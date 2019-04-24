@@ -46,6 +46,7 @@ module.exports = {
         ],
         "import/no-commonjs": 0,
         "react/jsx-no-bind": 0,
-        "react/prop-types": 1
+        "react/prop-types": 1,
+        "import/prefer-default-export": 0
     }
 };
