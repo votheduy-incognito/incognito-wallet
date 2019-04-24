@@ -19,7 +19,10 @@ const commonPlugins = [
   'babel-plugin-transform-remove-undefined',
 ];
 
-const commonPresets = ['module:metro-react-native-babel-preset'];
+const commonPresets = [
+  'module:metro-react-native-babel-preset',
+  'module:react-native-dotenv'
+];
 
 module.exports = {
   env: {
