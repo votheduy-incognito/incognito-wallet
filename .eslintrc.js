@@ -27,6 +27,9 @@ module.exports = {
           "babel-module": {}
         }
     },
+    "globals": {
+        "__DEV__": true
+    },
     "rules": {
         "indent": [
             "error",
@@ -47,6 +50,7 @@ module.exports = {
         "import/no-commonjs": 0,
         "react/jsx-no-bind": 0,
         "react/prop-types": 1,
-        "import/prefer-default-export": 0
+        "import/prefer-default-export": 0,
+        "no-console": 1
     }
 };
