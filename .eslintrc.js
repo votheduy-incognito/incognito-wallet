@@ -6,18 +6,27 @@ module.exports = {
         "jest/globals": true
     },
     "extends": ["eslint:recommended", "react-native", "plugin:jest/recommended"],
+    "parser": "babel-eslint",
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true
         },
         "ecmaVersion": 2018,
-        "sourceType": "module"
+        "sourceType": "module",
+        "babelOptions": {
+            "configFile": "./babel.config.js",
+        },
     },
     "plugins": [
         "react",
         "react-native",
         "jest"
     ],
+    "settings": {
+        "import/resolver": {
+          "babel-module": {}
+        }
+    },
     "rules": {
         "indent": [
             "error",
@@ -36,5 +45,7 @@ module.exports = {
             "always"
         ],
         "import/no-commonjs": 0,
+        "react/jsx-no-bind": 0,
+        "react/prop-types": 1
     }
 };
