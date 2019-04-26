@@ -11,6 +11,7 @@ const commonPlugins = [
     {
       alias: {
         '@src': './src',
+        '@core': './src/components/core',
       }
     }
   ],

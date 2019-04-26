@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Text, View } from 'react-native';
+import { Button, Text, View } from '@core';
 import { ROUTE_NAMES } from '@src/router';
 import { login } from '@src/services/auth';
 
