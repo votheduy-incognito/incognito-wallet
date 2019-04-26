@@ -1,4 +1,4 @@
 export default {
-  radiusBorder: '4px',
-  // boxShadow: ''
+  borderRadiusBorder: 2,
+  borderWidth: 0.5,
 };

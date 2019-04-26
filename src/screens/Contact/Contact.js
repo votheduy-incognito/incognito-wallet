@@ -1,5 +1,6 @@
 import React from 'react';
-import { Image, Button, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { Image, Button } from '@core';
 
 const styles = StyleSheet.create({
   icon: {

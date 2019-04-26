@@ -3,9 +3,11 @@ const fontNames =  {
 };
 
 const fontSizes =  {
-  small: '14px',
-  regular: '16px',
-  large: '18px'
+  superSmall: 12,
+  small: 14,
+  regular: 16,
+  large: 22,
+  superLarge: 30,
 };
 
 export default {

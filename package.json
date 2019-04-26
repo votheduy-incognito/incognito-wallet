@@ -12,6 +12,7 @@
     "axios": "^0.18.0",
     "constant-chain-web-js": "git://github.com/constant-money/constant-chain-web-js",
     "crypto-js": "^3.1.9-1",
+    "formik": "^1.5.3",
     "privacy-js-lib": "git://github.com/constant-money/privacy-js-lib",
     "prop-types": "^15.7.2",
     "react": "16.8.3",
@@ -22,7 +23,8 @@
     "react-navigation": "^3.8.1",
     "react-redux": "^7.0.2",
     "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "yup": "^0.27.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
