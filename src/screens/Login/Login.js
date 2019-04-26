@@ -1,29 +1,26 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Button, Text, View } from '@core';
-import { ROUTE_NAMES } from '@src/router';
+import { Text, Container, Form, FormTextField, FormSubmitButton } from '@core';
 import { login } from '@src/services/auth';
+import formValidate from './formValidate';
+import styleSheet from './style';
 
 const handleLogin = async () => {
   await login({ username: 'User', password: 'p' });
 };
 
-const Login = ({ navigation }) => (
-  <View>
-    <Text>Login</Text>
-    <Button
-      onPress={() => {
-        handleLogin().then(() => {
-          navigation.navigate(ROUTE_NAMES.Splash);
-        });
-      }}
-      title="LOGIN"
-    />
-  </View>
+const Login = () => (
+  <Container style={styleSheet.container}>
+    <Text style={styleSheet.title}>Welcome back!</Text>
+    <Text>The decentralized web awaits</Text>
+
+    <Form onSubmit={handleLogin} viewProps={{ style: styleSheet.form }} validationSchema={formValidate}>
+      <FormTextField name='password' placeholder='Enter your password' textContentType='password' secureTextEntry />
+      <FormSubmitButton title='Login' style={styleSheet.submitBtn} />
+    </Form>
+  </Container>
 );
 
 Login.propTypes = {
-  navigation: PropTypes.object.isRequired
 };
 
 export default Login;
