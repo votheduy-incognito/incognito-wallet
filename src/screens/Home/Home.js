@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Text, View } from '@core';
-import { ROUTE_NAMES } from '@src/router';
+import ROUTE_NAMES from '@src/router/routeNames';
 
 class Home extends React.Component {
   constructor() {

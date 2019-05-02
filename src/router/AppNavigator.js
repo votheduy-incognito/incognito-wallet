@@ -5,13 +5,8 @@ import Home from '@src/screens/Home';
 import Contact from '@src/screens/Contact';
 import HamburgerHeader from '@src/components/HamburgerHeader';
 import UserHeader from '@src/components/UserHeader';
-
 import { THEME } from '@src/styles';
-
-export const ROUTE_NAMES = {
-  Home: 'Home',
-  Contact: 'Contact',
-};
+import ROUTE_NAMES from './routeNames';
 
 const Drawer = createDrawerNavigator({
   [ROUTE_NAMES.Home]: Home,
