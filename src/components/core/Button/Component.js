@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TouchableOpacity as RNComponent } from 'react-native';
-import { Text } from '@core';
+import { Text } from '@src/components/core';
 import styleSheet from './style';
 
 const Button = ({ title, children, style, ...props }) => (

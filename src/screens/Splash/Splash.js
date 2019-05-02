@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Text, View } from '@core';
+import { Text, View } from '@src/components/core';
 import ROUTE_NAMES from '@src/router/routeNames';
 
 const Splash = ({ navigation }) => {

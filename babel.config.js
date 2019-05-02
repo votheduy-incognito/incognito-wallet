@@ -11,8 +11,7 @@ const commonPlugins = [
     'module-resolver',
     {
       alias: {
-        '@src': './src',
-        '@core': './src/components/core',
+        '@src': './src'
       }
     }
   ],

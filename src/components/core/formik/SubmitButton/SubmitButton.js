@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from '@core';
+import { Button } from '@src/components/core';
 
 const FormSubmitButton = (props) => {
   const { handleSubmit, ...btnProps } = props;

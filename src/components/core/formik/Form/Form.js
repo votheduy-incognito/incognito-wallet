@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
-import { View, FormSubmitButton } from '@core';
+import { View, FormSubmitButton } from '@src/components/core';
 
 const Form = (props) => {
   const { initialValues, onSubmit, children, viewProps, ...formikProps } = props;
