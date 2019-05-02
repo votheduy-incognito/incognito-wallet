@@ -40,6 +40,21 @@ const container = {
   padding: SPACINGS.small
 };
 
+const toast = {
+  error: {
+    backgroundColor: null,
+    textColor: COLORS.red
+  },
+  warning: {
+    backgroundColor: null,
+    textColor: COLORS.orange
+  },
+  info: {
+    backgroundColor: null,
+    textColor: COLORS.green
+  }
+};
+
 const textInput = {
   borderWidth: DECOR.borderWidth,
   borderRadius: DECOR.borderRadiusBorder,
@@ -53,5 +68,6 @@ export default {
   text,
   indicator,
   container,
-  textInput
+  textInput,
+  toast
 };
