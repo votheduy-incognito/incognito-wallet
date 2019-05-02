@@ -1,5 +1,7 @@
 import React from 'react';
 import { Button, Text, View } from '@src/components/core';
+import DrawerIcon from '@src/components/DrawerIcon';
+import MdIcon from 'react-native-vector-icons/MaterialIcons';
 import ROUTE_NAMES from '@src/router/routeNames';
 
 class Home extends React.Component {
@@ -7,18 +9,11 @@ class Home extends React.Component {
     super();
     this.openDrawer = this.openDrawer.bind(this);
   }
-  static navigationOptions = ({ navigation }) => ({
-    // drawerLabel: 'Home',
-    // drawerIcon: () => (
-    //   <Text>OK</Text>
-    // ),
-    title: 'Home Title',
-    headerRight: (
-      <Button
-        onPress={navigation.getParam('increaseCount')}
-        title="+1"
-        color="#fff"
-      />
+  
+  static navigationOptions = () => ({
+    drawerLabel: 'Home',
+    drawerIcon: () => (
+      <DrawerIcon><MdIcon name='home' /></DrawerIcon>
     ),
   });
 

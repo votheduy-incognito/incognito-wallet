@@ -5,6 +5,6 @@ export default {
   Login: 'Login',
   Splash: 'Splash',
   Home: 'Home',
-  Contact: 'Contact',
+  Setting: 'Setting',
   CreatePassword: 'CreatePassword'
 };

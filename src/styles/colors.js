@@ -1,7 +1,7 @@
 export default {
   black: 'black',
   white: 'white',
-  blue: '#286090',
+  blue: '#007bff',
   red: 'red',
   orange: 'orange',
   green: 'green',

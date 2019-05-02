@@ -2,7 +2,7 @@ import { createDrawerNavigator, createStackNavigator } from 'react-navigation';
 import React from 'react';
 
 import Home from '@src/screens/Home';
-import Contact from '@src/screens/Contact';
+import Setting from '@src/screens/Setting';
 import HamburgerHeader from '@src/components/HamburgerHeader';
 import UserHeader from '@src/components/UserHeader';
 import { THEME } from '@src/styles';
@@ -10,7 +10,7 @@ import ROUTE_NAMES from './routeNames';
 
 const Drawer = createDrawerNavigator({
   [ROUTE_NAMES.Home]: Home,
-  [ROUTE_NAMES.Contact]: Contact
+  [ROUTE_NAMES.Setting]: Setting
 }, {
   initialRouteName: ROUTE_NAMES.Home
 });
