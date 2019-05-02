@@ -1,13 +1,13 @@
 import React from 'react';
 import { Text, Container, Form, FormTextField, FormSubmitButton, Toast } from '@src/components/core';
-import { login } from '@src/services/auth';
 import formValidate from './formValidate';
 import styleSheet from './style';
 
 const Login = () => {
   const handleLogin = async ({ password }) => {
     try {
-      await login({ password });
+      console.log(password);
+      // TODO
     } catch (e) {
       Toast.showError(e.message);
     }

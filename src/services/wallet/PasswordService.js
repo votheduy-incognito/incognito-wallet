@@ -1,17 +1,17 @@
 import CryptoJS from 'crypto-js';
 import storage from '@src/services/storage';
+import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 const PASSWORD_DURATION_IN_MS = 7 * 24 * 3600 * 1000; // 7 days
-const PASSWORD_SECRET_KEY = 'FJexuTITEw';
 
 export function clearPassword() {
-  storage.removeItem('passphrase');
+  storage.removeItem(CONSTANT_KEYS.PASSPHRASE_KEY);
 }
 
 export async function getPassphrase() {
   try {
-    let pass = await storage.getItem('passphrase');
+    let pass = await storage.getItem(CONSTANT_KEYS.PASSPHRASE_KEY);
     if (!pass) return;
-    pass = CryptoJS.AES.decrypt(pass, PASSWORD_SECRET_KEY).toString(
+    pass = CryptoJS.AES.decrypt(pass, CONSTANT_CONFIGS.PASSWORD_SECRET_KEY).toString(
       CryptoJS.enc.Utf8
     );
     const [password, expired] = pass.split(':');
@@ -31,10 +31,14 @@ export async function hasPassword() {
 }
 
 export function savePassword(pass) {
-  const expired = Date.now() + PASSWORD_DURATION_IN_MS;
-  const toBeSaved = CryptoJS.AES.encrypt(
-    `${pass}:${expired}`,
-    PASSWORD_SECRET_KEY
-  ).toString();
-  storage.setItem('passphrase', toBeSaved);
+  try {
+    const expired = Date.now() + PASSWORD_DURATION_IN_MS;
+    const toBeSaved = CryptoJS.AES.encrypt(
+      `${pass}:${expired}`,
+      CONSTANT_CONFIGS.PASSWORD_SECRET_KEY
+    ).toString();
+    return storage.setItem(CONSTANT_KEYS.PASSPHRASE_KEY, toBeSaved);
+  } catch {
+    throw new Error('Can not save your password, please try again');
+  }
 }

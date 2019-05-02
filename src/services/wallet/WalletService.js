@@ -1,6 +1,6 @@
 import { Wallet, RpcClient } from 'constant-chain-web-js/build/wallet';
 import storage from '@src/services/storage';
-import { getPassphrase } from './PasswordService';
+import { getPassphrase } from './passwordService';
 import Server from './Server';
 import { getMaxShardNumber } from './RpcClientService';
 
