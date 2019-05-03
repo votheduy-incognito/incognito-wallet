@@ -6,5 +6,6 @@ export default {
   Splash: 'Splash',
   Home: 'Home',
   Setting: 'Setting',
-  CreatePassword: 'CreatePassword'
+  CreatePassword: 'CreatePassword',
+  UserHeaderBoard: 'UserHeaderBoard'
 };

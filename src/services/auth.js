@@ -1,4 +1,6 @@
-import { getPassphrase } from '@src/services/wallet/passwordService';
+import { getPassphrase, clearPassword } from '@src/services/wallet/passwordService';
+import { Toast } from '@src/components/core';
+import ROUTE_NAMES from '@src/router/routeNames';
 
 export const login = async ({
   password = throw new Error('Password is required!')
@@ -14,5 +16,14 @@ export const login = async ({
     throw new Error('Password is required!');
   } catch {
     throw new Error('Login failed!');
+  }
+};
+
+export const logout = async ({ navigation }) => {
+  try {
+    await clearPassword();
+    navigation.navigate(ROUTE_NAMES.RootSplash);
+  } catch {
+    Toast.showError('Logout failed!');
   }
 };
