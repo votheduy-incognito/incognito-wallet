@@ -20,7 +20,7 @@ class Toast extends RNToast {
   static show(msg, config) {
     return super.show(msg, {
       position: RNToast.positions.BOTTOM,
-      duration: RNToast.durations.SHORT,
+      duration: RNToast.durations.LONG,
       ...config,
     });
   }
