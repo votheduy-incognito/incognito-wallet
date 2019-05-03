@@ -14,7 +14,8 @@ const opacityButton = {
     paddingHorizontal: SPACINGS.medium,
     paddingVertical: SPACINGS.small,
     borderRadius: DECOR.borderRadiusBorder,
-    borderWidth: DECOR.borderWidth
+    borderWidth: DECOR.borderWidth,
+    height: DECOR.buttonHeight
   },
   buttonText: {
     color: COLORS.white,
@@ -62,6 +63,11 @@ const textInput = {
   borderColor: COLORS.lightGrey,
 };
 
+const divider = {
+  color: COLORS.black,
+  height: 1
+};
+
 export default {
   header,
   opacityButton,
@@ -69,5 +75,6 @@ export default {
   indicator,
   container,
   textInput,
-  toast
+  toast,
+  divider
 };
