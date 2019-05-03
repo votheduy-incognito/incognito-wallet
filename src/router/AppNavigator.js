@@ -1,30 +1,23 @@
-import { createDrawerNavigator, createStackNavigator } from 'react-navigation';
 import React from 'react';
-
-import Home from '@src/screens/Home';
-import Setting from '@src/screens/Setting';
+import { createStackNavigator } from 'react-navigation';
 import UserHeaderBoard from '@src/screens/UserHeaderBoard';
 import HamburgerHeader from '@src/components/HamburgerHeader';
 import UserHeader from '@src/components/UserHeader';
 import { THEME } from '@src/styles';
+import { navigationOptionsHandler } from '@src/utils/router';
 import ROUTE_NAMES from './routeNames';
-
-const Drawer = createDrawerNavigator({
-  [ROUTE_NAMES.Home]: Home,
-  [ROUTE_NAMES.Setting]: Setting,
-  [ROUTE_NAMES.UserHeaderBoard]: UserHeaderBoard
-}, {
-  initialRouteName: ROUTE_NAMES.Home
-});
+import DrawerNavigator from './DrawerNavigator';
 
 const AppNavigator = createStackNavigator({
-  Drawer
-},
-{
+  DrawerNavigator,
+  [ROUTE_NAMES.UserHeaderBoard]: navigationOptionsHandler(UserHeaderBoard),
+}, {
+  initialRouteName: 'DrawerNavigator',
   defaultNavigationOptions: ({ navigation }) => {
     const handleUserPress = () => {
       navigation.navigate(ROUTE_NAMES.UserHeaderBoard);
     };
+
     return {
       headerRight: <UserHeader userName='User' onPress={handleUserPress} />,
       headerLeft: <HamburgerHeader

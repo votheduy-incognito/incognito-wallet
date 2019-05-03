@@ -7,7 +7,7 @@ import SplashNavigator from './SplashNavigator';
 export default createAppContainer(createSwitchNavigator({
   [ROUTE_NAMES.RootApp]: AppNavigator,
   [ROUTE_NAMES.RootAuth]: AuthNavigator,
-  [ROUTE_NAMES.RootSplash]: SplashNavigator
+  [ROUTE_NAMES.RootSplash]: SplashNavigator,
 }, {
   initialRouteName: ROUTE_NAMES.RootSplash
 }));
