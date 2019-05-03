@@ -1,13 +1,19 @@
 import React from 'react';
-import { Button, Text, View } from '@src/components/core';
+import { View, Container } from '@src/components/core';
 import DrawerIcon from '@src/components/DrawerIcon';
 import MdIcon from 'react-native-vector-icons/MaterialIcons';
-import ROUTE_NAMES from '@src/router/routeNames';
+import AccountAddress from './AccountAddress';
+import AccountBalance from './AccountBalance';
+import { homeStyle } from './style';
 
 class Home extends React.Component {
   constructor() {
     super();
-    this.openDrawer = this.openDrawer.bind(this);
+
+    this.state = {
+      accountAddress: '15624561ajhsdhashjdbjasbdjbjahsbdjbasjhbdjhasbjdbasjhbdjabsjdhba256',
+      accountBalance: 100
+    };
   }
   
   static navigationOptions = () => ({
@@ -17,26 +23,14 @@ class Home extends React.Component {
     ),
   });
 
-  openDrawer() {
-    this.props.navigation.openDrawer();
-  }
-
-  componentDidMount() {
-    this.openDrawer();
-  }
-
   render() {
+    const { accountAddress, accountBalance } = this.state;
     return (
-      <View>
-        <Text>Home</Text>
-        <Button
-          onPress={() => this.props.navigation.navigate(ROUTE_NAMES.Contact)}
-          title="Go to contact"
-        />
-        <Button
-          onPress={() => this.props.navigation.navigate(ROUTE_NAMES.Login)}
-          title="Go to login"
-        />
+      <View style={homeStyle.container}>
+        <Container style={homeStyle.mainContainer}>
+          <AccountAddress data={accountAddress} />
+          <AccountBalance balance={accountBalance} />
+        </Container>
       </View>
     );
   }
