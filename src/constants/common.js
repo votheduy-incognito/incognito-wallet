@@ -1,3 +1,9 @@
 export default {
   CONST_SYMBOL: 'CONST',
+  STAKING_TYPES: {
+    SHARD: 0,
+    BEACON: 1
+  },
+  STAKING_AMOUNT: 200,
+  STAKING_ADDRESS: 'JHASDJHBASJHDBA'
 };
