@@ -6,6 +6,7 @@ export default {
   orange: 'orange',
   green: 'green',
   lightGrey: '#c2c2c2',
+  transparent: 'transparent',
 
 
 

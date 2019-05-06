@@ -4,6 +4,7 @@ import DrawerIcon from '@src/components/DrawerIcon';
 import MdIcon from 'react-native-vector-icons/MaterialIcons';
 import AccountAddress from './AccountAddress';
 import AccountBalance from './AccountBalance';
+import ActionButtons from './ActionButtons';
 import { homeStyle } from './style';
 
 class Home extends React.Component {
@@ -14,6 +15,21 @@ class Home extends React.Component {
       accountAddress: '15624561ajhsdhashjdbjasbdjbjahsbdjbasjhbdjhasbjdbasjhbdjabsjdhba256',
       accountBalance: 100
     };
+
+    this.actionButtons = [
+      {
+        label: 'SEND',
+        handlePress: null
+      },
+      {
+        label: 'STAKING',
+        handlePress: null
+      },
+      {
+        label: 'DEFRAGMENT',
+        handlePress: null
+      }
+    ];
   }
   
   static navigationOptions = () => ({
@@ -30,6 +46,7 @@ class Home extends React.Component {
         <Container style={homeStyle.mainContainer}>
           <AccountAddress data={accountAddress} />
           <AccountBalance balance={accountBalance} />
+          <ActionButtons actions={this.actionButtons} />
         </Container>
       </View>
     );

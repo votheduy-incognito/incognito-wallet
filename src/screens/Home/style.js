@@ -44,6 +44,25 @@ export const accountBalanceStyle = StyleSheet.create({
   }
 });
 
+export const actionButtonStyle = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    flexWrap: 'wrap',
+  },
+  item: {
+    backgroundColor: COLORS.white,
+    borderColor: COLORS.transparent,
+    paddingHorizontal: 0,
+    margin: 3,
+    width: 100
+  },
+  titleStyle: {
+    fontSize: FONT.SIZE.small,
+    color: COLORS.black,
+  }
+});
+
 export const homeStyle = StyleSheet.create({
   container: {
   },
