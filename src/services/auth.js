@@ -1,4 +1,4 @@
-import { getPassphrase, clearPassword } from '@src/services/wallet/passwordService';
+import { getPassphrase, clearPassword } from './wallet/passwordService';
 import { Toast } from '@src/components/core';
 import ROUTE_NAMES from '@src/router/routeNames';
 

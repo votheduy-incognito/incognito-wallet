@@ -24,7 +24,6 @@ export async function loadWallet() {
   }
 
   console.log('Wallet when load wallet:', Wallet);
-  console.time('loadWallet');
   const passphrase = await getPassphrase();
   const wallet = new Wallet();
   wallet.Storage = storage;
@@ -36,17 +35,14 @@ export async function loadWallet() {
   updateStatusHistory(wallet);
 
   if (wallet.Name) {
-    console.timeEnd('loadWallet');
     return wallet;
   }
-  console.timeEnd('loadWallet');
   return false;
 }
 
 export async function initWallet() {
   try {
     console.log('storage', storage);
-    console.time('initWallet');
     const passphrase = 'aaa'; //await getPassphrase();
     const wallet = new Wallet();
     wallet.Storage = storage;
@@ -59,7 +55,7 @@ export async function initWallet() {
     );
 
     await wallet.save(passphrase);
-    console.timeEnd('initWallet');
+    console.log('Wallet after initing kraken: ', wallet);
     return wallet;
   } catch (e) {
     throw e;

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Text, Container, Form, FormTextField, FormSubmitButton, Toast } from '@src/components/core';
 import { savePassword } from '@src/services/wallet/passwordService';
+import { initWallet } from '@src/services/wallet/WalletService';
 import ROUTE_NAMES from '@src/router/routeNames';
 import formValidate from './formValidate';
 import styleSheet from './style';
@@ -15,6 +16,10 @@ const CreatePassword = ({ navigation }) => {
     try {
       await savePassword(password);
       Toast.showInfo('Your password was saved!');
+
+      // kraken test
+      await initWallet();
+      Toast.showInfo('Your wallet was created!');
       setTimeout(goHome, 2000);
     } catch (e) {
       Toast.showError(e.message);
