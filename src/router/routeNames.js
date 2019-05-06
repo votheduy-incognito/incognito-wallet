@@ -7,5 +7,6 @@ export default {
   Home: 'Home',
   Setting: 'Setting',
   CreatePassword: 'CreatePassword',
-  UserHeaderBoard: 'UserHeaderBoard'
+  UserHeaderBoard: 'UserHeaderBoard',
+  SendConstant: 'SendConstant'
 };

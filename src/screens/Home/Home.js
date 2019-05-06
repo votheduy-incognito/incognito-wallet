@@ -2,6 +2,7 @@ import React from 'react';
 import { View, ScrollView, Container } from '@src/components/core';
 import DrawerIcon from '@src/components/DrawerIcon';
 import MdIcon from 'react-native-vector-icons/MaterialIcons';
+import ROUTE_NAMES from '@src/router/routeNames';
 import AccountAddress from './AccountAddress';
 import AccountBalance from './AccountBalance';
 import ActionButtons from './ActionButtons';
@@ -9,8 +10,8 @@ import HomeTabs from './HomeTabs';
 import { homeStyle } from './style';
 
 class Home extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       accountAddress: '15624561ajhsdhashjdbjasbdjbjahsbdjbasjhbdjhasbjdbasjhbdjabsjdhba256',
@@ -20,7 +21,7 @@ class Home extends React.Component {
     this.actionButtons = [
       {
         label: 'SEND',
-        handlePress: null
+        handlePress: () => props?.navigation?.navigate(ROUTE_NAMES.SendConstant)
       },
       {
         label: 'STAKING',
