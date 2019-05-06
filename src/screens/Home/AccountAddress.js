@@ -8,7 +8,7 @@ import { accountAddressStyle } from './style';
 
 const AccountAddress = ({ data }) => (
   <View style={accountAddressStyle.container}>
-    <QrCodeGenerate data={data} style={accountAddressStyle.qrCode} size={150} />
+    <QrCodeGenerate value={data} style={accountAddressStyle.qrCode} size={150} />
     <TouchableOpacity style={accountAddressStyle.textBox} onPress={() => clipboard.set(data)} >
       <Text style={accountAddressStyle.text} numberOfLines={1} ellipsizeMode='middle' >{data}</Text>
       <MdIcons name='content-copy' size={20} style={accountAddressStyle.copyIcon} />
