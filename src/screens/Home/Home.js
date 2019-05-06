@@ -13,7 +13,7 @@ class Home extends React.Component {
 
     this.state = {
       accountAddress: '15624561ajhsdhashjdbjasbdjbjahsbdjbasjhbdjhasbjdbasjhbdjabsjdhba256',
-      accountBalance: 100
+      accountBalance: 10000.2678
     };
 
     this.actionButtons = [

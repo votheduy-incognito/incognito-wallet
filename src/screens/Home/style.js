@@ -31,6 +31,7 @@ export const accountBalanceStyle = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    marginVertical: SPACING.small,
   },
   textBalance: {
     fontSize: FONT.SIZE.superLarge,
@@ -49,6 +50,7 @@ export const actionButtonStyle = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     flexWrap: 'wrap',
+    marginVertical: SPACING.small,
   },
   item: {
     backgroundColor: COLORS.white,
