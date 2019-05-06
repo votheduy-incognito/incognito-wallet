@@ -1,18 +1,13 @@
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-import AuthNavigator, { ROUTE_NAMES as authRouteNames } from './AuthNavigator';
-import AppNavigator, { ROUTE_NAMES as appRouteNames }  from './AppNavigator';
-import SplashNavigator, { ROUTE_NAMES as splashRouteNames }  from './SplashNavigator';
+import ROUTE_NAMES from './routeNames';
+import AuthNavigator from './AuthNavigator';
+import AppNavigator from './AppNavigator';
+import SplashNavigator from './SplashNavigator';
 
 export default createAppContainer(createSwitchNavigator({
-  App: AppNavigator,
-  Auth: AuthNavigator,
-  Splash: SplashNavigator
+  [ROUTE_NAMES.RootApp]: AppNavigator,
+  [ROUTE_NAMES.RootAuth]: AuthNavigator,
+  [ROUTE_NAMES.RootSplash]: SplashNavigator,
 }, {
-  initialRouteName: 'Auth'
+  initialRouteName: ROUTE_NAMES.RootSplash
 }));
-
-export const ROUTE_NAMES = {
-  ...authRouteNames,
-  ...appRouteNames,
-  ...splashRouteNames
-};

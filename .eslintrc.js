@@ -47,6 +47,7 @@ module.exports = {
             "error",
             "always"
         ],
+        "no-invalid-this": 0,
         "import/no-commonjs": 0,
         "react/jsx-no-bind": 0,
         "react/prop-types": 1,

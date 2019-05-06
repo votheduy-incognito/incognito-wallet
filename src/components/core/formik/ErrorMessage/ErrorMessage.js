@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text } from '@core';
+import { Text } from '@src/components/core';
 import styleSheet from './style';
 
 const ErrorMessage = (props) => {

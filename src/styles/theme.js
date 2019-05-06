@@ -4,7 +4,7 @@ import SPACINGS from './spacing';
 import DECOR from './decor';
 
 const header = {
-  backgroundColor: COLORS.white,
+  backgroundColor: COLORS.blue,
   headerTintColor: COLORS.black
 };
 
@@ -14,7 +14,8 @@ const opacityButton = {
     paddingHorizontal: SPACINGS.medium,
     paddingVertical: SPACINGS.small,
     borderRadius: DECOR.borderRadiusBorder,
-    borderWidth: DECOR.borderWidth
+    borderWidth: DECOR.borderWidth,
+    height: DECOR.buttonHeight
   },
   buttonText: {
     color: COLORS.white,
@@ -40,11 +41,31 @@ const container = {
   padding: SPACINGS.small
 };
 
+const toast = {
+  error: {
+    backgroundColor: null,
+    textColor: COLORS.red
+  },
+  warning: {
+    backgroundColor: null,
+    textColor: COLORS.orange
+  },
+  info: {
+    backgroundColor: null,
+    textColor: COLORS.green
+  }
+};
+
 const textInput = {
   borderWidth: DECOR.borderWidth,
   borderRadius: DECOR.borderRadiusBorder,
   paddingHorizontal: SPACINGS.small,
   borderColor: COLORS.lightGrey,
+};
+
+const divider = {
+  color: COLORS.black,
+  height: 1
 };
 
 export default {
@@ -53,5 +74,7 @@ export default {
   text,
   indicator,
   container,
-  textInput
+  textInput,
+  toast,
+  divider
 };

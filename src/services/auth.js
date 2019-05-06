@@ -1,13 +1,29 @@
-import http from './http';
+import { getPassphrase, clearPassword } from '@src/services/wallet/passwordService';
+import { Toast } from '@src/components/core';
+import ROUTE_NAMES from '@src/router/routeNames';
 
-
-// mock 
-export const login = ({
-  username = throw new Error('Username is required!'),
+export const login = async ({
   password = throw new Error('Password is required!')
 }) => {
-  if (username && password) {
-    return http.get('https://httpbin.org/get');
+  try {
+    if (password) {
+      const passphase = await getPassphrase();
+      if (passphase === password) {
+        return true;
+      }
+      throw new Error('Wrong password');
+    }
+    throw new Error('Password is required!');
+  } catch {
+    throw new Error('Login failed!');
   }
-  return Promise.reject();
+};
+
+export const logout = async ({ navigation }) => {
+  try {
+    await clearPassword();
+    navigation.navigate(ROUTE_NAMES.RootSplash);
+  } catch {
+    Toast.showError('Logout failed!');
+  }
 };

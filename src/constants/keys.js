@@ -1,3 +1,4 @@
 export default {
-  SERVERS: 'servers',
+  SERVERS: '$servers',
+  PASSPHRASE_KEY: '$password'
 };

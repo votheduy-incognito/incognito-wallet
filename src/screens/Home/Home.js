@@ -1,47 +1,53 @@
 import React from 'react';
-import { Button, Text, View } from '@core';
-import { ROUTE_NAMES } from '@src/router';
+import { View, Container } from '@src/components/core';
+import DrawerIcon from '@src/components/DrawerIcon';
+import MdIcon from 'react-native-vector-icons/MaterialIcons';
+import AccountAddress from './AccountAddress';
+import AccountBalance from './AccountBalance';
+import ActionButtons from './ActionButtons';
+import { homeStyle } from './style';
 
 class Home extends React.Component {
   constructor() {
     super();
-    this.openDrawer = this.openDrawer.bind(this);
+
+    this.state = {
+      accountAddress: '15624561ajhsdhashjdbjasbdjbjahsbdjbasjhbdjhasbjdbasjhbdjabsjdhba256',
+      accountBalance: 100
+    };
+
+    this.actionButtons = [
+      {
+        label: 'SEND',
+        handlePress: null
+      },
+      {
+        label: 'STAKING',
+        handlePress: null
+      },
+      {
+        label: 'DEFRAGMENT',
+        handlePress: null
+      }
+    ];
   }
-  static navigationOptions = ({ navigation }) => ({
-    // drawerLabel: 'Home',
-    // drawerIcon: () => (
-    //   <Text>OK</Text>
-    // ),
-    title: 'Home Title',
-    headerRight: (
-      <Button
-        onPress={navigation.getParam('increaseCount')}
-        title="+1"
-        color="#fff"
-      />
+  
+  static navigationOptions = () => ({
+    drawerLabel: 'Home',
+    drawerIcon: () => (
+      <DrawerIcon><MdIcon name='home' /></DrawerIcon>
     ),
   });
 
-  openDrawer() {
-    this.props.navigation.openDrawer();
-  }
-
-  componentDidMount() {
-    this.openDrawer();
-  }
-
   render() {
+    const { accountAddress, accountBalance } = this.state;
     return (
-      <View>
-        <Text>Home</Text>
-        <Button
-          onPress={() => this.props.navigation.navigate(ROUTE_NAMES.Contact)}
-          title="Go to contact"
-        />
-        <Button
-          onPress={() => this.props.navigation.navigate(ROUTE_NAMES.Login)}
-          title="Go to login"
-        />
+      <View style={homeStyle.container}>
+        <Container style={homeStyle.mainContainer}>
+          <AccountAddress data={accountAddress} />
+          <AccountBalance balance={accountBalance} />
+          <ActionButtons actions={this.actionButtons} />
+        </Container>
       </View>
     );
   }

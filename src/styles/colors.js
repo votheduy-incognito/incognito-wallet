@@ -1,7 +1,14 @@
 export default {
   black: 'black',
   white: 'white',
-  blue: '#286090',
+  blue: '#007bff',
   red: 'red',
-  lightGrey: '#c2c2c2'
+  orange: 'orange',
+  green: 'green',
+  lightGrey: '#c2c2c2',
+  transparent: 'transparent',
+
+
+
+  primary: '#007bff'
 };

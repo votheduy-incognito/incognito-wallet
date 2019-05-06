@@ -4,14 +4,14 @@ const commonPlugins = [
   '@babel/plugin-proposal-optional-chaining',
   'transform-function-bind',
   '@babel/plugin-proposal-export-default-from',
+  '@babel/plugin-proposal-export-namespace-from',
   '@babel/plugin-proposal-nullish-coalescing-operator',
   '@babel/plugin-proposal-throw-expressions',
   [
     'module-resolver',
     {
       alias: {
-        '@src': './src',
-        '@core': './src/components/core',
+        '@src': './src'
       }
     }
   ],
