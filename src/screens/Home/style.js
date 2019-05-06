@@ -67,8 +67,12 @@ export const actionButtonStyle = StyleSheet.create({
 
 export const homeStyle = StyleSheet.create({
   container: {
+    flex: 1
   },
   mainContainer: {
     backgroundColor: COLORS.primary,
+  },
+  tabContainer: {
+    flex: 1,
   }
 });
