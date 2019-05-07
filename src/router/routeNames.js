@@ -9,5 +9,6 @@ export default {
   CreatePassword: 'CreatePassword',
   UserHeaderBoard: 'UserHeaderBoard',
   SendConstant: 'SendConstant',
-  Staking: 'Staking'
+  Staking: 'Staking',
+  Defragment: 'Defragment'
 };

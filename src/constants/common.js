@@ -6,5 +6,8 @@ export default {
   },
   STAKING_AMOUNT: 200,
   STAKING_MIN_FEE: 0.1,
-  STAKING_ADDRESS: 'change_this_address_in_constants'
+  STAKING_ADDRESS: 'change_this_address_in_constants',
+  DEFRAGMENT_DEFAULT_AMOUNT: 1,
+  DEFRAGMENT_MIN_FEE: 0,
+  DEFRAGMENT_SET_DEFAULT_PRIVACY: true
 };

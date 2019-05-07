@@ -29,7 +29,7 @@ class Home extends React.Component {
       },
       {
         label: 'DEFRAGMENT',
-        handlePress: null
+        handlePress: () => props?.navigation?.navigate(ROUTE_NAMES.Defragment)
       }
     ];
   }
