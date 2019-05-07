@@ -10,5 +10,6 @@ export default {
   UserHeaderBoard: 'UserHeaderBoard',
   SendConstant: 'SendConstant',
   Staking: 'Staking',
-  Defragment: 'Defragment'
+  Defragment: 'Defragment',
+  NetworkSetting: 'NetworkSetting'
 };

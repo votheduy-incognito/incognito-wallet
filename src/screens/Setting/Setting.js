@@ -24,10 +24,11 @@ class Setting extends React.Component {
 
   render() {
     const { defaultServerId, defaultLanguage, passphrase } = this.state;
+    const { navigation } = this.props;
     return (
       <ScrollView>
         <Container>
-          <NetworkSection defaultServerId={defaultServerId} />
+          <NetworkSection navigation={navigation} defaultServerId={defaultServerId} />
           <PreferencesSection defaultLanguage={defaultLanguage} />
           <PrivacySection passphrase={passphrase} />
         </Container>
