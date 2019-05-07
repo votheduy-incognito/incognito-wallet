@@ -4,10 +4,10 @@ import {
   KeyWallet,
   Wallet
 } from 'constant-chain-web-js/build/wallet';
-import { getPassphrase } from './passwordService';
+import { saveWallet } from './WalletService';
 
 export default class Token {
-  static async createSendCustomToken(submitParam, fee, account, wallet) {
+  static async createSendCustomToken(param, fee, account, wallet) {
     await Wallet.resetProgressTx();
     console.log('SEND CUSTOM TOKEN!!!!!!!');
 
@@ -24,22 +24,22 @@ export default class Token {
 
     // receviers token
     const receiverPaymentAddrStr = new Array(1);
-    receiverPaymentAddrStr[0] = submitParam.TokenReceivers.PaymentAddress;
+    receiverPaymentAddrStr[0] = param.TokenReceivers.PaymentAddress;
 
     // token param
     const tokenParam = new CustomTokenParamTx();
-    tokenParam.propertyID = submitParam.TokenID;
-    tokenParam.propertyName = submitParam.TokenName;
-    tokenParam.propertySymbol = submitParam.TokenSymbol;
-    tokenParam.amount = submitParam.TokenAmount;
-    tokenParam.tokenTxType = submitParam.TokenTxType;
+    tokenParam.propertyID = param.TokenID;
+    tokenParam.propertyName = param.TokenName;
+    tokenParam.propertySymbol = param.TokenSymbol;
+    tokenParam.amount = param.TokenAmount;
+    tokenParam.tokenTxType = param.TokenTxType;
     tokenParam.receivers = new Array(1);
     tokenParam.receivers[0] = new TxTokenVout();
     tokenParam.receivers[0].set(
       KeyWallet.base58CheckDeserialize(
-        submitParam.TokenReceivers.PaymentAddress
+        param.TokenReceivers.PaymentAddress
       ).KeySet.PaymentAddress,
-      submitParam.TokenReceivers.Amount
+      param.TokenReceivers.Amount
     );
 
     console.log(tokenParam);
@@ -56,7 +56,7 @@ export default class Token {
       );
 
       // saving KeyWallet
-      await wallet.save(getPassphrase());
+      await saveWallet(wallet);
     } catch (e) {
       throw e;
     }
@@ -90,7 +90,7 @@ export default class Token {
         indexAccount
       ].createAndSendPrivacyCustomToken(paymentInfos, submitParam, fee);
 
-      await wallet.save(getPassphrase());
+      await saveWallet(wallet);
     } catch (e) {
       throw e;
     }

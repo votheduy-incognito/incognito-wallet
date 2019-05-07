@@ -7,16 +7,23 @@ export default class Server {
   }
 
   static getDefault() {
-    return storage.getItem(CONSTANT_KEYS.SERVERS)
-      .then(result => {
-        if (result && result.length) {
-          for (const s of result) {
-            if (s.default) {
-              return s;
-            }
-          }
-        }
-      });
+    return {
+      default: true,
+      address: 'http://test-node-constant-chain.constant.money:9334',
+      username: '',
+      password: '',
+      name: 'Testnet'
+    };
+    // return storage.getItem(CONSTANT_KEYS.SERVERS)
+    //   .then(result => {
+    //     if (result && result.length) {
+    //       for (const s of result) {
+    //         if (s.default) {
+    //           return s;
+    //         }
+    //       }
+    //     }
+    //   });
   }
 
   static setDefault() {

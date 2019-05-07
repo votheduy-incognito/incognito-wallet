@@ -1,7 +1,7 @@
 import { KeyWallet, Wallet } from 'constant-chain-web-js/build/wallet';
-import { getPassphrase } from './passwordService';
-import { getActiveShard } from './RpcClientService';
+import { getActiveShard, getRpcClient } from './RpcClientService';
 import { CONSTANT_CONFIGS } from '@src/constants';
+import { saveWallet } from './WalletService';
 
 export default class Account {
   static async importAccount(privakeyStr, accountName, passPhrase, wallet) {
@@ -11,7 +11,7 @@ export default class Account {
     if (account.isImport === false) {
       console.log('Account is not imported');
       return false;
-    } 
+    }
 
     console.log('Account is imported');
     return true;
@@ -27,9 +27,13 @@ export default class Account {
   }
 
   static async sendConstant(param, fee, isPrivacy, account, wallet) {
+    console.log('Wallet.ProgressTx: ', Wallet.ProgressTx);
     // param: payment address string, amount in Number (miliconstant)
-    await Wallet.resetProgressTx();
+    // await Wallet.resetProgressTx();
+    // console.log('Wallet.ProgressTx: ', Wallet.ProgressTx);
     const indexAccount = wallet.getAccountIndexByName(account.name);
+
+    console.log('getRpcClient: ', getRpcClient());
     // create and send constant
     let result;
     try {
@@ -43,8 +47,10 @@ export default class Account {
       );
 
       // save wallet
-      wallet.save(getPassphrase());
+      await saveWallet(wallet);
+      // wallet.save(await getPassphrase());
     } catch (e) {
+      console.log('Error when sendConstant', e);
       throw e;
     }
     await Wallet.resetProgressTx();
@@ -63,7 +69,7 @@ export default class Account {
       ].createAndSendStakingTx(param, fee);
 
       // save wallet
-      wallet.save(getPassphrase());
+      await saveWallet(wallet);
     } catch (e) {
       throw e;
     }
@@ -85,7 +91,7 @@ export default class Account {
       );
 
       // save wallet
-      wallet.save(getPassphrase());
+      await saveWallet(wallet);
     } catch (e) {
       await Wallet.resetProgressTx();
       throw e;

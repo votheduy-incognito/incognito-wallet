@@ -8,7 +8,7 @@ const numOfAccount = 1;
 const walletName = 'wallet1';
 
 export async function loadWallet() {
-  const server = await Server.getDefault();
+  const server = Server.getDefault();
   console.log('[loadWallet] with server ', server);
   Wallet.RpcClient = new RpcClient(
     server.address,
@@ -29,7 +29,7 @@ export async function loadWallet() {
   wallet.Storage = storage;
 
   await wallet.loadWallet(passphrase);
-  console.log('Load Wallet', wallet.MasterAccount.child);
+  console.log('Wallet after loading', wallet);
 
   // update status history
   updateStatusHistory(wallet);
@@ -43,7 +43,8 @@ export async function loadWallet() {
 export async function initWallet() {
   try {
     console.log('storage', storage);
-    const passphrase = 'aaa'; //await getPassphrase();
+    // const passphrase = 'aaa'; //await getPassphrase();
+    const passphrase = await getPassphrase();
     const wallet = new Wallet();
     wallet.Storage = storage;
     wallet.init(
@@ -69,7 +70,8 @@ export async function saveWallet(wallet) {
 export async function updateStatusHistory(wallet) {
   console.log('UPDATING HISTORY STATUS....');
   await wallet.updateStatusHistory();
-  wallet.save(await getPassphrase());
+  await saveWallet(wallet);
+  // wallet.save(await getPassphrase());
 }
 
 export function clearCache(wallet) {

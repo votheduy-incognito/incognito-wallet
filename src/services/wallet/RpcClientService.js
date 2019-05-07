@@ -1,6 +1,6 @@
 import { Wallet, RpcClient } from 'constant-chain-web-js/build/wallet';
 
-function getRpcClient() {
+export function getRpcClient() {
   return Wallet.RpcClient;
 }
 
@@ -111,6 +111,7 @@ export async function getActiveShard() {
   let resp;
   try {
     resp = await getRpcClient().getActiveShard();
+    console.log('resp getActiveShard: ', resp);
   } catch (e) {
     throw e;
   }
