@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { THEME } from '@src/styles';
+import { THEME, COLORS } from '@src/styles';
 
 export default StyleSheet.create({
   button: {
@@ -7,5 +7,12 @@ export default StyleSheet.create({
   },
   text: {
     ...THEME.opacityButton.buttonText
-  }
+  },
+  primaryStyle: {
+    ...THEME.opacityButton.button
+  },
+  dangerStyle: {
+    ...THEME.opacityButton.button,
+    backgroundColor: COLORS.red,
+  } 
 });

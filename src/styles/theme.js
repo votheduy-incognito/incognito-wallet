@@ -15,6 +15,7 @@ const opacityButton = {
     paddingVertical: SPACINGS.small,
     borderRadius: DECOR.borderRadiusBorder,
     borderWidth: DECOR.borderWidth,
+    borderColor: COLORS.transparent,
     height: DECOR.buttonHeight
   },
   buttonText: {
