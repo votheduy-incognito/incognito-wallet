@@ -5,5 +5,6 @@ export default {
     BEACON: 1
   },
   STAKING_AMOUNT: 200,
-  STAKING_ADDRESS: 'JHASDJHBASJHDBA'
+  STAKING_MIN_FEE: 0.1,
+  STAKING_ADDRESS: 'change_this_address_in_constants'
 };

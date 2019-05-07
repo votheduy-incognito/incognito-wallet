@@ -1,14 +1,16 @@
-import { object, string } from 'yup';
+import { object, string, number } from 'yup';
 
-export default object().shape({
+export default ({ minFee = 0 }) => object().shape({
   stakingType: string()
     .required('Required!'),
   fromAddress: string()
     .required('Required!'),
   toAddress: string()
     .required('Required!'),
-  amount: string()
+  amount: number()
+    .integer()
     .required('Required!'),
-  fee: string()
+  fee: number()
+    .min(minFee)
     .required('Required!')
 });

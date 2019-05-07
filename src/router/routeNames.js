@@ -8,5 +8,6 @@ export default {
   Setting: 'Setting',
   CreatePassword: 'CreatePassword',
   UserHeaderBoard: 'UserHeaderBoard',
-  SendConstant: 'SendConstant'
+  SendConstant: 'SendConstant',
+  Staking: 'Staking'
 };

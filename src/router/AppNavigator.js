@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from 'react-navigation';
 import UserHeaderBoard from '@src/screens/UserHeaderBoard';
+import Staking from '@src/screens/Staking';
 import SendConstant from '@src/screens/SendConstant';
 import HamburgerHeader from '@src/components/HamburgerHeader';
 import UserHeader from '@src/components/UserHeader';
@@ -13,6 +14,7 @@ const AppNavigator = createStackNavigator({
   DrawerNavigator,
   [ROUTE_NAMES.UserHeaderBoard]: navigationOptionsHandler(UserHeaderBoard),
   [ROUTE_NAMES.SendConstant]: navigationOptionsHandler(SendConstant),
+  [ROUTE_NAMES.Staking]: navigationOptionsHandler(Staking),
 }, {
   initialRouteName: 'DrawerNavigator',
   defaultNavigationOptions: ({ navigation }) => {

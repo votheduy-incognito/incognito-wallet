@@ -25,7 +25,7 @@ class Home extends React.Component {
       },
       {
         label: 'STAKING',
-        handlePress: null
+        handlePress: () => props?.navigation?.navigate(ROUTE_NAMES.Staking)
       },
       {
         label: 'DEFRAGMENT',
