@@ -7,7 +7,7 @@ import { getMaxShardNumber } from './RpcClientService';
 const numOfAccount = 1;
 const walletName = 'wallet1';
 
-export async function loadWallet() {
+export async function loadWallet(passphrase) {
   const server = Server.getDefault();
   console.log('[loadWallet] with server ', server);
   Wallet.RpcClient = new RpcClient(
@@ -24,7 +24,6 @@ export async function loadWallet() {
   }
 
   console.log('Wallet when load wallet:', Wallet);
-  const passphrase = await getPassphrase();
   const wallet = new Wallet();
   wallet.Storage = storage;
 
