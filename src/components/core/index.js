@@ -24,3 +24,4 @@ export { default as Divider } from './Divider';
 export { default as TabView } from './TabView';
 export { default as CheckBox } from './CheckBox';
 export { default as Picker } from './Picker';
+export { default as Alert } from './Alert';
