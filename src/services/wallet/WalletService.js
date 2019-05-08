@@ -43,7 +43,6 @@ export async function loadWallet() {
 export async function initWallet() {
   try {
     console.log('storage', storage);
-    // const passphrase = 'aaa'; //await getPassphrase();
     const passphrase = await getPassphrase();
     const wallet = new Wallet();
     wallet.Storage = storage;

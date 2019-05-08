@@ -17,10 +17,9 @@ const CreatePassword = ({ navigation }) => {
       await savePassword(password);
       Toast.showInfo('Your password was saved!');
 
-      // kraken test
       await initWallet();
       Toast.showInfo('Your wallet was created!');
-      setTimeout(goHome, 2000);
+      goHome();
     } catch (e) {
       Toast.showError(e.message);
     }
