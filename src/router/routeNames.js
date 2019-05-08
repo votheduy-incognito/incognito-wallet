@@ -13,5 +13,6 @@ export default {
   Defragment: 'Defragment',
   NetworkSetting: 'NetworkSetting',
   CreateAccount: 'CreateAccount',
-  ImportAccount: 'ImportAccount'
+  ImportAccount: 'ImportAccount',
+  SeedPhrase: 'SeedPhrase'
 };
