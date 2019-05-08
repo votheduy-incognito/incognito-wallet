@@ -12,5 +12,6 @@ export default {
   Staking: 'Staking',
   Defragment: 'Defragment',
   NetworkSetting: 'NetworkSetting',
-  CreateAccount: 'CreateAccount'
+  CreateAccount: 'CreateAccount',
+  ImportAccount: 'ImportAccount'
 };

@@ -22,7 +22,7 @@ class UserHeaderBoard extends React.Component {
       },
       {
         label: 'Import Account',
-        handlePress: null,
+        handlePress: () => navigation.navigate(ROUTE_NAMES.ImportAccount),
         icon: <MdIcons name='input' />
       },
       {
