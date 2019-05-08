@@ -15,8 +15,6 @@ const CreatePassword = ({ navigation }) => {
   const handleCreateWallet = async ({ password }) => {
     try {
       await savePassword(password);
-      Toast.showInfo('Your password was saved!');
-
       await initWallet();
       Toast.showInfo('Your wallet was created!');
       goHome();
