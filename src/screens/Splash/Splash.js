@@ -11,7 +11,7 @@ const Splash = ({ navigation }) => {
       .then(passphrase => {
         // TODO: loadWallet from here
         if (passphrase) {
-          navigation.navigate(ROUTE_NAMES.Home);
+          navigation.navigate(ROUTE_NAMES.Login);
         } else {
           navigation.navigate(ROUTE_NAMES.CreatePassword);
         }
