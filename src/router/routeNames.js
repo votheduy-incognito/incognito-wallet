@@ -11,5 +11,6 @@ export default {
   SendConstant: 'SendConstant',
   Staking: 'Staking',
   Defragment: 'Defragment',
-  NetworkSetting: 'NetworkSetting'
+  NetworkSetting: 'NetworkSetting',
+  CreateAccount: 'CreateAccount'
 };
