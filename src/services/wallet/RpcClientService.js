@@ -16,14 +16,7 @@ export function listPrivacyTokens() {
   return getRpcClient().listPrivacyCustomTokens();
 }
 
-export async function getEstimateFee(
-  from,
-  to,
-  amount,
-  privateKey,
-  accountWallet,
-  isPrivacy
-) {
+export async function getEstimateFee(from, to, amount, privateKey, accountWallet, isPrivacy) {
   console.log('Estimating fee ...');
   let fee;
   try {
