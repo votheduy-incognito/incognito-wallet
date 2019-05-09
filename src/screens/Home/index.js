@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Home from './Home';
 
-const HomeContainer = ({ defaultAccount, ...otheeProps }) => (
-  <Home account={defaultAccount} {...otheeProps} />
+const HomeContainer = ({ defaultAccount, ...otherProps }) => (
+  <Home account={defaultAccount} {...otherProps} />
 );
 
 const mapState = state => ({
-  defaultAccount: state.accounts.find(_account => _account.default) 
+  defaultAccount: state.account.defaultAccount
 });
 
 HomeContainer.propTypes = {

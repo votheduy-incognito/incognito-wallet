@@ -1,7 +1,10 @@
 import type from '@src/redux/types/account';
 import _ from 'lodash';
 
-const initialState = [];
+const initialState = {
+  list: [],
+  defaultAccount: null
+};
 
 const setAccount = (list, account) => {
   let newList = [...list];
@@ -33,16 +36,32 @@ const removeByName = (list, accountName) => {
   return newList;
 };
 
+const getDefaultAccount = list => list.find(_item => _item.default) || list[0];
+
 const reducer = (state = initialState, action) => {
+  let newList = [];
+
   switch (action.type) {
   case type.SET:
-    return setAccount(state, action.data);
+    newList = setAccount(state.list, action.data);
+    return {
+      list: newList,
+      defaultAccount: getDefaultAccount(newList)
+    };
   case type.SET_BULK:
-    return setBulkAccount(state, action.data);
+    newList = setBulkAccount(state.list, action.data);
+    return {
+      list: newList,
+      defaultAccount: getDefaultAccount(newList)
+    };
   case type.REMOVE_ALL:
     return [];
   case type.REMOVE_BY_NAME:
-    return removeByName(state, action.data);
+    newList = removeByName(state.list, action.data);
+    return {
+      list: newList,
+      defaultAccount: getDefaultAccount(newList)
+    };
   default:
     return state;
   }
