@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Home from './Home';
 
-const HomeContainer = ({ defaultAccount }) => (
-  <Home account={defaultAccount} />
+const HomeContainer = ({ defaultAccount, ...otheeProps }) => (
+  <Home account={defaultAccount} {...otheeProps} />
 );
 
 const mapState = state => ({
@@ -12,7 +12,7 @@ const mapState = state => ({
 });
 
 HomeContainer.propTypes = {
-  defaultAccount: PropTypes.object
+  defaultAccount: PropTypes.object,
 };
 
 export default connect(mapState)(HomeContainer);
