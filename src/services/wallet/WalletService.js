@@ -1,46 +1,18 @@
-import { Wallet, RpcClient } from 'constant-chain-web-js/build/wallet';
+import {Wallet, RpcClient} from 'constant-chain-web-js/build/wallet';
 import storage from '@src/services/storage';
-import { getPassphrase } from './passwordService';
-import accountService from './accountService';
+import {getPassphrase} from './passwordService';
 import Server from './Server';
-import { getMaxShardNumber } from './RpcClientService';
+import {getMaxShardNumber} from './RpcClientService';
+import {randomBytes} from 'react-native-randombytes';
+
 
 const numOfAccount = 1;
 const walletName = 'wallet1';
 
-export async function loadListAccount(wallet) {
-  try {
-    const listAccountRaw = await wallet.listAccount() || [];
-    const listAccount = listAccountRaw.map(account => ({
-      default: false,
-      name: account['Account Name'],
-      value: -1,
-      PaymentAddress: account.PaymentAddress,
-      ReadonlyKey: account.ReadonlyKey,
-      PrivateKey: account.PrivateKey,
-      PublicKey: account.PublicKey,
-      PublicKeyCheckEncode: account.PublicKeyCheckEncode,
-      PublicKeyBytes: account.PublicKeyBytes
-    })) || [];
-
-    const defaultAccountIndex = await accountService.getDefaultAccountIndex();
-    const defaultAccount = listAccount[defaultAccountIndex];
-
-    if (defaultAccount) {
-      listAccount[defaultAccountIndex].default = true;
-    } else {
-      listAccount[0].default = true;
-    }
-
-    return listAccount;
-  } catch (e) {
-    throw e;
-  }
-}
-
 export async function loadWallet(passphrase) {
   const server = Server.getDefault();
   console.log('[loadWallet] with server ', server);
+  Wallet.RandomBytesFunc = randomBytes;
   Wallet.RpcClient = new RpcClient(
     server.address,
     server.username,
