@@ -1,12 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Text, Container, Form, FormTextField, FormSubmitButton, Toast } from '@src/components/core';
-import formValidate from './formValidate';
-import styleSheet from './style';
+import { connect } from 'react-redux';
 import { loadWallet } from '@src/services/wallet/WalletService';
 import ROUTE_NAMES from '@src/router/routeNames';
-import PropTypes from 'prop-types';
+import { setWallet } from '@src/redux/actions/wallet';
+import formValidate from './formValidate';
+import styleSheet from './style';
 
-const Login = ({ navigation }) => {
+const Login = ({ navigation, setWallet }) => {
   const goHome = () => {
     navigation.navigate(ROUTE_NAMES.RootApp);
   };
@@ -15,12 +17,16 @@ const Login = ({ navigation }) => {
     navigation.navigate(ROUTE_NAMES.CreatePassword);
   };
 
+  const setWalletToStore = wallet => {
+    setWallet(wallet);
+  };
+
   const handleLogin = async ({ password }) => {
     try {
       const wallet = await loadWallet(password);
 
       if (wallet){
-        // Todo: save wallet to Redux
+        setWalletToStore(wallet);
 
         return goHome();
       }
@@ -47,4 +53,6 @@ Login.propTypes = {
   navigation: PropTypes.object
 };
 
-export default Login;
+const mapDispatch = { setWallet };
+
+export default connect(null, mapDispatch)(Login);
