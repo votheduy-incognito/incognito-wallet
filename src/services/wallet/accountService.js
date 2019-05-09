@@ -37,9 +37,10 @@ export default class Account {
     }
   }
 
-  static async sendConstant(param, fee, isPrivacy, account, wallet) {
+  // paymentInfos = [{ paymentAddressStr: toAddress, amount: amount}];
+  static async sendConstant(paymentInfos, fee, isPrivacy, account, wallet) {
     console.log('Wallet.ProgressTx: ', Wallet.ProgressTx);
-    // param: payment address string, amount in Number (miliconstant)
+    // paymentInfos: payment address string, amount in Number (miliconstant)
     // await Wallet.resetProgressTx();
     // console.log('Wallet.ProgressTx: ', Wallet.ProgressTx);
     const indexAccount = wallet.getAccountIndexByName(account.name);
@@ -50,7 +51,7 @@ export default class Account {
     try {
       result = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendConstant(param, fee, isPrivacy);
+      ].createAndSendConstant(paymentInfos, fee, isPrivacy);
 
       console.log(
         'Spendingcoin after sendConstant: ',
