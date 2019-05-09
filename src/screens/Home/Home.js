@@ -38,12 +38,12 @@ class Home extends React.Component {
   });
 
   render() {
-    const { account, isGettingBalance } = this.props;
+    const { account, isGettingBalance, reloadBalance } = this.props;
     return (
       <ScrollView style={homeStyle.container}>
         <Container style={homeStyle.mainContainer}>
           <AccountAddress data={account?.PaymentAddress} /> 
-          <AccountBalance balance={account?.value} isGettingBalance={isGettingBalance} />
+          <AccountBalance balance={account?.value} isGettingBalance={isGettingBalance} onReload={reloadBalance} />
           <ActionButtons actions={this.actionButtons} />
         </Container>
         <View style={homeStyle.tabContainer}>
@@ -61,6 +61,7 @@ Home.defaultProps = {
 
 Home.propTypes = {
   account: PropTypes.object,
+  reloadBalance: PropTypes.func,
   isGettingBalance: PropTypes.bool
 };
 

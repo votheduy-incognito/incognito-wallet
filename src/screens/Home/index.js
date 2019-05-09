@@ -2,15 +2,30 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getBalance } from '@src/redux/actions/account';
+import LoadingContainer from '@src/components/LoadingContainer';
 import Home from './Home';
 
 const HomeContainer = ({ defaultAccount, getBalance, isGettingBalance, ...otherProps }) => {
+  const loadBalance = account =>  {
+    if (account?.name) {
+      getBalance(account);
+    }
+  };
+
   useEffect(() => {
-    defaultAccount?.name && getBalance(defaultAccount);
+    loadBalance(defaultAccount);
   }, [defaultAccount?.name]);
 
+  if (!defaultAccount?.name) {
+    return <LoadingContainer />;
+  }
+
   return (
-    <Home account={defaultAccount} {...otherProps} isGettingBalance={isGettingBalance} />
+    <Home
+      account={defaultAccount}
+      isGettingBalance={isGettingBalance}
+      reloadBalance={() => loadBalance(defaultAccount)}
+      {...otherProps} />
   );
 };
 
