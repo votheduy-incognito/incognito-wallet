@@ -38,12 +38,12 @@ class Home extends React.Component {
   });
 
   render() {
-    const { account } = this.props;
+    const { account, isGettingBalance } = this.props;
     return (
       <ScrollView style={homeStyle.container}>
         <Container style={homeStyle.mainContainer}>
           <AccountAddress data={account?.PaymentAddress} /> 
-          <AccountBalance balance={account?.value} />
+          <AccountBalance balance={account?.value} isGettingBalance={isGettingBalance} />
           <ActionButtons actions={this.actionButtons} />
         </Container>
         <View style={homeStyle.tabContainer}>
@@ -55,11 +55,13 @@ class Home extends React.Component {
 }
 
 Home.defaultProps = {
-  account: {}
+  account: {},
+  isGettingBalance: false
 };
 
 Home.propTypes = {
-  account: PropTypes.object
+  account: PropTypes.object,
+  isGettingBalance: PropTypes.bool
 };
 
 export default Home;

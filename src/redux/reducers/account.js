@@ -3,7 +3,8 @@ import _ from 'lodash';
 
 const initialState = {
   list: [],
-  defaultAccount: null
+  defaultAccount: null,
+  isGettingBalance: []
 };
 
 const setAccount = (list, account) => {
@@ -38,6 +39,17 @@ const removeByName = (list, accountName) => {
 
 const getDefaultAccount = list => list.find(_item => _item.default) || list[0];
 
+const setGettingBalance = (list, accountName) => {
+  const newList = [...list];
+  return newList.includes(accountName) ? newList : [...newList, accountName];
+};
+
+const removeGettingBalance = (list, accountName) => {
+  const newList = [...list];
+  _.remove(newList, item => item === accountName);
+  return newList;
+};
+
 const reducer = (state = initialState, action) => {
   let newList = [];
 
@@ -45,12 +57,14 @@ const reducer = (state = initialState, action) => {
   case type.SET:
     newList = setAccount(state.list, action.data);
     return {
+      ...state,
       list: newList,
       defaultAccount: getDefaultAccount(newList)
     };
   case type.SET_BULK:
     newList = setBulkAccount(state.list, action.data);
     return {
+      ...state,
       list: newList,
       defaultAccount: getDefaultAccount(newList)
     };
@@ -59,8 +73,19 @@ const reducer = (state = initialState, action) => {
   case type.REMOVE_BY_NAME:
     newList = removeByName(state.list, action.data);
     return {
+      ...state,
       list: newList,
       defaultAccount: getDefaultAccount(newList)
+    };
+  case type.GET_BALANCE: 
+    return {
+      ...state,
+      isGettingBalance: setGettingBalance(state.isGettingBalance, action.data)
+    };
+  case type.GET_BALANCE_FINISH: 
+    return {
+      ...state,
+      isGettingBalance: removeGettingBalance(state.isGettingBalance, action.data)
     };
   default:
     return state;
