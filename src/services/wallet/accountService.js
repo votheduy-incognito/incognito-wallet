@@ -131,4 +131,11 @@ export default class Account {
 
     return true;
   }
+
+  static async getBalance(account, wallet){
+    const indexAccount = wallet.getAccountIndexByName(account.name);
+    return await wallet.MasterAccount.child[
+      indexAccount
+    ].getBalance();
+  }
 }
