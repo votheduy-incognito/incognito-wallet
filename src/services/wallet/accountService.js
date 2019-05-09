@@ -1,9 +1,20 @@
 import { KeyWallet, Wallet } from 'constant-chain-web-js/build/wallet';
+import storage from '@src/services/storage';
 import { getActiveShard, getRpcClient } from './RpcClientService';
-import { CONSTANT_CONFIGS } from '@src/constants';
+import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import { saveWallet } from './WalletService';
 
 export default class Account {
+  static async getDefaultAccountIndex() {
+    let index = 0;
+    try {
+      index =  await storage.getItem(CONSTANT_KEYS.DEFAULT_ACCOUNT_INDEX);
+    } catch (e) {
+      console.error('Error while getting default account index, fallback index to 0');
+    }
+    return index;
+  }
+
   static async importAccount(privakeyStr, accountName, passPhrase, wallet) {
     // console.log("Wallet when import account: ", wallet);
     const account = wallet.importAccount(privakeyStr, accountName, passPhrase);

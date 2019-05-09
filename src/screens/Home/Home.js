@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View, ScrollView, Container } from '@src/components/core';
 import DrawerIcon from '@src/components/DrawerIcon';
 import MdIcon from 'react-native-vector-icons/MaterialIcons';
@@ -12,11 +13,6 @@ import { homeStyle } from './style';
 class Home extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      accountAddress: '15624561ajhsdhashjdbjasbdjbjahsbdjbasjhbdjhasbjdbasjhbdjabsjdhba256',
-      accountBalance: 10000.2678
-    };
 
     this.actionButtons = [
       {
@@ -42,12 +38,12 @@ class Home extends React.Component {
   });
 
   render() {
-    const { accountAddress, accountBalance } = this.state;
+    const { account } = this.props;
     return (
       <ScrollView style={homeStyle.container}>
         <Container style={homeStyle.mainContainer}>
-          <AccountAddress data={accountAddress} /> 
-          <AccountBalance balance={accountBalance} />
+          <AccountAddress data={account?.PaymentAddress} /> 
+          <AccountBalance balance={account?.value} />
           <ActionButtons actions={this.actionButtons} />
         </Container>
         <View style={homeStyle.tabContainer}>
@@ -57,5 +53,13 @@ class Home extends React.Component {
     );
   }
 }
+
+Home.defaultProps = {
+  account: {}
+};
+
+Home.propTypes = {
+  account: PropTypes.object
+};
 
 export default Home;
