@@ -2,14 +2,32 @@ import React from 'react';
 import { Text, Container, Form, FormTextField, FormSubmitButton, Toast } from '@src/components/core';
 import formValidate from './formValidate';
 import styleSheet from './style';
+import { loadWallet } from '@src/services/wallet/WalletService';
+import ROUTE_NAMES from '@src/router/routeNames';
+import PropTypes from 'prop-types';
 
-const Login = () => {
+const Login = ({ navigation }) => {
+  const goHome = () => {
+    navigation.navigate(ROUTE_NAMES.RootApp);
+  };
+
+  const goCreatePassword = () => {
+    navigation.navigate(ROUTE_NAMES.CreatePassword);
+  };
+
   const handleLogin = async ({ password }) => {
     try {
-      console.log(password);
-      // TODO
+      const wallet = await loadWallet(password);
+
+      if (wallet){
+        // Todo: save wallet to Redux
+
+        return goHome();
+      }
+
+      goCreatePassword();
     } catch (e) {
-      Toast.showError(e.message);
+      Toast.showError('Login failed');
     }
   };
 
@@ -26,6 +44,7 @@ const Login = () => {
 };
 
 Login.propTypes = {
+  navigation: PropTypes.object
 };
 
 export default Login;
