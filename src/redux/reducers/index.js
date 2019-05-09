@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 import wallet from './wallet';
-import account from './account';
+import accounts from './account';
 
 const rootReducer = combineReducers({
-  account,
+  accounts,
   wallet
 });
 
