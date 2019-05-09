@@ -15,6 +15,9 @@ Link to  `constant-chain-web-js` (because The yarn/npm link command doesn't work
 yarn add `path/to/local/project/constant-chain-web-js`
 ```
 
+```
+yarn postinstall
+```
 
 Start project in development
 ```sh
