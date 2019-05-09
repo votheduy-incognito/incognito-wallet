@@ -83,7 +83,7 @@ class SendConstant extends Component {
         Toast.showError('Sent failed. Please try again! Err:' + res.err.Message);
       }
     } catch (e) {
-      Toast.showError(e.message);
+      Toast.showError('Sent failed. Please try again! Err:' + e.message);
     }
   };
 
