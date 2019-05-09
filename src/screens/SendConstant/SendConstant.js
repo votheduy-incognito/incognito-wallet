@@ -33,7 +33,6 @@ class SendConstant extends Component {
     this.setFormValue({
       ...initialFormValues,
       fromAddress: account?.PaymentAddress,
-      toAddress: account?.PaymentAddress,
     });
   }
 
