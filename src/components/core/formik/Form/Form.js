@@ -11,13 +11,11 @@ const isFormField = (com = throw new Error('Must be a React component')) => [
 
 const injectFieldToChildren = ({ handleChange, handleSubmit, handleBlur, values, errors, children }) => {
   const childrens = children?.constructor === Array ? [...children] : [children];
-  return  React.Children.map(childrens, field => {
-    if (field?.props?.children) {
-      return React.cloneElement(field, {
-        children: injectFieldToChildren({ handleChange, handleSubmit, handleBlur, values, errors, children: field.props.children })
-      });
-    }
+  const injectChildren = (field, children) => React.cloneElement(field, {
+    children: injectFieldToChildren({ handleChange, handleSubmit, handleBlur, values, errors, children })
+  });
 
+  return  React.Children.map(childrens, field => {
     if (field?.type === FormSubmitButton) {
       return (
         React.cloneElement(field, {
@@ -32,9 +30,13 @@ const injectFieldToChildren = ({ handleChange, handleSubmit, handleBlur, values,
           handleChange,
           handleBlur,
           value: field?.props?.name && values[field.props.name],
-          error: field?.props?.name && errors[field?.props?.name]
+          error: field?.props?.name && errors[field?.props?.name],
         })
       );
+    }
+
+    if (field?.props?.children) {
+      return injectChildren(field, field.props.children);
     }
     return field;
   });

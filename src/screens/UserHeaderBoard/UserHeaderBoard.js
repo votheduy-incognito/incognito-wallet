@@ -3,6 +3,7 @@ import { Container, Text } from '@src/components/core';
 import MdIcons from 'react-native-vector-icons/MaterialIcons';
 import { logout } from '@src/services/auth';
 import ActionButtons from './ActionButtons';
+import ROUTE_NAMES from '@src/router/routeNames';
 
 class UserHeaderBoard extends React.Component {
   constructor(props) {
@@ -16,12 +17,12 @@ class UserHeaderBoard extends React.Component {
     return ([
       {
         label: 'Create Account',
-        handlePress: null,
+        handlePress: () => navigation.navigate(ROUTE_NAMES.CreateAccount),
         icon: <MdIcons name='add' />
       },
       {
         label: 'Import Account',
-        handlePress: null,
+        handlePress: () => navigation.navigate(ROUTE_NAMES.ImportAccount),
         icon: <MdIcons name='input' />
       },
       {

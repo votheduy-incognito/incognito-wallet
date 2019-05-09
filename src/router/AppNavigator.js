@@ -5,6 +5,9 @@ import Staking from '@src/screens/Staking';
 import Defragment from '@src/screens/Defragment';
 import SendConstant from '@src/screens/SendConstant';
 import NetworkSetting from '@src/screens/NetworkSetting';
+import CreateAccount from '@src/screens/CreateAccount';
+import SeedPhrase from '@src/screens/SeedPhrase';
+import ImportAccount from '@src/screens/ImportAccount';
 import HamburgerHeader from '@src/components/HamburgerHeader';
 import UserHeader from '@src/components/UserHeader';
 import { THEME } from '@src/styles';
@@ -19,6 +22,9 @@ const AppNavigator = createStackNavigator({
   [ROUTE_NAMES.Staking]: navigationOptionsHandler(Staking),
   [ROUTE_NAMES.Defragment]: navigationOptionsHandler(Defragment),
   [ROUTE_NAMES.NetworkSetting]: navigationOptionsHandler(NetworkSetting),
+  [ROUTE_NAMES.CreateAccount]: navigationOptionsHandler(CreateAccount),
+  [ROUTE_NAMES.ImportAccount]: navigationOptionsHandler(ImportAccount),
+  [ROUTE_NAMES.SeedPhrase]: navigationOptionsHandler(SeedPhrase),
 }, {
   initialRouteName: 'DrawerNavigator',
   defaultNavigationOptions: ({ navigation }) => {
