@@ -1,21 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Text, Container, Form, FormTextField, FormSubmitButton, Toast } from '@src/components/core';
+import { connect } from 'react-redux';
 import { savePassword } from '@src/services/wallet/passwordService';
-import { initWallet } from '@src/services/wallet/WalletService';
+import { initWallet, loadListAccount } from '@src/services/wallet/WalletService';
 import ROUTE_NAMES from '@src/router/routeNames';
+import { setWallet } from '@src/redux/actions/wallet';
+import { setBulkAccount } from '@src/redux/actions/account';
 import formValidate from './formValidate';
 import styleSheet from './style';
 
-const CreatePassword = ({ navigation }) => {
+const CreatePassword = ({ navigation, setWallet, setBulkAccount }) => {
   const goHome = () => {
     navigation.navigate(ROUTE_NAMES.RootApp);
+  };
+
+  const setWalletToStore = wallet => {
+    setWallet(wallet);
+  };
+
+  const loadListAccountToStore = wallet => {
+    loadListAccount(wallet).then(accounts => {
+      setBulkAccount(accounts);
+    });
   };
 
   const handleCreateWallet = async ({ password }) => {
     try {
       await savePassword(password);
-      await initWallet();
+      const wallet = await initWallet();
+
+      setWalletToStore(wallet);
+      loadListAccountToStore(wallet);
+
       Toast.showInfo('Your wallet was created!');
       goHome();
     } catch (e) {
@@ -36,7 +53,11 @@ const CreatePassword = ({ navigation }) => {
 };
 
 CreatePassword.propTypes = {
-  navigation: PropTypes.object
+  navigation: PropTypes.object,
+  setWallet: PropTypes.func.isRequired,
+  setBulkAccount: PropTypes.func.isRequired
 };
 
-export default CreatePassword;
+const mapDispatch = { setWallet, setBulkAccount };
+
+export default connect(null, mapDispatch)(CreatePassword);
