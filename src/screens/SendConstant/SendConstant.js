@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text, Container, Form, FormTextField, FormSubmitButton, Toast, ScrollView, CheckBoxField, Button } from '@src/components/core';
+import { Text, Container, Form, FormTextField, FormSubmitButton, Toast, ScrollView, CheckBoxField } from '@src/components/core';
 import { CONSTANT_COMMONS } from '@src/constants';
 import formatUtil from '@src/utils/format';
 import formValidate from './formValidate';
@@ -51,6 +51,7 @@ class SendConstant extends Component {
     navigation.navigate(ROUTE_NAMES.RootApp);
   };
 
+  // Todo: estimate fee when user update isPrivacy or amount, and toAddress is not null
   handleEstimateFee = async () => {
     const { account, wallet } = this.props;
     const values = this.form;
@@ -106,8 +107,6 @@ class SendConstant extends Component {
             <FormTextField name='fee' placeholder='Min Fee' />
             <FormSubmitButton title='SEND' style={styleSheet.submitBtn} />
           </Form>
-          {/* This button just for testing */}
-          <Button title='Estimate fee' onPress={this.handleEstimateFee}></Button>
           <Text style={styleSheet.noteText}>* Only send CONSTANT to a CONSTANT address.</Text>
         </Container>
       </ScrollView>
