@@ -53,7 +53,7 @@ class Staking extends Component {
       const amount = await getStakingAmount(stakingType);
       this.updateFormValues('amount', amount);
     } catch(e){
-      Toast.showError('Get amount staking failed!');
+      Toast.showError('Get amount staking failed!' +  e);
     }
   }
 
