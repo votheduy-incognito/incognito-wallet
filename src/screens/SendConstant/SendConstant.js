@@ -58,7 +58,7 @@ class SendConstant extends Component {
 
     const accountWallet = wallet.getAccountByName(account.name);
     try{
-      const fee =  await getEstimateFee(values.fromAddress, values.toAddress, values.amount, account.PrivateKey, accountWallet, values.isPrivacy);
+      const fee =  await getEstimateFee(values.fromAddress, values.toAddress, Number(values.amount*100), account.PrivateKey, accountWallet, values.isPrivacy);
       // update min fee
       this.updateFormValues('fee', fee);
     } catch(e){
@@ -71,17 +71,17 @@ class SendConstant extends Component {
     const { account, wallet } = this.props;
 
     const paymentInfos = [{
-      paymentAddressStr: values.toAddress, amount: values.amount
+      paymentAddressStr: values.toAddress, amount: Number(values.amount*100)
     }];
 
     try {
-      const res = await Account.sendConstant(paymentInfos, values.fee, values.isPrivacy, account, wallet);
+      const res = await Account.sendConstant(paymentInfos, Number(values.fee*100), values.isPrivacy, account, wallet);
 
       if (res.txId) {
         Toast.showInfo('Sent successfully. TxId: ', res.txId);
         this.goHome();
       } else {
-        Toast.showError('Sent failed. Please try again! Err:' + res.err.Message);
+        Toast.showError('Sent failed. Please try again! Err:' + res.err);
       }
     } catch (e) {
       Toast.showError('Sent failed. Please try again! Err:' + e.message);

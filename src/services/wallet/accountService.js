@@ -1,7 +1,7 @@
 import { KeyWallet, Wallet } from 'constant-chain-web-js/build/wallet';
 import storage from '@src/services/storage';
 import { getActiveShard, getRpcClient } from './RpcClientService';
-import { CONSTANT_CONFIGS, CONSTANT_KEYS, CONSTANT_COMMONS } from '@src/constants';
+import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import { saveWallet } from './WalletService';
 
 export default class Account {
@@ -69,6 +69,7 @@ export default class Account {
     return result;
   }
 
+  // param = { type: Number(stakingType), burningAddress: BurnAddress }
   static async staking(param, fee, account, wallet) {
     // param: payment address string, amount in Number (miliconstant)
     await Wallet.resetProgressTx();
@@ -148,6 +149,6 @@ export default class Account {
     const indexAccount = wallet.getAccountIndexByName(account.name);
     return await wallet.MasterAccount.child[
       indexAccount
-    ].getBalance().then(balance => Number(balance / CONSTANT_COMMONS.MILICONSTANT_UNIT) || 0);
+    ].getBalance();
   }
 }
