@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'formik';
+import _ from 'lodash';
 
 type Props = {
   onChange: Function,
@@ -7,6 +8,11 @@ type Props = {
 };
 
 class Effect extends React.Component<Props> {
+  constructor(props) {
+    super(props);
+
+    this.onChange = props.onChange && _.debounce(::props.onChange, 300);
+  }
   componentDidUpdate(prevProps) {
     const { values, touched, errors, isSubmitting } = prevProps.formik;
     const {
@@ -16,8 +22,8 @@ class Effect extends React.Component<Props> {
       isSubmitting: nextIsSubmitting,
     } = this.props.formik;
     if (this.props.formik !== prevProps.formik) {
-      if (typeof this.props.onChange === 'function') {
-        this.props.onChange(
+      if (typeof this.onChange === 'function') {
+        this.onChange(
           {
             values,
             touched,
