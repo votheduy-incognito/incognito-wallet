@@ -4,7 +4,7 @@ const n = genNamspace('WALLET');
 // define types here
 const TYPES = {
   SET: n('SET'),
-  REMOVE: n('REMOVE') 
+  REMOVE: n('REMOVE'),
 };
 
 export default TYPES;

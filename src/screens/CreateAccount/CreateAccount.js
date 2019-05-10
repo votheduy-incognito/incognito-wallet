@@ -4,14 +4,19 @@ import { Text, Container, Form, FormTextField, FormSubmitButton, Toast } from '@
 import formValidate from './formValidate';
 import styleSheet from './style';
 
-const CreateAccount = ({ navigation }) => {
+const CreateAccount = ({ navigation, accountList, createAccount }) => {
   const goBack = () => {
     navigation.popToTop();
   };
 
   const handleCreateAccount = async ({ accountName }) => {
+    const lowerCase = str => String(str).toLowerCase();
     try {
-      Toast.showInfo(`Your account ${accountName} was created!`);
+      if (accountList?.find(_account => lowerCase(_account.name) === lowerCase(accountName))) {
+        throw new Error('This account name was created! Please try another one');
+      }
+
+      await createAccount(accountName);
       goBack();
     } catch (e) {
       Toast.showError(e.message);
@@ -31,7 +36,9 @@ const CreateAccount = ({ navigation }) => {
 };
 
 CreateAccount.propTypes = {
-  navigation: PropTypes.object
+  navigation: PropTypes.object,
+  accountList: PropTypes.array,
+  createAccount: PropTypes.func
 };
 
 export default CreateAccount;
