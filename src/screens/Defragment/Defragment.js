@@ -61,7 +61,7 @@ class Defragment extends Component {
         <Container style={styleSheet.container}>
           <Text style={styleSheet.title}>Defragment</Text>
           <Text>
-            Balance: { formatUtil.amount(balance) } {CONSTANT_COMMONS.CONST_SYMBOL}
+            Balance: { formatUtil.amountConstant(balance) } {CONSTANT_COMMONS.CONST_SYMBOL}
           </Text>
           <Form formRef={form => this.form = form} initialValues={initialFormValues} onSubmit={this.handleDefragment} viewProps={{ style: styleSheet.form }} validationSchema={validator}>
             <FormTextField name='fromAddress' placeholder='From Address' editable={false} />
