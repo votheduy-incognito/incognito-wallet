@@ -3,20 +3,20 @@ import PropTypes from 'prop-types';
 import { Text, Container, Form, FormTextField, FormSubmitButton, Toast, ScrollView, PickerField, Picker } from '@src/components/core';
 import { CONSTANT_COMMONS } from '@src/constants';
 import formatUtil from '@src/utils/format';
-import formValidate from './formValidate';
 import styleSheet from './style';
 import Account from '@src/services/wallet/accountService';
 import { getStakingAmount, getEstimateFee } from '@src/services/wallet/RpcClientService';
+import convert from '@src/utils/convert';
+import _ from 'lodash';
+import formValidate from './formValidate';
 
 const initialValues = {
   stakingType: CONSTANT_COMMONS.STAKING_TYPES.SHARD,
   toAddress: CONSTANT_COMMONS.STAKING_ADDRESS,
   fromAddress: '',
-  amount: String(CONSTANT_COMMONS.STAKING_AMOUNT),
+  amount: '',
   fee: String(CONSTANT_COMMONS.STAKING_MIN_FEE)
 };
-
-const validator = formValidate({ minFee: CONSTANT_COMMONS.STAKING_MIN_FEE });
 
 class Staking extends Component {
   constructor() {
@@ -25,13 +25,15 @@ class Staking extends Component {
     this.state = {
       initialFormValues: initialValues
     };
+
     this.form = null;
+    this.handleEstimateFee = _.debounce(::this.handleEstimateFee, 500);
   }
 
   componentDidMount = async () => {
     const { account } = this.props;
     this.updateFormValues('fromAddress', account?.PaymentAddress);
-    await this.handleGetAmountStaking();
+    await this.handleLoadAmountStaking(initialValues.stakingType);
   }
 
   updateFormValues = (field, value) => {
@@ -46,12 +48,10 @@ class Staking extends Component {
   }
 
   // Todo: update amount staking when change stakingType
-  handleGetAmountStaking = async () => {
-    const { stakingType } = this.form;
-
+  handleLoadAmountStaking = async (stakingType) => {
     try{
-      const amount = await getStakingAmount(stakingType);
-      this.updateFormValues('amount', amount);
+      const amount = await getStakingAmount(Number(stakingType));
+      this.updateFormValues('amount', String(convert.toConstant(amount)));
     } catch(e){
       Toast.showError('Get amount staking failed!' +  e);
     }
@@ -65,27 +65,38 @@ class Staking extends Component {
     try{
       const fee =  await getEstimateFee(values.fromAddress, values.toAddress, values.amount, account.PrivateKey, accountWallet, false);
       // update min fee
-      this.updateFormValues('fee', fee);
+      this.updateFormValues('fee', String(convert.toConstant(fee)));
     } catch(e){
       // alert(JSON.stringify(e.stack));
       Toast.showError('Error on get estimation fee!');
     }
   };
   
-  shouldGetFee = ({values, errors}) =>{
-    if (errors){
+  shouldGetFee = async ({values, errors}) => {
+    if (Object.values(errors).length) {
       return;
     } 
 
-    const { toAddress, amount, isPrivacy } = values;
+    const { toAddress, amount, stakingType } = values;
 
-    if (toAddress && amount && typeof isPrivacy === 'boolean') {
-      this.handleEstimateFee(values);
+    if (toAddress && amount && stakingType !== undefined) {
+      await this.handleEstimateFee(values);
     }
   }
 
-  handleFormChange = (prevState, state) => {
-    this.shouldGetFee({ values: state?.values, errors : state?.errors });
+  shouldLoadAmountStaking = async ({prevStakingType, stakingType, errors}) => {
+    if (Object.values(errors).length) {
+      return;
+    } 
+
+    if (prevStakingType !== stakingType){
+      await this.handleLoadAmountStaking(stakingType);
+    }
+  }
+
+  handleFormChange = async (prevState, state) => {
+    await this.shouldLoadAmountStaking({ prevStakingType: prevState?.values?.stakingType, stakingType: state?.values?.stakingType, errors : state?.errors});
+    await this.shouldGetFee({ values: state?.values, errors : state?.errors });
   }
 
   handleStaking = async (values) => {
@@ -107,6 +118,20 @@ class Staking extends Component {
     }
   };
 
+  //Todo: validate inputs
+  onFormValidate = values => {
+    // const { account } = this.props;
+    const errors = {};
+
+    console.log(values);
+
+    // if (values.amount >= account.value) {
+    //   errors.amount = `Must be less than ${values?.amount}`;
+    // }
+    
+    return errors;
+  }
+
   render() {
     const { account } = this.props;
     const { initialFormValues } = this.state;
@@ -123,8 +148,9 @@ class Staking extends Component {
             initialValues={initialFormValues} 
             onSubmit={this.handleStaking} 
             viewProps={{ style: styleSheet.form }} 
-            validationSchema={validator}
+            validationSchema={formValidate}
             onFormChange={this.handleFormChange}
+            validate={this.onFormValidate}
           >
             <FormTextField name='fromAddress' placeholder='From Address' editable={false} />
             <PickerField name='stakingType'>

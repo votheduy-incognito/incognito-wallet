@@ -1,6 +1,6 @@
 import { KeyWallet, Wallet } from 'constant-chain-web-js/build/wallet';
 import storage from '@src/services/storage';
-import { getActiveShard, getRpcClient } from './RpcClientService';
+import { getActiveShard } from './RpcClientService';
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import { saveWallet } from './WalletService';
 
@@ -45,7 +45,6 @@ export default class Account {
     // console.log('Wallet.ProgressTx: ', Wallet.ProgressTx);
     const indexAccount = wallet.getAccountIndexByName(account.name);
 
-    console.log('getRpcClient: ', getRpcClient());
     // create and send constant
     let result;
     try {
@@ -60,9 +59,7 @@ export default class Account {
 
       // save wallet
       await saveWallet(wallet);
-      // wallet.save(await getPassphrase());
     } catch (e) {
-      console.log('Error when sendConstant', e);
       throw e;
     }
     await Wallet.resetProgressTx();
