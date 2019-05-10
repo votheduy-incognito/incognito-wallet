@@ -33,7 +33,7 @@ const AppNavigator = createStackNavigator({
     };
 
     return {
-      headerRight: <UserHeader userName='User' onPress={handleUserPress} />,
+      headerRight: <UserHeader onPress={handleUserPress} />,
       headerLeft: <HamburgerHeader
         onPress={() => {
           navigation.toggleDrawer();
