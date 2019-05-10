@@ -4,7 +4,7 @@ import styleSheet from './style';
 
 const LoadingContainer = () => (
   <Container style={styleSheet.container}>
-    <ActivityIndicator size={35} />
+    <ActivityIndicator size='large' />
   </Container>
 );
 
