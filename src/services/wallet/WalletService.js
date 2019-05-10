@@ -99,6 +99,10 @@ export async function saveWallet(wallet) {
   wallet.save(await getPassphrase());
 }
 
+export async function loadHistoryByAccount(wallet, accountName){
+  return await wallet.getHistoryByAccount(accountName) || [];
+}
+
 export async function updateStatusHistory(wallet) {
   console.log('UPDATING HISTORY STATUS....');
   await wallet.updateStatusHistory();

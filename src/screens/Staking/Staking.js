@@ -85,7 +85,7 @@ class Staking extends Component {
         Toast.showInfo('Staking successfully. TxId: ', res.txId);
         this.goHome();
       } else {
-        Toast.showError('Staking failed. Please try again! Err:' + res.err.Message);
+        Toast.showError('Staking failed. Please try again! Err:' + res.err.Message || res.err);
       }
     } catch (e) {
       Toast.showError('Staking failed. Please try again! Err:' + e.message);

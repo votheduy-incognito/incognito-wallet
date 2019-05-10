@@ -81,7 +81,7 @@ class SendConstant extends Component {
         Toast.showInfo('Sent successfully. TxId: ', res.txId);
         this.goHome();
       } else {
-        Toast.showError('Sent failed. Please try again! Err:' + res.err);
+        Toast.showError('Sent failed. Please try again! Err:' + res.err.Message || res.err);
       }
     } catch (e) {
       Toast.showError('Sent failed. Please try again! Err:' + e.message);
