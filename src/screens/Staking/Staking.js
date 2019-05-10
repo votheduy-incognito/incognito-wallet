@@ -101,7 +101,7 @@ class Staking extends Component {
         <Container style={styleSheet.container}>
           <Text style={styleSheet.title}>Staking</Text>
           <Text>
-            Balance: { formatUtil.amount(account.value) } {CONSTANT_COMMONS.CONST_SYMBOL}
+            Balance: { formatUtil.amountConstant(account.value) } {CONSTANT_COMMONS.CONST_SYMBOL}
           </Text>
           <Form formRef={form => this.form = form} initialValues={initialFormValues} onSubmit={this.handleStaking} viewProps={{ style: styleSheet.form }} validationSchema={validator}>
             <FormTextField name='fromAddress' placeholder='From Address' editable={false} />
