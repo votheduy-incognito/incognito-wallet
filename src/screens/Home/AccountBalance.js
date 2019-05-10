@@ -4,6 +4,7 @@ import { View, Text, ActivityIndicator } from '@src/components/core';
 import MdIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { CONSTANT_COMMONS } from '@src/constants';
 import formatUtil from '@src/utils/format';
+import convertUtil from '@src/utils/convert';
 import { accountBalanceStyle } from './style';
 
 const AccountBalance = ({ balance = 0, isGettingBalance, onReload }) => (
@@ -11,7 +12,7 @@ const AccountBalance = ({ balance = 0, isGettingBalance, onReload }) => (
     {
       isGettingBalance ? <ActivityIndicator color='white' /> : (
         <>
-          <Text style={accountBalanceStyle.textBalance}>{formatUtil.amount(balance)}</Text>
+          <Text style={accountBalanceStyle.textBalance}>{formatUtil.amountConstant(convertUtil.toConstant(balance))}</Text>
           <Text style={accountBalanceStyle.textSymbol}>{CONSTANT_COMMONS.CONST_SYMBOL}</Text>
           <MdIcons.Button name='reload' onPress={onReload} color='yellow' />
         </>
