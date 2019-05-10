@@ -43,6 +43,8 @@ class Defragment extends Component {
 
   handleDefragment = (values) => {
     try {
+
+      // Account.defragment()
       // TODO
       console.log(values);
       Toast.showInfo('Defragment completed!');

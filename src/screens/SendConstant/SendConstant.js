@@ -9,10 +9,12 @@ import styleSheet from './style';
 import Account from '@src/services/wallet/accountService';
 import ROUTE_NAMES from '@src/router/routeNames';
 import { getEstimateFee } from '@src/services/wallet/RpcClientService';
+import convert from '@src/utils/convert';
 
 const initialFormValues = {
   isPrivacy: false,
   amount: '1',
+  minFee: '0.5',
   fee: '0.5',
   fromAddress: '',
 };
@@ -60,9 +62,12 @@ class SendConstant extends Component {
 
     const accountWallet = wallet.getAccountByName(account.name);
     try{
-      const fee =  await getEstimateFee(values.fromAddress, values.toAddress, Number(values.amount*100), account.PrivateKey, accountWallet, values.isPrivacy);
-      // update min fee
-      this.updateFormValues('fee', String(fee));
+      const fee =  await getEstimateFee(values.fromAddress, values.toAddress, convert.toMiliConstant(Number(values.amount)), account.PrivateKey, accountWallet, values.isPrivacy);
+      // set min fee state
+      this.setState({minFee: convert.toConstant(fee)});
+
+      // update fee
+      this.updateFormValues('fee', String(convert.toConstant(fee)));
     } catch(e){
       // alert(JSON.stringify(e.stack));
       Toast.showError('Error on get estimation fee!');
@@ -73,11 +78,11 @@ class SendConstant extends Component {
     const { account, wallet } = this.props;
 
     const paymentInfos = [{
-      paymentAddressStr: values.toAddress, amount: Number(values.amount*100)
+      paymentAddressStr: values.toAddress, amount: convert.toMiliConstant(Number(values.amount))
     }];
 
     try {
-      const res = await Account.sendConstant(paymentInfos, Number(values.fee*100), values.isPrivacy, account, wallet);
+      const res = await Account.sendConstant(paymentInfos, convert.toMiliConstant(Number(values.fee)), values.isPrivacy, account, wallet);
 
       if (res.txId) {
         Toast.showInfo(`Sent successfully. TxId: ${res.txId}`);
@@ -90,21 +95,31 @@ class SendConstant extends Component {
     }
   };
 
-  shouldGetFee = ({ values, errors }) => {
+  shouldGetFee = async ({ values, errors }) => {
     if (Object.values(errors).length) {
       return;
     }
 
-
     const { toAddress, amount, isPrivacy } = values;
 
     if (toAddress && amount && typeof isPrivacy === 'boolean') {
-      this.handleEstimateFee(values);
+      await this.handleEstimateFee(values);
     }
   }
 
-  handleFormChange= (prevState, state) => {
-    this.shouldGetFee({ values: state?.values, errors: state?.errors });
+  handleFormChange = async (prevState, state) => {
+    await this.shouldGetFee({ values: state?.values, errors: state?.errors });
+  }
+
+  onFormValidate = values => {
+    const { account } = this.props;
+    const errors = {};
+
+    if (values.amount >= account.value) {
+      errors.amount = `Must be less than ${values?.amount}`;
+    }
+    
+    return errors;
   }
 
   render() {
@@ -125,6 +140,7 @@ class SendConstant extends Component {
             viewProps={{ style: styleSheet.form }}
             validationSchema={formValidate}
             onFormChange={this.handleFormChange}
+            validate={this.onFormValidate}
           >
             <FormTextField name='fromAddress' placeholder='From Address' editable={false}  />
             <CheckBoxField name='isPrivacy' label='Is Privacy' />

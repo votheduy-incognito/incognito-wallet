@@ -1,5 +1,12 @@
-import { string } from 'yup';
+import { number } from 'yup';
 
-export default ({ errorMsg } = {}) => string()
-  .required('Required!')
-  .test('number', errorMsg ?? 'Must a number', value => !Number.isNaN(Number(value)));
+export default ({ max } = {}) => {
+  const validate = number()
+    .required('Required!');
+
+  if (max){
+    validate.lessThan(max);
+  }
+
+  return validate;
+};
