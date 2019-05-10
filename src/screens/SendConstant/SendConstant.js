@@ -97,7 +97,7 @@ class SendConstant extends Component {
         <Container style={styleSheet.container}>
           <Text style={styleSheet.title}>Send Constant</Text>
           <Text>
-            Balance: { formatUtil.amount(account.value) } {CONSTANT_COMMONS.CONST_SYMBOL}
+            Balance: { formatUtil.amountConstant(account.value) } {CONSTANT_COMMONS.CONST_SYMBOL}
           </Text>
           <Form formRef={form => this.form = form} initialValues={initialFormValues} onSubmit={this.handleSend} viewProps={{ style: styleSheet.form }} validationSchema={formValidate}>
             <FormTextField name='fromAddress' placeholder='From Address' editable={false}  />
