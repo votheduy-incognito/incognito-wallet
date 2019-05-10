@@ -4,14 +4,19 @@ import { Text, Container, Form, FormTextField, FormSubmitButton, Toast } from '@
 import formValidate from './formValidate';
 import styleSheet from './style';
 
-const ImportAccount = ({ navigation }) => {
+const ImportAccount = ({ navigation, accountList, importAccount }) => {
   const goBack = () => {
     navigation.popToTop();
   };
 
-  const handleImportAccount = async ({ accountName }) => {
+  const handleImportAccount = async ({ accountName, privateKey }) => {
+    const lowerCase = str => String(str).toLowerCase();
     try {
-      Toast.showInfo(`Your account ${accountName} was import!`);
+      if (accountList.find(_account => lowerCase(_account.name) === lowerCase(accountName))) {
+        throw new Error('This account name was created! Please try another one');
+      }
+
+      await importAccount({ privateKey, accountName });
       goBack();
     } catch (e) {
       Toast.showError(e.message);
