@@ -17,6 +17,26 @@ const setAccount = (list, account) => {
   return newList;
 };
 
+const updateDefaultAccountInList = (list, defaultAccount) => {
+  let newList = list.map(_account => {
+    if (defaultAccount.name === _account.default) {
+      return defaultAccount;
+    }
+
+    return {
+      ..._account,
+      default: false
+    };
+  });
+  
+  try {
+    newList = _.unionBy([defaultAccount], list, 'name');
+  } catch(e) {
+    console.error(e);
+  }
+  return newList;
+};
+
 const setBulkAccount = (list, accounts) => {
   let newList = [...list];
   try {
@@ -86,6 +106,12 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       isGettingBalance: removeGettingBalance(state.isGettingBalance, action.data)
+    };
+  case type.SET_DEFAULT_ACCOUNT:
+    return {
+      ...state,
+      list: updateDefaultAccountInList(state.list, action.data),
+      defaultAccount: action.data
     };
   default:
     return state;

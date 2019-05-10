@@ -1,8 +1,10 @@
 import React from 'react';
-import { Container, Text } from '@src/components/core';
+import PropTypes from 'prop-types';
+import { Container, ScrollView } from '@src/components/core';
 import MdIcons from 'react-native-vector-icons/MaterialIcons';
 import { logout } from '@src/services/auth';
 import ActionButtons from './ActionButtons';
+import AccountList from './AccountList';
 import ROUTE_NAMES from '@src/router/routeNames';
 
 class UserHeaderBoard extends React.Component {
@@ -34,13 +36,22 @@ class UserHeaderBoard extends React.Component {
   }
 
   render() {
+    const { accountList, handleSwitchAccount, defaultAccountName } = this.props;
     return (
-      <Container>
-        <Text>User Board</Text>
-        <ActionButtons actionBtns={this.actionBtns} />
-      </Container>
+      <ScrollView>
+        <Container>
+          <AccountList accounts={accountList} switchAccount={handleSwitchAccount} defaultAccountName={defaultAccountName} />
+          <ActionButtons actionBtns={this.actionBtns} />
+        </Container>
+      </ScrollView>
     );
   }
 }
+
+UserHeaderBoard.propTypes = {
+  accountList: PropTypes.array,
+  handleSwitchAccount: PropTypes.func,
+  defaultAccountName: PropTypes.string
+};
 
 export default UserHeaderBoard;

@@ -1,18 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, TouchableOpacity, Text, Divider } from '@src/components/core';
-import styleSheet from './style';
+import { actionBtnStyle } from './style';
 
 const ActionItem = ({ action }) => (
-  <TouchableOpacity onPress={action?.handlePress} style={styleSheet.actionItem}>
-    {React.cloneElement(action?.icon, { size: 20, style: styleSheet.actionItemIcon })}
-    <Text style={styleSheet.actionItemLabel}>{action?.label}</Text>
+  <TouchableOpacity onPress={action?.handlePress} style={actionBtnStyle.actionItem}>
+    {React.cloneElement(action?.icon, { size: 20, style: actionBtnStyle.actionItemIcon })}
+    <Text style={actionBtnStyle.actionItemLabel}>{action?.label}</Text>
   </TouchableOpacity>
 );
 
 const ActionButtons = ({ actionBtns }) => (
   <View>
-    <Divider style={styleSheet.divider} />
+    <Divider style={actionBtnStyle.divider} />
     {
       actionBtns.map((action, index) => <ActionItem key={index} action={action} />)
     }
