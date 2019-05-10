@@ -43,6 +43,7 @@ export async function loadWallet(passphrase) {
   const server = Server.getDefault();
   console.log('[loadWallet] with server ', server);
   Wallet.RandomBytesFunc = randomBytes;
+  Wallet.setPrivacyUtilRandomBytesFunc(randomBytes);
   Wallet.RpcClient = new RpcClient(
     server.address,
     server.username,
