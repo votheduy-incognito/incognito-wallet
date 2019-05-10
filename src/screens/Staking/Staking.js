@@ -58,9 +58,8 @@ class Staking extends Component {
   }
 
   // Todo: call this function when user change stakingType
-  handleEstimateFee = async () => {
+  handleEstimateFee = async (values) => {
     const { account, wallet } = this.props;
-    const values = this.form;
 
     const accountWallet = wallet.getAccountByName(account.name);
     try{
@@ -72,6 +71,22 @@ class Staking extends Component {
       Toast.showError('Error on get estimation fee!');
     }
   };
+  
+  shouldGetFee = ({values, errors}) =>{
+    if (errors){
+      return;
+    } 
+
+    const { toAddress, amount, isPrivacy } = values;
+
+    if (toAddress && amount && typeof isPrivacy === 'boolean') {
+      this.handleEstimateFee(values);
+    }
+  }
+
+  handleFormChange = (prevState, state) => {
+    this.shouldGetFee({ values: state?.values, errors : state?.errors });
+  }
 
   handleStaking = async (values) => {
     const { account, wallet } = this.props;
@@ -85,7 +100,7 @@ class Staking extends Component {
         Toast.showInfo('Staking successfully. TxId: ', res.txId);
         this.goHome();
       } else {
-        Toast.showError('Staking failed. Please try again! Err:' + res.err.Message);
+        Toast.showError('Staking failed. Please try again! Err:' + res.err.Message || res.err);
       }
     } catch (e) {
       Toast.showError('Staking failed. Please try again! Err:' + e.message);
@@ -103,7 +118,14 @@ class Staking extends Component {
           <Text>
             Balance: { formatUtil.amountConstant(account.value) } {CONSTANT_COMMONS.CONST_SYMBOL}
           </Text>
-          <Form formRef={form => this.form = form} initialValues={initialFormValues} onSubmit={this.handleStaking} viewProps={{ style: styleSheet.form }} validationSchema={validator}>
+          <Form 
+            formRef={form => this.form = form} 
+            initialValues={initialFormValues} 
+            onSubmit={this.handleStaking} 
+            viewProps={{ style: styleSheet.form }} 
+            validationSchema={validator}
+            onFormChange={this.handleFormChange}
+          >
             <FormTextField name='fromAddress' placeholder='From Address' editable={false} />
             <PickerField name='stakingType'>
               <Picker.Item label="Shard Type" value={CONSTANT_COMMONS.STAKING_TYPES.SHARD} />
