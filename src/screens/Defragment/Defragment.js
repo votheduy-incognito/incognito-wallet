@@ -28,9 +28,10 @@ class Defragment extends Component {
     this.handleEstimateFee = _.debounce(::this.handleEstimateFee, 500);
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     const { account } = this.props;
-    this.updateFormValues('fromAddress', account.PaymentAddress);
+    this.updateFormValues('fromAddress', account?.PaymentAddress);
+    await this.handleEstimateFee(this.form?.values);
   }
 
   updateFormValues = (field, value) => {
@@ -57,7 +58,7 @@ class Defragment extends Component {
       // update fee
       this.updateFormValues('fee', String(convert.toConstant(fee)));
     } catch(e){
-      Toast.showError('Error on get estimation fee!');
+      Toast.showError(`Error on get estimation fee!, ${e}`);
     }
   };
 
@@ -86,7 +87,7 @@ class Defragment extends Component {
     }
   };
 
-  shouldGetFee = async ({ values, errors }) => {
+  shouldGetFee = async ({ prevValues, values, errors }) => {
     if (Object.values(errors).length) {
       return;
     }
@@ -94,13 +95,15 @@ class Defragment extends Component {
     const { fromAddress, amount, isPrivacy } = values;
 
     if (fromAddress && amount && typeof isPrivacy === 'boolean') {
-      await this.handleEstimateFee(values);
+      if (prevValues.amount !== amount || prevValues.isPrivacy !== isPrivacy){
+        await this.handleEstimateFee(values);
+      }
     }
   }
 
   handleFormChange = async (prevState, state) => {
     // debugger;
-    await this.shouldGetFee({ values: state?.values, errors: state?.errors });
+    await this.shouldGetFee({ prevValues: prevState?.values, values: state?.values, errors: state?.errors });
   }
 
   onFormValidate = values => {
@@ -113,7 +116,6 @@ class Defragment extends Component {
     
     return errors;
   }
-
 
   render() {
     const { account } = this.props;
