@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { View, TouchableOpacity, Text } from '@src/components/core';
 import OcticonsIcon from 'react-native-vector-icons/Octicons';
 import _ from 'lodash';
+import formatUtil from '@src/utils/format';
 import { accountListStyle } from './style';
 
 const AccountItem = ({ account, onPress, active }) => (
@@ -12,7 +13,7 @@ const AccountItem = ({ account, onPress, active }) => (
     </View>
     <View>
       <Text style={accountListStyle.accountItemLabel}>{account?.name}</Text>
-      <Text>{account?.value}</Text>
+      <Text>{formatUtil.amountConstant(account?.value)}</Text>
     </View>
   </TouchableOpacity>
 );
