@@ -1858,8 +1858,9 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
 
-constant-chain-web-js@/Users/autonomous/Desktop/WORK/constant-chain-web-js:
+"constant-chain-web-js@git://github.com/constant-money/constant-chain-web-js.git":
   version "1.0.0"
+  resolved "git://github.com/constant-money/constant-chain-web-js.git#e1b2ae260bc65d0e4949e210a383811a886dace2"
   dependencies:
     big-integer "^1.6.42"
     privacy-js-lib "git://github.com/constant-money/privacy-js-lib.git"

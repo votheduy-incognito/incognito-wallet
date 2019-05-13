@@ -14,5 +14,6 @@ export default {
   NetworkSetting: 'NetworkSetting',
   CreateAccount: 'CreateAccount',
   ImportAccount: 'ImportAccount',
-  SeedPhrase: 'SeedPhrase'
+  SeedPhrase: 'SeedPhrase',
+  ExportAccount: 'ExportAccount'
 };

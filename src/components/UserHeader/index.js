@@ -1,3 +1,20 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import UserHeader from './UserHeader';
 
-export default UserHeader;
+const UserHeaderContainer = (props) => {
+  const { defaultAccount, ...otherProps } = props;
+
+  return <UserHeader userName={defaultAccount?.name} {...otherProps} />;
+};
+
+const mapState = state => ({
+  defaultAccount: state.account.defaultAccount
+});
+
+UserHeaderContainer.propTypes = {
+  defaultAccount: PropTypes.object
+};
+
+export default connect(mapState)(UserHeaderContainer);

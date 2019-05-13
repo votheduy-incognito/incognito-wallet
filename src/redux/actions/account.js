@@ -36,6 +36,14 @@ export const getBalanceFinish = accountName => ({
   data: accountName
 });
 
+export const setDefaultAccount = account => {
+  const _account = { ...account, default: true };
+  return ({
+    type: type.SET_DEFAULT_ACCOUNT,
+    data: _account
+  });
+};
+
 export const getBalance = (account = throw new Error('Account object is required')) => async (dispatch, getState) => {
   try {
     dispatch(getBalanceStart(account?.name));

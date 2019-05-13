@@ -8,6 +8,7 @@ import NetworkSetting from '@src/screens/NetworkSetting';
 import CreateAccount from '@src/screens/CreateAccount';
 import SeedPhrase from '@src/screens/SeedPhrase';
 import ImportAccount from '@src/screens/ImportAccount';
+import ExportAccount from '@src/screens/ExportAccount';
 import HamburgerHeader from '@src/components/HamburgerHeader';
 import UserHeader from '@src/components/UserHeader';
 import { THEME } from '@src/styles';
@@ -25,6 +26,7 @@ const AppNavigator = createStackNavigator({
   [ROUTE_NAMES.CreateAccount]: navigationOptionsHandler(CreateAccount),
   [ROUTE_NAMES.ImportAccount]: navigationOptionsHandler(ImportAccount),
   [ROUTE_NAMES.SeedPhrase]: navigationOptionsHandler(SeedPhrase),
+  [ROUTE_NAMES.ExportAccount]: navigationOptionsHandler(ExportAccount),
 }, {
   initialRouteName: 'DrawerNavigator',
   defaultNavigationOptions: ({ navigation }) => {
@@ -33,7 +35,7 @@ const AppNavigator = createStackNavigator({
     };
 
     return {
-      headerRight: <UserHeader userName='User' onPress={handleUserPress} />,
+      headerRight: <UserHeader onPress={handleUserPress} />,
       headerLeft: <HamburgerHeader
         onPress={() => {
           navigation.toggleDrawer();
