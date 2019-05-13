@@ -34,6 +34,7 @@ class Staking extends Component {
     const { account } = this.props;
     this.updateFormValues('fromAddress', account?.PaymentAddress);
     await this.handleLoadAmountStaking(initialValues.stakingType);
+    await this.handleEstimateFee(this.form?.values);
   }
 
   updateFormValues = (field, value) => {
@@ -62,6 +63,8 @@ class Staking extends Component {
     const { account, wallet } = this.props;
 
     const accountWallet = wallet.getAccountByName(account.name);
+
+    // convert.toMiliConstant(Number(values.amount))
     try{
       const fee =  await getEstimateFee(values.fromAddress, values.toAddress, values.amount, account.PrivateKey, accountWallet, false);
       // update min fee
@@ -72,15 +75,17 @@ class Staking extends Component {
     }
   };
   
-  shouldGetFee = async ({values, errors}) => {
+  shouldGetFee = async ({prevValues, values, errors}) => {
     if (Object.values(errors).length) {
       return;
-    } 
+    }
 
     const { toAddress, amount, stakingType } = values;
 
     if (toAddress && amount && stakingType !== undefined) {
-      await this.handleEstimateFee(values);
+      if (prevValues.stakingType !== stakingType){
+        await this.handleEstimateFee(values);
+      }
     }
   }
 
@@ -96,7 +101,7 @@ class Staking extends Component {
 
   handleFormChange = async (prevState, state) => {
     await this.shouldLoadAmountStaking({ prevStakingType: prevState?.values?.stakingType, stakingType: state?.values?.stakingType, errors : state?.errors});
-    await this.shouldGetFee({ values: state?.values, errors : state?.errors });
+    await this.shouldGetFee({ prevValues: prevState?.values, values: state?.values, errors : state?.errors });
   }
 
   handleStaking = async (values) => {
