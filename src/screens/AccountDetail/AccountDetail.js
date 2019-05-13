@@ -1,7 +1,9 @@
 
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Button, Container, Alert, Toast } from '@src/components/core';
 import styleSheet from './style';
+import ROUTE_NAMES from '@src/router/routeNames';
 
 class AccountDetail extends Component {
 
@@ -29,7 +31,8 @@ class AccountDetail extends Component {
   }
 
   handleExportKey = () => {
-    Toast.showWarning('Comming soon');
+    const { navigation, account } = this.props;
+    navigation.navigate(ROUTE_NAMES.ExportAccount, { account });
   }
   
   render() {
@@ -46,5 +49,10 @@ class AccountDetail extends Component {
     );
   }
 }
+
+AccountDetail.propTypes = {
+  account: PropTypes.object,
+  navigation: PropTypes.object
+};
 
 export default AccountDetail;

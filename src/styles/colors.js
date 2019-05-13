@@ -5,7 +5,9 @@ export default {
   red: 'red',
   orange: 'orange',
   green: 'green',
+  purple: 'purple',
   lightGrey: '#c2c2c2',
+  lightGrey2: '#fafafa',
   transparent: 'transparent',
 
 
