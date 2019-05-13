@@ -88,8 +88,6 @@ const reducer = (state = initialState, action) => {
       list: newList,
       defaultAccount: getDefaultAccount(newList)
     };
-  case type.REMOVE_ALL:
-    return [];
   case type.REMOVE_BY_NAME:
     newList = removeByName(state.list, action.data);
     return {

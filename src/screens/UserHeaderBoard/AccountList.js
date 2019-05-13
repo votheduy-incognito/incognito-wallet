@@ -6,6 +6,8 @@ import _ from 'lodash';
 import formatUtil from '@src/utils/format';
 import { accountListStyle } from './style';
 
+const getAccountValue = value => value < 0 ? 'Select to load balance' : formatUtil.amountConstant(value);
+
 const AccountItem = ({ account, onPress, active }) => (
   <TouchableOpacity onPress={onPress} style={accountListStyle.accountItem}>
     <View style={accountListStyle.activeIconContainer}>
@@ -13,7 +15,7 @@ const AccountItem = ({ account, onPress, active }) => (
     </View>
     <View>
       <Text style={accountListStyle.accountItemLabel}>{account?.name}</Text>
-      <Text>{formatUtil.amountConstant(account?.value)}</Text>
+      <Text>{getAccountValue(account?.value)}</Text>
     </View>
   </TouchableOpacity>
 );

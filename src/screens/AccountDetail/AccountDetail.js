@@ -7,8 +7,10 @@ import ROUTE_NAMES from '@src/router/routeNames';
 
 class AccountDetail extends Component {
 
-  handleRemove = () => {
+  handleRemove = async () => {
     try {
+      const { removeAccount, account } = this.props;
+      await removeAccount(account);
       Toast.showInfo('Remove completed');
     } catch {
       Toast.showError('Remove failed');
@@ -16,9 +18,10 @@ class AccountDetail extends Component {
   }
 
   handleRemoveConfirm = () => {
+    const { account } = this.props;
     Alert.alert(
       'Confirm',
-      'Remove account?',
+      `Remove account "${account?.name}"?`,
       [
         {
           text: 'Cancel',
@@ -52,7 +55,8 @@ class AccountDetail extends Component {
 
 AccountDetail.propTypes = {
   account: PropTypes.object,
-  navigation: PropTypes.object
+  navigation: PropTypes.object,
+  removeAccount: PropTypes.func
 };
 
 export default AccountDetail;

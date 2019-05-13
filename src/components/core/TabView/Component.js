@@ -62,6 +62,7 @@ TabView.propTypes = {
     title: PropTypes.string.isRequired,
     screen: PropTypes.oneOfType([
       PropTypes.node,
+      PropTypes.object,
       PropTypes.func
     ]).isRequired
   })),

@@ -1,5 +1,6 @@
 import type from '@src/redux/types/account';
 import accountService from '@src/services/wallet/accountService';
+import { getPassphrase } from '@src/services/wallet/passwordService';
 
 export const setAccount = (account = throw new Error('Account object is required')) => ({
   type: type.SET,
@@ -17,14 +18,33 @@ export const setBulkAccount = (accounts = throw new Error('Account array is requ
   });
 };
 
-export const removeAllAccount = () => ({
-  type: type.REMOVE_ALL,
-});
+export const removeAccount = (account = throw new Error('Account is required')) => async (dispatch, getState) => {
+  try {
+    const wallet = getState()?.wallet;
 
-export const removeAccountByName = (accountName = throw new Error('Account name is required')) => ({
-  type: type.REMOVE_BY_NAME,
-  data: accountName
-});
+    if (!wallet) {
+      throw new Error('Wallet is not existed, can not remove account right now');
+    }
+
+    const { PrivateKey, name, }  = account;
+    const passphrase = await getPassphrase();
+    await accountService.removeAccount(
+      PrivateKey,
+      name,
+      passphrase,
+      wallet
+    );
+
+    dispatch({
+      type: type.REMOVE_BY_NAME,
+      data: name
+    });
+
+    return true;
+  } catch (e) {
+    throw e;
+  }
+};
 
 export const getBalanceStart = accountName => ({
   type: type.GET_BALANCE,
