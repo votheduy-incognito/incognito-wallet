@@ -99,6 +99,7 @@ class Defragment extends Component {
   }
 
   handleFormChange = async (prevState, state) => {
+    // debugger;
     await this.shouldGetFee({ values: state?.values, errors: state?.errors });
   }
 

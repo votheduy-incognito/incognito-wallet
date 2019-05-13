@@ -24,7 +24,7 @@ class SendConstant extends Component {
     super();
 
     this.state = {
-      initialFormValues
+      initialFormValues,
     };
 
     this.handleShouldGetFee = _.debounce(::this.handleShouldGetFee, 500);
