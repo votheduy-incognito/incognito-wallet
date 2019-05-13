@@ -128,3 +128,18 @@ export async function getMaxShardNumber() {
   }
   return resp.shardNumber;
 }
+
+export async function hashToIdenticon(hash){
+  let res;
+
+  try {
+    res = await getRpcClient().hashToIdenticon([hash]);
+    if (res.err !== null) {
+      throw res.err;
+    }
+  } catch (e) {
+    throw e;
+  }
+  
+  return res.images[0];
+}

@@ -56,7 +56,7 @@ class SendConstant extends Component {
     navigation.navigate(ROUTE_NAMES.RootApp);
   };
 
-  // Todo: estimate fee when user update isPrivacy or amount, and toAddress is not null
+  // estimate fee when user update isPrivacy or amount, and toAddress is not null
   handleEstimateFee = async (values) => {
     const { account, wallet } = this.props;
 
@@ -69,7 +69,6 @@ class SendConstant extends Component {
       // update fee
       this.updateFormValues('fee', String(convert.toConstant(fee)));
     } catch(e){
-      // alert(JSON.stringify(e.stack));
       Toast.showError('Error on get estimation fee!');
     }
   };

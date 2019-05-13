@@ -5,6 +5,10 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import formatUtil from '@src/utils/format';
 import formValidate from './formValidate';
 import styleSheet from './style';
+import Account from '@src/services/wallet/accountService';
+import { getEstimateFeeToDefragment } from '@src/services/wallet/RpcClientService';
+import convert from '@src/utils/convert';
+import _ from 'lodash';
 
 const initialValues = {
   fromAddress: '',
@@ -12,8 +16,6 @@ const initialValues = {
   amount: String(CONSTANT_COMMONS.DEFRAGMENT_DEFAULT_AMOUNT),
   fee: String(CONSTANT_COMMONS.DEFRAGMENT_MIN_FEE)
 };
-
-const validator = formValidate({ minFee: CONSTANT_COMMONS.DEFRAGMENT_MIN_FEE });
 
 class Defragment extends Component {
   constructor() {
@@ -23,11 +25,12 @@ class Defragment extends Component {
       initialFormValues: initialValues
     };
     this.form = null;
+    this.handleEstimateFee = _.debounce(::this.handleEstimateFee, 500);
   }
 
   componentDidMount() {
-    const { fromAddress } = this.props;
-    this.updateFormValues('fromAddress', fromAddress);
+    const { account } = this.props;
+    this.updateFormValues('fromAddress', account.PaymentAddress);
   }
 
   updateFormValues = (field, value) => {
@@ -41,12 +44,41 @@ class Defragment extends Component {
     navigation.pop();
   }
 
-  handleDefragment = (values) => {
-    try {
+  // estimate fee when user update isPrivacy or amount, and fromAddress is not null
+  handleEstimateFee = async (values) => {
+    const { account, wallet } = this.props;
 
+    const accountWallet = wallet.getAccountByName(account.name);
+    try{
+      const fee =  await getEstimateFeeToDefragment(values.fromAddress, convert.toMiliConstant(Number(values.amount)), account.PrivateKey, accountWallet, values.isPrivacy);
+      // set min fee state
+      this.setState({minFee: convert.toConstant(fee)});
+
+      // update fee
+      this.updateFormValues('fee', String(convert.toConstant(fee)));
+    } catch(e){
+      Toast.showError('Error on get estimation fee!');
+    }
+  };
+
+  handleDefragment = async (values) => {
+    try {
       // Account.defragment()
-      // TODO
-      console.log(values);
+      const { account, wallet } = this.props;
+      const { amount, fee, isPrivacy } = values;
+
+      try {
+        const res = await Account.defragment(amount, fee, isPrivacy, account, wallet);
+
+        if (res.txId) {
+          Toast.showInfo(`Defragment successfully. TxId: ${res.txId}`);
+          this.goBack();
+        } else {
+          Toast.showError(`Defragment failed. Please try again! Err: ${res.err.Message || res.err}`);
+        }
+      } catch (e) {
+        Toast.showError(`Defragment failed. Please try again! Err: ${e.message}`);
+      }
       Toast.showInfo('Defragment completed!');
       this.goBack();
     } catch (e) {
@@ -54,8 +86,36 @@ class Defragment extends Component {
     }
   };
 
+  shouldGetFee = async ({ values, errors }) => {
+    if (Object.values(errors).length) {
+      return;
+    }
+
+    const { fromAddress, amount, isPrivacy } = values;
+
+    if (fromAddress && amount && typeof isPrivacy === 'boolean') {
+      await this.handleEstimateFee(values);
+    }
+  }
+
+  handleFormChange = async (prevState, state) => {
+    await this.shouldGetFee({ values: state?.values, errors: state?.errors });
+  }
+
+  onFormValidate = values => {
+    const { account } = this.props;
+    const errors = {};
+
+    if (values.amount >= account.value) {
+      errors.amount = `Must be less than ${values?.amount}`;
+    }
+    
+    return errors;
+  }
+
+
   render() {
-    const { balance } = this.props;
+    const { account } = this.props;
     const { initialFormValues } = this.state;
 
     return (
@@ -63,9 +123,17 @@ class Defragment extends Component {
         <Container style={styleSheet.container}>
           <Text style={styleSheet.title}>Defragment</Text>
           <Text>
-            Balance: { formatUtil.amountConstant(balance) } {CONSTANT_COMMONS.CONST_SYMBOL}
+            Balance: { formatUtil.amountConstant(account.value) } {CONSTANT_COMMONS.CONST_SYMBOL}
           </Text>
-          <Form formRef={form => this.form = form} initialValues={initialFormValues} onSubmit={this.handleDefragment} viewProps={{ style: styleSheet.form }} validationSchema={validator}>
+          <Form 
+            formRef={form => this.form = form} 
+            initialValues={initialFormValues} 
+            onSubmit={this.handleDefragment} 
+            viewProps={{ style: styleSheet.form }} 
+            validationSchema={formValidate}
+            onFormChange={this.handleFormChange}
+            validate={this.onFormValidate}
+          >
             <FormTextField name='fromAddress' placeholder='From Address' editable={false} />
             <CheckBoxField name='isPrivacy' label='Is Privacy' />
             <FormTextField name='amount' placeholder='Amount' />
@@ -85,9 +153,9 @@ Defragment.defaultProps = {
 };
 
 Defragment.propTypes = {
-  balance: PropTypes.number,
-  fromAddress: PropTypes.string,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  account: PropTypes.object,
+  wallet: PropTypes.object
 };
 
 export default Defragment;
