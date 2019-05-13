@@ -1,7 +1,8 @@
-import { API_BASE_URL, PASSWORD_SECRET_KEY, SHARD_ID } from 'react-native-dotenv';
+import { API_BASE_URL, PASSWORD_SECRET_KEY, SHARD_ID, EXPLORER_CONSTANT_CHAIN_URL } from 'react-native-dotenv';
 
 export default {
   API_BASE_URL,
   PASSWORD_SECRET_KEY,
-  SHARD_ID
+  SHARD_ID,
+  EXPLORER_CONSTANT_CHAIN_URL
 };
