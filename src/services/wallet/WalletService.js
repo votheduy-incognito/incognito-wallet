@@ -1,4 +1,10 @@
-import {RpcClient, Wallet} from 'constant-chain-web-js/build/wallet';
+import {
+  RpcClient,
+  Wallet,
+  SuccessTx as SuccessTxWallet,
+  ConfirmedTx as ConfirmedTxWallet,
+  genImageFromStr as genImageFromStrWallet
+} from 'constant-chain-web-js/build/wallet';
 import storage from '@src/services/storage';
 import {getPassphrase} from './passwordService';
 import accountService from './accountService';
@@ -8,6 +14,10 @@ import {randomBytes} from 'react-native-randombytes';
 
 const numOfAccount = 1;
 const walletName = 'wallet1';
+
+export const genImageFromStr = genImageFromStrWallet;
+export const ConfirmedTx = ConfirmedTxWallet;
+export const SuccessTx = SuccessTxWallet;
 
 export async function loadListAccount(wallet) {
   try {
