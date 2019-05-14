@@ -4,10 +4,11 @@ import { connect } from 'react-redux';
 import serverService from '@src/services/wallet/Server';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { reloadWallet } from '@src/redux/actions/wallet';
+import { setDefaultServer } from '@src/redux/actions/server';
 import NetworkSetting from './NetworkSetting';
 import { Toast } from '@src/components/core';
 
-const NetworkSettingContainer = ({ reloadWallet, ...props }) => {
+const NetworkSettingContainer = ({ reloadWallet, setDefaultServer, ...props }) => {
   const [ servers, setServers ] = useState([]);
   const [ isLoading, setIsLoading ] = useState(false);
 
@@ -24,6 +25,7 @@ const NetworkSettingContainer = ({ reloadWallet, ...props }) => {
 
   const handleSetDefaultNetwork = async network => {
     try {
+      setDefaultServer(network);
       await serverService.setDefault(network);
       const wallet = await reloadWallet();
 
@@ -46,7 +48,7 @@ const NetworkSettingContainer = ({ reloadWallet, ...props }) => {
   return <NetworkSetting {...props} networks={servers} setDefaultNetwork={handleSetDefaultNetwork} />;
 };
 
-const mapDispatch = { reloadWallet };
+const mapDispatch = { reloadWallet, setDefaultServer };
 
 NetworkSettingContainer.propTypes = {
   reloadWallet: PropTypes.func
