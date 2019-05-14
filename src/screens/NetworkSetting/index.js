@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import serverService from '@src/services/wallet/Server';
 import LoadingContainer from '@src/components/LoadingContainer';
+import { reloadWallet } from '@src/redux/actions/wallet';
 import NetworkSetting from './NetworkSetting';
 import { Toast } from '@src/components/core';
 
-const NetworkSettingContainer = (props) => {
+const NetworkSettingContainer = ({ reloadWallet, ...props }) => {
   const [ servers, setServers ] = useState([]);
   const [ isLoading, setIsLoading ] = useState(false);
 
@@ -19,6 +22,19 @@ const NetworkSettingContainer = (props) => {
       });
   };
 
+  const handleSetDefaultNetwork = async network => {
+    try {
+      await serverService.setDefault(network);
+      const wallet = await reloadWallet();
+
+      if (wallet) {
+        Toast.showInfo('Update completed, your wallet was reloaded');
+      }
+    } catch {
+      Toast.showError('Error while changing new server setting, please restart the app');
+    }
+  };
+
   useEffect(() => {
     loadServerList();
   }, []);
@@ -27,8 +43,13 @@ const NetworkSettingContainer = (props) => {
     return <LoadingContainer />;
   }
 
-  return <NetworkSetting {...props} networks={servers} setDefaultNetwork={serverService.setDefault} />;
+  return <NetworkSetting {...props} networks={servers} setDefaultNetwork={handleSetDefaultNetwork} />;
 };
 
+const mapDispatch = { reloadWallet };
 
-export default NetworkSettingContainer;
+NetworkSettingContainer.propTypes = {
+  reloadWallet: PropTypes.func
+};
+
+export default connect(null, mapDispatch)(NetworkSettingContainer);
