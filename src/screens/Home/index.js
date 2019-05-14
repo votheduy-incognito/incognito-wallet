@@ -4,11 +4,15 @@ import { connect } from 'react-redux';
 import { getBalance } from '@src/redux/actions/account';
 import LoadingContainer from '@src/components/LoadingContainer';
 import Home from './Home';
+import { Toast } from '@src/components/core';
 
 const HomeContainer = ({ defaultAccount, getBalance, isGettingBalance, ...otherProps }) => {
   const loadBalance = account =>  {
     if (account?.name) {
-      getBalance(account);
+      getBalance(account)
+        .catch(() => {
+          Toast.showError('Error while loading account balance');
+        });
     }
   };
 
