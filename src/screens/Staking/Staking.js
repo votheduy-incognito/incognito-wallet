@@ -8,7 +8,7 @@ import Account from '@src/services/wallet/accountService';
 import { getStakingAmount, getEstimateFee } from '@src/services/wallet/RpcClientService';
 import convert from '@src/utils/convert';
 import _ from 'lodash';
-import formValidate from './formValidate';
+// import formValidate from './formValidate';
 import ReceiptModal, { openReceipt } from '@src/components/Receipt';
 
 const initialValues = {
@@ -35,7 +35,7 @@ class Staking extends Component {
   componentDidMount = async () => {
     const { account } = this.props;
     await this.updateFormValues('fromAddress', account?.PaymentAddress);
-    this.handleLoadAmountStaking(Number(initialValues.stakingType));
+    await this.handleLoadAmountStaking(Number(initialValues.stakingType));
   }
 
   updateFormValues = (field, value) => {
@@ -67,7 +67,7 @@ class Staking extends Component {
     try{
       const fee =  await getEstimateFee(values.fromAddress, values.toAddress, convert.toMiliConstant(Number(values.amount)), account.PrivateKey, accountWallet, false);
       // update min fee
-      this.setState({minFee: convert.toConstant(fee)});
+      this.setState({ minFee: convert.toConstant(fee) });
       this.updateFormValues('fee', String(convert.toConstant(fee)));
     } catch(e){
       Toast.showError(`Error on get estimation fee! ${e.message}`);
@@ -144,7 +144,7 @@ class Staking extends Component {
             initialValues={initialFormValues} 
             onSubmit={this.handleStaking} 
             viewProps={{ style: styleSheet.form }} 
-            validationSchema={formValidate}
+            // validationSchema={formValidate}
             validate={this.onFormValidate}
           >
             <FormTextField name='fromAddress' placeholder='From Address' editable={false} />
