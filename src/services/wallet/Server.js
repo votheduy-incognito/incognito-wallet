@@ -1,51 +1,66 @@
 import storage from '@src/services/storage';
-import CONSTANT_KEYS from '@src/constants/keys';
+import { CONSTANT_KEYS, CONSTANT_CONFIGS } from '@src/constants';
+
+let cachedList = null;
 
 export default class Server {
   static get() {
-    return storage.getItem(CONSTANT_KEYS.SERVERS);
+    if (cachedList) {
+      return Promise.resolve(cachedList);
+    }
+    return storage.getItem(CONSTANT_KEYS.SERVERS)
+      .then(strData => {
+        cachedList = JSON.parse(strData);
+        return cachedList;
+      });
   }
 
   static getDefault() {
-    return {
-      default: true,
-      address: 'http://test-node-constant-chain.constant.money:9334',
-      username: '',
-      password: '',
-      name: 'Testnet'
-    };
-    // return storage.getItem(CONSTANT_KEYS.SERVERS)
-    //   .then(result => {
-    //     if (result && result.length) {
-    //       for (const s of result) {
-    //         if (s.default) {
-    //           return s;
-    //         }
-    //       }
-    //     }
-    //   });
+    return Server.get()
+      .then(result => {
+        if (result && result.length) {
+          for (const s of result) {
+            if (s.default) {
+              return s;
+            }
+          }
+        }
+      });
   }
 
-  static setDefault() {
-    storage.setItem(CONSTANT_KEYS.SERVERS, [
-      {
-        default: false,
-        address: 'http://localhost:9334',
-        username: '',
-        password: '',
-        name: 'Local'
-      },
-      {
-        default: true,
-        address: 'https://test-node-constant-chain.constant.money',
-        username: '',
-        password: '',
-        name: 'Testnet'
-      }
-    ]);
+  static async setDefault(defaultServer) {
+    try {
+      const servers = await Server.get();
+      const newServers = servers.map(server => {
+        if (defaultServer.id === server.id) {
+          return {
+            ...defaultServer,
+            default: true
+          };
+        }
+        return { ...server, default: false };
+      });
+      Server.set(newServers);
+
+      return newServers;
+    } catch (e) {
+      throw e;
+    }
   }
 
-  static set(data) {
-    storage.setItem(CONSTANT_KEYS.SERVERS, data);
+  static setDefaultList() {
+    try {
+      cachedList = CONSTANT_CONFIGS.DEFAULT_LIST_SERVER;
+      const strData = JSON.stringify(cachedList);
+      return storage.setItem(CONSTANT_KEYS.SERVERS, strData);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  static set(servers) {
+    cachedList = servers;
+    const strData = JSON.stringify(cachedList);
+    return storage.setItem(CONSTANT_KEYS.SERVERS, strData);
   }
 }

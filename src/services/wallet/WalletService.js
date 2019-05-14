@@ -50,7 +50,7 @@ export async function loadListAccount(wallet) {
 }
 
 export async function loadWallet(passphrase) {
-  const server = Server.getDefault();
+  const server = await Server.getDefault();
   console.log('[loadWallet] with server ', server);
   Wallet.RandomBytesFunc = randomBytes;
   Wallet.setPrivacyUtilRandomBytesFunc(randomBytes);
