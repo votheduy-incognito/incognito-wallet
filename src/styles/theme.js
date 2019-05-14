@@ -69,6 +69,10 @@ const divider = {
   height: 1
 };
 
+const modal = {
+  headerHeight: DECOR.buttonHeight
+};
+
 export default {
   header,
   opacityButton,
@@ -77,5 +81,6 @@ export default {
   container,
   textInput,
   toast,
-  divider
+  divider,
+  modal
 };
