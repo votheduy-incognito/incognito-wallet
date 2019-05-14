@@ -16,7 +16,7 @@ const initialFormValues = {
   amount: '1',
   minFee: '0.5',
   fee: '0.5',
-  fromAddress: '',
+  fromAddress: ''
 };
 
 class SendConstant extends Component {
@@ -60,12 +60,13 @@ class SendConstant extends Component {
   handleEstimateFee = async (values) => {
     const { account, wallet } = this.props;
 
+    const { fromAddress, toAddress, amount, isPrivacy } = values;
+
     const accountWallet = wallet.getAccountByName(account.name);
     try{
-      const fee =  await getEstimateFee(values.fromAddress, values.toAddress, convert.toMiliConstant(Number(values.amount)), account.PrivateKey, accountWallet, values.isPrivacy);
+      const fee =  await getEstimateFee(fromAddress, toAddress, convert.toMiliConstant(Number(amount)), account.PrivateKey, accountWallet, isPrivacy);
       // set min fee state
       this.setState({minFee: convert.toConstant(fee)});
-
       // update fee
       this.updateFormValues('fee', String(convert.toConstant(fee)));
     } catch(e){
@@ -76,18 +77,20 @@ class SendConstant extends Component {
   handleSend = async (values) => {
     const { account, wallet } = this.props;
 
+    const { toAddress, amount, isPrivacy, fee } = values;
+
     const paymentInfos = [{
-      paymentAddressStr: values.toAddress, amount: convert.toMiliConstant(Number(values.amount))
+      paymentAddressStr: toAddress, amount: convert.toMiliConstant(Number(amount))
     }];
 
     try {
-      const res = await Account.sendConstant(paymentInfos, convert.toMiliConstant(Number(values.fee)), values.isPrivacy, account, wallet);
+      const res = await Account.sendConstant(paymentInfos, convert.toMiliConstant(Number(fee)), isPrivacy, account, wallet);
 
       if (res.txId) {
         Toast.showInfo(`Sent successfully. TxId: ${res.txId}`);
         this.goHome();
       } else {
-        Toast.showError(`Sent failed. Please try again! Err: ${res.err || res.err.Message}`);
+        Toast.showError(`Sent failed. Please try again! Err: ${res.err.Message || res.err }`);
       }
     } catch (e) {
       Toast.showError(`Sent failed. Please try again! Err:' ${e.message}`);
@@ -142,7 +145,7 @@ class SendConstant extends Component {
             <CheckBoxField name='isPrivacy' label='Is Privacy' onFieldChange={this.handleShouldGetFee} />
             <FormTextField name='toAddress' placeholder='To Address' onFieldChange={this.handleShouldGetFee} />
             <FormTextField name='amount' placeholder='Amount' onFieldChange={this.handleShouldGetFee}/>
-            <FormTextField name='fee' placeholder='Min Fee'  />
+            <FormTextField name='fee' placeholder='Min Fee' />
             <FormSubmitButton title='SEND' style={styleSheet.submitBtn} />
           </Form>
           <Text style={styleSheet.noteText}>* Only send CONSTANT to a CONSTANT address.</Text>

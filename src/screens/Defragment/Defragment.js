@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Text, Container, Form, FormTextField, FormSubmitButton, Toast, ScrollView, CheckBoxField } from '@src/components/core';
 import { CONSTANT_COMMONS } from '@src/constants';
 import formatUtil from '@src/utils/format';
-import formValidate from './formValidate';
 import styleSheet from './style';
 import Account from '@src/services/wallet/accountService';
 import { getEstimateFeeToDefragment } from '@src/services/wallet/RpcClientService';
@@ -64,7 +63,6 @@ class Defragment extends Component {
     try {
       const { account, wallet } = this.props;
       const { amount, fee, isPrivacy } = values;
-
       try {
         const res = await Account.defragment(convert.toMiliConstant(Number(amount)), convert.toMiliConstant(Number(fee)), isPrivacy, account, wallet);
 
@@ -77,8 +75,6 @@ class Defragment extends Component {
       } catch (e) {
         Toast.showError(`Defragment failed. Please try again! Err: ${e.message}`);
       }
-      Toast.showInfo('Defragment completed!');
-      this.goBack();
     } catch (e) {
       Toast.showError(e.message);
     }
@@ -125,7 +121,7 @@ class Defragment extends Component {
             initialValues={initialFormValues} 
             onSubmit={this.handleDefragment} 
             viewProps={{ style: styleSheet.form }} 
-            validationSchema={formValidate}
+            // validationSchema={formValidate}
             validate={this.onFormValidate}
           >
             <FormTextField name='fromAddress' placeholder='From Address' editable={false}  onFieldChange={this.handleShouldGetFee}/>
