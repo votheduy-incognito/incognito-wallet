@@ -58,19 +58,16 @@ class Staking extends Component {
     }
   }
 
-  // Todo: call this function when user change stakingType
+  // call this function when user change stakingType
   handleEstimateFee = async (values) => {
     const { account, wallet } = this.props;
-
     const accountWallet = wallet.getAccountByName(account.name);
 
-    // convert.toMiliConstant(Number(values.amount))
     try{
-      const fee =  await getEstimateFee(values.fromAddress, values.toAddress, values.amount, account.PrivateKey, accountWallet, false);
+      const fee =  await getEstimateFee(values.fromAddress, values.toAddress, convert.toMiliConstant(Number(values.amount)), account.PrivateKey, accountWallet, false);
       // update min fee
       this.updateFormValues('fee', String(convert.toConstant(fee)));
     } catch(e){
-      // alert(JSON.stringify(e.stack));
       Toast.showError('Error on get estimation fee!');
     }
   };
