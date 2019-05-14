@@ -7,24 +7,36 @@ class NetworkSetting extends Component {
   constructor() {
     super();
     this.state = {
-      activeServerId: null,
-      expandedServerId: null
+      activeNetworkId: null,
+      expandedNetworkId: null
     };
   }
 
-  handleActive = serverId => {
-    this.setState({ activeServerId: serverId });
+  componentDidMount() {
+    const { networks } = this.props;
+    this.findDefaultNetwork(networks);
   }
 
-  handleExpand = serverId => {
-    this.setState(({ expandedServerId }) => ({
+  findDefaultNetwork = (networks) => {
+    const found = networks?.find(_ => _.default);
+    this.setState({ activeNetworkId: found?.id });
+  }
+
+  handleActive = network => {
+    const { setDefaultNetwork } = this.props;
+    setDefaultNetwork(network);
+    this.setState({ activeNetworkId: network?.id });
+  }
+
+  handleExpand = networkId => {
+    this.setState(({ expandedNetworkId }) => ({
       // operating like a toggle
-      expandedServerId: serverId === expandedServerId ? null : serverId
+      expandedNetworkId: networkId === expandedNetworkId ? null : networkId
     }));
   }
 
   render() {
-    const { activeServerId, expandedServerId } = this.state;
+    const { activeNetworkId, expandedNetworkId } = this.state;
     const { networks } = this.props;
 
     return (
@@ -35,9 +47,9 @@ class NetworkSetting extends Component {
               <NetworkItem
                 key={network?.id}
                 network={network} 
-                active={network?.id === activeServerId}
-                expanded={network?.id === expandedServerId}
-                onActive={() => this.handleActive(network?.id)}
+                active={network?.id === activeNetworkId}
+                expanded={network?.id === expandedNetworkId}
+                onActive={() => this.handleActive(network)}
                 onExpand={() => this.handleExpand(network?.id)}
               />
             ))
@@ -49,26 +61,12 @@ class NetworkSetting extends Component {
 }
 
 NetworkSetting.defaultProps = {
-  networks: [
-    {
-      id: 'local',
-      name: 'Local',
-      rpcServerAddress: 'http://localhost',
-      username: null,
-      password: null
-    },
-    {
-      id: 'local2',
-      name: 'Local2',
-      rpcServerAddress: 'http://localhost2',
-      username: null,
-      password: null
-    }
-  ]
+  networks: []
 };
 
 
 NetworkSetting.propTypes = {
+  setDefaultNetwork: PropTypes.func,
   networks: PropTypes.arrayOf(networkItemShape)
 };
 

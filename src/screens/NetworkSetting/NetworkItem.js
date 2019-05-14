@@ -1,54 +1,42 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, TouchableOpacity, Container } from '@src/components/core';
+import { View, Text, TouchableOpacity } from '@src/components/core';
 import { COLORS } from '@src/styles';
 import MdIcons from 'react-native-vector-icons/MaterialIcons';
 import EditSetting from './EditSetting';
 import { networkItemStyle } from './style';
 
-class NetworkItem extends Component {
-  constructor() {
-    super();
-    this.state = {
-      serverId: null
-    };
-  }
-
-  render() {
-    const { active, network, expanded, onExpand, onActive } = this.props;
-    
-    return (
-      <View style={networkItemStyle.container}>
-        <View style={networkItemStyle.summaryContainer}>
-          <TouchableOpacity onPress={onActive} style={networkItemStyle.iconContainer}>
-            <MdIcons name={active ? 'star' : 'star-border'} size={24} color={active ? COLORS.primary : null} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onExpand} style={networkItemStyle.infoContainer}>
-            <View style={networkItemStyle.textInfoContainer}>
-              <Text style={networkItemStyle.networkName} numberOfLines={1} ellipsizeMode='tail'>{network?.name}</Text>
-              <Text numberOfLines={1} ellipsizeMode='tail'>{network?.rpcServerAddress}</Text>
-            </View>
-            <View style={networkItemStyle.arrowIcon}>
-              <MdIcons name={ expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'} size={24} />
-            </View>
-          </TouchableOpacity>
+const NetworkItem = ({ active, network, expanded, onExpand, onActive }) => (
+  <View style={networkItemStyle.container}>
+    <View style={networkItemStyle.summaryContainer}>
+      <TouchableOpacity onPress={onActive} style={networkItemStyle.iconContainer}>
+        <MdIcons name={active ? 'star' : 'star-border'} size={24} color={active ? COLORS.primary : null} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={onExpand} style={networkItemStyle.infoContainer}>
+        <View style={networkItemStyle.textInfoContainer}>
+          <Text style={networkItemStyle.networkName} numberOfLines={1} ellipsizeMode='tail'>{network?.name}</Text>
+          <Text numberOfLines={1} ellipsizeMode='tail'>{network?.address}</Text>
         </View>
-        {
-          expanded && (
-            <View style={networkItemStyle.editContainer}>
-              <EditSetting />
-            </View>
-          )
-        }
-      </View>
-    );
-  }
-}
+        <View style={networkItemStyle.arrowIcon}>
+          <MdIcons name={ expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'} size={24} />
+        </View>
+      </TouchableOpacity>
+    </View>
+    {
+      expanded && (
+        <View style={networkItemStyle.editContainer}>
+          <EditSetting />
+        </View>
+      )
+    }
+  </View>
+);
 
 export const networkItemShape = PropTypes.shape({
   id: PropTypes.string,
+  default: PropTypes.bool,
   name: PropTypes.string,
-  rpcServerAddress: PropTypes.string,
+  address: PropTypes.string,
   username: PropTypes.string,
   password: PropTypes.string
 });
