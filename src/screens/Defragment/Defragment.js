@@ -8,6 +8,7 @@ import Account from '@src/services/wallet/accountService';
 import { getEstimateFeeToDefragment } from '@src/services/wallet/RpcClientService';
 import convert from '@src/utils/convert';
 import _ from 'lodash';
+import common from '@src/constants/common';
 
 const initialValues = {
   fromAddress: '',
@@ -21,7 +22,8 @@ class Defragment extends Component {
     super();
 
     this.state = {
-      initialFormValues: initialValues
+      initialFormValues: initialValues,
+      minFee: 0
     };
     this.form = null;
     this.handleShouldGetFee = _.debounce(::this.handleShouldGetFee, 500);
@@ -98,9 +100,16 @@ class Defragment extends Component {
     const { account } = this.props;
     const errors = {};
 
-    if (values.amount > account.value) {
-      errors.amount = `Must be less than ${values?.amount}`;
+    const { amount, fee } = values;
+    const { minFee } = this.state;
+
+    if (amount >= convert.toConstant(Number(account.value))) {
+      errors.amount = `Must be less than ${convert.toConstant(Number(account.value))} ${common.CONST_SYMBOL}`;
     }
+
+    if (fee < minFee){
+      errors.fee = `Must be at least min fee ${minFee} ${common.CONST_SYMBOL}`;
+    } 
     
     return errors;
   }
