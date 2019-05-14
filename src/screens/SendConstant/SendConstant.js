@@ -27,7 +27,7 @@ class SendConstant extends Component {
       initialFormValues
     };
 
-    this.handleEstimateFee = _.debounce(::this.handleEstimateFee, 500);
+    this.handleShouldGetFee = _.debounce(::this.handleShouldGetFee, 500);
 
     this.form = null;
   }
@@ -94,20 +94,18 @@ class SendConstant extends Component {
     }
   };
 
-  shouldGetFee = async ({ values, errors }) => {
-    if (Object.values(errors).length) {
+  handleShouldGetFee = async () => {
+    const { errors, values } = this.form;
+
+    if (Object.values(errors).length){
       return;
     }
 
-    const { toAddress, amount, isPrivacy } = values;
+    const { amount, toAddress, isPrivacy } = values;
 
-    if (toAddress && amount && typeof isPrivacy === 'boolean') {
-      await this.handleEstimateFee(values);
+    if (amount && toAddress && typeof isPrivacy === 'boolean'){
+      this.handleEstimateFee(values);
     }
-  }
-
-  handleFormChange = async (prevState, state) => {
-    await this.shouldGetFee({ values: state?.values, errors: state?.errors });
   }
 
   onFormValidate = values => {
@@ -138,14 +136,13 @@ class SendConstant extends Component {
             onSubmit={this.handleSend}
             viewProps={{ style: styleSheet.form }}
             validationSchema={formValidate}
-            onFormChange={this.handleFormChange}
             validate={this.onFormValidate}
           >
             <FormTextField name='fromAddress' placeholder='From Address' editable={false}  />
-            <CheckBoxField name='isPrivacy' label='Is Privacy' />
-            <FormTextField name='toAddress' placeholder='To Address' />
-            <FormTextField name='amount' placeholder='Amount' />
-            <FormTextField name='fee' placeholder='Min Fee' />
+            <CheckBoxField name='isPrivacy' label='Is Privacy' onFieldChange={this.handleShouldGetFee} />
+            <FormTextField name='toAddress' placeholder='To Address' onFieldChange={this.handleShouldGetFee} />
+            <FormTextField name='amount' placeholder='Amount' onFieldChange={this.handleShouldGetFee}/>
+            <FormTextField name='fee' placeholder='Min Fee'  />
             <FormSubmitButton title='SEND' style={styleSheet.submitBtn} />
           </Form>
           <Text style={styleSheet.noteText}>* Only send CONSTANT to a CONSTANT address.</Text>
