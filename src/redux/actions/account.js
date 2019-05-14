@@ -79,7 +79,8 @@ export const getBalance = (account = throw new Error('Account object is required
       ...account,
       value: balance
     }));
-
+    
+    return balance;
   } catch (e) {
     throw e;
   } finally {
