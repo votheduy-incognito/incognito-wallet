@@ -25,7 +25,7 @@ const NetworkItem = ({ active, network, expanded, onExpand, onActive }) => (
     {
       expanded && (
         <View style={networkItemStyle.editContainer}>
-          <EditSetting />
+          <EditSetting network={network} />
         </View>
       )
     }
