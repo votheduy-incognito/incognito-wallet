@@ -11,6 +11,7 @@ import ROUTE_NAMES from '@src/router/routeNames';
 import { getEstimateFee } from '@src/services/wallet/RpcClientService';
 import convert from '@src/utils/convert';
 import common from '@src/constants/common';
+import ReceiptModal, { openReceipt } from '@src/components/Receipt';
 
 const initialFormValues = {
   isPrivacy: false,
@@ -78,7 +79,7 @@ class SendConstant extends Component {
   handleSend = async (values) => {
     const { account, wallet } = this.props;
 
-    const { toAddress, amount, isPrivacy, fee } = values;
+    const { fromAddress, toAddress, amount, isPrivacy, fee } = values;
 
     const paymentInfos = [{
       paymentAddressStr: toAddress, amount: convert.toMiliConstant(Number(amount))
@@ -88,8 +89,15 @@ class SendConstant extends Component {
       const res = await Account.sendConstant(paymentInfos, convert.toMiliConstant(Number(fee)), isPrivacy, account, wallet);
 
       if (res.txId) {
-        Toast.showInfo(`Sent successfully. TxId: ${res.txId}`);
-        this.goHome();
+        openReceipt({
+          txId: res.txId,
+          toAddress,
+          fromAddress,
+          amount: convert.toMiliConstant(Number(amount)),
+          amountUnit: CONSTANT_COMMONS.CONST_SYMBOL,
+          time: formatUtil.toMiliSecond(res.lockTime),
+          fee: convert.toMiliConstant(Number(fee)),
+        });
       } else {
         Toast.showError(`Sent failed. Please try again! Err: ${res.err.Message || res.err }`);
       }
@@ -157,7 +165,9 @@ class SendConstant extends Component {
             <FormSubmitButton title='SEND' style={styleSheet.submitBtn} />
           </Form>
           <Text style={styleSheet.noteText}>* Only send CONSTANT to a CONSTANT address.</Text>
+          <ReceiptModal />
         </Container>
+        
       </ScrollView>
     );
   }

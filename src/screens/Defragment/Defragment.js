@@ -9,6 +9,7 @@ import { getEstimateFeeToDefragment } from '@src/services/wallet/RpcClientServic
 import convert from '@src/utils/convert';
 import _ from 'lodash';
 import common from '@src/constants/common';
+import ReceiptModal, { openReceipt } from '@src/components/Receipt';
 
 const initialValues = {
   fromAddress: '',
@@ -64,13 +65,19 @@ class Defragment extends Component {
   handleDefragment = async (values) => { 
     try {
       const { account, wallet } = this.props;
-      const { amount, fee, isPrivacy } = values;
+      const { amount, fee, isPrivacy, fromAddress } = values;
       try {
         const res = await Account.defragment(convert.toMiliConstant(Number(amount)), convert.toMiliConstant(Number(fee)), isPrivacy, account, wallet);
 
         if (res.txId) {
-          Toast.showInfo(`Defragment successfully. TxId: ${res.txId}`);
-          this.goBack();
+          openReceipt({
+            txId: res.txId,
+            fromAddress,
+            amount: convert.toMiliConstant(Number(amount)),
+            amountUnit: CONSTANT_COMMONS.CONST_SYMBOL,
+            time: formatUtil.toMiliSecond(res.lockTime),
+            fee: convert.toMiliConstant(Number(fee)),
+          });
         } else {
           Toast.showError(`Defragment failed. Please try again! Err: ${res.err.Message || res.err}`);
         }
@@ -140,6 +147,7 @@ class Defragment extends Component {
             <FormSubmitButton title='DEFRAGMENT' style={styleSheet.submitBtn} />
           </Form>
           <Text style={styleSheet.noteText}>* Only send CONSTANT to a CONSTANT address.</Text>
+          <ReceiptModal />
         </Container>
       </ScrollView>
     );

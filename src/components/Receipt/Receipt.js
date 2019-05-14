@@ -5,10 +5,11 @@ import { Text, Container, View } from '@src/components/core';
 import styleSheet from './style';
 import { COLORS } from '@src/styles';
 import formatUtil from '@src/utils/format';
+import CONSTANT_COMMONS from '@src/constants/common';
 
 const CommonText = (props) => <Text style={styleSheet.text} numberOfLines={1} ellipsizeMode='tail' {...props} />;
 const Receipt = ({ info }) => {
-  const { txId, time, amount, amountUnit, toAddress, fromAddress } = info;
+  const { txId, time, amount, amountUnit, toAddress, fromAddress, fee } = info;
   return (
     <Container style={styleSheet.container} >
       <SimpleLineIcons name='check' size={100} color={COLORS.white} />
@@ -18,6 +19,7 @@ const Receipt = ({ info }) => {
         { toAddress && <CommonText ellipsizeMode='middle'>To: {toAddress}</CommonText> }
         { time && <CommonText>Time: {formatUtil.formatDateTime(time)}</CommonText> }
         { amount && <CommonText>Amount: {formatUtil.amountConstant(amount)} {amountUnit}</CommonText> }
+        { fee && <CommonText>Fee: {formatUtil.amountConstant(fee)} {CONSTANT_COMMONS.CONST_SYMBOL}</CommonText> }
       </View>
     </Container>
   );
@@ -34,7 +36,8 @@ Receipt.propTypes = {
     fromAddress: PropTypes.string,
     time: PropTypes.oneOfType([ PropTypes.string, PropTypes.object, PropTypes.number ]),
     amount: PropTypes.number,
-    amountUnit: PropTypes.string
+    amountUnit: PropTypes.string,
+    fee: PropTypes.number,
   })
 };
 

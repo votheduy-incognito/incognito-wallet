@@ -9,6 +9,7 @@ import { getStakingAmount, getEstimateFee } from '@src/services/wallet/RpcClient
 import convert from '@src/utils/convert';
 import _ from 'lodash';
 import formValidate from './formValidate';
+import ReceiptModal, { openReceipt } from '@src/components/Receipt';
 
 const initialValues = {
   stakingType: CONSTANT_COMMONS.STAKING_TYPES.SHARD,
@@ -89,20 +90,28 @@ class Staking extends Component {
 
   handleStaking = async (values) => {
     const { account, wallet } = this.props;
+    const { stakingType, amount, fee , toAddress, fromAddress} = values;
 
-    const param = { type: Number(values.stakingType), burningAddress: CONSTANT_COMMONS.STAKING_ADDRESS };
+    const param = { type: Number(stakingType), burningAddress: CONSTANT_COMMONS.STAKING_ADDRESS };
 
     try {
-      const res = await Account.staking(param, values.fee, account, wallet);
+      const res = await Account.staking(param, fee, account, wallet);
 
       if (res.txId) {
-        Toast.showInfo('Staking successfully. TxId: ', res.txId);
-        this.goHome();
+        openReceipt({
+          txId: res.txId,
+          toAddress,
+          fromAddress,
+          amount: convert.toMiliConstant(Number(amount)),
+          amountUnit: CONSTANT_COMMONS.CONST_SYMBOL,
+          time: formatUtil.toMiliSecond(res.lockTime),
+          fee: convert.toMiliConstant(Number(fee)),
+        });
       } else {
-        Toast.showError('Staking failed. Please try again! Err:' + res.err.Message || res.err);
+        Toast.showError(`Staking failed. Please try again! Err:  ${res.err.Message || res.err}`);
       }
     } catch (e) {
-      Toast.showError('Staking failed. Please try again! Err:' + e.message);
+      Toast.showError(`Staking failed. Please try again! Err:  ${e.message}`);
     }
   };
 
@@ -149,6 +158,7 @@ class Staking extends Component {
             <FormSubmitButton title='STAKING' style={styleSheet.submitBtn} />
           </Form>
           <Text style={styleSheet.noteText}>* Only send CONSTANT to a CONSTANT address.</Text>
+          <ReceiptModal />
         </Container>
       </ScrollView>
     );
