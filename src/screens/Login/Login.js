@@ -2,14 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Text, Container, Form, FormTextField, FormSubmitButton, Toast } from '@src/components/core';
 import { connect } from 'react-redux';
-import { loadWallet, loadListAccount } from '@src/services/wallet/WalletService';
 import ROUTE_NAMES from '@src/router/routeNames';
-import { setWallet } from '@src/redux/actions/wallet';
-import { setBulkAccount } from '@src/redux/actions/account';
+import { reloadWallet } from '@src/redux/actions/wallet';
 import formValidate from './formValidate';
 import styleSheet from './style';
 
-const Login = ({ navigation, setWallet, setBulkAccount }) => {
+const Login = ({ navigation, reloadWallet }) => {
   const goHome = () => {
     navigation.navigate(ROUTE_NAMES.RootApp);
   };
@@ -18,24 +16,11 @@ const Login = ({ navigation, setWallet, setBulkAccount }) => {
     navigation.navigate(ROUTE_NAMES.CreatePassword);
   };
 
-  const setWalletToStore = wallet => {
-    setWallet(wallet);
-  };
-
-  const loadListAccountToStore = wallet => {
-    loadListAccount(wallet).then(accounts => {
-      setBulkAccount(accounts);
-    });
-  };
-
   const handleLogin = async ({ password }) => {
     try {
-      const wallet = await loadWallet(password);
+      const wallet = await reloadWallet(password);
 
       if (wallet){
-        setWalletToStore(wallet);
-        loadListAccountToStore(wallet);
-
         return goHome();
       }
 
@@ -59,10 +44,9 @@ const Login = ({ navigation, setWallet, setBulkAccount }) => {
 
 Login.propTypes = {
   navigation: PropTypes.object,
-  setWallet: PropTypes.func.isRequired,
-  setBulkAccount: PropTypes.func.isRequired
+  reloadWallet: PropTypes.func
 };
 
-const mapDispatch = { setWallet, setBulkAccount };
+const mapDispatch = { reloadWallet };
 
 export default connect(null, mapDispatch)(Login);
