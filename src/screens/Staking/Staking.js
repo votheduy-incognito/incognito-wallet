@@ -32,14 +32,13 @@ class Staking extends Component {
 
   componentDidMount = async () => {
     const { account } = this.props;
-    this.updateFormValues('fromAddress', account?.PaymentAddress);
-    await this.handleLoadAmountStaking(initialValues.stakingType);
-    await this.handleEstimateFee(this.form?.values);
+    await this.updateFormValues('fromAddress', account?.PaymentAddress);
+    this.handleLoadAmountStaking(Number(initialValues.stakingType));
   }
 
   updateFormValues = (field, value) => {
     if (this.form) {
-      this.form.setFieldValue(field, value, true);
+      return this.form.setFieldValue(field, value, true);
     }
   }
 
@@ -48,11 +47,11 @@ class Staking extends Component {
     navigation.pop();
   }
 
-  // Todo: update amount staking when change stakingType
+  // update amount staking when change stakingType
   handleLoadAmountStaking = async (stakingType) => {
     try{
       const amount = await getStakingAmount(Number(stakingType));
-      this.updateFormValues('amount', String(convert.toConstant(amount)));
+      await this.updateFormValues('amount', String(convert.toConstant(amount)));
     } catch(e){
       Toast.showError('Get amount staking failed!' +  e);
     }
@@ -71,34 +70,25 @@ class Staking extends Component {
       Toast.showError('Error on get estimation fee!');
     }
   };
-  
-  shouldGetFee = async ({prevValues, values, errors}) => {
-    if (Object.values(errors).length) {
+
+  handleShouldGetFee = async () => {
+    const { errors, values } = this.form;
+
+    if (Object.values(errors).length){
       return;
     }
 
-    const { toAddress, amount, stakingType } = values;
+    const { amount, toAddress, stakingType } = values;
 
-    if (toAddress && amount && stakingType !== undefined) {
-      if (prevValues.stakingType !== stakingType){
-        await this.handleEstimateFee(values);
-      }
+    if (amount && toAddress && stakingType !== undefined){
+      this.handleEstimateFee(values);
     }
   }
 
-  shouldLoadAmountStaking = async ({prevStakingType, stakingType, errors}) => {
-    if (Object.values(errors).length) {
-      return;
-    } 
-
-    if (prevStakingType !== stakingType){
-      await this.handleLoadAmountStaking(stakingType);
-    }
-  }
-
-  handleFormChange = async (prevState, state) => {
-    await this.shouldLoadAmountStaking({ prevStakingType: prevState?.values?.stakingType, stakingType: state?.values?.stakingType, errors : state?.errors});
-    await this.shouldGetFee({ prevValues: prevState?.values, values: state?.values, errors : state?.errors });
+  handleChangeStakingType = async () => {
+    const { stakingType } = this.form.values;
+    await this.handleLoadAmountStaking(Number(stakingType));
+    this.handleShouldGetFee();
   }
 
   handleStaking = async (values) => {
@@ -151,11 +141,10 @@ class Staking extends Component {
             onSubmit={this.handleStaking} 
             viewProps={{ style: styleSheet.form }} 
             validationSchema={formValidate}
-            onFormChange={this.handleFormChange}
             validate={this.onFormValidate}
           >
             <FormTextField name='fromAddress' placeholder='From Address' editable={false} />
-            <PickerField name='stakingType'>
+            <PickerField name='stakingType' onFieldChange={this.handleChangeStakingType} >
               <Picker.Item label="Shard Type" value={CONSTANT_COMMONS.STAKING_TYPES.SHARD} />
               <Picker.Item label="Beacon Type" value={CONSTANT_COMMONS.STAKING_TYPES.BEACON} />
             </PickerField>

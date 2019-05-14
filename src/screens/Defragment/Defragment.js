@@ -30,8 +30,7 @@ class Defragment extends Component {
 
   componentDidMount = async () => {
     const { account } = this.props;
-    await this.updateFormValues('fromAddress', account?.PaymentAddress);
-    this.handleEstimateFee(this.form?.values);
+    this.updateFormValues('fromAddress', account?.PaymentAddress);
   }
 
   updateFormValues = (field, value) => {
@@ -61,14 +60,13 @@ class Defragment extends Component {
     }
   };
 
-  handleDefragment = async (values) => {
+  handleDefragment = async (values) => { 
     try {
-      // Account.defragment()
       const { account, wallet } = this.props;
       const { amount, fee, isPrivacy } = values;
 
       try {
-        const res = await Account.defragment(amount, fee, isPrivacy, account, wallet);
+        const res = await Account.defragment(convert.toMiliConstant(Number(amount)), convert.toMiliConstant(Number(fee)), isPrivacy, account, wallet);
 
         if (res.txId) {
           Toast.showInfo(`Defragment successfully. TxId: ${res.txId}`);
@@ -104,7 +102,7 @@ class Defragment extends Component {
     const { account } = this.props;
     const errors = {};
 
-    if (values.amount >= account.value) {
+    if (values.amount > account.value) {
       errors.amount = `Must be less than ${values?.amount}`;
     }
     
