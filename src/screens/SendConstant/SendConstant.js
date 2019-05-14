@@ -10,11 +10,11 @@ import Account from '@src/services/wallet/accountService';
 import ROUTE_NAMES from '@src/router/routeNames';
 import { getEstimateFee } from '@src/services/wallet/RpcClientService';
 import convert from '@src/utils/convert';
+import common from '@src/constants/common';
 
 const initialFormValues = {
   isPrivacy: false,
   amount: '1',
-  minFee: '0.5',
   fee: '0.5',
   fromAddress: ''
 };
@@ -25,6 +25,7 @@ class SendConstant extends Component {
 
     this.state = {
       initialFormValues,
+      minFee: 0,
     };
 
     this.handleShouldGetFee = _.debounce(::this.handleShouldGetFee, 500);
@@ -115,9 +116,16 @@ class SendConstant extends Component {
     const { account } = this.props;
     const errors = {};
 
-    if (values.amount >= account.value) {
-      errors.amount = `Must be less than ${values?.amount}`;
+    const { amount, fee } = values;
+    const { minFee } = this.state;
+
+    if (amount >= convert.toConstant(Number(account.value))) {
+      errors.amount = `Must be less than ${convert.toConstant(Number(account.value))} ${common.CONST_SYMBOL}`;
     }
+
+    if (fee < minFee){
+      errors.fee = `Must be at least min fee ${minFee} ${common.CONST_SYMBOL}`;
+    } 
     
     return errors;
   }

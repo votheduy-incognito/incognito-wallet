@@ -23,7 +23,8 @@ class Staking extends Component {
     super();
 
     this.state = {
-      initialFormValues: initialValues
+      initialFormValues: initialValues,
+      minFee: 0,
     };
 
     this.form = null;
@@ -65,9 +66,10 @@ class Staking extends Component {
     try{
       const fee =  await getEstimateFee(values.fromAddress, values.toAddress, convert.toMiliConstant(Number(values.amount)), account.PrivateKey, accountWallet, false);
       // update min fee
+      this.setState({minFee: convert.toConstant(fee)});
       this.updateFormValues('fee', String(convert.toConstant(fee)));
     } catch(e){
-      Toast.showError('Error on get estimation fee!');
+      Toast.showError(`Error on get estimation fee! ${e.message}`);
     }
   };
 
@@ -83,12 +85,6 @@ class Staking extends Component {
     if (amount && toAddress && stakingType !== undefined){
       this.handleEstimateFee(values);
     }
-  }
-
-  handleChangeStakingType = async () => {
-    const { stakingType } = this.form.values;
-    await this.handleLoadAmountStaking(Number(stakingType));
-    this.handleShouldGetFee();
   }
 
   handleStaking = async (values) => {
@@ -110,16 +106,15 @@ class Staking extends Component {
     }
   };
 
-  //Todo: validate inputs
   onFormValidate = values => {
-    // const { account } = this.props;
     const errors = {};
 
-    console.log(values);
+    const { fee } = values;
+    const { minFee } = this.state;
 
-    // if (values.amount >= account.value) {
-    //   errors.amount = `Must be less than ${values?.amount}`;
-    // }
+    if (fee < minFee){
+      errors.fee = `Must be at least min fee ${minFee} ${CONSTANT_COMMONS.CONST_SYMBOL}`;
+    } 
     
     return errors;
   }
@@ -144,12 +139,12 @@ class Staking extends Component {
             validate={this.onFormValidate}
           >
             <FormTextField name='fromAddress' placeholder='From Address' editable={false} />
-            <PickerField name='stakingType' onFieldChange={this.handleChangeStakingType} >
+            <PickerField name='stakingType' onFieldChange={this.handleLoadAmountStaking} >
               <Picker.Item label="Shard Type" value={CONSTANT_COMMONS.STAKING_TYPES.SHARD} />
               <Picker.Item label="Beacon Type" value={CONSTANT_COMMONS.STAKING_TYPES.BEACON} />
             </PickerField>
             <FormTextField name='toAddress' placeholder='To Address' editable={false} />
-            <FormTextField name='amount' placeholder='Amount' editable={false} />
+            <FormTextField name='amount' placeholder='Amount' editable={false} onFieldChange={this.handleShouldGetFee} />
             <FormTextField name='fee' placeholder='Min Fee' />
             <FormSubmitButton title='STAKING' style={styleSheet.submitBtn} />
           </Form>
