@@ -8,11 +8,14 @@ const AmountConstantFormat = new Intl.NumberFormat('en-US', {
 
 const AmountTokenFormat = new Intl.NumberFormat('en-US');
 
+const amountMiliConstant = (amount = throw new Error('Amount is required!')) => AmountConstantFormat.format(amount);
+const amountConstant = (amount = throw new Error('Amount is required!')) => AmountConstantFormat.format(convert.toConstant(amount));
+const amountToken = (amount = throw new Error('Amount is required!')) => AmountTokenFormat.format(Number.parseInt(amount) || 0);
+const formatDateTime = (dateTime, formatPartern) =>  moment(dateTime).format(formatPartern || 'DD/MM/YYYY - HH:mm:ss');
+
 export default {
-  amountMiliConstant(amount = throw new Error('Amount is required!')) { return AmountConstantFormat.format(amount); },
-  amountConstant(amount = throw new Error('Amount is required!')) { return AmountConstantFormat.format(convert.toConstant(amount)); },
-  amountToken(amount = throw new Error('Amount is required!')) { return AmountTokenFormat.format(Number.parseInt(amount) || 0); },
-  formatDateTime(dateTime, formatPartern) {
-    return moment(dateTime).format(formatPartern || 'DD/MM/YYYY - HH:mm:ss');
-  }
+  amountMiliConstant,
+  amountConstant,
+  amountToken,
+  formatDateTime
 };
