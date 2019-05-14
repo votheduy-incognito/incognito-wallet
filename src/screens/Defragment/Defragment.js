@@ -85,7 +85,7 @@ class Defragment extends Component {
   handleShouldGetFee = async () => {
     const { errors, values } = this.form;
 
-    if (Object.values(errors).length){
+    if (errors?.amount || errors?.fromAddress){
       return;
     }
 
