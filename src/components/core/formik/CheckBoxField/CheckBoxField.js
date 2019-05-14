@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { CheckBox, View } from '@src/components/core';
 import ErrorMessage from '@src/components/core/formik/ErrorMessage';
@@ -6,18 +6,18 @@ import styleSheet from './style';
 
 const CheckBoxField = (props) => {
   const { name, value, error, handleChange, onFieldChange, ...others } = props;
-  const onValueChange = value => {
-    handleChange(name)(value);
+
+  useEffect(() => {
     if (typeof onFieldChange === 'function') {
       onFieldChange(value);
     }
-  };
-
+  }, [value]);
+  
   return (
     <View style={styleSheet.container}>
       <CheckBox
         {...others}
-        onValueChange={onValueChange}
+        onValueChange={handleChange(name)}
         value={value}
       />
       <ErrorMessage error={error} />

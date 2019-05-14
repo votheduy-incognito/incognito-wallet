@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Picker, View } from '@src/components/core';
 import ErrorMessage from '@src/components/core/formik/ErrorMessage';
@@ -8,12 +8,11 @@ const PickerField = (props) => {
   const { name, value, error, children, handleChange, onFieldChange, ...others } = props;
   const items = children.constructor === Array ? [...children] : [children];
 
-  const onValueChange = value => {
-    handleChange(name)(value);
+  useEffect(() => {
     if (typeof onFieldChange === 'function') {
       onFieldChange(value);
     }
-  };
+  }, [value]);
 
   if (value === undefined) {
     items.unshift(<Picker.Item label='Select' />);
@@ -23,7 +22,7 @@ const PickerField = (props) => {
     <View style={styleSheet.container}>
       <Picker
         {...others}
-        onValueChange={onValueChange}
+        onValueChange={handleChange(name)}
         selectedValue={value}
       >{items}</Picker>
       <ErrorMessage error={error} />
