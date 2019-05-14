@@ -1,4 +1,5 @@
-import { loadListAccount } from '@src/services/wallet/WalletService';
+import { loadListAccount, loadWallet } from '@src/services/wallet/WalletService';
+import { getPassphrase } from '@src/services/wallet/passwordService';
 import type from '@src/redux/types/wallet';
 import { setBulkAccount } from '@src/redux/actions/account';
 
@@ -21,4 +22,23 @@ export const reloadAccountList = () => (dispatch, getState) => {
     .then(accounts => {
       dispatch(setBulkAccount(accounts));
     });
+};
+
+export const reloadWallet = (passphrase) => async (dispatch) => {
+  try {
+    const _passphrase = passphrase || await getPassphrase();
+    if (!_passphrase) {
+      return;
+    }
+  
+    const wallet = await loadWallet(_passphrase);
+    dispatch(setWallet(wallet));
+  
+    const accounts = await loadListAccount(wallet);
+    dispatch(setBulkAccount(accounts));
+  
+    return wallet;
+  } catch (e) {
+    throw e;
+  }
 };
