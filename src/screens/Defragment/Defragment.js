@@ -25,18 +25,18 @@ class Defragment extends Component {
       initialFormValues: initialValues
     };
     this.form = null;
-    this.handleEstimateFee = _.debounce(::this.handleEstimateFee, 500);
+    this.handleShouldGetFee = _.debounce(::this.handleShouldGetFee, 500);
   }
 
   componentDidMount = async () => {
     const { account } = this.props;
-    this.updateFormValues('fromAddress', account?.PaymentAddress);
-    await this.handleEstimateFee(this.form?.values);
+    await this.updateFormValues('fromAddress', account?.PaymentAddress);
+    this.handleEstimateFee(this.form?.values);
   }
 
   updateFormValues = (field, value) => {
     if (this.form) {
-      this.form.setFieldValue(field, value, true);
+      return this.form.setFieldValue(field, value, true);
     }
   }
 
@@ -48,13 +48,12 @@ class Defragment extends Component {
   // estimate fee when user update isPrivacy or amount, and fromAddress is not null
   handleEstimateFee = async (values) => {
     const { account, wallet } = this.props;
-
     const accountWallet = wallet.getAccountByName(account.name);
+
     try{
       const fee =  await getEstimateFeeToDefragment(values.fromAddress, convert.toMiliConstant(Number(values.amount)), account.PrivateKey, accountWallet, values.isPrivacy);
       // set min fee state
       this.setState({minFee: convert.toConstant(fee)});
-
       // update fee
       this.updateFormValues('fee', String(convert.toConstant(fee)));
     } catch(e){
@@ -87,23 +86,18 @@ class Defragment extends Component {
     }
   };
 
-  shouldGetFee = async ({ prevValues, values, errors }) => {
-    if (Object.values(errors).length) {
+  handleShouldGetFee = async () => {
+    const { errors, values } = this.form;
+
+    if (Object.values(errors).length){
       return;
     }
 
-    const { fromAddress, amount, isPrivacy } = values;
+    const { amount, fromAddress, isPrivacy } = values;
 
-    if (fromAddress && amount && typeof isPrivacy === 'boolean') {
-      if (prevValues.amount !== amount || prevValues.isPrivacy !== isPrivacy){
-        await this.handleEstimateFee(values);
-      }
+    if (amount && fromAddress && typeof isPrivacy === 'boolean'){
+      this.handleEstimateFee(values);
     }
-  }
-
-  handleFormChange = async (prevState, state) => {
-    // debugger;
-    await this.shouldGetFee({ prevValues: prevState?.values, values: state?.values, errors: state?.errors });
   }
 
   onFormValidate = values => {
@@ -134,12 +128,11 @@ class Defragment extends Component {
             onSubmit={this.handleDefragment} 
             viewProps={{ style: styleSheet.form }} 
             validationSchema={formValidate}
-            onFormChange={this.handleFormChange}
             validate={this.onFormValidate}
           >
-            <FormTextField name='fromAddress' placeholder='From Address' editable={false} />
-            <CheckBoxField name='isPrivacy' label='Is Privacy' />
-            <FormTextField name='amount' placeholder='Amount' />
+            <FormTextField name='fromAddress' placeholder='From Address' editable={false}  onFieldChange={this.handleShouldGetFee}/>
+            <CheckBoxField name='isPrivacy' label='Is Privacy' onFieldChange={this.handleShouldGetFee} />
+            <FormTextField name='amount' placeholder='Amount' onFieldChange={this.handleShouldGetFee}/>
             <FormTextField name='fee' placeholder='Min Fee' />
             <FormSubmitButton title='DEFRAGMENT' style={styleSheet.submitBtn} />
           </Form>
@@ -149,11 +142,6 @@ class Defragment extends Component {
     );
   }
 }
-
-Defragment.defaultProps = {
-  balance: 0,
-  fromAddress: 'default_address'
-};
 
 Defragment.propTypes = {
   navigation: PropTypes.object.isRequired,
