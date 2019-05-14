@@ -5,14 +5,17 @@ import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import { saveWallet } from './WalletService';
 
 export default class Account {
-  static async getDefaultAccountIndex() {
-    let index = 0;
+  static async getDefaultAccountName() {
     try {
-      index =  await storage.getItem(CONSTANT_KEYS.DEFAULT_ACCOUNT_INDEX);
+      return await storage.getItem(CONSTANT_KEYS.DEFAULT_ACCOUNT_NAME);
     } catch (e) {
       console.error('Error while getting default account index, fallback index to 0');
     }
-    return index;
+    return null;
+  }
+
+  static saveDefaultAccountToStorage(accountName) {
+    return storage.setItem(CONSTANT_KEYS.DEFAULT_ACCOUNT_NAME, accountName);
   }
 
   static async importAccount(privakeyStr, accountName, passPhrase, wallet) {

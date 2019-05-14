@@ -34,10 +34,10 @@ export async function loadListAccount(wallet) {
       PublicKeyBytes: account.PublicKeyBytes
     })) || [];
 
-    const defaultAccountIndex = await accountService.getDefaultAccountIndex();
-    const defaultAccount = listAccount[defaultAccountIndex];
+    const defaultAccountName = await accountService.getDefaultAccountName();
+    const defaultAccountIndex = listAccount?.findIndex(_acc => _acc.name === defaultAccountName);
 
-    if (defaultAccount) {
+    if (defaultAccountIndex !== -1) {
       listAccount[defaultAccountIndex].default = true;
     } else {
       listAccount[0].default = true;
