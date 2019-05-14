@@ -12,7 +12,6 @@ class Setting extends React.Component {
     this.state = {
       defaultServerId: 1,
       defaultLanguage: 'en',
-      seedPhrase: 'passphrase_placeholder passphrase_placeholder passphrase_placeholder'
     };
   }
   static navigationOptions = () => ({
@@ -23,14 +22,14 @@ class Setting extends React.Component {
   });
 
   render() {
-    const { defaultServerId, defaultLanguage, seedPhrase } = this.state;
+    const { defaultServerId, defaultLanguage } = this.state;
     const { navigation } = this.props;
     return (
       <ScrollView>
         <Container>
           <NetworkSection navigation={navigation} defaultServerId={defaultServerId} />
           <PreferencesSection defaultLanguage={defaultLanguage} />
-          <PrivacySection navigation={navigation} seedPhrase={seedPhrase} />
+          <PrivacySection navigation={navigation} />
         </Container>
       </ScrollView>
     );
