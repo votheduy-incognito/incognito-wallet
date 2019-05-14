@@ -5,8 +5,15 @@ import ErrorMessage from '@src/components/core/formik/ErrorMessage';
 import styleSheet from './style';
 
 const PickerField = (props) => {
-  const { name, value, error, children, handleChange, ...others } = props;
+  const { name, value, error, children, handleChange, onFieldChange, ...others } = props;
   const items = children.constructor === Array ? [...children] : [children];
+
+  const onValueChange = value => {
+    handleChange(name)(value);
+    if (typeof onFieldChange === 'function') {
+      onFieldChange(value);
+    }
+  };
 
   if (value === undefined) {
     items.unshift(<Picker.Item label='Select' />);
@@ -16,7 +23,7 @@ const PickerField = (props) => {
     <View style={styleSheet.container}>
       <Picker
         {...others}
-        onValueChange={handleChange(name)}
+        onValueChange={onValueChange}
         selectedValue={value}
       >{items}</Picker>
       <ErrorMessage error={error} />
@@ -30,6 +37,7 @@ PickerField.propTypes = {
   error: PropTypes.string,
   handleChange: PropTypes.func,
   handleBlur: PropTypes.func,
+  onFieldChange: PropTypes.func,
   children: PropTypes.oneOfType([
     PropTypes.node,
     PropTypes.arrayOf(PropTypes.node)

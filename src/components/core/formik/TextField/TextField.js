@@ -5,12 +5,18 @@ import ErrorMessage from '@src/components/core/formik/ErrorMessage';
 import styleSheet from './style';
 
 const FormTextField = (props) => {
-  const { name, value, error, handleChange, handleBlur, ...others } = props;
+  const { name, value, error, handleChange, handleBlur, onFieldChange, ...others } = props;
+  const onChangeText = text => {
+    handleChange(name)(text);
+    if (typeof onFieldChange === 'function') {
+      onFieldChange(text);
+    }
+  };
   return (
     <View style={styleSheet.container}>
       <TextInput
         {...others}
-        onChangeText={handleChange(name)}
+        onChangeText={onChangeText}
         onBlur={handleBlur(name)}
         value={value}
       />
@@ -26,6 +32,7 @@ FormTextField.propTypes = {
   error: PropTypes.string,
   handleChange: PropTypes.func,
   handleBlur: PropTypes.func,
+  onFieldChange: PropTypes.func
 };
 
 export default FormTextField;
