@@ -1,12 +1,24 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, ActivityIndicator } from '@src/components/core';
+import { Text, View, ActivityIndicator, Toast } from '@src/components/core';
 import ROUTE_NAMES from '@src/router/routeNames';
+import serverService from '@src/services/wallet/Server';
 import styleSheet from './style';
 
 const Splash = ({ navigation }) => {
+  const initServer = async () => {
+    try {
+      if (!await serverService.get()) {
+        return serverService.setDefaultList();
+      }
+    } catch {
+      Toast.showError('Error occurs while setting server list');
+    }
+  };
   useEffect(() => {
-    navigation.navigate(ROUTE_NAMES.Login);
+    initServer().then(() => {
+      navigation.navigate(ROUTE_NAMES.Login);
+    });
   }, []);
 
   return (
