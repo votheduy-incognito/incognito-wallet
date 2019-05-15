@@ -50,7 +50,7 @@ class Token extends React.Component {
       <ScrollView>
         {/* <TokenTabs /> */}
         <Container>
-          <Tokens tokens={type ? listNormalTokens : listPrivacyTokens} />
+          <TokenList tokens={type ? listNormalTokens : listPrivacyTokens} />
         </Container> 
         <Button title='INIT NEW TOKEN' onPress={this.handleInitToken}></Button>
         <Button title='ADD TOKENS TO FOLLOW' onPress={this.handleAddFollowingTokens}></Button>
@@ -66,7 +66,7 @@ Token.propTypes = {
   navigation: PropTypes.object,
 };
 
-const Tokens = ({ tokens }) => (
+const TokenList = ({ tokens }) => (
   <Container style={styleSheet.container}>
     {
       tokens && tokens.map(token => <TokenItem key={token.ID} token={token} />)
