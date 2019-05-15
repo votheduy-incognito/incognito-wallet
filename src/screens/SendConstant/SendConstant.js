@@ -80,7 +80,7 @@ class SendConstant extends Component {
   };
 
   handleSend = async (values) => {
-    const { account, wallet } = this.props;
+    const { account, wallet, getBalance } = this.props;
 
     const { fromAddress, toAddress, amount, isPrivacy, fee } = values;
 
@@ -101,6 +101,8 @@ class SendConstant extends Component {
           time: formatUtil.toMiliSecond(res.lockTime),
           fee: convert.toMiliConstant(Number(fee)),
         });
+
+        setTimeout(() => getBalance(account), 10000);
       } else {
         Toast.showError(`Sent failed. Please try again! Err: ${res.err.Message || res.err }`);
       }
@@ -195,6 +197,7 @@ SendConstant.propTypes = {
   navigation: PropTypes.object,
   wallet: PropTypes.object,
   account: PropTypes.object,
+  getBalance: PropTypes.func
 };
 
 export default SendConstant;
