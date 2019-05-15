@@ -3,6 +3,7 @@ package com.constantwalletmobile;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import org.reactnative.camera.RNCameraPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.swmansion.reanimated.ReanimatedPackage;
 import com.horcrux.svg.SvgPackage;
@@ -29,6 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNCameraPackage(),
             new RandomBytesPackage(),
             new ReanimatedPackage(),
             new SvgPackage(),
