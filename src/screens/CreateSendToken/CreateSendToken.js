@@ -6,12 +6,11 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import formatUtil from '@src/utils/format';
 import formValidate from './formValidate';
 import styleSheet from './style';
-// import Account from '@src/services/wallet/accountService';
 import ROUTE_NAMES from '@src/router/routeNames';
 import { getEstimateFeeForSendingToken } from '@src/services/wallet/RpcClientService';
 import convert from '@src/utils/convert';
 import common from '@src/constants/common';
-import ReceiptModal, { openReceipt } from '@src/components/Receipt';
+import ReceiptModal from '@src/components/Receipt';
 import Token from '@src/services/wallet/tokenService';
 
 const initialFormValues = {
@@ -68,13 +67,15 @@ class CreateSendToken extends Component {
     const { account, wallet, isPrivacy, isCreate } = this.props;
 
     const { fromAddress, toAddress, name, symbol, amount } = values;
+    
+    const type = isCreate ? CONSTANT_COMMONS.INIT_TOKEN : CONSTANT_COMMONS.SEND_TOKEN;
 
     const tokenObject = {
       Privacy : isPrivacy,
       TokenID:  '',
       TokenName: name,
       TokenSymbol: symbol,
-      TokenTxType: !isCreate,
+      TokenTxType: type,
       TokenAmount: amount,
       TokenReceivers: {
         PaymentAddress: toAddress,
@@ -94,20 +95,24 @@ class CreateSendToken extends Component {
     }
   };
 
-  handleCreateToken = async (values) => {
-    const { account, wallet, isPrivacy } = this.props;
+  handleCreateSendToken = async (values) => {
+    const { account, wallet, isPrivacy, isCreate } = this.props;
 
-    const { fromAddress, toAddress, name, symbol, amount, fee } = values;
+    const { toAddress, name, symbol, amount, fee } = values;
+
+    const type = isCreate ? CONSTANT_COMMONS.INIT_TOKEN : CONSTANT_COMMONS.SEND_TOKEN;
+
+    const text = isCreate ? 'Create' : 'Send';
 
     const tokenObject = {
       Privacy : isPrivacy,
       TokenID:  '',
       TokenName: name,
       TokenSymbol: symbol,
-      TokenTxType: 0,
+      TokenTxType: type,
       TokenAmount: amount,
       TokenReceivers: {
-        PaymentAddress: fromAddress,
+        PaymentAddress: toAddress,
         Amount: amount
       }
     };
@@ -121,20 +126,12 @@ class CreateSendToken extends Component {
       }
 
       if (res.txId) {
-        openReceipt({
-          txId: res.txId,
-          toAddress,
-          fromAddress,
-          amount: convert.toMiliConstant(Number(amount)),
-          amountUnit: CONSTANT_COMMONS.CONST_SYMBOL,
-          time: formatUtil.toMiliSecond(res.lockTime),
-          fee: convert.toMiliConstant(Number(fee)),
-        });
+        Toast.showInfo(`${text} token successfully`);
       } else {
-        Toast.showError(`Sent failed. Please try again! Err: ${res.err.Message || res.err }`);
+        Toast.showError(`${text} token failed. Please try again! Err: ${res.err.Message || res.err }`);
       }
     } catch (e) {
-      Toast.showError(`Sent failed. Please try again! Err:' ${e.message}`);
+      Toast.showError(`${text} token failed. Please try again! Err:' ${e.message}`);
     }
   };
 
@@ -180,7 +177,7 @@ class CreateSendToken extends Component {
           <Form
             formRef={form => this.form = form}
             initialValues={initialFormValues}
-            onSubmit={this.handleCreateToken}
+            onSubmit={this.handleCreateSendToken}
             viewProps={{ style: styleSheet.form }}
             validationSchema={formValidate}
             validate={this.onFormValidate}
