@@ -15,5 +15,6 @@ export default {
   CreateAccount: 'CreateAccount',
   ImportAccount: 'ImportAccount',
   SeedPhrase: 'SeedPhrase',
-  ExportAccount: 'ExportAccount'
+  ExportAccount: 'ExportAccount',
+  CreateSendToken: 'CreateSendToken',
 };

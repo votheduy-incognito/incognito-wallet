@@ -151,4 +151,14 @@ export default class Account {
       indexAccount
     ].getBalance();
   }
+
+  static async getFollowingTokens(account, wallet){
+    const indexAccount = wallet.getAccountIndexByName(account.name);
+    return await wallet.MasterAccount.child[indexAccount].listFollowingTokens();
+  }
+
+  static async addFollowingTokens(tokens, account, wallet){
+    const indexAccount = wallet.getAccountIndexByName(account.name);
+    return await wallet.MasterAccount.child[indexAccount].addFollowingToken(tokens);
+  }
 }

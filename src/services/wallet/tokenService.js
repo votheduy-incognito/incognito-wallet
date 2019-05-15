@@ -65,7 +65,7 @@ export default class Token {
     return res;
   }
 
-  static async createSendPrivacyCustomTokenTransaction(
+  static async createSendPrivacyCustomToken(
     submitParam,
     fee,
     account,

@@ -257,7 +257,7 @@ class Kraken extends React.Component {
     console.log('Fee estimate: ', fee);
 
     try{
-      const res = await Token.createSendPrivacyCustomTokenTransaction(tokenObject, fee, account, wallet);
+      const res = await Token.createSendPrivacyCustomToken(tokenObject, fee, account, wallet);
       console.log('Res create token: ', res);
     } catch(e){
       console.log('Error when create token: ', e );
@@ -297,7 +297,7 @@ class Kraken extends React.Component {
     console.log('Fee estimate: ', fee);
 
     try{
-      const res = await Token.createSendPrivacyCustomTokenTransaction(tokenObject, fee, account, wallet);
+      const res = await Token.createSendPrivacyCustomToken(tokenObject, fee, account, wallet);
       console.log('Res sending token: ', res);
     } catch(e){
       console.log('Error when sending token: ', e );
