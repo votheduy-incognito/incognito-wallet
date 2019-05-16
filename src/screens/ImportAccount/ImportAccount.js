@@ -27,9 +27,9 @@ const ImportAccount = ({ navigation, accountList, importAccount }) => {
     <Container style={styleSheet.container}>
       <Text style={styleSheet.title}>Import Account</Text>
       <Text>* Imported accounts will not be associated with your originally created Constant account seedphrase.</Text>
-      <Form onSubmit={handleImportAccount} viewProps={{ style: styleSheet.form }} validationSchema={formValidate}>
+      <Form onSubmit={handleImportAccount} viewProps={{ style: styleSheet.form }} validationSchema={formValidate} >
         <FormTextField name='accountName' placeholder='Account Name' />
-        <FormTextField name='privateKey' placeholder='Privacy Key' />
+        <FormTextField name='privateKey' placeholder='Private Key' />
         <FormSubmitButton title='IMPORT ACCOUNT' style={styleSheet.submitBtn} />
       </Form>
     </Container>

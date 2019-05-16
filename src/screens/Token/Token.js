@@ -36,7 +36,7 @@ class Token extends React.Component {
 
   handleInitToken = () => {
     const { navigation } = this.props;
-    navigation.navigate(ROUTE_NAMES.CreateSendToken, {isPrivacy : false, isCreate: true});
+    navigation.navigate(ROUTE_NAMES.CreateSendToken, {isPrivacy: false, isCreate: true});
   }
 
   // handleAddFollowingTokens(){
