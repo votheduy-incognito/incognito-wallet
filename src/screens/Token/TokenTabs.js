@@ -1,24 +1,39 @@
 import React from 'react';
 import { TabView } from '@src/components/core';
+import TokenList from './TokenList';
+import PropTypes from 'prop-types';
 
-this.tabData = [
-  {
-    key: 'privacy',
-    title: 'PRIVACY'
-  },
-  {
-    key: 'normal',
-    title: 'NORMAL'
-  }
-];
+const TokenTabs = ({listNormalTokens, listPrivacyTokens, tabRef }) => {
 
-const TokenTabs = () => (
-  <TabView
-    defaultIndex={1}
-    data={this.tabData}
-  />
-);
+  const ListPrivacyToken = () => (<TokenList tokens={listPrivacyTokens} />);
+  const ListNormalToken = () => (<TokenList tokens={listNormalTokens} />);
 
-TokenTabs.propTypes = {};
+  const tabData = [
+    {
+      key: 'privacy',
+      title: 'PRIVACY',
+      screen: ListPrivacyToken
+    },
+    {
+      key: 'normal',
+      title: 'NORMAL',
+      screen: ListNormalToken
+    }
+  ];
+
+  return (
+    <TabView
+      tabRef={tabRef}
+      defaultIndex={1}
+      data={tabData}
+    />
+  );
+};
+
+TokenTabs.propTypes = {
+  tabRef: PropTypes.func,
+  listNormalTokens : PropTypes.array,
+  listPrivacyTokens : PropTypes.array,
+};
 
 export default TokenTabs;

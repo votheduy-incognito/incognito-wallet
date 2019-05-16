@@ -3,18 +3,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CreateSendToken from './CreateSendToken';
 
-const CreateSendTokenContainer = ({ wallet, defaultAccount, navigation, isPrivacy, isCreate, ...otherProps}) => {
-  const _isPrivacy = isPrivacy ?? navigation.getParam('isPrivacy');
-  const _isCreate = isCreate ?? navigation.getParam('isCreate');
+const CreateSendTokenContainer = ({ wallet, defaultAccount, navigation, ...otherProps}) => {
+  const _isPrivacy = navigation.getParam('isPrivacy');
+  const _isCreate = navigation.getParam('isCreate');
   
   return <CreateSendToken wallet={wallet} account={defaultAccount} isPrivacy={_isPrivacy} isCreate={_isCreate} {...otherProps} />;
 };
 
 const mapState = state => ({
   defaultAccount: state.account.defaultAccount,
-  wallet: state.wallet,
-  isPrivacy: false,
-  isCreate: true,
+  wallet: state.wallet
 });
 
 CreateSendTokenContainer.propTypes = {

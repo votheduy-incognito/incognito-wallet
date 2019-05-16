@@ -10,6 +10,21 @@ class TabView extends Tab {
       index: undefined
     };
   }
+   
+  componentDidMount() {
+    const { tabRef } = this.props;
+
+    if (typeof tabRef === 'function') {
+      tabRef(this);
+    }
+  }
+
+  getCurrentTabKey = () => {
+    const { data } = this.props;
+    const { index } = this.state;
+
+    return data[index]?.key;
+  }
 
   getNavigationState = (data =  throw new Error('Missing data'), defaultIndex = 0) => {
     const routes = data.map((_data = {}) => ({
@@ -57,6 +72,7 @@ TabView.defaultProps = {
 };
 
 TabView.propTypes = {
+  tabRef: PropTypes.func,
   data: PropTypes.arrayOf(PropTypes.shape({
     key: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,

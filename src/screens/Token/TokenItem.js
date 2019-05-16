@@ -4,6 +4,7 @@ import { View, Image, Text, Divider } from '@src/components/core';
 import styleSheet from './style';
 import { hashToIdenticon } from '@src/services/wallet/RpcClientService';
 import { COLORS } from '@src/styles';
+import PropTypes from 'prop-types';
 
 const TokenItem = ({ token }) => {
   if (!token) { return null; }
@@ -27,6 +28,10 @@ const TokenItem = ({ token }) => {
       <Divider style={styleSheet.divider} color={COLORS.lightGrey} />
     </>
   );
+};
+
+TokenItem.propTypes ={
+  token: PropTypes.object,
 };
 
 export default TokenItem;
