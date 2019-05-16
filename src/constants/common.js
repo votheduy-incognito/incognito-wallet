@@ -16,4 +16,6 @@ export default {
   AMOUNT_TOKEN_MIN: 0.01,
   INIT_TOKEN: 0,
   SEND_TOKEN: 1,
+  NORMAL_TOKEN_TAB: 0,
+  PRIVACY_TOKEN_TAB: 1,
 };

@@ -76,10 +76,10 @@ class CreateSendToken extends Component {
       TokenName: name,
       TokenSymbol: symbol,
       TokenTxType: type,
-      TokenAmount: amount,
+      TokenAmount: Number(amount),
       TokenReceivers: {
         PaymentAddress: toAddress,
-        Amount: amount
+        Amount: Number(amount)
       }
     };
 

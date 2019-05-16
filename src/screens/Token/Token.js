@@ -6,16 +6,16 @@ import Account from '@src/services/wallet/accountService';
 import ROUTE_NAMES from '@src/router/routeNames';
 import PropTypes from 'prop-types';
 import TokenItem from './TokenItem';
+import { CONSTANT_COMMONS } from '@src/constants';
 
 class Token extends React.Component {
   constructor(props) {
     super(props);
 
-    // type 0 : privacy token; type 1: custom token
     this.state = {
-      type: 0,
+      tokenTabType: CONSTANT_COMMONS.NORMAL_TOKEN_TAB,
       listNormalTokens: [],
-      listPrivacyTokens: [{ID: '1', Name: 'Token 1', Amount: '100'}],
+      listPrivacyTokens: [],
     };
   }
 
@@ -28,15 +28,19 @@ class Token extends React.Component {
       listPrivacyTokens: followingTokens.filter(token => token.IsPrivacy),
     });
   }
-  //TODO:
-  // get list tokens
+
   componentDidMount(){
     this.loadFollowingTokens();
   }
 
   handleInitToken = () => {
     const { navigation } = this.props;
-    navigation.navigate(ROUTE_NAMES.CreateSendToken, {isPrivacy: false, isCreate: true});
+    const { tokenTabType } = this.state;
+
+    navigation.navigate( 
+      ROUTE_NAMES.CreateSendToken, 
+      {isPrivacy: tokenTabType === CONSTANT_COMMONS.PRIVACY_TOKEN_TAB, isCreate: true}
+    );
   }
 
   // handleAddFollowingTokens(){
@@ -45,12 +49,12 @@ class Token extends React.Component {
 
 
   render(){
-    const { type, listNormalTokens, listPrivacyTokens } = this.state;
+    const { tokenTabType, listNormalTokens, listPrivacyTokens } = this.state;
     return (
       <ScrollView>
         {/* <TokenTabs /> */}
         <Container>
-          <TokenList tokens={type ? listNormalTokens : listPrivacyTokens} />
+          <TokenList tokens={tokenTabType === CONSTANT_COMMONS.NORMAL_TOKEN_TAB ? listNormalTokens : listPrivacyTokens} />
         </Container> 
         <Button title='INIT NEW TOKEN' onPress={this.handleInitToken}></Button>
         <Button title='ADD TOKENS TO FOLLOW' onPress={this.handleAddFollowingTokens}></Button>
@@ -74,6 +78,8 @@ const TokenList = ({ tokens }) => (
   </Container>
 );
 
-
+TokenList.propTypes = {
+  tokens: PropTypes.array,
+};
 
 export default Token;
