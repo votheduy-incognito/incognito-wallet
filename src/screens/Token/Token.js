@@ -50,7 +50,7 @@ class Token extends React.Component {
 
     navigation.navigate( 
       ROUTE_NAMES.CreateSendToken, 
-      {isPrivacy, isCreate: true}
+      {isPrivacy, isCreate: true, reloadListFollowToken: this.loadFollowingTokens}
     );
   }
 

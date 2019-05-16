@@ -6,8 +6,9 @@ import CreateSendToken from './CreateSendToken';
 const CreateSendTokenContainer = ({ wallet, defaultAccount, navigation, ...otherProps}) => {
   const _isPrivacy = navigation.getParam('isPrivacy');
   const _isCreate = navigation.getParam('isCreate');
+  const reloadListFollowToken = navigation.getParam('reloadListFollowToken');
   
-  return <CreateSendToken wallet={wallet} account={defaultAccount} isPrivacy={_isPrivacy} isCreate={_isCreate} {...otherProps} />;
+  return <CreateSendToken wallet={wallet} account={defaultAccount} isPrivacy={_isPrivacy} isCreate={_isCreate} reloadListFollowToken={reloadListFollowToken} {...otherProps} />;
 };
 
 const mapState = state => ({
