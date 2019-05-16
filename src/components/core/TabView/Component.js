@@ -7,7 +7,7 @@ class TabView extends Tab {
   constructor(props) {
     super(props);
     this.state = {
-      index: undefined
+      index: props.defaultIndex
     };
   }
    
@@ -50,9 +50,9 @@ class TabView extends Tab {
   handleIndexChange = index => this.setState({ index });
 
   render() {
-    const { data, defaultIndex, ...otherProps } = this.props;
+    const { data, ...otherProps } = this.props;
     const { index } = this.state;
-    const navigationState = this.getNavigationState(data, index ?? defaultIndex);
+    const navigationState = this.getNavigationState(data, index);
     const renderScene = this.getRenderScene(data);
 
     return (
