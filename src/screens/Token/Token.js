@@ -31,6 +31,14 @@ class Token extends React.Component {
     this.loadFollowingTokens();
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.shouldReloadListToken(prevProps)) {
+      this.loadFollowingTokens();
+    }
+  }
+
+  shouldReloadListToken = prevProps => this.props.account.name !== prevProps.account.name;
+
   handleInitToken = () => {
     const { navigation } = this.props;
 

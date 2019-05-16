@@ -24,7 +24,7 @@ const TokenTabs = ({listNormalTokens, listPrivacyTokens, tabRef }) => {
   return (
     <TabView
       tabRef={tabRef}
-      defaultIndex={1}
+      defaultIndex={0}
       data={tabData}
     />
   );
