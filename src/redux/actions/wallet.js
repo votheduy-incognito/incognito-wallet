@@ -32,12 +32,16 @@ export const reloadWallet = (passphrase) => async (dispatch) => {
     }
   
     const wallet = await loadWallet(_passphrase);
-    dispatch(setWallet(wallet));
+
+    if (wallet) {
+      dispatch(setWallet(wallet));
   
-    const accounts = await loadListAccount(wallet);
-    dispatch(setBulkAccount(accounts));
-  
-    return wallet;
+      const accounts = await loadListAccount(wallet);
+      dispatch(setBulkAccount(accounts));
+    
+      return wallet;
+    }
+    return false;
   } catch (e) {
     throw e;
   }
