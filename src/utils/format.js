@@ -6,9 +6,11 @@ const AmountConstantFormat = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 2,
 });
 
+const AmountMiliConstantFormat = new Intl.NumberFormat('en-US');
+
 const AmountTokenFormat = new Intl.NumberFormat('en-US');
 
-const amountMiliConstant = (amount = throw new Error('Amount is required!')) => AmountConstantFormat.format(amount);
+const amountMiliConstant = (amount = throw new Error('Amount is required!')) => AmountMiliConstantFormat.format(amount);
 const amountConstant = (amount = throw new Error('Amount is required!')) => AmountConstantFormat.format(convert.toConstant(amount));
 const amountToken = (amount = throw new Error('Amount is required!')) => AmountTokenFormat.format(Number.parseInt(amount) || 0);
 

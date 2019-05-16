@@ -159,6 +159,6 @@ export default class Account {
 
   static async addFollowingTokens(tokens, account, wallet){
     const indexAccount = wallet.getAccountIndexByName(account.name);
-    return await wallet.MasterAccount.child[indexAccount].addFollowingToken(tokens);
+    await wallet.MasterAccount.child[indexAccount].addFollowingToken(...tokens);
   }
 }

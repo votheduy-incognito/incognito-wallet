@@ -5,6 +5,9 @@ import {
   Wallet
 } from 'constant-chain-web-js/build/wallet';
 import { saveWallet } from './WalletService';
+import { listPrivacyTokens, listCustomTokens } from './RpcClientService';
+
+
 
 export default class Token {
   static async createSendCustomToken(param, fee, account, wallet) {
@@ -98,5 +101,71 @@ export default class Token {
     await Wallet.resetProgressTx();
 
     return response;
+  }
+
+  static async getPrivacyTokens() {
+    try {
+      const data = await listPrivacyTokens();
+
+      if (data?.err) {
+        throw data.err;
+      }
+
+      const tokens = data?.listCustomToken || [];
+
+      return tokens;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  static async getNormalTokens() {
+    try {
+      const data = await listCustomTokens();
+
+      if (data?.err) {
+        throw data.err;
+      }
+
+      const tokens = data?.listCustomToken || [];
+      return tokens;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  static getFollowingTokens({ account, wallet }) {
+    try {
+      const accountWallet = wallet.getAccountByName(account.name);
+      const followingTokens = accountWallet.listFollowingTokens();
+
+      return followingTokens;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  static getFollowingPrivacyTokens({ account, wallet }) {
+    try {
+      const followingTokens = Token.getFollowingToken({ account, wallet });
+
+      return followingTokens.filter(
+        token => token?.IsPrivacy
+      );
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  static getFollowingNormalTokens({ account, wallet }) {
+    try {
+      const followingTokens = Token.getFollowingToken({ account, wallet });
+
+      return followingTokens.filter(
+        token => !token?.IsPrivacy
+      );
+    } catch (e) {
+      throw e;
+    }
   }
 }

@@ -37,7 +37,7 @@ class Token extends React.Component {
     }
   }
 
-  shouldReloadListToken = prevProps => this.props.account.name !== prevProps.account.name;
+  shouldReloadListToken = prevProps => this.props.account.name !== prevProps.account.name || this.props.wallet !== prevProps.wallet;
 
   handleInitToken = () => {
     const { navigation } = this.props;
@@ -54,9 +54,17 @@ class Token extends React.Component {
     );
   }
 
-  // handleAddFollowingTokens(){
-  //   //TODO
-  // }
+  handleAddFollowingTokens = () => {
+    const { navigation } = this.props;
+    let isPrivacy = false;
+    const key = this.tab?.getCurrentTabKey();
+
+    if ( key === 'privacy'){
+      isPrivacy = true;
+    }
+
+    navigation.navigate(ROUTE_NAMES.FollowToken, { isPrivacy });
+  }
 
 
   render(){

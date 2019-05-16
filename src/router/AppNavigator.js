@@ -11,6 +11,7 @@ import ImportAccount from '@src/screens/ImportAccount';
 import ExportAccount from '@src/screens/ExportAccount';
 import HamburgerHeader from '@src/components/HamburgerHeader';
 import CreateSendToken from '@src/screens/CreateSendToken';
+import FollowToken from '@src/screens/FollowToken';
 import UserHeader from '@src/components/UserHeader';
 import { THEME } from '@src/styles';
 import { navigationOptionsHandler } from '@src/utils/router';
@@ -29,6 +30,7 @@ const AppNavigator = createStackNavigator({
   [ROUTE_NAMES.SeedPhrase]: navigationOptionsHandler(SeedPhrase),
   [ROUTE_NAMES.ExportAccount]: navigationOptionsHandler(ExportAccount),
   [ROUTE_NAMES.CreateSendToken]: navigationOptionsHandler(CreateSendToken),
+  [ROUTE_NAMES.FollowToken]: navigationOptionsHandler(FollowToken),
 }, {
   initialRouteName: 'DrawerNavigator',
   defaultNavigationOptions: ({ navigation }) => {
