@@ -20,8 +20,6 @@ const TokenItem = ({ token, navigation, accountWallet }) => {
     return await accountWallet.getCustomTokenBalance(token.ID);
   };
 
-  
-
   useEffect(() => {
     token.ID && hashToIdenticon(token.ID).then(src=> {
       setImageSrc(src);
