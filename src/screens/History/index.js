@@ -3,9 +3,19 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
 import LoadingContainer from '@src/components/LoadingContainer';
-import History from './History';
+import History from '@src/components/History';
+import formatUtil from '@src/utils/format';
+import { CONSTANT_COMMONS } from '@src/constants';
 import { Toast } from '@src/components/core';
 
+const normalizeData = histories => histories && histories.map(h => ({
+  txID: h.txID,
+  time: formatUtil.formatDateTime(h.time),
+  receiver: h.receivers[0],
+  amountAndSymbol: `${formatUtil.amountConstant(h.amount)} ${CONSTANT_COMMONS.CONST_SYMBOL}`,
+  fee: h.fee,
+  status: h.status
+}));
 
 class HistoryContainer extends Component {
   constructor() {
@@ -15,6 +25,11 @@ class HistoryContainer extends Component {
       isLoading: false,
       histories: []
     };
+  }
+
+  componentDidMount() {
+    const { defaultAccount: { name } = {}, wallet } = this.props;
+    this.loadAccountHistory(wallet, name);
   }
 
   componentDidUpdate(prevProps) {
@@ -53,7 +68,7 @@ class HistoryContainer extends Component {
     }
 
     return (
-      <History histories={histories} />
+      <History histories={normalizeData(histories)} />
     );
   }
 }

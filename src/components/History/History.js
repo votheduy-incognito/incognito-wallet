@@ -2,11 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Text, View, Container, Divider, TouchableOpacity, Image } from '@src/components/core';
-import { CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
+import { CONSTANT_CONFIGS } from '@src/constants';
 import { SuccessTx, ConfirmedTx } from '@src/services/wallet/WalletService';
 import linkingService from '@src/services/linking';
 import { COLORS } from '@src/styles';
-import formatUtil from '@src/utils/format';
 import { hashToIdenticon } from '@src/services/wallet/RpcClientService';
 import styleSheet from './style';
 
@@ -53,11 +52,11 @@ const HistoryItem = ({ history }) => {
           <TouchableOpacity onPress={() => openTxExplorer(history.txID)}>
             { imageSrc && <Image style={styleSheet.image} source={{uri: imageSrc}} /> }
           </TouchableOpacity>
-          <Text style={styleSheet.timeText} numberOfLines={1} ellipsizeMode='tail'>{formatUtil.formatDateTime(history.time)}</Text>
+          <Text style={styleSheet.timeText} numberOfLines={1} ellipsizeMode='tail'>{history.time}</Text>
         </View>
         <View style={styleSheet.row}>
-          <Text style={styleSheet.receiverText} numberOfLines={1} ellipsizeMode='middle'>To: ${history.receivers[0]}</Text>
-          <Text style={styleSheet.amountText} numberOfLines={1} ellipsizeMode='tail'>{formatUtil.amountConstant(history.amount)} {CONSTANT_COMMONS.CONST_SYMBOL}</Text>
+          <Text style={styleSheet.receiverText} numberOfLines={1} ellipsizeMode='middle'>To: {history.receiver}</Text>
+          <Text style={styleSheet.amountText} numberOfLines={1} ellipsizeMode='tail'>{history.amountAndSymbol}</Text>
         </View>
         <View style={styleSheet.row}>
           <Text style={styleSheet.feeText} numberOfLines={1} ellipsizeMode='tail'>Fee: {history.fee}</Text>
@@ -78,7 +77,14 @@ const History = ({ histories }) => (
 );
 
 HistoryItem.propTypes = {
-  history: PropTypes.object
+  history: PropTypes.shape({
+    txID: PropTypes.string,
+    time: PropTypes.string,
+    receiver: PropTypes.string,
+    amountAndSymbol: PropTypes.string,
+    fee: PropTypes.string,
+    status: PropTypes.string
+  })
 };
 
 History.propTypes = {
