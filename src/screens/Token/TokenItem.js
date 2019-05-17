@@ -33,15 +33,9 @@ const TokenItem = ({ token, navigation, accountWallet }) => {
  
 
   const handleSendToken = () => {
-    let isPrivacy = false;
-    const key = this.tab?.getCurrentTabKey();
-    if ( key === 'privacy'){
-      isPrivacy = true;
-    }
-
     navigation.navigate( 
       ROUTE_NAMES.CreateSendToken, 
-      { isPrivacy, isCreate: false, token }
+      { isPrivacy: token.IsPrivacy, isCreate: false, token }
     );
   };
 

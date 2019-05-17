@@ -85,11 +85,11 @@ class CreateSendToken extends Component {
 
     const tokenObject = {
       Privacy : isPrivacy,
-      TokenID:  token?.ID,
+      TokenID:  token?.ID || '',
       TokenName: name,
       TokenSymbol: symbol,
       TokenTxType: type,
-      TokenAmount: tokenAmount,
+      TokenAmount: Number(tokenAmount),
       TokenReceivers: {
         PaymentAddress: toAddress,
         Amount: Number(amount)
