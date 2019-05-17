@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { TextInput, Container, ScrollView, Button } from '@src/components/core';
+import { TextInput, Container, ScrollView, Button, Toast } from '@src/components/core';
 import _ from 'lodash';
 import ListToken, { tokenShape } from './ListToken';
 import { followTokenStyle } from './style';
@@ -46,6 +46,12 @@ class FollowToken extends Component {
   handleSaveFollow = () => {
     const { handleAddFollowToken } = this.props;
     const { followed } = this.state;
+
+    if (followed?.length === 0) {
+      Toast.showWarning('Please select at least one token to follow');
+      return;
+    }
+
     handleAddFollowToken(followed);
   }
 
