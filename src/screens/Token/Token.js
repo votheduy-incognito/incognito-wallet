@@ -27,6 +27,10 @@ class Token extends React.Component {
     });
   }
 
+  // getBalanceToken = async () => {
+
+  // }
+
   componentDidMount(){
     this.loadFollowingTokens();
   }
@@ -69,9 +73,19 @@ class Token extends React.Component {
 
   render(){
     const { listNormalTokens, listPrivacyTokens } = this.state;
+    const { navigation, account, wallet } = this.props;
+
+    const accountWallet = wallet.getAccountByName(account.name);
+
     return (
       <ScrollView>
-        <TokenTabs listNormalTokens={listNormalTokens} listPrivacyTokens={listPrivacyTokens} tabRef={ tab => this.tab = tab } />
+        <TokenTabs 
+          listNormalTokens={listNormalTokens} 
+          listPrivacyTokens={listPrivacyTokens} 
+          tabRef={ tab => this.tab = tab } 
+          navigation={navigation} 
+          accountWallet={accountWallet}
+        />
     
         <Button title='INIT NEW TOKEN' onPress={this.handleInitToken}></Button>
         <Button title='ADD TOKENS TO FOLLOW' onPress={this.handleAddFollowingTokens}></Button>

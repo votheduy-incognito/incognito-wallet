@@ -3,10 +3,10 @@ import { TabView } from '@src/components/core';
 import TokenList from './TokenList';
 import PropTypes from 'prop-types';
 
-const TokenTabs = ({listNormalTokens, listPrivacyTokens, tabRef }) => {
+const TokenTabs = ({listNormalTokens, listPrivacyTokens, tabRef, navigation, accountWallet }) => {
 
-  const ListPrivacyToken = () => (<TokenList tokens={listPrivacyTokens} />);
-  const ListNormalToken = () => (<TokenList tokens={listNormalTokens} />);
+  const ListPrivacyToken = () => (<TokenList tokens={listPrivacyTokens} navigation={navigation} accountWallet={accountWallet} />);
+  const ListNormalToken = () => (<TokenList tokens={listNormalTokens} navigation={navigation} accountWallet={accountWallet}/>);
 
   const tabData = [
     {
@@ -34,6 +34,8 @@ TokenTabs.propTypes = {
   tabRef: PropTypes.func,
   listNormalTokens : PropTypes.array,
   listPrivacyTokens : PropTypes.array,
+  navigation: PropTypes.object,
+  accountWallet: PropTypes.object
 };
 
 export default TokenTabs;

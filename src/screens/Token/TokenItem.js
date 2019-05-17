@@ -1,20 +1,49 @@
 import React, { useState, useEffect } from 'react';
-// import TokenTabs from './TokenTabs';
-import { View, Image, Text, Divider } from '@src/components/core';
+import PropTypes from 'prop-types';
 import styleSheet from './style';
+// import TokenTabs from './TokenTabs';
+import { View, Image, Text, Divider, Button } from '@src/components/core';
 import { hashToIdenticon } from '@src/services/wallet/RpcClientService';
 import { COLORS } from '@src/styles';
-import PropTypes from 'prop-types';
 
-const TokenItem = ({ token }) => {
+import ROUTE_NAMES from '@src/router/routeNames';
+
+const TokenItem = ({ token, navigation, accountWallet }) => {
   if (!token) { return null; }
   const [ imageSrc, setImageSrc ] = useState(null);
+  const [ balance, setBalance ] = useState(null);
+
+  const reloadBalanceToken = async () => {
+    if (token.IsPrivacy) {
+      return await accountWallet.getPrivacyCustomTokenBalance(token.ID);
+    } 
+    return await accountWallet.getCustomTokenBalance(token.ID);
+  };
 
   useEffect(() => {
     token.ID && hashToIdenticon(token.ID).then(src=> {
       setImageSrc(src);
     });
+
+    token.ID && reloadBalanceToken().then(balance => {
+      setBalance(balance);
+    });
   }, [token.ID]);
+
+ 
+
+  const handleSendToken = () => {
+    let isPrivacy = false;
+    const key = this.tab?.getCurrentTabKey();
+    if ( key === 'privacy'){
+      isPrivacy = true;
+    }
+
+    navigation.navigate( 
+      ROUTE_NAMES.CreateSendToken, 
+      { isPrivacy, isCreate: false, token }
+    );
+  };
 
   return (
     <>
@@ -22,7 +51,8 @@ const TokenItem = ({ token }) => {
         <View style={styleSheet.row}>
           { imageSrc && <Image style={styleSheet.image} source={{uri: imageSrc}} /> }
           <Text style={styleSheet.timeText} numberOfLines={1} ellipsizeMode='tail'>{token.Name}</Text>
-          <Text style={styleSheet.timeText} numberOfLines={1} ellipsizeMode='tail'>{token.Amount}</Text>
+          <Text style={styleSheet.timeText} numberOfLines={1} ellipsizeMode='tail'>{balance}</Text>
+          <Button title='Send' onPress={handleSendToken} ></Button>
         </View>
       </View>
       <Divider style={styleSheet.divider} color={COLORS.lightGrey} />
@@ -32,6 +62,8 @@ const TokenItem = ({ token }) => {
 
 TokenItem.propTypes ={
   token: PropTypes.object,
+  navigation: PropTypes.object,
+  accountWallet: PropTypes.object
 };
 
 export default TokenItem;
