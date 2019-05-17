@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { Text, Container, Form, FormTextField, FormSubmitButton, Toast, ScrollView } from '@src/components/core';
+import { Text, Container, Form, FormTextField, FormSubmitButton, Toast, ScrollView, TouchableOpacity } from '@src/components/core';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { FONT } from '@src/styles';
 import { CONSTANT_COMMONS } from '@src/constants';
 import formatUtil from '@src/utils/format';
 import formValidate from './formValidate';
@@ -12,6 +14,8 @@ import convert from '@src/utils/convert';
 import common from '@src/constants/common';
 import ReceiptModal from '@src/components/Receipt';
 import Token from '@src/services/wallet/tokenService';
+import { openQrScanner } from '@src/components/QrCodeScanner';
+
 
 const initialFormValues = {
   fee: '0.5',
@@ -208,6 +212,12 @@ class CreateSendToken extends Component {
     return <Text> Balance: { formatUtil.amountToken(this.state.balanceToken) } { token.Name }</Text>;
   }
 
+  handleQrScanAddress = () => {
+    openQrScanner(data => {
+      this.updateFormValues('toAddress', data);
+    });
+  }
+
   render() {
     const {  isCreate } = this.props;
     const { initialFormValues } = this.state;
@@ -217,7 +227,6 @@ class CreateSendToken extends Component {
         <Container style={styleSheet.container}>
           <Text style={styleSheet.title}>{isCreate?'Create':'Send'} Token</Text>
           {this.renderBalance()}
-          {/* <Text> Balance: { formatUtil.amountConstant(account.value) } { CONSTANT_COMMONS.CONST_SYMBOL }</Text> */}
           <Form
             formRef={form => this.form = form}
             initialValues={initialFormValues}
@@ -227,7 +236,13 @@ class CreateSendToken extends Component {
             validate={this.onFormValidate}
           >
             <FormTextField name='fromAddress' placeholder='From Address' editable={false}  />
-            <FormTextField name='toAddress' placeholder='To Address' />
+            <FormTextField name='toAddress' placeholder='To Address' 
+              prependView={
+                <TouchableOpacity onPress={this.handleQrScanAddress}>
+                  <MaterialCommunityIcons name='qrcode-scan' size={FONT.SIZE.large} />
+                </TouchableOpacity>
+              }
+            />
             <FormTextField name='name' placeholder='Name' />
             <FormTextField name='symbol' placeholder='Symbol' />
             <FormTextField name='amount' placeholder='Amount' onFieldChange={this.handleShouldGetFee}/>
