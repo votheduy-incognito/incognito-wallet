@@ -75,19 +75,21 @@ class CreateSendToken extends Component {
 
   // estimate fee when user update isPrivacy or amount, and toAddress is not null
   handleEstimateFee = async (values) => {
-    const { account, wallet, isPrivacy, isCreate } = this.props;
+    const { account, wallet, isPrivacy, isCreate, token } = this.props;
 
     const { fromAddress, toAddress, name, symbol, amount } = values;
     
     const type = isCreate ? CONSTANT_COMMONS.INIT_TOKEN : CONSTANT_COMMONS.SEND_TOKEN;
 
+    const tokenAmount = isCreate ? amount : token.Amount;
+
     const tokenObject = {
       Privacy : isPrivacy,
-      TokenID:  '',
+      TokenID:  token?.ID,
       TokenName: name,
       TokenSymbol: symbol,
       TokenTxType: type,
-      TokenAmount: Number(amount),
+      TokenAmount: tokenAmount,
       TokenReceivers: {
         PaymentAddress: toAddress,
         Amount: Number(amount)
@@ -96,7 +98,7 @@ class CreateSendToken extends Component {
 
     const accountWallet = wallet.getAccountByName(account.name);
     try{
-      const fee =  await getEstimateFeeForSendingToken(fromAddress, toAddress, amount, tokenObject, account.PrivateKey, accountWallet);
+      const fee =  await getEstimateFeeForSendingToken(fromAddress, toAddress, Number(amount), tokenObject, account.PrivateKey, accountWallet);
       // set min fee state
       this.setState({minFee: convert.toConstant(fee)});
       // update fee
@@ -114,6 +116,7 @@ class CreateSendToken extends Component {
     const type = isCreate ? CONSTANT_COMMONS.INIT_TOKEN : CONSTANT_COMMONS.SEND_TOKEN;
 
     const text = isCreate ? 'Create' : 'Send';
+    const tokenAmount = isCreate ? amount : token.Amount;
 
     const tokenObject = {
       Privacy : isPrivacy,
@@ -121,7 +124,7 @@ class CreateSendToken extends Component {
       TokenName: name,
       TokenSymbol: symbol,
       TokenTxType: type,
-      TokenAmount: Number(amount),
+      TokenAmount: Number(tokenAmount),
       TokenReceivers: {
         PaymentAddress: toAddress,
         Amount: Number(amount)
