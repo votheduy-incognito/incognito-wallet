@@ -15,9 +15,10 @@ const TokenItem = ({ token, navigation, accountWallet }) => {
 
   const reloadBalanceToken = async () => {
     if (token.IsPrivacy) {
-      return await accountWallet.getPrivacyCustomTokenBalance(token.ID);
-    } 
-    return await accountWallet.getCustomTokenBalance(token.ID);
+      setBalance(await accountWallet.getPrivacyCustomTokenBalance(token.ID));
+    } else{
+      setBalance(await accountWallet.getCustomTokenBalance(token.ID));
+    }
   };
 
   useEffect(() => {
@@ -25,9 +26,7 @@ const TokenItem = ({ token, navigation, accountWallet }) => {
       setImageSrc(src);
     });
 
-    token.ID && reloadBalanceToken().then(balance => {
-      setBalance(balance);
-    });
+    reloadBalanceToken();
   }, [token.ID]);
 
  
@@ -35,7 +34,7 @@ const TokenItem = ({ token, navigation, accountWallet }) => {
   const handleSendToken = () => {
     navigation.navigate( 
       ROUTE_NAMES.CreateSendToken, 
-      { isPrivacy: token.IsPrivacy, isCreate: false, token }
+      { isPrivacy: token.IsPrivacy, isCreate: false, token, reloadBalanceToken }
     );
   };
 

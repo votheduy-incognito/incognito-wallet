@@ -8,6 +8,7 @@ const CreateSendTokenContainer = ({ wallet, defaultAccount, navigation, ...other
   const isCreate = navigation.getParam('isCreate');
   const reloadListFollowToken = navigation.getParam('reloadListFollowToken');
   const token = navigation.getParam('token');
+  const reloadBalanceToken = navigation.getParam('reloadBalanceToken');
   
   return (<CreateSendToken 
     wallet={wallet} 
@@ -16,6 +17,7 @@ const CreateSendTokenContainer = ({ wallet, defaultAccount, navigation, ...other
     isCreate={isCreate} 
     reloadListFollowToken={reloadListFollowToken} 
     token={token} 
+    reloadBalanceToken={reloadBalanceToken}
     {...otherProps}  
   />);
 };

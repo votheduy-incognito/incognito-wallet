@@ -113,7 +113,7 @@ class CreateSendToken extends Component {
   };
 
   handleCreateSendToken = async (values) => {
-    const { account, wallet, isPrivacy, isCreate, reloadListFollowToken, token } = this.props;
+    const { account, wallet, isPrivacy, isCreate, reloadListFollowToken, token, reloadBalanceToken } = this.props;
 
     const { toAddress, name, symbol, amount, fee } = values;
 
@@ -147,6 +147,8 @@ class CreateSendToken extends Component {
         Toast.showInfo(`${text} token successfully`);
         if (isCreate){
           reloadListFollowToken();
+        } else{
+          setTimeout(() => reloadBalanceToken(), 10000);
         }
       } else {
         Toast.showError(`${text} token failed. Please try again! Err: ${res.err.Message || res.err }`);
@@ -159,7 +161,7 @@ class CreateSendToken extends Component {
   handleShouldGetFee = async () => {
     const { errors, values } = this.form;
 
-    if (errors?.amount || errors?.toAddress){
+    if (errors?.amount || errors?.toAddress || errors?.name || errors?.symbol){
       return;
     }
 
@@ -266,6 +268,7 @@ CreateSendToken.propTypes = {
   isCreate: PropTypes.bool,
   reloadListFollowToken: PropTypes.func,
   token: PropTypes.object,
+  reloadBalanceToken: PropTypes.func
 };
 
 export default CreateSendToken;
