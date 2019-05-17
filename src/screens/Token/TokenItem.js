@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styleSheet from './style';
-// import TokenTabs from './TokenTabs';
 import { View, Image, Text, Divider, Button } from '@src/components/core';
 import { hashToIdenticon } from '@src/services/wallet/RpcClientService';
 import { COLORS } from '@src/styles';
