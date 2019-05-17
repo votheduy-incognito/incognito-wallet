@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withNavigation } from 'react-navigation';
+import { setWallet } from '@src/redux/actions/wallet';
 import Token from './Token';
 
 
@@ -15,12 +16,14 @@ const mapState = state => ({
   wallet: state.wallet,
 });
 
+const mapDispatch = { setWallet };
+
 TokenContainer.propTypes = {
   defaultAccount: PropTypes.object,
   wallet: PropTypes.object,
 };
 
 export default compose(
-  connect(mapState),
+  connect(mapState, mapDispatch),
   withNavigation
 )(TokenContainer);

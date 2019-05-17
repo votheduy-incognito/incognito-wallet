@@ -8,7 +8,7 @@ import { COLORS } from '@src/styles';
 import ROUTE_NAMES from '@src/router/routeNames';
 import PropTypes from 'prop-types';
 
-const TokenItem = ({ token, navigation, accountWallet }) => {
+const TokenItem = ({ token, navigation, accountWallet, onRemoveFollowToken }) => {
   if (!token) { return null; }
   const [ imageSrc, setImageSrc ] = useState(null);
   const [ balance, setBalance ] = useState(null);
@@ -48,7 +48,7 @@ const TokenItem = ({ token, navigation, accountWallet }) => {
     {
       id: 'unfollow',
       label: 'Unfollow',
-      handlePress: null,
+      handlePress: () => onRemoveFollowToken(token.ID),
       icon: <MdIcons name='remove-circle-outline' size={20} />
     },
     {
@@ -77,7 +77,8 @@ const TokenItem = ({ token, navigation, accountWallet }) => {
 TokenItem.propTypes ={
   token: PropTypes.object,
   navigation: PropTypes.object,
-  accountWallet: PropTypes.object
+  accountWallet: PropTypes.object,
+  onRemoveFollowToken: PropTypes.func
 };
 
 export default TokenItem;

@@ -1,6 +1,6 @@
 import React from 'react';
 import TokenTabs from './TokenTabs';
-import { View, Button, Container, TouchableOpacity, Text } from '@src/components/core';
+import { View, Button, Container, TouchableOpacity, Text, Toast } from '@src/components/core';
 import Account from '@src/services/wallet/accountService';
 import ROUTE_NAMES from '@src/router/routeNames';
 import PropTypes from 'prop-types';
@@ -73,6 +73,19 @@ class Token extends React.Component {
     navigation.navigate(ROUTE_NAMES.FollowToken, { isPrivacy });
   }
 
+  handleRemoveFollowToken = async tokenId => {
+    try {
+      const { account, wallet, setWallet } = this.props;
+      await Account.removeFollowingToken(tokenId, account, wallet);
+
+      // update new wallet to store
+      setWallet(wallet);
+
+      Toast.showInfo('Unfollowed');
+    } catch {
+      Toast.showError('Remove token failed, please try later');
+    }
+  }
 
   render(){
     const { listNormalTokens, listPrivacyTokens } = this.state;
@@ -88,6 +101,7 @@ class Token extends React.Component {
           tabRef={ tab => this.tab = tab } 
           navigation={navigation} 
           accountWallet={accountWallet} 
+          onRemoveFollowToken={this.handleRemoveFollowToken}
         />
         <Container>
           <TouchableOpacity
@@ -109,6 +123,7 @@ Token.propTypes = {
   account: PropTypes.object,
   wallet: PropTypes.object,
   navigation: PropTypes.object,
+  setWallet: PropTypes.func
 };
 
 export default Token;
