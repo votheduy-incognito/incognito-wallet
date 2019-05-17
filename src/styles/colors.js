@@ -10,8 +10,6 @@ export default {
   lightGrey: '#c2c2c2',
   lightGrey2: '#fafafa',
   transparent: 'transparent',
-
-
-
+  overlayBlack: 'rgba(0, 0, 0, 0.5)',
   primary: '#007bff'
 };
