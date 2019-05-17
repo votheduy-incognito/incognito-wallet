@@ -4,11 +4,20 @@ import { connect } from 'react-redux';
 import CreateSendToken from './CreateSendToken';
 
 const CreateSendTokenContainer = ({ wallet, defaultAccount, navigation, ...otherProps}) => {
-  const _isPrivacy = navigation.getParam('isPrivacy');
-  const _isCreate = navigation.getParam('isCreate');
+  const isPrivacy = navigation.getParam('isPrivacy');
+  const isCreate = navigation.getParam('isCreate');
   const reloadListFollowToken = navigation.getParam('reloadListFollowToken');
+  const token = navigation.getParam('token');
   
-  return <CreateSendToken wallet={wallet} account={defaultAccount} isPrivacy={_isPrivacy} isCreate={_isCreate} reloadListFollowToken={reloadListFollowToken} {...otherProps} />;
+  return (<CreateSendToken 
+    wallet={wallet} 
+    account={defaultAccount} 
+    isPrivacy={isPrivacy} 
+    isCreate={isCreate} 
+    reloadListFollowToken={reloadListFollowToken} 
+    token={token} 
+    {...otherProps}  
+  />);
 };
 
 const mapState = state => ({

@@ -25,6 +25,7 @@ class CreateSendToken extends Component {
     this.state = {
       initialFormValues,
       minFee: 0,
+      balanceToken: 0
     };
 
     this.handleShouldGetFee = _.debounce(::this.handleShouldGetFee, 500);
@@ -33,18 +34,28 @@ class CreateSendToken extends Component {
   }
 
   componentDidMount() {
-    const { account, isCreate } = this.props;
+    const { account, isCreate, token } = this.props;
 
     let toAddress = '';
+    let name = '';
+    let symbol = '';
+
     if (isCreate){
       toAddress = account?.PaymentAddress;
+    } else {
+      name = token.Name;
+      symbol = token.Symbol;
     }
     
     this.setFormValue({
       ...initialFormValues,
       fromAddress: account?.PaymentAddress,
       toAddress,
+      name, 
+      symbol,
     });
+
+    this.reloadBalanceToken();
   }
 
   setFormValue = (initialFormValues) => {
@@ -96,7 +107,7 @@ class CreateSendToken extends Component {
   };
 
   handleCreateSendToken = async (values) => {
-    const { account, wallet, isPrivacy, isCreate, reloadListFollowToken } = this.props;
+    const { account, wallet, isPrivacy, isCreate, reloadListFollowToken, token } = this.props;
 
     const { toAddress, name, symbol, amount, fee } = values;
 
@@ -106,7 +117,7 @@ class CreateSendToken extends Component {
 
     const tokenObject = {
       Privacy : isPrivacy,
-      TokenID:  '',
+      TokenID: token?.ID || '',
       TokenName: name,
       TokenSymbol: symbol,
       TokenTxType: type,
@@ -166,17 +177,44 @@ class CreateSendToken extends Component {
     return errors;
   }
 
+  shouldReloadBalanceToken = () =>{
+    const { isCreate } = this.props;
+    return !isCreate;
+  }
+
+  reloadBalanceToken = async () => {
+    if (this.shouldReloadBalanceToken()) {
+      const {account, wallet, token}  = this.props;
+      const accountWallet = wallet.getAccountByName(account.name);
+
+      if (token.IsPrivacy) {
+        this.setState({ balanceToken: await accountWallet.getPrivacyCustomTokenBalance(token.ID) });
+      } else{
+        this.setState({ balanceToken: await accountWallet.getCustomTokenBalance(token.ID) });
+      }
+    }
+  };
+
+  renderBalance = () => {
+    const { account, isCreate, token } = this.props;
+
+    if (isCreate){
+      return <Text> Balance: { formatUtil.amountConstant(account.value) } { CONSTANT_COMMONS.CONST_SYMBOL }</Text>;
+    }
+
+    return <Text> Balance: { formatUtil.amountToken(this.state.balanceToken) } { token.Name }</Text>;
+  }
+
   render() {
-    const { account, isCreate } = this.props;
+    const {  isCreate } = this.props;
     const { initialFormValues } = this.state;
 
     return (
       <ScrollView>
         <Container style={styleSheet.container}>
           <Text style={styleSheet.title}>{isCreate?'Create':'Send'} Token</Text>
-          <Text>
-            Balance: { formatUtil.amountConstant(account.value) } {CONSTANT_COMMONS.CONST_SYMBOL}
-          </Text>
+          {this.renderBalance()}
+          {/* <Text> Balance: { formatUtil.amountConstant(account.value) } { CONSTANT_COMMONS.CONST_SYMBOL }</Text> */}
           <Form
             formRef={form => this.form = form}
             initialValues={initialFormValues}
@@ -209,6 +247,7 @@ CreateSendToken.propTypes = {
   isPrivacy: PropTypes.bool,
   isCreate: PropTypes.bool,
   reloadListFollowToken: PropTypes.func,
+  token: PropTypes.object,
 };
 
 export default CreateSendToken;

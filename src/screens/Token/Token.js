@@ -30,6 +30,10 @@ class Token extends React.Component {
     });
   }
 
+  // getBalanceToken = async () => {
+
+  // }
+
   componentDidMount(){
     this.loadFollowingTokens();
   }
@@ -72,9 +76,19 @@ class Token extends React.Component {
 
   render(){
     const { listNormalTokens, listPrivacyTokens } = this.state;
+    const { navigation, account, wallet } = this.props;
+
+    const accountWallet = wallet.getAccountByName(account.name);
+
     return (
       <View>
-        <TokenTabs listNormalTokens={listNormalTokens} listPrivacyTokens={listPrivacyTokens} tabRef={ tab => this.tab = tab } />
+        <TokenTabs 
+          listNormalTokens={listNormalTokens} 
+          listPrivacyTokens={listPrivacyTokens} 
+          tabRef={ tab => this.tab = tab } 
+          navigation={navigation} 
+          accountWallet={accountWallet} 
+        />
         <Container>
           <TouchableOpacity
             style={tokenStyle.addFollowTokenBtn}
