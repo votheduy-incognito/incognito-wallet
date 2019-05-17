@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import tokenService from '@src/services/wallet/tokenService';
 import accountService from '@src/services/wallet/accountService';
@@ -26,7 +27,7 @@ const FollowTokenContainer = ({ isPrivacy, account, wallet, setWallet, navigatio
 
       const followedTokens = await accountService.getFollowingTokens(account, wallet);
 
-      return _.xorBy(tokens, followedTokens, 'ID');
+      return _.differenceBy(tokens, followedTokens, 'ID');
     } catch {
       Toast.showError('Can not get list of tokens, please try later');
     } finally {
@@ -67,5 +68,13 @@ const mapState = state => ({
 });
 
 const mapDispatch = { setWallet };
+
+FollowTokenContainer.propTypes = {
+  isPrivacy: PropTypes.bool,
+  account: PropTypes.object,
+  wallet: PropTypes.object,
+  setWallet: PropTypes.func,
+  navigation: PropTypes.object
+};
 
 export default connect(mapState, mapDispatch)(FollowTokenContainer);
