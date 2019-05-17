@@ -5,21 +5,6 @@ const style = StyleSheet.create({
   container: {
     flex: 1,
   },
-  itemContainer: {
-    marginVertical: SPACING.small
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 3,
-  },
-  image: {
-    marginRight: SPACING.small,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
   feeText: {
     fontSize: FONT.SIZE.small,
     flex: 1
@@ -39,11 +24,54 @@ const style = StyleSheet.create({
   receiverText: {
     flex: 1
   },
-  timeText: {
-    flex: 1
+  
+});
+
+export const tokenItemStyle = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    marginVertical: 3,
   },
+  image: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    flexBasis: 40,
+    marginRight: SPACING.medium
+  },
+  infoContainer: {
+    flex: 1,
+    flexDirection: 'column'
+  },
+  name: {
+    color: COLORS.black
+  },
+  amount: {},
   divider: {
     marginVertical: 5,
+  },
+  itemContainer: {
+    marginVertical: SPACING.small
+  },
+});
+
+export const tokenStyle = StyleSheet.create({
+  initTokenBtn: {
+
+  },
+  addFollowTokenBtn: {
+    color: COLORS.green,
+    marginBottom: SPACING.medium,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addFollowTokenBtnText: {
+    color: COLORS.green,
+    fontWeight: 'bold',
+    marginLeft: 5
   }
 });
 

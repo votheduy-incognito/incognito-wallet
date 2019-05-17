@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 // import TokenTabs from './TokenTabs';
 import { View, Image, Text, Divider } from '@src/components/core';
-import styleSheet from './style';
+import OptionMenu from '@src/components/OptionMenu';
+import MdIcons from 'react-native-vector-icons/MaterialIcons';
+import { tokenItemStyle } from './style';
 import { hashToIdenticon } from '@src/services/wallet/RpcClientService';
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
@@ -9,6 +11,27 @@ import PropTypes from 'prop-types';
 const TokenItem = ({ token }) => {
   if (!token) { return null; }
   const [ imageSrc, setImageSrc ] = useState(null);
+
+  const menuData = [
+    {
+      id: 'send',
+      label: 'Send',
+      handlePress: null,
+      icon: <MdIcons name='send' size={20} />
+    },
+    {
+      id: 'unfollow',
+      label: 'Unfollow',
+      handlePress: null,
+      icon: <MdIcons name='remove-circle-outline' size={20} />
+    },
+    {
+      id: 'history',
+      label: 'History',
+      handlePress: null,
+      icon: <MdIcons name='history' size={22} />
+    }
+  ];
 
   useEffect(() => {
     token.ID && hashToIdenticon(token.ID).then(src=> {
@@ -18,14 +41,15 @@ const TokenItem = ({ token }) => {
 
   return (
     <>
-      <View style={styleSheet.itemContainer}>
-        <View style={styleSheet.row}>
-          { imageSrc && <Image style={styleSheet.image} source={{uri: imageSrc}} /> }
-          <Text style={styleSheet.timeText} numberOfLines={1} ellipsizeMode='tail'>{token.Name}</Text>
-          <Text style={styleSheet.timeText} numberOfLines={1} ellipsizeMode='tail'>{token.Amount}</Text>
+      <View style={tokenItemStyle.container}>
+        { imageSrc && <Image style={tokenItemStyle.image} source={{uri: imageSrc}} /> }
+        <View style={tokenItemStyle.infoContainer}>
+          <Text style={tokenItemStyle.name} numberOfLines={1} ellipsizeMode='tail'>{token.Name}</Text>
+          <Text style={tokenItemStyle.amount} numberOfLines={1} ellipsizeMode='tail'>{token.Amount}</Text>
         </View>
+        <OptionMenu data={menuData} title={`Token ${token?.Name}`} />
       </View>
-      <Divider style={styleSheet.divider} color={COLORS.lightGrey} />
+      <Divider style={tokenItemStyle.divider} color={COLORS.lightGrey} />
     </>
   );
 };

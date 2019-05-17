@@ -1,9 +1,12 @@
 import React from 'react';
 import TokenTabs from './TokenTabs';
-import { ScrollView, Button } from '@src/components/core';
+import { View, Button, Container, TouchableOpacity, Text } from '@src/components/core';
 import Account from '@src/services/wallet/accountService';
 import ROUTE_NAMES from '@src/router/routeNames';
 import PropTypes from 'prop-types';
+import MdIcons from 'react-native-vector-icons/MaterialIcons';
+import { COLORS } from '@src/styles';
+import { tokenStyle } from './style';
 
 class Token extends React.Component {
   constructor(props) {
@@ -70,12 +73,19 @@ class Token extends React.Component {
   render(){
     const { listNormalTokens, listPrivacyTokens } = this.state;
     return (
-      <ScrollView>
+      <View>
         <TokenTabs listNormalTokens={listNormalTokens} listPrivacyTokens={listPrivacyTokens} tabRef={ tab => this.tab = tab } />
-    
-        <Button title='INIT NEW TOKEN' onPress={this.handleInitToken}></Button>
-        <Button title='ADD TOKENS TO FOLLOW' onPress={this.handleAddFollowingTokens}></Button>
-      </ScrollView>
+        <Container>
+          <TouchableOpacity
+            style={tokenStyle.addFollowTokenBtn}
+            onPress={this.handleAddFollowingTokens}
+          >
+            <MdIcons name='playlist-add' size={22} color={COLORS.green} />
+            <Text style={tokenStyle.addFollowTokenBtnText}>ADD TOKENS TO FOLLOW</Text>
+          </TouchableOpacity>
+          <Button title='INIT NEW TOKEN' onPress={this.handleInitToken}></Button>
+        </Container>
+      </View>
     );
   }
 
