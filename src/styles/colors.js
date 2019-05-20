@@ -11,5 +11,7 @@ export default {
   lightGrey2: '#fafafa',
   transparent: 'transparent',
   overlayBlack: 'rgba(0, 0, 0, 0.5)',
+  overlayBlackDark: 'rgba(0, 0, 0, 0.8)',
+  overlayBlackLight: 'rgba(0, 0, 0, 0.3)',
   primary: '#007bff'
 };
