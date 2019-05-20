@@ -10,6 +10,7 @@ import convert from '@src/utils/convert';
 import _ from 'lodash';
 // import formValidate from './formValidate';
 import ReceiptModal, { openReceipt } from '@src/components/Receipt';
+import LoadingTx from '@src/components/LoadingTx';
 
 const initialValues = {
   stakingType: CONSTANT_COMMONS.STAKING_TYPES.SHARD,
@@ -26,6 +27,7 @@ class Staking extends Component {
     this.state = {
       initialFormValues: initialValues,
       minFee: 0,
+      isStaking: false
     };
 
     this.form = null;
@@ -95,6 +97,8 @@ class Staking extends Component {
     const param = { type: Number(stakingType), burningAddress: CONSTANT_COMMONS.STAKING_ADDRESS };
 
     try {
+      this.setState({ isStaking: true });
+
       const res = await Account.staking(param, fee, account, wallet);
 
       if (res.txId) {
@@ -112,6 +116,8 @@ class Staking extends Component {
       }
     } catch (e) {
       Toast.showError(`Staking failed. Please try again! Err:  ${e.message}`);
+    } finally {
+      this.setState({ isStaking: false });
     }
   };
 
@@ -130,7 +136,7 @@ class Staking extends Component {
 
   render() {
     const { account } = this.props;
-    const { initialFormValues } = this.state;
+    const { initialFormValues, isStaking } = this.state;
 
     return (
       <ScrollView>
@@ -160,6 +166,7 @@ class Staking extends Component {
           <Text style={styleSheet.noteText}>* Only send CONSTANT to a CONSTANT address.</Text>
           <ReceiptModal />
         </Container>
+        { isStaking && <LoadingTx /> }
       </ScrollView>
     );
   }

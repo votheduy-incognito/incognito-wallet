@@ -15,6 +15,7 @@ import ReceiptModal, { openReceipt } from '@src/components/Receipt';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { FONT } from '@src/styles';
 import { openQrScanner } from '@src/components/QrCodeScanner';
+import LoadingTx from '@src/components/LoadingTx';
 
 const initialFormValues = {
   isPrivacy: false,
@@ -30,6 +31,7 @@ class SendConstant extends Component {
     this.state = {
       initialFormValues,
       minFee: 0,
+      isSending: false,
     };
 
     this.handleShouldGetFee = _.debounce(::this.handleShouldGetFee, 500);
@@ -89,6 +91,10 @@ class SendConstant extends Component {
     }];
 
     try {
+      this.setState({
+        isSending: true
+      });
+
       const res = await Account.sendConstant(paymentInfos, convert.toMiliConstant(Number(fee)), isPrivacy, account, wallet);
 
       if (res.txId) {
@@ -108,6 +114,8 @@ class SendConstant extends Component {
       }
     } catch (e) {
       Toast.showError(`Sent failed. Please try again! Err:' ${e.message}`);
+    } finally {
+      this.setState({ isSending: false });
     }
   };
 
@@ -151,7 +159,7 @@ class SendConstant extends Component {
 
   render() {
     const { account } = this.props;
-    const { initialFormValues } = this.state;
+    const { initialFormValues, isSending } = this.state;
 
     return (
       <ScrollView>
@@ -187,7 +195,7 @@ class SendConstant extends Component {
           <Text style={styleSheet.noteText}>* Only send CONSTANT to a CONSTANT address.</Text>
           <ReceiptModal />
         </Container>
-        
+        { isSending && <LoadingTx /> }
       </ScrollView>
     );
   }

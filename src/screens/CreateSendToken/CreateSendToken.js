@@ -15,7 +15,7 @@ import common from '@src/constants/common';
 import ReceiptModal from '@src/components/Receipt';
 import Token from '@src/services/wallet/tokenService';
 import { openQrScanner } from '@src/components/QrCodeScanner';
-
+import LoadingTx from '@src/components/LoadingTx';
 
 const initialFormValues = {
   fee: '0.5',
@@ -29,7 +29,8 @@ class CreateSendToken extends Component {
     this.state = {
       initialFormValues,
       minFee: 0,
-      balanceToken: 0
+      balanceToken: 0,
+      isCreatingOrSending: false
     };
 
     this.handleShouldGetFee = _.debounce(::this.handleShouldGetFee, 500);
@@ -136,6 +137,7 @@ class CreateSendToken extends Component {
     };
 
     try {
+      this.setState({ isCreatingOrSending: true });
       let res;
       if (!isPrivacy){
         res = await Token.createSendCustomToken(tokenObject, convert.toMiliConstant(Number(fee)), account, wallet);
@@ -155,6 +157,8 @@ class CreateSendToken extends Component {
       }
     } catch (e) {
       Toast.showError(`${text} token failed. Please try again! Err:' ${e.message}`);
+    } finally {
+      this.setState({ isCreatingOrSending: false });
     }
   };
 
@@ -222,7 +226,7 @@ class CreateSendToken extends Component {
 
   render() {
     const {  isCreate } = this.props;
-    const { initialFormValues } = this.state;
+    const { initialFormValues, isCreatingOrSending } = this.state;
 
     return (
       <ScrollView>
@@ -254,7 +258,7 @@ class CreateSendToken extends Component {
           <Text style={styleSheet.noteText}>* Only send CONSTANT to a CONSTANT address.</Text>
           <ReceiptModal />
         </Container>
-        
+        { isCreatingOrSending && <LoadingTx /> }
       </ScrollView>
     );
   }

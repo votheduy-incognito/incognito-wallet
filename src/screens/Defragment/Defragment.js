@@ -10,6 +10,7 @@ import convert from '@src/utils/convert';
 import _ from 'lodash';
 import common from '@src/constants/common';
 import ReceiptModal, { openReceipt } from '@src/components/Receipt';
+import LoadingTx from '@src/components/LoadingTx';
 
 const initialValues = {
   fromAddress: '',
@@ -24,7 +25,8 @@ class Defragment extends Component {
 
     this.state = {
       initialFormValues: initialValues,
-      minFee: 0
+      minFee: 0,
+      isDefragmenting: false
     };
     this.form = null;
     this.handleShouldGetFee = _.debounce(::this.handleShouldGetFee, 500);
@@ -64,6 +66,7 @@ class Defragment extends Component {
 
   handleDefragment = async (values) => { 
     try {
+      this.setState({ isDefragmenting: true });
       const { account, wallet } = this.props;
       const { amount, fee, isPrivacy, fromAddress } = values;
       try {
@@ -86,6 +89,8 @@ class Defragment extends Component {
       }
     } catch (e) {
       Toast.showError(e.message);
+    } finally {
+      this.setState({ isDefragmenting: false });
     }
   };
 
@@ -123,7 +128,7 @@ class Defragment extends Component {
 
   render() {
     const { account } = this.props;
-    const { initialFormValues } = this.state;
+    const { initialFormValues, isDefragmenting } = this.state;
 
     return (
       <ScrollView>
@@ -149,6 +154,7 @@ class Defragment extends Component {
           <Text style={styleSheet.noteText}>* Only send CONSTANT to a CONSTANT address.</Text>
           <ReceiptModal />
         </Container>
+        { isDefragmenting && <LoadingTx /> }
       </ScrollView>
     );
   }
