@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import Effect from './Effect';
@@ -10,7 +10,7 @@ const isFormField = (com = throw new Error('Must be a React component')) => [
   PickerField
 ].includes(com.type);
 
-const injectFieldToChildren = ({ handleChange, handleSubmit, handleBlur, values, errors, children }) => {
+const injectFieldToChildren = ({ handleChange, handleSubmit, handleBlur, values, errors, children, isLoading }) => {
   const childrens = children?.constructor === Array ? [...children] : [children];
   const injectChildren = (field, children) => React.cloneElement(field, {
     children: injectFieldToChildren({ handleChange, handleSubmit, handleBlur, values, errors, children })
@@ -20,7 +20,8 @@ const injectFieldToChildren = ({ handleChange, handleSubmit, handleBlur, values,
     if (field?.type === FormSubmitButton) {
       return (
         React.cloneElement(field, {
-          handleSubmit
+          handleSubmit,
+          isLoading
         })
       );
     }
@@ -45,10 +46,24 @@ const injectFieldToChildren = ({ handleChange, handleSubmit, handleBlur, values,
 
 const CustomForm = (props) => {
   const { initialValues, onSubmit, children, viewProps, formRef, onFormChange, ...formikProps } = props;
+  const [ isLoading, setLoading ] = useState(false);
+
+  const handleOnSubmit = (...args) => {
+    if (typeof onSubmit === 'function') {
+      const submitted = onSubmit(...args);
+      if (submitted instanceof Promise) {
+        setLoading(true);
+        submitted.finally(() => setLoading(false));
+      }
+
+      return submitted;
+    }
+  };
+
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={onSubmit}
+      onSubmit={handleOnSubmit}
       enableReinitialize
       {...formikProps}
       render={(form) => {
@@ -61,7 +76,7 @@ const CustomForm = (props) => {
           <View {...viewProps}>
             <Effect onChange={onFormChange} />
             {
-              injectFieldToChildren({ handleChange, handleSubmit, handleBlur, values, errors, children })
+              injectFieldToChildren({ handleChange, handleSubmit, handleBlur, values, errors, children, isLoading })
             }
           </View>
         );
