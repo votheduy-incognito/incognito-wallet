@@ -36,11 +36,11 @@ class UserHeaderBoard extends React.Component {
   }
 
   render() {
-    const { accountList, handleSwitchAccount, defaultAccountName } = this.props;
+    const { accountList, handleSwitchAccount, defaultAccountName, isGettingBalance } = this.props;
     return (
       <ScrollView>
         <Container>
-          <AccountList accounts={accountList} switchAccount={handleSwitchAccount} defaultAccountName={defaultAccountName} />
+          <AccountList accounts={accountList} switchAccount={handleSwitchAccount} defaultAccountName={defaultAccountName} isGettingBalance={isGettingBalance} />
           <ActionButtons actionBtns={this.actionBtns} />
         </Container>
       </ScrollView>
@@ -51,7 +51,8 @@ class UserHeaderBoard extends React.Component {
 UserHeaderBoard.propTypes = {
   accountList: PropTypes.array,
   handleSwitchAccount: PropTypes.func,
-  defaultAccountName: PropTypes.string
+  defaultAccountName: PropTypes.string,
+  isGettingBalance: PropTypes.array
 };
 
 export default UserHeaderBoard;

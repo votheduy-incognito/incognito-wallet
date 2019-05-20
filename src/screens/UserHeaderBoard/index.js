@@ -20,7 +20,8 @@ class UserHeaderBoardContainer extends Component {
 
 const mapState = state => ({
   defaultAccountName: state.account?.defaultAccount?.name,
-  accountList: state.account?.list
+  accountList: state.account?.list,
+  isGettingBalance: state.account?.isGettingBalance
 });
 
 const mapDispatch = { setDefaultAccount };
