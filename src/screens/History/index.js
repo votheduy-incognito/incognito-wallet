@@ -13,7 +13,7 @@ const normalizeData = histories => histories && histories.map(h => ({
   time: formatUtil.formatDateTime(h.time),
   receiver: h.receivers[0],
   amountAndSymbol: `${formatUtil.amountConstant(h.amount)} ${CONSTANT_COMMONS.CONST_SYMBOL}`,
-  fee: h.fee,
+  fee: formatUtil.amountMiliConstant(h.fee),
   status: h.status
 }));
 

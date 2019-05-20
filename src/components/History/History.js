@@ -83,7 +83,7 @@ HistoryItem.propTypes = {
     receiver: PropTypes.string,
     amountAndSymbol: PropTypes.string,
     fee: PropTypes.string,
-    status: PropTypes.string
+    status: PropTypes.number
   })
 };
 
