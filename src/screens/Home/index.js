@@ -5,8 +5,9 @@ import { getBalance } from '@src/redux/actions/account';
 import LoadingContainer from '@src/components/LoadingContainer';
 import Home from './Home';
 import { Toast } from '@src/components/core';
+import scheduleService from '@src/services/schedule';
 
-const HomeContainer = ({ defaultAccount, getBalance, isGettingBalance, ...otherProps }) => {
+const HomeContainer = ({ defaultAccount, getBalance, isGettingBalance, accounts, ...otherProps }) => {
   const loadBalance = account =>  {
     if (account?.name) {
       getBalance(account)
@@ -15,6 +16,13 @@ const HomeContainer = ({ defaultAccount, getBalance, isGettingBalance, ...otherP
         });
     }
   };
+
+  useEffect(() => {
+    const unsubcribe = scheduleService.reloadAllAccountBalance({ accounts, getBalance, timeout: 300000 });
+    return () => {
+      unsubcribe();
+    };
+  }, []);
 
   useEffect(() => {
     loadBalance(defaultAccount);
@@ -36,12 +44,14 @@ const HomeContainer = ({ defaultAccount, getBalance, isGettingBalance, ...otherP
 const mapState = state => {
   const account = state.account;
   return ({
+    accounts: account.list || [],
     defaultAccount: account.defaultAccount,
     isGettingBalance: account.isGettingBalance.includes(account.defaultAccount?.name)
   });
 };
 
 HomeContainer.propTypes = {
+  accounts: PropTypes.array,
   defaultAccount: PropTypes.object,
   isGettingBalance: PropTypes.bool,
   getBalance: PropTypes.func

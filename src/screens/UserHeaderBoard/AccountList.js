@@ -24,18 +24,22 @@ const AccountItem = ({ account, onPress, active, isLoading }) => (
 
 const AccountList = ({ accounts, switchAccount, defaultAccountName, isGettingBalance }) => {
   const sortedAccounts = _.sortBy(accounts, ['name']) || [];
+  
   return (
     <View>
       {
-        sortedAccounts.map((account, index) => (
-          <AccountItem
-            key={index}
-            account={account}
-            onPress={() => switchAccount(account)}
-            active={account?.name === defaultAccountName}
-            isLoading={isGettingBalance?.includes(account?.name)}
-          />
-        ))
+        sortedAccounts.map((account, index) => {
+          const handleSwitchAccount = () => switchAccount(account);
+          return (
+            <AccountItem
+              key={index}
+              account={account}
+              onPress={handleSwitchAccount}
+              active={account?.name === defaultAccountName}
+              isLoading={isGettingBalance?.includes(account?.name)}
+            />
+          );
+        })
       }
     </View>
   );
