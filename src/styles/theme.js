@@ -16,7 +16,10 @@ const opacityButton = {
     borderRadius: DECOR.borderRadiusBorder,
     borderWidth: DECOR.borderWidth,
     borderColor: COLORS.transparent,
-    height: DECOR.buttonHeight
+    height: DECOR.buttonHeight,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonText: {
     color: COLORS.white,
