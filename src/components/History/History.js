@@ -32,7 +32,7 @@ const getStatusData = statusCode => {
   };
 };
 
-const openTxExplorer = txId => linkingService.openUrl(`${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/${txId}`);
+const openTxExplorer = txId => linkingService.openUrl(`${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txId}`);
 
 const HistoryItem = ({ history }) => {
   if (!history) { return null; }
