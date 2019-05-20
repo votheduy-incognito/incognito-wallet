@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text, Container, Form, FormTextField, FormSubmitButton, Toast, ScrollView, PickerField, Picker } from '@src/components/core';
+import { Text, Container, Form, FormTextField, FormSubmitButton, Toast, ScrollView, PickerField, Picker, ActivityIndicator } from '@src/components/core';
 import { CONSTANT_COMMONS } from '@src/constants';
 import formatUtil from '@src/utils/format';
 import styleSheet from './style';
@@ -27,7 +27,8 @@ class Staking extends Component {
     this.state = {
       initialFormValues: initialValues,
       minFee: 0,
-      isStaking: false
+      isStaking: false,
+      isGettingFee: false
     };
 
     this.form = null;
@@ -67,12 +68,15 @@ class Staking extends Component {
     const accountWallet = wallet.getAccountByName(account.name);
 
     try{
+      this.setState({ isGettingFee: true });
       const fee =  await getEstimateFee(values.fromAddress, values.toAddress, convert.toMiliConstant(Number(values.amount)), account.PrivateKey, accountWallet, false);
       // update min fee
       this.setState({ minFee: convert.toConstant(fee) });
       this.updateFormValues('fee', String(convert.toConstant(fee)));
     } catch(e){
       Toast.showError(`Error on get estimation fee! ${e.message}`);
+    } finally {
+      this.setState({ isGettingFee: false });
     }
   };
 
@@ -136,7 +140,7 @@ class Staking extends Component {
 
   render() {
     const { account } = this.props;
-    const { initialFormValues, isStaking } = this.state;
+    const { initialFormValues, isStaking, isGettingFee } = this.state;
 
     return (
       <ScrollView>
@@ -160,7 +164,7 @@ class Staking extends Component {
             </PickerField>
             <FormTextField name='toAddress' placeholder='To Address' editable={false} />
             <FormTextField name='amount' placeholder='Amount' editable={false} onFieldChange={this.handleShouldGetFee} />
-            <FormTextField name='fee' placeholder='Min Fee' />
+            <FormTextField name='fee' placeholder='Min Fee' prependView={isGettingFee ? <ActivityIndicator /> : undefined}/>
             <FormSubmitButton title='STAKING' style={styleSheet.submitBtn} />
           </Form>
           <Text style={styleSheet.noteText}>* Only send CONSTANT to a CONSTANT address.</Text>

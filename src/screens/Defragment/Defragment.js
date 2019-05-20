@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text, Container, Form, FormTextField, FormSubmitButton, Toast, ScrollView, CheckBoxField } from '@src/components/core';
+import { Text, Container, Form, FormTextField, FormSubmitButton, Toast, ScrollView, CheckBoxField, ActivityIndicator } from '@src/components/core';
 import { CONSTANT_COMMONS } from '@src/constants';
 import formatUtil from '@src/utils/format';
 import styleSheet from './style';
@@ -26,7 +26,8 @@ class Defragment extends Component {
     this.state = {
       initialFormValues: initialValues,
       minFee: 0,
-      isDefragmenting: false
+      isDefragmenting: false,
+      isGettingFee: false
     };
     this.form = null;
     this.handleShouldGetFee = _.debounce(::this.handleShouldGetFee, 500);
@@ -54,6 +55,7 @@ class Defragment extends Component {
     const accountWallet = wallet.getAccountByName(account.name);
 
     try{
+      this.setState({ isGettingFee: true });
       const fee =  await getEstimateFeeToDefragment(values.fromAddress, convert.toMiliConstant(Number(values.amount)), account.PrivateKey, accountWallet, values.isPrivacy);
       // set min fee state
       this.setState({minFee: convert.toConstant(fee)});
@@ -61,6 +63,8 @@ class Defragment extends Component {
       this.updateFormValues('fee', String(convert.toConstant(fee)));
     } catch(e){
       Toast.showError(`Error on get estimation fee!, ${e}`);
+    } finally {
+      this.setState({ isGettingFee: false });
     }
   };
 
@@ -128,7 +132,7 @@ class Defragment extends Component {
 
   render() {
     const { account } = this.props;
-    const { initialFormValues, isDefragmenting } = this.state;
+    const { initialFormValues, isDefragmenting, isGettingFee } = this.state;
 
     return (
       <ScrollView>
@@ -148,7 +152,7 @@ class Defragment extends Component {
             <FormTextField name='fromAddress' placeholder='From Address' editable={false}  onFieldChange={this.handleShouldGetFee}/>
             <CheckBoxField name='isPrivacy' label='Is Privacy' onFieldChange={this.handleShouldGetFee} />
             <FormTextField name='amount' placeholder='Amount' onFieldChange={this.handleShouldGetFee}/>
-            <FormTextField name='fee' placeholder='Min Fee' />
+            <FormTextField name='fee' placeholder='Min Fee' prependView={isGettingFee ? <ActivityIndicator /> : undefined} />
             <FormSubmitButton title='DEFRAGMENT' style={styleSheet.submitBtn} />
           </Form>
           <Text style={styleSheet.noteText}>* Only send CONSTANT to a CONSTANT address.</Text>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { Text, Container, Form, FormTextField, FormSubmitButton, Toast, ScrollView, CheckBoxField, TouchableOpacity } from '@src/components/core';
+import { Text, Container, Form, FormTextField, FormSubmitButton, Toast, ScrollView, CheckBoxField, TouchableOpacity, ActivityIndicator } from '@src/components/core';
 import { CONSTANT_COMMONS } from '@src/constants';
 import formatUtil from '@src/utils/format';
 import formValidate from './formValidate';
@@ -32,6 +32,7 @@ class SendConstant extends Component {
       initialFormValues,
       minFee: 0,
       isSending: false,
+      isGettingFee: false
     };
 
     this.handleShouldGetFee = _.debounce(::this.handleShouldGetFee, 500);
@@ -71,6 +72,8 @@ class SendConstant extends Component {
 
     const accountWallet = wallet.getAccountByName(account.name);
     try{
+      this.setState({ isGettingFee: true });
+
       const fee =  await getEstimateFee(fromAddress, toAddress, convert.toMiliConstant(Number(amount)), account.PrivateKey, accountWallet, isPrivacy);
       // set min fee state
       this.setState({minFee: convert.toConstant(fee)});
@@ -78,6 +81,8 @@ class SendConstant extends Component {
       this.updateFormValues('fee', String(convert.toConstant(fee)));
     } catch(e){
       Toast.showError('Error on get estimation fee!');
+    } finally {
+      this.setState({ isGettingFee: false });
     }
   };
 
@@ -159,7 +164,7 @@ class SendConstant extends Component {
 
   render() {
     const { account } = this.props;
-    const { initialFormValues, isSending } = this.state;
+    const { initialFormValues, isSending, isGettingFee } = this.state;
 
     return (
       <ScrollView>
@@ -189,7 +194,11 @@ class SendConstant extends Component {
               }
             />
             <FormTextField name='amount' placeholder='Amount' onFieldChange={this.handleShouldGetFee}/>
-            <FormTextField name='fee' placeholder='Min Fee' />
+            <FormTextField
+              name='fee'
+              placeholder='Min Fee'
+              prependView={isGettingFee ? <ActivityIndicator /> : undefined}
+            />
             <FormSubmitButton title='SEND' style={styleSheet.submitBtn} />
           </Form>
           <Text style={styleSheet.noteText}>* Only send CONSTANT to a CONSTANT address.</Text>

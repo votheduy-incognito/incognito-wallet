@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { Text, Container, Form, FormTextField, FormSubmitButton, Toast, ScrollView, TouchableOpacity } from '@src/components/core';
+import { Text, Container, Form, FormTextField, FormSubmitButton, Toast, ScrollView, TouchableOpacity, ActivityIndicator } from '@src/components/core';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { FONT } from '@src/styles';
 import { CONSTANT_COMMONS } from '@src/constants';
@@ -30,7 +30,8 @@ class CreateSendToken extends Component {
       initialFormValues,
       minFee: 0,
       balanceToken: 0,
-      isCreatingOrSending: false
+      isCreatingOrSending: false,
+      isGettingFee: false
     };
 
     this.handleShouldGetFee = _.debounce(::this.handleShouldGetFee, 500);
@@ -103,6 +104,7 @@ class CreateSendToken extends Component {
 
     const accountWallet = wallet.getAccountByName(account.name);
     try{
+      this.setState({ isGettingFee: true });
       const fee =  await getEstimateFeeForSendingToken(fromAddress, toAddress, Number(amount), tokenObject, account.PrivateKey, accountWallet);
       // set min fee state
       this.setState({minFee: convert.toConstant(fee)});
@@ -110,6 +112,8 @@ class CreateSendToken extends Component {
       this.updateFormValues('fee', String(convert.toConstant(fee)));
     } catch(e){
       Toast.showError(`Error on get estimation fee! ${e}`);
+    } finally {
+      this.setState({ isGettingFee: false });
     }
   };
 
@@ -226,7 +230,7 @@ class CreateSendToken extends Component {
 
   render() {
     const {  isCreate } = this.props;
-    const { initialFormValues, isCreatingOrSending } = this.state;
+    const { initialFormValues, isCreatingOrSending, isGettingFee } = this.state;
 
     return (
       <ScrollView>
@@ -252,7 +256,7 @@ class CreateSendToken extends Component {
             <FormTextField name='name' placeholder='Name' />
             <FormTextField name='symbol' placeholder='Symbol' />
             <FormTextField name='amount' placeholder='Amount' onFieldChange={this.handleShouldGetFee}/>
-            <FormTextField name='fee' placeholder='Min Fee' />
+            <FormTextField name='fee' placeholder='Min Fee' prependView={isGettingFee ? <ActivityIndicator /> : undefined} />
             <FormSubmitButton title={isCreate?'CREATE':'SEND'} style={styleSheet.submitBtn} />
           </Form>
           <Text style={styleSheet.noteText}>* Only send CONSTANT to a CONSTANT address.</Text>
