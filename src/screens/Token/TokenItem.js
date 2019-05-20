@@ -38,6 +38,10 @@ const TokenItem = ({ token, navigation, accountWallet, onRemoveFollowToken }) =>
     );
   };
 
+  const handleShowHistory = () => {
+    navigation.navigate(ROUTE_NAMES.HistoryToken, { token });
+  };
+
   const menuData = [
     {
       id: 'send',
@@ -54,7 +58,7 @@ const TokenItem = ({ token, navigation, accountWallet, onRemoveFollowToken }) =>
     {
       id: 'history',
       label: 'History',
-      handlePress: null,
+      handlePress: handleShowHistory,
       icon: <MdIcons name='history' size={22} />
     }
   ];

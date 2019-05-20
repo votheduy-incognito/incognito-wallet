@@ -168,4 +168,27 @@ export default class Token {
       throw e;
     }
   }
+
+  static async getTokenHistory({ account, wallet, token }) {
+    try {
+      if (!token?.ID) {
+        throw new Error('Token is required');
+      }
+
+      const accountWallet = wallet.getAccountByName(account.name);
+      let histories = [];
+        
+      if (token?.IsPrivacy) {
+        histories = await accountWallet.getPrivacyCustomTokenTrxByTokenID(token?.ID);
+      } else {
+        histories = await accountWallet.getCustomTokenTrxByTokenID(token?.ID);
+      }
+      
+      return histories;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  
 }

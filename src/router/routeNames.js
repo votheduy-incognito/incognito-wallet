@@ -17,5 +17,6 @@ export default {
   SeedPhrase: 'SeedPhrase',
   ExportAccount: 'ExportAccount',
   CreateSendToken: 'CreateSendToken',
-  FollowToken: 'FollowToken'
+  FollowToken: 'FollowToken',
+  HistoryToken: 'HistoryToken'
 };
