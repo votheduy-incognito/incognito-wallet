@@ -9,7 +9,6 @@ import CreateAccount from '@src/screens/CreateAccount';
 import SeedPhrase from '@src/screens/SeedPhrase';
 import ImportAccount from '@src/screens/ImportAccount';
 import ExportAccount from '@src/screens/ExportAccount';
-import HamburgerHeader from '@src/components/HamburgerHeader';
 import CreateSendToken from '@src/screens/CreateSendToken';
 import FollowToken from '@src/screens/FollowToken';
 import HistoryToken from '@src/screens/HistoryToken';
@@ -17,10 +16,10 @@ import UserHeader from '@src/components/UserHeader';
 import { THEME } from '@src/styles';
 import { navigationOptionsHandler } from '@src/utils/router';
 import ROUTE_NAMES from './routeNames';
-import DrawerNavigator from './DrawerNavigator';
+import TabNavigator from './TabNavigator';
 
 const AppNavigator = createStackNavigator({
-  DrawerNavigator,
+  TabNavigator,
   [ROUTE_NAMES.UserHeaderBoard]: navigationOptionsHandler(UserHeaderBoard),
   [ROUTE_NAMES.SendConstant]: navigationOptionsHandler(SendConstant),
   [ROUTE_NAMES.Staking]: navigationOptionsHandler(Staking),
@@ -34,7 +33,7 @@ const AppNavigator = createStackNavigator({
   [ROUTE_NAMES.FollowToken]: navigationOptionsHandler(FollowToken),
   [ROUTE_NAMES.HistoryToken]: navigationOptionsHandler(HistoryToken),
 }, {
-  initialRouteName: 'DrawerNavigator',
+  initialRouteName: 'TabNavigator',
   defaultNavigationOptions: ({ navigation }) => {
     const handleUserPress = () => {
       navigation.navigate(ROUTE_NAMES.UserHeaderBoard);
@@ -42,11 +41,6 @@ const AppNavigator = createStackNavigator({
 
     return {
       headerRight: <UserHeader onPress={handleUserPress} />,
-      headerLeft: <HamburgerHeader
-        onPress={() => {
-          navigation.toggleDrawer();
-        }}
-      />,
       headerTintColor: THEME.header.headerTintColor,
       headerStyle: {
         backgroundColor: THEME.header.backgroundColor,
