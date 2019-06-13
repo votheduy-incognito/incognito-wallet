@@ -20,15 +20,14 @@ export async function getEstimateFee(from, to, amount, privateKey, accountWallet
   console.log('Estimating fee ...');
   let fee;
   try {
-    fee = await getRpcClient().getEstimateFee(
+    fee = await getEstimateFee(
       from,
       to,
       amount,
       privateKey,
-      null,
-      null,
       accountWallet,
-      isPrivacy
+      isPrivacy,
+      getRpcClient()
     );
   } catch (e) {
     throw e;
@@ -53,13 +52,14 @@ export async function getEstimateFeeForSendingToken(
 
   let fee;
   try {
-    fee = await getRpcClient().getEstimateFeeForSendingToken(
+    fee = await getEstimateFeeForSendingToken(
       from,
       to,
       amount,
       tokenObject,
       privateKey,
-      account
+      account,
+      getRpcClient()
     );
   } catch (e) {
     throw e;
@@ -77,12 +77,13 @@ export async function getEstimateFeeToDefragment(
   console.log('Estimating fee ...');
   let fee;
   try {
-    fee = await getRpcClient().getEstimateFeeToDefragment(
+    fee = await getEstimateFeeToDefragment(
       from,
       amount,
       privateKey,
       accountWallet,
-      isPrivacy
+      isPrivacy,
+      getRpcClient()
     );
   } catch (e) {
     throw e;
@@ -104,14 +105,10 @@ export async function getActiveShard() {
   let resp;
   try {
     resp = await getRpcClient().getActiveShard();
-    console.log('resp getActiveShard: ', resp);
   } catch (e) {
     throw e;
   }
 
-  if (resp.err !== null) {
-    throw resp.err;
-  }
   return resp.shardNumber;
 }
 
@@ -123,23 +120,16 @@ export async function getMaxShardNumber() {
     throw e;
   }
 
-  if (resp.err !== null) {
-    throw resp.err;
-  }
   return resp.shardNumber;
 }
 
-export async function hashToIdenticon(hash){
-  let res;
-
+export async function hashToIdenticon(hashStrs) {
+  let resp;
   try {
-    res = await getRpcClient().hashToIdenticon([hash]);
-    if (res.err !== null) {
-      throw res.err;
-    }
+    resp = await getRpcClient().hashToIdenticon(hashStrs);
   } catch (e) {
     throw e;
   }
-  
-  return res.images[0];
+
+  return resp.images;
 }

@@ -22,8 +22,8 @@ const TokenItem = ({ token, navigation, accountWallet, onRemoveFollowToken }) =>
   };
 
   useEffect(() => {
-    token.ID && hashToIdenticon(token.ID).then(src=> {
-      setImageSrc(src);
+    token.ID && hashToIdenticon([token.ID]).then(images=> {
+      setImageSrc(images[0]);
     });
 
     reloadBalanceToken();

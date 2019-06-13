@@ -7,8 +7,6 @@ import {
 import { saveWallet } from './WalletService';
 import { listPrivacyTokens, listCustomTokens } from './RpcClientService';
 
-
-
 export default class Token {
   static async createSendCustomToken(param, fee, account, wallet) {
     await Wallet.resetProgressTx();
@@ -106,12 +104,7 @@ export default class Token {
   static async getPrivacyTokens() {
     try {
       const data = await listPrivacyTokens();
-
-      if (data?.err) {
-        throw data.err;
-      }
-
-      const tokens = data?.listCustomToken || [];
+      const tokens = data.listPrivacyToken || [];
 
       return tokens;
     } catch (e) {
@@ -122,12 +115,8 @@ export default class Token {
   static async getNormalTokens() {
     try {
       const data = await listCustomTokens();
+      const tokens = data.listCustomToken || [];
 
-      if (data?.err) {
-        throw data.err;
-      }
-
-      const tokens = data?.listCustomToken || [];
       return tokens;
     } catch (e) {
       throw e;
@@ -147,7 +136,7 @@ export default class Token {
 
   static getFollowingPrivacyTokens({ account, wallet }) {
     try {
-      const followingTokens = Token.getFollowingToken({ account, wallet });
+      const followingTokens = Token.getFollowingTokens({ account, wallet });
 
       return followingTokens.filter(
         token => token?.IsPrivacy
@@ -159,7 +148,7 @@ export default class Token {
 
   static getFollowingNormalTokens({ account, wallet }) {
     try {
-      const followingTokens = Token.getFollowingToken({ account, wallet });
+      const followingTokens = Token.getFollowingTokens({ account, wallet });
 
       return followingTokens.filter(
         token => !token?.IsPrivacy
@@ -179,9 +168,9 @@ export default class Token {
       let histories = [];
         
       if (token?.IsPrivacy) {
-        histories = await accountWallet.getPrivacyCustomTokenTrxByTokenID(token?.ID);
+        histories = await accountWallet.getPrivacyCustomTokenTxByTokenID(token?.ID);
       } else {
-        histories = await accountWallet.getCustomTokenTrxByTokenID(token?.ID);
+        histories = await accountWallet.getCustomTokenTxByTokenID(token?.ID);
       }
       
       return histories;

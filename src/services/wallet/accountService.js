@@ -20,20 +20,25 @@ export default class Account {
 
   static async importAccount(privakeyStr, accountName, passPhrase, wallet) {
     // console.log("Wallet when import account: ", wallet);
-    const account = wallet.importAccount(privakeyStr, accountName, passPhrase);
+    let account;
+    try {
+      account = wallet.importAccount(privakeyStr, accountName, passPhrase);
+    } catch (e) {
+      console.log(`Error when importing account:  ${e}`);
+      return false;
+    }
 
     if (account.isImport === false) {
       console.log('Account is not imported');
       return false;
     }
-
     console.log('Account is imported');
     return true;
   }
 
-  static async removeAccount(privateKeyStr, accountName, passPhrase, wallet) {
+  static async removeAccount(privateKeyStr, passPhrase, wallet) {
     try {
-      const result = wallet.removeAccount(privateKeyStr, accountName, passPhrase);
+      const result = wallet.removeAccount(privateKeyStr, passPhrase);
       return result;
     } catch (e) {
       return e;

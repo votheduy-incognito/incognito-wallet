@@ -40,8 +40,8 @@ const HistoryItem = ({ history }) => {
   const { statusText, statusColor } = getStatusData(history.status);
 
   useEffect(() => {
-    history.txID && hashToIdenticon(history.txID).then(src=> {
-      setImageSrc(src);
+    history.txID && hashToIdenticon([history.txID]).then(images=> {
+      setImageSrc(images[0]);
     });
   }, [history.txID]);
 

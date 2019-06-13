@@ -11,7 +11,7 @@ const DEFAULT_LIST_SERVER = [{
 {
   id: 'testnet',
   default: true,
-  address: 'http://test-node-constant-chain.constant.money:9334',
+  address: 'http://test-node.incognito.org:9334',
   username: '',
   password: '',
   name: 'Testnet'

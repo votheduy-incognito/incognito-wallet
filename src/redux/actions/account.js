@@ -30,7 +30,6 @@ export const removeAccount = (account = throw new Error('Account is required')) 
     const passphrase = await getPassphrase();
     await accountService.removeAccount(
       PrivateKey,
-      name,
       passphrase,
       wallet
     );

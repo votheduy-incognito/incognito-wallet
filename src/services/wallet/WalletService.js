@@ -24,7 +24,7 @@ export async function loadListAccount(wallet) {
     const listAccountRaw = await wallet.listAccount() || [];
     const listAccount = listAccountRaw.map(account => ({
       default: false,
-      name: account['Account Name'],
+      name: account.AccountName,
       value: -1,
       PaymentAddress: account.PaymentAddress,
       ReadonlyKey: account.ReadonlyKey,
@@ -54,6 +54,7 @@ export async function loadWallet(passphrase) {
   console.log('[loadWallet] with server ', server);
   Wallet.RandomBytesFunc = randomBytes;
   Wallet.setPrivacyUtilRandomBytesFunc(randomBytes);
+  console.log('set randombyte done');
   Wallet.RpcClient = new RpcClient(
     server.address,
     server.username,
@@ -74,10 +75,9 @@ export async function loadWallet(passphrase) {
   await wallet.loadWallet(passphrase);
   console.log('Wallet after loading', wallet);
 
-  // update status history
-  updateStatusHistory(wallet);
-
   if (wallet.Name) {
+    // update status history
+    updateStatusHistory(wallet);
     return wallet;
   }
   return false;
@@ -89,6 +89,11 @@ export async function initWallet() {
     const passphrase = await getPassphrase();
     const wallet = new Wallet();
     wallet.Storage = storage;
+
+    console.log('wallet.Storage: ', wallet.Storage);
+
+    console.log('wallet.Storage.setItem: ', typeof wallet.Storage.setItem);
+
     wallet.init(
       passphrase,
       numOfAccount,
