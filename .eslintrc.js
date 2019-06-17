@@ -52,6 +52,7 @@ module.exports = {
         "react/jsx-no-bind": 0,
         "react/prop-types": 1,
         "import/prefer-default-export": 0,
-        "no-console": 1
+        "no-console": 1,
+        "import/no-unresolved": 0
     }
 };
