@@ -4,7 +4,7 @@ import {
   SuccessTx as SuccessTxWallet,
   ConfirmedTx as ConfirmedTxWallet,
   genImageFromStr as genImageFromStrWallet
-} from 'constant-chain-web-js/build/wallet';
+} from 'incognito-chain-web-js/build/wallet';
 import storage from '@src/services/storage';
 import {getPassphrase} from './passwordService';
 import accountService from './accountService';
