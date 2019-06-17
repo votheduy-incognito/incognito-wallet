@@ -3,7 +3,7 @@ import {
   TxTokenVout,
   KeyWallet,
   Wallet
-} from 'constant-chain-web-js/build/wallet';
+} from 'incognito-chain-web-js/build/wallet';
 import { saveWallet } from './WalletService';
 import { listPrivacyTokens, listCustomTokens } from './RpcClientService';
 
