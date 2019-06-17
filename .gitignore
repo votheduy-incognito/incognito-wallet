@@ -58,3 +58,4 @@ buck-out/
 # env 
 .env
 .env.production
+*.lock
