@@ -1,6 +1,7 @@
 export default {
   RootApp: 'App',
   RootSplash: 'Splash',
+  RootSubscribeEmailNavigator: 'SubscribeEmailNavigator',
   RootAuth: 'Auth',
   Login: 'Login',
   Splash: 'Splash',
