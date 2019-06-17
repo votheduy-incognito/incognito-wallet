@@ -1,4 +1,4 @@
-import { KeyWallet, Wallet } from 'constant-chain-web-js/build/wallet';
+import { KeyWallet, Wallet } from 'incognito-chain-web-js/build/wallet';
 import storage from '@src/services/storage';
 import { getActiveShard } from './RpcClientService';
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';

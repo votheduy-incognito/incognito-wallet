@@ -1,4 +1,4 @@
-import { Wallet, RpcClient } from 'constant-chain-web-js/build/wallet';
+import { Wallet, RpcClient } from 'incognito-chain-web-js/build/wallet';
 
 export function getRpcClient() {
   return Wallet.RpcClient;
