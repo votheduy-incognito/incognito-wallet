@@ -3,6 +3,7 @@ import ROUTE_NAMES from './routeNames';
 import AuthNavigator from './AuthNavigator';
 import AppNavigator from './AppNavigator';
 import SplashNavigator from './SplashNavigator';
+import SubscribeEmailNavigator from './SubscribeEmailNavigator';
 
 export default createAppContainer(
   createSwitchNavigator(
