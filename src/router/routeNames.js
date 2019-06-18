@@ -19,5 +19,6 @@ export default {
   ExportAccount: 'ExportAccount',
   CreateSendToken: 'CreateSendToken',
   FollowToken: 'FollowToken',
-  HistoryToken: 'HistoryToken'
+  HistoryToken: 'HistoryToken',
+  GetStarted: 'GetStarted'
 };
