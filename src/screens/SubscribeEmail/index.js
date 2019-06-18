@@ -12,7 +12,7 @@ class SubscribeEmailContainer extends Component {
       Toast.showInfo('Your email was subscribed');
       return data;
     } catch (e) {
-      Toast.showError(e.message ?? 'Can not subscribe your email, please try again');
+      Toast.showError(e.message || 'Can not subscribe your email, please try again');
     } 
   }
 
