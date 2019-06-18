@@ -79,6 +79,7 @@
     "@babel/plugin-proposal-optional-catch-binding": "^7.2.0",
     "@babel/plugin-proposal-optional-chaining": "^7.2.0",
     "@babel/plugin-proposal-throw-expressions": "^7.2.0",
+    "@babel/preset-flow": "^7.0.0",
     "@babel/runtime": "^7.4.3",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.7.1",
