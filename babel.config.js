@@ -17,36 +17,27 @@ const commonPlugins = [
   ],
 
   // minify
-  'babel-plugin-transform-remove-undefined',
+  'babel-plugin-transform-remove-undefined'
 ];
 
 const commonPresets = [
   'module:metro-react-native-babel-preset',
+  '@babel/preset-flow',
   'module:react-native-dotenv'
 ];
 
 module.exports = {
   env: {
     development: {
-      presets: [
-        ...commonPresets
-      ],
-      plugins: [
-        ...commonPlugins,
-      ]
+      presets: [...commonPresets],
+      plugins: [...commonPlugins]
     },
     test: {
-      presets: [
-        ...commonPresets
-      ],
-      plugins: [
-        ...commonPlugins,
-      ]
+      presets: [...commonPresets],
+      plugins: [...commonPlugins]
     },
     production: {
-      presets: [
-        ...commonPresets
-      ],
+      presets: [...commonPresets],
       plugins: [
         ...commonPlugins,
 
@@ -55,5 +46,6 @@ module.exports = {
         'babel-plugin-transform-remove-debugger'
       ]
     }
-  }
+  },
+  retainLines: true
 };
