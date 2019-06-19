@@ -23,8 +23,9 @@ const opacityButton = {
   },
   buttonText: {
     color: COLORS.white,
-    fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
+    fontSize: 18,
+    letterSpacing: 0
   }
 };
 
