@@ -15,8 +15,10 @@ import HistoryToken from '@src/screens/HistoryToken';
 import UserHeader from '@src/components/UserHeader';
 import { THEME } from '@src/styles';
 import { navigationOptionsHandler } from '@src/utils/router';
+import WalletDetail from '@src/screens/WalletDetail';
 import ROUTE_NAMES from './routeNames';
 import TabNavigator from './TabNavigator';
+
 
 const AppNavigator = createStackNavigator({
   TabNavigator,
@@ -32,6 +34,7 @@ const AppNavigator = createStackNavigator({
   [ROUTE_NAMES.CreateSendToken]: navigationOptionsHandler(CreateSendToken),
   [ROUTE_NAMES.FollowToken]: navigationOptionsHandler(FollowToken),
   [ROUTE_NAMES.HistoryToken]: navigationOptionsHandler(HistoryToken),
+  [ROUTE_NAMES.WalletDetail]: navigationOptionsHandler(WalletDetail),
 }, {
   initialRouteName: 'TabNavigator',
   defaultNavigationOptions: ({ navigation }) => {

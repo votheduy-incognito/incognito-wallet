@@ -6,7 +6,7 @@ module.exports = {
     'react-native/react-native': true,
     'jest/globals': true
   },
-  extends: ['airbnb', 'plugin:react-native/all', 'eslint:recommended'],
+  // extends: ['airbnb', 'react-native',  'eslint:recommended'],
   parser: 'babel-eslint',
   parserOptions: {
     ecmaFeatures: {

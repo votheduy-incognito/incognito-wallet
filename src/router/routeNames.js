@@ -20,5 +20,6 @@ export default {
   CreateSendToken: 'CreateSendToken',
   FollowToken: 'FollowToken',
   HistoryToken: 'HistoryToken',
-  GetStarted: 'GetStarted'
+  GetStarted: 'GetStarted',
+  WalletDetail: 'WalletDetail',
 };

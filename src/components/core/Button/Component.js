@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { TouchableOpacity as RNComponent } from 'react-native';
 import { Text, ActivityIndicator } from '@src/components/core';
-import styleSheet from './style';
 import { COLORS } from '@src/styles';
+import styleSheet from './style';
 
 const Button = ({ title, children, style, titleStyle, type, onPress, loadingColor, isLoading: isLoadingProps, ...props }) => {
   const [ isLoading, setLoading ] = useState(false);
