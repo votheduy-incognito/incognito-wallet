@@ -17,7 +17,7 @@ class Home extends React.Component {
     this.actionButtons = [
       {
         label: 'SEND',
-        handlePress: () => props?.navigation?.navigate(ROUTE_NAMES.SendConstant)
+        handlePress: () => props?.navigation?.navigate(ROUTE_NAMES.WalletDetail)
       },
       {
         label: 'STAKING',
@@ -55,13 +55,13 @@ class Home extends React.Component {
 }
 
 Home.defaultProps = {
-  account: {},
+  // account: {},
   isGettingBalance: false
 };
 
 Home.propTypes = {
-  account: PropTypes.object,
-  reloadBalance: PropTypes.func,
+  // account: PropTypes.object,
+  // reloadBalance: PropTypes.func,
   isGettingBalance: PropTypes.bool
 };
 
