@@ -1,23 +1,13 @@
-import { ActivityIndicator, Text } from '@src/components/core';
+import { ActivityIndicator, Text, View } from '@src/components/core';
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity as RNComponent } from 'react-native';
 import styleSheet from './style';
 
-const Button = ({
-  title,
-  children,
-  style,
-  titleStyle,
-  type,
-  onPress,
-  loadingColor,
-  isLoading: isLoadingProps,
-  ...props
-}) => {
-  const [isLoading, setLoading] = useState(false);
-
+const Button = ({ title, children, style, titleStyle, type, onPress, loadingColor, isLoading: isLoadingProps, prepend, ...props }) => {
+  const [ isLoading, setLoading ] = useState(false);
+  
   useEffect(() => {
     setLoading(isLoadingProps);
   }, [isLoadingProps]);
@@ -40,32 +30,18 @@ const Button = ({
   };
 
   return (
-    <RNComponent
-      {...props}
-      onPress={handlePress}
-      style={[styleSheet.button, type && styleSheet[`${type}Style`], style]}
-      activeOpacity={0.9}
-    >
-      {children ? (
-        renderChild(children)
-      ) : (
-        <>
-          <Text
-            style={[styleSheet.text, titleStyle]}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {title}
-          </Text>
-          {isLoading && (
-            <ActivityIndicator
-              style={[styleSheet.loadingIcon]}
-              color={loadingColor}
-              size="small"
-            />
-          )}
-        </>
-      )}
+    <RNComponent {...props} onPress={handlePress} style={[styleSheet.button, type && styleSheet[`${type}Style`], style]} activeOpacity={0.9}>
+      {
+        children ? renderChild(children) : (
+          <>
+            { prepend }
+            <View style={styleSheet.textContainer}>
+              <Text style={[styleSheet.text, titleStyle]} numberOfLines={1} ellipsizeMode='tail'>{title}</Text>
+            </View>
+            { isLoading && <ActivityIndicator style={[styleSheet.loadingIcon]} color={loadingColor} size='small' /> }
+          </>
+        )
+      }
     </RNComponent>
   );
 };
@@ -73,15 +49,10 @@ const Button = ({
 Button.defaultProps = {
   loadingColor: COLORS.white,
   isLoading: false,
-  onPress: undefined,
-  style: undefined,
-  titleStyle: undefined,
-  title: '',
-  children: undefined,
-  type: 'primary'
 };
 
 Button.propTypes = {
+  prepend: PropTypes.node,
   isLoading: PropTypes.bool,
   loadingColor: PropTypes.string,
   onPress: PropTypes.func,

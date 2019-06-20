@@ -11,8 +11,9 @@ yarn
 Make sure you copied `.sample.env` to `.env` (or `.env.production` in production build, will fallback to `.env` if this file was not exist) for setting enviroment varibles.
 
 Link to  `incognito-chain-web-js` (because The yarn/npm link command doesn't work because React Native packager doesn't [support symlinks.](https://github.com/facebook/metro-bundler/issues/1))
-```sh
-yarn add `path/to/local/project/incognito-chain-web-js`
+
+```
+yarn
 ```
 
 ```

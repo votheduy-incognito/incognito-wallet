@@ -22,5 +22,6 @@ export default {
   FollowToken: 'FollowToken',
   HistoryToken: 'HistoryToken',
   GetStarted: 'GetStarted',
+  WalletDetail: 'WalletDetail',
   AddDevice: 'AddDevice'
 };

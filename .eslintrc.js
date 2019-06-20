@@ -6,7 +6,7 @@ module.exports = {
     'react-native/react-native': true,
     'jest/globals': true
   },
-  extends: ['airbnb', 'plugin:react-native/all', 'eslint:recommended'],
+  // extends: ['airbnb', 'react-native',  'eslint:recommended'],
   parser: 'babel-eslint',
   parserOptions: {
     ecmaFeatures: {
@@ -47,16 +47,11 @@ module.exports = {
     'react/no-unused-prop-types': 'warn',
     'react/jsx-wrap-multilines': 'warn',
     'react/jsx-tag-spacing': 'warn',
-    'import/no-cycle': 'warn',
     'react/require-default-props': 'warn',
     'import/prefer-default-export': 0,
     'no-console': 0,
     'no-unused-vars': 0,
-    'import/no-unresolved': [
-      'error',
-      {
-        ignore: ['@src', '@src/', '@src/.*']
-      }
-    ]
+    'react-native/sort-styles': 0,
+    'react/forbid-prop-types': 0
   }
 };

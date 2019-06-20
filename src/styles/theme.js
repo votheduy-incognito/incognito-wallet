@@ -1,7 +1,7 @@
 import COLORS from './colors';
+import DECOR from './decor';
 import FONTS from './font';
 import SPACINGS from './spacing';
-import DECOR from './decor';
 
 const header = {
   backgroundColor: COLORS.blue,
@@ -23,8 +23,9 @@ const opacityButton = {
   },
   buttonText: {
     color: COLORS.white,
-    fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
+    fontSize: 18,
+    letterSpacing: 0
   }
 };
 

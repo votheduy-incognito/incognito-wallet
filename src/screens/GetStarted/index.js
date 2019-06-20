@@ -94,7 +94,7 @@ const mapDispatch = { reloadWallet };
 
 GetStartedContainer.propTypes = {
   reloadWallet: PropTypes.func.isRequired,
-  navigation: PropTypes.objectOf(PropTypes.object).isRequired
+  navigation: PropTypes.object.isRequired
 };
 
 export default connect(

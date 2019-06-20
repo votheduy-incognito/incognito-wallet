@@ -1,20 +1,21 @@
-import React from 'react';
-import { createStackNavigator } from 'react-navigation';
-import UserHeaderBoard from '@src/screens/UserHeaderBoard';
-import Staking from '@src/screens/Staking';
-import Defragment from '@src/screens/Defragment';
-import SendConstant from '@src/screens/SendConstant';
-import NetworkSetting from '@src/screens/NetworkSetting';
+import UserHeader from '@src/components/UserHeader';
 import CreateAccount from '@src/screens/CreateAccount';
-import SeedPhrase from '@src/screens/SeedPhrase';
-import ImportAccount from '@src/screens/ImportAccount';
-import ExportAccount from '@src/screens/ExportAccount';
 import CreateSendToken from '@src/screens/CreateSendToken';
+import Defragment from '@src/screens/Defragment';
+import ExportAccount from '@src/screens/ExportAccount';
 import FollowToken from '@src/screens/FollowToken';
 import HistoryToken from '@src/screens/HistoryToken';
-import UserHeader from '@src/components/UserHeader';
+import ImportAccount from '@src/screens/ImportAccount';
+import NetworkSetting from '@src/screens/NetworkSetting';
+import SeedPhrase from '@src/screens/SeedPhrase';
+import SendConstant from '@src/screens/SendConstant';
+import Staking from '@src/screens/Staking';
+import UserHeaderBoard from '@src/screens/UserHeaderBoard';
+import WalletDetail from '@src/screens/WalletDetail';
 import { THEME } from '@src/styles';
 import { navigationOptionsHandler } from '@src/utils/router';
+import React from 'react';
+import { createStackNavigator } from 'react-navigation';
 import ROUTE_NAMES from './routeNames';
 import TabNavigator from './TabNavigator';
 
@@ -32,7 +33,8 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.ExportAccount]: navigationOptionsHandler(ExportAccount),
     [ROUTE_NAMES.CreateSendToken]: navigationOptionsHandler(CreateSendToken),
     [ROUTE_NAMES.FollowToken]: navigationOptionsHandler(FollowToken),
-    [ROUTE_NAMES.HistoryToken]: navigationOptionsHandler(HistoryToken)
+    [ROUTE_NAMES.HistoryToken]: navigationOptionsHandler(HistoryToken),
+    [ROUTE_NAMES.WalletDetail]: navigationOptionsHandler(WalletDetail)
   },
   {
     initialRouteName: 'TabNavigator',
