@@ -1,12 +1,14 @@
 {
   "typescript.validate.enable": false,
   "editor.tabSize": 2,
-  "editor.formatOnSave": true,
   "javascript.validate.enable": false,
   "javascript.format.enable": false,
   "prettier.eslintIntegration": true,
   "prettier.singleQuote": true,
   "eslint.packageManager": "yarn",
-  "eslint.workingDirectories": ["./src"],
-  "flow.runOnAllFiles": true
+  "eslint.workingDirectories": ["src"],
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  },
+  "eslint.autoFixOnSave": true
 }

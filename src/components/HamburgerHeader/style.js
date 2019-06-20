@@ -1,10 +1,10 @@
-import { StyleSheet } from 'react-native';
 import { SPACING } from '@src/styles';
+import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
   container: {
-    paddingLeft: SPACING.small,
-    paddingHorizontal: SPACING.small
+    paddingHorizontal: SPACING.small,
+    paddingLeft: SPACING.small
   }
 });
 

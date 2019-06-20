@@ -1,13 +1,15 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import accountService from '@src/services/wallet/accountService';
-import CreateAccount from './CreateAccount';
 import { Toast } from '@src/components/core';
 import { reloadAccountList } from '@src/redux/actions/wallet';
+import accountService from '@src/services/wallet/accountService';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import CreateAccount from './CreateAccount';
 
 class CreateAccountContainer extends Component {
-  createAccount = async (accountName = throw new Error('Account name is required')) => {
+  createAccount = async (
+    accountName = new Error('Account name is required')
+  ) => {
     try {
       const { wallet, reloadAccountList } = this.props;
 
@@ -18,7 +20,7 @@ class CreateAccountContainer extends Component {
     } catch {
       Toast.showError('Create account failed');
     }
-  }
+  };
 
   render() {
     return <CreateAccount {...this.props} createAccount={this.createAccount} />;
@@ -33,8 +35,11 @@ const mapState = state => ({
 const mapDispatch = { reloadAccountList };
 
 CreateAccountContainer.propTypes = {
-  wallet: PropTypes.object,
+  wallet: PropTypes.objectOf(PropTypes.object),
   reloadAccountList: PropTypes.func
 };
 
-export default connect(mapState, mapDispatch)(CreateAccountContainer);
+export default connect(
+  mapState,
+  mapDispatch
+)(CreateAccountContainer);

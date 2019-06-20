@@ -1,11 +1,11 @@
-import { StyleSheet } from 'react-native';
 import { THEME } from '@src/styles';
+import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
   container: {
     ...THEME.textInput,
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row'
   },
   input: {
     flex: 1

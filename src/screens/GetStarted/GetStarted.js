@@ -1,7 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { View, Button, Toast, Text, TouchableOpacity, Container } from '@src/components/core';
+import {
+  Button,
+  Container,
+  Text,
+  Toast,
+  TouchableOpacity,
+  View
+} from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
+import PropTypes from 'prop-types';
+import React from 'react';
 import style from './style';
 
 const GetStarted = ({ onCreateNew, goHome, isInitialing }) => {
@@ -22,16 +29,24 @@ const GetStarted = ({ onCreateNew, goHome, isInitialing }) => {
   }
 
   return (
-    <Container style={style.container}> 
+    <Container style={style.container}>
       <View style={style.getStartedBlock}>
         <Text style={[style.title, style.centerText]}>Excited?</Text>
         <Text style={[style.title, style.centerText]}>You should be</Text>
-        <Button title='Get Started' onPress={handleGetStarted} style={style.getStartedBtn} />
+        <Button
+          title="Get Started"
+          onPress={handleGetStarted}
+          style={style.getStartedBtn}
+        />
       </View>
       <View style={style.importKeyBlock}>
-        <Text style={style.centerText}>Import private key if you already have an account with us.</Text>
+        <Text style={style.centerText}>
+          Import private key if you already have an account with us.
+        </Text>
         <TouchableOpacity onPress={() => alert('Doing...doing...doing...')}>
-          <Text style={[style.importBtn, style.centerText]}>Import your key</Text>
+          <Text style={[style.importBtn, style.centerText]}>
+            Import your key
+          </Text>
         </TouchableOpacity>
       </View>
     </Container>

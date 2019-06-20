@@ -1,7 +1,7 @@
+import LoadingContainer from '@src/components/LoadingContainer';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import LoadingContainer from '@src/components/LoadingContainer';
 import ExportAccount from './ExportAccount';
 
 const ExportAccountContainer = ({ account, navigation }) => {
@@ -15,8 +15,8 @@ const ExportAccountContainer = ({ account, navigation }) => {
 };
 
 ExportAccountContainer.propTypes = {
-  navigation: PropTypes.object,
-  account: PropTypes.object
+  navigation: PropTypes.objectOf(PropTypes.object),
+  account: PropTypes.objectOf(PropTypes.object)
 };
 
 const mapState = state => ({

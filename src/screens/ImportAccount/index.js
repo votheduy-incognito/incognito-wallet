@@ -1,11 +1,10 @@
-
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import accountService from '@src/services/wallet/accountService';
-import { getPassphrase } from '@src/services/wallet/passwordService';
 import { Toast } from '@src/components/core';
 import { reloadAccountList } from '@src/redux/actions/wallet';
+import accountService from '@src/services/wallet/accountService';
+import { getPassphrase } from '@src/services/wallet/passwordService';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import ImportAccount from './ImportAccount';
 
 class ImportAccountContainer extends Component {
@@ -14,14 +13,19 @@ class ImportAccountContainer extends Component {
       const { wallet, reloadAccountList } = this.props;
       const passphrase = await getPassphrase();
 
-      await accountService.importAccount(privateKey, accountName, passphrase, wallet);
+      await accountService.importAccount(
+        privateKey,
+        accountName,
+        passphrase,
+        wallet
+      );
       Toast.showInfo(`Your account ${accountName} was import!`);
 
       await reloadAccountList();
     } catch {
       Toast.showError('Import account failed');
     }
-  }
+  };
 
   render() {
     return <ImportAccount {...this.props} importAccount={this.importAccount} />;
@@ -34,10 +38,16 @@ const mapState = state => ({
 });
 
 const mapDispatch = { reloadAccountList };
-
+ImportAccountContainer.defaultProps = {
+  wallet: undefined,
+  reloadAccountList: undefined
+};
 ImportAccountContainer.propTypes = {
-  wallet: PropTypes.object,
+  wallet: PropTypes.objectOf(PropTypes.object),
   reloadAccountList: PropTypes.func
 };
 
-export default connect(mapState, mapDispatch)(ImportAccountContainer);
+export default connect(
+  mapState,
+  mapDispatch
+)(ImportAccountContainer);

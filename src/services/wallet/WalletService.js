@@ -1,16 +1,17 @@
-import {
-  RpcClient,
-  Wallet,
-  SuccessTx as SuccessTxWallet,
-  ConfirmedTx as ConfirmedTxWallet,
-  genImageFromStr as genImageFromStrWallet
-} from 'incognito-chain-web-js/build/wallet';
+/* eslint-disable import/no-cycle */
 import storage from '@src/services/storage';
-import {getPassphrase} from './passwordService';
+import {
+  ConfirmedTx as ConfirmedTxWallet,
+  genImageFromStr as genImageFromStrWallet,
+  RpcClient,
+  SuccessTx as SuccessTxWallet,
+  Wallet
+} from 'incognito-chain-web-js/build/wallet';
+import { randomBytes } from 'react-native-randombytes';
 import accountService from './accountService';
+import { getPassphrase } from './passwordService';
+import { getMaxShardNumber } from './RpcClientService';
 import Server from './Server';
-import {getMaxShardNumber} from './RpcClientService';
-import {randomBytes} from 'react-native-randombytes';
 
 const numOfAccount = 1;
 const walletName = 'wallet1';
@@ -21,21 +22,24 @@ export const SuccessTx = SuccessTxWallet;
 
 export async function loadListAccount(wallet) {
   try {
-    const listAccountRaw = await wallet.listAccount() || [];
-    const listAccount = listAccountRaw.map(account => ({
-      default: false,
-      name: account.AccountName,
-      value: -1,
-      PaymentAddress: account.PaymentAddress,
-      ReadonlyKey: account.ReadonlyKey,
-      PrivateKey: account.PrivateKey,
-      PublicKey: account.PublicKey,
-      PublicKeyCheckEncode: account.PublicKeyCheckEncode,
-      PublicKeyBytes: account.PublicKeyBytes
-    })) || [];
+    const listAccountRaw = (await wallet.listAccount()) || [];
+    const listAccount =
+      listAccountRaw.map(account => ({
+        default: false,
+        name: account.AccountName,
+        value: -1,
+        PaymentAddress: account.PaymentAddress,
+        ReadonlyKey: account.ReadonlyKey,
+        PrivateKey: account.PrivateKey,
+        PublicKey: account.PublicKey,
+        PublicKeyCheckEncode: account.PublicKeyCheckEncode,
+        PublicKeyBytes: account.PublicKeyBytes
+      })) || [];
 
     const defaultAccountName = await accountService.getDefaultAccountName();
-    const defaultAccountIndex = listAccount?.findIndex(_acc => _acc.name === defaultAccountName);
+    const defaultAccountIndex = listAccount?.findIndex(
+      _acc => _acc.name === defaultAccountName
+    );
 
     if (defaultAccountIndex !== -1) {
       listAccount[defaultAccountIndex].default = true;
@@ -94,13 +98,7 @@ export async function initWallet() {
 
     console.log('wallet.Storage.setItem: ', typeof wallet.Storage.setItem);
 
-    wallet.init(
-      passphrase,
-      numOfAccount,
-      walletName,
-      storage,
-      '1'
-    );
+    wallet.init(passphrase, numOfAccount, walletName, storage, '1');
 
     await wallet.save(passphrase);
     console.log('Wallet after initing kraken: ', wallet);
@@ -114,8 +112,8 @@ export async function saveWallet(wallet) {
   wallet.save(await getPassphrase());
 }
 
-export async function loadHistoryByAccount(wallet, accountName){
-  return await wallet.getHistoryByAccount(accountName) || [];
+export async function loadHistoryByAccount(wallet, accountName) {
+  return (await wallet.getHistoryByAccount(accountName)) || [];
 }
 
 export async function updateStatusHistory(wallet) {

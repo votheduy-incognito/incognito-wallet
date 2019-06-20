@@ -1,4 +1,5 @@
-import { genNamspace } from '@src/utils/reduxUtils.js';
+import { genNamspace } from '@src/utils/reduxUtils';
+
 const n = genNamspace('SERVER');
 
 // define types here

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { TouchableOpacity as RNComponent } from 'react-native';
-import { Text, ActivityIndicator, View } from '@src/components/core';
+import { ActivityIndicator, Text, View } from '@src/components/core';
 import { COLORS } from '@src/styles';
+import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import { TouchableOpacity as RNComponent } from 'react-native';
 import styleSheet from './style';
 
 const Button = ({ title, children, style, titleStyle, type, onPress, loadingColor, isLoading: isLoadingProps, prepend, ...props }) => {
@@ -56,14 +56,14 @@ Button.propTypes = {
   isLoading: PropTypes.bool,
   loadingColor: PropTypes.string,
   onPress: PropTypes.func,
-  style: PropTypes.object,
-  titleStyle: PropTypes.object,
+  style: PropTypes.objectOf(PropTypes.object),
+  titleStyle: PropTypes.objectOf(PropTypes.object),
   title: PropTypes.string,
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
-  type: PropTypes.oneOf([
-    'primary',
-    'danger',
-  ])
+  children: PropTypes.oneOfType([
+    PropTypes.node,
+    PropTypes.arrayOf(PropTypes.node)
+  ]),
+  type: PropTypes.oneOf(['primary', 'danger'])
 };
 
 export default Button;

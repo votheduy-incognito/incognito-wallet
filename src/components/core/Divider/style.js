@@ -1,11 +1,11 @@
-import { StyleSheet } from 'react-native';
 import { THEME } from '@src/styles';
+import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
   container: {
-    height: THEME.divider.height,
-    backgroundColor: THEME.divider.color
-  },
+    backgroundColor: THEME.divider.color,
+    height: THEME.divider.height
+  }
 });
 
 export default style;

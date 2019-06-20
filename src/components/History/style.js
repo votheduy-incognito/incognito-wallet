@@ -1,49 +1,49 @@
+import { COLORS, FONT, SPACING } from '@src/styles';
 import { StyleSheet } from 'react-native';
-import { FONT, SPACING, COLORS } from '@src/styles';
 
 const style = StyleSheet.create({
-  container: {
+  amountText: {
+    color: COLORS.black,
     flex: 1,
+    fontWeight: 'bold',
+    textAlign: 'right'
+  },
+  container: {
+    flex: 1
+  },
+  divider: {
+    marginVertical: 5
+  },
+  feeText: {
+    flex: 1,
+    fontSize: FONT.SIZE.small
+  },
+  image: {
+    borderRadius: 20,
+    height: 40,
+    marginRight: SPACING.small,
+    width: 40
   },
   itemContainer: {
     marginVertical: SPACING.small
   },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 3,
-  },
-  image: {
-    marginRight: SPACING.small,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  feeText: {
-    fontSize: FONT.SIZE.small,
-    flex: 1
-  },
-  statusText: {
-    fontSize: FONT.SIZE.small,
-    fontWeight: 'bold',
-    textAlign: 'right',
-    flex: 1
-  },
-  amountText: {
-    fontWeight: 'bold',
-    color: COLORS.black,
-    textAlign: 'right',
-    flex: 1
-  },
   receiverText: {
     flex: 1
   },
+  row: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 3
+  },
+  statusText: {
+    flex: 1,
+    fontSize: FONT.SIZE.small,
+    fontWeight: 'bold',
+    textAlign: 'right'
+  },
   timeText: {
     flex: 1
-  },
-  divider: {
-    marginVertical: 5,
   }
 });
 

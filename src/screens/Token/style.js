@@ -1,78 +1,75 @@
+import { COLORS, FONT, SPACING } from '@src/styles';
 import { StyleSheet } from 'react-native';
-import { FONT, SPACING, COLORS } from '@src/styles';
 
 const style = StyleSheet.create({
-  container: {
+  amountText: {
+    color: COLORS.black,
     flex: 1,
+    fontWeight: 'bold',
+    textAlign: 'right'
+  },
+  container: {
+    flex: 1
   },
   feeText: {
-    fontSize: FONT.SIZE.small,
-    flex: 1
-  },
-  statusText: {
-    fontSize: FONT.SIZE.small,
-    fontWeight: 'bold',
-    textAlign: 'right',
-    flex: 1
-  },
-  amountText: {
-    fontWeight: 'bold',
-    color: COLORS.black,
-    textAlign: 'right',
-    flex: 1
+    flex: 1,
+    fontSize: FONT.SIZE.small
   },
   receiverText: {
     flex: 1
   },
-  
+  statusText: {
+    flex: 1,
+    fontSize: FONT.SIZE.small,
+    fontWeight: 'bold',
+    textAlign: 'right'
+  }
 });
 
 export const tokenItemStyle = StyleSheet.create({
+  amount: {},
   container: {
-    flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
+    flexDirection: 'row',
     marginVertical: 3,
+    paddingVertical: 10
+  },
+  divider: {
+    marginVertical: 5
   },
   image: {
-    width: 40,
-    height: 40,
     borderRadius: 20,
     flexBasis: 40,
-    marginRight: SPACING.medium
+    height: 40,
+    marginRight: SPACING.medium,
+    width: 40
   },
   infoContainer: {
     flex: 1,
     flexDirection: 'column'
   },
-  name: {
-    color: COLORS.black
-  },
-  amount: {},
-  divider: {
-    marginVertical: 5,
-  },
   itemContainer: {
     marginVertical: SPACING.small
   },
+  name: {
+    color: COLORS.black
+  }
 });
 
 export const tokenStyle = StyleSheet.create({
-  initTokenBtn: {
-
-  },
   addFollowTokenBtn: {
-    color: COLORS.green,
-    marginBottom: SPACING.medium,
-    flexDirection: 'row',
     alignItems: 'center',
+    color: COLORS.green,
+    flexDirection: 'row',
     justifyContent: 'center',
+    marginBottom: SPACING.medium
   },
   addFollowTokenBtnText: {
     color: COLORS.green,
     fontWeight: 'bold',
     marginLeft: 5
-  }
+  },
+  initTokenBtn: {}
 });
 
 export default style;

@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { View, Text, TouchableOpacity } from '@src/components/core';
+import { Text, TouchableOpacity, View } from '@src/components/core';
 import { COLORS } from '@src/styles';
+import PropTypes from 'prop-types';
+import React from 'react';
 import MdIcons from 'react-native-vector-icons/MaterialIcons';
 import EditSetting from './EditSetting';
 import { networkItemStyle } from './style';
@@ -9,26 +9,45 @@ import { networkItemStyle } from './style';
 const NetworkItem = ({ active, network, expanded, onExpand, onActive }) => (
   <View style={networkItemStyle.container}>
     <View style={networkItemStyle.summaryContainer}>
-      <TouchableOpacity onPress={onActive} style={networkItemStyle.iconContainer}>
-        <MdIcons name={active ? 'star' : 'star-border'} size={24} color={active ? COLORS.primary : null} />
+      <TouchableOpacity
+        onPress={onActive}
+        style={networkItemStyle.iconContainer}
+      >
+        <MdIcons
+          name={active ? 'star' : 'star-border'}
+          size={24}
+          color={active ? COLORS.primary : null}
+        />
       </TouchableOpacity>
-      <TouchableOpacity onPress={onExpand} style={networkItemStyle.infoContainer}>
+      <TouchableOpacity
+        onPress={onExpand}
+        style={networkItemStyle.infoContainer}
+      >
         <View style={networkItemStyle.textInfoContainer}>
-          <Text style={networkItemStyle.networkName} numberOfLines={1} ellipsizeMode='tail'>{network?.name}</Text>
-          <Text numberOfLines={1} ellipsizeMode='tail'>{network?.address}</Text>
+          <Text
+            style={networkItemStyle.networkName}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {network?.name}
+          </Text>
+          <Text numberOfLines={1} ellipsizeMode="tail">
+            {network?.address}
+          </Text>
         </View>
         <View style={networkItemStyle.arrowIcon}>
-          <MdIcons name={ expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'} size={24} />
+          <MdIcons
+            name={expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
+            size={24}
+          />
         </View>
       </TouchableOpacity>
     </View>
-    {
-      expanded && (
-        <View style={networkItemStyle.editContainer}>
-          <EditSetting network={network} />
-        </View>
-      )
-    }
+    {expanded && (
+      <View style={networkItemStyle.editContainer}>
+        <EditSetting network={network} />
+      </View>
+    )}
   </View>
 );
 
@@ -43,7 +62,9 @@ export const networkItemShape = PropTypes.shape({
 
 NetworkItem.defaultProps = {
   active: false,
-  expanded: false
+  expanded: false,
+  onActive: undefined,
+  onExpand: undefined
 };
 
 NetworkItem.propTypes = {

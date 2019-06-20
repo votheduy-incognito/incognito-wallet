@@ -1,44 +1,44 @@
+import { COLORS, FONT, SPACING } from '@src/styles';
 import { StyleSheet } from 'react-native';
-import { FONT, COLORS, SPACING } from '@src/styles';
 
 export const networkItemStyle = StyleSheet.create({
+  arrowIcon: {
+    flexBasis: 30,
+    flexDirection: 'row'
+  },
   container: {
     flexDirection: 'column'
   },
-  summaryContainer: {
-    flexDirection: 'row',
-    paddingBottom: SPACING.medium,
-    justifyContent: 'space-between'
+  editContainer: {
+    marginBottom: SPACING.large,
+    paddingHorizontal: SPACING.small
   },
   iconContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
     alignItems: 'center',
-    flexBasis: 60
+    flexBasis: 60,
+    flexDirection: 'row',
+    justifyContent: 'flex-start'
   },
   infoContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-between'
+  },
+  networkName: {
+    color: COLORS.black,
+    fontSize: FONT.SIZE.medium
+  },
+  summaryContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    flex: 1,
+    paddingBottom: SPACING.medium
   },
   textInfoContainer: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'flex-start',
-  },
-  networkName: {
-    fontSize: FONT.SIZE.medium,
-    color: COLORS.black
-  },
-  arrowIcon: {
-    flexDirection: 'row',
-    flexBasis: 30,
-  },
-  editContainer: {
-    paddingHorizontal: SPACING.small,
-    marginBottom: SPACING.large,
+    alignItems: 'flex-start'
   }
 });
 
@@ -47,8 +47,8 @@ export const networkEditStyle = StyleSheet.create({
     flexDirection: 'row'
   },
   removeBtn: {
-    width: 120,
     marginRight: SPACING.small,
+    width: 120
   },
   saveBtn: {
     flex: 2

@@ -1,9 +1,9 @@
-import { getPassphrase, clearPassword } from './wallet/passwordService';
 import { Toast } from '@src/components/core';
 import ROUTE_NAMES from '@src/router/routeNames';
+import { clearPassword, getPassphrase } from './wallet/passwordService';
 
 export const login = async ({
-  password = throw new Error('Password is required!')
+  password = new Error('Password is required!')
 }) => {
   try {
     if (password) {

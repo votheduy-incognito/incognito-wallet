@@ -1,33 +1,33 @@
+import { COLORS, FONT, SPACING } from '@src/styles';
 import { StyleSheet } from 'react-native';
-import { COLORS, SPACING, FONT } from '@src/styles';
 
 export const sectionStyle = StyleSheet.create({
   container: {
     flex: 1,
     marginBottom: SPACING.small
   },
-  label: {
-    fontWeight: 'bold',
-    color: COLORS.lightGrey
+  iconContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    width: 60
+  },
+  infoContainer: {
+    alignItems: 'flex-start',
+    flexDirection: 'column',
+    justifyContent: 'center'
+  },
+  item: {
+    flexDirection: 'row'
   },
   items: {
     marginVertical: SPACING.small
   },
-  item: {
-    flexDirection: 'row',
-  },
-  iconContainer: {
-    flexDirection: 'row',
-    width: 60,
-    alignItems: 'center'
-  },
-  infoContainer: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
+  label: {
+    color: COLORS.lightGrey,
+    fontWeight: 'bold'
   },
   titleItem: {
-    fontSize: FONT.SIZE.medium,
-    color: COLORS.black
+    color: COLORS.black,
+    fontSize: FONT.SIZE.medium
   }
 });

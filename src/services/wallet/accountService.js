@@ -1,7 +1,8 @@
-import { KeyWallet, Wallet } from 'incognito-chain-web-js/build/wallet';
-import storage from '@src/services/storage';
-import { getActiveShard } from './RpcClientService';
+/* eslint-disable import/no-cycle */
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
+import storage from '@src/services/storage';
+import { KeyWallet, Wallet } from 'incognito-chain-web-js/build/wallet';
+import { getActiveShard } from './RpcClientService';
 import { saveWallet } from './WalletService';
 
 export default class Account {
@@ -9,7 +10,9 @@ export default class Account {
     try {
       return await storage.getItem(CONSTANT_KEYS.DEFAULT_ACCOUNT_NAME);
     } catch (e) {
-      console.error('Error while getting default account index, fallback index to 0');
+      console.error(
+        'Error while getting default account index, fallback index to 0'
+      );
     }
     return null;
   }
@@ -150,25 +153,25 @@ export default class Account {
     return true;
   }
 
-  static async getBalance(account, wallet){
+  static async getBalance(account, wallet) {
     const indexAccount = wallet.getAccountIndexByName(account.name);
-    return await wallet.MasterAccount.child[
-      indexAccount
-    ].getBalance();
+    return await wallet.MasterAccount.child[indexAccount].getBalance();
   }
 
-  static async getFollowingTokens(account, wallet){
+  static async getFollowingTokens(account, wallet) {
     const indexAccount = wallet.getAccountIndexByName(account.name);
     return await wallet.MasterAccount.child[indexAccount].listFollowingTokens();
   }
 
-  static async addFollowingTokens(tokens, account, wallet){
+  static async addFollowingTokens(tokens, account, wallet) {
     const indexAccount = wallet.getAccountIndexByName(account.name);
     await wallet.MasterAccount.child[indexAccount].addFollowingToken(...tokens);
   }
 
-  static async removeFollowingToken(tokenId, account, wallet){
+  static async removeFollowingToken(tokenId, account, wallet) {
     const indexAccount = wallet.getAccountIndexByName(account.name);
-    await wallet.MasterAccount.child[indexAccount].removeFollowingToken(tokenId);
+    await wallet.MasterAccount.child[indexAccount].removeFollowingToken(
+      tokenId
+    );
   }
 }

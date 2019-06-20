@@ -2,6 +2,7 @@ export default {
   RootApp: 'App',
   RootSplash: 'Splash',
   RootSubscribeEmailNavigator: 'SubscribeEmailNavigator',
+  RootMiner: 'RootMiner',
   RootAuth: 'Auth',
   Login: 'Login',
   Splash: 'Splash',
@@ -22,4 +23,5 @@ export default {
   HistoryToken: 'HistoryToken',
   GetStarted: 'GetStarted',
   WalletDetail: 'WalletDetail',
+  AddDevice: 'AddDevice'
 };

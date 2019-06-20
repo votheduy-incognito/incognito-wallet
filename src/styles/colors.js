@@ -15,5 +15,5 @@ export default {
   overlayBlackLight: 'rgba(0, 0, 0, 0.3)',
   primary: '#007bff',
   blueLight: '#00D7FF',
-  headerColor: '#263B41',
+  headerColor: '#263B41'
 };

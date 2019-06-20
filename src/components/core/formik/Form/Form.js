@@ -1,40 +1,56 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { Formik } from 'formik';
-import Effect from './Effect';
-import { View, FormSubmitButton, FormTextField, CheckBoxField, PickerField } from '@src/components/core';
-
-const isFormField = (com = throw new Error('Must be a React component')) => [
-  FormTextField,
+import {
   CheckBoxField,
-  PickerField
-].includes(com.type);
+  FormSubmitButton,
+  FormTextField,
+  PickerField,
+  View
+} from '@src/components/core';
+import { Formik } from 'formik';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import Effect from './Effect';
 
-const injectFieldToChildren = ({ handleChange, handleSubmit, handleBlur, values, errors, children, isLoading }) => {
-  const childrens = children?.constructor === Array ? [...children] : [children];
-  const injectChildren = (field, children) => React.cloneElement(field, {
-    children: injectFieldToChildren({ handleChange, handleSubmit, handleBlur, values, errors, children })
-  });
+const isFormField = (com = new Error('Must be a React component')) =>
+  [FormTextField, CheckBoxField, PickerField].includes(com.type);
 
-  return  React.Children.map(childrens, field => {
+const injectFieldToChildren = ({
+  handleChange,
+  handleSubmit,
+  handleBlur,
+  values,
+  errors,
+  children,
+  isLoading
+}) => {
+  const childrens =
+    children?.constructor === Array ? [...children] : [children];
+  const injectChildren = (field, children) =>
+    React.cloneElement(field, {
+      children: injectFieldToChildren({
+        handleChange,
+        handleSubmit,
+        handleBlur,
+        values,
+        errors,
+        children
+      })
+    });
+
+  return React.Children.map(childrens, field => {
     if (field?.type === FormSubmitButton) {
-      return (
-        React.cloneElement(field, {
-          handleSubmit,
-          isLoading
-        })
-      );
+      return React.cloneElement(field, {
+        handleSubmit,
+        isLoading
+      });
     }
 
     if (isFormField(field)) {
-      return (
-        React.cloneElement(field, {
-          handleChange,
-          handleBlur,
-          value: field?.props?.name && values[field.props.name],
-          error: field?.props?.name && errors[field?.props?.name],
-        })
-      );
+      return React.cloneElement(field, {
+        handleChange,
+        handleBlur,
+        value: field?.props?.name && values[field.props.name],
+        error: field?.props?.name && errors[(field?.props?.name)]
+      });
     }
 
     if (field?.props?.children) {
@@ -44,9 +60,17 @@ const injectFieldToChildren = ({ handleChange, handleSubmit, handleBlur, values,
   });
 };
 
-const CustomForm = (props) => {
-  const { initialValues, onSubmit, children, viewProps, formRef, onFormChange, ...formikProps } = props;
-  const [ isLoading, setLoading ] = useState(false);
+const CustomForm = props => {
+  const {
+    initialValues,
+    onSubmit,
+    children,
+    viewProps,
+    formRef,
+    onFormChange,
+    ...formikProps
+  } = props;
+  const [isLoading, setLoading] = useState(false);
 
   const handleOnSubmit = (...args) => {
     if (typeof onSubmit === 'function') {
@@ -66,7 +90,7 @@ const CustomForm = (props) => {
       onSubmit={handleOnSubmit}
       enableReinitialize
       {...formikProps}
-      render={(form) => {
+      render={form => {
         if (typeof formRef === 'function') {
           formRef(form);
         }
@@ -75,22 +99,27 @@ const CustomForm = (props) => {
         return (
           <View {...viewProps}>
             <Effect onChange={onFormChange} />
-            {
-              injectFieldToChildren({ handleChange, handleSubmit, handleBlur, values, errors, children, isLoading })
-            }
+            {injectFieldToChildren({
+              handleChange,
+              handleSubmit,
+              handleBlur,
+              values,
+              errors,
+              children,
+              isLoading
+            })}
           </View>
         );
       }}
-    >
-    </Formik>
+    />
   );
 };
 
 CustomForm.propTypes = {
-  initialValues: PropTypes.object,
+  initialValues: PropTypes.objectOf(PropTypes.object),
   onSubmit: PropTypes.func,
   children: PropTypes.oneOf(PropTypes.arrayOf(PropTypes.node), PropTypes.node),
-  viewProps: PropTypes.object,
+  viewProps: PropTypes.objectOf(PropTypes.object),
   formRef: PropTypes.func,
   onFormChange: PropTypes.func
 };

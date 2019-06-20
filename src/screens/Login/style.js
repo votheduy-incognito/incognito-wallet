@@ -1,22 +1,22 @@
-import { StyleSheet } from 'react-native';
 import { THEME } from '@src/styles';
+import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: THEME.text.largeTitleSize,
-    fontWeight: 'bold',
+    flex: 1,
+    justifyContent: 'center'
   },
   form: {
-    width: '100%',
-    marginTop: 30
+    marginTop: 30,
+    width: '100%'
   },
   submitBtn: {
     marginTop: 30
+  },
+  title: {
+    fontSize: THEME.text.largeTitleSize,
+    fontWeight: 'bold'
   }
 });
 

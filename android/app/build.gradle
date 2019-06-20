@@ -139,6 +139,8 @@ android {
 }
 
 dependencies {
+    implementation project(':easy-bluetooth-classic')
+    implementation project(':react-native-bluetooth-serial')
     implementation project(':react-native-camera')
     implementation project(':react-native-randombytes')
     implementation project(':react-native-reanimated')

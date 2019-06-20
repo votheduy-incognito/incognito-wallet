@@ -1,9 +1,16 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Text, Container, Form, FormTextField, FormSubmitButton, Toast } from '@src/components/core';
-import { connect } from 'react-redux';
-import ROUTE_NAMES from '@src/router/routeNames';
+import {
+  Container,
+  Form,
+  FormSubmitButton,
+  FormTextField,
+  Text,
+  Toast
+} from '@src/components/core';
 import { reloadWallet } from '@src/redux/actions/wallet';
+import ROUTE_NAMES from '@src/router/routeNames';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { connect } from 'react-redux';
 import formValidate from './formValidate';
 import styleSheet from './style';
 
@@ -20,7 +27,7 @@ const Login = ({ navigation, reloadWallet }) => {
     try {
       const wallet = await reloadWallet(password);
 
-      if (wallet){
+      if (wallet) {
         return goHome();
       }
 
@@ -34,19 +41,35 @@ const Login = ({ navigation, reloadWallet }) => {
     <Container style={styleSheet.container}>
       <Text style={styleSheet.title}>Welcome back!</Text>
       <Text>The decentralized web awaits</Text>
-      <Form onSubmit={handleLogin} viewProps={{ style: styleSheet.form }} validationSchema={formValidate}>
-        <FormTextField name='password' placeholder='Enter your password' textContentType='password' secureTextEntry />
-        <FormSubmitButton title='Login' style={styleSheet.submitBtn} />
+      <Form
+        onSubmit={handleLogin}
+        viewProps={{ style: styleSheet.form }}
+        validationSchema={formValidate}
+      >
+        <FormTextField
+          name="password"
+          placeholder="Enter your password"
+          textContentType="password"
+          secureTextEntry
+        />
+        <FormSubmitButton title="Login" style={styleSheet.submitBtn} />
       </Form>
     </Container>
   );
 };
+Login.defaultProps = {
+  navigation: undefined,
+  reloadWallet: undefined
+};
 
 Login.propTypes = {
-  navigation: PropTypes.object,
+  navigation: PropTypes.objectOf(PropTypes.object),
   reloadWallet: PropTypes.func
 };
 
 const mapDispatch = { reloadWallet };
 
-export default connect(null, mapDispatch)(Login);
+export default connect(
+  null,
+  mapDispatch
+)(Login);

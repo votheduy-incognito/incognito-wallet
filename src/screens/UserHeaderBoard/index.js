@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { setDefaultAccount } from '@src/redux/actions/account';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import UserHeaderBoard from './UserHeaderBoard';
 
 class UserHeaderBoardContainer extends Component {
@@ -9,11 +9,14 @@ class UserHeaderBoardContainer extends Component {
     const { setDefaultAccount } = this.props;
 
     setDefaultAccount(account);
-  }
+  };
 
   render() {
     return (
-      <UserHeaderBoard {...this.props} handleSwitchAccount={this.onHandleSwitchAccount} />
+      <UserHeaderBoard
+        {...this.props}
+        handleSwitchAccount={this.onHandleSwitchAccount}
+      />
     );
   }
 }
@@ -25,9 +28,14 @@ const mapState = state => ({
 });
 
 const mapDispatch = { setDefaultAccount };
-
+UserHeaderBoardContainer.defaultProps = {
+  setDefaultAccount: undefined
+};
 UserHeaderBoardContainer.propTypes = {
   setDefaultAccount: PropTypes.func
 };
 
-export default connect(mapState, mapDispatch)(UserHeaderBoardContainer);
+export default connect(
+  mapState,
+  mapDispatch
+)(UserHeaderBoardContainer);
