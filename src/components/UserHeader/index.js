@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import UserHeader from './UserHeader';
@@ -14,7 +13,7 @@ const mapState = state => ({
 });
 
 UserHeaderContainer.propTypes = {
-  defaultAccount: PropTypes.objectOf(PropTypes.object)
+  // defaultAccount: PropTypes.objectOf(PropTypes.object)
 };
 
 export default connect(mapState)(UserHeaderContainer);
