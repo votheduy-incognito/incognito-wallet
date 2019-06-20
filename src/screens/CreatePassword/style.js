@@ -1,23 +1,23 @@
+import { COLORS, THEME } from '@src/styles';
 import { StyleSheet } from 'react-native';
-import { THEME, COLORS } from '@src/styles';
 
 const style = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    flex: 1,
+    justifyContent: 'center'
+  },
+  form: {
+    marginTop: 30,
+    width: '100%'
+  },
+  submitBtn: {
+    backgroundColor: COLORS.green,
+    marginTop: 30
   },
   title: {
     fontSize: THEME.text.largeTitleSize,
-    fontWeight: 'bold',
-  },
-  form: {
-    width: '100%',
-    marginTop: 30
-  },
-  submitBtn: {
-    marginTop: 30,
-    backgroundColor: COLORS.green
+    fontWeight: 'bold'
   }
 });
 

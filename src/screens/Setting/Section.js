@@ -1,6 +1,6 @@
-import React from 'react';
+import { Text, TouchableOpacity, View } from '@src/components/core';
 import PropTypes from 'prop-types';
-import { View, Text, TouchableOpacity } from '@src/components/core';
+import React from 'react';
 import { sectionStyle } from './style';
 
 const SectionItem = ({ data: { icon, title, desc, handlePress } }) => (
@@ -14,12 +14,11 @@ const SectionItem = ({ data: { icon, title, desc, handlePress } }) => (
 );
 
 const Section = ({ label, items }) => (
-  <View style={sectionStyle.container}>  
+  <View style={sectionStyle.container}>
     <Text style={sectionStyle.label}>{label}</Text>
     <View style={sectionStyle.items}>
-      {
-        items && items.map((item, index) =>  <SectionItem key={index} data={item} />)
-      }
+      {items &&
+        items.map((item, index) => <SectionItem key={index} data={item} />)}
     </View>
   </View>
 );
@@ -31,11 +30,18 @@ const itemShape = PropTypes.shape({
   handlePress: PropTypes.func
 });
 
+Section.defaultProps = {
+  label: '',
+  items: undefined
+};
 Section.propTypes = {
   label: PropTypes.string,
   items: PropTypes.arrayOf(itemShape)
 };
 
+SectionItem.defaultProps = {
+  data: undefined
+};
 SectionItem.propTypes = {
   data: itemShape
 };

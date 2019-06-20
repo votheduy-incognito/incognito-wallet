@@ -1,27 +1,27 @@
+import { COLORS, FONT, SPACING } from '@src/styles';
 import { StyleSheet } from 'react-native';
-import { COLORS, SPACING, FONT } from '@src/styles';
 
 const style = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: COLORS.overlayBlackDark
+    backgroundColor: COLORS.overlayBlackDark,
+    flex: 1,
+    justifyContent: 'center'
+  },
+  desc: {
+    color: COLORS.white,
+    fontSize: FONT.SIZE.small,
+    textAlign: 'center',
+    width: 200
   },
   percent: {
     color: COLORS.white,
-    marginVertical: SPACING.small,
     fontSize: FONT.SIZE.medium,
     fontWeight: 'bold',
+    marginVertical: SPACING.small
   },
   percentSymbol: {
     fontSize: FONT.SIZE.small
-  },
-  desc: {
-    width: 200,
-    fontSize: FONT.SIZE.small,
-    color: COLORS.white,
-    textAlign: 'center'
   }
 });
 

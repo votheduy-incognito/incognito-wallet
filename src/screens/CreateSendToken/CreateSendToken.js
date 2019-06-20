@@ -1,21 +1,21 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import { Text, Container, Form, FormTextField, FormSubmitButton, Toast, ScrollView, TouchableOpacity, ActivityIndicator } from '@src/components/core';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { FONT } from '@src/styles';
+import { ActivityIndicator, Container, Form, FormSubmitButton, FormTextField, ScrollView, Text, Toast, TouchableOpacity } from '@src/components/core';
+import LoadingTx from '@src/components/LoadingTx';
+import { openQrScanner } from '@src/components/QrCodeScanner';
+import ReceiptModal from '@src/components/Receipt';
 import { CONSTANT_COMMONS } from '@src/constants';
-import formatUtil from '@src/utils/format';
-import formValidate from './formValidate';
-import styleSheet from './style';
+import common from '@src/constants/common';
 import ROUTE_NAMES from '@src/router/routeNames';
 import { getEstimateFeeForSendingToken } from '@src/services/wallet/RpcClientService';
-import convert from '@src/utils/convert';
-import common from '@src/constants/common';
-import ReceiptModal from '@src/components/Receipt';
 import Token from '@src/services/wallet/tokenService';
-import { openQrScanner } from '@src/components/QrCodeScanner';
-import LoadingTx from '@src/components/LoadingTx';
+import { FONT } from '@src/styles';
+import convert from '@src/utils/convert';
+import formatUtil from '@src/utils/format';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import formValidate from './formValidate';
+import styleSheet from './style';
 
 const initialFormValues = {
   fee: '0.5',
@@ -34,7 +34,7 @@ class CreateSendToken extends Component {
       isGettingFee: false
     };
 
-    this.handleShouldGetFee = _.debounce(::this.handleShouldGetFee, 500);
+    this.handleShouldGetFee = _.debounce(this.handleShouldGetFee, 500);
 
     this.form = null;
   }
@@ -214,12 +214,13 @@ class CreateSendToken extends Component {
 
   renderBalance = () => {
     const { account, isCreate, token } = this.props;
+    const {balanceToken} = this.state;
 
     if (isCreate){
-      return <Text> Balance: { formatUtil.amountConstant(account.value) } { CONSTANT_COMMONS.CONST_SYMBOL }</Text>;
+      return <Text>{` Balance: ${ formatUtil.amountConstant(account.value) } ${ CONSTANT_COMMONS.CONST_SYMBOL }`}</Text>;
     }
 
-    return <Text> Balance: { formatUtil.amountToken(this.state.balanceToken) } { token.Name }</Text>;
+    return <Text>{` Balance: ${ formatUtil.amountToken(balanceToken) } ${ token.Name }`}</Text>;
   }
 
   handleQrScanAddress = () => {
@@ -235,7 +236,7 @@ class CreateSendToken extends Component {
     return (
       <ScrollView>
         <Container style={styleSheet.container}>
-          <Text style={styleSheet.title}>{isCreate?'Create':'Send'} Token</Text>
+          <Text style={styleSheet.title}>{`${isCreate?'Create':'Send'} Token`}</Text>
           {this.renderBalance()}
           <Form
             formRef={form => this.form = form}
@@ -246,7 +247,9 @@ class CreateSendToken extends Component {
             validate={this.onFormValidate}
           >
             <FormTextField name='fromAddress' placeholder='From Address' editable={false}  />
-            <FormTextField name='toAddress' placeholder='To Address' 
+            <FormTextField 
+              name='toAddress'
+              placeholder='To Address' 
               prependView={
                 <TouchableOpacity onPress={this.handleQrScanAddress}>
                   <MaterialCommunityIcons name='qrcode-scan' size={FONT.SIZE.large} />
@@ -269,13 +272,13 @@ class CreateSendToken extends Component {
 }
 
 CreateSendToken.propTypes = {
-  navigation: PropTypes.object,
-  wallet: PropTypes.object,
-  account: PropTypes.object,
+  navigation:  PropTypes.objectOf(PropTypes.object),
+  wallet:  PropTypes.objectOf(PropTypes.object),
+  account:  PropTypes.objectOf(PropTypes.object),
   isPrivacy: PropTypes.bool,
   isCreate: PropTypes.bool,
   reloadListFollowToken: PropTypes.func,
-  token: PropTypes.object,
+  token:  PropTypes.objectOf(PropTypes.object),
   reloadBalanceToken: PropTypes.func
 };
 

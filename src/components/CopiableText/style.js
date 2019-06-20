@@ -1,23 +1,23 @@
+import { COLORS, DECOR, SPACING } from '@src/styles';
 import { StyleSheet } from 'react-native';
-import { COLORS, SPACING, DECOR } from '@src/styles';
 
 export default StyleSheet.create({
-  textBox: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: COLORS.white,
-    borderWidth: DECOR.borderWidth,
-    borderRadius: DECOR.borderRadiusBorder,
-    padding: SPACING.small
+  copyIcon: {
+    flexBasis: 20,
+    marginLeft: 3
   },
   text: {
-    fontWeight: '400',
-    flex: 1
+    flex: 1,
+    fontWeight: '400'
   },
-  copyIcon: {
-    marginLeft: 3,
-    flexBasis: 20,
+  textBox: {
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
+    borderRadius: DECOR.borderRadiusBorder,
+    borderWidth: DECOR.borderWidth,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: SPACING.small,
+    width: '100%'
   }
 });

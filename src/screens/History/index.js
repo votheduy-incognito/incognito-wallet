@@ -1,21 +1,25 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
-import LoadingContainer from '@src/components/LoadingContainer';
-import History from '@src/components/History';
-import formatUtil from '@src/utils/format';
-import { CONSTANT_COMMONS } from '@src/constants';
 import { Toast } from '@src/components/core';
+import History from '@src/components/History';
+import LoadingContainer from '@src/components/LoadingContainer';
+import { CONSTANT_COMMONS } from '@src/constants';
+import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
+import formatUtil from '@src/utils/format';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-const normalizeData = histories => histories && histories.map(h => ({
-  txID: h.txID,
-  time: formatUtil.formatDateTime(h.time),
-  receiver: h.receivers[0],
-  amountAndSymbol: `${formatUtil.amountConstant(h.amount)} ${CONSTANT_COMMONS.CONST_SYMBOL}`,
-  fee: formatUtil.amountMiliConstant(h.fee),
-  status: h.status
-}));
+const normalizeData = histories =>
+  histories &&
+  histories.map(h => ({
+    txID: h.txID,
+    time: formatUtil.formatDateTime(h.time),
+    receiver: h.receivers[0],
+    amountAndSymbol: `${formatUtil.amountConstant(h.amount)} ${
+      CONSTANT_COMMONS.CONST_SYMBOL
+    }`,
+    fee: formatUtil.amountMiliConstant(h.fee),
+    status: h.status
+  }));
 
 class HistoryContainer extends Component {
   constructor() {
@@ -34,7 +38,7 @@ class HistoryContainer extends Component {
 
   componentDidUpdate(prevProps) {
     const { defaultAccount: { name } = {}, wallet } = this.props;
-    const { defaultAccount: { name : prevName } = {} } = prevProps;
+    const { defaultAccount: { name: prevName } = {} } = prevProps;
     if (prevName !== name) {
       this.loadAccountHistory(wallet, name);
     }
@@ -58,7 +62,7 @@ class HistoryContainer extends Component {
     } finally {
       this.setState({ isLoading: false });
     }
-  }
+  };
 
   render() {
     const { isLoading, histories } = this.state;
@@ -67,9 +71,7 @@ class HistoryContainer extends Component {
       return <LoadingContainer />;
     }
 
-    return (
-      <History histories={normalizeData(histories)} />
-    );
+    return <History histories={normalizeData(histories)} />;
   }
 }
 
@@ -79,8 +81,8 @@ const mapState = state => ({
 });
 
 HistoryContainer.propTypes = {
-  wallet: PropTypes.object,
-  defaultAccount: PropTypes.object,
+  wallet: PropTypes.objectOf(PropTypes.object),
+  defaultAccount: PropTypes.objectOf(PropTypes.object)
 };
 
 export default connect(mapState)(HistoryContainer);

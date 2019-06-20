@@ -1,67 +1,67 @@
+import { COLORS, DECOR, FONT, SPACING } from '@src/styles';
 import { StyleSheet } from 'react-native';
-import { COLORS, SPACING, DECOR, FONT } from '@src/styles';
 
 export const accountAddressStyle = StyleSheet.create({
   container: {
-    padding: SPACING.small,
     alignItems: 'center',
     justifyContent: 'center',
+    padding: SPACING.small
+  },
+  copyIcon: {
+    marginLeft: 3
   },
   qrCode: {
     marginBottom: SPACING.medium
   },
-  textBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.white,
-    borderWidth: DECOR.borderWidth,
-    borderRadius: DECOR.borderRadiusBorder,
-    padding: 10
-  },
   text: {
     fontWeight: '400'
   },
-  copyIcon: {
-    marginLeft: 3
+  textBox: {
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
+    borderRadius: DECOR.borderRadiusBorder,
+    borderWidth: DECOR.borderWidth,
+    flexDirection: 'row',
+    padding: 10
   }
 });
 
 export const accountBalanceStyle = StyleSheet.create({
   container: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: SPACING.small,
+    marginVertical: SPACING.small
   },
   textBalance: {
-    fontSize: FONT.SIZE.superLarge,
     color: COLORS.white,
+    fontSize: FONT.SIZE.superLarge,
     fontWeight: 'bold'
   },
   textSymbol: {
-    fontSize: FONT.SIZE.large,
     color: COLORS.white,
-    marginHorizontal: 5,
+    fontSize: FONT.SIZE.large,
+    marginHorizontal: 5
   }
 });
 
 export const actionButtonStyle = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
     flexWrap: 'wrap',
-    marginVertical: SPACING.small,
+    justifyContent: 'space-around',
+    marginVertical: SPACING.small
   },
   item: {
     backgroundColor: COLORS.white,
     borderColor: COLORS.transparent,
-    paddingHorizontal: 0,
     margin: 3,
+    paddingHorizontal: 0,
     width: 100
   },
   titleStyle: {
-    fontSize: FONT.SIZE.small,
     color: COLORS.black,
+    fontSize: FONT.SIZE.small
   }
 });
 
@@ -70,9 +70,9 @@ export const homeStyle = StyleSheet.create({
     flex: 1
   },
   mainContainer: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primary
   },
   tabContainer: {
-    flex: 1,
+    flex: 1
   }
 });

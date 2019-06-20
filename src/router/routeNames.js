@@ -1,6 +1,7 @@
 export default {
   RootApp: 'App',
   RootSplash: 'Splash',
+  RootMiner: 'RootMiner',
   RootAuth: 'Auth',
   Login: 'Login',
   Splash: 'Splash',
@@ -18,5 +19,6 @@ export default {
   ExportAccount: 'ExportAccount',
   CreateSendToken: 'CreateSendToken',
   FollowToken: 'FollowToken',
-  HistoryToken: 'HistoryToken'
+  HistoryToken: 'HistoryToken',
+  AddDevice: 'AddDevice'
 };

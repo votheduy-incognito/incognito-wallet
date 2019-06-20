@@ -1,4 +1,5 @@
-import { genNamspace } from '@src/utils/reduxUtils.js';
+import { genNamspace } from '@src/utils/reduxUtils';
+
 const n = genNamspace('ACCOUNT');
 
 // define types here

@@ -19,7 +19,7 @@ const opacityButton = {
     height: DECOR.buttonHeight,
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   buttonText: {
     color: COLORS.white,
@@ -34,7 +34,7 @@ const text = {
     color: COLORS.red
   },
   defaultSize: FONTS.SIZE.regular,
-  largeTitleSize: FONTS.SIZE.superLarge,
+  largeTitleSize: FONTS.SIZE.superLarge
 };
 
 const indicator = {
@@ -64,7 +64,7 @@ const textInput = {
   borderWidth: DECOR.borderWidth,
   borderRadius: DECOR.borderRadiusBorder,
   paddingHorizontal: SPACINGS.small,
-  borderColor: COLORS.lightGrey,
+  borderColor: COLORS.lightGrey
 };
 
 const divider = {
@@ -85,5 +85,10 @@ export default {
   textInput,
   toast,
   divider,
-  modal
+  modal,
+  Button: {
+    containerStyle: {
+      backgroundColor: 'red'
+    }
+  }
 };

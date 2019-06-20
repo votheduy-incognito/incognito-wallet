@@ -1,18 +1,17 @@
-import { StyleSheet } from 'react-native';
 import { COLORS, SPACING } from '@src/styles';
+import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
-  container: {
-  },
-  itemContainer: {
-    backgroundColor: COLORS.lightGrey2,
-    marginBottom: SPACING.small,
-  },
+  container: {},
   content: {
     flex: 1
   },
-  itemLabel: {},
-  itemData: {}
+  itemContainer: {
+    backgroundColor: COLORS.lightGrey2,
+    marginBottom: SPACING.small
+  },
+  itemData: {},
+  itemLabel: {}
 });
 
 export default style;

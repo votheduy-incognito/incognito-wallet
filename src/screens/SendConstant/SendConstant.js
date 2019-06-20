@@ -1,21 +1,21 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import { Text, Container, Form, FormTextField, FormSubmitButton, Toast, ScrollView, CheckBoxField, TouchableOpacity, ActivityIndicator } from '@src/components/core';
+import { ActivityIndicator, CheckBoxField, Container, Form, FormSubmitButton, FormTextField, ScrollView, Text, Toast, TouchableOpacity } from '@src/components/core';
+import LoadingTx from '@src/components/LoadingTx';
+import { openQrScanner } from '@src/components/QrCodeScanner';
+import ReceiptModal, { openReceipt } from '@src/components/Receipt';
 import { CONSTANT_COMMONS } from '@src/constants';
+import common from '@src/constants/common';
+import ROUTE_NAMES from '@src/router/routeNames';
+import Account from '@src/services/wallet/accountService';
+import { getEstimateFee } from '@src/services/wallet/RpcClientService';
+import { FONT } from '@src/styles';
+import convert from '@src/utils/convert';
 import formatUtil from '@src/utils/format';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import formValidate from './formValidate';
 import styleSheet from './style';
-import Account from '@src/services/wallet/accountService';
-import ROUTE_NAMES from '@src/router/routeNames';
-import { getEstimateFee } from '@src/services/wallet/RpcClientService';
-import convert from '@src/utils/convert';
-import common from '@src/constants/common';
-import ReceiptModal, { openReceipt } from '@src/components/Receipt';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { FONT } from '@src/styles';
-import { openQrScanner } from '@src/components/QrCodeScanner';
-import LoadingTx from '@src/components/LoadingTx';
 
 const initialFormValues = {
   isPrivacy: false,
@@ -35,7 +35,7 @@ class SendConstant extends Component {
       isGettingFee: false
     };
 
-    this.handleShouldGetFee = _.debounce(::this.handleShouldGetFee, 500);
+    this.handleShouldGetFee = _.debounce(this.handleShouldGetFee, 500);
 
     this.form = null;
   }
@@ -165,13 +165,13 @@ class SendConstant extends Component {
   render() {
     const { account } = this.props;
     const { initialFormValues, isSending, isGettingFee } = this.state;
-
+    const balance = `${formatUtil.amountConstant(account.value) } ${CONSTANT_COMMONS.CONST_SYMBOL}`;
     return (
       <ScrollView>
         <Container style={styleSheet.container}>
           <Text style={styleSheet.title}>Send Constant</Text>
           <Text>
-            Balance: { formatUtil.amountConstant(account.value) } {CONSTANT_COMMONS.CONST_SYMBOL}
+            {`Balance: ${balance}`}
           </Text>
           <Form
             formRef={form => this.form = form}
@@ -193,7 +193,7 @@ class SendConstant extends Component {
                 </TouchableOpacity>
               }
             />
-            <FormTextField name='amount' placeholder='Amount' onFieldChange={this.handleShouldGetFee}/>
+            <FormTextField name='amount' placeholder='Amount' onFieldChange={this.handleShouldGetFee} />
             <FormTextField
               name='fee'
               placeholder='Min Fee'
@@ -209,11 +209,16 @@ class SendConstant extends Component {
     );
   }
 }
-
+SendConstant.defaultProps = {
+  navigation: undefined,
+  wallet:  undefined,
+  account:  undefined,
+  getBalance: PropTypes.func
+};
 SendConstant.propTypes = {
-  navigation: PropTypes.object,
-  wallet: PropTypes.object,
-  account: PropTypes.object,
+  navigation: PropTypes.objectOf(PropTypes.object),
+  wallet:  PropTypes.objectOf(PropTypes.object),
+  account:  PropTypes.objectOf(PropTypes.object),
   getBalance: PropTypes.func
 };
 

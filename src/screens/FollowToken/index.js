@@ -1,17 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import tokenService from '@src/services/wallet/tokenService';
-import accountService from '@src/services/wallet/accountService';
 import { Toast } from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { setWallet } from '@src/redux/actions/wallet';
+import accountService from '@src/services/wallet/accountService';
+import tokenService from '@src/services/wallet/tokenService';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import FollowToken from './FollowToken';
 
-const FollowTokenContainer = ({ isPrivacy, account, wallet, setWallet, navigation,  ...props }) => {
-  const [ tokens, setTokens ] = useState();
-  const [ isLoading, setLoading ] = useState(false);
+const FollowTokenContainer = ({
+  isPrivacy,
+  account,
+  wallet,
+  setWallet,
+  navigation,
+  ...props
+}) => {
+  const [tokens, setTokens] = useState();
+  const [isLoading, setLoading] = useState(false);
   const _isPrivacy = isPrivacy ?? navigation.getParam('isPrivacy');
 
   const getTokenList = async () => {
@@ -25,7 +32,10 @@ const FollowTokenContainer = ({ isPrivacy, account, wallet, setWallet, navigatio
         tokens = await tokenService.getNormalTokens();
       }
 
-      const followedTokens = await accountService.getFollowingTokens(account, wallet);
+      const followedTokens = await accountService.getFollowingTokens(
+        account,
+        wallet
+      );
 
       return _.differenceBy(tokens, followedTokens, 'ID');
     } catch {
@@ -46,7 +56,9 @@ const FollowTokenContainer = ({ isPrivacy, account, wallet, setWallet, navigatio
 
       Toast.showInfo('Added successfully');
     } catch {
-      Toast.showError('Can not add these tokens to your account right now, please try later');
+      Toast.showError(
+        'Can not add these tokens to your account right now, please try later'
+      );
     }
   };
 
@@ -54,12 +66,17 @@ const FollowTokenContainer = ({ isPrivacy, account, wallet, setWallet, navigatio
     getTokenList().then(setTokens);
   }, [account?.name]);
 
-
   if (isLoading) {
     return <LoadingContainer />;
   }
 
-  return <FollowToken {...props} tokenList={tokens} handleAddFollowToken={handleAddFollowToken} />;
+  return (
+    <FollowToken
+      {...props}
+      tokenList={tokens}
+      handleAddFollowToken={handleAddFollowToken}
+    />
+  );
 };
 
 const mapState = state => ({
@@ -71,10 +88,13 @@ const mapDispatch = { setWallet };
 
 FollowTokenContainer.propTypes = {
   isPrivacy: PropTypes.bool,
-  account: PropTypes.object,
-  wallet: PropTypes.object,
+  account: PropTypes.objectOf(PropTypes.object),
+  wallet: PropTypes.objectOf(PropTypes.object),
   setWallet: PropTypes.func,
-  navigation: PropTypes.object
+  navigation: PropTypes.objectOf(PropTypes.object)
 };
 
-export default connect(mapState, mapDispatch)(FollowTokenContainer);
+export default connect(
+  mapState,
+  mapDispatch
+)(FollowTokenContainer);

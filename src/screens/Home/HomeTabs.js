@@ -1,10 +1,10 @@
-import React from 'react';
 import { TabView } from '@src/components/core';
-import History from '@src/screens/History';
 import AccountDetail from '@src/screens/AccountDetail';
+import History from '@src/screens/History';
 import Token from '@src/screens/Token';
+import React from 'react';
 
-this.tabData = [
+const tabData = [
   {
     key: 'token',
     title: 'TOKENS',
@@ -22,14 +22,8 @@ this.tabData = [
   }
 ];
 
-const HomeTabs = () => (
-  <TabView
-    defaultIndex={1}
-    data={this.tabData}
-  />
-);
+const HomeTabs = () => <TabView defaultIndex={1} data={tabData} />;
 
 HomeTabs.propTypes = {};
-
 
 export default HomeTabs;

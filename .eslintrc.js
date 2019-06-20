@@ -29,6 +29,7 @@ module.exports = {
     __DEV__: true
   },
   rules: {
+    'no-console': 0,
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
     indent: ['error', 2],
     'linebreak-style': ['error', 'unix'],
@@ -38,8 +39,24 @@ module.exports = {
     'import/no-commonjs': 0,
     'react/jsx-no-bind': 0,
     'react/prop-types': 1,
+    'react-native/no-inline-styles': 'off',
+    'react-native/no-color-literals': 'off',
+    'react/jsx-uses-react': 'error',
+    'react/jsx-uses-vars': 'error',
+    'react/no-array-index-key': 'warn',
+    'react/no-unused-prop-types': 'warn',
+    'react/jsx-wrap-multilines': 'warn',
+    'react/jsx-tag-spacing': 'warn',
+    'import/no-cycle': 'warn',
+    'react/require-default-props': 'warn',
     'import/prefer-default-export': 0,
-    'no-console': 1,
-    'import/no-unresolved': 0
+    'no-console': 0,
+    'no-unused-vars': 0,
+    'import/no-unresolved': [
+      'error',
+      {
+        ignore: ['@src', '@src/', '@src/.*']
+      }
+    ]
   }
 };

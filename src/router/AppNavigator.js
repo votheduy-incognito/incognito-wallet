@@ -18,35 +18,38 @@ import { navigationOptionsHandler } from '@src/utils/router';
 import ROUTE_NAMES from './routeNames';
 import TabNavigator from './TabNavigator';
 
-const AppNavigator = createStackNavigator({
-  TabNavigator,
-  [ROUTE_NAMES.UserHeaderBoard]: navigationOptionsHandler(UserHeaderBoard),
-  [ROUTE_NAMES.SendConstant]: navigationOptionsHandler(SendConstant),
-  [ROUTE_NAMES.Staking]: navigationOptionsHandler(Staking),
-  [ROUTE_NAMES.Defragment]: navigationOptionsHandler(Defragment),
-  [ROUTE_NAMES.NetworkSetting]: navigationOptionsHandler(NetworkSetting),
-  [ROUTE_NAMES.CreateAccount]: navigationOptionsHandler(CreateAccount),
-  [ROUTE_NAMES.ImportAccount]: navigationOptionsHandler(ImportAccount),
-  [ROUTE_NAMES.SeedPhrase]: navigationOptionsHandler(SeedPhrase),
-  [ROUTE_NAMES.ExportAccount]: navigationOptionsHandler(ExportAccount),
-  [ROUTE_NAMES.CreateSendToken]: navigationOptionsHandler(CreateSendToken),
-  [ROUTE_NAMES.FollowToken]: navigationOptionsHandler(FollowToken),
-  [ROUTE_NAMES.HistoryToken]: navigationOptionsHandler(HistoryToken),
-}, {
-  initialRouteName: 'TabNavigator',
-  defaultNavigationOptions: ({ navigation }) => {
-    const handleUserPress = () => {
-      navigation.navigate(ROUTE_NAMES.UserHeaderBoard);
-    };
+const AppNavigator = createStackNavigator(
+  {
+    TabNavigator,
+    [ROUTE_NAMES.UserHeaderBoard]: navigationOptionsHandler(UserHeaderBoard),
+    [ROUTE_NAMES.SendConstant]: navigationOptionsHandler(SendConstant),
+    [ROUTE_NAMES.Staking]: navigationOptionsHandler(Staking),
+    [ROUTE_NAMES.Defragment]: navigationOptionsHandler(Defragment),
+    [ROUTE_NAMES.NetworkSetting]: navigationOptionsHandler(NetworkSetting),
+    [ROUTE_NAMES.CreateAccount]: navigationOptionsHandler(CreateAccount),
+    [ROUTE_NAMES.ImportAccount]: navigationOptionsHandler(ImportAccount),
+    [ROUTE_NAMES.SeedPhrase]: navigationOptionsHandler(SeedPhrase),
+    [ROUTE_NAMES.ExportAccount]: navigationOptionsHandler(ExportAccount),
+    [ROUTE_NAMES.CreateSendToken]: navigationOptionsHandler(CreateSendToken),
+    [ROUTE_NAMES.FollowToken]: navigationOptionsHandler(FollowToken),
+    [ROUTE_NAMES.HistoryToken]: navigationOptionsHandler(HistoryToken)
+  },
+  {
+    initialRouteName: 'TabNavigator',
+    defaultNavigationOptions: ({ navigation }) => {
+      const handleUserPress = () => {
+        navigation.navigate(ROUTE_NAMES.UserHeaderBoard);
+      };
 
-    return {
-      headerRight: <UserHeader onPress={handleUserPress} />,
-      headerTintColor: THEME.header.headerTintColor,
-      headerStyle: {
-        backgroundColor: THEME.header.backgroundColor,
-      },
-    };
+      return {
+        headerRight: <UserHeader onPress={handleUserPress} />,
+        headerTintColor: THEME.header.headerTintColor,
+        headerStyle: {
+          backgroundColor: THEME.header.backgroundColor
+        }
+      };
+    }
   }
-});
+);
 
 export default AppNavigator;
