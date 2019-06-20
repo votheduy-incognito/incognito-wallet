@@ -6,9 +6,12 @@ export default StyleSheet.create({
     ...THEME.opacityButton.button,
     position: 'relative',
   },
+  textContainer: {
+    flex: 1
+  },
   text: {
     ...THEME.opacityButton.buttonText,
-    marginHorizontal: SPACING.small
+    marginHorizontal: 5
   },
   primaryStyle: {
     ...THEME.opacityButton.button

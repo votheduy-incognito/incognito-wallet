@@ -41,6 +41,8 @@ module.exports = {
     'import/prefer-default-export': 0,
     'no-console': 1,
     'import/no-unresolved': 0,
-    'react-native/sort-styles': 0
+    'react-native/sort-styles': 0,
+    'react/require-default-props': 0,
+    'react/forbid-prop-types': 0
   }
 };

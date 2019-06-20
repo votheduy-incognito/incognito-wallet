@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { TouchableOpacity as RNComponent } from 'react-native';
-import { Text, ActivityIndicator } from '@src/components/core';
+import { Text, ActivityIndicator, View } from '@src/components/core';
 import { COLORS } from '@src/styles';
 import styleSheet from './style';
 
-const Button = ({ title, children, style, titleStyle, type, onPress, loadingColor, isLoading: isLoadingProps, ...props }) => {
+const Button = ({ title, children, style, titleStyle, type, onPress, loadingColor, isLoading: isLoadingProps, prepend, ...props }) => {
   const [ isLoading, setLoading ] = useState(false);
   
   useEffect(() => {
@@ -34,7 +34,10 @@ const Button = ({ title, children, style, titleStyle, type, onPress, loadingColo
       {
         children ? renderChild(children) : (
           <>
-            <Text style={[styleSheet.text, titleStyle]} numberOfLines={1} ellipsizeMode='tail'>{title}</Text>
+            { prepend }
+            <View style={styleSheet.textContainer}>
+              <Text style={[styleSheet.text, titleStyle]} numberOfLines={1} ellipsizeMode='tail'>{title}</Text>
+            </View>
             { isLoading && <ActivityIndicator style={[styleSheet.loadingIcon]} color={loadingColor} size='small' /> }
           </>
         )
@@ -45,10 +48,11 @@ const Button = ({ title, children, style, titleStyle, type, onPress, loadingColo
 
 Button.defaultProps = {
   loadingColor: COLORS.white,
-  isLoading: false
+  isLoading: false,
 };
 
 Button.propTypes = {
+  prepend: PropTypes.node,
   isLoading: PropTypes.bool,
   loadingColor: PropTypes.string,
   onPress: PropTypes.func,

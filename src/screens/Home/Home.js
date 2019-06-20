@@ -11,6 +11,13 @@ import HomeTabs from './HomeTabs';
 import { homeStyle } from './style';
 
 class Home extends React.Component {
+  static navigationOptions = () => ({
+    drawerLabel: 'Home',
+    drawerIcon: () => (
+      <DrawerIcon><MdIcon name='home' /></DrawerIcon>
+    ),
+  });
+
   constructor(props) {
     super(props);
 
@@ -30,12 +37,6 @@ class Home extends React.Component {
     ];
   }
   
-  static navigationOptions = () => ({
-    drawerLabel: 'Home',
-    drawerIcon: () => (
-      <DrawerIcon><MdIcon name='home' /></DrawerIcon>
-    ),
-  });
 
   render() {
     const { account, isGettingBalance, reloadBalance } = this.props;
