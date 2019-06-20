@@ -1,6 +1,7 @@
 export default {
   RootApp: 'App',
   RootSplash: 'Splash',
+  RootSubscribeEmailNavigator: 'SubscribeEmailNavigator',
   RootMiner: 'RootMiner',
   RootAuth: 'Auth',
   Login: 'Login',
@@ -20,5 +21,6 @@ export default {
   CreateSendToken: 'CreateSendToken',
   FollowToken: 'FollowToken',
   HistoryToken: 'HistoryToken',
+  GetStarted: 'GetStarted',
   AddDevice: 'AddDevice'
 };
