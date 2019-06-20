@@ -1,4 +1,4 @@
-import UserHeader from '@src/components/UserHeader';
+import UserHeaderContainer from '@src/components/UserHeader';
 import CreateAccount from '@src/screens/CreateAccount';
 import CreateSendToken from '@src/screens/CreateSendToken';
 import Defragment from '@src/screens/Defragment';
@@ -44,7 +44,7 @@ const AppNavigator = createStackNavigator(
       };
 
       return {
-        headerRight: <UserHeader onPress={handleUserPress} />,
+        headerRight: <UserHeaderContainer onPress={handleUserPress} />,
         headerTintColor: THEME.header.headerTintColor,
         headerStyle: {
           backgroundColor: THEME.header.backgroundColor

@@ -1,8 +1,8 @@
+// import 'intl';
+// import 'intl/locale-data/jsonp/en';
 import QrScanner from '@src/components/QrCodeScanner';
 import configureStore from '@src/redux/store';
 import AppContainer from '@src/router';
-import 'intl';
-import 'intl/locale-data/jsonp/en';
 import React from 'react';
 import { ThemeProvider } from 'react-native-elements';
 import { Provider } from 'react-redux';

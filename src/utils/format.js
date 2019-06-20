@@ -1,6 +1,7 @@
 import convert from '@src/utils/convert';
+// import 'intl';
+// import 'intl/locale-data/jsonp/en';
 import moment from 'moment';
-
 const AmountConstantFormat = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
