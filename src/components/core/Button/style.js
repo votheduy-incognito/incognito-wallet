@@ -1,17 +1,16 @@
-import { COLORS, SPACING, THEME } from '@src/styles';
+import { COLORS, THEME } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   button: {
     ...THEME.opacityButton.button,
-    position: 'relative'
   },
   textContainer: {
-    flex: 1
+    marginHorizontal: 5,
+    flex: 1,
   },
   text: {
     ...THEME.opacityButton.buttonText,
-    marginHorizontal: 5
   },
   primaryStyle: {
     ...THEME.opacityButton.button
@@ -21,15 +20,12 @@ export default StyleSheet.create({
     backgroundColor: COLORS.red
   },
   loadingIcon: {
-    marginLeft: SPACING.small,
-    position: 'absolute',
-    right: SPACING.small
+    marginHorizontal: 2,
   },
   primaryStyle: {
     ...THEME.opacityButton.button
   },
   text: {
     ...THEME.opacityButton.buttonText,
-    marginHorizontal: SPACING.small
   }
 });

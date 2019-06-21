@@ -1,9 +1,9 @@
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-import ROUTE_NAMES from './routeNames';
-import AuthNavigator from './AuthNavigator';
 import AppNavigator from './AppNavigator';
-import SplashNavigator from './SplashNavigator';
+import AuthNavigator from './AuthNavigator';
 import MinerNavigator from './MinerNavigator';
+import ROUTE_NAMES from './routeNames';
+import SplashNavigator from './SplashNavigator';
 
 export default createAppContainer(
   createSwitchNavigator(
@@ -14,7 +14,7 @@ export default createAppContainer(
       [ROUTE_NAMES.RootMiner]: MinerNavigator
     },
     {
-      initialRouteName: ROUTE_NAMES.RootMiner
+      initialRouteName: ROUTE_NAMES.RootSplash
     }
   )
 );
