@@ -34,6 +34,11 @@ const text = {
     size: FONTS.SIZE.superSmall,
     color: COLORS.red
   },
+  defaultTextStyle: {
+    color: COLORS.black1,
+    fontSize: FONTS.SIZE.regular,
+    letterSpacing: 0
+  },
   defaultSize: FONTS.SIZE.regular,
   largeTitleSize: FONTS.SIZE.superLarge
 };
@@ -43,7 +48,8 @@ const indicator = {
 };
 
 const container = {
-  padding: SPACINGS.small
+  padding: SPACINGS.small,
+  backgroundColor: COLORS.grey
 };
 
 const toast = {

@@ -1,5 +1,7 @@
+import TOKEN_DATA from './tokenData';
+
 export default {
-  CONST_SYMBOL: 'CONST',
+  CONST_SYMBOL: 'PRV',
   STAKING_TYPES: {
     SHARD: 0,
     BEACON: 1
@@ -18,4 +20,9 @@ export default {
   SEND_TOKEN: 1,
   NORMAL_TOKEN_TAB: 0,
   PRIVACY_TOKEN_TAB: 1,
+  DECISION_RATE: {
+    [TOKEN_DATA.SYMBOL.pETH]: 1e9,
+    [TOKEN_DATA.SYMBOL.pBTC]: 1e9,
+    [TOKEN_DATA.SYMBOL.PRV]: 1e2
+  }
 };

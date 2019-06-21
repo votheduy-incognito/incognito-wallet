@@ -1,75 +1,87 @@
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Toast } from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
-import { getBalance } from '@src/redux/actions/account';
+import { getBalance as getAccountBalance } from '@src/redux/actions/account';
+import { setBulkToken, getBalance, setDefaultToken } from '@src/redux/actions/token';
 import scheduleService from '@src/services/schedule';
-import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import accountService from '@src/services/wallet/accountService';
+
 import { connect } from 'react-redux';
 import Home from './Home';
 
-const HomeContainer = ({
-  defaultAccount,
-  getBalance,
-  isGettingBalance,
-  accounts,
-  ...otherProps
-}) => {
-  const loadBalance = account => {
-    if (account?.name) {
-      getBalance(account).catch(() => {
-        Toast.showError('Error while loading account balance');
-      });
-    }
-  };
+class HomeContainer extends Component {
+  componentDidMount() {
+    const { account } = this.props;
+    this.getFollowingToken();
+    this.getAccountBalance(account);
 
-  useEffect(() => {
-    const unsubcribe = scheduleService.reloadAllAccountBalance({
-      accounts,
-      getBalance,
-      timeout: 300000
-    });
-    return () => {
-      unsubcribe();
-    };
-  }, []);
-
-  useEffect(() => {
-    loadBalance(defaultAccount);
-  }, [defaultAccount?.name]);
-
-  if (!defaultAccount?.name) {
-    return <LoadingContainer />;
+    scheduleService.reloadAllAccountBalance();
   }
 
-  return (
-    <Home
-      account={defaultAccount}
-      isGettingBalance={isGettingBalance}
-      reloadBalance={() => loadBalance(defaultAccount)}
-      {...otherProps}
-    />
-  );
-};
+  getTokenBalance = token => {
+    const { getBalance } = this.props;
+    getBalance(token);
+  }
 
-const mapState = state => {
-  const account = state.account;
-  return {
-    accounts: account.list || [],
-    defaultAccount: account.defaultAccount,
-    isGettingBalance: account.isGettingBalance.includes(
-      account.defaultAccount?.name
-    )
-  };
-};
+  getAccountBalance = account => {
+    const { getAccountBalance } = this.props;
+    getAccountBalance(account);
+  }
+
+  getFollowingToken = async () => {
+    try {
+      const { account, wallet, setBulkToken } = this.props;
+      const tokens = accountService.getFollowingTokens(account, wallet);
+      tokens.forEach(this.getTokenBalance);
+      setBulkToken(tokens);
+    } catch {
+      Toast.showError('Can not get list token for this account');
+    }
+  }
+
+  handleSelectToken = (token) => {
+    if (!token) return;
+
+    alert(token.symbol);
+  }
+
+  render() {
+    const { wallet, account, tokens, isGettingBalanceList } = this.props;
+
+    if (!wallet) return <LoadingContainer />;
+
+    return (
+      <Home
+        account={account}
+        tokens={tokens}
+        isGettingBalanceList={isGettingBalanceList}
+        onSelectToken={this.handleSelectToken}
+      />
+    );
+  }
+}
+
+const mapState = state => ({
+  account: state.account.defaultAccount,
+  wallet: state.wallet,
+  tokens: state.token.followed || [],
+  isGettingBalanceList: [...state.account.isGettingBalance, ...state.token.isGettingBalance]
+});
+
+const mapDispatch = { setBulkToken, getBalance, getAccountBalance, setDefaultToken };
 
 HomeContainer.propTypes = {
-  accounts: PropTypes.objectOf(PropTypes.array),
-  defaultAccount: PropTypes.objectOf(PropTypes.object),
-  isGettingBalance: PropTypes.bool,
-  getBalance: PropTypes.func
+  account: PropTypes.object.isRequired,
+  tokens: PropTypes.array.isRequired,
+  isGettingBalanceList: PropTypes.array.isRequired,
+  wallet: PropTypes.object.isRequired,
+  setBulkToken: PropTypes.func.isRequired,
+  getAccountBalance: PropTypes.func.isRequired,
+  getBalance: PropTypes.func.isRequired,
+  setDefaultToken: PropTypes.func.isRequired,
 };
 
-const mapDispatch = { getBalance };
 
 export default connect(
   mapState,

@@ -3,7 +3,7 @@ import { THEME } from '@src/styles';
 
 const style = StyleSheet.create({
   root: {
-    fontSize: THEME.text.defaultSize,
+    ...THEME.text.defaultTextStyle
   }
 });
 
