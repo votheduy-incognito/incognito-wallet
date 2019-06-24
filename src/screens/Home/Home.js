@@ -16,7 +16,7 @@ class Home extends React.Component {
         <Container style={homeStyle.mainContainer}>
           <CryptoItemCard
             style={homeStyle.cryptoItem}
-            tokenSymbol={tokenData.SYMBOL.PRV}
+            tokenSymbol={tokenData.SYMBOL.MAIN_PRIVACY}
             amount={account?.amount}
             isGettingBalance={isGettingBalanceList?.includes(account?.name)}
             onPress={onSelectToken}

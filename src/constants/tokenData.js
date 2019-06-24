@@ -5,7 +5,7 @@ import ethIcon from '@src/assets/images/cryptoLogo/ethereum.png';
 const SYMBOL = {
   pETH: 'pETH',
   pBTC: 'pBTC',
-  PRV: 'PRV'
+  MAIN_PRIVACY: 'PRV'
 };
 
 const DATA = {
@@ -23,7 +23,7 @@ const DATA = {
     name: 'pBTC',
     icon: btcIcon
   },
-  [SYMBOL.PRV]: {
+  [SYMBOL.MAIN_PRIVACY]: {
     fullName: 'Privacy',
     typeName: 'Incognito',
     symbol: 'PRV',

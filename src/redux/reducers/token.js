@@ -3,7 +3,6 @@ import { unionBy, remove } from 'lodash';
 
 const initialState = {
   followed: [],
-  default: null,
   isGettingBalance: []
 };
 
@@ -63,11 +62,6 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       isGettingBalance: removeGettingBalance(state.isGettingBalance, action.data)
-    };
-  case type.SET_DEFAULT:
-    return {
-      ...state,
-      default: action.data
     };
   default:
     return state;

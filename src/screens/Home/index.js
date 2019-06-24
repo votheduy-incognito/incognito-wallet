@@ -4,9 +4,10 @@ import { Toast } from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { getBalance as getAccountBalance } from '@src/redux/actions/account';
 import { setBulkToken, getBalance, setDefaultToken } from '@src/redux/actions/token';
+import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import scheduleService from '@src/services/schedule';
 import accountService from '@src/services/wallet/accountService';
-
+import SelectedPrivacyModel from '@src/models/selectedPrivacy';
 import { connect } from 'react-redux';
 import Home from './Home';
 
@@ -43,7 +44,11 @@ class HomeContainer extends Component {
   handleSelectToken = (token) => {
     if (!token) return;
 
-    alert(token.symbol);
+    const { account, tokens, setSelectedPrivacy } = this.props;
+    const tokenData = tokens.find(t => t.symbol === token.symbol);
+
+    const privacyToken = SelectedPrivacyModel.parse(account, tokenData);
+    setSelectedPrivacy(privacyToken);
   }
 
   render() {
@@ -69,7 +74,7 @@ const mapState = state => ({
   isGettingBalanceList: [...state.account.isGettingBalance, ...state.token.isGettingBalance]
 });
 
-const mapDispatch = { setBulkToken, getBalance, getAccountBalance, setDefaultToken };
+const mapDispatch = { setBulkToken, getBalance, getAccountBalance, setDefaultToken, setSelectedPrivacy };
 
 HomeContainer.propTypes = {
   account: PropTypes.object.isRequired,
@@ -79,7 +84,7 @@ HomeContainer.propTypes = {
   setBulkToken: PropTypes.func.isRequired,
   getAccountBalance: PropTypes.func.isRequired,
   getBalance: PropTypes.func.isRequired,
-  setDefaultToken: PropTypes.func.isRequired,
+  setSelectedPrivacy: PropTypes.func.isRequired,
 };
 
 

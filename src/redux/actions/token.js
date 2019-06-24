@@ -26,13 +26,6 @@ export const getBalanceFinish = tokenSymbol => ({
   data: tokenSymbol
 });
 
-export const setDefaultToken = token => {
-  return ({
-    type: type.SET_DEFAULT,
-    data: token
-  });
-};
-
 export const getBalance = (token = throw new Error('Token object is required')) => async (dispatch, getState) => {
   try {
     dispatch(getBalanceStart(token?.symbol));
