@@ -3,7 +3,7 @@ package com.constantwalletmobile;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import io.github.douglasjunior.ReactNativeEasyBluetooth.classic.ClassicPackage;
+import io.wifi.p2p.WiFiP2PManagerPackage;
 import com.rusel.RCTBluetoothSerial.RCTBluetoothSerialPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
@@ -32,7 +32,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new ClassicPackage(),
+            new WiFiP2PManagerPackage(),
             new RCTBluetoothSerialPackage(),
             new RNCameraPackage(),
             new RandomBytesPackage(),

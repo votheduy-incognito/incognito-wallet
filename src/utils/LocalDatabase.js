@@ -1,10 +1,12 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import User from '@src/models/user';
 import _ from 'lodash';
-import { AsyncStorage } from 'react-native';
+// import { AsyncStorage } from 'react-native';
 
 const TAG = 'LocalDatabase';
 const KEY_SAVE = {
-  USER: 'USER'
+  USER: 'USER',
+  LIST_DEVICE: 'LIST_DEVICE',
 };
 export default class LocalDatabase {
   static async getValue(key: String): String {
@@ -14,6 +16,11 @@ export default class LocalDatabase {
   }
   static async saveValue(key: String, value: Object): {} {
     await AsyncStorage.setItem(key, value);
+  }
+
+  static getListDevices = async ():[] =>{
+    const listDevice = (await this.getValue(KEY_SAVE.LIST_DEVICE)) || '';
+    return _.isEmpty(listDevice) ? JSON.parse(listDevice):[]; 
   }
   static async logout() {
     return await AsyncStorage.multiRemove([KEY_SAVE.USER]);

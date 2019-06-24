@@ -23,5 +23,8 @@ export default {
   HistoryToken: 'HistoryToken',
   GetStarted: 'GetStarted',
   WalletDetail: 'WalletDetail',
-  AddDevice: 'AddDevice'
+  AddDevice: 'AddDevice',
+  ConfigDevice: 'ConfigDevice',
+  DetailDevice: 'DetailDevice',
+  MineSetting: 'MineSetting',
 };

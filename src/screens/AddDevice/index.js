@@ -3,8 +3,9 @@ import BaseScreen from '@src/screens/BaseScreen';
 import TextStyle from '@src/styles/TextStyle';
 import _ from 'lodash';
 import React from 'react';
-import { ScrollView, View } from 'react-native';
-import { Button, CheckBox, ListItem } from 'react-native-elements';
+import { ScrollView, Text, View } from 'react-native';
+import { Button, CheckBox, Icon, ListItem } from 'react-native-elements';
+import Pulse from 'react-native-pulse';
 import { connect } from 'react-redux';
 import styles from './styles';
 
@@ -15,7 +16,7 @@ class AddDevice extends BaseScreen {
     super(props);
 
     this.state = {
-      loading: false,
+      loading: true,
       isAdmin: false,
       user: undefined,
       locationsList: [],
@@ -33,13 +34,30 @@ class AddDevice extends BaseScreen {
     super.componentDidMount();
   }
 
+  renderWaiting =()=>{
+    const {loading} = this.state;
+    return loading && (<View style={{marginTop:100,alignItems:'center',justifyContent:'center',position:'relative',width:300,height:300}}>
+      <Pulse style={{position:'absolute'}} color='orange' numPulses={3} diameter={400} speed={20} duration={2000} />
+      <Icon
+        reverse
+        name='robot'
+        type='material-community'
+        color='#517fa4'
+      />
+	    <Text>Find Miner</Text>
+    </View>);
+    
+  }
+
   render() {
     const { loading } = this.state;
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.container}>
+        
         <Button
           title="Scan"
           onPress={() => {
+            this.loading = true;
             this.deviceId.current.scan();
           }}
         />
@@ -85,6 +103,7 @@ class AddDevice extends BaseScreen {
         : { flex: 0 };
     return (
       <View style={[styles.containerDevice, styleParent]}>
+        
         <ScrollView>
           {devicesList.map((item, index) => {
             return (
@@ -124,8 +143,7 @@ AddDevice.propTypes = {};
 
 AddDevice.defaultProps = {};
 const mapStateToProps = state => ({
-  user: state.user,
-  location: state.location
+ 
 });
 const mapDispatchToProps = {};
 export default connect(

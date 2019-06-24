@@ -1,7 +1,6 @@
 import LocalDatabase from '@src/utils/LocalDatabase';
 import Permission from '@src/utils/PermissionUtil';
 import Util from '@src/utils/Util';
-import EasyBluetooth from 'easy-bluetooth-classic';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -21,38 +20,26 @@ class DeviceConnection extends Component {
       isDoingSetManual: false,
       pairedDevice: []
     };
-    const config = {
-      deviceName: '',
-      bufferSize: 1024,
-      characterDelimiter: '\n'
-    };
-
-    EasyBluetooth.init(config)
-      .then(function(config) {
-        console.log(TAG, ' ---- config done!');
-      })
-      .catch(function(ex) {
-        console.warn(ex);
-      });
+    
+    this.initBluetooth();
+    
   }
-
-  // scanAndConnect = async () => {
-  //   if (!this.state.loading) {
-  //     this.setState({
-  //       loading: true
-  //     });
-  //     try {
-  //       const [isEnabled, devices] = await Promise.all([
-  //         BluetoothSerial.isEnabled(),
-  //         EasyBluetooth.startScan()
-  //       ]);
-  //       console.log(
-  //         TAG,
-  //         `scanAndConnect ---- begin ${isEnabled} -- enabled =${devices}`
-  //       );
-  //     } catch (e) {}
-  //   }
-  // };
+  initBluetooth = ()=>{
+    if(Platform.OS === 'android'){
+      // const config = {
+      //   deviceName: '',
+      //   bufferSize: 1024,
+      //   characterDelimiter: '\n'
+      // };
+      // EasyBluetooth.init(config)
+      //   .then(function(config) {
+      //     console.log(TAG, ' ---- config done!');
+      //   })
+      //   .catch(function(ex) {
+      //     console.warn(ex);
+      //   });
+    }
+  }
 
   componentDidMount = async () => {
     const listDevice = await this.getDeviceSavedList();
