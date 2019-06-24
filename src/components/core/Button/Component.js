@@ -64,8 +64,8 @@ Button.propTypes = {
   isLoading: PropTypes.bool,
   loadingColor: PropTypes.string,
   onPress: PropTypes.func,
-  style: PropTypes.objectOf(PropTypes.object),
-  titleStyle: PropTypes.objectOf(PropTypes.object),
+  style: PropTypes.object,
+  titleStyle: PropTypes.object,
   title: PropTypes.string,
   children: PropTypes.oneOfType([
     PropTypes.node,

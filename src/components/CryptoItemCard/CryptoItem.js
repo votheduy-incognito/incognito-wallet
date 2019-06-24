@@ -36,7 +36,7 @@ CryptoItem.propTypes = {
   fullName: PropTypes.string,
   typeName: PropTypes.string,
   amount: PropTypes.number,
-  icon: PropTypes.string,
+  icon: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onPress: PropTypes.func,
   symbol: PropTypes.string,
   isGettingBalance: PropTypes.bool,

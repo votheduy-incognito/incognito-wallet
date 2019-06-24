@@ -118,7 +118,7 @@ const CustomForm = props => {
 CustomForm.propTypes = {
   initialValues: PropTypes.objectOf(PropTypes.object),
   onSubmit: PropTypes.func,
-  children: PropTypes.oneOf(PropTypes.arrayOf(PropTypes.node), PropTypes.node),
+  children: PropTypes.oneOf([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   viewProps: PropTypes.objectOf(PropTypes.object),
   formRef: PropTypes.func,
   onFormChange: PropTypes.func
