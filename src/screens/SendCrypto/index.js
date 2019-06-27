@@ -7,7 +7,9 @@ import convertUtil from '@src/utils/convert';
 import formatUtil from '@src/utils/format';
 import tokenData from '@src/constants/tokenData';
 import accountService from '@src/services/wallet/accountService';
+import tokenService from '@src/services/wallet/tokenService';
 import { getBalance } from '@src/redux/actions/account';
+import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import { CONSTANT_COMMONS } from '@src/constants';
 import SendCrypto from './SendCrypto';
 
@@ -101,8 +103,9 @@ class SendCryptoContainer extends Component {
   }
 
   _handleSendMainPrivacy = async values => {
-    const { account, wallet, selectedPrivacy, getAccountBalance } = this.props;
-    const { fromAddress, toAddress, amount, fee } = values;
+    const { account, wallet, selectedPrivacy, getAccountBalanceBound } = this.props;
+    const { toAddress, amount, fee } = values;
+    const fromAddress = selectedPrivacy?.paymentAddress;
     const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
     const originalFee = convertUtil.toOriginalAmount(Number(fee), tokenData.SYMBOL.MAIN_PRIVACY);
 
@@ -130,7 +133,7 @@ class SendCryptoContainer extends Component {
 
         this.setState({ receiptData });
 
-        setTimeout(() => getAccountBalance(account), 10000);
+        setTimeout(() => getAccountBalanceBound(account), 10000);
       } else {
         throw new Error(`Sent failed. Please try again! Detail: ${res.err.Message || res.err }`);
       }
@@ -141,8 +144,58 @@ class SendCryptoContainer extends Component {
     }
   }
 
-  _handleSendToken = values => {
-    console.log(values);
+  _handleSendToken = async values => {
+    const { account, wallet, tokens, selectedPrivacy, getTokenBalanceBound } = this.props;
+    const { toAddress, amount, fee } = values;
+    const fromAddress = selectedPrivacy?.paymentAddress;
+    const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
+    const originalFee = convertUtil.toOriginalAmount(Number(fee), tokenData.SYMBOL.MAIN_PRIVACY);
+
+    const tokenObject = {
+      Privacy : true,
+      TokenID: selectedPrivacy?.tokenId,
+      TokenName: selectedPrivacy?.name,
+      TokenSymbol: selectedPrivacy?.symbol,
+      TokenTxType: type,
+      TokenReceivers: {
+        PaymentAddress: toAddress,
+        Amount: Number(amount)
+      }
+    };
+
+    try {
+      this.setState({ isSending: true });
+
+      const res = await tokenService.createSendPrivacyCustomToken(
+        tokenObject,
+        originalFee,
+        account,
+        wallet
+      );
+
+      if (res.txId) {
+        const receiptData = {
+          txId: res.txId,
+          toAddress,
+          fromAddress,
+          amount: Number(amount) || 0,
+          amountUnit: selectedPrivacy?.symbol,
+          time: formatUtil.toMiliSecond(res.lockTime),
+          fee: originalFee
+        };
+
+        this.setState({ receiptData });
+        
+        const foundToken = tokens.find(t => t.id === selectedPrivacy?.tokenId);
+        foundToken && setTimeout(() => getTokenBalanceBound(foundToken), 10000);
+      } else {
+        throw new Error(`Send token failed. Please try again! Detail: ${res.err.Message || res.err }`);
+      }
+    } catch (e) {
+      throw new Error(`Send token failed. Please try again! Detail:' ${e.message}`);
+    } finally {
+      this.setState({ isSending: false });
+    }
   }
 
   handleSend = () => {
@@ -174,10 +227,14 @@ class SendCryptoContainer extends Component {
 const mapState = state => ({
   selectedPrivacy: state.selectedPrivacy,
   account: state.account.defaultAccount,
-  wallet: state.wallet
+  wallet: state.wallet,
+  tokens: state.token.followed
 });
 
-const mapDispatch = { getAccountBalance: getBalance };
+const mapDispatch = {
+  getAccountBalanceBound: getBalance,
+  getTokenBalanceBound: getTokenBalance
+};
 
 SendCryptoContainer.defaultProps = {
   selectedPrivacy: null
