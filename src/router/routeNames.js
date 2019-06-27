@@ -23,5 +23,6 @@ export default {
   HistoryToken: 'HistoryToken',
   GetStarted: 'GetStarted',
   WalletDetail: 'WalletDetail',
-  AddDevice: 'AddDevice'
+  AddDevice: 'AddDevice',
+  ReceiveCrypto: 'ReceiveCrypto'
 };

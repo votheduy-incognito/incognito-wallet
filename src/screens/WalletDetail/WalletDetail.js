@@ -57,7 +57,8 @@ class WalletDetail extends Component {
 
   }
   handleReceivebtn = () => {
-    
+    const { navigation } = this.props;
+    navigation.navigate(ROUTE_NAMES.ReceiveCrypto);
   }
   
 
@@ -71,12 +72,12 @@ class WalletDetail extends Component {
             <OptionMenu iconProps={{color: '#fff'}} data={this.getMenuData()} /> 
 
             <View style={styles.boxBalance}>
-              <Text style={styles.balance}>{formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy.symbol)}</Text>
-              <Text style={styles.getFree}>Get free coin</Text>
+              <Text style={styles.balance}>{formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy.symbol)} {selectedPrivacy.symbol}</Text>
+              {/* <Text style={styles.getFree}>Get free coin</Text> */}
 
               <View style={styles.boxButton}>
-                <Button title='Receive' onPress={this.handleSendbtn} style={styles.btnStyle} />
-                <Button title='Send' onPress={this.handleReceivebtn} style={styles.btnStyle} />
+                <Button title='Receive' onPress={this.handleReceivebtn} style={styles.btnStyle} />
+                <Button title='Send' onPress={this.handleSendbtn} style={styles.btnStyle} />
               </View>
 
             </View>

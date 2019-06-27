@@ -5,9 +5,9 @@ import { getBalance } from '@src/redux/actions/account';
 import WalletDetail from './WalletDetail';
 import LoadingContainer from '@src/components/LoadingContainer';
 
-const WalletDetailContainer = ({ wallet, defaultAccount, selectedPrivacy, ...otherProps}) => (
+const WalletDetailContainer = ({ wallet, defaultAccount, selectedPrivacy, navigation, ...otherProps}) => (
   selectedPrivacy ? 
-    <WalletDetail wallet={wallet} account={defaultAccount} selectedPrivacy={selectedPrivacy} {...otherProps} /> :
+    <WalletDetail wallet={wallet} account={defaultAccount} selectedPrivacy={selectedPrivacy} navigation={navigation} {...otherProps} /> :
     <LoadingContainer />
 );
 
