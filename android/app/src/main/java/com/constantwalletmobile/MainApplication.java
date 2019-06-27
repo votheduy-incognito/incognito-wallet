@@ -40,7 +40,8 @@ public class MainApplication extends Application implements ReactApplication {
             new SvgPackage(),
             new AsyncStoragePackage(),
             new VectorIconsPackage(),
-            new RNGestureHandlerPackage()
+            new RNGestureHandlerPackage(),
+            new GomobilePackage()
       );
     }
 
