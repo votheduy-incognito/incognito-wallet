@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
-import { Text, Container, ScrollView, Button } from '@src/components/core';
+import { Text, Container, ScrollView, Button, View } from '@src/components/core';
 import ROUTE_NAMES from '@src/router/routeNames';
 import OptionMenu from '@src/components/OptionMenu';
 import MdIcons from 'react-native-vector-icons/Octicons';
 import MdCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FSIcons from 'react-native-vector-icons/FontAwesome5';
 
-import { View } from 'react-native';
+import formatUtil from '@src/utils/format';
 import styles from './style';
 
 class WalletDetail extends Component {
@@ -61,7 +61,8 @@ class WalletDetail extends Component {
   }
   
 
-  render() {    
+  render() { 
+    const { selectedPrivacy } = this.props;   
     return (
       <ScrollView>
         <Container style={styles.container}> 
@@ -70,7 +71,7 @@ class WalletDetail extends Component {
             <OptionMenu iconProps={{color: '#fff'}} data={this.getMenuData()} /> 
 
             <View style={styles.boxBalance}>
-              <Text style={styles.balance}>0.0561 pBTC</Text>
+              <Text style={styles.balance}>{formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy.symbol)}</Text>
               <Text style={styles.getFree}>Get free coin</Text>
 
               <View style={styles.boxButton}>

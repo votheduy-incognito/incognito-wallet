@@ -4,20 +4,29 @@ import { Toast } from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { getBalance as getAccountBalance } from '@src/redux/actions/account';
 import { setBulkToken, getBalance, setDefaultToken } from '@src/redux/actions/token';
-import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
+import { setSelectedPrivacy, clearSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import scheduleService from '@src/services/schedule';
 import accountService from '@src/services/wallet/accountService';
 import SelectedPrivacyModel from '@src/models/selectedPrivacy';
 import { connect } from 'react-redux';
 import Home from './Home';
+import routeNames from '@src/router/routeNames';
 
 class HomeContainer extends Component {
   componentDidMount() {
-    const { account } = this.props;
+    const { account, navigation, clearSelectedPrivacy } = this.props;
     this.getFollowingToken();
     this.getAccountBalance(account);
 
     scheduleService.reloadAllAccountBalance();
+
+
+    navigation.addListener(
+      'didFocus',
+      () => {
+        clearSelectedPrivacy();
+      }
+    );
   }
 
   getTokenBalance = token => {
@@ -44,11 +53,13 @@ class HomeContainer extends Component {
   handleSelectToken = (token) => {
     if (!token) return;
 
-    const { account, tokens, setSelectedPrivacy } = this.props;
+    const { account, tokens, setSelectedPrivacy, navigation } = this.props;
     const tokenData = tokens.find(t => t.symbol === token.symbol);
 
     const privacyToken = SelectedPrivacyModel.parse(account, tokenData);
     setSelectedPrivacy(privacyToken);
+
+    navigation.navigate(routeNames.WalletDetail);
   }
 
   render() {
@@ -74,9 +85,10 @@ const mapState = state => ({
   isGettingBalanceList: [...state.account.isGettingBalance, ...state.token.isGettingBalance]
 });
 
-const mapDispatch = { setBulkToken, getBalance, getAccountBalance, setDefaultToken, setSelectedPrivacy };
+const mapDispatch = { setBulkToken, getBalance, getAccountBalance, setDefaultToken, setSelectedPrivacy, clearSelectedPrivacy };
 
 HomeContainer.propTypes = {
+  navigation: PropTypes.object.isRequired,
   account: PropTypes.object.isRequired,
   tokens: PropTypes.array.isRequired,
   isGettingBalanceList: PropTypes.array.isRequired,
@@ -85,6 +97,7 @@ HomeContainer.propTypes = {
   getAccountBalance: PropTypes.func.isRequired,
   getBalance: PropTypes.func.isRequired,
   setSelectedPrivacy: PropTypes.func.isRequired,
+  clearSelectedPrivacy: PropTypes.func.isRequired,
 };
 
 

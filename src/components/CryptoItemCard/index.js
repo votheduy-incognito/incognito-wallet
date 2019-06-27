@@ -42,6 +42,7 @@ class CryptoItemContainer extends Component {
 
   render() {
     const { data } = this.state;
+    const { amount } = this.props;
 
     if (!data) return null;
 
@@ -49,7 +50,7 @@ class CryptoItemContainer extends Component {
       ...this.props,
       fullName: data.fullName,
       typeName: data.typeName,
-      amount: data.amount,
+      amount: amount,
       icon: data.icon,
       symbol: data.symbol,
       onPress: this.handlePress

@@ -5,6 +5,7 @@ const n = genNamspace('SELECTED_PRIVACY');
 // define types here
 const TYPES = {
   SET: n('SET'),
+  CLEAR: n('CLEAR'),
 };
 
 export default TYPES;

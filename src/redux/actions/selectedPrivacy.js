@@ -4,3 +4,7 @@ export const setSelectedPrivacy = (privacyToken = throw new Error('Privacy token
   type: type.SET,
   data: privacyToken
 });
+
+export const clearSelectedPrivacy = () => ({
+  type: type.CLEAR,
+});
