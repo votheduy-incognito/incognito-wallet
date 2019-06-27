@@ -4,7 +4,10 @@ import LoadingContainer from '@src/components/LoadingContainer';
 import { getEstimateFeeService, getEstimateFeeForSendingTokenService } from '@src/services/wallet/RpcClientService';
 import { connect } from 'react-redux';
 import convertUtil from '@src/utils/convert';
+import formatUtil from '@src/utils/format';
 import tokenData from '@src/constants/tokenData';
+import accountService from '@src/services/wallet/accountService';
+import { getBalance } from '@src/redux/actions/account';
 import { CONSTANT_COMMONS } from '@src/constants';
 import SendCrypto from './SendCrypto';
 
@@ -13,7 +16,9 @@ class SendCryptoContainer extends Component {
     super();
     this.state = {
       isGettingFee: false,
-      minFee: 0
+      isSending: false,
+      minFee: 0,
+      receiptData: null
     };
   }
 
@@ -34,6 +39,7 @@ class SendCryptoContainer extends Component {
         accountWallet,
         true // privacy mode
       );
+
       const humanFee = convertUtil.toHumanAmount(fee, tokenData.SYMBOL.MAIN_PRIVACY);
       // set min fee state
       this.setState({ minFee: humanFee });
@@ -94,8 +100,45 @@ class SendCryptoContainer extends Component {
     if (selectedPrivacy?.isMainPrivacy) return this._estimateFeeMainPrivacy;
   }
 
-  _handleSendMainPrivacy = values => {
-    console.log(values);
+  _handleSendMainPrivacy = async values => {
+    const { account, wallet, selectedPrivacy, getAccountBalance } = this.props;
+    const { fromAddress, toAddress, amount, fee } = values;
+    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
+    const originalFee = convertUtil.toOriginalAmount(Number(fee), tokenData.SYMBOL.MAIN_PRIVACY);
+
+    const paymentInfos = [{
+      paymentAddressStr: toAddress, amount: originalAmount
+    }];
+
+    try {
+      this.setState({
+        isSending: true
+      });
+
+      const res = await accountService.sendConstant(paymentInfos, originalFee, true, account, wallet);
+
+      if (res.txId) {
+        const receiptData = {
+          txId: res.txId,
+          toAddress,
+          fromAddress,
+          amount: originalAmount,
+          amountUnit: selectedPrivacy?.symbol,
+          time: formatUtil.toMiliSecond(res.lockTime),
+          fee: originalFee
+        };
+
+        this.setState({ receiptData });
+
+        setTimeout(() => getAccountBalance(account), 10000);
+      } else {
+        throw new Error(`Sent failed. Please try again! Detail: ${res.err.Message || res.err }`);
+      }
+    } catch (e) {
+      throw new Error(`Sent failed. Please try again! Detail:' ${e.message}`);
+    } finally {
+      this.setState({ isSending: false });
+    }
   }
 
   _handleSendToken = values => {
@@ -111,7 +154,7 @@ class SendCryptoContainer extends Component {
 
   render() {
     const { selectedPrivacy } = this.props;
-    const { isGettingFee, minFee } = this.state;
+    const { isGettingFee, minFee, receiptData, isSending } = this.state;
 
     if (!selectedPrivacy) return <LoadingContainer />;
 
@@ -119,7 +162,9 @@ class SendCryptoContainer extends Component {
       handleEstimateFee: this.handleEstimateFee(),
       handleSend: this.handleSend(),
       isGettingFee,
-      minFee
+      minFee,
+      receiptData,
+      isSending
     };
 
     return <SendCrypto {...this.props} {...componentProps} />;
@@ -132,7 +177,7 @@ const mapState = state => ({
   wallet: state.wallet
 });
 
-const mapDispatch = {  };
+const mapDispatch = { getAccountBalance: getBalance };
 
 SendCryptoContainer.defaultProps = {
   selectedPrivacy: null

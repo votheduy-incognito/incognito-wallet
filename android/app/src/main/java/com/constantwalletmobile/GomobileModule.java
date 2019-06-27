@@ -25,6 +25,10 @@ public class GomobileModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void aggregatedRangeProve(String data, Callback successCallback) {
-        successCallback.invoke(Gomobile.aggregatedRangeProve(data));
+        try {
+            successCallback.invoke(null, Gomobile.aggregatedRangeProve(data));
+        } catch(Exception e) {
+            successCallback.invoke(e, null);
+        }
     }
 }

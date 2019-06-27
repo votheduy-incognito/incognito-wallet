@@ -73,7 +73,9 @@ class WalletDetail extends Component {
             <OptionMenu iconProps={{color: '#fff'}} data={this.getMenuData()} /> 
 
             <View style={styles.boxBalance}>
-              <Text style={styles.balance}>{formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy.symbol)} {selectedPrivacy.symbol}</Text>
+              <Text style={styles.balance}>
+                {formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy.symbol)} {selectedPrivacy.symbol}
+              </Text>
               {/* <Text style={styles.getFree}>Get free coin</Text> */}
 
               <View style={styles.boxButton}>

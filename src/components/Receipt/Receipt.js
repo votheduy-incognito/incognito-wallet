@@ -5,8 +5,10 @@ import { COLORS } from '@src/styles';
 import formatUtil from '@src/utils/format';
 import PropTypes from 'prop-types';
 import React from 'react';
+import tokenData from '@src/constants/tokenData';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import styleSheet from './style';
+
 
 const CommonText = props => (
   <Text
@@ -42,7 +44,7 @@ const Receipt = ({ info }) => {
           <CommonText>
             Amount: 
             {' '}
-            {formatUtil.amountConstant(amount)} 
+            {formatUtil.amount(amount, amountUnit)} 
             {' '}
             {amountUnit}
           </CommonText>
@@ -51,7 +53,7 @@ const Receipt = ({ info }) => {
           <CommonText>
             Fee: 
             {' '}
-            {formatUtil.amountConstant(fee)}
+            {formatUtil.amount(fee, tokenData.SYMBOL.MAIN_PRIVACY)}
             {' '}
             {CONSTANT_COMMONS.CONST_SYMBOL}
           </CommonText>

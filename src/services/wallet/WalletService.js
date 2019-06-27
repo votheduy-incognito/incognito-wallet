@@ -109,10 +109,12 @@ export async function initWallet() {
 }
 
 export async function saveWallet(wallet) {
+  wallet.Storage = storage;
   wallet.save(await getPassphrase());
 }
 
 export async function loadHistoryByAccount(wallet, accountName) {
+  wallet.Storage = storage;
   return (await wallet.getHistoryByAccount(accountName)) || [];
 }
 

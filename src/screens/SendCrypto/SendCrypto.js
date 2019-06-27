@@ -1,15 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Container, ScrollView, Form, FormSubmitButton, FormTextField, TouchableOpacity, ActivityIndicator, Text } from '@src/components/core';
+import { Container, ScrollView, Form, FormSubmitButton, FormTextField, TouchableOpacity, ActivityIndicator, Text, Toast } from '@src/components/core';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { openQrScanner } from '@src/components/QrCodeScanner';
+import ReceiptModal, { openReceipt } from '@src/components/Receipt';
+import LoadingTx from '@src/components/LoadingTx';
 import { homeStyle } from './style';
 import formValidate from './formValidate';
 
 const initialFormValues = {
   amount: '1',
   fee: '0.5',
-  toAdress: ''
+  toAddress: ''
 };
 
 class SendCrypto extends React.Component {
@@ -18,6 +20,14 @@ class SendCrypto extends React.Component {
     this.state = {
     };
     this.form = null;
+  }
+
+  componentDidUpdate(prevProps) {
+    const { receiptData } = this.props;
+
+    if (receiptData?.txId !== prevProps.receiptData?.txId) {
+      openReceipt(receiptData);
+    }
   }
 
   handleQrScanAddress = () => {
@@ -32,23 +42,39 @@ class SendCrypto extends React.Component {
     }
   }
 
-  handleShouldGetFee = async () => {
-    const { errors, values } = this.form;
+  handleShouldGetFee = () => {
+    try {
+      const { errors, values } = this.form;
 
-    if (errors?.amount || errors?.toAddress){
-      return;
+      if (errors?.amount || errors?.toAddress){
+        return;
+      }
+
+      const { amount, toAddress } = values;
+
+      if (amount && toAddress){
+        const { handleEstimateFee } = this.props;
+        handleEstimateFee(values);
+      }
+    } catch (e) {
+      Toast.showError(e.message);
     }
+  }
+  
+  handleSend = values => {
+    try {
+      const { handleSend, minFee } = this.props;
 
-    const { amount, toAddress } = values;
-
-    if (amount && toAddress){
-      const { handleEstimateFee } = this.props;
-      handleEstimateFee(values);
+      if (typeof handleSend === 'function') {
+        handleSend({ ...values, fee: minFee });
+      }
+    } catch (e) {
+      Toast.showError(e.message);
     }
   }
 
   render() {
-    const { handleSend, isGettingFee, minFee } = this.props;
+    const { isGettingFee, minFee, isSending } = this.props;
 
     return (
       <ScrollView style={homeStyle.container}>
@@ -56,7 +82,7 @@ class SendCrypto extends React.Component {
           <Form
             formRef={form => this.form = form}
             initialValues={initialFormValues}
-            onSubmit={handleSend}
+            onSubmit={this.handleSend}
             viewProps={{ style: homeStyle.form }}
             validationSchema={formValidate}
             validate={this.onFormValidate}
@@ -76,7 +102,9 @@ class SendCrypto extends React.Component {
           </Form>
           {isGettingFee && <ActivityIndicator />}
           {minFee > 0 && <Text>Min fee: {minFee}</Text>}
+          <ReceiptModal />
         </Container>
+        { isSending && <LoadingTx /> }
       </ScrollView>
     );
   }
