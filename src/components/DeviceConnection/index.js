@@ -1,7 +1,7 @@
 import LocalDatabase from '@src/utils/LocalDatabase';
 import Permission from '@src/utils/PermissionUtil';
 import Util from '@src/utils/Util';
-import EasyBluetooth from 'easy-bluetooth-classic';
+// import EasyBluetooth from 'easy-bluetooth-classic';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -21,19 +21,19 @@ class DeviceConnection extends Component {
       isDoingSetManual: false,
       pairedDevice: []
     };
-    const config = {
-      deviceName: '',
-      bufferSize: 1024,
-      characterDelimiter: '\n'
-    };
+    // const config = {
+    //   deviceName: '',
+    //   bufferSize: 1024,
+    //   characterDelimiter: '\n'
+    // };
 
-    EasyBluetooth.init(config)
-      .then(function(config) {
-        console.log(TAG, ' ---- config done!');
-      })
-      .catch(function(ex) {
-        console.warn(ex);
-      });
+    // EasyBluetooth.init(config)
+    //   .then(function(config) {
+    //     console.log(TAG, ' ---- config done!');
+    //   })
+    //   .catch(function(ex) {
+    //     console.warn(ex);
+    //   });
   }
 
   // scanAndConnect = async () => {
@@ -202,7 +202,7 @@ class DeviceConnection extends Component {
 }
 
 DeviceConnection.propTypes = {
-  callbackGettingListPairedDevices: pairedList => {}
+  // callbackGettingListPairedDevices: pairedList => {}
 };
 
 DeviceConnection.defaultProps = {
