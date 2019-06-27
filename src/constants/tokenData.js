@@ -2,6 +2,8 @@ import privacyIcon from '@src/assets/images/cryptoLogo/incognito.png';
 import btcIcon from '@src/assets/images/cryptoLogo/bitcoin.png';
 import ethIcon from '@src/assets/images/cryptoLogo/ethereum.png';
 
+const customTokenIcon = ethIcon;
+
 const SYMBOL = {
   pETH: 'pETH',
   pBTC: 'pBTC',
@@ -29,9 +31,18 @@ const DATA = {
     symbol: 'PRV',
     name: 'PRV',
     icon: privacyIcon
-  }
+  },
 };
 
+const parse = token => ({
+  fullName: token?.name,
+  typeName: 'Custom token',
+  symbol: token?.symbol,
+  name: token?.name,
+  icon: customTokenIcon
+});
+
+
 export default {
-  DATA, SYMBOL
+  DATA, SYMBOL, parse
 };

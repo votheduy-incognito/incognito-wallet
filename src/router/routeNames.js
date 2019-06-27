@@ -24,5 +24,6 @@ export default {
   GetStarted: 'GetStarted',
   WalletDetail: 'WalletDetail',
   AddDevice: 'AddDevice',
-  ReceiveCrypto: 'ReceiveCrypto'
+  ReceiveCrypto: 'ReceiveCrypto',
+  SendCrypto: 'SendCrypto'
 };

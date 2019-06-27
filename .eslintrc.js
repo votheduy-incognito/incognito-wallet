@@ -6,7 +6,7 @@ module.exports = {
     'react-native/react-native': true,
     'jest/globals': true
   },
-  // extends: ['airbnb', 'react-native',  'eslint:recommended'],
+  extends: ['airbnb', 'react-native',  'eslint:recommended'],
   parser: 'babel-eslint',
   parserOptions: {
     ecmaFeatures: {
@@ -17,7 +17,7 @@ module.exports = {
     sourceType: 'module',
     babelOptions: {
       configFile: './babel.config.js'
-    }
+    },
   },
   plugins: ['react', 'react-native', 'jest'],
   settings: {
@@ -52,6 +52,9 @@ module.exports = {
     'no-console': 0,
     'no-unused-vars': 2,
     'react-native/sort-styles': 0,
-    'react/forbid-prop-types': 0
+    'react/forbid-prop-types': 0,
+    'react/prefer-stateless-function': 0,
+    'import/no-unresolved': 0, // tmp
+    'react/jsx-one-expression-per-line': 0
   }
 };

@@ -53,7 +53,7 @@ const FollowTokenContainer = ({
       setWallet(wallet);
 
       getTokenList().then(setTokens);
-
+      
       Toast.showInfo('Added successfully');
     } catch {
       Toast.showError(

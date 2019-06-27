@@ -54,7 +54,8 @@ class WalletDetail extends Component {
   }
 
   handleSendbtn = () => {
-
+    const { navigation } = this.props;
+    navigation.navigate(ROUTE_NAMES.SendCrypto);
   }
   handleReceivebtn = () => {
     const { navigation } = this.props;

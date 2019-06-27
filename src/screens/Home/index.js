@@ -3,18 +3,19 @@ import PropTypes from 'prop-types';
 import { Toast } from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { getBalance as getAccountBalance } from '@src/redux/actions/account';
-import { setBulkToken, getBalance, setDefaultToken } from '@src/redux/actions/token';
+import { setBulkToken, getBalance } from '@src/redux/actions/token';
 import { setSelectedPrivacy, clearSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import scheduleService from '@src/services/schedule';
 import accountService from '@src/services/wallet/accountService';
 import SelectedPrivacyModel from '@src/models/selectedPrivacy';
+import routeNames from '@src/router/routeNames';
 import { connect } from 'react-redux';
 import Home from './Home';
-import routeNames from '@src/router/routeNames';
 
 class HomeContainer extends Component {
   componentDidMount() {
     const { account, navigation, clearSelectedPrivacy } = this.props;
+
     this.getFollowingToken();
     this.getAccountBalance(account);
 
@@ -27,6 +28,15 @@ class HomeContainer extends Component {
         clearSelectedPrivacy();
       }
     );
+  }
+
+  componentDidUpdate(prevProps) {
+    const { wallet } = this.props;
+
+    // reload tokens list if wallet was changed
+    if (prevProps.wallet !== wallet) {
+      this.getFollowingToken();
+    }
   }
 
   getTokenBalance = token => {
@@ -85,7 +95,7 @@ const mapState = state => ({
   isGettingBalanceList: [...state.account.isGettingBalance, ...state.token.isGettingBalance]
 });
 
-const mapDispatch = { setBulkToken, getBalance, getAccountBalance, setDefaultToken, setSelectedPrivacy, clearSelectedPrivacy };
+const mapDispatch = { setBulkToken, getBalance, getAccountBalance, setSelectedPrivacy, clearSelectedPrivacy };
 
 HomeContainer.propTypes = {
   navigation: PropTypes.object.isRequired,

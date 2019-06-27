@@ -30,7 +30,7 @@ Symbol:
       </Text>
       <Text>
 Init amount:
-        {formatUtil.amountMiliConstant(token.Amount)}
+        {formatUtil.amount(token.Amount)}
       </Text>
     </View>
   </TouchableOpacity>

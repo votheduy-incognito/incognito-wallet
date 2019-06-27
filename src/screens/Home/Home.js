@@ -2,10 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Container, ScrollView, View, Text } from '@src/components/core';
 import CryptoItemCard from '@src/components/CryptoItemCard';
-import { homeStyle } from './style';
 import tokenData from '@src/constants/tokenData';
 import TouchableOpacity from '@src/components/core/TouchableOpacity/Component';
-
+import { homeStyle } from './style';
 
 class Home extends React.Component {
   render() {
@@ -16,8 +15,10 @@ class Home extends React.Component {
         <Container style={homeStyle.mainContainer}>
           <CryptoItemCard
             style={homeStyle.cryptoItem}
-            tokenSymbol={tokenData.SYMBOL.MAIN_PRIVACY}
-            amount={account?.value}
+            token={{
+              symbol: tokenData.SYMBOL.MAIN_PRIVACY,
+              amount: account?.value
+            }}
             isGettingBalance={isGettingBalanceList?.includes(account?.name)}
             onPress={onSelectToken}
           />
@@ -26,8 +27,7 @@ class Home extends React.Component {
               <CryptoItemCard
                 style={homeStyle.cryptoItem}
                 key={token.symbol}
-                tokenSymbol={token.symbol}
-                amount={token.amount}
+                token={token}
                 isGettingBalance={isGettingBalanceList?.includes(token.name)}
                 onPress={onSelectToken}
               />

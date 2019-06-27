@@ -105,7 +105,6 @@ export default class Token {
     try {
       const data = await listPrivacyTokens();
       const tokens = data.listPrivacyToken || [];
-
       return tokens;
     } catch (e) {
       throw e;

@@ -24,5 +24,9 @@ export default {
     [TOKEN_DATA.SYMBOL.pETH]: 1e9,
     [TOKEN_DATA.SYMBOL.pBTC]: 1e9,
     [TOKEN_DATA.SYMBOL.MAIN_PRIVACY]: 1e2
+  },
+  TOKEN_TX_TYPE: {
+    INIT: 0,
+    SEND: 1
   }
 };

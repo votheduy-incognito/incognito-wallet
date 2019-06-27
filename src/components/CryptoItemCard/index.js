@@ -11,24 +11,24 @@ class CryptoItemContainer extends Component {
   }
 
   componentDidMount() {
-    const { tokenSymbol } = this.props;
+    const { token } = this.props;
 
-    if (tokenSymbol) {
-      this.getData(tokenSymbol);
+    if (token) {
+      this.getData(token);
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { tokenSymbol: oldTokenSymbol } = prevProps;
-    const { tokenSymbol } = this.props;
+    const { token: oldToken } = prevProps;
+    const { token } = this.props;
 
-    if (oldTokenSymbol !== tokenSymbol) {
-      this.getData(tokenSymbol);
+    if (oldToken?.symbol !== token?.symbol) {
+      this.getData(token);
     }
   }
 
-  getData = (tokenSymbol) => {
-    const data = tokenData.DATA[tokenSymbol];
+  getData = (token) => {
+    const data = tokenData.DATA[token?.symbol] || tokenData.parse(token);
     this.setState({ data });
   }
 
@@ -42,7 +42,7 @@ class CryptoItemContainer extends Component {
 
   render() {
     const { data } = this.state;
-    const { amount } = this.props;
+    const { token } = this.props;
 
     if (!data) return null;
 
@@ -50,7 +50,7 @@ class CryptoItemContainer extends Component {
       ...this.props,
       fullName: data.fullName,
       typeName: data.typeName,
-      amount: amount,
+      amount: token?.amount,
       icon: data.icon,
       symbol: data.symbol,
       onPress: this.handlePress
@@ -65,17 +65,15 @@ class CryptoItemContainer extends Component {
 }
 
 CryptoItemContainer.defaultProps = {
-  amount: 0,
   onPress: null,
-  tokenSymbol: null,
+  token: null,
   style: null,
   isGettingBalance: false
 };
 
 CryptoItemContainer.propTypes = {
-  amount: PropTypes.number,
   onPress: PropTypes.func,
-  tokenSymbol: PropTypes.string,
+  token: PropTypes.object,
   isGettingBalance: PropTypes.bool,
   style: PropTypes.object
 };
