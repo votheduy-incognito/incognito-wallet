@@ -1,12 +1,12 @@
 import LocalDatabase from '@src/utils/LocalDatabase';
-import Permission from '@src/utils/PermissionUtil';
 import Util from '@src/utils/Util';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Alert, Platform, View } from 'react-native';
-import BluetoothSerial from 'react-native-bluetooth-serial';
+import BaseConnection from './BaseConnection';
 import style from './style';
+import WifiConnection from './WifiConnection';
 
 export const TAG = 'DeviceConnection';
 
@@ -21,24 +21,12 @@ class DeviceConnection extends Component {
       pairedDevice: []
     };
     
-    this.initBluetooth();
+    this.init();
     
   }
-  initBluetooth = ()=>{
-    if(Platform.OS === 'android'){
-      // const config = {
-      //   deviceName: '',
-      //   bufferSize: 1024,
-      //   characterDelimiter: '\n'
-      // };
-      // EasyBluetooth.init(config)
-      //   .then(function(config) {
-      //     console.log(TAG, ' ---- config done!');
-      //   })
-      //   .catch(function(ex) {
-      //     console.warn(ex);
-      //   });
-    }
+  init = ()=>{
+    const connection:BaseConnection = new WifiConnection();
+    this.connection = connection;
   }
 
   componentDidMount = async () => {
@@ -96,34 +84,15 @@ class DeviceConnection extends Component {
     }
   };
 
-  checkBluetoothEnabled = () => {
-    return new Promise((resolve, reject) => {
-      try {
-        if (Platform.OS === 'android') {
-          BluetoothSerial.isEnabled().then(
-            enabled => {
-              console.log(
-                TAG,
-                `checkBluetoothEnabled ---- begin  enabled =${enabled}`
-              );
-              if (!enabled) {
-                BluetoothSerial.enabled();
-              }
-              resolve(enabled);
-            },
-            err => {
-              reject(err);
-            }
-          );
-        } else {
-          resolve(true);
-        }
-      } catch (error) {
-        reject(error);
-      }
-    });
-  };
-
+  checkRegular = async ()=>{
+    try {
+      const isRegular = await this.connection.checkRegular();
+      return Promise.resolve(isRegular);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+    return Promise.resolve(true);
+  }
   alertBluetooth = () => {
     Alert.alert(
       'Turn on bluetooth',
@@ -166,16 +135,15 @@ class DeviceConnection extends Component {
       const { callbackGettingListPairedDevices } = this.props;
       this.isLoading = true;
       try {
-        // console.log(TAG, 'scan -- enabled  =', devices);
-        const [isEnabled, granted] = await Promise.all([
-          this.checkBluetoothEnabled(),
-          Permission.locationPermission()
-        ]);
-        if (isEnabled && granted) {
-          const devices = await BluetoothSerial.discoverUnpairedDevices(); //EasyBluetooth.startScan();
-          callbackGettingListPairedDevices(devices);
-          console.log(TAG, `scan ${isEnabled} -- enabled01 =`, devices);
-        }
+        console.log(TAG, 'scan -- begin');
+        // const [isEnabled, granted] = await Promise.all([
+        //   this.checkRegular(),
+        //   Permission.locationPermission()
+        // ]);
+        const devices = await this.connection.scan();
+        callbackGettingListPairedDevices(devices);
+        console.log(TAG, 'scan -- enabled01 =', devices);
+        
       } catch (e) {
         console.log(TAG, 'scan error ', e);
       }

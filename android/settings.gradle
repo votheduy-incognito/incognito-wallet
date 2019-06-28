@@ -1,6 +1,10 @@
 rootProject.name = 'constantWalletMobile'
-include ':react-native-wifi-p2p'
-project(':react-native-wifi-p2p').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-wifi-p2p/android')
+include ':react-native-zmq-service'
+project(':react-native-zmq-service').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-zmq-service/android')
+include ':react-native-iot-wifi'
+project(':react-native-iot-wifi').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-iot-wifi/android')
+include ':react-native-wifi'
+project(':react-native-wifi').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-wifi/android')
 include ':react-native-bluetooth-serial'
 project(':react-native-bluetooth-serial').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-bluetooth-serial/android')
 include ':react-native-camera'

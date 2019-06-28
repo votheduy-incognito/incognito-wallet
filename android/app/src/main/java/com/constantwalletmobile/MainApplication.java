@@ -3,7 +3,9 @@ package com.constantwalletmobile;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import io.wifi.p2p.WiFiP2PManagerPackage;
+import com.reactlibrary.RNZmqServicePackage;
+import com.tadasr.IOTWifi.IOTWifiPackage;
+import com.reactlibrary.RNWifiPackage;
 import com.rusel.RCTBluetoothSerial.RCTBluetoothSerialPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
@@ -32,7 +34,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new WiFiP2PManagerPackage(),
+            new RNZmqServicePackage(),
+            new IOTWifiPackage(),
+            new RNWifiPackage(),
             new RCTBluetoothSerialPackage(),
             new RNCameraPackage(),
             new RandomBytesPackage(),

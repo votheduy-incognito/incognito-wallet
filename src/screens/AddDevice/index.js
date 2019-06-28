@@ -8,7 +8,6 @@ import { Button, CheckBox, Icon, ListItem } from 'react-native-elements';
 import Pulse from 'react-native-pulse';
 import { connect } from 'react-redux';
 import styles from './styles';
-
 export const TAG = 'AddDevice';
 
 class AddDevice extends BaseScreen {
@@ -53,7 +52,6 @@ class AddDevice extends BaseScreen {
     const { loading } = this.state;
     return (
       <View style={styles.container}>
-        
         <Button
           title="Scan"
           onPress={() => {
@@ -64,9 +62,8 @@ class AddDevice extends BaseScreen {
         <DeviceConnection
           ref={this.deviceId}
           callbackGettingListPairedDevices={(list: []) => {
-            // const newList = list;
             const newList = list.filter(
-              item => !_.isEmpty(item.name) && !_.isEmpty(item.address)
+              item => !_.isEmpty(item.name) && !_.isEmpty(item.id)
             );
             this.setState({
               loading: false,
