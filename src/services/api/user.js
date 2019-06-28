@@ -1,4 +1,5 @@
-// import http from '../http';
+import userModel from '@src/models/user';
+import http from '../http';
 
 // export const subscribeEmail = email => http.post('/auth/subscribe', {
 //   Email: email,
@@ -8,4 +9,7 @@
 //   Email: email,
 // });
 
-export const getToken = () => new Promise(resolve => resolve('123'));
+export const getToken = deviceId => {
+  return http.post('/auth/new-token', { DeviceID: deviceId})
+    .then(userModel.parseTokenData);
+};
