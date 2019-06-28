@@ -14,6 +14,7 @@ import UserHeaderBoard from '@src/screens/UserHeaderBoard';
 import WalletDetail from '@src/screens/WalletDetail';
 import ReceiveCrypto from '@src/screens/ReceiveCrypto';
 import SendCrypto from '@src/screens/SendCrypto';
+import Deposit from '@src/screens/Deposit';
 import { THEME } from '@src/styles';
 import { navigationOptionsHandler } from '@src/utils/router';
 import React from 'react';
@@ -39,6 +40,7 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.WalletDetail]: navigationOptionsHandler(WalletDetail),
     [ROUTE_NAMES.ReceiveCrypto]: navigationOptionsHandler(ReceiveCrypto),
     [ROUTE_NAMES.SendCrypto]: navigationOptionsHandler(SendCrypto),
+    [ROUTE_NAMES.Deposit]: navigationOptionsHandler(Deposit),
   },
   {
     initialRouteName: 'TabNavigator',

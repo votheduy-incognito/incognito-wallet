@@ -25,5 +25,6 @@ export default {
   WalletDetail: 'WalletDetail',
   AddDevice: 'AddDevice',
   ReceiveCrypto: 'ReceiveCrypto',
-  SendCrypto: 'SendCrypto'
+  SendCrypto: 'SendCrypto',
+  Deposit: 'Deposit'
 };

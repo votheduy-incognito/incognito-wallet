@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { Text, Container, ScrollView, Button, View } from '@src/components/core';
 import ROUTE_NAMES from '@src/router/routeNames';
 import OptionMenu from '@src/components/OptionMenu';
-import MdIcons from 'react-native-vector-icons/Octicons';
 import MdCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FSIcons from 'react-native-vector-icons/FontAwesome5';
 
@@ -30,33 +29,42 @@ class WalletDetail extends Component {
 
 
   getMenuData = () => {
+    const { selectedPrivacy } = this.props;
+    const additionalData = selectedPrivacy?.additionalData;
+    const data = [];
 
-    return [
-      {
-        id: 'deposit',
-        label: 'Deposit',
-        //handlePress: handleSendToken,
-        icon: <FSIcons name='hand-holding-usd' size={20} />
-      },
-      {
-        id: 'withdraw',
-        label: 'Withdraw',
-        //handlePress: () => onRemoveFollowToken(token.ID),
-        icon: <MdCIcons name='cash-refund' size={20} />
-      },
-      {
-        id: 'preferences',
-        label: 'Preferences',
-        //handlePress: handleShowHistory,
-        icon: <MdIcons name='settings' size={22} />
-      }
-    ];
+    additionalData?.isWithdrawable && data.push({
+      id: 'withdraw',
+      label: 'Withdraw',
+      handlePress: this.handleWithdrawBtn,
+      icon: <MdCIcons name='cash-refund' size={20} />
+    });
+
+    additionalData?.isDeposable && data.push({
+      id: 'deposit',
+      label: 'Deposit',
+      handlePress: this.handleDepositBtn,
+      icon: <FSIcons name='hand-holding-usd' size={20} />
+    });
+
+    return data;
+  }
+
+  handleDepositBtn = () => {
+    const { navigation } = this.props;
+    navigation.navigate(ROUTE_NAMES.Deposit);
+  }
+
+  handleWithdrawBtn = () => {
+    const { navigation } = this.props;
+    navigation.navigate(ROUTE_NAMES.SendCrypto);
   }
 
   handleSendbtn = () => {
     const { navigation } = this.props;
     navigation.navigate(ROUTE_NAMES.SendCrypto);
   }
+
   handleReceivebtn = () => {
     const { navigation } = this.props;
     navigation.navigate(ROUTE_NAMES.ReceiveCrypto);
@@ -64,13 +72,16 @@ class WalletDetail extends Component {
   
 
   render() { 
-    const { selectedPrivacy } = this.props;   
+    const { selectedPrivacy } = this.props;  
+    const menuData = this.getMenuData(); 
     return (
       <ScrollView>
         <Container style={styles.container}> 
 
           <View style={styles.boxHeader}> 
-            <OptionMenu iconProps={{color: '#fff'}} data={this.getMenuData()} /> 
+            {
+              menuData.length > 0 && <OptionMenu iconProps={{color: '#fff'}} data={menuData} /> 
+            }
 
             <View style={styles.boxBalance}>
               <Text style={styles.balance}>

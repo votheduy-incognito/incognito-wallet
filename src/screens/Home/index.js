@@ -14,12 +14,15 @@ import Home from './Home';
 
 class HomeContainer extends Component {
   componentDidMount() {
-    const { account, navigation, clearSelectedPrivacy } = this.props;
+    const { account, navigation, clearSelectedPrivacy, getAccountBalance, accountList } = this.props;
 
     this.getFollowingToken();
     this.getAccountBalance(account);
 
-    scheduleService.reloadAllAccountBalance();
+    scheduleService.reloadAllAccountBalance({
+      accounts: accountList,
+      getBalance: getAccountBalance
+    });
 
 
     navigation.addListener(
@@ -89,6 +92,7 @@ class HomeContainer extends Component {
 }
 
 const mapState = state => ({
+  accountList: state.account.list,
   account: state.account.defaultAccount,
   wallet: state.wallet,
   tokens: state.token.followed || [],
