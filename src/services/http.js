@@ -1,6 +1,6 @@
 import axios from 'axios';
 import CONFIG from '@src/constants/config';
-import { getErrorMessage } from './apiErrorHandler';
+import { apiErrorHandler, messageCode, createError } from './errorHandler';
 
 const HEADERS = {'Content-Type': 'application/json'};
 const TIMEOUT = 1000;
@@ -14,7 +14,7 @@ const instance = axios.create({
 instance.interceptors.response.use(null, errorData => {
   const data = errorData?.response?.data;
   if (data && data.Error) {
-    throw new Error(getErrorMessage(data.Error) || 'Opps! Something went wrong');
+    throw createError({ code: apiErrorHandler.getErrorMessageCode(data.Error) || messageCode.code.api_general });
   }
 
   return Promise.reject(errorData);
