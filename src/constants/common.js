@@ -1,6 +1,7 @@
 import TOKEN_DATA from './tokenData';
 
 export default {
+  // old varibles, maybe remove later
   CONST_SYMBOL: 'PRV',
   STAKING_TYPES: {
     SHARD: 0,
@@ -20,6 +21,8 @@ export default {
   SEND_TOKEN: 1,
   NORMAL_TOKEN_TAB: 0,
   PRIVACY_TOKEN_TAB: 1,
+
+  // for new app
   DECISION_RATE: {
     [TOKEN_DATA.SYMBOL.pETH]: 1e9,
     [TOKEN_DATA.SYMBOL.pBTC]: 1e9,
@@ -28,5 +31,13 @@ export default {
   TOKEN_TX_TYPE: {
     INIT: 0,
     SEND: 1
+  },
+  CURRENCY_TYPE_FOR_GEN_ADDRESS: {
+    ETH: 1,
+    BTC: 2 
+  },
+  ADDRESS_TYPE_FOR_GEN_ADDRESS: {
+    DEPOSIT: 1,
+    WITHDRAW: 2 
   }
 };

@@ -1,5 +1,6 @@
 import { Toast } from '@src/components/core';
-import { CONSTANT_CONFIGS } from '@src/constants';
+import { setTokenHeader } from '@src/services/http';
+import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import { reloadWallet } from '@src/redux/actions/wallet';
 import routeNames from '@src/router/routeNames';
 import { getToken } from '@src/services/api/user';
@@ -10,6 +11,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { createError, messageCode, throwNext, getErrorMessage } from '@src/services/errorHandler';
 import { connect } from 'react-redux';
+import storageService from '@src/services/storage';
 import GetStarted from './GetStarted';
 
 class GetStartedContainer extends Component {
@@ -62,6 +64,12 @@ class GetStartedContainer extends Component {
   initApp = async () => {
     try {
       this.setState({ isInitialing: true });
+      const token = await this.checkDeviceToken();
+
+      if (token) {
+        setTokenHeader(token);
+      }
+
       if (!(await serverService.get())) {
         await serverService.setDefaultList();
       }
@@ -90,11 +98,42 @@ class GetStartedContainer extends Component {
     }
   };
 
+  getExistedDeviceToken = async () => {
+    try {
+      const token = await storageService.getItem(CONSTANT_KEYS.DEVICE_TOKEN);
+      return token;
+    } catch {
+      throw createError({ code: messageCode.code.load_device_token_failed });
+    }
+  }
+
+  registerToken = async () => {
+    try {
+      const token = await getToken('d');
+      return token;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  checkDeviceToken = async () => {
+    try {
+      const token = await this.getExistedDeviceToken();
+      if (!token) {
+        const tokenData = await this.registerToken();
+        storageService.setItem(CONSTANT_KEYS.DEVICE_TOKEN, tokenData?.token);
+        return tokenData?.token;
+      } else {
+        return token;
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+
   handleCreateNew = async () => {
     try {
       const { reloadWallet } = this.props;
-      const token = await getToken();
-      if (!token) throw new Error('Can not create user token');
       await this.handleCreateWallet();
       reloadWallet();
     } catch (e) {

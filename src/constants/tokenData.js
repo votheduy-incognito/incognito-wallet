@@ -16,14 +16,20 @@ const DATA = {
     typeName: 'Ethereum',
     symbol: 'pETH',
     name: 'pETH',
-    icon: ethIcon
+    icon: ethIcon,
+    currencyType: 'ETH',
+    isWithdrawable: true,
+    isDeposable: true
   },
   [SYMBOL.pBTC]: {
     fullName: 'Private BTC',
     typeName: 'Bitcoin',
     symbol: 'pBTC',
     name: 'pBTC',
-    icon: btcIcon
+    icon: btcIcon,
+    currencyType: 'BTC',
+    isWithdrawable: true,
+    isDeposable: true
   },
   [SYMBOL.MAIN_PRIVACY]: {
     fullName: 'Privacy',
