@@ -1,3 +1,4 @@
+import { Toast } from '@src/components/core';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import { reloadWallet } from '@src/redux/actions/wallet';
 import routeNames from '@src/router/routeNames';
@@ -7,6 +8,7 @@ import serverService from '@src/services/wallet/Server';
 import { initWallet } from '@src/services/wallet/WalletService';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { createError, messageCode, throwNext, getErrorMessage } from '@src/services/errorHandler';
 import { connect } from 'react-redux';
 import GetStarted from './GetStarted';
 
@@ -20,7 +22,10 @@ class GetStartedContainer extends Component {
   }
 
   componentDidMount() {
-    this.initApp().then(this.checkExistedWallet);
+    this.initApp()
+      .catch(e => {
+        Toast.showError(getErrorMessage(e, { defaultCode: messageCode.code.initialing_wallet_failed }));
+      });
   }
 
   goHome = () => {
@@ -28,29 +33,41 @@ class GetStartedContainer extends Component {
     navigation.navigate(routeNames.Home);
   };
 
-  checkExistedWallet = async () => {
+  getExistedWallet = async () => {
     try {
       const { reloadWallet } = this.props;
       const wallet = await reloadWallet(
         CONSTANT_CONFIGS.PASSPHRASE_WALLET_DEFAULT
       );
       if (wallet) {
+        return wallet;
+      }
+      return null;
+    } catch (e) {
+      throw createError({ code: messageCode.code.load_existed_wallet_failed });
+    }
+  }
+
+  checkExistedWallet = async () => {
+    try {
+      const wallet = await this.getExistedWallet();
+      if (wallet) {
         this.goHome();
       }
     } catch (e) {
-      throw new Error('Can not load existed wallet');
+      throw e;
     }
-  };
+  }; 
 
   initApp = async () => {
     try {
       this.setState({ isInitialing: true });
       if (!(await serverService.get())) {
-        return serverService.setDefaultList();
+        await serverService.setDefaultList();
       }
-      return null;
-    } catch {
-      throw new Error('Error occurs while initialing wallet');
+      await this.checkExistedWallet();
+    } catch (e) {
+      throw e;
     } finally {
       this.setState({ isInitialing: false });
     }
@@ -59,9 +76,17 @@ class GetStartedContainer extends Component {
   handleCreateWallet = async () => {
     try {
       await savePassword(CONSTANT_CONFIGS.PASSPHRASE_WALLET_DEFAULT);
+
+      // just make sure there has no existed wallet
+      const wallet = await this.getExistedWallet();
+
+      if (wallet) {
+        return throw createError({ code: messageCode.code.can_not_create_wallet_on_existed });
+      }
+      
       return initWallet();
-    } catch {
-      throw new Error('Can not create new wallet');
+    } catch (e) {
+      throw e;
     }
   };
 
@@ -73,7 +98,7 @@ class GetStartedContainer extends Component {
       await this.handleCreateWallet();
       reloadWallet();
     } catch (e) {
-      throw e;
+      throwNext(e, { defaultCode: messageCode.code.create_wallet_failed });
     }
   };
 

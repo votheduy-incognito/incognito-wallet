@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View
 } from '@src/components/core';
+import { getErrorMessage, messageCode } from '@src/services/errorHandler';
 import LoadingContainer from '@src/components/LoadingContainer';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -19,8 +20,8 @@ const GetStarted = ({ onCreateNew, goHome, isInitialing }) => {
       goHome();
 
       return wallet;
-    } catch {
-      Toast.showError('Can not create your wallet, please try again');
+    } catch (e) {
+      Toast.showError(getErrorMessage(e, { defaultCode: messageCode.code.create_wallet_failed }));
     }
   };
 
