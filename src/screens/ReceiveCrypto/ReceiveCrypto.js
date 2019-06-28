@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Container, ScrollView } from '@src/components/core';
-import AccountAddress from './AccountAddress';
+import QrCodeAddress from '@src/components/QrCodeAddress';
 import { homeStyle } from './style';
 
 
@@ -12,7 +12,7 @@ class ReceiveCrypto extends React.Component {
     return (
       <ScrollView style={homeStyle.container}>
         <Container style={homeStyle.mainContainer}>
-          <AccountAddress data={selectedPrivacy.paymentAddress} />
+          <QrCodeAddress data={selectedPrivacy.paymentAddress} />
         </Container>
       </ScrollView>
     );

@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, DECOR } from '@src/styles';
+import { COLORS } from '@src/styles';
 
 export const homeStyle = StyleSheet.create({
   container: {
@@ -23,30 +23,5 @@ export const homeStyle = StyleSheet.create({
     fontSize: 15,
     color: COLORS.blue,
     marginVertical: 20
-  }
-});
-
-export const accountAddressStyle = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 10
-  },
-  copyIcon: {
-    marginLeft: 3
-  },
-  qrCode: {
-    marginBottom: 20
-  },
-  text: {
-    fontWeight: '400'
-  },
-  textBox: {
-    alignItems: 'center',
-    backgroundColor: COLORS.white,
-    borderRadius: DECOR.borderRadiusBorder,
-    borderWidth: DECOR.borderWidth,
-    flexDirection: 'row',
-    padding: 10
   }
 });
