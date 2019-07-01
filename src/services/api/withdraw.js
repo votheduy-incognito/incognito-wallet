@@ -4,7 +4,7 @@ import { CONSTANT_COMMONS } from '@src/constants';
 export const genWithdrawAddress = ({ currencyType, amount, paymentAddress }) => {
   const parseAmount = Number(amount);
 
-  if (Number.isFinite(parseAmount) || Number.isNaN(parseAmount) || parseAmount === 0) {
+  if (!Number.isFinite(parseAmount) || parseAmount === 0) {
     throw new Error('Invalid amount');
   }
 

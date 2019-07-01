@@ -26,5 +26,6 @@ export default {
   AddDevice: 'AddDevice',
   ReceiveCrypto: 'ReceiveCrypto',
   SendCrypto: 'SendCrypto',
-  Deposit: 'Deposit'
+  Deposit: 'Deposit',
+  Withdraw: 'Withdraw',
 };

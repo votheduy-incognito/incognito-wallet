@@ -9,7 +9,9 @@ const code = {
   load_existed_wallet_failed: Symbol(),
   initialing_wallet_failed: Symbol(),
   load_device_token_failed: Symbol(),
-  gen_deposit_address_failed: Symbol()
+  gen_deposit_address_failed: Symbol(),
+  gen_withdraw_address_failed: Symbol(),
+  withdraw_failed: Symbol(),
 };
 
 const message = {
@@ -26,7 +28,9 @@ const message = {
   [code.load_existed_wallet_failed]: 'Can not load existed wallet.',
   [code.initialing_wallet_failed]: 'Initialing wallet failed, please open it again.',
   [code.load_device_token_failed]: 'Can not load device token.',
-  [code.gen_deposit_address_failed]: 'Can not get deposit address, please try again.'
+  [code.gen_deposit_address_failed]: 'Can not get deposit address, please try again.',
+  [code.gen_withdraw_address_failed]: 'Can not get withdraw address, please try again.',
+  [code.withdraw_failed]: 'Can not withdraw, please try again.'
 };
 
 export default {
