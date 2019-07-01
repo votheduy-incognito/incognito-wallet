@@ -25,7 +25,7 @@ class Deposit extends React.Component {
     return (
       <ScrollView style={style.container}>
         <Container style={style.mainContainer}>
-          <QrCodeAddress data={depositAddress} />
+          {depositAddress && <QrCodeAddress data={depositAddress} />}
           <Form
             formRef={form => this.form = form}
             initialValues={initialFormValues}
