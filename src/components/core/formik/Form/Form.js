@@ -11,7 +11,7 @@ import React, { useState } from 'react';
 import Effect from './Effect';
 
 const isFormField = (com = new Error('Must be a React component')) =>
-  [FormTextField, CheckBoxField, PickerField].includes(com.type);
+  [FormTextField, CheckBoxField, PickerField].includes(com?.type);
 
 const injectFieldToChildren = ({
   handleChange,
