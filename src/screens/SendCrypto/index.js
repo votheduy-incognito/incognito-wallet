@@ -58,17 +58,17 @@ class SendCryptoContainer extends Component {
     const fromAddress = selectedPrivacy?.paymentAddress;
     const tokenFee = 0;
     const accountWallet = wallet.getAccountByName(account?.name);
-
+    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
     const tokenObject = {
       Privacy: true,
       TokenID: selectedPrivacy?.tokenId,
       TokenName: selectedPrivacy?.name,
       TokenSymbol: selectedPrivacy?.symbol,
       TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
-      TokenAmount: amount,
+      TokenAmount: originalAmount,
       TokenReceivers: {
         PaymentAddress: toAddress,
-        Amount: amount
+        Amount: originalAmount
       }
     };
 
@@ -78,7 +78,7 @@ class SendCryptoContainer extends Component {
       const fee = await getEstimateFeeForSendingTokenService(
         fromAddress,
         toAddress,
-        convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol),
+        originalAmount,
         tokenObject,
         account?.PrivateKey,
         accountWallet,
@@ -150,6 +150,7 @@ class SendCryptoContainer extends Component {
     const fromAddress = selectedPrivacy?.paymentAddress;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
     const originalFee = convertUtil.toOriginalAmount(Number(fee), tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
+    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
 
     const tokenObject = {
       Privacy : true,
@@ -157,10 +158,10 @@ class SendCryptoContainer extends Component {
       TokenName: selectedPrivacy?.name,
       TokenSymbol: selectedPrivacy?.symbol,
       TokenTxType: type,
-      TokenAmount: Number(amount),
+      TokenAmount: originalAmount,
       TokenReceivers: {
         PaymentAddress: toAddress,
-        Amount: Number(amount)
+        Amount: originalAmount
       }
     };
 

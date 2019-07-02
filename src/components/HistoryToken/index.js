@@ -12,7 +12,7 @@ histories.map(h => ({
   txID: h?.txID,
   time: formatUtil.formatDateTime(h?.time),
   receiver: h?.receivers[0],
-  amountAndSymbol: `${formatUtil.amount(h?.amount || 0)} ${
+  amountAndSymbol: `${formatUtil.amount(h?.amount || 0, h?.tokenSymbol)} ${
     h?.tokenSymbol
   }`,
   fee: formatUtil.amount(h?.fee),

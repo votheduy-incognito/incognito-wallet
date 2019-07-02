@@ -29,6 +29,7 @@ class HomeContainer extends Component {
       'didFocus',
       () => {
         clearSelectedPrivacy();
+        this.reload();
       }
     );
   }
@@ -39,6 +40,16 @@ class HomeContainer extends Component {
     // reload tokens list if wallet was changed
     if (prevProps.wallet !== wallet) {
       this.getFollowingToken();
+    }
+  }
+
+  reload = () => {
+    try {
+      const { getAccountBalance, account } = this.props;
+      getAccountBalance(account);
+      this.getFollowingToken();
+    } catch {
+      Toast.showError('Reoad balance failed');
     }
   }
 

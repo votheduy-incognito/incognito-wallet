@@ -25,9 +25,11 @@ class Withdraw extends React.Component {
       const { amount, toAddress } = values;
       const tempAddress = await handleGenAddress({ amount, paymentAddress: toAddress });
       const humanFee = await handleEstimateFeeToken({ amount, tempAddress });
-      const res = await handleSendToken({ tempAddress, amount, fee: humanFee });
 
       this.setState({ humanFee });
+
+      const res = await handleSendToken({ tempAddress, amount, fee: humanFee });
+      
       Toast.showInfo('Withdraw successfully');
       return res;
     } catch (e) {
