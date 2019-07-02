@@ -1,3 +1,4 @@
+
 import {
   Container,
   Divider,
@@ -13,6 +14,7 @@ import { ConfirmedTx, SuccessTx } from '@src/services/wallet/WalletService';
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import tokenData from '@src/constants/tokenData';
 import styleSheet from './style';
 
 const getStatusData = statusCode => {
@@ -101,6 +103,8 @@ const HistoryItem = ({ history }) => {
             Fee: 
             {' '}
             {history.fee}
+            {' '}
+            {tokenData.SYMBOL.MAIN_PRIVACY}
           </Text>
           <Text
             style={[styleSheet.statusText, { color: statusColor }]}

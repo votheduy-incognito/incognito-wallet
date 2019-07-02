@@ -1,25 +1,24 @@
 import { ScrollView, Toast } from '@src/components/core';
 import HistoryItem from '@src/components/HistoryItem';
 import LoadingContainer from '@src/components/LoadingContainer';
-import { CONSTANT_COMMONS } from '@src/constants';
 import tokenService from '@src/services/wallet/tokenService';
 import formatUtil from '@src/utils/format';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import tokenData from '@src/constants/tokenData';
 
-const normalizeData = histories =>
-  histories &&
-  histories.map(h => ({
-    txID: h.txID,
-    time: formatUtil.formatDateTime(h.time),
-    receiver: h.receivers[0],
-    amountAndSymbol: `${formatUtil.amountConstant(h.amount)} ${
-      CONSTANT_COMMONS.CONST_SYMBOL
-    }`,
-    fee: formatUtil.amountMiliConstant(h.fee),
-    status: h.status
-  }));
+const normalizeData = histories => histories &&
+histories.map(h => ({
+  txID: h?.txID,
+  time: formatUtil.formatDateTime(h?.time),
+  receiver: h?.receivers[0],
+  amountAndSymbol: `${formatUtil.amount(h?.amount || 0)} ${
+    h?.tokenSymbol
+  }`,
+  fee: formatUtil.amount(h?.fee, tokenData.SYMBOL.MAIN_PRIVACY),
+  status: h?.status
+}));
 
 class HistoryTokenContainer extends Component {
   constructor() {
@@ -32,22 +31,24 @@ class HistoryTokenContainer extends Component {
   }
 
   componentDidMount() {
-    const { defaultAccount, wallet, navigation } = this.props;
-    this.loadTokentHistory(wallet, defaultAccount, this.getToken(navigation));
+    const { defaultAccount, wallet } = this.props;
+    this.loadTokentHistory(wallet, defaultAccount, this.getToken(this.props));
   }
 
   componentDidUpdate(prevProps) {
-    const { wallet, defaultAccount, navigation } = this.props;
-    const { navigation: prevNavigation } = prevProps;
-    const token = this.getToken(navigation);
-    const prevToken = this.getToken(prevNavigation);
+    const { wallet, defaultAccount } = this.props;
+    const token = this.getToken(this.props);
+    const prevToken = this.getToken(prevProps);
 
-    if (token?.ID !== prevToken?.ID) {
+    if (token?.id !== prevToken?.id) {
       this.loadTokentHistory(wallet, defaultAccount, token);
     }
   }
 
-  getToken = navigation => navigation.getParam('token');
+  getToken = (props) => {
+    const { selectedPrivacy, tokens } = props;
+    return tokens?.find(t => t?.id === selectedPrivacy?.tokenId);
+  }
 
   loadTokentHistory = async (wallet, account, token) => {
     try {
@@ -89,8 +90,10 @@ class HistoryTokenContainer extends Component {
 }
 
 const mapState = state => ({
+  selectedPrivacy: state.selectedPrivacy,
   wallet: state.wallet,
-  defaultAccount: state.account?.defaultAccount
+  defaultAccount: state.account?.defaultAccount,
+  tokens: state.token.followed,
 });
 
 HistoryTokenContainer.propTypes = {

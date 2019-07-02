@@ -157,6 +157,7 @@ class SendCryptoContainer extends Component {
       TokenName: selectedPrivacy?.name,
       TokenSymbol: selectedPrivacy?.symbol,
       TokenTxType: type,
+      TokenAmount: Number(amount),
       TokenReceivers: {
         PaymentAddress: toAddress,
         Amount: Number(amount)

@@ -2,13 +2,22 @@ import { StyleSheet } from 'react-native';
 import { THEME, FONT, COLORS } from '@src/styles';
 
 const style = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+  },
   boxHeader: { 
     backgroundColor: COLORS.headerColor,
-    flexGrow: 1,
-    flex: 1,
     width: '100%',
     alignItems: 'center',
-    padding: 10
+    padding: 10,
+    height: 150,
+  },
+  historyContainer: {
+    flex: 1,
+    width: '100%',
   },
   balance: {
     color: COLORS.white,
@@ -19,11 +28,6 @@ const style = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',    
     textAlign: 'center',
-  },
-  container: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
   },
   getFree : {
     color: COLORS.blueLight,

@@ -67,6 +67,7 @@ class GetStartedContainer extends Component {
       const token = await this.checkDeviceToken();
 
       if (token) {
+        console.log('Device token', token);
         setTokenHeader(token);
       }
 

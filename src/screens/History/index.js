@@ -1,5 +1,5 @@
 import { Toast } from '@src/components/core';
-import History from '@src/components/History';
+import HistoryItem from '@src/components/HistoryItem';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
@@ -71,7 +71,7 @@ class HistoryContainer extends Component {
       return <LoadingContainer />;
     }
 
-    return <History histories={normalizeData(histories)} />;
+    return <HistoryItem histories={normalizeData(histories)} />;
   }
 }
 

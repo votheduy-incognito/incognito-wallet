@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
-import { Text, Container, ScrollView, Button, View } from '@src/components/core';
+import { Text, Container, Button, View } from '@src/components/core';
 import ROUTE_NAMES from '@src/router/routeNames';
 import OptionMenu from '@src/components/OptionMenu';
 import MdCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FSIcons from 'react-native-vector-icons/FontAwesome5';
+import HistoryToken from '@src/components/HistoryToken';
 
 import formatUtil from '@src/utils/format';
 import styles from './style';
@@ -72,37 +73,37 @@ class WalletDetail extends Component {
   
 
   render() { 
-    const { selectedPrivacy } = this.props;  
+    const { selectedPrivacy, navigation } = this.props;  
     const menuData = this.getMenuData(); 
     return (
-      <ScrollView>
-        <Container style={styles.container}> 
+      <Container style={styles.container}> 
+        <View style={styles.boxHeader}> 
+          {
+            menuData.length > 0 && <OptionMenu iconProps={{color: '#fff'}} data={menuData} /> 
+          }
 
-          <View style={styles.boxHeader}> 
-            {
-              menuData.length > 0 && <OptionMenu iconProps={{color: '#fff'}} data={menuData} /> 
-            }
+          <View style={styles.boxBalance}>
+            <Text style={styles.balance}>
+              {formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy.symbol)} {selectedPrivacy.symbol}
+            </Text>
+            {/* <Text style={styles.getFree}>Get free coin</Text> */}
 
-            <View style={styles.boxBalance}>
-              <Text style={styles.balance}>
-                {formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy.symbol)} {selectedPrivacy.symbol}
-              </Text>
-              {/* <Text style={styles.getFree}>Get free coin</Text> */}
-
-              <View style={styles.boxButton}>
-                <Button title='Receive' onPress={this.handleReceivebtn} style={styles.btnStyle} />
-                <Button title='Send' onPress={this.handleSendbtn} style={styles.btnStyle} />
-              </View>
-
+            <View style={styles.boxButton}>
+              <Button title='Receive' onPress={this.handleReceivebtn} style={styles.btnStyle} />
+              <Button title='Send' onPress={this.handleSendbtn} style={styles.btnStyle} />
             </View>
 
           </View>
-          <Text style={styles.title}>Send Constant</Text>
-          
-          <Text style={styles.noteText}>* Only send CONSTANT to a CONSTANT address.</Text>
-          
-        </Container>        
-      </ScrollView>
+
+        </View>
+        {
+          selectedPrivacy?.isToken && (
+            <View style={styles.historyContainer}>
+              <HistoryToken navigation={navigation} />
+            </View>
+          )
+        }
+      </Container>        
     );
   }
 }
