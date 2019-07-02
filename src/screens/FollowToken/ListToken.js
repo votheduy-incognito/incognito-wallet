@@ -11,56 +11,57 @@ const TokenItem = ({ token, handlePress, isActive }) => (
     onPress={() => handlePress(token)}
     style={[tokenListStyle.tokenItem, isActive && tokenListStyle.itemActive]}
   >
-    {token?.Image && (
-      <Image style={tokenListStyle.tokenIcon} source={{ uri: token.Image }} />
+    {token?.image && (
+      <Image style={tokenListStyle.tokenIcon} source={{ uri: token.image }} />
     )}
     <View style={tokenListStyle.infoContainer}>
       <Text numberOfLines={1} ellipsizeMode="middle">
         ID: 
         {' '}
-        {token.ID}
+        {token.id}
       </Text>
       <Text>
-Name:
-        {token.Name}
+        Name:
+        {token.name}
       </Text>
       <Text>
-Symbol:
-        {token.Symbol}
+        Symbol:
+        {token.symbol}
       </Text>
       <Text>
-Init amount:
-        {formatUtil.amount(token.Amount)}
+        Init amount:
+        {formatUtil.amount(token.amount, token.symbol)}
       </Text>
     </View>
   </TouchableOpacity>
 );
 
 const ListToken = ({ tokenList, followedList, onFollow }) => {
-  const followedId = followedList?.map(_follow => _follow?.ID) || [];
+  const followedId = followedList?.map(_follow => _follow?.id) || [];
 
   return (
     <View style={tokenListStyle.container}>
-      {tokenList &&
+      {tokenList?.length > 0 ?
         tokenList.map(token => (
-          <Fragment key={token?.ID}>
+          <Fragment key={token?.id}>
             <TokenItem
-              isActive={followedId.includes(token?.ID)}
+              isActive={followedId.includes(token?.id)}
               token={token}
               handlePress={onFollow}
             />
             <Divider color={COLORS.lightGrey} />
           </Fragment>
-        ))}
+        )) : <Text>There has no token.</Text>
+      }
     </View>
   );
 };
 
 export const tokenShape = PropTypes.shape({
-  ID: PropTypes.string,
-  Name: PropTypes.string,
-  Image: PropTypes.string,
-  Amount: PropTypes.number
+  id: PropTypes.string,
+  name: PropTypes.string,
+  image: PropTypes.string,
+  amount: PropTypes.number
 });
 
 TokenItem.propTypes = {

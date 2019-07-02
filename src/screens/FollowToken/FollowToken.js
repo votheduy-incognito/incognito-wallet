@@ -19,11 +19,11 @@ class FollowToken extends Component {
   }
 
   handleAddFollow = token => {
-    if (!token?.ID) return;
+    if (!token?.id) return;
 
     const { followed } = this.state;
     const result = [...followed];
-    const removed = _.remove(result, _token => _token?.ID === token?.ID);
+    const removed = _.remove(result, _token => _token?.id === token?.id);
     if (removed?.length === 0) {
       result.push(token);
     } 
@@ -38,7 +38,7 @@ class FollowToken extends Component {
       filteredTokens = tokenList;
     }
     
-    filteredTokens = tokenList?.filter(token => [token?.Name, token?.ID].join(' ')?.toUpperCase()?.includes(String(text).toUpperCase()));
+    filteredTokens = tokenList?.filter(token => [token?.name, token?.id].join(' ')?.toUpperCase()?.includes(String(text).toUpperCase()));
 
     this.setState({ filteredTokens });
   }

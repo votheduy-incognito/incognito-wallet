@@ -8,7 +8,7 @@ import { homeStyle } from './style';
 
 class Home extends React.Component {
   render() {
-    const { account, tokens, isGettingBalanceList, onSelectToken } = this.props;
+    const { account, tokens, isGettingBalanceList, onSelectToken, handleAddFollowToken } = this.props;
 
     return (
       <ScrollView style={homeStyle.container}>
@@ -35,7 +35,7 @@ class Home extends React.Component {
           }
           <View style={homeStyle.addTokenContainer}>
             <Text style={homeStyle.addTokenLabel}>Don’t see your token?</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleAddFollowToken}>
               <Text style={homeStyle.addTokenBtn}>Add token</Text>
             </TouchableOpacity>
           </View>
@@ -55,7 +55,8 @@ Home.propTypes = {
   isGettingBalanceList: PropTypes.array,
   account: PropTypes.object,
   tokens: PropTypes.array,
-  onSelectToken: PropTypes.func.isRequired
+  onSelectToken: PropTypes.func.isRequired,
+  handleAddFollowToken: PropTypes.func.isRequired,
 };
 
 export default Home;

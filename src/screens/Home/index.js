@@ -42,6 +42,11 @@ class HomeContainer extends Component {
     }
   }
 
+  onAddTokenToFollow = () => {
+    const { navigation } = this.props;
+    navigation.navigate(routeNames.FollowToken, { isPrivacy: true });
+  }
+
   getTokenBalance = token => {
     const { getBalance } = this.props;
     getBalance(token);
@@ -84,6 +89,7 @@ class HomeContainer extends Component {
       <Home
         account={account}
         tokens={tokens}
+        handleAddFollowToken={this.onAddTokenToFollow}
         isGettingBalanceList={isGettingBalanceList}
         onSelectToken={this.handleSelectToken}
       />
