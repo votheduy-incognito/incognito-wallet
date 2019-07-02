@@ -174,5 +174,6 @@ export default class Account {
     await wallet.MasterAccount.child[indexAccount].removeFollowingToken(
       tokenId
     );
+    return wallet;
   }
 }

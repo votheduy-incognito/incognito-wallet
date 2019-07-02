@@ -39,7 +39,7 @@ class HistoryTokenContainer extends Component {
     const token = this.getToken(this.props);
     const prevToken = this.getToken(prevProps);
 
-    if (token?.id !== prevToken?.id) {
+    if (token && (token?.id !== prevToken?.id)) {
       this.loadTokentHistory(wallet, defaultAccount, token);
     }
   }

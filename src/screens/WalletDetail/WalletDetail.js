@@ -1,34 +1,24 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
-import { Text, Container, Button, View } from '@src/components/core';
+import PropTypes from 'prop-types';
+import { Text, Container, Button, View, Toast } from '@src/components/core';
 import ROUTE_NAMES from '@src/router/routeNames';
 import OptionMenu from '@src/components/OptionMenu';
 import MdCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FSIcons from 'react-native-vector-icons/FontAwesome5';
 import HistoryToken from '@src/components/HistoryToken';
 import MainCryptoHistory from '@src/components/MainCryptoHistory';
-
 import formatUtil from '@src/utils/format';
 import styles from './style';
 
 class WalletDetail extends Component {
   constructor() {
     super();
-
-    this.state = {      
-      
-    };    
-    
   }
 
-  componentDidMount() {
-    
-  }
   goHome = () => {
     const { navigation } = this.props;
     navigation.navigate(ROUTE_NAMES.RootApp);
   };
-
 
   getMenuData = () => {
     const { selectedPrivacy } = this.props;
@@ -49,7 +39,26 @@ class WalletDetail extends Component {
       icon: <FSIcons name='hand-holding-usd' size={20} />
     });
 
+    selectedPrivacy?.isToken && !additionalData?.isNotAllowUnfollow && data.push({
+      id: 'unfollow_token',
+      label: 'Unfollow token',
+      handlePress: this.handleUnfollowTokenBtn,
+      icon: <MdCIcons name='playlist-remove' size={20} />
+    });
+
     return data;
+  }
+
+  handleUnfollowTokenBtn = async () => {
+    try {
+      const { handleRemoveFollowToken, selectedPrivacy, navigation } = this.props;
+      await handleRemoveFollowToken(selectedPrivacy?.tokenId);
+
+      Toast.showInfo('Unfollowed successfully');
+      navigation.goBack();
+    } catch {
+      Toast.showError('Can not unfollow this token right now, please try later.');
+    }
   }
 
   handleDepositBtn = () => {
@@ -75,7 +84,8 @@ class WalletDetail extends Component {
 
   render() { 
     const { selectedPrivacy, navigation } = this.props;  
-    const menuData = this.getMenuData(); 
+    const menuData = this.getMenuData();
+
     return (
       <Container style={styles.container}> 
         <View style={styles.boxHeader}> 
@@ -117,10 +127,9 @@ class WalletDetail extends Component {
 }
 
 WalletDetail.propTypes = {
-  // navigation: PropTypes.object,
-  // wallet: PropTypes.object,
-  // account: PropTypes.object,
-  // getBalance: PropTypes.func
+  navigation: PropTypes.object.isRequired,
+  selectedPrivacy: PropTypes.object.isRequired,
+  handleRemoveFollowToken: PropTypes.func.isRequired,
 };
 
 export default WalletDetail;

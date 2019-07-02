@@ -6,12 +6,22 @@ const initialState = {
   isGettingBalance: []
 };
 
-const setToken = (list, account) => {
+const setToken = (list, token) => {
   let newList = [...list];
   try {
-    newList = unionBy([account], list, 'symbol');
+    newList = unionBy([token], list, 'symbol');
   } catch(e) {
     throw new Error('Save token failed');
+  }
+  return newList;
+};
+
+const removeTokenById = (list, tokenId) => {
+  let newList = [...list];
+  try {
+    newList = remove(newList, t => t.id === tokenId);
+  } catch(e) {
+    throw new Error('Remove token failed');
   }
   return newList;
 };
@@ -24,6 +34,10 @@ const setBulkToken = (list, tokens) => {
     throw new Error('Save tokens failed');
   }
   return newList;
+};
+
+const setListToken = tokens => {
+  return [...tokens];
 };
 
 const setGettingBalance = (list, tokenSymbol) => {
@@ -63,6 +77,18 @@ const reducer = (state = initialState, action) => {
       ...state,
       isGettingBalance: removeGettingBalance(state.isGettingBalance, action.data)
     };
+  case type.REMOVE_BY_ID:
+    newList = removeTokenById(state.followed, action.data);
+    return {
+      ...state,
+      followed: newList
+    };
+  case type.SET_LIST:
+    newList = setListToken(action.data);
+    return {
+      ...state,
+      followed: newList
+    }; 
   default:
     return state;
   }

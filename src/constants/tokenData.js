@@ -19,7 +19,8 @@ const DATA = {
     icon: ethIcon,
     currencyType: 'ETH',
     isWithdrawable: true,
-    isDeposable: true
+    isDeposable: true,
+    isNotAllowUnfollow: true
   },
   [SYMBOL.pBTC]: {
     fullName: 'Private BTC',
@@ -29,7 +30,8 @@ const DATA = {
     icon: btcIcon,
     currencyType: 'BTC',
     isWithdrawable: true,
-    isDeposable: true
+    isDeposable: true,
+    isNotAllowUnfollow: true
   },
   [SYMBOL.MAIN_CRYPTO_CURRENCY]: {
     fullName: 'Privacy',
@@ -45,7 +47,8 @@ const parse = token => ({
   typeName: 'Custom token',
   symbol: token?.symbol,
   name: token?.name,
-  icon: customTokenIcon
+  icon: customTokenIcon,
+  isTokenFollowedByUser: true,
 });
 
 

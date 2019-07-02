@@ -5,6 +5,25 @@ export const setToken = (token = throw new Error('Token object is required')) =>
   data: token
 });
 
+export const removeTokenById = (tokenId = throw new Error('Token id is required')) => ({
+  type: type.REMOVE_BY_ID,
+  data: tokenId
+});
+
+/**
+ * Replace with new list
+ */
+export const setListToken = (tokens = throw new Error('Token list is required')) => {
+  if (tokens && tokens.constructor !== Array) {
+    throw new TypeError('Tokens must be an array');
+  }
+
+  return ({
+    type: type.SET_LIST,
+    data: tokens
+  });
+};
+
 export const setBulkToken = (tokens = throw new Error('Token array is required')) => {
   if (tokens && tokens.constructor !== Array) {
     throw new TypeError('Tokens must be an array');
