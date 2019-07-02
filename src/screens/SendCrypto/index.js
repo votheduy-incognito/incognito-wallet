@@ -125,7 +125,7 @@ class SendCryptoContainer extends Component {
           txId: res.txId,
           toAddress,
           fromAddress,
-          amount: originalAmount,
+          amount: originalAmount || 0,
           amountUnit: selectedPrivacy?.symbol,
           time: formatUtil.toMiliSecond(res.lockTime),
           fee: originalFee
@@ -180,7 +180,7 @@ class SendCryptoContainer extends Component {
           txId: res.txId,
           toAddress,
           fromAddress,
-          amount: Number(amount) || 0,
+          amount: originalAmount || 0,
           amountUnit: selectedPrivacy?.symbol,
           time: formatUtil.toMiliSecond(res.lockTime),
           fee: originalFee
