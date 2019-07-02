@@ -24,7 +24,7 @@ class SendCryptoContainer extends Component {
     };
   }
 
-  _estimateFeeMainPrivacy = async values => {
+  _estimateFeeMainCrypto = async values => {
     const { account, wallet, selectedPrivacy } = this.props;
     const { toAddress, amount } = values;
     const fromAddress = selectedPrivacy?.paymentAddress;
@@ -99,10 +99,10 @@ class SendCryptoContainer extends Component {
     const { selectedPrivacy } = this.props;
 
     if (selectedPrivacy?.isToken) return this._estimateFeeToken;
-    if (selectedPrivacy?.isMainPrivacy) return this._estimateFeeMainPrivacy;
+    if (selectedPrivacy?.isMainCrypto) return this._estimateFeeMainCrypto;
   }
 
-  _handleSendMainPrivacy = async values => {
+  _handleSendMainCrypto = async values => {
     const { account, wallet, selectedPrivacy, getAccountBalanceBound } = this.props;
     const { toAddress, amount, fee } = values;
     const fromAddress = selectedPrivacy?.paymentAddress;
@@ -203,7 +203,7 @@ class SendCryptoContainer extends Component {
     const { selectedPrivacy } = this.props;
 
     if (selectedPrivacy?.isToken) return this._handleSendToken;
-    if (selectedPrivacy?.isMainPrivacy) return this._handleSendMainPrivacy;
+    if (selectedPrivacy?.isMainCrypto) return this._handleSendMainCrypto;
   }
 
   render() {

@@ -8,7 +8,7 @@ class SelectedPrivacyModel {
       amount: token.amount ?? basePrivacy.value || 0,
       tokenId: token.id,
       isToken: !!token.id,
-      isMainPrivacy: !token.id,
+      isMainCrypto: !token.id,
       symbol,
       name,
       paymentAddress: basePrivacy.PaymentAddress,

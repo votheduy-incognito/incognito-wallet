@@ -6,7 +6,6 @@ import formatUtil from '@src/utils/format';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import tokenData from '@src/constants/tokenData';
 
 const normalizeData = histories => histories &&
 histories.map(h => ({
@@ -16,7 +15,7 @@ histories.map(h => ({
   amountAndSymbol: `${formatUtil.amount(h?.amount || 0)} ${
     h?.tokenSymbol
   }`,
-  fee: formatUtil.amount(h?.fee, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY),
+  fee: formatUtil.amount(h?.fee),
   status: h?.status
 }));
 

@@ -6,6 +6,7 @@ import OptionMenu from '@src/components/OptionMenu';
 import MdCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FSIcons from 'react-native-vector-icons/FontAwesome5';
 import HistoryToken from '@src/components/HistoryToken';
+import MainCryptoHistory from '@src/components/MainCryptoHistory';
 
 import formatUtil from '@src/utils/format';
 import styles from './style';
@@ -100,6 +101,13 @@ class WalletDetail extends Component {
           selectedPrivacy?.isToken && (
             <View style={styles.historyContainer}>
               <HistoryToken navigation={navigation} />
+            </View>
+          )
+        }
+        {
+          selectedPrivacy?.isMainCrypto && (
+            <View style={styles.historyContainer}>
+              <MainCryptoHistory navigation={navigation} />
             </View>
           )
         }
