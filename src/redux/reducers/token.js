@@ -9,7 +9,10 @@ const initialState = {
 const setToken = (list, token) => {
   let newList = [...list];
   try {
-    newList = unionBy([token], list, 'symbol');
+    const foundIndex = list.findIndex(t => t.id === token.id);
+    if (foundIndex >= 0) {
+      newList[foundIndex] = token;
+    }
   } catch(e) {
     throw new Error('Save token failed');
   }
