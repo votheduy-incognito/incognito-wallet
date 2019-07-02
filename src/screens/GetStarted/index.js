@@ -12,7 +12,9 @@ import React, { Component } from 'react';
 import { createError, messageCode, throwNext, getErrorMessage } from '@src/services/errorHandler';
 import { connect } from 'react-redux';
 import storageService from '@src/services/storage';
+import DeviceInfo from 'react-native-device-info';
 import GetStarted from './GetStarted';
+
 
 class GetStartedContainer extends Component {
   constructor() {
@@ -110,7 +112,9 @@ class GetStartedContainer extends Component {
 
   registerToken = async () => {
     try {
-      const token = await getToken('d');
+      const uniqueId = DeviceInfo.getUniqueID();      
+      // todo: need a device token gen from firebase, Vuong handle pls!!!
+      const token = await getToken(uniqueId);
       return token;
     } catch (e) {
       throw e;
