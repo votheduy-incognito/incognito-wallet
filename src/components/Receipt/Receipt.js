@@ -53,7 +53,7 @@ const Receipt = ({ info }) => {
           <CommonText>
             Fee: 
             {' '}
-            {formatUtil.amount(fee, tokenData.SYMBOL.MAIN_PRIVACY)}
+            {formatUtil.amount(fee, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY)}
             {' '}
             {CONSTANT_COMMONS.CONST_SYMBOL}
           </CommonText>

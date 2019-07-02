@@ -104,7 +104,7 @@ const HistoryItem = ({ history }) => {
             {' '}
             {history.fee}
             {' '}
-            {tokenData.SYMBOL.MAIN_PRIVACY}
+            {tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY}
           </Text>
           <Text
             style={[styleSheet.statusText, { color: statusColor }]}

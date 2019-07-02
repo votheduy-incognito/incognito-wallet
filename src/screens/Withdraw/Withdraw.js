@@ -51,7 +51,7 @@ class Withdraw extends React.Component {
           >
             <FormTextField name='amount' placeholder='Amount' />
             <FormTextField name='toAddress' placeholder='To Address' />
-            {humanFee > 0 && <Text>Fee: {humanFee} {tokenData.SYMBOL.MAIN_PRIVACY}</Text>}
+            {humanFee > 0 && <Text>Fee: {humanFee} {tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY}</Text>}
             <FormSubmitButton title='CONFIRM' style={style.submitBtn} />
           </Form>
         </Container>

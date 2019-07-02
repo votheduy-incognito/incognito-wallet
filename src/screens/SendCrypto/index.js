@@ -42,7 +42,7 @@ class SendCryptoContainer extends Component {
         true // privacy mode
       );
 
-      const humanFee = convertUtil.toHumanAmount(fee, tokenData.SYMBOL.MAIN_PRIVACY);
+      const humanFee = convertUtil.toHumanAmount(fee, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
       // set min fee state
       this.setState({ minFee: humanFee });
     } catch(e){
@@ -85,7 +85,7 @@ class SendCryptoContainer extends Component {
         true, // privacy mode
         tokenFee
       );
-      const humanFee = convertUtil.toHumanAmount(fee, tokenData.SYMBOL.MAIN_PRIVACY);
+      const humanFee = convertUtil.toHumanAmount(fee, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
       // set min fee state
       this.setState({ minFee: humanFee });
     } catch(e){
@@ -107,7 +107,7 @@ class SendCryptoContainer extends Component {
     const { toAddress, amount, fee } = values;
     const fromAddress = selectedPrivacy?.paymentAddress;
     const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
-    const originalFee = convertUtil.toOriginalAmount(Number(fee), tokenData.SYMBOL.MAIN_PRIVACY);
+    const originalFee = convertUtil.toOriginalAmount(Number(fee), tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
 
     const paymentInfos = [{
       paymentAddressStr: toAddress, amount: originalAmount
@@ -149,7 +149,7 @@ class SendCryptoContainer extends Component {
     const { toAddress, amount, fee } = values;
     const fromAddress = selectedPrivacy?.paymentAddress;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
-    const originalFee = convertUtil.toOriginalAmount(Number(fee), tokenData.SYMBOL.MAIN_PRIVACY);
+    const originalFee = convertUtil.toOriginalAmount(Number(fee), tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
 
     const tokenObject = {
       Privacy : true,

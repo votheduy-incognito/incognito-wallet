@@ -16,7 +16,7 @@ histories.map(h => ({
   amountAndSymbol: `${formatUtil.amount(h?.amount || 0)} ${
     h?.tokenSymbol
   }`,
-  fee: formatUtil.amount(h?.fee, tokenData.SYMBOL.MAIN_PRIVACY),
+  fee: formatUtil.amount(h?.fee, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY),
   status: h?.status
 }));
 

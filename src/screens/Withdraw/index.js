@@ -46,7 +46,7 @@ class WithdrawContainer extends Component {
         true, // privacy mode
         tokenFee
       );
-      const humanFee = convertUtil.toHumanAmount(fee, tokenData.SYMBOL.MAIN_PRIVACY);
+      const humanFee = convertUtil.toHumanAmount(fee, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
       return humanFee;
     } catch(e){
       throw new Error('Error on get estimation fee!');
@@ -57,7 +57,7 @@ class WithdrawContainer extends Component {
   onSendToken = async ({ tempAddress, amount, fee }) => {
     const { account, wallet, tokens, selectedPrivacy, getTokenBalanceBound } = this.props;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
-    const originalFee = convertUtil.toOriginalAmount(Number(fee), tokenData.SYMBOL.MAIN_PRIVACY);
+    const originalFee = convertUtil.toOriginalAmount(Number(fee), tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
 
     const tokenObject = {
       Privacy : true,

@@ -7,7 +7,7 @@ const customTokenIcon = ethIcon;
 const SYMBOL = {
   pETH: 'pETH',
   pBTC: 'pBTC',
-  MAIN_PRIVACY: 'PRV'
+  MAIN_CRYPTO_CURRENCY: 'PRV'
 };
 
 const DATA = {
@@ -31,7 +31,7 @@ const DATA = {
     isWithdrawable: true,
     isDeposable: true
   },
-  [SYMBOL.MAIN_PRIVACY]: {
+  [SYMBOL.MAIN_CRYPTO_CURRENCY]: {
     fullName: 'Privacy',
     typeName: 'Incognito',
     symbol: 'PRV',

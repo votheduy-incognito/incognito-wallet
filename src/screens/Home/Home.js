@@ -16,7 +16,7 @@ class Home extends React.Component {
           <CryptoItemCard
             style={homeStyle.cryptoItem}
             token={{
-              symbol: tokenData.SYMBOL.MAIN_PRIVACY,
+              symbol: tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY,
               amount: account?.value
             }}
             isGettingBalance={isGettingBalanceList?.includes(account?.name)}
