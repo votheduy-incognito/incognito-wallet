@@ -12,12 +12,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import style from './style';
 
-const GetStarted = ({ onCreateNew, goHome, isInitialing }) => {
+const GetStarted = ({ onCreateNew, isInitialing }) => {
   const handleGetStarted = async () => {
     try {
       const wallet = await onCreateNew();
       Toast.showInfo('Your wallet was created!');
-      goHome();
 
       return wallet;
     } catch (e) {
@@ -56,7 +55,6 @@ const GetStarted = ({ onCreateNew, goHome, isInitialing }) => {
 
 GetStarted.propTypes = {
   onCreateNew: PropTypes.func.isRequired,
-  goHome: PropTypes.func.isRequired,
   isInitialing: PropTypes.bool.isRequired
 };
 

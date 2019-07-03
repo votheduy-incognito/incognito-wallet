@@ -140,7 +140,13 @@ class GetStartedContainer extends Component {
     try {
       const { reloadWallet } = this.props;
       await this.handleCreateWallet();
-      reloadWallet();
+      const wallet = await reloadWallet();
+
+      if (wallet) {
+        this.goHome();
+      } else {
+        throw new Error('Load new wallet failed');
+      }
     } catch (e) {
       throwNext(e, { defaultCode: messageCode.code.create_wallet_failed });
     }
