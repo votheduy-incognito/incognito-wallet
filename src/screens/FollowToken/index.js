@@ -75,6 +75,7 @@ const FollowTokenContainer = ({
   return (
     <FollowToken
       {...props}
+      navigation={navigation}
       tokenList={tokens}
       handleAddFollowToken={handleAddFollowToken}
     />

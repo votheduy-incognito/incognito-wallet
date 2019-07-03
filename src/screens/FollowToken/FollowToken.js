@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { TextInput, Container, ScrollView, Button, Toast } from '@src/components/core';
+import { TextInput, Container, ScrollView, Button, Toast, TouchableOpacity, Text } from '@src/components/core';
 import _ from 'lodash';
+import routeNames from '@src/router/routeNames';
 import ListToken, { tokenShape } from './ListToken';
 import { followTokenStyle } from './style';
 
@@ -55,6 +56,11 @@ class FollowToken extends Component {
     handleAddFollowToken(followed);
   }
 
+  handleCreateToken = () => {
+    const { navigation } = this.props;
+    navigation.navigate(routeNames.CreateToken);
+  }
+
   render() {
     const { filteredTokens, followed } = this.state;
     const { tokenList } = this.props;
@@ -70,6 +76,11 @@ class FollowToken extends Component {
           />
         </ScrollView>
         <Button title='FOLLOW' onPress={this.handleSaveFollow} style={followTokenStyle.followBtn} />
+        <TouchableOpacity onPress={this.handleCreateToken}>
+          <Text style={[followTokenStyle.createTokenBtn, followTokenStyle.centerText]}>
+            Or create your token
+          </Text>
+        </TouchableOpacity>
       </Container>
     );
   }

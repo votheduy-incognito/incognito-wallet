@@ -28,4 +28,5 @@ export default {
   SendCrypto: 'SendCrypto',
   Deposit: 'Deposit',
   Withdraw: 'Withdraw',
+  CreateToken: 'CreateToken',
 };
