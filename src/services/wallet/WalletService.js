@@ -113,6 +113,11 @@ export async function saveWallet(wallet) {
   wallet.save(await getPassphrase());
 }
 
+export function deleteWallet(wallet) {
+  wallet.Storage = storage;
+  return wallet.deleteWallet();
+}
+
 export async function loadHistoryByAccount(wallet, accountName) {
   wallet.Storage = storage;
   return (await wallet.getHistoryByAccount(accountName)) || [];
