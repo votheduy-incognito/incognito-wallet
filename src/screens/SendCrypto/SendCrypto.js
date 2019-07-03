@@ -5,6 +5,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { openQrScanner } from '@src/components/QrCodeScanner';
 import ReceiptModal, { openReceipt } from '@src/components/Receipt';
 import LoadingTx from '@src/components/LoadingTx';
+import { debounce } from 'lodash';
 import { homeStyle } from './style';
 import formValidate from './formValidate';
 
@@ -20,6 +21,8 @@ class SendCrypto extends React.Component {
     this.state = {
     };
     this.form = null;
+
+    this.handleShouldGetFee = debounce(this.handleShouldGetFee.bind(this), 1000);
   }
 
   componentDidUpdate(prevProps) {
@@ -53,6 +56,7 @@ class SendCrypto extends React.Component {
       const { amount, toAddress } = values;
 
       if (amount && toAddress){
+        console.log(amount, toAddress);
         const { handleEstimateFee } = this.props;
         handleEstimateFee(values);
       }
