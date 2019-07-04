@@ -1,8 +1,7 @@
-import { object, string } from 'yup';
+import { object } from 'yup';
+import { string } from '@src/components/core/formik/validator';
 
 export default object().shape({
-  accountName: string()
-    .required('Required!'),
-  privateKey: string().
-    required('Required!')
+  accountName: string(),
+  privateKey: string(),
 });

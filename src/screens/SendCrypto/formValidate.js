@@ -1,7 +1,7 @@
 import { object } from 'yup';
-import { paymentAddress, amountConstant } from '@src/components/core/formik/validator';
+import { paymentAddress, amount } from '@src/components/core/formik/validator';
 
 export default object().shape({
   toAddress: paymentAddress(),
-  amount: amountConstant(),
+  amount: amount(),
 });

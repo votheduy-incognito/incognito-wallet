@@ -1,6 +1,5 @@
 /* eslint-disable react-native/no-raw-text */
 import { Container, Text, View } from '@src/components/core';
-import CONSTANT_COMMONS from '@src/constants/common';
 import { COLORS } from '@src/styles';
 import formatUtil from '@src/utils/format';
 import PropTypes from 'prop-types';
@@ -55,7 +54,7 @@ const Receipt = ({ info }) => {
             {' '}
             {formatUtil.amount(fee, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY)}
             {' '}
-            {CONSTANT_COMMONS.CONST_SYMBOL}
+            {tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY}
           </CommonText>
         )}
       </View>

@@ -2,7 +2,6 @@ import TOKEN_DATA from './tokenData';
 
 export default {
   // old varibles, maybe remove later
-  CONST_SYMBOL: 'PRV',
   STAKING_TYPES: {
     SHARD: 0,
     BEACON: 1
@@ -13,14 +12,6 @@ export default {
   DEFRAGMENT_DEFAULT_AMOUNT: 1,
   DEFRAGMENT_MIN_FEE: 0.01,
   DEFRAGMENT_SET_DEFAULT_PRIVACY: true,
-
-  MILICONSTANT_UNIT: 100,
-  AMOUNT_CONSTANT_MIN: 0.01,
-  AMOUNT_TOKEN_MIN: 0.01,
-  INIT_TOKEN: 0,
-  SEND_TOKEN: 1,
-  NORMAL_TOKEN_TAB: 0,
-  PRIVACY_TOKEN_TAB: 1,
 
   // for new app
   DECISION_RATE: {

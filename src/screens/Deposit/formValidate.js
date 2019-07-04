@@ -1,6 +1,6 @@
 import { object } from 'yup';
-import { amountConstant } from '@src/components/core/formik/validator';
+import { amount } from '@src/components/core/formik/validator';
 
 export default object().shape({
-  amount: amountConstant(),
+  amount: amount(),
 });
