@@ -12,6 +12,8 @@ const code = {
   gen_deposit_address_failed: Symbol(),
   gen_withdraw_address_failed: Symbol(),
   withdraw_failed: Symbol(),
+  balance_must_not_be_zero: Symbol(),
+  estimate_fee_failed: Symbol(),
 };
 
 const message = {
@@ -30,7 +32,9 @@ const message = {
   [code.load_device_token_failed]: 'Can not load device token.',
   [code.gen_deposit_address_failed]: 'Can not get deposit address, please try again.',
   [code.gen_withdraw_address_failed]: 'Can not get withdraw address, please try again.',
-  [code.withdraw_failed]: 'Can not withdraw, please try again.'
+  [code.withdraw_failed]: 'Can not withdraw, please try again.',
+  [code.balance_must_not_be_zero]: 'Your balance is zero, please check again.',
+  [code.estimate_fee_failed]: 'Estimate fee failed, please try again.'
 };
 
 export default {

@@ -6,7 +6,7 @@ import { genWithdrawAddress } from '@src/services/api/withdraw';
 import tokenService from '@src/services/wallet/tokenService';
 import { CONSTANT_COMMONS } from '@src/constants';
 import tokenData from '@src/constants/tokenData';
-import { messageCode, createError } from '@src/services/errorHandler';
+import { messageCode, createError, throwNext } from '@src/services/errorHandler';
 import { getEstimateFeeForSendingTokenService } from '@src/services/wallet/RpcClientService';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import convertUtil from '@src/utils/convert';
@@ -17,12 +17,18 @@ class WithdrawContainer extends Component {
     super();
   }
 
-  onEstimateFeeToken = async ({ amount, tempAddress }) => {
+  onEstimateFeeToken = async ({ amount }) => {
     const { account, wallet, selectedPrivacy } = this.props;
     const fromAddress = selectedPrivacy?.paymentAddress;
+    const toAddress = fromAddress; // est fee on the same network, dont care which address will be send to
     const tokenFee = 0;
     const accountWallet = wallet.getAccountByName(account?.name);
     const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
+    const selectedPrivacyAmount = selectedPrivacy?.amount;
+
+    if (selectedPrivacyAmount <= 0) {
+      throw createError({ code: messageCode.code.balance_must_not_be_zero });
+    }
 
     const tokenObject = {
       Privacy: true,
@@ -32,7 +38,7 @@ class WithdrawContainer extends Component {
       TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
       TokenAmount: originalAmount,
       TokenReceivers: {
-        PaymentAddress: tempAddress,
+        PaymentAddress: toAddress,
         Amount: originalAmount
       }
     };
@@ -40,7 +46,7 @@ class WithdrawContainer extends Component {
     try{
       const fee = await getEstimateFeeForSendingTokenService(
         fromAddress,
-        tempAddress,
+        toAddress,
         originalAmount,
         tokenObject,
         account?.PrivateKey,
@@ -51,7 +57,7 @@ class WithdrawContainer extends Component {
       const humanFee = convertUtil.toHumanAmount(fee, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
       return humanFee;
     } catch (e) {
-      throw new Error('Error on get estimation fee!');
+      throwNext(e, { defaultCode: messageCode.code.estimate_fee_failed });
     }
   }
 
@@ -75,12 +81,18 @@ class WithdrawContainer extends Component {
       }
     };
 
+    const paymentInfo = {
+      paymentAddressStr: tempAddress,
+      amount: originalFee,
+    };
+
     try {
       const res = await tokenService.createSendPrivacyCustomToken(
         tokenObject,
         originalFee,
         account,
-        wallet
+        wallet,
+        paymentInfo
       );
 
       if (res.txId) {
@@ -118,6 +130,7 @@ class WithdrawContainer extends Component {
 
     return (
       <Withdraw
+        {...this.props}
         handleGenAddress={this.getWithdrawAddress}
         handleSendToken={this.onSendToken}
         handleEstimateFeeToken={this.onEstimateFeeToken}
