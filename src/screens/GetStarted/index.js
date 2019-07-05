@@ -112,7 +112,7 @@ class GetStartedContainer extends Component {
 
   registerToken = async () => {
     try {
-      const uniqueId = DeviceInfo.getUniqueID();      
+      const uniqueId = process.env.DEFAULT_DEVICE_ID || DeviceInfo.getUniqueID();      
       // todo: need a device token gen from firebase, Vuong handle pls!!!
       const token = await getToken(uniqueId);
       return token;

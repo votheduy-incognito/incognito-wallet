@@ -1,4 +1,4 @@
-import { API_BASE_URL, PASSWORD_SECRET_KEY, SHARD_ID, EXPLORER_CONSTANT_CHAIN_URL, PASSPHRASE_WALLET_DEFAULT } from 'react-native-dotenv';
+import { API_BASE_URL, PASSWORD_SECRET_KEY, SHARD_ID, EXPLORER_CONSTANT_CHAIN_URL, PASSPHRASE_WALLET_DEFAULT, TESTNET_SERVER_ADDRESS } from 'react-native-dotenv';
 
 const DEFAULT_LIST_SERVER = [{
   id: 'local',
@@ -11,7 +11,7 @@ const DEFAULT_LIST_SERVER = [{
 {
   id: 'testnet',
   default: true,
-  address: 'http://test-node.incognito.org:9334',
+  address: TESTNET_SERVER_ADDRESS,
   username: '',
   password: '',
   name: 'Testnet'
