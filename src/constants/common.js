@@ -1,4 +1,13 @@
-import TOKEN_DATA from './tokenData';
+const CRYPTO_SYMBOL = {
+  BTC: 'BTC',
+  ETH: 'ETH',
+  PRV: 'PRV'
+};
+
+const TOKEN_SYMBOL = {
+  pETH: 'pETH',
+  pBTC: 'pBTC'
+};
 
 export default {
   // old varibles, maybe remove later
@@ -14,10 +23,14 @@ export default {
   DEFRAGMENT_SET_DEFAULT_PRIVACY: true,
 
   // for new app
+  CRYPTO_SYMBOL,
+  TOKEN_SYMBOL,
   DECISION_RATE: {
-    [TOKEN_DATA.SYMBOL.pETH]: 1e9,
-    [TOKEN_DATA.SYMBOL.pBTC]: 1e9,
-    [TOKEN_DATA.SYMBOL.MAIN_CRYPTO_CURRENCY]: 1e2
+    [CRYPTO_SYMBOL.ETH]: 1e18,
+    [CRYPTO_SYMBOL.BTC]: 1e6,
+    [TOKEN_SYMBOL.pETH]: 1e9,
+    [TOKEN_SYMBOL.pBTC]: 1e9,
+    [CRYPTO_SYMBOL.PRV]: 1e2
   },
   TOKEN_TX_TYPE: {
     INIT: 0,
@@ -30,5 +43,29 @@ export default {
   ADDRESS_TYPE_FOR_GEN_ADDRESS: {
     DEPOSIT: 1,
     WITHDRAW: 2 
+  },
+  PRIVATE_TOKEN_HISTORY_CURRENCY_TYPE: {
+    ETH: 1,
+    BTC: 2 
+  },
+  HISTORY: {
+    TYPE: {
+      DEPOSIT: 1, // same with PRIVATE_TOKEN_HISTORY_ADDRESS_TYPE.DEPOSIT
+      WITHDRAW: 2, // same with PRIVATE_TOKEN_HISTORY_ADDRESS_TYPE.WITHDRAW
+      SEND: 3
+    },
+    STATUS_TEXT: {
+      NewAddress: 'NewAddress',
+      ReceivedDepositAmount: 'ReceivedDepositAmount',
+      MintingPrivacyToken: 'MintingPrivacyToken',
+      MintedPrivacyToken: 'MintedPrivacyToken',
+      SendingToMasterAccount: 'SendingToMasterAccount',
+      SendedToMasterAccount: 'SendedToMasterAccount',
+      ReceivedWithdrawAmount: 'ReceivedWithdrawAmount',
+      BurningPrivacyToken: 'BurningPrivacyToken',
+      BurnedPrivacyToken: 'BurnedPrivacyToken',
+      SendingToUserAddress: 'SendingToUserAddress',
+      SendedToUserAddress: 'SendedToUserAddress'
+    }
   }
 };

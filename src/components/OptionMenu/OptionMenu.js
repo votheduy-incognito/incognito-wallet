@@ -69,13 +69,14 @@ class OptionMenu extends Component {
 }
 
 OptionMenu.defaultProps = {
+  title: '',
   iconProps: {},
   data: []
 };
 
 OptionMenu.propTypes = {
   title: PropTypes.string,
-  iconProps: PropTypes.objectOf(PropTypes.object),
+  iconProps: PropTypes.object,
   data: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
