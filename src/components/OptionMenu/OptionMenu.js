@@ -69,7 +69,7 @@ class OptionMenu extends Component {
 }
 
 OptionMenu.defaultProps = {
-  title: '',
+  title: null,
   iconProps: {},
   data: []
 };
