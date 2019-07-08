@@ -1,7 +1,7 @@
-import AsyncStorage from '@react-native-community/async-storage';
-import User from '@src/models/user';
+// import AsyncStorage from '@react-native-community/async-storage';
+import User from '@/models/user';
 import _ from 'lodash';
-// import { AsyncStorage } from 'react-native';
+import { AsyncStorage } from 'react-native';
 
 const TAG = 'LocalDatabase';
 const KEY_SAVE = {
