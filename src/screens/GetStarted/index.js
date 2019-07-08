@@ -13,6 +13,7 @@ import { createError, messageCode, throwNext, getErrorMessage } from '@src/servi
 import { connect } from 'react-redux';
 import storageService from '@src/services/storage';
 import DeviceInfo from 'react-native-device-info';
+import { getToken as getFirebaseToken } from '@src/services/firebase';
 import GetStarted from './GetStarted';
 
 
@@ -112,9 +113,10 @@ class GetStartedContainer extends Component {
 
   registerToken = async () => {
     try {
-      const uniqueId = process.env.DEFAULT_DEVICE_ID || DeviceInfo.getUniqueID();      
-      // todo: need a device token gen from firebase, Vuong handle pls!!!
-      const token = await getToken(uniqueId);
+      const fbToken = await getFirebaseToken();
+      const uniqueId = '12156256516221215625651622sssssss' || DeviceInfo.getUniqueID();      
+      const token = await getToken(uniqueId, fbToken);
+
       return token;
     } catch (e) {
       throw e;
@@ -123,6 +125,8 @@ class GetStartedContainer extends Component {
 
   checkDeviceToken = async () => {
     try {
+      const fbToken = await getFirebaseToken();
+      console.log('fbToken', fbToken);
       const token = await this.getExistedDeviceToken();
       if (!token) {
         const tokenData = await this.registerToken();

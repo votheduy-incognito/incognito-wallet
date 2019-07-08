@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "981432704059",
+    "firebase_url": "https://inconito-org.firebaseio.com",
+    "project_id": "inconito-org",
+    "storage_bucket": "inconito-org.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:981432704059:android:7416b2ca268c614c",
+        "android_client_info": {
+          "package_name": "com.constantwalletmobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "981432704059-octqpliesjpf9m9pdpsps5evc70gsm94.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.constantwalletmobile",
+            "certificate_hash": "005f13d7392a81163f15f970880480a9fbcb7a78"
+          }
+        },
+        {
+          "client_id": "981432704059-hrfd9sq7epc0e184c6rlnd2isq7dt9kc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8NEtIpMAuzjFLtVCT9Zm8yUN02cvnK58"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "981432704059-hrfd9sq7epc0e184c6rlnd2isq7dt9kc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

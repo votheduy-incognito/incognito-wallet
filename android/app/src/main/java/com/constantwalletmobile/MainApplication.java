@@ -3,6 +3,8 @@ package com.constantwalletmobile;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import io.invertase.firebase.RNFirebasePackage;
+import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.rusel.RCTBluetoothSerial.RCTBluetoothSerialPackage;
 import org.reactnative.camera.RNCameraPackage;
@@ -32,6 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFirebasePackage(),
             new RNDeviceInfo(),
             new RCTBluetoothSerialPackage(),
             new RNCameraPackage(),
@@ -41,7 +44,8 @@ public class MainApplication extends Application implements ReactApplication {
             new AsyncStoragePackage(),
             new VectorIconsPackage(),
             new RNGestureHandlerPackage(),
-            new GomobilePackage()
+            new GomobilePackage(),
+            new RNFirebaseMessagingPackage()
       );
     }
 

@@ -3,24 +3,29 @@
 import QrScanner from '@src/components/QrCodeScanner';
 import configureStore from '@src/redux/store';
 import AppContainer from '@src/router';
-import React from 'react';
-import { ThemeProvider } from 'react-native-elements';
+import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
-import theme from './styles/theme';
+import { initFirebaseNotification } from '@src/services/firebase';
 
 const store = configureStore();
-const MainContainer = props => {
+
+const App = () => {
+  useEffect(() => {
+    initFirebaseNotification()
+      .then(() => {
+        console.log('Firebase notification worked');
+      })
+      .catch(e => {
+        console.error(e);
+      });
+  }, []);
+
   return (
-    <ThemeProvider theme={theme}>
-      <AppContainer {...props} />
-    </ThemeProvider>
+    <Provider store={store}>
+      <AppContainer />
+      <QrScanner />
+    </Provider>
   );
 };
-const App = () => (
-  <Provider store={store}>
-    <AppContainer />
-    <QrScanner />
-  </Provider>
-);
 
 export default App;

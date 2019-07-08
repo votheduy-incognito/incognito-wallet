@@ -9,7 +9,10 @@ import http from '../http';
 //   Email: email,
 // });
 
-export const getToken = deviceId => {
-  return http.post('/auth/new-token', { DeviceID: deviceId})
+export const getToken = (deviceId, deviceFirebaseToken) => {
+  if (!deviceId)  throw new Error('Missing device ID');
+  if (!deviceFirebaseToken)  throw new Error('Missing device firebase token');
+
+  return http.post('/auth/new-token', { DeviceID: deviceId, DeviceToken:deviceFirebaseToken })
     .then(userModel.parseTokenData);
 };
