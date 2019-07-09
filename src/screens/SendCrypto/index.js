@@ -19,7 +19,7 @@ class SendCryptoContainer extends Component {
     this.state = {
       isGettingFee: false,
       isSending: false,
-      minFee: 0,
+      minFee: null,
       receiptData: null
     };
   }
@@ -29,6 +29,8 @@ class SendCryptoContainer extends Component {
     const { toAddress, amount } = values;
     const fromAddress = selectedPrivacy?.paymentAddress;
     const accountWallet = wallet.getAccountByName(account?.name);
+
+    if (!selectedPrivacy.amount) throw new Error('Can not estimate fee on zero amount');
 
     try{
       this.setState({ isGettingFee: true });
@@ -46,6 +48,7 @@ class SendCryptoContainer extends Component {
       // set min fee state
       this.setState({ minFee: humanFee });
     } catch(e){
+      this.setState({ minFee: null });
       throw new Error('Error on get estimation fee!');
     } finally {
       this.setState({ isGettingFee: false });
@@ -72,6 +75,8 @@ class SendCryptoContainer extends Component {
       }
     };
 
+    if (!selectedPrivacy.amount) throw new Error('Can not estimate fee on zero amount');
+
     try{
       this.setState({ isGettingFee: true });
 
@@ -89,6 +94,7 @@ class SendCryptoContainer extends Component {
       // set min fee state
       this.setState({ minFee: humanFee });
     } catch(e){
+      this.setState({ minFee: null });
       throw new Error('Error on get estimation fee!');
     } finally {
       this.setState({ isGettingFee: false });
