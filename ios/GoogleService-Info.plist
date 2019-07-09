@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>981432704059-iph77su6npv7lnrun5vvrkofa3bq2gi5.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.981432704059-iph77su6npv7lnrun5vvrkofa3bq2gi5</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>981432704059-octqpliesjpf9m9pdpsps5evc70gsm94.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDrJJWgzdrJOAF22ToiXqeGFT6UQrEEVXo</string>
+	<key>GCM_SENDER_ID</key>
+	<string>981432704059</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.constantWalletMobile</string>
+	<key>PROJECT_ID</key>
+	<string>inconito-org</string>
+	<key>STORAGE_BUCKET</key>
+	<string>inconito-org.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:981432704059:ios:898a88758e97aca9</string>
+	<key>DATABASE_URL</key>
+	<string>https://inconito-org.firebaseio.com</string>
+</dict>
+</plist>

@@ -5,7 +5,7 @@ import configureStore from '@src/redux/store';
 import AppContainer from '@src/router';
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
-import { initFirebaseNotification } from '@src/services/firebase';
+import { initFirebaseNotification, onFirebaseMessage } from '@src/services/firebase';
 
 const store = configureStore();
 
@@ -14,6 +14,9 @@ const App = () => {
     initFirebaseNotification()
       .then(() => {
         console.log('Firebase notification worked');
+        onFirebaseMessage(data => {
+          console.log('firebase msg', data);
+        });
       })
       .catch(e => {
         console.error(e);

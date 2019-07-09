@@ -12,6 +12,12 @@ export const initFirebaseNotification = async () => {
   }
 };
 
+export const onFirebaseMessage = (onData) => {
+  firebase.messaging()?.onMessage(onData);
+  firebase.notifications()?.onNotification(onData);
+  firebase.notifications()?.onNotificationDisplayed(onData);
+};
+
 export const getToken = () => {
   return firebase.messaging().getToken();
 };
