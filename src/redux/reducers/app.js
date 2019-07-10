@@ -3,7 +3,7 @@ import { CONSTANT_APP } from '@src/constants';
 
 const initialState = {
   status: CONSTANT_APP.STATUS.INIT,
-  isReady: false,
+  isReady: false, // isReady == true means wallet data && defaultAccount data were loaded successfully, including their balance
 };
 
 const reducer = (state = initialState, action) => {

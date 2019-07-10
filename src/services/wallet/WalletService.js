@@ -27,7 +27,7 @@ export async function loadListAccount(wallet) {
       listAccountRaw.map(account => ({
         default: false,
         name: account.AccountName,
-        value: -1,
+        value: null,
         PaymentAddress: account.PaymentAddress,
         ReadonlyKey: account.ReadonlyKey,
         PrivateKey: account.PrivateKey,
