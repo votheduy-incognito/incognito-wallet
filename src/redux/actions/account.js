@@ -82,6 +82,10 @@ export const getBalance = (account = throw new Error('Account object is required
     
     return balance;
   } catch (e) {
+    dispatch(setAccount({
+      ...account,
+      value: null
+    }));
     throw e;
   } finally {
     dispatch(getBalanceFinish(account?.name));

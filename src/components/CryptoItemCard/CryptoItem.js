@@ -5,7 +5,7 @@ import formatUtil from '@src/utils/format';
 import cryptoItemStyle from './style';
 
 const CryptoItem = ({ fullName, typeName, amount, icon, onPress, symbol, isGettingBalance, style }) => (
-  <TouchableOpacity style={[cryptoItemStyle.container, style]} onPress={onPress}>
+  <TouchableOpacity style={[cryptoItemStyle.container, style]} onPress={amount != null ? onPress : null}>
     <View style={cryptoItemStyle.logoContainer}>
       <Image source={icon} />
     </View>
@@ -15,8 +15,12 @@ const CryptoItem = ({ fullName, typeName, amount, icon, onPress, symbol, isGetti
     </View>
     <View style={cryptoItemStyle.balanceContainer}>
       { isGettingBalance ? 
-        <ActivityIndicator /> :
-        <Text style={cryptoItemStyle.amountText} numberOfLines={1} ellipsizeMode="tail">{formatUtil.amount(amount, symbol)} {symbol}</Text> }
+        <ActivityIndicator /> : (
+          amount != null ?
+            <Text style={cryptoItemStyle.amountText} numberOfLines={1} ellipsizeMode="tail">{formatUtil.amount(amount, symbol)} {symbol}</Text> :
+            <Text style={cryptoItemStyle.getAmountFailedText}>Failed</Text>
+        )
+      }
     </View>
   </TouchableOpacity>
 );
