@@ -2,22 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import EstimateFee from './EstimateFee';
 
-const EstimateFeeContainer = ({ fee, onSelectFee, feeUnit, ...otherProps }) => {
-  if (!fee && fee !== 0) {
-    return null;
-  }
-
-  return <EstimateFee {...otherProps} fee={fee} feeUnit={feeUnit} onSelectFee={onSelectFee} />;
+const EstimateFeeContainer = ({ minFee, onSelectFee, onEstimateFee, types, onRef, ...otherProps }) => {
+  return <EstimateFee {...otherProps} minFee={minFee} types={types} onEstimateFee={onEstimateFee} onSelectFee={onSelectFee} onRef={onRef} />;
 };
 
 EstimateFeeContainer.defaultProps = {
-  fee: null,
+  minFee: null,
+  onRef: null
 };
 
 EstimateFeeContainer.propTypes = {
-  feeUnit: PropTypes.string.isRequired,
+  types: PropTypes.array.isRequired,
   onSelectFee: PropTypes.func.isRequired,
-  fee: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  onEstimateFee: PropTypes.func.isRequired,
+  onRef: PropTypes.func,
+  minFee: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
 export default EstimateFeeContainer;

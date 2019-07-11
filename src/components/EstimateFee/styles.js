@@ -8,8 +8,12 @@ const style = StyleSheet.create({
     display: 'flex'
   },
   rate: {},
-  highlight: {
+  rateHighlight: {
     backgroundColor: COLORS.red
+  },
+  feeType: {},
+  feeTypeHighlight: {
+    backgroundColor: COLORS.blue
   }
 });
 

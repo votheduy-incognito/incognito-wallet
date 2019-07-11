@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { amount as amountValidation } from '@src/components/core/formik/validator';
 import convertUtil from '@src/utils/convert';
-import { Container, ScrollView, Form, FormSubmitButton, FormTextField, TouchableOpacity, ActivityIndicator, Toast } from '@src/components/core';
+import { Container, ScrollView, Form, FormSubmitButton, FormTextField, TouchableOpacity, Text, Toast } from '@src/components/core';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { openQrScanner } from '@src/components/QrCodeScanner';
 import ReceiptModal, { openReceipt } from '@src/components/Receipt';
@@ -16,17 +16,19 @@ import createFormValidate from './formValidate';
 const initialFormValues = {
   amount: '1',
   fee: '0.5',
-  toAddress: ''
+  toAddress: '1Uv3xw8bFCTXC2rK2Bqk9yYnDoexGh47pM2bY13xQ32wUu98HbhXzLhCtKHwFn8S4FymaQ6TgXaiWvnvWywBDdKQkr4BaWWwnyR7znhTZ'
 };
 
 class SendCrypto extends React.Component {
   constructor() {
     super();
     this.state = {
+      feeUnit: null,
       finalFee: null,
       formValidate: createFormValidate(),
     };
     this.form = null;
+    this.estimateFeeCom = null;
 
     this.handleShouldGetFee = debounce(this.handleShouldGetFee.bind(this), 1000);
   }
@@ -64,7 +66,7 @@ class SendCrypto extends React.Component {
     }
   }
 
-  handleShouldGetFee = async () => {
+  handleShouldGetFee = () => {
     try {
       const { errors, values } = this.form;
 
@@ -74,10 +76,23 @@ class SendCrypto extends React.Component {
 
       const { amount, toAddress } = values;
 
-      if (amount && toAddress){
-        console.log(amount, toAddress);
-        const { handleEstimateFee } = this.props;
+      if (amount && toAddress) {
+        this.estimateFeeCom?.estimateFee();
+      }
+    } catch (e) {
+      Toast.showError(e.message);
+    }
+  }
+
+  handleEstimateFee = async feeType => {
+    try {
+      const { values } = this.form;
+      const { handleEstimateFee, handleEstimateTokenFee } = this.props;
+
+      if (feeType === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY) {
         await handleEstimateFee(values);
+      } else {
+        await handleEstimateTokenFee(values);
       }
     } catch (e) {
       Toast.showError(e.message);
@@ -86,24 +101,29 @@ class SendCrypto extends React.Component {
   
   handleSend = async values => {
     try {
-      const { finalFee } = this.state;
+      const { finalFee, feeUnit } = this.state;
       const { handleSend } = this.props;
 
       if (typeof handleSend === 'function') {
-        await handleSend({ ...values, fee: finalFee });
+        await handleSend({ ...values, fee: finalFee, feeUnit });
       }
     } catch (e) {
       Toast.showError(e.message);
     }
   }
 
-  handleSelectFee = fee => {
-    this.setState({ finalFee: fee });
+  handleSelectFee = ({ fee, feeUnit }) => {
+    this.setState({ finalFee: fee, feeUnit });
   }
 
   render() {
-    const { formValidate } = this.state;
-    const { isGettingFee, minFee, isSending } = this.props;
+    const { formValidate, finalFee, feeUnit } = this.state;
+    const { minFee, isSending, selectedPrivacy } = this.props;
+    const types = [tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY];
+
+    if (selectedPrivacy?.symbol !== tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY) {
+      types.unshift(selectedPrivacy?.symbol);
+    }
 
     return (
       <ScrollView style={homeStyle.container}>
@@ -127,10 +147,16 @@ class SendCrypto extends React.Component {
               )}
             />
             <FormTextField name='amount' placeholder='Amount' onFieldChange={this.handleShouldGetFee} />
-            <EstimateFee fee={minFee} feeUnit={tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY} onSelectFee={this.handleSelectFee} />
+            <EstimateFee
+              onRef={com => this.estimateFeeCom = com}
+              minFee={minFee}
+              onSelectFee={this.handleSelectFee}
+              onEstimateFee={this.handleEstimateFee}
+              types={types}
+            />
             <FormSubmitButton title='SEND' style={homeStyle.submitBtn} />
           </Form>
-          {isGettingFee && <ActivityIndicator />}
+          <Text>Fee: {finalFee} {feeUnit}</Text>
           <ReceiptModal />
         </Container>
         { isSending && <LoadingTx /> }

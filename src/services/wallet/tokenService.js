@@ -72,7 +72,8 @@ export default class Token {
     fee,
     account,
     wallet,
-    paymentInfo
+    paymentInfo,
+    tokenFee,
   ) {
     await Wallet.resetProgressTx();
     console.log('SEND PRIVACY CUSTOM TOKEN!!!!!!!');
@@ -92,7 +93,7 @@ export default class Token {
     try {
       response = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendPrivacyCustomToken(paymentInfos, submitParam, fee);
+      ].createAndSendPrivacyCustomToken(paymentInfos, submitParam, fee, tokenFee);
 
       await saveWallet(wallet);
     } catch (e) {
