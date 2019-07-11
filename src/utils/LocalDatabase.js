@@ -1,5 +1,5 @@
 // import AsyncStorage from '@react-native-community/async-storage';
-import User from '@/models/user';
+import User from '@src/models/user';
 import _ from 'lodash';
 import { AsyncStorage } from 'react-native';
 
@@ -19,21 +19,21 @@ export default class LocalDatabase {
   }
 
   static getListDevices = async ():[] =>{
-    const listDevice = (await this.getValue(KEY_SAVE.LIST_DEVICE)) || '';
+    const listDevice = (await LocalDatabase.getValue(KEY_SAVE.LIST_DEVICE)) || '';
     return _.isEmpty(listDevice) ? JSON.parse(listDevice):[]; 
   }
   static async logout() {
     return await AsyncStorage.multiRemove([KEY_SAVE.USER]);
   }
   static async saveUserInfo(jsonUser: String) {
-    const oldUser = await this.getValue(KEY_SAVE.USER);
+    const oldUser = await LocalDatabase.getValue(KEY_SAVE.USER);
     if (jsonUser !== oldUser) {
       const data = { ...JSON.parse(oldUser), ...JSON.parse(jsonUser) };
-      await this.saveValue(KEY_SAVE.USER, JSON.stringify(data));
+      await LocalDatabase.saveValue(KEY_SAVE.USER, JSON.stringify(data));
     }
   }
   static async getUserInfo(): User {
-    const userJson = (await this.getValue(KEY_SAVE.USER)) || '';
+    const userJson = (await LocalDatabase.getValue(KEY_SAVE.USER)) || '';
     return _.isEmpty(userJson) ? null : new User(JSON.parse(userJson));
   }
 }

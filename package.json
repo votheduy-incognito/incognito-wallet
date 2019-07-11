@@ -64,7 +64,7 @@
     "react-native-udp": "^2.6.0",
     "react-native-vector-icons": "^6.5.0",
     "react-native-wifi": "/Users/hienton/HienData/Projects/MyProjects/libs/react-native-wifi",
-    "react-native-zmq-service": "/Users/hienton/HienData/Projects/MyProjects/libs/zmq-service",
+    "react-native-zmq-service": "file:/Users/hienton/HienData/Projects/MyProjects/libs/zmq-service",
     "react-navigation": "^3.8.1",
     "react-redux": "^7.0.2",
     "readable-stream": "^1.0.33",

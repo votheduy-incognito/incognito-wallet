@@ -46,12 +46,12 @@
 		3F434583C93D4CCC93D3E60B /* libIOTWifi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F9E162F47A946459F8222DA /* libIOTWifi.a */; };
 		4992337905E44CF49A39888B /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7139BB1E57B94AE2A6C8F4AF /* Entypo.ttf */; };
 		4C1DBB74B2F14588BF13C846 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 93B29E8475554D32A767FB11 /* SimpleLineIcons.ttf */; };
-		59F06AA6949A4457AF0CFC06 /* libRNZmqService.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D60F3FD63C72423F9BEE2848 /* libRNZmqService.a */; };
 		68E740EB49304D53A7558730 /* libRNVectorIcons-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CDB44AB3155F477CB290D577 /* libRNVectorIcons-tvOS.a */; };
 		7625ABD17D2545429E64DDEC /* libRCTBluetoothSerial.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DDA0DFA996054B719B6C8234 /* libRCTBluetoothSerial.a */; };
 		80612F532047467EBA2882E6 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A3DE260718B44BD4834DE46F /* Ionicons.ttf */; };
 		82E467C899D04A02A0589EB9 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB08C251E22B438096EA6169 /* libRNGestureHandler.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		85A78AB4D1784B63A2F325BD /* libRNZmqService.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC405DB35B32428284C6E7E4 /* libRNZmqService.a */; };
 		9657DE7B64C745999D5CDA92 /* libRNWifi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4131C8487746486CB1E7AFE0 /* libRNWifi.a */; };
 		986EF96C0FFF47F3990144BA /* libRNGestureHandler-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AF1B701A774B4C75BB5DD399 /* libRNGestureHandler-tvOS.a */; };
 		9C787534969A487DB668399B /* libRNRandomBytes-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FE9C669E1BF469DA6A28690 /* libRNRandomBytes-tvOS.a */; };
@@ -452,9 +452,9 @@
 			remoteGlobalIDString = 3EB7AB50200F0F1700E792FD;
 			remoteInfo = IOTWifi;
 		};
-		FEAD628822C468FB004E59FD /* PBXContainerItemProxy */ = {
+		FEB68DD322D6E47100562A26 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 08E62E2CA4EF470D83134914 /* RNZmqService.xcodeproj */;
+			containerPortal = F925301729E4434F85B802E2 /* RNZmqService.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNZmqService;
@@ -471,7 +471,6 @@
 		00E356EE1AD99517003FC87E /* constantWalletMobileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = constantWalletMobileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* constantWalletMobileTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = constantWalletMobileTests.m; sourceTree = "<group>"; };
-		08E62E2CA4EF470D83134914 /* RNZmqService.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNZmqService.xcodeproj; path = "../node_modules/react-native-zmq-service/ios/RNZmqService.xcodeproj"; sourceTree = "<group>"; };
 		0A159D2691E74CC884B8B9B8 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		0CF3A776954F44B68F506A6B /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		110F78A61BE244FF96379354 /* RNReanimated.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNReanimated.xcodeproj; path = "../node_modules/react-native-reanimated/ios/RNReanimated.xcodeproj"; sourceTree = "<group>"; };
@@ -524,12 +523,13 @@
 		C2A67D1A4580441FB14BDBC5 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
 		C33937D3476A44DEBFDB66AC /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		CDB44AB3155F477CB290D577 /* libRNVectorIcons-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNVectorIcons-tvOS.a"; sourceTree = "<group>"; };
-		D60F3FD63C72423F9BEE2848 /* libRNZmqService.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNZmqService.a; sourceTree = "<group>"; };
 		D83A536AAE9B4C2BBE7644F7 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
+		DC405DB35B32428284C6E7E4 /* libRNZmqService.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNZmqService.a; sourceTree = "<group>"; };
 		DDA0DFA996054B719B6C8234 /* libRCTBluetoothSerial.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTBluetoothSerial.a; sourceTree = "<group>"; };
 		ECBE1563D1B5449E86A7658F /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED47976300734F1B94B8F775 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
+		F925301729E4434F85B802E2 /* RNZmqService.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNZmqService.xcodeproj; path = "../node_modules/react-native-zmq-service/ios/RNZmqService.xcodeproj"; sourceTree = "<group>"; };
 		FB08C251E22B438096EA6169 /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
 		FEAD618422C383A4004E59FD /* constantWalletMobile-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "constantWalletMobile-Bridging-Header.h"; sourceTree = "<group>"; };
 		FEAD618522C383A4004E59FD /* MinnerBridging-Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MinnerBridging-Header.swift"; sourceTree = "<group>"; };
@@ -575,7 +575,7 @@
 				9657DE7B64C745999D5CDA92 /* libRNWifi.a in Frameworks */,
 				FECCED6022C32CAF00129059 /* NetworkExtension.framework in Frameworks */,
 				3F434583C93D4CCC93D3E60B /* libIOTWifi.a in Frameworks */,
-				59F06AA6949A4457AF0CFC06 /* libRNZmqService.a in Frameworks */,
+				85A78AB4D1784B63A2F325BD /* libRNZmqService.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -743,7 +743,7 @@
 				DDA0DFA996054B719B6C8234 /* libRCTBluetoothSerial.a */,
 				4131C8487746486CB1E7AFE0 /* libRNWifi.a */,
 				8F9E162F47A946459F8222DA /* libIOTWifi.a */,
-				D60F3FD63C72423F9BEE2848 /* libRNZmqService.a */,
+				DC405DB35B32428284C6E7E4 /* libRNZmqService.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -869,7 +869,7 @@
 				5058358FC30E4A81B86F5EC7 /* RCTBluetoothSerial.xcodeproj */,
 				96E990F6BE6D4EF99E1AF5D3 /* RNWifi.xcodeproj */,
 				A47EB0910A7B4F4EAEF82058 /* IOTWifi.xcodeproj */,
-				08E62E2CA4EF470D83134914 /* RNZmqService.xcodeproj */,
+				F925301729E4434F85B802E2 /* RNZmqService.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -967,10 +967,10 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		FEAD628522C468FB004E59FD /* Products */ = {
+		FEB68DCF22D6E47000562A26 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FEAD628922C468FB004E59FD /* libRNZmqService.a */,
+				FEB68DD422D6E47100562A26 /* libRNZmqService.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1008,6 +1008,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				FE41223D22D5F22A00E38657 /* PBXTargetDependency */,
 			);
 			name = constantWalletMobile;
 			productName = "Hello World";
@@ -1194,8 +1195,8 @@
 					ProjectRef = 96E990F6BE6D4EF99E1AF5D3 /* RNWifi.xcodeproj */;
 				},
 				{
-					ProductGroup = FEAD628522C468FB004E59FD /* Products */;
-					ProjectRef = 08E62E2CA4EF470D83134914 /* RNZmqService.xcodeproj */;
+					ProductGroup = FEB68DCF22D6E47000562A26 /* Products */;
+					ProjectRef = F925301729E4434F85B802E2 /* RNZmqService.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -1573,11 +1574,11 @@
 			remoteRef = FE85FC6A22C20E5000EAAE49 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		FEAD628922C468FB004E59FD /* libRNZmqService.a */ = {
+		FEB68DD422D6E47100562A26 /* libRNZmqService.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libRNZmqService.a;
-			remoteRef = FEAD628822C468FB004E59FD /* PBXContainerItemProxy */;
+			remoteRef = FEB68DD322D6E47100562A26 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1711,6 +1712,10 @@
 			target = 2D02E47A1E0B4A5D006451C7 /* constantWalletMobile-tvOS */;
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
+		FE41223D22D5F22A00E38657 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = RNZmqService;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -1821,6 +1826,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 54DJVWMJCC;
+				ENABLE_BITCODE = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
@@ -1835,11 +1842,12 @@
 					"$(SRCROOT)/../node_modules/react-native-bluetooth-serial/ios/RCTBluetoothSerial",
 					"$(SRCROOT)/../node_modules/react-native-wifi/ios",
 					"$(SRCROOT)/../node_modules/react-native-iot-wifi/ios",
-					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 				);
 				INFOPLIST_FILE = constantWalletMobile/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1865,6 +1873,8 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 54DJVWMJCC;
+				ENABLE_BITCODE = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
@@ -1879,11 +1889,12 @@
 					"$(SRCROOT)/../node_modules/react-native-bluetooth-serial/ios/RCTBluetoothSerial",
 					"$(SRCROOT)/../node_modules/react-native-wifi/ios",
 					"$(SRCROOT)/../node_modules/react-native-iot-wifi/ios",
-					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 				);
 				INFOPLIST_FILE = constantWalletMobile/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
