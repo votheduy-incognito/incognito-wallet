@@ -70,6 +70,10 @@ export const getBalance = (token = throw new Error('Token object is required')) 
     
     return balance;
   } catch (e) {
+    dispatch(setToken({
+      ...token,
+      amount: null
+    }));
     throw e;
   } finally {
     dispatch(getBalanceFinish(token?.symbol));

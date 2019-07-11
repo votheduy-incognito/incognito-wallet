@@ -1,6 +1,5 @@
 /* eslint-disable react-native/no-raw-text */
 import { Container, Text, View } from '@src/components/core';
-import CONSTANT_COMMONS from '@src/constants/common';
 import { COLORS } from '@src/styles';
 import formatUtil from '@src/utils/format';
 import PropTypes from 'prop-types';
@@ -19,28 +18,28 @@ const CommonText = props => (
   />
 );
 const Receipt = ({ info }) => {
-  const { txId, time, amount, amountUnit, toAddress, fromAddress, fee } = info;
+  const { txId, time, amount, amountUnit, toAddress, fromAddress, fee, feeUnit } = info;
   return (
     <Container style={styleSheet.container}>
       <SimpleLineIcons name="check" size={100} color={COLORS.white} />
       <View style={styleSheet.infoContainer}>
-        {txId && <CommonText>{`TxID:${txId}`}</CommonText>}
-        {fromAddress && (
+        {!!txId && <CommonText>{`TxID:${txId}`}</CommonText>}
+        {!!fromAddress && (
           <CommonText ellipsizeMode="middle">{`From:${fromAddress}`}</CommonText>
         )}
-        {toAddress && (
+        {!!toAddress && (
           <CommonText ellipsizeMode="middle">
             To:
             {toAddress}
           </CommonText>
         )}
-        {time && (
+        {!!time && (
           <CommonText>
             Time:
             {formatUtil.formatDateTime(time)}
           </CommonText>
         )}
-        {amount && (
+        {(amount === 0 || !!amount) && (
           <CommonText>
             Amount: 
             {' '}
@@ -49,13 +48,13 @@ const Receipt = ({ info }) => {
             {amountUnit}
           </CommonText>
         )}
-        {fee && (
+        {(fee === 0 || !!fee) && (
           <CommonText>
             Fee: 
             {' '}
-            {formatUtil.amount(fee, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY)}
+            {formatUtil.amount(fee, feeUnit)}
             {' '}
-            {CONSTANT_COMMONS.CONST_SYMBOL}
+            {feeUnit}
           </CommonText>
         )}
       </View>
@@ -79,7 +78,8 @@ Receipt.propTypes = {
     ]),
     amount: PropTypes.number,
     amountUnit: PropTypes.string,
-    fee: PropTypes.number
+    fee: PropTypes.number,
+    feeUnit: PropTypes.string,
   })
 };
 

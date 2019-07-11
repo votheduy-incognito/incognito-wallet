@@ -1,12 +1,19 @@
 rootProject.name = 'constantWalletMobile'
-include ':react-native-zmq-service'
-project(':react-native-zmq-service').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-zmq-service/android')
-include ':react-native-iot-wifi'
-project(':react-native-iot-wifi').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-iot-wifi/android')
 include ':react-native-wifi'
 project(':react-native-wifi').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-wifi/android')
+include ':react-native-udp'
+project(':react-native-udp').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-udp/android')
+include ':react-native-tcp'
+project(':react-native-tcp').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-tcp/android')
+include ':react-native-os'
+project(':react-native-os').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-os/android')
+include ':react-native-iot-wifi'
+project(':react-native-iot-wifi').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-iot-wifi/android')
+include ':react-native-firebase'
+project(':react-native-firebase').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-firebase/android')
 include ':react-native-device-info'
 project(':react-native-device-info').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-device-info/android')
+
 include ':react-native-bluetooth-serial'
 project(':react-native-bluetooth-serial').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-bluetooth-serial/android')
 include ':react-native-camera'

@@ -39,7 +39,5 @@ const locationPermission = async () => {
     return Promise.reject(err);
   }
 };
-module.exports = {
-  cameraPermission,
-  locationPermission
-};
+export { cameraPermission, locationPermission };
+

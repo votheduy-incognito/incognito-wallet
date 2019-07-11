@@ -56,9 +56,8 @@ WalletDetailContainer.defaultProps = {
 
 WalletDetailContainer.propTypes = {
   selectedPrivacy: PropTypes.object,
-  defaultAccount: PropTypes.object.isRequired,
-  wallet: PropTypes.object.isRequired,
   account: PropTypes.object.isRequired,
+  wallet: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
   setWallet: PropTypes.func.isRequired,
 };

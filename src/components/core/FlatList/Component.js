@@ -15,12 +15,7 @@ class FlatList extends React.PureComponent {
     this.combineProp = {renderItem:this.renderItem,ListEmptyComponent:this.renderEmpty,
       ListHeaderComponent:this.renderHeader,...props};
   }
-  render() {
-   
-    return (
-      <RNFlatList {...this.combineProp} />
-    );
-  }
+  
   renderEmpty = () => {
     return (
       <View style={[style.containerImg, {}]}>
@@ -31,7 +26,7 @@ class FlatList extends React.PureComponent {
     );
   };
   renderLoading = () => {
-    const {refreshing = false} = this.combineProp;
+    const {refreshing = false,isFetching} = this.combineProp;
     if (!isFetching) return null;
     return <ActivityIndicator />;
   };
@@ -42,6 +37,11 @@ class FlatList extends React.PureComponent {
   renderItem= ({item})=>{
     const {listItem} = this.props;
     return <ListItem {...listItem} />;
+  }
+  render() {
+    return (
+      <RNFlatList {...this.combineProp} />
+    );
   }
 }
 

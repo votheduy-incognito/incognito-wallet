@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Container, ScrollView, Form, FormSubmitButton, FormTextField, Toast, Text } from '@src/components/core';
+import { debounce } from 'lodash';
 import { getErrorMessage, messageCode } from '@src/services/errorHandler';
 import tokenData from '@src/constants/tokenData';
+import formatUtil from '@src/utils/format';
 import style from './style';
 import formValidate from './formValidate';
 
 const initialFormValues = {
-  amount: '0',
+  amount: undefined,
   toAddress: '0xd5808Ba261c91d640a2D4149E8cdb3fD4512efe4',
 };
 
@@ -17,20 +19,39 @@ class Withdraw extends React.Component {
 
     this.state = {
       humanFee: null,
+      feeLevel: 1,
     };
+
+    this.form = null;
+    this.handleEstFee = debounce(this.handleEstFee.bind(this), 1000);
   }
-  handleSubmit = async values => {
+
+  handleEstFee = async () => {
     try {
-      const { handleGenAddress, handleSendToken, handleEstimateFeeToken } = this.props;
-      const { amount, toAddress } = values;
-      const tempAddress = await handleGenAddress({ amount, paymentAddress: toAddress });
-      const humanFee = await handleEstimateFeeToken({ amount, tempAddress });
+      const { values } = this.form;
+      const { amount } = values;
+
+      if (!amount) return;
+
+      const { handleEstimateFeeToken } = this.props;
+      const humanFee = await handleEstimateFeeToken({ amount });
 
       this.setState({ humanFee });
+    } catch (e) {
+      Toast.showError(getErrorMessage(e, { defaultMessage: 'Can not get withdraw fee, please try again' }));
+    }
+  }
 
+  handleSubmit = async values => {
+    try {
+      const { humanFee } = this.state;
+      const { handleGenAddress, handleSendToken, navigation } = this.props;
+      const { amount, toAddress } = values;
+      const tempAddress = await handleGenAddress({ amount, paymentAddress: toAddress });
       const res = await handleSendToken({ tempAddress, amount, fee: humanFee });
       
       Toast.showInfo('Withdraw successfully');
+      navigation.goBack();
       return res;
     } catch (e) {
       Toast.showError(getErrorMessage(e, { defaultCode: messageCode.code.withdraw_failed }));
@@ -38,11 +59,14 @@ class Withdraw extends React.Component {
   }
 
   render() {
-    const { humanFee } = this.state;
+    const { humanFee, feeLevel } = this.state;
+    const { selectedPrivacy } = this.props;
+    const totalFee = (humanFee * feeLevel) + humanFee;
 
     return (
       <ScrollView style={style.container}>
         <Container style={style.mainContainer}>
+          <Text>Balance: {formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy?.symbol)} {selectedPrivacy?.symbol}</Text>
           <Form
             formRef={form => this.form = form}
             initialValues={initialFormValues}
@@ -51,9 +75,9 @@ class Withdraw extends React.Component {
             validationSchema={formValidate}
             validate={this.onFormValidate}
           >
-            <FormTextField name='amount' placeholder='Amount' />
+            <FormTextField name='amount' placeholder='Amount' onFieldChange={this.handleEstFee} />
             <FormTextField name='toAddress' placeholder='To Address' />
-            {humanFee > 0 && <Text>Fee: {humanFee} {tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY}</Text>}
+            {humanFee > 0 && <Text>Fee: {totalFee} {tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY} (include withdraw fee {humanFee} {tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY})</Text>}
             <FormSubmitButton title='CONFIRM' style={style.submitBtn} />
           </Form>
         </Container>
@@ -62,12 +86,12 @@ class Withdraw extends React.Component {
   }
 }
 
-Withdraw.defaultProps = {
-  depositAddress: null
-};
-
 Withdraw.propTypes = {
-  depositAddress: PropTypes.string
+  handleEstimateFeeToken: PropTypes.func.isRequired,
+  handleGenAddress: PropTypes.func.isRequired,
+  handleSendToken: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
+  selectedPrivacy: PropTypes.object.isRequired,
 };
 
 export default Withdraw;

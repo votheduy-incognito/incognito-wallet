@@ -26,7 +26,7 @@ class HomeMine extends BaseScreen {
       `${TAG} - componentWillUpdate - nextProps = ${JSON.stringify(nextProps)} `
     );
   }
-  updateIndex = (selectedIndex)=> {
+  handleUpdateIndex = (selectedIndex)=> {
     this.setState({
       selectedIndex :selectedIndex
     });
@@ -37,7 +37,7 @@ class HomeMine extends BaseScreen {
   handleRefresh = async ()=>{
     const list:[] = await this.getListLocalDevice();
     this.setState({
-      listDevice,
+      listDevice:list,
       isFetching:false
     });
   }
@@ -46,34 +46,44 @@ class HomeMine extends BaseScreen {
     return listDevice;
   };
   renderHeader = ()=>{
-    return (<Header containerStyle={{backgroundColor:'transparent'}} leftComponent={<Text>My Minex</Text>} rightComponent={<Icon
-      name='sc-telegram'
-      type='evilicon'
-      color='#517fa4'
-      onPress={()=>{
-        this.goToScreen(routeNames.AddDevice);
-      }}
-    />}></Header>);
+    return (
+      <Header
+        containerStyle={{backgroundColor:'transparent'}} 
+        leftComponent={<Text>My Minex</Text>} 
+        rightComponent={(
+          <Icon
+            name='sc-telegram'
+            type='evilicon'
+            color='#517fa4'
+            onPress={()=>{
+              this.goToScreen(routeNames.AddDevice);
+            }}
+          />
+        )}
+      />
+    );
   }
   render() {
     const {selectedIndex,listDevice,isFetching,isLoadMore} = this.state;
-    return (<Container style={style.container} >
-      {this.renderHeader()}
-      <ButtonGroup
-        onPress={this.updateIndex}
-        selectedIndex={selectedIndex}
-        buttons={buttonsTab}
-        containerStyle={{height: 40}}
-      />
-      <FlatList 
-        data={listDevice}
-        keyExtractor={item => String(item.id)}
-        onEndReachedThreshold={0.7}
-        onRefresh={this.handleRefresh}
-        refreshing={isFetching && !isLoadMore}
-        onEndReached={this.handleLoadMore}
-      />
-    </Container>);
+    return (
+      <Container style={style.container}>
+        {this.renderHeader()}
+        <ButtonGroup
+          onPress={this.handleUpdateIndex}
+          selectedIndex={selectedIndex}
+          buttons={buttonsTab}
+          containerStyle={{height: 40}}
+        />
+        <FlatList 
+          data={listDevice}
+          keyExtractor={item => String(item.id)}
+          onEndReachedThreshold={0.7}
+          onRefresh={this.handleRefresh}
+          refreshing={isFetching && !isLoadMore}
+          onEndReached={this.handleLoadMore}
+        />
+      </Container>
+    );
   }
 }
 

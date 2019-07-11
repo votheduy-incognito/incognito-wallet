@@ -71,7 +71,9 @@ export default class Token {
     submitParam,
     fee,
     account,
-    wallet
+    wallet,
+    paymentInfo,
+    tokenFee,
   ) {
     await Wallet.resetProgressTx();
     console.log('SEND PRIVACY CUSTOM TOKEN!!!!!!!');
@@ -82,15 +84,16 @@ export default class Token {
     // prepare param for create and send privacy custom token
     // payment info
     // @@ Note: it is use for receivers constant
-    const paymentInfos = [];
+    const paymentInfos = paymentInfo ? [paymentInfo] : [];
     // for (let i = 0; i < paymentInfos.length; i++) {
     //   paymentInfos[i] = new PaymentInfo(/*paymentAddress, amount*/);
     // }
     let response;
+
     try {
       response = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendPrivacyCustomToken(paymentInfos, submitParam, fee);
+      ].createAndSendPrivacyCustomToken(paymentInfos, submitParam, fee, tokenFee);
 
       await saveWallet(wallet);
     } catch (e) {

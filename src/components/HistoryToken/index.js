@@ -1,23 +1,46 @@
 import { ScrollView, Toast } from '@src/components/core';
-import HistoryItem from '@src/components/HistoryItem';
+import HistoryList from '@src/components/HistoryList';
 import LoadingContainer from '@src/components/LoadingContainer';
 import tokenService from '@src/services/wallet/tokenService';
-import formatUtil from '@src/utils/format';
+import { getpTokenHistory } from '@src/services/api/history';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { CONSTANT_COMMONS } from '@src/constants';
+import tokenData from '@src/constants/tokenData';
 
-const normalizeData = histories => histories &&
-histories.map(h => ({
-  txID: h?.txID,
-  time: formatUtil.formatDateTime(h?.time),
-  receiver: h?.receivers[0],
-  amountAndSymbol: `${formatUtil.amount(h?.amount || 0, h?.tokenSymbol)} ${
-    h?.tokenSymbol
-  }`,
-  fee: formatUtil.amount(h?.fee),
-  status: h?.status
-}));
+const combineHistory = (histories, historiesFromApi, symbol) => {
+  const currencyType = tokenData.DATA[symbol]?.currencyType;
+  const data = [];
+
+  historiesFromApi && historiesFromApi.forEach((h, index) => {
+    data.push({
+      id: h?.outsideChainTx || index,
+      time: h?.updatedAt,
+      type: h?.addressType,
+      toAddress: h?.userPaymentAddress,
+      fromAddress: h?.userPaymentAddress,
+      amount: h?.receivedAmount,
+      symbol: currencyType,
+      statusCode: h?.statusText
+    });
+  });
+
+  histories && histories.forEach(h => {
+    data.push({
+      id: h?.txID,
+      time: h?.time,
+      type: CONSTANT_COMMONS.HISTORY.TYPE.SEND,
+      toAddress: h?.receivers[0],
+      amount: h?.amount,
+      symbol: h?.tokenSymbol,
+      statusCode: h?.status
+    });
+  });
+
+  return data.sort((a, b) => new Date(a.time).getTime() < new Date(b.time).getTime() ? 1 : -1);
+};
+
 
 class HistoryTokenContainer extends Component {
   constructor() {
@@ -25,13 +48,21 @@ class HistoryTokenContainer extends Component {
 
     this.state = {
       isLoading: false,
-      histories: []
+      histories: [],
+      historiesFromApi: [],
     };
   }
 
   componentDidMount() {
-    const { defaultAccount, wallet } = this.props;
-    this.loadTokentHistory(wallet, defaultAccount, this.getToken(this.props));
+    const { defaultAccount, wallet, navigation } = this.props;
+  
+    navigation.addListener(
+      'didFocus',
+      () => {
+        this.loadTokentHistory(wallet, defaultAccount, this.getToken(this.props));
+        this.getHistoryFromApi();
+      }
+    );
   }
 
   componentDidUpdate(prevProps) {
@@ -41,12 +72,33 @@ class HistoryTokenContainer extends Component {
 
     if (token && (token?.id !== prevToken?.id)) {
       this.loadTokentHistory(wallet, defaultAccount, token);
+      this.getHistoryFromApi();
     }
   }
 
   getToken = (props) => {
     const { selectedPrivacy, tokens } = props;
     return tokens?.find(t => t?.id === selectedPrivacy?.tokenId);
+  }
+
+  getHistoryFromApi = async () => {
+    try {
+      this.setState({ isLoading: true });
+      const { selectedPrivacy } = this.props;
+      const { additionalData } = selectedPrivacy;
+
+      if (!additionalData?.isWithdrawable || !additionalData?.isDeposable) {
+        return;
+      }
+
+      const histories = await getpTokenHistory({ currencyType: CONSTANT_COMMONS.PRIVATE_TOKEN_HISTORY_CURRENCY_TYPE[additionalData?.currencyType] });
+
+      this.setState({ historiesFromApi: histories });
+    } catch {
+      Toast.showError('Can not load withdraw & deposit history right now, please try later');
+    } finally {
+      this.setState({ isLoading: false });
+    }
   }
 
   loadTokentHistory = async (wallet, account, token) => {
@@ -74,15 +126,16 @@ class HistoryTokenContainer extends Component {
   };
 
   render() {
-    const { isLoading, histories } = this.state;
+    const { isLoading, histories, historiesFromApi } = this.state;
+    const { selectedPrivacy } = this.props;
 
-    if (isLoading) {
+    if (isLoading || !selectedPrivacy) {
       return <LoadingContainer />;
     }
 
     return (
       <ScrollView>
-        <HistoryItem histories={normalizeData(histories)} />
+        <HistoryList histories={combineHistory(histories, historiesFromApi, selectedPrivacy?.symbol)} />
       </ScrollView>
     );
   }
@@ -95,10 +148,15 @@ const mapState = state => ({
   tokens: state.token.followed,
 });
 
+HistoryTokenContainer.defaultProps = {
+  selectedPrivacy: null
+};
+
 HistoryTokenContainer.propTypes = {
-  wallet: PropTypes.objectOf(PropTypes.object),
-  defaultAccount: PropTypes.objectOf(PropTypes.object),
-  navigation: PropTypes.objectOf(PropTypes.object)
+  selectedPrivacy: PropTypes.object,
+  wallet: PropTypes.object.isRequired,
+  defaultAccount: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired
 };
 
 export default connect(mapState)(HistoryTokenContainer);

@@ -6,5 +6,9 @@
   "prettier.eslintIntegration": true,
   "prettier.singleQuote": true,
   "eslint.packageManager": "yarn",
-  "eslint.workingDirectories": ["src"]
+  "eslint.workingDirectories": ["./src"],
+  "eslint.autoFixOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  }
 }

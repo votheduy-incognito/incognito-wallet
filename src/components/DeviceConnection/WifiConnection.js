@@ -1,8 +1,9 @@
-import Permission from '@src/utils/PermissionUtil';
+import { locationPermission } from '@src/utils/PermissionUtil';
 import Util from '@src/utils/Util';
 import { Alert } from 'react-native';
 import Wifi from 'react-native-iot-wifi';
 import BaseConnection, { ObjConnection } from './BaseConnection';
+
 export const TAG = 'WifiConnection';
 
 class WifiConnection extends BaseConnection{
@@ -54,7 +55,7 @@ class WifiConnection extends BaseConnection{
   checkRegular = async ():Promise<Boolean>=> {
     try {
       const [isEnabled, granted] = await Promise.all([
-        Permission.locationPermission()
+        locationPermission()
       ]);
       return Promise.resolve(isEnabled && granted);
     } catch (error) {
@@ -97,9 +98,7 @@ class WifiConnection extends BaseConnection{
     try {
       console.log(TAG, 'scan -- begin');
       const isRegular = await this.checkRegular();
-      if (isRegular) {
-        
-      }
+      
     } catch (e) {
       console.log(TAG, 'scan error ', e);
       return Promise.reject(e);

@@ -1,5 +1,5 @@
 import LocalDatabase from '@src/utils/LocalDatabase';
-import Permission from '@src/utils/PermissionUtil';
+import { locationPermission } from '@src/utils/PermissionUtil';
 import Util from '@src/utils/Util';
 import { Alert, Platform } from 'react-native';
 import BluetoothSerial from 'react-native-bluetooth-serial';
@@ -9,7 +9,6 @@ export const TAG = 'BluetoothConnection';
 class BluetoothConnection{
 
   constructor(props) {
-    super(props);
   }
   initBluetooth = ()=>{
     if(Platform.OS === 'android'){
@@ -120,7 +119,7 @@ class BluetoothConnection{
       // console.log(TAG, 'scan -- enabled  =', devices);
       const [isEnabled, granted] = await Promise.all([
         this.checkBluetoothEnabled(),
-        Permission.locationPermission()
+        locationPermission()
       ]);
       if (isEnabled && granted) {
         const devices = await BluetoothSerial.discoverUnpairedDevices(); //EasyBluetooth.startScan();

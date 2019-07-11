@@ -1,10 +1,10 @@
 export const TAG = 'BaseConnection';
-class ObjConnection{
+export class ObjConnection{
   constructor() {
     this.id = -1;
     this.name = '';
   }
-};
+}
 class BaseConnection{
 
   constructor() {

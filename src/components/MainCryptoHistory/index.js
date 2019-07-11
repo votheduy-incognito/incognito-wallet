@@ -1,9 +1,9 @@
 import { Toast } from '@src/components/core';
-import HistoryItem from '@src/components/HistoryItem';
+import HistoryList from '@src/components/HistoryList';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
-import formatUtil from '@src/utils/format';
 import PropTypes from 'prop-types';
+import { CONSTANT_COMMONS } from '@src/constants';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import tokenData from '@src/constants/tokenData';
@@ -11,14 +11,13 @@ import tokenData from '@src/constants/tokenData';
 const normalizeData = histories =>
   histories &&
   histories.map(h => ({
-    txID: h?.txID,
-    time: formatUtil.formatDateTime(h?.time),
-    receiver: h?.receivers[0],
-    amountAndSymbol: `${formatUtil.amount(h?.amount, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY)} ${
-      tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY
-    }`,
-    fee: formatUtil.amount(h?.fee),
-    status: h?.status
+    id: h?.txID,
+    time: h?.time,
+    type: CONSTANT_COMMONS.HISTORY.TYPE.SEND,
+    toAddress: h?.receivers[0],
+    amount: h?.amount,
+    symbol: tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY,
+    statusCode: h?.status
   }));
 
 class MainCryptoHistory extends Component {
@@ -32,8 +31,15 @@ class MainCryptoHistory extends Component {
   }
 
   componentDidMount() {
-    const { defaultAccount: { name } = {}, wallet } = this.props;
+    const { defaultAccount: { name } = {}, wallet, navigation } = this.props;
     this.loadAccountHistory(wallet, name);
+
+    navigation.addListener(
+      'didFocus',
+      () => {
+        this.loadAccountHistory(wallet, name);
+      }
+    );
   }
 
   componentDidUpdate(prevProps) {
@@ -71,7 +77,7 @@ class MainCryptoHistory extends Component {
       return <LoadingContainer />;
     }
 
-    return <HistoryItem histories={normalizeData(histories)} />;
+    return <HistoryList histories={normalizeData(histories)} />;
   }
 }
 
@@ -81,8 +87,9 @@ const mapState = state => ({
 });
 
 MainCryptoHistory.propTypes = {
-  wallet: PropTypes.objectOf(PropTypes.object),
-  defaultAccount: PropTypes.objectOf(PropTypes.object)
+  wallet: PropTypes.object.isRequired,
+  defaultAccount: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired,
 };
 
 export default connect(mapState)(MainCryptoHistory);

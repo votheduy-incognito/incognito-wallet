@@ -9,6 +9,7 @@ import scheduleService from '@src/services/schedule';
 import accountService from '@src/services/wallet/accountService';
 import SelectedPrivacyModel from '@src/models/selectedPrivacy';
 import routeNames from '@src/router/routeNames';
+import tokenData from '@src/constants/tokenData';
 import { connect } from 'react-redux';
 import Home from './Home';
 
@@ -43,13 +44,13 @@ class HomeContainer extends Component {
     }
   }
 
-  reload = () => {
+  reload = async () => {
     try {
       const { getAccountBalance, account } = this.props;
-      getAccountBalance(account);
+      await getAccountBalance(account);
       this.getFollowingToken();
     } catch {
-      Toast.showError('Reoad balance failed');
+      Toast.showError('Reload data failed');
     }
   }
 
@@ -58,14 +59,22 @@ class HomeContainer extends Component {
     navigation.navigate(routeNames.FollowToken, { isPrivacy: true });
   }
 
-  getTokenBalance = token => {
-    const { getBalance } = this.props;
-    getBalance(token);
+  getTokenBalance = async token => {
+    try {
+      const { getBalance } = this.props;
+      await getBalance(token);
+    } catch {
+      Toast.showError(`Get ${token?.symbol} balance failed`);
+    }
   }
 
-  getAccountBalance = account => {
-    const { getAccountBalance } = this.props;
-    getAccountBalance(account);
+  getAccountBalance = async account => {
+    try {
+      const { getAccountBalance } = this.props;
+      return getAccountBalance(account);
+    } catch {
+      Toast.showError(`Load ${tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY} balance failed`);
+    }
   }
 
   getFollowingToken = async () => {

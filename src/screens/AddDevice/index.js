@@ -8,6 +8,7 @@ import { Button, CheckBox, Icon, ListItem } from 'react-native-elements';
 import Pulse from 'react-native-pulse';
 import { connect } from 'react-redux';
 import styles from './styles';
+
 export const TAG = 'AddDevice';
 
 class AddDevice extends BaseScreen {
@@ -35,16 +36,18 @@ class AddDevice extends BaseScreen {
 
   renderWaiting =()=>{
     const {loading} = this.state;
-    return loading && (<View style={{marginTop:100,alignItems:'center',justifyContent:'center',position:'relative',width:300,height:300}}>
-      <Pulse style={{position:'absolute'}} color='orange' numPulses={3} diameter={400} speed={20} duration={2000} />
-      <Icon
-        reverse
-        name='robot'
-        type='material-community'
-        color='#517fa4'
-      />
-	    <Text>Find Miner</Text>
-    </View>);
+    return loading && (
+      <View style={{marginTop:100,alignItems:'center',justifyContent:'center',position:'relative',width:300,height:300}}>
+        <Pulse style={{position:'absolute'}} color='orange' numPulses={3} diameter={400} speed={20} duration={2000} />
+        <Icon
+          reverse
+          name='robot'
+          type='material-community'
+          color='#517fa4'
+        />
+        <Text>Find Miner</Text>
+      </View>
+    );
     
   }
 
