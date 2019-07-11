@@ -2,6 +2,7 @@
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import storage from '@src/services/storage';
 import { KeyWallet, Wallet } from 'incognito-chain-web-js/build/wallet';
+import tokenModel from '@src/models/token';
 import { getActiveShard } from './RpcClientService';
 import { saveWallet } from './WalletService';
 
@@ -158,9 +159,9 @@ export default class Account {
     return await wallet.MasterAccount.child[indexAccount].getBalance();
   }
 
-  static async getFollowingTokens(account, wallet) {
+  static getFollowingTokens(account, wallet){
     const indexAccount = wallet.getAccountIndexByName(account.name);
-    return await wallet.MasterAccount.child[indexAccount].listFollowingTokens();
+    return wallet.MasterAccount.child[indexAccount].listFollowingTokens()?.map(tokenModel.fromJson);
   }
 
   static async addFollowingTokens(tokens, account, wallet) {
@@ -173,5 +174,6 @@ export default class Account {
     await wallet.MasterAccount.child[indexAccount].removeFollowingToken(
       tokenId
     );
+    return wallet;
   }
 }

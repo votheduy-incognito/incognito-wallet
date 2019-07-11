@@ -8,7 +8,7 @@ const Container = ({ style, ...props }) => (
 );
 
 Container.propTypes = {
-  style: PropTypes.objectOf(PropTypes.object)
+  style: PropTypes.object
 };
 
 export default Container;

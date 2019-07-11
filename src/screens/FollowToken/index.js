@@ -3,6 +3,7 @@ import LoadingContainer from '@src/components/LoadingContainer';
 import { setWallet } from '@src/redux/actions/wallet';
 import accountService from '@src/services/wallet/accountService';
 import tokenService from '@src/services/wallet/tokenService';
+import tokenModel from '@src/models/token';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
@@ -37,7 +38,7 @@ const FollowTokenContainer = ({
         wallet
       );
 
-      return _.differenceBy(tokens, followedTokens, 'ID');
+      return _.differenceBy(tokens, followedTokens, 'id');
     } catch {
       Toast.showError('Can not get list of tokens, please try later');
     } finally {
@@ -47,14 +48,15 @@ const FollowTokenContainer = ({
 
   const handleAddFollowToken = async tokens => {
     try {
-      await accountService.addFollowingTokens(tokens, account, wallet);
+      const tokenPayload = tokens && tokens.map(tokenModel.toJson) || [];
+      await accountService.addFollowingTokens(tokenPayload, account, wallet);
+
+      Toast.showInfo('Added successfully');
 
       // update new wallet to store
       setWallet(wallet);
 
       getTokenList().then(setTokens);
-
-      Toast.showInfo('Added successfully');
     } catch {
       Toast.showError(
         'Can not add these tokens to your account right now, please try later'
@@ -73,6 +75,7 @@ const FollowTokenContainer = ({
   return (
     <FollowToken
       {...props}
+      navigation={navigation}
       tokenList={tokens}
       handleAddFollowToken={handleAddFollowToken}
     />

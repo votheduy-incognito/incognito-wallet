@@ -5,6 +5,8 @@ include ':react-native-iot-wifi'
 project(':react-native-iot-wifi').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-iot-wifi/android')
 include ':react-native-wifi'
 project(':react-native-wifi').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-wifi/android')
+include ':react-native-device-info'
+project(':react-native-device-info').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-device-info/android')
 include ':react-native-bluetooth-serial'
 project(':react-native-bluetooth-serial').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-bluetooth-serial/android')
 include ':react-native-camera'
@@ -22,4 +24,4 @@ project(':react-native-vector-icons').projectDir = new File(rootProject.projectD
 include ':react-native-gesture-handler'
 project(':react-native-gesture-handler').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-gesture-handler/android')
 
-include ':app'
+include ':app', ':gomobile'

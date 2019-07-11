@@ -5,9 +5,8 @@ import React, { useEffect, useState } from 'react';
 import { TouchableOpacity as RNComponent } from 'react-native';
 import styleSheet from './style';
 
-const Button = ({ title, children, style, titleStyle, type, onPress, loadingColor, isLoading: isLoadingProps, prepend, ...props }) => {
+const Button = ({ title, children, style, titleStyle, type, onPress, loadingColor, isLoading: isLoadingProps, prepend, isAsync, ...props }) => {
   const [ isLoading, setLoading ] = useState(false);
-  
   useEffect(() => {
     setLoading(isLoadingProps);
   }, [isLoadingProps]);
@@ -38,7 +37,7 @@ const Button = ({ title, children, style, titleStyle, type, onPress, loadingColo
             <View style={styleSheet.textContainer}>
               <Text style={[styleSheet.text, titleStyle]} numberOfLines={1} ellipsizeMode='tail'>{title}</Text>
             </View>
-            { isLoading && <ActivityIndicator style={[styleSheet.loadingIcon]} color={loadingColor} size='small' /> }
+            { isAsync && isLoading && <ActivityIndicator style={[styleSheet.loadingIcon]} color={loadingColor} size='small' /> }
           </>
         )
       }
@@ -49,15 +48,24 @@ const Button = ({ title, children, style, titleStyle, type, onPress, loadingColo
 Button.defaultProps = {
   loadingColor: COLORS.white,
   isLoading: false,
+  isAsync: false,
+  prepend: null,
+  onPress: null,
+  style: null,
+  titleStyle: null,
+  title: null,
+  children: null,
+  type: null
 };
 
 Button.propTypes = {
+  isAsync: PropTypes.bool,
   prepend: PropTypes.node,
   isLoading: PropTypes.bool,
   loadingColor: PropTypes.string,
   onPress: PropTypes.func,
-  style: PropTypes.objectOf(PropTypes.object),
-  titleStyle: PropTypes.objectOf(PropTypes.object),
+  style: PropTypes.object,
+  titleStyle: PropTypes.object,
   title: PropTypes.string,
   children: PropTypes.oneOfType([
     PropTypes.node,

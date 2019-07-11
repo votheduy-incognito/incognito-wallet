@@ -7,6 +7,7 @@ const FormSubmitButton = (props) => {
   return (
     <Button
       {...btnProps}
+      isAsync
       onPress={handleSubmit}
     />
   );

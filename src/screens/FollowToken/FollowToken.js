@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { TextInput, Container, ScrollView, Button, Toast } from '@src/components/core';
+import { TextInput, Container, ScrollView, Button, Toast, TouchableOpacity, Text } from '@src/components/core';
 import _ from 'lodash';
+import routeNames from '@src/router/routeNames';
 import ListToken, { tokenShape } from './ListToken';
 import { followTokenStyle } from './style';
 
@@ -19,11 +20,11 @@ class FollowToken extends Component {
   }
 
   handleAddFollow = token => {
-    if (!token?.ID) return;
+    if (!token?.id) return;
 
     const { followed } = this.state;
     const result = [...followed];
-    const removed = _.remove(result, _token => _token?.ID === token?.ID);
+    const removed = _.remove(result, _token => _token?.id === token?.id);
     if (removed?.length === 0) {
       result.push(token);
     } 
@@ -38,7 +39,7 @@ class FollowToken extends Component {
       filteredTokens = tokenList;
     }
     
-    filteredTokens = tokenList?.filter(token => [token?.Name, token?.ID].join(' ')?.toUpperCase()?.includes(String(text).toUpperCase()));
+    filteredTokens = tokenList?.filter(token => [token?.name, token?.id].join(' ')?.toUpperCase()?.includes(String(text).toUpperCase()));
 
     this.setState({ filteredTokens });
   }
@@ -53,6 +54,11 @@ class FollowToken extends Component {
     }
 
     handleAddFollowToken(followed);
+  }
+
+  handleCreateToken = () => {
+    const { navigation } = this.props;
+    navigation.navigate(routeNames.CreateToken);
   }
 
   render() {
@@ -70,6 +76,11 @@ class FollowToken extends Component {
           />
         </ScrollView>
         <Button title='FOLLOW' onPress={this.handleSaveFollow} style={followTokenStyle.followBtn} />
+        <TouchableOpacity onPress={this.handleCreateToken}>
+          <Text style={[followTokenStyle.createTokenBtn, followTokenStyle.centerText]}>
+            Or create your token
+          </Text>
+        </TouchableOpacity>
       </Container>
     );
   }

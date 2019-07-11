@@ -1,6 +1,6 @@
 import axios from 'axios';
 import CONFIG from '@src/constants/config';
-import { getErrorMessage } from './apiErrorHandler';
+import { apiErrorHandler, messageCode, createError } from './errorHandler';
 
 const HEADERS = {'Content-Type': 'application/json'};
 const TIMEOUT = 1000;
@@ -8,17 +8,40 @@ const TIMEOUT = 1000;
 const instance = axios.create({
   baseURL: CONFIG.API_BASE_URL,
   timeout: TIMEOUT,
-  headers: HEADERS
+  headers: {
+    ...HEADERS,
+    Authorization: ''
+  }
 });
 
-instance.interceptors.response.use(null, errorData => {
+instance.interceptors.response.use(res => {
+  const result = res?.data?.Result;
+
+  if (__DEV__) {
+    console.debug('Request success', result);
+  }
+
+  return Promise.resolve(result);
+}, errorData => {
+  if (__DEV__) {
+    console.warn('Request failed', errorData);
+  }
+
   const data = errorData?.response?.data;
   if (data && data.Error) {
-    throw new Error(getErrorMessage(data.Error) || 'Opps! Something went wrong');
+    throw createError({ code: apiErrorHandler.getErrorMessageCode(data.Error) || messageCode.code.api_general });
   }
 
   return Promise.reject(errorData);
 });
+
+export const setTokenHeader = token => {
+  try {
+    instance.defaults.headers.Authorization = `Bearer ${token}`;
+  } catch {
+    throw new Error('Can not set token request');
+  }
+};
 
 export default instance;
 /**

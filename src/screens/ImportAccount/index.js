@@ -13,12 +13,14 @@ class ImportAccountContainer extends Component {
       const { wallet, reloadAccountList } = this.props;
       const passphrase = await getPassphrase();
 
-      await accountService.importAccount(
+      const isImported = await accountService.importAccount(
         privateKey,
         accountName,
         passphrase,
         wallet
       );
+      if (!isImported) throw new Error('Account was not imported!');
+
       Toast.showInfo(`Your account ${accountName} was import!`);
 
       await reloadAccountList();

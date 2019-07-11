@@ -1,74 +1,62 @@
-import { Container, ScrollView, View } from '@src/components/core';
-import DrawerIcon from '@src/components/DrawerIcon';
-import ROUTE_NAMES from '@src/router/routeNames';
-import PropTypes from 'prop-types';
 import React from 'react';
-import MdIcon from 'react-native-vector-icons/MaterialIcons';
-import AccountAddress from './AccountAddress';
-import AccountBalance from './AccountBalance';
-import ActionButtons from './ActionButtons';
-import HomeTabs from './HomeTabs';
+import PropTypes from 'prop-types';
+import { Container, ScrollView, View, Text } from '@src/components/core';
+import CryptoItemCard from '@src/components/CryptoItemCard';
+import tokenData from '@src/constants/tokenData';
+import TouchableOpacity from '@src/components/core/TouchableOpacity/Component';
 import { homeStyle } from './style';
 
 class Home extends React.Component {
-  static navigationOptions = () => ({
-    drawerLabel: 'Home',
-    drawerIcon: () => (
-      <DrawerIcon>
-        <MdIcon name="home" />
-      </DrawerIcon>
-    )
-  });
-
-  constructor(props) {
-    super(props);
-
-    this.actionButtons = [
-      {
-        label: 'SEND',
-        handlePress: () => props?.navigation?.navigate(ROUTE_NAMES.WalletDetail)
-      },
-      {
-        label: 'STAKING',
-        handlePress: () => props?.navigation?.navigate(ROUTE_NAMES.Staking)
-      },
-      {
-        label: 'DEFRAGMENT',
-        handlePress: () => props?.navigation?.navigate(ROUTE_NAMES.Defragment)
-      }
-    ];
-  }
-
   render() {
-    const { account, isGettingBalance, reloadBalance } = this.props;
+    const { account, tokens, isGettingBalanceList, onSelectToken, handleAddFollowToken } = this.props;
+
     return (
       <ScrollView style={homeStyle.container}>
         <Container style={homeStyle.mainContainer}>
-          <AccountAddress data={account?.PaymentAddress} />
-          <AccountBalance
-            balance={account?.value}
-            isGettingBalance={isGettingBalance}
-            onReload={reloadBalance}
+          <CryptoItemCard
+            style={homeStyle.cryptoItem}
+            token={{
+              symbol: tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY,
+              amount: account?.value
+            }}
+            isGettingBalance={isGettingBalanceList?.includes(account?.name)}
+            onPress={onSelectToken}
           />
-          <ActionButtons actions={this.actionButtons} />
+          {
+            tokens?.map(token => (
+              <CryptoItemCard
+                style={homeStyle.cryptoItem}
+                key={token.symbol}
+                token={token}
+                isGettingBalance={isGettingBalanceList?.includes(token.name)}
+                onPress={onSelectToken}
+              />
+            ))
+          }
+          <View style={homeStyle.addTokenContainer}>
+            <Text style={homeStyle.addTokenLabel}>Don’t see your token?</Text>
+            <TouchableOpacity onPress={handleAddFollowToken}>
+              <Text style={homeStyle.addTokenBtn}>Add token</Text>
+            </TouchableOpacity>
+          </View>
         </Container>
-        <View style={homeStyle.tabContainer}>
-          <HomeTabs />
-        </View>
       </ScrollView>
     );
   }
 }
 
 Home.defaultProps = {
-  // account: {},
-  isGettingBalance: false
+  isGettingBalanceList: null,
+  account: null,
+  tokens: [],
 };
 
 Home.propTypes = {
-  account: PropTypes.objectOf(PropTypes.object),
-  reloadBalance: PropTypes.func,
-  isGettingBalance: PropTypes.bool
+  isGettingBalanceList: PropTypes.array,
+  account: PropTypes.object,
+  tokens: PropTypes.array,
+  onSelectToken: PropTypes.func.isRequired,
+  handleAddFollowToken: PropTypes.func.isRequired,
 };
 
 export default Home;

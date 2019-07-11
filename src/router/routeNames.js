@@ -27,4 +27,9 @@ export default {
   ConfigDevice: 'ConfigDevice',
   DetailDevice: 'DetailDevice',
   MineSetting: 'MineSetting',
+  CreateToken: 'CreateToken',
+  Withdraw: 'Withdraw',
+  Deposit: 'Deposit',
+  SendCrypto: 'SendCrypto',
+  ReceiveCrypto: 'ReceiveCrypto',
 };

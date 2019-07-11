@@ -4,6 +4,7 @@ import {
   KeyWallet,
   Wallet
 } from 'incognito-chain-web-js/build/wallet';
+import tokenModel from '@src/models/token';
 import { saveWallet } from './WalletService';
 import { listPrivacyTokens, listCustomTokens } from './RpcClientService';
 
@@ -105,8 +106,7 @@ export default class Token {
     try {
       const data = await listPrivacyTokens();
       const tokens = data.listPrivacyToken || [];
-
-      return tokens;
+      return tokens && tokens.map(tokenModel.fromJson);
     } catch (e) {
       throw e;
     }
@@ -117,7 +117,7 @@ export default class Token {
       const data = await listCustomTokens();
       const tokens = data.listCustomToken || [];
 
-      return tokens;
+      return tokens && tokens.map(tokenModel.fromJson);
     } catch (e) {
       throw e;
     }
@@ -160,17 +160,16 @@ export default class Token {
 
   static async getTokenHistory({ account, wallet, token }) {
     try {
-      if (!token?.ID) {
+      if (!token?.id) {
         throw new Error('Token is required');
       }
 
       const accountWallet = wallet.getAccountByName(account.name);
       let histories = [];
-        
-      if (token?.IsPrivacy) {
-        histories = await accountWallet.getPrivacyCustomTokenTxByTokenID(token?.ID);
+      if (token?.isPrivacy) {
+        histories = await accountWallet.getPrivacyCustomTokenTxByTokenID(token?.id);
       } else {
-        histories = await accountWallet.getCustomTokenTxByTokenID(token?.ID);
+        histories = await accountWallet.getCustomTokenTxByTokenID(token?.id);
       }
       
       return histories;

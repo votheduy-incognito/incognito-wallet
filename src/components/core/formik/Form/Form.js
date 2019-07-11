@@ -11,7 +11,7 @@ import React, { useState } from 'react';
 import Effect from './Effect';
 
 const isFormField = (com = new Error('Must be a React component')) =>
-  [FormTextField, CheckBoxField, PickerField].includes(com.type);
+  [FormTextField, CheckBoxField, PickerField].includes(com?.type);
 
 const injectFieldToChildren = ({
   handleChange,
@@ -116,10 +116,10 @@ const CustomForm = props => {
 };
 
 CustomForm.propTypes = {
-  initialValues: PropTypes.objectOf(PropTypes.object),
+  initialValues: PropTypes.object,
   onSubmit: PropTypes.func,
-  children: PropTypes.oneOf(PropTypes.arrayOf(PropTypes.node), PropTypes.node),
-  viewProps: PropTypes.objectOf(PropTypes.object),
+  children: PropTypes.oneOf([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  viewProps: PropTypes.object,
   formRef: PropTypes.func,
   onFormChange: PropTypes.func
 };

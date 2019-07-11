@@ -38,5 +38,12 @@ export const followTokenStyle = StyleSheet.create({
   tokenList: {
     flex: 1,
     marginVertical: SPACING.small
-  }
+  },
+  createTokenBtn: {
+    color: COLORS.blue,
+    marginVertical: 20
+  },
+  centerText: {
+    textAlign: 'center'
+  },
 });

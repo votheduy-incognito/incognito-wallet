@@ -1,75 +1,138 @@
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Toast } from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
-import { getBalance } from '@src/redux/actions/account';
+import { getBalance as getAccountBalance } from '@src/redux/actions/account';
+import { setListToken, getBalance } from '@src/redux/actions/token';
+import { setSelectedPrivacy, clearSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import scheduleService from '@src/services/schedule';
-import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import accountService from '@src/services/wallet/accountService';
+import SelectedPrivacyModel from '@src/models/selectedPrivacy';
+import routeNames from '@src/router/routeNames';
 import { connect } from 'react-redux';
 import Home from './Home';
 
-const HomeContainer = ({
-  defaultAccount,
-  getBalance,
-  isGettingBalance,
-  accounts,
-  ...otherProps
-}) => {
-  const loadBalance = account => {
-    if (account?.name) {
-      getBalance(account).catch(() => {
-        Toast.showError('Error while loading account balance');
-      });
-    }
-  };
+class HomeContainer extends Component {
+  componentDidMount() {
+    const { account, navigation, clearSelectedPrivacy, getAccountBalance, accountList } = this.props;
 
-  useEffect(() => {
-    const unsubcribe = scheduleService.reloadAllAccountBalance({
-      accounts,
-      getBalance,
-      timeout: 300000
+    this.getFollowingToken();
+    this.getAccountBalance(account);
+
+    scheduleService.reloadAllAccountBalance({
+      accounts: accountList,
+      getBalance: getAccountBalance
     });
-    return () => {
-      unsubcribe();
-    };
-  }, []);
 
-  useEffect(() => {
-    loadBalance(defaultAccount);
-  }, [defaultAccount?.name]);
 
-  if (!defaultAccount?.name) {
-    return <LoadingContainer />;
+    navigation.addListener(
+      'didFocus',
+      () => {
+        clearSelectedPrivacy();
+        this.reload();
+      }
+    );
   }
 
-  return (
-    <Home
-      account={defaultAccount}
-      isGettingBalance={isGettingBalance}
-      reloadBalance={() => loadBalance(defaultAccount)}
-      {...otherProps}
-    />
-  );
-};
+  componentDidUpdate(prevProps) {
+    const { wallet } = this.props;
 
-const mapState = state => {
-  const account = state.account;
-  return {
-    accounts: account.list || [],
-    defaultAccount: account.defaultAccount,
-    isGettingBalance: account.isGettingBalance.includes(
-      account.defaultAccount?.name
-    )
-  };
-};
+    // reload tokens list if wallet was changed
+    if (prevProps.wallet !== wallet) {
+      this.getFollowingToken();
+    }
+  }
+
+  reload = () => {
+    try {
+      const { getAccountBalance, account } = this.props;
+      getAccountBalance(account);
+      this.getFollowingToken();
+    } catch {
+      Toast.showError('Reoad balance failed');
+    }
+  }
+
+  onAddTokenToFollow = () => {
+    const { navigation } = this.props;
+    navigation.navigate(routeNames.FollowToken, { isPrivacy: true });
+  }
+
+  getTokenBalance = token => {
+    const { getBalance } = this.props;
+    getBalance(token);
+  }
+
+  getAccountBalance = account => {
+    const { getAccountBalance } = this.props;
+    getAccountBalance(account);
+  }
+
+  getFollowingToken = async () => {
+    try {
+      const { account, wallet, setListToken } = this.props;
+      const tokens = accountService.getFollowingTokens(account, wallet);
+
+      tokens.forEach(this.getTokenBalance);
+      setListToken(tokens);
+    } catch {
+      Toast.showError('Can not get list token for this account');
+    }
+  }
+
+  handleSelectToken = (token) => {
+    if (!token) return;
+
+    const { account, tokens, setSelectedPrivacy, navigation } = this.props;
+    const tokenData = tokens.find(t => t.symbol === token.symbol);
+
+    const privacyToken = SelectedPrivacyModel.parse(account, tokenData);
+    setSelectedPrivacy(privacyToken);
+
+    navigation.navigate(routeNames.WalletDetail);
+  }
+
+  render() {
+    const { wallet, account, tokens, isGettingBalanceList } = this.props;
+
+    if (!wallet) return <LoadingContainer />;
+
+    return (
+      <Home
+        account={account}
+        tokens={tokens}
+        handleAddFollowToken={this.onAddTokenToFollow}
+        isGettingBalanceList={isGettingBalanceList}
+        onSelectToken={this.handleSelectToken}
+      />
+    );
+  }
+}
+
+const mapState = state => ({
+  accountList: state.account.list,
+  account: state.account.defaultAccount,
+  wallet: state.wallet,
+  tokens: state.token.followed || [],
+  isGettingBalanceList: [...state.account.isGettingBalance, ...state.token.isGettingBalance]
+});
+
+const mapDispatch = { setListToken, getBalance, getAccountBalance, setSelectedPrivacy, clearSelectedPrivacy };
 
 HomeContainer.propTypes = {
-  accounts: PropTypes.objectOf(PropTypes.array),
-  defaultAccount: PropTypes.objectOf(PropTypes.object),
-  isGettingBalance: PropTypes.bool,
-  getBalance: PropTypes.func
+  navigation: PropTypes.object.isRequired,
+  account: PropTypes.object.isRequired,
+  accountList: PropTypes.array.isRequired,
+  tokens: PropTypes.array.isRequired,
+  isGettingBalanceList: PropTypes.array.isRequired,
+  wallet: PropTypes.object.isRequired,
+  setListToken: PropTypes.func.isRequired,
+  getAccountBalance: PropTypes.func.isRequired,
+  getBalance: PropTypes.func.isRequired,
+  setSelectedPrivacy: PropTypes.func.isRequired,
+  clearSelectedPrivacy: PropTypes.func.isRequired,
 };
 
-const mapDispatch = { getBalance };
 
 export default connect(
   mapState,

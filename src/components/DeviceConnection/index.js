@@ -24,10 +24,6 @@ class DeviceConnection extends Component {
     this.init();
     
   }
-  init = ()=>{
-    const connection:BaseConnection = new WifiConnection();
-    this.connection = connection;
-  }
 
   componentDidMount = async () => {
     const listDevice = await this.getDeviceSavedList();
@@ -91,7 +87,7 @@ class DeviceConnection extends Component {
     } catch (error) {
       return Promise.reject(error);
     }
-    return Promise.resolve(true);
+  
   }
   alertBluetooth = () => {
     Alert.alert(
@@ -123,6 +119,10 @@ class DeviceConnection extends Component {
       this.isDoingSetManual = true;
     }
   };
+  init = ()=>{
+    const connection:BaseConnection = new WifiConnection();
+    this.connection = connection;
+  }
 
   getDeviceSavedList = async () => {
     // const { callbackGettingListPairedDevices } = this.props;
@@ -157,7 +157,7 @@ class DeviceConnection extends Component {
 }
 
 DeviceConnection.propTypes = {
-  callbackGettingListPairedDevices: pairedList => {}
+  // callbackGettingListPairedDevices: pairedList => {}
 };
 
 DeviceConnection.defaultProps = {

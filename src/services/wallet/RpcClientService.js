@@ -1,6 +1,13 @@
-import { Wallet, RpcClient } from 'incognito-chain-web-js/build/wallet';
+import {
+  Wallet,
+  RpcClient,
+  getEstimateFee,
+  getEstimateFeeForSendingToken,
+  getEstimateFeeToDefragment,
+  getEstimateTokenFee
+} from 'incognito-chain-web-js/build/wallet';
 
-export function getRpcClient() {
+function getRpcClient() {
   return Wallet.RpcClient;
 }
 
@@ -16,7 +23,14 @@ export function listPrivacyTokens() {
   return getRpcClient().listPrivacyCustomTokens();
 }
 
-export async function getEstimateFee(from, to, amount, privateKey, accountWallet, isPrivacy) {
+export async function getEstimateFeeService(
+  from,
+  to,
+  amount,
+  privateKey,
+  accountWallet,
+  isPrivacy
+) {
   console.log('Estimating fee ...');
   let fee;
   try {
@@ -35,13 +49,15 @@ export async function getEstimateFee(from, to, amount, privateKey, accountWallet
   return fee;
 }
 
-export async function getEstimateFeeForSendingToken(
+export async function getEstimateFeeForSendingTokenService(
   from,
   to,
   amount,
   tokenObject,
   privateKey,
-  account
+  account,
+  isPrivacyForPrivateToken,
+  feeToken
 ) {
   console.log('getEstimateFeeForSendingToken');
   console.log('\tfrom:' + from);
@@ -59,7 +75,9 @@ export async function getEstimateFeeForSendingToken(
       tokenObject,
       privateKey,
       account,
-      getRpcClient()
+      getRpcClient(),
+      isPrivacyForPrivateToken,
+      feeToken
     );
   } catch (e) {
     throw e;
@@ -67,7 +85,42 @@ export async function getEstimateFeeForSendingToken(
   return fee;
 }
 
-export async function getEstimateFeeToDefragment(
+export async function getEstimateTokenFeeService(
+  from,
+  to,
+  amount,
+  tokenObject,
+  privateKey,
+  account,
+  isPrivacyForPrivateToken
+) {
+  console.log('getEstimateTokenFee');
+  console.log('\tfrom:' + from);
+  console.log('\tto: ' + to);
+  console.log('\tamount:' + amount);
+  console.log('\ttokenObject', tokenObject);
+  console.log('\tprivateKey', privateKey);
+  console.log('HHHHHHHH : ', typeof getEstimateTokenFee);
+
+  let fee;
+  try {
+    fee = await getEstimateTokenFee(
+      from,
+      to,
+      amount,
+      tokenObject,
+      privateKey,
+      account,
+      getRpcClient(),
+      isPrivacyForPrivateToken
+    );
+  } catch (e) {
+    throw e;
+  }
+  return fee;
+}
+
+export async function getEstimateFeeToDefragmentService(
   from,
   amount,
   privateKey,

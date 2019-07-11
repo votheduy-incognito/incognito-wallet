@@ -1,4 +1,6 @@
-import { CONSTANT_CONFIGS } from '@src/constants';
+import { Toast } from '@src/components/core';
+import { setTokenHeader } from '@src/services/http';
+import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import { reloadWallet } from '@src/redux/actions/wallet';
 import routeNames from '@src/router/routeNames';
 import { getToken } from '@src/services/api/user';
@@ -7,8 +9,12 @@ import serverService from '@src/services/wallet/Server';
 import { initWallet } from '@src/services/wallet/WalletService';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { createError, messageCode, throwNext, getErrorMessage } from '@src/services/errorHandler';
 import { connect } from 'react-redux';
+import storageService from '@src/services/storage';
+import DeviceInfo from 'react-native-device-info';
 import GetStarted from './GetStarted';
+
 
 class GetStartedContainer extends Component {
   constructor() {
@@ -20,7 +26,10 @@ class GetStartedContainer extends Component {
   }
 
   componentDidMount() {
-    this.initApp().then(this.checkExistedWallet);
+    this.initApp()
+      .catch(e => {
+        Toast.showError(getErrorMessage(e, { defaultCode: messageCode.code.initialing_wallet_failed }));
+      });
   }
 
   goHome = () => {
@@ -28,29 +37,48 @@ class GetStartedContainer extends Component {
     navigation.navigate(routeNames.Home);
   };
 
-  checkExistedWallet = async () => {
+  getExistedWallet = async () => {
     try {
       const { reloadWallet } = this.props;
       const wallet = await reloadWallet(
         CONSTANT_CONFIGS.PASSPHRASE_WALLET_DEFAULT
       );
       if (wallet) {
+        return wallet;
+      }
+      return null;
+    } catch (e) {
+      throw createError({ code: messageCode.code.load_existed_wallet_failed });
+    }
+  }
+
+  checkExistedWallet = async () => {
+    try {
+      const wallet = await this.getExistedWallet();
+      if (wallet) {
         this.goHome();
       }
     } catch (e) {
-      throw new Error('Can not load existed wallet');
+      throw e;
     }
-  };
+  }; 
 
   initApp = async () => {
     try {
       this.setState({ isInitialing: true });
-      if (!(await serverService.get())) {
-        return serverService.setDefaultList();
+      const token = await this.checkDeviceToken();
+
+      if (token) {
+        console.log('Device token', token);
+        setTokenHeader(token);
       }
-      return null;
-    } catch {
-      throw new Error('Error occurs while initialing wallet');
+
+      if (!(await serverService.get())) {
+        await serverService.setDefaultList();
+      }
+      await this.checkExistedWallet();
+    } catch (e) {
+      throw e;
     } finally {
       this.setState({ isInitialing: false });
     }
@@ -59,21 +87,68 @@ class GetStartedContainer extends Component {
   handleCreateWallet = async () => {
     try {
       await savePassword(CONSTANT_CONFIGS.PASSPHRASE_WALLET_DEFAULT);
+
+      // just make sure there has no existed wallet
+      const wallet = await this.getExistedWallet();
+
+      if (wallet) {
+        return throw createError({ code: messageCode.code.can_not_create_wallet_on_existed });
+      }
+      
       return initWallet();
-    } catch {
-      throw new Error('Can not create new wallet');
+    } catch (e) {
+      throw e;
     }
   };
+
+  getExistedDeviceToken = async () => {
+    try {
+      const token = await storageService.getItem(CONSTANT_KEYS.DEVICE_TOKEN);
+      return token;
+    } catch {
+      throw createError({ code: messageCode.code.load_device_token_failed });
+    }
+  }
+
+  registerToken = async () => {
+    try {
+      const uniqueId = DeviceInfo.getUniqueID();      
+      // todo: need a device token gen from firebase, Vuong handle pls!!!
+      const token = await getToken(uniqueId);
+      return token;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  checkDeviceToken = async () => {
+    try {
+      const token = await this.getExistedDeviceToken();
+      if (!token) {
+        const tokenData = await this.registerToken();
+        storageService.setItem(CONSTANT_KEYS.DEVICE_TOKEN, tokenData?.token);
+        return tokenData?.token;
+      } else {
+        return token;
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
 
   handleCreateNew = async () => {
     try {
       const { reloadWallet } = this.props;
-      const token = await getToken();
-      if (!token) throw new Error('Can not create user token');
       await this.handleCreateWallet();
-      reloadWallet();
+      const wallet = await reloadWallet();
+
+      if (wallet) {
+        this.goHome();
+      } else {
+        throw new Error('Load new wallet failed');
+      }
     } catch (e) {
-      throw e;
+      throwNext(e, { defaultCode: messageCode.code.create_wallet_failed });
     }
   };
 

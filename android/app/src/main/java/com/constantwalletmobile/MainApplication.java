@@ -6,6 +6,8 @@ import com.facebook.react.ReactApplication;
 import com.reactlibrary.RNZmqServicePackage;
 import com.tadasr.IOTWifi.IOTWifiPackage;
 import com.reactlibrary.RNWifiPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import io.github.douglasjunior.ReactNativeEasyBluetooth.classic.ClassicPackage;
 import com.rusel.RCTBluetoothSerial.RCTBluetoothSerialPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
@@ -34,9 +36,11 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNZmqServicePackage(),
+            new RNDeviceInfo(),
             new IOTWifiPackage(),
             new RNWifiPackage(),
+            new RNZmqServicePackage(),
+            new ClassicPackage(),
             new RCTBluetoothSerialPackage(),
             new RNCameraPackage(),
             new RandomBytesPackage(),
@@ -44,7 +48,8 @@ public class MainApplication extends Application implements ReactApplication {
             new SvgPackage(),
             new AsyncStoragePackage(),
             new VectorIconsPackage(),
-            new RNGestureHandlerPackage()
+            new RNGestureHandlerPackage(),
+            new GomobilePackage()
       );
     }
 

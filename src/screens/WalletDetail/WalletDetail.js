@@ -1,101 +1,135 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
-import { Text, Container, ScrollView, Button } from '@src/components/core';
+import PropTypes from 'prop-types';
+import { Text, Container, Button, View, Toast } from '@src/components/core';
 import ROUTE_NAMES from '@src/router/routeNames';
 import OptionMenu from '@src/components/OptionMenu';
-import MdIcons from 'react-native-vector-icons/Octicons';
 import MdCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FSIcons from 'react-native-vector-icons/FontAwesome5';
-
-import { View } from 'react-native';
+import HistoryToken from '@src/components/HistoryToken';
+import MainCryptoHistory from '@src/components/MainCryptoHistory';
+import formatUtil from '@src/utils/format';
 import styles from './style';
 
 class WalletDetail extends Component {
   constructor() {
     super();
-
-    this.state = {      
-      
-    };    
-    
   }
 
-  componentDidMount() {
-    
-  }
   goHome = () => {
     const { navigation } = this.props;
     navigation.navigate(ROUTE_NAMES.RootApp);
   };
 
-
   getMenuData = () => {
+    const { selectedPrivacy } = this.props;
+    const additionalData = selectedPrivacy?.additionalData;
+    const data = [];
 
-    return [
-      {
-        id: 'deposit',
-        label: 'Deposit',
-        //handlePress: handleSendToken,
-        icon: <FSIcons name='hand-holding-usd' size={20} />
-      },
-      {
-        id: 'withdraw',
-        label: 'Withdraw',
-        //handlePress: () => onRemoveFollowToken(token.ID),
-        icon: <MdCIcons name='cash-refund' size={20} />
-      },
-      {
-        id: 'preferences',
-        label: 'Preferences',
-        //handlePress: handleShowHistory,
-        icon: <MdIcons name='settings' size={22} />
-      }
-    ];
+    additionalData?.isWithdrawable && data.push({
+      id: 'withdraw',
+      label: 'Withdraw',
+      handlePress: this.handleWithdrawBtn,
+      icon: <MdCIcons name='cash-refund' size={20} />
+    });
+
+    additionalData?.isDeposable && data.push({
+      id: 'deposit',
+      label: 'Deposit',
+      handlePress: this.handleDepositBtn,
+      icon: <FSIcons name='hand-holding-usd' size={20} />
+    });
+
+    selectedPrivacy?.isToken && !additionalData?.isNotAllowUnfollow && data.push({
+      id: 'unfollow_token',
+      label: 'Unfollow token',
+      handlePress: this.handleUnfollowTokenBtn,
+      icon: <MdCIcons name='playlist-remove' size={20} />
+    });
+
+    return data;
+  }
+
+  handleUnfollowTokenBtn = async () => {
+    try {
+      const { handleRemoveFollowToken, selectedPrivacy, navigation } = this.props;
+      await handleRemoveFollowToken(selectedPrivacy?.tokenId);
+
+      Toast.showInfo('Unfollowed successfully');
+      navigation.goBack();
+    } catch {
+      Toast.showError('Can not unfollow this token right now, please try later.');
+    }
+  }
+
+  handleDepositBtn = () => {
+    const { navigation } = this.props;
+    navigation.navigate(ROUTE_NAMES.Deposit);
+  }
+
+  handleWithdrawBtn = () => {
+    const { navigation } = this.props;
+    navigation.navigate(ROUTE_NAMES.Withdraw);
   }
 
   handleSendbtn = () => {
-
+    const { navigation } = this.props;
+    navigation.navigate(ROUTE_NAMES.SendCrypto);
   }
+
   handleReceivebtn = () => {
-    
+    const { navigation } = this.props;
+    navigation.navigate(ROUTE_NAMES.ReceiveCrypto);
   }
   
 
-  render() {    
+  render() { 
+    const { selectedPrivacy, navigation } = this.props;  
+    const menuData = this.getMenuData();
+
     return (
-      <ScrollView>
-        <Container style={styles.container}> 
+      <Container style={styles.container}> 
+        <View style={styles.boxHeader}> 
+          {
+            menuData.length > 0 && <OptionMenu iconProps={{color: '#fff'}} data={menuData} /> 
+          }
 
-          <View style={styles.boxHeader}> 
-            <OptionMenu iconProps={{color: '#fff'}} data={this.getMenuData()} /> 
+          <View style={styles.boxBalance}>
+            <Text style={styles.balance}>
+              {formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy.symbol)} {selectedPrivacy.symbol}
+            </Text>
+            {/* <Text style={styles.getFree}>Get free coin</Text> */}
 
-            <View style={styles.boxBalance}>
-              <Text style={styles.balance}>0.0561 pBTC</Text>
-              <Text style={styles.getFree}>Get free coin</Text>
-
-              <View style={styles.boxButton}>
-                <Button title='Receive' onPress={this.handleSendbtn} style={styles.btnStyle} />
-                <Button title='Send' onPress={this.handleReceivebtn} style={styles.btnStyle} />
-              </View>
-
+            <View style={styles.boxButton}>
+              <Button title='Receive' onPress={this.handleReceivebtn} style={styles.btnStyle} />
+              <Button title='Send' onPress={this.handleSendbtn} style={styles.btnStyle} />
             </View>
 
           </View>
-          <Text style={styles.title}>Send Constant</Text>
-          
-          <Text style={styles.noteText}>* Only send CONSTANT to a CONSTANT address.</Text>
-          
-        </Container>        
-      </ScrollView>
+
+        </View>
+        {
+          selectedPrivacy?.isToken && (
+            <View style={styles.historyContainer}>
+              <HistoryToken navigation={navigation} />
+            </View>
+          )
+        }
+        {
+          selectedPrivacy?.isMainCrypto && (
+            <View style={styles.historyContainer}>
+              <MainCryptoHistory navigation={navigation} />
+            </View>
+          )
+        }
+      </Container>        
     );
   }
 }
 
 WalletDetail.propTypes = {
-  // navigation: PropTypes.object,
-  // wallet: PropTypes.object,
-  // account: PropTypes.object,
-  // getBalance: PropTypes.func
+  navigation: PropTypes.object.isRequired,
+  selectedPrivacy: PropTypes.object.isRequired,
+  handleRemoveFollowToken: PropTypes.func.isRequired,
 };
 
 export default WalletDetail;

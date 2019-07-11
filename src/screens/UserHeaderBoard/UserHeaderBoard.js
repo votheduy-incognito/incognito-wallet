@@ -1,6 +1,5 @@
-import { Container, ScrollView } from '@src/components/core';
+import { Container, ScrollView, Alert } from '@src/components/core';
 import ROUTE_NAMES from '@src/router/routeNames';
-import { logout } from '@src/services/auth';
 import PropTypes from 'prop-types';
 import React from 'react';
 import MdIcons from 'react-native-vector-icons/MaterialIcons';
@@ -15,7 +14,7 @@ class UserHeaderBoard extends React.Component {
   }
 
   getActionBtns = props => {
-    const { navigation } = props;
+    const { navigation, handleDeleteWalle } = props;
     return [
       {
         label: 'Create Account',
@@ -28,9 +27,22 @@ class UserHeaderBoard extends React.Component {
         icon: <MdIcons name="input" />
       },
       {
-        label: 'Log out',
-        handlePress: () => logout({ navigation }),
-        icon: <MdIcons name="exit-to-app" />
+        label: 'Delete Wallet',
+        handlePress: () => {
+          Alert.alert(
+            'Delete your wallet?',
+            'Do you want to delete this wallet? Make sure you did backed up the wallet.',
+            [
+              {
+                text: 'Cancel',
+                style: 'cancel'
+              },
+              { text: 'OK, delete it', onPress: handleDeleteWalle }
+            ],
+            { cancelable: false }
+          );
+        },
+        icon: <MdIcons name="delete" />
       }
     ];
   };
@@ -60,12 +72,14 @@ class UserHeaderBoard extends React.Component {
 UserHeaderBoard.defaultProps = {
   accountList: undefined,
   handleSwitchAccount: undefined,
+  handleDeleteWalle: undefined,
   defaultAccountName: '',
   isGettingBalance: undefined
 };
 UserHeaderBoard.propTypes = {
   accountList: PropTypes.objectOf(PropTypes.array),
   handleSwitchAccount: PropTypes.func,
+  handleDeleteWalle: PropTypes.func, 
   defaultAccountName: PropTypes.string,
   isGettingBalance: PropTypes.objectOf(PropTypes.array)
 };
