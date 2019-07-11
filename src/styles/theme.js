@@ -26,6 +26,9 @@ const opacityButton = {
     textAlign: 'center',
     fontSize: 18,
     letterSpacing: 0
+  },
+  disabled: {
+    backgroundColor: COLORS.lightGrey,
   }
 };
 

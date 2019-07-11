@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { TouchableOpacity as RNComponent } from 'react-native';
 import styleSheet from './style';
 
-const Button = ({ title, children, style, titleStyle, type, onPress, loadingColor, isLoading: isLoadingProps, prepend, isAsync, ...props }) => {
+const Button = ({ title, children, style, titleStyle, type, onPress, loadingColor, disabled, isLoading: isLoadingProps, prepend, isAsync, ...props }) => {
   const [ isLoading, setLoading ] = useState(false);
   useEffect(() => {
     setLoading(isLoadingProps);
@@ -29,7 +29,7 @@ const Button = ({ title, children, style, titleStyle, type, onPress, loadingColo
   };
 
   return (
-    <RNComponent {...props} onPress={handlePress} style={[styleSheet.button, type && styleSheet[`${type}Style`], style]} activeOpacity={0.9}>
+    <RNComponent {...props} onPress={handlePress} style={[styleSheet.button, type && styleSheet[`${type}Style`], disabled && styleSheet.disabled, style]} activeOpacity={0.9}>
       {
         children ? renderChild(children) : (
           <>

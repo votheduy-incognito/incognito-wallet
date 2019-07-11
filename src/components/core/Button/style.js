@@ -16,10 +16,7 @@ export default StyleSheet.create({
   loadingIcon: {
     marginHorizontal: 2,
   },
-  primaryStyle: {
-    ...THEME.opacityButton.button
+  disabled: {
+    ...THEME.opacityButton.disabled,
   },
-  text: {
-    ...THEME.opacityButton.buttonText,
-  }
 });
