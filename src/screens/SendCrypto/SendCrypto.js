@@ -86,8 +86,12 @@ class SendCrypto extends React.Component {
 
   handleEstimateFee = async feeType => {
     try {
-      const { values } = this.form;
+      const { values, errors } = this.form;
       const { handleEstimateFee, handleEstimateTokenFee } = this.props;
+
+      if (errors?.amount || errors?.toAddress){
+        return;
+      }
 
       if (feeType === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY) {
         await handleEstimateFee(values);
@@ -114,6 +118,15 @@ class SendCrypto extends React.Component {
 
   handleSelectFee = ({ fee, feeUnit }) => {
     this.setState({ finalFee: fee, feeUnit });
+  }
+
+  shouldDisabledSubmit = () => {
+    const { finalFee } = this.state;
+    if (finalFee !==0 && !finalFee) {
+      return true;
+    }
+
+    return false;
   }
 
   render() {
@@ -154,7 +167,7 @@ class SendCrypto extends React.Component {
               onEstimateFee={this.handleEstimateFee}
               types={types}
             />
-            <FormSubmitButton title='SEND' style={homeStyle.submitBtn} />
+            <FormSubmitButton title='SEND' style={homeStyle.submitBtn} disabled={this.shouldDisabledSubmit()} />
           </Form>
           <Text>Fee: {finalFee} {feeUnit}</Text>
           <ReceiptModal />
