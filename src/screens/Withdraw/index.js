@@ -7,7 +7,7 @@ import tokenService from '@src/services/wallet/tokenService';
 import { CONSTANT_COMMONS } from '@src/constants';
 import tokenData from '@src/constants/tokenData';
 import { messageCode, createError, throwNext } from '@src/services/errorHandler';
-import { getEstimateFeeForSendingTokenService } from '@src/services/wallet/RpcClientService';
+import { getEstimateFeeForSendingTokenService, getMaxWithdrawAmountService } from '@src/services/wallet/RpcClientService';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import convertUtil from '@src/utils/convert';
 import Withdraw from './Withdraw';
@@ -15,6 +15,64 @@ import Withdraw from './Withdraw';
 class WithdrawContainer extends Component {
   constructor() {
     super();
+
+    this.state = {
+      withdrawData: null,
+    };
+  }
+
+  componentDidMount() {
+    this.getWithdrawData();
+  }
+
+  getTokenObject = ({ amount }) => {
+    const { selectedPrivacy } = this.props;
+    const fromAddress = selectedPrivacy?.paymentAddress;
+    const toAddress = fromAddress; // est fee on the same network, dont care which address will be send to
+    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
+
+    const tokenObject = {
+      Privacy: true,
+      TokenID: selectedPrivacy?.tokenId,
+      TokenName: selectedPrivacy?.name,
+      TokenSymbol: selectedPrivacy?.symbol,
+      TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
+      TokenAmount: originalAmount,
+      TokenReceivers: {
+        PaymentAddress: toAddress,
+        Amount: originalAmount
+      }
+    };
+
+    return tokenObject;
+  }
+
+  getWithdrawData = async () => {
+    const { account, wallet, selectedPrivacy } = this.props;
+    const fromAddress = selectedPrivacy?.paymentAddress;
+    const toAddress = fromAddress; // est fee on the same network, dont care which address will be send to
+    const accountWallet = wallet.getAccountByName(account?.name);
+    const selectedPrivacyAmount = selectedPrivacy?.amount;
+
+    if (selectedPrivacyAmount <= 0) {
+      return throw createError({ code: messageCode.code.balance_must_not_be_zero });
+    }
+
+    const tokenObject = this.getTokenObject({ amount: 0 });
+
+    try{
+      const data = await getMaxWithdrawAmountService(
+        fromAddress,
+        toAddress,
+        tokenObject,
+        account?.PrivateKey,
+        accountWallet,
+      );
+
+      this.setState({ withdrawData: data });
+    } catch {
+      throw new Error('Get withdraw data error');
+    }
   }
 
   onEstimateFeeToken = async ({ amount }) => {
@@ -30,18 +88,7 @@ class WithdrawContainer extends Component {
       throw createError({ code: messageCode.code.balance_must_not_be_zero });
     }
 
-    const tokenObject = {
-      Privacy: true,
-      TokenID: selectedPrivacy?.tokenId,
-      TokenName: selectedPrivacy?.name,
-      TokenSymbol: selectedPrivacy?.symbol,
-      TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
-      TokenAmount: originalAmount,
-      TokenReceivers: {
-        PaymentAddress: toAddress,
-        Amount: originalAmount
-      }
-    };
+    const tokenObject = this.getTokenObject({ amount });
 
     try{
       const fee = await getEstimateFeeForSendingTokenService(
@@ -125,12 +172,14 @@ class WithdrawContainer extends Component {
 
   render() {
     const { selectedPrivacy } = this.props;
+    const { withdrawData } = this.state;
 
-    if (!selectedPrivacy) return <LoadingContainer />;
+    if (!selectedPrivacy && !withdrawData) return <LoadingContainer />;
 
     return (
       <Withdraw
         {...this.props}
+        withdrawData={withdrawData}
         handleGenAddress={this.getWithdrawAddress}
         handleSendToken={this.onSendToken}
         handleEstimateFeeToken={this.onEstimateFeeToken}

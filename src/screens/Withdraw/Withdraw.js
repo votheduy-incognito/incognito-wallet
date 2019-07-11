@@ -1,12 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Container, ScrollView, Form, FormSubmitButton, FormTextField, Toast, Text } from '@src/components/core';
+import EstimateFee from '@src/components/EstimateFee';
+import convertUtil from '@src/utils/convert';
 import { debounce } from 'lodash';
+import { amount as amountValidation } from '@src/components/core/formik/validator';
 import { getErrorMessage, messageCode } from '@src/services/errorHandler';
 import tokenData from '@src/constants/tokenData';
 import formatUtil from '@src/utils/format';
 import style from './style';
-import formValidate from './formValidate';
+import createFormValidate from './formValidate';
 
 const initialFormValues = {
   amount: undefined,
@@ -20,18 +23,34 @@ class Withdraw extends React.Component {
     this.state = {
       humanFee: null,
       feeLevel: 1,
+      formValidate: createFormValidate(),
     };
 
     this.form = null;
     this.handleEstFee = debounce(this.handleEstFee.bind(this), 1000);
   }
 
+  componentDidMount() {
+    const { selectedPrivacy } = this.props;
+    const maxAmount = convertUtil.toHumanAmount(selectedPrivacy?.amount, selectedPrivacy?.symbol);
+
+    this.setFormValidation({ maxAmount });
+  }
+
+  setFormValidation = ({ maxAmount }) => {
+    this.setState({
+      formValidate: createFormValidate({ amountValidation: amountValidation({ max: maxAmount }) }),
+    });
+  }
+
   handleEstFee = async () => {
     try {
-      const { values } = this.form;
+      const { values, errors } = this.form;
       const { amount } = values;
 
-      if (!amount) return;
+      if (errors?.amount || errors?.toAddress){
+        return;
+      }
 
       const { handleEstimateFeeToken } = this.props;
       const humanFee = await handleEstimateFeeToken({ amount });
@@ -59,10 +78,11 @@ class Withdraw extends React.Component {
   }
 
   render() {
-    const { humanFee, feeLevel } = this.state;
-    const { selectedPrivacy } = this.props;
+    const { humanFee, feeLevel, formValidate } = this.state;
+    const { selectedPrivacy, withdrawData } = this.props;
     const totalFee = (humanFee * feeLevel) + humanFee;
-
+    const types = [selectedPrivacy?.symbol, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY];
+    
     return (
       <ScrollView style={style.container}>
         <Container style={style.mainContainer}>
@@ -77,6 +97,13 @@ class Withdraw extends React.Component {
           >
             <FormTextField name='amount' placeholder='Amount' onFieldChange={this.handleEstFee} />
             <FormTextField name='toAddress' placeholder='To Address' />
+            <EstimateFee
+              onRef={com => this.estimateFeeCom = com}
+              minFee={withdrawData?.feeCreateTx}
+              onSelectFee={this.handleSelectFee}
+              onEstimateFee={this.handleEstimateFee}
+              types={types}
+            />
             {humanFee > 0 && <Text>Fee: {totalFee} {tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY} (include withdraw fee {humanFee} {tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY})</Text>}
             <FormSubmitButton title='CONFIRM' style={style.submitBtn} />
           </Form>
@@ -87,6 +114,7 @@ class Withdraw extends React.Component {
 }
 
 Withdraw.propTypes = {
+  withdrawData: PropTypes.object.isRequired,
   handleEstimateFeeToken: PropTypes.func.isRequired,
   handleGenAddress: PropTypes.func.isRequired,
   handleSendToken: PropTypes.func.isRequired,
