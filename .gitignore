@@ -59,3 +59,4 @@ buck-out/
 .env
 .env.production
 *.lock
+ios/Pods

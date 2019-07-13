@@ -9,12 +9,6 @@ export default StyleSheet.create({
     marginHorizontal: 5,
     flex: 1,
   },
-  text: {
-    ...THEME.opacityButton.buttonText,
-  },
-  primaryStyle: {
-    ...THEME.opacityButton.button
-  },
   dangerStyle: {
     ...THEME.opacityButton.button,
     backgroundColor: COLORS.red

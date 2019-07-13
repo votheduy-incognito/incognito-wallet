@@ -1,20 +1,9 @@
-import {
-  ActivityIndicator,
-  CheckBoxField,
-  Container,
-  Form,
-  FormSubmitButton,
-  FormTextField,
-  ScrollView,
-  Text,
-  Toast
-} from '@src/components/core';
+import { ActivityIndicator, CheckBoxField, Container, Form, FormSubmitButton, FormTextField, ScrollView, Text, Toast } from '@src/components/core';
 import LoadingTx from '@src/components/LoadingTx';
 import ReceiptModal, { openReceipt } from '@src/components/Receipt';
 import { CONSTANT_COMMONS } from '@src/constants';
 import common from '@src/constants/common';
 import Account from '@src/services/wallet/accountService';
-import { getEstimateFeeToDefragment } from '@src/services/wallet/RpcClientService';
 import convert from '@src/utils/convert';
 import formatUtil from '@src/utils/format';
 import _ from 'lodash';
@@ -66,13 +55,14 @@ class Defragment extends Component {
 
     try {
       this.setState({ isGettingFee: true });
-      const fee = await getEstimateFeeToDefragment(
-        values.fromAddress,
-        convert.toMiliConstant(Number(values.amount)),
-        account.PrivateKey,
-        accountWallet,
-        values.isPrivacy
-      );
+      // const fee = await getEstimateFeeToDefragment(
+      //   values.fromAddress,
+      //   convert.toMiliConstant(Number(values.amount)),
+      //   account.PrivateKey,
+      //   accountWallet,
+      //   values.isPrivacy
+      // );
+      const fee = 0;
       // set min fee state
       this.setState({ minFee: convert.toConstant(fee) });
       // update fee

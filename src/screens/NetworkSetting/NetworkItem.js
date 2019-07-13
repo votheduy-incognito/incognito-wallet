@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import { Text, TouchableOpacity, View } from '@src/components/core';
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';

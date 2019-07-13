@@ -16,7 +16,7 @@ import ReceiptModal, { openReceipt } from '@src/components/Receipt';
 import { CONSTANT_COMMONS } from '@src/constants';
 import Account from '@src/services/wallet/accountService';
 import {
-  getEstimateFee,
+  
   getStakingAmount
 } from '@src/services/wallet/RpcClientService';
 import convert from '@src/utils/convert';
@@ -78,27 +78,27 @@ class Staking extends Component {
 
   // call this function when user change stakingType
   handleEstimateFee = async values => {
-    const { account, wallet } = this.props;
-    const accountWallet = wallet.getAccountByName(account.name);
+    // const { account, wallet } = this.props;
+    // const accountWallet = wallet.getAccountByName(account.name);
 
-    try {
-      this.setState({ isGettingFee: true });
-      const fee = await getEstimateFee(
-        values.fromAddress,
-        values.toAddress,
-        convert.toMiliConstant(Number(values.amount)),
-        account.PrivateKey,
-        accountWallet,
-        false
-      );
-      // update min fee
-      this.setState({ minFee: convert.toConstant(fee) });
-      this.updateFormValues('fee', String(convert.toConstant(fee)));
-    } catch (e) {
-      Toast.showError(`Error on get estimation fee! ${e.message}`);
-    } finally {
-      this.setState({ isGettingFee: false });
-    }
+    // try {
+    //   this.setState({ isGettingFee: true });
+    //   const fee = await getEstimateFee(
+    //     values.fromAddress,
+    //     values.toAddress,
+    //     convert.toMiliConstant(Number(values.amount)),
+    //     account.PrivateKey,
+    //     accountWallet,
+    //     false
+    //   );
+    //   // update min fee
+    //   this.setState({ minFee: convert.toConstant(fee) });
+    //   this.updateFormValues('fee', String(convert.toConstant(fee)));
+    // } catch (e) {
+    //   Toast.showError(`Error on get estimation fee! ${e.message}`);
+    // } finally {
+    //   this.setState({ isGettingFee: false });
+    // }
   };
 
   handleShouldGetFee = async () => {
