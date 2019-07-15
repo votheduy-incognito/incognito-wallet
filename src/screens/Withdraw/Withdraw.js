@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import memoize from 'memoize-one';
 import { Container, ScrollView, Form, FormSubmitButton, FormTextField, Toast, Text } from '@src/components/core';
 import EstimateFee from '@src/components/EstimateFee';
 import convertUtil from '@src/utils/convert';
@@ -23,24 +24,10 @@ class Withdraw extends React.Component {
     this.state = {
       humanFee: null,
       feeLevel: 1,
-      formValidate: createFormValidate(),
     };
 
     this.form = null;
     this.handleEstFee = debounce(this.handleEstFee.bind(this), 1000);
-  }
-
-  componentDidMount() {
-    const { selectedPrivacy } = this.props;
-    const maxAmount = convertUtil.toHumanAmount(selectedPrivacy?.amount, selectedPrivacy?.symbol);
-
-    this.setFormValidation({ maxAmount });
-  }
-
-  setFormValidation = ({ maxAmount }) => {
-    this.setState({
-      formValidate: createFormValidate({ amountValidation: amountValidation({ max: maxAmount }) }),
-    });
   }
 
   handleEstFee = async () => {
@@ -77,16 +64,21 @@ class Withdraw extends React.Component {
     }
   }
 
+  getFormValidate = memoize(maxAmount => createFormValidate({ amountValidation: amountValidation({ max: maxAmount }) }));
+
   render() {
-    const { humanFee, feeLevel, formValidate } = this.state;
+    const { humanFee, feeLevel } = this.state;
     const { selectedPrivacy, withdrawData } = this.props;
     const totalFee = (humanFee * feeLevel) + humanFee;
     const types = [selectedPrivacy?.symbol, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY];
+    const maxAmount = convertUtil.toHumanAmount(withdrawData?.maxWithdrawAmount || 0, selectedPrivacy?.symbol);
+    const formValidate = this.getFormValidate(maxAmount);
     
     return (
       <ScrollView style={style.container}>
         <Container style={style.mainContainer}>
           <Text>Balance: {formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy?.symbol)} {selectedPrivacy?.symbol}</Text>
+          <Text>Max balance can withdraw: {formatUtil.amount(maxAmount)} {selectedPrivacy?.symbol}</Text>
           <Form
             formRef={form => this.form = form}
             initialValues={initialFormValues}
