@@ -2,8 +2,14 @@ import { THEME } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  error: {
+  container: {
+    flexDirection: 'column',
+  },
+  errorText: {
     ...THEME.text.errorText,
-    paddingVertical: 5
-  }
+    marginBottom: 10
+  },
+  field: {
+    marginBottom: 5
+  },
 });

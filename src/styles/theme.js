@@ -34,7 +34,7 @@ const opacityButton = {
 
 const text = {
   errorText: {
-    size: FONTS.SIZE.superSmall,
+    fontSize: FONTS.SIZE.superSmall,
     color: COLORS.red
   },
   defaultTextStyle: {
