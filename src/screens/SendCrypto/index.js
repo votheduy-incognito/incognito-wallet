@@ -26,7 +26,7 @@ class SendCryptoContainer extends Component {
     const { toAddress, amount, fee, feeUnit } = values;
     const fromAddress = selectedPrivacy?.paymentAddress;
     const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
-    const originalFee = convertUtil.toOriginalAmount(Number(fee), tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
+    const originalFee = Number(fee);
 
     const paymentInfos = [{
       paymentAddressStr: toAddress, amount: originalAmount
@@ -69,7 +69,7 @@ class SendCryptoContainer extends Component {
     const { toAddress, amount, fee, feeUnit } = values;
     const fromAddress = selectedPrivacy?.paymentAddress;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
-    const originalFee = convertUtil.toOriginalAmount(Number(fee), feeUnit);
+    const originalFee = Number(fee);
     const isUseTokenFee = feeUnit !== tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY;
     const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
     const tokenObject = {

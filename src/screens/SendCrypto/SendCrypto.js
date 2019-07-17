@@ -11,13 +11,14 @@ import LoadingTx from '@src/components/LoadingTx';
 import EstimateFee from '@src/components/EstimateFee';
 import tokenData from '@src/constants/tokenData';
 import { createForm, InputField, validator } from '@src/components/core/reduxForm';
+import formatUtil from '@src/utils/format';
 import { homeStyle } from './style';
 
 const formName = 'sendCrypto';
 const selector = formValueSelector(formName);
 const initialFormValues = {
-  amount: '',
-  toAddress: ''
+  amount: '1',
+  toAddress: '1Uv3c4hAXqNcxyFhKGwBzGXQ6qdR89nrawqSz7WmcQEX4yurCEVEZMDm1x7g9vJnHHy4Lno73aJhaJAf8fhGgPexmCpu5HuiXU94reXAC'
 };
 const Form = createForm(formName, {
   initialValues: initialFormValues
@@ -140,7 +141,7 @@ class SendCrypto extends React.Component {
               </>
             )}
           </Form>
-          <Text>Fee: {finalFee} {feeUnit}</Text>
+          <Text>Fee: {formatUtil.amount(finalFee, feeUnit)} {feeUnit}</Text>
           <ReceiptModal />
         </Container>
         { isSending && <LoadingTx /> }

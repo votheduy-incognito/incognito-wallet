@@ -22,7 +22,7 @@ const LEVELS = [
 
 const calcFinalFee = (minFee, rate) => {
   if (minFee === 0 && rate !== 1) {
-    return Number(0.05 * rate) || 0;
+    return Number(1 * rate) || 0;
   }
   return Number(minFee * rate) || 0;
 };
@@ -44,7 +44,7 @@ class EstimateFee extends Component {
     }
     
     const levels = LEVELS.map(level => {
-      const fee = formatUtil.amount(calcFinalFee(minFee, level?.rate));
+      const fee = calcFinalFee(minFee, level?.rate);
       return {
         level, fee,
       };
@@ -123,7 +123,7 @@ class EstimateFee extends Component {
                     return (
                       <TouchableOpacity key={level?.name} onPress={onPress} style={[finalFee === fee && styles.rateHighlight, styles.rate]}>
                         <Text>{level?.name}</Text>
-                        <Text>{fee} {defaultFeeSymbol}</Text>
+                        <Text>{formatUtil.amount(fee, defaultFeeSymbol)} {defaultFeeSymbol}</Text>
                       </TouchableOpacity>
                     );
                   })

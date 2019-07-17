@@ -46,21 +46,32 @@ class EstimateFeeContainer extends Component {
     try {
       const { defaultFeeSymbol } = this.state;
       const { selectedPrivacy, amount, toAddress } = this.props;
-  
+      let fee;
+
       if (!amount || !toAddress || !selectedPrivacy || !defaultFeeSymbol) {
         return;
       }
+
+      this.setState({ isGettingFee: true });
   
       // estimate fee in MAIN_CRYPTO_CURRENCY [PRV]
       if (defaultFeeSymbol === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY) {
-        if (selectedPrivacy?.isToken) return await this._estimateFeeForToken();
-        if (selectedPrivacy?.isMainCrypto) return await this._estimateFeeForMainCrypto();
+        if (selectedPrivacy?.isToken) {
+          fee = await this._estimateFeeForToken();
+        }
+        if (selectedPrivacy?.isMainCrypto) {
+          fee = await this._estimateFeeForMainCrypto();
+        }
       } else if (defaultFeeSymbol === selectedPrivacy?.symbol) { // estimate fee in pToken [pETH, pBTC, ...]
-        return await this._handleEstimateTokenFee();
+        fee = await this._handleEstimateTokenFee();
       }
-      this.setState({ estimateErrorMsg: null });
+      this.setState({ estimateErrorMsg: null, minFee: fee });
+
+      return fee;
     } catch (e) {
       this.setState({ estimateErrorMsg: 'Can not calculate fee for this transaction, please check again' });
+    } finally {
+      this.setState({ isGettingFee: false });
     }
   }
 
@@ -70,14 +81,12 @@ class EstimateFeeContainer extends Component {
   }
 
   _estimateFeeForMainCrypto = async ()=> {
-    const { account, wallet, selectedPrivacy, toAddress, amount } = this.props;
-    const fromAddress = selectedPrivacy?.paymentAddress;
-    const accountWallet = wallet.getAccountByName(account?.name);
+    try {
+      const { account, wallet, selectedPrivacy, toAddress, amount } = this.props;
+      const fromAddress = selectedPrivacy?.paymentAddress;
+      const accountWallet = wallet.getAccountByName(account?.name);
 
-    if (!selectedPrivacy.amount) throw new Error('Can not estimate fee on zero amount');
-
-    try{
-      this.setState({ isGettingFee: true });
+      if (!selectedPrivacy.amount) throw new Error('Can not estimate fee on zero amount');
 
       const fee = await getEstimateFeeService(
         fromAddress,
@@ -87,41 +96,34 @@ class EstimateFeeContainer extends Component {
         accountWallet,
         true // privacy mode
       );
-      console.log(fee);
-      const humanFee = convertUtil.toHumanAmount(fee, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
-      // set min fee state
-      this.setState({ minFee: humanFee });
+      
+      return fee;
     } catch(e){
-      this.setState({ minFee: null });
       throw e;
-    } finally {
-      this.setState({ isGettingFee: false });
     }
   }
 
   _estimateFeeForToken = async () => {
-    const { account, wallet, selectedPrivacy, toAddress, amount } = this.props;
-    const fromAddress = selectedPrivacy?.paymentAddress;
-    const tokenFee = 0;
-    const accountWallet = wallet.getAccountByName(account?.name);
-    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
-    const tokenObject = {
-      Privacy: true,
-      TokenID: selectedPrivacy?.tokenId,
-      TokenName: selectedPrivacy?.name,
-      TokenSymbol: selectedPrivacy?.symbol,
-      TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
-      TokenAmount: originalAmount,
-      TokenReceivers: {
-        PaymentAddress: toAddress,
-        Amount: originalAmount
-      }
-    };
-
-    if (!selectedPrivacy.amount) throw new Error('Can not estimate fee on zero amount');
-
     try{
-      this.setState({ isGettingFee: true });
+      const { account, wallet, selectedPrivacy, toAddress, amount } = this.props;
+      const fromAddress = selectedPrivacy?.paymentAddress;
+      const tokenFee = 0;
+      const accountWallet = wallet.getAccountByName(account?.name);
+      const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
+      const tokenObject = {
+        Privacy: true,
+        TokenID: selectedPrivacy?.tokenId,
+        TokenName: selectedPrivacy?.name,
+        TokenSymbol: selectedPrivacy?.symbol,
+        TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
+        TokenAmount: originalAmount,
+        TokenReceivers: {
+          PaymentAddress: toAddress,
+          Amount: originalAmount
+        }
+      };
+
+      if (!selectedPrivacy.amount) throw new Error('Can not estimate fee on zero amount');
 
       const fee = await getEstimateFeeForSendingTokenService(
         fromAddress,
@@ -133,39 +135,33 @@ class EstimateFeeContainer extends Component {
         true, // privacy mode
         tokenFee
       );
-      const humanFee = convertUtil.toHumanAmount(fee, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
-      // set min fee state
-      this.setState({ minFee: humanFee });
+      
+      return fee;
     } catch(e){
-      this.setState({ minFee: null });
       throw e;
-    } finally {
-      this.setState({ isGettingFee: false });
     }
   }
 
   _handleEstimateTokenFee = async () => {
-    const { account, wallet, selectedPrivacy, toAddress, amount } = this.props;
-    const fromAddress = selectedPrivacy?.paymentAddress;
-    const accountWallet = wallet.getAccountByName(account?.name);
-    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
-    const tokenObject = {
-      Privacy: true,
-      TokenID: selectedPrivacy?.tokenId,
-      TokenName: selectedPrivacy?.name,
-      TokenSymbol: selectedPrivacy?.symbol,
-      TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
-      TokenAmount: originalAmount,
-      TokenReceivers: {
-        PaymentAddress: toAddress,
-        Amount: originalAmount
-      }
-    };
-
-    if (!selectedPrivacy.amount) throw new Error('Can not estimate fee on zero amount');
-
     try{
-      this.setState({ isGettingFee: true });
+      const { account, wallet, selectedPrivacy, toAddress, amount } = this.props;
+      const fromAddress = selectedPrivacy?.paymentAddress;
+      const accountWallet = wallet.getAccountByName(account?.name);
+      const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
+      const tokenObject = {
+        Privacy: true,
+        TokenID: selectedPrivacy?.tokenId,
+        TokenName: selectedPrivacy?.name,
+        TokenSymbol: selectedPrivacy?.symbol,
+        TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
+        TokenAmount: originalAmount,
+        TokenReceivers: {
+          PaymentAddress: toAddress,
+          Amount: originalAmount
+        }
+      };
+
+      if (!selectedPrivacy.amount) throw new Error('Can not estimate fee on zero amount');
 
       const fee = await getEstimateTokenFeeService(
         fromAddress,
@@ -177,14 +173,9 @@ class EstimateFeeContainer extends Component {
         true, // privacy mode
       );
 
-      const humanFee = convertUtil.toHumanAmount(fee, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
-      // set min fee state
-      this.setState({ minFee: humanFee });
+      return fee;
     } catch(e){
-      this.setState({ minFee: null });
       throw e;
-    } finally {
-      this.setState({ isGettingFee: false });
     }
   }
 
