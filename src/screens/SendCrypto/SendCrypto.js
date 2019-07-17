@@ -95,7 +95,7 @@ class SendCrypto extends React.Component {
 
   render() {
     const { finalFee, feeUnit, maxAmountValidator } = this.state;
-    const { minFee, isSending, selectedPrivacy, amount, toAddress, isFormValid } = this.props;
+    const { isSending, selectedPrivacy, amount, toAddress, isFormValid } = this.props;
     const types = [tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY];
 
     if (selectedPrivacy?.symbol !== tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY) {
@@ -129,7 +129,7 @@ class SendCrypto extends React.Component {
                   ]}
                 />
                 <EstimateFee
-                  minFee={minFee}
+                  initialFee={0}
                   finalFee={finalFee}
                   onSelectFee={this.handleSelectFee}
                   types={types}
