@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, TouchableOpacity, Text, Toast, ActivityIndicator } from '@src/components/core';
+import memmoize from 'memoize-one';
+import { View, TouchableOpacity, Text, ActivityIndicator } from '@src/components/core';
 import formatUtil from '@src/utils/format';
-import convertUtil from '@src/utils/convert';
 import styles from './styles';
 
 const LEVELS = [
@@ -20,9 +20,9 @@ const LEVELS = [
   }
 ];
 
-const calcFinalFee = (minFee, rate, currentFeeType) => {
+const calcFinalFee = (minFee, rate) => {
   if (minFee === 0 && rate !== 1) {
-    return Number(convertUtil.toOriginalAmount(0.1, currentFeeType) * rate) || 0;
+    return Number(0.05 * rate) || 0;
   }
   return Number(minFee * rate) || 0;
 };
@@ -33,23 +33,18 @@ class EstimateFee extends Component {
 
     this.state = {
       levels: null,
-      isEstimating: false,
-      finalFee: null,
-      currentRate: null,
-      currentFeeType: props?.types[0],
     };
   }
 
   static getDerivedStateFromProps(props, state) {
     const { minFee } = props;
-    const { currentFeeType } = state;
 
     if (minFee !== 0 && !minFee) {
-      return state;
+      return null;
     }
     
     const levels = LEVELS.map(level => {
-      const fee = formatUtil.amount(calcFinalFee(minFee, level?.rate, currentFeeType), currentFeeType);
+      const fee = formatUtil.amount(calcFinalFee(minFee, level?.rate));
       return {
         level, fee,
       };
@@ -61,64 +56,45 @@ class EstimateFee extends Component {
     };
   }
 
-  componentDidMount() {
-    const { onRef, } = this.props;
+  componentDidUpdate(prevProps) {
+    const { defaultFeeSymbol: oldDefaultFeeSymbol } = prevProps;
+    const { finalFee, defaultFeeSymbol } = this.props;
+    const { levels } = this.state;
 
-    if (typeof onRef === 'function') {
-      onRef(this);
+    if (oldDefaultFeeSymbol === defaultFeeSymbol && this.shouldSetDefaultRate(levels, finalFee)) {
+      const defaultLevel = levels[1];
+      defaultLevel && this.handleSelectRate(defaultLevel.fee);
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { onSelectFee, minFee } = this.props; 
-    const { currentFeeType: oldFeeType, finalFee: oldFinalFee } = prevState;
-    const { currentRate, currentFeeType, finalFee, levels, isEstimating } = this.state;
-
-    if (minFee !== 0 && !minFee) {
-      return;
+  shouldSetDefaultRate = memmoize((levels, finalFee) => {
+    try {
+      const found = levels.find(level => level.fee === finalFee);
+      if (!found) return true;
+      return false;
+    } catch {
+      return false;
     }
-
-    if (oldFeeType !== currentFeeType || oldFinalFee !== finalFee) {
-      if (typeof onSelectFee === 'function') {
-        onSelectFee({ fee: finalFee, feeUnit: currentFeeType });
-      }
-    }
-
-    if (!currentRate && !isEstimating) {
-      const defaultLevel = levels[1]; // MEDIUM rate
-      !!defaultLevel && this.handleSelectRate(defaultLevel?.level, defaultLevel?.fee);
-    }
-  }
+  })
 
   handleSelectFeeType = (type) => {
-    this.setState({ currentFeeType: type }, () => {
-      this.estimateFee();
-    });
+    const { onChangeDefaultSymbol, onSelectFee } = this.props;
+    onChangeDefaultSymbol(type);
+    if (typeof onSelectFee === 'function') {
+      onSelectFee({ fee: null, feeUnit: type });
+    }
   }
 
-  handleSelectRate = (level, fee) => {
-    const { name } = level;
-    this.setState({ currentRate: name, finalFee: fee });
-  }
-
-  estimateFee = async () => {
-    try {
-      this.setState({ isEstimating: true, currentRate: null, finalFee: null });
-      const { onEstimateFee } = this.props;
-      if (typeof onEstimateFee === 'function') {
-        const { currentFeeType } = this.state;
-        await onEstimateFee(currentFeeType);
-      }
-    } catch {
-      Toast.showError('Can not get tracsaction fee, please try again');
-    } finally {
-      this.setState({ isEstimating: false });
+  handleSelectRate = (fee) => {
+    const { onSelectFee, defaultFeeSymbol } = this.props;
+    if (typeof onSelectFee === 'function') {
+      onSelectFee({ fee, feeUnit: defaultFeeSymbol });
     }
   }
 
   render() {
-    const { currentRate, currentFeeType, isEstimating, levels } = this.state;
-    const { types, minFee } = this.props;
+    const { levels } = this.state;
+    const { types, minFee, isGettingFee, defaultFeeSymbol, finalFee, estimateErrorMsg } = this.props;
 
     return (
       <View style={styles.container}>
@@ -128,41 +104,57 @@ class EstimateFee extends Component {
             types?.map(type => {
               const onPress = () => this.handleSelectFeeType(type);
               return (
-                <TouchableOpacity key={type} onPress={onPress} style={[currentFeeType === type && styles.feeTypeHighlight, styles.feeType]}>
+                <TouchableOpacity key={type} onPress={onPress} style={[defaultFeeSymbol === type && styles.feeTypeHighlight, styles.feeType]}>
                   <Text>Use {type}</Text>
                 </TouchableOpacity>
               );
             })
           }
         </View>
-        {
-          (minFee === 0 || !!minFee) && (
+        { estimateErrorMsg
+          ? <Text>{estimateErrorMsg}</Text>
+          : (minFee === 0 || !!minFee) && (
             <View>
               {
-                isEstimating ?
+                isGettingFee ?
                   <ActivityIndicator /> : 
                   levels?.map(({ fee, level }) => {
-                    const onPress = () => this.handleSelectRate(level, fee);
+                    const onPress = () => this.handleSelectRate(fee);
                     return (
-                      <TouchableOpacity key={level?.name} onPress={onPress} style={[currentRate === level?.name && styles.rateHighlight, styles.rate]}>
+                      <TouchableOpacity key={level?.name} onPress={onPress} style={[finalFee === fee && styles.rateHighlight, styles.rate]}>
                         <Text>{level?.name}</Text>
-                        <Text>{fee} {currentFeeType}</Text>
+                        <Text>{fee} {defaultFeeSymbol}</Text>
                       </TouchableOpacity>
                     );
                   })
               }
             </View>
-          )
+          ) 
         }
       </View>
     );
   }
 }
 
+EstimateFee.defaultProps = {
+  isGettingFee: false,
+  onChangeDefaultSymbol: null,
+  onSelectFee: null,
+  types: [],
+  defaultFeeSymbol: null,
+  finalFee: null,
+  estimateErrorMsg: null,
+};
+
 EstimateFee.propTypes = {
-  onSelectFee: PropTypes.func.isRequired,
+  isGettingFee: PropTypes.bool,
+  onChangeDefaultSymbol: PropTypes.func,
+  onSelectFee: PropTypes.func,
   minFee: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-  types: PropTypes.array.isRequired,
+  types: PropTypes.array,
+  defaultFeeSymbol: PropTypes.string,
+  finalFee: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  estimateErrorMsg: PropTypes.string,
 };
 
 export default EstimateFee;
