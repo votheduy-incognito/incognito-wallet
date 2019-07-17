@@ -5,9 +5,8 @@ import { connect } from 'react-redux';
 import { genWithdrawAddress } from '@src/services/api/withdraw';
 import tokenService from '@src/services/wallet/tokenService';
 import { CONSTANT_COMMONS } from '@src/constants';
-import tokenData from '@src/constants/tokenData';
-import { messageCode, createError, throwNext } from '@src/services/errorHandler';
-import { getEstimateFeeForSendingTokenService, getMaxWithdrawAmountService } from '@src/services/wallet/RpcClientService';
+import { messageCode, createError } from '@src/services/errorHandler';
+import { getMaxWithdrawAmountService } from '@src/services/wallet/RpcClientService';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import convertUtil from '@src/utils/convert';
 import Withdraw from './Withdraw';
@@ -75,44 +74,11 @@ class WithdrawContainer extends Component {
     }
   }
 
-  onEstimateFeeToken = async ({ amount }) => {
-    const { account, wallet, selectedPrivacy } = this.props;
-    const fromAddress = selectedPrivacy?.paymentAddress;
-    const toAddress = fromAddress; // est fee on the same network, dont care which address will be send to
-    const tokenFee = 0;
-    const accountWallet = wallet.getAccountByName(account?.name);
-    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
-    const selectedPrivacyAmount = selectedPrivacy?.amount;
-
-    if (selectedPrivacyAmount <= 0) {
-      throw createError({ code: messageCode.code.balance_must_not_be_zero });
-    }
-
-    const tokenObject = this.getTokenObject({ amount });
-
-    try{
-      const fee = await getEstimateFeeForSendingTokenService(
-        fromAddress,
-        toAddress,
-        originalAmount,
-        tokenObject,
-        account?.PrivateKey,
-        accountWallet,
-        true, // privacy mode
-        tokenFee
-      );
-      const humanFee = convertUtil.toHumanAmount(fee, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
-      return humanFee;
-    } catch (e) {
-      throwNext(e, { defaultCode: messageCode.code.estimate_fee_failed });
-    }
-  }
-
-
   onSendToken = async ({ tempAddress, amount, fee }) => {
+    const { withdrawData: { feeForBurn } } = this.state;
     const { account, wallet, tokens, selectedPrivacy, getTokenBalanceBound } = this.props;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
-    const originalFee = convertUtil.toOriginalAmount(Number(fee), tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
+    const originalFee = Number(fee);
     const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
 
     const tokenObject = {
@@ -130,7 +96,7 @@ class WithdrawContainer extends Component {
 
     const paymentInfo = {
       paymentAddressStr: tempAddress,
-      amount: originalFee,
+      amount: feeForBurn,
     };
 
     try {
@@ -174,7 +140,7 @@ class WithdrawContainer extends Component {
     const { selectedPrivacy } = this.props;
     const { withdrawData } = this.state;
 
-    if (!selectedPrivacy && !withdrawData) return <LoadingContainer />;
+    if (!selectedPrivacy || !withdrawData) return <LoadingContainer />;
 
     return (
       <Withdraw
@@ -182,7 +148,6 @@ class WithdrawContainer extends Component {
         withdrawData={withdrawData}
         handleGenAddress={this.getWithdrawAddress}
         handleSendToken={this.onSendToken}
-        handleEstimateFeeToken={this.onEstimateFeeToken}
       />
     );
   }

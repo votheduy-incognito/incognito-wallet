@@ -1,60 +1,63 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import memoize from 'memoize-one';
-import { Container, ScrollView, Form, FormSubmitButton, FormTextField, Toast, Text } from '@src/components/core';
+import { connect } from 'react-redux';
+import { Field, formValueSelector, isValid, change } from 'redux-form';
+import { Container, ScrollView, Toast, Text, TouchableOpacity, Button } from '@src/components/core';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { createForm, InputField, validator } from '@src/components/core/reduxForm';
 import EstimateFee from '@src/components/EstimateFee';
 import convertUtil from '@src/utils/convert';
-import { debounce } from 'lodash';
-import { amount as amountValidation } from '@src/components/core/formik/validator';
 import { getErrorMessage, messageCode } from '@src/services/errorHandler';
 import tokenData from '@src/constants/tokenData';
 import formatUtil from '@src/utils/format';
 import style from './style';
-import createFormValidate from './formValidate';
 
+const formName = 'withdraw';
+const selector = formValueSelector(formName);
 const initialFormValues = {
-  amount: undefined,
-  toAddress: '0xd5808Ba261c91d640a2D4149E8cdb3fD4512efe4',
+  amount: '',
+  toAddress: '0xd5808Ba261c91d640a2D4149E8cdb3fD4512efe4'
 };
 
+const Form = createForm(formName, {
+  initialValues: initialFormValues
+});
+
+
 class Withdraw extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
-      humanFee: null,
-      feeLevel: 1,
+      initialFee: props?.withdrawData?.feeCreateTx,
+      maxAmountValidator: undefined,
+      maxAmount: null,
+      finalFee: null,
+      feeUnit: null,
     };
-
-    this.form = null;
-    this.handleEstFee = debounce(this.handleEstFee.bind(this), 1000);
   }
 
-  handleEstFee = async () => {
-    try {
-      const { values, errors } = this.form;
-      const { amount } = values;
+  componentDidMount() {
+    const { withdrawData, selectedPrivacy } = this.props;
+    const maxAmount = convertUtil.toHumanAmount(withdrawData?.maxWithdrawAmount, selectedPrivacy?.symbol);
 
-      if (errors?.amount || errors?.toAddress){
-        return;
-      }
+    this.setMaxAmount(maxAmount);
+  }
 
-      const { handleEstimateFeeToken } = this.props;
-      const humanFee = await handleEstimateFeeToken({ amount });
-
-      this.setState({ humanFee });
-    } catch (e) {
-      Toast.showError(getErrorMessage(e, { defaultMessage: 'Can not get withdraw fee, please try again' }));
-    }
+  setMaxAmount = (maxAmount) => {
+    this.setState({
+      maxAmount,
+      maxAmountValidator: validator.maxValue(maxAmount),
+    });
   }
 
   handleSubmit = async values => {
     try {
-      const { humanFee } = this.state;
+      const { finalFee } = this.state;
       const { handleGenAddress, handleSendToken, navigation } = this.props;
       const { amount, toAddress } = values;
       const tempAddress = await handleGenAddress({ amount, paymentAddress: toAddress });
-      const res = await handleSendToken({ tempAddress, amount, fee: humanFee });
+      const res = await handleSendToken({ tempAddress, amount, fee: finalFee });
       
       Toast.showInfo('Withdraw successfully');
       navigation.goBack();
@@ -64,41 +67,65 @@ class Withdraw extends React.Component {
     }
   }
 
-  getFormValidate = memoize(maxAmount => createFormValidate({ amountValidation: amountValidation({ max: maxAmount }) }));
+  shouldDisabledSubmit = () => {
+    const { finalFee } = this.state;
+    if (finalFee !== 0 && !finalFee) {
+      return true;
+    }
+
+    return false;
+  }
+
+  handleSelectFee = ({ fee, feeUnit }) => {
+    this.setState({ finalFee: fee, feeUnit });
+  }
 
   render() {
-    const { humanFee, feeLevel } = this.state;
-    const { selectedPrivacy, withdrawData } = this.props;
-    const totalFee = (humanFee * feeLevel) + humanFee;
+    const { maxAmountValidator, maxAmount, finalFee, feeUnit, initialFee } = this.state;
+    const { selectedPrivacy, isFormValid, amount } = this.props;
     const types = [selectedPrivacy?.symbol, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY];
-    const maxAmount = convertUtil.toHumanAmount(withdrawData?.maxWithdrawAmount || 0, selectedPrivacy?.symbol);
-    const formValidate = this.getFormValidate(maxAmount);
-    
+
     return (
       <ScrollView style={style.container}>
         <Container style={style.mainContainer}>
           <Text>Balance: {formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy?.symbol)} {selectedPrivacy?.symbol}</Text>
           <Text>Max balance can withdraw: {formatUtil.amount(maxAmount)} {selectedPrivacy?.symbol}</Text>
-          <Form
-            formRef={form => this.form = form}
-            initialValues={initialFormValues}
-            onSubmit={this.handleSubmit}
-            viewProps={{ style: style.form }}
-            validationSchema={formValidate}
-            validate={this.onFormValidate}
-          >
-            <FormTextField name='amount' placeholder='Amount' onFieldChange={this.handleEstFee} />
-            <FormTextField name='toAddress' placeholder='To Address' />
-            <EstimateFee
-              onRef={com => this.estimateFeeCom = com}
-              minFee={withdrawData?.feeCreateTx}
-              onSelectFee={this.handleSelectFee}
-              onEstimateFee={this.handleEstimateFee}
-              types={types}
-            />
-            {humanFee > 0 && <Text>Fee: {totalFee} {tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY} (include withdraw fee {humanFee} {tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY})</Text>}
-            <FormSubmitButton title='CONFIRM' style={style.submitBtn} />
+          <Form>
+            {({ handleSubmit }) => (
+              <>
+                <Field
+                  component={InputField}
+                  name='toAddress'
+                  placeholder='To Address'
+                  prependView={(
+                    <TouchableOpacity onPress={this.handleQrScanAddress}>
+                      <MaterialCommunityIcons name='qrcode-scan' size={20} />
+                    </TouchableOpacity>
+                  )}
+                  validate={[validator.required]}
+                />
+                <Field
+                  component={InputField}
+                  name='amount'
+                  placeholder='Amount'
+                  validate={[
+                    ...validator.combinedAmount,
+                    ...maxAmountValidator ? [maxAmountValidator] : []
+                  ]}
+                />
+                <EstimateFee
+                  initialFee={initialFee}
+                  finalFee={finalFee}
+                  onSelectFee={this.handleSelectFee}
+                  types={types}
+                  amount={isFormValid ? amount : null}
+                  toAddress={isFormValid ? selectedPrivacy?.paymentAddress : null} // est fee on the same network, dont care which address will be send to
+                />
+                <Button title='SEND' style={style.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSubmit)} />
+              </>
+            )}
           </Form>
+          <Text>Fee: {formatUtil.amount(finalFee, feeUnit)} {feeUnit}</Text>
         </Container>
       </ScrollView>
     );
@@ -114,4 +141,17 @@ Withdraw.propTypes = {
   selectedPrivacy: PropTypes.object.isRequired,
 };
 
-export default Withdraw;
+const mapState = state => ({
+  amount: selector(state, 'amount'),
+  toAddress: selector(state, 'toAddress'),
+  isFormValid: isValid(formName)(state)
+});
+
+const mapDispatch = {
+  rfChange: change
+};
+
+export default connect(
+  mapState,
+  mapDispatch
+)(Withdraw);
