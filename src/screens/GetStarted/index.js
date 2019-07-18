@@ -114,7 +114,7 @@ class GetStartedContainer extends Component {
   registerToken = async () => {
     try {
       const fbToken = await getFirebaseToken();
-      const uniqueId = '12156256516221215625651622sssssss' || DeviceInfo.getUniqueID();      
+      const uniqueId = DeviceInfo.getUniqueID();      
       const token = await getToken(uniqueId, fbToken);
 
       return token;
