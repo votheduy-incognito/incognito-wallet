@@ -125,10 +125,12 @@ class WithdrawContainer extends Component {
     try {
       const { selectedPrivacy } = this.props;
       const currencyType = CONSTANT_COMMONS.CURRENCY_TYPE_FOR_GEN_ADDRESS[selectedPrivacy?.additionalData?.currencyType];
+      const walletAddress = selectedPrivacy?.paymentAddress;
       const address = await genWithdrawAddress({
         currencyType,
         amount,
-        paymentAddress
+        paymentAddress,
+        walletAddress
       });
       return address;
     } catch (e) {

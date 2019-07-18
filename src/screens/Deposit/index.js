@@ -23,7 +23,8 @@ class DepositContainer extends Component {
       const address = await genDepositAddress({
         currencyType,
         amount,
-        paymentAddress: selectedPrivacy?.paymentAddress
+        paymentAddress: selectedPrivacy?.paymentAddress,
+        walletAddress: selectedPrivacy?.paymentAddress,
       });
       this.setState({ address });
       return address;

@@ -1,7 +1,7 @@
 import http from '@src/services/http';
 import { CONSTANT_COMMONS } from '@src/constants';
 
-export const genDepositAddress = ({ currencyType, amount, paymentAddress }) => {
+export const genDepositAddress = ({ currencyType, amount, paymentAddress, walletAddress }) => {
   const parseAmount = Number(amount);
 
   if (!Number.isFinite(parseAmount) || parseAmount === 0) {
@@ -12,6 +12,7 @@ export const genDepositAddress = ({ currencyType, amount, paymentAddress }) => {
     CurrencyType: currencyType,
     AddressType: CONSTANT_COMMONS.ADDRESS_TYPE_FOR_GEN_ADDRESS.DEPOSIT,
     RequestAmount: String(parseAmount),
-    PaymentAddress: paymentAddress
+    PaymentAddress: paymentAddress,
+    WalletAddress: walletAddress ?? paymentAddress
   }).then(res => res?.Address);
 };
