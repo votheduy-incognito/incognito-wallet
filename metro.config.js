@@ -7,7 +7,7 @@
 
 module.exports = {
   resolver: {
-    blacklistRE: /react-native-zmq-service\/.*/
+    // blacklistRE: /react-native-zmq-service\/.*/
   },
   transformer: {
     getTransformOptions: async () => ({

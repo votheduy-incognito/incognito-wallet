@@ -1,11 +1,9 @@
-import LocalDatabase from '@src/utils/LocalDatabase';
-import Util from '@src/utils/Util';
-// import EasyBluetooth from 'easy-bluetooth-classic';
+import Util from '@utils/Util';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Alert, Platform, View } from 'react-native';
-import BaseConnection from './BaseConnection';
+import { View } from 'react-native';
+import BaseConnection, { ObjConnection } from './BaseConnection';
 import style from './style';
 import WifiConnection from './WifiConnection';
 
@@ -18,24 +16,19 @@ class DeviceConnection extends Component {
     super(props);
     this.state = {
       loading: false,
-      isDoingSetManual: false,
-      pairedDevice: []
+      isDoingSetManual: false
     };
-    // const config = {
-    //   deviceName: '',
-    //   bufferSize: 1024,
-    //   characterDelimiter: '\n'
-    // };
 
-    // EasyBluetooth.init(config)
-    //   .then(function(config) {
-    //     console.log(TAG, ' ---- config done!');
-    //   })
-    //   .catch(function(ex) {
-    //     console.warn(ex);
-    //   });
+    this.init();
   }
+  
+  getCurrentConnect = async () => {
+    await Util.delay(3);
+    console.log(TAG, 'getCurrentConnect ', this.connection.currentConnect);
 
+    return this.connection.currentConnect;
+  };
+  
   componentDidMount = async () => {
     const listDevice = await this.getDeviceSavedList();
     if (_.isEmpty(listDevice)) {
@@ -60,80 +53,62 @@ class DeviceConnection extends Component {
     return loading;
   }
 
+  init = () => {
+    const connection: BaseConnection = new WifiConnection();
+    this.connection = connection;
+  };
+
+  connectDevice = async (device: ObjConnection) => {
+    const result = await this.connection.connectDevice(device);
+    return result;
+  };
+
+
   selectDevice = async (selectedDevice = {}) => {
     console.log(TAG, 'selectDevice begin = ', selectedDevice);
   };
 
   saveItemConnectedInLocal = selectedDevice => {
-    const { callbackGettingListPairedDevices } = this.props;
-    if (Platform.OS === 'ios') {
-      const address = selectedDevice?.url;
-      const name = selectedDevice?.name;
-      LocalDatabase.savePrinterWifiAddress(address, name);
-      callbackGettingListPairedDevices([{ name, address, checked: true }]);
-    } else {
-      console.log(TAG, 'saveItemConnectedInLocal begin ', selectedDevice);
-      // save bluetooth
-      let { pairedDevice } = this.state;
-      const address = selectedDevice?.address;
-      const name = selectedDevice?.name;
-      const itemIndex = pairedDevice.findIndex(
-        item => item.address === selectedDevice.address
-      );
-      if (itemIndex > -1) {
-        pairedDevice[itemIndex].checked = true;
-      } else {
-        pairedDevice = [...pairedDevice, { name, address, checked: true }];
-      }
-      console.log(TAG, 'saveItemConnectedInLocal begin01 ', pairedDevice);
-
-      callbackGettingListPairedDevices(pairedDevice);
-    }
+    // const { callbackGettingListPairedDevices } = this.props;
+    // if (Platform.OS === 'ios') {
+    //   const address = !_.isEmpty(selectedDevice) ? selectedDevice.url : '';
+    //   const name = !_.isEmpty(selectedDevice) ? selectedDevice?.name : '';
+    //   LocalDatabase.savePrinterWifiAddress(address, name);
+    //   callbackGettingListPairedDevices([{ name, address, checked: true }]);
+    // } else {
+    //   console.log(TAG, 'saveItemConnectedInLocal begin ', selectedDevice);
+    //   // save bluetooth
+    //   let { pairedDevice } = this.state;
+    //   const address = selectedDevice?.address;
+    //   const name = selectedDevice?.name;
+    //   const itemIndex = pairedDevice.findIndex(
+    //     item => item.address === selectedDevice.address
+    //   );
+    //   if (itemIndex > -1) {
+    //     pairedDevice[itemIndex].checked = true;
+    //   } else {
+    //     pairedDevice = [...pairedDevice, { name, address, checked: true }];
+    //   }
+    //   console.log(TAG, 'saveItemConnectedInLocal begin01 ', pairedDevice);
+    //   callbackGettingListPairedDevices(pairedDevice);
+    // }
   };
 
-  checkRegular = async ()=>{
+  checkRegular = async () => {
     try {
       const isRegular = await this.connection.checkRegular();
-      return Promise.resolve(isRegular);
+      return isRegular;
     } catch (error) {
       return Promise.reject(error);
     }
-  
-  }
-  alertBluetooth = () => {
-    Alert.alert(
-      'Turn on bluetooth',
-      '',
-      [
-        {
-          text: 'Ask me later',
-          onPress: () => console.log('Ask me later pressed')
-        },
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel'
-        },
-        {
-          text: 'OK',
-          onPress: () => {
-            Util.openSetting('Bluetooth');
-          }
-        }
-      ],
-      { cancelable: false }
-    );
   };
+
   setMannual = () => {
     const { isDoingSetManual } = this.state;
     if (!isDoingSetManual) {
       this.isDoingSetManual = true;
     }
   };
-  init = ()=>{
-    const connection:BaseConnection = new WifiConnection();
-    this.connection = connection;
-  }
 
   getDeviceSavedList = async () => {
     // const { callbackGettingListPairedDevices } = this.props;
@@ -154,7 +129,6 @@ class DeviceConnection extends Component {
         const devices = await this.connection.scan();
         callbackGettingListPairedDevices(devices);
         console.log(TAG, 'scan -- enabled01 =', devices);
-        
       } catch (e) {
         console.log(TAG, 'scan error ', e);
       }
@@ -168,7 +142,7 @@ class DeviceConnection extends Component {
 }
 
 DeviceConnection.propTypes = {
-  // callbackGettingListPairedDevices: pairedList => {}
+  callbackGettingListPairedDevices: pairedList => {}
 };
 
 DeviceConnection.defaultProps = {

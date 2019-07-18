@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-import TextStyle from '@src/styles/TextStyle';
 
 const styles = StyleSheet.create({
   buttonDone: {
@@ -14,6 +13,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    backgroundColor: '#041B1E',
     flexDirection: 'column'
   },
   containerLocation: {},
@@ -23,11 +23,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   labelList: {
-    ...TextStyle.mediumText,
     fontWeight: 'bold'
   },
   textEmail: {
-    ...TextStyle.normalText,
     color: '#A3A3A3',
     fontWeight: 'normal'
   }

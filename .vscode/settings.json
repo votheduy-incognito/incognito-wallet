@@ -9,6 +9,6 @@
   "eslint.workingDirectories": ["./src"],
   "eslint.autoFixOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.organizeImports": true
+    // "source.organizeImports": true
   }
 }

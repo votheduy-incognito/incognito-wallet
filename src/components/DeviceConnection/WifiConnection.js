@@ -1,72 +1,95 @@
-import { locationPermission } from '@src/utils/PermissionUtil';
-import Util from '@src/utils/Util';
-import { Alert } from 'react-native';
+import {locationPermission } from '@utils/PermissionUtil';
+import Util from '@utils/Util';
+import { Alert, Platform } from 'react-native';
 import Wifi from 'react-native-iot-wifi';
 import BaseConnection, { ObjConnection } from './BaseConnection';
 
 export const TAG = 'WifiConnection';
 
-class WifiConnection extends BaseConnection{
-
+class WifiConnection extends BaseConnection {
   constructor() {
     super();
+
     this.init();
   }
-  init = async ()=>{
-    const available =  await new Promise((resolve,reject)=>{
-      Wifi.isApiAvailable((available) => {
-        console.log(TAG,available ? 'available' : 'failed');
-        resolve(available);
+  
+  init = async () => {
+    console.log(TAG, 'init begin ------');
+    
+    const result = await new Promise((resolve, reject) => {
+      Wifi.isApiAvailable(available => {
+        console.log(TAG, available ? 'available' : 'failed');
+        if (available) {
+          Wifi.getSSID(SSID => {
+            console.log(TAG, 'getSSID', SSID);
+            this.currentConnect = new ObjConnection();
+            this.currentConnect.id = SSID;
+            this.currentConnect.name = SSID;
+            resolve(available);
+          });
+        }
       });
-      Util.delay(3).then(
-        ()=>{reject('timeout');}
-      );
+      Util.delay(3).then(() => {
+        reject('timeout');
+      });
     });
-    if(available){
-      Wifi.getSSID((SSID) => {
-        console.log(TAG,'getSSID' ,SSID);
+  };
+
+  connectDevice = (device: ObjConnection) => {
+    return new Promise((resolve, reject) => {
+      Wifi.connect(device.name, error => {
+        if (!error) {
+          Wifi.getSSID(SSID => {
+            console.log(TAG, 'getSSID --- ', SSID);
+            this.currentConnect = new ObjConnection();
+            this.currentConnect.id = SSID;
+            this.currentConnect.name = SSID;
+            resolve(true);
+          });
+        } else {
+          resolve(false);
+        }
       });
+      Util.delay(40).then(() => {
+        console.log(TAG, 'getSSID timeout ');
+        reject('timeout');
+      });
+    });
+
+    // Wifi.connectSecure(ssid, passphase, false, (error) => {
+    //   this.setState({error: error});
+    //   this.setState({connected: error == null});
+
+    //   Wifi.getSSID((SSID) => {
+    //     this.setState({ssid: SSID});
+    //   });
+    // });
+  };
+
+  destroy = () => {};
+
+  disconnectDevice = () => {};
+  stopScan = async () => {};
+
+  onGetAvailableDevices = () => {};
+  onGetConnectionInfo = () => {};
+
+  checkRegular = async (): Promise<Boolean> => {
+    if (Platform.OS === 'ios') {
+      return Promise.resolve(true);
     }
-  }
-  
-  connectDevice = async (device:ObjConnection) => {
-  
-  };
-  
-  
-  destroy = ()=>{
-    
-  }
-
-  disconnectDevice = () => {
-    
-  };
-  stopScan = async () => {
-    
-  };
-
-  onGetAvailableDevices = () => {
-    
-  };
-  onGetConnectionInfo = () => {
-    
-  };
-
-  checkRegular = async ():Promise<Boolean>=> {
     try {
-      const [isEnabled, granted] = await Promise.all([
-        locationPermission()
+      const [isEnabled, granted] = await Promise.all([locationPermission()
       ]);
       return Promise.resolve(isEnabled && granted);
     } catch (error) {
       return Promise.reject(error);
     }
-
   };
 
   alertBluetooth = () => {
     Alert.alert(
-      'Turn on bluetooth',
+      'Turn on Wifi',
       '',
       [
         {

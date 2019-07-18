@@ -3,6 +3,7 @@ package com.constantwalletmobile;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactlibrary.RNZmqServicePackage;
 import com.reactlibrary.RNWifiPackage;
 import com.tradle.react.UdpSocketsModule;
 import com.peel.react.TcpSocketsModule;
@@ -40,6 +41,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNZmqServicePackage(),
             new UdpSocketsModule(),
             new TcpSocketsModule(),
             new RNOSModule(),

@@ -1,9 +1,9 @@
 /* eslint-disable import/no-cycle */
 import AddDevice from '@src/screens/AddDevice';
-import ConfigDevice from '@src/screens/ConfigDevice';
-import DetailDevice from '@src/screens/DetailDevice';
-import HomeMine from '@src/screens/HomeMine';
+import DetailDevice from '@screens/DetailDevice';
+import HomeMine from '@screens/HomeMine';
 import { createStackNavigator } from 'react-navigation';
+import SetupWifiDevice from '@screens/SetupWifiDevice';
 import ROUTE_NAMES from './routeNames';
 
 export const TAG = 'MinerNavigator';
@@ -21,10 +21,10 @@ const MinerNavigator = createStackNavigator(
         headerTitle:'Add Device'
       }
     },
-    [ROUTE_NAMES.ConfigDevice]:{
-      screen:ConfigDevice,
+    [ROUTE_NAMES.SetupWifiDevice]: {
+      screen:SetupWifiDevice,
       navigationOptions: {
-        headerTitle:'Config Device'
+        headerTitle:'Setup Wifi'
       }
     },
     [ROUTE_NAMES.DetailDevice]: DetailDevice

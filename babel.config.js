@@ -11,7 +11,14 @@ const commonPlugins = [
     'module-resolver',
     {
       alias: {
-        '@src': './src'
+        '@src': './src',
+        '@models': './src/models',
+        '@services': './src/services',
+        '@utils':'./src/utils',
+        '@assets':'./src/assets',
+        '@components': './src/components',
+        '@screens': './src/screens',
+        '@routers':'./src/router'
       }
     }
   ],

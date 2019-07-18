@@ -2,6 +2,11 @@
   "name": "const-wallet-mobile",
   "version": "0.0.1",
   "private": true,
+  "rnpm": {
+    "assets": [
+      "./src/assets/fonts/"
+    ]
+  },
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "start:reset": "react-native start --reset-cache",
@@ -11,6 +16,7 @@
     "test": "jest",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
+    "ios:clean": "yarn cache clean && rm -rf ~/Library/Developer/Xcode/DerivedData",
     "postinstall": "./node_modules/.bin/rn-nodeify --install crypto,stream,vm --hack"
   },
   "dependencies": {
@@ -66,6 +72,7 @@
     "react-native-udp": "^2.6.0",
     "react-native-vector-icons": "^6.5.0",
     "react-native-wifi": "/Users/hienton/HienData/Projects/MyProjects/libs/react-native-wifi",
+    "react-native-zmq-service": "/Users/hienton/HienData/Projects/MyProjects/libs/zmq-service",
     "react-navigation": "^3.8.1",
     "react-redux": "^7.0.2",
     "readable-stream": "^1.0.33",
