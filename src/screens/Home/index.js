@@ -23,7 +23,7 @@ class HomeContainer extends Component {
 
     scheduleService.reloadAllAccountBalance({
       accounts: accountList,
-      getBalance: getAccountBalance
+      getBalance: getAccountBalance,
     });
 
 
