@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { CONSTANT_COMMONS } from '@src/constants';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { accountSeleclor } from '@src/redux/selectors';
 import tokenData from '@src/constants/tokenData';
 
 const normalizeData = histories =>
@@ -83,7 +84,7 @@ class MainCryptoHistory extends Component {
 
 const mapState = state => ({
   wallet: state.wallet,
-  defaultAccount: state.account?.defaultAccount
+  defaultAccount: accountSeleclor.defaultAccount(state)
 });
 
 MainCryptoHistory.propTypes = {

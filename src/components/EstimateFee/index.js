@@ -5,6 +5,7 @@ import memmoize from 'memoize-one';
 import { connect } from 'react-redux';
 import { getEstimateFeeService, getEstimateFeeForSendingTokenService, getEstimateTokenFeeService } from '@src/services/wallet/RpcClientService';
 import { CONSTANT_COMMONS } from '@src/constants';
+import { accountSeleclor } from '@src/redux/selectors';
 import tokenData from '@src/constants/tokenData';
 import convertUtil from '@src/utils/convert';
 import EstimateFee from './EstimateFee';
@@ -218,7 +219,7 @@ class EstimateFeeContainer extends Component {
 
 const mapState = state => ({
   selectedPrivacy: state.selectedPrivacy,
-  account: state.account.defaultAccount,
+  account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet,
 });
 

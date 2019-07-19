@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import { accountSeleclor } from '@src/redux/selectors';
 import CreateToken from './CreateToken';
 
 const CreateTokenContainer = ({
@@ -18,7 +19,7 @@ const CreateTokenContainer = ({
 };
 
 const mapState = state => ({
-  defaultAccount: state.account.defaultAccount,
+  defaultAccount: accountSeleclor.defaultAccount(state),
   wallet: state.wallet
 });
 

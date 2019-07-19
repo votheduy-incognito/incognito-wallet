@@ -8,6 +8,7 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import { messageCode, createError } from '@src/services/errorHandler';
 import { getMaxWithdrawAmountService } from '@src/services/wallet/RpcClientService';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
+import { accountSeleclor } from '@src/redux/selectors';
 import convertUtil from '@src/utils/convert';
 import Withdraw from './Withdraw';
 
@@ -159,7 +160,7 @@ const mapState = state => ({
   tokens: state.token?.followed,
   selectedPrivacy: state.selectedPrivacy,
   wallet: state.wallet,
-  account: state.account?.defaultAccount
+  account: accountSeleclor.defaultAccount(state)
 });
 
 const mapDispatch = { getTokenBalanceBound: getTokenBalance };

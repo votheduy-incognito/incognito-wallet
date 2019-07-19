@@ -1,4 +1,5 @@
 import type from '@src/redux/types/token';
+import { accountSeleclor } from '@src/redux/selectors';
 
 export const setToken = (token = throw new Error('Token object is required')) => ({
   type: type.SET,
@@ -50,7 +51,7 @@ export const getBalance = (token = throw new Error('Token object is required')) 
     dispatch(getBalanceStart(token?.symbol));
 
     const wallet = getState()?.wallet;
-    const account = getState()?.account.defaultAccount;
+    const account = accountSeleclor.defaultAccount(getState());
     
     if (!wallet) {
       throw new Error('Wallet is not exist');

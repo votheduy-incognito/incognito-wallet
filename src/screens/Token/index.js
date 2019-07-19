@@ -4,6 +4,7 @@ import React from 'react';
 import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { accountSeleclor } from '@src/redux/selectors';
 import Token from './Token';
 
 const TokenContainer = ({ wallet, defaultAccount, ...otherProps }) => (
@@ -11,7 +12,7 @@ const TokenContainer = ({ wallet, defaultAccount, ...otherProps }) => (
 );
 
 const mapState = state => ({
-  defaultAccount: state.account.defaultAccount,
+  defaultAccount: accountSeleclor.defaultAccount(state),
   wallet: state.wallet
 });
 

@@ -4,6 +4,7 @@ import _ from 'lodash';
 const initialState = {
   list: [],
   defaultAccount: null,
+  defaultAccountName: '',
   isGettingBalance: []
 };
 
@@ -109,7 +110,8 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       list: updateDefaultAccountInList(state.list, action.data),
-      defaultAccount: action.data
+      defaultAccount: action.data,
+      defaultAccountName: action.data?.name,
     };
   default:
     return state;

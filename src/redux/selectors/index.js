@@ -1,0 +1,1 @@
+export { default as accountSeleclor } from './account';

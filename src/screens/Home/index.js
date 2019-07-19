@@ -11,6 +11,7 @@ import SelectedPrivacyModel from '@src/models/selectedPrivacy';
 import routeNames from '@src/router/routeNames';
 import tokenData from '@src/constants/tokenData';
 import { connect } from 'react-redux';
+import { accountSeleclor } from '@src/redux/selectors';
 import Home from './Home';
 
 class HomeContainer extends Component {
@@ -120,7 +121,7 @@ class HomeContainer extends Component {
 
 const mapState = state => ({
   accountList: state.account.list,
-  account: state.account.defaultAccount,
+  account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet,
   tokens: state.token.followed || [],
   isGettingBalanceList: [...state.account.isGettingBalance, ...state.token.isGettingBalance]

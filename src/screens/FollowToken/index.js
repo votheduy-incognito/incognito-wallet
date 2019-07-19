@@ -8,6 +8,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { accountSeleclor } from '@src/redux/selectors';
 import FollowToken from './FollowToken';
 
 const FollowTokenContainer = ({
@@ -83,7 +84,7 @@ const FollowTokenContainer = ({
 };
 
 const mapState = state => ({
-  account: state.account?.defaultAccount,
+  account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet
 });
 

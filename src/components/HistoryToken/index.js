@@ -6,6 +6,7 @@ import { getpTokenHistory } from '@src/services/api/history';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { accountSeleclor } from '@src/redux/selectors';
 import { CONSTANT_COMMONS } from '@src/constants';
 import tokenData from '@src/constants/tokenData';
 
@@ -144,7 +145,7 @@ class HistoryTokenContainer extends Component {
 const mapState = state => ({
   selectedPrivacy: state.selectedPrivacy,
   wallet: state.wallet,
-  defaultAccount: state.account?.defaultAccount,
+  defaultAccount: accountSeleclor.defaultAccount(state),
   tokens: state.token.followed,
 });
 

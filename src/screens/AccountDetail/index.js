@@ -4,6 +4,7 @@ import React from 'react';
 import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { accountSeleclor } from '@src/redux/selectors';
 import AccountDetail from './AccountDetail';
 
 const AccountDetailContainer = ({ account, ...otherProps }) => (
@@ -11,7 +12,7 @@ const AccountDetailContainer = ({ account, ...otherProps }) => (
 );
 
 const mapState = state => ({
-  account: state.account.defaultAccount
+  account: accountSeleclor.defaultAccount(state)
 });
 
 const mapDispatch = { removeAccount };
