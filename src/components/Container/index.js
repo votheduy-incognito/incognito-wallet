@@ -5,7 +5,7 @@ import { Image, ScrollView, View } from 'react-native';
 import styles from './style';
 
 /**
-* @augments {Component<{  headerBarStyle:object,  isShowHeader:boolean,  onPressLeft:any,  onPressRight:any,  styleContainScreen:object,  styleRoot:object,>}
+* @augments {Component<{  headerBarStyle:object,  isShowHeader:boolean,  onPressLeft:Function,  onPressRight:Function,  styleContainScreen:object,  styleRoot:object,  backgroundTop:object>}
 */
 class Container extends React.Component {
   constructor(props) {
@@ -32,18 +32,20 @@ class Container extends React.Component {
       children,
       styleRoot,
       styleContainScreen,
-      headerBarStyle = {}
+      headerBarStyle = {},
+      backgroundTop
     } = this.props;
 
     return (
       <ScrollView
+        scrollEnabled={false}
         contentContainerStyle={[styles.root, styleRoot]}
         keyboardShouldPersistTaps="handled"
       >
         <Image
           resizeMode="cover"
-          style={styles.bgTop}
-          source={images.bgTop}
+          style={[styles.bgTop,backgroundTop.style]}
+          source={backgroundTop?.source || images.bgTop}
         />
         <View style={styles.container}>
           {/* {isShowHeader && (
@@ -74,6 +76,10 @@ Container.defaultProps = {
     onPressLeft: undefined,
     onPressRight: undefined
   },
+  backgroundTop:{
+    source:images.bgTop,
+    style:undefined
+  },
   styleRoot: {},
   styleContainScreen: {}
 };
@@ -84,5 +90,6 @@ Container.propTypes = {
   onPressRight: PropTypes.func,
   styleContainScreen: PropTypes.object,
   styleRoot: PropTypes.object,
+  backgroundTop:PropTypes.object
 };
 export default Container;

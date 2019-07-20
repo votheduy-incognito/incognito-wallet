@@ -295,7 +295,7 @@ class HomeMine extends BaseScreen {
         rightComponent={(
           <TouchableOpacity
             onPress={() => {
-              this.goToScreen(routeNames.AddDevice);
+              this.goToScreen(routeNames.AddNode);
             }}
           >
             <Image source={images.ic_add_device} />
@@ -322,14 +322,8 @@ class HomeMine extends BaseScreen {
     return (
       <Container styleContainScreen={style.container}>
         {this.renderHeader()}
-        <Text
-          style={style.header2}
-        >
-          You have mined so far
-        </Text>
-        <Text
-          style={style.header3}
-        >
+        <Text style={style.header2}>You have mined so far</Text>
+        <Text style={style.header3}>
           <Text style={style.header3_child}>$</Text>0.00
         </Text>
         <DialogLoader loading={loading} />

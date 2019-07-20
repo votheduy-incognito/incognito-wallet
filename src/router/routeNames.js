@@ -28,6 +28,8 @@ export default {
   HomeStack: 'HomeStack',
   HomeMine: 'HomeMine',
   AddWallScreen: 'AddWallScreen',
+  AddNode: 'AddNode',
+  AddStake:'AddStake',
   Profile: 'Profile',
   ConfigDevice: 'ConfigDevice',
   DetailDevice: 'DetailDevice',

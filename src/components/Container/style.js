@@ -1,16 +1,32 @@
 import { StyleSheet,Image } from 'react-native';
 import images from '@src/assets';
-import { screenSize } from '@src/styles/TextStyle';
+import { screenSize, scaleInApp } from '@src/styles/TextStyle';
 
 const sizeImageTop = Image.resolveAssetSource(images.bgTop);
-// const sizzeImageInScreen = {
-//   height: screenSize.height/3,
-//   width: sizeImageTop.width *(screenSize.height/3) /sizeImageTop.height
-// };
-const sizeImageInScreen = {
-  width: screenSize.width,
-  height: sizeImageTop.height *(screenSize.width) /sizeImageTop.width
+
+export const limitRatioImageTop = 2.5/6;
+// export const limitRatioImageTop = 1/3;
+export const calculateTopBgImage = (sizeImage={width: 0,height:0})=>{
+  let value = {
+    top:0,
+    width: sizeImage.width,
+    height: sizeImage.height
+  };
+  if(sizeImage.height >0){
+    const sizeImageInScreen = {
+      width: screenSize.width,
+      height: sizeImage.height *(screenSize.width) /sizeImage.width
+    };
+    const maxHeightScreen = screenSize.height * limitRatioImageTop;
+    const top = maxHeightScreen - sizeImageInScreen.height ;
+    value.top = top>0?0:top;
+    value.width = sizeImageInScreen.width;
+    value.height = sizeImageInScreen.height;
+    
+  }
+  return value;
 };
+const valueForImageBackgoundTop = calculateTopBgImage(sizeImageTop) ;
 const styles = StyleSheet.create({
   root: {
     flex: 1,
@@ -26,12 +42,11 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     flex: 1,
-    paddingHorizontal: 20
+    paddingHorizontal: scaleInApp(10)
   },
   bgTop:{
     position: 'absolute',
-    top:screenSize.height*2.5/6 - sizeImageInScreen.height ,
-    ...sizeImageInScreen
+    ...valueForImageBackgoundTop
   }
 });
 export default styles;

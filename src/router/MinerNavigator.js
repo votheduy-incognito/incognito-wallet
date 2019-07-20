@@ -4,6 +4,9 @@ import DetailDevice from '@screens/DetailDevice';
 import HomeMine from '@screens/HomeMine';
 import { createStackNavigator } from 'react-navigation';
 import SetupWifiDevice from '@screens/SetupWifiDevice';
+import AddNode from '@src/screens/AddNode';
+import Withdraw from '@src/screens/Withdraw';
+import AddStake from '@src/screens/AddStake';
 import ROUTE_NAMES from './routeNames';
 
 export const TAG = 'MinerNavigator';
@@ -21,13 +24,36 @@ const MinerNavigator = createStackNavigator(
         headerTitle:'Add Device'
       }
     },
+    [ROUTE_NAMES.AddNode]: {
+      screen:AddNode,
+      navigationOptions: {
+        headerTitle:'Add Node'
+      }
+    },
+    [ROUTE_NAMES.AddStake]: {
+      screen:AddStake,
+      navigationOptions: {
+        headerTitle:'Add Stake'
+      }
+    },
     [ROUTE_NAMES.SetupWifiDevice]: {
       screen:SetupWifiDevice,
       navigationOptions: {
         headerTitle:'Setup Wifi'
       }
     },
-    [ROUTE_NAMES.DetailDevice]: DetailDevice
+    [ROUTE_NAMES.DetailDevice]:{
+      screen:DetailDevice,
+      navigationOptions: {
+        header: null
+      }
+    },
+    [ROUTE_NAMES.Withdraw]:{
+      screen:Withdraw,
+      navigationOptions: {
+        header: null
+      }
+    }
   },
   {
     headerMode: 'screen'

@@ -9,14 +9,17 @@ import FirebaseService, {
 
 import _ from 'lodash';
 import React from 'react';
-import { Alert, View,Switch } from 'react-native';
-import { ButtonGroup, ListItem } from 'react-native-elements';
+import { Alert, View,ScrollView,Image,Text } from 'react-native';
+import { ListItem, Icon,Button, Header } from 'react-native-elements';
 import Action from '@src/models/Action';
 import DialogLoader from '@src/components/DialogLoader';
+import images from '@src/assets';
+import Container from '@components/Container';
+import HistoryMined from '@src/components/HistoryMined';
+import routeNames from '@src/router/routeNames';
 import style from './style';
 
 export const TAG = 'DetailDevice';
-const buttonsTab = ['Chain Store', 'Earn So Far', 'History'];
 
 class DetailDevice extends BaseScreen {
   static navigationOptions = ({ navigation }) => {
@@ -45,6 +48,7 @@ class DetailDevice extends BaseScreen {
       },
       device: device
     };
+    this.productName = productName;
     props.navigation.setParams({ title: productName });
   }
 
@@ -52,12 +56,6 @@ class DetailDevice extends BaseScreen {
     // this.checkStatus('incognito');
     this.checkStatus('eth20');
   }
-
-  handleUpdateIndex = selectedIndex => {
-    this.setState({
-      selectedIndex: selectedIndex
-    });
-  };
 
   pingDevice = async (product, actionExcute: 'start', chain = 'incognito') => {
     let productId = product.product_id;
@@ -169,6 +167,66 @@ class DetailDevice extends BaseScreen {
     });
   };
 
+  renderHeader = () => {
+    const title = this.productName|| 'Details';
+    return (
+      <Header
+        containerStyle={style.containerHeader}
+        centerComponent={(
+          <Text style={style.titleHeader}>
+            {title}
+          </Text>
+        )}
+        leftComponent={(
+          <Icon
+            size={25}
+            name='ios-arrow-back'
+            type='ionicon'
+            color='#ffffff'
+            onPress={() => {
+              this.onPressBack();
+            }}
+          />
+        )}
+      />
+    );
+  };
+  handlePressWithdraw =()=>{
+    this.goToScreen(routeNames.Withdraw);
+  }
+  handlePressStake =()=>{
+    this.goToScreen(routeNames.AddStake);
+  }
+
+  renderGroupBalance = ()=>{
+    return (
+      <View style={style.group2_container}>
+        <View style={style.group2_container_container}>
+          <Text style={style.group2_container_title}>YOUR BALANCE</Text>
+          <Text style={style.group2_container_value}>0 BTC</Text>
+          <Button
+            titleStyle={style.group2_container_button_text}
+            buttonStyle={style.group2_container_button}
+            onPress={this.handlePressStake}
+            title='Add more stake'
+          />
+        </View>
+        <View style={style.group2_container_container2}>
+          <Text style={style.group2_container_title2}>STATUS</Text>
+          <Text style={style.group2_container_value2}>Mining</Text>
+          <View style={{flex:1,justifyContent:'flex-end'}}>
+            <Button
+              titleStyle={style.group2_container_button_text}
+              buttonStyle={style.group2_container_button2}
+              onPress={this.handlePressWithdraw}
+              title='Withdraw'
+            />
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   render() {
     const {
       selectedIndex,
@@ -179,36 +237,33 @@ class DetailDevice extends BaseScreen {
     } = this.state;
     const { product_name } = device || {};
     return (
-      <View style={style.container}>
+      <Container styleRoot={style.container} backgroundTop={{source:images.bg_top_detail,style:style.imageTop}}>
+        {this.renderHeader()}
+        <Image style={style.bg_top} source={images.bg_top_device} />
         <DialogLoader loading={loading} />
-        
-        <ButtonGroup
-          onPress={this.handleUpdateIndex}
-          selectedIndex={selectedIndex}
-          buttons={buttonsTab}
-          containerStyle={{ height: 40 }}
-        />
-        <ListItem
-          containerStyle={{
-            borderBottomWidth: 0,
-            backgroundColor: 'white',
-            margin: 20
-          }}
-          switchButton
-          hideChevron
-          rightElement={<Switch onValueChange={this.handleSwitchIncognito} />}
-          
-          switched={statusChain.incognito}
-          title="incognito"
-          underlayColor="transparent"
-          subtitle="Stakeing Yield 30%"
-          rightTitle={
-            _.isEmpty(dataChain.incognito.message)
-              ? 'Status'
-              : dataChain.incognito.message
-          }
-        />
-      </View>
+        <ScrollView>
+          <ListItem
+            containerStyle={style.top_container}
+            hideChevron
+            rightElement={(
+              <Button
+                type="outline"
+                buttonStyle={style.top_button_action}
+                icon={{
+                  size: 15,name:'control-play', type:'simple-line-icon', color:'black'
+                }}
+                title={null}
+              />
+            )}
+            subtitleStyle={style.top_container_subtitle}
+            titleStyle={style.top_container_title}
+            title="Node"
+            subtitle="Incognito Network"
+          />
+          {this.renderGroupBalance()}
+          <HistoryMined containerStyle={style.group2_container} listItems={[device,device,device,device,device,device]} />
+        </ScrollView>
+      </Container>
     );
   }
 }

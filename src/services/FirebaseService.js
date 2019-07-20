@@ -37,7 +37,7 @@ export default class FirebaseService {
     if (firebase.auth().currentUser !== null && currentUserName == username) {
       
       console.log(TAG,' auth begin02 has authenticated = ',firebase.auth().currentUser.uid);
-      success(firebase.auth().currentUser.uid);
+      success(firebase.auth().currentUser?.uid||'');
     } else {
       if (firebase.auth().currentUser !== null) {
         console.log(TAG,'auth begin03 logout');

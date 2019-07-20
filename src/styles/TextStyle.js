@@ -75,7 +75,7 @@ const TextStyle = StyleSheet.create({
   smallText: {
     ...FontStyle.normal,
     color: textColor,    
-    fontSize: scaleInApp(10)
+    fontSize: scaleInApp(12)
   },
   minimizeText: {
     ...FontStyle.normal,
