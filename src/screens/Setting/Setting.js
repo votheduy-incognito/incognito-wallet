@@ -5,6 +5,7 @@ import TabBarIcon from '@src/components/TabBarIcon';
 import NetworkSection from './NetworkSection';
 import PreferencesSection from './PreferencesSection';
 import PrivacySection from './PrivacySection';
+import WalletSection from './WalletSection';
 
 class Setting extends React.Component {
   static navigationOptions = () => ({
@@ -25,6 +26,7 @@ class Setting extends React.Component {
     return (
       <ScrollView>
         <Container>
+          <WalletSection navigation={navigation} />
           <NetworkSection
             navigation={navigation}
             defaultServerId={defaultServerId}
