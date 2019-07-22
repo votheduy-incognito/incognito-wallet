@@ -8,6 +8,7 @@ import { createForm, InputField, validator } from '@src/components/core/reduxFor
 import EstimateFee from '@src/components/EstimateFee';
 import convertUtil from '@src/utils/convert';
 import { getErrorMessage, messageCode } from '@src/services/errorHandler';
+import { openQrScanner } from '@src/components/QrCodeScanner';
 import tokenData from '@src/constants/tokenData';
 import formatUtil from '@src/utils/format';
 import style from './style';
@@ -16,7 +17,7 @@ const formName = 'withdraw';
 const selector = formValueSelector(formName);
 const initialFormValues = {
   amount: '',
-  toAddress: '0xd5808Ba261c91d640a2D4149E8cdb3fD4512efe4'
+  toAddress: '2MvNYpXrYSaGbYPP65BBHFRqCSqp32fTKo5'
 };
 
 const Form = createForm(formName, {
@@ -49,6 +50,19 @@ class Withdraw extends React.Component {
       maxAmount,
       maxAmountValidator: validator.maxValue(maxAmount),
     });
+  }
+
+  handleQrScanAddress = () => {
+    openQrScanner(data => {
+      this.updateFormValues('toAddress', data);
+    });
+  }
+
+  updateFormValues = (field, value) => {
+    const { rfChange } = this.props;
+    if (typeof rfChange === 'function') {
+      rfChange(formName, field, value);
+    }
   }
 
   handleSubmit = async values => {
