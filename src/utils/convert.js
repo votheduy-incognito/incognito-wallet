@@ -20,7 +20,7 @@ export default {
    */
   toOriginalAmount(humanAmount, tokenSymbol) {
     const decision_rate = CONSTANT_COMMONS.DECISION_RATE[tokenSymbol] || 1;
-    const _amount = humanAmount * decision_rate;
+    const _amount = Math.round(humanAmount * decision_rate);
     return _amount;
   }
 };
