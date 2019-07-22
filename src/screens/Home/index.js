@@ -12,9 +12,15 @@ import routeNames from '@src/router/routeNames';
 import tokenData from '@src/constants/tokenData';
 import { connect } from 'react-redux';
 import { accountSeleclor } from '@src/redux/selectors';
+import walletIcon from '@src/assets/images/icons/walletInactive.png';
+import TabBarIcon from '@src/components/TabBarIcon';
 import Home from './Home';
 
 class HomeContainer extends Component {
+  static navigationOptions = {
+    tabBarIcon: props => <TabBarIcon image={walletIcon} {...props} />
+  };
+
   componentDidMount() {
     const { account, navigation, clearSelectedPrivacy, getAccountBalance, accountList } = this.props;
 

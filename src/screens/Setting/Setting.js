@@ -1,20 +1,16 @@
 import { Container, ScrollView } from '@src/components/core';
-import DrawerIcon from '@src/components/DrawerIcon';
 import React from 'react';
-import MdIcon from 'react-native-vector-icons/MaterialIcons';
+import incognitoIcon from '@src/assets/images/icons/incognitoInactive.png';
+import TabBarIcon from '@src/components/TabBarIcon';
 import NetworkSection from './NetworkSection';
 import PreferencesSection from './PreferencesSection';
 import PrivacySection from './PrivacySection';
 
 class Setting extends React.Component {
   static navigationOptions = () => ({
-    drawerLabel: 'Setting',
-    drawerIcon: () => (
-      <DrawerIcon>
-        <MdIcon name="settings" />
-      </DrawerIcon>
-    )
+    tabBarIcon: props => <TabBarIcon image={incognitoIcon} {...props} />
   });
+
   constructor() {
     super();
     this.state = {
