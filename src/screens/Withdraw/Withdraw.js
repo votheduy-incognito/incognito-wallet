@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Field, formValueSelector, isValid, change } from 'redux-form';
-import { Container, ScrollView, Toast, Text, TouchableOpacity, Button } from '@src/components/core';
+import { Container, ScrollView, Toast, Text, View, TouchableOpacity, Button } from '@src/components/core';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { createForm, InputField, validator } from '@src/components/core/reduxForm';
 import EstimateFee from '@src/components/EstimateFee';
@@ -102,8 +102,10 @@ class Withdraw extends React.Component {
     return (
       <ScrollView style={style.container}>
         <Container style={style.mainContainer}>
-          <Text>Balance: {formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy?.symbol)} {selectedPrivacy?.symbol}</Text>
-          <Text>Max balance can withdraw: {formatUtil.amount(maxAmount)} {selectedPrivacy?.symbol}</Text>
+          <View style={style.currentBalanceContainer}>
+            <Text style={style.currentBalance}>{formatUtil.amount(maxAmount)} {selectedPrivacy?.symbol}</Text>
+            <Text style={style.currentBalanceLabel}>Current Balance</Text>
+          </View>
           <Form>
             {({ handleSubmit }) => (
               <>
@@ -135,11 +137,11 @@ class Withdraw extends React.Component {
                   amount={isFormValid ? amount : null}
                   toAddress={isFormValid ? selectedPrivacy?.paymentAddress : null} // est fee on the same network, dont care which address will be send to
                 />
-                <Button title='SEND' style={style.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSubmit)} />
+                <Text style={style.feeText}>Fee: {formatUtil.amount(finalFee, feeUnit)} {feeUnit}</Text>
+                <Button title='WITHDRAW' style={style.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSubmit)} />
               </>
             )}
           </Form>
-          <Text>Fee: {formatUtil.amount(finalFee, feeUnit)} {feeUnit}</Text>
         </Container>
       </ScrollView>
     );

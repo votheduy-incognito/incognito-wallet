@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Text } from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { connect } from 'react-redux';
 import { genWithdrawAddress } from '@src/services/api/withdraw';
@@ -145,6 +146,10 @@ class WithdrawContainer extends Component {
   render() {
     const { selectedPrivacy } = this.props;
     const { withdrawData } = this.state;
+
+    if (selectedPrivacy && selectedPrivacy?.amount <= 0) {
+      return <Text style={{ padding: 20, textAlign: 'center'}}>Please deposit more {selectedPrivacy?.symbol} to your wallet.</Text>;
+    }
 
     if (!selectedPrivacy || !withdrawData) return <LoadingContainer />;
 
