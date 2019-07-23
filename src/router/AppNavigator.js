@@ -1,3 +1,4 @@
+import { THEME } from '@src/styles';
 import { createStackNavigator } from 'react-navigation';
 import CreateAccount from '@src/screens/CreateAccount';
 import Defragment from '@src/screens/Defragment';
@@ -47,6 +48,7 @@ const AppNavigator = createStackNavigator(
       return {
         title,
         header: HeaderBar,
+        headerBackground: THEME.header.backgroundColor
       };
     }
   }

@@ -4,6 +4,7 @@ import FONTS from './font';
 import SPACINGS from './spacing';
 
 const header = {
+  headerHeight: 55,
   backgroundColor: COLORS.blueDark,
   headerTintColor: COLORS.black
 };
