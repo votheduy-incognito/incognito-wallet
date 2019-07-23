@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import memmoize from 'memoize-one';
 import { View, TouchableOpacity, Text, ActivityIndicator } from '@src/components/core';
-import formatUtil from '@src/utils/format';
 import styles from './styles';
 
 const LEVELS = [
@@ -99,31 +98,33 @@ class EstimateFee extends Component {
     return (
       <View style={styles.container}>
         <View>
-          <Text>Fee type</Text>
-          {
-            types?.map(type => {
-              const onPress = () => this.handleSelectFeeType(type);
-              return (
-                <TouchableOpacity key={type} onPress={onPress} style={[defaultFeeSymbol === type && styles.feeTypeHighlight, styles.feeType]}>
-                  <Text>Use {type}</Text>
-                </TouchableOpacity>
-              );
-            })
-          }
+          <Text>Select fee</Text>
+          <View style={styles.feeTypeGroup}>
+            {
+              types?.map(type => {
+                const onPress = () => this.handleSelectFeeType(type);
+                return (
+                  <TouchableOpacity key={type} onPress={onPress} style={[styles.feeType, defaultFeeSymbol === type && styles.feeTypeHighlight]}>
+                    <Text style={styles.feeTypeText}>Use {type}</Text>
+                  </TouchableOpacity>
+                );
+              })
+            }
+          </View>
         </View>
         { estimateErrorMsg
-          ? <Text>{estimateErrorMsg}</Text>
+          ? <Text style={styles.errorText}>{estimateErrorMsg}</Text>
           : (minFee === 0 || !!minFee) && (
-            <View>
+            <View style={styles.rateContainer}>
               {
                 isGettingFee ?
                   <ActivityIndicator /> : 
                   levels?.map(({ fee, level }) => {
                     const onPress = () => this.handleSelectRate(fee);
                     return (
-                      <TouchableOpacity key={level?.name} onPress={onPress} style={[finalFee === fee && styles.rateHighlight, styles.rate]}>
-                        <Text>{level?.name}</Text>
-                        <Text>{formatUtil.amount(fee, defaultFeeSymbol)} {defaultFeeSymbol}</Text>
+                      <TouchableOpacity key={level?.name} onPress={onPress} style={styles.rate}>
+                        <Text style={[styles.rateText, finalFee === fee && styles.rateTextHighlight]}>{level?.name}</Text>
+                        {/* <Text>{formatUtil.amount(fee, defaultFeeSymbol)} {defaultFeeSymbol}</Text> */}
                       </TouchableOpacity>
                     );
                   })
