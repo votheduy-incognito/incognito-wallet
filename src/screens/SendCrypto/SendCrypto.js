@@ -4,7 +4,7 @@ import { Field, formValueSelector, isValid, change } from 'redux-form';
 import { connect } from 'react-redux';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import convertUtil from '@src/utils/convert';
-import { Container, ScrollView, TouchableOpacity, Button, Text, Toast } from '@src/components/core';
+import { Container, ScrollView, TouchableOpacity, Button, Text, View, Toast } from '@src/components/core';
 import { openQrScanner } from '@src/components/QrCodeScanner';
 import ReceiptModal, { openReceipt } from '@src/components/Receipt';
 import LoadingTx from '@src/components/LoadingTx';
@@ -108,7 +108,7 @@ class SendCrypto extends React.Component {
         <Container style={homeStyle.mainContainer}>
           <Form>
             {({ handleSubmit }) => (
-              <>
+              <View style={homeStyle.form}>
                 <Field
                   component={InputField}
                   name='toAddress'
@@ -137,11 +137,11 @@ class SendCrypto extends React.Component {
                   amount={isFormValid ? amount : null}
                   toAddress={isFormValid ? toAddress : null}
                 />
+                <Text style={homeStyle.feeText}>Fee: {formatUtil.amount(finalFee, feeUnit)} {feeUnit}</Text>
                 <Button title='SEND' style={homeStyle.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSend)} />
-              </>
+              </View>
             )}
           </Form>
-          <Text>Fee: {formatUtil.amount(finalFee, feeUnit)} {feeUnit}</Text>
           <ReceiptModal />
         </Container>
         { isSending && <LoadingTx /> }

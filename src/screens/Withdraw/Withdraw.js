@@ -12,6 +12,7 @@ import { openQrScanner } from '@src/components/QrCodeScanner';
 import tokenData from '@src/constants/tokenData';
 import formatUtil from '@src/utils/format';
 import style from './style';
+import { homeStyle } from '../Home.old/style';
 
 const formName = 'withdraw';
 const selector = formValueSelector(formName);
@@ -106,7 +107,7 @@ class Withdraw extends React.Component {
             <Text style={style.currentBalance}>{formatUtil.amount(maxAmount)} {selectedPrivacy?.symbol}</Text>
             <Text style={style.currentBalanceLabel}>Current Balance</Text>
           </View>
-          <Form>
+          <Form style={homeStyle.form}>
             {({ handleSubmit }) => (
               <>
                 <Field
