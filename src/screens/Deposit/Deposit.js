@@ -26,7 +26,7 @@ class Deposit extends React.Component {
   }
 
   render() {
-    const { depositAddress } = this.props;
+    const { depositAddress, selectedPrivacy } = this.props;
     const { values: { amount } } = this.form;
 
     return (
@@ -34,7 +34,7 @@ class Deposit extends React.Component {
         <Container style={style.mainContainer}>
           {
             depositAddress
-              ? <WaitingDeposit depositAddress={depositAddress} amount={amount} />
+              ? <WaitingDeposit selectedPrivacy={selectedPrivacy} depositAddress={depositAddress} amount={amount} />
               : (
                 <Form
                   formRef={form => this.form = form}

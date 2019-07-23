@@ -40,7 +40,7 @@ class DepositContainer extends Component {
     if (!selectedPrivacy) return <LoadingContainer />;
 
     return (
-      <Deposit depositAddress={address} handleGenAddress={this.getDepositAddress} />
+      <Deposit selectedPrivacy={selectedPrivacy} depositAddress={address} handleGenAddress={this.getDepositAddress} />
     );
   }
 }
