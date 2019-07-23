@@ -7,13 +7,15 @@ const style = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
+    width: '100%'
   },
   boxHeader: { 
-    backgroundColor: COLORS.headerColor,
+    backgroundColor: COLORS.blueDark,
     width: '100%',
     alignItems: 'center',
-    padding: 10,
-    height: 150,
+    justifyContent: 'center',   
+    height: 80,
+    paddingBottom: 30,
   },
   historyContainer: {
     flex: 1,
@@ -23,6 +25,7 @@ const style = StyleSheet.create({
     color: COLORS.white,
     fontSize: 28,   
     textAlign: 'center', 
+    letterSpacing: 0,
   },
   boxBalance: {
     alignItems: 'center',
@@ -37,6 +40,9 @@ const style = StyleSheet.create({
   btnStyle: {    
     width: '45%',
     margin: 10
+  },
+  withdrawBtn: {
+    backgroundColor: COLORS.blueDark
   },
   boxButton : {
     flex: 1,
@@ -54,6 +60,11 @@ const style = StyleSheet.create({
   title: {
     fontSize: THEME.text.largeTitleSize,
     fontWeight: 'bold',
+  },
+  buttonRow: {
+    height: 80,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   }
 });
 
