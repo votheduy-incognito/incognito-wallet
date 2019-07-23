@@ -10,6 +10,7 @@ import { getMaxWithdrawAmountService } from '@src/services/wallet/RpcClientServi
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import { accountSeleclor } from '@src/redux/selectors';
 import convertUtil from '@src/utils/convert';
+import tokenData from '@src/constants/tokenData';
 import Withdraw from './Withdraw';
 
 class WithdrawContainer extends Component {
@@ -75,12 +76,13 @@ class WithdrawContainer extends Component {
     }
   }
 
-  onSendToken = async ({ tempAddress, amount, fee }) => {
+  onSendToken = async ({ tempAddress, amount, fee, feeUnit }) => {
     const { withdrawData: { feeForBurn } } = this.state;
     const { account, wallet, tokens, selectedPrivacy, getTokenBalanceBound } = this.props;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
     const originalFee = Number(fee);
     const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
+    const isTokenFee = feeUnit !== tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY;
 
     const tokenObject = {
       Privacy : true,
@@ -88,10 +90,10 @@ class WithdrawContainer extends Component {
       TokenName: selectedPrivacy?.name,
       TokenSymbol: selectedPrivacy?.symbol,
       TokenTxType: type,
-      TokenAmount: originalAmount,
+      TokenAmount: originalAmount + (isTokenFee ? feeForBurn : 0),
       TokenReceivers: {
         PaymentAddress: tempAddress,
-        Amount: originalAmount
+        Amount: originalAmount + (isTokenFee ? feeForBurn : 0)
       }
     };
 
@@ -103,10 +105,11 @@ class WithdrawContainer extends Component {
     try {
       const res = await tokenService.createSendPrivacyCustomToken(
         tokenObject,
-        originalFee,
+        !isTokenFee ? originalFee : 0,
         account,
         wallet,
-        paymentInfo
+        !isTokenFee  ? paymentInfo : null,
+        isTokenFee ? originalFee : 0
       );
 
       if (res.txId) {

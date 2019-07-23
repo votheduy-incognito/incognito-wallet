@@ -93,7 +93,7 @@ export default class Token {
     try {
       response = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendPrivacyCustomToken(paymentInfos, submitParam, fee, tokenFee);
+      ].createAndSendPrivacyCustomToken(paymentInfos, submitParam, fee, tokenFee, true);
 
       await saveWallet(wallet);
     } catch (e) {

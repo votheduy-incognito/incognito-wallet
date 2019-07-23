@@ -67,11 +67,11 @@ class Withdraw extends React.Component {
 
   handleSubmit = async values => {
     try {
-      const { finalFee } = this.state;
+      const { finalFee, feeUnit } = this.state;
       const { handleGenAddress, handleSendToken, navigation } = this.props;
       const { amount, toAddress } = values;
       const tempAddress = await handleGenAddress({ amount, paymentAddress: toAddress });
-      const res = await handleSendToken({ tempAddress, amount, fee: finalFee });
+      const res = await handleSendToken({ tempAddress, amount, fee: finalFee, feeUnit });
       
       Toast.showInfo('Withdraw successfully');
       navigation.goBack();
