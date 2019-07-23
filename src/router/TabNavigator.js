@@ -1,8 +1,10 @@
 import { StyleSheet } from 'react-native';
-import { createBottomTabNavigator } from 'react-navigation';
+import { createBottomTabNavigator, getActiveChildNavigationOptions } from 'react-navigation';
+import { navigationOptionsHandler } from '@src/utils/router';
 import Home from '@src/screens/Home';
 import Setting from '@src/screens/Setting';
 import { COLORS } from '@src/styles';
+import HeaderBar from '@src/components/HeaderBar';
 import ROUTE_NAMES from './routeNames';
 
 const styles = StyleSheet.create({
@@ -20,8 +22,8 @@ const styles = StyleSheet.create({
 });
 
 const Tab = createBottomTabNavigator({
-  [ROUTE_NAMES.Home]: Home,
-  [ROUTE_NAMES.Setting]: Setting,
+  [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { title: 'Wallet' }),
+  [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'Setting' }),
 }, {
   initialRouteName: ROUTE_NAMES.Home,
   tabBarOptions: {
@@ -30,6 +32,21 @@ const Tab = createBottomTabNavigator({
     tabStyle: styles.tabStyle,
     activeTintColor: COLORS.blue
   },
+  defaultNavigationOptions: {
+    header: HeaderBar
+  },
+  navigationOptions: ({ navigation, screenProps }) => {
+    const child = getActiveChildNavigationOptions(navigation, screenProps);
+    const { routeName } = navigation.state.routes[navigation.state.index];
+  
+    // You can do whatever you like here to pick the title based on the route name
+    const title = routeName;
+  
+    return {
+      title,
+      ...child,
+    };
+  }
 });
 
 export default Tab;
