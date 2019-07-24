@@ -23,10 +23,12 @@ class DeviceConnection extends Component {
   }
   
   getCurrentConnect = async ():Promise<ObjConnection> => {
-    await Util.delay(3);
-    console.log(TAG, 'getCurrentConnect ', this.connection.currentConnect);
+    // await Util.delay(3);
+    console.log(TAG, 'getCurrentConnect begin ', this.connection.currentConnect);
 
-    return this.connection.currentConnect;
+    const currentConnect =  await this.connection.fetchCurrentConnect();
+    console.log(TAG, 'getCurrentConnect end ', currentConnect);
+    return currentConnect;
   };
   
   componentDidMount = async () => {
@@ -60,6 +62,7 @@ class DeviceConnection extends Component {
 
   connectDevice = async (device: ObjConnection) => {
     const result = await this.connection.connectDevice(device);
+    // await Util.delay(10);
     return result;
   };
 
@@ -142,10 +145,10 @@ class DeviceConnection extends Component {
 }
 
 DeviceConnection.propTypes = {
-  callbackGettingListPairedDevices: pairedList => {}
+  callbackGettingListPairedDevices: PropTypes.func
 };
 
 DeviceConnection.defaultProps = {
-  callbackGettingListPairedDevices: PropTypes.func
+  callbackGettingListPairedDevices: pairedList => {}
 };
 export default DeviceConnection;

@@ -20,8 +20,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
-  Modal
+  View
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import WifiConnection from '@components/DeviceConnection/WifiConnection';
@@ -31,6 +30,8 @@ import BaseScreen from '@screens/BaseScreen';
 import { Button } from 'react-native-elements';
 import Util from '@src/utils/Util';
 import { onClickView } from '@src/utils/ViewUtil';
+import { ObjConnection } from '@src/components/DeviceConnection/BaseConnection';
+import DeviceConnection from '@src/components/DeviceConnection';
 import styles from './style';
 
 export const TAG = 'SetupWifiDevice';
@@ -47,7 +48,7 @@ class SetupWifiDevice extends BaseScreen {
     const {params} = props.navigation.state;
     const currentConnect = params.currentConnect||null;
     this.state = {
-      validSSID: false,
+      validSSID: !_.isEmpty(currentConnect?.name),
       validWPA: false,
       ssid: currentConnect?.name||'',
       wpa: '',
@@ -65,8 +66,10 @@ class SetupWifiDevice extends BaseScreen {
       addProduct: null
     };
     this.modal3 = React.createRef();
+    this.deviceId = React.createRef();
     this.wifiConnection = new WifiConnection();
   }
+  
 
   renderDeviceName=()=>{
     const { container, textInput, item, errorText } = styles;
@@ -109,6 +112,9 @@ class SetupWifiDevice extends BaseScreen {
     } = this.state;
     return (
       <View style={[styles.modal, styles.modal3]}>
+        <DeviceConnection
+          ref={this.deviceId}          
+        />
         {validSSID && validWPA ? null : (
           <Text style={[errorText]}>
         * Please type a Wi-Fi name and its password to connect Miner to the
@@ -144,9 +150,32 @@ class SetupWifiDevice extends BaseScreen {
     );
   }
 
+  connectHotspot = async ()=>{
+    
+    const deviceMiner = new ObjConnection();
+    deviceMiner.name = 'The Miner';
+    deviceMiner.id = 'The Miner';
+    const result:Boolean = await this.deviceId?.current?.connectDevice(deviceMiner) || false;
+    console.log(TAG,'connectHotspot end result = ',result);
+    return result?deviceMiner:null;
+  }
+
   handleSetUpPress = onClickView(async ()=>{
-    await this.checkConnectHotspot();
+    try {
+      this.setState({
+        loading: true
+      });
+      await this.checkConnectHotspot();
+    } catch (error) {
+      console.log(TAG,'handleSetUpPress error: ', error);
+    }finally{
+      this.setState({
+        loading: false
+      });
+    }
+    
   });
+
   handleSubmit = onClickView(async() => {
     this.closeModal();
   });
@@ -165,28 +194,7 @@ class SetupWifiDevice extends BaseScreen {
       </View>
     );
   }
-  async connectZMQAndroid(params) {
-    let data = JSON.stringify(params);
-    ZMQService.sendData(data);
 
-    this.setState({
-      counterVerify: 0
-    });
-    NetInfo.isConnected
-      .fetch()
-      .then()
-      .done(() => {
-        NetInfo.isConnected.addEventListener(
-          'change',
-          this._handleConnectionChange
-        );
-      });
-
-    setTimeout(() => {
-      this.callVerifyCode();
-    }, 23 * 1000);
-  }
-  
   validWallName(text) {
     const isValid = text.length > 0 ? true : false;
     this.setState({
@@ -279,31 +287,53 @@ class SetupWifiDevice extends BaseScreen {
         this.setState({
           verifyCode: verify_code
         });
-        if (Platform.OS == 'ios') {
-          await this.connectZMQiOS(params);
-        } else {
-          console.log('Send ZMQ Android');
-          //ZMQService.sendData(JSON.stringify(params));
-          this.connectZMQAndroid(params);
-          /*
-          var ZeroMQ  = require('react-native-zeromq') ;
-          ZeroMQ.socket(ZeroMQ.SOCKET_TYPE.DEALER).then((socket) => {
-            socket.connect("tcp://52.3.101.47:5004").then(() => {
-              socket.send(JSON.stringify(params)).then(() => {
-                socket.recv().then((msg) => {
-                  console.log('Send zmq successfully')
+        await this.connectZMQ(params);
+        // if (Platform.OS == 'ios') {
+        //   await this.connectZMQiOS(params);
+        // } else {
+        //   console.log(TAG,'Send ZMQ Android');
+        //   //ZMQService.sendData(JSON.stringify(params));
+        //   await this.connectZMQAndroid(params);
+        //   /*
+        //   var ZeroMQ  = require('react-native-zeromq') ;
+        //   ZeroMQ.socket(ZeroMQ.SOCKET_TYPE.DEALER).then((socket) => {
+        //     socket.connect("tcp://52.3.101.47:5004").then(() => {
+        //       socket.send(JSON.stringify(params)).then(() => {
+        //         socket.recv().then((msg) => {
+        //           console.log('Send zmq successfully')
 
-                  console.log(msg);
-                });
-              });
-            });
-          });
-          */
-        }
+        //           console.log(msg);
+        //         });
+        //       });
+        //     });
+        //   });
+        //   */
+        // }
       }
     }
   }
-  connectZMQiOS= async (params) =>{
+  // connectZMQAndroid = async(params) =>{
+  //   let data = JSON.stringify(params);
+  //   ZMQService.sendData(data);
+
+  //   this.setState({
+  //     counterVerify: 0
+  //   });
+  //   NetInfo.isConnected
+  //     .fetch()
+  //     .then()
+  //     .done(() => {
+  //       NetInfo.isConnected.addEventListener(
+  //         'connectionChange',
+  //         this._handleConnectionChange
+  //       );
+  //     });
+
+  //   setTimeout(() => {
+  //     this.callVerifyCode();
+  //   }, 23 * 1000);
+  // }
+  connectZMQ= async (params) =>{
     try {
       const res = await ZMQService.sendData(JSON.stringify(params));
       if(_.isEmpty(res)) return;
@@ -398,12 +428,21 @@ class SetupWifiDevice extends BaseScreen {
     }
   }
   checkConnectHotspot = async  ()=> {
+    
     const { validSSID, validWPA } = this.state;
 
-    if (validSSID && validWPA) {
-      let ssid = this.wifiConnection.currentConnect?.name?.toLowerCase()||'';
+    let device = await this.deviceId?.current?.getCurrentConnect();
+    
+    let isConnectedHotpost = _.isEqual(device?.name||'', 'The Miner');
+    if(!isConnectedHotpost){
+      device = await this.connectHotspot();
+    }
+    isConnectedHotpost = !_.isEmpty(device);
+    
+    if (isConnectedHotpost && validSSID && validWPA) {
+      let ssid = device?.name?.toLowerCase()||'';
       const product = CONSTANT_MINER.PRODUCT_TYPE.toLowerCase();
-      console.log('SSID---: ', ssid);
+      console.log(TAG,'checkConnectHotspot SSID---: ', ssid);
       if (_.includes(ssid, product)) {
         this.sendZMQ();
       } else {

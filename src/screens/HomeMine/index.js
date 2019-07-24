@@ -22,7 +22,8 @@ import images from '@src/assets';
 import APIService from '@src/services/api/miner/APIService';
 import ViewUtil from '@src/utils/ViewUtil';
 import HomeMineItem from '@src/components/HomeMineItem';
-import DeviceService from '@src/services/DeviceService';
+
+import ZMQService from 'react-native-zmq-service';
 import style from './style';
 
 export const TAG = 'HomeMine';
@@ -51,7 +52,7 @@ class HomeMine extends BaseScreen {
   componentDidMount = async () => {
     super.componentDidMount();
     await this.createSignIn();
-    DeviceService.receiveDataFromAddress();
+    // ZMQService.sendData('HIENTON');
   };
 
   createSignIn = async () => {
