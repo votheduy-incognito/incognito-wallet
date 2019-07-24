@@ -12,6 +12,8 @@ const Button = ({ title, children, style, titleStyle, type, onPress, loadingColo
   }, [isLoadingProps]);
 
   const handlePress = () => {
+    if (isLoading || disabled) return null;
+
     if (typeof onPress === 'function') {
       const pressed = onPress();
       if (pressed instanceof Promise) {
@@ -55,10 +57,12 @@ Button.defaultProps = {
   titleStyle: null,
   title: null,
   children: null,
-  type: null
+  type: null,
+  disabled: false
 };
 
 Button.propTypes = {
+  disabled: PropTypes.bool,
   isAsync: PropTypes.bool,
   prepend: PropTypes.node,
   isLoading: PropTypes.bool,
