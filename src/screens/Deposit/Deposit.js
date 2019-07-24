@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Container, ScrollView, Form, FormSubmitButton, FormTextField, Toast } from '@src/components/core';
+import { Container, ScrollView, View, Toast, Button } from '@src/components/core';
+import { Field } from 'redux-form';
+import { createForm, InputField, validator } from '@src/components/core/reduxForm';
 import { getErrorMessage } from '@src/services/errorHandler';
 import WaitingDeposit from './WaitingDeposit';
 import style from './style';
-import formValidate from './formValidate';
 
-const initialFormValues = {
-  amount: '',
-};
+const formName = 'deposit';
+const Form = createForm(formName);
 
 class Deposit extends React.Component {
   constructor() {
@@ -19,6 +19,7 @@ class Deposit extends React.Component {
   handleSubmit = values => {
     const { handleGenAddress } = this.props;
     const { amount } = values;
+
     return handleGenAddress(amount)
       .catch(e => {
         Toast.showError(getErrorMessage(e));
@@ -36,16 +37,25 @@ class Deposit extends React.Component {
             depositAddress
               ? <WaitingDeposit selectedPrivacy={selectedPrivacy} depositAddress={depositAddress} amount={amount} />
               : (
-                <Form
-                  formRef={form => this.form = form}
-                  initialValues={initialFormValues}
-                  onSubmit={this.handleSubmit}
-                  viewProps={{ style: style.form }}
-                  validationSchema={formValidate}
-                  validate={this.onFormValidate}
-                >
-                  <FormTextField name='amount' placeholder='Amount' />
-                  <FormSubmitButton title='CONFIRM' style={style.submitBtn} />
+                <Form>
+                  {({ handleSubmit, submitting }) => (
+                    <View style={style.form}>
+                      <Field
+                        component={InputField}
+                        name='amount'
+                        placeholder='Amount'
+                        label='Amount'
+                        validate={[validator.required, ...validator.combinedAmount]}
+                      />
+                      <Button
+                        title='CONTINUE'
+                        style={style.submitBtn}
+                        onPress={handleSubmit(this.handleSubmit)}
+                        isAsync
+                        isLoading={submitting}
+                      />
+                    </View>
+                  )}
                 </Form>
               )
           }
@@ -56,11 +66,14 @@ class Deposit extends React.Component {
 }
 
 Deposit.defaultProps = {
-  depositAddress: null
+  depositAddress: null,
+  selectedPrivacy: null,
 };
 
 Deposit.propTypes = {
-  depositAddress: PropTypes.string
+  depositAddress: PropTypes.string,
+  selectedPrivacy: PropTypes.object,
+  handleGenAddress: PropTypes.func.isRequired,
 };
 
 export default Deposit;
