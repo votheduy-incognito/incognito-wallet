@@ -39,7 +39,7 @@ const GetStarted = ({ onCreateNew, isInitialing }) => {
           style={style.getStartedBtn}
         />
       </View>
-      <View style={style.importKeyBlock}>
+      {/* <View style={style.importKeyBlock}>
         <Text style={style.centerText}>
           Import private key if you already have an account with us.
         </Text>
@@ -48,7 +48,7 @@ const GetStarted = ({ onCreateNew, isInitialing }) => {
             Import your key
           </Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </Container>
   );
 };
