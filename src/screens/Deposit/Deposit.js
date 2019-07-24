@@ -19,7 +19,7 @@ class Deposit extends React.Component {
   handleSubmit = values => {
     const { handleGenAddress } = this.props;
     const { amount } = values;
-    handleGenAddress(amount)
+    return handleGenAddress(amount)
       .catch(e => {
         Toast.showError(getErrorMessage(e));
       });
