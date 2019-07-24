@@ -9,6 +9,7 @@ import EstimateFee from '@src/components/EstimateFee';
 import convertUtil from '@src/utils/convert';
 import { getErrorMessage, messageCode } from '@src/services/errorHandler';
 import { openQrScanner } from '@src/components/QrCodeScanner';
+import LoadingTx from '@src/components/LoadingTx';
 import tokenData from '@src/constants/tokenData';
 import formatUtil from '@src/utils/format';
 import style from './style';
@@ -18,7 +19,7 @@ const formName = 'withdraw';
 const selector = formValueSelector(formName);
 const initialFormValues = {
   amount: '',
-  toAddress: '2MvNYpXrYSaGbYPP65BBHFRqCSqp32fTKo5'
+  toAddress: ''
 };
 
 const Form = createForm(formName, {
@@ -108,7 +109,7 @@ class Withdraw extends React.Component {
             <Text style={style.currentBalanceLabel}>Current Balance</Text>
           </View>
           <Form style={homeStyle.form}>
-            {({ handleSubmit }) => (
+            {({ handleSubmit, submitting }) => (
               <>
                 <Field
                   component={InputField}
@@ -139,7 +140,8 @@ class Withdraw extends React.Component {
                   toAddress={isFormValid ? selectedPrivacy?.paymentAddress : null} // est fee on the same network, dont care which address will be send to
                 />
                 <Text style={style.feeText}>Fee: {formatUtil.amount(finalFee, feeUnit)} {feeUnit}</Text>
-                <Button title='WITHDRAW' style={style.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSubmit)} />
+                <Button title='WITHDRAW' style={style.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSubmit)} isAsync isLoading={submitting} />
+                {submitting && <LoadingTx />}
               </>
             )}
           </Form>
@@ -151,7 +153,6 @@ class Withdraw extends React.Component {
 
 Withdraw.propTypes = {
   withdrawData: PropTypes.object.isRequired,
-  handleEstimateFeeToken: PropTypes.func.isRequired,
   handleGenAddress: PropTypes.func.isRequired,
   handleSendToken: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,

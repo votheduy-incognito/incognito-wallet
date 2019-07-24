@@ -1,9 +1,9 @@
-import { Container, ScrollView } from '@src/components/core';
 import React from 'react';
+import PropTypes from 'prop-types';
+import { Container, ScrollView } from '@src/components/core';
 import incognitoIcon from '@src/assets/images/icons/incognitoInactive.png';
 import TabBarIcon from '@src/components/TabBarIcon';
 import NetworkSection from './NetworkSection';
-import PreferencesSection from './PreferencesSection';
 import PrivacySection from './PrivacySection';
 import WalletSection from './WalletSection';
 
@@ -16,12 +16,11 @@ class Setting extends React.Component {
     super();
     this.state = {
       defaultServerId: 1,
-      defaultLanguage: 'en'
     };
   }
 
   render() {
-    const { defaultServerId, defaultLanguage } = this.state;
+    const { defaultServerId } = this.state;
     const { navigation } = this.props;
     return (
       <ScrollView>
@@ -31,12 +30,15 @@ class Setting extends React.Component {
             navigation={navigation}
             defaultServerId={defaultServerId}
           />
-          <PreferencesSection defaultLanguage={defaultLanguage} />
           <PrivacySection navigation={navigation} />
         </Container>
       </ScrollView>
     );
   }
 }
+
+Setting.propTypes = {
+  navigation: PropTypes.object.isRequired
+};
 
 export default Setting;

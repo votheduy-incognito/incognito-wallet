@@ -5,6 +5,9 @@ export default StyleSheet.create({
   button: {
     ...THEME.opacityButton.button,
   },
+  text: {
+    ...THEME.opacityButton.buttonText
+  },
   textContainer: {
     marginHorizontal: 5,
     flex: 1,

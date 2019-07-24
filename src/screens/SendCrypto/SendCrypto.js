@@ -17,8 +17,8 @@ import { homeStyle } from './style';
 const formName = 'sendCrypto';
 const selector = formValueSelector(formName);
 const initialFormValues = {
-  amount: '1',
-  toAddress: '1Uv3c4hAXqNcxyFhKGwBzGXQ6qdR89nrawqSz7WmcQEX4yurCEVEZMDm1x7g9vJnHHy4Lno73aJhaJAf8fhGgPexmCpu5HuiXU94reXAC'
+  amount: '',
+  toAddress: ''
 };
 const Form = createForm(formName, {
   initialValues: initialFormValues
