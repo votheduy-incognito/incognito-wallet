@@ -36,10 +36,11 @@ class AddDevice extends BaseScreen {
 
   componentDidMount = async ()=> {
     super.componentDidMount();
-    console.log(
-      TAG,
-      'componentDidMount begin');
+    
         this.deviceId?.current?.getCurrentConnect().then((device:ObjConnection) => {
+          console.log(
+            TAG,
+            'componentDidMount begin currentConnect = ',device);
           if (!_.isEmpty(device)) {
             // const name = device.name;
             // const isConnectedHotpost = _.isEqual(name, 'The Miner');
@@ -79,9 +80,6 @@ class AddDevice extends BaseScreen {
 
   renderWaiting = () => {
     const { loading } = this.state;
-    // if (!loading) {
-    //   this.goToScreen(routeNames.SetupWifiDevice);
-    // }
     return (
       loading && (
         <View style={styles.groupWaiting}>

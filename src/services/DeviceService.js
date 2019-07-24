@@ -78,8 +78,8 @@ export default class DeviceService {
   };
 
   static receiveDataFromAddress= ()=>{
-    ZMQService.receiveDataFromAddress('HINETONN', '111111').then(res => {
-      console.log(TAG,'receiveDataFromAddress successfully res',res);
-    });
+    // ZMQService.receiveDataFromAddress('HINETONN', '111111').then(res => {
+    //   console.log(TAG,'receiveDataFromAddress successfully res',res);
+    // });
   }
 }

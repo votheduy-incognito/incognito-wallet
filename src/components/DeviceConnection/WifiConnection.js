@@ -12,11 +12,14 @@ class WifiConnection extends BaseConnection {
 
     this.init();
   }
+  init = () => {
+    this.fetchCurrentConnect();
+  };
   
-  init = async () => {
+  fetchCurrentConnect =  () => {
     console.log(TAG, 'init begin ------');
     
-    const result = await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       Wifi.isApiAvailable(available => {
         console.log(TAG, available ? 'available' : 'failed');
         if (available) {
@@ -25,7 +28,7 @@ class WifiConnection extends BaseConnection {
             this.currentConnect = new ObjConnection();
             this.currentConnect.id = SSID;
             this.currentConnect.name = SSID;
-            resolve(available);
+            resolve(this.currentConnect);
           });
         }
       });
@@ -37,6 +40,7 @@ class WifiConnection extends BaseConnection {
 
   connectDevice = (device: ObjConnection) => {
     return new Promise((resolve, reject) => {
+      const delay = Util.delay(40);
       Wifi.connect(device.name, error => {
         if (!error) {
           Wifi.getSSID(SSID => {
@@ -44,16 +48,19 @@ class WifiConnection extends BaseConnection {
             this.currentConnect = new ObjConnection();
             this.currentConnect.id = SSID;
             this.currentConnect.name = SSID;
+            
             resolve(true);
+            // Util.makeCancelable(delay)?.cancel();
           });
         } else {
           resolve(false);
         }
       });
-      Util.delay(40).then(() => {
-        console.log(TAG, 'getSSID timeout ');
+      delay.then(() => {
+        console.log(TAG, 'connectDevice timeout ');
         reject('timeout');
       });
+       
     });
 
     // Wifi.connectSecure(ssid, passphase, false, (error) => {

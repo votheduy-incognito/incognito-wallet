@@ -61,6 +61,23 @@ export default class Util {
   static delay = timeSecond =>
     new Promise(res => setTimeout(() => res(), timeSecond * 1000));
 
+  static makeCancelable = promise => {
+    let rejectFn;
+
+    const wrappedPromise = new Promise((resolve, reject) => {
+      rejectFn = reject;
+
+      Promise.resolve(promise)
+        .then(resolve)
+        .catch(reject);
+    });
+
+    wrappedPromise.cancel = () => {
+      rejectFn({ canceled: true });
+    };
+
+    return wrappedPromise;
+  };
   static isEmailValid(email) {
     // eslint-disable-next-line no-useless-escape
     const reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

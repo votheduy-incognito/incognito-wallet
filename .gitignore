@@ -60,3 +60,6 @@ buck-out/
 .env.production
 *.lock
 ios/Pods
+ios/GoogleService-Info\.plist
+
+android/app/google-services\.json
