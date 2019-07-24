@@ -167,7 +167,6 @@ class GetStartedContainer extends Component {
 
   render() {
     const { isInitialing } = this.state;
-    Toast.showError('Cooll');
     return (
       <GetStarted
         onCreateNew={this.handleCreateNew}
