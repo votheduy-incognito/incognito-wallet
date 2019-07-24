@@ -64,7 +64,7 @@ class HistoryMined extends React.Component {
       <TouchableOpacity
         style={styles.container_item}
         onPress={()=>{
-          onPress(item);
+          onPress? onPress(item):undefined;
         }}
       >
         <Image style={styles.imageLogo} source={images.ic_device} />
@@ -92,7 +92,7 @@ class HistoryMined extends React.Component {
         <FlatList
           style={styles.list}
           data={listItems}
-          keyExtractor={item => String(item.id)}
+          keyExtractor={(item,index)=> `${item.id}_${index}`}
           onEndReachedThreshold={0.7}
           renderItem={this.renderItem}
           refreshing={isFetching && !isLoadMore}

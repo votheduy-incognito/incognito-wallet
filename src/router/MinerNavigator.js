@@ -7,9 +7,15 @@ import SetupWifiDevice from '@screens/SetupWifiDevice';
 import AddNode from '@src/screens/AddNode';
 import Withdraw from '@src/screens/Withdraw';
 import AddStake from '@src/screens/AddStake';
+import TextStyle, { scaleInApp } from '@src/styles/TextStyle';
+import { sizeHeader } from '@src/components/HeaderBar/style';
+import { imagesVector } from '@src/assets';
 import ROUTE_NAMES from './routeNames';
 
 export const TAG = 'MinerNavigator';
+const defaultNavigationOptions={
+
+};
 const MinerNavigator = createStackNavigator(
   {
     [ROUTE_NAMES.MineSetting]:{
@@ -21,7 +27,7 @@ const MinerNavigator = createStackNavigator(
     [ROUTE_NAMES.AddDevice]: {
       screen:AddDevice,
       navigationOptions: {
-        headerTitle:'Add Device'
+        headerTitle:'Select router'
       }
     },
     [ROUTE_NAMES.AddNode]: {
@@ -56,6 +62,19 @@ const MinerNavigator = createStackNavigator(
     }
   },
   {
+    defaultNavigationOptions:{
+      headerBackTitle:null,
+      headerTintColor: '#fff',
+      headerTitleStyle:{
+        ...TextStyle.bigText,
+        fontWeight:'bold',
+        color:'#FFFFFF'
+      },
+      headerStyle:{
+        height:sizeHeader.height/2,
+        backgroundColor:'#0ECBEE'
+      }
+    },
     headerMode: 'screen'
   }
 );

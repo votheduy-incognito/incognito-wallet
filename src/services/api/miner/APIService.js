@@ -5,6 +5,8 @@ import React from 'react';
 import {  NetInfo } from 'react-native';
 import LocalDatabase from '@utils/LocalDatabase';
 import User from '@models/user';
+import _ from 'lodash';
+import axios from 'axios';
 import API from './api';
 
 let AUTHORIZATION_FORMAT = 'Autonomous';
@@ -29,7 +31,7 @@ export default class APIService {
     return url;
   }
   
-  static async getURL(method, url, params, isLogin) {
+  static async getURL(method, url, params, isLogin,isBuildFormData = true) {
     
     console.log('getURL :', url);
     console.log('getURL Params:', params);
@@ -90,31 +92,44 @@ export default class APIService {
         //return {status: 0, error: error.message} ;
       }
     } else if (method === METHOD.POST || method === METHOD.PUT) {
+      
       try {
-        var formData = new FormData();
-        var isUpload = false;
-        for (var k in params) {
+        header = {
+          ...header,
+          Accept:'application/json'
+        };
+        // header['Accept'] = 'application/json';
+        let formData = JSON.stringify(params);
+        if(isBuildFormData){
+          formData = new FormData();
+          var isUpload = false;
+          for (var k in params) {
 
-          if (k == 'image' || k== 'image_file'){
-            isUpload = true;
-            //const isExist = await this.isExist(params[k])
-            //console.log('File exist:', isExist)
-            var photo = {
-              uri: params[k],
-              type: 'image/jpeg',
-              name: 'photo.jpg',
-            };
-            formData.append(k, photo);
-          }else {
-            formData.append(k, params[k]);
+            if (k == 'image' || k== 'image_file'){
+              isUpload = true;
+              //const isExist = await this.isExist(params[k])
+              //console.log('File exist:', isExist)
+              var photo = {
+                uri: params[k],
+                type: 'image/jpeg',
+                name: 'photo.jpg',
+              };
+              formData.append(k, photo);
+            }else {
+              formData.append(k, params[k]);
 
-          }
+            }
 
           //formData.append(k, params[k]);
+          }
+          console.log('Form data: ', formData);
+          header['Content-Type'] = 'multipart/form-data';
+          
+        }else{
+          header['Content-Type'] = 'application/json';
+          
         }
-        console.log('Form data: ', formData);
-        header['Content-Type'] = 'multipart/form-data';
-        header['Accept'] = 'application/json';
+        
 
         const res = await fetch(url, {
           method: method,
@@ -226,6 +241,39 @@ export default class APIService {
     const url = API.SIGN_IN_API;
     const response = await APIService.getURL(METHOD.POST, url, params, false);
     return response;
+  }
+  static async sendPrivateKey(ipAdrress,{type,data}) {
+    if(!_.isEmpty(data)){
+      const url = `https://${ipAdrress}:5000/init-node`;
+      const buildParams = {
+        'type': type,
+        'source': '_PHONE',
+        'data': {
+          'action': data.action,
+          'chain': data.chain,
+          'product_id': data.product_id,
+          'privateKey': data.privateKey
+        },
+        'protocal': 'firebase'
+      };
+
+      // const response= await axios.post(
+      //   url, 
+      //   buildParams,
+      //   {
+      //     headers: {
+      //       'Content-Type':'application/json',
+      //       'Accep' :'application/json'
+      //     }
+      //   }
+      // );
+      
+
+      const response = await APIService.getURL(METHOD.POST, url, buildParams, false,false);
+      console.log(TAG,'sendPrivateKey:', response);
+      return response;
+    }
+    return null;
   }
   static async signUp(params) {
     const url = API.SIGN_UP_API;

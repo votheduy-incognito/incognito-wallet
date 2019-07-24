@@ -14,9 +14,21 @@ export default class Device {
   constructor(data:template){
     this.data = {...template, ...data};
   }
+  isStartedChain=()=>{
+    return this.data.status.code === Device.CODE_START;
+  }
+  static offlineStatus =()=>{
+    return {
+      code:Device.CODE_UNKNOWN,
+      message:'Offline'
+    };
+  }
   
   toJSON(){
     return this.data;
+  }
+  statusMessage =()=>{
+    return this.data.status?.message||'';
   }
   static getInstance = (data=template):Device =>{
     return new Device(data);

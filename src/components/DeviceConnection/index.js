@@ -22,7 +22,7 @@ class DeviceConnection extends Component {
     this.init();
   }
   
-  getCurrentConnect = async () => {
+  getCurrentConnect = async ():Promise<ObjConnection> => {
     await Util.delay(3);
     console.log(TAG, 'getCurrentConnect ', this.connection.currentConnect);
 

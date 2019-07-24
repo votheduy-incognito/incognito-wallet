@@ -7,7 +7,12 @@ var data = {};
 var myProtocal = '';
 var dest = '';
 var key = '';
+const TYPE = {
+  PRODUCT_CONTROL:'product_control',
+  INCOGNITO:'incognito'
+};
 export default class Action {
+  static TYPE = TYPE;
   constructor(type, source, data, myProtocal, dest) {
     this.type = type;
     this.source = source;
@@ -22,5 +27,14 @@ export default class Action {
       this.data = { ...data, timestamp: new Date().getTime() * 1000 };
     }
     console.log('Data: ', this.data);
+  }
+
+  buildAction = (source)=>{
+    return {
+      type: this.type,
+      source: source || this.source,
+      data: this.data,
+      protocal: this.myProtocal
+    };
   }
 }

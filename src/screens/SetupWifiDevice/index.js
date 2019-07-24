@@ -28,6 +28,9 @@ import WifiConnection from '@components/DeviceConnection/WifiConnection';
 import { connect } from 'react-redux';
 import ZMQService from 'react-native-zmq-service';
 import BaseScreen from '@screens/BaseScreen';
+import { Button } from 'react-native-elements';
+import Util from '@src/utils/Util';
+import { onClickView } from '@src/utils/ViewUtil';
 import styles from './style';
 
 export const TAG = 'SetupWifiDevice';
@@ -41,10 +44,12 @@ class SetupWifiDevice extends BaseScreen {
 
   constructor(props) {
     super(props);
+    const {params} = props.navigation.state;
+    const currentConnect = params.currentConnect||null;
     this.state = {
       validSSID: false,
       validWPA: false,
-      ssid: '',
+      ssid: currentConnect?.name||'',
       wpa: '',
       errorMessage: '',
       verifyCode: '',
@@ -52,6 +57,7 @@ class SetupWifiDevice extends BaseScreen {
       latitude: null,
       longitude: null,
       loading: false,
+      isLoadingSetupWifi:false,
       isConnected: false,
       showModal: false,
       validWallName: false,
@@ -62,73 +68,54 @@ class SetupWifiDevice extends BaseScreen {
     this.wifiConnection = new WifiConnection();
   }
 
-  render() {
-    // const {
-    //   mediumText,
-    //   normalText,
-    //   button,
-    //   buttonText
-    // } = TextStyle;
+  renderDeviceName=()=>{
+    const { container, textInput, item, errorText } = styles;
+    const {
+      showModal,
+      validWallName,
+    } = this.state;
+    if(!showModal){
+      return null;
+    }
+    
+    return (
+      <View style={[styles.modal, styles.modal3]}>
+        {validWallName ? null : (
+          <Text style={[errorText]}>* Please enter name</Text>
+        )}
+        <TextInput
+          underlineColorAndroid="transparent"
+          style={[textInput, item]}
+          placeholder="Device name"
+          onChangeText={text => this.validWallName(text)}
+        />
+        <Button
+          title="Submit"
+          onPress={this.handleSubmit}
+          titleStyle={styles.textTitleButton}
+          buttonStyle={styles.button}
+        />
+      </View>
+    );
+  }
+
+  renderWifiPassword=()=>{
     const { container, textInput, item, errorText } = styles;
     const {
       validSSID,
       validWPA,
+      ssid,
       errorMessage,
-      showModal,
-      validWallName,
-      addProduct
     } = this.state;
     return (
-      <View style={container}>
-        <Modal
-          style={[styles.modal, styles.modal3]}
-          position="top"
-          animationType="slide"
-          transparent={false}
-          ref={this.modal3}
-          visible={showModal}
-        >
-          <Text style={[{ textAlign: 'center', marginTop: 10 }]}>
-            Please input a name
-          </Text>
-          {validWallName ? null : (
-            <Text style={[errorText]}>* Please enter name</Text>
-          )}
-          <TextInput
-            underlineColorAndroid="transparent"
-            style={[textInput, item, { width: '100%', height: 44 }]}
-            placeholder="Wall name"
-            onChangeText={text => this.validWallName(text)}
-          />
-          <TouchableOpacity
-            style={[
-              {
-                backgroundColor: '#579ae6',
-                marginBottom: 10,
-                marginTop: 20,
-                width: '100%'
-              }
-            ]}
-            onPress={() => {
-              this.closeModal();
-            }}
-          >
-            <Text>Submit</Text>
-          </TouchableOpacity>
-        </Modal>
-        <Loader loading={this.state.loading} />
-
+      <View style={[styles.modal, styles.modal3]}>
         {validSSID && validWPA ? null : (
           <Text style={[errorText]}>
-            * Please type a Wi-Fi name and its password to connect Miner to the
-            Internet
+        * Please type a Wi-Fi name and its password to connect Miner to the
+        Internet
           </Text>
         )}
-        {/*validWPA ? null : (
-      <Text style={[normalText, errorText]}>
-        * Please enter Password
-      </Text>
-    )*/}
+
         {errorMessage.length > 0 ? (
           <Text style={[errorText]}>*{errorMessage}</Text>
         ) : null}
@@ -136,28 +123,45 @@ class SetupWifiDevice extends BaseScreen {
           underlineColorAndroid="transparent"
           style={[textInput, item]}
           placeholder="Wi-Fi name"
+          value={ssid}
           onChangeText={text => this.validSSID(text)}
         />
         <TextInput
           underlineColorAndroid="transparent"
           style={[textInput, item]}
-          //secureTextEntry
+          secureTextEntry
           placeholder="Password"
           onChangeText={text => this.validWPA(text)}
         />
-        <TouchableOpacity
-          style={[item, { backgroundColor: '#0ECBEE',height:40 }]}
-          onPress={() => this.checkConnectHotspot()}
-        >
-          <Text>Connect</Text>
-        </TouchableOpacity>
+        
+        <Button
+          titleStyle={styles.textTitleButton}
+          buttonStyle={styles.button}
+          onPress={this.handleSetUpPress}
+          title='Setup'
+        />
+      </View>
+    );
+  }
 
-        {/*<TouchableOpacity
-    style={[button, item, { backgroundColor: '#379af0' }]}
-    onPress={() => this.testZMQ()}
-  >
-    <Text style={buttonText}>Test ZMQ Android</Text>
-  </TouchableOpacity>*/}
+  handleSetUpPress = onClickView(async ()=>{
+    await this.checkConnectHotspot();
+  });
+  handleSubmit = onClickView(async() => {
+    this.closeModal();
+  });
+
+  render() {
+    const { container, textInput, item, errorText } = styles;
+    const {
+      loading
+    } = this.state;
+    
+    return (
+      <View style={container}>
+        {this.renderDeviceName()}
+        <Loader loading={loading} />
+        {this.renderWifiPassword()}
       </View>
     );
   }
@@ -204,7 +208,7 @@ class SetupWifiDevice extends BaseScreen {
       validWPA: isValid
     });
   }
-  async sendZMQ() {
+  sendZMQ = async ()=> {
     const { validSSID, validWPA, ssid, wpa, longitude, latitude } = this.state;
     if (validSSID && validWPA) {
       Keyboard.dismiss();
@@ -276,7 +280,7 @@ class SetupWifiDevice extends BaseScreen {
           verifyCode: verify_code
         });
         if (Platform.OS == 'ios') {
-          this.connectZMQiOS(params);
+          await this.connectZMQiOS(params);
         } else {
           console.log('Send ZMQ Android');
           //ZMQService.sendData(JSON.stringify(params));
@@ -299,9 +303,10 @@ class SetupWifiDevice extends BaseScreen {
       }
     }
   }
-  connectZMQiOS=(params) =>{
-
-    ZMQService.sendData(JSON.stringify(params)).then(res => {
+  connectZMQiOS= async (params) =>{
+    try {
+      const res = await ZMQService.sendData(JSON.stringify(params));
+      if(_.isEmpty(res)) return;
       console.log(TAG,'Send zmq successfully res',res);
 
       this.setState({
@@ -318,10 +323,34 @@ class SetupWifiDevice extends BaseScreen {
           );
         });
 
-      setTimeout(() => {
-        this.callVerifyCode();
-      }, 20 * 1000);
-    });
+      // setTimeout(() => {
+      // this.callVerifyCode();
+      // }, 20 * 1000);
+      await Util.timeout(this.callVerifyCode,20);
+    } catch (error) {
+      console.log(TAG,'Send zmq error',error);
+    }
+    // ZMQService.sendData(JSON.stringify(params)).then(res => {
+    //   console.log(TAG,'Send zmq successfully res',res);
+
+    //   this.setState({
+    //     counterVerify: 0
+    //   });
+
+    //   NetInfo.isConnected
+    //     .fetch()
+    //     .then()
+    //     .done(() => {
+    //       NetInfo.isConnected.addEventListener(
+    //         'connectionChange',
+    //         this._handleConnectionChange
+    //       );
+    //     });
+
+    //   setTimeout(() => {
+    //     this.callVerifyCode();
+    //   }, 20 * 1000);
+    // });
   }
 
   _handleConnectionChange = isConnected => {
@@ -330,48 +359,43 @@ class SetupWifiDevice extends BaseScreen {
       isConnected: isConnected
     });
   };
-  closeModal() {
+  closeModal =()=> {
     if (this.validWallName) {
       const { addProduct } = this.state;
       this.setState(
         {
           showModal: false
         },
-        () => this.changeWallName(addProduct)
+        () => this.changeDeviceName(addProduct)
       );
     }
   }
-  changeWallName(product) {
-    this.setState(
-      {
-        //loaderMessage: 'Completing...'
-        //loading: true
-      },
-      async () => {
-        const { wallName } = this.state;
-        let params = {
-          product_id: product.product_id,
-          product_name: wallName
-        };
-        try {
-          const response = await APIService.updateProduct(params);
+  changeDeviceName = async (product) => {
+    this.setState({
+      loading: true
+    });
+    const { wallName } = this.state;
+    let params = {
+      product_id: product.product_id,
+      product_name: wallName
+    };
+    try {
+      const response = await APIService.updateProduct(params);
 
-          const { status } = response;
-          if (status) {
-            console.log('Change name = ', response);
-            this.setState({
-              loading: false
-            });
-            this.goToScreen(routeNames.HomeMine);
-          }
-        } catch (error) {
-          this.setState({
-            loading: false
-          });
-          this.onPressBack();
-        }
+      const { status } = response;
+      if (status) {
+        console.log('Change name = ', response);
+        this.setState({
+          loading: false
+        });
+        this.goToScreen(routeNames.HomeMine);
       }
-    );
+    } catch (error) {
+      this.setState({
+        loading: false
+      });
+      this.onPressBack();
+    }
   }
   checkConnectHotspot = async  ()=> {
     const { validSSID, validWPA } = this.state;

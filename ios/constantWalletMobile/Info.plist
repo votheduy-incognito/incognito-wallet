@@ -30,6 +30,10 @@
 		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
+			<key>NSTemporaryExceptionAllowsInsecureHTTPLoads </key>
+			<true/>
+			<key>NSIncludesSubdomains</key>
+			<true/>
 			<key>localhost</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
@@ -40,7 +44,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Need to access the camera to scan QR code</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need to access the camera roll to detect QR code</string>
 	<key>UIAppFonts</key>

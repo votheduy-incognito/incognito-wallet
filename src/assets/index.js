@@ -1,3 +1,7 @@
+import { Icon } from 'react-native-elements';
+import React from 'react';
+import { scaleInApp } from '@src/styles/TextStyle';
+
 const images = {
   bgTop: require('./images/bg_top.png'),
   ic_add_device: require('./images/ic_add_device.png'),
@@ -6,6 +10,9 @@ const images = {
   bg_top_device: require('./images/bg_top_device.png'),
   bg_top_detail: require('./images/bg_top_detail.png'),
   ic_back: require('./images/ic_back.png'),
+  ic_add_node_device:require('./images/ic_add_node_device.png'),
+  ic_add_self_node:require('./images/ic_add_self_node.png'),
+  ic_add_cloud_node:require('./images/ic_add_cloud_node.png'),
   // autonomous_logo: require('@/assets/images/autonomous_logo.png'),
   // autonomous_text: require('@/assets/images/autonomous_text.png'),
   // background_top: require('@/assets/images/background_top.png'),
@@ -21,5 +28,26 @@ const images = {
   // ic_capture_photo: require('@/assets/images/ic_capture_photo.png'),
   // ic_capture: require('@/assets/images/ic_capture.png')
 };
-export const imagesVector = {};
+const ic_back = (props)=>(
+  <Icon
+    size={scaleInApp(25)}
+    name='ios-arrow-back'
+    type='ionicon'
+    color='#ffffff'
+    {...props} 
+  />
+);
+const ic_wifi = (props)=>(
+  <Icon
+    size={scaleInApp(25)}
+    name='ios-wifi'
+    type='ionicon'
+    color='#000000'
+    {...props} 
+  />
+);
+export const imagesVector = {
+  ic_back:ic_back,
+  ic_wifi,
+};
 export default images;

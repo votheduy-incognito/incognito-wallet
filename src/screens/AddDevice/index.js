@@ -8,7 +8,9 @@ import { ScrollView, Text, View } from 'react-native';
 import { CheckBox, Icon, ListItem } from 'react-native-elements';
 import Pulse from 'react-native-pulse';
 import { connect } from 'react-redux';
-import styles from './styles';
+import { imagesVector } from '@src/assets';
+import { onClickView } from '@src/utils/ViewUtil';
+import styles, { iconWifi } from './styles';
 
 export const TAG = 'AddDevice';
 
@@ -37,59 +39,52 @@ class AddDevice extends BaseScreen {
     console.log(
       TAG,
       'componentDidMount begin');
-        this.deviceId?.current?.getCurrentConnect().then(device => {
+        this.deviceId?.current?.getCurrentConnect().then((device:ObjConnection) => {
           if (!_.isEmpty(device)) {
-            const name = device.name;
-            const isConnectedHotpost = _.isEqual(name, 'The Miner');
-            if (!isConnectedHotpost) {
-              const deviceMiner = new ObjConnection();
-              deviceMiner.name = 'The Miner';
-              deviceMiner.id = 'The Miner';
-              this.deviceId.current.connectDevice(deviceMiner).then(result => {
-                console.log(
-                  TAG,
-                  'componentDidMount connectDevice result =',
-                  result
-                );
-                if (result) {
-                  this.setState({
-                    loading: false,
-                    currentConnect: deviceMiner
-                  });
-                }
-              });
-            }
-            console.log(
-              TAG,
-              'componentDidMount isConnectedHotpost ',
-              isConnectedHotpost
-            );
+            // const name = device.name;
+            // const isConnectedHotpost = _.isEqual(name, 'The Miner');
+            // if (!isConnectedHotpost) {
+            //   const deviceMiner = new ObjConnection();
+            //   deviceMiner.name = 'The Miner';
+            //   deviceMiner.id = 'The Miner';
+            //   this.deviceId.current.connectDevice(deviceMiner).then(result => {
+            //     console.log(
+            //       TAG,
+            //       'componentDidMount connectDevice result =',
+            //       result
+            //     );
+            //     if (result) {
+            //       this.setState({
+            //         loading: false,
+            //         currentConnect: deviceMiner
+            //       });
+            //     }
+            //   });
+            // }
+            
             this.setState({
-              loading: !isConnectedHotpost,
+              loading: false,
               currentConnect: device
             });
           }
         });
   }
 
+  handleEnterPassword = onClickView(()=>{
+    const {currentConnect} = this.state;
+    this.goToScreen(routeNames.SetupWifiDevice,{
+      currentConnect:currentConnect
+    });
+  });
+
   renderWaiting = () => {
     const { loading } = this.state;
-    if (!loading) {
-      this.goToScreen(routeNames.SetupWifiDevice);
-    }
+    // if (!loading) {
+    //   this.goToScreen(routeNames.SetupWifiDevice);
+    // }
     return (
       loading && (
-        <View
-          style={{
-            marginTop: 300,
-            alignItems: 'center',
-            justifyContent: 'center',
-            position: 'relative',
-            alignSelf: 'center',
-            width: 300,
-            height: 300
-          }}
-        >
+        <View style={styles.groupWaiting}>
           <Pulse
             style={{ position: 'absolute' }}
             color="#0ECBEE"
@@ -111,22 +106,53 @@ class AddDevice extends BaseScreen {
     );
   };
 
+  renderGroup1 =()=>{
+    const { loading, currentConnect } = this.state;
+    const wifiName = currentConnect?.name||'';
+    if(_.isEmpty(wifiName)){
+      return null;
+    }
+    return (
+      <View style={styles.group1}>
+        <Text style={styles.textLabelWifi}>
+      Connect current phone
+        </Text>
+        <ListItem
+          containerStyle={styles.group1_listitem}
+          titleStyle={styles.textTitleWifi}
+          title={wifiName}
+          onPress={this.handleEnterPassword}
+          rightIcon={iconWifi}
+          subtitle='Tap to enter password'
+          subtitleStyle={styles.textEnterPass}
+          chevron={false}
+        />
+      </View>
+    );
+  }
+
+  renderGroup2=()=>{
+    return (
+      <View style={styles.group2}>
+        <ListItem
+          onPress={this.handleEnterPassword}
+          containerStyle={styles.group2_listitem}
+          titleStyle={styles.group2_title}
+          title='Connect to another router'
+          chevronColor="#979797"
+          chevron
+        />
+      </View>
+    );
+  }
+
   render() {
     const { loading, currentConnect } = this.state;
 
     return (
       <View style={styles.container}>
-        
-        <Text
-          style={{
-            color: 'white',
-            fontSize: 18,
-            marginTop: 80,
-            alignSelf: 'center'
-          }}
-        >
-          {currentConnect ? `Current Connection: ${currentConnect.name}` : ''}
-        </Text>
+        {this.renderGroup1()}
+        {this.renderGroup2()}
         <DeviceConnection
           ref={this.deviceId}
           callbackGettingListPairedDevices={(list: []) => {
@@ -141,6 +167,7 @@ class AddDevice extends BaseScreen {
         />
         {this.renderWaiting()}
         {this.renderDeviceList()}
+        
       </View>
     );
   }

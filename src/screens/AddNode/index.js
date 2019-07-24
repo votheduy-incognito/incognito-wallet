@@ -1,29 +1,29 @@
-import DeviceConnection from '@components/DeviceConnection';
-import { ObjConnection } from '@components/DeviceConnection/BaseConnection';
 import routeNames from '@routers/routeNames';
 import BaseScreen from '@screens/BaseScreen';
 import _ from 'lodash';
 import React from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import { CheckBox, Icon, ListItem } from 'react-native-elements';
-import Pulse from 'react-native-pulse';
 import { connect } from 'react-redux';
 import images from '@src/assets';
-import styles from './styles';
+import styles, { rightNextIcon } from './styles';
 
 export const TAG = 'AddNode';
 const listItems = [
   {
-    title:'Incognito-device',
-    img :images.ic_device,
+    title:'Incognito Device',
+    subTitle:'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium',
+    img :images.ic_add_node_device,
   },
   {
     title:'Self-Node',
-    img :images.ic_device,
+    subTitle:'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium',
+    img :images.ic_add_self_node,
   },
   {
-    title:'IncogCloud-device',
-    img :images.ic_device,
+    title:'IncogCloud-Node',
+    subTitle:'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium',
+    img :images.ic_add_cloud_node,
   }
 ];
 class AddNode extends BaseScreen {
@@ -62,13 +62,12 @@ class AddNode extends BaseScreen {
     });
   }
 
-  onItemClick = async (index) => {
+  handleItemClick = async (index) => {
     this.goToScreen(routeNames.AddDevice);
   };
 
   renderListActions = () => {
-    
-    const styleParent = { flex: 1 };
+
     return (
       <View style={styles.container_list_action}>
         
@@ -77,12 +76,12 @@ class AddNode extends BaseScreen {
             <ListItem
               containerStyle={styles.item_container}
               title={item.title}
-              hideChevron
-              leftAvatar={{
-                source:item.img
-              }}
-              onPress={() => this.onItemClick(index)}
-              key={index}
+              subtitle={item.subTitle}
+              leftElement={<Image resizeMode='center' source={item.img} style={styles.avatar} />}
+              rightIcon={rightNextIcon}
+              subtitleStyle={styles.subTitle}
+              onPress={this.handleItemClick}
+              key={`${item.title}`}
               titleStyle={styles.title}
             />
           );

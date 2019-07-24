@@ -1,33 +1,49 @@
 import { StyleSheet } from 'react-native';
+import TextStyle, { scaleInApp, FontStyle } from '@src/styles/TextStyle';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-    padding: 20
+    backgroundColor: '#FFFFFF',
+    padding: scaleInApp(20)
   },
   item: {
-    marginTop: 20
+    marginTop: scaleInApp(20)
   },
   textInput: {
-    borderColor: 'gray',
-    borderWidth: 1,
-    padding: 10
+    ...TextStyle.mediumText,
+    borderColor: '#E5E9EA',
+    color:'#1C1C1C',
+    borderBottomWidth: scaleInApp(2),
+    paddingVertical: scaleInApp(10)
   },
   errorText: {
+    ...TextStyle.smallText,
     color: 'red',
     marginTop: 10
   },
   modal: {
-    justifyContent: 'space-between',
-    alignItems: 'center'
+  },
+  button:{
+    backgroundColor:'#0ECBEE',
+    padding:scaleInApp(10),
+    borderRadius:scaleInApp(4),
+    marginTop:scaleInApp(20),
+  },
+  textTitleButton:{
+    ...TextStyle.bigText,
+    ...FontStyle.medium,
+    color:'#FFFFFF'
+  },
+  textTitleInputName:{
+    ...TextStyle.normalText,
+    ...FontStyle.medium,
+    color:'#737677'
   },
   modal3: {
-    height: 250,
-    width: 300,
-    margin: 10,
-    padding: 10,
-    borderRadius: 5
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    padding: scaleInApp(20)
   }
 });
 
