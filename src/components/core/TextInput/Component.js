@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { TextInput as RNComponent, View, Text } from 'react-native';
 import styleSheet from './style';
 
-const TextInput = ({ containerStyle, inputStyle, prependView, label, onFocus, onBlur, ...props }) => {
+const TextInput = ({ containerStyle, inputStyle, style, prependView, label, onFocus, onBlur, ...props }) => {
   const [focus, setFocus] = useState(false);
 
   function handleFocus() {
@@ -21,7 +21,7 @@ const TextInput = ({ containerStyle, inputStyle, prependView, label, onFocus, on
   }
 
   return (
-    <View style={styleSheet.container}>
+    <View style={styleSheet.container, style}>
       {label && <Text style={[styleSheet.label, focus && styleSheet.labelFocus]}>{label}</Text>}
       <View
         style={[
