@@ -9,7 +9,6 @@ import com.peel.react.TcpSocketsModule;
 import com.peel.react.rnos.RNOSModule;
 import com.tadasr.IOTWifi.IOTWifiPackage;
 import io.invertase.firebase.RNFirebasePackage;
-import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
@@ -48,7 +47,6 @@ public class MainApplication extends Application implements ReactApplication {
             new RNDeviceInfo(),
             new IOTWifiPackage(),
             new RNFirebasePackage(),
-            new RNFirebaseAuthPackage(),
             new RCTBluetoothSerialPackage(),
             new RNCameraPackage(),
             new RandomBytesPackage(),
