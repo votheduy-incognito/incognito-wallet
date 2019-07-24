@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.reactlibrary.RNZmqServicePackage;
-import com.reactlibrary.RNWifiPackage;
 import com.tradle.react.UdpSocketsModule;
 import com.peel.react.TcpSocketsModule;
 import com.peel.react.rnos.RNOSModule;
@@ -47,7 +46,6 @@ public class MainApplication extends Application implements ReactApplication {
             new RNOSModule(),
             new RNDeviceInfo(),
             new IOTWifiPackage(),
-            new RNWifiPackage(),
             new RNFirebasePackage(),
             new RCTBluetoothSerialPackage(),
             new RNCameraPackage(),
