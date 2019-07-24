@@ -17,6 +17,11 @@ import TabBarIcon from '@src/components/TabBarIcon';
 import Home from './Home';
 
 class HomeContainer extends Component {
+  constructor() {
+    super();
+    this.state = { isReloading: false };
+  }
+
   static navigationOptions = {
     tabBarIcon: props => <TabBarIcon image={walletIcon} {...props} />
   };
@@ -37,7 +42,6 @@ class HomeContainer extends Component {
       'didFocus',
       () => {
         clearSelectedPrivacy();
-        this.reload();
       }
     );
   }
@@ -53,11 +57,14 @@ class HomeContainer extends Component {
 
   reload = async () => {
     try {
+      this.setState({ isReloading: true });
       const { getAccountBalance, account } = this.props;
       await getAccountBalance(account);
       this.getFollowingToken();
     } catch {
       Toast.showError('Reload data failed');
+    } finally {
+      this.setState({ isReloading: false });
     }
   }
 
@@ -109,6 +116,7 @@ class HomeContainer extends Component {
   }
 
   render() {
+    const { isReloading } = this.state;
     const { wallet, account, tokens, isGettingBalanceList } = this.props;
 
     if (!wallet) return <LoadingContainer />;
@@ -117,6 +125,8 @@ class HomeContainer extends Component {
       <Home
         account={account}
         tokens={tokens}
+        reload={this.reload}
+        isReloading={isReloading}
         handleAddFollowToken={this.onAddTokenToFollow}
         isGettingBalanceList={isGettingBalanceList}
         onSelectToken={this.handleSelectToken}

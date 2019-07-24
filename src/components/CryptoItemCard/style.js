@@ -13,6 +13,11 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start',
   },
+  logo: {
+    width: 25,
+    height: 25,
+    resizeMode: 'contain'
+  },
   cryptoNameContainer: {
     flex: 3,
     flexDirection: 'column',
