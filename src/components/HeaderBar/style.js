@@ -1,32 +1,37 @@
 import { StyleSheet } from 'react-native';
 import { scaleInApp } from '@src/styles/TextStyle';
+import { COLORS, THEME } from '@src/styles';
 
 export const sizeHeader ={
   height:scaleInApp(90),
   width:'100%'
 }; 
-const styles = StyleSheet.create({
+
+const style = StyleSheet.create({
   container: {
-    alignItems: 'flex-start',
-    height: 60,
-    borderBottomWidth: 0,
-    paddingHorizontal: 20
+    flexDirection: 'row',
+    height: THEME.header.headerHeight,
+    alignItems: 'center'
   },
-  bg: {},
-  containerText: {
+  title: {
+    color: COLORS.white,
+    fontWeight: '600'
+  },
+  left: {
     flex: 1,
-    width: '50%',
-    alignSelf: 'flex-start',
-    flexDirection: 'column',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  center: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  right: {
+    flex: 1,
+    flexDirection: 'row',
     justifyContent: 'flex-end'
-  },
-  text: {
-    color: 'black',
-    fontWeight: '900'
-  },
-  bt_left_right: {
-    width: 30,
-    height: 30
   }
 });
-export default styles;
+
+export default style;

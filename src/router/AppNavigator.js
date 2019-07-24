@@ -1,4 +1,5 @@
-import UserHeaderContainer from '@src/components/UserHeader';
+import { THEME } from '@src/styles';
+import { createStackNavigator } from 'react-navigation';
 import CreateAccount from '@src/screens/CreateAccount';
 import Defragment from '@src/screens/Defragment';
 import ExportAccount from '@src/screens/ExportAccount';
@@ -14,45 +15,40 @@ import SendCrypto from '@src/screens/SendCrypto';
 import Deposit from '@src/screens/Deposit';
 import Withdraw from '@src/screens/Withdraw';
 import CreateToken from '@src/screens/CreateToken';
-import { THEME } from '@src/styles';
+import HeaderBar from '@src/components/HeaderBar';
 import { navigationOptionsHandler } from '@src/utils/router';
-import React from 'react';
-import { createStackNavigator } from 'react-navigation';
 import ROUTE_NAMES from './routeNames';
 import TabNavigator from './TabNavigator';
 
 const AppNavigator = createStackNavigator(
   {
     TabNavigator,
-    [ROUTE_NAMES.UserHeaderBoard]: navigationOptionsHandler(UserHeaderBoard),
+    [ROUTE_NAMES.UserHeaderBoard]: navigationOptionsHandler(UserHeaderBoard, { title: 'Accounts' }),
     [ROUTE_NAMES.Staking]: navigationOptionsHandler(Staking),
     [ROUTE_NAMES.Defragment]: navigationOptionsHandler(Defragment),
-    [ROUTE_NAMES.NetworkSetting]: navigationOptionsHandler(NetworkSetting),
-    [ROUTE_NAMES.CreateAccount]: navigationOptionsHandler(CreateAccount),
-    [ROUTE_NAMES.ImportAccount]: navigationOptionsHandler(ImportAccount),
+    [ROUTE_NAMES.NetworkSetting]: navigationOptionsHandler(NetworkSetting, { title: 'Network Setting' }),
+    [ROUTE_NAMES.CreateAccount]: navigationOptionsHandler(CreateAccount, { title: 'Create Account' }),
+    [ROUTE_NAMES.ImportAccount]: navigationOptionsHandler(ImportAccount, { title: 'Import Account' }),
     [ROUTE_NAMES.SeedPhrase]: navigationOptionsHandler(SeedPhrase),
-    [ROUTE_NAMES.ExportAccount]: navigationOptionsHandler(ExportAccount),
-    [ROUTE_NAMES.FollowToken]: navigationOptionsHandler(FollowToken),
+    [ROUTE_NAMES.ExportAccount]: navigationOptionsHandler(ExportAccount, { title: 'Export Account' }),
+    [ROUTE_NAMES.FollowToken]: navigationOptionsHandler(FollowToken, { title: 'Follow Token' }),
     [ROUTE_NAMES.WalletDetail]: navigationOptionsHandler(WalletDetail),
-    [ROUTE_NAMES.ReceiveCrypto]: navigationOptionsHandler(ReceiveCrypto),
-    [ROUTE_NAMES.SendCrypto]: navigationOptionsHandler(SendCrypto),
+    [ROUTE_NAMES.ReceiveCrypto]: navigationOptionsHandler(ReceiveCrypto, { title: 'Receive' }),
+    [ROUTE_NAMES.SendCrypto]: navigationOptionsHandler(SendCrypto, { title: 'Send' }),
     [ROUTE_NAMES.Deposit]: navigationOptionsHandler(Deposit),
     [ROUTE_NAMES.Withdraw]: navigationOptionsHandler(Withdraw),
-    [ROUTE_NAMES.CreateToken]: navigationOptionsHandler(CreateToken),
+    [ROUTE_NAMES.CreateToken]: navigationOptionsHandler(CreateToken, { title: 'Create Token' }),
   },
   {
     initialRouteName: 'TabNavigator',
     defaultNavigationOptions: ({ navigation }) => {
-      const handleUserPress = () => {
-        navigation.navigate(ROUTE_NAMES.UserHeaderBoard);
-      };
-
+      const { routeName } = navigation.state;
+      // You can do whatever you like here to pick the title based on the route name
+      const title = routeName;
       return {
-        headerRight: <UserHeaderContainer onPress={handleUserPress} />,
-        headerTintColor: THEME.header.headerTintColor,
-        headerStyle: {
-          backgroundColor: THEME.header.backgroundColor
-        }
+        title,
+        header: HeaderBar,
+        headerBackground: THEME.header.backgroundColor
       };
     }
   }

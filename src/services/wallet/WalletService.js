@@ -8,7 +8,6 @@ import {
   Wallet
 } from 'incognito-chain-web-js/build/wallet';
 import { randomBytes } from 'react-native-randombytes';
-import accountService from './accountService';
 import { getPassphrase } from './passwordService';
 import { getMaxShardNumber } from './RpcClientService';
 import Server from './Server';
@@ -25,7 +24,6 @@ export async function loadListAccount(wallet) {
     const listAccountRaw = (await wallet.listAccount()) || [];
     const listAccount =
       listAccountRaw.map(account => ({
-        default: false,
         name: account.AccountName,
         value: null,
         PaymentAddress: account.PaymentAddress,
@@ -35,17 +33,6 @@ export async function loadListAccount(wallet) {
         PublicKeyCheckEncode: account.PublicKeyCheckEncode,
         PublicKeyBytes: account.PublicKeyBytes
       })) || [];
-
-    const defaultAccountName = await accountService.getDefaultAccountName();
-    const defaultAccountIndex = listAccount?.findIndex(
-      _acc => _acc.name === defaultAccountName
-    );
-
-    if (defaultAccountIndex !== -1) {
-      listAccount[defaultAccountIndex].default = true;
-    } else {
-      listAccount[0].default = true;
-    }
 
     return listAccount;
   } catch (e) {

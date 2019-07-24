@@ -5,10 +5,37 @@ import { getBalance } from '@src/redux/actions/account';
 import LoadingContainer from '@src/components/LoadingContainer';
 import accountService from '@src/services/wallet/accountService';
 import { setWallet } from '@src/redux/actions/wallet';
+import { accountSeleclor } from '@src/redux/selectors';
+import SendReceiveGroup from '@src/components/HeaderRight/SendReceiveGroup';
 import WalletDetail from './WalletDetail';
 
-
 class WalletDetailContainer extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: navigation.state.params?.title,
+      headerRight: <SendReceiveGroup />
+    };
+  }
+
+  componentDidMount() {
+    this.setTitle();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
+    const { selectedPrivacy } = this.props;
+    if (oldSelectedPrivacy?.symbol !== selectedPrivacy?.symbol) {
+      this.setTitle();
+    }
+  }
+
+  setTitle = () => {
+    const { navigation, selectedPrivacy } = this.props;
+    navigation.setParams({
+      title: selectedPrivacy?.name
+    });
+  }
+
   onRemoveFollowToken = async tokenId => {
     try {
       const { account, wallet, setWallet } = this.props;
@@ -43,7 +70,7 @@ class WalletDetailContainer extends Component {
 }
 
 const mapState = state => ({
-  account: state.account.defaultAccount,
+  account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet,
   selectedPrivacy: state.selectedPrivacy
 });

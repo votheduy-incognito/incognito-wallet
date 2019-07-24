@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import { accountSeleclor } from '@src/redux/selectors';
 import Staking from './Staking';
 
 const StakingContainer = ({ wallet, defaultAccount, ...otherProps }) => (
@@ -8,7 +9,7 @@ const StakingContainer = ({ wallet, defaultAccount, ...otherProps }) => (
 );
 
 const mapState = state => ({
-  defaultAccount: state.account.defaultAccount,
+  defaultAccount: accountSeleclor.defaultAccount(state),
   wallet: state.wallet
 });
 StakingContainer.defaultProps = {

@@ -27,10 +27,10 @@ export default {
   TOKEN_SYMBOL,
   DECISION_RATE: {
     [CRYPTO_SYMBOL.ETH]: 1e18,
-    [CRYPTO_SYMBOL.BTC]: 1e6,
+    [CRYPTO_SYMBOL.BTC]: 1e9,
     [TOKEN_SYMBOL.pETH]: 1e9,
     [TOKEN_SYMBOL.pBTC]: 1e9,
-    [CRYPTO_SYMBOL.PRV]: 1e2
+    [CRYPTO_SYMBOL.PRV]: 1e9
   },
   TOKEN_TX_TYPE: {
     INIT: 0,

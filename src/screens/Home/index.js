@@ -11,9 +11,16 @@ import SelectedPrivacyModel from '@src/models/selectedPrivacy';
 import routeNames from '@src/router/routeNames';
 import tokenData from '@src/constants/tokenData';
 import { connect } from 'react-redux';
+import { accountSeleclor } from '@src/redux/selectors';
+import walletIcon from '@src/assets/images/icons/walletInactive.png';
+import TabBarIcon from '@src/components/TabBarIcon';
 import Home from './Home';
 
 class HomeContainer extends Component {
+  static navigationOptions = {
+    tabBarIcon: props => <TabBarIcon image={walletIcon} {...props} />
+  };
+
   componentDidMount() {
     const { account, navigation, clearSelectedPrivacy, getAccountBalance, accountList } = this.props;
 
@@ -22,7 +29,7 @@ class HomeContainer extends Component {
 
     scheduleService.reloadAllAccountBalance({
       accounts: accountList,
-      getBalance: getAccountBalance
+      getBalance: getAccountBalance,
     });
 
 
@@ -120,7 +127,7 @@ class HomeContainer extends Component {
 
 const mapState = state => ({
   accountList: state.account.list,
-  account: state.account.defaultAccount,
+  account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet,
   tokens: state.token.followed || [],
   isGettingBalanceList: [...state.account.isGettingBalance, ...state.token.isGettingBalance]

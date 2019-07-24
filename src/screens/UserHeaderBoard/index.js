@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { deleteWallet } from '@src/services/wallet/WalletService';
 import routeNames from '@src/router/routeNames';
+import { accountSeleclor } from '@src/redux/selectors';
 import UserHeaderBoard from './UserHeaderBoard';
 
 class UserHeaderBoardContainer extends Component {
@@ -37,7 +38,7 @@ class UserHeaderBoardContainer extends Component {
 
 const mapState = state => ({
   wallet: state.wallet,
-  defaultAccountName: state.account?.defaultAccount?.name,
+  defaultAccountName: accountSeleclor.defaultAccount(state)?.name,
   accountList: state.account?.list,
   isGettingBalance: state.account?.isGettingBalance
 });

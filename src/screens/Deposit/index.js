@@ -23,7 +23,8 @@ class DepositContainer extends Component {
       const address = await genDepositAddress({
         currencyType,
         amount,
-        paymentAddress: selectedPrivacy?.paymentAddress
+        paymentAddress: selectedPrivacy?.paymentAddress,
+        walletAddress: selectedPrivacy?.paymentAddress,
       });
       this.setState({ address });
       return address;
@@ -39,7 +40,7 @@ class DepositContainer extends Component {
     if (!selectedPrivacy) return <LoadingContainer />;
 
     return (
-      <Deposit depositAddress={address} handleGenAddress={this.getDepositAddress} />
+      <Deposit selectedPrivacy={selectedPrivacy} depositAddress={address} handleGenAddress={this.getDepositAddress} />
     );
   }
 }

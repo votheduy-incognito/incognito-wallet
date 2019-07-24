@@ -6,6 +6,7 @@ import { getpTokenHistory } from '@src/services/api/history';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { accountSeleclor } from '@src/redux/selectors';
 import { CONSTANT_COMMONS } from '@src/constants';
 import tokenData from '@src/constants/tokenData';
 
@@ -85,13 +86,13 @@ class HistoryTokenContainer extends Component {
     try {
       this.setState({ isLoading: true });
       const { selectedPrivacy } = this.props;
-      const { additionalData } = selectedPrivacy;
+      const { additionalData, paymentAddress } = selectedPrivacy;
 
       if (!additionalData?.isWithdrawable || !additionalData?.isDeposable) {
         return;
       }
 
-      const histories = await getpTokenHistory({ currencyType: CONSTANT_COMMONS.PRIVATE_TOKEN_HISTORY_CURRENCY_TYPE[additionalData?.currencyType] });
+      const histories = await getpTokenHistory({ currencyType: CONSTANT_COMMONS.PRIVATE_TOKEN_HISTORY_CURRENCY_TYPE[additionalData?.currencyType], paymentAddress });
 
       this.setState({ historiesFromApi: histories });
     } catch {
@@ -144,7 +145,7 @@ class HistoryTokenContainer extends Component {
 const mapState = state => ({
   selectedPrivacy: state.selectedPrivacy,
   wallet: state.wallet,
-  defaultAccount: state.account?.defaultAccount,
+  defaultAccount: accountSeleclor.defaultAccount(state),
   tokens: state.token.followed,
 });
 

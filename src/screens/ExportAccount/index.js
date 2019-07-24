@@ -2,6 +2,7 @@ import LoadingContainer from '@src/components/LoadingContainer';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import { accountSeleclor } from '@src/redux/selectors';
 import ExportAccount from './ExportAccount';
 
 const ExportAccountContainer = ({ account, navigation }) => {
@@ -20,7 +21,7 @@ ExportAccountContainer.propTypes = {
 };
 
 const mapState = state => ({
-  account: state.account?.defaultAccount
+  account: accountSeleclor.defaultAccount(state)
 });
 
 export default connect(mapState)(ExportAccountContainer);

@@ -1,7 +1,22 @@
 import { loadListAccount, loadWallet } from '@src/services/wallet/WalletService';
+import accountService from '@src/services/wallet/accountService';
 import { getPassphrase } from '@src/services/wallet/passwordService';
 import type from '@src/redux/types/wallet';
-import { setBulkAccount } from '@src/redux/actions/account';
+import { setBulkAccount, setDefaultAccount } from '@src/redux/actions/account';
+import { accountSeleclor } from '@src/redux/selectors';
+
+const getStoredDefaultAccountName = async (listAccount) => {
+  const firstAccountName = listAccount && listAccount[0]?.name;
+  try {
+    const storedName = await accountService.getDefaultAccountName();
+    if (storedName) {
+      return storedName;
+    }
+    throw new Error('Can not find stored account name, will fallback to first account');
+  } catch {
+    return firstAccountName;
+  }
+};
 
 export const setWallet = (wallet = throw new Error('Wallet object is required')) => ({
   type: type.SET,
@@ -24,8 +39,9 @@ export const reloadAccountList = () => (dispatch, getState) => {
     });
 };
 
-export const reloadWallet = (passphrase) => async (dispatch) => {
+export const reloadWallet = (passphrase) => async (dispatch, getState) => {
   try {
+    let defaultAccount = accountSeleclor.defaultAccount(getState());
     const _passphrase = passphrase || await getPassphrase();
     if (!_passphrase) {
       return;
@@ -38,6 +54,12 @@ export const reloadWallet = (passphrase) => async (dispatch) => {
   
       const accounts = await loadListAccount(wallet);
       dispatch(setBulkAccount(accounts));
+
+      if (!defaultAccount) {
+        const defaultAccountName = await getStoredDefaultAccountName(accounts);
+        defaultAccount = accounts?.find(a => a?.name === defaultAccountName);
+        defaultAccount && dispatch(setDefaultAccount(defaultAccount));
+      }
     
       return wallet;
     }

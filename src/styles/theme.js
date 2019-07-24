@@ -2,9 +2,11 @@ import COLORS from './colors';
 import DECOR from './decor';
 import FONTS from './font';
 import SPACINGS from './spacing';
+import { scaleInApp } from './TextStyle';
 
 const header = {
-  backgroundColor: COLORS.blue,
+  headerHeight:  scaleInApp(55),
+  backgroundColor: COLORS.blueDark,
   headerTintColor: COLORS.black
 };
 
@@ -26,12 +28,15 @@ const opacityButton = {
     textAlign: 'center',
     fontSize: 18,
     letterSpacing: 0
+  },
+  disabled: {
+    backgroundColor: COLORS.lightGrey,
   }
 };
 
 const text = {
   errorText: {
-    size: FONTS.SIZE.superSmall,
+    fontSize: FONTS.SIZE.superSmall,
     color: COLORS.red
   },
   defaultTextStyle: {

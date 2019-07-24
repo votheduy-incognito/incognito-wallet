@@ -1,34 +1,37 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Text } from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { connect } from 'react-redux';
 import { genWithdrawAddress } from '@src/services/api/withdraw';
 import tokenService from '@src/services/wallet/tokenService';
 import { CONSTANT_COMMONS } from '@src/constants';
-import tokenData from '@src/constants/tokenData';
-import { messageCode, createError, throwNext } from '@src/services/errorHandler';
-import { getEstimateFeeForSendingTokenService } from '@src/services/wallet/RpcClientService';
+import { messageCode, createError } from '@src/services/errorHandler';
+import { getMaxWithdrawAmountService } from '@src/services/wallet/RpcClientService';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
+import { accountSeleclor } from '@src/redux/selectors';
 import convertUtil from '@src/utils/convert';
+import tokenData from '@src/constants/tokenData';
 import Withdraw from './Withdraw';
 
 class WithdrawContainer extends Component {
   constructor() {
     super();
+
+    this.state = {
+      withdrawData: null,
+    };
   }
 
-  onEstimateFeeToken = async ({ amount }) => {
-    const { account, wallet, selectedPrivacy } = this.props;
+  componentDidMount() {
+    this.getWithdrawData();
+  }
+
+  getTokenObject = ({ amount }) => {
+    const { selectedPrivacy } = this.props;
     const fromAddress = selectedPrivacy?.paymentAddress;
     const toAddress = fromAddress; // est fee on the same network, dont care which address will be send to
-    const tokenFee = 0;
-    const accountWallet = wallet.getAccountByName(account?.name);
     const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
-    const selectedPrivacyAmount = selectedPrivacy?.amount;
-
-    if (selectedPrivacyAmount <= 0) {
-      throw createError({ code: messageCode.code.balance_must_not_be_zero });
-    }
 
     const tokenObject = {
       Privacy: true,
@@ -43,30 +46,44 @@ class WithdrawContainer extends Component {
       }
     };
 
+    return tokenObject;
+  }
+
+  getWithdrawData = async () => {
+    const { account, wallet, selectedPrivacy } = this.props;
+    const fromAddress = selectedPrivacy?.paymentAddress;
+    const toAddress = fromAddress; // est fee on the same network, dont care which address will be send to
+    const accountWallet = wallet.getAccountByName(account?.name);
+    const selectedPrivacyAmount = selectedPrivacy?.amount;
+
+    if (selectedPrivacyAmount <= 0) {
+      return throw createError({ code: messageCode.code.balance_must_not_be_zero });
+    }
+
+    const tokenObject = this.getTokenObject({ amount: 0 });
+
     try{
-      const fee = await getEstimateFeeForSendingTokenService(
+      const data = await getMaxWithdrawAmountService(
         fromAddress,
         toAddress,
-        originalAmount,
         tokenObject,
         account?.PrivateKey,
         accountWallet,
-        true, // privacy mode
-        tokenFee
       );
-      const humanFee = convertUtil.toHumanAmount(fee, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
-      return humanFee;
-    } catch (e) {
-      throwNext(e, { defaultCode: messageCode.code.estimate_fee_failed });
+
+      this.setState({ withdrawData: data });
+    } catch {
+      throw new Error('Get withdraw data error');
     }
   }
 
-
-  onSendToken = async ({ tempAddress, amount, fee }) => {
+  onSendToken = async ({ tempAddress, amount, fee, feeUnit }) => {
+    const { withdrawData: { feeForBurn } } = this.state;
     const { account, wallet, tokens, selectedPrivacy, getTokenBalanceBound } = this.props;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
-    const originalFee = convertUtil.toOriginalAmount(Number(fee), tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
+    const originalFee = Number(fee);
     const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
+    const isTokenFee = feeUnit !== tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY;
 
     const tokenObject = {
       Privacy : true,
@@ -74,25 +91,26 @@ class WithdrawContainer extends Component {
       TokenName: selectedPrivacy?.name,
       TokenSymbol: selectedPrivacy?.symbol,
       TokenTxType: type,
-      TokenAmount: originalAmount,
+      TokenAmount: originalAmount + (isTokenFee ? feeForBurn : 0),
       TokenReceivers: {
         PaymentAddress: tempAddress,
-        Amount: originalAmount
+        Amount: originalAmount + (isTokenFee ? feeForBurn : 0)
       }
     };
 
     const paymentInfo = {
       paymentAddressStr: tempAddress,
-      amount: originalFee,
+      amount: feeForBurn,
     };
 
     try {
       const res = await tokenService.createSendPrivacyCustomToken(
         tokenObject,
-        originalFee,
+        !isTokenFee ? originalFee : 0,
         account,
         wallet,
-        paymentInfo
+        !isTokenFee  ? paymentInfo : null,
+        isTokenFee ? originalFee : 0
       );
 
       if (res.txId) {
@@ -112,10 +130,12 @@ class WithdrawContainer extends Component {
     try {
       const { selectedPrivacy } = this.props;
       const currencyType = CONSTANT_COMMONS.CURRENCY_TYPE_FOR_GEN_ADDRESS[selectedPrivacy?.additionalData?.currencyType];
+      const walletAddress = selectedPrivacy?.paymentAddress;
       const address = await genWithdrawAddress({
         currencyType,
         amount,
-        paymentAddress
+        paymentAddress,
+        walletAddress
       });
       return address;
     } catch (e) {
@@ -125,15 +145,20 @@ class WithdrawContainer extends Component {
 
   render() {
     const { selectedPrivacy } = this.props;
+    const { withdrawData } = this.state;
 
-    if (!selectedPrivacy) return <LoadingContainer />;
+    if (selectedPrivacy && selectedPrivacy?.amount <= 0) {
+      return <Text style={{ padding: 20, textAlign: 'center'}}>Please deposit more {selectedPrivacy?.symbol} to your wallet.</Text>;
+    }
+
+    if (!selectedPrivacy || !withdrawData) return <LoadingContainer />;
 
     return (
       <Withdraw
         {...this.props}
+        withdrawData={withdrawData}
         handleGenAddress={this.getWithdrawAddress}
         handleSendToken={this.onSendToken}
-        handleEstimateFeeToken={this.onEstimateFeeToken}
       />
     );
   }
@@ -143,7 +168,7 @@ const mapState = state => ({
   tokens: state.token?.followed,
   selectedPrivacy: state.selectedPrivacy,
   wallet: state.wallet,
-  account: state.account?.defaultAccount
+  account: accountSeleclor.defaultAccount(state)
 });
 
 const mapDispatch = { getTokenBalanceBound: getTokenBalance };

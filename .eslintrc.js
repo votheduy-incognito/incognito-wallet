@@ -55,6 +55,7 @@ module.exports = {
     'react/forbid-prop-types': 0,
     'react/prefer-stateless-function': 0,
     'import/no-unresolved': 0, // tmp
-    'react/jsx-one-expression-per-line': 0
+    'react/jsx-one-expression-per-line': 0,
+    'react/sort-comp': 0
   }
 };

@@ -4,7 +4,8 @@ import {
   getEstimateFee,
   getEstimateFeeForSendingToken,
   getEstimateFeeToDefragment,
-  getEstimateTokenFee
+  getEstimateTokenFee,
+  getMaxWithdrawAmount
 } from 'incognito-chain-web-js/build/wallet';
 
 function getRpcClient() {
@@ -185,4 +186,29 @@ export async function hashToIdenticon(hashStrs) {
   }
 
   return resp.images;
+}
+
+export async function getMaxWithdrawAmountService(
+  from,
+  to,
+  tokenObject,
+  privateKey,
+  account,
+  isPrivacyForPrivateToken
+) {
+  let response;
+  try {
+    response = await getMaxWithdrawAmount(
+      from,
+      to,
+      tokenObject,
+      privateKey,
+      account,
+      getRpcClient(),
+      isPrivacyForPrivateToken
+    );
+  } catch (e) {
+    throw e;
+  }
+  return response;
 }

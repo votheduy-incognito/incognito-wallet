@@ -1,20 +1,58 @@
-import { SPACING, COLORS } from '@src/styles';
+import { COLORS, THEME } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
   container: {
-    paddingHorizontal: SPACING.small,
-    paddingLeft: SPACING.small,
+    marginTop: 30,
     display: 'flex'
   },
-  rate: {},
-  rateHighlight: {
-    backgroundColor: COLORS.red
+  errorText: {
+    ...THEME.text.errorText
   },
-  feeType: {},
+  feeTypeGroup: {
+    flexDirection: 'row',
+    marginTop: 5,
+  },
+  feeType: {
+    padding: 5,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignContent: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.lightGrey,
+  },
   feeTypeHighlight: {
-    backgroundColor: COLORS.blue
-  }
+    backgroundColor: COLORS.lightGrey
+  },
+  feeTypeText: {
+    color: COLORS.blue,
+  },
+  rateContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.lightGrey,
+    paddingVertical: 10,
+    height: 55
+  },
+  rate: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignContent: 'center',
+    paddingVertical: 5,
+    flex: 1,
+  },
+  rateTextHighlight: {
+    fontWeight: '900',
+    textDecorationLine: 'underline'
+  },
+  rateText: {
+    fontWeight: '100',
+    color: COLORS.blueDark,
+  },
+  
 });
 
 export default style;

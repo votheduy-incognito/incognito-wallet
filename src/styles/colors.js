@@ -4,6 +4,8 @@ export default {
   white: 'white',
   grey: '#F5F5F5',
   blue: '#0DB8D8',
+  blueDark: '#07252A',
+  blueLight: '#00D7FF',
   red: 'red',
   orange: 'orange',
   yellow: 'yellow',
@@ -16,6 +18,4 @@ export default {
   overlayBlackDark: 'rgba(0, 0, 0, 0.8)',
   overlayBlackLight: 'rgba(0, 0, 0, 0.3)',
   primary: '#007bff',
-  blueLight: '#00D7FF',
-  headerColor: '#263B41'
 };
