@@ -6,6 +6,7 @@ import com.facebook.react.ReactApplication;
 import com.reactlibrary.RNZmqServicePackage;
 import com.tadasr.IOTWifi.IOTWifiPackage;
 import io.invertase.firebase.RNFirebasePackage;
+import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
@@ -50,6 +51,7 @@ public class MainApplication extends Application implements ReactApplication {
             new VectorIconsPackage(),
             new RNGestureHandlerPackage(),
             new GomobilePackage(),
+            new RNFirebaseAuthPackage(),
             new RNFirebaseMessagingPackage(),
             new RNFirebaseNotificationsPackage()
       );
