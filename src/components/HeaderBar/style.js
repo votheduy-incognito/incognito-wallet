@@ -1,5 +1,11 @@
-import { COLORS, THEME } from '@src/styles';
 import { StyleSheet } from 'react-native';
+import { scaleInApp } from '@src/styles/TextStyle';
+import { COLORS, THEME } from '@src/styles';
+
+export const sizeHeader ={
+  height:scaleInApp(90),
+  width:'100%'
+}; 
 
 const style = StyleSheet.create({
   container: {

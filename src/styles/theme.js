@@ -2,9 +2,10 @@ import COLORS from './colors';
 import DECOR from './decor';
 import FONTS from './font';
 import SPACINGS from './spacing';
+import { scaleInApp } from './TextStyle';
 
 const header = {
-  headerHeight: 55,
+  headerHeight:  scaleInApp(55),
   backgroundColor: COLORS.blueDark,
   headerTintColor: COLORS.black
 };

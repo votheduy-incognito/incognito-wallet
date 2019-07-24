@@ -150,7 +150,7 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-wifi')
+    implementation project(':react-native-zmq-service')
     implementation project(':react-native-udp')
     implementation project(':react-native-tcp')
     implementation project(':react-native-os')

@@ -1,4 +1,30 @@
+const template = {
+  email: '',
+  country: '',
+  fullname: '',
+  id: '',
+  token: '',
+  phone: '',
+  user_hash: '',
+  gender: 'Male',
+  last_update_task: '',
+  created_at: '',
+  birth: '',
+  city: '',
+  code: ''
+};
 class User {
+  constructor(data: template) {
+    this.data = { ...template, ...data };
+  }
+  toJSON() {
+    return {
+      ...this.data
+    };
+  }
+  static getInstance = (data: template): User => {
+    return new User(data);
+  };
   static parseSubscribeEmailData(data = {}) {
     return {
       id: data.ID,

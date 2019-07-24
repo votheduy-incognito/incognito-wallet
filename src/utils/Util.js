@@ -1,3 +1,6 @@
+/**
+ * @providesModule Util
+ */
 import { Linking } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
 
@@ -10,6 +13,15 @@ export default class Util {
     });
 
     navigation.dispatch(resetAction);
+  };
+  static hashCode = str => {
+    return str
+      .split('')
+      .reduce(
+        (prevHash, currVal) =>
+          ((prevHash << 5) - prevHash + currVal.charCodeAt(0)) | 0,
+        0
+      );
   };
 
   static openSetting = async (

@@ -1,5 +1,5 @@
 import { Dimensions, Platform, StatusBar, StyleSheet } from 'react-native';
-import { verticalScale } from 'react-native-size-matters';
+import { scale,verticalScale } from 'react-native-size-matters';
 import colors from './colors';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight || 20;
@@ -8,15 +8,21 @@ export const screenSize = {
   width: Dimensions.get('window').width,
   height: Dimensions.get('window').height - STATUSBAR_HEIGHT
 };
-
+export const scaleInApp = verticalScale;
 export const FONT_FAMILY = Platform.OS === 'ios' ? 'Roboto' : 'Roboto';
+export const FontStyle = {
+  normal:{
+    fontFamily:`${FONT_FAMILY}`
+  },
+  medium:{
+    fontFamily:`${FONT_FAMILY}-Medium`
+  },
+  bold:{
+    fontFamily:`${FONT_FAMILY}-Bold`
+  }
+};
 const textColor = colors.white;
 const TextStyle = StyleSheet.create({
-  bigText: {
-    fontFamily: FONT_FAMILY,
-    fontSize: verticalScale(18)
-    // fontSize: 18 * scale()
-  },
   button: {
     alignItems: 'center',
     borderRadius: 5,
@@ -25,52 +31,56 @@ const TextStyle = StyleSheet.create({
     padding: 7
   },
   buttonText: {
+    ...FontStyle.normal,
     color: textColor,
-    fontFamily: FONT_FAMILY,
-    fontSize: verticalScale(16)
-  },
-  extraText: {
-    color: textColor,
-    fontFamily: FONT_FAMILY,
-    fontSize: verticalScale(22)
-  },
-  mediumText: {
-    color: textColor,
-    fontFamily: FONT_FAMILY,
-    fontSize: verticalScale(16)
-    // lineHeight: verticalScale(14)
-  },
-
-  minimizeText: {
-    color: textColor,
-    fontFamily: FONT_FAMILY,
-    fontSize: verticalScale(7)
-  },
-  normalText: {
-    color: textColor,
-    fontFamily: FONT_FAMILY,
-    fontSize: verticalScale(12)
-  },
-  smallText: {
-    color: textColor,
-    fontFamily: FONT_FAMILY,
-    fontSize: verticalScale(10)
+    fontSize: scaleInApp(16)
   },
   xExtraText: {
+    ...FontStyle.normal,
     color: textColor,
-    fontFamily: FONT_FAMILY,
-    fontSize: verticalScale(26)
+    fontSize: scaleInApp(26)
   },
   xxExtraText: {
+    ...FontStyle.normal,
     color: textColor,
-    fontFamily: FONT_FAMILY,
-    fontSize: verticalScale(30)
+    fontSize: scaleInApp(30)
   },
   xxxExtraText: {
+    ...FontStyle.normal,
     color: textColor,
-    fontFamily: FONT_FAMILY,
-    fontSize: verticalScale(60),
-    lineHeight: verticalScale(60)
+    fontSize: scaleInApp(60),
+    lineHeight: scaleInApp(60)
+  },
+  extraText: {
+    ...FontStyle.normal,
+    color: textColor,
+    fontSize: scaleInApp(22)
+  },
+  bigText: {
+    ...FontStyle.normal,
+    fontSize: scaleInApp(18)
+    // fontSize: 18 * scale()
+  },
+  mediumText: {
+    ...FontStyle.normal,
+    color: textColor,
+    fontSize: scaleInApp(16)
+    // lineHeight: scaleInApp(14)
+  },
+  normalText: {
+    ...FontStyle.normal,
+    color: textColor,
+    fontSize: scaleInApp(14)
+  },
+  smallText: {
+    ...FontStyle.normal,
+    color: textColor,    
+    fontSize: scaleInApp(12)
+  },
+  minimizeText: {
+    ...FontStyle.normal,
+    color: textColor,
+    fontSize: scaleInApp(7)
   }
 });
 export default TextStyle;
