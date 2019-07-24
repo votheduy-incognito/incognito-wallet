@@ -14,7 +14,7 @@ export default createAppContainer(
       [ROUTE_NAMES.RootMiner]: MinerNavigator
     },
     {
-      initialRouteName: ROUTE_NAMES.RootMiner
+      initialRouteName: ROUTE_NAMES.RootSplash
     }
   )
 );

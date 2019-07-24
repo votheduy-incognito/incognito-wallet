@@ -29,7 +29,8 @@ class GetStartedContainer extends Component {
   componentDidMount() {
     this.initApp()
       .catch(e => {
-        Toast.showError(getErrorMessage(e, { defaultCode: messageCode.code.initialing_wallet_failed }));
+        Toast.showError(`${e.message} ${JSON.stringify(e)}`);
+        // Toast.showError(getErrorMessage(e, { defaultCode: messageCode.code.initialing_wallet_failed }));
       });
   }
 
@@ -49,6 +50,7 @@ class GetStartedContainer extends Component {
       }
       return null;
     } catch (e) {
+      Toast.showError(`${e.message} ${JSON.stringify(e)}`);
       throw createError({ code: messageCode.code.load_existed_wallet_failed });
     }
   }
@@ -60,6 +62,7 @@ class GetStartedContainer extends Component {
         this.goHome();
       }
     } catch (e) {
+      Toast.showError(`${e.message} ${JSON.stringify(e)}`);
       throw e;
     }
   }; 
@@ -79,6 +82,7 @@ class GetStartedContainer extends Component {
       }
       await this.checkExistedWallet();
     } catch (e) {
+      Toast.showError(`${e.message} ${JSON.stringify(e)}`);
       throw e;
     } finally {
       this.setState({ isInitialing: false });
@@ -98,6 +102,7 @@ class GetStartedContainer extends Component {
       
       return initWallet();
     } catch (e) {
+      Toast.showError(`${e.message} ${JSON.stringify(e)}`);
       throw e;
     }
   };
@@ -106,7 +111,8 @@ class GetStartedContainer extends Component {
     try {
       const token = await storageService.getItem(CONSTANT_KEYS.DEVICE_TOKEN);
       return token;
-    } catch {
+    } catch (e) {
+      Toast.showError(`${e.message} ${JSON.stringify(e)}`);
       throw createError({ code: messageCode.code.load_device_token_failed });
     }
   }
@@ -119,6 +125,7 @@ class GetStartedContainer extends Component {
 
       return token;
     } catch (e) {
+      Toast.showError(`${e.message} ${JSON.stringify(e)}`);
       throw e;
     }
   }
@@ -136,6 +143,7 @@ class GetStartedContainer extends Component {
         return token;
       }
     } catch (e) {
+      Toast.showError(`${e.message} ${JSON.stringify(e)}`);
       throw e;
     }
   }
@@ -152,13 +160,14 @@ class GetStartedContainer extends Component {
         throw new Error('Load new wallet failed');
       }
     } catch (e) {
+      Toast.showError(`${e.message} ${JSON.stringify(e)}`);
       throwNext(e, { defaultCode: messageCode.code.create_wallet_failed });
     }
   };
 
   render() {
     const { isInitialing } = this.state;
-
+    Toast.showError('Cooll');
     return (
       <GetStarted
         onCreateNew={this.handleCreateNew}

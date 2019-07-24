@@ -31,7 +31,7 @@ const GetStarted = ({ onCreateNew, isInitialing }) => {
   return (
     <Container style={style.container}>
       <View style={style.getStartedBlock}>
-        <Text style={[style.title, style.centerText]}>Excited?</Text>
+        <Text style={[style.title, style.centerText]}>Excitedss?</Text>
         <Text style={[style.title, style.centerText]}>You should be</Text>
         <Button
           title="Get Started"
