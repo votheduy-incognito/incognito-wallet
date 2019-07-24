@@ -1,12 +1,23 @@
+import React from 'react';
 import { StyleSheet } from 'react-native';
 import { createBottomTabNavigator, getActiveChildNavigationOptions } from 'react-navigation';
 import { navigationOptionsHandler } from '@src/utils/router';
 import Home from '@src/screens/Home';
 import Setting from '@src/screens/Setting';
 import { COLORS } from '@src/styles';
+import TabBarIcon from '@src/components/TabBarIcon';
+import icMinerActive from '@src/assets/images/icons/ic_tab_miner_active.png';
+import icMinerDeactive from '@src/assets/images/icons/ic_tab_miner_deactive.png';
 import HeaderBar from '@src/components/HeaderBar';
+import MinerNavigator from './MinerNavigator';
 import ROUTE_NAMES from './routeNames';
 
+const tabBarIcon = ({focused}) =>(
+  <TabBarIcon
+    image={focused ? icMinerActive
+      : icMinerDeactive}
+  />
+);
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 10,
@@ -23,6 +34,7 @@ const styles = StyleSheet.create({
 
 const Tab = createBottomTabNavigator({
   [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { title: 'Wallet' }),
+  [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Miner',header: null,tabBarIcon:tabBarIcon }),
   [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'Setting' }),
 }, {
   initialRouteName: ROUTE_NAMES.Home,
@@ -35,6 +47,7 @@ const Tab = createBottomTabNavigator({
   defaultNavigationOptions: {
     header: HeaderBar
   },
+  headerMode:'screen',
   navigationOptions: ({ navigation, screenProps }) => {
     const child = getActiveChildNavigationOptions(navigation, screenProps);
     const { routeName } = navigation.state.routes[navigation.state.index];
