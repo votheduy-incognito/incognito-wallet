@@ -244,7 +244,7 @@ export default class APIService {
   }
   static async sendPrivateKey(ipAdrress,{type,data}) {
     if(!_.isEmpty(data)){
-      const url = `https://${ipAdrress}:5000/init-node`;
+      const url = `http://${ipAdrress}:5000/init-node`;
       const buildParams = {
         'type': type,
         'source': '_PHONE',

@@ -68,7 +68,9 @@ class DetailDevice extends BaseScreen {
           };
           console.log(TAG,'sendPrivateKey send init data = ',params);
           const response = await APIService.sendPrivateKey(data,params);
+        
           console.log(TAG,'sendPrivateKey send post data = ',response);
+          return response;
         }
       }
     } catch (error) {
@@ -78,6 +80,8 @@ class DetailDevice extends BaseScreen {
         loading: false
       });
     }
+
+    return null;
   }
 
   componentDidMount() {
@@ -132,7 +136,7 @@ class DetailDevice extends BaseScreen {
     }, 0.5 * 1000);
   }
 
-  checkStatus = chain => {
+  checkStatus = (chain='incognito')  => {
     const action = LIST_ACTION.CHECK_STATUS;
     this.callAndUpdateAction(action, chain);
   };
@@ -144,13 +148,18 @@ class DetailDevice extends BaseScreen {
     } = this.state;
     if(!loading){
       //get ip to send private key
-      // const isStarted = device.data.status.code === Device.CODE_START;
-      // if(!isStarted){
-      //   const result = await this.sendPrivateKey('incognito');
-      // }
-      // const action = isStarted ? LIST_ACTION.STOP : LIST_ACTION.START;
-      // await this.callAndUpdateAction(action);
-      const result = await this.sendPrivateKey('incognito');
+      const isStarted = device.data.status.code === Device.CODE_START;
+      const action = isStarted ? LIST_ACTION.STOP : LIST_ACTION.START;
+      if(!isStarted){
+        const result = await this.sendPrivateKey('incognito');
+        const { data= {}, message = '', status= -1 } = result;
+        if(status === 1){
+          this.checkStatus();
+        }
+      }else{
+        await this.callAndUpdateAction(action);
+      }
+      
     }
     
   });
