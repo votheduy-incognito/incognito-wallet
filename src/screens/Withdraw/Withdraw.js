@@ -8,6 +8,7 @@ import { createForm, InputField, validator } from '@src/components/core/reduxFor
 import EstimateFee from '@src/components/EstimateFee';
 import convertUtil from '@src/utils/convert';
 import { getErrorMessage, messageCode } from '@src/services/errorHandler';
+import CurrentBalance from '@src/components/CurrentBalance';
 import { openQrScanner } from '@src/components/QrCodeScanner';
 import LoadingTx from '@src/components/LoadingTx';
 import tokenData from '@src/constants/tokenData';
@@ -104,8 +105,7 @@ class Withdraw extends React.Component {
       <ScrollView style={style.container}>
         <Container style={style.mainContainer}>
           <View style={style.currentBalanceContainer}>
-            <Text style={style.currentBalance}>{formatUtil.amount(maxAmount)} {selectedPrivacy?.symbol}</Text>
-            <Text style={style.currentBalanceLabel}>Current Balance</Text>
+            <CurrentBalance amount={maxAmount} symbol={selectedPrivacy?.symbol} />
           </View>
           <Form style={style.form}>
             {({ handleSubmit, submitting }) => (

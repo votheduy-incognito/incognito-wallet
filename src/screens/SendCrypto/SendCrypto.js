@@ -9,6 +9,7 @@ import { openQrScanner } from '@src/components/QrCodeScanner';
 import ReceiptModal, { openReceipt } from '@src/components/Receipt';
 import LoadingTx from '@src/components/LoadingTx';
 import EstimateFee from '@src/components/EstimateFee';
+import CurrentBalance from '@src/components/CurrentBalance';
 import tokenData from '@src/constants/tokenData';
 import { createForm, InputField, validator } from '@src/components/core/reduxForm';
 import formatUtil from '@src/utils/format';
@@ -106,6 +107,7 @@ class SendCrypto extends React.Component {
     return (
       <ScrollView style={homeStyle.container}>
         <Container style={homeStyle.mainContainer}>
+          <CurrentBalance />
           <Form>
             {({ handleSubmit }) => (
               <View style={homeStyle.form}>
