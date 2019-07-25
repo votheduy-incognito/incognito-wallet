@@ -8,16 +8,41 @@ import { COLORS } from '@src/styles';
 import TabBarIcon from '@src/components/TabBarIcon';
 import icMinerActive from '@src/assets/images/icons/ic_tab_miner_active.png';
 import icMinerDeactive from '@src/assets/images/icons/ic_tab_miner_deactive.png';
+import icWalletActive from '@src/assets/images/icons/walletActive.png';
+import icWalletInactive from '@src/assets/images/icons/walletInactive.png';
+import icIncognitoActive from '@src/assets/images/icons/incognitoActive.png';
+import icIncognitoInactive from '@src/assets/images/icons/incognitoInactive.png';
 import HeaderBar from '@src/components/HeaderBar';
 import MinerNavigator from './MinerNavigator';
 import ROUTE_NAMES from './routeNames';
 
-const tabBarIcon = ({focused}) =>(
-  <TabBarIcon
-    image={focused ? icMinerActive
-      : icMinerDeactive}
-  />
-);
+const TabIcon = (type, { focused }) => {
+  let active = null;
+  let inactive = null;
+
+  switch(type) {
+  case 'wallet':
+    active = icWalletActive;
+    inactive = icWalletInactive;
+    break;
+  case 'miner':
+    active = icMinerActive;
+    inactive = icMinerDeactive;
+    break;
+  case 'setting':
+    active = icIncognitoActive;
+    inactive = icIncognitoInactive;
+    break;
+  }
+  return (
+    <TabBarIcon
+      image={focused ? active
+        : inactive}
+    />
+  );
+};
+const renderTab = (type) => TabIcon.bind(null, type);
+
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 10,
@@ -33,9 +58,9 @@ const styles = StyleSheet.create({
 });
 
 const Tab = createBottomTabNavigator({
-  [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { title: 'Wallet' }),
-  [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Miner',header: null,tabBarIcon:tabBarIcon }),
-  [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'Setting' }),
+  [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { title: 'Wallet', tabBarIcon: renderTab('wallet') }),
+  [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Miner', header: null, tabBarIcon: renderTab('miner') }),
+  [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'Setting', tabBarIcon: renderTab('setting') }),
 }, {
   initialRouteName: ROUTE_NAMES.Home,
   tabBarOptions: {
