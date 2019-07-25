@@ -3,6 +3,7 @@ export default {
   black1: '#111111',
   white: 'white',
   grey: '#F5F5F5',
+  grey1: '#899092',
   blue: '#0DB8D8',
   blueDark: '#07252A',
   blueLight: '#00D7FF',
