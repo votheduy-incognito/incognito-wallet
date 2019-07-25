@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Text, Container, Button, View, Toast, ActivityIndicator } from '@src/components/core';
 import ROUTE_NAMES from '@src/router/routeNames';
+import { COLORS } from '@src/styles';
 import HistoryToken from '@src/components/HistoryToken';
 import MainCryptoHistory from '@src/components/MainCryptoHistory';
 import formatUtil from '@src/utils/format';
@@ -58,7 +59,7 @@ class WalletDetail extends Component {
           <View style={styles.boxBalance}>
             {
               isGettingBalanceList?.includes(selectedPrivacy.symbol)
-                ? <ActivityIndicator />
+                ? <ActivityIndicator color={COLORS.white} />
                 : (
                   <Text style={styles.balance}>
                     {formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy.symbol)} {selectedPrivacy.symbol}

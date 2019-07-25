@@ -1,4 +1,4 @@
-import { COLORS, FONT, SPACING } from '@src/styles';
+import { FONT, SPACING } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
@@ -17,10 +17,7 @@ const style = StyleSheet.create({
   amountText: {
     flex: 1,
     fontWeight: 'bold',
-    textAlign: 'right'
-  },
-  addressText: {
-    flex: 1
+    textAlign: 'left'
   },
   typeText: {
     flex: 1

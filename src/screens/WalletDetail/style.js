@@ -15,6 +15,7 @@ const style = StyleSheet.create({
     justifyContent: 'center',   
     height: 80,
     paddingBottom: 30,
+    backgroundColor: COLORS.primary
   },
   historyContainer: {
     flex: 1,

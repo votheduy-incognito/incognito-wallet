@@ -142,23 +142,12 @@ const HistoryItem = ({ history }) => {
         </View>
         <View style={styleSheet.row}>
           <Text
-            style={styleSheet.addressText}
-            numberOfLines={1}
-            ellipsizeMode="middle"
-          >
-            {addressDirection}: 
-            {' '}
-            {address}
-          </Text>
-          <Text
             style={styleSheet.amountText}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
             {formatUtil.amount(history.amount, history.symbol)} {history.currencyType ?? history.symbol}
           </Text>
-        </View>
-        <View style={styleSheet.row}>
           <Text
             style={[styleSheet.statusText, { color: statusColor }]}
             numberOfLines={1}

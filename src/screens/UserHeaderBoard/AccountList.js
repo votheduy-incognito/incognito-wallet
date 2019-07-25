@@ -25,7 +25,7 @@ const AccountItem = ({ account, onPress, active, isLoading }) => (
       {isLoading ? (
         <ActivityIndicator />
       ) : (
-        <Text>{getAccountValue(account?.value)}</Text>
+        <Text>{getAccountValue(account?.value)} {tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY}</Text>
       )}
     </View>
   </TouchableOpacity>
