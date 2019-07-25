@@ -1,13 +1,11 @@
 import { THEME } from '@src/styles';
 import { createStackNavigator } from 'react-navigation';
 import CreateAccount from '@src/screens/CreateAccount';
-import Defragment from '@src/screens/Defragment';
 import ExportAccount from '@src/screens/ExportAccount';
 import FollowToken from '@src/screens/FollowToken';
 import ImportAccount from '@src/screens/ImportAccount';
 import NetworkSetting from '@src/screens/NetworkSetting';
 import SeedPhrase from '@src/screens/SeedPhrase';
-import Staking from '@src/screens/Staking';
 import UserHeaderBoard from '@src/screens/UserHeaderBoard';
 import WalletDetail from '@src/screens/WalletDetail';
 import ReceiveCrypto from '@src/screens/ReceiveCrypto';
@@ -24,8 +22,6 @@ const AppNavigator = createStackNavigator(
   {
     TabNavigator,
     [ROUTE_NAMES.UserHeaderBoard]: navigationOptionsHandler(UserHeaderBoard, { title: 'Accounts' }),
-    [ROUTE_NAMES.Staking]: navigationOptionsHandler(Staking),
-    [ROUTE_NAMES.Defragment]: navigationOptionsHandler(Defragment),
     [ROUTE_NAMES.NetworkSetting]: navigationOptionsHandler(NetworkSetting, { title: 'Network Setting' }),
     [ROUTE_NAMES.CreateAccount]: navigationOptionsHandler(CreateAccount, { title: 'Create Account' }),
     [ROUTE_NAMES.ImportAccount]: navigationOptionsHandler(ImportAccount, { title: 'Import Account' }),
