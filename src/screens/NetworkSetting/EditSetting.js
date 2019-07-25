@@ -1,33 +1,29 @@
 /* eslint-disable import/no-cycle */
 import {
-  Form,
-  FormSubmitButton,
-  FormTextField,
   ScrollView,
   Toast,
-  View
+  View,
+  Button
 } from '@src/components/core';
+import { createForm, InputField, validator } from '@src/components/core/reduxForm';
+import { Field } from 'redux-form';
 import { reloadWallet } from '@src/redux/actions/wallet';
 import serverService from '@src/services/wallet/Server';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { object, string } from 'yup';
 import { networkItemShape } from './NetworkItem';
 import { networkEditStyle } from './style';
 
-const validator = object().shape({
-  address: string().required('Required!'),
-  name: string().required('Required!')
-});
+const formName = 'editSetting';
 
 class EditSetting extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      initialFormValues: {
-        ...props.network
-      }
+      form: createForm(formName, {
+        initialValues: { ...props.network }
+      }) 
     };
   }
 
@@ -59,23 +55,44 @@ class EditSetting extends Component {
   };
 
   render() {
-    const { initialFormValues } = this.state;
+    const { form: Form } = this.state;
     return (
       <ScrollView>
-        <Form
-          formRef={form => (this.form = form)}
-          initialValues={initialFormValues}
-          onSubmit={this.handleEdit}
-          validationSchema={validator}
-        >
-          <FormTextField name="address" placeholder="RPC Server Address" />
-          <FormTextField name="username" placeholder="User Name" />
-          <FormTextField name="password" placeholder="Password" />
-          <FormTextField name="name" placeholder="Name" />
-          <View style={networkEditStyle.btnGroups}>
-            {/* <Button title='Remove' type='danger' style={networkEditStyle.removeBtn} disabled /> */}
-            <FormSubmitButton title="SAVING" style={networkEditStyle.saveBtn} />
-          </View>
+        <Form>
+          {({ handleSubmit, submitting }) => (
+            <>
+              <Field
+                component={InputField}
+                name='address'
+                placeholder='RPC Server Address'
+                label='RPC Server Address'
+                validate={[validator.required]}
+              />
+              <Field
+                component={InputField}
+                name='username'
+                placeholder='User Name'
+                label='User Name'
+              />
+              <Field
+                component={InputField}
+                name='password'
+                placeholder='Password'
+                label='Password'
+              />
+              <Field
+                component={InputField}
+                name='name'
+                placeholder='Name'
+                label='Name'
+                validate={[validator.required]}
+              />
+              <View style={networkEditStyle.btnGroups}>
+                {/* <Button title='Remove' type='danger' style={networkEditStyle.removeBtn} disabled /> */}
+                <Button title='SAVING' style={networkEditStyle.saveBtn} onPress={handleSubmit(this.handleEdit)} isAsync isLoading={submitting} />
+              </View>
+            </>
+          )}
         </Form>
       </ScrollView>
     );
