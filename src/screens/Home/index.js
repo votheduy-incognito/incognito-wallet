@@ -100,11 +100,9 @@ class HomeContainer extends Component {
   handleSelectToken = (token) => {
     if (!token) return;
 
-    const { account, tokens, setSelectedPrivacy, navigation } = this.props;
-    const tokenData = tokens.find(t => t.symbol === token.symbol);
+    const { setSelectedPrivacy, navigation } = this.props;
 
-    const privacyToken = SelectedPrivacyModel.parse(account, tokenData);
-    setSelectedPrivacy(privacyToken);
+    setSelectedPrivacy(token?.symbol);
 
     navigation.navigate(routeNames.WalletDetail);
   }

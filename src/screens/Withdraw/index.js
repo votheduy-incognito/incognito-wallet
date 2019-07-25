@@ -9,7 +9,7 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import { messageCode, createError } from '@src/services/errorHandler';
 import { getMaxWithdrawAmountService } from '@src/services/wallet/RpcClientService';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
-import { accountSeleclor } from '@src/redux/selectors';
+import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import convertUtil from '@src/utils/convert';
 import tokenData from '@src/constants/tokenData';
 import Withdraw from './Withdraw';
@@ -166,7 +166,7 @@ class WithdrawContainer extends Component {
 
 const mapState = state => ({
   tokens: state.token?.followed,
-  selectedPrivacy: state.selectedPrivacy,
+  selectedPrivacy: selectedPrivacySeleclor.selectedPrivacy(state),
   wallet: state.wallet,
   account: accountSeleclor.defaultAccount(state)
 });

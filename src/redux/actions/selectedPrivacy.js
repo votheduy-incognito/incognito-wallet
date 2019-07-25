@@ -1,8 +1,8 @@
 import type from '@src/redux/types/selectedPrivacy';
 
-export const setSelectedPrivacy = (privacyToken = throw new Error('Privacy token object is required')) => ({
+export const setSelectedPrivacy = (privacySymbol = throw new Error('Privacy symbol is required')) => ({
   type: type.SET,
-  data: privacyToken
+  data: privacySymbol
 });
 
 export const clearSelectedPrivacy = () => ({
