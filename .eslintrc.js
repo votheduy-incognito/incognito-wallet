@@ -56,6 +56,7 @@ module.exports = {
     'react/prefer-stateless-function': 0,
     'import/no-unresolved': 0, // tmp
     'react/jsx-one-expression-per-line': 0,
-    'react/sort-comp': 0
+    'react/sort-comp': 0,
+    'react/jsx-handler-names': 0
   }
 };
