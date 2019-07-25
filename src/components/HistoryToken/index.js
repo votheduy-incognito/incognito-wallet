@@ -1,4 +1,4 @@
-import { ScrollView, Toast } from '@src/components/core';
+import { ScrollView, Toast, RefreshControl } from '@src/components/core';
 import HistoryList from '@src/components/HistoryList';
 import LoadingContainer from '@src/components/LoadingContainer';
 import tokenService from '@src/services/wallet/tokenService';
@@ -55,25 +55,33 @@ class HistoryTokenContainer extends Component {
   }
 
   componentDidMount() {
-    const { defaultAccount, wallet, navigation } = this.props;
+    const { navigation } = this.props;
   
     navigation.addListener(
       'didFocus',
       () => {
-        this.loadTokentHistory(wallet, defaultAccount, this.getToken(this.props));
-        this.getHistoryFromApi();
+        this.handleLoadHistory();
       }
     );
   }
 
   componentDidUpdate(prevProps) {
-    const { wallet, defaultAccount } = this.props;
     const token = this.getToken(this.props);
     const prevToken = this.getToken(prevProps);
 
     if (token && (token?.id !== prevToken?.id)) {
-      this.loadTokentHistory(wallet, defaultAccount, token);
-      this.getHistoryFromApi();
+      this.handleLoadHistory();
+    }
+  }
+
+  handleLoadHistory = () => {
+    const { wallet, defaultAccount, onLoad } = this.props;
+    const token = this.getToken(this.props);
+    this.loadTokentHistory(wallet, defaultAccount, token);
+    this.getHistoryFromApi();
+
+    if (typeof onLoad === 'function') {
+      onLoad();
     }
   }
 
@@ -135,7 +143,14 @@ class HistoryTokenContainer extends Component {
     }
 
     return (
-      <ScrollView>
+      <ScrollView
+        refreshControl={(
+          <RefreshControl
+            refreshing={isLoading}
+            onRefresh={this.handleLoadHistory}
+          />
+        )}
+      >
         <HistoryList histories={combineHistory(histories, historiesFromApi, selectedPrivacy?.symbol)} />
       </ScrollView>
     );
@@ -150,14 +165,16 @@ const mapState = state => ({
 });
 
 HistoryTokenContainer.defaultProps = {
-  selectedPrivacy: null
+  selectedPrivacy: null,
+  onLoad: null
 };
 
 HistoryTokenContainer.propTypes = {
   selectedPrivacy: PropTypes.object,
   wallet: PropTypes.object.isRequired,
   defaultAccount: PropTypes.object.isRequired,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  onLoad: PropTypes.func,
 };
 
 export default connect(mapState)(HistoryTokenContainer);
