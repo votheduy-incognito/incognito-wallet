@@ -12,7 +12,7 @@ export const tokenListStyle = StyleSheet.create({
     marginLeft: SPACING.small
   },
   itemActive: {
-    backgroundColor: COLORS.lightGrey
+    backgroundColor: COLORS.lightGrey1
   },
   tokenIcon: {
     flexBasis: 40,

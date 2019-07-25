@@ -41,7 +41,7 @@ const ExportAccount = ({ account }) => (
     <ExportItem
       label="PUBLIC KEY BYTES"
       data={account?.PublicKeyBytes}
-      color={COLORS.purple}
+      color={COLORS.green}
     />
   </Container>
 );

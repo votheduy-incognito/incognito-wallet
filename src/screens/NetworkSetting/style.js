@@ -26,7 +26,6 @@ export const networkItemStyle = StyleSheet.create({
     justifyContent: 'space-between'
   },
   networkName: {
-    color: COLORS.black,
     fontSize: FONT.SIZE.medium
   },
   summaryContainer: {

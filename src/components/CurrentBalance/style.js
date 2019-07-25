@@ -9,11 +9,9 @@ const style = StyleSheet.create({
   },
   balance: {
     fontSize: 28,
-    color: COLORS.black1,
   },
   desc: {
     fontSize: 16,
-    color: COLORS.grey1,
   }
 });
 

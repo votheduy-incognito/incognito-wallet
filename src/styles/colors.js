@@ -1,22 +1,26 @@
-export default {
-  black: 'black',
-  black1: '#111111',
-  white: 'white',
-  grey: '#F5F5F5',
-  grey1: '#899092',
-  blue: '#0DB8D8',
-  blueDark: '#07252A',
-  blueLight: '#00D7FF',
-  red: 'red',
-  orange: 'orange',
-  yellow: 'yellow',
-  green: 'green',
-  purple: 'purple',
-  lightGrey: '#c2c2c2',
-  lightGrey2: '#fafafa',
+const COLORS = {
   transparent: 'transparent',
+  orange: '#FF8E00',
+  white: 'white',
+  blue: '#0ECBEE',
+  red: '#FE4D4D',
+  green: '#26C64D',
+  
+  dark1: '#101111',
+  dark2: '#0D353C',
+  dark3: '#014552',
+  
+  lightGrey1: '#D1DEE0',
+  lightGrey2: '#F0F7F9',
+  lightGrey3: '#8C9A9D',
+
   overlayBlack: 'rgba(0, 0, 0, 0.5)',
   overlayBlackDark: 'rgba(0, 0, 0, 0.8)',
   overlayBlackLight: 'rgba(0, 0, 0, 0.3)',
-  primary: '#007bff',
+};
+
+
+export default {
+  ...COLORS,
+  primary: COLORS.blue,
 };

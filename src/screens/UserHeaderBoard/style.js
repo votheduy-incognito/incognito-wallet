@@ -13,7 +13,6 @@ export const accountListStyle = StyleSheet.create({
     marginRight: SPACING.small
   },
   accountItemLabel: {
-    color: COLORS.black,
     fontWeight: '400'
   },
   activeIconContainer: {
@@ -33,7 +32,6 @@ export const actionBtnStyle = StyleSheet.create({
     marginRight: SPACING.small
   },
   actionItemLabel: {
-    color: COLORS.black,
     fontWeight: '400'
   },
   activeIconContainer: {

@@ -168,7 +168,7 @@ const HistoryItem = ({ history }) => {
           </Text>
         </View>
       </View>
-      <Divider style={styleSheet.divider} color={COLORS.lightGrey} />
+      <Divider style={styleSheet.divider} color={COLORS.lightGrey1} />
     </>
   );
 };

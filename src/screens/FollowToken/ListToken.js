@@ -49,7 +49,7 @@ const ListToken = ({ tokenList, followedList, onFollow }) => {
               token={token}
               handlePress={onFollow}
             />
-            <Divider color={COLORS.lightGrey} />
+            <Divider color={COLORS.lightGrey1} />
           </Fragment>
         )) : <Text>There has no token.</Text>
       }

@@ -12,7 +12,6 @@ export default StyleSheet.create({
   },
   textBox: {
     alignItems: 'center',
-    backgroundColor: COLORS.white,
     borderRadius: DECOR.borderRadiusBorder,
     borderWidth: DECOR.borderWidth,
     flexDirection: 'row',

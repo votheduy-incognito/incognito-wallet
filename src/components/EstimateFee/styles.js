@@ -20,10 +20,10 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     borderWidth: 1,
-    borderColor: COLORS.lightGrey,
+    borderColor: COLORS.lightGrey1,
   },
   feeTypeHighlight: {
-    backgroundColor: COLORS.lightGrey
+    backgroundColor: COLORS.lightGrey1
   },
   feeTypeText: {
     color: COLORS.blue,
@@ -33,7 +33,7 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.lightGrey,
+    borderColor: COLORS.lightGrey1,
     paddingVertical: 10,
     height: 55
   },
@@ -50,7 +50,6 @@ const style = StyleSheet.create({
   },
   rateText: {
     fontWeight: '100',
-    color: COLORS.blueDark,
   },
   
 });

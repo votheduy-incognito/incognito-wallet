@@ -10,7 +10,6 @@ const style = StyleSheet.create({
     width: '100%'
   },
   boxHeader: { 
-    backgroundColor: COLORS.blueDark,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',   
@@ -33,7 +32,6 @@ const style = StyleSheet.create({
     textAlign: 'center',
   },
   getFree : {
-    color: COLORS.blueLight,
     textAlign: 'center',
     fontSize: 16    
   },
@@ -42,7 +40,6 @@ const style = StyleSheet.create({
     margin: 10
   },
   withdrawBtn: {
-    backgroundColor: COLORS.blueDark
   },
   boxButton : {
     flex: 1,

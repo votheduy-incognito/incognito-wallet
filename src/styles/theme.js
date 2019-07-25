@@ -6,8 +6,8 @@ import { scaleInApp } from './TextStyle';
 
 const header = {
   headerHeight:  scaleInApp(55),
-  backgroundColor: COLORS.blueDark,
-  headerTintColor: COLORS.black
+  backgroundColor: COLORS.primary,
+  headerTintColor: COLORS.dark1
 };
 
 const opacityButton = {
@@ -30,7 +30,7 @@ const opacityButton = {
     letterSpacing: 0
   },
   disabled: {
-    backgroundColor: COLORS.lightGrey,
+    backgroundColor: COLORS.lightGrey1,
   }
 };
 
@@ -40,7 +40,7 @@ const text = {
     color: COLORS.red
   },
   defaultTextStyle: {
-    color: COLORS.black1,
+    color: COLORS.dark1,
     fontSize: FONTS.SIZE.regular,
     letterSpacing: 0
   },
@@ -74,7 +74,7 @@ const toast = {
 
 const textInput = {
   borderBottomWidth: DECOR.borderWidth,
-  borderColor: COLORS.lightGrey
+  borderColor: COLORS.lightGrey1
 };
 
 const divider = {

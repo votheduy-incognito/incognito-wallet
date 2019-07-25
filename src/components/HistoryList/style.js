@@ -15,7 +15,6 @@ const style = StyleSheet.create({
     marginVertical: SPACING.small
   },
   amountText: {
-    color: COLORS.black,
     flex: 1,
     fontWeight: 'bold',
     textAlign: 'right'
