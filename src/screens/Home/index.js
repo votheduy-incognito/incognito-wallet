@@ -7,11 +7,10 @@ import { setListToken, getBalance } from '@src/redux/actions/token';
 import { setSelectedPrivacy, clearSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import scheduleService from '@src/services/schedule';
 import accountService from '@src/services/wallet/accountService';
-import SelectedPrivacyModel from '@src/models/selectedPrivacy';
 import routeNames from '@src/router/routeNames';
 import tokenData from '@src/constants/tokenData';
 import { connect } from 'react-redux';
-import { accountSeleclor } from '@src/redux/selectors';
+import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
 import Home from './Home';
 
 class HomeContainer extends Component {
@@ -128,11 +127,11 @@ class HomeContainer extends Component {
 }
 
 const mapState = state => ({
-  accountList: state.account.list,
+  accountList: accountSeleclor.listAccount(state),
   account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet,
-  tokens: state.token.followed || [],
-  isGettingBalanceList: [...state.account.isGettingBalance, ...state.token.isGettingBalance]
+  tokens: tokenSeleclor.followed(state),
+  isGettingBalanceList: [...accountSeleclor.isGettingBalance(state), ...tokenSeleclor.isGettingBalance(state)]
 });
 
 const mapDispatch = { setListToken, getBalance, getAccountBalance, setSelectedPrivacy, clearSelectedPrivacy };
