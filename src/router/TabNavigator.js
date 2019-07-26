@@ -12,6 +12,8 @@ import HeaderBar from '@src/components/HeaderBar';
 import MinerNavigator from './MinerNavigator';
 import ROUTE_NAMES from './routeNames';
 
+const TAG = 'TabNavigator';
+
 const tabBarIcon = ({focused}) =>(
   <TabBarIcon
     image={focused ? icMinerActive
@@ -34,7 +36,7 @@ const styles = StyleSheet.create({
 
 const Tab = createBottomTabNavigator({
   [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { title: 'Wallet' }),
-  [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Miner',header: null,tabBarIcon:tabBarIcon }),
+  [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Miner',header:() => null,tabBarIcon:tabBarIcon }),
   [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'Setting' }),
 }, {
   initialRouteName: ROUTE_NAMES.Home,
@@ -51,7 +53,8 @@ const Tab = createBottomTabNavigator({
   navigationOptions: ({ navigation, screenProps }) => {
     const child = getActiveChildNavigationOptions(navigation, screenProps);
     const { routeName } = navigation.state.routes[navigation.state.index];
-  
+
+    // console.log(TAG,'navigationOptions child = ',child);
     // You can do whatever you like here to pick the title based on the route name
     const title = routeName;
   

@@ -22,7 +22,7 @@ export const LIST_ACTION={
     data:undefined
   },
   STOP:{
-    key:'start',
+    key:'stop',
     data:undefined
   },
 };
@@ -36,12 +36,12 @@ export default class DeviceService {
         const mailProductId = `${productId}${MAIL_UID_FORMAT}`;
         const action = DeviceService.buildAction(product,actionExcute,dataToSend,chain,type);
         const callBack = res => {
-          console.log(TAG,'Result: ', res);
+          console.log(TAG,'send Result: ', res);
           if (res) {
             const data = res.data || {};
             resolve({...data,productId:productId});
           } else {
-            console.log('Timeout check wifi');
+            console.log(TAG,'Timeout check wifi');
             reject('Timeout');
           }
         };

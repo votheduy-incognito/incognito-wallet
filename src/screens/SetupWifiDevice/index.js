@@ -65,6 +65,7 @@ class SetupWifiDevice extends BaseScreen {
       wallName: '',
       addProduct: null
     };
+    this.isSendDataZmqSuccess = false;
     this.modal3 = React.createRef();
     this.deviceId = React.createRef();
     this.wifiConnection = new WifiConnection();
@@ -109,7 +110,11 @@ class SetupWifiDevice extends BaseScreen {
       validWPA,
       ssid,
       errorMessage,
+      showModal
     } = this.state;
+    if(showModal){
+      return null;
+    }
     return (
       <View style={[styles.modal, styles.modal3]}>
         <DeviceConnection
@@ -156,6 +161,7 @@ class SetupWifiDevice extends BaseScreen {
     deviceMiner.name = 'The Miner';
     deviceMiner.id = 'The Miner';
     const result:Boolean = await this.deviceId?.current?.connectDevice(deviceMiner) || false;
+    await Util.delay(10);
     console.log(TAG,'connectHotspot end result = ',result);
     return result?deviceMiner:null;
   }
@@ -165,6 +171,7 @@ class SetupWifiDevice extends BaseScreen {
       this.setState({
         loading: true
       });
+      
       await this.checkConnectHotspot();
     } catch (error) {
       console.log(TAG,'handleSetUpPress error: ', error);
@@ -256,7 +263,7 @@ class SetupWifiDevice extends BaseScreen {
           wpa: wpa,
           product_name:CONSTANT_MINER.PRODUCT_NAME,
           product_type: CONSTANT_MINER.PRODUCT_TYPE,
-          source: 'ios',
+          source:  Platform.OS,
           verify_code: verify_code,
           address: 'NewYork',
           address_long: 0.0,
@@ -288,53 +295,13 @@ class SetupWifiDevice extends BaseScreen {
           verifyCode: verify_code
         });
         await this.connectZMQ(params);
-        // if (Platform.OS == 'ios') {
-        //   await this.connectZMQiOS(params);
-        // } else {
-        //   console.log(TAG,'Send ZMQ Android');
-        //   //ZMQService.sendData(JSON.stringify(params));
-        //   await this.connectZMQAndroid(params);
-        //   /*
-        //   var ZeroMQ  = require('react-native-zeromq') ;
-        //   ZeroMQ.socket(ZeroMQ.SOCKET_TYPE.DEALER).then((socket) => {
-        //     socket.connect("tcp://52.3.101.47:5004").then(() => {
-        //       socket.send(JSON.stringify(params)).then(() => {
-        //         socket.recv().then((msg) => {
-        //           console.log('Send zmq successfully')
-
-        //           console.log(msg);
-        //         });
-        //       });
-        //     });
-        //   });
-        //   */
-        // }
       }
     }
   }
-  // connectZMQAndroid = async(params) =>{
-  //   let data = JSON.stringify(params);
-  //   ZMQService.sendData(data);
-
-  //   this.setState({
-  //     counterVerify: 0
-  //   });
-  //   NetInfo.isConnected
-  //     .fetch()
-  //     .then()
-  //     .done(() => {
-  //       NetInfo.isConnected.addEventListener(
-  //         'connectionChange',
-  //         this._handleConnectionChange
-  //       );
-  //     });
-
-  //   setTimeout(() => {
-  //     this.callVerifyCode();
-  //   }, 23 * 1000);
-  // }
-  connectZMQ= async (params) =>{
+  
+  connectZMQ = async (params) =>{
     try {
+      this.isSendDataZmqSuccess = false;
       const res = await ZMQService.sendData(JSON.stringify(params));
       if(_.isEmpty(res)) return;
       console.log(TAG,'Send zmq successfully res',res);
@@ -342,7 +309,7 @@ class SetupWifiDevice extends BaseScreen {
       this.setState({
         counterVerify: 0
       });
-
+      this.isSendDataZmqSuccess = true;
       NetInfo.isConnected
         .fetch()
         .then()
@@ -352,11 +319,13 @@ class SetupWifiDevice extends BaseScreen {
             this._handleConnectionChange
           );
         });
-
+      await Util.delay(10);
+      // this.callVerifyCode();
       // setTimeout(() => {
       // this.callVerifyCode();
       // }, 20 * 1000);
-      await Util.timeout(this.callVerifyCode,20);
+
+      // await Util.timeout(this.callVerifyCode,20);
     } catch (error) {
       console.log(TAG,'Send zmq error',error);
     }
@@ -385,6 +354,9 @@ class SetupWifiDevice extends BaseScreen {
 
   _handleConnectionChange = isConnected => {
     console.log('_handleConnectionChange:', isConnected);
+    if(isConnected && this.isSendDataZmqSuccess){
+      this.callVerifyCode();
+    }
     this.setState({
       isConnected: isConnected
     });
@@ -413,11 +385,12 @@ class SetupWifiDevice extends BaseScreen {
       const response = await APIService.updateProduct(params);
 
       const { status } = response;
-      if (status) {
+      if (status === 1) {
         console.log('Change name = ', response);
         this.setState({
           loading: false
         });
+        
         this.goToScreen(routeNames.HomeMine);
       }
     } catch (error) {
@@ -444,7 +417,7 @@ class SetupWifiDevice extends BaseScreen {
       const product = CONSTANT_MINER.PRODUCT_TYPE.toLowerCase();
       console.log(TAG,'checkConnectHotspot SSID---: ', ssid);
       if (_.includes(ssid, product)) {
-        this.sendZMQ();
+        await Util.excuteWithTimeout(this.sendZMQ(),60);
       } else {
         this.setState({
           errorMessage: ' Please connect The Miner Hotspot'
@@ -475,6 +448,9 @@ class SetupWifiDevice extends BaseScreen {
     const { verifyCode, counterVerify, isConnected } = this.state;
     console.log(TAG,' callVerifyCode begin01 connected = ',isConnected);
     if (isConnected) {
+      this.setState({
+        loading: true
+      });
       const params = {
         verify_code: verifyCode
       };
@@ -495,9 +471,9 @@ class SetupWifiDevice extends BaseScreen {
           const { product } = response.data;
           if (product) {
             this.setState({
-              addProduct: product
+              addProduct: product,
+              showModal:true
             });
-            this.showPopupEditName();
             this.authFirebase(product);
           }
         } else {
@@ -532,11 +508,6 @@ class SetupWifiDevice extends BaseScreen {
         errorMessage: 'Can\'t connect The Miner. Please check the internert information and try again'
       });
     }
-  }
-  showPopupEditName=()=> {
-    this.setState({
-      showModal: true
-    });
   }
 
   authFirebase=(product) =>{

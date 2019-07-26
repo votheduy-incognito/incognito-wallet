@@ -59,7 +59,7 @@ class BaseScreen extends Component {
       this.appState.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
-      this.onResume();
+      // this.onResume();
       console.log('App has come to the foreground!');
     }
     this.appState = nextAppState;

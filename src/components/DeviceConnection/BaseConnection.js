@@ -13,9 +13,6 @@ class BaseConnection {
     return this.currentConnect;
   }
 
-  // set currentConnect(obj:ObjConnection){
-  //   this.currentConnect = obj;
-  // }
   init = () => {};
 
   connectDevice = async (device: ObjConnection) => {};
