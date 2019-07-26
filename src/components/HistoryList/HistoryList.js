@@ -126,7 +126,7 @@ const HistoryItem = ({ history }) => {
       <View style={styleSheet.itemContainer}>
         <View style={styleSheet.row}>
           <Text
-            style={[styleSheet.typeText, { color: typeColor }]}
+            style={[styleSheet.typeText]}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
@@ -157,7 +157,7 @@ const HistoryItem = ({ history }) => {
           </Text>
         </View>
       </View>
-      <Divider style={styleSheet.divider} color={COLORS.lightGrey1} />
+      <Divider color={COLORS.lightGrey4} />
     </>
   );
 };

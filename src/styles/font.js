@@ -4,11 +4,16 @@ const fontNames =  {
   medium: 'PostGroteskMedium',
   mediumItalic: 'PostGroteskMediumItalic',
   bold: 'PostGroteskBold',
-  boldItalic: 'PostGroteskBoldItalic'
+  boldItalic: 'PostGroteskBoldItalic',
+  regular: 'PostGroteskBook',
+  regularItalic: 'PostGroteskBookItalic',
 };
 
 const fontStyle = {
   normal: {
+    fontFamily: fontNames.regular,
+  },
+  medium: {
     fontFamily: fontNames.medium,
   },
   bold: {

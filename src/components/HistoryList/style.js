@@ -1,4 +1,4 @@
-import { FONT, SPACING } from '@src/styles';
+import { FONT, SPACING, COLORS } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
@@ -9,28 +9,29 @@ const style = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 3
+    marginVertical: 2
   },
   itemContainer: {
-    marginVertical: SPACING.small
+    marginVertical: 10
   },
   amountText: {
     flex: 1,
-    fontWeight: 'bold',
-    textAlign: 'left'
+    textAlign: 'left',
+    color: COLORS.lightGrey3
   },
   typeText: {
-    flex: 1
+    flex: 1,
+    color: COLORS.dark1,
   },
   statusText: {
     flex: 1,
     fontSize: FONT.SIZE.small,
-    fontWeight: 'bold',
     textAlign: 'right'
   },
   timeText: {
-    flex: 1
-  }
+    flex: 1,
+    color: COLORS.lightGrey3
+  },
 });
 
 export default style;

@@ -41,6 +41,7 @@ const style = StyleSheet.create({
     margin: 10
   },
   withdrawBtn: {
+    backgroundColor: COLORS.dark2
   },
   boxButton : {
     flex: 1,

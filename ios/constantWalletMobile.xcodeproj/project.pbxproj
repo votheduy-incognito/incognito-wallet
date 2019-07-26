@@ -93,6 +93,8 @@
 		875CEF8B09084A2D93993081 /* PostGroteskLightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 51B80536E38043E2810D70AD /* PostGroteskLightItalic.otf */; };
 		22D43C75396248B0BD811374 /* PostGroteskMedium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8A166D7044534B31A2BD26EC /* PostGroteskMedium.otf */; };
 		38C1CB68E5FA483E9F478497 /* PostGroteskMediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = A37F2762BA3D42388EA0979D /* PostGroteskMediumItalic.otf */; };
+		557C4371DA98418FBE33A4DA /* PostGroteskBook.otf in Resources */ = {isa = PBXBuildFile; fileRef = 60009CB9B42C40CDAF5B2DE3 /* PostGroteskBook.otf */; };
+		2DB9D3B0052743D18522D917 /* PostGroteskBookItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 82D0A734BA634CDEBE9A3F26 /* PostGroteskBookItalic.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -625,6 +627,8 @@
 		51B80536E38043E2810D70AD /* PostGroteskLightItalic.otf */ = {isa = PBXFileReference; name = "PostGroteskLightItalic.otf"; path = "../src/assets/fonts/PostGroteskLightItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		8A166D7044534B31A2BD26EC /* PostGroteskMedium.otf */ = {isa = PBXFileReference; name = "PostGroteskMedium.otf"; path = "../src/assets/fonts/PostGroteskMedium.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		A37F2762BA3D42388EA0979D /* PostGroteskMediumItalic.otf */ = {isa = PBXFileReference; name = "PostGroteskMediumItalic.otf"; path = "../src/assets/fonts/PostGroteskMediumItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		60009CB9B42C40CDAF5B2DE3 /* PostGroteskBook.otf */ = {isa = PBXFileReference; name = "PostGroteskBook.otf"; path = "../src/assets/fonts/PostGroteskBook.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		82D0A734BA634CDEBE9A3F26 /* PostGroteskBookItalic.otf */ = {isa = PBXFileReference; name = "PostGroteskBookItalic.otf"; path = "../src/assets/fonts/PostGroteskBookItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1106,6 +1110,8 @@
 				51B80536E38043E2810D70AD /* PostGroteskLightItalic.otf */,
 				8A166D7044534B31A2BD26EC /* PostGroteskMedium.otf */,
 				A37F2762BA3D42388EA0979D /* PostGroteskMediumItalic.otf */,
+				60009CB9B42C40CDAF5B2DE3 /* PostGroteskBook.otf */,
+				82D0A734BA634CDEBE9A3F26 /* PostGroteskBookItalic.otf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1824,6 +1830,8 @@
 				875CEF8B09084A2D93993081 /* PostGroteskLightItalic.otf in Resources */,
 				22D43C75396248B0BD811374 /* PostGroteskMedium.otf in Resources */,
 				38C1CB68E5FA483E9F478497 /* PostGroteskMediumItalic.otf in Resources */,
+				557C4371DA98418FBE33A4DA /* PostGroteskBook.otf in Resources */,
+				2DB9D3B0052743D18522D917 /* PostGroteskBookItalic.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

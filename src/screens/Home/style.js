@@ -10,7 +10,7 @@ export const homeStyle = StyleSheet.create({
     flex: 1,
   },
   cryptoItem: {
-    marginVertical: 5
+    marginVertical: 4
   },
   addTokenContainer: {
     flexDirection: 'column',

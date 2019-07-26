@@ -42,7 +42,7 @@ export default StyleSheet.create({
     fontSize: 14,
   },
   amountText: {
-    fontWeight: '500'
+
   },
   getAmountFailedText: {
     color: COLORS.red

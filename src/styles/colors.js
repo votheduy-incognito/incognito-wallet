@@ -13,6 +13,7 @@ const COLORS = {
   lightGrey1: '#D1DEE0',
   lightGrey2: '#F0F7F9',
   lightGrey3: '#8C9A9D',
+  lightGrey4: '#E4EDEF',
 
   overlayBlack: 'rgba(0, 0, 0, 0.5)',
   overlayBlackDark: 'rgba(0, 0, 0, 0.8)',
