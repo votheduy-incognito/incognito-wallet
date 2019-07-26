@@ -3,6 +3,7 @@ import ROUTE_NAMES from '@src/router/routeNames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import MdIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AccountList from './AccountList';
 import ActionButtons from './ActionButtons';
 
@@ -25,6 +26,11 @@ class UserHeaderBoard extends React.Component {
         label: 'Import Account',
         handlePress: () => navigation.navigate(ROUTE_NAMES.ImportAccount),
         icon: <MdIcons name="input" />
+      },
+      {
+        label: 'Export Account',
+        handlePress: () => navigation.navigate(ROUTE_NAMES.ExportAccount),
+        icon: <MaterialCommunityIcons name="export" />
       },
       {
         label: 'Delete Wallet',
