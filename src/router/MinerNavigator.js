@@ -54,12 +54,12 @@ const MinerNavigator = createStackNavigator(
         header: null
       }
     },
-    [ROUTE_NAMES.Withdraw]:{
-      screen:Withdraw,
-      navigationOptions: {
-        header: null
-      }
-    }
+    // [ROUTE_NAMES.Withdraw]:{
+    //   screen:Withdraw,
+    //   navigationOptions: {
+    //     header: null
+    //   }
+    // }
   },
   {
     defaultNavigationOptions:{
