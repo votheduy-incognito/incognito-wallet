@@ -61,7 +61,6 @@ const style = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonRow: {
-    height: 80,
     flexDirection: 'row',
     justifyContent: 'space-between'
   }
