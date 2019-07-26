@@ -49,7 +49,10 @@ UserHeaderBoardContainer.defaultProps = {
   setDefaultAccount: undefined
 };
 UserHeaderBoardContainer.propTypes = {
-  setDefaultAccount: PropTypes.func
+  setDefaultAccount: PropTypes.func,
+  reloadAccountFollowingToken: PropTypes.func.isRequired,
+  wallet: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired
 };
 
 export default connect(

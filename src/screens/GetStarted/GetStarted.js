@@ -3,7 +3,6 @@ import {
   Container,
   Text,
   Toast,
-  TouchableOpacity,
   View
 } from '@src/components/core';
 import { getErrorMessage, messageCode } from '@src/services/errorHandler';
