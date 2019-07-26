@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -45,6 +46,7 @@
 		36F7D5CE970D4799A075B466 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F36E2A27EA945A6BA652F08 /* libRNSVG.a */; };
 		3B50FECFE455494A8373E5A6 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ECBE1563D1B5449E86A7658F /* libRNVectorIcons.a */; };
 		3EA7A98691974C14B21D2406 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5A53B1ED9DEB4B68B5B3BA7F /* FontAwesome5_Regular.ttf */; };
+		3EF0EC91E7FE4B16A434459C /* libRNZmqService.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE70DDA39F794DA9B6544C35 /* libRNZmqService.a */; };
 		4992337905E44CF49A39888B /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7139BB1E57B94AE2A6C8F4AF /* Entypo.ttf */; };
 		4C1DBB74B2F14588BF13C846 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 93B29E8475554D32A767FB11 /* SimpleLineIcons.ttf */; };
 		58F940C67903A87D5DE19CCF /* libPods-constantWalletMobile-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4BE5E883350502AE2338935 /* libPods-constantWalletMobile-tvOSTests.a */; };
@@ -86,7 +88,6 @@
 		FE52DD5022DC6B4B003203EF /* AutonomousZMQ.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FE6F886122DC3B510009C5AA /* autonomous_config.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE6F886022DC3B510009C5AA /* autonomous_config.plist */; };
 		FE86096522D747230050666A /* libFirebaseCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE86096422D747230050666A /* libFirebaseCore.a */; };
-		3EF0EC91E7FE4B16A434459C /* libRNZmqService.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE70DDA39F794DA9B6544C35 /* libRNZmqService.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -475,6 +476,20 @@
 			remoteGlobalIDString = 358F4ED71D1E81A9004DF814;
 			remoteInfo = RCTBlob;
 		};
+		FE6B46C622E97B0A004FCB3F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 110F78A61BE244FF96379354 /* RNReanimated.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FDBB176E229BF04900D1E455;
+			remoteInfo = "RNReanimated-tvOS";
+		};
+		FE6B46D222E97B0A004FCB3F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0217CE11A01345C0A6DE9CF7 /* RNZmqService.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNZmqService;
+		};
 		FE8609DA22D748A50050666A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 793E471D36E74D598FFA7E81 /* IOTWifi.xcodeproj */;
@@ -522,6 +537,7 @@
 		00E356EE1AD99517003FC87E /* constantWalletMobileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = constantWalletMobileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* constantWalletMobileTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = constantWalletMobileTests.m; sourceTree = "<group>"; };
+		0217CE11A01345C0A6DE9CF7 /* RNZmqService.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNZmqService.xcodeproj; path = "../node_modules/react-native-zmq-service/ios/RNZmqService.xcodeproj"; sourceTree = "<group>"; };
 		0320F8C79E3C4EBB9B779DBB /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
 		0A159D2691E74CC884B8B9B8 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		0BAD1A0DB61346B886E179E6 /* RNOS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNOS.xcodeproj; path = "../node_modules/react-native-os/ios/RNOS.xcodeproj"; sourceTree = "<group>"; };
@@ -601,6 +617,7 @@
 		D4BE5E883350502AE2338935 /* libPods-constantWalletMobile-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-constantWalletMobile-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D83A536AAE9B4C2BBE7644F7 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		DDA0DFA996054B719B6C8234 /* libRCTBluetoothSerial.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTBluetoothSerial.a; sourceTree = "<group>"; };
+		DE70DDA39F794DA9B6544C35 /* libRNZmqService.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNZmqService.a; sourceTree = "<group>"; };
 		DEF86409B62F4B3DBE38A13D /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFirebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; };
 		ECBE1563D1B5449E86A7658F /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -611,8 +628,6 @@
 		FE6F886022DC3B510009C5AA /* autonomous_config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = autonomous_config.plist; sourceTree = "<group>"; };
 		FE86096422D747230050666A /* libFirebaseCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FECCEDF722C379D900129059 /* AutonomousZMQ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AutonomousZMQ.framework; sourceTree = "<group>"; };
-		0217CE11A01345C0A6DE9CF7 /* RNZmqService.xcodeproj */ = {isa = PBXFileReference; name = "RNZmqService.xcodeproj"; path = "../node_modules/react-native-zmq-service/ios/RNZmqService.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		DE70DDA39F794DA9B6544C35 /* libRNZmqService.a */ = {isa = PBXFileReference; name = "libRNZmqService.a"; path = "libRNZmqService.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -853,8 +868,8 @@
 				66AB9A7871F643BA80A04830 /* libIOTWifi.a */,
 				342DA32C89DE489180AC3EF2 /* libRNOS.a */,
 				C5D037565762439F89BE1412 /* libTcpSockets.a */,
-				4013C6C026BB4BCFBE0EC74B /* libRNZmqService.a */,
 				FECCEDF722C379D900129059 /* AutonomousZMQ.framework */,
+				DE70DDA39F794DA9B6544C35 /* libRNZmqService.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -897,6 +912,7 @@
 			isa = PBXGroup;
 			children = (
 				2090A0452285220900701CD9 /* libRNReanimated.a */,
+				FE6B46C722E97B0A004FCB3F /* libRNReanimated-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1090,6 +1106,14 @@
 				8EB8224132C242FC84C0C969 /* Roboto.ttf */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		FE6B46CE22E97B0A004FCB3F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FE6B46D322E97B0A004FCB3F /* libRNZmqService.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		FE6F885F22DC3B0E0009C5AA /* ZMQ */ = {
@@ -1355,6 +1379,10 @@
 				{
 					ProductGroup = 202892E6227045F9004F5C14 /* Products */;
 					ProjectRef = 0A159D2691E74CC884B8B9B8 /* RNVectorIcons.xcodeproj */;
+				},
+				{
+					ProductGroup = FE6B46CE22E97B0A004FCB3F /* Products */;
+					ProjectRef = 0217CE11A01345C0A6DE9CF7 /* RNZmqService.xcodeproj */;
 				},
 				{
 					ProductGroup = FE8609D522D748A50050666A /* Products */;
@@ -1741,6 +1769,20 @@
 			fileType = archive.ar;
 			path = libRCTBlob.a;
 			remoteRef = ADBDB9261DFEBF0700ED6528 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FE6B46C722E97B0A004FCB3F /* libRNReanimated-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRNReanimated-tvOS.a";
+			remoteRef = FE6B46C622E97B0A004FCB3F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FE6B46D322E97B0A004FCB3F /* libRNZmqService.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNZmqService.a;
+			remoteRef = FE6B46D222E97B0A004FCB3F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		FE8609DB22D748A50050666A /* libIOTWifi.a */ = {

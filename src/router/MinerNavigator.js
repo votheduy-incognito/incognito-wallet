@@ -18,7 +18,7 @@ const defaultNavigationOptions={
 };
 const MinerNavigator = createStackNavigator(
   {
-    [ROUTE_NAMES.MineSetting]:{
+    [ROUTE_NAMES.HomeMine]:{
       screen:HomeMine,
       navigationOptions: {
         header: null
@@ -50,12 +50,6 @@ const MinerNavigator = createStackNavigator(
     },
     [ROUTE_NAMES.DetailDevice]:{
       screen:DetailDevice,
-      navigationOptions: {
-        header: null
-      }
-    },
-    [ROUTE_NAMES.Withdraw]:{
-      screen:Withdraw,
       navigationOptions: {
         header: null
       }

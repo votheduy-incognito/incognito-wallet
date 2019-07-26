@@ -61,7 +61,7 @@ class DetailDevice extends BaseScreen {
         console.log(TAG,'sendPrivateKey send dataResult = ',dataResult);
         const { status = -1, data, message= ''} = dataResult;
         if(status === 1){
-          const action:Action = DeviceService.buildAction(device.data,LIST_ACTION.START,{product_id:device.data.product_id, privateKey:'HIENTON-PrivateKEY'},chain,'incognito');
+          const action:Action = DeviceService.buildAction(device.data,LIST_ACTION.START,{product_id:device.data.product_id, privateKey:'112t8rnX3rRvnpiSCBuA9ES9mzauoyoXXYkZmTqdQd7zfw3QVVFisFmouQ2JQJK1prdkaBaDWaiTtkzgfAkbUTPyXsgGkuJEBUtrE9vrMqhr'},chain,'incognito');
           const params = {
             type:action?.type||'',
             data:action?.data||{}
@@ -100,14 +100,14 @@ class DetailDevice extends BaseScreen {
         this.setState({
           loading: true
         });
-        const dataResult = await Util.excuteWithTimeout(DeviceService.send(device.data,action,chain),4);
+        const dataResult = await Util.excuteWithTimeout(DeviceService.send(device.data,action,chain),6);
         console.log(TAG,'callAndUpdateAction send dataResult = ',dataResult);
-        const { status = -1, data, message= 'Offline',productId = -1 } = dataResult;
+        const { status = -1, data={status:Device.offlineStatus()}, message= 'Offline',productId = -1 } = dataResult;
       
         if(device.data.product_id === productId ){
           device.data.status ={
-            code:status,
-            message:message
+            code:data.status.code,
+            message:data.status.message
           };
         }else{
           device.data.status = Device.offlineStatus();
@@ -148,12 +148,13 @@ class DetailDevice extends BaseScreen {
     } = this.state;
     if(!loading){
       //get ip to send private key
-      const isStarted = device.data.status.code === Device.CODE_START;
+      const isStarted = device.isStartedChain();
       const action = isStarted ? LIST_ACTION.STOP : LIST_ACTION.START;
       if(!isStarted){
         const result = await this.sendPrivateKey('incognito');
         const { data= {}, message = '', status= -1 } = result;
         if(status === 1){
+          await Util.delay(6);
           this.checkStatus();
         }
       }else{

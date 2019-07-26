@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
 
 const Tab = createBottomTabNavigator({
   [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { title: 'Wallet', tabBarIcon: renderTab('wallet') }),
-  [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Miner', header: null, tabBarIcon: renderTab('miner') }),
+  [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Miner', header:() => null, tabBarIcon: renderTab('miner') }),
   [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'Setting', tabBarIcon: renderTab('setting') }),
 }, {
   initialRouteName: ROUTE_NAMES.Home,
@@ -76,7 +76,8 @@ const Tab = createBottomTabNavigator({
   navigationOptions: ({ navigation, screenProps }) => {
     const child = getActiveChildNavigationOptions(navigation, screenProps);
     const { routeName } = navigation.state.routes[navigation.state.index];
-  
+
+    // console.log(TAG,'navigationOptions child = ',child);
     // You can do whatever you like here to pick the title based on the route name
     const title = routeName;
   

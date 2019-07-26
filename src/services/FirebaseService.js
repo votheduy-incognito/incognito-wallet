@@ -317,9 +317,9 @@ export default class FirebaseService {
       protocal: action.myProtocal
       //time: (new Date().getTime()) * 1000
     };
-    console.log('JSON: ', json);
+    console.log(TAG, 'send JSON: ', json);
     let path = `/${firebase.auth().currentUser.uid}/` + action.dest;
-    console.log('Send Path: ', path);
+    console.log(TAG,'send Path: ', path);
     firebase
       .database()
       .ref(path)
@@ -331,7 +331,7 @@ export default class FirebaseService {
             }, timeout * 1000);
           }
         } else {
-          console.log('Error:', error);
+          console.log(TAG,'Error:', error);
         }
       });
   }

@@ -46,6 +46,9 @@ class HomeMine extends BaseScreen {
     //   'componentWillFocus begin = ',
     //   Util.hashCode(DeviceInfo.getUniqueID())
     // );
+    // if(this.isForeground()){
+      
+    // }
     this.handleRefresh();
   };
 

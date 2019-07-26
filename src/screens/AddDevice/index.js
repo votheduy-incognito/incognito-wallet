@@ -8,7 +8,6 @@ import { ScrollView, Text, View } from 'react-native';
 import { CheckBox, Icon, ListItem } from 'react-native-elements';
 import Pulse from 'react-native-pulse';
 import { connect } from 'react-redux';
-import { imagesVector } from '@src/assets';
 import { onClickView } from '@src/utils/ViewUtil';
 import styles, { iconWifi } from './styles';
 
@@ -34,41 +33,25 @@ class AddDevice extends BaseScreen {
     return null;
   }
 
+  init = async ()=>{
+    let device;
+    try {
+      device = await this.deviceId?.current?.getCurrentConnect();
+    } catch (error) {
+      console.log(
+        TAG,
+        'init begin currentConnect = ',error);
+    }finally{
+      this.setState({
+        loading: false,
+        currentConnect: device
+      });
+    }
+  }
+
   componentDidMount = async ()=> {
     super.componentDidMount();
-    
-        this.deviceId?.current?.getCurrentConnect().then((device:ObjConnection) => {
-          console.log(
-            TAG,
-            'componentDidMount begin currentConnect = ',device);
-          if (!_.isEmpty(device)) {
-            // const name = device.name;
-            // const isConnectedHotpost = _.isEqual(name, 'The Miner');
-            // if (!isConnectedHotpost) {
-            //   const deviceMiner = new ObjConnection();
-            //   deviceMiner.name = 'The Miner';
-            //   deviceMiner.id = 'The Miner';
-            //   this.deviceId.current.connectDevice(deviceMiner).then(result => {
-            //     console.log(
-            //       TAG,
-            //       'componentDidMount connectDevice result =',
-            //       result
-            //     );
-            //     if (result) {
-            //       this.setState({
-            //         loading: false,
-            //         currentConnect: deviceMiner
-            //       });
-            //     }
-            //   });
-            // }
-            
-            this.setState({
-              loading: false,
-              currentConnect: device
-            });
-          }
-        });
+    this.init();
   }
 
   handleEnterPassword = onClickView(()=>{
@@ -98,7 +81,6 @@ class AddDevice extends BaseScreen {
             type="material-community"
             color="#517fa4"
           />
-          {/* <Text style={{ color: 'white', fontSize: 30 }}>Find Miner</Text> */}
         </View>
       )
     );
@@ -112,9 +94,7 @@ class AddDevice extends BaseScreen {
     }
     return (
       <View style={styles.group1}>
-        <Text style={styles.textLabelWifi}>
-      Connect current phone
-        </Text>
+        <Text style={styles.textLabelWifi}>Connect current phone</Text>
         <ListItem
           containerStyle={styles.group1_listitem}
           titleStyle={styles.textTitleWifi}
@@ -130,6 +110,10 @@ class AddDevice extends BaseScreen {
   }
 
   renderGroup2=()=>{
+    const { loading } = this.state;
+    if(loading){
+      return null;
+    }
     return (
       <View style={styles.group2}>
         <ListItem
@@ -151,21 +135,8 @@ class AddDevice extends BaseScreen {
       <View style={styles.container}>
         {this.renderGroup1()}
         {this.renderGroup2()}
-        <DeviceConnection
-          ref={this.deviceId}
-          callbackGettingListPairedDevices={(list: []) => {
-            const newList = list.filter(
-              item => !_.isEmpty(item.name) && !_.isEmpty(item.id)
-            );
-            this.setState({
-              loading: _.isEmpty(newList),
-              devicesList: newList
-            });
-          }}
-        />
-        {this.renderWaiting()}
-        {this.renderDeviceList()}
-        
+        <DeviceConnection ref={this.deviceId} />
+        {this.renderWaiting()}        
       </View>
     );
   }
