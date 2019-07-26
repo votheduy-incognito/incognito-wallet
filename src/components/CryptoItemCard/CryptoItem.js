@@ -7,7 +7,7 @@ import cryptoItemStyle from './style';
 const CryptoItem = ({ fullName, typeName, amount, icon, onPress, symbol, isGettingBalance, style }) => (
   <TouchableOpacity style={[cryptoItemStyle.container, style]} onPress={amount != null ? onPress : null}>
     <View style={cryptoItemStyle.logoContainer}>
-      <Image source={icon} />
+      <Image source={icon} style={cryptoItemStyle.logo} />
     </View>
     <View style={cryptoItemStyle.cryptoNameContainer}>
       <Text style={cryptoItemStyle.mainNameText}>{fullName}</Text>

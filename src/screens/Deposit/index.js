@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { genDepositAddress } from '@src/services/api/deposit';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { messageCode, createError } from '@src/services/errorHandler';
+import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import Deposit from './Deposit';
 
 class DepositContainer extends Component {
@@ -46,7 +47,7 @@ class DepositContainer extends Component {
 }
 
 const mapState = state => ({
-  selectedPrivacy: state.selectedPrivacy,
+  selectedPrivacy: selectedPrivacySeleclor.selectedPrivacy(state),
 });
 
 const mapDispatch = { };

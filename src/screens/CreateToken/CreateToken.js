@@ -1,5 +1,8 @@
-import { ActivityIndicator, Container, Form, FormSubmitButton, FormTextField, ScrollView, Text, Toast } from '@src/components/core';
+import { ActivityIndicator, Container, ScrollView, Text, Button, View, Toast } from '@src/components/core';
 import LoadingTx from '@src/components/LoadingTx';
+import { Field, change, isValid, formValueSelector } from 'redux-form';
+import { createForm, InputField, validator } from '@src/components/core/reduxForm';
+import { connect } from 'react-redux';
 import { CONSTANT_COMMONS } from '@src/constants';
 import ROUTE_NAMES from '@src/router/routeNames';
 import { getEstimateFeeForSendingTokenService } from '@src/services/wallet/RpcClientService';
@@ -10,39 +13,42 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import tokenData from '@src/constants/tokenData';
-
-import formValidate from './formValidate';
 import styleSheet from './style';
 
-
-const initialFormValues = {
+const formName = 'createToken';
+const selector = formValueSelector(formName);
+const initialValues = {
   fee: '0.5',
   fromAddress: ''
 };
+const Form = createForm(formName, { initialValues });
 
 class CreateToken extends Component {
   constructor() {
     super();
 
     this.state = {
-      initialFormValues,
-      minFee: 0,
       isCreatingOrSending: false,
-      isGettingFee: false
+      isGettingFee: false,
+      minFeeValidator: validator.minValue(0)
     };
 
     this.handleShouldGetFee = _.debounce(this.handleShouldGetFee, 1000);
-
-    this.form = null;
   }
 
-  setFormValue = (initialFormValues) => {
-    this.setState({ initialFormValues });
+  componentDidUpdate(prevProps) {
+    const { amount: oldAmount } = prevProps;
+    const { isFormValid, amount } = this.props;
+
+    if (amount !== oldAmount && isFormValid) {
+      this.handleShouldGetFee();
+    }
   }
 
   updateFormValues = (field, value) => {
-    if (this.form) {
-      this.form.setFieldValue(field, value, true);
+    const { rfChange } = this.props;
+    if (typeof rfChange === 'function') {
+      rfChange(formName, field, value);
     }
   }
 
@@ -76,7 +82,7 @@ class CreateToken extends Component {
       const fee =  await getEstimateFeeForSendingTokenService(fromAddress, toAddress, Number(amount), tokenObject, account.PrivateKey, accountWallet);
       const humanFee = convert.toHumanAmount(fee, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
       // set min fee state
-      this.setState({minFee: humanFee});
+      this.setState({ minFeeValidator: validator.minValue(humanFee) });
       // update fee
       this.updateFormValues('fee', String(humanFee));
     } catch(e){
@@ -122,15 +128,12 @@ class CreateToken extends Component {
   };
 
   handleShouldGetFee = async () => {
-    const { errors, values } = this.form;
-    const { account } = this.props;
+    const { account, isFormValid, name, symbol, amount } = this.props;
     const { PaymentAddress: paymentAddress } = account;
 
-    if (errors?.amount || errors?.name || errors?.symbol || !paymentAddress){
+    if (!isFormValid || !paymentAddress){
       return;
     }
-
-    const { name, symbol, amount } = values;
 
     if (amount && paymentAddress && name && symbol){
       this.handleEstimateFee({
@@ -143,48 +146,64 @@ class CreateToken extends Component {
     }
   }
 
-  onFormValidate = values => {
-    const errors = {};
-
-    const { fee } = values;
-    const { minFee } = this.state;
-
-
-    if (fee < minFee){
-      errors.fee = `Must be at least min fee ${minFee} ${tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY}`;
-    } 
-    
-    return errors;
-  }
-
-
   renderBalance = () => {
     const { account } = this.props;
 
-    return <Text>{` Balance: ${ formatUtil.amount(account.value, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY) } ${ tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY }`}</Text>;
+    return <Text style={styleSheet.balance}>{` Balance: ${ formatUtil.amount(account.value, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY) } ${ tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY }`}</Text>;
   }
 
   render() {
-    const { initialFormValues, isCreatingOrSending, isGettingFee } = this.state;
+    const { minFeeValidator, isCreatingOrSending, isGettingFee } = this.state;
 
     return (
       <ScrollView>
         <Container style={styleSheet.container}>
-          <Text style={styleSheet.title}>Create Token</Text>
           {this.renderBalance()}
-          <Form
-            formRef={form => this.form = form}
-            initialValues={initialFormValues}
-            onSubmit={this.handleCreateSendToken}
-            viewProps={{ style: styleSheet.form }}
-            validationSchema={formValidate}
-            validate={this.onFormValidate}
-          >
-            <FormTextField name='name' placeholder='Name' />
-            <FormTextField name='symbol' placeholder='Symbol' />
-            <FormTextField name='amount' placeholder='Amount' onFieldChange={this.handleShouldGetFee}/>
-            <FormTextField name='fee' placeholder='Min Fee' prependView={isGettingFee ? <ActivityIndicator /> : undefined} />
-            <FormSubmitButton title='CREATE' style={styleSheet.submitBtn} />
+          <Form>
+            {({ handleSubmit, submitting }) => (
+              <View style={styleSheet.form}>
+                <Field
+                  component={InputField}
+                  name='name'
+                  placeholder='Name'
+                  label='Name'
+                  style={styleSheet.input}
+                  validate={[validator.required]}
+                />
+                <Field
+                  component={InputField}
+                  name='symbol'
+                  placeholder='Symbol'
+                  label='Symbol'
+                  style={styleSheet.input}
+                  validate={[validator.required]}
+                />
+                <Field
+                  component={InputField}
+                  name='amount'
+                  placeholder='Amount'
+                  label='Amount'
+                  style={styleSheet.input}
+                  validate={[...validator.combinedAmount]}
+                />
+                <Field
+                  component={InputField}
+                  name='fee'
+                  placeholder='Min fee'
+                  label='Min fee'
+                  style={styleSheet.input}
+                  validate={[validator.required, validator.number, minFeeValidator]}
+                  prependView={isGettingFee ? <ActivityIndicator /> : undefined}
+                />
+                <Button
+                  title='CREATE'
+                  style={styleSheet.submitBtn}
+                  onPress={handleSubmit(this.handleCreateSendToken)}
+                  isAsync
+                  isLoading={submitting}
+                />
+              </View>
+            )}
           </Form>
         </Container>
         { isCreatingOrSending && <LoadingTx /> }
@@ -193,10 +212,34 @@ class CreateToken extends Component {
   }
 }
 
-CreateToken.propTypes = {
-  navigation:  PropTypes.objectOf(PropTypes.object),
-  wallet:  PropTypes.objectOf(PropTypes.object),
-  account:  PropTypes.objectOf(PropTypes.object),
+CreateToken.defaultProps = {
+  isFormValid: false,
+  name: null,
+  symbol: null,
+  amount: null
 };
 
-export default CreateToken;
+CreateToken.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  wallet: PropTypes.object.isRequired,
+  account: PropTypes.object.isRequired,
+  rfChange: PropTypes.func.isRequired,
+  isFormValid: PropTypes.bool,
+  name: PropTypes.string,
+  symbol: PropTypes.string,
+  amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+};
+
+const mapDispatch = {
+  rfChange: change
+};
+
+const mapState = state => ({
+  amount: selector(state, 'amount'),
+  name: selector(state, 'name'),
+  symbol: selector(state, 'symbol'),
+  isFormValid: isValid(formName)(state)
+});
+
+
+export default connect(mapState, mapDispatch)(CreateToken);

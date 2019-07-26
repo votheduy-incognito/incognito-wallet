@@ -12,14 +12,13 @@ import routeNames from '@src/router/routeNames';
 import tokenData from '@src/constants/tokenData';
 import { connect } from 'react-redux';
 import { accountSeleclor } from '@src/redux/selectors';
-import walletIcon from '@src/assets/images/icons/walletInactive.png';
-import TabBarIcon from '@src/components/TabBarIcon';
 import Home from './Home';
 
 class HomeContainer extends Component {
-  static navigationOptions = {
-    tabBarIcon: props => <TabBarIcon image={walletIcon} {...props} />
-  };
+  constructor() {
+    super();
+    this.state = { isReloading: false };
+  }
 
   componentDidMount() {
     const { account, navigation, clearSelectedPrivacy, getAccountBalance, accountList } = this.props;
@@ -37,7 +36,6 @@ class HomeContainer extends Component {
       'didFocus',
       () => {
         clearSelectedPrivacy();
-        this.reload();
       }
     );
   }
@@ -53,11 +51,14 @@ class HomeContainer extends Component {
 
   reload = async () => {
     try {
+      this.setState({ isReloading: true });
       const { getAccountBalance, account } = this.props;
       await getAccountBalance(account);
       this.getFollowingToken();
     } catch {
       Toast.showError('Reload data failed');
+    } finally {
+      this.setState({ isReloading: false });
     }
   }
 
@@ -99,16 +100,15 @@ class HomeContainer extends Component {
   handleSelectToken = (token) => {
     if (!token) return;
 
-    const { account, tokens, setSelectedPrivacy, navigation } = this.props;
-    const tokenData = tokens.find(t => t.symbol === token.symbol);
+    const { setSelectedPrivacy, navigation } = this.props;
 
-    const privacyToken = SelectedPrivacyModel.parse(account, tokenData);
-    setSelectedPrivacy(privacyToken);
+    setSelectedPrivacy(token?.symbol);
 
     navigation.navigate(routeNames.WalletDetail);
   }
 
   render() {
+    const { isReloading } = this.state;
     const { wallet, account, tokens, isGettingBalanceList } = this.props;
 
     if (!wallet) return <LoadingContainer />;
@@ -117,6 +117,8 @@ class HomeContainer extends Component {
       <Home
         account={account}
         tokens={tokens}
+        reload={this.reload}
+        isReloading={isReloading}
         handleAddFollowToken={this.onAddTokenToFollow}
         isGettingBalanceList={isGettingBalanceList}
         onSelectToken={this.handleSelectToken}

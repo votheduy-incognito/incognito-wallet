@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { connect } from 'react-redux';
+import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import ReceiveCrypto from './ReceiveCrypto';
 
 class ReceiveCryptoContainer extends Component {
@@ -17,7 +18,7 @@ class ReceiveCryptoContainer extends Component {
 }
 
 const mapState = state => ({
-  selectedPrivacy: state.selectedPrivacy
+  selectedPrivacy: selectedPrivacySeleclor.selectedPrivacy(state)
 });
 
 const mapDispatch = {  };

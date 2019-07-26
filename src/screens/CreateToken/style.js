@@ -3,13 +3,14 @@ import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
   container: {
-    alignItems: 'center',
     flex: 1,
-    justifyContent: 'center'
   },
   form: {
     marginTop: 30,
     width: '100%'
+  },
+  input: {
+    marginBottom: 15
   },
   noteText: {
     fontSize: FONT.SIZE.small,
@@ -22,6 +23,9 @@ const style = StyleSheet.create({
   title: {
     fontSize: THEME.text.largeTitleSize,
     fontWeight: 'bold'
+  },
+  balance: {
+    textAlign: 'center'
   }
 });
 

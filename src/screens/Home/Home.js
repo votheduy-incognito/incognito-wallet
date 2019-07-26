@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Container, ScrollView, View, Text } from '@src/components/core';
+import { Container, ScrollView, View, Text, RefreshControl } from '@src/components/core';
 import CryptoItemCard from '@src/components/CryptoItemCard';
 import tokenData from '@src/constants/tokenData';
 import TouchableOpacity from '@src/components/core/TouchableOpacity/Component';
@@ -8,10 +8,18 @@ import { homeStyle } from './style';
 
 class Home extends React.Component {
   render() {
-    const { account, tokens, isGettingBalanceList, onSelectToken, handleAddFollowToken } = this.props;
+    const { account, tokens, isGettingBalanceList, onSelectToken, handleAddFollowToken, reload, isReloading } = this.props;
 
     return (
-      <ScrollView style={homeStyle.container}>
+      <ScrollView
+        style={homeStyle.container}
+        refreshControl={(
+          <RefreshControl
+            refreshing={isReloading}
+            onRefresh={reload}
+          />
+        )}
+      >
         <Container style={homeStyle.mainContainer}>
           <CryptoItemCard
             style={homeStyle.cryptoItem}
@@ -49,6 +57,7 @@ Home.defaultProps = {
   isGettingBalanceList: null,
   account: null,
   tokens: [],
+  isReloading: false
 };
 
 Home.propTypes = {
@@ -57,6 +66,8 @@ Home.propTypes = {
   tokens: PropTypes.array,
   onSelectToken: PropTypes.func.isRequired,
   handleAddFollowToken: PropTypes.func.isRequired,
+  reload: PropTypes.func.isRequired,
+  isReloading: PropTypes.bool,
 };
 
 export default Home;

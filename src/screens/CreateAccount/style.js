@@ -3,16 +3,13 @@ import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
   container: {
-    alignItems: 'center',
     flex: 1,
-    justifyContent: 'center'
   },
   form: {
-    marginTop: 30,
     width: '100%'
   },
   submitBtn: {
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.blue,
     marginTop: 30
   },
   title: {

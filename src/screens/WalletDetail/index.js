@@ -5,7 +5,7 @@ import { getBalance } from '@src/redux/actions/account';
 import LoadingContainer from '@src/components/LoadingContainer';
 import accountService from '@src/services/wallet/accountService';
 import { setWallet } from '@src/redux/actions/wallet';
-import { accountSeleclor } from '@src/redux/selectors';
+import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import SendReceiveGroup from '@src/components/HeaderRight/SendReceiveGroup';
 import WalletDetail from './WalletDetail';
 
@@ -72,7 +72,7 @@ class WalletDetailContainer extends Component {
 const mapState = state => ({
   account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet,
-  selectedPrivacy: state.selectedPrivacy
+  selectedPrivacy: selectedPrivacySeleclor.selectedPrivacy(state)
 });
 
 const mapDispatch = { getBalance, setWallet };

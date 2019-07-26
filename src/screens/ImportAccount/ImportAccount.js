@@ -1,15 +1,17 @@
 import {
   Container,
-  Form,
-  FormSubmitButton,
-  FormTextField,
-  Text,
-  Toast
+  Toast,
+  Button,
+  View
 } from '@src/components/core';
 import PropTypes from 'prop-types';
+import { Field } from 'redux-form';
+import { createForm, InputField, validator } from '@src/components/core/reduxForm';
 import React from 'react';
-import formValidate from './formValidate';
 import styleSheet from './style';
+
+const formName = 'importAccount';
+const Form = createForm(formName);
 
 const ImportAccount = ({ navigation, accountList, importAccount }) => {
   const goBack = () => {
@@ -38,26 +40,46 @@ const ImportAccount = ({ navigation, accountList, importAccount }) => {
 
   return (
     <Container style={styleSheet.container}>
-      <Text style={styleSheet.title}>Import Account</Text>
-      <Text>
-        * Imported accounts will not be associated with your originally created
-        Constant account seedphrase.
-      </Text>
-      <Form
-        onSubmit={handleImportAccount}
-        viewProps={{ style: styleSheet.form }}
-        validationSchema={formValidate}
-      >
-        <FormTextField name="accountName" placeholder="Account Name" />
-        <FormTextField name="privateKey" placeholder="Private Key" />
-        <FormSubmitButton title="IMPORT ACCOUNT" style={styleSheet.submitBtn} />
+      <Form>
+        {({ handleSubmit, submitting }) => (
+          <View style={styleSheet.form}>
+            <Field
+              component={InputField}
+              name='accountName'
+              placeholder='Account Name'
+              label='Account Name'
+              validate={[validator.required]}
+            />
+            <Field
+              component={InputField}
+              name='privateKey'
+              placeholder='Private Key'
+              label='Private Key'
+              validate={[validator.required]}
+            />
+            <Button
+              title='IMPORT ACCOUNT'
+              style={styleSheet.submitBtn}
+              onPress={handleSubmit(handleImportAccount)}
+              isAsync
+              isLoading={submitting}
+            />
+          </View>
+        )}
       </Form>
     </Container>
   );
 };
 
+ImportAccount.defaultProps = {
+  accountList: [],
+  importAccount: null,
+};
+
 ImportAccount.propTypes = {
-  navigation: PropTypes.objectOf(PropTypes.object)
+  navigation: PropTypes.object.isRequired,
+  accountList: PropTypes.array,
+  importAccount: PropTypes.func,
 };
 
 export default ImportAccount;

@@ -9,7 +9,7 @@ import accountService from '@src/services/wallet/accountService';
 import tokenService from '@src/services/wallet/tokenService';
 import { getBalance } from '@src/redux/actions/account';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
-import { accountSeleclor } from '@src/redux/selectors';
+import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { CONSTANT_COMMONS } from '@src/constants';
 import SendCrypto from './SendCrypto';
 
@@ -147,7 +147,7 @@ class SendCryptoContainer extends Component {
 }
 
 const mapState = state => ({
-  selectedPrivacy: state.selectedPrivacy,
+  selectedPrivacy: selectedPrivacySeleclor.selectedPrivacy(state),
   account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet,
   tokens: state.token.followed

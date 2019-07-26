@@ -25,3 +25,4 @@ export { default as TabView } from './TabView';
 export { default as CheckBox } from './CheckBox';
 export { default as Picker } from './Picker';
 export { default as Alert } from './Alert';
+export { default as RefreshControl } from './RefreshControl';

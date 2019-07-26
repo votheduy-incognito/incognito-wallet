@@ -7,4 +7,7 @@ export default StyleSheet.create({
   mainContainer: {
     flex: 1,
   },
+  submitBtn: {
+    marginTop: 30
+  }
 });

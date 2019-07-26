@@ -73,9 +73,7 @@ const toast = {
 };
 
 const textInput = {
-  borderWidth: DECOR.borderWidth,
-  borderRadius: DECOR.borderRadiusBorder,
-  paddingHorizontal: SPACINGS.small,
+  borderBottomWidth: DECOR.borderWidth,
   borderColor: COLORS.lightGrey
 };
 
