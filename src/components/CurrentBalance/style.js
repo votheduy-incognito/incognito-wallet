@@ -11,7 +11,8 @@ const style = StyleSheet.create({
     fontSize: 28,
   },
   desc: {
-    fontSize: 16,
+    fontSize: 14,
+    color: COLORS.lightGrey3
   }
 });
 

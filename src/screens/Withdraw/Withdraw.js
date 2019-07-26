@@ -119,12 +119,14 @@ class Withdraw extends React.Component {
                       <MaterialCommunityIcons name='qrcode-scan' size={20} />
                     </TouchableOpacity>
                   )}
+                  style={style.input}
                   validate={[validator.required]}
                 />
                 <Field
                   component={InputField}
                   name='amount'
                   placeholder='Amount'
+                  style={style.input}
                   validate={[
                     ...validator.combinedAmount,
                     ...maxAmountValidator ? [maxAmountValidator] : []
@@ -139,7 +141,7 @@ class Withdraw extends React.Component {
                   toAddress={isFormValid ? selectedPrivacy?.paymentAddress : null} // est fee on the same network, dont care which address will be send to
                 />
                 <Text style={style.feeText}>Fee: {formatUtil.amount(finalFee, feeUnit)} {feeUnit}</Text>
-                <Button title='WITHDRAW' style={style.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSubmit)} isAsync isLoading={submitting} />
+                <Button title='Withdraw' style={style.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSubmit)} isAsync isLoading={submitting} />
                 {submitting && <LoadingTx />}
               </>
             )}

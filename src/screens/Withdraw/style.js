@@ -9,14 +9,18 @@ export default StyleSheet.create({
     flex: 1,
   },
   feeText: {
-    textAlign: 'right',
+    textAlign: 'center',
     marginVertical: 10,
+    fontSize: 14
   },
   form: {
     marginTop: 30,
     width: '100%'
   },
   submitBtn: {
-    marginTop: 30
+    marginTop: 20
+  },
+  input: {
+    marginBottom: 10
   },
 });

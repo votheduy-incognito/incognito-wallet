@@ -20,6 +20,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     backgroundColor: COLORS.white,
     borderRadius: DECOR.borderRadiusBorder,
+    borderColor: COLORS.lightGrey3,
     borderWidth: DECOR.borderWidth,
     flexDirection: 'row',
     padding: 10

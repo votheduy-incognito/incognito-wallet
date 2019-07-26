@@ -120,12 +120,14 @@ class SendCrypto extends React.Component {
                       <MaterialCommunityIcons name='qrcode-scan' size={20} />
                     </TouchableOpacity>
                   )}
+                  style={homeStyle.input}
                   validate={validator.combinedPaymentAddress}
                 />
                 <Field
                   component={InputField}
                   name='amount'
                   placeholder='Amount'
+                  style={homeStyle.input}
                   validate={[
                     ...validator.combinedAmount,
                     ...maxAmountValidator ? [maxAmountValidator] : []
@@ -140,7 +142,7 @@ class SendCrypto extends React.Component {
                   toAddress={isFormValid ? toAddress : null}
                 />
                 <Text style={homeStyle.feeText}>Fee: {formatUtil.amount(finalFee, feeUnit)} {feeUnit}</Text>
-                <Button title='SEND' style={homeStyle.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSend)} />
+                <Button title='Send' style={homeStyle.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSend)} />
               </View>
             )}
           </Form>

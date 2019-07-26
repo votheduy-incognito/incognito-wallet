@@ -24,7 +24,8 @@ const style = StyleSheet.create({
     flex: 1,
     height: DECOR.inputHeight,
     paddingVertical: 3,
-    fontSize: 20,
+    fontSize: 16,
+    ...THEME.text.defaultTextStyle,
   },
   focus: {
     borderColor: COLORS.blue,

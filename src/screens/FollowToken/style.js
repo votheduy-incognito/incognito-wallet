@@ -33,7 +33,7 @@ export const followTokenStyle = StyleSheet.create({
   },
   followBtn: {},
   input: {
-    flexBasis: 100
+    marginBottom: 15
   },
   tokenList: {
     flex: 1,

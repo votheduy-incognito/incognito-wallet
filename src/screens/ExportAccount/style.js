@@ -2,9 +2,11 @@ import { COLORS, SPACING } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+  },
   content: {
-    flex: 1
   },
   itemContainer: {
     backgroundColor: COLORS.lightGrey2,

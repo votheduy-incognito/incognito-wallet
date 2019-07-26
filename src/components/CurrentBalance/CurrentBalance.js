@@ -6,7 +6,7 @@ import styles from './style';
 
 const CurrentBalance = ({ amount, symbol }) => (
   <View style={styles.container}>
-    <Text style={styles.balance}>{formatUtil.amount(amount, symbol)} {symbol}</Text>
+    <Text style={styles.balance}>{formatUtil.amount(amount)} {symbol}</Text>
     <Text style={styles.desc}>Current balance</Text>
   </View>
 );
