@@ -26,6 +26,7 @@ class History {
       userPaymentAddress: data.UserPaymentAddress,
       requestedAmount: data.RequestedAmount,
       receivedAmount: data.ReceivedAmount,
+      incognitoAmount: data.IncognitoAmount,
       incognitoTx: data.IncognitoTx,
       outsideChainTx: data.OutsideChainTx,
     };

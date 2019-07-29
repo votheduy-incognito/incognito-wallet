@@ -21,7 +21,7 @@ const combineHistory = (histories, historiesFromApi, symbol) => {
       type: h?.addressType,
       toAddress: h?.userPaymentAddress,
       fromAddress: h?.userPaymentAddress,
-      amount: h?.receivedAmount,
+      amount: h?.incognitoAmount,
       symbol: currencyType,
       statusCode: h?.statusText
     });
