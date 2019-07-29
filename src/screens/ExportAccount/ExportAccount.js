@@ -47,7 +47,7 @@ const ExportAccount = ({ account }) => (
 );
 
 ExportAccount.propTypes = {
-  account: PropTypes.objectOf(PropTypes.object)
+  account: PropTypes.object.isRequired
 };
 
 export default ExportAccount;

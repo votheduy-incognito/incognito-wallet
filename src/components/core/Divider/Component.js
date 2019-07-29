@@ -23,10 +23,19 @@ const Divider = ({ height, color, style }) => (
   />
 );
 
+Divider.defaultProps = {
+  height: null,
+  color: null,
+  style: null,
+};
+
 Divider.propTypes = {
   height: PropTypes.number,
   color: PropTypes.string,
-  style: PropTypes.objectOf(PropTypes.object)
+  style: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.object),
+    PropTypes.object,
+  ])
 };
 
 export default Divider;

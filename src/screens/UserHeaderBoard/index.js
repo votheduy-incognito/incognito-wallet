@@ -31,7 +31,7 @@ class UserHeaderBoardContainer extends Component {
       <UserHeaderBoard
         {...this.props}
         handleSwitchAccount={this.onHandleSwitchAccount}
-        handleDeleteWalle={this.onDeleteWallet}
+        handleDeleteWallet={this.onDeleteWallet}
       />
     );
   }

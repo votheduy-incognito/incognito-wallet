@@ -40,13 +40,10 @@ const mapState = state => ({
 });
 
 const mapDispatch = { reloadAccountList };
-ImportAccountContainer.defaultProps = {
-  wallet: undefined,
-  reloadAccountList: undefined
-};
+
 ImportAccountContainer.propTypes = {
-  wallet: PropTypes.objectOf(PropTypes.object),
-  reloadAccountList: PropTypes.func
+  wallet: PropTypes.object.isRequired,
+  reloadAccountList: PropTypes.func.isRequired,
 };
 
 export default connect(

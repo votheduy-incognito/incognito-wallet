@@ -63,7 +63,7 @@ AccountList.defaultProps = {
 };
 
 AccountList.propTypes = {
-  accounts: PropTypes.objectOf(PropTypes.array),
+  accounts: PropTypes.arrayOf(PropTypes.object),
   switchAccount: PropTypes.func,
   defaultAccountName: PropTypes.string
 };
@@ -74,7 +74,7 @@ AccountItem.defaultProps = {
 };
 AccountItem.propTypes = {
   onPress: PropTypes.func,
-  account: PropTypes.objectOf(PropTypes.object),
+  account: PropTypes.object,
   active: PropTypes.bool
 };
 

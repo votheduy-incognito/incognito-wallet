@@ -12,7 +12,6 @@ import serverService from '@src/services/wallet/Server';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { networkItemShape } from './NetworkItem';
 import { networkEditStyle } from './style';
 
 const formName = 'editSetting';
@@ -99,13 +98,16 @@ class EditSetting extends Component {
   }
 }
 
-EditSetting.defaultProps = {
-  network: undefined,
-  reloadWallet: undefined
-};
 EditSetting.propTypes = {
-  network: networkItemShape,
-  reloadWallet: PropTypes.func
+  network: PropTypes.shape({
+    id: PropTypes.string,
+    default: PropTypes.bool,
+    name: PropTypes.string,
+    address: PropTypes.string,
+    username: PropTypes.string,
+    password: PropTypes.string
+  }).isRequired,
+  reloadWallet: PropTypes.func.isRequired
 };
 
 const mapDispatch = { reloadWallet };

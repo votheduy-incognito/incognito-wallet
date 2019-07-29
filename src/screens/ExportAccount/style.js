@@ -10,7 +10,8 @@ const style = StyleSheet.create({
   },
   itemContainer: {
     backgroundColor: COLORS.lightGrey2,
-    marginBottom: SPACING.small
+    marginBottom: SPACING.small,
+    padding: 5,
   },
   itemData: {},
   itemLabel: {}

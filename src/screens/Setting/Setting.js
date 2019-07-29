@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Container, ScrollView } from '@src/components/core';
 import NetworkSection from './NetworkSection';
-import PrivacySection from './PrivacySection';
+// import PrivacySection from './PrivacySection';
 import WalletSection from './WalletSection';
 
 class Setting extends React.Component {
@@ -24,7 +24,7 @@ class Setting extends React.Component {
             navigation={navigation}
             defaultServerId={defaultServerId}
           />
-          <PrivacySection navigation={navigation} />
+          {/* <PrivacySection navigation={navigation} /> */}
         </Container>
       </ScrollView>
     );
