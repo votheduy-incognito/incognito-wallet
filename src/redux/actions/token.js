@@ -1,5 +1,6 @@
 import type from '@src/redux/types/token';
 import { accountSeleclor } from '@src/redux/selectors';
+import { getTokenList } from '@src/services/api/token';
 
 export const setToken = (token = throw new Error('Token object is required')) => ({
   type: type.SET,
@@ -21,6 +22,20 @@ export const setListToken = (tokens = throw new Error('Token list is required'))
 
   return ({
     type: type.SET_LIST,
+    data: tokens
+  });
+};
+
+/**
+ * Replace with new list
+ */
+export const setListPToken = (tokens = throw new Error('Token list is required')) => {
+  if (tokens && tokens.constructor !== Array) {
+    throw new TypeError('Tokens must be an array');
+  }
+
+  return ({
+    type: type.SET_PTOKEN_LIST,
     data: tokens
   });
 };
@@ -78,5 +93,17 @@ export const getBalance = (token = throw new Error('Token object is required')) 
     throw e;
   } finally {
     dispatch(getBalanceFinish(token?.symbol));
+  }
+};
+
+export const getPTokenList = () => async (dispatch) => {
+  try {
+    const tokens = await getTokenList();
+
+    dispatch(setListPToken(tokens));
+    
+    return tokens;
+  } catch (e) {
+    throw e;
   }
 };

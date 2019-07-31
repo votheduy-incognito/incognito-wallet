@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Toast } from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { getBalance as getAccountBalance, reloadAccountFollowingToken } from '@src/redux/actions/account';
-import { setListToken, getBalance } from '@src/redux/actions/token';
+import { setListToken, getBalance, getPTokenList } from '@src/redux/actions/token';
 import { setSelectedPrivacy, clearSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import scheduleService from '@src/services/schedule';
 import routeNames from '@src/router/routeNames';
@@ -20,7 +20,7 @@ class HomeContainer extends Component {
 
   componentDidMount() {
     const { account, navigation, clearSelectedPrivacy, getAccountBalance, accountList } = this.props;
-
+    this.getPTokens();
     this.getFollowingToken();
     this.getAccountBalance(account);
 
@@ -44,6 +44,15 @@ class HomeContainer extends Component {
     // reload tokens list if wallet was changed
     if (prevProps.wallet !== wallet) {
       this.getFollowingToken();
+    }
+  }
+
+  getPTokens = async () => {
+    try {
+      const { getPTokenList } = this.props;
+      await getPTokenList();
+    } catch {
+      Toast.showError('Can not get token data');
     }
   }
 
@@ -130,7 +139,7 @@ const mapState = state => ({
   isGettingBalanceList: sharedSeleclor.isGettingBalance(state)
 });
 
-const mapDispatch = { setListToken, getBalance, getAccountBalance, setSelectedPrivacy, clearSelectedPrivacy, reloadAccountFollowingToken };
+const mapDispatch = { setListToken, getBalance, getAccountBalance, setSelectedPrivacy, clearSelectedPrivacy, reloadAccountFollowingToken, getPTokenList };
 
 HomeContainer.propTypes = {
   navigation: PropTypes.object.isRequired,
