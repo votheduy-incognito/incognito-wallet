@@ -11,7 +11,7 @@ export const genDepositAddress = ({ currencyType, amount, paymentAddress, wallet
   return http.post('ota/generate', {
     CurrencyType: currencyType,
     AddressType: CONSTANT_COMMONS.ADDRESS_TYPE_FOR_GEN_ADDRESS.DEPOSIT,
-    RequestAmount: String(parseAmount),
+    RequestedAmount: String(parseAmount),
     PaymentAddress: paymentAddress,
     WalletAddress: walletAddress ?? paymentAddress
   }).then(res => res?.Address);

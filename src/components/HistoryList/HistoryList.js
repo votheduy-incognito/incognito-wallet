@@ -146,7 +146,13 @@ const HistoryItem = ({ history }) => {
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {formatUtil.amount(history.amount, history.symbol)} {history.currencyType ?? history.symbol}
+            {
+              history.amount
+                ? formatUtil.amount(history.amount, history.symbol)
+                : formatUtil.amount(history.requestedAmount)
+            } 
+            {' '}
+            { history.currencyType ?? history.symbol }
           </Text>
           <Text
             style={[styleSheet.statusText, { color: statusColor }]}
