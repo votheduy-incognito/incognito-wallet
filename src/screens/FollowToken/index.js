@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Container } from '@src/components/core';
-import AddERC20Token from '@src/components/AddERC20Token';
+import AddToken from '@src/components/AddToken';
 import SearchPToken from '@src/components/SearchPToken';
 import styles from './style';
 
@@ -67,7 +67,7 @@ class FollowTokenContainer extends Component {
             view === VIEWS.SEARCH && <SearchPToken />
           }
           {
-            view === VIEWS.ADD && <AddERC20Token />
+            view === VIEWS.ADD && <AddToken />
           }
         </Container>
       </View>
