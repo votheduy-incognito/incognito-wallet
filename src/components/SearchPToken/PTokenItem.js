@@ -18,7 +18,7 @@ class PTokenItem extends PureComponent {
     if (!token) return null;
 
     return (
-      <TouchableOpacity onPress={this._handlePress} style={[ selected && itemStyle.highlight ]}>
+      <TouchableOpacity onPress={this._handlePress} style={[ itemStyle.container, selected && itemStyle.highlight ]}>
         <View>
           <Text>{token.name}</Text>
           <Text>{token.symbol} ({token.pSymbol})</Text>

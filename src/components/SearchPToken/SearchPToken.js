@@ -48,9 +48,12 @@ class SearchPToken extends PureComponent {
 
     selected.forEach((isSelected, tokenId) => isSelected && tokenIds.push(tokenId));
     
-    handleAddFollowToken(tokenIds);
+    if (tokenIds.length) {
+      handleAddFollowToken(tokenIds);
 
-    this.setState({ selected: new Map() });
+      // clear
+      this.setState({ selected: new Map() });
+    }
   }
 
   render() {
@@ -58,11 +61,15 @@ class SearchPToken extends PureComponent {
     const { selected, filteredTokens } = this.state;
 
     return (
-      <View>
+      <View style={searchPTokenStyle.container}>
         <TextInput
+          label='Search by symbol'
+          placeholder='ETH, BTC,...'
+          style={searchPTokenStyle.searchInput}
           onChangeText={this.handleFilter}
         />
         <FlatList
+          style={searchPTokenStyle.listToken}
           data={filteredTokens || tokens}
           extraData={selected}
           renderItem={this._renderItem}
