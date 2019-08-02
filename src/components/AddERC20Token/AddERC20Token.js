@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'redux-form';
 import { createForm, InputField, InputQRField, validator } from '@src/components/core/reduxForm';
-import { View, Button } from '@src/components/core';
+import { View, Button, ScrollView } from '@src/components/core';
 import styles from './style';
 
 
@@ -70,47 +70,49 @@ class AddERC20Token extends Component {
     const { isSearching } = this.props;
 
     return (
-      <Form initialValues={erc20Data} onChange={this.handleFormChange}>
+      <Form initialValues={erc20Data} onChange={this.handleFormChange} style={styles.container}>
         {({ handleSubmit, submitting }) => (
-          <View style={styles.form}>
-            <Field
-              component={InputQRField}
-              name='address'
-              label='Address'
-              placeholder='Search by ERC20 Address'
-              style={styles.input}
-              validate={validator.required}
-            />
-            <Field
-              component={InputField}
-              name='symbol'
-              label='Symbol'
-              placeholder='Search by Symbol'
-              style={styles.input}
-              validate={validator.required}
-            />
-            <Field
-              component={InputField}
-              name='name'
-              label='Name'
-              placeholder='Name'
-              style={styles.input}
-              validate={validator.required}
-              componentProps={{
-                editable: false
-              }}
-            />
-            <Field
-              component={InputField}
-              name='decimals'
-              label='Decimals'
-              placeholder='Decimals'
-              style={styles.input}
-              componentProps={{
-                editable: false
-              }}
-              validate={[validator.required, validator.number]}
-            />
+          <>
+            <ScrollView style={styles.fields}>
+              <Field
+                component={InputQRField}
+                name='address'
+                label='Address'
+                placeholder='Search by ERC20 Address'
+                style={styles.input}
+                validate={validator.required}
+              />
+              <Field
+                component={InputField}
+                name='symbol'
+                label='Symbol'
+                placeholder='Search by Symbol'
+                style={styles.input}
+                validate={validator.required}
+              />
+              <Field
+                component={InputField}
+                name='name'
+                label='Name'
+                placeholder='Name'
+                style={styles.input}
+                validate={validator.required}
+                componentProps={{
+                  editable: false
+                }}
+              />
+              <Field
+                component={InputField}
+                name='decimals'
+                label='Decimals'
+                placeholder='Decimals'
+                style={styles.input}
+                componentProps={{
+                  editable: false
+                }}
+                validate={[validator.required, validator.number]}
+              />
+            </ScrollView>
             <Button
               title='Add'
               style={styles.submitBtn}
@@ -118,7 +120,7 @@ class AddERC20Token extends Component {
               isAsync
               isLoading={isSearching || submitting}
             />
-          </View>
+          </>
         )}
       </Form>
     );

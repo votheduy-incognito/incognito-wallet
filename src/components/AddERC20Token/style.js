@@ -2,11 +2,11 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
-  },
-  mainContainer: {
     flex: 1,
+    flexDirection: 'column'
   },
-  form: {
+  fields: {
+    flex: 1,
   },
   submitBtn: {
     marginTop: 20,
