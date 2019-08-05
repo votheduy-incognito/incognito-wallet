@@ -20,13 +20,9 @@ const PrivacySection = ({ navigation, wallet }) => {
   return <Section label="Privacy" items={items} />;
 };
 
-PrivacySection.defaultProps = {
-  navigation: undefined,
-  wallet: undefined
-};
 PrivacySection.propTypes = {
-  navigation: PropTypes.objectOf(PropTypes.object),
-  wallet: PropTypes.objectOf(PropTypes.object)
+  navigation: PropTypes.object.isRequired,
+  wallet: PropTypes.object.isRequired
 };
 
 const mapState = state => ({

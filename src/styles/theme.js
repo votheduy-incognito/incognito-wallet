@@ -4,10 +4,26 @@ import FONTS from './font';
 import SPACINGS from './spacing';
 import { scaleInApp } from './TextStyle';
 
+const text = {
+  errorText: {
+    ...FONTS.STYLE.normal,
+    fontSize: FONTS.SIZE.superSmall,
+    color: COLORS.red
+  },
+  defaultTextStyle: {
+    ...FONTS.STYLE.normal,
+    color: COLORS.dark1,
+    fontSize: FONTS.SIZE.regular,
+    letterSpacing: 0
+  },
+  defaultSize: FONTS.SIZE.regular,
+  largeTitleSize: FONTS.SIZE.superLarge
+};
+
 const header = {
   headerHeight:  scaleInApp(55),
-  backgroundColor: COLORS.blueDark,
-  headerTintColor: COLORS.black
+  backgroundColor: COLORS.primary,
+  headerTintColor: COLORS.dark1
 };
 
 const opacityButton = {
@@ -24,28 +40,15 @@ const opacityButton = {
     alignItems: 'center'
   },
   buttonText: {
+    ...text.defaultTextStyle,
     color: COLORS.white,
     textAlign: 'center',
     fontSize: 18,
     letterSpacing: 0
   },
   disabled: {
-    backgroundColor: COLORS.lightGrey,
+    backgroundColor: COLORS.lightGrey1,
   }
-};
-
-const text = {
-  errorText: {
-    fontSize: FONTS.SIZE.superSmall,
-    color: COLORS.red
-  },
-  defaultTextStyle: {
-    color: COLORS.black1,
-    fontSize: FONTS.SIZE.regular,
-    letterSpacing: 0
-  },
-  defaultSize: FONTS.SIZE.regular,
-  largeTitleSize: FONTS.SIZE.superLarge
 };
 
 const indicator = {
@@ -59,22 +62,23 @@ const container = {
 
 const toast = {
   error: {
-    backgroundColor: null,
-    textColor: COLORS.red
+    backgroundColor: COLORS.red,
+    textColor: COLORS.white
   },
   warning: {
-    backgroundColor: null,
-    textColor: COLORS.orange
+    backgroundColor: COLORS.orange,
+    textColor: COLORS.white
   },
   info: {
-    backgroundColor: null,
-    textColor: COLORS.green
+    backgroundColor: COLORS.primary,
+    textColor: COLORS.white
   }
 };
 
 const textInput = {
+  ...text.defaultTextStyle,
   borderBottomWidth: DECOR.borderWidth,
-  borderColor: COLORS.lightGrey
+  borderColor: COLORS.lightGrey1
 };
 
 const divider = {

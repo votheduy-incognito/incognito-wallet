@@ -1,4 +1,4 @@
-import { setDefaultAccount } from '@src/redux/actions/account';
+import { setDefaultAccount, reloadAccountFollowingToken } from '@src/redux/actions/account';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -9,9 +9,10 @@ import UserHeaderBoard from './UserHeaderBoard';
 
 class UserHeaderBoardContainer extends Component {
   onHandleSwitchAccount = account => {
-    const { setDefaultAccount } = this.props;
+    const { setDefaultAccount, reloadAccountFollowingToken } = this.props;
 
     setDefaultAccount(account);
+    reloadAccountFollowingToken(account);
   };
 
   onDeleteWallet = () => {
@@ -30,7 +31,7 @@ class UserHeaderBoardContainer extends Component {
       <UserHeaderBoard
         {...this.props}
         handleSwitchAccount={this.onHandleSwitchAccount}
-        handleDeleteWalle={this.onDeleteWallet}
+        handleDeleteWallet={this.onDeleteWallet}
       />
     );
   }
@@ -43,12 +44,15 @@ const mapState = state => ({
   isGettingBalance: state.account?.isGettingBalance
 });
 
-const mapDispatch = { setDefaultAccount };
+const mapDispatch = { setDefaultAccount, reloadAccountFollowingToken };
 UserHeaderBoardContainer.defaultProps = {
   setDefaultAccount: undefined
 };
 UserHeaderBoardContainer.propTypes = {
-  setDefaultAccount: PropTypes.func
+  setDefaultAccount: PropTypes.func,
+  reloadAccountFollowingToken: PropTypes.func.isRequired,
+  wallet: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired
 };
 
 export default connect(

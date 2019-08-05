@@ -6,15 +6,15 @@ import styles from './styles';
 
 const LEVELS = [
   {
-    name: 'LOW',
+    name: 'Low',
     rate: 1,
   },
   {
-    name: 'MEDIUM',
+    name: 'Medium',
     rate: 2,
   },
   {
-    name: 'FAST',
+    name: 'Fast',
     rate: 3,
   }
 ];
@@ -97,41 +97,63 @@ class EstimateFee extends Component {
 
     return (
       <View style={styles.container}>
-        <View>
-          <Text>Select fee</Text>
-          <View style={styles.feeTypeGroup}>
-            {
-              types?.map(type => {
-                const onPress = () => this.handleSelectFeeType(type);
-                return (
-                  <TouchableOpacity key={type} onPress={onPress} style={[styles.feeType, defaultFeeSymbol === type && styles.feeTypeHighlight]}>
-                    <Text style={styles.feeTypeText}>Use {type}</Text>
-                  </TouchableOpacity>
-                );
-              })
-            }
-          </View>
-        </View>
-        { estimateErrorMsg
-          ? <Text style={styles.errorText}>{estimateErrorMsg}</Text>
-          : (minFee === 0 || !!minFee) && (
-            <View style={styles.rateContainer}>
+        <Text style={styles.label}>Select fee</Text>
+        <View style={styles.box}>
+          <View>
+            <View style={styles.feeTypeGroup}>
               {
-                isGettingFee ?
-                  <ActivityIndicator /> : 
-                  levels?.map(({ fee, level }) => {
-                    const onPress = () => this.handleSelectRate(fee);
-                    return (
-                      <TouchableOpacity key={level?.name} onPress={onPress} style={styles.rate}>
-                        <Text style={[styles.rateText, finalFee === fee && styles.rateTextHighlight]}>{level?.name}</Text>
-                        {/* <Text>{formatUtil.amount(fee, defaultFeeSymbol)} {defaultFeeSymbol}</Text> */}
-                      </TouchableOpacity>
-                    );
-                  })
+                types?.map((type, index) => {
+                  const onPress = () => this.handleSelectFeeType(type);
+                  const isHighlight = defaultFeeSymbol === type;
+                  return (
+                    <TouchableOpacity
+                      key={type}
+                      onPress={onPress}
+                      style={
+                        [
+                          styles.feeType,
+                          index === 0 && styles.feeTypeFirst,
+                          isHighlight && styles.feeTypeHighlight
+                        ]
+                      }
+                    >
+                      <Text
+                        style={
+                          [
+                            styles.feeTypeText,
+                            isHighlight && styles.feeTypeTextHighlight
+                          ]
+                        }
+                      >
+                        Use {type}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })
               }
             </View>
-          ) 
-        }
+          </View>
+          { estimateErrorMsg
+            ? <Text style={styles.errorText}>{estimateErrorMsg}</Text>
+            : (minFee === 0 || !!minFee) && (
+              <View style={styles.rateContainer}>
+                {
+                  isGettingFee ?
+                    <ActivityIndicator /> : 
+                    levels?.map(({ fee, level }) => {
+                      const onPress = () => this.handleSelectRate(fee);
+                      return (
+                        <TouchableOpacity key={level?.name} onPress={onPress} style={styles.rate}>
+                          <Text style={[styles.rateText, finalFee === fee && styles.rateTextHighlight]}>{level?.name}</Text>
+                          {/* <Text>{formatUtil.amount(fee, defaultFeeSymbol)} {defaultFeeSymbol}</Text> */}
+                        </TouchableOpacity>
+                      );
+                    })
+                }
+              </View>
+            ) 
+          }
+        </View>
       </View>
     );
   }

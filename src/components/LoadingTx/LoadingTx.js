@@ -49,7 +49,7 @@ class LoadingTx extends Component {
     return (
       <Modal animationType="fade" transparent visible={open}>
         <View style={styleSheet.container}>
-          <ActivityIndicator size="large" color={COLORS.yellow} />
+          <ActivityIndicator size="large" color={COLORS.primary} />
           <Text style={styleSheet.percent}>
             {percent}
             <Text style={styleSheet.percentSymbol}> %</Text>

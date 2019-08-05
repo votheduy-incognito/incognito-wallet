@@ -6,10 +6,6 @@ import styles from './style';
 const HeaderBar = (props) => {
   const { navigation, scene, index } = props;
   const { options } = scene.descriptor;
-
-  console.log('HeaderBar', props);
-  console.log('HeaderBar', scene.descriptor);
-
   const back = () => navigation.pop();
 
   return (

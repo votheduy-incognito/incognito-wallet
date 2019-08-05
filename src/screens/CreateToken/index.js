@@ -23,12 +23,17 @@ const mapState = state => ({
   wallet: state.wallet
 });
 
+CreateTokenContainer.defaultProps = {
+  isPrivacy: true,
+  isCreate: false,
+};
+
 CreateTokenContainer.propTypes = {
-  defaultAccount: PropTypes.objectOf(PropTypes.object),
-  wallet: PropTypes.objectOf(PropTypes.object),
+  defaultAccount: PropTypes.object.isRequired,
+  wallet: PropTypes.object.isRequired,
   isPrivacy: PropTypes.bool,
   isCreate: PropTypes.bool,
-  navigation: PropTypes.objectOf(PropTypes.object)
+  navigation: PropTypes.object.isRequired
 };
 
 export default connect(mapState)(CreateTokenContainer);

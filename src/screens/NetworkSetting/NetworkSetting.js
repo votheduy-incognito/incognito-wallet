@@ -43,7 +43,7 @@ class NetworkSetting extends Component {
       <ScrollView>
         <Container>
           {networks &&
-            networks.map(network => (
+            networks.map(network => network && (
               <NetworkItem
                 key={network?.id}
                 network={network}

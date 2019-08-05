@@ -3,7 +3,6 @@ import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
   amountText: {
-    color: COLORS.black,
     flex: 1,
     fontWeight: 'bold',
     textAlign: 'right'

@@ -196,7 +196,7 @@ class CreateToken extends Component {
                   prependView={isGettingFee ? <ActivityIndicator /> : undefined}
                 />
                 <Button
-                  title='CREATE'
+                  title='Create'
                   style={styleSheet.submitBtn}
                   onPress={handleSubmit(this.handleCreateSendToken)}
                   isAsync

@@ -9,7 +9,7 @@ import style from './style';
 /**
 * @augments {Component<{  listItem:any>}
 */
-class FlatList extends React.PureComponent {
+class FlatList extends React.Component {
   constructor(props){
     super(props);
     this.combineProp = {renderItem:this.renderItem,ListEmptyComponent:this.renderEmpty,
@@ -40,7 +40,7 @@ class FlatList extends React.PureComponent {
   }
   render() {
     return (
-      <RNFlatList {...this.combineProp} />
+      <RNFlatList {...this.combineProp} {...this.props} />
     );
   }
 }

@@ -1,14 +1,19 @@
 import React from 'react';
 import { View, Text } from '@src/components/core';
-import style from './style';
+import styleSheet from './style';
 
 const customField = (field, render) => {
+  const { style, componentProps, ...fieldProps } = field;
+  const renderProps = {
+    ...fieldProps,
+    ...typeof componentProps === 'object' ? componentProps : {}
+  };
   return (
-    <View style={style.container}>
-      <View style={style.field}>
-        {render(field)}
+    <View style={[styleSheet.container, style]}>
+      <View style={styleSheet.field}>
+        {render(renderProps)}
       </View>
-      {field?.meta?.touched && field?.meta?.error && <Text style={style.errorText}>{field.meta.error}</Text>}
+      {fieldProps?.meta?.touched && fieldProps?.meta?.error && <Text style={styleSheet.errorText}>{fieldProps.meta.error}</Text>}
     </View>
   );
 };

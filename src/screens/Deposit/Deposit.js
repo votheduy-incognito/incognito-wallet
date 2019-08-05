@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Container, ScrollView, View, Toast, Button } from '@src/components/core';
+import { Container, ScrollView, View, Toast, Text, Button } from '@src/components/core';
 import { Field, formValueSelector, destroy } from 'redux-form';
 import { createForm, InputField, validator } from '@src/components/core/reduxForm';
 import { getErrorMessage } from '@src/services/errorHandler';
@@ -47,12 +47,15 @@ class Deposit extends React.Component {
                       <Field
                         component={InputField}
                         name='amount'
-                        placeholder='Amount'
+                        placeholder='0.0'
                         label='Amount'
                         validate={[validator.required, ...validator.combinedAmount]}
+                        prependView={
+                          <Text>{selectedPrivacy?.symbol}</Text>
+                        }
                       />
                       <Button
-                        title='CONTINUE'
+                        title='Continue'
                         style={style.submitBtn}
                         onPress={handleSubmit(this.handleSubmit)}
                         isAsync

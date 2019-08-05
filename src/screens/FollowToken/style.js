@@ -12,7 +12,7 @@ export const tokenListStyle = StyleSheet.create({
     marginLeft: SPACING.small
   },
   itemActive: {
-    backgroundColor: COLORS.lightGrey
+    backgroundColor: COLORS.lightGrey1
   },
   tokenIcon: {
     flexBasis: 40,
@@ -33,7 +33,7 @@ export const followTokenStyle = StyleSheet.create({
   },
   followBtn: {},
   input: {
-    flexBasis: 100
+    marginBottom: 15
   },
   tokenList: {
     flex: 1,

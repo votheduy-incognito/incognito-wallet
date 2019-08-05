@@ -8,32 +8,19 @@ export default StyleSheet.create({
   mainContainer: {
     flex: 1,
   },
-  currentBalanceContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    marginBottom: 50,
-  },
-  currentBalance: {
-    ...THEME.text.defaultTextStyle,
-    fontSize: 28,
-    color: COLORS.black1,
-    letterSpacing: 0,
-    textAlign: 'center',
-  },
-  currentBalanceLabel: {
-    ...THEME.text.defaultTextStyle,
-    fontSize: 16,
-    color: '#899092',
-  },
   feeText: {
-    textAlign: 'right',
+    textAlign: 'center',
     marginVertical: 10,
+    fontSize: 14
   },
   form: {
     marginTop: 30,
     width: '100%'
   },
   submitBtn: {
-    marginTop: 30
+    marginTop: 20
+  },
+  input: {
+    marginBottom: 10
   },
 });

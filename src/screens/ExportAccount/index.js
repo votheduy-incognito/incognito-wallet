@@ -16,8 +16,8 @@ const ExportAccountContainer = ({ account, navigation }) => {
 };
 
 ExportAccountContainer.propTypes = {
-  navigation: PropTypes.objectOf(PropTypes.object),
-  account: PropTypes.objectOf(PropTypes.object)
+  navigation: PropTypes.object.isRequired,
+  account: PropTypes.object.isRequired
 };
 
 const mapState = state => ({

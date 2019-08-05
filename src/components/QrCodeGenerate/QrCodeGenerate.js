@@ -21,7 +21,7 @@ const QrCodeGenerate = ({ value, size, style }) => {
 
 QrCodeGenerate.defaultProps = {
   size: 200,
-  bgColor: COLORS.black,
+  bgColor: COLORS.dark1,
   fgColor: COLORS.white
 };
 

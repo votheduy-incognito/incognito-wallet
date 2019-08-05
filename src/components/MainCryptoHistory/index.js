@@ -1,4 +1,4 @@
-import { Toast } from '@src/components/core';
+import { Toast, ScrollView, RefreshControl } from '@src/components/core';
 import HistoryList from '@src/components/HistoryList';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
@@ -32,22 +32,31 @@ class MainCryptoHistory extends Component {
   }
 
   componentDidMount() {
-    const { defaultAccount: { name } = {}, wallet, navigation } = this.props;
-    this.loadAccountHistory(wallet, name);
+    const { navigation } = this.props;
+    this.handleLoadHistory();
 
     navigation.addListener(
       'didFocus',
       () => {
-        this.loadAccountHistory(wallet, name);
+        this.handleLoadHistory();
       }
     );
   }
 
   componentDidUpdate(prevProps) {
-    const { defaultAccount: { name } = {}, wallet } = this.props;
+    const { defaultAccount: { name } = {} } = this.props;
     const { defaultAccount: { name: prevName } = {} } = prevProps;
     if (prevName !== name) {
-      this.loadAccountHistory(wallet, name);
+      this.this.handleLoadHistory();
+    }
+  }
+
+  handleLoadHistory = () => {
+    const { defaultAccount: { name } = {}, wallet, onLoad } = this.props;
+    this.loadAccountHistory(wallet, name);
+
+    if (typeof onLoad === 'function') {
+      onLoad();
     }
   }
 
@@ -78,19 +87,35 @@ class MainCryptoHistory extends Component {
       return <LoadingContainer />;
     }
 
-    return <HistoryList histories={normalizeData(histories)} />;
+    return (
+      <ScrollView
+        refreshControl={(
+          <RefreshControl
+            refreshing={isLoading}
+            onRefresh={this.handleLoadHistory}
+          />
+        )}
+      >
+        <HistoryList histories={normalizeData(histories)} />
+      </ScrollView>
+    );
   }
 }
 
 const mapState = state => ({
   wallet: state.wallet,
-  defaultAccount: accountSeleclor.defaultAccount(state)
+  defaultAccount: accountSeleclor.defaultAccount(state),
 });
+
+MainCryptoHistory.defaultProps = {
+  onLoad: null
+};
 
 MainCryptoHistory.propTypes = {
   wallet: PropTypes.object.isRequired,
   defaultAccount: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
+  onLoad: PropTypes.func,
 };
 
 export default connect(mapState)(MainCryptoHistory);

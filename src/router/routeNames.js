@@ -6,8 +6,6 @@ export default {
   Setting: 'Setting',
   UserHeaderBoard: 'UserHeaderBoard',
   SendConstant: 'SendConstant',
-  Staking: 'Staking',
-  Defragment: 'Defragment',
   NetworkSetting: 'NetworkSetting',
   CreateAccount: 'CreateAccount',
   ImportAccount: 'ImportAccount',

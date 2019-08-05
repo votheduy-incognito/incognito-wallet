@@ -9,10 +9,14 @@ export const homeStyle = StyleSheet.create({
   form: {
   },
   submitBtn: {
-    marginTop: 50,
+    marginTop: 20,
   },
   feeText: {
-    textAlign: 'right',
+    textAlign: 'center',
     marginVertical: 10,
+    fontSize: 14
   },
+  input: {
+    marginBottom: 15
+  }
 });

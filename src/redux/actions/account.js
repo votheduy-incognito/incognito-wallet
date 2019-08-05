@@ -1,6 +1,7 @@
 import type from '@src/redux/types/account';
 import accountService from '@src/services/wallet/accountService';
 import { getPassphrase } from '@src/services/wallet/passwordService';
+import { setListToken, getBalance as getTokenBalance } from './token';
 
 export const setAccount = (account = throw new Error('Account object is required')) => ({
   type: type.SET,
@@ -14,6 +15,17 @@ export const setBulkAccount = (accounts = throw new Error('Account array is requ
 
   return ({
     type: type.SET_BULK,
+    data: accounts
+  });
+};
+
+export const setListAccount = (accounts = throw new Error('Account array is required')) => {
+  if (accounts && accounts.constructor !== Array) {
+    throw new TypeError('Accounts must be an array');
+  }
+
+  return ({
+    type: type.SET_LIST,
     data: accounts
   });
 };
@@ -89,5 +101,25 @@ export const getBalance = (account = throw new Error('Account object is required
     throw e;
   } finally {
     dispatch(getBalanceFinish(account?.name));
+  }
+};
+
+
+export const reloadAccountFollowingToken = (account = throw new Error('Account object is required')) => async (dispatch, getState) => {
+  try {
+    const wallet = getState()?.wallet;
+    
+    if (!wallet) {
+      throw new Error('Wallet is not exist');
+    }
+
+    const tokens = accountService.getFollowingTokens(account, wallet);
+    tokens.forEach(token => getTokenBalance(token)(dispatch, getState));
+
+    dispatch(setListToken(tokens));
+
+    return tokens;
+  } catch (e) {
+    throw e;
   }
 };

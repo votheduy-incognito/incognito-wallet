@@ -27,10 +27,17 @@ const Modal = ({
   </RNComponent>
 );
 
+Modal.defaultProps = {
+  children: null,
+  close: null,
+  containerStyle: null,
+  closeBtnColor: null,
+};
+
 Modal.propTypes = {
   children: PropTypes.node,
   close: PropTypes.func,
-  containerStyle: PropTypes.objectOf(PropTypes.object),
+  containerStyle: PropTypes.object,
   closeBtnColor: PropTypes.string
 };
 

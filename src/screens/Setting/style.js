@@ -23,11 +23,10 @@ export const sectionStyle = StyleSheet.create({
     marginVertical: SPACING.small
   },
   label: {
-    color: COLORS.lightGrey,
+    color: COLORS.lightGrey1,
     fontWeight: 'bold'
   },
   titleItem: {
-    color: COLORS.black,
     fontSize: FONT.SIZE.medium
   }
 });
