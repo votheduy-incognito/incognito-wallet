@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text, Container, Button, View, Toast, ActivityIndicator } from '@src/components/core';
+import { Text, Container, Button, View, Toast, ActivityIndicator, TouchableOpacity } from '@src/components/core';
 import ROUTE_NAMES from '@src/router/routeNames';
 import { COLORS } from '@src/styles';
 import HistoryToken from '@src/components/HistoryToken';
@@ -50,8 +50,8 @@ class WalletDetail extends Component {
   }
 
   render() { 
-    const { selectedPrivacy, navigation, hanldeLoadBalance, isGettingBalanceList } = this.props;  
-    const additionalData = selectedPrivacy?.additionalData;
+    const { selectedPrivacy, navigation, isGettingBalanceList } = this.props;  
+    const { isDeposable, isWithdrawable } = selectedPrivacy;
 
     return (
       <View style={styles.container}> 
@@ -71,13 +71,10 @@ class WalletDetail extends Component {
         <Container style={styles.container}>
           <View style={styles.buttonRow}>
             {
-              additionalData?.isDeposable && <Button style={styles.btnStyle} title='Deposit' onPress={this.handleDepositBtn} />
+              isDeposable && <Button style={styles.btnStyle} title='Deposit' onPress={this.handleDepositBtn} />
             }
             {
-              additionalData?.isWithdrawable && <Button style={[styles.btnStyle, styles.withdrawBtn]} title='Withdraw' onPress={this.handleWithdrawBtn} />
-            }
-            {
-              selectedPrivacy?.isToken && !additionalData?.isNotAllowUnfollow  && <Button style={[styles.btnStyle]} title='Unfollow' onPress={this.handleUnfollowTokenBtn} />
+              isWithdrawable && <Button style={[styles.btnStyle, styles.withdrawBtn]} title='Withdraw' onPress={this.handleWithdrawBtn} />
             }
           </View>
           {
@@ -92,6 +89,16 @@ class WalletDetail extends Component {
               <View style={styles.historyContainer}>
                 <MainCryptoHistory navigation={navigation} onLoad={this.hanldeLoadBalance} />
               </View>
+            )
+          }
+          {
+            selectedPrivacy?.isToken && (
+              <TouchableOpacity
+                style={[styles.unfollowBtn]}
+                onPress={this.handleUnfollowTokenBtn}
+              >
+                <Text style={styles.unfollowText}>Unfollow token</Text>
+              </TouchableOpacity>
             )
           }
         </Container>

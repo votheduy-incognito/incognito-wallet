@@ -40,6 +40,12 @@ const style = StyleSheet.create({
     width: '45%',
     margin: 10
   },
+  unfollowBtn: {
+    
+  },
+  unfollowText: {
+    color: COLORS.primary
+  },
   withdrawBtn: {
     backgroundColor: COLORS.dark2
   },

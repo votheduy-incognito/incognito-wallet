@@ -17,9 +17,8 @@ class SelectedPrivacy {
     this.externalSymbol = token?.metaData?.symbol;
     this.name = name;
     this.paymentAddress = account.PaymentAddress;
-    this.additionalData = tokenData.DATA[symbol];
     this.isWithdrawable = this.isPToken;
-    this.isWithdrawable = this.isPToken;
+    this.isDeposable = this.isPToken;
   }
 }
 

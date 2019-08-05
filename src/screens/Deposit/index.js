@@ -20,7 +20,7 @@ class DepositContainer extends Component {
   getDepositAddress = async amount => {
     try {
       const { selectedPrivacy } = this.props;
-      const currencyType = CONSTANT_COMMONS.CURRENCY_TYPE_FOR_GEN_ADDRESS[selectedPrivacy?.additionalData?.currencyType];
+      const currencyType = CONSTANT_COMMONS.CURRENCY_TYPE_FOR_GEN_ADDRESS[selectedPrivacy?.externalSymbol];
       const address = await genDepositAddress({
         currencyType,
         amount,
