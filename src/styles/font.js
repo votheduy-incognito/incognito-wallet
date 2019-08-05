@@ -1,12 +1,14 @@
+import {Platform} from 'react-native';
+
 const fontNames =  {
-  default: 'PostGroteskLight',
-  italic: 'PostGroteskLightItalic',
-  medium: 'PostGroteskMedium',
-  mediumItalic: 'PostGroteskMediumItalic',
-  bold: 'PostGroteskBold',
-  boldItalic: 'PostGroteskBoldItalic',
-  regular: 'PostGroteskBook',
-  regularItalic: 'PostGroteskBookItalic',
+  default: Platform.OS === 'ios'?'PostGrotesk-Light': 'PostGroteskLight',
+  italic: Platform.OS === 'ios'?'PostGrotesk-LightItalic':'PostGroteskLightItalic',
+  medium: Platform.OS === 'ios'?'PostGrotesk-Medium':'PostGroteskMedium',
+  mediumItalic: Platform.OS === 'ios'?'PostGrotesk-MediumItalic':'PostGroteskMediumItalic',
+  bold: Platform.OS === 'ios'?'PostGrotesk-Bold':'PostGroteskBold',
+  boldItalic: Platform.OS === 'ios'?'PostGrotesk-BoldItalic':'PostGroteskBoldItalic',
+  regular: Platform.OS === 'ios'?'PostGrotesk-Book':'PostGroteskBook',
+  regularItalic: Platform.OS === 'ios'?'PostGrotesk-BookItalic':'PostGroteskBookItalic',
 };
 
 const fontStyle = {
