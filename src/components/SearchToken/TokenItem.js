@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { TouchableOpacity, View, Text } from '../core';
 import { itemStyle } from './styles';
 
-class PTokenItem extends PureComponent {
+class TokenItem extends PureComponent {
 
   _handlePress = () => {
     const { onPress, token } = this.props;
@@ -20,20 +20,19 @@ class PTokenItem extends PureComponent {
     return (
       <TouchableOpacity onPress={this._handlePress} style={[ itemStyle.container, selected && itemStyle.highlight ]}>
         <View>
-          <Text>{token.name}</Text>
-          <Text>{token.symbol} ({token.pSymbol})</Text>
+          <Text>{token.name} ({token.symbol})</Text>
         </View>
       </TouchableOpacity>
     );
   }
 }
 
-PTokenItem.defaultProps = {
+TokenItem.defaultProps = {
   onPress: null,
   selected: false,
 };
 
-PTokenItem.propTypes = {
+TokenItem.propTypes = {
   selected: PropTypes.bool,
   onPress: PropTypes.func,
   token: PropTypes.shape({
@@ -44,4 +43,4 @@ PTokenItem.propTypes = {
   }).isRequired
 };
 
-export default PTokenItem;
+export default TokenItem;

@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { FlatList, View, TextInput, Button } from  '@src/components/core';
-import PTokenItem from './PTokenItem';
+import TokenItem from './TokenItem';
 import { searchPTokenStyle } from './styles';
 
-class SearchPToken extends PureComponent {
+class SearchToken extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,7 +25,7 @@ class SearchPToken extends PureComponent {
   _renderItem = ({ item }) => {
     const { selected } = this.state;
     return (
-      <PTokenItem
+      <TokenItem
         onPress={this._handleSelect}
         token={item}
         selected={selected.get(item.tokenId)}
@@ -37,7 +37,11 @@ class SearchPToken extends PureComponent {
 
   handleFilter = term => {
     const { tokens } = this.props;
-    const filteredTokens = tokens.filter(t => [t.name, t.pSymbol, t.symbol].join(' ').includes(term || ''));
+    const filteredTokens = tokens.filter(t => {
+      const lowerCaseTerm = term ?  String(term).toLowerCase() : term;
+      const lowerCaseTokenName = [t.name, t.symbol].join(' ')?.toLowerCase();
+      return lowerCaseTokenName.includes(lowerCaseTerm || '');
+    });
     this.setState({ filteredTokens });
   }
 
@@ -81,7 +85,7 @@ class SearchPToken extends PureComponent {
   }
 }
 
-SearchPToken.propTypes = {
+SearchToken.propTypes = {
   tokens: PropTypes.arrayOf(PropTypes.shape({
     tokenId: PropTypes.string.isRequired,
     symbol: PropTypes.string.isRequired,
@@ -91,4 +95,4 @@ SearchPToken.propTypes = {
   handleAddFollowToken: PropTypes.func.isRequired
 };
 
-export default SearchPToken;
+export default SearchToken;

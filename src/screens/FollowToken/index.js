@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Container } from '@src/components/core';
 import AddToken from '@src/components/AddToken';
-import SearchPToken from '@src/components/SearchPToken';
+import SearchToken from '@src/components/SearchToken';
 import styles from './style';
 
 const VIEWS = {
@@ -64,7 +64,7 @@ class FollowTokenContainer extends Component {
         </View>
         <Container style={styles.tabContent}>
           {
-            view === VIEWS.SEARCH && <SearchPToken />
+            view === VIEWS.SEARCH && <SearchToken />
           }
           {
             view === VIEWS.ADD && <AddToken />
