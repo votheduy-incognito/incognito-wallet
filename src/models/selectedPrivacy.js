@@ -1,21 +1,26 @@
 import tokenData from '@src/constants/tokenData';
 
-class SelectedPrivacyModel {
-  static parse(basePrivacy = {}, token = {}) {
+class SelectedPrivacy {
+  constructor(account = {}, token = {}) {
     const symbol = token.symbol || tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY;
     const name = token.name || tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY;
-    return {
-      amount: token.amount ?? basePrivacy.value || 0,
-      tokenId: token.id,
-      isToken: !!token.id,
-      isMainCrypto: !token.id,
-      symbol,
-      name,
-      paymentAddress: basePrivacy.PaymentAddress,
-      ownerAccountName: basePrivacy.name,
-      additionalData: tokenData.DATA[symbol]
-    };
+
+    this.amount = token.amount ?? account.value || 0;
+    this.tokenId = token.id;
+    this.isToken = !!token.id;
+    this.isMainCrypto = !token.id;
+    this.isPToken = !!token?.metaData?.pSymbol;
+    this.isErc20Token = !!token?.metaData?.contractId;
+    this.pTokenType = token?.metaData?.type;
+    this.decimals = token?.metaData?.decimals;
+    this.symbol = symbol;
+    this.externalSymbol = token?.metaData?.symbol;
+    this.name = name;
+    this.paymentAddress = account.PaymentAddress;
+    this.additionalData = tokenData.DATA[symbol];
+    this.isWithdrawable = this.isPToken;
+    this.isWithdrawable = this.isPToken;
   }
 }
 
-export default SelectedPrivacyModel;
+export default SelectedPrivacy;

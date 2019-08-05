@@ -48,6 +48,10 @@ export default {
     ETH: 1,
     BTC: 2 
   },
+  PTOKEN_TYPE: {
+    COIN: 0,
+    ERC20: 1
+  },
   HISTORY: {
     TYPE: {
       DEPOSIT: 1, // same with PRIVATE_TOKEN_HISTORY_ADDRESS_TYPE.DEPOSIT

@@ -1,21 +1,14 @@
 import http from '@src/services/http';
 import historyModel from '@src/models/history';
 
-export const getpTokenHistory = ({ currencyType, paymentAddress }) => {
-  if (!currencyType) throw new Error('Missing history currency type');
-
+export const getpTokenHistory = ({ paymentAddress }) => {
   return http.get('eta/history', {
     params: {
       WalletAddress: paymentAddress
     }
   }).then(res => {
-    const data = [];
-    res && res.forEach(history => {
-      if (history?.CurrencyType === currencyType) {
-        data.push(historyModel.parsePrivateTokenFromApi(history));
-      }
+    return res && res.map(history => {
+      return historyModel.parsePrivateTokenFromApi(history);
     });
-
-    return data;
   });
 };

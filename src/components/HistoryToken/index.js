@@ -95,13 +95,13 @@ class HistoryTokenContainer extends Component {
     try {
       this.setState({ isLoading: true });
       const { selectedPrivacy } = this.props;
-      const { additionalData, paymentAddress } = selectedPrivacy;
+      const { isDeposable, isWithdrawable, paymentAddress } = selectedPrivacy;
 
-      if (!additionalData?.isWithdrawable || !additionalData?.isDeposable) {
+      if (!isWithdrawable || !isDeposable) {
         return;
       }
 
-      const histories = await getpTokenHistory({ currencyType: CONSTANT_COMMONS.PRIVATE_TOKEN_HISTORY_CURRENCY_TYPE[additionalData?.currencyType], paymentAddress });
+      const histories = await getpTokenHistory({ paymentAddress });
 
       this.setState({ historiesFromApi: histories });
     } catch {

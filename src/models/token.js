@@ -8,6 +8,7 @@ class TokenModel {
     isInit: data.isInit,
     image: data.Image,
     listTxs: data.ListTxs,
+    metaData: data.metaData,
   });
 
   static toJson = (data = {}) => ({
@@ -19,6 +20,7 @@ class TokenModel {
     isInit: data.isInit,
     Image: data.image,
     ListTxs: data.listTxs,
+    metaData: data.metaData,
   });
 }
 
