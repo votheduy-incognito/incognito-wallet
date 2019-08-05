@@ -14,7 +14,7 @@ export default class LocalDatabase {
     return s;
   }
   static saveValue = async (key: String, value: Object) => {
-    console.log(TAG, ' saveValue begin ', value);
+    // console.log(TAG, ' saveValue begin ', value);
     await AsyncStorage.setItem(key, value);
   };
 

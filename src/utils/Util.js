@@ -89,6 +89,11 @@ export default class Util {
       setTimeout(() => resolve(fn), timeSecond * 1000);
     });
   };
+  static until= async (fn)=> {
+    while (!fn()) {
+      await Util.delay(0);
+    }
+  }
 
   static excuteWithTimeout = (promise, timeSecond = 1) => {
     return new Promise(function(resolve, reject) {
