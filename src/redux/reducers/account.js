@@ -64,6 +64,11 @@ const reducer = (state = initialState, action) => {
       ...state,
       list: newList,
     };
+  case type.SET_LIST:
+    return {
+      ...state,
+      list: [...action.data],
+    };
   case type.REMOVE_BY_NAME:
     newList = removeByName(state.list, action.data);
     return {

@@ -44,12 +44,15 @@ CopiableText.defaultProps = {
 };
 CopiableText.propTypes = {
   text: PropTypes.string,
-  textProps: PropTypes.objectOf(PropTypes.object),
-  containerProps: PropTypes.objectOf(PropTypes.object),
+  textProps: PropTypes.object,
+  containerProps: PropTypes.object,
   showCopyIcon: PropTypes.bool,
   oneLine: PropTypes.bool,
   children: PropTypes.node,
-  style: PropTypes.objectOf(PropTypes.object)
+  style: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+  ]),
 };
 
 export default CopiableText;

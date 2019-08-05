@@ -153,7 +153,7 @@ class GetStartedContainer extends Component {
       const { reloadWallet } = this.props;
       await this.handleCreateWallet();
       const wallet = await reloadWallet();
-
+      
       if (wallet) {
         this.goHome();
       } else {

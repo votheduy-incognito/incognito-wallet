@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { TextInput as RNComponent, View, Text } from 'react-native';
+import { COLORS } from '@src/styles';
 import styleSheet from './style';
 
 const TextInput = ({ containerStyle, inputStyle, style, prependView, label, onFocus, onBlur, ...props }) => {
@@ -32,6 +33,7 @@ const TextInput = ({ containerStyle, inputStyle, style, prependView, label, onFo
       >
         <RNComponent
           {...props}
+          placeholderTextColor={COLORS.lightGrey3}
           style={[
             styleSheet.input,
             inputStyle,

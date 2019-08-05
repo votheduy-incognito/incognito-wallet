@@ -1,13 +1,33 @@
 import { StyleSheet } from 'react-native';
+import { FONT, COLORS } from '@src/styles';
 
 export default StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   mainContainer: {
     flex: 1,
   },
   submitBtn: {
     marginTop: 30
+  }
+});
+
+export const waitingDepositStyle = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 80,
+  },
+  textContainer: {
+    paddingHorizontal: 20,
+  },
+  text: {
+    textAlign: 'center',
+    color: COLORS.lightGrey3
+  },
+  textHighlight: {
+    ...FONT.STYLE.medium,
+    color: COLORS.dark1,
+    marginBottom: 10,
   }
 });

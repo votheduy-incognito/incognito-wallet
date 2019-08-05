@@ -58,7 +58,7 @@ const ImportAccount = ({ navigation, accountList, importAccount }) => {
               validate={[validator.required]}
             />
             <Button
-              title='IMPORT ACCOUNT'
+              title='Import account'
               style={styleSheet.submitBtn}
               onPress={handleSubmit(handleImportAccount)}
               isAsync

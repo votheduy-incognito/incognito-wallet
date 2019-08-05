@@ -15,7 +15,6 @@ const style = StyleSheet.create({
   label: {
     ...THEME.text.defaultTextStyle,
     fontSize: 14,
-    color: COLORS.black,
     marginBottom: 5,
   },
   labelFocus: {
@@ -25,8 +24,8 @@ const style = StyleSheet.create({
     flex: 1,
     height: DECOR.inputHeight,
     paddingVertical: 3,
-    fontSize: 20,
-    color: COLORS.black,
+    fontSize: 16,
+    ...THEME.text.defaultTextStyle,
   },
   focus: {
     borderColor: COLORS.blue,

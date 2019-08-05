@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { scaleInApp } from '@src/styles/TextStyle';
-import { COLORS, THEME } from '@src/styles';
+import { COLORS, THEME, FONT } from '@src/styles';
 
 export const sizeHeader ={
   height:scaleInApp(90),
@@ -14,6 +14,7 @@ const style = StyleSheet.create({
     alignItems: 'center'
   },
   title: {
+    ...FONT.STYLE.medium,
     color: COLORS.white,
     fontWeight: '600'
   },

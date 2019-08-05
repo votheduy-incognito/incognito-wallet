@@ -17,7 +17,7 @@ const style = StyleSheet.create({
     marginVertical: 15
   },
   submitBtn: {
-    marginTop: 30
+    marginTop: 20
   },
   title: {
     fontSize: THEME.text.largeTitleSize,

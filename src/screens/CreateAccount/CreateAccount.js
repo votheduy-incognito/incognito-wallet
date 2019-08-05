@@ -51,7 +51,7 @@ const CreateAccount = ({ navigation, accountList, createAccount }) => {
               validate={[validator.required]}
             />
             <Button
-              title='CREATE ACCOUNT'
+              title='Create account'
               style={styleSheet.submitBtn}
               onPress={handleSubmit(handleCreateAccount)}
               isAsync

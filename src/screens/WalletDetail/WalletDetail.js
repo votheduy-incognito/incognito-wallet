@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text, Container, Button, View, Toast } from '@src/components/core';
+import { Text, Container, Button, View, Toast, ActivityIndicator } from '@src/components/core';
 import ROUTE_NAMES from '@src/router/routeNames';
+import { COLORS } from '@src/styles';
 import HistoryToken from '@src/components/HistoryToken';
 import MainCryptoHistory from '@src/components/MainCryptoHistory';
 import formatUtil from '@src/utils/format';
@@ -29,6 +30,15 @@ class WalletDetail extends Component {
     }
   }
 
+  hanldeLoadBalance = async () => {
+    try {
+      const { hanldeLoadBalance } = this.props;
+      return await hanldeLoadBalance();
+    } catch {
+      Toast.showWarning('Can not reload balance right now, please try again');
+    }
+  }
+
   handleDepositBtn = () => {
     const { navigation } = this.props;
     navigation.navigate(ROUTE_NAMES.Deposit);
@@ -40,16 +50,22 @@ class WalletDetail extends Component {
   }
 
   render() { 
-    const { selectedPrivacy, navigation } = this.props;  
+    const { selectedPrivacy, navigation, hanldeLoadBalance, isGettingBalanceList } = this.props;  
     const additionalData = selectedPrivacy?.additionalData;
 
     return (
       <View style={styles.container}> 
         <View style={styles.boxHeader}> 
           <View style={styles.boxBalance}>
-            <Text style={styles.balance}>
-              {formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy.symbol)} {selectedPrivacy.symbol}
-            </Text>
+            {
+              isGettingBalanceList?.includes(selectedPrivacy.symbol)
+                ? <ActivityIndicator color={COLORS.white} />
+                : (
+                  <Text style={styles.balance}>
+                    {formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy.symbol)} {selectedPrivacy.symbol}
+                  </Text>
+                )
+            }
           </View>
         </View>
         <Container style={styles.container}>
@@ -67,19 +83,19 @@ class WalletDetail extends Component {
           {
             selectedPrivacy?.isToken && (
               <View style={styles.historyContainer}>
-                <HistoryToken navigation={navigation} />
+                <HistoryToken navigation={navigation} onLoad={this.hanldeLoadBalance} />
               </View>
             )
           }
           {
             selectedPrivacy?.isMainCrypto && (
               <View style={styles.historyContainer}>
-                <MainCryptoHistory navigation={navigation} />
+                <MainCryptoHistory navigation={navigation} onLoad={this.hanldeLoadBalance} />
               </View>
             )
           }
         </Container>
-      </View>        
+      </View>          
     );
   }
 }
@@ -88,6 +104,8 @@ WalletDetail.propTypes = {
   navigation: PropTypes.object.isRequired,
   selectedPrivacy: PropTypes.object.isRequired,
   handleRemoveFollowToken: PropTypes.func.isRequired,
+  hanldeLoadBalance: PropTypes.func.isRequired,
+  isGettingBalanceList: PropTypes.array.isRequired
 };
 
 export default WalletDetail;

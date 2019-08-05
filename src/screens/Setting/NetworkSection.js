@@ -22,8 +22,13 @@ const NetworkSection = ({ navigation, defaultServer }) => {
   return <Section label="Network" items={items} />;
 };
 
+NetworkSection.defaultProps = {
+  defaultServer: null,
+};
+
 NetworkSection.propTypes = {
-  navigation: PropTypes.objectOf(PropTypes.object).isRequired
+  navigation: PropTypes.object.isRequired,
+  defaultServer: PropTypes.object,
 };
 
 const mapState = state => ({

@@ -10,12 +10,12 @@ const style = StyleSheet.create({
     width: '100%'
   },
   boxHeader: { 
-    backgroundColor: COLORS.blueDark,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',   
     height: 80,
     paddingBottom: 30,
+    backgroundColor: COLORS.primary
   },
   historyContainer: {
     flex: 1,
@@ -33,7 +33,6 @@ const style = StyleSheet.create({
     textAlign: 'center',
   },
   getFree : {
-    color: COLORS.blueLight,
     textAlign: 'center',
     fontSize: 16    
   },
@@ -42,7 +41,7 @@ const style = StyleSheet.create({
     margin: 10
   },
   withdrawBtn: {
-    backgroundColor: COLORS.blueDark
+    backgroundColor: COLORS.dark2
   },
   boxButton : {
     flex: 1,
@@ -62,7 +61,6 @@ const style = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonRow: {
-    height: 80,
     flexDirection: 'row',
     justifyContent: 'space-between'
   }

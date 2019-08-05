@@ -75,7 +75,7 @@ class FollowToken extends Component {
             followedList={followed}
           />
         </ScrollView>
-        <Button title='FOLLOW' onPress={this.handleSaveFollow} style={followTokenStyle.followBtn} />
+        <Button title='Follow' onPress={this.handleSaveFollow} style={followTokenStyle.followBtn} />
         <TouchableOpacity onPress={this.handleCreateToken}>
           <Text style={[followTokenStyle.createTokenBtn, followTokenStyle.centerText]}>
             Or create your token

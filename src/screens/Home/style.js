@@ -3,13 +3,14 @@ import { COLORS } from '@src/styles';
 
 export const homeStyle = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: COLORS.lightGrey2
   },
   mainContainer: {
     flex: 1,
   },
   cryptoItem: {
-    marginVertical: 5
+    marginVertical: 4
   },
   addTokenContainer: {
     flexDirection: 'column',

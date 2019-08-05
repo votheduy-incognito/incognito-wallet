@@ -1,4 +1,4 @@
-import { COLORS, DECOR } from '@src/styles';
+import { COLORS, DECOR, THEME } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
@@ -6,6 +6,8 @@ export default StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: COLORS.white,
     borderRadius: DECOR.borderRadiusBorder,
+    shadowOffset: { width: 2, height: 0 },
+    elevation: 3,
     padding: 13
   },
   logoContainer: {
@@ -31,13 +33,16 @@ export default StyleSheet.create({
   },
   text: {},
   mainNameText: {
-    fontWeight: '500'
+    ...THEME.text.defaultTextStyle,
+    fontWeight: '400'
   },
   subNameText: {
-    fontSize: 14
+    ...THEME.text.defaultTextStyle,
+    color: COLORS.lightGrey3,
+    fontSize: 14,
   },
   amountText: {
-    fontWeight: '500'
+
   },
   getAmountFailedText: {
     color: COLORS.red

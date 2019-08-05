@@ -26,23 +26,23 @@ const getStatusData = statusCode => {
     statusColor = COLORS.blue;
     break;
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.NewAddress:
-    statusText = 'NewAddress';
+    statusText = 'Pending';
     statusColor = COLORS.blue;
     break;
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.ReceivedDepositAmount:
-    statusText = 'ReceivedDepositAmount';
+    statusText = 'Received Deposit Amount';
     statusColor = COLORS.blue;
     break;
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.MintingPrivacyToken:
-    statusText = 'MintingPrivacyToken';
+    statusText = 'Minting Privacy Token';
     statusColor = COLORS.blue;
     break;
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.MintedPrivacyToken:
-    statusText = 'MintedPrivacyToken';
+    statusText = 'Minted Privacy Token';
     statusColor = COLORS.blue;
     break;
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SendingToMasterAccount:
-    statusText = 'SendingToMasterAccount';
+    statusText = 'Sending To Master Account';
     statusColor = COLORS.blue;
     break;
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SendedToMasterAccount:
@@ -50,19 +50,19 @@ const getStatusData = statusCode => {
     statusColor = COLORS.green;
     break;
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.ReceivedWithdrawAmount:
-    statusText = 'ReceivedWithdrawAmount';
+    statusText = 'Received Withdraw Amount';
     statusColor = COLORS.blue;
     break;
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.BurningPrivacyToken:
-    statusText = 'BurningPrivacyToken';
+    statusText = 'Burning Privacy Token';
     statusColor = COLORS.blue;
     break;
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.BurnedPrivacyToken:
-    statusText = 'BurnedPrivacyToken';
+    statusText = 'Burned Privacy Token';
     statusColor = COLORS.blue;
     break;
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SendingToUserAddress:
-    statusText = 'SendingToUserAddress';
+    statusText = 'Sending To User Address';
     statusColor = COLORS.blue;
     break;
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SendedToUserAddress:
@@ -126,7 +126,7 @@ const HistoryItem = ({ history }) => {
       <View style={styleSheet.itemContainer}>
         <View style={styleSheet.row}>
           <Text
-            style={[styleSheet.typeText, { color: typeColor }]}
+            style={[styleSheet.typeText]}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
@@ -142,23 +142,12 @@ const HistoryItem = ({ history }) => {
         </View>
         <View style={styleSheet.row}>
           <Text
-            style={styleSheet.addressText}
-            numberOfLines={1}
-            ellipsizeMode="middle"
-          >
-            {addressDirection}: 
-            {' '}
-            {address}
-          </Text>
-          <Text
             style={styleSheet.amountText}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
             {formatUtil.amount(history.amount, history.symbol)} {history.currencyType ?? history.symbol}
           </Text>
-        </View>
-        <View style={styleSheet.row}>
           <Text
             style={[styleSheet.statusText, { color: statusColor }]}
             numberOfLines={1}
@@ -168,7 +157,7 @@ const HistoryItem = ({ history }) => {
           </Text>
         </View>
       </View>
-      <Divider style={styleSheet.divider} color={COLORS.lightGrey} />
+      <Divider color={COLORS.lightGrey4} />
     </>
   );
 };

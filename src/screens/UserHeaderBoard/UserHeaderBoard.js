@@ -3,6 +3,7 @@ import ROUTE_NAMES from '@src/router/routeNames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import MdIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AccountList from './AccountList';
 import ActionButtons from './ActionButtons';
 
@@ -14,7 +15,7 @@ class UserHeaderBoard extends React.Component {
   }
 
   getActionBtns = props => {
-    const { navigation, handleDeleteWalle } = props;
+    const { navigation, handleDeleteWallet } = props;
     return [
       {
         label: 'Create Account',
@@ -27,6 +28,11 @@ class UserHeaderBoard extends React.Component {
         icon: <MdIcons name="input" />
       },
       {
+        label: 'Export Account',
+        handlePress: () => navigation.navigate(ROUTE_NAMES.ExportAccount),
+        icon: <MaterialCommunityIcons name="export" />
+      },
+      {
         label: 'Delete Wallet',
         handlePress: () => {
           Alert.alert(
@@ -37,7 +43,7 @@ class UserHeaderBoard extends React.Component {
                 text: 'Cancel',
                 style: 'cancel'
               },
-              { text: 'OK, delete it', onPress: handleDeleteWalle }
+              { text: 'OK, delete it', onPress: handleDeleteWallet }
             ],
             { cancelable: false }
           );
@@ -72,16 +78,16 @@ class UserHeaderBoard extends React.Component {
 UserHeaderBoard.defaultProps = {
   accountList: undefined,
   handleSwitchAccount: undefined,
-  handleDeleteWalle: undefined,
+  handleDeleteWallet: undefined,
   defaultAccountName: '',
   isGettingBalance: undefined
 };
 UserHeaderBoard.propTypes = {
-  accountList: PropTypes.objectOf(PropTypes.array),
+  accountList: PropTypes.arrayOf(PropTypes.object),
   handleSwitchAccount: PropTypes.func,
-  handleDeleteWalle: PropTypes.func, 
+  handleDeleteWallet: PropTypes.func, 
   defaultAccountName: PropTypes.string,
-  isGettingBalance: PropTypes.objectOf(PropTypes.array)
+  isGettingBalance: PropTypes.arrayOf(PropTypes.string)
 };
 
 export default UserHeaderBoard;

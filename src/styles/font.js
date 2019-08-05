@@ -1,5 +1,27 @@
 const fontNames =  {
-  default: ''
+  default: 'PostGroteskLight',
+  italic: 'PostGroteskLightItalic',
+  medium: 'PostGroteskMedium',
+  mediumItalic: 'PostGroteskMediumItalic',
+  bold: 'PostGroteskBold',
+  boldItalic: 'PostGroteskBoldItalic',
+  regular: 'PostGroteskBook',
+  regularItalic: 'PostGroteskBookItalic',
+};
+
+const fontStyle = {
+  normal: {
+    fontFamily: fontNames.regular,
+  },
+  medium: {
+    fontFamily: fontNames.medium,
+  },
+  bold: {
+    fontFamily: fontNames.bold,
+  },
+  light: {
+    fontFamily: fontNames.light,
+  }
 };
 
 const fontSizes =  {
@@ -13,5 +35,6 @@ const fontSizes =  {
 
 export default {
   NAME: fontNames,
-  SIZE: fontSizes
+  SIZE: fontSizes,
+  STYLE: fontStyle
 };

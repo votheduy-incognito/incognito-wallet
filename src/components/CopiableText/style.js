@@ -1,4 +1,4 @@
-import { COLORS, DECOR, SPACING } from '@src/styles';
+import { DECOR, SPACING } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
@@ -11,13 +11,18 @@ export default StyleSheet.create({
     fontWeight: '400'
   },
   textBox: {
+    flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: COLORS.white,
+    width: '100%'
+  },
+  row: {
+    alignItems: 'center',
     borderRadius: DECOR.borderRadiusBorder,
     borderWidth: DECOR.borderWidth,
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: SPACING.small,
     width: '100%'
-  }
+  },
+  desc: {}
 });

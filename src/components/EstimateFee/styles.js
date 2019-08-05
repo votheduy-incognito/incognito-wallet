@@ -1,4 +1,4 @@
-import { COLORS, THEME } from '@src/styles';
+import { COLORS, THEME, FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
@@ -9,31 +9,40 @@ const style = StyleSheet.create({
   errorText: {
     ...THEME.text.errorText
   },
+  label: {
+    marginBottom: 8
+  },
   feeTypeGroup: {
     flexDirection: 'row',
-    marginTop: 5,
   },
   feeType: {
-    padding: 5,
+    paddingVertical: 10,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignContent: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.lightGrey,
+    backgroundColor: COLORS.lightGrey2,
+    borderBottomWidth: 1,
+    borderColor: COLORS.lightGrey1
   },
   feeTypeHighlight: {
-    backgroundColor: COLORS.lightGrey
+    backgroundColor: COLORS.white,
+    borderBottomWidth: 0,
+  },
+  feeTypeFirst: {
+    borderRightWidth: 1,
+    borderColor: COLORS.lightGrey1
   },
   feeTypeText: {
-    color: COLORS.blue,
+    color: COLORS.lightGrey5,
+  },
+  feeTypeTextHighlight: {
+    color: COLORS.dark1
   },
   rateContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.lightGrey,
     paddingVertical: 10,
     height: 55
   },
@@ -45,14 +54,24 @@ const style = StyleSheet.create({
     flex: 1,
   },
   rateTextHighlight: {
-    fontWeight: '900',
-    textDecorationLine: 'underline'
+    ...FONT.STYLE.medium,
+    color: COLORS.white,
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 15
   },
   rateText: {
     fontWeight: '100',
-    color: COLORS.blueDark,
+    color: COLORS.lightGrey5
   },
-  
+  box: {
+    borderWidth: 1,
+    borderRadius: 4,
+    borderColor: COLORS.lightGrey1,
+    backgroundColor: COLORS.white,
+    overflow: 'hidden'
+  }
 });
 
 export default style;

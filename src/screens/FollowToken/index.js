@@ -90,12 +90,16 @@ const mapState = state => ({
 
 const mapDispatch = { setWallet };
 
+FollowTokenContainer.defaultProps = {
+  isPrivacy: true,
+};
+
 FollowTokenContainer.propTypes = {
   isPrivacy: PropTypes.bool,
-  account: PropTypes.objectOf(PropTypes.object),
-  wallet: PropTypes.objectOf(PropTypes.object),
-  setWallet: PropTypes.func,
-  navigation: PropTypes.objectOf(PropTypes.object)
+  account: PropTypes.object.isRequired,
+  wallet: PropTypes.object.isRequired,
+  setWallet: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
 };
 
 export default connect(

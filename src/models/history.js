@@ -18,7 +18,7 @@ class History {
   static parsePrivateTokenFromApi(data = {}) {
     return {
       address: data.Address,
-      updatedAt: data.ExpiredAt,
+      updatedAt: data.UpdatedAt,
       addressType: data.AddressType,
       status: data.Status,
       statusText: HISTORY_STATUS[data.Status],
@@ -26,6 +26,7 @@ class History {
       userPaymentAddress: data.UserPaymentAddress,
       requestedAmount: data.RequestedAmount,
       receivedAmount: data.ReceivedAmount,
+      incognitoAmount: data.IncognitoAmount,
       incognitoTx: data.IncognitoTx,
       outsideChainTx: data.OutsideChainTx,
     };

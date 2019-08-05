@@ -2,7 +2,7 @@ import { loadListAccount, loadWallet } from '@src/services/wallet/WalletService'
 import accountService from '@src/services/wallet/accountService';
 import { getPassphrase } from '@src/services/wallet/passwordService';
 import type from '@src/redux/types/wallet';
-import { setBulkAccount, setDefaultAccount } from '@src/redux/actions/account';
+import { setListAccount, setDefaultAccount } from '@src/redux/actions/account';
 import { accountSeleclor } from '@src/redux/selectors';
 
 const getStoredDefaultAccountName = async (listAccount) => {
@@ -35,7 +35,7 @@ export const reloadAccountList = () => (dispatch, getState) => {
 
   return loadListAccount(wallet)
     .then(accounts => {
-      dispatch(setBulkAccount(accounts));
+      dispatch(setListAccount(accounts));
     });
 };
 
@@ -53,7 +53,7 @@ export const reloadWallet = (passphrase) => async (dispatch, getState) => {
       dispatch(setWallet(wallet));
   
       const accounts = await loadListAccount(wallet);
-      dispatch(setBulkAccount(accounts));
+      dispatch(setListAccount(accounts));
 
       if (!defaultAccount) {
         const defaultAccountName = await getStoredDefaultAccountName(accounts);

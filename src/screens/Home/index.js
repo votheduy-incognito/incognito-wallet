@@ -2,16 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Toast } from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
-import { getBalance as getAccountBalance } from '@src/redux/actions/account';
+import { getBalance as getAccountBalance, reloadAccountFollowingToken } from '@src/redux/actions/account';
 import { setListToken, getBalance } from '@src/redux/actions/token';
 import { setSelectedPrivacy, clearSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import scheduleService from '@src/services/schedule';
-import accountService from '@src/services/wallet/accountService';
-import SelectedPrivacyModel from '@src/models/selectedPrivacy';
 import routeNames from '@src/router/routeNames';
 import tokenData from '@src/constants/tokenData';
 import { connect } from 'react-redux';
-import { accountSeleclor } from '@src/redux/selectors';
+import { accountSeleclor, tokenSeleclor, sharedSeleclor } from '@src/redux/selectors';
 import Home from './Home';
 
 class HomeContainer extends Component {
@@ -87,11 +85,8 @@ class HomeContainer extends Component {
 
   getFollowingToken = async () => {
     try {
-      const { account, wallet, setListToken } = this.props;
-      const tokens = accountService.getFollowingTokens(account, wallet);
-
-      tokens.forEach(this.getTokenBalance);
-      setListToken(tokens);
+      const { account, reloadAccountFollowingToken } = this.props;
+      return reloadAccountFollowingToken(account);
     } catch {
       Toast.showError('Can not get list token for this account');
     }
@@ -128,14 +123,14 @@ class HomeContainer extends Component {
 }
 
 const mapState = state => ({
-  accountList: state.account.list,
+  accountList: accountSeleclor.listAccount(state),
   account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet,
-  tokens: state.token.followed || [],
-  isGettingBalanceList: [...state.account.isGettingBalance, ...state.token.isGettingBalance]
+  tokens: tokenSeleclor.followed(state),
+  isGettingBalanceList: sharedSeleclor.isGettingBalance(state)
 });
 
-const mapDispatch = { setListToken, getBalance, getAccountBalance, setSelectedPrivacy, clearSelectedPrivacy };
+const mapDispatch = { setListToken, getBalance, getAccountBalance, setSelectedPrivacy, clearSelectedPrivacy, reloadAccountFollowingToken };
 
 HomeContainer.propTypes = {
   navigation: PropTypes.object.isRequired,
@@ -144,7 +139,7 @@ HomeContainer.propTypes = {
   tokens: PropTypes.array.isRequired,
   isGettingBalanceList: PropTypes.array.isRequired,
   wallet: PropTypes.object.isRequired,
-  setListToken: PropTypes.func.isRequired,
+  reloadAccountFollowingToken: PropTypes.func.isRequired,
   getAccountBalance: PropTypes.func.isRequired,
   getBalance: PropTypes.func.isRequired,
   setSelectedPrivacy: PropTypes.func.isRequired,

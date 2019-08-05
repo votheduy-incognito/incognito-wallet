@@ -19,7 +19,6 @@ export default StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    color: COLORS.black,
   },
   importKeyBlock: {
     height: 130,
