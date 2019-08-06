@@ -6,7 +6,6 @@ import FirebaseService, {
   MAIL_UID_FORMAT,
   PHONE_CHANNEL_FORMAT
 } from '@services/FirebaseService';
-
 import _ from 'lodash';
 import React from 'react';
 import { Alert, View,ScrollView,Image,Text } from 'react-native';
@@ -197,7 +196,7 @@ class DetailDevice extends BaseScreen {
             titleStyle={style.group2_container_button_text}
             buttonStyle={style.group2_container_button}
             onPress={this.handlePressStake}
-            title='Add more stake'
+            title='Stake'
           />
         </View>
         <View style={style.group2_container_container2}>

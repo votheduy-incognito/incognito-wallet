@@ -30,9 +30,9 @@
 		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>NSTemporaryExceptionAllowsInsecureHTTPLoads </key>
-			<true/>
 			<key>NSIncludesSubdomains</key>
+			<true/>
+			<key>NSTemporaryExceptionAllowsInsecureHTTPLoads </key>
 			<true/>
 			<key>localhost</key>
 			<dict>
@@ -44,7 +44,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Need to access the camera to scan QR code</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need to access the camera roll to detect QR code</string>
 	<key>UIAppFonts</key>
@@ -82,11 +82,11 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>

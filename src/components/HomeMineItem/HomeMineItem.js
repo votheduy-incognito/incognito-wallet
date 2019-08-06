@@ -24,7 +24,7 @@ class HomeMineItem extends React.Component {
     if(isActive){
       DeviceService.send(item,LIST_ACTION.CHECK_STATUS).then(dataResult=>{
         const { status = -1, data={status:Device.offlineStatus()}, message= 'Offline',productId = -1 } = dataResult;
-        // console.log(TAG,'componentDidMount send dataResult = ',dataResult);
+        console.log(TAG,'componentDidMount send dataResult = ',dataResult);
         if(item.product_id === productId ){
           deviceInfo.data.status ={
             code:data.status.code,

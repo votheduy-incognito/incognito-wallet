@@ -8,7 +8,7 @@ export const PHONE_CHANNEL_FORMAT = '_PHONE';
 export const DEVICE_CHANNEL_FORMAT = '';
 export const FIREBASE_PASS = 'at9XafdcJ7TVHzGa';
 let dictChannel = {};
-let currentUserName;
+// let currentUserName;
 let currentChannel;
 let ref = null;
 let dictCallback = {};
@@ -21,6 +21,9 @@ let uid = null;
 let myManager = null;
 const TAG = 'FirebaseService';
 export default class FirebaseService {
+  constructor(){
+    this.currentUserName = '';
+  }
   static getShareManager() {
     if (this.myManager == null) {
       console.log('Create new instance');
@@ -32,9 +35,9 @@ export default class FirebaseService {
   }
   async auth(username, password, success, fail) {
     console.log(TAG,' auth begin');
-    console.log(TAG,' auth begin 01 currentUserName = ',currentUserName);
+    console.log(TAG,' auth begin 01 currentUserName = ',this.currentUserName);
     
-    if (firebase.auth().currentUser !== null && currentUserName == username) {
+    if (firebase.auth().currentUser !== null && this.currentUserName == username) {
       
       console.log(TAG,' auth begin02 has authenticated = ',firebase.auth().currentUser.uid);
       success(firebase.auth().currentUser?.uid||'');
@@ -64,7 +67,7 @@ export default class FirebaseService {
         // The user will be logged in automatically by the
         // `onAuthStateChanged` listener we set up in App.js earlier
         // console.log(TAG,'createFirebaseAccount begin ', user);
-        currentUserName = username;
+        this.currentUserName = username;
         success(user.uid);
       })
       .catch(error => {
@@ -84,7 +87,7 @@ export default class FirebaseService {
             console.log('Create account success');
 
             console.log(TAG,'createFirebaseAccount fail and again -- ', user);
-            currentUserName = username;
+            this.currentUserName = username;
             success(user.uid);
           })
           .catch(err => {
@@ -203,7 +206,7 @@ export default class FirebaseService {
         .ref(path)
         .off('child_added', () => {
           console.log('Stop Listen Data');
-          currentUserName = '';
+          this.currentUserName = '';
           currentChannel = '';
         });
     }
