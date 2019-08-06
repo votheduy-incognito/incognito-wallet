@@ -11,6 +11,7 @@ class PToken {
     this.name = data.Name;
     this.contractId = data.ContractID;
     this.decimals = data.Decimals;
+    this.pDecimals = data.PDecimals;
     this.type = data.Type;
     this.pSymbol = data.PSymbol;
     this.default = data.Default;
@@ -29,6 +30,7 @@ class PToken {
       isInit: false,
       metaData: {
         decimals: this.decimals,
+        pDecimals: this.pDecimals,
         pSymbol: this.pSymbol,
         symbol: this.symbol,
         contractId: this.contractId,

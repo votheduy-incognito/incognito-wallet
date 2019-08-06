@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, Image, ActivityIndicator } from '@src/com
 import formatUtil from '@src/utils/format';
 import cryptoItemStyle from './style';
 
-const CryptoItem = ({ fullName, name, amount, icon, onPress, symbol, isGettingBalance, style, decimals }) => (
+const CryptoItem = ({ fullName, name, amount, icon, onPress, symbol, isGettingBalance, style, pDecimals }) => (
   <TouchableOpacity style={[cryptoItemStyle.container, style]} onPress={amount != null ? onPress : null}>
     <View style={cryptoItemStyle.logoContainer}>
       <Image source={icon} style={cryptoItemStyle.logo} />
@@ -17,7 +17,7 @@ const CryptoItem = ({ fullName, name, amount, icon, onPress, symbol, isGettingBa
       { isGettingBalance ? 
         <ActivityIndicator /> : (
           amount != null ?
-            <Text style={cryptoItemStyle.amountText} numberOfLines={1} ellipsizeMode="tail">{formatUtil.amount(amount, decimals)} {symbol}</Text> :
+            <Text style={cryptoItemStyle.amountText} numberOfLines={1} ellipsizeMode="tail">{formatUtil.amount(amount, pDecimals)} {symbol}</Text> :
             <Text style={cryptoItemStyle.getAmountFailedText}>Failed</Text>
         )
       }
@@ -34,11 +34,11 @@ CryptoItem.defaultProps = {
   symbol: null,
   isGettingBalance: false,
   style: null,
-  decimals: null,
+  pDecimals: null,
 };
 
 CryptoItem.propTypes = {
-  decimals: PropTypes.oneOfType([ PropTypes.number, PropTypes.string ]),
+  pDecimals: PropTypes.oneOfType([ PropTypes.number, PropTypes.string ]),
   fullName: PropTypes.string,
   name: PropTypes.string,
   amount: PropTypes.number,

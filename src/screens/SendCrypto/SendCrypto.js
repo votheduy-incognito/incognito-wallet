@@ -38,7 +38,7 @@ class SendCrypto extends React.Component {
 
   componentDidMount() {
     const { selectedPrivacy } = this.props;
-    const maxAmount = convertUtil.toHumanAmount(selectedPrivacy?.amount, selectedPrivacy?.decimals);
+    const maxAmount = convertUtil.toHumanAmount(selectedPrivacy?.amount, selectedPrivacy?.pDecimals);
 
     this.setFormValidation({ maxAmount });
   }
@@ -145,7 +145,7 @@ class SendCrypto extends React.Component {
                 <Text style={homeStyle.feeText}>
                   Fee: {formatUtil.amount(
                     finalFee,
-                    feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.decimals
+                    feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals
                   )} {feeUnit}
                 </Text>
                 <Button title='Send' style={homeStyle.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSend)} />

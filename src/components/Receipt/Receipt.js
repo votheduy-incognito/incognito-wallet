@@ -18,7 +18,7 @@ const CommonText = props => (
   />
 );
 const Receipt = ({ info }) => {
-  const { txId, time, amount, amountUnit, toAddress, fromAddress, fee, feeUnit, decimals } = info;
+  const { txId, time, amount, amountUnit, toAddress, fromAddress, fee, feeUnit, pDecimals } = info;
   return (
     <Container style={styleSheet.container}>
       <SimpleLineIcons name="check" size={100} color={COLORS.white} />
@@ -43,7 +43,7 @@ const Receipt = ({ info }) => {
           <CommonText>
             Amount: 
             {' '}
-            {formatUtil.amount(amount, decimals)} 
+            {formatUtil.amount(amount, pDecimals)} 
             {' '}
             {amountUnit}
           </CommonText>
@@ -52,7 +52,7 @@ const Receipt = ({ info }) => {
           <CommonText>
             Fee: 
             {' '}
-            {formatUtil.amount(fee, feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : decimals)}
+            {formatUtil.amount(fee, feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : pDecimals)}
             {' '}
             {feeUnit}
           </CommonText>

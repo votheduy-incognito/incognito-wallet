@@ -59,7 +59,7 @@ class CryptoItemContainer extends Component {
       amount: token?.amount,
       icon: data.icon,
       symbol: data.symbol,
-      decimals: data.decimals,
+      pDecimals: data.pDecimals,
       onPress: this.handlePress,
     };
 

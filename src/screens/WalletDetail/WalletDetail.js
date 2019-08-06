@@ -62,7 +62,7 @@ class WalletDetail extends Component {
                 ? <ActivityIndicator color={COLORS.white} />
                 : (
                   <Text style={styles.balance}>
-                    {formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy.decimals)} {selectedPrivacy.symbol}
+                    {formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy.pDecimals)} {selectedPrivacy.symbol}
                   </Text>
                 )
             }

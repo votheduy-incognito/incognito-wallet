@@ -92,7 +92,7 @@ class EstimateFeeContainer extends Component {
       const fee = await getEstimateFeeService(
         fromAddress,
         toAddress,
-        convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.decimals),
+        convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals),
         account?.PrivateKey,
         accountWallet,
         true // privacy mode
@@ -110,7 +110,7 @@ class EstimateFeeContainer extends Component {
       const fromAddress = selectedPrivacy?.paymentAddress;
       const tokenFee = 0;
       const accountWallet = wallet.getAccountByName(account?.name);
-      const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.decimals);
+      const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
       const tokenObject = {
         Privacy: true,
         TokenID: selectedPrivacy?.tokenId,
@@ -148,7 +148,7 @@ class EstimateFeeContainer extends Component {
       const { account, wallet, selectedPrivacy, toAddress, amount } = this.props;
       const fromAddress = selectedPrivacy?.paymentAddress;
       const accountWallet = wallet.getAccountByName(account?.name);
-      const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.decimals);
+      const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
       const tokenObject = {
         Privacy: true,
         TokenID: selectedPrivacy?.tokenId,

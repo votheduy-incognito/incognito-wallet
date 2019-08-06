@@ -148,7 +148,7 @@ const HistoryItem = ({ history }) => {
           >
             {
               history.amount
-                ? formatUtil.amount(history.amount, history.decimals)
+                ? formatUtil.amount(history.amount, history.pDecimals)
                 : formatUtil.amount(history.requestedAmount)
             } 
             {' '}

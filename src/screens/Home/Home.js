@@ -4,6 +4,7 @@ import { Container, ScrollView, View, Text, RefreshControl } from '@src/componen
 import CryptoItemCard from '@src/components/CryptoItemCard';
 import tokenData from '@src/constants/tokenData';
 import TouchableOpacity from '@src/components/core/TouchableOpacity/Component';
+import { CONSTANT_COMMONS } from '@src/constants';
 import { homeStyle } from './style';
 
 class Home extends React.Component {
@@ -25,7 +26,13 @@ class Home extends React.Component {
             style={homeStyle.cryptoItem}
             token={{
               symbol: tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY,
-              amount: account?.value
+              amount: account?.value,
+              name: 'Incognito',
+              metaData: {
+                pSymbol: tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY,
+                pDecimals: CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY,
+                decimals: CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
+              }
             }}
             isGettingBalance={isGettingBalanceList?.includes(account?.name)}
             onPress={onSelectToken}

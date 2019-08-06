@@ -14,6 +14,7 @@ class SelectedPrivacy {
     this.isErc20Token = !!token?.metaData?.contractId;
     this.pTokenType = token?.metaData?.type;
     this.decimals = this.isMainCrypto ? CONSTANT_COMMONS.DECIMALS[symbol] : token?.metaData?.decimals;
+    this.pDecimals = this.isMainCrypto ? CONSTANT_COMMONS.DECIMALS[symbol] : token?.metaData?.pDecimals;
     this.symbol = symbol;
     this.externalSymbol = token?.metaData?.symbol;
     this.name = name;
