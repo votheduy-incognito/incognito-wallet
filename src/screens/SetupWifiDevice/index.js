@@ -14,7 +14,6 @@ import _ from 'lodash';
 import React from 'react';
 import {
   Keyboard,
-  NativeModules,
   NetInfo,
   Platform,
   Text,
@@ -34,6 +33,8 @@ import { ObjConnection } from '@src/components/DeviceConnection/BaseConnection';
 import DeviceConnection from '@src/components/DeviceConnection';
 import styles from './style';
 
+const HOTPOT = 'TheMiner';
+const errorMessage = 'Can\'t connect The Miner. Please check the internert information and try again';
 export const TAG = 'SetupWifiDevice';
 
 const TIMES_VERIFY = 5;
@@ -66,11 +67,20 @@ class SetupWifiDevice extends BaseScreen {
       addProduct: null
     };
     this.isSendDataZmqSuccess = false;
+    this.isHaveNetwork = false;
     this.modal3 = React.createRef();
     this.deviceId = React.createRef();
     this.wifiConnection = new WifiConnection();
   }
-  
+
+  componentDidMount(){
+    super.componentDidMount();
+    NetInfo.isConnected.addEventListener('connectionChange', this._handleConnectionChange);
+  }
+  componentWillUnmount() {
+    super.componentWillUnmount();
+    NetInfo.isConnected.removeEventListener('connectionChange', this._handleConnectionChange);
+  }
 
   renderDeviceName=()=>{
     const { container, textInput, item, errorText } = styles;
@@ -120,16 +130,10 @@ class SetupWifiDevice extends BaseScreen {
         <DeviceConnection
           ref={this.deviceId}          
         />
-        {validSSID && validWPA ? null : (
-          <Text style={[errorText]}>
-        * Please type a Wi-Fi name and its password to connect Miner to the
-        Internet
-          </Text>
+        { validSSID && validWPA ? null : (
+          <Text style={[errorText,{color:'#000000'}]}>Please type a Wi-Fi name and its password to connect Miner to the Internet</Text>
         )}
 
-        {errorMessage.length > 0 ? (
-          <Text style={[errorText]}>*{errorMessage}</Text>
-        ) : null}
         <TextInput
           underlineColorAndroid="transparent"
           style={[textInput, item]}
@@ -144,7 +148,9 @@ class SetupWifiDevice extends BaseScreen {
           placeholder="Password"
           onChangeText={text => this.validWPA(text)}
         />
-        
+        {!_.isEmpty(errorMessage) ? (
+          <Text style={[errorText]}>*{errorMessage}</Text>
+        ) : null}
         <Button
           titleStyle={styles.textTitleButton}
           buttonStyle={styles.button}
@@ -158,26 +164,31 @@ class SetupWifiDevice extends BaseScreen {
   connectHotspot = async ()=>{
     
     const deviceMiner = new ObjConnection();
-    deviceMiner.name = 'The Miner';
-    deviceMiner.id = 'The Miner';
+    deviceMiner.name = HOTPOT;
+    deviceMiner.id = HOTPOT;
     const result:Boolean = await this.deviceId?.current?.connectDevice(deviceMiner) || false;
-    await Util.delay(10);
+    // await Util.delay(10);
     console.log(TAG,'connectHotspot end result = ',result);
     return result?deviceMiner:null;
   }
 
   handleSetUpPress = onClickView(async ()=>{
+    let errorMsg = '';
     try {
       this.setState({
-        loading: true
+        loading: true,
+        errorMessage:''
       });
       
-      await this.checkConnectHotspot();
+      const result = await this.checkConnectHotspot();
+      errorMsg = result ? '':errorMessage;
     } catch (error) {
+      errorMsg = errorMessage;
       console.log(TAG,'handleSetUpPress error: ', error);
     }finally{
       this.setState({
-        loading: false
+        loading: false,
+        errorMessage:errorMsg
       });
     }
     
@@ -310,53 +321,36 @@ class SetupWifiDevice extends BaseScreen {
         counterVerify: 0
       });
       this.isSendDataZmqSuccess = true;
-      NetInfo.isConnected
-        .fetch()
-        .then()
-        .done(() => {
-          NetInfo.isConnected.addEventListener(
-            'connectionChange',
-            this._handleConnectionChange
-          );
-        });
-      await Util.delay(10);
-      // this.callVerifyCode();
-      // setTimeout(() => {
-      // this.callVerifyCode();
-      // }, 20 * 1000);
+     
+      // await Util.delay(10);
+      const checkConnectWifi = async ()=>{
+        let isConnected = false;
+        while(!isConnected){
+          isConnected = await NetInfo.isConnected.fetch() && this.isHaveNetwork;
+        }
+        console.log(TAG, 'connectZMQ begin 111---- ',isConnected);
+        return isConnected;
+      };
 
-      // await Util.timeout(this.callVerifyCode,20);
+      const result = await Util.excuteWithTimeout(checkConnectWifi(),30);
+      if(result){
+        this.callVerifyCode();
+      }
+      
     } catch (error) {
       console.log(TAG,'Send zmq error',error);
     }
-    // ZMQService.sendData(JSON.stringify(params)).then(res => {
-    //   console.log(TAG,'Send zmq successfully res',res);
-
-    //   this.setState({
-    //     counterVerify: 0
-    //   });
-
-    //   NetInfo.isConnected
-    //     .fetch()
-    //     .then()
-    //     .done(() => {
-    //       NetInfo.isConnected.addEventListener(
-    //         'connectionChange',
-    //         this._handleConnectionChange
-    //       );
-    //     });
-
-    //   setTimeout(() => {
-    //     this.callVerifyCode();
-    //   }, 20 * 1000);
-    // });
+    
   }
 
-  _handleConnectionChange = isConnected => {
-    console.log('_handleConnectionChange:', isConnected);
-    if(isConnected && this.isSendDataZmqSuccess){
-      this.callVerifyCode();
-    }
+  _handleConnectionChange = async (isConnected) => {
+    
+    // if(isConnected && this.isSendDataZmqSuccess){
+    //   this.callVerifyCode();
+    // }
+    let device = isConnected && await this.deviceId?.current?.getCurrentConnect();
+    this.isHaveNetwork = !_.isEqual(device?.name||'', HOTPOT);
+    console.log('_handleConnectionChange:', this.isHaveNetwork);
     this.setState({
       isConnected: isConnected
     });
@@ -406,24 +400,31 @@ class SetupWifiDevice extends BaseScreen {
 
     let device = await this.deviceId?.current?.getCurrentConnect();
     
-    let isConnectedHotpost = _.isEqual(device?.name||'', 'The Miner');
+    let isConnectedHotpost = _.isEqual(device?.name||'', HOTPOT);
     if(!isConnectedHotpost){
       device = await this.connectHotspot();
     }
+    this.isHaveNetwork = false;
     isConnectedHotpost = !_.isEmpty(device);
-    
+
     if (isConnectedHotpost && validSSID && validWPA) {
       let ssid = device?.name?.toLowerCase()||'';
       const product = CONSTANT_MINER.PRODUCT_TYPE.toLowerCase();
       console.log(TAG,'checkConnectHotspot SSID---: ', ssid);
       if (_.includes(ssid, product)) {
         await Util.excuteWithTimeout(this.sendZMQ(),60);
+        return true;
       } else {
-        this.setState({
-          errorMessage: ' Please connect The Miner Hotspot'
-        });
+        // this.setState({
+        //   errorMessage: ' Please connect The Miner Hotspot'
+        // });
       }
+    }else{
+      // this.setState({
+      //   errorMessage:errorMessage
+      // });
     }
+    return false;
   }
   getCurrentLocation() {
     navigator.geolocation.getCurrentPosition(
@@ -447,7 +448,7 @@ class SetupWifiDevice extends BaseScreen {
     console.log(TAG,' callVerifyCode begin');
     const { verifyCode, counterVerify, isConnected } = this.state;
     console.log(TAG,' callVerifyCode begin01 connected = ',isConnected);
-    if (isConnected) {
+    if (this.isHaveNetwork) {
       this.setState({
         loading: true
       });
@@ -461,10 +462,6 @@ class SetupWifiDevice extends BaseScreen {
         const { status } = response;
         if (status == 1) {
           console.log('Get Product successfully');
-          NetInfo.isConnected.removeEventListener(
-            'connectionChange',
-            this._handleConnectionChange
-          );
           this.setState({
             loading: false
           });
@@ -499,13 +496,10 @@ class SetupWifiDevice extends BaseScreen {
         this.callVerifyCode();
       }, 12 * 1000);
     } else {
-      NetInfo.isConnected.removeEventListener(
-        'connectionChange',
-        this._handleConnectionChange
-      );
+      
       this.setState({
         loading: false,
-        errorMessage: 'Can\'t connect The Miner. Please check the internert information and try again'
+        errorMessage: errorMessage
       });
     }
   }

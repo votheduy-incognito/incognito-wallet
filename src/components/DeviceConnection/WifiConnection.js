@@ -2,6 +2,8 @@ import {locationPermission } from '@utils/PermissionUtil';
 import Util from '@utils/Util';
 import { Alert, Platform } from 'react-native';
 import Wifi from 'react-native-iot-wifi';
+import {PASS_HOSPOT} from 'react-native-dotenv';
+import _ from 'lodash';
 import BaseConnection, { ObjConnection } from './BaseConnection';
 
 export const TAG = 'WifiConnection';
@@ -17,60 +19,46 @@ class WifiConnection extends BaseConnection {
   };
   
   fetchCurrentConnect =  () => {
-    console.log(TAG, 'init begin ------');
-    
-    return new Promise((resolve, reject) => {
+    console.log(TAG, 'fetchCurrentConnect begin ------');
+    const pro =  new Promise((resolve, reject) => {
       Wifi.isApiAvailable(available => {
         console.log(TAG, available ? 'available' : 'failed');
         if (available) {
           Wifi.getSSID(SSID => {
-            console.log(TAG, 'getSSID', SSID);
+            console.log(TAG, 'fetchCurrentConnect getSSID', SSID);
             this.currentConnect = new ObjConnection();
             this.currentConnect.id = SSID;
             this.currentConnect.name = SSID;
             resolve(this.currentConnect);
           });
+        }else{
+          resolve(null);
         }
       });
-      Util.delay(3).then(() => {
-        reject('timeout');
-      });
     });
+    return Util.excuteWithTimeout(pro,3);
   };
 
   connectDevice = (device: ObjConnection) => {
-    return new Promise((resolve, reject) => {
-      const delay = Util.delay(40);
-      Wifi.connect(device.name, error => {
+    const pro = new Promise((resolve, reject) => {
+      Wifi.connectSecure(device.name,PASS_HOSPOT,false, error => {
         if (!error) {
           Wifi.getSSID(SSID => {
-            console.log(TAG, 'getSSID --- ', SSID);
+            console.log(TAG, 'connectDevice getSSID --- ', SSID);
             this.currentConnect = new ObjConnection();
             this.currentConnect.id = SSID;
             this.currentConnect.name = SSID;
-            
-            resolve(true);
-            // Util.makeCancelable(delay)?.cancel();
+            resolve(_.isEqual(device.name,SSID));
           });
         } else {
           resolve(false);
         }
       });
-      delay.then(() => {
-        console.log(TAG, 'connectDevice timeout ');
-        reject('timeout');
-      });
-       
+      
     });
+    // return Util.excuteWithTimeout(pro,5);
+    return pro;
 
-    // Wifi.connectSecure(ssid, passphase, false, (error) => {
-    //   this.setState({error: error});
-    //   this.setState({connected: error == null});
-
-    //   Wifi.getSSID((SSID) => {
-    //     this.setState({ssid: SSID});
-    //   });
-    // });
   };
 
   destroy = () => {};

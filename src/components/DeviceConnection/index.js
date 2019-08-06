@@ -2,7 +2,7 @@ import Util from '@utils/Util';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View,NetInfo } from 'react-native';
 import BaseConnection, { ObjConnection } from './BaseConnection';
 import style from './style';
 import WifiConnection from './WifiConnection';
@@ -61,8 +61,22 @@ class DeviceConnection extends Component {
   };
 
   connectDevice = async (device: ObjConnection) => {
-    const result = await this.connection.connectDevice(device);
-    // await Util.delay(10);
+    let result = await this.connection.connectDevice(device);
+    console.log(TAG, 'connectDevice begin result = ',result);
+    if(result){
+      console.log(TAG, 'connectDevice begin ---- ');
+      const checkConnectWifi = async ()=>{
+        let isConnected = false;
+        while(!isConnected){
+          isConnected = await NetInfo.isConnected.fetch();
+        }
+        console.log(TAG, 'connectDevice begin 111---- ',isConnected);
+        return isConnected;
+      };
+
+      result = await Util.excuteWithTimeout(checkConnectWifi(),5);
+      console.log(TAG, 'connectDevice begin 01 result =  ',result);
+    }
     return result;
   };
 
@@ -124,14 +138,14 @@ class DeviceConnection extends Component {
       const { callbackGettingListPairedDevices } = this.props;
       this.isLoading = true;
       try {
-        console.log(TAG, 'scan -- begin');
+        // console.log(TAG, 'scan -- begin');
         // const [isEnabled, granted] = await Promise.all([
         //   this.checkRegular(),
         //   Permission.locationPermission()
         // ]);
         const devices = await this.connection.scan();
         callbackGettingListPairedDevices(devices);
-        console.log(TAG, 'scan -- enabled01 =', devices);
+        // console.log(TAG, 'scan -- enabled01 =', devices);
       } catch (e) {
         console.log(TAG, 'scan error ', e);
       }
