@@ -10,10 +10,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import OcticonsIcon from 'react-native-vector-icons/Octicons';
 import tokenData from '@src/constants/tokenData';
+import { CONSTANT_COMMONS } from '@src/constants';
 import { accountListStyle } from './style';
 
+
 const getAccountValue = value =>
-  value < 0 ? 'Select to load balance' : formatUtil.amount(value, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
+  value < 0 ? 'Select to load balance' : formatUtil.amount(value, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY);
 
 const AccountItem = ({ account, onPress, active, isLoading }) => (
   <TouchableOpacity onPress={onPress} style={accountListStyle.accountItem}>

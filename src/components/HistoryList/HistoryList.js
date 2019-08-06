@@ -104,13 +104,13 @@ const getTypeData = type => {
   };
 };
 
-const getAddress = history => {
-  if ([CONSTANT_COMMONS.HISTORY.TYPE.SEND, CONSTANT_COMMONS.HISTORY.TYPE.WITHDRAW].includes(history?.type)) {
-    return ['To', history?.toAddress];
-  } else if ([CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT].includes(history?.type)) {
-    return ['From', history?.fromAddress];
-  }
-};
+// const getAddress = history => {
+//   if ([CONSTANT_COMMONS.HISTORY.TYPE.SEND, CONSTANT_COMMONS.HISTORY.TYPE.WITHDRAW].includes(history?.type)) {
+//     return ['To', history?.toAddress];
+//   } else if ([CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT].includes(history?.type)) {
+//     return ['From', history?.fromAddress];
+//   }
+// };
 
 const HistoryItem = ({ history }) => {
   if (!history) {
@@ -118,8 +118,8 @@ const HistoryItem = ({ history }) => {
   }
 
   const { statusText, statusColor } = getStatusData(history.statusCode);
-  const { typeText, typeColor } = getTypeData(history.type);
-  const [addressDirection, address] = getAddress(history);
+  const { typeText } = getTypeData(history.type);
+  // const [addressDirection, address] = getAddress(history);
 
   return (
     <>
@@ -148,7 +148,7 @@ const HistoryItem = ({ history }) => {
           >
             {
               history.amount
-                ? formatUtil.amount(history.amount, history.symbol)
+                ? formatUtil.amount(history.amount, history.decimals)
                 : formatUtil.amount(history.requestedAmount)
             } 
             {' '}

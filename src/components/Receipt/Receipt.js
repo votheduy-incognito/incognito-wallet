@@ -4,10 +4,10 @@ import { COLORS } from '@src/styles';
 import formatUtil from '@src/utils/format';
 import PropTypes from 'prop-types';
 import React from 'react';
-import tokenData from '@src/constants/tokenData';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import tokenData from '@src/constants/tokenData';
+import { CONSTANT_COMMONS } from '@src/constants';
 import styleSheet from './style';
-
 
 const CommonText = props => (
   <Text
@@ -18,7 +18,7 @@ const CommonText = props => (
   />
 );
 const Receipt = ({ info }) => {
-  const { txId, time, amount, amountUnit, toAddress, fromAddress, fee, feeUnit } = info;
+  const { txId, time, amount, amountUnit, toAddress, fromAddress, fee, feeUnit, decimals } = info;
   return (
     <Container style={styleSheet.container}>
       <SimpleLineIcons name="check" size={100} color={COLORS.white} />
@@ -43,7 +43,7 @@ const Receipt = ({ info }) => {
           <CommonText>
             Amount: 
             {' '}
-            {formatUtil.amount(amount, amountUnit)} 
+            {formatUtil.amount(amount, decimals)} 
             {' '}
             {amountUnit}
           </CommonText>
@@ -52,7 +52,7 @@ const Receipt = ({ info }) => {
           <CommonText>
             Fee: 
             {' '}
-            {formatUtil.amount(fee, feeUnit)}
+            {formatUtil.amount(fee, feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : decimals)}
             {' '}
             {feeUnit}
           </CommonText>

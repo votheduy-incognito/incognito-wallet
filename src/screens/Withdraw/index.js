@@ -31,7 +31,7 @@ class WithdrawContainer extends Component {
     const { selectedPrivacy } = this.props;
     const fromAddress = selectedPrivacy?.paymentAddress;
     const toAddress = fromAddress; // est fee on the same network, dont care which address will be send to
-    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
+    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.decimals);
 
     const tokenObject = {
       Privacy: true,
@@ -82,7 +82,7 @@ class WithdrawContainer extends Component {
     const { account, wallet, tokens, selectedPrivacy, getTokenBalanceBound } = this.props;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
     const originalFee = Number(fee);
-    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
+    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.decimals);
     const isTokenFee = feeUnit !== tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY;
 
     const tokenObject = {

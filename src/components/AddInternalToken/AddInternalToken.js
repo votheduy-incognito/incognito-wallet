@@ -31,7 +31,7 @@ class AddInternalToken extends Component {
       isCreatingOrSending: false,
       isGettingFee: false,
       minFeeValidator: validator.minValue(0),
-      maxFeeValidator: validator.maxValue(convert.toHumanAmount(props?.account?.value, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY) || 100),
+      maxFeeValidator: validator.maxValue(convert.toHumanAmount(props?.account?.value, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY) || 100),
     };
 
     this.handleShouldGetFee = _.debounce(this.handleShouldGetFee, 1000);
@@ -81,7 +81,7 @@ class AddInternalToken extends Component {
     try{
       this.setState({ isGettingFee: true });
       const fee =  await getEstimateFeeForSendingTokenService(fromAddress, toAddress, Number(amount), tokenObject, account.PrivateKey, accountWallet);
-      const humanFee = convert.toHumanAmount(fee, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
+      const humanFee = convert.toHumanAmount(fee, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY);
       // set min fee state
       this.setState({ minFeeValidator: validator.minValue(humanFee) });
       // update fee
@@ -113,7 +113,7 @@ class AddInternalToken extends Component {
 
     try {
       this.setState({ isCreatingOrSending: true });
-      const res = await Token.createSendPrivacyCustomToken(tokenObject, convert.toOriginalAmount(Number(fee), tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY), account, wallet);
+      const res = await Token.createSendPrivacyCustomToken(tokenObject, convert.toOriginalAmount(Number(fee), CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY), account, wallet);
 
       if (res.txId) {
         Toast.showInfo('Create token successfully');
@@ -150,7 +150,7 @@ class AddInternalToken extends Component {
   renderBalance = () => {
     const { account } = this.props;
 
-    return <Text style={styleSheet.balance}>{` Balance: ${ formatUtil.amount(account.value, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY) } ${ tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY }`}</Text>;
+    return <Text style={styleSheet.balance}>{` Balance: ${ formatUtil.amount(account.value, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY) } ${ tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY }`}</Text>;
   }
 
   render() {
@@ -191,7 +191,7 @@ class AddInternalToken extends Component {
                   component={InputField}
                   name='fee'
                   placeholder='Min fee'
-                  label={`Min fee (max ${formatUtil.amount(account.value, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY)} ${tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY})`}
+                  label={`Min fee (max ${formatUtil.amount(account.value, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)} ${tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY})`}
                   style={styleSheet.input}
                   validate={[validator.required, validator.number, minFeeValidator, maxFeeValidator]}
                   prependView={isGettingFee ? <ActivityIndicator /> : undefined}

@@ -14,25 +14,11 @@ const SYMBOL = {
 const DATA = {
   [SYMBOL.pETH]: {
     fullName: 'Private ETH',
-    typeName: 'Ethereum',
-    symbol: CONSTANT_COMMONS.TOKEN_SYMBOL.pETH,
-    name: CONSTANT_COMMONS.TOKEN_SYMBOL.pETH,
     icon: ethIcon,
-    currencyType: CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH,
-    isWithdrawable: true,
-    isDeposable: true,
-    isNotAllowUnfollow: true
   },
   [SYMBOL.pBTC]: {
     fullName: 'Private BTC',
-    typeName: 'Bitcoin',
-    symbol: CONSTANT_COMMONS.TOKEN_SYMBOL.pBTC,
-    name: CONSTANT_COMMONS.TOKEN_SYMBOL.pBTC,
     icon: btcIcon,
-    currencyType: CONSTANT_COMMONS.CRYPTO_SYMBOL.BTC,
-    isWithdrawable: true,
-    isDeposable: true,
-    isNotAllowUnfollow: true
   },
   [SYMBOL.MAIN_CRYPTO_CURRENCY]: {
     fullName: 'Privacy',

@@ -10,7 +10,7 @@ import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { CONSTANT_COMMONS } from '@src/constants';
 import tokenData from '@src/constants/tokenData';
 
-const combineHistory = (histories, historiesFromApi, symbol) => {
+const combineHistory = (histories, historiesFromApi, symbol, decimals) => {
   const currencyType = tokenData.DATA[symbol]?.currencyType;
   const data = [];
 
@@ -24,6 +24,7 @@ const combineHistory = (histories, historiesFromApi, symbol) => {
       amount: h?.incognitoAmount,
       requestedAmount: h?.requestedAmount,
       symbol: currencyType,
+      decimals: decimals,
       statusCode: h?.statusText
     });
   });
@@ -152,7 +153,7 @@ class HistoryTokenContainer extends Component {
           />
         )}
       >
-        <HistoryList histories={combineHistory(histories, historiesFromApi, selectedPrivacy?.symbol)} />
+        <HistoryList histories={combineHistory(histories, historiesFromApi, selectedPrivacy?.symbol, selectedPrivacy?.decimals)} />
       </ScrollView>
     );
   }

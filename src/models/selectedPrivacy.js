@@ -1,4 +1,5 @@
 import tokenData from '@src/constants/tokenData';
+import { CONSTANT_COMMONS } from '@src/constants';
 
 class SelectedPrivacy {
   constructor(account = {}, token = {}) {
@@ -12,7 +13,7 @@ class SelectedPrivacy {
     this.isPToken = !!token?.metaData?.pSymbol;
     this.isErc20Token = !!token?.metaData?.contractId;
     this.pTokenType = token?.metaData?.type;
-    this.decimals = token?.metaData?.decimals;
+    this.decimals = this.isMainCrypto ? CONSTANT_COMMONS.DECIMALS[symbol] : token?.metaData?.decimals;
     this.symbol = symbol;
     this.externalSymbol = token?.metaData?.symbol;
     this.name = name;

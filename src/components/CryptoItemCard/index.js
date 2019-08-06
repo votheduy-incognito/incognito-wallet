@@ -28,7 +28,13 @@ class CryptoItemContainer extends Component {
   }
 
   getData = (token) => {
-    const data = tokenData.DATA[token?.symbol] || tokenData.parse(token);
+    const additionData = tokenData.DATA[token?.symbol] || tokenData.parse(token);
+    const { metaData, ...othertokenData } = token;
+    const data = {
+      ...additionData,
+      ...metaData,
+      ...othertokenData
+    };
     this.setState({ data });
   }
 
@@ -49,11 +55,12 @@ class CryptoItemContainer extends Component {
     const cryptoItemProps = {
       ...this.props,
       fullName: data.fullName,
-      typeName: data.typeName,
+      name: data.name,
       amount: token?.amount,
       icon: data.icon,
       symbol: data.symbol,
-      onPress: this.handlePress
+      decimals: data.decimals,
+      onPress: this.handlePress,
     };
 
     return (

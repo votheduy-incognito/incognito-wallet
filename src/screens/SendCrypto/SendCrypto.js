@@ -13,6 +13,7 @@ import CurrentBalance from '@src/components/CurrentBalance';
 import tokenData from '@src/constants/tokenData';
 import { createForm, InputField, validator } from '@src/components/core/reduxForm';
 import formatUtil from '@src/utils/format';
+import { CONSTANT_COMMONS } from '@src/constants';
 import { homeStyle } from './style';
 
 const formName = 'sendCrypto';
@@ -37,7 +38,7 @@ class SendCrypto extends React.Component {
 
   componentDidMount() {
     const { selectedPrivacy } = this.props;
-    const maxAmount = convertUtil.toHumanAmount(selectedPrivacy?.amount, selectedPrivacy?.symbol);
+    const maxAmount = convertUtil.toHumanAmount(selectedPrivacy?.amount, selectedPrivacy?.decimals);
 
     this.setFormValidation({ maxAmount });
   }
@@ -141,7 +142,12 @@ class SendCrypto extends React.Component {
                   amount={isFormValid ? amount : null}
                   toAddress={isFormValid ? toAddress : null}
                 />
-                <Text style={homeStyle.feeText}>Fee: {formatUtil.amount(finalFee, feeUnit)} {feeUnit}</Text>
+                <Text style={homeStyle.feeText}>
+                  Fee: {formatUtil.amount(
+                    finalFee,
+                    feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.decimals
+                  )} {feeUnit}
+                </Text>
                 <Button title='Send' style={homeStyle.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSend)} />
               </View>
             )}
