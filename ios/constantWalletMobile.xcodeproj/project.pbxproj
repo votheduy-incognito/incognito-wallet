@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -28,7 +29,9 @@
 		1A63493129294F7CBBC251EE /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8B57AFBD91D64A199AFDCA4B /* Zocial.ttf */; };
 		20B559AC22C3937A0079FC06 /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20B5597A22C3937A0079FC06 /* Gomobile.framework */; };
 		20B559AF22C393B10079FC06 /* Gomobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B559AE22C393B10079FC06 /* Gomobile.m */; };
+		22D43C75396248B0BD811374 /* PostGroteskMedium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8A166D7044534B31A2BD26EC /* PostGroteskMedium.otf */; };
 		285661345E2B44218C6996AF /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 40DA4B90D00A4AC983FDC44B /* libRNSVG-tvOS.a */; };
+		28BD5850D91A49C286846B66 /* PostGroteskLight.otf in Resources */ = {isa = PBXBuildFile; fileRef = EAE5E838B7D344A5B5978F72 /* PostGroteskLight.otf */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -39,24 +42,29 @@
 		2D02E4C61E0B4AEC006451C7 /* libRCTSettings-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E901DF850E9000B6D8A /* libRCTSettings-tvOS.a */; };
 		2D02E4C71E0B4AEC006451C7 /* libRCTText-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E941DF850E9000B6D8A /* libRCTText-tvOS.a */; };
 		2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */; };
+		2DB9D3B0052743D18522D917 /* PostGroteskBookItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 82D0A734BA634CDEBE9A3F26 /* PostGroteskBookItalic.otf */; };
 		2DCD954D1E0B4F2C00145EB5 /* constantWalletMobileTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* constantWalletMobileTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		3652A44646DE4BD8B3C9BA56 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 867A1BB9427A41FDA3A5EFF3 /* Octicons.ttf */; };
 		36F7D5CE970D4799A075B466 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F36E2A27EA945A6BA652F08 /* libRNSVG.a */; };
+		38C1CB68E5FA483E9F478497 /* PostGroteskMediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = A37F2762BA3D42388EA0979D /* PostGroteskMediumItalic.otf */; };
 		3B50FECFE455494A8373E5A6 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ECBE1563D1B5449E86A7658F /* libRNVectorIcons.a */; };
 		3EA7A98691974C14B21D2406 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5A53B1ED9DEB4B68B5B3BA7F /* FontAwesome5_Regular.ttf */; };
 		3EF0EC91E7FE4B16A434459C /* libRNZmqService.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE70DDA39F794DA9B6544C35 /* libRNZmqService.a */; };
 		4992337905E44CF49A39888B /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7139BB1E57B94AE2A6C8F4AF /* Entypo.ttf */; };
 		4C1DBB74B2F14588BF13C846 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 93B29E8475554D32A767FB11 /* SimpleLineIcons.ttf */; };
+		557C4371DA98418FBE33A4DA /* PostGroteskBook.otf in Resources */ = {isa = PBXBuildFile; fileRef = 60009CB9B42C40CDAF5B2DE3 /* PostGroteskBook.otf */; };
 		58F940C67903A87D5DE19CCF /* libPods-constantWalletMobile-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4BE5E883350502AE2338935 /* libPods-constantWalletMobile-tvOSTests.a */; };
 		5BA5A622FA6D403380D24D44 /* libIOTWifi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66AB9A7871F643BA80A04830 /* libIOTWifi.a */; };
 		5E8D288FA98BB034E9895E32 /* libPods-constantWalletMobileTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E1088CFAD4FAE107846BF88 /* libPods-constantWalletMobileTests.a */; };
 		68E740EB49304D53A7558730 /* libRNVectorIcons-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CDB44AB3155F477CB290D577 /* libRNVectorIcons-tvOS.a */; };
 		7625ABD17D2545429E64DDEC /* libRCTBluetoothSerial.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DDA0DFA996054B719B6C8234 /* libRCTBluetoothSerial.a */; };
 		7951D9F679874B4EA8E3CFEE /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27AAED89E8AD4248BBC41F79 /* libRNFirebase.a */; };
+		79B5628C11D3486FB6EA21A8 /* PostGroteskBoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 59AFD324B84E4A7DB397B0B9 /* PostGroteskBoldItalic.otf */; };
 		80612F532047467EBA2882E6 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A3DE260718B44BD4834DE46F /* Ionicons.ttf */; };
 		82E467C899D04A02A0589EB9 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB08C251E22B438096EA6169 /* libRNGestureHandler.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		875CEF8B09084A2D93993081 /* PostGroteskLightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 51B80536E38043E2810D70AD /* PostGroteskLightItalic.otf */; };
 		91669D7036B9D6DAF92CDE4D /* libPods-constantWalletMobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 57EB851164961B035A20418C /* libPods-constantWalletMobile.a */; };
 		986EF96C0FFF47F3990144BA /* libRNGestureHandler-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AF1B701A774B4C75BB5DD399 /* libRNGestureHandler-tvOS.a */; };
 		9A35DA29B0814E0E85D3F53B /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6024CBE183FA4307ABE2C4F5 /* libRNDeviceInfo.a */; };
@@ -67,6 +75,7 @@
 		A83AE44E3EBA41B888B9743B /* libRNCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 35CBB32A5E3C42249B5769F9 /* libRNCamera.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		B312A222BD7D460DA5FE9C6C /* Roboto_bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 82DA549DAEFB4E95AB8C2EB1 /* Roboto_bold.ttf */; };
+		B977F62249034FA6AF219A3C /* PostGroteskBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 570EC87F438D402B8F1B76AE /* PostGroteskBold.otf */; };
 		C0300BA4836A47FCBFB4A4EE /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 96FC8B27D07249A5AD7223A5 /* Roboto-Medium.ttf */; };
 		C19BBB6B8E3D4577BD1EB7D2 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C2A67D1A4580441FB14BDBC5 /* AntDesign.ttf */; };
 		C2E73AA50DDC4747BAD7CC54 /* libRNOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 342DA32C89DE489180AC3EF2 /* libRNOS.a */; };
@@ -87,14 +96,6 @@
 		FE52DD5022DC6B4B003203EF /* AutonomousZMQ.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FE6F886122DC3B510009C5AA /* autonomous_config.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE6F886022DC3B510009C5AA /* autonomous_config.plist */; };
 		FE86096522D747230050666A /* libFirebaseCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE86096422D747230050666A /* libFirebaseCore.a */; };
-		B977F62249034FA6AF219A3C /* PostGroteskBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 570EC87F438D402B8F1B76AE /* PostGroteskBold.otf */; };
-		79B5628C11D3486FB6EA21A8 /* PostGroteskBoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 59AFD324B84E4A7DB397B0B9 /* PostGroteskBoldItalic.otf */; };
-		28BD5850D91A49C286846B66 /* PostGroteskLight.otf in Resources */ = {isa = PBXBuildFile; fileRef = EAE5E838B7D344A5B5978F72 /* PostGroteskLight.otf */; };
-		875CEF8B09084A2D93993081 /* PostGroteskLightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 51B80536E38043E2810D70AD /* PostGroteskLightItalic.otf */; };
-		22D43C75396248B0BD811374 /* PostGroteskMedium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8A166D7044534B31A2BD26EC /* PostGroteskMedium.otf */; };
-		38C1CB68E5FA483E9F478497 /* PostGroteskMediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = A37F2762BA3D42388EA0979D /* PostGroteskMediumItalic.otf */; };
-		557C4371DA98418FBE33A4DA /* PostGroteskBook.otf in Resources */ = {isa = PBXBuildFile; fileRef = 60009CB9B42C40CDAF5B2DE3 /* PostGroteskBook.otf */; };
-		2DB9D3B0052743D18522D917 /* PostGroteskBookItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 82D0A734BA634CDEBE9A3F26 /* PostGroteskBookItalic.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -544,7 +545,7 @@
 		00E356EE1AD99517003FC87E /* constantWalletMobileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = constantWalletMobileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* constantWalletMobileTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = constantWalletMobileTests.m; sourceTree = "<group>"; };
-		0217CE11A01345C0A6DE9CF7 /* RNZmqService.xcodeproj */ = {isa = PBXFileReference; name = "RNZmqService.xcodeproj"; path = "../node_modules/react-native-zmq-service/ios/RNZmqService.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		0217CE11A01345C0A6DE9CF7 /* RNZmqService.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNZmqService.xcodeproj; path = "../node_modules/react-native-zmq-service/ios/RNZmqService.xcodeproj"; sourceTree = "<group>"; };
 		0320F8C79E3C4EBB9B779DBB /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
 		0A159D2691E74CC884B8B9B8 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		0BAD1A0DB61346B886E179E6 /* RNOS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNOS.xcodeproj; path = "../node_modules/react-native-os/ios/RNOS.xcodeproj"; sourceTree = "<group>"; };
@@ -580,10 +581,14 @@
 		40DA4B90D00A4AC983FDC44B /* libRNSVG-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNSVG-tvOS.a"; sourceTree = "<group>"; };
 		4BA287542ADF445498FC2188 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		5058358FC30E4A81B86F5EC7 /* RCTBluetoothSerial.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTBluetoothSerial.xcodeproj; path = "../node_modules/react-native-bluetooth-serial/ios/RCTBluetoothSerial.xcodeproj"; sourceTree = "<group>"; };
+		51B80536E38043E2810D70AD /* PostGroteskLightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskLightItalic.otf; path = ../src/assets/fonts/PostGroteskLightItalic.otf; sourceTree = "<group>"; };
+		570EC87F438D402B8F1B76AE /* PostGroteskBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskBold.otf; path = ../src/assets/fonts/PostGroteskBold.otf; sourceTree = "<group>"; };
 		57EB851164961B035A20418C /* libPods-constantWalletMobile.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-constantWalletMobile.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		59AFD324B84E4A7DB397B0B9 /* PostGroteskBoldItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskBoldItalic.otf; path = ../src/assets/fonts/PostGroteskBoldItalic.otf; sourceTree = "<group>"; };
 		5A53B1ED9DEB4B68B5B3BA7F /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		5FEBE112FC96458EA9C2A77F /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
+		60009CB9B42C40CDAF5B2DE3 /* PostGroteskBook.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskBook.otf; path = ../src/assets/fonts/PostGroteskBook.otf; sourceTree = "<group>"; };
 		6024CBE183FA4307ABE2C4F5 /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
 		6044BF85A0F9445B9BC7E296 /* RNCamera.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RNCamera.xcodeproj"; sourceTree = "<group>"; };
 		64023541F1C357DBB41D8B65 /* Pods-constantWalletMobile-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-constantWalletMobile-tvOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-constantWalletMobile-tvOS/Pods-constantWalletMobile-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
@@ -596,10 +601,12 @@
 		7B1D10FDD4BB4B9780BB82C4 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		7EB70F3D666D466586596EC1 /* RNCAsyncStorage.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCAsyncStorage.xcodeproj; path = "../node_modules/@react-native-community/async-storage/ios/RNCAsyncStorage.xcodeproj"; sourceTree = "<group>"; };
 		803049AD3941440A9310525A /* libRNDeviceInfo-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNDeviceInfo-tvOS.a"; sourceTree = "<group>"; };
+		82D0A734BA634CDEBE9A3F26 /* PostGroteskBookItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskBookItalic.otf; path = ../src/assets/fonts/PostGroteskBookItalic.otf; sourceTree = "<group>"; };
 		82DA549DAEFB4E95AB8C2EB1 /* Roboto_bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Roboto_bold.ttf; path = ../src/assets/fonts/Roboto_bold.ttf; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		867A1BB9427A41FDA3A5EFF3 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		871A3798C65B40388FB608E2 /* RNRandomBytes.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNRandomBytes.xcodeproj; path = "../node_modules/react-native-randombytes/RNRandomBytes.xcodeproj"; sourceTree = "<group>"; };
+		8A166D7044534B31A2BD26EC /* PostGroteskMedium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskMedium.otf; path = ../src/assets/fonts/PostGroteskMedium.otf; sourceTree = "<group>"; };
 		8B57AFBD91D64A199AFDCA4B /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		8E1088CFAD4FAE107846BF88 /* libPods-constantWalletMobileTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-constantWalletMobileTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EB8224132C242FC84C0C969 /* Roboto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Roboto.ttf; path = ../src/assets/fonts/Roboto.ttf; sourceTree = "<group>"; };
@@ -607,6 +614,7 @@
 		96FC8B27D07249A5AD7223A5 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Medium.ttf"; path = "../src/assets/fonts/Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		9E330B34A32DC4617974B85C /* Pods-constantWalletMobileTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-constantWalletMobileTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-constantWalletMobileTests/Pods-constantWalletMobileTests.release.xcconfig"; sourceTree = "<group>"; };
 		9F36E2A27EA945A6BA652F08 /* libRNSVG.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSVG.a; sourceTree = "<group>"; };
+		A37F2762BA3D42388EA0979D /* PostGroteskMediumItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskMediumItalic.otf; path = ../src/assets/fonts/PostGroteskMediumItalic.otf; sourceTree = "<group>"; };
 		A3DE260718B44BD4834DE46F /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		A5D949FB76FCE735B63FE34D /* Pods-constantWalletMobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-constantWalletMobile.debug.xcconfig"; path = "Pods/Target Support Files/Pods-constantWalletMobile/Pods-constantWalletMobile.debug.xcconfig"; sourceTree = "<group>"; };
 		AC3439C990274B2AA62796BA /* libRNReanimated.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNReanimated.a; sourceTree = "<group>"; };
@@ -624,8 +632,9 @@
 		D4BE5E883350502AE2338935 /* libPods-constantWalletMobile-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-constantWalletMobile-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D83A536AAE9B4C2BBE7644F7 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		DDA0DFA996054B719B6C8234 /* libRCTBluetoothSerial.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTBluetoothSerial.a; sourceTree = "<group>"; };
-		DE70DDA39F794DA9B6544C35 /* libRNZmqService.a */ = {isa = PBXFileReference; name = "libRNZmqService.a"; path = "libRNZmqService.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		DE70DDA39F794DA9B6544C35 /* libRNZmqService.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNZmqService.a; sourceTree = "<group>"; };
 		DEF86409B62F4B3DBE38A13D /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFirebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; };
+		EAE5E838B7D344A5B5978F72 /* PostGroteskLight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskLight.otf; path = ../src/assets/fonts/PostGroteskLight.otf; sourceTree = "<group>"; };
 		ECBE1563D1B5449E86A7658F /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED47976300734F1B94B8F775 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
@@ -635,14 +644,6 @@
 		FE6F886022DC3B510009C5AA /* autonomous_config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = autonomous_config.plist; sourceTree = "<group>"; };
 		FE86096422D747230050666A /* libFirebaseCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		FECCEDF722C379D900129059 /* AutonomousZMQ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AutonomousZMQ.framework; sourceTree = "<group>"; };
-		570EC87F438D402B8F1B76AE /* PostGroteskBold.otf */ = {isa = PBXFileReference; name = "PostGroteskBold.otf"; path = "../src/assets/fonts/PostGroteskBold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		59AFD324B84E4A7DB397B0B9 /* PostGroteskBoldItalic.otf */ = {isa = PBXFileReference; name = "PostGroteskBoldItalic.otf"; path = "../src/assets/fonts/PostGroteskBoldItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		EAE5E838B7D344A5B5978F72 /* PostGroteskLight.otf */ = {isa = PBXFileReference; name = "PostGroteskLight.otf"; path = "../src/assets/fonts/PostGroteskLight.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		51B80536E38043E2810D70AD /* PostGroteskLightItalic.otf */ = {isa = PBXFileReference; name = "PostGroteskLightItalic.otf"; path = "../src/assets/fonts/PostGroteskLightItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		8A166D7044534B31A2BD26EC /* PostGroteskMedium.otf */ = {isa = PBXFileReference; name = "PostGroteskMedium.otf"; path = "../src/assets/fonts/PostGroteskMedium.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		A37F2762BA3D42388EA0979D /* PostGroteskMediumItalic.otf */ = {isa = PBXFileReference; name = "PostGroteskMediumItalic.otf"; path = "../src/assets/fonts/PostGroteskMediumItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		60009CB9B42C40CDAF5B2DE3 /* PostGroteskBook.otf */ = {isa = PBXFileReference; name = "PostGroteskBook.otf"; path = "../src/assets/fonts/PostGroteskBook.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		82D0A734BA634CDEBE9A3F26 /* PostGroteskBookItalic.otf */ = {isa = PBXFileReference; name = "PostGroteskBookItalic.otf"; path = "../src/assets/fonts/PostGroteskBookItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

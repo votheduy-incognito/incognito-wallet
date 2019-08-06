@@ -31,6 +31,8 @@ import Util from '@src/utils/Util';
 import { onClickView } from '@src/utils/ViewUtil';
 import { ObjConnection } from '@src/components/DeviceConnection/BaseConnection';
 import DeviceConnection from '@src/components/DeviceConnection';
+import DeviceService from '@src/services/DeviceService';
+import Device from '@src/models/device';
 import styles from './style';
 
 const HOTPOT = 'TheMiner';
@@ -167,7 +169,6 @@ class SetupWifiDevice extends BaseScreen {
     deviceMiner.name = HOTPOT;
     deviceMiner.id = HOTPOT;
     const result:Boolean = await this.deviceId?.current?.connectDevice(deviceMiner) || false;
-    // await Util.delay(10);
     console.log(TAG,'connectHotspot end result = ',result);
     return result?deviceMiner:null;
   }
@@ -195,7 +196,25 @@ class SetupWifiDevice extends BaseScreen {
   });
 
   handleSubmit = onClickView(async() => {
-    this.closeModal();
+    try {
+      this.setState({
+        loading: true
+      });
+      const {addProduct} = this.state;
+      await DeviceService.sendPrivateKey(Device.getInstance(addProduct));
+      
+      if (this.validWallName) {
+        await this.changeDeviceName(addProduct);
+      }
+    } catch (error) {
+      console.log(TAG,'handleSubmit error');
+    }finally{
+      this.setState({
+        loading: false,
+        showModal: false
+      });
+    }
+    
   });
 
   render() {
@@ -355,17 +374,17 @@ class SetupWifiDevice extends BaseScreen {
       isConnected: isConnected
     });
   };
-  closeModal =()=> {
-    if (this.validWallName) {
-      const { addProduct } = this.state;
-      this.setState(
-        {
-          showModal: false
-        },
-        () => this.changeDeviceName(addProduct)
-      );
-    }
-  }
+  // closeModal =()=> {
+  //   if (this.validWallName) {
+  //     const { addProduct } = this.state;
+  //     this.setState(
+  //       {
+  //         showModal: false
+  //       },
+  //       () => this.changeDeviceName(addProduct)
+  //     );
+  //   }
+  // }
   changeDeviceName = async (product) => {
     this.setState({
       loading: true
@@ -381,10 +400,6 @@ class SetupWifiDevice extends BaseScreen {
       const { status } = response;
       if (status === 1) {
         console.log('Change name = ', response);
-        this.setState({
-          loading: false
-        });
-        
         this.goToScreen(routeNames.HomeMine);
       }
     } catch (error) {
