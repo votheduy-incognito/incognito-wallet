@@ -8,7 +8,7 @@ import CurrentBalance from './CurrentBalance';
 const CurrentBalanceContainer = ({ selectedPrivacy, amount, symbol }) => {
   if (!selectedPrivacy) return null;
 
-  return <CurrentBalance amount={amount ?? convertUtil.toHumanAmount(selectedPrivacy?.amount, selectedPrivacy?.symbol)} symbol={symbol ?? selectedPrivacy?.symbol} />;
+  return <CurrentBalance amount={amount ?? convertUtil.toHumanAmount(selectedPrivacy?.amount, selectedPrivacy?.pDecimals)} symbol={symbol ?? selectedPrivacy?.symbol} />;
 };
 
 const mapState = state => ({

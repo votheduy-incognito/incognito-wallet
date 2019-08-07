@@ -4,8 +4,8 @@ import { reduxForm } from 'redux-form';
 import View from '../View';
 
 
-const Form = ({ children, ...props }) => (
-  <View>
+const Form = ({ children, style, ...props }) => (
+  <View style={style}>
     {typeof children === 'function' ? children(props) : children}
   </View>
 );

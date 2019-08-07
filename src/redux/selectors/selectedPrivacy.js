@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
-import selectedPrivacyModel from '@src/models/selectedPrivacy';
+import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { defaultAccount } from './account';
-import { followed } from './token';
+import { followed, pTokens } from './token';
 
 export const selectedPrivacySymbol = state => state?.selectedPrivacy?.symbol;
 
@@ -9,9 +9,10 @@ export const selectedPrivacy = createSelector(
   selectedPrivacySymbol,
   defaultAccount,
   followed,
-  (selectedSymbol, account, tokens) => {
-    const token = tokens.find(t => t?.symbol === selectedSymbol);
-    return selectedPrivacyModel.parse(account, token);
+  pTokens,
+  (selectedSymbol, account, followed) => {
+    const token = followed.find(t => t?.symbol === selectedSymbol);
+    return new SelectedPrivacy(account, token);
   }
 );
 

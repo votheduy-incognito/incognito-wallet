@@ -26,7 +26,7 @@ class SendCryptoContainer extends Component {
     const { account, wallet, selectedPrivacy, getAccountBalanceBound } = this.props;
     const { toAddress, amount, fee, feeUnit } = values;
     const fromAddress = selectedPrivacy?.paymentAddress;
-    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
+    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
     const originalFee = Number(fee);
 
     const paymentInfos = [{
@@ -37,7 +37,7 @@ class SendCryptoContainer extends Component {
       this.setState({
         isSending: true
       });
-
+      
       const res = await accountService.sendConstant(paymentInfos, originalFee, true, account, wallet);
 
       if (res.txId) {
@@ -72,7 +72,7 @@ class SendCryptoContainer extends Component {
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
     const originalFee = Number(fee);
     const isUseTokenFee = feeUnit !== tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY;
-    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.symbol);
+    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
     const tokenObject = {
       Privacy : true,
       TokenID: selectedPrivacy?.tokenId,
@@ -106,7 +106,8 @@ class SendCryptoContainer extends Component {
           amountUnit: selectedPrivacy?.symbol,
           time: formatUtil.toMiliSecond(res.lockTime),
           fee: originalFee,
-          feeUnit
+          feeUnit,
+          pDecimals: selectedPrivacy?.pDecimals,
         };
 
         this.setState({ receiptData });

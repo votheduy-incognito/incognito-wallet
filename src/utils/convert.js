@@ -1,25 +1,23 @@
-import { CONSTANT_COMMONS } from '@src/constants';
-
 export default {
   /**
    * 
    * @param {number} originAmount 
-   * @param {string} tokenSymbol 
+   * @param {number} decimals 
    * Convert original amount (usualy get from backend) to humain readable amount or display on frontend
    */
-  toHumanAmount(originAmount, tokenSymbol) {
-    const decision_rate = CONSTANT_COMMONS.DECISION_RATE[tokenSymbol] || 1;
+  toHumanAmount(originAmount, decimals) {
+    const decision_rate = Number(decimals) ? 10**(Number(decimals)) : 1;
     const _amount = originAmount/decision_rate;
     return _amount;
   },
   /**
    * 
    * @param {number} humanAmount 
-   * @param {string} tokenSymbol 
+   * @param {number} decimals 
    * Convert humain readable amount (display on frontend) to original amount
    */
-  toOriginalAmount(humanAmount, tokenSymbol) {
-    const decision_rate = CONSTANT_COMMONS.DECISION_RATE[tokenSymbol] || 1;
+  toOriginalAmount(humanAmount, decimals) {
+    const decision_rate = Number(decimals) ? 10**(Number(decimals)) : 1;
     const _amount = Math.round(humanAmount * decision_rate);
     return _amount;
   }

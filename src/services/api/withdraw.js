@@ -11,7 +11,7 @@ export const genWithdrawAddress = ({ currencyType, amount, paymentAddress, walle
   return http.post('ota/generate', {
     CurrencyType: currencyType,
     AddressType: CONSTANT_COMMONS.ADDRESS_TYPE_FOR_GEN_ADDRESS.WITHDRAW,
-    RequestAmount: String(parseAmount),
+    RequestedAmount: String(parseAmount),
     PaymentAddress: paymentAddress,
     WalletAddress: walletAddress
   }).then(res => res?.Address);

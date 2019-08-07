@@ -8,10 +8,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { CONSTANT_COMMONS } from '@src/constants';
-import tokenData from '@src/constants/tokenData';
 
-const combineHistory = (histories, historiesFromApi, symbol) => {
-  const currencyType = tokenData.DATA[symbol]?.currencyType;
+const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, decimals, pDecimals) => {
   const data = [];
 
   historiesFromApi && historiesFromApi.forEach((h, index) => {
@@ -22,7 +20,10 @@ const combineHistory = (histories, historiesFromApi, symbol) => {
       toAddress: h?.userPaymentAddress,
       fromAddress: h?.userPaymentAddress,
       amount: h?.incognitoAmount,
-      symbol: currencyType,
+      requestedAmount: h?.requestedAmount,
+      symbol: externalSymbol,
+      decimals,
+      pDecimals,
       statusCode: h?.statusText
     });
   });
@@ -35,6 +36,8 @@ const combineHistory = (histories, historiesFromApi, symbol) => {
       toAddress: h?.receivers[0],
       amount: h?.amount,
       symbol: h?.tokenSymbol,
+      decimals,
+      pDecimals,
       statusCode: h?.status
     });
   });
@@ -94,13 +97,13 @@ class HistoryTokenContainer extends Component {
     try {
       this.setState({ isLoading: true });
       const { selectedPrivacy } = this.props;
-      const { additionalData, paymentAddress } = selectedPrivacy;
+      const { isDeposable, isWithdrawable, paymentAddress } = selectedPrivacy;
 
-      if (!additionalData?.isWithdrawable || !additionalData?.isDeposable) {
+      if (!isWithdrawable || !isDeposable) {
         return;
       }
 
-      const histories = await getpTokenHistory({ currencyType: CONSTANT_COMMONS.PRIVATE_TOKEN_HISTORY_CURRENCY_TYPE[additionalData?.currencyType], paymentAddress });
+      const histories = await getpTokenHistory({ paymentAddress });
 
       this.setState({ historiesFromApi: histories });
     } catch {
@@ -151,7 +154,7 @@ class HistoryTokenContainer extends Component {
           />
         )}
       >
-        <HistoryList histories={combineHistory(histories, historiesFromApi, selectedPrivacy?.symbol)} />
+        <HistoryList histories={combineHistory(histories, historiesFromApi, selectedPrivacy?.symbol, selectedPrivacy?.externalSymbol, selectedPrivacy?.decimals, selectedPrivacy?.pDecimals)} />
       </ScrollView>
     );
   }

@@ -80,7 +80,7 @@ class CreateToken extends Component {
     try{
       this.setState({ isGettingFee: true });
       const fee =  await getEstimateFeeForSendingTokenService(fromAddress, toAddress, Number(amount), tokenObject, account.PrivateKey, accountWallet);
-      const humanFee = convert.toHumanAmount(fee, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
+      const humanFee = convert.toHumanAmount(fee, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY);
       // set min fee state
       this.setState({ minFeeValidator: validator.minValue(humanFee) });
       // update fee
@@ -112,7 +112,7 @@ class CreateToken extends Component {
 
     try {
       this.setState({ isCreatingOrSending: true });
-      const res = await Token.createSendPrivacyCustomToken(tokenObject, convert.toOriginalAmount(Number(fee), tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY), account, wallet);
+      const res = await Token.createSendPrivacyCustomToken(tokenObject, convert.toOriginalAmount(Number(fee), CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY), account, wallet);
 
       if (res.txId) {
         Toast.showInfo('Create token successfully');
@@ -149,7 +149,7 @@ class CreateToken extends Component {
   renderBalance = () => {
     const { account } = this.props;
 
-    return <Text style={styleSheet.balance}>{` Balance: ${ formatUtil.amount(account.value, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY) } ${ tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY }`}</Text>;
+    return <Text style={styleSheet.balance}>{` Balance: ${ formatUtil.amount(account.value, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY) } ${ tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY }`}</Text>;
   }
 
   render() {

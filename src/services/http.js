@@ -14,6 +14,21 @@ const instance = axios.create({
   }
 });
 
+// Add a request interceptor
+instance.interceptors.request.use(config => {
+  if (__DEV__) {
+    console.debug('Send request', config);
+  }
+
+  return config;
+}, error => {
+  if (__DEV__) {
+    console.warn('Send request error', error);
+  }
+
+  return Promise.reject(error);
+});
+
 instance.interceptors.response.use(res => {
   const result = res?.data?.Result;
 

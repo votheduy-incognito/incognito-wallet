@@ -6,9 +6,9 @@ import styleSheet from './style';
 
 let ExportCom = null;
 
-const openReceipt = ({ txId, toAddress, fromAddress, amount, amountUnit, time, fee, feeUnit } = {}) => {
+const openReceipt = ({ txId, toAddress, fromAddress, amount, amountUnit, time, fee, feeUnit, decimals, pDecimals } = {}) => {
   if (typeof ExportCom?.openReceipt === 'function') {
-    ExportCom.openReceipt({ txId, toAddress, fromAddress, amount, amountUnit, time, fee, feeUnit });
+    ExportCom.openReceipt({ txId, toAddress, fromAddress, amount, amountUnit, time, fee, feeUnit, decimals, pDecimals });
   }
 };
 

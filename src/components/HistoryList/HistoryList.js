@@ -104,13 +104,13 @@ const getTypeData = type => {
   };
 };
 
-const getAddress = history => {
-  if ([CONSTANT_COMMONS.HISTORY.TYPE.SEND, CONSTANT_COMMONS.HISTORY.TYPE.WITHDRAW].includes(history?.type)) {
-    return ['To', history?.toAddress];
-  } else if ([CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT].includes(history?.type)) {
-    return ['From', history?.fromAddress];
-  }
-};
+// const getAddress = history => {
+//   if ([CONSTANT_COMMONS.HISTORY.TYPE.SEND, CONSTANT_COMMONS.HISTORY.TYPE.WITHDRAW].includes(history?.type)) {
+//     return ['To', history?.toAddress];
+//   } else if ([CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT].includes(history?.type)) {
+//     return ['From', history?.fromAddress];
+//   }
+// };
 
 const HistoryItem = ({ history }) => {
   if (!history) {
@@ -118,8 +118,8 @@ const HistoryItem = ({ history }) => {
   }
 
   const { statusText, statusColor } = getStatusData(history.statusCode);
-  const { typeText, typeColor } = getTypeData(history.type);
-  const [addressDirection, address] = getAddress(history);
+  const { typeText } = getTypeData(history.type);
+  // const [addressDirection, address] = getAddress(history);
 
   return (
     <>
@@ -146,7 +146,13 @@ const HistoryItem = ({ history }) => {
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {formatUtil.amount(history.amount, history.symbol)} {history.currencyType ?? history.symbol}
+            {
+              history.amount
+                ? formatUtil.amount(history.amount, history.pDecimals)
+                : formatUtil.amount(history.requestedAmount)
+            } 
+            {' '}
+            { history.currencyType ?? history.symbol }
           </Text>
           <Text
             style={[styleSheet.statusText, { color: statusColor }]}

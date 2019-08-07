@@ -58,8 +58,12 @@ const style = StyleSheet.create({
     color: COLORS.white,
     backgroundColor: COLORS.primary,
     paddingHorizontal: 15,
+    lineHeight: 18,
     paddingVertical: 5,
-    borderRadius: 15
+    borderRadius: 15,
+    overflow: 'hidden',
+    textAlignVertical: 'center',
+    textAlign: 'center',
   },
   rateText: {
     fontWeight: '100',

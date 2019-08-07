@@ -25,12 +25,9 @@ export default {
   // for new app
   CRYPTO_SYMBOL,
   TOKEN_SYMBOL,
-  DECISION_RATE: {
-    [CRYPTO_SYMBOL.ETH]: 1e18,
-    [CRYPTO_SYMBOL.BTC]: 1e9,
-    [TOKEN_SYMBOL.pETH]: 1e9,
-    [TOKEN_SYMBOL.pBTC]: 1e9,
-    [CRYPTO_SYMBOL.PRV]: 1e9
+  DECIMALS: {
+    MAIN_CRYPTO_CURRENCY: 9,
+    [CRYPTO_SYMBOL.PRV]: 9,
   },
   TOKEN_TX_TYPE: {
     INIT: 0,
@@ -47,6 +44,10 @@ export default {
   PRIVATE_TOKEN_HISTORY_CURRENCY_TYPE: {
     ETH: 1,
     BTC: 2 
+  },
+  PTOKEN_TYPE: {
+    COIN: 0,
+    ERC20: 1
   },
   HISTORY: {
     TYPE: {

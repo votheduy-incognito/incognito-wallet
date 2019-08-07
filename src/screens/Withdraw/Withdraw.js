@@ -13,6 +13,7 @@ import { openQrScanner } from '@src/components/QrCodeScanner';
 import LoadingTx from '@src/components/LoadingTx';
 import tokenData from '@src/constants/tokenData';
 import formatUtil from '@src/utils/format';
+import { CONSTANT_COMMONS } from '@src/constants';
 import style from './style';
 
 const formName = 'withdraw';
@@ -42,7 +43,7 @@ class Withdraw extends React.Component {
 
   componentDidMount() {
     const { withdrawData, selectedPrivacy } = this.props;
-    const maxAmount = convertUtil.toHumanAmount(withdrawData?.maxWithdrawAmount, selectedPrivacy?.symbol);
+    const maxAmount = convertUtil.toHumanAmount(withdrawData?.maxWithdrawAmount, selectedPrivacy?.pDecimals);
 
     this.setMaxAmount(maxAmount);
   }
@@ -140,7 +141,12 @@ class Withdraw extends React.Component {
                   amount={isFormValid ? amount : null}
                   toAddress={isFormValid ? selectedPrivacy?.paymentAddress : null} // est fee on the same network, dont care which address will be send to
                 />
-                <Text style={style.feeText}>Fee: {formatUtil.amount(finalFee, feeUnit)} {feeUnit}</Text>
+                <Text style={style.feeText}>
+                  Fee: {formatUtil.amount(
+                    finalFee,
+                    feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals
+                  )} {feeUnit}
+                </Text>
                 <Button title='Withdraw' style={style.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSubmit)} isAsync isLoading={submitting} />
                 {submitting && <LoadingTx />}
               </>

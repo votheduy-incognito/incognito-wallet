@@ -10,6 +10,7 @@ const TYPES = {
   GET_BALANCE_FINISH: n('GET_BALANCE_FINISH'),
   REMOVE_BY_ID: n('REMOVE_BY_ID'),
   SET_LIST: n('SET_LIST'),
+  SET_PTOKEN_LIST: n('SET_PTOKEN_LIST'),
 };
 
 export default TYPES;

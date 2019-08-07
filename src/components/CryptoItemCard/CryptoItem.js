@@ -4,20 +4,20 @@ import { View, Text, TouchableOpacity, Image, ActivityIndicator } from '@src/com
 import formatUtil from '@src/utils/format';
 import cryptoItemStyle from './style';
 
-const CryptoItem = ({ fullName, typeName, amount, icon, onPress, symbol, isGettingBalance, style }) => (
+const CryptoItem = ({ fullName, name, amount, icon, onPress, symbol, isGettingBalance, style, pDecimals }) => (
   <TouchableOpacity style={[cryptoItemStyle.container, style]} onPress={amount != null ? onPress : null}>
     <View style={cryptoItemStyle.logoContainer}>
       <Image source={icon} style={cryptoItemStyle.logo} />
     </View>
     <View style={cryptoItemStyle.cryptoNameContainer}>
       <Text style={cryptoItemStyle.mainNameText}>{fullName}</Text>
-      <Text style={cryptoItemStyle.subNameText}>{typeName}</Text>
+      <Text style={cryptoItemStyle.subNameText}>{name}</Text>
     </View>
     <View style={cryptoItemStyle.balanceContainer}>
       { isGettingBalance ? 
         <ActivityIndicator /> : (
           amount != null ?
-            <Text style={cryptoItemStyle.amountText} numberOfLines={1} ellipsizeMode="tail">{formatUtil.amount(amount, symbol)} {symbol}</Text> :
+            <Text style={cryptoItemStyle.amountText} numberOfLines={1} ellipsizeMode="tail">{formatUtil.amount(amount, pDecimals)} {symbol}</Text> :
             <Text style={cryptoItemStyle.getAmountFailedText}>Failed</Text>
         )
       }
@@ -27,18 +27,20 @@ const CryptoItem = ({ fullName, typeName, amount, icon, onPress, symbol, isGetti
 
 CryptoItem.defaultProps = {
   fullName: 'Sample name',
-  typeName: 'Name',
+  name: 'Name',
   amount: 0,
   icon: null,
   onPress: null,
   symbol: null,
   isGettingBalance: false,
-  style: null
+  style: null,
+  pDecimals: null,
 };
 
 CryptoItem.propTypes = {
+  pDecimals: PropTypes.oneOfType([ PropTypes.number, PropTypes.string ]),
   fullName: PropTypes.string,
-  typeName: PropTypes.string,
+  name: PropTypes.string,
   amount: PropTypes.number,
   icon: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onPress: PropTypes.func,
