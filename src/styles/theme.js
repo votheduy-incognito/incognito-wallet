@@ -29,7 +29,6 @@ const header = {
 const opacityButton = {
   button: {
     backgroundColor: COLORS.blue,
-    paddingVertical: SPACINGS.small,
     paddingHorizontal: 5,
     borderRadius: DECOR.borderRadiusBorder,
     borderWidth: DECOR.borderWidth,
