@@ -1,11 +1,4 @@
 import BaseScreen from '@screens/BaseScreen';
-
-import FirebaseService, {
-  DEVICE_CHANNEL_FORMAT,
-  FIREBASE_PASS,
-  MAIL_UID_FORMAT,
-  PHONE_CHANNEL_FORMAT
-} from '@services/FirebaseService';
 import _ from 'lodash';
 import React from 'react';
 import { Alert, View,ScrollView,Image,Text } from 'react-native';
