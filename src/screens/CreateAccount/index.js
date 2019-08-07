@@ -13,13 +13,15 @@ class CreateAccountContainer extends Component {
     try {
       const { wallet, reloadAccountList } = this.props;
 
-      await accountService.createAccount(accountName, wallet);
+      const result = await accountService.createAccount(accountName, wallet);
       Toast.showInfo(`Your account ${accountName} was created!`);
-
+      console.log('CreateAccount function ---- result =', result);
       await reloadAccountList();
+      return result;
     } catch {
       Toast.showError('Create account failed');
     }
+    return null;
   };
 
   render() {
