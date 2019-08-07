@@ -8,6 +8,7 @@ class SelectedPrivacy {
 
     this.amount = token.amount ?? account.value || 0;
     this.tokenId = token.id;
+    this.contractId = token?.metaData?.contractId;
     this.isToken = !!token.id;
     this.isMainCrypto = !token.id;
     this.isPToken = !!token?.metaData?.pSymbol;

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { connect } from 'react-redux';
-import { genDepositAddress } from '@src/services/api/deposit';
+import { genCentralizedDepositAddress, genERC20DepositAddress, genETHDepositAddress } from '@src/services/api/deposit';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { messageCode, createError } from '@src/services/errorHandler';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
@@ -19,14 +19,36 @@ class DepositContainer extends Component {
 
   getDepositAddress = async amount => {
     try {
+      let address;
       const { selectedPrivacy } = this.props;
-      const currencyType = CONSTANT_COMMONS.CURRENCY_TYPE_FOR_GEN_ADDRESS[selectedPrivacy?.externalSymbol];
-      const address = await genDepositAddress({
-        currencyType,
-        amount,
-        paymentAddress: selectedPrivacy?.paymentAddress,
-        walletAddress: selectedPrivacy?.paymentAddress,
-      });
+
+      if (!selectedPrivacy?.isPToken) {
+        return null;
+      }
+
+      if (selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) {
+        address = await genETHDepositAddress({
+          amount,
+          paymentAddress: selectedPrivacy?.paymentAddress,
+          walletAddress: selectedPrivacy?.paymentAddress,
+          tokenId: selectedPrivacy?.tokenId,
+        });
+      } else if (selectedPrivacy?.isErc20Token) {
+        address = await genERC20DepositAddress({
+          amount,
+          paymentAddress: selectedPrivacy?.paymentAddress,
+          walletAddress: selectedPrivacy?.paymentAddress,
+          tokenId: selectedPrivacy?.tokenId,
+          tokenContractID: selectedPrivacy?.contractId
+        });
+      } else {
+        address = await genCentralizedDepositAddress({
+          amount,
+          paymentAddress: selectedPrivacy?.paymentAddress,
+          walletAddress: selectedPrivacy?.paymentAddress,
+        });
+      }
+
       this.setState({ address });
       return address;
     } catch (e) {
