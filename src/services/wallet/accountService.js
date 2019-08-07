@@ -122,7 +122,18 @@ export default class Account {
     return result;
   }
 
-  // create new account
+  // // create new account
+  // static async createAccount(accountName, wallet) {
+  //   const activeShardNumber = await getActiveShard();
+  //   let shardID = CONSTANT_CONFIGS.SHARD_ID;
+  //   if (shardID) {
+  //     shardID = Math.floor(Math.random() * (activeShardNumber - 1));
+  //   }
+
+  //   return wallet.createNewAccount(accountName, shardID);
+  // }
+
+  // create new account hienton
   static async createAccount(accountName, wallet) {
     const activeShardNumber = await getActiveShard();
     let shardID = CONSTANT_CONFIGS.SHARD_ID;
@@ -130,7 +141,8 @@ export default class Account {
       shardID = Math.floor(Math.random() * (activeShardNumber - 1));
     }
 
-    return wallet.createNewAccount(accountName, shardID);
+    const result = await wallet.createNewAccount(accountName, shardID);
+    return result;
   }
 
   // get progress tx

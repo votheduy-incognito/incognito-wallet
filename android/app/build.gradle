@@ -154,7 +154,6 @@ dependencies {
     implementation project(':react-native-iot-wifi')
     implementation project(':react-native-firebase')
     implementation project(':react-native-device-info')
-    implementation project(':react-native-bluetooth-serial')
     implementation project(':react-native-camera')
     implementation project(':react-native-randombytes')
     implementation project(':react-native-reanimated')

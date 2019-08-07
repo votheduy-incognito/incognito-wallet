@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'redux-form';
 import { createForm, InputField, InputQRField, validator } from '@src/components/core/reduxForm';
-import { View, Button, ScrollView } from '@src/components/core';
+import { Button, ScrollView } from '@src/components/core';
 import styles from './style';
 
 

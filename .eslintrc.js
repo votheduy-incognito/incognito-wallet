@@ -50,7 +50,7 @@ module.exports = {
     'react/require-default-props': 'warn',
     'import/prefer-default-export': 0,
     'no-console': 0,
-    'no-unused-vars': 2,
+    'no-unused-vars': 1,
     'react-native/sort-styles': 0,
     'react/forbid-prop-types': 0,
     'react/prefer-stateless-function': 0,

@@ -87,16 +87,16 @@ export default class DeviceService {
     // });
   }
 
-  static sendPrivateKey = async(device:Device,chain='incognito')=>{
+  static sendPrivateKey = async(device:Device,privateKey:String,chain='incognito')=>{
     
     try {
-      if(!_.isEmpty(device)){
+      if(!_.isEmpty(device) && !_.isEmpty(privateKey)){
         const actionPrivateKey = LIST_ACTION.GET_IP;
         const dataResult = await Util.excuteWithTimeout(DeviceService.send(device.data,actionPrivateKey,chain,Action.TYPE.PRODUCT_CONTROL),8);
         console.log(TAG,'sendPrivateKey send dataResult = ',dataResult);
         const { status = -1, data, message= ''} = dataResult;
         if(status === 1){
-          const action:Action = DeviceService.buildAction(device.data,LIST_ACTION.START,{product_id:device.data.product_id, privateKey:'112t8rnX3rRvnpiSCBuA9ES9mzauoyoXXYkZmTqdQd7zfw3QVVFisFmouQ2JQJK1prdkaBaDWaiTtkzgfAkbUTPyXsgGkuJEBUtrE9vrMqhr'},chain,'incognito');
+          const action:Action = DeviceService.buildAction(device.data,LIST_ACTION.START,{product_id:device.data.product_id, privateKey:privateKey},chain,'incognito');
           const params = {
             type:action?.type||'',
             data:action?.data||{}
