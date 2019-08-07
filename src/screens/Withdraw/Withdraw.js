@@ -2,14 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Field, formValueSelector, isValid, change } from 'redux-form';
-import { Container, ScrollView, Toast, Text, View, TouchableOpacity, Button } from '@src/components/core';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { createForm, InputField, validator } from '@src/components/core/reduxForm';
+import { Container, ScrollView, Toast, Text, View, Button } from '@src/components/core';
+import { createForm, InputField, InputQRField, validator } from '@src/components/core/reduxForm';
 import EstimateFee from '@src/components/EstimateFee';
 import convertUtil from '@src/utils/convert';
 import { getErrorMessage, messageCode } from '@src/services/errorHandler';
 import CurrentBalance from '@src/components/CurrentBalance';
-import { openQrScanner } from '@src/components/QrCodeScanner';
 import LoadingTx from '@src/components/LoadingTx';
 import tokenData from '@src/constants/tokenData';
 import formatUtil from '@src/utils/format';
@@ -55,27 +53,29 @@ class Withdraw extends React.Component {
     });
   }
 
-  handleQrScanAddress = () => {
-    openQrScanner(data => {
-      this.updateFormValues('toAddress', data);
-    });
-  }
-
-  updateFormValues = (field, value) => {
-    const { rfChange } = this.props;
-    if (typeof rfChange === 'function') {
-      rfChange(formName, field, value);
-    }
-  }
-
   handleSubmit = async values => {
     try {
+      let res;
       const { finalFee, feeUnit } = this.state;
-      const { handleGenAddress, handleSendToken, navigation } = this.props;
+      const {  handleCentralizedWithdraw, handleDecentralizedWithdraw, navigation, selectedPrivacy } = this.props;
       const { amount, toAddress } = values;
-      const tempAddress = await handleGenAddress({ amount, paymentAddress: toAddress });
-      const res = await handleSendToken({ tempAddress, amount, fee: finalFee, feeUnit });
-      
+
+      if (selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH || selectedPrivacy?.isErc20Token) {
+        res = await handleDecentralizedWithdraw({
+          amount,
+          remoteAddress: toAddress,
+          fee: finalFee,
+          feeUnit
+        });
+      } else {
+        res = await handleCentralizedWithdraw({
+          amount,
+          paymentAddress: toAddress,
+          fee: finalFee,
+          feeUnit
+        });
+      }
+
       Toast.showInfo('Withdraw successfully');
       navigation.goBack();
       return res;
@@ -112,14 +112,9 @@ class Withdraw extends React.Component {
             {({ handleSubmit, submitting }) => (
               <>
                 <Field
-                  component={InputField}
+                  component={InputQRField}
                   name='toAddress'
                   placeholder='To Address'
-                  prependView={(
-                    <TouchableOpacity onPress={this.handleQrScanAddress}>
-                      <MaterialCommunityIcons name='qrcode-scan' size={20} />
-                    </TouchableOpacity>
-                  )}
                   style={style.input}
                   validate={[validator.required]}
                 />

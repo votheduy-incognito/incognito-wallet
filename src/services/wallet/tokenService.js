@@ -105,6 +105,45 @@ export default class Token {
     return response;
   }
 
+  // remoteAddress (string) is an ETH/BTC address which users want to receive ETH/BTC (without 0x)
+  static async createBurningRequest(
+    submitParam,
+    feePRV,
+    feeToken,
+    remoteAddress,
+    account,
+    wallet
+  ) {
+    await Wallet.resetProgressTx();
+    // get index account by name
+    let indexAccount = wallet.getAccountIndexByName(account.name);
+    // prepare param for create and send privacy custom token
+    // payment info
+    // @@ Note: it is use for receivers constant
+    let paymentInfos = [];
+    //   paymentInfos[0] = {
+    //     paymentAddressStr: submitParam.TokenReceivers.PaymentAddress,
+    //     amount: 100
+    //   };
+    let response;
+    try {
+      response = await wallet.MasterAccount.child[
+        indexAccount
+      ].createAndSendBurningRequestTx(
+        paymentInfos,
+        submitParam,
+        feePRV,
+        feeToken,
+        remoteAddress
+      );
+      await saveWallet(wallet);
+    } catch (e) {
+      throw e;
+    }
+    await Wallet.resetProgressTx();
+    return response;
+  }
+
   static async getPrivacyTokens() {
     try {
       const data = await listPrivacyTokens();
