@@ -15,16 +15,21 @@ class CreateAccountContainer extends Component {
 
       const account = await accountService.createAccount(accountName, wallet);
       Toast.showInfo(`Your account ${accountName} was created!`);
-      // console.log('CreateAccount function ---- result =', result);
+      
       await reloadAccountList();
 
       const serializedAccount = accountService.toSerializedAccountObj(account);
+      console.log('CreateAccount function ---- result =', serializedAccount);
       return serializedAccount;
     } catch {
       Toast.showError('Create account failed');
     }
     return null;
   };
+
+  hien=()=>{
+    console.log('CreateAccount function ---- hien neeeeee =');
+  }
 
   render() {
     return <CreateAccount {...this.props} createAccount={this.createAccount} />;
@@ -45,5 +50,9 @@ CreateAccountContainer.propTypes = {
 
 export default connect(
   mapState,
-  mapDispatch
+  mapDispatch,
+  null,
+  {
+    forwardRef: true
+  }
 )(CreateAccountContainer);

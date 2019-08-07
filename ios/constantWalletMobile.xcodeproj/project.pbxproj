@@ -58,7 +58,6 @@
 		5BA5A622FA6D403380D24D44 /* libIOTWifi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66AB9A7871F643BA80A04830 /* libIOTWifi.a */; };
 		5E8D288FA98BB034E9895E32 /* libPods-constantWalletMobileTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E1088CFAD4FAE107846BF88 /* libPods-constantWalletMobileTests.a */; };
 		68E740EB49304D53A7558730 /* libRNVectorIcons-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CDB44AB3155F477CB290D577 /* libRNVectorIcons-tvOS.a */; };
-		7625ABD17D2545429E64DDEC /* libRCTBluetoothSerial.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DDA0DFA996054B719B6C8234 /* libRCTBluetoothSerial.a */; };
 		7951D9F679874B4EA8E3CFEE /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27AAED89E8AD4248BBC41F79 /* libRNFirebase.a */; };
 		79B5628C11D3486FB6EA21A8 /* PostGroteskBoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 59AFD324B84E4A7DB397B0B9 /* PostGroteskBoldItalic.otf */; };
 		80612F532047467EBA2882E6 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A3DE260718B44BD4834DE46F /* Ionicons.ttf */; };
@@ -90,7 +89,7 @@
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
 		EDD5E18A68DA49EFABE3EB8B /* libReactNativePermissions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B21C0D59E5564F04B44CD65D /* libReactNativePermissions.a */; };
 		EECDC37EFEF34BEEB265199B /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5FEBE112FC96458EA9C2A77F /* MaterialCommunityIcons.ttf */; };
-		FE3AB7E822E84756001DF612 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE3AB7E722E84756001DF612 /* GoogleService-Info.plist */; };
+		FE4DD5CE22FADD4600518366 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE4DD5CD22FADD4600518366 /* GoogleService-Info.plist */; };
 		FE52DD1022DC6A8B003203EF /* AutonomousZMQ.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		FE52DD4F22DC6B4B003203EF /* AutonomousZMQ.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */; };
 		FE52DD5022DC6B4B003203EF /* AutonomousZMQ.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -295,13 +294,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = E72EC1401F7ABB5A0001BC90;
 			remoteInfo = "RNDeviceInfo-tvOS";
-		};
-		20B55BD522C46B340079FC06 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5058358FC30E4A81B86F5EC7 /* RCTBluetoothSerial.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 69CA06031CC43C2900AF6479;
-			remoteInfo = RCTBluetoothSerial;
 		};
 		2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -581,7 +573,6 @@
 		3ED27E1B24D07276A0DEFEDA /* libPods-constantWalletMobile-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-constantWalletMobile-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		40DA4B90D00A4AC983FDC44B /* libRNSVG-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNSVG-tvOS.a"; sourceTree = "<group>"; };
 		4BA287542ADF445498FC2188 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
-		5058358FC30E4A81B86F5EC7 /* RCTBluetoothSerial.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTBluetoothSerial.xcodeproj; path = "../node_modules/react-native-bluetooth-serial/ios/RCTBluetoothSerial.xcodeproj"; sourceTree = "<group>"; };
 		51B80536E38043E2810D70AD /* PostGroteskLightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskLightItalic.otf; path = ../src/assets/fonts/PostGroteskLightItalic.otf; sourceTree = "<group>"; };
 		570EC87F438D402B8F1B76AE /* PostGroteskBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskBold.otf; path = ../src/assets/fonts/PostGroteskBold.otf; sourceTree = "<group>"; };
 		57EB851164961B035A20418C /* libPods-constantWalletMobile.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-constantWalletMobile.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -632,7 +623,6 @@
 		D20CBF5EE4444499BE17B488 /* TcpSockets.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = TcpSockets.xcodeproj; path = "../node_modules/react-native-tcp/ios/TcpSockets.xcodeproj"; sourceTree = "<group>"; };
 		D4BE5E883350502AE2338935 /* libPods-constantWalletMobile-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-constantWalletMobile-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D83A536AAE9B4C2BBE7644F7 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
-		DDA0DFA996054B719B6C8234 /* libRCTBluetoothSerial.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTBluetoothSerial.a; sourceTree = "<group>"; };
 		DE70DDA39F794DA9B6544C35 /* libRNZmqService.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNZmqService.a; sourceTree = "<group>"; };
 		DEF86409B62F4B3DBE38A13D /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFirebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; };
 		EAE5E838B7D344A5B5978F72 /* PostGroteskLight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskLight.otf; path = ../src/assets/fonts/PostGroteskLight.otf; sourceTree = "<group>"; };
@@ -640,7 +630,7 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED47976300734F1B94B8F775 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
 		FB08C251E22B438096EA6169 /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
-		FE3AB7E722E84756001DF612 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		FE4DD5CD22FADD4600518366 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AutonomousZMQ.framework; path = "../node_modules/react-native-zmq-service/ios/AutonomousZMQ.framework"; sourceTree = "<group>"; };
 		FE57448522F97A3700F2A2BC /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		FE6F886022DC3B510009C5AA /* autonomous_config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = autonomous_config.plist; sourceTree = "<group>"; };
@@ -687,7 +677,6 @@
 				D41D4868DF294BC598996AE5 /* libRNRandomBytes.a in Frameworks */,
 				A83AE44E3EBA41B888B9743B /* libRNCamera.a in Frameworks */,
 				EDD5E18A68DA49EFABE3EB8B /* libReactNativePermissions.a in Frameworks */,
-				7625ABD17D2545429E64DDEC /* libRCTBluetoothSerial.a in Frameworks */,
 				9A35DA29B0814E0E85D3F53B /* libRNDeviceInfo.a in Frameworks */,
 				FE52DD1022DC6A8B003203EF /* AutonomousZMQ.framework in Frameworks */,
 				7951D9F679874B4EA8E3CFEE /* libRNFirebase.a in Frameworks */,
@@ -828,7 +817,7 @@
 		13B07FAE1A68108700A75B9A /* constantWalletMobile */ = {
 			isa = PBXGroup;
 			children = (
-				FE3AB7E722E84756001DF612 /* GoogleService-Info.plist */,
+				FE4DD5CD22FADD4600518366 /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -880,7 +869,6 @@
 				1FE9C669E1BF469DA6A28690 /* libRNRandomBytes-tvOS.a */,
 				35CBB32A5E3C42249B5769F9 /* libRNCamera.a */,
 				B21C0D59E5564F04B44CD65D /* libReactNativePermissions.a */,
-				DDA0DFA996054B719B6C8234 /* libRCTBluetoothSerial.a */,
 				6024CBE183FA4307ABE2C4F5 /* libRNDeviceInfo.a */,
 				27AAED89E8AD4248BBC41F79 /* libRNFirebase.a */,
 				803049AD3941440A9310525A /* libRNDeviceInfo-tvOS.a */,
@@ -979,14 +967,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		20B55BCD22C46B340079FC06 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				20B55BD622C46B340079FC06 /* libRCTBluetoothSerial.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1043,7 +1023,6 @@
 				871A3798C65B40388FB608E2 /* RNRandomBytes.xcodeproj */,
 				6044BF85A0F9445B9BC7E296 /* RNCamera.xcodeproj */,
 				79E8EDE0739040FF875DEAF2 /* ReactNativePermissions.xcodeproj */,
-				5058358FC30E4A81B86F5EC7 /* RCTBluetoothSerial.xcodeproj */,
 				0320F8C79E3C4EBB9B779DBB /* RNDeviceInfo.xcodeproj */,
 				DEF86409B62F4B3DBE38A13D /* RNFirebase.xcodeproj */,
 				793E471D36E74D598FFA7E81 /* IOTWifi.xcodeproj */,
@@ -1330,10 +1309,6 @@
 				{
 					ProductGroup = ADBDB9201DFEBF0600ED6528 /* Products */;
 					ProjectRef = ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */;
-				},
-				{
-					ProductGroup = 20B55BCD22C46B340079FC06 /* Products */;
-					ProjectRef = 5058358FC30E4A81B86F5EC7 /* RCTBluetoothSerial.xcodeproj */;
 				},
 				{
 					ProductGroup = 00C302B61ABCB90400DB3ED1 /* Products */;
@@ -1624,13 +1599,6 @@
 			remoteRef = 20AAA0F922D4571000B4D0BD /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		20B55BD622C46B340079FC06 /* libRCTBluetoothSerial.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRCTBluetoothSerial.a;
-			remoteRef = 20B55BD522C46B340079FC06 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		2D16E6721FA4F8DC00B85C8A /* libRCTBlob-tvOS.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1872,9 +1840,9 @@
 				3652A44646DE4BD8B3C9BA56 /* Octicons.ttf in Resources */,
 				4C1DBB74B2F14588BF13C846 /* SimpleLineIcons.ttf in Resources */,
 				1A63493129294F7CBBC251EE /* Zocial.ttf in Resources */,
+				FE4DD5CE22FADD4600518366 /* GoogleService-Info.plist in Resources */,
 				FE6F886122DC3B510009C5AA /* autonomous_config.plist in Resources */,
 				B312A222BD7D460DA5FE9C6C /* Roboto_bold.ttf in Resources */,
-				FE3AB7E822E84756001DF612 /* GoogleService-Info.plist in Resources */,
 				C0300BA4836A47FCBFB4A4EE /* Roboto-Medium.ttf in Resources */,
 				9DB2573194904FCEA349B72D /* Roboto.ttf in Resources */,
 				B977F62249034FA6AF219A3C /* PostGroteskBold.otf in Resources */,
@@ -2124,10 +2092,7 @@
 				INFOPLIST_FILE = constantWalletMobileTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2170,10 +2135,7 @@
 				INFOPLIST_FILE = constantWalletMobileTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2330,10 +2292,7 @@
 				);
 				INFOPLIST_FILE = "constantWalletMobile-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2380,10 +2339,7 @@
 				);
 				INFOPLIST_FILE = "constantWalletMobile-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2429,10 +2385,7 @@
 				);
 				INFOPLIST_FILE = "constantWalletMobile-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2478,10 +2431,7 @@
 				);
 				INFOPLIST_FILE = "constantWalletMobile-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",

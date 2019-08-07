@@ -177,6 +177,7 @@ class SetupWifiDevice extends BaseScreen {
 
   handleSetUpPress = onClickView(async ()=>{
     let errorMsg = '';
+    
     try {
       this.setState({
         loading: true,
@@ -198,6 +199,7 @@ class SetupWifiDevice extends BaseScreen {
   });
 
   handleSubmit = onClickView(async() => {
+    let errMessage = '';
     try {
       this.setState({
         loading: true
@@ -209,20 +211,27 @@ class SetupWifiDevice extends BaseScreen {
       }
       if(!_.isEmpty(fetchProductInfo)){
         // create account
-        let result = await this.viewCreateAccount.current.createAccount(fetchProductInfo.product_name);
-        await DeviceService.sendPrivateKey(Device.getInstance(addProduct));
-        ////////
-        // product_name
+        console.log(TAG,'handleSubmit fetchData = ',fetchProductInfo);
+        let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
+        const {PrivateKey = '',AccountName = '',PaymentAddress = ''} = result;
+        result = await DeviceService.sendPrivateKey(Device.getInstance(addProduct),PrivateKey);
+
+        if(!_.isEmpty(result)){
+          this.goToScreen(routeNames.HomeMine);
+          return;
+        }
       }
+      errMessage = errorMessage;
       
     } catch (error) {
       console.log(TAG,'handleSubmit error');
-    }finally{
-      this.setState({
-        loading: false,
-        showModal: false
-      });
+      this.onPressBack();
     }
+    this.setState({
+      loading: false,
+      showModal: false,
+      errorMessage:errMessage
+    });
     
   });
 
@@ -238,7 +247,10 @@ class SetupWifiDevice extends BaseScreen {
         <Loader loading={loading} />
         {this.renderWifiPassword()}
         {this.renderToastMessage()}
-        <CreateAccount ref={this.viewCreateAccount} />
+        
+        <View style={{width: 0,height: 0}}>
+          <CreateAccount ref={this.viewCreateAccount} />
+        </View>
       </View>
     );
   }

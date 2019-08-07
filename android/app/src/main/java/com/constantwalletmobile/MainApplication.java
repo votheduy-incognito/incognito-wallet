@@ -10,7 +10,6 @@ import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
-import com.rusel.RCTBluetoothSerial.RCTBluetoothSerialPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.swmansion.reanimated.ReanimatedPackage;
@@ -42,7 +41,6 @@ public class MainApplication extends Application implements ReactApplication {
             new RNDeviceInfo(),
             new IOTWifiPackage(),
             new RNFirebasePackage(),
-            new RCTBluetoothSerialPackage(),
             new RNCameraPackage(),
             new RandomBytesPackage(),
             new ReanimatedPackage(),
