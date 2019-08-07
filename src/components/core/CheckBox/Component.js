@@ -1,15 +1,7 @@
-import { Text, View } from '@src/components/core';
 import PropTypes from 'prop-types';
-import React from 'react';
-import { CheckBox as RNCheckBox } from 'react-native';
-import styleSheet from './style';
+import { CheckBox as RNCheckBox } from 'react-native-elements';
 
-const CheckBox = ({ label, labelStyle, containerStyle, ...checkBoxProps }) => (
-  <View style={[styleSheet.container, containerStyle]}>
-    <RNCheckBox {...checkBoxProps} />
-    {label && <Text style={[styleSheet.label, labelStyle]}>{label}</Text>}
-  </View>
-);
+const CheckBox = RNCheckBox;
 
 CheckBox.propTypes = {
   label: PropTypes.string,

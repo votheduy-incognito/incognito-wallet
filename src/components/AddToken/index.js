@@ -11,9 +11,9 @@ const AddToken = () => {
     <View style={styles.container}>
       <CheckBox
         containerStyle={styles.switchCheckbox}
-        value={isCreateErc20Token}
-        label='Create ERC20 Token'
-        onValueChange={setCreateErc20Token}
+        checked={isCreateErc20Token}
+        title='Create ERC20 Token'
+        onPress={() => setCreateErc20Token(!isCreateErc20Token)}
       />
       {
         isCreateErc20Token ? <AddERC20Token /> : <AddInternalToken />
