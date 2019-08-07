@@ -214,4 +214,12 @@ export default class Account {
     }
     return result;
   }
+
+  /**
+   *
+   * @param {object} accountWallet
+   */
+  static toSerializedAccountObj(accountWallet) {
+    return accountWallet.toSerializedAccountObj();
+  }
 }
