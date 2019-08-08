@@ -180,7 +180,8 @@ class WithdrawContainer extends Component {
         address = await genCentralizedWithdrawAddress({
           amount,
           paymentAddress,
-          walletAddress
+          walletAddress,
+          tokenId: selectedPrivacy?.tokenId,
         });
       }
       

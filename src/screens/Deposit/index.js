@@ -46,6 +46,7 @@ class DepositContainer extends Component {
           amount,
           paymentAddress: selectedPrivacy?.paymentAddress,
           walletAddress: selectedPrivacy?.paymentAddress,
+          tokenId: selectedPrivacy?.tokenId,
         });
       }
 
