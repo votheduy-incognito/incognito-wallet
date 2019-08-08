@@ -103,7 +103,7 @@ class HistoryTokenContainer extends Component {
         return;
       }
 
-      const histories = await getpTokenHistory({ paymentAddress });
+      const histories = await getpTokenHistory({ paymentAddress, tokenId: selectedPrivacy?.tokenId });
 
       this.setState({ historiesFromApi: histories });
     } catch {
