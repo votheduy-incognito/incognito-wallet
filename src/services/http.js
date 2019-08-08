@@ -39,7 +39,7 @@ instance.interceptors.response.use(res => {
   return Promise.resolve(result);
 }, errorData => {
   if (__DEV__) {
-    console.warn('Request failed', errorData);
+    console.warn('Request failed', errorData?.response);
   }
 
   const data = errorData?.response?.data;
