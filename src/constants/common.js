@@ -44,7 +44,8 @@ export default {
   },
   PRIVATE_TOKEN_HISTORY_CURRENCY_TYPE: {
     ETH: 1,
-    BTC: 2 
+    BTC: 2 ,
+    ERC20: 3,
   },
   PTOKEN_TYPE: {
     COIN: 0,
@@ -54,20 +55,13 @@ export default {
     TYPE: {
       DEPOSIT: 1, // same with PRIVATE_TOKEN_HISTORY_ADDRESS_TYPE.DEPOSIT
       WITHDRAW: 2, // same with PRIVATE_TOKEN_HISTORY_ADDRESS_TYPE.WITHDRAW
-      SEND: 3
+      SEND: 3, // custom
+      RECEIVE: 4 // custom
     },
     STATUS_TEXT: {
-      NewAddress: 'NewAddress',
-      ReceivedDepositAmount: 'ReceivedDepositAmount',
-      MintingPrivacyToken: 'MintingPrivacyToken',
-      MintedPrivacyToken: 'MintedPrivacyToken',
-      SendingToMasterAccount: 'SendingToMasterAccount',
-      SendedToMasterAccount: 'SendedToMasterAccount',
-      ReceivedWithdrawAmount: 'ReceivedWithdrawAmount',
-      BurningPrivacyToken: 'BurningPrivacyToken',
-      BurnedPrivacyToken: 'BurnedPrivacyToken',
-      SendingToUserAddress: 'SendingToUserAddress',
-      SendedToUserAddress: 'SendedToUserAddress'
+      SUCCESS: 'SUCCESS',
+      FAILED: 'FAILED',
+      PENDING: 'PENDING'
     }
   }
 };

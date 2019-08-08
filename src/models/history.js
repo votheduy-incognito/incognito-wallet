@@ -1,17 +1,21 @@
 import { CONSTANT_COMMONS } from '@src/constants';
 
-const HISTORY_STATUS = {
-  0: CONSTANT_COMMONS.HISTORY.STATUS_TEXT.NewAddress,
-  1: CONSTANT_COMMONS.HISTORY.STATUS_TEXT.ReceivedDepositAmount,
-  2: CONSTANT_COMMONS.HISTORY.STATUS_TEXT.MintingPrivacyToken,
-  3: CONSTANT_COMMONS.HISTORY.STATUS_TEXT.MintedPrivacyToken,
-  4: CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SendingToMasterAccount,
-  5: CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SendedToMasterAccount,
-  6: CONSTANT_COMMONS.HISTORY.STATUS_TEXT.ReceivedWithdrawAmount,
-  7: CONSTANT_COMMONS.HISTORY.STATUS_TEXT.BurningPrivacyToken,
-  8: CONSTANT_COMMONS.HISTORY.STATUS_TEXT.BurnedPrivacyToken,
-  9: CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SendingToUserAddress,
-  10: CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SendedToUserAddress
+const getStatusText = (status, currencyType) => {
+  if ([CONSTANT_COMMONS.PRIVATE_TOKEN_HISTORY_CURRENCY_TYPE.ETH, CONSTANT_COMMONS.PRIVATE_TOKEN_HISTORY_CURRENCY_TYPE.ERC20].includes(currencyType)) {
+    // decentralized token history 
+    if (status === 6 || status === 23) {
+      return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.FAILED;
+    } else if (status === 7 || status === 12) {
+      return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SUCCESS;
+    }
+    return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING;
+  } else {
+    // centralized token history 
+    if (status === 5 || status === 10) {
+      return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SUCCESS;
+    }
+    return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING;
+  }
 };
  
 class History {
@@ -21,7 +25,7 @@ class History {
       updatedAt: data.UpdatedAt,
       addressType: data.AddressType,
       status: data.Status,
-      statusText: HISTORY_STATUS[data.Status],
+      statusText: getStatusText(data.Status, data.CurrencyType),
       currencyType: data.CurrencyType,
       userPaymentAddress: data.UserPaymentAddress,
       requestedAmount: data.RequestedAmount,

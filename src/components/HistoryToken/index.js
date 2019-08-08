@@ -24,7 +24,8 @@ const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, dec
       symbol: externalSymbol,
       decimals,
       pDecimals,
-      statusCode: h?.statusText
+      status: h?.statusText,
+      statusCode: h?.status
     });
   });
 
@@ -32,13 +33,13 @@ const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, dec
     data.push({
       id: h?.txID,
       time: h?.time,
-      type: CONSTANT_COMMONS.HISTORY.TYPE.SEND,
+      type: h?.isIn ?  CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE : CONSTANT_COMMONS.HISTORY.TYPE.SEND,
       toAddress: h?.receivers[0],
       amount: h?.amount,
       symbol: h?.tokenSymbol,
       decimals,
       pDecimals,
-      statusCode: h?.status
+      status: h?.status
     });
   });
 
