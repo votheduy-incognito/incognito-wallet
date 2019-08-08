@@ -123,6 +123,9 @@ class Withdraw extends React.Component {
                   name='amount'
                   placeholder='Amount'
                   style={style.input}
+                  componentProps={{
+                    keyboardType: 'number-pad'
+                  }}
                   validate={[
                     ...validator.combinedAmount,
                     ...maxAmountValidator ? [maxAmountValidator] : []

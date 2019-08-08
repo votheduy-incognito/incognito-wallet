@@ -50,6 +50,9 @@ class Deposit extends React.Component {
                         placeholder='0.0'
                         label='Amount'
                         validate={[validator.required, ...validator.combinedAmount]}
+                        componentProps={{
+                          keyboardType: 'number-pad'
+                        }}
                         prependView={
                           <Text>{selectedPrivacy?.symbol}</Text>
                         }
