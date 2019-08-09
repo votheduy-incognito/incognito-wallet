@@ -11,7 +11,7 @@ const getStatusText = (status, currencyType) => {
     return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING;
   } else {
     // centralized token history 
-    if (status === 5 || status === 10) {
+    if ([3, 4, 5, 10].includes(status)) {
       return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SUCCESS;
     }
     return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING;
