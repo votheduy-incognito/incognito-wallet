@@ -13,12 +13,18 @@ import formatUtil from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
 import styleSheet from './style';
 
-const getStatusData = (statusCode) => {
+const getStatusData = (status, statusCode) => {
   let statusText;
   let statusColor;
-  switch (statusCode) {
+  let statusNumber;
+  switch (status) {
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING:
+    statusNumber = statusCode;
+    statusText = 'Pending';
+    statusColor = COLORS.blue;
+    break; 
   case SuccessTx:
+    statusNumber = null;
     statusText = 'Pending';
     statusColor = COLORS.blue;
     break;
@@ -39,7 +45,8 @@ const getStatusData = (statusCode) => {
 
   return {
     statusText,
-    statusColor
+    statusColor,
+    statusNumber
   };
 };
 
@@ -84,7 +91,7 @@ const HistoryItem = ({ history }) => {
     return null;
   }
 
-  const { statusText, statusColor } = getStatusData(history.status);
+  const { statusText, statusColor, statusNumber } = getStatusData(history.status, history.statusCode);
   const { typeText } = getTypeData(history.type);
   // const [addressDirection, address] = getAddress(history);
 
@@ -126,7 +133,7 @@ const HistoryItem = ({ history }) => {
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {statusText} {(!!history?.statusCode || history?.statusCode === 0) ? `[${history?.statusCode}]` : null}
+            {statusText} {(!!statusNumber || statusNumber === 0) ? `[${statusNumber}]` : null}
           </Text>
         </View>
       </View>
