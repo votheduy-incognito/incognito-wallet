@@ -38,7 +38,7 @@ export default {
     BTC: 2 ,
     ERC20: 3,
   },
-  ADDRESS_TYPE_FOR_GEN_ADDRESS: {
+  ADDRESS_TYPE: {
     DEPOSIT: 1,
     WITHDRAW: 2 
   },

@@ -5,6 +5,7 @@ import { Container, ScrollView, View, Toast, Text, Button } from '@src/component
 import { Field, formValueSelector, destroy } from 'redux-form';
 import { createForm, InputField, validator } from '@src/components/core/reduxForm';
 import { getErrorMessage } from '@src/services/errorHandler';
+import { CONSTANT_COMMONS } from '@src/constants';
 import WaitingDeposit from './WaitingDeposit';
 import style from './style';
 
@@ -33,6 +34,7 @@ class Deposit extends React.Component {
 
   render() {
     const { depositAddress, selectedPrivacy, amount } = this.props;
+    const isBTC = selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BTC;
 
     return (
       <ScrollView style={style.container}>
@@ -49,7 +51,11 @@ class Deposit extends React.Component {
                         name='amount'
                         placeholder='0.0'
                         label='Amount'
-                        validate={[validator.required, ...validator.combinedAmount]}
+                        validate={[
+                          ...isBTC ? [validator.bitcoinWithdrawMinAmount] : [],
+                          validator.required,
+                          ...validator.combinedAmount
+                        ]}
                         componentProps={{
                           keyboardType: 'number-pad'
                         }}

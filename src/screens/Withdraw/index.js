@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Text } from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { connect } from 'react-redux';
-import { genCentralizedWithdrawAddress } from '@src/services/api/withdraw';
+import { genCentralizedWithdrawAddress, addERC20TxWithdraw, addETHTxWithdraw } from '@src/services/api/withdraw';
 import tokenService from '@src/services/wallet/tokenService';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { messageCode, createError } from '@src/services/errorHandler';
@@ -114,7 +114,7 @@ class WithdrawContainer extends Component {
       );
 
       if (res.txId) {
-        const foundToken = tokens.find(t => t.id === selectedPrivacy?.tokenId);
+        const foundToken = tokens?.find(t => t.id === selectedPrivacy?.tokenId);
         foundToken && setTimeout(() => getTokenBalanceBound(foundToken), 10000);
 
         return res;
@@ -158,7 +158,7 @@ class WithdrawContainer extends Component {
       );
 
       if (res.txId) {
-        const foundToken = tokens.find(t => t.id === selectedPrivacy?.tokenId);
+        const foundToken = tokens?.find(t => t.id === selectedPrivacy?.tokenId);
         foundToken && setTimeout(() => getTokenBalanceBound(foundToken), 10000);
 
         return res;
@@ -202,9 +202,34 @@ class WithdrawContainer extends Component {
 
   handleDecentralizedWithdraw = async ({ amount, fee, feeUnit, remoteAddress }) => {
     try {
+      const { selectedPrivacy } = this.props;
+      const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
       const tx = await this.handleBurningToken({ remoteAddress, amount, fee, feeUnit });
 
-      return tx;
+      // ERC20 
+      if (selectedPrivacy?.isErc20Token) {
+        return await addERC20TxWithdraw({
+          amount,
+          originalAmount,
+          paymentAddress: selectedPrivacy?.paymentAddress,
+          walletAddress: selectedPrivacy?.paymentAddress,
+          tokenContractID: selectedPrivacy?.contractId,
+          tokenId: selectedPrivacy?.tokenId,
+          burningTxId: tx?.txId
+        });
+      } else if (selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) {
+        // ETH
+        return await addETHTxWithdraw({
+          amount,
+          originalAmount,
+          paymentAddress: selectedPrivacy?.paymentAddress,
+          walletAddress: selectedPrivacy?.paymentAddress,
+          tokenId: selectedPrivacy?.tokenId,
+          burningTxId: tx?.txId
+        });
+      }
+
+      return null;
     } catch (e) {
       throw e;
     }
@@ -242,10 +267,15 @@ const mapDispatch = { getTokenBalanceBound: getTokenBalance };
 
 WithdrawContainer.defaultProps = {
   selectedPrivacy: null,
+  tokens: null
 };
 
 WithdrawContainer.propTypes = {
   selectedPrivacy: PropTypes.object,
+  getTokenBalanceBound: PropTypes.func.isRequired,
+  account: PropTypes.object.isRequired,
+  wallet: PropTypes.object.isRequired,
+  tokens: PropTypes.arrayOf(PropTypes.object),
 };
 
 

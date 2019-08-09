@@ -76,9 +76,13 @@ class Withdraw extends React.Component {
         });
       }
 
-      Toast.showInfo('Withdraw successfully');
-      navigation.goBack();
-      return res;
+      if (res) {
+        Toast.showInfo('Withdraw successfully');
+        navigation.goBack();
+        return res;
+      }
+
+      throw new Error('Withdraw failed');
     } catch (e) {
       Toast.showError(getErrorMessage(e, { defaultCode: messageCode.code.withdraw_failed }));
     }
@@ -99,8 +103,9 @@ class Withdraw extends React.Component {
 
   render() {
     const { maxAmountValidator, maxAmount, finalFee, feeUnit, initialFee } = this.state;
-    const { selectedPrivacy, isFormValid, amount } = this.props;
+    const { selectedPrivacy, isFormValid, amount, withdrawData } = this.props;
     const types = [selectedPrivacy?.symbol, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY];
+    const isUsedTokenFee = !(feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
 
     return (
       <ScrollView style={style.container}>
@@ -143,7 +148,17 @@ class Withdraw extends React.Component {
                   Fee: {formatUtil.amount(
                     finalFee,
                     feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals
-                  )} {feeUnit}
+                  )} {feeUnit ? feeUnit : ''}
+                  {
+                    isUsedTokenFee && withdrawData?.feeForBurn
+                      ? ` + (${
+                        formatUtil.amount(
+                          withdrawData?.feeForBurn,
+                          feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals
+                        )
+                      } ${feeUnit ? feeUnit : ''})`
+                      : ''
+                  }
                 </Text>
                 <Button title='Withdraw' style={style.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSubmit)} isAsync isLoading={submitting} />
                 {submitting && <LoadingTx />}
@@ -156,12 +171,19 @@ class Withdraw extends React.Component {
   }
 }
 
+Withdraw.defaultProps = {
+  amount: null,
+  isFormValid: false,
+};
+
 Withdraw.propTypes = {
   withdrawData: PropTypes.object.isRequired,
-  handleGenAddress: PropTypes.func.isRequired,
-  handleSendToken: PropTypes.func.isRequired,
+  handleCentralizedWithdraw: PropTypes.func.isRequired,
+  handleDecentralizedWithdraw: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   selectedPrivacy: PropTypes.object.isRequired,
+  isFormValid: PropTypes.bool,
+  amount: PropTypes.string,
 };
 
 const mapState = state => ({

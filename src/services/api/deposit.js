@@ -14,7 +14,7 @@ export const genCentralizedDepositAddress = ({ amount, paymentAddress, walletAdd
 
   return http.post('ota/generate', {
     CurrencyType: CONSTANT_COMMONS.CURRENCY_TYPE_FOR_GEN_ADDRESS.BTC,
-    AddressType: CONSTANT_COMMONS.ADDRESS_TYPE_FOR_GEN_ADDRESS.DEPOSIT,
+    AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.DEPOSIT,
     RequestedAmount: String(parseAmount),
     PaymentAddress: paymentAddress,
     WalletAddress: walletAddress ?? paymentAddress,
@@ -35,7 +35,7 @@ export const genETHDepositAddress = ({ amount, paymentAddress, walletAddress, to
 
   return http.post('eta/generate', {
     CurrencyType: CONSTANT_COMMONS.CURRENCY_TYPE_FOR_GEN_ADDRESS.ETH,
-    AddressType: CONSTANT_COMMONS.ADDRESS_TYPE_FOR_GEN_ADDRESS.DEPOSIT,
+    AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.DEPOSIT,
     RequestedAmount: String(parseAmount),
     PaymentAddress: paymentAddress,
     WalletAddress: walletAddress ?? paymentAddress,
@@ -58,7 +58,7 @@ export const genERC20DepositAddress = ({ amount, paymentAddress, walletAddress, 
 
   return http.post('eta/generate', {
     CurrencyType: CONSTANT_COMMONS.CURRENCY_TYPE_FOR_GEN_ADDRESS.ERC20,
-    AddressType: CONSTANT_COMMONS.ADDRESS_TYPE_FOR_GEN_ADDRESS.DEPOSIT,
+    AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.DEPOSIT,
     RequestedAmount: String(parseAmount),
     PaymentAddress: paymentAddress,
     WalletAddress: walletAddress ?? paymentAddress,
