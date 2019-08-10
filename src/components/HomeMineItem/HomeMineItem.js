@@ -2,35 +2,54 @@ import PropTypes from 'prop-types';
 import React  from 'react';
 import { View, Text,Image,TouchableOpacity } from 'react-native';
 import images from '@src/assets';
-import routeNames from '@src/router/routeNames';
+import _ from 'lodash';
 import ViewUtil from '@src/utils/ViewUtil';
 import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
 import Device from '@src/models/device';
+import { accountSeleclor } from '@src/redux/selectors';
+import { connect } from 'react-redux';
 import styles from './style';
-
 
 const TAG = 'HomeMineItem';
 class HomeMineItem extends React.Component {
   constructor(props){
     super(props);
+    const {item,wallet} = props;
     this.state = {
-      item:props.item,
-      deviceInfo : Device.getInstance()
+      item:item,
+      account:{},
+      balance:0,
+      deviceInfo : Device.getInstance(item)
     };
   }
-  componentDidMount(){
-    const {item,isActive} = this.props;
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if(!_.isEqual(nextProps.item,prevState.item)){
+      return {
+        item:nextProps?.item,
+        deviceInfo:Device.getInstance(nextProps?.item)
+      };
+    }
+    return null;
+  }
+  
+  async componentDidMount(){
+    const {item,isActive,getAccountByName,wallet} = this.props;
     let {deviceInfo} = this.state;
+    const account = await getAccountByName(deviceInfo.Name);
+    const balance = await deviceInfo.balance(account,wallet);
+
     if(isActive){
       DeviceService.send(item,LIST_ACTION.CHECK_STATUS).then(dataResult=>{
         const { status = -1, data={status:Device.offlineStatus()}, message= 'Offline',productId = -1 } = dataResult;
-        console.log(TAG,'componentDidMount send dataResult = ',dataResult);
+        // console.log(TAG,'componentDidMount send dataResult = ',dataResult);
         if(item.product_id === productId ){
           deviceInfo.data.status ={
             code:data.status.code,
             message:data.status.message
           };
           this.setState({
+            account:account,
+            balance:balance,
             deviceInfo:deviceInfo
           });
         }
@@ -44,10 +63,7 @@ class HomeMineItem extends React.Component {
   }
   setDeviceOffline =()=>{
     let {deviceInfo} = this.state;
-    deviceInfo.data.status ={
-      code:Device.CODE_OFFLINE,
-      message:'Offline'
-    };
+    deviceInfo.data.status = Device.offlineStatus();
     this.setState({
       deviceInfo:deviceInfo,
     });
@@ -65,7 +81,7 @@ class HomeMineItem extends React.Component {
     return [styles.groupRight_title,styleStatus];
   }
   render() {
-    const {item,deviceInfo} = this.state;
+    const {item,deviceInfo,balance} = this.state;
     const {containerStyle,onPress} = this.props;
     
     const styleStatus = this.getStyleStatus();
@@ -78,11 +94,11 @@ class HomeMineItem extends React.Component {
       >
         <Image style={styles.imageLogo} source={images.ic_device} />
         <View style={styles.groupLeft}>
-          <Text style={styles.groupLeft_title}>{item.product_name}</Text>
-          <Text style={styles.groupLeft_title2}>Last: <Text style={{color:'#000000'}}>{item.product_name}</Text></Text>
+          <Text style={styles.groupLeft_title}>{deviceInfo.Name}</Text>
+          <Text style={styles.groupLeft_title2}>Earned: <Text style={{color:'#000000'}}>{balance}$</Text></Text>
         </View>
         <View style={styles.groupRight}>
-          <Text style={styleStatus}>{deviceInfo.data?.status?.message}</Text>
+          <Text style={styleStatus}>{deviceInfo.statusMessage()}</Text>
           {deviceInfo.data.status.code === Device.CODE_UNKNOWN && ViewUtil.loadingComponent()}
         </View>
       </TouchableOpacity>
@@ -91,16 +107,26 @@ class HomeMineItem extends React.Component {
 }
 
 HomeMineItem.defaultProps = {
-  containerStyle:{},
+  containerStyle:null,
   isActive:false,
-  onPress:(item)=>{}
+  onPress:(item)=>{},
 };
 
 HomeMineItem.propTypes = {
-  item: PropTypes.instanceOf(JSON).isRequired,
-  containerStyle:PropTypes.instanceOf(JSON),
+  item: PropTypes.object.isRequired,
+  getAccountByName:PropTypes.func.isRequired,
+  wallet:PropTypes.object.isRequired,
+  containerStyle:PropTypes.object,
   isActive:PropTypes.bool,
   onPress:PropTypes.func
 };
+const mapDispatch = { };
 
-export default HomeMineItem;
+export default connect(
+  state => ({
+    wallet:state.wallet,
+    getAccountByName: accountSeleclor.getAccountByName(state),
+  }),
+  mapDispatch
+)(HomeMineItem);
+

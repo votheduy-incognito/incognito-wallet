@@ -6,25 +6,26 @@ import { Image, Text, View } from 'react-native';
 import { CheckBox, Icon, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 import images from '@src/assets';
+import { onClickView } from '@src/utils/ViewUtil';
 import styles, { rightNextIcon } from './styles';
 
 export const TAG = 'AddNode';
 const listItems = [
   {
-    title:'Incognito Device',
-    subTitle:'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium',
+    title:'Device',
+    subTitle:'Plug in and connect',
     img :images.ic_add_node_device,
   },
   {
     title:'Self-Node',
-    subTitle:'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium',
+    subTitle:'Run a script on your computer',
     img :images.ic_add_self_node,
   },
-  {
-    title:'IncogCloud-Node',
-    subTitle:'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium',
-    img :images.ic_add_cloud_node,
-  }
+  // {
+  //   title:'IncogCloud-Node',
+  //   subTitle:'Run a script on your',
+  //   img :images.ic_add_cloud_node,
+  // }
 ];
 class AddNode extends BaseScreen {
   constructor(props) {
@@ -62,9 +63,9 @@ class AddNode extends BaseScreen {
     });
   }
 
-  handleItemClick = async (index) => {
+  handleItemClick = onClickView((index) => {
     this.goToScreen(routeNames.AddDevice);
-  };
+  });
 
   renderListActions = () => {
 
@@ -77,7 +78,7 @@ class AddNode extends BaseScreen {
               containerStyle={styles.item_container}
               title={item.title}
               subtitle={item.subTitle}
-              leftElement={<Image resizeMode='center' source={item.img} style={styles.avatar} />}
+              leftElement={<Image resizeMode='contain' source={item.img} style={styles.avatar} />}
               rightIcon={rightNextIcon}
               subtitleStyle={styles.subTitle}
               onPress={this.handleItemClick}

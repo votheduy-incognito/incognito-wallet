@@ -34,8 +34,6 @@ import DeviceConnection from '@src/components/DeviceConnection';
 import DeviceService from '@src/services/DeviceService';
 import Device from '@src/models/device';
 import PropTypes from 'prop-types';
-import { reloadAccountList } from '@src/redux/actions/wallet';
-import accountService from '@src/services/wallet/accountService';
 import CreateAccount from '@screens/CreateAccount';
 import styles from './style';
 
@@ -208,6 +206,7 @@ class SetupWifiDevice extends BaseScreen {
       let fetchProductInfo = {};
       if (this.validWallName) {
         fetchProductInfo = await this.changeDeviceName(addProduct);
+        await this.saveProductList();
       }
       if(!_.isEmpty(fetchProductInfo)){
         // create account
@@ -234,6 +233,19 @@ class SetupWifiDevice extends BaseScreen {
     });
     
   });
+  saveProductList = async () =>{
+    console.log(TAG,'saveProductList begin');
+    try {
+      const response = await APIService.getProductList(true);
+      const { status, data } = response;
+      if (status == 1) {
+        await LocalDatabase.saveListDevices(data);
+        return data;
+      }
+    } catch (error) {
+      return undefined;
+    }
+  }
 
   render() {
     const { container, textInput, item, errorText } = styles;
@@ -256,14 +268,14 @@ class SetupWifiDevice extends BaseScreen {
   }
 
   validWallName(text) {
-    const isValid = text.length > 0 ? true : false;
+    const isValid = !_.isEmpty(text);
     this.setState({
       wallName: text,
       validWallName: isValid
     });
   }
   validSSID(text) {
-    const isValid = text.length > 0 ? true : false;
+    const isValid = !_.isEmpty(text);
     this.setState({
       ssid: text,
       validSSID: isValid
@@ -343,7 +355,7 @@ class SetupWifiDevice extends BaseScreen {
           phone: phone
         };
         console.log(TAG, 'Params:', JSON.stringify(params));
-        console.log(TAG, 'Platform OS:', Platform.OS);
+        
         this.setState({
           verifyCode: verify_code
         });
@@ -364,7 +376,6 @@ class SetupWifiDevice extends BaseScreen {
       });
       this.isSendDataZmqSuccess = true;
      
-      // await Util.delay(10);
       const checkConnectWifi = async ()=>{
         let isConnected = false;
         while(!isConnected){
@@ -376,7 +387,7 @@ class SetupWifiDevice extends BaseScreen {
 
       const result = await Util.excuteWithTimeout(checkConnectWifi(),30);
       if(result){
-        this.callVerifyCode();
+        await this.callVerifyCode();
       }
       
     } catch (error) {
@@ -407,7 +418,7 @@ class SetupWifiDevice extends BaseScreen {
 
       const { status,data } = response;
       if (status === 1) {
-        console.log('Change name = ', response);
+        console.log(TAG,'Change name = ', response);
         params={...params,...data};
       }
       return params;
@@ -434,7 +445,7 @@ class SetupWifiDevice extends BaseScreen {
       const product = CONSTANT_MINER.PRODUCT_TYPE.toLowerCase();
       console.log(TAG,'checkConnectHotspot SSID---: ', ssid);
       if (_.includes(ssid, product)) {
-        await Util.excuteWithTimeout(this.sendZMQ(),60);
+        await Util.excuteWithTimeout(this.sendZMQ(),120);
         return true;
       } else {
         // this.setState({
@@ -484,16 +495,13 @@ class SetupWifiDevice extends BaseScreen {
         const { status } = response;
         if (status == 1) {
           console.log('Get Product successfully');
-          this.setState({
-            loading: false
-          });
           const { product } = response.data;
           if (product) {
             this.setState({
               addProduct: product,
               showModal:true
             });
-            this.authFirebase(product);
+            await DeviceService.authFirebase(product);
           }
         } else {
           this.failedVerifyCode();
@@ -526,44 +534,30 @@ class SetupWifiDevice extends BaseScreen {
     }
   }
 
-  // createAccount = async (
-  //   accountName = new Error('Account name is required')
-  // ) => {
-  //   try {
-  //     const { wallet, reloadAccountList } = this.props;
-
-  //     await accountService.createAccount(accountName, wallet);
-  //     this.showToastMessage(`Your account ${accountName} was created!`);
-  //     await reloadAccountList();
-  //   } catch {
-  //     this.showToastMessage('Create account failed');
-  //   }
-  // };
-
-  authFirebase=(product) =>{
-    // const autonomousContext = AutonomousContext.getShareManager();
-    // autonomousContext.setActiveDevice(product);
-    let productId = product.product_id;
-    const firebase = FirebaseService.getShareManager();
-    let mailProductId = `${productId}${MAIL_UID_FORMAT}`;
-    let password = `${FIREBASE_PASS}`;
-    firebase.auth(
-      mailProductId,
-      password,
-      uid => {
-        console.log('Firebase login successfully: ', uid);
-      },
-      error => {
-        console.log('Firebase login error: ', error);
-      }
-    );
-  }
+  // authFirebase = async (product) =>{
+  //   // const autonomousContext = AutonomousContext.getShareManager();
+  //   // autonomousContext.setActiveDevice(product);
+  //   let productId = product.product_id;
+  //   const firebase = FirebaseService.getShareManager();
+  //   let mailProductId = `${productId}${MAIL_UID_FORMAT}`;
+  //   let password = `${FIREBASE_PASS}`;
+  //   firebase.auth(
+  //     mailProductId,
+  //     password,
+  //     uid => {
+  //       console.log('Firebase login successfully: ', uid);
+  //     },
+  //     error => {
+  //       console.log('Firebase login error: ', error);
+  //     }
+  //   );
+  // }
 }
 
 SetupWifiDevice.propTypes = {
   wallet: PropTypes.objectOf(PropTypes.object),
 };
-const mapDispatch = { reloadAccountList };
+const mapDispatch = { };
 SetupWifiDevice.defaultProps = {};
 export default connect(
   state => ({}),

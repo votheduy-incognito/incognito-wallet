@@ -31,8 +31,29 @@ export const LIST_ACTION={
   },
 };
 export default class DeviceService {
-  static send = async (product, actionExcute = templateAction, chain = 'incognito',type = 'incognito',dataToSend={},timeout = 5) => {
-    return await new Promise((resolve,reject)=>{
+  static authFirebase = (product) =>{
+    return new Promise((resolve,reject)=>{
+      let productId = product.product_id;
+      const firebase = FirebaseService.getShareManager();
+      let mailProductId = `${productId}${MAIL_UID_FORMAT}`;
+      let password = `${FIREBASE_PASS}`;
+      firebase.auth(
+        mailProductId,
+        password,
+        uid => {
+          resolve(uid);
+          console.log(TAG,'authFirebase successfully: ', uid);
+        },
+        error => {
+          reject(error);
+          console.log(TAG,'authFirebase error: ', error);
+        }
+      );
+    });
+    
+  }
+  static send = (product, actionExcute = templateAction, chain = 'incognito',type = 'incognito',dataToSend={},timeout = 5) => {
+    return new Promise((resolve,reject)=>{
       const productId = product.product_id;
       console.log(TAG, 'ProductId: ', product.product_id);
       if (productId) {
@@ -45,8 +66,8 @@ export default class DeviceService {
             const data = res.data || {};
             resolve({...data,productId:productId});
           } else {
-            console.log(TAG,'Timeout check wifi');
-            reject('Timeout');
+            console.log(TAG,'Timeout action = ' + actionExcute.key);
+            reject('Timeout action = '+  actionExcute.key);
           }
         };
         firebase.sendAction(

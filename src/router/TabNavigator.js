@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
 
 const Tab = createBottomTabNavigator({
   [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { title: 'Wallet', tabBarIcon: renderTab('wallet') }),
-  [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Miner', header:() => null, tabBarIcon: renderTab('miner') }),
+  [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Earn', header:() => null, tabBarIcon: renderTab('miner') }),
   [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'Setting', tabBarIcon: renderTab('setting') }),
 }, {
   initialRouteName: ROUTE_NAMES.Home,

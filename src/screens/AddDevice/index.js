@@ -94,7 +94,7 @@ class AddDevice extends BaseScreen {
     }
     return (
       <View style={styles.group1}>
-        <Text style={styles.textLabelWifi}>Connect current phone</Text>
+        <Text style={styles.textLabelWifi}>Using current network</Text>
         <ListItem
           containerStyle={styles.group1_listitem}
           titleStyle={styles.textTitleWifi}
@@ -120,7 +120,7 @@ class AddDevice extends BaseScreen {
           onPress={this.handleEnterPassword}
           containerStyle={styles.group2_listitem}
           titleStyle={styles.group2_title}
-          title='Connect to another router'
+          title='Connect to another network'
           chevronColor="#979797"
           chevron
         />
