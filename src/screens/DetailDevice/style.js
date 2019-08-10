@@ -68,8 +68,14 @@ const style = StyleSheet.create({
     marginTop: scaleInApp(5),
     color: 'rgba(137,144,146,1)',
   },
+  textWarning:{
+    ...TextStyle.normalText,
+    marginTop: scaleInApp(5),
+    alignSelf:'center',
+    color: 'rgba(137,144,146,1)',
+  },
   group2_container:{
-    flexDirection:'row',
+    flexDirection:'column',
     justifyContent:'space-around',
     borderBottomWidth: 0,
     margin: scaleInApp(10),
@@ -83,6 +89,10 @@ const style = StyleSheet.create({
     shadowColor: 'rgba(208,208,208,0.5)',
     shadowOpacity: 1,
     shadowRadius: 1.2
+  },
+  group2_container_group1:{
+    flexDirection:'row',
+    justifyContent:'space-around',
   },
   group2_container_container:{
     flex:1,

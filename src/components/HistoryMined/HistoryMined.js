@@ -7,6 +7,7 @@ import ViewUtil from '@src/utils/ViewUtil';
 import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
 import Device from '@src/models/device';
 import _ from 'lodash';
+import tokenData from '@src/constants/tokenData';
 import styles from './style';
 
 
@@ -23,6 +24,15 @@ class HistoryMined extends React.Component {
       loading:false
     };
   }
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if(!_.isEqual(nextProps.listItems,prevState.listItems)){
+      return {
+        listItems:nextProps.listItems
+      };
+    }
+    return null;
+  }
+  
   componentDidMount(){
     const {item,isActive} = this.props;
     let {deviceInfo} = this.state;
@@ -56,10 +66,15 @@ class HistoryMined extends React.Component {
       deviceInfo:deviceInfo,
     });
   }
+
+  getImageSymbol = (item)=>{
+
+  }
   
   renderItem=({ item,index })=> {
     const {onPress} = this.props;
-    
+    const {name = '',symbol = '',amount = 0} = item;
+    const {icon = images.ic_device} = this.getData(item)||{};
     return (
       <TouchableOpacity
         style={styles.container_item}
@@ -67,15 +82,25 @@ class HistoryMined extends React.Component {
           onPress? onPress(item):undefined;
         }}
       >
-        <Image style={styles.imageLogo} source={images.ic_device} />
+        <Image style={styles.imageLogo} source={icon} />
         <View style={styles.groupLeft}>
-          <Text style={styles.groupLeft_title}>Incognito</Text>
+          <Text style={styles.groupLeft_title}>{name}</Text>
         </View>
         <View style={styles.groupRight}>
-          <Text style={styles.groupRight_title}>0.002I <Text style={styles.groupRight_title2}>mined</Text></Text>
+          <Text style={styles.groupRight_title}>{`${amount}${symbol} `}<Text style={styles.groupRight_title2}>earned</Text></Text>
         </View>
       </TouchableOpacity>
     );
+  }
+  getData = (token) => {
+    const additionData = tokenData.DATA[token?.symbol] || tokenData.parse(token);
+    const { metaData, othertokenData } = token;
+    const data = {
+      ...additionData,
+      ...metaData,
+      ...othertokenData
+    };
+    return data;
   }
 
   render() {
@@ -111,8 +136,7 @@ HistoryMined.defaultProps = {
 };
 
 HistoryMined.propTypes = {
-  item: PropTypes.instanceOf(JSON).isRequired,
-  containerStyle:PropTypes.instanceOf(JSON),
+  containerStyle:PropTypes.object,
   isActive:PropTypes.bool,
   listItems:PropTypes.array,
   onPress:PropTypes.func

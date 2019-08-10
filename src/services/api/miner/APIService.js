@@ -7,6 +7,7 @@ import LocalDatabase from '@utils/LocalDatabase';
 import User from '@models/user';
 import _ from 'lodash';
 import axios from 'axios';
+import { CONSTANT_MINER } from '@src/constants';
 import API from './api';
 
 let AUTHORIZATION_FORMAT = 'Autonomous';
@@ -323,11 +324,17 @@ export default class APIService {
     return response;
   }
   
-  static async getProductList() {
+  static async getProductList(isNeedFilter = false) {
     const url = API.PRODUCT_LIST_API;
 
     const response = await APIService.getURL(METHOD.GET, url, {}, true);
-    return response;
+    let { status, data = [] } = response;
+    if (isNeedFilter && status === 1) {
+      data  = data.filter(item =>{
+        _.includes(item.platform, CONSTANT_MINER.PRODUCT_TYPE)&& item.is_checkin == 1;
+      });
+    }
+    return {status,data};
   }
   
 }

@@ -153,7 +153,7 @@ export default class FirebaseService {
         .on('child_added', snapshot => {
           if (snapshot.exists()) {
             let dict = snapshot.val();
-            console.log('Snapshot: ', dict);
+            // console.log('Snapshot: ', dict);
             const { data } = dict;
             console.log('Data: ', data);
             if (data) {
@@ -161,7 +161,7 @@ export default class FirebaseService {
               console.log('Action: ', action);
               if (action) {
                 let arr = dictCallback[action];
-                console.log('Arr: ', arr);
+                // console.log('Arr: ', arr);
                 if (arr) {
                   arr.forEach(dict => {
                     const { key } = dict;
@@ -184,7 +184,7 @@ export default class FirebaseService {
                   channel +
                   '/' +
                   snapshot.key;
-                console.log('Child Path: ', childPath);
+                // console.log('Child Path: ', childPath);
                 firebase
                   .database()
                   .ref(childPath)

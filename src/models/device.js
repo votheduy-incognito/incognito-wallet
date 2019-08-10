@@ -1,4 +1,10 @@
+import accountService from '@src/services/wallet/accountService';
+import _ from 'lodash';
+
 const template = {
+  minerInfo:{
+    account:{}
+  },
   status:{
     code: -1,
     message:'Waiting'
@@ -20,13 +26,36 @@ export default class Device {
     this.data = {...template, ...data};
   }
   isStartedChain=()=>{
-    return this.data.status.code !== Device.CODE_STOP;
+    return this.data.status.code!=Device.CODE_OFFLINE && this.data.status.code!=Device.CODE_UNKNOWN && this.data.status.code !== Device.CODE_STOP;
+  }
+  isOffline =()=>{
+    return this.data.status.code == Device.CODE_OFFLINE || this.data.status.code == Device.CODE_UNKNOWN;
   }
   static offlineStatus =()=>{
     return {
-      code:Device.CODE_UNKNOWN,
-      message:'Offline'
+      code:Device.CODE_OFFLINE,
+      message:'offline'
     };
+  }
+  set Status(status:{}){
+    this.data.status = status;
+  }
+
+  get Status(){
+    return  this.data.status||template.status;
+  }
+
+  get Name(){
+    return this.data.product_name||'';
+  }
+
+  balance = async(account,wallet)=>{
+    const result = (!_.isEmpty(account)&& !_.isEmpty(wallet) && await accountService.getBalance(account,wallet))||0;
+    return result;
+  }
+  balanceToken = async(account,wallet,tokenID = '')=>{
+    const result = (!_.isEmpty(account) && !_.isEmpty(wallet)  && await accountService.getRewardAmount(tokenID, account,wallet))||0;
+    return result;
   }
   
   toJSON(){

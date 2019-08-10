@@ -74,7 +74,7 @@ class DeviceConnection extends Component {
         return isConnected;
       };
 
-      result = await Util.excuteWithTimeout(checkConnectWifi(),5);
+      result = await Util.excuteWithTimeout(checkConnectWifi(),10);
       console.log(TAG, 'connectDevice begin 01 result =  ',result);
     }
     return result;
