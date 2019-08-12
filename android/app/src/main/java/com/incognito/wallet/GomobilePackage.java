@@ -1,4 +1,4 @@
-package com.constantwalletmobile;
+package com.incognito.wallet;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
