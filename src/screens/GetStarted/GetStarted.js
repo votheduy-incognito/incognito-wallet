@@ -36,6 +36,7 @@ const GetStarted = ({ onCreateNew, isInitialing }) => {
           title="Get Started"
           onPress={handleGetStarted}
           style={style.getStartedBtn}
+          isAsync
         />
       </View>
       {/* <View style={style.importKeyBlock}>
