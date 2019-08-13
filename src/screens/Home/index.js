@@ -153,6 +153,7 @@ HomeContainer.propTypes = {
   getBalance: PropTypes.func.isRequired,
   setSelectedPrivacy: PropTypes.func.isRequired,
   clearSelectedPrivacy: PropTypes.func.isRequired,
+  getPTokenList: PropTypes.func.isRequired,
 };
 
 
