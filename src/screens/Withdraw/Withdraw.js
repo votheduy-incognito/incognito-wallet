@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import memmoize from 'memoize-one';
 import { connect } from 'react-redux';
 import { Field, formValueSelector, isValid, change } from 'redux-form';
 import { Container, ScrollView, Toast, Text, View, Button } from '@src/components/core';
@@ -101,11 +102,23 @@ class Withdraw extends React.Component {
     this.setState({ finalFee: fee, feeUnit });
   }
 
+  getAddressValidator = memmoize((symbol, isErc20Token) => {
+    if (isErc20Token || symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) {
+      return validator.combinedETHAddress;
+    } else if (symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BTC) {
+      return validator.combinedBTCAddress;
+    }
+
+    // default
+    return validator.combinedIncognitoAddress;
+  });
+
   render() {
     const { maxAmountValidator, maxAmount, finalFee, feeUnit, initialFee } = this.state;
     const { selectedPrivacy, isFormValid, amount, withdrawData } = this.props;
     const types = [selectedPrivacy?.symbol, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY];
     const isUsedTokenFee = !(feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
+    const addressValidator = this.getAddressValidator(selectedPrivacy?.externalSymbol, selectedPrivacy?.isErc20Token);
 
     return (
       <ScrollView style={style.container}>
@@ -121,7 +134,7 @@ class Withdraw extends React.Component {
                   name='toAddress'
                   placeholder='To Address'
                   style={style.input}
-                  validate={[validator.required]}
+                  validate={addressValidator}
                 />
                 <Field
                   component={InputField}
