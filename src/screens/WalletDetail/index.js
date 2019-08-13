@@ -1,26 +1,30 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Toast, Image } from '@src/components/core';
 import { getBalance , getBalance as getAccountBalance } from '@src/redux/actions/account';
 import LoadingContainer from '@src/components/LoadingContainer';
 import accountService from '@src/services/wallet/accountService';
 import { setWallet } from '@src/redux/actions/wallet';
 import { accountSeleclor, selectedPrivacySeleclor, tokenSeleclor, sharedSeleclor } from '@src/redux/selectors';
-import SendReceiveGroup from '@src/components/HeaderRight/SendReceiveGroup';
-
+import WalletDetailOptionMenu from '@src/components/HeaderRight/WalletDetailOptionMenu';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
+import ROUTE_NAMES from '@src/router/routeNames';
+import withdrawIcon from '@src/assets/images/icons/withdraw.png';
+import unfollowTokenIcon from '@src/assets/images/icons/unfollowToken.png';
 import WalletDetail from './WalletDetail';
 
 class WalletDetailContainer extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
       title: navigation.state.params?.title,
-      headerRight: <SendReceiveGroup />
+      headerRight: <WalletDetailOptionMenu menu={navigation.state.params?.optionMenu} />
     };
   }
 
   componentDidMount() {
     this.setTitle();
+    this.setOptionMenu();
   }
 
   componentDidUpdate(prevProps) {
@@ -28,6 +32,7 @@ class WalletDetailContainer extends Component {
     const { selectedPrivacy } = this.props;
     if (oldSelectedPrivacy?.symbol !== selectedPrivacy?.symbol) {
       this.setTitle();
+      this.setOptionMenu();
     }
   }
 
@@ -36,6 +41,50 @@ class WalletDetailContainer extends Component {
     navigation.setParams({
       title: selectedPrivacy?.name
     });
+  }
+
+  setOptionMenu = () => {
+    const { navigation, selectedPrivacy } = this.props;
+    const options = [];
+
+    if (selectedPrivacy?.isToken) {
+      options.push({
+        id: 'unfollow',
+        icon: <Image source={unfollowTokenIcon} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
+        label: 'Unfollow token',
+        desc: 'Tap to unfollow',
+        handlePress: () => this.handleUnfollowTokenBtn(selectedPrivacy?.tokenId)
+      });
+    }
+
+    if (selectedPrivacy?.isWithdrawable) {
+      options.push({
+        id: 'withdraw',
+        icon: <Image source={withdrawIcon} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
+        label: 'Withdraw',
+        desc: 'to your own wallet',
+        handlePress: () => navigation.navigate(ROUTE_NAMES.Withdraw)
+      });
+    }
+
+    navigation.setParams({
+      optionMenu: options
+    });
+  }
+
+  handleUnfollowTokenBtn = async tokenId => {
+    try {
+      const { account, wallet, setWallet, navigation } = this.props;
+      const updatedWallet = await accountService.removeFollowingToken(tokenId, account, wallet);
+
+      // update new wallet to store
+      setWallet(updatedWallet);
+
+      Toast.showInfo('Unfollowed successfully');
+      navigation.goBack();
+    } catch {
+      Toast.showError('Can not unfollow this token right now, please try later.');
+    }
   }
 
   onLoadBalance = () => {
@@ -54,19 +103,6 @@ class WalletDetailContainer extends Component {
     }
   }
 
-  onRemoveFollowToken = async tokenId => {
-    try {
-      const { account, wallet, setWallet } = this.props;
-      const updatedWallet = await accountService.removeFollowingToken(tokenId, account, wallet);
-
-      // update new wallet to store
-      setWallet(updatedWallet);
-      return true;
-    } catch (e) {
-      throw e;
-    }
-  };
-
   render() {
     const { wallet, account, selectedPrivacy, navigation, isGettingBalanceList, ...otherProps } = this.props;
 
@@ -81,7 +117,6 @@ class WalletDetailContainer extends Component {
         selectedPrivacy={selectedPrivacy}
         isGettingBalanceList={isGettingBalanceList}
         navigation={navigation}
-        handleRemoveFollowToken={this.onRemoveFollowToken}
         hanldeLoadBalance={this.onLoadBalance}
         {...otherProps}
       />
