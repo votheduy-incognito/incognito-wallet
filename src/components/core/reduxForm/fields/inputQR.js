@@ -15,6 +15,9 @@ const renderCustomField = ({ input, meta, ...props }) => {
       defaultValue={value}
       prependView={(
         <TouchableOpacity
+          style={{
+            padding: 10,
+          }}
           onPress={() => {
             openQrScanner(data => {
               onChange(data);

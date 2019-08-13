@@ -11,7 +11,7 @@ import LoadingTx from '@src/components/LoadingTx';
 import EstimateFee from '@src/components/EstimateFee';
 import CurrentBalance from '@src/components/CurrentBalance';
 import tokenData from '@src/constants/tokenData';
-import { createForm, InputField, validator } from '@src/components/core/reduxForm';
+import { createForm, InputField, InputQRField, validator } from '@src/components/core/reduxForm';
 import formatUtil from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { homeStyle } from './style';
@@ -113,14 +113,9 @@ class SendCrypto extends React.Component {
             {({ handleSubmit }) => (
               <View style={homeStyle.form}>
                 <Field
-                  component={InputField}
+                  component={InputQRField}
                   name='toAddress'
                   placeholder='To Address'
-                  prependView={(
-                    <TouchableOpacity onPress={this.handleQrScanAddress}>
-                      <MaterialCommunityIcons name='qrcode-scan' size={20} />
-                    </TouchableOpacity>
-                  )}
                   style={homeStyle.input}
                   validate={validator.combinedPaymentAddress}
                 />
