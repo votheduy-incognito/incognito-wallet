@@ -44,7 +44,9 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Need to access the camera to scan QR code</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Do you allow ${PRODUCT_NAME} to know your current location?</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Will you allow this app to always know your location?</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need to access the camera roll to detect QR code</string>
 	<key>UIAppFonts</key>

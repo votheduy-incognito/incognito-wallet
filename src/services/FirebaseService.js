@@ -118,7 +118,7 @@ export default class FirebaseService {
             if (dict['key'] == action.key) {
               let callback = dict['callback'];
               callback({
-                data: { status: 0, message: 'Device is offline !!!' }
+                data: { status: -1, message: 'Device is offline !!!' }
               });
               dictKey[action.key] = 0;
               console.log(
