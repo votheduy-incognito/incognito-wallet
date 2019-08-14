@@ -59,12 +59,14 @@ export class SearchTokenContainer extends PureComponent {
       const { pTokens, followedTokens } = this.props;
       const followedTokenIds: Array = followedTokens.map(t => t?.id) || [];
       const normalizedTokens = [
-        ...internalTokens.map(t => normalizeToken({ data: t, isInternalToken: true })),
-        ...pTokens.map(t => normalizeToken({ data: t, isPToken: true }))
+        ...internalTokens
+          ?.filter(t => !pTokens?.find(pToken => pToken.tokenId === t.id))
+          ?.map(t => normalizeToken({ data: t, isInternalToken: true })),
+        ...pTokens?.map(t => normalizeToken({ data: t, isPToken: true }))
       ];
 
       const tokens =  normalizedTokens?.filter(token => {
-        return token.tokenId && !followedTokenIds.includes(token.tokenId);
+        return token?.name && token?.symbol && token.tokenId && !followedTokenIds.includes(token.tokenId);
       });
 
       this.setState({ tokens });

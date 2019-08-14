@@ -185,6 +185,9 @@ class AddInternalToken extends Component {
                   placeholder='Amount'
                   label='Amount'
                   style={styleSheet.input}
+                  componentProps={{
+                    keyboardType: 'number-pad'
+                  }}
                   validate={[...validator.combinedAmount]}
                 />
                 <Field
@@ -194,6 +197,9 @@ class AddInternalToken extends Component {
                   label={`Min fee (max ${formatUtil.amount(account.value, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)} ${tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY})`}
                   style={styleSheet.input}
                   validate={[validator.required, validator.number, minFeeValidator, maxFeeValidator]}
+                  componentProps={{
+                    keyboardType: 'number-pad'
+                  }}
                   prependView={isGettingFee ? <ActivityIndicator /> : undefined}
                 />
               </ScrollView>

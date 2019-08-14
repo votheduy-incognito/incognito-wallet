@@ -129,6 +129,9 @@ class SendCrypto extends React.Component {
                   name='amount'
                   placeholder='Amount'
                   style={homeStyle.input}
+                  componentProps={{
+                    keyboardType: 'number-pad'
+                  }}
                   validate={[
                     ...validator.combinedAmount,
                     ...maxAmountValidator ? [maxAmountValidator] : []

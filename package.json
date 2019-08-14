@@ -127,7 +127,8 @@
     "prettier-eslint": "^9.0.0",
     "react-test-renderer": "16.8.3",
     "redux-devtools-extension": "^2.13.8",
-    "rn-nodeify": "github:tradle/rn-nodeify"
+    "rn-nodeify": "github:tradle/rn-nodeify",
+    "wallet-address-validator": "^0.2.4"
   },
   "jest": {
     "preset": "react-native",

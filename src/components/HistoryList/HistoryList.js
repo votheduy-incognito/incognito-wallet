@@ -5,7 +5,7 @@ import {
   Text,
   View
 } from '@src/components/core';
-import { ConfirmedTx, SuccessTx } from '@src/services/wallet/WalletService';
+import { ConfirmedTx, SuccessTx, FailedTx } from '@src/services/wallet/WalletService';
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -13,70 +13,40 @@ import formatUtil from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
 import styleSheet from './style';
 
-const getStatusData = statusCode => {
+const getStatusData = (status, statusCode) => {
   let statusText;
   let statusColor;
-  switch (statusCode) {
-  case SuccessTx:
-    statusText = 'Success';
-    statusColor = COLORS.green;
-    break;
-  case ConfirmedTx:
-    statusText = 'Confirmed';
+  let statusNumber;
+  switch (status) {
+  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING:
+    statusNumber = statusCode;
+    statusText = 'Pending';
     statusColor = COLORS.blue;
-    break;
-  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.NewAddress:
+    break; 
+  case SuccessTx:
+    statusNumber = null;
     statusText = 'Pending';
     statusColor = COLORS.blue;
     break;
-  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.ReceivedDepositAmount:
-    statusText = 'Received Deposit Amount';
-    statusColor = COLORS.blue;
-    break;
-  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.MintingPrivacyToken:
-    statusText = 'Minting Privacy Token';
-    statusColor = COLORS.blue;
-    break;
-  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.MintedPrivacyToken:
-    statusText = 'Minted Privacy Token';
-    statusColor = COLORS.blue;
-    break;
-  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SendingToMasterAccount:
-    statusText = 'Sending To Master Account';
-    statusColor = COLORS.blue;
-    break;
-  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SendedToMasterAccount:
+  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SUCCESS:
+  case ConfirmedTx:
     statusText = 'Success';
     statusColor = COLORS.green;
     break;
-  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.ReceivedWithdrawAmount:
-    statusText = 'Received Withdraw Amount';
-    statusColor = COLORS.blue;
-    break;
-  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.BurningPrivacyToken:
-    statusText = 'Burning Privacy Token';
-    statusColor = COLORS.blue;
-    break;
-  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.BurnedPrivacyToken:
-    statusText = 'Burned Privacy Token';
-    statusColor = COLORS.blue;
-    break;
-  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SendingToUserAddress:
-    statusText = 'Sending To User Address';
-    statusColor = COLORS.blue;
-    break;
-  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SendedToUserAddress:
-    statusText = 'Success';
-    statusColor = COLORS.green;
-    break;
-  default:
+  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.FAILED:
+  case FailedTx:
     statusText = 'Failed';
     statusColor = COLORS.red;
+    break;
+  default:
+    statusText = '';
+    statusColor = COLORS.lightGrey1;
   }
 
   return {
     statusText,
-    statusColor
+    statusColor,
+    statusNumber
   };
 };
 
@@ -94,6 +64,10 @@ const getTypeData = type => {
     break;
   case CONSTANT_COMMONS.HISTORY.TYPE.SEND:
     typeText = 'Send';
+    typeColor = COLORS.blue;
+    break;
+  case CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE:
+    typeText = 'Receive';
     typeColor = COLORS.blue;
     break;
   }
@@ -117,7 +91,7 @@ const HistoryItem = ({ history }) => {
     return null;
   }
 
-  const { statusText, statusColor } = getStatusData(history.statusCode);
+  const { statusText, statusColor, statusNumber } = getStatusData(history.status, history.statusCode);
   const { typeText } = getTypeData(history.type);
   // const [addressDirection, address] = getAddress(history);
 
@@ -152,14 +126,14 @@ const HistoryItem = ({ history }) => {
                 : formatUtil.amount(history.requestedAmount)
             } 
             {' '}
-            { history.currencyType ?? history.symbol }
+            { history.symbol }
           </Text>
           <Text
             style={[styleSheet.statusText, { color: statusColor }]}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {statusText}
+            {statusText} {(!!statusNumber || statusNumber === 0) ? `[${statusNumber}]` : null}
           </Text>
         </View>
       </View>

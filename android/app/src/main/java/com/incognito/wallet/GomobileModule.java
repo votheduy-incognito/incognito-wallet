@@ -1,4 +1,4 @@
-package com.constantwalletmobile;
+package com.incognito.wallet;
 
 import gomobile.Gomobile;
 import com.facebook.react.bridge.ReactApplicationContext;

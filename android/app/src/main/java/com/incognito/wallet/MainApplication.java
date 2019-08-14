@@ -1,4 +1,4 @@
-package com.constantwalletmobile;
+package com.incognito.wallet;
 
 import android.app.Application;
 

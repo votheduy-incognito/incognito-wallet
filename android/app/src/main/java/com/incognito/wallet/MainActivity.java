@@ -1,4 +1,4 @@
-package com.constantwalletmobile;
+package com.incognito.wallet;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Text } from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { connect } from 'react-redux';
-import { genWithdrawAddress } from '@src/services/api/withdraw';
+import { genCentralizedWithdrawAddress, addERC20TxWithdraw, addETHTxWithdraw } from '@src/services/api/withdraw';
 import tokenService from '@src/services/wallet/tokenService';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { messageCode, createError } from '@src/services/errorHandler';
@@ -77,7 +77,7 @@ class WithdrawContainer extends Component {
     }
   }
 
-  onSendToken = async ({ tempAddress, amount, fee, feeUnit }) => {
+  handleSendToken = async ({ tempAddress, amount, fee, feeUnit }) => {
     const { withdrawData: { feeForBurn } } = this.state;
     const { account, wallet, tokens, selectedPrivacy, getTokenBalanceBound } = this.props;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
@@ -114,7 +114,7 @@ class WithdrawContainer extends Component {
       );
 
       if (res.txId) {
-        const foundToken = tokens.find(t => t.id === selectedPrivacy?.tokenId);
+        const foundToken = tokens?.find(t => t.id === selectedPrivacy?.tokenId);
         foundToken && setTimeout(() => getTokenBalanceBound(foundToken), 10000);
 
         return res;
@@ -126,20 +126,112 @@ class WithdrawContainer extends Component {
     }
   }
 
+  handleBurningToken = async ({ amount, fee, feeUnit, remoteAddress }) => {
+    const { withdrawData: { feeForBurn } } = this.state;
+    const { account, wallet, tokens, selectedPrivacy, getTokenBalanceBound } = this.props;
+    const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
+    const originalFee = Number(fee);
+    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
+    const isTokenFee = feeUnit !== tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY;
+
+    const tokenObject = {
+      Privacy : true,
+      TokenID: selectedPrivacy?.tokenId,
+      TokenName: selectedPrivacy?.name,
+      TokenSymbol: selectedPrivacy?.symbol,
+      TokenTxType: type,
+      TokenAmount: originalAmount + (isTokenFee ? feeForBurn : 0),
+      TokenReceivers: {
+        PaymentAddress: '',
+        Amount: originalAmount + (isTokenFee ? feeForBurn : 0)
+      }
+    };
+
+    try {
+      const res = await tokenService.createBurningRequest(
+        tokenObject,
+        !isTokenFee ? originalFee : 0,
+        isTokenFee ? originalFee : 0,
+        remoteAddress,
+        account,
+        wallet,
+      );
+
+      if (res.txId) {
+        const foundToken = tokens?.find(t => t.id === selectedPrivacy?.tokenId);
+        foundToken && setTimeout(() => getTokenBalanceBound(foundToken), 10000);
+
+        return res;
+      } else {
+        throw new Error(`Burning token failed. Please try again! Detail: ${res.err.Message || res.err }`);
+      }
+    } catch (e) {
+      throw new Error(`Burning token failed. Please try again! Detail:' ${e.message}`);
+    }
+  }
+
   getWithdrawAddress = async ({ amount, paymentAddress }) => {
     try {
+      let address;
       const { selectedPrivacy } = this.props;
-      const currencyType = CONSTANT_COMMONS.CURRENCY_TYPE_FOR_GEN_ADDRESS[selectedPrivacy?.externalSymbol];
       const walletAddress = selectedPrivacy?.paymentAddress;
-      const address = await genWithdrawAddress({
-        currencyType,
-        amount,
-        paymentAddress,
-        walletAddress
-      });
+
+      if (selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BTC) {
+        address = await genCentralizedWithdrawAddress({
+          amount,
+          paymentAddress,
+          walletAddress,
+          tokenId: selectedPrivacy?.tokenId,
+        });
+      }
+      
       return address;
     } catch (e) {
       throw createError({ code: messageCode.code.gen_withdraw_address_failed });
+    }
+  }
+
+  handleCentralizedWithdraw = async ({ amount, paymentAddress, fee, feeUnit }) => {
+    try {
+      const tempAddress = this.getWithdrawAddress({ amount, paymentAddress });
+      return await this.handleSendToken({ tempAddress, amount, fee, feeUnit });
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  handleDecentralizedWithdraw = async ({ amount, fee, feeUnit, remoteAddress }) => {
+    try {
+      const { selectedPrivacy } = this.props;
+      const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
+      const tx = await this.handleBurningToken({ remoteAddress, amount, fee, feeUnit });
+
+      // ERC20 
+      if (selectedPrivacy?.isErc20Token) {
+        return await addERC20TxWithdraw({
+          amount,
+          originalAmount,
+          paymentAddress: selectedPrivacy?.paymentAddress,
+          walletAddress: selectedPrivacy?.paymentAddress,
+          tokenContractID: selectedPrivacy?.contractId,
+          tokenId: selectedPrivacy?.tokenId,
+          burningTxId: tx?.txId
+        });
+      } else if (selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) {
+        // ETH
+        return await addETHTxWithdraw({
+          amount,
+          originalAmount,
+          paymentAddress: selectedPrivacy?.paymentAddress,
+          walletAddress: selectedPrivacy?.paymentAddress,
+          tokenId: selectedPrivacy?.tokenId,
+          burningTxId: tx?.txId
+        });
+      }
+
+      return null;
+    } catch (e) {
+      throw e;
     }
   }
 
@@ -157,8 +249,8 @@ class WithdrawContainer extends Component {
       <Withdraw
         {...this.props}
         withdrawData={withdrawData}
-        handleGenAddress={this.getWithdrawAddress}
-        handleSendToken={this.onSendToken}
+        handleCentralizedWithdraw={this.handleCentralizedWithdraw}
+        handleDecentralizedWithdraw={this.handleDecentralizedWithdraw}
       />
     );
   }
@@ -175,10 +267,15 @@ const mapDispatch = { getTokenBalanceBound: getTokenBalance };
 
 WithdrawContainer.defaultProps = {
   selectedPrivacy: null,
+  tokens: null
 };
 
 WithdrawContainer.propTypes = {
   selectedPrivacy: PropTypes.object,
+  getTokenBalanceBound: PropTypes.func.isRequired,
+  account: PropTypes.object.isRequired,
+  wallet: PropTypes.object.isRequired,
+  tokens: PropTypes.arrayOf(PropTypes.object),
 };
 
 

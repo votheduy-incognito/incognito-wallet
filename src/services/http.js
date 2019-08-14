@@ -3,7 +3,7 @@ import CONFIG from '@src/constants/config';
 import { apiErrorHandler, messageCode, createError } from './errorHandler';
 
 const HEADERS = {'Content-Type': 'application/json'};
-const TIMEOUT = 1000;
+const TIMEOUT = 10000;
 
 const instance = axios.create({
   baseURL: CONFIG.API_BASE_URL,
@@ -39,7 +39,7 @@ instance.interceptors.response.use(res => {
   return Promise.resolve(result);
 }, errorData => {
   if (__DEV__) {
-    console.warn('Request failed', errorData);
+    console.warn('Request failed', errorData?.response);
   }
 
   const data = errorData?.response?.data;

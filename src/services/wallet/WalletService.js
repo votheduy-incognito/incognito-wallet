@@ -5,6 +5,7 @@ import {
   genImageFromStr as genImageFromStrWallet,
   RpcClient,
   SuccessTx as SuccessTxWallet,
+  FailedTx as FailedTxWallet,
   Wallet
 } from 'incognito-chain-web-js/build/wallet';
 import { randomBytes } from 'react-native-randombytes';
@@ -18,6 +19,7 @@ const walletName = 'wallet1';
 export const genImageFromStr = genImageFromStrWallet;
 export const ConfirmedTx = ConfirmedTxWallet;
 export const SuccessTx = SuccessTxWallet;
+export const FailedTx = FailedTxWallet;
 
 export async function loadListAccount(wallet) {
   try {
