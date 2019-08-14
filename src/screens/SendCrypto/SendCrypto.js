@@ -65,7 +65,7 @@ class SendCrypto extends React.Component {
     
     const maxAmount = convertUtil.toHumanAmount(amount, selectedPrivacy?.pDecimals);
 
-    return maxAmount;
+    return Math.max(maxAmount, 0);
   }
 
   setFormValidation = ({ maxAmount }) => {
