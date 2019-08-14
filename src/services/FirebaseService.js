@@ -2,23 +2,28 @@
  * @providesModule FirebaseService
  */
 import firebase from 'react-native-firebase';
+import _ from 'lodash';
+import Util from '@src/utils/Util';
 
 export const MAIL_UID_FORMAT = '@autonomous.ai';
 export const PHONE_CHANNEL_FORMAT = '_PHONE';
 export const DEVICE_CHANNEL_FORMAT = '';
 export const FIREBASE_PASS = 'at9XafdcJ7TVHzGa';
-let dictChannel = {};
-// let currentUserName;
-let currentChannel;
+const STATUS_CODE = {
+  OFFLINE :-1,
+  SERVER:1,
+};
 let ref = null;
+let uid = null;
+let myManager = null;
+
+let currentChannel;
 let dictCallback = {};
 let obj = {
   key1: 'value1',
   key2: 'value2'
 };
 let dictKey = {};
-let uid = null;
-let myManager = null;
 const TAG = 'FirebaseService';
 export default class FirebaseService {
   constructor(){
@@ -45,9 +50,8 @@ export default class FirebaseService {
       if (firebase.auth().currentUser !== null) {
         console.log(TAG,'auth begin03 logout');
         //Logout
-        this.logout(value => {
-          this.createFirebaseAccount(username, password, success, fail);
-        });
+        await this.logout();
+        this.createFirebaseAccount(username, password, success, fail);
       } else {
         console.log(TAG,'auth begin04 Create firebase account');
         this.createFirebaseAccount(username, password, success, fail);
@@ -107,23 +111,19 @@ export default class FirebaseService {
       this.logout();
     }
   }
-  checkTimeout(action, callback) {
-    console.log('checkTimeout');
+  checkTimeout = (action, callback)=>{
+    console.log(TAG,'checkTimeout begin action = ',action);
     if (action.data['action']) {
       if (dictCallback[action.data['action']]) {
         let arrCallbacks = dictCallback[action.data['action']];
         if (dictKey[action.key] == 1) {
           arrCallbacks.forEach(dict => {
             console.log('checkTimeout dict[key] = ', dict['key']);
-            if (dict['key'] == action.key) {
-              let callback = dict['callback'];
-              callback({
-                data: { status: -1, message: 'Device is offline !!!' }
-              });
+            if (_.isEqual(dict['key'],action.key)) {
+              const callback = dict['callback'];
+              callback({status:STATUS_CODE.OFFLINE,data: { message: 'Device is offline !!!' }});
               dictKey[action.key] = 0;
-              console.log(
-                'timeout' + action.key + '--> ' + action.data['action']
-              );
+              console.log(TAG,'timeout' + action.key + '--> ' + action.data['action']);
             }
           });
         }
@@ -132,9 +132,9 @@ export default class FirebaseService {
   }
 
   async startListenData(channel) {
-    console.log('startListenData');
-    console.log('Current Channel:', currentChannel);
-    console.log('Channel: ', channel);
+    
+    console.log(TAG,'startListenData Current Channel:', currentChannel);
+    console.log(TAG,'startListenData Channel: ', channel);
 
     //Update current subcribed channel
     if (currentChannel !== channel) {
@@ -154,11 +154,11 @@ export default class FirebaseService {
           if (snapshot.exists()) {
             let dict = snapshot.val();
             // console.log('Snapshot: ', dict);
-            const { data } = dict;
-            console.log('Data: ', data);
-            if (data) {
+            const { data = {} } = dict;
+            console.log(TAG,'startListenData Data: ', data);
+            if (!_.isEmpty(data)) {
               const { action } = data;
-              console.log('Action: ', action);
+              console.log(TAG,'startListenData Action: ', action);
               if (action) {
                 let arr = dictCallback[action];
                 // console.log('Arr: ', arr);
@@ -171,15 +171,15 @@ export default class FirebaseService {
                       }
 
                       let callback = dict.callback;
-                      console.log('Return callback');
-                      callback(data);
+                      console.log(TAG,'startListenData Return callback');
+                      callback({status:STATUS_CODE.SERVER, ...data});
                     }
                   });
                   if (action !== 'update_firmware_status') {
                     dictCallback[action] = null;
                   }
                 }
-                let childPath =
+                const childPath =
                   `/${firebase.auth().currentUser.uid}/` +
                   channel +
                   '/' +
@@ -196,41 +196,41 @@ export default class FirebaseService {
     }
   }
 
-  async stopListenData() {
-    console.log('stopListenData');
-    if (firebase.auth().currentUser !== null) {
-      let path = `/${firebase.auth().currentUser.uid}/` + currentChannel;
-      console.log('Stop Path: ', path);
-      await firebase
-        .database()
-        .ref(path)
-        .off('child_added', () => {
-          console.log('Stop Listen Data');
-          this.currentUserName = '';
-          currentChannel = '';
-        });
-    }
+  stopListenData = ()=>{
+    console.log('stopListenData begin');
+    let funcExcute = new Promise((resolve,reject)=>{
+      if (firebase.auth().currentUser) {
+        let path = `/${firebase.auth().currentUser.uid}/` + currentChannel;
+        console.log(TAG,'stopListenData Path: ', path);
+        firebase
+          .database()
+          .ref(path)
+          .off('child_added', (dataSnapshot) => {
+            console.log(TAG,'stopListenData off ----');
+            this.currentUserName = '';
+            currentChannel = '';
+            resolve(true);
+          });
+      }else{
+        resolve(true);
+      }
+    });
+    return Util.excuteWithTimeout(funcExcute,3);
+    
   }
-  async logout(onCallback) {
-    console.log('logout');
+  logout = async ()=>{
+    console.log(TAG,'logout begin');
     if (firebase.auth().currentUser !== null) {
       //stopListenData
-      await this.stopListenData();
+      let result = await this.stopListenData().catch(console.log);
+      console.log(TAG,'logout stop result= ',result);
       try {
         await firebase.auth().signOut();
-        if (onCallback) {
-          onCallback(true);
-        }
       } catch (error) {
-        if (onCallback) {
-          onCallback(false);
-        }
+        return false;
       }
-    } else {
-      if (onCallback) {
-        onCallback(true);
-      }
-    }
+    } 
+    return true;
   }
   addActionCallback(action, onCallback) {
     console.log('Action: ', action);
@@ -273,10 +273,8 @@ export default class FirebaseService {
     );
   }
   sendAction(username, password, action, onCallback, timeout) {
-    console.log('Username: ', username);
-    console.log('Password: ', password);
-    console.log('Action: ', action);
-
+    console.log(TAG,`Username: ${username}-password=${password}-action=${action}`);
+    
     this.isAuth(username, password, value => {
       if (value) {
         this.send(action, onCallback, timeout);
@@ -285,35 +283,35 @@ export default class FirebaseService {
       }
     });
   }
-  async listen(action, onCallback, timeout) {
-    await this.startListenData(action.source);
-    if (onCallback !== null) {
-      this.addActionCallback(action, onCallback);
-      setTimeout(() => {
-        this.checkTimeout(action, onCallback);
-      }, timeout * 1000);
-    }
-  }
-  listenAction(username, password, action, onCallback, timeout) {
-    console.log('Username: ', username);
-    console.log('Password: ', password);
-    console.log('Action: ', action);
+  // async listen(action, onCallback, timeout) {
+  //   await this.startListenData(action.source);
+  //   if (onCallback !== null) {
+  //     this.addActionCallback(action, onCallback);
+  //     setTimeout(() => {
+  //       this.checkTimeout(action, onCallback);
+  //     }, timeout * 1000);
+  //   }
+  // }
+  // listenAction(username, password, action, onCallback, timeout) {
+  //   console.log('Username: ', username);
+  //   console.log('Password: ', password);
+  //   console.log('Action: ', action);
 
-    this.isAuth(username, password, value => {
-      if (value) {
-        this.listen(action, onCallback, timeout);
-      } else {
-        console.log('You input invalid data');
-      }
-    });
-  }
+  //   this.isAuth(username, password, value => {
+  //     if (value) {
+  //       this.listen(action, onCallback, timeout);
+  //     } else {
+  //       console.log('You input invalid data');
+  //     }
+  //   });
+  // }
   async send(action, onCallback, timeout) {
     await this.startListenData(action.source);
-    if (onCallback !== null) {
+    if (onCallback) {
       this.addActionCallback(action, onCallback);
     }
 
-    let json = {
+    const json = {
       type: action.type,
       source: this.brainSource(action.source),
       data: action.data,
@@ -327,14 +325,15 @@ export default class FirebaseService {
       .database()
       .ref(path)
       .push(json, error => {
-        if (error == null) {
+        if (!error) {
           if (onCallback) {
             setTimeout(() => {
               this.checkTimeout(action, onCallback);
             }, timeout * 1000);
           }
         } else {
-          console.log(TAG,'Error:', error);
+          console.log(TAG,'send Error:', error);
+          return new Error(error);
         }
       });
   }

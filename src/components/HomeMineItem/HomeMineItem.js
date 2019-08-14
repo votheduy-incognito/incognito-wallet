@@ -67,10 +67,7 @@ class HomeMineItem extends React.Component {
       const { status = -1, data={status:Device.offlineStatus()},productId = -1 } = dataResult;
       if(status === 1 && item?.product_id === productId ){
         console.log(TAG,'checkActive begin 010101');
-        deviceInfo.data.status ={
-          code:data.status.code,
-          message:data.status.message
-        };
+        deviceInfo.data.status = data.status;
         this.setState({
           deviceInfo:deviceInfo
         });

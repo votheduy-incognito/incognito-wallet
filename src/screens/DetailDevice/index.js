@@ -49,44 +49,15 @@ class DetailDevice extends BaseScreen {
     navigation.setParams({ title: this.productName });
   }
 
-  // sendPrivateKey = async(chain='incognito')=>{
-  //   let {device} = this.state;
-  //   try {
-  //     if(!_.isEmpty(device)){
-  //       this.setState({
-  //         loading: true
-  //       });
-  //       const actionPrivateKey = LIST_ACTION.GET_IP;
-  //       const dataResult = await Util.excuteWithTimeout(DeviceService.send(device.data,actionPrivateKey,chain,Action.TYPE.PRODUCT_CONTROL),4);
-  //       console.log(TAG,'sendPrivateKey send dataResult = ',dataResult);
-  //       const { status = -1, data, message= ''} = dataResult;
-  //       if(status === 1){
-  //         const action:Action = DeviceService.buildAction(device.data,LIST_ACTION.START,{product_id:device.data.product_id, privateKey:'112t8rnX3rRvnpiSCBuA9ES9mzauoyoXXYkZmTqdQd7zfw3QVVFisFmouQ2JQJK1prdkaBaDWaiTtkzgfAkbUTPyXsgGkuJEBUtrE9vrMqhr'},chain,'incognito');
-  //         const params = {
-  //           type:action?.type||'',
-  //           data:action?.data||{}
-  //         };
-  //         console.log(TAG,'sendPrivateKey send init data = ',params);
-  //         const response = await APIService.sendPrivateKey(data,params);
-        
-  //         console.log(TAG,'sendPrivateKey send post data = ',response);
-  //         return response;
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.log(TAG,'sendPrivateKey error = ',error);
-  //   }finally{
-  //     this.setState({
-  //       loading: false
-  //     });
-  //   }
-
-  //   return null;
-  // }
-
   async componentDidMount() {
     this.checkStatus('incognito');
     this.fetchData();
+  }
+
+  set Loading(isLoading){
+    this.setState({
+      loading:isLoading
+    });
   }
 
   fetchData = async ()=>{
@@ -116,9 +87,9 @@ class DetailDevice extends BaseScreen {
         });
         const dataResult = await DeviceService.send(device.data,action,chain);
         console.log(TAG,'callAndUpdateAction send dataResult = ',dataResult);
-        const { status = -1, data={status:Device.offlineStatus()}, productId = -1 } = dataResult;
+        const { data={status:Device.offlineStatus()}, productId = -1 } = dataResult;
       
-        if(status === 1 && device.data.product_id === productId ){
+        if(device.data.product_id === productId ){
           device.Status = data.status;
         }else{
           device.Status = Device.offlineStatus();
@@ -134,17 +105,6 @@ class DetailDevice extends BaseScreen {
         device:device
       });
     }
-  }
-
-  showAlertOffline(message) {
-    setTimeout(() => {
-      Alert.alert(
-        '',
-        message,
-        [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-        { cancelable: true }
-      );
-    }, 0.5 * 1000);
   }
 
   checkStatus = async (chain='incognito')  => {
@@ -163,9 +123,7 @@ class DetailDevice extends BaseScreen {
       const isOffline = device.isOffline();
       const action = isStarted ? LIST_ACTION.STOP : LIST_ACTION.START;
       if(!isStarted && !isOffline){
-        this.setState({
-          loading:true
-        });
+        this.Loading = true;
         if(_.isEmpty(accountMiner)){
           accountMiner = await this.viewCreateAccount?.current?.createAccount(device.Name);
           this.setState({
@@ -176,11 +134,7 @@ class DetailDevice extends BaseScreen {
         const result = await DeviceService.sendPrivateKey(device,PrivateKey,'incognito');
         const { status= -1 } = result;
         await this.checkStatus();
-        this.setState({
-          loading:false
-        });
-      }else{
-        // await this.callAndUpdateAction(action);
+        this.Loading = false;
       }
       
     }
@@ -201,12 +155,18 @@ class DetailDevice extends BaseScreen {
       />
     );
   };
-  handlePressWithdraw =()=>{
-    this.goToScreen(routeNames.Withdraw);
-  }
-  handlePressStake =()=>{
+
+  handlePressWithdraw = onClickView(async()=>{
+    const {device,accountMiner,wallet} = this.state;
+    this.Loading = true;
+    const result = await device.requestWithdraw(accountMiner,wallet,'').catch(e=>console.log);
+    !_.isEmpty(result) && await this.fetchData();
+    this.Loading = false;
+  });
+
+  handlePressStake = onClickView(()=>{
     this.goToScreen(routeNames.AddStake);
-  }
+  });
 
   renderGroupBalance = ()=>{
     const {device,balancePRV = 0,accountMiner} = this.state;
