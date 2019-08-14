@@ -20,7 +20,7 @@ import TabNavigator from './TabNavigator';
 
 const AppNavigator = createStackNavigator(
   {
-    TabNavigator,
+    [ROUTE_NAMES.RootTab]: TabNavigator,
     [ROUTE_NAMES.UserHeaderBoard]: navigationOptionsHandler(UserHeaderBoard, { title: 'Accounts' }),
     [ROUTE_NAMES.NetworkSetting]: navigationOptionsHandler(NetworkSetting, { title: 'Network Setting' }),
     [ROUTE_NAMES.CreateAccount]: navigationOptionsHandler(CreateAccount, { title: 'Create Account' }),
@@ -36,7 +36,7 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.CreateToken]: navigationOptionsHandler(CreateToken, { title: 'Create Token' }),
   },
   {
-    initialRouteName: 'TabNavigator',
+    initialRouteName: ROUTE_NAMES.RootTab,
     defaultNavigationOptions: ({ navigation }) => {
       const { routeName } = navigation.state;
       // You can do whatever you like here to pick the title based on the route name

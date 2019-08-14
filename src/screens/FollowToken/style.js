@@ -1,4 +1,4 @@
-import { COLORS, SPACING } from '@src/styles';
+import { COLORS } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
@@ -15,7 +15,7 @@ export default StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: COLORS.lightGrey4,
+    backgroundColor: COLORS.lightGrey5,
   },
   tabItemActive: {
     backgroundColor: COLORS.white
@@ -23,7 +23,10 @@ export default StyleSheet.create({
   tabContent: {
     flex: 1,
   },
+  tabItemText: {
+    color: COLORS.lightGrey1
+  },
   tabItemTextActive: {
-    color: COLORS.primary
+    color: COLORS.dark1
   },
 });
