@@ -22,13 +22,16 @@ class SearchToken extends PureComponent {
     });
   }
 
-  _renderItem = ({ item }) => {
-    const { selected } = this.state;
+  _renderItem = ({ item, index }) => {
+    const { tokens } = this.props;
+    const { selected, filteredTokens } = this.state;
+    const length = (filteredTokens || tokens)?.length;
     return (
       <TokenItem
         onPress={this._handleSelect}
         token={item}
         selected={selected.get(item.tokenId)}
+        divider={index < (length - 1)}
       />
     );
   }
