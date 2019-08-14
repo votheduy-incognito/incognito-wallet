@@ -1,15 +1,36 @@
-import { COLORS, DECOR, SPACING, UTILS } from '@src/styles';
+import { COLORS, DECOR, SPACING, UTILS, THEME } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
   container: {
-    position: 'relative'
+    position: 'relative',
+    height: THEME.header.headerHeight
+  },
+  toggleBtn: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    height: '100%',
+    width: 45,
   },
   content: {
     backgroundColor: COLORS.white,
-    borderRadius: DECOR.borderRadiusBorder,
-    padding: SPACING.small,
+    borderTopLeftRadius: DECOR.borderRadiusBorder,
+    borderTopRightRadius: DECOR.borderRadiusBorder,
+    paddingTop: SPACING.small,
+    paddingBottom: 50,
     width: UTILS.deviceWidth()
+  },
+  barIcon: {
+    backgroundColor: COLORS.white,
+    width: 50,
+    height: 5,
+    borderRadius: 3,
+    position: 'relative',
+    top: -28,
+    left: UTILS.deviceWidth()/2,
+    transform: [{ translateX: -25}]
   },
   contentContainer: {
     alignItems: 'center',
@@ -18,20 +39,36 @@ const style = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   icon: {
-    flexBasis: 30
+    flexBasis: 45,
+    paddingTop: 0,
   },
   iconBtn: {
     alignItems: 'center',
     display: 'flex',
     height: 30,
     justifyContent: 'center',
-    width: 30
+    width: 30,
+    color: COLORS.white
+  },
+  textContainer: {
+    display: 'flex',
+    flexDirection: 'column',
   },
   itemText: {},
+  itemDescText: {
+    fontSize: 15,
+    color: '#8C9A9D',
+    marginTop: 5,
+  },
   menuItem: {
-    alignItems: 'center',
+    display: 'flex',
     flexDirection: 'row',
-    paddingVertical: 10
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  itemDivider: {
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.lightGrey6
   },
   title: {
     fontWeight: '500',
