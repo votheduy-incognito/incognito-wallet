@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text } from '@src/components/core';
+import { Text, Toast } from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { connect } from 'react-redux';
 import { genCentralizedWithdrawAddress, addERC20TxWithdraw, addETHTxWithdraw } from '@src/services/api/withdraw';
@@ -73,7 +73,7 @@ class WithdrawContainer extends Component {
 
       this.setState({ withdrawData: data });
     } catch {
-      throw new Error('Get withdraw data error');
+      Toast.showError('Prepare for withdrawing failed, please try again');
     }
   }
 
