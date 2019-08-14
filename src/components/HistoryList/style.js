@@ -1,9 +1,12 @@
-import { FONT, SPACING, COLORS } from '@src/styles';
+import { FONT, COLORS, DECOR } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    paddingHorizontal: 15,
+    backgroundColor: COLORS.white,
+    borderRadius: DECOR.borderRadiusBorder
   },
   row: {
     alignItems: 'center',
@@ -30,8 +33,16 @@ const style = StyleSheet.create({
   },
   timeText: {
     flex: 1,
+    textAlign: 'right',
     color: COLORS.lightGrey3
   },
+  noHistoryContainer: {
+    paddingVertical: 30
+  },
+  noHistoryText: {
+    fontSize: 20,
+    textAlign: 'center',
+  }
 });
 
 export default style;

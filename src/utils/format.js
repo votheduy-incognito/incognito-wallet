@@ -8,7 +8,7 @@ const amount = (amount = throw new Error('Amount is required!'), decimals) => {
   const _amount = convertUtil.toHumanAmount(amount, decimals);
   return AmountFormat.format(Math.max(_amount), 0);
 };
-const formatDateTime = (dateTime, formatPartern) => moment(dateTime).format(formatPartern || 'DD/MM/YYYY - HH:mm:ss');
+const formatDateTime = (dateTime, formatPartern) => moment(dateTime).format(formatPartern || 'DD MMM hh:mm A');
 const toMiliSecond = (second) => second * 1000;
 
 export default {
