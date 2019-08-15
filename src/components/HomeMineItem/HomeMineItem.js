@@ -19,27 +19,38 @@ class HomeMineItem extends React.Component {
       item:item,
       account:{},
       balance:0,
+      timeToUpdate:0,
       deviceInfo : Device.getInstance(item)
     };
   }
   static getDerivedStateFromProps(nextProps, prevState) {
     if(!_.isEqual(nextProps.item,prevState.item)){
+      console.log(TAG,'getDerivedStateFromProps begin 010101');
       return {
         item:nextProps?.item,
         deviceInfo:Device.getInstance(nextProps?.item)
       };
     }
+    
     return null;
   }
 
   componentDidUpdate(prevProps,prevState){
-    const {item} = this.props;
+    const {item,timeToUpdate} = this.props;
     if(!_.isEqual(item,prevProps?.item)){
+      console.log(TAG,'componentDidUpdate begin 010101');
       this.getInfo();
+    }
+    if(!_.isEqual(prevProps.timeToUpdate,timeToUpdate)){
+      console.log(TAG,'componentDidUpdate begin timeToUpdate = ',timeToUpdate);
       this.checkActive();
     }
+    
   }
-  
+  // componentWillMount(){
+  //   this.getInfo();
+  //   this.checkActive();
+  // }
   async componentDidMount(){
     this.getInfo();
     this.checkActive();
@@ -59,7 +70,9 @@ class HomeMineItem extends React.Component {
   checkActive = async ()=>{
     const {item,isActive} = this.props;
     let {deviceInfo} = this.state;
+    
     if(isActive){
+      console.log(TAG,'checkActive begin');
       const dataResult = await DeviceService.send(item,LIST_ACTION.CHECK_STATUS).catch(err=>{
         console.log(TAG,'checkActive error');
         this.setDeviceOffline();
@@ -125,6 +138,7 @@ HomeMineItem.defaultProps = {
   containerStyle:null,
   isActive:false,
   onPress:(item)=>{},
+  timeToUpdate:0
 };
 
 HomeMineItem.propTypes = {
@@ -133,6 +147,7 @@ HomeMineItem.propTypes = {
   wallet:PropTypes.object.isRequired,
   containerStyle:PropTypes.object,
   isActive:PropTypes.bool,
+  timeToUpdate:PropTypes.number,
   onPress:PropTypes.func
 };
 const mapDispatch = { };

@@ -34,13 +34,19 @@ class HomeMine extends BaseScreen {
       selectedIndex: 0,
       listDevice: [],
       wallet:wallet,
+      timeToUpdate: Date.now(),
       isFetching: false,
       isLoadMore: false,
       loading: false
     };
   }
   onResume = () => {
-    this.handleRefresh();
+    this.setState({
+      timeToUpdate:Date.now()
+    },()=>{
+      this.handleRefresh();
+    });
+    
   };
   async componentWillMount(){
     await this.createSignIn();
@@ -158,7 +164,7 @@ class HomeMine extends BaseScreen {
       // let list: [] = await this.fetchProductList();
       // list = _.isEmpty(list)?await this.getListLocalDevice():list.reverse();
       // let list: [];
-      console.log(TAG, 'handleRefresh list = ', list);
+      // console.log(TAG, 'handleRefresh list = ', list);
       this.setState({
         listDevice: list,
         isFetching: false
@@ -236,7 +242,8 @@ class HomeMine extends BaseScreen {
       listDevice,
       isFetching,
       isLoadMore,
-      loading
+      loading,
+      timeToUpdate
     } = this.state;
     
     return (
@@ -251,12 +258,12 @@ class HomeMine extends BaseScreen {
           contentContainerStyle={_.isEmpty(listDevice) ? { flexGrow: 1 }:undefined}
           style={style.list}
           data={listDevice}
-          keyExtractor={item => String(item.id)}
+          keyExtractor={item => String(item.product_id)}
           onEndReachedThreshold={0.7}
           ListEmptyComponent={this.renderEmptyComponent()}
           renderItem={({ item,index }) => {
             return (
-              <HomeMineItem onPress={this.handleItemDevicePress} isActive={index === 0} containerStyle={style.itemList} item={item} />
+              <HomeMineItem timeToUpdate={index === 0?timeToUpdate:0} onPress={this.handleItemDevicePress} isActive={index === 0} containerStyle={style.itemList} item={item} />
             );
           }}
           onRefresh={this.handleRefresh}

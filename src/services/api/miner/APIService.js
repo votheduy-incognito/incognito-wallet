@@ -331,7 +331,7 @@ export default class APIService {
     let { status, data = [] } = response;
     if (isNeedFilter && status === 1) {
       data  = data.filter(item =>{
-        _.includes(item.platform, CONSTANT_MINER.PRODUCT_TYPE)&& item.is_checkin == 1;
+        return _.includes(item.platform, CONSTANT_MINER.PRODUCT_TYPE)&& item.is_checkin == 1;
       });
     }
     return {status,data};

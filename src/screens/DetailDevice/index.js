@@ -17,6 +17,7 @@ import { connect } from 'react-redux';
 import { accountSeleclor } from '@src/redux/selectors';
 import PropTypes from 'prop-types';
 import CreateAccount from '@screens/CreateAccount';
+import LocalDatabase from '@src/utils/LocalDatabase';
 import style from './style';
 
 export const TAG = 'DetailDevice';
@@ -96,7 +97,7 @@ class DetailDevice extends BaseScreen {
         }
       }
     } catch (error) {
-      device.data.status = Device.offlineStatus();
+      device.Status = Device.offlineStatus();
       console.log(TAG,'callAction error = ',error);
     }finally{
       // console.log(TAG,'callAction finally = ',device.toJSON());
@@ -164,7 +165,17 @@ class DetailDevice extends BaseScreen {
     this.Loading = false;
   });
 
-  handlePressStake = onClickView(()=>{
+  handlePressStake = onClickView(async ()=>{
+    // hienton test
+    // const {device} = this.state;
+    // let listDeviceTest = await LocalDatabase.getListDevices();
+    // const deviceJson = device.toJSON();
+    // const time = Date.now().toString();
+    // const deviceToClone = Device.getInstance({...deviceJson,product_name:`HIEN_TEST-${time}`,product_id:`${deviceJson.product_id}-${time}`});
+    // listDeviceTest.push(deviceToClone);
+    // await LocalDatabase.saveListDevices(listDeviceTest);
+    // this.goToScreen(routeNames.HomeMine);
+    
     this.goToScreen(routeNames.AddStake);
   });
 

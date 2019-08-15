@@ -253,11 +253,12 @@ class SetupWifiDevice extends BaseScreen {
       let fetchProductInfo = {};
       if (this.validWallName) {
         fetchProductInfo = await this.changeDeviceName(addProduct);
-        await this.saveProductList();
+        const listResult =  await this.saveProductList();
+        // console.log(TAG,'handleSubmit saved - listResult = ',listResult);
       }
       if(!_.isEmpty(fetchProductInfo)){
         // create account
-        console.log(TAG,'handleSubmit fetchData = ',fetchProductInfo);
+        // console.log(TAG,'handleSubmit fetchData = ',fetchProductInfo);
         let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
         const {PrivateKey = '',AccountName = '',PaymentAddress = ''} = result;
         result = await DeviceService.sendPrivateKey(Device.getInstance(addProduct),PrivateKey);
@@ -281,11 +282,12 @@ class SetupWifiDevice extends BaseScreen {
     
   });
   saveProductList = async () =>{
-    console.log(TAG,'saveProductList begin');
+    
     try {
       const response = await APIService.getProductList(true);
       const { status, data } = response;
       if (status == 1) {
+        // console.log(TAG,'saveProductList begin data = ',data);
         await LocalDatabase.saveListDevices(data);
         return data;
       }
