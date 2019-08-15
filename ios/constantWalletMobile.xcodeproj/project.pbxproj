@@ -89,13 +89,13 @@
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
 		EDD5E18A68DA49EFABE3EB8B /* libReactNativePermissions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B21C0D59E5564F04B44CD65D /* libReactNativePermissions.a */; };
 		EECDC37EFEF34BEEB265199B /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5FEBE112FC96458EA9C2A77F /* MaterialCommunityIcons.ttf */; };
-		FE4DD5CE22FADD4600518366 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE4DD5CD22FADD4600518366 /* GoogleService-Info.plist */; };
 		FE52DD1022DC6A8B003203EF /* AutonomousZMQ.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		FE52DD4F22DC6B4B003203EF /* AutonomousZMQ.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */; };
 		FE52DD5022DC6B4B003203EF /* AutonomousZMQ.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FE57448622F97A3700F2A2BC /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE57448522F97A3700F2A2BC /* NetworkExtension.framework */; };
 		FE6F886122DC3B510009C5AA /* autonomous_config.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE6F886022DC3B510009C5AA /* autonomous_config.plist */; };
 		FE86096522D747230050666A /* libFirebaseCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE86096422D747230050666A /* libFirebaseCore.a */; };
+		FEA5D0F32301234E009B6B51 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FEA5D0F22301234E009B6B51 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -630,11 +630,11 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED47976300734F1B94B8F775 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
 		FB08C251E22B438096EA6169 /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
-		FE4DD5CD22FADD4600518366 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AutonomousZMQ.framework; path = "../node_modules/react-native-zmq-service/ios/AutonomousZMQ.framework"; sourceTree = "<group>"; };
 		FE57448522F97A3700F2A2BC /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		FE6F886022DC3B510009C5AA /* autonomous_config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = autonomous_config.plist; sourceTree = "<group>"; };
 		FE86096422D747230050666A /* libFirebaseCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		FEA5D0F22301234E009B6B51 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FECCEDF722C379D900129059 /* AutonomousZMQ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AutonomousZMQ.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -817,7 +817,7 @@
 		13B07FAE1A68108700A75B9A /* constantWalletMobile */ = {
 			isa = PBXGroup;
 			children = (
-				FE4DD5CD22FADD4600518366 /* GoogleService-Info.plist */,
+				FEA5D0F22301234E009B6B51 /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -1186,8 +1186,8 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				FE52DCB222DC61FA003203EF /* Run Script */,
 				FE52DD5122DC6B4B003203EF /* Embed Frameworks */,
+				FE22CCEB2302CF20001C60E6 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1840,7 +1840,7 @@
 				3652A44646DE4BD8B3C9BA56 /* Octicons.ttf in Resources */,
 				4C1DBB74B2F14588BF13C846 /* SimpleLineIcons.ttf in Resources */,
 				1A63493129294F7CBBC251EE /* Zocial.ttf in Resources */,
-				FE4DD5CE22FADD4600518366 /* GoogleService-Info.plist in Resources */,
+				FEA5D0F32301234E009B6B51 /* GoogleService-Info.plist in Resources */,
 				FE6F886122DC3B510009C5AA /* autonomous_config.plist in Resources */,
 				B312A222BD7D460DA5FE9C6C /* Roboto_bold.ttf in Resources */,
 				C0300BA4836A47FCBFB4A4EE /* Roboto-Medium.ttf in Resources */,
@@ -1974,7 +1974,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FE52DCB222DC61FA003203EF /* Run Script */ = {
+		FE22CCEB2302CF20001C60E6 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1983,7 +1983,6 @@
 			);
 			inputPaths = (
 			);
-			name = "Run Script";
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -2192,7 +2191,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.autonomous.incognito;
+				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet;
 				PRODUCT_NAME = constantWalletMobile;
 				PROVISIONING_PROFILE_SPECIFIER = Incognito_Dev;
 				SWIFT_OBJC_BRIDGING_HEADER = "constantWalletMobile-Bridging-Header.h";
@@ -2248,7 +2247,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.autonomous.incognito;
+				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet;
 				PRODUCT_NAME = constantWalletMobile;
 				PROVISIONING_PROFILE_SPECIFIER = Incognito_Dis;
 				SWIFT_OBJC_BRIDGING_HEADER = "constantWalletMobile-Bridging-Header.h";

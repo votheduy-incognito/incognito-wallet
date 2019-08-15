@@ -19,44 +19,72 @@ class HomeMineItem extends React.Component {
       item:item,
       account:{},
       balance:0,
+      timeToUpdate:0,
       deviceInfo : Device.getInstance(item)
     };
   }
   static getDerivedStateFromProps(nextProps, prevState) {
     if(!_.isEqual(nextProps.item,prevState.item)){
+      console.log(TAG,'getDerivedStateFromProps begin 010101');
       return {
         item:nextProps?.item,
         deviceInfo:Device.getInstance(nextProps?.item)
       };
     }
+    
     return null;
   }
-  
-  async componentDidMount(){
-    const {item,isActive,getAccountByName,wallet} = this.props;
-    let {deviceInfo} = this.state;
-    const account = await getAccountByName(deviceInfo.Name);
-    const balance = await deviceInfo.balance(account,wallet);
 
+  componentDidUpdate(prevProps,prevState){
+    const {item,timeToUpdate} = this.props;
+    if(!_.isEqual(item,prevProps?.item)){
+      console.log(TAG,'componentDidUpdate begin 010101');
+      this.getInfo();
+    }
+    if(!_.isEqual(prevProps.timeToUpdate,timeToUpdate)){
+      console.log(TAG,'componentDidUpdate begin timeToUpdate = ',timeToUpdate);
+      this.checkActive();
+    }
+    
+  }
+  // componentWillMount(){
+  //   this.getInfo();
+  //   this.checkActive();
+  // }
+  async componentDidMount(){
+    this.getInfo();
+    this.checkActive();
+  }
+  getInfo = async ()=>{
+    const {item,isActive,getAccountByName,wallet} = this.props;
+    let {deviceInfo,account,balance} = this.state;
+    if(!_.isEmpty(item)){
+      account = await getAccountByName(deviceInfo.Name);
+      balance = await deviceInfo.balance(account,wallet);
+    }
+    this.setState({
+      account:account,
+      balance:balance
+    });
+  }
+  checkActive = async ()=>{
+    const {item,isActive} = this.props;
+    let {deviceInfo} = this.state;
+    
     if(isActive){
-      DeviceService.send(item,LIST_ACTION.CHECK_STATUS).then(dataResult=>{
-        const { status = -1, data={status:Device.offlineStatus()}, message= 'Offline',productId = -1 } = dataResult;
-        // console.log(TAG,'componentDidMount send dataResult = ',dataResult);
-        if(item.product_id === productId ){
-          deviceInfo.data.status ={
-            code:data.status.code,
-            message:data.status.message
-          };
-          this.setState({
-            account:account,
-            balance:balance,
-            deviceInfo:deviceInfo
-          });
-        }
-      // ViewUtil.showAlert(JSON.stringify(data));
-      }).catch(err=>{
+      console.log(TAG,'checkActive begin');
+      const dataResult = await DeviceService.send(item,LIST_ACTION.CHECK_STATUS).catch(err=>{
+        console.log(TAG,'checkActive error');
         this.setDeviceOffline();
-      });
+      })||{};
+      const { status = -1, data={status:Device.offlineStatus()},productId = -1 } = dataResult;
+      if(status === 1 && item?.product_id === productId ){
+        console.log(TAG,'checkActive begin 010101');
+        deviceInfo.data.status = data.status;
+        this.setState({
+          deviceInfo:deviceInfo
+        });
+      }
     }else{
       this.setDeviceOffline();
     }
@@ -110,6 +138,7 @@ HomeMineItem.defaultProps = {
   containerStyle:null,
   isActive:false,
   onPress:(item)=>{},
+  timeToUpdate:0
 };
 
 HomeMineItem.propTypes = {
@@ -118,6 +147,7 @@ HomeMineItem.propTypes = {
   wallet:PropTypes.object.isRequired,
   containerStyle:PropTypes.object,
   isActive:PropTypes.bool,
+  timeToUpdate:PropTypes.number,
   onPress:PropTypes.func
 };
 const mapDispatch = { };

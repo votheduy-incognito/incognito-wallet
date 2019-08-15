@@ -61,12 +61,12 @@ export default class DeviceService {
         const mailProductId = `${productId}${MAIL_UID_FORMAT}`;
         const action = DeviceService.buildAction(product,actionExcute,dataToSend,chain,type);
         const callBack = res => {
+          const {status = -1,data} = res;
           console.log(TAG,'send Result: ', res);
-          if (res) {
-            const data = res.data || {};
+          if (status >= 0) {
             resolve({...data,productId:productId});
           } else {
-            console.log(TAG,'Timeout action = ' + actionExcute.key);
+            console.log(TAG,'send Timeout action = ' + actionExcute.key);
             reject('Timeout action = '+  actionExcute.key);
           }
         };
@@ -101,12 +101,6 @@ export default class DeviceService {
     }
     return null;
   };
-
-  static receiveDataFromAddress= ()=>{
-    // ZMQService.receiveDataFromAddress('HINETONN', '111111').then(res => {
-    //   console.log(TAG,'receiveDataFromAddress successfully res',res);
-    // });
-  }
 
   static sendPrivateKey = async(device:Device,privateKey:String,chain='incognito')=>{
     
