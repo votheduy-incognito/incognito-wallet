@@ -26,14 +26,13 @@ class MainCryptoHistory extends Component {
     super();
 
     this.state = {
-      isLoading: false,
+      isLoading: true,
       histories: []
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const { navigation } = this.props;
-    this.handleLoadHistory();
 
     navigation.addListener(
       'didFocus',
@@ -51,18 +50,20 @@ class MainCryptoHistory extends Component {
     }
   }
 
-  handleLoadHistory = () => {
-    const { defaultAccount: { name } = {}, wallet, onLoad } = this.props;
-    this.loadAccountHistory(wallet, name);
+  handleLoadHistory = async () => {
+    try {
+      this.setState({ isLoading: true });
+      const { defaultAccount: { name } = {}, wallet } = this.props;
+      const histories = await this.loadAccountHistory(wallet, name);
 
-    if (typeof onLoad === 'function') {
-      onLoad();
+      this.setState({ histories });
+    } finally {
+      this.setState({ isLoading: false });
     }
   }
 
   loadAccountHistory = async (wallet, accountName) => {
     try {
-      this.setState({ isLoading: true });
       if (!wallet) {
         throw new Error('Wallet is not exist to load history');
       }
@@ -72,13 +73,22 @@ class MainCryptoHistory extends Component {
       }
 
       const histories = await loadHistoryByAccount(wallet, accountName);
-      this.setState({ histories });
+
+      return histories;
     } catch {
       Toast.showError('Can not load history right now, please try later');
-    } finally {
-      this.setState({ isLoading: false });
     }
   };
+
+
+  handleScrollReload = () => {
+    const { onLoad } = this.props;
+    if (typeof onLoad === 'function') {
+      onLoad();
+    }
+
+    this.handleLoadHistory();
+  }
 
   render() {
     const { isLoading, histories } = this.state;
@@ -89,10 +99,13 @@ class MainCryptoHistory extends Component {
 
     return (
       <ScrollView
+        contentContainerStyle={{
+          flex: 1
+        }}
         refreshControl={(
           <RefreshControl
             refreshing={isLoading}
-            onRefresh={this.handleLoadHistory}
+            onRefresh={this.handleScrollReload}
           />
         )}
       >

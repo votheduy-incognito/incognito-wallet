@@ -151,21 +151,29 @@ const HistoryItem = ({ history, divider }) => {
   );
 };
 
-const EmptyHistory = () => (
+const EmptyHistory = ({ actionButton }) => (
   <Container style={styleSheet.noHistoryContainer}>
     <Text style={styleSheet.noHistoryText}>No histories</Text>
+    <View style={styleSheet.noHistoryActionButton}>
+      {actionButton}
+    </View>
   </Container>
 );
 
-const HistoryList = ({ histories }) => (
-  <View style={styleSheet.container}>
-    {histories && histories.length
-      ? histories.map((history, index) => (
-        <HistoryItem key={history.id} history={history} divider={index < (histories.length - 1)} />
-      ))
-      : <EmptyHistory />
-    }
-  </View>
+const HistoryList = ({ histories, actionButton }) => (
+  histories && histories.length
+    ? (
+      <Container style={styleSheet.container}>
+        <View style={styleSheet.content}>
+          {
+            histories.map((history, index) => (
+              <HistoryItem key={history.id} history={history} divider={index < (histories.length - 1)} />
+            ))
+          }
+        </View>
+      </Container>
+    )
+    : <EmptyHistory actionButton={actionButton} />
 );
 
 HistoryItem.defaultProps = {
@@ -197,11 +205,21 @@ HistoryItem.propTypes = {
 };
 
 HistoryList.defaultProps = {
-  histories: null
+  histories: null,
+  actionButton: null
 };
 
 HistoryList.propTypes = {
-  histories: PropTypes.array
+  histories: PropTypes.array,
+  actionButton: PropTypes.element
+};
+
+EmptyHistory.defaultProps = {
+  actionButton: null
+};
+
+EmptyHistory.propTypes = {
+  actionButton: PropTypes.element
 };
 
 export default HistoryList;

@@ -4,6 +4,10 @@ import { StyleSheet } from 'react-native';
 const style = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.lightGrey6,
+  },
+  content: {
+    flex: 1,
     paddingHorizontal: 15,
     backgroundColor: COLORS.white,
     borderRadius: DECOR.borderRadiusBorder
@@ -37,11 +41,19 @@ const style = StyleSheet.create({
     color: COLORS.lightGrey3
   },
   noHistoryContainer: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
     paddingVertical: 30
   },
   noHistoryText: {
+    ...FONT.STYLE.medium,
     fontSize: 20,
     textAlign: 'center',
+    marginVertical: 40,
+  },
+  noHistoryActionButton: {
+    width: 200
   }
 });
 

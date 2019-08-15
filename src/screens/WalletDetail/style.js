@@ -8,7 +8,7 @@ const style = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     width: '100%',
-    backgroundColor: COLORS.lightGrey6
+    backgroundColor: COLORS.white
   },
   boxHeader: { 
     width: '100%',

@@ -83,7 +83,7 @@ class WalletDetail extends Component {
             }
           </View>
         </View>
-        <Container style={styles.container}>
+        <View style={styles.container}>
           {
             selectedPrivacy?.isToken && (
               <View style={styles.historyContainer}>
@@ -98,7 +98,7 @@ class WalletDetail extends Component {
               </View>
             )
           }
-        </Container>
+        </View>
       </View>          
     );
   }
