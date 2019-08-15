@@ -95,6 +95,16 @@ export default class Util {
     }
   }
 
+   static tryAtMost=async (promiseFunc, count = 6) =>{
+     if (count > 0) {
+       const result = await promiseFunc().catch(e => e);
+       console.log(`tryAtMost result = ${result}, count = ${count}`);
+       if (result instanceof Error) { return await Util.tryAtMost(promiseFunc, count - 1); }
+       return result;
+     }
+     return Promise.reject(`Tried ${6} times and failed`);
+   };
+
   static excuteWithTimeout = (promise, timeSecond = 1) => {
     return new Promise(function(resolve, reject) {
       setTimeout(function() {

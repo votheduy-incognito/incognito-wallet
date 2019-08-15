@@ -57,6 +57,11 @@ export default class Device {
     const result = (!_.isEmpty(account) && !_.isEmpty(wallet)  && await accountService.getRewardAmount(tokenID, account,wallet))||0;
     return result;
   }
+
+  requestWithdraw = async(account,wallet,tokenID = '')=>{
+    const result = (!_.isEmpty(account)&& !_.isEmpty(wallet) && await accountService.createAndSendWithdrawRewardTx(tokenID, account,wallet))|| null;
+    return result;
+  }
   
   toJSON(){
     return this.data;

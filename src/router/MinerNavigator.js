@@ -56,18 +56,21 @@ const MinerNavigator = createStackNavigator(
     }
   },
   {
-    defaultNavigationOptions:{
-      headerBackTitle:null,
-      headerTintColor: '#fff',
-      headerTitleStyle:{
-        ...TextStyle.bigText,
-        fontWeight:'bold',
-        color:'#FFFFFF'
-      },
-      headerStyle:{
-        height:sizeHeader.height/2,
-        backgroundColor:'#0ECBEE'
-      }
+    defaultNavigationOptions:({navigation})=>{
+      return{
+        headerLeft:imagesVector.ic_back({onPress:()=>navigation?.goBack()}),
+        headerBackTitle:null,
+        headerTintColor: '#fff',
+        headerTitleStyle:{
+          ...TextStyle.bigText,
+          fontWeight:'bold',
+          color:'#FFFFFF'
+        },
+        headerStyle:{
+          height:sizeHeader.height/2,
+          backgroundColor:'#0ECBEE'
+        }
+      };
     },
     headerMode: 'screen'
   }

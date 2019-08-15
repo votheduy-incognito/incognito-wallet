@@ -1,5 +1,6 @@
 import { Icon } from 'react-native-elements';
 import React from 'react';
+import {TouchableOpacity} from 'react-native';
 import { scaleInApp } from '@src/styles/TextStyle';
 
 const images = {
@@ -28,15 +29,18 @@ const images = {
   // ic_capture_photo: require('@/assets/images/ic_capture_photo.png'),
   // ic_capture: require('@/assets/images/ic_capture.png')
 };
-const ic_back = (props)=>(
-  <Icon
-    size={scaleInApp(25)}
-    name='ios-arrow-back'
-    type='ionicon'
-    color='#ffffff'
-    {...props} 
-  />
+const ic_back = (props?)=>(
+  <TouchableOpacity {...props}>
+    <Icon
+      size={scaleInApp(25)}
+      name='ios-arrow-back'
+      type='ionicon'
+      color='#ffffff'
+      containerStyle={{paddingHorizontal:scaleInApp(5)}}
+    />
+  </TouchableOpacity>
 );
+
 const ic_wifi = (props)=>(
   <Icon
     size={scaleInApp(25)}
