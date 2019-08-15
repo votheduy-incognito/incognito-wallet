@@ -6,7 +6,8 @@ const CRYPTO_SYMBOL = {
 
 const TOKEN_SYMBOL = {
   pETH: 'pETH',
-  pBTC: 'pBTC'
+  pBTC: 'pBTC',
+  pBNB: 'pBNB'
 };
 
 export default {
