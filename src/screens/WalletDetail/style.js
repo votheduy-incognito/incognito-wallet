@@ -52,15 +52,17 @@ const style = StyleSheet.create({
   },
   actionButton: {
     display: 'flex',
+    flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 116,
+    maxWidth: 116,
     paddingVertical: 12,
     backgroundColor: COLORS.white,
     shadowOffset: { width: 2, height: 0 },
     elevation: 3,
     marginHorizontal: 3,
+    marginVertical: 3,
     height: 80
   },
   actionButtonIcon: {
