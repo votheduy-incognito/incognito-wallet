@@ -90,6 +90,7 @@
     "url": "^0.10.3",
     "util": "^0.10.4",
     "vm-browserify": "0.0.4",
+    "wallet-address-validator": "^0.2.4",
     "yup": "^0.27.0"
   },
   "devDependencies": {
@@ -127,8 +128,7 @@
     "prettier-eslint": "^9.0.0",
     "react-test-renderer": "16.8.3",
     "redux-devtools-extension": "^2.13.8",
-    "rn-nodeify": "github:tradle/rn-nodeify",
-    "wallet-address-validator": "^0.2.4"
+    "rn-nodeify": "github:tradle/rn-nodeify"
   },
   "jest": {
     "preset": "react-native",

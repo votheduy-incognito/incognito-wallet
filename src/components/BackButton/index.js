@@ -1,14 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Image, TouchableOpacity } from '@src/components/core';
-import backIcon from '@src/assets/images/icons/back.png';
+import { TouchableOpacity } from '@src/components/core';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { THEME } from '@src/styles';
 
 const BackButton = ({ onPress }) => (
   <TouchableOpacity
     onPress={onPress}
-    style={{ padding: 20, height: 30, width: 30, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+    style={{
+      display: 'flex',
+      justifyContent: 'center',
+      width: 50,
+      paddingLeft: 5,
+      height: THEME.header.headerHeight
+    }}
   >
-    <Image source={backIcon} style={{ width: 20, height: 20, resizeMode: 'contain' }} />
+    <Icon name='chevron-left' color='white' size={30} />
   </TouchableOpacity>
 );
 

@@ -4,10 +4,16 @@ import { COLORS } from '@src/styles';
 export const homeStyle = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.lightGrey2
+    backgroundColor: COLORS.lightGrey6,
+  },
+  bgStyle: {
+    backgroundColor: COLORS.primary,
+    height: 60,
   },
   mainContainer: {
     flex: 1,
+    position: 'relative',
+    top: -55
   },
   cryptoItem: {
     marginVertical: 4
@@ -15,14 +21,14 @@ export const homeStyle = StyleSheet.create({
   addTokenContainer: {
     flexDirection: 'column',
     alignItems: 'center',
-    marginTop: 100
+    marginTop: 50
   },
   addTokenLabel: {
     fontSize: 15
   },
   addTokenBtn: {
     fontSize: 15,
-    color: COLORS.blue,
+    color: COLORS.primary,
     marginVertical: 20
   }
 });

@@ -6,15 +6,15 @@ import styles from './styles';
 
 const LEVELS = [
   {
-    name: 'Low',
+    name: 'Normal',
     rate: 1,
   },
   {
-    name: 'Medium',
+    name: 'Faster',
     rate: 2,
   },
   {
-    name: 'Fast',
+    name: 'Speedy',
     rate: 3,
   }
 ];

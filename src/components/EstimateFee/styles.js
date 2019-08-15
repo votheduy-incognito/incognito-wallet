@@ -21,9 +21,9 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignContent: 'center',
-    backgroundColor: COLORS.lightGrey2,
+    backgroundColor: COLORS.lightGrey6,
     borderBottomWidth: 1,
-    borderColor: COLORS.lightGrey1
+    borderColor: COLORS.lightGrey4
   },
   feeTypeHighlight: {
     backgroundColor: COLORS.white,
@@ -31,10 +31,10 @@ const style = StyleSheet.create({
   },
   feeTypeFirst: {
     borderRightWidth: 1,
-    borderColor: COLORS.lightGrey1
+    borderColor: COLORS.lightGrey4
   },
   feeTypeText: {
-    color: COLORS.lightGrey5,
+    color: COLORS.lightGrey3,
   },
   feeTypeTextHighlight: {
     color: COLORS.dark1
@@ -58,7 +58,7 @@ const style = StyleSheet.create({
     color: COLORS.white,
     backgroundColor: COLORS.primary,
     paddingHorizontal: 15,
-    lineHeight: 18,
+    lineHeight: 20,
     paddingVertical: 5,
     borderRadius: 15,
     overflow: 'hidden',
@@ -67,12 +67,12 @@ const style = StyleSheet.create({
   },
   rateText: {
     fontWeight: '100',
-    color: COLORS.lightGrey5
+    color: COLORS.lightGrey3
   },
   box: {
     borderWidth: 1,
     borderRadius: 4,
-    borderColor: COLORS.lightGrey1,
+    borderColor: COLORS.lightGrey4,
     backgroundColor: COLORS.white,
     overflow: 'hidden'
   }

@@ -2,16 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Field, formValueSelector, isValid, change } from 'redux-form';
 import { connect } from 'react-redux';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import convertUtil from '@src/utils/convert';
-import { Container, ScrollView, TouchableOpacity, Button, Text, View, Toast } from '@src/components/core';
+import { Container, ScrollView, Button, Text, View, Toast } from '@src/components/core';
 import { openQrScanner } from '@src/components/QrCodeScanner';
 import ReceiptModal, { openReceipt } from '@src/components/Receipt';
 import LoadingTx from '@src/components/LoadingTx';
 import EstimateFee from '@src/components/EstimateFee';
 import CurrentBalance from '@src/components/CurrentBalance';
 import tokenData from '@src/constants/tokenData';
-import { createForm, InputField, validator } from '@src/components/core/reduxForm';
+import { createForm, InputQRField, InputMaxValueField, validator } from '@src/components/core/reduxForm';
 import formatUtil from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { homeStyle } from './style';
@@ -37,18 +36,36 @@ class SendCrypto extends React.Component {
   }
 
   componentDidMount() {
-    const { selectedPrivacy } = this.props;
-    const maxAmount = convertUtil.toHumanAmount(selectedPrivacy?.amount, selectedPrivacy?.pDecimals);
-
-    this.setFormValidation({ maxAmount });
+    this.setFormValidation({ maxAmount: this.getMaxAmount() });
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const { receiptData } = this.props;
+    const { finalFee: oldFinalFee, feeUnit: oldFeeUnit } = prevState;
+    const { finalFee, feeUnit } = this.state;
+
+    if (finalFee !== oldFinalFee || feeUnit !== oldFeeUnit) {
+      // need to re-calc max amount can be send if fee was changed
+      this.setFormValidation({ maxAmount: this.getMaxAmount() });
+    }
 
     if (receiptData?.txId !== prevProps.receiptData?.txId) {
       openReceipt(receiptData);
     }
+  }
+
+  getMaxAmount = () => {
+    const { selectedPrivacy } = this.props;
+    const { finalFee, feeUnit } = this.state;
+    let amount = selectedPrivacy?.amount;
+
+    if (feeUnit === selectedPrivacy?.symbol) {
+      amount-= finalFee;
+    }
+    
+    const maxAmount = convertUtil.toHumanAmount(amount, selectedPrivacy?.pDecimals);
+
+    return Math.max(maxAmount, 0);
   }
 
   setFormValidation = ({ maxAmount }) => {
@@ -100,6 +117,7 @@ class SendCrypto extends React.Component {
     const { finalFee, feeUnit, maxAmountValidator } = this.state;
     const { isSending, selectedPrivacy, amount, toAddress, isFormValid } = this.props;
     const types = [tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY];
+    const maxAmount = this.getMaxAmount();
 
     if (selectedPrivacy?.symbol !== tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY) {
       types.unshift(selectedPrivacy?.symbol);
@@ -113,22 +131,19 @@ class SendCrypto extends React.Component {
             {({ handleSubmit }) => (
               <View style={homeStyle.form}>
                 <Field
-                  component={InputField}
+                  component={InputQRField}
                   name='toAddress'
-                  placeholder='To Address'
-                  prependView={(
-                    <TouchableOpacity onPress={this.handleQrScanAddress}>
-                      <MaterialCommunityIcons name='qrcode-scan' size={20} />
-                    </TouchableOpacity>
-                  )}
+                  label='To Address'
                   style={homeStyle.input}
-                  validate={validator.combinedPaymentAddress}
+                  validate={validator.combinedIncognitoAddress}
                 />
                 <Field
-                  component={InputField}
+                  component={InputMaxValueField}
                   name='amount'
-                  placeholder='Amount'
+                  placeholder='0.0'
+                  label='Amount'
                   style={homeStyle.input}
+                  maxValue={convertUtil.toHumanAmount(maxAmount, selectedPrivacy?.pDecimals)}
                   componentProps={{
                     keyboardType: 'number-pad'
                   }}
@@ -163,8 +178,23 @@ class SendCrypto extends React.Component {
   }
 }
 
+SendCrypto.defaultProps = {
+  receiptData: null,
+  isSending: false,
+  isFormValid: false,
+  amount: null,
+  toAddress: null
+};
+
 SendCrypto.propTypes = {
-  selectedPrivacy: PropTypes.object.isRequired
+  selectedPrivacy: PropTypes.object.isRequired,
+  receiptData: PropTypes.object,
+  handleSend: PropTypes.func.isRequired,
+  rfChange: PropTypes.func.isRequired,
+  isSending: PropTypes.bool,
+  isFormValid: PropTypes.bool,
+  amount: PropTypes.string,
+  toAddress: PropTypes.string
 };
 
 const mapState = state => ({

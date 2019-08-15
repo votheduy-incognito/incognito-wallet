@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View } from '@src/components/core';
+import { Text, TouchableOpacity, View, Divider } from '@src/components/core';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Modal } from 'react-native';
@@ -19,20 +19,24 @@ class OptionMenu extends Component {
 
   render() {
     const {
+      icon,
       iconProps: { style: iconStyle, ...iconOtherProps },
       title,
       data
     } = this.props;
     const { open } = this.state;
+
     return (
       <View style={styleSheet.container}>
-        <TouchableOpacity onPress={() => this.handleToggle()}>
-          <EntypoIcons
-            size={24}
-            style={[styleSheet.iconBtn, iconStyle]}
-            {...iconOtherProps}
-            name="dots-three-horizontal"
-          />
+        <TouchableOpacity onPress={() => this.handleToggle()} style={styleSheet.toggleBtn}>
+          {icon || (
+            <EntypoIcons
+              size={24}
+              style={[styleSheet.iconBtn, iconStyle]}
+              {...iconOtherProps}
+              name="dots-three-vertical"
+            />
+          )}
         </TouchableOpacity>
         <Modal animationType="slide" transparent visible={open}>
           <TouchableOpacity
@@ -40,8 +44,9 @@ class OptionMenu extends Component {
             style={styleSheet.contentContainer}
           >
             <View style={styleSheet.content}>
+              <View style={styleSheet.barIcon} />
               {title && <Text style={styleSheet.title}>{title}</Text>}
-              {data.map(item => {
+              {data.map((item, index) => {
                 const handleItemPress = () => {
                   if (typeof item?.handlePress === 'function') {
                     item.handlePress();
@@ -53,10 +58,16 @@ class OptionMenu extends Component {
                   <TouchableOpacity
                     key={item?.id}
                     onPress={handleItemPress}
-                    style={styleSheet.menuItem}
+                    style={[
+                      styleSheet.menuItem,
+                      index < (data.length - 1) && styleSheet.itemDivider
+                    ]}
                   >
                     <View style={styleSheet.icon}>{item?.icon}</View>
-                    <Text style={styleSheet.itemText}>{item?.label}</Text>
+                    <View style={styleSheet.textContainer}>
+                      <Text style={styleSheet.itemText}>{item?.label}</Text>
+                      <Text style={styleSheet.itemDescText}>{item?.desc}</Text>
+                    </View>
                   </TouchableOpacity>
                 );
               })}
@@ -70,6 +81,7 @@ class OptionMenu extends Component {
 
 OptionMenu.defaultProps = {
   title: null,
+  icon: null,
   iconProps: {},
   data: []
 };
@@ -77,10 +89,12 @@ OptionMenu.defaultProps = {
 OptionMenu.propTypes = {
   title: PropTypes.string,
   iconProps: PropTypes.object,
+  icon: PropTypes.element,
   data: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,
       label: PropTypes.string.isRequired,
+      desc: PropTypes.string,
       icon: PropTypes.element,
       handlePress: PropTypes.func
     })

@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text, Container, Button, View, Toast, ActivityIndicator, TouchableOpacity } from '@src/components/core';
+import { Text, Container, Button, View, Toast, ActivityIndicator, Image, TouchableOpacity } from '@src/components/core';
 import ROUTE_NAMES from '@src/router/routeNames';
 import { COLORS } from '@src/styles';
 import HistoryToken from '@src/components/HistoryToken';
 import MainCryptoHistory from '@src/components/MainCryptoHistory';
 import formatUtil from '@src/utils/format';
+import sendIcon from '@src/assets/images/icons/send.png';
+import depositIcon from '@src/assets/images/icons/deposit_pig.png';
+import receiveIcon from '@src/assets/images/icons/qrCode.png';
 import styles from './style';
 
 class WalletDetail extends Component {
@@ -17,18 +20,6 @@ class WalletDetail extends Component {
     const { navigation } = this.props;
     navigation.navigate(ROUTE_NAMES.RootApp);
   };
-
-  handleUnfollowTokenBtn = async () => {
-    try {
-      const { handleRemoveFollowToken, selectedPrivacy, navigation } = this.props;
-      await handleRemoveFollowToken(selectedPrivacy?.tokenId);
-
-      Toast.showInfo('Unfollowed successfully');
-      navigation.goBack();
-    } catch {
-      Toast.showError('Can not unfollow this token right now, please try later.');
-    }
-  }
 
   hanldeLoadBalance = async () => {
     try {
@@ -49,9 +40,26 @@ class WalletDetail extends Component {
     navigation.navigate(ROUTE_NAMES.Withdraw);
   }
 
+  handleSendBtn = () => {
+    const { navigation } = this.props;
+    navigation.navigate(ROUTE_NAMES.SendCrypto);
+  }
+
+  handleReceiveBtn = () => {
+    const { navigation } = this.props;
+    navigation.navigate(ROUTE_NAMES.ReceiveCrypto);
+  }
+
+  renderActionButton = ({ label, icon, onPress }) => (
+    <Button style={styles.actionButton} onPress={onPress}>
+      <Image source={icon} style={styles.actionButtonIcon} />
+      <Text>{label}</Text>
+    </Button>
+  );
+
   render() { 
     const { selectedPrivacy, navigation, isGettingBalanceList } = this.props;  
-    const { isDeposable, isWithdrawable } = selectedPrivacy;
+    const { isDeposable } = selectedPrivacy;
 
     return (
       <View style={styles.container}> 
@@ -67,16 +75,15 @@ class WalletDetail extends Component {
                 )
             }
           </View>
-        </View>
-        <Container style={styles.container}>
           <View style={styles.buttonRow}>
+            {this.renderActionButton({ label: 'Send', icon: sendIcon, onPress: this.handleSendBtn })}
+            {this.renderActionButton({ label: 'Receive', icon: receiveIcon, onPress: this.handleReceiveBtn })}
             {
-              isDeposable && <Button style={styles.btnStyle} title='Deposit' onPress={this.handleDepositBtn} />
-            }
-            {
-              isWithdrawable && <Button style={[styles.btnStyle, styles.withdrawBtn]} title='Withdraw' onPress={this.handleWithdrawBtn} />
+              isDeposable && this.renderActionButton({ label: 'Deposit', icon: depositIcon, onPress: this.handleDepositBtn })
             }
           </View>
+        </View>
+        <Container style={styles.container}>
           {
             selectedPrivacy?.isToken && (
               <View style={styles.historyContainer}>
@@ -91,16 +98,6 @@ class WalletDetail extends Component {
               </View>
             )
           }
-          {
-            selectedPrivacy?.isToken && (
-              <TouchableOpacity
-                style={[styles.unfollowBtn]}
-                onPress={this.handleUnfollowTokenBtn}
-              >
-                <Text style={styles.unfollowText}>Unfollow token</Text>
-              </TouchableOpacity>
-            )
-          }
         </Container>
       </View>          
     );
@@ -110,7 +107,6 @@ class WalletDetail extends Component {
 WalletDetail.propTypes = {
   navigation: PropTypes.object.isRequired,
   selectedPrivacy: PropTypes.object.isRequired,
-  handleRemoveFollowToken: PropTypes.func.isRequired,
   hanldeLoadBalance: PropTypes.func.isRequired,
   isGettingBalanceList: PropTypes.array.isRequired
 };

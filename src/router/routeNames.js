@@ -2,6 +2,7 @@ export default {
   RootApp: 'App',
   RootSplash: 'RootSplash',
   RootMiner: 'RootMiner',
+  RootTab: 'RootTab',
   Home: 'Home',
   Setting: 'Setting',
   UserHeaderBoard: 'UserHeaderBoard',

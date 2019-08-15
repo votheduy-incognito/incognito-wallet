@@ -1,15 +1,19 @@
-import { COLORS } from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 export const itemStyle = StyleSheet.create({
   container: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingVertical: 15,
+    marginHorizontal: 15,
     marginBottom: 5,
   },
+  divider: {
+    borderBottomWidth: 1,
+    borderColor: COLORS.lightGrey6
+  },
   highlight: {
-    backgroundColor: COLORS.lightGrey1,
-    borderRadius: 5,
+    ...FONT.STYLE.medium,
+    color: COLORS.primary,
   },
 });
 
@@ -22,7 +26,7 @@ export const searchPTokenStyle = StyleSheet.create({
     height: 60
   },
   listToken: {
-    marginVertical: 10
+    marginVertical: 10,
   },
   followBtn: {
     

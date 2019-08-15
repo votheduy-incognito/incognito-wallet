@@ -10,11 +10,12 @@ const Modal = ({
   close,
   containerStyle,
   closeBtnColor,
+  isShowHeader,
   ...otherProps
 }) => (
   <RNComponent animationType="fade" {...otherProps}>
     <View style={[styleSheet.container, containerStyle]}>
-      {close && (
+      {isShowHeader && close && (
         <View style={styleSheet.header}>
           <TouchableOpacity onPress={close} style={styleSheet.closeBtn}>
             <MdIcons name="close" size={30} color={closeBtnColor} />
@@ -32,13 +33,15 @@ Modal.defaultProps = {
   close: null,
   containerStyle: null,
   closeBtnColor: null,
+  isShowHeader: true
 };
 
 Modal.propTypes = {
   children: PropTypes.node,
   close: PropTypes.func,
   containerStyle: PropTypes.object,
-  closeBtnColor: PropTypes.string
+  closeBtnColor: PropTypes.string,
+  isShowHeader: PropTypes.bool
 };
 
 export default Modal;

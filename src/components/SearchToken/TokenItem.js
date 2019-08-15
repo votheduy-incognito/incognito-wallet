@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { TouchableOpacity, View, Text } from '../core';
+import { TouchableOpacity, View, Text,  } from '../core';
 import { itemStyle } from './styles';
 
 class TokenItem extends PureComponent {
@@ -13,14 +13,14 @@ class TokenItem extends PureComponent {
   }
 
   render() {
-    const { token, selected } = this.props;
+    const { token, selected, divider } = this.props;
 
     if (!token) return null;
 
     return (
-      <TouchableOpacity onPress={this._handlePress} style={[ itemStyle.container, selected && itemStyle.highlight ]}>
+      <TouchableOpacity onPress={this._handlePress} style={[ itemStyle.container, divider && itemStyle.divider ]}>
         <View>
-          <Text>{token.name} ({token.symbol})</Text>
+          <Text style={selected && itemStyle.highlight}>{token.name} ({token.symbol})</Text>
         </View>
       </TouchableOpacity>
     );
@@ -30,10 +30,12 @@ class TokenItem extends PureComponent {
 TokenItem.defaultProps = {
   onPress: null,
   selected: false,
+  divider: false,
 };
 
 TokenItem.propTypes = {
   selected: PropTypes.bool,
+  divider: PropTypes.bool,
   onPress: PropTypes.func,
   token: PropTypes.shape({
     tokenId: PropTypes.string.isRequired,

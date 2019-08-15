@@ -52,29 +52,35 @@ const getStatusData = (status, statusCode) => {
 
 const getTypeData = type => {
   let typeText;
-  let typeColor;
+  let balanceDirection;
+  let balanceColor;
   switch (type) {
   case CONSTANT_COMMONS.HISTORY.TYPE.WITHDRAW:
-    typeText = 'Withdraw';
-    typeColor = COLORS.green;
+    typeText = 'Withdrawn';
+    balanceColor = COLORS.red;
+    balanceDirection = '-';
     break;
   case CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT:
-    typeText = 'Deposit';
-    typeColor = COLORS.orange;
+    typeText = 'Deposited';
+    balanceColor = COLORS.green;
+    balanceDirection = '+';
     break;
   case CONSTANT_COMMONS.HISTORY.TYPE.SEND:
-    typeText = 'Send';
-    typeColor = COLORS.blue;
+    typeText = 'Sent';
+    balanceColor = COLORS.orange;
+    balanceDirection = '-';
     break;
   case CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE:
-    typeText = 'Receive';
-    typeColor = COLORS.blue;
+    typeText = 'Received';
+    balanceColor = COLORS.green;
+    balanceDirection = '+';
     break;
   }
 
   return {
     typeText,
-    typeColor
+    balanceColor,
+    balanceDirection
   };
 };
 
@@ -86,13 +92,13 @@ const getTypeData = type => {
 //   }
 // };
 
-const HistoryItem = ({ history }) => {
+const HistoryItem = ({ history, divider }) => {
   if (!history) {
     return null;
   }
 
   const { statusText, statusColor, statusNumber } = getStatusData(history.status, history.statusCode);
-  const { typeText } = getTypeData(history.type);
+  const { typeText, balanceColor, balanceDirection } = getTypeData(history.type);
   // const [addressDirection, address] = getAddress(history);
 
   return (
@@ -116,10 +122,13 @@ const HistoryItem = ({ history }) => {
         </View>
         <View style={styleSheet.row}>
           <Text
-            style={styleSheet.amountText}
+            style={[styleSheet.amountText, {
+              color: balanceColor
+            }]}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
+            {`${balanceDirection} `}
             {
               history.amount
                 ? formatUtil.amount(history.amount, history.pDecimals)
@@ -137,18 +146,26 @@ const HistoryItem = ({ history }) => {
           </Text>
         </View>
       </View>
-      <Divider color={COLORS.lightGrey4} />
+      {divider && <Divider height={2} color={COLORS.lightGrey6} />}
     </>
   );
 };
 
-const HistoryList = ({ histories }) => (
-  <Container style={styleSheet.container}>
-    {histories &&
-      histories.map(history => (
-        <HistoryItem key={history.id} history={history} />
-      ))}
+const EmptyHistory = () => (
+  <Container style={styleSheet.noHistoryContainer}>
+    <Text style={styleSheet.noHistoryText}>No histories</Text>
   </Container>
+);
+
+const HistoryList = ({ histories }) => (
+  <View style={styleSheet.container}>
+    {histories && histories.length
+      ? histories.map((history, index) => (
+        <HistoryItem key={history.id} history={history} divider={index < (histories.length - 1)} />
+      ))
+      : <EmptyHistory />
+    }
+  </View>
 );
 
 HistoryItem.defaultProps = {
@@ -161,7 +178,8 @@ HistoryItem.defaultProps = {
     fromAddress: null,
     toAddress: null,
     statusCode: null,
-  }
+  },
+  divider: false
 };
 
 HistoryItem.propTypes = {
@@ -174,7 +192,8 @@ HistoryItem.propTypes = {
     fromAddress: PropTypes.string, 
     toAddress: PropTypes.string, 
     statusCode: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  })
+  }),
+  divider: PropTypes.bool,
 };
 
 HistoryList.defaultProps = {

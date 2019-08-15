@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import memmoize from 'memoize-one';
 import { connect } from 'react-redux';
 import { Field, formValueSelector, isValid, change } from 'redux-form';
 import { Container, ScrollView, Toast, Text, View, Button } from '@src/components/core';
-import { createForm, InputField, InputQRField, validator } from '@src/components/core/reduxForm';
+import { createForm, InputField, InputQRField, InputMaxValueField, validator } from '@src/components/core/reduxForm';
 import EstimateFee from '@src/components/EstimateFee';
 import convertUtil from '@src/utils/convert';
 import { getErrorMessage, messageCode } from '@src/services/errorHandler';
@@ -33,22 +34,42 @@ class Withdraw extends React.Component {
     this.state = {
       initialFee: props?.withdrawData?.feeCreateTx,
       maxAmountValidator: undefined,
-      maxAmount: null,
       finalFee: null,
       feeUnit: null,
     };
   }
 
   componentDidMount() {
-    const { withdrawData, selectedPrivacy } = this.props;
-    const maxAmount = convertUtil.toHumanAmount(withdrawData?.maxWithdrawAmount, selectedPrivacy?.pDecimals);
-
-    this.setMaxAmount(maxAmount);
+    this.setFormValidator({ maxAmount: this.getMaxAmount() });
   }
 
-  setMaxAmount = (maxAmount) => {
+  
+  componentDidUpdate(prevProps, prevState) {
+    const { finalFee: oldFinalFee, feeUnit: oldFeeUnit } = prevState;
+    const { finalFee, feeUnit } = this.state;
+
+    if (finalFee !== oldFinalFee || feeUnit !== oldFeeUnit) {
+      // need to re-calc max amount can be send if fee was changed
+      this.setFormValidator({ maxAmount: this.getMaxAmount() });
+    }
+  }
+
+  getMaxAmount = () => {
+    const { selectedPrivacy, withdrawData } = this.props;
+    const { finalFee, feeUnit } = this.state;
+    let amount = withdrawData?.maxWithdrawAmount;
+
+    if (feeUnit === selectedPrivacy?.symbol) {
+      amount-= finalFee;
+    }
+    
+    const maxAmount = convertUtil.toHumanAmount(amount, selectedPrivacy?.pDecimals);
+
+    return Math.max(maxAmount, 0);
+  }
+
+  setFormValidator = ({ maxAmount }) => {
     this.setState({
-      maxAmount,
       maxAmountValidator: validator.maxValue(maxAmount),
     });
   }
@@ -101,11 +122,24 @@ class Withdraw extends React.Component {
     this.setState({ finalFee: fee, feeUnit });
   }
 
+  getAddressValidator = memmoize((symbol, isErc20Token) => {
+    if (isErc20Token || symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) {
+      return validator.combinedETHAddress;
+    } else if (symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BTC) {
+      return validator.combinedBTCAddress;
+    }
+
+    // default
+    return validator.combinedIncognitoAddress;
+  });
+
   render() {
-    const { maxAmountValidator, maxAmount, finalFee, feeUnit, initialFee } = this.state;
+    const { maxAmountValidator, finalFee, feeUnit, initialFee } = this.state;
     const { selectedPrivacy, isFormValid, amount, withdrawData } = this.props;
     const types = [selectedPrivacy?.symbol, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY];
     const isUsedTokenFee = !(feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
+    const addressValidator = this.getAddressValidator(selectedPrivacy?.externalSymbol, selectedPrivacy?.isErc20Token);
+    const maxAmount = this.getMaxAmount();
 
     return (
       <ScrollView style={style.container}>
@@ -121,13 +155,14 @@ class Withdraw extends React.Component {
                   name='toAddress'
                   placeholder='To Address'
                   style={style.input}
-                  validate={[validator.required]}
+                  validate={addressValidator}
                 />
                 <Field
-                  component={InputField}
+                  component={InputMaxValueField}
                   name='amount'
                   placeholder='Amount'
                   style={style.input}
+                  maxValue={convertUtil.toHumanAmount(maxAmount, selectedPrivacy?.pDecimals)}
                   componentProps={{
                     keyboardType: 'number-pad'
                   }}

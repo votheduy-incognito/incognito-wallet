@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View, Text } from '@src/components/core';
 import BackButton from '../BackButton';
 import styles from './style';
@@ -20,13 +21,19 @@ const HeaderBar = (props) => {
         { index > 0 && <BackButton onPress={back} />}
       </View>
       <View style={styles.center}>
-        <Text style={styles.title}>{options.title}</Text>
+        <Text style={styles.title} numberOfLines={1} ellipsizeMode='tail'>{options.title}</Text>
       </View>
       <View style={styles.right}>
         { options?.headerRight }
       </View>
     </View>
   );
+};
+
+HeaderBar.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  scene: PropTypes.object.isRequired,
+  index: PropTypes.number.isRequired,
 };
 
 export default HeaderBar;

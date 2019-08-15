@@ -21,6 +21,7 @@ class Home extends React.Component {
           />
         )}
       >
+        <View style={homeStyle.bgStyle} />
         <Container style={homeStyle.mainContainer}>
           <CryptoItemCard
             style={homeStyle.cryptoItem}

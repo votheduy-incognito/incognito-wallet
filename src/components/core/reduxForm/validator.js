@@ -1,3 +1,4 @@
+import walletValidator from 'wallet-address-validator';
 import accountService from '@src/services/wallet/accountService';
 
 export const required = (value, { message } = {}) => value ? undefined : message ?? 'Required';
@@ -20,12 +21,18 @@ export const email = (value, { message } = {}) =>
   value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ?
     message ?? 'Invalid email address' : undefined;
 
-export const paymentAddress = (value, { message } = {}) => value && !accountService.checkPaymentAddress(value) ? message ?? 'Invalid address'  :undefined;
+export const incognitoAddress = (value, { message } = {}) => value && !accountService.checkPaymentAddress(value) ? message ?? 'Invalid address'  :undefined;
+
+export const ethAddress = (value, { message } = {}) => !walletValidator.validate(value, 'ETH') ? message ?? 'Invalid ETH address' : undefined;
+
+export const btcAddress = (value, { message } = {}) => !walletValidator.validate(value, 'BTC') ? message ?? 'Invalid BTC address' : undefined;
 
 export const bitcoinWithdrawMinAmount = largerThan(0.0005, { message: 'Amount of Bitcoin must be larger than 0.0005 BTC' });
 
 export const combinedAmount = [required, number, largerThan(0)];
-export const combinedPaymentAddress = [required, paymentAddress];
+export const combinedIncognitoAddress = [required, incognitoAddress];
+export const combinedETHAddress = [required, ethAddress];
+export const combinedBTCAddress = [required, btcAddress];
 
 export default {
   required,
@@ -34,9 +41,13 @@ export default {
   minValue,
   maxValue,
   email,
-  paymentAddress,
+  incognitoAddress,
   largerThan,
   combinedAmount,
-  combinedPaymentAddress,
-  bitcoinWithdrawMinAmount
+  combinedIncognitoAddress,
+  combinedETHAddress,
+  combinedBTCAddress,
+  bitcoinWithdrawMinAmount,
+  ethAddress,
+  btcAddress
 };
