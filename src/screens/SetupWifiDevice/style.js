@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   modal: {
   },
   button:{
-    backgroundColor:'#0ECBEE',
+    backgroundColor:'#25CDD6',
     padding:scaleInApp(10),
     borderRadius:scaleInApp(4),
     marginTop:scaleInApp(20),

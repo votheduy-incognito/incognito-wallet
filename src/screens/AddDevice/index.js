@@ -68,7 +68,7 @@ class AddDevice extends BaseScreen {
         <View style={styles.groupWaiting}>
           <Pulse
             style={{ position: 'absolute' }}
-            color="#0ECBEE"
+            color="#25CDD6"
             numPulses={3}
             diameter={400}
             speed={20}

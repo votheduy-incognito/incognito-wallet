@@ -1,29 +1,54 @@
 import { StyleSheet } from 'react-native';
 import TextStyle, { scaleInApp, FontStyle } from '@src/styles/TextStyle';
 
+export const tab_border_radius = scaleInApp(4);
+  
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    flexDirection: 'row',
-    justifyContent: 'center'
+    flexDirection: 'column',
+    padding:scaleInApp(10)
   },
   group:{
-    flex: 0.75,
-    alignSelf:'center',
+    flex: 1,
+    padding:scaleInApp(20),
     flexDirection: 'column'
   },
+  tab_button:{
+    borderWidth:0,
+    backgroundColor:'#F0F5F5',
+  },
+  tab_container:{
+    borderWidth:0,
+    backgroundColor:'#FFFFFF',
+    borderRadius:tab_border_radius,
+    height: scaleInApp(44)
+  },
+  tab_text:{
+    ...TextStyle.mediumText,
+    color:'#8C9C9D'
+  },
+  tab_text_selected:{
+    ...TextStyle.mediumText,
+    color:'#FFFFFF'
+  },
+  tab_button_selected:{
+    backgroundColor:'#25CDD6'
+  },
   label:{
-    ...TextStyle.normalText,
-    ...FontStyle.medium,
-    color: '#000000',
+    ...TextStyle.bigText,
+    textAlign:'center',
+    textAlignVertical:'center',
+    marginTop:scaleInApp(20),
+    color: '#101111',
   },
   errorText:{
     ...TextStyle.normalText,
     color: 'red',
   },
   button:{
-    backgroundColor:'#0ECBEE',
+    backgroundColor:'#25CDD6',
     padding:scaleInApp(10),
     marginTop:scaleInApp(20),
     borderRadius:scaleInApp(4)

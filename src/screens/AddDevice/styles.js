@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   textEnterPass:{
     ...TextStyle.normalText,
     marginTop:scaleInApp(5),
-    color: '#0ECBEE',
+    color: '#25CDD6',
   },
   group2_title:{
     ...TextStyle.normalText,

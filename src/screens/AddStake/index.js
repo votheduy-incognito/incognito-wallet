@@ -3,9 +3,12 @@ import _ from 'lodash';
 import React from 'react';
 import { ScrollView, Text, View,TextInput } from 'react-native';
 import { connect } from 'react-redux';
-import { Button } from 'react-native-elements';
-import style from './styles';
+import { Button,ButtonGroup } from 'react-native-elements';
+import { scaleInApp } from '@src/styles/TextStyle';
+import StakeValidatorTypeSelector from '@src/components/StakeValidatorTypeSelector/StakeValidatorTypeSelector';
+import style, { tab_border_radius } from './styles';
 
+const buttons = ['Stake', 'Borrow & Stake'];
 export const TAG = 'AddStake';
 
 class AddStake extends BaseScreen {
@@ -14,7 +17,8 @@ class AddStake extends BaseScreen {
 
     this.state = {
       loading: true,
-      errorText:''
+      errorText:'',
+      selectedIndex:0
     };
   }
 
@@ -25,16 +29,39 @@ class AddStake extends BaseScreen {
   componentDidMount = async ()=> {
     super.componentDidMount();
   }
+  updateIndex=(selectedIndex)=> {
+    this.setState({selectedIndex});
+  }
+  renderTabs=()=>{
+    const { selectedIndex } = this.state;
+    return(
+      <ButtonGroup
+        onPress={this.updateIndex}
+        selectedIndex={selectedIndex}
+        buttons={buttons}
+        textStyle={style.tab_text}
+        buttonStyle={style.tab_button}
+        selectedTextStyle={style.tab_text_selected}
+        selectedButtonStyle={style.tab_button_selected}
+        containerStyle={style.tab_container}
+      />
+    );
+  }
 
   render() {
-    const { loading ,validAmount,errorText} = this.state;
+    const { loading ,validAmount,errorText,selectedIndex} = this.state;
 
     return (
       <View style={style.container}>
+        {this.renderTabs()}
         <View style={style.group}>
-          <Text style={style.label}>
-            Amount
-          </Text>
+          {selectedIndex ==1 &&(
+            <Text style={style.label}>
+          Borrow & Stake program is a special program designed for Node Device’s Owner
+            </Text>
+          )}
+          <StakeValidatorTypeSelector />
+          
           <Text style={style.errorText}>{errorText}</Text>
           <TextInput
             underlineColorAndroid="transparent"

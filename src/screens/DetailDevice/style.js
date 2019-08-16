@@ -108,7 +108,7 @@ const style = StyleSheet.create({
     color: '#1C1C1C',
   },
   group2_container_button:{
-    backgroundColor:'#0ECBEE',
+    backgroundColor:'#25CDD6',
     padding:scaleInApp(10),
     marginTop:scaleInApp(20),
     borderRadius:scaleInApp(4)
