@@ -1,6 +1,7 @@
 import privacyIcon from '@src/assets/images/cryptoLogo/incognito.png';
 import btcIcon from '@src/assets/images/cryptoLogo/bitcoin.png';
 import ethIcon from '@src/assets/images/cryptoLogo/ethereum.png';
+import binanceIcon from '@src/assets/images/cryptoLogo/binance.png';
 import { CONSTANT_COMMONS } from '@src/constants';
 
 const customTokenIcon = ethIcon;
@@ -8,6 +9,7 @@ const customTokenIcon = ethIcon;
 const SYMBOL = {
   pETH: CONSTANT_COMMONS.TOKEN_SYMBOL.pETH,
   pBTC: CONSTANT_COMMONS.TOKEN_SYMBOL.pBTC,
+  pBNB:  CONSTANT_COMMONS.TOKEN_SYMBOL.pBNB,
   MAIN_CRYPTO_CURRENCY: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV
 };
 
@@ -19,6 +21,10 @@ const DATA = {
   [SYMBOL.pBTC]: {
     fullName: 'Private BTC',
     icon: btcIcon,
+  },
+  [SYMBOL.pBNB]: {
+    fullName: 'Private BNB',
+    icon: binanceIcon,
   },
   [SYMBOL.MAIN_CRYPTO_CURRENCY]: {
     fullName: 'Privacy',

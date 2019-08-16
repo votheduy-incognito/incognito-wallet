@@ -1,13 +1,16 @@
-import { ScrollView, Toast, RefreshControl } from '@src/components/core';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { withNavigation } from 'react-navigation';
+import { ScrollView, Toast, RefreshControl, Button } from '@src/components/core';
 import HistoryList from '@src/components/HistoryList';
 import LoadingContainer from '@src/components/LoadingContainer';
 import tokenService from '@src/services/wallet/tokenService';
 import { getpTokenHistory } from '@src/services/api/history';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { CONSTANT_COMMONS } from '@src/constants';
+import ROUTE_NAMES from '@src/router/routeNames';
 
 const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, decimals, pDecimals) => {
   const data = [];
@@ -52,15 +55,14 @@ class HistoryTokenContainer extends Component {
     super();
 
     this.state = {
-      isLoading: false,
+      isLoading: true,
       histories: [],
       historiesFromApi: [],
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const { navigation } = this.props;
-  
     navigation.addListener(
       'didFocus',
       () => {
@@ -78,14 +80,24 @@ class HistoryTokenContainer extends Component {
     }
   }
 
-  handleLoadHistory = () => {
-    const { wallet, defaultAccount, onLoad } = this.props;
-    const token = this.getToken(this.props);
-    this.loadTokentHistory(wallet, defaultAccount, token);
-    this.getHistoryFromApi();
+  handleLoadHistory = async () => {
+    try {
+      this.setState({ isLoading: true });
+      const { wallet, defaultAccount } = this.props;
+      const token = this.getToken(this.props);
+  
+      const [histories, historiesFromApi] = await Promise.all([
+        this.loadTokentHistory(wallet, defaultAccount, token),
+        this.getHistoryFromApi()
+      ]);
 
-    if (typeof onLoad === 'function') {
-      onLoad();
+      this.setState({
+        historiesFromApi,
+        histories
+      });
+      
+    } finally {
+      this.setState({ isLoading: false });
     }
   }
 
@@ -96,7 +108,6 @@ class HistoryTokenContainer extends Component {
 
   getHistoryFromApi = async () => {
     try {
-      this.setState({ isLoading: true });
       const { selectedPrivacy } = this.props;
       const { isDeposable, isWithdrawable, paymentAddress } = selectedPrivacy;
 
@@ -106,17 +117,14 @@ class HistoryTokenContainer extends Component {
 
       const histories = await getpTokenHistory({ paymentAddress, tokenId: selectedPrivacy?.tokenId });
 
-      this.setState({ historiesFromApi: histories });
+      return histories;
     } catch {
       Toast.showError('Can not load withdraw & deposit history right now, please try later');
-    } finally {
-      this.setState({ isLoading: false });
     }
   }
 
   loadTokentHistory = async (wallet, account, token) => {
     try {
-      this.setState({ isLoading: true });
       if (!wallet) {
         throw new Error('Wallet is not exist to load history');
       }
@@ -130,13 +138,37 @@ class HistoryTokenContainer extends Component {
         account,
         token
       });
-      this.setState({ histories });
+
+      return histories;
     } catch {
       Toast.showError('Can not load history right now, please try later');
-    } finally {
-      this.setState({ isLoading: false });
     }
   };
+
+  handleScrollReload = () => {
+    const { onLoad } = this.props;
+    if (typeof onLoad === 'function') {
+      onLoad();
+    }
+
+    this.handleLoadHistory();
+  }
+
+  renderActionButton = () => {
+    const { selectedPrivacy, navigation } = this.props;
+    if (selectedPrivacy?.isDeposable) {
+      return (
+        <Button
+          title='Deposit'
+          onPress={() => {
+            navigation.navigate(ROUTE_NAMES.ReceiveCrypto);
+          }}
+        />
+      );
+    }
+
+    return null;
+  }
 
   render() {
     const { isLoading, histories, historiesFromApi } = this.state;
@@ -148,14 +180,20 @@ class HistoryTokenContainer extends Component {
 
     return (
       <ScrollView
+        contentContainerStyle={{
+          flex: 1
+        }}
         refreshControl={(
           <RefreshControl
             refreshing={isLoading}
-            onRefresh={this.handleLoadHistory}
+            onRefresh={this.handleScrollReload}
           />
         )}
       >
-        <HistoryList histories={combineHistory(histories, historiesFromApi, selectedPrivacy?.symbol, selectedPrivacy?.externalSymbol, selectedPrivacy?.decimals, selectedPrivacy?.pDecimals)} />
+        <HistoryList
+          histories={combineHistory(histories, historiesFromApi, selectedPrivacy?.symbol, selectedPrivacy?.externalSymbol, selectedPrivacy?.decimals, selectedPrivacy?.pDecimals)}
+          actionButton={this.renderActionButton()}
+        />
       </ScrollView>
     );
   }
@@ -181,4 +219,7 @@ HistoryTokenContainer.propTypes = {
   onLoad: PropTypes.func,
 };
 
-export default connect(mapState)(HistoryTokenContainer);
+export default compose(
+  connect(mapState),
+  withNavigation
+)(HistoryTokenContainer);
