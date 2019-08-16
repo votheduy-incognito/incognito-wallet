@@ -5,7 +5,6 @@ import HomeMine from '@screens/HomeMine';
 import { createStackNavigator } from 'react-navigation';
 import SetupWifiDevice from '@screens/SetupWifiDevice';
 import AddNode from '@src/screens/AddNode';
-import Withdraw from '@src/screens/Withdraw';
 import AddStake from '@src/screens/AddStake';
 import TextStyle, { scaleInApp } from '@src/styles/TextStyle';
 import { sizeHeader } from '@src/components/HeaderBar/style';
@@ -13,9 +12,7 @@ import { imagesVector } from '@src/assets';
 import ROUTE_NAMES from './routeNames';
 
 export const TAG = 'MinerNavigator';
-const defaultNavigationOptions={
 
-};
 const MinerNavigator = createStackNavigator(
   {
     [ROUTE_NAMES.HomeMine]:{
@@ -68,10 +65,11 @@ const MinerNavigator = createStackNavigator(
         },
         headerStyle:{
           height:sizeHeader.height/2,
-          backgroundColor:'#0ECBEE'
+          backgroundColor:'#25CDD6'
         }
       };
     },
+    initialRouteName:ROUTE_NAMES.AddStake,
     headerMode: 'screen'
   }
 );
