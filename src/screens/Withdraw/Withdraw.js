@@ -162,7 +162,7 @@ class Withdraw extends React.Component {
                   name='amount'
                   placeholder='Amount'
                   style={style.input}
-                  maxValue={convertUtil.toHumanAmount(maxAmount, selectedPrivacy?.pDecimals)}
+                  maxValue={maxAmount}
                   componentProps={{
                     keyboardType: 'number-pad'
                   }}
