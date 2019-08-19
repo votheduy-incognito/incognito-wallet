@@ -6,7 +6,7 @@
       "@models/*": ["./models/*"],
       "@services/*": ["./services/*"],
       "@utils/*":["./utils/*"],
-      "@components/*": ["./components/*", "./components/*/index"],
+      "@components/*": ["./components/*","./components/*.js", "./components/*/index"],
       "@screens/*": ["./screens/*", "./screens/*/index"],
       "@assets/*": ["./assets/*"],
       "@routers/*":["./router/*"]
