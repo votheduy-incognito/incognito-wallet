@@ -1,21 +1,12 @@
 import Util from '@src/utils/Util';
-import React, { Component } from 'react';
+import React from 'react';
 import { AppState } from 'react-native';
 import Toast from 'react-native-easy-toast';
+import BaseComponent from '@src/components/BaseComponent';
 
 export const TAG = 'BaseScreen';
 
-const callIfBackToThisRoute = (props, call) => {
-  if (!props.navigation) {
-    return undefined;
-  }
-  const thisRoute = props.navigation.state.routeName;
-  const listener = props.navigation.addListener('willFocus', payload => {
-    if (payload.state.routeName === thisRoute) call(props);
-  });
-  return listener;
-};
-class BaseScreen extends Component {
+class BaseScreen extends BaseComponent {
   constructor(props) {
     super(props);
 
@@ -25,52 +16,14 @@ class BaseScreen extends Component {
   }
 
   componentDidMount() {
-    this.subs = [callIfBackToThisRoute(this.props, props => this.onResume())];
-
-    AppState.addEventListener('change', this.handleAppStateChange);
+    super.componentDidMount();
   }
 
   componentWillUnmount() {
-    this.subs?.forEach(sub => sub?.remove());
-    AppState.removeEventListener('change', this.handleAppStateChange);
+    super.componentWillUnmount();
   }
 
   onResume = () => {};
-
-  renderToastMessage = () => {
-    return (
-      <Toast
-        position="top"
-        ref={toast => {
-          this.toast = toast;
-        }}
-      />
-    );
-  };
-
-  showToastMessage = (text = '', callback = null) => {
-    if (text && this.toast) {
-      this.toast.show(text, 500, callback);
-    }
-  };
-
-  handleAppStateChange = nextAppState => {
-    if (
-      this.appState.match(/inactive|background/) &&
-      nextAppState === 'active'
-    ) {
-      // this.onResume();
-      // console.log('App has come to the foreground!');
-    }
-    this.appState = nextAppState;
-  };
-
-  isForeground = () => {
-    return (
-      this.appState.match(/inactive|background/) &&
-      AppState.currentState === 'active'
-    );
-  };
 
   onPressBack = () => {
     const { navigation } = this.props;

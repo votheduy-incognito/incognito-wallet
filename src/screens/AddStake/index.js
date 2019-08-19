@@ -9,6 +9,7 @@ import StakeValidatorTypeSelector from '@src/components/StakeValidatorTypeSelect
 import { createForm, InputField, InputQRField, validator } from '@src/components/core/reduxForm';
 import { Field } from 'redux-form';
 import EstimateFee from '@src/components/EstimateFee/EstimateFee';
+import BorrowStake from '@src/components/BorrowStake';
 import style, { tab_border_radius } from './styles';
 
 const buttons = ['Stake', 'Borrow & Stake'];
@@ -66,48 +67,13 @@ class AddStake extends BaseScreen {
       />
     );
   }
-  renderQrcodeForm=({ handleSubmit, submitting }) =>{ 
+  renderBorrowStake = ()=>{
     const {selectedIndex} = this.state;
-    console.log(TAG,'renderQrcodeForm begin');
-    return(
-      <Field
-        component={FieldQrcode}
-        name='address'
-        label='Address'
-        placeholder='Search by ERC20 Address'
-        style={style.fields}
-        validate={validator.required}
-      />
-    );
-  };
-  renderFormWithTab=({ handleSubmit, submitting }) =>{ 
-    const {loading ,validAmount,errorText,selectedIndex} = this.state;
-    console.log(TAG,'renderQrcodeForm begin');
-    return(
-      <>
-        {selectedIndex ==1 &&(
-          <Text style={style.label}>
-          Borrow & Stake program is a special program designed for Node Device’s Owner
-          </Text>
-        )}
-        <StakeValidatorTypeSelector />
-        <EstimateFee />
-        <Text style={style.errorText}>{errorText}</Text>
-        <Field
-          component={FieldQrcode}
-          name='address'
-          placeholder='Enter device serial number'
-          style={style.input}
-          validate={validator.required}
-        />
-        <Button
-          titleStyle={style.button_text}
-          buttonStyle={style.button}
-          title='Stake'
-        />
-      </>
-    );
-  };
+    return selectedIndex === 1?<BorrowStake />:undefined; 
+  }
+  renderStake = ()=>{
+    return undefined;
+  }
 
   render() {
     const { loading ,validAmount,errorText,selectedIndex} = this.state;
@@ -115,9 +81,8 @@ class AddStake extends BaseScreen {
     return (
       <View style={style.container}>
         {this.renderTabs()}
-        <Form onChange={this.handleFormChange} style={style.group}>
-          {this.renderFormWithTab}
-        </Form>
+        {this.renderStake()}
+        {this.renderBorrowStake()}
       </View>
     );
   }
