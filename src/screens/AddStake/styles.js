@@ -10,6 +10,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     padding:scaleInApp(10)
   },
+  fields: {
+    flex: 1,
+  },
   group:{
     flex: 1,
     padding:scaleInApp(20),
@@ -58,13 +61,16 @@ const styles = StyleSheet.create({
     ...FontStyle.medium,
     color: '#FFFFFF',
   },
+  input_container:{
+    height:scaleInApp(50)
+  },
   input:{
     ...FontStyle.medium,
     fontSize:scaleInApp(20),
     color: '#000000',
     width: '100%',
     borderColor:'#0DB8D8',
-    borderBottomWidth:1
+    borderBottomWidth:0
   }
 });
 
