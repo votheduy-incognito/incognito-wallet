@@ -2,6 +2,7 @@ import privacyIcon from '@src/assets/images/cryptoLogo/incognito.png';
 import btcIcon from '@src/assets/images/cryptoLogo/bitcoin.png';
 import ethIcon from '@src/assets/images/cryptoLogo/ethereum.png';
 import binanceIcon from '@src/assets/images/cryptoLogo/binance.png';
+import kcsIcon from '@src/assets/images/cryptoLogo/kcs.png';
 import { CONSTANT_COMMONS } from '@src/constants';
 
 const customTokenIcon = ethIcon;
@@ -10,7 +11,8 @@ const SYMBOL = {
   pETH: CONSTANT_COMMONS.TOKEN_SYMBOL.pETH,
   pBTC: CONSTANT_COMMONS.TOKEN_SYMBOL.pBTC,
   pBNB:  CONSTANT_COMMONS.TOKEN_SYMBOL.pBNB,
-  MAIN_CRYPTO_CURRENCY: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV
+  MAIN_CRYPTO_CURRENCY: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
+  pKCS: 'pKCS'
 };
 
 const DATA = {
@@ -32,6 +34,10 @@ const DATA = {
     symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
     name: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
     icon: privacyIcon
+  },
+  [SYMBOL.pKCS]: {
+    fullName: 'Private KCS',
+    icon: kcsIcon,
   },
 };
 
