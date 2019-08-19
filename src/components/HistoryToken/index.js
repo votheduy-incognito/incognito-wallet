@@ -161,7 +161,7 @@ class HistoryTokenContainer extends Component {
         <Button
           title='Deposit'
           onPress={() => {
-            navigation.navigate(ROUTE_NAMES.ReceiveCrypto);
+            navigation.navigate(ROUTE_NAMES.Deposit);
           }}
         />
       );
