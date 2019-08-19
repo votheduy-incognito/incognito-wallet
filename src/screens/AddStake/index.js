@@ -6,9 +6,28 @@ import { connect } from 'react-redux';
 import { Button,ButtonGroup } from 'react-native-elements';
 import { scaleInApp } from '@src/styles/TextStyle';
 import StakeValidatorTypeSelector from '@src/components/StakeValidatorTypeSelector/StakeValidatorTypeSelector';
+import { createForm, InputField, InputQRField, validator } from '@src/components/core/reduxForm';
+import { Field } from 'redux-form';
+import EstimateFee from '@src/components/EstimateFee/EstimateFee';
 import style, { tab_border_radius } from './styles';
 
 const buttons = ['Stake', 'Borrow & Stake'];
+const formName = 'addErc20Token';
+const Form = createForm(formName, {
+  enableReinitialize: true,
+  keepDirtyOnReinitialize: true,
+});
+const FieldQrcode = (props)=>(
+  <InputQRField
+    {...props}
+    containerStyle={style.input_container}
+    underlineColorAndroid="transparent"
+    inputStyle={style.input}
+    placeholder="Enter device serial number"
+    maxLength={100}
+    numberOfLines={1}
+  />
+);
 export const TAG = 'AddStake';
 
 class AddStake extends BaseScreen {
@@ -47,6 +66,48 @@ class AddStake extends BaseScreen {
       />
     );
   }
+  renderQrcodeForm=({ handleSubmit, submitting }) =>{ 
+    const {selectedIndex} = this.state;
+    console.log(TAG,'renderQrcodeForm begin');
+    return(
+      <Field
+        component={FieldQrcode}
+        name='address'
+        label='Address'
+        placeholder='Search by ERC20 Address'
+        style={style.fields}
+        validate={validator.required}
+      />
+    );
+  };
+  renderFormWithTab=({ handleSubmit, submitting }) =>{ 
+    const {loading ,validAmount,errorText,selectedIndex} = this.state;
+    console.log(TAG,'renderQrcodeForm begin');
+    return(
+      <>
+        {selectedIndex ==1 &&(
+          <Text style={style.label}>
+          Borrow & Stake program is a special program designed for Node Device’s Owner
+          </Text>
+        )}
+        <StakeValidatorTypeSelector />
+        <EstimateFee />
+        <Text style={style.errorText}>{errorText}</Text>
+        <Field
+          component={FieldQrcode}
+          name='address'
+          placeholder='Enter device serial number'
+          style={style.input}
+          validate={validator.required}
+        />
+        <Button
+          titleStyle={style.button_text}
+          buttonStyle={style.button}
+          title='Stake'
+        />
+      </>
+    );
+  };
 
   render() {
     const { loading ,validAmount,errorText,selectedIndex} = this.state;
@@ -54,29 +115,9 @@ class AddStake extends BaseScreen {
     return (
       <View style={style.container}>
         {this.renderTabs()}
-        <View style={style.group}>
-          {selectedIndex ==1 &&(
-            <Text style={style.label}>
-          Borrow & Stake program is a special program designed for Node Device’s Owner
-            </Text>
-          )}
-          <StakeValidatorTypeSelector />
-          
-          <Text style={style.errorText}>{errorText}</Text>
-          <TextInput
-            underlineColorAndroid="transparent"
-            style={style.input}
-            placeholder="1.0"
-            maxLength={10}
-            numberOfLines={1}
-            keyboardType="numeric"
-          />
-          <Button
-            titleStyle={style.button_text}
-            buttonStyle={style.button}
-            title='Stake'
-          />
-        </View>
+        <Form onChange={this.handleFormChange} style={style.group}>
+          {this.renderFormWithTab}
+        </Form>
       </View>
     );
   }
