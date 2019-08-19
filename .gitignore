@@ -57,7 +57,7 @@ buck-out/
 
 # env 
 .env
-.env.production
+.env.*
 *.lock
 ios/Pods
 ios/GoogleService-Info\.plist

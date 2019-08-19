@@ -143,7 +143,7 @@ class SendCrypto extends React.Component {
                   placeholder='0.0'
                   label='Amount'
                   style={homeStyle.input}
-                  maxValue={convertUtil.toHumanAmount(maxAmount, selectedPrivacy?.pDecimals)}
+                  maxValue={maxAmount}
                   componentProps={{
                     keyboardType: 'number-pad'
                   }}
