@@ -18,7 +18,7 @@ import styleSheet from './style';
 const formName = 'addInternalToken';
 const selector = formValueSelector(formName);
 const initialValues = {
-  fee: '0.5',
+  fee: '',
   fromAddress: ''
 };
 const Form = createForm(formName, { initialValues });
