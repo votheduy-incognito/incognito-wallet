@@ -50,9 +50,8 @@ class Home extends React.Component {
             ))
           }
           <View style={homeStyle.addTokenContainer}>
-            <Text style={homeStyle.addTokenLabel}>Don’t see your token?</Text>
             <TouchableOpacity onPress={handleAddFollowToken}>
-              <Text style={homeStyle.addTokenBtn}>Add token</Text>
+              <Text style={homeStyle.addTokenBtn}>Add an existing token</Text>
             </TouchableOpacity>
           </View>
         </Container>

@@ -12,6 +12,7 @@ import styleSheet from './style';
 
 const formName = 'createAccount';
 const Form = createForm(formName);
+const isRequired = validator.required();
 
 const CreateAccount = ({ navigation, accountList, createAccount }) => {
   const goBack = () => {
@@ -48,7 +49,7 @@ const CreateAccount = ({ navigation, accountList, createAccount }) => {
               name='accountName'
               placeholder='Account Name'
               label='Account Name'
-              validate={[validator.required]}
+              validate={[isRequired]}
             />
             <Button
               title='Create account'

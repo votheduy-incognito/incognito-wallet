@@ -30,7 +30,7 @@ const getStatusData = (status, statusCode) => {
     break;
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SUCCESS:
   case ConfirmedTx:
-    statusText = 'Success';
+    statusText = 'Complete';
     statusColor = COLORS.green;
     break;
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.FAILED:
@@ -56,22 +56,22 @@ const getTypeData = type => {
   let balanceColor;
   switch (type) {
   case CONSTANT_COMMONS.HISTORY.TYPE.WITHDRAW:
-    typeText = 'Withdrawn';
+    typeText = 'Withdraw';
     balanceColor = COLORS.red;
     balanceDirection = '-';
     break;
   case CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT:
-    typeText = 'Deposited';
+    typeText = 'Deposit';
     balanceColor = COLORS.green;
     balanceDirection = '+';
     break;
   case CONSTANT_COMMONS.HISTORY.TYPE.SEND:
-    typeText = 'Sent';
+    typeText = 'Send';
     balanceColor = COLORS.orange;
     balanceDirection = '-';
     break;
   case CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE:
-    typeText = 'Received';
+    typeText = 'Receive';
     balanceColor = COLORS.green;
     balanceDirection = '+';
     break;
@@ -153,7 +153,7 @@ const HistoryItem = ({ history, divider }) => {
 
 const EmptyHistory = ({ actionButton }) => (
   <Container style={styleSheet.noHistoryContainer}>
-    <Text style={styleSheet.noHistoryText}>No histories</Text>
+    <Text style={styleSheet.noHistoryText}>No transactions yet.</Text>
     <View style={styleSheet.noHistoryActionButton}>
       {actionButton}
     </View>

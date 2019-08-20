@@ -17,10 +17,11 @@ class FlatList extends React.Component {
   }
   
   renderEmpty = () => {
+    const { emptyText } = this.props;
     return (
       <View style={[style.containerImg, {}]}>
         <Text>
-          There are no data available
+          { emptyText ?? 'There are no data available'}
         </Text>
       </View>
     );
@@ -45,7 +46,13 @@ class FlatList extends React.Component {
   }
 }
 
+FlatList.defaultProps = {
+  listItem: null,
+  emptyText: null
+};
+
 FlatList.propTypes = {
-  listItem: PropTypes.shape()
+  listItem: PropTypes.shape(),
+  emptyText: PropTypes.string,
 };
 export default FlatList;

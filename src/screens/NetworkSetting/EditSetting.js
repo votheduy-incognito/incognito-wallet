@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 import { networkEditStyle } from './style';
 
 const formName = 'editSetting';
+const isRequired = validator.required();
 
 class EditSetting extends Component {
   constructor(props) {
@@ -65,7 +66,7 @@ class EditSetting extends Component {
                 name='address'
                 placeholder='RPC Server Address'
                 label='RPC Server Address'
-                validate={[validator.required]}
+                validate={[isRequired]}
               />
               <Field
                 component={InputField}
@@ -84,11 +85,11 @@ class EditSetting extends Component {
                 name='name'
                 placeholder='Name'
                 label='Name'
-                validate={[validator.required]}
+                validate={[isRequired]}
               />
               <View style={networkEditStyle.btnGroups}>
                 {/* <Button title='Remove' type='danger' style={networkEditStyle.removeBtn} disabled /> */}
-                <Button title='SAVING' style={networkEditStyle.saveBtn} onPress={handleSubmit(this.handleEdit)} isAsync isLoading={submitting} />
+                <Button title='SAVE' style={networkEditStyle.saveBtn} onPress={handleSubmit(this.handleEdit)} isAsync isLoading={submitting} />
               </View>
             </>
           )}

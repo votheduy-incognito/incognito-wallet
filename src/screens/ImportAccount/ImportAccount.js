@@ -12,6 +12,7 @@ import styleSheet from './style';
 
 const formName = 'importAccount';
 const Form = createForm(formName);
+const isRequired = validator.required();
 
 const ImportAccount = ({ navigation, accountList, importAccount }) => {
   const goBack = () => {
@@ -48,14 +49,14 @@ const ImportAccount = ({ navigation, accountList, importAccount }) => {
               name='accountName'
               placeholder='Account Name'
               label='Account Name'
-              validate={[validator.required]}
+              validate={[isRequired]}
             />
             <Field
               component={InputField}
               name='privateKey'
               placeholder='Private Key'
               label='Private Key'
-              validate={[validator.required]}
+              validate={[isRequired]}
             />
             <Button
               title='Import account'

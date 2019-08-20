@@ -12,6 +12,7 @@ import style from './style';
 const formName = 'deposit';
 const selector = formValueSelector(formName);
 const Form = createForm(formName, { destroyOnUnmount: false });
+const isRequired = validator.required();
 
 class Deposit extends React.Component {
   constructor() {
@@ -53,7 +54,7 @@ class Deposit extends React.Component {
                         label='Amount'
                         validate={[
                           ...isBTC ? [validator.bitcoinWithdrawMinAmount] : [],
-                          validator.required,
+                          isRequired,
                           ...validator.combinedAmount
                         ]}
                         componentProps={{

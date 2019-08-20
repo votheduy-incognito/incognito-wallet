@@ -51,8 +51,8 @@ class WalletDetailContainer extends Component {
       options.push({
         id: 'unfollow',
         icon: <Image source={unfollowTokenIcon} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
-        label: 'Unfollow token',
-        desc: 'Tap to unfollow',
+        label: 'Remove token',
+        desc: 'Any existing balance will reappear when the token is added back.',
         handlePress: () => this.handleUnfollowTokenBtn(selectedPrivacy?.tokenId)
       });
     }
@@ -62,7 +62,7 @@ class WalletDetailContainer extends Component {
         id: 'withdraw',
         icon: <Image source={withdrawIcon} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
         label: 'Withdraw',
-        desc: 'to your own wallet',
+        desc: 'to another crypto wallet',
         handlePress: () => navigation.navigate(ROUTE_NAMES.Withdraw)
       });
     }
@@ -80,7 +80,7 @@ class WalletDetailContainer extends Component {
       // update new wallet to store
       setWallet(updatedWallet);
 
-      Toast.showInfo('Unfollowed successfully');
+      Toast.showInfo('Token removed');
       navigation.goBack();
     } catch {
       Toast.showError('Can not unfollow this token right now, please try later.');

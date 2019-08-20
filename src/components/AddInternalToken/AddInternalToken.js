@@ -22,6 +22,12 @@ const initialValues = {
   fromAddress: ''
 };
 const Form = createForm(formName, { initialValues });
+const isRequired = validator.required();
+const isNumber = validator.number({ message: 'Decimals must be a number' });
+const minFee = fee => validator.minValue(fee, { message: `Fee must be larger than ${fee}` });
+const maxFee = balance => validator.maxValue(balance, { message: balance > 0
+  ? `Fee must be less than your balance (your balance is ${balance} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV})`
+  : `Please top up your balance to cover the fee (approx 0.001 ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}).` });
 
 class AddInternalToken extends Component {
   constructor(props) {
@@ -30,8 +36,8 @@ class AddInternalToken extends Component {
     this.state = {
       isCreatingOrSending: false,
       isGettingFee: false,
-      minFeeValidator: validator.minValue(0),
-      maxFeeValidator: validator.maxValue(convert.toHumanAmount(props?.account?.value, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY) || 100),
+      minFeeValidator: minFee(0),
+      maxFeeValidator: maxFee(convert.toHumanAmount(props?.account?.value, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)),
     };
 
     this.handleShouldGetFee = _.debounce(this.handleShouldGetFee, 1000);
@@ -83,7 +89,7 @@ class AddInternalToken extends Component {
       const fee =  await getEstimateFeeForSendingTokenService(fromAddress, toAddress, Number(amount), tokenObject, account.PrivateKey, accountWallet);
       const humanFee = convert.toHumanAmount(fee, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY);
       // set min fee state
-      this.setState({ minFeeValidator: validator.minValue(humanFee) });
+      this.setState({ minFeeValidator: minFee(humanFee) });
       // update fee
       this.updateFormValues('fee', String(humanFee));
     } catch(e){
@@ -169,7 +175,7 @@ class AddInternalToken extends Component {
                   placeholder='Name'
                   label='Name'
                   style={styleSheet.input}
-                  validate={[validator.required]}
+                  validate={[isRequired]}
                 />
                 <Field
                   component={InputField}
@@ -177,7 +183,7 @@ class AddInternalToken extends Component {
                   placeholder='Symbol'
                   label='Symbol'
                   style={styleSheet.input}
-                  validate={[validator.required]}
+                  validate={[isRequired]}
                 />
                 <Field
                   component={InputField}
@@ -193,10 +199,10 @@ class AddInternalToken extends Component {
                 <Field
                   component={InputField}
                   name='fee'
-                  placeholder='Min fee'
-                  label={`Min fee (max ${formatUtil.amount(account.value, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)} ${tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY})`}
+                  placeholder='Issuance fee'
+                  label={`Issuance fee (${tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY})`}
                   style={styleSheet.input}
-                  validate={[validator.required, validator.number, minFeeValidator, maxFeeValidator]}
+                  validate={[isRequired, isNumber, minFeeValidator, maxFeeValidator]}
                   componentProps={{
                     keyboardType: 'number-pad'
                   }}
@@ -204,7 +210,7 @@ class AddInternalToken extends Component {
                 />
               </ScrollView>
               <Button
-                title='Add'
+                title='Issue'
                 style={styleSheet.submitBtn}
                 onPress={handleSubmit(this.handleCreateSendToken)}
                 isAsync
