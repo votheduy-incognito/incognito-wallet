@@ -8,7 +8,7 @@ const WaitingDeposit = ({ selectedPrivacy, depositAddress, amount }) => {
   return (
     <View style={waitingDepositStyle.container}>
       <View style={waitingDepositStyle.textContainer}>
-        <Text style={[waitingDepositStyle.text, waitingDepositStyle.textHighlight]}>Please send {amount} {selectedPrivacy?.symbol} to this address within 60 minutes.</Text>
+        <Text style={[waitingDepositStyle.text, waitingDepositStyle.textHighlight]}>Please send {amount} {selectedPrivacy?.externalSymbol} to this address within 60 minutes.</Text>
         <Text style={waitingDepositStyle.text}>After this, you can close this screen, we will let you know once completed.</Text>
       </View>
       <QrCodeAddress data={depositAddress} />
