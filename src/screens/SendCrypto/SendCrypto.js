@@ -69,8 +69,14 @@ class SendCrypto extends React.Component {
   }
 
   setFormValidation = ({ maxAmount }) => {
+    const { selectedPrivacy } = this.props;
+
     this.setState({
-      maxAmountValidator: validator.maxValue(maxAmount),
+      maxAmountValidator: validator.maxValue(maxAmount, {
+        message: maxAmount > 0 
+          ? `Max amount you can send is ${maxAmount} ${selectedPrivacy?.symbol}`
+          : 'Your balance is zero'
+      }),
     });
   }
 
@@ -133,7 +139,8 @@ class SendCrypto extends React.Component {
                 <Field
                   component={InputQRField}
                   name='toAddress'
-                  label='To Address'
+                  label='To'
+                  placeholder='Enter wallet address'
                   style={homeStyle.input}
                   validate={validator.combinedIncognitoAddress}
                 />
@@ -161,7 +168,7 @@ class SendCrypto extends React.Component {
                   toAddress={isFormValid ? toAddress : null}
                 />
                 <Text style={homeStyle.feeText}>
-                  Fee: {formatUtil.amount(
+                  You&apos;ll pay: {formatUtil.amount(
                     finalFee,
                     feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals
                   )} {feeUnit}

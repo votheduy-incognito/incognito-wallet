@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Container } from '@src/components/core';
-import AddToken from '@src/components/AddToken';
+import AddERC20Token from '@src/components/AddERC20Token';
+import AddInternalToken from '@src/components/AddInternalToken';
 import SearchToken from '@src/components/SearchToken';
 import styles from './style';
 
 const VIEWS = {
   SEARCH: 'SEARCH',
   ADD: 'ADD',
+  ISSUE: 'ISSUE'
 };
 
 const viewData = {
@@ -16,7 +18,11 @@ const viewData = {
   },
   [VIEWS.ADD]: {
     id: VIEWS.ADD,
-    label: 'Add'
+    label: 'Add ERC20'
+  },
+  [VIEWS.ISSUE]: {
+    id: VIEWS.ISSUE,
+    label: 'Issue'
   }
 };
 
@@ -67,7 +73,10 @@ class FollowTokenContainer extends Component {
             view === VIEWS.SEARCH && <SearchToken />
           }
           {
-            view === VIEWS.ADD && <AddToken />
+            view === VIEWS.ADD && <AddERC20Token />
+          }
+          {
+            view === VIEWS.ISSUE && <AddInternalToken />
           }
         </Container>
       </View>

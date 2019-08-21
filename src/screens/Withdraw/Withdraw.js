@@ -69,8 +69,14 @@ class Withdraw extends React.Component {
   }
 
   setFormValidator = ({ maxAmount }) => {
+    const { selectedPrivacy } = this.props;
+
     this.setState({
-      maxAmountValidator: validator.maxValue(maxAmount),
+      maxAmountValidator: validator.maxValue(maxAmount, {
+        message: maxAmount > 0 
+          ? `Max amount you can withdraw is ${maxAmount} ${selectedPrivacy?.symbol}`
+          : 'Your balance is zero'
+      }),
     });
   }
 
@@ -153,7 +159,8 @@ class Withdraw extends React.Component {
                 <Field
                   component={InputQRField}
                   name='toAddress'
-                  placeholder='To Address'
+                  label='To'
+                  placeholder='Enter wallet address'
                   style={style.input}
                   validate={addressValidator}
                 />
@@ -180,7 +187,7 @@ class Withdraw extends React.Component {
                   toAddress={isFormValid ? selectedPrivacy?.paymentAddress : null} // est fee on the same network, dont care which address will be send to
                 />
                 <Text style={style.feeText}>
-                  Fee: {formatUtil.amount(
+                  You&apos;ll pay: {formatUtil.amount(
                     finalFee,
                     feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals
                   )} {feeUnit ? feeUnit : ''}

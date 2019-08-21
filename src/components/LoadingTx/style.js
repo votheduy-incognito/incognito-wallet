@@ -21,7 +21,8 @@ const style = StyleSheet.create({
     marginVertical: SPACING.small
   },
   percentSymbol: {
-    fontSize: FONT.SIZE.small
+    fontSize: FONT.SIZE.small,
+    color: COLORS.white
   }
 });
 

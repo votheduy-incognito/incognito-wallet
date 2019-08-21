@@ -17,6 +17,9 @@ const Form = createForm(formName, {
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
 });
+const isRequired = validator.required();
+const isNumber = validator.number({ message: 'Decimals must be a number' });
+
 
 class AddERC20Token extends Component {
   constructor(props) {
@@ -80,7 +83,7 @@ class AddERC20Token extends Component {
                 label='Address'
                 placeholder='Search by ERC20 Address'
                 style={styles.input}
-                validate={validator.required}
+                validate={isRequired}
               />
               <Field
                 component={InputField}
@@ -88,7 +91,7 @@ class AddERC20Token extends Component {
                 label='Symbol'
                 placeholder='Search by Symbol'
                 style={styles.input}
-                validate={validator.required}
+                validate={isRequired}
               />
               <Field
                 component={InputField}
@@ -96,7 +99,7 @@ class AddERC20Token extends Component {
                 label='Name'
                 placeholder='Name'
                 style={styles.input}
-                validate={validator.required}
+                validate={isRequired}
                 componentProps={{
                   editable: false
                 }}
@@ -110,7 +113,7 @@ class AddERC20Token extends Component {
                 componentProps={{
                   editable: false
                 }}
-                validate={[validator.required, validator.number]}
+                validate={[isRequired, isNumber]}
               />
             </ScrollView>
             <Button

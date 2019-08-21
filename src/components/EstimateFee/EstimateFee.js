@@ -14,7 +14,7 @@ const LEVELS = [
     rate: 2,
   },
   {
-    name: 'Speedy',
+    name: 'Fastest',
     rate: 3,
   }
 ];
@@ -96,8 +96,8 @@ class EstimateFee extends Component {
     const { types, minFee, isGettingFee, defaultFeeSymbol, finalFee, estimateErrorMsg } = this.props;
 
     return (
-      <View style={styles.container}>
-        <Text style={styles.label}>Select fee</Text>
+      <View style={[styles.container]}>
+        <Text style={styles.label}>Select fee & speed</Text>
         <View style={styles.box}>
           <View>
             <View style={styles.feeTypeGroup}>

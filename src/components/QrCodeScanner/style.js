@@ -1,11 +1,17 @@
-import { COLORS, SPACING } from '@src/styles';
+import { COLORS } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
+    flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: COLORS.white,
     justifyContent: 'center',
-    padding: SPACING.small
+
+  },
+  desc: {
+    textAlign: 'center',
+    marginBottom: 20,
+    backgroundColor:'red'
   }
 });

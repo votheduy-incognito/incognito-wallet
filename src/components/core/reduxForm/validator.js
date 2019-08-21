@@ -1,38 +1,45 @@
 import walletValidator from 'wallet-address-validator';
 import accountService from '@src/services/wallet/accountService';
 
-export const required = (value, { message } = {}) => value ? undefined : message ?? 'Required';
+const messageHanlder = (message, fieldValue, inputValue) => {
+  if (typeof message === 'function') {
+    return message(fieldValue, inputValue);
+  }
+  return message && String(message);
+};
 
-export const maxLength = (max, { message } = {}) => value =>
-  value && value.length > max ? message ?? `Must be ${max} characters or less` : undefined;
+const required = ({ message } = {}) => value => value ? undefined : messageHanlder(message, value) ?? 'Required';
 
-export const number = (value, { message } = {}) => value && isNaN(Number(value)) ? message ?? 'Must be a number' : undefined;
+const maxLength = (max, { message } = {}) => value =>
+  value && value.length > max ? messageHanlder(message, value, max) ?? `Must be ${max} characters or less` : undefined;
 
-export const minValue = (min, { message } = {}) => value =>
-  value && value < min ? message ?? `Must be at least ${min}` : undefined;
+const number = ({ message } = {}) => value => value && isNaN(Number(value)) ? messageHanlder(message, value) ?? 'Must be a number' : undefined;
 
-export const maxValue = (max, { message } = {}) => value =>
-  value && value > max ? message ?? `Must be less than or equal ${max}` : undefined;
+const minValue = (min, { message } = {}) => value =>
+  value && value < min ? messageHanlder(message, value, min) ?? `Must be at least ${min}` : undefined;
 
-export const largerThan = (min, { message } = {}) => value =>
-  value && value <= min ? message ?? `Must be larger than ${min}` : undefined;
+const maxValue = (max, { message } = {}) => value =>
+  value && value > max ? messageHanlder(message, value, max) ?? `Must be less than or equal ${max}` : undefined;
 
-export const email = (value, { message } = {}) =>
+const largerThan = (min, { message } = {}) => value =>
+  value && value <= min ? messageHanlder(message, value, min) ?? `Must be larger than ${min}` : undefined;
+
+const email = (value, { message } = {}) =>
   value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ?
-    message ?? 'Invalid email address' : undefined;
+    messageHanlder(message, value) ?? 'Invalid email address' : undefined;
 
-export const incognitoAddress = (value, { message } = {}) => value && !accountService.checkPaymentAddress(value) ? message ?? 'Invalid address'  :undefined;
+const incognitoAddress = (value, { message } = {}) => value => value && !accountService.checkPaymentAddress(value) ? messageHanlder(message, value) ?? 'Invalid address'  :undefined;
 
-export const ethAddress = (value, { message } = {}) => !walletValidator.validate(value, 'ETH') ? message ?? 'Invalid ETH address' : undefined;
+const ethAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'ETH') ? messageHanlder(message, value) ?? 'Invalid ETH address' : undefined;
 
-export const btcAddress = (value, { message } = {}) => !walletValidator.validate(value, 'BTC') ? message ?? 'Invalid BTC address' : undefined;
+const btcAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'BTC') ? messageHanlder(message, value) ?? 'Invalid BTC address' : undefined;
 
-export const bitcoinWithdrawMinAmount = largerThan(0.0005, { message: 'Amount of Bitcoin must be larger than 0.0005 BTC' });
+const bitcoinWithdrawMinAmount = largerThan(0.0005, { message: 'Amount of Bitcoin must be larger than 0.0005 BTC' });
 
-export const combinedAmount = [required, number, largerThan(0)];
-export const combinedIncognitoAddress = [required, incognitoAddress];
-export const combinedETHAddress = [required, ethAddress];
-export const combinedBTCAddress = [required, btcAddress];
+const combinedAmount = [required(), number(), largerThan(0, { message: 'Please enter an amount greater than 0.' })];
+const combinedIncognitoAddress = [required(), incognitoAddress()];
+const combinedETHAddress = [required(), ethAddress()];
+const combinedBTCAddress = [required(), btcAddress()];
 
 export default {
   required,

@@ -1,6 +1,6 @@
 class TokenModel {
   static fromJson = (data = {}) => ({
-    amount: data.Amount,
+    amount: 0,
     id: data.ID,
     isPrivacy: data.IsPrivacy,
     name: data.Name,

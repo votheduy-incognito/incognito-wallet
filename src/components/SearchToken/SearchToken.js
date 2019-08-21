@@ -81,8 +81,9 @@ class SearchToken extends PureComponent {
           extraData={selected}
           renderItem={this._renderItem}
           keyExtractor={this._keyExtractor}
+          emptyText='This token is not currently supported.'
         />
-        <Button title='Follow' onPress={this.handleSaveFollow} style={searchPTokenStyle.followBtn} />
+        <Button title='Add to wallet' onPress={this.handleSaveFollow} style={searchPTokenStyle.followBtn} />
       </View>
     );
   }

@@ -14,6 +14,8 @@ const Form = createForm(formName, {
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
 });
+const isRequired = validator.required();
+
 const FieldQrcode = (props)=>(
   <InputQRField
     {...props}
@@ -56,7 +58,7 @@ class BorrowStake extends BaseComponent {
         label='Address'
         placeholder='Search by ERC20 Address'
         style={style.fields}
-        validate={validator.required}
+        validate={isRequired}
       />
     );
   };
@@ -76,7 +78,8 @@ class BorrowStake extends BaseComponent {
           component={FieldQrcode}
           name='address'
           placeholder='Enter device serial number'
-          validate={validator.required}
+          style={style.input}
+          validate={isRequired}
         />
         <Button
           titleStyle={style.button_text}

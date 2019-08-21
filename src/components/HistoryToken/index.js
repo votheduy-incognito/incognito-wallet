@@ -159,9 +159,9 @@ class HistoryTokenContainer extends Component {
     if (selectedPrivacy?.isDeposable) {
       return (
         <Button
-          title='Deposit'
+          title='Make a deposit'
           onPress={() => {
-            navigation.navigate(ROUTE_NAMES.ReceiveCrypto);
+            navigation.navigate(ROUTE_NAMES.Deposit);
           }}
         />
       );
