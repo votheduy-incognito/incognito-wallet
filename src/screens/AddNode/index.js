@@ -63,9 +63,9 @@ class AddNode extends BaseScreen {
     });
   }
 
-  handleItemClick = onClickView((index) => {
-    this.goToScreen(routeNames.AddDevice);
-  });
+  handleItemClick = (index) => {
+    this.goToScreen(index ===0?routeNames.AddDevice:routeNames.AddSelfNode);
+  };
 
   renderListActions = () => {
 
@@ -81,7 +81,7 @@ class AddNode extends BaseScreen {
               leftElement={<Image resizeMode='contain' source={item.img} style={styles.avatar} />}
               rightIcon={rightNextIcon}
               subtitleStyle={styles.subTitle}
-              onPress={this.handleItemClick}
+              onPress={onClickView(()=>this.handleItemClick(index))}
               key={`${item.title}`}
               titleStyle={styles.title}
             />

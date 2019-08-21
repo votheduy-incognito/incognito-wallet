@@ -5,10 +5,6 @@ import routeNames from '@routers/routeNames';
 import LocalDatabase from '@utils/LocalDatabase';
 import APIService from '@services/api/miner/APIService';
 import { CONSTANT_MINER } from '@src/constants';
-import FirebaseService, {
-  FIREBASE_PASS,
-  MAIL_UID_FORMAT
-} from '@services/FirebaseService';
 import Loader from '@components/DialogLoader';
 import _ from 'lodash';
 import React from 'react';

@@ -164,7 +164,7 @@ class HomeMine extends BaseScreen {
       // let list: [] = await this.fetchProductList();
       // list = _.isEmpty(list)?await this.getListLocalDevice():list.reverse();
       // let list: [];
-      // console.log(TAG, 'handleRefresh list = ', list);
+      console.log(TAG, 'handleRefresh list = ', list);
       this.setState({
         listDevice: list,
         isFetching: false
@@ -251,7 +251,7 @@ class HomeMine extends BaseScreen {
         {this.renderHeader()}
         <Text style={style.header2}>earnings so far</Text>
         <Text style={style.header3}>
-          <Text style={style.header3_child}>$</Text>0.00
+          0.00<Text style={style.header3_child}>PRV</Text>
         </Text>
         <DialogLoader loading={loading} />
         <FlatList
