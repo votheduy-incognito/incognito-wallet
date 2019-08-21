@@ -15,7 +15,7 @@ const STATUS_CODE = {
 };
 let ref = null;
 let uid = null;
-let myManager = null;
+// let myManager = null;
 
 let currentChannel;
 let dictCallback = {};
@@ -26,17 +26,18 @@ let obj = {
 let dictKey = {};
 const TAG = 'FirebaseService';
 export default class FirebaseService {
+  static myManager;
   constructor(){
     this.currentUserName = '';
   }
   static getShareManager() {
-    if (this.myManager == null) {
+    if (FirebaseService.myManager == null) {
       console.log('Create new instance');
-      this.myManager = new FirebaseService();
-      this.myManager.configurateDatabase();
+      FirebaseService.myManager = new FirebaseService();
+      FirebaseService.myManager.configurateDatabase();
     }
 
-    return this.myManager;
+    return FirebaseService.myManager;
   }
   async auth(username, password, success, fail) {
     console.log(TAG,' auth begin');
@@ -199,8 +200,8 @@ export default class FirebaseService {
   stopListenData = ()=>{
     console.log('stopListenData begin');
     let funcExcute = new Promise((resolve,reject)=>{
-      if (firebase.auth().currentUser) {
-        let path = `/${firebase.auth().currentUser.uid}/` + currentChannel;
+      if (!_.isNull(firebase.auth().currentUser)) {
+        let path = `/${this.getUID()}/` + currentChannel;
         console.log(TAG,'stopListenData Path: ', path);
         firebase
           .database()
@@ -319,25 +320,31 @@ export default class FirebaseService {
       //time: (new Date().getTime()) * 1000
     };
     console.log(TAG, 'send JSON: ', json);
-    let path = `/${firebase.auth().currentUser.uid}/` + action.dest;
+    const uid = this.getUID();
+    let path = `/${uid}/` + action.dest;
     console.log(TAG,'send Path: ', path);
-    firebase
-      .database()
-      .ref(path)
-      .push(json, error => {
-        if (!error) {
-          if (onCallback) {
-            setTimeout(() => {
-              this.checkTimeout(action, onCallback);
-            }, timeout * 1000);
+    if(!_.isEmpty(uid)){
+      firebase
+        .database()
+        .ref(path)
+        .push(json, error => {
+          if (!error) {
+            if (onCallback) {
+              setTimeout(() => {
+                this.checkTimeout(action, onCallback);
+              }, timeout * 1000);
+            }
+          } else {
+            console.log(TAG,'send Error:', error);
+            return new Error(error);
           }
-        } else {
-          console.log(TAG,'send Error:', error);
-          return new Error(error);
-        }
-      });
+        });
+    }
   }
-  brainSource(source) {
-    return firebase.auth().currentUser.uid + '/' + source;
+  getUID =()=>{
+    return firebase.auth()?.currentUser?.uid||'';
+  }
+  brainSource=(source)=>{
+    return this.getUID() + '/' + source;
   }
 }

@@ -12,9 +12,14 @@ const templateAction = {
   key:'',
   data:{}
 };
+const timeout = 8;
 export const LIST_ACTION={
   GET_IP:{
     key:'ip_address',
+    data:undefined
+  },
+  RESET:{
+    key:'factory_reset',
     data:undefined
   },
   CHECK_STATUS:{
@@ -101,6 +106,24 @@ export default class DeviceService {
     }
     return null;
   };
+
+  static reset = async(device:Device,chain='incognito')=>{
+    
+    try {
+      if(!_.isEmpty(device)){
+        const actionReset = LIST_ACTION.RESET;
+        const dataResult = await Util.excuteWithTimeout(DeviceService.send(device.data,actionReset,chain,Action.TYPE.PRODUCT_CONTROL),timeout);
+        console.log(TAG,'reset send dataResult = ',dataResult);
+        // const { status = -1, data, message= ''} = dataResult;
+        return dataResult;
+      }
+    } catch (error) {
+      console.log(TAG,'reset error = ',error);
+      return null;
+    }
+
+    return null;
+  }
 
   static sendPrivateKey = async(device:Device,privateKey:String,chain='incognito')=>{
     

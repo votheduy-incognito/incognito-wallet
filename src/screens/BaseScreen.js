@@ -10,9 +10,20 @@ class BaseScreen extends BaseComponent {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      loading:false
+    };
     this.subs = [];
     this.appState = AppState.currentState;
+  }
+
+  set Loading(isLoading){
+    this.setState({
+      loading:isLoading
+    });
+  }
+  get isLoading(){
+    return this.state.loading||false;
   }
 
   componentDidMount() {

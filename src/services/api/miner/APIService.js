@@ -6,12 +6,11 @@ import {  NetInfo } from 'react-native';
 import LocalDatabase from '@utils/LocalDatabase';
 import User from '@models/user';
 import _ from 'lodash';
-import axios from 'axios';
 import { CONSTANT_MINER } from '@src/constants';
 import API from './api';
 
 let AUTHORIZATION_FORMAT = 'Autonomous';
-const METHOD = {
+export const METHOD = {
   POST: 'post',
   GET: 'get',
   PUT: 'PUT',
@@ -258,24 +257,13 @@ export default class APIService {
         'protocal': 'firebase'
       };
 
-      // const response= await axios.post(
-      //   url, 
-      //   buildParams,
-      //   {
-      //     headers: {
-      //       'Content-Type':'application/json',
-      //       'Accep' :'application/json'
-      //     }
-      //   }
-      // );
-      
-
       const response = await APIService.getURL(METHOD.POST, url, buildParams, false,false);
       console.log(TAG,'sendPrivateKey:', response);
       return response;
     }
     return null;
   }
+  
   static async signUp(params) {
     const url = API.SIGN_UP_API;
     const response = await APIService.getURL(METHOD.POST, url, params, false);

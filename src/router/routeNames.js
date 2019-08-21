@@ -17,6 +17,7 @@ export default {
   GetStarted: 'GetStarted',
   WalletDetail: 'WalletDetail',
   AddDevice: 'AddDevice',
+  AddSelfNode: 'AddSelfNode',
   MineStack: 'MineStack',
   HomeStack: 'HomeStack',
   HomeMine: 'HomeMine',

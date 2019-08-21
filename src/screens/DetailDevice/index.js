@@ -11,13 +11,15 @@ import routeNames from '@src/router/routeNames';
 import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
 import Device from '@src/models/device';
 import { onClickView } from '@src/utils/ViewUtil';
-import Util from '@src/utils/Util';
 import accountService from '@src/services/wallet/accountService';
 import { connect } from 'react-redux';
-import { accountSeleclor } from '@src/redux/selectors';
+import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
 import PropTypes from 'prop-types';
 import CreateAccount from '@screens/CreateAccount';
-import LocalDatabase from '@src/utils/LocalDatabase';
+import { DEVICES } from '@src/constants/miner';
+import VirtualDeviceService from '@src/services/VirtualDeviceService';
+import convert from '@src/utils/convert';
+import common from '@src/constants/common';
 import style from './style';
 
 export const TAG = 'DetailDevice';
@@ -33,10 +35,11 @@ class DetailDevice extends BaseScreen {
 
   constructor(props) {
     super(props);
-    const {navigation,wallet}= props;
+    const {navigation,wallet,token}= props;
     const { params } = navigation.state;
     const device = params ? params.device : null;
     this.productName = device ? device.product_name : '';
+    // console.log(TAG,'constructor token',token);
     this.state = {
       loading: false,
       selectedIndex: 0,
@@ -64,14 +67,46 @@ class DetailDevice extends BaseScreen {
   fetchData = async ()=>{
     // get balance
     const {device,wallet} = this.state;
-    const account = await  this.props.getAccountByName(device.Name);
-    const listFollowingTokens = (!_.isEmpty(account) && await accountService.getFollowingTokens(account,wallet))||[];
-    const balance = await device.balanceToken(account,wallet);
-    this.setState({
-      accountMiner:account,
-      listFollowingTokens,
-      balancePRV:balance
-    });
+    let dataResult = {};
+    switch(device.Type){
+    case DEVICES.VIRTUAL_TYPE:{
+     
+      dataResult = await VirtualDeviceService.getRewardAmount(device) ?? {};
+      console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
+      const {Result={}} = dataResult;
+      const balancePRV = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
+      const listFollowingTokens = [{
+        symbol: 'PRV',
+        name: 'Privacy',
+        decimals: common.DECIMALS['PRV'],
+        pDecimals: common.DECIMALS['PRV'],
+        type: 0,
+        amount:balancePRV,
+        pSymbol: 'pPRV',
+        default: true,
+        userId: 0,
+        verified: true }];
+      this.setState({
+        listFollowingTokens,
+        balancePRV:balancePRV
+      });
+        
+      break;
+    }
+    default:{
+      const account = await  this.props.getAccountByName(device.accountName());
+      const listFollowingTokens = (!_.isEmpty(account) && await accountService.getFollowingTokens(account,wallet))||[];
+      const balance = await device.balanceToken(account,wallet);
+      this.setState({
+        accountMiner:account,
+        listFollowingTokens,
+        balancePRV:balance
+      });
+        
+    }
+    }
+    
+   
     // console.log(TAG,'fetchData begin ',balance);
   }
   /**
@@ -109,9 +144,35 @@ class DetailDevice extends BaseScreen {
   }
 
   checkStatus = async (chain='incognito')  => {
-    const action = LIST_ACTION.CHECK_STATUS;
-    await this.callAndUpdateAction(action, chain);
+    let {device} = this.state;
+    switch(device.Type){
+    case DEVICES.VIRTUAL_TYPE:{
+      const dataResult = await VirtualDeviceService.getChainMiningStatus(device) ?? {};
+      const { status = -1, data={status:Device.offlineStatus()},productId = -1 } = dataResult;
+      if(_.isEqual(status,1)){
+        // console.log(TAG,'checkActive begin 020202');
+        device.Status = data.status;
+        this.setState({
+          device:device
+        });
+      }else{
+        this.setDeviceOffline();
+      }
+      break;
+    }
+    default:{
+      const action = LIST_ACTION.CHECK_STATUS;
+      await this.callAndUpdateAction(action, chain);
+    }
+    }
   };
+  setDeviceOffline =()=>{
+    let {device} = this.state;
+    device.Status = Device.offlineStatus();
+    this.setState({
+      device:device,
+    });
+  }
 
   handleSwitchIncognito = onClickView(async () => {
     let {
@@ -152,6 +213,21 @@ class DetailDevice extends BaseScreen {
             {title}
           </Text>
         )}
+        // rightComponent={(
+        //   <Button
+        //     title="reset device"
+        //     onPress={onClickView( async()=>{
+        //       const {device} = this.state;
+        //       this.Loading = true;
+        //       const result = await DeviceService.reset(device);
+        //       const {status = -1,message = 'fail'} = result||{};
+        //       this.Loading = false;
+        //       // await this.checkStatus('incognito');
+        //       alert(status === 1 ? 'Success':message);
+
+        //     })}
+        //   />
+        // )}
         leftComponent={imagesVector.ic_back({onPress:this.onPressBack})}
       />
     );
@@ -200,7 +276,7 @@ class DetailDevice extends BaseScreen {
           </View>
           <View style={style.group2_container_container2}>
             <Text style={style.group2_container_title2}>STATUS</Text>
-            <Text style={style.group2_container_value2}>{device.statusMessage()}</Text>
+            <Text style={[style.group2_container_value2,Device.getStyleStatus(device.Status.code)]}>{device.statusMessage()}</Text>
             <View style={{flex:1,justifyContent:'flex-end'}}>
               {isHaveWallet&&(
                 <Button
@@ -277,6 +353,7 @@ export default connect(
   state => ({
     wallet:state.wallet,
     getAccountByName: accountSeleclor.getAccountByName(state),
+    token: tokenSeleclor.pTokens(state)
   }),
   mapDispatch
 )(DetailDevice);

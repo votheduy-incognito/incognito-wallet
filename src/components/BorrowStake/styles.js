@@ -18,27 +18,6 @@ const styles = StyleSheet.create({
     padding:scaleInApp(20),
     flexDirection: 'column'
   },
-  tab_button:{
-    borderWidth:0,
-    backgroundColor:'#F0F5F5',
-  },
-  tab_container:{
-    borderWidth:0,
-    backgroundColor:'#FFFFFF',
-    borderRadius:tab_border_radius,
-    height: scaleInApp(44)
-  },
-  tab_text:{
-    ...TextStyle.mediumText,
-    color:'#8C9C9D'
-  },
-  tab_text_selected:{
-    ...TextStyle.mediumText,
-    color:'#FFFFFF'
-  },
-  tab_button_selected:{
-    backgroundColor:'#25CDD6'
-  },
   label:{
     ...TextStyle.bigText,
     textAlign:'center',
@@ -57,16 +36,15 @@ const styles = StyleSheet.create({
     borderRadius:scaleInApp(4)
   },
   button_text:{
-    ...TextStyle.bigText,
-    ...FontStyle.medium,
+    ...TextStyle.mediumText,
     color: '#FFFFFF',
   },
   input_container:{
     height:scaleInApp(50)
   },
   input:{
+    ...TextStyle.mediumText,
     ...FontStyle.medium,
-    fontSize:scaleInApp(20),
     color: '#000000',
     width: '100%',
     borderColor:'#0DB8D8',

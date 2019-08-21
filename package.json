@@ -61,6 +61,7 @@
     "react-native-iot-wifi": "^1.0.0",
     "react-native-level-fs": "^3.0.1",
     "react-native-os": "^1.2.2",
+    "react-native-popup-dialog": "^0.18.3",
     "react-native-pulse": "^1.0.7",
     "react-native-qrcode-scanner": "^1.2.1",
     "react-native-qrcode-svg": "^5.1.2",

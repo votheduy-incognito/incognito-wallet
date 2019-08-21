@@ -76,7 +76,6 @@ class BorrowStake extends BaseComponent {
           component={FieldQrcode}
           name='address'
           placeholder='Enter device serial number'
-          style={style.input}
           validate={validator.required}
         />
         <Button

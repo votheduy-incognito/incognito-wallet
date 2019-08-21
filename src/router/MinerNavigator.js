@@ -9,6 +9,7 @@ import AddStake from '@src/screens/AddStake';
 import TextStyle, { scaleInApp } from '@src/styles/TextStyle';
 import { sizeHeader } from '@src/components/HeaderBar/style';
 import { imagesVector } from '@src/assets';
+import AddSelfNode from '@src/screens/AddSelfNode';
 import ROUTE_NAMES from './routeNames';
 
 export const TAG = 'MinerNavigator';
@@ -45,6 +46,12 @@ const MinerNavigator = createStackNavigator(
         headerTitle:'Setup Wifi'
       }
     },
+    [ROUTE_NAMES.AddSelfNode]: {
+      screen:AddSelfNode,
+      navigationOptions: {
+        headerTitle:'Add a Script'
+      }
+    },
     [ROUTE_NAMES.DetailDevice]:{
       screen:DetailDevice,
       navigationOptions: {
@@ -69,7 +76,7 @@ const MinerNavigator = createStackNavigator(
         }
       };
     },
-    initialRouteName:ROUTE_NAMES.AddStake,
+    initialRouteName:ROUTE_NAMES.HomeMine,
     headerMode: 'screen'
   }
 );

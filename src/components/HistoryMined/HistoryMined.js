@@ -58,10 +58,7 @@ class HistoryMined extends React.Component {
   }
   setDeviceOffline =()=>{
     let {deviceInfo} = this.state;
-    deviceInfo.data.status ={
-      code:Device.CODE_OFFLINE,
-      message:'Offline'
-    };
+    deviceInfo.Status =Device.offlineStatus();
     this.setState({
       deviceInfo:deviceInfo,
     });

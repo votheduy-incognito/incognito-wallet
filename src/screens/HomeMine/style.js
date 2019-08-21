@@ -25,7 +25,7 @@ const style = StyleSheet.create({
     marginTop: scaleInApp(4)
   },
   header3_child:{
-    ...TextStyle.xxExtraText,
+    ...TextStyle.smallText,
     ...FontStyle.medium,
     color: '#1C1C1C',
   },

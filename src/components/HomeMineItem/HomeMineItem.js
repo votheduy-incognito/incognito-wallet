@@ -8,6 +8,8 @@ import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
 import Device from '@src/models/device';
 import { accountSeleclor } from '@src/redux/selectors';
 import { connect } from 'react-redux';
+import { DEVICES } from '@src/constants/miner';
+import VirtualDeviceService from '@src/services/VirtualDeviceService';
 import styles from './style';
 
 const TAG = 'HomeMineItem';
@@ -59,7 +61,7 @@ class HomeMineItem extends React.Component {
     const {item,isActive,getAccountByName,wallet} = this.props;
     let {deviceInfo,account,balance} = this.state;
     if(!_.isEmpty(item)){
-      account = await getAccountByName(deviceInfo.Name);
+      account = await getAccountByName(deviceInfo.accountName());
       balance = await deviceInfo.balance(account,wallet);
     }
     this.setState({
@@ -72,19 +74,41 @@ class HomeMineItem extends React.Component {
     let {deviceInfo} = this.state;
     
     if(isActive){
-      console.log(TAG,'checkActive begin');
-      const dataResult = await DeviceService.send(item,LIST_ACTION.CHECK_STATUS).catch(err=>{
-        console.log(TAG,'checkActive error');
-        this.setDeviceOffline();
-      })||{};
+      console.log(TAG,'checkActive begin deviceType = ',deviceInfo.Type);
+      let dataResult = {};
+      switch(deviceInfo.Type){
+      case DEVICES.VIRTUAL_TYPE:{
+        // dataResult = await VirtualDeviceService.getMininginfo(deviceInfo).catch(err=>{
+        //   console.log(TAG,'checkActive error VIRTUAL_TYPE');
+        //   this.setDeviceOffline();
+        // })||{};
+        // const shardId = dataResult.Result?.ShardID ?? undefined;
+        // console.log(TAG,'checkActive shardID ',shardId);
+        dataResult = await VirtualDeviceService.getChainMiningStatus(deviceInfo) ?? {};
+        console.log(TAG,'checkActive VIRTUAL_TYPE ',dataResult);
+        break;
+      }
+      default:{
+        dataResult = await DeviceService.send(item,LIST_ACTION.CHECK_STATUS).catch(err=>{
+          console.log(TAG,'checkActive error');
+          this.setDeviceOffline();
+        })||{};
+        
+      }
+      }
+      // console.log(TAG,'checkActive begin 010101');
       const { status = -1, data={status:Device.offlineStatus()},productId = -1 } = dataResult;
-      if(status === 1 && item?.product_id === productId ){
-        console.log(TAG,'checkActive begin 010101');
+      if(_.isEqual(status,1) && item?.product_id === productId ){
+        // console.log(TAG,'checkActive begin 020202');
         deviceInfo.data.status = data.status;
         this.setState({
           deviceInfo:deviceInfo
         });
+      }else{
+        this.setDeviceOffline();
       }
+      
+      
     }else{
       this.setDeviceOffline();
     }
@@ -98,14 +122,7 @@ class HomeMineItem extends React.Component {
   }
   getStyleStatus = ()=>{
     const {deviceInfo} = this.state;
-    let styleStatus = {color:'#91A4A6'};
-    if(deviceInfo.data.status.code === Device.CODE_STOP){
-      styleStatus.color = '#91A4A6';
-    }else if(deviceInfo.data.status.code === Device.CODE_MINING){
-      styleStatus.color = '#0DB8D8';
-    }else if(deviceInfo.data.status.code === Device.CODE_SYNCING){
-      styleStatus.color = '#262727';
-    }
+    const styleStatus = Device.getStyleStatus(deviceInfo.Status.code);
     return [styles.groupRight_title,styleStatus];
   }
   render() {
@@ -123,7 +140,7 @@ class HomeMineItem extends React.Component {
         <Image style={styles.imageLogo} source={images.ic_device} />
         <View style={styles.groupLeft}>
           <Text style={styles.groupLeft_title}>{deviceInfo.Name}</Text>
-          <Text style={styles.groupLeft_title2}>Earned: <Text style={{color:'#000000'}}>{balance}$</Text></Text>
+          <Text style={styles.groupLeft_title2}>{balance} PRV</Text>
         </View>
         <View style={styles.groupRight}>
           <Text style={styleStatus}>{deviceInfo.statusMessage()}</Text>
