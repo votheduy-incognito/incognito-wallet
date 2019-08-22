@@ -13,6 +13,20 @@ class StakeValidatorTypeSelector extends Component {
     super(props);
   }
 
+  componentDidMount() {
+    const { stakeTypeId, onChange } = this.props;
+
+    if (stakeTypeId !== undefined && stakeTypeId !== null && typeof onChange === 'function') {
+      const defaultStakeType = this.getTypeById(stakeTypeId);
+      onChange(defaultStakeType);
+    }
+  }
+
+  getTypeById = id => {
+    const { stakeData } = this.props;
+    return stakeData?.find(stakeType => stakeType?.id === id);
+  }
+
   isValidId = memmoize((id, types) => {
     if (types?.map(t => t?.id).includes(id)) {
       return true;

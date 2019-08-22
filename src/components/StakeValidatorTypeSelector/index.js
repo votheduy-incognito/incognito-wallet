@@ -5,23 +5,25 @@ import StakeValidatorTypeSelector from './StakeValidatorTypeSelector';
 import { Toast, View } from '../core';
 import ActivityIndicator from '../core/ActivityIndicator/Component';
 
+const DEFAULT_STAKE_DATA = [
+  {
+    id: CONSTANT_COMMONS.STAKING_TYPES.SHARD,
+    name: 'Shard validator',
+    amount: null
+  },
+  {
+    id: CONSTANT_COMMONS.STAKING_TYPES.BEACON,
+    name: 'Beacon validator',
+    amount: null
+  }
+];
+
 class StakeValidatorTypeSelectorContainer extends Component {
   constructor() {
     super();
     this.state = {
       isLoading: false,
-      stakeData: [
-        {
-          id: CONSTANT_COMMONS.STAKING_TYPES.SHARD,
-          name: 'Shard validator',
-          amount: 1750
-        },
-        {
-          id: CONSTANT_COMMONS.STAKING_TYPES.BEACON,
-          name: 'Beacon validator',
-          amount: 5250
-        }
-      ]
+      stakeData: null
     };
   }
 
@@ -34,12 +36,11 @@ class StakeValidatorTypeSelectorContainer extends Component {
     try {
       this.setState({ isLoading: true });
 
-      const { stakeData } = this.state;
-      const promises = stakeData.map(type => getStakingAmount(type.id));
+      const promises = DEFAULT_STAKE_DATA.map(type => getStakingAmount(type.id));
 
       const amounts =  await Promise.all(promises);
 
-      const newStakeData = stakeData.map((stake, index) => ({
+      const newStakeData = DEFAULT_STAKE_DATA.map((stake, index) => ({
         ...stake,
         amount: amounts[index]
       }));
