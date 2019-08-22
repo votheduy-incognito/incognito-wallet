@@ -80,6 +80,11 @@ export default class Account {
 
   // param = { type: Number(stakingType), burningAddress: BurnAddress }
   static async staking(param, fee, candidatePaymentAddress, isRewardFunder, account, wallet) {
+    if (!param || typeof param?.type !== 'number') throw new Error('Invalid staking param');
+    if (!candidatePaymentAddress) throw new Error('Missing candidatePaymentAddress');
+    if (!account) throw new Error('Missing account');
+    if (!wallet) throw new Error('Missing wallet');
+
     // param: payment address string, amount in Number (miliconstant)
     await Wallet.resetProgressTx();
     const indexAccount = wallet.getAccountIndexByName(account.name);
