@@ -20,15 +20,4 @@ export default StyleSheet.create({
     textAlign: 'center',
     fontSize: 14
   },
-  selectFunder: {
-
-  },
-  selectFunderLabel: {
-    fontSize: 18
-  },
-  selectFunderPicker: {},
-  selectFunderErrText: {
-    color: COLORS.red,
-    fontSize: 14
-  },
 });

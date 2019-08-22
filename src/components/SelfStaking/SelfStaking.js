@@ -19,27 +19,18 @@ class SelfStaking extends Component {
       feeUnit: null,
       amount:  null,
       stakeTypeId: CONSTANT_COMMONS.STAKING_TYPES.SHARD,
-      funderAccountName: null,
       funderAccount: null,
       minerAccount: null,
     };
   }
 
-  componentDidMount() {
-    const { defaultAccountName } = this.props;
-    this.setDefaultFunderAccountName(defaultAccountName);
-  }
-
-  setDefaultFunderAccountName = name => this.setState({ funderAccountName: name });
-
-  static getDerivedStateFromProps(nextProps, nextState) {
+  static getDerivedStateFromProps(nextProps) {
     let state = {};
-    const { getAccountByName, minerAccountName } = nextProps;
-    const { funderAccountName } = nextState;
-    if (getAccountByName && minerAccountName) {
+    const { getAccountByName, minerAccountName, funderAccountName } = nextProps;
+    if (getAccountByName) {
       state = {
         ...state,
-        minerAccount: getAccountByName(minerAccountName)
+        minerAccount: getAccountByName(minerAccountName || funderAccountName)
       };
     }
 
@@ -99,8 +90,8 @@ class SelfStaking extends Component {
   }
 
   render() {
-    const { amount, finalFee, feeUnit, stakeTypeId, isStaking, funderAccountName, minerAccount, funderAccount } = this.state;
-    const { selectedPrivacy, listAccount } = this.props;
+    const { amount, finalFee, feeUnit, stakeTypeId, isStaking, minerAccount, funderAccount } = this.state;
+    const { selectedPrivacy } = this.props;
     const toAddress = minerAccount?.paymentAddress || selectedPrivacy?.paymentAddress;
     const isNotEnoughBalance = amount > funderAccount?.value;
     const isCanSubmit = !isNotEnoughBalance;
@@ -108,27 +99,6 @@ class SelfStaking extends Component {
     return (
       <View>
         <ScrollView>
-          <View style={styles.selectFunder}>
-            <Text style={styles.selectFunderLabel}>Select funder account</Text>
-            <Picker
-              selectedValue={funderAccountName}
-              style={styles.selectFunderPicker}
-              onValueChange={(itemValue) => this.setState({ funderAccountName: itemValue })}
-            >
-              {
-                listAccount?.map(account => (
-                  <Picker.Item
-                    key={account?.name}
-                    label={`${account?.name} (${formatUtil.amount(account?.value, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV})`}
-                    value={account?.name}
-                  />
-                ))
-              }
-            </Picker>
-            {
-              isNotEnoughBalance && <Text style={styles.selectFunderErrText}>This funder account is not enough balance for staking, please select another account</Text>
-            }
-          </View>
           <StakeValidatorTypeSelector
             stakeTypeId={stakeTypeId}
             onChange={this.handleStakeTypeChange}
