@@ -3,7 +3,6 @@
  */
 import routeNames from '@routers/routeNames';
 import LocalDatabase from '@utils/LocalDatabase';
-import APIService from '@services/api/miner/APIService';
 import { CONSTANT_MINER } from '@src/constants';
 import Loader from '@components/DialogLoader';
 import _ from 'lodash';
@@ -16,7 +15,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import BaseScreen from '@screens/BaseScreen';
-import { Button } from 'react-native-elements';
+import { Button,Input } from 'react-native-elements';
 import { onClickView } from '@src/utils/ViewUtil';
 import { ObjConnection } from '@src/components/DeviceConnection/BaseConnection';
 import PropTypes from 'prop-types';
@@ -24,9 +23,9 @@ import CreateAccount from '@screens/CreateAccount';
 import StepIndicator from 'react-native-step-indicator';
 import { accountSeleclor } from '@src/redux/selectors';
 import Dialog, { DialogContent,DialogTitle } from 'react-native-popup-dialog';
-import Device, { template } from '@src/models/device';
 import DeviceInfo from 'react-native-device-info';
 import { DEVICES } from '@src/constants/miner';
+import ImportAccount from '@screens/ImportAccount';
 import styles from './style';
 
 export const TAG = 'AddSelfNode';
@@ -63,25 +62,26 @@ class AddSelfNode extends BaseScreen {
     super(props);
     const {accountList = [],defaultAccountName= ''} = props;
       
-    const selectedAccount =  accountList.find((value,index)=>{
-      return value.name == defaultAccountName;
-    });
+    // const selectedAccount =  accountList.find((value,index)=>{
+    //   return value.name == defaultAccountName;
+    // });
     this.state = { 
       currentPositionStep:0,
       accountList:[],
       loading:false,
       defaultAccountName:defaultAccountName,
-      selectedAccount:selectedAccount,
+      selectedAccount:undefined,
       isConnected: false,
       isShowListAccount:false
     };
    
-    this.viewCreateAccount = React.createRef();
+    this.viewImportPrivateKey = React.createRef();
     // this.viewInnputDeviceName = React.createRef();
     // this.viewInputHost = React.createRef();
     // this.viewInputPort = React.createRef();
     this.inputDeviceName = '';
-    this.inputHost = '';
+    this.inputPrivateKey = '';
+    this.inputHost = '192.168.1.1';
     this.inputPort = '9334';
   }
 
@@ -95,21 +95,24 @@ class AddSelfNode extends BaseScreen {
     if(!_.isEqual(nextProps?.accountList,prevState.accountList)){
       const {accountList = [],defaultAccountName= ''} = nextProps;
       
-      const selectedAccount = _.isEmpty(prevState.selectedAccount) ? accountList.filter((value,index)=>{
-        return value.name === defaultAccountName;
-      }):prevState.selectedAccount;
+      // const selectedAccount = _.isEmpty(prevState.selectedAccount) ? accountList.filter((value,index)=>{
+      //   return value.name === defaultAccountName;
+      // }):prevState.selectedAccount;
       return {
-        accountList:nextProps?.accountList||[],
-        selectedAccount:selectedAccount
+        accountList:nextProps?.accountList||[]
       };
     }
     return null;
+  }
+
+  handleChooseItemAccount=(item,index)=>{
+
+    this.setState({selectedAccount:index === 0?undefined:item,isShowListAccount:false});
   }
   
   renderWifiPassword=()=>{
     const { container, textInput, item, errorText } = styles;
     const {
-      ssid,
       errorMessage,
       showModal,
       currentPositionStep,
@@ -129,20 +132,19 @@ class AddSelfNode extends BaseScreen {
           labels={labels}
         />
       ):(
-        <View style={[styles.modal, styles.modal3]}>
+        <View style={[styles.group_host]}>
           <TextInput
             underlineColorAndroid="transparent"
             style={[textInput, item]}
             placeholder="Device's name"
             onChangeText={(text) =>this.inputDeviceName = text}
-            
           />
           <TextInput
             onChangeText={(text) =>this.inputHost = text}
             underlineColorAndroid="transparent"
             style={[textInput, item]}
             placeholder="Host"
-            
+            defaultValue={this.inputHost}
           />
           <TextInput
             onChangeText={(text) =>this.inputPort = text}
@@ -155,28 +157,34 @@ class AddSelfNode extends BaseScreen {
           {!_.isEmpty(errorMessage) ? (
             <Text style={[errorText]}>*{errorMessage}</Text>
           ) : null}
-          <Button
-            titleStyle={styles.textTitleButton}
-            buttonStyle={styles.button}
-            onPress={this.handleSetUpPress}
-            title='Add'
-          />
+          
         </View>
       )
     );
   }
 
   renderListAccount =()=>{
-    const {accountList = [],isShowListAccount = false,defaultAccountName = '',selectedAccount = {} } = this.state;
+    const {accountList = [],isShowListAccount = false,selectedAccount = {} } = this.state;
+    const accountListCombined = [{name:'Import Private Key'},...accountList];
+    const isEditatle = _.isEmpty(selectedAccount?.name);
     return (
       <View style={styles.group_list_account}>
-        <Button
-          titleStyle={styles.item_account_text}
-          title={selectedAccount?.name||''}
+        <TextInput
+          label="Private Key Or Choose Account"
+          underlineColorAndroid="transparent"
+          placeholder="Private Key"
+          editable={isEditatle}
+          defaultValue={selectedAccount?.name||undefined}
+          style={[styles.textInputPrivateKey,{flex:isEditatle?1:undefined}]}
+          onChangeText={(text) =>this.inputPrivateKey = text}
+        />
+        <Text
+          style={[styles.buttonChooseAccount]}
           onPress={() => {
             this.setState({ isShowListAccount: true });
           }}
-        />
+        >Choose account
+        </Text>
         <Dialog
           width={0.75}
           height={0.75}
@@ -187,8 +195,8 @@ class AddSelfNode extends BaseScreen {
           }}
         >
           <DialogContent>
-            {accountList.map(item=>{
-              return (<Text key={item.name} style={styles.item_account_text} onPress={()=>{ this.setState({selectedAccount:item,isShowListAccount:false});}}>{item.name}</Text>);
+            {accountListCombined.map((item,index)=>{
+              return (<Text key={item.name} style={styles.item_account_text} onPress={()=>this.handleChooseItemAccount(item,index)}>{item.name}</Text>);
             })}
           </DialogContent>
         </Dialog>
@@ -196,19 +204,8 @@ class AddSelfNode extends BaseScreen {
     );
   }
 
-  connectHotspot = async ()=>{
-    
-    const deviceMiner = new ObjConnection();
-    deviceMiner.name = '';
-    deviceMiner.id = '';
-    const result:Boolean = await this.deviceId?.current?.connectDevice(deviceMiner) || false;
-    console.log(TAG,'connectHotspot end result = ',result);
-    return result?deviceMiner:null;
-  }
-
   handleSetUpPress = onClickView(async ()=>{
     let errorMsg = '';
-    
     try {
       
       const {selectedAccount} = this.state;
@@ -257,6 +254,8 @@ class AddSelfNode extends BaseScreen {
         let listLocalDevice = await LocalDatabase.getListDevices();
         listLocalDevice.push(deviceJSON);
         await LocalDatabase.saveListDevices(listLocalDevice);
+        // create account if import private key
+
         this.goToScreen(routeNames.HomeMine);
       // save local
       // 
@@ -282,12 +281,18 @@ class AddSelfNode extends BaseScreen {
     return (
       <View style={container}>
         <Loader loading={loading} />
-        {this.renderListAccount()}
-        {this.renderWifiPassword()}
-        {this.renderToastMessage()}
         
+        {this.renderWifiPassword()}
+        {this.renderListAccount()}
+        {this.renderToastMessage()}
+        <Button
+          titleStyle={styles.textTitleButton}
+          buttonStyle={styles.button}
+          onPress={this.handleSetUpPress}
+          title='Add'
+        />
         <View style={{width: 0,height: 0}}>
-          <CreateAccount ref={this.viewCreateAccount} />
+          <ImportAccount ref={this.viewImportPrivateKey} />
         </View>
       </View>
     );

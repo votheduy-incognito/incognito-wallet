@@ -125,6 +125,16 @@ class HomeMineItem extends React.Component {
     const styleStatus = Device.getStyleStatus(deviceInfo.Status.code);
     return [styles.groupRight_title,styleStatus];
   }
+  getIconWithType = ()=>{
+    const {deviceInfo} = this.state;
+    switch(deviceInfo.Type){
+    case DEVICES.VIRTUAL_TYPE:{
+      return images.ic_virtual_device;
+    }
+    default:
+      return images.ic_device;
+    }
+  }
   render() {
     const {item,deviceInfo,balance} = this.state;
     const {containerStyle,onPress} = this.props;
@@ -137,7 +147,7 @@ class HomeMineItem extends React.Component {
           onPress(item);
         }}
       >
-        <Image style={styles.imageLogo} source={images.ic_device} />
+        <Image style={styles.imageLogo} source={this.getIconWithType()} />
         <View style={styles.groupLeft}>
           <Text style={styles.groupLeft_title}>{deviceInfo.Name}</Text>
           <Text style={styles.groupLeft_title2}>{balance} PRV</Text>

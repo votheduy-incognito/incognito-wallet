@@ -429,7 +429,7 @@ class SetupWifiDevice extends BaseScreen {
         return isConnected;
       };
 
-      const result = await Util.excuteWithTimeout(checkConnectWifi(),30);
+      const result = await Util.excuteWithTimeout(checkConnectWifi(),60);
       console.log(TAG, 'connectZMQ begin end  ',result);
       return result;
       
@@ -552,6 +552,7 @@ class SetupWifiDevice extends BaseScreen {
           }
         } else {
           await Util.delay(2);
+          if(__DEV__) this.showToastMessage('callVerifyCode fail and retry');
           // await this.failedVerifyCode();
         }
       } catch (error) {

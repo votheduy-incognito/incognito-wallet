@@ -7,6 +7,7 @@ const images = {
   bgTop: require('./images/bg_top.png'),
   ic_add_device: require('./images/ic_add_device.png'),
   ic_device: require('./images/ic_device.png'),
+  ic_virtual_device: require('./images/ic_virtual_device.png'),
   ic_no_finding_device: require('./images/ic_no_finding_device.png'),
   bg_top_device: require('./images/bg_top_device.png'),
   bg_top_detail: require('./images/bg_top_detail.png'),

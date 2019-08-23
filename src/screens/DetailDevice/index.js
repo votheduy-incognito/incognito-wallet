@@ -74,7 +74,8 @@ class DetailDevice extends BaseScreen {
       dataResult = await VirtualDeviceService.getRewardAmount(device) ?? {};
       console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
       const {Result={}} = dataResult;
-      const balancePRV = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
+      let balancePRV = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
+      balancePRV = _.isNaN(balancePRV)?0:balancePRV;
       const listFollowingTokens = [{
         symbol: 'PRV',
         name: 'Privacy',
@@ -209,7 +210,7 @@ class DetailDevice extends BaseScreen {
       <Header
         containerStyle={style.containerHeader}
         centerComponent={(
-          <Text style={style.titleHeader}>
+          <Text numberOfLines={1} style={style.titleHeader}>
             {title}
           </Text>
         )}
@@ -257,7 +258,8 @@ class DetailDevice extends BaseScreen {
 
   renderGroupBalance = ()=>{
     const {device,balancePRV = 0,accountMiner} = this.state;
-    const isHaveWallet =  !_.isEmpty(accountMiner);
+    // const isHaveWallet =  !_.isEmpty(accountMiner);
+    const isHaveWallet =  !device.isOffline();
     
     return (
       <View style={style.group2_container}>
@@ -314,7 +316,7 @@ class DetailDevice extends BaseScreen {
           <ListItem
             containerStyle={style.top_container}
             hideChevron
-            rightElement={(
+            rightElement={_.isEqual(device.Type,DEVICES.MINER_TYPE) && (
               <Button
                 type="outline"
                 buttonStyle={style.top_button_action}
