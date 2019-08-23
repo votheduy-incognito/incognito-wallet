@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, SPACING } from '@src/styles';
+import { COLORS, SPACING, THEME } from '@src/styles';
 
 export default StyleSheet.create({
   container: {
@@ -7,6 +7,7 @@ export default StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'center',
     padding: SPACING.small,
   },
   getStartedBlock: {
@@ -19,6 +20,7 @@ export default StyleSheet.create({
   },
   title: {
     fontSize: 24,
+    marginBottom: 20
   },
   importKeyBlock: {
     height: 130,
@@ -29,5 +31,12 @@ export default StyleSheet.create({
   importBtn: {
     color: COLORS.blue,
     marginVertical: 20
+  },
+  errorMsg: {
+    ...THEME.text.errorText,
+    fontSize: 14,
+  },
+  retryBtn: {
+    marginTop: 50,
   }
 });
