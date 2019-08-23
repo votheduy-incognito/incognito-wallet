@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'redux-form';
 import { createForm, InputField, InputQRField, validator } from '@src/components/core/reduxForm';
-import { Button, ScrollView } from '@src/components/core';
+import { Button, ScrollView, Text } from '@src/components/core';
 import styles from './style';
 
 
@@ -77,6 +77,7 @@ class AddERC20Token extends Component {
         {({ handleSubmit, submitting }) => (
           <>
             <ScrollView style={styles.fields}>
+              <Text style={styles.desc}>Add any ERC20 token here. Support will be added for other types soon.</Text>
               <Field
                 component={InputQRField}
                 name='address'
@@ -89,15 +90,16 @@ class AddERC20Token extends Component {
                 component={InputField}
                 name='symbol'
                 label='Symbol'
-                placeholder='Search by Symbol'
                 style={styles.input}
                 validate={isRequired}
+                componentProps={{
+                  editable: false
+                }}
               />
               <Field
                 component={InputField}
                 name='name'
                 label='Name'
-                placeholder='Name'
                 style={styles.input}
                 validate={isRequired}
                 componentProps={{
@@ -108,7 +110,6 @@ class AddERC20Token extends Component {
                 component={InputField}
                 name='decimals'
                 label='Decimals'
-                placeholder='Decimals'
                 style={styles.input}
                 componentProps={{
                   editable: false

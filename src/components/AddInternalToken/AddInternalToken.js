@@ -1,4 +1,4 @@
-import { ActivityIndicator, ScrollView, Text, Button, View, Toast } from '@src/components/core';
+import {  ScrollView, Text, Button, View, Toast } from '@src/components/core';
 import LoadingTx from '@src/components/LoadingTx';
 import { Field, change, isValid, formValueSelector } from 'redux-form';
 import { createForm, InputField, validator } from '@src/components/core/reduxForm';
@@ -18,16 +18,10 @@ import styleSheet from './style';
 const formName = 'addInternalToken';
 const selector = formValueSelector(formName);
 const initialValues = {
-  fee: '',
   fromAddress: ''
 };
 const Form = createForm(formName, { initialValues });
 const isRequired = validator.required();
-const isNumber = validator.number({ message: 'Decimals must be a number' });
-const minFee = fee => validator.minValue(fee, { message: `Fee must be larger than ${fee}` });
-const maxFee = balance => validator.maxValue(balance, { message: balance > 0
-  ? `Fee must be less than your balance (your balance is ${balance} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV})`
-  : `Please top up your balance to cover the fee (approx 0.001 ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}).` });
 
 class AddInternalToken extends Component {
   constructor(props) {
@@ -36,8 +30,7 @@ class AddInternalToken extends Component {
     this.state = {
       isCreatingOrSending: false,
       isGettingFee: false,
-      minFeeValidator: minFee(0),
-      maxFeeValidator: maxFee(convert.toHumanAmount(props?.account?.value, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)),
+      fee: null,
     };
 
     this.handleShouldGetFee = _.debounce(this.handleShouldGetFee, 1000);
@@ -87,13 +80,11 @@ class AddInternalToken extends Component {
     try{
       this.setState({ isGettingFee: true });
       const fee =  await getEstimateFeeForSendingTokenService(fromAddress, toAddress, Number(amount), tokenObject, account.PrivateKey, accountWallet);
-      const humanFee = convert.toHumanAmount(fee, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY);
-      // set min fee state
-      this.setState({ minFeeValidator: minFee(humanFee) });
+
       // update fee
-      this.updateFormValues('fee', String(humanFee));
+      this.setState({ fee });
     } catch(e){
-      Toast.showError(`Error on get estimation fee! ${e}`);
+      Toast.showError('Can not calculate fee for creating token');
     } finally {
       this.setState({ isGettingFee: false });
     }
@@ -160,8 +151,10 @@ class AddInternalToken extends Component {
   }
 
   render() {
-    const { minFeeValidator, maxFeeValidator, isCreatingOrSending, isGettingFee } = this.state;
+    const { isCreatingOrSending, isGettingFee, fee } = this.state;
     const { account } = this.props;
+    const isNotEnoughFee = account?.value < fee;
+    const isCanSubmit = !isGettingFee && typeof fee === 'number' && !isNotEnoughFee;
 
     return (
       <View style={styleSheet.container}>
@@ -169,10 +162,11 @@ class AddInternalToken extends Component {
           {({ handleSubmit, submitting }) => (
             <>
               <ScrollView style={styleSheet.fields}>
+                <Text style={styleSheet.desc}>Issue your own privacy token here.</Text>
                 <Field
                   component={InputField}
                   name='name'
-                  placeholder='Name'
+                  placeholder='Enter token name'
                   label='Name'
                   style={styleSheet.input}
                   validate={[isRequired]}
@@ -180,7 +174,7 @@ class AddInternalToken extends Component {
                 <Field
                   component={InputField}
                   name='symbol'
-                  placeholder='Symbol'
+                  placeholder='Enter token symbol'
                   label='Symbol'
                   style={styleSheet.input}
                   validate={[isRequired]}
@@ -188,28 +182,27 @@ class AddInternalToken extends Component {
                 <Field
                   component={InputField}
                   name='amount'
-                  placeholder='Amount'
-                  label='Amount'
+                  placeholder='Enter number of tokens'
+                  label='Total supply'
                   style={styleSheet.input}
                   componentProps={{
                     keyboardType: 'number-pad'
                   }}
                   validate={[...validator.combinedAmount]}
                 />
-                <Field
-                  component={InputField}
-                  name='fee'
-                  placeholder='Issuance fee'
-                  label={`Issuance fee (${tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY})`}
-                  style={styleSheet.input}
-                  validate={[isRequired, isNumber, minFeeValidator, maxFeeValidator]}
-                  componentProps={{
-                    keyboardType: 'number-pad'
-                  }}
-                  prependView={isGettingFee ? <ActivityIndicator /> : undefined}
-                />
+                {
+                  isGettingFee
+                    ? <Text>Calculating fee...</Text>
+                    : typeof fee === 'number' && (
+                      <Text>
+                        Inssuance fee: {formatUtil.amount(fee, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)} {tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY}
+                        {isNotEnoughFee && ' (please top up your balance to cover the fee)' }
+                      </Text>
+                    )
+                }
               </ScrollView>
               <Button
+                disabled={!isCanSubmit}
                 title='Issue'
                 style={styleSheet.submitBtn}
                 onPress={handleSubmit(this.handleCreateSendToken)}
