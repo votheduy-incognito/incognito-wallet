@@ -93,10 +93,10 @@ class EstimateFee extends Component {
 
   render() {
     const { levels } = this.state;
-    const { types, minFee, isGettingFee, defaultFeeSymbol, finalFee, estimateErrorMsg } = this.props;
+    const { types, minFee, isGettingFee, defaultFeeSymbol, finalFee, estimateErrorMsg, style } = this.props;
 
     return (
-      <View style={[styles.container]}>
+      <View style={[styles.container, style]}>
         <Text style={styles.label}>Select fee & speed</Text>
         <View style={styles.box}>
           <View>
@@ -167,6 +167,7 @@ EstimateFee.defaultProps = {
   defaultFeeSymbol: null,
   finalFee: null,
   estimateErrorMsg: null,
+  style: null
 };
 
 EstimateFee.propTypes = {
@@ -178,6 +179,7 @@ EstimateFee.propTypes = {
   defaultFeeSymbol: PropTypes.string,
   finalFee: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   estimateErrorMsg: PropTypes.string,
+  style: PropTypes.object,
 };
 
 export default EstimateFee;

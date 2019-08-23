@@ -195,7 +195,7 @@ class EstimateFeeContainer extends Component {
 
   render() {
     const { minFee, isGettingFee, defaultFeeSymbol, estimateErrorMsg } = this.state;
-    const { selectedPrivacy, onSelectFee, finalFee } = this.props;
+    const { selectedPrivacy, onSelectFee, finalFee, style } = this.props;
     const types = this.getFeeSymbolList(selectedPrivacy);
 
     if (typeof minFee !== 'undefined' && minFee !== null) {
@@ -209,6 +209,7 @@ class EstimateFeeContainer extends Component {
           defaultFeeSymbol={defaultFeeSymbol}
           isGettingFee={isGettingFee}
           estimateErrorMsg={estimateErrorMsg}
+          style={style}
         />
       );
     }
@@ -229,6 +230,7 @@ EstimateFeeContainer.defaultProps = {
   amount: null,
   toAddress: null,
   finalFee: null,
+  style: null
 };
 
 EstimateFeeContainer.propTypes = {
@@ -240,6 +242,7 @@ EstimateFeeContainer.propTypes = {
   initialFee: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   amount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   toAddress: PropTypes.string,
+  style: PropTypes.object
 };
 
 

@@ -2,31 +2,33 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import memmoize from 'memoize-one';
 import { View, Text, TouchableOpacity } from '@src/components/core';
-import { CONSTANT_COMMONS } from '@src/constants';
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { COLORS } from '@src/styles';
+import { CONSTANT_COMMONS } from '@src/constants';
+import formatUtil from '@src/utils/format';
 import styles from './styles';
-
-const TYPES = [
-  {
-    id: CONSTANT_COMMONS.STAKING_TYPES.SHARD,
-    name: 'Shard validator',
-    amount: 1750
-  },
-  {
-    id: CONSTANT_COMMONS.STAKING_TYPES.BEACON,
-    name: 'Beacon validator',
-    amount: 5250
-  }
-];
 
 class StakeValidatorTypeSelector extends Component {
   constructor(props) {
     super(props);
   }
 
-  isValidId = memmoize((id) => {
-    if (TYPES.map(t => t?.id).includes(id)) {
+  componentDidMount() {
+    const { stakeTypeId, onChange } = this.props;
+
+    if (stakeTypeId !== undefined && stakeTypeId !== null && typeof onChange === 'function') {
+      const defaultStakeType = this.getTypeById(stakeTypeId);
+      onChange(defaultStakeType);
+    }
+  }
+
+  getTypeById = id => {
+    const { stakeData } = this.props;
+    return stakeData?.find(stakeType => stakeType?.id === id);
+  }
+
+  isValidId = memmoize((id, types) => {
+    if (types?.map(t => t?.id).includes(id)) {
       return true;
     }
 
@@ -34,9 +36,9 @@ class StakeValidatorTypeSelector extends Component {
   });
 
   handleSelect = type => {
-    const { onChange } = this.props;
+    const { onChange, stakeData } = this.props;
 
-    if (this.isValidId(type?.id) && typeof onChange === 'function') {
+    if (this.isValidId(type?.id, stakeData) && typeof onChange === 'function') {
       onChange(type);
     }
   }
@@ -74,20 +76,20 @@ class StakeValidatorTypeSelector extends Component {
             isSelected && styles.activeText,
           ]}
         >
-          {type?.amount} {CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}
+          {formatUtil.amount(type?.amount, CONSTANT_COMMONS.DECIMALS[CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV])} {CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}
         </Text>
       </TouchableOpacity>
     );
   }
 
   render() {
-    const { selectedId } = this.props;
+    const { stakeTypeId, style, stakeData } = this.props;
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, style]}>
         <Text style={styles.title}>What kind of validator?</Text>
         {
-          TYPES.map(type => this.renderItem(type, selectedId === type.id))
+          stakeData?.map(type => this.renderItem(type, stakeTypeId === type.id))
         }
       </View>
     );
@@ -95,13 +97,16 @@ class StakeValidatorTypeSelector extends Component {
 }
 
 StakeValidatorTypeSelector.defaultProps = {
-  selectedId: null,
-  onChange: null
+  stakeTypeId: null,
+  onChange: null,
+  style: null,
 };
 
 StakeValidatorTypeSelector.propTypes = {
-  selectedId: PropTypes.number,
-  onChange: PropTypes.func
+  stakeTypeId: PropTypes.number,
+  onChange: PropTypes.func,
+  style: PropTypes.object,
+  stakeData: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default StakeValidatorTypeSelector;
