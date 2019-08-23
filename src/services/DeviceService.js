@@ -39,21 +39,26 @@ export default class DeviceService {
   static authFirebase = (product) =>{
     return new Promise((resolve,reject)=>{
       let productId = product.product_id;
-      const firebase = FirebaseService.getShareManager();
+      const firebase = new FirebaseService();// FirebaseService.getShareManager();
       let mailProductId = `${productId}${MAIL_UID_FORMAT}`;
       let password = `${FIREBASE_PASS}`;
-      firebase.auth(
-        mailProductId,
-        password,
-        uid => {
-          resolve(uid);
-          console.log(TAG,'authFirebase successfully: ', uid);
-        },
-        error => {
-          reject(error);
-          console.log(TAG,'authFirebase error: ', error);
-        }
-      );
+      firebase.signIn( mailProductId,password).then(uid=>{
+        resolve(uid);
+      }).catch(e=>{
+        reject(e);
+      });
+    //   firebase.auth(
+    //     mailProductId,
+    //     password,
+    //     uid => {
+    //       resolve(uid);
+    //       console.log(TAG,'authFirebase successfully: ', uid);
+    //     },
+    //     error => {
+    //       reject(error);
+    //       console.log(TAG,'authFirebase error: ', error);
+    //     }
+    //   );
     });
     
   }
@@ -62,7 +67,7 @@ export default class DeviceService {
       const productId = product.product_id;
       console.log(TAG, 'ProductId: ', product.product_id);
       if (productId) {
-        const firebase = FirebaseService.getShareManager();
+        const firebase = new FirebaseService();//FirebaseService.getShareManager();
         const mailProductId = `${productId}${MAIL_UID_FORMAT}`;
         const action = DeviceService.buildAction(product,actionExcute,dataToSend,chain,type);
         const callBack = res => {

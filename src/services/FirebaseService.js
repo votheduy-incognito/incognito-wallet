@@ -1,9 +1,10 @@
 /**
  * @providesModule FirebaseService
  */
-import firebase from 'react-native-firebase';
+import firebaseRN from 'react-native-firebase';
 import _ from 'lodash';
 import Util from '@src/utils/Util';
+import timer from 'react-native-timer';
 
 export const MAIL_UID_FORMAT = '@autonomous.ai';
 export const PHONE_CHANNEL_FORMAT = '_PHONE';
@@ -13,42 +14,44 @@ const STATUS_CODE = {
   OFFLINE :-1,
   SERVER:1,
 };
-let ref = null;
-let uid = null;
+// let ref = null;
+// let uid = null;
 // let myManager = null;
 
 let currentChannel;
-let dictCallback = {};
+// let dictCallback = {};
 let obj = {
   key1: 'value1',
   key2: 'value2'
 };
-let dictKey = {};
+// let dictKey = {};
 const TAG = 'FirebaseService';
 export default class FirebaseService {
   static myManager;
   constructor(){
     this.currentUserName = '';
+    this.dictCallback = {};
+    this.dictKey ={};
+    this.configurateDatabase();
   }
   static getShareManager() {
     if (FirebaseService.myManager == null) {
       console.log('Create new instance');
       FirebaseService.myManager = new FirebaseService();
-      FirebaseService.myManager.configurateDatabase();
     }
 
     return FirebaseService.myManager;
   }
-  async auth(username, password, success, fail) {
+  auth = async(username, password, success, fail)=> {
     console.log(TAG,' auth begin');
     console.log(TAG,' auth begin 01 currentUserName = ',this.currentUserName);
     
-    if (firebase.auth().currentUser !== null && this.currentUserName == username) {
+    if (this.firebase.auth().currentUser !== null && this.currentUserName == username) {
       
-      console.log(TAG,' auth begin02 has authenticated = ',firebase.auth().currentUser.uid);
-      success(firebase.auth().currentUser?.uid||'');
+      console.log(TAG,' auth begin02 has authenticated = ',this.firebase.auth().currentUser.uid);
+      success(this.firebase.auth().currentUser?.uid||'');
     } else {
-      if (firebase.auth().currentUser !== null) {
+      if (this.firebase.auth().currentUser !== null) {
         console.log(TAG,'auth begin03 logout');
         //Logout
         await this.logout();
@@ -59,72 +62,95 @@ export default class FirebaseService {
       }
     }
   }
-  createFirebaseAccount(username, password, success, fail) {
+  signIn = async(username, password):Promise<String>=> {
+    
+    return new Promise((resolve,reject)=>{
+      console.log(TAG,' signIn begin');
+      const email = this.firebase.auth().currentUser?.email ||'';
+      if (!_.isEmpty(email) && _.isEqual(email,username)) {
+        this.currentUserName  = username;
+        console.log(TAG,' signIn begin02 has authenticated = ',this.currentUserName);
+        resolve(this.firebase.auth().currentUser?.uid||'');
+      } else {
+        this.createFirebaseAccount(username, password).then(user=>{
+          
+          console.log(TAG,' signIn begin03 has authenticated = ',user);
+          this.currentUserName  = username;
+          resolve(user?.uid??null);
+        }).catch(e=>{
+          reject(e);
+        });
+      }
+    });
+    
+  }
+  createFirebaseAccount = (username, password)=>{
     // console.log(TAG,'Create firebase account');
     // console.log('Username: ', username);
     // console.log('Password: ', password);
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(username, password)
-      .then(authResult => {
-        const user = authResult.user;
-        // If you need to do anything with the user, do it here
-        // The user will be logged in automatically by the
-        // `onAuthStateChanged` listener we set up in App.js earlier
-        // console.log(TAG,'createFirebaseAccount begin ', user);
-        this.currentUserName = username;
-        success(user.uid);
-      })
-      .catch(error => {
-        const { code, message } = error;
-        // For details of error codes, see the docs
-        // The message contains the default Firebase string
-        // representation of the error
-        console.log('Signin failed: ', error);
+    return new Promise((resolve,reject)=>{
+      this.firebase
+        .auth()
+        .signInWithEmailAndPassword(username, password)
+        .then(authResult => {
+          const user = authResult.user;
 
-        firebase
-          .auth()
-          .createUserWithEmailAndPassword(username, password)
-          .then(user => {
-            // If you need to do anything with the user, do it here
-            // The user will be logged in automatically by the
-            // `onAuthStateChanged` listener we set up in App.js earlier
-            console.log('Create account success');
+          // If you need to do anything with the user, do it here
+          // The user will be logged in automatically by the
+          // `onAuthStateChanged` listener we set up in App.js earlier
+          // console.log(TAG,'createFirebaseAccount begin ', user);
+          this.currentUserName = username;
+          resolve(user);
+        })
+        .catch(error => {
+          console.log('Signin failed: ', error);
 
-            console.log(TAG,'createFirebaseAccount fail and again -- ', user);
-            this.currentUserName = username;
-            success(user.uid);
-          })
-          .catch(err => {
-            const { code, message } = err;
-            // For details of error codes, see the docs
-            // The message contains the default Firebase string
-            // representation of the error
-            console.log('Create account error: ', err);
-            fail(err);
-          });
-      });
+          this.firebase
+            .auth()
+            .createUserWithEmailAndPassword(username, password)
+            .then(user => {
+              resolve(user);
+            })
+            .catch(err => {
+              const { code, message } = err;
+              // For details of error codes, see the docs
+              // The message contains the default Firebase string
+              // representation of the error
+              console.log('Create account error: ', err);
+              reject(err);
+            });
+        });
+    });
+    
   }
-  configurateDatabase() {
-    console.log('configurateDatabase');
-    ref = firebase.database().ref();
-    if (firebase.auth().currentUser !== null) {
-      this.logout();
+  configurateDatabase= async () =>{
+    try {
+      this.firebase = firebaseRN.app();
+      console.log(TAG,'configurateDatabase');
+      const ref = this.firebase.database().ref();
+      console.log(TAG,'configurateDatabase01 ref = ',ref);
+      if(!_.isNil(this.firebase.auth().currentUser)){
+        await this.firebase.auth().currentUser.reload();
+      }
+    } catch (error) {
+      console.log(TAG,'configurateDatabase error = ',error);
     }
+    
   }
-  checkTimeout = (action, callback)=>{
+  checkTimeout = (action)=>{
     console.log(TAG,'checkTimeout begin action = ',action);
     if (action.data['action']) {
-      if (dictCallback[action.data['action']]) {
-        let arrCallbacks = dictCallback[action.data['action']];
-        if (dictKey[action.key] == 1) {
+      if (this.dictCallback[action.data['action']]) {
+        let arrCallbacks = this.dictCallback[action.data['action']];
+        if (this.dictKey[action.key] == 1) {
           arrCallbacks.forEach(dict => {
             console.log('checkTimeout dict[key] = ', dict['key']);
             if (_.isEqual(dict['key'],action.key)) {
               const callback = dict['callback'];
               callback({status:STATUS_CODE.OFFLINE,data: { message: 'Device is offline !!!' }});
-              dictKey[action.key] = 0;
-              console.log(TAG,'timeout' + action.key + '--> ' + action.data['action']);
+              this.dictKey[action.key] = 0;
+              timer.clearTimeout(this,action.key);
+              console.log(TAG,'checkTimeout timeout' + action.key + '--> ' + action.data['action']);
             }
           });
         }
@@ -135,20 +161,20 @@ export default class FirebaseService {
   async startListenData(channel) {
     
     console.log(TAG,'startListenData Current Channel:', currentChannel);
-    console.log(TAG,'startListenData Channel: ', channel);
+    // console.log(TAG,'startListenData Channel: ', channel);
 
     //Update current subcribed channel
-    if (currentChannel !== channel) {
-      let path = `/${firebase.auth().currentUser.uid}/` + channel;
+    if (channel) {
+      let path = `/${this.firebase.auth().currentUser.uid}/` + channel;
       console.log('Update Path: ', path);
       currentChannel = channel;
-      firebase
+      this.firebase
         .database()
         .ref(path)
         .remove();
 
       // Listen for new messages in the Firebase database
-      firebase
+      this.firebase
         .database()
         .ref(path)
         .on('child_added', snapshot => {
@@ -161,32 +187,32 @@ export default class FirebaseService {
               const { action } = data;
               console.log(TAG,'startListenData Action: ', action);
               if (action) {
-                let arr = dictCallback[action];
-                // console.log('Arr: ', arr);
+                let arr = this.dictCallback[action];
+                
                 if (arr) {
+                  console.log(TAG, 'startListenData Arr: ', arr);
                   arr.forEach(dict => {
-                    const { key } = dict;
-                    if (dictKey[key] == 1) {
+                    const { key ,callback } = dict;
+                    if (this.dictKey[key] == 1) {
                       if (action !== 'update_firmware_status') {
-                        dictKey[key] = 0;
+                        this.dictKey[key] = 0;
                       }
-
-                      let callback = dict.callback;
                       console.log(TAG,'startListenData Return callback');
                       callback({status:STATUS_CODE.SERVER, ...data});
+                      timer.clearTimeout(this,key);
                     }
                   });
                   if (action !== 'update_firmware_status') {
-                    dictCallback[action] = null;
+                    this.dictCallback[action] = null;
                   }
                 }
                 const childPath =
-                  `/${firebase.auth().currentUser.uid}/` +
+                  `/${this.firebase.auth().currentUser.uid}/` +
                   channel +
                   '/' +
                   snapshot.key;
                 // console.log('Child Path: ', childPath);
-                firebase
+                this.firebase
                   .database()
                   .ref(childPath)
                   .remove();
@@ -200,10 +226,10 @@ export default class FirebaseService {
   stopListenData = ()=>{
     console.log('stopListenData begin');
     let funcExcute = new Promise((resolve,reject)=>{
-      if (!_.isNull(firebase.auth().currentUser)) {
+      if (!_.isNull(this.firebase.auth().currentUser)) {
         let path = `/${this.getUID()}/` + currentChannel;
         console.log(TAG,'stopListenData Path: ', path);
-        firebase
+        this.firebase
           .database()
           .ref(path)
           .off('child_added', (dataSnapshot) => {
@@ -221,68 +247,55 @@ export default class FirebaseService {
   }
   logout = async ()=>{
     console.log(TAG,'logout begin');
-    if (firebase.auth().currentUser !== null) {
+    if (this.firebase.auth().currentUser !== null) {
       //stopListenData
       let result = await this.stopListenData().catch(console.log);
       console.log(TAG,'logout stop result= ',result);
       try {
-        await firebase.auth().signOut();
+        await this.firebase.auth().signOut();
       } catch (error) {
         return false;
       }
     } 
     return true;
   }
-  addActionCallback(action, onCallback) {
+  addActionCallback = (action, onCallback)=>{
     console.log('Action: ', action);
     const { data } = action;
     const dataAction = data.action;
     console.log('Data Action: ', dataAction);
 
     if (dataAction) {
-      var arrCallbacks = [];
-      console.log('dictCallback ', dictCallback);
+      let arrCallbacks = [];
+      console.log(TAG,'addActionCallback dictCallback ', this.dictCallback);
 
-      if (dictCallback[dataAction]) {
-        arrCallbacks = dictCallback[dataAction];
+      if (this.dictCallback[dataAction]) {
+        arrCallbacks = this.dictCallback[dataAction];
       }
 
       let dict = { key: action.key, callback: onCallback };
-      console.log('action.key  ', action.key);
+      console.log(TAG,'addActionCallback action.key  ', action.key);
       arrCallbacks.push(dict);
-      console.log('Arr callback: ', arrCallbacks);
-      dictCallback[dataAction] = arrCallbacks;
-      dictKey[action.key] = 1;
+      console.log(TAG,'addActionCallback Arr callback: ', arrCallbacks);
+      this.dictCallback[dataAction] = arrCallbacks;
+      this.dictKey[action.key] = 1;
     }
   }
 
-  isAuth(username, password, onCallback) {
+  isAuth = async (username, password)=> {
     console.log('isAuth');
-    this.auth(
-      username,
-      password,
-      () => {
-        if (onCallback) {
-          onCallback(true);
-        }
-      },
-      () => {
-        if (onCallback) {
-          onCallback(false);
-        }
-      }
-    );
+    const uid = await this.signIn(username,password).catch(console.log)||undefined;
+    return uid;
   }
-  sendAction(username, password, action, onCallback, timeout) {
+
+  sendAction = async (username, password, action, onCallback, timeout)=> {
     console.log(TAG,`Username: ${username}-password=${password}-action=${action}`);
-    
-    this.isAuth(username, password, value => {
-      if (value) {
-        this.send(action, onCallback, timeout);
-      } else {
-        console.log('You input invalid data');
-      }
-    });
+    const result = await this.isAuth(username, password);
+    if (result) {
+      await this.send(action, onCallback, timeout);
+    } else {
+      console.log('You input invalid data');
+    }
   }
   // async listen(action, onCallback, timeout) {
   //   await this.startListenData(action.source);
@@ -306,7 +319,7 @@ export default class FirebaseService {
   //     }
   //   });
   // }
-  async send(action, onCallback, timeout) {
+  send = async(action, onCallback, timeout)=>{
     await this.startListenData(action.source);
     if (onCallback) {
       this.addActionCallback(action, onCallback);
@@ -324,13 +337,13 @@ export default class FirebaseService {
     let path = `/${uid}/` + action.dest;
     console.log(TAG,'send Path: ', path);
     if(!_.isEmpty(uid)){
-      firebase
+      this.firebase
         .database()
         .ref(path)
         .push(json, error => {
-          if (!error) {
+          if (_.isNil(error)) {
             if (onCallback) {
-              setTimeout(() => {
+              timer.setTimeout(this,action.key??'',() => {
                 this.checkTimeout(action, onCallback);
               }, timeout * 1000);
             }
@@ -342,7 +355,7 @@ export default class FirebaseService {
     }
   }
   getUID =()=>{
-    return firebase.auth()?.currentUser?.uid||'';
+    return this.firebase.auth()?.currentUser?.uid||'';
   }
   brainSource=(source)=>{
     return this.getUID() + '/' + source;

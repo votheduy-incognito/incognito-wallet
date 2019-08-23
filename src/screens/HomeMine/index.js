@@ -263,7 +263,7 @@ class HomeMine extends BaseScreen {
           ListEmptyComponent={this.renderEmptyComponent()}
           renderItem={({ item,index }) => {
             return (
-              <HomeMineItem timeToUpdate={index === 0?timeToUpdate:0} onPress={this.handleItemDevicePress} isActive={index === 0} containerStyle={style.itemList} item={item} />
+              <HomeMineItem timeToUpdate={index === 0?timeToUpdate:0} onPress={this.handleItemDevicePress} isActive containerStyle={style.itemList} item={item} />
             );
           }}
           onRefresh={this.handleRefresh}
