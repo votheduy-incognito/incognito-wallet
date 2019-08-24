@@ -26,7 +26,7 @@ class DialogLoader extends Component {
       content,
       ...attributes
     } = this.props;
-    var isDisplayContent = false;
+    let isDisplayContent = false;
     if (content){
       isDisplayContent = true;
     }

@@ -55,15 +55,18 @@ const mapDispatchToProps = {
 
 SelfStakingContainer.defaultProps = {
   minerAccountName: null,
-  selectedPrivacy: null
+  funderAccountName:null,
+  selectedPrivacy: null,
+  onCallBackStaked:null
 };
 
 SelfStakingContainer.propTypes = {
   minerAccountName: PropTypes.string,
-  selectedPrivacy: PropTypes.object
+  funderAccountName: PropTypes.string,
+  selectedPrivacy: PropTypes.object,
+  onCallBackStaked:PropTypes.func
 };
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  withNavigation
+  connect(mapStateToProps, mapDispatchToProps)
 )(SelfStakingContainer);

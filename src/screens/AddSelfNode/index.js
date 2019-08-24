@@ -11,21 +11,21 @@ import {
   Text,
   TextInput,
   View,
-  Platform
+  Platform,
+  ScrollView
 } from 'react-native';
 import { connect } from 'react-redux';
 import BaseScreen from '@screens/BaseScreen';
 import { Button,Input } from 'react-native-elements';
 import { onClickView } from '@src/utils/ViewUtil';
-import { ObjConnection } from '@src/components/DeviceConnection/BaseConnection';
 import PropTypes from 'prop-types';
-import CreateAccount from '@screens/CreateAccount';
 import StepIndicator from 'react-native-step-indicator';
 import { accountSeleclor } from '@src/redux/selectors';
 import Dialog, { DialogContent,DialogTitle } from 'react-native-popup-dialog';
 import DeviceInfo from 'react-native-device-info';
 import { DEVICES } from '@src/constants/miner';
 import ImportAccount from '@screens/ImportAccount';
+
 import styles from './style';
 
 export const TAG = 'AddSelfNode';
@@ -174,6 +174,8 @@ class AddSelfNode extends BaseScreen {
           underlineColorAndroid="transparent"
           placeholder="Private Key"
           editable={isEditatle}
+          numberOfLines={4}
+          multiline
           defaultValue={selectedAccount?.name||undefined}
           style={[styles.textInputPrivateKey,{flex:isEditatle?1:undefined}]}
           onChangeText={(text) =>this.inputPrivateKey = text}
@@ -212,10 +214,12 @@ class AddSelfNode extends BaseScreen {
       const userJson = await LocalDatabase.getUserInfo();
       const host = this.inputHost;
       
-      console.log(TAG,'handleSetUpPress host = ',host);
+      let privateKey = selectedAccount?.name||'';
+      privateKey = _.trim(_.isEmpty(privateKey)?this.inputPrivateKey:privateKey);
+      console.log(TAG,'handleSetUpPress host = ',host+'- inputPrivateKey = '+privateKey);
       const port = this.inputPort;
-      if (userJson && !_.isEmpty(selectedAccount) && !_.isEmpty(host) && !_.isEmpty(port)) {
-        this.Loading = true;
+      if (userJson && !_.isEmpty(host) && !_.isEmpty(port) && !_.isEmpty(privateKey) ) {
+        const isImportPrivateKey = !_.isEmpty(this.inputPrivateKey);
         const user = userJson.toJSON();
         const {
           email,
@@ -225,16 +229,18 @@ class AddSelfNode extends BaseScreen {
         } = user;
         let deviceName = this.inputDeviceName;
         deviceName = _.isEmpty(deviceName)?`${host}:${port}`:deviceName;
+        deviceName = deviceName || CONSTANT_MINER.VIRTUAL_PRODUCT_NAME;
         const time = Date.now().toString();
+        const account = {
+          name:_.isEmpty(selectedAccount)?deviceName:(selectedAccount?.name||'')
+        };
         const deviceJSON =  {
           minerInfo:{
-            account:{
-              name:selectedAccount.name
-            },
+            account:account,
             ipAddress:host,
             port:port
           },
-          product_name:deviceName || CONSTANT_MINER.VIRTUAL_PRODUCT_NAME,
+          product_name:deviceName ,
           created_from: Platform.OS,
           address: 'NewYork',
           address_long: 0.0,
@@ -250,51 +256,63 @@ class AddSelfNode extends BaseScreen {
           deleted: false,
           is_checkin: 1,
         };
+        const resultAccount =( isImportPrivateKey && await this.viewImportPrivateKey.current.importAccount({accountName:deviceJSON.product_name,privateKey:privateKey})) ||false;
+        if(resultAccount || !isImportPrivateKey){
+          let listLocalDevice = await LocalDatabase.getListDevices();
+          listLocalDevice.push(deviceJSON);
         
-        let listLocalDevice = await LocalDatabase.getListDevices();
-        listLocalDevice.push(deviceJSON);
-        await LocalDatabase.saveListDevices(listLocalDevice);
-        // create account if import private key
+          await LocalDatabase.saveListDevices(listLocalDevice);
+          // create account if import private key
 
-        this.goToScreen(routeNames.HomeMine);
+          this.goToScreen(routeNames.HomeMine);
+          return;
+        }else{
+          // this.setState({
+          //   loading:false
+          // },()=>{
+          //   alert('Please check and input correct fields!');
+          // });
+        }
       // save local
       // 
       }else{
-        this.Loading = false;
+        // this.Loading = false;
         alert('Please check and input correct fields!');
       }
     } catch (error) {
-      errorMsg = errorMessage;
-      
+      errorMsg = errorMessage; 
+      alert(error.message);
       console.log(TAG,'handleSetUpPress error: ', error);
-    }finally{
-      this.Loading = false;
-      
     }
-    
   });
 
   render() {
-    const { container, textInput, item, errorText } = styles;
+    const { container} = styles;
 
     const {loading} = this.state;
     return (
-      <View style={container}>
-        <Loader loading={loading} />
+      <ScrollView
+        scrollEnabled={false}
+        contentContainerStyle={{flex:1}}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={container}>
+          <Loader loading={loading} />
         
-        {this.renderWifiPassword()}
-        {this.renderListAccount()}
-        {this.renderToastMessage()}
-        <Button
-          titleStyle={styles.textTitleButton}
-          buttonStyle={styles.button}
-          onPress={this.handleSetUpPress}
-          title='Add'
-        />
-        <View style={{width: 0,height: 0}}>
-          <ImportAccount ref={this.viewImportPrivateKey} />
+          {this.renderWifiPassword()}
+          {this.renderListAccount()}
+          {this.renderToastMessage()}
+          <Button
+            titleStyle={styles.textTitleButton}
+            buttonStyle={styles.button}
+            onPress={this.handleSetUpPress}
+            title='Add'
+          />
+          <View style={{width: 0,height: 0}}>
+            <ImportAccount ref={this.viewImportPrivateKey} />
+          </View>
         </View>
-      </View>
+      </ScrollView>
     );
   }
   set CurrentPositionStep(index:Number){

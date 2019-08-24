@@ -2,8 +2,8 @@ import images from '@src/assets';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Image, ScrollView, View } from 'react-native';
+import _ from 'lodash';
 import styles from './style';
-
 /**
 * @augments {Component<{  headerBarStyle:object,  isShowHeader:boolean,  onPressLeft:Function,  onPressRight:Function,  styleContainScreen:object,  styleRoot:object,  backgroundTop:object>}
 */
@@ -36,6 +36,8 @@ class Container extends React.Component {
       backgroundTop
     } = this.props;
 
+    const bgSource = backgroundTop?.source ?? images.bgTop;
+
     return (
       <ScrollView
         scrollEnabled={false}
@@ -45,7 +47,7 @@ class Container extends React.Component {
         <Image
           resizeMode="cover"
           style={[styles.bgTop,backgroundTop.style]}
-          source={backgroundTop?.source || images.bgTop}
+          source={_.isInteger(bgSource) && bgSource == 0 ?undefined:bgSource}
         />
         <View style={styles.container}>
           {/* {isShowHeader && (

@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { COLORS } from '@src/styles';
+import { scaleInApp } from '@src/styles/TextStyle';
 
 export default StyleSheet.create({
   container: {
@@ -7,16 +8,17 @@ export default StyleSheet.create({
     flexDirection: 'column'
   },
   stakeSelector: {
-    marginVertical: 50,
+    marginVertical: scaleInApp(20),
   },
   estFee: {
-    marginBottom: 10
+    marginTop: scaleInApp(10),
+    marginBottom: scaleInApp(10)
   },
   stakeButton: {
-    marginBottom: 20
+    marginBottom: scaleInApp(20)
   },
   feeText: {
-    marginBottom: 38,
+    marginBottom: scaleInApp(38),
     textAlign: 'center',
     fontSize: 14
   },
