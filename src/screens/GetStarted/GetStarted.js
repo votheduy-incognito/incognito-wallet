@@ -1,61 +1,37 @@
 import {
-  Button,
   Container,
   Text,
-  Toast,
-  View
+  View,
+  ActivityIndicator,
+  Button
 } from '@src/components/core';
-import { getErrorMessage, messageCode } from '@src/services/errorHandler';
-import LoadingContainer from '@src/components/LoadingContainer';
 import PropTypes from 'prop-types';
 import React from 'react';
 import style from './style';
 
-const GetStarted = ({ onCreateNew, isInitialing }) => {
-  const handleGetStarted = async () => {
-    try {
-      const wallet = await onCreateNew();
-      Toast.showInfo('Your wallet was created!');
-
-      return wallet;
-    } catch (e) {
-      Toast.showError(getErrorMessage(e, { defaultCode: messageCode.code.create_wallet_failed }));
-    }
-  };
-
-  if (isInitialing) {
-    return <LoadingContainer />;
-  }
-
+const GetStarted = ({ isInitialing, errorMsg, onRetry }) => {
   return (
     <Container style={style.container}>
       <View style={style.getStartedBlock}>
-        <Text style={[style.title, style.centerText]}>Excited?</Text>
-        <Text style={[style.title, style.centerText]}>You should be</Text>
-        <Button
-          title="Get Started"
-          onPress={handleGetStarted}
-          style={style.getStartedBtn}
-          isAsync
-        />
+        <Text style={[style.title, style.centerText]}>Opening your wallet</Text>
+        { isInitialing && <ActivityIndicator size={40} /> }
+        { errorMsg && <Text style={[style.errorMsg, style.centerText]}>{errorMsg}</Text> }
+        <Button style={style.retryBtn} title='Retry' onPress={onRetry} />
       </View>
-      {/* <View style={style.importKeyBlock}>
-        <Text style={style.centerText}>
-          Import private key if you already have an account with us.
-        </Text>
-        <TouchableOpacity onPress={() => alert('Doing...doing...doing...')}>
-          <Text style={[style.importBtn, style.centerText]}>
-            Import your key
-          </Text>
-        </TouchableOpacity>
-      </View> */}
     </Container>
   );
 };
 
+GetStarted.defaultProps = {
+  errorMsg: null,
+  isInitialing: true,
+  onRetry: null
+};
+
 GetStarted.propTypes = {
-  onCreateNew: PropTypes.func.isRequired,
-  isInitialing: PropTypes.bool.isRequired
+  errorMsg: PropTypes.string,
+  isInitialing: PropTypes.bool,
+  onRetry: PropTypes.func
 };
 
 export default GetStarted;

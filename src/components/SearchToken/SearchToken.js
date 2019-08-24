@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { FlatList, View, TextInput, Button } from  '@src/components/core';
+import { FlatList, View, TextInput, Button, Text } from  '@src/components/core';
 import TokenItem from './TokenItem';
 import { searchPTokenStyle } from './styles';
 
@@ -70,7 +70,7 @@ class SearchToken extends PureComponent {
     return (
       <View style={searchPTokenStyle.container}>
         <TextInput
-          label='Search by symbol'
+          label="Search the list of tokens. Don't see your token? Add it manually."
           placeholder='ETH, BTC,...'
           style={searchPTokenStyle.searchInput}
           onChangeText={this.handleFilter}

@@ -34,4 +34,5 @@ export default {
   Deposit: 'Deposit',
   Withdraw: 'Withdraw',
   CreateToken: 'CreateToken',
+  Wizard: 'Wizard'
 };

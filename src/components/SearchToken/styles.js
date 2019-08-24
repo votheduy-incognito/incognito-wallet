@@ -23,10 +23,10 @@ export const searchPTokenStyle = StyleSheet.create({
     flexDirection: 'column'
   },
   searchInput: {
-    height: 60
+    marginBottom: 10
   },
   listToken: {
-    marginVertical: 10,
+    marginBottom: 10,
   },
   followBtn: {
     

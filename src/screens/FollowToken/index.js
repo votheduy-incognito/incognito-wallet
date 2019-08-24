@@ -14,15 +14,15 @@ const VIEWS = {
 const viewData = {
   [VIEWS.SEARCH]: {
     id: VIEWS.SEARCH,
-    label: 'Search',
+    label: 'Select symbol',
   },
   [VIEWS.ADD]: {
     id: VIEWS.ADD,
-    label: 'Add ERC20'
+    label: 'Add manually'
   },
   [VIEWS.ISSUE]: {
     id: VIEWS.ISSUE,
-    label: 'Issue'
+    label: 'Issue your own'
   }
 };
 

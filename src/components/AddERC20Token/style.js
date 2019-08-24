@@ -5,6 +5,9 @@ export default StyleSheet.create({
     flex: 1,
     flexDirection: 'column'
   },
+  desc: {
+    marginBottom: 10
+  },
   fields: {
     flex: 1,
   },

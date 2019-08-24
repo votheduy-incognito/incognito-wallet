@@ -1,4 +1,3 @@
-import { Toast } from '@src/components/core';
 import { setTokenHeader } from '@src/services/http';
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import { reloadWallet } from '@src/redux/actions/wallet';
@@ -9,7 +8,7 @@ import serverService from '@src/services/wallet/Server';
 import { initWallet } from '@src/services/wallet/WalletService';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { createError, messageCode, throwNext, getErrorMessage } from '@src/services/errorHandler';
+import { createError, messageCode } from '@src/services/errorHandler';
 import { connect } from 'react-redux';
 import storageService from '@src/services/storage';
 import DeviceInfo from 'react-native-device-info';
@@ -22,17 +21,16 @@ class GetStartedContainer extends Component {
     super();
 
     this.state = {
-      isInitialing: true
+      isInitialing: true,
+      errorMsg: null
     };
   }
 
   componentDidMount() {
-    this.initApp()
-      .catch(e => {
-        Toast.showError(`${e.message} ${JSON.stringify(e)}`);
-        // Toast.showError(getErrorMessage(e, { defaultCode: messageCode.code.initialing_wallet_failed }));
-      });
+    this.initApp();
   }
+
+  onError = msg => this.setState({ errorMsg: msg })
 
   goHome = () => {
     const { navigation } = this.props;
@@ -50,22 +48,9 @@ class GetStartedContainer extends Component {
       }
       return null;
     } catch (e) {
-      Toast.showError(`${e.message} ${JSON.stringify(e)}`);
-      throw createError({ code: messageCode.code.load_existed_wallet_failed });
+      this.onError('Can not load existed wallet.');
     }
   }
-
-  checkExistedWallet = async () => {
-    try {
-      const wallet = await this.getExistedWallet();
-      if (wallet) {
-        this.goHome();
-      }
-    } catch (e) {
-      Toast.showError(`${e.message} ${JSON.stringify(e)}`);
-      throw e;
-    }
-  }; 
 
   initApp = async () => {
     try {
@@ -80,12 +65,19 @@ class GetStartedContainer extends Component {
       if (!(await serverService.get())) {
         await serverService.setDefaultList();
       }
-      await this.checkExistedWallet();
-    } catch (e) {
-      Toast.showError(`${e.message} ${JSON.stringify(e)}`);
-      throw e;
-    } finally {
+      const wallet = await this.getExistedWallet();
+
+      // loaded wallet & then continue to Home screen
+      if (!wallet) {
+        // create new Wallet
+        await this.handleCreateNew();
+      }
+
       this.setState({ isInitialing: false });
+      this.goHome();
+    } catch (e) {
+      this.setState({ isInitialing: false });
+      this.onError('Something went wrong while opening wallet, please try again');
     }
   };
 
@@ -102,7 +94,6 @@ class GetStartedContainer extends Component {
       
       return initWallet();
     } catch (e) {
-      Toast.showError(`${e.message} ${JSON.stringify(e)}`);
       throw e;
     }
   };
@@ -112,7 +103,6 @@ class GetStartedContainer extends Component {
       const token = await storageService.getItem(CONSTANT_KEYS.DEVICE_TOKEN);
       return token;
     } catch (e) {
-      Toast.showError(`${e.message} ${JSON.stringify(e)}`);
       throw createError({ code: messageCode.code.load_device_token_failed });
     }
   }
@@ -125,7 +115,6 @@ class GetStartedContainer extends Component {
 
       return token;
     } catch (e) {
-      Toast.showError(`${e.message} ${JSON.stringify(e)}`);
       throw e;
     }
   }
@@ -143,7 +132,6 @@ class GetStartedContainer extends Component {
         return token;
       }
     } catch (e) {
-      Toast.showError(`${e.message} ${JSON.stringify(e)}`);
       throw e;
     }
   }
@@ -160,18 +148,22 @@ class GetStartedContainer extends Component {
         throw new Error('Load new wallet failed');
       }
     } catch (e) {
-      Toast.showError(`${e.message} ${JSON.stringify(e)}`);
-      throwNext(e, { defaultCode: messageCode.code.create_wallet_failed });
+      this.onError('Can not create new wallet, please try again');
     }
   };
 
+  handleRytry = () => {
+    this.initApp();
+    this.setState({ errorMsg: null, isInitialing: true });
+  }
+
   render() {
-    const { isInitialing } = this.state;
+    const { isInitialing, errorMsg } = this.state;
     return (
       <GetStarted
-        onCreateNew={this.handleCreateNew}
-        goHome={this.goHome}
+        errorMsg={errorMsg}
         isInitialing={isInitialing}
+        onRetry={this.handleRytry}
       />
     );
   }

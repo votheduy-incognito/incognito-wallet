@@ -9,7 +9,7 @@ export default StyleSheet.create({
   tabContainer: {
     display: 'flex',
     flexDirection: 'row',
-    height: 40
+    minHeight: 40
   },
   tabItem: {
     flex: 1,
@@ -24,6 +24,7 @@ export default StyleSheet.create({
     flex: 1,
   },
   tabItemText: {
+    textAlign: 'center',
     color: COLORS.lightGrey1
   },
   tabItemTextActive: {

@@ -10,6 +10,9 @@ const style = StyleSheet.create({
     flexDirection: 'column',
     width: '100%'
   },
+  desc: {
+    marginBottom: 10
+  },
   fields: {
     flex: 1
   },
