@@ -10,6 +10,8 @@ import TextStyle, { scaleInApp } from '@src/styles/TextStyle';
 import { sizeHeader } from '@src/components/HeaderBar/style';
 import { imagesVector } from '@src/assets';
 import AddSelfNode from '@src/screens/AddSelfNode';
+import HeaderBar from '@src/components/HeaderBar/HeaderBar';
+import { THEME } from '@src/styles';
 import ROUTE_NAMES from './routeNames';
 
 export const TAG = 'MinerNavigator';
@@ -62,6 +64,9 @@ const MinerNavigator = createStackNavigator(
   {
     defaultNavigationOptions:({navigation})=>{
       return{
+        // header: HeaderBar,
+        // headerBackground: THEME.header.backgroundColor,
+        
         headerLeft:imagesVector.ic_back({onPress:()=>navigation?.goBack()}),
         headerBackTitle:null,
         headerTintColor: '#fff',

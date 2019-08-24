@@ -52,18 +52,13 @@ class SelfStaking extends Component {
     this.setState({ stakeTypeId: id, amount });
   }
 
-  goBack = () => {
-    const { navigation } = this.props;
-    navigation?.pop();
-  }
-
   handleStake = async () => {
     try {
       this.setState({
         isStaking: true
       });
 
-      const { onStaking, getAccountByName } = this.props;
+      const { onStaking, getAccountByName,onCallBackStaked } = this.props;
       const { stakeTypeId, finalFee, minerAccount, funderAccount } = this.state;
       if (typeof onStaking === 'function') {
         const rs = await onStaking({
@@ -75,7 +70,9 @@ class SelfStaking extends Component {
 
         if (rs?.txId) {
           Toast.showInfo('Stake completed!');
-          this.goBack();
+          if(onCallBackStaked instanceof Function ){ 
+            onCallBackStaked(rs);
+          }
         } else {
           throw new Error('Stake failed with no tx id');
         }

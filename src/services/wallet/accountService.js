@@ -29,7 +29,8 @@ export default class Account {
       account = wallet.importAccount(privakeyStr, accountName, passPhrase);
     } catch (e) {
       console.log(`Error when importing account:  ${e}`);
-      return false;
+      throw e;
+      // return false;
     }
 
     if (account.isImport === false) {

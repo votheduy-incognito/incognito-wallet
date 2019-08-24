@@ -10,6 +10,7 @@ import { createForm, InputField, InputQRField, validator } from '@src/components
 import { Field } from 'redux-form';
 import EstimateFee from '@src/components/EstimateFee/EstimateFee';
 import BorrowStake from '@src/components/BorrowStake';
+import SelfStaking from '@src/components/SelfStaking';
 import style, { tab_border_radius } from './styles';
 
 const buttons = ['Stake', 'Borrow & Stake'];
@@ -34,20 +35,20 @@ export const TAG = 'AddStake';
 class AddStake extends BaseScreen {
   constructor(props) {
     super(props);
-
+    const {navigation}= props;
+    const { params } = navigation.state;
+    const accountInfo = params ? params.accountInfo : null;
+    console.log(TAG,'constructor begin =',accountInfo);
     this.state = {
       loading: true,
       errorText:'',
+      accountInfo:accountInfo,
       selectedIndex:0
     };
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     return null;
-  }
-
-  componentDidMount = async ()=> {
-    super.componentDidMount();
   }
   updateIndex=(selectedIndex)=> {
     this.setState({selectedIndex});
@@ -72,7 +73,17 @@ class AddStake extends BaseScreen {
     return selectedIndex === 1?<BorrowStake />:undefined; 
   }
   renderStake = ()=>{
-    return undefined;
+    const {accountInfo,selectedIndex} = this.state;
+    
+    return (selectedIndex === 1?<BorrowStake />: (
+      <SelfStaking
+        onCallBackStaked={(rs)=>{
+          this.onPressBack();
+        }}
+        minerAccountName={accountInfo.minerAccountName}
+        funderAccountName={accountInfo.funderAccountName}
+      />
+    ));
   }
 
   render() {
@@ -82,7 +93,7 @@ class AddStake extends BaseScreen {
       <View style={style.container}>
         {this.renderTabs()}
         {this.renderStake()}
-        {this.renderBorrowStake()}
+        {/* {this.renderBorrowStake()} */}
       </View>
     );
   }

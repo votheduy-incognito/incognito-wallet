@@ -24,8 +24,11 @@ class ImportAccountContainer extends Component {
       Toast.showInfo(`Your account ${accountName} was import!`);
 
       await reloadAccountList();
-    } catch {
+      return true;
+    } catch(e) {
+
       Toast.showError('Import account failed');
+      throw e;
     }
   };
 
@@ -48,5 +51,9 @@ ImportAccountContainer.propTypes = {
 
 export default connect(
   mapState,
-  mapDispatch
+  mapDispatch,
+  null,
+  {
+    forwardRef: true
+  }
 )(ImportAccountContainer);

@@ -27,10 +27,6 @@ class CreateAccountContainer extends Component {
     return null;
   };
 
-  hien=()=>{
-    console.log('CreateAccount function ---- hien neeeeee =');
-  }
-
   render() {
     return <CreateAccount {...this.props} createAccount={this.createAccount} />;
   }

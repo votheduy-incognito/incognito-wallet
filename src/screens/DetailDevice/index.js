@@ -54,7 +54,7 @@ class DetailDevice extends BaseScreen {
   }
 
   async componentDidMount() {
-    this.checkStatus('incognito');
+    await this.checkStatus('incognito');
     this.fetchData();
   }
 
@@ -146,12 +146,14 @@ class DetailDevice extends BaseScreen {
 
   checkStatus = async (chain='incognito')  => {
     let {device} = this.state;
+    console.log(TAG,'checkStatus begin ',device.Type);
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
       const dataResult = await VirtualDeviceService.getChainMiningStatus(device) ?? {};
       const { status = -1, data={status:Device.offlineStatus()},productId = -1 } = dataResult;
+      console.log(TAG,'checkStatus begin VIRTUAL_TYPE',dataResult);
       if(_.isEqual(status,1)){
-        // console.log(TAG,'checkActive begin 020202');
+        
         device.Status = data.status;
         this.setState({
           device:device
@@ -244,7 +246,7 @@ class DetailDevice extends BaseScreen {
 
   handlePressStake = onClickView(async ()=>{
     // hienton test
-    // const {device} = this.state;
+    const {device} = this.state;
     // let listDeviceTest = await LocalDatabase.getListDevices();
     // const deviceJson = device.toJSON();
     // const time = Date.now().toString();
@@ -253,7 +255,12 @@ class DetailDevice extends BaseScreen {
     // await LocalDatabase.saveListDevices(listDeviceTest);
     // this.goToScreen(routeNames.HomeMine);
     
-    this.goToScreen(routeNames.AddStake);
+    this.goToScreen(routeNames.AddStake,{
+      accountInfo:{
+        minerAccountName: device.accountName(),
+        funderAccountName:device.accountName()
+      }
+    });
   });
 
   renderGroupBalance = ()=>{
@@ -303,11 +310,12 @@ class DetailDevice extends BaseScreen {
       listFollowingTokens
     } = this.state;
     const isOffline = device?.isOffline()||false;
-    
+    const bgTop = device.Type === DEVICES.VIRTUAL_TYPE ?images.bg_top_virtual_device:images.bg_top_device;
+    const bgRootTop = device.Type === DEVICES.VIRTUAL_TYPE ?0: images.bg_top_detail;
     return (
-      <Container styleRoot={style.container} backgroundTop={{source:images.bg_top_detail,style:style.imageTop}}>
+      <Container styleRoot={style.container} backgroundTop={{source:bgRootTop,style:[style.imageTop,{backgroundColor:'#01828A'}]}}>
         {this.renderHeader()}
-        <Image style={style.bg_top} source={images.bg_top_device} />
+        <Image style={style.bg_top} source={bgTop} />
         <DialogLoader loading={loading} />
         <View style={{width: 0,height: 0,display:'none'}}>
           <CreateAccount ref={this.viewCreateAccount} />
