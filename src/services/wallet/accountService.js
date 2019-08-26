@@ -85,7 +85,6 @@ export default class Account {
     if (!candidatePaymentAddress) throw new Error('Missing candidatePaymentAddress');
     if (!account) throw new Error('Missing account');
     if (!wallet) throw new Error('Missing wallet');
-
     // param: payment address string, amount in Number (miliconstant)
     await Wallet.resetProgressTx();
     const indexAccount = wallet.getAccountIndexByName(account.name);

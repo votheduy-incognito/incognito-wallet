@@ -130,6 +130,25 @@ export default class DeviceService {
     return null;
   }
 
+  static pingGetIP = async(device:Device,chain='incognito')=>{
+    
+    try {
+      if(!_.isEmpty(device)){
+        const action = LIST_ACTION.GET_IP;
+        const dataResult = await Util.excuteWithTimeout(DeviceService.send(device.data,action,chain,Action.TYPE.PRODUCT_CONTROL),8);
+        console.log(TAG,'pingGetIP send dataResult = ',dataResult);
+        const { status = -1, data, message= ''} = dataResult;
+        if(status === 1){
+          return data;
+        }
+      }
+    } catch (error) {
+      console.log(TAG,'pingGetIP error = ',error);
+    }
+
+    return null;
+  }
+
   static sendPrivateKey = async(device:Device,privateKey:String,chain='incognito')=>{
     
     try {
