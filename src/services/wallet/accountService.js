@@ -239,4 +239,19 @@ export default class Account {
   static toSerializedAccountObj(accountWallet) {
     return accountWallet.toSerializedAccountObj();
   }
+
+  /**
+   *
+   * @param {object} accountWallet
+   */
+  static async isStaked(accountWallet) {
+    let isStaked;
+    try {
+      isStaked = await accountWallet.isStaked();
+    } catch(e){
+      throw e;
+    }
+    
+    return isStaked;
+  }
 }

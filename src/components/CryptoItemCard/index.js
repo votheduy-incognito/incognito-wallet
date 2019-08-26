@@ -33,7 +33,8 @@ class CryptoItemContainer extends Component {
     const data = {
       ...additionData,
       ...metaData,
-      ...othertokenData
+      ...othertokenData,
+      exteralSymbol: metaData?.symbol,
     };
     this.setState({ data });
   }
@@ -52,9 +53,11 @@ class CryptoItemContainer extends Component {
 
     if (!data) return null;
 
+    const fullName = ![undefined, null].includes(data?.pTokenType) ? `Private ${data?.exteralSymbol}` : null;
+
     const cryptoItemProps = {
       ...this.props,
-      fullName: data.fullName,
+      fullName: data.fullName ?? fullName,
       name: data.name,
       amount: token?.amount,
       icon: data.icon,

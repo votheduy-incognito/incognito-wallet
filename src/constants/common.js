@@ -34,18 +34,12 @@ export default {
     INIT: 0,
     SEND: 1
   },
-  CURRENCY_TYPE_FOR_GEN_ADDRESS: {
-    ETH: 1,
-    BTC: 2 ,
-    ERC20: 3,
-  },
   ADDRESS_TYPE: {
     DEPOSIT: 1,
     WITHDRAW: 2 
   },
   PRIVATE_TOKEN_HISTORY_CURRENCY_TYPE: {
     ETH: 1,
-    BTC: 2 ,
     ERC20: 3,
   },
   PTOKEN_TYPE: {

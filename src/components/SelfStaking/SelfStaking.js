@@ -97,6 +97,7 @@ class SelfStaking extends Component {
       <View>
         <ScrollView>
           <StakeValidatorTypeSelector
+            account={funderAccount}
             stakeTypeId={stakeTypeId}
             onChange={this.handleStakeTypeChange}
             style={styles.stakeSelector}

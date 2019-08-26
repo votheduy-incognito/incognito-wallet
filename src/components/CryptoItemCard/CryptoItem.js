@@ -1,13 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity, Image, ActivityIndicator } from '@src/components/core';
+import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
 import formatUtil from '@src/utils/format';
+import { COLORS } from '@src/styles';
 import cryptoItemStyle from './style';
 
 const CryptoItem = ({ fullName, name, amount, icon, onPress, symbol, isGettingBalance, style, pDecimals }) => (
   <TouchableOpacity style={[cryptoItemStyle.container, style]} onPress={amount != null ? onPress : null}>
     <View style={cryptoItemStyle.logoContainer}>
-      <Image source={icon} style={cryptoItemStyle.logo} />
+      {
+        icon
+          ? <Image source={icon} style={cryptoItemStyle.logo} />
+          : <Icons name='circle' size={28} color={COLORS.primary} />
+      }
     </View>
     <View style={cryptoItemStyle.cryptoNameContainer}>
       <Text style={cryptoItemStyle.mainNameText}>{fullName}</Text>
