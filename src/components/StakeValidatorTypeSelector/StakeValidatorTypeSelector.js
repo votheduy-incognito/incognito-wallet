@@ -83,14 +83,18 @@ class StakeValidatorTypeSelector extends Component {
   }
 
   render() {
-    const { stakeTypeId, style, stakeData } = this.props;
+    const { style, account } = this.props;
+    const stakeShard = this.getTypeById(CONSTANT_COMMONS.STAKING_TYPES.SHARD);
 
     return (
       <View style={[styles.container, style]}>
-        <Text style={styles.title}>What kind of validator?</Text>
+        {/* <Text style={styles.title}>What kind of validator?</Text>
         {
           stakeData?.map(type => this.renderItem(type, stakeTypeId === type.id))
-        }
+        } */}
+        <Text style={styles.title}>
+          Please make sure your account {account?.name} has enough {formatUtil.amount(stakeShard?.amount, CONSTANT_COMMONS.DECIMALS[CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV])} {CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}
+        </Text>
       </View>
     );
   }
@@ -100,12 +104,14 @@ StakeValidatorTypeSelector.defaultProps = {
   stakeTypeId: null,
   onChange: null,
   style: null,
+  account: null
 };
 
 StakeValidatorTypeSelector.propTypes = {
   stakeTypeId: PropTypes.number,
   onChange: PropTypes.func,
   style: PropTypes.object,
+  account: PropTypes.object,
   stakeData: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
