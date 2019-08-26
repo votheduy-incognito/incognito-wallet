@@ -336,6 +336,15 @@ class DetailDevice extends BaseScreen {
                 title={null}
               />
             )}
+            onPress={()=>{
+              if(__DEV__){
+                const {device} = this.state;
+                DeviceService.pingGetIP(device).then(data=>{
+                  this.showToastMessage('ping IP ' +JSON.stringify(data));
+                });
+                
+              }
+            }}
             subtitleStyle={style.top_container_subtitle}
             titleStyle={style.top_container_title}
             title="Node"
@@ -344,6 +353,7 @@ class DetailDevice extends BaseScreen {
           {this.renderGroupBalance()}
           {!_.isEmpty(listFollowingTokens) &&<HistoryMined containerStyle={style.group2_container} listItems={listFollowingTokens} />}
         </ScrollView>
+        {this.renderToastMessage()}
         
       </Container>
     );
