@@ -176,14 +176,14 @@ class WithdrawContainer extends Component {
       const { selectedPrivacy } = this.props;
       const walletAddress = selectedPrivacy?.paymentAddress;
 
-      if (selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BTC) {
-        address = await genCentralizedWithdrawAddress({
-          amount,
-          paymentAddress,
-          walletAddress,
-          tokenId: selectedPrivacy?.tokenId,
-        });
-      }
+      // centralized floW: BTC, BNB,...
+      address = await genCentralizedWithdrawAddress({
+        amount,
+        paymentAddress,
+        walletAddress,
+        tokenId: selectedPrivacy?.tokenId,
+        currencyType: selectedPrivacy?.currencyType,
+      });
       
       return address;
     } catch (e) {
@@ -215,7 +215,8 @@ class WithdrawContainer extends Component {
           walletAddress: selectedPrivacy?.paymentAddress,
           tokenContractID: selectedPrivacy?.contractId,
           tokenId: selectedPrivacy?.tokenId,
-          burningTxId: tx?.txId
+          burningTxId: tx?.txId,
+          currencyType: selectedPrivacy?.currencyType,
         });
       } else if (selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) {
         // ETH
@@ -225,7 +226,8 @@ class WithdrawContainer extends Component {
           paymentAddress: selectedPrivacy?.paymentAddress,
           walletAddress: selectedPrivacy?.paymentAddress,
           tokenId: selectedPrivacy?.tokenId,
-          burningTxId: tx?.txId
+          burningTxId: tx?.txId,
+          currencyType: selectedPrivacy?.currencyType,
         });
       }
 

@@ -17,6 +17,7 @@ class SelectedPrivacy {
     this.decimals = this.isMainCrypto ? CONSTANT_COMMONS.DECIMALS[symbol] : token?.metaData?.decimals;
     this.pDecimals = this.isMainCrypto ? CONSTANT_COMMONS.DECIMALS[symbol] : token?.metaData?.pDecimals;
     this.symbol = symbol;
+    this.currencyType = token?.metaData?.currencyType;
     this.externalSymbol = token?.metaData?.symbol;
     this.name = name;
     this.paymentAddress = account.PaymentAddress;

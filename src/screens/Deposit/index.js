@@ -32,6 +32,7 @@ class DepositContainer extends Component {
           paymentAddress: selectedPrivacy?.paymentAddress,
           walletAddress: selectedPrivacy?.paymentAddress,
           tokenId: selectedPrivacy?.tokenId,
+          currencyType: selectedPrivacy?.currencyType,
         });
       } else if (selectedPrivacy?.isErc20Token) {
         address = await genERC20DepositAddress({
@@ -39,7 +40,8 @@ class DepositContainer extends Component {
           paymentAddress: selectedPrivacy?.paymentAddress,
           walletAddress: selectedPrivacy?.paymentAddress,
           tokenId: selectedPrivacy?.tokenId,
-          tokenContractID: selectedPrivacy?.contractId
+          tokenContractID: selectedPrivacy?.contractId,
+          currencyType: selectedPrivacy?.currencyType,
         });
       } else {
         address = await genCentralizedDepositAddress({
@@ -47,6 +49,7 @@ class DepositContainer extends Component {
           paymentAddress: selectedPrivacy?.paymentAddress,
           walletAddress: selectedPrivacy?.paymentAddress,
           tokenId: selectedPrivacy?.tokenId,
+          currencyType: selectedPrivacy?.currencyType
         });
       }
 

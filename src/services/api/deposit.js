@@ -1,7 +1,7 @@
 import http from '@src/services/http';
 import { CONSTANT_COMMONS } from '@src/constants';
 
-export const genCentralizedDepositAddress = ({ amount, paymentAddress, walletAddress, tokenId }) => {
+export const genCentralizedDepositAddress = ({ amount, paymentAddress, walletAddress, tokenId, currencyType }) => {
   if (!paymentAddress) return throw new Error('Missing paymentAddress');
   if (!walletAddress) return throw new Error('Missing walletAddress');
   if (!tokenId) return throw new Error('Missing tokenId');
@@ -13,7 +13,7 @@ export const genCentralizedDepositAddress = ({ amount, paymentAddress, walletAdd
   }
 
   return http.post('ota/generate', {
-    CurrencyType: CONSTANT_COMMONS.CURRENCY_TYPE_FOR_GEN_ADDRESS.BTC,
+    CurrencyType: currencyType,
     AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.DEPOSIT,
     RequestedAmount: String(parseAmount),
     PaymentAddress: paymentAddress,
@@ -22,7 +22,7 @@ export const genCentralizedDepositAddress = ({ amount, paymentAddress, walletAdd
   }).then(res => res?.Address);
 };
 
-export const genETHDepositAddress = ({ amount, paymentAddress, walletAddress, tokenId }) => {
+export const genETHDepositAddress = ({ amount, paymentAddress, walletAddress, tokenId, currencyType }) => {
   if (!paymentAddress) return throw new Error('Missing paymentAddress');
   if (!walletAddress) return throw new Error('Missing walletAddress');
   if (!tokenId) return throw new Error('Missing tokenId');
@@ -34,7 +34,7 @@ export const genETHDepositAddress = ({ amount, paymentAddress, walletAddress, to
   }
 
   return http.post('eta/generate', {
-    CurrencyType: CONSTANT_COMMONS.CURRENCY_TYPE_FOR_GEN_ADDRESS.ETH,
+    CurrencyType: currencyType,
     AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.DEPOSIT,
     RequestedAmount: String(parseAmount),
     PaymentAddress: paymentAddress,
@@ -44,7 +44,7 @@ export const genETHDepositAddress = ({ amount, paymentAddress, walletAddress, to
   }).then(res => res?.Address);
 };
 
-export const genERC20DepositAddress = ({ amount, paymentAddress, walletAddress, tokenId, tokenContractID }) => {
+export const genERC20DepositAddress = ({ amount, paymentAddress, walletAddress, tokenId, tokenContractID, currencyType }) => {
   if (!paymentAddress) return throw new Error('Missing paymentAddress');
   if (!walletAddress) return throw new Error('Missing walletAddress');
   if (!tokenId) return throw new Error('Missing tokenId');
@@ -57,7 +57,7 @@ export const genERC20DepositAddress = ({ amount, paymentAddress, walletAddress, 
   }
 
   return http.post('eta/generate', {
-    CurrencyType: CONSTANT_COMMONS.CURRENCY_TYPE_FOR_GEN_ADDRESS.ERC20,
+    CurrencyType: currencyType,
     AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.DEPOSIT,
     RequestedAmount: String(parseAmount),
     PaymentAddress: paymentAddress,

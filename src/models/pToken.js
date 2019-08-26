@@ -17,6 +17,7 @@ class PToken {
     this.default = data.Default;
     this.userId = data.UserID;
     this.verified = data.Verified;
+    this.currencyType = data.CurrencyType;
   }
   /**
    * Convert to data structure of token which stored in wallet object
@@ -34,7 +35,8 @@ class PToken {
         pSymbol: this.pSymbol,
         symbol: this.symbol,
         contractId: this.contractId,
-        pTokenType: this.type
+        pTokenType: this.type,
+        currencyType: this.currencyType,
       }
       // listTxs,
       // image,
