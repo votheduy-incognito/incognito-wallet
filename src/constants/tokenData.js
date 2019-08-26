@@ -5,7 +5,7 @@ import binanceIcon from '@src/assets/images/cryptoLogo/binance.png';
 import kcsIcon from '@src/assets/images/cryptoLogo/kcs.png';
 import { CONSTANT_COMMONS } from '@src/constants';
 
-const customTokenIcon = ethIcon;
+const customTokenIcon = null;
 
 const SYMBOL = {
   pETH: CONSTANT_COMMONS.TOKEN_SYMBOL.pETH,
@@ -17,15 +17,12 @@ const SYMBOL = {
 
 const DATA = {
   [SYMBOL.pETH]: {
-    fullName: 'Private ETH',
     icon: ethIcon,
   },
   [SYMBOL.pBTC]: {
-    fullName: 'Private BTC',
     icon: btcIcon,
   },
   [SYMBOL.pBNB]: {
-    fullName: 'Private BNB',
     icon: binanceIcon,
   },
   [SYMBOL.MAIN_CRYPTO_CURRENCY]: {
@@ -36,7 +33,6 @@ const DATA = {
     icon: privacyIcon
   },
   [SYMBOL.pKCS]: {
-    fullName: 'Private KCS',
     icon: kcsIcon,
   },
 };
