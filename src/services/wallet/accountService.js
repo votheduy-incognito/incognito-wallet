@@ -242,16 +242,11 @@ export default class Account {
 
   /**
    *
-   * @param {object} accountWallet
+   * @param {object} account
+   * @param {object} wallet
    */
-  static async isStaked(accountWallet) {
-    let isStaked;
-    try {
-      isStaked = await accountWallet.isStaked();
-    } catch(e){
-      throw e;
-    }
-    
-    return isStaked;
+  static isStaked(account, wallet) {
+    const accountWallet = wallet.getAccountByName(account?.name);
+    return accountWallet.isStaked();
   }
 }
