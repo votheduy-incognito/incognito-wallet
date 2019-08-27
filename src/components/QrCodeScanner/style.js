@@ -12,6 +12,5 @@ export default StyleSheet.create({
   desc: {
     textAlign: 'center',
     marginBottom: 20,
-    backgroundColor:'red'
   }
 });
