@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
 import { scaleInApp } from '@src/styles/TextStyle';
 
 export default StyleSheet.create({
@@ -22,4 +22,14 @@ export default StyleSheet.create({
     textAlign: 'center',
     fontSize: 14
   },
+  notEnoughPRVContainer: {
+    alignItems: 'center',
+    marginTop: 50
+  },
+  notEnoughPRVText: {
+    ...FONT.STYLE.medium,
+    fontSize: 25,
+    marginTop: 20,
+  },
+  notEnoughPRVImg: {}
 });

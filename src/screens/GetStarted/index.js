@@ -22,6 +22,7 @@ class GetStartedContainer extends Component {
 
     this.state = {
       isInitialing: true,
+      isCreating: false,
       errorMsg: null
     };
   }
@@ -69,14 +70,15 @@ class GetStartedContainer extends Component {
 
       // loaded wallet & then continue to Home screen
       if (!wallet) {
+        this.setState({ isCreating: true });
         // create new Wallet
         await this.handleCreateNew();
       }
 
-      this.setState({ isInitialing: false });
+      this.setState({ isInitialing: false, isCreating: false });
       this.goHome();
     } catch (e) {
-      this.setState({ isInitialing: false });
+      this.setState({ isInitialing: false, isCreating: false });
       this.onError('Something went wrong while opening wallet, please try again');
     }
   };
@@ -158,11 +160,12 @@ class GetStartedContainer extends Component {
   }
 
   render() {
-    const { isInitialing, errorMsg } = this.state;
+    const { isInitialing, errorMsg, isCreating } = this.state;
     return (
       <GetStarted
         errorMsg={errorMsg}
         isInitialing={isInitialing}
+        isCreating={isCreating}
         onRetry={this.handleRytry}
       />
     );

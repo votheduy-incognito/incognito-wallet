@@ -7,7 +7,10 @@ const style = StyleSheet.create({
     display: 'flex'
   },
   errorText: {
-    ...THEME.text.errorText
+    ...THEME.text.errorText,
+    textAlign: 'center',
+    padding: 15,
+    fontSize: 14
   },
   label: {
     marginBottom: 8
@@ -44,7 +47,7 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 10,
-    height: 55
+    minHeight: 55
   },
   rate: {
     flexDirection: 'row',

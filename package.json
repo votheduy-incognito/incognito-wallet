@@ -23,6 +23,7 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.3.4",
     "@tradle/react-native-http": "^2.0.1",
+    "add": "^2.0.6",
     "assert": "^1.5.0",
     "axios": "^0.18.0",
     "browserify-zlib": "^0.1.4",
@@ -69,6 +70,7 @@
     "react-native-reanimated": "^1.0.1",
     "react-native-root-toast": "^3.0.2",
     "react-native-size-matters": "^0.2.1",
+    "react-native-splash-screen": "^3.2.0",
     "react-native-step-indicator": "^0.0.11",
     "react-native-svg": "^9.4.0",
     "react-native-tab-view": "^2.2.0",
@@ -93,6 +95,7 @@
     "util": "^0.10.4",
     "vm-browserify": "0.0.4",
     "wallet-address-validator": "^0.2.4",
+    "yarn": "^1.17.3",
     "yup": "^0.27.0"
   },
   "devDependencies": {

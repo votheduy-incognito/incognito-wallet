@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, ScrollView, View, Text, Toast, Picker } from '@src/components/core';
+import { Button, ScrollView, View, Text, Toast, Picker, Image } from '@src/components/core';
 import EstimateFee from '@src/components/EstimateFee';
 import StakeValidatorTypeSelector from '@src/components/StakeValidatorTypeSelector';
 import tokenData from '@src/constants/tokenData';
@@ -8,6 +8,7 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import LoadingTx from '@src/components/LoadingTx';
 import formatUtil from '@src/utils/format';
 import convertUtil from '@src/utils/convert';
+import warningImg from '@src/assets/images/incognito_warning.png';
 import styles from './style';
 
 class SelfStaking extends Component {
@@ -94,30 +95,42 @@ class SelfStaking extends Component {
     const isCanSubmit = !isNotEnoughBalance;
 
     return (
-      <View>
-        <ScrollView>
-          <StakeValidatorTypeSelector
-            account={funderAccount}
-            stakeTypeId={stakeTypeId}
-            onChange={this.handleStakeTypeChange}
-            style={styles.stakeSelector}
-          />
-          <EstimateFee
-            initialFee={0}
-            finalFee={finalFee}
-            onSelectFee={this.handleSelectFee}
-            types={[tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY]}
-            amount={convertUtil.toHumanAmount(amount, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)}
-            toAddress={toAddress}
-            style={styles.estFee}
-          />
-          <Text style={styles.feeText}>
-            You&apos;ll pay: {formatUtil.amount(finalFee, feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : null)} {feeUnit}
-          </Text>
-          <Button disabled={!isCanSubmit} title='Stake' style={styles.stakeButton} onPress={this.handleStake} />
-        </ScrollView>
+      <ScrollView>
+        {
+          isNotEnoughBalance && (
+            <View style={styles.notEnoughPRVContainer}>
+              <Image source={warningImg} style={styles.notEnoughPRVCImg} />
+              <Text style={styles.notEnoughPRVText}>Not enough PRV</Text>
+            </View>
+          )
+        }
+        <StakeValidatorTypeSelector
+          account={funderAccount}
+          stakeTypeId={stakeTypeId}
+          onChange={this.handleStakeTypeChange}
+          style={styles.stakeSelector}
+        />
+        {
+          !isNotEnoughBalance && (
+            <>
+              <EstimateFee
+                initialFee={0}
+                finalFee={finalFee}
+                onSelectFee={this.handleSelectFee}
+                types={[tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY]}
+                amount={convertUtil.toHumanAmount(amount, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)}
+                toAddress={toAddress}
+                style={styles.estFee}
+              />
+              <Text style={styles.feeText}>
+                You&apos;ll pay: {formatUtil.amount(finalFee, feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : null)} {feeUnit}
+              </Text>
+              <Button disabled={!isCanSubmit} title='Stake' style={styles.stakeButton} onPress={this.handleStake} />
+            </>
+          )
+        }
         { isStaking && <LoadingTx /> }
-      </View>
+      </ScrollView>
     );
   }
 }

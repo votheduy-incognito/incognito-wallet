@@ -93,7 +93,7 @@ class StakeValidatorTypeSelector extends Component {
           stakeData?.map(type => this.renderItem(type, stakeTypeId === type.id))
         } */}
         <Text style={styles.title}>
-          Please make sure your account {account?.name} has enough {formatUtil.amount(stakeShard?.amount, CONSTANT_COMMONS.DECIMALS[CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV])} {CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}
+          Please make sure your account {account?.name ? `"${account?.name }"`: ''} has enough {formatUtil.amount(stakeShard?.amount, CONSTANT_COMMONS.DECIMALS[CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV])} {CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}
         </Text>
       </View>
     );
