@@ -51,10 +51,7 @@ class HomeMineItem extends React.Component {
     }
     
   }
-  // componentWillMount(){
-  //   this.getInfo();
-  //   this.checkActive();
-  // }
+  
   async componentDidMount(){
     this.getInfo();
     this.checkActive();
@@ -115,7 +112,7 @@ class HomeMineItem extends React.Component {
       const { status = -1, data={status:Device.offlineStatus()},productId = -1 } = dataResult;
       if(_.isEqual(status,1) && item?.product_id === productId ){
         // console.log(TAG,'checkActive begin 020202');
-        deviceInfo.data.status = data.status;
+        deviceInfo.Status = data.status;
         this.setState({
           deviceInfo:deviceInfo
         });

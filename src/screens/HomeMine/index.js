@@ -41,12 +41,7 @@ class HomeMine extends BaseScreen {
     };
   }
   onResume = () => {
-    this.setState({
-      timeToUpdate:Date.now()
-    },()=>{
-      this.handleRefresh();
-    });
-    
+    this.handleRefresh();
   };
   async componentWillMount(){
     await this.createSignIn();
@@ -154,21 +149,26 @@ class HomeMine extends BaseScreen {
   }
   handleLoadMore = () => {};
   handleRefresh = async () => {
+    
     const {isFetching,loading} = this.state;
     if(!isFetching){
+      
       this.setState({
-        isFetching:true
+        isFetching:true,
+        timeToUpdate:Date.now()
+      },async ()=>{
+        let list: [] = await this.getListLocalDevice();
+        list = _.isEmpty(list)?await this.fetchProductList():list.reverse();
+        // let list: [] = await this.fetchProductList();
+        // list = _.isEmpty(list)?await this.getListLocalDevice():list.reverse();
+        // let list: [];
+        console.log(TAG, 'handleRefresh list = ', list);
+        this.setState({
+          listDevice: list,
+          isFetching: false
+        });
       });
-      let list: [] = await this.getListLocalDevice();
-      list = _.isEmpty(list)?await this.fetchProductList():list.reverse();
-      // let list: [] = await this.fetchProductList();
-      // list = _.isEmpty(list)?await this.getListLocalDevice():list.reverse();
-      // let list: [];
-      console.log(TAG, 'handleRefresh list = ', list);
-      this.setState({
-        listDevice: list,
-        isFetching: false
-      });
+      
     }
   };
   getListLocalDevice = async () => {
