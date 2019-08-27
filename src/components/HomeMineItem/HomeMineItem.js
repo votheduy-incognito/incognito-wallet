@@ -10,6 +10,8 @@ import { accountSeleclor } from '@src/redux/selectors';
 import { connect } from 'react-redux';
 import { DEVICES } from '@src/constants/miner';
 import VirtualDeviceService from '@src/services/VirtualDeviceService';
+import convert from '@src/utils/convert';
+import common from '@src/constants/common';
 import styles from './style';
 
 const TAG = 'HomeMineItem';
@@ -61,8 +63,21 @@ class HomeMineItem extends React.Component {
     const {item,isActive,getAccountByName,wallet} = this.props;
     let {deviceInfo,account,balance} = this.state;
     if(!_.isEmpty(item)){
-      account = await getAccountByName(deviceInfo.accountName());
-      balance = await deviceInfo.balance(account,wallet);
+      switch(deviceInfo.Type){
+      case DEVICES.VIRTUAL_TYPE:{
+        let dataResult = await VirtualDeviceService.getRewardAmount(deviceInfo) ?? {};
+        console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
+        const {Result={}} = dataResult;
+        balance = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
+        balance = _.isNaN(balance)?0:balance;
+        break;
+      }
+      default:{
+        account = await getAccountByName(deviceInfo.accountName());
+        balance = await deviceInfo.balance(account,wallet);
+      }
+      }
+      
     }
     this.setState({
       account:account,

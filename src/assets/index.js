@@ -31,14 +31,14 @@ const images = {
   // ic_capture_photo: require('@/assets/images/ic_capture_photo.png'),
   // ic_capture: require('@/assets/images/ic_capture.png')
 };
-const ic_back = (props?)=>(
+const ic_back = (props?,containerIconStyle?)=>(
   <TouchableOpacity {...props}>
     <Icon
       size={scaleInApp(25)}
       name='ios-arrow-back'
       type='ionicon'
       color='#ffffff'
-      containerStyle={{paddingHorizontal:scaleInApp(10)}}
+      containerStyle={[{paddingHorizontal:scaleInApp(15)},containerIconStyle]}
     />
   </TouchableOpacity>
 );

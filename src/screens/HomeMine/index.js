@@ -251,7 +251,7 @@ class HomeMine extends BaseScreen {
         {this.renderHeader()}
         <Text style={style.header2}>earnings so far</Text>
         <Text style={style.header3}>
-          0.00<Text style={style.header3_child}>PRV</Text>
+          0.00 <Text style={style.header3_child}>PRV</Text>
         </Text>
         <DialogLoader loading={loading} />
         <FlatList

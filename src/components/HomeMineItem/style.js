@@ -23,9 +23,7 @@ const style = StyleSheet.create({
     height:scaleInApp(40),
   },
   groupRight_title:{
-    ...TextStyle.mediumText,
-    ...FontStyle.medium,
-    fontSize:scaleInApp(15),
+    ...TextStyle.normalText,
     backgroundColor: 'transparent',
     'letterSpacing':0,
     color: '#0DB8D8',
@@ -36,15 +34,14 @@ const style = StyleSheet.create({
     marginLeft:scaleInApp(10)
   },
   groupLeft_title:{
-    ...TextStyle.mediumText,
+    ...TextStyle.normalText,
     ...FontStyle.medium,
     backgroundColor: 'transparent',
     'letterSpacing':0,
     color: 'rgba(0,0,0,1)',
   },
   groupLeft_title2:{
-    ...TextStyle.mediumText,
-    fontSize:scaleInApp(15),
+    ...TextStyle.normalText,
     backgroundColor: 'transparent',
     color: '#899092',
     'letterSpacing':0,

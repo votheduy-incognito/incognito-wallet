@@ -17,8 +17,8 @@ const listItems = [
     img :images.ic_add_node_device,
   },
   {
-    title:'Self-Node',
-    subTitle:'Run a script on your computer',
+    title:'Virtual Node',
+    subTitle:'Run a virtual node on your computer',
     img :images.ic_add_self_node,
   },
   // {

@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import TextStyle, { scaleInApp, FontStyle } from '@src/styles/TextStyle';
 
+export const placeHolderColor = '#B9C9CA';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -15,16 +16,20 @@ const styles = StyleSheet.create({
     flexDirection:'column'
   },
   item_account_text: {
-    ...TextStyle.mediumText,
+    ...TextStyle.normalText,
     color:'#1C1C1C',
-    paddingVertical: scaleInApp(10)
+    paddingVertical: scaleInApp(5)
   },
   textInputPrivateKey:{
     flex:1,
+    marginTop: scaleInApp(20),
     borderColor:'#E5E9EA',
     textAlignVertical:'top',
-    padding: scaleInApp(10),
-    borderWidth: scaleInApp(2)
+    paddingTop: scaleInApp(15),
+    paddingBottom: scaleInApp(15),
+    paddingHorizontal:scaleInApp(20),
+    borderWidth: scaleInApp(2),
+    borderRadius:scaleInApp(4)
   },
   textInput: {
     ...TextStyle.mediumText,
@@ -35,9 +40,9 @@ const styles = StyleSheet.create({
   },
   buttonChooseAccount:{
     ...TextStyle.smallText,
-    color:'#00bfff',
+    color:'#25CDD6',
     textAlign:'right',
-    marginTop:scaleInApp(5),
+    marginTop:scaleInApp(10),
     backgroundColor:'transparent',
     borderColor: '#E5E9EA',
     borderBottomWidth: scaleInApp(2),
@@ -55,7 +60,7 @@ const styles = StyleSheet.create({
     marginTop:scaleInApp(20),
   },
   textTitleButton:{
-    ...TextStyle.bigText,
+    ...TextStyle.mediumText,
     ...FontStyle.medium,
     color:'#FFFFFF'
   },
@@ -63,6 +68,9 @@ const styles = StyleSheet.create({
   group_host: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+  dialog_content:{
+    paddingVertical:scaleInApp(5),
   }
 });
 

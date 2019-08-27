@@ -1,8 +1,8 @@
 import BaseScreen from '@screens/BaseScreen';
 import _ from 'lodash';
 import React from 'react';
-import { Alert, View,ScrollView,Image,Text } from 'react-native';
-import { ListItem, Icon,Button, Header } from 'react-native-elements';
+import { View,ScrollView,Image,Text } from 'react-native';
+import { Button, Header } from 'react-native-elements';
 import DialogLoader from '@src/components/DialogLoader';
 import images, { imagesVector } from '@src/assets';
 import Container from '@components/Container';
@@ -20,6 +20,7 @@ import { DEVICES } from '@src/constants/miner';
 import VirtualDeviceService from '@src/services/VirtualDeviceService';
 import convert from '@src/utils/convert';
 import common from '@src/constants/common';
+import { scaleInApp } from '@src/styles/TextStyle';
 import style from './style';
 
 export const TAG = 'DetailDevice';
@@ -37,20 +38,22 @@ class DetailDevice extends BaseScreen {
     super(props);
     const {navigation,wallet,token}= props;
     const { params } = navigation.state;
-    const device = params ? params.device : null;
-    this.productName = device ? device.product_name : '';
+    const device = Device.getInstance(params?.device ||{});
+    this.titleBar = device.Type == DEVICES.VIRTUAL_TYPE?'Virtual Node':'Node';
+    this.productName = device.Name;
     // console.log(TAG,'constructor token',token);
     this.state = {
       loading: false,
       selectedIndex: 0,
       accountMiner:{},
+      isStaked:undefined,
       wallet:wallet,
       balancePRV:0,
       listFollowingTokens:[],
-      device: Device.getInstance(device)
+      device: device
     };
     this.viewCreateAccount = React.createRef();
-    navigation.setParams({ title: this.productName });
+    navigation.setParams({ title: this.titleBar });
   }
 
   async componentDidMount() {
@@ -58,25 +61,39 @@ class DetailDevice extends BaseScreen {
     this.fetchData();
   }
 
-  set Loading(isLoading){
+  // set Loading(isLoading){
+  //   this.setState({
+  //     loading:isLoading
+  //   });
+  // }
+
+  set IsStaked (isStake:Boolean){
     this.setState({
-      loading:isLoading
+      isStaked:isStake
     });
+  }
+
+  get IsStaked(){
+    return this.state.isStaked;
   }
 
   fetchData = async ()=>{
     // get balance
     const {device,wallet} = this.state;
     let dataResult = {};
+    let balancePRV = 0;
+    let listFollowingTokens = [];
+    const account = await  this.props.getAccountByName(device.accountName());
+    const isStaked = await accountService.isStaked(account,wallet)??false;
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
      
       dataResult = await VirtualDeviceService.getRewardAmount(device) ?? {};
       console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
       const {Result={}} = dataResult;
-      let balancePRV = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
+      balancePRV = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
       balancePRV = _.isNaN(balancePRV)?0:balancePRV;
-      const listFollowingTokens = [{
+      listFollowingTokens = [{
         symbol: 'PRV',
         name: 'Privacy',
         decimals: common.DECIMALS['PRV'],
@@ -87,27 +104,26 @@ class DetailDevice extends BaseScreen {
         default: true,
         userId: 0,
         verified: true }];
-      this.setState({
-        listFollowingTokens,
-        balancePRV:balancePRV
-      });
+      // this.setState({
+      //   listFollowingTokens,
+      //   balancePRV:balancePRV
+      // });
         
       break;
     }
     default:{
-      const account = await  this.props.getAccountByName(device.accountName());
-      const listFollowingTokens = (!_.isEmpty(account) && await accountService.getFollowingTokens(account,wallet))||[];
-      const balance = await device.balanceToken(account,wallet);
-      this.setState({
-        accountMiner:account,
-        listFollowingTokens,
-        balancePRV:balance
-      });
-        
+      
+      listFollowingTokens = (!_.isEmpty(account) && await accountService.getFollowingTokens(account,wallet))||[];
+      balancePRV = await device.balanceToken(account,wallet);        
     }
     }
     
-   
+    this.setState({
+      accountMiner:account,
+      listFollowingTokens,
+      isStaked:isStaked,
+      balancePRV:balancePRV
+    });
     // console.log(TAG,'fetchData begin ',balance);
   }
   /**
@@ -205,9 +221,23 @@ class DetailDevice extends BaseScreen {
     }
     
   });
-  
+  // rightComponent={(
+  //   <Button
+  //     title="reset device"
+  //     onPress={onClickView( async()=>{
+  //       const {device} = this.state;
+  //       this.Loading = true;
+  //       const result = await DeviceService.reset(device);
+  //       const {status = -1,message = 'fail'} = result||{};
+  //       this.Loading = false;
+  //       // await this.checkStatus('incognito');
+  //       alert(status === 1 ? 'Success':message);
+
+  //     })}
+  //   />
+  // )}
   renderHeader = () => {
-    const title = this.productName|| 'Details';
+    const title = this.titleBar|| 'Details';
     return (
       <Header
         containerStyle={style.containerHeader}
@@ -216,22 +246,7 @@ class DetailDevice extends BaseScreen {
             {title}
           </Text>
         )}
-        // rightComponent={(
-        //   <Button
-        //     title="reset device"
-        //     onPress={onClickView( async()=>{
-        //       const {device} = this.state;
-        //       this.Loading = true;
-        //       const result = await DeviceService.reset(device);
-        //       const {status = -1,message = 'fail'} = result||{};
-        //       this.Loading = false;
-        //       // await this.checkStatus('incognito');
-        //       alert(status === 1 ? 'Success':message);
-
-        //     })}
-        //   />
-        // )}
-        leftComponent={imagesVector.ic_back({onPress:this.onPressBack})}
+        leftComponent={imagesVector.ic_back({onPress:this.onPressBack},{paddingLeft:0,paddingRight:scaleInApp(30)})}
       />
     );
   };
@@ -239,14 +254,15 @@ class DetailDevice extends BaseScreen {
   handlePressWithdraw = onClickView(async()=>{
     const {device,accountMiner,wallet} = this.state;
     this.Loading = true;
-    const result = await device.requestWithdraw(accountMiner,wallet,'').catch(e=>console.log);
+    const result = await device.requestWithdraw(accountMiner,wallet,'').catch(console.log);
     !_.isEmpty(result) && await this.fetchData();
     this.Loading = false;
   });
 
   handlePressStake = onClickView(async ()=>{
-    // hienton test
+    
     const {device} = this.state;
+    // hienton test
     // let listDeviceTest = await LocalDatabase.getListDevices();
     // const deviceJson = device.toJSON();
     // const time = Date.now().toString();
@@ -272,33 +288,53 @@ class DetailDevice extends BaseScreen {
       <View style={style.group2_container}>
         <View style={style.group2_container_group1}>
           <View style={style.group2_container_container}>
-            <Text style={style.group2_container_title}>YOUR BALANCE</Text>
+            <Text style={style.group2_container_title}>TOTAL BALANCE</Text>
             <Text style={style.group2_container_value}>{`${balancePRV} PRV`}</Text>
-            {isHaveWallet&&(
+            {/* {isHaveWallet&&(
               <Button
                 titleStyle={style.group2_container_button_text}
                 buttonStyle={style.group2_container_button}
                 onPress={this.handlePressStake}
                 title='Stake'
               />
-            )}
+            )} */}
           </View>
           <View style={style.group2_container_container2}>
-            <Text style={style.group2_container_title2}>STATUS</Text>
-            <Text style={[style.group2_container_value2,Device.getStyleStatus(device.Status.code)]}>{device.statusMessage()}</Text>
-            <View style={{flex:1,justifyContent:'flex-end'}}>
-              {isHaveWallet&&(
-                <Button
-                  titleStyle={style.group2_container_button_text}
-                  buttonStyle={style.group2_container_button2}
-                  onPress={this.handlePressWithdraw}
-                  title='Withdraw'
-                />
-              )}
-            </View>
+            {isHaveWallet&&(
+              <Button
+                titleStyle={style.group2_container_button_text}
+                buttonStyle={style.group2_container_button2}
+                onPress={this.handlePressWithdraw}
+                title='Withdraw'
+              />
+            )}
+            {!isHaveWallet && (
+              <Text style={style.textWarning}>Testnest is being maintained.{'\n'}Please wait.
+              </Text>
+            )}
           </View>
         </View>
-        {!isHaveWallet && <Text style={style.textWarning}>Your Wallet is not found</Text>}
+        
+      </View>
+    );
+  }
+  renderTop = ()=>{
+    const {device,isStaked} = this.state;
+    const stakeTitle = isStaked?'Stop':'Run';
+    return (
+      <View style={style.top_container}>
+        <View style={style.top_container_group}>
+          <Text style={style.top_container_title} numberOfLines={1}>{this.productName}</Text>
+          <Text style={[style.group2_container_value2,Device.getStyleStatus(device.Status.code)]}>{device.statusMessage()}</Text>
+        </View>  
+        <Button
+          titleStyle={style.group2_container_button_text}
+          buttonStyle={style.group2_container_button}
+          title={stakeTitle}
+          onPress={onClickView( async()=>{
+            await this.handlePressStake();
+          })}
+        />
       </View>
     );
   }
@@ -321,21 +357,45 @@ class DetailDevice extends BaseScreen {
           <CreateAccount ref={this.viewCreateAccount} />
         </View>
         <ScrollView>
-          <ListItem
+          {this.renderTop()}
+          {/* <ListItem
             containerStyle={style.top_container}
             hideChevron
-            rightElement={_.isEqual(device.Type,DEVICES.MINER_TYPE) && (
-              <Button
-                type="outline"
-                buttonStyle={style.top_button_action}
-                icon={{
-                  size: 15,name:device.isStartedChain()?'control-pause' :'control-play', type:'simple-line-icon', color:'black'
-                }}
-                disabled={isOffline}
-                onPress={this.handleSwitchIncognito}
-                title={null}
-              />
-            )}
+            // rightElement={_.isEqual(device.Type,DEVICES.MINER_TYPE) && (
+            //   <Button
+            //     type="outline"
+            //     buttonStyle={style.top_button_action}
+            //     icon={{
+            //       size: 15,name:device.isStartedChain()?'control-pause' :'control-play', type:'simple-line-icon', color:'black'
+            //     }}
+            //     disabled={isOffline}
+            //     onPress={this.handleSwitchIncognito}
+            //     title={null}
+            //   />
+            // )}
+            leftElement={()=>{
+              const {device} = this.state;
+              return (
+                <View style={style.group2_container_container}>
+                  <Text style={style.top_container_title}>{this.productName}</Text>
+                  <Text style={style.group2_container_title2}>STATUS <Text style={[style.group2_container_value2,Device.getStyleStatus(device.Status.code)]}>{device.statusMessage()}</Text></Text>
+                </View>
+              );
+            }}
+            rightElement={()=>{
+              const {device,isStaked} = this.state;
+              const stakeTitle = isStaked?'Pause':'Play';
+              return (
+                <Button
+                  titleStyle={style.group2_container_button_text}
+                  buttonStyle={style.group2_container_button}
+                  title={stakeTitle}
+                  onPress={onClickView( async()=>{
+                    await this.handlePressStake();
+                  })}
+                />
+              );
+            }}
             onPress={()=>{
               if(__DEV__){
                 const {device} = this.state;
@@ -345,11 +405,8 @@ class DetailDevice extends BaseScreen {
                 
               }
             }}
-            subtitleStyle={style.top_container_subtitle}
-            titleStyle={style.top_container_title}
-            title="Node"
-            subtitle="Incognito Network"
-          />
+          
+          /> */}
           {this.renderGroupBalance()}
           {!_.isEmpty(listFollowingTokens) &&<HistoryMined containerStyle={style.group2_container} listItems={listFollowingTokens} />}
         </ScrollView>

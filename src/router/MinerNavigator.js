@@ -39,7 +39,7 @@ const MinerNavigator = createStackNavigator(
     [ROUTE_NAMES.AddStake]: {
       screen:AddStake,
       navigationOptions: {
-        headerTitle:'Add Stake'
+        headerTitle:'Stake'
       }
     },
     [ROUTE_NAMES.SetupWifiDevice]: {
@@ -51,7 +51,7 @@ const MinerNavigator = createStackNavigator(
     [ROUTE_NAMES.AddSelfNode]: {
       screen:AddSelfNode,
       navigationOptions: {
-        headerTitle:'Add a Script'
+        headerTitle:'Add a Virtual Node'
       }
     },
     [ROUTE_NAMES.DetailDevice]:{

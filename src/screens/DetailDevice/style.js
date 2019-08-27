@@ -21,6 +21,8 @@ const style = StyleSheet.create({
     height:sizeHeader.height,
     marginLeft:0,
     marginRight:0,
+    paddingHorizontal:0,
+    paddingVertical:0,
     marginHorizontal:0,
     marginVertical:0,
     borderBottomColor: 'transparent'
@@ -31,8 +33,8 @@ const style = StyleSheet.create({
   },
   titleHeader:{
     ...TextStyle.bigText,
+    ...FontStyle.medium,
     color: '#FFFFFF',
-    fontWeight: 'bold',
   },
   bg_top:{
     marginTop:posImageDevice.top,
@@ -53,13 +55,20 @@ const style = StyleSheet.create({
     shadowRadius: 2.62,
   },
   top_container:{
+    flexDirection:'row',
     borderBottomWidth: 0,
     backgroundColor: 'rgba(243,248,249,0.73)',
     marginHorizontal: scaleInApp(20),
-    marginVertical:scaleInApp(5)
+    marginVertical:scaleInApp(5),
+    height:scaleInApp(60),
+  },
+  top_container_group:{
+    flex:1,
+    justifyContent:'space-evenly',
+    paddingHorizontal:scaleInApp(10),
   },
   top_container_title:{
-    ...TextStyle.bigText,
+    ...TextStyle.mediumText,
     ...FontStyle.medium,
     color: '#000000',
   },
@@ -69,10 +78,10 @@ const style = StyleSheet.create({
     color: 'rgba(137,144,146,1)',
   },
   textWarning:{
-    ...TextStyle.normalText,
-    marginTop: scaleInApp(5),
+    ...TextStyle.smallText,
     alignSelf:'center',
-    color: 'rgba(137,144,146,1)',
+    textAlign:'left',
+    color: '#FF8E00',
   },
   group2_container:{
     flexDirection:'column',
@@ -99,26 +108,29 @@ const style = StyleSheet.create({
     padding:scaleInApp(10),
   },
   group2_container_title:{
-    ...TextStyle.smallText,
+    ...TextStyle.minimizeText,
     color: '#899092',
   },
   group2_container_value:{
-    ...TextStyle.extraText,
+    ...TextStyle.bigText,
     marginTop:scaleInApp(2),
     color: '#1C1C1C',
   },
   group2_container_button:{
     backgroundColor:'#25CDD6',
-    padding:scaleInApp(10),
-    marginTop:scaleInApp(20),
+    height:'100%',
+    marginLeft:scaleInApp(10),
+    marginHorizontal:scaleInApp(2),
+    paddingHorizontal:scaleInApp(30),
     borderRadius:scaleInApp(4)
   },
   group2_container_container2:{
     flex:1,
+    justifyContent:'center',
     padding:scaleInApp(10),
   },
   group2_container_title2:{
-    ...TextStyle.smallText,
+    ...TextStyle.minimizeText,
     color: '#899092',
   },
   group2_container_value2:{
@@ -128,9 +140,8 @@ const style = StyleSheet.create({
     color: '#00C7E2',
   },
   group2_container_button2:{
-    backgroundColor:'#0D353C',
+    backgroundColor:'#26C64D',
     padding:scaleInApp(10),
-    marginTop:scaleInApp(20),
     borderRadius:scaleInApp(4)
   },
   group2_container_button_text:{
