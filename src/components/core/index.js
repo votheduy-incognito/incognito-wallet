@@ -22,3 +22,4 @@ export { default as Picker } from './Picker';
 export { default as Alert } from './Alert';
 export { default as RefreshControl } from './RefreshControl';
 export { default as FlatList } from './FlatList';
+export { default as SafeAreaView } from './SafeAreaView';
