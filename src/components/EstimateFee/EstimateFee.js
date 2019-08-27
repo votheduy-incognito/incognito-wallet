@@ -99,40 +99,45 @@ class EstimateFee extends Component {
       <View style={[styles.container, style]}>
         <Text style={styles.label}>Select fee & speed</Text>
         <View style={styles.box}>
-          <View>
-            <View style={styles.feeTypeGroup}>
-              {
-                types?.map((type, index) => {
-                  const onPress = () => this.handleSelectFeeType(type);
-                  const isHighlight = defaultFeeSymbol === type;
-                  return (
-                    <TouchableOpacity
-                      key={type}
-                      onPress={onPress}
-                      style={
-                        [
-                          styles.feeType,
-                          index === 0 && styles.feeTypeFirst,
-                          isHighlight && styles.feeTypeHighlight
-                        ]
-                      }
-                    >
-                      <Text
-                        style={
-                          [
-                            styles.feeTypeText,
-                            isHighlight && styles.feeTypeTextHighlight
-                          ]
-                        }
-                      >
-                        Use {type}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })
-              }
-            </View>
-          </View>
+          {
+            !estimateErrorMsg && (
+              <View>
+                <View style={styles.feeTypeGroup}>
+                  {
+                    types?.map((type, index) => {
+                      const onPress = () => this.handleSelectFeeType(type);
+                      const isHighlight = defaultFeeSymbol === type;
+                      return (
+                        <TouchableOpacity
+                          key={type}
+                          onPress={onPress}
+                          style={
+                            [
+                              styles.feeType,
+                              index === 0 && styles.feeTypeFirst,
+                              isHighlight && styles.feeTypeHighlight
+                            ]
+                          }
+                        >
+                          <Text
+                            style={
+                              [
+                                styles.feeTypeText,
+                                isHighlight && styles.feeTypeTextHighlight
+                              ]
+                            }
+                          >
+                            Use {type}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })
+                  }
+                </View>
+              </View>
+            )
+          }
+          
           { estimateErrorMsg
             ? <Text style={styles.errorText}>{estimateErrorMsg}</Text>
             : (minFee === 0 || !!minFee) && (

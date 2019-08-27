@@ -70,7 +70,7 @@ class EstimateFeeContainer extends Component {
 
       return fee;
     } catch (e) {
-      this.setState({ estimateErrorMsg: 'Can not calculate fee for this transaction, please check again' });
+      this.setState({ estimateErrorMsg: 'Can\'t calculate the fee for this transaction' });
     } finally {
       this.setState({ isGettingFee: false });
     }

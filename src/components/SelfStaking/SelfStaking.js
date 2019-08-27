@@ -94,30 +94,34 @@ class SelfStaking extends Component {
     const isCanSubmit = !isNotEnoughBalance;
 
     return (
-      <View>
-        <ScrollView>
-          <StakeValidatorTypeSelector
-            account={funderAccount}
-            stakeTypeId={stakeTypeId}
-            onChange={this.handleStakeTypeChange}
-            style={styles.stakeSelector}
-          />
-          <EstimateFee
-            initialFee={0}
-            finalFee={finalFee}
-            onSelectFee={this.handleSelectFee}
-            types={[tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY]}
-            amount={convertUtil.toHumanAmount(amount, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)}
-            toAddress={toAddress}
-            style={styles.estFee}
-          />
-          <Text style={styles.feeText}>
-            You&apos;ll pay: {formatUtil.amount(finalFee, feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : null)} {feeUnit}
-          </Text>
-          <Button disabled={!isCanSubmit} title='Stake' style={styles.stakeButton} onPress={this.handleStake} />
-        </ScrollView>
+      <ScrollView>
+        <StakeValidatorTypeSelector
+          account={funderAccount}
+          stakeTypeId={stakeTypeId}
+          onChange={this.handleStakeTypeChange}
+          style={styles.stakeSelector}
+        />
+        {
+          !isNotEnoughBalance && (
+            <>
+              <EstimateFee
+                initialFee={0}
+                finalFee={finalFee}
+                onSelectFee={this.handleSelectFee}
+                types={[tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY]}
+                amount={convertUtil.toHumanAmount(amount, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)}
+                toAddress={toAddress}
+                style={styles.estFee}
+              />
+              <Text style={styles.feeText}>
+                You&apos;ll pay: {formatUtil.amount(finalFee, feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : null)} {feeUnit}
+              </Text>
+              <Button disabled={!isCanSubmit} title='Stake' style={styles.stakeButton} onPress={this.handleStake} />
+            </>
+          )
+        }
         { isStaking && <LoadingTx /> }
-      </View>
+      </ScrollView>
     );
   }
 }
