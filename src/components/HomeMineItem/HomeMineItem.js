@@ -41,12 +41,15 @@ class HomeMineItem extends React.Component {
 
   componentDidUpdate(prevProps,prevState){
     const {item,timeToUpdate} = this.props;
+    let isUpdateInfo = false;
     if(!_.isEqual(item,prevProps?.item)){
       console.log(TAG,'componentDidUpdate begin 010101');
       this.getInfo();
+      isUpdateInfo = true;
     }
     if(!_.isEqual(prevProps.timeToUpdate,timeToUpdate)){
       console.log(TAG,'componentDidUpdate begin timeToUpdate = ',timeToUpdate);
+      isUpdateInfo =  !isUpdateInfo && this.getInfo();
       this.checkActive();
     }
     
