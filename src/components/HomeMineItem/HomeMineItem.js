@@ -10,6 +10,8 @@ import { accountSeleclor } from '@src/redux/selectors';
 import { connect } from 'react-redux';
 import { DEVICES } from '@src/constants/miner';
 import VirtualDeviceService from '@src/services/VirtualDeviceService';
+import convert from '@src/utils/convert';
+import common from '@src/constants/common';
 import styles from './style';
 
 const TAG = 'HomeMineItem';
@@ -49,10 +51,7 @@ class HomeMineItem extends React.Component {
     }
     
   }
-  // componentWillMount(){
-  //   this.getInfo();
-  //   this.checkActive();
-  // }
+  
   async componentDidMount(){
     this.getInfo();
     this.checkActive();
@@ -61,8 +60,21 @@ class HomeMineItem extends React.Component {
     const {item,isActive,getAccountByName,wallet} = this.props;
     let {deviceInfo,account,balance} = this.state;
     if(!_.isEmpty(item)){
-      account = await getAccountByName(deviceInfo.accountName());
-      balance = await deviceInfo.balance(account,wallet);
+      switch(deviceInfo.Type){
+      case DEVICES.VIRTUAL_TYPE:{
+        let dataResult = await VirtualDeviceService.getRewardAmount(deviceInfo) ?? {};
+        console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
+        const {Result={}} = dataResult;
+        balance = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
+        balance = _.isNaN(balance)?0:balance;
+        break;
+      }
+      default:{
+        account = await getAccountByName(deviceInfo.accountName());
+        balance = await deviceInfo.balance(account,wallet);
+      }
+      }
+      
     }
     this.setState({
       account:account,
@@ -100,7 +112,7 @@ class HomeMineItem extends React.Component {
       const { status = -1, data={status:Device.offlineStatus()},productId = -1 } = dataResult;
       if(_.isEqual(status,1) && item?.product_id === productId ){
         // console.log(TAG,'checkActive begin 020202');
-        deviceInfo.data.status = data.status;
+        deviceInfo.Status = data.status;
         this.setState({
           deviceInfo:deviceInfo
         });

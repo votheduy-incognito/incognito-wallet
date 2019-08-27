@@ -38,10 +38,9 @@ const styles = StyleSheet.create({
     color: '#1C1C1C'
   },
   subTitle: {
-    ...FontStyle.medium,
+    ...TextStyle.normalText,
     marginTop:scaleInApp(5),
-    fontSize:scaleInApp(15),
-    lineHeight:scaleInApp(22),
+    lineHeight:scaleInApp(20),
     color: '#9FA4A5'
   },
   item_container:{

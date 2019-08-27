@@ -9,10 +9,10 @@ export const screenSize = {
   height: Dimensions.get('window').height - STATUSBAR_HEIGHT
 };
 export const scaleInApp = verticalScale;
-export const FONT_FAMILY = Platform.OS === 'ios' ? 'Roboto' : 'Roboto';
+export const FONT_FAMILY = Platform.OS === 'ios' ? 'PostGrotesk' : 'Roboto';
 export const FontStyle = {
   normal:{
-    fontFamily:`${FONT_FAMILY}`
+    fontFamily:`${FONT_FAMILY}-Book`
   },
   medium:{
     fontFamily:`${FONT_FAMILY}-Medium`
@@ -80,7 +80,7 @@ const TextStyle = StyleSheet.create({
   minimizeText: {
     ...FontStyle.normal,
     color: textColor,
-    fontSize: scaleInApp(7)
+    fontSize: scaleInApp(10)
   }
 });
 export default TextStyle;

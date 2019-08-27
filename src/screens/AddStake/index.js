@@ -91,7 +91,7 @@ class AddStake extends BaseScreen {
 
     return (
       <View style={style.container}>
-        {this.renderTabs()}
+        {/* {this.renderTabs()} */}
         {this.renderStake()}
         {/* {this.renderBorrowStake()} */}
       </View>

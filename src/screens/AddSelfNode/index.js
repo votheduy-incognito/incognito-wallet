@@ -26,7 +26,7 @@ import DeviceInfo from 'react-native-device-info';
 import { DEVICES } from '@src/constants/miner';
 import ImportAccount from '@screens/ImportAccount';
 
-import styles from './style';
+import styles, { placeHolderColor } from './style';
 
 export const TAG = 'AddSelfNode';
 
@@ -134,12 +134,16 @@ class AddSelfNode extends BaseScreen {
       ):(
         <View style={[styles.group_host]}>
           <TextInput
+            placeholderTextColor={placeHolderColor}
             underlineColorAndroid="transparent"
             style={[textInput, item]}
-            placeholder="Device's name"
+            maxLength={200}
+            placeholder="Node’s name (optional)"
             onChangeText={(text) =>this.inputDeviceName = text}
           />
           <TextInput
+            placeholderTextColor={placeHolderColor}
+            maxLength={100}
             onChangeText={(text) =>this.inputHost = text}
             underlineColorAndroid="transparent"
             style={[textInput, item]}
@@ -147,10 +151,12 @@ class AddSelfNode extends BaseScreen {
             defaultValue={this.inputHost}
           />
           <TextInput
+            placeholderTextColor={placeHolderColor}
             onChangeText={(text) =>this.inputPort = text}
             underlineColorAndroid="transparent"
             style={[textInput, item]}
             keyboardType='numeric'
+            maxLength={6}
             defaultValue={this.inputPort}
             placeholder="Port"
           />
@@ -170,9 +176,9 @@ class AddSelfNode extends BaseScreen {
     return (
       <View style={styles.group_list_account}>
         <TextInput
-          label="Private Key Or Choose Account"
-          underlineColorAndroid="transparent"
-          placeholder="Private Key"
+          placeholder="Private key or choose account."
+          placeholderTextColor={placeHolderColor}
+          underlineColorAndroid="transparent" 
           editable={isEditatle}
           numberOfLines={4}
           multiline
@@ -196,9 +202,9 @@ class AddSelfNode extends BaseScreen {
             this.setState({ isShowListAccount: false });
           }}
         >
-          <DialogContent>
+          <DialogContent style={styles.dialog_content}>
             {accountListCombined.map((item,index)=>{
-              return (<Text key={item.name} style={styles.item_account_text} onPress={()=>this.handleChooseItemAccount(item,index)}>{item.name}</Text>);
+              return (<Text key={item.name} style={[styles.item_account_text,{color:index === 0?'#25CDD6':styles.item_account_text.color}]} onPress={()=>this.handleChooseItemAccount(item,index)}>{item.name}</Text>);
             })}
           </DialogContent>
         </Dialog>
