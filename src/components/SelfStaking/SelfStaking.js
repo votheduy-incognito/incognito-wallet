@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, ScrollView, View, Text, Toast, Picker } from '@src/components/core';
+import { Button, ScrollView, View, Text, Toast, Picker, Image } from '@src/components/core';
 import EstimateFee from '@src/components/EstimateFee';
 import StakeValidatorTypeSelector from '@src/components/StakeValidatorTypeSelector';
 import tokenData from '@src/constants/tokenData';
@@ -8,6 +8,7 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import LoadingTx from '@src/components/LoadingTx';
 import formatUtil from '@src/utils/format';
 import convertUtil from '@src/utils/convert';
+import warningImg from '@src/assets/images/incognito_warning.png';
 import styles from './style';
 
 class SelfStaking extends Component {
@@ -95,6 +96,14 @@ class SelfStaking extends Component {
 
     return (
       <ScrollView>
+        {
+          isNotEnoughBalance && (
+            <View style={styles.notEnoughPRVContainer}>
+              <Image source={warningImg} style={styles.notEnoughPRVCImg} />
+              <Text style={styles.notEnoughPRVText}>Not enough PRV</Text>
+            </View>
+          )
+        }
         <StakeValidatorTypeSelector
           account={funderAccount}
           stakeTypeId={stakeTypeId}

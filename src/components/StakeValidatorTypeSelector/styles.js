@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
+    alignItems: 'center'
   },
   itemContainer: {
     flexDirection: 'row',
@@ -25,6 +26,7 @@ export default StyleSheet.create({
     color: COLORS.dark1,
     fontSize: 18,
     marginVertical: 10,
+    maxWidth: 300,
   },
   icon: {
     marginRight: 13
