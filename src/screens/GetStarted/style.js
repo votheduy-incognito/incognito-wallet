@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, SPACING, THEME } from '@src/styles';
+import { COLORS, THEME, DECOR } from '@src/styles';
 
 export default StyleSheet.create({
   container: {
@@ -8,10 +8,10 @@ export default StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: SPACING.small,
+    padding: 30,
   },
   getStartedBlock: {
-    flex: 1,
+    marginTop: 30,
     justifyContent: 'center',
     width: '100%',
   },
@@ -19,7 +19,7 @@ export default StyleSheet.create({
     marginVertical: 30
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     marginBottom: 20
   },
   importKeyBlock: {
@@ -38,5 +38,19 @@ export default StyleSheet.create({
   },
   retryBtn: {
     marginTop: 50,
+  },
+  bar: {
+    width: '100%',
+    height: 5,
+    backgroundColor: COLORS.lightGrey6,
+    borderRadius: DECOR.borderRadiusBorder
+  },
+  barHighlight: {
+    position: 'relative',
+    left: 0,
+    width: 100,
+    height: 5,
+    backgroundColor: COLORS.primary,
+    borderRadius: DECOR.borderRadiusBorder
   }
 });
