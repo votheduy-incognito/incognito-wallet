@@ -12,7 +12,8 @@ import {
   TextInput,
   View,
   Platform,
-  ScrollView
+  ScrollView,
+  KeyboardAvoidingView
 } from 'react-native';
 import { connect } from 'react-redux';
 import BaseScreen from '@screens/BaseScreen';
@@ -62,9 +63,6 @@ class AddSelfNode extends BaseScreen {
     super(props);
     const {accountList = [],defaultAccountName= ''} = props;
       
-    // const selectedAccount =  accountList.find((value,index)=>{
-    //   return value.name == defaultAccountName;
-    // });
     this.state = { 
       currentPositionStep:0,
       accountList:[],
@@ -106,12 +104,12 @@ class AddSelfNode extends BaseScreen {
   }
 
   handleChooseItemAccount=(item,index)=>{
-
-    this.setState({selectedAccount:index === 0?undefined:item,isShowListAccount:false});
+    this.setState({selectedAccount:item,isShowListAccount:false});
+    // this.setState({selectedAccount:index === 0?undefined:item,isShowListAccount:false});
   }
   
   renderWifiPassword=()=>{
-    const {  textInput, item, errorText } = styles;
+    const {  textInput, item, errorText,item_container_input,label } = styles;
     const {
       errorMessage,
       showModal,
@@ -132,24 +130,30 @@ class AddSelfNode extends BaseScreen {
           labels={labels}
         />
       ):(
-        <View style={[styles.group_host]}>
-          
-          <TextInput
+        <>
+          <Input
             placeholderTextColor={placeHolderColor}
             maxLength={100}
+            labelStyle={label}
             onChangeText={(text) =>this.inputHost = text}
             underlineColorAndroid="transparent"
-            style={[textInput, item]}
+            inputStyle={textInput}
+            inputContainerStyle={item_container_input}
+            containerStyle={[item]}
             placeholder="Host"
+            label='Host'
             defaultValue={this.inputHost}
           />
-          <TextInput
+          <Input
             placeholderTextColor={placeHolderColor}
             onChangeText={(text) =>this.inputPort = text}
             underlineColorAndroid="transparent"
-            style={[textInput, item]}
+            inputStyle={textInput}
+            inputContainerStyle={item_container_input}
+            containerStyle={[item]}
             keyboardType='numeric'
             maxLength={6}
+            label='Port'
             defaultValue={this.inputPort}
             placeholder="Port"
           />
@@ -158,38 +162,44 @@ class AddSelfNode extends BaseScreen {
             <Text style={[errorText]}>*{errorMessage}</Text>
           ) : null}
           
-        </View>
+        </>
       )
     );
   }
 
   renderListAccount =()=>{
     const {accountList = [],isShowListAccount = false,selectedAccount = {} } = this.state;
-    const accountListCombined = [{name:'Import Private Key'},...accountList];
-    const isEditatle = _.isEmpty(selectedAccount?.name);
+    // const accountListCombined = [{name:'Import Private Key'},...accountList];
+    const accountListCombined = accountList;
+    const isEditatle = _.isEmpty(selectedAccount?.PrivateKey);
+    // console.log(TAG,'renderListAccount = item  = ',selectedAccount);
+    const textAction = isEditatle ? 'Choose Account':'Import Private Key';
     return (
-      <View style={styles.group_list_account}>
+      <>
         <TextInput
           placeholder="Private key or choose account."
           placeholderTextColor={placeHolderColor}
           underlineColorAndroid="transparent" 
           editable={isEditatle}
-          numberOfLines={4}
-          multiline
-          defaultValue={selectedAccount?.name||undefined}
-          style={[styles.textInputPrivateKey,{flex:isEditatle?1:undefined}]}
+          defaultValue={selectedAccount?.PrivateKey||undefined}
+          style={[styles.textInputPrivateKey]}
           onChangeText={(text) =>this.inputPrivateKey = text}
         />
         <Text
           style={[styles.buttonChooseAccount]}
           onPress={() => {
-            this.setState({ isShowListAccount: true });
+            if(isEditatle){
+              this.setState({ isShowListAccount: true });
+            }else{
+              this.setState({ selectedAccount:null });
+            }
+            
           }}
-        >Choose account
+        >{textAction}
         </Text>
         <Dialog
           width={0.75}
-          height={0.75}
+          height={0.5}
           visible={isShowListAccount}
           dialogTitle={<DialogTitle textStyle={styles.item_account_text} title="Choose account" />}
           onTouchOutside={() => {
@@ -198,11 +208,11 @@ class AddSelfNode extends BaseScreen {
         >
           <DialogContent style={styles.dialog_content}>
             {accountListCombined.map((item,index)=>{
-              return (<Text key={item.name} style={[styles.item_account_text,{color:index === 0?'#25CDD6':styles.item_account_text.color}]} onPress={()=>this.handleChooseItemAccount(item,index)}>{item.name}</Text>);
+              return (<Text key={item.name} style={[styles.item_account_text]} onPress={()=>this.handleChooseItemAccount(item,index)}>{item.name}</Text>);
             })}
           </DialogContent>
         </Dialog>
-      </View>
+      </>
     );
   }
 
@@ -214,7 +224,7 @@ class AddSelfNode extends BaseScreen {
       const userJson = await LocalDatabase.getUserInfo();
       const host = this.inputHost;
       
-      let privateKey = selectedAccount?.name||'';
+      let privateKey = selectedAccount?.PrivateKey||'';
       privateKey = _.trim(_.isEmpty(privateKey)?this.inputPrivateKey:privateKey);
       console.log(TAG,'handleSetUpPress host = ',host+'- inputPrivateKey = '+privateKey);
       const port = this.inputPort;
@@ -287,23 +297,20 @@ class AddSelfNode extends BaseScreen {
   });
 
   render() {
-    const { container, textInput, item } = styles;
+    const { container, textInput, item,item_container_input } = styles;
     const {loading} = this.state;
     return (
       <ScrollView
-        scrollEnabled={false}
-        contentContainerStyle={{flex:1}}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={container}>
-          <Loader loading={loading} />
-        
+        <Loader loading={loading} />
+        <KeyboardAvoidingView keyboardVerticalOffset={50} behavior="padding" style={[container]}>
           {this.renderWifiPassword()}
           {this.renderListAccount()}
           <TextInput
             placeholderTextColor={placeHolderColor}
             underlineColorAndroid="transparent"
-            style={[textInput, item]}
+            style={[textInput, item,item_container_input]}
             maxLength={200}
             placeholder="Node’s name (optional)"
             onChangeText={(text) =>this.inputDeviceName = text}
@@ -315,9 +322,10 @@ class AddSelfNode extends BaseScreen {
             onPress={this.handleSetUpPress}
             title='Add'
           />
-          <View style={{width: 0,height: 0}}>
-            <ImportAccount ref={this.viewImportPrivateKey} />
-          </View>
+          
+        </KeyboardAvoidingView>
+        <View style={{width: 0,height: 0}}>
+          <ImportAccount ref={this.viewImportPrivateKey} />
         </View>
       </ScrollView>
     );
