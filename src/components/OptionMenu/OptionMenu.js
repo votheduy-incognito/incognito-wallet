@@ -22,12 +22,13 @@ class OptionMenu extends Component {
       icon,
       iconProps: { style: iconStyle, ...iconOtherProps },
       title,
-      data
+      data,
+      style,
     } = this.props;
     const { open } = this.state;
 
     return (
-      <View style={styleSheet.container}>
+      <View style={[styleSheet.container, style]}>
         <TouchableOpacity onPress={() => this.handleToggle()} style={styleSheet.toggleBtn}>
           {icon || (
             <EntypoIcons
@@ -83,6 +84,7 @@ OptionMenu.defaultProps = {
   title: null,
   icon: null,
   iconProps: {},
+  style: null,
   data: []
 };
 
@@ -90,6 +92,7 @@ OptionMenu.propTypes = {
   title: PropTypes.string,
   iconProps: PropTypes.object,
   icon: PropTypes.element,
+  style: PropTypes.oneOfType([ PropTypes.object, PropTypes.arrayOf(PropTypes.object) ]),
   data: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,

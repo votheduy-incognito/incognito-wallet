@@ -2,7 +2,7 @@ import moment from 'moment';
 import convertUtil from './convert';
 
 const AmountFormat = new Intl.NumberFormat('en-US', {
-  maximumFractionDigits: 9,
+  maximumFractionDigits: 4,
 });
 const amount = (amount = throw new Error('Amount is required!'), decimals) => {
   const _amount = convertUtil.toHumanAmount(amount, decimals);

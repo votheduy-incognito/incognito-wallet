@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Container, ScrollView } from '@src/components/core';
+import { View, ScrollView } from '@src/components/core';
 import NetworkSection from './NetworkSection';
 // import PrivacySection from './PrivacySection';
-import WalletSection from './WalletSection';
+import AccountSection from './AccountSection';
+import { settingStyle } from './style';
 
 class Setting extends React.Component {
   constructor() {
@@ -17,15 +18,15 @@ class Setting extends React.Component {
     const { defaultServerId } = this.state;
     const { navigation } = this.props;
     return (
-      <ScrollView>
-        <Container>
-          <WalletSection navigation={navigation} />
+      <ScrollView contentContainerStyle={{ minHeight: '100%' }}>
+        <View style={settingStyle.container}>
+          <AccountSection navigation={navigation} />
           <NetworkSection
             navigation={navigation}
             defaultServerId={defaultServerId}
           />
           {/* <PrivacySection navigation={navigation} /> */}
-        </Container>
+        </View>
       </ScrollView>
     );
   }

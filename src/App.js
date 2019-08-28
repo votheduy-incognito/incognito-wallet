@@ -1,11 +1,16 @@
 // import 'intl';
 // import 'intl/locale-data/jsonp/en';
 import QrScanner from '@src/components/QrCodeScanner';
+import AppScreen from '@src/components/AppScreen';
 import configureStore from '@src/redux/store';
 import AppContainer from '@src/router';
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { initFirebaseNotification, onFirebaseMessage } from '@src/services/firebase';
+import { StatusBar } from 'react-native';
+import { THEME } from './styles';
+
+StatusBar.setBackgroundColor(THEME.header.backgroundColor);
 
 const store = configureStore();
 
@@ -25,8 +30,10 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <AppContainer />
-      <QrScanner />
+      <AppScreen>
+        <AppContainer />
+        <QrScanner />
+      </AppScreen>
     </Provider>
   );
 };

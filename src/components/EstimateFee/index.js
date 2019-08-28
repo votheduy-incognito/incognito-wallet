@@ -210,6 +210,7 @@ class EstimateFeeContainer extends Component {
           isGettingFee={isGettingFee}
           estimateErrorMsg={estimateErrorMsg}
           style={style}
+          selectedPrivacy={selectedPrivacy}
         />
       );
     }
