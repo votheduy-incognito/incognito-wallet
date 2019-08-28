@@ -13,12 +13,16 @@ const SectionItem = ({ data: { icon, title, desc, handlePress } }) => (
   </TouchableOpacity>
 );
 
-const Section = ({ label, items }) => (
+const Section = ({ label, items, customItems }) => (
   <View style={sectionStyle.container}>
     <Text style={sectionStyle.label}>{label}</Text>
     <View style={sectionStyle.items}>
-      {items &&
-        items.map((item, index) => <SectionItem key={index} data={item} />)}
+      {customItems
+        ? customItems
+        : (items &&
+            items.map((item, index) => <SectionItem key={index} data={item} />)
+        )
+      }
     </View>
   </View>
 );
