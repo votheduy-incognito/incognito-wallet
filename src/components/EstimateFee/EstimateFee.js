@@ -19,12 +19,13 @@ const LEVELS = [
   }
 ];
 
-const calcFinalFee = (minFee, rate) => {
+const calcFinalFee = memmoize((minFee, rate, pDecimals) => {
   if (minFee === 0 && rate !== 1) {
-    return Number(1 * rate) || 0;
+    const expectedMin = pDecimals ? (10 ** pDecimals * 0.001) : 1;
+    return Number(expectedMin * rate) || 0;
   }
   return Number(minFee * rate) || 0;
-};
+});
 
 class EstimateFee extends Component {
   constructor(props) {
@@ -36,14 +37,14 @@ class EstimateFee extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { minFee } = props;
+    const { minFee, selectedPrivacy } = props;
 
     if (minFee !== 0 && !minFee) {
       return null;
     }
     
     const levels = LEVELS.map(level => {
-      const fee = calcFinalFee(minFee, level?.rate);
+      const fee = calcFinalFee(minFee, level?.rate, selectedPrivacy?.pDecimals);
       return {
         level, fee,
       };
