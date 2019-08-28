@@ -11,8 +11,12 @@ const styles = StyleSheet.create({
   item: {
     marginTop: scaleInApp(20)
   },
+  item_container_input:{
+    borderColor: '#E5E9EA',
+    borderBottomWidth: scaleInApp(2),
+    // paddingVertical: scaleInApp(10)
+  },
   group_list_account:{
-    flex:1,
     flexDirection:'column'
   },
   item_account_text: {
@@ -33,26 +37,24 @@ const styles = StyleSheet.create({
   },
   textInput: {
     ...TextStyle.mediumText,
-    borderColor: '#E5E9EA',
     color:'#1C1C1C',
-    borderBottomWidth: scaleInApp(2),
-    paddingVertical: scaleInApp(10)
   },
   buttonChooseAccount:{
     ...TextStyle.smallText,
     color:'#25CDD6',
     textAlign:'right',
     marginTop:scaleInApp(10),
-    backgroundColor:'transparent',
-    borderColor: '#E5E9EA',
-    borderBottomWidth: scaleInApp(2),
+    backgroundColor:'transparent'
   },
   errorText: {
     ...TextStyle.smallText,
     color: 'red',
     marginTop: scaleInApp(8)
   },
-  
+  label: {
+    ...TextStyle.normalText,
+    color: '#8C9C9D'
+  },
   button:{
     backgroundColor:'#25CDD6',
     padding:scaleInApp(10),
@@ -66,7 +68,6 @@ const styles = StyleSheet.create({
   },
   
   group_host: {
-    flex: 1,
     backgroundColor: '#FFFFFF',
   },
   dialog_content:{

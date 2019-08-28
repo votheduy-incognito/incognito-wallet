@@ -1,16 +1,9 @@
 import routeNames from '@src/router/routeNames';
 import BaseScreen from '@screens/BaseScreen';
 import LocalDatabase from '@utils/LocalDatabase';
-import FirebaseService, {
-  DEVICE_CHANNEL_FORMAT,
-  FIREBASE_PASS,
-  MAIL_UID_FORMAT,
-  PHONE_CHANNEL_FORMAT
-} from '@services/FirebaseService';
-import Action from '@models/Action';
 import React from 'react';
 import Container from '@components/Container';
-import {  Header, Icon, ListItem} from 'react-native-elements';
+import {  Header, Button, ListItem} from 'react-native-elements';
 import { Alert, FlatList, Image,TouchableOpacity ,Text,View} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import _ from 'lodash';
@@ -22,6 +15,7 @@ import images from '@src/assets';
 import APIService from '@src/services/api/miner/APIService';
 import ViewUtil from '@src/utils/ViewUtil';
 import HomeMineItem from '@src/components/HomeMineItem';
+import { DEVICES } from '@src/constants/miner';
 import style from './style';
 
 export const TAG = 'HomeMine';
@@ -149,7 +143,6 @@ class HomeMine extends BaseScreen {
   }
   handleLoadMore = () => {};
   handleRefresh = async () => {
-    
     const {isFetching,loading} = this.state;
     if(!isFetching){
       
@@ -158,7 +151,8 @@ class HomeMine extends BaseScreen {
         timeToUpdate:Date.now()
       },async ()=>{
         let list: [] = await this.getListLocalDevice();
-        list = _.isEmpty(list)?await this.fetchProductList():list.reverse();
+        // list = _.isEmpty(list)?await this.fetchProductList():list.reverse();
+        list = list.reverse();
         // let list: [] = await this.fetchProductList();
         // list = _.isEmpty(list)?await this.getListLocalDevice():list.reverse();
         // let list: [];
@@ -171,8 +165,18 @@ class HomeMine extends BaseScreen {
       
     }
   };
+  handleAddVirtualNodePress=()=>{
+    this.goToScreen(routeNames.AddSelfNode);
+  }
+  handleAddNodePress=()=>{
+    this.goToScreen(routeNames.AddDevice);
+  }
   getListLocalDevice = async () => {
-    const listDevice = await LocalDatabase.getListDevices();
+    let listDevice = await LocalDatabase.getListDevices();
+    listDevice = listDevice.filter(item=>{
+      // console.log('HHHHHH item',item);
+      return _.includes(item.platform, CONSTANT_MINER.PRODUCT_TYPE)&& item.is_checkin == 1;//&&  item.product_type === DEVICES.VIRTUAL_TYPE;
+    });
     return listDevice;
   };
   handleItemDevicePress=(item)=>{
@@ -237,6 +241,30 @@ class HomeMine extends BaseScreen {
       </View>
     );
   }
+  renderFirstOpenApp = ()=>{
+    const {listDevice} = this.state;
+    return (
+      <View style={style.container_first_app}>
+        <Image resizeMode="cover" source={images.bg_first} style={{ position: 'absolute',width:'100%',height:'100%'}} />
+        <View style={style.group_first_open}>
+          <Text style={style.group_first_open_text01}>Welcome!</Text>
+          <Text style={style.group_first_open_text02}>Add a Node to start</Text>
+          <Button
+            titleStyle={style.textTitleButton}
+            buttonStyle={[style.button,{backgroundColor:'#101111'}]}
+            onPress={this.handleAddVirtualNodePress}
+            title='Add a Virtual Node'
+          />
+          <Button
+            titleStyle={style.textTitleButton}
+            buttonStyle={style.button}
+            onPress={this.handleAddNodePress}
+            title='Add a Node Device'
+          />
+        </View>
+      </View>
+    );
+  }
   render() {
     const {
       listDevice,
@@ -245,8 +273,9 @@ class HomeMine extends BaseScreen {
       loading,
       timeToUpdate
     } = this.state;
-    
-    return (
+    // const viewCustom = this.renderFirstOpenApp();
+    // return viewCustom;
+    return (!isFetching && _.isEmpty(listDevice)?this.renderFirstOpenApp(): (
       <Container styleContainScreen={style.container}>
         {this.renderHeader()}
         <Text style={style.header2}>earnings so far</Text>
@@ -270,8 +299,9 @@ class HomeMine extends BaseScreen {
           refreshing={isFetching && !isLoadMore}
           onEndReached={this.handleLoadMore}
         />
+        
       </Container>
-    );
+    ));
   }
 }
 
