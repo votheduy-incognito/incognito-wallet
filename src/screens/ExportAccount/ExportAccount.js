@@ -1,6 +1,5 @@
 import CopiableText from '@src/components/CopiableText';
-import { Container, Text, View } from '@src/components/core';
-import { COLORS } from '@src/styles';
+import { ScrollView, Text, View } from '@src/components/core';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styleSheet from './style';
@@ -20,24 +19,26 @@ const ExportItem = ({ label, data, color }) => (
 );
 
 const ExportAccount = ({ account }) => (
-  <View style={styleSheet.container}>
-    <ExportItem
-      label="YOUR INCOGNITO ADDRESS"
-      data={account?.PaymentAddress}
-    />
-    <ExportItem
-      label="PRIVATE KEY"
-      data={account?.PrivateKey}
-    />
-    <ExportItem
-      label="PUBLIC KEY"
-      data={account?.PublicKeyCheckEncode}
-    />
-    <ExportItem
-      label="READONLY KEY"
-      data={account?.ReadonlyKey}
-    />
-  </View>
+  <ScrollView contentContainerStyle={{ minHeight: '100%' }}>
+    <View style={styleSheet.container}>
+      <ExportItem
+        label="YOUR INCOGNITO ADDRESS"
+        data={account?.PaymentAddress}
+      />
+      <ExportItem
+        label="PRIVATE KEY"
+        data={account?.PrivateKey}
+      />
+      <ExportItem
+        label="PUBLIC KEY"
+        data={account?.PublicKeyCheckEncode}
+      />
+      <ExportItem
+        label="READONLY KEY"
+        data={account?.ReadonlyKey}
+      />
+    </View>
+  </ScrollView>
 );
 
 ExportAccount.propTypes = {
