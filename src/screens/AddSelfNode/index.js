@@ -111,7 +111,7 @@ class AddSelfNode extends BaseScreen {
   }
   
   renderWifiPassword=()=>{
-    const { container, textInput, item, errorText } = styles;
+    const {  textInput, item, errorText } = styles;
     const {
       errorMessage,
       showModal,
@@ -133,14 +133,7 @@ class AddSelfNode extends BaseScreen {
         />
       ):(
         <View style={[styles.group_host]}>
-          <TextInput
-            placeholderTextColor={placeHolderColor}
-            underlineColorAndroid="transparent"
-            style={[textInput, item]}
-            maxLength={200}
-            placeholder="Node’s name (optional)"
-            onChangeText={(text) =>this.inputDeviceName = text}
-          />
+          
           <TextInput
             placeholderTextColor={placeHolderColor}
             maxLength={100}
@@ -160,6 +153,7 @@ class AddSelfNode extends BaseScreen {
             defaultValue={this.inputPort}
             placeholder="Port"
           />
+          
           {!_.isEmpty(errorMessage) ? (
             <Text style={[errorText]}>*{errorMessage}</Text>
           ) : null}
@@ -293,8 +287,7 @@ class AddSelfNode extends BaseScreen {
   });
 
   render() {
-    const { container} = styles;
-
+    const { container, textInput, item } = styles;
     const {loading} = this.state;
     return (
       <ScrollView
@@ -307,6 +300,14 @@ class AddSelfNode extends BaseScreen {
         
           {this.renderWifiPassword()}
           {this.renderListAccount()}
+          <TextInput
+            placeholderTextColor={placeHolderColor}
+            underlineColorAndroid="transparent"
+            style={[textInput, item]}
+            maxLength={200}
+            placeholder="Node’s name (optional)"
+            onChangeText={(text) =>this.inputDeviceName = text}
+          />
           {this.renderToastMessage()}
           <Button
             titleStyle={styles.textTitleButton}

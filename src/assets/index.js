@@ -11,6 +11,7 @@ const images = {
   ic_no_finding_device: require('./images/ic_no_finding_device.png'),
   bg_top_device: require('./images/bg_top_device.png'),
   bg_top_virtual_device: require('./images/bg_top_virtual_device.png'),
+  bg_first: require('./images/bg_first.png'),
   bg_top_detail: require('./images/bg_top_detail.png'),
   ic_back: require('./images/ic_back.png'),
   ic_add_node_device:require('./images/ic_add_node_device.png'),
