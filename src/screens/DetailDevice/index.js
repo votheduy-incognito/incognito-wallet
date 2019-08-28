@@ -1,7 +1,7 @@
 import BaseScreen from '@screens/BaseScreen';
 import _ from 'lodash';
 import React from 'react';
-import { View,ScrollView,Image,Text } from 'react-native';
+import { View,ScrollView,Image,Text,TouchableOpacity } from 'react-native';
 import { Button, Header } from 'react-native-elements';
 import DialogLoader from '@src/components/DialogLoader';
 import images, { imagesVector } from '@src/assets';
@@ -309,8 +309,7 @@ class DetailDevice extends BaseScreen {
               />
             )}
             {!isHaveWallet && (
-              <Text style={style.textWarning}>Testnest is being maintained.{'\n'}Please wait.
-              </Text>
+              <Text style={style.textWarning}>Your device is offline.</Text>
             )}
           </View>
         </View>
@@ -322,7 +321,18 @@ class DetailDevice extends BaseScreen {
     const {device,isStaked} = this.state;
     const stakeTitle = isStaked?'Stop':'Run';
     return (
-      <View style={style.top_container}>
+      <TouchableOpacity
+        style={style.top_container}
+        onPress={()=>{
+          if(__DEV__){
+            const {device} = this.state;
+            DeviceService.pingGetIP(device).then(data=>{
+              this.showToastMessage('ping IP ' +JSON.stringify(data));
+            });
+          
+          }
+        }}
+      >
         <View style={style.top_container_group}>
           <Text style={style.top_container_title} numberOfLines={1}>{this.productName}</Text>
           <Text style={[style.group2_container_value2,Device.getStyleStatus(device.Status.code)]}>{device.statusMessage()}</Text>
@@ -332,10 +342,12 @@ class DetailDevice extends BaseScreen {
           buttonStyle={style.group2_container_button}
           title={stakeTitle}
           onPress={onClickView( async()=>{
-            await this.handlePressStake();
+            if(!isStaked){
+              await this.handlePressStake();
+            }
           })}
         />
-      </View>
+      </TouchableOpacity>
     );
   }
 
