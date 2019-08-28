@@ -13,12 +13,19 @@ const SectionItem = ({ data: { icon, title, desc, handlePress } }) => (
   </TouchableOpacity>
 );
 
-const Section = ({ label, items }) => (
+const Section = ({ label, items, customItems, headerRight }) => (
   <View style={sectionStyle.container}>
-    <Text style={sectionStyle.label}>{label}</Text>
+    <View style={sectionStyle.header}>
+      <Text style={sectionStyle.label}>{label}</Text>
+      {headerRight}
+    </View>
     <View style={sectionStyle.items}>
-      {items &&
-        items.map((item, index) => <SectionItem key={index} data={item} />)}
+      {customItems
+        ? customItems
+        : (items &&
+            items.map((item, index) => <SectionItem key={index} data={item} />)
+        )
+      }
     </View>
   </View>
 );
@@ -32,15 +39,17 @@ const itemShape = PropTypes.shape({
 
 Section.defaultProps = {
   label: '',
-  items: undefined
+  items: undefined,
+  customItems: undefined
 };
 Section.propTypes = {
   label: PropTypes.string,
-  items: PropTypes.arrayOf(itemShape)
+  items: PropTypes.arrayOf(itemShape),
+  customItems: PropTypes.oneOfType([ PropTypes.arrayOf(PropTypes.element), PropTypes.element ]),
 };
 
 SectionItem.defaultProps = {
-  data: undefined
+  data: undefined,
 };
 SectionItem.propTypes = {
   data: itemShape

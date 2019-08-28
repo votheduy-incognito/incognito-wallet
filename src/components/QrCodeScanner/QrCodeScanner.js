@@ -63,11 +63,6 @@ class QrScanner extends Component {
             {
               open && (
                 <QRCodeScanner
-                  topContent={<Text>Scan the address QR code</Text>}
-                  topViewStyle={{
-                    backgroundColor: 'red',
-                    marginBottom: 20
-                  }}
                   showMarker
                   onRead={this.handleSuccess}
                   notAuthorizedView={NotAuthorizedView}
