@@ -6,6 +6,29 @@ const style = StyleSheet.create({
     flex: 1,
     backgroundColor: 'transparent'
   },
+  container_first_app:{
+    flex: 1,
+    flexDirection:'row',
+    justifyContent:'center',
+    backgroundColor: 'transparent'
+  },
+  group_first_open:{
+    width:'100%',
+    paddingHorizontal:scaleInApp(20),
+    marginBottom:scaleInApp(20),
+    alignSelf:'flex-end',
+  },
+  group_first_open_text01:{
+    textAlign:'center',
+    ...TextStyle.bigText,
+    color: '#101111',
+  },
+  group_first_open_text02:{
+    ...TextStyle.normalText,
+    marginBottom:scaleInApp(20),
+    textAlign:'center',
+    color: '#8C9A9D',
+  },
   titleHeader:{
     ...TextStyle.bigText,
     color: '#007280',
@@ -45,7 +68,17 @@ const style = StyleSheet.create({
   },
   itemList:{
     marginVertical:scaleInApp(3),
-  }
+  },
+  button:{
+    backgroundColor:'#25CDD6',
+    padding:scaleInApp(10),
+    borderRadius:scaleInApp(4),
+    marginTop:scaleInApp(10),
+  },
+  textTitleButton:{
+    ...TextStyle.normalText,
+    color:'#FFFFFF'
+  },
 });
 
 export default style;
