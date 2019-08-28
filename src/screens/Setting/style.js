@@ -11,8 +11,13 @@ export const settingStyle = StyleSheet.create({
 
 export const sectionStyle = StyleSheet.create({
   container: {
-    flex: 1,
     marginBottom: SPACING.small
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
   },
   iconContainer: {
     alignItems: 'center',
@@ -36,8 +41,7 @@ export const sectionStyle = StyleSheet.create({
   label: {
     ...FONT.STYLE.medium,
     fontSize: 12,
-    paddingHorizontal: 20,
-    color: COLORS.primary,
+    color: COLORS.lightGrey1,
     textTransform: 'uppercase',
     fontWeight: 'bold',
     letterSpacing: 0.5
@@ -49,6 +53,11 @@ export const sectionStyle = StyleSheet.create({
 
 export const accountSection = StyleSheet.create({
   itemWrapper: {
+  },
+  importButton: {
+  },
+  importButtonText: {
+    color: COLORS.primary
   },
   container: {
     flex: 1,

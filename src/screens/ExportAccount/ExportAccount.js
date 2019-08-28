@@ -9,41 +9,35 @@ const ExportItem = ({ label, data, color }) => (
   <CopiableText style={styleSheet.itemContainer} text={data}>
     <View style={styleSheet.content}>
       <Text style={[styleSheet.itemLabel, { color }]}>{label}</Text>
-      <Text numberOfLines={1} ellipsizeMode="middle">
+      <Text numberOfLines={1} ellipsizeMode="middle" style={styleSheet.itemData}>
         {data}
       </Text>
+    </View>
+    <View style={styleSheet.rightBlock}>
+      <Text style={styleSheet.copyText}>Copy</Text>
     </View>
   </CopiableText>
 );
 
 const ExportAccount = ({ account }) => (
-  <Container style={styleSheet.container}>
+  <View style={styleSheet.container}>
     <ExportItem
-      label="READONLY KEY"
-      data={account?.ReadonlyKey}
-      color={COLORS.blue}
+      label="YOUR INCOGNITO ADDRESS"
+      data={account?.PaymentAddress}
     />
     <ExportItem
       label="PRIVATE KEY"
       data={account?.PrivateKey}
-      color={COLORS.red}
     />
     <ExportItem
-      label="PUBLIC KEY IN HEX"
-      data={account?.PublicKey}
-      color={COLORS.orange}
-    />
-    <ExportItem
-      label="PUBLIC KEY BASE58 CHECK ENCODE"
+      label="PUBLIC KEY"
       data={account?.PublicKeyCheckEncode}
-      color={COLORS.green}
     />
     <ExportItem
-      label="PUBLIC KEY BYTES"
-      data={account?.PublicKeyBytes}
-      color={COLORS.green}
+      label="READONLY KEY"
+      data={account?.ReadonlyKey}
     />
-  </Container>
+  </View>
 );
 
 ExportAccount.propTypes = {
