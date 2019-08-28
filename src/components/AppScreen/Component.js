@@ -1,15 +1,14 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Platform, StatusBar, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
-import DeviceInfo from 'react-native-device-info';
 import { THEME } from '@src/styles';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: THEME.header.backgroundColor,
-    paddingTop: (Platform.OS === 'android' && DeviceInfo.hasNotch()) ? StatusBar.currentHeight : 0
+    // paddingTop: (Platform.OS === 'android' && StatusBar.currentHeight > 24) ? StatusBar.currentHeight : 0
   }
 });
 
