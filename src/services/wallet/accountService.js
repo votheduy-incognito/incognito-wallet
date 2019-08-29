@@ -245,8 +245,11 @@ export default class Account {
    * @param {object} account
    * @param {object} wallet
    */
-  static isStaked(account, wallet) {
+  // stakerStatus returns -1 if account haven't staked, 
+  // returns 0 if account is a candidator and
+  // returns 1 if account is a validator
+  static stakerStatus(account, wallet) {
     const accountWallet = wallet.getAccountByName(account?.name);
-    return accountWallet.isStaked();
+    return accountWallet.stakerStatus();
   }
 }
