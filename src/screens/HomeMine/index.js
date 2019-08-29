@@ -82,7 +82,7 @@ class HomeMine extends BaseScreen {
     return isProduct;
   };
   saveData = async (data):Promise<Array<Object>> => {
-    let filterProducts = null;
+    let filterProducts = [];
     if (data) {
       const {
         email,
@@ -103,7 +103,7 @@ class HomeMine extends BaseScreen {
         refresh_token
       } = data;
       
-      filterProducts = products?.filter(item => this.isProduct(item))||[];
+      // filterProducts = products?.filter(item => this.isProduct(item))||[];
       const user = {
         email: email,
         fullname: fullname,
@@ -123,10 +123,10 @@ class HomeMine extends BaseScreen {
       };
       //Save to async storage
       await LocalDatabase.saveUserInfo(JSON.stringify(user));
-      if (filterProducts) {
-        // console.log(TAG, 'saveData filterProducts = ', filterProducts);
-        await LocalDatabase.saveListDevices(filterProducts);
-      }
+      // if (filterProducts) {
+      //   // console.log(TAG, 'saveData filterProducts = ', filterProducts);
+      //   await LocalDatabase.saveListDevices(filterProducts);
+      // }
     }
     return filterProducts;
   };
@@ -174,8 +174,8 @@ class HomeMine extends BaseScreen {
   getListLocalDevice = async () => {
     let listDevice = await LocalDatabase.getListDevices();
     listDevice = listDevice.filter(item=>{
-      console.log('HHHHHH item',item);
-      return _.includes(item.platform, CONSTANT_MINER.PRODUCT_TYPE)&& item.is_checkin == 1 &&  item.product_type === DEVICES.VIRTUAL_TYPE;
+      // console.log('HHHHHH item',item);
+      return _.includes(item.platform, CONSTANT_MINER.PRODUCT_TYPE)&& item.is_checkin == 1;//&&  item.product_type === DEVICES.VIRTUAL_TYPE;
     });
     return listDevice;
   };
@@ -275,7 +275,7 @@ class HomeMine extends BaseScreen {
     } = this.state;
     // const viewCustom = this.renderFirstOpenApp();
     // return viewCustom;
-    return (_.isEmpty(listDevice)?this.renderFirstOpenApp(): (
+    return (!isFetching && _.isEmpty(listDevice)?this.renderFirstOpenApp(): (
       <Container styleContainScreen={style.container}>
         {this.renderHeader()}
         <Text style={style.header2}>earnings so far</Text>

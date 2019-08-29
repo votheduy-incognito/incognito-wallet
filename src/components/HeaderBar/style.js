@@ -15,6 +15,7 @@ const style = StyleSheet.create({
   },
   title: {
     ...FONT.STYLE.medium,
+    fontSize: 20,
     color: COLORS.white,
     fontWeight: '600'
   },

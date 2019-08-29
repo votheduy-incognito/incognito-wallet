@@ -249,7 +249,7 @@ class SetupWifiDevice extends BaseScreen {
       let fetchProductInfo = {};
       if (this.validWallName) {
         fetchProductInfo = await this.changeDeviceName(addProduct);
-        const listResult =  await this.saveProductList();
+        const listResult =  await this.saveProductList(fetchProductInfo);
         // console.log(TAG,'handleSubmit saved - listResult = ',listResult);
       }
       if(!_.isEmpty(fetchProductInfo)){
@@ -277,16 +277,19 @@ class SetupWifiDevice extends BaseScreen {
     });
     
   });
-  saveProductList = async () =>{
-    
+  saveProductList = async (deviceInfo) =>{
     try {
-      const response = await APIService.getProductList(true);
-      const { status, data } = response;
-      if (status == 1) {
-        // console.log(TAG,'saveProductList begin data = ',data);
-        await LocalDatabase.saveListDevices(data);
-        return data;
-      }
+      let listLocalDevice = await LocalDatabase.getListDevices();
+      listLocalDevice.push(deviceInfo);
+      await LocalDatabase.saveListDevices(listLocalDevice);
+      // const response = await APIService.getProductList(true);
+      // const { status, data } = response;
+      // if (status == 1) {
+      //   // console.log(TAG,'saveProductList begin data = ',data);
+      //   await LocalDatabase.saveListDevices(data);
+      //   return data;
+      // }
+      return listLocalDevice;
     } catch (error) {
       return undefined;
     }
