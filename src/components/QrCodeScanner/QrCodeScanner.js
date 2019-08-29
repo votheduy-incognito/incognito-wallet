@@ -9,7 +9,7 @@ const closeQrScanner = () => {
   if (typeof Com?.closeModal === 'function') {
     Com.closeModal();
   } else {
-    Toast.showWarning('QR Scanner is not ready');
+    Toast.showWarning('Please make sure the app has access to your camera and try again.');
   }
 };
 
@@ -18,7 +18,7 @@ const openQrScanner = (onData) => {
     Com.onDataHook = onData;
     Com.openModal();
   } else {
-    Toast.showWarning('QR Scanner is not ready');
+    Toast.showWarning('Please make sure the app has access to your camera and try again.');
   }
 };
 

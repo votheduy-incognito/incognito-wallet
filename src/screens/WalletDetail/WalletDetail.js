@@ -26,7 +26,7 @@ class WalletDetail extends Component {
       const { hanldeLoadBalance } = this.props;
       return await hanldeLoadBalance();
     } catch {
-      Toast.showWarning('Can not reload balance right now, please try again');
+      Toast.showWarning('Something went wrong. Please refresh the screen.');
     }
   }
 
