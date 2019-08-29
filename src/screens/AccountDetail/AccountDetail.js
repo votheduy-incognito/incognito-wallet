@@ -9,9 +9,9 @@ class AccountDetail extends Component {
     try {
       const { removeAccount, account } = this.props;
       await removeAccount(account);
-      Toast.showInfo('Remove completed');
+      Toast.showSuccess('Account removed.');
     } catch {
-      Toast.showError('Remove failed');
+      Toast.showError('Something went wrong. Please try again.');
     }
   };
 

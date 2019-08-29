@@ -14,7 +14,7 @@ class CreateAccountContainer extends Component {
       const { wallet, reloadAccountList } = this.props;
 
       const account = await accountService.createAccount(accountName, wallet);
-      Toast.showInfo(`Your account ${accountName} was created!`);
+      Toast.showInfo('Success! Account created.');
       
       await reloadAccountList();
 

@@ -113,7 +113,7 @@ class AddInternalToken extends Component {
       const res = await Token.createSendPrivacyCustomToken(tokenObject, convert.toOriginalAmount(Number(fee), CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY), account, wallet);
 
       if (res.txId) {
-        Toast.showInfo('Create token successfully');
+        Toast.showSuccess('Create token successfully');
 
       } else {
         Toast.showError('Something went wrong. Please refresh the screen.');

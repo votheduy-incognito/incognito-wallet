@@ -28,7 +28,7 @@ class Deposit extends React.Component {
 
     return handleGenAddress(amount)
       .catch(() => {
-        Toast.showError('Something went wrong. Just tap the button again.');
+        Toast.showError('Something went wrong. Please try again.');
       });
   }
 

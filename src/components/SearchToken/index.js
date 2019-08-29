@@ -95,7 +95,7 @@ export class SearchTokenContainer extends PureComponent {
 
       await accountService.addFollowingTokens(pTokenSelected, account, wallet);
 
-      Toast.showInfo('Token added');
+      Toast.showSuccess('Token added');
 
       // update new wallet to store
       setWallet(wallet);

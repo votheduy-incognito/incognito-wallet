@@ -62,7 +62,7 @@ class WalletDetailContainer extends Component {
         id: 'withdraw',
         icon: <Image source={withdrawIcon} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
         label: 'Withdraw',
-        desc: 'to another crypto wallet',
+        desc: 'Withdraw funds to another crypto wallet',
         handlePress: () => navigation.navigate(ROUTE_NAMES.Withdraw)
       });
     }

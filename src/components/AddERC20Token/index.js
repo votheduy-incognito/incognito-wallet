@@ -49,7 +49,7 @@ export class AddERC20TokenContainer extends Component {
       // update new wallet to store
       setWallet(wallet);
 
-      Toast.showInfo('Added new token successfully');
+      Toast.showSuccess('Success! You added a token.');
       return newPToken;
     } catch(e) {
       Toast.showWarning('Something went wrong. Please try again.');

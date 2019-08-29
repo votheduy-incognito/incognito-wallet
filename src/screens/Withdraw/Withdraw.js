@@ -104,7 +104,7 @@ class Withdraw extends React.Component {
       }
 
       if (res) {
-        Toast.showInfo('Withdraw successfully');
+        Toast.showSuccess('Success! You withdrew funds.');
         navigation.goBack();
         return res;
       }
