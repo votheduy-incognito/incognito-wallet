@@ -176,13 +176,16 @@ class AddSelfNode extends BaseScreen {
     const textAction = isEditatle ? 'Choose Account':'Import Private Key';
     return (
       <>
-        <TextInput
+        <Input
           placeholder="Private key or choose account."
           placeholderTextColor={placeHolderColor}
           underlineColorAndroid="transparent" 
           editable={isEditatle}
+          inputStyle={styles.textInput}
+          containerStyle={[styles.item]}
           defaultValue={selectedAccount?.PrivateKey||undefined}
-          style={[styles.textInputPrivateKey]}
+          inputContainerStyle={[styles.item_container_input]}
+          label='Private Key'
           onChangeText={(text) =>this.inputPrivateKey = text}
         />
         <Text
@@ -304,7 +307,7 @@ class AddSelfNode extends BaseScreen {
         keyboardShouldPersistTaps="handled"
       >
         <Loader loading={loading} />
-        <KeyboardAvoidingView keyboardVerticalOffset={50} behavior="padding" style={[container]}>
+        <KeyboardAvoidingView contentContainerStyle={{flex:1}} keyboardVerticalOffset={50} behavior="padding" style={[container]}>
           {this.renderWifiPassword()}
           {this.renderListAccount()}
           <TextInput
@@ -324,7 +327,7 @@ class AddSelfNode extends BaseScreen {
           />
           
         </KeyboardAvoidingView>
-        <View style={{width: 0,height: 0}}>
+        <View style={{width: 0,height: 0,position:'absolute',opacity:0}}>
           <ImportAccount ref={this.viewImportPrivateKey} />
         </View>
       </ScrollView>

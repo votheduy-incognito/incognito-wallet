@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   },
   item_container_input:{
     borderColor: '#E5E9EA',
-    borderBottomWidth: scaleInApp(2),
+    borderBottomWidth: scaleInApp(1),
     // paddingVertical: scaleInApp(10)
   },
   group_list_account:{
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     paddingTop: scaleInApp(15),
     paddingBottom: scaleInApp(15),
     paddingHorizontal:scaleInApp(20),
-    borderWidth: scaleInApp(2),
+    borderBottomWidth: scaleInApp(1),
     borderRadius:scaleInApp(4)
   },
   textInput: {

@@ -20,6 +20,8 @@ export default {
   AddSelfNode: 'AddSelfNode',
   MineStack: 'MineStack',
   HomeStack: 'HomeStack',
+  GetStaredMineStake: 'GetStaredMineStake',
+  GetStaredAddNode: 'GetStaredAddNode',
   HomeMine: 'HomeMine',
   AddWallScreen: 'AddWallScreen',
   AddNode: 'AddNode',
