@@ -169,7 +169,8 @@ class HomeMine extends BaseScreen {
     this.goToScreen(routeNames.AddSelfNode);
   }
   handleAddNodePress=()=>{
-    this.goToScreen(routeNames.AddDevice);
+    this.goToScreen(routeNames.GetStaredMineStake);
+    
   }
   getListLocalDevice = async () => {
     let listDevice = await LocalDatabase.getListDevices();
@@ -292,7 +293,16 @@ class HomeMine extends BaseScreen {
           ListEmptyComponent={this.renderEmptyComponent()}
           renderItem={({ item,index }) => {
             return (
-              <HomeMineItem timeToUpdate={index === 0?timeToUpdate:0} onPress={this.handleItemDevicePress} isActive containerStyle={style.itemList} item={item} />
+              <HomeMineItem
+                reloadList={()=>{
+                  this.onResume();
+                }}
+                timeToUpdate={index === 0?timeToUpdate:0}
+                onPress={this.handleItemDevicePress}
+                isActive
+                containerStyle={style.itemList}
+                item={item}
+              />
             );
           }}
           onRefresh={this.handleRefresh}

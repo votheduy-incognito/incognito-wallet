@@ -23,6 +23,7 @@ export const template = {
 export default class Device {
   static CODE_UNKNOWN = -1;
   static CODE_STOP = 4;
+  static CODE_PENDING = 5;
   static CODE_START = 2;
   static CODE_MINING = 3;
   static CODE_SYNCING = 1;

@@ -13,10 +13,19 @@ import AddSelfNode from '@src/screens/AddSelfNode';
 import HeaderBar from '@src/components/HeaderBar/HeaderBar';
 import { navigationOptionsHandler } from '@src/utils/router';
 import { THEME } from '@src/styles';
+import GetStartedAddNode from '@src/screens/GetStartedAddNode';
 import ROUTE_NAMES from './routeNames';
 
 export const TAG = 'MinerNavigator';
-
+const GetStaredMineStake = createStackNavigator(
+  {
+    [ROUTE_NAMES.GetStaredAddNode]: navigationOptionsHandler(GetStartedAddNode, { header: null }),
+  },
+  {
+    initialRouteName:ROUTE_NAMES.GetStaredAddNode,
+    headerMode: 'screen'
+  }
+);
 const MinerNavigator = createStackNavigator(
   {
     [ROUTE_NAMES.HomeMine]: navigationOptionsHandler(HomeMine, { header: null }),
@@ -25,7 +34,8 @@ const MinerNavigator = createStackNavigator(
     [ROUTE_NAMES.AddStake]: navigationOptionsHandler(AddStake, { title: 'Stake' }),
     [ROUTE_NAMES.SetupWifiDevice]: navigationOptionsHandler(SetupWifiDevice, { title: 'Setup Wifi' }),
     [ROUTE_NAMES.AddSelfNode]: navigationOptionsHandler(AddSelfNode, { title: 'Add a Virtual Node' }),
-    [ROUTE_NAMES.DetailDevice]: navigationOptionsHandler(DetailDevice, { title: null }),
+    [ROUTE_NAMES.DetailDevice]: navigationOptionsHandler(DetailDevice, { header: null }),
+    [ROUTE_NAMES.GetStaredMineStake]: navigationOptionsHandler(GetStaredMineStake, { title: null }),
   },
   {
     defaultNavigationOptions: ({ navigation }) => {

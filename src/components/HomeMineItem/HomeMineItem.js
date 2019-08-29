@@ -12,7 +12,9 @@ import { DEVICES } from '@src/constants/miner';
 import VirtualDeviceService from '@src/services/VirtualDeviceService';
 import convert from '@src/utils/convert';
 import common from '@src/constants/common';
+import LocalDatabase from '@src/utils/LocalDatabase';
 import styles from './style';
+import { Alert } from '../core';
 
 const TAG = 'HomeMineItem';
 class HomeMineItem extends React.Component {
@@ -66,7 +68,7 @@ class HomeMineItem extends React.Component {
       switch(deviceInfo.Type){
       case DEVICES.VIRTUAL_TYPE:{
         let dataResult = await VirtualDeviceService.getRewardAmount(deviceInfo) ?? {};
-        console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
+        // console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
         const {Result={}} = dataResult;
         balance = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
         balance = _.isNaN(balance)?0:balance;
@@ -158,6 +160,16 @@ class HomeMineItem extends React.Component {
     return (
       <TouchableOpacity
         style={[styles.container,containerStyle]}
+        onLongPress={()=>{
+          Alert.alert('Confirm','Are you sure to delete this item?',[{text:'Yes',onPress:async ()=>{
+            let list = await LocalDatabase.getListDevices();
+            _.remove(list,item);
+            await LocalDatabase.saveListDevices(list);
+            const {reloadList} = this.props;
+
+            reloadList();
+          }},{ text: 'Cancel'}],{cancelable: true});
+        }}
         onPress={()=>{
           onPress(item);
         }}
@@ -180,7 +192,8 @@ HomeMineItem.defaultProps = {
   containerStyle:null,
   isActive:false,
   onPress:(item)=>{},
-  timeToUpdate:0
+  timeToUpdate:0,
+  reloadList:()=>{}
 };
 
 HomeMineItem.propTypes = {
@@ -190,7 +203,8 @@ HomeMineItem.propTypes = {
   containerStyle:PropTypes.object,
   isActive:PropTypes.bool,
   timeToUpdate:PropTypes.number,
-  onPress:PropTypes.func
+  onPress:PropTypes.func,
+  reloadList:PropTypes.func
 };
 const mapDispatch = { };
 

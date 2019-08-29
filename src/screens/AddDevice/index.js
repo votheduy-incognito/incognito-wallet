@@ -18,7 +18,7 @@ class AddDevice extends BaseScreen {
     super(props);
 
     this.state = {
-      loading: true,
+      loading: false,
       isAdmin: false,
       user: undefined,
       locationsList: [],

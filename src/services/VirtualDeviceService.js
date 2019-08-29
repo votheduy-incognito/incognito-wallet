@@ -2,11 +2,17 @@ import Action from '@src/models/Action';
 import _ from 'lodash';
 import Util from '@src/utils/Util';
 import Device from '@src/models/device';
+import { DEVICES } from '@src/constants/miner';
 import APIService,{METHOD} from './api/miner/APIService';
 
 const TAG = 'VirtualDeviceService';
 const password = 'kkkk';
-
+const DATA_INFO = [ {'status':'offline', 'message':'ready','code':DEVICES.CODE_START},
+  {'status':'syncing', 'message':'syncing','code':DEVICES.CODE_SYNCING},
+  {'status':'ready', 'message':'ready','code':DEVICES.CODE_START},
+  {'status':'mining', 'message':'earning','code':DEVICES.CODE_MINING},
+  {'status':'pending', 'message':'waiting to be selected','code':DEVICES.CODE_PENDING},
+  {'status':'notmining', 'message':'ready','code':DEVICES.CODE_START}];
 const timeout = 8;
 export const LIST_ACTION={
   GET_REWARD_AMOUNT:{
@@ -92,15 +98,19 @@ export default class VirtualDeviceService {
         const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),3);
         
         const {Result ,Method} = response ?? {};
-        if (_.isEqual(Result,'syncing')){
-          dataResponseCombinded = {'status': {'code': Device.CODE_SYNCING ,'message':'syncing' }};
-        }else if (_.isEqual(Result,'ready')){
-          dataResponseCombinded = {'status': {'code': Device.CODE_START ,'message':'ready' }};
-        } else if (_.isEqual(Result,'mining')){
-          dataResponseCombinded = {'status': {'code': Device.CODE_MINING ,'message':'mining' }};
-        } else if (_.isEqual(Result,'offline')){
-          dataResponseCombinded = {'status': {'code': Device.CODE_START ,'message':'ready' }};
-        }
+        const item = DATA_INFO.find((item)=>{
+          return _.isEqual(Result,item.status);
+        })|| Device.offlineStatus();
+        dataResponseCombinded = {'status': {'code': item.code ,'message':item.message }};
+        // if (_.isEqual(Result,'syncing')){
+        //   dataResponseCombinded = {'status': {'code': Device.CODE_SYNCING ,'message':'syncing' }};
+        // }else if (_.isEqual(Result,'ready')){
+        //   dataResponseCombinded = {'status': {'code': Device.CODE_START ,'message':'ready' }};
+        // } else if (_.isEqual(Result,'mining')){
+        //   dataResponseCombinded = {'status': {'code': Device.CODE_MINING ,'message':'mining' }};
+        // } else if (_.isEqual(Result,'offline')){
+        //   dataResponseCombinded = {'status': {'code': Device.CODE_START ,'message':'ready' }};
+        // }
       
         console.log(TAG,'getChainMiningStatus result',response);
         return {status:1, data:dataResponseCombinded,productId:device.ProductId};
