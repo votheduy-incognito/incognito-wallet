@@ -11,7 +11,6 @@ import { sizeHeader } from '@src/components/HeaderBar/style';
 import { imagesVector } from '@src/assets';
 import AddSelfNode from '@src/screens/AddSelfNode';
 import HeaderBar from '@src/components/HeaderBar/HeaderBar';
-import { THEME } from '@src/styles';
 import ROUTE_NAMES from './routeNames';
 
 export const TAG = 'MinerNavigator';

@@ -82,7 +82,7 @@ class HomeMine extends BaseScreen {
     return isProduct;
   };
   saveData = async (data):Promise<Array<Object>> => {
-    let filterProducts = null;
+    let filterProducts = [];
     if (data) {
       const {
         email,
@@ -103,7 +103,7 @@ class HomeMine extends BaseScreen {
         refresh_token
       } = data;
       
-      filterProducts = products?.filter(item => this.isProduct(item))||[];
+      // filterProducts = products?.filter(item => this.isProduct(item))||[];
       const user = {
         email: email,
         fullname: fullname,
@@ -123,10 +123,10 @@ class HomeMine extends BaseScreen {
       };
       //Save to async storage
       await LocalDatabase.saveUserInfo(JSON.stringify(user));
-      if (filterProducts) {
-        // console.log(TAG, 'saveData filterProducts = ', filterProducts);
-        await LocalDatabase.saveListDevices(filterProducts);
-      }
+      // if (filterProducts) {
+      //   // console.log(TAG, 'saveData filterProducts = ', filterProducts);
+      //   await LocalDatabase.saveListDevices(filterProducts);
+      // }
     }
     return filterProducts;
   };
