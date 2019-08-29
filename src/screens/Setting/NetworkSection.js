@@ -15,7 +15,7 @@ const NetworkSection = ({ navigation, defaultServer }) => {
     {
       title: server?.name || 'Change default server',
       desc: server?.address || '---',
-      icon: <MdIcons name="laptop" size={24} />,
+      icon: <MdIcons name="laptop" size={20} />,
       handlePress: () => navigation?.navigate(ROUTE_NAMES.NetworkSetting)
     }
   ];
