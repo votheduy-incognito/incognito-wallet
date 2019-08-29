@@ -19,6 +19,7 @@ const style = StyleSheet.create({
   containerHeader:{
     backgroundColor: 'transparent',
     height:sizeHeader.height,
+    alignItems:'flex-start',
     marginLeft:0,
     marginRight:0,
     paddingHorizontal:0,

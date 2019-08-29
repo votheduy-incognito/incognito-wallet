@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native';
-import { scaleInApp } from '@src/styles/TextStyle';
+import { scaleInApp, screenSize } from '@src/styles/TextStyle';
 import { COLORS, THEME, FONT } from '@src/styles';
 
 export const sizeHeader ={
-  height:scaleInApp(90),
-  width:'100%'
+  height:THEME.header.headerHeight,
+  width: screenSize.width
 }; 
 
 const style = StyleSheet.create({
