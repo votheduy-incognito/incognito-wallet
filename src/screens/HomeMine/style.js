@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import TextStyle, { scaleInApp, FontStyle } from '@src/styles/TextStyle';
+import { sizeHeader } from '@src/components/HeaderBar/style';
 
 const style = StyleSheet.create({
   container: {
@@ -59,7 +60,8 @@ const style = StyleSheet.create({
   },
   containerHeader:{
     backgroundColor: 'transparent',
-    height:scaleInApp(90),
+    height:sizeHeader.height,
+    alignItems:'flex-start',
     marginLeft:0,
     marginRight:0,
     marginHorizontal:0,
