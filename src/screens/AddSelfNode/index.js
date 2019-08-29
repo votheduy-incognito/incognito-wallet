@@ -145,6 +145,7 @@ class AddSelfNode extends BaseScreen {
             defaultValue={this.inputHost}
           />
           <Input
+            labelStyle={label}
             placeholderTextColor={placeHolderColor}
             onChangeText={(text) =>this.inputPort = text}
             underlineColorAndroid="transparent"
@@ -177,6 +178,7 @@ class AddSelfNode extends BaseScreen {
     return (
       <>
         <Input
+          labelStyle={styles.label}
           placeholder="Private key or choose account."
           placeholderTextColor={placeHolderColor}
           underlineColorAndroid="transparent" 
@@ -241,7 +243,7 @@ class AddSelfNode extends BaseScreen {
           
         } = user;
         let deviceName = this.inputDeviceName;
-        deviceName = _.isEmpty(deviceName)?`${host}:${port}`:deviceName;
+        deviceName = _.isEmpty(deviceName)?`${host}`:deviceName;
         deviceName = deviceName || CONSTANT_MINER.VIRTUAL_PRODUCT_NAME;
         const time = Date.now().toString();
         const account = {
@@ -300,7 +302,7 @@ class AddSelfNode extends BaseScreen {
   });
 
   render() {
-    const { container, textInput, item,item_container_input } = styles;
+    const { container, textInput, item,item_container_input ,label} = styles;
     const {loading} = this.state;
     return (
       <ScrollView
@@ -310,10 +312,14 @@ class AddSelfNode extends BaseScreen {
         <KeyboardAvoidingView contentContainerStyle={{flex:1}} keyboardVerticalOffset={50} behavior="padding" style={[container]}>
           {this.renderWifiPassword()}
           {this.renderListAccount()}
-          <TextInput
+          <Input
+            labelStyle={label}
             placeholderTextColor={placeHolderColor}
             underlineColorAndroid="transparent"
-            style={[textInput, item,item_container_input]}
+            inputStyle={textInput}
+            inputContainerStyle={item_container_input}
+            containerStyle={[item]}
+            label='Name'
             maxLength={200}
             placeholder="Node’s name (optional)"
             onChangeText={(text) =>this.inputDeviceName = text}
