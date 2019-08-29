@@ -14,7 +14,7 @@ const LEVELS = [
     rate: 2,
   },
   {
-    name: 'Fastest',
+    name: 'Swift',
     rate: 3,
   }
 ];

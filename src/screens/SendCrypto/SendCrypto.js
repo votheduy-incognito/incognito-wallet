@@ -102,7 +102,7 @@ class SendCrypto extends React.Component {
         await handleSend({ ...values, fee: finalFee, feeUnit });
       }
     } catch (e) {
-      Toast.showError(e.message);
+      Toast.showError('Something went wrong. Just tap the Send button again.');
     }
   }
 

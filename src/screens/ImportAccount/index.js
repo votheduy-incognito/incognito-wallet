@@ -27,7 +27,7 @@ class ImportAccountContainer extends Component {
       return true;
     } catch(e) {
 
-      Toast.showError('Import account failed');
+      Toast.showError('Something went wrong. Please try again.');
       throw e;
     }
   };

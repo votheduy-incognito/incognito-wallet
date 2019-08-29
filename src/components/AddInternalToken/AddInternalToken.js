@@ -84,7 +84,7 @@ class AddInternalToken extends Component {
       // update fee
       this.setState({ fee });
     } catch(e){
-      Toast.showError('Can not calculate fee for creating token');
+      Toast.showError('Something went wrong. Please refresh the screen.');
     } finally {
       this.setState({ isGettingFee: false });
     }
@@ -116,10 +116,10 @@ class AddInternalToken extends Component {
         Toast.showInfo('Create token successfully');
 
       } else {
-        Toast.showError(`Create token failed. Please try again! Err: ${res.err.Message || res.err }`);
+        Toast.showError('Something went wrong. Please refresh the screen.');
       }
     } catch (e) {
-      Toast.showError(`Create token failed. Please try again! Err:' ${e.message}`);
+      Toast.showError('Something went wrong. Please refresh the screen.');
     } finally {
       this.setState({ isCreatingOrSending: false });
     }
@@ -195,7 +195,7 @@ class AddInternalToken extends Component {
                     ? <Text>Calculating fee...</Text>
                     : typeof fee === 'number' && (
                       <Text>
-                        Inssuance fee: {formatUtil.amount(fee, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)} {tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY}
+                        Issuance fee: {formatUtil.amount(fee, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)} {tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY}
                         {isNotEnoughFee && ' (please top up your balance to cover the fee)' }
                       </Text>
                     )

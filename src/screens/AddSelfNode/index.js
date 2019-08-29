@@ -179,7 +179,7 @@ class AddSelfNode extends BaseScreen {
       <>
         <Input
           labelStyle={styles.label}
-          placeholder="Private key or choose account."
+          placeholder="Enter private key or import from account"
           placeholderTextColor={placeHolderColor}
           underlineColorAndroid="transparent" 
           editable={isEditatle}
@@ -321,7 +321,7 @@ class AddSelfNode extends BaseScreen {
             containerStyle={[item]}
             label='Name'
             maxLength={200}
-            placeholder="Node’s name (optional)"
+            placeholder="Name of Node (optional)"
             onChangeText={(text) =>this.inputDeviceName = text}
           />
           {this.renderToastMessage()}

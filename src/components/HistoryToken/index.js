@@ -119,7 +119,7 @@ class HistoryTokenContainer extends Component {
 
       return histories;
     } catch {
-      Toast.showError('Can not load withdraw & deposit history right now, please try later');
+      Toast.showError('Something went wrong. Please refresh the screen.');
     }
   }
 
@@ -141,7 +141,7 @@ class HistoryTokenContainer extends Component {
 
       return histories;
     } catch {
-      Toast.showError('Can not load history right now, please try later');
+      Toast.showError('Something went wrong. Please refresh the screen.');
     }
   };
 

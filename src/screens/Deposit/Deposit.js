@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Container, ScrollView, View, Toast, Text, Button } from '@src/components/core';
 import { Field, formValueSelector, destroy } from 'redux-form';
 import { createForm, InputField, validator } from '@src/components/core/reduxForm';
-import { getErrorMessage } from '@src/services/errorHandler';
 import { CONSTANT_COMMONS } from '@src/constants';
 import WaitingDeposit from './WaitingDeposit';
 import style from './style';
@@ -28,8 +27,8 @@ class Deposit extends React.Component {
     const { handleGenAddress, amount } = this.props;
 
     return handleGenAddress(amount)
-      .catch(e => {
-        Toast.showError(getErrorMessage(e));
+      .catch(() => {
+        Toast.showError('Something went wrong. Just tap the button again.');
       });
   }
 

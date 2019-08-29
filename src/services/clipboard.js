@@ -11,7 +11,7 @@ const ClipboardService = {
         throw new Error('Clipboard data must be string');
       }
     } catch {
-      Toast.showError('Can not copy right now, try later');
+      Toast.showError('Please tap again to copy.');
     }
   },
 

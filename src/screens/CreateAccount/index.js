@@ -22,7 +22,7 @@ class CreateAccountContainer extends Component {
       console.log('CreateAccount function ---- result =', serializedAccount);
       return serializedAccount;
     } catch {
-      Toast.showError('Create account failed');
+      Toast.showError('Something went wrong. Please try again.');
     }
     return null;
   };

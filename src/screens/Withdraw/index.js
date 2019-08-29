@@ -73,7 +73,7 @@ class WithdrawContainer extends Component {
 
       this.setState({ withdrawData: data });
     } catch {
-      Toast.showError('Prepare for withdrawing failed, please try again');
+      Toast.showError('Something went wrong. Please refresh the screen.');
     }
   }
 

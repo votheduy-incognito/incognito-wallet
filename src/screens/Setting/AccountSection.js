@@ -50,14 +50,14 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAcc
     {
       id: 'import',
       icon: <MdIcons name="input" size={25} />,
-      desc: 'Import your account',
+      desc: 'Import an existing account',
       label: 'Import',
       handlePress: handleImport
     },
     {
       id: 'create',
       icon: <MdIcons name="add" size={25} />,
-      desc: 'Create new account',
+      desc: 'Create a new account',
       label: 'Create',
       handlePress: handleCreate
     }

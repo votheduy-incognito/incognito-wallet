@@ -52,7 +52,7 @@ class WalletDetailContainer extends Component {
         id: 'unfollow',
         icon: <Image source={unfollowTokenIcon} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
         label: 'Remove token',
-        desc: 'Any existing balance will reappear when the token is added back.',
+        desc: 'Any existing balance will reappear when the token is added back',
         handlePress: () => this.handleUnfollowTokenBtn(selectedPrivacy?.tokenId)
       });
     }
@@ -83,7 +83,7 @@ class WalletDetailContainer extends Component {
       Toast.showInfo('Token removed');
       navigation.goBack();
     } catch {
-      Toast.showError('Can not unfollow this token right now, please try later.');
+      Toast.showError('Something went wrong. Please try again.');
     }
   }
 

@@ -7,9 +7,7 @@ const cameraPermission = async () => {
       PermissionsAndroid.PERMISSIONS.CAMERA,
       {
         title: 'Camera Permission',
-        message:
-          'App needs access to your camera ' +
-          'so you can take awesome pictures.',
+        message: 'To scan QR codes, please give Incognito access to your camera.',
         buttonNeutral: 'Ask Me Later',
         buttonNegative: 'Cancel',
         buttonPositive: 'OK'
@@ -27,7 +25,7 @@ const locationPermission = async () => {
       PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
       {
         title: 'Location Permission',
-        message: 'App needs access to your location so app can scan bluetooth',
+        message: 'To find Node, please give this app access to your location.',
         buttonNeutral: 'Ask Me Later',
         buttonNegative: 'Cancel',
         buttonPositive: 'OK'

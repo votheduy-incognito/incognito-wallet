@@ -111,7 +111,7 @@ class Withdraw extends React.Component {
 
       throw new Error('Withdraw failed');
     } catch (e) {
-      Toast.showError(getErrorMessage(e, { defaultCode: messageCode.code.withdraw_failed }));
+      Toast.showError('Something went wrong. Please try again.');
     }
   }
 
