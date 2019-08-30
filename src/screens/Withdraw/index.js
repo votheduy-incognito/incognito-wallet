@@ -193,7 +193,7 @@ class WithdrawContainer extends Component {
 
   handleCentralizedWithdraw = async ({ amount, paymentAddress, fee, feeUnit }) => {
     try {
-      const tempAddress = this.getWithdrawAddress({ amount, paymentAddress });
+      const tempAddress = await this.getWithdrawAddress({ amount, paymentAddress });
       return await this.handleSendToken({ tempAddress, amount, fee, feeUnit });
     } catch (e) {
       throw e;
