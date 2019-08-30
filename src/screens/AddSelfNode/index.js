@@ -26,8 +26,10 @@ import Dialog, { DialogContent,DialogTitle } from 'react-native-popup-dialog';
 import DeviceInfo from 'react-native-device-info';
 import { DEVICES } from '@src/constants/miner';
 import ImportAccount from '@screens/ImportAccount';
+import { Toast } from '@src/components/core';
 
 import styles, { placeHolderColor } from './style';
+
 
 export const TAG = 'AddSelfNode';
 
@@ -292,11 +294,11 @@ class AddSelfNode extends BaseScreen {
       // 
       }else{
         // this.Loading = false;
-        alert('Please check and input correct fields!');
+        Toast.showError('Please check and input correct fields!');
       }
     } catch (error) {
       errorMsg = errorMessage; 
-      alert(error.message);
+      Toast.showError(error.message);
       console.log(TAG,'handleSetUpPress error: ', error);
     }
   });
