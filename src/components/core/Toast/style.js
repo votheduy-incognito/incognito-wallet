@@ -16,7 +16,8 @@ const style = StyleSheet.create({
   },
   message: {
     color: COLORS.white,
-    marginHorizontal: 10
+    marginHorizontal: 10,
+    lineHeight: 21
   },
   warningMessage: {
     color: '#47412C'
