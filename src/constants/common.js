@@ -1,7 +1,8 @@
 const CRYPTO_SYMBOL = {
   BTC: 'BTC',
   ETH: 'ETH',
-  PRV: 'PRV'
+  PRV: 'PRV',
+  BNB: 'BNB'
 };
 
 const TOKEN_SYMBOL = {

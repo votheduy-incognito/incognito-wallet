@@ -4,10 +4,9 @@ import memmoize from 'memoize-one';
 import { connect } from 'react-redux';
 import { Field, formValueSelector, isValid, change } from 'redux-form';
 import { Container, ScrollView, Toast, Text, View, Button } from '@src/components/core';
-import { createForm, InputField, InputQRField, InputMaxValueField, validator } from '@src/components/core/reduxForm';
+import { createForm, InputQRField, InputMaxValueField, validator } from '@src/components/core/reduxForm';
 import EstimateFee from '@src/components/EstimateFee';
 import convertUtil from '@src/utils/convert';
-import { getErrorMessage, messageCode } from '@src/services/errorHandler';
 import CurrentBalance from '@src/components/CurrentBalance';
 import LoadingTx from '@src/components/LoadingTx';
 import tokenData from '@src/constants/tokenData';
@@ -133,6 +132,8 @@ class Withdraw extends React.Component {
       return validator.combinedETHAddress;
     } else if (symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BTC) {
       return validator.combinedBTCAddress;
+    } else if (symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BNB) {
+      return validator.combinedBNBAddress;
     }
 
     // default

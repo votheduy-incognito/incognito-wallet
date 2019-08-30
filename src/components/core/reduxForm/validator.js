@@ -34,12 +34,21 @@ const ethAddress = (value, { message } = {}) => value => !walletValidator.valida
 
 const btcAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'BTC') ? messageHanlder(message, value) ?? 'Invalid BTC address' : undefined;
 
+const bnbAddress = (value, { message } = {}) => value => {
+  const regexp = new RegExp('^(t)?(bnb)([a-z0-9]{39})$'); // t(for testnet) bnb + 39 a-z0-9
+  if (!regexp.test(value)) {
+    return messageHanlder(message, value) ?? 'Invalid BNB address';
+  }
+  return undefined;
+};
+
 const bitcoinWithdrawMinAmount = largerThan(0.0005, { message: 'Amount of Bitcoin must be larger than 0.0005 BTC' });
 
 const combinedAmount = [required(), number(), largerThan(0, { message: 'Please enter an amount greater than 0.' })];
 const combinedIncognitoAddress = [required(), incognitoAddress()];
 const combinedETHAddress = [required(), ethAddress()];
 const combinedBTCAddress = [required(), btcAddress()];
+const combinedBNBAddress = [required(), bnbAddress()];
 
 export default {
   required,
@@ -52,6 +61,7 @@ export default {
   largerThan,
   combinedAmount,
   combinedIncognitoAddress,
+  combinedBNBAddress,
   combinedETHAddress,
   combinedBTCAddress,
   bitcoinWithdrawMinAmount,
