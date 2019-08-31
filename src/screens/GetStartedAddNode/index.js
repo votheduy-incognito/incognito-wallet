@@ -1,7 +1,7 @@
 import BaseScreen from '@screens/BaseScreen';
 import _ from 'lodash';
 import React from 'react';
-import { TouchableOpacity, Text, View,Image,TextInput } from 'react-native';
+import { TouchableOpacity, Text, View,Image,TextInput,ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import StepIndicator from '@components/StepIndicator';
 import images from '@src/assets';
@@ -9,16 +9,15 @@ import { Button, Icon } from 'react-native-elements';
 import { openQrScanner } from '@src/components/QrCodeScanner';
 import { onClickView } from '@src/utils/ViewUtil';
 import { scaleInApp } from '@src/styles/TextStyle';
-import { ScrollView } from '@src/components/core';
 import routeNames from '@src/router/routeNames';
+import SetupDevice from '@src/components/SetupDevice';
+import LongLoading from '@src/components/LongLoading';
 import styles from './styles';
 
 export const TAG = 'GetStartedAddNode';
-const titleStep = ['Make sure to plug-in the device into AC.','Connect your Node to a Wi-Fi','Scan the code at the base of the device','Nearly there'];
-const titleButton = ['Done, next step','Next','Next','Nearly there'];
-type State={
-  deviceId:string
-}
+const titleStep = ['Make sure to plug-in the device into AC.','Connect your Node to a Wi-Fi','Scan the code at the base of the device'];
+const titleButton = ['Done, next step','Next','Next'];
+
 class GetStartedAddNode extends BaseScreen {
   constructor(props) {
     super(props);
@@ -26,14 +25,16 @@ class GetStartedAddNode extends BaseScreen {
     this.state = {
       loading: false,
       currentPage:0,
+      currentConnect:{name:'',password:''},
+      errorMessage:'',
       deviceId:null
     };
     this.viewStepIndicator = React.createRef();
+    this.viewSetupDevice = React.createRef();
+    this.wifiNameValue = '';
+    this.wifiPassValue = '';
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    return null;
-  }
   handleQrcode = onClickView(()=>{
     openQrScanner(data => {
       console.log(TAG,'openQrScanner  == data',data);
@@ -44,17 +45,19 @@ class GetStartedAddNode extends BaseScreen {
   });
 
   renderTitle =()=>{
-    const {currentPage} = this.state;
+    const {currentPage,currentConnect} = this.state;
     const headerStep = `STEP ${currentPage+1}`;
+    console.log(TAG,'renderTitle ',currentConnect);
     return (
       <>
-        <Text style={styles.title1}>{headerStep}</Text>
+        {/* <Text style={styles.title1}>{headerStep}</Text> */}
         <Text style={styles.title2}>{titleStep[currentPage]??''}</Text>
       </>
     );
   }
 
   renderContentStep2 =()=>{
+    const {currentConnect} = this.state;
     const {textInput,item} = styles;
     return (
       <>          
@@ -62,13 +65,14 @@ class GetStartedAddNode extends BaseScreen {
           underlineColorAndroid="transparent"
           style={[textInput, item]}
           placeholder="Wi-Fi name"
-          onChangeText={text => {}}
+          defaultValue={this.wifiNameValue||''}
+          onChangeText={text => {this.wifiNameValue = text;}}
         />
         <TextInput
           underlineColorAndroid="transparent"
           style={[textInput, item]}
           placeholder="Password"
-          onChangeText={text =>{}}
+          onChangeText={text =>{this.wifiPassValue = text;}}
         />
       </>
     );
@@ -84,7 +88,7 @@ class GetStartedAddNode extends BaseScreen {
   }
 
   renderContent=()=>{
-    const {currentPage,deviceId} = this.state;
+    const {currentPage,deviceId,currentConnect,errorMessage,loading} = this.state;
     let childView ;
     switch(currentPage){
     case 0:{
@@ -96,7 +100,19 @@ class GetStartedAddNode extends BaseScreen {
       break;
     }
     case 2:{
-      childView = (
+      let isFail = !_.isEmpty(errorMessage);
+      childView = loading? (
+        <>
+          {isFail && (
+            <Text
+              style={[styles.textInput, styles.item,styles.errorText]}
+            >{errorMessage}
+            </Text>
+          )
+          }
+          {!isFail && <LongLoading />}
+        </>
+      ):(
         <>
           <Image style={styles.content_step1} source={images.ic_getstarted_scan_device} />
           {_.isEmpty(deviceId)?(
@@ -106,18 +122,15 @@ class GetStartedAddNode extends BaseScreen {
             </TouchableOpacity>
           ):this.renderViewComplete()}
           <Text
-            style={[styles.textInput, styles.item]}
+            style={[styles.textInput,{ textAlign:'center',paddingBottom:2}]}
           >{deviceId??''}
           </Text>
-        
+
         </>
       ); 
       break;
     }
-    case 3:{
-      childView = <Image style={styles.content_step1} source={images.ic_getstarted_scan_device} />; 
-      break;
-    }
+    
     }
     return (
       <View style={styles.content}>
@@ -133,11 +146,32 @@ class GetStartedAddNode extends BaseScreen {
   }
 
   handleFinish =()=>{
-    this.onPressBack();
+    console.log(TAG,'handleFinish ');
+    this.goToScreen(routeNames.HomeMine);
+  }
+
+  handleStepConnect = async ()=>{
+    this.setState({
+      loading:true,
+      currentPage:2,
+    });
+    const errorMessage = await this.viewSetupDevice.current.handleSetUpPress();
+    const deviceObj = _.isEmpty(errorMessage) && await this.viewSetupDevice.current.changeDeviceName('Node'); 
+    console.log(TAG,'handleStepConnect errorMessage ',errorMessage ,deviceObj);
+    if(_.isEmpty(errorMessage) && !_.isNil(deviceObj)){
+      this.handleFinish();
+    }else{
+      this.showToastMessage(errorMessage);
+      this.setState({
+        loading:false,
+        currentPage:0
+      });
+      // this.setState({errorMessage:errorMessage,loading:false});
+    }
   }
 
   renderFooter=()=>{
-    const {currentPage} = this.state;
+    const {currentPage,loading,errorMessage,currentConnect} = this.state;
     let childView  = {
       title:titleButton[currentPage],
     };
@@ -145,8 +179,17 @@ class GetStartedAddNode extends BaseScreen {
     case 0:{
       childView = {
         ...childView,
-        onPress:()=>{
-          this.CurrenPage = 1;
+        onPress:async()=>{
+          const device = await this.viewSetupDevice.current?.getCurrentConnect();
+          const name = device?.name||'';
+          this.wifiNameValue = name;
+          this.setState({
+            currentPage:1,
+            currentConnect:{
+              ...currentConnect,
+              name:name
+            }
+          });
         },
       };
       break;
@@ -155,7 +198,13 @@ class GetStartedAddNode extends BaseScreen {
       childView = {
         ...childView,
         onPress:()=>{
-          this.CurrenPage = 2;
+          this.setState({
+            currentPage:2,
+            currentConnect:{
+              name:this.wifiNameValue,
+              password:this.wifiPassValue
+            }
+          });
         },
       }; 
       break;
@@ -163,18 +212,15 @@ class GetStartedAddNode extends BaseScreen {
     case 2:{
       childView = {
         ...childView,
-        onPress:()=>{
-          this.CurrenPage = 3;
-        },
+        onPress:this.handleStepConnect,
       };
       break;
     }
     case 3:{
+      let title = !_.isEmpty(errorMessage)?'Retry':childView.title;
       childView = {
-        ...childView,
-        onPress:()=>{
-          this.goToScreen(routeNames.AddDevice);
-        },
+        title:title,
+        onPress:this.handleStepConnect,
       };
       break;
     }
@@ -182,6 +228,7 @@ class GetStartedAddNode extends BaseScreen {
     return (
       <View style={styles.footer}>
         <Button
+          loading={loading}
           titleStyle={styles.textTitleButton}
           buttonStyle={styles.button}
           onPress={childView.onPress}
@@ -193,17 +240,17 @@ class GetStartedAddNode extends BaseScreen {
   }
 
   render() {
-    const { loading,currentPage } = this.state;
+    const { loading,currentPage,currentConnect } = this.state;
 
     return (
       <View style={styles.container}>
-        <StepIndicator stepCount={4} currentPage={currentPage} ref={this.viewStepIndicator} />
+        <StepIndicator stepCount={3} currentPage={currentPage} ref={this.viewStepIndicator} />
         <ScrollView>
-          <>
-            {this.renderTitle()}
-            {this.renderContent()}
-            {this.renderFooter()}
-          </>
+          {this.renderTitle()}
+          {this.renderContent()}
+          {this.renderFooter()}
+          {this.renderToastMessage()}
+          <SetupDevice ref={this.viewSetupDevice} isRenderUI={false} currentConnect={currentConnect} />
         </ScrollView>
       </View>
     );

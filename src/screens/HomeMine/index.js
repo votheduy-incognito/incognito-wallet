@@ -64,7 +64,9 @@ class HomeMine extends BaseScreen {
       };
       let response = await APIService.signUp(params);
       if (response.status !== 1) {
+        
         response = await APIService.signIn(params);
+        // console.log(TAG, 'createSignIn saveUser signIn reponse ',response);
       }
       const { status, data } = response;
       list = (status === 1 && await this.saveData(data)) || [];
@@ -72,7 +74,7 @@ class HomeMine extends BaseScreen {
         loading:false,
         listDevice:list
       });
-      console.log(TAG, 'createSignIn saveUser ');
+      // console.log(TAG, 'createSignIn saveUser ');
     }
   };
 

@@ -11,6 +11,11 @@ const styles = StyleSheet.create({
   item: {
     marginVertical: scaleInApp(10)
   },
+  errorText:{
+    ...TextStyle.minimizeText,
+    textAlign:'center',
+    color:'#FF9494',
+  },
   title1:{
     ...TextStyle.minimizeText,
     ...FontStyle.medium,
@@ -19,11 +24,11 @@ const styles = StyleSheet.create({
     textAlign:'center',
   },
   title2:{
+    marginVertical:scaleInApp(10),
     ...TextStyle.bigText,
     ...FontStyle.medium,
-    width:'50%',
+    width:'75%',
     alignSelf:'center',
-    lineHeight:scaleInApp(25),
     color:'#101111',
     textAlign:'center',
   },
@@ -57,9 +62,9 @@ const styles = StyleSheet.create({
   },
   textInput: {
     ...TextStyle.mediumText,
-    borderColor: '#E5E9EA',
+    borderBottomColor: '#E5E9EA',
     color:'#1C1C1C',
-    borderBottomWidth: scaleInApp(2),
+    borderBottomWidth: scaleInApp(1),
     paddingVertical: scaleInApp(10)
   },
 });

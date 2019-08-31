@@ -84,7 +84,8 @@ class DetailDevice extends BaseScreen {
     let balancePRV = 0;
     let listFollowingTokens = [];
     const account = await  this.props.getAccountByName(device.accountName());
-    const isStaked = await accountService.isStaked(account,wallet)??false;
+    const stakerStatus = await accountService.stakerStatus(account,wallet)??-1;
+    const isStaked = stakerStatus!=-1 ;
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
      

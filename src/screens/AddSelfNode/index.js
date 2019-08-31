@@ -104,6 +104,7 @@ class AddSelfNode extends BaseScreen {
   }
 
   handleChooseItemAccount=(item,index)=>{
+    this.inputPrivateKey = _.isEmpty(item?.PrivateKey)? this.inputPrivateKey:this.inputPrivateKey;
     this.setState({selectedAccount:item,isShowListAccount:false});
     // this.setState({selectedAccount:index === 0?undefined:item,isShowListAccount:false});
   }
@@ -175,6 +176,7 @@ class AddSelfNode extends BaseScreen {
     const isEditatle = _.isEmpty(selectedAccount?.PrivateKey);
     // console.log(TAG,'renderListAccount = item  = ',selectedAccount);
     const textAction = isEditatle ? 'Choose Account':'Import Private Key';
+    
     return (
       <>
         <Input
@@ -234,13 +236,12 @@ class AddSelfNode extends BaseScreen {
       console.log(TAG,'handleSetUpPress host = ',host+'- inputPrivateKey = '+privateKey);
       const port = this.inputPort;
       if (userJson && !_.isEmpty(host) && !_.isEmpty(port) && !_.isEmpty(privateKey) ) {
-        const isImportPrivateKey = !_.isEmpty(this.inputPrivateKey);
+        const isImportPrivateKey = _.isEmpty(selectedAccount?.PrivateKey);
         const user = userJson.toJSON();
         const {
           email,
           id,          
           created_at,
-          
         } = user;
         let deviceName = this.inputDeviceName;
         deviceName = _.isEmpty(deviceName)?`${host}`:deviceName;

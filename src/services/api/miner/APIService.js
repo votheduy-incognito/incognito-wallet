@@ -33,12 +33,12 @@ export default class APIService {
   
   static async getURL(method, url, params, isLogin,isBuildFormData = true) {
     
-    console.log('getURL :', url);
-    console.log('getURL Params:', params);
+    console.log(TAG,'getURL :', url);
+    console.log(TAG,'getURL Params:', params);
     let header = {};
     let user = {};
     const isConnected = await NetInfo.isConnected.fetch();
-    console.log('isConnected==>', isConnected); 
+    // console.log('isConnected==>', isConnected); 
     if (!isConnected){
       return {status: 0, data: {message:'Internet is offline'}} ;
 
@@ -47,9 +47,10 @@ export default class APIService {
     if (isLogin){
       const userObject:User = await LocalDatabase.getUserInfo();
       user = userObject?.data||{};
-      console.log(TAG,'getURL user',user);
+      const token = user.token;
+      console.log(TAG,'getURL token',token);
       header= {
-        'Authorization': `${AUTHORIZATION_FORMAT} ${user.token}`
+        'Authorization': `${AUTHORIZATION_FORMAT} ${token}`
       };
     }
     if (method === METHOD.GET) {
@@ -58,23 +59,23 @@ export default class APIService {
         console.log('URL build :', URL);
         const res = await fetch(URL, {
           method,
-          credentials: 'include',
+          // credentials: 'include',
           headers: header
         });
 
-        console.log('Header: ', header);
-        //console.log('Res:', res)
-        if (!res.ok) {
-          // throw new Error(res.statusText);
-          return {status: 0, data: ''};
-        }
+        console.log(TAG,'getURL Header: ', header);
+        console.log(TAG,'getURL Res:', res);
+        // if (!res.ok) {
+        //   // throw new Error(res.statusText);
+        //   return {status: 0, data: ''};
+        // }
         if (res && res.error){
           //throw new Error(res.error);
           return {status: 0, data: ''} ;
         }
         if (res.status == 200){
           const resJson = await res.json();
-          console.log('Response data:', resJson);
+          console.log(TAG,'getURL Response data:', resJson);
           return resJson;
         }else if (res.status == 401){
 
@@ -130,7 +131,6 @@ export default class APIService {
           
         }
         
-
         const res = await fetch(url, {
           method: method,
           headers: header,

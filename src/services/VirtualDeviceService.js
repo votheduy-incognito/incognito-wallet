@@ -2,19 +2,26 @@ import Action from '@src/models/Action';
 import _ from 'lodash';
 import Util from '@src/utils/Util';
 import Device from '@src/models/device';
-import { DEVICES } from '@src/constants/miner';
 import APIService,{METHOD} from './api/miner/APIService';
 
 const TAG = 'VirtualDeviceService';
-const password = 'kkkk';
-const DATA_INFO = [ {'status':'offline', 'message':'ready','code':DEVICES.CODE_START},
-  {'status':'syncing', 'message':'syncing','code':DEVICES.CODE_SYNCING},
-  {'status':'ready', 'message':'ready','code':DEVICES.CODE_START},
-  {'status':'mining', 'message':'earning','code':DEVICES.CODE_MINING},
-  {'status':'pending', 'message':'waiting to be selected','code':DEVICES.CODE_PENDING},
-  {'status':'notmining', 'message':'ready','code':DEVICES.CODE_START}];
+const DATA_INFO = [ {'status':'offline', 'message':'ready','code':Device.CODE_START},
+  {'status':'syncing', 'message':'syncing','code':Device.CODE_SYNCING},
+  {'status':'ready', 'message':'ready','code':Device.CODE_START},
+  {'status':'mining', 'message':'earning','code':Device.CODE_MINING},
+  {'status':'pending', 'message':'waiting to be selected','code':Device.CODE_PENDING},
+  {'status':'notmining', 'message':'ready','code':Device.CODE_START}];
 const timeout = 8;
 export const LIST_ACTION={
+  GET_PUBLIC_KEY_MINING:{
+    key:'getpublickeymining',
+    data:{
+      'jsonrpc': '1.0',
+      'method': 'getpublickeymining',
+      'params': [],
+      'id': 1
+    }
+  },
   GET_REWARD_AMOUNT:{
     key:'getrewardamount',
     data:{
@@ -62,6 +69,22 @@ export default class VirtualDeviceService {
     }
   }
 
+  static getPublicKeyMining = async(device:Device)=>{
+    try {
+      let apiURL = VirtualDeviceService.buildURL(device);
+      if(!_.isEmpty(apiURL)){
+        apiURL = `${apiURL}/${LIST_ACTION.GET_PUBLIC_KEY_MINING.key}`;
+        const buildParams = LIST_ACTION.GET_PUBLIC_KEY_MINING.data;
+        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),3);
+      
+        console.log(TAG,'getPublicKeyMining result',response);
+        return response;
+      }
+    } catch (error) {
+      console.log(TAG,'getPublicKeyMining error',error);
+    }
+  }
+
   static getRewardAmount = async(device:Device)=>{
     try {
       let apiURL = VirtualDeviceService.buildURL(device);
@@ -102,16 +125,6 @@ export default class VirtualDeviceService {
           return _.isEqual(Result,item.status);
         })|| Device.offlineStatus();
         dataResponseCombinded = {'status': {'code': item.code ,'message':item.message }};
-        // if (_.isEqual(Result,'syncing')){
-        //   dataResponseCombinded = {'status': {'code': Device.CODE_SYNCING ,'message':'syncing' }};
-        // }else if (_.isEqual(Result,'ready')){
-        //   dataResponseCombinded = {'status': {'code': Device.CODE_START ,'message':'ready' }};
-        // } else if (_.isEqual(Result,'mining')){
-        //   dataResponseCombinded = {'status': {'code': Device.CODE_MINING ,'message':'mining' }};
-        // } else if (_.isEqual(Result,'offline')){
-        //   dataResponseCombinded = {'status': {'code': Device.CODE_START ,'message':'ready' }};
-        // }
-      
         console.log(TAG,'getChainMiningStatus result',response);
         return {status:1, data:dataResponseCombinded,productId:device.ProductId};
       }

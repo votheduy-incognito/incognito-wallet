@@ -14,14 +14,12 @@ import {
   Platform,
   Text,
   TextInput,
-  TouchableOpacity,
   View
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import WifiConnection from '@components/DeviceConnection/WifiConnection';
 import { connect } from 'react-redux';
 import ZMQService from 'react-native-zmq-service';
-import BaseScreen from '@screens/BaseScreen';
 import { Button } from 'react-native-elements';
 import Util from '@src/utils/Util';
 import { onClickView } from '@src/utils/ViewUtil';
@@ -33,10 +31,11 @@ import PropTypes from 'prop-types';
 import CreateAccount from '@screens/CreateAccount';
 import StepIndicator from 'react-native-step-indicator';
 import styles from './style';
+import BaseComponent from '../BaseComponent';
 
-export const TAG = 'SetupWifiDevice';
+export const TAG = 'SetupDevice';
 const HOTPOT = 'TheMiner';
-const errorMessage = 'Can\'t connect The Miner. Please check the internert information and try again';
+const errorMessage = 'Can\'t connect Node. Please check the internert information and try again';
 const TIMES_VERIFY = 5;
 const labels = ['Connect Hotpot','Send Wifi Info','Verify Code'];
 const customStyles = {
@@ -62,20 +61,19 @@ const customStyles = {
   labelSize: 13,
   currentStepLabelColor: '#fe7013'
 };
-class SetupWifiDevice extends BaseScreen {
-  static navigationOptions = {
-    title: 'WI-FI CONNECTION'
-  };
+class SetupDevice extends BaseComponent {
 
   constructor(props) {
     super(props);
-    const {params} = props.navigation.state;
-    const currentConnect = params.currentConnect||null;
+    const {currentConnect} = props;
+    const {name='',password=''} = currentConnect||{};
+    console.log(TAG,'constructor currentConnect ',currentConnect);
     this.state = {
-      validSSID: !_.isEmpty(currentConnect?.name),
-      validWPA: false,
-      ssid: currentConnect?.name||'',
-      wpa: '',
+      currentConnect:currentConnect,
+      validSSID: !_.isEmpty(name),
+      validWPA: !_.isEmpty(password),
+      ssid: name,
+      wpa: password,
       isDoingSetUp:false,
       errorMessage: '',
       verifyCode: '',
@@ -98,9 +96,22 @@ class SetupWifiDevice extends BaseScreen {
     this.viewCreateAccount = React.createRef();
     this.wifiConnection = new WifiConnection();
   }
-
+  static getDerivedStateFromProps(props, state) {
+    if(!_.isEqual(props.currentConnect,state.currentConnect)){
+      const {name='',password=''} = props.currentConnect||{};
+      console.log(TAG,`getDerivedStateFromProps ${name} - ${password}`);
+      return {
+        currentConnect:props.currentConnect,
+        validSSID: !_.isEmpty(name),
+        validWPA: !_.isEmpty(password),
+        ssid: name,
+        wpa: password
+      };
+    }
+  }
   componentDidMount(){
     super.componentDidMount();
+    // this.callVerifyCode();
     NetInfo.isConnected.addEventListener('connectionChange', this._handleConnectionChange);
   }
   componentWillUnmount() {
@@ -109,7 +120,7 @@ class SetupWifiDevice extends BaseScreen {
   }
 
   renderDeviceName=()=>{
-    const { container, textInput, item, errorText } = styles;
+    const { textInput, item, errorText } = styles;
     const {
       showModal,
       validWallName,
@@ -145,6 +156,7 @@ class SetupWifiDevice extends BaseScreen {
       validSSID,
       validWPA,
       ssid,
+      wpa,
       errorMessage,
       showModal,
       currentPositionStep,
@@ -180,7 +192,7 @@ class SetupWifiDevice extends BaseScreen {
           <TextInput
             underlineColorAndroid="transparent"
             style={[textInput, item]}
-            secureTextEntry
+            value={wpa}
             placeholder="Password"
             onChangeText={text => this.validWPA(text)}
           />
@@ -222,7 +234,7 @@ class SetupWifiDevice extends BaseScreen {
       const resultStep1 = await this.checkConnectHotspot();
       let callVerifyCode = this.callVerifyCode;
       this.CurrentPositionStep = 2;
-      const resultStep2  = (resultStep1 && await Util.tryAtMost(callVerifyCode,TIMES_VERIFY).catch(console.log)) || false;
+      const resultStep2  = (resultStep1 && await Util.tryAtMost(callVerifyCode,TIMES_VERIFY)) || false;
       console.log(TAG,'handleSetUpPress callVerifyCode end =======',resultStep2);
       errorMsg = resultStep2 ? '':errorMessage;
     } catch (error) {
@@ -236,8 +248,36 @@ class SetupWifiDevice extends BaseScreen {
         errorMessage:errorMsg
       });
     }
-    
+    return errorMsg;
   });
+
+  changeDeviceName = async(name)=>{
+    let errMessage = '';
+    try {
+      const {addProduct} = this.state;
+      let fetchProductInfo = {};
+      if (this.validWallName) {
+        fetchProductInfo = await this.updateDeviceNameRequest(addProduct.product_id,name);
+        const listResult =  await this.saveProductList(fetchProductInfo);
+        // console.log(TAG,'handleSubmit saved - listResult = ',listResult);
+      }
+      if(!_.isEmpty(fetchProductInfo)){
+        let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
+        const {PrivateKey = '',AccountName = '',PaymentAddress = ''} = result;
+        result = await DeviceService.sendPrivateKey(Device.getInstance(addProduct),PrivateKey);
+
+        if(!_.isEmpty(result)){
+          return result;
+        }
+      }
+      errMessage = errorMessage;
+      
+    } catch (error) {
+      console.log(TAG,'handleSubmit error');
+    }
+
+    return throw new Error(errMessage);
+  }
 
   handleSubmit = onClickView(async() => {
     let errMessage = '';
@@ -245,10 +285,10 @@ class SetupWifiDevice extends BaseScreen {
       this.setState({
         loading: true
       });
-      const {addProduct} = this.state;
+      const {addProduct,wallName} = this.state;
       let fetchProductInfo = {};
       if (this.validWallName) {
-        fetchProductInfo = await this.changeDeviceName(addProduct);
+        fetchProductInfo = await this.updateDeviceNameRequest(addProduct.product_id,wallName);
         const listResult =  await this.saveProductList(fetchProductInfo);
         // console.log(TAG,'handleSubmit saved - listResult = ',listResult);
       }
@@ -296,41 +336,44 @@ class SetupWifiDevice extends BaseScreen {
   }
 
   render() {
-    const { container, textInput, item, errorText } = styles;
+    const { container} = styles;
     const {
       loading
     } = this.state;
-    
+    const {isRenderUI} = this.props;
+    const styleHideView = {
+      opacity: 0,width: 0,height: 0
+    };
     return (
-      <View style={container}>
+      <View style={[container,isRenderUI?undefined:styleHideView]}>
         <DeviceConnection ref={this.deviceId} />
         {this.renderDeviceName()}
-        <Loader loading={loading} />
+        {/* <Loader loading={loading} /> */}
         {this.renderWifiPassword()}
         {this.renderToastMessage()}
         
-        <View style={{width: 0,height: 0}}>
+        <View style={{width: 0,height: 0,opacity:0}}>
           <CreateAccount ref={this.viewCreateAccount} />
         </View>
       </View>
     );
   }
 
-  validWallName(text) {
+  validWallName=(text) =>{
     const isValid = !_.isEmpty(text);
     this.setState({
       wallName: text,
       validWallName: isValid
     });
   }
-  validSSID(text) {
+  validSSID=(text)=>{
     const isValid = !_.isEmpty(text);
     this.setState({
       ssid: text,
       validSSID: isValid
     });
   }
-  validWPA(text) {
+  validWPA=(text)=>{
     const isValid = text.length >= 6 ? true : false;
     this.setState({
       wpa: text,
@@ -454,12 +497,10 @@ class SetupWifiDevice extends BaseScreen {
     });
   };
   
-  changeDeviceName = async (product) => {
-    
-    const { wallName } = this.state;
+  updateDeviceNameRequest = async (product_id,name) => {
     let params = {
-      product_id: product.product_id,
-      product_name: wallName
+      product_id: product_id,
+      product_name: name
     };
     try {
       const response = await APIService.updateProduct(params);
@@ -471,7 +512,7 @@ class SetupWifiDevice extends BaseScreen {
       }
       return params;
     } catch (error) {
-      console.log(TAG,'changeDeviceName error');
+      console.log(TAG,'updateDeviceNameRequest error');
     }
     return null;
   }
@@ -480,6 +521,11 @@ class SetupWifiDevice extends BaseScreen {
       currentPositionStep:index
     });
   }
+
+  getCurrentConnect = async ()=>{
+    let device = await this.deviceId?.current?.getCurrentConnect();
+    return device;
+  };
   checkConnectHotspot = async  ()=> {
     
     const { validSSID, validWPA } = this.state;
@@ -488,12 +534,13 @@ class SetupWifiDevice extends BaseScreen {
     
     let isConnectedHotpost = !_.isEmpty(device?.name||'') && _.isEqual(device?.name||'', HOTPOT);
     this.CurrentPositionStep = 0;
+    console.log(TAG,'checkConnectHotspot begin: ', validSSID,validWPA);
     if(!isConnectedHotpost){
       device = await this.connectHotspot();
     }
     this.isHaveNetwork = false;
     isConnectedHotpost = !_.isEmpty(device);
-
+    
     if (isConnectedHotpost && validSSID && validWPA) {
       let ssid = device?.name?.toLowerCase()||'';
       const product = CONSTANT_MINER.PRODUCT_TYPE.toLowerCase();
@@ -507,43 +554,23 @@ class SetupWifiDevice extends BaseScreen {
     }
     return false;
   }
-  getCurrentLocation() {
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        console.log('Position:', position);
-        this.setState({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          errorMessage: ''
-        });
-      },
-      error => {
-        console.log('Error:', error);
-        this.setState({ errorMessage: error.message });
-      },
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    );
-  }
 
   callVerifyCode = async()=> {
-    console.log(TAG,' callVerifyCode begin');
-    const { verifyCode, counterVerify, isConnected } = this.state;
+    // console.log(TAG,' callVerifyCode begin');
+    const { verifyCode, isConnected } = this.state;
     console.log(TAG,' callVerifyCode begin01 connected = ',isConnected);
     const errorObj = new Error('callVerifyCode fail');
-    if (this.isHaveNetwork) {
-      // this.setState({
-      //   loading: true
-      // });
+    if (this.isHaveNetwork ) {
       const params = {
         verify_code: verifyCode
       };
       console.log(TAG,' callVerifyCode begin 02');
       try {
         const response = await APIService.verifyCode(params);
-        console.log(TAG, 'callVerifyCode Verify Code Response: ', response);
+        // console.log(TAG, 'callVerifyCode Verify Code Response: ', response);
         const { status } = response;
         if (status == 1) {
-          console.log('Get Product successfully');
+          console.log(TAG,'callVerifyCode successfully');
           const { product } = response.data;
           if (product) {
             this.setState({
@@ -551,48 +578,37 @@ class SetupWifiDevice extends BaseScreen {
               showModal:true
             });
             await DeviceService.authFirebase(product);
+
             return true;
           }
         } else {
-          await Util.delay(2);
           if(__DEV__) this.showToastMessage('callVerifyCode fail and retry');
-          // await this.failedVerifyCode();
         }
       } catch (error) {
         console.log('Error try catch:', error);
-        // await this.failedVerifyCode();
       }
     }
+    await Util.delay(3);
     return errorObj;
 
-    // console.log('Counter: ', counterVerify + 1);
-    // this.setState({
-    //   counterVerify: counterVerify + 1
-    // });
   }
-  // failedVerifyCode() {
-  //   const { verifyCode, counterVerify, isConnected } = this.state;
-  //   if (counterVerify < TIMES_VERIFY) {
-  //     setTimeout(() => {
-  //       this.callVerifyCode();
-  //     }, 12 * 1000);
-  //   } else {
-      
-  //     this.setState({
-  //       // loading: false,
-  //       errorMessage: errorMessage
-  //     });
-  //   }
-  // }
-
 }
 
-SetupWifiDevice.propTypes = {
-  wallet: PropTypes.objectOf(PropTypes.object),
+SetupDevice.propTypes = {
+  currentConnect: PropTypes.objectOf(PropTypes.object),
+  isRenderUI: PropTypes.bool,
+  wallet: PropTypes.objectOf(PropTypes.object)
+};
+SetupDevice.defaultProps = {
+  isRenderUI:true
 };
 const mapDispatch = { };
-SetupWifiDevice.defaultProps = {};
+
 export default connect(
   state => ({}),
-  mapDispatch
-)(SetupWifiDevice);
+  mapDispatch,
+  null,
+  {
+    forwardRef: true
+  }
+)(SetupDevice);
