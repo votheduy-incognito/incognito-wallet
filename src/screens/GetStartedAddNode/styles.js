@@ -60,13 +60,19 @@ const styles = StyleSheet.create({
     color:'#101111',
     alignSelf:'center'
   },
-  textInput: {
-    ...TextStyle.mediumText,
+  item_container_input:{
     borderBottomColor: '#E5E9EA',
-    color:'#1C1C1C',
-    borderBottomWidth: scaleInApp(1),
-    paddingVertical: scaleInApp(10)
+    borderBottomWidth: scaleInApp(1)
   },
+  text: {
+    ...TextStyle.normalText,
+    color:'#1C1C1C',
+  },
+  item_container_error:{
+    borderBottomColor: '#E5E9EA',
+    borderBottomWidth: scaleInApp(1),
+    paddingVertical:scaleInApp(10),
+  }
 });
 
 export default styles;
