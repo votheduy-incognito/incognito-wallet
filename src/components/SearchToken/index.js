@@ -73,7 +73,7 @@ export class SearchTokenContainer extends PureComponent {
 
       return tokens || [];
     } catch {
-      Toast.showError('Can not get list of tokens, please try later');
+      Toast.showError('Something went wrong. Please refresh the screen.');
     }
   };
 
@@ -95,13 +95,13 @@ export class SearchTokenContainer extends PureComponent {
 
       await accountService.addFollowingTokens(pTokenSelected, account, wallet);
 
-      Toast.showInfo('Token added');
+      Toast.showSuccess('Token added');
 
       // update new wallet to store
       setWallet(wallet);
     } catch {
       Toast.showError(
-        'Can not add these tokens to your account right now, please try later'
+        'Something went wrong. Please tap the Add button again.'
       );
     }
   };
@@ -111,7 +111,7 @@ export class SearchTokenContainer extends PureComponent {
       const { getPTokenList } = this.props;
       await getPTokenList();
     } catch {
-      Toast.showError('Can not get list of token');
+      Toast.showError('Something went wrong. Please refresh the screen.');
     }
   }
 
@@ -126,7 +126,7 @@ export class SearchTokenContainer extends PureComponent {
 
       return internalTokens;
     } catch {
-      Toast.showError('Can not get list of internal token');
+      Toast.showError('Something went wrong. Please refresh the screen.');
     }
   }
 

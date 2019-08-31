@@ -22,7 +22,7 @@ const NetworkSettingContainer = ({
       .get()
       .then(setServers)
       .catch(() => {
-        Toast.showError('Error while getting server list');
+        Toast.showError('Something went wrong. Please refresh the screen.');
       })
       .finally(() => {
         setIsLoading(false);
@@ -36,11 +36,11 @@ const NetworkSettingContainer = ({
       const wallet = await reloadWallet();
 
       if (wallet) {
-        Toast.showInfo('Update completed, your wallet was reloaded');
+        Toast.showInfo('You successfully changed networks.');
       }
     } catch {
       Toast.showError(
-        'Error while changing new server setting, please restart the app'
+        'Something went wrong. Please try again.'
       );
     }
   };

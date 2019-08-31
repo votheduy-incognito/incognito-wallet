@@ -4,10 +4,9 @@ import memmoize from 'memoize-one';
 import { connect } from 'react-redux';
 import { Field, formValueSelector, isValid, change } from 'redux-form';
 import { Container, ScrollView, Toast, Text, View, Button } from '@src/components/core';
-import { createForm, InputField, InputQRField, InputMaxValueField, validator } from '@src/components/core/reduxForm';
+import { createForm, InputQRField, InputMaxValueField, validator } from '@src/components/core/reduxForm';
 import EstimateFee from '@src/components/EstimateFee';
 import convertUtil from '@src/utils/convert';
-import { getErrorMessage, messageCode } from '@src/services/errorHandler';
 import CurrentBalance from '@src/components/CurrentBalance';
 import LoadingTx from '@src/components/LoadingTx';
 import tokenData from '@src/constants/tokenData';
@@ -104,14 +103,14 @@ class Withdraw extends React.Component {
       }
 
       if (res) {
-        Toast.showInfo('Withdraw successfully');
+        Toast.showSuccess('Success! You withdrew funds.');
         navigation.goBack();
         return res;
       }
 
       throw new Error('Withdraw failed');
     } catch (e) {
-      Toast.showError(getErrorMessage(e, { defaultCode: messageCode.code.withdraw_failed }));
+      Toast.showError('Something went wrong. Please try again.');
     }
   }
 
@@ -133,6 +132,8 @@ class Withdraw extends React.Component {
       return validator.combinedETHAddress;
     } else if (symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BTC) {
       return validator.combinedBTCAddress;
+    } else if (symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BNB) {
+      return validator.combinedBNBAddress;
     }
 
     // default
@@ -151,7 +152,7 @@ class Withdraw extends React.Component {
       <ScrollView style={style.container}>
         <Container style={style.mainContainer}>
           <View style={style.currentBalanceContainer}>
-            <CurrentBalance amount={maxAmount} symbol={selectedPrivacy?.symbol} />
+            <CurrentBalance amount={formatUtil.amount(withdrawData?.maxWithdrawAmount, selectedPrivacy?.pDecimals)} symbol={selectedPrivacy?.symbol} />
           </View>
           <Form style={style.form}>
             {({ handleSubmit, submitting }) => (

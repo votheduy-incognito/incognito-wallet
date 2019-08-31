@@ -16,8 +16,9 @@ import { accountSection } from './style';
 const createItem = (account, onSwitch, onExport, isActive) => (
   <View style={accountSection.container}>
     <TouchableOpacity style={accountSection.name} onPress={() => onSwitch(account)}>
+      <View style={[accountSection.indicator, isActive && accountSection.indicatorActive]} />
       <FIcons name={isActive ? 'user-check' : 'user'} size={20} color={isActive ? COLORS.primary : COLORS.lightGrey4} />
-      <Text style={accountSection.nameText}>{account?.name}</Text>
+      <Text style={isActive ? accountSection.nameTextActive : accountSection.nameText}>{account?.name}</Text>
     </TouchableOpacity>
     <TouchableOpacity style={accountSection.actionBtn} onPress={onExport}>
       <Icons name='key' size={20} color={COLORS.lightGrey3} />
@@ -49,14 +50,14 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAcc
     {
       id: 'import',
       icon: <MdIcons name="input" size={25} />,
-      desc: 'Import your account',
+      desc: 'Import an existing account',
       label: 'Import',
       handlePress: handleImport
     },
     {
       id: 'create',
       icon: <MdIcons name="add" size={25} />,
-      desc: 'Create new account',
+      desc: 'Create a new account',
       label: 'Create',
       handlePress: handleCreate
     }
@@ -66,13 +67,13 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAcc
     <Section
       label='Your accounts'
       headerRight={(
-        <OptionMenu data={menu} icon={<Icons name='dots-three-horizontal' size={24} style={{ color: COLORS.lightGrey1 }} />} style={{ height: 20 }} />
+        <OptionMenu data={menu} icon={<Icons name='dots-three-horizontal' size={20} style={{ color: COLORS.lightGrey1 }} />} style={accountSection.optionMenu} />
       )}
       customItems={
         listAccount?.map((account, index) => (
           <View key={account?.name} style={accountSection.itemWrapper}>
             {createItem(account, onHandleSwitchAccount, handleExportKey, account?.name === defaultAccount?.name)}
-            { (index < listAccount.length - 1) && <Divider height={1} color={COLORS.lightGrey5} /> }
+            { (index === listAccount.length - 1) && <Divider height={1} color={COLORS.lightGrey5} /> }
           </View>
         ))
       }

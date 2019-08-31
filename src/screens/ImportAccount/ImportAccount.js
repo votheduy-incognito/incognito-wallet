@@ -28,14 +28,14 @@ const ImportAccount = ({ navigation, accountList, importAccount }) => {
         )
       ) {
         throw new Error(
-          'This account name was created! Please try another one'
+          'This account already exists on your device. Please try another.'
         );
       }
 
       await importAccount({ privateKey, accountName });
       goBack();
     } catch (e) {
-      Toast.showError(e.message);
+      Toast.showError('This account already exists on your device. Please try another.');
     }
   };
 

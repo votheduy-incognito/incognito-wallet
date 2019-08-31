@@ -52,7 +52,7 @@ class HomeContainer extends Component {
       const { getPTokenList } = this.props;
       await getPTokenList();
     } catch {
-      Toast.showError('Can not get token data');
+      Toast.showError('Something went wrong. Please refresh the screen.');
     }
   }
 
@@ -63,7 +63,7 @@ class HomeContainer extends Component {
       await getAccountBalance(account);
       this.getFollowingToken();
     } catch {
-      Toast.showError('Reload data failed');
+      Toast.showError('Something went wrong. Please try again.');
     } finally {
       this.setState({ isReloading: false });
     }
@@ -79,7 +79,7 @@ class HomeContainer extends Component {
       const { getBalance } = this.props;
       await getBalance(token);
     } catch {
-      Toast.showError(`Get ${token?.symbol} balance failed`);
+      Toast.showError('Refresh to reload balance');
     }
   }
 
@@ -88,7 +88,7 @@ class HomeContainer extends Component {
       const { getAccountBalance } = this.props;
       return getAccountBalance(account);
     } catch {
-      Toast.showError(`Load ${tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY} balance failed`);
+      Toast.showError('Refresh to reload balance');
     }
   }
 
@@ -97,7 +97,7 @@ class HomeContainer extends Component {
       const { account, reloadAccountFollowingToken } = this.props;
       return reloadAccountFollowingToken(account);
     } catch {
-      Toast.showError('Can not get list token for this account');
+      Toast.showError('Something went wrong. Please refresh the screen.');
     }
   }
 

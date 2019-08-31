@@ -73,7 +73,7 @@ class WithdrawContainer extends Component {
 
       this.setState({ withdrawData: data });
     } catch {
-      Toast.showError('Prepare for withdrawing failed, please try again');
+      Toast.showError('Something went wrong. Please refresh the screen.');
     }
   }
 
@@ -193,7 +193,7 @@ class WithdrawContainer extends Component {
 
   handleCentralizedWithdraw = async ({ amount, paymentAddress, fee, feeUnit }) => {
     try {
-      const tempAddress = this.getWithdrawAddress({ amount, paymentAddress });
+      const tempAddress = await this.getWithdrawAddress({ amount, paymentAddress });
       return await this.handleSendToken({ tempAddress, amount, fee, feeUnit });
     } catch (e) {
       throw e;

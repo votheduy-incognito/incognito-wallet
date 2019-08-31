@@ -2,6 +2,7 @@
 // import 'intl/locale-data/jsonp/en';
 import QrScanner from '@src/components/QrCodeScanner';
 import AppScreen from '@src/components/AppScreen';
+import { Toast } from '@src/components/core';
 import configureStore from '@src/redux/store';
 import AppContainer from '@src/router';
 import React, { useEffect } from 'react';
@@ -33,6 +34,7 @@ const App = () => {
       <AppScreen>
         <AppContainer />
         <QrScanner />
+        <Toast />
       </AppScreen>
     </Provider>
   );

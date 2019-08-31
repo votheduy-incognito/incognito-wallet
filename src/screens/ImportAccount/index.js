@@ -21,13 +21,13 @@ class ImportAccountContainer extends Component {
       );
       if (!isImported) throw new Error('Account was not imported!');
 
-      Toast.showInfo(`Your account ${accountName} was import!`);
+      Toast.showSuccess('Import successful.');
 
       await reloadAccountList();
       return true;
     } catch(e) {
 
-      Toast.showError('Import account failed');
+      Toast.showError('Something went wrong. Please try again.');
       throw e;
     }
   };

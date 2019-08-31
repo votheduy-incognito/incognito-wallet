@@ -48,9 +48,9 @@ class EditSetting extends Component {
         reloadWallet();
       }
 
-      Toast.showInfo('Update completed!');
+      Toast.showInfo('Network saved.');
     } catch (e) {
-      Toast.showError(e.message);
+      Toast.showError('Something went wrong. Please try again.');
     }
   };
 
@@ -71,8 +71,8 @@ class EditSetting extends Component {
               <Field
                 component={InputField}
                 name='username'
-                placeholder='User Name'
-                label='User Name'
+                placeholder='Username'
+                label='Username'
               />
               <Field
                 component={InputField}

@@ -26,8 +26,10 @@ import Dialog, { DialogContent,DialogTitle } from 'react-native-popup-dialog';
 import DeviceInfo from 'react-native-device-info';
 import { DEVICES } from '@src/constants/miner';
 import ImportAccount from '@screens/ImportAccount';
+import { Toast } from '@src/components/core';
 
 import styles, { placeHolderColor } from './style';
+
 
 export const TAG = 'AddSelfNode';
 
@@ -181,7 +183,7 @@ class AddSelfNode extends BaseScreen {
       <>
         <Input
           labelStyle={styles.label}
-          placeholder="Private key or choose account."
+          placeholder="Enter private key or import from account"
           placeholderTextColor={placeHolderColor}
           underlineColorAndroid="transparent" 
           editable={isEditatle}
@@ -293,11 +295,11 @@ class AddSelfNode extends BaseScreen {
       // 
       }else{
         // this.Loading = false;
-        alert('Please check and input correct fields!');
+        Toast.showError('Please check and input correct fields!');
       }
     } catch (error) {
       errorMsg = errorMessage; 
-      alert(error.message);
+      Toast.showError(error.message);
       console.log(TAG,'handleSetUpPress error: ', error);
     }
   });
@@ -322,7 +324,7 @@ class AddSelfNode extends BaseScreen {
             containerStyle={[item]}
             label='Name'
             maxLength={200}
-            placeholder="Node’s name (optional)"
+            placeholder="Name of Node (optional)"
             onChangeText={(text) =>this.inputDeviceName = text}
           />
           {this.renderToastMessage()}

@@ -1,1 +1,3 @@
-export { default } from './Component';
+import Toast from './Toast';
+
+export default Toast;

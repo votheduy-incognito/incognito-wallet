@@ -28,14 +28,14 @@ const CreateAccount = ({ navigation, accountList, createAccount }) => {
         )
       ) {
         throw new Error(
-          'This account name was created! Please try another one'
+          'You already have an account with this name. Please try another.'
         );
       }
 
       await createAccount(accountName);
       goBack();
     } catch (e) {
-      Toast.showError(e.message);
+      Toast.showError('You already have an account with this name. Please try another.');
     }
   };
 

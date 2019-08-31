@@ -31,6 +31,9 @@ const style = StyleSheet.create({
     marginBottom: 10,
     paddingVertical: 15,
     flexDirection: 'row',
+    borderTopWidth: DECOR.borderWidth,
+    borderBottomWidth: DECOR.borderWidth,
+    borderColor: COLORS.lightGrey5
   },
   itemData: {
     fontSize: 14,

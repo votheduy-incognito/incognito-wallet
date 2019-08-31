@@ -1,17 +1,21 @@
 import { setTokenHeader } from '@src/services/http';
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
-import { reloadWallet } from '@src/redux/actions/wallet';
+import { reloadWallet, setWallet } from '@src/redux/actions/wallet';
 import routeNames from '@src/router/routeNames';
 import { getToken } from '@src/services/api/user';
 import { savePassword } from '@src/services/wallet/passwordService';
+import { getPTokenList } from '@src/redux/actions/token';
 import serverService from '@src/services/wallet/Server';
 import { initWallet } from '@src/services/wallet/WalletService';
+import accountService from '@src/services/wallet/accountService';
+import { accountSeleclor } from '@src/redux/selectors';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { createError, messageCode } from '@src/services/errorHandler';
 import { connect } from 'react-redux';
 import storageService from '@src/services/storage';
 import DeviceInfo from 'react-native-device-info';
+import PToken from '@src/models/pToken';
 import { getToken as getFirebaseToken } from '@src/services/firebase';
 import GetStarted from './GetStarted';
 
@@ -138,6 +142,32 @@ class GetStartedContainer extends Component {
     }
   }
 
+  setDefaultPToken = async (wallet) => {
+    try {
+      const { account, getPTokenList, setWallet } = this.props;
+
+      if (!account) throw new Error('Missing account');
+      if (!wallet) throw new Error('Missing wallet');
+
+      const pTokens = await getPTokenList();
+      const defaultTokens = [];
+      pTokens?.forEach((token : PToken) => {
+        if (token.default) {
+          defaultTokens.push(token.convertToToken());
+        }
+      });
+
+      if (defaultTokens?.length > 0) {
+        await accountService.addFollowingTokens(defaultTokens, account, wallet);
+        
+        // update new wallet to store
+        setWallet(wallet);
+      }
+    } catch {
+      // can ignore this err
+    }
+  }
+
   handleCreateNew = async () => {
     try {
       const { reloadWallet } = this.props;
@@ -145,6 +175,7 @@ class GetStartedContainer extends Component {
       const wallet = await reloadWallet();
       
       if (wallet) {
+        await this.setDefaultPToken(wallet);
         this.goHome();
       } else {
         throw new Error('Load new wallet failed');
@@ -172,14 +203,21 @@ class GetStartedContainer extends Component {
   }
 }
 
-const mapDispatch = { reloadWallet };
+const mapDispatch = { reloadWallet, getPTokenList, setWallet };
+
+const mapState = state => ({
+  account: accountSeleclor.defaultAccount(state),
+});
 
 GetStartedContainer.propTypes = {
   reloadWallet: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  getPTokenList: PropTypes.func.isRequired,
+  setWallet: PropTypes.func.isRequired,
+  account: PropTypes.object.isRequired,
 };
 
 export default connect(
-  null,
+  mapState,
   mapDispatch
 )(GetStartedContainer);

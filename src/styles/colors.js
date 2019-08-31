@@ -17,6 +17,10 @@ const COLORS = {
   lightGrey6: '#F0F5F5',
   lightGrey7: '#F0F9F9',
 
+  toastBackgroundDefault: 'rgba(107, 141, 143, 0.8)',
+  toastBackgroundError: 'rgba(255, 101, 47, 0.8)',
+  toastBackgroundWarning: 'rgba(255, 241, 192, 0.8)',
+  toastBackgroundSuccess: 'rgba(42, 171, 160, 0.8)',
   overlayBlack: 'rgba(6, 40, 41, 0.9)',
   overlayBlackDark: 'rgba(0, 0, 0, 0.8)',
   overlayBlackLight: 'rgba(0, 0, 0, 0.3)',

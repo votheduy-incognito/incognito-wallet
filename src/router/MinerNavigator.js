@@ -33,7 +33,7 @@ const MinerNavigator = createStackNavigator(
     [ROUTE_NAMES.AddNode]: navigationOptionsHandler(AddNode, { title: 'Add Node' }),
     [ROUTE_NAMES.AddStake]: navigationOptionsHandler(AddStake, { title: 'Stake' }),
     [ROUTE_NAMES.SetupWifiDevice]: navigationOptionsHandler(SetupWifiDevice, { title: 'Setup Wifi' }),
-    [ROUTE_NAMES.AddSelfNode]: navigationOptionsHandler(AddSelfNode, { title: 'Add a Virtual Node' }),
+    [ROUTE_NAMES.AddSelfNode]: navigationOptionsHandler(AddSelfNode, { title: 'Virtual Node' }),
     [ROUTE_NAMES.DetailDevice]: navigationOptionsHandler(DetailDevice, { header: null }),
     [ROUTE_NAMES.GetStaredMineStake]: navigationOptionsHandler(GetStaredMineStake, { title: null }),
   },

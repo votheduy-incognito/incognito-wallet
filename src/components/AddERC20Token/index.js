@@ -30,7 +30,7 @@ export class AddERC20TokenContainer extends Component {
 
       return erc20Data;
     } catch(e) {
-      Toast.showWarning('Can not detect this ERC20 token, please check again');
+      Toast.showWarning('This ERC20 token doesn\'t seem to exist. Please check and try again.');
       this.setState({ erc20Data: null });
       throw e;
     }
@@ -49,10 +49,10 @@ export class AddERC20TokenContainer extends Component {
       // update new wallet to store
       setWallet(wallet);
 
-      Toast.showInfo('Added new token successfully');
+      Toast.showSuccess('Success! You added a token.');
       return newPToken;
     } catch(e) {
-      Toast.showWarning('Can not add this ERC20 token, please check again');
+      Toast.showWarning('Something went wrong. Please try again.');
       throw e;
     }
   }
