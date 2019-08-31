@@ -1,17 +1,18 @@
 import BaseScreen from '@screens/BaseScreen';
 import _ from 'lodash';
 import React from 'react';
-import { TouchableOpacity, Text, View,Image,TextInput,ScrollView } from 'react-native';
+import { TouchableOpacity, Text, View,Image,ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import StepIndicator from '@components/StepIndicator';
 import images from '@src/assets';
-import { Button, Icon } from 'react-native-elements';
+import { Button, Icon,Input } from 'react-native-elements';
 import { openQrScanner } from '@src/components/QrCodeScanner';
 import { onClickView } from '@src/utils/ViewUtil';
 import { scaleInApp } from '@src/styles/TextStyle';
 import routeNames from '@src/router/routeNames';
 import SetupDevice from '@src/components/SetupDevice';
 import LongLoading from '@src/components/LongLoading';
+import LocalDatabase from '@src/utils/LocalDatabase';
 import styles from './styles';
 
 export const TAG = 'GetStartedAddNode';
@@ -27,6 +28,7 @@ class GetStartedAddNode extends BaseScreen {
       currentPage:0,
       currentConnect:{name:'',password:''},
       errorMessage:'',
+      isPassedValidate:true,
       deviceId:null
     };
     this.viewStepIndicator = React.createRef();
@@ -57,21 +59,28 @@ class GetStartedAddNode extends BaseScreen {
   }
 
   renderContentStep2 =()=>{
-    const {currentConnect} = this.state;
-    const {textInput,item} = styles;
+    const {currentConnect,isPassedValidate} = this.state;
+    const {text,item,item_container_input,errorText} = styles;
     return (
       <>          
-        <TextInput
+        <Input
           underlineColorAndroid="transparent"
-          style={[textInput, item]}
+          containerStyle={item}
+          inputContainerStyle={item_container_input}
+          inputStyle={[text]}
           placeholder="Wi-Fi name"
+          errorStyle={[errorText,{textAlign:'left'}]}
+          errorMessage={!isPassedValidate && _.isEmpty(this.wifiNameValue)?'Enter wifi name here!':''}
           defaultValue={this.wifiNameValue||''}
           onChangeText={text => {this.wifiNameValue = text;}}
         />
-        <TextInput
+        <Input
           underlineColorAndroid="transparent"
-          style={[textInput, item]}
+          containerStyle={item}
+          inputContainerStyle={item_container_input}
+          inputStyle={[text]}
           placeholder="Password"
+          defaultValue={this.wifiPassValue||''}
           onChangeText={text =>{this.wifiPassValue = text;}}
         />
       </>
@@ -100,12 +109,13 @@ class GetStartedAddNode extends BaseScreen {
       break;
     }
     case 2:{
+      const {isPassedValidate} = this.state;
       let isFail = !_.isEmpty(errorMessage);
-      childView = loading? (
+      childView = isPassedValidate && loading? (
         <>
           {isFail && (
             <Text
-              style={[styles.textInput, styles.item,styles.errorText]}
+              style={[styles.text, styles.item,styles.errorText]}
             >{errorMessage}
             </Text>
           )
@@ -121,10 +131,18 @@ class GetStartedAddNode extends BaseScreen {
               <Text style={styles.step3_text}>Tap to scan</Text>
             </TouchableOpacity>
           ):this.renderViewComplete()}
-          <Text
-            style={[styles.textInput,{ textAlign:'center',paddingBottom:2}]}
-          >{deviceId??''}
-          </Text>
+          
+          {!isPassedValidate && _.isEmpty(deviceId)?(
+            <Text
+              style={[styles.text,styles.errorText,styles.item_container_error]}
+            >Please scan QR code to get a verification code
+            </Text>
+          ):(
+            <Text
+              style={[styles.item,styles.text,styles.item_container_input,{ textAlign:'center',paddingBottom:2}]}
+            >{deviceId??''}
+            </Text>
+          )}
 
         </>
       ); 
@@ -155,8 +173,11 @@ class GetStartedAddNode extends BaseScreen {
       loading:true,
       currentPage:2,
     });
+    
     const errorMessage = await this.viewSetupDevice.current.handleSetUpPress();
-    const deviceObj = _.isEmpty(errorMessage) && await this.viewSetupDevice.current.changeDeviceName('Node'); 
+    const listNode = await LocalDatabase.getListDevices()||[];
+    const nodeName = `Node ${listNode.length+1}`;
+    const deviceObj = _.isEmpty(errorMessage) ? await this.viewSetupDevice.current.changeDeviceName(nodeName):null; 
     console.log(TAG,'handleStepConnect errorMessage ',errorMessage ,deviceObj);
     if(_.isEmpty(errorMessage) && !_.isNil(deviceObj)){
       this.handleFinish();
@@ -198,8 +219,10 @@ class GetStartedAddNode extends BaseScreen {
       childView = {
         ...childView,
         onPress:()=>{
+          const isPassedValidate = !_.isEmpty(this.wifiNameValue);
           this.setState({
-            currentPage:2,
+            isPassedValidate:isPassedValidate,
+            currentPage:isPassedValidate? 2:1,
             currentConnect:{
               name:this.wifiNameValue,
               password:this.wifiPassValue
@@ -212,7 +235,22 @@ class GetStartedAddNode extends BaseScreen {
     case 2:{
       childView = {
         ...childView,
-        onPress:this.handleStepConnect,
+        onPress:()=>{
+          const {deviceId} = this.state;
+          const isPassedValidate = !_.isEmpty(deviceId);
+          if(isPassedValidate){
+            this.setState({
+              isPassedValidate:true
+            },()=>{
+              this.handleStepConnect();
+            });
+            
+          }else{
+            this.setState({
+              isPassedValidate:false,
+            });
+          }
+        }
       };
       break;
     }
@@ -228,6 +266,7 @@ class GetStartedAddNode extends BaseScreen {
     return (
       <View style={styles.footer}>
         <Button
+          disabled={loading}
           loading={loading}
           titleStyle={styles.textTitleButton}
           buttonStyle={styles.button}
