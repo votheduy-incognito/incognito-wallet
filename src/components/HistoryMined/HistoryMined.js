@@ -82,9 +82,10 @@ class HistoryMined extends React.Component {
         <Image style={styles.imageLogo} source={icon} />
         <View style={styles.groupLeft}>
           <Text style={styles.groupLeft_title}>{name}</Text>
+          <Text style={styles.groupRight_title}>{`${amount} ${symbol}`}</Text>
         </View>
         <View style={styles.groupRight}>
-          <Text style={styles.groupRight_title}>{`${amount}${symbol} `}<Text style={styles.groupRight_title2}>earned</Text></Text>
+          <Text style={styles.groupRight_title2}>earned</Text>
         </View>
       </TouchableOpacity>
     );

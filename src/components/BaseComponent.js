@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { AppState } from 'react-native';
 import Toast from 'react-native-easy-toast';
+import  { scaleInApp} from '@src/styles/TextStyle';
 
 export const TAG = 'BaseComponent';
 
@@ -39,7 +40,8 @@ class BaseComponent extends Component {
   renderToastMessage = () => {
     return (
       <Toast
-        position="top"
+        style={{marginHorizontal:scaleInApp(20)}}
+        position="center"
         ref={toast => {
           this.toast = toast;
         }}

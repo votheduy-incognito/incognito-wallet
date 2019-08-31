@@ -30,11 +30,10 @@ import { Toast } from '@src/components/core';
 
 import styles, { placeHolderColor } from './style';
 
-
 export const TAG = 'AddSelfNode';
 
 const errorMessage = 'Can\'t connect The Miner. Please check the internert information and try again';
-const TIMES_VERIFY = 5;
+
 const labels = ['Connect Hotpot','Send Wifi Info','Verify Code'];
 const customStyles = {
   stepIndicatorSize: 25,
@@ -67,7 +66,7 @@ class AddSelfNode extends BaseScreen {
       
     this.state = { 
       currentPositionStep:0,
-      accountList:[],
+      accountList:accountList,
       loading:false,
       defaultAccountName:defaultAccountName,
       selectedAccount:undefined,
@@ -171,6 +170,34 @@ class AddSelfNode extends BaseScreen {
     );
   }
 
+  renderInput=()=>{
+    const {  textInput, item,item_container_input,label } = styles;
+    const {
+      errorMessage,
+      showModal,
+      currentPositionStep,
+      isDoingSetUp,
+    } = this.state;
+    
+    return (
+      <>
+        <Input
+          placeholderTextColor={placeHolderColor}
+          maxLength={200}
+          labelStyle={label}
+          onChangeText={(text) =>this.inputHost = text}
+          underlineColorAndroid="transparent"
+          inputStyle={textInput}
+          inputContainerStyle={item_container_input}
+          containerStyle={[item]}
+          placeholder="Host"
+          label='Host'
+          defaultValue={this.inputHost}
+        />
+      </>
+    );
+  }
+
   renderListAccount =()=>{
     const {accountList = [],isShowListAccount = false,selectedAccount = {} } = this.state;
     // const accountListCombined = [{name:'Import Private Key'},...accountList];
@@ -231,31 +258,36 @@ class AddSelfNode extends BaseScreen {
       
       const {selectedAccount} = this.state;
       const userJson = await LocalDatabase.getUserInfo();
-      const host = this.inputHost;
+      const host = _.trim(this.inputHost);
       
-      let privateKey = selectedAccount?.PrivateKey||'';
-      privateKey = _.trim(_.isEmpty(privateKey)?this.inputPrivateKey:privateKey);
-      console.log(TAG,'handleSetUpPress host = ',host+'- inputPrivateKey = '+privateKey);
-      const port = this.inputPort;
-      if (userJson && !_.isEmpty(host) && !_.isEmpty(port) && !_.isEmpty(privateKey) ) {
-        const isImportPrivateKey = _.isEmpty(selectedAccount?.PrivateKey);
+      // let privateKey = selectedAccount?.PrivateKey||'';
+      // privateKey = _.trim(_.isEmpty(privateKey)?this.inputPrivateKey:privateKey);
+      console.log(TAG,'handleSetUpPress host = ',host);
+      
+      if (userJson && !_.isEmpty(host)) {
+        const arrHost =  _.split(host,':')||[];
+        const ipAddress = _.trim(arrHost[0]);
+        let port = arrHost.length > 1 ?_.trim(arrHost[arrHost.length-1]):this.inputPort;
+        
+        port =  !_.isEmpty(port) && _.isNumber(Number(port))?port:this.inputPort;
+        console.log(TAG,'handleSetUpPress port = ',port,ipAddress);
+        // const isImportPrivateKey = _.isEmpty(selectedAccount?.PrivateKey);
         const user = userJson.toJSON();
         const {
           email,
           id,          
           created_at,
         } = user;
-        let deviceName = this.inputDeviceName;
-        deviceName = _.isEmpty(deviceName)?`${host}`:deviceName;
-        deviceName = deviceName || CONSTANT_MINER.VIRTUAL_PRODUCT_NAME;
+        // let deviceName = host;
+        // deviceName = _.isEmpty(deviceName)?`${host}`:deviceName;
+        let deviceName = ipAddress || CONSTANT_MINER.VIRTUAL_PRODUCT_NAME;
         const time = Date.now().toString();
         const account = {
-          name:_.isEmpty(selectedAccount)?deviceName:(selectedAccount?.name||'')
         };
         const deviceJSON =  {
           minerInfo:{
             account:account,
-            ipAddress:host,
+            ipAddress:ipAddress,
             port:port
           },
           product_name:deviceName ,
@@ -274,23 +306,22 @@ class AddSelfNode extends BaseScreen {
           deleted: false,
           is_checkin: 1,
         };
-        const resultAccount =( isImportPrivateKey && await this.viewImportPrivateKey.current.importAccount({accountName:deviceJSON.product_name,privateKey:privateKey})) ||false;
-        if(resultAccount || !isImportPrivateKey){
-          let listLocalDevice = await LocalDatabase.getListDevices();
-          listLocalDevice.push(deviceJSON);
+        let listLocalDevice = await LocalDatabase.getListDevices();
+        listLocalDevice.push(deviceJSON);
+        await LocalDatabase.saveListDevices(listLocalDevice);
+        this.goToScreen(routeNames.HomeMine);
+        return;
+        // const resultAccount =( isImportPrivateKey && await this.viewImportPrivateKey.current.importAccount({accountName:deviceJSON.product_name,privateKey:privateKey})) ||false;
+        // if(resultAccount || !isImportPrivateKey){
+        //   let listLocalDevice = await LocalDatabase.getListDevices();
+        //   listLocalDevice.push(deviceJSON);
         
-          await LocalDatabase.saveListDevices(listLocalDevice);
-          // create account if import private key
+        //   await LocalDatabase.saveListDevices(listLocalDevice);
+        //   // create account if import private key
 
-          this.goToScreen(routeNames.HomeMine);
-          return;
-        }else{
-          // this.setState({
-          //   loading:false
-          // },()=>{
-          //   alert('Please check and input correct fields!');
-          // });
-        }
+        //   this.goToScreen(routeNames.HomeMine);
+        //   return;
+        // }
       // save local
       // 
       }else{
@@ -313,9 +344,10 @@ class AddSelfNode extends BaseScreen {
       >
         <Loader loading={loading} />
         <KeyboardAvoidingView contentContainerStyle={{flex:1}} keyboardVerticalOffset={50} behavior="padding" style={[container]}>
-          {this.renderWifiPassword()}
-          {this.renderListAccount()}
-          <Input
+          {this.renderInput()}
+          {/* {this.renderWifiPassword()} */}
+          {/* {this.renderListAccount()} */}
+          {/* <Input
             labelStyle={label}
             placeholderTextColor={placeHolderColor}
             underlineColorAndroid="transparent"
@@ -326,7 +358,7 @@ class AddSelfNode extends BaseScreen {
             maxLength={200}
             placeholder="Name of Node (optional)"
             onChangeText={(text) =>this.inputDeviceName = text}
-          />
+          /> */}
           {this.renderToastMessage()}
           <Button
             titleStyle={styles.textTitleButton}
@@ -336,9 +368,9 @@ class AddSelfNode extends BaseScreen {
           />
           
         </KeyboardAvoidingView>
-        <View style={{width: 0,height: 0,position:'absolute',opacity:0}}>
+        {/* <View style={{width: 0,height: 0,position:'absolute',opacity:0}}>
           <ImportAccount ref={this.viewImportPrivateKey} />
-        </View>
+        </View> */}
       </ScrollView>
     );
   }

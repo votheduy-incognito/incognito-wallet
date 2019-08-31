@@ -13,6 +13,7 @@ import VirtualDeviceService from '@src/services/VirtualDeviceService';
 import convert from '@src/utils/convert';
 import common from '@src/constants/common';
 import LocalDatabase from '@src/utils/LocalDatabase';
+import format from '@src/utils/format';
 import styles from './style';
 import { Alert } from '../core';
 
@@ -70,7 +71,8 @@ class HomeMineItem extends React.Component {
         let dataResult = await VirtualDeviceService.getRewardAmount(deviceInfo) ?? {};
         // console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
         const {Result={}} = dataResult;
-        balance = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
+        // balance = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
+        balance =  format.amount(Result['PRV'],common.DECIMALS['PRV']);
         balance = _.isNaN(balance)?0:balance;
         break;
       }

@@ -16,10 +16,16 @@ export const getAccountByName = createSelector(
   accounts => memoize(accountName => accounts.find(account => account?.name === accountName))
 );
 
+export const getAccountByPublicKey = createSelector(
+  listAccount,
+  accounts => memoize(publicKey => accounts.find(account => account?.PublicKeyCheckEncode === publicKey))
+);
+
 export default {
   defaultAccountName,
   listAccount,
   defaultAccount,
   isGettingBalance,
-  getAccountByName
+  getAccountByName,
+  getAccountByPublicKey
 };

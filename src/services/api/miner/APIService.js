@@ -64,7 +64,7 @@ export default class APIService {
         });
 
         console.log(TAG,'getURL Header: ', header);
-        console.log(TAG,'getURL Res:', res);
+        // console.log(TAG,'getURL Res:', res);
         // if (!res.ok) {
         //   // throw new Error(res.statusText);
         //   return {status: 0, data: ''};
@@ -75,7 +75,7 @@ export default class APIService {
         }
         if (res.status == 200){
           const resJson = await res.json();
-          console.log(TAG,'getURL Response data:', resJson);
+          // console.log(TAG,'getURL Response data:', resJson);
           return resJson;
         }else if (res.status == 401){
 

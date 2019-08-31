@@ -21,6 +21,7 @@ import VirtualDeviceService from '@src/services/VirtualDeviceService';
 import convert from '@src/utils/convert';
 import common from '@src/constants/common';
 import { scaleInApp } from '@src/styles/TextStyle';
+import format from '@src/utils/format';
 import style from './style';
 
 export const TAG = 'DetailDevice';
@@ -58,14 +59,9 @@ class DetailDevice extends BaseScreen {
 
   async componentDidMount() {
     await this.checkStatus('incognito');
+    await this.checkAndUpdateInfoVirtualNode();
     this.fetchData();
   }
-
-  // set Loading(isLoading){
-  //   this.setState({
-  //     loading:isLoading
-  //   });
-  // }
 
   set IsStaked (isStake:Boolean){
     this.setState({
@@ -77,22 +73,40 @@ class DetailDevice extends BaseScreen {
     return this.state.isStaked;
   }
 
+  checkAndUpdateInfoVirtualNode =async ()=>{
+    const {device} = this.state;
+    const {getAccountByPublicKey,getAccountByName} = this.props;
+    let account = await getAccountByName(device.accountName());
+    const publicKey = await VirtualDeviceService.getPublicKeyMining(device);
+    if(device.Type == DEVICES.VIRTUAL_TYPE && !_.isEqual(account?.PublicKeyCheckEncode,publicKey)){
+      // const publicKey = await VirtualDeviceService.getPublicKeyMining(device);
+      account = getAccountByPublicKey(publicKey);
+      console.log(TAG,'checkAndUpdateInfoVirtualNode account ',account);
+      !_.isEmpty(account) && await device.saveAccount({name:account.name});
+    }
+    this.setState({
+      accountMiner:account
+    });
+  }
+
   fetchData = async ()=>{
     // get balance
-    const {device,wallet} = this.state;
+    const {device,wallet,accountMiner} = this.state;
     let dataResult = {};
     let balancePRV = 0;
     let listFollowingTokens = [];
-    const account = await  this.props.getAccountByName(device.accountName());
-    const stakerStatus = await accountService.stakerStatus(account,wallet)??-1;
+    const account = _.isEmpty(accountMiner)? await this.props.getAccountByName(device.accountName()):accountMiner;
+    const stakerStatus =(!_.isEmpty(account)&& !_.isEmpty(wallet)? await accountService.stakerStatus(account,wallet).catch(console.log):-1)??-1;
+    console.log(TAG,'fetchData stakerStatus ',stakerStatus);
     const isStaked = stakerStatus!=-1 ;
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
      
       dataResult = await VirtualDeviceService.getRewardAmount(device) ?? {};
-      console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
+      // console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
       const {Result={}} = dataResult;
-      balancePRV = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
+      // balancePRV = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
+      balancePRV = format.amount(Result['PRV'],common.DECIMALS['PRV']);
       balancePRV = _.isNaN(balancePRV)?0:balancePRV;
       listFollowingTokens = [{
         symbol: 'PRV',
@@ -104,12 +118,7 @@ class DetailDevice extends BaseScreen {
         pSymbol: 'pPRV',
         default: true,
         userId: 0,
-        verified: true }];
-      // this.setState({
-      //   listFollowingTokens,
-      //   balancePRV:balancePRV
-      // });
-        
+        verified: true }];        
       break;
     }
     default:{
@@ -290,7 +299,7 @@ class DetailDevice extends BaseScreen {
         <View style={style.group2_container_group1}>
           <View style={style.group2_container_container}>
             <Text style={style.group2_container_title}>TOTAL BALANCE</Text>
-            <Text style={style.group2_container_value}>{`${balancePRV} PRV`}</Text>
+            <Text numberOfLines={1} style={style.group2_container_value}>{`${balancePRV} PRV`}</Text>
             {/* {isHaveWallet&&(
               <Button
                 titleStyle={style.group2_container_button_text}
@@ -343,8 +352,16 @@ class DetailDevice extends BaseScreen {
           buttonStyle={style.group2_container_button}
           title={stakeTitle}
           onPress={onClickView( async()=>{
+            const {accountMiner,isStaked} = this.state;
             if(!isStaked){
-              await this.handlePressStake();
+              if(!_.isEmpty(accountMiner)){
+                await this.handlePressStake();
+              }else{
+                this.showToastMessage('None of your keys are linked to this node.Please import the node`s private key');
+              }
+            }else{
+              // udpdate status at local
+              this.IsStaked = false;
             }
           })}
         />
@@ -358,6 +375,7 @@ class DetailDevice extends BaseScreen {
       loading,
       listFollowingTokens
     } = this.state;
+    const {navigation} = this.props;
     const isOffline = device?.isOffline()||false;
     const bgTop = device.Type === DEVICES.VIRTUAL_TYPE ?images.bg_top_virtual_device:images.bg_top_device;
     const bgRootTop = device.Type === DEVICES.VIRTUAL_TYPE ?0: images.bg_top_detail;
@@ -367,7 +385,7 @@ class DetailDevice extends BaseScreen {
         <Image style={style.bg_top} source={bgTop} />
         <DialogLoader loading={loading} />
         <View style={{width: 0,height: 0,display:'none'}}>
-          <CreateAccount ref={this.viewCreateAccount} />
+          <CreateAccount navigation={navigation} ref={this.viewCreateAccount} />
         </View>
         <ScrollView>
           {this.renderTop()}
@@ -422,6 +440,7 @@ class DetailDevice extends BaseScreen {
           /> */}
           {this.renderGroupBalance()}
           {!_.isEmpty(listFollowingTokens) &&<HistoryMined containerStyle={style.group2_container} listItems={listFollowingTokens} />}
+          
         </ScrollView>
         {this.renderToastMessage()}
         
@@ -432,6 +451,7 @@ class DetailDevice extends BaseScreen {
 
 DetailDevice.propTypes = {
   getAccountByName:PropTypes.func.isRequired,
+  getAccountByPublicKey:PropTypes.func.isRequired,
   wallet:PropTypes.object.isRequired
 };
 
@@ -443,6 +463,7 @@ export default connect(
   state => ({
     wallet:state.wallet,
     getAccountByName: accountSeleclor.getAccountByName(state),
+    getAccountByPublicKey:accountSeleclor.getAccountByPublicKey(state),
     token: tokenSeleclor.pTokens(state)
   }),
   mapDispatch

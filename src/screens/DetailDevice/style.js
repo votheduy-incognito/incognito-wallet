@@ -113,7 +113,7 @@ const style = StyleSheet.create({
     color: '#899092',
   },
   group2_container_value:{
-    ...TextStyle.bigText,
+    ...TextStyle.mediumText,
     marginTop:scaleInApp(2),
     color: '#1C1C1C',
   },
