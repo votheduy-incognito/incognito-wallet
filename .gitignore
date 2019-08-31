@@ -59,6 +59,7 @@ buck-out/
 .env
 .env.*
 ios/Pods
+ios/Podfile.lock
 ios/GoogleService-Info\.plist
 
 android/app/google-services\.json

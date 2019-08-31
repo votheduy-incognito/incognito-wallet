@@ -23,6 +23,7 @@ class StepIndicator extends Component<StepIndicatorProps,State> {
         currentPage:props.currentPage
       };
     }
+    return undefined;
   }
   setCurrentPage=(currentPage:Number)=>{
     this.setState({

@@ -24,19 +24,20 @@ const style = StyleSheet.create({
     marginVertical:scaleInApp(5)
   },
   imageLogo:{
+    alignSelf:'center',
     width:scaleInApp(40),
     height:scaleInApp(40),
   },
   groupLeft:{
-    flexDirection:'row',
+    flexDirection:'column',
     flex:1,
+    justifyContent:'space-between',
     marginLeft:scaleInApp(10)
   },
   groupLeft_title:{
-    ...TextStyle.mediumText,
+    ...TextStyle.normalText,
     backgroundColor: 'transparent',
     'letterSpacing':0,
-    alignSelf:'center',
     color: 'rgba(0,0,0,1)',
   },
   groupRight:{
@@ -44,13 +45,13 @@ const style = StyleSheet.create({
     alignItems:'center'
   },
   groupRight_title:{
-    ...TextStyle.mediumText,
+    ...TextStyle.normalText,
     ...FontStyle.medium,
     'letterSpacing':0,
     color: '#000000',
   },
   groupRight_title2:{
-    ...TextStyle.mediumText,
+    ...TextStyle.normalText,
     'letterSpacing':0,
     color: '#899092',
   }

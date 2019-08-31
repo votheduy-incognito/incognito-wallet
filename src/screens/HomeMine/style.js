@@ -1,7 +1,10 @@
 import { StyleSheet } from 'react-native';
-import TextStyle, { scaleInApp, FontStyle } from '@src/styles/TextStyle';
+import TextStyle, { scaleInApp, FontStyle, screenSize } from '@src/styles/TextStyle';
 import { sizeHeader } from '@src/components/HeaderBar/style';
+import { limitRatioImageTop } from '@src/components/Container/style';
 
+// const marginTopList = screenSize.height * limitRatioImageTop - scaleInApp(30);
+const marginTopList = screenSize.height/3;
 const style = StyleSheet.create({
   container: {
     flex: 1,
@@ -55,8 +58,12 @@ const style = StyleSheet.create({
   },
   list:{
     flex:1,
+    alignSelf:'center',
     backgroundColor:'transparent',
-    marginTop:scaleInApp(50)
+    position:'absolute',
+    width:screenSize.width - 2*scaleInApp(20),
+    height:'100%',
+    top:marginTopList
   },
   containerHeader:{
     backgroundColor: 'transparent',

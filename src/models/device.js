@@ -1,6 +1,9 @@
+/* eslint-disable import/no-cycle */
 import accountService from '@src/services/wallet/accountService';
 import _ from 'lodash';
 import { DEVICES } from '@src/constants/miner';
+// import VirtualDeviceService from '@src/services/VirtualDeviceService';
+import LocalDatabase from '@utils/LocalDatabase';
 
 export const template = {
   minerInfo:{
@@ -20,14 +23,23 @@ export const template = {
   
   product_type:DEVICES.MINER_TYPE
 };
+export const DEVICE_STATUS = {
+  CODE_UNKNOWN : -1,
+  CODE_STOP : 4,
+  CODE_PENDING : 5,
+  CODE_START : 2,
+  CODE_MINING : 3,
+  CODE_SYNCING : 1,
+  CODE_OFFLINE : -2
+};
 export default class Device {
-  static CODE_UNKNOWN = -1;
-  static CODE_STOP = 4;
-  static CODE_PENDING = 5;
-  static CODE_START = 2;
-  static CODE_MINING = 3;
-  static CODE_SYNCING = 1;
-  static CODE_OFFLINE = -2;
+  static CODE_UNKNOWN = DEVICE_STATUS.CODE_UNKNOWN;
+  static CODE_STOP = DEVICE_STATUS.CODE_STOP;
+  static CODE_PENDING = DEVICE_STATUS.CODE_PENDING;
+  static CODE_START = DEVICE_STATUS.CODE_START;
+  static CODE_MINING = DEVICE_STATUS.CODE_MINING;
+  static CODE_SYNCING = DEVICE_STATUS.CODE_SYNCING;
+  static CODE_OFFLINE = DEVICE_STATUS.CODE_OFFLINE;
 
   //  SYNCING = 1
   // READY   = 2
@@ -77,6 +89,15 @@ export default class Device {
     return this.data.product_type||'';
   }
 
+  // getPublicKey= async ()=>{
+  //   if(this.Type == DEVICES.VIRTUAL_TYPE){
+  //     const dataResult = await VirtualDeviceService.getPublicKeyMining(this) ?? {};
+  //     const {Result=''} = dataResult;
+  //     return Result;
+  //   }
+  //   return '';
+  // }
+
   balance = async(account,wallet)=>{
     const result = (!_.isEmpty(account)&& !_.isEmpty(wallet) && await accountService.getBalance(account,wallet))||0;
     return result;
@@ -84,6 +105,20 @@ export default class Device {
   balanceToken = async(account,wallet,tokenID = '')=>{
     const result = (!_.isEmpty(account) && !_.isEmpty(wallet)  && await accountService.getRewardAmount(tokenID, account,wallet))||0;
     return result;
+  }
+
+  saveAccount = async (account)=>{
+    if(!_.isEmpty(account)){
+      let listLocalDevice = await LocalDatabase.getListDevices();
+      this.data.minerInfo['account'] = {
+        ...account
+      };
+      const index = listLocalDevice.findIndex(item=> _.isEqual(item?.product_id,this.data.product_id));
+      listLocalDevice[index] = this.data;
+      await LocalDatabase.saveListDevices(listLocalDevice);
+      return true;
+    }
+    return false;
   }
 
   requestWithdraw = async(account,wallet,tokenID = '')=>{
