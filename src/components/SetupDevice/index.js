@@ -212,12 +212,12 @@ class SetupDevice extends BaseComponent {
 
   connectHotspot = async ()=>{
     
-    const deviceMiner = new ObjConnection();
-    deviceMiner.name = HOTPOT;
-    deviceMiner.id = HOTPOT;
-    const result:Boolean = await this.deviceId?.current?.connectDevice(deviceMiner) || false;
+    this.deviceMiner = new ObjConnection();
+    this.deviceMiner.name = HOTPOT;
+    this.deviceMiner.id = HOTPOT;
+    const result:Boolean = await this.deviceId?.current?.connectDevice(this.deviceMiner) || false;
     console.log(TAG,'connectHotspot end result = ',result);
-    return result?deviceMiner:null;
+    return result?this.deviceMiner:null;
   }
 
   handleSetUpPress = onClickView(async ()=>{
@@ -239,6 +239,7 @@ class SetupDevice extends BaseComponent {
       errorMsg = resultStep2 ? '':errorMessage;
     } catch (error) {
       errorMsg = errorMessage;
+      !_.isNil(this.deviceMiner) && this.deviceId?.current?.removeConnectionDevice(this.deviceMiner);
       console.log(TAG,'handleSetUpPress error: ', error);
     }finally{
       this.setState({
