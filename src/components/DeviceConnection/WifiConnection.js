@@ -39,6 +39,16 @@ class WifiConnection extends BaseConnection {
     return Util.excuteWithTimeout(pro,3);
   };
 
+  removeConnection=(device: ObjConnection) => {
+    return new Promise<Boolean>((resolve, reject) => {
+      console.log(TAG, 'removeConnection begin result = ',device?.name||'');
+      Wifi.removeSSID(device.name,error => {
+        resolve(!error);
+      });
+      
+    });
+  } 
+
   connectDevice = (device: ObjConnection) => {
     const pro = new Promise((resolve, reject) => {
       Wifi.connectSecure(device.name,PASS_HOSPOT,false, error => {

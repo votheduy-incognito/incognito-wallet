@@ -61,10 +61,11 @@ class DeviceConnection extends Component {
   };
 
   connectDevice = async (device: ObjConnection) => {
+    console.log(TAG, 'connectDevice begin result = ',JSON.stringify(device)||'');
     let result = await this.connection.connectDevice(device);
-    console.log(TAG, 'connectDevice begin result = ',result);
+    
     if(result){
-      console.log(TAG, 'connectDevice begin ---- ');
+      console.log(TAG, 'connectDevice begin true ---- ');
       const checkConnectWifi = async ()=>{
         let isConnected = false;
         while(!isConnected){
@@ -77,6 +78,13 @@ class DeviceConnection extends Component {
       result = await Util.excuteWithTimeout(checkConnectWifi(),10);
       console.log(TAG, 'connectDevice begin 01 result =  ',result);
     }
+    return result;
+  };
+
+  removeConnectionDevice = async (device: ObjConnection) => {
+    console.log(TAG, 'connectDevice begin result = ',JSON.stringify(device)||'');
+    let result = await this.connection.removeConnection(device);
+
     return result;
   };
 
