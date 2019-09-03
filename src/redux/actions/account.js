@@ -1,7 +1,10 @@
 import type from '@src/redux/types/account';
 import accountService from '@src/services/wallet/accountService';
 import { getPassphrase } from '@src/services/wallet/passwordService';
+import walletType from '@src/redux/types/wallet';
+import tokenSelector  from '../selectors/token';
 import { setListToken, getBalance as getTokenBalance } from './token';
+
 
 export const setAccount = (account = throw new Error('Account object is required')) => ({
   type: type.SET,
@@ -119,6 +122,39 @@ export const reloadAccountFollowingToken = (account = throw new Error('Account o
     dispatch(setListToken(tokens));
 
     return tokens;
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const followDefaultTokens = (account = throw new Error('Account object is required'), pTokenList) => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const wallet = state?.wallet;
+    const pTokens = pTokenList || tokenSelector.pTokens(state);  
+
+    if (!wallet) {
+      throw new Error('Wallet is not exist');
+    }
+
+    const defaultTokens = [];
+    pTokens?.forEach((token) => {
+      if (token.default) {
+        defaultTokens.push(token.convertToToken());
+      }
+    });
+
+    if (defaultTokens?.length > 0) {
+      await accountService.addFollowingTokens(defaultTokens, account, wallet);
+    }
+    
+    // update wallet object to store
+    dispatch({
+      type: walletType.SET,
+      data: wallet
+    });
+
+    return defaultTokens;
   } catch (e) {
     throw e;
   }
