@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { ScrollView, Container, Button } from '@src/components/core';
+import { debounce } from 'lodash';
+import { Container, ScrollView } from '@src/components/core';
+import { UTILS } from '@src/styles';
 import Base from './Base';
-import Indicator from './Indicator';
 import styles from './style';
-
-
-const DEFAULT_INDEX = 0;
 
 class Wizard extends Component {
   constructor() {
     super();
 
+    this.scroll = React.createRef();
+
     this.screenData = [
       {
+        index: 0,
         title: 'Turn on privacy mode',
         desc: 'Send, receive and store your crypto assets with total privacy. No one can view your balances or track your activity.',
         image: require('@src/assets/images/wizard/privacy_mode.png'),
@@ -22,6 +23,7 @@ class Wizard extends Component {
         buttonStyle: styles.buttonLight,
       },
       {
+        index: 1,
         title: 'Stake to make crypto',
         desc: 'Manage multiple software or hardware nodes. Start, pause and resume staking. Withdraw your earnings.',
         image: require('@src/assets/images/wizard/stake.png'),
@@ -30,6 +32,7 @@ class Wizard extends Component {
         buttonStyle: styles.buttonLight,
       },
       {
+        index: 2,
         title: 'Issue your own token',
         desc: 'Create your own privacy-protecting token with a single tap. How many will you issue? What will you call it?',
         image: require('@src/assets/images/wizard/issue_token.png'),
@@ -39,10 +42,8 @@ class Wizard extends Component {
       }
     ];
 
-    this.state = {
-      currenIndex: DEFAULT_INDEX,
-      data: this.screenData[DEFAULT_INDEX]
-    };
+    this.currentPositionX = 0;
+    this.onScroll = debounce(this.onScroll.bind(this), 100);
   }
 
   getData = currenIndex => {
@@ -58,10 +59,9 @@ class Wizard extends Component {
   }
 
   handleNext = () => {
-    const { currenIndex } = this.state;
-    const { data, newIndex } = this.getData(currenIndex);
-
-    this.setState({ data, currenIndex: newIndex });
+    this.scroll.current?.scrollTo({
+      x: this.currentPositionX + UTILS.deviceWidth(),
+    });
   }
 
   handleFinish = () => {
@@ -69,20 +69,42 @@ class Wizard extends Component {
     goHome();
   }
 
-  render() {
-    const { currenIndex, data } = this.state;
+  onScroll = (e) => {
+    this.currentPositionX = e?.nativeEvent?.contentOffset?.x;
+  }
 
+  render() {
     return (
-      <ScrollView contentContainerStyle={{ minHeight: '100%' }}>
-        <Container style={styles.container}>
-          <Base
-            title={data.title}
-            desc={data.desc}
-            image={data.image}
-          />
-          <Indicator number={this.screenData.length} activeIndex={currenIndex} style={styles.indicator} />
-          <Button title={data.buttonText} onPress={data.onPress} style={[styles.button, data.buttonStyle]} />
-        </Container>
+      <ScrollView
+        pagingEnabled
+        horizontal
+        ref={this.scroll}
+        onScroll={
+          e => {
+            e.persist();
+            this.onScroll(e);
+          }
+        }
+      >
+        {
+          this.screenData.map(data => (
+            <ScrollView key={data.index} contentContainerStyle={{ minHeight: '100%' }}>
+              <Container style={styles.container}>
+                <Base
+                  indicator={data.index}
+                  indicatorNumber={this.screenData.length}
+                  title={data.title}
+                  desc={data.desc}
+                  image={data.image}
+                  buttonText={data.buttonText}
+                  buttonStyle={data.buttonStyle}
+                  onPress={data.onPress}
+                />
+              </Container>
+            </ScrollView>
+          ))
+        }
+        
       </ScrollView>
     );
   }
