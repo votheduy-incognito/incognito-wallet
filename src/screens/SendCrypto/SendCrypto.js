@@ -152,7 +152,7 @@ class SendCrypto extends React.Component {
                   style={homeStyle.input}
                   maxValue={maxAmount}
                   componentProps={{
-                    keyboardType: 'number-pad'
+                    keyboardType: 'decimal-pad'
                   }}
                   validate={[
                     ...validator.combinedAmount,
