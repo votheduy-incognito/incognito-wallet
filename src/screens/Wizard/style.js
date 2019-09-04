@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONT, DECOR } from '@src/styles';
+import { COLORS, FONT, DECOR, UTILS } from '@src/styles';
 
 export default StyleSheet.create({
   container: {
@@ -8,6 +8,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: COLORS.blue1,
+    width: UTILS.deviceWidth(),
   },
   baseContainer: {
     width: '100%',

@@ -60,7 +60,7 @@ class Deposit extends React.Component {
                           keyboardType: 'number-pad'
                         }}
                         prependView={
-                          <Text>{selectedPrivacy?.symbol}</Text>
+                          <Text>{selectedPrivacy?.externalSymbol}</Text>
                         }
                       />
                       <Button
