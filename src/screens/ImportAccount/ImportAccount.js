@@ -27,15 +27,16 @@ const ImportAccount = ({ navigation, accountList, importAccount }) => {
           _account => lowerCase(_account.name) === lowerCase(accountName)
         )
       ) {
-        throw new Error(
+        Toast.showError(
           'This account already exists on your device. Please try another.'
         );
+        return;
       }
 
       await importAccount({ privateKey, accountName });
       goBack();
     } catch (e) {
-      Toast.showError('This account already exists on your device. Please try another.');
+      Toast.showError('Please make sure this private key is valid and does not already exist on your device.');
     }
   };
 
