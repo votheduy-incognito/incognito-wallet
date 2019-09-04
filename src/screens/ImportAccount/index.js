@@ -6,6 +6,7 @@ import accountService from '@src/services/wallet/accountService';
 import { getPassphrase } from '@src/services/wallet/passwordService';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { change } from 'redux-form';
 import { connect } from 'react-redux';
 import ImportAccount from './ImportAccount';
 
@@ -61,7 +62,7 @@ const mapState = state => ({
   getAccountByName: accountSeleclor.getAccountByName(state),
 });
 
-const mapDispatch = { reloadAccountList, followDefaultTokens };
+const mapDispatch = { reloadAccountList, followDefaultTokens, rfChange: change };
 
 ImportAccountContainer.propTypes = {
   wallet: PropTypes.object.isRequired,
