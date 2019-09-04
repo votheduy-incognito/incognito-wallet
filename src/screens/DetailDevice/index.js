@@ -91,11 +91,12 @@ class DetailDevice extends BaseScreen {
 
   createListFollowingToken=(result:{})=>{
     let balancePRV = 0;
-    return result.map((value,index)=>{
-      balancePRV = format.amount(value,common.DECIMALS['PRV']);
+    return Object.keys(result).map((value,index)=>{
+
+      balancePRV = format.amount(result[value],common.DECIMALS[value]);
       balancePRV = _.isNaN(balancePRV)?0:balancePRV;
       return {
-        symbol: 'PRV',
+        symbol: value,
         name: 'Privacy',
         decimals: common.DECIMALS['PRV'],
         pDecimals: common.DECIMALS['PRV'],
