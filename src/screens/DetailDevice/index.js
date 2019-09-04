@@ -366,25 +366,27 @@ class DetailDevice extends BaseScreen {
         <View style={style.top_container_group}>
           <Text style={style.top_container_title} numberOfLines={1}>{this.productName}</Text>
           <Text style={[style.group2_container_value2,Device.getStyleStatus(device.Status.code)]}>{device.statusMessage()}</Text>
-        </View>  
-        <Button
-          titleStyle={style.group2_container_button_text}
-          buttonStyle={style.group2_container_button}
-          title={stakeTitle}
-          onPress={onClickView( async()=>{
-            const {accountMiner,isStaked} = this.state;
-            if(!isStaked){
-              if(!_.isEmpty(accountMiner)){
-                await this.handlePressStake();
+        </View>
+        {device.Type === DEVICES.VIRTUAL_TYPE ? (
+          <Button
+            titleStyle={style.group2_container_button_text}
+            buttonStyle={style.group2_container_button}
+            title={stakeTitle}
+            onPress={onClickView( async()=>{
+              const {accountMiner,isStaked} = this.state;
+              if(!isStaked){
+                if(!_.isEmpty(accountMiner)){
+                  await this.handlePressStake();
+                }else{
+                  this.showToastMessage('None of your keys are linked to this node.Please import the node`s private key');
+                }
               }else{
-                this.showToastMessage('None of your keys are linked to this node.Please import the node`s private key');
-              }
-            }else{
               // udpdate status at local
-              this.IsStaked = false;
-            }
-          })}
-        />
+                this.IsStaked = false;
+              }
+            })}
+          />
+        ):null}
       </TouchableOpacity>
     );
   }

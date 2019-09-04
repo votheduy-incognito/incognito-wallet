@@ -1,6 +1,9 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet,Image } from 'react-native';
 import TextStyle, { scaleInApp, FontStyle } from '@src/styles/TextStyle';
+import images from '@src/assets';
 
+const sizeImage = Image.resolveAssetSource(images.ic_getstarted_device);
+const scale = 0.7;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -37,6 +40,11 @@ const styles = StyleSheet.create({
     flex:1,
     justifyContent:'center',
     flexDirection:'column'
+  },
+  content_step1_image:{
+    alignSelf:'center',
+    width:sizeImage.width*scale,
+    height:sizeImage.height*scale
   },
   content_step1:{
     alignSelf:'center'

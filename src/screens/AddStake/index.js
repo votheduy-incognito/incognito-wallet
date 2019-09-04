@@ -78,6 +78,7 @@ class AddStake extends BaseScreen {
     return (selectedIndex === 1?<BorrowStake />: (
       <SelfStaking
         onCallBackStaked={(rs)=>{
+          
           this.onPressBack();
         }}
         minerAccountName={accountInfo.minerAccountName}

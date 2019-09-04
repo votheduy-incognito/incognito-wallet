@@ -98,10 +98,11 @@ class GetStartedAddNode extends BaseScreen {
 
   renderContent=()=>{
     const {currentPage,deviceId,currentConnect,errorMessage,loading} = this.state;
+    
     let childView ;
     switch(currentPage){
     case 0:{
-      childView = <Image style={styles.content_step1} source={images.ic_getstarted_device} />; 
+      childView = <Image style={styles.content_step1_image} source={images.ic_getstarted_device} />; 
       break;
     }
     case 1:{
@@ -139,7 +140,7 @@ class GetStartedAddNode extends BaseScreen {
             </Text>
           ):(
             <Text
-              style={[styles.item,styles.text,styles.item_container_input,{ textAlign:'center',paddingBottom:2}]}
+              style={[styles.text,styles.item_container_input,{ textAlign:'center',paddingBottom:2}]}
             >{deviceId??''}
             </Text>
           )}
