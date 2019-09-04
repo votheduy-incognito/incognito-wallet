@@ -14,6 +14,15 @@ const DATA_INFO = [ {'status':'offline', 'message':'ready','code':DEVICE_STATUS.
   {'status':'notmining', 'message':'ready','code':DEVICE_STATUS.CODE_START}];
 const timeout = 8;
 export const LIST_ACTION={
+  GET_PRIVACY_CUSTOM_TOKEN:{
+    key:'listprivacycustomtoken',
+    data:{
+      'jsonrpc': '1.0',
+      'method': 'listprivacycustomtoken',
+      'params': [],
+      'id': 1
+    }
+  },
   GET_PUBLIC_KEY_MINING:{
     key:'getpublickeymining',
     data:{
@@ -86,6 +95,24 @@ export default class VirtualDeviceService {
       console.log(TAG,'getPublicKeyMining error',error);
     }
     return '';
+  }
+
+  static getPrivacyCustomToken = async(device:Device):Promise<Array>=>{
+    try {
+      let apiURL = VirtualDeviceService.buildURL(device);
+      if(!_.isEmpty(apiURL)){
+        apiURL = `${apiURL}/${LIST_ACTION.GET_PRIVACY_CUSTOM_TOKEN.key}`;
+        const buildParams = LIST_ACTION.GET_PRIVACY_CUSTOM_TOKEN.data;
+        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),3);
+      
+        console.log(TAG,'getPrivacyCustomToken result',response);
+        const {Result={}} = response;
+        return Result['ListCustomToken']??[];
+      }
+    } catch (error) {
+      console.log(TAG,'getPrivacyCustomToken error',error);
+    }
+    return [];
   }
 
   static getRewardAmount = async(device:Device)=>{

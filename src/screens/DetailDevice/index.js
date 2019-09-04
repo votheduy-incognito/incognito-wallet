@@ -89,19 +89,19 @@ class DetailDevice extends BaseScreen {
     });
   }
 
-  createListFollowingToken=(result:{})=>{
-    let balancePRV = 0;
+  createListFollowingToken=(result:{},listprivacyCustomToken:Array)=>{
+    let amount = 0;
     return Object.keys(result).map((value,index)=>{
 
-      balancePRV = format.amount(result[value],common.DECIMALS[value]);
-      balancePRV = _.isNaN(balancePRV)?0:balancePRV;
+      amount = format.amount(result[value],common.DECIMALS[value]);
+      amount = _.isNaN(amount)?0:amount;
       return {
         symbol: value,
         name: 'Privacy',
         decimals: common.DECIMALS['PRV'],
         pDecimals: common.DECIMALS['PRV'],
         type: 0,
-        amount:balancePRV,
+        amount:amount,
         pSymbol: 'pPRV',
         default: true,
         userId: 0,
@@ -121,24 +121,14 @@ class DetailDevice extends BaseScreen {
     const isStaked = stakerStatus!=-1 ;
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
-     
+      const listprivacyCustomToken:[] = await VirtualDeviceService.getPrivacyCustomToken(device);
       dataResult = await VirtualDeviceService.getRewardAmount(device) ?? {};
       // console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
       const {Result={}} = dataResult;
-      // balancePRV = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
+      balancePRV = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
       balancePRV = format.amount(Result['PRV'],common.DECIMALS['PRV']);
       balancePRV = _.isNaN(balancePRV)?0:balancePRV;
-      listFollowingTokens = [{
-        symbol: 'PRV',
-        name: 'Privacy',
-        decimals: common.DECIMALS['PRV'],
-        pDecimals: common.DECIMALS['PRV'],
-        type: 0,
-        amount:balancePRV,
-        pSymbol: 'pPRV',
-        default: true,
-        userId: 0,
-        verified: true }];        
+      listFollowingTokens = this.createListFollowingToken(Result,listprivacyCustomToken);
       break;
     }
     default:{
