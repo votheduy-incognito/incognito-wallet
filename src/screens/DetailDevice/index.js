@@ -112,6 +112,7 @@ class DetailDevice extends BaseScreen {
   fetchData = async ()=>{
     // get balance
     const {device,wallet,accountMiner} = this.state;
+    const {listTokens} = this.props;
     let dataResult = {};
     let balancePRV = 0;
     let listFollowingTokens = [];
@@ -121,7 +122,7 @@ class DetailDevice extends BaseScreen {
     const isStaked = stakerStatus!=-1 ;
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
-      const listprivacyCustomToken:[] = await VirtualDeviceService.getPrivacyCustomToken(device);
+      const listprivacyCustomToken:[] = listTokens;
       dataResult = await VirtualDeviceService.getRewardAmount(device) ?? {};
       // console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
       const {Result={}} = dataResult;
@@ -473,6 +474,7 @@ export default connect(
   state => ({
     wallet:state.wallet,
     getAccountByName: accountSeleclor.getAccountByName(state),
+    listTokens:tokenSeleclor.pTokens(state),
     getAccountByPublicKey:accountSeleclor.getAccountByPublicKey(state),
     token: tokenSeleclor.pTokens(state)
   }),
