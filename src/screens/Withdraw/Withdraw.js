@@ -172,7 +172,7 @@ class Withdraw extends React.Component {
                   style={style.input}
                   maxValue={maxAmount}
                   componentProps={{
-                    keyboardType: 'number-pad'
+                    keyboardType: 'decimal-pad'
                   }}
                   validate={[
                     ...validator.combinedAmount,

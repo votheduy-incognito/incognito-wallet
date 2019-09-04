@@ -57,7 +57,7 @@ class Deposit extends React.Component {
                           ...validator.combinedAmount
                         ]}
                         componentProps={{
-                          keyboardType: 'number-pad'
+                          keyboardType: 'decimal-pad'
                         }}
                         prependView={
                           <Text>{selectedPrivacy?.externalSymbol}</Text>

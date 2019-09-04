@@ -185,7 +185,7 @@ class CreateToken extends Component {
                   label='Amount'
                   style={styleSheet.input}
                   componentProps={{
-                    keyboardType: 'number-pad'
+                    keyboardType: 'decimal-pad'
                   }}
                   validate={[...validator.combinedAmount]}
                 />
@@ -197,7 +197,7 @@ class CreateToken extends Component {
                   style={styleSheet.input}
                   validate={[validator.required, validator.number, minFeeValidator]}
                   componentProps={{
-                    keyboardType: 'number-pad'
+                    keyboardType: 'decimal-pad'
                   }}
                   prependView={isGettingFee ? <ActivityIndicator /> : undefined}
                 />
