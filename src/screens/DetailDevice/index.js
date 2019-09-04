@@ -89,6 +89,25 @@ class DetailDevice extends BaseScreen {
     });
   }
 
+  createListFollowingToken=(result:{})=>{
+    let balancePRV = 0;
+    return result.map((value,index)=>{
+      balancePRV = format.amount(value,common.DECIMALS['PRV']);
+      balancePRV = _.isNaN(balancePRV)?0:balancePRV;
+      return {
+        symbol: 'PRV',
+        name: 'Privacy',
+        decimals: common.DECIMALS['PRV'],
+        pDecimals: common.DECIMALS['PRV'],
+        type: 0,
+        amount:balancePRV,
+        pSymbol: 'pPRV',
+        default: true,
+        userId: 0,
+        verified: true };
+    });
+  }
+
   fetchData = async ()=>{
     // get balance
     const {device,wallet,accountMiner} = this.state;
