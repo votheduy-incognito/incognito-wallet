@@ -5,7 +5,6 @@ const n = genNamspace('ACCOUNT');
 // define types here
 const TYPES = {
   SET: n('SET'),
-  SET_BULK: n('SET_BULK'),
   SET_LIST: n('SET_LIST'),
   REMOVE_BY_NAME: n('REMOVE_BY_NAME'),
   GET_BALANCE: n('GET_BALANCE'),

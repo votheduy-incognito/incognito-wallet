@@ -11,17 +11,6 @@ export const setAccount = (account = throw new Error('Account object is required
   data: account
 });
 
-export const setBulkAccount = (accounts = throw new Error('Account array is required')) => {
-  if (accounts && accounts.constructor !== Array) {
-    throw new TypeError('Accounts must be an array');
-  }
-
-  return ({
-    type: type.SET_BULK,
-    data: accounts
-  });
-};
-
 export const setListAccount = (accounts = throw new Error('Account array is required')) => {
   if (accounts && accounts.constructor !== Array) {
     throw new TypeError('Accounts must be an array');
