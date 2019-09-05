@@ -4,6 +4,7 @@ import { unionBy, remove } from 'lodash';
 const initialState = {
   followed: [],
   pTokens: null,
+  internalTokens: null,
   isGettingBalance: []
 };
 
@@ -97,6 +98,11 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       pTokens: setListToken(action.data)
+    }; 
+  case type.SET_INTERNAL_LIST:
+    return {
+      ...state,
+      internalTokens: setListToken(action.data)
     }; 
   default:
     return state;
