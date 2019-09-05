@@ -16,7 +16,7 @@ import LocalDatabase from '@src/utils/LocalDatabase';
 import styles from './styles';
 
 export const TAG = 'GetStartedAddNode';
-const titleStep = ['Make sure to plug-in the device into AC.','Connect your Node to a Wi-Fi','Scan the code at the base of the device'];
+const titleStep = ['Make sure Node is plugged in.','Connect Node to Wi-Fi','Scan the code at the base of the device'];
 const titleButton = ['Done, next step','Next','Next'];
 
 class GetStartedAddNode extends BaseScreen {
