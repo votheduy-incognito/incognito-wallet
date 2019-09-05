@@ -8,7 +8,7 @@ import Icons from 'react-native-vector-icons/Entypo';
 import FIcons from 'react-native-vector-icons/Feather';
 import MdIcons from 'react-native-vector-icons/MaterialIcons';
 import ROUTE_NAMES from '@src/router/routeNames';
-import { setDefaultAccount, reloadAccountFollowingToken } from '@src/redux/actions/account';
+import { setDefaultAccount, reloadAccountFollowingToken, getBalance as getAccountBalance } from '@src/redux/actions/account';
 import { COLORS } from '@src/styles';
 import Section from './Section';
 import { accountSection } from './style';
@@ -27,11 +27,15 @@ const createItem = (account, onSwitch, onExport, isActive) => (
 );
 
 
-const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAccount, reloadAccountFollowingToken }) => {
-  const onHandleSwitchAccount = account => {
-
-    setDefaultAccount(account);
-    reloadAccountFollowingToken(account);
+const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAccount, reloadAccountFollowingToken, getAccountBalance }) => {
+  const onHandleSwitchAccount = async account => {
+    try {
+      setDefaultAccount(account);
+      await getAccountBalance(account);
+      await reloadAccountFollowingToken(account);
+    } catch {
+      console.warn('Switched account successfully, but can not load account details, please reload manually');
+    }
   };
 
   const handleExportKey = () => {
@@ -39,11 +43,11 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAcc
   };
 
   const handleImport = () => {
-    navigation.navigate(ROUTE_NAMES.ImportAccount);
+    navigation.navigate(ROUTE_NAMES.ImportAccount, { onSwitchAccount: onHandleSwitchAccount });
   };
 
   const handleCreate = () => {
-    navigation.navigate(ROUTE_NAMES.CreateAccount);
+    navigation.navigate(ROUTE_NAMES.CreateAccount, { onSwitchAccount: onHandleSwitchAccount });
   };
 
   const menu = [
@@ -87,6 +91,7 @@ AccountSection.propTypes = {
   listAccount: PropTypes.arrayOf(PropTypes.object).isRequired,
   setDefaultAccount: PropTypes.func.isRequired,
   reloadAccountFollowingToken: PropTypes.func.isRequired,
+  getAccountBalance: PropTypes.func.isRequired,
 };
 
 const mapState = state => ({
@@ -94,6 +99,6 @@ const mapState = state => ({
   listAccount: accountSeleclor.listAccount(state)
 });
 
-const mapDispatch = { setDefaultAccount, reloadAccountFollowingToken };
+const mapDispatch = { setDefaultAccount, reloadAccountFollowingToken, getAccountBalance };
 
 export default connect(mapState, mapDispatch)(AccountSection);

@@ -186,7 +186,7 @@ class AddInternalToken extends Component {
                   label='Total supply'
                   style={styleSheet.input}
                   componentProps={{
-                    keyboardType: 'number-pad'
+                    keyboardType: 'decimal-pad'
                   }}
                   validate={[...validator.combinedAmount]}
                 />

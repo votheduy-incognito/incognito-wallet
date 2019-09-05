@@ -7,7 +7,7 @@ import MdIcons from 'react-native-vector-icons/MaterialIcons';
 import EditSetting from './EditSetting';
 import { networkItemStyle } from './style';
 
-const NetworkItem = ({ active, network, expanded, onExpand, onActive }) => (
+const NetworkItem = ({ active, network, expanded, onExpand, onActive, reloadNetworks }) => (
   <View style={networkItemStyle.container}>
     <View style={networkItemStyle.summaryContainer}>
       <TouchableOpacity
@@ -46,7 +46,7 @@ const NetworkItem = ({ active, network, expanded, onExpand, onActive }) => (
     </View>
     {expanded && (
       <View style={networkItemStyle.editContainer}>
-        <EditSetting network={network} />
+        <EditSetting network={network} onSaved={() => reloadNetworks()} />
       </View>
     )}
   </View>

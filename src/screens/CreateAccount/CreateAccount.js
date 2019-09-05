@@ -8,6 +8,7 @@ import { Field } from 'redux-form';
 import { createForm, InputField, validator } from '@src/components/core/reduxForm';
 import PropTypes from 'prop-types';
 import React from 'react';
+import AccountModel from '@src/models/account';
 import styleSheet from './style';
 
 const formName = 'createAccount';
@@ -32,7 +33,14 @@ const CreateAccount = ({ navigation, accountList, createAccount }) => {
         );
       }
 
-      await createAccount(accountName);
+      const account = await createAccount(accountName);
+
+      // switch to this account
+      const onSwitchAccount = navigation?.getParam('onSwitchAccount');
+      if (typeof onSwitchAccount === 'function') {
+        onSwitchAccount(new AccountModel(account));
+      }
+
       goBack();
     } catch (e) {
       Toast.showError('You already have an account with this name. Please try another.');

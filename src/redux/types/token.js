@@ -11,6 +11,7 @@ const TYPES = {
   REMOVE_BY_ID: n('REMOVE_BY_ID'),
   SET_LIST: n('SET_LIST'),
   SET_PTOKEN_LIST: n('SET_PTOKEN_LIST'),
+  SET_INTERNAL_LIST: n('SET_INTERNAL_LIST'),
 };
 
 export default TYPES;
