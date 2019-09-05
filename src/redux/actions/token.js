@@ -1,6 +1,7 @@
 import type from '@src/redux/types/token';
 import { accountSeleclor } from '@src/redux/selectors';
 import { getTokenList } from '@src/services/api/token';
+import tokenService from '@src/services/wallet/tokenService';
 
 export const setToken = (token = throw new Error('Token object is required')) => ({
   type: type.SET,
@@ -36,6 +37,17 @@ export const setListPToken = (tokens = throw new Error('Token list is required')
 
   return ({
     type: type.SET_PTOKEN_LIST,
+    data: tokens
+  });
+};
+
+export const setListInternalToken = (tokens = throw new Error('Token list is required')) => {
+  if (tokens && tokens.constructor !== Array) {
+    throw new TypeError('Tokens must be an array');
+  }
+
+  return ({
+    type: type.SET_INTERNAL_LIST,
     data: tokens
   });
 };
@@ -101,6 +113,19 @@ export const getPTokenList = () => async (dispatch) => {
     const tokens = await getTokenList();
 
     dispatch(setListPToken(tokens));
+    
+    return tokens;
+  } catch (e) {
+    throw e;
+  }
+};
+
+
+export const getInternalTokenList = () => async (dispatch) => {
+  try {
+    const tokens = await tokenService.getPrivacyTokens();
+
+    dispatch(setListInternalToken(tokens));
     
     return tokens;
   } catch (e) {

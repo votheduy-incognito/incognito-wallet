@@ -199,13 +199,14 @@ export default class Account {
    * @param {string} tokenID
    * @param {object} account
    * @param {object} wallet
+   * @param {bool} isGetAll
    */
-  static async getRewardAmount(tokenID, account, wallet) {
+  static async getRewardAmount(tokenID, account, wallet,isGetAll = false) {
     let indexAccount = wallet.getAccountIndexByName(account.name);
     let result;
     try {
       result = await wallet.MasterAccount.child[indexAccount].getRewardAmount(
-        tokenID
+        tokenID,isGetAll
       );
     } catch (e) {
       throw e;

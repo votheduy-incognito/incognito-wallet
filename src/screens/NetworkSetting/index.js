@@ -1,7 +1,8 @@
 import { Toast } from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
-import { setDefaultServer } from '@src/redux/actions/server';
 import { reloadWallet } from '@src/redux/actions/wallet';
+import { getBalance as getAccountBalance } from '@src/redux/actions/account';
+import { accountSeleclor } from '@src/redux/selectors';
 import serverService from '@src/services/wallet/Server';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
@@ -10,7 +11,9 @@ import NetworkSetting from './NetworkSetting';
 
 const NetworkSettingContainer = ({
   reloadWallet,
-  setDefaultServer,
+  navigation,
+  getAccountBalance,
+  account,
   ...props
 }) => {
   const [servers, setServers] = useState([]);
@@ -20,7 +23,15 @@ const NetworkSettingContainer = ({
     setIsLoading(true);
     serverService
       .get()
-      .then(setServers)
+      .then(servers => {
+        setServers(servers);
+
+        const onReloadedNetworks = navigation.getParam('onReloadedNetworks');
+        if (typeof onReloadedNetworks === 'function') {
+          onReloadedNetworks();
+        }
+
+      })
       .catch(() => {
         Toast.showError('Something went wrong. Please refresh the screen.');
       })
@@ -31,9 +42,9 @@ const NetworkSettingContainer = ({
 
   const handleSetDefaultNetwork = async network => {
     try {
-      setDefaultServer(network);
       await serverService.setDefault(network);
       const wallet = await reloadWallet();
+      await getAccountBalance(account);
 
       if (wallet) {
         Toast.showInfo('You successfully changed networks.');
@@ -57,21 +68,27 @@ const NetworkSettingContainer = ({
     <NetworkSetting
       {...props}
       networks={servers}
+      reloadNetworks={loadServerList}
       setDefaultNetwork={handleSetDefaultNetwork}
     />
   );
 };
 
-const mapDispatch = { reloadWallet, setDefaultServer };
-NetworkSettingContainer.defaultProps = {
-  reloadWallet: undefined
-};
+const mapDispatch = { reloadWallet, getAccountBalance };
+
+const mapState = state => ({
+  account: accountSeleclor.defaultAccount(state)
+});
 
 NetworkSettingContainer.propTypes = {
-  reloadWallet: PropTypes.func
+  reloadWallet: PropTypes.func.isRequired,
+  setDefaultServer: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
+  getAccountBalance: PropTypes.func.isRequired,
+  account: PropTypes.object.isRequired,
 };
 
 export default connect(
-  null,
+  mapState,
   mapDispatch
 )(NetworkSettingContainer);

@@ -89,29 +89,36 @@ class DetailDevice extends BaseScreen {
     });
   }
 
-  createListFollowingToken=(result:{})=>{
-    let balancePRV = 0;
+  createListFollowingToken=(result:{},listprivacyCustomToken:Array)=>{
+    let amount = 0;
+    console.log(TAG,'createListFollowingToken begin ',listprivacyCustomToken);
     return Object.keys(result).map((value,index)=>{
-
-      balancePRV = format.amount(result[value],common.DECIMALS[value]);
-      balancePRV = _.isNaN(balancePRV)?0:balancePRV;
-      return {
+      let ObjFinded = _.find(listprivacyCustomToken,(item)=>_.isEqual(item.tokenId,value))||{
         symbol: value,
         name: 'Privacy',
         decimals: common.DECIMALS['PRV'],
         pDecimals: common.DECIMALS['PRV'],
         type: 0,
-        amount:balancePRV,
+        amount:amount,
         pSymbol: 'pPRV',
         default: true,
         userId: 0,
         verified: true };
+    
+      console.log(TAG,'createListFollowingToken begin findd ---  ',ObjFinded);
+      amount = format.amount(result[value],ObjFinded['pDecimals']??common.DECIMALS[value]);
+      amount = _.isNaN(amount)?0:amount;
+      return {
+        ...ObjFinded,
+        amount:amount,
+      };
     });
   }
 
   fetchData = async ()=>{
     // get balance
     const {device,wallet,accountMiner} = this.state;
+    const {listTokens} = this.props;
     let dataResult = {};
     let balancePRV = 0;
     let listFollowingTokens = [];
@@ -121,24 +128,15 @@ class DetailDevice extends BaseScreen {
     const isStaked = stakerStatus!=-1 ;
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
-     
+
+      const listprivacyCustomToken:[] = listTokens;
       dataResult = await VirtualDeviceService.getRewardAmount(device) ?? {};
       // console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
       const {Result={}} = dataResult;
-      // balancePRV = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
+      balancePRV = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
       balancePRV = format.amount(Result['PRV'],common.DECIMALS['PRV']);
       balancePRV = _.isNaN(balancePRV)?0:balancePRV;
-      listFollowingTokens = [{
-        symbol: 'PRV',
-        name: 'Privacy',
-        decimals: common.DECIMALS['PRV'],
-        pDecimals: common.DECIMALS['PRV'],
-        type: 0,
-        amount:balancePRV,
-        pSymbol: 'pPRV',
-        default: true,
-        userId: 0,
-        verified: true }];        
+      listFollowingTokens = this.createListFollowingToken(Result,listprivacyCustomToken);
       break;
     }
     default:{
@@ -485,6 +483,7 @@ export default connect(
   state => ({
     wallet:state.wallet,
     getAccountByName: accountSeleclor.getAccountByName(state),
+    listTokens:tokenSeleclor.pTokens(state),
     getAccountByPublicKey:accountSeleclor.getAccountByPublicKey(state),
     token: tokenSeleclor.pTokens(state)
   }),

@@ -2,10 +2,14 @@
  * @providesModule Util
  */
 import { Linking } from 'react-native';
+import _ from 'lodash';
 import { NavigationActions, StackActions } from 'react-navigation';
 
 const TAG = 'Util';
 export default class Util {
+  static getIconLinkWithSymbol=(symbol = '')=>{
+    return `./node_modules/cryptocurrency-icons/32@2x/color/${_.toLower(symbol)}@2x.png`;
+  }
   static resetRoute = (navigation, routeName, params = {}) => {
     const resetAction = StackActions.reset({
       index: 0,

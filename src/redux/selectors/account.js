@@ -8,7 +8,13 @@ export const defaultAccount = createSelector(
   listAccount,
   defaultAccountName,
   (list, defaultName) => {
-    return list?.find(account => account?.name === defaultName);
+    let account = list?.find(account => account?.name === defaultName);
+    if (!account?.name) {
+      console.warn(`Can not get account ${account?.name}, fallback to first account (default account)`);
+      account = list && list[0]; 
+    }
+
+    return account;
   }
 );
 export const getAccountByName = createSelector(

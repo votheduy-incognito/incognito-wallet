@@ -10,17 +10,12 @@ const initialState = {
 const setAccount = (list, account) => {
   let newList = [...list];
   try {
-    newList = _.unionBy([account], list, 'name');
-  } catch(e) {
-    console.error(e);
-  }
-  return newList;
-};
-
-const setBulkAccount = (list, accounts) => {
-  let newList = [...list];
-  try {
-    newList = _.unionBy(accounts, list, 'name');
+    const foundIndex = list.findIndex(a => a.name === account.name);
+    if (foundIndex >= 0) {
+      newList[foundIndex] = account;
+    } else {
+      newList.push(account);
+    }
   } catch(e) {
     console.error(e);
   }
@@ -54,12 +49,6 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
   case type.SET:
     newList = setAccount(state.list, action.data);
-    return {
-      ...state,
-      list: newList,
-    };
-  case type.SET_BULK:
-    newList = setBulkAccount(state.list, action.data);
     return {
       ...state,
       list: newList,
