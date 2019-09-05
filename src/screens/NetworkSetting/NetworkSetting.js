@@ -37,7 +37,7 @@ class NetworkSetting extends Component {
 
   render() {
     const { activeNetworkId, expandedNetworkId } = this.state;
-    const { networks } = this.props;
+    const { networks, reloadNetworks } = this.props;
 
     return (
       <ScrollView>
@@ -51,6 +51,7 @@ class NetworkSetting extends Component {
                 expanded={network?.id === expandedNetworkId}
                 onActive={() => this.handleActive(network)}
                 onExpand={() => this.handleExpand(network?.id)}
+                reloadNetworks={reloadNetworks}
               />
             ))}
         </Container>

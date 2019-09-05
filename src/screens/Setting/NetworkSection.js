@@ -8,15 +8,22 @@ import Section from './Section';
 
 const NetworkSection = ({ navigation, defaultServer }) => {
   const [server, setServer] = useState(null);
-  useEffect(() => {
+
+  const loadServers = () => {
     serverService.getDefault().then(setServer);
+  };
+
+  useEffect(() => {
+    loadServers();
   }, [defaultServer?.id]);
   const items = [
     {
       title: server?.name || 'Change default server',
       desc: server?.address || '---',
       icon: <MdIcons name="laptop" size={20} />,
-      handlePress: () => navigation?.navigate(ROUTE_NAMES.NetworkSetting)
+      handlePress: () => navigation?.navigate(ROUTE_NAMES.NetworkSetting, {
+        onReloadedNetworks: () => loadServers()
+      })
     }
   ];
   return <Section label="Network" items={items} />;

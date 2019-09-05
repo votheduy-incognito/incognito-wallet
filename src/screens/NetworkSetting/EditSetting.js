@@ -29,7 +29,7 @@ class EditSetting extends Component {
 
   handleEdit = async values => {
     try {
-      const { network, reloadWallet } = this.props;
+      const { network, reloadWallet, onSaved } = this.props;
       const servers = await serverService.get();
       const newServers = servers.map(server => {
         if (server?.id === network?.id) {
@@ -42,6 +42,10 @@ class EditSetting extends Component {
       });
 
       serverService.set(newServers);
+
+      if (typeof onSaved === 'function') {
+        onSaved(newServers);
+      }
 
       // need to reload wallet if current network was updated
       if (network?.default) {
