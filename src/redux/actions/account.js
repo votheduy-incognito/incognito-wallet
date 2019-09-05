@@ -61,10 +61,9 @@ export const getBalanceFinish = accountName => ({
 
 export const setDefaultAccount = account => {
   accountService.saveDefaultAccountToStorage(account?.name);
-  const _account = { ...account, default: true };
   return ({
     type: type.SET_DEFAULT_ACCOUNT,
-    data: _account
+    data: account
   });
 };
 

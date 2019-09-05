@@ -48,7 +48,7 @@ class ImportAccount extends Component {
   };
 
   handleImportAccount = async ({ accountName : name, privateKey }) => {
-    const { accountList, importAccount } = this.props;
+    const { accountList, importAccount, navigation } = this.props;
     const { isUseRandomName, randomName } = this.state;
     const accountName = isUseRandomName ? randomName : name;
 
@@ -65,7 +65,14 @@ class ImportAccount extends Component {
         return;
       }
 
-      await importAccount({ privateKey, accountName });
+      const account = await importAccount({ privateKey, accountName });
+
+      // switch to this account
+      const onSwitchAccount = navigation?.getParam('onSwitchAccount');
+      if (typeof onSwitchAccount === 'function') {
+        onSwitchAccount(account);
+      }
+
       this.goBack();
     } catch (e) {
       Toast.showError('Please make sure this private key is valid and does not already exist on your device.');

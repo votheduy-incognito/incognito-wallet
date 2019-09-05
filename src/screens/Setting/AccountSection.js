@@ -43,11 +43,11 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAcc
   };
 
   const handleImport = () => {
-    navigation.navigate(ROUTE_NAMES.ImportAccount);
+    navigation.navigate(ROUTE_NAMES.ImportAccount, { onSwitchAccount: onHandleSwitchAccount });
   };
 
   const handleCreate = () => {
-    navigation.navigate(ROUTE_NAMES.CreateAccount);
+    navigation.navigate(ROUTE_NAMES.CreateAccount, { onSwitchAccount: onHandleSwitchAccount });
   };
 
   const menu = [

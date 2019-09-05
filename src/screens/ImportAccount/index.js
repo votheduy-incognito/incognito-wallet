@@ -43,7 +43,7 @@ class ImportAccountContainer extends Component {
       const account = getAccountByName(accountName);
       await this.followDefaultTokens(account);
 
-      return true;
+      return account;
     } catch(e) {
 
       Toast.showError('Something went wrong. Please try again.');

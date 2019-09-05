@@ -47,7 +47,8 @@ const mapDispatch = { reloadAccountList, followDefaultTokens };
 
 CreateAccountContainer.propTypes = {
   wallet: PropTypes.objectOf(PropTypes.object),
-  reloadAccountList: PropTypes.func
+  reloadAccountList: PropTypes.func.isRequired,
+  followDefaultTokens: PropTypes.func.isRequired,
 };
 
 export default connect(
