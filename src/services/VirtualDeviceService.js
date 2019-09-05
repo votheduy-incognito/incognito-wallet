@@ -97,6 +97,9 @@ export default class VirtualDeviceService {
     return '';
   }
 
+  /*
+  *** is sefl node
+  */
   static getPrivacyCustomToken = async(device:Device):Promise<Array>=>{
     try {
       let apiURL = VirtualDeviceService.buildURL(device);

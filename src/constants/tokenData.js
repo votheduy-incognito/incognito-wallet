@@ -4,8 +4,11 @@ import ethIcon from '@src/assets/images/cryptoLogo/ethereum.png';
 import binanceIcon from '@src/assets/images/cryptoLogo/binance.png';
 import kcsIcon from '@src/assets/images/cryptoLogo/kcs.png';
 import { CONSTANT_COMMONS } from '@src/constants';
+import Util from '@src/utils/Util';
 
-const customTokenIcon = null;
+const customTokenIcon = (symbol ):String=>{
+  return Util.getIconLinkWithSymbol(symbol);
+};
 
 const SYMBOL = {
   pETH: CONSTANT_COMMONS.TOKEN_SYMBOL.pETH,
@@ -42,7 +45,7 @@ const parse = token => ({
   typeName: 'Custom token',
   symbol: token?.symbol,
   name: token?.name,
-  icon: customTokenIcon,
+  icon: null,
   isTokenFollowedByUser: true,
 });
 

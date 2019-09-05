@@ -91,11 +91,9 @@ class DetailDevice extends BaseScreen {
 
   createListFollowingToken=(result:{},listprivacyCustomToken:Array)=>{
     let amount = 0;
+    console.log(TAG,'createListFollowingToken begin ',listprivacyCustomToken);
     return Object.keys(result).map((value,index)=>{
-
-      amount = format.amount(result[value],common.DECIMALS[value]);
-      amount = _.isNaN(amount)?0:amount;
-      return {
+      let ObjFinded = _.find(listprivacyCustomToken,(item)=>_.isEqual(item.tokenId,value))||{
         symbol: value,
         name: 'Privacy',
         decimals: common.DECIMALS['PRV'],
@@ -106,6 +104,14 @@ class DetailDevice extends BaseScreen {
         default: true,
         userId: 0,
         verified: true };
+    
+      console.log(TAG,'createListFollowingToken begin findd ---  ',ObjFinded);
+      amount = format.amount(result[value],ObjFinded['pDecimals']??common.DECIMALS[value]);
+      amount = _.isNaN(amount)?0:amount;
+      return {
+        ...ObjFinded,
+        amount:amount,
+      };
     });
   }
 
@@ -122,6 +128,7 @@ class DetailDevice extends BaseScreen {
     const isStaked = stakerStatus!=-1 ;
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
+
       const listprivacyCustomToken:[] = listTokens;
       dataResult = await VirtualDeviceService.getRewardAmount(device) ?? {};
       // console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
