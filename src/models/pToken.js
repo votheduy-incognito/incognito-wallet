@@ -35,7 +35,6 @@ class PToken {
         pSymbol: this.pSymbol,
         symbol: this.symbol,
         contractId: this.contractId,
-        pTokenType: this.type,
         currencyType: this.currencyType,
       }
       // listTxs,

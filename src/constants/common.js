@@ -39,9 +39,13 @@ export default {
     DEPOSIT: 1,
     WITHDRAW: 2 
   },
-  PRIVATE_TOKEN_HISTORY_CURRENCY_TYPE: {
+  PRIVATE_TOKEN_CURRENCY_TYPE: {
     ETH: 1,
+    BTC: 2,
     ERC20: 3,
+    BNB: 4,
+    BNB_BEP2: 5,
+    USD: 6
   },
   PTOKEN_TYPE: {
     COIN: 0,

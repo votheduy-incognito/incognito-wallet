@@ -1,7 +1,7 @@
 import { CONSTANT_COMMONS } from '@src/constants';
 
 const getStatusText = (status, currencyType) => {
-  if ([CONSTANT_COMMONS.PRIVATE_TOKEN_HISTORY_CURRENCY_TYPE.ETH, CONSTANT_COMMONS.PRIVATE_TOKEN_HISTORY_CURRENCY_TYPE.ERC20].includes(currencyType)) {
+  if ([CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH, CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20].includes(currencyType)) {
     // decentralized token history 
     if (status === 6 || status === 23) {
       return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.FAILED;
