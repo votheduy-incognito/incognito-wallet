@@ -22,6 +22,7 @@ import convert from '@src/utils/convert';
 import common from '@src/constants/common';
 import { scaleInApp } from '@src/styles/TextStyle';
 import format from '@src/utils/format';
+import HeaderBar from '@src/components/HeaderBar/HeaderBar';
 import style from './style';
 
 export const TAG = 'DetailDevice';
@@ -264,17 +265,34 @@ class DetailDevice extends BaseScreen {
   //     })}
   //   />
   // )}
+  // renderHeader = () => {
+  //   const title = this.titleBar|| 'Details';
+  //   return (
+  //     <Header
+  //       containerStyle={style.containerHeader}
+  //       centerComponent={(
+  //         <Text numberOfLines={1} style={style.titleHeader}>
+  //           {title}
+  //         </Text>
+  //       )}
+  //       leftComponent={imagesVector.ic_back({onPress:this.onPressBack},{paddingLeft:0,paddingRight:scaleInApp(30)})}
+  //     />
+  //   );
+    
+  // };
   renderHeader = () => {
+    const {navigation} = this.props;
     const title = this.titleBar|| 'Details';
+    const options= {
+      title: title,
+      headerBackground:'transparent',
+      headerTitleStyle:style.titleHeader
+    };
     return (
-      <Header
-        containerStyle={style.containerHeader}
-        centerComponent={(
-          <Text numberOfLines={1} style={style.titleHeader}>
-            {title}
-          </Text>
-        )}
-        leftComponent={imagesVector.ic_back({onPress:this.onPressBack},{paddingLeft:0,paddingRight:scaleInApp(30)})}
+      <HeaderBar
+        navigation={navigation}
+        index={1}
+        scene={{descriptor:{options}}} 
       />
     );
   };
@@ -400,7 +418,7 @@ class DetailDevice extends BaseScreen {
     const bgTop = device.Type === DEVICES.VIRTUAL_TYPE ?images.bg_top_virtual_device:images.bg_top_device;
     const bgRootTop = device.Type === DEVICES.VIRTUAL_TYPE ?0: images.bg_top_detail;
     return (
-      <Container styleRoot={style.container} backgroundTop={{source:bgRootTop,style:[style.imageTop,{backgroundColor:'#01828A'}]}}>
+      <Container styleContainScreen={{paddingHorizontal:0}} styleRoot={style.container} backgroundTop={{source:bgRootTop,style:[style.imageTop,{backgroundColor:'#01828A'}]}}>
         {this.renderHeader()}
         <Image style={style.bg_top} source={bgTop} />
         <DialogLoader loading={loading} />

@@ -1,14 +1,15 @@
 import {Platform} from 'react-native';
 
+const FONT_FAMILY = Platform.OS === 'ios' ? 'PostGrotesk' : 'PostGrotesk';
 const fontNames =  {
-  default: Platform.OS === 'ios'?'PostGrotesk-Light': 'PostGroteskLight',
-  italic: Platform.OS === 'ios'?'PostGrotesk-LightItalic':'PostGroteskLightItalic',
-  medium: Platform.OS === 'ios'?'PostGrotesk-Medium':'PostGroteskMedium',
-  mediumItalic: Platform.OS === 'ios'?'PostGrotesk-MediumItalic':'PostGroteskMediumItalic',
-  bold: Platform.OS === 'ios'?'PostGrotesk-Bold':'PostGroteskBold',
-  boldItalic: Platform.OS === 'ios'?'PostGrotesk-BoldItalic':'PostGroteskBoldItalic',
-  regular: Platform.OS === 'ios'?'PostGrotesk-Book':'PostGroteskBook',
-  regularItalic: Platform.OS === 'ios'?'PostGrotesk-BookItalic':'PostGroteskBookItalic',
+  default: Platform.OS === 'ios'?`${FONT_FAMILY}-Light`: `${FONT_FAMILY}Light`,
+  italic: Platform.OS === 'ios'?`${FONT_FAMILY}-LightItalic`:`${FONT_FAMILY}LightItalic`,
+  medium: Platform.OS === 'ios'?`${FONT_FAMILY}-Medium`:`${FONT_FAMILY}Medium`,
+  mediumItalic: Platform.OS === 'ios'?`${FONT_FAMILY}-MediumItalic`:`${FONT_FAMILY}MediumItalic`,
+  bold: Platform.OS === 'ios'?`${FONT_FAMILY}-Bold`:`${FONT_FAMILY}Bold`,
+  boldItalic: Platform.OS === 'ios'?`${FONT_FAMILY}-BoldItalic`:`${FONT_FAMILY}BoldItalic`,
+  regular: Platform.OS === 'ios'?`${FONT_FAMILY}-Book`:`${FONT_FAMILY}Book`,
+  regularItalic: Platform.OS === 'ios'?`${FONT_FAMILY}-BookItalic`:`${FONT_FAMILY}BookItalic`,
 };
 
 const fontStyle = {

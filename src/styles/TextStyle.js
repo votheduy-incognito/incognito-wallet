@@ -1,6 +1,7 @@
 import { Dimensions, Platform, StatusBar, StyleSheet } from 'react-native';
 import { scale,verticalScale } from 'react-native-size-matters';
 import colors from './colors';
+import font from './font';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight || 20;
 
@@ -9,17 +10,9 @@ export const screenSize = {
   height: Dimensions.get('window').height - STATUSBAR_HEIGHT
 };
 export const scaleInApp = verticalScale;
-export const FONT_FAMILY = Platform.OS === 'ios' ? 'PostGrotesk' : 'Roboto';
+
 export const FontStyle = {
-  normal:{
-    fontFamily:`${FONT_FAMILY}-Book`
-  },
-  medium:{
-    fontFamily:`${FONT_FAMILY}-Medium`
-  },
-  bold:{
-    fontFamily:`${FONT_FAMILY}-Bold`
-  }
+  ...font
 };
 const textColor = colors.white;
 const TextStyle = StyleSheet.create({

@@ -11,17 +11,13 @@ const HeaderBar = (props) => {
 
   return (
     <View style={[
-      styles.container,
-      {
-        backgroundColor: options?.headerBackground,
-      }
-    ]}
+      styles.container,{backgroundColor: options?.headerBackground}]}
     >
       <View style={styles.left}>
         { index > 0 && <BackButton onPress={back} />}
       </View>
       <View style={styles.center}>
-        <Text style={styles.title} numberOfLines={1} ellipsizeMode='tail'>{options.title}</Text>
+        <Text style={[styles.title,options?.headerTitleStyle]} numberOfLines={1} ellipsizeMode='tail'>{options.title}</Text>
       </View>
       <View style={styles.right}>
         { options?.headerRight }
