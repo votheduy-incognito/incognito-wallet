@@ -28,6 +28,9 @@ const email = (value, { message } = {}) =>
   value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ?
     messageHanlder(message, value) ?? 'Invalid email address' : undefined;
 
+const notInList = (list, { message } = {}) => value =>
+  list?.includes(value) ? messageHanlder(message, value, list) ?? 'Please use another value' : undefined;
+
 const incognitoAddress = (value, { message } = {}) => value => value && !accountService.checkPaymentAddress(value) ? messageHanlder(message, value) ?? 'Invalid address'  :undefined;
 
 const ethAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'ETH') ? messageHanlder(message, value) ?? 'Invalid ETH address' : undefined;
@@ -66,5 +69,6 @@ export default {
   combinedBTCAddress,
   bitcoinWithdrawMinAmount,
   ethAddress,
-  btcAddress
+  btcAddress,
+  notInList
 };
