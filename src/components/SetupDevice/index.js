@@ -30,6 +30,7 @@ import Device from '@src/models/device';
 import PropTypes from 'prop-types';
 import CreateAccount from '@screens/CreateAccount';
 import StepIndicator from 'react-native-step-indicator';
+import Account from '@src/models/account';
 import styles from './style';
 import BaseComponent from '../BaseComponent';
 
@@ -297,7 +298,7 @@ class SetupDevice extends BaseComponent {
         // create account
         // console.log(TAG,'handleSubmit fetchData = ',fetchProductInfo);
         let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
-        const {PrivateKey = '',AccountName = '',PaymentAddress = ''} = result;
+        const PrivateKey = result.PrivateKey;
         result = await DeviceService.sendPrivateKey(Device.getInstance(addProduct),PrivateKey);
 
         if(!_.isEmpty(result)){

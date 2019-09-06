@@ -83,18 +83,17 @@ class StakeValidatorTypeSelector extends Component {
   }
 
   render() {
-    const { style, account } = this.props;
+    const { style, account,isNotEnoughBalance } = this.props;
     const stakeShard = this.getTypeById(CONSTANT_COMMONS.STAKING_TYPES.SHARD);
-
+    const enoughMsg = `${account?.name ? `"${account?.name }"`: ''} successfully staked ${formatUtil.amount(stakeShard?.amount, CONSTANT_COMMONS.DECIMALS[CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV])} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}.`;
+    const notEnoughMsg = `Please make sure your account ${account?.name ? `"${account?.name }"`: ''} has enough ${formatUtil.amount(stakeShard?.amount, CONSTANT_COMMONS.DECIMALS[CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV])} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}`;
     return (
       <View style={[styles.container, style]}>
         {/* <Text style={styles.title}>What kind of validator?</Text>
         {
           stakeData?.map(type => this.renderItem(type, stakeTypeId === type.id))
         } */}
-        <Text style={styles.title}>
-          Please make sure your account {account?.name ? `"${account?.name }"`: ''} has enough {formatUtil.amount(stakeShard?.amount, CONSTANT_COMMONS.DECIMALS[CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV])} {CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}
-        </Text>
+        <Text style={styles.title}>{isNotEnoughBalance?notEnoughMsg:enoughMsg}</Text>
       </View>
     );
   }
@@ -104,11 +103,13 @@ StakeValidatorTypeSelector.defaultProps = {
   stakeTypeId: null,
   onChange: null,
   style: null,
-  account: null
+  account: null,
+  isNotEnoughBalance:true
 };
 
 StakeValidatorTypeSelector.propTypes = {
   stakeTypeId: PropTypes.number,
+  isNotEnoughBalance:PropTypes.bool,
   onChange: PropTypes.func,
   style: PropTypes.object,
   account: PropTypes.object,

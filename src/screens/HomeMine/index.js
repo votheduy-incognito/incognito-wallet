@@ -3,7 +3,7 @@ import BaseScreen from '@screens/BaseScreen';
 import LocalDatabase from '@utils/LocalDatabase';
 import React from 'react';
 import Container from '@components/Container';
-import {  Header, Button, ListItem} from 'react-native-elements';
+import {  Header, Button} from 'react-native-elements';
 import { Alert, FlatList, Image,TouchableOpacity ,Text,View} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import _ from 'lodash';
@@ -15,12 +15,20 @@ import images from '@src/assets';
 import APIService from '@src/services/api/miner/APIService';
 import ViewUtil from '@src/utils/ViewUtil';
 import HomeMineItem from '@src/components/HomeMineItem';
-import { DEVICES } from '@src/constants/miner';
+import HeaderBar from '@src/components/HeaderBar/HeaderBar';
 import style from './style';
 
 export const TAG = 'HomeMine';
 
 class HomeMine extends BaseScreen {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'My Nodes',
+      headerBackground:'transparent',
+      headerTitleStyle:style.titleHeader,
+      headerRight:  (<TouchableOpacity><Image source={images.ic_add_device} /></TouchableOpacity>)
+    };
+  }
   constructor(props) {
     super(props);
     const {navigation,wallet}= props;
@@ -45,11 +53,6 @@ class HomeMine extends BaseScreen {
     super.componentDidMount();
     
   };
-
-  componentDidUpdate(prevProps) {
-    
-  }
-
   createSignIn = async () => {
     const user = await LocalDatabase.getUserInfo();
     if (_.isEmpty(user)) {
@@ -216,24 +219,37 @@ class HomeMine extends BaseScreen {
       return undefined;
     }
   }
+  // renderHeader = () => {
+  //   return (
+  //     <Header
+  //       containerStyle={style.containerHeader}
+  //       centerComponent={(
+  //         <Text style={style.titleHeader}>
+  //           My Nodes
+  //         </Text>
+  //       )}
+  //       rightComponent={(
+  //         <TouchableOpacity
+  //           onPress={() => {
+  //             this.goToScreen(routeNames.AddNode);
+  //           }}
+  //         >
+  //           <Image source={images.ic_add_device} />
+  //         </TouchableOpacity>
+  //       )}
+  //     />
+  //   );
+  // };
   renderHeader = () => {
+    const options= {
+      title: 'My Nodes',
+      headerBackground:'transparent',
+      headerTitleStyle:style.titleHeader,
+      headerRight:  (<TouchableOpacity onPress={()=>{this.goToScreen(routeNames.AddNode);}}><Image source={images.ic_add_device} /></TouchableOpacity>)
+    };
     return (
-      <Header
-        containerStyle={style.containerHeader}
-        centerComponent={(
-          <Text style={style.titleHeader}>
-            My Nodes
-          </Text>
-        )}
-        rightComponent={(
-          <TouchableOpacity
-            onPress={() => {
-              this.goToScreen(routeNames.AddNode);
-            }}
-          >
-            <Image source={images.ic_add_device} />
-          </TouchableOpacity>
-        )}
+      <HeaderBar
+        scene={{descriptor:{options}}} 
       />
     );
   };

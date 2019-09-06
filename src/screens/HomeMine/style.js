@@ -34,9 +34,7 @@ const style = StyleSheet.create({
     color: '#8C9A9D',
   },
   titleHeader:{
-    ...TextStyle.bigText,
-    color: '#007280',
-    fontWeight: 'bold',
+    color: '#007280'
   },
   header2:{
     ...TextStyle.normalText,

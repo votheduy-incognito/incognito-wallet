@@ -8,6 +8,7 @@ class Account {
     this.PublicKey = data?.PublicKey;
     this.PublicKeyCheckEncode = data?.PublicKeyCheckEncode;
     this.PublicKeyBytes = data?.PublicKeyBytes;
+    this.BlockProducerKey = data?.BlockProducerKey;
   }
 }
 

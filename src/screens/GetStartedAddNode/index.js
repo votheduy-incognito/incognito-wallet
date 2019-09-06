@@ -16,7 +16,7 @@ import LocalDatabase from '@src/utils/LocalDatabase';
 import styles from './styles';
 
 export const TAG = 'GetStartedAddNode';
-const titleStep = ['Make sure to plug-in the device into AC.','Connect your Node to a Wi-Fi','Scan the code at the base of the device'];
+const titleStep = ['Make sure Node is plugged in.','Connect Node to Wi-Fi','Scan the code at the base of the device'];
 const titleButton = ['Done, next step','Next','Next'];
 
 class GetStartedAddNode extends BaseScreen {
@@ -98,10 +98,11 @@ class GetStartedAddNode extends BaseScreen {
 
   renderContent=()=>{
     const {currentPage,deviceId,currentConnect,errorMessage,loading} = this.state;
+    
     let childView ;
     switch(currentPage){
     case 0:{
-      childView = <Image style={styles.content_step1} source={images.ic_getstarted_device} />; 
+      childView = <Image style={styles.content_step1_image} source={images.ic_getstarted_device} />; 
       break;
     }
     case 1:{
@@ -139,7 +140,7 @@ class GetStartedAddNode extends BaseScreen {
             </Text>
           ):(
             <Text
-              style={[styles.item,styles.text,styles.item_container_input,{ textAlign:'center',paddingBottom:2}]}
+              style={[styles.text,styles.item_container_input,{ textAlign:'center',paddingBottom:2}]}
             >{deviceId??''}
             </Text>
           )}

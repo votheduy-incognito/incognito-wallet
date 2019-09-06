@@ -20,8 +20,8 @@ import { DEVICES } from '@src/constants/miner';
 import VirtualDeviceService from '@src/services/VirtualDeviceService';
 import convert from '@src/utils/convert';
 import common from '@src/constants/common';
-import { scaleInApp } from '@src/styles/TextStyle';
 import format from '@src/utils/format';
+import HeaderBar from '@src/components/HeaderBar/HeaderBar';
 import style from './style';
 
 export const TAG = 'DetailDevice';
@@ -73,14 +73,29 @@ class DetailDevice extends BaseScreen {
     return this.state.isStaked;
   }
 
-  checkAndUpdateInfoVirtualNode =async ()=>{
+  checkAndUpdateInfoVirtualNode = async ()=>{
     const {device} = this.state;
-    const {getAccountByPublicKey,getAccountByName} = this.props;
+    const {getAccountByPublicKey,getAccountByName,getAccountByBlsKey,listAccount} = this.props;
     let account = await getAccountByName(device.accountName());
-    const publicKey = await VirtualDeviceService.getPublicKeyMining(device);
-    if(device.Type == DEVICES.VIRTUAL_TYPE && !_.isEqual(account?.PublicKeyCheckEncode,publicKey)){
-      // const publicKey = await VirtualDeviceService.getPublicKeyMining(device);
-      account = getAccountByPublicKey(publicKey);
+    
+    // with test-node publicKey
+    let keyCompare = await VirtualDeviceService.getPublicKeyMining(device);
+
+    // dev-test
+    // const resultBLS = await VirtualDeviceService.getPublicKeyMining(device);
+    // let keyCompare = resultBLS[0]??'';
+  
+    // const publicKey = '16yUvbgiXUZfwuWafBcXX4oiyYVui57e1oMtEyRCwkHemeqKvf9';
+    // const isRegular = !_.includes(keyCompare,account?.BlockProducerKey);
+    // console.log(TAG,'checkAndUpdateInfoVirtualNode listAccount ',listAccount);
+    console.log(TAG,'checkAndUpdateInfoVirtualNode publicKey ',keyCompare);
+    
+
+    const isRegular = !_.isEqual(account?.PublicKeyCheckEncode,keyCompare);
+    if(device.Type == DEVICES.VIRTUAL_TYPE && isRegular){
+      keyCompare = _.split(keyCompare,':')[1]||keyCompare;
+      console.log(TAG,'checkAndUpdateInfoVirtualNode1111111 publicKey ',keyCompare);
+      account = getAccountByPublicKey(keyCompare);
       console.log(TAG,'checkAndUpdateInfoVirtualNode account ',account);
       !_.isEmpty(account) && await device.saveAccount({name:account.name});
     }
@@ -264,17 +279,34 @@ class DetailDevice extends BaseScreen {
   //     })}
   //   />
   // )}
+  // renderHeader = () => {
+  //   const title = this.titleBar|| 'Details';
+  //   return (
+  //     <Header
+  //       containerStyle={style.containerHeader}
+  //       centerComponent={(
+  //         <Text numberOfLines={1} style={style.titleHeader}>
+  //           {title}
+  //         </Text>
+  //       )}
+  //       leftComponent={imagesVector.ic_back({onPress:this.onPressBack},{paddingLeft:0,paddingRight:scaleInApp(30)})}
+  //     />
+  //   );
+    
+  // };
   renderHeader = () => {
+    const {navigation} = this.props;
     const title = this.titleBar|| 'Details';
+    const options= {
+      title: title,
+      headerBackground:'transparent',
+      headerTitleStyle:style.titleHeader
+    };
     return (
-      <Header
-        containerStyle={style.containerHeader}
-        centerComponent={(
-          <Text numberOfLines={1} style={style.titleHeader}>
-            {title}
-          </Text>
-        )}
-        leftComponent={imagesVector.ic_back({onPress:this.onPressBack},{paddingLeft:0,paddingRight:scaleInApp(30)})}
+      <HeaderBar
+        navigation={navigation}
+        index={1}
+        scene={{descriptor:{options}}} 
       />
     );
   };
@@ -301,7 +333,7 @@ class DetailDevice extends BaseScreen {
     
     this.goToScreen(routeNames.AddStake,{
       accountInfo:{
-        minerAccountName: device.accountName(),
+        minerAccountName:device.accountName(),
         funderAccountName:device.accountName()
       }
     });
@@ -364,25 +396,27 @@ class DetailDevice extends BaseScreen {
         <View style={style.top_container_group}>
           <Text style={style.top_container_title} numberOfLines={1}>{this.productName}</Text>
           <Text style={[style.group2_container_value2,Device.getStyleStatus(device.Status.code)]}>{device.statusMessage()}</Text>
-        </View>  
-        <Button
-          titleStyle={style.group2_container_button_text}
-          buttonStyle={style.group2_container_button}
-          title={stakeTitle}
-          onPress={onClickView( async()=>{
-            const {accountMiner,isStaked} = this.state;
-            if(!isStaked){
-              if(!_.isEmpty(accountMiner)){
-                await this.handlePressStake();
+        </View>
+        {device.Type === DEVICES.VIRTUAL_TYPE && !device.isOffline() && !device.isEarning()? (
+          <Button
+            titleStyle={style.group2_container_button_text}
+            buttonStyle={style.group2_container_button}
+            title={stakeTitle}
+            onPress={onClickView( async()=>{
+              const {accountMiner,isStaked} = this.state;
+              if(!isStaked){
+                if(!_.isEmpty(accountMiner)){
+                  await this.handlePressStake();
+                }else{
+                  this.showToastMessage('None of your keys are linked to this node.Please import the node`s private key');
+                }
               }else{
-                this.showToastMessage('None of your keys are linked to this node.Please import the node`s private key');
-              }
-            }else{
               // udpdate status at local
-              this.IsStaked = false;
-            }
-          })}
-        />
+                this.IsStaked = false;
+              }
+            })}
+          />
+        ):null}
       </TouchableOpacity>
     );
   }
@@ -398,7 +432,7 @@ class DetailDevice extends BaseScreen {
     const bgTop = device.Type === DEVICES.VIRTUAL_TYPE ?images.bg_top_virtual_device:images.bg_top_device;
     const bgRootTop = device.Type === DEVICES.VIRTUAL_TYPE ?0: images.bg_top_detail;
     return (
-      <Container styleRoot={style.container} backgroundTop={{source:bgRootTop,style:[style.imageTop,{backgroundColor:'#01828A'}]}}>
+      <Container styleContainScreen={{paddingHorizontal:0}} styleRoot={style.container} backgroundTop={{source:bgRootTop,style:[style.imageTop,{backgroundColor:'#01828A'}]}}>
         {this.renderHeader()}
         <Image style={style.bg_top} source={bgTop} />
         <DialogLoader loading={loading} />
@@ -470,6 +504,7 @@ class DetailDevice extends BaseScreen {
 DetailDevice.propTypes = {
   getAccountByName:PropTypes.func.isRequired,
   getAccountByPublicKey:PropTypes.func.isRequired,
+  getAccountByBlsKey:PropTypes.func.isRequired,
   wallet:PropTypes.object.isRequired
 };
 
@@ -483,7 +518,8 @@ export default connect(
     getAccountByName: accountSeleclor.getAccountByName(state),
     listTokens:tokenSeleclor.pTokens(state),
     getAccountByPublicKey:accountSeleclor.getAccountByPublicKey(state),
-    token: tokenSeleclor.pTokens(state)
+    getAccountByBlsKey:accountSeleclor.getAccountByBlsKey(state),
+    listAccount: accountSeleclor.listAccount(state)
   }),
   mapDispatch
 )(DetailDevice);

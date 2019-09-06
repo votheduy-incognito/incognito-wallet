@@ -54,6 +54,9 @@ export default class Device {
   isOffline =()=>{
     return this.data.status.code == Device.CODE_OFFLINE || this.data.status.code == Device.CODE_UNKNOWN;
   }
+  isEarning =()=>{
+    return this.data.status.code == Device.CODE_MINING;
+  }
   accountName = () =>{
     return this.data.minerInfo?.account?.name||this.Name;
   }
