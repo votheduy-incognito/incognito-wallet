@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { scaleInApp, screenSize } from '@src/styles/TextStyle';
+import TextStyle, { scaleInApp, screenSize } from '@src/styles/TextStyle';
 import { COLORS, THEME, FONT } from '@src/styles';
 
 export const sizeHeader ={
@@ -10,14 +10,13 @@ export const sizeHeader ={
 const style = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: THEME.header.headerHeight,
+    height: sizeHeader.height,
     alignItems: 'center'
   },
   title: {
-    ...FONT.STYLE.medium,
-    fontSize: 20,
+    ...TextStyle.bigText,
+    ...FONT.STYLE.bold,
     color: COLORS.white,
-    fontWeight: '600'
   },
   left: {
     flex: 1,

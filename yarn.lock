@@ -3810,6 +3810,11 @@ gud@^1.0.0:
   resolved "https://registry.yarnpkg.com/gud/-/gud-1.0.0.tgz#a489581b17e6a70beca9abe3ae57de7a499852c0"
   integrity sha512-zGEOVKFM5sVPPrYs7J5/hYEw2Pof8KCyOwyhG8sAF26mCAeUFAcYPu1mwB7hhpIP29zOIBaDqwuHdLp0jvZXjw==
 
+hammerjs@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/hammerjs/-/hammerjs-2.0.8.tgz#04ef77862cff2bb79d30f7692095930222bf60f1"
+  integrity sha1-BO93hiz/K7edMPdpIJWTAiK/YPE=
+
 handlebars@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.1.2.tgz#b6b37c1ced0306b221e094fc7aca3ec23b131b67"
@@ -4055,9 +4060,9 @@ imurmurhash@^0.1.4:
   resolved "https://registry.yarnpkg.com/imurmurhash/-/imurmurhash-0.1.4.tgz#9218b9b2b928a238b13dc4fb6b6d576f231453ea"
   integrity sha1-khi5srkoojixPcT7a21XbyMUU+o=
 
-"incognito-chain-web-js@git://github.com/incognitochain/incognito-chain-web-js":
+"incognito-chain-web-js@https://github.com/incognitochain/incognito-chain-web-js.git#bls":
   version "1.0.0"
-  resolved "git://github.com/incognitochain/incognito-chain-web-js#87e8e745e83da4f594b5e41b0303892ee9773a69"
+  resolved "https://github.com/incognitochain/incognito-chain-web-js.git#4b7f8cce92d692782aec8d636707cc5dc67695db"
   dependencies:
     acorn "^7.0.0"
     big-integer "^1.6.42"
@@ -7061,14 +7066,15 @@ react-native-firebase@^5.5.4:
     opencollective-postinstall "^2.0.0"
     prop-types "^15.7.2"
 
-react-native-gesture-handler@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.3.0.tgz#d0386f565928ccc1849537f03f2e37fd5f6ad43f"
-  integrity sha512-ASRFIXBuKRvqlmwkWJhV8yP2dTpvcqVrLNpd7FKVBFHYWr6SAxjGyO9Ik8w1lAxDhMlRP2IcJ9p9eq5X2WWeLQ==
+react-native-gesture-handler@^1.1.0:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.4.1.tgz#c38d9e57637b95e221722a79f2bafac62e3aeb21"
+  integrity sha512-Ffcs+SbEbkGaal0CClYL+v7A9y4OA5G5lW01qrzjxaqASp5C8BfnWSKuqYKE00s6bLwE5L4xnlHkG0yIxAtbrQ==
   dependencies:
+    hammerjs "^2.0.8"
     hoist-non-react-statics "^2.3.1"
-    invariant "^2.2.2"
-    prop-types "^15.5.10"
+    invariant "^2.2.4"
+    prop-types "^15.7.2"
 
 react-native-iot-wifi@^1.0.0:
   version "1.0.0"
@@ -7252,7 +7258,7 @@ react-native-vector-icons@^6.5.0:
 
 "react-native-zmq-service@https://github.com/matsatit/RNZmqService.git":
   version "1.0.0"
-  resolved "https://github.com/matsatit/RNZmqService.git#fa147f1ba6039e91cb39a95a73764c913fc95067"
+  resolved "https://github.com/matsatit/RNZmqService.git#9c3dbc5be458c3decf5d8bec0df00f1eb88db242"
 
 react-native@0.59.5:
   version "0.59.5"

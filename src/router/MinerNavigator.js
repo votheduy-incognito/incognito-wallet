@@ -10,7 +10,7 @@ import TextStyle, { scaleInApp } from '@src/styles/TextStyle';
 import { sizeHeader } from '@src/components/HeaderBar/style';
 import { imagesVector } from '@src/assets';
 import AddSelfNode from '@src/screens/AddSelfNode';
-import HeaderBar from '@src/components/HeaderBar/HeaderBar';
+import HeaderBar from '@src/components/HeaderBar';
 import { navigationOptionsHandler } from '@src/utils/router';
 import { THEME } from '@src/styles';
 import GetStartedAddNode from '@src/screens/GetStartedAddNode';
@@ -28,13 +28,13 @@ const GetStaredMineStake = createStackNavigator(
 );
 const MinerNavigator = createStackNavigator(
   {
-    [ROUTE_NAMES.HomeMine]: navigationOptionsHandler(HomeMine, { header: null }),
+    [ROUTE_NAMES.HomeMine]: navigationOptionsHandler(HomeMine,{ header: null }),
     [ROUTE_NAMES.AddDevice]: navigationOptionsHandler(AddDevice, { title: 'Select router' }),
     [ROUTE_NAMES.AddNode]: navigationOptionsHandler(AddNode, { title: 'Add Node' }),
     [ROUTE_NAMES.AddStake]: navigationOptionsHandler(AddStake, { title: 'Stake' }),
     [ROUTE_NAMES.SetupWifiDevice]: navigationOptionsHandler(SetupWifiDevice, { title: 'Setup Wifi' }),
     [ROUTE_NAMES.AddSelfNode]: navigationOptionsHandler(AddSelfNode, { title: 'Virtual Node' }),
-    [ROUTE_NAMES.DetailDevice]: navigationOptionsHandler(DetailDevice, { header: null }),
+    [ROUTE_NAMES.DetailDevice]: navigationOptionsHandler(DetailDevice,{header:null}),
     [ROUTE_NAMES.GetStaredMineStake]: navigationOptionsHandler(GetStaredMineStake, { title: null }),
   },
   {

@@ -254,9 +254,10 @@ class SetupWifiDevice extends BaseScreen {
       }
       if(!_.isEmpty(fetchProductInfo)){
         // create account
-        // console.log(TAG,'handleSubmit fetchData = ',fetchProductInfo);
+        
         let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
-        const {PrivateKey = '',AccountName = '',PaymentAddress = ''} = result;
+        const PrivateKey  = result.PrivateKey;
+        console.log(TAG,'handleSubmit PrivateKey = ',PrivateKey);
         result = await DeviceService.sendPrivateKey(Device.getInstance(addProduct),PrivateKey);
 
         if(!_.isEmpty(result)){

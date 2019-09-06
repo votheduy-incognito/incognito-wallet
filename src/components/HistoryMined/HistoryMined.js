@@ -8,6 +8,7 @@ import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
 import Device from '@src/models/device';
 import _ from 'lodash';
 import tokenData from '@src/constants/tokenData';
+import Util from '@src/utils/Util';
 import styles from './style';
 
 
@@ -63,15 +64,13 @@ class HistoryMined extends React.Component {
       deviceInfo:deviceInfo,
     });
   }
-
-  getImageSymbol = (item)=>{
-
-  }
   
   renderItem=({ item,index })=> {
     const {onPress} = this.props;
-    const {name = '',symbol = '',amount = 0} = item;
-    const {icon = images.ic_device} = this.getData(item)||{};
+    const {name = '',symbol = '',amount = 0,pSymbol=''} = item;
+    const symbolUI = _.isEqual(symbol,'PRV')?symbol:pSymbol;
+    const nameUI = _.isEqual(symbol,'PRV')?name:`Private ${symbol}`;
+    const {icon = images.ic_device} = this.getData(item)??{};
     return (
       <TouchableOpacity
         style={styles.container_item}
@@ -81,8 +80,8 @@ class HistoryMined extends React.Component {
       >
         <Image style={styles.imageLogo} source={icon} />
         <View style={styles.groupLeft}>
-          <Text style={styles.groupLeft_title}>{name}</Text>
-          <Text style={styles.groupRight_title}>{`${amount} ${symbol}`}</Text>
+          <Text style={styles.groupLeft_title}>{nameUI}</Text>
+          <Text style={styles.groupRight_title}>{`${amount} ${symbolUI}`}</Text>
         </View>
         <View style={styles.groupRight}>
           <Text style={styles.groupRight_title2}>earned</Text>
@@ -91,7 +90,8 @@ class HistoryMined extends React.Component {
     );
   }
   getData = (token) => {
-    const additionData = tokenData.DATA[token?.symbol] || tokenData.parse(token);
+    const symbolUI = _.isEqual(token?.symbol,'PRV')?token.symbol:token.pSymbol;
+    const additionData = tokenData.DATA[symbolUI] ?? tokenData.parse(token);
     const { metaData, othertokenData } = token;
     const data = {
       ...additionData,
