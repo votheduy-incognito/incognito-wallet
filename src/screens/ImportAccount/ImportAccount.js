@@ -115,6 +115,7 @@ class ImportAccount extends Component {
                   : (
                     <Field
                       component={InputField}
+                      componentProps={{ autoFocus: true }}
                       name='accountName'
                       placeholder='Account Name'
                       label='Account Name'
