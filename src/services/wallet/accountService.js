@@ -103,6 +103,30 @@ export default class Account {
     await Wallet.resetProgressTx();
     return result;
   }
+  // static async staking(param, fee, candidatePaymentAddress, account, wallet, rewardReceiverPaymentAddress, autoReStaking = false) {
+  //   if (!param || typeof param?.type !== 'number') throw new Error('Invalid staking param');
+  //   if (!candidatePaymentAddress) throw new Error('Missing candidatePaymentAddress');
+  //   if (!account) throw new Error('Missing account');
+  //   if (!wallet) throw new Error('Missing wallet');
+  //   // param: payment address string, amount in Number (miliconstant)
+  //   await Wallet.resetProgressTx();
+  //   const indexAccount = wallet.getAccountIndexByName(account.name);
+  //   const candidateMiningSeedKey = account.BlockProducerKey;
+  //   // create and send constant
+  //   let result;
+  //   try {
+  //     result = await wallet.MasterAccount.child[
+  //       indexAccount
+  //     ].createAndSendStakingTx(param, fee, candidatePaymentAddress, candidateMiningSeedKey, rewardReceiverPaymentAddress, autoReStaking);
+
+  //     // save wallet
+  //     await saveWallet(wallet);
+  //   } catch (e) {
+  //     throw e;
+  //   }
+  //   await Wallet.resetProgressTx();
+  //   return result;
+  // }
 
   static async defragment(amount, fee, isPrivacy, account, wallet) {
     // param: payment address string, amount in Number (miliconstant)

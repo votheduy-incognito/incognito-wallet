@@ -20,11 +20,11 @@ class CreateAccountContainer extends Component {
       
       await reloadAccountList();
 
-      const serializedAccount = accountService.toSerializedAccountObj(account);
+      const serializedAccount = new AccountModel(accountService.toSerializedAccountObj(account));
       console.log('CreateAccount function ---- result =', serializedAccount);
 
       // follow default tokens
-      followDefaultTokens(new AccountModel(serializedAccount));
+      followDefaultTokens(serializedAccount);
 
       return serializedAccount;
     } catch {

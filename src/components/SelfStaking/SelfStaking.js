@@ -105,6 +105,7 @@ class SelfStaking extends Component {
           )
         }
         <StakeValidatorTypeSelector
+          isNotEnoughBalance={isNotEnoughBalance}
           account={funderAccount}
           stakeTypeId={stakeTypeId}
           onChange={this.handleStakeTypeChange}
