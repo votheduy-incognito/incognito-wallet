@@ -2,6 +2,7 @@ import type from '@src/redux/types/token';
 import { accountSeleclor } from '@src/redux/selectors';
 import { getTokenList } from '@src/services/api/token';
 import tokenService from '@src/services/wallet/tokenService';
+import PToken from '@src/models/pToken';
 
 export const setToken = (token = throw new Error('Token object is required')) => ({
   type: type.SET,
@@ -112,7 +113,7 @@ export const getPTokenList = () => async (dispatch) => {
   try {
     const tokens = await getTokenList();
 
-    dispatch(setListPToken(tokens));
+    dispatch(setListPToken(tokens?.filter((t: PToken) => t.verified)));
     
     return tokens;
   } catch (e) {
