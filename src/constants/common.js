@@ -1,14 +1,18 @@
 const CRYPTO_SYMBOL = {
+  PRV: 'PRV',
   BTC: 'BTC',
   ETH: 'ETH',
-  PRV: 'PRV',
-  BNB: 'BNB'
+  BNB: 'BNB',
+  USD: 'USD',
+  KCS: 'KCS'
 };
 
 const TOKEN_SYMBOL = {
   pETH: 'pETH',
   pBTC: 'pBTC',
-  pBNB: 'pBNB'
+  pBNB: 'pBNB',
+  pUSD: 'pUSD',
+  pKCS: 'pKCS'
 };
 
 export default {

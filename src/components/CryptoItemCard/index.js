@@ -53,7 +53,7 @@ class CryptoItemContainer extends Component {
 
     if (!data) return null;
 
-    const fullName = data?.pSymbol ? `Private ${data?.exteralSymbol}` : null;
+    const fullName = data?.pSymbol ? `Private ${data?.exteralSymbol}` : data.name;
 
     const cryptoItemProps = {
       ...this.props,
