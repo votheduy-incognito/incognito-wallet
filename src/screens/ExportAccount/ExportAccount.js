@@ -18,31 +18,41 @@ const ExportItem = ({ label, data, color }) => (
   </CopiableText>
 );
 
+const renderItem = (label, value) => (
+  value
+    ? (
+      <ExportItem
+        label={label}
+        data={value}
+      />
+    )
+    : null
+);
+
 const ExportAccount = ({ account }) => (
   <ScrollView contentContainerStyle={{ minHeight: '100%' }}>
     <View style={styleSheet.container}>
-      <ExportItem
-        label="YOUR INCOGNITO ADDRESS"
-        data={account?.PaymentAddress}
-      />
-      <ExportItem
-        label="PRIVATE KEY"
-        data={account?.PrivateKey}
-      />
-      <ExportItem
-        label="PUBLIC KEY"
-        data={account?.PublicKeyCheckEncode}
-      />
-      <ExportItem
-        label="READONLY KEY"
-        data={account?.ReadonlyKey}
-      />
+      {renderItem('YOUR INCOGNITO ADDRESS', account?.PaymentAddress)}
+      {renderItem('PRIVATE KEY', account?.PrivateKey)}
+      {renderItem('PUBLIC KEY', account?.PublicKeyCheckEncode)}
+      {renderItem('READONLY KEY', account?.ReadonlyKey)}
+      {renderItem('BLOCK PRODUCER KEY', account?.BlockProducerKey)}
     </View>
   </ScrollView>
 );
 
 ExportAccount.propTypes = {
   account: PropTypes.object.isRequired
+};
+
+ExportItem.defaultProps = {
+  color: null
+};
+
+ExportItem.propTypes = {
+  label: PropTypes.string.isRequired,
+  data: PropTypes.string.isRequired,
+  color: PropTypes.string,
 };
 
 export default ExportAccount;

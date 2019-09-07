@@ -1,14 +1,18 @@
 const CRYPTO_SYMBOL = {
+  PRV: 'PRV',
   BTC: 'BTC',
   ETH: 'ETH',
-  PRV: 'PRV',
-  BNB: 'BNB'
+  BNB: 'BNB',
+  USD: 'USD',
+  KCS: 'KCS'
 };
 
 const TOKEN_SYMBOL = {
   pETH: 'pETH',
   pBTC: 'pBTC',
-  pBNB: 'pBNB'
+  pBNB: 'pBNB',
+  pUSD: 'pUSD',
+  pKCS: 'pKCS'
 };
 
 export default {
@@ -39,9 +43,13 @@ export default {
     DEPOSIT: 1,
     WITHDRAW: 2 
   },
-  PRIVATE_TOKEN_HISTORY_CURRENCY_TYPE: {
+  PRIVATE_TOKEN_CURRENCY_TYPE: {
     ETH: 1,
+    BTC: 2,
     ERC20: 3,
+    BNB: 4,
+    BNB_BEP2: 5,
+    USD: 6
   },
   PTOKEN_TYPE: {
     COIN: 0,

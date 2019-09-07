@@ -3,8 +3,9 @@ import LoadingTx from '@src/components/LoadingTx';
 import { Field, change, isValid, formValueSelector } from 'redux-form';
 import { createForm, InputField, validator } from '@src/components/core/reduxForm';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { withNavigation } from 'react-navigation';
 import { CONSTANT_COMMONS } from '@src/constants';
-import ROUTE_NAMES from '@src/router/routeNames';
 import { getEstimateFeeForSendingTokenService } from '@src/services/wallet/RpcClientService';
 import Token from '@src/services/wallet/tokenService';
 import convert from '@src/utils/convert';
@@ -12,6 +13,7 @@ import formatUtil from '@src/utils/format';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { setWallet } from '@src/redux/actions/wallet';
 import tokenData from '@src/constants/tokenData';
 import styleSheet from './style';
 
@@ -52,9 +54,9 @@ class AddInternalToken extends Component {
     }
   }
 
-  goHome = () => {
+  goBack = () => {
     const { navigation } = this.props;
-    navigation.navigate(ROUTE_NAMES.RootApp);
+    navigation?.popToTop();
   };
 
   // estimate fee when user update isPrivacy or amount, and toAddress is not null
@@ -91,7 +93,7 @@ class AddInternalToken extends Component {
   };
 
   handleCreateSendToken = async (values) => {
-    const { account, wallet } = this.props;
+    const { account, wallet, setWallet } = this.props;
 
     const { name, symbol, amount, fee } = values;
 
@@ -115,6 +117,10 @@ class AddInternalToken extends Component {
       if (res.txId) {
         Toast.showSuccess('Create token successfully');
 
+        // update new wallet to store
+        setWallet(wallet);
+
+        this.goBack();
       } else {
         Toast.showError('Something went wrong. Please refresh the screen.');
       }
@@ -230,6 +236,7 @@ AddInternalToken.propTypes = {
   wallet: PropTypes.object.isRequired,
   account: PropTypes.object.isRequired,
   rfChange: PropTypes.func.isRequired,
+  setWallet: PropTypes.func.isRequired,
   isFormValid: PropTypes.bool,
   name: PropTypes.string,
   symbol: PropTypes.string,
@@ -237,7 +244,8 @@ AddInternalToken.propTypes = {
 };
 
 const mapDispatch = {
-  rfChange: change
+  rfChange: change,
+  setWallet
 };
 
 const mapState = state => ({
@@ -248,4 +256,7 @@ const mapState = state => ({
 });
 
 
-export default connect(mapState, mapDispatch)(AddInternalToken);
+export default compose(
+  connect(mapState, mapDispatch),
+  withNavigation
+)(AddInternalToken);

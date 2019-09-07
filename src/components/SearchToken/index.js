@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { withNavigation } from 'react-navigation';
 import { differenceBy } from 'lodash';
 import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
 import accountService from '@src/services/wallet/accountService';
@@ -77,6 +79,12 @@ export class SearchTokenContainer extends PureComponent {
     }
   };
 
+  goBack = () => {
+    const { navigation } = this.props;
+
+    navigation?.pop();
+  }
+
   handleAddFollowToken = async (tokenIds: Array) => {
     try {
       const { pTokens, account, wallet, setWallet } = this.props;
@@ -99,6 +107,8 @@ export class SearchTokenContainer extends PureComponent {
 
       // update new wallet to store
       setWallet(wallet);
+
+      this.goBack();
     } catch {
       Toast.showError(
         'Something went wrong. Please tap the Add button again.'
@@ -169,6 +179,10 @@ SearchTokenContainer.propTypes = {
   account: PropTypes.object.isRequired,
   wallet: PropTypes.object.isRequired,
   setWallet: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchTokenContainer);
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withNavigation
+)(SearchTokenContainer);

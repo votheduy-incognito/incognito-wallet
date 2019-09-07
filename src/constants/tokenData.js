@@ -15,7 +15,7 @@ const SYMBOL = {
   pBTC: CONSTANT_COMMONS.TOKEN_SYMBOL.pBTC,
   pBNB:  CONSTANT_COMMONS.TOKEN_SYMBOL.pBNB,
   MAIN_CRYPTO_CURRENCY: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
-  pKCS: 'pKCS'
+  pKCS: CONSTANT_COMMONS.TOKEN_SYMBOL.pKCS
 };
 
 const DATA = {
@@ -41,7 +41,6 @@ const DATA = {
 };
 
 const parse = token => ({
-  fullName: token?.name,
   typeName: 'Custom token',
   symbol: token?.symbol,
   name: token?.name,
