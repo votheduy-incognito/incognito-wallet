@@ -65,6 +65,9 @@ Receipt.propTypes = {
     amountUnit: PropTypes.string,
     fee: PropTypes.number,
     feeUnit: PropTypes.string,
+    pDecimals: PropTypes.number,
+    decimals: PropTypes.number,
+    title: PropTypes.string,
   })
 };
 
