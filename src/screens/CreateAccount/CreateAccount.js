@@ -28,12 +28,17 @@ const CreateAccount = ({ navigation, accountList, createAccount }) => {
           _account => lowerCase(_account.name) === lowerCase(accountName)
         )
       ) {
-        throw new Error(
+        Toast.showError(
           'You already have an account with this name. Please try another.'
         );
+        return;
       }
 
       const account = await createAccount(accountName);
+
+      if (!account) {
+        throw new Error('Account was not created! Please try again.');
+      }
 
       // switch to this account
       const onSwitchAccount = navigation?.getParam('onSwitchAccount');
@@ -43,7 +48,7 @@ const CreateAccount = ({ navigation, accountList, createAccount }) => {
 
       goBack();
     } catch (e) {
-      Toast.showError('You already have an account with this name. Please try another.');
+      Toast.showError('Account was not created! Please try again.');
     }
   };
 

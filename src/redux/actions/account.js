@@ -2,7 +2,7 @@ import type from '@src/redux/types/account';
 import accountService from '@src/services/wallet/accountService';
 import { getPassphrase } from '@src/services/wallet/passwordService';
 import walletType from '@src/redux/types/wallet';
-import tokenSelector  from '../selectors/token';
+import { tokenSeleclor }  from '../selectors';
 import { setListToken, getBalance as getTokenBalance } from './token';
 
 
@@ -67,8 +67,10 @@ export const setDefaultAccount = account => {
   });
 };
 
-export const getBalance = (account = throw new Error('Account object is required')) => async (dispatch, getState) => {
+export const getBalance = (account) => async (dispatch, getState) => {
   try {
+    if (!account) throw new Error('Account object is required');
+
     dispatch(getBalanceStart(account?.name));
 
     const wallet = getState()?.wallet;
@@ -85,7 +87,7 @@ export const getBalance = (account = throw new Error('Account object is required
     
     return balance;
   } catch (e) {
-    dispatch(setAccount({
+    account && dispatch(setAccount({
       ...account,
       value: null
     }));
@@ -119,7 +121,7 @@ export const followDefaultTokens = (account = throw new Error('Account object is
   try {
     const state = getState();
     const wallet = state?.wallet;
-    const pTokens = pTokenList || tokenSelector.pTokens(state);  
+    const pTokens = pTokenList || tokenSeleclor.pTokens(state);  
 
     if (!wallet) {
       throw new Error('Wallet is not exist');
