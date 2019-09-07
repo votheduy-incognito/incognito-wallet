@@ -11,6 +11,7 @@ export default StyleSheet.create({
     width: UTILS.deviceWidth(),
   },
   baseContainer: {
+    flex: 1,
     width: '100%',
     alignItems: 'center',
     marginTop: 10
@@ -34,7 +35,12 @@ export default StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 321,
+    flex: 1,
+  },
+  content: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
   },
   button: {},
   buttonText: {},
