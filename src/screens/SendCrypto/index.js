@@ -42,10 +42,13 @@ class SendCryptoContainer extends Component {
 
       if (res.txId) {
         const receiptData = {
+          title: 'Sent successfully',
           txId: res.txId,
           toAddress,
           fromAddress,
           amount: originalAmount || 0,
+          pDecimals: selectedPrivacy.pDecimals,
+          decimals: selectedPrivacy.decimals,
           amountUnit: selectedPrivacy?.symbol,
           time: formatUtil.toMiliSecond(res.lockTime),
           fee: originalFee,
