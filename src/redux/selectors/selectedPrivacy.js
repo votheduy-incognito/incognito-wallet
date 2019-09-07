@@ -15,10 +15,10 @@ export const getPrivacyDataBySymbol = createSelector(
     let internalTokenData = _followed.find(t => t?.symbol === pSymbol);
 
     if (!internalTokenData) {
-      internalTokenData = _internalTokens.find(t => t?.symbol === pSymbol);
+      internalTokenData = _internalTokens?.find(t => t?.symbol === pSymbol);
     }
 
-    const pTokenData = _pTokens.find(t => t?.pSymbol === pSymbol);
+    const pTokenData = _pTokens?.find(t => t?.pSymbol === pSymbol);
 
     return new SelectedPrivacy(account, internalTokenData, pTokenData);
   })

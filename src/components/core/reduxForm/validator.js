@@ -1,5 +1,6 @@
 import walletValidator from 'wallet-address-validator';
 import accountService from '@src/services/wallet/accountService';
+import { CONSTANT_COMMONS } from '@src/constants';
 
 const messageHanlder = (message, fieldValue, inputValue) => {
   if (typeof message === 'function') {
@@ -45,9 +46,12 @@ const bnbAddress = (value, { message } = {}) => value => {
   return undefined;
 };
 
-const bitcoinWithdrawMinAmount = largerThan(0.0005, { message: 'Amount of Bitcoin must be larger than 0.0005 BTC' });
+const combinedAmount = [
+  required(),
+  number(),
+  minValue(CONSTANT_COMMONS.MIN_AMOUNT_REQUIRED, { message: `Please enter an amount greater than ${CONSTANT_COMMONS.MIN_AMOUNT_REQUIRED}.` })
+];
 
-const combinedAmount = [required(), number(), largerThan(0, { message: 'Please enter an amount greater than 0.' })];
 const combinedIncognitoAddress = [required(), incognitoAddress()];
 const combinedETHAddress = [required(), ethAddress()];
 const combinedBTCAddress = [required(), btcAddress()];
@@ -67,7 +71,6 @@ export default {
   combinedBNBAddress,
   combinedETHAddress,
   combinedBTCAddress,
-  bitcoinWithdrawMinAmount,
   ethAddress,
   btcAddress,
   notInList

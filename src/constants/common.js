@@ -15,6 +15,10 @@ const TOKEN_SYMBOL = {
   pKCS: 'pKCS'
 };
 
+const AMOUNT_MAX_FRACTION_DIGITS = 4;
+
+const MIN_AMOUNT_REQUIRED = 1/10**AMOUNT_MAX_FRACTION_DIGITS;
+
 export default {
   // old varibles, maybe remove later
   STAKING_TYPES: {
@@ -27,6 +31,9 @@ export default {
   DEFRAGMENT_DEFAULT_AMOUNT: 1,
   DEFRAGMENT_MIN_FEE: 0.01,
   DEFRAGMENT_SET_DEFAULT_PRIVACY: true,
+
+  MIN_AMOUNT_REQUIRED,
+  AMOUNT_MAX_FRACTION_DIGITS,
 
   // for new app
   CRYPTO_SYMBOL,
