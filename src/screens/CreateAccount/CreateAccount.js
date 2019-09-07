@@ -38,7 +38,7 @@ const CreateAccount = ({ navigation, accountList, createAccount }) => {
       // switch to this account
       const onSwitchAccount = navigation?.getParam('onSwitchAccount');
       if (typeof onSwitchAccount === 'function') {
-        onSwitchAccount(new AccountModel(account));
+        onSwitchAccount(account);
       }
 
       goBack();
