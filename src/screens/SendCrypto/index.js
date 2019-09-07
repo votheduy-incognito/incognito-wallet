@@ -102,6 +102,7 @@ class SendCryptoContainer extends Component {
 
       if (res.txId) {
         const receiptData = {
+          title: 'Sent successfully',
           txId: res.txId,
           toAddress,
           fromAddress,
@@ -111,6 +112,7 @@ class SendCryptoContainer extends Component {
           fee: originalFee,
           feeUnit,
           pDecimals: selectedPrivacy?.pDecimals,
+          decimals: selectedPrivacy.decimals,
         };
 
         this.setState({ receiptData });
