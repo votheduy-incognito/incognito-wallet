@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import memoize from 'memoize-one';
+import { CONSTANT_COMMONS } from '@src/constants';
 import { defaultAccount } from './account';
 import { followed, pTokens, internalTokens } from './token';
 
@@ -15,7 +16,8 @@ export const getPrivacyDataBySymbol = createSelector(
     let internalTokenData = _followed.find(t => t?.symbol === pSymbol);
 
     if (!internalTokenData) {
-      internalTokenData = _internalTokens?.find(t => t?.symbol === pSymbol);
+      // 'PRV' is not a token
+      internalTokenData = _internalTokens?.find(t => t?.symbol !== CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV && t?.symbol === pSymbol);
     }
 
     const pTokenData = _pTokens?.find(t => t?.pSymbol === pSymbol);
