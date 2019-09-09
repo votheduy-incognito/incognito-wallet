@@ -31,4 +31,13 @@ public class GomobileModule extends ReactContextBaseJavaModule {
             successCallback.invoke(e, null);
         }
     }
+
+    @ReactMethod
+    public void generateBLSKeyPairFromSeed(String data, Callback successCallback) {
+        try {
+            successCallback.invoke(null, Gomobile.generateBLSKeyPairFromSeed(data));
+        } catch(Exception e) {
+            successCallback.invoke(e, null);
+        }
+    }
 }
