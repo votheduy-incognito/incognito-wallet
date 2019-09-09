@@ -105,4 +105,7 @@ export const accountSection = StyleSheet.create({
   indicatorActive: {
     backgroundColor: COLORS.primary
   },
+  swipeoutButton: {
+    backgroundColor: COLORS.transparent
+  }
 });
