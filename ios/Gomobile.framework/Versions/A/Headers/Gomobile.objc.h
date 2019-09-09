@@ -13,7 +13,29 @@
 
 FOUNDATION_EXPORT long GomobileAdd(long a, long b);
 
+/**
+ * args {
+     "values": valueStrs,
+     "rands": randStrs
+   }
+convert object to JSON string (JSON.stringify)
+ */
 FOUNDATION_EXPORT NSString* _Nonnull GomobileAggregatedRangeProve(NSString* _Nullable args);
+
+/**
+ * GenerateBLSKeyPairFromSeed generates BLS key pair from seed
+ */
+FOUNDATION_EXPORT NSString* _Nonnull GomobileGenerateBLSKeyPairFromSeed(NSString* _Nullable args);
+
+/**
+ * args {
+     "commitments": commitments,   // list of bytes arrays
+     "rand": rand,					// string
+		"indexiszero" 					//number
+   }
+convert object to JSON string (JSON.stringify)
+ */
+FOUNDATION_EXPORT NSString* _Nonnull GomobileOneOutOfManyProve(NSString* _Nullable args, NSError* _Nullable* _Nullable error);
 
 FOUNDATION_EXPORT NSString* _Nonnull GomobileSayHello(NSString* _Nullable i);
 
