@@ -14,10 +14,12 @@ class Base extends Component {
           style={styles.image}
           resizeMode='contain'
         />
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.desc}>{desc}</Text>   
-        <Indicator number={indicatorNumber} activeIndex={indicator} style={styles.indicator} />
-        <Button title={buttonText} onPress={onPress} style={[styles.button, buttonStyle]} />
+        <View style={styles.content}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.desc}>{desc}</Text>   
+          <Indicator number={indicatorNumber} activeIndex={indicator} style={styles.indicator} />
+          <Button title={buttonText} onPress={onPress} style={[styles.button, buttonStyle]} />
+        </View>
       </View>
     );
   }

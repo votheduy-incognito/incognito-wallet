@@ -20,7 +20,7 @@ const createItem = (account, onSwitch, onExport, isActive) => (
       <FIcons name={isActive ? 'user-check' : 'user'} size={20} color={isActive ? COLORS.primary : COLORS.lightGrey4} />
       <Text style={isActive ? accountSection.nameTextActive : accountSection.nameText}>{account?.name}</Text>
     </TouchableOpacity>
-    <TouchableOpacity style={accountSection.actionBtn} onPress={onExport}>
+    <TouchableOpacity style={accountSection.actionBtn} onPress={() => onExport(account)}>
       <Icons name='key' size={20} color={COLORS.lightGrey3} />
     </TouchableOpacity>
   </View>
@@ -38,8 +38,8 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAcc
     }
   };
 
-  const handleExportKey = () => {
-    navigation.navigate(ROUTE_NAMES.ExportAccount);
+  const handleExportKey = account => {
+    navigation.navigate(ROUTE_NAMES.ExportAccount, { account });
   };
 
   const handleImport = () => {

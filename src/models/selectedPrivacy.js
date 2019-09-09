@@ -1,24 +1,20 @@
-import tokenData from '@src/constants/tokenData';
 import { CONSTANT_COMMONS } from '@src/constants';
 import PToken from './pToken';
 
 class SelectedPrivacy {
   constructor(account = {}, token = {}, pTokenData: PToken = {}) {
-    const symbol = token.symbol || tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY;
-    const name = pTokenData.name || token.name || tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY;
-
-    this.amount = token.amount ?? account.value || 0;
+    this.isToken = !!token.id;
+    this.symbol = this.isToken ? token.symbol : CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
+    this.name = this.isToken ? (pTokenData.name || token.name) : CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
+    this.amount = (this.isToken ? token.amount : account.value) || 0;
     this.tokenId = token.id;
     this.contractId = pTokenData.contractId;
-    this.isToken = !!token.id;
-    this.isMainCrypto = !token.id;
+    this.isMainCrypto = !this.isToken;
     this.isPToken = !!pTokenData.pSymbol;
-    this.decimals = this.isMainCrypto ? CONSTANT_COMMONS.DECIMALS[symbol] : pTokenData.decimals;
-    this.pDecimals = this.isMainCrypto ? CONSTANT_COMMONS.DECIMALS[symbol] : pTokenData.pDecimals;
-    this.symbol = symbol;
+    this.decimals = this.isMainCrypto ? CONSTANT_COMMONS.DECIMALS[this.symbol] : pTokenData.decimals;
+    this.pDecimals = this.isMainCrypto ? CONSTANT_COMMONS.DECIMALS[this.symbol] : pTokenData.pDecimals;
     this.currencyType = pTokenData.currencyType;
     this.externalSymbol = pTokenData.symbol;
-    this.name = name;
     this.paymentAddress = account.PaymentAddress;
     this.isWithdrawable = this.isPToken;
     this.isDeposable = this.isPToken;

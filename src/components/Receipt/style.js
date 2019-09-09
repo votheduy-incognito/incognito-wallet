@@ -44,6 +44,7 @@ export default StyleSheet.create({
     textAlign: 'right'
   },
   valueText: {
+    flex: 1,
     color: COLORS.dark1,
     fontSize: 15,
     marginVertical: 2,

@@ -6,10 +6,10 @@ import PropTypes from 'prop-types';
 import { CONSTANT_COMMONS } from '@src/constants';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { accountSeleclor } from '@src/redux/selectors';
+import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import tokenData from '@src/constants/tokenData';
 
-const normalizeData = histories =>
+const normalizeData = (histories, decimals, pDecimals) =>
   histories &&
   histories.map(h => ({
     id: h?.txID,
@@ -18,7 +18,9 @@ const normalizeData = histories =>
     toAddress: h?.receivers[0],
     amount: h?.amount,
     symbol: tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY,
-    status: h?.status
+    status: h?.status,
+    decimals,
+    pDecimals
   }));
 
 class MainCryptoHistory extends Component {
@@ -92,8 +94,9 @@ class MainCryptoHistory extends Component {
 
   render() {
     const { isLoading, histories } = this.state;
+    const { selectedPrivacy } = this.props;
 
-    if (isLoading) {
+    if (isLoading || !selectedPrivacy) {
       return <LoadingContainer />;
     }
 
@@ -109,7 +112,7 @@ class MainCryptoHistory extends Component {
           />
         )}
       >
-        <HistoryList histories={normalizeData(histories)} />
+        <HistoryList histories={normalizeData(histories, selectedPrivacy?.decimals, selectedPrivacy?.pDecimals)} />
       </ScrollView>
     );
   }
@@ -118,6 +121,7 @@ class MainCryptoHistory extends Component {
 const mapState = state => ({
   wallet: state.wallet,
   defaultAccount: accountSeleclor.defaultAccount(state),
+  selectedPrivacy: selectedPrivacySeleclor.selectedPrivacy(state),
 });
 
 MainCryptoHistory.defaultProps = {
@@ -129,6 +133,7 @@ MainCryptoHistory.propTypes = {
   defaultAccount: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
   onLoad: PropTypes.func,
+  selectedPrivacy: PropTypes.object,
 };
 
 export default connect(mapState)(MainCryptoHistory);

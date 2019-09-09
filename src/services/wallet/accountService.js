@@ -181,18 +181,17 @@ export default class Account {
   }
 
   static checkPaymentAddress(paymentAddrStr) {
-    let key;
     try {
-      key = KeyWallet.base58CheckDeserialize(paymentAddrStr);
+      const key = KeyWallet.base58CheckDeserialize(paymentAddrStr);
+      const paymentAddressObj = key?.KeySet?.PaymentAddress || {};
+      if (paymentAddressObj.Pk?.length === 33 && paymentAddressObj.Tk?.length === 33) {
+        return true;
+      }
     } catch (e) {
       return false;
     }
 
-    if (key.KeySet.PaymentAddress === null) {
-      return false;
-    }
-
-    return true;
+    return false;
   }
 
   static async getBalance(account, wallet) {

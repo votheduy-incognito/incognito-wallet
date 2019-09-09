@@ -16,7 +16,7 @@ class Wizard extends Component {
       {
         index: 0,
         title: 'Turn on privacy mode',
-        desc: 'Send, receive and store your crypto assets with total privacy. No one can view your balances or track your activity.',
+        desc: 'Send, receive and store your crypto assets with total privacy. No one can view your balances or track your activity. ',
         image: require('@src/assets/images/wizard/privacy_mode.png'),
         buttonText: 'Next',
         onPress: this.handleNext,
