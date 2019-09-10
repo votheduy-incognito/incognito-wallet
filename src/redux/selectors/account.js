@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { memoize } from 'lodash';
+import _ , { memoize } from 'lodash';
 
 export const isGettingBalance = state => state?.account?.isGettingBalance;
 export const defaultAccountName = state => state?.account?.defaultAccountName;
@@ -9,7 +9,7 @@ export const defaultAccount = createSelector(
   defaultAccountName,
   (list, defaultName) => {
     let account = list?.find(account => account?.name === defaultName);
-    if (!account?.name) {
+    if (_.isEmpty(account?.name)) {
       console.warn(`Can not get account ${account?.name}, fallback to first account (default account)`);
       account = list && list[0]; 
     }

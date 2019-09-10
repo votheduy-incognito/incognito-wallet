@@ -107,6 +107,7 @@ export async function loadHistoryByAccount(wallet, accountName) {
 export async function updateStatusHistory(wallet) {
   console.log('UPDATING HISTORY STATUS....');
   await wallet.updateStatusHistory();
+  console.log('UPDATING HISTORY STATUS....DONE');
   await saveWallet(wallet);
   // wallet.save(await getPassphrase());
 }
