@@ -21,6 +21,7 @@ const getStatusText = (status, currencyType) => {
 class History {
   static parsePrivateTokenFromApi(data = {}) {
     return {
+      id: data?.ID,
       address: data.Address,
       updatedAt: data.UpdatedAt,
       addressType: data.AddressType,
@@ -33,6 +34,7 @@ class History {
       incognitoAmount: data.IncognitoAmount,
       incognitoTx: data.IncognitoTx,
       outsideChainTx: data.OutsideChainTx,
+      cancelable: data.Status === 0
     };
   }
 }

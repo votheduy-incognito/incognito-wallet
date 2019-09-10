@@ -13,3 +13,13 @@ export const getpTokenHistory = ({ paymentAddress, tokenId }) => {
     });
   });
 };
+
+export const removeHistory = ({ historyId, currencyType }) => {
+  if (typeof historyId !== 'number' && !Number.isFinite(historyId)) return throw new Error('Invalid historyId');
+  if (typeof currencyType !== 'number' && !Number.isFinite(currencyType)) return throw new Error('Invalid currencyType');
+
+  return http.post('eta/remove', {
+    CurrencyType: currencyType,
+    ID: historyId
+  });
+};
