@@ -64,7 +64,7 @@ class AddNode extends BaseScreen {
   }
 
   handleItemClick = (index) => {
-    this.goToScreen(index ===0?routeNames.AddDevice:routeNames.AddSelfNode);
+    this.goToScreen(index ===0?routeNames.GetStaredAddNode:routeNames.AddSelfNode);
   };
 
   renderListActions = () => {

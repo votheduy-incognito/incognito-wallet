@@ -22,7 +22,7 @@ const normalizeData = (histories, decimals, pDecimals) =>
     decimals,
     pDecimals
   }));
-
+const TAG = 'MainCryptoHistory';
 class MainCryptoHistory extends Component {
   constructor() {
     super();
@@ -48,20 +48,19 @@ class MainCryptoHistory extends Component {
     const { defaultAccount: { name } = {} } = this.props;
     const { defaultAccount: { name: prevName } = {} } = prevProps;
     if (prevName !== name) {
-      this.this.handleLoadHistory();
+      this.handleLoadHistory();
     }
   }
 
   handleLoadHistory = async () => {
-    try {
-      this.setState({ isLoading: true });
-      const { defaultAccount: { name } = {}, wallet } = this.props;
-      const histories = await this.loadAccountHistory(wallet, name);
+    console.log(TAG,'handleLoadHistory begin');
+    const { histories } = this.state;
+    this.setState({ isLoading: true });
+    const { defaultAccount: { name } = {}, wallet } = this.props;
+    let historiesNew = await this.loadAccountHistory(wallet, name).catch(console.log)||histories;
 
-      this.setState({ histories });
-    } finally {
-      this.setState({ isLoading: false });
-    }
+    this.setState({ histories:historiesNew,isLoading: false });
+    console.log(TAG,'handleLoadHistory end');
   }
 
   loadAccountHistory = async (wallet, accountName) => {
@@ -73,9 +72,9 @@ class MainCryptoHistory extends Component {
       if (!accountName) {
         throw new Error('Account is not exist to load history');
       }
-
+      console.log(TAG,'loadAccountHistory begin');
       const histories = await loadHistoryByAccount(wallet, accountName);
-
+      console.log(TAG,'loadAccountHistory end');
       return histories;
     } catch {
       Toast.showError('Something went wrong. Please refresh the screen.');

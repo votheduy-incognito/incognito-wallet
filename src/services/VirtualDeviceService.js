@@ -14,6 +14,17 @@ const DATA_INFO = [ {'status':'offline', 'message':'ready','code':DEVICE_STATUS.
   {'status':'notmining', 'message':'ready','code':DEVICE_STATUS.CODE_START}];
 const timeout = 8;
 export const LIST_ACTION={
+  GET_PUBLIC_KEY_ROLE:{
+    key:'getpublickeyrole',
+    data:(params=[])=>{
+      return {
+        'jsonrpc': '1.0',
+        'method': 'getpublickeyrole',
+        'params': params,
+        'id': 1
+      };
+    }
+  },
   GET_PRIVACY_CUSTOM_TOKEN:{
     key:'listprivacycustomtoken',
     data:{
@@ -89,7 +100,35 @@ export default class VirtualDeviceService {
       
         console.log(TAG,'getPublicKeyMining result',response);
         const {Result=''} = response;
-        return Result;
+        let keyCompare = Result[0]??'';
+  
+        keyCompare = _.split(keyCompare,':')[1]||keyCompare;
+        return keyCompare;
+      }
+    } catch (error) {
+      console.log(TAG,'getPublicKeyMining error',error);
+    }
+    return '';
+  }
+  
+  static getPublicKeyRole = async(device:Device)=>{
+    try {
+      let apiURL = VirtualDeviceService.buildURL(device);
+      if(!_.isEmpty(apiURL)){
+        let blsKey = await VirtualDeviceService.getPublicKeyMining(device).catch(err=>{
+          console.log(TAG,'getPublicKeyRole getPublicKeyMining error');
+        })||'';
+
+        if(!_.isEmpty(blsKey)){
+
+          apiURL = `${apiURL}/${LIST_ACTION.GET_PUBLIC_KEY_ROLE.key}`;
+          const buildParams = LIST_ACTION.GET_PUBLIC_KEY_ROLE.data([`bls:${blsKey}`]);
+          const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),3);
+      
+          console.log(TAG,'getPublicKeyRole result',response);
+          const {Result=''} = response;
+          return Result;
+        }
       }
     } catch (error) {
       console.log(TAG,'getPublicKeyMining error',error);

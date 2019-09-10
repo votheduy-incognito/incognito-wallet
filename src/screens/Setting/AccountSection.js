@@ -11,6 +11,7 @@ import MdIcons from 'react-native-vector-icons/MaterialIcons';
 import ROUTE_NAMES from '@src/router/routeNames';
 import { setDefaultAccount, reloadAccountFollowingToken, getBalance as getAccountBalance, removeAccount } from '@src/redux/actions/account';
 import { COLORS } from '@src/styles';
+import { onClickView } from '@src/utils/ViewUtil';
 import Section from './Section';
 import { accountSection } from './style';
 
@@ -36,7 +37,7 @@ const createItem = (account, onSwitch, onExport, onDelete, isActive) => (
 
 
 const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAccount, reloadAccountFollowingToken, getAccountBalance, removeAccount }) => {
-  const onHandleSwitchAccount = async account => {
+  const onHandleSwitchAccount = onClickView(async account => {
     try {
       setDefaultAccount(account);
       await getAccountBalance(account);
@@ -44,7 +45,7 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAcc
     } catch {
       console.warn('Switched account successfully, but can not load account details, please reload manually');
     }
-  };
+  });
 
   const handleExportKey = account => {
     navigation.navigate(ROUTE_NAMES.ExportAccount, { account });
