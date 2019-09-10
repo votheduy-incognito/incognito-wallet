@@ -5,6 +5,7 @@ import {
   Text,
   View
 } from '@src/components/core';
+import Swipeout from 'react-native-swipeout';
 import { ConfirmedTx, SuccessTx, FailedTx } from '@src/services/wallet/WalletService';
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
@@ -92,6 +93,26 @@ const getTypeData = type => {
 //   }
 // };
 
+const HistoryItemWrapper = ({ history, onCancelEtaHistory, ...otherProps }) => {
+  const component = <HistoryItem history={history} {...otherProps} />;
+  if (history?.cancelable) {
+    return (
+      <Swipeout
+        style={{
+          backgroundColor: 'transparent'
+        }}
+        right={[
+          { text: 'Cancel', backgroundColor: COLORS.red, onPress: () => onCancelEtaHistory(history) }
+        ]}
+      >
+        {component}
+      </Swipeout>
+    );
+  }
+
+  return component;
+};
+
 const HistoryItem = ({ history, divider }) => {
   if (!history) {
     return null;
@@ -160,14 +181,14 @@ const EmptyHistory = ({ actionButton }) => (
   </Container>
 );
 
-const HistoryList = ({ histories, actionButton }) => (
+const HistoryList = ({ histories, actionButton, onCancelEtaHistory }) => (
   histories && histories.length
     ? (
       <Container style={styleSheet.container}>
         <View style={styleSheet.content}>
           {
             histories.map((history, index) => (
-              <HistoryItem key={history.id} history={history} divider={index < (histories.length - 1)} />
+              <HistoryItemWrapper key={history.id} history={history} divider={index < (histories.length - 1)} onCancelEtaHistory={onCancelEtaHistory} />
             ))
           }
         </View>
@@ -186,6 +207,7 @@ HistoryItem.defaultProps = {
     fromAddress: null,
     toAddress: null,
     statusCode: null,
+    status: null,
   },
   divider: false
 };
@@ -200,18 +222,24 @@ HistoryItem.propTypes = {
     fromAddress: PropTypes.string, 
     toAddress: PropTypes.string, 
     statusCode: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    cancelable: PropTypes.bool,
+    pDecimals: PropTypes.number,
+    requestedAmount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    status: PropTypes.string,
   }),
   divider: PropTypes.bool,
 };
 
 HistoryList.defaultProps = {
   histories: null,
-  actionButton: null
+  actionButton: null,
+  onCancelEtaHistory: null
 };
 
 HistoryList.propTypes = {
   histories: PropTypes.array,
-  actionButton: PropTypes.element
+  actionButton: PropTypes.element,
+  onCancelEtaHistory: PropTypes.func
 };
 
 EmptyHistory.defaultProps = {

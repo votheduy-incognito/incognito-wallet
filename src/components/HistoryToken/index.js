@@ -7,7 +7,7 @@ import { ScrollView, Toast, RefreshControl, Button } from '@src/components/core'
 import HistoryList from '@src/components/HistoryList';
 import LoadingContainer from '@src/components/LoadingContainer';
 import tokenService from '@src/services/wallet/tokenService';
-import { getpTokenHistory } from '@src/services/api/history';
+import { getpTokenHistory, removeHistory } from '@src/services/api/history';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { CONSTANT_COMMONS } from '@src/constants';
 import ROUTE_NAMES from '@src/router/routeNames';
@@ -15,9 +15,9 @@ import ROUTE_NAMES from '@src/router/routeNames';
 const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, decimals, pDecimals) => {
   const data = [];
 
-  historiesFromApi && historiesFromApi.forEach((h, index) => {
+  historiesFromApi && historiesFromApi.forEach((h) => {
     data.push({
-      id: h?.outsideChainTx || index,
+      id: h?.id,
       time: h?.updatedAt,
       type: h?.addressType,
       toAddress: h?.userPaymentAddress,
@@ -28,7 +28,9 @@ const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, dec
       decimals,
       pDecimals,
       status: h?.statusText,
-      statusCode: h?.status
+      statusCode: h?.status,
+      cancelable: h?.cancelable,
+      currencyType: h?.currencyType
     });
   });
 
@@ -77,6 +79,17 @@ class HistoryTokenContainer extends Component {
 
     if (token && (token?.id !== prevToken?.id)) {
       this.handleLoadHistory();
+    }
+  }
+
+  handleCancelEtaHistory = async history => {
+    try {
+      const data = await removeHistory({ historyId: history?.id, currencyType: history?.currencyType});
+      if (data) {
+        Toast.showSuccess('Canceled');
+      }
+    } catch {
+      Toast.showError('Something went wrong. Please try again.');
     }
   }
 
@@ -193,6 +206,7 @@ class HistoryTokenContainer extends Component {
         <HistoryList
           histories={combineHistory(histories, historiesFromApi, selectedPrivacy?.symbol, selectedPrivacy?.externalSymbol, selectedPrivacy?.decimals, selectedPrivacy?.pDecimals)}
           actionButton={this.renderActionButton()}
+          onCancelEtaHistory={this.handleCancelEtaHistory}
         />
       </ScrollView>
     );

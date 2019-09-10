@@ -113,7 +113,7 @@ class HomeContainer extends Component {
 
   render() {
     const { isReloading } = this.state;
-    const { wallet, account, tokens, isGettingBalanceList } = this.props;
+    const { wallet, account, tokens, accountGettingBalanceList, tokenGettingBalanceList } = this.props;
 
     if (!wallet) return <LoadingContainer />;
 
@@ -124,7 +124,8 @@ class HomeContainer extends Component {
         reload={this.reload}
         isReloading={isReloading}
         handleAddFollowToken={this.onAddTokenToFollow}
-        isGettingBalanceList={isGettingBalanceList}
+        accountGettingBalanceList={accountGettingBalanceList}
+        tokenGettingBalanceList={tokenGettingBalanceList}
         onSelectToken={this.handleSelectToken}
       />
     );
@@ -136,7 +137,8 @@ const mapState = state => ({
   account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet,
   tokens: tokenSeleclor.followed(state),
-  isGettingBalanceList: sharedSeleclor.isGettingBalance(state)
+  accountGettingBalanceList: accountSeleclor.isGettingBalance(state),
+  tokenGettingBalanceList: tokenSeleclor.isGettingBalance(state)
 });
 
 const mapDispatch = { setListToken, getBalance, getAccountBalance, setSelectedPrivacy, clearSelectedPrivacy, reloadAccountFollowingToken, getPTokenList, getInternalTokenList };
@@ -146,7 +148,8 @@ HomeContainer.propTypes = {
   account: PropTypes.object.isRequired,
   accountList: PropTypes.array.isRequired,
   tokens: PropTypes.array.isRequired,
-  isGettingBalanceList: PropTypes.array.isRequired,
+  tokenGettingBalanceList: PropTypes.array.isRequired,
+  accountGettingBalanceList: PropTypes.array.isRequired,
   wallet: PropTypes.object.isRequired,
   reloadAccountFollowingToken: PropTypes.func.isRequired,
   getAccountBalance: PropTypes.func.isRequired,

@@ -9,7 +9,7 @@ import { homeStyle } from './style';
 
 class Home extends React.Component {
   render() {
-    const { account, tokens, isGettingBalanceList, onSelectToken, handleAddFollowToken, reload, isReloading } = this.props;
+    const { account, tokens, accountGettingBalanceList, tokenGettingBalanceList, onSelectToken, handleAddFollowToken, reload, isReloading } = this.props;
 
     return (
       <ScrollView
@@ -35,7 +35,7 @@ class Home extends React.Component {
                 decimals: CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
               }
             }}
-            isGettingBalance={isGettingBalanceList?.includes(account?.name)}
+            isGettingBalance={accountGettingBalanceList?.includes(account?.name)}
             onPress={onSelectToken}
           />
           {
@@ -44,7 +44,7 @@ class Home extends React.Component {
                 style={homeStyle.cryptoItem}
                 key={token.symbol}
                 token={token}
-                isGettingBalance={isGettingBalanceList?.includes(token.name)}
+                isGettingBalance={tokenGettingBalanceList?.includes(token?.symbol)}
                 onPress={onSelectToken}
               />
             ))
@@ -61,14 +61,16 @@ class Home extends React.Component {
 }
 
 Home.defaultProps = {
-  isGettingBalanceList: null,
+  tokenGettingBalanceList: [],
+  accountGettingBalanceList: [],
   account: null,
   tokens: [],
   isReloading: false
 };
 
 Home.propTypes = {
-  isGettingBalanceList: PropTypes.array,
+  tokenGettingBalanceList: PropTypes.array,
+  accountGettingBalanceList: PropTypes.array,
   account: PropTypes.object,
   tokens: PropTypes.array,
   onSelectToken: PropTypes.func.isRequired,
