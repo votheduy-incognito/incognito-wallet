@@ -17,12 +17,12 @@ export class SelfStakingContainer extends Component {
         type: Number(stakeType),
       };
       // param, fee, candidatePaymentAddress, account, wallet, rewardReceiverPaymentAddress, autoReStaking = false
-      // const candidatePaymentAddress = minerAccount?.PaymentAddress;
-      // const rs = await accountService.staking(param, fee, candidatePaymentAddress,funderAccount, wallet,candidatePaymentAddress,true);
-
       const candidatePaymentAddress = minerAccount?.PaymentAddress;
-      const isRewardFunder = false; // reward will be paid for miners
-      const rs = await accountService.staking(param, fee, candidatePaymentAddress, isRewardFunder, funderAccount, wallet);
+      const rs = await accountService.staking(param, fee, candidatePaymentAddress,funderAccount, wallet,candidatePaymentAddress,true);
+
+      // const candidatePaymentAddress = minerAccount?.PaymentAddress;
+      // const isRewardFunder = false; // reward will be paid for miners
+      // const rs = await accountService.staking(param, fee, candidatePaymentAddress, isRewardFunder, funderAccount, wallet);
 
       return rs;
     } catch (e) {

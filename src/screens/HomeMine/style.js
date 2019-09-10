@@ -55,13 +55,13 @@ const style = StyleSheet.create({
     color: '#1C1C1C',
   },
   list:{
-    flex:1,
     alignSelf:'center',
     backgroundColor:'transparent',
     position:'absolute',
     width:screenSize.width - 2*scaleInApp(20),
-    height:'100%',
-    top:marginTopList
+    top:marginTopList,
+    bottom:0,
+    marginBottom:0
   },
   containerHeader:{
     backgroundColor: 'transparent',

@@ -308,7 +308,7 @@ class SetupWifiDevice extends BaseScreen {
         {this.renderDeviceName()}
         <Loader loading={loading} />
         {this.renderWifiPassword()}
-        {this.renderToastMessage()}
+        {/* {this.renderToastMessage()} */}
         
         <View style={{width: 0,height: 0}}>
           <CreateAccount ref={this.viewCreateAccount} />

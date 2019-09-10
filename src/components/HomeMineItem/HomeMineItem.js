@@ -71,8 +71,9 @@ class HomeMineItem extends React.Component {
         let dataResult = await VirtualDeviceService.getRewardAmount(deviceInfo) ?? {};
         // console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
         const {Result={}} = dataResult;
+        const PRV = Result['PRV']??0;
         // balance = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
-        balance =  format.amount(Result['PRV'],common.DECIMALS['PRV']);
+        balance =  format.amount(PRV,common.DECIMALS['PRV']);
         balance = _.isNaN(balance)?0:balance;
         break;
       }

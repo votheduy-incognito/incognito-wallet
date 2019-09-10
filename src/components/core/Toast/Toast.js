@@ -31,7 +31,7 @@ class Toast extends Component {
     });
   }
 
-  static showError(msg, config) {
+  static showError(msg, config?) {
     Toast.show(msg, {
       ...typeof config === 'object' ? config : {},
       icon: <MdIcons name='error' size={20} color={COLORS.white} />,
@@ -39,7 +39,7 @@ class Toast extends Component {
     });
   }
 
-  static showInfo(msg, config) {
+  static showInfo(msg, config?) {
     Toast.show(msg, {
       ...typeof config === 'object' ? config : {},
       icon: <MdIcons name='info' size={20} color={COLORS.white} />,
@@ -48,7 +48,7 @@ class Toast extends Component {
     });
   }
 
-  static showWarning(msg, config) {
+  static showWarning(msg, config?) {
     Toast.show(msg, {
       ...typeof config === 'object' ? config : {},
       icon: <MdIcons name='warning' size={20} color={COLORS.dark1} />,

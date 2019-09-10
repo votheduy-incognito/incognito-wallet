@@ -29,7 +29,7 @@ export const getAccountByPublicKey = createSelector(
 
 export const getAccountByBlsKey =  createSelector(
   listAccount,
-  accounts => memoize(blsKey => accounts.find(account => account?.BlockProducerKey === blsKey))
+  accounts => memoize(blsKey => accounts.find(account => account?.BLSPublicKey === blsKey))
 );
 
 export default {

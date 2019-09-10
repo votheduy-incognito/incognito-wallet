@@ -3,7 +3,7 @@ import BaseScreen from '@screens/BaseScreen';
 import LocalDatabase from '@utils/LocalDatabase';
 import React from 'react';
 import Container from '@components/Container';
-import {  Header, Button} from 'react-native-elements';
+import {  Button} from 'react-native-elements';
 import { Alert, FlatList, Image,TouchableOpacity ,Text,View} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import _ from 'lodash';
@@ -49,10 +49,6 @@ class HomeMine extends BaseScreen {
     await this.createSignIn();
   }
 
-  componentDidMount = async () => {
-    super.componentDidMount();
-    
-  };
   createSignIn = async () => {
     const user = await LocalDatabase.getUserInfo();
     if (_.isEmpty(user)) {
@@ -219,27 +215,7 @@ class HomeMine extends BaseScreen {
       return undefined;
     }
   }
-  // renderHeader = () => {
-  //   return (
-  //     <Header
-  //       containerStyle={style.containerHeader}
-  //       centerComponent={(
-  //         <Text style={style.titleHeader}>
-  //           My Nodes
-  //         </Text>
-  //       )}
-  //       rightComponent={(
-  //         <TouchableOpacity
-  //           onPress={() => {
-  //             this.goToScreen(routeNames.AddNode);
-  //           }}
-  //         >
-  //           <Image source={images.ic_add_device} />
-  //         </TouchableOpacity>
-  //       )}
-  //     />
-  //   );
-  // };
+  
   renderHeader = () => {
     const options= {
       title: 'My Nodes',
@@ -247,8 +223,11 @@ class HomeMine extends BaseScreen {
       headerTitleStyle:style.titleHeader,
       headerRight:  (<TouchableOpacity onPress={()=>{this.goToScreen(routeNames.AddNode);}}><Image source={images.ic_add_device} /></TouchableOpacity>)
     };
+    const {navigation} = this.props;
     return (
       <HeaderBar
+        index={0}
+        navigation={navigation}
         scene={{descriptor:{options}}} 
       />
     );
@@ -297,13 +276,14 @@ class HomeMine extends BaseScreen {
     return (!isFetching && _.isEmpty(listDevice)?this.renderFirstOpenApp(): (
       <Container styleContainScreen={style.container}>
         {this.renderHeader()}
+        <DialogLoader loading={loading} />
         <Text style={style.header2}>earnings so far</Text>
         <Text style={style.header3}>
           0.00 <Text style={style.header3_child}>PRV</Text>
         </Text>
-        <DialogLoader loading={loading} />
         <FlatList
-          contentContainerStyle={_.isEmpty(listDevice) ? { flexGrow: 1 }:undefined}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={[_.isEmpty(listDevice) ? { flexGrow: 1}:undefined]}
           style={style.list}
           data={listDevice}
           keyExtractor={item => String(item.product_id)}

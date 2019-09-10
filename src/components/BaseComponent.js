@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { AppState } from 'react-native';
-import Toast from 'react-native-easy-toast';
+// import Toast from 'react-native-easy-toast';
 import  { scaleInApp} from '@src/styles/TextStyle';
+import { Toast } from './core';
 
 export const TAG = 'BaseComponent';
 
@@ -37,21 +38,27 @@ class BaseComponent extends Component {
 
   onResume = () => {};
 
-  renderToastMessage = () => {
-    return (
-      <Toast
-        style={{marginHorizontal:scaleInApp(20)}}
-        position="center"
-        ref={toast => {
-          this.toast = toast;
-        }}
-      />
-    );
-  };
+  // renderToastMessage = () => {
+  //   return (
+  //     <Toast
+  //       style={{marginHorizontal:scaleInApp(20)}}
+  //       position="center"
+  //       ref={toast => {
+  //         this.toast = toast;
+  //       }}
+  //     />
+  //   );
+  // };
 
-  showToastMessage = (text = '', callback = null) => {
-    if (text && this.toast) {
-      this.toast.show(text, 500, callback);
+  // showToastMessage = (text = '', callback = null) => {
+  //   if (text && this.toast) {
+  //     this.toast.show(text, 500, callback);
+  //   }
+  // };
+
+  showToastMessage = (text = '', callback?) => {
+    if (text ) {
+      Toast.showInfo(text);
     }
   };
 
