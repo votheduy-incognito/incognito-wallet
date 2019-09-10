@@ -79,11 +79,10 @@ class DetailDevice extends BaseScreen {
     let account = await getAccountByName(device.accountName());
     
     // with test-node publicKey
-    let keyCompare = await VirtualDeviceService.getPublicKeyMining(device);
+    // let keyCompare = await VirtualDeviceService.getPublicKeyMining(device);
 
     // dev-test
-    // const resultBLS = await VirtualDeviceService.getPublicKeyMining(device);
-    // let keyCompare = resultBLS[0]??'';
+    const keyCompare = await VirtualDeviceService.getPublicKeyMining(device)??'';
   
     // const publicKey = '16yUvbgiXUZfwuWafBcXX4oiyYVui57e1oMtEyRCwkHemeqKvf9';
     // const isRegular = !_.includes(keyCompare,account?.BlockProducerKey);
@@ -93,9 +92,10 @@ class DetailDevice extends BaseScreen {
 
     const isRegular = !_.isEqual(account?.PublicKeyCheckEncode,keyCompare);
     if(device.Type == DEVICES.VIRTUAL_TYPE && isRegular){
-      keyCompare = _.split(keyCompare,':')[1]||keyCompare;
+      // keyCompare = _.split(keyCompare,':')[1]||keyCompare;
       console.log(TAG,'checkAndUpdateInfoVirtualNode1111111 publicKey ',keyCompare);
-      account = getAccountByPublicKey(keyCompare);
+      // account = getAccountByPublicKey(keyCompare);
+      account = getAccountByBlsKey(keyCompare);
       console.log(TAG,'checkAndUpdateInfoVirtualNode account ',account);
       !_.isEmpty(account) && await device.saveAccount({name:account.name});
     }
@@ -106,7 +106,7 @@ class DetailDevice extends BaseScreen {
 
   createListFollowingToken=(result:{},listprivacyCustomToken:Array)=>{
     let amount = 0;
-    console.log(TAG,'createListFollowingToken begin ',listprivacyCustomToken);
+    // console.log(TAG,'createListFollowingToken begin ',listprivacyCustomToken);
     return Object.keys(result).map((value,index)=>{
       let ObjFinded = _.find(listprivacyCustomToken,(item)=>_.isEqual(item.tokenId,value))||{
         symbol: value,
@@ -138,24 +138,40 @@ class DetailDevice extends BaseScreen {
     let balancePRV = 0;
     let listFollowingTokens = [];
     const account = _.isEmpty(accountMiner)? await this.props.getAccountByName(device.accountName()):accountMiner;
-    const stakerStatus =(!_.isEmpty(account)&& !_.isEmpty(wallet)? await accountService.stakerStatus(account,wallet).catch(console.log):-1)??-1;
-    console.log(TAG,'fetchData stakerStatus ',stakerStatus);
-    const isStaked = stakerStatus!=-1 ;
+    // const stakerStatus =(!_.isEmpty(account)&& !_.isEmpty(wallet)? await accountService.stakerStatus(account,wallet).catch(console.log):-1)??{};
+    // console.log(TAG,'fetchData stakerStatus ',stakerStatus);
+
+    // const { Role= -1, ShardID= 0 } = stakerStatus;
+    let isStaked = -1 ;
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
+      const stakerStatus =await VirtualDeviceService.getPublicKeyRole(device) ??{};
+      console.log(TAG,'fetchData VIRTUAL_TYPE stakerStatus ',stakerStatus);
+
+      const { Role= -1, ShardID= 0 } = stakerStatus;
+      isStaked = Role!=-1 ;
+      console.log(TAG,'fetchData VIRTUAL_TYPE getPublicKeyRole ',stakerStatus);
 
       const listprivacyCustomToken:[] = listTokens;
       dataResult = await VirtualDeviceService.getRewardAmount(device) ?? {};
-      // console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
+      console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
       const {Result={}} = dataResult;
-      balancePRV = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
-      balancePRV = format.amount(Result['PRV'],common.DECIMALS['PRV']);
+      const PRV = Result['PRV']??0;
+      // balancePRV = convert.toHumanAmount(PRV,common.DECIMALS['PRV']);
+      balancePRV = format.amount(PRV,common.DECIMALS['PRV']);
+      console.log(TAG,'fetchData VIRTUAL_TYPE 01');
       balancePRV = _.isNaN(balancePRV)?0:balancePRV;
+      console.log(TAG,'fetchData VIRTUAL_TYPE 02');
+
       listFollowingTokens = this.createListFollowingToken(Result,listprivacyCustomToken);
       break;
     }
     default:{
-      
+      const stakerStatus =(!_.isEmpty(account)&& !_.isEmpty(wallet)? await accountService.stakerStatus(account,wallet).catch(console.log):-1)??{};
+      console.log(TAG,'fetchData stakerStatus ',stakerStatus);
+
+      const { Role= -1, ShardID= 0 } = stakerStatus;
+      isStaked = Role!=-1 ;
       listFollowingTokens = (!_.isEmpty(account) && await accountService.getFollowingTokens(account,wallet))||[];
       balancePRV = await device.balanceToken(account,wallet);        
     }
@@ -312,11 +328,14 @@ class DetailDevice extends BaseScreen {
   };
 
   handlePressWithdraw = onClickView(async()=>{
+    /* next release
     const {device,accountMiner,wallet} = this.state;
     this.Loading = true;
     const result = await device.requestWithdraw(accountMiner,wallet,'').catch(console.log);
     !_.isEmpty(result) && await this.fetchData();
     this.Loading = false;
+    */
+    this.showToastMessage('Withdrawals will be enabled once the mainnet launches in October 2019.');
   });
 
   handlePressStake = onClickView(async ()=>{
@@ -494,8 +513,6 @@ class DetailDevice extends BaseScreen {
           {!_.isEmpty(listFollowingTokens) &&<HistoryMined containerStyle={style.group2_container} listItems={listFollowingTokens} />}
           
         </ScrollView>
-        {this.renderToastMessage()}
-        
       </Container>
     );
   }

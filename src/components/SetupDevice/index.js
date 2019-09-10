@@ -352,7 +352,7 @@ class SetupDevice extends BaseComponent {
         {this.renderDeviceName()}
         {/* <Loader loading={loading} /> */}
         {this.renderWifiPassword()}
-        {this.renderToastMessage()}
+        {/* {this.renderToastMessage()} */}
         
         <View style={{width: 0,height: 0,opacity:0}}>
           <CreateAccount ref={this.viewCreateAccount} />

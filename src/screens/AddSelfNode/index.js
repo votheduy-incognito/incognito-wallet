@@ -359,7 +359,6 @@ class AddSelfNode extends BaseScreen {
             placeholder="Name of Node (optional)"
             onChangeText={(text) =>this.inputDeviceName = text}
           /> */}
-          {this.renderToastMessage()}
           <Button
             titleStyle={styles.textTitleButton}
             buttonStyle={styles.button}

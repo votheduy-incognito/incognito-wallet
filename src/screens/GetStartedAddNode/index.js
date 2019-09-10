@@ -289,7 +289,7 @@ class GetStartedAddNode extends BaseScreen {
           {this.renderTitle()}
           {this.renderContent()}
           {this.renderFooter()}
-          {this.renderToastMessage()}
+          {/* {this.renderToastMessage()} */}
           <SetupDevice ref={this.viewSetupDevice} isRenderUI={false} currentConnect={currentConnect} />
         </ScrollView>
       </View>
