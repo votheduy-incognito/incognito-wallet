@@ -2,16 +2,16 @@
 import Action from '@src/models/Action';
 import _ from 'lodash';
 import Util from '@src/utils/Util';
-import Device,{DEVICE_STATUS} from '@src/models/device';
+import Device,{ DATA_INFO } from '@src/models/device';
 import APIService,{METHOD} from './api/miner/APIService';
 
 const TAG = 'VirtualDeviceService';
-const DATA_INFO = [ {'status':'offline', 'message':'ready','code':DEVICE_STATUS.CODE_START},
-  {'status':'syncing', 'message':'syncing','code':DEVICE_STATUS.CODE_SYNCING},
-  {'status':'ready', 'message':'ready','code':DEVICE_STATUS.CODE_START},
-  {'status':'mining', 'message':'earning','code':DEVICE_STATUS.CODE_MINING},
-  {'status':'pending', 'message':'waiting to be selected','code':DEVICE_STATUS.CODE_PENDING},
-  {'status':'notmining', 'message':'ready','code':DEVICE_STATUS.CODE_START}];
+// const DATA_INFO = [ {'status':'offline', 'message':'ready','code':DEVICE_STATUS.CODE_START},
+//   {'status':'syncing', 'message':'syncing','code':DEVICE_STATUS.CODE_SYNCING},
+//   {'status':'ready', 'message':'ready','code':DEVICE_STATUS.CODE_START},
+//   {'status':'mining', 'message':'earning','code':DEVICE_STATUS.CODE_MINING},
+//   {'status':'pending', 'message':'waiting to be selected','code':DEVICE_STATUS.CODE_PENDING},
+//   {'status':'notmining', 'message':'ready','code':DEVICE_STATUS.CODE_START}];
 const timeout = 8;
 export const LIST_ACTION={
   GET_PUBLIC_KEY_ROLE:{

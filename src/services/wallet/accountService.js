@@ -221,17 +221,16 @@ export default class Account {
   /**
    *
    * @param {string} tokenID
-   * @param {object} account
+   * @param {string} accountName
    * @param {object} wallet
    * @param {bool} isGetAll
    */
-  static async getRewardAmount(tokenID, account, wallet,isGetAll = false) {
-    let indexAccount = wallet.getAccountIndexByName(account.name);
-    let result;
+  static async getRewardAmount(tokenID, accountName, wallet,isGetAll = false) {
+    
+    const accountWallet = wallet.getAccountByName(accountName);
+    let result = 0;
     try {
-      result = await wallet.MasterAccount.child[indexAccount].getRewardAmount(
-        tokenID,isGetAll
-      );
+      result = await accountWallet?.getRewardAmount(isGetAll,tokenID);
     } catch (e) {
       throw e;
     }

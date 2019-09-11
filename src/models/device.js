@@ -2,9 +2,26 @@
 import accountService from '@src/services/wallet/accountService';
 import _ from 'lodash';
 import { DEVICES } from '@src/constants/miner';
-// import VirtualDeviceService from '@src/services/VirtualDeviceService';
+import VirtualDeviceService from '@src/services/VirtualDeviceService';
 import LocalDatabase from '@utils/LocalDatabase';
+import format from '@src/utils/format';
+import common from '@src/constants/common';
 
+export const DEVICE_STATUS = {
+  CODE_UNKNOWN : -1,
+  CODE_STOP : 4,
+  CODE_PENDING : 5,
+  CODE_START : 2,
+  CODE_MINING : 3,
+  CODE_SYNCING : 1,
+  CODE_OFFLINE : -2
+};
+export const DATA_INFO = [ {'status':'offline', 'message':'ready','code':DEVICE_STATUS.CODE_START},
+  {'status':'syncing', 'message':'syncing','code':DEVICE_STATUS.CODE_SYNCING},
+  {'status':'ready', 'message':'ready','code':DEVICE_STATUS.CODE_START},
+  {'status':'mining', 'message':'earning','code':DEVICE_STATUS.CODE_MINING},
+  {'status':'pending', 'message':'waiting to be selected','code':DEVICE_STATUS.CODE_PENDING},
+  {'status':'notmining', 'message':'ready','code':DEVICE_STATUS.CODE_START}];
 export const template = {
   minerInfo:{
     account:{}
@@ -23,15 +40,7 @@ export const template = {
   
   product_type:DEVICES.MINER_TYPE
 };
-export const DEVICE_STATUS = {
-  CODE_UNKNOWN : -1,
-  CODE_STOP : 4,
-  CODE_PENDING : 5,
-  CODE_START : 2,
-  CODE_MINING : 3,
-  CODE_SYNCING : 1,
-  CODE_OFFLINE : -2
-};
+
 export default class Device {
   static CODE_UNKNOWN = DEVICE_STATUS.CODE_UNKNOWN;
   static CODE_STOP = DEVICE_STATUS.CODE_STOP;
@@ -106,7 +115,8 @@ export default class Device {
     return result;
   }
   balanceToken = async(account,wallet,tokenID = '')=>{
-    const result = (!_.isEmpty(account) && !_.isEmpty(wallet)  && await accountService.getRewardAmount(tokenID, account,wallet))||0;
+    const accountName = !_.isEmpty(account)? account.name:this.accountName();
+    const result = (!_.isEmpty(accountName) && !_.isEmpty(wallet)  && await accountService.getRewardAmount(tokenID, accountName,wallet))||0;
     return result;
   }
 
@@ -141,6 +151,30 @@ export default class Device {
   }
   static getInstance = (data=template):Device =>{
     return new Device(data);
+  }
+  static getRewardAmount = async (deviceInfo:Device,wallet?)=>{
+    let balance = 0;
+    if(!_.isEmpty(deviceInfo) && !deviceInfo.isOffline()){
+      switch(deviceInfo.Type){
+      case DEVICES.VIRTUAL_TYPE:{
+        let dataResult = await VirtualDeviceService.getRewardAmount(deviceInfo) ?? {};
+        
+        const {Result={}} = dataResult;
+        balance = Result['PRV']??0;
+        break;
+      }
+      default:{
+        balance = await deviceInfo.balanceToken(null,wallet);
+      }
+      } 
+    }
+    
+    balance = _.isNaN(balance)?0:balance;
+    return balance;
+  }
+  static formatForDisplayBalance = (balance:Number)=>{
+    return format.amount(_.isNaN(balance)?0:balance,common.DECIMALS['PRV']);
+
   }
   static getStyleStatus = (code)=>{
     let styleStatus = {color:'#91A4A6'};

@@ -16,6 +16,7 @@ import APIService from '@src/services/api/miner/APIService';
 import ViewUtil from '@src/utils/ViewUtil';
 import HomeMineItem from '@src/components/HomeMineItem';
 import HeaderBar from '@src/components/HeaderBar/HeaderBar';
+import Device from '@src/models/device';
 import style from './style';
 
 export const TAG = 'HomeMine';
@@ -36,6 +37,7 @@ class HomeMine extends BaseScreen {
       selectedIndex: 0,
       listDevice: [],
       wallet:wallet,
+      balancePRV:0,
       timeToUpdate: Date.now(),
       isFetching: false,
       isLoadMore: false,
@@ -144,22 +146,28 @@ class HomeMine extends BaseScreen {
   }
   handleLoadMore = () => {};
   handleRefresh = async () => {
-    const {isFetching,loading} = this.state;
+    const {isFetching,loading,wallet} = this.state;
     if(!isFetching){
       
       this.setState({
         isFetching:true,
         timeToUpdate:Date.now()
       },async ()=>{
+        let balance = 0;
+
         let list: [] = await this.getListLocalDevice();
         // list = _.isEmpty(list)?await this.fetchProductList():list.reverse();
         list = list.reverse();
+        list.forEach(async item=>{
+          balance += (await Device.getRewardAmount(Device.getInstance(item),wallet));
+        });
         // let list: [] = await this.fetchProductList();
         // list = _.isEmpty(list)?await this.getListLocalDevice():list.reverse();
         // let list: [];
         console.log(TAG, 'handleRefresh list = ', list);
         this.setState({
           listDevice: list,
+          balancePRV:Device.formatForDisplayBalance(balance??0),
           isFetching: false
         });
       });
@@ -269,7 +277,8 @@ class HomeMine extends BaseScreen {
       isFetching,
       isLoadMore,
       loading,
-      timeToUpdate
+      timeToUpdate,
+      balancePRV
     } = this.state;
     // const viewCustom = this.renderFirstOpenApp();
     // return viewCustom;
@@ -279,7 +288,7 @@ class HomeMine extends BaseScreen {
         <DialogLoader loading={loading} />
         <Text style={style.header2}>earnings so far</Text>
         <Text style={style.header3}>
-          0.00 <Text style={style.header3_child}>PRV</Text>
+          {balancePRV} <Text style={style.header3_child}>PRV</Text>
         </Text>
         <FlatList
           showsVerticalScrollIndicator={false}
