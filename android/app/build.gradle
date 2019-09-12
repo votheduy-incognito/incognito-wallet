@@ -105,8 +105,8 @@ android {
         applicationId "com.incognito.wallet"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 8
-        versionName "1.0.7"
+        versionCode 9
+        versionName "1.0.8"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     signingConfigs {
@@ -164,7 +164,7 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
-    compile project(':gomobile')
+    implementation project(':gomobile')
 
     // Firebase dependencies
     implementation "com.google.android.gms:play-services-base:16.1.0"
