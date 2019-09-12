@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Button, ScrollView, View, Text, Toast, Picker, Image } from '@src/components/core';
-import EstimateFee from '@src/components/EstimateFee';
-import StakeValidatorTypeSelector from '@src/components/StakeValidatorTypeSelector';
-import tokenData from '@src/constants/tokenData';
-import { CONSTANT_COMMONS } from '@src/constants';
-import LoadingTx from '@src/components/LoadingTx';
-import formatUtil from '@src/utils/format';
-import convertUtil from '@src/utils/convert';
 import warningImg from '@src/assets/images/incognito_warning.png';
+import { Button, Image, ScrollView, Text, Toast, View } from '@src/components/core';
+import EstimateFee from '@src/components/EstimateFee';
+import LoadingTx from '@src/components/LoadingTx';
+import StakeValidatorTypeSelector from '@src/components/StakeValidatorTypeSelector';
+import { CONSTANT_COMMONS } from '@src/constants';
+import tokenData from '@src/constants/tokenData';
+import convertUtil from '@src/utils/convert';
+import formatUtil from '@src/utils/format';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import styles from './style';
 
 class SelfStaking extends Component {
@@ -100,7 +100,7 @@ class SelfStaking extends Component {
           isNotEnoughBalance && (
             <View style={styles.notEnoughPRVContainer}>
               <Image source={warningImg} style={styles.notEnoughPRVCImg} />
-              <Text style={styles.notEnoughPRVText}>Not enough PRV</Text>
+              <Text style={styles.notEnoughPRVText}>Please top up PRV</Text>
             </View>
           )
         }

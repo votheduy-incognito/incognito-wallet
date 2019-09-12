@@ -1,18 +1,18 @@
+import StepIndicator from '@components/StepIndicator';
 import BaseScreen from '@screens/BaseScreen';
+import images from '@src/assets';
+import LongLoading from '@src/components/LongLoading';
+import { openQrScanner } from '@src/components/QrCodeScanner';
+import SetupDevice from '@src/components/SetupDevice';
+import routeNames from '@src/router/routeNames';
+import { scaleInApp } from '@src/styles/TextStyle';
+import LocalDatabase from '@src/utils/LocalDatabase';
+import { onClickView } from '@src/utils/ViewUtil';
 import _ from 'lodash';
 import React from 'react';
-import { TouchableOpacity, Text, View,Image,ScrollView } from 'react-native';
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Button, Icon, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
-import StepIndicator from '@components/StepIndicator';
-import images from '@src/assets';
-import { Button, Icon,Input } from 'react-native-elements';
-import { openQrScanner } from '@src/components/QrCodeScanner';
-import { onClickView } from '@src/utils/ViewUtil';
-import { scaleInApp } from '@src/styles/TextStyle';
-import routeNames from '@src/router/routeNames';
-import SetupDevice from '@src/components/SetupDevice';
-import LongLoading from '@src/components/LongLoading';
-import LocalDatabase from '@src/utils/LocalDatabase';
 import styles from './styles';
 
 export const TAG = 'GetStartedAddNode';
@@ -70,7 +70,7 @@ class GetStartedAddNode extends BaseScreen {
           inputStyle={[text]}
           placeholder="Wi-Fi name"
           errorStyle={[errorText,{textAlign:'left'}]}
-          errorMessage={!isPassedValidate && _.isEmpty(this.wifiNameValue)?'Enter wifi name here!':''}
+          errorMessage={!isPassedValidate && _.isEmpty(this.wifiNameValue)?'Required':''}
           defaultValue={this.wifiNameValue||''}
           onChangeText={text => {this.wifiNameValue = text;}}
         />
@@ -91,7 +91,7 @@ class GetStartedAddNode extends BaseScreen {
     return (
       <>
         <Icon size={scaleInApp(50)} color='#25CDD6' name="check" type='simple-line-icon' />
-        <Text style={[styles.step3_text,{color:'#25CDD6'}]}>Completed</Text>
+        <Text style={[styles.step3_text,{color:'#25CDD6'}]}>Scan complete</Text>
       </>
     );
   }

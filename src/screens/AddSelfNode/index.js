@@ -1,63 +1,32 @@
 /**
  * @providesModule SetupWifiDevice
  */
-import routeNames from '@routers/routeNames';
-import LocalDatabase from '@utils/LocalDatabase';
-import { CONSTANT_MINER } from '@src/constants';
 import Loader from '@components/DialogLoader';
-import _ from 'lodash';
-import React from 'react';
-import {
-  Text,
-  TextInput,
-  View,
-  Platform,
-  ScrollView,
-  KeyboardAvoidingView
-} from 'react-native';
-import { connect } from 'react-redux';
+import routeNames from '@routers/routeNames';
 import BaseScreen from '@screens/BaseScreen';
-import { Button,Input } from 'react-native-elements';
-import { onClickView } from '@src/utils/ViewUtil';
-import PropTypes from 'prop-types';
-import StepIndicator from 'react-native-step-indicator';
-import { accountSeleclor } from '@src/redux/selectors';
-import Dialog, { DialogContent,DialogTitle } from 'react-native-popup-dialog';
-import DeviceInfo from 'react-native-device-info';
+import { CONSTANT_MINER } from '@src/constants';
 import { DEVICES } from '@src/constants/miner';
-import ImportAccount from '@screens/ImportAccount';
-import { Toast } from '@src/components/core';
-
+import { accountSeleclor } from '@src/redux/selectors';
+import { onClickView } from '@src/utils/ViewUtil';
+import LocalDatabase from '@utils/LocalDatabase';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { KeyboardAvoidingView, Platform, ScrollView, Text } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
+import { Button, Input } from 'react-native-elements';
+import Dialog, { DialogContent, DialogTitle } from 'react-native-popup-dialog';
+import StepIndicator from 'react-native-step-indicator';
+import { connect } from 'react-redux';
 import styles, { placeHolderColor } from './style';
+
 
 export const TAG = 'AddSelfNode';
 
-const errorMessage = 'Can\'t connect The Miner. Please check the internert information and try again';
+const errorMessage = 'Something went wrong. Let\'s start again.';
 
 const labels = ['Connect Hotpot','Send Wifi Info','Verify Code'];
-const customStyles = {
-  stepIndicatorSize: 25,
-  currentStepIndicatorSize:30,
-  separatorStrokeWidth: 2,
-  currentStepStrokeWidth: 3,
-  stepStrokeCurrentColor: '#fe7013',
-  stepStrokeWidth: 3,
-  stepStrokeFinishedColor: '#fe7013',
-  stepStrokeUnFinishedColor: '#aaaaaa',
-  separatorFinishedColor: '#fe7013',
-  separatorUnFinishedColor: '#aaaaaa',
-  stepIndicatorFinishedColor: '#fe7013',
-  stepIndicatorUnFinishedColor: '#ffffff',
-  stepIndicatorCurrentColor: '#ffffff',
-  stepIndicatorLabelFontSize: 13,
-  currentStepIndicatorLabelFontSize: 13,
-  stepIndicatorLabelCurrentColor: '#fe7013',
-  stepIndicatorLabelFinishedColor: '#ffffff',
-  stepIndicatorLabelUnFinishedColor: '#aaaaaa',
-  labelColor: '#999999',
-  labelSize: 13,
-  currentStepLabelColor: '#fe7013'
-};
+
 class AddSelfNode extends BaseScreen {
   
   constructor(props) {
@@ -127,7 +96,6 @@ class AddSelfNode extends BaseScreen {
         <StepIndicator
           direction='vertical'
           stepCount={labels.length}
-          customStyles={customStyles}
           currentPosition={currentPositionStep}
           labels={labels}
         />
@@ -184,14 +152,15 @@ class AddSelfNode extends BaseScreen {
         <Input
           placeholderTextColor={placeHolderColor}
           maxLength={200}
+          errorMessage={_.isEmpty(this.inputHost)?'Required':''}
           labelStyle={label}
           onChangeText={(text) =>this.inputHost = text}
           underlineColorAndroid="transparent"
           inputStyle={textInput}
           inputContainerStyle={item_container_input}
           containerStyle={[item]}
-          placeholder="Host"
-          label='Host'
+          placeholder="IP address"
+          label='IP address'
           defaultValue={this.inputHost}
         />
       </>
@@ -325,12 +294,11 @@ class AddSelfNode extends BaseScreen {
       // save local
       // 
       }else{
-        // this.Loading = false;
-        Toast.showError('Please check and input correct fields!');
+        this.Loading = false;
       }
     } catch (error) {
       errorMsg = errorMessage; 
-      Toast.showError(error.message);
+      this.showToastMessage(errorMessage);
       console.log(TAG,'handleSetUpPress error: ', error);
     }
   });

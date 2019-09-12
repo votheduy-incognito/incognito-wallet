@@ -1,22 +1,22 @@
-import routeNames from '@src/router/routeNames';
-import BaseScreen from '@screens/BaseScreen';
-import LocalDatabase from '@utils/LocalDatabase';
-import React from 'react';
 import Container from '@components/Container';
-import {  Button} from 'react-native-elements';
-import { Alert, FlatList, Image,TouchableOpacity ,Text,View} from 'react-native';
-import DeviceInfo from 'react-native-device-info';
-import _ from 'lodash';
-import { connect } from 'react-redux';
-import Util from '@utils/Util';
-import { CONSTANT_MINER } from '@src/constants';
-import DialogLoader from '@src/components/DialogLoader';
+import BaseScreen from '@screens/BaseScreen';
 import images from '@src/assets';
+import DialogLoader from '@src/components/DialogLoader';
+import HeaderBar from '@src/components/HeaderBar/HeaderBar';
+import HomeMineItem from '@src/components/HomeMineItem';
+import { CONSTANT_MINER } from '@src/constants';
+import Device from '@src/models/device';
+import routeNames from '@src/router/routeNames';
 import APIService from '@src/services/api/miner/APIService';
 import ViewUtil from '@src/utils/ViewUtil';
-import HomeMineItem from '@src/components/HomeMineItem';
-import HeaderBar from '@src/components/HeaderBar/HeaderBar';
-import Device from '@src/models/device';
+import LocalDatabase from '@utils/LocalDatabase';
+import Util from '@utils/Util';
+import _ from 'lodash';
+import React from 'react';
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
+import { Button } from 'react-native-elements';
+import { connect } from 'react-redux';
 import style from './style';
 
 export const TAG = 'HomeMine';
@@ -134,16 +134,6 @@ class HomeMine extends BaseScreen {
     return filterProducts;
   };
 
-  showAlertOffline(message) {
-    setTimeout(() => {
-      Alert.alert(
-        '',
-        message,
-        [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-        { cancelable: true }
-      );
-    }, 0.5 * 1000);
-  }
   handleLoadMore = () => {};
   handleRefresh = async () => {
     const {isFetching,loading,wallet} = this.state;
@@ -286,7 +276,7 @@ class HomeMine extends BaseScreen {
       <Container styleContainScreen={style.container}>
         {this.renderHeader()}
         <DialogLoader loading={loading} />
-        <Text style={style.header2}>earnings so far</Text>
+        <Text style={style.header2}>Total earnings</Text>
         <Text style={style.header3}>
           {balancePRV} <Text style={style.header3_child}>PRV</Text>
         </Text>

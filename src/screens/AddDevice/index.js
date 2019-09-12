@@ -1,14 +1,13 @@
 import DeviceConnection from '@components/DeviceConnection';
-import { ObjConnection } from '@components/DeviceConnection/BaseConnection';
 import routeNames from '@routers/routeNames';
 import BaseScreen from '@screens/BaseScreen';
+import { onClickView } from '@src/utils/ViewUtil';
 import _ from 'lodash';
 import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { CheckBox, Icon, ListItem } from 'react-native-elements';
 import Pulse from 'react-native-pulse';
 import { connect } from 'react-redux';
-import { onClickView } from '@src/utils/ViewUtil';
 import styles, { iconWifi } from './styles';
 
 export const TAG = 'AddDevice';

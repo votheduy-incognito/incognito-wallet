@@ -1,9 +1,9 @@
-import React from 'react';
+import { ScrollView, View } from '@src/components/core';
 import PropTypes from 'prop-types';
-import { View, ScrollView } from '@src/components/core';
-import NetworkSection from './NetworkSection';
+import React from 'react';
 // import PrivacySection from './PrivacySection';
 import AccountSection from './AccountSection';
+import NetworkSection from './NetworkSection';
 import { settingStyle } from './style';
 
 class Setting extends React.Component {
@@ -18,7 +18,7 @@ class Setting extends React.Component {
     const { defaultServerId } = this.state;
     const { navigation } = this.props;
     return (
-      <ScrollView contentContainerStyle={{ minHeight: '100%' }}>
+      <ScrollView contentContainerStyle={{ flexGrow:1 }}>
         <View style={settingStyle.container}>
           <AccountSection navigation={navigation} />
           <NetworkSection

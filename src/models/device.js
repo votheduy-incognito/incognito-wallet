@@ -1,11 +1,11 @@
 /* eslint-disable import/no-cycle */
-import accountService from '@src/services/wallet/accountService';
-import _ from 'lodash';
+import common from '@src/constants/common';
 import { DEVICES } from '@src/constants/miner';
 import VirtualDeviceService from '@src/services/VirtualDeviceService';
-import LocalDatabase from '@utils/LocalDatabase';
+import accountService from '@src/services/wallet/accountService';
 import format from '@src/utils/format';
-import common from '@src/constants/common';
+import LocalDatabase from '@utils/LocalDatabase';
+import _ from 'lodash';
 
 export const DEVICE_STATUS = {
   CODE_UNKNOWN : -1,
@@ -24,7 +24,8 @@ export const DATA_INFO = [ {'status':'offline', 'message':'ready','code':DEVICE_
   {'status':'notmining', 'message':'ready','code':DEVICE_STATUS.CODE_START}];
 export const template = {
   minerInfo:{
-    account:{}
+    account:{},
+    isCallStaked:false
   },
   status:{
     code: -1,
@@ -68,6 +69,9 @@ export default class Device {
   }
   accountName = () =>{
     return this.data.minerInfo?.account?.name||this.Name;
+  }
+  get isCallStaked(){
+    return this.data.minerInfo?.isCallStaked||false;
   }
   static offlineStatus =()=>{
     return {
@@ -157,7 +161,7 @@ export default class Device {
     if(!_.isEmpty(deviceInfo) && !deviceInfo.isOffline()){
       switch(deviceInfo.Type){
       case DEVICES.VIRTUAL_TYPE:{
-        let dataResult = await VirtualDeviceService.getRewardAmount(deviceInfo) ?? {};
+        let dataResult = await VirtualDeviceService.getRewardFromMiningkey(deviceInfo) ?? {};
         
         const {Result={}} = dataResult;
         balance = Result['PRV']??0;

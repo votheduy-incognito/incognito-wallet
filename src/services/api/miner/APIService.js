@@ -1,12 +1,11 @@
 /**
  * @providesModule APIService
  */
-import React from 'react';
-import {  NetInfo } from 'react-native';
-import LocalDatabase from '@utils/LocalDatabase';
 import User from '@models/user';
-import _ from 'lodash';
 import { CONSTANT_MINER } from '@src/constants';
+import LocalDatabase from '@utils/LocalDatabase';
+import _ from 'lodash';
+import { NetInfo } from 'react-native';
 import API from './api';
 
 let AUTHORIZATION_FORMAT = 'Autonomous';
@@ -136,9 +135,9 @@ export default class APIService {
           headers: header,
           body:formData
         });
-        console.log('Response:', res);
-        console.log('Header: ', header);
-        console.log('Resonse Status:', res.status);
+        // console.log('Response:', res);
+        // console.log('Header: ', header);
+        // console.log('Resonse Status:', res.status);
         if (res && res.error){
           //throw new Error(res.error);
           return {status: 0, data: ''} ;

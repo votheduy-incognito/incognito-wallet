@@ -1,27 +1,27 @@
-import BaseScreen from '@screens/BaseScreen';
-import _ from 'lodash';
-import React from 'react';
-import { View,ScrollView,Image,Text,TouchableOpacity } from 'react-native';
-import { Button, Header } from 'react-native-elements';
-import DialogLoader from '@src/components/DialogLoader';
-import images, { imagesVector } from '@src/assets';
 import Container from '@components/Container';
+import BaseScreen from '@screens/BaseScreen';
+import CreateAccount from '@screens/CreateAccount';
+import images from '@src/assets';
+import DialogLoader from '@src/components/DialogLoader';
+import HeaderBar from '@src/components/HeaderBar/HeaderBar';
 import HistoryMined from '@src/components/HistoryMined';
+import common from '@src/constants/common';
+import { DEVICES } from '@src/constants/miner';
+import Device from '@src/models/device';
+import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
 import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
-import Device from '@src/models/device';
-import { onClickView } from '@src/utils/ViewUtil';
-import accountService from '@src/services/wallet/accountService';
-import { connect } from 'react-redux';
-import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
-import PropTypes from 'prop-types';
-import CreateAccount from '@screens/CreateAccount';
-import { DEVICES } from '@src/constants/miner';
 import VirtualDeviceService from '@src/services/VirtualDeviceService';
-import convert from '@src/utils/convert';
-import common from '@src/constants/common';
+import accountService from '@src/services/wallet/accountService';
 import format from '@src/utils/format';
-import HeaderBar from '@src/components/HeaderBar/HeaderBar';
+import LocalDatabase from '@src/utils/LocalDatabase';
+import { onClickView } from '@src/utils/ViewUtil';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Button } from 'react-native-elements';
+import { connect } from 'react-redux';
 import style from './style';
 
 export const TAG = 'DetailDevice';
@@ -58,6 +58,25 @@ class DetailDevice extends BaseScreen {
   }
 
   async componentDidMount() {
+    super.componentDidMount();
+    console.log(TAG,'componentDidMount begin');
+    // await this.checkStatus('incognito');
+    // await this.checkAndUpdateInfoVirtualNode();
+    // this.fetchData();
+  }
+
+  onResume= async ()=>{
+    console.log(TAG,'onResume begin');
+    const {device } = this.state;
+    const product_id = device.data.product_id;
+    if(!_.isEmpty(product_id)){
+      let listDevice = await LocalDatabase.getListDevices()||[];
+      const deviceNewJSON =  listDevice.find(item=>_.isEqual(item.product_id,product_id));
+      console.log(TAG,'onResume begin new -- ',deviceNewJSON);
+      this.setState({
+        device:Device.getInstance(deviceNewJSON)
+      });
+    }
     await this.checkStatus('incognito');
     await this.checkAndUpdateInfoVirtualNode();
     this.fetchData();
@@ -87,7 +106,7 @@ class DetailDevice extends BaseScreen {
     // const publicKey = '16yUvbgiXUZfwuWafBcXX4oiyYVui57e1oMtEyRCwkHemeqKvf9';
     // const isRegular = !_.includes(keyCompare,account?.BlockProducerKey);
     // console.log(TAG,'checkAndUpdateInfoVirtualNode listAccount ',listAccount);
-    console.log(TAG,'checkAndUpdateInfoVirtualNode publicKey ',keyCompare);
+    // console.log(TAG,'checkAndUpdateInfoVirtualNode publicKey ',keyCompare);
     
 
     const isRegular = !_.isEqual(account?.PublicKeyCheckEncode,keyCompare);
@@ -153,7 +172,7 @@ class DetailDevice extends BaseScreen {
       console.log(TAG,'fetchData VIRTUAL_TYPE getPublicKeyRole ',stakerStatus);
 
       const listprivacyCustomToken:[] = listTokens;
-      dataResult = await VirtualDeviceService.getRewardAmount(device) ?? {};
+      dataResult = await VirtualDeviceService.getRewardFromMiningkey(device) ?? {};
       console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
       const {Result={}} = dataResult;
       const PRV = Result['PRV']??0;
@@ -398,6 +417,7 @@ class DetailDevice extends BaseScreen {
   }
   renderTop = ()=>{
     const {device,isStaked} = this.state;
+    const isCallStaked = device.isCallStaked;
     const stakeTitle = isStaked?'Stop':'Run';
     return (
       <TouchableOpacity
@@ -416,7 +436,7 @@ class DetailDevice extends BaseScreen {
           <Text style={style.top_container_title} numberOfLines={1}>{this.productName}</Text>
           <Text style={[style.group2_container_value2,Device.getStyleStatus(device.Status.code)]}>{device.statusMessage()}</Text>
         </View>
-        {device.Type === DEVICES.VIRTUAL_TYPE && !device.isOffline() && !device.isEarning()? (
+        {device.Type === DEVICES.VIRTUAL_TYPE && !device.isOffline() && !device.isEarning() && !isStaked &&!isCallStaked? (
           <Button
             titleStyle={style.group2_container_button_text}
             buttonStyle={style.group2_container_button}

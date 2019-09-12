@@ -1,13 +1,13 @@
-import { Toast, ScrollView, RefreshControl } from '@src/components/core';
+import { RefreshControl, ScrollView, Toast } from '@src/components/core';
 import HistoryList from '@src/components/HistoryList';
 import LoadingContainer from '@src/components/LoadingContainer';
+import { CONSTANT_COMMONS } from '@src/constants';
+import tokenData from '@src/constants/tokenData';
+import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
 import PropTypes from 'prop-types';
-import { CONSTANT_COMMONS } from '@src/constants';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
-import tokenData from '@src/constants/tokenData';
 
 const normalizeData = (histories, decimals, pDecimals) =>
   histories &&
@@ -102,7 +102,7 @@ class MainCryptoHistory extends Component {
     return (
       <ScrollView
         contentContainerStyle={{
-          flex: 1
+          flexGrow: 1
         }}
         refreshControl={(
           <RefreshControl
