@@ -1,38 +1,29 @@
 /**
  * @providesModule SetupWifiDevice
  */
-import routeNames from '@routers/routeNames';
-import LocalDatabase from '@utils/LocalDatabase';
-import APIService from '@services/api/miner/APIService';
-import { CONSTANT_MINER } from '@src/constants';
-import Loader from '@components/DialogLoader';
-import _ from 'lodash';
-import React from 'react';
-import {
-  Keyboard,
-  NetInfo,
-  Platform,
-  Text,
-  TextInput,
-  View
-} from 'react-native';
-import DeviceInfo from 'react-native-device-info';
 import WifiConnection from '@components/DeviceConnection/WifiConnection';
-import { connect } from 'react-redux';
-import ZMQService from 'react-native-zmq-service';
-import { Button } from 'react-native-elements';
+import routeNames from '@routers/routeNames';
+import CreateAccount from '@screens/CreateAccount';
+import APIService from '@services/api/miner/APIService';
+import DeviceConnection from '@src/components/DeviceConnection';
+import { ObjConnection } from '@src/components/DeviceConnection/BaseConnection';
+import { CONSTANT_MINER } from '@src/constants';
+import Device from '@src/models/device';
+import DeviceService from '@src/services/DeviceService';
 import Util from '@src/utils/Util';
 import { onClickView } from '@src/utils/ViewUtil';
-import { ObjConnection } from '@src/components/DeviceConnection/BaseConnection';
-import DeviceConnection from '@src/components/DeviceConnection';
-import DeviceService from '@src/services/DeviceService';
-import Device from '@src/models/device';
+import LocalDatabase from '@utils/LocalDatabase';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
-import CreateAccount from '@screens/CreateAccount';
+import React from 'react';
+import { Keyboard, NetInfo, Platform, Text, TextInput, View } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
+import { Button } from 'react-native-elements';
 import StepIndicator from 'react-native-step-indicator';
-import Account from '@src/models/account';
-import styles from './style';
+import ZMQService from 'react-native-zmq-service';
+import { connect } from 'react-redux';
 import BaseComponent from '../BaseComponent';
+import styles from './style';
 
 export const TAG = 'SetupDevice';
 const HOTPOT = 'TheMiner';
@@ -259,7 +250,14 @@ class SetupDevice extends BaseComponent {
       const {addProduct} = this.state;
       let fetchProductInfo = {};
       if (this.validWallName) {
-        fetchProductInfo = await this.updateDeviceNameRequest(addProduct.product_id,name);
+        fetchProductInfo = await this.updateDeviceNameRequest(addProduct.product_id,name)||{};
+        fetchProductInfo = {
+          ...fetchProductInfo,
+          minerInfo:{
+            isCallStaked:true
+          },
+        };
+
         const listResult =  await this.saveProductList(fetchProductInfo);
         // console.log(TAG,'handleSubmit saved - listResult = ',listResult);
       }

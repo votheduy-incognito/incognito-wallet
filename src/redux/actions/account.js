@@ -1,9 +1,9 @@
 import type from '@src/redux/types/account';
+import walletType from '@src/redux/types/wallet';
 import accountService from '@src/services/wallet/accountService';
 import { getPassphrase } from '@src/services/wallet/passwordService';
-import walletType from '@src/redux/types/wallet';
-import { tokenSeleclor }  from '../selectors';
-import { setListToken, getBalance as getTokenBalance } from './token';
+import { tokenSeleclor } from '../selectors';
+import { getBalance as getTokenBalance, setListToken } from './token';
 
 
 export const setAccount = (account = throw new Error('Account object is required')) => ({
@@ -68,6 +68,7 @@ export const setDefaultAccount = account => {
 };
 
 export const getBalance = (account) => async (dispatch, getState) => {
+  let balance = 0;
   try {
     if (!account) throw new Error('Account object is required');
 
@@ -79,13 +80,12 @@ export const getBalance = (account) => async (dispatch, getState) => {
       throw new Error('Wallet is not exist');
     }
 
-    const balance = await accountService.getBalance(account, wallet);
+    balance = await accountService.getBalance(account, wallet);
     dispatch(setAccount({
       ...account,
       value: balance
     }));
     
-    return balance;
   } catch (e) {
     account && dispatch(setAccount({
       ...account,
@@ -95,6 +95,8 @@ export const getBalance = (account) => async (dispatch, getState) => {
   } finally {
     dispatch(getBalanceFinish(account?.name));
   }
+
+  return balance??0;
 };
 
 

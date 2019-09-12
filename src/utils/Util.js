@@ -1,8 +1,8 @@
 /**
  * @providesModule Util
  */
-import { Linking } from 'react-native';
 import _ from 'lodash';
+import { Linking } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
 
 const TAG = 'Util';
@@ -100,13 +100,13 @@ export default class Util {
   }
 
    static tryAtMost=async (promiseFunc, count = 6) =>{
-     if (count > 0) {
+     if (count > 0 && promiseFunc ) {
        const result = await promiseFunc().catch(e => e);
        console.log(`tryAtMost result = ${result}, count = ${count}`);
        if (result instanceof Error) { return await Util.tryAtMost(promiseFunc, count - 1); }
        return result;
      }
-     return Promise.reject(`Tried ${6} times and failed`);
+     return Promise.reject(`Tried ${count} times and failed`);
    };
 
   static excuteWithTimeout = (promise, timeSecond = 1) => {

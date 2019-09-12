@@ -1,12 +1,11 @@
 /**
  * @providesModule APIService
  */
-import React from 'react';
-import {  NetInfo } from 'react-native';
-import LocalDatabase from '@utils/LocalDatabase';
 import User from '@models/user';
-import _ from 'lodash';
 import { CONSTANT_MINER } from '@src/constants';
+import LocalDatabase from '@utils/LocalDatabase';
+import _ from 'lodash';
+import { NetInfo } from 'react-native';
 import API from './api';
 
 let AUTHORIZATION_FORMAT = 'Autonomous';
@@ -34,7 +33,7 @@ export default class APIService {
   static async getURL(method, url, params, isLogin,isBuildFormData = true) {
     
     console.log(TAG,'getURL :', url);
-    console.log(TAG,'getURL Params:', params);
+    // console.log(TAG,'getURL Params:', params);
     let header = {};
     let user = {};
     const isConnected = await NetInfo.isConnected.fetch();
@@ -63,7 +62,7 @@ export default class APIService {
           headers: header
         });
 
-        console.log(TAG,'getURL Header: ', header);
+        // console.log(TAG,'getURL Header: ', header);
         // console.log(TAG,'getURL Res:', res);
         // if (!res.ok) {
         //   // throw new Error(res.statusText);
@@ -79,7 +78,7 @@ export default class APIService {
           return resJson;
         }else if (res.status == 401){
 
-          let response = await this.handleRefreshToken(method, url, params, isLogin, user);
+          let response = await APIService.handleRefreshToken(method, url, params, isLogin, user);
           return response;
         }else {
           return {status: 0, data: ''} ;
@@ -108,7 +107,7 @@ export default class APIService {
 
             if (k == 'image' || k== 'image_file'){
               isUpload = true;
-              //const isExist = await this.isExist(params[k])
+              //const isExist = await APIService.isExist(params[k])
               //console.log('File exist:', isExist)
               var photo = {
                 uri: params[k],
@@ -136,9 +135,9 @@ export default class APIService {
           headers: header,
           body:formData
         });
-        console.log('Response:', res);
-        console.log('Header: ', header);
-        console.log('Resonse Status:', res.status);
+        // console.log('Response:', res);
+        // console.log('Header: ', header);
+        // console.log('Resonse Status:', res.status);
         if (res && res.error){
           //throw new Error(res.error);
           return {status: 0, data: ''} ;
@@ -149,7 +148,7 @@ export default class APIService {
           return resJson;
         }else if (res.status == 401){
 
-          let response = await this.handleRefreshToken(method, url, params, isLogin, user);
+          let response = await APIService.handleRefreshToken(method, url, params, isLogin, user);
           return response;
         }else {
           return {status: 0, data: ''} ;
@@ -181,7 +180,7 @@ export default class APIService {
           return resJson;
         }else if (res.status == 401){
 
-          let response = await this.handleRefreshToken(method, url, params, isLogin, user);
+          let response = await APIService.handleRefreshToken(method, url, params, isLogin, user);
           return response;
         }else {
           return {status: 0, data: ''} ;
@@ -221,7 +220,7 @@ export default class APIService {
           const {token} = data;
           user.token = token;
         
-          let response =  await this.getURL(method, url, params, isLogin);
+          let response =  await APIService.getURL(method, url, params, isLogin);
   
           return response;
         }else {
@@ -229,7 +228,7 @@ export default class APIService {
         }
         
       }else if (res.status == 401){
-        return this.handleRefreshToken(user);
+        return APIService.handleRefreshToken(user);
       }
     }catch(error){
       console.log('Error:', error);

@@ -45,13 +45,14 @@ class HomeMineItem extends React.Component {
   componentDidUpdate(prevProps,prevState){
     const {item,timeToUpdate} = this.props;
     let isUpdateInfo = false;
-    if(!_.isEqual(item,prevProps?.item)){
-      console.log(TAG,'componentDidUpdate begin 010101');
-      this.getInfo();
-      isUpdateInfo = true;
-    }
-    if(!_.isEqual(prevProps.timeToUpdate,timeToUpdate)){
+    // if(!_.isEqual(item,prevProps?.item)){
+    //   console.log(TAG,'componentDidUpdate begin 010101');
+    //   this.getInfo();
+    //   isUpdateInfo = true;
+    // }
+    if(!_.isEqual(prevProps.timeToUpdate,timeToUpdate) || !_.isEqual(item,prevProps?.item)){
       console.log(TAG,'componentDidUpdate begin timeToUpdate = ',timeToUpdate);
+      this.getInfo();
       isUpdateInfo =  !isUpdateInfo && this.getInfo();
       this.checkActive();
     }
@@ -63,27 +64,13 @@ class HomeMineItem extends React.Component {
     this.checkActive();
   }
   getInfo = async ()=>{
-    const {item,isActive,getAccountByName,wallet} = this.props;
+    const {getAccountByName,wallet} = this.props;
     let {deviceInfo,account,balance} = this.state;
-    if(!_.isEmpty(item)){
-      switch(deviceInfo.Type){
-      case DEVICES.VIRTUAL_TYPE:{
-        let dataResult = await VirtualDeviceService.getRewardAmount(deviceInfo) ?? {};
-        // console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
-        const {Result={}} = dataResult;
-        const PRV = Result['PRV']??0;
-        // balance = convert.toHumanAmount(Result['PRV'],common.DECIMALS['PRV']);
-        balance =  format.amount(PRV,common.DECIMALS['PRV']);
-        balance = _.isNaN(balance)?0:balance;
-        break;
-      }
-      default:{
-        account = await getAccountByName(deviceInfo.accountName());
-        balance = await deviceInfo.balance(account,wallet);
-      }
-      }
-      
-    }
+    account = await getAccountByName(deviceInfo.accountName());
+
+    balance = await Device.getRewardAmount(deviceInfo,wallet); 
+    // balance =  format.amount(_.isNaN(balance)?0:balance,common.DECIMALS['PRV']);
+    balance = Device.formatForDisplayBalance(balance);
     this.setState({
       account:account,
       balance:balance
@@ -98,12 +85,6 @@ class HomeMineItem extends React.Component {
       let dataResult = {};
       switch(deviceInfo.Type){
       case DEVICES.VIRTUAL_TYPE:{
-        // dataResult = await VirtualDeviceService.getMininginfo(deviceInfo).catch(err=>{
-        //   console.log(TAG,'checkActive error VIRTUAL_TYPE');
-        //   this.setDeviceOffline();
-        // })||{};
-        // const shardId = dataResult.Result?.ShardID ?? undefined;
-        // console.log(TAG,'checkActive shardID ',shardId);
         dataResult = await VirtualDeviceService.getChainMiningStatus(deviceInfo) ?? {};
         console.log(TAG,'checkActive VIRTUAL_TYPE ',dataResult);
         break;
@@ -113,7 +94,6 @@ class HomeMineItem extends React.Component {
           console.log(TAG,'checkActive error');
           this.setDeviceOffline();
         })||{};
-        
       }
       }
       // console.log(TAG,'checkActive begin 010101');

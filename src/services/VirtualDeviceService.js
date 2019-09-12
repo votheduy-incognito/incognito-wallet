@@ -1,18 +1,18 @@
 /* eslint-disable import/no-cycle */
-import Action from '@src/models/Action';
-import _ from 'lodash';
+import Device, { DATA_INFO } from '@src/models/device';
 import Util from '@src/utils/Util';
-import Device,{DEVICE_STATUS} from '@src/models/device';
-import APIService,{METHOD} from './api/miner/APIService';
+import _ from 'lodash';
+import APIService, { METHOD } from './api/miner/APIService';
 
 const TAG = 'VirtualDeviceService';
-const DATA_INFO = [ {'status':'offline', 'message':'ready','code':DEVICE_STATUS.CODE_START},
-  {'status':'syncing', 'message':'syncing','code':DEVICE_STATUS.CODE_SYNCING},
-  {'status':'ready', 'message':'ready','code':DEVICE_STATUS.CODE_START},
-  {'status':'mining', 'message':'earning','code':DEVICE_STATUS.CODE_MINING},
-  {'status':'pending', 'message':'waiting to be selected','code':DEVICE_STATUS.CODE_PENDING},
-  {'status':'notmining', 'message':'ready','code':DEVICE_STATUS.CODE_START}];
+// const DATA_INFO = [ {'status':'offline', 'message':'ready','code':DEVICE_STATUS.CODE_START},
+//   {'status':'syncing', 'message':'syncing','code':DEVICE_STATUS.CODE_SYNCING},
+//   {'status':'ready', 'message':'ready','code':DEVICE_STATUS.CODE_START},
+//   {'status':'mining', 'message':'earning','code':DEVICE_STATUS.CODE_MINING},
+//   {'status':'pending', 'message':'waiting to be selected','code':DEVICE_STATUS.CODE_PENDING},
+//   {'status':'notmining', 'message':'ready','code':DEVICE_STATUS.CODE_START}];
 const timeout = 8;
+const PREFIX_BLS_PARAMS = 'bls:';
 export const LIST_ACTION={
   GET_PUBLIC_KEY_ROLE:{
     key:'getpublickeyrole',
@@ -45,11 +45,24 @@ export const LIST_ACTION={
   },
   GET_REWARD_AMOUNT:{
     key:'getrewardamount',
-    data:{
-      'jsonrpc': '1.0',
-      'method': 'getrewardamount',
-      'params': [''],
-      'id':1
+    data:({paymentAddress=''})=>{
+      return {
+        'jsonrpc': '1.0',
+        'method': 'getrewardamount',
+        'params': [paymentAddress],
+        'id': 1
+      };
+    }
+  },
+  GET_MINER_REWARD_FROM_MINING_KEY:{
+    key:'getminerrewardfromminingkey',
+    data:({blsData=''})=>{
+      return {
+        'jsonrpc': '1.0',
+        'method': 'getminerrewardfromminingkey',
+        'params': [blsData],
+        'id': 1
+      };
     }
   },
   GET_MINING_INFO:{
@@ -90,6 +103,10 @@ export default class VirtualDeviceService {
     }
   }
 
+  /**
+   * 
+   * return [string]:[bls:key....]
+   */
   static getPublicKeyMining = async(device:Device)=>{
     try {
       let apiURL = VirtualDeviceService.buildURL(device);
@@ -122,7 +139,7 @@ export default class VirtualDeviceService {
         if(!_.isEmpty(blsKey)){
 
           apiURL = `${apiURL}/${LIST_ACTION.GET_PUBLIC_KEY_ROLE.key}`;
-          const buildParams = LIST_ACTION.GET_PUBLIC_KEY_ROLE.data([`bls:${blsKey}`]);
+          const buildParams = LIST_ACTION.GET_PUBLIC_KEY_ROLE.data([`${PREFIX_BLS_PARAMS}${blsKey}`]);
           const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),3);
       
           console.log(TAG,'getPublicKeyRole result',response);
@@ -159,10 +176,10 @@ export default class VirtualDeviceService {
 
   static getRewardAmount = async(device:Device)=>{
     try {
-      let apiURL = VirtualDeviceService.buildURL(device);
+      let apiURL = VirtualDeviceService.buildURL(device,false);
       if(!_.isEmpty(apiURL)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_REWARD_AMOUNT.key}`;
-        const buildParams = LIST_ACTION.GET_REWARD_AMOUNT.data;
+        const buildParams = LIST_ACTION.GET_REWARD_AMOUNT.data({paymentAddress:''});
         const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),3);
       
         console.log(TAG,'getRewardAmount result',response);
@@ -173,6 +190,26 @@ export default class VirtualDeviceService {
     }
   }
 
+  static getRewardFromMiningkey = async(device:Device)=>{
+    try {
+      let blsKey = await VirtualDeviceService.getPublicKeyMining(device).catch(err=>{
+        console.log(TAG,'getRewardFromMiningkey getPublicKeyMining error');
+      })||'';
+      
+      let apiURL = VirtualDeviceService.buildURL(device,true);
+      if(!_.isEmpty(apiURL)){
+        apiURL = `${apiURL}/${LIST_ACTION.GET_MINER_REWARD_FROM_MINING_KEY.key}`;
+        const buildParams = LIST_ACTION.GET_MINER_REWARD_FROM_MINING_KEY.data({blsData:`${PREFIX_BLS_PARAMS}${blsKey}`});
+        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),3);
+      
+        console.log(TAG,'getRewardFromMiningkey result',response);
+        return response;
+      }
+    } catch (error) {
+      console.log(TAG,'getRewardFromMiningkey error',error);
+    }
+  }
+  
   static getChainMiningStatus = async(device:Device)=>{
     let dataResponseCombinded = {'status': Device.offlineStatus()};
     try {
@@ -206,7 +243,8 @@ export default class VirtualDeviceService {
     }
   }
 
-  static buildURL=(device:Device)=>{
-    return !_.isEmpty(device?.APIUrl) ?`http://${device.APIUrl}`:'';
+  static buildURL=(device:Device,isFullNode= false)=>{
+    return isFullNode?'https://test-node.incognito.org':`http://${device.APIUrl??''}`;
+    // return isFullNode?'http://192.168.1.188:9334':`http://${device.APIUrl??''}`;
   }
 }

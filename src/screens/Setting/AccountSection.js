@@ -1,17 +1,17 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { View, TouchableOpacity, Text, Divider, Alert, Toast } from '@src/components/core';
-import Swipeout from 'react-native-swipeout';
+import { Alert, Divider, Text, Toast, TouchableOpacity, View } from '@src/components/core';
 import OptionMenu from '@src/components/OptionMenu';
+import { getBalance as getAccountBalance, reloadAccountFollowingToken, removeAccount, setDefaultAccount } from '@src/redux/actions/account';
 import { accountSeleclor } from '@src/redux/selectors';
+import ROUTE_NAMES from '@src/router/routeNames';
+import { COLORS } from '@src/styles';
+import { onClickView } from '@src/utils/ViewUtil';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Swipeout from 'react-native-swipeout';
 import Icons from 'react-native-vector-icons/Entypo';
 import FIcons from 'react-native-vector-icons/Feather';
 import MdIcons from 'react-native-vector-icons/MaterialIcons';
-import ROUTE_NAMES from '@src/router/routeNames';
-import { setDefaultAccount, reloadAccountFollowingToken, getBalance as getAccountBalance, removeAccount } from '@src/redux/actions/account';
-import { COLORS } from '@src/styles';
-import { onClickView } from '@src/utils/ViewUtil';
+import { connect } from 'react-redux';
 import Section from './Section';
 import { accountSection } from './style';
 
@@ -39,7 +39,7 @@ const createItem = (account, onSwitch, onExport, onDelete, isActive) => (
 const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAccount, reloadAccountFollowingToken, getAccountBalance, removeAccount }) => {
   const onHandleSwitchAccount = onClickView(async account => {
     try {
-      setDefaultAccount(account);
+      await setDefaultAccount(account);
       await getAccountBalance(account);
       await reloadAccountFollowingToken(account);
     } catch {

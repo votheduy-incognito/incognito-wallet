@@ -1,12 +1,11 @@
 import routeNames from '@routers/routeNames';
 import BaseScreen from '@screens/BaseScreen';
-import _ from 'lodash';
-import React from 'react';
-import { Image, Text, View } from 'react-native';
-import { CheckBox, Icon, ListItem } from 'react-native-elements';
-import { connect } from 'react-redux';
 import images from '@src/assets';
 import { onClickView } from '@src/utils/ViewUtil';
+import React from 'react';
+import { Image, View } from 'react-native';
+import { ListItem } from 'react-native-elements';
+import { connect } from 'react-redux';
 import styles, { rightNextIcon } from './styles';
 
 export const TAG = 'AddNode';
@@ -18,7 +17,7 @@ const listItems = [
   },
   {
     title:'Virtual Node',
-    subTitle:'Run a virtual node on your computer',
+    subTitle:' Run a virtual node',
     img :images.ic_add_self_node,
   },
   // {

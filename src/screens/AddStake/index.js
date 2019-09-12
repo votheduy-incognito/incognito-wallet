@@ -1,17 +1,15 @@
 import BaseScreen from '@screens/BaseScreen';
+import BorrowStake from '@src/components/BorrowStake';
+import { createForm, InputQRField } from '@src/components/core/reduxForm';
+import SelfStaking from '@src/components/SelfStaking';
+import Device from '@src/models/device';
+import LocalDatabase from '@src/utils/LocalDatabase';
 import _ from 'lodash';
 import React from 'react';
-import { ScrollView, Text, View,TextInput } from 'react-native';
+import { View } from 'react-native';
+import { ButtonGroup } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { Button,ButtonGroup } from 'react-native-elements';
-import { scaleInApp } from '@src/styles/TextStyle';
-import StakeValidatorTypeSelector from '@src/components/StakeValidatorTypeSelector/StakeValidatorTypeSelector';
-import { createForm, InputField, InputQRField, validator } from '@src/components/core/reduxForm';
-import { Field } from 'redux-form';
-import EstimateFee from '@src/components/EstimateFee/EstimateFee';
-import BorrowStake from '@src/components/BorrowStake';
-import SelfStaking from '@src/components/SelfStaking';
-import style, { tab_border_radius } from './styles';
+import style from './styles';
 
 const buttons = ['Stake', 'Borrow & Stake'];
 const formName = 'addErc20Token';
@@ -77,7 +75,15 @@ class AddStake extends BaseScreen {
     
     return (selectedIndex === 1?<BorrowStake />: (
       <SelfStaking
-        onCallBackStaked={(rs)=>{
+        onCallBackStaked={async (rs)=>{
+          const minerAccountName = accountInfo?.minerAccountName||'';
+          if(!_.isEmpty(minerAccountName)){
+          // get list device 
+            let listDevice = await LocalDatabase.getListDevices()||[];
+            const deviceIndex =  listDevice.findIndex(item=>_.isEqual(Device.getInstance(item).accountName(),minerAccountName));
+            if(deviceIndex>=0) listDevice[deviceIndex].minerInfo['isCallStaked'] = true;
+            await LocalDatabase.saveListDevices(listDevice);
+          }
           this.onPressBack();
         }}
         minerAccountName={accountInfo.minerAccountName}
