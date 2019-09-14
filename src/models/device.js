@@ -41,7 +41,7 @@ export const template = {
   
   product_type:DEVICES.MINER_TYPE
 };
-
+const TAG = 'Device';
 export default class Device {
   static CODE_UNKNOWN = DEVICE_STATUS.CODE_UNKNOWN;
   static CODE_STOP = DEVICE_STATUS.CODE_STOP;
@@ -165,6 +165,7 @@ export default class Device {
         
         const {Result={}} = dataResult;
         balance = Result['PRV']??0;
+        
         break;
       }
       default:{
@@ -174,6 +175,7 @@ export default class Device {
     }
     
     balance = _.isNaN(balance)?0:balance;
+    console.log(TAG,'getRewardAmount balance = ',balance);
     return balance;
   }
   static formatForDisplayBalance = (balance:Number)=>{

@@ -1,21 +1,18 @@
-import PropTypes from 'prop-types';
-import React  from 'react';
-import { View, Text,Image,TouchableOpacity } from 'react-native';
 import images from '@src/assets';
-import _ from 'lodash';
-import ViewUtil from '@src/utils/ViewUtil';
-import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
+import { DEVICES } from '@src/constants/miner';
 import Device from '@src/models/device';
 import { accountSeleclor } from '@src/redux/selectors';
-import { connect } from 'react-redux';
-import { DEVICES } from '@src/constants/miner';
+import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
 import VirtualDeviceService from '@src/services/VirtualDeviceService';
-import convert from '@src/utils/convert';
-import common from '@src/constants/common';
 import LocalDatabase from '@src/utils/LocalDatabase';
-import format from '@src/utils/format';
-import styles from './style';
+import ViewUtil from '@src/utils/ViewUtil';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { connect } from 'react-redux';
 import { Alert } from '../core';
+import styles from './style';
 
 const TAG = 'HomeMineItem';
 class HomeMineItem extends React.Component {
@@ -53,7 +50,7 @@ class HomeMineItem extends React.Component {
     if(!_.isEqual(prevProps.timeToUpdate,timeToUpdate) || !_.isEqual(item,prevProps?.item)){
       console.log(TAG,'componentDidUpdate begin timeToUpdate = ',timeToUpdate);
       this.getInfo();
-      isUpdateInfo =  !isUpdateInfo && this.getInfo();
+      // isUpdateInfo =  !isUpdateInfo && this.getInfo();
       this.checkActive();
     }
     
@@ -66,11 +63,14 @@ class HomeMineItem extends React.Component {
   getInfo = async ()=>{
     const {getAccountByName,wallet} = this.props;
     let {deviceInfo,account,balance} = this.state;
+    console.log(TAG,'getInfo id = ',deviceInfo.Name);
     account = await getAccountByName(deviceInfo.accountName());
 
     balance = await Device.getRewardAmount(deviceInfo,wallet); 
     // balance =  format.amount(_.isNaN(balance)?0:balance,common.DECIMALS['PRV']);
+    
     balance = Device.formatForDisplayBalance(balance);
+    console.log(TAG,'getInfo balance format = ',balance);
     this.setState({
       account:account,
       balance:balance

@@ -148,13 +148,17 @@ class HomeMine extends BaseScreen {
         let list: [] = await this.getListLocalDevice();
         // list = _.isEmpty(list)?await this.fetchProductList():list.reverse();
         list = list.reverse();
-        list.forEach(async item=>{
-          balance += (await Device.getRewardAmount(Device.getInstance(item),wallet));
-        });
+        for(let index =0 ;index < list.length;index ++){
+          const item = list[index];
+          const temp = await Device.getRewardAmount(Device.getInstance(item),wallet);
+          balance += temp;
+          // console.log(TAG, 'handleRefresh -------forEach-- balance = ', balance,temp);
+        }
+        
         // let list: [] = await this.fetchProductList();
         // list = _.isEmpty(list)?await this.getListLocalDevice():list.reverse();
         // let list: [];
-        console.log(TAG, 'handleRefresh list = ', list);
+        console.log(TAG, 'handleRefresh balance = ', balance);
         this.setState({
           listDevice: list,
           balancePRV:Device.formatForDisplayBalance(balance??0),
@@ -294,7 +298,7 @@ class HomeMine extends BaseScreen {
                 reloadList={()=>{
                   this.onResume();
                 }}
-                timeToUpdate={index === 0?timeToUpdate:0}
+                timeToUpdate={timeToUpdate}
                 onPress={this.handleItemDevicePress}
                 isActive
                 containerStyle={style.itemList}
