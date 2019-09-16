@@ -2,6 +2,7 @@ import { ActivityIndicator, Text, View } from '@src/components/core';
 import accountService from '@src/services/wallet/accountService';
 import { COLORS } from '@src/styles';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Modal } from 'react-native';
 import styleSheet from './style';
 
@@ -46,6 +47,8 @@ class LoadingTx extends Component {
 
   render() {
     const { open, percent } = this.state;
+    const { text } = this.props;
+
     return (
       <Modal animationType="fade" transparent visible={open}>
         <View style={styleSheet.container}>
@@ -53,6 +56,9 @@ class LoadingTx extends Component {
           <Text style={styleSheet.percent}>
             {percent}
             <Text style={styleSheet.percentSymbol}> %</Text>
+          </Text>
+          <Text style={[styleSheet.desc, styleSheet.extraDesc]}>
+            {text}
           </Text>
           <Text style={styleSheet.desc}>
             Please wait, this window will close when complete
@@ -63,8 +69,12 @@ class LoadingTx extends Component {
   }
 }
 
-LoadingTx.defaultProps = {};
+LoadingTx.defaultProps = {
+  text: '',
+};
 
-LoadingTx.propTypes = {};
+LoadingTx.propTypes = {
+  text: PropTypes.string,
+};
 
 export default LoadingTx;

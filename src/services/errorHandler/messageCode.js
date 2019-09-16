@@ -14,6 +14,7 @@ const code = {
   withdraw_failed: Symbol(),
   balance_must_not_be_zero: Symbol(),
   estimate_fee_failed: Symbol(),
+  pending_transactions: Symbol(),
 };
 
 const message = {
@@ -34,7 +35,10 @@ const message = {
   [code.gen_withdraw_address_failed]: 'Can not get withdraw address, please try again.',
   [code.withdraw_failed]: 'Can not withdraw, please try again.',
   [code.balance_must_not_be_zero]: 'Your balance is zero, please check again.',
-  [code.estimate_fee_failed]: 'Estimate fee failed, please try again.'
+  [code.estimate_fee_failed]: 'Estimate fee failed, please try again.',
+
+  // game
+  [code.pending_transactions]: 'Player has pending transactions.',
 };
 
 export default {

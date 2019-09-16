@@ -16,6 +16,14 @@ export default StyleSheet.create({
     ...THEME.opacityButton.button,
     backgroundColor: COLORS.red
   },
+  primaryStyle: {
+    ...THEME.opacityButton.button,
+    backgroundColor: COLORS.blue,
+  },
+  secondaryStyle: {
+    ...THEME.opacityButton.button,
+    backgroundColor: COLORS.dark3,
+  },
   loadingIcon: {
     marginHorizontal: 2,
   },

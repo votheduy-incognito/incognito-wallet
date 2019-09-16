@@ -150,6 +150,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-sensors')
+    implementation project(':react-native-sound')
     implementation project(':react-native-zmq-service')
     implementation project(':react-native-iot-wifi')
     implementation project(':react-native-firebase')
@@ -172,6 +174,10 @@ dependencies {
     implementation "com.google.firebase:firebase-auth:17.0.0"
     implementation "com.google.firebase:firebase-database:17.0.0"
     implementation "com.google.firebase:firebase-messaging:18.0.0"
+
+    // For animated GIF support
+    implementation 'com.facebook.fresco:fresco:1.12.0'
+    implementation 'com.facebook.fresco:animated-gif:1.12.0'
 }
 
 // Run this once to be able to run the application with BUCK

@@ -1,5 +1,6 @@
 // import 'intl';
 // import 'intl/locale-data/jsonp/en';
+import 'react-native-console-time-polyfill';
 import QrScanner from '@src/components/QrCodeScanner';
 import AppScreen from '@src/components/AppScreen';
 import { Toast } from '@src/components/core';

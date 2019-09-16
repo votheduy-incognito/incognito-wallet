@@ -14,6 +14,9 @@ const style = StyleSheet.create({
     textAlign: 'center',
     width: 200
   },
+  extraDesc: {
+    marginBottom: 10,
+  },
   percent: {
     color: COLORS.white,
     fontSize: FONT.SIZE.medium,
