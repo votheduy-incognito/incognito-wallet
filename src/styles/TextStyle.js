@@ -1,5 +1,5 @@
-import { Dimensions, Platform, StatusBar, StyleSheet } from 'react-native';
-import { scale,verticalScale } from 'react-native-size-matters';
+import { Dimensions, StatusBar, StyleSheet } from 'react-native';
+import { verticalScale } from 'react-native-size-matters';
 import colors from './colors';
 import font from './font';
 
@@ -12,7 +12,7 @@ export const screenSize = {
 export const scaleInApp = verticalScale;
 
 export const FontStyle = {
-  ...font
+  ...font.STYLE
 };
 const textColor = colors.white;
 const TextStyle = StyleSheet.create({

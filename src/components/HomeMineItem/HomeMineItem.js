@@ -61,14 +61,14 @@ class HomeMineItem extends React.Component {
     this.checkActive();
   }
   getInfo = async ()=>{
-    const {getAccountByName,wallet} = this.props;
+    const {getAccountByName,wallet,callbackReward} = this.props;
     let {deviceInfo,account,balance} = this.state;
     console.log(TAG,'getInfo id = ',deviceInfo.Name);
     account = await getAccountByName(deviceInfo.accountName());
 
     balance = await Device.getRewardAmount(deviceInfo,wallet); 
     // balance =  format.amount(_.isNaN(balance)?0:balance,common.DECIMALS['PRV']);
-    
+    callbackReward(balance);
     balance = Device.formatForDisplayBalance(balance);
     console.log(TAG,'getInfo balance format = ',balance);
     this.setState({
@@ -176,7 +176,8 @@ HomeMineItem.defaultProps = {
   isActive:false,
   onPress:(item)=>{},
   timeToUpdate:0,
-  reloadList:()=>{}
+  reloadList:()=>{},
+  callbackReward:(amount:Number)=>{}
 };
 
 HomeMineItem.propTypes = {
@@ -187,7 +188,8 @@ HomeMineItem.propTypes = {
   isActive:PropTypes.bool,
   timeToUpdate:PropTypes.number,
   onPress:PropTypes.func,
-  reloadList:PropTypes.func
+  reloadList:PropTypes.func,
+  callbackReward:PropTypes.func,
 };
 const mapDispatch = { };
 

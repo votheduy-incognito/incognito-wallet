@@ -1,8 +1,8 @@
-import { StyleSheet,Image } from 'react-native';
-import TextStyle, { scaleInApp, FontStyle, screenSize } from '@src/styles/TextStyle';
 import images from '@src/assets';
-import { limitRatioImageTop, calculateTopBgImage } from '@src/components/Container/style';
+import { calculateTopBgImage, limitRatioImageTop } from '@src/components/Container/style';
 import { sizeHeader } from '@src/components/HeaderBar/style';
+import TextStyle, { FontStyle, scaleInApp, screenSize } from '@src/styles/TextStyle';
+import { Image, StyleSheet } from 'react-native';
 
 const sizeImageDevice = Image.resolveAssetSource(images.bg_top_device);
 const sizeBackgroundImage = Image.resolveAssetSource(images.bg_top_detail);
@@ -62,6 +62,13 @@ const style = StyleSheet.create({
     marginHorizontal: scaleInApp(20),
     marginVertical:scaleInApp(5),
     height:scaleInApp(60),
+  },
+  top_right_container:{
+  },
+  advance_text:{
+    ...TextStyle.mediumText,
+    color: '#25CDD6',
+    textDecorationLine:'underline'
   },
   top_container_group:{
     flex:1,
@@ -147,7 +154,39 @@ const style = StyleSheet.create({
   group2_container_button_text:{
     ...TextStyle.mediumText,
     color: '#FFFFFF',
-  }
+  },
+  dialog_title_text: {
+    ...TextStyle.bigText,
+    ...FontStyle.medium,
+    alignSelf:'center',
+    color:'#1C1C1C',
+  },
+  dialog_content_text: {
+    ...TextStyle.normalText,
+    color:'#1C1C1C',
+    textAlignVertical:'center',
+    textAlign:'center',
+  },
+  dialog_content: {
+    flex:1,
+    alignItems:'center',
+    justifyContent:'center',
+  },
+  dialog_container:{
+    flex:1,
+    paddingVertical:scaleInApp(20),
+    paddingHorizontal:scaleInApp(30),
+  },
+  dialog_button:{
+    backgroundColor:'#25CDD6',
+    borderRadius:scaleInApp(4),
+    padding:scaleInApp(10)
+  },
+  textTitleButton:{
+    ...TextStyle.mediumText,
+    ...FontStyle.medium,
+    color:'#FFFFFF'
+  },
 });
 
 export default style;
