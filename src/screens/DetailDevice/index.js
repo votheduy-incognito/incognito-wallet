@@ -21,7 +21,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Button } from 'react-native-elements';
+import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import { connect } from 'react-redux';
+import AdvanceOption from './AdvanceOption';
 import style from './style';
 
 export const TAG = 'DetailDevice';
@@ -49,10 +51,12 @@ class DetailDevice extends BaseScreen {
       accountMiner:{},
       isStaked:undefined,
       wallet:wallet,
+      isShowMessage:false,
       balancePRV:0,
       listFollowingTokens:[],
       device: device
     };
+    this.advanceOptionView = React.createRef();
     this.viewCreateAccount = React.createRef();
     navigation.setParams({ title: this.titleBar });
   }
@@ -65,7 +69,7 @@ class DetailDevice extends BaseScreen {
     // this.fetchData();
   }
 
-  onResume= async ()=>{
+  onResume = async ()=>{
     console.log(TAG,'onResume begin');
     const {device } = this.state;
     const product_id = device.data.product_id;
@@ -139,8 +143,8 @@ class DetailDevice extends BaseScreen {
         userId: 0,
         verified: true };
     
-      console.log(TAG,'createListFollowingToken begin findd ---  ',ObjFinded);
-      amount = format.amount(result[value],ObjFinded['pDecimals']??common.DECIMALS[value]);
+      // console.log(TAG,'createListFollowingToken begin findd ---  ',ObjFinded);
+      amount = format.amountFull(result[value],ObjFinded['pDecimals']??common.DECIMALS[value]);
       amount = _.isNaN(amount)?0:amount;
       return {
         ...ObjFinded,
@@ -428,7 +432,6 @@ class DetailDevice extends BaseScreen {
             DeviceService.pingGetIP(device).then(data=>{
               this.showToastMessage('ping IP ' +JSON.stringify(data));
             });
-          
           }
         }}
       >
@@ -436,6 +439,13 @@ class DetailDevice extends BaseScreen {
           <Text style={style.top_container_title} numberOfLines={1}>{this.productName}</Text>
           <Text style={[style.group2_container_value2,Device.getStyleStatus(device.Status.code)]}>{device.statusMessage()}</Text>
         </View>
+        {/* <TouchableOpacity onPress={()=>{
+          // this.advanceOptionView?.current.open();
+          this.setState({isShowMessage:true});
+        }}
+        >
+          <Text style={[style.top_right_container,style.advance_text]} numberOfLines={1}>Advance</Text>
+        </TouchableOpacity> */}
         {device.Type === DEVICES.VIRTUAL_TYPE && !device.isOffline() && !device.isEarning() && !isStaked &&!isCallStaked? (
           <Button
             titleStyle={style.group2_container_button_text}
@@ -447,7 +457,11 @@ class DetailDevice extends BaseScreen {
                 if(!_.isEmpty(accountMiner)){
                   await this.handlePressStake();
                 }else{
-                  this.showToastMessage('None of your keys are linked to this node.Please import the node`s private key');
+                  this.setState({
+                    isShowMessage:true
+                  });
+                  
+                  // this.showToastMessage('None of your keys are linked to this node.Please import the node`s private key');
                 }
               }else{
               // udpdate status at local
@@ -457,6 +471,37 @@ class DetailDevice extends BaseScreen {
           />
         ):null}
       </TouchableOpacity>
+    );
+  }
+
+  renderDialogNotify =()=>{
+    const {isShowMessage} = this.state;
+    return (
+      <Dialog
+        width={0.8}
+        height={0.35}
+        visible={isShowMessage}
+        onTouchOutside={() => {
+          this.setState({ isShowMessage: false });
+        }}
+      >
+        <DialogContent style={style.dialog_container}>
+          <Text style={style.dialog_title_text}>Import private key</Text>
+          <View style={style.dialog_content}>
+            <Text style={style.dialog_content_text}>No keys are currently linked to this node. Please import a private key.</Text>
+          </View>
+          <Button
+            titleStyle={style.textTitleButton}
+            buttonStyle={style.dialog_button}
+            onPress={onClickView(()=>{
+              this.setState({ isShowMessage: false });
+              this.goToScreen(routeNames.ImportAccount);
+            })}
+            title='Import'
+          />
+        </DialogContent>
+       
+      </Dialog>
     );
   }
 
@@ -473,6 +518,7 @@ class DetailDevice extends BaseScreen {
     return (
       <Container styleContainScreen={{paddingHorizontal:0}} styleRoot={style.container} backgroundTop={{source:bgRootTop,style:[style.imageTop,{backgroundColor:'#01828A'}]}}>
         {this.renderHeader()}
+        <AdvanceOption ref={this.advanceOptionView}  />
         <Image style={style.bg_top} source={bgTop} />
         <DialogLoader loading={loading} />
         <View style={{width: 0,height: 0,display:'none'}}>
@@ -480,58 +526,9 @@ class DetailDevice extends BaseScreen {
         </View>
         <ScrollView>
           {this.renderTop()}
-          {/* <ListItem
-            containerStyle={style.top_container}
-            hideChevron
-            // rightElement={_.isEqual(device.Type,DEVICES.MINER_TYPE) && (
-            //   <Button
-            //     type="outline"
-            //     buttonStyle={style.top_button_action}
-            //     icon={{
-            //       size: 15,name:device.isStartedChain()?'control-pause' :'control-play', type:'simple-line-icon', color:'black'
-            //     }}
-            //     disabled={isOffline}
-            //     onPress={this.handleSwitchIncognito}
-            //     title={null}
-            //   />
-            // )}
-            leftElement={()=>{
-              const {device} = this.state;
-              return (
-                <View style={style.group2_container_container}>
-                  <Text style={style.top_container_title}>{this.productName}</Text>
-                  <Text style={style.group2_container_title2}>STATUS <Text style={[style.group2_container_value2,Device.getStyleStatus(device.Status.code)]}>{device.statusMessage()}</Text></Text>
-                </View>
-              );
-            }}
-            rightElement={()=>{
-              const {device,isStaked} = this.state;
-              const stakeTitle = isStaked?'Pause':'Play';
-              return (
-                <Button
-                  titleStyle={style.group2_container_button_text}
-                  buttonStyle={style.group2_container_button}
-                  title={stakeTitle}
-                  onPress={onClickView( async()=>{
-                    await this.handlePressStake();
-                  })}
-                />
-              );
-            }}
-            onPress={()=>{
-              if(__DEV__){
-                const {device} = this.state;
-                DeviceService.pingGetIP(device).then(data=>{
-                  this.showToastMessage('ping IP ' +JSON.stringify(data));
-                });
-                
-              }
-            }}
-          
-          /> */}
           {this.renderGroupBalance()}
           {!_.isEmpty(listFollowingTokens) &&<HistoryMined containerStyle={style.group2_container} listItems={listFollowingTokens} />}
-          
+          {this.renderDialogNotify()}
         </ScrollView>
       </Container>
     );

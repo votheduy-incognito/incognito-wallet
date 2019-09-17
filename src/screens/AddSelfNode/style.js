@@ -1,5 +1,5 @@
+import TextStyle, { FontStyle, scaleInApp } from '@src/styles/TextStyle';
 import { StyleSheet } from 'react-native';
-import TextStyle, { scaleInApp, FontStyle } from '@src/styles/TextStyle';
 
 export const placeHolderColor = '#B9C9CA';
 const styles = StyleSheet.create({

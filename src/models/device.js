@@ -158,7 +158,7 @@ export default class Device {
   }
   static getRewardAmount = async (deviceInfo:Device,wallet?)=>{
     let balance = 0;
-    if(!_.isEmpty(deviceInfo) && !deviceInfo.isOffline()){
+    if(!_.isEmpty(deviceInfo)){
       switch(deviceInfo.Type){
       case DEVICES.VIRTUAL_TYPE:{
         let dataResult = await VirtualDeviceService.getRewardFromMiningkey(deviceInfo) ?? {};

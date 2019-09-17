@@ -141,27 +141,28 @@ class HomeMine extends BaseScreen {
       
       this.setState({
         isFetching:true,
+        balancePRV:0,
+        isLoadMore:false,
         timeToUpdate:Date.now()
-      },async ()=>{
-        let balance = 0;
+      },async () => {
+        // let balance = 0;
 
         let list: [] = await this.getListLocalDevice();
-        // list = _.isEmpty(list)?await this.fetchProductList():list.reverse();
+        // // list = _.isEmpty(list)?await this.fetchProductList():list.reverse();
         list = list.reverse();
-        for(let index =0 ;index < list.length;index ++){
-          const item = list[index];
-          const temp = await Device.getRewardAmount(Device.getInstance(item),wallet);
-          balance += temp;
-          // console.log(TAG, 'handleRefresh -------forEach-- balance = ', balance,temp);
-        }
-        
+        // for(let item of list){
+        //   // const item = list[index];
+        //   const temp = await Device.getRewardAmount(Device.getInstance(item),wallet);
+        //   balance += temp;
+        //   console.log(TAG, 'handleRefresh -------forEach-- balance = ', balance,temp);
+        // }
+
         // let list: [] = await this.fetchProductList();
         // list = _.isEmpty(list)?await this.getListLocalDevice():list.reverse();
         // let list: [];
-        console.log(TAG, 'handleRefresh balance = ', balance);
+        // console.log(TAG, 'handleRefresh balance = ', balance);
         this.setState({
           listDevice: list,
-          balancePRV:Device.formatForDisplayBalance(balance??0),
           isFetching: false
         });
       });
@@ -272,8 +273,9 @@ class HomeMine extends BaseScreen {
       isLoadMore,
       loading,
       timeToUpdate,
-      balancePRV
+      balancePRV,
     } = this.state;
+    const balanceDisplayPRV = Device.formatForDisplayBalance(balancePRV??0);
     // const viewCustom = this.renderFirstOpenApp();
     // return viewCustom;
     return (!isFetching && _.isEmpty(listDevice)?this.renderFirstOpenApp(): (
@@ -282,11 +284,11 @@ class HomeMine extends BaseScreen {
         <DialogLoader loading={loading} />
         <Text style={style.header2}>Total earnings</Text>
         <Text style={style.header3}>
-          {balancePRV} <Text style={style.header3_child}>PRV</Text>
+          {balanceDisplayPRV} <Text style={style.header3_child}>PRV</Text>
         </Text>
         <FlatList
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={[_.isEmpty(listDevice) ? { flexGrow: 1}:undefined]}
+          contentContainerStyle={[{ flexGrow: 1}]}
           style={style.list}
           data={listDevice}
           keyExtractor={item => String(item.product_id)}
@@ -297,6 +299,13 @@ class HomeMine extends BaseScreen {
               <HomeMineItem
                 reloadList={()=>{
                   this.onResume();
+                }}
+                callbackReward={(amount)=>{
+                  let {balancePRV = 0} = this.state;
+                  balancePRV +=amount;
+                  this.setState({
+                    balancePRV:balancePRV
+                  });
                 }}
                 timeToUpdate={timeToUpdate}
                 onPress={this.handleItemDevicePress}
