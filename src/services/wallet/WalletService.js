@@ -34,6 +34,21 @@ export async function loadListAccount(wallet) {
   }
 }
 
+/**
+ * 
+ * @param {object} wallet
+ * @returns [{{string} AccountName, {string} BLSPublicKey, {int} Index}]  
+ */
+export async function loadListAccountWithBLSPubKey(wallet) {
+  try {
+    const listAccount = (await wallet.listAccountWithBLSPubKey()) || [];
+    return listAccount;
+  } catch (e) {
+    throw e;
+  }
+}
+
+
 export async function loadWallet(passphrase) {
   const server = await Server.getDefault();
   console.log('[loadWallet] with server ', server);
