@@ -36,7 +36,7 @@ const ExportAccount = ({ account }) => (
       {renderItem('PRIVATE KEY', account?.PrivateKey)}
       {renderItem('PUBLIC KEY', account?.PublicKeyCheckEncode)}
       {renderItem('READONLY KEY', account?.ReadonlyKey)}
-      {renderItem('VALIDATOR KEY', account?.BlockProducerKey)}
+      {renderItem('VALIDATOR KEY', account?.ValidatorKey)}
     </View>
   </ScrollView>
 );
