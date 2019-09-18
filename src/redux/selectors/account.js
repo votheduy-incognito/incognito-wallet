@@ -1,5 +1,5 @@
+import _, { memoize } from 'lodash';
 import { createSelector } from 'reselect';
-import _ , { memoize } from 'lodash';
 
 export const isGettingBalance = state => state?.account?.isGettingBalance;
 export const defaultAccountName = state => state?.account?.defaultAccountName;
@@ -27,10 +27,10 @@ export const getAccountByPublicKey = createSelector(
   accounts => memoize(publicKey => accounts.find(account => account?.PublicKeyCheckEncode === publicKey))
 );
 
-export const getAccountByBlsKey =  createSelector(
-  listAccount,
-  accounts => memoize(blsKey => accounts.find(account => account?.BLSPublicKey === blsKey))
-);
+// export const getAccountByBlsKey =  createSelector(
+//   listAccount,
+//   accounts => memoize(blsKey => accounts.find(account => account?.BLSPublicKey === blsKey))
+// );
 
 export default {
   defaultAccountName,
@@ -38,6 +38,5 @@ export default {
   defaultAccount,
   isGettingBalance,
   getAccountByName,
-  getAccountByPublicKey,
-  getAccountByBlsKey
+  getAccountByPublicKey
 };

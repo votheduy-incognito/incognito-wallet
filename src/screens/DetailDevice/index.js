@@ -97,8 +97,8 @@ class DetailDevice extends BaseScreen {
   }
 
   checkAndUpdateInfoVirtualNode = async ()=>{
-    const {device} = this.state;
-    const {getAccountByPublicKey,getAccountByName,getAccountByBlsKey,listAccount} = this.props;
+    const {device,wallet} = this.state;
+    const {getAccountByName,listAccount} = this.props;
     let account = await getAccountByName(device.accountName());
     
     // with test-node publicKey
@@ -118,7 +118,7 @@ class DetailDevice extends BaseScreen {
       // keyCompare = _.split(keyCompare,':')[1]||keyCompare;
       console.log(TAG,'checkAndUpdateInfoVirtualNode1111111 publicKey ',keyCompare);
       // account = getAccountByPublicKey(keyCompare);
-      account = getAccountByBlsKey(keyCompare);
+      account = await accountService.getAccountWithBLSPubKey(keyCompare,wallet);
       console.log(TAG,'checkAndUpdateInfoVirtualNode account ',account);
       !_.isEmpty(account) && await device.saveAccount({name:account.name});
     }
@@ -551,8 +551,6 @@ export default connect(
     wallet:state.wallet,
     getAccountByName: accountSeleclor.getAccountByName(state),
     listTokens:tokenSeleclor.pTokens(state),
-    getAccountByPublicKey:accountSeleclor.getAccountByPublicKey(state),
-    getAccountByBlsKey:accountSeleclor.getAccountByBlsKey(state),
     listAccount: accountSeleclor.listAccount(state)
   }),
   mapDispatch

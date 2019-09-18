@@ -113,7 +113,7 @@ export default class VirtualDeviceService {
       if(!_.isEmpty(apiURL)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_PUBLIC_KEY_MINING.key}`;
         const buildParams = LIST_ACTION.GET_PUBLIC_KEY_MINING.data;
-        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),3);
+        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),5);
       
         console.log(TAG,'getPublicKeyMining result',response);
         const {Result=''} = response;
