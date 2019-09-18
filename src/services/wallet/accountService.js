@@ -1,11 +1,14 @@
 /* eslint-disable import/no-cycle */
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
+import AccountModel from '@src/models/account';
 import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
 import { KeyWallet, Wallet } from 'incognito-chain-web-js/build/wallet';
+import _ from 'lodash';
 import { getActiveShard } from './RpcClientService';
-import { saveWallet } from './WalletService';
+import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
 
+const TAG = 'Account';
 export default class Account {
   static async getDefaultAccountName() {
     try {
@@ -275,5 +278,30 @@ export default class Account {
   static stakerStatus(account, wallet) {
     const accountWallet = wallet.getAccountByName(account?.name);
     return accountWallet.stakerStatus();
+  }
+
+  /**
+   * 
+   * @param {string} blsKey 
+   * @param {object} wallet 
+   * @returns :AccountModel
+   */
+  static async getAccountWithBLSPubKey(blsKey,wallet) {
+    try {
+      let accountWallet:AccountModel = null;
+      if(!_.isEmpty(blsKey)){
+        console.log(TAG,'getAccountWithBLSPubKey begin');
+        const listAccounts = await loadListAccountWithBLSPubKey(wallet)||[];
+        console.log(TAG,'getAccountWithBLSPubKey listAccount ',listAccounts);
+        let account = listAccounts.find(item=> _.isEqual(item.BLSPublicKey,blsKey));
+        account = account? await wallet.getAccountByName(account.AccountName):null;
+        accountWallet = account? new AccountModel(account):null;
+      }
+      return accountWallet;
+
+    } catch (e) {
+      console.warn(TAG,'getAccountWithBLSPubKey error =',e );
+    }
+    return null;
   }
 }

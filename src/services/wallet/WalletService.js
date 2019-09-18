@@ -1,15 +1,8 @@
 /* eslint-disable import/no-cycle */
-import storage from '@src/services/storage';
-import {
-  ConfirmedTx as ConfirmedTxWallet,
-  genImageFromStr as genImageFromStrWallet,
-  RpcClient,
-  SuccessTx as SuccessTxWallet,
-  FailedTx as FailedTxWallet,
-  Wallet
-} from 'incognito-chain-web-js/build/wallet';
-import { randomBytes } from 'react-native-randombytes';
 import AccountModel from '@src/models/account';
+import storage from '@src/services/storage';
+import { ConfirmedTx as ConfirmedTxWallet, FailedTx as FailedTxWallet, genImageFromStr as genImageFromStrWallet, RpcClient, SuccessTx as SuccessTxWallet, Wallet } from 'incognito-chain-web-js/build/wallet';
+import { randomBytes } from 'react-native-randombytes';
 import { getPassphrase } from './passwordService';
 import { getMaxShardNumber } from './RpcClientService';
 import Server from './Server';
@@ -41,8 +34,11 @@ export async function loadListAccount(wallet) {
  */
 export async function loadListAccountWithBLSPubKey(wallet) {
   try {
-    const listAccount = (await wallet.listAccountWithBLSPubKey()) || [];
-    return listAccount;
+    const listAccountRaw = (await wallet.listAccountWithBLSPubKey()) || [];
+    // const listAccount =
+    //   listAccountRaw.map(account => new AccountModel(account)) || [];
+
+    return listAccountRaw;
   } catch (e) {
     throw e;
   }
