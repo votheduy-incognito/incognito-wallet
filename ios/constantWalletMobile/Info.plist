@@ -17,11 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>10.0</string>
+	<string>11.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>10</string>
+	<string>11</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -43,6 +43,8 @@
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>${PRODUCT_NAME} will need access to Apple Music for setting welcome theme sound.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Bluetooth will be required for ${PRODUCT_NAME} to connect to the Badge printer hardware.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Bluetooth will be required for ${PRODUCT_NAME} to connect to the Badge printer hardware.</string>
 	<key>NSCalendarsUsageDescription</key>

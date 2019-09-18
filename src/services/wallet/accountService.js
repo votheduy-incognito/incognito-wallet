@@ -1,8 +1,8 @@
 /* eslint-disable import/no-cycle */
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
+import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
 import { KeyWallet, Wallet } from 'incognito-chain-web-js/build/wallet';
-import tokenModel from '@src/models/token';
 import { getActiveShard } from './RpcClientService';
 import { saveWallet } from './WalletService';
 
@@ -112,7 +112,7 @@ export default class Account {
     // param: payment address string, amount in Number (miliconstant)
     await Wallet.resetProgressTx();
     const indexAccount = wallet.getAccountIndexByName(account.name);
-    const candidateMiningSeedKey = account.BlockProducerKey;
+    const candidateMiningSeedKey = account.ValidatorKey;
     // create and send constant
     let result;
     try {

@@ -109,7 +109,7 @@ class DetailDevice extends BaseScreen {
   
     // const publicKey = '16yUvbgiXUZfwuWafBcXX4oiyYVui57e1oMtEyRCwkHemeqKvf9';
     // const isRegular = !_.includes(keyCompare,account?.BlockProducerKey);
-    // console.log(TAG,'checkAndUpdateInfoVirtualNode listAccount ',listAccount);
+    console.log(TAG,'checkAndUpdateInfoVirtualNode listAccount ',listAccount);
     // console.log(TAG,'checkAndUpdateInfoVirtualNode publicKey ',keyCompare);
     
 
