@@ -16,9 +16,9 @@ const instance = axios.create({
 
 // Add a request interceptor
 instance.interceptors.request.use(config => {
-  if (__DEV__) {
-    console.debug('Send request', config);
-  }
+  // if (__DEV__) {
+  //   console.debug('Send request', config);
+  // }
 
   return config;
 }, error => {
@@ -32,9 +32,9 @@ instance.interceptors.request.use(config => {
 instance.interceptors.response.use(res => {
   const result = res?.data?.Result;
 
-  if (__DEV__) {
-    console.debug('Request success', result);
-  }
+  // if (__DEV__) {
+  //   console.debug('Request success', result);
+  // }
 
   return Promise.resolve(result);
 }, errorData => {

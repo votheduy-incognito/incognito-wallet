@@ -41,10 +41,10 @@ class Toast extends Component {
 
   static showInfo(msg, config?) {
     Toast.show(msg, {
-      ...typeof config === 'object' ? config : {},
       icon: <MdIcons name='info' size={20} color={COLORS.white} />,
       containerStyle: styles.infoContainer,
-      duration: 2500
+      duration: 2500,
+      ...typeof config === 'object' ? config : {},
     });
   }
 
@@ -87,7 +87,7 @@ class Toast extends Component {
         if (finished) {
           this.setState({ msg: null });
         }
-      });     
+      });
     });
   }
 
@@ -123,7 +123,7 @@ class Toast extends Component {
         </Animated.View>
       );
     }
-    
+
     return null;
   }
 }

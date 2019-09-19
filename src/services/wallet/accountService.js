@@ -1,10 +1,13 @@
 /* eslint-disable import/no-cycle */
+import axios from 'axios';
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import AccountModel from '@src/models/account';
 import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
 import { KeyWallet, Wallet } from 'incognito-chain-web-js/build/wallet';
 import _ from 'lodash';
+import tokenModel from '@src/models/token';
+import CONFIG from '@src/constants/config';
 import { getActiveShard } from './RpcClientService';
 import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
 
@@ -54,19 +57,21 @@ export default class Account {
   }
 
   // paymentInfos = [{ paymentAddressStr: toAddress, amount: amount}];
-  static async sendConstant(paymentInfos, fee, isPrivacy, account, wallet) {
+  static async sendConstant(paymentInfos, fee, isPrivacy, account, wallet, info) {
     console.log('Wallet.ProgressTx: ', Wallet.ProgressTx);
     // paymentInfos: payment address string, amount in Number (miliconstant)
     // await Wallet.resetProgressTx();
     // console.log('Wallet.ProgressTx: ', Wallet.ProgressTx);
     const indexAccount = wallet.getAccountIndexByName(account.name);
 
+    console.log('Account', account);
+
     // create and send constant
     let result;
     try {
       result = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendConstant(paymentInfos, fee, isPrivacy);
+      ].createAndSendConstant(paymentInfos, fee, isPrivacy, info);
 
       console.log(
         'Spendingcoin after sendConstant: ',
@@ -80,6 +85,76 @@ export default class Account {
     }
     await Wallet.resetProgressTx();
     return result;
+  }
+
+  static async sendGameConstant(paymentInfos, fee, isPrivacy, account, wallet, info) {
+    let result;
+    try {
+      const url = CONFIG.TESTNET_SERVER_ADDRESS;
+      const paymentAddress = {
+        [paymentInfos[0].paymentAddressStr]: paymentInfos[0].amount
+      };
+      const data = {
+        'jsonrpc':'1.0',
+        'id': '1',
+        'method':'createandsendtransaction',
+        'params':[
+          account.PrivateKey,
+          paymentAddress,
+          5,
+          1,
+          null,
+          info || ''
+        ],
+      };
+
+      console.log('sendGameConstant', JSON.stringify(data));
+      const res = await axios.post(url, data);
+      if (res?.data?.Result) {
+        return res.data.Result;
+      } else if (res?.data?.Error) {
+        throw res.data.Error;
+      }
+    } catch (e) {
+      console.log('sendGameConstant', e);
+      throw e;
+    }
+    return result;
+  }
+
+  static async sendGameToken(
+    submitParam,
+    account,
+    info,
+  ) {
+    try {
+      const url = CONFIG.TESTNET_SERVER_ADDRESS;
+      const data = {
+        'jsonrpc':'1.0',
+        'id': '1',
+        'method':'createandsendprivacycustomtokentransaction',
+        'params':[
+          account.PrivateKey,
+          null,
+          5,
+          1,
+          submitParam,
+          1,
+          info || '',
+        ],
+      };
+      console.log('Send Game Token', JSON.stringify(data));
+      const res = await axios.post(url, data);
+
+      if (res?.data?.Result) {
+        return res.data.Result;
+      } else if (res?.data?.Error) {
+        throw res.data.Error;
+      }
+    } catch (e) {
+      console.log('sendGameToken error', e);
+      throw e;
+    }
   }
 
   // param = { type: Number(stakingType), burningAddress: BurnAddress }
@@ -272,7 +347,7 @@ export default class Account {
    * @param {object} account
    * @param {object} wallet
    */
-  // stakerStatus returns -1 if account haven't staked, 
+  // stakerStatus returns -1 if account haven't staked,
   // returns 0 if account is a candidator and
   // returns 1 if account is a validator
   static stakerStatus(account, wallet) {

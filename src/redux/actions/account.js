@@ -75,7 +75,7 @@ export const getBalance = (account) => async (dispatch, getState) => {
     dispatch(getBalanceStart(account?.name));
 
     const wallet = getState()?.wallet;
-    
+
     if (!wallet) {
       throw new Error('Wallet is not exist');
     }
@@ -103,12 +103,13 @@ export const getBalance = (account) => async (dispatch, getState) => {
 export const reloadAccountFollowingToken = (account = throw new Error('Account object is required')) => async (dispatch, getState) => {
   try {
     const wallet = getState()?.wallet;
-    
+
     if (!wallet) {
       throw new Error('Wallet is not exist');
     }
 
     const tokens = accountService.getFollowingTokens(account, wallet);
+
     tokens.forEach(token => getTokenBalance(token)(dispatch, getState));
 
     dispatch(setListToken(tokens));

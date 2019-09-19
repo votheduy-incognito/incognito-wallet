@@ -34,7 +34,7 @@ class GetStartedContainer extends Component {
     this.initApp();
   }
 
-  onError = msg => this.setState({ errorMsg: msg })
+  onError = msg => this.setState({ errorMsg: msg });
 
   goHome = () => {
     const { navigation } = this.props;
@@ -62,7 +62,7 @@ class GetStartedContainer extends Component {
       const token = await this.checkDeviceToken();
 
       if (token) {
-        console.log('Device token', token);
+        // console.log('Device token', token);
         setTokenHeader(token);
       }
 
@@ -96,7 +96,7 @@ class GetStartedContainer extends Component {
       if (wallet) {
         return throw createError({ code: messageCode.code.can_not_create_wallet_on_existed });
       }
-      
+
       return initWallet();
     } catch (e) {
       throw e;
@@ -115,7 +115,7 @@ class GetStartedContainer extends Component {
   registerToken = async () => {
     try {
       const fbToken = await getFirebaseToken();
-      const uniqueId = DeviceInfo.getUniqueID();      
+      const uniqueId = DeviceInfo.getUniqueID();
       const token = await getToken(uniqueId, fbToken);
 
       return token;
@@ -127,7 +127,7 @@ class GetStartedContainer extends Component {
   checkDeviceToken = async () => {
     try {
       const fbToken = await getFirebaseToken();
-      console.log('fbToken', fbToken);
+      // console.log('fbToken', fbToken);
       const token = await this.getExistedDeviceToken();
       if (!token) {
         const tokenData = await this.registerToken();
@@ -148,7 +148,7 @@ class GetStartedContainer extends Component {
       if (!account) throw new Error('Missing account');
 
       const pTokens = await getPTokenList();
-      
+
       await followDefaultTokens(account, pTokens);
     } catch {
       // can ignore this err
@@ -160,7 +160,7 @@ class GetStartedContainer extends Component {
       const { reloadWallet } = this.props;
       await this.handleCreateWallet();
       const wallet = await reloadWallet();
-      
+
       if (wallet) {
         await this.setDefaultPToken(wallet);
         this.goHome();
