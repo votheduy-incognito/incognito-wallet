@@ -16,12 +16,9 @@ class BottomSheet extends Component {
           }}
           height={height}
           animationType='fade'
-          duration={250}
+          duration={200}
           customStyles={{
-            container: {
-              justifyContent: 'center',
-              alignItems: 'center'
-            }
+            container: undefined
           }}
         >
           {contentView?contentView:null}

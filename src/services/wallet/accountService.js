@@ -1,13 +1,12 @@
 /* eslint-disable import/no-cycle */
-import axios from 'axios';
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
+import CONFIG from '@src/constants/config';
 import AccountModel from '@src/models/account';
 import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
+import axios from 'axios';
 import { KeyWallet, Wallet } from 'incognito-chain-web-js/build/wallet';
 import _ from 'lodash';
-import tokenModel from '@src/models/token';
-import CONFIG from '@src/constants/config';
 import { getActiveShard } from './RpcClientService';
 import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
 

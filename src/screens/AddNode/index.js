@@ -3,7 +3,7 @@ import BaseScreen from '@screens/BaseScreen';
 import images from '@src/assets';
 import { onClickView } from '@src/utils/ViewUtil';
 import React from 'react';
-import { Image, View } from 'react-native';
+import { Image, TouchableOpacity, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 import styles, { rightNextIcon } from './styles';
@@ -74,6 +74,7 @@ class AddNode extends BaseScreen {
         {listItems.map((item, index) => {
           return (
             <ListItem
+              Component={TouchableOpacity}
               containerStyle={styles.item_container}
               title={item.title}
               subtitle={item.subTitle}

@@ -1,40 +1,29 @@
 /* eslint-disable */
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import DeviceInfo from 'react-native-device-info';
-import { connect } from 'react-redux';
-import { reloadAccountList } from '@src/redux/actions/wallet';
-import {
-  getBalance as getAccountBalance,
-  reloadAccountFollowingToken,
-} from '@src/redux/actions/account';
-import firebase from 'firebase';
 import { Toast } from '@src/components/core';
+import { CONSTANT_COMMONS } from '@src/constants';
+import { Cell, NotificationStatus, Player, TransactionType } from '@src/models/game';
+import { getBalance as getAccountBalance, reloadAccountFollowingToken } from '@src/redux/actions/account';
+import { reloadAccountList } from '@src/redux/actions/wallet';
+import { accountSeleclor } from '@src/redux/selectors';
 import gameAPI from '@src/services/api/game';
 import accountService from '@src/services/wallet/accountService';
-import { accountSeleclor } from '@src/redux/selectors';
-import { CONSTANT_COMMONS } from '@src/constants';
-import { Cell, Player, TransactionType, NotificationStatus } from '@src/models/game';
-import Game from './Game';
-import {
-  AUTO_CLOSE_POPUP_TIMEOUT,
-  CARD_ACTION,
-  GAME_HOST_PAYMENT_ADDRESS,
-  GO_TO_JAIL_POSITION,
-  JAIL_FINE,
-  JAIL_POSITION, MAX_JAIL_ROLL, MESSAGES,
-  SHAKE_THRESHOLD
-} from './constants';
+import firebase from 'firebase';
 import 'firebase/database';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import DeviceInfo from 'react-native-device-info';
+import { connect } from 'react-redux';
 import LoadingContainer from '../../components/LoadingContainer';
+import { AUTO_CLOSE_POPUP_TIMEOUT, CARD_ACTION, GAME_HOST_PAYMENT_ADDRESS, GO_TO_JAIL_POSITION, JAIL_FINE, JAIL_POSITION, MAX_JAIL_ROLL, MESSAGES } from './constants';
+import Game from './Game';
 
 const isEmulator = DeviceInfo.isEmulator();
 
 let accelerometer;
 
 if (!isEmulator) {
-  accelerometer = require('react-native-sensors').accelerometer;
+  // accelerometer = require('react-native-sensors').accelerometer;
 }
 
 const originalFee = 0;
