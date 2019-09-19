@@ -1,7 +1,7 @@
-import { Icon } from 'react-native-elements';
-import React from 'react';
-import {TouchableOpacity} from 'react-native';
 import { scaleInApp } from '@src/styles/TextStyle';
+import React from 'react';
+import { TouchableOpacity } from 'react-native';
+import { Icon } from 'react-native-elements';
 
 const images = {
   bgTop: require('./images/bg_top.png'),
@@ -55,8 +55,28 @@ const ic_wifi = (props)=>(
     {...props} 
   />
 );
+const ic_update_wifi = (props)=>(
+  <Icon
+    size={scaleInApp(25)}
+    name='ios-wifi'
+    type='ionicon'
+    color='#000000'
+    {...props} 
+  />
+);
+const ic_factory_reset = (props)=>(
+  <Icon
+    size={scaleInApp(25)}
+    name='ios-wifi'
+    type='ionicon'
+    color='#000000'
+    {...props} 
+  />
+);
 export const imagesVector = {
   ic_back:ic_back,
   ic_wifi,
+  ic_update_wifi,
+  ic_factory_reset
 };
 export default images;

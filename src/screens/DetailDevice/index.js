@@ -440,8 +440,8 @@ class DetailDevice extends BaseScreen {
           <Text style={[style.group2_container_value2,Device.getStyleStatus(device.Status.code)]}>{device.statusMessage()}</Text>
         </View>
         {/* <TouchableOpacity onPress={()=>{
-          // this.advanceOptionView?.current.open();
-          this.setState({isShowMessage:true});
+          this.advanceOptionView?.current.open();
+          // this.setState({isShowMessage:true});
         }}
         >
           <Text style={[style.top_right_container,style.advance_text]} numberOfLines={1}>Advance</Text>

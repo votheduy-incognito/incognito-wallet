@@ -1,18 +1,18 @@
+import { imagesVector } from '@src/assets';
 import BottomSheet from '@src/components/BottomSheet';
-import { COLORS, DECOR } from '@src/styles';
 import TextStyle from '@src/styles/TextStyle';
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 const style = StyleSheet.create({
   container: {
-    borderTopLeftRadius: DECOR.borderRadiusBorder,
-    backgroundColor: COLORS.white
+    flex:1,
+    alignItems:'center',
+    flexDirection:'row',
+    backgroundColor: 'white'
   },
   containerItem: {
-    backgroundColor: COLORS.white,
-    flex:1,
-    borderWidth:DECOR.borderWidth,
+    
   },
   textItem:{
     ...TextStyle.normalText,
@@ -38,11 +38,16 @@ class AdvanceOption extends Component {
   renderContent = ()=>{
     const labels = ['Update Wifi','Factory reset'];
     return (
-      <View style={style.container}>
+      <>
         {labels.map(item=>{
-          return <Text style={[style.containerItem,style.textItem]} key={item}>{item}</Text>;  
+          return (
+            <View style={style.container} key={item}>      
+              {imagesVector.ic_update_wifi()}
+              <Text style={[style.containerItem,style.textItem]}>{item}</Text>
+            </View>      
+          );  
         })}
-      </View>
+      </>
     );
   }
 }

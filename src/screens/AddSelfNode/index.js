@@ -49,7 +49,7 @@ class AddSelfNode extends BaseScreen {
     // this.viewInputPort = React.createRef();
     this.inputDeviceName = '';
     this.inputPrivateKey = '';
-    this.inputHost = '192.168.1.1';
+    this.inputHost = '';
     this.inputPort = '9334';
   }
 
@@ -159,7 +159,7 @@ class AddSelfNode extends BaseScreen {
           inputStyle={textInput}
           inputContainerStyle={item_container_input}
           containerStyle={[item]}
-          placeholder="IP address"
+          placeholder="192.168.1.1"
           label='IP address'
           defaultValue={this.inputHost}
         />
