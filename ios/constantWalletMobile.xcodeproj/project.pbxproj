@@ -71,6 +71,8 @@
 		9D6041EC6C7E422A9D19DCAE /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4BA287542ADF445498FC2188 /* MaterialIcons.ttf */; };
 		9DB2573194904FCEA349B72D /* Roboto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EB8224132C242FC84C0C969 /* Roboto.ttf */; };
 		A23A5B4BF797429292519AC6 /* libRNCAsyncStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D828B2179CD4981AB6E75EE /* libRNCAsyncStorage.a */; };
+		A755AE19231783D200091D54 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A755AE18231783D200091D54 /* GoogleService-Info.plist */; };
+		A7ED66CC231E7AA600632177 /* game.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A7ED6691231E7AA600632177 /* game.mp3 */; };
 		A83AE44E3EBA41B888B9743B /* libRNCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 35CBB32A5E3C42249B5769F9 /* libRNCamera.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		B312A222BD7D460DA5FE9C6C /* Roboto_bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 82DA549DAEFB4E95AB8C2EB1 /* Roboto_bold.ttf */; };
@@ -95,7 +97,6 @@
 		FE57448622F97A3700F2A2BC /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE57448522F97A3700F2A2BC /* NetworkExtension.framework */; };
 		FE6F886122DC3B510009C5AA /* autonomous_config.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE6F886022DC3B510009C5AA /* autonomous_config.plist */; };
 		FE86096522D747230050666A /* libFirebaseCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE86096422D747230050666A /* libFirebaseCore.a */; };
-		FEA5D0F32301234E009B6B51 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FEA5D0F22301234E009B6B51 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -608,6 +609,8 @@
 		A37F2762BA3D42388EA0979D /* PostGroteskMediumItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskMediumItalic.otf; path = ../src/assets/fonts/PostGroteskMediumItalic.otf; sourceTree = "<group>"; };
 		A3DE260718B44BD4834DE46F /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		A5D949FB76FCE735B63FE34D /* Pods-constantWalletMobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-constantWalletMobile.debug.xcconfig"; path = "Pods/Target Support Files/Pods-constantWalletMobile/Pods-constantWalletMobile.debug.xcconfig"; sourceTree = "<group>"; };
+		A755AE18231783D200091D54 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A7ED6691231E7AA600632177 /* game.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = game.mp3; path = ../android/app/src/main/res/raw/game.mp3; sourceTree = "<group>"; };
 		AC3439C990274B2AA62796BA /* libRNReanimated.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNReanimated.a; sourceTree = "<group>"; };
 		AD33F7805A83410A91743D3C /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
@@ -633,7 +636,6 @@
 		FE57448522F97A3700F2A2BC /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		FE6F886022DC3B510009C5AA /* autonomous_config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = autonomous_config.plist; sourceTree = "<group>"; };
 		FE86096422D747230050666A /* libFirebaseCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		FEA5D0F22301234E009B6B51 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FECCEDF722C379D900129059 /* AutonomousZMQ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AutonomousZMQ.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -816,7 +818,8 @@
 		13B07FAE1A68108700A75B9A /* constantWalletMobile */ = {
 			isa = PBXGroup;
 			children = (
-				FEA5D0F22301234E009B6B51 /* GoogleService-Info.plist */,
+				A755AE18231783D200091D54 /* GoogleService-Info.plist */,
+				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -1044,6 +1047,7 @@
 			isa = PBXGroup;
 			children = (
 				20C180A123263963006CD8C5 /* Gomobile.framework */,
+				A7ED6691231E7AA600632177 /* game.mp3 */,
 				FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */,
 				FE6F885F22DC3B0E0009C5AA /* ZMQ */,
 				13B07FAE1A68108700A75B9A /* constantWalletMobile */,
@@ -1829,6 +1833,7 @@
 				CECDA3A1DFDB4AB0B7DD8E96 /* Feather.ttf in Resources */,
 				CFFC70D705B748D7AAF71201 /* FontAwesome.ttf in Resources */,
 				D20EB391F5E546C5BFD81902 /* FontAwesome5_Brands.ttf in Resources */,
+				A7ED66CC231E7AA600632177 /* game.mp3 in Resources */,
 				3EA7A98691974C14B21D2406 /* FontAwesome5_Regular.ttf in Resources */,
 				12370AB45ED646E8A2255D63 /* FontAwesome5_Solid.ttf in Resources */,
 				DA339C58293744B9BEE3CAA2 /* Foundation.ttf in Resources */,
@@ -1838,7 +1843,7 @@
 				3652A44646DE4BD8B3C9BA56 /* Octicons.ttf in Resources */,
 				4C1DBB74B2F14588BF13C846 /* SimpleLineIcons.ttf in Resources */,
 				1A63493129294F7CBBC251EE /* Zocial.ttf in Resources */,
-				FEA5D0F32301234E009B6B51 /* GoogleService-Info.plist in Resources */,
+				A755AE19231783D200091D54 /* GoogleService-Info.plist in Resources */,
 				FE6F886122DC3B510009C5AA /* autonomous_config.plist in Resources */,
 				B312A222BD7D460DA5FE9C6C /* Roboto_bold.ttf in Resources */,
 				C0300BA4836A47FCBFB4A4EE /* Roboto-Medium.ttf in Resources */,

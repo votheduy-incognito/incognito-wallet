@@ -78,7 +78,7 @@ Button.propTypes = {
     PropTypes.node,
     PropTypes.arrayOf(PropTypes.node)
   ]),
-  type: PropTypes.oneOf(['primary', 'danger'])
+  type: PropTypes.oneOf(['primary', 'danger', 'secondary'])
 };
 
 export default Button;

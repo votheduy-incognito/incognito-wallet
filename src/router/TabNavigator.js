@@ -12,8 +12,11 @@ import icWalletActive from '@src/assets/images/icons/walletActive.png';
 import icWalletInactive from '@src/assets/images/icons/walletInactive.png';
 import icIncognitoActive from '@src/assets/images/icons/incognitoActive.png';
 import icIncognitoInactive from '@src/assets/images/icons/incognitoInactive.png';
+import icWhalesActive from '@src/assets/images/icons/ic_tab_whales_active.png';
+import icWhalesInactive from '@src/assets/images/icons/ic_tab_whales_deactive.png';
 import HeaderBar from '@src/components/HeaderBar';
 import MinerNavigator from './MinerNavigator';
+import GameNavigator from './GameNavigator';
 import ROUTE_NAMES from './routeNames';
 
 const TabIcon = (type, { focused }) => {
@@ -33,6 +36,9 @@ const TabIcon = (type, { focused }) => {
     active = icIncognitoActive;
     inactive = icIncognitoInactive;
     break;
+  case 'game':
+    active = icWhalesActive;
+    inactive = icWhalesInactive;
   }
   return (
     <TabBarIcon
@@ -60,6 +66,7 @@ const styles = StyleSheet.create({
 const Tab = createBottomTabNavigator({
   [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { title: 'Wallet', tabBarIcon: renderTab('wallet') }),
   [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Nodes', header:() => null, tabBarIcon: renderTab('miner') }),
+  [ROUTE_NAMES.Game]: navigationOptionsHandler(GameNavigator, { title: 'Whales', header:() => null, tabBarIcon: renderTab('game')}),
   [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'You', tabBarIcon: renderTab('setting') }),
 }, {
   initialRouteName: ROUTE_NAMES.Home,
@@ -80,7 +87,7 @@ const Tab = createBottomTabNavigator({
     // console.log(TAG,'navigationOptions child = ',child);
     // You can do whatever you like here to pick the title based on the route name
     const title = routeName;
-  
+
     return {
       title,
       ...child,

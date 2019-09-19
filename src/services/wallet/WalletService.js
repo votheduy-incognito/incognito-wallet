@@ -47,10 +47,10 @@ export async function loadListAccountWithBLSPubKey(wallet) {
 
 export async function loadWallet(passphrase) {
   const server = await Server.getDefault();
-  console.log('[loadWallet] with server ', server);
+  // console.log('[loadWallet] with server ', server);
   Wallet.RandomBytesFunc = randomBytes;
   Wallet.setPrivacyUtilRandomBytesFunc(randomBytes);
-  console.log('set randombyte done');
+  // console.log('set randombyte done');
   Wallet.RpcClient = new RpcClient(
     server.address,
     server.username,
