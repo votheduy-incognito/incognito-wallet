@@ -1,9 +1,9 @@
-import {locationPermission } from '@utils/PermissionUtil';
+import { locationPermission } from '@utils/PermissionUtil';
 import Util from '@utils/Util';
-import { Alert, Platform } from 'react-native';
-import Wifi from 'react-native-iot-wifi';
-import {PASS_HOSPOT} from 'react-native-dotenv';
 import _ from 'lodash';
+import { Alert, Platform } from 'react-native';
+import { PASS_HOSPOT } from 'react-native-dotenv';
+import Wifi from 'react-native-iot-wifi';
 import BaseConnection, { ObjConnection } from './BaseConnection';
 
 export const TAG = 'WifiConnection';
@@ -22,15 +22,21 @@ class WifiConnection extends BaseConnection {
     console.log(TAG, 'fetchCurrentConnect begin ------');
     const pro =  new Promise((resolve, reject) => {
       Wifi.isApiAvailable(available => {
-        console.log(TAG, available ? 'available' : 'failed');
+        console.log(TAG,'fetchCurrentConnect begin 01 = ', available ? 'available' : 'failed');
         if (available) {
-          Wifi.getSSID(SSID => {
-            console.log(TAG, 'fetchCurrentConnect getSSID', SSID);
-            this.currentConnect = new ObjConnection();
-            this.currentConnect.id = SSID;
-            this.currentConnect.name = SSID;
-            resolve(this.currentConnect);
-          });
+          console.log(TAG, 'fetchCurrentConnect begin02 ');
+          try {
+            Wifi.getSSID(SSID => {
+              console.log(TAG, 'fetchCurrentConnect getSSID', SSID);
+              this.currentConnect = new ObjConnection();
+              this.currentConnect.id = SSID;
+              this.currentConnect.name = SSID;
+              resolve(this.currentConnect);
+            });
+          } catch (error) {
+            resolve(null);
+          }
+          
         }else{
           resolve(null);
         }
@@ -40,9 +46,9 @@ class WifiConnection extends BaseConnection {
   };
 
   removeConnection=(device: ObjConnection) => {
-    return new Promise<Boolean>((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       console.log(TAG, 'removeConnection begin result = ',device?.name||'');
-      Wifi.removeSSID(device.name,error => {
+      Wifi.removeSSID(device.name,true,error => {
         resolve(!error);
       });
       
@@ -51,7 +57,7 @@ class WifiConnection extends BaseConnection {
 
   connectDevice = (device: ObjConnection) => {
     const pro = new Promise((resolve, reject) => {
-      Wifi.connectSecure(device.name,PASS_HOSPOT,false, error => {
+      Wifi.connectSecure(device.name,PASS_HOSPOT,false,false, error => {
         if (!error) {
           Wifi.getSSID(SSID => {
             console.log(TAG, 'connectDevice getSSID --- ', SSID);

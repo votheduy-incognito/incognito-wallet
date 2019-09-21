@@ -2,7 +2,7 @@ import Util from '@utils/Util';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { View,NetInfo } from 'react-native';
+import { NetInfo, View } from 'react-native';
 import BaseConnection, { ObjConnection } from './BaseConnection';
 import style from './style';
 import WifiConnection from './WifiConnection';
@@ -65,26 +65,26 @@ class DeviceConnection extends Component {
     let result = await this.connection.connectDevice(device);
     
     if(result){
-      console.log(TAG, 'connectDevice begin true ---- ');
+      // console.log(TAG, 'connectDevice begin true ---- ');
       const checkConnectWifi = async ()=>{
-        let isConnected = false;
-        while(!isConnected){
-          isConnected = await NetInfo.isConnected.fetch();
-        }
-        console.log(TAG, 'connectDevice begin 111---- ',isConnected);
-        return isConnected;
+        const isConnected = await NetInfo.isConnected.fetch();
+        // while(!isConnected){
+          
+        // }
+        // console.log(TAG, 'connectDevice begin 111---- ',isConnected);
+        return isConnected?isConnected : new Error('is connected fail ');
       };
 
-      result = await Util.excuteWithTimeout(checkConnectWifi(),10);
+      result = await Util.tryAtMost (checkConnectWifi,20,1);
       console.log(TAG, 'connectDevice begin 01 result =  ',result);
     }
     return result;
   };
 
   removeConnectionDevice = async (device: ObjConnection) => {
-    console.log(TAG, 'connectDevice begin result = ',JSON.stringify(device)||'');
+    // console.log(TAG, 'removeConnectionDevice begin result = ',JSON.stringify(device)||'');
     let result = await this.connection.removeConnection(device);
-
+    console.log(TAG, 'removeConnectionDevice begin result = ',result);
     return result;
   };
 

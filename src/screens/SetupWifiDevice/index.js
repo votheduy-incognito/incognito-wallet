@@ -1,37 +1,29 @@
 /**
  * @providesModule SetupWifiDevice
  */
-import routeNames from '@routers/routeNames';
-import LocalDatabase from '@utils/LocalDatabase';
-import APIService from '@services/api/miner/APIService';
-import { CONSTANT_MINER } from '@src/constants';
-import Loader from '@components/DialogLoader';
-import _ from 'lodash';
-import React from 'react';
-import {
-  Keyboard,
-  NetInfo,
-  Platform,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
-} from 'react-native';
-import DeviceInfo from 'react-native-device-info';
 import WifiConnection from '@components/DeviceConnection/WifiConnection';
-import { connect } from 'react-redux';
-import ZMQService from 'react-native-zmq-service';
+import Loader from '@components/DialogLoader';
+import routeNames from '@routers/routeNames';
 import BaseScreen from '@screens/BaseScreen';
-import { Button } from 'react-native-elements';
+import CreateAccount from '@screens/CreateAccount';
+import APIService from '@services/api/miner/APIService';
+import DeviceConnection from '@src/components/DeviceConnection';
+import { ObjConnection } from '@src/components/DeviceConnection/BaseConnection';
+import { CONSTANT_MINER } from '@src/constants';
+import Device from '@src/models/device';
+import DeviceService from '@src/services/DeviceService';
 import Util from '@src/utils/Util';
 import { onClickView } from '@src/utils/ViewUtil';
-import { ObjConnection } from '@src/components/DeviceConnection/BaseConnection';
-import DeviceConnection from '@src/components/DeviceConnection';
-import DeviceService from '@src/services/DeviceService';
-import Device from '@src/models/device';
+import LocalDatabase from '@utils/LocalDatabase';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
-import CreateAccount from '@screens/CreateAccount';
+import React from 'react';
+import { Keyboard, NetInfo, Platform, Text, TextInput, View } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
+import { Button } from 'react-native-elements';
 import StepIndicator from 'react-native-step-indicator';
+import ZMQService from 'react-native-zmq-service';
+import { connect } from 'react-redux';
 import styles from './style';
 
 export const TAG = 'SetupWifiDevice';
@@ -222,7 +214,7 @@ class SetupWifiDevice extends BaseScreen {
       const resultStep1 = await this.checkConnectHotspot();
       let callVerifyCode = this.callVerifyCode;
       this.CurrentPositionStep = 2;
-      const resultStep2  = (resultStep1 && await Util.tryAtMost(callVerifyCode,TIMES_VERIFY).catch(console.log)) || false;
+      const resultStep2  = (resultStep1 && await Util.tryAtMost(callVerifyCode,TIMES_VERIFY,2).catch(console.log)) || false;
       console.log(TAG,'handleSetUpPress callVerifyCode end =======',resultStep2);
       errorMsg = resultStep2 ? '':errorMessage;
     } catch (error) {

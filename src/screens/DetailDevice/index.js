@@ -518,7 +518,13 @@ class DetailDevice extends BaseScreen {
     return (
       <Container styleContainScreen={{paddingHorizontal:0}} styleRoot={style.container} backgroundTop={{source:bgRootTop,style:[style.imageTop,{backgroundColor:'#01828A'}]}}>
         {this.renderHeader()}
-        <AdvanceOption ref={this.advanceOptionView}  />
+        <AdvanceOption
+          ref={this.advanceOptionView}
+          handleReset={()=>{
+            DeviceService.reset(device);
+          }}
+          handleUpdateWifi={()=>{}}
+        />
         <Image style={style.bg_top} source={bgTop} />
         <DialogLoader loading={loading} />
         <View style={{width: 0,height: 0,display:'none'}}>
