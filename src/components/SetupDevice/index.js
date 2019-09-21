@@ -28,7 +28,7 @@ import styles from './style';
 export const TAG = 'SetupDevice';
 const HOTPOT = 'TheMiner';
 const errorMessage = 'Can\'t connect Node. Please check the internert information and try again';
-const TIMES_VERIFY = 5;
+const TIMES_VERIFY = 20;
 const labels = ['Connect Hotpot','Send Wifi Info','Verify Code'];
 const customStyles = {
   stepIndicatorSize: 25,
@@ -226,7 +226,7 @@ class SetupDevice extends BaseComponent {
       const resultStep1 = await this.checkConnectHotspot();
       let callVerifyCode = this.callVerifyCode;
       this.CurrentPositionStep = 2;
-      const resultStep2  = (resultStep1 && await Util.tryAtMost(callVerifyCode,TIMES_VERIFY)) || false;
+      const resultStep2  = (resultStep1 && await Util.tryAtMost(callVerifyCode,TIMES_VERIFY,2)) || false;
       console.log(TAG,'handleSetUpPress callVerifyCode end =======',resultStep2);
       errorMsg = resultStep2 ? '':errorMessage;
     } catch (error) {
@@ -464,18 +464,24 @@ class SetupDevice extends BaseComponent {
       const res = await ZMQService.sendData(JSON.stringify(params));
       if(_.isEmpty(res)) return false;
       console.log(TAG,'Send zmq successfully res',res);
+      await Util.excuteWithTimeout(this.deviceId?.current?.removeConnectionDevice(this.deviceMiner),2).catch(console.log);
       this.isSendDataZmqSuccess = true;
      
       const checkConnectWifi = async ()=>{
-        let isConnected = false;
-        while(!isConnected){
-          isConnected = await NetInfo.isConnected.fetch() && this.isHaveNetwork;
+        let isConnected = await NetInfo.isConnected.fetch() && this.isHaveNetwork;
+        // while(!isConnected){
+        console.log(TAG, 'connectZMQ checkConnectWifi isConnected = ',isConnected);
+        if(!isConnected){
+          await Util.delay(2);
         }
+        // }
+        console.log(TAG, 'connectZMQ checkConnectWifi isConnected end ----- ',isConnected);
         
-        return isConnected;
+        return isConnected?isConnected : new Error('is connected fail ');
       };
 
-      const result = await Util.excuteWithTimeout(checkConnectWifi(),60);
+      // const result = await Util.excuteWithTimeout(checkConnectWifi(),60);
+      const result = await Util.tryAtMost(checkConnectWifi,60,2);
       console.log(TAG, 'connectZMQ begin end  ',result);
       return result;
       
@@ -547,7 +553,7 @@ class SetupDevice extends BaseComponent {
       console.log(TAG,'checkConnectHotspot SSID---: ', ssid);
       if (_.includes(ssid, product)) {
         this.CurrentPositionStep = 1;
-        let result = await Util.excuteWithTimeout(this.sendZMQ(),120);
+        let result = await Util.excuteWithTimeout(this.sendZMQ(),150);
         
         return result;
       } 
@@ -588,7 +594,7 @@ class SetupDevice extends BaseComponent {
         console.log('Error try catch:', error);
       }
     }
-    await Util.delay(3);
+    
     return errorObj;
 
   }

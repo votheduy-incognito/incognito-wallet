@@ -1,10 +1,9 @@
 import Action from '@src/models/Action';
-import ZMQService from 'react-native-zmq-service';
-import _ from 'lodash';
-import Util from '@src/utils/Util';
 import Device from '@src/models/device';
-import FirebaseService, { FIREBASE_PASS, MAIL_UID_FORMAT, PHONE_CHANNEL_FORMAT, DEVICE_CHANNEL_FORMAT } from './FirebaseService';
+import Util from '@src/utils/Util';
+import _ from 'lodash';
 import APIService from './api/miner/APIService';
+import FirebaseService, { DEVICE_CHANNEL_FORMAT, FIREBASE_PASS, MAIL_UID_FORMAT, PHONE_CHANNEL_FORMAT } from './FirebaseService';
 
 const TAG = 'DeviceService';
 const password = `${FIREBASE_PASS}`;

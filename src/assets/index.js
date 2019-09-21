@@ -67,8 +67,8 @@ const ic_update_wifi = (props)=>(
 const ic_factory_reset = (props)=>(
   <Icon
     size={scaleInApp(25)}
-    name='ios-wifi'
-    type='ionicon'
+    name='lock-reset'
+    type='material-community'
     color='#000000'
     {...props} 
   />

@@ -99,11 +99,16 @@ export default class Util {
     }
   }
 
-   static tryAtMost=async (promiseFunc, count = 6) =>{
+   static tryAtMost = async(promiseFunc, count = 6,delayToTry = 1) =>{
      if (count > 0 && promiseFunc ) {
        const result = await promiseFunc().catch(e => e);
-       console.log(`tryAtMost result = ${result}, count = ${count}`);
-       if (result instanceof Error) { return await Util.tryAtMost(promiseFunc, count - 1); }
+       console.log(`tryAtMost result = ${result}, count = ${count}---isEROR = ${result instanceof Error}`);
+       if (result instanceof Error) {
+         if(_.isNumber(delayToTry)){
+           await Util.delay(delayToTry);
+         }
+         return await Util.tryAtMost(promiseFunc, count - 1); 
+       }
        return result;
      }
      return Promise.reject(`Tried ${count} times and failed`);
