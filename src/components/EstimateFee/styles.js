@@ -6,6 +6,20 @@ const style = StyleSheet.create({
     marginTop: 30,
     display: 'flex'
   },
+  errorBox: {
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  retryBtn: {
+    paddingVertical: 5,
+    paddingHorizontal: 20,
+    backgroundColor: COLORS.orange,
+    marginVertical: 10,
+    borderRadius: 20,
+  },
+  retryText: {
+    color: COLORS.white
+  },
   errorText: {
     ...THEME.text.errorText,
     textAlign: 'center',
