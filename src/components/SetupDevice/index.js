@@ -340,7 +340,7 @@ class SetupDevice extends BaseComponent {
     const {
       loading
     } = this.state;
-    const {isRenderUI} = this.props;
+    const {isRenderUI,navigation} = this.props;
     const styleHideView = {
       opacity: 0,width: 0,height: 0
     };
@@ -353,7 +353,7 @@ class SetupDevice extends BaseComponent {
         {/* {this.renderToastMessage()} */}
         
         <View style={{width: 0,height: 0,opacity:0}}>
-          <CreateAccount ref={this.viewCreateAccount} />
+          <CreateAccount ref={this.viewCreateAccount} navigation={navigation} />
         </View>
       </View>
     );
@@ -544,9 +544,8 @@ class SetupDevice extends BaseComponent {
     if(!isConnectedHotpost){
       device = await this.connectHotspot();
     }
+    isConnectedHotpost = !_.isEmpty(device) && !this.isHaveNetwork;
     this.isHaveNetwork = false;
-    isConnectedHotpost = !_.isEmpty(device);
-    
     if (isConnectedHotpost && validSSID && validWPA) {
       let ssid = device?.name?.toLowerCase()||'';
       const product = CONSTANT_MINER.PRODUCT_TYPE.toLowerCase();

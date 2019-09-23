@@ -13,6 +13,10 @@ const templateAction = {
 };
 const timeout = 8;
 export const LIST_ACTION={
+  UPDATE_FIRMWARE:{
+    key:'update_firmware',
+    data:undefined
+  },
   GET_IP:{
     key:'ip_address',
     data:undefined
@@ -119,6 +123,24 @@ export default class DeviceService {
         const dataResult = await Util.excuteWithTimeout(DeviceService.send(device.data,actionReset,chain,Action.TYPE.PRODUCT_CONTROL),timeout);
         console.log(TAG,'reset send dataResult = ',dataResult);
         // const { status = -1, data, message= ''} = dataResult;
+        return _.isEqual(dataResult?.status,1);
+      }
+    } catch (error) {
+      console.log(TAG,'reset error = ',error);
+      return false;
+    }
+
+    return false;
+  }
+
+  static updateFirware = async(device:Device,chain='incognito')=>{
+    
+    try {
+      if(!_.isEmpty(device)){
+        const actionReset = LIST_ACTION.UPDATE_FIRMWARE;
+        const dataResult = await Util.excuteWithTimeout(DeviceService.send(device.data,actionReset,chain,Action.TYPE.PRODUCT_CONTROL),timeout);
+        console.log(TAG,'updateFirware send dataResult = ',dataResult);
+        // const { status = -1, data, message= ''} = dataResult;
         return dataResult;
       }
     } catch (error) {
@@ -128,6 +150,7 @@ export default class DeviceService {
 
     return null;
   }
+  
 
   static pingGetIP = async(device:Device,chain='incognito')=>{
     

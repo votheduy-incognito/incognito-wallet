@@ -1,5 +1,5 @@
+import TextStyle, { FontStyle, scaleInApp } from '@src/styles/TextStyle';
 import { StyleSheet } from 'react-native';
-import TextStyle, { scaleInApp,FontStyle } from '@src/styles/TextStyle';
 
 const style = StyleSheet.create({
   container: {
@@ -25,8 +25,8 @@ const style = StyleSheet.create({
   },
   imageLogo:{
     alignSelf:'center',
-    width:scaleInApp(40),
-    height:scaleInApp(40),
+    width:scaleInApp(30),
+    height:scaleInApp(30),
   },
   groupLeft:{
     flexDirection:'column',

@@ -1,7 +1,7 @@
 import Container from '@components/Container';
 import BaseScreen from '@screens/BaseScreen';
 import CreateAccount from '@screens/CreateAccount';
-import images from '@src/assets';
+import images, { imagesVector } from '@src/assets';
 import DialogLoader from '@src/components/DialogLoader';
 import HeaderBar from '@src/components/HeaderBar/HeaderBar';
 import HistoryMined from '@src/components/HistoryMined';
@@ -97,30 +97,30 @@ class DetailDevice extends BaseScreen {
   }
 
   checkAndUpdateInfoVirtualNode = async ()=>{
+    
     const {device,wallet} = this.state;
     const {getAccountByName,listAccount} = this.props;
     let account = await getAccountByName(device.accountName());
-    
-    // with test-node publicKey
-    // let keyCompare = await VirtualDeviceService.getPublicKeyMining(device);
+    if(device.Type == DEVICES.VIRTUAL_TYPE){
+      // with test-node publicKey
+      // let keyCompare = await VirtualDeviceService.getPublicKeyMining(device);
 
-    // dev-test
-    const keyCompare = await VirtualDeviceService.getPublicKeyMining(device)??'';
+      // dev-test
+      const keyCompare = await VirtualDeviceService.getPublicKeyMining(device)??'';
   
-    // const publicKey = '16yUvbgiXUZfwuWafBcXX4oiyYVui57e1oMtEyRCwkHemeqKvf9';
-    // const isRegular = !_.includes(keyCompare,account?.BlockProducerKey);
-    console.log(TAG,'checkAndUpdateInfoVirtualNode listAccount ',listAccount);
-    // console.log(TAG,'checkAndUpdateInfoVirtualNode publicKey ',keyCompare);
-    
+      // const publicKey = '16yUvbgiXUZfwuWafBcXX4oiyYVui57e1oMtEyRCwkHemeqKvf9';
+      // const isRegular = !_.includes(keyCompare,account?.BlockProducerKey);
+      console.log(TAG,'checkAndUpdateInfoVirtualNode listAccount ',listAccount);
+      // console.log(TAG,'checkAndUpdateInfoVirtualNode publicKey ',keyCompare);
 
-    const isRegular = !_.isEqual(account?.PublicKeyCheckEncode,keyCompare);
-    if(device.Type == DEVICES.VIRTUAL_TYPE && isRegular){
+      const isRegular = !_.isEqual(account?.PublicKeyCheckEncode,keyCompare);
+      if(isRegular){
       // keyCompare = _.split(keyCompare,':')[1]||keyCompare;
-      console.log(TAG,'checkAndUpdateInfoVirtualNode1111111 publicKey ',keyCompare);
-      // account = getAccountByPublicKey(keyCompare);
-      account = await accountService.getAccountWithBLSPubKey(keyCompare,wallet);
-      console.log(TAG,'checkAndUpdateInfoVirtualNode account ',account);
-      !_.isEmpty(account) && await device.saveAccount({name:account.name});
+        console.log(TAG,'checkAndUpdateInfoVirtualNode1111111 publicKey ',keyCompare);
+        account = await accountService.getAccountWithBLSPubKey(keyCompare,wallet);
+        console.log(TAG,'checkAndUpdateInfoVirtualNode account ',account);
+        !_.isEmpty(account) && await device.saveAccount({name:account.name});
+      }
     }
     this.setState({
       accountMiner:account
@@ -196,6 +196,17 @@ class DetailDevice extends BaseScreen {
       const { Role= -1, ShardID= 0 } = stakerStatus;
       isStaked = Role!=-1 ;
       listFollowingTokens = (!_.isEmpty(account) && await accountService.getFollowingTokens(account,wallet))||[];
+      listFollowingTokens = listFollowingTokens.map(async item=>{ 
+        const objMerge = {id:item.id,name:item.name,...item.metaData};
+        let amount = await device.balanceToken(account,wallet,objMerge.id);
+        amount = format.amountFull(amount,objMerge['pDecimals']);
+        amount = _.isNaN(amount)?0:amount;
+        return {...objMerge,amount:amount};
+      });
+
+      listFollowingTokens = await Promise.all(listFollowingTokens);
+
+      console.log(TAG,'fetchData NODE listFollowingTokens = ',listFollowingTokens);
       balancePRV = await device.balanceToken(account,wallet);        
     }
     }
@@ -439,13 +450,15 @@ class DetailDevice extends BaseScreen {
           <Text style={style.top_container_title} numberOfLines={1}>{this.productName}</Text>
           <Text style={[style.group2_container_value2,Device.getStyleStatus(device.Status.code)]}>{device.statusMessage()}</Text>
         </View>
-        {/* <TouchableOpacity onPress={()=>{
+        {!device?.isOffline() && device?.Type === DEVICES.MINER_TYPE && (
+          <TouchableOpacity onPress={()=>{
           this.advanceOptionView?.current.open();
           // this.setState({isShowMessage:true});
-        }}
-        >
-          <Text style={[style.top_right_container,style.advance_text]} numberOfLines={1}>Advance</Text>
-        </TouchableOpacity> */}
+          }}
+          >
+            {imagesVector.ic_setting()}
+          </TouchableOpacity>
+        )}
         {device.Type === DEVICES.VIRTUAL_TYPE && !device.isOffline() && !device.isEarning() && !isStaked &&!isCallStaked? (
           <Button
             titleStyle={style.group2_container_button_text}
@@ -520,8 +533,17 @@ class DetailDevice extends BaseScreen {
         {this.renderHeader()}
         <AdvanceOption
           ref={this.advanceOptionView}
-          handleReset={()=>{
-            DeviceService.reset(device);
+          handleReset={async()=>{
+            const result = await DeviceService.reset(device);
+            if(result){
+              // remove in call
+              await LocalDatabase.removeDevice(device.toJSON());
+              this.onPressBack();
+            }
+          }}
+          handleUpdateUpdateFirware={async()=>{
+            const result = await DeviceService.updateFirware(device);
+            alert(`Update Firware result = ${JSON.stringify(result)}`);
           }}
           handleUpdateWifi={()=>{}}
         />
@@ -543,8 +565,6 @@ class DetailDevice extends BaseScreen {
 
 DetailDevice.propTypes = {
   getAccountByName:PropTypes.func.isRequired,
-  getAccountByPublicKey:PropTypes.func.isRequired,
-  getAccountByBlsKey:PropTypes.func.isRequired,
   wallet:PropTypes.object.isRequired
 };
 

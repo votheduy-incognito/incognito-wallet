@@ -1,9 +1,9 @@
 /**
  * @providesModule FirebaseService
  */
-import firebaseRN from 'react-native-firebase';
-import _ from 'lodash';
 import Util from '@src/utils/Util';
+import _ from 'lodash';
+import firebaseRN from 'react-native-firebase';
 import timer from 'react-native-timer';
 
 export const MAIL_UID_FORMAT = '@autonomous.ai';
@@ -127,8 +127,8 @@ export default class FirebaseService {
     try {
       this.firebase = firebaseRN.app();
       console.log(TAG,'configurateDatabase');
-      const ref = this.firebase.database().ref();
-      console.log(TAG,'configurateDatabase01 ref = ',ref);
+      // const ref = this.firebase.database().ref();
+      // console.log(TAG,'configurateDatabase01 ref = ',ref);
       if(!_.isNil(this.firebase.auth().currentUser)){
         await this.firebase.auth().currentUser.reload();
       }

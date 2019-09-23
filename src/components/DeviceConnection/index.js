@@ -61,7 +61,7 @@ class DeviceConnection extends Component {
   };
 
   connectDevice = async (device: ObjConnection) => {
-    console.log(TAG, 'connectDevice begin result = ',JSON.stringify(device)||'');
+    console.log(TAG, 'connectDevice begin  = ',JSON.stringify(device)||'');
     let result = await this.connection.connectDevice(device);
     
     if(result){
@@ -71,6 +71,9 @@ class DeviceConnection extends Component {
         // while(!isConnected){
           
         // }
+        if(!isConnected){
+          await Util.delay(1);
+        }
         // console.log(TAG, 'connectDevice begin 111---- ',isConnected);
         return isConnected?isConnected : new Error('is connected fail ');
       };

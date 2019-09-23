@@ -1,8 +1,8 @@
 import { ActivityIndicator, Text, View } from '@src/components/core';
 import accountService from '@src/services/wallet/accountService';
 import { COLORS } from '@src/styles';
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { Modal } from 'react-native';
 import styleSheet from './style';
 
@@ -28,7 +28,7 @@ class LoadingTx extends Component {
     this.clearTimer();
   }
 
-  clearTimer = () => clearInterval(this.timer);
+  clearTimer = () => this.timer&&clearInterval(this.timer);
 
   progress = () => {
     const percent = accountService.getProgressTx();
