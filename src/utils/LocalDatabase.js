@@ -29,6 +29,14 @@ export default class LocalDatabase {
       !_.isEmpty(listDevice) ? JSON.parse(listDevice) : []
     );
   };
+
+  static removeDevice = async (device)=>{
+    let list = await LocalDatabase.getListDevices();
+    _.remove(list,item=>{
+      return item.product_id == device.product_id;
+    });
+    await LocalDatabase.saveListDevices(list);
+  }
   static saveListDevices = async (jsonListDevice: []) => {
     const listDevices = JSON.stringify(jsonListDevice);
     // console.log(TAG, ' saveListDevices begin ', listDevices);

@@ -97,29 +97,30 @@ class DetailDevice extends BaseScreen {
   }
 
   checkAndUpdateInfoVirtualNode = async ()=>{
+    
     const {device,wallet} = this.state;
     const {getAccountByName,listAccount} = this.props;
     let account = await getAccountByName(device.accountName());
-    
-    // with test-node publicKey
-    // let keyCompare = await VirtualDeviceService.getPublicKeyMining(device);
+    if(device.Type == DEVICES.VIRTUAL_TYPE){
+      // with test-node publicKey
+      // let keyCompare = await VirtualDeviceService.getPublicKeyMining(device);
 
-    // dev-test
-    const keyCompare = await VirtualDeviceService.getPublicKeyMining(device)??'';
+      // dev-test
+      const keyCompare = await VirtualDeviceService.getPublicKeyMining(device)??'';
   
-    // const publicKey = '16yUvbgiXUZfwuWafBcXX4oiyYVui57e1oMtEyRCwkHemeqKvf9';
-    // const isRegular = !_.includes(keyCompare,account?.BlockProducerKey);
-    console.log(TAG,'checkAndUpdateInfoVirtualNode listAccount ',listAccount);
-    // console.log(TAG,'checkAndUpdateInfoVirtualNode publicKey ',keyCompare);
-    
+      // const publicKey = '16yUvbgiXUZfwuWafBcXX4oiyYVui57e1oMtEyRCwkHemeqKvf9';
+      // const isRegular = !_.includes(keyCompare,account?.BlockProducerKey);
+      console.log(TAG,'checkAndUpdateInfoVirtualNode listAccount ',listAccount);
+      // console.log(TAG,'checkAndUpdateInfoVirtualNode publicKey ',keyCompare);
 
-    const isRegular = !_.isEqual(account?.PublicKeyCheckEncode,keyCompare);
-    if(device.Type == DEVICES.VIRTUAL_TYPE && isRegular){
+      const isRegular = !_.isEqual(account?.PublicKeyCheckEncode,keyCompare);
+      if(isRegular){
       // keyCompare = _.split(keyCompare,':')[1]||keyCompare;
-      console.log(TAG,'checkAndUpdateInfoVirtualNode1111111 publicKey ',keyCompare);
-      account = await accountService.getAccountWithBLSPubKey(keyCompare,wallet);
-      console.log(TAG,'checkAndUpdateInfoVirtualNode account ',account);
-      !_.isEmpty(account) && await device.saveAccount({name:account.name});
+        console.log(TAG,'checkAndUpdateInfoVirtualNode1111111 publicKey ',keyCompare);
+        account = await accountService.getAccountWithBLSPubKey(keyCompare,wallet);
+        console.log(TAG,'checkAndUpdateInfoVirtualNode account ',account);
+        !_.isEmpty(account) && await device.saveAccount({name:account.name});
+      }
     }
     this.setState({
       accountMiner:account
@@ -202,6 +203,8 @@ class DetailDevice extends BaseScreen {
         amount = _.isNaN(amount)?0:amount;
         return {...objMerge,amount:amount};
       });
+
+      listFollowingTokens = await Promise.all(listFollowingTokens);
 
       console.log(TAG,'fetchData NODE listFollowingTokens = ',listFollowingTokens);
       balancePRV = await device.balanceToken(account,wallet);        
@@ -532,9 +535,15 @@ class DetailDevice extends BaseScreen {
           ref={this.advanceOptionView}
           handleReset={async()=>{
             const result = await DeviceService.reset(device);
-            if(_.isEmpty(result)){
-              this.onResume();
+            if(result){
+              // remove in call
+              await LocalDatabase.removeDevice(device.toJSON());
+              this.onPressBack();
             }
+          }}
+          handleUpdateUpdateFirware={async()=>{
+            const result = await DeviceService.updateFirware(device);
+            alert(`Update Firware result = ${JSON.stringify(result)}`);
           }}
           handleUpdateWifi={()=>{}}
         />
