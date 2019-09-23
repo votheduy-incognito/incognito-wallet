@@ -90,7 +90,7 @@ export async function initWallet() {
 
     console.log('wallet.Storage.setItem: ', typeof wallet.Storage.setItem);
 
-    wallet.init(passphrase, numOfAccount, walletName, storage, '1');
+    wallet.init(passphrase, numOfAccount, walletName, storage, null);
 
     await wallet.save(passphrase);
     console.log('Wallet after initing kraken: ', wallet);
