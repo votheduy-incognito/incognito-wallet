@@ -94,7 +94,7 @@ class EstimateFee extends Component {
 
   render() {
     const { levels } = this.state;
-    const { types, minFee, isGettingFee, defaultFeeSymbol, finalFee, estimateErrorMsg, style } = this.props;
+    const { types, minFee, isGettingFee, defaultFeeSymbol, finalFee, estimateErrorMsg, onRetry, style } = this.props;
 
     return (
       <View style={[styles.container, style]}>
@@ -140,7 +140,12 @@ class EstimateFee extends Component {
           }
           
           { estimateErrorMsg
-            ? <Text style={styles.errorText}>{estimateErrorMsg}</Text>
+            ? (
+              <View style={styles.errorBox}>
+                <Text style={styles.errorText}>{estimateErrorMsg}</Text>
+                <TouchableOpacity onPress={onRetry} style={styles.retryBtn}><Text style={styles.retryText}>Try again</Text></TouchableOpacity>
+              </View>
+            )
             : (minFee === 0 || !!minFee) && (
               <View style={styles.rateContainer}>
                 {
@@ -173,11 +178,13 @@ EstimateFee.defaultProps = {
   defaultFeeSymbol: null,
   finalFee: null,
   estimateErrorMsg: null,
+  onRetry: null,
   style: null
 };
 
 EstimateFee.propTypes = {
   isGettingFee: PropTypes.bool,
+  onRetry: PropTypes.func,
   onChangeDefaultSymbol: PropTypes.func,
   onSelectFee: PropTypes.func,
   minFee: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,

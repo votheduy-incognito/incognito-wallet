@@ -209,6 +209,7 @@ class EstimateFeeContainer extends Component {
           defaultFeeSymbol={defaultFeeSymbol}
           isGettingFee={isGettingFee}
           estimateErrorMsg={estimateErrorMsg}
+          onRetry={this.handleEstimateFee}
           style={style}
           selectedPrivacy={selectedPrivacy}
         />
