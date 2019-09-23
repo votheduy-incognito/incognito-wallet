@@ -1,14 +1,11 @@
-import PropTypes from 'prop-types';
-import React  from 'react';
-import { View, Text,Image,TouchableOpacity,FlatList } from 'react-native';
 import images from '@src/assets';
-import routeNames from '@src/router/routeNames';
-import ViewUtil from '@src/utils/ViewUtil';
-import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
-import Device from '@src/models/device';
-import _ from 'lodash';
 import tokenData from '@src/constants/tokenData';
-import Util from '@src/utils/Util';
+import Device from '@src/models/device';
+import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 import styles from './style';
 
 
@@ -91,13 +88,15 @@ class HistoryMined extends React.Component {
   }
   getData = (token) => {
     const symbolUI = _.isEqual(token?.symbol,'PRV')?token.symbol:token.pSymbol;
-    const additionData = tokenData.DATA[symbolUI] ?? tokenData.parse(token);
+    const additionData = tokenData.DATA[symbolUI] || tokenData.parse(token);
     const { metaData, othertokenData } = token;
     const data = {
       ...additionData,
       ...metaData,
       ...othertokenData
     };
+    console.log(TAG,'getData begin ==== ',additionData,symbolUI);
+    console.log(TAG,'getData end ==== ',data);
     return data;
   }
 

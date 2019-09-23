@@ -55,6 +55,15 @@ const ic_wifi = (props)=>(
     {...props} 
   />
 );
+const ic_setting = (props)=>(
+  <Icon
+    size={scaleInApp(25)}
+    name='dots-vertical'
+    type='material-community'
+    color='#000000'
+    {...props} 
+  />
+);
 const ic_update_wifi = (props)=>(
   <Icon
     size={scaleInApp(25)}
@@ -77,6 +86,7 @@ export const imagesVector = {
   ic_back:ic_back,
   ic_wifi,
   ic_update_wifi,
+  ic_setting,
   ic_factory_reset
 };
 export default images;

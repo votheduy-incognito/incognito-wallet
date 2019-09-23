@@ -3,7 +3,7 @@ import BottomSheet from '@src/components/BottomSheet';
 import TextStyle from '@src/styles/TextStyle';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 const style = StyleSheet.create({
@@ -45,16 +45,18 @@ class AdvanceOption extends Component {
             <ListItem
               Component={TouchableOpacity}
               onPress={()=>{
-                
+                this.close();
                 const {handleUpdateWifi,handleReset} = this.props;
                 if(index === 0){
                   handleUpdateWifi && handleUpdateWifi();
                 }else{
-                  handleReset && handleReset();
-                  
+                  Alert.alert('','Are you sure you want to reset your device?Please remember to back up your wallet. Only you can restore your private key.',[{text: 'Reset', onPress: () => handleReset && handleReset()},
+                    {
+                      text: 'Cancel',
+                      onPress: () => console.log('Cancel Pressed'),
+                      style: 'cancel',
+                    },]);
                 }
-                
-                this.close();
               }}
               key={item.title}
               containerStyle={style.container}

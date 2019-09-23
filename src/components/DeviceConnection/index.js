@@ -71,6 +71,9 @@ class DeviceConnection extends Component {
         // while(!isConnected){
           
         // }
+        if(!isConnected){
+          await Util.delay(1);
+        }
         // console.log(TAG, 'connectDevice begin 111---- ',isConnected);
         return isConnected?isConnected : new Error('is connected fail ');
       };
