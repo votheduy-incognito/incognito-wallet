@@ -20,8 +20,9 @@ const normalizeData = (histories, decimals, pDecimals) =>
     amount: h?.amount,
     symbol: tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY,
     status: h?.status,
+    fee: h?.fee * (10 ** CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY), // convert to nano fee (HistoryList require)
     decimals,
-    pDecimals
+    pDecimals,
   }));
 const TAG = 'MainCryptoHistory';
 class MainCryptoHistory extends Component {

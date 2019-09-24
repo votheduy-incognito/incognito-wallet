@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { TouchableOpacity, Container, ScrollView } from '@src/components/core';
-import { CONSTANT_CONFIGS } from '@src/constants';
+import { CONSTANT_CONFIGS, CONSTANT_COMMONS } from '@src/constants';
 import formatUtil from '@src/utils/format';
 import linkingService from '@src/services/linking';
 import MdIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -37,6 +37,10 @@ export default class TxHistoryDetail extends Component {
   render() {
     const { data } = this.props;
     const { typeText, balanceDirection, statusText, balanceColor, statusColor, statusNumber, history } = data;
+    const isUseTokenFee = !!history?.feePToken;
+    const fee = isUseTokenFee ? history?.feePToken : history?.fee;
+    const feeUnit = isUseTokenFee ? history?.symbol : CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
+    const formatFee = fee && formatUtil.amountFull(fee, isUseTokenFee ? history?.pDecimals : CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY);
 
     return (
       <ScrollView>
@@ -51,6 +55,7 @@ export default class TxHistoryDetail extends Component {
               valueTextStyle: { color: balanceColor }
             })
           }
+          {!!fee && this.renderRow({ label: 'Fee', valueText: `${formatFee} ${feeUnit}` })}
           {!!statusText && this.renderRow({ label: 'Status', valueText: `${statusText} ${(!!statusNumber || statusNumber === 0) ? `[${statusNumber}]` : ''}`, valueTextStyle: { color: statusColor } })}
           {!!history?.time && this.renderRow({ label: 'Time', valueText: formatUtil.formatDateTime(history?.time) })}
           {!!history?.incognitoTx && this.renderRow({ label: 'Incognito TX', valueComponent: this.renderTxId(history?.incognitoTx) })}
