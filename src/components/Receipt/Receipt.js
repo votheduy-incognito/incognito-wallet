@@ -28,7 +28,7 @@ const Receipt = ({ info, onBack }) => {
           {!!toAddress && <Row label='To' value={toAddress} valueProps={{ ellipsizeMode: 'middle' }} />}
           {!!time && <Row label='Time' value={formatUtil.formatDateTime(time)} />}
           {!!(amount === 0 || !!amount) && <Row label='Amount' value={`${formatUtil.amount(amount, pDecimals)} ${amountUnit}`} />}
-          {(fee === 0 || !!fee) && <Row label='Fee' value={`${formatUtil.amount(fee, feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : pDecimals)} ${feeUnit}`} />}
+          {(fee === 0 || !!fee) && <Row label='Fee' value={`${formatUtil.amountFull(fee, feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : pDecimals)} ${feeUnit}`} />}
         </View>
         <Divider color={COLORS.lightGrey5} height={1.5} style={styleSheet.divider} />
         <Button style={styleSheet.backButton} title='Back to Wallet' onPress={onBack} />

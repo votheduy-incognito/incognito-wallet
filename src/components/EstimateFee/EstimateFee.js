@@ -21,7 +21,7 @@ const LEVELS = [
 
 const calcFinalFee = memmoize((minFee, rate, pDecimals) => {
   if (minFee === 0 && rate !== 1) {
-    const expectedMin = pDecimals ? (10 ** pDecimals * 0.001) : 1;
+    const expectedMin = pDecimals ? (10 ** pDecimals * 0.0001) : 1;
     return Number(expectedMin * rate) || 0;
   }
   return Number(minFee * rate) || 0;

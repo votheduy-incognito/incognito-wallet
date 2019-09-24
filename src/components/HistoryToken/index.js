@@ -47,7 +47,7 @@ const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, dec
       decimals,
       pDecimals,
       status: h?.status,
-      fee: h?.fee,
+      fee: h?.fee * (10 ** CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY), // convert to nano fee (HistoryList require)
       feePToken: h?.feePToken,
     });
   });
