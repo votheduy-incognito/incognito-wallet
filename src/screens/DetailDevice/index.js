@@ -61,13 +61,13 @@ class DetailDevice extends BaseScreen {
     navigation.setParams({ title: this.titleBar });
   }
 
-  async componentDidMount() {
-    super.componentDidMount();
-    console.log(TAG,'componentDidMount begin');
-    // await this.checkStatus('incognito');
-    // await this.checkAndUpdateInfoVirtualNode();
-    // this.fetchData();
-  }
+  // async componentDidMount() {
+  //   super.componentDidMount();
+  //   console.log(TAG,'componentDidMount begin');
+  //   // await this.checkStatus('incognito');
+  //   // await this.checkAndUpdateInfoVirtualNode();
+  //   // this.fetchData();
+  // }
 
   onResume = async ()=>{
     console.log(TAG,'onResume begin');
@@ -156,11 +156,11 @@ class DetailDevice extends BaseScreen {
   fetchData = async ()=>{
     // get balance
     const {device,wallet,accountMiner} = this.state;
-    const {listTokens} = this.props;
+    const {listTokens,getAccountByName} = this.props;
     let dataResult = {};
     let balancePRV = 0;
     let listFollowingTokens = [];
-    const account = _.isEmpty(accountMiner)? await this.props.getAccountByName(device.accountName()):accountMiner;
+    const account = _.isEmpty(accountMiner)? await getAccountByName(device.accountName()):accountMiner;
     // const stakerStatus =(!_.isEmpty(account)&& !_.isEmpty(wallet)? await accountService.stakerStatus(account,wallet).catch(console.log):-1)??{};
     // console.log(TAG,'fetchData stakerStatus ',stakerStatus);
 
@@ -168,7 +168,7 @@ class DetailDevice extends BaseScreen {
     let isStaked = -1 ;
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
-      const stakerStatus =await VirtualDeviceService.getPublicKeyRole(device) ??{};
+      const stakerStatus = await VirtualDeviceService.getPublicKeyRole(device) ??{};
       console.log(TAG,'fetchData VIRTUAL_TYPE stakerStatus ',stakerStatus);
 
       const { Role= -1, ShardID= 0 } = stakerStatus;
@@ -198,7 +198,7 @@ class DetailDevice extends BaseScreen {
       listFollowingTokens = (!_.isEmpty(account) && await accountService.getFollowingTokens(account,wallet))||[];
       listFollowingTokens = listFollowingTokens.map(async item=>{ 
         const objMerge = {id:item.id,name:item.name,...item.metaData};
-        let amount = await device.balanceToken(account,wallet,objMerge.id);
+        let amount = await device.balanceToken(account,wallet,objMerge.id).catch(console.log)||0;
         amount = format.amountFull(amount,objMerge['pDecimals']);
         amount = _.isNaN(amount)?0:amount;
         return {...objMerge,amount:amount};
@@ -465,6 +465,7 @@ class DetailDevice extends BaseScreen {
             buttonStyle={style.group2_container_button}
             title={stakeTitle}
             onPress={onClickView( async()=>{
+              
               const {accountMiner,isStaked} = this.state;
               if(!isStaked){
                 if(!_.isEmpty(accountMiner)){
@@ -473,13 +474,18 @@ class DetailDevice extends BaseScreen {
                   this.setState({
                     isShowMessage:true
                   });
-                  
-                  // this.showToastMessage('None of your keys are linked to this node.Please import the node`s private key');
                 }
               }else{
               // udpdate status at local
                 this.IsStaked = false;
               }
+              // hienton
+              // this.goToScreen(routeNames.AddStake,{
+              //   accountInfo:{
+              //     minerAccountName:'hito',
+              //     funderAccountName:'hito'
+              //   }
+              // });
             })}
           />
         ):null}

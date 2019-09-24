@@ -138,15 +138,15 @@ class HomeMine extends BaseScreen {
   handleRefresh = async () => {
     const {isFetching,loading,wallet} = this.state;
     if(!isFetching){
+      this.sessionTimer = Date.now();
       
       this.setState({
         isFetching:true,
-        balancePRV:0,
         isLoadMore:false,
-        timeToUpdate:Date.now()
+        timeToUpdate:this.sessionTimer
       },async () => {
         // let balance = 0;
-
+        this.balancePRV = 0;
         let list: [] = await this.getListLocalDevice();
         // // list = _.isEmpty(list)?await this.fetchProductList():list.reverse();
         list = list.reverse();
@@ -301,11 +301,13 @@ class HomeMine extends BaseScreen {
                   this.onResume();
                 }}
                 callbackReward={(amount)=>{
-                  let {balancePRV = 0} = this.state;
-                  balancePRV +=amount;
-                  this.setState({
-                    balancePRV:balancePRV
-                  });
+                  const {timeToUpdate} = this.state;
+                  if(_.isEqual(this.sessionTimer,timeToUpdate)){
+                    this.balancePRV += amount;
+                    this.setState({
+                      balancePRV:this.balancePRV
+                    });
+                  }
                 }}
                 timeToUpdate={timeToUpdate}
                 onPress={this.handleItemDevicePress}

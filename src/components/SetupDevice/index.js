@@ -544,8 +544,14 @@ class SetupDevice extends BaseComponent {
     if(!isConnectedHotpost){
       device = await this.connectHotspot();
     }
-    isConnectedHotpost = !_.isEmpty(device) && !this.isHaveNetwork;
-    this.isHaveNetwork = false;
+    if(Platform.OS === 'ios'){
+      this.isHaveNetwork = false;
+      isConnectedHotpost = !_.isEmpty(device) ;
+    }else{
+      isConnectedHotpost = !_.isEmpty(device) && !this.isHaveNetwork;
+      this.isHaveNetwork = false;
+    }
+   
     if (isConnectedHotpost && validSSID && validWPA) {
       let ssid = device?.name?.toLowerCase()||'';
       const product = CONSTANT_MINER.PRODUCT_TYPE.toLowerCase();

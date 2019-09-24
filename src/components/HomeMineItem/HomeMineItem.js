@@ -66,7 +66,8 @@ class HomeMineItem extends React.Component {
     console.log(TAG,'getInfo id = ',deviceInfo.Name);
     account = await getAccountByName(deviceInfo.accountName());
 
-    balance = await Device.getRewardAmount(deviceInfo,wallet); 
+    balance = await Device.getRewardAmount(deviceInfo,wallet);
+    // balance = 1000000000;
     // balance =  format.amount(_.isNaN(balance)?0:balance,common.DECIMALS['PRV']);
     callbackReward(balance);
     balance = Device.formatForDisplayBalance(balance);

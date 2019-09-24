@@ -1,7 +1,6 @@
 /* eslint-disable import/no-cycle */
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import CONFIG from '@src/constants/config';
-import AccountModel from '@src/models/account';
 import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
 import axios from 'axios';
@@ -362,18 +361,21 @@ export default class Account {
    * 
    * @param {string} blsKey 
    * @param {object} wallet 
-   * @returns :AccountModel
+   * @returns :AccountModel: template
    */
   static async getAccountWithBLSPubKey(blsKey,wallet) {
     try {
-      let accountWallet:AccountModel = null;
+      let accountWallet = null;
       if(!_.isEmpty(blsKey)){
         console.log(TAG,'getAccountWithBLSPubKey begin');
         const listAccounts = await loadListAccountWithBLSPubKey(wallet)||[];
         console.log(TAG,'getAccountWithBLSPubKey listAccount ',listAccounts);
         let account = listAccounts.find(item=> _.isEqual(item.BLSPublicKey,blsKey));
+
         account = account? await wallet.getAccountByName(account.AccountName):null;
-        accountWallet = account? new AccountModel(account):null;
+        console.log(TAG,'getAccountWithBLSPubKey end ---- ',account);
+        // accountWallet = account? new AccountModel(account):null;
+        accountWallet = account;
       }
       return accountWallet;
 

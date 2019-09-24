@@ -62,7 +62,7 @@ export default class Device {
     return this.data.status.code!=Device.CODE_OFFLINE && this.data.status.code!=Device.CODE_UNKNOWN && this.data.status.code !== Device.CODE_STOP;
   }
   isOffline =()=>{
-    return this.data.status.code == Device.CODE_OFFLINE || this.data.status.code == Device.CODE_UNKNOWN;
+    return this.data.status.code == Device.CODE_OFFLINE || (this.data.status.code == Device.CODE_UNKNOWN && this.data.status.message !== template.status.message);
   }
   isEarning =()=>{
     return this.data.status.code == Device.CODE_MINING;
