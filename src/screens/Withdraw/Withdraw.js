@@ -188,7 +188,7 @@ class Withdraw extends React.Component {
                   toAddress={isFormValid ? selectedPrivacy?.paymentAddress : null} // est fee on the same network, dont care which address will be send to
                 />
                 <Text style={style.feeText}>
-                  You&apos;ll pay: {formatUtil.amount(
+                  You&apos;ll pay: {formatUtil.amountFull(
                     finalFee,
                     feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals
                   )} {feeUnit ? feeUnit : ''}

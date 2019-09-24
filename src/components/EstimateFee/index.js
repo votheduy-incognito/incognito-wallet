@@ -53,7 +53,7 @@ class EstimateFeeContainer extends Component {
         return;
       }
 
-      this.setState({ isGettingFee: true });
+      this.setState({ isGettingFee: true, estimateErrorMsg: null });
   
       // estimate fee in MAIN_CRYPTO_CURRENCY [PRV]
       if (defaultFeeSymbol === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY) {
