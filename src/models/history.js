@@ -29,11 +29,13 @@ class History {
       statusText: getStatusText(data.Status, data.CurrencyType),
       currencyType: data.CurrencyType,
       userPaymentAddress: data.UserPaymentAddress,
+      erc20TokenAddress: data.Erc20TokenAddress,
       requestedAmount: data.RequestedAmount,
       receivedAmount: data.ReceivedAmount,
       incognitoAmount: data.IncognitoAmount,
       incognitoTx: data.IncognitoTx,
-      outsideChainTx: data.OutsideChainTx,
+      ethereumTx: data.EthereumTx,
+      erc20TokenTx: data.Erc20TokenTx,
       cancelable: data.Status === 0
     };
   }

@@ -5,14 +5,10 @@ export default {
   RootTab: 'RootTab',
   Home: 'Home',
   Setting: 'Setting',
-  UserHeaderBoard: 'UserHeaderBoard',
-  SendConstant: 'SendConstant',
   NetworkSetting: 'NetworkSetting',
   CreateAccount: 'CreateAccount',
   ImportAccount: 'ImportAccount',
-  SeedPhrase: 'SeedPhrase',
   ExportAccount: 'ExportAccount',
-  CreateSendToken: 'CreateSendToken',
   FollowToken: 'FollowToken',
   GetStarted: 'GetStarted',
   WalletDetail: 'WalletDetail',
@@ -35,7 +31,7 @@ export default {
   SendCrypto: 'SendCrypto',
   Deposit: 'Deposit',
   Withdraw: 'Withdraw',
-  CreateToken: 'CreateToken',
   Wizard: 'Wizard',
   Game: 'Game',
+  TxHistoryDetail: 'TxHistoryDetail'
 };

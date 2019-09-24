@@ -18,6 +18,7 @@ const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, dec
   historiesFromApi && historiesFromApi.forEach((h) => {
     data.push({
       id: h?.id,
+      incognitoTx: h?.incognitoTx,
       time: h?.updatedAt,
       type: h?.addressType,
       toAddress: h?.userPaymentAddress,
@@ -30,13 +31,14 @@ const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, dec
       status: h?.statusText,
       statusCode: h?.status,
       cancelable: h?.cancelable,
-      currencyType: h?.currencyType
+      currencyType: h?.currencyType,
     });
   });
 
   histories && histories.forEach(h => {
     data.push({
       id: h?.txID,
+      incognitoTx: h?.txID,
       time: h?.time,
       type: h?.isIn ?  CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE : CONSTANT_COMMONS.HISTORY.TYPE.SEND,
       toAddress: h?.receivers[0],
@@ -44,7 +46,9 @@ const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, dec
       symbol: h?.tokenSymbol,
       decimals,
       pDecimals,
-      status: h?.status
+      status: h?.status,
+      fee: h?.fee,
+      feePToken: h?.feePToken,
     });
   });
 
@@ -87,6 +91,7 @@ class HistoryTokenContainer extends Component {
       const data = await removeHistory({ historyId: history?.id, currencyType: history?.currencyType});
       if (data) {
         Toast.showSuccess('Canceled');
+        this.handleLoadHistory();
       }
     } catch {
       Toast.showError('Something went wrong. Please try again.');

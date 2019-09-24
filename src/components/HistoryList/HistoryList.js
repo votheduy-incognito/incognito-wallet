@@ -3,7 +3,8 @@ import {
   Container,
   Divider,
   Text,
-  View
+  View,
+  TouchableOpacity
 } from '@src/components/core';
 import Swipeout from 'react-native-swipeout';
 import { ConfirmedTx, SuccessTx, FailedTx } from '@src/services/wallet/WalletService';
@@ -12,6 +13,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import formatUtil from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
+import routeNames from '@src/router/routeNames';
 import styleSheet from './style';
 
 const getStatusData = (status, statusCode) => {
@@ -98,6 +100,7 @@ const HistoryItemWrapper = ({ history, onCancelEtaHistory, ...otherProps }) => {
   if (history?.cancelable) {
     return (
       <Swipeout
+        autoClose
         style={{
           backgroundColor: 'transparent'
         }}
@@ -113,7 +116,7 @@ const HistoryItemWrapper = ({ history, onCancelEtaHistory, ...otherProps }) => {
   return component;
 };
 
-const HistoryItem = ({ history, divider }) => {
+const HistoryItem = ({ history, divider, navigation }) => {
   if (!history) {
     return null;
   }
@@ -121,10 +124,13 @@ const HistoryItem = ({ history, divider }) => {
   const { statusText, statusColor, statusNumber } = getStatusData(history.status, history.statusCode);
   const { typeText, balanceColor, balanceDirection } = getTypeData(history.type);
   // const [addressDirection, address] = getAddress(history);
+  const onPress = () => {
+    navigation?.navigate(routeNames.TxHistoryDetail, { data: { history, typeText, balanceColor, balanceDirection, statusText, statusColor, statusNumber } });
+  };
 
   return (
     <>
-      <View style={styleSheet.itemContainer}>
+      <TouchableOpacity onPress={onPress} style={styleSheet.itemContainer}>
         <View style={styleSheet.row}>
           <Text
             style={[styleSheet.typeText]}
@@ -166,7 +172,7 @@ const HistoryItem = ({ history, divider }) => {
             {statusText} {(!!statusNumber || statusNumber === 0) ? `[${statusNumber}]` : null}
           </Text>
         </View>
-      </View>
+      </TouchableOpacity>
       {divider && <Divider height={2} color={COLORS.lightGrey6} />}
     </>
   );
@@ -181,14 +187,14 @@ const EmptyHistory = ({ actionButton }) => (
   </Container>
 );
 
-const HistoryList = ({ histories, actionButton, onCancelEtaHistory }) => (
+const HistoryList = ({ histories, actionButton, onCancelEtaHistory, navigation }) => (
   histories && histories.length
     ? (
       <Container style={styleSheet.container}>
         <View style={styleSheet.content}>
           {
             histories.map((history, index) => (
-              <HistoryItemWrapper key={history.id} history={history} divider={index < (histories.length - 1)} onCancelEtaHistory={onCancelEtaHistory} />
+              <HistoryItemWrapper key={history.id} history={history} divider={index < (histories.length - 1)} onCancelEtaHistory={onCancelEtaHistory} navigation={navigation} />
             ))
           }
         </View>

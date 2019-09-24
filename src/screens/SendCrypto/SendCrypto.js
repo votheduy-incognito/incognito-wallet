@@ -168,7 +168,7 @@ class SendCrypto extends React.Component {
                   toAddress={isFormValid ? toAddress : null}
                 />
                 <Text style={homeStyle.feeText}>
-                  You&apos;ll pay: {formatUtil.amount(
+                  You&apos;ll pay: {formatUtil.amountFull(
                     finalFee,
                     feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals
                   )} {feeUnit}

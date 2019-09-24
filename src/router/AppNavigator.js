@@ -5,14 +5,12 @@ import ExportAccount from '@src/screens/ExportAccount';
 import FollowToken from '@src/screens/FollowToken';
 import ImportAccount from '@src/screens/ImportAccount';
 import NetworkSetting from '@src/screens/NetworkSetting';
-import SeedPhrase from '@src/screens/SeedPhrase';
-import UserHeaderBoard from '@src/screens/UserHeaderBoard';
 import WalletDetail from '@src/screens/WalletDetail';
 import ReceiveCrypto from '@src/screens/ReceiveCrypto';
 import SendCrypto from '@src/screens/SendCrypto';
 import Deposit from '@src/screens/Deposit';
 import Withdraw from '@src/screens/Withdraw';
-import CreateToken from '@src/screens/CreateToken';
+import TxHistoryDetail from '@src/screens/TxHistoryDetail';
 import HeaderBar from '@src/components/HeaderBar';
 import { navigationOptionsHandler } from '@src/utils/router';
 import ROUTE_NAMES from './routeNames';
@@ -21,11 +19,9 @@ import TabNavigator from './TabNavigator';
 const AppNavigator = createStackNavigator(
   {
     [ROUTE_NAMES.RootTab]: TabNavigator,
-    [ROUTE_NAMES.UserHeaderBoard]: navigationOptionsHandler(UserHeaderBoard, { title: 'Accounts' }),
     [ROUTE_NAMES.NetworkSetting]: navigationOptionsHandler(NetworkSetting, { title: 'Network' }),
     [ROUTE_NAMES.CreateAccount]: navigationOptionsHandler(CreateAccount, { title: 'Create Account' }),
     [ROUTE_NAMES.ImportAccount]: navigationOptionsHandler(ImportAccount, { title: 'Import Account' }),
-    [ROUTE_NAMES.SeedPhrase]: navigationOptionsHandler(SeedPhrase),
     [ROUTE_NAMES.ExportAccount]: navigationOptionsHandler(ExportAccount, { title: 'Your keys' }),
     [ROUTE_NAMES.FollowToken]: navigationOptionsHandler(FollowToken, { title: 'Add a token' }),
     [ROUTE_NAMES.WalletDetail]: navigationOptionsHandler(WalletDetail),
@@ -33,7 +29,7 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.SendCrypto]: navigationOptionsHandler(SendCrypto, { title: 'Send' }),
     [ROUTE_NAMES.Deposit]: navigationOptionsHandler(Deposit),
     [ROUTE_NAMES.Withdraw]: navigationOptionsHandler(Withdraw),
-    [ROUTE_NAMES.CreateToken]: navigationOptionsHandler(CreateToken, { title: 'Create Token' }),
+    [ROUTE_NAMES.TxHistoryDetail]: navigationOptionsHandler(TxHistoryDetail, { title: 'History Detail' })
   },
   {
     initialRouteName: ROUTE_NAMES.RootTab,
