@@ -259,7 +259,7 @@ class SetupDevice extends BaseComponent {
         };
 
         const listResult =  await this.saveProductList(fetchProductInfo);
-        // console.log(TAG,'handleSubmit saved - listResult = ',listResult);
+        // console.log(TAG,'changeDeviceName saved - listResult = ',listResult);
       }
       if(!_.isEmpty(fetchProductInfo)){
         let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
@@ -273,7 +273,7 @@ class SetupDevice extends BaseComponent {
       errMessage = errorMessage;
       
     } catch (error) {
-      console.log(TAG,'handleSubmit error');
+      console.log(TAG,'changeDeviceName error');
     }
 
     return throw new Error(errMessage);

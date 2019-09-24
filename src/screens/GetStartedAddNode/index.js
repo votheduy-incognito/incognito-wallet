@@ -177,7 +177,8 @@ class GetStartedAddNode extends BaseScreen {
     
     const errorMessage = await this.viewSetupDevice.current.handleSetUpPress();
     const listNode = await LocalDatabase.getListDevices()||[];
-    const nodeName = `Node ${listNode.length+1}`;
+    const subfix = Date.now();
+    const nodeName =  _.padEnd(`Node ${listNode.length+1}`,10,subfix);
     const deviceObj = _.isEmpty(errorMessage) ? await this.viewSetupDevice.current.changeDeviceName(nodeName):null; 
     console.log(TAG,'handleStepConnect errorMessage ',errorMessage ,deviceObj);
     if(_.isEmpty(errorMessage) && !_.isNil(deviceObj)){

@@ -35,13 +35,19 @@ class HomeMineItem extends React.Component {
         deviceInfo:Device.getInstance(nextProps?.item)
       };
     }
+
+    // if(!_.isEqual(nextProps.timeToUpdate,prevState.timeToUpdate)){
+    //   return {
+    //     timeToUpdate:nextProps.timeToUpdate
+    //   };
+    // }
     
     return null;
   }
 
   componentDidUpdate(prevProps,prevState){
     const {item,timeToUpdate} = this.props;
-    let isUpdateInfo = false;
+    
     // if(!_.isEqual(item,prevProps?.item)){
     //   console.log(TAG,'componentDidUpdate begin 010101');
     //   this.getInfo();
@@ -50,7 +56,7 @@ class HomeMineItem extends React.Component {
     if(!_.isEqual(prevProps.timeToUpdate,timeToUpdate) || !_.isEqual(item,prevProps?.item)){
       console.log(TAG,'componentDidUpdate begin timeToUpdate = ',timeToUpdate);
       this.getInfo();
-      // isUpdateInfo =  !isUpdateInfo && this.getInfo();
+      
       this.checkActive();
     }
     
@@ -65,10 +71,8 @@ class HomeMineItem extends React.Component {
     let {deviceInfo,account,balance} = this.state;
     console.log(TAG,'getInfo id = ',deviceInfo.Name);
     account = await getAccountByName(deviceInfo.accountName());
-
     balance = await Device.getRewardAmount(deviceInfo,wallet);
     // balance = 1000000000;
-    // balance =  format.amount(_.isNaN(balance)?0:balance,common.DECIMALS['PRV']);
     callbackReward(balance);
     balance = Device.formatForDisplayBalance(balance);
     console.log(TAG,'getInfo balance format = ',balance);
@@ -78,8 +82,9 @@ class HomeMineItem extends React.Component {
     });
   }
   checkActive = async ()=>{
-    const {item,isActive} = this.props;
+    const {item} = this.props;
     let {deviceInfo} = this.state;
+    const isActive = true;
     
     if(isActive){
       console.log(TAG,'checkActive begin deviceType = ',deviceInfo.Type);
