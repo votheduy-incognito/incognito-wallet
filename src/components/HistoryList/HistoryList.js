@@ -100,6 +100,7 @@ const HistoryItemWrapper = ({ history, onCancelEtaHistory, ...otherProps }) => {
   if (history?.cancelable) {
     return (
       <Swipeout
+        autoClose
         style={{
           backgroundColor: 'transparent'
         }}

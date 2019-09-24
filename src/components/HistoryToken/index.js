@@ -91,6 +91,7 @@ class HistoryTokenContainer extends Component {
       const data = await removeHistory({ historyId: history?.id, currencyType: history?.currencyType});
       if (data) {
         Toast.showSuccess('Canceled');
+        this.handleLoadHistory();
       }
     } catch {
       Toast.showError('Something went wrong. Please try again.');
