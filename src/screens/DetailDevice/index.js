@@ -207,7 +207,11 @@ class DetailDevice extends BaseScreen {
       listFollowingTokens = await Promise.all(listFollowingTokens);
 
       console.log(TAG,'fetchData NODE listFollowingTokens = ',listFollowingTokens);
-      balancePRV = await device.balanceToken(account,wallet);        
+      balancePRV = await device.balanceToken(account,wallet);
+      balancePRV = format.amount(balancePRV,common.DECIMALS['PRV']);
+      
+      balancePRV = _.isNaN(balancePRV)?0:balancePRV;
+      console.log(TAG,'fetchData NODE balance = ',balancePRV);
     }
     }
     
