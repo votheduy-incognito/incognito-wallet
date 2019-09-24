@@ -1,7 +1,6 @@
 import { ScrollView, View } from '@src/components/core';
 import PropTypes from 'prop-types';
 import React from 'react';
-// import PrivacySection from './PrivacySection';
 import AccountSection from './AccountSection';
 import NetworkSection from './NetworkSection';
 import { settingStyle } from './style';
@@ -25,7 +24,6 @@ class Setting extends React.Component {
             navigation={navigation}
             defaultServerId={defaultServerId}
           />
-          {/* <PrivacySection navigation={navigation} /> */}
         </View>
       </ScrollView>
     );
