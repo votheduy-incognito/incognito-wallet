@@ -10,6 +10,7 @@ import ReceiveCrypto from '@src/screens/ReceiveCrypto';
 import SendCrypto from '@src/screens/SendCrypto';
 import Deposit from '@src/screens/Deposit';
 import Withdraw from '@src/screens/Withdraw';
+import TxHistoryDetail from '@src/screens/TxHistoryDetail';
 import HeaderBar from '@src/components/HeaderBar';
 import { navigationOptionsHandler } from '@src/utils/router';
 import ROUTE_NAMES from './routeNames';
@@ -28,6 +29,7 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.SendCrypto]: navigationOptionsHandler(SendCrypto, { title: 'Send' }),
     [ROUTE_NAMES.Deposit]: navigationOptionsHandler(Deposit),
     [ROUTE_NAMES.Withdraw]: navigationOptionsHandler(Withdraw),
+    [ROUTE_NAMES.TxHistoryDetail]: navigationOptionsHandler(TxHistoryDetail, { title: 'History Detail' })
   },
   {
     initialRouteName: ROUTE_NAMES.RootTab,

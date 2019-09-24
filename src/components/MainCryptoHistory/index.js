@@ -13,6 +13,7 @@ const normalizeData = (histories, decimals, pDecimals) =>
   histories &&
   histories.map(h => ({
     id: h?.txID,
+    incognitoTx: h?.txID,
     time: h?.time,
     type: h?.isIn ? CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE : CONSTANT_COMMONS.HISTORY.TYPE.SEND,
     toAddress: h?.receivers[0],

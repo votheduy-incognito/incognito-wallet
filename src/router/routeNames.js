@@ -33,4 +33,5 @@ export default {
   Withdraw: 'Withdraw',
   Wizard: 'Wizard',
   Game: 'Game',
+  TxHistoryDetail: 'TxHistoryDetail'
 };
