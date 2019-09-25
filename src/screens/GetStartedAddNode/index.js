@@ -174,10 +174,11 @@ class GetStartedAddNode extends BaseScreen {
       loading:true,
       currentPage:2,
     });
+    const deviceIdFromQrcode = this.state.deviceId;
     
-    const errorMessage = await this.viewSetupDevice.current.handleSetUpPress();
+    const errorMessage = await this.viewSetupDevice.current.handleSetUpPress(deviceIdFromQrcode);
     const listNode = await LocalDatabase.getListDevices()||[];
-    const subfix = Date.now();
+    const subfix = Date.now()%1000;
     const nodeName =  _.padEnd(`Node ${listNode.length+1}`,10,subfix);
     const deviceObj = _.isEmpty(errorMessage) ? await this.viewSetupDevice.current.changeDeviceName(nodeName):null; 
     console.log(TAG,'handleStepConnect errorMessage ',errorMessage ,deviceObj);
