@@ -262,9 +262,9 @@ class DetailDevice extends BaseScreen {
   checkStatus = async (chain='incognito')  => {
     let {device,isFetchingCheckStatus} = this.state;
     console.log(TAG,'checkStatus begin ',device.Type);
-    this.setState({
-      isFetchingCheckStatus:true
-    });
+    // this.setState({
+    //   isFetchingCheckStatus:true
+    // });
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
       const dataResult = await VirtualDeviceService.getChainMiningStatus(device) ?? {};
@@ -286,9 +286,9 @@ class DetailDevice extends BaseScreen {
       await this.callAndUpdateAction(action, chain);
     }
     }
-    this.setState({
-      isFetchingCheckStatus:false
-    });
+    // this.setState({
+    //   isFetchingCheckStatus:false
+    // });
   };
   setDeviceOffline =()=>{
     let {device} = this.state;
