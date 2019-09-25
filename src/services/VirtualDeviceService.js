@@ -93,7 +93,7 @@ export default class VirtualDeviceService {
       if(!_.isEmpty(apiURL)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_MINING_INFO.key}`;
         const buildParams = LIST_ACTION.GET_MINING_INFO.data;
-        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),3);
+        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
       
         console.log(TAG,'getMiningInfo result',response);
         return response;
@@ -113,7 +113,7 @@ export default class VirtualDeviceService {
       if(!_.isEmpty(apiURL)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_PUBLIC_KEY_MINING.key}`;
         const buildParams = LIST_ACTION.GET_PUBLIC_KEY_MINING.data;
-        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),5);
+        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
       
         console.log(TAG,'getPublicKeyMining result',response);
         const {Result=''} = response;
@@ -140,7 +140,7 @@ export default class VirtualDeviceService {
 
           apiURL = `${apiURL}/${LIST_ACTION.GET_PUBLIC_KEY_ROLE.key}`;
           const buildParams = LIST_ACTION.GET_PUBLIC_KEY_ROLE.data([`${PREFIX_BLS_PARAMS}${blsKey}`]);
-          const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),3);
+          const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
       
           console.log(TAG,'getPublicKeyRole result',response);
           const {Result=''} = response;
@@ -162,7 +162,7 @@ export default class VirtualDeviceService {
       if(!_.isEmpty(apiURL)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_PRIVACY_CUSTOM_TOKEN.key}`;
         const buildParams = LIST_ACTION.GET_PRIVACY_CUSTOM_TOKEN.data;
-        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),3);
+        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
       
         console.log(TAG,'getPrivacyCustomToken result',response);
         const {Result={}} = response;
@@ -180,7 +180,7 @@ export default class VirtualDeviceService {
       if(!_.isEmpty(apiURL)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_REWARD_AMOUNT.key}`;
         const buildParams = LIST_ACTION.GET_REWARD_AMOUNT.data({paymentAddress:''});
-        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),3);
+        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
       
         console.log(TAG,'getRewardAmount result',response);
         return response;
@@ -201,7 +201,7 @@ export default class VirtualDeviceService {
         apiURL = `${apiURL}/${LIST_ACTION.GET_MINER_REWARD_FROM_MINING_KEY.key}`;
         const buildParams = LIST_ACTION.GET_MINER_REWARD_FROM_MINING_KEY.data({blsData:`${PREFIX_BLS_PARAMS}${blsKey}`});
         // console.log(TAG,'getRewardFromMiningkey begin ----');
-        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),5);
+        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
       
         console.log(TAG,'getRewardFromMiningkey result',response);
         return response;
@@ -228,7 +228,7 @@ export default class VirtualDeviceService {
           ...LIST_ACTION.GET_CHAIN_MINING_STATUS.data,
           'params': [shardID]
         };
-        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),3);
+        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
         
         const {Result ,Method} = response ?? {};
         const item = DATA_INFO.find((item)=>{
