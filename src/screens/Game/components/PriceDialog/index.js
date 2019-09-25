@@ -17,7 +17,6 @@ function calculatePrice(text, number, token) {
     return price;
   }
 
-
   return 0;
 }
 

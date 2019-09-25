@@ -13,16 +13,18 @@ function TopBar(props) {
   let displayValue = (value || 0) / 1e9;
 
   if (displayValue >= 1e9) {
-    displayValue = _.floor((value / 1e9), 0) + 'M';
+    displayValue = _.round((displayValue / 1e9), 0) + 'M';
   } else if (displayValue >= 1e6) {
-    displayValue = _.floor((value / 1e6), 0) + 'M';
+    displayValue = _.round((displayValue / 1e6), 0) + 'M';
   } else if (displayValue >= 1e4) {
-    displayValue = _.floor((value / 1e3), 1) + 'K';
+    displayValue = _.round((displayValue / 1e3), 1) + 'K';
   } else {
-    displayValue = _.floor(displayValue, 2).toLocaleString();
+    displayValue = _.round(displayValue, 2).toLocaleString();
   }
 
-  const total = playerTokens.reduce((total, token) => total + token.number, 0);
+  const total = playerTokens.reduce((total, token) => {
+    return total + Math.min(token.number, token.actualNumber || 0);
+  }, 0);
 
   return (
     <View style={styles.main}>
