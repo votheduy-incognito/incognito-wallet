@@ -47,6 +47,8 @@ class DetailDevice extends BaseScreen {
     // console.log(TAG,'constructor token',token);
     this.state = {
       loading: false,
+      isFetchingCheckStatus:false,
+      isetFetchingCheckAndUpdateInfoVirtualNode:false,
       selectedIndex: 0,
       accountMiner:{},
       isStaked:undefined,
@@ -258,8 +260,11 @@ class DetailDevice extends BaseScreen {
   }
 
   checkStatus = async (chain='incognito')  => {
-    let {device} = this.state;
+    let {device,isFetchingCheckStatus} = this.state;
     console.log(TAG,'checkStatus begin ',device.Type);
+    // this.setState({
+    //   isFetchingCheckStatus:true
+    // });
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
       const dataResult = await VirtualDeviceService.getChainMiningStatus(device) ?? {};
@@ -281,6 +286,9 @@ class DetailDevice extends BaseScreen {
       await this.callAndUpdateAction(action, chain);
     }
     }
+    // this.setState({
+    //   isFetchingCheckStatus:false
+    // });
   };
   setDeviceOffline =()=>{
     let {device} = this.state;
@@ -318,36 +326,7 @@ class DetailDevice extends BaseScreen {
     }
     
   });
-  // rightComponent={(
-  //   <Button
-  //     title="reset device"
-  //     onPress={onClickView( async()=>{
-  //       const {device} = this.state;
-  //       this.Loading = true;
-  //       const result = await DeviceService.reset(device);
-  //       const {status = -1,message = 'fail'} = result||{};
-  //       this.Loading = false;
-  //       // await this.checkStatus('incognito');
-  //       alert(status === 1 ? 'Success':message);
-
-  //     })}
-  //   />
-  // )}
-  // renderHeader = () => {
-  //   const title = this.titleBar|| 'Details';
-  //   return (
-  //     <Header
-  //       containerStyle={style.containerHeader}
-  //       centerComponent={(
-  //         <Text numberOfLines={1} style={style.titleHeader}>
-  //           {title}
-  //         </Text>
-  //       )}
-  //       leftComponent={imagesVector.ic_back({onPress:this.onPressBack},{paddingLeft:0,paddingRight:scaleInApp(30)})}
-  //     />
-  //   );
-    
-  // };
+  
   renderHeader = () => {
     const {navigation} = this.props;
     const title = this.titleBar|| 'Details';
@@ -399,7 +378,7 @@ class DetailDevice extends BaseScreen {
   renderGroupBalance = ()=>{
     const {device,balancePRV = 0,accountMiner} = this.state;
     // const isHaveWallet =  !_.isEmpty(accountMiner);
-    const isHaveWallet =  !device.isOffline();
+    const isHaveWallet = !device.isOffline();
     
     return (
       <View style={style.group2_container}>
@@ -407,14 +386,6 @@ class DetailDevice extends BaseScreen {
           <View style={style.group2_container_container}>
             <Text style={style.group2_container_title}>TOTAL BALANCE</Text>
             <Text numberOfLines={1} style={style.group2_container_value}>{`${balancePRV} PRV`}</Text>
-            {/* {isHaveWallet&&(
-              <Button
-                titleStyle={style.group2_container_button_text}
-                buttonStyle={style.group2_container_button}
-                onPress={this.handlePressStake}
-                title='Stake'
-              />
-            )} */}
           </View>
           <View style={style.group2_container_container2}>
             {isHaveWallet&&(
