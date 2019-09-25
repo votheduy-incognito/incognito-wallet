@@ -205,7 +205,7 @@ class SetupDevice extends BaseComponent {
   connectHotspot = async ()=>{
     this.deviceMiner = new ObjConnection();
     let suffix = _.split(this.deviceIdFromQrcode,'-')[1];
-    suffix = _.isEmpty(suffix)?'':`-${suffix}`;
+    suffix = _.isEmpty(suffix) || _.toLength(suffix) != 6 ?'':`-${suffix}`;
     this.deviceMiner.name = `${HOTPOT}${suffix}`;
     this.deviceMiner.id = `${HOTPOT}${suffix}`;
     const result:Boolean = await this.deviceId?.current?.connectDevice(this.deviceMiner) || false;
