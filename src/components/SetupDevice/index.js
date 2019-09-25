@@ -203,16 +203,17 @@ class SetupDevice extends BaseComponent {
   }
 
   connectHotspot = async ()=>{
-    
     this.deviceMiner = new ObjConnection();
-    this.deviceMiner.name = HOTPOT;
-    this.deviceMiner.id = HOTPOT;
+    let suffix = _.split(this.deviceIdFromQrcode,'-')[1];
+    suffix = _.isEmpty(suffix)?'':`-${suffix}`;
+    this.deviceMiner.name = `${HOTPOT}${suffix}`;
+    this.deviceMiner.id = `${HOTPOT}${suffix}`;
     const result:Boolean = await this.deviceId?.current?.connectDevice(this.deviceMiner) || false;
     console.log(TAG,'connectHotspot end result = ',result);
     return result?this.deviceMiner:null;
   }
 
-  handleSetUpPress = onClickView(async ()=>{
+  handleSetUpPress = onClickView(async (deviceIdFromQrcode='')=>{
     let errorMsg = '';
     
     try {
@@ -222,7 +223,7 @@ class SetupDevice extends BaseComponent {
         isDoingSetUp:true,
         errorMessage:''
       });
-      
+      this.deviceIdFromQrcode = deviceIdFromQrcode;
       const resultStep1 = await this.checkConnectHotspot();
       let callVerifyCode = this.callVerifyCode;
       this.CurrentPositionStep = 2;
@@ -496,7 +497,7 @@ class SetupDevice extends BaseComponent {
   _handleConnectionChange = async (isConnected) => {
     
     let device = isConnected && await this.deviceId?.current?.getCurrentConnect();
-    this.isHaveNetwork = !_.isEmpty(device?.name||'') && !_.isEqual(device?.name||'', HOTPOT);
+    this.isHaveNetwork = !_.isEmpty(device?.name||'') && !_.includes(device?.name||'', HOTPOT);
     console.log(TAG,`_handleConnectionChange: ${this.isHaveNetwork} ,name = ${device?.name}`);
     this.setState({
       isConnected: isConnected
@@ -538,7 +539,7 @@ class SetupDevice extends BaseComponent {
 
     let device = await this.deviceId?.current?.getCurrentConnect();
     
-    let isConnectedHotpost = !_.isEmpty(device?.name||'') && _.isEqual(device?.name||'', HOTPOT);
+    let isConnectedHotpost = !_.isEmpty(device?.name||'') && _.includes(device?.name||'', HOTPOT);
     this.CurrentPositionStep = 0;
     console.log(TAG,'checkConnectHotspot begin: ', validSSID,validWPA);
     if(!isConnectedHotpost){
