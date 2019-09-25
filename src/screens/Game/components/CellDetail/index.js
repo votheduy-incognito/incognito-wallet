@@ -6,64 +6,9 @@ import { Button } from '@src/components/core';
 import {MAX_TOKEN} from '../../constants';
 
 const TIMEOUT = 1000;
-const START_RATE = 11;
-
-function calculateRentFee(token, playerTokens) {
-  if (!token) {
-    return 0;
-  }
-  let rentFee = 0;
-  let playerTokenBought = 0;
-
-  const tokenBought = MAX_TOKEN - token.number;
-
-  playerTokens.forEach(playerToken => {
-    if (playerToken.tokenId === token.id) {
-      playerTokenBought = playerToken.number;
-    }
-  });
-
-  if (tokenBought <= 0) {
-    return 0;
-  }
-
-  if (tokenBought > 0) {
-    rentFee = START_RATE* token.startPrice;
-  }
-
-  if (tokenBought >= 100) {
-    rentFee = rentFee * 2;
-  }
-
-  if (tokenBought >= 200) {
-    rentFee = rentFee * 4;
-  }
-
-  if (tokenBought >= 300) {
-    rentFee = rentFee * 8;
-  }
-
-  if (tokenBought >= 400) {
-    rentFee = rentFee * 12;
-  }
-
-  if (tokenBought >= 500) {
-    rentFee = rentFee * 28;
-  }
-
-  if (tokenBought >= 600) {
-    rentFee = rentFee * 34;
-  }
-
-  if (playerTokenBought > 0) {
-    rentFee = rentFee - (rentFee * playerTokenBought) / tokenBought;
-  }
-
-  return rentFee;
-}
 
 function CellDetail(props) {
-  const { cell, playerTokens, onBuy, isLoading } = props;
+  const { cell, onBuy, isLoading, rentFee } = props;
   const [currentCell, setCurrentCell] = React.useState(null);
   const [visible, setVisible] = React.useState(false);
 
@@ -83,7 +28,6 @@ function CellDetail(props) {
   }, [cell, isLoading]);
 
   const token = cell?.token;
-  const rentFee = calculateRentFee(token, playerTokens);
 
   return (
     <Dialog visible={visible} style={styles.dialog}>
@@ -188,17 +132,15 @@ CellDetail.propTypes = {
     }),
     index: PropTypes.number,
   }),
-  playerTokens: PropTypes.arrayOf(PropTypes.shape({
-    tokenId: PropTypes.string,
-    number: PropTypes.string,
-  })).isRequired,
   onBuy: PropTypes.func.isRequired,
   isLoading: PropTypes.bool,
+  rentFee: PropTypes.number,
 };
 
 CellDetail.defaultProps = {
   cell: null,
   isLoading: false,
+  rentFee: 0,
 };
 
 export default React.memo(CellDetail);

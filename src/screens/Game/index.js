@@ -1,30 +1,31 @@
 /* eslint-disable */
-import { Toast } from '@src/components/core';
-import { CONSTANT_COMMONS } from '@src/constants';
-import { Cell, NotificationStatus, Player, TransactionType } from '@src/models/game';
-import { getBalance as getAccountBalance, reloadAccountFollowingToken } from '@src/redux/actions/account';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import _ from 'lodash';
+import { connect } from 'react-redux';
 import { reloadAccountList } from '@src/redux/actions/wallet';
-import { accountSeleclor } from '@src/redux/selectors';
+import {
+  getBalance as getAccountBalance,
+  reloadAccountFollowingToken,
+} from '@src/redux/actions/account';
+import firebase from 'firebase';
+import { Toast } from '@src/components/core';
 import gameAPI from '@src/services/api/game';
 import accountService from '@src/services/wallet/accountService';
-import firebase from 'firebase';
-import 'firebase/database';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import DeviceInfo from 'react-native-device-info';
-import { connect } from 'react-redux';
-import LoadingContainer from '../../components/LoadingContainer';
-import { AUTO_CLOSE_POPUP_TIMEOUT, CARD_ACTION, GAME_HOST_PAYMENT_ADDRESS, GO_TO_JAIL_POSITION, JAIL_FINE, JAIL_POSITION, MAX_JAIL_ROLL, MESSAGES } from './constants';
+import { accountSeleclor } from '@src/redux/selectors';
+import { CONSTANT_COMMONS } from '@src/constants';
+import { Cell, Player, TransactionType, NotificationStatus } from '@src/models/game';
 import Game from './Game';
-
-const isEmulator = DeviceInfo.isEmulator();
-
-let accelerometer;
-
-if (!isEmulator) {
-  // accelerometer = require('react-native-sensors').accelerometer;
-}
+import {
+  AUTO_CLOSE_POPUP_TIMEOUT,
+  CARD_ACTION,
+  GAME_HOST_PAYMENT_ADDRESS,
+  GO_TO_JAIL_POSITION,
+  JAIL_FINE,
+  JAIL_POSITION, MAX_JAIL_ROLL, MESSAGES,
+} from './constants';
+import 'firebase/database';
+import LoadingContainer from '../../components/LoadingContainer';
 
 const originalFee = 0;
 const TIMEOUT = 2000;
@@ -43,12 +44,6 @@ class GameContainer extends Component {
     };
     this.lastAcceleration = {};
   }
-
-  // componentDidUpdate(prevProps) {
-  //   if (this.props.account?.name !== prevProps.account?.name) {
-  //     this.getPlayer(this.state.cells);
-  //   }
-  // }
 
   componentDidMount() {
     this.getData();
@@ -115,8 +110,7 @@ class GameContainer extends Component {
     if (!isLoading) {
       this.setState({ isLoading: MESSAGES.RELOADING, rollInfo: {} });
       try {
-        const promises = [this.getPlayer(), this.getPendingTransactions()];
-        await Promise.all(promises);
+        await Promise.all([this.getPlayer(), this.getPlayerNotifications()]);
       } catch (error) {
         console.log('Reload Error', error);
       }
@@ -180,15 +174,25 @@ class GameContainer extends Component {
       });
 
       await getAccountBalance(account);
-      await this.getPlayerNotifications();
       const accountWallet = wallet.getAccountByName(account?.name);
+
+      for (let i = 0; i < player.tokens.length; i++) {
+        let actualNumber = 0;
+        const playerToken = player.tokens[i];
+
+        try {
+          actualNumber = await accountWallet.getPrivacyCustomTokenBalance(playerToken.tokenId);
+        } catch (error) {
+          actualNumber = 0;
+        }
+
+        playerToken.actualNumber = actualNumber;
+      }
 
       player.tokens.forEach(playerToken => {
         const newPlayerToken = playerToken;
-        accountWallet.getPrivacyCustomTokenBalance(playerToken.tokenId)
-          .then(actualNumber => {
-            newPlayerToken.actualNumber = actualNumber;
-          });
+        newPlayerToken.actualNumber = playerToken.actualNumber || 0;
+
       });
 
       this.setState({
@@ -560,6 +564,7 @@ class GameContainer extends Component {
         isShowingATM={isShowingATM}
         onCloseATM={this.onCloseATM}
         notifications={notifications}
+        rentFee={rollInfo?.rentFee}
       />
     );
   }
