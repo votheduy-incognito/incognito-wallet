@@ -120,6 +120,7 @@ class Game extends React.Component {
       isShowingATM,
       onCloseATM,
       notifications,
+      rentFee,
     } = this.props;
     const {
       topPart,
@@ -199,6 +200,7 @@ class Game extends React.Component {
         <CellDetail
           cell={currentCell}
           playerTokens={player.tokens}
+          rentFee={rentFee}
           onBuy={this.showPriceDialog}
           isLoading={isPaying || isLoading || isShowingATM || isShowingPriceDialog || isShowingSellDialog}
         />
@@ -235,6 +237,7 @@ class Game extends React.Component {
           cells={cells}
           visible={isShowingATM}
           onConfirmPrice={(...values) => onBuy(...values)}
+          player={player}
           onCancel={onCloseATM}
         />
         <NotificationDialog visible={isShowingNotifications} notifications={notifications} onCancel={this.hideDialog} />
