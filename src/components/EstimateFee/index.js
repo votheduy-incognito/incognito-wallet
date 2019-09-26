@@ -70,7 +70,7 @@ class EstimateFeeContainer extends Component {
 
       return fee;
     } catch (e) {
-      this.setState({ estimateErrorMsg: 'Can\'t calculate the fee for this transaction' });
+      this.setState({ estimateErrorMsg: e?.message || 'Can\'t calculate the fee for this transaction' });
     } finally {
       this.setState({ isGettingFee: false });
     }
@@ -195,10 +195,10 @@ class EstimateFeeContainer extends Component {
 
   render() {
     const { minFee, isGettingFee, defaultFeeSymbol, estimateErrorMsg } = this.state;
-    const { selectedPrivacy, onSelectFee, finalFee, style } = this.props;
+    const { selectedPrivacy, onSelectFee, finalFee, style, account } = this.props;
     const types = this.getFeeSymbolList(selectedPrivacy);
 
-    if (typeof minFee !== 'undefined' && minFee !== null) {
+    if (typeof minFee !== 'undefined' && minFee !== null && account && selectedPrivacy) {
       return (
         <EstimateFee
           onChangeDefaultSymbol={this.handleChangeDefaultSymbol}
@@ -212,6 +212,7 @@ class EstimateFeeContainer extends Component {
           onRetry={this.handleEstimateFee}
           style={style}
           selectedPrivacy={selectedPrivacy}
+          account={account}
         />
       );
     }
