@@ -48,7 +48,7 @@ class WifiConnection extends BaseConnection {
   removeConnection=(device: ObjConnection) => {
     return new Promise((resolve, reject) => {
       console.log(TAG, 'removeConnection begin result = ',device?.name||'');
-      Wifi.removeSSID(device.name,true,error => {
+      Wifi.removeSSID(device.name,false,error => {
         resolve(!error);
       });
       
@@ -57,7 +57,7 @@ class WifiConnection extends BaseConnection {
 
   connectDevice = (device: ObjConnection) => {
     const pro = new Promise((resolve, reject) => {
-      Wifi.connectSecure(device.name,PASS_HOSPOT,false,false, error => {
+      Wifi.connectSecure(device.name,PASS_HOSPOT,false,true, error => {
         if (!error) {
           Wifi.getSSID(SSID => {
             console.log(TAG, 'connectDevice getSSID --- ', SSID);

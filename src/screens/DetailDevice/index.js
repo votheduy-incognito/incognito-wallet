@@ -80,6 +80,7 @@ class DetailDevice extends BaseScreen {
       const deviceNewJSON =  listDevice.find(item=>_.isEqual(item.product_id,product_id));
       console.log(TAG,'onResume begin new -- ',deviceNewJSON);
       this.setState({
+        isStaked:undefined,
         device:Device.getInstance(deviceNewJSON)
       });
     }
@@ -434,7 +435,7 @@ class DetailDevice extends BaseScreen {
             {imagesVector.ic_setting()}
           </TouchableOpacity>
         )}
-        {device.Type === DEVICES.VIRTUAL_TYPE && !device.isOffline() && !device.isEarning() && !isStaked &&!isCallStaked? (
+        {device.Type === DEVICES.VIRTUAL_TYPE && !device.isOffline() && !device.isEarning() && (!_.isNil(isStaked) && !isStaked) &&!isCallStaked? (
           <Button
             titleStyle={style.group2_container_button_text}
             buttonStyle={style.group2_container_button}
