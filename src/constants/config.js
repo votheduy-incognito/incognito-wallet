@@ -6,6 +6,7 @@ import {
   PASSPHRASE_WALLET_DEFAULT,
   TESTNET_SERVER_ADDRESS,
   TEST_URL,
+  CRYPTO_ICON_URL,
 } from 'react-native-dotenv';
 
 const DEFAULT_LIST_SERVER = [{
@@ -26,6 +27,7 @@ const DEFAULT_LIST_SERVER = [{
 }];
 
 export default {
+  CRYPTO_ICON_URL,
   API_BASE_URL,
   PASSWORD_SECRET_KEY,
   SHARD_ID: SHARD_ID || -1,
