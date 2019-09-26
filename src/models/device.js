@@ -55,8 +55,8 @@ export default class Device {
   // READY   = 2
   // MINING  = 3
   // STOP    = 4
-  constructor(data:template){
-    this.data = {...template, ...data};
+  constructor(data){
+    this.data = {...template, ...data,status:template.status};
   }
   isStartedChain=()=>{
     return this.data.status.code!=Device.CODE_OFFLINE && this.data.status.code!=Device.CODE_UNKNOWN && this.data.status.code !== Device.CODE_STOP;
@@ -64,8 +64,14 @@ export default class Device {
   isOffline =()=>{
     return this.data.status.code == Device.CODE_OFFLINE || (this.data.status.code == Device.CODE_UNKNOWN && this.data.status.message !== template.status.message);
   }
+  isWaiting =()=>{
+    return this.data.status.message === template.status.message;
+  }
   isEarning =()=>{
     return this.data.status.code == Device.CODE_MINING;
+  }
+  isReady =()=>{
+    return this.data.status.code == Device.CODE_START;
   }
   accountName = () =>{
     return this.data.minerInfo?.account?.name||this.Name;
@@ -120,7 +126,7 @@ export default class Device {
   }
   balanceToken = async(account,wallet,tokenID = '')=>{
     const accountName = !_.isEmpty(account)? account.name:this.accountName();
-    const result = (!_.isEmpty(accountName) && !_.isEmpty(wallet)  && await accountService.getRewardAmount(tokenID, accountName,wallet))||0;
+    const result = (!_.isEmpty(accountName) && !_.isEmpty(wallet)  && await accountService.getRewardAmount(tokenID, accountName,wallet))||null;
     return result;
   }
 
@@ -157,14 +163,15 @@ export default class Device {
     return new Device(data);
   }
   static getRewardAmount = async (deviceInfo:Device,wallet?)=>{
-    let balance = 0;
+    let balance = null;
     if(!_.isEmpty(deviceInfo)){
       switch(deviceInfo.Type){
       case DEVICES.VIRTUAL_TYPE:{
+        console.log(TAG,'getRewardAmount VIRTUAL_TYPE begin');
         let dataResult = await VirtualDeviceService.getRewardFromMiningkey(deviceInfo) ?? {};
-        
+        console.log(TAG,'getRewardAmount VIRTUAL_TYPE dataResult = ',dataResult,deviceInfo.Name);
         const {Result={}} = dataResult;
-        balance = Result['PRV']??0;
+        balance = Result['PRV']||null;
         
         break;
       }
@@ -174,8 +181,8 @@ export default class Device {
       } 
     }
     
-    balance = _.isNaN(balance)?0:balance;
-    console.log(TAG,'getRewardAmount balance = ',balance);
+    balance = _.isNil(balance)||_.isNaN(balance)?null:balance;
+    console.log(TAG,'getRewardAmount balance = ',balance,deviceInfo.Name);
     return balance;
   }
   static formatForDisplayBalance = (balance:Number)=>{

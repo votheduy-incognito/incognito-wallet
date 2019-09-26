@@ -7,7 +7,7 @@ import style from './style';
 
 class BottomSheet extends Component {
   render() {
-    const{contentView,height} = this.props;
+    const{contentView,height,onClose} = this.props;
     return (
       <View style={style.container}>
         <RBSheet
@@ -19,6 +19,9 @@ class BottomSheet extends Component {
           duration={200}
           customStyles={{
             container: undefined
+          }}
+          onClose={()=>{
+            onClose && onClose();
           }}
         >
           {contentView?contentView:null}
