@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import memmoize from 'memoize-one';
-import { View, TouchableOpacity, Text, ActivityIndicator } from '@src/components/core';
+import { View, TouchableOpacity, Text, ActivityIndicator, Toast } from '@src/components/core';
+import formatUtil from '@src/utils/format';
+import { CONSTANT_COMMONS } from '@src/constants';
 import styles from './styles';
 
 const LEVELS = [
@@ -62,9 +64,32 @@ class EstimateFee extends Component {
     const { levels } = this.state;
 
     if (oldDefaultFeeSymbol === defaultFeeSymbol && this.shouldSetDefaultRate(levels, finalFee)) {
-      const defaultLevel = levels[1];
-      defaultLevel && this.handleSelectRate(defaultLevel.fee);
+      const selectDefaultLevel = (level) => {
+        const defaultLevel = level;
+        defaultLevel && this.handleSelectRate(defaultLevel.fee);
+      };
+      if (this.isAvailabelFee(levels[1].fee, defaultFeeSymbol)) {
+        selectDefaultLevel(levels[1]);
+      } else if (this.isAvailabelFee(levels[0].fee, defaultFeeSymbol)) {
+        selectDefaultLevel(levels[0]);
+      } else if (!this.isAvailabelFee(levels[0].fee, defaultFeeSymbol)) {
+        // can not use this type of fee
+        this.canNotUseFeeType(levels[0].fee, defaultFeeSymbol);
+      }
     }
+  }
+
+  canNotUseFeeType = (nanoFee, symbol) => {
+    const { selectedPrivacy } = this.props;
+    let formatAmount = 0;
+
+    if (symbol === selectedPrivacy?.symbol) {
+      formatAmount = formatUtil.amountFull(nanoFee, selectedPrivacy?.pDecimals);
+    } else if (symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV) {
+      formatAmount = formatUtil.amountFull(nanoFee, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY);
+    }
+
+    Toast.showWarning(`Min fee is ${formatAmount} ${symbol}. Your balance is not enough to use ${symbol} fee, please uses another type or top up your balance.`);
   }
 
   shouldSetDefaultRate = memmoize((levels, finalFee) => {
@@ -90,6 +115,23 @@ class EstimateFee extends Component {
     if (typeof onSelectFee === 'function') {
       onSelectFee({ fee, feeUnit: defaultFeeSymbol });
     }
+  }
+
+  isAvailabelFee = (fee, symbol) => {
+    const { account, selectedPrivacy } = this.props;
+    let amount = 0;
+
+    if (symbol === selectedPrivacy?.symbol) {
+      amount = selectedPrivacy?.amount;
+    } else if (symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV) {
+      amount = account?.value;
+    }
+
+    if (amount >= fee) {
+      return true;
+    }
+
+    return false;
   }
 
   render() {
@@ -152,10 +194,11 @@ class EstimateFee extends Component {
                   isGettingFee ?
                     <ActivityIndicator /> : 
                     levels?.map(({ fee, level }) => {
-                      const onPress = () => this.handleSelectRate(fee);
+                      const isAvailabelFee = this.isAvailabelFee(fee, defaultFeeSymbol);
+                      const onPress = isAvailabelFee ? () => this.handleSelectRate(fee) : null;
                       return (
                         <TouchableOpacity key={level?.name} onPress={onPress} style={styles.rate}>
-                          <Text style={[styles.rateText, finalFee === fee && styles.rateTextHighlight]}>{level?.name}</Text>
+                          <Text style={[styles.rateText, finalFee === fee && styles.rateTextHighlight, !isAvailabelFee && { textDecorationLine: 'line-through' }]}>{level?.name}</Text>
                           {/* <Text>{formatUtil.amount(fee, defaultFeeSymbol)} {defaultFeeSymbol}</Text> */}
                         </TouchableOpacity>
                       );
@@ -179,7 +222,9 @@ EstimateFee.defaultProps = {
   finalFee: null,
   estimateErrorMsg: null,
   onRetry: null,
-  style: null
+  style: null,
+  account: null,
+  selectedPrivacy: null
 };
 
 EstimateFee.propTypes = {
@@ -193,6 +238,8 @@ EstimateFee.propTypes = {
   finalFee: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   estimateErrorMsg: PropTypes.string,
   style: PropTypes.object,
+  account: PropTypes.object,
+  selectedPrivacy: PropTypes.object,
 };
 
 export default EstimateFee;

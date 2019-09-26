@@ -1,19 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, TouchableOpacity, Image, ActivityIndicator } from '@src/components/core';
-import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { View, Text, TouchableOpacity, ActivityIndicator } from '@src/components/core';
+import CryptoIcon from '@src/components/CryptoIcon';
 import formatUtil from '@src/utils/format';
-import { COLORS } from '@src/styles';
 import cryptoItemStyle from './style';
 
-const CryptoItem = ({ fullName, name, amount, icon, onPress, symbol, isGettingBalance, style, pDecimals }) => (
+const CryptoItem = ({ fullName, name, amount, externalSymbol, onPress, symbol, isGettingBalance, style, pDecimals }) => (
   <TouchableOpacity style={[cryptoItemStyle.container, style]} onPress={amount != null ? onPress : null}>
     <View style={cryptoItemStyle.logoContainer}>
-      {
-        icon
-          ? <Image source={icon} style={cryptoItemStyle.logo} />
-          : <Icons name='circle' size={28} color={COLORS.primary} />
-      }
+      <CryptoIcon symbol={externalSymbol || symbol} />
     </View>
     <View style={cryptoItemStyle.cryptoNameContainer}>
       <Text style={cryptoItemStyle.mainNameText}>{fullName}</Text>
@@ -24,7 +19,7 @@ const CryptoItem = ({ fullName, name, amount, icon, onPress, symbol, isGettingBa
         <ActivityIndicator /> : (
           amount != null ?
             <Text style={cryptoItemStyle.amountText} numberOfLines={1} ellipsizeMode="tail">{formatUtil.amount(amount, pDecimals)} {symbol}</Text> :
-            <Text style={cryptoItemStyle.getAmountFailedText}>Failed</Text>
+            <Text style={cryptoItemStyle.getAmountFailedText}>---</Text>
         )
       }
     </View>
@@ -35,7 +30,7 @@ CryptoItem.defaultProps = {
   fullName: 'Sample name',
   name: 'Name',
   amount: 0,
-  icon: null,
+  externalSymbol: null,
   onPress: null,
   symbol: null,
   isGettingBalance: false,
@@ -48,7 +43,7 @@ CryptoItem.propTypes = {
   fullName: PropTypes.string,
   name: PropTypes.string,
   amount: PropTypes.number,
-  icon: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  externalSymbol: PropTypes.string,
   onPress: PropTypes.func,
   symbol: PropTypes.string,
   isGettingBalance: PropTypes.bool,
