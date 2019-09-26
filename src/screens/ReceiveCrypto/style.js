@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
 
 export const homeStyle = StyleSheet.create({
   container: {
@@ -7,6 +7,11 @@ export const homeStyle = StyleSheet.create({
   },
   mainContainer: {
     flex: 1,
+  },
+  desc: {
+    ...FONT.STYLE.medium,
+    marginBottom: 20,
+    textAlign: 'center'
   },
   cryptoItem: {
     marginVertical: 5

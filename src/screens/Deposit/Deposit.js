@@ -44,6 +44,7 @@ class Deposit extends React.Component {
                 <Form>
                   {({ handleSubmit, submitting }) => (
                     <View style={style.form}>
+                      <Text style={style.desc}>Please enter the amount you would like to deposit to your wallet.</Text>
                       <Field
                         component={InputField}
                         name='amount'

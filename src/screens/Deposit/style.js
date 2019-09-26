@@ -8,6 +8,11 @@ export default StyleSheet.create({
   mainContainer: {
     flex: 1,
   },
+  desc: {
+    ...FONT.STYLE.medium,
+    marginBottom: 20,
+    textAlign: 'center'
+  },
   submitBtn: {
     marginTop: 30
   }

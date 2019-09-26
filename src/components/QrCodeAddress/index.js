@@ -13,6 +13,7 @@ const AccountAddress = ({ data }) => (
           <QrCodeGenerate value={data} style={accountAddressStyle.qrCode} size={150} />
           <CopiableText
             oneLine
+            showCopyIcon
             containerProps={{
               style :accountAddressStyle.textBox
             }}

@@ -3,7 +3,9 @@ import clipboard from '@src/services/clipboard';
 import PropTypes from 'prop-types';
 import React from 'react';
 import MdIcons from 'react-native-vector-icons/MaterialIcons';
+import { COLORS } from '@src/styles';
 import styleSheet from './style';
+
 
 const CopiableText = ({
   text,
@@ -29,7 +31,7 @@ const CopiableText = ({
       </Text>
     )}
     {showCopyIcon && (
-      <MdIcons name="content-copy" size={20} style={styleSheet.copyIcon} />
+      <MdIcons name="content-copy" size={20} style={styleSheet.copyIcon} color={COLORS.primary} />
     )}
   </TouchableOpacity>
 );
