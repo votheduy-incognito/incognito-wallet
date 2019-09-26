@@ -11,7 +11,7 @@ const templateAction = {
   key:'',
   data:{}
 };
-const timeout = 8;
+const timeout = 10;
 export const LIST_ACTION={
   UPDATE_FIRMWARE:{
     key:'update_firmware',

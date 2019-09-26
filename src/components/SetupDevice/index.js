@@ -205,7 +205,8 @@ class SetupDevice extends BaseComponent {
   connectHotspot = async ()=>{
     this.deviceMiner = new ObjConnection();
     let suffix = _.split(this.deviceIdFromQrcode,'-')[1];
-    suffix = _.isEmpty(suffix) || _.toLength(suffix) != 6 ?'':`-${suffix}`;
+    suffix = !_.isEmpty(suffix) && _.size(suffix) == 6 ?`-${suffix}`:'';
+    console.log(TAG,'connectHotspot end result = ',result);
     this.deviceMiner.name = `${HOTPOT}${suffix}`;
     this.deviceMiner.id = `${HOTPOT}${suffix}`;
     const result:Boolean = await this.deviceId?.current?.connectDevice(this.deviceMiner) || false;
@@ -543,7 +544,8 @@ class SetupDevice extends BaseComponent {
     this.CurrentPositionStep = 0;
     console.log(TAG,'checkConnectHotspot begin: ', validSSID,validWPA);
     if(!isConnectedHotpost){
-      device = await this.connectHotspot();
+      const connectHotspot = this.connectHotspot;
+      device = await Util.tryAtMost(connectHotspot,2,1);
     }
     if(Platform.OS === 'ios'){
       this.isHaveNetwork = false;
