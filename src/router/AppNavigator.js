@@ -22,7 +22,7 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.NetworkSetting]: navigationOptionsHandler(NetworkSetting, { title: 'Network' }),
     [ROUTE_NAMES.CreateAccount]: navigationOptionsHandler(CreateAccount, { title: 'Create Account' }),
     [ROUTE_NAMES.ImportAccount]: navigationOptionsHandler(ImportAccount, { title: 'Import Account' }),
-    [ROUTE_NAMES.ExportAccount]: navigationOptionsHandler(ExportAccount, { title: 'Your keys' }),
+    [ROUTE_NAMES.ExportAccount]: navigationOptionsHandler(ExportAccount),
     [ROUTE_NAMES.FollowToken]: navigationOptionsHandler(FollowToken, { title: 'Add a token' }),
     [ROUTE_NAMES.WalletDetail]: navigationOptionsHandler(WalletDetail),
     [ROUTE_NAMES.ReceiveCrypto]: navigationOptionsHandler(ReceiveCrypto, { title: 'Receive' }),
