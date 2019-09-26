@@ -15,6 +15,9 @@ import { Alert } from '../core';
 import styles from './style';
 
 const TAG = 'HomeMineItem';
+const descriptionNodeOffline = 'Chain under maintenance.\nBalance will reload soon.';
+const descriptionMasterNodeOffline = 'Chain under maintenance.\nBalance will reload soon.';
+const desciptionMasterAndNodeOffline = 'Balance will reload when Master node is back online.';
 class HomeMineItem extends React.Component {
   constructor(props){
     super(props);
@@ -22,16 +25,18 @@ class HomeMineItem extends React.Component {
     this.state = {
       item:item,
       account:{},
-      balance:0,
+      balance:null,
       timeToUpdate:0,
       deviceInfo : Device.getInstance(item)
     };
   }
   static getDerivedStateFromProps(nextProps, prevState) {
-    if(!_.isEqual(nextProps.item,prevState.item)){
+    if(!_.isEqual(nextProps.timeToUpdate,prevState.timeToUpdate)){
       console.log(TAG,'getDerivedStateFromProps begin 010101');
       return {
         item:nextProps?.item,
+        balance:null,
+        timeToUpdate:nextProps?.timeToUpdate,
         deviceInfo:Device.getInstance(nextProps?.item)
       };
     }
@@ -45,7 +50,7 @@ class HomeMineItem extends React.Component {
     return null;
   }
 
-  componentDidUpdate(prevProps,prevState){
+  async componentDidUpdate(prevProps,prevState){
     const {item,timeToUpdate} = this.props;
     
     // if(!_.isEqual(item,prevProps?.item)){
@@ -55,7 +60,7 @@ class HomeMineItem extends React.Component {
     // }
     if(!_.isEqual(prevProps.timeToUpdate,timeToUpdate) || !_.isEqual(item,prevProps?.item)){
       console.log(TAG,'componentDidUpdate begin timeToUpdate = ',timeToUpdate);
-      this.getInfo();
+      await this.getInfo();
       
       this.checkActive();
     }
@@ -63,18 +68,24 @@ class HomeMineItem extends React.Component {
   }
   
   async componentDidMount(){
-    this.getInfo();
+    await this.getInfo();
     this.checkActive();
   }
   getInfo = async ()=>{
     const {getAccountByName,wallet,callbackReward} = this.props;
     let {deviceInfo,account,balance} = this.state;
-    console.log(TAG,'getInfo id = ',deviceInfo.Name);
+    
     account = await getAccountByName(deviceInfo.accountName());
     balance = await Device.getRewardAmount(deviceInfo,wallet);
+    console.log(TAG,'getInfo name,balance = ',deviceInfo.Name,balance);
+    // should be is null or number;
+    balance = _.isNaN(balance)?null:balance;
     // balance = 1000000000;
     callbackReward(balance);
-    balance = Device.formatForDisplayBalance(balance);
+    if(_.isNumber(balance)){
+      balance = Device.formatForDisplayBalance(balance);
+    }
+    
     console.log(TAG,'getInfo balance format = ',balance);
     this.setState({
       account:account,
@@ -133,12 +144,13 @@ class HomeMineItem extends React.Component {
   }
   getIconWithType = ()=>{
     const {deviceInfo} = this.state;
+    const isOffline = deviceInfo.isOffline();
     switch(deviceInfo.Type){
     case DEVICES.VIRTUAL_TYPE:{
-      return images.ic_virtual_device;
+      return  isOffline?images.ic_virtual_node_offline:images.ic_virtual_device;
     }
     default:
-      return images.ic_device;
+      return  isOffline?images.ic_node_offline:images.ic_device;
     }
   }
   render() {
@@ -146,6 +158,20 @@ class HomeMineItem extends React.Component {
     const {containerStyle,onPress} = this.props;
     
     const styleStatus = this.getStyleStatus();
+    let textErrorDevice ='';
+    if(deviceInfo.isWaiting()){
+      textErrorDevice = '---';
+    }else{
+      if(deviceInfo.isReady()){
+        textErrorDevice = 'Tap to start';
+      }else if(_.isNil(balance) && deviceInfo.isOffline()){
+        textErrorDevice = descriptionNodeOffline;
+      } else if(deviceInfo.isOffline()){
+        textErrorDevice = '';
+      }else if(_.isNil(balance)){
+        textErrorDevice = descriptionNodeOffline;
+      }
+    }
     return (
       <TouchableOpacity
         style={[styles.container,containerStyle]}
@@ -166,7 +192,9 @@ class HomeMineItem extends React.Component {
         <Image style={styles.imageLogo} source={this.getIconWithType()} />
         <View style={styles.groupLeft}>
           <Text style={styles.groupLeft_title}>{deviceInfo.Name}</Text>
-          <Text style={styles.groupLeft_title2}>{balance} PRV</Text>
+          {_.isEmpty(textErrorDevice) && !_.isNil(balance)&&<Text style={styles.groupLeft_title2}>{`${balance} PRV`}</Text>}
+          {!_.isEmpty(textErrorDevice) &&<Text style={styles.groupLeft_title2}>{textErrorDevice}</Text>}
+          
         </View>
         <View style={styles.groupRight}>
           <Text style={styleStatus}>{deviceInfo.statusMessage()}</Text>

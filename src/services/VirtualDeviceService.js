@@ -115,11 +115,13 @@ export default class VirtualDeviceService {
         const buildParams = LIST_ACTION.GET_PUBLIC_KEY_MINING.data;
         const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
       
-        console.log(TAG,'getPublicKeyMining result',response);
+        
         const {Result=''} = response;
         let keyCompare = Result[0]??'';
-  
-        keyCompare = _.split(keyCompare,':')[1]||keyCompare;
+        const listKeyCompare = _.split(keyCompare,':');
+        keyCompare = _.size(listKeyCompare)>1?listKeyCompare[1]:''; 
+        keyCompare = _.isEmpty(keyCompare) && _.size(listKeyCompare) == 1 ? listKeyCompare[0]:keyCompare;
+        console.log(TAG,'getPublicKeyMining blsKEY',keyCompare);
         return keyCompare;
       }
     } catch (error) {
@@ -176,13 +178,17 @@ export default class VirtualDeviceService {
 
   static getRewardAmount = async(device:Device)=>{
     try {
+      
       let apiURL = VirtualDeviceService.buildURL(device,false);
+      console.log(TAG,'getRewardAmount begin',apiURL);
       if(!_.isEmpty(apiURL)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_REWARD_AMOUNT.key}`;
         const buildParams = LIST_ACTION.GET_REWARD_AMOUNT.data({paymentAddress:''});
         const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
-      
-        console.log(TAG,'getRewardAmount result',response);
+        if(_.includes(apiURL,'192.168.11.27')){
+          console.log(TAG,'getRewardAmount result',response,apiURL);
+        }
+        
         return response;
       }
     } catch (error) {
@@ -191,17 +197,19 @@ export default class VirtualDeviceService {
   }
 
   static getRewardFromMiningkey = async(device:Device)=>{
+    let response = {Result:{}};
     try {
+      
       let blsKey = await VirtualDeviceService.getPublicKeyMining(device).catch(err=>{
         console.log(TAG,'getRewardFromMiningkey getPublicKeyMining error');
       })||'';
-      
+     
       let apiURL = VirtualDeviceService.buildURL(device,true);
-      if(!_.isEmpty(apiURL)){
+      if(!_.isEmpty(apiURL) && !_.isEmpty(blsKey)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_MINER_REWARD_FROM_MINING_KEY.key}`;
         const buildParams = LIST_ACTION.GET_MINER_REWARD_FROM_MINING_KEY.data({blsData:`${PREFIX_BLS_PARAMS}${blsKey}`});
         // console.log(TAG,'getRewardFromMiningkey begin ----');
-        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
+        response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
       
         console.log(TAG,'getRewardFromMiningkey result',response);
         return response;
@@ -209,6 +217,8 @@ export default class VirtualDeviceService {
     } catch (error) {
       console.log(TAG,'getRewardFromMiningkey error',error);
     }
+
+    return response;
   }
   
   static getChainMiningStatus = async(device:Device)=>{

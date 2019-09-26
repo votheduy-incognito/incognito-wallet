@@ -113,7 +113,7 @@ class DetailDevice extends BaseScreen {
   
       // const publicKey = '16yUvbgiXUZfwuWafBcXX4oiyYVui57e1oMtEyRCwkHemeqKvf9';
       // const isRegular = !_.includes(keyCompare,account?.BlockProducerKey);
-      console.log(TAG,'checkAndUpdateInfoVirtualNode listAccount ',listAccount);
+      // console.log(TAG,'checkAndUpdateInfoVirtualNode listAccount ',listAccount);
       // console.log(TAG,'checkAndUpdateInfoVirtualNode publicKey ',keyCompare);
 
       const isRegular = !_.isEqual(account?.PublicKeyCheckEncode,keyCompare);
@@ -239,7 +239,7 @@ class DetailDevice extends BaseScreen {
           loading: true
         });
         const dataResult = await DeviceService.send(device.data,action,chain);
-        console.log(TAG,'callAndUpdateAction send dataResult = ',dataResult);
+        // console.log(TAG,'callAndUpdateAction send dataResult = ',dataResult);
         const { data={status:Device.offlineStatus()}, productId = -1 } = dataResult;
       
         if(device.data.product_id === productId ){
@@ -262,7 +262,7 @@ class DetailDevice extends BaseScreen {
 
   checkStatus = async (chain='incognito')  => {
     let {device,isFetchingCheckStatus} = this.state;
-    console.log(TAG,'checkStatus begin ',device.Type);
+    // console.log(TAG,'checkStatus begin ',device.Type);
     // this.setState({
     //   isFetchingCheckStatus:true
     // });
@@ -270,7 +270,7 @@ class DetailDevice extends BaseScreen {
     case DEVICES.VIRTUAL_TYPE:{
       const dataResult = await VirtualDeviceService.getChainMiningStatus(device) ?? {};
       const { status = -1, data={status:Device.offlineStatus()},productId = -1 } = dataResult;
-      console.log(TAG,'checkStatus begin VIRTUAL_TYPE',dataResult);
+      // console.log(TAG,'checkStatus begin VIRTUAL_TYPE',dataResult);
       if(_.isEqual(status,1)){
         
         device.Status = data.status;

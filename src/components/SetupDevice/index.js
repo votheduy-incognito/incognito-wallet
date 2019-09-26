@@ -561,7 +561,7 @@ class SetupDevice extends BaseComponent {
       console.log(TAG,'checkConnectHotspot SSID---: ', ssid);
       if (_.includes(ssid, product)) {
         this.CurrentPositionStep = 1;
-        let result = await Util.excuteWithTimeout(this.sendZMQ(),150);
+        let result = await Util.excuteWithTimeout(this.sendZMQ(),180);
         
         return result;
       } 

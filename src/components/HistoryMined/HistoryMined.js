@@ -1,4 +1,3 @@
-import images from '@src/assets';
 import tokenData from '@src/constants/tokenData';
 import Device from '@src/models/device';
 import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
@@ -6,6 +5,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import CryptoIcon from '../CryptoIcon';
 import styles from './style';
 
 
@@ -67,7 +67,7 @@ class HistoryMined extends React.Component {
     const {name = '',symbol = '',amount = 0,pSymbol=''} = item;
     const symbolUI = _.isEqual(symbol,'PRV')?symbol:pSymbol;
     const nameUI = _.isEqual(symbol,'PRV')?name:`Private ${symbol}`;
-    const {icon = images.ic_device} = this.getData(item)??{};
+    const {icon = null} = this.getData(item)??{};
     return (
       <TouchableOpacity
         style={styles.container_item}
@@ -75,7 +75,7 @@ class HistoryMined extends React.Component {
           onPress? onPress(item):undefined;
         }}
       >
-        <Image style={styles.imageLogo} source={icon} />
+        {!_.isNil(icon)?<Image style={styles.imageLogo} source={icon} />:<CryptoIcon symbol={symbol} />}
         <View style={styles.groupLeft}>
           <Text style={styles.groupLeft_title}>{nameUI}</Text>
           <Text style={styles.groupRight_title}>{`${amount} ${symbolUI}`}</Text>
