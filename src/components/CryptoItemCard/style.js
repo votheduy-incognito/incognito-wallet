@@ -45,6 +45,6 @@ export default StyleSheet.create({
 
   },
   getAmountFailedText: {
-    color: COLORS.red
+    color: COLORS.lightGrey3
   }
 });
