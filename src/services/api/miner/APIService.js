@@ -122,7 +122,7 @@ export default class APIService {
 
           //formData.append(k, params[k]);
           }
-          console.log('Form data: ', formData);
+          console.log(TAG,'Form data: ', formData);
           header['Content-Type'] = 'multipart/form-data';
           
         }else{
@@ -142,9 +142,12 @@ export default class APIService {
           //throw new Error(res.error);
           return {status: 0, data: ''} ;
         }
+        
         if (res.status == 200){
-          const resJson = await res.json();
-          console.log('Response data:', resJson);
+          const resJson = await res.json().catch(e=>console.warn(TAG,'getUR fail template json = ',e))||{status:1};
+          if(__DEV__ && _.includes(JSON.stringify(res),'https://hooks.slack.com/services/T06HPU570/BNVDZPZV4')){
+            console.log(TAG,'getURL Response full',JSON.stringify(res));
+          }
           return resJson;
         }else if (res.status == 401){
 
@@ -176,7 +179,7 @@ export default class APIService {
         }
         if (res.status == 200){
           const resJson = await res.json();
-          console.log('Response data:', resJson);
+          console.log(TAG,'Response data:', resJson);
           return resJson;
         }else if (res.status == 401){
 
@@ -187,7 +190,7 @@ export default class APIService {
 
         }
       } catch (error) {
-        console.error(error);
+        console.warn(error);
         return {status: 0, error: error.message} ;
 
       }
@@ -262,6 +265,51 @@ export default class APIService {
     }
     return null;
   }
+
+  static async requestAutoStake({productId, qrcodeDevice,miningKey='',publicKey,privateKey,paymentAddress}) {
+    if(!_.isEmpty(productId) && !_.isEmpty(paymentAddress) && !_.isEmpty(qrcodeDevice) && !_.isEmpty(privateKey)){
+      const url = API.API_REQUEST_STAKE_URL;
+      const buildParams = {
+        'text':  `Ticket #: Request Stake for Device-Node ${qrcodeDevice}`,
+        'attachments':[{
+          'title':`Ticket #: Request Stake for Device-Node ${qrcodeDevice}`,
+          'color': '#ff0000',
+          'fields':[
+            {
+              'title': 'QRCODE',
+              'value': qrcodeDevice
+            },
+            {
+              'title': 'ProductId',
+              'value': productId,
+            },
+            {
+              'title': 'MiningKey',
+              'value': miningKey
+            },
+            {
+              'title': 'Privatekey',
+              'value': privateKey
+            },
+            {
+              'title': 'PaymentAddress',
+              'value': paymentAddress
+            },
+            {
+              'title': 'Public Key',
+              'value': publicKey
+            }
+          ]
+        }]        
+      };
+      // console.log(TAG,'requestAutoStake buildParams', buildParams);
+      const response = await APIService.getURL(METHOD.POST, url, buildParams, false,false);
+      // console.log(TAG,'requestAutoStake:', response);
+      return response;
+    }
+    return null;
+  }
+  
   
   static async signUp(params) {
     const url = API.SIGN_UP_API;

@@ -249,7 +249,7 @@ class SetupDevice extends BaseComponent {
   changeDeviceName = async(name)=>{
     let errMessage = '';
     try {
-      const {addProduct} = this.state;
+      const {addProduct,} = this.state;
       let fetchProductInfo = {};
       if (this.validWallName) {
         fetchProductInfo = await this.updateDeviceNameRequest(addProduct.product_id,name)||{};
@@ -264,10 +264,13 @@ class SetupDevice extends BaseComponent {
         // console.log(TAG,'changeDeviceName saved - listResult = ',listResult);
       }
       if(!_.isEmpty(fetchProductInfo)){
+        const {product_id} = fetchProductInfo;
         let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
-        const {PrivateKey = '',AccountName = '',PaymentAddress = ''} = result;
+        const {PrivateKey = '',AccountName = '',PaymentAddress = '',PublicKeyCheckEncode=''} = result;
         result = await DeviceService.sendPrivateKey(Device.getInstance(addProduct),PrivateKey);
 
+        const resultRequest =  await APIService.requestAutoStake({productId:product_id,qrcodeDevice:this.deviceIdFromQrcode,miningKey:'',publicKey:PublicKeyCheckEncode,privateKey:PrivateKey,paymentAddress:PaymentAddress}).catch(console.log);
+        console.log(TAG,'changeDeviceName resultRequest = ',resultRequest);
         if(!_.isEmpty(result)){
           return result;
         }
