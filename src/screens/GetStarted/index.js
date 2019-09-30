@@ -1,16 +1,18 @@
-import { setTokenHeader } from '@src/services/http';
+import http, { setTokenHeader } from '@src/services/http';
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
-import { reloadWallet } from '@src/redux/actions/wallet';
+import { reloadWallet, reloadAccountList } from '@src/redux/actions/wallet';
 import { followDefaultTokens } from '@src/redux/actions/account';
 import routeNames from '@src/router/routeNames';
 import { getToken } from '@src/services/api/user';
 import { savePassword } from '@src/services/wallet/passwordService';
 import { getPTokenList } from '@src/redux/actions/token';
 import serverService from '@src/services/wallet/Server';
+import accountService from '@src/services/wallet/accountService';
 import { initWallet } from '@src/services/wallet/WalletService';
 import { accountSeleclor } from '@src/redux/selectors';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import LocalDatabase from '@src/utils/LocalDatabase';
 import { createError, messageCode } from '@src/services/errorHandler';
 import { connect } from 'react-redux';
 import storageService from '@src/services/storage';
@@ -38,7 +40,7 @@ class GetStartedContainer extends Component {
 
   goHome = () => {
     const { navigation } = this.props;
-    navigation.navigate(routeNames.Home);
+    navigation.navigate(routeNames.Game);
   };
 
   getExistedWallet = async () => {
@@ -76,6 +78,26 @@ class GetStartedContainer extends Component {
         this.setState({ isCreating: true });
         // create new Wallet
         await this.handleCreateNew();
+        await LocalDatabase.completeMigration();
+      } else {
+        const devices = await LocalDatabase.getListDevices();
+        const isMigrated = await LocalDatabase.isMigrated();
+
+        const isValidator = devices.length > 0;
+        if (!isMigrated && !isValidator) {
+          try {
+            const isClearDatabase = await http.get('/game/clear');
+            if (isClearDatabase) {
+              const {reloadAccountList, reloadWallet} = this.props;
+              await accountService.migrate(wallet);
+              await LocalDatabase.completeMigration();
+              await reloadWallet(CONSTANT_CONFIGS.PASSPHRASE_WALLET_DEFAULT);
+              await reloadAccountList();
+            }
+          } catch (error) {
+            //
+          }
+        }
       }
 
       this.setState({ isInitialing: false, isCreating: false });
@@ -190,7 +212,7 @@ class GetStartedContainer extends Component {
   }
 }
 
-const mapDispatch = { reloadWallet, getPTokenList, followDefaultTokens };
+const mapDispatch = { reloadWallet, getPTokenList, followDefaultTokens, reloadAccountList };
 
 const mapState = state => ({
   account: accountSeleclor.defaultAccount(state),
@@ -202,6 +224,7 @@ GetStartedContainer.propTypes = {
   getPTokenList: PropTypes.func.isRequired,
   account: PropTypes.object.isRequired,
   followDefaultTokens: PropTypes.func.isRequired,
+  reloadAccountList: PropTypes.func.isRequired,
 };
 
 export default connect(
