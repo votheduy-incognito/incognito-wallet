@@ -24,8 +24,10 @@ import { Button } from 'react-native-elements';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import { connect } from 'react-redux';
 import AdvanceOption from './AdvanceOption';
+import Loader from './Loader';
 import style from './style';
 
+const FullLoader = DialogLoader;
 export const TAG = 'DetailDevice';
 
 class DetailDevice extends BaseScreen {
@@ -54,7 +56,7 @@ class DetailDevice extends BaseScreen {
       isStaked:undefined,
       wallet:wallet,
       isShowMessage:false,
-      balancePRV:0,
+      balancePRV:undefined,
       listFollowingTokens:[],
       device: device
     };
@@ -74,7 +76,7 @@ class DetailDevice extends BaseScreen {
   onResume = async ()=>{
     console.log(TAG,'onResume begin');
     const {device } = this.state;
-    const product_id = device.data.product_id;
+    const product_id = device.ProductId;
     if(!_.isEmpty(product_id)){
       let listDevice = await LocalDatabase.getListDevices()||[];
       const deviceNewJSON =  listDevice.find(item=>_.isEqual(item.product_id,product_id));
@@ -380,29 +382,32 @@ class DetailDevice extends BaseScreen {
     const {device,balancePRV = 0,accountMiner} = this.state;
     // const isHaveWallet =  !_.isEmpty(accountMiner);
     const isHaveWallet = !device.isOffline();
+    const isWaiting =  _.isNil(balancePRV) || device.isWaiting();
+    
     
     return (
       <View style={style.group2_container}>
-        <View style={style.group2_container_group1}>
-          <View style={style.group2_container_container}>
-            <Text style={style.group2_container_title}>TOTAL BALANCE</Text>
-            <Text numberOfLines={1} style={style.group2_container_value}>{`${balancePRV} PRV`}</Text>
+        {isWaiting?<Loader />:(
+          <View style={style.group2_container_group1}>
+            <View style={style.group2_container_container}>
+              <Text style={style.group2_container_title}>TOTAL BALANCE</Text>
+              <Text numberOfLines={1} style={style.group2_container_value}>{`${balancePRV} PRV`}</Text>
+            </View>
+            <View style={style.group2_container_container2}>
+              {isHaveWallet&&(
+                <Button
+                  titleStyle={style.group2_container_button_text}
+                  buttonStyle={style.group2_container_button2}
+                  onPress={this.handlePressWithdraw}
+                  title='Withdraw'
+                />
+              )}
+              {!isHaveWallet && (
+                <Text style={style.textWarning}>Your device is offline.</Text>
+              )}
+            </View>
           </View>
-          <View style={style.group2_container_container2}>
-            {isHaveWallet&&(
-              <Button
-                titleStyle={style.group2_container_button_text}
-                buttonStyle={style.group2_container_button2}
-                onPress={this.handlePressWithdraw}
-                title='Withdraw'
-              />
-            )}
-            {!isHaveWallet && (
-              <Text style={style.textWarning}>Your device is offline.</Text>
-            )}
-          </View>
-        </View>
-        
+        )}
       </View>
     );
   }
@@ -440,7 +445,7 @@ class DetailDevice extends BaseScreen {
             titleStyle={style.group2_container_button_text}
             buttonStyle={style.group2_container_button}
             title={stakeTitle}
-            onPress={onClickView( async()=>{
+            onPress={onClickView(async()=>{
               
               const {accountMiner,isStaked} = this.state;
               if(!isStaked){
@@ -530,7 +535,7 @@ class DetailDevice extends BaseScreen {
           handleUpdateWifi={()=>{}}
         />
         <Image style={style.bg_top} source={bgTop} />
-        <DialogLoader loading={loading} />
+        <FullLoader loading={loading} />
         <View style={{width: 0,height: 0,display:'none'}}>
           <CreateAccount navigation={navigation} ref={this.viewCreateAccount} />
         </View>

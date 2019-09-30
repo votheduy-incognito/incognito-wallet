@@ -203,13 +203,14 @@ export default class VirtualDeviceService {
       let blsKey = await VirtualDeviceService.getPublicKeyMining(device).catch(err=>{
         console.log(TAG,'getRewardFromMiningkey getPublicKeyMining error');
       })||'';
-     
+      
       let apiURL = VirtualDeviceService.buildURL(device,true);
       if(!_.isEmpty(apiURL) && !_.isEmpty(blsKey)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_MINER_REWARD_FROM_MINING_KEY.key}`;
         const buildParams = LIST_ACTION.GET_MINER_REWARD_FROM_MINING_KEY.data({blsData:`${PREFIX_BLS_PARAMS}${blsKey}`});
         // console.log(TAG,'getRewardFromMiningkey begin ----');
-        response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
+        // response = await Util.excuteWithTimeout(Util.delay(10),timeout).catch(console.log)||null;
+        response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout).catch(console.log)||null;
       
         console.log(TAG,'getRewardFromMiningkey result',response);
         return response;

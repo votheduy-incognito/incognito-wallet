@@ -302,7 +302,7 @@ class HomeMine extends BaseScreen {
                 }}
                 callbackReward={(amount)=>{
                   // const {timeToUpdate} = this.state;
-                  if(_.isEqual(this.sessionTimer,timeToUpdate)){
+                  if(_.isEqual(this.sessionTimer,timeToUpdate) && _.isNumber(amount) &&  amount>0 ){
                     this.balancePRV += amount;
                     this.setState({
                       balancePRV:this.balancePRV

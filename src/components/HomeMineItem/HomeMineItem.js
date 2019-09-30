@@ -15,7 +15,7 @@ import { Alert } from '../core';
 import styles from './style';
 
 const TAG = 'HomeMineItem';
-const descriptionNodeOffline = 'Chain under maintenance.\nBalance will reload soon.';
+const descriptionNodeOffline = 'Balance will reload soon\nwhen Node is back online.';
 const descriptionMasterNodeOffline = 'Chain under maintenance.\nBalance will reload soon.';
 const desciptionMasterAndNodeOffline = 'Balance will reload when Master node is back online.';
 class HomeMineItem extends React.Component {
@@ -82,7 +82,7 @@ class HomeMineItem extends React.Component {
     balance = _.isNaN(balance)?null:balance;
     // balance = 1000000000;
     callbackReward(balance);
-    if(_.isNumber(balance)){
+    if(_.isNumber(balance) && balance >=0 ){
       balance = Device.formatForDisplayBalance(balance);
     }
     
@@ -91,6 +91,11 @@ class HomeMineItem extends React.Component {
       account:account,
       balance:balance
     });
+  }
+
+  isFullNodeDie = ()=>{
+    const {balance } = this.state;
+    return balance ==-1;
   }
   checkActive = async ()=>{
     const {item} = this.props;
@@ -166,10 +171,8 @@ class HomeMineItem extends React.Component {
         textErrorDevice = 'Tap to start';
       }else if(_.isNil(balance) && deviceInfo.isOffline()){
         textErrorDevice = descriptionNodeOffline;
-      } else if(deviceInfo.isOffline()){
-        textErrorDevice = '';
-      }else if(_.isNil(balance)){
-        textErrorDevice = descriptionNodeOffline;
+      }else if(balance == -1){
+        textErrorDevice = descriptionMasterNodeOffline;
       }
     }
     return (

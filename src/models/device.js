@@ -162,17 +162,20 @@ export default class Device {
   static getInstance = (data=template):Device =>{
     return new Device(data);
   }
+  /*
+  balance : null -> node die,
+  -1: full-node die
+  */
   static getRewardAmount = async (deviceInfo:Device,wallet?)=>{
     let balance = null;
     if(!_.isEmpty(deviceInfo)){
       switch(deviceInfo.Type){
       case DEVICES.VIRTUAL_TYPE:{
         console.log(TAG,'getRewardAmount VIRTUAL_TYPE begin');
-        let dataResult = await VirtualDeviceService.getRewardFromMiningkey(deviceInfo) ?? {};
-        console.log(TAG,'getRewardAmount VIRTUAL_TYPE dataResult = ',dataResult,deviceInfo.Name);
-        const {Result={}} = dataResult;
-        balance = Result['PRV']||null;
+        let dataResult = await VirtualDeviceService.getRewardFromMiningkey(deviceInfo);
         
+        balance = _.isNil(dataResult)?-1: (dataResult.Result['PRV']||null);
+        console.log(TAG,'getRewardAmount VIRTUAL_TYPE dataResult = ',dataResult,deviceInfo.Name,balance);
         break;
       }
       default:{
