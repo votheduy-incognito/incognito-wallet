@@ -1,4 +1,4 @@
-import http from '@src/services/thttp';
+import http from '@src/services/http';
 import { RollInfo, Transaction, Cell, Player, Card, Notification } from '@src/models/game';
 
 const getBoardData = () =>
