@@ -5,40 +5,42 @@ import { Toast } from '@src/components/core';
 import QrScanner from '@src/components/QrCodeScanner';
 import configureStore from '@src/redux/store';
 import AppContainer from '@src/router';
-import { initFirebaseNotification, onFirebaseMessage } from '@src/services/firebase';
-import React, { useEffect } from 'react';
+import { initFirebaseNotification } from '@src/services/firebase';
+import React, { PureComponent } from 'react';
 import { StatusBar } from 'react-native';
 import 'react-native-console-time-polyfill';
 import { Provider } from 'react-redux';
+import BalanceNotification from '@src/services/balanceNotification';
 import { THEME } from './styles';
 
 StatusBar.setBackgroundColor(THEME.statusBar.backgroundColor);
 
 const store = configureStore();
 
-const App = () => {
-  useEffect(() => {
+class App extends PureComponent {
+  componentDidMount() {
     initFirebaseNotification()
       .then(() => {
         console.log('Firebase notification worked');
-        onFirebaseMessage(data => {
-          console.log('firebase msg', data);
-        });
+        new BalanceNotification({ id: 'balance_alert' }).startSchedule();
       })
       .catch(e => {
+        // TODO: handler error
         console.error(e);
       });
-  }, []);
+  }
 
-  return (
-    <Provider store={store}>
-      <AppScreen>
-        <AppContainer />
-        <QrScanner />
-        <Toast />
-      </AppScreen>
-    </Provider>
-  );
-};
+  render() {
+    return (
+      <Provider store={store}>
+        <AppScreen>
+          <AppContainer />
+          <QrScanner />
+          <Toast />
+        </AppScreen>
+      </Provider>
+    );
+  }
+}
 
 export default App;

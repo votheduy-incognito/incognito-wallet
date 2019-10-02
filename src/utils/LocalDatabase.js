@@ -5,7 +5,8 @@ import _ from 'lodash';
 const TAG = 'LocalDatabase';
 const KEY_SAVE = {
   USER: 'USER_OBJECT_KEY',
-  LIST_DEVICE:'PRODUCT_LIST_KEY'
+  LIST_DEVICE:'PRODUCT_LIST_KEY',
+  IS_MIGRATED: 'IS_MIGRATED',
 };
 export default class LocalDatabase {
   static async getValue(key: String): String {
@@ -54,6 +55,13 @@ export default class LocalDatabase {
     const listDevices = JSON.stringify(jsonListDevice);
     // console.log(TAG, ' saveListDevices begin ', listDevices);
     await LocalDatabase.saveValue(KEY_SAVE.LIST_DEVICE, listDevices);
+  };
+  static isMigrated = async () => {
+    const result = await LocalDatabase.getValue(KEY_SAVE.IS_MIGRATED);
+    return result === true;
+  };
+  static completeMigration = async () => {
+    await LocalDatabase.saveValue(KEY_SAVE.IS_MIGRATED, true);
   };
   static async logout() {
     return await AsyncStorage.multiRemove([

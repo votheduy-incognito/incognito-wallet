@@ -3,6 +3,7 @@ import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import CONFIG from '@src/constants/config';
 import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
+import gameAPI from '@src/services/api/game';
 import axios from 'axios';
 import { KeyWallet, Wallet } from 'incognito-chain-web-js/build/wallet';
 import _ from 'lodash';
@@ -120,6 +121,41 @@ export default class Account {
     return result;
   }
 
+  static async migrateBalance(oldAccount, newAccount, balance) {
+    let result;
+    try {
+      const url = CONFIG.TESTNET_SERVER_ADDRESS;
+      const paymentAddress = {
+        [newAccount.PaymentAddress]: balance
+      };
+      const data = {
+        'jsonrpc':'1.0',
+        'id': '1',
+        'method':'createandsendtransaction',
+        'params':[
+          oldAccount.PrivateKey,
+          paymentAddress,
+          0,
+          0,
+          null,
+          'migration'
+        ],
+      };
+
+      console.log('migration', JSON.stringify(data));
+      const res = await axios.post(url, data);
+      if (res?.data?.Result) {
+        return res.data.Result;
+      } else if (res?.data?.Error) {
+        throw res.data.Error;
+      }
+    } catch (e) {
+      console.log('sendGameConstant', e);
+      throw e;
+    }
+    return result;
+  }
+
   static async sendGameToken(
     submitParam,
     account,
@@ -152,6 +188,24 @@ export default class Account {
     } catch (e) {
       console.log('sendGameToken error', e);
       throw e;
+    }
+  }
+
+  static async migrate(wallet) {
+    const accounts = await wallet.listAccount();
+    if (accounts.length === 1) {
+      const firstAccount = accounts[0];
+      const bytes = firstAccount.PublicKeyBytes.split(',');
+      const lastByte = bytes[bytes.length - 1];
+      const passPhrase = CONSTANT_CONFIGS.PASSPHRASE_WALLET_DEFAULT;
+      if (lastByte % 8 === 1) {
+        await this.removeAccount(firstAccount.PrivateKey, passPhrase, wallet);
+        const newAccount = await this.createAccount(firstAccount.AccountName, wallet);
+        const balance = await this.getBalance(firstAccount, wallet);
+
+        await this.migrateBalance(firstAccount, newAccount, balance);
+        await gameAPI.migrateAccount(firstAccount, newAccount);
+      }
     }
   }
 
