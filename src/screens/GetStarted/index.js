@@ -13,13 +13,12 @@ import { accountSeleclor } from '@src/redux/selectors';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import LocalDatabase from '@src/utils/LocalDatabase';
-import { createError, messageCode } from '@src/services/errorHandler';
 import { connect } from 'react-redux';
 import storageService from '@src/services/storage';
 import DeviceInfo from 'react-native-device-info';
 import { getToken as getFirebaseToken } from '@src/services/firebase';
+import { ErrorCode, CustomError, ExHandler } from '@src/services/exception';
 import GetStarted from './GetStarted';
-
 
 class GetStartedContainer extends Component {
   constructor() {
@@ -104,7 +103,7 @@ class GetStartedContainer extends Component {
       this.goHome();
     } catch (e) {
       this.setState({ isInitialing: false, isCreating: false });
-      this.onError('Something went wrong while opening wallet, please try again');
+      new ExHandler(e, 'Something went wrong while opening wallet, please try again').showErrorToast().writeLog();
     }
   };
 
@@ -116,7 +115,7 @@ class GetStartedContainer extends Component {
       const wallet = await this.getExistedWallet();
 
       if (wallet) {
-        return throw createError({ code: messageCode.code.can_not_create_wallet_on_existed });
+        return throw new CustomError(ErrorCode.getStarted_can_not_create_wallet_on_existed);
       }
 
       return initWallet();
@@ -130,7 +129,7 @@ class GetStartedContainer extends Component {
       const token = await storageService.getItem(CONSTANT_KEYS.DEVICE_TOKEN);
       return token;
     } catch (e) {
-      throw createError({ code: messageCode.code.load_device_token_failed });
+      throw throw new CustomError(ErrorCode.getStarted_load_device_token_failed);
     }
   }
 
@@ -148,8 +147,6 @@ class GetStartedContainer extends Component {
 
   checkDeviceToken = async () => {
     try {
-      const fbToken = await getFirebaseToken();
-      // console.log('fbToken', fbToken);
       const token = await this.getExistedDeviceToken();
       if (!token) {
         const tokenData = await this.registerToken();

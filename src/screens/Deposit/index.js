@@ -4,7 +4,6 @@ import LoadingContainer from '@src/components/LoadingContainer';
 import { connect } from 'react-redux';
 import { genCentralizedDepositAddress, genERC20DepositAddress, genETHDepositAddress } from '@src/services/api/deposit';
 import { CONSTANT_COMMONS } from '@src/constants';
-import { messageCode, createError } from '@src/services/errorHandler';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import Deposit from './Deposit';
 
@@ -56,7 +55,7 @@ class DepositContainer extends Component {
       this.setState({ address });
       return address;
     } catch (e) {
-      throw createError({ code: messageCode.code.gen_deposit_address_failed });
+      throw e;
     }
   }
 

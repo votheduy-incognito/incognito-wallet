@@ -6,6 +6,7 @@ import { Field, formValueSelector, destroy } from 'redux-form';
 import { createForm, InputField, validator } from '@src/components/core/reduxForm';
 import WaitingDeposit from './WaitingDeposit';
 import style from './style';
+import { ExHandler } from '@src/services/exception';
 
 const formName = 'deposit';
 const selector = formValueSelector(formName);
@@ -26,8 +27,8 @@ class Deposit extends React.Component {
     const { handleGenAddress, amount } = this.props;
 
     return handleGenAddress(amount)
-      .catch(() => {
-        Toast.showError('Something went wrong. Please try again.');
+      .catch((e) => {
+        new ExHandler(e, 'Can not get deposit address, please try again.').showErrorToast();
       });
   }
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import memmoize from 'memoize-one';
-import { View, TouchableOpacity, Text, ActivityIndicator, Toast } from '@src/components/core';
+import { View, TouchableOpacity, Text, ActivityIndicator, Toast, Button } from '@src/components/core';
 import formatUtil from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
 import styles from './styles';
@@ -35,6 +35,7 @@ class EstimateFee extends Component {
 
     this.state = {
       levels: null,
+      isRetrying: false,
     };
   }
 
@@ -134,9 +135,21 @@ class EstimateFee extends Component {
     return false;
   }
 
+  onRetry = () => {
+    const { onRetry } = this.props;
+    const delay = new Promise(r => {
+      setTimeout(() => r(), 500);
+    });
+    this.setState({ isRetrying: true });
+    Promise.all([onRetry(), delay])
+      .finally(() => {
+        this.setState({ isRetrying: false });
+      });
+  }
+
   render() {
-    const { levels } = this.state;
-    const { types, minFee, isGettingFee, defaultFeeSymbol, finalFee, estimateErrorMsg, onRetry, style } = this.props;
+    const { levels, isRetrying } = this.state;
+    const { types, minFee, isGettingFee, defaultFeeSymbol, finalFee, estimateErrorMsg, style } = this.props;
 
     return (
       <View style={[styles.container, style]}>
@@ -185,7 +198,7 @@ class EstimateFee extends Component {
             ? (
               <View style={styles.errorBox}>
                 <Text style={styles.errorText}>{estimateErrorMsg}</Text>
-                <TouchableOpacity onPress={onRetry} style={styles.retryBtn}><Text style={styles.retryText}>Try again</Text></TouchableOpacity>
+                <Button onPress={this.onRetry} style={styles.retryBtn} title='Try again' isAsync isLoading={isRetrying} />
               </View>
             )
             : (minFee === 0 || !!minFee) && (
