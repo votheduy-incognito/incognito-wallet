@@ -1,6 +1,6 @@
-import React from 'react';
-import { ActivityIndicator,Alert, View, Text, Modal, Image } from 'react-native';
 import { debounce } from 'lodash';
+import React from 'react';
+import { ActivityIndicator, Alert, View } from 'react-native';
 
 const TAG = 'ViewUtil';
 export const onClickView = funcOnView => {
@@ -15,6 +15,9 @@ export const delayCallingManyTime = (funcOnView, second = 1) => {
 class ViewUtil{
   static loadingComponent =(props) => {
     return (<ActivityIndicator animating size="small" {...props} />);
+  }
+  static lineComponent =({style={}}) => {
+    return (<View style={[{ backgroundColor:'#F0F9F9', width:'100%',height: 1},style]} />);
   }
   static showAlert=(message) =>{
     setTimeout(() => {

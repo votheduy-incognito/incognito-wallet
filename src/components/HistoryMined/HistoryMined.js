@@ -114,6 +114,7 @@ class HistoryMined extends React.Component {
         <FlatList
           style={styles.list}
           data={listItems}
+          ListEmptyComponent={<Text style={styles.text_empty}>You haven’t earned any cryptos yet.</Text>}
           keyExtractor={(item,index)=> `${item.id}_${index}`}
           onEndReachedThreshold={0.7}
           renderItem={this.renderItem}

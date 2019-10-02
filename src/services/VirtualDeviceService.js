@@ -176,14 +176,14 @@ export default class VirtualDeviceService {
     return [];
   }
 
-  static getRewardAmount = async(device:Device)=>{
+  static getRewardAmount = async(device:Device,paymentAddress,isFullNode=false)=>{
     try {
       
-      let apiURL = VirtualDeviceService.buildURL(device,false);
+      let apiURL = VirtualDeviceService.buildURL(device,isFullNode);
       console.log(TAG,'getRewardAmount begin',apiURL);
-      if(!_.isEmpty(apiURL)){
+      if(!_.isEmpty(apiURL) && !_.isEmpty(paymentAddress)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_REWARD_AMOUNT.key}`;
-        const buildParams = LIST_ACTION.GET_REWARD_AMOUNT.data({paymentAddress:''});
+        const buildParams = LIST_ACTION.GET_REWARD_AMOUNT.data({paymentAddress:paymentAddress});
         const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
         if(_.includes(apiURL,'192.168.11.27')){
           console.log(TAG,'getRewardAmount result',response,apiURL);
@@ -232,7 +232,7 @@ export default class VirtualDeviceService {
 
       let apiURL = VirtualDeviceService.buildURL(device);
       
-      console.log(TAG,'getChainMiningStatus begin shardID - ',shardID);
+      
       if(!_.isEmpty(apiURL) && !_.isNil(shardID)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_CHAIN_MINING_STATUS.key}`;
         const buildParams = {
@@ -246,7 +246,9 @@ export default class VirtualDeviceService {
           return _.isEqual(Result,item.status);
         })|| Device.offlineStatus();
         dataResponseCombinded = {'status': {'code': item.code ,'message':item.message }};
+        console.log(TAG,'getChainMiningStatus begin apiURL = ',apiURL);
         console.log(TAG,'getChainMiningStatus result',response);
+        console.log(TAG,'getChainMiningStatus end --------');
         return {status:1, data:dataResponseCombinded,productId:device.ProductId};
       }
     } catch (error) {

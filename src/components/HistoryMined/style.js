@@ -2,25 +2,31 @@ import TextStyle, { FontStyle, scaleInApp } from '@src/styles/TextStyle';
 import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
+  // container: {
+  //   flex:1,
+  //   flexDirection:'row',
+  //   padding:scaleInApp(10),
+  //   backgroundColor: 'rgba(255,255,255,1)',
+  //   borderRadius: scaleInApp(4),
+  //   shadowOffset: {
+  //     height: 2,
+  //     width: 0
+  //   },
+  //   shadowColor: 'rgba(208,208,208,0.5)',
+  //   shadowOpacity: 1,
+  //   shadowRadius: 1.2
+  // },
   container: {
     flex:1,
     flexDirection:'row',
-    padding:scaleInApp(10),
-    backgroundColor: 'rgba(255,255,255,1)',
-    borderRadius: scaleInApp(4),
-    shadowOffset: {
-      height: 2,
-      width: 0
-    },
-    shadowColor: 'rgba(208,208,208,0.5)',
-    shadowOpacity: 1,
-    shadowRadius: 1.2
+    // padding:scaleInApp(10),
   },
   list:{
     margin:scaleInApp(10)
   },
   container_item:{
     flexDirection:'row',
+    alignItems:'center',
     marginVertical:scaleInApp(5)
   },
   imageLogo:{
@@ -54,6 +60,13 @@ const style = StyleSheet.create({
     ...TextStyle.normalText,
     'letterSpacing':0,
     color: '#899092',
+  },
+  text_empty:{
+    ...TextStyle.normalText,
+    'letterSpacing':0,
+    textAlign:'center',
+    textAlignVertical:'center',
+    color: '#8C9C9D',
   }
 });
 

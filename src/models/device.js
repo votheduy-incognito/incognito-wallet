@@ -16,16 +16,19 @@ export const DEVICE_STATUS = {
   CODE_SYNCING : 1,
   CODE_OFFLINE : -2
 };
-export const DATA_INFO = [ {'status':'offline', 'message':'ready','code':DEVICE_STATUS.CODE_START},
+export const DATA_INFO = [{'status':'offline', 'message':__DEV__?'offline_online':'online','code':DEVICE_STATUS.CODE_START},
   {'status':'syncing', 'message':'syncing','code':DEVICE_STATUS.CODE_SYNCING},
-  {'status':'ready', 'message':'ready','code':DEVICE_STATUS.CODE_START},
+  {'status':'ready', 'message':'online','code':DEVICE_STATUS.CODE_START},
   {'status':'mining', 'message':'earning','code':DEVICE_STATUS.CODE_MINING},
-  {'status':'pending', 'message':'waiting to be selected','code':DEVICE_STATUS.CODE_PENDING},
-  {'status':'notmining', 'message':'ready','code':DEVICE_STATUS.CODE_START}];
+  {'status':'pending', 'message':'queueing','code':DEVICE_STATUS.CODE_PENDING},
+  {'status':'notmining', 'message':__DEV__?'notmining_online':'online','code':DEVICE_STATUS.CODE_START}];
 export const template = {
   minerInfo:{
     account:{},
-    isCallStaked:false
+    isCallStaked:false,
+    qrCodeDeviceId:'',
+    PaymentAddress:'',
+    Commission:1
   },
   status:{
     code: -1,
@@ -69,6 +72,9 @@ export default class Device {
   }
   isEarning =()=>{
     return this.data.status.code == Device.CODE_MINING;
+  }
+  isSyncing =()=>{
+    return this.data.status.code == Device.CODE_SYNCING;
   }
   isReady =()=>{
     return this.data.status.code == Device.CODE_START;
@@ -151,6 +157,18 @@ export default class Device {
 
   get ProductId(){
     return this.data.product_id ?? '';
+  }
+
+  get qrCodeDeviceId(){
+    return this.data.minerInfo?.qrCodeDeviceId ?? '';
+  }
+
+  get PaymentAddressFromServer(){
+    return this.data.minerInfo?.PaymentAddress ?? '';
+  }
+
+  get CommissionFromServer(){
+    return this.data.minerInfo?.Commission ?? 1;
   }
   
   toJSON(){

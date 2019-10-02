@@ -49,6 +49,21 @@ class HomeMine extends BaseScreen {
   };
   async componentWillMount(){
     await this.createSignIn();
+    // hientesting
+    // const {
+    //   product_id ='b005ada1-c16f-4dc1-8e95-6c4ff282f66e',
+    //   qrcodeDevice='',
+    //   ValidatorKey='15oDPbAxPmkULeHLvtPm9af2xDH1Dmumkv8zBdDxZtFAavMMwX5',
+    //   PrivateKey='112t8rnp1c9NSK9hbo6dLwY6cjMnBZPZ6MTyVjVg6vN4kX7sxMeScHSQPx59QffSohPVwNHmrLk7eMrpjn7qVBpWXws9Zg4puwWi3UszU3RQ',
+    //   PaymentAddress='1Uv2dV2A3ZYwfZ75hAHXLzCQDS5xQ9PiHAfL5cYVVMXmxzW1cKGDUdiVRt5yLcV4UbhvyDps3VpD4rT548sRx4zWeRrbRjHWanphwEoa2'
+    // } = {};
+    // const s = await APIService.requestStake({
+    //   ProductID:product_id,
+    //   ValidatorKey:ValidatorKey,
+    //   qrCodeDeviceId:qrcodeDevice,
+    //   PaymentAddress:PaymentAddress
+    // });
+    // console.log(TAG,'componentWillMount response = ',s);
   }
 
   createSignIn = async () => {

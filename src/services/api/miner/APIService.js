@@ -3,6 +3,7 @@
  */
 import User from '@models/user';
 import { CONSTANT_MINER } from '@src/constants';
+import http from '@src/services/http';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
 import { NetInfo } from 'react-native';
@@ -371,5 +372,51 @@ export default class APIService {
     }
     return {status,data};
   }
-  
+  static async requestStake({
+    ProductID,
+    ValidatorKey,
+    qrCodeDeviceId,
+    PaymentAddress
+  }) {
+    if (!PaymentAddress) return throw new Error('Missing paymentAddress');
+    if (!ProductID) return throw new Error('Missing ProductID');
+    if (!qrCodeDeviceId) return throw new Error('Missing qrCodeDeviceId');
+    if (!ValidatorKey) return throw new Error('Missing ValidatorKey');
+
+    const response = await http.post('stake/request', {
+      ProductID:ProductID,
+      ValidatorKey:ValidatorKey ,
+      QRCode: qrCodeDeviceId,
+      PaymentAddress:PaymentAddress
+    }).catch(console.log);
+    console.log(TAG,'requestStake end = ',response);
+    return {
+      status:!_.isEmpty(response) ?1:0,
+      data:response
+    };
+  }
+
+  static async requestWithdraw({
+    ProductID,
+    ValidatorKey,
+    qrCodeDeviceId,
+    PaymentAddress
+  }) {
+    if (!PaymentAddress) return throw new Error('Missing paymentAddress');
+    if (!ProductID) return throw new Error('Missing ProductID');
+    if (!qrCodeDeviceId) return throw new Error('Missing qrCodeDeviceId');
+    if (!ValidatorKey) return throw new Error('Missing ValidatorKey');
+
+    const response = await http.post('stake/withdraw', {
+      ProductID:ProductID,
+      ValidatorKey:ValidatorKey ,
+      QRCode: qrCodeDeviceId,
+      PaymentAddress:PaymentAddress
+    }).catch(console.log);
+    console.log(TAG,'requestWithdraw end = ',response);
+    return {
+      status:!_.isEmpty(response) ?1:0,
+      data:response
+    };
+  }
 }

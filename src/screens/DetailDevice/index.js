@@ -10,12 +10,14 @@ import { DEVICES } from '@src/constants/miner';
 import Device from '@src/models/device';
 import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
+import APIService from '@src/services/api/miner/APIService';
 import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
 import VirtualDeviceService from '@src/services/VirtualDeviceService';
 import accountService from '@src/services/wallet/accountService';
 import format from '@src/utils/format';
 import LocalDatabase from '@src/utils/LocalDatabase';
-import { onClickView } from '@src/utils/ViewUtil';
+import Util from '@src/utils/Util';
+import ViewUtil, { onClickView } from '@src/utils/ViewUtil';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -57,7 +59,7 @@ class DetailDevice extends BaseScreen {
       wallet:wallet,
       isShowMessage:false,
       balancePRV:undefined,
-      listFollowingTokens:[],
+      listFollowingTokens:null,
       device: device
     };
     this.advanceOptionView = React.createRef();
@@ -132,9 +134,9 @@ class DetailDevice extends BaseScreen {
     });
   }
 
-  createListFollowingToken=(result:{},listprivacyCustomToken:Array)=>{
+  createListFollowingToken=(result:{},listprivacyCustomToken:Array,commission = 1)=>{
     let amount = 0;
-    // console.log(TAG,'createListFollowingToken begin ',listprivacyCustomToken);
+    console.log(TAG,'createListFollowingToken begin ',commission);
     return Object.keys(result).map((value,index)=>{
       let ObjFinded = _.find(listprivacyCustomToken,(item)=>_.isEqual(item.tokenId,value))||{
         symbol: value,
@@ -148,10 +150,12 @@ class DetailDevice extends BaseScreen {
         userId: 0,
         verified: true };
     
-      // console.log(TAG,'createListFollowingToken begin findd ---  ',ObjFinded);
-      amount = format.amountFull(result[value],ObjFinded['pDecimals']??common.DECIMALS[value]);
+      // console.log(TAG,'createListFollowingToken begin findd ---  ',ObjFinded,value);
+      amount = !_.isNaN(result[value]) ? _.toNumber(result[value])*commission :0;
+      amount = format.amountFull(amount,ObjFinded['pDecimals']??common.DECIMALS[value]);
       amount = _.isNaN(amount)?0:amount;
       return {
+        id:value,
         ...ObjFinded,
         amount:amount,
       };
@@ -200,23 +204,36 @@ class DetailDevice extends BaseScreen {
 
       const { Role= -1, ShardID= 0 } = stakerStatus;
       isStaked = Role!=-1 ;
-      listFollowingTokens = (!_.isEmpty(account) && await accountService.getFollowingTokens(account,wallet))||[];
-      listFollowingTokens = listFollowingTokens.map(async item=>{ 
-        const objMerge = {id:item.id,name:item.name,...item.metaData};
-        let amount = await device.balanceToken(account,wallet,objMerge.id).catch(console.log)||0;
-        amount = format.amountFull(amount,objMerge['pDecimals']);
-        amount = _.isNaN(amount)?0:amount;
-        return {...objMerge,amount:amount};
-      });
 
-      listFollowingTokens = await Promise.all(listFollowingTokens);
-
-      console.log(TAG,'fetchData NODE listFollowingTokens = ',listFollowingTokens);
-      balancePRV = await device.balanceToken(account,wallet);
-      balancePRV = format.amount(balancePRV,common.DECIMALS['PRV']);
-      
+      dataResult = await VirtualDeviceService.getRewardAmount(device,device.PaymentAddressFromServer,true) ?? {} ;
+      console.log(TAG,'fetchData getRewardAmount ',dataResult);
+      const {Result={}} = dataResult;
+      const PRV = Result['PRV']??0;
+      balancePRV = format.amount(PRV,common.DECIMALS['PRV']);
+      console.log(TAG,'fetchData getRewardAmount 01');
       balancePRV = _.isNaN(balancePRV)?0:balancePRV;
-      console.log(TAG,'fetchData NODE balance = ',balancePRV);
+      console.log(TAG,'fetchData getRewardAmount 02',balancePRV);
+
+      listFollowingTokens = this.createListFollowingToken(Result,listTokens,device.CommissionFromServer??1);
+
+
+      // listFollowingTokens = (!_.isEmpty(account) && await accountService.getFollowingTokens(account,wallet))||[];
+      // listFollowingTokens = listFollowingTokens.map(async item=>{ 
+      //   const objMerge = {id:item.id,name:item.name,...item.metaData};
+      //   let amount = await device.balanceToken(account,wallet,objMerge.id).catch(console.log)||0;
+      //   amount = format.amountFull(amount,objMerge['pDecimals']);
+      //   amount = _.isNaN(amount)?0:amount;
+      //   return {...objMerge,amount:amount};
+      // });
+      // listFollowingTokens = await Promise.all(listFollowingTokens);
+
+      // console.log(TAG,'fetchData NODE listFollowingTokens = ',listFollowingTokens);
+      // balancePRV = await device.balanceToken(account,wallet);
+
+      // balancePRV = format.amount(balancePRV,common.DECIMALS['PRV']);
+      
+      // balancePRV = _.isNaN(balancePRV)?0:balancePRV;
+      // console.log(TAG,'fetchData NODE balance = ',balancePRV);
     }
     }
     
@@ -355,7 +372,44 @@ class DetailDevice extends BaseScreen {
     !_.isEmpty(result) && await this.fetchData();
     this.Loading = false;
     */
-    this.showToastMessage('Withdrawals will be enabled once the mainnet launches in October 2019.');
+    const {device,accountMiner,wallet,listFollowingTokens} = this.state;
+    if(_.isEmpty(accountMiner)){
+      this.setState({
+        isShowMessage:true
+      });
+      return;
+    }
+    this.Loading = true;
+    let result = null;
+    
+    switch(device.Type){
+    case DEVICES.VIRTUAL_TYPE:{
+      if( !_.isEmpty(listFollowingTokens) ){
+        for(let i = 0;i<listFollowingTokens.length;i++){
+          const id = listFollowingTokens[i]?.id||'';
+          result = await device.requestWithdraw(accountMiner,wallet,_.includes(id,'PRV')?'':id).catch(console.log);
+        }
+      }
+      break;
+    }
+    default:
+      // call apiservice
+      if(device){
+        const {PaymentAddress,ValidatorKey} = accountMiner;
+        result = await Util.excuteWithTimeout(APIService.requestWithdraw({ProductID:device.ProductId,qrCodeDeviceId:device.qrCodeDeviceId,ValidatorKey:ValidatorKey,PaymentAddress:PaymentAddress}),4).catch(console.log);
+        
+      }
+      break;
+    }
+    if(!_.isNil(result)){
+      if(result){
+        this.showToastMessage('Withdrawing earnings to your Incognito Wallet. Balances will update in a few minutes.');
+      }else{
+        this.showToastMessage('Withdrawals will be enabled once the mainnet launches in October 2019.');
+      }
+    }
+    this.Loading = false;
+    
   });
 
   handlePressStake = onClickView(async ()=>{
@@ -383,30 +437,39 @@ class DetailDevice extends BaseScreen {
     // const isHaveWallet =  !_.isEmpty(accountMiner);
     const isHaveWallet = !device.isOffline();
     const isWaiting =  _.isNil(balancePRV) || device.isWaiting();
-    
-    
+   
     return (
       <View style={style.group2_container}>
         {isWaiting?<Loader />:(
-          <View style={style.group2_container_group1}>
-            <View style={style.group2_container_container}>
-              <Text style={style.group2_container_title}>TOTAL BALANCE</Text>
-              <Text numberOfLines={1} style={style.group2_container_value}>{`${balancePRV} PRV`}</Text>
-            </View>
-            <View style={style.group2_container_container2}>
-              {isHaveWallet&&(
+          <>
+            <View style={style.group2_container_group1}>
+              <View style={style.group2_container_container}>
+                <Text style={style.group2_container_title}>Earned so far</Text>
+                {/* <Text numberOfLines={1} style={style.group2_container_value}>{`${balancePRV} PRV`}</Text> */}
+              </View>
+              <View style={style.group2_container_container2}>
+                {/* {isHaveWallet&&(
+                  <Button
+                    titleStyle={style.group2_container_button_text}
+                    buttonStyle={style.group2_container_button2}
+                    onPress={this.handlePressWithdraw}
+                    title='Withdraw'
+                  />
+                )}
+                {!isHaveWallet && (
+                  <Text style={style.textWarning}>Your device is offline.</Text>
+                )} */}
                 <Button
                   titleStyle={style.group2_container_button_text}
                   buttonStyle={style.group2_container_button2}
                   onPress={this.handlePressWithdraw}
                   title='Withdraw'
                 />
-              )}
-              {!isHaveWallet && (
-                <Text style={style.textWarning}>Your device is offline.</Text>
-              )}
+              </View>
             </View>
-          </View>
+            {ViewUtil.lineComponent({style:{marginVertical:5}})}
+            {this.renderListFollowingTokens()}
+          </>
         )}
       </View>
     );
@@ -419,12 +482,10 @@ class DetailDevice extends BaseScreen {
       <TouchableOpacity
         style={style.top_container}
         onPress={()=>{
-          if(__DEV__){
-            const {device} = this.state;
-            DeviceService.pingGetIP(device).then(data=>{
-              this.showToastMessage('ping IP ' +JSON.stringify(data));
-            });
-          }
+          const {device} = this.state;
+          device && device.Type == DEVICES.MINER_TYPE && (DeviceService.pingGetIP(device).then(data=>{
+            this.showToastMessage('ping IP ' +JSON.stringify(data));
+          }));
         }}
       >
         <View style={style.top_container_group}>
@@ -433,8 +494,7 @@ class DetailDevice extends BaseScreen {
         </View>
         {!device?.isOffline() && device?.Type === DEVICES.MINER_TYPE && (
           <TouchableOpacity onPress={()=>{
-          this.advanceOptionView?.current.open();
-          // this.setState({isShowMessage:true});
+            this.advanceOptionView?.current.open();
           }}
           >
             {imagesVector.ic_setting()}
@@ -505,6 +565,20 @@ class DetailDevice extends BaseScreen {
     );
   }
 
+  renderListFollowingTokens = ()=>{
+    const {
+      device,
+      listFollowingTokens
+    } = this.state;
+    const isWaiting =  _.isNil(listFollowingTokens) || device.isWaiting();
+    return (
+      <>
+        {isWaiting?<Loader /> :<HistoryMined listItems={listFollowingTokens} />}
+      </>
+    );
+    
+  }
+
   render() {
     const {
       device,
@@ -542,7 +616,8 @@ class DetailDevice extends BaseScreen {
         <ScrollView>
           {this.renderTop()}
           {this.renderGroupBalance()}
-          {!_.isEmpty(listFollowingTokens) &&<HistoryMined containerStyle={style.group2_container} listItems={listFollowingTokens} />}
+          {/* {this.renderListFollowingTokens()} */}
+          
           {this.renderDialogNotify()}
         </ScrollView>
       </Container>
