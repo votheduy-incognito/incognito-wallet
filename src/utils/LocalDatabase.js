@@ -38,6 +38,19 @@ export default class LocalDatabase {
     });
     await LocalDatabase.saveListDevices(list);
   }
+  static updateDevice = async (device)=>{
+    let list = await LocalDatabase.getListDevices();
+    const index = _.findIndex(list,'product_id',device.product_id);
+    if(index >=0){
+      list[index] = {
+        ...list[index],
+        ...device
+      };
+    }else{
+      list.push(device);
+    }
+    await LocalDatabase.saveListDevices(list);
+  }
   static saveListDevices = async (jsonListDevice: []) => {
     const listDevices = JSON.stringify(jsonListDevice);
     // console.log(TAG, ' saveListDevices begin ', listDevices);

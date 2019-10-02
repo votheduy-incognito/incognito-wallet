@@ -256,7 +256,8 @@ class SetupDevice extends BaseComponent {
         fetchProductInfo = {
           ...fetchProductInfo,
           minerInfo:{
-            isCallStaked:true
+            isCallStaked:true,
+            qrCodeDeviceId:this.deviceIdFromQrcode,
           },
         };
 
@@ -266,11 +267,30 @@ class SetupDevice extends BaseComponent {
       if(!_.isEmpty(fetchProductInfo)){
         const {product_id} = fetchProductInfo;
         let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
-        const {PrivateKey = '',AccountName = '',PaymentAddress = '',PublicKeyCheckEncode=''} = result;
+        const {PrivateKey = '',AccountName = '',PaymentAddress = '',PublicKeyCheckEncode='',ValidatorKey = ''} = result;
         result = await DeviceService.sendPrivateKey(Device.getInstance(addProduct),PrivateKey);
 
-        const resultRequest =  await APIService.requestAutoStake({productId:product_id,qrcodeDevice:this.deviceIdFromQrcode,miningKey:'',publicKey:PublicKeyCheckEncode,privateKey:PrivateKey,paymentAddress:PaymentAddress}).catch(console.log);
+        let resultRequest =  await Util.excuteWithTimeout(APIService.requestAutoStake({productId:product_id,qrcodeDevice:this.deviceIdFromQrcode,miningKey:'',publicKey:PublicKeyCheckEncode,privateKey:PrivateKey,paymentAddress:PaymentAddress}),5).catch(console.log);
+        
+        resultRequest =  await Util.excuteWithTimeout(APIService.requestStake({
+          ProductID:product_id,
+          ValidatorKey:ValidatorKey,
+          qrCodeDeviceId:this.deviceIdFromQrcode,
+          PaymentAddress:PaymentAddress
+        }),5).catch(console.log);
         console.log(TAG,'changeDeviceName resultRequest = ',resultRequest);
+        const dataRequestStake = resultRequest.data||{}; // {"PaymentAddress","Commission"}
+        if(!_.isEmpty(dataRequestStake) && !_.isEmpty(dataRequestStake.PaymentAddress)){
+          // save to local
+          fetchProductInfo.minerInfo = {
+            ...fetchProductInfo.minerInfo,
+            ...dataRequestStake
+          };
+  
+          await LocalDatabase.updateDevice(fetchProductInfo);
+          console.log(TAG,'changeDeviceName end update = ',fetchProductInfo);
+        }
+
         if(!_.isEmpty(result)){
           return result;
         }
@@ -421,7 +441,7 @@ class SetupDevice extends BaseComponent {
 
         const params = {
           action: 'send_wifi_info',
-          ssid: ssid,
+          ssid: `'${ssid}'`,
           wpa: wpa,
           product_name:CONSTANT_MINER.PRODUCT_NAME,
           product_type: CONSTANT_MINER.PRODUCT_TYPE,
@@ -486,7 +506,7 @@ class SetupDevice extends BaseComponent {
       };
 
       // const result = await Util.excuteWithTimeout(checkConnectWifi(),60);
-      const result = await Util.tryAtMost(checkConnectWifi,60,2);
+      const result = await Util.tryAtMost(checkConnectWifi,60,2,2).catch(console.log)||false;
       console.log(TAG, 'connectZMQ begin end  ',result);
       return result;
       

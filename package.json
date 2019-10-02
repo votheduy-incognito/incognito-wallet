@@ -7,6 +7,9 @@
       "./src/assets/fonts/"
     ]
   },
+  "resolutions": {
+    "react-native-svg": "9.6.4"
+  },
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "start:reset": "react-native start --reset-cache",
@@ -44,6 +47,7 @@
     "https-browserify": "0.0.1",
     "incognito-chain-web-js": "https://github.com/incognitochain/incognito-chain-web-js.git",
     "intl": "^1.2.5",
+    "react-native-svg": "9.6.4",
     "lodash": "^4.17.11",
     "memoize-one": "^5.0.5",
     "moment": "^2.24.0",
@@ -54,6 +58,7 @@
     "querystring-es3": "^0.2.1",
     "random-bytes": "^1.0.0",
     "react": "16.8.3",
+    "react-content-loader": "^4.3.0",
     "react-devtools": "^3.6.3",
     "react-native": "0.59.5",
     "react-native-bluetooth-serial": "https://github.com/Takt29/react-native-bluetooth-serial-array.git",
@@ -82,7 +87,6 @@
     "react-native-sound": "^0.11.0",
     "react-native-splash-screen": "^3.2.0",
     "react-native-step-indicator": "^0.0.11",
-    "react-native-svg": "^9.4.0",
     "react-native-swipeout": "^2.3.6",
     "react-native-tab-view": "^2.2.0",
     "react-native-tcp": "^3.3.0",

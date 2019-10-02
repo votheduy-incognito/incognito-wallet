@@ -11,6 +11,17 @@ const styleBackgroundImage = calculateTopBgImage(sizeBackgroundImage);
 const posImageDevice = {
   top:screenSize.height * limitRatioImageTop - sizeImageDevice.height - sizeHeader.height
 };
+const boxGroup = {
+  backgroundColor: 'rgba(255,255,255,1)',
+  borderRadius: scaleInApp(8),
+  shadowOffset: {
+    height: 2,
+    width: 0
+  },
+  shadowColor: 'rgba(208,208,208,0.5)',
+  shadowOpacity: 1,
+  marginHorizontal: scaleInApp(15),
+  shadowRadius: 1.2};
 const style = StyleSheet.create({
   container: {
     flex: 1,
@@ -59,9 +70,10 @@ const style = StyleSheet.create({
     flexDirection:'row',
     borderBottomWidth: 0,
     backgroundColor: 'rgba(243,248,249,0.73)',
-    marginHorizontal: scaleInApp(20),
     marginVertical:scaleInApp(5),
-    height:scaleInApp(60),
+    padding:scaleInApp(10),
+    alignItems:'center',
+    ...boxGroup
   },
   top_right_container:{
   },
@@ -95,29 +107,23 @@ const style = StyleSheet.create({
     flexDirection:'column',
     justifyContent:'space-around',
     borderBottomWidth: 0,
-    margin: scaleInApp(10),
+    marginVertical:scaleInApp(5),
     padding:scaleInApp(10),
-    backgroundColor: 'rgba(255,255,255,1)',
-    borderRadius: scaleInApp(4),
-    shadowOffset: {
-      height: 2,
-      width: 0
-    },
-    shadowColor: 'rgba(208,208,208,0.5)',
-    shadowOpacity: 1,
-    shadowRadius: 1.2
+    ...boxGroup
   },
   group2_container_group1:{
     flexDirection:'row',
     justifyContent:'space-around',
   },
   group2_container_container:{
-    flex:1,
+    flex:2,
+    justifyContent:'center',
     padding:scaleInApp(10),
   },
   group2_container_title:{
-    ...TextStyle.minimizeText,
-    color: '#899092',
+    ...TextStyle.mediumText,
+    ...FontStyle.medium,
+    color: '#000000',
   },
   group2_container_value:{
     ...TextStyle.mediumText,
@@ -126,8 +132,7 @@ const style = StyleSheet.create({
   },
   group2_container_button:{
     backgroundColor:'#25CDD6',
-    marginLeft:scaleInApp(10),
-    marginHorizontal:scaleInApp(2),
+    marginHorizontal:scaleInApp(10),
     paddingHorizontal:scaleInApp(30),
     borderRadius:scaleInApp(4)
   },
@@ -148,11 +153,11 @@ const style = StyleSheet.create({
   },
   group2_container_button2:{
     backgroundColor:'#26C64D',
-    padding:scaleInApp(10),
+    padding:scaleInApp(7),
     borderRadius:scaleInApp(4)
   },
   group2_container_button_text:{
-    ...TextStyle.mediumText,
+    ...TextStyle.normalText,
     color: '#FFFFFF',
   },
   dialog_title_text: {

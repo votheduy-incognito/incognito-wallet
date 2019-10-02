@@ -15,9 +15,9 @@ import { Alert } from '../core';
 import styles from './style';
 
 const TAG = 'HomeMineItem';
-const descriptionNodeOffline = 'Chain under maintenance.\nBalance will reload soon.';
-const descriptionMasterNodeOffline = 'Chain under maintenance.\nBalance will reload soon.';
-const desciptionMasterAndNodeOffline = 'Balance will reload when Master node is back online.';
+const descriptionNodeOffline = 'Check if your node is running';
+const descriptionMasterNodeOffline = 'Reconnecting to the network. Please wait.';
+// const desciptionMasterAndNodeOffline = 'Balance will reload when Master node is back online.';
 class HomeMineItem extends React.Component {
   constructor(props){
     super(props);
@@ -82,7 +82,7 @@ class HomeMineItem extends React.Component {
     balance = _.isNaN(balance)?null:balance;
     // balance = 1000000000;
     callbackReward(balance);
-    if(_.isNumber(balance)){
+    if(_.isNumber(balance) && balance >=0 ){
       balance = Device.formatForDisplayBalance(balance);
     }
     
@@ -91,6 +91,11 @@ class HomeMineItem extends React.Component {
       account:account,
       balance:balance
     });
+  }
+
+  isFullNodeDie = ()=>{
+    const {balance } = this.state;
+    return balance ==-1;
   }
   checkActive = async ()=>{
     const {item} = this.props;
@@ -158,18 +163,26 @@ class HomeMineItem extends React.Component {
     const {containerStyle,onPress} = this.props;
     
     const styleStatus = this.getStyleStatus();
+    const isFetchedBalance = !_.isNil(balance) && !_.isNaN(balance);
     let textErrorDevice ='';
     if(deviceInfo.isWaiting()){
       textErrorDevice = '---';
     }else{
-      if(deviceInfo.isReady()){
-        textErrorDevice = 'Tap to start';
-      }else if(_.isNil(balance) && deviceInfo.isOffline()){
+      
+      if(deviceInfo.isSyncing()){
+        if(!isFetchedBalance){
+          textErrorDevice = 'Waiting to become a validator';
+        }else if(balance == -1){
+          textErrorDevice = descriptionMasterNodeOffline;
+        }
+      }else if(deviceInfo.isReady()){
+        textErrorDevice = 'Tap here to stake';
+      }else if(!isFetchedBalance && deviceInfo.isOffline()){
         textErrorDevice = descriptionNodeOffline;
-      } else if(deviceInfo.isOffline()){
-        textErrorDevice = '';
-      }else if(_.isNil(balance)){
-        textErrorDevice = descriptionNodeOffline;
+      }else if(balance == -1){
+        textErrorDevice = descriptionMasterNodeOffline;
+      }else if(!isFetchedBalance){
+        textErrorDevice = 'Please refresh to reload your balance';
       }
     }
     return (
@@ -197,7 +210,7 @@ class HomeMineItem extends React.Component {
           
         </View>
         <View style={styles.groupRight}>
-          <Text style={styleStatus}>{deviceInfo.statusMessage()}</Text>
+          <Text style={styleStatus}>{balance == -1?'Reconnecting':deviceInfo.statusMessage()}</Text>
           {deviceInfo.data.status.code === Device.CODE_UNKNOWN && ViewUtil.loadingComponent()}
         </View>
       </TouchableOpacity>
