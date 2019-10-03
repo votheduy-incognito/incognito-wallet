@@ -1,4 +1,3 @@
-import { Toast } from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { getBalance as getAccountBalance, reloadAccountFollowingToken } from '@src/redux/actions/account';
 import { clearSelectedPrivacy, setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
@@ -10,6 +9,7 @@ import Util from '@src/utils/Util';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
 import Home from './Home';
 
 const TAG = 'HomeContainer';
@@ -19,12 +19,22 @@ class HomeContainer extends Component {
     this.state = { isReloading: false };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { account, navigation, clearSelectedPrivacy, getAccountBalance, accountList } = this.props;
-    this.getTokens();
-    this.getFollowingToken();
-    this.getAccountBalance(account);
+    try {
+      this.getTokens();
+      this.getFollowingToken();
+      this.getAccountBalance(account);
 
+      await Promise.all([
+        this.getTokens(),
+        this.getFollowingToken(),
+        this.getAccountBalance(account),
+      ]);
+    } catch (e) {
+      new ExHandler(e).showErrorToast();
+    }
+    
     scheduleService.reloadAllAccountBalance({
       accounts: accountList,
       getBalance: getAccountBalance,
@@ -51,26 +61,26 @@ class HomeContainer extends Component {
   getTokens = async () => {
     try {
       const { getPTokenList, getInternalTokenList } = this.props;
-      await getPTokenList().catch(() => null);
-      await getInternalTokenList().catch(() => null);
-    } catch {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+      await getPTokenList();
+      await getInternalTokenList();
+    } catch (e) {
+      new ExHandler(e, 'Sorry, we can not get list of tokens, reopen the app can fix it.');
     }
   }
 
   reload = async () => {
     try {
       this.setState({ isReloading: true });
-      const { getAccountBalance, account } = this.props;
+      const { account } = this.props;
       console.log(TAG,'reload getAccountBalance begin');
-      await Util.excuteWithTimeout(getAccountBalance(account),3).catch(console.log);
+      await Util.excuteWithTimeout(this.getAccountBalance(account),3);
       console.log(TAG,'reload getAccountBalance end');
       console.log(TAG,'reload getFollowingToken begin');
       // await this.getFollowingToken();
-      await Util.excuteWithTimeout(this.getFollowingToken(),3).catch(console.log);
+      await Util.excuteWithTimeout(this.getFollowingToken(),3);
       console.log(TAG,'reload getFollowingToken end');
-    } catch {
-      Toast.showError('Something went wrong. Please try again.');
+    } catch (e) {
+      new ExHandler(e).showErrorToast();
     } finally {
       this.setState({ isReloading: false });
     }
@@ -86,7 +96,7 @@ class HomeContainer extends Component {
       const { getBalance } = this.props;
       await getBalance(token);
     } catch {
-      Toast.showError('Refresh to reload balance');
+      throw new CustomError(ErrorCode.home_load_balance_failed);
     }
   }
 
@@ -95,7 +105,7 @@ class HomeContainer extends Component {
       const { getAccountBalance } = this.props;
       return getAccountBalance(account);
     } catch {
-      Toast.showError('Refresh to reload balance');
+      throw new CustomError(ErrorCode.home_load_balance_failed);
     }
   }
 
@@ -105,7 +115,7 @@ class HomeContainer extends Component {
       const result = await reloadAccountFollowingToken(account);
       return result;
     } catch {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+      throw new CustomError(ErrorCode.home_load_following_token_failed);
     }
   }
 

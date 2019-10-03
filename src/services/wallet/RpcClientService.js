@@ -7,9 +7,27 @@ import {
   getEstimateTokenFee,
   getMaxWithdrawAmount
 } from 'incognito-chain-web-js/build/wallet';
+import { ExHandler, CustomError, ErrorCode } from '../exception';
 
 function getRpcClient() {
   return Wallet.RpcClient;
+}
+
+function setRpcClientInterceptor() {
+  const instance = Wallet.RpcClient?.rpcHttpService?.axios;
+
+  instance?.interceptors.response.use(res => {
+    return Promise.resolve(res);
+  }, errorData => {
+    const errResponse = errorData?.response;
+
+    // can not get response, alert to user
+    if (!errResponse) {
+      return new ExHandler(new CustomError(ErrorCode.network_make_request_failed)).showErrorToast().throw();
+    }
+
+    return Promise.reject(errorData);
+  });
 }
 
 export function setRpcClient(server, username, password) {
@@ -212,3 +230,5 @@ export async function getMaxWithdrawAmountService(
   }
   return response;
 }
+
+setRpcClientInterceptor();

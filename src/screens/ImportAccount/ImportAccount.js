@@ -1,6 +1,5 @@
 import {
   Container,
-  Toast,
   Button,
   View,
   Text,
@@ -11,6 +10,7 @@ import { Field } from 'redux-form';
 import { createForm, InputField, validator } from '@src/components/core/reduxForm';
 import React, { Component } from 'react';
 import randomName from '@src/utils/randomName';
+import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import styleSheet from './style';
 
 const formName = 'importAccount';
@@ -59,10 +59,7 @@ class ImportAccount extends Component {
           _account => lowerCase(_account.name) === lowerCase(accountName)
         )
       ) {
-        Toast.showError(
-          'This account already exists on your device. Please try another.'
-        );
-        return;
+        return throw new CustomError(ErrorCode.importAccount_existed);
       }
 
       const account = await importAccount({ privateKey, accountName });
@@ -75,7 +72,7 @@ class ImportAccount extends Component {
 
       this.goBack();
     } catch (e) {
-      Toast.showError('Please make sure this private key is valid and does not already exist on your device.');
+      new ExHandler(e).showErrorToast();
     }
   };
 

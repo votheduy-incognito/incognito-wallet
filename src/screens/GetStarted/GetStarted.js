@@ -1,7 +1,6 @@
 import {
   Text,
   View,
-  ActivityIndicator,
   Button
 } from '@src/components/core';
 import PropTypes from 'prop-types';
