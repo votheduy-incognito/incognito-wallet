@@ -12,6 +12,7 @@ import LoadingTx from '@src/components/LoadingTx';
 import tokenData from '@src/constants/tokenData';
 import formatUtil from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
+import { ExHandler } from '@src/services/exception';
 import style from './style';
 
 const formName = 'withdraw';
@@ -110,7 +111,7 @@ class Withdraw extends React.Component {
 
       throw new Error('Withdraw failed');
     } catch (e) {
-      Toast.showError('Something went wrong. Please try again.');
+      new ExHandler(e, 'Something went wrong. Please try again.').showErrorToast();
     }
   }
 

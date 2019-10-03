@@ -58,10 +58,10 @@ export default class LocalDatabase {
   };
   static isMigrated = async () => {
     const result = await LocalDatabase.getValue(KEY_SAVE.IS_MIGRATED);
-    return result === true;
+    return result === 'true';
   };
   static completeMigration = async () => {
-    await LocalDatabase.saveValue(KEY_SAVE.IS_MIGRATED, true);
+    await LocalDatabase.saveValue(KEY_SAVE.IS_MIGRATED, 'true');
   };
   static async logout() {
     return await AsyncStorage.multiRemove([

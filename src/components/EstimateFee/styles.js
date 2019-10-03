@@ -15,10 +15,10 @@ const style = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: COLORS.orange,
     marginVertical: 10,
+    marginHorizontal: 10,
+    maxWidth: 200,
+    maxHeight: 40,
     borderRadius: 20,
-  },
-  retryText: {
-    color: COLORS.white
   },
   errorText: {
     ...THEME.text.errorText,

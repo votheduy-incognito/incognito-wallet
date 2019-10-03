@@ -8,6 +8,7 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import tokenData from '@src/constants/tokenData';
 import convertUtil from '@src/utils/convert';
+import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import EstimateFee from './EstimateFee';
 import ActivityIndicator from '../core/ActivityIndicator/Component';
 
@@ -70,7 +71,9 @@ class EstimateFeeContainer extends Component {
 
       return fee;
     } catch (e) {
-      this.setState({ estimateErrorMsg: e?.message || 'Can\'t calculate the fee for this transaction' });
+      this.setState({
+        estimateErrorMsg: new ExHandler(e, 'Something went wrong while estimating fee for this tracsaction, please try again.').message
+      });
     } finally {
       this.setState({ isGettingFee: false });
     }
@@ -87,7 +90,7 @@ class EstimateFeeContainer extends Component {
       const fromAddress = selectedPrivacy?.paymentAddress;
       const accountWallet = wallet.getAccountByName(account?.name);
 
-      if (!selectedPrivacy.amount) throw new Error('Can not estimate fee on zero amount');
+      if (!selectedPrivacy.amount) throw new CustomError(ErrorCode.estimate_fee_with_zero_balance);
 
       const fee = await getEstimateFeeService(
         fromAddress,
@@ -124,7 +127,7 @@ class EstimateFeeContainer extends Component {
         }
       };
 
-      if (!selectedPrivacy.amount) throw new Error('Can not estimate fee on zero amount');
+      if (!selectedPrivacy.amount) throw new CustomError(ErrorCode.estimate_fee_with_zero_balance);
 
       const fee = await getEstimateFeeForSendingTokenService(
         fromAddress,
@@ -162,7 +165,7 @@ class EstimateFeeContainer extends Component {
         }
       };
 
-      if (!selectedPrivacy.amount) throw new Error('Can not estimate fee on zero amount');
+      if (!selectedPrivacy.amount) throw new CustomError(ErrorCode.estimate_fee_with_zero_balance);
 
       const fee = await getEstimateTokenFeeService(
         fromAddress,

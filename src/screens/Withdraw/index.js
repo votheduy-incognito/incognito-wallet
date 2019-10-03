@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text, Toast } from '@src/components/core';
+import { Text } from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { connect } from 'react-redux';
 import { genCentralizedWithdrawAddress, addERC20TxWithdraw, addETHTxWithdraw } from '@src/services/api/withdraw';
 import tokenService from '@src/services/wallet/tokenService';
 import { CONSTANT_COMMONS } from '@src/constants';
-import { messageCode, createError } from '@src/services/errorHandler';
 import { getMaxWithdrawAmountService } from '@src/services/wallet/RpcClientService';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import convertUtil from '@src/utils/convert';
 import tokenData from '@src/constants/tokenData';
+import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import Withdraw from './Withdraw';
 
 class WithdrawContainer extends Component {
@@ -57,7 +57,7 @@ class WithdrawContainer extends Component {
     const selectedPrivacyAmount = selectedPrivacy?.amount;
 
     if (selectedPrivacyAmount <= 0) {
-      return throw createError({ code: messageCode.code.balance_must_not_be_zero });
+      return new ExHandler(new CustomError(ErrorCode.withdraw_balance_must_not_be_zero)).showErrorToast().throw();
     }
 
     const tokenObject = this.getTokenObject({ amount: 0 });
@@ -72,8 +72,8 @@ class WithdrawContainer extends Component {
       );
 
       this.setState({ withdrawData: data });
-    } catch {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+    } catch (e) {
+      new ExHandler(e, 'Something went wrong. Please refresh the screen.').showErrorToast();
     }
   }
 
@@ -187,7 +187,7 @@ class WithdrawContainer extends Component {
       
       return address;
     } catch (e) {
-      throw createError({ code: messageCode.code.gen_withdraw_address_failed });
+      throw new CustomError(ErrorCode.getStarted_load_device_token_failed);
     }
   }
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import CONFIG from '@src/constants/config';
-import { apiErrorHandler, messageCode, createError } from './errorHandler';
+import { CustomError, ErrorCode, ExHandler } from './exception';
 
 const HEADERS = {'Content-Type': 'application/json'};
 const TIMEOUT = 10000;
@@ -38,13 +38,22 @@ instance.interceptors.response.use(res => {
 
   return Promise.resolve(result);
 }, errorData => {
+  const errResponse = errorData?.response;
+
   if (__DEV__) {
-    console.warn('Request failed', errorData?.response);
+    console.warn('Request failed', errResponse);
   }
 
-  const data = errorData?.response?.data;
+  // can not get response, alert to user
+  if (!errResponse) {
+    return new ExHandler(new CustomError(ErrorCode.network_make_request_failed)).showErrorToast().throw();
+  }
+
+  // get response of error
+  // wrap the error with CustomError to custom error message, or logging
+  const data = errResponse?.data;
   if (data && data.Error) {
-    throw createError({ code: apiErrorHandler.getErrorMessageCode(data.Error) || messageCode.code.api_general });
+    throw new CustomError(data.Error?.Code, { name: CustomError.TYPES.API_ERROR, message: data.Error?.Message });
   }
 
   return Promise.reject(errorData);
