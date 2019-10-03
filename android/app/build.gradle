@@ -150,6 +150,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-ssh')
+    implementation project(':react-native-network-info')
     implementation project(':react-native-sensors')
     implementation project(':react-native-sound')
     implementation project(':react-native-zmq-service')

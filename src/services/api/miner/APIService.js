@@ -260,6 +260,8 @@ export default class APIService {
         'protocal': 'firebase'
       };
 
+      console.log('buildParams', buildParams);
+
       const response = await APIService.getURL(METHOD.POST, url, buildParams, false,false);
       console.log(TAG,'sendPrivateKey:', response);
       return response;
