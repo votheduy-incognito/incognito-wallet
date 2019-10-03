@@ -95,8 +95,8 @@ class HistoryMined extends React.Component {
       ...metaData,
       ...othertokenData
     };
-    console.log(TAG,'getData begin ==== ',additionData,symbolUI);
-    console.log(TAG,'getData end ==== ',data);
+    // console.log(TAG,'getData begin ==== ',additionData,symbolUI);
+    // console.log(TAG,'getData end ==== ',data);
     return data;
   }
 
@@ -114,7 +114,7 @@ class HistoryMined extends React.Component {
         <FlatList
           style={styles.list}
           data={listItems}
-          ListEmptyComponent={<Text style={styles.text_empty}>You haven’t earned any cryptos yet.</Text>}
+          ListEmptyComponent={<Text style={styles.text_empty}>You haven`t started earning yet.</Text>}
           keyExtractor={(item,index)=> `${item.id}_${index}`}
           onEndReachedThreshold={0.7}
           renderItem={this.renderItem}

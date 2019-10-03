@@ -28,7 +28,7 @@ import styles from './style';
 export const TAG = 'SetupDevice';
 const HOTPOT = 'TheMiner';
 const errorMessage = 'Can\'t connect Node. Please check the internert information and try again';
-const TIMES_VERIFY = 20;
+const TIMES_VERIFY = 30;
 const labels = ['Connect Hotpot','Send Wifi Info','Verify Code'];
 const customStyles = {
   stepIndicatorSize: 25,
