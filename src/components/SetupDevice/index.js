@@ -203,15 +203,23 @@ class SetupDevice extends BaseComponent {
   }
 
   connectHotspot = async ()=>{
-    this.deviceMiner = new ObjConnection();
-    let suffix = _.split(this.deviceIdFromQrcode,'-')[1];
-    suffix = !_.isEmpty(suffix) && _.size(suffix) == 6 ?`-${suffix}`:'';
-    console.log(TAG,'connectHotspot end result = ',result);
-    this.deviceMiner.name = `${HOTPOT}${suffix}`;
-    this.deviceMiner.id = `${HOTPOT}${suffix}`;
-    const result:Boolean = await this.deviceId?.current?.connectDevice(this.deviceMiner) || false;
-    console.log(TAG,'connectHotspot end result = ',result);
-    return result?this.deviceMiner:null;
+    const errorObj = new Error('callVerifyCode fail');
+    try {
+      this.deviceMiner = new ObjConnection();
+      let suffix = _.split(this.deviceIdFromQrcode,'-')[1];
+      suffix = !_.isEmpty(suffix) && _.size(suffix) == 6 ?`-${suffix}`:'';
+      console.log(TAG,'connectHotspot begin = ');
+      this.deviceMiner.name = `${HOTPOT}${suffix}`;
+      this.deviceMiner.id = `${HOTPOT}${suffix}`;
+      const result:Boolean = await this.deviceId?.current?.connectDevice(this.deviceMiner);
+      console.log(TAG,'connectHotspot end result = ',result);
+      return result?this.deviceMiner:errorObj;
+    } catch (error) {
+      console.log(TAG,'connectHotspot error ');
+    }
+
+    return errorObj;
+    
   }
 
   handleSetUpPress = onClickView(async (deviceIdFromQrcode='')=>{
@@ -568,7 +576,8 @@ class SetupDevice extends BaseComponent {
     console.log(TAG,'checkConnectHotspot begin: ', validSSID,validWPA);
     if(!isConnectedHotpost){
       const connectHotspot = this.connectHotspot;
-      device = await Util.tryAtMost(connectHotspot,2,1);
+      device = await Util.tryAtMost(connectHotspot,3,1);
+      device = device instanceof Error ?null:device;
     }
     if(Platform.OS === 'ios'){
       this.isHaveNetwork = false;
