@@ -8,6 +8,7 @@ import APIService from '@services/api/miner/APIService';
 import DeviceConnection from '@src/components/DeviceConnection';
 import { ObjConnection } from '@src/components/DeviceConnection/BaseConnection';
 import { CONSTANT_MINER } from '@src/constants';
+import { DEVICES } from '@src/constants/miner';
 import Device from '@src/models/device';
 import DeviceService from '@src/services/DeviceService';
 import Util from '@src/utils/Util';
@@ -254,15 +255,18 @@ class SetupDevice extends BaseComponent {
     return errorMsg;
   });
 
-  changeDeviceName = async(name)=>{
+  changeDeviceName = async(name,qrCodeDevice='')=>{
     let errMessage = '';
     try {
+      this.qrCodeDeviceId = qrCodeDevice;
       const {addProduct} = this.state;
       let fetchProductInfo = {};
       if (this.validWallName && !_.isEmpty(addProduct) ) {
+        console.log(TAG,'changeDeviceName begin');
         fetchProductInfo = await this.updateDeviceNameRequest(addProduct.product_id,name)||{};
         fetchProductInfo = {
           ...fetchProductInfo,
+          product_type:DEVICES.MINER_TYPE,
           minerInfo:{
             isCallStaked:true,
             qrCodeDeviceId:this.deviceIdFromQrcode,
@@ -276,6 +280,7 @@ class SetupDevice extends BaseComponent {
         const {product_id} = fetchProductInfo;
         let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
         const {PrivateKey = '',AccountName = '',PaymentAddress = '',PublicKeyCheckEncode='',ValidatorKey = ''} = result;
+        console.log(TAG,'changeDeviceName sendPrivateKey begin');
         result = await DeviceService.sendPrivateKey(Device.getInstance(addProduct),PrivateKey);
 
         let resultRequest =  await Util.excuteWithTimeout(APIService.requestAutoStake({productId:product_id,qrcodeDevice:this.deviceIdFromQrcode,miningKey:'',publicKey:PublicKeyCheckEncode,privateKey:PrivateKey,paymentAddress:PaymentAddress}),5).catch(console.log);
@@ -307,6 +312,7 @@ class SetupDevice extends BaseComponent {
       
     } catch (error) {
       console.log(TAG,'changeDeviceName error');
+      __DEV__ && this.showToastMessage(error.message);
     }
 
     return throw new Error(errMessage);
@@ -451,8 +457,8 @@ class SetupDevice extends BaseComponent {
           action: 'send_wifi_info',
           ssid: `'${ssid}'`,
           wpa: wpa,
-          product_name:CONSTANT_MINER.PRODUCT_NAME,
-          product_type: CONSTANT_MINER.PRODUCT_TYPE,
+          product_name:`${CONSTANT_MINER.PRODUCT_NAME}_${this.qrCodeDeviceId}`,
+          product_type: DEVICES.MINER_TYPE,
           source:  Platform.OS,
           verify_code: verify_code,
           address: 'NewYork',

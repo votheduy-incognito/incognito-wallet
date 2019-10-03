@@ -190,11 +190,11 @@ class HomeMineItem extends React.Component {
         style={[styles.container,containerStyle]}
         onLongPress={()=>{
           Alert.alert('Confirm','Are you sure to delete this item?',[{text:'Yes',onPress:async ()=>{
-            let list = await LocalDatabase.getListDevices();
-            _.remove(list,item);
-            await LocalDatabase.saveListDevices(list);
             const {reloadList} = this.props;
-
+            // let list = await LocalDatabase.getListDevices();
+            // _.remove(list,item);
+            // await LocalDatabase.saveListDevices(list);
+            await LocalDatabase.removeDevice(item);
             reloadList();
           }},{ text: 'Cancel'}],{cancelable: true});
         }}

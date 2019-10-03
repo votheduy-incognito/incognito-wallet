@@ -2,12 +2,12 @@ import { imagesVector } from '@src/assets';
 import BottomSheet from '@src/components/BottomSheet';
 import TextStyle from '@src/styles/TextStyle';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 import React, { Component } from 'react';
-import { Alert, StyleSheet, TouchableOpacity,View,Text } from 'react-native';
-import { ListItem,Button } from 'react-native-elements';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Button, ListItem } from 'react-native-elements';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import styles from './style';
+
 const style = StyleSheet.create({
   container: {
   },
@@ -27,13 +27,16 @@ class AdvanceOption extends Component {
     super(props);
     this.state={
       isShowMessage:false,
-    }
+    };
     this.mainView = React.createRef();
   }
   render(){
-    return (<>
-    {this.renderDialogNotify()}
-    <BottomSheet ref={this.mainView} contentView={this.renderContent()} /></>);
+    return (
+      <>
+        {this.renderDialogNotify()}
+        <BottomSheet ref={this.mainView} contentView={this.renderContent()} />
+      </>
+    );
   }
 
   renderDialogNotify =()=>{
@@ -48,7 +51,7 @@ class AdvanceOption extends Component {
         }}
       >
         <DialogContent style={styles.dialog_container}>
-        <Text style={styles.dialog_title_text}>Are you sure?</Text>
+          <Text style={styles.dialog_title_text}>Are you sure?</Text>
           <View style={styles.dialog_content}>
             <Text style={styles.dialog_content_text}>Are you sure you want to reset your device?{'\n'}Please remember to back up your wallet. Only you can restore your private key.</Text>
           </View>
