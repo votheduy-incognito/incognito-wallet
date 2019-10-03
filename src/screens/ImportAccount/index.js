@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { change } from 'redux-form';
 import { connect } from 'react-redux';
+import { CustomError, ErrorCode } from '@src/services/exception';
 import ImportAccount from './ImportAccount';
 
 class ImportAccountContainer extends Component {
@@ -31,7 +32,7 @@ class ImportAccountContainer extends Component {
         passphrase,
         wallet
       );
-      if (!isImported) throw new Error('Account was not imported!');
+      if (!isImported) throw new CustomError(ErrorCode.importAccount_failed);
 
       Toast.showSuccess('Import successful.');
 
@@ -45,8 +46,6 @@ class ImportAccountContainer extends Component {
 
       return account;
     } catch(e) {
-
-      Toast.showError('Something went wrong. Please try again.');
       throw e;
     }
   };

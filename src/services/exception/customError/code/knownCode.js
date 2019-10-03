@@ -43,6 +43,11 @@ const home = {
   home_load_balance_failed: knownError(-19)
 };
 
+const importAccount = {
+  importAccount_failed: knownError(-20),
+  importAccount_existed: knownError(-21),
+};
+
 
 export default {
   ...app,
@@ -50,5 +55,6 @@ export default {
   ...getStarted,
   ...withdraw,
   ...createAccount,
+  ...importAccount,
   ...home
 };
