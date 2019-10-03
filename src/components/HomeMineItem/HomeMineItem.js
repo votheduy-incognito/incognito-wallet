@@ -137,7 +137,7 @@ class HomeMineItem extends React.Component {
   }
   setDeviceOffline =()=>{
     let {deviceInfo} = this.state;
-    deviceInfo.data.status = Device.offlineStatus();
+    deviceInfo.Status = Device.offlineStatus();
     this.setState({
       deviceInfo:deviceInfo,
     });
@@ -176,7 +176,7 @@ class HomeMineItem extends React.Component {
           textErrorDevice = descriptionMasterNodeOffline;
         }
       }else if(deviceInfo.isReady()){
-        textErrorDevice = 'Tap here to stake';
+        textErrorDevice = deviceInfo.Type == DEVICES.VIRTUAL_TYPE? 'Tap here to stake':'Waiting to become a validator';
       }else if(!isFetchedBalance && deviceInfo.isOffline()){
         textErrorDevice = descriptionNodeOffline;
       }else if(balance == -1){
