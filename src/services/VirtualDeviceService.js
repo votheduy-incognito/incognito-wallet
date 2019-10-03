@@ -258,7 +258,7 @@ export default class VirtualDeviceService {
   }
 
   static buildURL=(device:Device,isFullNode= false)=>{
-    return isFullNode?'https://test-node.incognito.org':`http://${device.APIUrl??''}`;
+    return isFullNode?'https://test-mobile.incognito.org':`http://${device.APIUrl??''}`;
     // return isFullNode?'http://192.168.1.188:9334':`http://${device.APIUrl??''}`;
   }
 }
