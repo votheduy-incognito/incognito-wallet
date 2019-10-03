@@ -117,7 +117,7 @@ class DetailDevice extends BaseScreen {
   
       // const publicKey = '16yUvbgiXUZfwuWafBcXX4oiyYVui57e1oMtEyRCwkHemeqKvf9';
       // const isRegular = !_.includes(keyCompare,account?.BlockProducerKey);
-      // console.log(TAG,'checkAndUpdateInfoVirtualNode listAccount ',listAccount);
+      console.log(TAG,'checkAndUpdateInfoVirtualNode listAccount ',listAccount);
       // console.log(TAG,'checkAndUpdateInfoVirtualNode publicKey ',keyCompare);
 
       const isRegular = !_.isEqual(account?.PublicKeyCheckEncode,keyCompare);
@@ -444,7 +444,7 @@ class DetailDevice extends BaseScreen {
           <>
             <View style={style.group2_container_group1}>
               <View style={style.group2_container_container}>
-                <Text style={style.group2_container_title}>Earned so far</Text>
+                <Text style={style.group2_container_title}>Balance</Text>
                 {/* <Text numberOfLines={1} style={style.group2_container_value}>{`${balancePRV} PRV`}</Text> */}
               </View>
               <View style={style.group2_container_container2}>
