@@ -11,7 +11,6 @@ import { StatusBar } from 'react-native';
 import 'react-native-console-time-polyfill';
 import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
 import { Provider } from 'react-redux';
-import BalanceNotification from '@src/services/balanceNotification';
 import { THEME } from './styles';
 
 
@@ -25,7 +24,6 @@ class App extends PureComponent {
     initFirebaseNotification()
       .then(() => {
         console.log('Firebase notification worked');
-        new BalanceNotification({ id: 'balance_alert' }).startSchedule();
       })
       .catch(() => {
         new ExHandler(new CustomError(ErrorCode.firebase_init_failed)).showErrorToast();
