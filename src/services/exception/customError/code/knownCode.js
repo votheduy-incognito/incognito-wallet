@@ -33,10 +33,16 @@ const withdraw = {
   withdraw_gen_withdraw_address_failed: knownError(-13)
 };
 
+const createAccount = {
+  createAccount_failed: knownError(-16),
+  createAccount_existed_name: knownError(-17)
+};
+
 
 export default {
   ...app,
   ...estimateFee,
   ...getStarted,
   ...withdraw,
+  ...createAccount
 };

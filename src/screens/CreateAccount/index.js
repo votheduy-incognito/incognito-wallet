@@ -27,10 +27,9 @@ class CreateAccountContainer extends Component {
       followDefaultTokens(serializedAccount);
 
       return serializedAccount;
-    } catch {
-      Toast.showError('Something went wrong. Please try again.');
+    } catch (e) {
+      throw e;
     }
-    return null;
   };
 
   render() {
@@ -46,7 +45,7 @@ const mapState = state => ({
 const mapDispatch = { reloadAccountList, followDefaultTokens };
 
 CreateAccountContainer.propTypes = {
-  wallet: PropTypes.objectOf(PropTypes.object),
+  wallet: PropTypes.objectOf(PropTypes.object).isRequired,
   reloadAccountList: PropTypes.func.isRequired,
   followDefaultTokens: PropTypes.func.isRequired,
 };
