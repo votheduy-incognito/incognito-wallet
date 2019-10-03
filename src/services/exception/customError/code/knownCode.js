@@ -38,11 +38,17 @@ const createAccount = {
   createAccount_existed_name: knownError(-17)
 };
 
+const home = {
+  home_load_following_token_failed: knownError(-18),
+  home_load_balance_failed: knownError(-19)
+};
+
 
 export default {
   ...app,
   ...estimateFee,
   ...getStarted,
   ...withdraw,
-  ...createAccount
+  ...createAccount,
+  ...home
 };

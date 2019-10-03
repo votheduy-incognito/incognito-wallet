@@ -27,7 +27,7 @@ class Home extends React.Component {
             style={homeStyle.cryptoItem}
             token={{
               symbol: tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY,
-              amount: account?.value,
+              amount: account?.value ?? null,
               name: 'Incognito',
               metaData: {
                 pSymbol: tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY,
