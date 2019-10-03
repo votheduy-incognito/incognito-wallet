@@ -203,15 +203,23 @@ class SetupDevice extends BaseComponent {
   }
 
   connectHotspot = async ()=>{
-    this.deviceMiner = new ObjConnection();
-    let suffix = _.split(this.deviceIdFromQrcode,'-')[1];
-    suffix = !_.isEmpty(suffix) && _.size(suffix) == 6 ?`-${suffix}`:'';
-    console.log(TAG,'connectHotspot end result = ',result);
-    this.deviceMiner.name = `${HOTPOT}${suffix}`;
-    this.deviceMiner.id = `${HOTPOT}${suffix}`;
-    const result:Boolean = await this.deviceId?.current?.connectDevice(this.deviceMiner) || false;
-    console.log(TAG,'connectHotspot end result = ',result);
-    return result?this.deviceMiner:null;
+    const errorObj = new Error('callVerifyCode fail');
+    try {
+      this.deviceMiner = new ObjConnection();
+      let suffix = _.split(this.deviceIdFromQrcode,'-')[1];
+      suffix = !_.isEmpty(suffix) && _.size(suffix) == 6 ?`-${suffix}`:'';
+      console.log(TAG,'connectHotspot begin = ');
+      this.deviceMiner.name = `${HOTPOT}${suffix}`;
+      this.deviceMiner.id = `${HOTPOT}${suffix}`;
+      const result:Boolean = await this.deviceId?.current?.connectDevice(this.deviceMiner);
+      console.log(TAG,'connectHotspot end result = ',result);
+      return result?this.deviceMiner:errorObj;
+    } catch (error) {
+      console.log(TAG,'connectHotspot error ');
+    }
+
+    return errorObj;
+    
   }
 
   handleSetUpPress = onClickView(async (deviceIdFromQrcode='')=>{
@@ -228,7 +236,7 @@ class SetupDevice extends BaseComponent {
       const resultStep1 = await this.checkConnectHotspot();
       let callVerifyCode = this.callVerifyCode;
       this.CurrentPositionStep = 2;
-      const resultStep2  = (resultStep1 && await Util.tryAtMost(callVerifyCode,TIMES_VERIFY,2)) || false;
+      const resultStep2  = (resultStep1 && await Util.tryAtMost(callVerifyCode,TIMES_VERIFY,2,2)) || false;
       console.log(TAG,'handleSetUpPress callVerifyCode end =======',resultStep2);
       errorMsg = resultStep2 ? '':errorMessage;
     } catch (error) {
@@ -568,7 +576,8 @@ class SetupDevice extends BaseComponent {
     console.log(TAG,'checkConnectHotspot begin: ', validSSID,validWPA);
     if(!isConnectedHotpost){
       const connectHotspot = this.connectHotspot;
-      device = await Util.tryAtMost(connectHotspot,2,1);
+      device = await Util.tryAtMost(connectHotspot,3,1);
+      device = device instanceof Error ?null:device;
     }
     if(Platform.OS === 'ios'){
       this.isHaveNetwork = false;
@@ -584,12 +593,22 @@ class SetupDevice extends BaseComponent {
       console.log(TAG,'checkConnectHotspot SSID---: ', ssid);
       if (_.includes(ssid, product)) {
         this.CurrentPositionStep = 1;
-        let result = await Util.excuteWithTimeout(this.sendZMQ(),180);
+        let result = await Util.excuteWithTimeout(this.sendZMQ(),250);
         
         return result;
       } 
     }
     return false;
+  }
+
+  authFirebase = async () =>{
+    try {
+      const {addProduct} = this.state;
+      const authFirebase = await Util.excuteWithTimeout(DeviceService.authFirebase(addProduct),7);  
+      return authFirebase;
+    } catch (error) {
+      return new Error('timeout');
+    }
   }
 
   callVerifyCode = async()=> {
@@ -614,7 +633,11 @@ class SetupDevice extends BaseComponent {
               addProduct: product,
               showModal:true
             });
-            await DeviceService.authFirebase(product);
+            __DEV__ && this.showToastMessage('authFirebase begin');
+            let authFirebase = this.authFirebase;
+            await Util.tryAtMost(authFirebase,3,3).catch(console.error);
+            
+            if(__DEV__) this.showToastMessage('authFirebase end');
 
             return true;
           }
