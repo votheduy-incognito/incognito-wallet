@@ -53,7 +53,7 @@ class GetStartedContainer extends Component {
       }
       return null;
     } catch (e) {
-      this.onError('Can not load existed wallet.');
+      throw new CustomError(ErrorCode.wallet_can_not_load_existed_wallet);
     }
   }
 
@@ -103,7 +103,9 @@ class GetStartedContainer extends Component {
       this.goHome();
     } catch (e) {
       this.setState({ isInitialing: false, isCreating: false });
-      new ExHandler(e, 'Something went wrong while opening wallet, please try again').showErrorToast().writeLog();
+      this.onError(
+        new ExHandler(e, 'Something went wrong while opening wallet, please try again').showErrorToast().writeLog().message
+      );
     }
   };
 
@@ -119,8 +121,8 @@ class GetStartedContainer extends Component {
       }
 
       return initWallet();
-    } catch (e) {
-      throw e;
+    } catch {
+      throw new CustomError(ErrorCode.wallet_can_not_create_new_wallet);
     }
   };
 
@@ -128,7 +130,7 @@ class GetStartedContainer extends Component {
     try {
       const token = await storageService.getItem(CONSTANT_KEYS.DEVICE_TOKEN);
       return token;
-    } catch (e) {
+    } catch {
       throw throw new CustomError(ErrorCode.getStarted_load_device_token_failed);
     }
   }
@@ -187,7 +189,7 @@ class GetStartedContainer extends Component {
         throw new Error('Load new wallet failed');
       }
     } catch (e) {
-      this.onError('Can not create new wallet, please try again');
+      throw e;
     }
   };
 

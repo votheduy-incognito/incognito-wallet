@@ -14,7 +14,9 @@ const knownError = codeCreator(TYPES.KNOWN_ERROR);
 
 const app = {
   firebase_init_failed: knownError(-8),
-  network_make_request_failed: knownError(-9)
+  network_make_request_failed: knownError(-9),
+  wallet_can_not_create_new_wallet: knownError(-14),
+  wallet_can_not_load_existed_wallet: knownError(-15)
 };
 
 const estimateFee = {
@@ -30,6 +32,7 @@ const withdraw = {
   withdraw_balance_must_not_be_zero: knownError(-12),
   withdraw_gen_withdraw_address_failed: knownError(-13)
 };
+
 
 export default {
   ...app,
