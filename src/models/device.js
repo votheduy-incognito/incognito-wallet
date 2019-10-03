@@ -16,10 +16,10 @@ export const DEVICE_STATUS = {
   CODE_SYNCING : 1,
   CODE_OFFLINE : -2
 };
-export const DATA_INFO = [{'status':'offline', 'message':__DEV__?'offline_online':'online','code':DEVICE_STATUS.CODE_START},
+export const DATA_INFO = [{'status':'ready', 'message':'online','code':DEVICE_STATUS.CODE_START},
   {'status':'syncing', 'message':'syncing','code':DEVICE_STATUS.CODE_SYNCING},
-  {'status':'ready', 'message':'online','code':DEVICE_STATUS.CODE_START},
   {'status':'mining', 'message':'earning','code':DEVICE_STATUS.CODE_MINING},
+  {'status':'offline', 'message':__DEV__?'offline_online':'online','code':DEVICE_STATUS.CODE_START},
   {'status':'pending', 'message':'queueing','code':DEVICE_STATUS.CODE_PENDING},
   {'status':'notmining', 'message':__DEV__?'notmining_online':'online','code':DEVICE_STATUS.CODE_START}];
 export const template = {
@@ -103,11 +103,22 @@ export default class Device {
     return apiURL;
   }
   set Status(status:{}){
+    // const item = DATA_INFO.find((i)=>{
+    //   return _.isEqual(i.code,status.code) && (_.isEqual(i.status,status.message)||_.isEqual(i.status,status.status)) ;
+    // })|| Device.offlineStatus();
+    // const dataResponseCombinded =  {'code': item.code ,'message':item.message };
     this.data.status = status;
   }
 
   get Status(){
-    return  this.data.status||template.status;
+    let status = this.data.status;
+    // if(this.Type != DEVICES.VIRTUAL_TYPE){
+    //   const item = DATA_INFO.find((i)=>{
+    //     return _.isEqual(i.code,status.code) &&  (_.isEqual(i.status,status.message));
+    //   })|| Device.offlineStatus();
+    //   status =  {'code': item.code ,'message':item.message };
+    // }
+    return  status||template.status;
   }
 
   get Name(){
@@ -175,7 +186,14 @@ export default class Device {
     return this.data;
   }
   statusMessage =()=>{
-    return this.data.status?.message||'';
+    let status = this.data.status;
+    if(this.Type != DEVICES.VIRTUAL_TYPE){
+      const item = DATA_INFO.find((i)=>{
+        return _.isEqual(i.code,status.code);
+      })|| template.status;
+      status =  {'code': item.code ,'message':item.message};
+    }
+    return status.message||'';
   }
   static getInstance = (data=template):Device =>{
     return new Device(data);
