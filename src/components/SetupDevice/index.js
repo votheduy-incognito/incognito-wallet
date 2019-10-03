@@ -236,7 +236,7 @@ class SetupDevice extends BaseComponent {
       const resultStep1 = await this.checkConnectHotspot();
       let callVerifyCode = this.callVerifyCode;
       this.CurrentPositionStep = 2;
-      const resultStep2  = (resultStep1 && await Util.tryAtMost(callVerifyCode,TIMES_VERIFY,2,2)) || false;
+      const resultStep2  = (resultStep1 && await Util.tryAtMost(callVerifyCode,TIMES_VERIFY,2)) || false;
       console.log(TAG,'handleSetUpPress callVerifyCode end =======',resultStep2);
       errorMsg = resultStep2 ? '':errorMessage;
     } catch (error) {
@@ -257,9 +257,9 @@ class SetupDevice extends BaseComponent {
   changeDeviceName = async(name)=>{
     let errMessage = '';
     try {
-      const {addProduct,} = this.state;
+      const {addProduct} = this.state;
       let fetchProductInfo = {};
-      if (this.validWallName) {
+      if (this.validWallName && !_.isEmpty(addProduct) ) {
         fetchProductInfo = await this.updateDeviceNameRequest(addProduct.product_id,name)||{};
         fetchProductInfo = {
           ...fetchProductInfo,
