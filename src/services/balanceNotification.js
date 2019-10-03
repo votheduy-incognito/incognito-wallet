@@ -78,7 +78,7 @@ class BalanceNotification {
   }
 
   startSchedule() {
-    const repeatInterval = 'hours';
+    const repeatInterval = 'hour';
     const date = new Date();
     const noti = this._buildNotification();
 
