@@ -23,7 +23,7 @@ function setRpcClientInterceptor() {
 
     // can not get response, alert to user
     if (!errResponse) {
-      return new ExHandler(new CustomError(ErrorCode.network_make_request_failed)).showErrorToast().throw();
+      return new ExHandler(new CustomError(ErrorCode.network_make_request_failed)).throw();
     }
 
     return Promise.reject(errorData);
