@@ -46,7 +46,7 @@ instance.interceptors.response.use(res => {
 
   // can not get response, alert to user
   if (!errResponse) {
-    return new ExHandler(new CustomError(ErrorCode.network_make_request_failed)).showErrorToast().throw();
+    return new ExHandler(new CustomError(ErrorCode.network_make_request_failed)).throw();
   }
 
   // get response of error
