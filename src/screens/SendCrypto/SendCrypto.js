@@ -14,6 +14,7 @@ import { createForm, InputQRField, InputMaxValueField, validator } from '@src/co
 import formatUtil from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { homeStyle } from './style';
+import { ExHandler } from '@src/services/exception';
 
 const formName = 'sendCrypto';
 const selector = formValueSelector(formName);
@@ -102,7 +103,7 @@ class SendCrypto extends React.Component {
         await handleSend({ ...values, fee: finalFee, feeUnit });
       }
     } catch (e) {
-      Toast.showError('Something went wrong. Just tap the Send button again.');
+      new ExHandler(e, 'Something went wrong. Just tap the Send button again.').showErrorToast();
     }
   }
 

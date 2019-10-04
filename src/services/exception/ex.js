@@ -131,6 +131,19 @@ class Exception {
   }
 
   /**
+   * Show a toast to UI, use `message` as default.
+   * If __DEV__ is true, `debugMessage` will be displayed too.
+   */
+  showWarningToast() {
+    let msg = this.message;
+    if (__DEV__) {
+      msg = `${msg}\n****** DEBUG ******\n(${this.debugMessage})`;
+    }
+    msg && Toast.showWarning(msg);
+    return this;
+  }
+
+  /**
    * re-throw the exception, this must be end of chain.
    */
   throw() {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text, Container, Button, View, Toast, ActivityIndicator, Image, TouchableOpacity } from '@src/components/core';
+import { Text, Button, View, ActivityIndicator, Image } from '@src/components/core';
 import ROUTE_NAMES from '@src/router/routeNames';
 import { COLORS } from '@src/styles';
 import HistoryToken from '@src/components/HistoryToken';
@@ -9,6 +9,7 @@ import formatUtil from '@src/utils/format';
 import sendIcon from '@src/assets/images/icons/send.png';
 import depositIcon from '@src/assets/images/icons/deposit_pig.png';
 import receiveIcon from '@src/assets/images/icons/qrCode.png';
+import { ExHandler } from '@src/services/exception';
 import styles from './style';
 
 class WalletDetail extends Component {
@@ -25,8 +26,8 @@ class WalletDetail extends Component {
     try {
       const { hanldeLoadBalance } = this.props;
       return await hanldeLoadBalance();
-    } catch {
-      Toast.showWarning('Something went wrong. Please refresh the screen.');
+    } catch (e) {
+      new ExHandler(e, 'Pull down to reload you balance.').showErrorToast();
     }
   }
 

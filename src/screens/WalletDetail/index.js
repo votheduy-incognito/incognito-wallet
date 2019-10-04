@@ -12,6 +12,7 @@ import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import ROUTE_NAMES from '@src/router/routeNames';
 import withdrawIcon from '@src/assets/images/icons/withdraw.png';
 import unfollowTokenIcon from '@src/assets/images/icons/unfollowToken.png';
+import { ExHandler } from '@src/services/exception';
 import WalletDetail from './WalletDetail';
 
 class WalletDetailContainer extends Component {
@@ -82,8 +83,8 @@ class WalletDetailContainer extends Component {
 
       Toast.showInfo('Token removed');
       navigation.goBack();
-    } catch {
-      Toast.showError('Something went wrong. Please try again.');
+    } catch (e) {
+      new ExHandler(e).showErrorToast();
     }
   }
 

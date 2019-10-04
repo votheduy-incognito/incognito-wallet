@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text } from '@src/components/core';
+import { NavigationActions } from 'react-navigation';
+import { Text, Container, Button } from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { connect } from 'react-redux';
 import { genCentralizedWithdrawAddress, addERC20TxWithdraw, addETHTxWithdraw } from '@src/services/api/withdraw';
@@ -12,6 +13,7 @@ import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import convertUtil from '@src/utils/convert';
 import tokenData from '@src/constants/tokenData';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
+import routeNames from '@src/router/routeNames';
 import Withdraw from './Withdraw';
 
 class WithdrawContainer extends Component {
@@ -57,7 +59,7 @@ class WithdrawContainer extends Component {
     const selectedPrivacyAmount = selectedPrivacy?.amount;
 
     if (selectedPrivacyAmount <= 0) {
-      return new ExHandler(new CustomError(ErrorCode.withdraw_balance_must_not_be_zero)).showErrorToast().throw();
+      return new ExHandler(new CustomError(ErrorCode.withdraw_balance_must_not_be_zero)).showWarningToast();
     }
 
     const tokenObject = this.getTokenObject({ amount: 0 });
@@ -119,10 +121,10 @@ class WithdrawContainer extends Component {
 
         return res;
       } else {
-        throw new Error(`Send token failed. Please try again! Detail: ${res.err.Message || res.err }`);
+        throw new Error('Sent tx, but doesnt have txID, please check it');
       }
     } catch (e) {
-      throw new Error(`Send token failed. Please try again! Detail:' ${e.message}`);
+      throw e;
     }
   }
 
@@ -163,10 +165,10 @@ class WithdrawContainer extends Component {
 
         return res;
       } else {
-        throw new Error(`Burning token failed. Please try again! Detail: ${res.err.Message || res.err }`);
+        throw new Error('Burned token, but doesnt have txID, please check it');
       }
     } catch (e) {
-      throw new Error(`Burning token failed. Please try again! Detail:' ${e.message}`);
+      throw e;
     }
   }
 
@@ -237,12 +239,22 @@ class WithdrawContainer extends Component {
     }
   }
 
+  goToDeposit = () => {
+    const { navigation } = this.props;
+    navigation?.replace(routeNames.Deposit);
+  }
+
   render() {
     const { selectedPrivacy } = this.props;
     const { withdrawData } = this.state;
 
     if (selectedPrivacy && selectedPrivacy?.amount <= 0) {
-      return <Text style={{ padding: 20, textAlign: 'center'}}>Please deposit more {selectedPrivacy?.symbol} to your wallet.</Text>;
+      return (
+        <Container style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
+          <Text style={{ padding: 20, textAlign: 'center'}}>Please deposit more {selectedPrivacy?.symbol} to your wallet.</Text>
+          <Button style={{ maxWidth: 200 }} title='Deposit' onPress={this.goToDeposit} />
+        </Container>
+      );
     }
 
     if (!selectedPrivacy || !withdrawData) return <LoadingContainer />;
@@ -277,6 +289,7 @@ WithdrawContainer.propTypes = {
   getTokenBalanceBound: PropTypes.func.isRequired,
   account: PropTypes.object.isRequired,
   wallet: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired,
   tokens: PropTypes.arrayOf(PropTypes.object),
 };
 
