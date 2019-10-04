@@ -583,7 +583,6 @@ class DetailDevice extends BaseScreen {
     const {
       device,
       loading,
-      listFollowingTokens
     } = this.state;
     const {navigation} = this.props;
     const isOffline = device?.isOffline()||false;
