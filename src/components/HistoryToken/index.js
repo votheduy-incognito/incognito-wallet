@@ -11,6 +11,7 @@ import { getpTokenHistory, removeHistory } from '@src/services/api/history';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { CONSTANT_COMMONS } from '@src/constants';
 import ROUTE_NAMES from '@src/router/routeNames';
+import { ExHandler } from '@src/services/exception';
 
 const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, decimals, pDecimals) => {
   const data = [];
@@ -93,8 +94,8 @@ class HistoryTokenContainer extends Component {
         Toast.showSuccess('Canceled');
         this.handleLoadHistory();
       }
-    } catch {
-      Toast.showError('Something went wrong. Please try again.');
+    } catch (e) {
+      new ExHandler(e, 'Cancel this transaction failed, please try again.').showErrorToast();
     }
   }
 
@@ -113,7 +114,8 @@ class HistoryTokenContainer extends Component {
         historiesFromApi,
         histories
       });
-      
+    } catch (e) {
+      new ExHandler(e).showErrorToast();
     } finally {
       this.setState({ isLoading: false });
     }
@@ -136,8 +138,8 @@ class HistoryTokenContainer extends Component {
       const histories = await getpTokenHistory({ paymentAddress, tokenId: selectedPrivacy?.tokenId });
 
       return histories;
-    } catch {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+    } catch (e) {
+      throw e;
     }
   }
 
@@ -158,8 +160,8 @@ class HistoryTokenContainer extends Component {
       });
 
       return histories;
-    } catch {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+    } catch (e) {
+      throw e;
     }
   };
 

@@ -59,10 +59,10 @@ class SendCryptoContainer extends Component {
 
         setTimeout(() => getAccountBalanceBound(account), 10000);
       } else {
-        throw new Error(`Sent failed. Please try again! Detail: ${res.err.Message || res.err }`);
+        throw new Error('Sent tx, but doesnt have txID, please check it');
       }
     } catch (e) {
-      throw new Error(`Sent failed. Please try again! Detail:' ${e.message}`);
+      throw e;
     } finally {
       this.setState({ isSending: false });
     }
@@ -117,13 +117,13 @@ class SendCryptoContainer extends Component {
 
         this.setState({ receiptData });
         
-        const foundToken = tokens.find(t => t.id === selectedPrivacy?.tokenId);
+        const foundToken = tokens?.find(t => t.id === selectedPrivacy?.tokenId);
         foundToken && setTimeout(() => getTokenBalanceBound(foundToken), 10000);
       } else {
-        throw new Error(`Send token failed. Please try again! Detail: ${res.err.Message || res.err }`);
+        throw new Error('Sent tx, but doesnt have txID, please check it');
       }
     } catch (e) {
-      throw new Error(`Send token failed. Please try again! Detail:' ${e.message}`);
+      throw e;
     } finally {
       this.setState({ isSending: false });
     }
@@ -165,12 +165,18 @@ const mapDispatch = {
 };
 
 SendCryptoContainer.defaultProps = {
-  selectedPrivacy: null
+  selectedPrivacy: null,
+  tokens: null
 };
 
 SendCryptoContainer.propTypes = {
   navigation: PropTypes.object.isRequired,
+  account: PropTypes.object.isRequired,
+  wallet: PropTypes.object.isRequired,
   selectedPrivacy: PropTypes.object,
+  getAccountBalanceBound: PropTypes.func.isRequired,
+  getTokenBalanceBound: PropTypes.func.isRequired,
+  tokens: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default connect(

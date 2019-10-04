@@ -8,6 +8,7 @@ import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { ExHandler } from '@src/services/exception';
 
 const normalizeData = (histories, decimals, pDecimals) =>
   histories &&
@@ -78,8 +79,8 @@ class MainCryptoHistory extends Component {
       const histories = await loadHistoryByAccount(wallet, accountName);
       console.log(TAG,'loadAccountHistory end');
       return histories;
-    } catch {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+    } catch (e) {
+      new ExHandler(e, 'Sorry, we can not load your history. Please pull down to reload.').showErrorToast();
     }
   };
 

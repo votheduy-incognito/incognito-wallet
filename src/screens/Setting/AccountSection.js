@@ -12,6 +12,7 @@ import Icons from 'react-native-vector-icons/Entypo';
 import FIcons from 'react-native-vector-icons/Feather';
 import MdIcons from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
+import { ExHandler } from '@src/services/exception';
 import Section from './Section';
 import { accountSection } from './style';
 
@@ -40,10 +41,12 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAcc
   const onHandleSwitchAccount = onClickView(async account => {
     try {
       await setDefaultAccount(account);
-      await getAccountBalance(account);
-      await reloadAccountFollowingToken(account);
-    } catch {
-      console.warn('Switched account successfully, but can not load account details, please reload manually');
+      await getAccountBalance(account).catch(() => null);
+      await reloadAccountFollowingToken(account).catch(() => null);
+
+      Toast.showInfo(`Switched to account "${account?.name}"`);
+    } catch (e) {
+      new ExHandler(e, `Can not switch to account "${account?.name}", please try again.`).showErrorToast();
     }
   });
 
@@ -74,8 +77,8 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAcc
             try {
               await removeAccount(account);
               Toast.showSuccess('Account removed.');
-            } catch {
-              Toast.showError('Something went wrong. Please try again.');
+            } catch (e) {
+              new ExHandler(e, `Can not delete account ${account?.name}, please try again.`).showErrorToast();
             }
           }
         }
