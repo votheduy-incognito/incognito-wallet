@@ -1225,6 +1225,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				FE52DD5122DC6B4B003203EF /* Embed Frameworks */,
 				FE22CCEB2302CF20001C60E6 /* ShellScript */,
+				20143B3B23475B11001C797B /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1947,6 +1948,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+		};
+		20143B3B23475B11001C797B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/Fabric/run\"\n";
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
