@@ -19,6 +19,7 @@ import Dialog, { DialogContent, DialogTitle } from 'react-native-popup-dialog';
 import StepIndicator from 'react-native-step-indicator';
 import { connect } from 'react-redux';
 import styles, { placeHolderColor } from './style';
+import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 
 
 export const TAG = 'AddSelfNode';
@@ -236,10 +237,18 @@ class AddSelfNode extends BaseScreen {
       if (userJson && !_.isEmpty(host)) {
         const arrHost =  _.split(host,':')||[];
         const ipAddress = _.trim(arrHost[0]);
+        const listLocalDevice = await LocalDatabase.getListDevices();
         let port = arrHost.length > 1 ?_.trim(arrHost[arrHost.length-1]):this.inputPort;
         
         port =  !_.isEmpty(port) && _.isNumber(Number(port))?port:this.inputPort;
         console.log(TAG,'handleSetUpPress port = ',port,ipAddress);
+
+        const duplicatedNode = listLocalDevice.find(({ minerInfo }) => minerInfo.ipAddress === ipAddress && minerInfo.port === port);
+
+        if (duplicatedNode) {
+          throw new CustomError(ErrorCode.node_duplicate);
+        }
+
         // const isImportPrivateKey = _.isEmpty(selectedAccount?.PrivateKey);
         const user = userJson.toJSON();
         const {
@@ -275,7 +284,6 @@ class AddSelfNode extends BaseScreen {
           deleted: false,
           is_checkin: 1,
         };
-        let listLocalDevice = await LocalDatabase.getListDevices();
         listLocalDevice.push(deviceJSON);
         await LocalDatabase.saveListDevices(listLocalDevice);
         this.goToScreen(routeNames.HomeMine);
@@ -296,10 +304,10 @@ class AddSelfNode extends BaseScreen {
       }else{
         this.Loading = false;
       }
-    } catch (error) {
-      errorMsg = errorMessage; 
-      this.showToastMessage(errorMessage);
-      console.log(TAG,'handleSetUpPress error: ', error);
+    } catch (errorMessage) {
+      new ExHandler(errorMessage).showErrorToast();
+      console.log(TAG,'handleSetUpPress error: ', errorMessage);
+      return errorMessage;
     }
   });
 
