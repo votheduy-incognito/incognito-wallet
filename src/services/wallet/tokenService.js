@@ -5,7 +5,7 @@ import {
   Wallet
 } from 'incognito-chain-web-js/build/wallet';
 import tokenModel from '@src/models/token';
-import { saveWallet } from './WalletService';
+import { saveWallet, updateStatusHistory } from './WalletService';
 import { listPrivacyTokens, listCustomTokens } from './RpcClientService';
 
 export default class Token {
@@ -206,6 +206,8 @@ export default class Token {
       if (!token?.id) {
         throw new Error('Token is required');
       }
+
+      await updateStatusHistory(wallet).catch(() => console.warn('History statuses were not updated'));
 
       const accountWallet = wallet.getAccountByName(account.name);
       let histories = [];

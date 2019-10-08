@@ -112,6 +112,7 @@ export function deleteWallet(wallet) {
 
 export async function loadHistoryByAccount(wallet, accountName) {
   wallet.Storage = storage;
+  await updateStatusHistory(wallet).catch(() => console.warn('History statuses were not updated'));
   return (await wallet.getHistoryByAccount(accountName)) || [];
 }
 
