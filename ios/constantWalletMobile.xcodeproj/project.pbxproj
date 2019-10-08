@@ -27,8 +27,8 @@
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		1A63493129294F7CBBC251EE /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8B57AFBD91D64A199AFDCA4B /* Zocial.ttf */; };
+		201529A8234C8895008F4C86 /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 201529A7234C8895008F4C86 /* Gomobile.framework */; };
 		20B559AF22C393B10079FC06 /* Gomobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B559AE22C393B10079FC06 /* Gomobile.m */; };
-		20C180A223263963006CD8C5 /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20C180A123263963006CD8C5 /* Gomobile.framework */; };
 		22D43C75396248B0BD811374 /* PostGroteskMedium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8A166D7044534B31A2BD26EC /* PostGroteskMedium.otf */; };
 		285661345E2B44218C6996AF /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 40DA4B90D00A4AC983FDC44B /* libRNSVG-tvOS.a */; };
 		28BD5850D91A49C286846B66 /* PostGroteskLight.otf in Resources */ = {isa = PBXBuildFile; fileRef = EAE5E838B7D344A5B5978F72 /* PostGroteskLight.otf */; };
@@ -572,10 +572,10 @@
 		18DA0D45522B402982193615 /* libRNRandomBytes.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNRandomBytes.a; sourceTree = "<group>"; };
 		1F1E47E1BC38F4F391AF7B86 /* Pods-constantWalletMobile-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-constantWalletMobile-tvOSTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-constantWalletMobile-tvOSTests/Pods-constantWalletMobile-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		1FE9C669E1BF469DA6A28690 /* libRNRandomBytes-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNRandomBytes-tvOS.a"; sourceTree = "<group>"; };
+		201529A7234C8895008F4C86 /* Gomobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Gomobile.framework; sourceTree = "<group>"; };
 		20160FCB034340829E942C14 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		20B559AD22C393920079FC06 /* Gomobile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Gomobile.h; sourceTree = "<group>"; };
 		20B559AE22C393B10079FC06 /* Gomobile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Gomobile.m; sourceTree = "<group>"; };
-		20C180A123263963006CD8C5 /* Gomobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Gomobile.framework; sourceTree = "<group>"; };
 		27AAED89E8AD4248BBC41F79 /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFirebase.a; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* constantWalletMobile-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "constantWalletMobile-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* constantWalletMobile-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "constantWalletMobile-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -683,7 +683,6 @@
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
-				20C180A223263963006CD8C5 /* Gomobile.framework in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
@@ -701,6 +700,7 @@
 				7951D9F679874B4EA8E3CFEE /* libRNFirebase.a in Frameworks */,
 				91669D7036B9D6DAF92CDE4D /* libPods-constantWalletMobile.a in Frameworks */,
 				5BA5A622FA6D403380D24D44 /* libIOTWifi.a in Frameworks */,
+				201529A8234C8895008F4C86 /* Gomobile.framework in Frameworks */,
 				C2E73AA50DDC4747BAD7CC54 /* libRNOS.a in Frameworks */,
 				D7BDB11DB76A47B9A686E426 /* libTcpSockets.a in Frameworks */,
 				3EF0EC91E7FE4B16A434459C /* libRNZmqService.a in Frameworks */,
@@ -1065,7 +1065,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				20C180A123263963006CD8C5 /* Gomobile.framework */,
+				201529A7234C8895008F4C86 /* Gomobile.framework */,
 				A7ED6691231E7AA600632177 /* game.mp3 */,
 				FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */,
 				FE6F885F22DC3B0E0009C5AA /* ZMQ */,
