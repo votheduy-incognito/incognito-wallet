@@ -71,12 +71,7 @@ export async function loadWallet(passphrase) {
   await wallet.loadWallet(passphrase);
   console.log('Wallet after loading', wallet);
 
-  if (wallet.Name) {
-    // update status history
-    updateStatusHistory(wallet);
-    return wallet;
-  }
-  return false;
+  return wallet || false;
 }
 
 export async function initWallet() {
