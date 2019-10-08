@@ -48,6 +48,10 @@ const importAccount = {
   importAccount_existed: knownError(-21),
 };
 
+const node = {
+  node_duplicate: knownError(-22),
+};
+
 
 export default {
   ...app,
@@ -56,5 +60,6 @@ export default {
   ...withdraw,
   ...createAccount,
   ...importAccount,
-  ...home
+  ...home,
+  ...node,
 };

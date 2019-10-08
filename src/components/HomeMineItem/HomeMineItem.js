@@ -185,6 +185,8 @@ class HomeMineItem extends React.Component {
         textErrorDevice = 'Please refresh to reload your balance';
       }
     }
+
+    console.log('DeviceInfo', deviceInfo.data.minerInfo, deviceInfo.data);
     return (
       <TouchableOpacity
         style={[styles.container,containerStyle]}
@@ -204,7 +206,7 @@ class HomeMineItem extends React.Component {
       >
         <Image style={styles.imageLogo} source={this.getIconWithType()} />
         <View style={styles.groupLeft}>
-          <Text style={styles.groupLeft_title}>{deviceInfo.Name}</Text>
+          <Text style={styles.groupLeft_title}>{deviceInfo.Name}{deviceInfo.data.minerInfo.port !== '9334' ? `:${deviceInfo.data.minerInfo.port}` : ''}</Text>
           {_.isEmpty(textErrorDevice) && !_.isNil(balance)&&<Text style={styles.groupLeft_title2}>{`${balance} PRV`}</Text>}
           {!_.isEmpty(textErrorDevice) &&<Text style={styles.groupLeft_title2}>{textErrorDevice}</Text>}
           
