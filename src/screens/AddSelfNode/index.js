@@ -287,7 +287,7 @@ class AddSelfNode extends BaseScreen {
         listLocalDevice.push(deviceJSON);
         await LocalDatabase.saveListDevices(listLocalDevice);
         this.goToScreen(routeNames.HomeMine);
-        return;
+        return true;
         // const resultAccount =( isImportPrivateKey && await this.viewImportPrivateKey.current.importAccount({accountName:deviceJSON.product_name,privateKey:privateKey})) ||false;
         // if(resultAccount || !isImportPrivateKey){
         //   let listLocalDevice = await LocalDatabase.getListDevices();
@@ -341,7 +341,7 @@ class AddSelfNode extends BaseScreen {
             onPress={this.handleSetUpPress}
             title='Add'
           />
-          
+
         </KeyboardAvoidingView>
         {/* <View style={{width: 0,height: 0,position:'absolute',opacity:0}}>
           <ImportAccount ref={this.viewImportPrivateKey} />
@@ -368,11 +368,15 @@ AddSelfNode.defaultProps = {
 };
 const mapDispatch = { };
 
-export default connect(
-  state => ({
-    wallet: state.wallet,
-    defaultAccountName: accountSeleclor.defaultAccount(state)?.name,
-    accountList: accountSeleclor.listAccount(state),
-  }),
-  mapDispatch
-)(AddSelfNode);
+// export default connect(
+//   state => ({
+//     wallet: state.wallet,
+//     defaultAccountName: accountSeleclor.defaultAccount(state)?.name,
+//     accountList: accountSeleclor.listAccount(state),
+//   }),
+//   mapDispatch
+// )(AddSelfNode);
+
+const AddSelfNodeComponent = AddSelfNode;
+
+export default AddSelfNodeComponent;
