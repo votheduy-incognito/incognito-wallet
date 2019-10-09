@@ -161,7 +161,7 @@ export default class APIService {
 
 
       } catch (error) {
-        console.log('Error: ',error);
+        console.log('Error: ', url, error);
         return {status: 0, error: error.message} ;
 
       }

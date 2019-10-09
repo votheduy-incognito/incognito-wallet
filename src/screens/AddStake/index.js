@@ -72,6 +72,7 @@ class AddStake extends BaseScreen {
   }
   renderStake = ()=>{
     const {accountInfo,selectedIndex} = this.state;
+    const { navigation } = this.props;
     
     return (selectedIndex === 1?<BorrowStake />: (
       <SelfStaking
@@ -88,6 +89,7 @@ class AddStake extends BaseScreen {
         }}
         minerAccountName={accountInfo.minerAccountName}
         funderAccountName={accountInfo.funderAccountName}
+        navigation={navigation}
       />
     ));
   }
