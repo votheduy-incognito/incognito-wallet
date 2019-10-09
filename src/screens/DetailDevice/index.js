@@ -26,7 +26,7 @@ import { Button } from 'react-native-elements';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import { connect } from 'react-redux';
 import AdvanceOption from './AdvanceOption';
-import Loader from './Loader';
+import Loader, { Earning } from './Loader';
 import style from './style';
 
 const FullLoader = DialogLoader;
@@ -492,6 +492,9 @@ class DetailDevice extends BaseScreen {
           <Text style={style.top_container_title} numberOfLines={1}>{this.productName}</Text>
           <Text style={[style.group2_container_value2,Device.getStyleStatus(device.Status.code)]}>{device.statusMessage()}</Text>
         </View>
+        {device.isEarning() && (
+          <Earning />
+        )}
         {!device?.isOffline() && device?.Type === DEVICES.MINER_TYPE && (
           <TouchableOpacity onPress={()=>{
             this.advanceOptionView?.current.open();
