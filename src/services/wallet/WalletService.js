@@ -71,7 +71,7 @@ export async function loadWallet(passphrase) {
   await wallet.loadWallet(passphrase);
   console.log('Wallet after loading', wallet);
 
-  return wallet || false;
+  return wallet?.Name ? wallet : false;
 }
 
 export async function initWallet() {
