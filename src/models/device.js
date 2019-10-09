@@ -99,8 +99,11 @@ export default class Device {
   }
 
   get APIUrl(){
-    const apiURL = !_.isEmpty(this.Host) && !_.isEmpty(this.Port)? `${this.Host}:${this.Port}`:'';
-    return apiURL;
+    if (!_.isEmpty(this.Host) && _.isEmpty(this.Port)) {
+      return this.Host;
+    }
+
+    return !_.isEmpty(this.Host) && !_.isEmpty(this.Port) ? `${this.Host}:${this.Port}` : '';
   }
   set Status(status:{}){
     // const item = DATA_INFO.find((i)=>{
@@ -122,10 +125,10 @@ export default class Device {
   }
 
   get Name(){
-    return this.data.product_name||'';
+    return this.data.product_name || '';
   }
   get Type(){
-    return this.data.product_type||'';
+    return this.data.product_type || '';
   }
 
   // getPublicKey= async ()=>{

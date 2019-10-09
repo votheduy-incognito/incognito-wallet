@@ -10,6 +10,7 @@ import formatUtil from '@src/utils/format';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import styles from './style';
+import routeNames from "@routers/routeNames";
 
 class SelfStaking extends Component {
   constructor(props) {
@@ -44,6 +45,31 @@ class SelfStaking extends Component {
 
     return state;
   }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+    navigation.addListener(
+      'didBlur',
+      () => {
+        const { funderAccount } = this.state;
+        if (!funderAccount) {
+          console.log('Navigation go back', navigation.state.params);
+          navigation?.goBack();
+        }
+      }
+    );
+  }
+
+
+  // componentDidUpdate() {
+  //   const { funderAccount } = this.state;
+  //   const { navigation, funderAccountName } = this.props;
+  //
+  //   if (!funderAccount) {
+  //     console.log('Navigation go back', navigation.state.params);
+  //     navigation?.goBack(navigation.state.params.goBackKey);
+  //   }
+  // }
 
   handleSelectFee = ({ fee, feeUnit }) => {
     this.setState({ finalFee: fee, feeUnit });

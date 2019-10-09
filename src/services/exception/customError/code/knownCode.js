@@ -50,6 +50,7 @@ const importAccount = {
 
 const node = {
   node_duplicate: knownError(-22),
+  node_invalid_host: knownError(-23),
 };
 
 
