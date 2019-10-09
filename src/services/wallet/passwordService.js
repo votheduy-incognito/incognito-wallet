@@ -19,9 +19,10 @@ export async function getPassphrase() {
     const [password, expired] = pass.split(':');
     if (!password || !expired) return;
 
-    if (Date.now() > parseInt(expired, 10)) {
-      return;
-    }
+    // disabled check expired time
+    // if (Date.now() > parseInt(expired, 10)) {
+    //   return;
+    // }
     return password;
   } catch (e) {
     return;
