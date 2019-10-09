@@ -188,9 +188,12 @@ export default class Device {
   statusMessage =()=>{
     let status = this.data.status;
     if(this.Type != DEVICES.VIRTUAL_TYPE){
+      if(status.code == template.status.code){
+        return template.status.message;
+      }
       const item = DATA_INFO.find((i)=>{
         return _.isEqual(i.code,status.code);
-      })|| template.status;
+      })|| Device.offlineStatus();
       status =  {'code': item.code ,'message':item.message};
     }
     return status.message||'';

@@ -1,8 +1,77 @@
 // import DialogLoader from '@src/components/DialogLoader';
-import React, { Component } from 'react';
+import { scaleInApp } from '@src/styles/TextStyle';
+import React, { Component, useEffect, useRef } from 'react';
 import ContentLoader, { Facebook, Rect } from 'react-content-loader/native';
-import { StyleSheet, View } from 'react-native';
+import { Animated, StyleSheet, View } from 'react-native';
+// import Sequence from 'react-native-reanimated/Example/transitions/sequence';
+// import Sequence from 'react-native-reanimated';
+// const {Value,timing,sequence} = Animated;
+const TAG = 'Loader';
+const SizeItemBox = {
+  width: scaleInApp(2),
+  height: scaleInApp(10),
+};
+const style = StyleSheet.create({
+  container: {
+    height:60,
+    justifyContent:'center'
+  },
+  earning_container:{
+    flexDirection:'row',
+  },
+  earning_box:{
+    width: SizeItemBox.width,
+    height: SizeItemBox.height,
+    marginHorizontal:scaleInApp(1),
+    borderRadius: scaleInApp(2),
+  },
+});
 
+const usePulse = ({start = 1,to=2},startDelay = 500,duration = 300) => {
+  const scale = useRef(new Animated.Value(start)).current;
+
+  const pulse = () => {
+    return Animated.sequence([
+      Animated.timing(scale, { toValue: to,duration:duration }),
+      Animated.timing(scale, { toValue: start,duration:duration }),
+    ]).start(() => pulse());
+  };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => pulse(), startDelay);
+    return () => {
+      scale.stopAnimation(({value})=>console.log(TAG,'usePulse stop ===='));
+      clearTimeout(timeout);
+    };
+  }, []);
+  // useEffect(() => {
+  //   pulse();
+  //   return ()=>scale.stopAnimation(({value})=>console.log(TAG,'usePulse stop ===='));
+  // }, []);
+  return scale;
+};
+
+const Earning = React.memo(({color = 'turquoise',isVisible = true })=>{
+  // const scale1 = usePulse({start:3,to:1.5},0);
+  // const scale2 = usePulse({start: 1.5,to:2.5},200);
+  // const scale3 = usePulse({start:1,to:2.5},400);
+  const scale1 = usePulse({start:1,to:3},0);
+  const scale2 = usePulse({start: 1,to:2},200);
+  const scale3 = usePulse({start:1,to:1.5},400);
+
+  return (
+    <View style={[style.earning_container,{display:isVisible?'flex':'none'}]}>
+      <Animated.View style={[style.earning_box,{backgroundColor: color,transform:[{scaleY:scale1}]}]} />
+      <Animated.View style={[style.earning_box,{backgroundColor: color,transform:[{scaleY:scale2}]}]} />
+      <Animated.View style={[style.earning_box,{backgroundColor: color,transform:[{scaleY:scale3}]}]} />
+
+      <Animated.View style={[style.earning_box,{backgroundColor: color,transform:[{scaleY:scale2}]}]} />
+      <Animated.View style={[style.earning_box,{backgroundColor: color,transform:[{scaleY:scale1}]}]} />      
+      <Animated.View style={[style.earning_box,{backgroundColor: color,transform:[{scaleY:scale3}]}]} />
+      
+    </View>
+  );
+});
 const MyLoader = () => (
   <ContentLoader
     height="100%" 
@@ -28,15 +97,12 @@ const MyLoader = () => (
   
 );
 const MyFacebookLoader = () => <Facebook />;
-const style = StyleSheet.create({
-  container: {
-    height:60,
-    justifyContent:'center'
-  }
-});
 
 // export const FullLoader =(loading:false)=> <DialogLoader loading={loading} />;
 
+/**
+* @augments {Component<{ >}
+*/
 class Loader extends Component {
   constructor(props){
     super(props);
@@ -68,3 +134,5 @@ Loader.propTypes = {
  
 };
 export default Loader;
+export { Earning };
+
