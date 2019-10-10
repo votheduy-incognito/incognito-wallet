@@ -251,10 +251,7 @@ class AddSelfNode extends BaseScreen {
     let port;
     let address;
 
-    if (FULL_DOMAIN_REGEX.test(host) || SHORT_DOMAIN_REGEX.test(host)) {
-      address = host;
-      port = '';
-    } else if (IP_ADDRESS_REGEX.test(host) || LOCALHOST_REGEX.test(host)) {
+    if (IP_ADDRESS_REGEX.test(host) || LOCALHOST_REGEX.test(host)) {
       const listLocalDevice = await LocalDatabase.getListDevices();
       const parts =  _.split(host,':')||[];
       address = _.trim(parts[0]);
@@ -265,6 +262,9 @@ class AddSelfNode extends BaseScreen {
       if (duplicatedNode) {
         throw new CustomError(ErrorCode.node_duplicate);
       }
+    } else if (FULL_DOMAIN_REGEX.test(host) || SHORT_DOMAIN_REGEX.test(host)) {
+      address = host;
+      port = '';
     }
 
     console.log(TAG,'parseHost', address, port);
