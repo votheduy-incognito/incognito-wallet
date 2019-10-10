@@ -319,7 +319,7 @@ export default class Account {
     try {
       const key = KeyWallet.base58CheckDeserialize(paymentAddrStr);
       const paymentAddressObj = key?.KeySet?.PaymentAddress || {};
-      if (paymentAddressObj.Pk?.length === 33 && paymentAddressObj.Tk?.length === 33) {
+      if (paymentAddressObj.Pk?.length === 32 && paymentAddressObj.Tk?.length === 32) {
         return true;
       }
     } catch (e) {
