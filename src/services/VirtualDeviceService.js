@@ -2,7 +2,9 @@
 import Device, { DATA_INFO } from '@src/models/device';
 import Util from '@src/utils/Util';
 import _ from 'lodash';
+import { TESTNET_SERVER_ADDRESS } from 'react-native-dotenv';
 import APIService, { METHOD } from './api/miner/APIService';
+import Server from './wallet/Server';
 
 const TAG = 'VirtualDeviceService';
 // const DATA_INFO = [ {'status':'offline', 'message':'ready','code':DEVICE_STATUS.CODE_START},
@@ -89,7 +91,7 @@ export default class VirtualDeviceService {
 
   static getMininginfo = async(device:Device)=>{
     try {
-      let apiURL = VirtualDeviceService.buildURL(device);
+      let apiURL = await VirtualDeviceService.buildURL(device);
       if(!_.isEmpty(apiURL)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_MINING_INFO.key}`;
         const buildParams = LIST_ACTION.GET_MINING_INFO.data;
@@ -109,7 +111,7 @@ export default class VirtualDeviceService {
    */
   static getPublicKeyMining = async(device:Device)=>{
     try {
-      let apiURL = VirtualDeviceService.buildURL(device);
+      let apiURL = await VirtualDeviceService.buildURL(device);
       if(!_.isEmpty(apiURL)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_PUBLIC_KEY_MINING.key}`;
         const buildParams = LIST_ACTION.GET_PUBLIC_KEY_MINING.data;
@@ -132,7 +134,7 @@ export default class VirtualDeviceService {
   
   static getPublicKeyRole = async(device:Device)=>{
     try {
-      let apiURL = VirtualDeviceService.buildURL(device);
+      let apiURL = await VirtualDeviceService.buildURL(device);
       if(!_.isEmpty(apiURL)){
         let blsKey = await VirtualDeviceService.getPublicKeyMining(device).catch(err=>{
           console.log(TAG,'getPublicKeyRole getPublicKeyMining error');
@@ -160,7 +162,7 @@ export default class VirtualDeviceService {
   */
   static getPrivacyCustomToken = async(device:Device):Promise<Array>=>{
     try {
-      let apiURL = VirtualDeviceService.buildURL(device);
+      let apiURL = await VirtualDeviceService.buildURL(device);
       if(!_.isEmpty(apiURL)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_PRIVACY_CUSTOM_TOKEN.key}`;
         const buildParams = LIST_ACTION.GET_PRIVACY_CUSTOM_TOKEN.data;
@@ -179,7 +181,7 @@ export default class VirtualDeviceService {
   static getRewardAmount = async(device:Device,paymentAddress,isFullNode=false)=>{
     try {
       
-      let apiURL = VirtualDeviceService.buildURL(device,isFullNode);
+      let apiURL = await VirtualDeviceService.buildURL(device,isFullNode);
       console.log(TAG,'getRewardAmount begin',apiURL);
       if(!_.isEmpty(apiURL) && !_.isEmpty(paymentAddress)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_REWARD_AMOUNT.key}`;
@@ -204,7 +206,7 @@ export default class VirtualDeviceService {
         console.log(TAG,'getRewardFromMiningkey getPublicKeyMining error');
       })||'';
       
-      let apiURL = VirtualDeviceService.buildURL(device,true);
+      let apiURL = await VirtualDeviceService.buildURL(device,true);
       if(!_.isEmpty(apiURL) && !_.isEmpty(blsKey)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_MINER_REWARD_FROM_MINING_KEY.key}`;
         const buildParams = LIST_ACTION.GET_MINER_REWARD_FROM_MINING_KEY.data({blsData:`${PREFIX_BLS_PARAMS}${blsKey}`});
@@ -230,7 +232,7 @@ export default class VirtualDeviceService {
       })||{};
       const shardID = dataResult.Result?.ShardID ?? undefined;
 
-      let apiURL = VirtualDeviceService.buildURL(device);
+      let apiURL = await VirtualDeviceService.buildURL(device);
       
       
       if(!_.isEmpty(apiURL) && !_.isNil(shardID)){
@@ -257,9 +259,11 @@ export default class VirtualDeviceService {
     }
   }
 
-  static buildURL=(device:Device,isFullNode= false)=>{
+  static buildURL = async(device:Device,isFullNode= false)=>{
     if (isFullNode) {
-      return 'https://test-mobile.incognito.org';
+      let fullNode = ((await Server.getDefault())?.address)||TESTNET_SERVER_ADDRESS;
+      console.log(TAG,'buildURL = ',fullNode);
+      return fullNode;
     }
 
     const url = device.APIUrl??'';
@@ -269,6 +273,5 @@ export default class VirtualDeviceService {
     }
 
     return `http://${device.APIUrl??''}`;
-    // return isFullNode?'http://192.168.1.188:9334':`http://${device.APIUrl??''}`;
   }
 }

@@ -4,17 +4,18 @@
 import Loader from '@components/DialogLoader';
 import routeNames from '@routers/routeNames';
 import BaseScreen from '@screens/BaseScreen';
-import {CONSTANT_MINER} from '@src/constants';
-import {DEVICES} from '@src/constants/miner';
-import {onClickView} from '@src/utils/ViewUtil';
+import { CONSTANT_MINER } from '@src/constants';
+import { DEVICES } from '@src/constants/miner';
+import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
+import { onClickView } from '@src/utils/ViewUtil';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {KeyboardAvoidingView, Platform, ScrollView, Text} from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, Text } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import {Button, Input} from 'react-native-elements';
-import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
+import { Button, Input } from 'react-native-elements';
+import Dialog, { DialogContent, DialogTitle } from 'react-native-popup-dialog';
 import StepIndicator from 'react-native-step-indicator';
 import {CustomError, ErrorCode, ExHandler} from '@src/services/exception';
 import styles, {placeHolderColor} from './style';
@@ -224,7 +225,7 @@ class AddSelfNode extends BaseScreen {
     );
   };
 
-  async validateHost(host) {
+  validateHost = async (host)=> {
     if (host === 'localhost' || SHORT_DOMAIN_REGEX.test(host) || FULL_DOMAIN_REGEX.test(host) || IP_ADDRESS_REGEX.test(host)) {
       let isValid = true;
       if (IP_ADDRESS_REGEX.test(host)) {

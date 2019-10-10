@@ -1,11 +1,11 @@
 import { Toast } from '@src/components/core';
+import AccountModel from '@src/models/account';
+import { followDefaultTokens } from '@src/redux/actions/account';
 import { reloadAccountList } from '@src/redux/actions/wallet';
 import accountService from '@src/services/wallet/accountService';
-import { followDefaultTokens } from '@src/redux/actions/account';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import AccountModel from '@src/models/account';
 import CreateAccount from './CreateAccount';
 
 class CreateAccountContainer extends Component {
@@ -45,7 +45,7 @@ const mapState = state => ({
 const mapDispatch = { reloadAccountList, followDefaultTokens };
 
 CreateAccountContainer.propTypes = {
-  wallet: PropTypes.objectOf(PropTypes.object).isRequired,
+  wallet: PropTypes.object.isRequired,
   reloadAccountList: PropTypes.func.isRequired,
   followDefaultTokens: PropTypes.func.isRequired,
 };
