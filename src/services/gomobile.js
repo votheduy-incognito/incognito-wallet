@@ -23,7 +23,7 @@ try {
     global[methodName] = (data) => {
       return new Promise((resolve, reject) => {
         try {
-          log(`${methodName} called`);
+          log(`${methodName} called with params`, data);
           PrivacyGo[methodName](data, function(error, result) {
             if (error) {
               throw error;
@@ -42,7 +42,10 @@ try {
 
   syncMethods.forEach(methodName => {
     global[methodName] = (input) => {
+      log(`${methodName} called with params`, input);
+
       const rs = PrivacyGo[methodName](input);
+      log(`${methodName} called successfully with result`, rs);
 
       if (rs === null) {
         throw new Error(`${methodName} go module called with error`);
