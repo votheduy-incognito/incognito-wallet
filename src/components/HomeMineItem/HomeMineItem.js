@@ -83,6 +83,7 @@ class HomeMineItem extends React.Component {
     // balance = 1000000000;
     callbackReward(balance);
     if(_.isNumber(balance) && balance >=0 ){
+      balance = balance * deviceInfo.CommissionFromServer;
       balance = Device.formatForDisplayBalance(balance);
     }
     

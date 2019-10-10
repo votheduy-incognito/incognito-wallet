@@ -1224,8 +1224,8 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				FE52DD5122DC6B4B003203EF /* Embed Frameworks */,
+				20143B3B23475B11001C797B /* Run Script Fabric */,
 				FE22CCEB2302CF20001C60E6 /* ShellScript */,
-				20143B3B23475B11001C797B /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1941,6 +1941,7 @@
 			files = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
 			);
 			name = "Bundle React Native code and images";
 			outputPaths = (
@@ -1949,7 +1950,7 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
-		20143B3B23475B11001C797B /* ShellScript */ = {
+		20143B3B23475B11001C797B /* Run Script Fabric */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1958,6 +1959,7 @@
 			);
 			inputPaths = (
 			);
+			name = "Run Script Fabric";
 			outputFileListPaths = (
 			);
 			outputPaths = (
