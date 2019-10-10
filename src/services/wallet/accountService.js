@@ -329,9 +329,17 @@ export default class Account {
     return false;
   }
 
-  static async getBalance(account, wallet) {
+  /**
+   * 
+   * @param {object} account 
+   * @param {object} wallet 
+   * @param {string} tokenId 
+   * 
+   * If `tokenId` is not passed, this method will return native token (PRV) balance, else custom token balance (from `tokenId`)
+   */
+  static async getBalance(account, wallet, tokenId) {
     const indexAccount = wallet.getAccountIndexByName(account.name);
-    return await wallet.MasterAccount.child[indexAccount].getBalance();
+    return await wallet.MasterAccount.child[indexAccount].getBalance(tokenId);
   }
 
   static getFollowingTokens(account, wallet){
