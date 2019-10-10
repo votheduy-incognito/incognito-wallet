@@ -154,14 +154,15 @@ class HomeMine extends BaseScreen {
     const {isFetching,loading,wallet} = this.state;
     if(!isFetching){
       this.sessionTimer = Date.now();
-      this.balancePRV = 0;
+      // this.balancePRV = 0;
       this.setState({
         isFetching:true,
         isLoadMore:false,
+        listDevice:[],
         timeToUpdate:this.sessionTimer
       },async () => {
         // let balance = 0;
-        
+        this.balancePRV = 0;
         let list: [] = await this.getListLocalDevice();
         // // list = _.isEmpty(list)?await this.fetchProductList():list.reverse();
         list = list.reverse();
@@ -251,14 +252,17 @@ class HomeMine extends BaseScreen {
     );
   };
   renderEmptyComponent =()=>{
+    const {isFetching} = this.state;
     return (
-      <View style={{flex:1,justifyContent:'center',alignItems:'center' }}>
-        <Image source={images.ic_no_finding_device} />
-      </View>
+      !isFetching && (
+        <View style={{flex:1,justifyContent:'center',alignItems:'center' }}>
+          <Image source={images.ic_no_finding_device} />
+        </View>
+      )
     );
   }
   renderFirstOpenApp = ()=>{
-    const {listDevice} = this.state;
+    // const {listDevice} = this.state;
     return (
       <View style={style.container_first_app}>
         <Image resizeMode="cover" source={images.bg_first} style={{ position: 'absolute',width:'100%',height:'100%'}} />
@@ -317,7 +321,7 @@ class HomeMine extends BaseScreen {
                 }}
                 callbackReward={(amount)=>{
                   // const {timeToUpdate} = this.state;
-                  if(_.isEqual(this.sessionTimer,timeToUpdate) && _.isNumber(amount) &&  amount>0 ){
+                  if(_.isEqual(this.sessionTimer,timeToUpdate) && _.isNumber(amount)){
                     this.balancePRV += amount;
                     this.setState({
                       balancePRV:this.balancePRV
