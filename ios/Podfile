@@ -2,10 +2,13 @@
 platform :ios, '9.0'
 
 # Required by RNFirebase
+pod 'Firebase/Analytics'
 pod 'Firebase/Core', '~> 6.3.0'
 pod 'Firebase/Messaging', '~> 6.3.0'
 pod 'Firebase/Auth'
 pod 'Firebase/Database'
+pod 'Fabric', '~> 1.10.2'
+pod 'Crashlytics', '~> 3.13.2'
 
 # pod 'React', :path => '../node_modules/react-native', :subspecs => [
 #     'Core',

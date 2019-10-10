@@ -19,5 +19,7 @@ export default {
   [CODE.home_load_balance_failed] : 'Refresh to reload your balance.',
   [CODE.importAccount_failed]: 'Account was not imported, please try again.',
   [CODE.importAccount_existed]: 'This account already exists on your device. Please try another.',
-  [CODE.web_js_import_existed_account]: 'Please make sure this private key is valid and does not already exist on your device.'
+  [CODE.web_js_import_existed_account]: 'Please make sure this private key is valid and does not already exist on your device.',
+  [CODE.node_duplicate]: 'This node already exists on your device. Please try another.',
+  [CODE.node_invalid_host]: 'This address is not a valid domain or ip address. Please try another.',
 };

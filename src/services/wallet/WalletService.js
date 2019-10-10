@@ -71,12 +71,7 @@ export async function loadWallet(passphrase) {
   await wallet.loadWallet(passphrase);
   console.log('Wallet after loading', wallet);
 
-  if (wallet.Name) {
-    // update status history
-    updateStatusHistory(wallet);
-    return wallet;
-  }
-  return false;
+  return wallet?.Name ? wallet : false;
 }
 
 export async function initWallet() {
@@ -112,6 +107,7 @@ export function deleteWallet(wallet) {
 
 export async function loadHistoryByAccount(wallet, accountName) {
   wallet.Storage = storage;
+  await updateStatusHistory(wallet).catch(() => console.warn('History statuses were not updated'));
   return (await wallet.getHistoryByAccount(accountName)) || [];
 }
 
