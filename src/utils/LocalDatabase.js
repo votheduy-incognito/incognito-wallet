@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import _ from 'lodash';
 
 const TAG = 'LocalDatabase';
-const KEY_SAVE = {
+export const KEY_SAVE = {
   USER: 'USER_OBJECT_KEY',
   LIST_DEVICE:'PRODUCT_LIST_KEY',
   IS_MIGRATED: 'IS_MIGRATED',

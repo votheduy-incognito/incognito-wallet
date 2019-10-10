@@ -1,5 +1,5 @@
 import MESSAGE from './message';
-import { genCode } from './code';
+import { genCode } from './utils';
 import types from './types';
 
 class CustomError extends Error {

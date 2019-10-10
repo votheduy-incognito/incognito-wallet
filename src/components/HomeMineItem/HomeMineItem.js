@@ -186,6 +186,7 @@ class HomeMineItem extends React.Component {
         textErrorDevice = 'Please refresh to reload your balance';
       }
     }
+
     return (
       <TouchableOpacity
         style={[styles.container,containerStyle]}
