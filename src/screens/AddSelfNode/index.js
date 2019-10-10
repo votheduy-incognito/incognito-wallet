@@ -17,7 +17,6 @@ import DeviceInfo from 'react-native-device-info';
 import { Button, Input } from 'react-native-elements';
 import Dialog, { DialogContent, DialogTitle } from 'react-native-popup-dialog';
 import StepIndicator from 'react-native-step-indicator';
-import {CustomError, ErrorCode, ExHandler} from '@src/services/exception';
 import styles, {placeHolderColor} from './style';
 
 const SHORT_DOMAIN_REGEX = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/;
