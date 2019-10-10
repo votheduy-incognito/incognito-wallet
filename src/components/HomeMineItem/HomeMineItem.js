@@ -80,10 +80,13 @@ class HomeMineItem extends React.Component {
     console.log(TAG,'getInfo name,balance = ',deviceInfo.Name,balance);
     // should be is null or number;
     balance = _.isNaN(balance)?null:balance;
-    // balance = 1000000000;
-    callbackReward(balance);
+    // balance = 1000000000 - balance/3;
     if(_.isNumber(balance) && balance >=0 ){
+      balance = balance * deviceInfo.CommissionFromServer;
+      callbackReward(balance);
       balance = Device.formatForDisplayBalance(balance);
+    }else{
+      callbackReward(0);
     }
     
     console.log(TAG,'getInfo balance format = ',balance);
@@ -185,6 +188,7 @@ class HomeMineItem extends React.Component {
         textErrorDevice = 'Please refresh to reload your balance';
       }
     }
+
     return (
       <TouchableOpacity
         style={[styles.container,containerStyle]}

@@ -1,12 +1,12 @@
 /**
- * @providesModule SetupWifiDevice
+ * @providesModule AddSelfNode
  */
 import Loader from '@components/DialogLoader';
 import routeNames from '@routers/routeNames';
 import BaseScreen from '@screens/BaseScreen';
 import { CONSTANT_MINER } from '@src/constants';
 import { DEVICES } from '@src/constants/miner';
-import { accountSeleclor } from '@src/redux/selectors';
+import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import { onClickView } from '@src/utils/ViewUtil';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
@@ -17,9 +17,12 @@ import DeviceInfo from 'react-native-device-info';
 import { Button, Input } from 'react-native-elements';
 import Dialog, { DialogContent, DialogTitle } from 'react-native-popup-dialog';
 import StepIndicator from 'react-native-step-indicator';
-import { connect } from 'react-redux';
-import styles, { placeHolderColor } from './style';
+import styles, {placeHolderColor} from './style';
 
+const SHORT_DOMAIN_REGEX = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/;
+const FULL_DOMAIN_REGEX = /^(http)|(https):\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/;
+const IP_ADDRESS_REGEX = /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(:[0-9]+)?$/;
+const LOCALHOST_REGEX = /^localhost(:[0-9]+)?$/;
 
 export const TAG = 'AddSelfNode';
 
@@ -159,8 +162,8 @@ class AddSelfNode extends BaseScreen {
           inputStyle={textInput}
           inputContainerStyle={item_container_input}
           containerStyle={[item]}
-          placeholder="192.168.1.1"
-          label='IP address'
+          placeholder="192.168.1.1 or node.example.com"
+          label='IP address or domain'
           defaultValue={this.inputHost}
         />
       </>
@@ -219,67 +222,107 @@ class AddSelfNode extends BaseScreen {
         </Dialog>
       </>
     );
+  };
+
+  validateHost = async (host)=> {
+    if (host === 'localhost' || SHORT_DOMAIN_REGEX.test(host) || FULL_DOMAIN_REGEX.test(host) || IP_ADDRESS_REGEX.test(host)) {
+      let isValid = true;
+      if (IP_ADDRESS_REGEX.test(host)) {
+        const parts = _.split(host, ':');
+        const ip = parts[0];
+        const ipParts = _.split(ip, '.');
+        isValid = ipParts.every(item => {
+          const number = _.toNumber(item);
+          return number <= 255;
+        });
+      }
+
+      console.log('isValid', isValid);
+
+      if (isValid) {
+        return isValid;
+      }
+    }
+
+    throw new CustomError(ErrorCode.node_invalid_host);
+  }
+
+  async parseHost(host) {
+    let port;
+    let address;
+
+    if (IP_ADDRESS_REGEX.test(host) || LOCALHOST_REGEX.test(host)) {
+      const listLocalDevice = await LocalDatabase.getListDevices();
+      const parts =  _.split(host,':')||[];
+      address = _.trim(parts[0]);
+      port = parts.length > 1 ?_.trim(parts[parts.length-1]):this.inputPort;
+      port = !_.isEmpty(port) && _.isNumber(Number(port))?port:this.inputPort;
+      const duplicatedNode = listLocalDevice.find(({ minerInfo }) => minerInfo.ipAddress === host && minerInfo.port === port);
+
+      if (duplicatedNode) {
+        throw new CustomError(ErrorCode.node_duplicate);
+      }
+    } else if (FULL_DOMAIN_REGEX.test(host) || SHORT_DOMAIN_REGEX.test(host)) {
+      address = host;
+      port = '';
+    }
+
+    console.log(TAG,'parseHost', address, port);
+
+    const userJson = await LocalDatabase.getUserInfo();
+    const user = userJson.toJSON();
+    const {
+      email,
+      id,
+      created_at,
+    } = user;
+    // const deviceName = _.isEmpty(port) ? address : `${address}:${port}`;
+    const deviceName =  address ;
+
+    console.log('DeviceName', deviceName, address, port);
+
+    const time = Date.now().toString();
+    const account = {};
+    return {
+      minerInfo: {
+        account: account,
+        ipAddress: address,
+        port: port
+      },
+      product_name: deviceName,
+      created_from: Platform.OS,
+      address: 'NewYork',
+      address_long: 0.0,
+      address_lat: 0.0,
+      platform: CONSTANT_MINER.PRODUCT_TYPE,
+      product_type: DEVICES.VIRTUAL_TYPE,
+      timezone: DeviceInfo.getTimezone(),
+      user_id: id,
+      email: email,
+      id: id,
+      product_id: `${DEVICES.VIRTUAL_TYPE}-${time}`,
+      created_at: created_at,
+      deleted: false,
+      is_checkin: 1,
+    };
   }
 
   handleSetUpPress = onClickView(async ()=>{
-    let errorMsg = '';
     try {
-      
-      const {selectedAccount} = this.state;
       const userJson = await LocalDatabase.getUserInfo();
-      const host = _.trim(this.inputHost);
-      
+      const host = _.trim(this.inputHost).toLowerCase();
+
       // let privateKey = selectedAccount?.PrivateKey||'';
       // privateKey = _.trim(_.isEmpty(privateKey)?this.inputPrivateKey:privateKey);
-      console.log(TAG,'handleSetUpPress host = ',host);
-      
       if (userJson && !_.isEmpty(host)) {
-        const arrHost =  _.split(host,':')||[];
-        const ipAddress = _.trim(arrHost[0]);
-        let port = arrHost.length > 1 ?_.trim(arrHost[arrHost.length-1]):this.inputPort;
-        
-        port =  !_.isEmpty(port) && _.isNumber(Number(port))?port:this.inputPort;
-        console.log(TAG,'handleSetUpPress port = ',port,ipAddress);
+        await this.validateHost(host);
+        const listLocalDevice = await LocalDatabase.getListDevices();
         // const isImportPrivateKey = _.isEmpty(selectedAccount?.PrivateKey);
-        const user = userJson.toJSON();
-        const {
-          email,
-          id,          
-          created_at,
-        } = user;
-        // let deviceName = host;
-        // deviceName = _.isEmpty(deviceName)?`${host}`:deviceName;
-        let deviceName = ipAddress || CONSTANT_MINER.VIRTUAL_PRODUCT_NAME;
-        const time = Date.now().toString();
-        const account = {
-        };
-        const deviceJSON =  {
-          minerInfo:{
-            account:account,
-            ipAddress:ipAddress,
-            port:port
-          },
-          product_name:deviceName ,
-          created_from: Platform.OS,
-          address: 'NewYork',
-          address_long: 0.0,
-          address_lat: 0.0,
-          platform: CONSTANT_MINER.PRODUCT_TYPE,
-          product_type:DEVICES.VIRTUAL_TYPE,
-          timezone: DeviceInfo.getTimezone(),
-          user_id: id,
-          email: email,
-          id: id,
-          product_id:`${DEVICES.VIRTUAL_TYPE}-${time}`,
-          created_at: created_at,
-          deleted: false,
-          is_checkin: 1,
-        };
-        let listLocalDevice = await LocalDatabase.getListDevices();
+        const deviceJSON = await this.parseHost(host);
         listLocalDevice.push(deviceJSON);
         await LocalDatabase.saveListDevices(listLocalDevice);
         this.goToScreen(routeNames.HomeMine);
-        return;
+        return true;
         // const resultAccount =( isImportPrivateKey && await this.viewImportPrivateKey.current.importAccount({accountName:deviceJSON.product_name,privateKey:privateKey})) ||false;
         // if(resultAccount || !isImportPrivateKey){
         //   let listLocalDevice = await LocalDatabase.getListDevices();
@@ -291,20 +334,15 @@ class AddSelfNode extends BaseScreen {
         //   this.goToScreen(routeNames.HomeMine);
         //   return;
         // }
-      // save local
-      // 
-      }else{
-        this.Loading = false;
       }
-    } catch (error) {
-      errorMsg = errorMessage; 
-      this.showToastMessage(errorMessage);
-      console.log(TAG,'handleSetUpPress error: ', error);
+    } catch (errorMessage) {
+      new ExHandler(errorMessage).showErrorToast();
+      return errorMessage;
     }
   });
 
   render() {
-    const { container, textInput, item,item_container_input ,label} = styles;
+    const { container, textInput, item,item_container_input ,label } = styles;
     const {loading} = this.state;
     return (
       <ScrollView
@@ -333,7 +371,7 @@ class AddSelfNode extends BaseScreen {
             onPress={this.handleSetUpPress}
             title='Add'
           />
-          
+
         </KeyboardAvoidingView>
         {/* <View style={{width: 0,height: 0,position:'absolute',opacity:0}}>
           <ImportAccount ref={this.viewImportPrivateKey} />
@@ -360,11 +398,15 @@ AddSelfNode.defaultProps = {
 };
 const mapDispatch = { };
 
-export default connect(
-  state => ({
-    wallet: state.wallet,
-    defaultAccountName: accountSeleclor.defaultAccount(state)?.name,
-    accountList: accountSeleclor.listAccount(state),
-  }),
-  mapDispatch
-)(AddSelfNode);
+// export default connect(
+//   state => ({
+//     wallet: state.wallet,
+//     defaultAccountName: accountSeleclor.defaultAccount(state)?.name,
+//     accountList: accountSeleclor.listAccount(state),
+//   }),
+//   mapDispatch
+// )(AddSelfNode);
+
+const AddSelfNodeComponent = AddSelfNode;
+
+export default AddSelfNodeComponent;

@@ -428,7 +428,7 @@ class DetailDevice extends BaseScreen {
       accountInfo:{
         minerAccountName:device.accountName(),
         funderAccountName:device.accountName()
-      }
+      },
     });
   });
 

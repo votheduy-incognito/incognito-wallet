@@ -48,7 +48,7 @@ class BaseScreen extends BaseComponent {
 
   goToScreen = (routeName, params = {}) => {
     const { navigation } = this.props;
-    navigation?.navigate(routeName, params);
+    navigation?.navigate(routeName, { ...params, goBackKey: navigation.state.key });
   };
 }
 

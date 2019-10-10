@@ -170,28 +170,32 @@ class GetStartedAddNode extends BaseScreen {
   }
 
   handleStepConnect = async ()=>{
-    this.setState({
-      loading:true,
-      currentPage:2,
-    });
-    const deviceIdFromQrcode = this.state.deviceId;
-    
-    const errorMessage = await this.viewSetupDevice.current.handleSetUpPress(deviceIdFromQrcode);
-    const listNode = await LocalDatabase.getListDevices()||[];
-    const subfix = Date.now()%1000;
-    const nodeName =  _.padEnd(`Node ${listNode.length+1}`,10,subfix);
-    const deviceObj =  await this.viewSetupDevice.current.changeDeviceName(nodeName)||null; 
-    console.log(TAG,'handleStepConnect errorMessage ',errorMessage ,deviceObj);
-    if(_.isEmpty(errorMessage) && !_.isNil(deviceObj)){
-      this.handleFinish();
-    }else{
-      this.showToastMessage(errorMessage);
+    try{
+      this.setState({
+        loading:true,
+        currentPage:2,
+      });
+      const deviceIdFromQrcode = this.state.deviceId;
+      
+      const errorMessage = await this.viewSetupDevice.current.handleSetUpPress(deviceIdFromQrcode);
+      const listNode = await LocalDatabase.getListDevices()||[];
+      const subfix = Date.now()%1000;
+      const nodeName =  _.padEnd(`Node ${listNode.length+1}`,10,subfix);
+      const deviceObj =  await this.viewSetupDevice.current.changeDeviceName(nodeName)||null; 
+      console.log(TAG,'handleStepConnect errorMessage ',errorMessage ,deviceObj);
+      if(_.isEmpty(errorMessage) && !_.isNil(deviceObj)){
+        this.handleFinish();
+      }else{
+        this.showToastMessage(errorMessage);
+        
+      }
+    }catch(e){
       this.setState({
         loading:false,
         currentPage:0
       });
-      // this.setState({errorMessage:errorMessage,loading:false});
     }
+    
   }
 
   renderFooter=()=>{
