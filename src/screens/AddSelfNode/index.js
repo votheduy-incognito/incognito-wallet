@@ -1,5 +1,5 @@
 /**
- * @providesModule SetupWifiDevice
+ * @providesModule AddSelfNode
  */
 import Loader from '@components/DialogLoader';
 import routeNames from '@routers/routeNames';
@@ -16,8 +16,8 @@ import DeviceInfo from 'react-native-device-info';
 import {Button, Input} from 'react-native-elements';
 import Dialog, {DialogContent, DialogTitle} from 'react-native-popup-dialog';
 import StepIndicator from 'react-native-step-indicator';
-import styles, {placeHolderColor} from './style';
 import {CustomError, ErrorCode, ExHandler} from '@src/services/exception';
+import styles, {placeHolderColor} from './style';
 
 const SHORT_DOMAIN_REGEX = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/;
 const FULL_DOMAIN_REGEX = /^(http)|(https):\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/;
@@ -276,7 +276,8 @@ class AddSelfNode extends BaseScreen {
       id,
       created_at,
     } = user;
-    const deviceName = _.isEmpty(port) ? address : `${address}:${port}`;
+    // const deviceName = _.isEmpty(port) ? address : `${address}:${port}`;
+    const deviceName =  address ;
 
     console.log('DeviceName', deviceName, address, port);
 
