@@ -70,14 +70,15 @@ export default class DeviceService {
       const productId = product.product_id;
       console.log(TAG, 'ProductId: ', product.product_id);
       if (productId) {
-        const firebase = new FirebaseService();//FirebaseService.getShareManager();
+        const firebase = new FirebaseService();
+        const uid = firebase.getUID()||'';
         const mailProductId = `${productId}${MAIL_UID_FORMAT}`;
         const action = DeviceService.buildAction(product,actionExcute,dataToSend,chain,type);
         const callBack = res => {
           const {status = -1,data} = res;
           console.log(TAG,'send Result: ', res);
           if (status >= 0) {
-            resolve({...data,productId:productId});
+            resolve({...data,productId:productId,uid:uid});
           } else {
             console.log(TAG,'send Timeout action = ' + actionExcute.key);
             reject('Timeout action = '+  actionExcute.key);
@@ -187,9 +188,10 @@ export default class DeviceService {
           };
           console.log(TAG,'sendPrivateKey send init data = ',params);
           const response = await APIService.sendPrivateKey(data,params);
+          const uid = dataResult?.uid||'';
         
           console.log(TAG,'sendPrivateKey send post data = ',response);
-          return response;
+          return {...response,uid:uid};
         }
       }
     } catch (error) {

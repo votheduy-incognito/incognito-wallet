@@ -3,6 +3,8 @@ package com.incognito.wallet;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactnative.ssh.RNSSHPackage;
+import com.pusherman.networkinfo.RNNetworkInfoPackage;
 import com.sensors.RNSensorsPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.reactlibrary.RNZmqServicePackage;
@@ -41,6 +43,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNSSHPackage(),
+            new RNNetworkInfoPackage(),
             new RNSensorsPackage(),
             new RNSoundPackage(),
             new RNZmqServicePackage(),
