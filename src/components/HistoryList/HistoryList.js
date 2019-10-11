@@ -57,6 +57,7 @@ const getTypeData = type => {
   let typeText;
   let balanceDirection;
   let balanceColor;
+  
   switch (type) {
   case CONSTANT_COMMONS.HISTORY.TYPE.WITHDRAW:
     typeText = 'Withdraw';
