@@ -64,13 +64,13 @@ export default class Token {
   //   return res;
   // }
 
-  static async createSendPrivacyCustomToken(
+  static async createSendPToken(
     submitParam,
-    fee,
+    feeNativeToken = 0,
     account,
     wallet,
     paymentInfo,
-    tokenFee,
+    feePToken = 0,
     info,
   ) {
     await Wallet.resetProgressTx();
@@ -87,11 +87,13 @@ export default class Token {
     //   paymentInfos[i] = new PaymentInfo(/*paymentAddress, amount*/);
     // }
     let response;
+    const hasPrivacyForNativeToken = false;
+    const hasPrivacyForPToken = true;
 
     try {
       response = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendPrivacyCustomToken(paymentInfos, submitParam, fee, tokenFee, true, info);
+      ].createAndSendPrivacyToken(paymentInfos, submitParam, feeNativeToken, feePToken, hasPrivacyForNativeToken, hasPrivacyForPToken, info);
 
       await saveWallet(wallet);
     } catch (e) {
