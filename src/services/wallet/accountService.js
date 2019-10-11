@@ -56,7 +56,7 @@ export default class Account {
   }
 
   // paymentInfos = [{ paymentAddressStr: toAddress, amount: amount}];
-  static async sendConstant(paymentInfos, fee, isPrivacy, account, wallet, info) {
+  static async createAndSendNativeToken(paymentInfos, fee, isPrivacy, account, wallet, info) {
     console.log('Wallet.ProgressTx: ', Wallet.ProgressTx);
     // paymentInfos: payment address string, amount in Number (miliconstant)
     // await Wallet.resetProgressTx();
