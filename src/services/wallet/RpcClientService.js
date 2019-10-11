@@ -3,7 +3,6 @@ import {
   RpcClient,
   getEstimateFee,
   getEstimateFeeForPToken as getEstimateFeeForPTokenService,
-  getEstimateTokenFee,
   getMaxWithdrawAmount
 } from 'incognito-chain-web-js/build/wallet';
 import { ExHandler, CustomError, ErrorCode } from '../exception';
@@ -56,17 +55,19 @@ export async function getEstimateFeeForNativeToken(
   to,
   amount,
   accountWallet,
-  isPrivacy = true
 ) {
   console.log('Estimating fee ...');
   let fee;
+  const isPrivacyForNativeToken = true;
+  const isPrivacyForPrivateToken = false;
   try {
     fee = await getEstimateFee(
       from,
       to,
       amount,
       accountWallet,
-      isPrivacy,
+      isPrivacyForNativeToken,
+      isPrivacyForPrivateToken,
       getRpcClient()
     );
   } catch (e) {
@@ -122,41 +123,6 @@ export async function getEstimateFeeForPToken(
       isPrivacyForPrivateToken,
       feeToken,
       isGetTokenFee
-    );
-  } catch (e) {
-    throw e;
-  }
-  return fee;
-}
-
-export async function getEstimateTokenFeeService(
-  from,
-  to,
-  amount,
-  tokenObject,
-  privateKey,
-  account,
-  isPrivacyForPrivateToken
-) {
-  console.log('getEstimateTokenFee');
-  console.log('\tfrom:' + from);
-  console.log('\tto: ' + to);
-  console.log('\tamount:' + amount);
-  console.log('\ttokenObject', tokenObject);
-  console.log('\tprivateKey', privateKey);
-  console.log('HHHHHHHH : ', typeof getEstimateTokenFee);
-
-  let fee;
-  try {
-    fee = await getEstimateTokenFee(
-      from,
-      to,
-      amount,
-      tokenObject,
-      privateKey,
-      account,
-      getRpcClient(),
-      isPrivacyForPrivateToken
     );
   } catch (e) {
     throw e;

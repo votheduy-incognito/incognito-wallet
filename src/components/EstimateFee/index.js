@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 import PropTypes from 'prop-types';
 import memmoize from 'memoize-one';
 import { connect } from 'react-redux';
-import { getEstimateFeeForNativeToken, getEstimateFeeForPToken, getEstimateTokenFeeService } from '@src/services/wallet/RpcClientService';
+import { getEstimateFeeForNativeToken, getEstimateFeeForPToken } from '@src/services/wallet/RpcClientService';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import tokenData from '@src/constants/tokenData';
@@ -97,7 +97,6 @@ class EstimateFeeContainer extends Component {
         toAddress,
         convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals),
         accountWallet,
-        true // privacy mode
       );
       
       return fee;
@@ -162,14 +161,13 @@ class EstimateFeeContainer extends Component {
 
       if (!selectedPrivacy.amount) throw new CustomError(ErrorCode.estimate_fee_with_zero_balance);
 
-      const fee = await getEstimateTokenFeeService(
+      const fee = await getEstimateFeeForPToken(
         fromAddress,
         toAddress,
         originalAmount,
         tokenObject,
-        account?.PrivateKey,
         accountWallet,
-        true, // privacy mode
+        true, // get token fee flag
       );
 
       return fee;
