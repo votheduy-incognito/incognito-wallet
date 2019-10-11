@@ -3,7 +3,6 @@ import {
   RpcClient,
   getEstimateFee,
   getEstimateFeeForSendingToken,
-  getEstimateFeeToDefragment,
   getEstimateTokenFee,
   getMaxWithdrawAmount
 } from 'incognito-chain-web-js/build/wallet';
@@ -42,13 +41,22 @@ export function listPrivacyTokens() {
   return getRpcClient().listPrivacyCustomTokens();
 }
 
-export async function getEstimateFeeService(
+/**
+ * 
+ * @param {string} from Incognito Address
+ * @param {string} to Incognito Address
+ * @param {number} amount nano unit
+ * @param {object} accountWallet get from WalletService.getAccountByName(accountName);
+ * @param {bool} isPrivacy default `true`
+ * 
+ * Estimate fee for sending native token (PRV), fee is returned in nano unit
+ */
+export async function getEstimateFeeForNativeToken(
   from,
   to,
   amount,
-  privateKey,
   accountWallet,
-  isPrivacy
+  isPrivacy = true
 ) {
   console.log('Estimating fee ...');
   let fee;
@@ -57,7 +65,6 @@ export async function getEstimateFeeService(
       from,
       to,
       amount,
-      privateKey,
       accountWallet,
       isPrivacy,
       getRpcClient()
@@ -132,30 +139,6 @@ export async function getEstimateTokenFeeService(
       account,
       getRpcClient(),
       isPrivacyForPrivateToken
-    );
-  } catch (e) {
-    throw e;
-  }
-  return fee;
-}
-
-export async function getEstimateFeeToDefragmentService(
-  from,
-  amount,
-  privateKey,
-  accountWallet,
-  isPrivacy
-) {
-  console.log('Estimating fee ...');
-  let fee;
-  try {
-    fee = await getEstimateFeeToDefragment(
-      from,
-      amount,
-      privateKey,
-      accountWallet,
-      isPrivacy,
-      getRpcClient()
     );
   } catch (e) {
     throw e;
