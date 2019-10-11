@@ -21,7 +21,7 @@ import ViewUtil, { onClickView } from '@src/utils/ViewUtil';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Button } from 'react-native-elements';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import { connect } from 'react-redux';
@@ -58,6 +58,7 @@ class DetailDevice extends BaseScreen {
       isStaked:undefined,
       wallet:wallet,
       isShowMessage:false,
+      isFetching:false,
       balancePRV:undefined,
       listFollowingTokens:null,
       device: device
@@ -77,7 +78,7 @@ class DetailDevice extends BaseScreen {
 
   onResume = async ()=>{
     console.log(TAG,'onResume begin');
-    const {device } = this.state;
+    const {device,isFetching } = this.state;
     const product_id = device.ProductId;
     if(!_.isEmpty(product_id)){
       let listDevice = await LocalDatabase.getListDevices()||[];
@@ -88,9 +89,17 @@ class DetailDevice extends BaseScreen {
         device:Device.getInstance(deviceNewJSON)
       });
     }
-    await this.checkStatus('incognito');
-    await this.checkAndUpdateInfoVirtualNode();
-    this.fetchData();
+    if(!isFetching){
+      this.setState({
+        isFetching:true
+      });
+      await this.checkStatus('incognito');
+      await this.checkAndUpdateInfoVirtualNode();
+      await this.fetchData();
+      this.setState({
+        isFetching:false
+      });
+    }
   }
 
   set IsStaked (isStake:Boolean){
@@ -280,11 +289,9 @@ class DetailDevice extends BaseScreen {
   }
 
   checkStatus = async (chain='incognito')  => {
-    let {device,isFetchingCheckStatus} = this.state;
+    let {device} = this.state;
     // console.log(TAG,'checkStatus begin ',device.Type);
-    // this.setState({
-    //   isFetchingCheckStatus:true
-    // });
+    
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
       const dataResult = await VirtualDeviceService.getChainMiningStatus(device) ?? {};
@@ -306,9 +313,6 @@ class DetailDevice extends BaseScreen {
       await this.callAndUpdateAction(action, chain);
     }
     }
-    // this.setState({
-    //   isFetchingCheckStatus:false
-    // });
   };
   setDeviceOffline =()=>{
     let {device} = this.state;
@@ -586,6 +590,7 @@ class DetailDevice extends BaseScreen {
     const {
       device,
       loading,
+      isFetching
     } = this.state;
     const {navigation} = this.props;
     const isOffline = device?.isOffline()||false;
@@ -615,7 +620,7 @@ class DetailDevice extends BaseScreen {
         <View style={{width: 0,height: 0,display:'none'}}>
           <CreateAccount navigation={navigation} ref={this.viewCreateAccount} />
         </View>
-        <ScrollView>
+        <ScrollView refreshControl={<RefreshControl refreshing={isFetching} onRefresh={this.onResume} />}>
           {this.renderTop()}
           {this.renderGroupBalance()}
           {/* {this.renderListFollowingTokens()} */}
