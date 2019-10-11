@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import { debounce } from 'lodash';
-import PropTypes from 'prop-types';
-import memmoize from 'memoize-one';
-import { connect } from 'react-redux';
-import { getEstimateFeeForNativeToken, getEstimateFeeForPToken } from '@src/services/wallet/RpcClientService';
 import { CONSTANT_COMMONS } from '@src/constants';
-import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import tokenData from '@src/constants/tokenData';
-import convertUtil from '@src/utils/convert';
+import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
-import EstimateFee from './EstimateFee';
+import { getEstimateFeeForNativeToken, getEstimateFeeForPToken } from '@src/services/wallet/RpcClientService';
+import convertUtil from '@src/utils/convert';
+import { debounce } from 'lodash';
+import memmoize from 'memoize-one';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import ActivityIndicator from '../core/ActivityIndicator/Component';
+import EstimateFee from './EstimateFee';
 
 class EstimateFeeContainer extends Component {
   constructor(props) {
