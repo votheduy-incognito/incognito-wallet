@@ -2,7 +2,7 @@ import {
   Wallet,
   RpcClient,
   getEstimateFee,
-  getEstimateFeeForSendingToken,
+  getEstimateFeeForPToken as getEstimateFeeForPTokenService,
   getEstimateTokenFee,
   getMaxWithdrawAmount
 } from 'incognito-chain-web-js/build/wallet';
@@ -49,7 +49,7 @@ export function listPrivacyTokens() {
  * @param {object} accountWallet get from WalletService.getAccountByName(accountName);
  * @param {bool} isPrivacy default `true`
  * 
- * Estimate fee for sending native token (PRV), fee is returned in nano unit
+ * Estimate fee for sending native token (PRV), fee is returned in PRV nano unit
  */
 export async function getEstimateFeeForNativeToken(
   from,
@@ -75,35 +75,53 @@ export async function getEstimateFeeForNativeToken(
   return fee;
 }
 
-export async function getEstimateFeeForSendingTokenService(
+/**
+ * 
+ * @param {string} from 
+ * @param {string} to 
+ * @param {number} amount in nano
+ * @param {object} tokenObject 
+ * @param {object} account get from WalletService.getAccountByName(accountName);
+ * @param {number} feeToken  in nano
+ * @param {bool} isGetTokenFee default `false`
+ * 
+ * Estimate fee for sending PRIVATE_TOKEN (pETH, pBTC, Incognito Custom Tokens,...) in
+ * - nano PRV if `isGetTokenFee` is `false` (default)
+ * - nano PRIVATE_TOKEN if `isGetTokenFee` is `true`
+ * 
+ * tokenObject format
+ * @param {bool} Privacy 
+ * @param {string} TokenID 
+ * @param {string} TokenName 
+ * @param {string} TokenSymbol 
+ * @param {string} TokenTxType see here CONSTANT_COMMONS.TOKEN_TX_TYPE
+ * @param {string} TokenAmount in nano
+ * @param {string} TokenReceivers  { PaymentAddress: string, Amount: number in nano }
+ */
+export async function getEstimateFeeForPToken(
   from,
   to,
   amount,
   tokenObject,
-  privateKey,
   account,
-  isPrivacyForPrivateToken,
-  feeToken
+  isGetTokenFee = false
 ) {
-  console.log('getEstimateFeeForSendingToken');
-  console.log('\tfrom:' + from);
-  console.log('\tto: ' + to);
-  console.log('\tamount:' + amount);
-  console.log('\ttokenObject', tokenObject);
-  console.log('\tprivateKey', privateKey);
-
   let fee;
+  const isPrivacyForNativeToken = false;
+  const isPrivacyForPrivateToken = true;
+  const feeToken = 0;
   try {
-    fee = await getEstimateFeeForSendingToken(
+    fee = await getEstimateFeeForPTokenService(
       from,
       to,
       amount,
       tokenObject,
-      privateKey,
       account,
       getRpcClient(),
+      isPrivacyForNativeToken,
       isPrivacyForPrivateToken,
-      feeToken
+      feeToken,
+      isGetTokenFee
     );
   } catch (e) {
     throw e;

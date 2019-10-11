@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withNavigation } from 'react-navigation';
 import { CONSTANT_COMMONS } from '@src/constants';
-import { getEstimateFeeForSendingTokenService } from '@src/services/wallet/RpcClientService';
+import { getEstimateFeeForPToken } from '@src/services/wallet/RpcClientService';
 import Token from '@src/services/wallet/tokenService';
 import convert from '@src/utils/convert';
 import formatUtil from '@src/utils/format';
@@ -81,7 +81,7 @@ class AddInternalToken extends Component {
     const accountWallet = wallet.getAccountByName(account.name);
     try{
       this.setState({ isGettingFee: true });
-      const fee =  await getEstimateFeeForSendingTokenService(fromAddress, toAddress, Number(amount), tokenObject, account.PrivateKey, accountWallet);
+      const fee =  await getEstimateFeeForPToken(fromAddress, toAddress, Number(amount), tokenObject, accountWallet);
 
       // update fee
       this.setState({ fee });
