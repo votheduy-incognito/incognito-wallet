@@ -95,7 +95,8 @@ class AddInternalToken extends Component {
   handleCreateSendToken = async (values) => {
     const { account, wallet, setWallet } = this.props;
 
-    const { name, symbol, amount, fee } = values;
+    const { name, symbol, amount } = values;
+    const { fee } = this.state;
 
     const tokenObject = {
       Privacy : true,
@@ -112,7 +113,7 @@ class AddInternalToken extends Component {
 
     try {
       this.setState({ isCreatingOrSending: true });
-      const res = await Token.createSendPrivacyCustomToken(tokenObject, convert.toOriginalAmount(Number(fee), CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY), account, wallet);
+      const res = await Token.createSendPToken(tokenObject, convert.toOriginalAmount(Number(fee), CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY), account, wallet);
 
       if (res.txId) {
         Toast.showSuccess('Create token successfully');
