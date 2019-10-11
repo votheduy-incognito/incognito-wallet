@@ -106,7 +106,7 @@ class WithdrawContainer extends Component {
     };
 
     try {
-      const res = await tokenService.createSendPrivacyCustomToken(
+      const res = await tokenService.createSendPToken(
         tokenObject,
         !isTokenFee ? originalFee : 0,
         account,
