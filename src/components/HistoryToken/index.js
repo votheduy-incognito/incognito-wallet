@@ -42,13 +42,13 @@ const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, dec
       incognitoTx: h?.txID,
       time: h?.time,
       type: h?.isIn ?  CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE : CONSTANT_COMMONS.HISTORY.TYPE.SEND,
-      toAddress: h?.receivers[0],
-      amount: h?.amount,
+      toAddress: h?.receivers?.length && h?.receivers[0],
+      amount: h?.amountPToken,
       symbol: h?.tokenSymbol,
       decimals,
       pDecimals,
       status: h?.status,
-      fee: h?.fee * (10 ** CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY), // convert to nano fee (HistoryList require)
+      fee: h?.amountNativeToken,
       feePToken: h?.feePToken,
     });
   });
