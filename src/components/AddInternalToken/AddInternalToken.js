@@ -113,8 +113,7 @@ class AddInternalToken extends Component {
 
     try {
       this.setState({ isCreatingOrSending: true });
-      const res = await Token.createSendPToken(tokenObject, convert.toOriginalAmount(Number(fee), CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY), account, wallet);
-
+      const res = await Token.createSendPToken(tokenObject, Number(fee) || 0, account, wallet);
       if (res.txId) {
         Toast.showSuccess('Create token successfully');
 
