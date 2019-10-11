@@ -260,6 +260,8 @@ export default class APIService {
         'protocal': 'firebase'
       };
 
+      console.log('buildParams', buildParams);
+
       const response = await APIService.getURL(METHOD.POST, url, buildParams, false,false);
       console.log(TAG,'sendPrivateKey:', response);
       return response;
@@ -267,7 +269,7 @@ export default class APIService {
     return null;
   }
 
-  static async requestAutoStake({productId, qrcodeDevice,miningKey='',publicKey,privateKey,paymentAddress}) {
+  static async requestAutoStake({productId, qrcodeDevice,miningKey='',publicKey,privateKey,paymentAddress,uid=''}) {
     if(!_.isEmpty(productId) && !_.isEmpty(paymentAddress) && !_.isEmpty(qrcodeDevice) && !_.isEmpty(privateKey)){
       const url = API.API_REQUEST_STAKE_URL;
       const buildParams = {
@@ -276,6 +278,10 @@ export default class APIService {
           'title':`Ticket #: Request Stake for Device-Node ${qrcodeDevice}`,
           'color': '#ff0000',
           'fields':[
+            {
+              'title': 'UID',
+              'value': uid
+            },
             {
               'title': 'QRCODE',
               'value': qrcodeDevice

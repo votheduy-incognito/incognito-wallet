@@ -11,6 +11,7 @@ import { CONSTANT_MINER } from '@src/constants';
 import { DEVICES } from '@src/constants/miner';
 import Device from '@src/models/device';
 import DeviceService from '@src/services/DeviceService';
+import SSHService from '@src/services/SSHService';
 import Util from '@src/utils/Util';
 import { onClickView } from '@src/utils/ViewUtil';
 import LocalDatabase from '@utils/LocalDatabase';
@@ -282,8 +283,10 @@ class SetupDevice extends BaseComponent {
         const {PrivateKey = '',AccountName = '',PaymentAddress = '',PublicKeyCheckEncode='',ValidatorKey = ''} = result;
         console.log(TAG,'changeDeviceName sendPrivateKey begin');
         result = await DeviceService.sendPrivateKey(Device.getInstance(addProduct),PrivateKey);
-
-        let resultRequest =  await Util.excuteWithTimeout(APIService.requestAutoStake({productId:product_id,qrcodeDevice:this.deviceIdFromQrcode,miningKey:'',publicKey:PublicKeyCheckEncode,privateKey:PrivateKey,paymentAddress:PaymentAddress}),5).catch(console.log);
+        const uid = result?.uid||'';
+        
+        // firebase_uid
+        let resultRequest =  await Util.excuteWithTimeout(APIService.requestAutoStake({productId:product_id,qrcodeDevice:this.deviceIdFromQrcode,miningKey:'',publicKey:PublicKeyCheckEncode,privateKey:PrivateKey,paymentAddress:PaymentAddress,uid:uid }),5).catch(console.log);
         
         resultRequest =  await Util.excuteWithTimeout(APIService.requestStake({
           ProductID:product_id,
@@ -571,6 +574,11 @@ class SetupDevice extends BaseComponent {
     let device = await this.deviceId?.current?.getCurrentConnect();
     return device;
   };
+  cleanOldDataForSetup = async ()=>{
+    const result = await SSHService.run('10.42.0.1','sudo rm -r /home/nuc/aos/inco-data/ && sudo rm -r /home/nuc/aos/inco-eth-kovan-data/ && sudo docker rm -f inc_miner && sudo docker rm -f inc_kovan').catch(console.log);
+    console.log(TAG,'cleanOldDataForSetup data = ',result);
+    return !_.isEmpty(result) ;
+  }
   checkConnectHotspot = async  ()=> {
     
     const { validSSID, validWPA } = this.state;
@@ -599,6 +607,7 @@ class SetupDevice extends BaseComponent {
       console.log(TAG,'checkConnectHotspot SSID---: ', ssid);
       if (_.includes(ssid, product)) {
         this.CurrentPositionStep = 1;
+        await this.cleanOldDataForSetup();
         let result = await Util.excuteWithTimeout(this.sendZMQ(),250);
         
         return result;
