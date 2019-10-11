@@ -70,7 +70,7 @@ export default class Account {
     try {
       result = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendConstant(paymentInfos, fee, isPrivacy, info);
+      ].createAndSendNativeToken(paymentInfos, fee, isPrivacy, info);
 
       console.log(
         'Spendingcoin after sendConstant: ',
