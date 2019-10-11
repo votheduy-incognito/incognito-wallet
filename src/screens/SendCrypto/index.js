@@ -91,7 +91,7 @@ class SendCryptoContainer extends Component {
 
     try {
       this.setState({ isSending: true });
-      const res = await tokenService.createSendPrivacyCustomToken(
+      const res = await tokenService.createSendPToken(
         tokenObject,
         isUseTokenFee ? 0 : originalFee,
         account,
