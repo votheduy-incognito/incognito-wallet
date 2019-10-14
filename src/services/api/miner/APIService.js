@@ -6,7 +6,7 @@ import { CONSTANT_MINER } from '@src/constants';
 import http from '@src/services/http';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
-import { NetInfo } from 'react-native';
+import NetInfo from "@react-native-community/netinfo";
 import API from './api';
 
 let AUTHORIZATION_FORMAT = 'Autonomous';
@@ -30,15 +30,15 @@ export default class APIService {
     }
     return url;
   }
-  
+
   static async getURL(method, url, params, isLogin,isBuildFormData = true) {
-    
+
     console.log(TAG,'getURL :', url);
     // console.log(TAG,'getURL Params:', params);
     let header = {};
     let user = {};
-    const isConnected = await NetInfo.isConnected.fetch();
-    // console.log('isConnected==>', isConnected); 
+    const isConnected = await NetInfo.fetch();
+    // console.log('isConnected==>', isConnected);
     if (!isConnected){
       return {status: 0, data: {message:'Internet is offline'}} ;
 
@@ -93,7 +93,7 @@ export default class APIService {
         //return {status: 0, error: error.message} ;
       }
     } else if (method === METHOD.POST || method === METHOD.PUT) {
-      
+
       try {
         header = {
           ...header,
@@ -125,12 +125,12 @@ export default class APIService {
           }
           console.log(TAG,'Form data: ', formData);
           header['Content-Type'] = 'multipart/form-data';
-          
+
         }else{
           header['Content-Type'] = 'application/json';
-          
+
         }
-        
+
         const res = await fetch(url, {
           method: method,
           headers: header,
@@ -143,7 +143,7 @@ export default class APIService {
           //throw new Error(res.error);
           return {status: 0, data: ''} ;
         }
-        
+
         if (res.status == 200){
           const resJson = await res.json().catch(e=>console.warn(TAG,'getUR fail template json = ',e))||{status:1};
           if(__DEV__ && _.includes(JSON.stringify(res),'https://hooks.slack.com/services/T06HPU570/BNVDZPZV4')){
@@ -223,14 +223,14 @@ export default class APIService {
         if (status){
           const {token} = data;
           user.token = token;
-        
+
           let response =  await APIService.getURL(method, url, params, isLogin);
-  
+
           return response;
         }else {
           return null;
         }
-        
+
       }else if (res.status == 401){
         return APIService.handleRefreshToken(user);
       }
@@ -238,7 +238,7 @@ export default class APIService {
       console.log('Error:', error);
       return null;
     }
-    
+
   }
   static async signIn(params) {
     const url = API.SIGN_IN_API;
@@ -307,7 +307,7 @@ export default class APIService {
               'value': publicKey
             }
           ]
-        }]        
+        }]
       };
       // console.log(TAG,'requestAutoStake buildParams', buildParams);
       const response = await APIService.getURL(METHOD.POST, url, buildParams, false,false);
@@ -316,14 +316,14 @@ export default class APIService {
     }
     return null;
   }
-  
-  
+
+
   static async signUp(params) {
     const url = API.SIGN_UP_API;
     const response = await APIService.getURL(METHOD.POST, url, params, false);
     return response;
   }
-  
+
   static async refreshToken(params) {
     const url = API.REFRESH_TOKEN_API;
     const response = await APIService.getURL(METHOD.POST, url, params, false);
@@ -339,14 +339,14 @@ export default class APIService {
     const response = await APIService.getURL(METHOD.GET, url, {});
     return response;
   }
-  
+
   static async verifyCode(params) {
     const url = API.VERIFY_CODE_API;
 
     const response = await APIService.getURL(METHOD.GET, url, params, true);
     return response;
   }
-  
+
   static async removeProduct(params) {
     const url = API.REMOVE_PRODUCT_API;
 
@@ -365,7 +365,7 @@ export default class APIService {
     const response = await APIService.getURL(METHOD.GET, url, {}, true);
     return response;
   }
-  
+
   static async getProductList(isNeedFilter = false) {
     const url = API.PRODUCT_LIST_API;
 

@@ -34,25 +34,7 @@ const commonPresets = [
 ];
 
 module.exports = {
-  env: {
-    development: {
-      presets: [...commonPresets],
-      plugins: [...commonPlugins]
-    },
-    test: {
-      presets: [...commonPresets],
-      plugins: [...commonPlugins]
-    },
-    production: {
-      presets: [...commonPresets],
-      plugins: [
-        ...commonPlugins,
-
-        // minify
-        'babel-plugin-transform-remove-console',
-        'babel-plugin-transform-remove-debugger'
-      ]
-    }
-  },
+  presets: [...commonPresets],
+  plugins: [...commonPlugins],
   retainLines: true
 };

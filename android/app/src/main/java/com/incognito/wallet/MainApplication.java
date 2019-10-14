@@ -1,10 +1,15 @@
 package com.incognito.wallet;
 
 import android.app.Application;
+import android.util.Log;
 
+import com.facebook.react.PackageList;
+import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
+import com.facebook.react.bridge.JavaScriptExecutorFactory;
 import com.facebook.react.ReactApplication;
 import com.reactnative.ssh.RNSSHPackage;
 import com.pusherman.networkinfo.RNNetworkInfoPackage;
+import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.sensors.RNSensorsPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.reactlibrary.RNZmqServicePackage;
@@ -45,6 +50,7 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new RNSSHPackage(),
             new RNNetworkInfoPackage(),
+            new NetInfoPackage(),
             new RNSensorsPackage(),
             new RNSoundPackage(),
             new RNZmqServicePackage(),

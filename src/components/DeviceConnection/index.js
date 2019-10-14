@@ -2,7 +2,8 @@ import Util from '@utils/Util';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { NetInfo, View } from 'react-native';
+import { View } from 'react-native';
+import NetInfo from "@react-native-community/netinfo";
 import BaseConnection, { ObjConnection } from './BaseConnection';
 import style from './style';
 import WifiConnection from './WifiConnection';
@@ -21,7 +22,7 @@ class DeviceConnection extends Component {
 
     this.init();
   }
-  
+
   getCurrentConnect = async ():Promise<ObjConnection> => {
     // await Util.delay(3);
     console.log(TAG, 'getCurrentConnect begin ', this.connection.currentConnect);
@@ -30,7 +31,7 @@ class DeviceConnection extends Component {
     console.log(TAG, 'getCurrentConnect end ', currentConnect);
     return currentConnect;
   };
-  
+
   componentDidMount = async () => {
     const listDevice = await this.getDeviceSavedList();
     if (_.isEmpty(listDevice)) {
@@ -63,13 +64,13 @@ class DeviceConnection extends Component {
   connectDevice = async (device: ObjConnection) => {
     console.log(TAG, 'connectDevice begin  = ',JSON.stringify(device)||'');
     let result = await this.connection.connectDevice(device);
-    
+
     if(result){
       // console.log(TAG, 'connectDevice begin true ---- ');
       const checkConnectWifi = async ()=>{
-        const isConnected = await NetInfo.isConnected.fetch();
+        const isConnected = await NetInfo.fetch();
         // while(!isConnected){
-          
+
         // }
         if(!isConnected){
           await Util.delay(1);
