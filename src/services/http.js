@@ -45,7 +45,8 @@ instance.interceptors.response.use(res => {
   }
 
   // can not get response, alert to user
-  if (!errResponse) {
+  if (errorData?.isAxiosError && !errResponse) {
+    console.log('errorData', errorData);
     return new ExHandler(new CustomError(ErrorCode.network_make_request_failed)).throw();
   }
 
