@@ -1,6 +1,4 @@
-import 'intl';
-import 'intl/locale-data/jsonp/en';
-import '@src/services/gomobile';
+import '@src/services/polyfill';
 import App from '@src/App';
 // import AppTemp from '@src/Temp';
 import { AppRegistry } from 'react-native';
