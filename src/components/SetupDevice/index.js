@@ -18,7 +18,8 @@ import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Keyboard, NetInfo, Platform, Text, TextInput, View } from 'react-native';
+import { Keyboard, Platform, Text, TextInput, View } from 'react-native';
+import NetInfo from "@react-native-community/netinfo";
 import DeviceInfo from 'react-native-device-info';
 import { Button } from 'react-native-elements';
 import StepIndicator from 'react-native-step-indicator';
@@ -106,11 +107,11 @@ class SetupDevice extends BaseComponent {
   componentDidMount(){
     super.componentDidMount();
     // this.callVerifyCode();
-    NetInfo.isConnected.addEventListener('connectionChange', this._handleConnectionChange);
+    NetInfo.addEventListener('connectionChange', this._handleConnectionChange);
   }
   componentWillUnmount() {
     super.componentWillUnmount();
-    NetInfo.isConnected.removeEventListener('connectionChange', this._handleConnectionChange);
+    NetInfo.removeEventListener('connectionChange', this._handleConnectionChange);
   }
 
   renderDeviceName=()=>{
@@ -122,7 +123,7 @@ class SetupDevice extends BaseComponent {
     if(!showModal){
       return null;
     }
-    
+
     return (
       <View style={[styles.modal, styles.modal3]}>
         {validWallName ? null : (
@@ -160,7 +161,7 @@ class SetupDevice extends BaseComponent {
       return null;
     }
     // let isDoingSetUp = true;
-    
+
     return (
       isDoingSetUp? (
         <StepIndicator
@@ -172,7 +173,7 @@ class SetupDevice extends BaseComponent {
         />
       ):(
         <View style={[styles.modal, styles.modal3]}>
-          
+
           { validSSID && validWPA ? null : (
             <Text style={[errorText,{color:'#000000'}]}>Please type a Wi-Fi name and its password to connect Miner to the Internet</Text>
           )}
@@ -221,12 +222,12 @@ class SetupDevice extends BaseComponent {
     }
 
     return errorObj;
-    
+
   }
 
   handleSetUpPress = onClickView(async (deviceIdFromQrcode='')=>{
     let errorMsg = '';
-    
+
     try {
       this.setState({
         loading: true,
@@ -302,7 +303,7 @@ class SetupDevice extends BaseComponent {
             ...fetchProductInfo.minerInfo,
             ...dataRequestStake
           };
-  
+
           await LocalDatabase.updateDevice(fetchProductInfo);
           console.log(TAG,'changeDeviceName end update = ',fetchProductInfo);
         }
@@ -312,7 +313,7 @@ class SetupDevice extends BaseComponent {
         }
       }
       errMessage = errorMessage;
-      
+
     } catch (error) {
       console.log(TAG,'changeDeviceName error');
       __DEV__ && this.showToastMessage(error.message);
@@ -347,7 +348,7 @@ class SetupDevice extends BaseComponent {
         }
       }
       errMessage = errorMessage;
-      
+
     } catch (error) {
       console.log(TAG,'handleSubmit error');
       this.onPressBack();
@@ -357,7 +358,7 @@ class SetupDevice extends BaseComponent {
       showModal: false,
       errorMessage:errMessage
     });
-    
+
   });
   saveProductList = async (deviceInfo) =>{
     try {
@@ -393,7 +394,7 @@ class SetupDevice extends BaseComponent {
         {/* <Loader loading={loading} /> */}
         {this.renderWifiPassword()}
         {/* {this.renderToastMessage()} */}
-        
+
         <View style={{width: 0,height: 0,opacity:0}}>
           <CreateAccount ref={this.viewCreateAccount} navigation={navigation} />
         </View>
@@ -489,7 +490,7 @@ class SetupDevice extends BaseComponent {
           phone: phone
         };
         console.log(TAG, 'Params:', JSON.stringify(params));
-        
+
         this.setState({
           verifyCode: verify_code
         });
@@ -499,7 +500,7 @@ class SetupDevice extends BaseComponent {
     }
     return false;
   }
-  
+
   connectZMQ = async (params) =>{
     try {
       this.isSendDataZmqSuccess = false;
@@ -508,9 +509,9 @@ class SetupDevice extends BaseComponent {
       console.log(TAG,'Send zmq successfully res',res);
       await Util.excuteWithTimeout(this.deviceId?.current?.removeConnectionDevice(this.deviceMiner),2).catch(console.log);
       this.isSendDataZmqSuccess = true;
-     
+
       const checkConnectWifi = async ()=>{
-        let isConnected = await NetInfo.isConnected.fetch() && this.isHaveNetwork;
+        let isConnected = await NetInfo.fetch() && this.isHaveNetwork;
         // while(!isConnected){
         console.log(TAG, 'connectZMQ checkConnectWifi isConnected = ',isConnected);
         if(!isConnected){
@@ -518,7 +519,7 @@ class SetupDevice extends BaseComponent {
         }
         // }
         console.log(TAG, 'connectZMQ checkConnectWifi isConnected end ----- ',isConnected);
-        
+
         return isConnected?isConnected : new Error('is connected fail ');
       };
 
@@ -526,17 +527,17 @@ class SetupDevice extends BaseComponent {
       const result = await Util.tryAtMost(checkConnectWifi,60,2,2).catch(console.log)||false;
       console.log(TAG, 'connectZMQ begin end  ',result);
       return result;
-      
+
     } catch (error) {
       console.log(TAG,'Send zmq error',error);
     }
 
     return false;
-    
+
   }
 
   _handleConnectionChange = async (isConnected) => {
-    
+
     let device = isConnected && await this.deviceId?.current?.getCurrentConnect();
     this.isHaveNetwork = !_.isEmpty(device?.name||'') && !_.includes(device?.name||'', HOTPOT);
     console.log(TAG,`_handleConnectionChange: ${this.isHaveNetwork} ,name = ${device?.name}`);
@@ -544,7 +545,7 @@ class SetupDevice extends BaseComponent {
       isConnected: isConnected
     });
   };
-  
+
   updateDeviceNameRequest = async (product_id,name) => {
     let params = {
       product_id: product_id,
@@ -580,11 +581,11 @@ class SetupDevice extends BaseComponent {
     return !_.isEmpty(result) ;
   }
   checkConnectHotspot = async  ()=> {
-    
+
     const { validSSID, validWPA } = this.state;
 
     let device = await this.deviceId?.current?.getCurrentConnect();
-    
+
     let isConnectedHotpost = !_.isEmpty(device?.name||'') && _.includes(device?.name||'', HOTPOT);
     this.CurrentPositionStep = 0;
     console.log(TAG,'checkConnectHotspot begin: ', validSSID,validWPA);
@@ -600,7 +601,7 @@ class SetupDevice extends BaseComponent {
       isConnectedHotpost = !_.isEmpty(device) && !this.isHaveNetwork;
       this.isHaveNetwork = false;
     }
-   
+
     if (isConnectedHotpost && validSSID && validWPA) {
       let ssid = device?.name?.toLowerCase()||'';
       const product = CONSTANT_MINER.PRODUCT_TYPE.toLowerCase();
@@ -609,9 +610,9 @@ class SetupDevice extends BaseComponent {
         this.CurrentPositionStep = 1;
         await this.cleanOldDataForSetup();
         let result = await Util.excuteWithTimeout(this.sendZMQ(),250);
-        
+
         return result;
-      } 
+      }
     }
     return false;
   }
@@ -619,7 +620,7 @@ class SetupDevice extends BaseComponent {
   authFirebase = async () =>{
     try {
       const {addProduct} = this.state;
-      const authFirebase = await Util.excuteWithTimeout(DeviceService.authFirebase(addProduct),7);  
+      const authFirebase = await Util.excuteWithTimeout(DeviceService.authFirebase(addProduct),7);
       return authFirebase;
     } catch (error) {
       return new Error('timeout');
@@ -651,7 +652,7 @@ class SetupDevice extends BaseComponent {
             __DEV__ && this.showToastMessage('authFirebase begin');
             let authFirebase = this.authFirebase;
             await Util.tryAtMost(authFirebase,3,3).catch(console.error);
-            
+
             if(__DEV__) this.showToastMessage('authFirebase end');
 
             return true;
@@ -663,7 +664,7 @@ class SetupDevice extends BaseComponent {
         console.log('Error try catch:', error);
       }
     }
-    
+
     return errorObj;
 
   }
