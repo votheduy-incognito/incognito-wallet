@@ -1,13 +1,12 @@
-import React,{Component} from 'react';
-import {Platform,View } from 'react-native';
-import RNStepIndicator from 'react-native-step-indicator';
-import PropTypes from 'prop-types';
 import _ from 'lodash';
-import style,{ indicatorStyles } from './style';
-import {StepIndicatorProps} from './type';
+import React, { Component } from 'react';
+import { View } from 'react-native';
+import RNStepIndicator from 'react-native-step-indicator';
+import style, { indicatorStyles } from './style';
+import { StepIndicatorProps } from './type';
 
 type State = {
-  currentPage:number
+  currentPage:Number
 }
 class StepIndicator extends Component<StepIndicatorProps,State> {
   constructor(props:StepIndicatorProps) {
@@ -49,7 +48,7 @@ class StepIndicator extends Component<StepIndicatorProps,State> {
           currentPosition={currentPage}
           direction='horizontal'
           stepCount={stepCount}
-          customStyles={[indicatorStyles,stepStyle]}
+          customStyles={stepStyle}
         />
       </View>
     );
