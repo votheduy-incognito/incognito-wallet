@@ -20,7 +20,7 @@ function setRpcClientInterceptor() {
     const errResponse = errorData?.response;
 
     // can not get response, alert to user
-    if (!errResponse) {
+    if (errorData?.isAxiosError && !errResponse) {
       return new ExHandler(new CustomError(ErrorCode.network_make_request_failed)).throw();
     }
 
