@@ -5,11 +5,13 @@ import images from '@src/assets';
 import { openQrScanner } from '@src/components/QrCodeScanner';
 import SetupDevice from '@src/components/SetupDevice';
 import routeNames from '@src/router/routeNames';
+import APIService from '@src/services/api/miner/APIService';
 import { scaleInApp } from '@src/styles/TextStyle';
 import LocalDatabase from '@src/utils/LocalDatabase';
+import Util from '@src/utils/Util';
 import { onClickView } from '@src/utils/ViewUtil';
 import _ from 'lodash';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Button, Icon, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
@@ -18,7 +20,53 @@ import styles from './styles';
 export const TAG = 'GetStartedAddNode';
 const titleStep = ['Make sure Node is plugged in.','Connect Node to Wi-Fi','Scan the code at the base of the device'];
 const titleButton = ['Done, next step','Next','Next'];
-
+const GetQrcode = React.memo(({onSuccess})=>{
+  const [deviceId,setDeviceId] = useState('');
+  const [isPassedValidate,setIdPassedValidate] = useState(false);
+  const [errorMessage,setErrorMessage] = useState(''); 
+  const handleQrcode = useCallback(onClickView(()=>{
+    openQrScanner(async data => {
+      if(_.isEmpty(data)){
+        setDeviceId('');
+        setIdPassedValidate(false);
+        setErrorMessage('Please scan QR code to get a verification code');
+      }else{
+        console.log(TAG,'openQrScanner  == data',data);
+        const checked = await Util.excuteWithTimeout(APIService.qrCodeCheck({QRCode:data})).catch(console.log)||{};
+    
+        const isPassed = !_.isEmpty(checked) && _.isEqual(checked.status,1);
+        setIdPassedValidate(isPassed);
+        setDeviceId(data);
+        setErrorMessage(isPassed?'':'QR-Code is invalid. Please try again');
+        isPassed && onSuccess && onSuccess(data);
+      }
+    });
+  }),[deviceId]);
+  return (
+    <>
+      <Image style={styles.content_step1} source={images.ic_getstarted_scan_device} />
+      {!isPassedValidate ?(
+        <TouchableOpacity onPress={handleQrcode}>
+          <Image style={styles.content_step1} source={images.ic_getstarted_qrcode} />
+          <Text style={styles.step3_text}>Tap to scan</Text>
+        </TouchableOpacity>
+      ):(
+        <>
+          <Icon size={scaleInApp(50)} color='#25CDD6' name="check" type='simple-line-icon' />
+          <Text style={[styles.step3_text,{color:'#25CDD6'}]}>Scan complete</Text>
+        </>
+      )}
+      {!isPassedValidate && (
+        <Text style={[styles.text,styles.errorText,styles.item_container_error]}>{errorMessage}</Text>
+      )}
+      
+      { !_.isEmpty(deviceId) && (
+        <Text style={[styles.text,styles.item_container_input,{ textAlign:'center',paddingBottom:2}]}>{deviceId}</Text>
+      )}
+    
+    </>
+  );
+});
 class GetStartedAddNode extends BaseScreen {
   constructor(props) {
     super(props);
@@ -37,14 +85,25 @@ class GetStartedAddNode extends BaseScreen {
     this.wifiPassValue = '';
   }
 
-  handleQrcode = onClickView(()=>{
-    openQrScanner(data => {
-      console.log(TAG,'openQrScanner  == data',data);
-      this.setState({
-        deviceId:data
-      });
-    });
-  });
+  // handleQrcode = onClickView(()=>{
+  //   openQrScanner(async data => {
+  //     console.log(TAG,'openQrScanner  == data',data);
+  //     const checked = await Util.excuteWithTimeout(APIService.qrCodeCheck({QRCode:data})).catch(console.log)||{};
+      
+  //     if(!_.isEmpty(checked) && _.isEqual(checked.status,1)){
+  //       const {isPassedValidate} = this.state;
+  //       this.setState({
+  //         isPassedValidate:isPassedValidate||false,
+  //         deviceId:data
+  //       });
+  //     }else{
+  //       this.setState({
+  //         isPassedValidate:false,
+  //         errorMessage:'error code'
+  //       });
+  //     }
+  //   });
+  // });
 
   renderTitle =()=>{
     const {currentPage,currentConnect} = this.state;
@@ -87,15 +146,6 @@ class GetStartedAddNode extends BaseScreen {
     );
   }
 
-  renderViewComplete =()=>{
-    return (
-      <>
-        <Icon size={scaleInApp(50)} color='#25CDD6' name="check" type='simple-line-icon' />
-        <Text style={[styles.step3_text,{color:'#25CDD6'}]}>Scan complete</Text>
-      </>
-    );
-  }
-
   renderContent=()=>{
     const {currentPage,deviceId,currentConnect,errorMessage,loading} = this.state;
     
@@ -106,7 +156,7 @@ class GetStartedAddNode extends BaseScreen {
       break;
     }
     case 1:{
-      childView = this.renderContentStep2(); 
+      childView = this.renderContentStep2();
       break;
     }
     case 2:{
@@ -119,34 +169,10 @@ class GetStartedAddNode extends BaseScreen {
               style={[styles.text, styles.item,styles.errorText]}
             >{errorMessage}
             </Text>
-          )
-          }
+          )}
           {!isFail && <LongLoading />}
         </>
-      ):(
-        <>
-          <Image style={styles.content_step1} source={images.ic_getstarted_scan_device} />
-          {_.isEmpty(deviceId)?(
-            <TouchableOpacity onPress={this.handleQrcode}>
-              <Image style={styles.content_step1} source={images.ic_getstarted_qrcode} />
-              <Text style={styles.step3_text}>Tap to scan</Text>
-            </TouchableOpacity>
-          ):this.renderViewComplete()}
-          
-          {!isPassedValidate && _.isEmpty(deviceId)?(
-            <Text
-              style={[styles.text,styles.errorText,styles.item_container_error]}
-            >Please scan QR code to get a verification code
-            </Text>
-          ):(
-            <Text
-              style={[styles.text,styles.item_container_input,{ textAlign:'center',paddingBottom:2}]}
-            >{deviceId??''}
-            </Text>
-          )}
-
-        </>
-      ); 
+      ):<GetQrcode onSuccess={(qrCode)=>{this.setState({deviceId:qrCode});}} />; 
       break;
     }
     
