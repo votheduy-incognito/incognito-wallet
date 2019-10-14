@@ -8,13 +8,13 @@ import { withNavigation } from 'react-navigation';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { getEstimateFeeForPToken } from '@src/services/wallet/RpcClientService';
 import Token from '@src/services/wallet/tokenService';
-import convert from '@src/utils/convert';
 import formatUtil from '@src/utils/format';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { setWallet } from '@src/redux/actions/wallet';
 import tokenData from '@src/constants/tokenData';
+import { ExHandler } from '@src/services/exception';
 import styleSheet from './style';
 
 const formName = 'addInternalToken';
@@ -86,7 +86,7 @@ class AddInternalToken extends Component {
       // update fee
       this.setState({ fee });
     } catch(e){
-      Toast.showError('Something went wrong. Please refresh the screen.');
+      new ExHandler(e).showErrorToast();
     } finally {
       this.setState({ isGettingFee: false });
     }
@@ -122,10 +122,10 @@ class AddInternalToken extends Component {
 
         this.goBack();
       } else {
-        Toast.showError('Something went wrong. Please refresh the screen.');
+        throw new Error('Something went wrong. Please refresh the screen.');
       }
     } catch (e) {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+      new ExHandler(e).showErrorToast();
     } finally {
       this.setState({ isCreatingOrSending: false });
     }

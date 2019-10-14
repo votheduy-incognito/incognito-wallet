@@ -12,6 +12,7 @@ import { setWallet } from '@src/redux/actions/wallet';
 import { pTokens } from '@src/redux/selectors/token';
 import PToken from '@src/models/pToken';
 import internalTokenModel from '@src/models/token';
+import { ExHandler } from '@src/services/exception';
 import SearchToken from './SearchToken';
 import { Toast, ActivityIndicator, } from '../core';
 
@@ -74,8 +75,8 @@ export class SearchTokenContainer extends PureComponent {
       this.setState({ tokens });
 
       return tokens || [];
-    } catch {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+    } catch (e) {
+      new ExHandler(e).showErrorToast();
     }
   };
 
@@ -109,10 +110,8 @@ export class SearchTokenContainer extends PureComponent {
       setWallet(wallet);
 
       this.goBack();
-    } catch {
-      Toast.showError(
-        'Something went wrong. Please tap the Add button again.'
-      );
+    } catch (e) {
+      new ExHandler(e, 'Something went wrong. Please tap the Add button again.').showErrorToast();
     }
   };
 
@@ -120,8 +119,8 @@ export class SearchTokenContainer extends PureComponent {
     try {
       const { getPTokenList } = this.props;
       await getPTokenList();
-    } catch {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+    } catch (e) {
+      new ExHandler(e).showErrorToast();
     }
   }
 
@@ -135,8 +134,8 @@ export class SearchTokenContainer extends PureComponent {
       this.setState({ internalTokens });
 
       return internalTokens;
-    } catch {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+    } catch (e) {
+      new ExHandler(e).showErrorToast();
     }
   }
 
