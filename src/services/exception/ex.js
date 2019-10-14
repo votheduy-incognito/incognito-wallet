@@ -31,6 +31,7 @@ class Exception {
       // find friendly message
       if (exception.name === CustomError.TYPES.KNOWN_ERROR) {
         this.message = exception?.message;
+        this.debugMessage = exception?.rawError?.stack;
       } else if (exception.name === CustomError.TYPES.API_ERROR) {
         Message[this.exception?.code] && (this.message = Message[this.exception.code]);
       } else if (exception.name === CustomError.TYPES.WEB_JS_ERROR) {
@@ -47,7 +48,7 @@ class Exception {
     /**
      * Message for debug
      */
-    this.debugMessage = this.exception?.message;
+    this.debugMessage = this.debugMessage ?? this.exception?.message;
 
     /**
      * Message for UI (display to user)
