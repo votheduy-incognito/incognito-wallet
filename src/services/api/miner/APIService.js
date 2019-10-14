@@ -402,6 +402,21 @@ export default class APIService {
     };
   }
 
+  static async qrCodeCheck({
+    QRCode
+  }) {
+    if (!QRCode) return throw new Error('Missing QRCode');
+   
+    const response = await http.post('stake/qr-code-check', {
+      QRCode:QRCode
+    }).catch(console.log);
+    console.log(TAG,'qrCodeCheck end = ',response);
+    return {
+      status:_.isBoolean(response) && response ?1:0,
+      data:response
+    };
+  }
+
   static async requestWithdraw({
     ProductID,
     ValidatorKey,
