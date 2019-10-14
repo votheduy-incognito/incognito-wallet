@@ -1,7 +1,7 @@
+import LongLoading from '@components/LongLoading';
 import StepIndicator from '@components/StepIndicator';
 import BaseScreen from '@screens/BaseScreen';
 import images from '@src/assets';
-import LongLoading from '@src/components/LongLoading';
 import { openQrScanner } from '@src/components/QrCodeScanner';
 import SetupDevice from '@src/components/SetupDevice';
 import routeNames from '@src/router/routeNames';
@@ -48,7 +48,7 @@ class GetStartedAddNode extends BaseScreen {
 
   renderTitle =()=>{
     const {currentPage,currentConnect} = this.state;
-    const headerStep = `STEP ${currentPage+1}`;
+    // const headerStep = `STEP ${currentPage+1}`;
     console.log(TAG,'renderTitle ',currentConnect);
     return (
       <>

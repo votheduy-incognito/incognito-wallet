@@ -1,15 +1,16 @@
-import {StyleSheet} from 'react-native';
-import { scaleInApp } from '@src/styles/TextStyle';
+import { FontStyle, scaleInApp } from '@src/styles/TextStyle';
+import { StyleSheet } from 'react-native';
 
 export const indicatorStyles = {
-  stepIndicatorSize: scaleInApp(30),
-  currentStepIndicatorSize: scaleInApp(40),
+  stepIndicatorSize: scaleInApp(25),
+  currentStepIndicatorSize: scaleInApp(30),
   separatorStrokeWidth: scaleInApp(1),
-  currentStepStrokeWidth: scaleInApp(3),
-  separatorFinishedColor: '#25CDD6',
-  separatorUnFinishedColor: '#a4d4a5',
+  currentStepStrokeWidth: scaleInApp(2),
+  stepStrokeCurrentColor:'#25CDD6',
+  separatorFinishedColor: '#D8D8D8',
+  separatorUnFinishedColor: '#D8D8D8',
   stepIndicatorFinishedColor: '#25CDD6',
-  stepIndicatorUnFinishedColor: '#a4d4a5',
+  stepIndicatorUnFinishedColor: '#014E52',
   stepIndicatorCurrentColor: '#ffffff',
   stepIndicatorLabelFontSize: scaleInApp(15),
   currentStepIndicatorLabelFontSize: scaleInApp(15),
@@ -18,7 +19,8 @@ export const indicatorStyles = {
   stepIndicatorLabelUnFinishedColor: 'rgba(255,255,255,0.5)',
   labelColor: '#666666',
   labelSize: scaleInApp(12),
-  currentStepLabelColor: '#4aae4f'
+  currentStepLabelColor: '#25CDD6',
+  labelFontFamily:FontStyle.medium
 };
 
 const style = StyleSheet.create({
