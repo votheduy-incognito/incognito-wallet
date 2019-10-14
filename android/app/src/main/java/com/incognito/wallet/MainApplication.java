@@ -1,8 +1,13 @@
 package com.incognito.wallet;
 
 import android.app.Application;
+import android.util.Log;
 
+import com.facebook.react.PackageList;
+import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
+import com.facebook.react.bridge.JavaScriptExecutorFactory;
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.sensors.RNSensorsPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.reactlibrary.RNZmqServicePackage;
@@ -26,6 +31,12 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 
+// firebase
+import io.invertase.firebase.auth.RNFirebaseAuthPackage;
+import io.invertase.firebase.database.RNFirebaseDatabasePackage;
+import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
+import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,6 +52,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new NetInfoPackage(),
             new RNSensorsPackage(),
             new RNSoundPackage(),
             new RNZmqServicePackage(),

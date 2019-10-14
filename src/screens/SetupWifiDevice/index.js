@@ -18,7 +18,8 @@ import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Keyboard, NetInfo, Platform, Text, TextInput, View } from 'react-native';
+import { Keyboard, Platform, Text, TextInput, View } from 'react-native';
+import NetInfo from "@react-native-community/netinfo";
 import DeviceInfo from 'react-native-device-info';
 import { Button } from 'react-native-elements';
 import StepIndicator from 'react-native-step-indicator';
@@ -93,11 +94,11 @@ class SetupWifiDevice extends BaseScreen {
 
   componentDidMount(){
     super.componentDidMount();
-    NetInfo.isConnected.addEventListener('connectionChange', this._handleConnectionChange);
+    NetInfo.addEventListener('connectionChange', this._handleConnectionChange);
   }
   componentWillUnmount() {
     super.componentWillUnmount();
-    NetInfo.isConnected.removeEventListener('connectionChange', this._handleConnectionChange);
+    NetInfo.removeEventListener('connectionChange', this._handleConnectionChange);
   }
 
   renderDeviceName=()=>{
@@ -109,7 +110,7 @@ class SetupWifiDevice extends BaseScreen {
     if(!showModal){
       return null;
     }
-    
+
     return (
       <View style={[styles.modal, styles.modal3]}>
         {validWallName ? null : (
@@ -146,7 +147,7 @@ class SetupWifiDevice extends BaseScreen {
       return null;
     }
     // let isDoingSetUp = true;
-    
+
     return (
       isDoingSetUp? (
         <StepIndicator
@@ -158,7 +159,7 @@ class SetupWifiDevice extends BaseScreen {
         />
       ):(
         <View style={[styles.modal, styles.modal3]}>
-          
+
           { validSSID && validWPA ? null : (
             <Text style={[errorText,{color:'#000000'}]}>Please type a Wi-Fi name and its password to connect Miner to the Internet</Text>
           )}
@@ -191,7 +192,7 @@ class SetupWifiDevice extends BaseScreen {
   }
 
   connectHotspot = async ()=>{
-    
+
     const deviceMiner = new ObjConnection();
     deviceMiner.name = HOTPOT;
     deviceMiner.id = HOTPOT;
@@ -202,7 +203,7 @@ class SetupWifiDevice extends BaseScreen {
 
   handleSetUpPress = onClickView(async ()=>{
     let errorMsg = '';
-    
+
     try {
       this.setState({
         loading: true,
@@ -210,7 +211,7 @@ class SetupWifiDevice extends BaseScreen {
         isDoingSetUp:true,
         errorMessage:''
       });
-      
+
       const resultStep1 = await this.checkConnectHotspot();
       let callVerifyCode = this.callVerifyCode;
       this.CurrentPositionStep = 2;
@@ -228,7 +229,7 @@ class SetupWifiDevice extends BaseScreen {
         errorMessage:errorMsg
       });
     }
-    
+
   });
 
   handleSubmit = onClickView(async() => {
@@ -246,7 +247,7 @@ class SetupWifiDevice extends BaseScreen {
       }
       if(!_.isEmpty(fetchProductInfo)){
         // create account
-        
+
         let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
         const PrivateKey  = result.PrivateKey;
         console.log(TAG,'handleSubmit PrivateKey = ',PrivateKey);
@@ -258,7 +259,7 @@ class SetupWifiDevice extends BaseScreen {
         }
       }
       errMessage = errorMessage;
-      
+
     } catch (error) {
       console.log(TAG,'handleSubmit error');
       this.onPressBack();
@@ -268,7 +269,7 @@ class SetupWifiDevice extends BaseScreen {
       showModal: false,
       errorMessage:errMessage
     });
-    
+
   });
   saveProductList = async (deviceInfo) =>{
     try {
@@ -293,7 +294,7 @@ class SetupWifiDevice extends BaseScreen {
     const {
       loading
     } = this.state;
-    
+
     return (
       <View style={container}>
         <DeviceConnection ref={this.deviceId} />
@@ -301,7 +302,7 @@ class SetupWifiDevice extends BaseScreen {
         <Loader loading={loading} />
         {this.renderWifiPassword()}
         {/* {this.renderToastMessage()} */}
-        
+
         <View style={{width: 0,height: 0}}>
           <CreateAccount ref={this.viewCreateAccount} />
         </View>
@@ -397,7 +398,7 @@ class SetupWifiDevice extends BaseScreen {
           phone: phone
         };
         console.log(TAG, 'Params:', JSON.stringify(params));
-        
+
         this.setState({
           verifyCode: verify_code
         });
@@ -407,7 +408,7 @@ class SetupWifiDevice extends BaseScreen {
     }
     return false;
   }
-  
+
   connectZMQ = async (params) =>{
     try {
       this.isSendDataZmqSuccess = false;
@@ -415,30 +416,30 @@ class SetupWifiDevice extends BaseScreen {
       if(_.isEmpty(res)) return false;
       console.log(TAG,'Send zmq successfully res',res);
       this.isSendDataZmqSuccess = true;
-     
+
       const checkConnectWifi = async ()=>{
         let isConnected = false;
         while(!isConnected){
-          isConnected = await NetInfo.isConnected.fetch() && this.isHaveNetwork;
+          isConnected = await NetInfo.fetch() && this.isHaveNetwork;
         }
-        
+
         return isConnected;
       };
 
       const result = await Util.excuteWithTimeout(checkConnectWifi(),60);
       console.log(TAG, 'connectZMQ begin end  ',result);
       return result;
-      
+
     } catch (error) {
       console.log(TAG,'Send zmq error',error);
     }
 
     return false;
-    
+
   }
 
   _handleConnectionChange = async (isConnected) => {
-    
+
     let device = isConnected && await this.deviceId?.current?.getCurrentConnect();
     this.isHaveNetwork = !_.isEmpty(device?.name||'') && !_.isEqual(device?.name||'', HOTPOT);
     console.log(TAG,`_handleConnectionChange: ${this.isHaveNetwork} ,name = ${device?.name}`);
@@ -446,9 +447,9 @@ class SetupWifiDevice extends BaseScreen {
       isConnected: isConnected
     });
   };
-  
+
   changeDeviceName = async (product) => {
-    
+
     const { wallName } = this.state;
     let params = {
       product_id: product.product_id,
@@ -474,11 +475,11 @@ class SetupWifiDevice extends BaseScreen {
     });
   }
   checkConnectHotspot = async  ()=> {
-    
+
     const { validSSID, validWPA } = this.state;
 
     let device = await this.deviceId?.current?.getCurrentConnect();
-    
+
     let isConnectedHotpost = !_.isEmpty(device?.name||'') && _.isEqual(device?.name||'', HOTPOT);
     this.CurrentPositionStep = 0;
     if(!isConnectedHotpost){
@@ -494,9 +495,9 @@ class SetupWifiDevice extends BaseScreen {
       if (_.includes(ssid, product)) {
         this.CurrentPositionStep = 1;
         let result = await Util.excuteWithTimeout(this.sendZMQ(),120);
-        
+
         return result;
-      } 
+      }
     }
     return false;
   }
@@ -570,7 +571,7 @@ class SetupWifiDevice extends BaseScreen {
   //       this.callVerifyCode();
   //     }, 12 * 1000);
   //   } else {
-      
+
   //     this.setState({
   //       // loading: false,
   //       errorMessage: errorMessage
