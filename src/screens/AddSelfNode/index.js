@@ -31,12 +31,12 @@ const errorMessage = 'Something went wrong. Let\'s start again.';
 const labels = ['Connect Hotpot','Send Wifi Info','Verify Code'];
 
 class AddSelfNode extends BaseScreen {
-  
+
   constructor(props) {
     super(props);
     const {accountList = [],defaultAccountName= ''} = props;
-      
-    this.state = { 
+
+    this.state = {
       currentPositionStep:0,
       accountList:accountList,
       loading:false,
@@ -45,7 +45,7 @@ class AddSelfNode extends BaseScreen {
       isConnected: false,
       isShowListAccount:false
     };
-   
+
     this.viewImportPrivateKey = React.createRef();
     // this.viewInnputDeviceName = React.createRef();
     // this.viewInputHost = React.createRef();
@@ -65,7 +65,7 @@ class AddSelfNode extends BaseScreen {
   static getDerivedStateFromProps(nextProps, prevState) {
     if(!_.isEqual(nextProps?.accountList,prevState.accountList)){
       const {accountList = [],defaultAccountName= ''} = nextProps;
-      
+
       // const selectedAccount = _.isEmpty(prevState.selectedAccount) ? accountList.filter((value,index)=>{
       //   return value.name === defaultAccountName;
       // }):prevState.selectedAccount;
@@ -81,7 +81,7 @@ class AddSelfNode extends BaseScreen {
     this.setState({selectedAccount:item,isShowListAccount:false});
     // this.setState({selectedAccount:index === 0?undefined:item,isShowListAccount:false});
   }
-  
+
   renderWifiPassword=()=>{
     const {  textInput, item, errorText,item_container_input,label } = styles;
     const {
@@ -93,7 +93,7 @@ class AddSelfNode extends BaseScreen {
     if(showModal){
       return null;
     }
-    
+
     return (
       isDoingSetUp? (
         <StepIndicator
@@ -131,11 +131,11 @@ class AddSelfNode extends BaseScreen {
             defaultValue={this.inputPort}
             placeholder="Port"
           />
-          
+
           {!_.isEmpty(errorMessage) ? (
             <Text style={[errorText]}>*{errorMessage}</Text>
           ) : null}
-          
+
         </>
       )
     );
@@ -149,7 +149,7 @@ class AddSelfNode extends BaseScreen {
       currentPositionStep,
       isDoingSetUp,
     } = this.state;
-    
+
     return (
       <>
         <Input
@@ -177,14 +177,14 @@ class AddSelfNode extends BaseScreen {
     const isEditatle = _.isEmpty(selectedAccount?.PrivateKey);
     // console.log(TAG,'renderListAccount = item  = ',selectedAccount);
     const textAction = isEditatle ? 'Choose Account':'Import Private Key';
-    
+
     return (
       <>
         <Input
           labelStyle={styles.label}
           placeholder="Enter private key or import from account"
           placeholderTextColor={placeHolderColor}
-          underlineColorAndroid="transparent" 
+          underlineColorAndroid="transparent"
           editable={isEditatle}
           inputStyle={styles.textInput}
           containerStyle={[styles.item]}
@@ -201,7 +201,7 @@ class AddSelfNode extends BaseScreen {
             }else{
               this.setState({ selectedAccount:null });
             }
-            
+
           }}
         >{textAction}
         </Text>
@@ -327,7 +327,7 @@ class AddSelfNode extends BaseScreen {
         // if(resultAccount || !isImportPrivateKey){
         //   let listLocalDevice = await LocalDatabase.getListDevices();
         //   listLocalDevice.push(deviceJSON);
-        
+
         //   await LocalDatabase.saveListDevices(listLocalDevice);
         //   // create account if import private key
 
@@ -384,7 +384,7 @@ class AddSelfNode extends BaseScreen {
       currentPositionStep:index
     });
   }
-  
+
 }
 
 AddSelfNode.propTypes = {

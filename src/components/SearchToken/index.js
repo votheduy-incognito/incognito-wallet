@@ -12,6 +12,7 @@ import { setWallet } from '@src/redux/actions/wallet';
 import { pTokens } from '@src/redux/selectors/token';
 import PToken from '@src/models/pToken';
 import internalTokenModel from '@src/models/token';
+import { ExHandler } from '@src/services/exception';
 import SearchToken from './SearchToken';
 import { Toast, ActivityIndicator, } from '../core';
 
@@ -63,8 +64,8 @@ export class SearchTokenContainer extends PureComponent {
       const normalizedTokens = [
         ...internalTokens
           ?.filter(t => !pTokens?.find(pToken => pToken.tokenId === t.id))
-          ?.map(t => normalizeToken({ data: t, isInternalToken: true })),
-        ...pTokens?.map(t => normalizeToken({ data: t, isPToken: true }))
+          ?.map(t => normalizeToken({ data: t, isInternalToken: true })) || [],
+        ...pTokens?.map(t => normalizeToken({ data: t, isPToken: true })) || []
       ];
 
       const tokens =  normalizedTokens?.filter(token => {
@@ -74,8 +75,8 @@ export class SearchTokenContainer extends PureComponent {
       this.setState({ tokens });
 
       return tokens || [];
-    } catch {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+    } catch (e) {
+      new ExHandler(e).showErrorToast();
     }
   };
 
@@ -90,8 +91,8 @@ export class SearchTokenContainer extends PureComponent {
       const { pTokens, account, wallet, setWallet } = this.props;
       const { internalTokens } = this.state;
       const pTokenSelected = tokenIds.map(id => {
-        const foundPToken : PToken = pTokens.find((pToken: PToken) => pToken.tokenId === id);
-        const foundInternalToken = internalTokens.find(token => token.id === id);
+        const foundPToken : PToken = pTokens?.find((pToken: PToken) => pToken.tokenId === id);
+        const foundInternalToken = internalTokens?.find(token => token.id === id);
         if (foundPToken) {
           return foundPToken.convertToToken();
         }
@@ -109,10 +110,8 @@ export class SearchTokenContainer extends PureComponent {
       setWallet(wallet);
 
       this.goBack();
-    } catch {
-      Toast.showError(
-        'Something went wrong. Please tap the Add button again.'
-      );
+    } catch (e) {
+      new ExHandler(e, 'Something went wrong. Please tap the Add button again.').showErrorToast();
     }
   };
 
@@ -120,8 +119,8 @@ export class SearchTokenContainer extends PureComponent {
     try {
       const { getPTokenList } = this.props;
       await getPTokenList();
-    } catch {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+    } catch (e) {
+      new ExHandler(e).showErrorToast();
     }
   }
 
@@ -135,8 +134,8 @@ export class SearchTokenContainer extends PureComponent {
       this.setState({ internalTokens });
 
       return internalTokens;
-    } catch {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+    } catch (e) {
+      new ExHandler(e).showErrorToast();
     }
   }
 

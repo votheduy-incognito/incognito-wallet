@@ -26,13 +26,15 @@ const header = {
   headerTintColor: COLORS.dark1
 };
 const statusBar = {
-  backgroundColor: COLORS.primary,
+  backgroundColor1: COLORS.primary,
+  backgroundColor2: COLORS.white,
+  backgroundColor3: COLORS.blue2,
 };
 const opacityButton = {
   button: {
     backgroundColor: COLORS.blue,
     paddingHorizontal: 5,
-    borderRadius: DECOR.borderRadiusBorder,
+    borderRadius: 6,
     borderWidth: DECOR.borderWidth,
     borderColor: COLORS.transparent,
     height: DECOR.buttonHeight,

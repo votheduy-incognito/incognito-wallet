@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import TextStyle, { scaleInApp,FontStyle } from '@src/styles/TextStyle';
+import {DECOR} from "@src/styles";
 
 const style = StyleSheet.create({
   container: {
@@ -9,14 +10,12 @@ const style = StyleSheet.create({
     alignItems:'center',
     flexDirection:'row',
     backgroundColor: 'rgba(255,255,255,1)',
-    shadowOffset: {
-      height: scaleInApp(2),
-      width: 0
-    },
     shadowColor: 'rgba(227,227,227,1)',
     shadowOpacity: 0.5,
     shadowRadius: scaleInApp(10),
-    borderRadius:scaleInApp(7)
+    borderRadius: DECOR.borderRadiusBorder,
+    shadowOffset: { width: 2, height: 0 },
+    elevation: 3,
   },
   imageLogo:{
     width:scaleInApp(40),
@@ -39,6 +38,7 @@ const style = StyleSheet.create({
     backgroundColor: 'transparent',
     'letterSpacing':0,
     color: 'rgba(0,0,0,1)',
+    marginBottom: 2,
   },
   groupLeft_title2:{
     ...TextStyle.normalText,
@@ -46,6 +46,10 @@ const style = StyleSheet.create({
     color: '#899092',
     'letterSpacing':0,
   },
+  earning: {
+    marginTop: 8,
+    marginLeft: 18,
+  }
 });
 
 export default style;

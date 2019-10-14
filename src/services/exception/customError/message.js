@@ -12,7 +12,7 @@ export default {
   [CODE.getStarted_can_not_create_wallet_on_existed]: 'Can not create new wallet on existing wallet.',
   [CODE.getStarted_load_device_token_failed]: 'Can not load device token.',
   [CODE.wallet_can_not_create_new_wallet]: 'Sorry, we can not create new wallet, close and reopen the app can fix it.',
-  [CODE.wallet_can_not_load_existed_wallet]: 'Can not open your wallet.',
+  [CODE.wallet_can_not_load_existed_wallet]: 'Can not open your wallet. Please re-install the application and try again.',
   [CODE.createAccount_failed]: 'Account was not created! Please try again.',
   [CODE.createAccount_existed_name]: 'You already have an account with this name. Please try another.',
   [CODE.home_load_following_token_failed]: 'Is your list token not show? Pull to reload your the list.',

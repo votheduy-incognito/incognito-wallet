@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import { debounce } from 'lodash';
-import PropTypes from 'prop-types';
-import memmoize from 'memoize-one';
-import { connect } from 'react-redux';
-import { getEstimateFeeService, getEstimateFeeForSendingTokenService, getEstimateTokenFeeService } from '@src/services/wallet/RpcClientService';
 import { CONSTANT_COMMONS } from '@src/constants';
-import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import tokenData from '@src/constants/tokenData';
-import convertUtil from '@src/utils/convert';
+import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
-import EstimateFee from './EstimateFee';
+import { getEstimateFeeForNativeToken, getEstimateFeeForPToken } from '@src/services/wallet/RpcClientService';
+import convertUtil from '@src/utils/convert';
+import { debounce } from 'lodash';
+import memmoize from 'memoize-one';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import ActivityIndicator from '../core/ActivityIndicator/Component';
+import EstimateFee from './EstimateFee';
 
 class EstimateFeeContainer extends Component {
   constructor(props) {
@@ -92,13 +92,11 @@ class EstimateFeeContainer extends Component {
 
       if (!selectedPrivacy.amount) throw new CustomError(ErrorCode.estimate_fee_with_zero_balance);
 
-      const fee = await getEstimateFeeService(
+      const fee = await getEstimateFeeForNativeToken(
         fromAddress,
         toAddress,
         convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals),
-        account?.PrivateKey,
         accountWallet,
-        true // privacy mode
       );
       
       return fee;
@@ -111,7 +109,6 @@ class EstimateFeeContainer extends Component {
     try{
       const { account, wallet, selectedPrivacy, toAddress, amount } = this.props;
       const fromAddress = selectedPrivacy?.paymentAddress;
-      const tokenFee = 0;
       const accountWallet = wallet.getAccountByName(account?.name);
       const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
       const tokenObject = {
@@ -129,15 +126,12 @@ class EstimateFeeContainer extends Component {
 
       if (!selectedPrivacy.amount) throw new CustomError(ErrorCode.estimate_fee_with_zero_balance);
 
-      const fee = await getEstimateFeeForSendingTokenService(
+      const fee = await getEstimateFeeForPToken(
         fromAddress,
         toAddress,
         originalAmount,
         tokenObject,
-        account?.PrivateKey,
         accountWallet,
-        true, // privacy mode
-        tokenFee
       );
       
       return fee;
@@ -167,14 +161,13 @@ class EstimateFeeContainer extends Component {
 
       if (!selectedPrivacy.amount) throw new CustomError(ErrorCode.estimate_fee_with_zero_balance);
 
-      const fee = await getEstimateTokenFeeService(
+      const fee = await getEstimateFeeForPToken(
         fromAddress,
         toAddress,
         originalAmount,
         tokenObject,
-        account?.PrivateKey,
         accountWallet,
-        true, // privacy mode
+        true, // get token fee flag
       );
 
       return fee;

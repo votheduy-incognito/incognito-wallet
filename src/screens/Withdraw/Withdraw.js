@@ -1,18 +1,18 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import memmoize from 'memoize-one';
-import { connect } from 'react-redux';
-import { Field, formValueSelector, isValid, change } from 'redux-form';
-import { Container, ScrollView, Toast, Text, View, Button } from '@src/components/core';
-import { createForm, InputQRField, InputMaxValueField, validator } from '@src/components/core/reduxForm';
-import EstimateFee from '@src/components/EstimateFee';
-import convertUtil from '@src/utils/convert';
+import { Button, Container, ScrollView, Text, Toast, View } from '@src/components/core';
+import { createForm, InputMaxValueField, InputQRField, validator } from '@src/components/core/reduxForm';
 import CurrentBalance from '@src/components/CurrentBalance';
+import EstimateFee from '@src/components/EstimateFee';
 import LoadingTx from '@src/components/LoadingTx';
-import tokenData from '@src/constants/tokenData';
-import formatUtil from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
+import tokenData from '@src/constants/tokenData';
 import { ExHandler } from '@src/services/exception';
+import convertUtil from '@src/utils/convert';
+import formatUtil from '@src/utils/format';
+import memmoize from 'memoize-one';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { connect } from 'react-redux';
+import { change, Field, formValueSelector, isValid } from 'redux-form';
 import style from './style';
 
 const formName = 'withdraw';
@@ -87,7 +87,7 @@ class Withdraw extends React.Component {
       const {  handleCentralizedWithdraw, handleDecentralizedWithdraw, navigation, selectedPrivacy } = this.props;
       const { amount, toAddress } = values;
 
-      if (selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH || selectedPrivacy?.isErc20Token) {
+      if (selectedPrivacy?.isDecentralized) {
         res = await handleDecentralizedWithdraw({
           amount,
           remoteAddress: toAddress,

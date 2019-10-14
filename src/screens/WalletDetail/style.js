@@ -10,10 +10,10 @@ const style = StyleSheet.create({
     width: '100%',
     backgroundColor: COLORS.white
   },
-  boxHeader: { 
+  boxHeader: {
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'center',   
+    justifyContent: 'center',
     paddingBottom: 15,
     backgroundColor: COLORS.primary,
   },
@@ -23,14 +23,14 @@ const style = StyleSheet.create({
   },
   balance: {
     color: COLORS.white,
-    fontSize: 28,   
-    textAlign: 'center', 
+    fontSize: 28,
+    textAlign: 'center',
     letterSpacing: 0,
     ...FONT.STYLE.medium
   },
   boxBalance: {
     alignItems: 'center',
-    justifyContent: 'center',    
+    justifyContent: 'center',
     textAlign: 'center',
     marginTop: 15,
     marginBottom: 42,
@@ -38,14 +38,14 @@ const style = StyleSheet.create({
   },
   getFree : {
     textAlign: 'center',
-    fontSize: 16    
+    fontSize: 16
   },
-  btnStyle: {    
+  btnStyle: {
     width: '45%',
     margin: 10
   },
   unfollowBtn: {
-    
+
   },
   unfollowText: {
     color: COLORS.primary
@@ -60,6 +60,7 @@ const style = StyleSheet.create({
     paddingVertical: 12,
     backgroundColor: COLORS.white,
     shadowOffset: { width: 2, height: 0 },
+    borderRadius: 6,
     elevation: 3,
     marginHorizontal: 3,
     marginVertical: 3,
@@ -79,8 +80,8 @@ const style = StyleSheet.create({
   noteText: {
     fontSize: FONT.SIZE.small,
     fontWeight: 'bold',
-    marginVertical: 15,    
-  },  
+    marginVertical: 15,
+  },
   submitBtn: {
     marginTop: 30
   },

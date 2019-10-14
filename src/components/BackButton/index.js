@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Image } from 'react-native';
 import { TouchableOpacity } from '@src/components/core';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { THEME } from '@src/styles';
+
+import chevronLeft from '@src/assets/images/icons/chevron-left-icon.png';
 
 const BackButton = ({ onPress }) => (
   <TouchableOpacity
@@ -15,7 +17,14 @@ const BackButton = ({ onPress }) => (
       height: THEME.header.headerHeight
     }}
   >
-    <Icon name='chevron-left' color='white' size={30} />
+    <Image
+      style={{
+        height: 20,
+        width: '100%',
+      }}
+      resizeMode="contain"
+      resizeMethod="resize"
+      source={chevronLeft} />
   </TouchableOpacity>
 );
 

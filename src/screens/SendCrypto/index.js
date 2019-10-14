@@ -38,7 +38,7 @@ class SendCryptoContainer extends Component {
         isSending: true
       });
       
-      const res = await accountService.sendConstant(paymentInfos, originalFee, true, account, wallet);
+      const res = await accountService.createAndSendNativeToken(paymentInfos, originalFee, true, account, wallet);
 
       if (res.txId) {
         const receiptData = {
@@ -91,7 +91,7 @@ class SendCryptoContainer extends Component {
 
     try {
       this.setState({ isSending: true });
-      const res = await tokenService.createSendPrivacyCustomToken(
+      const res = await tokenService.createSendPToken(
         tokenObject,
         isUseTokenFee ? 0 : originalFee,
         account,

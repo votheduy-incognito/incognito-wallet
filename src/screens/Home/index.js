@@ -4,15 +4,12 @@ import { clearSelectedPrivacy, setSelectedPrivacy } from '@src/redux/actions/sel
 import { getBalance, getInternalTokenList, getPTokenList, setListToken } from '@src/redux/actions/token';
 import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
-import scheduleService from '@src/services/schedule';
-import Util from '@src/utils/Util';
+import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
 import Home from './Home';
 
-const TAG = 'HomeContainer';
 class HomeContainer extends Component {
   constructor() {
     super();
@@ -34,12 +31,8 @@ class HomeContainer extends Component {
     } catch (e) {
       new ExHandler(e).showErrorToast();
     }
-    
-    scheduleService.reloadAllAccountBalance({
-      accounts: accountList,
-      getBalance: getAccountBalance,
-    });
 
+    this.loadBalanceSchedule();
 
     navigation.addListener(
       'didFocus',
@@ -58,6 +51,10 @@ class HomeContainer extends Component {
     }
   }
 
+  loadBalanceSchedule = () => {
+    this.schedule = setInterval(this.reload, 3 * 60 * 1000);
+  }
+
   getTokens = async () => {
     try {
       const { getPTokenList, getInternalTokenList } = this.props;
@@ -72,13 +69,12 @@ class HomeContainer extends Component {
     try {
       this.setState({ isReloading: true });
       const { account } = this.props;
-      console.log(TAG,'reload getAccountBalance begin');
-      await Util.excuteWithTimeout(this.getAccountBalance(account),3);
-      console.log(TAG,'reload getAccountBalance end');
-      console.log(TAG,'reload getFollowingToken begin');
-      // await this.getFollowingToken();
-      await Util.excuteWithTimeout(this.getFollowingToken(),3);
-      console.log(TAG,'reload getFollowingToken end');
+      const tasks = [
+        this.getAccountBalance(account),
+        this.getFollowingToken()
+      ];
+
+      await Promise.all(tasks);
     } catch (e) {
       new ExHandler(e).showErrorToast();
     } finally {

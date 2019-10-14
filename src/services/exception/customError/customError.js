@@ -1,9 +1,17 @@
 import MESSAGE from './message';
-import { genCode } from './utils';
 import types from './types';
+import { genCode } from './utils';
 
 class CustomError extends Error {
-  constructor(code, { name, message } = {}) {
+  /**
+   * 
+   * @param {string | number} code 
+   * @param {string} name
+   * @param {string} name
+   * @param {string} message
+   * @param {object} rawError error object, ex: new Error();
+   */
+  constructor(code, { name, message, rawError } = {}) {
     // Pass remaining arguments (including vendor specific ones) to parent constructor
     super();
 
@@ -14,6 +22,7 @@ class CustomError extends Error {
 
     this.name = name || CustomError.TYPES.KNOWN_ERROR;
     this.message = message || 'Unknown error';
+    this.rawError = rawError;
     this.code = code;
 
     // must to check the code of KNOWN_ERROR
