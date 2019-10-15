@@ -1,11 +1,5 @@
-import {
-  Wallet,
-  RpcClient,
-  getEstimateFee,
-  getEstimateFeeForPToken as getEstimateFeeForPTokenService,
-  getMaxWithdrawAmount
-} from 'incognito-chain-web-js/build/wallet';
-import { ExHandler, CustomError, ErrorCode } from '../exception';
+import { getEstimateFee, getEstimateFeeForPToken as getEstimateFeeForPTokenService, getMaxWithdrawAmount, RpcClient, Wallet } from 'incognito-chain-web-js/build/wallet';
+import { CustomError, ErrorCode, ExHandler } from '../exception';
 
 function getRpcClient() {
   return Wallet.RpcClient;
@@ -173,23 +167,44 @@ export async function hashToIdenticon(hashStrs) {
   return resp.images;
 }
 
+/**
+ * 
+ * @param {string} from 
+ * @param {string} to 
+ * @param {object} tokenObject 
+ * @param {object} account get from wallet.getAccountByName(account?.name)
+ * @param {bool} isPrivacyForPrivateToken for centralized = true, decentralized = false
+ * 
+ * tokenObject = {
+      Privacy: bool,
+      TokenID: string,
+      TokenName: string,
+      TokenSymbol: string,
+      TokenTxType: from CONSTANT_COMMONS.TOKEN_TX_TYPE,
+      TokenAmount: amount in nano,
+      TokenReceivers: {
+        PaymentAddress: string,
+        Amount: amount in nano
+      }
+    }
+ */
 export async function getMaxWithdrawAmountService(
   from,
   to,
   tokenObject,
-  privateKey,
   account,
   isPrivacyForPrivateToken
 ) {
   let response;
+  const isPrivacyForNativeToken = false;
   try {
     response = await getMaxWithdrawAmount(
       from,
       to,
       tokenObject,
-      privateKey,
       account,
       getRpcClient(),
+      isPrivacyForNativeToken,
       isPrivacyForPrivateToken
     );
   } catch (e) {
