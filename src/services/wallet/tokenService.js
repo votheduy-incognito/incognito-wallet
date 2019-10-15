@@ -108,8 +108,8 @@ export default class Token {
   // remoteAddress (string) is an ETH/BTC address which users want to receive ETH/BTC (without 0x)
   static async createBurningRequest(
     submitParam,
-    feePRV,
-    feeToken,
+    feeNativeToken,
+    feePToken,
     remoteAddress,
     account,
     wallet
@@ -132,8 +132,8 @@ export default class Token {
       ].createAndSendBurningRequestTx(
         paymentInfos,
         submitParam,
-        feePRV,
-        feeToken,
+        feeNativeToken,
+        feePToken,
         remoteAddress
       );
       await saveWallet(wallet);
@@ -211,7 +211,7 @@ export default class Token {
       const accountWallet = wallet.getAccountByName(account.name);
       let histories = [];
       if (token?.isPrivacy) {
-        histories = await accountWallet.getPrivacyCustomTokenTxByTokenID(token?.id);
+        histories = await accountWallet.getPrivacyTokenTxHistoryByTokenID(token?.id);
       } else {
         histories = await accountWallet.getCustomTokenTxByTokenID(token?.id);
       }
