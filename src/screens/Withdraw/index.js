@@ -1,19 +1,18 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { NavigationActions } from 'react-navigation';
-import { Text, Container, Button } from '@src/components/core';
+import { Button, Container, Text } from '@src/components/core';
 import LoadingContainer from '@src/components/LoadingContainer';
-import { connect } from 'react-redux';
-import { genCentralizedWithdrawAddress, addERC20TxWithdraw, addETHTxWithdraw } from '@src/services/api/withdraw';
-import tokenService from '@src/services/wallet/tokenService';
 import { CONSTANT_COMMONS } from '@src/constants';
-import { getMaxWithdrawAmountService } from '@src/services/wallet/RpcClientService';
+import tokenData from '@src/constants/tokenData';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
-import convertUtil from '@src/utils/convert';
-import tokenData from '@src/constants/tokenData';
-import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import routeNames from '@src/router/routeNames';
+import { addERC20TxWithdraw, addETHTxWithdraw, genCentralizedWithdrawAddress } from '@src/services/api/withdraw';
+import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
+import { getMaxWithdrawAmountService } from '@src/services/wallet/RpcClientService';
+import tokenService from '@src/services/wallet/tokenService';
+import convertUtil from '@src/utils/convert';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Withdraw from './Withdraw';
 
 class WithdrawContainer extends Component {
@@ -52,25 +51,25 @@ class WithdrawContainer extends Component {
   }
 
   getWithdrawData = async () => {
-    const { account, wallet, selectedPrivacy } = this.props;
-    const fromAddress = selectedPrivacy?.paymentAddress;
-    const toAddress = fromAddress; // est fee on the same network, dont care which address will be send to
-    const accountWallet = wallet.getAccountByName(account?.name);
-    const selectedPrivacyAmount = selectedPrivacy?.amount;
-
-    if (selectedPrivacyAmount <= 0) {
-      return new ExHandler(new CustomError(ErrorCode.withdraw_balance_must_not_be_zero)).showWarningToast();
-    }
-
-    const tokenObject = this.getTokenObject({ amount: 0 });
-
     try{
+      const { account, wallet, selectedPrivacy } = this.props;
+      const fromAddress = selectedPrivacy?.paymentAddress;
+      const toAddress = fromAddress; // est fee on the same network, dont care which address will be send to
+      const accountWallet = wallet.getAccountByName(account?.name);
+      const selectedPrivacyAmount = selectedPrivacy?.amount;
+
+      if (selectedPrivacyAmount <= 0) {
+        return;
+      }
+
+      const tokenObject = this.getTokenObject({ amount: 0 });
+      const isPrivacyForPrivateToken = selectedPrivacy.isDecentralized ? false : true;
       const data = await getMaxWithdrawAmountService(
         fromAddress,
         toAddress,
         tokenObject,
-        account?.PrivateKey,
         accountWallet,
+        isPrivacyForPrivateToken,
       );
 
       this.setState({ withdrawData: data });
