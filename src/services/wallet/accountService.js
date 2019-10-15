@@ -234,7 +234,7 @@ export default class Account {
   //   return result;
   // }
 
-  static async staking(param, fee, candidatePaymentAddress, account, wallet, rewardReceiverPaymentAddress, autoReStaking = false) {
+  static async staking(param, feeNativeToken, candidatePaymentAddress, account, wallet, rewardReceiverPaymentAddress, autoReStaking = false) {
     if (!param || typeof param?.type !== 'number') throw new Error('Invalid staking param');
     if (!candidatePaymentAddress) throw new Error('Missing candidatePaymentAddress');
     if (!account) throw new Error('Missing account');
@@ -248,7 +248,7 @@ export default class Account {
     try {
       result = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendStakingTx(param, fee, candidatePaymentAddress, candidateMiningSeedKey, rewardReceiverPaymentAddress, autoReStaking);
+      ].createAndSendStakingTx(param, feeNativeToken, candidatePaymentAddress, candidateMiningSeedKey, rewardReceiverPaymentAddress, autoReStaking);
 
       // save wallet
       await saveWallet(wallet);
