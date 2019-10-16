@@ -7,6 +7,15 @@ import com.facebook.react.PackageList;
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
 import com.facebook.react.bridge.JavaScriptExecutorFactory;
 import com.facebook.react.ReactApplication;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.reactlibrary.RNZmqServicePackage;
+import com.peel.react.rnos.RNOSModule;
+import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
+import org.reactnative.camera.RNCameraPackage;
+import com.bitgo.randombytes.RandomBytesPackage;
+import com.swmansion.reanimated.ReanimatedPackage;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.reactnative.ssh.RNSSHPackage;
 import com.pusherman.networkinfo.RNNetworkInfoPackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
@@ -48,6 +57,15 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new VectorIconsPackage(),
+            new RNZmqServicePackage(),
+            new RNOSModule(),
+            new RNPermissionsPackage(),
+            new RNCameraPackage(),
+            new RandomBytesPackage(),
+            new ReanimatedPackage(),
+            new AsyncStoragePackage(),
+            new RNGestureHandlerPackage(),
             new RNSSHPackage(),
             new RNNetworkInfoPackage(),
             new NetInfoPackage(),

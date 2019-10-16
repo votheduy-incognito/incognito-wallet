@@ -2,11 +2,11 @@
  * @providesModule APIService
  */
 import User from '@models/user';
+import NetInfo from '@react-native-community/netinfo';
 import { CONSTANT_MINER } from '@src/constants';
 import http from '@src/services/http';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
-import NetInfo from "@react-native-community/netinfo";
 import API from './api';
 
 let AUTHORIZATION_FORMAT = 'Autonomous';

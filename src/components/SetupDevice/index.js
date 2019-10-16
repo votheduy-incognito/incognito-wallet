@@ -1,7 +1,8 @@
 /**
- * @providesModule SetupWifiDevice
+ * @providesModule SetupDevice
  */
 import WifiConnection from '@components/DeviceConnection/WifiConnection';
+import NetInfo from '@react-native-community/netinfo';
 import routeNames from '@routers/routeNames';
 import CreateAccount from '@screens/CreateAccount';
 import APIService from '@services/api/miner/APIService';
@@ -19,7 +20,6 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Keyboard, Platform, Text, TextInput, View } from 'react-native';
-import NetInfo from "@react-native-community/netinfo";
 import DeviceInfo from 'react-native-device-info';
 import { Button } from 'react-native-elements';
 import StepIndicator from 'react-native-step-indicator';
