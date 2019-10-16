@@ -1,9 +1,9 @@
+import NetInfo from '@react-native-community/netinfo';
 import Util from '@utils/Util';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import NetInfo from "@react-native-community/netinfo";
 import BaseConnection, { ObjConnection } from './BaseConnection';
 import style from './style';
 import WifiConnection from './WifiConnection';

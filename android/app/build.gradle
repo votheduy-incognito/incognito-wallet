@@ -184,6 +184,15 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-vector-icons')
+    implementation project(':react-native-zmq-service')
+    implementation project(':react-native-os')
+    implementation project(':react-native-permissions')
+    implementation project(':react-native-camera')
+    implementation project(':react-native-randombytes')
+    implementation project(':react-native-reanimated')
+    implementation project(':@react-native-community_async-storage')
+    implementation project(':react-native-gesture-handler')
     implementation project(':react-native-ssh')
     implementation project(':react-native-network-info')
     implementation fileTree(dir: "libs", include: ["*.jar"])

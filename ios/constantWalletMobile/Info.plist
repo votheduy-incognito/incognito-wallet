@@ -74,6 +74,7 @@
 		<string>PostGroteskMediumItalic.otf</string>
 		<string>PostGroteskBook.otf</string>
 		<string>PostGroteskBookItalic.otf</string>
+		<string>Fontisto.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
