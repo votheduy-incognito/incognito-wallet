@@ -28,21 +28,88 @@ public class GomobileModule extends ReactContextBaseJavaModule {
         return "PrivacyGo";
     }
 
-    @ReactMethod
-    public void aggregatedRangeProve(String data, Callback successCallback) {
-        try {
-            Log.d(TAG, "aggregatedRangeProve: begin");
-            successCallback.invoke(null, Gomobile.aggregatedRangeProve(data));
-        } catch (Exception e) {
-            successCallback.invoke(e, null);
-        }
-    }
-
     public static void setPrivateField(Class clazz, Object inst, String field, Object value) throws Exception {
         java.lang.reflect.Field f = clazz.getDeclaredField(field);
         f.setAccessible(true);
         f.set(inst, value);
         f.setAccessible(false);
+    }
+
+    @ReactMethod
+    public void deriveSerialNumber(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "deriveSerialNumber: begin");
+            successCallback.invoke(null, Gomobile.deriveSerialNumber(data));
+        } catch (Exception e) {
+            Log.d(TAG, "deriveSerialNumber: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
+
+    @ReactMethod
+    public void randomScalars(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "randomScalars: begin");
+            successCallback.invoke(null, Gomobile.randomScalars(data));
+        } catch (Exception e) {
+            Log.d(TAG, "randomScalars: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
+
+    @ReactMethod
+    public void initPrivacyTx(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "initPrivacyTx: begin");
+            successCallback.invoke(null, Gomobile.initPrivacyTx(data));
+        } catch (Exception e) {
+            Log.d(TAG, "initPrivacyTx: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
+
+    @ReactMethod
+    public void initPrivacyTokenTx(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "initPrivacyTokenTx: begin");
+            successCallback.invoke(null, Gomobile.initPrivacyTokenTx(data));
+        } catch (Exception e) {
+            Log.d(TAG, "initPrivacyTokenTx: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
+
+    @ReactMethod
+    public void initBurningRequestTx(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "initBurningRequestTx: begin");
+            successCallback.invoke(null, Gomobile.initBurningRequestTx(data));
+        } catch (Exception e) {
+            Log.d(TAG, "initBurningRequestTx: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
+
+    @ReactMethod
+    public void initWithdrawRewardTx(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "initWithdrawRewardTx: begin");
+            successCallback.invoke(null, Gomobile.initWithdrawRewardTx(data));
+        } catch (Exception e) {
+            Log.d(TAG, "initWithdrawRewardTx: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
+
+    @ReactMethod
+    public void staking(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "staking: begin");
+            successCallback.invoke(null, Gomobile.staking(data));
+        } catch (Exception e) {
+            Log.d(TAG, "staking: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
     }
 
     @ReactMethod
@@ -65,8 +132,30 @@ public class GomobileModule extends ReactContextBaseJavaModule {
 
             Log.d(TAG, "generateBLSKeyPairFromSeed: begin01");
         } catch (Exception e) {
-            successCallback.invoke(e, null);
+            successCallback.invoke(e.getMessage(), null);
             Log.d(TAG, "generateBLSKeyPairFromSeed: begin02 error");
         }
+    }
+
+    @ReactMethod(isBlockingSynchronousMethod =true)
+    public String scalarMultBase(String data) {
+        try {
+            return Gomobile.scalarMultBase(data);
+        } catch (Exception e) {
+            Log.d(TAG, "scalarMultBase: error");
+        }
+
+        return null;
+    }
+
+    @ReactMethod(isBlockingSynchronousMethod =true)
+    public String generateKeyFromSeed(String data) {
+        try {
+            return Gomobile.generateKeyFromSeed(data);
+        } catch (Exception e) {
+            Log.d(TAG, "generateKeyFromSeed: error");
+        }
+
+        return null;
     }
 }

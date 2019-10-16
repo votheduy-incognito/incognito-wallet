@@ -8,6 +8,7 @@ import { setWallet } from '@src/redux/actions/wallet';
 import accountService from '@src/services/wallet/accountService';
 import { detectERC20Token, addERC20Token } from '@src/services/api/token';
 import LoadingContainer from '@src/components/LoadingContainer';
+import { ExHandler } from '@src/services/exception';
 import AddERC20Token from './AddERC20Token';
 
 export class AddERC20TokenContainer extends Component {
@@ -52,7 +53,7 @@ export class AddERC20TokenContainer extends Component {
       Toast.showSuccess('Success! You added a token.');
       return newPToken;
     } catch(e) {
-      Toast.showWarning('Something went wrong. Please try again.');
+      new ExHandler(e).showErrorToast();
       throw e;
     }
   }

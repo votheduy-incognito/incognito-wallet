@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { FlatList, View, TextInput, Button, Text } from  '@src/components/core';
+import { FlatList, View, TextInput, Button } from  '@src/components/core';
 import TokenItem from './TokenItem';
 import { searchPTokenStyle } from './styles';
 

@@ -1,7 +1,4 @@
 import {
-  CustomTokenParamTx,
-  TxTokenVout,
-  KeyWallet,
   Wallet
 } from 'incognito-chain-web-js/build/wallet';
 import tokenModel from '@src/models/token';
@@ -9,71 +6,71 @@ import { saveWallet, updateStatusHistory } from './WalletService';
 import { listPrivacyTokens, listCustomTokens } from './RpcClientService';
 
 export default class Token {
-  static async createSendCustomToken(param, fee, account, wallet) {
-    await Wallet.resetProgressTx();
-    console.log('SEND CUSTOM TOKEN!!!!!!!');
+  // static async createSendCustomToken(param, fee, account, wallet) {
+  //   await Wallet.resetProgressTx();
+  //   console.log('SEND CUSTOM TOKEN!!!!!!!');
 
-    // get index account by name
-    const indexAccount = wallet.getAccountIndexByName(account.name);
+  //   // get index account by name
+  //   const indexAccount = wallet.getAccountIndexByName(account.name);
 
-    // prepare param for create and send token
-    // payment info
-    // @@ Note: it is use for receivers constant
-    const paymentInfos = [];
-    // for (let i = 0; i < paymentInfos.length; i++) {
-    //   paymentInfos[i] = new PaymentInfo(/*paymentAddress, amount*/);
-    // }
+  //   // prepare param for create and send token
+  //   // payment info
+  //   // @@ Note: it is use for receivers constant
+  //   const paymentInfos = [];
+  //   // for (let i = 0; i < paymentInfos.length; i++) {
+  //   //   paymentInfos[i] = new PaymentInfo(/*paymentAddress, amount*/);
+  //   // }
 
-    // receviers token
-    const receiverPaymentAddrStr = new Array(1);
-    receiverPaymentAddrStr[0] = param.TokenReceivers.PaymentAddress;
+  //   // receviers token
+  //   const receiverPaymentAddrStr = new Array(1);
+  //   receiverPaymentAddrStr[0] = param.TokenReceivers.PaymentAddress;
 
-    // token param
-    const tokenParam = new CustomTokenParamTx();
-    tokenParam.propertyID = param.TokenID;
-    tokenParam.propertyName = param.TokenName;
-    tokenParam.propertySymbol = param.TokenSymbol;
-    tokenParam.amount = param.TokenAmount;
-    tokenParam.tokenTxType = param.TokenTxType;
-    tokenParam.receivers = new Array(1);
-    tokenParam.receivers[0] = new TxTokenVout();
-    tokenParam.receivers[0].set(
-      KeyWallet.base58CheckDeserialize(
-        param.TokenReceivers.PaymentAddress
-      ).KeySet.PaymentAddress,
-      param.TokenReceivers.Amount
-    );
+  //   // token param
+  //   const tokenParam = new CustomTokenParamTx();
+  //   tokenParam.propertyID = param.TokenID;
+  //   tokenParam.propertyName = param.TokenName;
+  //   tokenParam.propertySymbol = param.TokenSymbol;
+  //   tokenParam.amount = param.TokenAmount;
+  //   tokenParam.tokenTxType = param.TokenTxType;
+  //   tokenParam.receivers = new Array(1);
+  //   tokenParam.receivers[0] = new TxTokenVout();
+  //   tokenParam.receivers[0].set(
+  //     KeyWallet.base58CheckDeserialize(
+  //       param.TokenReceivers.PaymentAddress
+  //     ).KeySet.PaymentAddress,
+  //     param.TokenReceivers.Amount
+  //   );
 
-    console.log(tokenParam);
-    // create and send custom token
-    let res;
-    try {
-      res = await wallet.MasterAccount.child[
-        indexAccount
-      ].createAndSendCustomToken(
-        paymentInfos,
-        tokenParam,
-        receiverPaymentAddrStr,
-        fee
-      );
+  //   console.log(tokenParam);
+  //   // create and send custom token
+  //   let res;
+  //   try {
+  //     res = await wallet.MasterAccount.child[
+  //       indexAccount
+  //     ].createAndSendCustomToken(
+  //       paymentInfos,
+  //       tokenParam,
+  //       receiverPaymentAddrStr,
+  //       fee
+  //     );
 
-      // saving KeyWallet
-      await saveWallet(wallet);
-    } catch (e) {
-      throw e;
-    }
+  //     // saving KeyWallet
+  //     await saveWallet(wallet);
+  //   } catch (e) {
+  //     throw e;
+  //   }
 
-    await Wallet.resetProgressTx();
-    return res;
-  }
+  //   await Wallet.resetProgressTx();
+  //   return res;
+  // }
 
-  static async createSendPrivacyCustomToken(
+  static async createSendPToken(
     submitParam,
-    fee,
+    feeNativeToken = 0,
     account,
     wallet,
     paymentInfo,
-    tokenFee,
+    feePToken = 0,
     info,
   ) {
     await Wallet.resetProgressTx();
@@ -90,11 +87,13 @@ export default class Token {
     //   paymentInfos[i] = new PaymentInfo(/*paymentAddress, amount*/);
     // }
     let response;
+    const hasPrivacyForNativeToken = false;
+    const hasPrivacyForPToken = true;
 
     try {
       response = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendPrivacyCustomToken(paymentInfos, submitParam, fee, tokenFee, true, info);
+      ].createAndSendPrivacyToken(paymentInfos, submitParam, feeNativeToken, feePToken, hasPrivacyForNativeToken, hasPrivacyForPToken, info);
 
       await saveWallet(wallet);
     } catch (e) {
@@ -109,8 +108,8 @@ export default class Token {
   // remoteAddress (string) is an ETH/BTC address which users want to receive ETH/BTC (without 0x)
   static async createBurningRequest(
     submitParam,
-    feePRV,
-    feeToken,
+    feeNativeToken,
+    feePToken,
     remoteAddress,
     account,
     wallet
@@ -133,8 +132,8 @@ export default class Token {
       ].createAndSendBurningRequestTx(
         paymentInfos,
         submitParam,
-        feePRV,
-        feeToken,
+        feeNativeToken,
+        feePToken,
         remoteAddress
       );
       await saveWallet(wallet);
@@ -212,7 +211,7 @@ export default class Token {
       const accountWallet = wallet.getAccountByName(account.name);
       let histories = [];
       if (token?.isPrivacy) {
-        histories = await accountWallet.getPrivacyCustomTokenTxByTokenID(token?.id);
+        histories = await accountWallet.getPrivacyTokenTxHistoryByTokenID(token?.id);
       } else {
         histories = await accountWallet.getCustomTokenTxByTokenID(token?.id);
       }

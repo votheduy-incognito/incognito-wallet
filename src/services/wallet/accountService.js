@@ -56,7 +56,7 @@ export default class Account {
   }
 
   // paymentInfos = [{ paymentAddressStr: toAddress, amount: amount}];
-  static async sendConstant(paymentInfos, fee, isPrivacy, account, wallet, info) {
+  static async createAndSendNativeToken(paymentInfos, fee, isPrivacy, account, wallet, info) {
     console.log('Wallet.ProgressTx: ', Wallet.ProgressTx);
     // paymentInfos: payment address string, amount in Number (miliconstant)
     // await Wallet.resetProgressTx();
@@ -70,7 +70,7 @@ export default class Account {
     try {
       result = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendConstant(paymentInfos, fee, isPrivacy, info);
+      ].createAndSendNativeToken(paymentInfos, fee, isPrivacy, info);
 
       console.log(
         'Spendingcoin after sendConstant: ',
@@ -234,7 +234,7 @@ export default class Account {
   //   return result;
   // }
 
-  static async staking(param, fee, candidatePaymentAddress, account, wallet, rewardReceiverPaymentAddress, autoReStaking = false) {
+  static async staking(param, feeNativeToken, candidatePaymentAddress, account, wallet, rewardReceiverPaymentAddress, autoReStaking = false) {
     if (!param || typeof param?.type !== 'number') throw new Error('Invalid staking param');
     if (!candidatePaymentAddress) throw new Error('Missing candidatePaymentAddress');
     if (!account) throw new Error('Missing account');
@@ -248,7 +248,7 @@ export default class Account {
     try {
       result = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendStakingTx(param, fee, candidatePaymentAddress, candidateMiningSeedKey, rewardReceiverPaymentAddress, autoReStaking);
+      ].createAndSendStakingTx(param, feeNativeToken, candidatePaymentAddress, candidateMiningSeedKey, rewardReceiverPaymentAddress, autoReStaking);
 
       // save wallet
       await saveWallet(wallet);
@@ -319,7 +319,7 @@ export default class Account {
     try {
       const key = KeyWallet.base58CheckDeserialize(paymentAddrStr);
       const paymentAddressObj = key?.KeySet?.PaymentAddress || {};
-      if (paymentAddressObj.Pk?.length === 33 && paymentAddressObj.Tk?.length === 33) {
+      if (paymentAddressObj.Pk?.length === 32 && paymentAddressObj.Tk?.length === 32) {
         return true;
       }
     } catch (e) {
@@ -329,9 +329,17 @@ export default class Account {
     return false;
   }
 
-  static async getBalance(account, wallet) {
+  /**
+   * 
+   * @param {object} account 
+   * @param {object} wallet 
+   * @param {string} tokenId 
+   * 
+   * If `tokenId` is not passed, this method will return native token (PRV) balance, else custom token balance (from `tokenId`)
+   */
+  static async getBalance(account, wallet, tokenId) {
     const indexAccount = wallet.getAccountIndexByName(account.name);
-    return await wallet.MasterAccount.child[indexAccount].getBalance();
+    return await wallet.MasterAccount.child[indexAccount].getBalance(tokenId);
   }
 
   static getFollowingTokens(account, wallet){

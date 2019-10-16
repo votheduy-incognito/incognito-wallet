@@ -4,6 +4,7 @@
   "javascript.validate.enable": false,
   "javascript.format.enable": false,
   "prettier.eslintIntegration": true,
+  "flow.useNPMPackagedFlow": true,
   "prettier.singleQuote": true,
   "eslint.packageManager": "yarn",
   "eslint.workingDirectories": ["./src"],

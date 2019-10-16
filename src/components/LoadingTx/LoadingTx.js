@@ -21,7 +21,7 @@ class LoadingTx extends Component {
     this.handleToggle(true);
     this.timer = setInterval(() => {
       this.progress();
-    }, 300);
+    }, 1000);
   }
 
   componentWillUnmount() {
