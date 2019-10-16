@@ -1,5 +1,5 @@
 import React from 'react';
-import MdIcons from 'react-native-vector-icons/MaterialIcons';
+import { Icon } from 'react-native-elements';
 import Section from './Section';
 
 const PreferencesSection = () => {
@@ -7,7 +7,7 @@ const PreferencesSection = () => {
     {
       title: 'Language',
       desc: 'English',
-      icon: <MdIcons name='language' size={24} />,
+      icon: <Icon type='material' name='language' size={24} />,
       handlePress: null
     }
   ];

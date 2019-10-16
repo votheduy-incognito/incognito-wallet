@@ -3,16 +3,16 @@ import OptionMenu from '@src/components/OptionMenu';
 import { getBalance as getAccountBalance, reloadAccountFollowingToken, removeAccount, setDefaultAccount } from '@src/redux/actions/account';
 import { accountSeleclor } from '@src/redux/selectors';
 import ROUTE_NAMES from '@src/router/routeNames';
+import { ExHandler } from '@src/services/exception';
 import { COLORS } from '@src/styles';
 import { onClickView } from '@src/utils/ViewUtil';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Icon } from 'react-native-elements';
 import Swipeout from 'react-native-swipeout';
 import Icons from 'react-native-vector-icons/Entypo';
 import FIcons from 'react-native-vector-icons/Feather';
-import MdIcons from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
-import { ExHandler } from '@src/services/exception';
 import Section from './Section';
 import { accountSection } from './style';
 
@@ -90,14 +90,14 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAcc
   const menu = [
     {
       id: 'import',
-      icon: <MdIcons name="input" size={25} />,
+      icon: <Icon type='material' name="input" size={25} />,
       desc: 'Import an existing account',
       label: 'Import',
       handlePress: handleImport
     },
     {
       id: 'create',
-      icon: <MdIcons name="add" size={25} />,
+      icon: <Icon type='material' name="add" size={25} />,
       desc: 'Create a new account',
       label: 'Create',
       handlePress: handleCreate

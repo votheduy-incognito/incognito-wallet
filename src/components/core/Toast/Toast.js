@@ -1,7 +1,7 @@
+import { COLORS } from '@src/styles';
 import React, { Component } from 'react';
 import { Animated } from 'react-native';
-import MdIcons from 'react-native-vector-icons/MaterialIcons';
-import { COLORS } from '@src/styles';
+import { Icon } from 'react-native-elements';
 import Text from '../Text';
 import styles from './style';
 
@@ -26,7 +26,7 @@ class Toast extends Component {
   static showSuccess(msg, config) {
     Toast.show(msg, {
       ...typeof config === 'object' ? config : {},
-      icon: <MdIcons name='check' size={20} color={COLORS.white} />,
+      icon: <Icon type='material' name='check' size={20} color={COLORS.white} />,
       containerStyle: styles.successContainer
     });
   }
@@ -34,14 +34,14 @@ class Toast extends Component {
   static showError(msg, config?) {
     Toast.show(msg, {
       ...typeof config === 'object' ? config : {},
-      icon: <MdIcons name='error' size={20} color={COLORS.white} />,
+      icon: <Icon type='material' name='error' size={20} color={COLORS.white} />,
       containerStyle: styles.errorContainer
     });
   }
 
   static showInfo(msg, config?) {
     Toast.show(msg, {
-      icon: <MdIcons name='info' size={20} color={COLORS.white} />,
+      icon: <Icon type='material' name='info' size={20} color={COLORS.white} />,
       containerStyle: styles.infoContainer,
       duration: 2500,
       ...typeof config === 'object' ? config : {},
@@ -51,7 +51,7 @@ class Toast extends Component {
   static showWarning(msg, config?) {
     Toast.show(msg, {
       ...typeof config === 'object' ? config : {},
-      icon: <MdIcons name='warning' size={20} color={COLORS.dark1} />,
+      icon: <Icon type='material' name='warning' size={20} color={COLORS.dark1} />,
       containerStyle: styles.warningContainer,
       messageStyle: styles.warningMessage
     });

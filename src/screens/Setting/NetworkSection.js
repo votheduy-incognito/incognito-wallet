@@ -2,7 +2,7 @@ import ROUTE_NAMES from '@src/router/routeNames';
 import serverService from '@src/services/wallet/Server';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import MdIcons from 'react-native-vector-icons/MaterialIcons';
+import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import Section from './Section';
 
@@ -20,7 +20,7 @@ const NetworkSection = ({ navigation, defaultServer }) => {
     {
       title: server?.name || 'Change default server',
       desc: server?.address || '---',
-      icon: <MdIcons name="laptop" size={20} />,
+      icon: <Icon type='material' name="laptop" size={20} />,
       handlePress: () => navigation?.navigate(ROUTE_NAMES.NetworkSetting, {
         onReloadedNetworks: () => loadServers()
       })

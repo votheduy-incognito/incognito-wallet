@@ -1,7 +1,5 @@
-import React from 'react';
-import { StyleSheet,Text } from 'react-native';
 import TextStyle, { FontStyle, scaleInApp } from '@src/styles/TextStyle';
-import { Icon } from 'react-native-elements';
+import { StyleSheet } from 'react-native';
 
 export const rightNextIcon = {
   size:scaleInApp(25), type:'material',
