@@ -221,7 +221,7 @@ GetStartedContainer.propTypes = {
   reloadWallet: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   getPTokenList: PropTypes.func.isRequired,
-  account: PropTypes.object.isRequired,
+  account: PropTypes.object,
   followDefaultTokens: PropTypes.func.isRequired,
   reloadAccountList: PropTypes.func.isRequired,
 };
