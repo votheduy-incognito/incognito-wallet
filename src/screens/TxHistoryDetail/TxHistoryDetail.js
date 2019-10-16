@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { View, Text } from 'react-native';
-import PropTypes from 'prop-types';
-import { TouchableOpacity, Container, ScrollView } from '@src/components/core';
-import { CONSTANT_CONFIGS, CONSTANT_COMMONS } from '@src/constants';
-import formatUtil from '@src/utils/format';
+import { Container, ScrollView, TouchableOpacity } from '@src/components/core';
+import { CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
 import linkingService from '@src/services/linking';
-import MdIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import formatUtil from '@src/utils/format';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { Text, View } from 'react-native';
+import { Icon } from 'react-native-elements';
 import styleSheet from './styles';
 
 export default class TxHistoryDetail extends Component {
@@ -45,7 +45,7 @@ export default class TxHistoryDetail extends Component {
     return (
       <ScrollView>
         <Container style={styleSheet.container}>
-          <MdIcons name='history' style={styleSheet.icon} />
+          <Icon type='material-community' name='history' style={styleSheet.icon} />
           {this.renderRow(
             {
               label: typeText,

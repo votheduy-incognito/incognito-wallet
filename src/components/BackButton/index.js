@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import { TouchableOpacity } from '@src/components/core';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { THEME } from '@src/styles';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Icon } from 'react-native-elements';
 
 const BackButton = ({ onPress }) => (
   <TouchableOpacity
@@ -15,7 +15,7 @@ const BackButton = ({ onPress }) => (
       height: THEME.header.headerHeight
     }}
   >
-    <Icon name='chevron-left' color='white' size={30} />
+    <Icon name='chevron-left' type='material-community' color='white' size={30} />
   </TouchableOpacity>
 );
 
