@@ -25,7 +25,7 @@ const boxGroup = {
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f9fa'
+    backgroundColor: '#f0f5f5'
   },
   containerHeader:{
     backgroundColor: 'transparent',
@@ -71,8 +71,12 @@ const style = StyleSheet.create({
     borderBottomWidth: 0,
     backgroundColor: 'rgba(243,248,249,0.73)',
     marginVertical:scaleInApp(5),
-    padding:scaleInApp(10),
+    paddingHorizontal:scaleInApp(10),
+    paddingVertical:scaleInApp(20),
     alignItems:'center',
+    shadowOffset: { width: 2, height: 0 },
+    borderRadius: 6,
+    elevation: 3,
     ...boxGroup
   },
   top_right_container:{
@@ -83,14 +87,20 @@ const style = StyleSheet.create({
     textDecorationLine:'underline'
   },
   top_container_group:{
-    flex:1,
+    flex:2,
     justifyContent:'space-evenly',
+    paddingHorizontal:scaleInApp(10),
+  },
+  top_container_right_group: {
+    flex:1,
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
     paddingHorizontal:scaleInApp(10),
   },
   top_container_title:{
     ...TextStyle.mediumText,
     ...FontStyle.medium,
-    color: '#000000',
+    color: '#000000'
   },
   top_container_subtitle:{
     ...TextStyle.mediumText,
@@ -109,6 +119,9 @@ const style = StyleSheet.create({
     borderBottomWidth: 0,
     marginVertical:scaleInApp(5),
     padding:scaleInApp(10),
+    shadowOffset: { width: 2, height: 0 },
+    borderRadius: 6,
+    elevation: 3,
     ...boxGroup
   },
   group2_container_group1:{
@@ -116,7 +129,7 @@ const style = StyleSheet.create({
     justifyContent:'space-around',
   },
   group2_container_container:{
-    flex:2,
+    flex:1,
     justifyContent:'center',
     padding:scaleInApp(10),
   },
@@ -148,16 +161,17 @@ const style = StyleSheet.create({
   group2_container_value2:{
     ...TextStyle.smallText,
     fontSize:scaleInApp(15),
-    marginTop:scaleInApp(2),
+    marginTop:scaleInApp(5),
     color: '#00C7E2',
   },
   group2_container_button2:{
-    backgroundColor:'#26C64D',
+    backgroundColor:'#25CDD6',
     padding:scaleInApp(7),
-    borderRadius:scaleInApp(4)
+    borderRadius:scaleInApp(6)
   },
   group2_container_button_text:{
     ...TextStyle.normalText,
+    ...FontStyle.medium,
     color: '#FFFFFF',
   },
   dialog_title_text: {
@@ -171,6 +185,7 @@ const style = StyleSheet.create({
     color:'#1C1C1C',
     textAlignVertical:'center',
     textAlign:'center',
+    paddingHorizontal: 5,
   },
   dialog_content: {
     flex:1,

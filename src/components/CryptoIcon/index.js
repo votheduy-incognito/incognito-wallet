@@ -1,10 +1,10 @@
+import { ActivityIndicator, Image, View } from '@src/components/core';
+import { CONSTANT_CONFIGS } from '@src/constants';
+import { COLORS } from '@src/styles';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Platform } from 'react-native';
-import PropTypes from 'prop-types';
-import { View, ActivityIndicator, Image } from '@src/components/core';
-import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { COLORS } from '@src/styles';
-import { CONSTANT_CONFIGS } from '@src/constants';
+import { Icon } from 'react-native-elements';
 import styleSheet from './style';
 
 export default class CryptoIcon extends Component {
@@ -46,7 +46,7 @@ export default class CryptoIcon extends Component {
     this.setState({ isLoading: false });
   }
 
-  renderDefault = () => <Icons name='circle' size={28} color={COLORS.primary} />
+  renderDefault = () => <Icon type='material-community' name='circle' size={28} color={COLORS.primary} />
 
   getStyle = (isLoading) => {
     const styles = [styleSheet.logo];

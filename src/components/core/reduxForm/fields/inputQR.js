@@ -1,8 +1,8 @@
-import React from 'react';
-import { TouchableOpacity, TextInput } from '@src/components/core';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { TextInput, TouchableOpacity } from '@src/components/core';
 import { openQrScanner } from '@src/components/QrCodeScanner';
 import { scaleInApp } from '@src/styles/TextStyle';
+import React from 'react';
+import { Icon } from 'react-native-elements';
 import createField from './createField';
 
 const renderCustomField = ({ input, meta, ...props }) => {
@@ -27,7 +27,7 @@ const renderCustomField = ({ input, meta, ...props }) => {
             });
           }}
         >
-          <MaterialCommunityIcons name='qrcode-scan' size={scaleInApp(20)} />
+          <Icon type='material-community' name='qrcode-scan' size={scaleInApp(20)} />
         </TouchableOpacity>
       )}
     />

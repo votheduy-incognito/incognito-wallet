@@ -1,8 +1,8 @@
+import AppScreen from '@src/components/AppScreen';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Modal as RNComponent } from 'react-native';
-import MdIcons from 'react-native-vector-icons/MaterialIcons';
-import AppScreen from '@src/components/AppScreen';
+import { Icon } from 'react-native-elements';
 import { TouchableOpacity, View } from '..';
 import styleSheet from './style';
 
@@ -20,7 +20,7 @@ const Modal = ({
         {isShowHeader && close && (
           <View style={styleSheet.header}>
             <TouchableOpacity onPress={close} style={styleSheet.closeBtn}>
-              <MdIcons name="close" size={30} color={closeBtnColor} />
+              <Icon name='close' type='material' size={30} color={closeBtnColor} />
             </TouchableOpacity>
           </View>
         )}
@@ -35,7 +35,7 @@ Modal.defaultProps = {
   children: null,
   close: null,
   containerStyle: null,
-  closeBtnColor: null,
+  closeBtnColor: 'white',
   isShowHeader: true
 };
 

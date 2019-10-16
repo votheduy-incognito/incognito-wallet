@@ -10,7 +10,7 @@ export default class WizardContainer extends Component {
     isShow: false
   };
 
-  componentWillMount() {
+  componentDidMount() {
     this.init();
   }
 

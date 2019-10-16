@@ -120,16 +120,16 @@ class ImportAccount extends Component {
                     />
                   )
               }
-              
+
               <Field
                 component={InputField}
                 name='privateKey'
-                placeholder='Private Key'
+                placeholder='Enter Private Key'
                 label='Private Key'
                 validate={[isRequired]}
               />
               <Button
-                title='Import account'
+                title='Import'
                 style={styleSheet.submitBtn}
                 onPress={handleSubmit(this.handleImportAccount)}
                 isAsync

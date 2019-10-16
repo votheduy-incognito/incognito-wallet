@@ -2,6 +2,7 @@ import type from '@src/redux/types/token';
 import { accountSeleclor } from '@src/redux/selectors';
 import { getTokenList } from '@src/services/api/token';
 import tokenService from '@src/services/wallet/tokenService';
+import accountService from '@src/services/wallet/accountService';
 import PToken from '@src/models/pToken';
 
 export const setToken = (token = throw new Error('Token object is required')) => ({
@@ -88,10 +89,8 @@ export const getBalance = (token = throw new Error('Token object is required')) 
     if (!account) {
       throw new Error('Account is not exist');
     }
-
-    const accountWallet = wallet.getAccountByName(account?.name);
-
-    const balance = await accountWallet.getPrivacyCustomTokenBalance(token.id);
+    
+    const balance = await accountService.getBalance(account, wallet, token.id);
     dispatch(setToken({
       ...token,
       amount: balance

@@ -1,9 +1,9 @@
 import { Text, TouchableOpacity } from '@src/components/core';
 import clipboard from '@src/services/clipboard';
+import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
 import React from 'react';
-import MdIcons from 'react-native-vector-icons/MaterialIcons';
-import { COLORS } from '@src/styles';
+import { Icon } from 'react-native-elements';
 import styleSheet from './style';
 
 
@@ -13,13 +13,15 @@ const CopiableText = ({
   children,
   textProps,
   containerProps,
+  copiedMessage,
   showCopyIcon = true,
-  oneLine = false
+  oneLine = false,
+  iconStyle
 }) => (
   <TouchableOpacity
     style={[styleSheet.textBox, style]}
     {...containerProps}
-    onPress={() => clipboard.set(text)}
+    onPress={() => clipboard.set(text, { copiedMessage })}
   >
     {children || (
       <Text
@@ -31,7 +33,7 @@ const CopiableText = ({
       </Text>
     )}
     {showCopyIcon && (
-      <MdIcons name="content-copy" size={20} style={styleSheet.copyIcon} color={COLORS.primary} />
+      <Icon type='material' name="content-copy" size={20} style={styleSheet.copyIcon} color={COLORS.primary} />
     )}
   </TouchableOpacity>
 );
@@ -42,7 +44,8 @@ CopiableText.defaultProps = {
   showCopyIcon: false,
   oneLine: false,
   children: undefined,
-  style: undefined
+  style: undefined,
+  copiedMessage: undefined
 };
 CopiableText.propTypes = {
   text: PropTypes.string,
@@ -51,6 +54,7 @@ CopiableText.propTypes = {
   showCopyIcon: PropTypes.bool,
   oneLine: PropTypes.bool,
   children: PropTypes.node,
+  copiedMessage: PropTypes.string,
   style: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.array,

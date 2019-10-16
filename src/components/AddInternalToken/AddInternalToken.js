@@ -6,15 +6,15 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withNavigation } from 'react-navigation';
 import { CONSTANT_COMMONS } from '@src/constants';
-import { getEstimateFeeForSendingTokenService } from '@src/services/wallet/RpcClientService';
+import { getEstimateFeeForPToken } from '@src/services/wallet/RpcClientService';
 import Token from '@src/services/wallet/tokenService';
-import convert from '@src/utils/convert';
 import formatUtil from '@src/utils/format';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { setWallet } from '@src/redux/actions/wallet';
 import tokenData from '@src/constants/tokenData';
+import { ExHandler } from '@src/services/exception';
 import styleSheet from './style';
 
 const formName = 'addInternalToken';
@@ -81,12 +81,12 @@ class AddInternalToken extends Component {
     const accountWallet = wallet.getAccountByName(account.name);
     try{
       this.setState({ isGettingFee: true });
-      const fee =  await getEstimateFeeForSendingTokenService(fromAddress, toAddress, Number(amount), tokenObject, account.PrivateKey, accountWallet);
+      const fee =  await getEstimateFeeForPToken(fromAddress, toAddress, Number(amount), tokenObject, accountWallet);
 
       // update fee
       this.setState({ fee });
     } catch(e){
-      Toast.showError('Something went wrong. Please refresh the screen.');
+      new ExHandler(e).showErrorToast();
     } finally {
       this.setState({ isGettingFee: false });
     }
@@ -95,7 +95,8 @@ class AddInternalToken extends Component {
   handleCreateSendToken = async (values) => {
     const { account, wallet, setWallet } = this.props;
 
-    const { name, symbol, amount, fee } = values;
+    const { name, symbol, amount } = values;
+    const { fee } = this.state;
 
     const tokenObject = {
       Privacy : true,
@@ -112,8 +113,7 @@ class AddInternalToken extends Component {
 
     try {
       this.setState({ isCreatingOrSending: true });
-      const res = await Token.createSendPrivacyCustomToken(tokenObject, convert.toOriginalAmount(Number(fee), CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY), account, wallet);
-
+      const res = await Token.createSendPToken(tokenObject, Number(fee) || 0, account, wallet);
       if (res.txId) {
         Toast.showSuccess('Create token successfully');
 
@@ -122,10 +122,10 @@ class AddInternalToken extends Component {
 
         this.goBack();
       } else {
-        Toast.showError('Something went wrong. Please refresh the screen.');
+        throw new Error('Something went wrong. Please refresh the screen.');
       }
     } catch (e) {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+      new ExHandler(e).showErrorToast();
     } finally {
       this.setState({ isCreatingOrSending: false });
     }

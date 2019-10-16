@@ -5,7 +5,7 @@ import QrCodeGenerate from '@src/components/QrCodeGenerate';
 import CopiableText from '@src/components/CopiableText';
 import accountAddressStyle from './style';
 
-const AccountAddress = ({ data }) => (
+const AccountAddress = ({ data, containerStyle, textStyle, iconStyle }) => (
   <View style={accountAddressStyle.container}>
     {
       data ? (
@@ -15,13 +15,14 @@ const AccountAddress = ({ data }) => (
             oneLine
             showCopyIcon
             containerProps={{
-              style :accountAddressStyle.textBox
+              style : [accountAddressStyle.textBox, containerStyle]
             }}
             textProps={{
-              style: accountAddressStyle.text,
+              style: [accountAddressStyle.text, textStyle],
               numberOfLines: 1,
               ellipsizeMode:'middle'
             }}
+            iconStyle={iconStyle}
             text={data}
           />
         </>

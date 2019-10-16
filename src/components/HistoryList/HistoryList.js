@@ -1,19 +1,13 @@
 
-import {
-  Container,
-  Divider,
-  Text,
-  View,
-  TouchableOpacity
-} from '@src/components/core';
-import Swipeout from 'react-native-swipeout';
-import { ConfirmedTx, SuccessTx, FailedTx } from '@src/services/wallet/WalletService';
-import { COLORS } from '@src/styles';
-import PropTypes from 'prop-types';
-import React from 'react';
-import formatUtil from '@src/utils/format';
+import { Container, Divider, Text, TouchableOpacity, View } from '@src/components/core';
 import { CONSTANT_COMMONS } from '@src/constants';
 import routeNames from '@src/router/routeNames';
+import { ConfirmedTx, FailedTx, SuccessTx } from '@src/services/wallet/WalletService';
+import { COLORS } from '@src/styles';
+import formatUtil from '@src/utils/format';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Swipeout from 'react-native-swipeout';
 import styleSheet from './style';
 
 const getStatusData = (status, statusCode) => {
@@ -57,6 +51,7 @@ const getTypeData = type => {
   let typeText;
   let balanceDirection;
   let balanceColor;
+  
   switch (type) {
   case CONSTANT_COMMONS.HISTORY.TYPE.WITHDRAW:
     typeText = 'Withdraw';
@@ -234,6 +229,7 @@ HistoryItem.propTypes = {
     status: PropTypes.string,
   }),
   divider: PropTypes.bool,
+  navigation: PropTypes.object.isRequired
 };
 
 HistoryList.defaultProps = {
@@ -245,7 +241,8 @@ HistoryList.defaultProps = {
 HistoryList.propTypes = {
   histories: PropTypes.array,
   actionButton: PropTypes.element,
-  onCancelEtaHistory: PropTypes.func
+  onCancelEtaHistory: PropTypes.func,
+  navigation: PropTypes.object.isRequired
 };
 
 EmptyHistory.defaultProps = {

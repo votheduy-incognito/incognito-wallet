@@ -2,6 +2,7 @@ import Container from '@components/Container';
 import BaseScreen from '@screens/BaseScreen';
 import CreateAccount from '@screens/CreateAccount';
 import images, { imagesVector } from '@src/assets';
+import { Button } from '@src/components/core';
 import DialogLoader from '@src/components/DialogLoader';
 import HeaderBar from '@src/components/HeaderBar/HeaderBar';
 import HistoryMined from '@src/components/HistoryMined';
@@ -14,6 +15,7 @@ import APIService from '@src/services/api/miner/APIService';
 import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
 import VirtualDeviceService from '@src/services/VirtualDeviceService';
 import accountService from '@src/services/wallet/accountService';
+import { COLORS } from '@src/styles';
 import format from '@src/utils/format';
 import LocalDatabase from '@src/utils/LocalDatabase';
 import Util from '@src/utils/Util';
@@ -22,7 +24,6 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { Button } from 'react-native-elements';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import { connect } from 'react-redux';
 import AdvanceOption from './AdvanceOption';
@@ -113,7 +114,7 @@ class DetailDevice extends BaseScreen {
   }
 
   checkAndUpdateInfoVirtualNode = async ()=>{
-    
+
     const {device,wallet} = this.state;
     const {getAccountByName,listAccount} = this.props;
     let account = await getAccountByName(device.accountName());
@@ -123,7 +124,7 @@ class DetailDevice extends BaseScreen {
 
       // dev-test
       const keyCompare = await VirtualDeviceService.getPublicKeyMining(device)??'';
-  
+
       // const publicKey = '16yUvbgiXUZfwuWafBcXX4oiyYVui57e1oMtEyRCwkHemeqKvf9';
       // const isRegular = !_.includes(keyCompare,account?.BlockProducerKey);
       console.log(TAG,'checkAndUpdateInfoVirtualNode listAccount ',listAccount);
@@ -158,7 +159,7 @@ class DetailDevice extends BaseScreen {
         default: true,
         userId: 0,
         verified: true };
-    
+
       // console.log(TAG,'createListFollowingToken begin findd ---  ',ObjFinded,value);
       amount = !_.isNaN(result[value]) ? _.toNumber(result[value])*commission :0;
       amount = format.amountFull(amount,ObjFinded['pDecimals']??common.DECIMALS[value]);
@@ -227,7 +228,7 @@ class DetailDevice extends BaseScreen {
 
 
       // listFollowingTokens = (!_.isEmpty(account) && await accountService.getFollowingTokens(account,wallet))||[];
-      // listFollowingTokens = listFollowingTokens.map(async item=>{ 
+      // listFollowingTokens = listFollowingTokens.map(async item=>{
       //   const objMerge = {id:item.id,name:item.name,...item.metaData};
       //   let amount = await device.balanceToken(account,wallet,objMerge.id).catch(console.log)||0;
       //   amount = format.amountFull(amount,objMerge['pDecimals']);
@@ -240,12 +241,12 @@ class DetailDevice extends BaseScreen {
       // balancePRV = await device.balanceToken(account,wallet);
 
       // balancePRV = format.amount(balancePRV,common.DECIMALS['PRV']);
-      
+
       // balancePRV = _.isNaN(balancePRV)?0:balancePRV;
       // console.log(TAG,'fetchData NODE balance = ',balancePRV);
     }
     }
-    
+
     this.setState({
       accountMiner:account,
       listFollowingTokens,
@@ -269,7 +270,7 @@ class DetailDevice extends BaseScreen {
         const dataResult = await DeviceService.send(device.data,action,chain);
         // console.log(TAG,'callAndUpdateAction send dataResult = ',dataResult);
         const { data={status:Device.offlineStatus()}, productId = -1 } = dataResult;
-      
+
         if(device.data.product_id === productId ){
           device.Status = data.status;
         }else{
@@ -291,14 +292,14 @@ class DetailDevice extends BaseScreen {
   checkStatus = async (chain='incognito')  => {
     let {device} = this.state;
     // console.log(TAG,'checkStatus begin ',device.Type);
-    
+
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
       const dataResult = await VirtualDeviceService.getChainMiningStatus(device) ?? {};
       const { status = -1, data={status:Device.offlineStatus()},productId = -1 } = dataResult;
       // console.log(TAG,'checkStatus begin VIRTUAL_TYPE',dataResult);
       if(_.isEqual(status,1)){
-        
+
         device.Status = data.status;
         this.setState({
           device:device
@@ -346,11 +347,11 @@ class DetailDevice extends BaseScreen {
         await this.checkStatus();
         this.Loading = false;
       }
-      
+
     }
-    
+
   });
-  
+
   renderHeader = () => {
     const {navigation} = this.props;
     const title = this.titleBar|| 'Details';
@@ -363,7 +364,7 @@ class DetailDevice extends BaseScreen {
       <HeaderBar
         navigation={navigation}
         index={1}
-        scene={{descriptor:{options}}} 
+        scene={{descriptor:{options}}}
       />
     );
   };
@@ -385,7 +386,7 @@ class DetailDevice extends BaseScreen {
     }
     this.Loading = true;
     let result = null;
-    
+
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
       if( !_.isEmpty(listFollowingTokens) ){
@@ -401,7 +402,7 @@ class DetailDevice extends BaseScreen {
       if(device){
         const {PaymentAddress,ValidatorKey} = accountMiner;
         result = await Util.excuteWithTimeout(APIService.requestWithdraw({ProductID:device.ProductId,qrCodeDeviceId:device.qrCodeDeviceId,ValidatorKey:ValidatorKey,PaymentAddress:PaymentAddress}),4).catch(console.log);
-        
+
       }
       break;
     }
@@ -413,11 +414,11 @@ class DetailDevice extends BaseScreen {
       }
     }
     this.Loading = false;
-    
+
   });
 
   handlePressStake = onClickView(async ()=>{
-    
+
     const {device} = this.state;
     // hienton test
     // let listDeviceTest = await LocalDatabase.getListDevices();
@@ -427,7 +428,7 @@ class DetailDevice extends BaseScreen {
     // listDeviceTest.push(deviceToClone);
     // await LocalDatabase.saveListDevices(listDeviceTest);
     // this.goToScreen(routeNames.HomeMine);
-    
+
     this.goToScreen(routeNames.AddStake,{
       accountInfo:{
         minerAccountName:device.accountName(),
@@ -441,7 +442,7 @@ class DetailDevice extends BaseScreen {
     // const isHaveWallet =  !_.isEmpty(accountMiner);
     const isHaveWallet = !device.isOffline();
     const isWaiting =  _.isNil(balancePRV) || device.isWaiting();
-   
+
     return (
       <View style={style.group2_container}>
         {isWaiting?<Loader />:(
@@ -452,18 +453,10 @@ class DetailDevice extends BaseScreen {
                 {/* <Text numberOfLines={1} style={style.group2_container_value}>{`${balancePRV} PRV`}</Text> */}
               </View>
               <View style={style.group2_container_container2}>
-                {/* {isHaveWallet&&(
-                  <Button
-                    titleStyle={style.group2_container_button_text}
-                    buttonStyle={style.group2_container_button2}
-                    onPress={this.handlePressWithdraw}
-                    title='Withdraw'
-                  />
-                )}
-                {!isHaveWallet && (
-                  <Text style={style.textWarning}>Your device is offline.</Text>
-                )} */}
                 <Button
+                  disabled
+                  disabledTitleStyle={style.group2_container_button_text}
+                  disabledStyle={[style.group2_container_button2,{backgroundColor:'#93EAEF'}]}
                   titleStyle={style.group2_container_button_text}
                   buttonStyle={style.group2_container_button2}
                   onPress={this.handlePressWithdraw}
@@ -496,47 +489,42 @@ class DetailDevice extends BaseScreen {
           <Text style={style.top_container_title} numberOfLines={1}>{this.productName}</Text>
           <Text style={[style.group2_container_value2,Device.getStyleStatus(device.Status.code)]}>{device.statusMessage()}</Text>
         </View>
-        {device.isEarning() && (
-          <Earning />
-        )}
-        {!device?.isOffline() && device?.Type === DEVICES.MINER_TYPE && (
-          <TouchableOpacity onPress={()=>{
-            this.advanceOptionView?.current.open();
-          }}
-          >
-            {imagesVector.ic_setting()}
-          </TouchableOpacity>
-        )}
-        {device.Type === DEVICES.VIRTUAL_TYPE && !device.isOffline() && !device.isEarning() && (!_.isNil(isStaked) && !isStaked) &&!isCallStaked? (
-          <Button
-            titleStyle={style.group2_container_button_text}
-            buttonStyle={style.group2_container_button}
-            title={stakeTitle}
-            onPress={onClickView(async()=>{
-              
-              const {accountMiner,isStaked} = this.state;
-              if(!isStaked){
-                if(!_.isEmpty(accountMiner)){
-                  await this.handlePressStake();
+        <View style={style.top_container_right_group}>
+          {device.isEarning() && (
+            <Earning />
+          )}
+          {!device?.isOffline() && device?.Type === DEVICES.MINER_TYPE && (
+            <TouchableOpacity onPress={()=>{
+              this.advanceOptionView?.current.open();
+            }}
+            >
+              {imagesVector.ic_setting()}
+            </TouchableOpacity>
+          )}
+          {device.Type === DEVICES.VIRTUAL_TYPE && !device.isOffline() && !device.isEarning() && (!_.isNil(isStaked) && !isStaked) &&!isCallStaked? (
+            <Button
+              titleStyle={style.group2_container_button_text}
+              buttonStyle={style.group2_container_button}
+              title={stakeTitle}
+              onPress={onClickView(async()=>{
+
+                const {accountMiner,isStaked} = this.state;
+                if(!isStaked){
+                  if(!_.isEmpty(accountMiner)){
+                    await this.handlePressStake();
+                  }else{
+                    this.setState({
+                      isShowMessage:true
+                    });
+                  }
                 }else{
-                  this.setState({
-                    isShowMessage:true
-                  });
+                // udpdate status at local
+                  this.IsStaked = false;
                 }
-              }else{
-              // udpdate status at local
-                this.IsStaked = false;
-              }
-              // hienton
-              // this.goToScreen(routeNames.AddStake,{
-              //   accountInfo:{
-              //     minerAccountName:'hito',
-              //     funderAccountName:'hito'
-              //   }
-              // });
-            })}
-          />
-        ):null}
+              })}
+            />
+          ):null}
+        </View>
       </TouchableOpacity>
     );
   }
@@ -546,7 +534,7 @@ class DetailDevice extends BaseScreen {
     return (
       <Dialog
         width={0.8}
-        height={0.35}
+        height={0.3}
         visible={isShowMessage}
         onTouchOutside={() => {
           this.setState({ isShowMessage: false });
@@ -567,7 +555,7 @@ class DetailDevice extends BaseScreen {
             title='Import'
           />
         </DialogContent>
-       
+
       </Dialog>
     );
   }
@@ -583,7 +571,7 @@ class DetailDevice extends BaseScreen {
         {isWaiting?<Loader /> :<HistoryMined listItems={listFollowingTokens} />}
       </>
     );
-    
+
   }
 
   render() {
@@ -597,7 +585,7 @@ class DetailDevice extends BaseScreen {
     const bgTop = device.Type === DEVICES.VIRTUAL_TYPE ?images.bg_top_virtual_device:images.bg_top_device;
     const bgRootTop = device.Type === DEVICES.VIRTUAL_TYPE ?0: images.bg_top_detail;
     return (
-      <Container styleContainScreen={{paddingHorizontal:0}} styleRoot={style.container} backgroundTop={{source:bgRootTop,style:[style.imageTop,{backgroundColor:'#01828A'}]}}>
+      <Container styleContainScreen={{paddingHorizontal:0}} styleRoot={style.container} backgroundTop={{source:bgRootTop,style:[style.imageTop,{backgroundColor:COLORS.blue2}]}}>
         {this.renderHeader()}
         <AdvanceOption
           ref={this.advanceOptionView}
@@ -624,7 +612,7 @@ class DetailDevice extends BaseScreen {
           {this.renderTop()}
           {this.renderGroupBalance()}
           {/* {this.renderListFollowingTokens()} */}
-          
+
           {this.renderDialogNotify()}
         </ScrollView>
       </Container>

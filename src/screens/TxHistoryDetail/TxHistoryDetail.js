@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import {View, Text, Image} from 'react-native';
 import PropTypes from 'prop-types';
 import { TouchableOpacity, Container, ScrollView } from '@src/components/core';
 import { CONSTANT_CONFIGS, CONSTANT_COMMONS } from '@src/constants';
 import formatUtil from '@src/utils/format';
 import linkingService from '@src/services/linking';
-import MdIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import external from '@src/assets/images/icons/external.png';
 import styleSheet from './styles';
 
 export default class TxHistoryDetail extends Component {
@@ -29,7 +29,13 @@ export default class TxHistoryDetail extends Component {
   renderTxId = txID => {
     return (
       <TouchableOpacity style={styleSheet.txButton} onPress={() => { linkingService.openUrl(`${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txID}`); }}>
-        {this.renderText({ text: txID, style: [styleSheet.valueText, styleSheet.txButtonText], textProps: { ellipsizeMode: 'middle' } })}
+        {this.renderText({ text: txID, style: [styleSheet.valueText, { paddingRight: 20 }], textProps: { ellipsizeMode: 'middle' } })}
+        <Image
+          source={external}
+          resizeMode="contain"
+          resizeMethod="resize"
+          style={{position: 'absolute', top: 9, right: 0, width: 14, height: 14 }}
+        />
       </TouchableOpacity>
     );
   }
@@ -45,7 +51,6 @@ export default class TxHistoryDetail extends Component {
     return (
       <ScrollView>
         <Container style={styleSheet.container}>
-          <MdIcons name='history' style={styleSheet.icon} />
           {this.renderRow(
             {
               label: typeText,
@@ -58,7 +63,7 @@ export default class TxHistoryDetail extends Component {
           {!!fee && this.renderRow({ label: 'Fee', valueText: `${formatFee} ${feeUnit}` })}
           {!!statusText && this.renderRow({ label: 'Status', valueText: `${statusText} ${(!!statusNumber || statusNumber === 0) ? `[${statusNumber}]` : ''}`, valueTextStyle: { color: statusColor } })}
           {!!history?.time && this.renderRow({ label: 'Time', valueText: formatUtil.formatDateTime(history?.time) })}
-          {!!history?.incognitoTx && this.renderRow({ label: 'Incognito TX', valueComponent: this.renderTxId(history?.incognitoTx) })}
+          {!!history?.incognitoTx && this.renderRow({ label: 'TxID', valueComponent: this.renderTxId(history?.incognitoTx) })}
           {!!history?.toAddress && this.renderRow({ label: 'To address', valueText: history?.toAddress, valueTextProps: { ellipsizeMode: 'middle' } })}
         </Container>
       </ScrollView>

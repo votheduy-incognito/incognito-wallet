@@ -5,7 +5,10 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import withdrawNode from '@src/assets/images/icons/withdraw-node.png';
+import withdrawNodeDisabled from '@src/assets/images/icons/withdraw-node-disable.png';
 import CryptoIcon from '../CryptoIcon';
+
 import styles from './style';
 
 
@@ -30,7 +33,7 @@ class HistoryMined extends React.Component {
     }
     return null;
   }
-  
+
   componentDidMount(){
     const {item,isActive} = this.props;
     let {deviceInfo} = this.state;
@@ -60,17 +63,18 @@ class HistoryMined extends React.Component {
     this.setState({
       deviceInfo:deviceInfo,
     });
-  }
-  
+  };
+
   renderItem=({ item,index })=> {
-    const {onPress} = this.props;
+    const {onPress,listItems} = this.props;
     const {name = '',symbol = '',amount = 0,pSymbol=''} = item;
-    const symbolUI = _.isEqual(symbol,'PRV')?symbol:pSymbol;
-    const nameUI = _.isEqual(symbol,'PRV')?name:`Private ${symbol}`;
+    const isPRV = _.isEqual(symbol,'PRV');
+    const symbolUI = isPRV?symbol:pSymbol;
+    const nameUI = isPRV?name:`Private ${symbol}`;
     const {icon = null} = this.getData(item)??{};
     return (
       <TouchableOpacity
-        style={styles.container_item}
+        style={[styles.container_item, index === listItems.length - 1 ? styles.last_item : {}]}
         onPress={()=>{
           onPress? onPress(item):undefined;
         }}
@@ -81,11 +85,11 @@ class HistoryMined extends React.Component {
           <Text style={styles.groupRight_title}>{`${amount} ${symbolUI}`}</Text>
         </View>
         <View style={styles.groupRight}>
-          <Text style={styles.groupRight_title2}>earned</Text>
+          <Image source={isPRV ? withdrawNodeDisabled : withdrawNode} resizeMode="contain" resizeMethod="resize" style={styles.withdraw_logo} />
         </View>
       </TouchableOpacity>
     );
-  }
+  };
   getData = (token) => {
     const symbolUI = _.isEqual(token?.symbol,'PRV')?token.symbol:token.pSymbol;
     const additionData = tokenData.DATA[symbolUI] || tokenData.parse(token);
@@ -98,7 +102,7 @@ class HistoryMined extends React.Component {
     // console.log(TAG,'getData begin ==== ',additionData,symbolUI);
     // console.log(TAG,'getData end ==== ',data);
     return data;
-  }
+  };
 
   render() {
     const {
@@ -108,7 +112,7 @@ class HistoryMined extends React.Component {
       loading
     } = this.state;
     const {containerStyle,onPress} = this.props;
-    
+
     return (
       <View style={[styles.container,containerStyle]}>
         <FlatList

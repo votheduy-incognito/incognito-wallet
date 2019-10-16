@@ -12,8 +12,13 @@ class ReceiveCrypto extends React.Component {
     return (
       <ScrollView style={homeStyle.container}>
         <Container style={homeStyle.mainContainer}>
-          <Text style={homeStyle.desc}>Simply scan this QR code from the sending wallet.</Text>
-          <QrCodeAddress data={selectedPrivacy.paymentAddress} />
+          <Text style={[homeStyle.desc, { marginBottom: 5, marginTop: 30 }]}>Simply scan this QR code from</Text>
+          <Text style={homeStyle.desc}>the sending wallet.</Text>
+          <QrCodeAddress
+            data={selectedPrivacy.paymentAddress}
+            containerStyle={{ width: 250, paddingLeft: 10, paddingRight: 35, }}
+            iconStyle={{ marginLeft: 5 }}
+          />
         </Container>
       </ScrollView>
     );

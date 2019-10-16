@@ -1,25 +1,36 @@
 // import 'intl';
 // import 'intl/locale-data/jsonp/en';
+import 'react-native-console-time-polyfill';
 import AppScreen from '@src/components/AppScreen';
-import { Toast } from '@src/components/core';
+import { Toast, StatusBar } from '@src/components/core';
 import QrScanner from '@src/components/QrCodeScanner';
 import configureStore from '@src/redux/store';
 import AppContainer from '@src/router';
+import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import { initFirebaseNotification } from '@src/services/firebase';
 import React, { PureComponent } from 'react';
-import { StatusBar } from 'react-native';
-import 'react-native-console-time-polyfill';
-import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
 import { Provider } from 'react-redux';
-import { THEME } from './styles';
-
-
-
-StatusBar.setBackgroundColor(THEME.statusBar.backgroundColor);
 
 const store = configureStore();
 
+// gets the current screen from navigation state
+function getActiveRouteName(navigationState) {
+  if (!navigationState) {
+    return null;
+  }
+  const route = navigationState.routes[navigationState.index];
+  // dive into nested navigators
+  if (route.routes) {
+    return getActiveRouteName(route);
+  }
+  return route.routeName;
+}
+
 class App extends PureComponent {
+  state = {
+    currentScreen: '',
+  };
+
   componentDidMount() {
     initFirebaseNotification()
       .then(() => {
@@ -31,10 +42,18 @@ class App extends PureComponent {
   }
 
   render() {
+    const { currentScreen } = this.state;
     return (
       <Provider store={store}>
+        <StatusBar currentScreen={currentScreen} />
         <AppScreen>
-          <AppContainer />
+          <AppContainer
+            onNavigationStateChange={(prevState, currentState) => {
+              const currentScreen = getActiveRouteName(currentState);
+              this.setState({ currentScreen });
+              console.debug('CurrentScreen', currentScreen);
+            }}
+          />
           <QrScanner />
           <Toast />
         </AppScreen>

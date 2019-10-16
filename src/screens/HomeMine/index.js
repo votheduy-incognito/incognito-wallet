@@ -13,13 +13,15 @@ import LocalDatabase from '@utils/LocalDatabase';
 import Util from '@utils/Util';
 import _ from 'lodash';
 import React from 'react';
-import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import {FlatList, Image, StatusBar, Text, TouchableOpacity, View} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
+import {COLORS} from '@src/styles';
 import style from './style';
 
 export const TAG = 'HomeMine';
+
 
 class HomeMine extends BaseScreen {
   static navigationOptions = ({ navigation }) => {
@@ -49,6 +51,7 @@ class HomeMine extends BaseScreen {
   };
   async componentWillMount(){
     await this.createSignIn();
+    // StatusBar.setBackgroundColor(COLORS.white);
     // hientesting
     // const {
     //   product_id ='b005ada1-c16f-4dc1-8e95-6c4ff282f66e',
@@ -80,7 +83,7 @@ class HomeMine extends BaseScreen {
       };
       let response = await APIService.signUp(params);
       if (response.status !== 1) {
-        
+
         response = await APIService.signIn(params);
         // console.log(TAG, 'createSignIn saveUser signIn reponse ',response);
       }
@@ -120,7 +123,7 @@ class HomeMine extends BaseScreen {
         products = [],
         refresh_token
       } = data;
-      
+
       // filterProducts = products?.filter(item => this.isProduct(item))||[];
       const user = {
         email: email,
@@ -182,7 +185,7 @@ class HomeMine extends BaseScreen {
           isFetching: false
         });
       });
-      
+
     }
   };
   handleAddVirtualNodePress=()=>{
@@ -190,7 +193,7 @@ class HomeMine extends BaseScreen {
   }
   handleAddNodePress=()=>{
     this.goToScreen(routeNames.GetStaredMineStake);
-    
+
   }
   getListLocalDevice = async () => {
     let listDevice = await LocalDatabase.getListDevices();
@@ -234,7 +237,7 @@ class HomeMine extends BaseScreen {
       return undefined;
     }
   }
-  
+
   renderHeader = () => {
     const options= {
       title: 'My Nodes',
@@ -247,7 +250,7 @@ class HomeMine extends BaseScreen {
       <HeaderBar
         index={0}
         navigation={navigation}
-        scene={{descriptor:{options}}} 
+        scene={{descriptor:{options}}}
       />
     );
   };
@@ -340,7 +343,7 @@ class HomeMine extends BaseScreen {
           refreshing={isFetching && !isLoadMore}
           onEndReached={this.handleLoadMore}
         />
-        
+
       </Container>
     ));
   }
