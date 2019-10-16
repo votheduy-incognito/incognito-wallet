@@ -5,12 +5,12 @@ import LoadingTx from '@src/components/LoadingTx';
 import StakeValidatorTypeSelector from '@src/components/StakeValidatorTypeSelector';
 import { CONSTANT_COMMONS } from '@src/constants';
 import tokenData from '@src/constants/tokenData';
+import { ExHandler } from '@src/services/exception';
 import convertUtil from '@src/utils/convert';
 import formatUtil from '@src/utils/format';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import styles from './style';
-import routeNames from "@routers/routeNames";
 
 class SelfStaking extends Component {
   constructor(props) {
@@ -104,8 +104,8 @@ class SelfStaking extends Component {
           throw new Error('Stake failed with no tx id');
         }
       }
-    } catch {
-      Toast.showError('Stake failed, please try again');
+    } catch (e) {
+      new ExHandler(e, 'Stake failed, please try again').showErrorToast();
     } finally {
       this.setState({
         isStaking: false
