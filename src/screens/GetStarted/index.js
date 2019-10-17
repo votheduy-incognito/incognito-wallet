@@ -120,7 +120,9 @@ class GetStartedContainer extends Component {
         return throw new CustomError(ErrorCode.getStarted_can_not_create_wallet_on_existed);
       }
 
-      return initWallet();
+      requestAnimationFrame(() => {
+        return initWallet();
+      });
     } catch {
       throw new CustomError(ErrorCode.wallet_can_not_create_new_wallet);
     }
