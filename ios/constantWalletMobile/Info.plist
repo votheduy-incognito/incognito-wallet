@@ -61,6 +61,8 @@
 	<string>Need to access the camera roll to detect QR code</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Recognize speech</string>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>Need to access the Microphone to scan QR code</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Roboto_bold.ttf</string>
