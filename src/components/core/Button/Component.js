@@ -14,11 +14,13 @@ const Button = ({ title, children, style, titleStyle, type, onPress, loadingColo
     if (isLoading || disabled) return null;
 
     if (typeof onPress === 'function') {
-      const pressed = onPress();
-      if (pressed instanceof Promise) {
-        setLoading(true);
-        pressed.finally(() => setLoading(false));
-      }
+      requestAnimationFrame(() => {
+        const pressed = onPress();
+        if (pressed instanceof Promise) {
+          setLoading(true);
+          pressed.finally(() => setLoading(false));
+        }
+      });
     }
   };
 
