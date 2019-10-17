@@ -5,9 +5,9 @@ import React from 'react';
 import styleSheet from './style';
 
 const ExportItem = ({ label, data }) => (
-  <CopiableText style={styleSheet.itemContainer} text={data}>
+  <CopiableText style={styleSheet.itemContainer} text={data} copiedMessage={`${label} was copied.`}>
     <View style={styleSheet.content}>
-      <Text style={[styleSheet.itemLabel ]}>{label}</Text>
+      <Text style={[styleSheet.itemLabel]}>{label}</Text>
       <Text numberOfLines={1} ellipsizeMode="middle" style={styleSheet.itemData}>
         {data}
       </Text>
@@ -44,7 +44,6 @@ const ExportAccount = ({ account }) => (
 ExportAccount.propTypes = {
   account: PropTypes.object.isRequired
 };
-
 
 ExportItem.propTypes = {
   label: PropTypes.string.isRequired,

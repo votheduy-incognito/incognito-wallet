@@ -40,6 +40,11 @@ const createItem = (account, onSwitch, onExport, onDelete, isActive) => (
 const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAccount, reloadAccountFollowingToken, getAccountBalance, removeAccount }) => {
   const onHandleSwitchAccount = onClickView(async account => {
     try {
+      if (defaultAccount?.name === account?.name) {
+        Toast.showInfo(`Your current account is "${account?.name}"`);
+        return;
+      }
+
       await setDefaultAccount(account);
       await getAccountBalance(account).catch(() => null);
       await reloadAccountFollowingToken(account).catch(() => null);
