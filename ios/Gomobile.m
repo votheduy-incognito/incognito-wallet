@@ -5,10 +5,77 @@
 
 RCT_EXPORT_MODULE(PrivacyGo);
 
-//exports a method aggregatedRangeProve to javascript
-RCT_EXPORT_METHOD(aggregatedRangeProve:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+//exports a method deriveSerialNumber to javascript
+RCT_EXPORT_METHOD(deriveSerialNumber:(NSString *)data callback:(RCTResponseSenderBlock)callback){
   @try{
-    NSString *rs = GomobileAggregatedRangeProve(data);
+    NSString *rs = GomobileDeriveSerialNumber(data);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
+//exports a method randomScalars to javascript
+RCT_EXPORT_METHOD(randomScalars:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileRandomScalars(data);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
+//exports a method initPrivacyTx to javascript
+RCT_EXPORT_METHOD(initPrivacyTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileInitPrivacyTx(data);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
+
+//exports a method initPrivacyTokenTx to javascript
+RCT_EXPORT_METHOD(initPrivacyTokenTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileInitPrivacyTokenTx(data);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
+//exports a method initBurningRequestTx to javascript
+RCT_EXPORT_METHOD(initBurningRequestTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileInitBurningRequestTx(data);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
+//exports a method initBurningRequestTx to javascript
+RCT_EXPORT_METHOD(initWithdrawRewardTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileInitWithdrawRewardTx(data);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
+//exports a method staking to javascript
+RCT_EXPORT_METHOD(staking:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileStaking(data);
     callback(@[[NSNull null], rs]);
   }
   @catch(NSException *exception){
@@ -27,5 +94,20 @@ RCT_EXPORT_METHOD(generateBLSKeyPairFromSeed:(NSString *)data callback:(RCTRespo
   }
 }
 
+//exports a method scalarMultBase to javascript
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  scalarMultBase:(NSString *)data
+) {
+  NSString *rs = GomobileScalarMultBase(data);
+  return rs;
+}
+
+//exports a method scalarMultBase to javascript
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
+  generateKeyFromSeed:(NSString *)data
+) {
+  NSString *rs = GomobileGenerateKeyFromSeed(data);
+  return rs;
+}
 
 @end
