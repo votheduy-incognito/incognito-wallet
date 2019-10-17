@@ -13,6 +13,7 @@ const CopiableText = ({
   children,
   textProps,
   containerProps,
+  copiedMessage,
   showCopyIcon = true,
   oneLine = false,
   iconStyle
@@ -20,7 +21,7 @@ const CopiableText = ({
   <TouchableOpacity
     style={[styleSheet.textBox, style]}
     {...containerProps}
-    onPress={() => clipboard.set(text)}
+    onPress={() => clipboard.set(text, { copiedMessage })}
   >
     {children || (
       <Text
@@ -43,7 +44,8 @@ CopiableText.defaultProps = {
   showCopyIcon: false,
   oneLine: false,
   children: undefined,
-  style: undefined
+  style: undefined,
+  copiedMessage: undefined
 };
 CopiableText.propTypes = {
   text: PropTypes.string,
@@ -52,6 +54,7 @@ CopiableText.propTypes = {
   showCopyIcon: PropTypes.bool,
   oneLine: PropTypes.bool,
   children: PropTypes.node,
+  copiedMessage: PropTypes.string,
   style: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.array,
