@@ -79,7 +79,7 @@
     "react-native-permissions": "^2.0.2",
     "react-native-popup-dialog": "^0.18.3",
     "react-native-pulse": "^1.0.7",
-    "react-native-qrcode-scanner": "^1.2.1",
+    "react-native-qrcode-scanner": "https://github.com/cuidayang/react-native-qrcode-scanner.git",
     "react-native-qrcode-svg": "^5.1.2",
     "react-native-randombytes": "^3.5.2",
     "react-native-raw-bottom-sheet": "^2.0.2",
