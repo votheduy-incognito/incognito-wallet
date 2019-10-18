@@ -15,6 +15,7 @@ export { default as Switch } from './Switch';
 export { default as Container } from './Container';
 export { default as Toast } from './Toast';
 export { default as TouchableOpacity } from './TouchableOpacity';
+export { default as TouchableScale } from './TouchableScale';
 export { default as Divider } from './Divider';
 export { default as TabView } from './TabView';
 export { default as CheckBox } from './CheckBox';

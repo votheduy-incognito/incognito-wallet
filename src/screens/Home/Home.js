@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Container, ScrollView, View, Text, RefreshControl } from '@src/components/core';
+import {Container, ScrollView, View, Text, RefreshControl, TouchableScale} from '@src/components/core';
 import CryptoItemCard from '@src/components/CryptoItemCard';
 import tokenData from '@src/constants/tokenData';
-import TouchableOpacity from '@src/components/core/TouchableOpacity/Component';
 import { CONSTANT_COMMONS } from '@src/constants';
+import MdIcons from 'react-native-vector-icons/MaterialIcons';
 import { homeStyle } from './style';
 
 class Home extends React.Component {
@@ -50,9 +50,10 @@ class Home extends React.Component {
             ))
           }
           <View style={homeStyle.addTokenContainer}>
-            <TouchableOpacity onPress={handleAddFollowToken}>
-              <Text style={homeStyle.addTokenBtn}>Add a token</Text>
-            </TouchableOpacity>
+            <TouchableScale onPress={handleAddFollowToken} style={homeStyle.addTokenBtn}>
+              <MdIcons style={[homeStyle.addTokenBtnText, homeStyle.icon]} name="add" size={20} />
+              <Text style={homeStyle.addTokenBtnText}>Add a token</Text>
+            </TouchableScale>
           </View>
         </Container>
       </ScrollView>

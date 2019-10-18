@@ -9,10 +9,11 @@ import ViewUtil from '@src/utils/ViewUtil';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import { connect } from 'react-redux';
-import { Alert } from '../core';
+import { Alert, TouchableScale } from '../core';
 import styles from './style';
+import {Earning} from "@screens/DetailDevice/Loader";
 
 const TAG = 'HomeMineItem';
 const descriptionNodeOffline = 'Check if your node is running';
@@ -46,13 +47,13 @@ class HomeMineItem extends React.Component {
     //     timeToUpdate:nextProps.timeToUpdate
     //   };
     // }
-    
+
     return null;
   }
 
   async componentDidUpdate(prevProps,prevState){
     const {item,timeToUpdate} = this.props;
-    
+
     // if(!_.isEqual(item,prevProps?.item)){
     //   console.log(TAG,'componentDidUpdate begin 010101');
     //   this.getInfo();
@@ -61,12 +62,12 @@ class HomeMineItem extends React.Component {
     if(!_.isEqual(prevProps.timeToUpdate,timeToUpdate) || !_.isEqual(item,prevProps?.item)){
       console.log(TAG,'componentDidUpdate begin timeToUpdate = ',timeToUpdate);
       await this.getInfo();
-      
+
       this.checkActive();
     }
-    
+
   }
-  
+
   async componentDidMount(){
     await this.getInfo();
     this.checkActive();
@@ -74,7 +75,7 @@ class HomeMineItem extends React.Component {
   getInfo = async ()=>{
     const {getAccountByName,wallet,callbackReward} = this.props;
     let {deviceInfo,account,balance} = this.state;
-    
+
     account = await getAccountByName(deviceInfo.accountName());
     balance = await Device.getRewardAmount(deviceInfo,wallet);
     console.log(TAG,'getInfo name,balance = ',deviceInfo.Name,balance);
@@ -88,7 +89,7 @@ class HomeMineItem extends React.Component {
     }else{
       callbackReward(0);
     }
-    
+
     console.log(TAG,'getInfo balance format = ',balance);
     this.setState({
       account:account,
@@ -104,7 +105,7 @@ class HomeMineItem extends React.Component {
     const {item} = this.props;
     let {deviceInfo} = this.state;
     const isActive = true;
-    
+
     if(isActive){
       console.log(TAG,'checkActive begin deviceType = ',deviceInfo.Type);
       let dataResult = {};
@@ -132,8 +133,8 @@ class HomeMineItem extends React.Component {
       }else{
         this.setDeviceOffline();
       }
-      
-      
+
+
     }else{
       this.setDeviceOffline();
     }
@@ -164,14 +165,14 @@ class HomeMineItem extends React.Component {
   render() {
     const {item,deviceInfo,balance} = this.state;
     const {containerStyle,onPress} = this.props;
-    
+
     const styleStatus = this.getStyleStatus();
     const isFetchedBalance = !_.isNil(balance) && !_.isNaN(balance);
     let textErrorDevice ='';
     if(deviceInfo.isWaiting()){
       textErrorDevice = '---';
     }else{
-      
+
       if(deviceInfo.isSyncing()){
         if(!isFetchedBalance){
           textErrorDevice = 'Waiting to become a validator';
@@ -190,7 +191,7 @@ class HomeMineItem extends React.Component {
     }
 
     return (
-      <TouchableOpacity
+      <TouchableScale
         style={[styles.container,containerStyle]}
         onLongPress={()=>{
           Alert.alert('Confirm','Are you sure to delete this item?',[{text:'Yes',onPress:async ()=>{
@@ -211,13 +212,14 @@ class HomeMineItem extends React.Component {
           <Text style={styles.groupLeft_title}>{deviceInfo.Name}</Text>
           {_.isEmpty(textErrorDevice) && !_.isNil(balance)&&<Text style={styles.groupLeft_title2}>{`${balance} PRV`}</Text>}
           {!_.isEmpty(textErrorDevice) &&<Text style={styles.groupLeft_title2}>{textErrorDevice}</Text>}
-          
+
         </View>
         <View style={styles.groupRight}>
           <Text style={styleStatus}>{balance == -1?'Reconnecting':deviceInfo.statusMessage()}</Text>
           {deviceInfo.data.status.code === Device.CODE_UNKNOWN && ViewUtil.loadingComponent()}
+          {deviceInfo.data.status.code === Device.CODE_MINING && <View style={styles.earning}><Earning scale={0.65} /></View>}
         </View>
-      </TouchableOpacity>
+      </TouchableScale>
     );
   }
 }

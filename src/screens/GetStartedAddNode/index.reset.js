@@ -13,7 +13,7 @@ import React from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Button, Icon, Input } from 'react-native-elements';
 import { NetworkInfo } from 'react-native-network-info';
-import SSH from 'react-native-ssh';
+// import SSH from 'react-native-ssh';
 import { connect } from 'react-redux';
 import styles from './styles';
 
@@ -181,7 +181,7 @@ class GetStartedAddNode extends BaseScreen {
     const {currentConnect,isPassedValidate} = this.state;
     const {text,item,item_container_input,errorText} = styles;
     return (
-      <>          
+      <>
         <Input
           underlineColorAndroid="transparent"
           containerStyle={item}
@@ -217,15 +217,15 @@ class GetStartedAddNode extends BaseScreen {
 
   renderContent=()=>{
     const {currentPage,deviceId,currentConnect,errorMessage,loading} = this.state;
-    
+
     let childView ;
     switch(currentPage){
     case 0:{
-      childView = <Image style={styles.content_step1_image} source={images.ic_getstarted_device} />; 
+      childView = <Image style={styles.content_step1_image} source={images.ic_getstarted_device} />;
       break;
     }
     case 1:{
-      childView = this.renderContentStep2(); 
+      childView = this.renderContentStep2();
       break;
     }
     case 2:{
@@ -234,9 +234,9 @@ class GetStartedAddNode extends BaseScreen {
 
       let id = deviceId || '';
       const connectedNode = this.nodes.find(node => node.id.substring(node.id.length - 6) === id.substring(id.length - 6));
-      const onReset = () => {
-        SSH.execute({ user: 'nuc', password: 'Binh!2345', host: connectedNode.ip }, './reset.sh');
-      };
+      // const onReset = () => {
+      //   SSH.execute({ user: 'nuc', password: 'Binh!2345', host: connectedNode.ip }, './reset.sh');
+      // };
 
       console.log('Substring', this.nodes[0]?.id, this.nodes[0]?.id.substring(this.nodes[0]?.id.length - 6), id.substring(id.length - 6));
       if (connectedNode) {
@@ -280,7 +280,7 @@ class GetStartedAddNode extends BaseScreen {
       }
       break;
     }
-    
+
     }
     return (
       <View style={styles.content}>
@@ -307,18 +307,18 @@ class GetStartedAddNode extends BaseScreen {
         currentPage:2,
       });
       const deviceIdFromQrcode = this.state.deviceId;
-      
+
       const errorMessage = await this.viewSetupDevice.current.handleSetUpPress(deviceIdFromQrcode);
       const listNode = await LocalDatabase.getListDevices()||[];
       const subfix = Date.now()%1000;
       const nodeName =  _.padEnd(`Node ${listNode.length+1}`,10,subfix);
-      const deviceObj =  await this.viewSetupDevice.current.changeDeviceName(nodeName)||null; 
+      const deviceObj =  await this.viewSetupDevice.current.changeDeviceName(nodeName)||null;
       console.log(TAG,'handleStepConnect errorMessage ',errorMessage ,deviceObj);
       if(_.isEmpty(errorMessage) && !_.isNil(deviceObj)){
         this.handleFinish();
       }else{
         this.showToastMessage(errorMessage);
-        
+
       }
     }catch(e){
       this.setState({
@@ -326,7 +326,7 @@ class GetStartedAddNode extends BaseScreen {
         currentPage:0
       });
     }
-    
+
   }
 
   renderFooter=()=>{
@@ -367,7 +367,7 @@ class GetStartedAddNode extends BaseScreen {
             }
           });
         },
-      }; 
+      };
       break;
     }
     case 2:{
@@ -382,7 +382,7 @@ class GetStartedAddNode extends BaseScreen {
             },()=>{
               this.handleStepConnect();
             });
-            
+
           }else{
             this.setState({
               isPassedValidate:false,
@@ -413,7 +413,7 @@ class GetStartedAddNode extends BaseScreen {
         />
       </View>
     );
-    
+
   }
 
   render() {

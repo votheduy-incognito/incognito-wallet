@@ -27,7 +27,14 @@ const style = StyleSheet.create({
   container_item:{
     flexDirection:'row',
     alignItems:'center',
-    marginVertical:scaleInApp(5)
+    marginVertical:scaleInApp(7),
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderColor: '#f0f5f5',
+  },
+  last_item: {
+    borderBottomWidth: 0,
+    paddingBottom: 0,
   },
   imageLogo:{
     alignSelf:'center',
@@ -38,13 +45,14 @@ const style = StyleSheet.create({
     flexDirection:'column',
     flex:1,
     justifyContent:'space-between',
-    marginLeft:scaleInApp(10)
+    marginLeft:scaleInApp(15),
   },
   groupLeft_title:{
     ...TextStyle.normalText,
     backgroundColor: 'transparent',
     'letterSpacing':0,
     color: 'rgba(0,0,0,1)',
+    paddingBottom: 4,
   },
   groupRight:{
     flexDirection:'row',
@@ -55,11 +63,13 @@ const style = StyleSheet.create({
     ...FontStyle.medium,
     'letterSpacing':0,
     color: '#000000',
+    fontSize: 13,
   },
   groupRight_title2:{
     ...TextStyle.normalText,
     'letterSpacing':0,
     color: '#899092',
+    fontSize: 14,
   },
   text_empty:{
     ...TextStyle.normalText,

@@ -2,7 +2,7 @@
 import AddDevice from '@src/screens/AddDevice';
 import DetailDevice from '@screens/DetailDevice';
 import HomeMine from '@screens/HomeMine';
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import SetupWifiDevice from '@screens/SetupWifiDevice';
 import AddNode from '@src/screens/AddNode';
 import AddStake from '@src/screens/AddStake';

@@ -17,11 +17,12 @@ const renderCustomField = ({ input, meta, maxValue, ...props }) => {
       prependView={(
         <TouchableOpacity
           style={{
-            paddingHorizontal: 10,
+            paddingHorizontal: 15,
             paddingVertical: 5,
             borderWidth: 1,
             borderRadius: 15,
-            borderColor: COLORS.primary 
+            borderColor: COLORS.primary,
+            marginBottom: 5,
           }}
           onPress={() => {
             onChange(String(Number(maxValue)));

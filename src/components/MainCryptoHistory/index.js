@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ExHandler } from '@src/services/exception';
+import {Text} from "react-native";
 
 const normalizeData = (histories, decimals, pDecimals) =>
   histories &&
