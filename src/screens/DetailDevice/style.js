@@ -71,7 +71,8 @@ const style = StyleSheet.create({
     borderBottomWidth: 0,
     backgroundColor: 'rgba(243,248,249,0.73)',
     marginVertical:scaleInApp(5),
-    padding:scaleInApp(10),
+    paddingHorizontal:scaleInApp(10),
+    paddingVertical:scaleInApp(20),
     alignItems:'center',
     shadowOffset: { width: 2, height: 0 },
     borderRadius: 6,
@@ -86,8 +87,14 @@ const style = StyleSheet.create({
     textDecorationLine:'underline'
   },
   top_container_group:{
-    flex:1,
+    flex:2,
     justifyContent:'space-evenly',
+    paddingHorizontal:scaleInApp(10),
+  },
+  top_container_right_group: {
+    flex:1,
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
     paddingHorizontal:scaleInApp(10),
   },
   top_container_title:{
@@ -122,7 +129,7 @@ const style = StyleSheet.create({
     justifyContent:'space-around',
   },
   group2_container_container:{
-    flex:2,
+    flex:1,
     justifyContent:'center',
     padding:scaleInApp(10),
   },

@@ -34,7 +34,7 @@ const opacityButton = {
   button: {
     backgroundColor: COLORS.blue,
     paddingHorizontal: 5,
-    borderRadius: DECOR.borderRadiusBorder,
+    borderRadius: 6,
     borderWidth: DECOR.borderWidth,
     borderColor: COLORS.transparent,
     height: DECOR.buttonHeight,
