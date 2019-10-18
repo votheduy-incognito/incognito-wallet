@@ -5,7 +5,9 @@ import { TouchableOpacity as RNComponent } from 'react-native';
 const TouchableOpacity = ({ onPress, ...props }) => {
   const _onPress = () => {
     requestAnimationFrame(() => {
-      onPress();
+      if (typeof onPress === 'function') {
+        onPress();
+      }
     });
   };
 
