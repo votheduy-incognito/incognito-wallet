@@ -1,7 +1,8 @@
 import {
   Text,
   View,
-  Button
+  Button,
+  ActivityIndicator
 } from '@src/components/core';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -23,6 +24,7 @@ class GetStarted extends Component {
           {
             toValue: UTILS.deviceWidth() - (100 /* bar size */ + 60 /* container padding */ ),
             duration: 500,
+            useNativeDriver: true
           }
         ),
         Animated.timing(
@@ -30,6 +32,7 @@ class GetStarted extends Component {
           {
             toValue: 0,
             duration: 500,
+            useNativeDriver: true
           }
         )
       ])
@@ -44,15 +47,25 @@ class GetStarted extends Component {
       <View style={style.container}>
         {
           isInitialing && (
-            <View style={style.bar}>
-              <Animated.View
-                style={[
-                  style.barHighlight,
-                  {
-                    transform: [{ translateX: moveAni }]
-                  }
-                ]}
-              />
+            <View style={style.loadingContainer}>
+              {
+                isCreating
+                  ? (
+                    <ActivityIndicator />
+                  )
+                  : (
+                    <View style={style.bar}>
+                      <Animated.View
+                        style={[
+                          style.barHighlight,
+                          {
+                            transform: [{ translateX: moveAni }]
+                          }
+                        ]}
+                      />
+                    </View>
+                  )
+              }
             </View>
           )
         }

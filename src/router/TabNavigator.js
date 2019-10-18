@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import { createBottomTabNavigator, getActiveChildNavigationOptions } from 'react-navigation';
+import { StyleSheet, View, Text } from 'react-native';
+import { getActiveChildNavigationOptions } from 'react-navigation';
+import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { navigationOptionsHandler } from '@src/utils/router';
 import Home from '@src/screens/Home';
 import Setting from '@src/screens/Setting';
@@ -40,11 +41,15 @@ const TabIcon = (type, { focused }) => {
     active = icWhalesActive;
     inactive = icWhalesInactive;
   }
+
   return (
-    <TabBarIcon
-      image={focused ? active
-        : inactive}
-    />
+    <View style={styles.tabBarLabel}>
+      <TabBarIcon
+        image={focused ? active
+          : inactive}
+      />
+      <Text style={[styles.labelStyle, focused ? styles.activeLabel : {}]}>{type.toUpperCase()}</Text>
+    </View>
   );
 };
 const renderTab = (type) => TabIcon.bind(null, type);
@@ -52,29 +57,44 @@ const renderTab = (type) => TabIcon.bind(null, type);
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 10,
-    height: 80
+    height: 80,
+    backgroundColor: COLORS.white,
+  },
+  activeLabel: {
+    color: COLORS.blue
+  },
+  tabBarLabel: {
+    flexDirection: 'column',
+    flex: 1,
+    alignItems: 'center',
   },
   labelStyle: {
     textTransform: 'uppercase',
     fontSize: 10,
     fontWeight: '500',
     letterSpacing: 1,
-    textAlign: 'center'
+    textAlign: 'center',
+    marginTop: 10,
   },
+  indicator: {
+    opacity: 0,
+  }
 });
 
-const Tab = createBottomTabNavigator({
-  [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { title: 'Wallet', tabBarIcon: renderTab('wallet') }),
-  [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Nodes', header:() => null, tabBarIcon: renderTab('miner') }),
-  [ROUTE_NAMES.Game]: navigationOptionsHandler(GameNavigator, { title: 'Whales', header:() => null, tabBarIcon: renderTab('game')}),
-  [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'You', tabBarIcon: renderTab('setting') }),
+const Tab = createMaterialTopTabNavigator({
+  [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { title: 'Wallet', tabBarLabel: renderTab('wallet') }),
+  [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Nodes', header:() => null, tabBarLabel: renderTab('miner') }),
+  [ROUTE_NAMES.Game]: navigationOptionsHandler(GameNavigator, { title: 'Whales', header:() => null, tabBarLabel: renderTab('game')}),
+  [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'You', tabBarLabel: renderTab('setting') }),
 }, {
   initialRouteName: ROUTE_NAMES.Home,
+  swipeEnabled: false,
+  animationEnabled: true,
+  tabBarPosition: 'bottom',
   tabBarOptions: {
     style: styles.container,
-    labelStyle: styles.labelStyle,
     tabStyle: styles.tabStyle,
-    activeTintColor: COLORS.blue
+    indicatorStyle: styles.indicator,
   },
   defaultNavigationOptions: {
     header: HeaderBar
@@ -92,7 +112,7 @@ const Tab = createBottomTabNavigator({
       title,
       ...child,
     };
-  }
+  },
 });
 
 export default Tab;

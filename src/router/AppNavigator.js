@@ -1,5 +1,5 @@
 import { THEME } from '@src/styles';
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import CreateAccount from '@src/screens/CreateAccount';
 import ExportAccount from '@src/screens/ExportAccount';
 import FollowToken from '@src/screens/FollowToken';

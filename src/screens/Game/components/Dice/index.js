@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Image } from 'react-native';
-import Sound from 'react-native-sound';
+// import Sound from 'react-native-sound';
 import dice1 from '@src/assets/images/game/1.gif';
 import dice2 from '@src/assets/images/game/2.gif';
 import dice3 from '@src/assets/images/game/3.gif';
@@ -28,7 +28,7 @@ class Dice extends React.Component {
   }
 
   componentDidMount() {
-    this.sound = new Sound('game.mp3', Sound.MAIN_BUNDLE);
+    // this.sound = new Sound('game.mp3', Sound.MAIN_BUNDLE);
   }
 
   componentDidUpdate(prevProps) {
@@ -41,7 +41,7 @@ class Dice extends React.Component {
   }
 
   componentWillUnmount() {
-    this.sound.release();
+    // this.sound.release();
   }
 
   renderDice = (diceFace, index) => {
@@ -65,7 +65,7 @@ class Dice extends React.Component {
   rollDice = () => {
     const { numberOfDice, dices: diceFaces } = this.props;
     const dices = [];
-    this.sound.play();
+    // this.sound.play();
 
     for (let i = 0; i < numberOfDice; i++) {
       const diceFace = diceFaces[i];

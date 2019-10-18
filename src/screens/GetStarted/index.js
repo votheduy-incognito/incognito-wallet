@@ -53,7 +53,7 @@ class GetStartedContainer extends Component {
       }
       return null;
     } catch (e) {
-      throw new CustomError(ErrorCode.wallet_can_not_load_existed_wallet);
+      throw new CustomError(ErrorCode.wallet_can_not_load_existed_wallet, { rawError: e });
     }
   }
 
@@ -104,7 +104,7 @@ class GetStartedContainer extends Component {
     } catch (e) {
       this.setState({ isInitialing: false, isCreating: false });
       this.onError(
-        new ExHandler(e, 'Something went wrong while opening wallet, please try again').showErrorToast().writeLog().message
+        new ExHandler(e, 'Something went wrong while opening your wallet. Please re-install the application and try again.').showErrorToast().writeLog().message
       );
     }
   };
@@ -120,9 +120,11 @@ class GetStartedContainer extends Component {
         return throw new CustomError(ErrorCode.getStarted_can_not_create_wallet_on_existed);
       }
 
-      return initWallet();
-    } catch {
-      throw new CustomError(ErrorCode.wallet_can_not_create_new_wallet);
+      requestAnimationFrame(() => {
+        return initWallet();
+      });
+    } catch (e) {
+      throw new CustomError(ErrorCode.wallet_can_not_create_new_wallet, { rawError: e });
     }
   };
 
@@ -130,8 +132,8 @@ class GetStartedContainer extends Component {
     try {
       const token = await storageService.getItem(CONSTANT_KEYS.DEVICE_TOKEN);
       return token;
-    } catch {
-      throw throw new CustomError(ErrorCode.getStarted_load_device_token_failed);
+    } catch (e) {
+      throw throw new CustomError(ErrorCode.getStarted_load_device_token_failed, { rawError: e });
     }
   }
 

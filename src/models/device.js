@@ -41,7 +41,7 @@ export const template = {
   verify_code:'',
   user_id:-1,
   deleted:false,
-  
+
   product_type:DEVICES.MINER_TYPE
 };
 const TAG = 'Device';
@@ -184,7 +184,7 @@ export default class Device {
   get CommissionFromServer(){
     return this.data.minerInfo?.Commission ?? 1;
   }
-  
+
   toJSON(){
     return this.data;
   }
@@ -215,17 +215,17 @@ export default class Device {
       case DEVICES.VIRTUAL_TYPE:{
         console.log(TAG,'getRewardAmount VIRTUAL_TYPE begin');
         let dataResult = await VirtualDeviceService.getRewardFromMiningkey(deviceInfo);
-        
-        balance = _.isNil(dataResult)?-1: (dataResult.Result['PRV']||null);
+
+        balance = _.isNil(dataResult) || _.isNil(dataResult.Result) ?-1: (dataResult.Result?.PRV||null);
         console.log(TAG,'getRewardAmount VIRTUAL_TYPE dataResult = ',dataResult,deviceInfo.Name,balance);
         break;
       }
       default:{
         balance = await deviceInfo.balanceToken(null,wallet);
       }
-      } 
+      }
     }
-    
+
     balance = _.isNil(balance)||_.isNaN(balance)?null:balance;
     console.log(TAG,'getRewardAmount balance = ',balance,deviceInfo.Name);
     return balance;
@@ -239,7 +239,7 @@ export default class Device {
     if(code === Device.CODE_STOP){
       styleStatus.color = '#91A4A6';
     }else if(code === Device.CODE_MINING){
-      styleStatus.color = '#0DB8D8';
+      styleStatus.color = '#25CDD6';
     }else if(code === Device.CODE_SYNCING){
       styleStatus.color = '#262727';
     }else if(code === Device.CODE_START){

@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styleSheet from './style';
 
-const ExportItem = ({ label, data, color }) => (
-  <CopiableText style={styleSheet.itemContainer} text={data}>
+const ExportItem = ({ label, data }) => (
+  <CopiableText style={styleSheet.itemContainer} text={data} copiedMessage={`${label} was copied.`}>
     <View style={styleSheet.content}>
-      <Text style={[styleSheet.itemLabel, { color }]}>{label}</Text>
+      <Text style={[styleSheet.itemLabel]}>{label}</Text>
       <Text numberOfLines={1} ellipsizeMode="middle" style={styleSheet.itemData}>
         {data}
       </Text>
@@ -45,14 +45,9 @@ ExportAccount.propTypes = {
   account: PropTypes.object.isRequired
 };
 
-ExportItem.defaultProps = {
-  color: null
-};
-
 ExportItem.propTypes = {
   label: PropTypes.string.isRequired,
   data: PropTypes.string.isRequired,
-  color: PropTypes.string,
 };
 
 export default ExportAccount;

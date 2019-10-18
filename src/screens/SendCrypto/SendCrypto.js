@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Field, formValueSelector, isValid, change } from 'redux-form';
 import { connect } from 'react-redux';
 import convertUtil from '@src/utils/convert';
-import { Container, ScrollView, Button, Text, View, Toast } from '@src/components/core';
+import { Container, ScrollView, Text, View, TouchableScale } from '@src/components/core';
 import { openQrScanner } from '@src/components/QrCodeScanner';
 import ReceiptModal, { openReceipt } from '@src/components/Receipt';
 import LoadingTx from '@src/components/LoadingTx';
@@ -13,8 +13,8 @@ import tokenData from '@src/constants/tokenData';
 import { createForm, InputQRField, InputMaxValueField, validator } from '@src/components/core/reduxForm';
 import formatUtil from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
-import { homeStyle } from './style';
 import { ExHandler } from '@src/services/exception';
+import { homeStyle } from './style';
 
 const formName = 'sendCrypto';
 const selector = formValueSelector(formName);
@@ -63,7 +63,7 @@ class SendCrypto extends React.Component {
     if (feeUnit === selectedPrivacy?.symbol) {
       amount-= finalFee;
     }
-    
+
     const maxAmount = convertUtil.toHumanAmount(amount, selectedPrivacy?.pDecimals);
 
     return Math.max(maxAmount, 0);
@@ -74,7 +74,7 @@ class SendCrypto extends React.Component {
 
     this.setState({
       maxAmountValidator: validator.maxValue(maxAmount, {
-        message: maxAmount > 0 
+        message: maxAmount > 0
           ? `Max amount you can send is ${maxAmount} ${selectedPrivacy?.symbol}`
           : 'Your balance is zero'
       }),
@@ -174,7 +174,11 @@ class SendCrypto extends React.Component {
                     feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals
                   )} {feeUnit}
                 </Text>
-                <Button title='Send' style={homeStyle.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSend)} />
+                <TouchableScale title='Send' style={homeStyle.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSend)}>
+                  <Text style={homeStyle.submitBtnText}>
+                    Send
+                  </Text>
+                </TouchableScale>
               </View>
             )}
           </Form>

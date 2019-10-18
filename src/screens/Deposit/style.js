@@ -28,11 +28,15 @@ export const waitingDepositStyle = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
-    color: COLORS.lightGrey3
+    color: COLORS.lightGrey1,
+    fontSize: 13,
+    lineHeight: 18,
   },
   textHighlight: {
     ...FONT.STYLE.medium,
     color: COLORS.dark1,
-    marginBottom: 10,
+    marginBottom: 20,
+    fontSize: 15,
+    lineHeight: 23,
   }
 });
