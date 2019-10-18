@@ -1,3 +1,4 @@
+import { Earning } from '@screens/DetailDevice/Loader';
 import images from '@src/assets';
 import { DEVICES } from '@src/constants/miner';
 import Device from '@src/models/device';
@@ -13,7 +14,6 @@ import { Image, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import { Alert, TouchableScale } from '../core';
 import styles from './style';
-import {Earning} from "@screens/DetailDevice/Loader";
 
 const TAG = 'HomeMineItem';
 const descriptionNodeOffline = 'Check if your node is running';
@@ -42,23 +42,12 @@ class HomeMineItem extends React.Component {
       };
     }
 
-    // if(!_.isEqual(nextProps.timeToUpdate,prevState.timeToUpdate)){
-    //   return {
-    //     timeToUpdate:nextProps.timeToUpdate
-    //   };
-    // }
-
     return null;
   }
 
   async componentDidUpdate(prevProps,prevState){
     const {item,timeToUpdate} = this.props;
 
-    // if(!_.isEqual(item,prevProps?.item)){
-    //   console.log(TAG,'componentDidUpdate begin 010101');
-    //   this.getInfo();
-    //   isUpdateInfo = true;
-    // }
     if(!_.isEqual(prevProps.timeToUpdate,timeToUpdate) || !_.isEqual(item,prevProps?.item)){
       console.log(TAG,'componentDidUpdate begin timeToUpdate = ',timeToUpdate);
       await this.getInfo();

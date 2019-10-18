@@ -119,14 +119,9 @@ class DetailDevice extends BaseScreen {
     const {getAccountByName,listAccount} = this.props;
     let account = await getAccountByName(device.accountName());
     if(device.Type == DEVICES.VIRTUAL_TYPE){
-      // with test-node publicKey
-      // let keyCompare = await VirtualDeviceService.getPublicKeyMining(device);
 
       // dev-test
       const keyCompare = await VirtualDeviceService.getPublicKeyMining(device)??'';
-
-      // const publicKey = '16yUvbgiXUZfwuWafBcXX4oiyYVui57e1oMtEyRCwkHemeqKvf9';
-      // const isRegular = !_.includes(keyCompare,account?.BlockProducerKey);
       console.log(TAG,'checkAndUpdateInfoVirtualNode listAccount ',listAccount);
       // console.log(TAG,'checkAndUpdateInfoVirtualNode publicKey ',keyCompare);
 
@@ -369,14 +364,44 @@ class DetailDevice extends BaseScreen {
     );
   };
 
-  handlePressWithdraw = onClickView(async()=>{
-    /* next release
+  handleWithdrawEachToken = onClickView(async(item)=>{
     const {device,accountMiner,wallet} = this.state;
+    if(_.isEmpty(accountMiner) && _.isEmpty(item) ){
+      this.setState({
+        isShowMessage:true
+      });
+      return;
+    }
     this.Loading = true;
-    const result = await device.requestWithdraw(accountMiner,wallet,'').catch(console.log);
-    !_.isEmpty(result) && await this.fetchData();
+    let result = null;
+
+    switch(device.Type){
+    case DEVICES.VIRTUAL_TYPE:{
+      const id = item?.id||'';
+      result = await device.requestWithdraw(accountMiner,wallet,_.includes(id,'PRV')?'':id).catch(console.log);
+      break;
+    }
+    default:
+      // call apiservice
+      if(device){
+        const {PaymentAddress,ValidatorKey} = accountMiner;
+        result = await Util.excuteWithTimeout(APIService.requestWithdraw({ProductID:device.ProductId,qrCodeDeviceId:device.qrCodeDeviceId,ValidatorKey:ValidatorKey,PaymentAddress:PaymentAddress}),4).catch(console.log);
+
+      }
+      break;
+    }
+    if(!_.isNil(result)){
+      if(result){
+        this.showToastMessage('Withdrawing earnings to your Incognito Wallet. Balances will update in a few minutes.');
+      }else{
+        this.showToastMessage('Withdrawals will be enabled once the mainnet launches in October 2019.');
+      }
+    }
     this.Loading = false;
-    */
+
+  });
+
+  handlePressWithdraw = onClickView(async()=>{
     const {device,accountMiner,wallet,listFollowingTokens} = this.state;
     if(_.isEmpty(accountMiner)){
       this.setState({
@@ -568,7 +593,15 @@ class DetailDevice extends BaseScreen {
     const isWaiting =  _.isNil(listFollowingTokens) || device.isWaiting();
     return (
       <>
-        {isWaiting?<Loader /> :<HistoryMined listItems={listFollowingTokens} />}
+        {isWaiting?<Loader /> :(
+          <HistoryMined
+            onPressWithdraw={async (item)=>{ 
+              await this.handleWithdrawEachToken(item);
+              // this.showToastMessage(`OK - ${JSON.stringify(item)}`); 
+            }} 
+            listItems={listFollowingTokens}
+          />
+        )}
       </>
     );
 
