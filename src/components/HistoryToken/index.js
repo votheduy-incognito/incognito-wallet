@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withNavigation } from 'react-navigation';
-import { ScrollView, Toast, RefreshControl, Button } from '@src/components/core';
+import { Button, RefreshControl, ScrollView, Toast } from '@src/components/core';
 import HistoryList from '@src/components/HistoryList';
 import LoadingContainer from '@src/components/LoadingContainer';
-import tokenService from '@src/services/wallet/tokenService';
-import { getpTokenHistory, removeHistory } from '@src/services/api/history';
-import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { CONSTANT_COMMONS } from '@src/constants';
+import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import ROUTE_NAMES from '@src/router/routeNames';
+import { getpTokenHistory, removeHistory } from '@src/services/api/history';
 import { ExHandler } from '@src/services/exception';
+import tokenService from '@src/services/wallet/tokenService';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { withNavigation } from 'react-navigation';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 
 const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, decimals, pDecimals) => {
   const data = [];
@@ -194,7 +194,7 @@ class HistoryTokenContainer extends Component {
     const { isLoading, histories, historiesFromApi } = this.state;
     const { selectedPrivacy } = this.props;
 
-    if (isLoading || !selectedPrivacy) {
+    if (!selectedPrivacy) {
       return <LoadingContainer />;
     }
 

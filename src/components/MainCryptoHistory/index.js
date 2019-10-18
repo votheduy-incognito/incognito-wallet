@@ -3,12 +3,11 @@ import HistoryList from '@src/components/HistoryList';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
+import { ExHandler } from '@src/services/exception';
 import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ExHandler } from '@src/services/exception';
-import {Text} from "react-native";
 
 const normalizeData = (histories, decimals, pDecimals) =>
   histories &&
@@ -97,7 +96,7 @@ class MainCryptoHistory extends Component {
     const { isLoading, histories } = this.state;
     const { selectedPrivacy } = this.props;
 
-    if (isLoading || !selectedPrivacy) {
+    if (!selectedPrivacy) {
       return <LoadingContainer />;
     }
 
@@ -126,7 +125,8 @@ const mapState = state => ({
 });
 
 MainCryptoHistory.defaultProps = {
-  onLoad: null
+  onLoad: null,
+  selectedPrivacy: null,
 };
 
 MainCryptoHistory.propTypes = {
