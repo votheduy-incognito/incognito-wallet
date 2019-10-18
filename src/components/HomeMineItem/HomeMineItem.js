@@ -14,6 +14,7 @@ import { Image, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import { Alert, TouchableScale } from '../core';
 import styles from './style';
+import {Earning} from "@screens/DetailDevice/Loader";
 
 const TAG = 'HomeMineItem';
 const descriptionNodeOffline = 'Check if your node is running';

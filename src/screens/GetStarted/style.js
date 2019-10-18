@@ -39,6 +39,11 @@ export default StyleSheet.create({
   retryBtn: {
     marginTop: 50,
   },
+  loadingContainer: {
+    justifyContent: 'flex-end',
+    width: '100%',
+    minHeight: 20,
+  },
   bar: {
     width: '100%',
     height: 5,
