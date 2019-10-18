@@ -7,12 +7,8 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
-import withdrawNode from '@src/assets/images/icons/withdraw-node.png';
-import withdrawNodeDisabled from '@src/assets/images/icons/withdraw-node-disable.png';
 import CryptoIcon from '../CryptoIcon';
-
 import styles from './style';
-
 
 
 const TAG = 'HistoryMined';
