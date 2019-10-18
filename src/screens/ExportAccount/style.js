@@ -1,4 +1,4 @@
-import { COLORS, DECOR } from '@src/styles';
+import { COLORS, DECOR, FONT} from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
@@ -24,7 +24,9 @@ const style = StyleSheet.create({
     textAlign: 'center',
     color: COLORS.white,
     borderRadius: DECOR.borderRadiusBorder,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    fontSize: 15,
+    ...FONT.STYLE.medium,
   },
   itemContainer: {
     backgroundColor: COLORS.white,
@@ -37,12 +39,13 @@ const style = StyleSheet.create({
   },
   itemData: {
     fontSize: 14,
-    color: COLORS.dark1
+    color: COLORS.lightGrey1,
   },
   itemLabel: {
     fontSize: 12,
     letterSpacing: 0.5,
     marginBottom: 5,
+    color: COLORS.dark1,
   }
 });
 

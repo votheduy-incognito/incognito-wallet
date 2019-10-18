@@ -51,7 +51,7 @@ const usePulse = ({start = 1,to=2},startDelay = 500,duration = 300) => {
   return scale;
 };
 
-const Earning = React.memo(({color = 'turquoise',isVisible = true })=>{
+const Earning = React.memo(({color = '#25CDD6',isVisible = true, scale = 0.8 })=>{
   // const scale1 = usePulse({start:3,to:1.5},0);
   // const scale2 = usePulse({start: 1.5,to:2.5},200);
   // const scale3 = usePulse({start:1,to:2.5},400);
@@ -60,21 +60,21 @@ const Earning = React.memo(({color = 'turquoise',isVisible = true })=>{
   const scale3 = usePulse({start:1,to:1.5},400);
 
   return (
-    <View style={[style.earning_container,{display:isVisible?'flex':'none'}]}>
+    <View style={[style.earning_container,{display:isVisible?'flex':'none', transform: [{ scale }, { translateX: -10 }]}]}>
       <Animated.View style={[style.earning_box,{backgroundColor: color,transform:[{scaleY:scale1}]}]} />
       <Animated.View style={[style.earning_box,{backgroundColor: color,transform:[{scaleY:scale2}]}]} />
       <Animated.View style={[style.earning_box,{backgroundColor: color,transform:[{scaleY:scale3}]}]} />
 
       <Animated.View style={[style.earning_box,{backgroundColor: color,transform:[{scaleY:scale2}]}]} />
-      <Animated.View style={[style.earning_box,{backgroundColor: color,transform:[{scaleY:scale1}]}]} />      
+      <Animated.View style={[style.earning_box,{backgroundColor: color,transform:[{scaleY:scale1}]}]} />
       <Animated.View style={[style.earning_box,{backgroundColor: color,transform:[{scaleY:scale3}]}]} />
-      
+
     </View>
   );
 });
 const MyLoader = () => (
   <ContentLoader
-    height="100%" 
+    height="100%"
     width="100%"
     viewBox="0 0 150 70"
     speed={1}
@@ -94,7 +94,7 @@ const MyLoader = () => (
 
     <Rect x="0" y="60" rx="3" ry="3" width="30" height="10" />
   </ContentLoader>
-  
+
 );
 const MyFacebookLoader = () => <Facebook />;
 
@@ -107,9 +107,9 @@ class Loader extends Component {
   constructor(props){
     super(props);
     this.state={
-      
+
     };
-    
+
   }
   render(){
     return (
@@ -121,17 +121,17 @@ class Loader extends Component {
 
 
   renderContent = ()=>{
-    
+
     return (
       <>
-        
+
       </>
     );
   }
 }
 
 Loader.propTypes = {
- 
+
 };
 export default Loader;
 export { Earning };

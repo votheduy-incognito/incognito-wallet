@@ -1,4 +1,4 @@
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import Wizard from '@src/screens/Wizard';
 import GetStarted from '@src/screens/GetStarted';
 import ROUTE_NAMES from './routeNames';

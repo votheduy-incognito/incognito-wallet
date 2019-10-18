@@ -30,7 +30,7 @@ class HistoryMined extends React.Component {
     }
     return null;
   }
-  
+
   componentDidMount(){
     const {item,isActive} = this.props;
     let {deviceInfo} = this.state;
@@ -61,16 +61,16 @@ class HistoryMined extends React.Component {
       deviceInfo:deviceInfo,
     });
   }
-  
+
   renderItem=({ item,index })=> {
-    const {onPress} = this.props;
+    const {onPress,listItems} = this.props;
     const {name = '',symbol = '',amount = 0,pSymbol=''} = item;
     const symbolUI = _.isEqual(symbol,'PRV')?symbol:pSymbol;
     const nameUI = _.isEqual(symbol,'PRV')?name:`Private ${symbol}`;
     const {icon = null} = this.getData(item)??{};
     return (
       <TouchableOpacity
-        style={styles.container_item}
+        style={[styles.container_item, index === listItems.length - 1 ? styles.last_item : {}]}
         onPress={()=>{
           onPress? onPress(item):undefined;
         }}
@@ -108,7 +108,7 @@ class HistoryMined extends React.Component {
       loading
     } = this.state;
     const {containerStyle,onPress} = this.props;
-    
+
     return (
       <View style={[styles.container,containerStyle]}>
         <FlatList
