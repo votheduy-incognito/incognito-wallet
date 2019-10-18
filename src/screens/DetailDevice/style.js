@@ -92,9 +92,8 @@ const style = StyleSheet.create({
   },
   top_container_title:{
     ...TextStyle.mediumText,
-    ...FontStyle.normal,
-    color: '#000000',
-    fontSize: 15,
+    ...FontStyle.medium,
+    color: '#000000'
   },
   top_container_subtitle:{
     ...TextStyle.mediumText,
@@ -159,7 +158,7 @@ const style = StyleSheet.create({
     color: '#00C7E2',
   },
   group2_container_button2:{
-    backgroundColor:'#26C64D',
+    backgroundColor:'#25CDD6',
     padding:scaleInApp(7),
     borderRadius:scaleInApp(6)
   },

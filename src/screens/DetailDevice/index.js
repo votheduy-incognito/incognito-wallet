@@ -453,21 +453,12 @@ class DetailDevice extends BaseScreen {
                 {/* <Text numberOfLines={1} style={style.group2_container_value}>{`${balancePRV} PRV`}</Text> */}
               </View>
               <View style={style.group2_container_container2}>
-                {/* {isHaveWallet&&(
-                  <Button
-                    titleStyle={style.group2_container_button_text}
-                    buttonStyle={style.group2_container_button2}
-                    onPress={this.handlePressWithdraw}
-                    title='Withdraw'
-                  />
-                )}
-                {!isHaveWallet && (
-                  <Text style={style.textWarning}>Your device is offline.</Text>
-                )} */}
                 <Button
+                  disabled
+                  disabledTitleStyle={style.group2_container_button_text}
+                  disabledStyle={[style.group2_container_button2,{backgroundColor:'#93EAEF'}]}
                   titleStyle={style.group2_container_button_text}
                   buttonStyle={style.group2_container_button2}
-                  style={{ borderRadius: 6 }}
                   onPress={this.handlePressWithdraw}
                   title='Withdraw'
                 />
@@ -575,34 +566,17 @@ class DetailDevice extends BaseScreen {
   }
 
   renderListFollowingTokens = ()=>{
-    // const {
-    //   device,
-    //   listFollowingTokens
-    // } = this.state;
-    // const isWaiting =  _.isNil(listFollowingTokens) || device.isWaiting();
-    const listFollowingTokens = [{
-      name: 'Bitcoin',
-      symbol: 'BTC',
-      amount: 111.222,
-      pSymbol: 'pBTC',
-    }, {
-      name: 'Ethereum',
-      symbol: 'ETH',
-      amount: 333222.444,
-      pSymbol: 'pETH',
-    }, {
-      name: 'Binance',
-      symbol: 'BNB',
-      amount: 1222551,
-      pSymbol: 'pBNB',
-    }];
-    const isWaiting = false;
+    const {
+      device,
+      listFollowingTokens
+    } = this.state;
+    const isWaiting =  _.isNil(listFollowingTokens) || device.isWaiting();
     return (
       <>
         {isWaiting?<Loader /> :<HistoryMined listItems={listFollowingTokens} />}
       </>
     );
-
+    
   }
 
   render() {
