@@ -2,23 +2,16 @@
 // import 'intl/locale-data/jsonp/en';
 import 'react-native-console-time-polyfill';
 import AppScreen from '@src/components/AppScreen';
-import { Toast } from '@src/components/core';
+import { Toast, StatusBar } from '@src/components/core';
 import QrScanner from '@src/components/QrCodeScanner';
 import configureStore from '@src/redux/store';
 import AppContainer from '@src/router';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import { initFirebaseNotification } from '@src/services/firebase';
 import React, { PureComponent } from 'react';
-import { StatusBar } from 'react-native';
-
 import { Provider } from 'react-redux';
-import { THEME } from './styles';
-
-StatusBar.setBackgroundColor(THEME.statusBar.backgroundColor1);
 
 const store = configureStore();
-const whiteScreens = ['HomeMine', 'Game'];
-const darkScreens = ['DetailDevice'];
 
 // gets the current screen from navigation state
 function getActiveRouteName(navigationState) {
@@ -34,6 +27,10 @@ function getActiveRouteName(navigationState) {
 }
 
 class App extends PureComponent {
+  state = {
+    currentScreen: '',
+  };
+
   componentDidMount() {
     initFirebaseNotification()
       .then(() => {
@@ -45,25 +42,16 @@ class App extends PureComponent {
   }
 
   render() {
+    const { currentScreen } = this.state;
     return (
       <Provider store={store}>
+        <StatusBar currentScreen={currentScreen} />
         <AppScreen>
           <AppContainer
             onNavigationStateChange={(prevState, currentState) => {
               const currentScreen = getActiveRouteName(currentState);
-
+              this.setState({ currentScreen });
               console.debug('CurrentScreen', currentScreen);
-
-              if (whiteScreens.includes(currentScreen)) {
-                StatusBar.setBackgroundColor(THEME.statusBar.backgroundColor2);
-                StatusBar.setBarStyle('dark-content');
-              } else if (darkScreens.includes(currentScreen)) {
-                StatusBar.setBackgroundColor(THEME.statusBar.backgroundColor3);
-                StatusBar.setBarStyle('light-content');
-              } else {
-                StatusBar.setBackgroundColor(THEME.statusBar.backgroundColor1);
-                StatusBar.setBarStyle('light-content');
-              }
             }}
           />
           <QrScanner />
