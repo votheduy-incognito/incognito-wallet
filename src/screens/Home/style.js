@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from '@src/styles';
+import {COLORS, FONT} from '@src/styles';
 
 export const homeStyle = StyleSheet.create({
   container: {
@@ -16,7 +16,7 @@ export const homeStyle = StyleSheet.create({
     top: -55
   },
   cryptoItem: {
-    marginVertical: 4
+    marginVertical: 4,
   },
   addTokenContainer: {
     flexDirection: 'column',
@@ -28,7 +28,21 @@ export const homeStyle = StyleSheet.create({
   },
   addTokenBtn: {
     fontSize: 15,
-    color: COLORS.primary,
-    marginVertical: 20
-  }
+    paddingVertical: 16,
+    paddingHorizontal: 30,
+    backgroundColor: COLORS.primary,
+    marginVertical: 20,
+    flexDirection: 'row',
+    flex: 1,
+    borderRadius: 6,
+  },
+  addTokenBtnText: {
+    fontSize: 15,
+    color: COLORS.white,
+    ...FONT.STYLE.medium,
+  },
+  icon: {
+    paddingTop: 2,
+    marginRight: 5,
+  },
 });

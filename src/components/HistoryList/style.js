@@ -5,10 +5,11 @@ const style = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.lightGrey6,
+    padding: 15,
   },
   content: {
     flex: 1,
-    paddingHorizontal: 15,
+    padding: 20,
     backgroundColor: COLORS.white,
     borderRadius: DECOR.borderRadiusBorder
   },
@@ -19,7 +20,7 @@ const style = StyleSheet.create({
     marginVertical: 2
   },
   itemContainer: {
-    marginVertical: 10
+    marginBottom: 10
   },
   amountText: {
     flex: 1,

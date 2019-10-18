@@ -14,9 +14,24 @@ import { StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
 import { THEME } from './styles';
 
-StatusBar.setBackgroundColor(THEME.statusBar.backgroundColor);
+StatusBar.setBackgroundColor(THEME.statusBar.backgroundColor1);
 
 const store = configureStore();
+const whiteScreens = ['HomeMine', 'Game'];
+const darkScreens = ['DetailDevice'];
+
+// gets the current screen from navigation state
+function getActiveRouteName(navigationState) {
+  if (!navigationState) {
+    return null;
+  }
+  const route = navigationState.routes[navigationState.index];
+  // dive into nested navigators
+  if (route.routes) {
+    return getActiveRouteName(route);
+  }
+  return route.routeName;
+}
 
 class App extends PureComponent {
   componentDidMount() {
@@ -33,7 +48,24 @@ class App extends PureComponent {
     return (
       <Provider store={store}>
         <AppScreen>
-          <AppContainer />
+          <AppContainer
+            onNavigationStateChange={(prevState, currentState) => {
+              const currentScreen = getActiveRouteName(currentState);
+
+              console.debug('CurrentScreen', currentScreen);
+
+              if (whiteScreens.includes(currentScreen)) {
+                StatusBar.setBackgroundColor(THEME.statusBar.backgroundColor2);
+                StatusBar.setBarStyle('dark-content');
+              } else if (darkScreens.includes(currentScreen)) {
+                StatusBar.setBackgroundColor(THEME.statusBar.backgroundColor3);
+                StatusBar.setBarStyle('light-content');
+              } else {
+                StatusBar.setBackgroundColor(THEME.statusBar.backgroundColor1);
+                StatusBar.setBarStyle('light-content');
+              }
+            }}
+          />
           <QrScanner />
           <Toast />
         </AppScreen>

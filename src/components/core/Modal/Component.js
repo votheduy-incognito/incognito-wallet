@@ -35,7 +35,7 @@ Modal.defaultProps = {
   children: null,
   close: null,
   containerStyle: null,
-  closeBtnColor: null,
+  closeBtnColor: 'white',
   isShowHeader: true
 };
 

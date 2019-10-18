@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, TouchableOpacity, ActivityIndicator } from '@src/components/core';
+import { View, Text, TouchableScale, ActivityIndicator } from '@src/components/core';
 import CryptoIcon from '@src/components/CryptoIcon';
 import formatUtil from '@src/utils/format';
 import cryptoItemStyle from './style';
 
 const CryptoItem = ({ fullName, name, amount, externalSymbol, onPress, symbol, isGettingBalance, style, pDecimals }) => (
-  <TouchableOpacity style={[cryptoItemStyle.container, style]} onPress={amount != null ? onPress : null}>
+  <TouchableScale style={[cryptoItemStyle.container, style]} onPress={amount != null ? onPress : null}>
     <View style={cryptoItemStyle.logoContainer}>
       <CryptoIcon symbol={externalSymbol || symbol} />
     </View>
@@ -15,7 +15,7 @@ const CryptoItem = ({ fullName, name, amount, externalSymbol, onPress, symbol, i
       <Text style={cryptoItemStyle.subNameText}>{name}</Text>
     </View>
     <View style={cryptoItemStyle.balanceContainer}>
-      { isGettingBalance ? 
+      { isGettingBalance ?
         <ActivityIndicator /> : (
           amount != null ?
             <Text style={cryptoItemStyle.amountText} numberOfLines={1} ellipsizeMode="tail">{formatUtil.amount(amount, pDecimals)} {symbol}</Text> :
@@ -23,7 +23,7 @@ const CryptoItem = ({ fullName, name, amount, externalSymbol, onPress, symbol, i
         )
       }
     </View>
-  </TouchableOpacity>
+  </TouchableScale>
 );
 
 CryptoItem.defaultProps = {

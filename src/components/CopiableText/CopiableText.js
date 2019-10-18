@@ -14,7 +14,8 @@ const CopiableText = ({
   textProps,
   containerProps,
   showCopyIcon = true,
-  oneLine = false
+  oneLine = false,
+  iconStyle
 }) => (
   <TouchableOpacity
     style={[styleSheet.textBox, style]}

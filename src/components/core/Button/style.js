@@ -1,12 +1,16 @@
-import { COLORS, THEME } from '@src/styles';
+import {COLORS, FONT, THEME} from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   button: {
     ...THEME.opacityButton.button,
+    height: 44,
+    borderRadius: 8,
   },
   text: {
-    ...THEME.opacityButton.buttonText
+    ...THEME.opacityButton.buttonText,
+    ...FONT.STYLE.medium,
+    ...FONT.SIZE.medium,
   },
   textContainer: {
     marginHorizontal: 5,

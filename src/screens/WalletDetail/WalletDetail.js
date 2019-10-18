@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text, Button, View, ActivityIndicator, Image } from '@src/components/core';
+import {Text, Button, View, ActivityIndicator, Image, TouchableScale} from '@src/components/core';
 import ROUTE_NAMES from '@src/router/routeNames';
 import { COLORS } from '@src/styles';
 import HistoryToken from '@src/components/HistoryToken';
@@ -52,19 +52,19 @@ class WalletDetail extends Component {
   }
 
   renderActionButton = ({ label, icon, onPress }) => (
-    <Button style={styles.actionButton} onPress={onPress}>
+    <TouchableScale style={styles.actionButton} onPress={onPress}>
       <Image source={icon} style={styles.actionButtonIcon} />
       <Text>{label}</Text>
-    </Button>
+    </TouchableScale>
   );
 
-  render() { 
-    const { selectedPrivacy, navigation, isGettingBalanceList } = this.props;  
+  render() {
+    const { selectedPrivacy, navigation, isGettingBalanceList } = this.props;
     const { isDeposable } = selectedPrivacy;
 
     return (
-      <View style={styles.container}> 
-        <View style={styles.boxHeader}> 
+      <View style={styles.container}>
+        <View style={styles.boxHeader}>
           <View style={styles.boxBalance}>
             {
               isGettingBalanceList?.includes(selectedPrivacy.symbol)
@@ -100,7 +100,7 @@ class WalletDetail extends Component {
             )
           }
         </View>
-      </View>          
+      </View>
     );
   }
 }

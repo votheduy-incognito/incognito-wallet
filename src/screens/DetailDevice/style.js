@@ -25,7 +25,7 @@ const boxGroup = {
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f9fa'
+    backgroundColor: '#f0f5f5'
   },
   containerHeader:{
     backgroundColor: 'transparent',
@@ -73,6 +73,9 @@ const style = StyleSheet.create({
     marginVertical:scaleInApp(5),
     padding:scaleInApp(10),
     alignItems:'center',
+    shadowOffset: { width: 2, height: 0 },
+    borderRadius: 6,
+    elevation: 3,
     ...boxGroup
   },
   top_right_container:{
@@ -89,8 +92,9 @@ const style = StyleSheet.create({
   },
   top_container_title:{
     ...TextStyle.mediumText,
-    ...FontStyle.medium,
+    ...FontStyle.normal,
     color: '#000000',
+    fontSize: 15,
   },
   top_container_subtitle:{
     ...TextStyle.mediumText,
@@ -109,6 +113,9 @@ const style = StyleSheet.create({
     borderBottomWidth: 0,
     marginVertical:scaleInApp(5),
     padding:scaleInApp(10),
+    shadowOffset: { width: 2, height: 0 },
+    borderRadius: 6,
+    elevation: 3,
     ...boxGroup
   },
   group2_container_group1:{
@@ -147,17 +154,18 @@ const style = StyleSheet.create({
   },
   group2_container_value2:{
     ...TextStyle.smallText,
-    fontSize:scaleInApp(15),
+    fontSize:scaleInApp(14),
     marginTop:scaleInApp(2),
     color: '#00C7E2',
   },
   group2_container_button2:{
     backgroundColor:'#26C64D',
     padding:scaleInApp(7),
-    borderRadius:scaleInApp(4)
+    borderRadius:scaleInApp(6)
   },
   group2_container_button_text:{
     ...TextStyle.normalText,
+    ...FontStyle.medium,
     color: '#FFFFFF',
   },
   dialog_title_text: {
@@ -171,6 +179,7 @@ const style = StyleSheet.create({
     color:'#1C1C1C',
     textAlignVertical:'center',
     textAlign:'center',
+    paddingHorizontal: 5,
   },
   dialog_content: {
     flex:1,

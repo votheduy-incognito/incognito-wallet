@@ -9,10 +9,10 @@ const WaitingDeposit = ({ selectedPrivacy, depositAddress, amount }) => {
     <View style={waitingDepositStyle.container}>
       <View style={waitingDepositStyle.textContainer}>
         <Text style={[waitingDepositStyle.text, waitingDepositStyle.textHighlight]}>Please send {amount} {selectedPrivacy?.externalSymbol} to this address within the next 60 minutes.</Text>
-        <Text style={waitingDepositStyle.text}>You can close this screen anytime. You&apos;ll receive a notification once your wallet balance has been updated.</Text>
-        <Text style={waitingDepositStyle.text}>Ran out of time? Just create a new deposit order.</Text>
       </View>
       <QrCodeAddress data={depositAddress} />
+      <Text style={[waitingDepositStyle.text, { marginTop: 50 }]}>You can close this screen anytime. You&apos;ll receive a notification once your wallet balance has been updated.</Text>
+      <Text style={[waitingDepositStyle.text]}>Ran out of time? Just create a new deposit order.</Text>
     </View>
   );
 };
