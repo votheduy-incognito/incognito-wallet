@@ -41,6 +41,11 @@ const style = StyleSheet.create({
     width:scaleInApp(30),
     height:scaleInApp(30),
   },
+  withdraw_logo: {
+    alignSelf:'center',
+    width:scaleInApp(27),
+    height:scaleInApp(27),
+  },
   groupLeft:{
     flexDirection:'column',
     flex:1,
@@ -63,13 +68,13 @@ const style = StyleSheet.create({
     ...FontStyle.medium,
     'letterSpacing':0,
     color: '#000000',
-    fontSize: 13,
+    fontSize: scaleInApp(13),
   },
   groupRight_title2:{
     ...TextStyle.normalText,
     'letterSpacing':0,
     color: '#899092',
-    fontSize: 14,
+    fontSize: scaleInApp(14),
   },
   text_empty:{
     ...TextStyle.normalText,

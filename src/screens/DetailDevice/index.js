@@ -18,12 +18,12 @@ import { COLORS } from '@src/styles';
 import format from '@src/utils/format';
 import LocalDatabase from '@src/utils/LocalDatabase';
 import Util from '@src/utils/Util';
+import { Button } from '@src/components/core';
 import ViewUtil, { onClickView } from '@src/utils/ViewUtil';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { Button } from 'react-native-elements';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import { connect } from 'react-redux';
 import AdvanceOption from './AdvanceOption';
@@ -489,47 +489,49 @@ class DetailDevice extends BaseScreen {
           <Text style={style.top_container_title} numberOfLines={1}>{this.productName}</Text>
           <Text style={[style.group2_container_value2,Device.getStyleStatus(device.Status.code)]}>{device.statusMessage()}</Text>
         </View>
-        {device.isEarning() && (
-          <Earning />
-        )}
-        {!device?.isOffline() && device?.Type === DEVICES.MINER_TYPE && (
-          <TouchableOpacity onPress={()=>{
-            this.advanceOptionView?.current.open();
-          }}
-          >
-            {imagesVector.ic_setting()}
-          </TouchableOpacity>
-        )}
-        {device.Type === DEVICES.VIRTUAL_TYPE && !device.isOffline() && !device.isEarning() && (!_.isNil(isStaked) && !isStaked) &&!isCallStaked? (
-          <Button
-            titleStyle={style.group2_container_button_text}
-            buttonStyle={style.group2_container_button}
-            title={stakeTitle}
-            onPress={onClickView(async()=>{
+        <View style={style.top_container_right_group}>
+          {device.isEarning() && (
+            <Earning />
+          )}
+          {!device?.isOffline() && device?.Type === DEVICES.MINER_TYPE && (
+            <TouchableOpacity onPress={()=>{
+              this.advanceOptionView?.current.open();
+            }}
+            >
+              {imagesVector.ic_setting()}
+            </TouchableOpacity>
+          )}
+          {device.Type === DEVICES.VIRTUAL_TYPE && !device.isOffline() && !device.isEarning() && (!_.isNil(isStaked) && !isStaked) &&!isCallStaked? (
+            <Button
+              titleStyle={style.group2_container_button_text}
+              buttonStyle={style.group2_container_button}
+              title={stakeTitle}
+              onPress={onClickView(async()=>{
 
-              const {accountMiner,isStaked} = this.state;
-              if(!isStaked){
-                if(!_.isEmpty(accountMiner)){
-                  await this.handlePressStake();
+                const {accountMiner,isStaked} = this.state;
+                if(!isStaked){
+                  if(!_.isEmpty(accountMiner)){
+                    await this.handlePressStake();
+                  }else{
+                    this.setState({
+                      isShowMessage:true
+                    });
+                  }
                 }else{
-                  this.setState({
-                    isShowMessage:true
-                  });
+                // udpdate status at local
+                  this.IsStaked = false;
                 }
-              }else{
-              // udpdate status at local
-                this.IsStaked = false;
-              }
-              // hienton
-              // this.goToScreen(routeNames.AddStake,{
-              //   accountInfo:{
-              //     minerAccountName:'hito',
-              //     funderAccountName:'hito'
-              //   }
-              // });
-            })}
-          />
-        ):null}
+                // hienton
+                // this.goToScreen(routeNames.AddStake,{
+                //   accountInfo:{
+                //     minerAccountName:'hito',
+                //     funderAccountName:'hito'
+                //   }
+                // });
+              })}
+            />
+          ):null}
+        </View>
       </TouchableOpacity>
     );
   }
@@ -576,7 +578,7 @@ class DetailDevice extends BaseScreen {
         {isWaiting?<Loader /> :<HistoryMined listItems={listFollowingTokens} />}
       </>
     );
-    
+
   }
 
   render() {

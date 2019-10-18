@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import {COLORS, FONT} from '@src/styles';
+import {scaleInApp} from "@src/styles/TextStyle";
 
 export const homeStyle = StyleSheet.create({
   container: {
@@ -23,11 +24,7 @@ export const homeStyle = StyleSheet.create({
     alignItems: 'center',
     marginTop: 50
   },
-  addTokenLabel: {
-    fontSize: 15
-  },
   addTokenBtn: {
-    fontSize: 15,
     paddingVertical: 16,
     paddingHorizontal: 30,
     backgroundColor: COLORS.primary,
@@ -37,7 +34,7 @@ export const homeStyle = StyleSheet.create({
     borderRadius: 6,
   },
   addTokenBtnText: {
-    fontSize: 15,
+    fontSize: scaleInApp(15),
     color: COLORS.white,
     ...FONT.STYLE.medium,
   },
