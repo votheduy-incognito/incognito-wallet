@@ -6,7 +6,8 @@ import {THEME} from '@src/styles';
 const whiteScreens = ['HomeMine', 'Game'];
 const darkScreens = ['DetailDevice'];
 
-const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? 20 : RNComponent.currentHeight;
+const isIOS = Platform.OS === 'ios';
+const STATUS_BAR_HEIGHT = isIOS ? 20 : RNComponent.currentHeight;
 
 const StatusBar = ({ currentScreen }) => {
   let backgroundColor;
@@ -25,7 +26,11 @@ const StatusBar = ({ currentScreen }) => {
     textColor = 'light-content';
   }
 
-  console.debug('color', backgroundColor, currentScreen);
+  if (!isIOS) {
+    RNComponent.setBackgroundColor(backgroundColor);
+    RNComponent.setBarStyle(textColor);
+    return null;
+  }
 
   return (
     <View style={{
