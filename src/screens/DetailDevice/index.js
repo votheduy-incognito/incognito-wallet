@@ -2,6 +2,7 @@ import Container from '@components/Container';
 import BaseScreen from '@screens/BaseScreen';
 import CreateAccount from '@screens/CreateAccount';
 import images, { imagesVector } from '@src/assets';
+import { Button } from '@src/components/core';
 import DialogLoader from '@src/components/DialogLoader';
 import HeaderBar from '@src/components/HeaderBar/HeaderBar';
 import HistoryMined from '@src/components/HistoryMined';
@@ -18,7 +19,6 @@ import { COLORS } from '@src/styles';
 import format from '@src/utils/format';
 import LocalDatabase from '@src/utils/LocalDatabase';
 import Util from '@src/utils/Util';
-import { Button } from '@src/components/core';
 import ViewUtil, { onClickView } from '@src/utils/ViewUtil';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -521,13 +521,6 @@ class DetailDevice extends BaseScreen {
                 // udpdate status at local
                   this.IsStaked = false;
                 }
-                // hienton
-                // this.goToScreen(routeNames.AddStake,{
-                //   accountInfo:{
-                //     minerAccountName:'hito',
-                //     funderAccountName:'hito'
-                //   }
-                // });
               })}
             />
           ):null}

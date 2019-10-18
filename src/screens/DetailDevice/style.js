@@ -160,8 +160,8 @@ const style = StyleSheet.create({
   },
   group2_container_value2:{
     ...TextStyle.smallText,
-    fontSize:scaleInApp(14),
-    marginTop:scaleInApp(2),
+    fontSize:scaleInApp(15),
+    marginTop:scaleInApp(5),
     color: '#00C7E2',
   },
   group2_container_button2:{
