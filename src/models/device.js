@@ -216,7 +216,7 @@ export default class Device {
         console.log(TAG,'getRewardAmount VIRTUAL_TYPE begin');
         let dataResult = await VirtualDeviceService.getRewardFromMiningkey(deviceInfo);
 
-        balance = _.isNil(dataResult)?-1: (dataResult.Result['PRV']||null);
+        balance = _.isNil(dataResult) || _.isNil(dataResult.Result) ?-1: (dataResult.Result?.PRV||null);
         console.log(TAG,'getRewardAmount VIRTUAL_TYPE dataResult = ',dataResult,deviceInfo.Name,balance);
         break;
       }

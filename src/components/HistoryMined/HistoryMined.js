@@ -1,3 +1,5 @@
+import withdrawNodeDisabled from '@src/assets/images/icons/withdraw-node-disable.png';
+import withdrawNode from '@src/assets/images/icons/withdraw-node.png';
 import tokenData from '@src/constants/tokenData';
 import Device from '@src/models/device';
 import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
@@ -10,6 +12,7 @@ import withdrawNodeDisabled from '@src/assets/images/icons/withdraw-node-disable
 import CryptoIcon from '../CryptoIcon';
 
 import styles from './style';
+
 
 
 const TAG = 'HistoryMined';
@@ -66,7 +69,7 @@ class HistoryMined extends React.Component {
   };
 
   renderItem=({ item,index })=> {
-    const {onPress,listItems} = this.props;
+    const {onPress,listItems,onPressWithdraw} = this.props;
     const {name = '',symbol = '',amount = 0,pSymbol=''} = item;
     const isPRV = _.isEqual(symbol,'PRV');
     const symbolUI = isPRV?symbol:pSymbol;
@@ -84,9 +87,9 @@ class HistoryMined extends React.Component {
           <Text style={styles.groupLeft_title}>{nameUI}</Text>
           <Text style={styles.groupRight_title}>{`${amount} ${symbolUI}`}</Text>
         </View>
-        <View style={styles.groupRight}>
+        <TouchableOpacity style={styles.groupRight} onPress={()=>!isPRV&&onPressWithdraw&&onPressWithdraw(item)}>
           <Image source={isPRV ? withdrawNodeDisabled : withdrawNode} resizeMode="contain" resizeMethod="resize" style={styles.withdraw_logo} />
-        </View>
+        </TouchableOpacity>
       </TouchableOpacity>
     );
   };
@@ -134,14 +137,16 @@ HistoryMined.defaultProps = {
   containerStyle:{},
   isActive:false,
   listItems:[],
-  onPress:(item)=>{}
+  onPress:(item)=>{},
+  onPressWithdraw:undefined
 };
 
 HistoryMined.propTypes = {
   containerStyle:PropTypes.object,
   isActive:PropTypes.bool,
   listItems:PropTypes.array,
-  onPress:PropTypes.func
+  onPress:PropTypes.func,
+  onPressWithdraw:PropTypes.func,
 };
 
 export default HistoryMined;
