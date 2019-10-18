@@ -1,6 +1,6 @@
-import http from '@src/services/http';
-import PToken from '@src/models/pToken';
 import Erc20Token from '@src/models/erc20Token';
+import PToken from '@src/models/pToken';
+import http from '@src/services/http';
 
 export const getTokenList = () =>
   http.get('ptoken/list')

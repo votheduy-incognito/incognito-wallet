@@ -22,4 +22,5 @@ export default {
   [CODE.web_js_import_existed_account]: 'Please make sure this private key is valid and does not already exist on your device.',
   [CODE.node_duplicate]: 'This node already exists on your device. Please try another.',
   [CODE.node_invalid_host]: 'This address is not a valid domain or ip address. Please try another.',
+  [CODE.getStarted_load_token_failed]: 'Can not get token list, please check your connection and try again or contact us for help.'
 };

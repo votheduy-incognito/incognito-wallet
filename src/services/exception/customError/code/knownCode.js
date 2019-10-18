@@ -1,5 +1,5 @@
-import { codeCreator } from '../utils';
 import TYPES from '../types';
+import { codeCreator } from '../utils';
 
 const knownError = codeCreator(TYPES.KNOWN_ERROR);
 
@@ -25,7 +25,8 @@ const estimateFee = {
 
 const getStarted = {
   getStarted_can_not_create_wallet_on_existed: knownError(-10),
-  getStarted_load_device_token_failed: knownError(-11)
+  getStarted_load_device_token_failed: knownError(-11),
+  getStarted_load_token_failed: knownError(-24),
 };
 
 const withdraw = {

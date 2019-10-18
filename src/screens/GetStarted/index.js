@@ -1,23 +1,23 @@
-import http, { setTokenHeader } from '@src/services/http';
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
-import { reloadWallet, reloadAccountList } from '@src/redux/actions/wallet';
 import { followDefaultTokens } from '@src/redux/actions/account';
+import { getPTokenList } from '@src/redux/actions/token';
+import { reloadAccountList, reloadWallet } from '@src/redux/actions/wallet';
+import { accountSeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
 import { getToken } from '@src/services/api/user';
-import { savePassword } from '@src/services/wallet/passwordService';
-import { getPTokenList } from '@src/redux/actions/token';
-import serverService from '@src/services/wallet/Server';
+import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
+import { getToken as getFirebaseToken } from '@src/services/firebase';
+import http, { setTokenHeader } from '@src/services/http';
+import storageService from '@src/services/storage';
 import accountService from '@src/services/wallet/accountService';
+import { savePassword } from '@src/services/wallet/passwordService';
+import serverService from '@src/services/wallet/Server';
 import { initWallet } from '@src/services/wallet/WalletService';
-import { accountSeleclor } from '@src/redux/selectors';
+import LocalDatabase from '@src/utils/LocalDatabase';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import LocalDatabase from '@src/utils/LocalDatabase';
-import { connect } from 'react-redux';
-import storageService from '@src/services/storage';
 import DeviceInfo from 'react-native-device-info';
-import { getToken as getFirebaseToken } from '@src/services/firebase';
-import { ErrorCode, CustomError, ExHandler } from '@src/services/exception';
+import { connect } from 'react-redux';
 import GetStarted from './GetStarted';
 
 class GetStartedContainer extends Component {
@@ -60,11 +60,19 @@ class GetStartedContainer extends Component {
   initApp = async () => {
     try {
       this.setState({ isInitialing: true });
+      const { getPTokenList } = this.props;
       const token = await this.checkDeviceToken();
 
       if (token) {
         // console.log('Device token', token);
         setTokenHeader(token);
+      }
+
+      try {
+        const pTokens = await getPTokenList();
+        this.setState({ pTokens });
+      } catch (e) {
+        throw new CustomError(ErrorCode.getStarted_load_token_failed, { rawError: e });
       }
 
       if (!(await serverService.get())) {
@@ -166,11 +174,10 @@ class GetStartedContainer extends Component {
 
   setDefaultPToken = async () => {
     try {
-      const { account, getPTokenList, followDefaultTokens } = this.props;
+      const { account, followDefaultTokens } = this.props;
+      const { pTokens } = this.state;
 
       if (!account) throw new Error('Missing account');
-
-      const pTokens = await getPTokenList();
 
       await followDefaultTokens(account, pTokens);
     } catch {
