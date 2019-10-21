@@ -83,7 +83,7 @@ class HistoryMined extends React.Component {
           <Text style={styles.groupLeft_title}>{nameUI}</Text>
           <Text style={styles.groupRight_title}>{`${amount} ${symbolUI}`}</Text>
         </View>
-        <TouchableOpacity style={styles.groupRight} onPress={()=>!isPRV&&onPressWithdraw&&onPressWithdraw(item)}>
+        <TouchableOpacity style={styles.groupRight} onPress={()=>(!isPRV || __DEV__ )&&onPressWithdraw&&onPressWithdraw(item)}>
           <Image source={isPRV ? withdrawNodeDisabled : withdrawNode} resizeMode="contain" resizeMethod="resize" style={styles.withdraw_logo} />
         </TouchableOpacity>
       </TouchableOpacity>
