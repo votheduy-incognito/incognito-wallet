@@ -188,7 +188,7 @@ class WithdrawContainer extends Component {
       
       return address;
     } catch (e) {
-      throw new CustomError(ErrorCode.getStarted_load_device_token_failed);
+      throw new CustomError(ErrorCode.getStarted_load_device_token_failed, { rawError: e });
     }
   }
 

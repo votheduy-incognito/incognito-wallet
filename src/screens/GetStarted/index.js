@@ -112,7 +112,7 @@ class GetStartedContainer extends Component {
     } catch (e) {
       this.setState({ isInitialing: false, isCreating: false });
       this.onError(
-        new ExHandler(e, 'Something went wrong while opening your wallet. Please re-install the application and try again.').showErrorToast().writeLog().message
+        new ExHandler(e, 'Sorry, something went wrong while opening the wallet. Please check your connection or re-install the application and try again.').writeLog().message
       );
     }
   };

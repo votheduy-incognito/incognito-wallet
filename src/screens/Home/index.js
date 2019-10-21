@@ -91,8 +91,8 @@ class HomeContainer extends Component {
     try {
       const { getBalance } = this.props;
       await getBalance(token);
-    } catch {
-      throw new CustomError(ErrorCode.home_load_balance_failed);
+    } catch (e) {
+      throw new CustomError(ErrorCode.home_load_balance_failed, { rawError: e });
     }
   }
 
@@ -100,8 +100,8 @@ class HomeContainer extends Component {
     try {
       const { getAccountBalance } = this.props;
       return getAccountBalance(account);
-    } catch {
-      throw new CustomError(ErrorCode.home_load_balance_failed);
+    } catch (e) {
+      throw new CustomError(ErrorCode.home_load_balance_failed, { rawError: e });
     }
   }
 
@@ -110,8 +110,8 @@ class HomeContainer extends Component {
       const { account, reloadAccountFollowingToken } = this.props;
       const result = await reloadAccountFollowingToken(account);
       return result;
-    } catch {
-      throw new CustomError(ErrorCode.home_load_following_token_failed);
+    } catch (e) {
+      throw new CustomError(ErrorCode.home_load_following_token_failed, { rawError: e });
     }
   }
 
