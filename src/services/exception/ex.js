@@ -53,11 +53,22 @@ class Exception {
     /**
      * Message for UI (display to user)
      */
-    this.message = this.message ?? 'Sorry! Something went wrong.';
+    this.message = this.message ?? this._getUnexpectedMessageError(exception);
 
     if (__DEV__) {
       this._log2Console();
     }
+  }
+
+  _getUnexpectedMessageError(exception) {
+    const defaultMsg = 'Sorry! Something went wrong.';
+    const message = exception?.message || '';
+
+    if (message) {
+      return `${defaultMsg}\n\nMORE: ${message}`;
+    }
+
+    return defaultMsg;
   }
 
   /**
