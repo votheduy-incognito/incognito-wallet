@@ -4,7 +4,10 @@
 import _ from 'lodash';
 import { Linking } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
+// import timer from 'react-native-timer';
+const timer = require('react-native-timer');
 
+const chars = 'abcdefghijklmnopqrstufwxyzABCDEFGHIJKLMNOPQRSTUFWXYZ1234567890';
 const TAG = 'Util';
 export default class Util {
   static getIconLinkWithSymbol=(symbol = '')=>{
@@ -114,10 +117,19 @@ export default class Util {
      return Promise.reject(`Tried ${count} times and failed`);
    };
 
+  static createRandomString= (length) =>{
+    
+    let pwd = _.sampleSize(chars, length || 12) ; // lodash v4: use _.sampleSize
+    return pwd.join('');
+  }
+
   static excuteWithTimeout = (promise, timeSecond = 1) => {
     return new Promise(function(resolve, reject) {
-      setTimeout(function() {
+      const ss = Util.createRandomString(10);
+      console.log(TAG,'excuteWithTimeout random string = ',ss);
+      timer.setTimeout(ss,function() {
         reject(new Error('timeout'));
+        timer.clearTimeout(ss);
       }, timeSecond * 1000);
       promise.then(resolve, reject);
     });
