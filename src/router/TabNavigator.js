@@ -20,7 +20,7 @@ import MinerNavigator from './MinerNavigator';
 import GameNavigator from './GameNavigator';
 import ROUTE_NAMES from './routeNames';
 
-const TabIcon = (type, { focused }) => {
+const TabIcon = (type, title, { focused }) => {
   let active = null;
   let inactive = null;
 
@@ -48,11 +48,11 @@ const TabIcon = (type, { focused }) => {
         image={focused ? active
           : inactive}
       />
-      <Text style={[styles.labelStyle, focused ? styles.activeLabel : {}]}>{type.toUpperCase()}</Text>
+      <Text style={[styles.labelStyle, focused ? styles.activeLabel : {}]}>{title.toUpperCase()}</Text>
     </View>
   );
 };
-const renderTab = (type) => TabIcon.bind(null, type);
+const renderTab = (type, title) => TabIcon.bind(null, type, title);
 
 const styles = StyleSheet.create({
   container: {
@@ -82,10 +82,10 @@ const styles = StyleSheet.create({
 });
 
 const Tab = createMaterialTopTabNavigator({
-  [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { title: 'Wallet', tabBarLabel: renderTab('wallet') }),
-  [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Nodes', header:() => null, tabBarLabel: renderTab('miner') }),
-  [ROUTE_NAMES.Game]: navigationOptionsHandler(GameNavigator, { title: 'Whales', header:() => null, tabBarLabel: renderTab('game')}),
-  [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'You', tabBarLabel: renderTab('setting') }),
+  [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { title: 'Wallet', tabBarLabel: renderTab('wallet', 'Wallet') }),
+  [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Nodes', header:() => null, tabBarLabel: renderTab('miner', 'Nodes') }),
+  [ROUTE_NAMES.Game]: navigationOptionsHandler(GameNavigator, { title: 'Whales', header:() => null, tabBarLabel: renderTab('game', 'Whales')}),
+  [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'You', tabBarLabel: renderTab('setting', 'You') }),
 }, {
   initialRouteName: ROUTE_NAMES.Home,
   swipeEnabled: false,
