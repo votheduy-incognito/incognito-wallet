@@ -16,7 +16,7 @@ class DepositContainer extends Component {
     };
   }
 
-  getDepositAddress = async amount => {
+  getDepositAddress = async () => {
     try {
       let address;
       const { selectedPrivacy } = this.props;
@@ -27,7 +27,6 @@ class DepositContainer extends Component {
 
       if (selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) {
         address = await genETHDepositAddress({
-          amount,
           paymentAddress: selectedPrivacy?.paymentAddress,
           walletAddress: selectedPrivacy?.paymentAddress,
           tokenId: selectedPrivacy?.tokenId,
@@ -35,7 +34,6 @@ class DepositContainer extends Component {
         });
       } else if (selectedPrivacy?.isErc20Token) {
         address = await genERC20DepositAddress({
-          amount,
           paymentAddress: selectedPrivacy?.paymentAddress,
           walletAddress: selectedPrivacy?.paymentAddress,
           tokenId: selectedPrivacy?.tokenId,
@@ -44,7 +42,6 @@ class DepositContainer extends Component {
         });
       } else {
         address = await genCentralizedDepositAddress({
-          amount,
           paymentAddress: selectedPrivacy?.paymentAddress,
           walletAddress: selectedPrivacy?.paymentAddress,
           tokenId: selectedPrivacy?.tokenId,

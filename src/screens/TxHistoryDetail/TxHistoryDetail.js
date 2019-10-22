@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { TouchableOpacity, Container, ScrollView } from '@src/components/core';
 import { CONSTANT_CONFIGS, CONSTANT_COMMONS } from '@src/constants';
 import formatUtil from '@src/utils/format';
+import convertUtil from '@src/utils/convert';
 import linkingService from '@src/services/linking';
 import external from '@src/assets/images/icons/external.png';
 import styleSheet from './styles';
@@ -47,16 +48,15 @@ export default class TxHistoryDetail extends Component {
     const fee = isUseTokenFee ? history?.feePToken : history?.fee;
     const feeUnit = isUseTokenFee ? history?.symbol : CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
     const formatFee = fee && formatUtil.amountFull(fee, isUseTokenFee ? history?.pDecimals : CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY);
+    const amount = convertUtil.toHumanAmount(history.amount, history.pDecimals) || history.requestedAmount;
 
     return (
       <ScrollView>
         <Container style={styleSheet.container}>
-          {this.renderRow(
+          {!! amount && this.renderRow(
             {
               label: typeText,
-              valueText: `${balanceDirection} ${history.amount
-                ? formatUtil.amount(history.amount, history.pDecimals)
-                : formatUtil.amount(history.requestedAmount)} ${history.symbol}`,
+              valueText: `${balanceDirection} ${formatUtil.amount(amount)} ${history.symbol}`,
               valueTextStyle: { color: balanceColor }
             })
           }

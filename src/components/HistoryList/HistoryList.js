@@ -5,6 +5,7 @@ import routeNames from '@src/router/routeNames';
 import { ConfirmedTx, FailedTx, SuccessTx } from '@src/services/wallet/WalletService';
 import { COLORS } from '@src/styles';
 import formatUtil from '@src/utils/format';
+import convertUtil from '@src/utils/convert';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Swipeout from 'react-native-swipeout';
@@ -118,6 +119,7 @@ const HistoryItem = ({ history, divider, navigation }) => {
 
   const { statusText, statusColor, statusNumber } = getStatusData(history.status, history.statusCode);
   const { typeText, balanceColor, balanceDirection } = getTypeData(history.type);
+  const amount = convertUtil.toHumanAmount(history.amount, history.pDecimals) || history.requestedAmount;
   // const [addressDirection, address] = getAddress(history);
   const onPress = () => {
     navigation?.navigate(routeNames.TxHistoryDetail, { data: { history, typeText, balanceColor, balanceDirection, statusText, statusColor, statusNumber } });
@@ -150,14 +152,9 @@ const HistoryItem = ({ history, divider, navigation }) => {
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {`${balanceDirection} `}
             {
-              history.amount
-                ? formatUtil.amount(history.amount, history.pDecimals)
-                : formatUtil.amount(history.requestedAmount)
-            } 
-            {' '}
-            { history.symbol }
+              amount ? `${balanceDirection} ${formatUtil.amount(amount)} ${ history.symbol }` : ''
+            }
           </Text>
           <Text
             style={[styleSheet.statusText, { color: statusColor }]}

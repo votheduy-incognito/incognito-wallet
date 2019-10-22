@@ -15,7 +15,26 @@ export default StyleSheet.create({
   },
   submitBtn: {
     marginTop: 30
-  }
+  },
+  errorContainer: {
+    marginTop: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorIcon: {
+    color: COLORS.orange,
+    fontSize: 60,
+    marginBottom: 30
+  },
+  errorText: {
+    maxWidth: 400,
+    textAlign: 'center',
+  },
+  errorText2: {
+    marginTop: 5,
+    maxWidth: 500,
+    textAlign: 'center',
+  },
 });
 
 export const waitingDepositStyle = StyleSheet.create({

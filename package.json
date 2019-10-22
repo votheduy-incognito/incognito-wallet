@@ -159,6 +159,12 @@
     "redux-devtools-extension": "^2.13.8",
     "rn-nodeify": "github:tradle/rn-nodeify"
   },
+  "husky": {
+     "hooks": {
+       "pre-commit": "lint-staged",
+        "pre-push": "lint-staged"
+      }
+  },
   "jest": {
     "preset": "react-native",
     "testMatch": [

@@ -1,103 +1,70 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Container, ScrollView, View, Toast, Text, Button } from '@src/components/core';
-import { Field, formValueSelector, destroy } from 'redux-form';
-import { createForm, InputField, validator } from '@src/components/core/reduxForm';
+import { Container, ScrollView, Text } from '@src/components/core';
+import Icons from 'react-native-vector-icons/AntDesign';
+import LoadingContainer from '@src/components/LoadingContainer';
 import WaitingDeposit from './WaitingDeposit';
 import style from './style';
-import { ExHandler } from '@src/services/exception';
-
-const formName = 'deposit';
-const selector = formValueSelector(formName);
-const Form = createForm(formName, { destroyOnUnmount: false });
-const isRequired = validator.required();
 
 class Deposit extends React.Component {
   constructor() {
     super();
+
+    this.state = {
+      hasError: false,
+    };
   }
 
-  componentWillUnmount() {
-    const { destroy } = this.props;
-    destroy(formName);
+  componentDidMount() {
+    this.handleGenAddress();
   }
 
-  handleSubmit = () => {
-    const { handleGenAddress, amount } = this.props;
+  handleGenAddress = () => {
+    const { handleGenAddress } = this.props;
 
-    return handleGenAddress(amount)
-      .catch((e) => {
-        new ExHandler(e, 'Can not get deposit address, please try again.').showErrorToast();
+    return handleGenAddress()
+      .catch(() => {
+        this.setState({ hasError: true });
       });
   }
 
   render() {
-    const { depositAddress, selectedPrivacy, amount } = this.props;
+    const { depositAddress, selectedPrivacy } = this.props;
+    const { hasError } = this.state;
 
-    return (
-      <ScrollView style={style.container}>
-        <Container style={style.mainContainer}>
-          {
-            depositAddress
-              ? <WaitingDeposit selectedPrivacy={selectedPrivacy} depositAddress={depositAddress} amount={amount} />
-              : (
-                <Form>
-                  {({ handleSubmit, submitting }) => (
-                    <View style={style.form}>
-                      <Text style={style.desc}>Please enter the amount you would like to deposit to your wallet.</Text>
-                      <Field
-                        component={InputField}
-                        name='amount'
-                        placeholder='0.0'
-                        label='Amount'
-                        validate={[
-                          isRequired,
-                          ...validator.combinedAmount
-                        ]}
-                        componentProps={{
-                          keyboardType: 'decimal-pad'
-                        }}
-                        prependView={
-                          <Text>{selectedPrivacy?.externalSymbol}</Text>
-                        }
-                      />
-                      <Button
-                        title='Continue'
-                        style={style.submitBtn}
-                        onPress={handleSubmit(this.handleSubmit)}
-                        isAsync
-                        isLoading={submitting}
-                      />
-                    </View>
-                  )}
-                </Form>
-              )
-          }
-        </Container>
-      </ScrollView>
-    );
+    if (hasError) {
+      return (
+        <ScrollView style={style.container}>
+          <Container style={[style.mainContainer, style.errorContainer]}>
+            <Icons name='exclamationcircleo' style={style.errorIcon} />
+            <Text style={style.errorText}>Sorry, we can not process your deposit request right now, please try again.</Text>
+            <Text style={style.errorText2}>If this problem still happening, please come back after 60 minutes.</Text>
+          </Container>
+        </ScrollView>
+      );
+    }
+
+    return depositAddress ?
+      (
+        <ScrollView style={style.container}>
+          <Container style={style.mainContainer}>
+            <WaitingDeposit selectedPrivacy={selectedPrivacy} depositAddress={depositAddress} />
+          </Container>
+        </ScrollView>
+      )
+      :<LoadingContainer />;
   }
 }
 
 Deposit.defaultProps = {
   depositAddress: null,
   selectedPrivacy: null,
-  amount: null,
 };
 
 Deposit.propTypes = {
   depositAddress: PropTypes.string,
   selectedPrivacy: PropTypes.object,
   handleGenAddress: PropTypes.func.isRequired,
-  destroy: PropTypes.func.isRequired,
-  amount: PropTypes.oneOfType([ PropTypes.number, PropTypes.string ]),
 };
 
-const mapState = state => ({
-  amount: selector(state, 'amount'),
-});
-
-const mapDispatch = { destroy };
-
-export default connect(mapState, mapDispatch)(Deposit);
+export default Deposit;
