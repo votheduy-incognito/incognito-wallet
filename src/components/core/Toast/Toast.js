@@ -11,6 +11,7 @@ class Toast extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      animation: null,
       msg: null,
       config: {},
       opacityAni: new Animated.Value(1)
@@ -62,12 +63,18 @@ class Toast extends Component {
   }
 
   show = (msg, config = {}) => {
-    const { opacityAni } = this.state;
+    const { opacityAni, animation } = this.state;
+
+    // stop exist animation
+    if (animation && typeof animation.stop === 'function') {
+      animation.stop();
+    }
+
     this.setState({
       msg,
       config: config || {}
     }, () => {
-      Animated.sequence([
+      const animation = Animated.sequence([
         Animated.timing(
           opacityAni,
           {
@@ -83,11 +90,15 @@ class Toast extends Component {
             duration: 200,
           }
         )
-      ]).start(({ finished}) => {
+      ]);
+
+      animation.start(({ finished}) => {
         if (finished) {
           this.setState({ msg: null });
         }
       });
+
+      this.setState({ animation });
     });
   }
 
