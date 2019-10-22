@@ -92,8 +92,8 @@ const style = StyleSheet.create({
     paddingHorizontal:scaleInApp(10),
   },
   top_container_right_group: {
-    flex:1,
-    alignItems: 'flex-end',
+    flexDirection:'row',
+    alignItems: 'center',
     justifyContent: 'flex-end',
     paddingHorizontal:scaleInApp(10),
   },

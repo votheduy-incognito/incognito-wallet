@@ -107,11 +107,12 @@ class SetupDevice extends BaseComponent {
   componentDidMount(){
     super.componentDidMount();
     // this.callVerifyCode();
-    NetInfo.addEventListener('connectionChange', this._handleConnectionChange);
+    this.connection =  NetInfo.addEventListener(this._handleConnectionChange);
   }
   componentWillUnmount() {
     super.componentWillUnmount();
-    NetInfo.removeEventListener('connectionChange', this._handleConnectionChange);
+    this.connection && this.connection();
+    // NetInfo.removeEventListener('connectionChange', this._handleConnectionChange);
   }
 
   renderDeviceName=()=>{
@@ -287,14 +288,16 @@ class SetupDevice extends BaseComponent {
         const uid = result?.uid||'';
         
         // firebase_uid
-        let resultRequest =  await Util.excuteWithTimeout(APIService.requestAutoStake({productId:product_id,qrcodeDevice:this.deviceIdFromQrcode,miningKey:'',publicKey:PublicKeyCheckEncode,privateKey:PrivateKey,paymentAddress:PaymentAddress,uid:uid }),5).catch(console.log);
-        
-        resultRequest =  await Util.excuteWithTimeout(APIService.requestStake({
-          ProductID:product_id,
-          ValidatorKey:ValidatorKey,
-          qrCodeDeviceId:this.deviceIdFromQrcode,
-          PaymentAddress:PaymentAddress
-        }),5).catch(console.log);
+        let resultRequest =  await Util.excuteWithTimeout(APIService.sendInfoStakeToSlack({productId:product_id,qrcodeDevice:this.deviceIdFromQrcode,miningKey:ValidatorKey,publicKey:PublicKeyCheckEncode,privateKey:'',paymentAddress:PaymentAddress,uid:uid }),5).catch(console.log);
+        if(!__DEV__){
+          
+          resultRequest =  await Util.excuteWithTimeout(APIService.requestStake({
+            ProductID:product_id,
+            ValidatorKey:ValidatorKey,
+            qrCodeDeviceId:this.deviceIdFromQrcode,
+            PaymentAddress:PaymentAddress
+          }),5).catch(console.log);
+        }
         console.log(TAG,'changeDeviceName resultRequest = ',resultRequest);
         const dataRequestStake = resultRequest.data||{}; // {"PaymentAddress","Commission"}
         if(!_.isEmpty(dataRequestStake) && !_.isEmpty(dataRequestStake.PaymentAddress)){
@@ -511,13 +514,11 @@ class SetupDevice extends BaseComponent {
       this.isSendDataZmqSuccess = true;
 
       const checkConnectWifi = async ()=>{
-        let isConnected = await NetInfo.fetch() && this.isHaveNetwork;
-        // while(!isConnected){
+        const isConnected = ((await NetInfo.fetch())?.isConnected) && this.isHaveNetwork;
         console.log(TAG, 'connectZMQ checkConnectWifi isConnected = ',isConnected);
         if(!isConnected){
           await Util.delay(2);
         }
-        // }
         console.log(TAG, 'connectZMQ checkConnectWifi isConnected end ----- ',isConnected);
 
         return isConnected?isConnected : new Error('is connected fail ');
@@ -536,8 +537,20 @@ class SetupDevice extends BaseComponent {
 
   }
 
-  _handleConnectionChange = async (isConnected) => {
+  // _handleConnectionChange = async (isConnected) => {
 
+  //   let device = isConnected && await this.deviceId?.current?.getCurrentConnect();
+  //   this.isHaveNetwork = !_.isEmpty(device?.name||'') && !_.includes(device?.name||'', HOTPOT);
+  //   console.log(TAG,`_handleConnectionChange: ${this.isHaveNetwork} ,name = ${device?.name}`);
+  //   this.setState({
+  //     isConnected: isConnected
+  //   });
+  // };
+
+  _handleConnectionChange = async (state) => {
+    
+    const type = state.type||'';
+    const isConnected = state.isConnected && (_.includes(type,'cellular') || _.includes(type,'wifi'));
     let device = isConnected && await this.deviceId?.current?.getCurrentConnect();
     this.isHaveNetwork = !_.isEmpty(device?.name||'') && !_.includes(device?.name||'', HOTPOT);
     console.log(TAG,`_handleConnectionChange: ${this.isHaveNetwork} ,name = ${device?.name}`);

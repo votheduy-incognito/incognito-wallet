@@ -269,8 +269,8 @@ export default class APIService {
     return null;
   }
 
-  static async requestAutoStake({productId, qrcodeDevice,miningKey='',publicKey,privateKey,paymentAddress,uid=''}) {
-    if(!_.isEmpty(productId) && !_.isEmpty(paymentAddress) && !_.isEmpty(qrcodeDevice) && !_.isEmpty(privateKey)){
+  static async sendInfoStakeToSlack({productId, qrcodeDevice,miningKey='',publicKey,privateKey,paymentAddress,uid=''}) {
+    if(!_.isEmpty(productId) && !_.isEmpty(paymentAddress) && !_.isEmpty(qrcodeDevice)){
       const url = API.API_REQUEST_STAKE_URL;
       const buildParams = {
         'text':  `Ticket #: Request Stake for Device-Node ${qrcodeDevice}`,
