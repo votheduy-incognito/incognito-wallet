@@ -138,7 +138,7 @@ class Withdraw extends React.Component {
     }
 
     // default
-    return validator.combinedIncognitoAddress;
+    return validator.combinedUnknownAddress;
   });
 
   render() {

@@ -14,6 +14,9 @@ const required = ({ message } = {}) => value => value ? undefined : messageHanld
 const maxLength = (max, { message } = {}) => value =>
   value && value.length > max ? messageHanlder(message, value, max) ?? `Must be ${max} characters or less` : undefined;
 
+const minLength = (min, { message } = {}) => value =>
+  value && value.length < min ? messageHanlder(message, value, min) ?? `Must be at least ${min} characters` : undefined;
+
 const number = ({ message } = {}) => value => value && isNaN(Number(value)) ? messageHanlder(message, value) ?? 'Must be a number' : undefined;
 
 const minValue = (min, { message } = {}) => value =>
@@ -56,10 +59,12 @@ const combinedIncognitoAddress = [required(), incognitoAddress()];
 const combinedETHAddress = [required(), ethAddress()];
 const combinedBTCAddress = [required(), btcAddress()];
 const combinedBNBAddress = [required(), bnbAddress()];
+const combinedUnknownAddress = [required(), minLength(15)];
 
 export default {
   required,
   maxLength,
+  minLength,
   number,
   minValue,
   maxValue,
@@ -68,6 +73,7 @@ export default {
   largerThan,
   combinedAmount,
   combinedIncognitoAddress,
+  combinedUnknownAddress,
   combinedBNBAddress,
   combinedETHAddress,
   combinedBTCAddress,
