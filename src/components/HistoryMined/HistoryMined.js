@@ -107,10 +107,9 @@ class HistoryMined extends React.Component {
     const {
       listItems,
       isFetching,
-      isLoadMore,
-      loading
+      isLoadMore
     } = this.state;
-    const {containerStyle,onPress} = this.props;
+    const {containerStyle} = this.props;
 
     return (
       <View style={[styles.container,containerStyle]}>

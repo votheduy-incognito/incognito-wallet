@@ -68,7 +68,7 @@ class DeviceConnection extends Component {
     if(result){
       // console.log(TAG, 'connectDevice begin true ---- ');
       const checkConnectWifi = async ()=>{
-        const isConnected = await NetInfo.fetch();
+        const isConnected = ((await NetInfo.fetch())?.isConnected)||false;
         // while(!isConnected){
 
         // }

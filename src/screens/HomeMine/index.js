@@ -51,7 +51,6 @@ class HomeMine extends BaseScreen {
   };
   async componentWillMount(){
     await this.createSignIn();
-    // StatusBar.setBackgroundColor(COLORS.white);
     // hientesting
     // const {
     //   product_id ='b005ada1-c16f-4dc1-8e95-6c4ff282f66e',

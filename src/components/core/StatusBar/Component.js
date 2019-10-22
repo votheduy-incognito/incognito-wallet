@@ -9,7 +9,7 @@ const darkScreens = ['DetailDevice'];
 const isIOS = Platform.OS === 'ios';
 const STATUS_BAR_HEIGHT = isIOS ? 20 : RNComponent.currentHeight;
 
-const StatusBar = ({ currentScreen }) => {
+const StatusBar = React.memo(({ currentScreen }) => {
   let backgroundColor;
   let textColor;
 
@@ -42,7 +42,7 @@ const StatusBar = ({ currentScreen }) => {
       <RNComponent barStyle={textColor} />
     </View>
   );
-};
+});
 
 StatusBar.defaultProps = {
   currentScreen: '',
