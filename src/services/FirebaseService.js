@@ -19,12 +19,7 @@ const STATUS_CODE = {
 // let myManager = null;
 
 let currentChannel;
-// let dictCallback = {};
-let obj = {
-  key1: 'value1',
-  key2: 'value2'
-};
-// let dictKey = {};
+
 const TAG = 'FirebaseService';
 export default class FirebaseService {
   static myManager;
@@ -62,7 +57,7 @@ export default class FirebaseService {
       }
     }
   }
-  signIn = async(username, password):Promise<String>=> {
+  signIn = async(username, password) => {
     
     return new Promise((resolve,reject)=>{
       console.log(TAG,' signIn begin');
