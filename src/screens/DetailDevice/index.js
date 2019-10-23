@@ -69,14 +69,6 @@ class DetailDevice extends BaseScreen {
     navigation.setParams({ title: this.titleBar });
   }
 
-  // async componentDidMount() {
-  //   super.componentDidMount();
-  //   console.log(TAG,'componentDidMount begin');
-  //   // await this.checkStatus('incognito');
-  //   // await this.checkAndUpdateInfoVirtualNode();
-  //   // this.fetchData();
-  // }
-
   onResume = async ()=>{
     console.log(TAG,'onResume begin');
     const {device,isFetching } = this.state;
