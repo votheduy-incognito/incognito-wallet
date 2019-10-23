@@ -677,9 +677,7 @@ class SetupDevice extends BaseComponent {
         console.log('Error try catch:', error);
       }
     }
-
     return errorObj;
-
   }
 }
 
