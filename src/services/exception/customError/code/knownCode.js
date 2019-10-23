@@ -38,7 +38,6 @@ const createAccount = {
   createAccount_failed: knownError(-16),
   createAccount_existed_name: knownError(-17)
 };
-
 const home = {
   home_load_following_token_failed: knownError(-18),
   home_load_balance_failed: knownError(-19)
@@ -54,6 +53,9 @@ const node = {
   node_invalid_host: knownError(-23),
 };
 
+const validator = {
+  payment_address_empty: knownError(-25),
+};
 
 export default {
   ...app,
@@ -64,4 +66,5 @@ export default {
   ...importAccount,
   ...home,
   ...node,
+  ...validator
 };

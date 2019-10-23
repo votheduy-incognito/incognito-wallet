@@ -4,6 +4,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
+import { ExHandler } from '@src/services/exception';
 import BaseConnection, { ObjConnection } from './BaseConnection';
 import style from './style';
 import WifiConnection from './WifiConnection';
@@ -63,19 +64,16 @@ class DeviceConnection extends Component {
 
   connectDevice = async (device: ObjConnection) => {
     console.log(TAG, 'connectDevice begin  = ',JSON.stringify(device)||'');
-    let result = await this.connection.connectDevice(device);
+    let result = await this.connection.connectDevice(device).catch(e=>new ExHandler(e,'connectDevice fail').showWarningToast());
 
     if(result){
       // console.log(TAG, 'connectDevice begin true ---- ');
       const checkConnectWifi = async ()=>{
         const isConnected = ((await NetInfo.fetch())?.isConnected)||false;
-        // while(!isConnected){
-
-        // }
         if(!isConnected){
           await Util.delay(1);
         }
-        // console.log(TAG, 'connectDevice begin 111---- ',isConnected);
+        console.log(TAG, 'connectDevice begin 111---- ',isConnected);
         return isConnected?isConnected : new Error('is connected fail ');
       };
 

@@ -57,7 +57,8 @@ class WifiConnection extends BaseConnection {
 
   connectDevice = (device: ObjConnection) => {
     const pro = new Promise((resolve, reject) => {
-      Wifi.connectSecure(device.name,PASS_HOSPOT,false,true, error => {
+      Wifi.connectSecure(device.name,PASS_HOSPOT,false,false, error => {
+        console.log(TAG, 'connectDevice OKKKKK ---');
         if (!error) {
           Wifi.getSSID(SSID => {
             console.log(TAG, 'connectDevice getSSID --- ', SSID);
@@ -67,13 +68,14 @@ class WifiConnection extends BaseConnection {
             resolve(_.isEqual(device.name,SSID));
           });
         } else {
-          resolve(false);
+          // resolve(false);
+          reject(new Error(error));
         }
       });
       
     });
-    // return Util.excuteWithTimeout(pro,5);
-    return pro;
+    return Util.excuteWithTimeout(pro,15);
+    // return pro;
 
   };
 
