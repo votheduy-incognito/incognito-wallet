@@ -160,10 +160,10 @@
     "rn-nodeify": "github:tradle/rn-nodeify"
   },
   "husky": {
-     "hooks": {
-       "pre-commit": "lint-staged",
-        "pre-push": "lint-staged"
-      }
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "lint-staged"
+    }
   },
   "jest": {
     "preset": "react-native",

@@ -69,14 +69,6 @@ class DetailDevice extends BaseScreen {
     navigation.setParams({ title: this.titleBar });
   }
 
-  // async componentDidMount() {
-  //   super.componentDidMount();
-  //   console.log(TAG,'componentDidMount begin');
-  //   // await this.checkStatus('incognito');
-  //   // await this.checkAndUpdateInfoVirtualNode();
-  //   // this.fetchData();
-  // }
-
   onResume = async ()=>{
     console.log(TAG,'onResume begin');
     const {device,isFetching } = this.state;
@@ -194,7 +186,6 @@ class DetailDevice extends BaseScreen {
       console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
       const {Result={}} = dataResult;
       const PRV = Result['PRV']??0;
-      // balancePRV = convert.toHumanAmount(PRV,common.DECIMALS['PRV']);
       balancePRV = format.amount(PRV,common.DECIMALS['PRV']);
       console.log(TAG,'fetchData VIRTUAL_TYPE 01');
       balancePRV = _.isNaN(balancePRV)?0:balancePRV;
@@ -215,30 +206,12 @@ class DetailDevice extends BaseScreen {
       const {Result={}} = dataResult;
       const PRV = Result['PRV']??0;
       balancePRV = format.amount(PRV,common.DECIMALS['PRV']);
-      console.log(TAG,'fetchData getRewardAmount 01');
+      // console.log(TAG,'fetchData getRewardAmount 01');
       balancePRV = _.isNaN(balancePRV)?0:balancePRV;
       console.log(TAG,'fetchData getRewardAmount 02',balancePRV);
 
       listFollowingTokens = this.createListFollowingToken(Result,listTokens,device.CommissionFromServer??1);
 
-
-      // listFollowingTokens = (!_.isEmpty(account) && await accountService.getFollowingTokens(account,wallet))||[];
-      // listFollowingTokens = listFollowingTokens.map(async item=>{
-      //   const objMerge = {id:item.id,name:item.name,...item.metaData};
-      //   let amount = await device.balanceToken(account,wallet,objMerge.id).catch(console.log)||0;
-      //   amount = format.amountFull(amount,objMerge['pDecimals']);
-      //   amount = _.isNaN(amount)?0:amount;
-      //   return {...objMerge,amount:amount};
-      // });
-      // listFollowingTokens = await Promise.all(listFollowingTokens);
-
-      // console.log(TAG,'fetchData NODE listFollowingTokens = ',listFollowingTokens);
-      // balancePRV = await device.balanceToken(account,wallet);
-
-      // balancePRV = format.amount(balancePRV,common.DECIMALS['PRV']);
-
-      // balancePRV = _.isNaN(balancePRV)?0:balancePRV;
-      // console.log(TAG,'fetchData NODE balance = ',balancePRV);
     }
     }
 

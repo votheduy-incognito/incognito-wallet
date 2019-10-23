@@ -5,10 +5,11 @@ import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
 import gameAPI from '@src/services/api/game';
 import axios from 'axios';
-import { KeyWallet, Wallet } from 'incognito-chain-web-js/build/wallet';
+import { KeyWallet, Wallet,AccountWallet } from 'incognito-chain-web-js/build/wallet';
 import _ from 'lodash';
 import { getActiveShard } from './RpcClientService';
 import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
+import { CustomError, ErrorCode } from '../exception';
 
 const TAG = 'Account';
 export default class Account {
@@ -366,13 +367,13 @@ export default class Account {
    * @param {string} accountName
    * @param {object} wallet
    * @param {bool} isGetAll
+   * @returns {map[TokenID] : number}
    */
-  static async getRewardAmount(tokenID, accountName, wallet,isGetAll = false) {
-    
-    const accountWallet = wallet.getAccountByName(accountName);
-    let result = 0;
+  static async getRewardAmount(tokenID, paymentAddrStr,isGetAll = false) {
+    if(_.isEmpty(paymentAddrStr)) throw new CustomError(ErrorCode.payment_address_empty,{name:'payment address is empty'});
+    let result = null;
     try {
-      result = await accountWallet?.getRewardAmount(isGetAll,tokenID);
+      result = await AccountWallet?.getRewardAmount(paymentAddrStr,isGetAll,tokenID);
     } catch (e) {
       throw e;
     }
