@@ -5,6 +5,7 @@ import { getActiveChildNavigationOptions } from 'react-navigation';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { navigationOptionsHandler } from '@src/utils/router';
 import Home from '@src/screens/Home';
+import Dapps from '@src/screens/Dapps';
 import { COLORS } from '@src/styles';
 import TabBarIcon from '@src/components/TabBarIcon';
 import icMinerActive from '@src/assets/images/icons/ic_tab_nodes_active.png';
@@ -17,7 +18,7 @@ import icDexActive from '@src/assets/images/icons/ic_tab_dex_active.png';
 import icDexInactive from '@src/assets/images/icons/ic_tab_dex_deactive.png';
 import HeaderBar from '@src/components/HeaderBar';
 import Game from '@src/screens/Game';
-import {FontStyle, scaleInApp} from '@src/styles/TextStyle';
+import {FontStyle} from '@src/styles/TextStyle';
 import MinerNavigator from './MinerNavigator';
 import ROUTE_NAMES from './routeNames';
 
