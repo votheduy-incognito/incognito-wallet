@@ -6,6 +6,7 @@ import accountService from '@src/services/wallet/accountService';
 import format from '@src/utils/format';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
+import { ExHandler } from '@src/services/exception';
 
 export const DEVICE_STATUS = {
   CODE_UNKNOWN : -1,
@@ -131,22 +132,20 @@ export default class Device {
     return this.data.product_type || '';
   }
 
-  // getPublicKey= async ()=>{
-  //   if(this.Type == DEVICES.VIRTUAL_TYPE){
-  //     const dataResult = await VirtualDeviceService.getPublicKeyMining(this) ?? {};
-  //     const {Result=''} = dataResult;
-  //     return Result;
-  //   }
-  //   return '';
-  // }
-
   balance = async(account,wallet)=>{
     const result = (!_.isEmpty(account)&& !_.isEmpty(wallet) && await accountService.getBalance(account,wallet))||0;
     return result;
   }
-  balanceToken = async(account,wallet,tokenID = '')=>{
-    const accountName = !_.isEmpty(account)? account.name:this.accountName();
-    const result = (!_.isEmpty(accountName) && !_.isEmpty(wallet)  && await accountService.getRewardAmount(tokenID, accountName,wallet))||null;
+
+  /**
+   *
+   * @param {string} paymentAddrStr
+   * @param {string} tokenID
+   * @returns {number}
+   */
+  balanceToken = async(paymentAddrStr,tokenID = '')=>{
+    const result = !_.isEmpty(paymentAddrStr) ? await accountService.getRewardAmount(tokenID, paymentAddrStr).catch(e=>new ExHandler(e).showWarningToast()):null;
+    console.log(TAG,'balanceToken result = ',result);
     return result;
   }
 
@@ -165,7 +164,7 @@ export default class Device {
   }
 
   requestWithdraw = async(account,wallet,tokenID = '')=>{
-    const result = (!_.isEmpty(account)&& !_.isEmpty(wallet) && await accountService.createAndSendWithdrawRewardTx(tokenID, account,wallet))|| null;
+    const result = (!_.isEmpty(account)&& !_.isEmpty(wallet) && await accountService.createAndSendWithdrawRewardTx(tokenID, account,wallet))??null;
     return result;
   }
 
@@ -208,7 +207,7 @@ export default class Device {
   balance : null -> node die,
   -1: full-node die
   */
-  static getRewardAmount = async (deviceInfo:Device,wallet?)=>{
+  static getRewardAmount = async (deviceInfo:Device)=>{
     let balance = null;
     if(!_.isEmpty(deviceInfo)){
       switch(deviceInfo.Type){
@@ -216,12 +215,14 @@ export default class Device {
         console.log(TAG,'getRewardAmount VIRTUAL_TYPE begin');
         let dataResult = await VirtualDeviceService.getRewardFromMiningkey(deviceInfo);
 
-        balance = _.isNil(dataResult) || _.isNil(dataResult.Result) ?-1: (dataResult.Result?.PRV||null);
+        balance = _.isNil(dataResult) || _.isNil(dataResult.Result) ?-1:dataResult.Result?.PRV;
         console.log(TAG,'getRewardAmount VIRTUAL_TYPE dataResult = ',dataResult,deviceInfo.Name,balance);
         break;
       }
       default:{
-        balance = await deviceInfo.balanceToken(null,wallet);
+        const paymentAddress =  deviceInfo.PaymentAddressFromServer;
+        balance = await deviceInfo.balanceToken(paymentAddress,'');
+        balance = _.isNaN(balance)? 0:balance;
       }
       }
     }

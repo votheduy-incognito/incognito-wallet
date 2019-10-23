@@ -212,10 +212,10 @@ class SetupDevice extends BaseComponent {
       this.deviceMiner = new ObjConnection();
       let suffix = _.split(this.deviceIdFromQrcode,'-')[1];
       suffix = !_.isEmpty(suffix) && _.size(suffix) == 6 ?`-${suffix}`:'';
-      console.log(TAG,'connectHotspot begin = ');
+      console.log(TAG,'connectHotspot begin  suffix= ',suffix);
       this.deviceMiner.name = `${HOTPOT}${suffix}`;
       this.deviceMiner.id = `${HOTPOT}${suffix}`;
-      const result:Boolean = await this.deviceId?.current?.connectDevice(this.deviceMiner);
+      const result = await this.deviceId?.current?.connectDevice(this.deviceMiner);
       console.log(TAG,'connectHotspot end result = ',result);
       return result?this.deviceMiner:errorObj;
     } catch (error) {
@@ -299,6 +299,7 @@ class SetupDevice extends BaseComponent {
           }),5).catch(console.log);
         }
         console.log(TAG,'changeDeviceName resultRequest = ',resultRequest);
+        console.log(TAG,'changeDeviceName end result  = ',result);
         const dataRequestStake = resultRequest.data||{}; // {"PaymentAddress","Commission"}
         if(!_.isEmpty(dataRequestStake) && !_.isEmpty(dataRequestStake.PaymentAddress)){
           // save to local
@@ -514,11 +515,12 @@ class SetupDevice extends BaseComponent {
       this.isSendDataZmqSuccess = true;
 
       const checkConnectWifi = async ()=>{
+        console.log(TAG, 'connectZMQ checkConnectWifi00 isConnected = ',((await NetInfo.fetch())?.isConnected));
         const isConnected = ((await NetInfo.fetch())?.isConnected) && this.isHaveNetwork;
-        console.log(TAG, 'connectZMQ checkConnectWifi isConnected = ',isConnected);
-        if(!isConnected){
-          await Util.delay(2);
-        }
+        console.log(TAG, 'connectZMQ checkConnectWifi01 isConnected = ',isConnected);
+        // if(!isConnected){
+        //   await Util.delay(2);
+        // }
         console.log(TAG, 'connectZMQ checkConnectWifi isConnected end ----- ',isConnected);
 
         return isConnected?isConnected : new Error('is connected fail ');
@@ -645,7 +647,7 @@ class SetupDevice extends BaseComponent {
     const { verifyCode, isConnected } = this.state;
     console.log(TAG,' callVerifyCode begin01 connected = ',isConnected);
     const errorObj = new Error('callVerifyCode fail');
-    if (this.isHaveNetwork ) {
+    if (this.isHaveNetwork) {
       const params = {
         verify_code: verifyCode
       };
@@ -664,7 +666,7 @@ class SetupDevice extends BaseComponent {
             });
             __DEV__ && this.showToastMessage('authFirebase begin');
             let authFirebase = this.authFirebase;
-            await Util.tryAtMost(authFirebase,3,3).catch(console.error);
+            await Util.tryAtMost(authFirebase,3,3).catch(console.log);
 
             if(__DEV__) this.showToastMessage('authFirebase end');
 

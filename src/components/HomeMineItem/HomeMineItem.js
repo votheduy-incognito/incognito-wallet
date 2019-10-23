@@ -66,7 +66,7 @@ class HomeMineItem extends React.Component {
     let {deviceInfo,account,balance} = this.state;
 
     account = await getAccountByName(deviceInfo.accountName());
-    balance = await Device.getRewardAmount(deviceInfo,wallet);
+    balance = await Device.getRewardAmount(deviceInfo);
     console.log(TAG,'getInfo name,balance = ',deviceInfo.Name,balance);
     // should be is null or number;
     balance = _.isNaN(balance)?null:balance;
