@@ -25,4 +25,4 @@ export { default as Toast } from './Toast';
 export { default as TouchableOpacity } from './TouchableOpacity';
 export { default as TouchableScale } from './TouchableScale';
 export { default as Select } from './Select';
-
+export { default as WebView } from './WebView';
