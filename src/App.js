@@ -1,5 +1,4 @@
-// import 'intl';
-// import 'intl/locale-data/jsonp/en';
+import 'react-native-gesture-handler';
 import 'react-native-console-time-polyfill';
 import AppScreen from '@src/components/AppScreen';
 import { Toast, StatusBar } from '@src/components/core';
