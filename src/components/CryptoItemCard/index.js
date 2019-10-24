@@ -45,7 +45,7 @@ class CryptoItemContainer extends Component {
     if (typeof onPress === 'function') {
       onPress(data);
     }
-  }
+  };
 
   render() {
     const { data } = this.state;

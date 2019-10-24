@@ -29,6 +29,12 @@ const renderItem = (label, value) => (
     : null
 );
 
+const parseShard = (bytes) => {
+  const arr = bytes.split(',');
+  const lastByte = arr[arr.length - 1];
+  return lastByte % 8;
+};
+
 const ExportAccount = ({ account }) => (
   <ScrollView contentContainerStyle={{ minHeight: '100%' }}>
     <View style={styleSheet.container}>
@@ -37,6 +43,7 @@ const ExportAccount = ({ account }) => (
       {renderItem('PUBLIC KEY', account?.PublicKeyCheckEncode)}
       {renderItem('READONLY KEY', account?.ReadonlyKey)}
       {renderItem('VALIDATOR KEY', account?.ValidatorKey)}
+      {__DEV__ ? renderItem('Shard', parseShard(account?.PublicKeyBytes)) : null}
     </View>
   </ScrollView>
 );

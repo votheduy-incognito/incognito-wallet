@@ -1,11 +1,11 @@
 import {COLORS, FONT, THEME} from '@src/styles';
 import { StyleSheet } from 'react-native';
+import {scaleInApp} from '@src/styles/TextStyle';
 
 export default StyleSheet.create({
   button: {
     ...THEME.opacityButton.button,
-    height: 44,
-    borderRadius: 8,
+    borderRadius: 4,
   },
   text: {
     ...THEME.opacityButton.buttonText,
@@ -14,7 +14,7 @@ export default StyleSheet.create({
   },
   textContainer: {
     marginHorizontal: 5,
-    flex: 1,
+    paddingVertical: 12,
   },
   dangerStyle: {
     ...THEME.opacityButton.button,
@@ -29,6 +29,7 @@ export default StyleSheet.create({
     backgroundColor: COLORS.dark3,
   },
   loadingIcon: {
+    marginTop: 6,
     marginHorizontal: 2,
   },
   disabled: {

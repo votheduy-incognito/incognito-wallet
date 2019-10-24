@@ -328,6 +328,7 @@ class DetailDevice extends BaseScreen {
       headerBackground:'transparent',
       headerTitleStyle:style.titleHeader
     };
+
     return (
       <HeaderBar
         navigation={navigation}
@@ -505,7 +506,6 @@ class DetailDevice extends BaseScreen {
               buttonStyle={style.group2_container_button}
               title={stakeTitle}
               onPress={onClickView(async()=>{
-
                 const {accountMiner,isStaked} = this.state;
                 if(!isStaked){
                   if(!_.isEmpty(accountMiner)){
@@ -568,10 +568,10 @@ class DetailDevice extends BaseScreen {
       <>
         {isWaiting?<Loader /> :(
           <HistoryMined
-            onPressWithdraw={async (item)=>{ 
+            onPressWithdraw={async (item)=>{
               await this.handleWithdrawEachToken(item);
-              // this.showToastMessage(`OK - ${JSON.stringify(item)}`); 
-            }} 
+              // this.showToastMessage(`OK - ${JSON.stringify(item)}`);
+            }}
             listItems={listFollowingTokens}
           />
         )}

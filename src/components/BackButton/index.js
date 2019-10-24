@@ -6,30 +6,40 @@ import { THEME } from '@src/styles';
 
 import chevronLeft from '@src/assets/images/icons/chevron-left-icon.png';
 
-const BackButton = ({ onPress }) => (
+const BackButton = ({ onPress, width, height, size }) => (
   <TouchableOpacity
     onPress={onPress}
     style={{
       display: 'flex',
       justifyContent: 'center',
-      width: 50,
+      width: width,
       paddingLeft: 5,
-      height: THEME.header.headerHeight
+      height: height
     }}
   >
     <Image
       style={{
-        height: 20,
+        height: size,
         width: '100%',
       }}
       resizeMode="contain"
       resizeMethod="resize"
-      source={chevronLeft} />
+      source={chevronLeft}
+    />
   </TouchableOpacity>
 );
 
 BackButton.propTypes = {
   onPress: PropTypes.func.isRequired,
+  width: PropTypes.number,
+  height: PropTypes.number,
+  size: PropTypes.number,
+};
+
+BackButton.defaultProps = {
+  width: 50,
+  size: 20,
+  height: THEME.header.headerHeight,
 };
 
 export default BackButton;

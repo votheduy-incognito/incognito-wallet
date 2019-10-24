@@ -5,6 +5,7 @@ import { Toast, StatusBar } from '@src/components/core';
 import QrScanner from '@src/components/QrCodeScanner';
 import configureStore from '@src/redux/store';
 import AppContainer from '@src/router';
+import ROUTE_NAMES from '@src/router/routeNames';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import { initFirebaseNotification } from '@src/services/firebase';
 import React, { PureComponent } from 'react';
@@ -27,7 +28,7 @@ function getActiveRouteName(navigationState) {
 
 class App extends PureComponent {
   state = {
-    currentScreen: '',
+    currentScreen: ROUTE_NAMES.Wizard,
   };
 
   componentDidMount() {

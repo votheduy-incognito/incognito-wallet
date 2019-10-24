@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withNavigation } from 'react-navigation';
 import { differenceBy } from 'lodash';
+import { TOKEN_TYPES } from '@src/constants/tokenData';
 import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
 import accountService from '@src/services/wallet/accountService';
 import tokenService from '@src/services/wallet/tokenService';
@@ -13,6 +14,7 @@ import { pTokens } from '@src/redux/selectors/token';
 import PToken from '@src/models/pToken';
 import internalTokenModel from '@src/models/token';
 import { ExHandler } from '@src/services/exception';
+import ROUTE_NAMES from '@routers/routeNames';
 import SearchToken from './SearchToken';
 import { Toast, ActivityIndicator, } from '../core';
 
@@ -22,6 +24,7 @@ const normalizeToken = ({ data, isPToken, isInternalToken }) => {
       tokenId: data?.tokenId,
       name: data?.name,
       symbol: data?.symbol,
+      type: data?.currencyType
     });
   }
 
@@ -30,6 +33,7 @@ const normalizeToken = ({ data, isPToken, isInternalToken }) => {
       tokenId: data?.id,
       name: data?.name,
       symbol: data?.symbol,
+      type: TOKEN_TYPES.INCOGNITO,
     });
   }
 };
@@ -38,13 +42,20 @@ export class SearchTokenContainer extends PureComponent {
   state = {
     tokens: [],
     internalTokens: [],
+    gettingToken: false,
   };
 
   componentDidMount() {
-    this.getPTokens();
-    this.getInternalTokens();
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({ gettingToken: true });
+    Promise.all([
+      this.getPTokens(),
+      this.getInternalTokens()
+    ])
+      .then(() => this.setState({ gettingToken: false }))
+      .catch(() => this.setState({ gettingToken: false }));
   }
-  
+
   componentDidUpdate(prevProps, prevState) {
     const { pTokens: oldPTokens, followedTokens: oldFollowedTokens } = prevProps;
     const { pTokens, followedTokens } = this.props;
@@ -115,6 +126,11 @@ export class SearchTokenContainer extends PureComponent {
     }
   };
 
+  handleAddToken = () => {
+    const { navigation } = this.props;
+    navigation.navigate(ROUTE_NAMES.AddToken, { isPrivacy: true });
+  };
+
   getPTokens = async () => {
     try {
       const { getPTokenList } = this.props;
@@ -140,15 +156,17 @@ export class SearchTokenContainer extends PureComponent {
   }
 
   render() {
-    const { tokens } = this.state;
+    const { tokens, gettingToken } = this.state;
     const { account, wallet } = this.props;
 
-    if (!tokens || !account || !wallet) return <ActivityIndicator />;
+    if (!tokens || !account || !wallet || gettingToken) return <ActivityIndicator />;
 
     return (
       <SearchToken
         tokens={tokens}
         handleAddFollowToken={this.handleAddFollowToken}
+        handleAddToken={this.handleAddToken}
+        onCancel={this.goBack}
       />
     );
   }
