@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Container, ScrollView, View, Text, RefreshControl, TouchableScale, Image} from '@src/components/core';
+import {Container, ScrollView, View, Text, RefreshControl, Button, Image} from '@src/components/core';
 import CryptoItemCard from '@src/components/CryptoItemCard';
 import tokenData from '@src/constants/tokenData';
 import { CONSTANT_COMMONS } from '@src/constants';
@@ -73,9 +73,12 @@ class Home extends React.Component {
             ))
             }
             <View style={homeStyle.addTokenContainer}>
-              <TouchableScale onPress={handleCreateToken} style={homeStyle.addTokenBtn}>
-                <Text style={homeStyle.addTokenBtnText}>Issue your own token</Text>
-              </TouchableScale>
+              <Button
+                titleStyle={homeStyle.addTokenBtnText}
+                title="Issue your own token"
+                onPress={handleCreateToken}
+                style={homeStyle.addTokenBtn}
+              />
               <Text style={homeStyle.followTokenTitle}>Looking for available tokens?</Text>
               <TouchableWithoutFeedback onPress={handleAddFollowToken}>
                 <View style={homeStyle.followTokenBtn}>

@@ -1,6 +1,8 @@
+import {scaleInApp} from '@src/styles/TextStyle';
+
 export default {
-  borderRadiusBorder: 8,
+  borderRadiusBorder: scaleInApp(4),
   borderWidth: 0.5,
-  buttonHeight: 50,
+  buttonHeight: scaleInApp(44),
   inputHeight: 40,
 };

@@ -34,8 +34,8 @@ export const homeStyle = StyleSheet.create({
   bgStyle: {
     backgroundColor: COLORS.primary,
     width: '100%',
-    height: scaleInApp(40),
-    top: 0,
+    height: scaleInApp(1040),
+    top: scaleInApp(-1000),
     position: 'absolute',
     borderBottomLeftRadius: scaleInApp(30),
     borderBottomRightRadius: scaleInApp(30),
@@ -58,17 +58,13 @@ export const homeStyle = StyleSheet.create({
     padding: 25
   },
   addTokenBtn: {
-    paddingVertical: 16,
-    backgroundColor: COLORS.primary,
     flexDirection: 'row',
     justifyContent: 'center',
     width: '100%',
-    borderRadius: 6,
   },
   addTokenBtnText: {
     fontSize: scaleInApp(15),
     color: COLORS.white,
-    ...FONT.STYLE.medium,
   },
   followTokenTitle: {
     fontSize: scaleInApp(15),

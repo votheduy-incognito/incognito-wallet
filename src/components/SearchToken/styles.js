@@ -54,7 +54,7 @@ export const searchPTokenStyle = StyleSheet.create({
   inputIcon: {
     position: 'absolute',
     color: 'red',
-    top: 15,
+    alignSelf: 'center',
     left: 65,
   },
   searchInput: {
@@ -167,8 +167,7 @@ export const emptyStyle = StyleSheet.create({
     color: COLORS.lightGrey1,
   },
   button: {
-    borderRadius: scaleInApp(4),
+    width: '100%',
     marginTop: scaleInApp(30),
-    paddingVertical: scaleInApp(24),
   }
 });
