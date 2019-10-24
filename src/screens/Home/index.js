@@ -17,7 +17,7 @@ class HomeContainer extends Component {
   }
 
   async componentDidMount() {
-    const { account, navigation, clearSelectedPrivacy, getAccountBalance, accountList } = this.props;
+    const { account, navigation, clearSelectedPrivacy } = this.props;
     try {
       this.getTokens();
       this.getFollowingToken();
@@ -31,8 +31,6 @@ class HomeContainer extends Component {
     } catch (e) {
       new ExHandler(e).showErrorToast();
     }
-
-    this.loadBalanceSchedule();
 
     navigation.addListener(
       'didFocus',
@@ -49,10 +47,6 @@ class HomeContainer extends Component {
     if (prevProps.wallet !== wallet) {
       this.getFollowingToken();
     }
-  }
-
-  loadBalanceSchedule = () => {
-    this.schedule = setInterval(this.reload, 3 * 60 * 1000);
   }
 
   getTokens = async () => {
@@ -147,7 +141,6 @@ class HomeContainer extends Component {
 }
 
 const mapState = state => ({
-  accountList: accountSeleclor.listAccount(state),
   account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet,
   tokens: tokenSeleclor.followed(state),
@@ -160,7 +153,6 @@ const mapDispatch = { setListToken, getBalance, getAccountBalance, setSelectedPr
 HomeContainer.propTypes = {
   navigation: PropTypes.object.isRequired,
   account: PropTypes.object.isRequired,
-  accountList: PropTypes.array.isRequired,
   tokens: PropTypes.array.isRequired,
   tokenGettingBalanceList: PropTypes.array.isRequired,
   accountGettingBalanceList: PropTypes.array.isRequired,
