@@ -1,11 +1,12 @@
-import { TextInput, TouchableOpacity } from '@src/components/core';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { TextInput, TouchableOpacity, Image } from '@src/components/core';
 import { openQrScanner } from '@src/components/QrCodeScanner';
 import { scaleInApp } from '@src/styles/TextStyle';
-import React from 'react';
-import { Icon } from 'react-native-elements';
+import qrCodeScanner from '@src/assets/images/icons/qr_code_scanner.png';
 import createField from './createField';
 
-const renderCustomField = ({ input, meta, ...props }) => {
+const renderCustomField = ({ input, ...props }) => {
   const { onChange, onBlur, onFocus, value } = input;
   return (
     <TextInput
@@ -27,11 +28,26 @@ const renderCustomField = ({ input, meta, ...props }) => {
             });
           }}
         >
-          <Icon type='material-community' name='qrcode-scan' size={scaleInApp(20)} />
+          <Image
+            source={qrCodeScanner}
+            style={{
+              width: scaleInApp(20),
+              height: scaleInApp(20),
+              resizeMode: 'contain',
+            }}
+          />
         </TouchableOpacity>
       )}
     />
   );
+};
+
+renderCustomField.propTypes = {
+  input: PropTypes.object,
+};
+
+renderCustomField.defaultProps = {
+  input: null,
 };
 
 const InputQRField = createField({

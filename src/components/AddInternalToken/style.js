@@ -4,6 +4,8 @@ import { StyleSheet } from 'react-native';
 const style = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 30,
+    paddingVertical: 40,
   },
   form: {
     flex: 1,
@@ -12,9 +14,6 @@ const style = StyleSheet.create({
   },
   desc: {
     marginBottom: 10
-  },
-  fields: {
-    flex: 1
   },
   input: {
     marginBottom: 15
@@ -25,7 +24,8 @@ const style = StyleSheet.create({
     marginVertical: 15
   },
   submitBtn: {
-    marginTop: 30
+    marginTop: 40,
+    borderRadius: 4,
   },
   title: {
     fontSize: THEME.text.largeTitleSize,

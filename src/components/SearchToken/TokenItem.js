@@ -1,6 +1,9 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { TouchableOpacity, View, Text,  } from '../core';
+import CryptoIcon from '@components/CryptoIcon/index';
+import checkboxChecked from '@src/assets/images/checkbox_checked.png';
+import checkboxUnchecked from '@src/assets/images/checkbox_unchecked.png';
+import { TouchableOpacity, View, Text, Image } from '../core';
 import { itemStyle } from './styles';
 
 class TokenItem extends PureComponent {
@@ -10,7 +13,7 @@ class TokenItem extends PureComponent {
     if (typeof onPress === 'function') {
       onPress(token.tokenId);
     }
-  }
+  };
 
   render() {
     const { token, selected, divider } = this.props;
@@ -19,8 +22,15 @@ class TokenItem extends PureComponent {
 
     return (
       <TouchableOpacity onPress={this._handlePress} style={[ itemStyle.container, divider && itemStyle.divider ]}>
+        <View style={itemStyle.logoContainer}>
+          <CryptoIcon symbol={token.symbol} />
+        </View>
         <View>
-          <Text style={selected && itemStyle.highlight}>{token.name} ({token.symbol})</Text>
+          <Text style={itemStyle.name}>{token.name}</Text>
+          <Text style={itemStyle.symbol}>{token.symbol}</Text>
+        </View>
+        <View style={itemStyle.checkboxWrapper}>
+          <Image style={itemStyle.checkbox} source={selected ? checkboxChecked : checkboxUnchecked} />
         </View>
       </TouchableOpacity>
     );

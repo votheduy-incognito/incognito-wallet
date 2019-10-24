@@ -1,14 +1,12 @@
-import { COLORS, DECOR, THEME } from '@src/styles';
+import { COLORS, THEME } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: COLORS.white,
-    borderRadius: DECOR.borderRadiusBorder,
-    shadowOffset: { width: 2, height: 0 },
-    elevation: 3,
-    padding: 13
+    padding: 20,
+    borderBottomColor: COLORS.lightGrey6,
+    borderBottomWidth: 1,
   },
   logoContainer: {
     flex: 1,

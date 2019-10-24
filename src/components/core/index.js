@@ -25,3 +25,4 @@ export { default as RefreshControl } from './RefreshControl';
 export { default as FlatList } from './FlatList';
 export { default as SafeAreaView } from './SafeAreaView';
 export { default as StatusBar } from './StatusBar';
+export { default as Select } from './Select';

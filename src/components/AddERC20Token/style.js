@@ -2,24 +2,17 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: 'column'
+    paddingHorizontal: 30,
+    paddingVertical: 40,
   },
   desc: {
     marginBottom: 10
   },
-  fields: {
-    flex: 1,
-  },
   submitBtn: {
-    marginTop: 20,
-  },
-  feeText: {
-    textAlign: 'center',
-    marginVertical: 10,
-    fontSize: 14
+    marginTop: 30,
+    borderRadius: 4,
   },
   input: {
-    marginBottom: 15
+    marginBottom: 15,
   }
 });

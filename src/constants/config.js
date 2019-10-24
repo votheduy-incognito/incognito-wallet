@@ -7,6 +7,7 @@ import {
   TESTNET_SERVER_ADDRESS,
   TEST_URL,
   CRYPTO_ICON_URL,
+  BEP2_URL,
 } from 'react-native-dotenv';
 
 const DEFAULT_LIST_SERVER = [{
@@ -36,4 +37,5 @@ export default {
   PASSPHRASE_WALLET_DEFAULT,
   TEST_URL,
   TESTNET_SERVER_ADDRESS,
+  BEP2_URL,
 };

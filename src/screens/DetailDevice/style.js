@@ -145,9 +145,8 @@ const style = StyleSheet.create({
   },
   group2_container_button:{
     backgroundColor:'#25CDD6',
-    marginHorizontal:scaleInApp(10),
     paddingHorizontal:scaleInApp(30),
-    borderRadius:scaleInApp(4)
+    borderRadius:scaleInApp(4),
   },
   group2_container_container2:{
     flex:1,
@@ -165,8 +164,6 @@ const style = StyleSheet.create({
     color: '#00C7E2',
   },
   group2_container_button2:{
-    backgroundColor:'#25CDD6',
-    padding:scaleInApp(7),
     borderRadius:scaleInApp(6)
   },
   group2_container_button_text:{
@@ -200,7 +197,6 @@ const style = StyleSheet.create({
   dialog_button:{
     backgroundColor:'#25CDD6',
     borderRadius:scaleInApp(4),
-    padding:scaleInApp(10)
   },
   textTitleButton:{
     ...TextStyle.mediumText,
