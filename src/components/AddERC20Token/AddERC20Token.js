@@ -54,8 +54,8 @@ class AddERC20Token extends Component {
     } else {
       const { bep2symbol } = values;
       const { bep2symbol: oldBep2Symbol } = previousValues;
-      if (bep2symbol !== oldBep2Symbol) {
-        onSearch(values);
+      if (bep2symbol?.toUpperCase() !== oldBep2Symbol?.toUpperCase()) {
+        onSearch({ ...values, bep2symbol: bep2symbol?.toUpperCase() });
       }
     }
   };

@@ -126,9 +126,16 @@ export class SearchTokenContainer extends PureComponent {
     }
   };
 
-  handleAddToken = () => {
+  handleAddToken = (tokenType) => {
     const { navigation } = this.props;
-    navigation.navigate(ROUTE_NAMES.AddToken, { isPrivacy: true });
+
+    if (tokenType === TOKEN_TYPES.INCOGNITO) {
+      navigation.navigate(ROUTE_NAMES.CreateToken, { isPrivacy: true });
+    } else if (tokenType === TOKEN_TYPES.BEP2) {
+      navigation.navigate(ROUTE_NAMES.AddToken, { isPrivacy: true, type: 'bep2' });
+    } else if (tokenType === TOKEN_TYPES.ERC20) {
+      navigation.navigate(ROUTE_NAMES.AddToken, { isPrivacy: true, type: 'erc20' });
+    }
   };
 
   getPTokens = async () => {

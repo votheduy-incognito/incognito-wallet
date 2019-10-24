@@ -50,7 +50,6 @@ export const searchPTokenStyle = StyleSheet.create({
     paddingLeft: 5,
     paddingTop: 10,
     paddingRight: 20,
-    marginBottom: 30,
   },
   inputIcon: {
     position: 'absolute',
@@ -79,6 +78,9 @@ export const searchPTokenStyle = StyleSheet.create({
     fontSize: scaleInApp(15),
     ...FontStyle.medium,
   },
+  disabled: {
+    color: COLORS.lightGrey4,
+  },
   listToken: {
     marginBottom: 10,
   },
@@ -103,6 +105,7 @@ export const searchPTokenStyle = StyleSheet.create({
 export const tokenTypeStyle = StyleSheet.create({
   container: {
     paddingHorizontal: 25,
+    marginTop: 30,
     marginBottom: 15,
   },
   title: {

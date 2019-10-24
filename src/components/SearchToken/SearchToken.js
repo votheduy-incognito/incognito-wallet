@@ -44,6 +44,7 @@ class SearchToken extends PureComponent {
       selected: (new Map(): Map<string, boolean>),
       filteredTokens: null,
       tokenType: 0,
+      selectedItems: 0,
     };
   }
 
@@ -55,8 +56,19 @@ class SearchToken extends PureComponent {
     this.setState(state => {
       // copy the map rather than modifying state
       const selected = new Map(state.selected);
-      selected.set(tokenId, !selected.get(tokenId)); // toggle
-      return { selected };
+      const isSelected = !selected.get(tokenId);
+      let { selectedItems } = state;
+      selected.set(tokenId, isSelected); // toggle
+
+      if (isSelected) {
+        selectedItems++;
+      } else {
+        selectedItems--;
+      }
+
+      console.debug(isSelected, selectedItems);
+
+      return { selected, selectedItems };
     });
   };
 
@@ -77,13 +89,15 @@ class SearchToken extends PureComponent {
   filter() {
     const { tokens } = this.props;
     const { query, tokenType } = this.state;
-    const filteredTokens = tokens
-      .filter(t => t.type === tokenType)
-      .filter(t => {
-        const lowerCaseTerm = query ?  String(query).toLowerCase() : query;
-        const lowerCaseTokenName = [t.name, t.symbol].join(' ')?.toLowerCase();
-        return lowerCaseTokenName.includes(lowerCaseTerm || '');
-      });
+    let filteredTokens = tokens.filter(t => t.type === tokenType);
+    if (query) {
+      filteredTokens = filteredTokens
+        .filter(t => {
+          const lowerCaseTerm = query ? String(query).toLowerCase() : query;
+          const lowerCaseTokenName = [t.name, t.symbol].join(' ')?.toLowerCase();
+          return lowerCaseTokenName.includes(lowerCaseTerm || '');
+        });
+    }
     this.setState({ filteredTokens });
   }
 
@@ -103,17 +117,22 @@ class SearchToken extends PureComponent {
   };
 
   handleSearch = (query) => {
-    this.setState({ query });
-    this.filter();
+    this.setState({ query }, this.filter);
   };
 
   handleSelectTokenType = (type) => {
-    this.setState({ tokenType: type });
-    this.filter();
+    this.setState({ tokenType: type }, this.filter);
+  };
+
+  handleAddToken = () => {
+    const { tokenType } = this.state;
+    const { handleAddToken } = this.props;
+    handleAddToken(tokenType);
   };
 
   renderHeader() {
     const { onCancel } = this.props;
+    const { selectedItems } = this.state;
     return (
       <View style={searchPTokenStyle.header}>
         <BackButton onPress={onCancel} width={50} height={scaleInApp(35)} size={20} />
@@ -125,8 +144,11 @@ class SearchToken extends PureComponent {
           onChangeText={this.handleSearch}
         />
         <Icon name="search" containerStyle={searchPTokenStyle.inputIcon} color='white' />
-        <TouchableWithoutFeedback onPress={this.handleSaveFollow}>
-          <Text style={searchPTokenStyle.cancelBtnText}>Add</Text>
+        <TouchableWithoutFeedback
+          disabled={selectedItems <= 0}
+          onPress={this.handleSaveFollow}
+        >
+          <Text style={[searchPTokenStyle.cancelBtnText, selectedItems <= 0 && searchPTokenStyle.disabled]}>Add</Text>
         </TouchableWithoutFeedback>
       </View>
     );
@@ -151,15 +173,25 @@ class SearchToken extends PureComponent {
     );
   }
 
+  renderAddTokenText() {
+    const { tokenType } = this.state;
+    if (tokenType === TOKEN_TYPES.INCOGNITO) {
+      return 'Issue your own token';
+    } else if (tokenType === TOKEN_TYPES.BEP2) {
+      return 'Add a BEP2 token';
+    } else if (tokenType === TOKEN_TYPES.ERC20) {
+      return 'Add a ERC20 token';
+    }
+  }
+
   renderEmpty() {
-    const { handleAddToken } = this.props;
     return (
       <View style={emptyStyle.container}>
         <Image source={sadFace} style={emptyStyle.image} />
         <Text style={emptyStyle.title}>Oh no!</Text>
         <Text style={emptyStyle.desc}>Tokens you are looking for is</Text>
         <Text style={emptyStyle.desc}>not available.</Text>
-        <Button style={emptyStyle.button} title="Add token manually" onPress={handleAddToken} />
+        <Button style={emptyStyle.button} title={this.renderAddTokenText()} onPress={this.handleAddToken} />
       </View>
     );
   }
@@ -167,7 +199,6 @@ class SearchToken extends PureComponent {
   renderTokenList() {
     const { tokens } = this.props;
     const { selected, filteredTokens } = this.state;
-    const { handleAddToken } = this.props;
     const tokenList = filteredTokens || tokens;
     const isEmpty = !(tokenList?.length > 0);
 
@@ -184,10 +215,10 @@ class SearchToken extends PureComponent {
           />
         ) : this.renderEmpty()}
         {!isEmpty ? (
-          <TouchableWithoutFeedback onPress={handleAddToken}>
+          <TouchableWithoutFeedback onPress={this.handleAddToken}>
             <View style={searchPTokenStyle.followBtn}>
               <Icon containerStyle={searchPTokenStyle.followBtnIcon} name="add-circle-outline" size={35} color={COLORS.primary} />
-              <Text style={searchPTokenStyle.followBtnText}>Add a token manually</Text>
+              <Text style={searchPTokenStyle.followBtnText}>{this.renderAddTokenText()}</Text>
             </View>
           </TouchableWithoutFeedback>
         ) : null}
