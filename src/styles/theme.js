@@ -25,11 +25,6 @@ const header = {
   backgroundColor: COLORS.primary,
   headerTintColor: COLORS.dark1
 };
-const statusBar = {
-  backgroundColor1: COLORS.primary,
-  backgroundColor2: COLORS.white,
-  backgroundColor3: COLORS.blue2,
-};
 const opacityButton = {
   button: {
     backgroundColor: COLORS.blue,
@@ -95,7 +90,6 @@ const modal = {
 
 export default {
   header,
-  statusBar,
   opacityButton,
   text,
   indicator,

@@ -1,8 +1,41 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { FlatList, View, TextInput, Button } from  '@src/components/core';
+import {Button, FlatList, Image, View} from '@src/components/core';
+import {TouchableWithoutFeedback, Text, TextInput, ScrollView} from 'react-native';
+import { Icon } from 'react-native-elements';
+import {COLORS} from '@src/styles';
+import incognitoBlack from '@src/assets/images/icons/incognito_black.png';
+import incognitoWhite from '@src/assets/images/icons/incognito_white.png';
+import otherBlack from '@src/assets/images/icons/other_token_black.png';
+import otherWhite from '@src/assets/images/icons/other_token_white.png';
+import sadFace from '@src/assets/images/sad_face.png';
+import BackButton from '@src/components/BackButton/index';
+import TokenType from '@src/components/SearchToken/TokenType';
+import {TOKEN_TYPES} from '@src/constants/tokenData';
+import {scaleInApp} from '@src/styles/TextStyle';
+import { searchPTokenStyle, tokenTypeStyle, emptyStyle } from './styles';
 import TokenItem from './TokenItem';
-import { searchPTokenStyle } from './styles';
+
+const TYPES = [
+  {
+    active: incognitoWhite,
+    inactive: incognitoBlack,
+    name: 'Incognito',
+    value: TOKEN_TYPES.INCOGNITO,
+  },
+  {
+    active: otherWhite,
+    inactive: otherBlack,
+    name: 'ERC20',
+    value: TOKEN_TYPES.ERC20,
+  },
+  {
+    active: otherWhite,
+    inactive: otherBlack,
+    name: 'BEP2',
+    value: TOKEN_TYPES.BEP2,
+  },
+];
 
 class SearchToken extends PureComponent {
   constructor(props) {
@@ -10,7 +43,12 @@ class SearchToken extends PureComponent {
     this.state = {
       selected: (new Map(): Map<string, boolean>),
       filteredTokens: null,
+      tokenType: 0,
     };
+  }
+
+  componentDidMount() {
+    this.filter();
   }
 
   _handleSelect = (tokenId: string) => {
@@ -20,31 +58,32 @@ class SearchToken extends PureComponent {
       selected.set(tokenId, !selected.get(tokenId)); // toggle
       return { selected };
     });
-  }
+  };
 
-  _renderItem = ({ item, index }) => {
-    const { tokens } = this.props;
-    const { selected, filteredTokens } = this.state;
-    const length = (filteredTokens || tokens)?.length;
+  _renderItem = ({ item }) => {
+    const { selected } = this.state;
     return (
       <TokenItem
         onPress={this._handleSelect}
         token={item}
         selected={selected.get(item.tokenId)}
-        divider={index < (length - 1)}
+        divider
       />
     );
-  }
+  };
 
   _keyExtractor = item => item.tokenId;
 
-  handleFilter = term => {
+  filter() {
     const { tokens } = this.props;
-    const filteredTokens = tokens.filter(t => {
-      const lowerCaseTerm = term ?  String(term).toLowerCase() : term;
-      const lowerCaseTokenName = [t.name, t.symbol].join(' ')?.toLowerCase();
-      return lowerCaseTokenName.includes(lowerCaseTerm || '');
-    });
+    const { query, tokenType } = this.state;
+    const filteredTokens = tokens
+      .filter(t => t.type === tokenType)
+      .filter(t => {
+        const lowerCaseTerm = query ?  String(query).toLowerCase() : query;
+        const lowerCaseTokenName = [t.name, t.symbol].join(' ')?.toLowerCase();
+        return lowerCaseTokenName.includes(lowerCaseTerm || '');
+      });
     this.setState({ filteredTokens });
   }
 
@@ -54,36 +93,113 @@ class SearchToken extends PureComponent {
     const tokenIds = [];
 
     selected.forEach((isSelected, tokenId) => isSelected && tokenIds.push(tokenId));
-    
+
     if (tokenIds.length) {
       handleAddFollowToken(tokenIds);
 
       // clear
       this.setState({ selected: new Map() });
     }
+  };
+
+  handleSearch = (query) => {
+    this.setState({ query });
+    this.filter();
+  };
+
+  handleSelectTokenType = (type) => {
+    this.setState({ tokenType: type });
+    this.filter();
+  };
+
+  renderHeader() {
+    const { onCancel } = this.props;
+    return (
+      <View style={searchPTokenStyle.header}>
+        <BackButton onPress={onCancel} width={50} height={scaleInApp(35)} size={20} />
+        <TextInput
+          placeholder='Search for a token'
+          placeholderTextColor="rgba(255, 255, 255, 0.65)"
+          style={searchPTokenStyle.searchInput}
+          selectionColor={COLORS.white}
+          onChangeText={this.handleSearch}
+        />
+        <Icon name="search" containerStyle={searchPTokenStyle.inputIcon} color='white' />
+        <TouchableWithoutFeedback onPress={this.handleSaveFollow}>
+          <Text style={searchPTokenStyle.cancelBtnText}>Add</Text>
+        </TouchableWithoutFeedback>
+      </View>
+    );
+  }
+
+  renderTokenTypes() {
+    const { tokenType } = this.state;
+    return (
+      <View style={tokenTypeStyle.container}>
+        <Text style={tokenTypeStyle.title}>Select a network</Text>
+        <View style={tokenTypeStyle.types}>
+          {TYPES.map(type => (
+            <TokenType
+              key={type.name}
+              type={type}
+              isSelected={type.value === tokenType}
+              onSelectType={this.handleSelectTokenType}
+            />
+          ))}
+        </View>
+      </View>
+    );
+  }
+
+  renderEmpty() {
+    const { handleAddToken } = this.props;
+    return (
+      <View style={emptyStyle.container}>
+        <Image source={sadFace} style={emptyStyle.image} />
+        <Text style={emptyStyle.title}>Oh no!</Text>
+        <Text style={emptyStyle.desc}>Tokens you are looking for is</Text>
+        <Text style={emptyStyle.desc}>not available.</Text>
+        <Button style={emptyStyle.button} title="Add token manually" onPress={handleAddToken} />
+      </View>
+    );
+  }
+
+  renderTokenList() {
+    const { tokens } = this.props;
+    const { selected, filteredTokens } = this.state;
+    const { handleAddToken } = this.props;
+    const tokenList = filteredTokens || tokens;
+    const isEmpty = !(tokenList?.length > 0);
+
+    return (
+      <ScrollView>
+        {this.renderTokenTypes()}
+        {!isEmpty ? (
+          <FlatList
+            style={searchPTokenStyle.listToken}
+            data={filteredTokens || tokens}
+            extraData={selected}
+            renderItem={this._renderItem}
+            keyExtractor={this._keyExtractor}
+          />
+        ) : this.renderEmpty()}
+        {!isEmpty ? (
+          <TouchableWithoutFeedback onPress={handleAddToken}>
+            <View style={searchPTokenStyle.followBtn}>
+              <Icon containerStyle={searchPTokenStyle.followBtnIcon} name="add-circle-outline" size={35} color={COLORS.primary} />
+              <Text style={searchPTokenStyle.followBtnText}>Add a token manually</Text>
+            </View>
+          </TouchableWithoutFeedback>
+        ) : null}
+      </ScrollView>
+    );
   }
 
   render() {
-    const { tokens } = this.props;
-    const { selected, filteredTokens } = this.state;
-
     return (
       <View style={searchPTokenStyle.container}>
-        <TextInput
-          label="Search the list of tokens. Don't see your token? Add it manually."
-          placeholder='ETH, BTC,...'
-          style={searchPTokenStyle.searchInput}
-          onChangeText={this.handleFilter}
-        />
-        <FlatList
-          style={searchPTokenStyle.listToken}
-          data={filteredTokens || tokens}
-          extraData={selected}
-          renderItem={this._renderItem}
-          keyExtractor={this._keyExtractor}
-          emptyText='This token is not currently supported.'
-        />
-        <Button title='Add to wallet' onPress={this.handleSaveFollow} style={searchPTokenStyle.followBtn} />
+        {this.renderHeader()}
+        {this.renderTokenList()}
       </View>
     );
   }
@@ -96,7 +212,9 @@ SearchToken.propTypes = {
     pSymbol: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
   })).isRequired,
-  handleAddFollowToken: PropTypes.func.isRequired
+  handleAddFollowToken: PropTypes.func.isRequired,
+  handleAddToken: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
 };
 
 export default SearchToken;

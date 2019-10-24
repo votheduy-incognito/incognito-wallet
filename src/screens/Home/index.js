@@ -17,7 +17,7 @@ class HomeContainer extends Component {
   }
 
   async componentDidMount() {
-    const { account, navigation, clearSelectedPrivacy, getAccountBalance, accountList } = this.props;
+    const { account, navigation, clearSelectedPrivacy } = this.props;
     try {
       this.getTokens();
       this.getFollowingToken();
@@ -31,8 +31,6 @@ class HomeContainer extends Component {
     } catch (e) {
       new ExHandler(e).showErrorToast();
     }
-
-    this.loadBalanceSchedule();
 
     navigation.addListener(
       'didFocus',
@@ -51,10 +49,6 @@ class HomeContainer extends Component {
     }
   }
 
-  loadBalanceSchedule = () => {
-    this.schedule = setInterval(this.reload, 3 * 60 * 1000);
-  }
-
   getTokens = async () => {
     try {
       const { getPTokenList, getInternalTokenList } = this.props;
@@ -63,7 +57,7 @@ class HomeContainer extends Component {
     } catch (e) {
       new ExHandler(e, 'Sorry, we can not get list of tokens, reopen the app can fix it.');
     }
-  }
+  };
 
   reload = async () => {
     try {
@@ -80,12 +74,22 @@ class HomeContainer extends Component {
     } finally {
       this.setState({ isReloading: false });
     }
-  }
+  };
 
   onAddTokenToFollow = () => {
     const { navigation } = this.props;
     navigation.navigate(routeNames.FollowToken, { isPrivacy: true });
-  }
+  };
+
+  onCreateToken = () => {
+    const { navigation } = this.props;
+    navigation.navigate(routeNames.CreateToken, { isPrivacy: true });
+  };
+
+  onSetting = () => {
+    const { navigation } = this.props;
+    navigation.navigate(routeNames.Setting, { isPrivacy: true });
+  };
 
   getTokenBalance = async token => {
     try {
@@ -94,7 +98,7 @@ class HomeContainer extends Component {
     } catch (e) {
       throw new CustomError(ErrorCode.home_load_balance_failed, { rawError: e });
     }
-  }
+  };
 
   getAccountBalance = async account => {
     try {
@@ -103,7 +107,7 @@ class HomeContainer extends Component {
     } catch (e) {
       throw new CustomError(ErrorCode.home_load_balance_failed, { rawError: e });
     }
-  }
+  };
 
   getFollowingToken = async () => {
     try {
@@ -113,7 +117,7 @@ class HomeContainer extends Component {
     } catch (e) {
       throw new CustomError(ErrorCode.home_load_following_token_failed, { rawError: e });
     }
-  }
+  };
 
   handleSelectToken = (token) => {
     if (!token) return;
@@ -123,7 +127,7 @@ class HomeContainer extends Component {
     setSelectedPrivacy(token?.symbol);
 
     navigation.navigate(routeNames.WalletDetail);
-  }
+  };
 
   render() {
     const { isReloading } = this.state;
@@ -138,6 +142,8 @@ class HomeContainer extends Component {
         reload={this.reload}
         isReloading={isReloading}
         handleAddFollowToken={this.onAddTokenToFollow}
+        handleCreateToken={this.onCreateToken}
+        handleSetting={this.onSetting}
         accountGettingBalanceList={accountGettingBalanceList}
         tokenGettingBalanceList={tokenGettingBalanceList}
         onSelectToken={this.handleSelectToken}
@@ -147,7 +153,6 @@ class HomeContainer extends Component {
 }
 
 const mapState = state => ({
-  accountList: accountSeleclor.listAccount(state),
   account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet,
   tokens: tokenSeleclor.followed(state),
@@ -160,7 +165,6 @@ const mapDispatch = { setListToken, getBalance, getAccountBalance, setSelectedPr
 HomeContainer.propTypes = {
   navigation: PropTypes.object.isRequired,
   account: PropTypes.object.isRequired,
-  accountList: PropTypes.array.isRequired,
   tokens: PropTypes.array.isRequired,
   tokenGettingBalanceList: PropTypes.array.isRequired,
   accountGettingBalanceList: PropTypes.array.isRequired,

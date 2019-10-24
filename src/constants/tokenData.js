@@ -17,6 +17,12 @@ const DATA = {
   },
 };
 
+export const TOKEN_TYPES = {
+  INCOGNITO: 0,
+  ERC20: 3,
+  BEP2: 5,
+};
+
 const parse = token => ({
   typeName: 'Custom token',
   symbol: token?.symbol,
@@ -26,5 +32,5 @@ const parse = token => ({
 
 
 export default {
-  DATA, SYMBOL, parse
+  DATA, SYMBOL, parse, TOKEN_TYPES
 };

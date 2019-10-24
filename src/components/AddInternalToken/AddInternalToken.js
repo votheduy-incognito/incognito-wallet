@@ -1,4 +1,4 @@
-import {  ScrollView, Text, Button, View, Toast } from '@src/components/core';
+import { Text, Button, View, Toast } from '@src/components/core';
 import LoadingTx from '@src/components/LoadingTx';
 import { Field, change, isValid, formValueSelector } from 'redux-form';
 import { createForm, InputField, validator } from '@src/components/core/reduxForm';
@@ -143,7 +143,7 @@ class AddInternalToken extends Component {
       this.handleEstimateFee({
         name,
         symbol,
-        amount, 
+        amount,
         toAddress: paymentAddress,
         fromAddress: paymentAddress
       });
@@ -167,8 +167,7 @@ class AddInternalToken extends Component {
         <Form style={styleSheet.form}>
           {({ handleSubmit, submitting }) => (
             <>
-              <ScrollView style={styleSheet.fields}>
-                <Text style={styleSheet.desc}>Issue your own privacy token here.</Text>
+              <View style={styleSheet.fields}>
                 <Field
                   component={InputField}
                   name='name'
@@ -206,7 +205,7 @@ class AddInternalToken extends Component {
                       </Text>
                     )
                 }
-              </ScrollView>
+              </View>
               <Button
                 disabled={!isCanSubmit}
                 title='Issue'

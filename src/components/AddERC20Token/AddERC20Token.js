@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'redux-form';
-import { createForm, InputField, InputQRField, validator } from '@src/components/core/reduxForm';
-import { Button, ScrollView, Text } from '@src/components/core';
+import { createForm, InputField, InputQRField, SelectField, validator } from '@src/components/core/reduxForm';
+import { Button, View } from '@src/components/core';
+import { Picker } from 'react-native';
 import styles from './style';
 
 
@@ -11,7 +12,8 @@ const initialFormValues = {
   symbol: '',
   name: '',
   address: '',
-  decimals: '0'
+  decimals: '0',
+  'bep2-name': '1',
 };
 const Form = createForm(formName, {
   enableReinitialize: true,
@@ -25,16 +27,16 @@ class AddERC20Token extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      erc20Data: initialFormValues,
+      data: initialFormValues,
     };
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps?.erc20Data !== prevState.erc20Data) {
+    if (nextProps?.data !== prevState.data) {
       return {
-        erc20Data: nextProps?.erc20Data ? {
-          ...nextProps?.erc20Data,
-          decimals: nextProps?.erc20Data?.decimals ? String(nextProps?.erc20Data?.decimals) : '0'
+        data: nextProps?.data ? {
+          ...nextProps?.data,
+          decimals: nextProps?.data?.decimals ? String(nextProps?.data?.decimals) : '0'
         } : null
       };
     }
@@ -42,86 +44,137 @@ class AddERC20Token extends Component {
   }
 
   handleFormChange = (values, dispatch, props, previousValues) => {
-    const { address } = values;
-    const { address: oldAddress } = previousValues;
-
-    if (address !== oldAddress) {
-      this.handleSearchByAddress(address);
+    const { type, onSearch } = this.props;
+    if (type === 'erc20') {
+      const { address } = values;
+      const { address: oldAddress } = previousValues;
+      if (address !== oldAddress) {
+        onSearch(values);
+      }
+    } else {
+      const { bep2symbol } = values;
+      const { bep2symbol: oldBep2Symbol } = previousValues;
+      if (bep2symbol !== oldBep2Symbol) {
+        onSearch(values);
+      }
     }
+  };
+
+  renderBEP2Fields() {
+    const { data }  = this.state;
+    return (
+      <>
+        <Field
+          component={InputField}
+          name='bep2symbol'
+          label='Symbol'
+          placeholder='Search by BEP2 symbol'
+          style={styles.input}
+          validate={isRequired}
+        />
+        { data?.name ? (
+          <Field
+            component={InputField}
+            name='name'
+            label='Name'
+            style={styles.input}
+            componentProps={{
+              editable: false
+            }}
+            validate={isRequired}
+          />
+        ) : null}
+        { data?.originalSymbol ? (
+          <Field
+            component={InputField}
+            name='originalSymbol'
+            label='Original symbol'
+            style={styles.input}
+            validate={isRequired}
+            componentProps={{
+              editable: false
+            }}
+          />
+        ) : null}
+      </>
+    );
   }
 
-  handleSearchByAddress = address => {
-    const { onSearch } = this.props;
-    onSearch({ address });
+  renderERC20Fields() {
+    const { data }  = this.state;
+    return (
+      <>
+        <Field
+          component={InputQRField}
+          name='address'
+          label='Address'
+          placeholder='Search by ERC20 Address'
+          style={styles.input}
+          validate={isRequired}
+        />
+        { data?.symbol ? (
+          <Field
+            component={InputField}
+            name='symbol'
+            label='Symbol'
+            style={styles.input}
+            validate={isRequired}
+            componentProps={{
+              editable: false
+            }}
+          />
+        ) : null}
+        { data?.decimals ? (
+          <Field
+            component={InputField}
+            name='decimals'
+            label='Decimals'
+            style={styles.input}
+            componentProps={{
+              editable: false
+            }}
+            validate={[isRequired, isNumber]}
+          />
+        ) : null}
+      </>
+    );
   }
 
-  handleAdd = values => {
-    if (!values) return;
-
-    const { name, symbol, address, decimals } = values;
-    const { onAddErc20Token } = this.props;
-    return onAddErc20Token({
-      name,
-      symbol,
-      contractId: address,
-      decimals
-    });
-  }
 
   render() {
-    const { erc20Data } = this.state;
-    const { isSearching } = this.props;
+    const { data } = this.state;
+    const { isSearching, onChangeType, onAdd, type } = this.props;
 
     return (
-      <Form initialValues={erc20Data} onChange={this.handleFormChange} style={styles.container}>
+      <Form initialValues={data} onChange={this.handleFormChange} style={styles.container}>
         {({ handleSubmit, submitting }) => (
           <>
-            <ScrollView style={styles.fields}>
-              <Text style={styles.desc}>Add any ERC20 token here. Support will be added for other types soon.</Text>
+            <View style={styles.fields}>
               <Field
-                component={InputQRField}
-                name='address'
-                label='Address'
-                placeholder='Search by ERC20 Address'
+                component={SelectField}
+                name='type'
+                label='Select a network'
                 style={styles.input}
-                validate={isRequired}
-              />
-              <Field
-                component={InputField}
-                name='symbol'
-                label='Symbol'
-                style={styles.input}
-                validate={isRequired}
-                componentProps={{
-                  editable: false
-                }}
-              />
-              <Field
-                component={InputField}
-                name='name'
-                label='Name'
-                style={styles.input}
-                validate={isRequired}
-                componentProps={{
-                  editable: false
-                }}
-              />
-              <Field
-                component={InputField}
-                name='decimals'
-                label='Decimals'
-                style={styles.input}
-                componentProps={{
-                  editable: false
-                }}
-                validate={[isRequired, isNumber]}
-              />
-            </ScrollView>
+                onValueChange={onChangeType}
+                selectedValue={type}
+                placeholder={{}}
+                value={type}
+                items={[
+                  { label: 'ERC20', value: 'erc20' },
+                  { label: 'BEP2', value: 'bep2' },
+                ]}
+              >
+                <Picker.Item label="ERC20" value="erc20" />
+                <Picker.Item label="BEP2" value="bep2" />
+              </Field>
+              { type === 'erc20' ? this.renderERC20Fields() : this.renderBEP2Fields() }
+            </View>
             <Button
-              title='Add'
+              title='Add manually'
               style={styles.submitBtn}
-              onPress={handleSubmit(this.handleAdd)}
+              onPress={handleSubmit(onAdd)}
               isAsync
+              disabled={!data || isSearching || submitting}
               isLoading={isSearching || submitting}
             />
           </>
@@ -136,8 +189,10 @@ AddERC20Token.defaultProps = {
 };
 
 AddERC20Token.propTypes = {
-  onAddErc20Token: PropTypes.func.isRequired,
+  onAdd: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
+  onChangeType: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired,
   isSearching: PropTypes.bool,
 };
 

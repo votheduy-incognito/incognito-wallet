@@ -16,9 +16,9 @@ class Base extends Component {
         />
         <View style={styles.content}>
           <Text style={styles.title}>{title}</Text>
-          <Text style={styles.desc}>{desc}</Text>   
+          <Text style={styles.desc}>{desc}</Text>
           <Indicator number={indicatorNumber} activeIndex={indicator} style={styles.indicator} />
-          <Button title={buttonText} onPress={onPress} style={[styles.button, buttonStyle]} />
+          <Button title={buttonText} onPress={onPress} style={[styles.button, buttonStyle]} textContainerStyle={styles.content} />
         </View>
       </View>
     );

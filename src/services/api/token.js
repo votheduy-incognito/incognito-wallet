@@ -1,6 +1,11 @@
 import Erc20Token from '@src/models/erc20Token';
 import PToken from '@src/models/pToken';
+import BEP2Token from '@models/bep2Token';
 import http from '@src/services/http';
+import { CONSTANT_CONFIGS } from '@src/constants';
+import axios from 'axios';
+
+let BEP2Tokens = [];
 
 export const getTokenList = () =>
   http.get('ptoken/list')
@@ -12,6 +17,17 @@ export const detectERC20Token = erc20Address => {
     Address: erc20Address
   })
     .then(res => new Erc20Token(res));
+};
+
+export const detectBEP2Token = async (symbol) => {
+  if (!symbol) throw new Error('Missing BEP2 symbol to detect');
+
+  if (BEP2Token.length === 0) {
+    const res = await axios.get(`${CONSTANT_CONFIGS.BEP2_URL}?limit=1000000`);
+    BEP2Tokens = res.data.map(item => new BEP2Token(item));
+  }
+
+  return BEP2Tokens.find(item => item.symbol === symbol);
 };
 
 export const addERC20Token = ({ symbol, name, contractId, decimals }) => {
@@ -29,4 +45,16 @@ export const addERC20Token = ({ symbol, name, contractId, decimals }) => {
     Decimals: parseDecimals
   })
     .then(res => new PToken(res));
+};
+
+export const addBEP2Token = ({ symbol, name, originalSymbol }) => {
+  if (!symbol) throw new Error('Missing symbol');
+  if (!name) throw new Error('Missing name');
+  if (!originalSymbol) throw new Error('Missing originalSymbol');
+
+  return http.post('ptoken/bep2/add', {
+    Symbol: symbol,
+    Name: name,
+    OriginalSymbol: originalSymbol,
+  }).then(res => new PToken(res));
 };

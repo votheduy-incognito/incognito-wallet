@@ -1,44 +1,67 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Container, ScrollView, View, Text, RefreshControl, TouchableScale} from '@src/components/core';
+import {Container, ScrollView, View, Text, RefreshControl, TouchableScale, Image} from '@src/components/core';
 import CryptoItemCard from '@src/components/CryptoItemCard';
 import tokenData from '@src/constants/tokenData';
 import { CONSTANT_COMMONS } from '@src/constants';
-import MdIcons from 'react-native-vector-icons/MaterialIcons';
+import setting from '@src/assets/images/setting_white.png';
+import { TouchableWithoutFeedback } from 'react-native';
+import { Icon } from 'react-native-elements';
+import {COLORS} from '@src/styles';
 import { homeStyle } from './style';
 
 class Home extends React.Component {
   render() {
-    const { account, tokens, accountGettingBalanceList, tokenGettingBalanceList, onSelectToken, handleAddFollowToken, reload, isReloading } = this.props;
+    const {
+      account,
+      tokens,
+      accountGettingBalanceList,
+      tokenGettingBalanceList,
+      onSelectToken,
+      handleAddFollowToken,
+      handleCreateToken,
+      handleSetting,
+      reload,
+      isReloading
+    } = this.props;
 
     return (
-      <ScrollView
-        style={homeStyle.container}
-        refreshControl={(
-          <RefreshControl
-            refreshing={isReloading}
-            onRefresh={reload}
-          />
-        )}
-      >
-        <View style={homeStyle.bgStyle} />
-        <Container style={homeStyle.mainContainer}>
-          <CryptoItemCard
-            style={homeStyle.cryptoItem}
-            token={{
-              symbol: tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY,
-              amount: account?.value ?? null,
-              name: 'Incognito',
-              metaData: {
-                pSymbol: tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY,
-                pDecimals: CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY,
-                decimals: CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
-              }
-            }}
-            isGettingBalance={accountGettingBalanceList?.includes(account?.name)}
-            onPress={onSelectToken}
-          />
-          {
+      <View style={homeStyle.wrapper}>
+        <View style={homeStyle.header}>
+          <TouchableWithoutFeedback onPress={handleSetting}>
+            <Image source={setting} style={homeStyle.setting} />
+          </TouchableWithoutFeedback>
+          <Text style={homeStyle.title}>Wallet</Text>
+          {/* Use below empty view to push the title to middle */}
+          <View style={homeStyle.setting} />
+        </View>
+        <ScrollView
+          style={homeStyle.container}
+          refreshControl={(
+            <RefreshControl
+              refreshing={isReloading}
+              onRefresh={reload}
+            />
+          )}
+        >
+          <View style={homeStyle.bgStyle} />
+          <Container style={homeStyle.mainContainer}>
+            <CryptoItemCard
+              style={homeStyle.cryptoItem}
+              token={{
+                symbol: tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY,
+                amount: account?.value ?? null,
+                name: 'Incognito',
+                metaData: {
+                  pSymbol: tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY,
+                  pDecimals: CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY,
+                  decimals: CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
+                }
+              }}
+              isGettingBalance={accountGettingBalanceList?.includes(account?.name)}
+              onPress={onSelectToken}
+            />
+            {
             tokens?.map(token => (
               <CryptoItemCard
                 style={homeStyle.cryptoItem}
@@ -48,15 +71,26 @@ class Home extends React.Component {
                 onPress={onSelectToken}
               />
             ))
-          }
-          <View style={homeStyle.addTokenContainer}>
-            <TouchableScale onPress={handleAddFollowToken} style={homeStyle.addTokenBtn}>
-              <MdIcons style={[homeStyle.addTokenBtnText, homeStyle.icon]} name="add" size={20} />
-              <Text style={homeStyle.addTokenBtnText}>Add a token</Text>
-            </TouchableScale>
-          </View>
-        </Container>
-      </ScrollView>
+            }
+            <View style={homeStyle.addTokenContainer}>
+              <TouchableScale onPress={handleCreateToken} style={homeStyle.addTokenBtn}>
+                <Text style={homeStyle.addTokenBtnText}>Issue your own token</Text>
+              </TouchableScale>
+              <Text style={homeStyle.followTokenTitle}>Looking for available tokens?</Text>
+              <TouchableWithoutFeedback onPress={handleAddFollowToken}>
+                <View style={homeStyle.followTokenBtn}>
+                  <Text style={homeStyle.followTokenText}>Follow a token</Text>
+                  <Icon
+                    containerStyle={[homeStyle.followTokenText, homeStyle.followTokenIcon]}
+                    name="chevron-right"
+                    color={COLORS.primary}
+                  />
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </Container>
+        </ScrollView>
+      </View>
     );
   }
 }
@@ -76,6 +110,8 @@ Home.propTypes = {
   tokens: PropTypes.array,
   onSelectToken: PropTypes.func.isRequired,
   handleAddFollowToken: PropTypes.func.isRequired,
+  handleCreateToken: PropTypes.func.isRequired,
+  handleSetting: PropTypes.func.isRequired,
   reload: PropTypes.func.isRequired,
   isReloading: PropTypes.bool,
 };

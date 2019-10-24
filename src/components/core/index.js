@@ -2,7 +2,7 @@
  * We need to wrap all native component with us high level component
  * it helps to fully control component styles,..
  */
-
+export { default as View } from './View';
 export { default as ActivityIndicator } from './ActivityIndicator';
 export { default as Alert } from './Alert';
 export { ButtonExtension, default as Button } from './Button';
@@ -24,5 +24,5 @@ export { default as TextInput,InputExtension } from './TextInput';
 export { default as Toast } from './Toast';
 export { default as TouchableOpacity } from './TouchableOpacity';
 export { default as TouchableScale } from './TouchableScale';
-export { default as View } from './View';
+export { default as Select } from './Select';
 

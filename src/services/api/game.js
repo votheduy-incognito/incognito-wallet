@@ -98,14 +98,6 @@ const getPlayerNotifications = (playerId) =>
     PlayerID: playerId,
   }).then(res => res.map(item => new Notification(item)));
 
-const migrateAccount = (oldAccount, newAccount) =>
-  http.post('game/migrate', {
-    OldPrivateKey: oldAccount.PrivateKey,
-    OldPaymentAddress: oldAccount.PaymentAddress,
-    NewPrivateKey: newAccount.PrivateKey,
-    NewPaymentAddress: newAccount.PaymentAddress,
-  });
-
 export default {
   getBoardData,
   getBuyPrice,
@@ -122,5 +114,4 @@ export default {
   drawChanceCard,
   payJailFine,
   getPlayerNotifications,
-  migrateAccount,
 };

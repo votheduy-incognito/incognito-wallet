@@ -10,6 +10,8 @@ export default {
   ImportAccount: 'ImportAccount',
   ExportAccount: 'ExportAccount',
   FollowToken: 'FollowToken',
+  AddToken: 'AddToken',
+  CreateToken: 'CreateToken',
   GetStarted: 'GetStarted',
   WalletDetail: 'WalletDetail',
   AddDevice: 'AddDevice',
@@ -33,5 +35,7 @@ export default {
   Withdraw: 'Withdraw',
   Wizard: 'Wizard',
   Game: 'Game',
+  DApps: 'DApps',
+  Dex: 'Dex',
   TxHistoryDetail: 'TxHistoryDetail'
 };
