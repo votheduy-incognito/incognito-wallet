@@ -8,7 +8,7 @@ class SelectedPrivacy {
     this.symbol = this.isToken ? token.symbol : CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
     this.name = this.isToken ? (pTokenData.name || token.name) : CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
     this.amount = (this.isToken ? token.amount : account.value) || 0;
-    this.tokenId = token.id;
+    this.tokenId = this.isMainCrypto ? CONSTANT_COMMONS.PRV_TOKEN_ID : token.id;
     this.contractId = pTokenData.contractId;
     this.isPToken = !!pTokenData.pSymbol;
     this.decimals = this.isMainCrypto ? CONSTANT_COMMONS.DECIMALS[this.symbol] : pTokenData.decimals;
