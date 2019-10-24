@@ -2,8 +2,13 @@ import { ActivityIndicator, Text, View, TouchableScale } from '@src/components/c
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import { Button as ButtonElements } from 'react-native-elements';
 import styleSheet from './style';
 
+export const ButtonExtension = React.memo((props)=>{
+  const titleProps = {allowFontScaling:false,...(props?.titleProps??{})};
+  return ( <ButtonElements titleProps={titleProps} {...props}  />);
+});
 const Button = ({ title, children, style, titleStyle, type, onPress, loadingColor, disabled, isLoading: isLoadingProps, prepend, isAsync, disabledStyle, disabledTitleStyle, ...props }) => {
   const [ isLoading, setLoading ] = useState(false);
   useEffect(() => {

@@ -2,7 +2,7 @@ import Container from '@components/Container';
 import BaseScreen from '@screens/BaseScreen';
 import CreateAccount from '@screens/CreateAccount';
 import images, { imagesVector } from '@src/assets';
-import { Button } from '@src/components/core';
+import { Text,ButtonExtension } from '@src/components/core';
 import DialogLoader from '@src/components/DialogLoader';
 import HeaderBar from '@src/components/HeaderBar/HeaderBar';
 import HistoryMined from '@src/components/HistoryMined';
@@ -23,7 +23,7 @@ import ViewUtil, { onClickView } from '@src/utils/ViewUtil';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Image, RefreshControl, ScrollView, TouchableOpacity, View } from 'react-native';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import { connect } from 'react-redux';
 import AdvanceOption from './AdvanceOption';
@@ -451,13 +451,14 @@ class DetailDevice extends BaseScreen {
                 {/* <Text numberOfLines={1} style={style.group2_container_value}>{`${balancePRV} PRV`}</Text> */}
               </View>
               <View style={style.group2_container_container2}>
-                <Button
+                <ButtonExtension
                   disabled
                   disabledTitleStyle={style.group2_container_button_text}
                   disabledStyle={[style.group2_container_button2,{backgroundColor:'#93EAEF'}]}
                   titleStyle={style.group2_container_button_text}
                   buttonStyle={style.group2_container_button2}
                   onPress={this.handlePressWithdraw}
+                  titleProps={{allowFontScaling:false}}
                   title='Withdraw'
                 />
               </View>
@@ -500,12 +501,11 @@ class DetailDevice extends BaseScreen {
             </TouchableOpacity>
           )}
           {device.Type === DEVICES.VIRTUAL_TYPE && !device.isOffline() && !device.isEarning() && (!_.isNil(isStaked) && !isStaked) &&!isCallStaked? (
-            <Button
+            <ButtonExtension
               titleStyle={style.group2_container_button_text}
               buttonStyle={style.group2_container_button}
               title={stakeTitle}
               onPress={onClickView(async()=>{
-
                 const {accountMiner,isStaked} = this.state;
                 if(!isStaked){
                   if(!_.isEmpty(accountMiner)){
@@ -543,7 +543,7 @@ class DetailDevice extends BaseScreen {
           <View style={style.dialog_content}>
             <Text style={style.dialog_content_text}>No keys are currently linked to this node. Please import a private key.</Text>
           </View>
-          <Button
+          <ButtonExtension
             titleStyle={style.textTitleButton}
             buttonStyle={style.dialog_button}
             onPress={onClickView(()=>{

@@ -4,8 +4,8 @@ import images from '@src/assets';
 import { onClickView } from '@src/utils/ViewUtil';
 import React from 'react';
 import { Image, TouchableOpacity, View } from 'react-native';
-import { ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
+import { ListItem } from '@src/components/core';
 import styles, { rightNextIcon } from './styles';
 
 export const TAG = 'AddNode';

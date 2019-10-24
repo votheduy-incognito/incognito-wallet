@@ -3,8 +3,8 @@ import BottomSheet from '@src/components/BottomSheet';
 import TextStyle from '@src/styles/TextStyle';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Button, ListItem } from 'react-native-elements';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import {Text,ButtonExtension, ListItem} from '@components/core';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import styles from './style';
 
@@ -55,7 +55,7 @@ class AdvanceOption extends Component {
           <View style={styles.dialog_content}>
             <Text style={styles.dialog_content_text}>Are you sure you want to reset your device?{'\n'}Please remember to back up your wallet. Only you can restore your private key.</Text>
           </View>
-          <Button
+          <ButtonExtension
             titleStyle={styles.textTitleButton}
             buttonStyle={styles.dialog_button}
             onPress={()=>{

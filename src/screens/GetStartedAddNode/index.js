@@ -12,9 +12,10 @@ import Util from '@src/utils/Util';
 import { onClickView } from '@src/utils/ViewUtil';
 import _ from 'lodash';
 import React, { useCallback, useState } from 'react';
-import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { Button, Icon, Input } from 'react-native-elements';
+import { Image, ScrollView, TouchableOpacity, View } from 'react-native';
+import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
+import { Text,ButtonExtension,InputExtension as Input } from '@src/components/core';
 import styles from './styles';
 
 export const TAG = 'GetStartedAddNode';
@@ -84,26 +85,6 @@ class GetStartedAddNode extends BaseScreen {
     this.wifiNameValue = '';
     this.wifiPassValue = '';
   }
-
-  // handleQrcode = onClickView(()=>{
-  //   openQrScanner(async data => {
-  //     console.log(TAG,'openQrScanner  == data',data);
-  //     const checked = await Util.excuteWithTimeout(APIService.qrCodeCheck({QRCode:data})).catch(console.log)||{};
-      
-  //     if(!_.isEmpty(checked) && _.isEqual(checked.status,1)){
-  //       const {isPassedValidate} = this.state;
-  //       this.setState({
-  //         isPassedValidate:isPassedValidate||false,
-  //         deviceId:data
-  //       });
-  //     }else{
-  //       this.setState({
-  //         isPassedValidate:false,
-  //         errorMessage:'error code'
-  //       });
-  //     }
-  //   });
-  // });
 
   renderTitle =()=>{
     const {currentPage,currentConnect} = this.state;
@@ -298,7 +279,7 @@ class GetStartedAddNode extends BaseScreen {
     }
     return (
       <View style={styles.footer}>
-        <Button
+        <ButtonExtension
           disabled={loading}
           loading={loading}
           titleStyle={styles.textTitleButton}
