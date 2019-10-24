@@ -1,18 +1,18 @@
 import type from '@src/redux/types/selectedPrivacy';
 
-const initialState = { symbol: null };
+const initialState = { tokenID: null };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
   case type.SET:
     return {
       ...state,
-      symbol: action.data
+      tokenID: action.data
     };
   case type.CLEAR:
     return {
       ...state,
-      symbol: null,
+      tokenID: null,
     };
 
   default:

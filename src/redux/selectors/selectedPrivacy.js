@@ -5,36 +5,36 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import { defaultAccount } from './account';
 import { followed, pTokens, internalTokens } from './token';
 
-export const selectedPrivacySymbol = state => state?.selectedPrivacy?.symbol;
+export const selectedPrivacyTokenID = state => state?.selectedPrivacy?.tokenID;
 
-export const getPrivacyDataBySymbol = createSelector(
+export const getPrivacyDataByTokenID = createSelector(
   defaultAccount,
   internalTokens,
   pTokens,
   followed,
-  (account, _internalTokens, _pTokens, _followed) => memoize((pSymbol) => {
-    let internalTokenData = _followed.find(t => t?.symbol === pSymbol);
+  (account, _internalTokens, _pTokens, _followed) => memoize((tokenID) => {
+    let internalTokenData = _followed.find(t => t?.id === tokenID);
 
     if (!internalTokenData) {
       // 'PRV' is not a token
-      internalTokenData = _internalTokens?.find(t => t?.symbol !== CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV && t?.symbol === pSymbol);
+      internalTokenData = _internalTokens?.find(t => t?.id !== CONSTANT_COMMONS.PRV_TOKEN_ID && t?.id === tokenID);
     }
 
-    const pTokenData = _pTokens?.find(t => t?.pSymbol === pSymbol);
+    const pTokenData = _pTokens?.find(t => t?.tokenId === tokenID);
 
     return new SelectedPrivacy(account, internalTokenData, pTokenData);
   })
 );
 
 export const selectedPrivacy = createSelector(
-  selectedPrivacySymbol,
-  getPrivacyDataBySymbol,
+  selectedPrivacyTokenID,
+  getPrivacyDataByTokenID,
   (selectedSymbol, getFn) => {
     return getFn(selectedSymbol);
   }
 );
 
 export default {
-  selectedPrivacySymbol,
+  selectedPrivacyTokenID,
   selectedPrivacy
 };

@@ -161,7 +161,7 @@ class HomeContainer extends Component {
 
     const { setSelectedPrivacy, navigation } = this.props;
 
-    setSelectedPrivacy(token?.symbol);
+    setSelectedPrivacy(token?.id);
 
     navigation.navigate(routeNames.WalletDetail);
   };

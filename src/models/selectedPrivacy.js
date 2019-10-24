@@ -3,8 +3,8 @@ import PToken from './pToken';
 
 class SelectedPrivacy {
   constructor(account = {}, token = {}, pTokenData: PToken = {}) {
-    this.isToken = (token?.symbol !== CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV) && !!token.id;
-    this.isMainCrypto = (token?.symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV) || !this.isToken;
+    this.isToken = (token?.id !== CONSTANT_COMMONS.PRV_TOKEN_ID) && !!token.id;
+    this.isMainCrypto = (token?.id === CONSTANT_COMMONS.PRV_TOKEN_ID) || !this.isToken;
     this.symbol = this.isToken ? token.symbol : CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
     this.name = this.isToken ? (pTokenData.name || token.name) : CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
     this.amount = (this.isToken ? token.amount : account.value) || 0;
