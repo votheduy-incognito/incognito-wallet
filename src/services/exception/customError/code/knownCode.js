@@ -61,6 +61,11 @@ const staking = {
   click_stake: knownError(-26),
 };
 
+const dapps = {
+  daaps_invalid_daap_url: knownError(-25)
+};
+
+
 export default {
   ...app,
   ...estimateFee,
@@ -71,5 +76,6 @@ export default {
   ...home,
   ...node,
   ...validator,
-  ...staking
+  ...staking,
+  ...dapps
 };

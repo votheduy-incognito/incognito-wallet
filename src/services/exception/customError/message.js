@@ -22,5 +22,6 @@ export default {
   [CODE.node_duplicate]: 'This node already exists on your device. Please try another.',
   [CODE.node_invalid_host]: 'This address is not a valid domain or ip address. Please try another.',
   [CODE.getStarted_load_token_failed]: 'Somthing went wrong while loading data, please check your connection and try again or contact us for help.',
-  [CODE.user_login_failed]: 'We have an authorization issue.'
+  [CODE.user_login_failed]: 'We have an authorization issue.',
+  [CODE.daaps_invalid_daap_url]: 'Please enter a valid Dapp URL'
 };
