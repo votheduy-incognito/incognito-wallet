@@ -7,6 +7,8 @@ import { selectedPrivacy } from '@src/redux/selectors/selectedPrivacy';
 import { getAccountByName, listAccount, defaultAccount } from '@src/redux/selectors/account';
 import accountService from '@src/services/wallet/accountService';
 import { CONSTANT_COMMONS } from '@src/constants';
+import { ExHandler, CustomError,ErrorCode } from '@src/services/exception';
+import _ from 'lodash';
 import SelfStaking from './SelfStaking';
 
 export class SelfStakingContainer extends Component {
@@ -17,7 +19,9 @@ export class SelfStakingContainer extends Component {
         type: Number(stakeType),
       };
       // param, fee, candidatePaymentAddress, account, wallet, rewardReceiverPaymentAddress, autoReStaking = false
-      const candidatePaymentAddress = minerAccount?.PaymentAddress;
+      const candidatePaymentAddress = minerAccount?.PaymentAddress??'';
+      if(_.isEmpty(candidatePaymentAddress)) new ExHandler(new CustomError(ErrorCode.payment_address_empty),'Candidate PaymentAddress is empty').showErrorToast().throw();
+      
       const rs = await accountService.staking(param, fee, candidatePaymentAddress,funderAccount, wallet,candidatePaymentAddress,true);
 
       // const candidatePaymentAddress = minerAccount?.PaymentAddress;
@@ -26,7 +30,7 @@ export class SelfStakingContainer extends Component {
 
       return rs;
     } catch (e) {
-      throw e;
+      throw new CustomError(ErrorCode.click_stake,{rawError:e}) ;
     }
   }
 

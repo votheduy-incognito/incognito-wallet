@@ -5,7 +5,7 @@ import LoadingTx from '@src/components/LoadingTx';
 import StakeValidatorTypeSelector from '@src/components/StakeValidatorTypeSelector';
 import { CONSTANT_COMMONS } from '@src/constants';
 import tokenData from '@src/constants/tokenData';
-import { ExHandler } from '@src/services/exception';
+import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
 import convertUtil from '@src/utils/convert';
 import formatUtil from '@src/utils/format';
 import PropTypes from 'prop-types';
@@ -101,11 +101,11 @@ class SelfStaking extends Component {
             onCallBackStaked(rs);
           }
         } else {
-          throw new Error('Stake failed with no tx id');
+          new ExHandler(new CustomError(ErrorCode.click_stake), 'Stake failed with no tx id').showErrorToast();
         }
       }
     } catch (e) {
-      new ExHandler(e, 'Stake failed, please try again').showErrorToast();
+      new ExHandler(new CustomError(ErrorCode.click_stake,{rawError:e}), 'Stake failed, please try again').showErrorToast();
     } finally {
       this.setState({
         isStaking: false

@@ -35,7 +35,7 @@ export const homeStyle = StyleSheet.create({
     backgroundColor: COLORS.primary,
     width: '100%',
     height: scaleInApp(1040),
-    top: -1000,
+    top: -1080,
     position: 'absolute',
     borderBottomLeftRadius: scaleInApp(30),
     borderBottomRightRadius: scaleInApp(30),

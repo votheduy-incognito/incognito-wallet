@@ -57,6 +57,10 @@ const validator = {
   payment_address_empty: knownError(-25),
 };
 
+const staking = {
+  click_stake: knownError(-26),
+};
+
 export default {
   ...app,
   ...estimateFee,
@@ -66,5 +70,6 @@ export default {
   ...importAccount,
   ...home,
   ...node,
-  ...validator
+  ...validator,
+  ...staking
 };
