@@ -10,11 +10,10 @@ export default StyleSheet.create({
   text: {
     ...THEME.opacityButton.buttonText,
     ...FONT.STYLE.medium,
-    ...FONT.SIZE.medium,
+    fontSize: scaleInApp(FONT.SIZE.regular),
   },
   textContainer: {
     marginHorizontal: 5,
-    paddingVertical: 12,
   },
   dangerStyle: {
     ...THEME.opacityButton.button,
