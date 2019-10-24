@@ -12,11 +12,10 @@ import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, Text } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import { Button, Input } from 'react-native-elements';
-import Dialog, { DialogContent, DialogTitle } from 'react-native-popup-dialog';
 import StepIndicator from 'react-native-step-indicator';
+import {Text,ButtonExtension as Button,InputExtension as Input} from '@components/core';
 import styles, {placeHolderColor} from './style';
 
 const SHORT_DOMAIN_REGEX = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/;
@@ -65,12 +64,8 @@ class AddSelfNode extends BaseScreen {
   static getDerivedStateFromProps(nextProps, prevState) {
     if(!_.isEqual(nextProps?.accountList,prevState.accountList)){
       const {accountList = [],defaultAccountName= ''} = nextProps;
-
-      // const selectedAccount = _.isEmpty(prevState.selectedAccount) ? accountList.filter((value,index)=>{
-      //   return value.name === defaultAccountName;
-      // }):prevState.selectedAccount;
       return {
-        accountList:nextProps?.accountList||[]
+        accountList:accountList??[]
       };
     }
     return null;
@@ -79,7 +74,6 @@ class AddSelfNode extends BaseScreen {
   handleChooseItemAccount=(item,index)=>{
     this.inputPrivateKey = _.isEmpty(item?.PrivateKey)? this.inputPrivateKey:this.inputPrivateKey;
     this.setState({selectedAccount:item,isShowListAccount:false});
-    // this.setState({selectedAccount:index === 0?undefined:item,isShowListAccount:false});
   }
 
   renderWifiPassword=()=>{
@@ -169,60 +163,6 @@ class AddSelfNode extends BaseScreen {
       </>
     );
   }
-
-  renderListAccount =()=>{
-    const {accountList = [],isShowListAccount = false,selectedAccount = {} } = this.state;
-    // const accountListCombined = [{name:'Import Private Key'},...accountList];
-    const accountListCombined = accountList;
-    const isEditatle = _.isEmpty(selectedAccount?.PrivateKey);
-    // console.log(TAG,'renderListAccount = item  = ',selectedAccount);
-    const textAction = isEditatle ? 'Choose Account':'Import Private Key';
-
-    return (
-      <>
-        <Input
-          labelStyle={styles.label}
-          placeholder="Enter private key or import from account"
-          placeholderTextColor={placeHolderColor}
-          underlineColorAndroid="transparent"
-          editable={isEditatle}
-          inputStyle={styles.textInput}
-          containerStyle={[styles.item]}
-          defaultValue={selectedAccount?.PrivateKey||undefined}
-          inputContainerStyle={[styles.item_container_input]}
-          label='Private Key'
-          onChangeText={(text) =>this.inputPrivateKey = text}
-        />
-        <Text
-          style={[styles.buttonChooseAccount]}
-          onPress={() => {
-            if(isEditatle){
-              this.setState({ isShowListAccount: true });
-            }else{
-              this.setState({ selectedAccount:null });
-            }
-
-          }}
-        >{textAction}
-        </Text>
-        <Dialog
-          width={0.75}
-          height={0.5}
-          visible={isShowListAccount}
-          dialogTitle={<DialogTitle textStyle={styles.item_account_text} title="Choose account" />}
-          onTouchOutside={() => {
-            this.setState({ isShowListAccount: false });
-          }}
-        >
-          <DialogContent style={styles.dialog_content}>
-            {accountListCombined.map((item,index)=>{
-              return (<Text key={item.name} style={[styles.item_account_text]} onPress={()=>this.handleChooseItemAccount(item,index)}>{item.name}</Text>);
-            })}
-          </DialogContent>
-        </Dialog>
-      </>
-    );
-  };
 
   validateHost = async (host)=> {
     if (host === 'localhost' || SHORT_DOMAIN_REGEX.test(host) || FULL_DOMAIN_REGEX.test(host) || IP_ADDRESS_REGEX.test(host)) {
@@ -323,17 +263,6 @@ class AddSelfNode extends BaseScreen {
         await LocalDatabase.saveListDevices(listLocalDevice);
         this.goToScreen(routeNames.HomeMine);
         return true;
-        // const resultAccount =( isImportPrivateKey && await this.viewImportPrivateKey.current.importAccount({accountName:deviceJSON.product_name,privateKey:privateKey})) ||false;
-        // if(resultAccount || !isImportPrivateKey){
-        //   let listLocalDevice = await LocalDatabase.getListDevices();
-        //   listLocalDevice.push(deviceJSON);
-
-        //   await LocalDatabase.saveListDevices(listLocalDevice);
-        //   // create account if import private key
-
-        //   this.goToScreen(routeNames.HomeMine);
-        //   return;
-        // }
       }
     } catch (errorMessage) {
       new ExHandler(errorMessage).showErrorToast();
@@ -345,26 +274,10 @@ class AddSelfNode extends BaseScreen {
     const { container, textInput, item,item_container_input ,label } = styles;
     const {loading} = this.state;
     return (
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-      >
+      <ScrollView keyboardShouldPersistTaps="handled">
         <Loader loading={loading} />
         <KeyboardAvoidingView contentContainerStyle={{flex:1}} keyboardVerticalOffset={50} behavior="padding" style={[container]}>
           {this.renderInput()}
-          {/* {this.renderWifiPassword()} */}
-          {/* {this.renderListAccount()} */}
-          {/* <Input
-            labelStyle={label}
-            placeholderTextColor={placeHolderColor}
-            underlineColorAndroid="transparent"
-            inputStyle={textInput}
-            inputContainerStyle={item_container_input}
-            containerStyle={[item]}
-            label='Name'
-            maxLength={200}
-            placeholder="Name of Node (optional)"
-            onChangeText={(text) =>this.inputDeviceName = text}
-          /> */}
           <Button
             titleStyle={styles.textTitleButton}
             buttonStyle={styles.button}
@@ -373,9 +286,6 @@ class AddSelfNode extends BaseScreen {
           />
 
         </KeyboardAvoidingView>
-        {/* <View style={{width: 0,height: 0,position:'absolute',opacity:0}}>
-          <ImportAccount ref={this.viewImportPrivateKey} />
-        </View> */}
       </ScrollView>
     );
   }

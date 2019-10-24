@@ -10,9 +10,10 @@ import ViewUtil from '@src/utils/ViewUtil';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Image, Text, View } from 'react-native';
+import { Image, View } from 'react-native';
+import {Text, Alert, TouchableScale } from '@components/core';
 import { connect } from 'react-redux';
-import { Alert, TouchableScale } from '../core';
+
 import styles from './style';
 
 const TAG = 'HomeMineItem';
@@ -185,9 +186,6 @@ class HomeMineItem extends React.Component {
         onLongPress={()=>{
           Alert.alert('Confirm','Are you sure to delete this item?',[{text:'Yes',onPress:async ()=>{
             const {reloadList} = this.props;
-            // let list = await LocalDatabase.getListDevices();
-            // _.remove(list,item);
-            // await LocalDatabase.saveListDevices(list);
             await LocalDatabase.removeDevice(item);
             reloadList();
           }},{ text: 'Cancel'}],{cancelable: true});

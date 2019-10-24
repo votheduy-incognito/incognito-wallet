@@ -33,6 +33,7 @@ const TextInput = ({ containerStyle, inputStyle, style, prependView, label, onFo
       >
         <RNComponent
           {...props}
+          allowFontScaling={false}
           placeholderTextColor={COLORS.lightGrey3}
           style={[
             styleSheet.input,

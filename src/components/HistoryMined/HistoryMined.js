@@ -2,11 +2,12 @@ import withdrawNodeDisabled from '@src/assets/images/icons/withdraw-node-disable
 import withdrawNode from '@src/assets/images/icons/withdraw-node.png';
 import tokenData from '@src/constants/tokenData';
 import Device from '@src/models/device';
+import {Text} from '@components/core';
 import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, TouchableOpacity, View } from 'react-native';
 import CryptoIcon from '../CryptoIcon';
 import styles from './style';
 
