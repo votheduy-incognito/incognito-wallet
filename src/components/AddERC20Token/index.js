@@ -5,6 +5,7 @@ import { debounce } from 'lodash';
 import { Toast } from '@src/components/core';
 import { accountSeleclor } from '@src/redux/selectors';
 import { setWallet } from '@src/redux/actions/wallet';
+import { getPTokenList } from '@src/redux/actions/token';
 import accountService from '@src/services/wallet/accountService';
 import { detectERC20Token, addERC20Token, detectBEP2Token, addBEP2Token } from '@src/services/api/token';
 import LoadingContainer from '@src/components/LoadingContainer';
@@ -12,12 +13,12 @@ import { ExHandler } from '@src/services/exception';
 import AddERC20Token from './AddERC20Token';
 
 export class AddERC20TokenContainer extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       data: null,
       isSearching: false,
-      type: 'erc20',
+      type: props.type,
     };
 
     this.handleSearch = debounce(this.handleSearch.bind(this), 1000);
@@ -56,7 +57,7 @@ export class AddERC20TokenContainer extends Component {
     try {
       if (!values) return;
       const { type } = this.state;
-      const { account, wallet, setWallet } = this.props;
+      const { account, wallet, setWallet, getPTokenList } = this.props;
       let newPToken;
 
       console.log(type, values);
@@ -84,6 +85,7 @@ export class AddERC20TokenContainer extends Component {
 
 
       await accountService.addFollowingTokens([newPToken.convertToToken()], account, wallet);
+      await getPTokenList();
       // update new wallet to store
       setWallet(wallet);
       Toast.showSuccess('Success! You added a token.');
@@ -157,13 +159,16 @@ const mapState = state => ({
 });
 
 const mapDispatchToProps = {
-  setWallet
+  setWallet,
+  getPTokenList
 };
 
 AddERC20TokenContainer.propTypes = {
   account: PropTypes.object.isRequired,
   wallet: PropTypes.object.isRequired,
   setWallet: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired,
+  getPTokenList: PropTypes.func.isRequired,
 };
 
 export default connect(mapState, mapDispatchToProps)(AddERC20TokenContainer);

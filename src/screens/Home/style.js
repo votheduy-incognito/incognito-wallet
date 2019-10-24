@@ -19,7 +19,7 @@ export const homeStyle = StyleSheet.create({
     marginBottom: 'auto',
   },
   title: {
-    fontSize: scaleInApp(24),
+    fontSize: scaleInApp(18),
     color: COLORS.white,
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -77,15 +77,18 @@ export const homeStyle = StyleSheet.create({
   followTokenBtn: {
     flexDirection: 'row',
     marginVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   followTokenText: {
     ...FONT.STYLE.medium,
     fontSize: scaleInApp(15),
     color: COLORS.primary,
+    justifyContent: 'center',
+
   },
   followTokenIcon: {
     color: COLORS.primary,
     fontSize: scaleInApp(24),
-    marginTop: scaleInApp(-2.5),
   },
 });

@@ -14,5 +14,5 @@ export default StyleSheet.create({
   },
   input: {
     marginBottom: 15,
-  }
+  },
 });

@@ -1,10 +1,9 @@
 import { ActivityIndicator, Image, View } from '@src/components/core';
 import { CONSTANT_CONFIGS } from '@src/constants';
-import { COLORS } from '@src/styles';
+import defaultTokenIcon from '@src/assets/images/icons/default_token_icon.png';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Platform } from 'react-native';
-import { Icon } from 'react-native-elements';
 import styleSheet from './style';
 
 export default class CryptoIcon extends Component {
@@ -18,7 +17,7 @@ export default class CryptoIcon extends Component {
 
   componentDidMount() {
     const { symbol } = this.props;
-    
+
     this.getUri(symbol);
   }
 
@@ -26,33 +25,36 @@ export default class CryptoIcon extends Component {
     if (!symbol) return;
 
     return String(symbol).toLowerCase();
-  }
+  };
 
   getUri = async symbol => {
     const formatedSymbol = this.preFormatSymbol(symbol);
     const uri =  formatedSymbol && `${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${formatedSymbol}@2x.png`;
     this.setState({ uri });
-  }
+  };
 
   onLoadError = () => {
-    this.setState({ uri: null, isLoading: false });
-  }
+    this.setState({ uri: '', isLoading: false });
+  };
 
   onLoadStart = () => {
     this.setState({ isLoading: true });
-  }
+  };
 
   onLoadEnd = () => {
     this.setState({ isLoading: false });
-  }
+  };
 
-  renderDefault = () => <Icon type='material-community' name='circle' size={28} color={COLORS.primary} />
+  renderDefault = () => <Image
+    style={this.getStyle(false)}
+    source={defaultTokenIcon}
+  />;
 
   getStyle = (isLoading) => {
     const styles = [styleSheet.logo];
 
     return Platform.OS === 'android' ? [...styles, isLoading && styleSheet.hidden] : styles;
-  }
+  };
 
   render() {
     const { uri, isLoading } = this.state;
@@ -61,7 +63,7 @@ export default class CryptoIcon extends Component {
       <View style={styleSheet.container}>
         { isLoading && <ActivityIndicator /> }
         {
-          uri 
+          uri
             ? (
               <Image
                 style={this.getStyle(isLoading)}
