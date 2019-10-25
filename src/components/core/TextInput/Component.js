@@ -64,9 +64,9 @@ const TextInput = ({
           onBlur={handleBlur}
           ref={textInput}
         />
-        { clearable && (
+        { clearable && focus && (
           <TouchableOpacity onPress={handleClear}>
-            <Icon name="close" color={COLORS.lightGrey3} size={20} />
+            <Icon name="ios-close-circle" type='ionicon' color={COLORS.lightGrey3} size={20} />
           </TouchableOpacity>
         ) }
         {prependView}
