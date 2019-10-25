@@ -15,10 +15,20 @@ import AddERC20Token from './AddERC20Token';
 export class AddERC20TokenContainer extends Component {
   constructor(props) {
     super(props);
+
+    const items = props.type === 'erc20' ? [
+      { label: 'ERC20', value: 'erc20' },
+      { label: 'BEP2', value: 'bep2' },
+    ] : [
+      { label: 'BEP2', value: 'bep2' },
+      { label: 'ERC20', value: 'erc20' },
+    ];
+
     this.state = {
       data: null,
       isSearching: false,
       type: props.type,
+      items,
     };
 
     this.handleSearch = debounce(this.handleSearch.bind(this), 1000);
@@ -133,7 +143,7 @@ export class AddERC20TokenContainer extends Component {
   };
 
   render() {
-    const { data, isSearching, type } = this.state;
+    const { data, isSearching, type, items} = this.state;
     const { wallet, account } = this.props;
 
     if (!wallet || !account) {
@@ -148,6 +158,7 @@ export class AddERC20TokenContainer extends Component {
         onAdd={this.handleAdd}
         onSearch={this.handleSearch}
         type={type}
+        items={items}
       />
     );
   }

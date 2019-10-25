@@ -143,7 +143,7 @@ class AddERC20Token extends Component {
 
   render() {
     const { data } = this.state;
-    const { isSearching, onChangeType, onAdd, type } = this.props;
+    const { isSearching, onChangeType, onAdd, type, items } = this.props;
 
     return (
       <Form initialValues={data} onChange={this.handleFormChange} style={styles.container}>
@@ -159,10 +159,7 @@ class AddERC20Token extends Component {
                 selectedValue={type}
                 placeholder={{}}
                 value={type}
-                items={[
-                  { label: 'ERC20', value: 'erc20' },
-                  { label: 'BEP2', value: 'bep2' },
-                ]}
+                items={items}
               >
                 <Picker.Item label="ERC20" value="erc20" />
                 <Picker.Item label="BEP2" value="bep2" />
@@ -194,6 +191,7 @@ AddERC20Token.propTypes = {
   onChangeType: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
   isSearching: PropTypes.bool,
+  items: PropTypes.array.isRequired,
 };
 
 

@@ -9,10 +9,10 @@ import incognitoWhite from '@src/assets/images/icons/incognito_white.png';
 import otherBlack from '@src/assets/images/icons/other_token_black.png';
 import otherWhite from '@src/assets/images/icons/other_token_white.png';
 import sadFace from '@src/assets/images/sad_face.png';
+import addIcon from '@src/assets/images/icons/add_outline.png';
 import BackButton from '@src/components/BackButton/index';
 import TokenType from '@src/components/SearchToken/TokenType';
 import {TOKEN_TYPES} from '@src/constants/tokenData';
-import {scaleInApp} from '@src/styles/TextStyle';
 import { searchPTokenStyle, tokenTypeStyle, emptyStyle } from './styles';
 import TokenItem from './TokenItem';
 
@@ -135,7 +135,7 @@ class SearchToken extends PureComponent {
     const { selectedItems } = this.state;
     return (
       <View style={searchPTokenStyle.header}>
-        <BackButton onPress={onCancel} width={50} height={scaleInApp(35)} size={20} />
+        <BackButton onPress={onCancel} width={50} height={35} size={20} />
         <TextInput
           placeholder='Search for a token'
           placeholderTextColor="rgba(255, 255, 255, 0.65)"
@@ -217,7 +217,7 @@ class SearchToken extends PureComponent {
         {!isEmpty ? (
           <TouchableWithoutFeedback onPress={this.handleAddToken}>
             <View style={searchPTokenStyle.followBtn}>
-              <Icon containerStyle={searchPTokenStyle.followBtnIcon} name="add-circle-outline" size={35} color={COLORS.primary} />
+              <Image source={addIcon} style={searchPTokenStyle.followBtnIcon} />
               <Text style={searchPTokenStyle.followBtnText}>{this.renderAddTokenText()}</Text>
             </View>
           </TouchableWithoutFeedback>

@@ -7,8 +7,8 @@ const ActivityIndicator = (props) => {
   return (
     <RNComponent
       color={THEME.indicator.color}
-      {...props}
       size={Platform.OS === 'ios'?'large':size}
+      {...props}
     />
   );
 };

@@ -1,4 +1,4 @@
-import { FONT, THEME } from '@src/styles';
+import { FONT, THEME, COLORS } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
@@ -33,7 +33,11 @@ const style = StyleSheet.create({
   },
   balance: {
     textAlign: 'center'
-  }
+  },
+  error: {
+    color: COLORS.red,
+    fontSize: FONT.SIZE.small,
+  },
 });
 
 export default style;

@@ -16,7 +16,7 @@ const CryptoItem = ({ fullName, name, amount, externalSymbol, onPress, symbol, i
     </View>
     <View style={cryptoItemStyle.balanceContainer}>
       { isGettingBalance ?
-        <ActivityIndicator /> : (
+        <ActivityIndicator size="small" /> : (
           amount != null ?
             <Text style={cryptoItemStyle.amountText} numberOfLines={1} ellipsizeMode="tail">{formatUtil.amount(amount, pDecimals)} {symbol}</Text> :
             <Text style={cryptoItemStyle.getAmountFailedText}>---</Text>

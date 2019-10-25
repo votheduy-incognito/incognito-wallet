@@ -1,5 +1,5 @@
 import { COLORS } from '@src/styles';
-import { FontStyle, scaleInApp } from '@src/styles/TextStyle';
+import { FontStyle } from '@src/styles/TextStyle';
 import { StyleSheet } from 'react-native';
 
 export const itemStyle = StyleSheet.create({
@@ -26,15 +26,15 @@ export const itemStyle = StyleSheet.create({
     justifyContent: 'center',
   },
   checkbox: {
-    width: scaleInApp(25),
-    height: scaleInApp(25),
+    width: 30,
+    height: 30,
   },
   name: {
-    fontSize: scaleInApp(16),
+    fontSize: 16,
   },
   symbol: {
     color: COLORS.lightGrey1,
-    fontSize: scaleInApp(14),
+    fontSize: 14,
     marginTop: 5,
   }
 });
@@ -58,14 +58,14 @@ export const searchPTokenStyle = StyleSheet.create({
     left: 65,
   },
   searchInput: {
-    marginBottom: scaleInApp(10),
+    marginBottom: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.24)',
-    borderRadius: scaleInApp(18),
+    borderRadius: 18,
     paddingLeft: 40,
     paddingVertical: 2,
     marginRight: 10,
     color: COLORS.white,
-    minHeight: scaleInApp(32),
+    minHeight: 32,
     flex: 1,
   },
   cancelBtnText: {
@@ -75,11 +75,11 @@ export const searchPTokenStyle = StyleSheet.create({
     marginTop: -8,
     alignSelf: 'center',
     color: 'white',
-    fontSize: scaleInApp(15),
+    fontSize: 15,
     ...FontStyle.medium,
   },
   disabled: {
-    color: COLORS.lightGrey4,
+    opacity: 0.7,
   },
   listToken: {
     marginBottom: 10,
@@ -92,11 +92,12 @@ export const searchPTokenStyle = StyleSheet.create({
     marginBottom: 30,
   },
   followBtnIcon: {
-
+    width: 30,
+    height: 30,
   },
   followBtnText: {
     marginLeft: 25,
-    fontSize: scaleInApp(16),
+    fontSize: 16,
     color: COLORS.primary,
     ...FontStyle.medium,
   },
@@ -111,14 +112,14 @@ export const tokenTypeStyle = StyleSheet.create({
   title: {
     color: '#101111',
     marginBottom: 10,
-    fontSize: scaleInApp(15),
+    fontSize: 15,
   },
   types: {
     flexDirection: 'row',
   },
   image: {
-    width: scaleInApp(18),
-    height: scaleInApp(18),
+    width: 18,
+    height: 18,
     resizeMode: 'contain',
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -126,13 +127,13 @@ export const tokenTypeStyle = StyleSheet.create({
   type: {
     backgroundColor: COLORS.lightGrey6,
     marginRight: 8,
-    width: scaleInApp(94),
-    height: scaleInApp(73),
+    width: 94,
+    height: 73,
   },
   name: {
     marginTop: 5,
     color: COLORS.lightGrey1,
-    fontSize: scaleInApp(14),
+    fontSize: 14,
   },
   selected: {
     backgroundColor: COLORS.dark2,
@@ -147,27 +148,27 @@ export const emptyStyle = StyleSheet.create({
   container: {
     paddingTop: '10%',
     alignItems: 'center',
-    paddingHorizontal: scaleInApp(30),
+    paddingHorizontal: 30,
   },
   image: {
-    width: scaleInApp(58),
-    height: scaleInApp(66),
+    width: 58,
+    height: 66,
     resizeMode: 'contain',
-    marginBottom: scaleInApp(20),
+    marginBottom: 20,
   },
   title: {
     color: COLORS.dark1,
-    marginBottom: scaleInApp(8),
-    fontSize: scaleInApp(19),
+    marginBottom: 8,
+    fontSize: 19,
     ...FontStyle.medium,
   },
   desc: {
-    fontSize: scaleInApp(16),
-    marginBottom: scaleInApp(4),
+    fontSize: 16,
+    marginBottom: 4,
     color: COLORS.lightGrey1,
   },
   button: {
     width: '100%',
-    marginTop: scaleInApp(30),
+    marginTop: 30,
   }
 });

@@ -15,4 +15,10 @@ export default StyleSheet.create({
   hidden: {
     display: 'none'
   },
+  loadingIcon: {
+    justifyContent: 'center',
+    position: 'absolute',
+    alignItems: 'center',
+    height: '100%'
+  },
 });

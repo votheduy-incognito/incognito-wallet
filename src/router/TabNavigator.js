@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   },
   activeLabel: {
     color: COLORS.dark1,
-    fontSize: scaleInApp(10),
+    fontSize: 10,
     ...FontStyle.bold,
   },
   tabBarLabel: {
@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     textAlign: 'center',
     marginTop: 4,
+    color: COLORS.lightGrey1,
   },
   indicator: {
     opacity: 0,
