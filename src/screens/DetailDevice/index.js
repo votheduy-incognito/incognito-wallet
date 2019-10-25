@@ -152,8 +152,8 @@ class DetailDevice extends BaseScreen {
       amount = format.amountFull(amount,ObjFinded['pDecimals']??common.DECIMALS[value]);
       amount = _.isNaN(amount)?0:amount;
       return {
-        id:value,
         ...ObjFinded,
+        id:value,
         amount:amount,
       };
     });
@@ -167,10 +167,7 @@ class DetailDevice extends BaseScreen {
     let balancePRV = 0;
     let listFollowingTokens = [];
     const account = _.isEmpty(accountMiner)? await getAccountByName(device.accountName()):accountMiner;
-    // const stakerStatus =(!_.isEmpty(account)&& !_.isEmpty(wallet)? await accountService.stakerStatus(account,wallet).catch(console.log):-1)??{};
-    // console.log(TAG,'fetchData stakerStatus ',stakerStatus);
-
-    // const { Role= -1, ShardID= 0 } = stakerStatus;
+   
     let isStaked = -1 ;
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
@@ -340,7 +337,7 @@ class DetailDevice extends BaseScreen {
 
   handleWithdrawEachToken = onClickView(async(item)=>{
     const {device,accountMiner,wallet} = this.state;
-    if(_.isEmpty(accountMiner) && _.isEmpty(item) ){
+    if(_.isEmpty(accountMiner) || _.isEmpty(item) ){
       this.setState({
         isShowMessage:true
       });
@@ -351,7 +348,8 @@ class DetailDevice extends BaseScreen {
 
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
-      const id = item?.id||'';
+      const id = item?.tokenId??'';
+      console.log(TAG,'handleWithdrawEachToken VIRTUAL_TYPE id ',item);
       result = await device.requestWithdraw(accountMiner,wallet,_.includes(id,'PRV')?'':id).catch(console.log);
       break;
     }
