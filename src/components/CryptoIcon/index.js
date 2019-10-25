@@ -61,7 +61,11 @@ export default class CryptoIcon extends Component {
 
     return (
       <View style={styleSheet.container}>
-        { isLoading && <ActivityIndicator /> }
+        { isLoading &&
+          <View style={styleSheet.loadingIcon}>
+            <ActivityIndicator size="small" />
+          </View>
+        }
         {
           uri
             ? (

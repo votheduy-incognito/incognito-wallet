@@ -36,7 +36,7 @@ export default StyleSheet.create({
   },
   subNameText: {
     ...THEME.text.defaultTextStyle,
-    color: COLORS.lightGrey3,
+    color: COLORS.lightGrey1,
     fontSize: 14,
   },
   amountText: {

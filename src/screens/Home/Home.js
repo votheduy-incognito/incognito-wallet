@@ -31,7 +31,7 @@ class Home extends React.Component {
           <TouchableWithoutFeedback onPress={handleSetting}>
             <Image source={setting} style={homeStyle.setting} />
           </TouchableWithoutFeedback>
-          <Text style={homeStyle.title}>Wallet</Text>
+          <Text style={homeStyle.title}>{account.name}</Text>
           {/* Use below empty view to push the title to middle */}
           <View style={homeStyle.setting} />
         </View>
@@ -74,7 +74,6 @@ class Home extends React.Component {
             }
             <View style={homeStyle.addTokenContainer}>
               <Button
-                titleStyle={homeStyle.addTokenBtnText}
                 title="Issue your own token"
                 onPress={handleCreateToken}
                 style={homeStyle.addTokenBtn}

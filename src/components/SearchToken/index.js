@@ -15,6 +15,7 @@ import PToken from '@src/models/pToken';
 import internalTokenModel from '@src/models/token';
 import { ExHandler } from '@src/services/exception';
 import ROUTE_NAMES from '@routers/routeNames';
+import { View } from 'react-native';
 import SearchToken from './SearchToken';
 import { Toast, ActivityIndicator, } from '../core';
 
@@ -166,7 +167,13 @@ export class SearchTokenContainer extends PureComponent {
     const { tokens, gettingToken } = this.state;
     const { account, wallet } = this.props;
 
-    if (!tokens || !account || !wallet || gettingToken) return <ActivityIndicator />;
+    if (!tokens || !account || !wallet || gettingToken) {
+      return (
+        <View style={{ height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="small" />
+        </View>
+      );
+    }
 
     return (
       <SearchToken

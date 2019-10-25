@@ -199,7 +199,7 @@ class AddInternalToken extends Component {
                   isGettingFee
                     ? <Text>Calculating fee...</Text>
                     : typeof fee === 'number' && (
-                      <Text>
+                      <Text style={isNotEnoughFee && styleSheet.error}>
                         Issuance fee: {formatUtil.amountFull(fee, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)} {tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY}
                         {isNotEnoughFee && ' (please top up your balance to cover the fee)' }
                       </Text>

@@ -1,6 +1,5 @@
 import {COLORS, FONT, THEME} from '@src/styles';
 import { StyleSheet } from 'react-native';
-import {scaleInApp} from '@src/styles/TextStyle';
 
 export default StyleSheet.create({
   button: {
@@ -10,7 +9,7 @@ export default StyleSheet.create({
   text: {
     ...THEME.opacityButton.buttonText,
     ...FONT.STYLE.medium,
-    fontSize: scaleInApp(FONT.SIZE.regular),
+    fontSize: FONT.SIZE.regular,
   },
   textContainer: {
     marginHorizontal: 5,

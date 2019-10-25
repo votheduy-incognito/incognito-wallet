@@ -159,10 +159,11 @@ class AddSelfNode extends BaseScreen {
           placeholder="192.168.1.1 or node.example.com"
           label='IP address or domain'
           defaultValue={this.inputHost}
+          clearable
         />
       </>
     );
-  }
+  };
 
   validateHost = async (host)=> {
     if (host === 'localhost' || SHORT_DOMAIN_REGEX.test(host) || FULL_DOMAIN_REGEX.test(host) || IP_ADDRESS_REGEX.test(host)) {

@@ -45,7 +45,7 @@ const opacityButton = {
     letterSpacing: 0
   },
   disabled: {
-    backgroundColor: COLORS.lightGrey1,
+    backgroundColor: COLORS.blue3,
   }
 };
 
@@ -76,7 +76,7 @@ const toast = {
 const textInput = {
   ...text.defaultTextStyle,
   borderBottomWidth: DECOR.borderWidth,
-  borderColor: COLORS.lightGrey1
+  borderColor: COLORS.lightGrey5
 };
 
 const divider = {
