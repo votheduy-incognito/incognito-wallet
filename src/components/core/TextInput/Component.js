@@ -1,11 +1,24 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { TextInput as RNComponent, View, Text } from 'react-native';
+import {TextInput as RNComponent, View, Text, TouchableOpacity} from 'react-native';
+import { Icon } from 'react-native-elements';
 import { COLORS } from '@src/styles';
 import styleSheet from './style';
 
-const TextInput = ({ containerStyle, inputStyle, style, prependView, label, onFocus, onBlur, ...props }) => {
+const TextInput = ({
+  containerStyle,
+  inputStyle,
+  style,
+  prependView,
+  label,
+  onFocus,
+  onBlur,
+  onChangeText,
+  clearable,
+  ...props
+}) => {
   const [focus, setFocus] = useState(false);
+  let textInput = React.createRef();
 
   function handleFocus() {
     setFocus(true);
@@ -18,6 +31,14 @@ const TextInput = ({ containerStyle, inputStyle, style, prependView, label, onFo
     setFocus(false);
     if (typeof onBlur === 'function') {
       onBlur.apply(this, arguments);
+    }
+  }
+
+  function handleClear() {
+    textInput.current.clear();
+
+    if (onChangeText) {
+      onChangeText('');
     }
   }
 
@@ -41,7 +62,13 @@ const TextInput = ({ containerStyle, inputStyle, style, prependView, label, onFo
           ]}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          ref={textInput}
         />
+        { clearable && (
+          <TouchableOpacity onPress={handleClear}>
+            <Icon name="close" color={COLORS.lightGrey3} size={20} />
+          </TouchableOpacity>
+        ) }
         {prependView}
       </View>
     </View>
@@ -52,7 +79,12 @@ TextInput.defaultProps = {
   label: null,
   containerStyle: null,
   inputStyle: null,
-  prependView: null
+  prependView: null,
+  clearable: false,
+  onChangeText: undefined,
+  onFocus: undefined,
+  onBlur: undefined,
+  style: null,
 };
 
 TextInput.propTypes = {
@@ -60,6 +92,11 @@ TextInput.propTypes = {
   inputStyle: PropTypes.object,
   prependView: PropTypes.element,
   label: PropTypes.string,
+  clearable: PropTypes.bool,
+  onChangeText: PropTypes.func,
+  onBlur: PropTypes.func,
+  onFocus: PropTypes.func,
+  style: PropTypes.object,
 };
 
 export default TextInput;
