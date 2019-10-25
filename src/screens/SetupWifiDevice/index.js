@@ -20,6 +20,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Keyboard, Platform, Text, TextInput, View } from 'react-native';
+import { getTimeZone } from 'react-native-localize';
 import DeviceInfo from 'react-native-device-info';
 import { Button } from 'react-native-elements';
 import StepIndicator from 'react-native-step-indicator';
@@ -339,7 +340,7 @@ class SetupWifiDevice extends BaseScreen {
       this.setState({
         loading: true
       });
-      const deviceId = DeviceInfo.getUniqueID();
+      const deviceId = DeviceInfo.getUniqueId();
       var date = new Date();
       const verify_code = `${deviceId}.${date.getTime()}`;
       console.log(TAG,'sendZMQ Verify Code: ', verify_code);
@@ -379,8 +380,8 @@ class SetupWifiDevice extends BaseScreen {
           platform: CONSTANT_MINER.PRODUCT_TYPE,
           // time_zone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           // timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          time_zone: DeviceInfo.getTimezone(),
-          timezone: DeviceInfo.getTimezone(),
+          time_zone: getTimeZone(),
+          timezone: getTimeZone(),
           user_id: id,
           email: email,
           fullname: fullname,
