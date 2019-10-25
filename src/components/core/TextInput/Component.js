@@ -22,7 +22,7 @@ const TextInput = ({ containerStyle, inputStyle, style, prependView, label, onFo
   }
 
   return (
-    <View style={styleSheet.container, style}>
+    <View style={[styleSheet.container, style]}>
       {label && <Text style={[styleSheet.label, focus && styleSheet.labelFocus]}>{label}</Text>}
       <View
         style={[

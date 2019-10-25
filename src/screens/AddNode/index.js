@@ -17,7 +17,7 @@ const listItems = [
   },
   {
     title:'Virtual Node',
-    subTitle:' Run a virtual node',
+    subTitle:'Run a virtual node',
     img :images.ic_add_self_node,
   },
   // {
@@ -35,7 +35,7 @@ class AddNode extends BaseScreen {
       isAdmin: false,
       user: undefined
     };
-    
+
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -70,7 +70,7 @@ class AddNode extends BaseScreen {
 
     return (
       <View style={styles.container_list_action}>
-        
+
         {listItems.map((item, index) => {
           return (
             <ListItem

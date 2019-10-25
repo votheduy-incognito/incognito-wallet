@@ -6,6 +6,7 @@ const COLORS = {
   blue: '#25CDD6',
   blue1: '#0A3A3C',
   blue2: '#01828A',
+  blue3: '#ACE9EC',
   red: '#FE4D4D',
   green: '#26C64D',
   dark1: '#101111',

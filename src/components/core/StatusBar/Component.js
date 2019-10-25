@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {StatusBar as RNComponent, View, Platform} from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import {COLORS} from '@src/styles';
 
 const whiteScreens = ['HomeMine', 'Game', 'DApps', 'Dex', 'GetStarted'];
@@ -8,7 +9,9 @@ const blue2Screens = ['DetailDevice'];
 const blue1Screens = ['Wizard'];
 
 const isIOS = Platform.OS === 'ios';
-const STATUS_BAR_HEIGHT = isIOS ? 20 : RNComponent.currentHeight;
+const isIphoneX = DeviceInfo.hasNotch();
+
+const STATUS_BAR_HEIGHT = isIOS ? isIphoneX ? 40 : 20 : RNComponent.currentHeight;
 
 const StatusBar = React.memo(({ currentScreen }) => {
   let backgroundColor;

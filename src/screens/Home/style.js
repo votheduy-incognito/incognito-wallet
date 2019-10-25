@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native';
 import {COLORS, FONT} from '@src/styles';
-import {scaleInApp} from '@src/styles/TextStyle';
 
 export const homeStyle = StyleSheet.create({
   wrapper: {
@@ -19,11 +18,11 @@ export const homeStyle = StyleSheet.create({
     marginBottom: 'auto',
   },
   title: {
-    fontSize: scaleInApp(18),
+    fontSize: 18,
     color: COLORS.white,
     marginLeft: 'auto',
     marginRight: 'auto',
-    ...FONT.STYLE.medium,
+    ...FONT.STYLE.bold,
     marginVertical: 20,
   },
   container: {
@@ -34,17 +33,17 @@ export const homeStyle = StyleSheet.create({
   bgStyle: {
     backgroundColor: COLORS.primary,
     width: '100%',
-    height: scaleInApp(1040),
-    top: scaleInApp(-1000),
+    height: 1040,
+    top: -1000,
     position: 'absolute',
-    borderBottomLeftRadius: scaleInApp(30),
-    borderBottomRightRadius: scaleInApp(30),
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
   },
   mainContainer: {
     flex: 1,
     position: 'relative',
-    marginHorizontal: scaleInApp(15),
-    marginBottom: scaleInApp(15),
+    marginHorizontal: 15,
+    marginBottom: 15,
     padding: 0,
     backgroundColor: COLORS.white,
     borderRadius: 8,
@@ -63,28 +62,29 @@ export const homeStyle = StyleSheet.create({
     width: '100%',
   },
   addTokenBtnText: {
-    fontSize: scaleInApp(15),
     color: COLORS.white,
   },
   followTokenTitle: {
-    fontSize: scaleInApp(15),
+    fontSize: FONT.SIZE.regular,
     marginTop: 30,
   },
   followTokenBtn: {
     flexDirection: 'row',
     marginVertical: 10,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    height: 50,
   },
   followTokenText: {
     ...FONT.STYLE.medium,
-    fontSize: scaleInApp(15),
+    fontSize: 15,
     color: COLORS.primary,
     justifyContent: 'center',
-
   },
   followTokenIcon: {
     color: COLORS.primary,
-    fontSize: scaleInApp(24),
+    marginTop: 1,
+    height: 24,
+    fontSize: 24,
   },
 });
