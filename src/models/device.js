@@ -164,7 +164,7 @@ export default class Device {
   }
 
   requestWithdraw = async(account,wallet,tokenID = '')=>{
-    const result = (!_.isEmpty(account)&& !_.isEmpty(wallet) && await accountService.createAndSendWithdrawRewardTx(tokenID, account,wallet))??null;
+    const result = (!_.isEmpty(account)&& !_.isEmpty(wallet) && await accountService.createAndSendWithdrawRewardTx(tokenID, account,wallet).catch(console.log))??null;
     return result;
   }
 
