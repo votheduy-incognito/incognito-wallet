@@ -76,7 +76,7 @@ const toast = {
 const textInput = {
   ...text.defaultTextStyle,
   borderBottomWidth: DECOR.borderWidth,
-  borderColor: COLORS.lightGrey5
+  borderColor: COLORS.lightGrey4
 };
 
 const divider = {

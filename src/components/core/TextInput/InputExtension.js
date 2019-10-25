@@ -12,7 +12,8 @@ import { TextInput } from '..';
 const InputExtension = React.memo(props=>{
   const labelProps = {allowFontScaling:false,...(props?.labelProps??{})};
   const errorProps = {allowFontScaling:false,...(props?.errorProps??{})};
-  return <Input inputComponent={TextInput} {...props} labelProps={labelProps} errorProps={errorProps} />;
+  const inputContainerStyle = {...(props?.inputContainerStyle),borderBottomWidth:0};
+  return <Input inputComponent={TextInput} {...props} labelProps={labelProps} errorProps={errorProps} inputContainerStyle={inputContainerStyle} />;
 });
 
 
