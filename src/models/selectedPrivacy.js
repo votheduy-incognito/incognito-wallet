@@ -19,8 +19,8 @@ class SelectedPrivacy {
     this.isWithdrawable = this.isPToken;
     this.isDeposable = this.isPToken;
     this.isErc20Token = this.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20;
-    this.isDecentralized = this.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH || this.isErc20Token;
-    this.isCentralized = !this.isDecentralized;
+    this.isDecentralized = this.isToken && (this.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) || this.isErc20Token;
+    this.isCentralized = this.isToken && !this.isDecentralized;
   }
 }
 

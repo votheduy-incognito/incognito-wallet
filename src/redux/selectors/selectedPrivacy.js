@@ -22,6 +22,10 @@ export const getPrivacyDataByTokenID = createSelector(
 
     const pTokenData = _pTokens?.find(t => t?.tokenId === tokenID);
 
+    if (!internalTokenData && !pTokenData && tokenID !== CONSTANT_COMMONS.PRV_TOKEN_ID) {
+      throw new Error(`Can not find token with id ${tokenID}`);
+    }
+
     return new SelectedPrivacy(account, internalTokenData, pTokenData);
   })
 );
@@ -35,6 +39,7 @@ export const selectedPrivacy = createSelector(
 );
 
 export default {
+  getPrivacyDataByTokenID,
   selectedPrivacyTokenID,
   selectedPrivacy
 };
