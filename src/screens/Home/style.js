@@ -73,7 +73,6 @@ export const homeStyle = StyleSheet.create({
     marginVertical: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 50,
   },
   followTokenText: {
     ...FONT.STYLE.medium,

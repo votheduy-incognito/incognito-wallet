@@ -13,7 +13,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
+import { getTimeZone } from 'react-native-localize';
 import StepIndicator from 'react-native-step-indicator';
 import {Text,ButtonExtension as Button,InputExtension as Input} from '@components/core';
 import styles, {placeHolderColor} from './style';
@@ -237,7 +237,7 @@ class AddSelfNode extends BaseScreen {
       address_lat: 0.0,
       platform: CONSTANT_MINER.PRODUCT_TYPE,
       product_type: DEVICES.VIRTUAL_TYPE,
-      timezone: DeviceInfo.getTimezone(),
+      timezone: getTimeZone(),
       user_id: id,
       email: email,
       id: id,
@@ -253,6 +253,8 @@ class AddSelfNode extends BaseScreen {
       const userJson = await LocalDatabase.getUserInfo();
       const host = _.trim(this.inputHost).toLowerCase();
 
+      console.log(host);
+
       // let privateKey = selectedAccount?.PrivateKey||'';
       // privateKey = _.trim(_.isEmpty(privateKey)?this.inputPrivateKey:privateKey);
       if (userJson && !_.isEmpty(host)) {
@@ -266,6 +268,7 @@ class AddSelfNode extends BaseScreen {
         return true;
       }
     } catch (errorMessage) {
+      console.log(errorMessage);
       new ExHandler(errorMessage).showErrorToast();
       return errorMessage;
     }

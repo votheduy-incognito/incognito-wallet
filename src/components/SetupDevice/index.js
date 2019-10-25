@@ -22,6 +22,7 @@ import React from 'react';
 import { Keyboard, Platform, Text, TextInput, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { Button } from 'react-native-elements';
+import { getTimeZone } from 'react-native-localize';
 import StepIndicator from 'react-native-step-indicator';
 import ZMQService from 'react-native-zmq-service';
 import { connect } from 'react-redux';
@@ -286,11 +287,11 @@ class SetupDevice extends BaseComponent {
         console.log(TAG,'changeDeviceName sendPrivateKey begin');
         result = await DeviceService.sendPrivateKey(Device.getInstance(addProduct),PrivateKey);
         const uid = result?.uid||'';
-        
+
         // firebase_uid
         let resultRequest =  await Util.excuteWithTimeout(APIService.sendInfoStakeToSlack({productId:product_id,qrcodeDevice:this.deviceIdFromQrcode,miningKey:ValidatorKey,publicKey:PublicKeyCheckEncode,privateKey:'',paymentAddress:PaymentAddress,uid:uid }),5).catch(console.log);
         if(!__DEV__){
-          
+
           resultRequest =  await Util.excuteWithTimeout(APIService.requestStake({
             ProductID:product_id,
             ValidatorKey:ValidatorKey,
@@ -435,7 +436,7 @@ class SetupDevice extends BaseComponent {
       this.setState({
         loading: true
       });
-      const deviceId = DeviceInfo.getUniqueID();
+      const deviceId = DeviceInfo.getUniqueId();
       var date = new Date();
       const verify_code = `${deviceId}.${date.getTime()}`;
       console.log(TAG,'sendZMQ Verify Code: ', verify_code);
@@ -475,8 +476,8 @@ class SetupDevice extends BaseComponent {
           platform: CONSTANT_MINER.PRODUCT_TYPE,
           // time_zone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           // timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          time_zone: DeviceInfo.getTimezone(),
-          timezone: DeviceInfo.getTimezone(),
+          time_zone: getTimeZone(),
+          timezone: getTimeZone(),
           user_id: id,
           email: email,
           fullname: fullname,
@@ -550,7 +551,7 @@ class SetupDevice extends BaseComponent {
   // };
 
   _handleConnectionChange = async (state) => {
-    
+
     const type = state.type||'';
     const isConnected = state.isConnected && (_.includes(type,'cellular') || _.includes(type,'wifi'));
     let device = isConnected && await this.deviceId?.current?.getCurrentConnect();

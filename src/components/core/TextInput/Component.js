@@ -13,7 +13,6 @@ const TextInput = ({
   label,
   onFocus,
   onBlur,
-  onChangeText,
   clearable,
   ...props
 }) => {
@@ -35,6 +34,7 @@ const TextInput = ({
   }
 
   function handleClear() {
+    const { onChangeText } = props;
     textInput.current.clear();
 
     if (onChangeText) {

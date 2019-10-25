@@ -76,7 +76,7 @@ class HomeMine extends BaseScreen {
         loading:true
       });
       let list = [];
-      const deviceId = DeviceInfo.getUniqueID();
+      const deviceId = DeviceInfo.getUniqueId();
       const params = {
         email: deviceId + '@minerX.com',
         password: Util.hashCode(deviceId)

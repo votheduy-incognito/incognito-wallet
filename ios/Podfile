@@ -73,12 +73,13 @@ target 'constantWalletMobile' do
   pod 'Permission-SpeechRecognition', :path => "#{permissions_path}/SpeechRecognition.podspec"
   pod 'Permission-StoreKit', :path => "#{permissions_path}/StoreKit.podspec"
 
-  
+
   pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
+  pod 'RNLocalize', :path => '../node_modules/react-native-localize'
   pod 'react-native-iot-wifi', :path => '../node_modules/react-native-iot-wifi'
   pod 'RNOS', :path => '../node_modules/react-native-os'
   pod 'TcpSockets', :path => '../node_modules/react-native-tcp'
-  
+
 #  pod 'RNZmqService', :path => '../node_modules/react-native-zmq-service'
   pod 'RNFirebase', :path => '../node_modules/react-native-firebase/ios'
   pod 'RNSensors', :path => '../node_modules/react-native-sensors'
@@ -89,8 +90,8 @@ target 'constantWalletMobile' do
     inherit! :search_paths
     # Pods for testing
     # pod 'react-native-udp', :path => '../node_modules/react-native-udp'
-    
-    
+
+
 
   end
 
@@ -98,21 +99,21 @@ target 'constantWalletMobile' do
     inherit! :search_paths
     # Pods for testing
   end
-  
+
   # React-Native is not great about React double-including from the Podfile
   post_install do |installer|
     installer.pods_project.targets.each do |target|
       if target.name == "React"
         target.remove_from_project
       end
-      
+
       # It removes React & Yoga from the Pods project, as it is already included in the main project.
       targets_to_ignore = %w(React yoga)
       if targets_to_ignore.include? target.name
         target.remove_from_project
       end
     end
-    
+
 #    rnfirebase = installer.pods_project.targets.find { |target| target.name == 'RNFirebase' }
 #    rnfirebase.build_configurations.each do |config|
 #      config.build_settings['HEADER_SEARCH_PATHS'] = '$(inherited) ${PODS_ROOT}/Headers/Public/**'
