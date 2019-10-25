@@ -18,6 +18,27 @@ const style = StyleSheet.create({
     backgroundColor: COLORS.blue,
     minWidth: 100
   },
+  controlContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  navigateGroup: {
+    flexDirection: 'row',
+    marginRight: 20,
+  },
+  urlText: {
+    flex: 1,
+    borderBottomColor: COLORS.lightGrey3,
+    borderBottomWidth: 1
+  },
+  btnGroup: {
+    flexDirection: 'row',
+    marginLeft: 20
+  },
+  controlBtn: {
+    fontSize: 40,
+    marginRight: 30,
+  }
 });
 
 export default style;
