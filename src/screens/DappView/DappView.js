@@ -8,7 +8,7 @@ import RequestSendTx from './RequestSendTx';
 import { APPSDK, ERRORSDK, CONSTANTSDK } from './sdk';
 import styles from './style';
 
-let sdk : APPSDK = null;
+let sdk : APPSDK= null;
 
 const updateDataToDapp = (data) => {
   if (!sdk) return;
@@ -18,7 +18,7 @@ const updateDataToDapp = (data) => {
   const paymentAddress = selectedPrivacy?.paymentAddress;
 
   paymentAddress && sdk.sendUpdatePaymentAddress(paymentAddress);
-  balance >= 0 && sdk.sendUpdateBalance(selectedPrivacy?.amount);
+  selectedPrivacy && sdk.sendUpdateTokenInfo({ balance, symbol: selectedPrivacy?.symbol, name: selectedPrivacy?.name });
   listSupportedToken && sdk.sendListToken(listSupportedToken);
 };
 
@@ -130,6 +130,11 @@ class DappView extends PureComponent {
 
   renderControlBar = () => {
     const { url, onCloseDapp } = this.props;
+    const onClose = () => {
+      this.webviewInstance = null;
+      sdk = null;
+      onCloseDapp();
+    };
     return (
       <View style={styles.controlContainer}>
         <View style={styles.navigateGroup}>
@@ -139,7 +144,7 @@ class DappView extends PureComponent {
         </View>
         <Text style={styles.urlText} numberOfLines={1} ellipsizeMode="tail">{url}</Text>
         <View style={styles.btnGroup}>
-          {this.renderControlButton({ name: 'ios-close', onPress: onCloseDapp, size: 60 })}
+          {this.renderControlButton({ name: 'ios-close', onPress: onClose, size: 60 })}
         </View>
       </View>
     );
@@ -152,7 +157,12 @@ class DappView extends PureComponent {
       <View style={styles.container}>
         {this.renderControlBar()}
         <WebView
-          ref={webview => { sdk = webview && new APPSDK(webview); this.webviewInstance = webview; }}
+          ref={webview => {
+            if (webview) {
+              sdk = new APPSDK(webview);
+              this.webviewInstance = webview;
+            }
+          }}
           containerStyle={styles.webview}
           source={{ uri: url }}
           allowsBackForwardNavigationGestures

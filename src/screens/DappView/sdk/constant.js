@@ -1,7 +1,7 @@
 const SDK_MODULE = 'incognitoWallet';
 
 const DATA_NAMES = {
-  BALANCE: 'balance',
+  TOKEN_INFO: 'token_info',
   PAYMENT_ADDRESS: 'payment_andress',
   TX_PENDING_RESULT: 'tx_pending_result',
   LIST_TOKEN: 'list_token'

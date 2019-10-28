@@ -10,7 +10,7 @@ class Dapps extends PureComponent {
   constructor() {
     super();
     this.state = {
-      url: 'http://192.168.1.57:8080',
+      url: 'http://192.168.0.87:9000',
       openDapp: false,
     };
   }
