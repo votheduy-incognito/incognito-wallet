@@ -67,7 +67,7 @@ class Home extends React.Component {
             tokens?.map(token => (
               <CryptoItemCard
                 style={homeStyle.cryptoItem}
-                key={token.symbol}
+                key={token.id}
                 token={token}
                 isGettingBalance={tokenGettingBalanceList?.includes(token?.symbol)}
                 onPress={onSelectToken}

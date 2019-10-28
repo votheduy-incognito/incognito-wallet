@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Text, Button } from '@src/components/core';
+import { View, Text, Button, Container } from '@src/components/core';
 import { accountSeleclor, tokenSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import convertUtil from '@src/utils/convert';
 import accountService from '@src/services/wallet/accountService';
@@ -8,6 +8,7 @@ import tokenService from '@src/services/wallet/tokenService';
 import LoadingTx from '@src/components/LoadingTx';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
+import { requestSendTxStyle } from './style';
 
 class RequestSendTx extends Component {
   constructor(props) {
@@ -107,19 +108,31 @@ class RequestSendTx extends Component {
     }
   }
 
+  renderData = (label, value) => {
+    return (
+      <View style={requestSendTxStyle.infoContainer}>
+        <Text style={requestSendTxStyle.infoLabel}>{label}</Text>
+        <Text style={requestSendTxStyle.infoValue}>{value}</Text>
+      </View>
+    );
+  }
+
   render() {
     const { isSending } = this.state;
     const { onCancel, selectedPrivacy, toAddress, amount, url } = this.props;
     return (
-      <View>
-        <Text> REQUEST SEND TX </Text>
-        <Text>Daap: {url}</Text>
-        <Text>To: {toAddress}</Text>
-        <Text>Amount: {amount} {selectedPrivacy?.symbol}</Text>
-        <Button title='Cancel' onPress={onCancel} />
-        <Button title='Confirm Send' onPress={this.handleSendTx} />
+      <Container style={requestSendTxStyle.container}>
+        <Text style={requestSendTxStyle.title}> REQUEST SEND TX </Text>
+        {this.renderData('DAPP URL', url)}
+        {this.renderData('To address', toAddress)}
+        {this.renderData('Amount', `${amount} ${selectedPrivacy?.symbol}`)}
+
+        <View style={requestSendTxStyle.groupBtn}>
+          <Button style={requestSendTxStyle.cancelBtn} title='Cancel' onPress={onCancel} />
+          <Button style={requestSendTxStyle.submitBtn} title='Confirm Send' onPress={this.handleSendTx} />
+        </View>
         { isSending && <LoadingTx /> }
-      </View>
+      </Container>
     );
   }
 }
