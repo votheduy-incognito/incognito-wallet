@@ -11,10 +11,9 @@ import { onClickView } from '@src/utils/ViewUtil';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState, useRef, useEffect, createRef, forwardRef, useImperativeHandle } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { getTimeZone } from 'react-native-localize';
-import StepIndicator from 'react-native-step-indicator';
 import {Text,ButtonExtension as Button,InputExtension as Input} from '@components/core';
 import styles, {placeHolderColor} from './style';
 
@@ -24,11 +23,35 @@ const IP_ADDRESS_REGEX = /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(:[0-9]+)?$/;
 const LOCALHOST_REGEX = /^localhost(:[0-9]+)?$/;
 
 export const TAG = 'AddSelfNode';
-
-const errorMessage = 'Something went wrong. Let\'s start again.';
-
-const labels = ['Connect Hotpot','Send Wifi Info','Verify Code'];
-
+const ViewInput = forwardRef((props,ref)=>{
+  const {  textInput, item,item_container_input,label } = styles;
+  let inputView = useRef(null);
+  const [text,setText] = useState('');
+  useImperativeHandle(ref, () => ({
+    getText: () => {
+      return text;
+    }
+  }));
+  
+  return (
+    <Input
+      ref={inputView}
+      placeholderTextColor={placeHolderColor}
+      maxLength={200}
+      errorMessage={!_.isNil(inputView.current) && _.isEmpty(text)?'Required':''}
+      labelStyle={label}
+      onChangeText={(t) => setText(t)}
+      underlineColorAndroid="transparent"
+      inputStyle={textInput}
+      inputContainerStyle={item_container_input}
+      containerStyle={item}
+      placeholder="192.168.1.1 or node.example.com"
+      label='IP address or domain'
+      defaultValue={text}
+      clearable
+    />
+  );
+});
 class AddSelfNode extends BaseScreen {
 
   constructor(props) {
@@ -46,9 +69,7 @@ class AddSelfNode extends BaseScreen {
     };
 
     this.viewImportPrivateKey = React.createRef();
-    // this.viewInnputDeviceName = React.createRef();
-    // this.viewInputHost = React.createRef();
-    // this.viewInputPort = React.createRef();
+    this.inputView = React.createRef();
     this.inputDeviceName = '';
     this.inputPrivateKey = '';
     this.inputHost = '';
@@ -70,100 +91,6 @@ class AddSelfNode extends BaseScreen {
     }
     return null;
   }
-
-  handleChooseItemAccount=(item,index)=>{
-    this.inputPrivateKey = _.isEmpty(item?.PrivateKey)? this.inputPrivateKey:this.inputPrivateKey;
-    this.setState({selectedAccount:item,isShowListAccount:false});
-  }
-
-  renderWifiPassword=()=>{
-    const {  textInput, item, errorText,item_container_input,label } = styles;
-    const {
-      errorMessage,
-      showModal,
-      currentPositionStep,
-      isDoingSetUp,
-    } = this.state;
-    if(showModal){
-      return null;
-    }
-
-    return (
-      isDoingSetUp? (
-        <StepIndicator
-          direction='vertical'
-          stepCount={labels.length}
-          currentPosition={currentPositionStep}
-          labels={labels}
-        />
-      ):(
-        <>
-          <Input
-            placeholderTextColor={placeHolderColor}
-            maxLength={100}
-            labelStyle={label}
-            onChangeText={(text) =>this.inputHost = text}
-            underlineColorAndroid="transparent"
-            inputStyle={textInput}
-            inputContainerStyle={item_container_input}
-            containerStyle={[item]}
-            placeholder="Host"
-            label='Host'
-            defaultValue={this.inputHost}
-          />
-          <Input
-            labelStyle={label}
-            placeholderTextColor={placeHolderColor}
-            onChangeText={(text) =>this.inputPort = text}
-            underlineColorAndroid="transparent"
-            inputStyle={textInput}
-            inputContainerStyle={item_container_input}
-            containerStyle={[item]}
-            keyboardType='numeric'
-            maxLength={6}
-            label='Port'
-            defaultValue={this.inputPort}
-            placeholder="Port"
-          />
-
-          {!_.isEmpty(errorMessage) ? (
-            <Text style={[errorText]}>*{errorMessage}</Text>
-          ) : null}
-
-        </>
-      )
-    );
-  }
-
-  renderInput=()=>{
-    const {  textInput, item,item_container_input,label } = styles;
-    const {
-      errorMessage,
-      showModal,
-      currentPositionStep,
-      isDoingSetUp,
-    } = this.state;
-
-    return (
-      <>
-        <Input
-          placeholderTextColor={placeHolderColor}
-          maxLength={200}
-          errorMessage={_.isEmpty(this.inputHost)?'Required':''}
-          labelStyle={label}
-          onChangeText={(text) =>this.inputHost = text}
-          underlineColorAndroid="transparent"
-          inputStyle={textInput}
-          inputContainerStyle={item_container_input}
-          containerStyle={[item]}
-          placeholder="192.168.1.1 or node.example.com"
-          label='IP address or domain'
-          defaultValue={this.inputHost}
-          clearable
-        />
-      </>
-    );
-  };
 
   validateHost = async (host)=> {
     if (host === 'localhost' || SHORT_DOMAIN_REGEX.test(host) || FULL_DOMAIN_REGEX.test(host) || IP_ADDRESS_REGEX.test(host)) {
@@ -251,12 +178,9 @@ class AddSelfNode extends BaseScreen {
   handleSetUpPress = onClickView(async ()=>{
     try {
       const userJson = await LocalDatabase.getUserInfo();
-      const host = _.trim(this.inputHost).toLowerCase();
+      const host = _.trim(this.inputView.current?.getText()).toLowerCase();
 
-      console.log(host);
-
-      // let privateKey = selectedAccount?.PrivateKey||'';
-      // privateKey = _.trim(_.isEmpty(privateKey)?this.inputPrivateKey:privateKey);
+      console.log(TAG,'handleSetUpPress host = ',host);
       if (userJson && !_.isEmpty(host)) {
         await this.validateHost(host);
         const listLocalDevice = await LocalDatabase.getListDevices();
@@ -267,10 +191,8 @@ class AddSelfNode extends BaseScreen {
         this.goToScreen(routeNames.HomeMine);
         return true;
       }
-    } catch (errorMessage) {
-      console.log(errorMessage);
-      new ExHandler(errorMessage).showErrorToast();
-      return errorMessage;
+    } catch (error) {
+      new ExHandler(error,'Can\'t add virtual node').showErrorToast();
     }
   });
 
@@ -281,7 +203,8 @@ class AddSelfNode extends BaseScreen {
       <ScrollView keyboardShouldPersistTaps="handled">
         <Loader loading={loading} />
         <KeyboardAvoidingView contentContainerStyle={{flex:1}} keyboardVerticalOffset={50} behavior="padding" style={[container]}>
-          {this.renderInput()}
+          
+          <ViewInput ref={this.inputView} />
           <Button
             titleStyle={styles.textTitleButton}
             buttonStyle={styles.button}
