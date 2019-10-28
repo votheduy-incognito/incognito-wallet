@@ -48,7 +48,7 @@ class RequestSendTx extends Component {
   _handleSendToken = async ({ toAddress, amount, feeUnit, fee }) => {
     const { selectedPrivacy, account, wallet } = this.props;
     feeUnit = feeUnit || selectedPrivacy?.symbol;
-    fee = fee || 2;
+    fee = 0;
 
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
     const originalFee = Number(fee);
@@ -109,10 +109,13 @@ class RequestSendTx extends Component {
 
   render() {
     const { isSending } = this.state;
-    const { onCancel } = this.props;
+    const { onCancel, selectedPrivacy, toAddress, amount, url } = this.props;
     return (
       <View>
-        <Text> RequestSendTx </Text>
+        <Text> REQUEST SEND TX </Text>
+        <Text>Daap: {url}</Text>
+        <Text>To: {toAddress}</Text>
+        <Text>Amount: {amount} {selectedPrivacy?.symbol}</Text>
         <Button title='Cancel' onPress={onCancel} />
         <Button title='Confirm Send' onPress={this.handleSendTx} />
         { isSending && <LoadingTx /> }
