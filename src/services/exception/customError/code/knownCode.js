@@ -62,7 +62,7 @@ const staking = {
 };
 
 const dapps = {
-  daaps_invalid_daap_url: knownError(-25)
+  daaps_invalid_daap_url: knownError(-27)
 };
 
 
