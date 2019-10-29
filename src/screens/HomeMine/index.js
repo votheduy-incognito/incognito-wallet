@@ -4,7 +4,7 @@ import images from '@src/assets';
 import DialogLoader from '@src/components/DialogLoader';
 import HeaderBar from '@src/components/HeaderBar/HeaderBar';
 import HomeMineItem from '@src/components/HomeMineItem';
-import { CONSTANT_MINER } from '@src/constants';
+import { CONSTANT_MINER, CONSTANT_COMMONS } from '@src/constants';
 import Device from '@src/models/device';
 import routeNames from '@src/router/routeNames';
 import APIService from '@src/services/api/miner/APIService';
@@ -19,6 +19,7 @@ import DeviceInfo from 'react-native-device-info';
 import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 import {COLORS} from '@src/styles';
+import { logEvent } from '@src/services/firebase';
 import style from './style';
 
 export const TAG = 'HomeMine';
@@ -49,6 +50,8 @@ class HomeMine extends BaseScreen {
   }
   onResume = () => {
     this.handleRefresh();
+    const {candidatePaymentAddress = 'HIEN_TON',fee = 1000000,stakeType = 1,} = {};
+    logEvent(CONSTANT_COMMONS.TRACK_LOG_EVENT.CLICK_STAKING,{candidatePaymentAddress:candidatePaymentAddress,fee:String(fee),stakeType:stakeType,status:CONSTANT_COMMONS.TRACK_LOG_EVENT_STATUS.BEGIN});
   };
   async componentWillMount(){
     await this.createSignIn();
@@ -67,6 +70,7 @@ class HomeMine extends BaseScreen {
     //   PaymentAddress:PaymentAddress
     // });
     // console.log(TAG,'componentWillMount response = ',s);
+    
   }
 
   createSignIn = async () => {

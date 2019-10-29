@@ -18,7 +18,15 @@ const TOKEN_SYMBOL = {
 const AMOUNT_MAX_FRACTION_DIGITS = 4;
 
 const MIN_AMOUNT_REQUIRED = 1/10**AMOUNT_MAX_FRACTION_DIGITS;
-
+const TRACK_LOG_EVENT = {
+  CLICK_STAKING:'click_staking'
+};
+const TRACK_LOG_EVENT_STATUS = {
+  BEGIN:'INIT',
+  DOING:'DOING',
+  PASS:'PASS',
+  FAIL:'FAIL'
+};
 export default {
   // old varibles, maybe remove later
   STAKING_TYPES: {
@@ -74,5 +82,7 @@ export default {
       FAILED: 'FAILED',
       PENDING: 'PENDING'
     }
-  }
+  },
+  TRACK_LOG_EVENT,
+  TRACK_LOG_EVENT_STATUS
 };

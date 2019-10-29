@@ -1,7 +1,17 @@
 import firebase from 'react-native-firebase';
+import _ from 'lodash';
 
 export const notifications = firebase.notifications;
-
+export const logEvent = (event,eventParams = {})=>{
+  if(!_.isEmpty(event)){
+    try {
+      firebase.analytics().logEvent(event, eventParams);  
+    } catch (error) {
+      console.log(error);
+    }
+    
+  }
+};
 export const initFirebaseNotification = async () => {
   try {
     const enabled = await firebase.messaging().hasPermission();

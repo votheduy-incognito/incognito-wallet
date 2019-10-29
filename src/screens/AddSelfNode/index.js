@@ -38,7 +38,7 @@ const ViewInput = forwardRef((props,ref)=>{
       ref={inputView}
       placeholderTextColor={placeHolderColor}
       maxLength={200}
-      errorMessage={!_.isNil(inputView.current) && _.isEmpty(text)?'Required':''}
+      // errorMessage={!_.isNil(inputView.current) && _.isEmpty(text)?'Required':''}
       labelStyle={label}
       onChangeText={(t) => setText(t)}
       underlineColorAndroid="transparent"

@@ -10,5 +10,4 @@ export const DEVICES={
   CLOUD_TYPE:'CLOUD',
 };
 
-
 export default MINER;
