@@ -29,10 +29,11 @@ class NetworkSetting extends Component {
   };
 
   handleExpand = networkId => {
-    this.setState(({ expandedNetworkId }) => ({
-      // operating like a toggle
-      expandedNetworkId: networkId === expandedNetworkId ? null : networkId
-    }));
+    
+    // this.setState(({ expandedNetworkId }) => ({
+    //   // operating like a toggle
+    //   expandedNetworkId: networkId === expandedNetworkId ? null : networkId
+    // }));
   };
 
   render() {
