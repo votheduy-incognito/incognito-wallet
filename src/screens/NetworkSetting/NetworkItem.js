@@ -37,13 +37,13 @@ const NetworkItem = ({ active, network, expanded, onExpand, onActive, reloadNetw
             {network?.address}
           </Text>
         </View>
-        <View style={networkItemStyle.arrowIcon}>
+        {/* <View style={networkItemStyle.arrowIcon}>
           <Icon
             type='material'
             name={expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
             size={24}
           />
-        </View>
+        </View> */}
       </TouchableOpacity>
     </View>
     {expanded && (

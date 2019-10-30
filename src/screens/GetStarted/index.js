@@ -73,7 +73,7 @@ class GetStartedContainer extends Component {
         throw new CustomError(ErrorCode.getStarted_load_token_failed, { rawError: e });
       }
 
-      if (!(await serverService.get())) {
+      if (__DEV__ || !(await serverService.get())) {
         await serverService.setDefaultList();
       }
       const wallet = await this.getExistedWallet();

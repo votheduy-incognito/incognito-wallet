@@ -97,7 +97,7 @@ RCT_EXPORT_METHOD(generateBLSKeyPairFromSeed:(NSString *)data callback:(RCTRespo
 //exports a method initPRVContributionTx to javascript
 RCT_EXPORT_METHOD(initPRVContributionTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
   @try{
-    NSString *rs = GomobileInitPRVContributionTx(data);
+    NSString *rs = GomobileInitPRVContributionTx(data,nil);
     callback(@[[NSNull null], rs]);
   }
   @catch(NSException *exception){
@@ -108,7 +108,7 @@ RCT_EXPORT_METHOD(initPRVContributionTx:(NSString *)data callback:(RCTResponseSe
 //exports a method initPTokenContributionTx to javascript
 RCT_EXPORT_METHOD(initPTokenContributionTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
   @try{
-    NSString *rs = GomobileInitPTokenContributionTx(data);
+    NSString *rs = GomobileInitPTokenContributionTx(data,nil);
     callback(@[[NSNull null], rs]);
   }
   @catch(NSException *exception){
@@ -119,7 +119,7 @@ RCT_EXPORT_METHOD(initPTokenContributionTx:(NSString *)data callback:(RCTRespons
 //exports a method initPRVTradeTx to javascript
 RCT_EXPORT_METHOD(initPRVTradeTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
   @try{
-    NSString *rs = GomobileInitPRVTradeTx(data);
+    NSString *rs = GomobileInitPRVTradeTx(data,nil);
     callback(@[[NSNull null], rs]);
   }
   @catch(NSException *exception){
@@ -130,7 +130,7 @@ RCT_EXPORT_METHOD(initPRVTradeTx:(NSString *)data callback:(RCTResponseSenderBlo
 //exports a method initPTokenTradeTx to javascript
 RCT_EXPORT_METHOD(initPTokenTradeTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
   @try{
-    NSString *rs = GomobileInitPTokenTradeTx(data);
+    NSString *rs = GomobileInitPTokenTradeTx(data,nil);
     callback(@[[NSNull null], rs]);
   }
   @catch(NSException *exception){
@@ -141,7 +141,7 @@ RCT_EXPORT_METHOD(initPTokenTradeTx:(NSString *)data callback:(RCTResponseSender
 //exports a method withdrawDexTx to javascript
 RCT_EXPORT_METHOD(withdrawDexTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
   @try{
-    NSString *rs = GomobileWithdrawDexTx(data);
+    NSString *rs = GomobileWithdrawDexTx(data,nil);
     callback(@[[NSNull null], rs]);
   }
   @catch(NSException *exception){
