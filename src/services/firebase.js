@@ -1,13 +1,17 @@
 import firebase from 'react-native-firebase';
 import _ from 'lodash';
+import LocalDatabase from '@src/utils/LocalDatabase';
 
 export const notifications = firebase.notifications;
-export const logEvent = (event,eventParams = {})=>{
+const TAG = 'firebase';
+export const logEvent = async (event,eventParams = {},isGetUserInfo = true)=>{
   if(!_.isEmpty(event)){
     try {
-      firebase.analytics().logEvent(event, eventParams);  
+      let user = isGetUserInfo ? await LocalDatabase.getUserInfo().catch(console.log):null;
+      user = _.isEmpty(user)?{}:{email:user.toJSON().email};
+      firebase.analytics().logEvent(event, {...user, ...eventParams});  
     } catch (error) {
-      console.log(error);
+      console.log(TAG,'logEvent error = ',error);
     }
     
   }

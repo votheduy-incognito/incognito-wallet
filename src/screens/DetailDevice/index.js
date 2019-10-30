@@ -432,6 +432,13 @@ class DetailDevice extends BaseScreen {
         funderAccountName:device.accountName()
       },
     });
+
+    // this.goToScreen(routeNames.AddStake,{
+    //   accountInfo:{
+    //     minerAccountName:'Pigeon',
+    //     funderAccountName:'Pigeon'
+    //   },
+    // });
   });
 
   renderGroupBalance = ()=>{

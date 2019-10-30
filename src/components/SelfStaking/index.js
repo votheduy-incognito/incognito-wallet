@@ -53,7 +53,6 @@ const mapStateToProps = (state) => ({
   selectedPrivacy: selectedPrivacy(state),
   wallet: state?.wallet,
   getAccountByName: getAccountByName(state),
-  listAccount: listAccount(state),
   defaultAccountName: defaultAccount(state)?.name
 });
 

@@ -50,8 +50,8 @@ class HomeMine extends BaseScreen {
   }
   onResume = () => {
     this.handleRefresh();
-    const {candidatePaymentAddress = 'HIEN_TON',fee = 1000000,stakeType = 1,} = {};
-    logEvent(CONSTANT_COMMONS.TRACK_LOG_EVENT.CLICK_STAKING,{candidatePaymentAddress:candidatePaymentAddress,fee:String(fee),stakeType:stakeType,status:CONSTANT_COMMONS.TRACK_LOG_EVENT_STATUS.BEGIN});
+    // const {candidatePaymentAddress = 'HIEN_TON',fee = 1000000,stakeType = 1,} = {};
+    // logEvent(CONSTANT_COMMONS.TRACK_LOG_EVENT.CLICK_STAKING,{candidatePaymentAddress:candidatePaymentAddress,fee:String(fee),stakeType:stakeType,status:CONSTANT_COMMONS.TRACK_LOG_EVENT_STATUS.BEGIN});
   };
   async componentWillMount(){
     await this.createSignIn();
