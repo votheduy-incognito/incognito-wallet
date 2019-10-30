@@ -12,7 +12,12 @@ try {
     'initBurningRequestTx',
     'initWithdrawRewardTx',
     'staking',
-    'generateBLSKeyPairFromSeed'
+    'generateBLSKeyPairFromSeed',
+    'initPRVContributionTx',
+    'initPTokenContributionTx',
+    'initPRVTradeTx',
+    'initPTokenTradeTx',
+    'withdrawDexTx'
   ];
   const syncMethods = [
     'scalarMultBase',
