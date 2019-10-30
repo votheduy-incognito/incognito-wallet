@@ -10,9 +10,12 @@ import convertUtil from '@src/utils/convert';
 import formatUtil from '@src/utils/format';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import BaseScreen from '@src/screens/BaseScreen';
+import _ from 'lodash';
 import styles from './style';
 
-class SelfStaking extends Component {
+const TAG  = 'SelfStaking';
+class SelfStaking extends BaseScreen {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,38 +29,41 @@ class SelfStaking extends Component {
     };
   }
 
-  static getDerivedStateFromProps(nextProps) {
-    let state = {};
+  static getDerivedStateFromProps(nextProps,prevState) {
+  
     const { getAccountByName, minerAccountName, funderAccountName } = nextProps;
+    const {funderAccount,minerAccount} = prevState;
     if (getAccountByName) {
-      state = {
-        ...state,
-        minerAccount: getAccountByName(minerAccountName || funderAccountName)
-      };
-    }
-
-    if (getAccountByName && funderAccountName) {
-      state = {
-        ...state,
-        funderAccount: getAccountByName(funderAccountName)
-      };
-    }
-
-    return state;
-  }
-
-  componentDidMount() {
-    const { navigation } = this.props;
-    navigation.addListener(
-      'didBlur',
-      () => {
-        const { funderAccount } = this.state;
-        if (!funderAccount) {
-          console.log('Navigation go back', navigation.state.params);
-          navigation?.goBack();
-        }
+      if(!_.isEqual(minerAccount?.name,minerAccountName)){
+        return {
+          minerAccount: getAccountByName(minerAccountName || funderAccountName)
+        };
       }
-    );
+
+      if(!_.isEqual(funderAccount?.name,funderAccountName)){
+        return {
+          funderAccount: getAccountByName(funderAccountName)
+        };
+      }
+      
+    }
+    return null;
+  }
+  onResume = ()=>{
+    const { funderAccount } = this.state;
+    const { getAccountByName, minerAccountName, funderAccountName } = this.props;
+    if (getAccountByName) {
+      this.setState({
+        minerAccount: getAccountByName(minerAccountName || funderAccountName),
+        funderAccount: getAccountByName(funderAccountName)
+
+      });
+      
+    }
+    // if (!funderAccount) {
+    //   console.log(TAG,'onResume null');
+    //   this.onPressBack();
+    // }
   }
 
 
@@ -117,28 +123,37 @@ class SelfStaking extends Component {
     const { amount, finalFee, feeUnit, stakeTypeId, isStaking, minerAccount, funderAccount } = this.state;
     const { selectedPrivacy } = this.props;
     const toAddress = minerAccount?.paymentAddress || selectedPrivacy?.paymentAddress;
-    const isNotEnoughBalance = amount > funderAccount?.value;
+    const isCantLoadAccount =  _.isEmpty(funderAccount) || _.isNil(funderAccount?.value) ||_.isNaN(funderAccount?.value);
+    const isNotEnoughBalance = isCantLoadAccount || amount > funderAccount?.value;
     const isCanSubmit = !isNotEnoughBalance;
 
     return (
       <ScrollView>
+        {isCantLoadAccount &&(
+          <View style={styles.notEnoughPRVContainer}>
+            <Image source={warningImg} style={styles.notEnoughPRVCImg} />
+            <Text style={styles.notEnoughPRVText}>Can not load account</Text>
+          </View>
+        )}
         {
-          isNotEnoughBalance && (
+          !isCantLoadAccount && isNotEnoughBalance && (
             <View style={styles.notEnoughPRVContainer}>
               <Image source={warningImg} style={styles.notEnoughPRVCImg} />
               <Text style={styles.notEnoughPRVText}>Please top up PRV</Text>
             </View>
           )
         }
-        <StakeValidatorTypeSelector
-          isNotEnoughBalance={isNotEnoughBalance}
-          account={funderAccount}
-          stakeTypeId={stakeTypeId}
-          onChange={this.handleStakeTypeChange}
-          style={styles.stakeSelector}
-        />
+        {!isCantLoadAccount &&(
+          <StakeValidatorTypeSelector
+            isNotEnoughBalance={isNotEnoughBalance}
+            account={funderAccount}
+            stakeTypeId={stakeTypeId}
+            onChange={this.handleStakeTypeChange}
+            style={styles.stakeSelector}
+          />
+        )}
         {
-          !isNotEnoughBalance && (
+          !isCantLoadAccount && !isNotEnoughBalance && (
             <>
               <EstimateFee
                 initialFee={0}

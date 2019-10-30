@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import TextStyle, { scaleInApp, FontStyle } from '@src/styles/TextStyle';
+import { COLORS } from '@src/styles';
 
 const styles = StyleSheet.create({
   container: {
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     ...TextStyle.smallText,
-    color: 'red',
+    color: COLORS.errorMessage,
     marginTop: 10
   },
   modal: {

@@ -9,27 +9,28 @@ import accountService from '@src/services/wallet/accountService';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler, CustomError,ErrorCode } from '@src/services/exception';
 import _ from 'lodash';
+import { logEvent } from '@src/services/firebase';
 import SelfStaking from './SelfStaking';
 
 export class SelfStakingContainer extends Component {
   handleStaking = async ({ stakeType, fee, funderAccount, minerAccount }) => {
+    const candidatePaymentAddress = minerAccount?.PaymentAddress??'';
     try {
       const { wallet } = this.props;
       const param = {
         type: Number(stakeType),
       };
       // param, fee, candidatePaymentAddress, account, wallet, rewardReceiverPaymentAddress, autoReStaking = false
-      const candidatePaymentAddress = minerAccount?.PaymentAddress??'';
+      
+      logEvent(CONSTANT_COMMONS.TRACK_LOG_EVENT.CLICK_STAKING,{candidatePaymentAddress:candidatePaymentAddress,fee:fee,stakeType:stakeType,status:CONSTANT_COMMONS.TRACK_LOG_EVENT_STATUS.BEGIN});
       if(_.isEmpty(candidatePaymentAddress)) new ExHandler(new CustomError(ErrorCode.payment_address_empty),'Candidate PaymentAddress is empty').showErrorToast().throw();
       
       const rs = await accountService.staking(param, fee, candidatePaymentAddress,funderAccount, wallet,candidatePaymentAddress,true);
 
-      // const candidatePaymentAddress = minerAccount?.PaymentAddress;
-      // const isRewardFunder = false; // reward will be paid for miners
-      // const rs = await accountService.staking(param, fee, candidatePaymentAddress, isRewardFunder, funderAccount, wallet);
-
+      // logEvent(CONSTANT_COMMONS.TRACK_LOG_EVENT.CLICK_STAKING,{candidatePaymentAddress:candidatePaymentAddress,status:CONSTANT_COMMONS.TRACK_LOG_EVENT_STATUS.PASS});
       return rs;
     } catch (e) {
+      logEvent(CONSTANT_COMMONS.TRACK_LOG_EVENT.CLICK_STAKING,{candidatePaymentAddress:candidatePaymentAddress,status:CONSTANT_COMMONS.TRACK_LOG_EVENT_STATUS.FAIL,errorMessage:e.message??''});
       throw new CustomError(ErrorCode.click_stake,{rawError:e}) ;
     }
   }
@@ -52,7 +53,6 @@ const mapStateToProps = (state) => ({
   selectedPrivacy: selectedPrivacy(state),
   wallet: state?.wallet,
   getAccountByName: getAccountByName(state),
-  listAccount: listAccount(state),
   defaultAccountName: defaultAccount(state)?.name
 });
 

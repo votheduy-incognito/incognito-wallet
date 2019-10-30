@@ -27,6 +27,7 @@ const COLORS = {
   overlayBlack: 'rgba(6, 40, 41, 0.9)',
   overlayBlackDark: 'rgba(0, 0, 0, 0.8)',
   overlayBlackLight: 'rgba(0, 0, 0, 0.3)',
+  errorMessage:'#ed4337'
 };
 
 

@@ -68,7 +68,7 @@ export default class LocalDatabase {
       await LocalDatabase.saveValue(KEY_SAVE.USER, JSON.stringify(data));
     }
   }
-  static async getUserInfo(): User {
+  static async getUserInfo(): Promise<User> {
     const userJson = (await LocalDatabase.getValue(KEY_SAVE.USER)) || '';
     return _.isEmpty(userJson) ? null : new User(JSON.parse(userJson));
   }
