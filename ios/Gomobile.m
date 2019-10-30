@@ -94,6 +94,61 @@ RCT_EXPORT_METHOD(generateBLSKeyPairFromSeed:(NSString *)data callback:(RCTRespo
   }
 }
 
+//exports a method initPRVContributionTx to javascript
+RCT_EXPORT_METHOD(initPRVContributionTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileInitPRVContributionTx(data);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
+//exports a method initPTokenContributionTx to javascript
+RCT_EXPORT_METHOD(initPTokenContributionTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileInitPTokenContributionTx(data);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
+//exports a method initPRVTradeTx to javascript
+RCT_EXPORT_METHOD(initPRVTradeTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileInitPRVTradeTx(data);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
+//exports a method initPTokenTradeTx to javascript
+RCT_EXPORT_METHOD(initPTokenTradeTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileInitPTokenTradeTx(data);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
+//exports a method withdrawDexTx to javascript
+RCT_EXPORT_METHOD(withdrawDexTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileWithdrawDexTx(data);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
 //exports a method scalarMultBase to javascript
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(
   scalarMultBase:(NSString *)data
