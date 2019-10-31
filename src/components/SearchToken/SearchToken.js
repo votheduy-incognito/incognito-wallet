@@ -6,6 +6,8 @@ import { Icon } from 'react-native-elements';
 import {COLORS} from '@src/styles';
 import incognitoBlack from '@src/assets/images/icons/incognito_black.png';
 import incognitoWhite from '@src/assets/images/icons/incognito_white.png';
+import coinBlack from '@src/assets/images/icons/coin_black.png';
+import coinWhite from '@src/assets/images/icons/coin_white.png';
 import otherBlack from '@src/assets/images/icons/other_token_black.png';
 import otherWhite from '@src/assets/images/icons/other_token_white.png';
 import sadFace from '@src/assets/images/sad_face.png';
@@ -24,6 +26,12 @@ const TYPES = [
     value: TOKEN_TYPES.INCOGNITO,
   },
   {
+    active: coinWhite,
+    inactive: coinBlack,
+    name: 'COIN',
+    value: TOKEN_TYPES.COIN,
+  },
+  {
     active: otherWhite,
     inactive: otherBlack,
     name: 'ERC20',
@@ -34,12 +42,6 @@ const TYPES = [
     inactive: otherBlack,
     name: 'BEP2',
     value: TOKEN_TYPES.BEP2,
-  },
-  {
-    active: otherWhite,
-    inactive: otherBlack,
-    name: 'COIN',
-    value: TOKEN_TYPES.COIN,
   },
 ];
 
