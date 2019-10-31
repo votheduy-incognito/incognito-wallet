@@ -15,7 +15,9 @@ const api = {
   api_email_invalid: apiError(-1000),
   api_email_existed: apiError(-1005),
   api_device_id_existed: apiError(-1017),
-  api_invalid_arguments: apiError(-9000)
+  api_invalid_arguments: apiError(-9000),
+  api_invalid_limit: apiError(-9002),
+  api_paymentaddres_existed: apiError(-100002)
 };
 
 

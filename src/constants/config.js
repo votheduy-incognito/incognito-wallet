@@ -11,17 +11,17 @@ import {
   BEP2_URL,
   
 } from 'react-native-dotenv';
-// import serverService from '@src/services/wallet/Server';
+import serverService from '@src/services/wallet/Server';
 import _ from 'lodash';
 
-// const findDefaultNetwork = async () => {
-//   const networks = await serverService.get();
-//   const found = networks?.find(_ => _.default);
-//   return found;
-// };
-// const isMainnet = findDefaultNetwork()?.id === 'mainnet';
-console.log('CONFIG begin = ',TEMPLATE_API_BASE_URL);
-const isMainnet = true;
+const findDefaultNetwork = async () => {
+  const networks = await serverService.get();
+  const found = networks?.find(_ => _.default);
+  return found;
+};
+const isMainnet = true;//findDefaultNetwork()?.id === 'mainnet';
+// console.log('CONFIG begin = ',TEMPLATE_API_BASE_URL);
+// const isMainnet = true;
 const regex = /<%=.*%>/;
 const prefix_network = isMainnet ?'mainnet':'testnet';
 const prefix_Api = isMainnet?'':'test-';
