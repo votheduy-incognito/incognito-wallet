@@ -14,7 +14,6 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1EBA2F750D7D4CEC919D9242 /* libRNSSH.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 97C3A54F4B934DA1A6004B78 /* libRNSSH.a */; };
-		202B1CE4236953300052D45B /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202B1CE3236953300052D45B /* Gomobile.framework */; };
 		20B559AF22C393B10079FC06 /* Gomobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B559AE22C393B10079FC06 /* Gomobile.m */; };
 		285661345E2B44218C6996AF /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 40DA4B90D00A4AC983FDC44B /* libRNSVG-tvOS.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -130,7 +129,6 @@
 		1B5521124109464CB94BB248 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		1FE9C669E1BF469DA6A28690 /* libRNRandomBytes-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNRandomBytes-tvOS.a"; sourceTree = "<group>"; };
 		20160FCB034340829E942C14 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
-		202B1CE3236953300052D45B /* Gomobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Gomobile.framework; sourceTree = "<group>"; };
 		20B559AD22C393920079FC06 /* Gomobile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Gomobile.h; sourceTree = "<group>"; };
 		20B559AE22C393B10079FC06 /* Gomobile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Gomobile.m; sourceTree = "<group>"; };
 		27AAED89E8AD4248BBC41F79 /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFirebase.a; sourceTree = "<group>"; };
@@ -229,7 +227,6 @@
 				FE57448622F97A3700F2A2BC /* NetworkExtension.framework in Frameworks */,
 				82E467C899D04A02A0589EB9 /* libRNGestureHandler.a in Frameworks */,
 				3B50FECFE455494A8373E5A6 /* libRNVectorIcons.a in Frameworks */,
-				202B1CE4236953300052D45B /* Gomobile.framework in Frameworks */,
 				A23A5B4BF797429292519AC6 /* libRNCAsyncStorage.a in Frameworks */,
 				36F7D5CE970D4799A075B466 /* libRNSVG.a in Frameworks */,
 				0D4F7FF3224B482F9DFC427A /* libRNReanimated.a in Frameworks */,
@@ -378,7 +375,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				202B1CE3236953300052D45B /* Gomobile.framework */,
 				A7ED6691231E7AA600632177 /* game.mp3 */,
 				FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */,
 				FE6F885F22DC3B0E0009C5AA /* ZMQ */,

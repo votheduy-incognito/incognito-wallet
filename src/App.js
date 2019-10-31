@@ -25,7 +25,7 @@ function getActiveRouteName(navigationState) {
   }
   return route.routeName;
 }
-
+const TAG = 'App';
 class App extends PureComponent {
   state = {
     currentScreen: ROUTE_NAMES.Wizard,
