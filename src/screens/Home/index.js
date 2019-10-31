@@ -17,11 +17,11 @@ import { DialogUpgradeToMainnet } from './ChildViews';
 class HomeContainer extends Component {
   constructor(props) {
     super(props);
-    
+
     const {navigation} = props;
     const { params } = navigation.state;
-    const isNeedUpgrade = params.isNeedUpgrade??false;
-    this.state = { 
+    const isNeedUpgrade = params?.isNeedUpgrade??false;
+    this.state = {
       isReloading: false ,
       isNeedUpgrade:isNeedUpgrade
     };

@@ -10,10 +10,15 @@ class Game extends React.Component {
     const { navigation} = this.props;
     let displayName = navigation.state.key;
 
+    let mainText;
+    let subText;
+
     if (displayName === 'DApps') {
-      displayName = 'Dapps';
+      mainText = 'pApps are coming soon.';
+      subText = 'The first privacy-first applications built on Incognito. Watch this space.';
     } else {
-      displayName = 'DEX';
+      mainText = 'pDEX is coming soon.';
+      subText = 'ETA: 5 November. Get ready to trade crypto privately.';
     }
 
     return (
@@ -23,9 +28,8 @@ class Game extends React.Component {
           style={styles.image}
           resizeMode="contain"
         />
-        <Text style={styles.title}>{displayName} is coming soon.</Text>
-        <Text style={styles.desc}>This feature is being developed.</Text>
-        <Text style={styles.desc}>Stay tuned!</Text>
+        <Text style={styles.title}>{mainText}</Text>
+        <Text style={styles.desc}>{subText}</Text>
       </View>
     );
   }
@@ -55,6 +59,7 @@ const styles = {
     marginTop: 5,
     color: '#657576',
     textAlign: 'center',
+    lineHeight: 20,
   },
 };
 

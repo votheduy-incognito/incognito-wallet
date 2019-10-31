@@ -90,8 +90,8 @@ const styles = StyleSheet.create({
 const Tab = createMaterialTopTabNavigator({
   [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { header: () => null, tabBarLabel: renderTab('wallet', 'Wallet') }),
   [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Nodes', header: () => null, tabBarLabel: renderTab('miner', 'Nodes') }),
-  [ROUTE_NAMES.DApps]: navigationOptionsHandler(Game, { title: 'DApps', header: () => null, tabBarLabel: renderTab('dapps', 'DApps')}),
-  [ROUTE_NAMES.Dex]: navigationOptionsHandler(Game, { title: 'Dex', header: () => null, tabBarLabel: renderTab('dex', 'Dex')}),
+  [ROUTE_NAMES.DApps]: navigationOptionsHandler(Game, { title: 'pApps', header: () => null, tabBarLabel: renderTab('dapps', 'pApps')}),
+  [ROUTE_NAMES.Dex]: navigationOptionsHandler(Game, { title: 'pDEX', header: () => null, tabBarLabel: renderTab('dex', 'pDEX')}),
 }, {
   initialRouteName: ROUTE_NAMES.Home,
   swipeEnabled: false,
