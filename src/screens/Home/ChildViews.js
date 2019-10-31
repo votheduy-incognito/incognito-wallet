@@ -54,7 +54,7 @@ const DialogUpgradeToMainnet = React.memo(({isVisible = true ,onButtonClick})=>{
         <Image style={{width:'100%'}} resizeMode="cover" source={images.dialog_top} />
         <View style={style.dialog_content}>
           <Text style={style.dialog_title_text}>Welcome to the Incognito Mainnet!</Text>
-          <Text style={[style.dialog_title_text2,{...FontStyle.bold,fontStyle: 'italic', marginTop:scaleInApp(10)}]}>1 PRV is on its way to your wallet.Give it a couple of minutes.</Text>
+          <Text style={[style.dialog_title_text2,{...FontStyle.bold,fontStyle: 'italic', marginTop:scaleInApp(10),fontWeight:'bold'}]}>1 PRV is on its way to your wallet.</Text>
           <Text style={[style.dialog_title_text2]}>Give it a couple of minutes.</Text>
           
           <View style={style.dialog_content2}>

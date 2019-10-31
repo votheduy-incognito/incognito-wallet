@@ -19,7 +19,8 @@ const findDefaultNetwork = async () => {
   const found = networks?.find(_ => _.default);
   return found;
 };
-const isMainnet = true;//findDefaultNetwork()?.id === 'mainnet';
+const isMainnet = true;
+//findDefaultNetwork()?.id === 'mainnet';
 // console.log('CONFIG begin = ',TEMPLATE_API_BASE_URL);
 // const isMainnet = true;
 const regex = /<%=.*%>/;
