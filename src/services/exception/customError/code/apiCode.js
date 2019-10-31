@@ -17,7 +17,8 @@ const api = {
   api_device_id_existed: apiError(-1017),
   api_invalid_arguments: apiError(-9000),
   api_invalid_limit: apiError(-9002),
-  api_paymentaddres_existed: apiError(-100002)
+  api_paymentaddres_existed: apiError(-100002),
+  api_transfer_fail: apiError(-100003)
 };
 
 
