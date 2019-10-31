@@ -16,6 +16,7 @@ export default class Util {
   static resetRoute = (navigation, routeName, params = {}) => {
     const resetAction = StackActions.reset({
       index: 0,
+      key: null,
       actions: [NavigationActions.navigate({ routeName, params })]
     });
 

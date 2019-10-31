@@ -9,10 +9,10 @@ import { networkItemStyle } from './style';
 
 const NetworkItem = ({ active, network, expanded, onExpand, onActive, reloadNetworks }) => (
   <View style={networkItemStyle.container}>
-    <View style={networkItemStyle.summaryContainer}>
+    <View style={[networkItemStyle.summaryContainer,{opacity:active?1:0.5}]}>
       <TouchableOpacity
-        onPress={onActive}
-        style={networkItemStyle.iconContainer}
+        // onPress={onActive}
+        style={[networkItemStyle.iconContainer]}
       >
         <Icon
           type='material'

@@ -22,6 +22,7 @@ const images = {
   ic_getstarted_qrcode: require('./images/ic_getstarted_qrcode.png'),
   ic_node_offline: require('./images/ic_node_offline.png'),
   ic_virtual_node_offline: require('./images/ic_virtual_node_offline.png'),
+  dialog_top: require('./images/dialog_top.png'),
   // autonomous_text: require('@/assets/images/autonomous_text.png'),
   // background_top: require('@/assets/images/background_top.png'),
   // bg_home_top: require('@/assets/images/bg_home_top.png'),
