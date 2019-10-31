@@ -35,6 +35,12 @@ const TYPES = [
     name: 'BEP2',
     value: TOKEN_TYPES.BEP2,
   },
+  {
+    active: otherWhite,
+    inactive: otherBlack,
+    name: 'COIN',
+    value: TOKEN_TYPES.COIN,
+  },
 ];
 
 class SearchToken extends PureComponent {
@@ -159,7 +165,7 @@ class SearchToken extends PureComponent {
     return (
       <View style={tokenTypeStyle.container}>
         <Text style={tokenTypeStyle.title}>Select a network</Text>
-        <View style={tokenTypeStyle.types}>
+        <ScrollView style={tokenTypeStyle.types} horizontal>
           {TYPES.map(type => (
             <TokenType
               key={type.name}
@@ -168,7 +174,7 @@ class SearchToken extends PureComponent {
               onSelectType={this.handleSelectTokenType}
             />
           ))}
-        </View>
+        </ScrollView>
       </View>
     );
   }
@@ -185,20 +191,23 @@ class SearchToken extends PureComponent {
   }
 
   renderEmpty() {
+    const { tokenType } = this.state;
     return (
       <View style={emptyStyle.container}>
         <Image source={sadFace} style={emptyStyle.image} />
         <Text style={emptyStyle.title}>Oh no!</Text>
         <Text style={emptyStyle.desc}>Tokens you are looking for is</Text>
         <Text style={emptyStyle.desc}>not available.</Text>
-        <Button style={emptyStyle.button} title={this.renderAddTokenText()} onPress={this.handleAddToken} />
+        {
+          tokenType !== TOKEN_TYPES.COIN && <Button style={emptyStyle.button} title={this.renderAddTokenText()} onPress={this.handleAddToken} />
+        }
       </View>
     );
   }
 
   renderTokenList() {
     const { tokens } = this.props;
-    const { selected, filteredTokens } = this.state;
+    const { selected, filteredTokens, tokenType } = this.state;
     const tokenList = filteredTokens || tokens;
     const isEmpty = !(tokenList?.length > 0);
 
@@ -214,7 +223,7 @@ class SearchToken extends PureComponent {
             keyExtractor={this._keyExtractor}
           />
         ) : this.renderEmpty()}
-        {!isEmpty ? (
+        {!isEmpty && !(tokenType === TOKEN_TYPES.COIN) ? (
           <TouchableWithoutFeedback onPress={this.handleAddToken}>
             <View style={searchPTokenStyle.followBtn}>
               <Image source={addIcon} style={searchPTokenStyle.followBtnIcon} />
