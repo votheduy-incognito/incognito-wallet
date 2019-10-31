@@ -11,19 +11,25 @@ import {
   BEP2_URL,
   
 } from 'react-native-dotenv';
-import serverService from '@src/services/wallet/Server';
+// import serverService from '@src/services/wallet/Server';
 import _ from 'lodash';
 
-const findDefaultNetwork = async () => {
-  const networks = await serverService.get();
-  const found = networks?.find(_ => _.default);
-  return found;
-};
+// const findDefaultNetwork = async () => {
+//   const networks = await serverService.get();
+//   const found = networks?.find(_ => _.default);
+//   return found;
+// };
 // const isMainnet = findDefaultNetwork()?.id === 'mainnet';
+console.log('CONFIG begin = ',TEMPLATE_API_BASE_URL);
 const isMainnet = true;
+const regex = /<%=.*%>/;
 const prefix_network = isMainnet ?'mainnet':'testnet';
-const API_BASE_URL =  _.template(TEMPLATE_API_BASE_URL)({ 'network': isMainnet?'':'test-'});
-const EXPLORER_CONSTANT_CHAIN_URL = _.template(TEMPLATE_EXPLORER_CONSTANT_CHAIN_URL)({ 'network': prefix_network });
+const prefix_Api = isMainnet?'':'test-';
+
+const API_BASE_URL =  String(TEMPLATE_API_BASE_URL).replace(regex,prefix_Api);
+
+// const EXPLORER_CONSTANT_CHAIN_URL = _.template(TEMPLATE_EXPLORER_CONSTANT_CHAIN_URL)({ 'network': prefix_network });
+const EXPLORER_CONSTANT_CHAIN_URL = String(TEMPLATE_EXPLORER_CONSTANT_CHAIN_URL).replace(regex,prefix_network);
 const MASTER_NODE_ADDRESS=isMainnet?MAINNET_SERVER_ADDRESS:TESTNET_SERVER_ADDRESS;
 const DEFAULT_LIST_SERVER = [{
   id: 'local',
@@ -58,6 +64,7 @@ export default {
   DEFAULT_LIST_SERVER,
   PASSPHRASE_WALLET_DEFAULT,
   TEST_URL,
+  TEMPLATE_API_BASE_URL,
   MASTER_NODE_ADDRESS,
   BEP2_URL,
 };
