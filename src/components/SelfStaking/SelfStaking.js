@@ -163,10 +163,8 @@ class SelfStaking extends BaseScreen {
                 amount={convertUtil.toHumanAmount(amount, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)}
                 toAddress={toAddress}
                 style={styles.estFee}
+                feeText={`You'll pay: ${formatUtil.amountFull(finalFee, feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : null)} ${feeUnit}`}
               />
-              <Text style={styles.feeText}>
-                You&apos;ll pay: {formatUtil.amountFull(finalFee, feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : null)} {feeUnit}
-              </Text>
               <Button disabled={!isCanSubmit} title='Stake' style={styles.stakeButton} onPress={this.handleStake} />
             </>
           )

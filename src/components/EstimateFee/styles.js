@@ -1,5 +1,6 @@
 import { COLORS, THEME, FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
+import { scaleInApp } from '@src/styles/TextStyle';
 
 const style = StyleSheet.create({
   container: {
@@ -92,6 +93,12 @@ const style = StyleSheet.create({
     borderColor: COLORS.lightGrey4,
     backgroundColor: COLORS.white,
     overflow: 'hidden'
+  },
+  feeText: {
+    marginTop: 30,
+    marginBottom: scaleInApp(38),
+    textAlign: 'center',
+    fontSize: 14
   }
 });
 

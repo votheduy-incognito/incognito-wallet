@@ -1,4 +1,4 @@
-import { Button, Container, ScrollView, Text, Toast, View } from '@src/components/core';
+import { Button, Container, ScrollView, Toast, View } from '@src/components/core';
 import { createForm, InputMaxValueField, InputQRField, validator } from '@src/components/core/reduxForm';
 import CurrentBalance from '@src/components/CurrentBalance';
 import EstimateFee from '@src/components/EstimateFee';
@@ -144,10 +144,12 @@ class Withdraw extends React.Component {
   render() {
     const { maxAmountValidator, finalFee, feeUnit, initialFee } = this.state;
     const { selectedPrivacy, isFormValid, amount, withdrawData } = this.props;
-    const types = [selectedPrivacy?.symbol, tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY];
+    const { isGetTokenFee } = withdrawData;
+    const types = [...isGetTokenFee ? [selectedPrivacy?.symbol] : [], CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV];
     const isUsedTokenFee = !(feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
     const addressValidator = this.getAddressValidator(selectedPrivacy?.externalSymbol, selectedPrivacy?.isErc20Token);
     const maxAmount = this.getMaxAmount();
+    
 
     return (
       <ScrollView style={style.container}>
@@ -187,23 +189,21 @@ class Withdraw extends React.Component {
                   types={types}
                   amount={isFormValid ? amount : null}
                   toAddress={isFormValid ? selectedPrivacy?.paymentAddress : null} // est fee on the same network, dont care which address will be send to
-                />
-                <Text style={style.feeText}>
-                  You&apos;ll pay: {formatUtil.amountFull(
-                    finalFee,
-                    feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals
-                  )} {feeUnit ? feeUnit : ''}
-                  {
-                    isUsedTokenFee && withdrawData?.feeForBurn
-                      ? ` + (${
-                        formatUtil.amount(
-                          withdrawData?.feeForBurn,
-                          feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals
-                        )
-                      } ${feeUnit ? feeUnit : ''})`
-                      : ''
+                  feeText={finalFee && `You'll pay: ${
+                    formatUtil.amountFull(finalFee,feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals)} ${feeUnit ? feeUnit : ''
                   }
-                </Text>
+                    ${
+                      isUsedTokenFee && withdrawData?.feeForBurn
+                        ? ` + (${
+                          formatUtil.amount(
+                            withdrawData?.feeForBurn,
+                            feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals
+                          )
+                        } ${feeUnit ? feeUnit : ''})`
+                        : ''
+                    }`
+                  }
+                />
                 <Button title='Withdraw' style={style.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSubmit)} isAsync isLoading={submitting} />
                 {submitting && <LoadingTx />}
               </>

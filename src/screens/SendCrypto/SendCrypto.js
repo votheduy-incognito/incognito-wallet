@@ -11,8 +11,6 @@ import EstimateFee from '@src/components/EstimateFee';
 import CurrentBalance from '@src/components/CurrentBalance';
 import tokenData from '@src/constants/tokenData';
 import { createForm, InputQRField, InputMaxValueField, validator } from '@src/components/core/reduxForm';
-import formatUtil from '@src/utils/format';
-import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
 import { homeStyle } from './style';
 
@@ -121,7 +119,7 @@ class SendCrypto extends React.Component {
   }
 
   render() {
-    const { finalFee, feeUnit, maxAmountValidator } = this.state;
+    const { finalFee, maxAmountValidator } = this.state;
     const { isSending, selectedPrivacy, amount, toAddress, isFormValid } = this.props;
     const types = [tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY];
     const maxAmount = this.getMaxAmount();
@@ -168,12 +166,6 @@ class SendCrypto extends React.Component {
                   amount={isFormValid ? amount : null}
                   toAddress={isFormValid ? toAddress : null}
                 />
-                <Text style={homeStyle.feeText}>
-                  You&apos;ll pay: {formatUtil.amountFull(
-                    finalFee,
-                    feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals
-                  )} {feeUnit}
-                </Text>
                 <TouchableScale title='Send' style={homeStyle.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSend)}>
                   <Text style={homeStyle.submitBtnText}>
                     Send

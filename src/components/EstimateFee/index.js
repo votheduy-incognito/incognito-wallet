@@ -4,13 +4,15 @@ import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import { getEstimateFeeForNativeToken, getEstimateFeeForPToken } from '@src/services/wallet/RpcClientService';
 import convertUtil from '@src/utils/convert';
+import formatUtil from '@src/utils/format';
 import { debounce } from 'lodash';
 import memmoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import ActivityIndicator from '../core/ActivityIndicator/Component';
+import { ActivityIndicator, Text } from '@src/components/core';
 import EstimateFee from './EstimateFee';
+import styles from './styles';
 
 class EstimateFeeContainer extends Component {
   constructor(props) {
@@ -18,7 +20,7 @@ class EstimateFeeContainer extends Component {
 
     this.state = {
       defaultFeeSymbol: null, // which currency use for fee
-      minFee: props.initialFee || 0,
+      minFee: 1,
       isGettingFee: false,
       estimateErrorMsg: null,
     };
@@ -27,17 +29,14 @@ class EstimateFeeContainer extends Component {
   }
 
   componentDidMount() {
-    const { selectedPrivacy } = this.props;
-    this.setFeeSymbol(selectedPrivacy?.symbol);
+    const { types } = this.props;
+    this.setFeeSymbol(types[0]);
+    this.handleEstimateFee();
   }
 
   componentDidUpdate(prevProps) {
-    const { amount: oldAmount, selectedPrivacy: oldSelectedPrivacy } = prevProps;
-    const { amount, selectedPrivacy, toAddress } = this.props;
-
-    if (oldSelectedPrivacy?.symbol !== selectedPrivacy?.symbol) {
-      this.setFeeSymbol(selectedPrivacy?.symbol);
-    }
+    const { amount: oldAmount } = prevProps;
+    const { amount, toAddress } = this.props;
 
     if (oldAmount !== amount && toAddress) {
       this.handleEstimateFee();
@@ -189,27 +188,44 @@ class EstimateFeeContainer extends Component {
     return symbols;
   })
 
+  getPDecimals = memmoize((selectedPrivacy, defaultFeeSymbol) => {
+    if (defaultFeeSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV) {
+      return CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY;
+    }
+
+    if (defaultFeeSymbol === selectedPrivacy?.symbol) {
+      return selectedPrivacy?.pDecimals;
+    }
+
+    return null;
+  })
+
   render() {
     const { minFee, isGettingFee, defaultFeeSymbol, estimateErrorMsg } = this.state;
-    const { selectedPrivacy, onSelectFee, finalFee, style, account } = this.props;
-    const types = this.getFeeSymbolList(selectedPrivacy);
+    const { selectedPrivacy, onSelectFee, finalFee, style, account, types, feeText } = this.props;
+    const pDecimals = this.getPDecimals(selectedPrivacy, defaultFeeSymbol);
+    const txt = feeText ?? (finalFee && `You'll pay: ${formatUtil.amountFull(finalFee, pDecimals)} ${defaultFeeSymbol}`);
 
-    if (typeof minFee !== 'undefined' && minFee !== null && account && selectedPrivacy) {
+    if (account && selectedPrivacy) {
       return (
-        <EstimateFee
-          onChangeDefaultSymbol={this.handleChangeDefaultSymbol}
-          onSelectFee={onSelectFee}
-          minFee={minFee}
-          finalFee={finalFee}
-          types={types}
-          defaultFeeSymbol={defaultFeeSymbol}
-          isGettingFee={isGettingFee}
-          estimateErrorMsg={estimateErrorMsg}
-          onRetry={this.handleEstimateFee}
-          style={style}
-          selectedPrivacy={selectedPrivacy}
-          account={account}
-        />
+        <>
+          <EstimateFee
+            onChangeDefaultSymbol={this.handleChangeDefaultSymbol}
+            onSelectFee={onSelectFee}
+            minFee={minFee}
+            finalFee={finalFee}
+            types={types || this.getFeeSymbolList(selectedPrivacy)}
+            defaultFeeSymbol={defaultFeeSymbol}
+            isGettingFee={isGettingFee}
+            estimateErrorMsg={estimateErrorMsg}
+            onRetry={this.handleEstimateFee}
+            style={style}
+            selectedPrivacy={selectedPrivacy}
+            account={account}
+          />
+          <Text style={styles.feeText}>{txt}</Text>
+        </>
+        
       );
     }
 
@@ -224,12 +240,13 @@ const mapState = state => ({
 });
 
 EstimateFeeContainer.defaultProps = {
-  initialFee: null,
   selectedPrivacy: null,
   amount: null,
   toAddress: null,
   finalFee: null,
-  style: null
+  style: null,
+  types: [CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV],
+  feeText: null,
 };
 
 EstimateFeeContainer.propTypes = {
@@ -238,10 +255,11 @@ EstimateFeeContainer.propTypes = {
   finalFee:  PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   selectedPrivacy: PropTypes.object,
   onSelectFee: PropTypes.func.isRequired,
-  initialFee: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   amount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   toAddress: PropTypes.string,
-  style: PropTypes.object
+  style: PropTypes.object,
+  types: PropTypes.arrayOf(PropTypes.string),
+  feeText: PropTypes.string,
 };
 
 
