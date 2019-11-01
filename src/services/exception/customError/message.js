@@ -10,7 +10,6 @@ export default {
   [CODE.withdraw_balance_must_not_be_zero]: 'Your balance is zero, please deposit more.',
   [CODE.withdraw_gen_withdraw_address_failed]: 'Can not get withdraw address, please try again.',
   [CODE.getStarted_can_not_create_wallet_on_existed]: 'Can not create new wallet on existing wallet.',
-  [CODE.getStarted_load_device_token_failed]: 'Can not load device token.',
   [CODE.wallet_can_not_create_new_wallet]: 'Sorry, we can not create new wallet, close and reopen the app can fix it.',
   [CODE.wallet_can_not_load_existed_wallet]: 'Can not open your wallet. Please re-install the application and try again.',
   [CODE.createAccount_failed]: 'Account was not created! Please try again.',
@@ -22,5 +21,6 @@ export default {
   [CODE.web_js_import_existed_account]: 'Please make sure this private key is valid and does not already exist on your device.',
   [CODE.node_duplicate]: 'This node already exists on your device. Please try another.',
   [CODE.node_invalid_host]: 'This address is not a valid domain or ip address. Please try another.',
-  [CODE.getStarted_load_token_failed]: 'Somthing went wrong while loading data, please check your connection and try again or contact us for help.'
+  [CODE.getStarted_load_token_failed]: 'Somthing went wrong while loading data, please check your connection and try again or contact us for help.',
+  [CODE.user_login_failed]: 'We have an authorization issue.'
 };

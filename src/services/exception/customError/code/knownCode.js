@@ -16,7 +16,8 @@ const app = {
   firebase_init_failed: knownError(-8),
   network_make_request_failed: knownError(-9),
   wallet_can_not_create_new_wallet: knownError(-14),
-  wallet_can_not_load_existed_wallet: knownError(-15)
+  wallet_can_not_load_existed_wallet: knownError(-15),
+  user_login_failed: knownError(-27)
 };
 
 const estimateFee = {
@@ -25,7 +26,6 @@ const estimateFee = {
 
 const getStarted = {
   getStarted_can_not_create_wallet_on_existed: knownError(-10),
-  getStarted_load_device_token_failed: knownError(-11),
   getStarted_load_token_failed: knownError(-24),
 };
 

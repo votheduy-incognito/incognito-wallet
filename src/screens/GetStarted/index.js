@@ -1,5 +1,5 @@
-import { setTokenHeader } from '@src/services/http';
-import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
+import { login } from '@src/services/auth';
+import { CONSTANT_CONFIGS } from '@src/constants';
 import { reloadWallet } from '@src/redux/actions/wallet';
 import { followDefaultTokens } from '@src/redux/actions/account';
 import { getPTokenList } from '@src/redux/actions/token';
@@ -14,7 +14,6 @@ import { initWallet } from '@src/services/wallet/WalletService';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import storageService from '@src/services/storage';
 import DeviceInfo from 'react-native-device-info';
 import GetStarted from './GetStarted';
 
@@ -66,12 +65,7 @@ class GetStartedContainer extends Component {
         await storageService.setItem(CONSTANT_KEYS.DISPLAYED_WIZARD, String(true));
       }
       const { getPTokenList } = this.props;
-      const token = await this.checkDeviceToken(this.isNeedUpgrade);
-
-      if (token) {
-        // console.log('Device token', token);
-        setTokenHeader(token);
-      }
+      await login();
 
       try {
         const pTokens = await getPTokenList();
@@ -121,15 +115,6 @@ class GetStartedContainer extends Component {
     }
   };
 
-  getExistedDeviceToken = async () => {
-    try {
-      const token = await storageService.getItem(CONSTANT_KEYS.DEVICE_TOKEN);
-      return token;
-    } catch (e) {
-      throw new CustomError(ErrorCode.getStarted_load_device_token_failed, { rawError: e });
-    }
-  }
-
   registerToken = async () => {
     try {
       const fbToken = await getFirebaseToken();
@@ -137,21 +122,6 @@ class GetStartedContainer extends Component {
       const token = await getToken(uniqueId, fbToken);
 
       return token;
-    } catch (e) {
-      throw e;
-    }
-  }
-
-  checkDeviceToken = async (isNeedUpgrade:false) => {
-    try {
-      const token = await this.getExistedDeviceToken();
-      if (isNeedUpgrade || !token) {
-        const tokenData = await this.registerToken();
-        storageService.setItem(CONSTANT_KEYS.DEVICE_TOKEN, tokenData?.token);
-        return tokenData?.token;
-      } else {
-        return token;
-      }
     } catch (e) {
       throw e;
     }
@@ -217,6 +187,10 @@ GetStartedContainer.propTypes = {
   getPTokenList: PropTypes.func.isRequired,
   account: PropTypes.object,
   followDefaultTokens: PropTypes.func.isRequired,
+};
+
+GetStartedContainer.defaultProps = {
+  account: null
 };
 
 export default connect(
