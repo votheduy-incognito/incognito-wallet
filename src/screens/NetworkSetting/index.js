@@ -7,6 +7,11 @@ import serverService from '@src/services/wallet/Server';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import Util from '@src/utils/Util';
+import ROUTE_NAMES from '@src/router/routeNames';
+import storageService from '@src/services/storage';
+import { CONSTANT_KEYS } from '@src/constants';
+import RNRestart from 'react-native-restart';
 import NetworkSetting from './NetworkSetting';
 
 const NetworkSettingContainer = ({
@@ -43,12 +48,15 @@ const NetworkSettingContainer = ({
   const handleSetDefaultNetwork = async network => {
     try {
       await serverService.setDefault(network);
+      await storageService.removeItem(CONSTANT_KEYS.DEVICE_TOKEN);
+      // Util.resetRoute(navigation,ROUTE_NAMES.RootSplash);
       const wallet = await reloadWallet();
       await getAccountBalance(account);
 
       if (wallet) {
         Toast.showInfo('You successfully changed networks.');
       }
+      RNRestart.Restart();
     } catch {
       Toast.showError(
         'Something went wrong. Please try again.'
