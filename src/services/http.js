@@ -14,6 +14,18 @@ const instance = axios.create({
   }
 });
 
+let renewToken = null;
+let pendingSubscribers = [];
+let isAlreadyFetchingAccessToken = false;
+
+function onAccessTokenFetched(accessToken) {
+  pendingSubscribers = pendingSubscribers.filter(callback => callback(accessToken));
+}
+
+function addSubscriber(callback) {
+  pendingSubscribers.push(callback);
+}
+
 // Add a request interceptor
 instance.interceptors.request.use(config => {
   // if (__DEV__) {
@@ -39,6 +51,7 @@ instance.interceptors.response.use(res => {
   return Promise.resolve(result);
 }, errorData => {
   const errResponse = errorData?.response;
+  const originalRequest = errorData?.config;
 
   if (__DEV__) {
     console.warn('Request failed', errResponse);
@@ -48,6 +61,30 @@ instance.interceptors.response.use(res => {
   if (errorData?.isAxiosError && !errResponse) {
     console.log('errorData', errorData);
     return new ExHandler(new CustomError(ErrorCode.network_make_request_failed)).throw();
+  }
+
+  // Unauthorized
+  if (errResponse.status === 401) {
+    if (!isAlreadyFetchingAccessToken) {
+      isAlreadyFetchingAccessToken = true;
+      if (typeof renewToken === 'function') {
+        renewToken().then(token => {
+          isAlreadyFetchingAccessToken = false;
+          onAccessTokenFetched(token);
+        });
+      } else {
+        console.error('Token was expired, but can not re-new it!');
+      }
+    }
+
+    const retryOriginalRequest = new Promise((resolve) => {
+      addSubscriber(accessToken => {
+        originalRequest.headers.Authorization = 'Bearer ' + accessToken;
+        resolve(instance(originalRequest));
+      });
+    });
+    
+    return retryOriginalRequest;
   }
 
   // get response of error
@@ -66,6 +103,11 @@ export const setTokenHeader = token => {
   } catch {
     throw new Error('Can not set token request');
   }
+};
+
+export const setRenewToken = (fn) => {
+  if (typeof fn !== 'function') throw new Error('setRenewToken must be recieved a function');
+  renewToken = fn;
 };
 
 export default instance;

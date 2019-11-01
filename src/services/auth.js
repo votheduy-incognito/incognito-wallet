@@ -1,5 +1,5 @@
 import storageService from '@src/services/storage';
-import { setTokenHeader } from '@src/services/http';
+import { setTokenHeader, setRenewToken } from '@src/services/http';
 import { CONSTANT_KEYS } from '@src/constants';
 import { getToken as getFirebaseToken } from '@src/services/firebase';
 import DeviceInfo from 'react-native-device-info';
@@ -15,10 +15,14 @@ export const getToken = async () => {
   return token;
 };
 
-export const login = async () => {
+// if "fresh" is true, dont use savedToken, have to get new one 
+export const login = async ({ fresh = false } = {}) => {
   try {
-    // get existed token
-    let token = await storageService.getItem(CONSTANT_KEYS.DEVICE_TOKEN);
+    let token;
+    if (!fresh) {
+      // get existed token
+      token = await storageService.getItem(CONSTANT_KEYS.DEVICE_TOKEN);
+    }
 
     // if not existed, get new one
     if (!token) {
@@ -41,3 +45,6 @@ export const login = async () => {
 export const logout = async () => {
   storageService.clear(CONSTANT_KEYS.DEVICE_TOKEN);
 };
+
+
+setRenewToken(() => login({ fresh: true }));

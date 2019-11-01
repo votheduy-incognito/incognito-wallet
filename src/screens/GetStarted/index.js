@@ -1,20 +1,18 @@
 import { login } from '@src/services/auth';
-import { CONSTANT_CONFIGS } from '@src/constants';
+import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import { reloadWallet } from '@src/redux/actions/wallet';
 import { followDefaultTokens } from '@src/redux/actions/account';
 import { getPTokenList } from '@src/redux/actions/token';
 import { accountSeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
-import { getToken } from '@src/services/api/user';
+import storageService from '@src/services/storage';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
-import { getToken as getFirebaseToken } from '@src/services/firebase';
 import { savePassword } from '@src/services/wallet/passwordService';
 import serverService from '@src/services/wallet/Server';
 import { initWallet } from '@src/services/wallet/WalletService';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import DeviceInfo from 'react-native-device-info';
 import GetStarted from './GetStarted';
 
 class GetStartedContainer extends Component {
@@ -114,18 +112,6 @@ class GetStartedContainer extends Component {
       throw new CustomError(ErrorCode.wallet_can_not_create_new_wallet, { rawError: e });
     }
   };
-
-  registerToken = async () => {
-    try {
-      const fbToken = await getFirebaseToken();
-      const uniqueId = DeviceInfo.getUniqueId();
-      const token = await getToken(uniqueId, fbToken);
-
-      return token;
-    } catch (e) {
-      throw e;
-    }
-  }
 
   setDefaultPToken = async () => {
     try {
