@@ -18,6 +18,7 @@ const DATA = {
 };
 
 export const TOKEN_TYPES = {
+  COIN: 'COIN', // cheat! refactor later
   INCOGNITO: 0,
   ERC20: 3,
   BEP2: 5,
