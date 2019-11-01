@@ -125,13 +125,16 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    } 
 
     defaultConfig {
         applicationId "com.incognito.wallet"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 25
-        versionName "3.1.0"
+        versionCode 26
+        versionName "3.2.0"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     signingConfigs {

@@ -1,6 +1,5 @@
 /* eslint-disable import/no-cycle */
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
-import CONFIG from '@src/constants/config';
 import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
 import axios from 'axios';
@@ -89,7 +88,7 @@ export default class Account {
   static async sendGameConstant(paymentInfos, fee, isPrivacy, account, wallet, info) {
     let result;
     try {
-      const url = CONFIG.TESTNET_SERVER_ADDRESS;
+      const url = CONSTANT_CONFIGS.MASTER_NODE_ADDRESS;
       const paymentAddress = {
         [paymentInfos[0].paymentAddressStr]: paymentInfos[0].amount
       };
@@ -127,7 +126,7 @@ export default class Account {
     info,
   ) {
     try {
-      const url = CONFIG.TESTNET_SERVER_ADDRESS;
+      const url = CONSTANT_CONFIGS.MASTER_NODE_ADDRESS;
       const data = {
         'jsonrpc':'1.0',
         'id': '1',

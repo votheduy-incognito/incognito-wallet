@@ -16,6 +16,7 @@ import internalTokenModel from '@src/models/token';
 import { ExHandler } from '@src/services/exception';
 import ROUTE_NAMES from '@routers/routeNames';
 import { View } from 'react-native';
+import { CONSTANT_COMMONS } from '@src/constants';
 import SearchToken from './SearchToken';
 import { Toast, ActivityIndicator, } from '../core';
 
@@ -25,7 +26,7 @@ const normalizeToken = ({ data, isPToken, isInternalToken }) => {
       tokenId: data?.tokenId,
       name: data?.name,
       symbol: data?.symbol,
-      type: data?.currencyType
+      type: data?.type === CONSTANT_COMMONS.PTOKEN_TYPE.COIN ? TOKEN_TYPES.COIN : data?.currencyType, // cheat! refactor later
     });
   }
 
@@ -73,6 +74,7 @@ export class SearchTokenContainer extends PureComponent {
       const { internalTokens } = this.state;
       const { pTokens, followedTokens } = this.props;
       const followedTokenIds: Array = followedTokens.map(t => t?.id) || [];
+
       const normalizedTokens = [
         ...internalTokens
           ?.filter(t => !pTokens?.find(pToken => pToken.tokenId === t.id))

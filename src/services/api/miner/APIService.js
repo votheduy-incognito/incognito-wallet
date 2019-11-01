@@ -7,6 +7,7 @@ import { CONSTANT_MINER } from '@src/constants';
 import http from '@src/services/http';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
+import { ExHandler } from '@src/services/exception';
 import API from './api';
 
 let AUTHORIZATION_FORMAT = 'Autonomous';
@@ -398,6 +399,20 @@ export default class APIService {
     console.log(TAG,'requestStake end = ',response);
     return {
       status:!_.isEmpty(response) ?1:0,
+      data:response
+    };
+  }
+  static async airdrop1({
+    WalletAddress
+  }) {
+    if (!WalletAddress) return throw new Error('Missing WalletAddress');
+    
+    const response = await http.post('auth/airdrop1', {
+      WalletAddress:WalletAddress
+    }).catch(console.log)??false;
+    console.log(TAG,'airdrop1 end = ',response);
+    return {
+      status:response ?1:0,
       data:response
     };
   }

@@ -37,7 +37,7 @@ class GetStartedContainer extends Component {
 
   goHome = () => {
     const { navigation } = this.props;
-    navigation.navigate(routeNames.Home);
+    navigation.navigate(routeNames.Home,{isNeedUpgrade: this.isNeedUpgrade});
   };
 
   getExistedWallet = async () => {
@@ -57,9 +57,16 @@ class GetStartedContainer extends Component {
 
   initApp = async () => {
     try {
+      
       this.setState({ isInitialing: true });
+      const serverLocalList = await serverService.get()??[];
+      this.isNeedUpgrade = CONSTANT_CONFIGS.DEFAULT_LIST_SERVER.length != serverLocalList.length;
+      if (this.isNeedUpgrade) {
+        await storageService.clear();
+        await storageService.setItem(CONSTANT_KEYS.DISPLAYED_WIZARD, String(true));
+      }
       const { getPTokenList } = this.props;
-      const token = await this.checkDeviceToken();
+      const token = await this.checkDeviceToken(this.isNeedUpgrade);
 
       if (token) {
         // console.log('Device token', token);
@@ -73,7 +80,7 @@ class GetStartedContainer extends Component {
         throw new CustomError(ErrorCode.getStarted_load_token_failed, { rawError: e });
       }
 
-      if (!(await serverService.get())) {
+      if (this.isNeedUpgrade || !(serverLocalList)) {
         await serverService.setDefaultList();
       }
       const wallet = await this.getExistedWallet();
@@ -119,7 +126,7 @@ class GetStartedContainer extends Component {
       const token = await storageService.getItem(CONSTANT_KEYS.DEVICE_TOKEN);
       return token;
     } catch (e) {
-      throw throw new CustomError(ErrorCode.getStarted_load_device_token_failed, { rawError: e });
+      throw new CustomError(ErrorCode.getStarted_load_device_token_failed, { rawError: e });
     }
   }
 
@@ -135,10 +142,10 @@ class GetStartedContainer extends Component {
     }
   }
 
-  checkDeviceToken = async () => {
+  checkDeviceToken = async (isNeedUpgrade:false) => {
     try {
       const token = await this.getExistedDeviceToken();
-      if (!token) {
+      if (isNeedUpgrade || !token) {
         const tokenData = await this.registerToken();
         storageService.setItem(CONSTANT_KEYS.DEVICE_TOKEN, tokenData?.token);
         return tokenData?.token;

@@ -8,17 +8,36 @@ import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import APIService from '@src/services/api/miner/APIService';
+import _ from 'lodash';
+import { Toast } from '@src/components/core';
 import Home from './Home';
+import { DialogUpgradeToMainnet } from './ChildViews';
 
 class HomeContainer extends Component {
-  constructor() {
-    super();
-    this.state = { isReloading: false };
+  constructor(props) {
+    super(props);
+
+    const {navigation} = props;
+    const { params } = navigation.state;
+    const isNeedUpgrade = params?.isNeedUpgrade??false;
+    this.state = {
+      isReloading: false ,
+      isNeedUpgrade:isNeedUpgrade
+    };
   }
 
   async componentDidMount() {
+    const {isNeedUpgrade} = this.state;
+
     const { account, navigation, clearSelectedPrivacy } = this.props;
+    // console.log('HIENTON account = ',account);
     try {
+      if(isNeedUpgrade && !_.isEmpty(account)){
+        APIService.airdrop1({WalletAddress:account.PaymentAddress}).then(result=>{
+          result?.status == 1 && Toast.showSuccess('1 PRV has been added to your wallet.');
+        });
+      }
       this.getTokens();
       this.getFollowingToken();
       this.getAccountBalance(account);
@@ -130,24 +149,32 @@ class HomeContainer extends Component {
   };
 
   render() {
-    const { isReloading } = this.state;
+    const { isReloading,isNeedUpgrade } = this.state;
     const { wallet, account, tokens, accountGettingBalanceList, tokenGettingBalanceList } = this.props;
 
     if (!wallet) return <LoadingContainer />;
 
     return (
-      <Home
-        account={account}
-        tokens={tokens}
-        reload={this.reload}
-        isReloading={isReloading}
-        handleAddFollowToken={this.onAddTokenToFollow}
-        handleCreateToken={this.onCreateToken}
-        handleSetting={this.onSetting}
-        accountGettingBalanceList={accountGettingBalanceList}
-        tokenGettingBalanceList={tokenGettingBalanceList}
-        onSelectToken={this.handleSelectToken}
-      />
+      <>
+        <Home
+          account={account}
+          tokens={tokens}
+          reload={this.reload}
+          isReloading={isReloading}
+          handleAddFollowToken={this.onAddTokenToFollow}
+          handleCreateToken={this.onCreateToken}
+          handleSetting={this.onSetting}
+          accountGettingBalanceList={accountGettingBalanceList}
+          tokenGettingBalanceList={tokenGettingBalanceList}
+          onSelectToken={this.handleSelectToken}
+        />
+        <DialogUpgradeToMainnet
+          isVisible={isNeedUpgrade}
+          onButtonClick={()=>{
+            this.setState({isNeedUpgrade:false});
+          }}
+        />
+      </>
     );
   }
 }

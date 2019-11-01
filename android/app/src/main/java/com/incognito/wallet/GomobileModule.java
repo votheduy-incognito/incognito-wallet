@@ -113,6 +113,61 @@ public class GomobileModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void initPRVContributionTx(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "staking: begin");
+            successCallback.invoke(null, Gomobile.initPRVContributionTx(data));
+        } catch (Exception e) {
+            Log.d(TAG, "staking: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
+
+    @ReactMethod
+    public void initPTokenContributionTx(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "staking: begin");
+            successCallback.invoke(null, Gomobile.initPTokenContributionTx(data));
+        } catch (Exception e) {
+            Log.d(TAG, "staking: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
+
+    @ReactMethod
+    public void initPRVTradeTx(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "staking: begin");
+            successCallback.invoke(null, Gomobile.initPRVTradeTx(data));
+        } catch (Exception e) {
+            Log.d(TAG, "staking: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
+
+    @ReactMethod
+    public void initPTokenTradeTx(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "staking: begin");
+            successCallback.invoke(null, Gomobile.initPTokenTradeTx(data));
+        } catch (Exception e) {
+            Log.d(TAG, "staking: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
+
+    @ReactMethod
+    public void withdrawDexTx(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "staking: begin");
+            successCallback.invoke(null, Gomobile.withdrawDexTx(data));
+        } catch (Exception e) {
+            Log.d(TAG, "staking: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
+
+    @ReactMethod
     public void generateBLSKeyPairFromSeed(String data, Callback successCallback) {
         try {
             Log.d(TAG, "generateBLSKeyPairFromSeed: begin");

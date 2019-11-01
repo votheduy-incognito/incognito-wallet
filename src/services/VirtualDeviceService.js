@@ -2,7 +2,8 @@
 import Device, { DATA_INFO } from '@src/models/device';
 import Util from '@src/utils/Util';
 import _ from 'lodash';
-import { TESTNET_SERVER_ADDRESS } from 'react-native-dotenv';
+
+import { CONSTANT_CONFIGS } from '@src/constants';
 import APIService, { METHOD } from './api/miner/APIService';
 import Server from './wallet/Server';
 
@@ -261,7 +262,7 @@ export default class VirtualDeviceService {
 
   static buildURL = async(device:Device,isFullNode= false)=>{
     if (isFullNode) {
-      let fullNode = ((await Server.getDefault())?.address)||TESTNET_SERVER_ADDRESS;
+      let fullNode = ((await Server.getDefault())?.address)||CONSTANT_CONFIGS.MASTER_NODE_ADDRESS;
       console.log(TAG,'buildURL = ',fullNode);
       return fullNode;
     }

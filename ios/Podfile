@@ -84,6 +84,7 @@ target 'constantWalletMobile' do
   pod 'RNFirebase', :path => '../node_modules/react-native-firebase/ios'
   pod 'RNSensors', :path => '../node_modules/react-native-sensors'
   pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+  pod 'RCTRestart', :path => '../node_modules/react-native-restart/ios'
   # Pods for constantWalletMobile
 
   target 'constantWalletMobile-tvOSTests' do
