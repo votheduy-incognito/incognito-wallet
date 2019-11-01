@@ -213,4 +213,10 @@ export async function getMaxWithdrawAmountService(
   return response;
 }
 
+export function isExchangeRatePToken(tokenID)  {
+  if (typeof tokenID !== 'string') throw new Error('tokenID must be a string');
+  
+  return getRpcClient().isExchangeRatePToken(tokenID);
+}
+
 setRpcClientInterceptor();

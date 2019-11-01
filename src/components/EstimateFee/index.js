@@ -20,7 +20,7 @@ class EstimateFeeContainer extends Component {
 
     this.state = {
       defaultFeeSymbol: null, // which currency use for fee
-      minFee: 1,
+      minFee: null,
       isGettingFee: false,
       estimateErrorMsg: null,
     };
@@ -35,8 +35,12 @@ class EstimateFeeContainer extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { amount: oldAmount } = prevProps;
-    const { amount, toAddress } = this.props;
+    const { amount: oldAmount, types: oldTypes } = prevProps;
+    const { amount, toAddress, types } = this.props;
+
+    if (oldTypes !== types) {
+      this.setFeeSymbol(types[0]);
+    }
 
     if (oldAmount !== amount && toAddress) {
       this.handleEstimateFee();
@@ -66,6 +70,7 @@ class EstimateFeeContainer extends Component {
       } else if (defaultFeeSymbol === selectedPrivacy?.symbol) { // estimate fee in pToken [pETH, pBTC, ...]
         fee = await this._handleEstimateTokenFee();
       }
+
       this.setState({ estimateErrorMsg: null, minFee: fee });
 
       return fee;
@@ -206,7 +211,7 @@ class EstimateFeeContainer extends Component {
     const pDecimals = this.getPDecimals(selectedPrivacy, defaultFeeSymbol);
     const txt = feeText ?? (finalFee && `You'll pay: ${formatUtil.amountFull(finalFee, pDecimals)} ${defaultFeeSymbol}`);
 
-    if (account && selectedPrivacy) {
+    if (typeof minFee !== 'undefined' && minFee !== null &&account && selectedPrivacy) {
       return (
         <>
           <EstimateFee
@@ -229,7 +234,7 @@ class EstimateFeeContainer extends Component {
       );
     }
 
-    return <ActivityIndicator />;
+    return null;
   }
 }
 

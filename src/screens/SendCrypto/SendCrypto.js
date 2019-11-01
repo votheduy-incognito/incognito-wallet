@@ -3,15 +3,17 @@ import PropTypes from 'prop-types';
 import { Field, formValueSelector, isValid, change } from 'redux-form';
 import { connect } from 'react-redux';
 import convertUtil from '@src/utils/convert';
-import { Container, ScrollView, Text, View, TouchableScale } from '@src/components/core';
+import { Container, ScrollView, View, Button } from '@src/components/core';
 import { openQrScanner } from '@src/components/QrCodeScanner';
 import ReceiptModal, { openReceipt } from '@src/components/Receipt';
 import LoadingTx from '@src/components/LoadingTx';
 import EstimateFee from '@src/components/EstimateFee';
 import CurrentBalance from '@src/components/CurrentBalance';
+import { isExchangeRatePToken } from '@src/services/wallet/RpcClientService';
 import tokenData from '@src/constants/tokenData';
 import { createForm, InputQRField, InputMaxValueField, validator } from '@src/components/core/reduxForm';
 import { ExHandler } from '@src/services/exception';
+import { CONSTANT_COMMONS } from '@src/constants';
 import { homeStyle } from './style';
 
 const formName = 'sendCrypto';
@@ -28,6 +30,7 @@ class SendCrypto extends React.Component {
   constructor() {
     super();
     this.state = {
+      supportedFeeTypes: [],
       feeUnit: null,
       finalFee: null,
       maxAmountValidator: undefined,
@@ -36,6 +39,7 @@ class SendCrypto extends React.Component {
 
   componentDidMount() {
     this.setFormValidation({ maxAmount: this.getMaxAmount() });
+    this.getSupportedFeeTypes();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -118,8 +122,21 @@ class SendCrypto extends React.Component {
     return false;
   }
 
+  getSupportedFeeTypes = async () => {
+    const supportedFeeTypes = [CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV];
+    try {
+      const { selectedPrivacy } = this.props;
+      const isUsed = await isExchangeRatePToken(selectedPrivacy.tokenId);
+      isUsed && supportedFeeTypes.push(selectedPrivacy.symbol);
+    } catch (e) {
+      new ExHandler(e);
+    } finally {
+      this.setState({ supportedFeeTypes });
+    }
+  }
+
   render() {
-    const { finalFee, maxAmountValidator } = this.state;
+    const { finalFee, maxAmountValidator, supportedFeeTypes } = this.state;
     const { isSending, selectedPrivacy, amount, toAddress, isFormValid } = this.props;
     const types = [tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY];
     const maxAmount = this.getMaxAmount();
@@ -162,15 +179,11 @@ class SendCrypto extends React.Component {
                   initialFee={0}
                   finalFee={finalFee}
                   onSelectFee={this.handleSelectFee}
-                  types={types}
+                  types={supportedFeeTypes}
                   amount={isFormValid ? amount : null}
                   toAddress={isFormValid ? toAddress : null}
                 />
-                <TouchableScale title='Send' style={homeStyle.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSend)}>
-                  <Text style={homeStyle.submitBtnText}>
-                    Send
-                  </Text>
-                </TouchableScale>
+                <Button title='Send' style={homeStyle.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSend)} />
               </View>
             )}
           </Form>

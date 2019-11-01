@@ -73,9 +73,6 @@ class EstimateFee extends Component {
         selectDefaultLevel(levels[1]);
       } else if (this.isAvailabelFee(levels[0].fee, defaultFeeSymbol)) {
         selectDefaultLevel(levels[0]);
-      } else if (!this.isAvailabelFee(levels[0].fee, defaultFeeSymbol)) {
-        // can not use this type of fee
-        this.canNotUseFeeType(levels[0].fee, defaultFeeSymbol);
       }
     }
   }
