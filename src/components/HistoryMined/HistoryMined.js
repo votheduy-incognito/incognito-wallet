@@ -72,6 +72,8 @@ class HistoryMined extends React.Component {
     const symbolUI = isPRV?symbol:pSymbol;
     const nameUI = isPRV?name:`Private ${symbol}`;
     const {icon = null} = this.getData(item)??{};
+    // const imgSrc = isPRV ? withdrawNodeDisabled : withdrawNode;
+    const imgSrc =  withdrawNode;
     return (
       <TouchableOpacity
         style={[styles.container_item, index === listItems.length - 1 ? styles.last_item : {}]}
@@ -84,8 +86,8 @@ class HistoryMined extends React.Component {
           <Text style={styles.groupLeft_title}>{nameUI}</Text>
           <Text style={styles.groupRight_title}>{`${amount} ${symbolUI}`}</Text>
         </View>
-        <TouchableOpacity style={styles.groupRight} onPress={()=>(!isPRV || __DEV__ )&&onPressWithdraw&&onPressWithdraw(item)}>
-          <Image source={isPRV ? withdrawNodeDisabled : withdrawNode} resizeMode="contain" resizeMethod="resize" style={styles.withdraw_logo} />
+        <TouchableOpacity style={styles.groupRight} onPress={()=>onPressWithdraw&&onPressWithdraw(item)}>
+          <Image source={imgSrc} resizeMode="contain" resizeMethod="resize" style={styles.withdraw_logo} />
         </TouchableOpacity>
       </TouchableOpacity>
     );

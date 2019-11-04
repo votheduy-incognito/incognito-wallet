@@ -17,7 +17,7 @@
     "flow": "flow",
     "android": "react-native run-android",
     "android:clean": "cd android && ./gradlew clean",
-    "buildRelease": "rm -rf android/app/src/main/res/drawable-xxxhdpi android/app/src/main/res/drawable-xxhdpi android/app/src/main/res/drawable-xhdpi android/app/src/main/res/drawable-mdpi android/app/src/main/res/drawable-hdpi && cd android && ./gradlew assembleRelease",
+    "buildRelease": "cd android && ./gradlew assembleRelease",
     "ios:device": "react-native run-ios --device=\"Pik phone\"",
     "ios": "react-native run-ios --simulator=\"iPhone 6s\"",
     "buildIosDebug": "react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios",
