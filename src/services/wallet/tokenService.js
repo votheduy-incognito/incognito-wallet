@@ -76,6 +76,12 @@ export default class Token {
     await Wallet.resetProgressTx();
     console.log('SEND PRIVACY CUSTOM TOKEN!!!!!!!');
 
+    const { TokenSymbol, TokenName, TokenAmount } = submitParam;
+
+    if (typeof TokenSymbol !== 'string' || TokenSymbol.trim() === '') throw new Error('TokenSymbol is invalid');
+    if (typeof TokenName !== 'string' || TokenName.trim() === '') throw new Error('TokenName is invalid');
+    if (typeof TokenAmount !== 'number' ||  TokenAmount <= 0 ) throw new Error('TokenAmount is invalid');
+
     // get index account by name
     const indexAccount = wallet.getAccountIndexByName(account.name);
 

@@ -9,7 +9,16 @@ const messageHanlder = (message, fieldValue, inputValue) => {
   return message && String(message);
 };
 
-const required = ({ message } = {}) => value => value ? undefined : messageHanlder(message, value) ?? 'Required';
+const required = ({ message } = {}) => value => {
+  if (value !== undefined && value !== null) {
+    if (typeof value === 'string' && String(value).trim() === '') {
+      return messageHanlder(message, value) ?? 'Required';
+    }
+    return undefined;
+  }
+
+  return messageHanlder(message, value) ?? 'Required';
+};
 
 const maxLength = (max, { message } = {}) => value =>
   value && value.length > max ? messageHanlder(message, value, max) ?? `Must be ${max} characters or less` : undefined;
