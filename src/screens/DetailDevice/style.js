@@ -164,7 +164,8 @@ const style = StyleSheet.create({
     color: '#00C7E2',
   },
   group2_container_button2:{
-    borderRadius:scaleInApp(6)
+    borderRadius:scaleInApp(6),
+    backgroundColor:'#25CDD6'
   },
   group2_container_button_text:{
     ...TextStyle.normalText,

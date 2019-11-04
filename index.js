@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import '@src/services/polyfill';
 import App from '@src/App';
 // import AppTemp from '@src/Temp';

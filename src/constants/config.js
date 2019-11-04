@@ -42,14 +42,14 @@ const DEFAULT_LIST_SERVER = [{
 },
 {
   id: 'testnet',
-  default:false,
+  default:!isMainnet,
   address: TESTNET_SERVER_ADDRESS,
   username: '',
   password: '',
   name: 'Testnet'
 },{
   id: 'mainnet',
-  default: true,
+  default: isMainnet,
   address: MAINNET_SERVER_ADDRESS,
   username: '',
   password: '',

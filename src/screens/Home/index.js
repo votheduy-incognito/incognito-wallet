@@ -2,6 +2,8 @@ import LoadingContainer from '@src/components/LoadingContainer';
 import { getBalance as getAccountBalance, reloadAccountFollowingToken } from '@src/redux/actions/account';
 import { clearSelectedPrivacy, setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import { getBalance, getInternalTokenList, getPTokenList, setListToken } from '@src/redux/actions/token';
+import accountService from '@src/services/wallet/accountService';
+import { setWallet } from '@src/redux/actions/wallet';
 import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
@@ -28,6 +30,9 @@ class HomeContainer extends Component {
   }
 
   async componentDidMount() {
+    // temp
+    this.removeOldTomo();
+
     const {isNeedUpgrade} = this.state;
 
     const { account, navigation, clearSelectedPrivacy } = this.props;
@@ -119,6 +124,19 @@ class HomeContainer extends Component {
     }
   };
 
+  removeOldTomo = async () => {
+    try {
+      const tomoTokenId = 'ba1e1865f97bc445a87e61fcec0880237b3c1747768b713d6e1706fde25a8c93';
+      const { account, wallet, setWallet } = this.props;
+      const updatedWallet = await accountService.removeFollowingToken(tomoTokenId, account, wallet);
+
+      // update new wallet to store
+      setWallet(updatedWallet);
+    } catch (e) {
+      new ExHandler(e);
+    }
+  }
+
   getAccountBalance = async account => {
     try {
       const { getAccountBalance } = this.props;
@@ -187,7 +205,7 @@ const mapState = state => ({
   tokenGettingBalanceList: tokenSeleclor.isGettingBalance(state)
 });
 
-const mapDispatch = { setListToken, getBalance, getAccountBalance, setSelectedPrivacy, clearSelectedPrivacy, reloadAccountFollowingToken, getPTokenList, getInternalTokenList };
+const mapDispatch = { setListToken, setWallet, getBalance, getAccountBalance, setSelectedPrivacy, clearSelectedPrivacy, reloadAccountFollowingToken, getPTokenList, getInternalTokenList };
 
 HomeContainer.propTypes = {
   navigation: PropTypes.object.isRequired,

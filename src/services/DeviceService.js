@@ -50,18 +50,6 @@ export default class DeviceService {
       }).catch(e=>{
         reject(e);
       });
-    //   firebase.auth(
-    //     mailProductId,
-    //     password,
-    //     uid => {
-    //       resolve(uid);
-    //       console.log(TAG,'authFirebase successfully: ', uid);
-    //     },
-    //     error => {
-    //       reject(error);
-    //       console.log(TAG,'authFirebase error: ', error);
-    //     }
-    //   );
     });
     
   }

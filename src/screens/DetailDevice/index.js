@@ -458,11 +458,10 @@ class DetailDevice extends BaseScreen {
               </View>
               <View style={style.group2_container_container2}>
                 <ButtonExtension
-                  disabled
                   disabledTitleStyle={style.group2_container_button_text}
                   disabledStyle={[style.group2_container_button2,{backgroundColor:'#93EAEF'}]}
                   titleStyle={style.group2_container_button_text}
-                  buttonStyle={style.group2_container_button2}
+                  buttonStyle={[style.group2_container_button2]}
                   onPress={this.handlePressWithdraw}
                   titleProps={{allowFontScaling:false}}
                   title='Withdraw'
