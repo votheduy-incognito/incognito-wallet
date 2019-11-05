@@ -64,7 +64,7 @@ target 'constantWalletMobile' do
   pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways.podspec"
   pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse.podspec"
   pod 'Permission-MediaLibrary', :path => "#{permissions_path}/MediaLibrary.podspec"
-  pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone.podspec"
+  # pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone.podspec"
   pod 'Permission-Motion', :path => "#{permissions_path}/Motion.podspec"
   pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications.podspec"
   pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary.podspec"
