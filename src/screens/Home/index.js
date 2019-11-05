@@ -221,6 +221,7 @@ HomeContainer.propTypes = {
   clearSelectedPrivacy: PropTypes.func.isRequired,
   getPTokenList: PropTypes.func.isRequired,
   getInternalTokenList: PropTypes.func.isRequired,
+  setWallet: PropTypes.func.isRequired,
 };
 
 
