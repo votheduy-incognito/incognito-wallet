@@ -76,7 +76,7 @@ class EstimateFeeContainer extends Component {
       return fee;
     } catch (e) {
       this.setState({
-        estimateErrorMsg: new ExHandler(e, 'Something went wrong while estimating fee for this tracsaction, please try again.').message
+        estimateErrorMsg: new ExHandler(e, 'Something went wrong while estimating fee for this transactions, please try again.').message
       });
     } finally {
       this.setState({ isGettingFee: false });

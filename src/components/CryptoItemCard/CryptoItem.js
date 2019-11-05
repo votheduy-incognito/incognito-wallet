@@ -11,8 +11,8 @@ const CryptoItem = ({ fullName, name, amount, externalSymbol, onPress, symbol, i
       <CryptoIcon symbol={externalSymbol || symbol} />
     </View>
     <View style={cryptoItemStyle.cryptoNameContainer}>
-      <Text style={cryptoItemStyle.mainNameText}>{fullName}</Text>
-      <Text style={cryptoItemStyle.subNameText}>{name}</Text>
+      <Text style={cryptoItemStyle.mainNameText} numberOfLines={1} ellipsizeMode="tail">{fullName}</Text>
+      <Text style={cryptoItemStyle.subNameText} numberOfLines={1} ellipsizeMode="tail">{name}</Text>
     </View>
     <View style={cryptoItemStyle.balanceContainer}>
       { isGettingBalance ?
