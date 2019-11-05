@@ -207,11 +207,13 @@ class AddInternalToken extends Component {
               </View>
               <Button
                 disabled={!isCanSubmit}
-                title='Issue'
+                title={
+                  isGettingFee ? 'Calculating fee...' : 'Issue'
+                }
                 style={styleSheet.submitBtn}
                 onPress={handleSubmit(this.handleCreateSendToken)}
                 isAsync
-                isLoading={submitting}
+                isLoading={isGettingFee || submitting}
               />
             </>
           )}
