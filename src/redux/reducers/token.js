@@ -34,7 +34,7 @@ const removeTokenById = (list, tokenId) => {
 const setBulkToken = (list, tokens) => {
   let newList = [...list];
   try {
-    newList = unionBy(tokens, list, 'symbol');
+    newList = unionBy(tokens, list, 'id');
   } catch(e) {
     throw new Error('Save tokens failed');
   }

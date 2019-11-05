@@ -4,13 +4,13 @@ import tokenData from '@src/constants/tokenData';
 import Device from '@src/models/device';
 import {Text} from '@components/core';
 import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
+import { CONSTANT_COMMONS } from '@src/constants';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FlatList, Image, TouchableOpacity, View } from 'react-native';
 import CryptoIcon from '../CryptoIcon';
 import styles from './style';
-
 
 const TAG = 'HistoryMined';
 class HistoryMined extends React.Component {
@@ -93,8 +93,7 @@ class HistoryMined extends React.Component {
     );
   };
   getData = (token) => {
-    const symbolUI = _.isEqual(token?.symbol,'PRV')?token.symbol:token.pSymbol;
-    const additionData = tokenData.DATA[symbolUI] || tokenData.parse(token);
+    const additionData = tokenData.DATA[token?.id] || tokenData.parse(token);
     const { metaData, othertokenData } = token;
     const data = {
       ...additionData,

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import memmoize from 'memoize-one';
-import { View, TouchableOpacity, Text, ActivityIndicator, Toast, Button } from '@src/components/core';
-import formatUtil from '@src/utils/format';
+import { View, TouchableOpacity, Text, ActivityIndicator, Button } from '@src/components/core';
 import { CONSTANT_COMMONS } from '@src/constants';
 import styles from './styles';
 
@@ -75,19 +74,6 @@ class EstimateFee extends Component {
         selectDefaultLevel(levels[0]);
       }
     }
-  }
-
-  canNotUseFeeType = (nanoFee, symbol) => {
-    const { selectedPrivacy } = this.props;
-    let formatAmount = 0;
-
-    if (symbol === selectedPrivacy?.symbol) {
-      formatAmount = formatUtil.amountFull(nanoFee, selectedPrivacy?.pDecimals);
-    } else if (symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV) {
-      formatAmount = formatUtil.amountFull(nanoFee, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY);
-    }
-
-    Toast.showWarning(`Min fee is ${formatAmount} ${symbol}. Your balance is not enough to use ${symbol} fee, please uses another type or top up your balance.`);
   }
 
   shouldSetDefaultRate = memmoize((levels, finalFee) => {

@@ -67,7 +67,7 @@ class WalletDetail extends Component {
         <View style={styles.boxHeader}>
           <View style={styles.boxBalance}>
             {
-              isGettingBalanceList?.includes(selectedPrivacy.symbol)
+              isGettingBalanceList?.includes(selectedPrivacy.tokenId)
                 ? <ActivityIndicator color={COLORS.white} />
                 : (
                   <Text style={styles.balance}>

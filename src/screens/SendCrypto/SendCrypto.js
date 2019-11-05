@@ -138,10 +138,10 @@ class SendCrypto extends React.Component {
   render() {
     const { finalFee, maxAmountValidator, supportedFeeTypes } = this.state;
     const { isSending, selectedPrivacy, amount, toAddress, isFormValid } = this.props;
-    const types = [tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY];
+    const types = [CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV];
     const maxAmount = this.getMaxAmount();
 
-    if (selectedPrivacy?.symbol !== tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY) {
+    if (selectedPrivacy?.symbol !== CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV) {
       types.unshift(selectedPrivacy?.symbol);
     }
 

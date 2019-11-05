@@ -69,7 +69,7 @@ class Home extends React.Component {
                 style={homeStyle.cryptoItem}
                 key={token.id}
                 token={token}
-                isGettingBalance={tokenGettingBalanceList?.includes(token?.symbol)}
+                isGettingBalance={tokenGettingBalanceList?.includes(token?.id)}
                 onPress={onSelectToken}
               />
             ))

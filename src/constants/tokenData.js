@@ -9,7 +9,7 @@ const SYMBOL = {
 };
 
 const DATA = {
-  [SYMBOL.MAIN_CRYPTO_CURRENCY]: {
+  [CONSTANT_COMMONS.PRV_TOKEN_ID]: {
     typeName: 'Incognito',
     symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
     name: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,

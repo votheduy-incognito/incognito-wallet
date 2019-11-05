@@ -77,7 +77,7 @@ export const getBalanceFinish = tokenSymbol => ({
 
 export const getBalance = (token = throw new Error('Token object is required')) => async (dispatch, getState) => {
   try {
-    dispatch(getBalanceStart(token?.symbol));
+    dispatch(getBalanceStart(token?.id));
 
     const wallet = getState()?.wallet;
     const account = accountSeleclor.defaultAccount(getState());
@@ -104,7 +104,7 @@ export const getBalance = (token = throw new Error('Token object is required')) 
     }));
     throw e;
   } finally {
-    dispatch(getBalanceFinish(token?.symbol));
+    dispatch(getBalanceFinish(token?.id));
   }
 };
 

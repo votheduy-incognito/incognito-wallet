@@ -31,7 +31,7 @@ class WalletDetailContainer extends Component {
   componentDidUpdate(prevProps) {
     const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
     const { selectedPrivacy } = this.props;
-    if (oldSelectedPrivacy?.symbol !== selectedPrivacy?.symbol) {
+    if (oldSelectedPrivacy?.tokenId !== selectedPrivacy?.tokenId) {
       this.setTitle();
       this.setOptionMenu();
     }

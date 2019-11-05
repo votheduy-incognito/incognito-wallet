@@ -59,16 +59,16 @@ class EstimateFeeContainer extends Component {
 
       this.setState({ isGettingFee: true, estimateErrorMsg: null });
   
-      // estimate fee in MAIN_CRYPTO_CURRENCY [PRV]
-      if (defaultFeeSymbol === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY) {
+      if (defaultFeeSymbol === selectedPrivacy?.symbol) { // estimate fee in pToken [pETH, pBTC, ...]
+        fee = await this._handleEstimateTokenFee();
+      } else if (defaultFeeSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV) {
+        // estimate fee in PRV
         if (selectedPrivacy?.isToken) {
           fee = await this._estimateFeeForToken();
         }
         if (selectedPrivacy?.isMainCrypto) {
           fee = await this._estimateFeeForMainCrypto();
         }
-      } else if (defaultFeeSymbol === selectedPrivacy?.symbol) { // estimate fee in pToken [pETH, pBTC, ...]
-        fee = await this._handleEstimateTokenFee();
       }
 
       this.setState({ estimateErrorMsg: null, minFee: fee });
@@ -185,8 +185,9 @@ class EstimateFeeContainer extends Component {
   }
 
   getFeeSymbolList = memmoize((selectedPrivacy) => {
-    const symbols = [tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY];
+    const symbols = [CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV];
 
+    // NOTE: dont support fake P.R.V(s)
     if (!symbols.includes(selectedPrivacy?.symbol)) {
       symbols.unshift(selectedPrivacy?.symbol);
     }

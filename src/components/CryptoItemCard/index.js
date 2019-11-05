@@ -22,13 +22,13 @@ class CryptoItemContainer extends Component {
     const { token: oldToken } = prevProps;
     const { token } = this.props;
 
-    if (oldToken?.symbol !== token?.symbol) {
+    if (oldToken?.id !== token?.id) {
       this.getData(token);
     }
   }
 
   getData = (token) => {
-    const additionData = tokenData.DATA[token?.symbol] || tokenData.parse(token);
+    const additionData = tokenData.DATA[token?.id] || tokenData.parse(token);
     const { metaData, ...othertokenData } = token;
     const data = {
       ...additionData,

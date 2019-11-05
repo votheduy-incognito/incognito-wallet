@@ -11,8 +11,8 @@ class SelectedPrivacy {
     this.tokenId = this.isMainCrypto ? CONSTANT_COMMONS.PRV_TOKEN_ID : token.id;
     this.contractId = pTokenData.contractId;
     this.isPToken = !!pTokenData.pSymbol;
-    this.decimals = this.isMainCrypto ? CONSTANT_COMMONS.DECIMALS[this.symbol] : pTokenData.decimals;
-    this.pDecimals = this.isMainCrypto ? CONSTANT_COMMONS.DECIMALS[this.symbol] : pTokenData.pDecimals;
+    this.decimals = this.isMainCrypto ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : pTokenData.decimals;
+    this.pDecimals = this.isMainCrypto ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : pTokenData.pDecimals;
     this.currencyType = pTokenData.currencyType;
     this.externalSymbol = pTokenData.symbol;
     this.paymentAddress = account.PaymentAddress;
