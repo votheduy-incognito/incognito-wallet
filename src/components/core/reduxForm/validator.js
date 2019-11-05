@@ -44,6 +44,10 @@ const email = (value, { message } = {}) =>
 const notInList = (list, { message } = {}) => value =>
   list?.includes(value) ? messageHanlder(message, value, list) ?? 'Please use another value' : undefined;
 
+const regexp = (pattern, { message } = {}) => value =>
+  pattern && !pattern.test(value) ?
+    messageHanlder(message, value, pattern) ?? 'Invalid data' : undefined;
+
 const incognitoAddress = (value, { message } = {}) => value => value && !accountService.checkPaymentAddress(value) ? messageHanlder(message, value) ?? 'Invalid address'  :undefined;
 
 const ethAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'ETH') ? messageHanlder(message, value) ?? 'Invalid ETH address' : undefined;
@@ -69,6 +73,8 @@ const combinedETHAddress = [required(), ethAddress()];
 const combinedBTCAddress = [required(), btcAddress()];
 const combinedBNBAddress = [required(), bnbAddress()];
 const combinedUnknownAddress = [required(), minLength(15)];
+const combinedTokenName = [required(), minLength(5), maxLength(10), regexp(/^[a-zA-Z]((\w+)?(( |-){1}\w+)?)+$/i, { message: 'Please use a valid token name (Ex: "My Token").' })];
+const combinedTokenSymbol = [required(), minLength(2), maxLength(5), regexp(/^[a-zA-Z]+$/i, { message: 'Please use a valid token symbol (Ex: "mySym").' })];
 
 export default {
   required,
@@ -88,5 +94,7 @@ export default {
   combinedBTCAddress,
   ethAddress,
   btcAddress,
-  notInList
+  notInList,
+  combinedTokenName,
+  combinedTokenSymbol
 };

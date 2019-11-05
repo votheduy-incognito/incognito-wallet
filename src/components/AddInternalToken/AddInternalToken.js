@@ -23,7 +23,6 @@ const initialValues = {
   fromAddress: ''
 };
 const Form = createForm(formName, { initialValues });
-const isRequired = validator.required();
 
 class AddInternalToken extends Component {
   constructor(props) {
@@ -174,7 +173,7 @@ class AddInternalToken extends Component {
                   placeholder='Enter token name'
                   label='Name'
                   style={styleSheet.input}
-                  validate={[isRequired]}
+                  validate={validator.combinedTokenName}
                 />
                 <Field
                   component={InputField}
@@ -182,7 +181,7 @@ class AddInternalToken extends Component {
                   placeholder='Enter token symbol'
                   label='Symbol'
                   style={styleSheet.input}
-                  validate={[isRequired]}
+                  validate={validator.combinedTokenSymbol}
                 />
                 <Field
                   component={InputField}
