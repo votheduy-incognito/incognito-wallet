@@ -16,9 +16,9 @@ export default class CryptoIcon extends Component {
   }
 
   componentDidMount() {
-    const { symbol } = this.props;
+    const { symbol, onlyDefault } = this.props;
 
-    this.getUri(symbol);
+    !onlyDefault && this.getUri(symbol);
   }
 
   preFormatSymbol = symbol => {
@@ -45,10 +45,12 @@ export default class CryptoIcon extends Component {
     this.setState({ isLoading: false });
   };
 
-  renderDefault = () => <Image
-    style={this.getStyle(false)}
-    source={defaultTokenIcon}
-  />;
+  renderDefault = () => (
+    <Image
+      style={this.getStyle(false)}
+      source={defaultTokenIcon}
+    />
+  );
 
   getStyle = (isLoading) => {
     const styles = [styleSheet.logo];
@@ -58,17 +60,20 @@ export default class CryptoIcon extends Component {
 
   render() {
     const { uri, isLoading } = this.state;
+    const { onlyDefault } = this.props;
 
     return (
       <View style={styleSheet.container}>
-        { isLoading &&
+        { isLoading && !onlyDefault && (
           <View style={styleSheet.loadingIcon}>
             <ActivityIndicator size="small" />
           </View>
+        )
         }
         {
-          uri
-            ? (
+          onlyDefault || !uri
+            ? this.renderDefault()
+            : (
               <Image
                 style={this.getStyle(isLoading)}
                 source={{ uri }}
@@ -77,13 +82,17 @@ export default class CryptoIcon extends Component {
                 onLoadEnd={this.onLoadEnd}
               />
             )
-            : this.renderDefault()
         }
       </View>
     );
   }
 }
 
+CryptoIcon.defaultProps = {
+  onlyDefault: false
+};
+
 CryptoIcon.propTypes = {
-  symbol: PropTypes.string.isRequired
+  symbol: PropTypes.string.isRequired,
+  onlyDefault: PropTypes.bool
 };

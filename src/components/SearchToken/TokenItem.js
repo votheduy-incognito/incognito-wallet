@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import CryptoIcon from '@components/CryptoIcon/index';
+import { TOKEN_TYPES } from '@src/constants/tokenData';
 import checkboxChecked from '@src/assets/images/checkbox_checked.png';
 import checkboxUnchecked from '@src/assets/images/checkbox_unchecked.png';
 import { TouchableOpacity, View, Text, Image } from '../core';
@@ -15,6 +16,15 @@ class TokenItem extends PureComponent {
     }
   };
 
+  hasIcon = () => {
+    const { token } = this.props;
+    if ([TOKEN_TYPES.COIN, TOKEN_TYPES.ERC20, TOKEN_TYPES.BEP2].includes(token?.type)) {
+      return true;
+    }
+
+    return false;
+  }
+
   render() {
     const { token, selected, divider } = this.props;
 
@@ -23,7 +33,7 @@ class TokenItem extends PureComponent {
     return (
       <TouchableOpacity onPress={this._handlePress} style={[ itemStyle.container, divider && itemStyle.divider ]}>
         <View style={itemStyle.logoContainer}>
-          <CryptoIcon symbol={token.symbol} />
+          <CryptoIcon symbol={token.symbol} onlyDefault={!this.hasIcon()} />
         </View>
         <View>
           <Text style={itemStyle.name}>{token.name}</Text>

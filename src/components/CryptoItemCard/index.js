@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { CONSTANT_COMMONS } from '@src/constants';
 import tokenData from '@src/constants/tokenData';
 import CryptoItem from './CryptoItem';
 
@@ -47,6 +48,22 @@ class CryptoItemContainer extends Component {
     }
   };
 
+  hasIcon = () => {
+    const { token } = this.props;
+
+    // bridge tokens always have an icon
+    if (token?.metaData?.pSymbol) {
+      return true;
+    }
+
+    // Incognito
+    if (token?.id === CONSTANT_COMMONS.PRV_TOKEN_ID) {
+      return true;
+    }
+
+    return false;
+  }
+
   render() {
     const { data } = this.state;
     const { token } = this.props;
@@ -64,6 +81,7 @@ class CryptoItemContainer extends Component {
       externalSymbol: data?.externalSymbol,
       pDecimals: data.pDecimals,
       onPress: this.handlePress,
+      hasIcon: this.hasIcon()
     };
 
     return (
