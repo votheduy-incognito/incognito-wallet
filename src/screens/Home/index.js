@@ -25,7 +25,8 @@ class HomeContainer extends Component {
     const isNeedUpgrade = params?.isNeedUpgrade??false;
     this.state = {
       isReloading: false ,
-      isNeedUpgrade:isNeedUpgrade
+      isNeedUpgrade:isNeedUpgrade,
+      isReceivedPRV: false
     };
   }
 
@@ -38,9 +39,13 @@ class HomeContainer extends Component {
     const { account, navigation, clearSelectedPrivacy } = this.props;
     // console.log('HIENTON account = ',account);
     try {
-      if(isNeedUpgrade && !_.isEmpty(account)){
+      if(!_.isEmpty(account)){
+
         APIService.airdrop1({WalletAddress:account.PaymentAddress}).then(result=>{
-          result?.status == 1 && Toast.showSuccess('1 PRV has been added to your wallet.');
+          this.setState({
+            isReceivedPRV:result?.status == 1
+          });
+          // result?.status == 1 && Toast.showSuccess('1 PRV has been added to your wallet.');
         });
       }
       this.getTokens();
@@ -167,7 +172,7 @@ class HomeContainer extends Component {
   };
 
   render() {
-    const { isReloading,isNeedUpgrade } = this.state;
+    const { isReloading,isNeedUpgrade,isReceivedPRV } = this.state;
     const { wallet, account, tokens, accountGettingBalanceList, tokenGettingBalanceList } = this.props;
 
     if (!wallet) return <LoadingContainer />;
@@ -187,9 +192,9 @@ class HomeContainer extends Component {
           onSelectToken={this.handleSelectToken}
         />
         <DialogUpgradeToMainnet
-          isVisible={isNeedUpgrade}
+          isVisible={isReceivedPRV}
           onButtonClick={()=>{
-            this.setState({isNeedUpgrade:false});
+            this.setState({isReceivedPRV:false});
           }}
         />
       </>
