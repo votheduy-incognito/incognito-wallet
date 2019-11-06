@@ -31,7 +31,7 @@ try {
           log(`${methodName} called with params`, data);
           PrivacyGo[methodName](data, function(error, result) {
             if (error) {
-              throw error;
+              reject(error);
             }
   
             log(`${methodName} called successfully with result`, result);
