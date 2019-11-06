@@ -128,6 +128,10 @@ class Withdraw extends React.Component {
     this.setState({ finalFee: fee, feeUnit });
   }
 
+  handleEstFeeFailed = () => {
+    this.setState({ finalFee: null });
+  }
+
   getAddressValidator = memmoize((symbol, isErc20Token) => {
     if (isErc20Token || symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) {
       return validator.combinedETHAddress;
@@ -186,6 +190,7 @@ class Withdraw extends React.Component {
                   initialFee={initialFee}
                   finalFee={finalFee}
                   onSelectFee={this.handleSelectFee}
+                  onEstimateFailed={this.handleEstFeeFailed}
                   types={types}
                   amount={isFormValid ? amount : null}
                   toAddress={isFormValid ? selectedPrivacy?.paymentAddress : null} // est fee on the same network, dont care which address will be send to
