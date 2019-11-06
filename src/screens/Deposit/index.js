@@ -49,6 +49,10 @@ class DepositContainer extends Component {
         });
       }
 
+      if (!address) {
+        throw new Error('Can not gen new deposit address');
+      }
+
       this.setState({ address });
       return address;
     } catch (e) {
