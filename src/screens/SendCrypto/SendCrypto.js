@@ -10,7 +10,6 @@ import LoadingTx from '@src/components/LoadingTx';
 import EstimateFee from '@src/components/EstimateFee';
 import CurrentBalance from '@src/components/CurrentBalance';
 import { isExchangeRatePToken } from '@src/services/wallet/RpcClientService';
-import tokenData from '@src/constants/tokenData';
 import { createForm, InputQRField, InputMaxValueField, validator } from '@src/components/core/reduxForm';
 import { ExHandler } from '@src/services/exception';
 import { CONSTANT_COMMONS } from '@src/constants';
