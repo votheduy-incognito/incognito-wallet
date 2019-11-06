@@ -16,20 +16,27 @@ export default class CryptoIcon extends Component {
   }
 
   componentDidMount() {
-    const { symbol, onlyDefault } = this.props;
+    const { symbol, tokenId, onlyDefault } = this.props;
 
-    !onlyDefault && this.getUri(symbol);
+    !onlyDefault && this.getUri({ symbol, tokenId });
   }
 
-  preFormatSymbol = symbol => {
-    if (!symbol) return;
+  preFormat = data => {
+    if (!data) return;
 
-    return String(symbol).toLowerCase();
+    return String(data).toLowerCase();
   };
 
-  getUri = async symbol => {
-    const formatedSymbol = this.preFormatSymbol(symbol);
-    const uri =  formatedSymbol && `${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${formatedSymbol}@2x.png`;
+  getUri = async ({ symbol, tokenId }) => {
+    let uri;
+    if (tokenId) {
+      const formatedTokenId = this.preFormat(tokenId);
+      uri =  formatedTokenId && `${CONSTANT_CONFIGS.INCOGNITO_TOKEN_ICON_URL}/${formatedTokenId}.png`;
+    } else if (symbol) {
+      const formatedSymbol = this.preFormat(symbol);
+      uri =  formatedSymbol && `${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${formatedSymbol}@2x.png`;
+    }
+
     this.setState({ uri });
   };
 
@@ -89,10 +96,13 @@ export default class CryptoIcon extends Component {
 }
 
 CryptoIcon.defaultProps = {
-  onlyDefault: false
+  onlyDefault: false,
+  symbol: null,
+  tokenId: null
 };
 
 CryptoIcon.propTypes = {
-  symbol: PropTypes.string.isRequired,
+  symbol: PropTypes.string,
+  tokenId: PropTypes.string,
   onlyDefault: PropTypes.bool
 };

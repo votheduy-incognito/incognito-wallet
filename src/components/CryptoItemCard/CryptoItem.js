@@ -5,10 +5,10 @@ import CryptoIcon from '@src/components/CryptoIcon';
 import formatUtil from '@src/utils/format';
 import cryptoItemStyle from './style';
 
-const CryptoItem = ({ fullName, name, amount, externalSymbol, onPress, symbol, isGettingBalance, style, pDecimals, hasIcon }) => (
+const CryptoItem = ({ fullName, name, amount, externalSymbol, onPress, symbol, isGettingBalance, style, pDecimals, useLogoFromSymbol, tokenId }) => (
   <TouchableScale style={[cryptoItemStyle.container, style]} onPress={amount != null ? onPress : null}>
     <View style={cryptoItemStyle.logoContainer}>
-      <CryptoIcon symbol={externalSymbol || symbol} onlyDefault={!hasIcon} />
+      <CryptoIcon tokenId={!useLogoFromSymbol && tokenId} symbol={useLogoFromSymbol && (externalSymbol || symbol)} />
     </View>
     <View style={cryptoItemStyle.cryptoNameContainer}>
       <Text style={cryptoItemStyle.mainNameText} numberOfLines={1} ellipsizeMode="tail">{fullName}</Text>
@@ -36,7 +36,8 @@ CryptoItem.defaultProps = {
   isGettingBalance: false,
   style: null,
   pDecimals: null,
-  hasIcon: false
+  useLogoFromSymbol: false,
+  tokenId: null,
 };
 
 CryptoItem.propTypes = {
@@ -49,7 +50,8 @@ CryptoItem.propTypes = {
   symbol: PropTypes.string,
   isGettingBalance: PropTypes.bool,
   style: PropTypes.object,
-  hasIcon: PropTypes.bool,
+  tokenId: PropTypes.string,
+  useLogoFromSymbol: PropTypes.bool,
 };
 
 export default CryptoItem;

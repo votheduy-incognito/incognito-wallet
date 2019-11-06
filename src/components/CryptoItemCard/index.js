@@ -48,7 +48,7 @@ class CryptoItemContainer extends Component {
     }
   };
 
-  hasIcon = () => {
+  useLogoFromSymbol = () => {
     const { token } = this.props;
 
     // bridge tokens always have an icon
@@ -78,10 +78,11 @@ class CryptoItemContainer extends Component {
       name: data.name,
       amount: token?.amount,
       symbol: data.symbol,
+      tokenId: data.id,
       externalSymbol: data?.externalSymbol,
       pDecimals: data.pDecimals,
       onPress: this.handlePress,
-      hasIcon: this.hasIcon()
+      useLogoFromSymbol: this.useLogoFromSymbol()
     };
 
     return (
