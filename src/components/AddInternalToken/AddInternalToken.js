@@ -38,10 +38,10 @@ class AddInternalToken extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { amount: oldAmount } = prevProps;
+    const { amount: oldAmount, isFormValid: oldIsFormValid } = prevProps;
     const { isFormValid, amount } = this.props;
 
-    if (amount !== oldAmount && isFormValid) {
+    if ((amount !== oldAmount || isFormValid !== oldIsFormValid) && isFormValid) {
       this.handleShouldGetFee();
     }
   }
@@ -177,6 +177,7 @@ class AddInternalToken extends Component {
                 />
                 <Field
                   component={InputField}
+                  componentProps={{ autoCapitalize: 'characters' }}
                   name='symbol'
                   placeholder='Enter token symbol'
                   label='Symbol'
@@ -192,7 +193,7 @@ class AddInternalToken extends Component {
                   componentProps={{
                     keyboardType: 'decimal-pad'
                   }}
-                  validate={[...validator.combinedAmount]}
+                  validate={[...validator.combinedNanoAmount]}
                 />
                 {
                   isGettingFee
