@@ -9,7 +9,8 @@ import {
   TEST_URL,
   CRYPTO_ICON_URL,
   BEP2_URL,
-  
+  DEX_BINANCE_TOKEN_URL,
+
 } from 'react-native-dotenv';
 import serverService from '@src/services/wallet/Server';
 import _ from 'lodash';
@@ -68,4 +69,5 @@ export default {
   TEMPLATE_API_BASE_URL,
   MASTER_NODE_ADDRESS,
   BEP2_URL,
+  DEX_BINANCE_TOKEN_URL,
 };

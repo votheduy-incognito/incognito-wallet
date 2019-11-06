@@ -23,7 +23,7 @@ export const detectBEP2Token = async (symbol) => {
   if (!symbol) throw new Error('Missing BEP2 symbol to detect');
 
   if (BEP2Token.length === 0) {
-    const res = await axios.get(`${CONSTANT_CONFIGS.BEP2_URL}?limit=1000000`);
+    const res = await axios.get(`${CONSTANT_CONFIGS.DEX_BINANCE_TOKEN_URL}?limit=1000000`);
     BEP2Tokens = res.data.map(item => new BEP2Token(item));
   }
 
