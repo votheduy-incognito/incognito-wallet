@@ -62,6 +62,9 @@ const bnbAddress = (value, { message } = {}) => value => {
   return undefined;
 };
 
+// the same as ETH
+const tomoAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'ETH') ? messageHanlder(message, value) ?? 'Invalid TOMO address' : undefined;
+
 const combinedAmount = [
   required(),
   number(),
@@ -70,6 +73,7 @@ const combinedAmount = [
 
 const combinedIncognitoAddress = [required(), incognitoAddress()];
 const combinedETHAddress = [required(), ethAddress()];
+const combinedTOMOAddress = [required(), tomoAddress()];
 const combinedBTCAddress = [required(), btcAddress()];
 const combinedBNBAddress = [required(), bnbAddress()];
 const combinedUnknownAddress = [required(), minLength(15)];
@@ -91,6 +95,7 @@ export default {
   combinedUnknownAddress,
   combinedBNBAddress,
   combinedETHAddress,
+  combinedTOMOAddress,
   combinedBTCAddress,
   ethAddress,
   btcAddress,

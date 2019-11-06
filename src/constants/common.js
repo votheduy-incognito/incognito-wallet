@@ -4,7 +4,8 @@ const CRYPTO_SYMBOL = {
   ETH: 'ETH',
   BNB: 'BNB',
   USD: 'USD',
-  KCS: 'KCS'
+  KCS: 'KCS',
+  TOMO: 'TOMO'
 };
 
 const TOKEN_SYMBOL = {

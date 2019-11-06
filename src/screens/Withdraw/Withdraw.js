@@ -135,6 +135,8 @@ class Withdraw extends React.Component {
   getAddressValidator = memmoize((symbol, isErc20Token) => {
     if (isErc20Token || symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) {
       return validator.combinedETHAddress;
+    } if (symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.TOMO) {
+      return validator.combinedTOMOAddress;
     } else if (symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BTC) {
       return validator.combinedBTCAddress;
     } else if (symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BNB) {
