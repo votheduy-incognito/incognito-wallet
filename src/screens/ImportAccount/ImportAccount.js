@@ -7,7 +7,7 @@ import {
 } from '@src/components/core';
 import PropTypes from 'prop-types';
 import { Field } from 'redux-form';
-import { createForm, InputField, validator } from '@src/components/core/reduxForm';
+import { createForm, InputField, InputQRField, validator } from '@src/components/core/reduxForm';
 import React, { Component } from 'react';
 import randomName from '@src/utils/randomName';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
@@ -122,7 +122,7 @@ class ImportAccount extends Component {
               }
 
               <Field
-                component={InputField}
+                component={InputQRField}
                 name='privateKey'
                 placeholder='Enter Private Key'
                 label='Private Key'

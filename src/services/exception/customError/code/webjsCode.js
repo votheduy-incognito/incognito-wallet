@@ -13,7 +13,8 @@ const webjsError = codeCreator(TYPES.WEB_JS_ERROR);
 
 const webJs = {
   web_js_token_balance_is_zero: webjsError(-4007),
-  web_js_import_existed_account: webjsError(-2001)
+  web_js_import_existed_account: webjsError(-2001),
+  web_js_import_invalid_key: webjsError(-2005)
 };
 
 export default {
