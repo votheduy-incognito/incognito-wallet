@@ -161,7 +161,7 @@ class Withdraw extends React.Component {
       <ScrollView style={style.container}>
         <Container style={style.mainContainer}>
           <View style={style.currentBalanceContainer}>
-            <CurrentBalance amount={formatUtil.amount(withdrawData?.maxWithdrawAmount, selectedPrivacy?.pDecimals)} symbol={selectedPrivacy?.symbol} />
+            <CurrentBalance amount={convertUtil.toHumanAmount(withdrawData?.maxWithdrawAmount, selectedPrivacy?.pDecimals)} symbol={selectedPrivacy?.symbol} />
           </View>
           <Form style={style.form}>
             {({ handleSubmit, submitting }) => (
