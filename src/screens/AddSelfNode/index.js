@@ -45,7 +45,7 @@ const ViewInput = forwardRef((props,ref)=>{
       inputStyle={textInput}
       inputContainerStyle={item_container_input}
       containerStyle={item}
-      placeholder="192.168.1.1 or node.example.com"
+      placeholder="192.168.1.1:1002 or node.example.com"
       label='IP address or domain'
       defaultValue={text}
       clearable

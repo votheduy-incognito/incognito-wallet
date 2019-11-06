@@ -1,5 +1,6 @@
 import { COLORS, FONT, SPACING, DECOR } from '@src/styles';
 import { StyleSheet } from 'react-native';
+import TextStyle from '@src/styles/TextStyle';
 
 const HEADER_HEIGHT = 35;
 
@@ -7,6 +8,13 @@ export const settingStyle = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.lightGrey6
+  },
+  textVersion:{
+    ...TextStyle.smallText,
+    backgroundColor: COLORS.lightGrey6,
+    color:COLORS.lightGrey1,
+    textAlign:'center',
+    padding: 10,
   }
 });
 
