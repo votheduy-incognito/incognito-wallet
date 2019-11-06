@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Incognito Wallet</string>
+<!--    <string name="app_name">Incognito Wallet</string>-->
+<!--    <string name="app_name_debug">Dev Wallet</string>-->
 </resources>

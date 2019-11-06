@@ -20,6 +20,7 @@ const findDefaultNetwork = async () => {
   const found = networks?.find(_ => _.default);
   return found;
 };
+const BUILD_VERSION = '3.2.3';
 const isMainnet = true;
 //findDefaultNetwork()?.id === 'mainnet';
 // console.log('CONFIG begin = ',TEMPLATE_API_BASE_URL);
@@ -70,4 +71,5 @@ export default {
   MASTER_NODE_ADDRESS,
   BEP2_URL,
   DEX_BINANCE_TOKEN_URL,
+  BUILD_VERSION
 };
