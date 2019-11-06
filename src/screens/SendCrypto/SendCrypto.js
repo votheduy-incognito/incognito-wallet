@@ -113,6 +113,10 @@ class SendCrypto extends React.Component {
     this.setState({ finalFee: fee, feeUnit });
   }
 
+  handleEstFeeFailed = () => {
+    this.setState({ finalFee: null });
+  }
+
   shouldDisabledSubmit = () => {
     const { finalFee } = this.state;
     if (finalFee !== 0 && !finalFee) {
@@ -179,6 +183,7 @@ class SendCrypto extends React.Component {
                   initialFee={0}
                   finalFee={finalFee}
                   onSelectFee={this.handleSelectFee}
+                  onEstimateFailed={this.handleEstFeeFailed}
                   types={supportedFeeTypes}
                   amount={isFormValid ? amount : null}
                   toAddress={isFormValid ? toAddress : null}

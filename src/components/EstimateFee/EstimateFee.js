@@ -60,10 +60,10 @@ class EstimateFee extends Component {
 
   componentDidUpdate(prevProps) {
     const { defaultFeeSymbol: oldDefaultFeeSymbol } = prevProps;
-    const { finalFee, defaultFeeSymbol } = this.props;
+    const { minFee, finalFee, defaultFeeSymbol } = this.props;
     const { levels } = this.state;
 
-    if (oldDefaultFeeSymbol === defaultFeeSymbol && this.shouldSetDefaultRate(levels, finalFee)) {
+    if (oldDefaultFeeSymbol === defaultFeeSymbol && this.shouldSetDefaultRate(levels, minFee, finalFee)) {
       const selectDefaultLevel = (level) => {
         const defaultLevel = level;
         defaultLevel && this.handleSelectRate(defaultLevel.fee);
@@ -76,8 +76,10 @@ class EstimateFee extends Component {
     }
   }
 
-  shouldSetDefaultRate = memmoize((levels, finalFee) => {
+  shouldSetDefaultRate = memmoize((levels, minFee, finalFee) => {
     try {
+      if (minFee === null) return false;
+
       const found = levels.find(level => level.fee === finalFee);
       if (!found) return true;
       return false;
@@ -132,7 +134,7 @@ class EstimateFee extends Component {
 
   render() {
     const { levels, isRetrying } = this.state;
-    const { types, minFee, isGettingFee, defaultFeeSymbol, finalFee, estimateErrorMsg, style } = this.props;
+    const { types, minFee, isGettingFee, defaultFeeSymbol, estimateErrorMsg, finalFee, style } = this.props;
 
     return (
       <View style={[styles.container, style]}>
