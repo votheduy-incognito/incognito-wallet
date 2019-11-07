@@ -68,8 +68,8 @@ export const getBalanceFinish = accountName => ({
   data: accountName
 });
 
-export const setDefaultAccount = account => {
-  accountService.saveDefaultAccountToStorage(account?.name);
+export const setDefaultAccount = async account => {
+  await accountService.saveDefaultAccountToStorage(account?.name);
   return ({
     type: type.SET_DEFAULT_ACCOUNT,
     data: account
@@ -90,10 +90,12 @@ export const getBalance = (account) => async (dispatch, getState) => {
     }
 
     balance = await accountService.getBalance(account, wallet);
-    dispatch(setAccount({
+    const accountMerge = {
       ...account,
       value: balance
-    }));
+    };
+    // console.log(TAG,'getBalance = accountMerge = ',accountMerge);
+    dispatch(setAccount(accountMerge));
     
   } catch (e) {
     account && dispatch(setAccount({

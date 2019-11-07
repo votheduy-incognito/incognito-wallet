@@ -2,7 +2,7 @@ import Container from '@components/Container';
 import BaseScreen from '@screens/BaseScreen';
 import CreateAccount from '@screens/CreateAccount';
 import images, { imagesVector } from '@src/assets';
-import { Text,ButtonExtension } from '@src/components/core';
+import { Text,ButtonExtension, Toast } from '@src/components/core';
 import DialogLoader from '@src/components/DialogLoader';
 import HeaderBar from '@src/components/HeaderBar/HeaderBar';
 import HistoryMined from '@src/components/HistoryMined';
@@ -25,7 +25,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Image, RefreshControl, ScrollView, TouchableOpacity, View } from 'react-native';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
+import { getBalance as getAccountBalance,setDefaultAccount, reloadAccountFollowingToken,switchAccount } from '@src/redux/actions/account';
 import { connect } from 'react-redux';
+import { ExHandler } from '@src/services/exception';
 import AdvanceOption from './AdvanceOption';
 import Loader, { Earning } from './Loader';
 import style from './style';
@@ -532,8 +534,27 @@ class DetailDevice extends BaseScreen {
     );
   }
 
+  onHandleSwitchAccount = onClickView(async account => {
+    try {
+      const {defaultAccountName} = this.props;
+      if (defaultAccountName === account?.name) {
+        Toast.showInfo(`Your current account is "${account?.name}"`);
+        return;
+      }
+      await switchAccount(account?.name);
+      // // await setDefaultAccount(account);
+      // await getAccountBalance(account).catch(console.log);
+      // await reloadAccountFollowingToken(account).catch(console.log);
+
+      Toast.showInfo(`Switched to account "${account?.name}"`);
+    } catch (e) {
+      new ExHandler(e, `Can not switch to account "${account?.name}", please try again.`).showErrorToast();
+    }
+  });
+
   renderDialogNotify =()=>{
     const {isShowMessage} = this.state;
+    const onHandleSwitchAccount = this.onHandleSwitchAccount;
     return (
       <Dialog
         width={0.8}
@@ -553,7 +574,8 @@ class DetailDevice extends BaseScreen {
             buttonStyle={style.dialog_button}
             onPress={onClickView(()=>{
               this.setState({ isShowMessage: false });
-              this.goToScreen(routeNames.ImportAccount);
+              this.goToScreen(routeNames.ImportAccount, { onSwitchAccount: onHandleSwitchAccount });
+              // this.goToScreen(routeNames.ImportAccount);
             })}
             title='Import'
           />
@@ -638,7 +660,7 @@ DetailDevice.propTypes = {
 
 DetailDevice.defaultProps = {};
 
-const mapDispatch = { };
+const mapDispatch = { getAccountBalance,setDefaultAccount, reloadAccountFollowingToken,switchAccount };
 
 export default connect(
   state => ({

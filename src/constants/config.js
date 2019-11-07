@@ -21,8 +21,8 @@ const findDefaultNetwork = async () => {
   const found = networks?.find(_ => _.default);
   return found;
 };
-const BUILD_VERSION = '3.2.3';
-const isMainnet = true;
+const BUILD_VERSION = '3.2.4';
+const isMainnet = false;
 //findDefaultNetwork()?.id === 'mainnet';
 // console.log('CONFIG begin = ',TEMPLATE_API_BASE_URL);
 // const isMainnet = true;
