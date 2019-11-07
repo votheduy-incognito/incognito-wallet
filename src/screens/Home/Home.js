@@ -31,7 +31,7 @@ class Home extends React.Component {
           <TouchableWithoutFeedback onPress={handleSetting}>
             <Image source={setting} style={homeStyle.setting} />
           </TouchableWithoutFeedback>
-          <Text style={homeStyle.title}>{account.name}</Text>
+          <Text style={homeStyle.title} numberOfLines={1} ellipsizeMode='middle'>{account.name}</Text>
           {/* Use below empty view to push the title to middle */}
           <View style={homeStyle.setting} />
         </View>
