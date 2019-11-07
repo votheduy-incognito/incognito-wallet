@@ -4,7 +4,7 @@ import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import { getEstimateFeeForNativeToken, getEstimateFeeForPToken } from '@src/services/wallet/RpcClientService';
 import convertUtil from '@src/utils/convert';
 import formatUtil from '@src/utils/format';
-import { debounce } from 'lodash';
+import { debounce, xor } from 'lodash';
 import memmoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -19,7 +19,7 @@ class EstimateFeeContainer extends Component {
 
     this.state = {
       defaultFeeSymbol: null, // which currency use for fee
-      minFee: 1,
+      minFee: null,
       isGettingFee: false,
       estimateErrorMsg: null,
     };
@@ -30,14 +30,13 @@ class EstimateFeeContainer extends Component {
   componentDidMount() {
     const { types } = this.props;
     this.setFeeSymbol(types[0]);
-    this.handleEstimateFee();
   }
 
   componentDidUpdate(prevProps) {
     const { amount: oldAmount, types: oldTypes } = prevProps;
     const { amount, toAddress, types } = this.props;
 
-    if (oldTypes !== types) {
+    if (xor(oldTypes, types).length) {
       this.setFeeSymbol(types[0]);
     }
 
@@ -51,12 +50,14 @@ class EstimateFeeContainer extends Component {
       const { defaultFeeSymbol } = this.state;
       const { selectedPrivacy, amount, toAddress, onSelectFee } = this.props;
       let fee;
-
       if (!amount || !toAddress || !selectedPrivacy || !defaultFeeSymbol) {
         return;
       }
 
-      this.setState({ isGettingFee: true, estimateErrorMsg: null });
+      this.setState({ isGettingFee: true, estimateErrorMsg: null, minFee: null }, () => {
+        onSelectFee({ fee: null, feeUnit: defaultFeeSymbol });
+      });
+
       if (defaultFeeSymbol === selectedPrivacy?.symbol && selectedPrivacy.isToken) { // estimate fee in pToken [pETH, pBTC, ...]
         fee = await this._handleEstimateTokenFee();
       } else if (defaultFeeSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV) {
@@ -69,16 +70,14 @@ class EstimateFeeContainer extends Component {
         }
       }
 
-      this.setState({ estimateErrorMsg: null, minFee: fee }, () => {
-        // after estimating fee, need to reset previous fee
-        onSelectFee({ fee: null, feeUnit: defaultFeeSymbol });
-      });
+      this.setState({ estimateErrorMsg: null, minFee: fee });
 
       return fee;
     } catch (e) {
       const { onEstimateFailed } = this.props;
+      const { defaultFeeSymbol } = this.state;
       this.setState({
-        estimateErrorMsg: new ExHandler(e, 'Something went wrong while estimating fee for this transactions, please try again.').message,
+        estimateErrorMsg: new ExHandler(e, `Something went wrong while estimating ${defaultFeeSymbol} fee for this transactions, please try again.`).message,
         minFee: null,
       }, onEstimateFailed);
     } finally {
@@ -87,8 +86,9 @@ class EstimateFeeContainer extends Component {
   }
 
   setFeeSymbol = symbol => {
+    // if change fee type, request estimate fee
     const { defaultFeeSymbol } = this.state;
-    symbol !== defaultFeeSymbol && this.setState({ defaultFeeSymbol: symbol }, this.handleEstimateFee);
+    symbol !== defaultFeeSymbol && this.setState({ defaultFeeSymbol: symbol, minFee: null, isGettingFee: true }, this.handleEstimateFee);
   }
 
   _estimateFeeForMainCrypto = async ()=> {
@@ -231,6 +231,7 @@ class EstimateFeeContainer extends Component {
             style={style}
             selectedPrivacy={selectedPrivacy}
             account={account}
+            feeDecimals={pDecimals}
           />
           <Text style={styles.feeText}>{txt}</Text>
         </>
@@ -242,8 +243,8 @@ class EstimateFeeContainer extends Component {
   }
 }
 
-const mapState = state => ({
-  selectedPrivacy: selectedPrivacySeleclor.selectedPrivacy(state),
+const mapState = (state, props) => ({
+  selectedPrivacy: props?.selectedPrivacy || selectedPrivacySeleclor.selectedPrivacy(state),
   account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet,
 });
