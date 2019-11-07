@@ -62,7 +62,7 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 10,
-    minHeight: 55
+    minHeight: 60
   },
   rate: {
     flexDirection: 'row',

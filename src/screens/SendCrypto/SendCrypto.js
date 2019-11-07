@@ -179,7 +179,6 @@ class SendCrypto extends React.Component {
                   ]}
                 />
                 <EstimateFee
-                  initialFee={0}
                   finalFee={finalFee}
                   onSelectFee={this.handleSelectFee}
                   onEstimateFailed={this.handleEstFeeFailed}

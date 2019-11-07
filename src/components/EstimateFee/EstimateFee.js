@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import memmoize from 'memoize-one';
-import { View, TouchableOpacity, Text, ActivityIndicator, Button } from '@src/components/core';
+import { View, TouchableOpacity, Text, ActivityIndicator, Button, Toast } from '@src/components/core';
 import { CONSTANT_COMMONS } from '@src/constants';
+import formatUtil from '@src/utils/format';
 import styles from './styles';
 
 const LEVELS = [
@@ -132,6 +133,12 @@ class EstimateFee extends Component {
       });
   }
 
+  handleSelectUnavailableFee = (fee) => {
+    const { defaultFeeSymbol, feeDecimals } = this.props;
+    const formatedFee = formatUtil.amountFull(fee, feeDecimals);
+    Toast.showWarning(`Your balance is not enough to pay ${formatedFee} ${defaultFeeSymbol} fee.`);
+  }
+
   render() {
     const { levels, isRetrying } = this.state;
     const { types, minFee, isGettingFee, defaultFeeSymbol, estimateErrorMsg, finalFee, style } = this.props;
@@ -140,44 +147,40 @@ class EstimateFee extends Component {
       <View style={[styles.container, style]}>
         <Text style={styles.label}>Select fee & speed</Text>
         <View style={styles.box}>
-          {
-            !estimateErrorMsg && (
-              <View>
-                <View style={styles.feeTypeGroup}>
-                  {
-                    types?.map((type, index) => {
-                      const onPress = () => this.handleSelectFeeType(type);
-                      const isHighlight = defaultFeeSymbol === type;
-                      return (
-                        <TouchableOpacity
-                          key={type}
-                          onPress={onPress}
-                          style={
-                            [
-                              styles.feeType,
-                              index === 0 && styles.feeTypeFirst,
-                              isHighlight && styles.feeTypeHighlight
-                            ]
-                          }
-                        >
-                          <Text
-                            style={
-                              [
-                                styles.feeTypeText,
-                                isHighlight && styles.feeTypeTextHighlight
-                              ]
-                            }
-                          >
-                            Use {type}
-                          </Text>
-                        </TouchableOpacity>
-                      );
-                    })
-                  }
-                </View>
-              </View>
-            )
-          }
+          <View>
+            <View style={styles.feeTypeGroup}>
+              {
+                types?.map((type, index) => {
+                  const onPress = () => this.handleSelectFeeType(type);
+                  const isHighlight = defaultFeeSymbol === type;
+                  return (
+                    <TouchableOpacity
+                      key={type}
+                      onPress={onPress}
+                      style={
+                        [
+                          styles.feeType,
+                          index === 0 && styles.feeTypeFirst,
+                          isHighlight && styles.feeTypeHighlight
+                        ]
+                      }
+                    >
+                      <Text
+                        style={
+                          [
+                            styles.feeTypeText,
+                            isHighlight && styles.feeTypeTextHighlight
+                          ]
+                        }
+                      >
+                        Use {type}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })
+              }
+            </View>
+          </View>
           
           { estimateErrorMsg
             ? (
@@ -186,21 +189,25 @@ class EstimateFee extends Component {
                 <Button onPress={this.onRetry} style={styles.retryBtn} title='Try again' isAsync isLoading={isRetrying} />
               </View>
             )
-            : (minFee === 0 || !!minFee) && (
+            : (
               <View style={styles.rateContainer}>
                 {
-                  isGettingFee ?
-                    <ActivityIndicator /> : 
-                    levels?.map(({ fee, level }) => {
-                      const isAvailabelFee = this.isAvailabelFee(fee, defaultFeeSymbol);
-                      const onPress = isAvailabelFee ? () => this.handleSelectRate(fee) : null;
-                      return (
-                        <TouchableOpacity key={level?.name} onPress={onPress} style={styles.rate}>
-                          <Text style={[styles.rateText, finalFee === fee && styles.rateTextHighlight, !isAvailabelFee && { textDecorationLine: 'line-through' }]}>{level?.name}</Text>
-                          {/* <Text>{formatUtil.amount(fee, defaultFeeSymbol)} {defaultFeeSymbol}</Text> */}
-                        </TouchableOpacity>
-                      );
-                    })
+                  !minFee && !isGettingFee
+                    ? <Text style={styles.rateText}>Transaction fee will be calculated here</Text>
+                    : (
+                      isGettingFee ?
+                        <ActivityIndicator /> : 
+                        levels?.map(({ fee, level }) => {
+                          const isAvailabelFee = this.isAvailabelFee(fee, defaultFeeSymbol);
+                          const onPress = isAvailabelFee ? () => this.handleSelectRate(fee) : this.handleSelectUnavailableFee.bind(null, fee);
+                          return (
+                            <TouchableOpacity key={level?.name} onPress={onPress} style={styles.rate}>
+                              <Text style={[styles.rateText, finalFee === fee && styles.rateTextHighlight, !isAvailabelFee && { textDecorationLine: 'line-through' }]}>{level?.name}</Text>
+                              {/* <Text>{formatUtil.amount(fee, defaultFeeSymbol)} {defaultFeeSymbol}</Text> */}
+                            </TouchableOpacity>
+                          );
+                        })
+                    )
                 }
               </View>
             ) 
@@ -222,7 +229,8 @@ EstimateFee.defaultProps = {
   onRetry: null,
   style: null,
   account: null,
-  selectedPrivacy: null
+  selectedPrivacy: null,
+  feeDecimals: null
 };
 
 EstimateFee.propTypes = {
@@ -238,6 +246,7 @@ EstimateFee.propTypes = {
   style: PropTypes.object,
   account: PropTypes.object,
   selectedPrivacy: PropTypes.object,
+  feeDecimals: PropTypes.number,
 };
 
 export default EstimateFee;

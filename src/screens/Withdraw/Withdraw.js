@@ -32,7 +32,6 @@ class Withdraw extends React.Component {
     super(props);
 
     this.state = {
-      initialFee: props?.withdrawData?.feeCreateTx,
       maxAmountValidator: undefined,
       finalFee: null,
       feeUnit: null,
@@ -148,7 +147,7 @@ class Withdraw extends React.Component {
   });
 
   render() {
-    const { maxAmountValidator, finalFee, feeUnit, initialFee } = this.state;
+    const { maxAmountValidator, finalFee, feeUnit } = this.state;
     const { selectedPrivacy, isFormValid, amount, withdrawData } = this.props;
     const { isGetTokenFee } = withdrawData;
     const types = [...isGetTokenFee ? [selectedPrivacy?.symbol] : [], CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV];
@@ -189,7 +188,6 @@ class Withdraw extends React.Component {
                   ]}
                 />
                 <EstimateFee
-                  initialFee={initialFee}
                   finalFee={finalFee}
                   onSelectFee={this.handleSelectFee}
                   onEstimateFailed={this.handleEstFeeFailed}
@@ -202,7 +200,7 @@ class Withdraw extends React.Component {
                     ${
                       isUsedTokenFee && withdrawData?.feeForBurn
                         ? ` + (${
-                          formatUtil.amount(
+                          formatUtil.amountFull(
                             withdrawData?.feeForBurn,
                             feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals
                           )
