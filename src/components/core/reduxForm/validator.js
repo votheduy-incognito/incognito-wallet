@@ -2,6 +2,16 @@ import walletValidator from 'wallet-address-validator';
 import accountService from '@src/services/wallet/accountService';
 import { CONSTANT_COMMONS } from '@src/constants';
 
+const isSafeInteger = number => {
+  const n = Number(n);
+
+  if (Math.abs(number) > Number.MAX_SAFE_INTEGER) {
+    return false;
+  }
+
+  return true;
+};
+
 const messageHanlder = (message, fieldValue, inputValue) => {
   if (typeof message === 'function') {
     return message(fieldValue, inputValue);
@@ -26,7 +36,20 @@ const maxLength = (max, { message } = {}) => value =>
 const minLength = (min, { message } = {}) => value =>
   value && value.length < min ? messageHanlder(message, value, min) ?? `Must be at least ${min} characters` : undefined;
 
-const number = ({ message } = {}) => value => value && isNaN(Number(value)) ? messageHanlder(message, value) ?? 'Must be a number' : undefined;
+const isInteger = ({ message } = {}) => value => value && !Number.isInteger(Number(value)) ? messageHanlder(message, value) ?? 'Must be a integer number' : undefined;
+
+const number = ({ message } = {}) => value => {
+  const number = Number(value);
+  if (value && isNaN(number)) {
+    return messageHanlder(message, value) ?? 'Must be a number';
+  }
+
+  if (value && !isSafeInteger(number)) {
+    return messageHanlder(message, value) ?? 'Please enter a valid number';
+  }
+
+  return undefined;
+};
 
 const minValue = (min, { message } = {}) => value =>
   value && value < min ? messageHanlder(message, value, min) ?? `Must be at least ${min}` : undefined;
@@ -71,6 +94,13 @@ const combinedAmount = [
   minValue(CONSTANT_COMMONS.MIN_AMOUNT_REQUIRED, { message: `Please enter an amount greater than ${CONSTANT_COMMONS.MIN_AMOUNT_REQUIRED}.` })
 ];
 
+const combinedNanoAmount = [
+  required(),
+  isInteger(),
+  number(),
+  minValue(1, { message: 'Please enter an amount greater than 1.' })
+];
+
 const combinedIncognitoAddress = [required(), incognitoAddress()];
 const combinedETHAddress = [required(), ethAddress()];
 const combinedTOMOAddress = [required(), tomoAddress()];
@@ -79,11 +109,6 @@ const combinedBNBAddress = [required(), bnbAddress()];
 const combinedUnknownAddress = [required(), minLength(15)];
 const combinedTokenName = [required(), minLength(3), maxLength(50), regexp(/^[a-zA-Z]((\w+)?(( |-){1}\w+)?)+$/i, { message: 'Please use a valid token name (Ex: "My Token").' })];
 const combinedTokenSymbol = [required(), minLength(2), maxLength(10), regexp(/^[A-Z]+$/, { message: 'Please use a valid token symbol (Ex: "SYM").' })];
-const combinedNanoAmount = [
-  required(),
-  number(),
-  minValue(1, { message: 'Please enter an amount greater than 1.' })
-];
 
 export default {
   required,
@@ -93,6 +118,7 @@ export default {
   minValue,
   maxValue,
   email,
+  isInteger,
   incognitoAddress,
   largerThan,
   combinedAmount,

@@ -138,8 +138,27 @@ class SendCrypto extends React.Component {
     }
   }
 
+  getAmountValidator = () => {
+    const { selectedPrivacy } = this.props;
+    const { maxAmountValidator } = this.state;
+
+    const val = [];
+
+    if (maxAmountValidator) val.push(maxAmountValidator);
+
+    if (selectedPrivacy.isIncognitoToken) {
+      val.push(...validator.combinedNanoAmount);
+    }
+
+    if (selectedPrivacy.isMainCrypto || selectedPrivacy.isPToken) {
+      val.push(...validator.combinedAmount);
+    }
+
+    return val;
+  }
+
   render() {
-    const { finalFee, maxAmountValidator, supportedFeeTypes } = this.state;
+    const { finalFee, supportedFeeTypes } = this.state;
     const { isSending, selectedPrivacy, amount, toAddress, isFormValid } = this.props;
     const types = [CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV];
     const maxAmount = this.getMaxAmount();
@@ -173,10 +192,7 @@ class SendCrypto extends React.Component {
                   componentProps={{
                     keyboardType: 'decimal-pad'
                   }}
-                  validate={[
-                    ...validator.combinedAmount,
-                    ...maxAmountValidator ? [maxAmountValidator] : []
-                  ]}
+                  validate={this.getAmountValidator()}
                 />
                 <EstimateFee
                   finalFee={finalFee}
