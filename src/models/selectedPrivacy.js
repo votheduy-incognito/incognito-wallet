@@ -7,7 +7,7 @@ class SelectedPrivacy {
     this.isToken = (token?.id !== CONSTANT_COMMONS.PRV_TOKEN_ID) && !!token.id;
     this.isMainCrypto = (token?.id === CONSTANT_COMMONS.PRV_TOKEN_ID) || !this.isToken;
     this.isPToken = !!pTokenData.pSymbol; // pToken is private token (pETH <=> ETH, pBTC <=> BTC, ...)
-    this.isIncognitoToken = !this.isPToken; // is tokens were issued from users
+    this.isIncognitoToken = !this.isPToken && !this.isMainCrypto; // is tokens were issued from users
     this.isErc20Token = this.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20;
     this.symbol = this.isToken ? token.symbol : CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
     this.name = this.isToken ? (pTokenData.name || token.name) : CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
