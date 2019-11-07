@@ -17,6 +17,8 @@ const amountCreator = inltConfig => (amount = throw new Error('Amount is require
   }
 
   const _amount = convertUtil.toHumanAmount(amount, decimals);
+  if (!Number.isFinite(_amount)) throw new Error('Can not format invalid amount');
+
   return AmountFormat.format(Math.max(_amount, 0));
 };
 
