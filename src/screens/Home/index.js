@@ -31,9 +31,6 @@ class HomeContainer extends Component {
   }
 
   async componentDidMount() {
-    // temp
-    this.removeOldTomo();
-
     const {isNeedUpgrade} = this.state;
 
     const { account, navigation, clearSelectedPrivacy } = this.props;
