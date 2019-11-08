@@ -123,7 +123,7 @@ class SelfStaking extends BaseScreen {
     const toAddress = minerAccount?.PaymentAddress || selectedPrivacy?.PaymentAddress;
     const isCantLoadAccount =  _.isEmpty(funderAccount) || _.isEmpty(funderAccount?.PaymentAddress);
     const isNotEnoughBalance = isCantLoadAccount || amount > funderAccount?.value;
-    console.log(TAG,'render funderAccount = ',funderAccount,'-amount = ',amount);
+    // console.log(TAG,'render funderAccount = ',funderAccount,'-amount = ',amount);
     
     const isCanSubmit = !isNotEnoughBalance;
     

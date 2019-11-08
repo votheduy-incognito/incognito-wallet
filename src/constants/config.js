@@ -22,10 +22,9 @@ const findDefaultNetwork = async () => {
   return found;
 };
 const BUILD_VERSION = '3.2.4';
-const isMainnet = false;
+const isMainnet = true;
 //findDefaultNetwork()?.id === 'mainnet';
 // console.log('CONFIG begin = ',TEMPLATE_API_BASE_URL);
-// const isMainnet = true;
 const regex = /<%=.*%>/;
 const prefix_network = isMainnet ?'mainnet':'testnet';
 const prefix_Api = isMainnet?'':'test-';

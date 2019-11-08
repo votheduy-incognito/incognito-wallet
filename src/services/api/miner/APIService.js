@@ -246,7 +246,7 @@ export default class APIService {
     const response = await APIService.getURL(METHOD.POST, url, params, false);
     return response;
   }
-  static async sendPrivateKey(ipAdrress,{type,data}) {
+  static async sendValidatorKey(ipAdrress,{type,data}) {
     if(!_.isEmpty(data)){
       const url = `http://${ipAdrress}:5000/init-node`;
       const buildParams = {
@@ -256,7 +256,7 @@ export default class APIService {
           'action': data.action,
           'chain': data.chain,
           'product_id': data.product_id,
-          'privateKey': data.privateKey
+          'validatorKey': data.validatorKey
         },
         'protocal': 'firebase'
       };
@@ -264,7 +264,7 @@ export default class APIService {
       console.log('buildParams', buildParams);
 
       const response = await APIService.getURL(METHOD.POST, url, buildParams, false,false);
-      console.log(TAG,'sendPrivateKey:', response);
+      console.log(TAG,'sendValidatorKey:', response);
       return response;
     }
     return null;

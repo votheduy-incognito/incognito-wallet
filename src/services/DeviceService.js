@@ -175,7 +175,7 @@ export default class DeviceService {
             data:action?.data||{}
           };
           console.log(TAG,'sendPrivateKey send init data = ',params);
-          const response = await APIService.sendPrivateKey(data,params);
+          const response = await APIService.sendValidatorKey(data,params);
           const uid = dataResult?.uid||'';
         
           console.log(TAG,'sendPrivateKey send post data = ',response);
@@ -184,6 +184,35 @@ export default class DeviceService {
       }
     } catch (error) {
       console.log(TAG,'sendPrivateKey error = ',error);
+    }
+
+    return null;
+  }
+
+  static sendValidatorKey = async(device:Device,validatorKey:String,chain='incognito')=>{
+    
+    try {
+      if(!_.isEmpty(device) && !_.isEmpty(validatorKey)){
+        const actionGetIp = LIST_ACTION.GET_IP;
+        const dataResult = await Util.excuteWithTimeout(DeviceService.send(device.data,actionGetIp,chain,Action.TYPE.PRODUCT_CONTROL),8);
+        console.log(TAG,'sendValidatorKey send dataResult = ',dataResult);
+        const { status = -1, data, message= ''} = dataResult;
+        if(status === 1){
+          const action:Action = DeviceService.buildAction(device.data,LIST_ACTION.START,{product_id:device.data.product_id, validatorKey:validatorKey},chain,'incognito');
+          const params = {
+            type:action?.type||'',
+            data:action?.data||{}
+          };
+          console.log(TAG,'sendValidatorKey send init data = ',params);
+          const response = await APIService.sendValidatorKey(data,params);
+          const uid = dataResult?.uid||'';
+        
+          console.log(TAG,'sendValidatorKey send post data = ',response);
+          return {...response,uid:uid};
+        }
+      }
+    } catch (error) {
+      console.log(TAG,'sendValidatorKey error = ',error);
     }
 
     return null;
