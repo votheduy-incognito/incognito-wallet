@@ -245,7 +245,7 @@ class EstimateFeeContainer extends Component {
 
 const mapState = (state, props) => ({
   selectedPrivacy: props?.selectedPrivacy || selectedPrivacySeleclor.selectedPrivacy(state),
-  account: accountSeleclor.defaultAccount(state),
+  account: accountSeleclor.getAccountByName(state)(props.accountName),
   wallet: state.wallet,
 });
 
@@ -257,11 +257,12 @@ EstimateFeeContainer.defaultProps = {
   style: null,
   types: [CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV],
   feeText: null,
-  onEstimateFailed: null
+  onEstimateFailed: null,
 };
 
 EstimateFeeContainer.propTypes = {
   account: PropTypes.object.isRequired,
+  accountName: PropTypes.string.isRequired,
   wallet: PropTypes.object.isRequired,
   finalFee:  PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   selectedPrivacy: PropTypes.object,

@@ -141,7 +141,7 @@ class EstimateFee extends Component {
 
   render() {
     const { levels, isRetrying } = this.state;
-    const { types, minFee, isGettingFee, defaultFeeSymbol, estimateErrorMsg, finalFee, style } = this.props;
+    const { types, minFee, isGettingFee, defaultFeeSymbol, estimateErrorMsg, finalFee, style, account } = this.props;
 
     return (
       <View style={[styles.container, style]}>
@@ -230,7 +230,8 @@ EstimateFee.defaultProps = {
   style: null,
   account: null,
   selectedPrivacy: null,
-  feeDecimals: null
+  feeDecimals: null,
+  minFee: null
 };
 
 EstimateFee.propTypes = {
@@ -238,7 +239,7 @@ EstimateFee.propTypes = {
   onRetry: PropTypes.func,
   onChangeDefaultSymbol: PropTypes.func,
   onSelectFee: PropTypes.func,
-  minFee: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  minFee: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   types: PropTypes.array,
   defaultFeeSymbol: PropTypes.string,
   finalFee: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),

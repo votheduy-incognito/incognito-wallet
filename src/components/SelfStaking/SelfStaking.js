@@ -18,14 +18,15 @@ const TAG  = 'SelfStaking';
 class SelfStaking extends BaseScreen {
   constructor(props) {
     super(props);
+    const { getAccountByName, minerAccountName, funderAccountName } = props;
     this.state = {
       isStaking: false,
       finalFee: null,
       feeUnit: null,
       amount:  null,
       stakeTypeId: CONSTANT_COMMONS.STAKING_TYPES.SHARD,
-      funderAccount: null,
-      minerAccount: null,
+      funderAccount: _.isEmpty(funderAccountName)?getAccountByName(funderAccountName):null,
+      minerAccount: _.isEmpty(minerAccountName)?getAccountByName(minerAccountName || funderAccountName):null,
     };
   }
 
@@ -60,10 +61,6 @@ class SelfStaking extends BaseScreen {
       });
       
     }
-    // if (!funderAccount) {
-    //   console.log(TAG,'onResume null');
-    //   this.onPressBack();
-    // }
   }
 
 
@@ -121,12 +118,15 @@ class SelfStaking extends BaseScreen {
 
   render() {
     const { amount, finalFee, feeUnit, stakeTypeId, isStaking, minerAccount, funderAccount } = this.state;
-    const { selectedPrivacy } = this.props;
-    const toAddress = minerAccount?.paymentAddress || selectedPrivacy?.paymentAddress;
-    const isCantLoadAccount =  _.isEmpty(funderAccount) || _.isNil(funderAccount?.value) ||_.isNaN(funderAccount?.value);
+    const { selectedPrivacy,funderAccountName} = this.props;
+    
+    const toAddress = minerAccount?.PaymentAddress || selectedPrivacy?.PaymentAddress;
+    const isCantLoadAccount =  _.isEmpty(funderAccount) || _.isEmpty(funderAccount?.PaymentAddress);
     const isNotEnoughBalance = isCantLoadAccount || amount > funderAccount?.value;
+    console.log(TAG,'render funderAccount = ',funderAccount,'-amount = ',amount);
+    
     const isCanSubmit = !isNotEnoughBalance;
-
+    
     return (
       <ScrollView>
         {isCantLoadAccount &&(
@@ -157,7 +157,9 @@ class SelfStaking extends BaseScreen {
             <>
               <EstimateFee
                 initialFee={0}
+                selectedPrivacy={selectedPrivacy}
                 finalFee={finalFee}
+                accountName={funderAccountName}
                 onSelectFee={this.handleSelectFee}
                 types={[tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY]}
                 amount={convertUtil.toHumanAmount(amount, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)}

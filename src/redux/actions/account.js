@@ -2,9 +2,18 @@ import type from '@src/redux/types/account';
 import walletType from '@src/redux/types/wallet';
 import accountService from '@src/services/wallet/accountService';
 import { getPassphrase } from '@src/services/wallet/passwordService';
-import { tokenSeleclor } from '../selectors';
+import { tokenSeleclor, accountSeleclor } from '../selectors';
 import { getBalance as getTokenBalance, setListToken } from './token';
 
+/**
+ *  return basic account object from its name like its KEY, not including account methods (please use accountWallet instead) 
+ *
+ * @param {object} state redux state
+ * @param {string} accountName name of account you wanna get
+ */
+const getBasicAccountObjectByName = state => accountName => {
+  return accountSeleclor.getAccountByName(state)(accountName);
+};
 
 export const setAccount = (account = throw new Error('Account object is required')) => ({
   type: type.SET,
@@ -81,10 +90,12 @@ export const getBalance = (account) => async (dispatch, getState) => {
     }
 
     balance = await accountService.getBalance(account, wallet);
-    dispatch(setAccount({
+    const accountMerge = {
       ...account,
       value: balance
-    }));
+    };
+    // console.log(TAG,'getBalance = accountMerge = ',accountMerge);
+    dispatch(setAccount(accountMerge));
     
   } catch (e) {
     account && dispatch(setAccount({
@@ -148,6 +159,34 @@ export const followDefaultTokens = (account = throw new Error('Account object is
     });
 
     return defaultTokens;
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const switchAccount = (accountName) => async (dispatch, getState) => {
+  try {
+    if (!accountName) throw new Error('accountName is required');
+
+    const state = getState();
+    const wallet = state?.wallet;
+
+    if (!wallet) {
+      throw new Error('Wallet is not exist');
+    }
+
+    const account = getBasicAccountObjectByName(state)(accountName);
+    const defaultAccount = accountSeleclor.defaultAccount(state);
+
+    if (defaultAccount?.name === account?.name) {
+      return;
+    }
+
+    dispatch(setDefaultAccount(account));
+    await getBalance(account)(dispatch, getState).catch(() => null);
+    await reloadAccountFollowingToken(account)(dispatch, getState).catch(() => null);
+
+    return accountSeleclor.defaultAccount(state);
   } catch (e) {
     throw e;
   }

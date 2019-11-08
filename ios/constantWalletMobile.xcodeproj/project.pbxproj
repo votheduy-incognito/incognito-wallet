@@ -39,9 +39,51 @@
 		D7BDB11DB76A47B9A686E426 /* libTcpSockets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C5D037565762439F89BE1412 /* libTcpSockets.a */; };
 		DA4222BF3D9749D2B97D9039 /* libRNDeviceInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 803049AD3941440A9310525A /* libRNDeviceInfo-tvOS.a */; };
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
+		FE26D17A2373D41A0040A54B /* Gomobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B559AE22C393B10079FC06 /* Gomobile.m */; };
+		FE26D17B2373D41A0040A54B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
+		FE26D17C2373D41A0040A54B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		FE26D17E2373D41A0040A54B /* libreact-native-netinfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5C9FA72355D46900AC6E90 /* libreact-native-netinfo.a */; };
+		FE26D17F2373D41A0040A54B /* libreact-native-iot-wifi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEBD6E62355CC2A006EFECD /* libreact-native-iot-wifi.a */; };
+		FE26D1802373D41A0040A54B /* libreact-native-camera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEBD6E22355CBB3006EFECD /* libreact-native-camera.a */; };
+		FE26D1812373D41A0040A54B /* libRNPermissions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEBD6DA2355CA94006EFECD /* libRNPermissions.a */; };
+		FE26D1822373D41A0040A54B /* libRNSensors.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEBD6DC2355CA94006EFECD /* libRNSensors.a */; };
+		FE26D1832373D41A0040A54B /* libRNSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEBD6DE2355CA94006EFECD /* libRNSound.a */; };
+		FE26D1842373D41A0040A54B /* libreact-native-randombytes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEBD6D62355CA35006EFECD /* libreact-native-randombytes.a */; };
+		FE26D1852373D41A0040A54B /* libFirebaseCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE86096422D747230050666A /* libFirebaseCore.a */; };
+		FE26D1862373D41A0040A54B /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
+		FE26D1872373D41A0040A54B /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE57448522F97A3700F2A2BC /* NetworkExtension.framework */; };
+		FE26D1882373D41A0040A54B /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB08C251E22B438096EA6169 /* libRNGestureHandler.a */; };
+		FE26D1892373D41A0040A54B /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ECBE1563D1B5449E86A7658F /* libRNVectorIcons.a */; };
+		FE26D18A2373D41A0040A54B /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEC7DE90236B0844003C84C1 /* Gomobile.framework */; };
+		FE26D18B2373D41A0040A54B /* libRNCAsyncStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D828B2179CD4981AB6E75EE /* libRNCAsyncStorage.a */; };
+		FE26D18C2373D41A0040A54B /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F36E2A27EA945A6BA652F08 /* libRNSVG.a */; };
+		FE26D18D2373D41A0040A54B /* libRNReanimated.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AC3439C990274B2AA62796BA /* libRNReanimated.a */; };
+		FE26D18E2373D41A0040A54B /* AutonomousZMQ.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */; };
+		FE26D18F2373D41A0040A54B /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6024CBE183FA4307ABE2C4F5 /* libRNDeviceInfo.a */; };
+		FE26D1902373D41A0040A54B /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27AAED89E8AD4248BBC41F79 /* libRNFirebase.a */; };
+		FE26D1912373D41A0040A54B /* libRNOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 342DA32C89DE489180AC3EF2 /* libRNOS.a */; };
+		FE26D1922373D41A0040A54B /* libTcpSockets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C5D037565762439F89BE1412 /* libTcpSockets.a */; };
+		FE26D1932373D41A0040A54B /* libRNZmqService.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE70DDA39F794DA9B6544C35 /* libRNZmqService.a */; };
+		FE26D1942373D41A0040A54B /* libRNSSH.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 97C3A54F4B934DA1A6004B78 /* libRNSSH.a */; };
+		FE26D1952373D41A0040A54B /* libPods-constantWalletMobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EFC1329943BE2D10F4F58719 /* libPods-constantWalletMobile.a */; };
+		FE26D1972373D41A0040A54B /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4BA287542ADF445498FC2188 /* MaterialIcons.ttf */; };
+		FE26D1992373D41A0040A54B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		FE26D19A2373D41A0040A54B /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
+		FE26D19B2373D41A0040A54B /* autonomous_config.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE6F886022DC3B510009C5AA /* autonomous_config.plist */; };
+		FE26D19C2373D41A0040A54B /* PostGroteskBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 570EC87F438D402B8F1B76AE /* PostGroteskBold.otf */; };
+		FE26D19D2373D41A0040A54B /* PostGroteskBoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 59AFD324B84E4A7DB397B0B9 /* PostGroteskBoldItalic.otf */; };
+		FE26D19E2373D41A0040A54B /* PostGroteskLight.otf in Resources */ = {isa = PBXBuildFile; fileRef = EAE5E838B7D344A5B5978F72 /* PostGroteskLight.otf */; };
+		FE26D19F2373D41A0040A54B /* PostGroteskLightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 51B80536E38043E2810D70AD /* PostGroteskLightItalic.otf */; };
+		FE26D1A02373D41A0040A54B /* PostGroteskMedium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8A166D7044534B31A2BD26EC /* PostGroteskMedium.otf */; };
+		FE26D1A12373D41A0040A54B /* PostGroteskMediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = A37F2762BA3D42388EA0979D /* PostGroteskMediumItalic.otf */; };
+		FE26D1A22373D41A0040A54B /* PostGroteskBook.otf in Resources */ = {isa = PBXBuildFile; fileRef = 60009CB9B42C40CDAF5B2DE3 /* PostGroteskBook.otf */; };
+		FE26D1A32373D41A0040A54B /* PostGroteskBookItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 82D0A734BA634CDEBE9A3F26 /* PostGroteskBookItalic.otf */; };
+		FE26D1A42373D41A0040A54B /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B5521124109464CB94BB248 /* Fontisto.ttf */; };
+		FE26D1A82373D41A0040A54B /* AutonomousZMQ.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		FE26D1DC2373E7A80040A54B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE26D1DB2373E7A80040A54B /* GoogleService-Info.plist */; };
+		FE26D1DE2373E7E60040A54B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE26D1DD2373E7E60040A54B /* GoogleService-Info.plist */; };
 		FE57448622F97A3700F2A2BC /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE57448522F97A3700F2A2BC /* NetworkExtension.framework */; };
 		FE5C9FA82355D46900AC6E90 /* libreact-native-netinfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5C9FA72355D46900AC6E90 /* libreact-native-netinfo.a */; };
-		FE5C9FAC2355E80200AC6E90 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE9A2AE22333656500A33E75 /* GoogleService-Info.plist */; };
 		FE5C9FAD2355E86E00AC6E90 /* PostGroteskBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 570EC87F438D402B8F1B76AE /* PostGroteskBold.otf */; };
 		FE5C9FAE2355E86E00AC6E90 /* PostGroteskBoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 59AFD324B84E4A7DB397B0B9 /* PostGroteskBoldItalic.otf */; };
 		FE5C9FAF2355E86E00AC6E90 /* PostGroteskLight.otf in Resources */ = {isa = PBXBuildFile; fileRef = EAE5E838B7D344A5B5978F72 /* PostGroteskLight.otf */; };
@@ -96,6 +138,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		FE26D1A72373D41A0040A54B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				FE26D1A82373D41A0040A54B /* AutonomousZMQ.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FEEBD6C12355AD57006EFECD /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -186,12 +239,15 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		EFC1329943BE2D10F4F58719 /* libPods-constantWalletMobile.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-constantWalletMobile.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB08C251E22B438096EA6169 /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
+		FE26D1AE2373D41A0040A54B /* constantWalletMobile_dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = constantWalletMobile_dev.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FE26D1B22373D41E0040A54B /* constantWalletMobile_dev-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "constantWalletMobile_dev-Info.plist"; path = "/Users/hienton/HienData/Projects/Company/incognito-chain-wallet-client-app/ios/constantWalletMobile_dev-Info.plist"; sourceTree = "<absolute>"; };
+		FE26D1DB2373E7A80040A54B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		FE26D1DD2373E7E60040A54B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AutonomousZMQ.framework; path = "../node_modules/react-native-zmq-service/ios/AutonomousZMQ.framework"; sourceTree = "<group>"; };
 		FE57448522F97A3700F2A2BC /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		FE5C9FA72355D46900AC6E90 /* libreact-native-netinfo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-netinfo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE6F886022DC3B510009C5AA /* autonomous_config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = autonomous_config.plist; sourceTree = "<group>"; };
 		FE86096422D747230050666A /* libFirebaseCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		FE9A2AE22333656500A33E75 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FEC7DE90236B0844003C84C1 /* Gomobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Gomobile.framework; sourceTree = "<group>"; };
 		FECCEDF722C379D900129059 /* AutonomousZMQ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AutonomousZMQ.framework; sourceTree = "<group>"; };
 		FEEBD6CD2355C724006EFECD /* RNZmqService.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNZmqService.xcodeproj; path = "../node_modules/react-native-zmq-service/ios/RNZmqService.xcodeproj"; sourceTree = "<group>"; };
@@ -265,6 +321,37 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FE26D17D2373D41A0040A54B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FE26D17E2373D41A0040A54B /* libreact-native-netinfo.a in Frameworks */,
+				FE26D17F2373D41A0040A54B /* libreact-native-iot-wifi.a in Frameworks */,
+				FE26D1802373D41A0040A54B /* libreact-native-camera.a in Frameworks */,
+				FE26D1812373D41A0040A54B /* libRNPermissions.a in Frameworks */,
+				FE26D1822373D41A0040A54B /* libRNSensors.a in Frameworks */,
+				FE26D1832373D41A0040A54B /* libRNSound.a in Frameworks */,
+				FE26D1842373D41A0040A54B /* libreact-native-randombytes.a in Frameworks */,
+				FE26D1852373D41A0040A54B /* libFirebaseCore.a in Frameworks */,
+				FE26D1862373D41A0040A54B /* JavaScriptCore.framework in Frameworks */,
+				FE26D1872373D41A0040A54B /* NetworkExtension.framework in Frameworks */,
+				FE26D1882373D41A0040A54B /* libRNGestureHandler.a in Frameworks */,
+				FE26D1892373D41A0040A54B /* libRNVectorIcons.a in Frameworks */,
+				FE26D18A2373D41A0040A54B /* Gomobile.framework in Frameworks */,
+				FE26D18B2373D41A0040A54B /* libRNCAsyncStorage.a in Frameworks */,
+				FE26D18C2373D41A0040A54B /* libRNSVG.a in Frameworks */,
+				FE26D18D2373D41A0040A54B /* libRNReanimated.a in Frameworks */,
+				FE26D18E2373D41A0040A54B /* AutonomousZMQ.framework in Frameworks */,
+				FE26D18F2373D41A0040A54B /* libRNDeviceInfo.a in Frameworks */,
+				FE26D1902373D41A0040A54B /* libRNFirebase.a in Frameworks */,
+				FE26D1912373D41A0040A54B /* libRNOS.a in Frameworks */,
+				FE26D1922373D41A0040A54B /* libTcpSockets.a in Frameworks */,
+				FE26D1932373D41A0040A54B /* libRNZmqService.a in Frameworks */,
+				FE26D1942373D41A0040A54B /* libRNSSH.a in Frameworks */,
+				FE26D1952373D41A0040A54B /* libPods-constantWalletMobile.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -288,7 +375,8 @@
 		13B07FAE1A68108700A75B9A /* constantWalletMobile */ = {
 			isa = PBXGroup;
 			children = (
-				FE9A2AE22333656500A33E75 /* GoogleService-Info.plist */,
+				FE26D1DD2373E7E60040A54B /* GoogleService-Info.plist */,
+				FE26D1DA2373E7A80040A54B /* Dev */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -390,6 +478,7 @@
 				B03307F2B37F442B9DE45330 /* Resources */,
 				202892B6227045F6004F5C14 /* Recovered References */,
 				25B8F1BF1D9A90CBC089A9C9 /* Pods */,
+				FE26D1B22373D41E0040A54B /* constantWalletMobile_dev-Info.plist */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -403,6 +492,7 @@
 				00E356EE1AD99517003FC87E /* constantWalletMobileTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* constantWalletMobile-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* constantWalletMobile-tvOSTests.xctest */,
+				FE26D1AE2373D41A0040A54B /* constantWalletMobile_dev.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -439,6 +529,14 @@
 				1B5521124109464CB94BB248 /* Fontisto.ttf */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		FE26D1DA2373E7A80040A54B /* Dev */ = {
+			isa = PBXGroup;
+			children = (
+				FE26D1DB2373E7A80040A54B /* GoogleService-Info.plist */,
+			);
+			path = Dev;
 			sourceTree = "<group>";
 		};
 		FE6F885F22DC3B0E0009C5AA /* ZMQ */ = {
@@ -548,6 +646,29 @@
 			productReference = 2D02E4901E0B4A5D006451C7 /* constantWalletMobile-tvOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		FE26D1772373D41A0040A54B /* constantWalletMobile_dev */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FE26D1AB2373D41A0040A54B /* Build configuration list for PBXNativeTarget "constantWalletMobile_dev" */;
+			buildPhases = (
+				FE26D1782373D41A0040A54B /* [CP] Check Pods Manifest.lock */,
+				FE26D1792373D41A0040A54B /* Sources */,
+				FE26D17D2373D41A0040A54B /* Frameworks */,
+				FE26D1962373D41A0040A54B /* Resources */,
+				FE26D1A52373D41A0040A54B /* Bundle React Native code and images */,
+				FE26D1A62373D41A0040A54B /* Run Script Fabric */,
+				FE26D1A72373D41A0040A54B /* Embed Frameworks */,
+				FE26D1A92373D41A0040A54B /* [CP] Copy Pods Resources */,
+				FE26D1AA2373D41A0040A54B /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = constantWalletMobile_dev;
+			productName = "Hello World";
+			productReference = FE26D1AE2373D41A0040A54B /* constantWalletMobile_dev.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -591,6 +712,10 @@
 						ProvisioningStyle = Automatic;
 						TestTargetID = 2D02E47A1E0B4A5D006451C7;
 					};
+					FE26D1772373D41A0040A54B = {
+						DevelopmentTeam = G63A8CY3DS;
+						ProvisioningStyle = Manual;
+					};
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "constantWalletMobile" */;
@@ -618,6 +743,7 @@
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* constantWalletMobile */,
+				FE26D1772373D41A0040A54B /* constantWalletMobile_dev */,
 				00E356ED1AD99517003FC87E /* constantWalletMobileTests */,
 				2D02E47A1E0B4A5D006451C7 /* constantWalletMobile-tvOS */,
 				2D02E48F1E0B4A5D006451C7 /* constantWalletMobile-tvOSTests */,
@@ -655,7 +781,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FE5C9FB52355EE0100AC6E90 /* MaterialIcons.ttf in Resources */,
-				FE5C9FAC2355E80200AC6E90 /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				FED68302235DBC6A002F1A7C /* autonomous_config.plist in Resources */,
@@ -668,6 +793,7 @@
 				FE5C9FB32355E86E00AC6E90 /* PostGroteskBook.otf in Resources */,
 				FE5C9FB42355E86E00AC6E90 /* PostGroteskBookItalic.otf in Resources */,
 				86ED14E621B04B6EAF5271CA /* Fontisto.ttf in Resources */,
+				FE26D1DE2373E7E60040A54B /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -683,6 +809,27 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FE26D1962373D41A0040A54B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FE26D1972373D41A0040A54B /* MaterialIcons.ttf in Resources */,
+				FE26D1992373D41A0040A54B /* Images.xcassets in Resources */,
+				FE26D19A2373D41A0040A54B /* LaunchScreen.xib in Resources */,
+				FE26D19B2373D41A0040A54B /* autonomous_config.plist in Resources */,
+				FE26D19C2373D41A0040A54B /* PostGroteskBold.otf in Resources */,
+				FE26D19D2373D41A0040A54B /* PostGroteskBoldItalic.otf in Resources */,
+				FE26D19E2373D41A0040A54B /* PostGroteskLight.otf in Resources */,
+				FE26D19F2373D41A0040A54B /* PostGroteskLightItalic.otf in Resources */,
+				FE26D1A02373D41A0040A54B /* PostGroteskMedium.otf in Resources */,
+				FE26D1A12373D41A0040A54B /* PostGroteskMediumItalic.otf in Resources */,
+				FE26D1A22373D41A0040A54B /* PostGroteskBook.otf in Resources */,
+				FE26D1A32373D41A0040A54B /* PostGroteskBookItalic.otf in Resources */,
+				FE26D1A42373D41A0040A54B /* Fontisto.ttf in Resources */,
+				FE26D1DC2373E7A80040A54B /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -889,6 +1036,126 @@
 			shellPath = /bin/sh;
 			shellScript = "if [ \"$CONFIGURATION\" = \"Release\" ]; then\nAPP_PATH=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\n\n# This script loops through the frameworks embedded in the application and\n# removes unused architectures.\nfind \"$APP_PATH\" -name '*.framework' -type d | while read -r FRAMEWORK\ndo\nFRAMEWORK_EXECUTABLE_NAME=$(defaults read \"$FRAMEWORK/Info.plist\" CFBundleExecutable)\nFRAMEWORK_EXECUTABLE_PATH=\"$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME\"\necho \"Executable is $FRAMEWORK_EXECUTABLE_PATH\"\n\nEXTRACTED_ARCHS=()\n\nfor ARCH in $ARCHS\ndo\necho \"Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME\"\nlipo -extract \"$ARCH\" \"$FRAMEWORK_EXECUTABLE_PATH\" -o \"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\"\nEXTRACTED_ARCHS+=(\"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\")\ndone\n\necho \"Merging extracted architectures: ${ARCHS}\"\nlipo -o \"$FRAMEWORK_EXECUTABLE_PATH-merged\" -create \"${EXTRACTED_ARCHS[@]}\"\nrm \"${EXTRACTED_ARCHS[@]}\"\n\necho \"Replacing original executable with thinned version\"\nrm \"$FRAMEWORK_EXECUTABLE_PATH\"\nmv \"$FRAMEWORK_EXECUTABLE_PATH-merged\" \"$FRAMEWORK_EXECUTABLE_PATH\"\n\ndone\nfi\n";
 		};
+		FE26D1782373D41A0040A54B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-constantWalletMobile-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FE26D1A52373D41A0040A54B /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			name = "Bundle React Native code and images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+		};
+		FE26D1A62373D41A0040A54B /* Run Script Fabric */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script Fabric";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/Fabric/run\"\n";
+		};
+		FE26D1A92373D41A0040A54B /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-constantWalletMobile/Pods-constantWalletMobile-resources.sh",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Feather.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Feather.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Brands.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Regular.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Solid.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Fontisto.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Foundation.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Ionicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialCommunityIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-constantWalletMobile/Pods-constantWalletMobile-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FE26D1AA2373D41A0040A54B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"$CONFIGURATION\" = \"Release\" ]; then\nAPP_PATH=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\n\n# This script loops through the frameworks embedded in the application and\n# removes unused architectures.\nfind \"$APP_PATH\" -name '*.framework' -type d | while read -r FRAMEWORK\ndo\nFRAMEWORK_EXECUTABLE_NAME=$(defaults read \"$FRAMEWORK/Info.plist\" CFBundleExecutable)\nFRAMEWORK_EXECUTABLE_PATH=\"$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME\"\necho \"Executable is $FRAMEWORK_EXECUTABLE_PATH\"\n\nEXTRACTED_ARCHS=()\n\nfor ARCH in $ARCHS\ndo\necho \"Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME\"\nlipo -extract \"$ARCH\" \"$FRAMEWORK_EXECUTABLE_PATH\" -o \"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\"\nEXTRACTED_ARCHS+=(\"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\")\ndone\n\necho \"Merging extracted architectures: ${ARCHS}\"\nlipo -o \"$FRAMEWORK_EXECUTABLE_PATH-merged\" -create \"${EXTRACTED_ARCHS[@]}\"\nrm \"${EXTRACTED_ARCHS[@]}\"\n\necho \"Replacing original executable with thinned version\"\nrm \"$FRAMEWORK_EXECUTABLE_PATH\"\nmv \"$FRAMEWORK_EXECUTABLE_PATH-merged\" \"$FRAMEWORK_EXECUTABLE_PATH\"\n\ndone\nfi\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -924,6 +1191,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				2DCD954D1E0B4F2C00145EB5 /* constantWalletMobileTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FE26D1792373D41A0040A54B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FE26D17A2373D41A0040A54B /* Gomobile.m in Sources */,
+				FE26D17B2373D41A0040A54B /* AppDelegate.m in Sources */,
+				FE26D17C2373D41A0040A54B /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1476,6 +1753,127 @@
 			};
 			name = Release;
 		};
+		FE26D1AC2373D41A0040A54B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8122C57D16242F0E791AFCC6 /* Pods-constantWalletMobile.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = constantWalletMobile/constantWalletMobile.entitlements;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = G63A8CY3DS;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/../node_modules/react-native-zmq-service/ios/**",
+					"$(PROJECT_DIR)/../node_modules/react-native-ssh/ios/**",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-randombytes",
+					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-permissions/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-bluetooth-serial-next/ios/RCTBluetoothSerial",
+					"$(SRCROOT)/../node_modules/react-native-bluetooth-serial/ios/RCTBluetoothSerial",
+					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-iot-wifi/ios",
+					"$(SRCROOT)/../node_modules/react-native-os/ios",
+					"$(SRCROOT)/../node_modules/react-native-tcp/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-ssh/ios/**",
+				);
+				INFOPLIST_FILE = "constantWalletMobile_dev-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet.debug;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = Incognito_TestNet;
+				SWIFT_OBJC_BRIDGING_HEADER = "constantWalletMobile-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		FE26D1AD2373D41A0040A54B /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0C5B7EDC57A8F6517A2BFE79 /* Pods-constantWalletMobile.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = constantWalletMobile/constantWalletMobile.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G63A8CY3DS;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/../node_modules/react-native-zmq-service/ios/**",
+					"$(PROJECT_DIR)/../node_modules/react-native-ssh/ios/**",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
+					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-reanimated/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-randombytes",
+					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-permissions/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-bluetooth-serial-next/ios/RCTBluetoothSerial",
+					"$(SRCROOT)/../node_modules/react-native-bluetooth-serial/ios/RCTBluetoothSerial",
+					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
+					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native-iot-wifi/ios",
+					"$(SRCROOT)/../node_modules/react-native-os/ios",
+					"$(SRCROOT)/../node_modules/react-native-tcp/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-ssh/ios/**",
+				);
+				INFOPLIST_FILE = "constantWalletMobile_dev-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.incognito.wallet.debug;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = Incognito_Dis;
+				SWIFT_OBJC_BRIDGING_HEADER = "constantWalletMobile-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1520,6 +1918,15 @@
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
 				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FE26D1AB2373D41A0040A54B /* Build configuration list for PBXNativeTarget "constantWalletMobile_dev" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FE26D1AC2373D41A0040A54B /* Debug */,
+				FE26D1AD2373D41A0040A54B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -159,7 +159,7 @@ class SendCrypto extends React.Component {
 
   render() {
     const { finalFee, supportedFeeTypes } = this.state;
-    const { isSending, selectedPrivacy, amount, toAddress, isFormValid } = this.props;
+    const { isSending, selectedPrivacy, amount, toAddress, isFormValid, account } = this.props;
     const types = [CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV];
     const maxAmount = this.getMaxAmount();
 
@@ -195,6 +195,7 @@ class SendCrypto extends React.Component {
                   validate={this.getAmountValidator()}
                 />
                 <EstimateFee
+                  accountName={account?.name}
                   finalFee={finalFee}
                   onSelectFee={this.handleSelectFee}
                   onEstimateFailed={this.handleEstFeeFailed}
@@ -224,13 +225,14 @@ SendCrypto.defaultProps = {
 
 SendCrypto.propTypes = {
   selectedPrivacy: PropTypes.object.isRequired,
+  account: PropTypes.object.isRequired,
   receiptData: PropTypes.object,
   handleSend: PropTypes.func.isRequired,
   rfChange: PropTypes.func.isRequired,
   isSending: PropTypes.bool,
   isFormValid: PropTypes.bool,
   amount: PropTypes.string,
-  toAddress: PropTypes.string
+  toAddress: PropTypes.string,
 };
 
 const mapState = state => ({
