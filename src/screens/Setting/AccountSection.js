@@ -1,6 +1,6 @@
 import { Alert, Divider, Text, Toast, TouchableOpacity, View } from '@src/components/core';
 import OptionMenu from '@src/components/OptionMenu';
-import { getBalance as getAccountBalance, reloadAccountFollowingToken, removeAccount, setDefaultAccount } from '@src/redux/actions/account';
+import { removeAccount, switchAccount } from '@src/redux/actions/account';
 import { accountSeleclor } from '@src/redux/selectors';
 import ROUTE_NAMES from '@src/router/routeNames';
 import { ExHandler } from '@src/services/exception';
@@ -37,7 +37,7 @@ const createItem = (account, onSwitch, onExport, onDelete, isActive) => (
 );
 
 
-const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAccount, reloadAccountFollowingToken, getAccountBalance, removeAccount }) => {
+const AccountSection = ({ navigation, defaultAccount, listAccount, removeAccount, switchAccount }) => {
   const onHandleSwitchAccount = onClickView(async account => {
     try {
       if (defaultAccount?.name === account?.name) {
@@ -45,9 +45,7 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAcc
         return;
       }
 
-      await setDefaultAccount(account);
-      await getAccountBalance(account).catch(() => null);
-      await reloadAccountFollowingToken(account).catch(() => null);
+      await switchAccount(account?.name);
 
       Toast.showInfo(`Switched to account "${account?.name}"`);
     } catch (e) {
@@ -140,9 +138,7 @@ AccountSection.propTypes = {
   navigation: PropTypes.object.isRequired,
   defaultAccount: PropTypes.object.isRequired,
   listAccount: PropTypes.arrayOf(PropTypes.object).isRequired,
-  setDefaultAccount: PropTypes.func.isRequired,
-  reloadAccountFollowingToken: PropTypes.func.isRequired,
-  getAccountBalance: PropTypes.func.isRequired,
+  switchAccount: PropTypes.func.isRequired,
   removeAccount: PropTypes.func.isRequired,
 };
 
@@ -151,6 +147,6 @@ const mapState = state => ({
   listAccount: accountSeleclor.listAccount(state)
 });
 
-const mapDispatch = { setDefaultAccount, reloadAccountFollowingToken, getAccountBalance, removeAccount };
+const mapDispatch = { removeAccount, switchAccount };
 
 export default connect(mapState, mapDispatch)(AccountSection);
