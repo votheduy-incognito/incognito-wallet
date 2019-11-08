@@ -68,8 +68,8 @@ export const getBalanceFinish = accountName => ({
   data: accountName
 });
 
-export const setDefaultAccount = async account => {
-  await accountService.saveDefaultAccountToStorage(account?.name);
+export const setDefaultAccount = account => {
+  accountService.saveDefaultAccountToStorage(account?.name);
   return ({
     type: type.SET_DEFAULT_ACCOUNT,
     data: account
