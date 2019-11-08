@@ -18,7 +18,7 @@ class Game extends React.Component {
       subText = 'The first privacy-first applications built on Incognito. Watch this space.';
     } else {
       mainText = 'pDEX is coming soon.';
-      subText = 'ETA: 5 November. Get ready to trade crypto privately.';
+      subText = 'ETA: 12 November. Get ready to trade crypto privately.';
     }
 
     return (
