@@ -103,7 +103,7 @@ class MainCryptoHistory extends Component {
     return (
       <ScrollView
         contentContainerStyle={{
-          flexGrow: 1
+          minHeight: '100%'
         }}
         refreshControl={(
           <RefreshControl

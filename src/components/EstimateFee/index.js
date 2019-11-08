@@ -48,14 +48,15 @@ class EstimateFeeContainer extends Component {
   handleEstimateFee = async () => {
     try {
       const { defaultFeeSymbol } = this.state;
-      const { selectedPrivacy, amount, toAddress, onSelectFee } = this.props;
+      const { selectedPrivacy, amount, toAddress, /* onSelectFee */ } = this.props;
       let fee;
       if (!amount || !toAddress || !selectedPrivacy || !defaultFeeSymbol) {
         return;
       }
 
       this.setState({ isGettingFee: true, estimateErrorMsg: null, minFee: null }, () => {
-        onSelectFee({ fee: null, feeUnit: defaultFeeSymbol });
+        // disabled submit button while estimating fee
+        // onSelectFee({ fee: null, feeUnit: defaultFeeSymbol });
       });
 
       if (defaultFeeSymbol === selectedPrivacy?.symbol && selectedPrivacy.isToken) { // estimate fee in pToken [pETH, pBTC, ...]

@@ -201,7 +201,7 @@ class HistoryTokenContainer extends Component {
     return (
       <ScrollView
         contentContainerStyle={{
-          flex: 1
+          minHeight: '100%'
         }}
         refreshControl={(
           <RefreshControl

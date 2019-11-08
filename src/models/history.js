@@ -1,17 +1,34 @@
 import { CONSTANT_COMMONS } from '@src/constants';
 
+const CENTRALIZED_STATUS = {
+  FAILED: [
+    [
+      14, // RejectedIssueFromIncognito
+      15, // RejectedBurnFromIncognito
+    ]
+  ],
+  SUCCESS: [3, 4, 5, 10],
+};
+
+const DECENTRALIZED_STATUS = {
+  FAILED: [6, 23],
+  SUCCESS: [7, 12]
+};
+
 const getStatusText = (status, currencyType) => {
   if ([CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH, CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20].includes(currencyType)) {
     // decentralized token history 
-    if (status === 6 || status === 23) {
+    if (DECENTRALIZED_STATUS.FAILED.includes(status)) {
       return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.FAILED;
-    } else if (status === 7 || status === 12) {
+    } else if (DECENTRALIZED_STATUS.SUCCESS.includes(status)) {
       return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SUCCESS;
     }
     return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING;
   } else {
     // centralized token history 
-    if ([3, 4, 5, 10].includes(status)) {
+    if (CENTRALIZED_STATUS.FAILED.includes(status)) {
+      return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.FAILED;
+    } else if (CENTRALIZED_STATUS.SUCCESS.includes(status)) {
       return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SUCCESS;
     }
     return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING;
