@@ -535,20 +535,22 @@ class DetailDevice extends BaseScreen {
   }
 
   onHandleSwitchAccount = onClickView(async account => {
+    const accountName = account?.name??'';
     try {
-      const {defaultAccountName} = this.props;
-      if (defaultAccountName === account?.name) {
-        Toast.showInfo(`Your current account is "${account?.name}"`);
-        return;
-      }
-      await switchAccount(account?.name);
-      // // await setDefaultAccount(account);
-      // await getAccountBalance(account).catch(console.log);
-      // await reloadAccountFollowingToken(account).catch(console.log);
-
-      Toast.showInfo(`Switched to account "${account?.name}"`);
+      
+      const {defaultAccountName,switchAccount,getAccountBalance} = this.props;
+      
+      // if (defaultAccountName === accountName) {
+      //   Toast.showInfo(`Your current account is "${accountName}"`);
+      //   return;
+      // }
+      // const amount = await getAccountBalance(account);
+      
+      await switchAccount(accountName);
+      // __DEV__ && Toast.showInfo(`"${account?.name}" = ${amount}`);
     } catch (e) {
-      new ExHandler(e, `Can not switch to account "${account?.name}", please try again.`).showErrorToast();
+      // new ExHandler(e, `Can not get balance from account "${account?.name}", please try again.`).showErrorToast();
+      new ExHandler(e, `Can not switch to account "${accountName}", please try again.`).showErrorToast();
     }
   });
 
@@ -575,7 +577,6 @@ class DetailDevice extends BaseScreen {
             onPress={onClickView(()=>{
               this.setState({ isShowMessage: false });
               this.goToScreen(routeNames.ImportAccount, { onSwitchAccount: onHandleSwitchAccount });
-              // this.goToScreen(routeNames.ImportAccount);
             })}
             title='Import'
           />
