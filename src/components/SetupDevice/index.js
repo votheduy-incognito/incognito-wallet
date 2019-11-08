@@ -285,7 +285,7 @@ class SetupDevice extends BaseComponent {
         let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
         const {PrivateKey = '',AccountName = '',PaymentAddress = '',PublicKeyCheckEncode='',ValidatorKey = ''} = result;
         console.log(TAG,'changeDeviceName sendPrivateKey begin');
-        result = await DeviceService.sendPrivateKey(Device.getInstance(addProduct),PrivateKey);
+        result = await DeviceService.sendValidatorKey(Device.getInstance(addProduct),ValidatorKey);
         const uid = result?.uid||'';
 
         // firebase_uid
@@ -344,8 +344,9 @@ class SetupDevice extends BaseComponent {
         // create account
         // console.log(TAG,'handleSubmit fetchData = ',fetchProductInfo);
         let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
-        const PrivateKey = result.PrivateKey;
-        result = await DeviceService.sendPrivateKey(Device.getInstance(addProduct),PrivateKey);
+        // const PrivateKey = result.PrivateKey;
+        const {PrivateKey = '',AccountName = '',PaymentAddress = '',PublicKeyCheckEncode='',ValidatorKey = ''} = result??{};
+        result = await DeviceService.sendValidatorKey(Device.getInstance(addProduct),ValidatorKey);
 
         if(!_.isEmpty(result)){
           this.goToScreen(routeNames.HomeMine);
