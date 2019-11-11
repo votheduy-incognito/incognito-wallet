@@ -87,7 +87,6 @@ class Home extends React.Component {
                 <View style={homeStyle.followTokenBtn}>
                   <Text style={homeStyle.followTokenText}>Follow a token</Text>
                   <Icon
-                    containerStyle={[homeStyle.followTokenText, homeStyle.followTokenIcon]}
                     name="chevron-right"
                     color={COLORS.primary}
                   />
