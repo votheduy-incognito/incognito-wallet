@@ -5,11 +5,13 @@ import storage from '@src/services/storage';
 import axios from 'axios';
 import { KeyWallet, Wallet,AccountWallet } from 'incognito-chain-web-js/build/wallet';
 import _ from 'lodash';
-import { getActiveShard } from './RpcClientService';
+import { getUserUnfollowTokenIDs, setUserUnfollowTokenIDs } from './tokenService';
+import { getActiveShard, getListPrivacyCustomTokenBalance } from './RpcClientService';
 import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
 import { CustomError, ErrorCode } from '../exception';
 
 const TAG = 'Account';
+
 export default class Account {
   static async getDefaultAccountName() {
     try {
@@ -296,6 +298,12 @@ export default class Account {
   static async addFollowingTokens(tokens, account, wallet) {
     const indexAccount = wallet.getAccountIndexByName(account.name);
     await wallet.MasterAccount.child[indexAccount].addFollowingToken(...tokens);
+
+    // remove these tokenIds out of tracking list
+    const followList = tokens.map(t => t.ID);
+    const prevList = await getUserUnfollowTokenIDs();
+    const newList = _.difference(prevList, followList);
+    setUserUnfollowTokenIDs(newList);
   }
 
   static async removeFollowingToken(tokenId, account, wallet) {
@@ -303,6 +311,13 @@ export default class Account {
     await wallet.MasterAccount.child[indexAccount].removeFollowingToken(
       tokenId
     );
+
+    // save these tokenIds for tracking list token of user
+    const prevList = await getUserUnfollowTokenIDs();
+
+    prevList.push(tokenId);
+    setUserUnfollowTokenIDs(prevList);
+
     return wallet;
   }
 
@@ -391,5 +406,25 @@ export default class Account {
       console.warn(TAG,'getAccountWithBLSPubKey error =',e );
     }
     return null;
+  }
+
+  // get all of tokens that have balance in the account, even it hasnt been added to following list 
+  static async getListTokenHasBalance(account) {
+    try {
+      if (!account) throw new Error('Account is required');
+      const privateKey = account?.PrivateKey;
+  
+      const list = await getListPrivacyCustomTokenBalance(privateKey);
+      return list?.map(tokenData => ({
+        name: tokenData?.Name,
+        symbol: tokenData?.Symbol,
+        amount: tokenData?.Amount,
+        id: tokenData?.TokenID,
+        image: tokenData?.TokenImage,
+        isPrivacy: tokenData?.IsPrivacy,
+      })) || [];
+    } catch (e) {
+      throw e;
+    }
   }
 }

@@ -8,7 +8,7 @@ import cryptoItemStyle from './style';
 const CryptoItem = ({ fullName, name, amount, externalSymbol, onPress, symbol, isGettingBalance, style, pDecimals, useLogoFromSymbol, tokenId }) => (
   <TouchableScale style={[cryptoItemStyle.container, style]} onPress={amount != null ? onPress : null}>
     <View style={cryptoItemStyle.logoContainer}>
-      <CryptoIcon tokenId={!useLogoFromSymbol && tokenId} symbol={useLogoFromSymbol && (externalSymbol || symbol)} />
+      <CryptoIcon tokenId={!useLogoFromSymbol ? tokenId : undefined} symbol={useLogoFromSymbol ? (externalSymbol || symbol) : undefined} />
     </View>
     <View style={cryptoItemStyle.cryptoNameContainer}>
       <Text style={cryptoItemStyle.mainNameText} numberOfLines={1} ellipsizeMode="tail">{fullName}</Text>

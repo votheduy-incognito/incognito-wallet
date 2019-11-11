@@ -31,7 +31,9 @@ class Home extends React.Component {
           <TouchableWithoutFeedback onPress={handleSetting}>
             <Image source={setting} style={homeStyle.setting} />
           </TouchableWithoutFeedback>
-          <Text style={homeStyle.title} numberOfLines={1} ellipsizeMode='middle'>{account.name}</Text>
+          <View style={homeStyle.headerTitleContainer}>
+            <Text style={homeStyle.title} numberOfLines={1} ellipsizeMode='middle'>{account.name}</Text>
+          </View>
           {/* Use below empty view to push the title to middle */}
           <View style={homeStyle.setting} />
         </View>
@@ -85,7 +87,6 @@ class Home extends React.Component {
                 <View style={homeStyle.followTokenBtn}>
                   <Text style={homeStyle.followTokenText}>Follow a token</Text>
                   <Icon
-                    containerStyle={[homeStyle.followTokenText, homeStyle.followTokenIcon]}
                     name="chevron-right"
                     color={COLORS.primary}
                   />

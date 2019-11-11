@@ -2,6 +2,8 @@ import {
   Wallet
 } from 'incognito-chain-web-js/build/wallet';
 import tokenModel from '@src/models/token';
+import storage from '@src/services/storage';
+import { CONSTANT_KEYS } from '@src/constants';
 import { saveWallet, updateStatusHistory } from './WalletService';
 import { listPrivacyTokens, listCustomTokens } from './RpcClientService';
 
@@ -93,7 +95,7 @@ export default class Token {
     //   paymentInfos[i] = new PaymentInfo(/*paymentAddress, amount*/);
     // }
     let response;
-    const hasPrivacyForNativeToken = false;
+    const hasPrivacyForNativeToken = true;
     const hasPrivacyForPToken = true;
 
     try {
@@ -227,6 +229,13 @@ export default class Token {
       throw e;
     }
   }
+}
 
+export async function getUserUnfollowTokenIDs() {
+  const listRaw = await storage.getItem(CONSTANT_KEYS.USER_UNFOLLOWING_TOKEN_ID_LIST);
+  return JSON.parse(listRaw) || [];
+}
 
+export async function setUserUnfollowTokenIDs(newList = []) {
+  return await storage.setItem(CONSTANT_KEYS.USER_UNFOLLOWING_TOKEN_ID_LIST, JSON.stringify(newList));
 }
