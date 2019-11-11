@@ -10,6 +10,10 @@ export const homeStyle = StyleSheet.create({
   header: {
     flexDirection: 'row',
   },
+  headerTitleContainer: {
+    flex: 1,
+    paddingHorizontal: 3
+  },
   setting: {
     marginHorizontal: 25,
     width: 24,
