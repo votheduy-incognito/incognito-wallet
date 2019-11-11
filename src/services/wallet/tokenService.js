@@ -93,7 +93,7 @@ export default class Token {
     //   paymentInfos[i] = new PaymentInfo(/*paymentAddress, amount*/);
     // }
     let response;
-    const hasPrivacyForNativeToken = false;
+    const hasPrivacyForNativeToken = true;
     const hasPrivacyForPToken = true;
 
     try {
