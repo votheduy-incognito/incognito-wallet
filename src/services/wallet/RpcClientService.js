@@ -219,4 +219,11 @@ export function isExchangeRatePToken(tokenID)  {
   return getRpcClient().isExchangeRatePToken(tokenID);
 }
 
+export async function getListPrivacyCustomTokenBalance(privateKey) {
+  if (!privateKey) throw new Error('Can not getListPrivacyCustomTokenBalance without account privateKey');
+
+  const list = await getRpcClient().getListPrivacyCustomTokenBalance(privateKey);
+  return list || [];
+}
+
 setRpcClientInterceptor();

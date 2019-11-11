@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 
 const Storage = {
-  setItem(key:string, value:any, callback:function) {
+  setItem(key:string, value:string, callback:function) {
     return new Promise((resolve, reject) => {
       AsyncStorage.setItem(key, value, (err)=> {
         if (typeof callback === 'function') {

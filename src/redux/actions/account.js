@@ -1,7 +1,10 @@
+import { differenceBy } from 'lodash';
 import type from '@src/redux/types/account';
+import TokenModel from '@src/models/token';
 import walletType from '@src/redux/types/wallet';
 import accountService from '@src/services/wallet/accountService';
 import { getPassphrase } from '@src/services/wallet/passwordService';
+import { setUserUnfollowTokenIDs, getUserUnfollowTokenIDs } from '@src/services/wallet/tokenService';
 import { tokenSeleclor, accountSeleclor } from '../selectors';
 import { getBalance as getTokenBalance, setListToken } from './token';
 
@@ -110,6 +113,39 @@ export const getBalance = (account) => async (dispatch, getState) => {
   return balance??0;
 };
 
+export const loadAllPTokenHasBalance = account => async (dispatch, getState) => {
+  if (!account) {
+    throw new Error('Account is required');
+  }
+
+  const state = getState();
+  const wallet = state?.wallet;
+
+  if (!wallet) {
+    throw new Error('Wallet is not existed');
+  }
+
+  const followedToken = tokenSeleclor.followed(state);
+  const allTokens = await accountService.getListTokenHasBalance(account);
+  const newTokens = differenceBy(allTokens, followedToken, 'id');
+
+  // if token id has been existed in USER UNFOLLOWING LIST, ignore it!
+  const userUnfollowedList = await getUserUnfollowTokenIDs();
+  const shouldAddTokens = newTokens?.filter(token => !userUnfollowedList?.includes(token.id));
+
+  
+  if (shouldAddTokens?.length > 0) {
+    await accountService.addFollowingTokens(shouldAddTokens.map(TokenModel.toJson), account, wallet);
+
+    // update wallet object to store
+    dispatch({
+      type: walletType.SET,
+      data: wallet
+    });
+  }
+
+  return allTokens;
+};
 
 export const reloadAccountFollowingToken = (account = throw new Error('Account object is required')) => async (dispatch, getState) => {
   try {

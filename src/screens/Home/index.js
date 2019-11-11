@@ -1,5 +1,5 @@
 import LoadingContainer from '@src/components/LoadingContainer';
-import { getBalance as getAccountBalance, reloadAccountFollowingToken } from '@src/redux/actions/account';
+import { getBalance as getAccountBalance, reloadAccountFollowingToken, loadAllPTokenHasBalance } from '@src/redux/actions/account';
 import { clearSelectedPrivacy, setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import { getBalance, getInternalTokenList, getPTokenList, setListToken } from '@src/redux/actions/token';
 import accountService from '@src/services/wallet/accountService';
@@ -31,8 +31,6 @@ class HomeContainer extends Component {
   }
 
   async componentDidMount() {
-    const {isNeedUpgrade} = this.state;
-
     const { account, navigation, clearSelectedPrivacy } = this.props;
     // console.log('HIENTON account = ',account);
     try {
@@ -45,15 +43,8 @@ class HomeContainer extends Component {
           // result?.status == 1 && Toast.showSuccess('1 PRV has been added to your wallet.');
         });
       }
-      this.getTokens();
-      this.getFollowingToken();
-      this.getAccountBalance(account);
 
-      await Promise.all([
-        this.getTokens(),
-        this.getFollowingToken(),
-        this.getAccountBalance(account),
-      ]);
+      await this.reload();
     } catch (e) {
       new ExHandler(e).showErrorToast();
     }
@@ -88,13 +79,15 @@ class HomeContainer extends Component {
   reload = async () => {
     try {
       this.setState({ isReloading: true });
-      const { account } = this.props;
+      const { account, loadAllPTokenHasBalance } = this.props;
       const tasks = [
+        this.getTokens(),
         this.getAccountBalance(account),
         this.getFollowingToken()
       ];
 
       await Promise.all(tasks);
+      await loadAllPTokenHasBalance(account);
     } catch (e) {
       new ExHandler(e).showErrorToast();
     } finally {
@@ -207,7 +200,18 @@ const mapState = state => ({
   tokenGettingBalanceList: tokenSeleclor.isGettingBalance(state)
 });
 
-const mapDispatch = { setListToken, setWallet, getBalance, getAccountBalance, setSelectedPrivacy, clearSelectedPrivacy, reloadAccountFollowingToken, getPTokenList, getInternalTokenList };
+const mapDispatch = {
+  setListToken,
+  setWallet,
+  getBalance,
+  getAccountBalance,
+  setSelectedPrivacy,
+  clearSelectedPrivacy,
+  reloadAccountFollowingToken,
+  getPTokenList,
+  getInternalTokenList,
+  loadAllPTokenHasBalance
+};
 
 HomeContainer.propTypes = {
   navigation: PropTypes.object.isRequired,
@@ -224,6 +228,7 @@ HomeContainer.propTypes = {
   getPTokenList: PropTypes.func.isRequired,
   getInternalTokenList: PropTypes.func.isRequired,
   setWallet: PropTypes.func.isRequired,
+  loadAllPTokenHasBalance: PropTypes.func.isRequired,
 };
 
 
