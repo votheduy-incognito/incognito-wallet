@@ -27,7 +27,7 @@ const createItem = (account, onSwitch, onExport, onDelete, isActive) => (
       <TouchableOpacity style={accountSection.name} onPress={() => onSwitch(account)}>
         <View style={[accountSection.indicator, isActive && accountSection.indicatorActive]} />
         <FIcons name={isActive ? 'user-check' : 'user'} size={20} color={isActive ? COLORS.primary : COLORS.lightGrey4} />
-        <Text style={isActive ? accountSection.nameTextActive : accountSection.nameText}>{account?.name}</Text>
+        <Text numberOfLines={1} ellipsizeMode='middle' style={isActive ? accountSection.nameTextActive : accountSection.nameText}>{account?.name}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={accountSection.actionBtn} onPress={() => onExport(account)}>
         <Icons name='key' size={20} color={COLORS.lightGrey3} />
