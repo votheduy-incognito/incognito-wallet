@@ -45,7 +45,7 @@ const number = ({ message } = {}) => value => {
   }
 
   if (value && !isSafeInteger(number)) {
-    return messageHanlder(message, value) ?? 'Please enter a valid number';
+    return messageHanlder(message, value) ?? 'This number is too large!';
   }
 
   return undefined;
