@@ -116,7 +116,7 @@ class ImportAccount extends Component {
                       name='accountName'
                       placeholder='Account Name'
                       label='Account Name'
-                      validate={[isRequired]}
+                      validate={validator.combinedAccountName}
                     />
                   )
               }

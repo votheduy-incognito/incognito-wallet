@@ -10,10 +10,8 @@ import React from 'react';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import styleSheet from './style';
 
-
 const formName = 'createAccount';
 const Form = createForm(formName);
-const isRequired = validator.required();
 
 const CreateAccount = ({ navigation, accountList, createAccount }) => {
   const goBack = () => {
@@ -59,7 +57,7 @@ const CreateAccount = ({ navigation, accountList, createAccount }) => {
               name='accountName'
               placeholder='Account Name'
               label='Account Name'
-              validate={[isRequired]}
+              validate={validator.combinedAccountName}
             />
             <Button
               title='Create account'
