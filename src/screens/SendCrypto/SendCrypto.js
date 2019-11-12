@@ -30,9 +30,8 @@ class SendCrypto extends React.Component {
     super();
     this.state = {
       supportedFeeTypes: [],
-      feeUnit: null,
-      finalFee: null,
       maxAmountValidator: undefined,
+      estimateFeeData: {},
     };
   }
 
@@ -42,11 +41,11 @@ class SendCrypto extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const { estimateFeeData: { fee, feeUnit } } = this.state;
+    const { estimateFeeData: { fee: oldFee, feeUnit: oldFeeUnit } } = prevState;
     const { receiptData } = this.props;
-    const { finalFee: oldFinalFee, feeUnit: oldFeeUnit } = prevState;
-    const { finalFee, feeUnit } = this.state;
-
-    if (finalFee !== oldFinalFee || feeUnit !== oldFeeUnit) {
+   
+    if (fee !== oldFee || feeUnit !== oldFeeUnit) {
       // need to re-calc max amount can be send if fee was changed
       this.setFormValidation({ maxAmount: this.getMaxAmount() });
     }
@@ -58,11 +57,11 @@ class SendCrypto extends React.Component {
 
   getMaxAmount = () => {
     const { selectedPrivacy } = this.props;
-    const { finalFee, feeUnit } = this.state;
+    const { estimateFeeData: { fee, feeUnit } } = this.state;
     let amount = selectedPrivacy?.amount;
 
     if (feeUnit === selectedPrivacy?.symbol) {
-      amount-= finalFee;
+      amount-= fee || 0;
     }
 
     const maxAmount = convertUtil.toHumanAmount(amount, selectedPrivacy?.pDecimals);
@@ -97,28 +96,24 @@ class SendCrypto extends React.Component {
 
   handleSend = async values => {
     try {
-      const { finalFee, feeUnit } = this.state;
       const { handleSend } = this.props;
+      const { estimateFeeData: { fee, feeUnit } } = this.state;
 
       if (typeof handleSend === 'function') {
-        await handleSend({ ...values, fee: finalFee, feeUnit });
+        await handleSend({ ...values, fee, feeUnit });
       }
     } catch (e) {
       new ExHandler(e, 'Something went wrong. Just tap the Send button again.').showErrorToast();
     }
   }
 
-  handleSelectFee = ({ fee, feeUnit }) => {
-    this.setState({ finalFee: fee, feeUnit });
-  }
-
-  handleEstFeeFailed = () => {
-    this.setState({ finalFee: null });
+  handleSelectFee = (estimateFeeData) => {
+    this.setState({ estimateFeeData });
   }
 
   shouldDisabledSubmit = () => {
-    const { finalFee } = this.state;
-    if (finalFee !== 0 && !finalFee) {
+    const { estimateFeeData: { fee } } = this.state;
+    if (fee !== 0 && !fee) {
       return true;
     }
 
@@ -126,11 +121,18 @@ class SendCrypto extends React.Component {
   }
 
   getSupportedFeeTypes = async () => {
-    const supportedFeeTypes = [CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV];
+    const supportedFeeTypes = [{
+      tokenId: CONSTANT_COMMONS.PRV_TOKEN_ID,
+      symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV
+    }];
+
     try {
       const { selectedPrivacy } = this.props;
       const isUsed = await isExchangeRatePToken(selectedPrivacy.tokenId);
-      isUsed && supportedFeeTypes.push(selectedPrivacy.symbol);
+      isUsed && supportedFeeTypes.push({
+        tokenId: selectedPrivacy.tokenId,
+        symbol: selectedPrivacy.symbol
+      });
     } catch (e) {
       new ExHandler(e);
     } finally {
@@ -158,7 +160,7 @@ class SendCrypto extends React.Component {
   }
 
   render() {
-    const { finalFee, supportedFeeTypes } = this.state;
+    const { supportedFeeTypes, estimateFeeData } = this.state;
     const { isSending, selectedPrivacy, amount, toAddress, isFormValid, account } = this.props;
     const types = [CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV];
     const maxAmount = this.getMaxAmount();
@@ -196,9 +198,8 @@ class SendCrypto extends React.Component {
                 />
                 <EstimateFee
                   accountName={account?.name}
-                  finalFee={finalFee}
-                  onSelectFee={this.handleSelectFee}
-                  onEstimateFailed={this.handleEstFeeFailed}
+                  estimateFeeData={estimateFeeData}
+                  onNewFeeData={this.handleSelectFee}
                   types={supportedFeeTypes}
                   amount={isFormValid ? amount : null}
                   toAddress={isFormValid ? toAddress : null}
@@ -220,7 +221,7 @@ SendCrypto.defaultProps = {
   isSending: false,
   isFormValid: false,
   amount: null,
-  toAddress: null
+  toAddress: null,
 };
 
 SendCrypto.propTypes = {

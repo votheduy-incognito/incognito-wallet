@@ -21,8 +21,6 @@ class SelfStaking extends BaseScreen {
     const { getAccountByName, minerAccountName, funderAccountName } = props;
     this.state = {
       isStaking: false,
-      finalFee: null,
-      feeUnit: null,
       amount:  null,
       stakeTypeId: CONSTANT_COMMONS.STAKING_TYPES.SHARD,
       funderAccount: _.isEmpty(funderAccountName)?getAccountByName(funderAccountName):null,
@@ -74,8 +72,8 @@ class SelfStaking extends BaseScreen {
   //   }
   // }
 
-  handleSelectFee = ({ fee, feeUnit }) => {
-    this.setState({ finalFee: fee, feeUnit });
+  handleSelectFee = (estimateFeeData) => {
+    this.setState(estimateFeeData);
   }
 
   handleStakeTypeChange = ({ id, amount }) => {
@@ -89,11 +87,11 @@ class SelfStaking extends BaseScreen {
       });
 
       const { onStaking, getAccountByName,onCallBackStaked } = this.props;
-      const { stakeTypeId, finalFee, minerAccount, funderAccount } = this.state;
+      const { stakeTypeId, minerAccount, funderAccount, estimateFeeData: { fee } } = this.state;
       if (typeof onStaking === 'function') {
         const rs = await onStaking({
           stakeType: stakeTypeId,
-          fee: finalFee,
+          fee,
           minerAccount,
           funderAccount
         });
@@ -117,7 +115,8 @@ class SelfStaking extends BaseScreen {
   }
 
   render() {
-    const { amount, finalFee, feeUnit, stakeTypeId, isStaking, minerAccount, funderAccount } = this.state;
+    const { amount, stakeTypeId, isStaking, minerAccount, funderAccount, estimateFeeData } = this.state;
+    const { fee, feeUnit } = estimateFeeData;
     const { selectedPrivacy,funderAccountName} = this.props;
     
     const toAddress = minerAccount?.PaymentAddress || selectedPrivacy?.PaymentAddress;
@@ -156,16 +155,18 @@ class SelfStaking extends BaseScreen {
           !isCantLoadAccount && !isNotEnoughBalance && (
             <>
               <EstimateFee
-                initialFee={0}
                 selectedPrivacy={selectedPrivacy}
-                finalFee={finalFee}
                 accountName={funderAccountName}
-                onSelectFee={this.handleSelectFee}
-                types={[tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY]}
+                estimateFeeData={estimateFeeData}
+                onNewFeeData={this.handleSelectFee}
+                types={[{
+                  tokenId: CONSTANT_COMMONS.PRV_TOKEN_ID,
+                  symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV
+                }]}
                 amount={convertUtil.toHumanAmount(amount, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)}
                 toAddress={toAddress}
                 style={styles.estFee}
-                feeText={`You'll pay: ${formatUtil.amountFull(finalFee, feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : null)} ${feeUnit}`}
+                feeText={`${formatUtil.amountFull(fee, feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : null)} ${feeUnit}`}
               />
               <Button disabled={!isCanSubmit} title='Stake' style={styles.stakeButton} onPress={this.handleStake} />
             </>
