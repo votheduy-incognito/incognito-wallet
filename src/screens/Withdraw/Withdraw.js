@@ -33,21 +33,23 @@ class Withdraw extends React.Component {
 
     this.state = {
       maxAmountValidator: undefined,
-      finalFee: null,
+      estimateFeeData: {},
+      supportedFeeTypes: [],
       feeUnit: null,
     };
   }
 
   componentDidMount() {
     this.setFormValidator({ maxAmount: this.getMaxAmount() });
+    this.getSupportedFeeTypes();
   }
 
   
   componentDidUpdate(prevProps, prevState) {
-    const { finalFee: oldFinalFee, feeUnit: oldFeeUnit } = prevState;
-    const { finalFee, feeUnit } = this.state;
+    const { estimateFeeData: { fee, feeUnit } } = this.state;
+    const { estimateFeeData: { fee: oldFee, feeUnit: oldFeeUnit } } = prevState;
 
-    if (finalFee !== oldFinalFee || feeUnit !== oldFeeUnit) {
+    if (fee !== oldFee || feeUnit !== oldFeeUnit) {
       // need to re-calc max amount can be send if fee was changed
       this.setFormValidator({ maxAmount: this.getMaxAmount() });
     }
@@ -55,11 +57,11 @@ class Withdraw extends React.Component {
 
   getMaxAmount = () => {
     const { selectedPrivacy, withdrawData } = this.props;
-    const { finalFee, feeUnit } = this.state;
+    const { estimateFeeData: { fee, feeUnit } } = this.state;
     let amount = withdrawData?.maxWithdrawAmount;
 
     if (feeUnit === selectedPrivacy?.symbol) {
-      amount-= finalFee;
+      amount-= fee || 0;
     }
     
     const maxAmount = convertUtil.toHumanAmount(amount, selectedPrivacy?.pDecimals);
@@ -82,7 +84,7 @@ class Withdraw extends React.Component {
   handleSubmit = async values => {
     try {
       let res;
-      const { finalFee, feeUnit } = this.state;
+      const { estimateFeeData: { fee, feeUnit } } = this.state;
       const {  handleCentralizedWithdraw, handleDecentralizedWithdraw, navigation, selectedPrivacy } = this.props;
       const { amount, toAddress } = values;
 
@@ -90,14 +92,14 @@ class Withdraw extends React.Component {
         res = await handleDecentralizedWithdraw({
           amount,
           remoteAddress: toAddress,
-          fee: finalFee,
+          fee,
           feeUnit
         });
       } else {
         res = await handleCentralizedWithdraw({
           amount,
           paymentAddress: toAddress,
-          fee: finalFee,
+          fee,
           feeUnit
         });
       }
@@ -115,20 +117,16 @@ class Withdraw extends React.Component {
   }
 
   shouldDisabledSubmit = () => {
-    const { finalFee } = this.state;
-    if (finalFee !== 0 && !finalFee) {
+    const { estimateFeeData: { fee } } = this.state;
+    if (fee !== 0 && !fee) {
       return true;
     }
 
     return false;
   }
 
-  handleSelectFee = ({ fee, feeUnit }) => {
-    this.setState({ finalFee: fee, feeUnit });
-  }
-
-  handleEstFeeFailed = () => {
-    this.setState({ finalFee: null });
+  handleSelectFee = (estimateFeeData) => {
+    this.setState({ estimateFeeData });
   }
 
   getAddressValidator = memmoize((symbol, isErc20Token) => {
@@ -146,11 +144,31 @@ class Withdraw extends React.Component {
     return validator.combinedUnknownAddress;
   });
 
-  render() {
-    const { maxAmountValidator, finalFee, feeUnit } = this.state;
-    const { selectedPrivacy, isFormValid, amount, withdrawData, account } = this.props;
+  getSupportedFeeTypes = async () => {
+    const {  withdrawData } = this.props;
     const { isGetTokenFee } = withdrawData;
-    const types = [...isGetTokenFee ? [selectedPrivacy?.symbol] : [], CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV];
+    const supportedFeeTypes = [{
+      tokenId: CONSTANT_COMMONS.PRV_TOKEN_ID,
+      symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV
+    }];
+
+    try {
+      const { selectedPrivacy } = this.props;
+      isGetTokenFee && supportedFeeTypes.push({
+        tokenId: selectedPrivacy.tokenId,
+        symbol: selectedPrivacy.symbol
+      });
+    } catch (e) {
+      new ExHandler(e);
+    } finally {
+      this.setState({ supportedFeeTypes });
+    }
+  }
+
+  render() {
+    const { maxAmountValidator, supportedFeeTypes, estimateFeeData } = this.state;
+    const { fee, feeUnit } = estimateFeeData;
+    const { selectedPrivacy, isFormValid, amount, withdrawData, account } = this.props;
     const isUsedTokenFee = !(feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
     const addressValidator = this.getAddressValidator(selectedPrivacy?.externalSymbol, selectedPrivacy?.isErc20Token);
     const maxAmount = this.getMaxAmount();
@@ -189,25 +207,23 @@ class Withdraw extends React.Component {
                 />
                 <EstimateFee
                   accountName={account?.name}
-                  finalFee={finalFee}
-                  onSelectFee={this.handleSelectFee}
-                  onEstimateFailed={this.handleEstFeeFailed}
-                  types={types}
+                  estimateFeeData={estimateFeeData}
+                  onNewFeeData={this.handleSelectFee}
+                  types={supportedFeeTypes}
                   amount={isFormValid ? amount : null}
                   toAddress={isFormValid ? selectedPrivacy?.paymentAddress : null} // est fee on the same network, dont care which address will be send to
-                  feeText={finalFee && `You'll pay: ${
-                    formatUtil.amountFull(finalFee,feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals)} ${feeUnit ? feeUnit : ''
-                  }
-                    ${
-                      isUsedTokenFee && withdrawData?.feeForBurn
-                        ? ` + (${
-                          formatUtil.amountFull(
-                            withdrawData?.feeForBurn,
-                            feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals
-                          )
-                        } ${feeUnit ? feeUnit : ''})`
-                        : ''
-                    }`
+                  feeText={fee && `${
+                    formatUtil.amountFull(fee,feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals)} ${feeUnit ? feeUnit : ''
+                  } ${
+                    isUsedTokenFee && withdrawData?.feeForBurn
+                      ? ` + (${
+                        formatUtil.amountFull(
+                          withdrawData?.feeForBurn,
+                          feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals
+                        )
+                      } ${feeUnit ? feeUnit : ''})`
+                      : ''
+                  }`
                   }
                 />
                 <Button title='Withdraw' style={style.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSubmit)} isAsync isLoading={submitting} />

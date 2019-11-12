@@ -22,6 +22,7 @@ const app = {
 
 const estimateFee = {
   estimate_fee_with_zero_balance: knownError(-1),
+  estimate_fee_does_not_support_type_of_fee: knownError(-29)
 };
 
 const getStarted = {
