@@ -212,7 +212,7 @@ class WithdrawContainer extends Component {
         return await addERC20TxWithdraw({
           amount,
           originalAmount,
-          paymentAddress: selectedPrivacy?.paymentAddress,
+          paymentAddress: remoteAddress,
           walletAddress: selectedPrivacy?.paymentAddress,
           tokenContractID: selectedPrivacy?.contractId,
           tokenId: selectedPrivacy?.tokenId,
@@ -224,7 +224,7 @@ class WithdrawContainer extends Component {
         return await addETHTxWithdraw({
           amount,
           originalAmount,
-          paymentAddress: selectedPrivacy?.paymentAddress,
+          paymentAddress: remoteAddress,
           walletAddress: selectedPrivacy?.paymentAddress,
           tokenId: selectedPrivacy?.tokenId,
           burningTxId: tx?.txId,
