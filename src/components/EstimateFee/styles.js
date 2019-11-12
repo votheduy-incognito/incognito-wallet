@@ -1,6 +1,5 @@
 import { COLORS, THEME, FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
-import { scaleInApp } from '@src/styles/TextStyle';
 
 const style = StyleSheet.create({
   container: {
@@ -64,29 +63,6 @@ const style = StyleSheet.create({
     paddingVertical: 10,
     minHeight: 60
   },
-  rate: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignContent: 'center',
-    paddingVertical: 5,
-    flex: 1,
-  },
-  rateTextHighlight: {
-    ...FONT.STYLE.medium,
-    color: COLORS.white,
-    backgroundColor: COLORS.primary,
-    paddingHorizontal: 15,
-    lineHeight: 20,
-    paddingVertical: 5,
-    borderRadius: 15,
-    overflow: 'hidden',
-    textAlignVertical: 'center',
-    textAlign: 'center',
-  },
-  rateText: {
-    fontWeight: '100',
-    color: COLORS.lightGrey3
-  },
   box: {
     borderWidth: 1,
     borderRadius: 4,
@@ -94,11 +70,49 @@ const style = StyleSheet.create({
     backgroundColor: COLORS.white,
     overflow: 'hidden'
   },
-  feeText: {
-    marginTop: 30,
-    marginBottom: scaleInApp(38),
-    textAlign: 'center',
-    fontSize: 14
+  changeFeeForm: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    maxWidth: 350,
+    padding: 20
+  },
+  changeFeeInput: {
+    flex: 1,
+    minWidth: 200,
+    marginBottom: 20
+  },
+  changeFeeSubmitBtn: {
+    width: 150,
+    borderWidth: 1,
+    borderColor: '#0DB8D8',
+    borderRadius: 18,
+    backgroundColor: COLORS.transparent,
+  },
+  changeFeeSubmitText: {
+    color: COLORS.blue
+  },
+  feeTextContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20
+  },
+  changeFeeBtn: {
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    marginTop: 20,
+  },
+  changeFeeText: {
+    ...FONT.STYLE.medium,
+    color: COLORS.blue,
+    fontSize: 16,
+  },
+  feeTextTitle: {
+    fontSize: 14,
+    color: '#657576',
+    marginBottom: 12
   }
 });
 

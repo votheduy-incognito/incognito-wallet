@@ -4,64 +4,100 @@ import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import { getEstimateFeeForNativeToken, getEstimateFeeForPToken } from '@src/services/wallet/RpcClientService';
 import convertUtil from '@src/utils/convert';
 import formatUtil from '@src/utils/format';
-import { debounce, xor } from 'lodash';
+import { debounce } from 'lodash';
 import memmoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Text } from '@src/components/core';
+import { change } from 'redux-form';
 import EstimateFee from './EstimateFee';
-import styles from './styles';
 
 class EstimateFeeContainer extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      defaultFeeSymbol: null, // which currency use for fee
-      minFee: null,
       isGettingFee: false,
       estimateErrorMsg: null,
+      userFee: null,  // high priority
     };
 
     this.handleEstimateFee = debounce(this.handleEstimateFee.bind(this), 1000);
   }
 
   componentDidMount() {
-    const { types } = this.props;
-    this.setFeeSymbol(types[0]);
+    // select default type 
+    this.selectDefaultFeeType();
   }
 
   componentDidUpdate(prevProps) {
-    const { amount: oldAmount, types: oldTypes } = prevProps;
-    const { amount, toAddress, types } = this.props;
+    const { amount: oldAmount, estimateFeeData: { feeUnitByTokenId: oldFeeUnitByTokenId } } = prevProps;
+    const { amount, estimateFeeData: { feeUnitByTokenId } } = this.props;
 
-    if (xor(oldTypes, types).length) {
-      this.setFeeSymbol(types[0]);
+    // do estimate if amount or type of fee was changed
+    if ((oldAmount !== amount) || (feeUnitByTokenId !== oldFeeUnitByTokenId)) {
+      this.handleEstimateFee();
     }
 
-    if (oldAmount !== amount && toAddress) {
-      this.handleEstimateFee();
+    // select default type if hasnt been selected
+    if (!feeUnitByTokenId) {
+      this.selectDefaultFeeType();
+    }
+  }
+
+  setUserFee = fee => {
+    if (Number.isInteger(fee)) {
+      this.setState({ userFee: fee });
+    }
+  }
+
+  selectDefaultFeeType = () => {
+    // select a type as default, priority: selectedPrivacy > PRV > first type
+    const { types, selectedPrivacy } = this.props;
+
+    const defaultType = types.find(t => t.tokenId === selectedPrivacy.tokenId) || types.find(t => t.tokenId === CONSTANT_COMMONS.PRV_TOKEN_ID) || types[0];
+    
+    if (defaultType) {
+      this.handleNewFeeData({
+        feeUnitByTokenId: defaultType.tokenId,
+        feeUnit: defaultType.symbol
+      });
+    } 
+  }
+
+  handleNewFeeData = ({ fee, feeUnitByTokenId, feeUnit } = {}) => {
+    const { onNewFeeData, estimateFeeData } = this.props;
+
+    // clear err msg and show loading if user changes type of fee
+    if (feeUnitByTokenId) {
+      this.setState({ estimateErrorMsg: null, isGettingFee: true });
+    }
+
+    if (typeof onNewFeeData === 'function') {
+      onNewFeeData({
+        ...estimateFeeData || {},
+        ...fee ? { fee } : {},
+        ...feeUnitByTokenId ? { feeUnitByTokenId } : {},
+        ...feeUnit ? { feeUnit } : {}
+      });
     }
   }
 
   handleEstimateFee = async () => {
+    let fee;
     try {
-      const { defaultFeeSymbol } = this.state;
-      const { selectedPrivacy, amount, toAddress, /* onSelectFee */ } = this.props;
-      let fee;
-      if (!amount || !toAddress || !selectedPrivacy || !defaultFeeSymbol) {
+      const { userFee } = this.state;
+      const { selectedPrivacy, amount, toAddress, estimateFeeData: { feeUnitByTokenId } } = this.props;
+
+      if (!amount || !toAddress || !selectedPrivacy) {
         return;
       }
 
-      this.setState({ isGettingFee: true, estimateErrorMsg: null, minFee: null }, () => {
-        // disabled submit button while estimating fee
-        // onSelectFee({ fee: null, feeUnit: defaultFeeSymbol });
-      });
+      this.setState({ isGettingFee: true, estimateErrorMsg: null });
 
-      if (defaultFeeSymbol === selectedPrivacy?.symbol && selectedPrivacy.isToken) { // estimate fee in pToken [pETH, pBTC, ...]
+      if (feeUnitByTokenId === selectedPrivacy?.tokenId && selectedPrivacy.isToken) { // estimate fee in pToken [pETH, pBTC, ...]
         fee = await this._handleEstimateTokenFee();
-      } else if (defaultFeeSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV) {
+      } else if (feeUnitByTokenId === CONSTANT_COMMONS.PRV_TOKEN_ID) {
         // estimate fee in PRV
         if (selectedPrivacy?.isToken) {
           fee = await this._estimateFeeForToken();
@@ -69,27 +105,25 @@ class EstimateFeeContainer extends Component {
         if (selectedPrivacy?.isMainCrypto) {
           fee = await this._estimateFeeForMainCrypto();
         }
+      } else {
+        throw new CustomError(ErrorCode.estimate_fee_does_not_support_type_of_fee);
       }
 
-      this.setState({ estimateErrorMsg: null, minFee: fee });
+      fee = userFee > fee ? userFee : fee; // get higher fee, userFee or fee from the chain
+
+      this.setState({ estimateErrorMsg: null });
 
       return fee;
     } catch (e) {
-      const { onEstimateFailed } = this.props;
-      const { defaultFeeSymbol } = this.state;
+      const { onEstimateFailed, estimateFeeData: { feeUnit } } = this.props;
       this.setState({
-        estimateErrorMsg: new ExHandler(e, `Something went wrong while estimating ${defaultFeeSymbol} fee for this transactions, please try again.`).message,
-        minFee: null,
+        estimateErrorMsg: new ExHandler(e, `Something went wrong while estimating ${feeUnit} fee for this transactions, please try again.`).message,
       }, onEstimateFailed);
+      fee = null;
     } finally {
       this.setState({ isGettingFee: false });
+      this.handleNewFeeData({ fee });
     }
-  }
-
-  setFeeSymbol = symbol => {
-    // if change fee type, request estimate fee
-    const { defaultFeeSymbol } = this.state;
-    symbol !== defaultFeeSymbol && this.setState({ defaultFeeSymbol: symbol, minFee: null, isGettingFee: true }, this.handleEstimateFee);
   }
 
   _estimateFeeForMainCrypto = async ()=> {
@@ -184,26 +218,22 @@ class EstimateFeeContainer extends Component {
     }
   }
 
-  handleChangeDefaultSymbol = symbol => {
-    this.setFeeSymbol(symbol);
-  }
-
-  getFeeSymbolList = memmoize((selectedPrivacy) => {
-    const symbols = [CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV];
+  getFeeTypesByTokenId = memmoize((selectedPrivacy) => {
+    const ids = [CONSTANT_COMMONS.PRV_TOKEN_ID];
 
     // NOTE: dont support fake P.R.V(s)
-    if (!symbols.includes(selectedPrivacy?.symbol)) {
-      symbols.unshift(selectedPrivacy?.symbol);
+    if (!ids.includes(selectedPrivacy?.tokenId)) {
+      ids.unshift(selectedPrivacy?.tokenId);
     }
-    return symbols;
+    return ids;
   })
 
-  getPDecimals = memmoize((selectedPrivacy, defaultFeeSymbol) => {
-    if (defaultFeeSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV) {
+  getPDecimals = memmoize((selectedPrivacy, defaultFeeTokenId) => {
+    if (defaultFeeTokenId === CONSTANT_COMMONS.PRV_TOKEN_ID) {
       return CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY;
     }
 
-    if (defaultFeeSymbol === selectedPrivacy?.symbol) {
+    if (defaultFeeTokenId === selectedPrivacy?.tokenId) {
       return selectedPrivacy?.pDecimals;
     }
 
@@ -211,32 +241,25 @@ class EstimateFeeContainer extends Component {
   })
 
   render() {
-    const { minFee, isGettingFee, defaultFeeSymbol, estimateErrorMsg } = this.state;
-    const { selectedPrivacy, onSelectFee, finalFee, style, account, types, feeText } = this.props;
-    const pDecimals = this.getPDecimals(selectedPrivacy, defaultFeeSymbol);
-    const txt = feeText ?? (finalFee && `You'll pay: ${formatUtil.amountFull(finalFee, pDecimals)} ${defaultFeeSymbol}`);
+    const { isGettingFee, estimateErrorMsg } = this.state;
+    const { selectedPrivacy, style, account, feeText, estimateFeeData } = this.props;
+    const { feeUnitByTokenId, fee, feeUnit } = estimateFeeData || {};
+    const feePDecimals = this.getPDecimals(selectedPrivacy, feeUnitByTokenId);
+    const txt = feeText ?? (fee && `${formatUtil.amountFull(fee, feePDecimals)} ${feeUnit}`);
 
-    if (defaultFeeSymbol && account && selectedPrivacy) {
+    if (account && selectedPrivacy) {
       return (
-        <>
-          <EstimateFee
-            onChangeDefaultSymbol={this.handleChangeDefaultSymbol}
-            onSelectFee={onSelectFee}
-            minFee={minFee}
-            finalFee={finalFee}
-            types={types || this.getFeeSymbolList(selectedPrivacy)}
-            defaultFeeSymbol={defaultFeeSymbol}
-            isGettingFee={isGettingFee}
-            estimateErrorMsg={estimateErrorMsg}
-            onRetry={this.handleEstimateFee}
-            style={style}
-            selectedPrivacy={selectedPrivacy}
-            account={account}
-            feeDecimals={pDecimals}
-          />
-          <Text style={styles.feeText}>{txt}</Text>
-        </>
-        
+        <EstimateFee
+          {...this.props}
+          isGettingFee={isGettingFee}
+          estimateErrorMsg={estimateErrorMsg}
+          onRetry={this.handleEstimateFee}
+          onNewFeeData={this.handleNewFeeData}
+          setUserFee={this.setUserFee}
+          style={style}
+          feeText={txt}
+          feePDecimals={feePDecimals}
+        />
       );
     }
 
@@ -250,13 +273,17 @@ const mapState = (state, props) => ({
   wallet: state.wallet,
 });
 
+const mapDispatch = { rfChange: change };
+
 EstimateFeeContainer.defaultProps = {
   selectedPrivacy: null,
   amount: null,
   toAddress: null,
-  finalFee: null,
   style: null,
-  types: [CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV],
+  types: [{
+    tokenId: CONSTANT_COMMONS.PRV_TOKEN_ID,
+    symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV
+  }],
   feeText: null,
   onEstimateFailed: null,
 };
@@ -265,18 +292,26 @@ EstimateFeeContainer.propTypes = {
   account: PropTypes.object.isRequired,
   accountName: PropTypes.string.isRequired,
   wallet: PropTypes.object.isRequired,
-  finalFee:  PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  estimateFeeData: PropTypes.shape({
+    fee: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    feeUnit: PropTypes.string,
+    feeUnitByTokenId: PropTypes.string
+  }).isRequired,
   selectedPrivacy: PropTypes.object,
-  onSelectFee: PropTypes.func.isRequired,
   amount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   toAddress: PropTypes.string,
   style: PropTypes.object,
-  types: PropTypes.arrayOf(PropTypes.string),
+  types: PropTypes.arrayOf(PropTypes.shape({
+    tokenId: PropTypes.string,
+    symbol: PropTypes.string
+  })),
   feeText: PropTypes.string,
-  onEstimateFailed: PropTypes.func
+  onEstimateFailed: PropTypes.func,
+  onNewFeeData: PropTypes.func.isRequired,
 };
 
 
 export default connect(
-  mapState
+  mapState,
+  mapDispatch,
 )(EstimateFeeContainer);

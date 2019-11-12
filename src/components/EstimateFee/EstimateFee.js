@@ -1,127 +1,98 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import memmoize from 'memoize-one';
-import { View, TouchableOpacity, Text, ActivityIndicator, Button, Toast } from '@src/components/core';
-import { CONSTANT_COMMONS } from '@src/constants';
-import formatUtil from '@src/utils/format';
+import { Field } from 'redux-form';
+import { createForm, InputField, validator } from '@src/components/core/reduxForm';
+import { View, TouchableOpacity, Text, ActivityIndicator, Button } from '@src/components/core';
+import convert from '@src/utils/convert';
 import styles from './styles';
 
-const LEVELS = [
-  {
-    name: 'Normal',
-    rate: 1,
-  },
-  {
-    name: 'Faster',
-    rate: 2,
-  },
-  {
-    name: 'Swift',
-    rate: 3,
-  }
+
+const getAnotherTypeOfFee = (types, feeUnitByTokenId) => {
+  
+  return types?.find(t => t?.tokenId !== feeUnitByTokenId);
+};
+
+const feeValidator = [
+  validator.required(),
+  validator.number(),
+  validator.largerThan(0)
 ];
 
-const calcFinalFee = memmoize((minFee, rate, pDecimals) => {
-  if (minFee === 0 && rate !== 1) {
-    const expectedMin = pDecimals ? (10 ** pDecimals * 0.0001) : 1;
-    return Number(expectedMin * rate) || 0;
-  }
-  return Number(minFee * rate) || 0;
-});
+const formName = 'changeFee';
+const Form = createForm(formName);
 
 class EstimateFee extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      levels: null,
       isRetrying: false,
+      anotherFee: null,
+      isShowChangeFeeInput: false,
+      minFeeValidator: null
     };
   }
 
-  static getDerivedStateFromProps(props, state) {
-    const { minFee, selectedPrivacy } = props;
+  static getDerivedStateFromProps(nextProps) {
+    let state = {};
 
-    if (minFee !== 0 && !minFee) {
-      return null;
+    const { estimateErrorMsg, types, estimateFeeData, feePDecimals } = nextProps;
+    const { feeUnitByTokenId, fee, feeUnit } = estimateFeeData;
+
+    if (estimateErrorMsg) {
+      const another = getAnotherTypeOfFee(types, feeUnitByTokenId);
+      state.anotherFee = another;
+    } else {
+      state.anotherFee = null;
     }
-    
-    const levels = LEVELS.map(level => {
-      const fee = calcFinalFee(minFee, level?.rate, selectedPrivacy?.pDecimals);
-      return {
-        level, fee,
-      };
-    });
 
-    return {
-      ...state,
-      levels,
-    };
+    if (fee) {
+      const convertedFee = convert.toHumanAmount(fee, feePDecimals);
+      const convertedFeeStr = convertedFee.toFixed(feePDecimals);
+      state.minFeeValidator = validator.minValue(convertedFee, { message: `Must be at least ${convertedFeeStr} ${feeUnit}` });
+    }
+
+    return state;
   }
 
-  componentDidUpdate(prevProps) {
-    const { defaultFeeSymbol: oldDefaultFeeSymbol } = prevProps;
-    const { minFee, finalFee, defaultFeeSymbol } = this.props;
-    const { levels } = this.state;
+  handleChangeFee = () => {
+    this.setState({ isShowChangeFeeInput: true }, () => {
+      const { rfChange, estimateFeeData, feePDecimals } = this.props;
+      const convertedFee = convert.toHumanAmount(estimateFeeData?.fee, feePDecimals);
 
-    if (oldDefaultFeeSymbol === defaultFeeSymbol && this.shouldSetDefaultRate(levels, minFee, finalFee)) {
-      const selectDefaultLevel = (level) => {
-        const defaultLevel = level;
-        defaultLevel && this.handleSelectRate(defaultLevel.fee);
-      };
-      if (this.isAvailabelFee(levels[1].fee, defaultFeeSymbol)) {
-        selectDefaultLevel(levels[1]);
-      } else if (this.isAvailabelFee(levels[0].fee, defaultFeeSymbol)) {
-        selectDefaultLevel(levels[0]);
+      if (typeof convertedFee === 'number') {
+        rfChange(formName, 'fee', convertedFee.toFixed(feePDecimals));
       }
+    });
+  };
+
+  onChangeNewFee = (values) => {
+    const { onNewFeeData, feePDecimals, setUserFee } = this.props;
+    const { fee } = values;
+
+    // convert fee to nano fee
+    const originalFee = convert.toOriginalAmount(fee, feePDecimals);
+
+    if (typeof onNewFeeData === 'function' && typeof originalFee === 'number') {
+      this.setState({ isShowChangeFeeInput: false });
+      onNewFeeData({ fee: originalFee });
+      setUserFee(originalFee);
     }
   }
-
-  shouldSetDefaultRate = memmoize((levels, minFee, finalFee) => {
-    try {
-      if (minFee === null) return false;
-
-      const found = levels.find(level => level.fee === finalFee);
-      if (!found) return true;
-      return false;
-    } catch {
-      return false;
-    }
-  })
-
+  
   handleSelectFeeType = (type) => {
-    const { onChangeDefaultSymbol, onSelectFee } = this.props;
-    onChangeDefaultSymbol(type);
-    if (typeof onSelectFee === 'function') {
-      onSelectFee({ fee: null, feeUnit: type });
+    const { onNewFeeData } = this.props;
+    if (typeof onNewFeeData === 'function') {
+      onNewFeeData({ feeUnitByTokenId: type?.tokenId, feeUnit: type?.symbol });
     }
   }
-
-  handleSelectRate = (fee) => {
-    const { onSelectFee, defaultFeeSymbol } = this.props;
-    if (typeof onSelectFee === 'function') {
-      onSelectFee({ fee, feeUnit: defaultFeeSymbol });
-    }
-  }
-
-  isAvailabelFee = (fee, symbol) => {
-    const { account, selectedPrivacy } = this.props;
-    let amount = 0;
-
-    if (symbol === selectedPrivacy?.symbol) {
-      amount = selectedPrivacy?.amount;
-    } else if (symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV) {
-      amount = account?.value;
+  
+  onRetry = (anotherFee) => {
+    if (anotherFee) {
+      this.handleSelectFeeType(anotherFee);
+      return;
     }
 
-    if (amount >= fee) {
-      return true;
-    }
-
-    return false;
-  }
-
-  onRetry = () => {
     const { onRetry } = this.props;
     const delay = new Promise(r => {
       setTimeout(() => r(), 500);
@@ -133,15 +104,37 @@ class EstimateFee extends Component {
       });
   }
 
-  handleSelectUnavailableFee = (fee) => {
-    const { defaultFeeSymbol, feeDecimals } = this.props;
-    const formatedFee = formatUtil.amountFull(fee, feeDecimals);
-    Toast.showWarning(`Your balance is not enough to pay ${formatedFee} ${defaultFeeSymbol} fee.`);
+  renderChangeFee = () => {
+    const { minFeeValidator } = this.state;
+    return (
+      <Form style={styles.changeFeeForm}>
+        {({ handleSubmit }) => (
+          <>
+            <Text style={styles.feeTextTitle}>The more you pay, the faster you get</Text>
+            <Field
+              component={InputField}
+              componentProps={{
+                keyboardType: 'decimal-pad'
+              }}
+              name='fee'
+              placeholder='Enter new fee'
+              style={styles.changeFeeInput}
+              validate={[
+                ...feeValidator,
+                ...minFeeValidator ? [minFeeValidator] : []
+              ]}
+            />
+            <Button titleStyle={styles.changeFeeSubmitText} style={styles.changeFeeSubmitBtn} title='Use this fee' onPress={handleSubmit(this.onChangeNewFee)} />
+          </>
+        )}
+      </Form>
+    );
   }
 
   render() {
-    const { levels, isRetrying } = this.state;
-    const { types, minFee, isGettingFee, defaultFeeSymbol, estimateErrorMsg, finalFee, style, account } = this.props;
+    const { isRetrying, anotherFee, isShowChangeFeeInput } = this.state;
+    const { types, isGettingFee, estimateErrorMsg, style, feeText, estimateFeeData } = this.props;
+    const { feeUnitByTokenId, fee } = estimateFeeData || {};
 
     return (
       <View style={[styles.container, style]}>
@@ -151,11 +144,12 @@ class EstimateFee extends Component {
             <View style={styles.feeTypeGroup}>
               {
                 types?.map((type, index) => {
+                  const { symbol, tokenId } = type;
                   const onPress = () => this.handleSelectFeeType(type);
-                  const isHighlight = defaultFeeSymbol === type;
+                  const isHighlight = feeUnitByTokenId === tokenId;
                   return (
                     <TouchableOpacity
-                      key={type}
+                      key={tokenId}
                       onPress={onPress}
                       style={
                         [
@@ -173,7 +167,7 @@ class EstimateFee extends Component {
                           ]
                         }
                       >
-                        Use {type}
+                        Use {symbol}
                       </Text>
                     </TouchableOpacity>
                   );
@@ -186,27 +180,30 @@ class EstimateFee extends Component {
             ? (
               <View style={styles.errorBox}>
                 <Text style={styles.errorText}>{estimateErrorMsg}</Text>
-                <Button onPress={this.onRetry} style={styles.retryBtn} title='Try again' isAsync isLoading={isRetrying} />
+                <Button onPress={() => this.onRetry(anotherFee)} style={styles.retryBtn} title={anotherFee ? `Try ${anotherFee?.symbol}` : 'Try again'} isAsync isLoading={isRetrying} />
               </View>
             )
             : (
               <View style={styles.rateContainer}>
                 {
-                  !minFee && !isGettingFee
+                  fee === null || fee === undefined && !isGettingFee
                     ? <Text style={styles.rateText}>Transaction fee will be calculated here</Text>
                     : (
                       isGettingFee ?
                         <ActivityIndicator /> : 
-                        levels?.map(({ fee, level }) => {
-                          const isAvailabelFee = this.isAvailabelFee(fee, defaultFeeSymbol);
-                          const onPress = isAvailabelFee ? () => this.handleSelectRate(fee) : this.handleSelectUnavailableFee.bind(null, fee);
-                          return (
-                            <TouchableOpacity key={level?.name} onPress={onPress} style={styles.rate}>
-                              <Text style={[styles.rateText, finalFee === fee && styles.rateTextHighlight, !isAvailabelFee && { textDecorationLine: 'line-through' }]}>{level?.name}</Text>
-                              {/* <Text>{formatUtil.amount(fee, defaultFeeSymbol)} {defaultFeeSymbol}</Text> */}
-                            </TouchableOpacity>
-                          );
-                        })
+                        (
+                          isShowChangeFeeInput
+                            ? this.renderChangeFee()
+                            : (
+                              <View style={styles.feeTextContainer}>
+                                <Text style={styles.feeTextTitle}>{'You\'ll pay'}</Text>
+                                <Text>{feeText}</Text>
+                                <TouchableOpacity style={styles.changeFeeBtn} onPress={this.handleChangeFee}>
+                                  <Text style={styles.changeFeeText}>Change the fee</Text>
+                                </TouchableOpacity>
+                              </View>
+                            )
+                        )
                     )
                 }
               </View>
@@ -220,34 +217,25 @@ class EstimateFee extends Component {
 
 EstimateFee.defaultProps = {
   isGettingFee: false,
-  onChangeDefaultSymbol: null,
-  onSelectFee: null,
   types: [],
-  defaultFeeSymbol: null,
-  finalFee: null,
   estimateErrorMsg: null,
   onRetry: null,
   style: null,
-  account: null,
-  selectedPrivacy: null,
-  feeDecimals: null,
-  minFee: null
+  feeText: null,
+  feePDecimals: null
 };
 
 EstimateFee.propTypes = {
   isGettingFee: PropTypes.bool,
   onRetry: PropTypes.func,
-  onChangeDefaultSymbol: PropTypes.func,
-  onSelectFee: PropTypes.func,
-  minFee: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  onNewFeeData: PropTypes.func.isRequired,
+  rfChange: PropTypes.func.isRequired,
+  feePDecimals: PropTypes.number,
   types: PropTypes.array,
-  defaultFeeSymbol: PropTypes.string,
-  finalFee: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  estimateFeeData: PropTypes.object.isRequired,
+  feeText: PropTypes.string,
   estimateErrorMsg: PropTypes.string,
   style: PropTypes.object,
-  account: PropTypes.object,
-  selectedPrivacy: PropTypes.object,
-  feeDecimals: PropTypes.number,
 };
 
 export default EstimateFee;
