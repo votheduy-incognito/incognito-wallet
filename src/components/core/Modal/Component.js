@@ -1,7 +1,7 @@
 import AppScreen from '@src/components/AppScreen';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Modal as RNComponent } from 'react-native';
+import { Modal as RNComponent,SafeAreaView } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { TouchableOpacity, View } from '..';
 import styleSheet from './style';
@@ -15,7 +15,7 @@ const Modal = ({
   ...otherProps
 }) => (
   <RNComponent animationType="fade" {...otherProps}>
-    <AppScreen>
+    <SafeAreaView style={styleSheet.containerSafeView}>
       <View style={[styleSheet.container, containerStyle]}>
         {isShowHeader && close && (
           <View style={styleSheet.header}>
@@ -27,7 +27,7 @@ const Modal = ({
 
         {children}
       </View>
-    </AppScreen>
+    </SafeAreaView>
   </RNComponent>
 );
 

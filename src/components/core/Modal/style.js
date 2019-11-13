@@ -10,6 +10,10 @@ export default StyleSheet.create({
     flex: 1,
     paddingTop: 0
   },
+  containerSafeView: {
+    flex: 1,
+    backgroundColor: THEME.header.backgroundColor,
+  },
   header: {
     alignItems: 'center',
     backgroundColor: COLORS.transparent,

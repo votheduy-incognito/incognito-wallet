@@ -1,7 +1,7 @@
 import { Dimensions, StatusBar, StyleSheet } from 'react-native';
-import { verticalScale } from 'react-native-size-matters';
 import colors from './colors';
 import font from './font';
+import DECOR from './decor';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight || 20;
 
@@ -9,7 +9,7 @@ export const screenSize = {
   width: Dimensions.get('window').width,
   height: Dimensions.get('window').height - STATUSBAR_HEIGHT
 };
-export const scaleInApp = verticalScale;
+export const scaleInApp = DECOR.scaleInApp;
 
 export const FontStyle = {
   ...font.STYLE
