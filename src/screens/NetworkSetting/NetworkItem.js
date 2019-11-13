@@ -4,6 +4,7 @@ import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Icon } from 'react-native-elements';
+import _ from 'lodash';
 import EditSetting from './EditSetting';
 import { networkItemStyle } from './style';
 
@@ -11,7 +12,7 @@ const NetworkItem = ({ active, network, expanded, onExpand, onActive, reloadNetw
   <View style={networkItemStyle.container}>
     <View style={[networkItemStyle.summaryContainer,{opacity:active?1:0.5}]}>
       <TouchableOpacity
-        // onPress={onActive}
+        onPress={__DEV__&&!_.isEqual(network?.id,'local')&&onActive}
         style={[networkItemStyle.iconContainer]}
       >
         <Icon

@@ -10,8 +10,8 @@ import { connect } from 'react-redux';
 import Util from '@src/utils/Util';
 import ROUTE_NAMES from '@src/router/routeNames';
 import storageService from '@src/services/storage';
-import { CONSTANT_KEYS } from '@src/constants';
-import RNRestart from 'react-native-restart';
+import { CONSTANT_CONFIGS } from '@src/constants';
+import _ from 'lodash';
 import NetworkSetting from './NetworkSetting';
 
 const NetworkSettingContainer = ({
@@ -48,15 +48,20 @@ const NetworkSettingContainer = ({
   const handleSetDefaultNetwork = async network => {
     try {
       await serverService.setDefault(network);
-      await storageService.removeItem(CONSTANT_KEYS.DEVICE_TOKEN);
-      // Util.resetRoute(navigation,ROUTE_NAMES.RootSplash);
-      const wallet = await reloadWallet();
-      await getAccountBalance(account);
+      // const isMainnet =  serverService.isMainnet(network);
+      // await storageService.removeItem(CONSTANT_KEYS.DEVICE_TOKEN);
+      const walletDBClone = await storageService.getItem('Wallet_Clone')??'';
+      const walletDB =  await storageService.getItem('Wallet') ?? '';
+      await storageService.setItem('Wallet_Clone',walletDB);
+      await storageService.setItem('Wallet',walletDBClone);
 
-      if (wallet) {
-        Toast.showInfo('You successfully changed networks.');
-      }
-      RNRestart.Restart();
+      // const wallet = await reloadWallet();
+      // await getAccountBalance(account);
+
+      // if (wallet) {
+      //   Toast.showInfo('You successfully changed networks.');
+      // }
+      Toast.showInfo('You successfully changed networks.');
     } catch {
       Toast.showError(
         'Something went wrong. Please try again.'
