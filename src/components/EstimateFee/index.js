@@ -225,7 +225,6 @@ class EstimateFeeContainer extends Component {
   getFeeTypesByTokenId = memmoize((selectedPrivacy) => {
     const ids = [CONSTANT_COMMONS.PRV_TOKEN_ID];
 
-    // NOTE: dont support fake P.R.V(s)
     if (!ids.includes(selectedPrivacy?.tokenId)) {
       ids.unshift(selectedPrivacy?.tokenId);
     }

@@ -26,5 +26,6 @@ export default {
   [CODE.daaps_invalid_daap_url]: 'Please enter a valid Dapp URL',
   [CODE.web_js_import_invalid_key]: 'Please make sure this private key is valid.',
   [CODE.web_js_can_not_use_this_token_for_fee]: 'Can not use this token for fee, please try another.',
-  [CODE.estimate_fee_does_not_support_type_of_fee]: 'Can not use this token for fee, please try another.'
+  [CODE.estimate_fee_does_not_support_type_of_fee]: 'Can not use this token for fee, please try another.',
+  [CODE.web_js_not_enough_coin]: 'Your balance is not enough for this transaction.'
 };
