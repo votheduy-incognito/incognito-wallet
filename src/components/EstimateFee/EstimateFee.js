@@ -19,7 +19,9 @@ const feeValidator = [
 ];
 
 const formName = 'changeFee';
-const Form = createForm(formName);
+const Form = createForm(formName, {
+  destroyOnUnmount: false
+});
 
 class EstimateFee extends Component {
   constructor(props) {
@@ -36,8 +38,8 @@ class EstimateFee extends Component {
   static getDerivedStateFromProps(nextProps) {
     let state = {};
 
-    const { estimateErrorMsg, types, estimateFeeData, feePDecimals } = nextProps;
-    const { feeUnitByTokenId, fee, feeUnit } = estimateFeeData;
+    const { estimateErrorMsg, types, estimateFeeData, feePDecimals, minFee } = nextProps;
+    const { feeUnitByTokenId, feeUnit } = estimateFeeData;
 
     if (estimateErrorMsg) {
       const another = getAnotherTypeOfFee(types, feeUnitByTokenId);
@@ -46,13 +48,19 @@ class EstimateFee extends Component {
       state.anotherFee = null;
     }
 
-    if (fee) {
-      const convertedFee = convert.toHumanAmount(fee, feePDecimals);
-      const convertedFeeStr = convertedFee.toFixed(feePDecimals);
-      state.minFeeValidator = validator.minValue(convertedFee, { message: `Must be at least ${convertedFeeStr} ${feeUnit}` });
+    if (minFee) {
+      const convertedMinFee = convert.toHumanAmount(minFee, feePDecimals);
+      const convertedMinFeeStr = convertedMinFee.toFixed(feePDecimals);
+      state.minFeeValidator = validator.minValue(convertedMinFee, { message: `Must be at least ${convertedMinFeeStr} ${feeUnit}` });
     }
 
     return state;
+  }
+
+  componentWillUnmount() {
+    // destroy change fee form
+    const { rfDestroy } = this.props;
+    rfDestroy(formName);
   }
 
   handleChangeFee = () => {
@@ -230,6 +238,8 @@ EstimateFee.propTypes = {
   onRetry: PropTypes.func,
   onNewFeeData: PropTypes.func.isRequired,
   rfChange: PropTypes.func.isRequired,
+  rfDestroy: PropTypes.func.isRequired,
+  setUserFee: PropTypes.func.isRequired,
   feePDecimals: PropTypes.number,
   types: PropTypes.array,
   estimateFeeData: PropTypes.object.isRequired,

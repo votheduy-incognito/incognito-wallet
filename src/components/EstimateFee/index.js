@@ -9,7 +9,7 @@ import memmoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { change } from 'redux-form';
+import { change, destroy } from 'redux-form';
 import EstimateFee from './EstimateFee';
 
 class EstimateFeeContainer extends Component {
@@ -20,6 +20,7 @@ class EstimateFeeContainer extends Component {
       isGettingFee: false,
       estimateErrorMsg: null,
       userFee: null,  // high priority
+      minFee: null,
     };
 
     this.handleEstimateFee = debounce(this.handleEstimateFee.bind(this), 1000);
@@ -85,6 +86,7 @@ class EstimateFeeContainer extends Component {
 
   handleEstimateFee = async () => {
     let fee;
+    let minFee;
     try {
       const { userFee } = this.state;
       const { selectedPrivacy, amount, toAddress, estimateFeeData: { feeUnitByTokenId } } = this.props;
@@ -109,8 +111,9 @@ class EstimateFeeContainer extends Component {
         throw new CustomError(ErrorCode.estimate_fee_does_not_support_type_of_fee);
       }
 
-      fee = userFee > fee ? userFee : fee; // get higher fee, userFee or fee from the chain
-
+      minFee = fee;
+      fee = userFee > fee ? userFee : fee;
+      
       this.setState({ estimateErrorMsg: null });
 
       return fee;
@@ -120,8 +123,9 @@ class EstimateFeeContainer extends Component {
         estimateErrorMsg: new ExHandler(e, `Something went wrong while estimating ${feeUnit} fee for this transactions, please try again.`).message,
       }, onEstimateFailed);
       fee = null;
+      minFee = null;
     } finally {
-      this.setState({ isGettingFee: false });
+      this.setState({ isGettingFee: false, minFee });
       this.handleNewFeeData({ fee });
     }
   }
@@ -241,7 +245,7 @@ class EstimateFeeContainer extends Component {
   })
 
   render() {
-    const { isGettingFee, estimateErrorMsg } = this.state;
+    const { isGettingFee, estimateErrorMsg, minFee } = this.state;
     const { selectedPrivacy, style, account, feeText, estimateFeeData } = this.props;
     const { feeUnitByTokenId, fee, feeUnit } = estimateFeeData || {};
     const feePDecimals = this.getPDecimals(selectedPrivacy, feeUnitByTokenId);
@@ -256,6 +260,7 @@ class EstimateFeeContainer extends Component {
           onRetry={this.handleEstimateFee}
           onNewFeeData={this.handleNewFeeData}
           setUserFee={this.setUserFee}
+          minFee={minFee}
           style={style}
           feeText={txt}
           feePDecimals={feePDecimals}
@@ -273,7 +278,7 @@ const mapState = (state, props) => ({
   wallet: state.wallet,
 });
 
-const mapDispatch = { rfChange: change };
+const mapDispatch = { rfChange: change, rfDestroy: destroy };
 
 EstimateFeeContainer.defaultProps = {
   selectedPrivacy: null,
