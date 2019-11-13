@@ -13,6 +13,7 @@ import convertUtil from '@src/utils/convert';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import SimpleInfo from '@src/components/SimpleInfo';
 import Withdraw from './Withdraw';
 
 class WithdrawContainer extends Component {
@@ -21,6 +22,7 @@ class WithdrawContainer extends Component {
 
     this.state = {
       withdrawData: null,
+      isPreparing: false,
     };
   }
 
@@ -52,6 +54,7 @@ class WithdrawContainer extends Component {
 
   getWithdrawData = async () => {
     try{
+      this.setState({ isPreparing: true });
       const { account, wallet, selectedPrivacy } = this.props;
       const fromAddress = selectedPrivacy?.paymentAddress;
       const toAddress = fromAddress; // est fee on the same network, dont care which address will be send to
@@ -73,8 +76,12 @@ class WithdrawContainer extends Component {
       );
 
       this.setState({ withdrawData: data });
+
+      return data;
     } catch (e) {
-      new ExHandler(e, 'Something went wrong. Please refresh the screen.').showErrorToast();
+      new ExHandler(e);
+    } finally {
+      this.setState({ isPreparing: false });
     }
   }
 
@@ -245,7 +252,7 @@ class WithdrawContainer extends Component {
 
   render() {
     const { selectedPrivacy } = this.props;
-    const { withdrawData } = this.state;
+    const { withdrawData, isPreparing } = this.state;
 
     if (selectedPrivacy && selectedPrivacy?.amount <= 0) {
       return (
@@ -256,7 +263,22 @@ class WithdrawContainer extends Component {
       );
     }
 
-    if (!selectedPrivacy || !withdrawData) return <LoadingContainer />;
+    if (isPreparing) {
+      return <LoadingContainer />;
+    }
+
+    if (!selectedPrivacy || !withdrawData) {
+      return (
+        <SimpleInfo
+          type='warning'
+          text='Hmm. We hit a snag. Please try again.'
+          subText="If second time didnt work: We'll need to take a closer look at this. Please send a message to go@incognito.org or t.me/@incognitonode for assistance."
+          button={
+            <Button title='Try again' onPress={this.getWithdrawData} />
+          }
+        />
+      );
+    }
 
     return (
       <Withdraw

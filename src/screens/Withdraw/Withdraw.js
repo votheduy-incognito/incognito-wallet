@@ -35,7 +35,6 @@ class Withdraw extends React.Component {
       maxAmountValidator: undefined,
       estimateFeeData: {},
       supportedFeeTypes: [],
-      feeUnit: null,
     };
   }
 
