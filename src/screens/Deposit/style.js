@@ -24,7 +24,6 @@ export default StyleSheet.create({
   errorIcon: {
     color: COLORS.orange,
     fontSize: 60,
-    marginBottom: 30
   },
   errorText: {
     maxWidth: 400,

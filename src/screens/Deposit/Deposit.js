@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Container, ScrollView, Text } from '@src/components/core';
+import { Container, ScrollView, Button } from '@src/components/core';
 import Icons from 'react-native-vector-icons/AntDesign';
 import LoadingContainer from '@src/components/LoadingContainer';
+import SimpleInfo from '@src/components/SimpleInfo';
 import WaitingDeposit from './WaitingDeposit';
 import style from './style';
 
@@ -34,13 +35,15 @@ class Deposit extends React.Component {
 
     if (hasError) {
       return (
-        <ScrollView style={style.container}>
-          <Container style={[style.mainContainer, style.errorContainer]}>
-            <Icons name='exclamationcircleo' style={style.errorIcon} />
-            <Text style={style.errorText}>Sorry, we can not process your deposit request right now, please try again.</Text>
-            <Text style={style.errorText2}>If this problem still happening, please come back after 60 minutes.</Text>
-          </Container>
-        </ScrollView>
+        <SimpleInfo
+          icon={<Icons name='exclamationcircleo' style={style.errorIcon} />}
+          type='success'
+          text='Sorry, we can not process your deposit request right now, please try again.'
+          subText='If this problem still happening, please come back after 60 minutes.'
+          button={
+            <Button title='Try again' onPress={this.handleGenAddress} isAsync />
+          }
+        />
       );
     }
 
