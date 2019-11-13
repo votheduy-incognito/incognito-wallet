@@ -12,7 +12,7 @@ const NetworkItem = ({ active, network, expanded, onExpand, onActive, reloadNetw
   <View style={networkItemStyle.container}>
     <View style={[networkItemStyle.summaryContainer,{opacity:active?1:0.5}]}>
       <TouchableOpacity
-        onPress={__DEV__&&!_.isEqual(network?.id,'local')&&onActive}
+        onPress={!_.isEqual(network?.id,'local')&&onActive}
         style={[networkItemStyle.iconContainer]}
       >
         <Icon
