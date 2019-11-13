@@ -30,10 +30,11 @@ class NetworkSetting extends Component {
     const { setDefaultNetwork } = this.props;
     this.setState({loading:true});
     await setDefaultNetwork(network);
+    RNRestart.Restart();
     // clone data
-    this.setState({ activeNetworkId: network?.id,loading:false },()=>{
-      RNRestart.Restart();
-    });
+    // this.setState({ activeNetworkId: network?.id,loading:false },()=>{
+      
+    // });
   };
 
   handleExpand = networkId => {
