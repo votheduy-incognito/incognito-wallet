@@ -116,7 +116,7 @@ class SelfStaking extends BaseScreen {
 
   render() {
     const { amount, stakeTypeId, isStaking, minerAccount, funderAccount, estimateFeeData } = this.state;
-    const { fee, feeUnit } = estimateFeeData;
+    const { fee, feeUnit } = estimateFeeData??{};
     const { selectedPrivacy,funderAccountName} = this.props;
     
     const toAddress = minerAccount?.PaymentAddress || selectedPrivacy?.PaymentAddress;
@@ -152,7 +152,7 @@ class SelfStaking extends BaseScreen {
           />
         )}
         {
-          !isCantLoadAccount && !isNotEnoughBalance && (
+          !isCantLoadAccount && !isNotEnoughBalance && !_.isEmpty(amount) && (
             <>
               <EstimateFee
                 selectedPrivacy={selectedPrivacy}
