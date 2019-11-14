@@ -108,7 +108,7 @@ class Withdraw extends React.Component {
       } else {
         res = await handleCentralizedWithdraw({
           amount,
-          paymentAddress: toAddress,
+          remoteAddress: toAddress,
           fee,
           isUsedPRVFee,
           feeForBurn

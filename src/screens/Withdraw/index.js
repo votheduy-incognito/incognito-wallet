@@ -3,7 +3,7 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
-import { addERC20TxWithdraw, addETHTxWithdraw, genCentralizedWithdrawAddress } from '@src/services/api/withdraw';
+import { addERC20TxWithdraw, addETHTxWithdraw, genCentralizedWithdrawAddress, updatePTokenFee } from '@src/services/api/withdraw';
 import { CustomError, ErrorCode } from '@src/services/exception';
 import tokenService from '@src/services/wallet/tokenService';
 import convertUtil from '@src/utils/convert';
@@ -150,10 +150,16 @@ class WithdrawContainer extends Component {
     }
   }
 
-  handleCentralizedWithdraw = async ({ amount, paymentAddress, fee, isUsedPRVFee, feeForBurn }) => {
+  handleCentralizedWithdraw = async ({ amount, fee, isUsedPRVFee, feeForBurn, remoteAddress }) => {
     try {
-      const tempAddress = await this.getWithdrawAddress({ amount, paymentAddress });
-      return await this.handleSendToken({ tempAddress, amount, fee, isUsedPRVFee, feeForBurn });
+      const tempAddress = await this.getWithdrawAddress({ amount, paymentAddress: remoteAddress });
+      const tx = await this.handleSendToken({ tempAddress, amount, fee, isUsedPRVFee, feeForBurn });
+
+      if (tx && !isUsedPRVFee) {
+        await updatePTokenFee({ fee, paymentAddress: tempAddress });
+      }
+
+      return tx;
     } catch (e) {
       throw e;
     }
