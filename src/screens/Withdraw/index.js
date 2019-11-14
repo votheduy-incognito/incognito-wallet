@@ -1,13 +1,10 @@
 import { Button, Container, Text } from '@src/components/core';
-import LoadingContainer from '@src/components/LoadingContainer';
 import { CONSTANT_COMMONS } from '@src/constants';
-import tokenData from '@src/constants/tokenData';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
 import { addERC20TxWithdraw, addETHTxWithdraw, genCentralizedWithdrawAddress } from '@src/services/api/withdraw';
-import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
-import { getMaxWithdrawAmountService } from '@src/services/wallet/RpcClientService';
+import { CustomError, ErrorCode } from '@src/services/exception';
 import tokenService from '@src/services/wallet/tokenService';
 import convertUtil from '@src/utils/convert';
 import PropTypes from 'prop-types';
@@ -19,15 +16,6 @@ import Withdraw from './Withdraw';
 class WithdrawContainer extends Component {
   constructor() {
     super();
-
-    this.state = {
-      withdrawData: null,
-      isPreparing: false,
-    };
-  }
-
-  componentDidMount() {
-    this.getWithdrawData();
   }
 
   getTokenObject = ({ amount }) => {
@@ -52,46 +40,11 @@ class WithdrawContainer extends Component {
     return tokenObject;
   }
 
-  getWithdrawData = async () => {
-    try{
-      this.setState({ isPreparing: true });
-      const { account, wallet, selectedPrivacy } = this.props;
-      const fromAddress = selectedPrivacy?.paymentAddress;
-      const toAddress = fromAddress; // est fee on the same network, dont care which address will be send to
-      const accountWallet = wallet.getAccountByName(account?.name);
-      const selectedPrivacyAmount = selectedPrivacy?.amount;
-
-      if (selectedPrivacyAmount <= 0) {
-        return;
-      }
-
-      const tokenObject = this.getTokenObject({ amount: 0 });
-      const isPrivacyForPrivateToken = selectedPrivacy.isDecentralized ? false : true;
-      const data = await getMaxWithdrawAmountService(
-        fromAddress,
-        toAddress,
-        tokenObject,
-        accountWallet,
-        isPrivacyForPrivateToken,
-      );
-
-      this.setState({ withdrawData: data });
-
-      return data;
-    } catch (e) {
-      new ExHandler(e);
-    } finally {
-      this.setState({ isPreparing: false });
-    }
-  }
-
-  handleSendToken = async ({ tempAddress, amount, fee, feeUnit }) => {
-    const { withdrawData: { feeForBurn } } = this.state;
-    const { account, wallet, tokens, selectedPrivacy, getTokenBalanceBound } = this.props;
+  handleSendToken = async ({ tempAddress, amount, fee, isUsedPRVFee, feeForBurn }) => {
+    const { account, wallet, selectedPrivacy } = this.props;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
     const originalFee = Number(fee);
     const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
-    const isTokenFee = feeUnit !== tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY;
 
     const tokenObject = {
       Privacy : true,
@@ -99,10 +52,10 @@ class WithdrawContainer extends Component {
       TokenName: selectedPrivacy?.name,
       TokenSymbol: selectedPrivacy?.symbol,
       TokenTxType: type,
-      TokenAmount: originalAmount + (isTokenFee ? feeForBurn : 0),
+      TokenAmount: originalAmount + (isUsedPRVFee ? 0 : feeForBurn),
       TokenReceivers: {
         PaymentAddress: tempAddress,
-        Amount: originalAmount + (isTokenFee ? feeForBurn : 0)
+        Amount: originalAmount + (isUsedPRVFee ? 0 : feeForBurn)
       }
     };
 
@@ -114,16 +67,16 @@ class WithdrawContainer extends Component {
     try {
       const res = await tokenService.createSendPToken(
         tokenObject,
-        !isTokenFee ? originalFee : 0,
+        isUsedPRVFee ? originalFee : 0,
         account,
         wallet,
-        !isTokenFee  ? paymentInfo : null,
-        isTokenFee ? originalFee : 0
+        isUsedPRVFee  ? paymentInfo : null,
+        isUsedPRVFee ? 0 : originalFee
       );
 
       if (res.txId) {
-        const foundToken = tokens?.find(t => t.id === selectedPrivacy?.tokenId);
-        foundToken && setTimeout(() => getTokenBalanceBound(foundToken), 10000);
+        // const foundToken = tokens?.find(t => t.id === selectedPrivacy?.tokenId);
+        // foundToken && setTimeout(() => getTokenBalanceBound(foundToken), 10000);
 
         return res;
       } else {
@@ -134,13 +87,11 @@ class WithdrawContainer extends Component {
     }
   }
 
-  handleBurningToken = async ({ amount, fee, feeUnit, remoteAddress }) => {
-    const { withdrawData: { feeForBurn } } = this.state;
-    const { account, wallet, tokens, selectedPrivacy, getTokenBalanceBound } = this.props;
+  handleBurningToken = async ({ amount, fee, isUsedPRVFee, remoteAddress, feeForBurn }) => {
+    const { account, wallet, selectedPrivacy } = this.props;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
     const originalFee = Number(fee);
     const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
-    const isTokenFee = feeUnit !== tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY;
 
     const tokenObject = {
       Privacy : true,
@@ -148,26 +99,26 @@ class WithdrawContainer extends Component {
       TokenName: selectedPrivacy?.name,
       TokenSymbol: selectedPrivacy?.symbol,
       TokenTxType: type,
-      TokenAmount: originalAmount + (isTokenFee ? feeForBurn : 0),
+      TokenAmount: originalAmount + (isUsedPRVFee ? 0 : feeForBurn),
       TokenReceivers: {
         PaymentAddress: '',
-        Amount: originalAmount + (isTokenFee ? feeForBurn : 0)
+        Amount: originalAmount + (isUsedPRVFee ? 0 : feeForBurn)
       }
     };
 
     try {
       const res = await tokenService.createBurningRequest(
         tokenObject,
-        !isTokenFee ? originalFee : 0,
-        isTokenFee ? originalFee : 0,
+        isUsedPRVFee ? originalFee : 0,
+        isUsedPRVFee ? 0 : originalFee,
         remoteAddress,
         account,
         wallet,
       );
 
       if (res.txId) {
-        const foundToken = tokens?.find(t => t.id === selectedPrivacy?.tokenId);
-        foundToken && setTimeout(() => getTokenBalanceBound(foundToken), 10000);
+        // const foundToken = tokens?.find(t => t.id === selectedPrivacy?.tokenId);
+        // foundToken && setTimeout(() => getTokenBalanceBound(foundToken), 10000);
 
         return res;
       } else {
@@ -195,24 +146,24 @@ class WithdrawContainer extends Component {
       
       return address;
     } catch (e) {
-      throw new CustomError(ErrorCode.getStarted_load_device_token_failed, { rawError: e });
+      throw new CustomError(ErrorCode.withdraw_gen_withdraw_address_failed, { rawError: e });
     }
   }
 
-  handleCentralizedWithdraw = async ({ amount, paymentAddress, fee, feeUnit }) => {
+  handleCentralizedWithdraw = async ({ amount, paymentAddress, fee, isUsedPRVFee, feeForBurn }) => {
     try {
       const tempAddress = await this.getWithdrawAddress({ amount, paymentAddress });
-      return await this.handleSendToken({ tempAddress, amount, fee, feeUnit });
+      return await this.handleSendToken({ tempAddress, amount, fee, isUsedPRVFee, feeForBurn });
     } catch (e) {
       throw e;
     }
   }
 
-  handleDecentralizedWithdraw = async ({ amount, fee, feeUnit, remoteAddress }) => {
+  handleDecentralizedWithdraw = async ({ amount, fee, isUsedPRVFee, feeForBurn, remoteAddress }) => {
     try {
       const { selectedPrivacy } = this.props;
       const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
-      const tx = await this.handleBurningToken({ remoteAddress, amount, fee, feeUnit });
+      const tx = await this.handleBurningToken({ remoteAddress, amount, fee, isUsedPRVFee, feeForBurn });
 
       // ERC20 
       if (selectedPrivacy?.isErc20Token) {
@@ -252,7 +203,6 @@ class WithdrawContainer extends Component {
 
   render() {
     const { selectedPrivacy } = this.props;
-    const { withdrawData, isPreparing } = this.state;
 
     if (selectedPrivacy && selectedPrivacy?.amount <= 0) {
       return (
@@ -263,19 +213,12 @@ class WithdrawContainer extends Component {
       );
     }
 
-    if (isPreparing) {
-      return <LoadingContainer />;
-    }
-
-    if (!selectedPrivacy || !withdrawData) {
+    if (!selectedPrivacy) {
       return (
         <SimpleInfo
           type='warning'
-          text='Hmm. We hit a snag. Please try again.'
+          text='Hmm. We hit a snag. Please re-open the app and try again.'
           subText="If second time didnt work: We'll need to take a closer look at this. Please send a message to go@incognito.org or t.me/@incognitonode for assistance."
-          button={
-            <Button title='Try again' onPress={this.getWithdrawData} />
-          }
         />
       );
     }
@@ -283,7 +226,6 @@ class WithdrawContainer extends Component {
     return (
       <Withdraw
         {...this.props}
-        withdrawData={withdrawData}
         handleCentralizedWithdraw={this.handleCentralizedWithdraw}
         handleDecentralizedWithdraw={this.handleDecentralizedWithdraw}
       />

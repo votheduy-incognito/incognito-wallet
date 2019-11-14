@@ -1,16 +1,16 @@
-import { Button, Container, ScrollView, Toast, View } from '@src/components/core';
+import { Button, Container, ScrollView, Toast, Text, View } from '@src/components/core';
 import { createForm, InputMaxValueField, InputQRField, validator } from '@src/components/core/reduxForm';
 import CurrentBalance from '@src/components/CurrentBalance';
 import EstimateFee from '@src/components/EstimateFee';
 import LoadingTx from '@src/components/LoadingTx';
 import { CONSTANT_COMMONS } from '@src/constants';
-import tokenData from '@src/constants/tokenData';
 import { ExHandler } from '@src/services/exception';
 import convertUtil from '@src/utils/convert';
 import formatUtil from '@src/utils/format';
 import memmoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { isExchangeRatePToken } from '@src/services/wallet/RpcClientService';
 import { connect } from 'react-redux';
 import { change, Field, formValueSelector, isValid } from 'redux-form';
 import style from './style';
@@ -35,6 +35,16 @@ class Withdraw extends React.Component {
       maxAmountValidator: undefined,
       estimateFeeData: {},
       supportedFeeTypes: [],
+      feeForBurn: 0
+    };
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { estimateFeeData: { fee, feeUnitByTokenId } } = prevState;
+
+    return {
+      feeForBurn: fee,
+      isUsedPRVFee: feeUnitByTokenId === CONSTANT_COMMONS.PRV_TOKEN_ID
     };
   }
 
@@ -45,22 +55,22 @@ class Withdraw extends React.Component {
 
   
   componentDidUpdate(prevProps, prevState) {
-    const { estimateFeeData: { fee, feeUnit } } = this.state;
-    const { estimateFeeData: { fee: oldFee, feeUnit: oldFeeUnit } } = prevState;
+    const { estimateFeeData: { fee, feeUnitByTokenId } } = this.state;
+    const { estimateFeeData: { fee: oldFee, feeUnitByTokenId: oldFeeUnitByTokenId } } = prevState;
 
-    if (fee !== oldFee || feeUnit !== oldFeeUnit) {
+    if (fee !== oldFee || feeUnitByTokenId !== oldFeeUnitByTokenId) {
       // need to re-calc max amount can be send if fee was changed
       this.setFormValidator({ maxAmount: this.getMaxAmount() });
     }
   }
 
   getMaxAmount = () => {
-    const { selectedPrivacy, withdrawData } = this.props;
-    const { estimateFeeData: { fee, feeUnit } } = this.state;
-    let amount = withdrawData?.maxWithdrawAmount;
+    const { selectedPrivacy } = this.props;
+    const { estimateFeeData: { fee }, feeForBurn, isUsedPRVFee } = this.state;
+    let amount = selectedPrivacy?.amount;
 
-    if (feeUnit === selectedPrivacy?.symbol) {
-      amount-= fee || 0;
+    if (!isUsedPRVFee) {
+      amount-= (fee + feeForBurn) || 0;
     }
     
     const maxAmount = convertUtil.toHumanAmount(amount, selectedPrivacy?.pDecimals);
@@ -83,7 +93,7 @@ class Withdraw extends React.Component {
   handleSubmit = async values => {
     try {
       let res;
-      const { estimateFeeData: { fee, feeUnit } } = this.state;
+      const { estimateFeeData: { fee }, isUsedPRVFee, feeForBurn } = this.state;
       const {  handleCentralizedWithdraw, handleDecentralizedWithdraw, navigation, selectedPrivacy } = this.props;
       const { amount, toAddress } = values;
 
@@ -92,14 +102,16 @@ class Withdraw extends React.Component {
           amount,
           remoteAddress: toAddress,
           fee,
-          feeUnit
+          isUsedPRVFee,
+          feeForBurn
         });
       } else {
         res = await handleCentralizedWithdraw({
           amount,
           paymentAddress: toAddress,
           fee,
-          feeUnit
+          isUsedPRVFee,
+          feeForBurn
         });
       }
 
@@ -128,14 +140,14 @@ class Withdraw extends React.Component {
     this.setState({ estimateFeeData });
   }
 
-  getAddressValidator = memmoize((symbol, isErc20Token) => {
-    if (isErc20Token || symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) {
+  getAddressValidator = memmoize((externalSymbol, isErc20Token) => {
+    if (isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) {
       return validator.combinedETHAddress;
-    } if (symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.TOMO) {
+    } if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.TOMO) {
       return validator.combinedTOMOAddress;
-    } else if (symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BTC) {
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BTC) {
       return validator.combinedBTCAddress;
-    } else if (symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BNB) {
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BNB) {
       return validator.combinedBNBAddress;
     }
 
@@ -144,8 +156,6 @@ class Withdraw extends React.Component {
   });
 
   getSupportedFeeTypes = async () => {
-    const {  withdrawData } = this.props;
-    const { isGetTokenFee } = withdrawData;
     const supportedFeeTypes = [{
       tokenId: CONSTANT_COMMONS.PRV_TOKEN_ID,
       symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV
@@ -153,7 +163,8 @@ class Withdraw extends React.Component {
 
     try {
       const { selectedPrivacy } = this.props;
-      isGetTokenFee && supportedFeeTypes.push({
+      const isUsed = await isExchangeRatePToken(selectedPrivacy.tokenId);
+      isUsed && supportedFeeTypes.push({
         tokenId: selectedPrivacy.tokenId,
         symbol: selectedPrivacy.symbol
       });
@@ -165,10 +176,9 @@ class Withdraw extends React.Component {
   }
 
   render() {
-    const { maxAmountValidator, supportedFeeTypes, estimateFeeData } = this.state;
+    const { maxAmountValidator, supportedFeeTypes, estimateFeeData, feeForBurn, isUsedPRVFee } = this.state;
     const { fee, feeUnit } = estimateFeeData;
-    const { selectedPrivacy, isFormValid, amount, withdrawData, account } = this.props;
-    const isUsedTokenFee = !(feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY);
+    const { selectedPrivacy, isFormValid, amount, account } = this.props;
     const addressValidator = this.getAddressValidator(selectedPrivacy?.externalSymbol, selectedPrivacy?.isErc20Token);
     const maxAmount = this.getMaxAmount();
     
@@ -177,7 +187,7 @@ class Withdraw extends React.Component {
       <ScrollView style={style.container}>
         <Container style={style.mainContainer}>
           <View style={style.currentBalanceContainer}>
-            <CurrentBalance amount={convertUtil.toHumanAmount(withdrawData?.maxWithdrawAmount, selectedPrivacy?.pDecimals)} symbol={selectedPrivacy?.symbol} />
+            <CurrentBalance />
           </View>
           <Form style={style.form}>
             {({ handleSubmit, submitting }) => (
@@ -211,19 +221,33 @@ class Withdraw extends React.Component {
                   types={supportedFeeTypes}
                   amount={isFormValid ? amount : null}
                   toAddress={isFormValid ? selectedPrivacy?.paymentAddress : null} // est fee on the same network, dont care which address will be send to
-                  feeText={fee && `${
-                    formatUtil.amountFull(fee,feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals)} ${feeUnit ? feeUnit : ''
-                  } ${
-                    isUsedTokenFee && withdrawData?.feeForBurn
-                      ? ` + (${
-                        formatUtil.amountFull(
-                          withdrawData?.feeForBurn,
-                          feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals
+                  feeText={(
+                    <View>
+                      {
+                        fee && (
+                          <Text style={style.feeText}>
+                            Transaction fee:
+                            {' '}
+                            {formatUtil.amountFull(fee, isUsedPRVFee ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals)}
+                            {' '}
+                            {feeUnit ? feeUnit : ''}
+                          </Text>
                         )
-                      } ${feeUnit ? feeUnit : ''})`
-                      : ''
-                  }`
-                  }
+                      }
+                      {
+                        feeForBurn && (
+                          <Text style={style.feeText}>
+                            Withdraw fee:
+                            {' '}
+                            {formatUtil.amountFull(feeForBurn, isUsedPRVFee ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : selectedPrivacy?.pDecimals)}
+                            {' '}
+                            {feeUnit ? feeUnit : ''}
+                          </Text>
+                        )
+                      }
+                      
+                    </View>
+                  )}
                 />
                 <Button title='Withdraw' style={style.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSubmit)} isAsync isLoading={submitting} />
                 {submitting && <LoadingTx />}
@@ -242,7 +266,6 @@ Withdraw.defaultProps = {
 };
 
 Withdraw.propTypes = {
-  withdrawData: PropTypes.object.isRequired,
   handleCentralizedWithdraw: PropTypes.func.isRequired,
   handleDecentralizedWithdraw: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,

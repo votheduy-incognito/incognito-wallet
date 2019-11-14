@@ -139,6 +139,18 @@ class EstimateFee extends Component {
     );
   }
 
+  renderFeeText = () => {
+    const { feeText } = this.props;
+
+    if (typeof feeText === 'string') {
+      return <Text>{feeText}</Text>;
+    } else if (React.isValidElement(feeText)) {
+      return feeText;
+    }
+
+    return null;
+  }
+
   render() {
     const { isRetrying, anotherFee, isShowChangeFeeInput } = this.state;
     const { types, isGettingFee, estimateErrorMsg, style, feeText, estimateFeeData } = this.props;
@@ -205,7 +217,7 @@ class EstimateFee extends Component {
                             : (
                               <View style={styles.feeTextContainer}>
                                 <Text style={styles.feeTextTitle}>{'You\'ll pay'}</Text>
-                                <Text>{feeText}</Text>
+                                {this.renderFeeText()}
                                 <TouchableOpacity style={styles.changeFeeBtn} onPress={this.handleChangeFee}>
                                   <Text style={styles.changeFeeText}>Change the fee</Text>
                                 </TouchableOpacity>
