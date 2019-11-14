@@ -1,5 +1,6 @@
 import { COLORS, DECOR } from '@src/styles';
 import { StyleSheet } from 'react-native';
+import TextStyle from '@src/styles/TextStyle';
 
 export default StyleSheet.create({
   container: {
@@ -22,11 +23,10 @@ export default StyleSheet.create({
     alignItems: 'center'
   },
   title: {
+    ...TextStyle.bigText,
     textAlign: 'center',
     color: COLORS.dark1,
-    fontSize: 18,
     marginVertical: 10,
-    maxWidth: 300,
   },
   icon: {
     marginRight: 13
