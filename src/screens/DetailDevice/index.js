@@ -434,13 +434,6 @@ class DetailDevice extends BaseScreen {
         funderAccountName:device.accountName()
       },
     });
-
-    // this.goToScreen(routeNames.AddStake,{
-    //   accountInfo:{
-    //     minerAccountName:'Pigeon',
-    //     funderAccountName:'Pigeon'
-    //   },
-    // });
   });
 
   renderGroupBalance = ()=>{
@@ -489,6 +482,12 @@ class DetailDevice extends BaseScreen {
           device && device.Type == DEVICES.MINER_TYPE && (DeviceService.pingGetIP(device).then(data=>{
             this.showToastMessage('ping IP ' +JSON.stringify(data));
           }));
+          // this.goToScreen(routeNames.AddStake,{
+          //   accountInfo:{
+          //     minerAccountName:'Llama',
+          //     funderAccountName:'Llama'
+          //   },
+          // });
         }}
       >
         <View style={style.top_container_group}>

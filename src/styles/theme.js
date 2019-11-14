@@ -2,7 +2,6 @@ import COLORS from './colors';
 import DECOR from './decor';
 import FONTS from './font';
 import SPACINGS from './spacing';
-import { scaleInApp } from './TextStyle';
 
 const text = {
   errorText: {
@@ -21,7 +20,7 @@ const text = {
 };
 
 const header = {
-  headerHeight:  scaleInApp(55),
+  headerHeight:  DECOR.scaleInApp(55),
   backgroundColor: COLORS.primary,
   headerTintColor: COLORS.dark1
 };
@@ -85,7 +84,7 @@ const divider = {
 };
 
 const modal = {
-  headerHeight: DECOR.buttonHeight
+  headerHeight: DECOR.scaleInApp(44)
 };
 
 export default {

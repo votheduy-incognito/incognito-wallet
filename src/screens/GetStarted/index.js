@@ -1,5 +1,6 @@
 import { login } from '@src/services/auth';
-import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
+import { CONSTANT_KEYS,CONSTANT_CONFIGS } from '@src/constants';
+
 import { reloadWallet } from '@src/redux/actions/wallet';
 import { followDefaultTokens } from '@src/redux/actions/account';
 import { getPTokenList } from '@src/redux/actions/token';
@@ -13,6 +14,7 @@ import { initWallet } from '@src/services/wallet/WalletService';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import GetStarted from './GetStarted';
 
 class GetStartedContainer extends Component {
@@ -56,8 +58,10 @@ class GetStartedContainer extends Component {
     try {
       
       this.setState({ isInitialing: true });
+      console.log('initApp CONSTANT_CONFIGS = ',CONSTANT_CONFIGS);
       const serverLocalList = await serverService.get()??[];
-      this.isNeedUpgrade = CONSTANT_CONFIGS.DEFAULT_LIST_SERVER.length != serverLocalList.length;
+      // this.isNeedUpgrade = !_.isEmpty(serverLocalList) && CONSTANT_CONFIGS.DEFAULT_LIST_SERVER.length != serverLocalList.length;
+      this.isNeedUpgrade = CONSTANT_CONFIGS.DEFAULT_LIST_SERVER.length != serverLocalList?.length;
       if (this.isNeedUpgrade) {
         await storageService.clear();
         await storageService.setItem(CONSTANT_KEYS.DISPLAYED_WIZARD, String(true));

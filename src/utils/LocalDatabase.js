@@ -1,11 +1,12 @@
 import User from '@models/user';
 import AsyncStorage from '@react-native-community/async-storage';
 import _ from 'lodash';
+import { CONSTANT_KEYS } from '@src/constants';
 
 const TAG = 'LocalDatabase';
 export const KEY_SAVE = {
-  USER: 'USER_OBJECT_KEY',
-  LIST_DEVICE:'PRODUCT_LIST_KEY'
+  USER: CONSTANT_KEYS.USER,
+  LIST_DEVICE:CONSTANT_KEYS.LIST_DEVICE
 };
 export default class LocalDatabase {
   static async getValue(key: String): String {
