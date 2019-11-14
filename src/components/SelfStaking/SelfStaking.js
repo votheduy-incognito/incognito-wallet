@@ -22,9 +22,11 @@ class SelfStaking extends BaseScreen {
     this.state = {
       isStaking: false,
       amount:  null,
+      estimateFeeData:{},
       stakeTypeId: CONSTANT_COMMONS.STAKING_TYPES.SHARD,
       funderAccount: _.isEmpty(funderAccountName)?getAccountByName(funderAccountName):null,
       minerAccount: _.isEmpty(minerAccountName)?getAccountByName(minerAccountName || funderAccountName):null,
+
     };
   }
 
@@ -73,7 +75,7 @@ class SelfStaking extends BaseScreen {
   // }
 
   handleSelectFee = (estimateFeeData) => {
-    this.setState(estimateFeeData);
+    this.setState({estimateFeeData});
   }
 
   handleStakeTypeChange = ({ id, amount }) => {
@@ -116,13 +118,13 @@ class SelfStaking extends BaseScreen {
 
   render() {
     const { amount, stakeTypeId, isStaking, minerAccount, funderAccount, estimateFeeData } = this.state;
-    const { fee, feeUnit } = estimateFeeData??{};
+    const { fee = null, feeUnit } = estimateFeeData??{};
     const { selectedPrivacy,funderAccountName} = this.props;
     
-    const toAddress = minerAccount?.PaymentAddress || selectedPrivacy?.PaymentAddress;
+    const toAddress = minerAccount?.PaymentAddress || selectedPrivacy?.paymentAddress;
     const isCantLoadAccount =  _.isEmpty(funderAccount) || _.isEmpty(funderAccount?.PaymentAddress);
-    const isNotEnoughBalance = isCantLoadAccount || amount > funderAccount?.value;
-    // console.log(TAG,'render funderAccount = ',funderAccount,'-amount = ',amount);
+    const isNotEnoughBalance = isCantLoadAccount || (amount + fee - funderAccount?.value > 0);
+    // console.log(TAG,'render fee = ',selectedPrivacy,'-amount = ',amount,'-- value =',funderAccount?.value,'--estimateFeeData = ',estimateFeeData);
     
     const isCanSubmit = !isNotEnoughBalance;
     
@@ -152,7 +154,7 @@ class SelfStaking extends BaseScreen {
           />
         )}
         {
-          !isCantLoadAccount && !isNotEnoughBalance && !_.isEmpty(amount) && (
+          !isCantLoadAccount && !isNotEnoughBalance && !_.isNil(amount) && (
             <>
               <EstimateFee
                 selectedPrivacy={selectedPrivacy}
