@@ -6,7 +6,7 @@ import axios from 'axios';
 import { KeyWallet, Wallet,AccountWallet } from 'incognito-chain-web-js/build/wallet';
 import _ from 'lodash';
 import { getUserUnfollowTokenIDs, setUserUnfollowTokenIDs } from './tokenService';
-import { getActiveShard, getListPrivacyCustomTokenBalance } from './RpcClientService';
+import { getActiveShard } from './RpcClientService';
 import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
 import { CustomError, ErrorCode } from '../exception';
 
@@ -407,22 +407,29 @@ export default class Account {
     }
     return null;
   }
-
-  // get all of tokens that have balance in the account, even it hasnt been added to following list 
-  static async getListTokenHasBalance(account) {
+  /**
+   * get all of tokens that have balance in the account, even it hasnt been added to following list 
+   * return array of { id: TokenID, amount }
+   * 
+   * @param {object} account 
+   * @param {object} wallet 
+   */
+  static async getListTokenHasBalance(account, wallet) {
     try {
       if (!account) throw new Error('Account is required');
-      const privateKey = account?.PrivateKey;
-  
-      const list = await getListPrivacyCustomTokenBalance(privateKey);
-      return list?.map(tokenData => ({
-        name: tokenData?.Name,
-        symbol: tokenData?.Symbol,
-        amount: tokenData?.Amount,
-        id: tokenData?.TokenID,
-        image: tokenData?.TokenImage,
-        isPrivacy: tokenData?.IsPrivacy,
-      })) || [];
+
+      const accountWallet = wallet.getAccountByName(account.name);
+
+      if (accountWallet) {
+        const list = await accountWallet.getAllPrivacyTokenBalance();
+
+        return list?.map(tokenData => ({
+          amount: tokenData?.Balance,
+          id: tokenData?.TokenID,
+        })) || [];
+      } else {
+        throw new Error('Can not get list token has balance of non-existed account');
+      }
     } catch (e) {
       throw e;
     }

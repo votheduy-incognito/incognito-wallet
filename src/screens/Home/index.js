@@ -1,5 +1,5 @@
 import LoadingContainer from '@src/components/LoadingContainer';
-import { getBalance as getAccountBalance, reloadAccountFollowingToken, loadAllPTokenHasBalance } from '@src/redux/actions/account';
+import { getBalance as getAccountBalance, reloadAccountFollowingToken, /** loadAllPTokenHasBalance */ } from '@src/redux/actions/account';
 import { clearSelectedPrivacy, setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import { getBalance, getInternalTokenList, getPTokenList, setListToken } from '@src/redux/actions/token';
 import accountService from '@src/services/wallet/accountService';
@@ -12,7 +12,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import APIService from '@src/services/api/miner/APIService';
 import _ from 'lodash';
-import { Toast } from '@src/components/core';
 import Home from './Home';
 import { DialogUpgradeToMainnet } from './ChildViews';
 
@@ -79,7 +78,7 @@ class HomeContainer extends Component {
   reload = async () => {
     try {
       this.setState({ isReloading: true });
-      const { account, loadAllPTokenHasBalance } = this.props;
+      const { account, /* loadAllPTokenHasBalance */ } = this.props;
       const tasks = [
         this.getTokens(),
         this.getAccountBalance(account),
@@ -87,7 +86,7 @@ class HomeContainer extends Component {
       ];
 
       await Promise.all(tasks);
-      await loadAllPTokenHasBalance(account);
+      // await loadAllPTokenHasBalance(account);
     } catch (e) {
       new ExHandler(e).showErrorToast();
     } finally {
@@ -210,7 +209,7 @@ const mapDispatch = {
   reloadAccountFollowingToken,
   getPTokenList,
   getInternalTokenList,
-  loadAllPTokenHasBalance
+  // loadAllPTokenHasBalance
 };
 
 HomeContainer.propTypes = {
@@ -228,7 +227,7 @@ HomeContainer.propTypes = {
   getPTokenList: PropTypes.func.isRequired,
   getInternalTokenList: PropTypes.func.isRequired,
   setWallet: PropTypes.func.isRequired,
-  loadAllPTokenHasBalance: PropTypes.func.isRequired,
+  // loadAllPTokenHasBalance: PropTypes.func.isRequired,
 };
 
 

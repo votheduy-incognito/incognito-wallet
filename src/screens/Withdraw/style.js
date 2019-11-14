@@ -10,7 +10,7 @@ export default StyleSheet.create({
   },
   feeText: {
     textAlign: 'center',
-    marginVertical: 10,
+    marginVertical: 3,
     fontSize: 14
   },
   form: {
