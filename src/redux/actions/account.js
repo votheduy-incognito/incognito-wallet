@@ -125,15 +125,19 @@ export const loadAllPTokenHasBalance = account => async (dispatch, getState) => 
     throw new Error('Wallet is not existed');
   }
 
+  const allTokenData = await accountService.getListTokenHasBalance(account, wallet);
   const followedToken = tokenSeleclor.followed(state);
-  const allTokens = await accountService.getListTokenHasBalance(account);
+  const allIncognitoTokens = tokenSeleclor.internalTokens(state);
+
+  // get data of tokens that have balance
+  const allTokens = allTokenData?.map(tokenData => allIncognitoTokens?.find(t => t?.id === tokenData?.id));
+
   const newTokens = differenceBy(allTokens, followedToken, 'id');
 
   // if token id has been existed in USER UNFOLLOWING LIST, ignore it!
   const userUnfollowedList = await getUserUnfollowTokenIDs();
   const shouldAddTokens = newTokens?.filter(token => !userUnfollowedList?.includes(token.id));
 
-  
   if (shouldAddTokens?.length > 0) {
     await accountService.addFollowingTokens(shouldAddTokens.map(TokenModel.toJson), account, wallet);
 
