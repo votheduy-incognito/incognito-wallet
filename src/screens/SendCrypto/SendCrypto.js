@@ -76,7 +76,7 @@ class SendCrypto extends React.Component {
       maxAmountValidator: validator.maxValue(maxAmount, {
         message: maxAmount > 0
           ? `Max amount you can send is ${maxAmount} ${selectedPrivacy?.symbol}`
-          : 'Your balance is zero'
+          : 'Your balance is not enough to send'
       }),
     });
   }

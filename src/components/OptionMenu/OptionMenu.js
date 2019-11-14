@@ -1,7 +1,6 @@
-import { Text, TouchableOpacity, View, Divider } from '@src/components/core';
+import { Text, TouchableOpacity, View, Modal } from '@src/components/core';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Modal } from 'react-native';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import styleSheet from './style';
 

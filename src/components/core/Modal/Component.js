@@ -1,4 +1,3 @@
-import AppScreen from '@src/components/AppScreen';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Modal as RNComponent,SafeAreaView } from 'react-native';
@@ -9,13 +8,14 @@ import styleSheet from './style';
 const Modal = ({
   children,
   close,
+  transparent,
   containerStyle,
   closeBtnColor,
   isShowHeader,
   ...otherProps
 }) => (
-  <RNComponent animationType="fade" {...otherProps}>
-    <SafeAreaView style={styleSheet.containerSafeView}>
+  <RNComponent transparent={transparent} animationType="fade" {...otherProps}>
+    <SafeAreaView style={[styleSheet.containerSafeView, transparent && { backgroundColor: 'transparent' }]}>
       <View style={[styleSheet.container, containerStyle]}>
         {isShowHeader && close && (
           <View style={styleSheet.header}>
@@ -36,7 +36,8 @@ Modal.defaultProps = {
   close: null,
   containerStyle: null,
   closeBtnColor: 'white',
-  isShowHeader: true
+  isShowHeader: true,
+  transparent: false,
 };
 
 Modal.propTypes = {
@@ -44,7 +45,8 @@ Modal.propTypes = {
   close: PropTypes.func,
   containerStyle: PropTypes.object,
   closeBtnColor: PropTypes.string,
-  isShowHeader: PropTypes.bool
+  isShowHeader: PropTypes.bool,
+  transparent: PropTypes.bool
 };
 
 export default Modal;

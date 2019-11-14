@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'redux-form';
 import { createForm, InputField, validator } from '@src/components/core/reduxForm';
-import { View, TouchableOpacity, Text, ActivityIndicator, Button } from '@src/components/core';
+import { View, TouchableOpacity, Text, ActivityIndicator, Button, Modal } from '@src/components/core';
 import convert from '@src/utils/convert';
 import styles from './styles';
 
@@ -101,9 +101,9 @@ class EstimateFee extends Component {
     if (typeof onNewFeeData === 'function' && typeof minFee === 'number') {
       onNewFeeData({ fee: minFee });
       setUserFee(minFee);
-
-      this.setState({ isShowChangeFeeInput: false });
     }
+
+    this.setState({ isShowChangeFeeInput: false });
   }
   
   handleSelectFeeType = (type) => {
@@ -131,37 +131,39 @@ class EstimateFee extends Component {
   }
 
   renderChangeFee = () => {
-    const { minFeeValidator } = this.state;
-    const { estimateFeeData: { feeUnit } } = this.props;
+    const { minFeeValidator, isShowChangeFeeInput } = this.state;
+    const { estimateFeeData: { feeUnit }, minFee } = this.props;
 
     return (
-      <Form style={styles.changeFeeForm}>
-        {({ handleSubmit }) => (
-          <>
-            <Text style={styles.feeTextTitle}>The more you pay, the faster you get</Text>
-            <Field
-              component={InputField}
-              componentProps={{
-                keyboardType: 'decimal-pad'
-              }}
-              prependView={
-                <Text>{feeUnit}</Text>
-              }
-              name='fee'
-              placeholder='Enter new fee'
-              style={styles.changeFeeInput}
-              validate={[
-                ...feeValidator,
-                ...minFeeValidator ? [minFeeValidator] : []
-              ]}
-            />
-            <View style={styles.changeFeeBtnGroup}>
-              <Button titleStyle={styles.changeFeeSubmitText} style={styles.changeFeeSubmitBtn} title='Use this fee' onPress={handleSubmit(this.onChangeNewFee)} />
-              <Button titleStyle={styles.changeFeeResetText} style={styles.changeFeeSubmitBtn} title='Reset' onPress={handleSubmit(this.onResetFee)} />
-            </View>
-          </>
-        )}
-      </Form>
+      <Modal animationType="fade" transparent visible={isShowChangeFeeInput} containerStyle={styles.changeFeeModal}>
+        <Form style={styles.changeFeeForm}>
+          {({ handleSubmit }) => (
+            <>
+              <Text style={styles.feeTextTitle}>The more you pay, the faster you get</Text>
+              <Field
+                component={InputField}
+                componentProps={{
+                  keyboardType: 'decimal-pad'
+                }}
+                prependView={
+                  <Text>{feeUnit}</Text>
+                }
+                name='fee'
+                placeholder='Enter new fee'
+                style={styles.changeFeeInput}
+                validate={[
+                  ...feeValidator,
+                  ...minFeeValidator ? [minFeeValidator] : []
+                ]}
+              />
+              <View style={styles.changeFeeBtnGroup}>
+                <Button titleStyle={styles.changeFeeSubmitText} style={[styles.changeFeeBtn, styles.changeFeeSubmitBtn]} title='Use this fee' onPress={handleSubmit(this.onChangeNewFee)} />
+                <Button titleStyle={styles.changeFeeResetText} style={styles.changeFeeBtn} title={minFee > 0 ? 'Reset' : 'Close'} onPress={this.onResetFee} />
+              </View>
+            </>
+          )}
+        </Form>
+      </Modal>
     );
   }
 
@@ -178,7 +180,7 @@ class EstimateFee extends Component {
   }
 
   render() {
-    const { isRetrying, anotherFee, isShowChangeFeeInput } = this.state;
+    const { isRetrying, anotherFee } = this.state;
     const { types, isGettingFee, estimateErrorMsg, style, estimateFeeData } = this.props;
     const { feeUnitByTokenId, fee } = estimateFeeData || {};
 
@@ -232,29 +234,28 @@ class EstimateFee extends Component {
             : (
               <View style={styles.rateContainer}>
                 {
-                  fee === undefined || fee === undefined && !isGettingFee
+                  !Number.isFinite(fee) && !isGettingFee
                     ? <Text style={styles.rateText}>Transaction fee will be calculated here</Text>
                     : (
                       isGettingFee ?
                         <ActivityIndicator /> : 
                         (
-                          isShowChangeFeeInput
-                            ? this.renderChangeFee()
-                            : (
-                              <View style={styles.feeTextContainer}>
-                                <Text style={styles.feeTextTitle}>{'You\'ll pay'}</Text>
-                                {this.renderFeeText()}
-                                <TouchableOpacity style={styles.changeFeeBtn} onPress={this.handleChangeFee}>
-                                  <Text style={styles.changeFeeText}>Change the fee</Text>
-                                </TouchableOpacity>
-                              </View>
-                            )
+                          <>
+                            <View style={styles.feeTextContainer}>
+                              <Text style={styles.feeTextTitle}>{'You\'ll pay'}</Text>
+                              {this.renderFeeText()}
+                              <TouchableOpacity style={styles.changeFeeLightBtn} onPress={this.handleChangeFee}>
+                                <Text style={styles.changeFeeText}>Change the fee</Text>
+                              </TouchableOpacity>
+                            </View>
+                          </>
                         )
                     )
                 }
               </View>
             ) 
           }
+          {this.renderChangeFee()}
         </View>
       </View>
     );
