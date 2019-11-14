@@ -65,10 +65,14 @@ class EstimateFee extends Component {
 
   handleChangeFee = () => {
     this.setState({ isShowChangeFeeInput: true }, () => {
-      const { rfChange, estimateFeeData, feePDecimals } = this.props;
+      const { rfChange, estimateFeeData, feePDecimals, onNewFeeData } = this.props;
       const convertedFee = convert.toHumanAmount(estimateFeeData?.fee, feePDecimals);
 
+      // clear previous fee
+      onNewFeeData({ fee: null });
+
       if (typeof convertedFee === 'number') {
+        // set current fee to the change fee input
         rfChange(formName, 'fee', convertedFee.toFixed(feePDecimals));
       }
     });
@@ -83,15 +87,29 @@ class EstimateFee extends Component {
 
     if (typeof onNewFeeData === 'function' && typeof originalFee === 'number') {
       this.setState({ isShowChangeFeeInput: false });
+
+      // update new custom fee
       onNewFeeData({ fee: originalFee });
+
+      // save custom fee, use later
       setUserFee(originalFee);
+    }
+  }
+
+  onResetFee = () => {
+    const { onNewFeeData, setUserFee, minFee } = this.props;
+    if (typeof onNewFeeData === 'function' && typeof minFee === 'number') {
+      onNewFeeData({ fee: minFee });
+      setUserFee(minFee);
+
+      this.setState({ isShowChangeFeeInput: false });
     }
   }
   
   handleSelectFeeType = (type) => {
     const { onNewFeeData } = this.props;
     if (typeof onNewFeeData === 'function') {
-      onNewFeeData({ feeUnitByTokenId: type?.tokenId, feeUnit: type?.symbol });
+      onNewFeeData({ feeUnitByTokenId: type?.tokenId, feeUnit: type?.symbol, fee: null });
     }
   }
   
@@ -114,6 +132,8 @@ class EstimateFee extends Component {
 
   renderChangeFee = () => {
     const { minFeeValidator } = this.state;
+    const { estimateFeeData: { feeUnit } } = this.props;
+
     return (
       <Form style={styles.changeFeeForm}>
         {({ handleSubmit }) => (
@@ -124,6 +144,9 @@ class EstimateFee extends Component {
               componentProps={{
                 keyboardType: 'decimal-pad'
               }}
+              prependView={
+                <Text>{feeUnit}</Text>
+              }
               name='fee'
               placeholder='Enter new fee'
               style={styles.changeFeeInput}
@@ -132,7 +155,10 @@ class EstimateFee extends Component {
                 ...minFeeValidator ? [minFeeValidator] : []
               ]}
             />
-            <Button titleStyle={styles.changeFeeSubmitText} style={styles.changeFeeSubmitBtn} title='Use this fee' onPress={handleSubmit(this.onChangeNewFee)} />
+            <View style={styles.changeFeeBtnGroup}>
+              <Button titleStyle={styles.changeFeeSubmitText} style={styles.changeFeeSubmitBtn} title='Use this fee' onPress={handleSubmit(this.onChangeNewFee)} />
+              <Button titleStyle={styles.changeFeeResetText} style={styles.changeFeeSubmitBtn} title='Reset' onPress={handleSubmit(this.onResetFee)} />
+            </View>
           </>
         )}
       </Form>
@@ -153,7 +179,7 @@ class EstimateFee extends Component {
 
   render() {
     const { isRetrying, anotherFee, isShowChangeFeeInput } = this.state;
-    const { types, isGettingFee, estimateErrorMsg, style, feeText, estimateFeeData } = this.props;
+    const { types, isGettingFee, estimateErrorMsg, style, estimateFeeData } = this.props;
     const { feeUnitByTokenId, fee } = estimateFeeData || {};
 
     return (
@@ -206,7 +232,7 @@ class EstimateFee extends Component {
             : (
               <View style={styles.rateContainer}>
                 {
-                  fee === null || fee === undefined && !isGettingFee
+                  fee === undefined || fee === undefined && !isGettingFee
                     ? <Text style={styles.rateText}>Transaction fee will be calculated here</Text>
                     : (
                       isGettingFee ?
@@ -242,10 +268,12 @@ EstimateFee.defaultProps = {
   onRetry: null,
   style: null,
   feeText: null,
-  feePDecimals: null
+  feePDecimals: null,
+  minFee: undefined
 };
 
 EstimateFee.propTypes = {
+  minFee: PropTypes.number,
   isGettingFee: PropTypes.bool,
   onRetry: PropTypes.func,
   onNewFeeData: PropTypes.func.isRequired,

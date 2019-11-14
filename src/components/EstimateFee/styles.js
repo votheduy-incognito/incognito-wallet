@@ -83,15 +83,28 @@ const style = StyleSheet.create({
     minWidth: 200,
     marginBottom: 20
   },
+  changeFeeBtnGroup: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   changeFeeSubmitBtn: {
     width: 150,
+    height: 30,
+    paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: '#0DB8D8',
-    borderRadius: 18,
+    borderRadius: 15,
     backgroundColor: COLORS.transparent,
+    marginHorizontal: 2,
+    marginVertical: 2,
   },
   changeFeeSubmitText: {
     color: COLORS.blue
+  },
+  changeFeeResetText: {
+    color: COLORS.black
   },
   feeTextContainer: {
     flexDirection: 'column',

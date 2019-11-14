@@ -19,8 +19,8 @@ class EstimateFeeContainer extends Component {
     this.state = {
       isGettingFee: false,
       estimateErrorMsg: null,
-      userFee: null,  // high priority
-      minFee: null,
+      userFee: undefined,  // high priority
+      minFee: undefined,
     };
 
     this.handleEstimateFee = debounce(this.handleEstimateFee.bind(this), 1000);
@@ -77,9 +77,9 @@ class EstimateFeeContainer extends Component {
     if (typeof onNewFeeData === 'function') {
       onNewFeeData({
         ...estimateFeeData || {},
-        ...fee ? { fee } : {},
-        ...feeUnitByTokenId ? { feeUnitByTokenId } : {},
-        ...feeUnit ? { feeUnit } : {}
+        ...fee !== undefined ? { fee } : {},
+        ...feeUnitByTokenId !== undefined ? { feeUnitByTokenId } : {},
+        ...feeUnit !== undefined ? { feeUnit } : {}
       });
     }
   }
@@ -95,7 +95,9 @@ class EstimateFeeContainer extends Component {
         return;
       }
 
-      this.setState({ isGettingFee: true, estimateErrorMsg: null });
+      this.setState({ isGettingFee: true, estimateErrorMsg: null }, () => {
+        this.handleNewFeeData({ fee: null });
+      });
 
       if (feeUnitByTokenId === selectedPrivacy?.tokenId && selectedPrivacy.isToken) { // estimate fee in pToken [pETH, pBTC, ...]
         fee = await this._handleEstimateTokenFee();
