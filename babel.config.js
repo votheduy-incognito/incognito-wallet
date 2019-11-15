@@ -41,7 +41,7 @@ module.exports = function(api) {
     config.plugins = [
       ...config.plugins,
       // minify
-      'babel-plugin-transform-remove-console',
+      ['babel-plugin-transform-remove-console', { 'exclude': [ 'debug' ] }],
       'babel-plugin-transform-remove-debugger',
       'babel-plugin-transform-remove-undefined'
     ];
