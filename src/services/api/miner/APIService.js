@@ -146,10 +146,10 @@ export default class APIService {
         }
 
         if (res.status == 200){
-          const resJson = await res.json().catch(e=>console.warn(TAG,'getUR fail template json = ',e))||{status:1};
-          if(__DEV__ && _.includes(JSON.stringify(res),'https://hooks.slack.com/services/T06HPU570/BNVDZPZV4')){
-            console.log(TAG,'getURL Response full',JSON.stringify(res));
-          }
+          const resJson = await res.json().catch(e=>console.warn(TAG,'getURL fail template json = ',e))||{status:1};
+          // if(__DEV__ && _.includes(JSON.stringify(res),'https://hooks.slack.com/services/T06HPU570/BNVDZPZV4')){
+          //   console.log(TAG,'getURL Response full',JSON.stringify(res));
+          // }
           return resJson;
         }else if (res.status == 401){
 

@@ -12,6 +12,7 @@ export const DEVICE_STATUS = {
   CODE_UNKNOWN : -1,
   CODE_STOP : 4,
   CODE_PENDING : 5,
+  // CODE_OUT_OF_STATUS : -3,
   CODE_START : 2,
   CODE_MINING : 3,
   CODE_SYNCING : 1,
@@ -21,8 +22,9 @@ export const DATA_INFO = [{'status':'ready', 'message':'online','code':DEVICE_ST
   {'status':'syncing', 'message':'syncing','code':DEVICE_STATUS.CODE_SYNCING},
   {'status':'mining', 'message':'earning','code':DEVICE_STATUS.CODE_MINING},
   {'status':'offline', 'message':__DEV__?'offline_online':'online','code':DEVICE_STATUS.CODE_START},
-  {'status':'pending', 'message':'queueing','code':DEVICE_STATUS.CODE_PENDING},
-  {'status':'notmining', 'message':__DEV__?'notmining_online':'online','code':DEVICE_STATUS.CODE_START}];
+  {'status':'pending', 'message':'processing','code':DEVICE_STATUS.CODE_PENDING},
+  {'status':'notmining', 'message':__DEV__?'notmining_online':'online','code':DEVICE_STATUS.CODE_START},
+  {'status':'waiting', 'message':__DEV__?'waiting_earning':'earning','code':DEVICE_STATUS.CODE_MINING}];
 export const template = {
   minerInfo:{
     account:{},
@@ -90,6 +92,13 @@ export default class Device {
     return {
       code:Device.CODE_OFFLINE,
       message:'offline'
+    };
+  }
+  static outOfStatus =(statusMessage?)=>{
+    const status = DATA_INFO[0];
+    return {
+      ...status,
+      'message':__DEV__?`${statusMessage}_online`:'online'
     };
   }
   get Host(){
