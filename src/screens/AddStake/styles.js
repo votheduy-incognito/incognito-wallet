@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import TextStyle, { scaleInApp, FontStyle } from '@src/styles/TextStyle';
+import { COLORS } from '@src/styles';
 
 export const tab_border_radius = scaleInApp(4);
   
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
     fontSize:scaleInApp(20),
     color: '#000000',
     width: '100%',
-    borderColor:'#0DB8D8',
+    borderColor: COLORS.primary,
     borderBottomWidth:0
   }
 });

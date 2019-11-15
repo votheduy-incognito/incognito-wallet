@@ -72,3 +72,19 @@ export const addERC20TxWithdraw = ({ amount, originalAmount, paymentAddress, wal
     WalletAddress: walletAddress ?? paymentAddress,
   });
 };
+
+export const updatePTokenFee = ({ fee, paymentAddress  }) => {
+  if (!fee) return throw new Error('Missing fee');
+  if (!paymentAddress) return throw new Error('Missing paymentAddress');
+
+  const parseFee = Number(fee);
+
+  if (!Number.isFinite(parseFee) || parseFee === 0) {
+    return throw new Error('Invalid fee');
+  }
+
+  return http.post('ota/update-fee', {
+    Address: paymentAddress,
+    TokenFee: String(fee),
+  });
+};

@@ -73,9 +73,9 @@ const regexp = (pattern, { message } = {}) => value =>
 
 const incognitoAddress = (value, { message } = {}) => value => value && !accountService.checkPaymentAddress(value) ? messageHanlder(message, value) ?? 'Invalid address'  :undefined;
 
-const ethAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'ETH') ? messageHanlder(message, value) ?? 'Invalid ETH address' : undefined;
+const ethAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'ETH', 'both') ? messageHanlder(message, value) ?? 'Invalid ETH address' : undefined;
 
-const btcAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'BTC') ? messageHanlder(message, value) ?? 'Invalid BTC address' : undefined;
+const btcAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'BTC', 'both') ? messageHanlder(message, value) ?? 'Invalid BTC address' : undefined;
 
 const bnbAddress = (value, { message } = {}) => value => {
   const regexp = new RegExp('^(t)?(bnb)([a-z0-9]{39})$'); // t(for testnet) bnb + 39 a-z0-9
@@ -86,7 +86,7 @@ const bnbAddress = (value, { message } = {}) => value => {
 };
 
 // the same as ETH
-const tomoAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'ETH') ? messageHanlder(message, value) ?? 'Invalid TOMO address' : undefined;
+const tomoAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'ETH', 'both') ? messageHanlder(message, value) ?? 'Invalid TOMO address' : undefined;
 
 const combinedAmount = [
   required(),
