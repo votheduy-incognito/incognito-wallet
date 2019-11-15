@@ -33,15 +33,15 @@ class HomeContainer extends Component {
     const { account, navigation, clearSelectedPrivacy } = this.props;
     // console.log('HIENTON account = ',account);
     try {
-      if(!_.isEmpty(account)){
+      // if(!_.isEmpty(account)){
 
-        APIService.airdrop1({WalletAddress:account.PaymentAddress}).then(result=>{
-          this.setState({
-            isReceivedPRV:result?.status == 1
-          });
-          // result?.status == 1 && Toast.showSuccess('1 PRV has been added to your wallet.');
-        });
-      }
+      //   APIService.airdrop1({WalletAddress:account.PaymentAddress}).then(result=>{
+      //     this.setState({
+      //       isReceivedPRV:result?.status == 1
+      //     });
+      //     // result?.status == 1 && Toast.showSuccess('1 PRV has been added to your wallet.');
+      //   });
+      // }
 
       await this.reload();
     } catch (e) {

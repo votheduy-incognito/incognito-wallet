@@ -427,11 +427,12 @@ class DetailDevice extends BaseScreen {
     // listDeviceTest.push(deviceToClone);
     // await LocalDatabase.saveListDevices(listDeviceTest);
     // this.goToScreen(routeNames.HomeMine);
-
+    const accountName = device.accountName();
+    console.log(TAG,'handlePressStake accountname = ',accountName);
     this.goToScreen(routeNames.AddStake,{
       accountInfo:{
-        minerAccountName:device.accountName(),
-        funderAccountName:device.accountName()
+        minerAccountName:accountName,
+        funderAccountName:accountName
       },
     });
   });
@@ -484,8 +485,10 @@ class DetailDevice extends BaseScreen {
           }));
           // this.goToScreen(routeNames.AddStake,{
           //   accountInfo:{
-          //     minerAccountName:'Llama',
-          //     funderAccountName:'Llama'
+          //     minerAccountName:'Sardine',
+          //     funderAccountName:'Sardine'
+          //     // minerAccountName:'Llama',
+          //     // funderAccountName:'Llama'
           //   },
           // });
         }}

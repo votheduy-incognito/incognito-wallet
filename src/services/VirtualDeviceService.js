@@ -104,6 +104,7 @@ export default class VirtualDeviceService {
     } catch (error) {
       console.log(TAG,'getMiningInfo error',error);
     }
+    return null;
   }
 
   /**
@@ -197,6 +198,7 @@ export default class VirtualDeviceService {
     } catch (error) {
       console.log(TAG,'getRewardAmount error',error);
     }
+    return null;
   }
 
   static getRewardFromMiningkey = async(device:Device)=>{
@@ -247,7 +249,7 @@ export default class VirtualDeviceService {
         const {Result ,Method} = response ?? {};
         const item = DATA_INFO.find((item)=>{
           return _.isEqual(Result,item.status);
-        })|| Device.offlineStatus();
+        })|| Device.outOfStatus(Result);
         dataResponseCombinded = {'status': {'code': item.code ,'message':item.message }};
         console.log(TAG,'getChainMiningStatus begin apiURL = ',apiURL);
         console.log(TAG,'getChainMiningStatus result',response);
