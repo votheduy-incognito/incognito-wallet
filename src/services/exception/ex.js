@@ -55,9 +55,7 @@ class Exception {
      */
     this.message = this.message ?? this._getUnexpectedMessageError(exception);
 
-    if (__DEV__) {
-      this._log2Console();
-    }
+    this._log2Console();
   }
 
   _getUnexpectedMessageError(exception) {
@@ -110,7 +108,7 @@ class Exception {
   // private method
   _log2Console() {
     const log = this._getLog();
-    log && console.log(log);
+    log && console.debug(log);
   }
 
   /**
