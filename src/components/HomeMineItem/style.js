@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import TextStyle, { scaleInApp,FontStyle } from '@src/styles/TextStyle';
-import {DECOR} from "@src/styles";
+import {DECOR, COLORS} from '@src/styles';
 
 const style = StyleSheet.create({
   container: {
@@ -25,7 +25,7 @@ const style = StyleSheet.create({
     ...TextStyle.normalText,
     backgroundColor: 'transparent',
     'letterSpacing':0,
-    color: '#0DB8D8',
+    color: COLORS.primary,
   },
   groupLeft:{
     flexDirection:'column',
