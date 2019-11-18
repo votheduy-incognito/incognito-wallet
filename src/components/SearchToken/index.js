@@ -162,6 +162,7 @@ export class SearchTokenContainer extends PureComponent {
 
     return (
       <SearchToken
+        {...this.props}
         tokens={tokens}
         handleAddFollowToken={this.handleAddFollowToken}
         onCancel={this.goBack}

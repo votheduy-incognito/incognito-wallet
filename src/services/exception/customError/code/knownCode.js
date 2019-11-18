@@ -66,6 +66,14 @@ const dapps = {
   daaps_invalid_daap_url: knownError(-28)
 };
 
+const addBep2Token = {
+  addBep2Token_not_found: knownError(-30)
+};
+
+const addErc20Token = {
+  addErc20Token_not_found: knownError(-31)
+};
+
 
 export default {
   ...app,
@@ -78,5 +86,7 @@ export default {
   ...node,
   ...validator,
   ...staking,
-  ...dapps
+  ...dapps,
+  ...addBep2Token,
+  ...addErc20Token,
 };

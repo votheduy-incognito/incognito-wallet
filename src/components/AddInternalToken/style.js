@@ -4,8 +4,7 @@ import { StyleSheet } from 'react-native';
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 30,
-    paddingVertical: 40,
+    height: 1000
   },
   form: {
     flex: 1,

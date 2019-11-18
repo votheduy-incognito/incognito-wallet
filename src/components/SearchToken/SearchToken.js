@@ -8,9 +8,9 @@ import sadFace from '@src/assets/images/sad_face.png';
 import addIcon from '@src/assets/images/icons/add_outline.png';
 import { ExHandler } from '@src/services/exception';
 import { debounce, remove } from 'lodash';
+import routeNames from '@src/router/routeNames';
 import { searchPTokenStyle, emptyStyle } from './styles';
 import TokenItem from './TokenItem';
-
 
 class SearchToken extends PureComponent {
   constructor(props) {
@@ -96,6 +96,11 @@ class SearchToken extends PureComponent {
     this.setState({ query }, this.filter);
   };
 
+  hanldeAddTokenManually = () => {
+    const { navigation } = this.props;
+    navigation?.navigate(routeNames.AddToken);
+  };
+
   renderHeader() {
     const { selected } = this.state;
     const { onCancel } = this.props;
@@ -120,10 +125,6 @@ class SearchToken extends PureComponent {
     );
   }
 
-  renderAddTokenText() {
-    return 'AAADDDDD';
-  }
-
   renderEmpty() {
     return (
       <View style={emptyStyle.container}>
@@ -131,7 +132,7 @@ class SearchToken extends PureComponent {
         <Text style={emptyStyle.title}>Oh no!</Text>
         <Text style={emptyStyle.desc}>Tokens you are looking for is</Text>
         <Text style={emptyStyle.desc}>not available.</Text>
-        <Button style={emptyStyle.button} title={this.renderAddTokenText()} onPress={() => alert(1)} />
+        <Button style={emptyStyle.button} title='Add a token manually' onPress={this.hanldeAddTokenManually} />
       </View>
     );
   }
@@ -154,10 +155,10 @@ class SearchToken extends PureComponent {
           />
         ) : this.renderEmpty()}
         {!isEmpty ? (
-          <TouchableOpacity onPress={() => alert(2)}>
+          <TouchableOpacity onPress={this.hanldeAddTokenManually}>
             <View style={searchPTokenStyle.followBtn}>
               <Image source={addIcon} style={searchPTokenStyle.followBtnIcon} />
-              <Text style={searchPTokenStyle.followBtnText}>{this.renderAddTokenText()}</Text>
+              <Text style={searchPTokenStyle.followBtnText}>Add a token manually</Text>
             </View>
           </TouchableOpacity>
         ) : null}
@@ -184,6 +185,7 @@ SearchToken.propTypes = {
   })).isRequired,
   handleAddFollowToken: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
 };
 
 export default SearchToken;

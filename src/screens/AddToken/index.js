@@ -1,15 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import AddERC20Token from '@src/components/AddERC20Token';
+import AddToken from './AddToken';
 
-class AddToken extends Component {
+class AddTokenContainer extends Component {
   render() {
-    const { navigation } = this.props;
-    const type = navigation.getParam('type');
-    console.log('TYPE', type);
-    return (
-      <AddERC20Token type={type} />
-    );
+    return <AddToken />;
   }
 }
 
@@ -17,4 +12,4 @@ AddToken.propTypes = {
   navigation: PropTypes.object.isRequired,
 };
 
-export default AddToken;
+export default AddTokenContainer;
