@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withNavigation } from 'react-navigation';
 import { differenceBy } from 'lodash';
-import { TOKEN_TYPES } from '@src/constants/tokenData';
 import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
 import accountService from '@src/services/wallet/accountService';
 import tokenService from '@src/services/wallet/tokenService';
@@ -14,7 +13,6 @@ import { pTokens } from '@src/redux/selectors/token';
 import PToken from '@src/models/pToken';
 import internalTokenModel from '@src/models/token';
 import { ExHandler } from '@src/services/exception';
-import ROUTE_NAMES from '@routers/routeNames';
 import { View } from 'react-native';
 import { CONSTANT_COMMONS } from '@src/constants';
 import SearchToken from './SearchToken';
@@ -22,11 +20,19 @@ import { Toast, ActivityIndicator, } from '../core';
 
 const normalizeToken = ({ data, isPToken, isInternalToken }) => {
   if (isPToken) {
+    const isPrivateToken = data?.type === CONSTANT_COMMONS.PRIVATE_TOKEN_TYPE.TOKEN;
+    const isERC20 = isPrivateToken && data?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20;
+    const isBep2 = isPrivateToken && data?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB_BEP2;
+    const isPrivateCoin = data?.type === CONSTANT_COMMONS.PRIVATE_TOKEN_TYPE.COIN;
+
     return ({
       tokenId: data?.tokenId,
       name: data?.name,
       symbol: data?.symbol,
-      type: data?.type === CONSTANT_COMMONS.PTOKEN_TYPE.COIN ? TOKEN_TYPES.COIN : data?.currencyType, // cheat! refactor later
+      isPrivateToken,
+      isPrivateCoin,
+      isBep2,
+      isERC20,
     });
   }
 
@@ -35,7 +41,7 @@ const normalizeToken = ({ data, isPToken, isInternalToken }) => {
       tokenId: data?.id,
       name: data?.name,
       symbol: data?.symbol,
-      type: TOKEN_TYPES.INCOGNITO,
+      isIncognitoToken: true
     });
   }
 };
@@ -100,45 +106,22 @@ export class SearchTokenContainer extends PureComponent {
     navigation?.pop();
   }
 
-  handleAddFollowToken = async (tokenIds: Array) => {
-    try {
-      const { pTokens, account, wallet, setWallet } = this.props;
-      const { internalTokens } = this.state;
-      const pTokenSelected = tokenIds.map(id => {
-        const foundPToken : PToken = pTokens?.find((pToken: PToken) => pToken.tokenId === id);
-        const foundInternalToken = internalTokens?.find(token => token.id === id);
-        if (foundPToken) {
-          return foundPToken.convertToToken();
-        }
+  handleAddFollowToken = async (tokenId: Array) => {
+    const { pTokens, account, wallet, setWallet } = this.props;
+    const { internalTokens } = this.state;
+    const foundPToken : PToken = pTokens?.find((pToken: PToken) => pToken.tokenId === tokenId);
+    const foundInternalToken = !foundPToken && internalTokens?.find(token => token.id === tokenId);
+    
+    const token = (foundInternalToken && internalTokenModel.toJson(foundInternalToken)) || foundPToken?.convertToToken();
 
-        if (foundInternalToken) {
-          return internalTokenModel.toJson(foundInternalToken);
-        }
-      });
+    if (!token) throw new Error('Can not follow empty token');
 
-      await accountService.addFollowingTokens(pTokenSelected, account, wallet);
+    await accountService.addFollowingTokens([token], account, wallet);
 
-      Toast.showSuccess('Token added');
+    Toast.showSuccess('Token added');
 
-      // update new wallet to store
-      setWallet(wallet);
-
-      this.goBack();
-    } catch (e) {
-      new ExHandler(e, 'Something went wrong. Please tap the Add button again.').showErrorToast();
-    }
-  };
-
-  handleAddToken = (tokenType) => {
-    const { navigation } = this.props;
-
-    if (tokenType === TOKEN_TYPES.INCOGNITO) {
-      navigation.navigate(ROUTE_NAMES.CreateToken, { isPrivacy: true });
-    } else if (tokenType === TOKEN_TYPES.BEP2) {
-      navigation.navigate(ROUTE_NAMES.AddToken, { isPrivacy: true, type: 'bep2' });
-    } else if (tokenType === TOKEN_TYPES.ERC20) {
-      navigation.navigate(ROUTE_NAMES.AddToken, { isPrivacy: true, type: 'erc20' });
-    }
+    // update new wallet to store
+    setWallet(wallet);
   };
 
   getPTokens = async () => {
@@ -181,7 +164,6 @@ export class SearchTokenContainer extends PureComponent {
       <SearchToken
         tokens={tokens}
         handleAddFollowToken={this.handleAddFollowToken}
-        handleAddToken={this.handleAddToken}
         onCancel={this.goBack}
       />
     );

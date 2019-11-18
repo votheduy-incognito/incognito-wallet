@@ -33,9 +33,15 @@ export const itemStyle = StyleSheet.create({
     fontSize: 16,
   },
   symbol: {
-    color: COLORS.lightGrey1,
     fontSize: 14,
     marginTop: 5,
+  },
+  networkName: {
+    fontSize: 14,
+    marginTop: 5,
+  },
+  infoRow: {
+    flexDirection: 'row'
   }
 });
 
@@ -46,37 +52,30 @@ export const searchPTokenStyle = StyleSheet.create({
   },
   header: {
     backgroundColor: COLORS.primary,
+    paddingHorizontal: 10,
     flexDirection: 'row',
-    paddingLeft: 5,
     paddingTop: 10,
-    paddingRight: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 70
   },
   inputIcon: {
-    position: 'absolute',
-    color: 'red',
-    alignSelf: 'center',
-    left: 65,
+    width: 60,
   },
   searchInput: {
-    marginBottom: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.24)',
-    borderRadius: 18,
-    paddingLeft: 40,
-    paddingVertical: 2,
-    marginRight: 10,
     color: COLORS.white,
     minHeight: 32,
     flex: 1,
   },
+  cancelBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    width: 70,
+  },
   cancelBtnText: {
-    flexDirection: 'row',
-    paddingHorizontal: 5,
-    marginHorizontal: 5,
-    marginTop: -8,
-    alignSelf: 'center',
     color: 'white',
     fontSize: 15,
-    ...FontStyle.medium,
+    ...FontStyle.bold,
   },
   disabled: {
     opacity: 0.7,
@@ -100,47 +99,6 @@ export const searchPTokenStyle = StyleSheet.create({
     fontSize: 16,
     color: COLORS.primary,
     ...FontStyle.medium,
-  },
-});
-
-export const tokenTypeStyle = StyleSheet.create({
-  container: {
-    paddingHorizontal: 25,
-    marginTop: 30,
-    marginBottom: 15,
-  },
-  title: {
-    color: '#101111',
-    marginBottom: 10,
-    fontSize: 15,
-  },
-  types: {
-    flexDirection: 'row',
-  },
-  image: {
-    width: 18,
-    height: 18,
-    resizeMode: 'contain',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-  },
-  type: {
-    backgroundColor: COLORS.lightGrey6,
-    marginRight: 8,
-    width: 94,
-    height: 73,
-  },
-  name: {
-    marginTop: 5,
-    color: COLORS.lightGrey1,
-    fontSize: 14,
-  },
-  selected: {
-    backgroundColor: COLORS.dark2,
-  },
-  selectedText: {
-    backgroundColor: COLORS.dark2,
-    color: COLORS.white,
   },
 });
 
