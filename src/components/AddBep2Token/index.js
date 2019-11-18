@@ -7,12 +7,12 @@ import { accountSeleclor } from '@src/redux/selectors';
 import { setWallet } from '@src/redux/actions/wallet';
 import { getPTokenList } from '@src/redux/actions/token';
 import accountService from '@src/services/wallet/accountService';
-import { detectERC20Token, addERC20Token } from '@src/services/api/token';
+import { detectBEP2Token, addBEP2Token } from '@src/services/api/token';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
-import AddERC20Token from './AddERC20Token';
+import AddBep2Token from './AddBep2Token';
 
-export class AddERC20TokenContainer extends Component {
+export class AddBep2TokenContainer extends Component {
   constructor(props) {
     super(props);
 
@@ -24,8 +24,8 @@ export class AddERC20TokenContainer extends Component {
     this.handleSearch = debounce(this.handleSearch.bind(this), 1000);
   }
 
-  detectErc20Token = async address => {
-    const data = await detectERC20Token(address);
+  detectBEP2Token = async symbol => {
+    const data = await detectBEP2Token(symbol);
     if (!data) {
       throw new CustomError(ErrorCode.addBep2Token_not_found);
     }
@@ -38,16 +38,13 @@ export class AddERC20TokenContainer extends Component {
       if (!values) return;
       const { account, wallet, setWallet, getPTokenList } = this.props;
       let newPToken;
-      const {name, symbol, address, decimals} = values;
+      const {name, symbol, originalSymbol} = values;
       const data = {
         name,
         symbol,
-        contractId: address,
-        decimals
+        originalSymbol,
       };
-
-      newPToken = await addERC20Token(data);
-      // add this new token to user following list
+      newPToken = await addBEP2Token(data);
 
       await accountService.addFollowingTokens([newPToken.convertToToken()], account, wallet);
       await getPTokenList();
@@ -66,18 +63,14 @@ export class AddERC20TokenContainer extends Component {
 
   handleSearch = async (values) => {
     try {
-      const { address, symbol } = values;
-      // clear previous result
-      this.setState({ data: null, isSearching: true });
-
-      // search by address/contractId
-      if (address) {
-        await this.detectErc20Token(address);
-      } else if (symbol) {
-        // TODO: search by symbol
+      const { bep2symbol } = values;
+      this.setState({data: null, isSearching: true});
+      // symbol
+      if (bep2symbol) {
+        await this.detectBEP2Token(bep2symbol);
       }
     } catch (e) {
-      new ExHandler(e, 'Can not search this ERC20 token, please try again.').showErrorToast();
+      new ExHandler(e, 'Can not search this BEP2 token, please try again.').showErrorToast();
     } finally {
       this.setState({ isSearching: false });
     }
@@ -92,7 +85,7 @@ export class AddERC20TokenContainer extends Component {
     }
 
     return (
-      <AddERC20Token
+      <AddBep2Token
         data={data}
         isSearching={isSearching}
         onAdd={this.handleAdd}
@@ -112,11 +105,11 @@ const mapDispatchToProps = {
   getPTokenList
 };
 
-AddERC20TokenContainer.propTypes = {
+AddBep2TokenContainer.propTypes = {
   account: PropTypes.object.isRequired,
   wallet: PropTypes.object.isRequired,
   setWallet: PropTypes.func.isRequired,
   getPTokenList: PropTypes.func.isRequired,
 };
 
-export default connect(mapState, mapDispatchToProps)(AddERC20TokenContainer);
+export default connect(mapState, mapDispatchToProps)(AddBep2TokenContainer);

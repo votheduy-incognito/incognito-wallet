@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'redux-form';
-import { createForm, InputField, InputQRField, validator } from '@src/components/core/reduxForm';
+import { createForm, InputField, validator } from '@src/components/core/reduxForm';
 import { Button, View } from '@src/components/core';
 import styles from './style';
 
@@ -13,68 +13,58 @@ const Form = createForm(formName, {
 });
 const isRequired = validator.required();
 
-const isNumber = validator.number({ message: 'Decimals must be a number' });
-
-
-class AddERC20Token extends Component {
+class AddBep2Token extends Component {
   constructor(props) {
     super(props);
   }
 
   handleFormChange = (values, dispatch, props, previousValues) => {
     const { onSearch } = this.props;
-    const { address } = values;
-    const { address: oldAddress } = previousValues;
-    if (address !== oldAddress) {
-      onSearch(values);
+    const { bep2symbol } = values;
+    const { bep2symbol: oldBep2Symbol } = previousValues;
+    if (bep2symbol?.toUpperCase() !== oldBep2Symbol?.toUpperCase()) {
+      onSearch({ ...values, bep2symbol: bep2symbol?.toUpperCase() });
     }
   };
-
-  processFormData = (data = {}) => {
-    return {
-      ...data,
-      decimals: data?.decimals ? String(data.decimals) : ''
-    };
-  }
 
   render() {
     const { isSearching, onAdd, data } = this.props;
 
     return (
-      <Form initialValues={data && this.processFormData(data)} onChange={this.handleFormChange} style={styles.container}>
+      <Form initialValues={data} onChange={this.handleFormChange} style={styles.container}>
         {({ handleSubmit, submitting }) => (
           <>
             <View style={styles.fields}>
               <Field
-                component={InputQRField}
-                name='address'
-                label='Address'
-                placeholder='Search by ERC20 Address'
+                component={InputField}
+                name='bep2symbol'
+                label='Symbol'
+                placeholder='Search by BEP2 symbol'
                 style={styles.input}
                 validate={isRequired}
               />
-              { data?.symbol ? (
+              { data?.name ? (
                 <Field
                   component={InputField}
-                  name='symbol'
-                  label='Symbol'
+                  name='name'
+                  label='Name'
+                  style={styles.input}
+                  componentProps={{
+                    editable: false
+                  }}
+                  validate={isRequired}
+                />
+              ) : null}
+              { data?.originalSymbol ? (
+                <Field
+                  component={InputField}
+                  name='originalSymbol'
+                  label='Original symbol'
                   style={styles.input}
                   validate={isRequired}
                   componentProps={{
                     editable: false
                   }}
-                />
-              ) : null}
-              { data?.decimals ? (
-                <Field
-                  component={InputField}
-                  name='decimals'
-                  label='Decimals'
-                  style={styles.input}
-                  componentProps={{
-                    editable: false
-                  }}
-                  validate={[isRequired, isNumber]}
                 />
               ) : null}
             </View>
@@ -93,7 +83,7 @@ class AddERC20Token extends Component {
   }
 }
 
-AddERC20Token.defaultProps = {
+AddBep2Token.defaultProps = {
   isSearching: false,
   data: {
     bep2symbol: '',
@@ -103,7 +93,7 @@ AddERC20Token.defaultProps = {
   }
 };
 
-AddERC20Token.propTypes = {
+AddBep2Token.propTypes = {
   onAdd: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
   isSearching: PropTypes.bool,
@@ -116,4 +106,4 @@ AddERC20Token.propTypes = {
 };
 
 
-export default AddERC20Token;
+export default AddBep2Token;

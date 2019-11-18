@@ -68,9 +68,9 @@ export default {
     BNB_BEP2: 5,
     USD: 6
   },
-  PTOKEN_TYPE: {
+  PRIVATE_TOKEN_TYPE: {
     COIN: 0,
-    ERC20: 1
+    TOKEN: 1 // including ERC20, BEP1, BEP2,...
   },
   HISTORY: {
     TYPE: {
