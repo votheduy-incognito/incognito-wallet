@@ -48,7 +48,6 @@ const style = StyleSheet.create({
     height: 30,
     justifyContent: 'center',
     width: 30,
-    color: COLORS.white
   },
   textContainer: {
     display: 'flex',

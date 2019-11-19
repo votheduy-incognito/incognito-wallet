@@ -1,4 +1,4 @@
-import { COLORS } from '@src/styles';
+import { COLORS, THEME } from '@src/styles';
 import { FontStyle } from '@src/styles/TextStyle';
 import { StyleSheet } from 'react-native';
 
@@ -51,7 +51,7 @@ export const searchPTokenStyle = StyleSheet.create({
     flexDirection: 'column',
   },
   header: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: THEME.header.backgroundColor,
     paddingHorizontal: 10,
     flexDirection: 'row',
     paddingTop: 10,

@@ -1,94 +1,65 @@
-import { ActivityIndicator, Image, View } from '@src/components/core';
-import { CONSTANT_CONFIGS } from '@src/constants';
+import { Image, View } from '@src/components/core';
 import defaultTokenIcon from '@src/assets/images/icons/default_token_icon.png';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Platform } from 'react-native';
+import { tokenSeleclor } from '@src/redux/selectors';
+import { connect } from 'react-redux';
 import styleSheet from './style';
 
-export default class CryptoIcon extends Component {
+class CryptoIcon extends Component {
   constructor(props) {
     super(props);
     this.state = {
       uri: null,
-      isLoading: true,
+      imageComponent: null,
     };
   }
 
   componentDidMount() {
-    const { symbol, tokenId, onlyDefault } = this.props;
+    const { tokenId, onlyDefault } = this.props;
 
-    !onlyDefault && this.getUri({ symbol, tokenId });
+    tokenId && !onlyDefault && this.getUri({ tokenId });
   }
 
-  preFormat = data => {
-    if (!data) return;
-
-    return String(data).toLowerCase();
-  };
-
-  getUri = async ({ symbol, tokenId }) => {
+  getUri = async ({ tokenId }) => {
+    const { getIconUrlFromTokenId } = this.props;
     let uri;
     if (tokenId) {
-      const formatedTokenId = this.preFormat(tokenId);
-      uri =  formatedTokenId && `${CONSTANT_CONFIGS.INCOGNITO_TOKEN_ICON_URL}/${formatedTokenId}.png`;
-    } else if (symbol) {
-      const formatedSymbol = this.preFormat(symbol);
-      uri =  formatedSymbol && `${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${formatedSymbol}@2x.png`;
-    }
+      uri = getIconUrlFromTokenId(tokenId);
+    } 
 
-    this.setState({ uri });
+    this.setState({ uri, imageComponent: (
+      <Image
+        style={styleSheet.logo}
+        source={{ uri }}
+        onError={this.onLoadError}
+        onLoadStart={this.onLoadStart}
+        onLoadEnd={this.onLoadEnd}
+      />
+    ) });
   };
 
   onLoadError = () => {
-    this.setState({ uri: '', isLoading: false });
-  };
-
-  onLoadStart = () => {
-    this.setState({ isLoading: true });
-  };
-
-  onLoadEnd = () => {
-    this.setState({ isLoading: false });
+    this.setState({ uri: '' });
   };
 
   renderDefault = () => (
     <Image
-      style={this.getStyle(false)}
+      style={styleSheet.logo}
       source={defaultTokenIcon}
     />
   );
 
-  getStyle = (isLoading) => {
-    const styles = [styleSheet.logo];
-
-    return Platform.OS === 'android' ? [...styles, isLoading && styleSheet.hidden] : styles;
-  };
-
   render() {
-    const { uri, isLoading } = this.state;
+    const { uri, imageComponent } = this.state;
     const { onlyDefault } = this.props;
 
     return (
       <View style={styleSheet.container}>
-        { isLoading && !onlyDefault && (
-          <View style={styleSheet.loadingIcon}>
-            <ActivityIndicator size="small" />
-          </View>
-        )
-        }
         {
           onlyDefault || !uri
             ? this.renderDefault()
-            : (
-              <Image
-                style={this.getStyle(isLoading)}
-                source={{ uri }}
-                onError={this.onLoadError}
-                onLoadStart={this.onLoadStart}
-                onLoadEnd={this.onLoadEnd}
-              />
-            )
+            : imageComponent
         }
       </View>
     );
@@ -97,12 +68,18 @@ export default class CryptoIcon extends Component {
 
 CryptoIcon.defaultProps = {
   onlyDefault: false,
-  symbol: null,
   tokenId: null
 };
 
 CryptoIcon.propTypes = {
-  symbol: PropTypes.string,
   tokenId: PropTypes.string,
-  onlyDefault: PropTypes.bool
+  onlyDefault: PropTypes.bool,
+  getIconUrlFromTokenId: PropTypes.func.isRequired
 };
+
+
+const mapState = state => ({
+  getIconUrlFromTokenId: tokenSeleclor.getIconUrlFromTokenId(state)
+});
+
+export default connect(mapState)(CryptoIcon);

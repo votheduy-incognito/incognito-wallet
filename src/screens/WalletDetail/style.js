@@ -21,19 +21,31 @@ const style = StyleSheet.create({
     flex: 1,
     width: '100%',
   },
+  balanceContainer: {
+    flexDirection: 'row',
+    marginHorizontal: 40,
+  },
   balance: {
     color: COLORS.white,
-    fontSize: 28,
+    fontSize: 32,
     textAlign: 'center',
     letterSpacing: 0,
+    ...FONT.STYLE.medium
+  },
+  balanceSymbol: {
+    color: COLORS.white,
+    fontSize: 20,
+    textAlign: 'center',
+    letterSpacing: 0,
+    marginLeft: 7,
     ...FONT.STYLE.medium
   },
   boxBalance: {
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',
-    marginTop: 15,
-    marginBottom: 42,
+    marginTop: 40,
+    marginBottom: 10,
     height: 35
   },
   getFree : {
@@ -56,21 +68,28 @@ const style = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    maxWidth: 116,
+    maxWidth: 100,
     paddingVertical: 12,
-    backgroundColor: COLORS.white,
-    shadowOffset: { width: 2, height: 0 },
-    borderRadius: 6,
-    elevation: 3,
-    marginHorizontal: 3,
+    marginHorizontal: 10,
     marginVertical: 3,
-    height: 80
+  },
+  buttonImg: {
+    width: 100,
+    backgroundColor: COLORS.primary,
+    height: 80,
+    borderRadius: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   actionButtonIcon: {
-    height: 20,
-    width: 20,
+    width: '100%',
+    height: 40,
     resizeMode: 'contain',
-    marginBottom: 7,
+  },
+  buttonText: {
+    marginTop: 12,
+    textTransform: 'uppercase',
+    color: COLORS.white
   },
   boxButton : {
     flex: 1,

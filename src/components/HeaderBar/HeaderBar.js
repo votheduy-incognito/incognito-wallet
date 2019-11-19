@@ -6,21 +6,25 @@ import styles from './style';
 
 const HeaderBar = (props) => {
   const { navigation, scene, index } = props;
-  const { options } = scene.descriptor;
+  const { theme, headerSubTitleStyle, headerTitleStyle, headerBackground, subTitle, headerRight, title } = scene?.descriptor?.options || {};
+  const { backgroundColor, textColor } = theme || {};
   const back = () => navigation.pop();
 
   return (
     <View style={[
-      styles.container,{backgroundColor: options?.headerBackground}]}
+      styles.container, { backgroundColor: backgroundColor || headerBackground }]}
     >
       <View style={styles.left}>
         { index > 0 && <BackButton onPress={back} />}
       </View>
       <View style={styles.center}>
-        <Text style={[styles.title,options?.headerTitleStyle]} numberOfLines={1} ellipsizeMode='tail'>{options.title}</Text>
+        <View style={styles.titleGroup}>
+          <Text style={[styles.title, headerTitleStyle, textColor && { color: textColor }]} numberOfLines={1} ellipsizeMode='tail'>{title}</Text>
+          { subTitle && <Text style={[styles.subTitle, headerSubTitleStyle]} numberOfLines={1} ellipsizeMode='tail'>{subTitle}</Text>}
+        </View>
       </View>
       <View style={styles.right}>
-        { options?.headerRight }
+        { headerRight }
       </View>
     </View>
   );

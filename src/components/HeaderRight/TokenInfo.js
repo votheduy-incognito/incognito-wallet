@@ -52,7 +52,7 @@ class TokenInfo extends Component {
     return (
       <Container style={tokenInfoStyle.infoContainer}>
         <View style={tokenInfoStyle.header}>
-          <CryptoIcon />
+          <CryptoIcon tokenId={tokenId} />
           <View style={tokenInfoStyle.headerTextContainer}>
             <Text numberOfLines={1} ellipsizeMode="middle" style={tokenInfoStyle.headerText}>{selectedPrivacy?.name}</Text>
             <Text numberOfLines={1} ellipsizeMode="middle" style={tokenInfoStyle.headerSubText}>{selectedPrivacy?.networkName}</Text>
