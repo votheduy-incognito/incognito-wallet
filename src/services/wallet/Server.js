@@ -49,7 +49,7 @@ export default class Server {
       .then(result => {
         if (result && result.length) {
           for (const s of result) {
-            console.log('getDefault s = ',s);
+            // console.log('getDefault s = ',s);
             if (s.default) {
               return s;
             }
@@ -61,7 +61,7 @@ export default class Server {
   static async getDefaultIfNullGettingDefaulList() {
     const list = await Server.get().catch(console.log) || KEY.DEFAULT_LIST_SERVER;
     const found = list?.find(_ => _.default);
-    console.log('getDefaultIfNullGettingDefaulList found = ',found);
+    // console.log('getDefaultIfNullGettingDefaulList found = ',found);
     return found;
   }
 
