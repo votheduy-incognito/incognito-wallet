@@ -2,18 +2,21 @@ import Container from '@components/Container';
 import BaseScreen from '@screens/BaseScreen';
 import CreateAccount from '@screens/CreateAccount';
 import images, { imagesVector } from '@src/assets';
-import { Text,ButtonExtension, Toast } from '@src/components/core';
+import { ButtonExtension, Text } from '@src/components/core';
 import DialogLoader from '@src/components/DialogLoader';
 import HeaderBar from '@src/components/HeaderBar/HeaderBar';
 import HistoryMined from '@src/components/HistoryMined';
 import common from '@src/constants/common';
 import { DEVICES } from '@src/constants/miner';
 import Device from '@src/models/device';
+import { getBalance as getAccountBalance, reloadAccountFollowingToken, setDefaultAccount, switchAccount } from '@src/redux/actions/account';
 import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
 import APIService from '@src/services/api/miner/APIService';
-import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
-import VirtualDeviceService from '@src/services/VirtualDeviceService';
+import DeviceService from '@src/services/DeviceService';
+import { ExHandler } from '@src/services/exception';
+import NodeService, { LIST_ACTION } from '@src/services/NodeService';
+import VirtualNodeService from '@src/services/VirtualNodeService';
 import accountService from '@src/services/wallet/accountService';
 import { COLORS } from '@src/styles';
 import format from '@src/utils/format';
@@ -25,9 +28,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Image, RefreshControl, ScrollView, TouchableOpacity, View } from 'react-native';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
-import { getBalance as getAccountBalance,setDefaultAccount, reloadAccountFollowingToken,switchAccount } from '@src/redux/actions/account';
 import { connect } from 'react-redux';
-import { ExHandler } from '@src/services/exception';
 import AdvanceOption from './AdvanceOption';
 import Loader, { Earning } from './Loader';
 import style from './style';
@@ -115,7 +116,7 @@ class DetailDevice extends BaseScreen {
     if(device.Type == DEVICES.VIRTUAL_TYPE){
 
       // dev-test
-      const keyCompare = await VirtualDeviceService.getPublicKeyMining(device)??'';
+      const keyCompare = await VirtualNodeService.getPublicKeyMining(device)??'';
       console.log(TAG,'checkAndUpdateInfoVirtualNode listAccount ',listAccount);
       // console.log(TAG,'checkAndUpdateInfoVirtualNode publicKey ',keyCompare);
 
@@ -171,9 +172,10 @@ class DetailDevice extends BaseScreen {
     const account = _.isEmpty(accountMiner)? await getAccountByName(device.accountName()):accountMiner;
    
     let isStaked = -1 ;
+    const Result = await DeviceService.getRewardAmountAllToken(device).catch(e=>new ExHandler(e).showWarningToast())??{};
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
-      const stakerStatus = await VirtualDeviceService.getPublicKeyRole(device) ??{};
+      const stakerStatus = await VirtualNodeService.getPublicKeyRole(device) ??{};
       console.log(TAG,'fetchData VIRTUAL_TYPE stakerStatus ',stakerStatus);
 
       const { Role= -1, ShardID= 0 } = stakerStatus;
@@ -181,9 +183,10 @@ class DetailDevice extends BaseScreen {
       console.log(TAG,'fetchData VIRTUAL_TYPE getPublicKeyRole ',stakerStatus);
 
       const listprivacyCustomToken:[] = listTokens;
-      dataResult = await VirtualDeviceService.getRewardFromMiningkey(device) ?? {};
-      console.log(TAG,'fetchData VIRTUAL_TYPE ',dataResult);
-      const {Result={}} = dataResult;
+      // dataResult = await VirtualNodeService.getRewardFromMiningkey(device) ?? {};
+      
+      // const {Result={}} = dataResult;
+      console.log(TAG,'fetchData VIRTUAL_TYPE ',Result);
       const PRV = Result['PRV']??0;
       balancePRV = format.amount(PRV,common.DECIMALS['PRV']);
       console.log(TAG,'fetchData VIRTUAL_TYPE 01');
@@ -200,9 +203,10 @@ class DetailDevice extends BaseScreen {
       const { Role= -1, ShardID= 0 } = stakerStatus;
       isStaked = Role!=-1 ;
 
-      dataResult = await VirtualDeviceService.getRewardAmount(device,device.PaymentAddressFromServer,true) ?? {} ;
-      console.log(TAG,'fetchData getRewardAmount ',dataResult);
-      const {Result={}} = dataResult;
+      // dataResult = await VirtualNodeService.getRewardAmount(device,device.StakerAddressFromServer,true) ?? {} ;
+      // const Result = await DeviceService.getRewardAmountWithPaymentAddress(device.StakerAddressFromServer,'',true)??{};
+      console.log(TAG,'fetchData getRewardAmount ',Result);
+      // const {Result={}} = dataResult;
       const PRV = Result['PRV']??0;
       balancePRV = format.amount(PRV,common.DECIMALS['PRV']);
       // console.log(TAG,'fetchData getRewardAmount 01');
@@ -234,7 +238,7 @@ class DetailDevice extends BaseScreen {
         this.setState({
           loading: true
         });
-        const dataResult = await DeviceService.send(device.data,action,chain);
+        const dataResult = await NodeService.send(device.data,action,chain);
         // console.log(TAG,'callAndUpdateAction send dataResult = ',dataResult);
         const { data={status:Device.offlineStatus()}, productId = -1 } = dataResult;
 
@@ -262,7 +266,7 @@ class DetailDevice extends BaseScreen {
 
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
-      const dataResult = await VirtualDeviceService.getChainMiningStatus(device) ?? {};
+      const dataResult = await VirtualNodeService.getChainMiningStatus(device) ?? {};
       const { status = -1, data={status:Device.offlineStatus()},productId = -1 } = dataResult;
       // console.log(TAG,'checkStatus begin VIRTUAL_TYPE',dataResult);
       if(_.isEqual(status,1)){
@@ -309,7 +313,7 @@ class DetailDevice extends BaseScreen {
           });
         }
         const {PrivateKey = '',AccountName = '',PaymentAddress = ''} = accountMiner;
-        const result = await DeviceService.sendPrivateKey(device,PrivateKey,'incognito');
+        const result = await NodeService.sendPrivateKey(device,PrivateKey,'incognito');
         const { status= -1 } = result;
         await this.checkStatus();
         this.Loading = false;
@@ -480,7 +484,7 @@ class DetailDevice extends BaseScreen {
         style={style.top_container}
         onPress={()=>{
           const {device} = this.state;
-          device && device.Type == DEVICES.MINER_TYPE && (DeviceService.pingGetIP(device).then(data=>{
+          device && device.Type == DEVICES.MINER_TYPE && (NodeService.pingGetIP(device).then(data=>{
             this.showToastMessage('ping IP ' +JSON.stringify(data));
           }));
           // this.goToScreen(routeNames.AddStake,{
@@ -495,7 +499,7 @@ class DetailDevice extends BaseScreen {
       >
         <View style={style.top_container_group}>
           <Text style={style.top_container_title} numberOfLines={1}>{this.productName}</Text>
-          <Text style={[style.group2_container_value2,Device.getStyleStatus(device.Status.code)]}>{device.statusMessage()}</Text>
+          <Text style={[style.group2_container_value2,DeviceService.getStyleStatus(device.Status.code)]}>{device.statusMessage()}</Text>
         </View>
         <View style={style.top_container_right_group}>
           {device.isEarning() && (
@@ -626,7 +630,7 @@ class DetailDevice extends BaseScreen {
         <AdvanceOption
           ref={this.advanceOptionView}
           handleReset={async()=>{
-            const result = await DeviceService.reset(device);
+            const result = await NodeService.reset(device);
             if(result){
               // remove in call
               await LocalDatabase.removeDevice(device.toJSON());
@@ -634,7 +638,7 @@ class DetailDevice extends BaseScreen {
             }
           }}
           handleUpdateUpdateFirware={async()=>{
-            const result = await DeviceService.updateFirware(device);
+            const result = await NodeService.updateFirware(device);
             alert(`Update Firware result = ${JSON.stringify(result)}`);
           }}
           handleUpdateWifi={()=>{}}

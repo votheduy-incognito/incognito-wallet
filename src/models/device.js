@@ -1,12 +1,8 @@
-/* eslint-disable import/no-cycle */
-import common from '@src/constants/common';
+
 import { DEVICES } from '@src/constants/miner';
-import VirtualDeviceService from '@src/services/VirtualDeviceService';
 import accountService from '@src/services/wallet/accountService';
-import format from '@src/utils/format';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
-import { ExHandler } from '@src/services/exception';
 
 export const DEVICE_STATUS = {
   CODE_UNKNOWN : -1,
@@ -31,6 +27,7 @@ export const template = {
     isCallStaked:false,
     qrCodeDeviceId:'',
     PaymentAddress:'',
+    StakerAddress:'',
     Commission:1
   },
   status:{
@@ -146,18 +143,6 @@ export default class Device {
     return result;
   }
 
-  /**
-   *
-   * @param {string} paymentAddrStr
-   * @param {string} tokenID
-   * @returns {number}
-   */
-  balanceToken = async(paymentAddrStr,tokenID = '')=>{
-    const result = !_.isEmpty(paymentAddrStr) ? await accountService.getRewardAmount(tokenID, paymentAddrStr).catch(e=>new ExHandler(e).showWarningToast()):null;
-    console.log(TAG,'balanceToken result = ',result);
-    return result;
-  }
-
   saveAccount = async (account)=>{
     if(!_.isEmpty(account)){
       let listLocalDevice = await LocalDatabase.getListDevices();
@@ -183,6 +168,10 @@ export default class Device {
 
   get qrCodeDeviceId(){
     return this.data.minerInfo?.qrCodeDeviceId ?? '';
+  }
+
+  get StakerAddressFromServer(){
+    return this.data.minerInfo?.StakerAddress ?? '';
   }
 
   get PaymentAddressFromServer(){
@@ -212,49 +201,5 @@ export default class Device {
   static getInstance = (data=template):Device =>{
     return new Device(data);
   }
-  /*
-  balance : null -> node die,
-  -1: full-node die
-  */
-  static getRewardAmount = async (deviceInfo:Device)=>{
-    let balance = null;
-    if(!_.isEmpty(deviceInfo)){
-      switch(deviceInfo.Type){
-      case DEVICES.VIRTUAL_TYPE:{
-        console.log(TAG,'getRewardAmount VIRTUAL_TYPE begin');
-        let dataResult = await VirtualDeviceService.getRewardFromMiningkey(deviceInfo);
-
-        balance = _.isNil(dataResult) || _.isNil(dataResult.Result) ?-1:dataResult.Result?.PRV;
-        console.log(TAG,'getRewardAmount VIRTUAL_TYPE dataResult = ',dataResult,deviceInfo.Name,balance);
-        break;
-      }
-      default:{
-        const paymentAddress =  deviceInfo.PaymentAddressFromServer;
-        balance = await deviceInfo.balanceToken(paymentAddress,'');
-        balance = _.isNaN(balance)? 0:balance;
-      }
-      }
-    }
-
-    balance = _.isNil(balance)||_.isNaN(balance)?null:balance;
-    console.log(TAG,'getRewardAmount balance = ',balance,deviceInfo.Name);
-    return balance;
-  }
-  static formatForDisplayBalance = (balance:Number)=>{
-    return format.amount(_.isNaN(balance)?0:balance,common.DECIMALS['PRV']);
-
-  }
-  static getStyleStatus = (code)=>{
-    let styleStatus = {color:'#91A4A6'};
-    if(code === Device.CODE_STOP){
-      styleStatus.color = '#91A4A6';
-    }else if(code === Device.CODE_MINING){
-      styleStatus.color = '#25CDD6';
-    }else if(code === Device.CODE_SYNCING){
-      styleStatus.color = '#262727';
-    }else if(code === Device.CODE_START){
-      styleStatus.color = '#26C64D';
-    }
-    return styleStatus;
-  }
+  
 }

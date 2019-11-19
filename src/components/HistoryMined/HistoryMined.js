@@ -3,7 +3,7 @@ import withdrawNode from '@src/assets/images/icons/withdraw-node.png';
 import tokenData from '@src/constants/tokenData';
 import Device from '@src/models/device';
 import {Text} from '@components/core';
-import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
+import NodeService, { LIST_ACTION } from '@src/services/NodeService';
 import { CONSTANT_COMMONS } from '@src/constants';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -38,7 +38,7 @@ class HistoryMined extends React.Component {
     const {item,isActive} = this.props;
     let {deviceInfo} = this.state;
     if(isActive){
-      DeviceService.send(item,LIST_ACTION.CHECK_STATUS).then(dataResult=>{
+      NodeService.send(item,LIST_ACTION.CHECK_STATUS).then(dataResult=>{
         const { status = -1, data, message= 'Offline',productId = -1 } = dataResult;
         if(item.product_id === productId ){
           deviceInfo.data.status ={
