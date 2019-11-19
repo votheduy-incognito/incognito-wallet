@@ -4,7 +4,9 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   closeBtn: {
     paddingHorizontal: 15,
-    paddingVertical: 5
+    paddingVertical: 5,
+    position: 'absolute',
+    right: 10,
   },
   container: {
     flex: 1,
@@ -19,6 +21,12 @@ export default StyleSheet.create({
     backgroundColor: COLORS.transparent,
     flexDirection: 'row',
     height: THEME.modal.headerHeight,
-    justifyContent: 'flex-end'
+    justifyContent: 'center',
+
+  },
+  headerText: {
+    fontSize: 20,
+    marginHorizontal: 60,
+    color: COLORS.dark1
   }
 });
