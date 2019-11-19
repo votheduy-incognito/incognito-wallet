@@ -99,7 +99,7 @@ export default class DeviceService {
          stakerAddress =  _.isEmpty(stakerAddress) ? await NodeService.fetchAndSavingInfoNodeStake(deviceInfo,true)?.StakerAddress:stakerAddress;
          console.log(TAG,'getRewardAmountAllToken NODE begin');
          if(_.isEmpty(stakerAddress)){
-           Result = {PRV:0};
+           Result = {PRV:null};
          }else{
            Result = await DeviceService.getRewardAmountWithPaymentAddress(stakerAddress,'',true);
          }
