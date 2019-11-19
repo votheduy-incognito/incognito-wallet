@@ -1,13 +1,13 @@
 /* eslint-disable import/no-cycle */
+import { CONSTANT_CONFIGS } from '@src/constants';
 import Device, { DATA_INFO } from '@src/models/device';
 import Util from '@src/utils/Util';
 import _ from 'lodash';
-
-import { CONSTANT_CONFIGS } from '@src/constants';
 import APIService, { METHOD } from './api/miner/APIService';
 import Server from './wallet/Server';
 
-const TAG = 'VirtualDeviceService';
+
+const TAG = 'VirtualNodeService';
 // const DATA_INFO = [ {'status':'offline', 'message':'ready','code':DEVICE_STATUS.CODE_START},
 //   {'status':'syncing', 'message':'syncing','code':DEVICE_STATUS.CODE_SYNCING},
 //   {'status':'ready', 'message':'ready','code':DEVICE_STATUS.CODE_START},
@@ -88,14 +88,15 @@ export const LIST_ACTION={
   }
   
 };
-export default class VirtualDeviceService {
+export default class VirtualNodeService {
 
   static getMininginfo = async(device:Device)=>{
     try {
-      let apiURL = await VirtualDeviceService.buildURL(device);
+      let apiURL = await VirtualNodeService.buildURL(device);
       if(!_.isEmpty(apiURL)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_MINING_INFO.key}`;
         const buildParams = LIST_ACTION.GET_MINING_INFO.data;
+        console.log(TAG,'getMiningInfo buildParams = ',buildParams);
         const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
       
         console.log(TAG,'getMiningInfo result',response);
@@ -113,7 +114,7 @@ export default class VirtualDeviceService {
    */
   static getPublicKeyMining = async(device:Device)=>{
     try {
-      let apiURL = await VirtualDeviceService.buildURL(device);
+      let apiURL = await VirtualNodeService.buildURL(device);
       if(!_.isEmpty(apiURL)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_PUBLIC_KEY_MINING.key}`;
         const buildParams = LIST_ACTION.GET_PUBLIC_KEY_MINING.data;
@@ -136,9 +137,9 @@ export default class VirtualDeviceService {
   
   static getPublicKeyRole = async(device:Device)=>{
     try {
-      let apiURL = await VirtualDeviceService.buildURL(device);
+      let apiURL = await VirtualNodeService.buildURL(device);
       if(!_.isEmpty(apiURL)){
-        let blsKey = await VirtualDeviceService.getPublicKeyMining(device).catch(err=>{
+        let blsKey = await VirtualNodeService.getPublicKeyMining(device).catch(err=>{
           console.log(TAG,'getPublicKeyRole getPublicKeyMining error');
         })||'';
 
@@ -164,7 +165,7 @@ export default class VirtualDeviceService {
   */
   static getPrivacyCustomToken = async(device:Device):Promise<Array>=>{
     try {
-      let apiURL = await VirtualDeviceService.buildURL(device);
+      let apiURL = await VirtualNodeService.buildURL(device);
       if(!_.isEmpty(apiURL)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_PRIVACY_CUSTOM_TOKEN.key}`;
         const buildParams = LIST_ACTION.GET_PRIVACY_CUSTOM_TOKEN.data;
@@ -183,15 +184,15 @@ export default class VirtualDeviceService {
   static getRewardAmount = async(device:Device,paymentAddress,isFullNode=false)=>{
     try {
       
-      let apiURL = await VirtualDeviceService.buildURL(device,isFullNode);
+      let apiURL = await VirtualNodeService.buildURL(device,isFullNode);
       console.log(TAG,'getRewardAmount begin',apiURL);
       if(!_.isEmpty(apiURL) && !_.isEmpty(paymentAddress)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_REWARD_AMOUNT.key}`;
         const buildParams = LIST_ACTION.GET_REWARD_AMOUNT.data({paymentAddress:paymentAddress});
         const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
-        if(_.includes(apiURL,'192.168.11.27')){
-          console.log(TAG,'getRewardAmount result',response,apiURL);
-        }
+        // if(_.includes(apiURL,'192.168.11.27')){
+        //   console.log(TAG,'getRewardAmount result',response,apiURL);
+        // }
         
         return response;
       }
@@ -205,11 +206,11 @@ export default class VirtualDeviceService {
     let response = {Result:{}};
     try {
       
-      let blsKey = await VirtualDeviceService.getPublicKeyMining(device).catch(err=>{
+      let blsKey = await VirtualNodeService.getPublicKeyMining(device).catch(err=>{
         console.log(TAG,'getRewardFromMiningkey getPublicKeyMining error');
       })||'';
       
-      let apiURL = await VirtualDeviceService.buildURL(device,true);
+      let apiURL = await VirtualNodeService.buildURL(device,true);
       if(!_.isEmpty(apiURL) && !_.isEmpty(blsKey)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_MINER_REWARD_FROM_MINING_KEY.key}`;
         const buildParams = LIST_ACTION.GET_MINER_REWARD_FROM_MINING_KEY.data({blsData:`${PREFIX_BLS_PARAMS}${blsKey}`});
@@ -230,12 +231,12 @@ export default class VirtualDeviceService {
   static getChainMiningStatus = async(device:Device)=>{
     let dataResponseCombinded = {'status': Device.offlineStatus()};
     try {
-      let dataResult = await VirtualDeviceService.getMininginfo(device).catch(err=>{
+      let dataResult = await VirtualNodeService.getMininginfo(device).catch(err=>{
         console.log(TAG,'getChainMiningStatus getMininginfo error');
       })||{};
       const shardID = dataResult.Result?.ShardID ?? undefined;
 
-      let apiURL = await VirtualDeviceService.buildURL(device);
+      let apiURL = await VirtualNodeService.buildURL(device);
       
       
       if(!_.isEmpty(apiURL) && !_.isNil(shardID)){

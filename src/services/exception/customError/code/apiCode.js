@@ -1,5 +1,5 @@
-import { codeCreator } from '../utils';
 import TYPES from '../types';
+import { codeCreator } from '../utils';
 
 const apiError = codeCreator(TYPES.API_ERROR);
 
@@ -19,7 +19,9 @@ const api = {
   api_invalid_limit: apiError(-9002),
   api_paymentaddres_existed: apiError(-100002),
   api_transfer_fail: apiError(-100003),
-  api_add_private_token_already_existed: apiError(-1023)
+  api_add_private_token_already_existed: apiError(-1023),
+  api_qrcode_fail_ProductNotFound: apiError(-80008),
+  api_qrcode_fail_QRCodeAlreadyStaked: apiError(-80009)
 };
 
 

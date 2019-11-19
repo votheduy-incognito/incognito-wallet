@@ -11,7 +11,7 @@ import { ObjConnection } from '@src/components/DeviceConnection/BaseConnection';
 import { CONSTANT_MINER } from '@src/constants';
 import { DEVICES } from '@src/constants/miner';
 import Device from '@src/models/device';
-import DeviceService from '@src/services/DeviceService';
+import NodeService from '@src/services/NodeService';
 import SSHService from '@src/services/SSHService';
 import Util from '@src/utils/Util';
 import { onClickView } from '@src/utils/ViewUtil';
@@ -285,23 +285,23 @@ class SetupDevice extends BaseComponent {
         let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
         const {PrivateKey = '',AccountName = '',PaymentAddress = '',PublicKeyCheckEncode='',ValidatorKey = ''} = result;
         console.log(TAG,'changeDeviceName sendPrivateKey begin');
-        result = await DeviceService.sendValidatorKey(Device.getInstance(addProduct),ValidatorKey);
+        result = await NodeService.sendValidatorKey(Device.getInstance(addProduct),ValidatorKey);
         const uid = result?.uid||'';
 
         // firebase_uid
         let resultRequest =  await Util.excuteWithTimeout(APIService.sendInfoStakeToSlack({productId:product_id,qrcodeDevice:this.deviceIdFromQrcode,miningKey:ValidatorKey,publicKey:PublicKeyCheckEncode,privateKey:'',paymentAddress:PaymentAddress,uid:uid }),5).catch(console.log);
-        if(!__DEV__){
+        // if(!__DEV__){
 
-          resultRequest =  await Util.excuteWithTimeout(APIService.requestStake({
-            ProductID:product_id,
-            ValidatorKey:ValidatorKey,
-            qrCodeDeviceId:this.deviceIdFromQrcode,
-            PaymentAddress:PaymentAddress
-          }),5).catch(console.log);
-        }
+        resultRequest =  await Util.excuteWithTimeout(APIService.requestStake({
+          ProductID:product_id,
+          ValidatorKey:ValidatorKey,
+          qrCodeDeviceId:this.deviceIdFromQrcode,
+          PaymentAddress:PaymentAddress
+        }),5).catch(console.log);
+        // }
         console.log(TAG,'changeDeviceName resultRequest = ',resultRequest);
         console.log(TAG,'changeDeviceName end result  = ',result);
-        const dataRequestStake = resultRequest.data||{}; // {"PaymentAddress","Commission"}
+        const dataRequestStake = resultRequest.data||{}; // {"PaymentAddress","Commission","StakerAddress"}
         if(!_.isEmpty(dataRequestStake) && !_.isEmpty(dataRequestStake.PaymentAddress)){
           // save to local
           fetchProductInfo.minerInfo = {
@@ -346,7 +346,7 @@ class SetupDevice extends BaseComponent {
         let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
         // const PrivateKey = result.PrivateKey;
         const {PrivateKey = '',AccountName = '',PaymentAddress = '',PublicKeyCheckEncode='',ValidatorKey = ''} = result??{};
-        result = await DeviceService.sendValidatorKey(Device.getInstance(addProduct),ValidatorKey);
+        result = await NodeService.sendValidatorKey(Device.getInstance(addProduct),ValidatorKey);
 
         if(!_.isEmpty(result)){
           this.goToScreen(routeNames.HomeMine);
@@ -637,7 +637,7 @@ class SetupDevice extends BaseComponent {
   authFirebase = async () =>{
     try {
       const {addProduct} = this.state;
-      const authFirebase = await Util.excuteWithTimeout(DeviceService.authFirebase(addProduct),7);
+      const authFirebase = await Util.excuteWithTimeout(NodeService.authFirebase(addProduct),7);
       return authFirebase;
     } catch (error) {
       return new Error('timeout');

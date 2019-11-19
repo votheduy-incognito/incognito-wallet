@@ -12,7 +12,7 @@ import DeviceConnection from '@src/components/DeviceConnection';
 import { ObjConnection } from '@src/components/DeviceConnection/BaseConnection';
 import { CONSTANT_MINER } from '@src/constants';
 import Device from '@src/models/device';
-import DeviceService from '@src/services/DeviceService';
+import NodeService from '@src/services/NodeService';
 import Util from '@src/utils/Util';
 import { onClickView } from '@src/utils/ViewUtil';
 import LocalDatabase from '@utils/LocalDatabase';
@@ -252,7 +252,7 @@ class SetupWifiDevice extends BaseScreen {
         let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
         const PrivateKey  = result.PrivateKey;
         console.log(TAG,'handleSubmit PrivateKey = ',PrivateKey);
-        result = await DeviceService.sendPrivateKey(Device.getInstance(addProduct),PrivateKey);
+        result = await NodeService.sendPrivateKey(Device.getInstance(addProduct),PrivateKey);
 
         if(!_.isEmpty(result)){
           this.goToScreen(routeNames.HomeMine);
@@ -545,7 +545,7 @@ class SetupWifiDevice extends BaseScreen {
               addProduct: product,
               showModal:true
             });
-            await DeviceService.authFirebase(product);
+            await NodeService.authFirebase(product);
             return true;
           }
         } else {

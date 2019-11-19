@@ -1,19 +1,19 @@
+import { Alert, Text, TouchableScale } from '@components/core';
 import { Earning } from '@screens/DetailDevice/Loader';
 import images from '@src/assets';
 import { DEVICES } from '@src/constants/miner';
 import Device from '@src/models/device';
 import { accountSeleclor } from '@src/redux/selectors';
-import DeviceService, { LIST_ACTION } from '@src/services/DeviceService';
-import VirtualDeviceService from '@src/services/VirtualDeviceService';
+import DeviceService from '@src/services/DeviceService';
+import NodeService, { LIST_ACTION } from '@src/services/NodeService';
+import VirtualNodeService from '@src/services/VirtualNodeService';
 import LocalDatabase from '@src/utils/LocalDatabase';
 import ViewUtil from '@src/utils/ViewUtil';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Image, View } from 'react-native';
-import {Text, Alert, TouchableScale } from '@components/core';
 import { connect } from 'react-redux';
-
 import styles from './style';
 
 const TAG = 'HomeMineItem';
@@ -67,7 +67,7 @@ class HomeMineItem extends React.Component {
     let {deviceInfo,account,balance} = this.state;
 
     account = await getAccountByName(deviceInfo.accountName());
-    balance = await Device.getRewardAmount(deviceInfo);
+    balance = await DeviceService.getRewardAmount(deviceInfo);
     console.log(TAG,'getInfo name,balance = ',deviceInfo.Name,balance);
     // should be is null or number;
     balance = _.isNaN(balance)?null:balance;
@@ -75,7 +75,7 @@ class HomeMineItem extends React.Component {
     if(_.isNumber(balance) && balance >=0 ){
       balance = balance * deviceInfo.CommissionFromServer;
       callbackReward(balance);
-      balance = Device.formatForDisplayBalance(balance);
+      balance = DeviceService.formatForDisplayBalance(balance);
     }else{
       callbackReward(0);
     }
@@ -101,12 +101,12 @@ class HomeMineItem extends React.Component {
       let dataResult = {};
       switch(deviceInfo.Type){
       case DEVICES.VIRTUAL_TYPE:{
-        dataResult = await VirtualDeviceService.getChainMiningStatus(deviceInfo) ?? {};
+        dataResult = await VirtualNodeService.getChainMiningStatus(deviceInfo) ?? {};
         console.log(TAG,'checkActive VIRTUAL_TYPE ',dataResult);
         break;
       }
       default:{
-        dataResult = await DeviceService.send(item,LIST_ACTION.CHECK_STATUS).catch(err=>{
+        dataResult = await NodeService.send(item,LIST_ACTION.CHECK_STATUS).catch(err=>{
           console.log(TAG,'checkActive error');
           this.setDeviceOffline();
         })||{};
@@ -138,7 +138,7 @@ class HomeMineItem extends React.Component {
   }
   getStyleStatus = ()=>{
     const {deviceInfo} = this.state;
-    const styleStatus = Device.getStyleStatus(deviceInfo.Status.code);
+    const styleStatus = DeviceService.getStyleStatus(deviceInfo.Status.code);
     return [styles.groupRight_title,styleStatus];
   }
   getIconWithType = ()=>{

@@ -1,29 +1,26 @@
 import Container from '@components/Container';
+import { Text } from '@components/core';
 import BaseScreen from '@screens/BaseScreen';
 import images from '@src/assets';
 import DialogLoader from '@src/components/DialogLoader';
 import HeaderBar from '@src/components/HeaderBar/HeaderBar';
 import HomeMineItem from '@src/components/HomeMineItem';
-import { CONSTANT_MINER, CONSTANT_COMMONS } from '@src/constants';
-import Device from '@src/models/device';
+import { CONSTANT_MINER } from '@src/constants';
 import routeNames from '@src/router/routeNames';
 import APIService from '@src/services/api/miner/APIService';
+import DeviceService from '@src/services/DeviceService';
 import ViewUtil from '@src/utils/ViewUtil';
 import LocalDatabase from '@utils/LocalDatabase';
 import Util from '@utils/Util';
 import _ from 'lodash';
 import React from 'react';
-import {FlatList, Image, TouchableOpacity, View} from 'react-native';
-import {Text} from '@components/core';
+import { FlatList, Image, TouchableOpacity, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
-import {COLORS} from '@src/styles';
-import { logEvent } from '@src/services/firebase';
 import style from './style';
 
 export const TAG = 'HomeMine';
-
 
 class HomeMine extends BaseScreen {
   static navigationOptions = ({ navigation }) => {
@@ -173,13 +170,6 @@ class HomeMine extends BaseScreen {
         let list: [] = await this.getListLocalDevice();
         // // list = _.isEmpty(list)?await this.fetchProductList():list.reverse();
         list = list.reverse();
-        // for(let item of list){
-        //   // const item = list[index];
-        //   const temp = await Device.getRewardAmount(Device.getInstance(item),wallet);
-        //   balance += temp;
-        //   console.log(TAG, 'handleRefresh -------forEach-- balance = ', balance,temp);
-        // }
-
         // let list: [] = await this.fetchProductList();
         // list = _.isEmpty(list)?await this.getListLocalDevice():list.reverse();
         // let list: [];
@@ -301,7 +291,7 @@ class HomeMine extends BaseScreen {
       timeToUpdate,
       balancePRV,
     } = this.state;
-    const balanceDisplayPRV = Device.formatForDisplayBalance(balancePRV??0);
+    const balanceDisplayPRV = DeviceService.formatForDisplayBalance(balancePRV??0);
     // const viewCustom = this.renderFirstOpenApp();
     // return viewCustom;
     return (!isFetching && _.isEmpty(listDevice)?this.renderFirstOpenApp(): (
