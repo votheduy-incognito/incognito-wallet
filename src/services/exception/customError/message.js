@@ -31,4 +31,6 @@ export default {
   [CODE.addBep2Token_not_found]: 'This BEP2 token doesn\'t seem to exist. Please check and try again.',
   [CODE.api_add_private_token_already_existed]: 'This token has been added.',
   [CODE.addErc20Token_not_found]: 'This BEP2 token has been added.',
+  [CODE.api_qrcode_fail_ProductNotFound]: 'This QR code is unfamiliar. Please try again.',
+  [CODE.api_qrcode_fail_QRCodeAlreadyStaked]: 'You\'ve already set up this Node.',
 };
