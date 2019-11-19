@@ -4,10 +4,10 @@
 import User from '@models/user';
 import NetInfo from '@react-native-community/netinfo';
 import { CONSTANT_MINER } from '@src/constants';
+import { ExHandler } from '@src/services/exception';
 import http from '@src/services/http';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
-import { ExHandler } from '@src/services/exception';
 import API from './api';
 
 let AUTHORIZATION_FORMAT = 'Autonomous';
@@ -449,9 +449,10 @@ export default class APIService {
         data:response
       };
     } catch (error) {
+      const message = new ExHandler(error,'QR-Code is invalid. Please try again').message;
       return {
         status:0,
-        data:error.message??'QR-Code is invalid. Please try again'
+        data:message
       };
     }
     
