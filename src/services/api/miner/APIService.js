@@ -390,13 +390,30 @@ export default class APIService {
     if (!qrCodeDeviceId) return throw new Error('Missing qrCodeDeviceId');
     if (!ValidatorKey) return throw new Error('Missing ValidatorKey');
 
-    const response = await http.post('stake/request', {
+    const response = await http.post('pool/request-stake', {
       ProductID:ProductID,
       ValidatorKey:ValidatorKey ,
       QRCode: qrCodeDeviceId,
       PaymentAddress:PaymentAddress
     }).catch(console.log);
     console.log(TAG,'requestStake end = ',response);
+    return {
+      status:!_.isEmpty(response) ?1:0,
+      data:response
+    };
+  }
+  static async fetchInfoNodeStake({
+    PaymentAddress
+  }) {
+    if (!PaymentAddress) return throw new Error('Missing paymentAddress');
+   
+    const response = await http.get('pool/request-stake',
+      {
+        params: {
+          PaymentAddress:PaymentAddress
+        }
+      }).catch(console.log);
+    console.log(TAG,'fetchInfoNodeStake end = ',response);
     return {
       status:!_.isEmpty(response) ?1:0,
       data:response
@@ -421,15 +438,23 @@ export default class APIService {
     QRCode
   }) {
     if (!QRCode) return throw new Error('Missing QRCode');
-   
-    const response = await http.post('stake/qr-code-check', {
-      QRCode:QRCode
-    }).catch(console.log);
-    console.log(TAG,'qrCodeCheck end = ',response);
-    return {
-      status:_.isBoolean(response) && response ?1:0,
-      data:response
-    };
+    try {
+      let response = await http.post('pool/qr-code-check', {
+        QRCode:QRCode
+      });
+      const status = _.isBoolean(response) && response ?1:0;
+      console.log(TAG,'qrCodeCheck end = ',response);
+      return {
+        status:status,
+        data:response
+      };
+    } catch (error) {
+      return {
+        status:0,
+        data:error.message??'QR-Code is invalid. Please try again'
+      };
+    }
+    
   }
 
   static async requestWithdraw({

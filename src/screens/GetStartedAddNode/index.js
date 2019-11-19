@@ -26,20 +26,20 @@ const GetQrcode = React.memo(({onSuccess})=>{
   const [isPassedValidate,setIdPassedValidate] = useState(false);
   const [errorMessage,setErrorMessage] = useState(''); 
   const handleQrcode = useCallback(onClickView(()=>{
-    openQrScanner(async data => {
-      if(_.isEmpty(data)){
+    openQrScanner(async dataReader => {
+      if(_.isEmpty(dataReader)){
         setDeviceId('');
         setIdPassedValidate(false);
         setErrorMessage('Please scan QR code to get a verification code');
       }else{
         console.log(TAG,'openQrScanner  == data',data);
-        const checked = await Util.excuteWithTimeout(APIService.qrCodeCheck({QRCode:data})).catch(console.log)||{};
-    
-        const isPassed = !_.isEmpty(checked) && _.isEqual(checked.status,1);
+        const checked = await Util.excuteWithTimeout(APIService.qrCodeCheck({QRCode:dataReader})).catch(console.log)||{};
+        const {data='',status = -1 } = checked??{};
+        const isPassed =  _.isEqual(status,1);
         setIdPassedValidate(isPassed);
-        setDeviceId(data);
-        setErrorMessage(isPassed?'':'QR-Code is invalid. Please try again');
-        isPassed && onSuccess && onSuccess(data);
+        setDeviceId(dataReader);
+        setErrorMessage(isPassed?'':data);
+        isPassed && onSuccess && onSuccess(dataReader);
       }
     });
   }),[deviceId]);
