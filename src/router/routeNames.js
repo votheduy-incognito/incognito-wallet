@@ -37,5 +37,7 @@ export default {
   Game: 'Game',
   DApps: 'DApps',
   Dex: 'Dex',
+  DexHistory: 'DexHistory',
+  DexHistoryDetail: 'DexHistoryDetail',
   TxHistoryDetail: 'TxHistoryDetail'
 };

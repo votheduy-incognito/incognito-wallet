@@ -10,6 +10,7 @@ import sendIcon from '@src/assets/images/icons/send.png';
 import depositIcon from '@src/assets/images/icons/deposit_pig.png';
 import receiveIcon from '@src/assets/images/icons/qrCode.png';
 import { ExHandler } from '@src/services/exception';
+import dexUtils from '@src/utils/dex';
 import styles from './style';
 
 class WalletDetail extends Component {
@@ -66,7 +67,7 @@ class WalletDetail extends Component {
   }
 
   render() {
-    const { selectedPrivacy, navigation, isGettingBalanceList, theme } = this.props;
+    const { selectedPrivacy, navigation, isGettingBalanceList, theme, account } = this.props;
     const { isDeposable } = selectedPrivacy;
     return (
       <View style={styles.container}>
@@ -84,8 +85,8 @@ class WalletDetail extends Component {
             }
           </View>
           <View style={styles.buttonRow}>
-            {this.renderActionButton({ label: 'Send', icon: sendIcon, onPress: this.handleSendBtn })}
-            {this.renderActionButton({ label: 'Receive', icon: receiveIcon, onPress: this.handleReceiveBtn })}
+            {!dexUtils.isDEXMainAccount(account.name) && this.renderActionButton({ label: 'Send', icon: sendIcon, onPress: this.handleSendBtn })}
+            {!dexUtils.isDEXWithdrawAccount(account.name) && this.renderActionButton({ label: 'Receive', icon: receiveIcon, onPress: this.handleReceiveBtn })}
             {
               isDeposable && this.renderActionButton({ label: 'Deposit', icon: depositIcon, onPress: this.handleDepositBtn })
             }
@@ -117,7 +118,8 @@ WalletDetail.propTypes = {
   selectedPrivacy: PropTypes.object.isRequired,
   hanldeLoadBalance: PropTypes.func.isRequired,
   isGettingBalanceList: PropTypes.array.isRequired,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  account: PropTypes.object.isRequired,
 };
 
 export default WalletDetail;

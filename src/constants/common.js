@@ -58,7 +58,7 @@ export default {
   },
   ADDRESS_TYPE: {
     DEPOSIT: 1,
-    WITHDRAW: 2 
+    WITHDRAW: 2
   },
   PRIVATE_TOKEN_CURRENCY_TYPE: {
     ETH: 1,
@@ -86,5 +86,11 @@ export default {
     }
   },
   TRACK_LOG_EVENT,
-  TRACK_LOG_EVENT_STATUS
+  TRACK_LOG_EVENT_STATUS,
+  PRV: {
+    id: '0000000000000000000000000000000000000000000000000000000000000004',
+    name: 'PRV',
+    symbol: 'PRV',
+    pDecimals: 9,
+  },
 };

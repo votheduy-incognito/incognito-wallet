@@ -85,7 +85,7 @@ export default class Token {
     if (typeof TokenAmount !== 'number' ||  TokenAmount <= 0 ) throw new Error('TokenAmount is invalid');
 
     // get index account by name
-    const indexAccount = wallet.getAccountIndexByName(account.name);
+    const indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
 
     // prepare param for create and send privacy custom token
     // payment info

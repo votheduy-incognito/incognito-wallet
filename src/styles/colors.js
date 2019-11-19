@@ -20,6 +20,12 @@ const COLORS = {
   lightGrey5: '#E4EEEF',
   lightGrey6: '#F0F5F5',
   lightGrey7: '#F0F9F9',
+  lightGrey8: '#4A5656',
+  lightGrey9: '#657576',
+  lightGrey10: '#F6F6F6',
+  lightGrey11: '#EDEDED',
+  lightGrey12: '#F3F3F3',
+  lightGrey13: '#E6EEEF',
 
   toastBackgroundDefault: 'rgba(107, 141, 143, 0.8)',
   toastBackgroundError: 'rgba(255, 101, 47, 0.8)',

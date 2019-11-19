@@ -27,7 +27,7 @@ class EstimateFeeContainer extends Component {
   }
 
   componentDidMount() {
-    // select default type 
+    // select default type
     this.selectDefaultFeeType();
   }
 
@@ -57,13 +57,13 @@ class EstimateFeeContainer extends Component {
     const { types, selectedPrivacy } = this.props;
 
     const defaultType = types.find(t => t.tokenId === selectedPrivacy.tokenId) || types.find(t => t.tokenId === CONSTANT_COMMONS.PRV_TOKEN_ID) || types[0];
-    
+
     if (defaultType) {
       this.handleNewFeeData({
         feeUnitByTokenId: defaultType.tokenId,
         feeUnit: defaultType.symbol
       });
-    } 
+    }
   }
 
   handleNewFeeData = ({ fee, feeUnitByTokenId, feeUnit } = {}) => {
@@ -89,7 +89,7 @@ class EstimateFeeContainer extends Component {
     let minFee;
     try {
       const { userFee } = this.state;
-      const { selectedPrivacy, amount, toAddress, estimateFeeData: { feeUnitByTokenId } } = this.props;
+      const { selectedPrivacy, amount, toAddress, estimateFeeData: { feeUnitByTokenId }, multiply } = this.props;
 
       if (!amount || !toAddress || !selectedPrivacy) {
         return;
@@ -113,9 +113,10 @@ class EstimateFeeContainer extends Component {
         throw new CustomError(ErrorCode.estimate_fee_does_not_support_type_of_fee);
       }
 
+      fee = fee * multiply;
       minFee = fee;
       fee = userFee > fee ? userFee : fee;
-      
+
       this.setState({ estimateErrorMsg: null });
 
       return fee;
@@ -146,7 +147,7 @@ class EstimateFeeContainer extends Component {
         convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals),
         accountWallet,
       );
-      
+
       return fee;
     } catch(e){
       throw e;
@@ -181,7 +182,7 @@ class EstimateFeeContainer extends Component {
         tokenObject,
         accountWallet,
       );
-      
+
       return fee;
     } catch(e){
       throw e;
@@ -273,11 +274,19 @@ class EstimateFeeContainer extends Component {
   }
 }
 
-const mapState = (state, props) => ({
-  selectedPrivacy: props?.selectedPrivacy || selectedPrivacySeleclor.selectedPrivacy(state),
-  account: accountSeleclor.getAccountByName(state)(props.accountName),
-  wallet: state.wallet,
-});
+const mapState = (state, props) => {
+  const selectedPrivacy = props?.selectedPrivacy || selectedPrivacySeleclor.selectedPrivacy(state, props.dexToken);
+
+  if (props.dexToken?.id) {
+    selectedPrivacy.amount = props.dexToken.balance;
+  }
+
+  return {
+    selectedPrivacy,
+    account: accountSeleclor.getAccountByName(state)(props.accountName),
+    wallet: state.wallet,
+  };
+};
 
 const mapDispatch = { rfChange: change, rfDestroy: destroy };
 
@@ -292,6 +301,8 @@ EstimateFeeContainer.defaultProps = {
   }],
   feeText: null,
   onEstimateFailed: null,
+  dexToken: null,
+  multiply: 1,
 };
 
 EstimateFeeContainer.propTypes = {
@@ -314,6 +325,8 @@ EstimateFeeContainer.propTypes = {
   feeText: PropTypes.string,
   onEstimateFailed: PropTypes.func,
   onNewFeeData: PropTypes.func.isRequired,
+  dexToken: PropTypes.object,
+  multiply: PropTypes.number,
 };
 
 

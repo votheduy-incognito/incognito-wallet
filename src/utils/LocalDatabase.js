@@ -6,7 +6,10 @@ import { CONSTANT_KEYS } from '@src/constants';
 const TAG = 'LocalDatabase';
 export const KEY_SAVE = {
   USER: CONSTANT_KEYS.USER,
-  LIST_DEVICE:CONSTANT_KEYS.LIST_DEVICE
+  LIST_DEVICE:CONSTANT_KEYS.LIST_DEVICE,
+  DEX: CONSTANT_KEYS.DEX,
+  DEX_HISTORY: CONSTANT_KEYS.DEX_HISTORY,
+  SEEN_DEPOSIT_GUIDE: CONSTANT_KEYS.SEEN_DEPOSIT_GUIDE,
 };
 export default class LocalDatabase {
   static async getValue(key: String): String {
@@ -72,5 +75,32 @@ export default class LocalDatabase {
   static async getUserInfo(): Promise<User> {
     const userJson = (await LocalDatabase.getValue(KEY_SAVE.USER)) || '';
     return _.isEmpty(userJson) ? null : new User(JSON.parse(userJson));
+  }
+
+  static async saveDEXInfo(dexInfo) {
+    await LocalDatabase.saveValue(KEY_SAVE.DEX, JSON.stringify(dexInfo));
+  }
+
+  static async getDEXInfo() {
+    const dexString = (await LocalDatabase.getValue(KEY_SAVE.DEX)) || '';
+    return _.isEmpty(dexString) ? null : JSON.parse(dexString);
+  }
+
+  static async saveDexHistory(swapHistory) {
+    await LocalDatabase.saveValue(KEY_SAVE.DEX_HISTORY, JSON.stringify(swapHistory));
+  }
+
+  static async getDexHistory() {
+    const swapHistory = (await LocalDatabase.getValue(KEY_SAVE.DEX_HISTORY)) || '';
+    return _.isEmpty(swapHistory) ? [] : JSON.parse(swapHistory);
+  }
+
+  static async saveSeenDepositGuide(firstTime) {
+    await LocalDatabase.saveValue(KEY_SAVE.SEEN_DEPOSIT_GUIDE, JSON.stringify(firstTime));
+  }
+
+  static async getSeenDepositGuide() {
+    const seenDepositGuide = (await LocalDatabase.getValue(KEY_SAVE.SEEN_DEPOSIT_GUIDE)) || '';
+    return _.isEmpty(seenDepositGuide) ? false : JSON.parse(seenDepositGuide);
   }
 }
