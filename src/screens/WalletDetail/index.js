@@ -1,40 +1,61 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Toast, Image } from '@src/components/core';
+import { Toast, Image, View, Text } from '@src/components/core';
 import { getBalance , getBalance as getAccountBalance } from '@src/redux/actions/account';
 import LoadingContainer from '@src/components/LoadingContainer';
 import accountService from '@src/services/wallet/accountService';
 import { setWallet } from '@src/redux/actions/wallet';
 import { accountSeleclor, selectedPrivacySeleclor, tokenSeleclor, sharedSeleclor } from '@src/redux/selectors';
 import WalletDetailOptionMenu from '@src/components/HeaderRight/WalletDetailOptionMenu';
+import TokenInfo from '@src/components/HeaderRight/TokenInfo';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import ROUTE_NAMES from '@src/router/routeNames';
 import withdrawIcon from '@src/assets/images/icons/withdraw.png';
 import unfollowTokenIcon from '@src/assets/images/icons/unfollowToken.png';
 import { ExHandler } from '@src/services/exception';
+import { COLORS } from '@src/styles';
 import WalletDetail from './WalletDetail';
+import styles from './style';
 
 class WalletDetailContainer extends Component {
   static navigationOptions = ({ navigation }) => {
+    const { title, selectedPrivacy, optionMenu } = navigation.state.params || {};
+    const infoIconColor = selectedPrivacy?.isToken ? COLORS.black : COLORS.white;
     return {
-      title: navigation.state.params?.title,
-      headerRight: <WalletDetailOptionMenu menu={navigation.state.params?.optionMenu} />
+      title: title,
+      headerRight: (
+        <View style={styles.headerRight}>
+          <TokenInfo selectedPrivacy={selectedPrivacy} iconColor={infoIconColor} />
+          <WalletDetailOptionMenu menu={optionMenu} />
+        </View>
+      )
     };
   }
 
   componentDidMount() {
-    this.setTitle();
-    this.setOptionMenu();
+    this.setHeaderData();
   }
 
   componentDidUpdate(prevProps) {
     const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
     const { selectedPrivacy } = this.props;
     if (oldSelectedPrivacy?.tokenId !== selectedPrivacy?.tokenId) {
-      this.setTitle();
-      this.setOptionMenu();
+      this.setHeaderData();
     }
+  }
+
+  setHeaderData = () => {
+    this.setTitle();
+    this.setOptionMenu();
+    this.setTokenInfo();
+  }
+
+  setTokenInfo = () => {
+    const { navigation, selectedPrivacy } = this.props;
+    navigation.setParams({
+      selectedPrivacy
+    });
   }
 
   setTitle = () => {
@@ -106,7 +127,6 @@ class WalletDetailContainer extends Component {
 
   render() {
     const { wallet, account, selectedPrivacy, navigation, isGettingBalanceList, ...otherProps } = this.props;
-
     if (!selectedPrivacy) {
       return <LoadingContainer />;
     }

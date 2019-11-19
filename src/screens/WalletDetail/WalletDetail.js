@@ -61,7 +61,6 @@ class WalletDetail extends Component {
   render() {
     const { selectedPrivacy, navigation, isGettingBalanceList } = this.props;
     const { isDeposable } = selectedPrivacy;
-
     return (
       <View style={styles.container}>
         <View style={styles.boxHeader}>

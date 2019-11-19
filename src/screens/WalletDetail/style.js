@@ -93,6 +93,10 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     flexWrap: 'wrap'
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center'
   }
 });
 
