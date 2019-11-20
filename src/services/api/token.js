@@ -27,7 +27,7 @@ export const detectBEP2Token = async (symbol) => {
     BEP2Tokens = res.data.map(item => new BEP2Token(item));
   }
 
-  return BEP2Tokens.find(item => item.symbol === symbol);
+  return BEP2Tokens.find(item => item.originalSymbol === symbol);
 };
 
 export const addERC20Token = ({ symbol, name, contractId, decimals }) => {

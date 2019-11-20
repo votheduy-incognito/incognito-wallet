@@ -20,10 +20,10 @@ class AddBep2Token extends Component {
 
   handleFormChange = (values, dispatch, props, previousValues) => {
     const { onSearch } = this.props;
-    const { bep2symbol } = values;
-    const { bep2symbol: oldBep2Symbol } = previousValues;
-    if (bep2symbol?.toUpperCase() !== oldBep2Symbol?.toUpperCase()) {
-      onSearch({ ...values, bep2symbol: bep2symbol?.toUpperCase() });
+    const { originalSymbol } = values;
+    const { originalSymbol: oldOriginalSymbol } = previousValues;
+    if (originalSymbol?.toUpperCase() !== oldOriginalSymbol?.toUpperCase()) {
+      onSearch({ ...values, originalSymbol: originalSymbol?.toUpperCase() });
     }
   };
 
@@ -37,9 +37,9 @@ class AddBep2Token extends Component {
             <View style={styles.fields}>
               <Field
                 component={InputField}
-                name='bep2symbol'
-                label='Symbol'
-                placeholder='Search by BEP2 symbol'
+                name='originalSymbol'
+                label='Origin Symbol'
+                placeholder='Search by BEP2 origin symbol'
                 style={styles.input}
                 validate={isRequired}
               />
@@ -58,8 +58,8 @@ class AddBep2Token extends Component {
               { data?.originalSymbol ? (
                 <Field
                   component={InputField}
-                  name='originalSymbol'
-                  label='Original symbol'
+                  name='symbol'
+                  label='Symbol'
                   style={styles.input}
                   validate={isRequired}
                   componentProps={{
