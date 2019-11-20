@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, FlatList, Image, View, ScrollView, Text, TouchableOpacity, Toast } from '@src/components/core';
 import { TextInput } from 'react-native';
@@ -13,13 +13,13 @@ import routeNames from '@src/router/routeNames';
 import { searchPTokenStyle, emptyStyle } from './styles';
 import TokenItem from './TokenItem';
 
-class SearchToken extends PureComponent {
+class SearchToken extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selected: [],
       processingTokens: [],
-      filteredTokens: null,
+      filteredTokenIds: null,
     };
 
     this.filter = debounce(this.filter.bind(this), 500);
@@ -47,11 +47,6 @@ class SearchToken extends PureComponent {
 
       // adding to following list
       await handleAddFollowToken(tokenId);
-
-      // then marking this token
-      this.setState(({ selected }) => ({
-        selected: [...selected, tokenId]
-      }));
     } catch (e) {
       new ExHandler(e, 'Sorry, can not add this token to your list. Please try again.').showErrorToast();
     } finally {
@@ -62,13 +57,36 @@ class SearchToken extends PureComponent {
     }
   }
 
+  handleUnFollowToken = async (tokenId) => {
+    try {
+      const { handleRemoveFollowToken } = this.props;
+
+      this.setState(({ processingTokens }) => ({
+        processingTokens: [
+          ...processingTokens,
+          tokenId,
+        ],
+      }));
+
+      // adding to following list
+      await handleRemoveFollowToken(tokenId);
+    } catch (e) {
+      new ExHandler(e, 'Sorry, can not remove this token from your list. Please try again.').showErrorToast();
+    } finally {
+      this.setState(({ processingTokens }) => {
+        const newList = remove(processingTokens, id => id === tokenId);
+        return newList && { processingTokens: [...processingTokens] };
+      });
+    }
+  }
+
   _renderItem = ({ item }) => {
-    const { selected, processingTokens } = this.state;
+    const { processingTokens } = this.state;
     return (
       <TokenItem
-        onPress={this.handleFollowToken}
+        onFollowToken={this.handleFollowToken}
+        onUnFollowToken={this.handleUnFollowToken}
         token={item}
-        selected={selected.includes(item.tokenId)}
         isProcessing={processingTokens.includes(item.tokenId)}
         divider
       />
@@ -81,13 +99,13 @@ class SearchToken extends PureComponent {
     try {
       const { tokens } = this.props;
       const { query } = this.state;
-      const filteredTokens = tokens
+      const filteredTokenIds = tokens
         .filter(t => {
           const lowerCaseTerm = query ? String(query).toLowerCase() : query;
           const lowerCaseTokenName = [t.name, t.symbol, t.networkName].join(' ')?.toLowerCase();
           return lowerCaseTokenName.includes(lowerCaseTerm || '');
-        });
-      this.setState({ filteredTokens });
+        }).map(t => t.tokenId);
+      this.setState({ filteredTokenIds });
     } catch (e) {
       new ExHandler(e).showErrorToast();
     }
@@ -121,14 +139,14 @@ class SearchToken extends PureComponent {
           onChangeText={this.handleSearch}
         />
         {
-          query && (
+          query ? (
             <TouchableOpacity
               onPress={this.handleClear}
               style={searchPTokenStyle.cancelBtn}
             >
               <Text style={searchPTokenStyle.cancelBtnText}>Clear</Text>
             </TouchableOpacity>
-          )
+          ) : null
         }
       </View>
     );
@@ -146,10 +164,15 @@ class SearchToken extends PureComponent {
     );
   }
 
+  getTokenList = (ids) => {
+    const { tokens } = this.props;
+    return ids.map(id => tokens.find(token => token.tokenId === id));
+  }
+
   renderTokenList() {
     const { tokens } = this.props;
-    const { selected, filteredTokens, processingTokens } = this.state;
-    const tokenList = filteredTokens || tokens;
+    const { filteredTokenIds, processingTokens } = this.state;
+    const tokenList = filteredTokenIds && this.getTokenList(filteredTokenIds) || tokens;
     const isEmpty = !(tokenList?.length > 0);
 
     return (
@@ -157,8 +180,8 @@ class SearchToken extends PureComponent {
         {!isEmpty ? (
           <FlatList
             style={searchPTokenStyle.listToken}
-            data={filteredTokens || tokens}
-            extraData={{ selected, processingTokens}}
+            data={tokenList}
+            extraData={processingTokens}
             renderItem={this._renderItem}
             keyExtractor={this._keyExtractor}
           />
@@ -193,6 +216,7 @@ SearchToken.propTypes = {
     name: PropTypes.string.isRequired,
   })).isRequired,
   handleAddFollowToken: PropTypes.func.isRequired,
+  handleRemoveFollowToken: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
 };
 

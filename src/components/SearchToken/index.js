@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withNavigation } from 'react-navigation';
-import { differenceBy } from 'lodash';
 import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
 import accountService from '@src/services/wallet/accountService';
 import tokenService from '@src/services/wallet/tokenService';
@@ -48,7 +47,7 @@ const normalizeToken = ({ data, isPToken, isInternalToken }) => {
 
 export class SearchTokenContainer extends PureComponent {
   state = {
-    tokens: [],
+    tokens: null,
     internalTokens: [],
     gettingToken: false,
   };
@@ -88,8 +87,18 @@ export class SearchTokenContainer extends PureComponent {
         ...pTokens?.map(t => normalizeToken({ data: t, isPToken: true })) || []
       ];
 
-      const tokens =  normalizedTokens?.filter(token => {
-        return token?.name && token?.symbol && token.tokenId && !followedTokenIds.includes(token.tokenId);
+      const tokens = [];
+
+      normalizedTokens?.forEach(token => {
+        if (token?.name && token?.symbol && token.tokenId) {
+          let _token = { ...token };
+
+          if (followedTokenIds.includes(token.tokenId)) {
+            _token.isFollowed = true;
+          }
+
+          tokens.push(_token);
+        }
       });
 
       this.setState({ tokens });
@@ -122,7 +131,17 @@ export class SearchTokenContainer extends PureComponent {
 
     // update new wallet to store
     setWallet(wallet);
-  };
+  }
+
+  handleRemoveFollowToken = async tokenId => {
+    const { account, wallet, setWallet } = this.props;
+    const updatedWallet = await accountService.removeFollowingToken(tokenId, account, wallet);
+
+    // update new wallet to store
+    setWallet(updatedWallet);
+
+    Toast.showInfo('Token removed');
+  }
 
   getPTokens = async () => {
     try {
@@ -135,11 +154,7 @@ export class SearchTokenContainer extends PureComponent {
 
   getInternalTokens = async () => {
     try {
-      const tokens = await tokenService.getPrivacyTokens();
-      const { followedTokens } = this.props;
-
-      const internalTokens = differenceBy(tokens, followedTokens, 'id');
-
+      const internalTokens = await tokenService.getPrivacyTokens();
       this.setState({ internalTokens });
 
       return internalTokens;
@@ -150,7 +165,7 @@ export class SearchTokenContainer extends PureComponent {
 
   render() {
     const { tokens, gettingToken } = this.state;
-    const { account, wallet } = this.props;
+    const { account, wallet, followedTokens } = this.props;
 
     if (!tokens || !account || !wallet || gettingToken) {
       return (
@@ -164,7 +179,9 @@ export class SearchTokenContainer extends PureComponent {
       <SearchToken
         {...this.props}
         tokens={tokens}
+        followedTokens={followedTokens}
         handleAddFollowToken={this.handleAddFollowToken}
+        handleRemoveFollowToken={this.handleRemoveFollowToken}
         onCancel={this.goBack}
       />
     );

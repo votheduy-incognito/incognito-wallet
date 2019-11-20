@@ -4,7 +4,7 @@ import TokenModel from '@src/models/token';
 import walletType from '@src/redux/types/wallet';
 import accountService from '@src/services/wallet/accountService';
 import { getPassphrase } from '@src/services/wallet/passwordService';
-import { setUserUnfollowTokenIDs, getUserUnfollowTokenIDs } from '@src/services/wallet/tokenService';
+import { getUserUnfollowTokenIDs } from '@src/services/wallet/tokenService';
 import { tokenSeleclor, accountSeleclor } from '../selectors';
 import { getBalance as getTokenBalance, setListToken } from './token';
 
@@ -151,7 +151,7 @@ export const loadAllPTokenHasBalance = account => async (dispatch, getState) => 
   return allTokens;
 };
 
-export const reloadAccountFollowingToken = (account = throw new Error('Account object is required')) => async (dispatch, getState) => {
+export const reloadAccountFollowingToken = (account = throw new Error('Account object is required'), { shouldLoadBalance = true } = {}) => async (dispatch, getState) => {
   try {
     const wallet = getState()?.wallet;
 
@@ -161,7 +161,7 @@ export const reloadAccountFollowingToken = (account = throw new Error('Account o
 
     const tokens = accountService.getFollowingTokens(account, wallet);
 
-    tokens.forEach(token => getTokenBalance(token)(dispatch, getState));
+    shouldLoadBalance && tokens.forEach(token => getTokenBalance(token)(dispatch, getState));
 
     dispatch(setListToken(tokens));
 

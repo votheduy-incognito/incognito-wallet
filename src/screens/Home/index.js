@@ -10,39 +10,21 @@ import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import APIService from '@src/services/api/miner/APIService';
 import _ from 'lodash';
 import Home from './Home';
-import { DialogUpgradeToMainnet } from './ChildViews';
 
 class HomeContainer extends Component {
   constructor(props) {
     super(props);
-
-    const {navigation} = props;
-    const { params } = navigation.state;
-    const isNeedUpgrade = params?.isNeedUpgrade??false;
+    
     this.state = {
       isReloading: false ,
-      isNeedUpgrade:isNeedUpgrade,
-      isReceivedPRV: false
     };
   }
 
   async componentDidMount() {
-    const { account, navigation, clearSelectedPrivacy } = this.props;
-    // console.log('HIENTON account = ',account);
+    const { navigation, clearSelectedPrivacy } = this.props;
     try {
-      // if(!_.isEmpty(account)){
-
-      //   APIService.airdrop1({WalletAddress:account.PaymentAddress}).then(result=>{
-      //     this.setState({
-      //       isReceivedPRV:result?.status == 1
-      //     });
-      //     // result?.status == 1 && Toast.showSuccess('1 PRV has been added to your wallet.');
-      //   });
-      // }
-
       await this.reload();
     } catch (e) {
       new ExHandler(e).showErrorToast();
@@ -82,7 +64,7 @@ class HomeContainer extends Component {
       const tasks = [
         this.getTokens(),
         this.getAccountBalance(account),
-        this.getFollowingToken()
+        this.getFollowingToken({ shouldLoadBalance: true })
       ];
 
       await Promise.all(tasks);
@@ -140,10 +122,10 @@ class HomeContainer extends Component {
     }
   };
 
-  getFollowingToken = async () => {
+  getFollowingToken = async ({ shouldLoadBalance = false } = {}) => {
     try {
       const { account, reloadAccountFollowingToken } = this.props;
-      const result = await reloadAccountFollowingToken(account);
+      const result = await reloadAccountFollowingToken(account, { shouldLoadBalance });
       return result;
     } catch (e) {
       throw new CustomError(ErrorCode.home_load_following_token_failed, { rawError: e });
@@ -161,32 +143,24 @@ class HomeContainer extends Component {
   };
 
   render() {
-    const { isReloading,isNeedUpgrade,isReceivedPRV } = this.state;
+    const { isReloading } = this.state;
     const { wallet, account, tokens, accountGettingBalanceList, tokenGettingBalanceList } = this.props;
 
     if (!wallet) return <LoadingContainer />;
 
     return (
-      <>
-        <Home
-          account={account}
-          tokens={tokens}
-          reload={this.reload}
-          isReloading={isReloading}
-          handleAddFollowToken={this.onAddTokenToFollow}
-          handleCreateToken={this.onCreateToken}
-          handleSetting={this.onSetting}
-          accountGettingBalanceList={accountGettingBalanceList}
-          tokenGettingBalanceList={tokenGettingBalanceList}
-          onSelectToken={this.handleSelectToken}
-        />
-        <DialogUpgradeToMainnet
-          isVisible={isReceivedPRV}
-          onButtonClick={()=>{
-            this.setState({isReceivedPRV:false});
-          }}
-        />
-      </>
+      <Home
+        account={account}
+        tokens={tokens}
+        reload={this.reload}
+        isReloading={isReloading}
+        handleAddFollowToken={this.onAddTokenToFollow}
+        handleCreateToken={this.onCreateToken}
+        handleSetting={this.onSetting}
+        accountGettingBalanceList={accountGettingBalanceList}
+        tokenGettingBalanceList={tokenGettingBalanceList}
+        onSelectToken={this.handleSelectToken}
+      />
     );
   }
 }
