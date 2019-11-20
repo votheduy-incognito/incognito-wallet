@@ -47,23 +47,7 @@ class CryptoItemContainer extends Component {
       onPress(data);
     }
   };
-
-  useLogoFromSymbol = () => {
-    const { token } = this.props;
-
-    // bridge tokens always have an icon
-    if (token?.metaData?.pSymbol) {
-      return true;
-    }
-
-    // Incognito
-    if (token?.id === CONSTANT_COMMONS.PRV_TOKEN_ID) {
-      return true;
-    }
-
-    return false;
-  }
-
+  
   render() {
     const { data } = this.state;
     const { token } = this.props;
@@ -82,7 +66,6 @@ class CryptoItemContainer extends Component {
       externalSymbol: data?.externalSymbol,
       pDecimals: data.pDecimals,
       onPress: this.handlePress,
-      useLogoFromSymbol: this.useLogoFromSymbol()
     };
 
     return (

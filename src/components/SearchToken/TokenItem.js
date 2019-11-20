@@ -59,7 +59,7 @@ class TokenItem extends Component {
     return (
       <View style={[ itemStyle.container, divider && itemStyle.divider ]}>
         <View style={itemStyle.logoContainer}>
-          <CryptoIcon symbol={token.symbol} onlyDefault={!this.hasIcon()} />
+          <CryptoIcon tokenId={token.tokenId} onlyDefault={!this.hasIcon()} />
         </View>
         <View>
           <Text style={itemStyle.name}>{token.name}</Text>

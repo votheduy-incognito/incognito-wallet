@@ -2,6 +2,7 @@ import { Text, TouchableOpacity, View, Modal } from '@src/components/core';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
+import { COLORS } from '@src/styles';
 import styleSheet from './style';
 
 class OptionMenu extends Component {
@@ -33,6 +34,7 @@ class OptionMenu extends Component {
             <EntypoIcons
               size={24}
               style={[styleSheet.iconBtn, iconStyle]}
+              color={COLORS.white}
               {...iconOtherProps}
               name="dots-three-vertical"
             />

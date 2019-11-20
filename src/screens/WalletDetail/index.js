@@ -1,46 +1,121 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Toast, Image } from '@src/components/core';
+import { Toast, Image, View } from '@src/components/core';
 import { getBalance , getBalance as getAccountBalance } from '@src/redux/actions/account';
 import LoadingContainer from '@src/components/LoadingContainer';
 import accountService from '@src/services/wallet/accountService';
 import { setWallet } from '@src/redux/actions/wallet';
 import { accountSeleclor, selectedPrivacySeleclor, tokenSeleclor, sharedSeleclor } from '@src/redux/selectors';
 import WalletDetailOptionMenu from '@src/components/HeaderRight/WalletDetailOptionMenu';
+import TokenInfo from '@src/components/HeaderRight/TokenInfo';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import ROUTE_NAMES from '@src/router/routeNames';
 import withdrawIcon from '@src/assets/images/icons/withdraw.png';
 import unfollowTokenIcon from '@src/assets/images/icons/unfollowToken.png';
 import { ExHandler } from '@src/services/exception';
+import { COLORS } from '@src/styles';
+import { CONSTANT_COMMONS } from '@src/constants';
 import WalletDetail from './WalletDetail';
+import styles from './style';
+
+const THEMES = {
+  light: {
+    textColor: COLORS.dark4,
+    backgroundColor: COLORS.white
+  },
+  dark: {
+    textColor: COLORS.white,
+    backgroundColor: COLORS.dark4
+  }
+};
 
 class WalletDetailContainer extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      theme: null
+    };
+  }
+
   static navigationOptions = ({ navigation }) => {
+    const { title, subTitle, selectedPrivacy, optionMenu, theme } = navigation.state.params || {};
+    const infoIconColor = (selectedPrivacy?.isIncognitoToken || selectedPrivacy?.isMainCrypto) ? COLORS.white : COLORS.black;
     return {
-      title: navigation.state.params?.title,
-      headerRight: <WalletDetailOptionMenu menu={navigation.state.params?.optionMenu} />
+      title: title ?? '---',
+      subTitle: (title || subTitle) ? subTitle : 'Loading information...',
+      theme,
+      headerRight: theme && (
+        <View style={styles.headerRight}>
+          <TokenInfo selectedPrivacy={selectedPrivacy} iconColor={infoIconColor} />
+          <WalletDetailOptionMenu menu={optionMenu} iconColor={infoIconColor} />
+        </View>
+      )
     };
   }
 
   componentDidMount() {
-    this.setTitle();
-    this.setOptionMenu();
+    this.setHeaderData();
+    this.applyTheme();
   }
 
   componentDidUpdate(prevProps) {
     const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
     const { selectedPrivacy } = this.props;
     if (oldSelectedPrivacy?.tokenId !== selectedPrivacy?.tokenId) {
-      this.setTitle();
-      this.setOptionMenu();
+      this.setHeaderData();
     }
+  }
+
+  applyTheme = () => {
+    const { selectedPrivacy } = this.props;
+    const mode = (selectedPrivacy?.isIncognitoToken || selectedPrivacy?.isMainCrypto) ? 'dark' : 'light';
+
+    let t = THEMES[mode];
+
+    if (!t) {
+      console.warn(`Invalid mode ${mode}, fallback to light mode`);
+      t = THEMES.dark;
+    }
+
+    this.setState({ theme: { ...t } });
+    this.setHeaderTheme(t);
+
+    return t;
+  }
+
+  setHeaderData = () => {
+    this.setTitle();
+    this.setOptionMenu();
+    this.setTokenInfo();
+  }
+
+  setHeaderTheme = (theme) => {
+    const { navigation } = this.props;
+    navigation.setParams({
+      theme
+    });
+  }
+
+  setTokenInfo = () => {
+    const { navigation, selectedPrivacy } = this.props;
+    navigation.setParams({
+      selectedPrivacy
+    });
   }
 
   setTitle = () => {
     const { navigation, selectedPrivacy } = this.props;
+    let title;
+    if (selectedPrivacy?.tokenId === CONSTANT_COMMONS.PRV_TOKEN_ID) {
+      title = 'Privacy';
+    } else {
+      title = selectedPrivacy?.externalSymbol ? `Private ${selectedPrivacy.externalSymbol}` : selectedPrivacy.name;
+    }
     navigation.setParams({
-      title: selectedPrivacy?.name
+      title,
+      subTitle: selectedPrivacy?.networkName
     });
   }
 
@@ -105,9 +180,9 @@ class WalletDetailContainer extends Component {
   }
 
   render() {
+    const { theme } = this.state;
     const { wallet, account, selectedPrivacy, navigation, isGettingBalanceList, ...otherProps } = this.props;
-
-    if (!selectedPrivacy) {
+    if (!selectedPrivacy || !theme) {
       return <LoadingContainer />;
     }
 
@@ -119,6 +194,7 @@ class WalletDetailContainer extends Component {
         isGettingBalanceList={isGettingBalanceList}
         navigation={navigation}
         hanldeLoadBalance={this.onLoadBalance}
+        theme={theme}
         {...otherProps}
       />
     );

@@ -3,7 +3,7 @@ import {COLORS, FONT} from '@src/styles';
 
 export const homeStyle = StyleSheet.create({
   wrapper: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.dark4,
     width: '100%',
     height: '100%',
   },
@@ -35,7 +35,7 @@ export const homeStyle = StyleSheet.create({
     position: 'relative',
   },
   bgStyle: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.dark4,
     width: '100%',
     height: 1040,
     top: -1000,
