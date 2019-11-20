@@ -62,12 +62,12 @@ class TokenItem extends Component {
             <Text style={[itemStyle.networkName, { color }]}> - {networkName}</Text>
           </View>
         </View>
-        <View style={itemStyle.checkboxWrapper}>
+        <View style={itemStyle.toggleWrapper}>
           { isProcessing
             ? <ActivityIndicator />
             : (
-              <TouchableOpacity onPress={selected ? null : this._handlePress}>
-                <Image style={itemStyle.checkbox} source={selected ? checkboxChecked : plusRoundIcon} />
+              <TouchableOpacity style={itemStyle.toggle} onPress={selected ? null : this._handlePress}>
+                <Image style={itemStyle.toggleImg} source={selected ? checkboxChecked : plusRoundIcon} />
               </TouchableOpacity>
             )
           }

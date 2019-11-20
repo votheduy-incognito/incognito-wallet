@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { withNavigation } from 'react-navigation';
 import { accountSeleclor } from '@src/redux/selectors';
 import AddInternalToken from './AddInternalToken';
 
@@ -36,4 +38,7 @@ AddInternalTokenContainer.propTypes = {
   navigation: PropTypes.object.isRequired
 };
 
-export default connect(mapState)(AddInternalTokenContainer);
+export default compose(
+  connect(mapState),
+  withNavigation
+)(AddInternalTokenContainer);

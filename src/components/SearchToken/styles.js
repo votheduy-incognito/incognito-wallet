@@ -21,11 +21,14 @@ export const itemStyle = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: COLORS.lightGrey6
   },
-  checkboxWrapper: {
+  toggleWrapper: {
     marginLeft: 'auto',
     justifyContent: 'center',
   },
-  checkbox: {
+  toggle: {
+    padding: 5
+  },
+  toggleImg: {
     width: 30,
     height: 30,
   },
