@@ -63,7 +63,8 @@ export const searchPTokenStyle = StyleSheet.create({
     height: 70
   },
   inputIcon: {
-    width: 60,
+    width: 25,
+    marginLeft: 20
   },
   searchInput: {
     color: COLORS.white,

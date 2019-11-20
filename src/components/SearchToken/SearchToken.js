@@ -2,7 +2,8 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Button, FlatList, Image, View, ScrollView, Text, TouchableOpacity, Toast } from '@src/components/core';
 import { TextInput } from 'react-native';
-import { Icon } from 'react-native-elements';
+import BackButton from '@src/components/BackButton';
+import Icons from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '@src/styles';
 import sadFace from '@src/assets/images/sad_face.png';
 import addIcon from '@src/assets/images/icons/add_outline.png';
@@ -96,31 +97,39 @@ class SearchToken extends PureComponent {
     this.setState({ query }, this.filter);
   };
 
+  handleClear = () => {
+    this.setState({ query: null }, this.filter);
+  };
+
   hanldeAddTokenManually = () => {
     const { navigation } = this.props;
     navigation?.navigate(routeNames.AddToken);
   };
 
   renderHeader() {
-    const { selected } = this.state;
-    const { onCancel } = this.props;
-    const isSelected = selected?.length > 0;
+    const { query } = this.state;
     return (
       <View style={searchPTokenStyle.header}>
-        <Icon name="search" containerStyle={searchPTokenStyle.inputIcon} color='white' size={32} />
+        <BackButton />
+        <Icons name="ios-search" style={searchPTokenStyle.inputIcon} color='white' size={24} />
         <TextInput
           placeholder='Search for a token'
           placeholderTextColor={COLORS.white}
           style={searchPTokenStyle.searchInput}
           selectionColor={COLORS.white}
+          value={query}
           onChangeText={this.handleSearch}
         />
-        <TouchableOpacity
-          onPress={onCancel}
-          style={searchPTokenStyle.cancelBtn}
-        >
-          <Text style={searchPTokenStyle.cancelBtnText}>{isSelected ? 'Done' : 'Cancel'}</Text>
-        </TouchableOpacity>
+        {
+          query && (
+            <TouchableOpacity
+              onPress={this.handleClear}
+              style={searchPTokenStyle.cancelBtn}
+            >
+              <Text style={searchPTokenStyle.cancelBtnText}>Clear</Text>
+            </TouchableOpacity>
+          )
+        }
       </View>
     );
   }
@@ -184,7 +193,6 @@ SearchToken.propTypes = {
     name: PropTypes.string.isRequired,
   })).isRequired,
   handleAddFollowToken: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
 };
 
