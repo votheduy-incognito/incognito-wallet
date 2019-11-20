@@ -25,7 +25,7 @@ const style = StyleSheet.create({
   amountText: {
     flex: 1,
     textAlign: 'left',
-    color: COLORS.lightGrey3
+    color: COLORS.lightGrey1
   },
   typeText: {
     flex: 1,
@@ -39,7 +39,7 @@ const style = StyleSheet.create({
   timeText: {
     flex: 1,
     textAlign: 'right',
-    color: COLORS.lightGrey3
+    color: COLORS.lightGrey1
   },
   noHistoryContainer: {
     flex: 1,
@@ -55,7 +55,10 @@ const style = StyleSheet.create({
   },
   noHistoryActionButton: {
     width: 200
-  }
+  },
+  divider: {
+    marginBottom: 15
+  },
 });
 
 export default style;

@@ -74,9 +74,9 @@ const style = StyleSheet.create({
     marginVertical: 3,
   },
   buttonImg: {
-    width: 100,
+    width: 75,
     backgroundColor: COLORS.primary,
-    height: 80,
+    height: 65,
     borderRadius: 26,
     alignItems: 'center',
     justifyContent: 'center',
@@ -88,8 +88,11 @@ const style = StyleSheet.create({
   },
   buttonText: {
     marginTop: 12,
+    fontSize: 12,
+    letterSpacing: 0.5,
     textTransform: 'uppercase',
-    color: COLORS.white
+    color: COLORS.white,
+    ...FONT.STYLE.medium,
   },
   boxButton : {
     flex: 1,

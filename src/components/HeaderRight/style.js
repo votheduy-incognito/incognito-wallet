@@ -29,11 +29,13 @@ export const tokenInfoStyle = StyleSheet.create({
   modalContainer: {
     backgroundColor: COLORS.white
   },
-  infoContainer: {},
+  infoContainer: {
+    padding: 35
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center' ,
-    marginBottom: 35
+    marginBottom: 35,
   },
   headerTextContainer: {
     marginLeft: 20,

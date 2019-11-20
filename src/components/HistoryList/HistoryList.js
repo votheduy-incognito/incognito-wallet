@@ -165,7 +165,7 @@ const HistoryItem = ({ history, divider, navigation }) => {
           </Text>
         </View>
       </TouchableOpacity>
-      {divider && <Divider height={2} color={COLORS.lightGrey6} />}
+      {divider && <Divider height={2} style={styleSheet.divider} color={COLORS.lightGrey6} />}
     </>
   );
 };
@@ -186,8 +186,7 @@ const HistoryList = ({ histories, actionButton, onCancelEtaHistory, navigation }
         <View style={styleSheet.content}>
           {
             histories.map((history, index) => (
-              <HistoryItemWrapper key={history.id} history={history} divider={index < (histories.length - 1)} onCancelEtaHistory={onCancelEtaHistory} navigation={navigation} />
-            ))
+              <HistoryItemWrapper key={history.id} history={history} divider={index < (histories.length - 1)} onCancelEtaHistory={onCancelEtaHistory} navigation={navigation} />))
           }
         </View>
       </Container>
