@@ -1,7 +1,7 @@
 import LoadingContainer from '@src/components/LoadingContainer';
 import { getBalance, getInternalTokenList, getPTokenList, setListToken } from '@src/redux/actions/token';
 import { setDefaultAccount } from '@src/redux/actions/account';
-import { addHistory, getHistories } from '@src/redux/actions/dex';
+import { addHistory, getHistories, updateHistory } from '@src/redux/actions/dex';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -15,7 +15,7 @@ class DexContainer extends Component {
   }
 
   render() {
-    const { wallet, navigation, histories, addHistory } = this.props;
+    const { wallet, navigation, histories, addHistory, updateHistory } = this.props;
 
     if (!wallet) return <LoadingContainer />;
 
@@ -25,6 +25,7 @@ class DexContainer extends Component {
         navigation={navigation}
         histories={histories}
         onAddHistory={addHistory}
+        onUpdateHistory={updateHistory}
       />
     );
   }
@@ -44,6 +45,7 @@ const mapDispatch = {
   setDefaultAccount,
   getHistories,
   addHistory,
+  updateHistory,
 };
 
 DexContainer.propTypes = {
@@ -52,6 +54,7 @@ DexContainer.propTypes = {
   histories: PropTypes.array.isRequired,
   getHistories: PropTypes.func.isRequired,
   addHistory: PropTypes.func.isRequired,
+  updateHistory: PropTypes.func.isRequired,
 };
 
 

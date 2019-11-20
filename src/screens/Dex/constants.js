@@ -13,6 +13,7 @@ export const PRV = {
   originalSymbol: 'PRV',
 };
 export const WAIT_TIME = 30000;
+export const SHORT_WAIT_TIME = 3000;
 export const STEPS = [
   { percent: 10, step: 'Sending input token to account 1...' },
   { percent: 20, step: 'Checking balance account 1...' },
@@ -44,6 +45,11 @@ export const MESSAGES = {
   DEPOSIT: 'deposit',
   WITHDRAW: 'withdraw',
   TRADE: 'trade',
+  RETRY_WITHDRAW: 'Withdraw unsuccessful. Please go into withdraw detail in history to retry.',
+  WITHDRAW_COMPLETED: 'Withdraw successfully. Your balance will update in a couple of minutes',
+  WITHDRAW_BALANCE: 'PDexWithdraw account balance is insufficient',
+  SOMETHING_WRONG: 'Something got stuck. Please make the withdrawal again.',
 };
 export const MIN_INPUT = 1;
-export const MIN_VALUE = 10;
+export const MIN_VALUE = 50;
+export const MAX_TRIED = 50;

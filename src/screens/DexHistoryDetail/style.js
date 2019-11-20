@@ -11,6 +11,7 @@ export default StyleSheet.create({
     fontSize: 20,
     borderBottomWidth: 1,
     borderColor: COLORS.lightGrey5,
+    maxWidth: '100%',
     ...FONT.STYLE.medium,
   },
   row: {
@@ -52,4 +53,7 @@ export default StyleSheet.create({
     width: 180,
     fontSize: 14,
   },
+  button: {
+    marginTop: 50,
+  }
 });

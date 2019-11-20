@@ -4,23 +4,43 @@ import { RefreshControl } from 'react-native';
 import {connect} from 'react-redux';
 import _ from 'lodash';
 import {ScrollView, Text, View} from '@components/core';
-import {getHistories, getHistoryStatus} from '@src/redux/actions/dex';
+import {getHistories, getHistoryStatus, NOT_CHANGE_STATUS} from '@src/redux/actions/dex';
 import routeNames from '@routers/routeNames';
 import BaseScreen from '@screens/BaseScreen';
 import HeaderBar from '@components/HeaderBar/HeaderBar';
 import {COLORS} from '@src/styles';
+import {MESSAGES} from '@screens/Dex/constants';
+import TradeHistory from './TradeHistory';
+import DepositHistory from './DepositHistory';
+import WithdrawHistory from './WithdrawHistory';
 import stylesheet from './style';
-import History from './History';
+
+const HISTORY_TYPES = {
+  [MESSAGES.DEPOSIT]: DepositHistory,
+  [MESSAGES.WITHDRAW]: WithdrawHistory,
+  [MESSAGES.TRADE]: TradeHistory,
+};
+
+const appRecently = [];
 
 class DexHistory extends BaseScreen {
   state = {
     recently: undefined,
   };
 
-  recently = [];
+  static instance;
 
   componentDidMount() {
+    const { navigation } = this.props;
     this.loadData();
+    DexHistory.instance = this;
+
+    this.listener = navigation.addListener('didFocus', this.loadData);
+  }
+
+  componentWillUnmount() {
+    DexHistory.instance = null;
+    this.listener.remove();
   }
 
   loadData = () => {
@@ -38,9 +58,9 @@ class DexHistory extends BaseScreen {
 
   getStatus = () => {
     const { histories, getHistoryStatus } = this.props;
-    const recently = this.recently;
+    const recently = appRecently;
     histories.forEach(item => {
-      if (item.status !== 'successful' && item.status !== 'refunded') {
+      if (!NOT_CHANGE_STATUS.includes(item.status)) {
         getHistoryStatus(item);
         if (!recently.includes(item)) {
           recently.push(item.txId);
@@ -71,6 +91,18 @@ class DexHistory extends BaseScreen {
     );
   };
 
+  renderHistory(list, history, index) {
+    const History = HISTORY_TYPES[history.type];
+    return (
+      <History
+        {...history}
+        key={history.txId}
+        onPress={this.goToDetail.bind(this, history)}
+        isLastItem={index === list.length - 1}
+      />
+    );
+  }
+
   renderList(list, title) {
     if (list.length <= 0) {
       return null;
@@ -80,14 +112,7 @@ class DexHistory extends BaseScreen {
       <View style={stylesheet.wrapper}>
         <Text style={stylesheet.title}>{title}</Text>
         <View>
-          {list.map((history, index) => (
-            <History
-              {...history}
-              key={history.txId}
-              onPress={this.goToDetail.bind(this, history)}
-              isLastItem={index === list.length - 1}
-            />
-          ))}
+          {list.map(this.renderHistory.bind(this, list))}
         </View>
       </View>
     );
@@ -101,7 +126,7 @@ class DexHistory extends BaseScreen {
       histories = [];
     }
 
-    const allHistories = _.orderBy([...histories], ['lockTime'], ['desc']);
+    const allHistories = _.orderBy([...histories], (item) => item.lockTime ? item.lockTime : 0, ['desc']);
     const recentlyHistories = _.remove(allHistories, item => recently.includes(item.txId));
 
     return (

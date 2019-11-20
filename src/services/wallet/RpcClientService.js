@@ -229,4 +229,9 @@ export async function getPDETradeStatus(txId) {
   return client.getPDETradeStatus(txId);
 }
 
+export async function getTransactionByHash(txId) {
+  const client = await getRpcClient();
+  return client.getTransactionByHash(txId);
+}
+
 setRpcClientInterceptor();

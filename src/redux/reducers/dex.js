@@ -40,6 +40,11 @@ const reducer = (state = initialState, action) => {
       ...state,
       histories: addHistory(action.payload, state.histories),
     };
+  case types.UPDATE_HISTORY:
+    return {
+      ...state,
+      histories: updateHistory(action.payload, state.histories),
+    };
   default:
     return state;
   }

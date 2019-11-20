@@ -1,33 +1,139 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import moment from 'moment';
-import { View, Text } from '@components/core';
+import { View } from '@components/core';
 import HeaderBar from '@components/HeaderBar/HeaderBar';
 import {COLORS} from '@src/styles';
-import stylesheet from './style';
+import {MAX_TRIED, MESSAGES, PRV, SHORT_WAIT_TIME} from '@screens/Dex/constants';
+import {CONSTANT_COMMONS} from '@src/constants';
+import tokenService from '@services/wallet/tokenService';
+import accountService from '@services/wallet/accountService';
+import Toast from '@components/core/Toast/Toast';
+import {ExHandler} from '@services/exception';
+import {DEX} from '@utils/dex';
+import {updateHistory, getHistoryStatus} from '@src/redux/actions/dex';
+import DexHistory from '@src/screens/DexHistory';
+import {connect} from 'react-redux';
+import FullScreenLoading from '@components/FullScreenLoading/index';
+import TradeHistory from './TradeHistory';
+import WithdrawHistory from './WithdrawHistory';
+import DepositHistory from './DepositHistory';
 
 const options = {
   title: 'Transaction details',
   headerBackground: COLORS.dark2,
 };
 
-const DexHistoryDetail = ({ navigation }) => {
+const HISTORY_TYPES = {
+  [MESSAGES.DEPOSIT]: DepositHistory,
+  [MESSAGES.WITHDRAW]: WithdrawHistory,
+  [MESSAGES.TRADE]: TradeHistory,
+};
+
+let currentInterval;
+
+const sendPToken = (wallet, fromAccount, toAccount, token, amount, paymentInfo, prvFee = 0, tokenFee = 0) => {
+  const tokenObject = {
+    Privacy: true,
+    TokenID: token.id,
+    TokenName: token.name,
+    TokenSymbol: token.symbol,
+    TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
+    TokenAmount: amount,
+    TokenReceivers: {
+      PaymentAddress: toAccount.PaymentAddress,
+      Amount: amount
+    }
+  };
+
+  return tokenService.createSendPToken(
+    tokenObject,
+    prvFee,
+    fromAccount,
+    wallet,
+    paymentInfo,
+    tokenFee,
+  );
+};
+
+const sendPRV = async (wallet, fromAccount, toAccount, amount, prvFee = 0) => {
+  const paymentInfos = [{
+    paymentAddressStr: toAccount.PaymentAddress,
+    amount: amount
+  }];
+
+  console.debug('SEND PRV', paymentInfos, prvFee, fromAccount.AccountName);
+
+  return accountService.createAndSendNativeToken(paymentInfos, prvFee, true, fromAccount, wallet);
+};
+
+const waitUntil = (func, ms) => {
+  return new Promise((resolve, reject) => {
+    currentInterval = setInterval(func.bind(this, resolve, reject), ms);
+  });
+};
+
+const checkCorrectBalance = (wallet, account, token, value) => {
+  let tried = 0;
+  return async (resolve, reject) => {
+    const balance = await accountService.getBalance(account, wallet, token.id);
+    if (balance >= value) {
+      clearInterval(currentInterval);
+      return resolve(balance);
+    }
+
+    if (tried++ > MAX_TRIED) {
+      reject(MESSAGES.SOMETHING_WRONG);
+    }
+  };
+};
+
+const DexHistoryDetail = ({ navigation, wallet, updateHistory, getHistoryStatus }) => {
   const { params } = navigation.state;
   const { history } = params;
-  const {
-    inputToken,
-    inputValue,
-    outputToken,
-    outputValue,
-    status,
-    type,
-    time,
-    networkFee,
-    networkFeeUnit,
-    tradingFee,
-    stopPrice,
-  } = history;
+  const [loading, setLoading] = React.useState(false);
+  const History = HISTORY_TYPES[history.type];
+
+  const continueWithdraw = async () => {
+    const accounts = await wallet.listAccount();
+    const dexWithdrawAccount = accounts.find(item => item.AccountName === DEX.WITHDRAW_ACCOUNT);
+    const { tokenId, amount, networkFee, networkFeeUnit, pDecimals, paymentAddress, account: accountName, tokenSymbol, tokenName } = history;
+    const token = { id: tokenId, symbol: tokenSymbol, pDecimals, name: tokenName || '' };
+    const account = { AccountName: accountName, PaymentAddress: paymentAddress };
+    const fee = _.floor(networkFee, 0);
+
+    WithdrawHistory.currentWithdraw = history;
+    setLoading(true);
+
+    try {
+      let res;
+      if (token.id === PRV.id) {
+        console.debug('CONTINUE STEP PRV');
+        await waitUntil(checkCorrectBalance(wallet, dexWithdrawAccount, PRV, amount + fee), SHORT_WAIT_TIME);
+        res = await sendPRV(wallet, dexWithdrawAccount, account, amount, fee);
+      } else {
+        console.debug('CONTINUE STEP TOKEN');
+        const tokenFee = networkFeeUnit !== PRV.symbol ? fee : 0;
+        await waitUntil(checkCorrectBalance(wallet, dexWithdrawAccount, token, amount + tokenFee), SHORT_WAIT_TIME);
+        res = await sendPToken(wallet, dexWithdrawAccount, account, token, amount, null, tokenFee ? 0 : fee, tokenFee);
+      }
+
+      history.updateTx2(res);
+      WithdrawHistory.currentWithdraw = null;
+      updateHistory(history);
+      await getHistoryStatus(history);
+      Toast.showSuccess(MESSAGES.WITHDRAW_COMPLETED);
+    } catch (error) {
+      const e = error;
+      console.debug('CONTINUE FAILED', e);
+      WithdrawHistory.currentWithdraw = null;
+      updateHistory(history);
+      new ExHandler(error).showErrorToast();
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return(
     <View>
       <HeaderBar
@@ -35,64 +141,35 @@ const DexHistoryDetail = ({ navigation }) => {
         navigation={navigation}
         scene={{ descriptor: { options } }}
       />
-      <View style={stylesheet.wrapper}>
-        <Text style={stylesheet.title}>
-          {type === 'trade' ? `Trade ${inputToken} for ${outputToken}` : ''}
-        </Text>
-        <View style={stylesheet.row}>
-          <Text style={stylesheet.field}>TYPE</Text>
-          <Text style={stylesheet.textRight}>{_.capitalize(type || 'Trade')}</Text>
-        </View>
-        <View style={stylesheet.row}>
-          <Text style={stylesheet.field}>TIME</Text>
-          <Text style={stylesheet.textRight}>{moment(time).format('DD MMM YYYY hh:mm A')}</Text>
-        </View>
-        <View style={stylesheet.row}>
-          <Text style={stylesheet.field}>STATUS</Text>
-          <Text style={[stylesheet.textRight, stylesheet[status]]}>{_.capitalize(status)}</Text>
-        </View>
-        <View style={stylesheet.row}>
-          <Text style={stylesheet.field}>YOU PAID</Text>
-          <Text style={stylesheet.textRight}>{inputValue} {inputToken}</Text>
-        </View>
-        <View style={stylesheet.row}>
-          <Text style={stylesheet.field}>YOU GET (ESTIMATED)</Text>
-          <Text style={stylesheet.textRight}>{outputValue} {outputToken}</Text>
-        </View>
-        <View style={stylesheet.row}>
-          <Text style={stylesheet.field}>NETWORK FEE</Text>
-          <Text style={stylesheet.textRight}>{networkFee} {networkFeeUnit}</Text>
-        </View>
-        <View style={stylesheet.row}>
-          <Text style={stylesheet.field}>TRADING FEE</Text>
-          <Text style={stylesheet.textRight}>{tradingFee} {inputToken}</Text>
-        </View>
-        <View style={stylesheet.row}>
-          <Text style={stylesheet.field}>MINIMUM AMOUNT</Text>
-          <Text style={stylesheet.textRight}>{stopPrice} {outputToken}</Text>
-        </View>
-      </View>
+      <History {...history} onContinue={continueWithdraw} loading={loading} />
     </View>
   );
 };
 
+const mapState = state => ({
+  wallet: state.wallet,
+});
+
+const mapDispatch = {
+  updateHistory,
+  getHistoryStatus,
+};
+
+
 DexHistoryDetail.propTypes = {
+  wallet: PropTypes.object.isRequired,
+  updateHistory: PropTypes.func.isRequired,
+  getHistoryStatus: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     state: PropTypes.shape({
       params: PropTypes.shape({
-        history: PropTypes.shape({
-          inputToken: PropTypes.string.isRequired,
-          inputValue: PropTypes.string.isRequired,
-          outputToken: PropTypes.string.isRequired,
-          outputValue: PropTypes.string.isRequired,
-          onPress: PropTypes.func.isRequired,
-          type: PropTypes.string.isRequired,
-          time: PropTypes.number.isRequired,
-          status: PropTypes.string,
-        }).isRequired,
+        history: PropTypes.object.isRequired,
       }).isRequired,
     }).isRequired,
   }).isRequired,
 };
 
-export default DexHistoryDetail;
+export default connect(
+  mapState,
+  mapDispatch
+)(DexHistoryDetail);

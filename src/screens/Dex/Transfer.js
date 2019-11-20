@@ -23,6 +23,9 @@ import leftArrow from '@src/assets/images/icons/left_arrow.png';
 import CryptoIcon from '@components/CryptoIcon/index';
 import EstimateFee from '@components/EstimateFee';
 import FullScreenLoading from '@components/FullScreenLoading/index';
+import tokenService from '@services/wallet/tokenService';
+import {DepositHistory, WithdrawHistory} from '@models/dexHistory';
+import Toast from '@components/core/Toast/Toast';
 import TransferSuccessPopUp from './components/TransferSuccessPopUp';
 import {PRV, WAIT_TIME, MESSAGES, MIN_INPUT} from './constants';
 import { mainStyle, tokenStyle } from './style';
@@ -55,38 +58,120 @@ class Transfer extends React.PureComponent {
     this.setState({ transfer: {...transfer, ...newTransfer} }, cb);
   }
 
+  checkCorrectBalance = (account, token, value) => {
+    const { wallet } = this.props;
+    let tried = 0;
+    return async (resolve, reject) => {
+      const balance = await accountService.getBalance(account, wallet, token.id);
+      if (balance >= value) {
+        clearInterval(this.interval);
+        WithdrawHistory.currentWithdraw.checking = true;
+        resolve(balance);
+      }
+
+      if (tried++ > 10) {
+        reject(MESSAGES.SOMETHING_WRONG);
+      }
+    };
+  };
+
+  sendPToken = (fromAccount, toAccount, token, amount, paymentInfo, prvFee = 0, tokenFee = 0) => {
+    const { wallet } = this.props;
+
+    const tokenObject = {
+      Privacy: true,
+      TokenID: token.id,
+      TokenName: token.name,
+      TokenSymbol: token.symbol,
+      TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
+      TokenAmount: amount,
+      TokenReceivers: {
+        PaymentAddress: toAccount.PaymentAddress,
+        Amount: amount
+      }
+    };
+
+    return tokenService.createSendPToken(
+      tokenObject,
+      prvFee,
+      fromAccount,
+      wallet,
+      paymentInfo,
+      tokenFee,
+    );
+  };
+
+  sendPRV = async (fromAccount, toAccount, amount, prvFee = 0) => {
+    const { wallet } = this.props;
+
+    const paymentInfos = [{
+      paymentAddressStr: toAccount.PaymentAddress,
+      amount: amount
+    }];
+
+    console.debug('SEND PRV', paymentInfos, prvFee, fromAccount.AccountName);
+
+    return accountService.createAndSendNativeToken(paymentInfos, prvFee, true, fromAccount, wallet);
+  };
+
+  waitUntil = (func, ms) => {
+    return new Promise(async (resolve, reject) => {
+      this.interval = setInterval(func.bind(this, resolve, reject), ms);
+    });
+  };
+
   async deposit({ token, amount, account, fee, feeUnit }) {
-    const { sendPRV, sendPToken, dexMainAccount } = this.props;
+    const { dexMainAccount, onAddHistory } = this.props;
+    let res;
     if (token === PRV) {
-      await sendPRV(account, dexMainAccount, amount, fee);
+      res = await this.sendPRV(account, dexMainAccount, amount, fee);
     } else {
-      await sendPToken(account, dexMainAccount, token, amount, null, feeUnit === PRV.symbol ? fee : 0, feeUnit !== PRV.symbol ? fee : 0);
+      res = await this.sendPToken(account, dexMainAccount, token, amount, null, feeUnit === PRV.symbol ? fee : 0, feeUnit !== PRV.symbol ? fee : 0);
     }
+
+    onAddHistory(new DepositHistory(res, token, amount, fee, feeUnit, account));
   }
 
-  async withdraw({token, amount, account, fee: rawFee}) {
-    const { sendPRV, sendPToken, dexMainAccount, dexWithdrawAccount, waitUntil, checkCorrectBalance } = this.props;
+  async withdraw({ token, amount, account, fee: rawFee }) {
+    const { dexMainAccount, dexWithdrawAccount, onAddHistory, onUpdateHistory } = this.props;
+    const { waitUntil, sendPRV, sendPToken, checkCorrectBalance } = this;
     const fee = rawFee / 2;
 
-    if (token === PRV) {
-      console.debug('WITHDRAW STEP 1', amount, fee, amount + fee, rawFee);
-      await sendPRV(dexMainAccount, dexWithdrawAccount, amount + fee, fee);
-      await waitUntil(checkCorrectBalance(dexWithdrawAccount, PRV, amount + fee), WAIT_TIME);
-      console.debug('WITHDRAW STEP 2', amount, fee);
-      await sendPRV(dexWithdrawAccount, account, amount, fee);
-    } else {
-      const { transfer } = this.state;
-      const { feeUnit, fee } = transfer;
-      const paymentInfo = feeUnit === PRV.symbol ? {
-        paymentAddressStr: dexWithdrawAccount.PaymentAddress,
-        amount: fee,
-      } : null;
-      const tokenFee = feeUnit !== PRV.symbol ? fee : 0;
-      console.debug('WITHDRAW PTOKEN STEP 1', amount, fee, amount + fee);
-      await sendPToken(dexMainAccount, dexWithdrawAccount, token, amount + tokenFee, paymentInfo, tokenFee ? 0 : fee, tokenFee);
-      await waitUntil(checkCorrectBalance(dexWithdrawAccount, token, amount + tokenFee), WAIT_TIME);
-      console.debug('WITHDRAW PTOKEN STEP 2', amount, fee);
-      await sendPToken(dexWithdrawAccount, account, token, amount, null, tokenFee ? 0 : fee, tokenFee);
+    let newHistory;
+    let res1;
+    let res2;
+
+    try {
+      if (token === PRV) {
+        res1 = await sendPRV(dexMainAccount, dexWithdrawAccount, amount + fee, fee);
+        newHistory = new WithdrawHistory(res1, token, amount, rawFee, PRV.symbol, account);
+        WithdrawHistory.currentWithdraw = newHistory;
+        onAddHistory(newHistory);
+        await waitUntil(checkCorrectBalance(dexWithdrawAccount, PRV, amount + fee), WAIT_TIME);
+        res2 = await this.sendPRV(dexWithdrawAccount, account, amount, fee);
+      } else {
+        const {transfer} = this.state;
+        const {feeUnit, fee} = transfer;
+        const paymentInfo = feeUnit === PRV.symbol ? {
+          paymentAddressStr: dexWithdrawAccount.PaymentAddress,
+          amount: fee,
+        } : null;
+        const tokenFee = feeUnit !== PRV.symbol ? fee : 0;
+        res1 = await sendPToken(dexMainAccount, dexWithdrawAccount, token, amount + tokenFee, paymentInfo, tokenFee ? 0 : fee, tokenFee);
+        newHistory = new WithdrawHistory(res1, token, amount, rawFee, feeUnit, account);
+        onAddHistory(newHistory);
+        await waitUntil(checkCorrectBalance(dexWithdrawAccount, token, amount + tokenFee), WAIT_TIME);
+        res2 = await this.sendPToken(dexWithdrawAccount, account, token, amount, null, tokenFee ? 0 : fee, tokenFee);
+      }
+
+      newHistory.updateTx2(res2);
+      WithdrawHistory.currentWithdraw = null;
+      onUpdateHistory(newHistory);
+      Toast.showSuccess(MESSAGES.WITHDRAW_COMPLETED);
+    } catch (error) {
+      WithdrawHistory.currentWithdraw = null;
+      onUpdateHistory(newHistory);
+      new ExHandler(error).showErrorToast();
     }
   }
 
@@ -288,8 +373,8 @@ class Transfer extends React.PureComponent {
 
     const { fee, feeUnit, feeUnitByTokenId } = estimateFeeData;
     let error = transfer.error;
-    const { token, amount, multiply, balance } = transfer;
-    const txFee = feeUnit === token.symbol ? fee * (multiply || 1) : 0;
+    const { token, amount, balance } = transfer;
+    const txFee = feeUnit === token.symbol ? fee : 0;
 
     if (txFee + amount > balance) {
       error = MESSAGES.BALANCE_INSUFFICIENT;
@@ -303,7 +388,7 @@ class Transfer extends React.PureComponent {
       fee,
       feeUnit,
       feeUnitByTokenId,
-      multiply: transfer.action === 'deposit' ? 1 : 2,
+      multiply: transfer.action === 'deposit' ? 1 : 10,
       error,
       chainError : null,
     });
@@ -452,8 +537,10 @@ class Transfer extends React.PureComponent {
       error = MESSAGES.BALANCE_INSUFFICIENT;
     }
 
+    const isVisible = !!account && !success;
+
     return (
-      <Overlay isVisible={!!account && !success} overlayStyle={mainStyle.modal}>
+      <Overlay isVisible={isVisible} overlayStyle={mainStyle.modal}>
         <View>
           <View style={mainStyle.modalHeader}>
             <TouchableOpacity onPress={this.closeAmountPopUp} style={mainStyle.modalBack}>
@@ -500,29 +587,13 @@ class Transfer extends React.PureComponent {
             {!!error && <Text style={[mainStyle.fee, mainStyle.error, mainStyle.center, tokenStyle.error]}>{error}</Text>}
             {!!chainError && <Text style={[mainStyle.fee, mainStyle.error, mainStyle.center, tokenStyle.error]}>{chainError}</Text>}
             <View style={mainStyle.modalEstimate}>
-              {/*<EstimateFee*/}
-              {/*  initialFee={0}*/}
-              {/*  finalFee={fee}*/}
-              {/*  onSelectFee={this.handleSelectFee}*/}
-              {/*  dexAccount={action === 'deposit' ? account : dexMainAccount}*/}
-              {/*  dexToken={{*/}
-              {/*    ...token,*/}
-              {/*    amount: balance,*/}
-              {/*  }}*/}
-              {/*  types={supportedFeeTypes}*/}
-              {/*  amount={amount / Math.pow(10, token?.pDecimals || 0)}*/}
-              {/*  toAddress={action === 'deposit' ? dexMainAccount?.PaymentAddress : dexWithdrawAccount?.PaymentAddress}*/}
-              {/*  multiply={multiply || 1}*/}
-              {/*/>*/}
               <EstimateFee
                 accountName={action === 'deposit' ? account?.AccountName : dexMainAccount?.AccountName}
                 estimateFeeData={{ feeUnit, fee, feeUnitByTokenId }}
                 onNewFeeData={this.handleSelectFee}
                 types={supportedFeeTypes}
-                dexToken={{
-                  ...token,
-                  balance,
-                }}
+                dexToken={token}
+                dexBalance={balance}
                 amount={amount / Math.pow(10, token?.pDecimals || 0)}
                 toAddress={action === 'deposit' ? dexMainAccount?.PaymentAddress : dexWithdrawAccount?.PaymentAddress}
                 multiply={multiply || 1}
@@ -578,10 +649,8 @@ Transfer.defaultProps = {
 Transfer.propTypes = {
   dexMainAccount: PropTypes.object,
   dexWithdrawAccount: PropTypes.object,
-  sendPRV: PropTypes.func.isRequired,
-  sendPToken: PropTypes.func.isRequired,
-  waitUntil: PropTypes.func.isRequired,
-  checkCorrectBalance: PropTypes.func.isRequired,
+  onAddHistory: PropTypes.func.isRequired,
+  onUpdateHistory: PropTypes.func.isRequired,
   wallet: PropTypes.object.isRequired,
   tokens: PropTypes.array.isRequired,
   accounts: PropTypes.array.isRequired,

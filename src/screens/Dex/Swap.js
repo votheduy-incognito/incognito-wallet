@@ -15,7 +15,6 @@ import { getTokenList } from '@src/services/api/token';
 import {
   getPDEPairs,
 } from '@src/services/wallet/RpcClientService';
-import { CONSTANT_COMMONS } from '@src/constants';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
 import { ExHandler } from '@services/exception';
@@ -25,10 +24,11 @@ import ExchangeRate from '@screens/Dex/components/ExchangeRate';
 import LocalDatabase from '@utils/LocalDatabase';
 import FullScreenLoading from '@components/FullScreenLoading/index';
 import routeNames from '@routers/routeNames';
+import {TradeHistory} from '@models/dexHistory';
 import SwapSuccessDialog from './components/SwapSuccessDialog';
 import Transfer from './Transfer';
 import Input from './Input';
-import {PRV, MESSAGES, MIN_VALUE, MIN_INPUT} from './constants';
+import {PRV, MESSAGES, MIN_INPUT} from './constants';
 import { mainStyle } from './style';
 import { CHAIN_PAIRS, CHAIN_TOKENS } from './mock_data';
 import TradeConfirm from './components/TradeConfirm';
@@ -198,12 +198,6 @@ class Swap extends React.Component {
     }
   };
 
-  waitUntil = (func, ms) => {
-    return new Promise(async (resolve, reject) => {
-      this.interval = setInterval(func.bind(this, resolve, reject), ms);
-    });
-  };
-
   async filterOutputList() {
     const { inputToken: token, chainPairs, tokens, outputToken } = this.state;
 
@@ -215,8 +209,6 @@ class Swap extends React.Component {
         .map(id => tokens.find(token => token.id.includes(id)))
         .filter(item => item)
       , item => item.symbol && item.symbol.toLowerCase());
-
-    console.debug('OUTPUT', outputList, outputToken);
 
     this.setState({
       pairs,
@@ -241,48 +233,6 @@ class Swap extends React.Component {
     const outputValue = outputPool - newOutputPoolWithFee;
     this.setState({ outputValue });
   }
-
-  checkCorrectBalance = (account, token, value) => {
-    const { wallet } = this.props;
-    let lastBalance;
-    return async (resolve) => {
-      const balance = await accountService.getBalance(account, wallet, token.id);
-      console.debug('checkCorrectBalance', lastBalance, balance, value, Math.abs(balance - lastBalance));
-
-      if (Math.abs(balance - lastBalance) === value) {
-        clearInterval(this.interval);
-        resolve(balance);
-      }
-
-      lastBalance = balance;
-    };
-  };
-
-  sendPToken = (fromAccount, toAccount, token, amount, paymentInfo, prvFee = 0, tokenFee = 0) => {
-    const { wallet } = this.props;
-
-    const tokenObject = {
-      Privacy: true,
-      TokenID: token.id,
-      TokenName: token.name,
-      TokenSymbol: token.symbol,
-      TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
-      TokenAmount: amount,
-      TokenReceivers: {
-        PaymentAddress: toAccount.PaymentAddress,
-        Amount: amount
-      }
-    };
-
-    return tokenService.createSendPToken(
-      tokenObject,
-      prvFee,
-      fromAccount,
-      wallet,
-      paymentInfo,
-      tokenFee,
-    );
-  };
 
   async tradePToken(account, tradingFee, networkFee, networkFeeUnit, stopPrice) {
     const { wallet } = this.props;
@@ -312,19 +262,6 @@ class Swap extends React.Component {
       return accountService.createAndSendPTokenTradeRequestTx(wallet, account, tokenParams, prvFee, tokenFee, outputToken.id, inputValue, stopPrice, tradingFee);
     }
   }
-
-  sendPRV = async (fromAccount, toAccount, amount, prvFee = 0) => {
-    const { wallet } = this.props;
-
-    const paymentInfos = [{
-      paymentAddressStr: toAccount.PaymentAddress,
-      amount: amount
-    }];
-
-    console.debug('SEND PRV', paymentInfos, prvFee, fromAccount.AccountName);
-
-    return accountService.createAndSendNativeToken(paymentInfos, prvFee, true, fromAccount, wallet);
-  };
 
   trade = async (networkFee, networkFeeUnit, tradingFee, stopPrice) => {
     const { wallet } = this.props;
@@ -365,19 +302,7 @@ class Swap extends React.Component {
         const { onAddHistory } = this.props;
         const { outputValue, outputToken } = this.state;
         this.setState({ showSwapSuccess: true, showTradeConfirm: false });
-        onAddHistory({
-          txId: result.txId,
-          lockTime: result.lockTime,
-          inputToken: inputToken.symbol,
-          inputValue: formatUtil.amountFull(inputValue, inputToken.pDecimals),
-          outputToken: outputToken.symbol,
-          outputValue: formatUtil.amountFull(outputValue, outputToken.pDecimals),
-          type: MESSAGES.TRADE,
-          networkFee: formatUtil.amountFull(networkFee, networkFeeUnit === inputToken.symbol ? inputToken.pDecimals : PRV.pDecimals),
-          networkFeeUnit,
-          tradingFee: formatUtil.amountFull(tradingFee, inputToken.pDecimals),
-          stopPrice: formatUtil.amountFull(stopPrice, outputToken.pDecimals),
-        });
+        onAddHistory(new TradeHistory(result, inputToken, outputToken, inputValue, outputValue, networkFee, networkFeeUnit, tradingFee, stopPrice));
         await this.loadData();
       }
     } catch (error) {
@@ -390,8 +315,6 @@ class Swap extends React.Component {
   goToHistory = () => {
     const { navigation } = this.props;
     navigation.navigate(routeNames.DexHistory);
-
-    console.debug('GO TO HISTORY');
   };
 
   swap = async () => {
@@ -513,7 +436,7 @@ class Swap extends React.Component {
       balance,
       prvBalance,
     } = this.state;
-    const { wallet, transferAction, onClosePopUp, onShowPopUp, histories } = this.props;
+    const { wallet, transferAction, onClosePopUp, histories, onAddHistory, onUpdateHistory } = this.props;
     let { inputError } = this.state;
 
     if (inputError === MESSAGES.BALANCE_INSUFFICIENT && !this.seenDepositGuide) {
@@ -532,10 +455,6 @@ class Swap extends React.Component {
             <Transfer
               dexMainAccount={dexMainAccount}
               dexWithdrawAccount={dexWithdrawAccount}
-              sendPRV={this.sendPRV}
-              sendPToken={this.sendPToken}
-              waitUntil={this.waitUntil}
-              checkCorrectBalance={this.checkCorrectBalance}
               wallet={wallet}
               accounts={accounts}
               tokens={tokens}
@@ -543,6 +462,8 @@ class Swap extends React.Component {
               onClosePopUp={onClosePopUp}
               inputToken={inputToken}
               onLoadData={this.loadData}
+              onAddHistory={onAddHistory}
+              onUpdateHistory={onUpdateHistory}
             />
             <View style={[mainStyle.actionsWrapper]}>
               <Button
@@ -589,6 +510,7 @@ class Swap extends React.Component {
             prvBalance={prvBalance}
           />
         </ScrollView>
+        {/*<WithdrawalInProgress />*/}
       </View>
     );
   }
@@ -599,6 +521,7 @@ Swap.defaultProps = {
 };
 
 Swap.propTypes = {
+  histories: PropTypes.array.isRequired,
   wallet: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
   onClosePopUp: PropTypes.func.isRequired,
@@ -606,6 +529,7 @@ Swap.propTypes = {
   onShowPopUp: PropTypes.func.isRequired,
   onShowDepositGuide: PropTypes.func.isRequired,
   onAddHistory: PropTypes.func.isRequired,
+  onUpdateHistory: PropTypes.func.isRequired,
 };
 
 export default Swap;
