@@ -4,7 +4,7 @@ import { API_BASE_URL as TEMPLATE_API_BASE_URL, BEP2_URL, CRYPTO_ICON_URL, DEX_B
 const TAG = 'Config';
 const regex = /<%=.*%>/;
 
-const BUILD_VERSION = '3.2.6';
+const BUILD_VERSION = '3.2.7';
 const isMainnet = global.isMainnet??true;
 
 export const prefix_network = isMainnet ?'mainnet':'testnet';
