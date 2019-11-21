@@ -1,8 +1,8 @@
+import 'react-native-gesture-handler';
 import '@src/services/polyfill';
 import serverService from '@src/services/wallet/Server';
 // import AppTemp from '@src/Temp';
 import { AppRegistry } from 'react-native';
-import 'react-native-gesture-handler';
 import { name as appName } from './app.json';
 
 
