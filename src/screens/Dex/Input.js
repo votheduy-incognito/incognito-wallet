@@ -132,10 +132,10 @@ class Input extends React.Component {
                   onPress={() => this.selectToken(item)}
                 >
                   <CryptoIcon
-                    symbol={item.symbol}
-                    style={tokenStyle.logo}
+                    tokenId={item.id}
+                    logoStyle={tokenStyle.logo}
                     onlyDefault={!item.hasIcon}
-                    wrapperStyle={{ width: 30, height: 30 }}
+                    containerStyle={{ width: 30, height: 30 }}
                   />
                   <View style={modalStyle.tokenInfo}>
                     <Text style={modalStyle.tokenSymbol}>{item.symbol}</Text>
@@ -158,10 +158,10 @@ class Input extends React.Component {
       <View style={inputStyle.token}>
         <CryptoIcon
           key={token.id}
-          symbol={token.symbol}
+          tokenId={token.id}
           onlyDefault={!token.hasIcon}
-          style={{ width: 20, height: 20 }}
-          wrapperStyle={{ width: 25, height: 25 }}
+          logoStyle={{ width: 20, height: 20 }}
+          containerStyle={{ width: 25, height: 25 }}
         />
         <Text style={modalStyle.tokenInfo}>{token.symbol}</Text>
       </View>

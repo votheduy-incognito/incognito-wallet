@@ -500,7 +500,7 @@ class Transfer extends React.PureComponent {
                 activeOpacity={0.5}
                 style={[mainStyle.modalItem, index === filteredTokens.length - 1 && mainStyle.lastItem]}
               >
-                <CryptoIcon symbol={item.symbol} />
+                <CryptoIcon tokenId={item.id} />
                 <View style={tokenStyle.info}>
                   <Text style={tokenStyle.symbol}>{item.symbol}</Text>
                   <Text style={[tokenStyle.name, tokenStyle.modalName]}>{item.name}</Text>

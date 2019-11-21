@@ -22,15 +22,15 @@ class CryptoIcon extends Component {
   }
 
   getUri = async ({ tokenId }) => {
-    const { getIconUrlFromTokenId } = this.props;
+    const { getIconUrlFromTokenId, logoStyle } = this.props;
     let uri;
     if (tokenId) {
       uri = getIconUrlFromTokenId(tokenId);
-    } 
+    }
 
     this.setState({ uri, imageComponent: (
       <Image
-        style={styleSheet.logo}
+        style={[styleSheet.logo, logoStyle]}
         source={{ uri }}
         onError={this.onLoadError}
         onLoadStart={this.onLoadStart}
@@ -43,22 +43,22 @@ class CryptoIcon extends Component {
     this.setState({ uri: '' });
   };
 
-  renderDefault = () => (
+  renderDefault = (logoStyle) => (
     <Image
-      style={styleSheet.logo}
+      style={[styleSheet.logo, logoStyle]}
       source={defaultTokenIcon}
     />
   );
 
   render() {
     const { uri, imageComponent } = this.state;
-    const { onlyDefault } = this.props;
+    const { onlyDefault, containerStyle, logoStyle } = this.props;
 
     return (
-      <View style={styleSheet.container}>
+      <View style={[styleSheet.container, containerStyle]}>
         {
           onlyDefault || !uri
-            ? this.renderDefault()
+            ? this.renderDefault(logoStyle)
             : imageComponent
         }
       </View>
@@ -68,13 +68,17 @@ class CryptoIcon extends Component {
 
 CryptoIcon.defaultProps = {
   onlyDefault: false,
-  tokenId: null
+  tokenId: null,
+  containerStyle: null,
+  logoStyle: null,
 };
 
 CryptoIcon.propTypes = {
   tokenId: PropTypes.string,
   onlyDefault: PropTypes.bool,
-  getIconUrlFromTokenId: PropTypes.func.isRequired
+  getIconUrlFromTokenId: PropTypes.func.isRequired,
+  containerStyle: PropTypes.object,
+  logoStyle: PropTypes.object,
 };
 
 
