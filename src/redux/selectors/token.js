@@ -12,7 +12,7 @@ const getIconUrlFromTokenId = createSelector(
   pTokens,
   (_internalTokens, _pTokens) => memoize((tokenID) => {
     const isNativeToken = tokenID === CONSTANT_COMMONS.PRV_TOKEN_ID; // PRV
-    const pToken = _pTokens.find(t => t.tokenId === tokenID);
+    const pToken = _pTokens?.find(t => t.tokenId === tokenID);
     // const formatedTokenId = String(tokenID).toLowerCase();
     let uri;
 

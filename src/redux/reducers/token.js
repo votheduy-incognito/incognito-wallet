@@ -41,8 +41,18 @@ const setBulkToken = (list, tokens) => {
   return newList;
 };
 
-const setListToken = tokens => {
-  return [...tokens];
+const setListToken = (list, tokens) => {
+  const newTokens =  tokens?.map(token => {
+    const cachedToken = list?.find(t => t.id === token.id);
+
+    // if cached token (in redux store) has its amount, keep it!
+    if (cachedToken?.amount) {
+      token.amount = cachedToken.amount;
+    }
+    return token;
+  });
+
+  return newTokens;
 };
 
 const setGettingBalance = (list, tokenSymbol) => {
@@ -89,7 +99,7 @@ const reducer = (state = initialState, action) => {
       followed: newList
     };
   case type.SET_LIST:
-    newList = setListToken(action.data);
+    newList = setListToken(state.followed, action.data);
     return {
       ...state,
       followed: newList
@@ -97,12 +107,12 @@ const reducer = (state = initialState, action) => {
   case type.SET_PTOKEN_LIST:
     return {
       ...state,
-      pTokens: setListToken(action.data)
+      pTokens: setListToken(state.followed, action.data)
     }; 
   case type.SET_INTERNAL_LIST:
     return {
       ...state,
-      internalTokens: setListToken(action.data)
+      internalTokens: setListToken(state.followed, action.data)
     }; 
   default:
     return state;
