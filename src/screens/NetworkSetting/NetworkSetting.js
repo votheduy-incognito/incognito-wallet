@@ -1,9 +1,9 @@
 import { Container, ScrollView } from '@src/components/core';
+import DialogLoader from '@src/components/DialogLoader';
+import { onClickView } from '@src/utils/ViewUtil';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import RNRestart from 'react-native-restart';
-import DialogLoader from '@src/components/DialogLoader';
-import { onClickView } from '@src/utils/ViewUtil';
 import NetworkItem, { networkItemShape } from './NetworkItem';
 
 class NetworkSetting extends Component {
@@ -30,7 +30,10 @@ class NetworkSetting extends Component {
     const { setDefaultNetwork } = this.props;
     this.setState({loading:true});
     await setDefaultNetwork(network);
-    RNRestart.Restart();
+    this.setState({ loading:false },()=>{
+      RNRestart.Restart();  
+    });
+    
     // clone data
     // this.setState({ activeNetworkId: network?.id,loading:false },()=>{
       

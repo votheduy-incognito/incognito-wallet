@@ -4,14 +4,14 @@ import { API_BASE_URL as TEMPLATE_API_BASE_URL, BEP2_URL, CRYPTO_ICON_URL, DEX_B
 const TAG = 'Config';
 const regex = /<%=.*%>/;
 
-const BUILD_VERSION = '3.2.7';
+
 const isMainnet = global.isMainnet??true;
 
 export const prefix_network = isMainnet ?'mainnet':'testnet';
 const prefix_Api = isMainnet?'':'test-';
 
 const API_BASE_URL =  String(TEMPLATE_API_BASE_URL).replace(regex,prefix_Api);
-
+const BUILD_VERSION = `3.2.7${__DEV__?'-'+API_BASE_URL:''}`;
 const EXPLORER_CONSTANT_CHAIN_URL = String(TEMPLATE_EXPLORER_CONSTANT_CHAIN_URL).replace(regex,prefix_network);
 const MASTER_NODE_ADDRESS=isMainnet?MAINNET_SERVER_ADDRESS:TESTNET_SERVER_ADDRESS;
 const DEFAULT_LIST_SERVER = KEY.DEFAULT_LIST_SERVER;
