@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, FlatList, Image, View, ScrollView, Text, TouchableOpacity, Toast } from '@src/components/core';
+import { Button, FlatList, Image, View, ScrollView, Text, TouchableOpacity, Toast, Container } from '@src/components/core';
 import { TextInput } from 'react-native';
 import BackButton from '@src/components/BackButton';
 import Icons from 'react-native-vector-icons/Ionicons';
@@ -175,26 +175,35 @@ class SearchToken extends Component {
     const tokenList = filteredTokenIds && this.getTokenList(filteredTokenIds) || tokens;
     const isEmpty = !(tokenList?.length > 0);
 
+    if (isEmpty) {
+      return (
+        <Container>
+          {this.renderEmpty()}
+        </Container>
+      );
+    }
+
     return (
-      <ScrollView>
-        {!isEmpty ? (
-          <FlatList
-            style={searchPTokenStyle.listToken}
-            data={tokenList}
-            extraData={processingTokens}
-            renderItem={this._renderItem}
-            keyExtractor={this._keyExtractor}
-          />
-        ) : this.renderEmpty()}
-        {!isEmpty ? (
-          <TouchableOpacity onPress={this.hanldeAddTokenManually}>
-            <View style={searchPTokenStyle.followBtn}>
-              <Image source={addIcon} style={searchPTokenStyle.followBtnIcon} />
-              <Text style={searchPTokenStyle.followBtnText}>Add a token manually</Text>
-            </View>
-          </TouchableOpacity>
-        ) : null}
-      </ScrollView>
+      <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
+          <ScrollView>
+            <FlatList
+              style={searchPTokenStyle.listToken}
+              data={tokenList}
+              extraData={processingTokens}
+              renderItem={this._renderItem}
+              keyExtractor={this._keyExtractor}
+            />
+          </ScrollView>
+        </View>
+
+        <TouchableOpacity style={{ height: 60}} onPress={this.hanldeAddTokenManually}>
+          <View style={searchPTokenStyle.followBtn}>
+            <Image source={addIcon} style={searchPTokenStyle.followBtnIcon} />
+            <Text style={searchPTokenStyle.followBtnText}>Add a token manually</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
     );
   }
 

@@ -7,6 +7,13 @@ import { COLORS } from '@src/styles';
 import { TouchableOpacity, View, Text, Image, ActivityIndicator } from '../core';
 import { itemStyle } from './styles';
 
+export const NETWORK_NAME_ID = {
+  BEP2: 'BEP2',
+  ERC20: 'ERC20',
+  INCOGNITO: 'INCOGNITO',
+  USE_COIN_NAME: 'USE_COIN_NAME',
+};
+
 class TokenItem extends Component {
 
   _handlePress = () => {
@@ -31,22 +38,20 @@ class TokenItem extends Component {
     return false;
   }
 
-  getNetworkName = (token) => {
-    let name = 'Unknown';
+  getNetworkNameColor = (token) => {
     let color = COLORS.black;
 
-    if (token?.isPrivateCoin) {
-      name = `${token?.name} network`;
-    } else if (token?.isERC20) {
-      name = 'ERC20';
-    } else if (token?.isBep2) {
-      name = 'BEP2';
-    } else if (token?.isIncognitoToken) {
-      name = 'Incognito network';
+    switch(token?.networkNameId) {
+    case NETWORK_NAME_ID.USE_COIN_NAME:
+    case NETWORK_NAME_ID.ERC20:
+    case NETWORK_NAME_ID.BEP2:
+      break;
+
+    case NETWORK_NAME_ID.INCOGNITO:
       color = COLORS.lightGrey1;
     }
 
-    return { name, color };
+    return color;
   };
 
   render() {
@@ -54,18 +59,18 @@ class TokenItem extends Component {
     
     if (!token) return null;
 
-    const { name: networkName, color } = this.getNetworkName(token);
+    const color = this.getNetworkNameColor(token);
 
     return (
       <View style={[ itemStyle.container, divider && itemStyle.divider ]}>
         <View style={itemStyle.logoContainer}>
           <CryptoIcon tokenId={token.tokenId} onlyDefault={!this.hasIcon()} />
         </View>
-        <View>
-          <Text style={itemStyle.name}>{token.name}</Text>
+        <View style={itemStyle.infoContainer}>
+          <Text style={itemStyle.name} numberOfLines={1} ellipsizeMode='tail'>{token.name}</Text>
           <View style={itemStyle.infoRow}>
             <Text style={[itemStyle.symbol]}>{token.symbol}</Text>
-            <Text style={[itemStyle.networkName, { color }]}> - {networkName}</Text>
+            <Text style={[itemStyle.networkName, { color }]}> - {token?.networkName}</Text>
           </View>
         </View>
         <View style={itemStyle.toggleWrapper}>

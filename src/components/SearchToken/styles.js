@@ -21,10 +21,13 @@ export const itemStyle = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: COLORS.lightGrey6
   },
+  infoContainer: {
+    flex: 1,
+  },
   toggleWrapper: {
     marginLeft: 'auto',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   toggle: {
     padding: 5
@@ -34,6 +37,7 @@ export const itemStyle = StyleSheet.create({
     height: 30,
   },
   name: {
+    flex: 1,
     fontSize: 16,
   },
   symbol: {

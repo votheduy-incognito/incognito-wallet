@@ -14,6 +14,7 @@ import internalTokenModel from '@src/models/token';
 import { ExHandler } from '@src/services/exception';
 import { View } from 'react-native';
 import { CONSTANT_COMMONS } from '@src/constants';
+import { NETWORK_NAME_ID } from './TokenItem';
 import SearchToken from './SearchToken';
 import { Toast, ActivityIndicator, } from '../core';
 
@@ -23,7 +24,20 @@ const normalizeToken = ({ data, isPToken, isInternalToken }) => {
     const isERC20 = isPrivateToken && data?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20;
     const isBep2 = isPrivateToken && data?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB_BEP2;
     const isPrivateCoin = data?.type === CONSTANT_COMMONS.PRIVATE_TOKEN_TYPE.COIN;
+    let networkNameId;
+    let networkName;
 
+    if (isPrivateCoin) {
+      networkNameId = NETWORK_NAME_ID.USE_COIN_NAME;
+      networkName = `${data?.name} network`;
+    } else if (isERC20) {
+      networkNameId = NETWORK_NAME_ID.ERC20;
+      networkName = 'ERC20 network';
+    } else if (isBep2) {
+      networkNameId = NETWORK_NAME_ID.BEP2;
+      networkName = 'BEP2 network';
+    }
+    
     return ({
       tokenId: data?.tokenId,
       name: data?.name,
@@ -32,6 +46,8 @@ const normalizeToken = ({ data, isPToken, isInternalToken }) => {
       isPrivateCoin,
       isBep2,
       isERC20,
+      networkNameId,
+      networkName
     });
   }
 
@@ -40,7 +56,9 @@ const normalizeToken = ({ data, isPToken, isInternalToken }) => {
       tokenId: data?.id,
       name: data?.name,
       symbol: data?.symbol,
-      isIncognitoToken: true
+      isIncognitoToken: true,
+      networkNameId: NETWORK_NAME_ID.INCOGNITO,
+      networkName: 'Incognito network'
     });
   }
 };

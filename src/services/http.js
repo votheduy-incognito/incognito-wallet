@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { CONSTANT_CONFIGS } from '@src/constants';
+import Log from '@src/services/log';
 import { CustomError, ErrorCode, ExHandler } from './exception';
 
 const HEADERS = {'Content-Type': 'application/json'};
@@ -28,43 +29,40 @@ function addSubscriber(callback) {
 
 // Add a request interceptor
 instance.interceptors.request.use(config => {
-  // if (__DEV__) {
-  //   console.debug('Send request', config);
-  // }
+  Log.log(`http ${config?.method} ${config?.baseURL}/${config?.url}`)
+    .logDev(config);
 
   return config;
 }, error => {
-  if (__DEV__) {
-    console.warn('Send request error', error);
-  }
+  Log.log('http request error', error?.message)
+    .logDev(error);
 
   return Promise.reject(error);
 });
 
 instance.interceptors.response.use(res => {
+  const config = res?.config;
   const result = res?.data?.Result;
 
-  // if (__DEV__) {
-  //   console.debug('Request success', result);
-  // }
+  Log.logDev(`http response ${config?.url}`, result);
 
   return Promise.resolve(result);
 }, errorData => {
   const errResponse = errorData?.response;
   const originalRequest = errorData?.config;
 
-  if (__DEV__) {
-    console.warn('Request failed', errResponse);
-  }
+  Log.log(`http respone error ${originalRequest?.method} ${originalRequest?.url}`)
+    .logDev(errorData);
 
   // can not get response, alert to user
   if (errorData?.isAxiosError && !errResponse) {
-    console.log('errorData', errorData);
     return new ExHandler(new CustomError(ErrorCode.network_make_request_failed)).throw();
   }
 
   // Unauthorized
   if (errResponse.status === 401) {
+    Log.log('Token was expired');
+
     if (!isAlreadyFetchingAccessToken) {
       isAlreadyFetchingAccessToken = true;
       if (typeof renewToken === 'function') {
