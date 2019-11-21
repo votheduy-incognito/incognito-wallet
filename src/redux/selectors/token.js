@@ -34,7 +34,7 @@ const getIconUrlFromTokenId = createSelector(
       // dont use incognito tokens for now
       uri = null;
     }
-    console.log('uri', uri);
+
     return uri;
   })
 );
