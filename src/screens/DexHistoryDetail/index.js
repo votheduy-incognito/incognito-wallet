@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { View } from '@components/core';
 import HeaderBar from '@components/HeaderBar/HeaderBar';
 import {COLORS} from '@src/styles';
-import {MAX_TRIED, MESSAGES, PRV, SHORT_WAIT_TIME} from '@screens/Dex/constants';
+import {MESSAGES, PRV, SHORT_WAIT_TIME, MAX_WAITING_TIME} from '@screens/Dex/constants';
 import {CONSTANT_COMMONS} from '@src/constants';
 import tokenService from '@services/wallet/tokenService';
 import accountService from '@services/wallet/accountService';
@@ -12,12 +12,12 @@ import Toast from '@components/core/Toast/Toast';
 import {ExHandler} from '@services/exception';
 import {DEX} from '@utils/dex';
 import {updateHistory, getHistoryStatus} from '@src/redux/actions/dex';
-import DexHistory from '@src/screens/DexHistory';
 import {connect} from 'react-redux';
-import FullScreenLoading from '@components/FullScreenLoading/index';
 import TradeHistory from './TradeHistory';
 import WithdrawHistory from './WithdrawHistory';
 import DepositHistory from './DepositHistory';
+
+const MAX_TRIED = MAX_WAITING_TIME / SHORT_WAIT_TIME;
 
 const options = {
   title: 'Transaction details',
@@ -46,6 +46,8 @@ const sendPToken = (wallet, fromAccount, toAccount, token, amount, paymentInfo, 
     }
   };
 
+  console.debug('SEND PTOKEN', tokenObject, amount, prvFee, tokenFee, fromAccount.AccountName);
+
   return tokenService.createSendPToken(
     tokenObject,
     prvFee,
@@ -62,7 +64,7 @@ const sendPRV = async (wallet, fromAccount, toAccount, amount, prvFee = 0) => {
     amount: amount
   }];
 
-  console.debug('SEND PRV', paymentInfos, prvFee, fromAccount.AccountName);
+  console.debug('SEND PRV', paymentInfos, amount, prvFee, fromAccount.AccountName);
 
   return accountService.createAndSendNativeToken(paymentInfos, prvFee, true, fromAccount, wallet);
 };
@@ -100,7 +102,7 @@ const DexHistoryDetail = ({ navigation, wallet, updateHistory, getHistoryStatus 
     const { tokenId, amount, networkFee, networkFeeUnit, pDecimals, paymentAddress, account: accountName, tokenSymbol, tokenName } = history;
     const token = { id: tokenId, symbol: tokenSymbol, pDecimals, name: tokenName || '' };
     const account = { AccountName: accountName, PaymentAddress: paymentAddress };
-    const fee = _.floor(networkFee, 0);
+    const fee = _.floor(networkFee / 2, 0);
 
     WithdrawHistory.currentWithdraw = history;
     setLoading(true);

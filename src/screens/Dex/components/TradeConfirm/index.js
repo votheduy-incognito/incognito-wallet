@@ -125,12 +125,20 @@ class TradeConfirm extends React.Component {
 
   handleSelectFee = (type) => {
     const { inputToken } = this.props;
+    const { networkFee, pDecimals: previousPDecimals } = this.state;
+    const networkFeeNumber = _.toNumber(networkFee.replace ? networkFee.replace(/,/g, '') : 0);
+    const pDecimals = type === inputToken.symbol ? inputToken.pDecimals : PRV.pDecimals || 0;
+
+    if (networkFee && !_.isNaN(networkFeeNumber)) {
+      const originalNetworkFee = convertUtil.toOriginalAmount(networkFeeNumber, previousPDecimals);
+      const newNetworkFee = formatUtil.amountFull(originalNetworkFee, pDecimals);
+      this.setState({ networkFee: newNetworkFee, pDecimals });
+    }
+
     this.setState({
       networkFeeUnit: type,
-      pDecimals: type === inputToken.symbol ? inputToken.pDecimals : PRV.pDecimals || 0,
+      pDecimals,
     });
-
-    console.debug('SELECT FEE TYPE', type, type === inputToken.symbol ? inputToken.pDecimals : PRV.pDecimals || 0);
   };
 
   changeFee = (text) => {
@@ -266,9 +274,8 @@ class TradeConfirm extends React.Component {
       expandNetworkFee,
       supportedFeeTypes,
       networkFeeError,
+      pDecimals,
     } = this.state;
-    const { inputToken } = this.props;
-    const pDecimals = networkFeeUnit === inputToken.symbol ? inputToken.pDecimals : PRV.pDecimals || 0;
     const { displayFee, feeInput } = formatFee(networkFee, pDecimals);
 
     return (

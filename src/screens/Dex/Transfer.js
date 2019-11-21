@@ -27,8 +27,10 @@ import tokenService from '@services/wallet/tokenService';
 import {DepositHistory, WithdrawHistory} from '@models/dexHistory';
 import Toast from '@components/core/Toast/Toast';
 import TransferSuccessPopUp from './components/TransferSuccessPopUp';
-import {PRV, WAIT_TIME, MESSAGES, MIN_INPUT} from './constants';
+import {PRV, WAIT_TIME, MESSAGES, MIN_INPUT, MULTIPLY, MAX_WAITING_TIME} from './constants';
 import { mainStyle, tokenStyle } from './style';
+
+const MAX_TRIED = MAX_WAITING_TIME / WAIT_TIME;
 
 class Transfer extends React.PureComponent {
   constructor(props) {
@@ -69,7 +71,7 @@ class Transfer extends React.PureComponent {
         resolve(balance);
       }
 
-      if (tried++ > 10) {
+      if (tried++ > MAX_TRIED) {
         reject(MESSAGES.SOMETHING_WRONG);
       }
     };
@@ -91,6 +93,8 @@ class Transfer extends React.PureComponent {
       }
     };
 
+    console.debug('SEND PTOKEN', paymentInfo, fromAccount.AccountName, toAccount.AccountName, amount, prvFee, tokenFee, tokenObject);
+
     return tokenService.createSendPToken(
       tokenObject,
       prvFee,
@@ -109,7 +113,7 @@ class Transfer extends React.PureComponent {
       amount: amount
     }];
 
-    console.debug('SEND PRV', paymentInfos, prvFee, fromAccount.AccountName);
+    console.debug('SEND PRV', paymentInfos, fromAccount.AccountName, toAccount.AccountName, amount, prvFee);
 
     return accountService.createAndSendNativeToken(paymentInfos, prvFee, true, fromAccount, wallet);
   };
@@ -135,7 +139,7 @@ class Transfer extends React.PureComponent {
   async withdraw({ token, amount, account, fee: rawFee }) {
     const { dexMainAccount, dexWithdrawAccount, onAddHistory, onUpdateHistory } = this.props;
     const { waitUntil, sendPRV, sendPToken, checkCorrectBalance } = this;
-    const fee = rawFee / 2;
+    const fee = _.floor(rawFee / 2, 0);
 
     let newHistory;
     let res1;
@@ -151,7 +155,7 @@ class Transfer extends React.PureComponent {
         res2 = await this.sendPRV(dexWithdrawAccount, account, amount, fee);
       } else {
         const {transfer} = this.state;
-        const {feeUnit, fee} = transfer;
+        const {feeUnit} = transfer;
         const paymentInfo = feeUnit === PRV.symbol ? {
           paymentAddressStr: dexWithdrawAccount.PaymentAddress,
           amount: fee,
@@ -388,7 +392,7 @@ class Transfer extends React.PureComponent {
       fee,
       feeUnit,
       feeUnitByTokenId,
-      multiply: transfer.action === 'deposit' ? 1 : 10,
+      multiply: transfer.action === 'deposit' ? 1 : MULTIPLY,
       error,
       chainError : null,
     });

@@ -1,5 +1,5 @@
 import types from '@src/redux/types/dex';
-import LocalDatabase from '@utils/LocalDatabase';
+import LocalDatabase from '@src/utils/LocalDatabase';
 
 const initialState = {
   histories: [],

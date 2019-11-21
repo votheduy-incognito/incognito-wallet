@@ -50,6 +50,11 @@ export const MESSAGES = {
   WITHDRAW_BALANCE: 'PDexWithdraw account balance is insufficient',
   SOMETHING_WRONG: 'Something got stuck. Please make the withdrawal again.',
 };
+export const MILLISECOND = 1;
+export const SECOND = 1000 * MILLISECOND;
+export const MINUTE = 60 * SECOND;
 export const MIN_INPUT = 1;
 export const MIN_VALUE = 50;
 export const MAX_TRIED = 50;
+export const MAX_WAITING_TIME = 5 * MINUTE;
+export const MULTIPLY = 6;
