@@ -1,7 +1,7 @@
 import { KEY } from '@src/services/wallet/Server';
 
 // import { isMainnet } from './config';
-const isMainnet = global.isMainnet;
+const isMainnet = global.isMainnet??true;
 const prefix_network  = 'testnet';
 const KEYS =  {
   PASSPHRASE_KEY: '$password',
@@ -25,7 +25,8 @@ const KEYS_TESTNET =  {
   USER_UNFOLLOWING_TOKEN_ID_LIST: `${prefix_network}_$USER_UNFOLLOWING_TOKEN_ID_LIST`
 };
 
-const MERGE_KEY = isMainnet? KEYS:KEYS_TESTNET;
+// const MERGE_KEY = isMainnet? KEYS:KEYS_TESTNET;
+const MERGE_KEY =  KEYS;
 export default {
   ...MERGE_KEY,
   SERVERS: KEY.SERVER
