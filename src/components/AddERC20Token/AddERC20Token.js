@@ -39,7 +39,6 @@ class AddERC20Token extends Component {
 
   render() {
     const { isSearching, onAdd, data } = this.props;
-
     return (
       <Form initialValues={data && this.processFormData(data)} onChange={this.handleFormChange} style={styles.container}>
         {({ handleSubmit, submitting }) => (
@@ -96,10 +95,10 @@ class AddERC20Token extends Component {
 AddERC20Token.defaultProps = {
   isSearching: false,
   data: {
-    bep2symbol: '',
     symbol: '',
     name: '',
-    originalSymbol: ''
+    address: '',
+    decimals: null
   }
 };
 
@@ -108,10 +107,10 @@ AddERC20Token.propTypes = {
   onSearch: PropTypes.func.isRequired,
   isSearching: PropTypes.bool,
   data: PropTypes.shape({
-    bep2symbol: PropTypes.string.isRequired,
     symbol: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    originalSymbol: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired,
+    decimals: PropTypes.number.isRequired,
   })
 };
 

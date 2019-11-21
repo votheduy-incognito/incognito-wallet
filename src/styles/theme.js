@@ -21,7 +21,7 @@ const text = {
 
 const header = {
   headerHeight:  DECOR.scaleInApp(55),
-  backgroundColor: COLORS.primary,
+  backgroundColor: COLORS.dark4,
   headerTintColor: COLORS.dark1
 };
 const opacityButton = {

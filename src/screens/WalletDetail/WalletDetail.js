@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Text, Button, View, ActivityIndicator, Image, TouchableScale} from '@src/components/core';
+import {Text, View, ActivityIndicator, Image, TouchableScale} from '@src/components/core';
 import ROUTE_NAMES from '@src/router/routeNames';
 import { COLORS } from '@src/styles';
 import HistoryToken from '@src/components/HistoryToken';
@@ -52,27 +52,34 @@ class WalletDetail extends Component {
   }
 
   renderActionButton = ({ label, icon, onPress }) => (
-    <TouchableScale style={styles.actionButton} onPress={onPress}>
-      <Image source={icon} style={styles.actionButtonIcon} />
-      <Text>{label}</Text>
+    <TouchableScale onPress={onPress} style={styles.actionButton}>
+      <View style={styles.buttonImg}>
+        <Image source={icon} style={styles.actionButtonIcon} />
+      </View>
+      {this.renderText(label, { style: styles.buttonText })}
     </TouchableScale>
   );
 
-  render() {
-    const { selectedPrivacy, navigation, isGettingBalanceList } = this.props;
-    const { isDeposable } = selectedPrivacy;
+  renderText = (text, { style, ...props } = {}) => {
+    const { theme } = this.props;
+    return <Text numberOfLines={1} ellipsizeMode='tail' {...props} style={[style, { color: theme?.textColor }]}>{text}</Text>;
+  }
 
+  render() {
+    const { selectedPrivacy, navigation, isGettingBalanceList, theme } = this.props;
+    const { isDeposable } = selectedPrivacy;
     return (
       <View style={styles.container}>
-        <View style={styles.boxHeader}>
+        <View style={[styles.boxHeader, { backgroundColor: theme?.backgroundColor }]}>
           <View style={styles.boxBalance}>
             {
               isGettingBalanceList?.includes(selectedPrivacy.tokenId)
                 ? <ActivityIndicator color={COLORS.white} />
                 : (
-                  <Text style={styles.balance}>
-                    {formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy.pDecimals)} {selectedPrivacy.symbol}
-                  </Text>
+                  <View style={styles.balanceContainer}>
+                    {this.renderText(formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy.pDecimals), { style: styles.balance })}
+                    {this.renderText(selectedPrivacy.symbol, { style: styles.balanceSymbol })}
+                  </View>
                 )
             }
           </View>
@@ -109,7 +116,8 @@ WalletDetail.propTypes = {
   navigation: PropTypes.object.isRequired,
   selectedPrivacy: PropTypes.object.isRequired,
   hanldeLoadBalance: PropTypes.func.isRequired,
-  isGettingBalanceList: PropTypes.array.isRequired
+  isGettingBalanceList: PropTypes.array.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 export default WalletDetail;

@@ -63,11 +63,11 @@ export class AddBep2TokenContainer extends Component {
 
   handleSearch = async (values) => {
     try {
-      const { bep2symbol } = values;
+      const { originalSymbol } = values;
       this.setState({data: null, isSearching: true});
       // symbol
-      if (bep2symbol) {
-        await this.detectBEP2Token(bep2symbol);
+      if (originalSymbol) {
+        await this.detectBEP2Token(originalSymbol);
       }
     } catch (e) {
       new ExHandler(e, 'Can not search this BEP2 token, please try again.').showErrorToast();

@@ -27,7 +27,7 @@ const StatusBar = React.memo(({ currentScreen }) => {
     backgroundColor = COLORS.blue1;
     textColor = 'light-content';
   } else {
-    backgroundColor = COLORS.primary;
+    backgroundColor = COLORS.dark4;
     textColor = 'light-content';
   }
 

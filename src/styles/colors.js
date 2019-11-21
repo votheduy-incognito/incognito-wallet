@@ -12,6 +12,7 @@ const COLORS = {
   dark1: '#101111',
   dark2: '#0D3A3C',
   dark3: '#014E52',
+  dark4: '#0A3A3C',
   lightGrey1: '#8C9C9D',
   lightGrey2: '#B9C9CA',
   lightGrey3: '#9AB7B8',
