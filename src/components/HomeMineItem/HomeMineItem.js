@@ -8,7 +8,7 @@ import DeviceService from '@src/services/DeviceService';
 import NodeService, { LIST_ACTION } from '@src/services/NodeService';
 import VirtualNodeService from '@src/services/VirtualNodeService';
 import LocalDatabase from '@src/utils/LocalDatabase';
-import ViewUtil from '@src/utils/ViewUtil';
+import ViewUtil, { onClickView } from '@src/utils/ViewUtil';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -91,6 +91,12 @@ class HomeMineItem extends React.Component {
     const {balance } = this.state;
     return balance ==-1;
   }
+
+  handleGotoDetailScreen = onClickView(()=>{
+    const {onPress} = this.props;
+    const {item} = this.state;
+    onPress && onPress(item);
+  });
   checkActive = async ()=>{
     const {item} = this.props;
     let {deviceInfo} = this.state;
@@ -154,7 +160,7 @@ class HomeMineItem extends React.Component {
   }
   render() {
     const {item,deviceInfo,balance} = this.state;
-    const {containerStyle,onPress} = this.props;
+    const {containerStyle} = this.props;
 
     const styleStatus = this.getStyleStatus();
     const isFetchedBalance = !_.isNil(balance) && !_.isNaN(balance);
@@ -165,12 +171,13 @@ class HomeMineItem extends React.Component {
 
       if(deviceInfo.isSyncing()){
         if(!isFetchedBalance){
-          textErrorDevice = 'Waiting to become a validator';
+          // textErrorDevice = 'Waiting to become a validator';
+          textErrorDevice = deviceInfo.Type == DEVICES.VIRTUAL_TYPE? 'Waiting to become a validator':'You’re all set up!\nEarning will begin within 12 hours.';
         }else if(balance == -1){
           textErrorDevice = descriptionMasterNodeOffline;
         }
       }else if(deviceInfo.isReady()){
-        textErrorDevice = deviceInfo.Type == DEVICES.VIRTUAL_TYPE? 'Tap here to stake':'Waiting to become a validator';
+        textErrorDevice = deviceInfo.Type == DEVICES.VIRTUAL_TYPE? 'Tap here to stake':'You’re all set up!\nEarning will begin within 12 hours.';
       }else if(!isFetchedBalance && deviceInfo.isOffline()){
         textErrorDevice = descriptionNodeOffline;
       }else if(balance == -1){
@@ -190,9 +197,7 @@ class HomeMineItem extends React.Component {
             reloadList();
           }},{ text: 'Cancel'}],{cancelable: true});
         }}
-        onPress={()=>{
-          onPress(item);
-        }}
+        onPress={this.handleGotoDetailScreen}
       >
         <Image style={styles.imageLogo} source={this.getIconWithType()} />
         <View style={styles.groupLeft}>

@@ -1,12 +1,12 @@
-import React from 'react';
+import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
-import {StatusBar as RNComponent, View, Platform} from 'react-native';
+import React from 'react';
+import { Platform, StatusBar as RNComponent, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import {COLORS} from '@src/styles';
 
-const whiteScreens = ['HomeMine', 'Game', 'DApps', 'GetStarted'];
-const blue2Screens = ['DetailDevice'];
-const blue1Screens = ['Wizard'];
+const whiteScreens = ['Game', 'DApps', 'GetStarted'];
+const blue2Screens = [];
+const blue1Screens = ['Wizard','HomeMine','DetailDevice'];
 const dark2Screen = ['Dex', 'DexHistory', 'DexHistoryDetail'];
 
 const isIOS = Platform.OS === 'ios';
