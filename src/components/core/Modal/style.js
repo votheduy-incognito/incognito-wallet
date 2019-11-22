@@ -6,11 +6,11 @@ export default StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 5,
     position: 'absolute',
-    right: 10,
+    left: 10,
   },
   container: {
     flex: 1,
-    paddingTop: 0
+    paddingTop: 0,
   },
   containerSafeView: {
     flex: 1,
@@ -18,15 +18,14 @@ export default StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    backgroundColor: COLORS.transparent,
+    backgroundColor: THEME.header.backgroundColor,
     flexDirection: 'row',
     height: THEME.modal.headerHeight,
     justifyContent: 'center',
-
   },
   headerText: {
     fontSize: 20,
     marginHorizontal: 60,
-    color: COLORS.dark1
+    color: COLORS.white
   }
 });

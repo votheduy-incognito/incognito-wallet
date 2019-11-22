@@ -40,7 +40,7 @@ class OptionMenu extends Component {
             />
           )}
         </TouchableOpacity>
-        <Modal animationType="slide" transparent visible={open}>
+        <Modal animationType="slide" transparent visible={open} close={this.handleToggle}>
           <TouchableOpacity
             onPress={() => this.handleToggle(false)}
             style={styleSheet.contentContainer}
