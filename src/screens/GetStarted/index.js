@@ -1,7 +1,6 @@
 import { login } from '@src/services/auth';
-import { CONSTANT_KEYS,CONSTANT_CONFIGS } from '@src/constants';
-
-import { reloadWallet } from '@src/redux/actions/wallet';
+import { CONSTANT_KEYS, CONSTANT_CONFIGS } from '@src/constants';
+import { reloadWallet, reloadAccountList } from '@src/redux/actions/wallet';
 import { followDefaultTokens } from '@src/redux/actions/account';
 import { getPTokenList } from '@src/redux/actions/token';
 import { accountSeleclor } from '@src/redux/selectors';
@@ -15,6 +14,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import { DEX } from '@src/utils/dex';
+import accountService from '@src/services/wallet/accountService';
 import GetStarted from './GetStarted';
 
 class GetStartedContainer extends Component {
@@ -34,9 +35,28 @@ class GetStartedContainer extends Component {
 
   onError = msg => this.setState({ errorMsg: msg });
 
-  goHome = () => {
+  goHome = async () => {
     const { navigation } = this.props;
+
+    const wallet = await this.getExistedWallet();
+
+    let accounts = await wallet.listAccount();
+
+    if(!accounts.find(item => item.AccountName === DEX.MAIN_ACCOUNT)) {
+      await accountService.createAccount(DEX.MAIN_ACCOUNT, wallet);
+    }
+
+    if(!accounts.find(item => item.AccountName === DEX.WITHDRAW_ACCOUNT)) {
+      accounts = await wallet.listAccount();
+      const dexMainAccount = accounts.find(item => item.AccountName === DEX.MAIN_ACCOUNT);
+      await accountService.createAccount(DEX.WITHDRAW_ACCOUNT, wallet, accountService.parseShard(dexMainAccount));
+    }
+
+    const { reloadAccountList } = this.props;
+    reloadAccountList();
+
     navigation.navigate(routeNames.Home,{isNeedUpgrade: this.isNeedUpgrade});
+    // navigation.navigate(routeNames.Dex);
   };
 
   getExistedWallet = async () => {
@@ -56,7 +76,7 @@ class GetStartedContainer extends Component {
 
   initApp = async () => {
     try {
-      
+
       this.setState({ isInitialing: true });
       console.log('initApp CONSTANT_CONFIGS = ',CONSTANT_CONFIGS);
       const serverLocalList = await serverService.get()??[];
@@ -165,7 +185,7 @@ class GetStartedContainer extends Component {
   }
 }
 
-const mapDispatch = { reloadWallet, getPTokenList, followDefaultTokens };
+const mapDispatch = { reloadWallet, getPTokenList, followDefaultTokens, reloadAccountList };
 
 const mapState = state => ({
   account: accountSeleclor.defaultAccount(state),
@@ -176,6 +196,7 @@ GetStartedContainer.propTypes = {
   navigation: PropTypes.object.isRequired,
   getPTokenList: PropTypes.func.isRequired,
   account: PropTypes.object,
+  reloadAccountList: PropTypes.func.isRequired,
   followDefaultTokens: PropTypes.func.isRequired,
 };
 

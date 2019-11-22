@@ -18,6 +18,7 @@ import icDexActive from '@src/assets/images/icons/ic_tab_dex_active.png';
 import icDexInactive from '@src/assets/images/icons/ic_tab_dex_deactive.png';
 import HeaderBar from '@src/components/HeaderBar';
 import Game from '@src/screens/Game';
+import Dex from '@src/screens/Dex';
 import {FontStyle} from '@src/styles/TextStyle';
 import MinerNavigator from './MinerNavigator';
 import ROUTE_NAMES from './routeNames';
@@ -92,7 +93,7 @@ const Tab = createMaterialTopTabNavigator({
   [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { header: () => null, tabBarLabel: renderTab('wallet', 'Wallet') }),
   [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Nodes', header: () => null, tabBarLabel: renderTab('miner', 'Nodes') }),
   [ROUTE_NAMES.DApps]: navigationOptionsHandler(Game, { title: 'pApps', header: () => null, tabBarLabel: renderTab('dapps', 'pApps')}),
-  [ROUTE_NAMES.Dex]: navigationOptionsHandler(Game, { title: 'pDEX', header: () => null, tabBarLabel: renderTab('dex', 'pDEX')}),
+  [ROUTE_NAMES.Dex]: navigationOptionsHandler(Dex, { title: 'pDex', header: () => null, tabBarLabel: renderTab('dex', 'pDex')}),
 }, {
   initialRouteName: ROUTE_NAMES.Home,
   swipeEnabled: false,

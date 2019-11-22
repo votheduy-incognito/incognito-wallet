@@ -27,7 +27,7 @@ class EstimateFeeContainer extends Component {
   }
 
   componentDidMount() {
-    // select default type 
+    // select default type
     this.selectDefaultFeeType();
   }
 
@@ -57,13 +57,13 @@ class EstimateFeeContainer extends Component {
     const { types, selectedPrivacy } = this.props;
 
     const defaultType = types.find(t => t.tokenId === selectedPrivacy.tokenId) || types.find(t => t.tokenId === CONSTANT_COMMONS.PRV_TOKEN_ID) || types[0];
-    
+
     if (defaultType) {
       this.handleNewFeeData({
         feeUnitByTokenId: defaultType.tokenId,
         feeUnit: defaultType.symbol
       });
-    } 
+    }
   }
 
   handleNewFeeData = ({ fee, feeUnitByTokenId, feeUnit } = {}) => {
@@ -89,7 +89,7 @@ class EstimateFeeContainer extends Component {
     let minFee;
     try {
       const { userFee } = this.state;
-      const { selectedPrivacy, amount, toAddress, estimateFeeData: { feeUnitByTokenId } } = this.props;
+      const { selectedPrivacy, amount, toAddress, estimateFeeData: { feeUnitByTokenId }, multiply } = this.props;
 
       if (!amount || !toAddress || !selectedPrivacy) {
         return;
@@ -113,9 +113,10 @@ class EstimateFeeContainer extends Component {
         throw new CustomError(ErrorCode.estimate_fee_does_not_support_type_of_fee);
       }
 
+      fee = fee * multiply;
       minFee = fee;
       fee = userFee > fee ? userFee : fee;
-      
+
       this.setState({ estimateErrorMsg: null });
 
       return fee;
@@ -130,15 +131,15 @@ class EstimateFeeContainer extends Component {
       this.setState({ isGettingFee: false, minFee });
       this.handleNewFeeData({ fee });
     }
-  }
+  };
 
   _estimateFeeForMainCrypto = async ()=> {
     try {
-      const { account, wallet, selectedPrivacy, toAddress, amount } = this.props;
+      const { account, wallet, selectedPrivacy, toAddress, amount, dexBalance } = this.props;
       const fromAddress = selectedPrivacy?.paymentAddress;
       const accountWallet = wallet.getAccountByName(account?.name);
 
-      if (!selectedPrivacy.amount) throw new CustomError(ErrorCode.estimate_fee_with_zero_balance);
+      if (!selectedPrivacy.amount && !dexBalance) throw new CustomError(ErrorCode.estimate_fee_with_zero_balance);
 
       const fee = await getEstimateFeeForNativeToken(
         fromAddress,
@@ -146,7 +147,7 @@ class EstimateFeeContainer extends Component {
         convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals),
         accountWallet,
       );
-      
+
       return fee;
     } catch(e){
       throw e;
@@ -155,7 +156,7 @@ class EstimateFeeContainer extends Component {
 
   _estimateFeeForToken = async () => {
     try{
-      const { account, wallet, selectedPrivacy, toAddress, amount } = this.props;
+      const { account, wallet, selectedPrivacy, toAddress, amount, dexBalance } = this.props;
       const fromAddress = selectedPrivacy?.paymentAddress;
       const accountWallet = wallet.getAccountByName(account?.name);
       const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
@@ -172,7 +173,7 @@ class EstimateFeeContainer extends Component {
         }
       };
 
-      if (!selectedPrivacy.amount) throw new CustomError(ErrorCode.estimate_fee_with_zero_balance);
+      if (!selectedPrivacy.amount && !dexBalance) throw new CustomError(ErrorCode.estimate_fee_with_zero_balance);
 
       const fee = await getEstimateFeeForPToken(
         fromAddress,
@@ -181,7 +182,7 @@ class EstimateFeeContainer extends Component {
         tokenObject,
         accountWallet,
       );
-      
+
       return fee;
     } catch(e){
       throw e;
@@ -190,7 +191,7 @@ class EstimateFeeContainer extends Component {
 
   _handleEstimateTokenFee = async () => {
     try{
-      const { account, wallet, selectedPrivacy, toAddress, amount } = this.props;
+      const { account, wallet, selectedPrivacy, toAddress, amount, dexBalance } = this.props;
       const fromAddress = selectedPrivacy?.paymentAddress;
       const accountWallet = wallet.getAccountByName(account?.name);
       const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
@@ -207,7 +208,7 @@ class EstimateFeeContainer extends Component {
         }
       };
 
-      if (!selectedPrivacy.amount) throw new CustomError(ErrorCode.estimate_fee_with_zero_balance);
+      if (!selectedPrivacy.amount && !dexBalance) throw new CustomError(ErrorCode.estimate_fee_with_zero_balance);
 
       const fee = await getEstimateFeeForPToken(
         fromAddress,
@@ -274,7 +275,7 @@ class EstimateFeeContainer extends Component {
 }
 
 const mapState = (state, props) => ({
-  selectedPrivacy: props?.selectedPrivacy || selectedPrivacySeleclor.selectedPrivacy(state),
+  selectedPrivacy: props?.selectedPrivacy || selectedPrivacySeleclor.selectedPrivacy(state, props.dexToken),
   account: accountSeleclor.getAccountByName(state)(props.accountName),
   wallet: state.wallet,
 });
@@ -292,6 +293,9 @@ EstimateFeeContainer.defaultProps = {
   }],
   feeText: null,
   onEstimateFailed: null,
+  dexToken: null,
+  dexBalance: 0,
+  multiply: 1,
 };
 
 EstimateFeeContainer.propTypes = {
@@ -314,6 +318,9 @@ EstimateFeeContainer.propTypes = {
   feeText: PropTypes.string,
   onEstimateFailed: PropTypes.func,
   onNewFeeData: PropTypes.func.isRequired,
+  dexToken: PropTypes.object,
+  dexBalance: PropTypes.number,
+  multiply: PropTypes.number,
 };
 
 

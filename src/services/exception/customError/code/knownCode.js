@@ -74,6 +74,10 @@ const addErc20Token = {
   addErc20Token_not_found: knownError(-31)
 };
 
+const dex = {
+  WITHDRAW_FAIL: knownError(-40),
+};
+
 
 export default {
   ...app,
@@ -89,4 +93,5 @@ export default {
   ...dapps,
   ...addBep2Token,
   ...addErc20Token,
+  ...dex,
 };

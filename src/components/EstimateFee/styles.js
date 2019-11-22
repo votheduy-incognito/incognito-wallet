@@ -73,7 +73,7 @@ const style = StyleSheet.create({
   changeFeeModal: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.overlayBlackLight
+    backgroundColor: COLORS.overlayBlackLight,
   },
   changeFeeForm: {
     flexDirection: 'column',
@@ -83,6 +83,7 @@ const style = StyleSheet.create({
     maxWidth: 350,
     minHeight: 200,
     padding: 20,
+    paddingVertical: 30,
     backgroundColor: COLORS.white,
     shadowOffset: {
       height: 2,
@@ -94,30 +95,34 @@ const style = StyleSheet.create({
     shadowRadius: 1.2,
     borderRadius: 6,
   },
+  feeInputWrapper: {
+    marginHorizontal: 25,
+    marginBottom: 40,
+    marginTop: 20,
+    flexDirection: 'row',
+  },
   changeFeeInput: {
     flex: 1,
     minWidth: 200,
-    marginBottom: 20
   },
   changeFeeBtnGroup: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginTop: 50,
   },
   changeFeeBtn: {
-    width: 150,
-    height: 30,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: COLORS.primary,
-    borderRadius: 15,
+    marginLeft: 5,
     backgroundColor: COLORS.transparent,
-    marginHorizontal: 2,
-    marginVertical: 2,
+    borderColor: COLORS.primary,
+    borderBottomWidth: 1,
   },
   changeFeeSubmitBtn: {
-    backgroundColor: COLORS.primary
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
+    borderBottomWidth: 1,
+    marginRight: 5,
   },
   changeFeeSubmitText: {
     color: COLORS.white
@@ -142,9 +147,13 @@ const style = StyleSheet.create({
     fontSize: 16,
   },
   feeTextTitle: {
-    fontSize: 14,
+    fontSize: 16,
+    textAlign: 'center',
     color: '#657576',
     marginBottom: 12
+  },
+  rateText: {
+    fontSize: 14,
   }
 });
 

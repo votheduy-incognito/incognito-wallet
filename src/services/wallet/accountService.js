@@ -62,7 +62,7 @@ export default class Account {
     // paymentInfos: payment address string, amount in Number (miliconstant)
     // await Wallet.resetProgressTx();
     // console.log('Wallet.ProgressTx: ', Wallet.ProgressTx);
-    const indexAccount = wallet.getAccountIndexByName(account.name);
+    const indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
 
     console.log('Account', account);
 
@@ -242,9 +242,9 @@ export default class Account {
   // }
 
   // create new account hienton
-  static async createAccount(accountName, wallet) {
+  static async createAccount(accountName, wallet, initShardID) {
     const activeShardNumber = await getActiveShard();
-    let shardID = CONSTANT_CONFIGS.SHARD_ID;
+    let shardID = _.isNumber(initShardID) ? initShardID : CONSTANT_CONFIGS.SHARD_ID;
     if (
       shardID &&
       (parseInt(shardID) >= parseInt(activeShardNumber) ||
@@ -278,17 +278,26 @@ export default class Account {
   }
 
   /**
-   * 
-   * @param {object} account 
-   * @param {object} wallet 
-   * @param {string} tokenId 
-   * 
+   *
+   * @param {object} account
+   * @param {object} wallet
+   * @param {string} tokenId
+   *
    * If `tokenId` is not passed, this method will return native token (PRV) balance, else custom token balance (from `tokenId`)
    */
   static async getBalance(account, wallet, tokenId) {
-    const indexAccount = wallet.getAccountIndexByName(account.name);
-    return await wallet.MasterAccount.child[indexAccount].getBalance(tokenId);
+    const indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
+
+    return wallet.MasterAccount.child[indexAccount].getBalance(tokenId);
   }
+
+  static parseShard(account) {
+    const bytes = account.PublicKeyBytes;
+    const arr = bytes.split(',');
+    const lastByte = arr[arr.length - 1];
+    return lastByte % 8;
+  }
+
 
   static getFollowingTokens(account, wallet){
     const indexAccount = wallet.getAccountIndexByName(account.name);
@@ -381,9 +390,9 @@ export default class Account {
   }
 
   /**
-   * 
-   * @param {string} blsKey 
-   * @param {object} wallet 
+   *
+   * @param {string} blsKey
+   * @param {object} wallet
    * @returns :AccountModel: template
    */
   static async getAccountWithBLSPubKey(blsKey,wallet) {
@@ -407,6 +416,7 @@ export default class Account {
     }
     return null;
   }
+  
   /**
    * get all of tokens that have balance in the account, even it hasnt been added to following list 
    * return array of { id: TokenID, amount }
@@ -433,5 +443,73 @@ export default class Account {
     } catch (e) {
       throw e;
     }
+  }
+
+  static async createAndSendTxWithNativeTokenContribution(wallet, account, fee, pdeContributionPairID, contributedAmount, info = '') {
+    let indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
+    let result;
+    try {
+      result = await wallet.MasterAccount.child[
+        indexAccount
+      ].createAndSendTxWithNativeTokenContribution(fee, pdeContributionPairID, contributedAmount, info);
+    } catch (e) {
+      throw e;
+    }
+    return result;
+  }
+
+  static async createAndSendPTokenContributionTx(wallet, account, tokenParam, feeNativeToken, feePToken, pdeContributionPairID, contributedAmount) {
+    let indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
+    let result;
+    try {
+      result = await wallet.MasterAccount.child[
+        indexAccount
+      ].createAndSendPTokenContributionTx(tokenParam, feeNativeToken, feePToken, pdeContributionPairID, contributedAmount);
+    } catch (e) {
+      throw e;
+    }
+    return result;
+  }
+
+  static async createAndSendNativeTokenTradeRequestTx(wallet, account, fee, tokenIDToBuyStr, sellAmount, minimumAcceptableAmount, tradingFee, info = '') {
+    let indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
+    let result;
+    try {
+      console.debug('CREATE AND SEND NATIVE TOKEN TRADE', fee, tokenIDToBuyStr, sellAmount, minimumAcceptableAmount, tradingFee, info);
+      result = await wallet.MasterAccount.child[
+        indexAccount
+      ].createAndSendNativeTokenTradeRequestTx(fee, tokenIDToBuyStr, sellAmount, minimumAcceptableAmount, tradingFee, info);
+    } catch (e) {
+      throw e;
+    }
+    return result;
+  }
+
+  static async createAndSendPTokenTradeRequestTx(wallet, account, tokenParam, feeNativeToken, feePToken, tokenIDToBuyStr, sellAmount, minimumAcceptableAmount, tradingFee) {
+    let indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
+    let result;
+
+    try {
+      console.debug('CREATE AND SEND PTOKEN TRADE', tokenParam, feeNativeToken, feePToken, tokenIDToBuyStr, sellAmount, minimumAcceptableAmount, tradingFee);
+      result = await wallet.MasterAccount.child[
+        indexAccount
+      ].createAndSendPTokenTradeRequestTx(tokenParam, feeNativeToken, feePToken, tokenIDToBuyStr, sellAmount, minimumAcceptableAmount, tradingFee);
+    } catch (e) {
+      throw e;
+    }
+    return result;
+  }
+
+  static async createAndSendWithdrawDexTx(wallet, account, fee, withdrawalToken1IDStr, withdrawalShare1Amt, withdrawalToken2IDStr, withdrawalShare2Amt, info = '') {
+    let indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
+    let result;
+    try {
+      result = await wallet.MasterAccount.child[
+        indexAccount
+      ].createAndSendWithdrawDexTx(fee, withdrawalToken1IDStr, withdrawalShare1Amt, withdrawalToken2IDStr, withdrawalShare2Amt, info);
+    } catch (e) {
+      throw e;
+    }
+    return result;
   }
 }

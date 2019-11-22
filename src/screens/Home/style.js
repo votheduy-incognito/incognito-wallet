@@ -85,9 +85,7 @@ export const homeStyle = StyleSheet.create({
     justifyContent: 'center',
   },
   followTokenIcon: {
-    color: COLORS.primary,
     marginTop: 1,
     height: 24,
-    fontSize: 24,
   },
 });

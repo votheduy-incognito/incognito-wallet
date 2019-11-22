@@ -4,11 +4,11 @@ import { Field } from 'redux-form';
 import { createForm, InputField, validator } from '@src/components/core/reduxForm';
 import { View, TouchableOpacity, Text, ActivityIndicator, Button, Modal } from '@src/components/core';
 import convert from '@src/utils/convert';
+import formatUtils from '@utils/format';
 import styles from './styles';
 
-
 const getAnotherTypeOfFee = (types, feeUnitByTokenId) => {
-  
+
   return types?.find(t => t?.tokenId !== feeUnitByTokenId);
 };
 
@@ -50,7 +50,7 @@ class EstimateFee extends Component {
 
     if (minFee) {
       const convertedMinFee = convert.toHumanAmount(minFee, feePDecimals);
-      const convertedMinFeeStr = convertedMinFee.toFixed(feePDecimals);
+      const convertedMinFeeStr = formatUtils.toFixed(convertedMinFee, feePDecimals);
       state.minFeeValidator = validator.minValue(convertedMinFee, { message: `Must be at least ${convertedMinFeeStr} ${feeUnit}` });
     }
 
@@ -73,7 +73,7 @@ class EstimateFee extends Component {
 
       if (typeof convertedFee === 'number') {
         // set current fee to the change fee input
-        rfChange(formName, 'fee', convertedFee.toFixed(feePDecimals));
+        rfChange(formName, 'fee', formatUtils.toFixed(convertedFee, feePDecimals));
       }
     });
   };
@@ -105,14 +105,14 @@ class EstimateFee extends Component {
 
     this.setState({ isShowChangeFeeInput: false });
   }
-  
+
   handleSelectFeeType = (type) => {
     const { onNewFeeData } = this.props;
     if (typeof onNewFeeData === 'function') {
       onNewFeeData({ feeUnitByTokenId: type?.tokenId, feeUnit: type?.symbol, fee: null });
     }
   }
-  
+
   onRetry = (anotherFee) => {
     if (anotherFee) {
       this.handleSelectFeeType(anotherFee);
@@ -139,26 +139,30 @@ class EstimateFee extends Component {
         <Form style={styles.changeFeeForm}>
           {({ handleSubmit }) => (
             <>
-              <Text style={styles.feeTextTitle}>The more you pay, the faster you get</Text>
-              <Field
-                component={InputField}
-                componentProps={{
-                  keyboardType: 'decimal-pad'
-                }}
-                prependView={
-                  <Text>{feeUnit}</Text>
-                }
-                name='fee'
-                placeholder='Enter new fee'
-                style={styles.changeFeeInput}
-                validate={[
-                  ...feeValidator,
-                  ...minFeeValidator ? [minFeeValidator] : []
-                ]}
-              />
+              <Text style={styles.feeTextTitle}>
+                Pay a higher fee to the network for faster transaction speeds
+              </Text>
+              <View style={styles.feeInputWrapper}>
+                <Field
+                  component={InputField}
+                  componentProps={{
+                    keyboardType: 'decimal-pad'
+                  }}
+                  prependView={
+                    <Text>{feeUnit}</Text>
+                  }
+                  name='fee'
+                  placeholder='Enter new fee'
+                  style={styles.changeFeeInput}
+                  validate={[
+                    ...feeValidator,
+                    ...minFeeValidator ? [minFeeValidator] : []
+                  ]}
+                />
+              </View>
               <View style={styles.changeFeeBtnGroup}>
-                <Button titleStyle={styles.changeFeeSubmitText} style={[styles.changeFeeBtn, styles.changeFeeSubmitBtn]} title='Use this fee' onPress={handleSubmit(this.onChangeNewFee)} />
-                <Button titleStyle={styles.changeFeeResetText} style={styles.changeFeeBtn} title={minFee > 0 ? 'Reset' : 'Close'} onPress={this.onResetFee} />
+                <Button style={[styles.changeFeeSubmitBtn]} title='Pay this fee' onPress={handleSubmit(this.onChangeNewFee)} />
+                <Button titleStyle={styles.changeFeeText} style={styles.changeFeeBtn} title={minFee > 0 ? 'Pay default fee' : 'Close'} onPress={this.onResetFee} />
               </View>
             </>
           )}
@@ -186,7 +190,6 @@ class EstimateFee extends Component {
 
     return (
       <View style={[styles.container, style]}>
-        <Text style={styles.label}>Select fee & speed</Text>
         <View style={styles.box}>
           <View>
             <View style={styles.feeTypeGroup}>
@@ -223,7 +226,7 @@ class EstimateFee extends Component {
               }
             </View>
           </View>
-          
+
           { estimateErrorMsg
             ? (
               <View style={styles.errorBox}>
@@ -235,17 +238,17 @@ class EstimateFee extends Component {
               <View style={styles.rateContainer}>
                 {
                   !Number.isFinite(fee) && !isGettingFee
-                    ? <Text style={styles.rateText}>Transaction fee will be calculated here</Text>
+                    ? <Text style={styles.rateText}>- Transaction fee will be calculated here -</Text>
                     : (
                       isGettingFee ?
-                        <ActivityIndicator /> : 
+                        <ActivityIndicator /> :
                         (
                           <>
                             <View style={styles.feeTextContainer}>
                               <Text style={styles.feeTextTitle}>{'You\'ll pay'}</Text>
                               {this.renderFeeText()}
                               <TouchableOpacity style={styles.changeFeeLightBtn} onPress={this.handleChangeFee}>
-                                <Text style={styles.changeFeeText}>Change the fee</Text>
+                                <Text style={styles.changeFeeText}>Customize fee</Text>
                               </TouchableOpacity>
                             </View>
                           </>
@@ -253,7 +256,7 @@ class EstimateFee extends Component {
                     )
                 }
               </View>
-            ) 
+            )
           }
           {this.renderChangeFee()}
         </View>

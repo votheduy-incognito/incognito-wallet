@@ -7,6 +7,7 @@ import server from './server';
 import token from './token';
 import selectedPrivacy from './selectedPrivacy';
 import app from './app';
+import dex from './dex';
 import globalReducer from './globalReducer';
 
 const rootReducer = reduceReducers(
@@ -17,6 +18,7 @@ const rootReducer = reduceReducers(
     token,
     selectedPrivacy,
     app,
+    dex,
     form: formReducer
   }),
   globalReducer

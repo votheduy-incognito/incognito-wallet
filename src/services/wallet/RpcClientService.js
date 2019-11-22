@@ -35,13 +35,12 @@ export function listPrivacyTokens() {
 }
 
 /**
- * 
+ *
  * @param {string} from Incognito Address
  * @param {string} to Incognito Address
  * @param {number} amount nano unit
  * @param {object} accountWallet get from WalletService.getAccountByName(accountName);
- * @param {bool} isPrivacy default `true`
- * 
+ *
  * Estimate fee for sending native token (PRV), fee is returned in PRV nano unit
  */
 export async function getEstimateFeeForNativeToken(
@@ -71,24 +70,24 @@ export async function getEstimateFeeForNativeToken(
 }
 
 /**
- * 
- * @param {string} from 
- * @param {string} to 
+ *
+ * @param {string} from
+ * @param {string} to
  * @param {number} amount in nano
- * @param {object} tokenObject 
+ * @param {object} tokenObject
  * @param {object} account get from WalletService.getAccountByName(accountName);
  * @param {number} feeToken  in nano
  * @param {bool} isGetTokenFee default `false`
- * 
+ *
  * Estimate fee for sending PRIVATE_TOKEN (pETH, pBTC, Incognito Custom Tokens,...) in
  * - nano PRV if `isGetTokenFee` is `false` (default)
  * - nano PRIVATE_TOKEN if `isGetTokenFee` is `true`
- * 
+ *
  * tokenObject format
- * @param {bool} Privacy 
- * @param {string} TokenID 
- * @param {string} TokenName 
- * @param {string} TokenSymbol 
+ * @param {bool} Privacy
+ * @param {string} TokenID
+ * @param {string} TokenName
+ * @param {string} TokenSymbol
  * @param {string} TokenTxType see here CONSTANT_COMMONS.TOKEN_TX_TYPE
  * @param {string} TokenAmount in nano
  * @param {string} TokenReceivers  { PaymentAddress: string, Amount: number in nano }
@@ -168,13 +167,13 @@ export async function hashToIdenticon(hashStrs) {
 }
 
 /**
- * 
- * @param {string} from 
- * @param {string} to 
- * @param {object} tokenObject 
+ *
+ * @param {string} from
+ * @param {string} to
+ * @param {object} tokenObject
  * @param {object} account get from wallet.getAccountByName(account?.name)
  * @param {bool} isPrivacyForPrivateToken for centralized = true, decentralized = false
- * 
+ *
  * tokenObject = {
       Privacy: bool,
       TokenID: string,
@@ -215,8 +214,24 @@ export async function getMaxWithdrawAmountService(
 
 export function isExchangeRatePToken(tokenID)  {
   if (typeof tokenID !== 'string') throw new Error('tokenID must be a string');
-  
+
   return getRpcClient().isExchangeRatePToken(tokenID);
+}
+
+export async function getPDEPairs() {
+  const client = await getRpcClient();
+  const beaconState = await client.getBeaconBestState();
+  return client.getPDEState(beaconState.bestState.BeaconHeight);
+}
+
+export async function getPDETradeStatus(txId) {
+  const client = await getRpcClient();
+  return client.getPDETradeStatus(txId);
+}
+
+export async function getTransactionByHash(txId) {
+  const client = await getRpcClient();
+  return client.getTransactionByHash(txId);
 }
 
 setRpcClientInterceptor();

@@ -7,6 +7,7 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import setting from '@src/assets/images/setting_white.png';
 import { TouchableWithoutFeedback } from 'react-native';
 import { Icon } from 'react-native-elements';
+import dexUtils from '@utils/dex';
 import {COLORS} from '@src/styles';
 import { homeStyle } from './style';
 
@@ -77,16 +78,19 @@ class Home extends React.Component {
             ))
             }
             <View style={homeStyle.addTokenContainer}>
-              <Button
-                title="Issue your own token"
-                onPress={handleCreateToken}
-                style={homeStyle.addTokenBtn}
-              />
+              { !dexUtils.isDEXAccount(account.name) &&
+                <Button
+                  title="Issue your own token"
+                  onPress={handleCreateToken}
+                  style={homeStyle.addTokenBtn}
+                />
+              }
               <Text style={homeStyle.followTokenTitle}>Looking for available tokens?</Text>
               <TouchableWithoutFeedback onPress={handleAddFollowToken}>
                 <View style={homeStyle.followTokenBtn}>
                   <Text style={homeStyle.followTokenText}>Follow a token</Text>
                   <Icon
+                    containerStyle={[homeStyle.followTokenIcon]}
                     name="chevron-right"
                     color={COLORS.primary}
                   />

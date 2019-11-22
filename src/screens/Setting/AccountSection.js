@@ -6,6 +6,7 @@ import ROUTE_NAMES from '@src/router/routeNames';
 import { ExHandler } from '@src/services/exception';
 import { COLORS } from '@src/styles';
 import { onClickView } from '@src/utils/ViewUtil';
+import dexUtils from '@src/utils/dex';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Icon } from 'react-native-elements';
@@ -107,6 +108,8 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, removeAccount
     }
   ];
 
+  const isDeletable = (account) => listAccount.length > 1 && !dexUtils.isDEXAccount(account?.name);
+
   return (
     <Section
       label='Your accounts'
@@ -122,7 +125,7 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, removeAccount
                   account,
                   onHandleSwitchAccount,
                   handleExportKey,
-                  listAccount.length > 1 ? handleDelete : null,
+                  isDeletable(account) ? handleDelete : null,
                   account?.name === defaultAccount?.name
                 )
             }

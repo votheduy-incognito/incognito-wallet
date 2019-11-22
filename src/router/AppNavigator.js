@@ -14,6 +14,8 @@ import Deposit from '@src/screens/Deposit';
 import Withdraw from '@src/screens/Withdraw';
 import TxHistoryDetail from '@src/screens/TxHistoryDetail';
 import Setting from '@screens/Setting';
+import DexHistory from '@screens/DexHistory';
+import DexHistoryDetail from '@screens/DexHistoryDetail';
 import HeaderBar from '@src/components/HeaderBar';
 import { navigationOptionsHandler } from '@src/utils/router';
 import ROUTE_NAMES from './routeNames';
@@ -36,6 +38,8 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.Withdraw]: navigationOptionsHandler(Withdraw),
     [ROUTE_NAMES.TxHistoryDetail]: navigationOptionsHandler(TxHistoryDetail, { title: 'History Detail' }),
     [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'You' }),
+    [ROUTE_NAMES.DexHistory]: navigationOptionsHandler(DexHistory, { header: () => null }),
+    [ROUTE_NAMES.DexHistoryDetail]: navigationOptionsHandler(DexHistoryDetail, { header: () => null }),
   },
   {
     initialRouteName: ROUTE_NAMES.RootTab,

@@ -4,9 +4,10 @@ import {StatusBar as RNComponent, View, Platform} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {COLORS} from '@src/styles';
 
-const whiteScreens = ['HomeMine', 'Game', 'DApps', 'Dex', 'GetStarted'];
+const whiteScreens = ['HomeMine', 'Game', 'DApps', 'GetStarted'];
 const blue2Screens = ['DetailDevice'];
 const blue1Screens = ['Wizard'];
+const dark2Screen = ['Dex', 'DexHistory', 'DexHistoryDetail'];
 
 const isIOS = Platform.OS === 'ios';
 const isIphoneX = DeviceInfo.hasNotch();
@@ -25,6 +26,9 @@ const StatusBar = React.memo(({ currentScreen }) => {
     textColor = 'light-content';
   } else if (blue1Screens.includes(currentScreen)) {
     backgroundColor = COLORS.blue1;
+    textColor = 'light-content';
+  } else if (dark2Screen.includes(currentScreen)) {
+    backgroundColor = COLORS.dark2;
     textColor = 'light-content';
   } else {
     backgroundColor = COLORS.dark4;
