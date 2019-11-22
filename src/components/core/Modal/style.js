@@ -6,7 +6,7 @@ export default StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 5,
     position: 'absolute',
-    right: 10,
+    left: 10,
   },
   container: {
     flex: 1,

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Modal as RNComponent,SafeAreaView, Text } from 'react-native';
 import { Icon } from 'react-native-elements';
+import { COLORS } from '@src/styles';
 import { TouchableOpacity, View } from '..';
 import styleSheet from './style';
 
@@ -12,18 +13,19 @@ const Modal = ({
   transparent,
   containerStyle,
   closeBtnColor,
+  closeOnBack,
   isShowHeader,
   ...otherProps
 }) => (
-  <RNComponent transparent={transparent} animationType="fade" {...otherProps}>
+  <RNComponent transparent={transparent} animationType="fade" onRequestClose={closeOnBack && close} {...otherProps}>
     <SafeAreaView style={[styleSheet.containerSafeView, transparent && { backgroundColor: 'transparent' }]}>
       <View style={[styleSheet.container, containerStyle]}>
         {isShowHeader && (close || headerText) && (
           <View style={styleSheet.header}>
-            <Text style={styleSheet.headerText} numberOfLines={1} ellipsizeMode='tail'>{headerText}</Text>
             <TouchableOpacity onPress={close} style={styleSheet.closeBtn}>
               <Icon name='close' type='material' size={30} color={closeBtnColor} />
             </TouchableOpacity>
+            <Text style={styleSheet.headerText} numberOfLines={1} ellipsizeMode='tail'>{headerText}</Text>
           </View>
         )}
           
@@ -37,10 +39,11 @@ Modal.defaultProps = {
   children: null,
   close: null,
   containerStyle: null,
-  closeBtnColor: 'white',
+  closeBtnColor: COLORS.primary,
   isShowHeader: true,
   transparent: false,
-  headerText: null
+  headerText: null,
+  closeOnBack: true
 };
 
 Modal.propTypes = {
@@ -51,6 +54,7 @@ Modal.propTypes = {
   isShowHeader: PropTypes.bool,
   transparent: PropTypes.bool,
   headerText: PropTypes.string,
+  closeOnBack: PropTypes.bool
 };
 
 export default Modal;
