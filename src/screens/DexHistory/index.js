@@ -4,7 +4,7 @@ import { RefreshControl } from 'react-native';
 import {connect} from 'react-redux';
 import _ from 'lodash';
 import {ScrollView, Text, View} from '@components/core';
-import {getHistories, getHistoryStatus, NOT_CHANGE_STATUS} from '@src/redux/actions/dex';
+import {getHistories, getHistoryStatus, NOT_CHANGE_STATUS, TRANSFER_STATUS, MAX_ERROR_TRIED} from '@src/redux/actions/dex';
 import routeNames from '@routers/routeNames';
 import BaseScreen from '@screens/BaseScreen';
 import HeaderBar from '@components/HeaderBar/HeaderBar';
@@ -60,7 +60,8 @@ class DexHistory extends BaseScreen {
     const { histories, getHistoryStatus } = this.props;
     const recently = appRecently;
     histories.forEach(item => {
-      if (!NOT_CHANGE_STATUS.includes(item.status)) {
+      if ((!NOT_CHANGE_STATUS.includes(item.status)) ||
+        (item.status === TRANSFER_STATUS.UNSUCCESSFUL && item.errorTried < MAX_ERROR_TRIED)) {
         getHistoryStatus(item);
         if (!recently.includes(item)) {
           recently.push(item.txId);

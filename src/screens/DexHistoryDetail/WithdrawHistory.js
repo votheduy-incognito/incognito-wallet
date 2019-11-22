@@ -68,6 +68,7 @@ DexHistory.defaultProps = {
 };
 
 DexHistory.propTypes = {
+  txId: PropTypes.string.isRequired,
   tokenSymbol: PropTypes.string.isRequired,
   amount: PropTypes.number.isRequired,
   pDecimals: PropTypes.number.isRequired,

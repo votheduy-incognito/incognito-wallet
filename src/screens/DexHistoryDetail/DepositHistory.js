@@ -53,6 +53,7 @@ DepositHistory.defaultProps = {
 };
 
 DepositHistory.propTypes = {
+  txId: PropTypes.string.isRequired,
   tokenSymbol: PropTypes.string.isRequired,
   amount: PropTypes.string.isRequired,
   account: PropTypes.string.isRequired,

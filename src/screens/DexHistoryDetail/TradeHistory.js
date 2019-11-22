@@ -64,6 +64,7 @@ TradeHistory.defaultProps = {
 };
 
 TradeHistory.propTypes = {
+  txId: PropTypes.string.isRequired,
   inputToken: PropTypes.string.isRequired,
   inputValue: PropTypes.string.isRequired,
   outputToken: PropTypes.string.isRequired,

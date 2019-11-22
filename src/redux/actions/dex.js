@@ -4,12 +4,6 @@ import { getPDETradeStatus, getTransactionByHash } from '@services/wallet/RpcCli
 import { MESSAGES } from '@screens/Dex/constants';
 import {DepositHistory, TradeHistory, WithdrawHistory} from '@models/dexHistory';
 
-export const TRADE_STATUS = [
-  'pending',
-  'successful',
-  'refunded',
-];
-
 export const TRANSFER_STATUS = {
   PROCESSING: 'processing',
   PENDING: 'pending',
@@ -17,14 +11,29 @@ export const TRANSFER_STATUS = {
   UNSUCCESSFUL: 'unsuccessful',
   INTERRUPTED: 'tap to try again',
   FAILED: 'failed',
+  REFUNDED: 'refunded'
 };
 
+export const TRADE_STATUS = [
+  TRANSFER_STATUS.PENDING,
+  TRANSFER_STATUS.SUCCESSFUL,
+  TRANSFER_STATUS.REFUNDED,
+];
+
 export const NOT_CHANGE_STATUS = [
-  'successful',
-  'refunded',
-  'unsuccessful',
+  TRANSFER_STATUS.SUCCESSFUL,
+  TRANSFER_STATUS.REFUNDED,
+  TRANSFER_STATUS.UNSUCCESSFUL,
   TRANSFER_STATUS.INTERRUPTED
 ];
+
+export const MAX_ERROR_TRIED = 10;
+
+const HISTORY_TYPES = {
+  [MESSAGES.TRADE]: TradeHistory,
+  [MESSAGES.DEPOSIT]: DepositHistory,
+  [MESSAGES.WITHDRAW]: WithdrawHistory,
+};
 
 function getDepositStatus(history) {
   return getTransactionByHash(history.txId)
@@ -72,7 +81,15 @@ function getWithdrawStatus(history) {
 }
 
 function getTradeStatus(history) {
-  return getPDETradeStatus(history.txId)
+  return getTransactionByHash(history.txId)
+    .then(async result => {
+      if (result.isInMempool) {
+        return TRANSFER_STATUS.PENDING;
+      } else if (result.err) {
+        return TRANSFER_STATUS.UNSUCCESSFUL;
+      }
+    })
+    .then(() => getPDETradeStatus(history.txId))
     .then(result => TRADE_STATUS[result.state])
     .catch((error) => error.message);
 }
@@ -96,23 +113,19 @@ export const getHistoriesSuccess = (histories) => ({
 export const getHistories = () => async (dispatch) => {
   const histories = await LocalDatabase.getDexHistory();
   const formattedHistories = histories.map(item => {
-    if (item.type === MESSAGES.TRADE) {
-      return TradeHistory.load({
-        ...item,
-        status: NOT_CHANGE_STATUS.includes(item.status) ? item.status : undefined,
-      });
-    } else if (item.type === MESSAGES.DEPOSIT) {
-      return DepositHistory.load({
-        ...item,
-        status: NOT_CHANGE_STATUS.includes(item.status) ? item.status : undefined,
-      });
-    } else if (item.type === MESSAGES.WITHDRAW) {
-      return WithdrawHistory.load({
-        ...item,
-        status: NOT_CHANGE_STATUS.includes(item.status) ? item.status : undefined,
-      });
+    const history = HISTORY_TYPES[item.type].load(item);
+
+    if (history.status === TRANSFER_STATUS.UNSUCCESSFUL && history.errorTried < MAX_ERROR_TRIED) {
+      history.status = undefined;
+    } else {
+      history.status = NOT_CHANGE_STATUS.includes(item.status) ? item.status : undefined;
     }
+
+    history.errorTried = history.errorTried || 0;
+
+    return history;
   });
+
   dispatch(getHistoriesSuccess(formattedHistories));
   return formattedHistories;
 };
@@ -125,6 +138,9 @@ export const getHistoryStatusSuccess = (history) => ({
 export const getHistoryStatus = (history) => async (dispatch) => {
   const status = await getStatus(history);
   history.status = status;
+  if (status === TRANSFER_STATUS.UNSUCCESSFUL) {
+    history.errorTried = history.errorTried > 0 ? history.errorTried++ : 1;
+  }
   dispatch(getHistoryStatusSuccess(history));
 };
 
