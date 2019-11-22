@@ -1,7 +1,6 @@
-import { StyleSheet } from 'react-native';
-import TextStyle, { scaleInApp, FontStyle, screenSize } from '@src/styles/TextStyle';
 import { sizeHeader } from '@src/components/HeaderBar/style';
-import { limitRatioImageTop } from '@src/components/Container/style';
+import TextStyle, { FontStyle, scaleInApp, screenSize } from '@src/styles/TextStyle';
+import { StyleSheet } from 'react-native';
 
 // const marginTopList = screenSize.height * limitRatioImageTop - scaleInApp(30);
 const marginTopList = screenSize.height/3;
@@ -34,25 +33,25 @@ const style = StyleSheet.create({
     color: '#8C9A9D',
   },
   titleHeader:{
-    color: '#007280'
+    color: '#25CDD6'
   },
   header2:{
     ...TextStyle.normalText,
-    color: '#293D40',
+    color: '#FFFFFF',
     marginTop: scaleInApp(10),
     alignSelf: 'center',
   },
   header3:{
     ...TextStyle.xxExtraText,
     ...FontStyle.medium,
-    color: '#1C1C1C',
+    color: '#FFFFFF',
     alignSelf: 'center',
     marginTop: scaleInApp(4)
   },
   header3_child:{
     ...TextStyle.smallText,
     ...FontStyle.medium,
-    color: '#1C1C1C',
+    color: '#FFFFFF',
   },
   list:{
     alignSelf:'center',

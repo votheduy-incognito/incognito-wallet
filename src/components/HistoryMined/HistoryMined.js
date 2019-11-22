@@ -1,10 +1,8 @@
-import withdrawNodeDisabled from '@src/assets/images/icons/withdraw-node-disable.png';
+import { Text } from '@components/core';
 import withdrawNode from '@src/assets/images/icons/withdraw-node.png';
 import tokenData from '@src/constants/tokenData';
 import Device from '@src/models/device';
-import {Text} from '@components/core';
 import NodeService, { LIST_ACTION } from '@src/services/NodeService';
-import { CONSTANT_COMMONS } from '@src/constants';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -67,7 +65,7 @@ class HistoryMined extends React.Component {
 
   renderItem=({ item,index })=> {
     const {onPress,listItems,onPressWithdraw} = this.props;
-    const {name = '',symbol = '',amount = 0,pSymbol=''} = item;
+    const {name = '',symbol = '',amount = 0,pSymbol='', id = '',tokenId} = item;
     const isPRV = _.isEqual(symbol,'PRV');
     const symbolUI = isPRV?symbol:pSymbol;
     const nameUI = isPRV?name:`Private ${symbol}`;
@@ -81,7 +79,7 @@ class HistoryMined extends React.Component {
           onPress? onPress(item):undefined;
         }}
       >
-        {!_.isNil(icon)?<Image style={styles.imageLogo} source={icon} />:<CryptoIcon symbol={symbol} />}
+        {!_.isEmpty(icon)?<Image style={styles.imageLogo} source={icon} />:<CryptoIcon tokenId={tokenId} />}
         <View style={styles.groupLeft}>
           <Text style={styles.groupLeft_title}>{nameUI}</Text>
           <Text style={styles.groupRight_title}>{`${amount} ${symbolUI}`}</Text>
@@ -93,7 +91,7 @@ class HistoryMined extends React.Component {
     );
   };
   getData = (token) => {
-    const additionData = tokenData.DATA[token?.id] || tokenData.parse(token);
+    const additionData = tokenData.DATA[token?.tokenId] || tokenData.parse(token);
     const { metaData, othertokenData } = token;
     const data = {
       ...additionData,
@@ -119,7 +117,7 @@ class HistoryMined extends React.Component {
           style={styles.list}
           data={listItems}
           ListEmptyComponent={<Text style={styles.text_empty}>You haven{'\''}t started earning yet.</Text>}
-          keyExtractor={(item,index)=> `${item.id}_${index}`}
+          keyExtractor={(item,index)=> `${item.tokenId}_${index}`}
           onEndReachedThreshold={0.7}
           renderItem={this.renderItem}
           refreshing={isFetching && !isLoadMore}

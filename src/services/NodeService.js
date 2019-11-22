@@ -233,16 +233,17 @@ export default class NodeService {
         PaymentAddress:paymentAddress
       }),5).catch(console.log);
       const dataRequestStake = resultRequest.data||{};
-      if(isNeedSaving && !_.isEmpty(dataRequestStake)){
-        
-        fetchProductInfo.minerInfo = {
+      if( !_.isEmpty(dataRequestStake)){
+        fetchProductInfo['minerInfo'] = {
           ...fetchProductInfo.minerInfo,
           ...dataRequestStake
         };
-        !_.isEmpty(fetchProductInfo) && await LocalDatabase.updateDevice(fetchProductInfo);
+      }
+      if(isNeedSaving && !_.isEmpty(fetchProductInfo)){
+        await LocalDatabase.updateDevice(fetchProductInfo);
       }
 
-      return dataRequestStake;
+      return fetchProductInfo['minerInfo'];
       
     } catch (error) {
       console.log(TAG,'fetchAndSavingInfoNodeStake error = ',error);

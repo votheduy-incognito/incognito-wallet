@@ -95,9 +95,11 @@ export default class DeviceService {
          break;
        }
        default:{
-         let stakerAddress =  deviceInfo.StakerAddressFromServer;
-         stakerAddress =  _.isEmpty(stakerAddress) ? await NodeService.fetchAndSavingInfoNodeStake(deviceInfo,true)?.StakerAddress:stakerAddress;
-         console.log(TAG,'getRewardAmountAllToken NODE begin');
+         //  let stakerAddress =  deviceInfo.StakerAddressFromServer;
+         //  stakerAddress =  _.isEmpty(stakerAddress) ? await NodeService.fetchAndSavingInfoNodeStake(deviceInfo,true)?.StakerAddress:stakerAddress;
+         const dataStaked = await NodeService.fetchAndSavingInfoNodeStake(deviceInfo,true);
+         let stakerAddress =  dataStaked?.StakerAddress ??'';
+         console.log(TAG,'getRewardAmountAllToken NODE begin = ',dataStaked);
          if(_.isEmpty(stakerAddress)){
            Result = {PRV:null};
          }else{

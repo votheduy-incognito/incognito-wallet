@@ -10,7 +10,7 @@ import common from '@src/constants/common';
 import { DEVICES } from '@src/constants/miner';
 import Device from '@src/models/device';
 import { getBalance as getAccountBalance, reloadAccountFollowingToken, setDefaultAccount, switchAccount } from '@src/redux/actions/account';
-import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
+import { accountSeleclor, selectedPrivacySeleclor, tokenSeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
 import APIService from '@src/services/api/miner/APIService';
 import DeviceService from '@src/services/DeviceService';
@@ -47,7 +47,7 @@ class DetailDevice extends BaseScreen {
 
   constructor(props) {
     super(props);
-    const {navigation,wallet,token}= props;
+    const {navigation,wallet,token,getPrivacyDataByTokenID}= props;
     const { params } = navigation.state;
     const device = Device.getInstance(params?.device ||{});
     this.titleBar = device.Type == DEVICES.VIRTUAL_TYPE?'Virtual Node':'Node';
@@ -67,6 +67,7 @@ class DetailDevice extends BaseScreen {
       listFollowingTokens:null,
       device: device
     };
+    this.coinPRV = getPrivacyDataByTokenID(common.PRV_TOKEN_ID)??{};
     this.advanceOptionView = React.createRef();
     this.viewCreateAccount = React.createRef();
     navigation.setParams({ title: this.titleBar });
@@ -134,26 +135,51 @@ class DetailDevice extends BaseScreen {
     });
   }
 
+  // createListFollowingToken=(result:{},listprivacyCustomToken:Array,commission = 1)=>{
+  //   let amount = 0;
+    
+  //   // console.log(TAG,'createListFollowingToken begin ',commission);
+  //   return Object.keys(result).map((value,index)=>{
+  //     // let ObjFinded = _.find(listprivacyCustomToken,(item)=>_.isEqual(item.tokenId,value))||{
+  //     //   symbol: value,
+  //     //   name: 'Privacy',
+  //     //   decimals: common.DECIMALS['PRV'],
+  //     //   pDecimals: common.DECIMALS['PRV'],
+  //     //   type: 0,
+  //     //   amount:amount,
+  //     //   pSymbol: 'pPRV',
+  //     //   default: true,
+  //     //   userId: 0,
+  //     //   verified: true };
+
+  //     let ObjFinded =  _.find(listprivacyCustomToken,(item)=>_.isEqual(item.tokenId,value))|| {...this.coinPRV,amount:amount};
+      
+
+  //     console.log(TAG,'createListFollowingToken begin findd ---  ',ObjFinded,value);
+  //     amount = !_.isNaN(result[value]) ? _.toNumber(result[value])*commission :0;
+  //     amount = format.amountFull(amount,ObjFinded['pDecimals']??common.DECIMALS[value]);
+  //     amount = _.isNaN(amount)?0:amount;
+  //     return {
+  //       ...ObjFinded,
+  //       id:value,
+  //       amount:amount,
+  //     };
+  //   });
+  // }
+
   createListFollowingToken=(result:{},listprivacyCustomToken:Array,commission = 1)=>{
     let amount = 0;
-    console.log(TAG,'createListFollowingToken begin ',commission);
+    const {getPrivacyDataByTokenID} = this.props;
+    
+    // console.log(TAG,'createListFollowingToken begin ',commission);
     return Object.keys(result).map((value,index)=>{
-      let ObjFinded = _.find(listprivacyCustomToken,(item)=>_.isEqual(item.tokenId,value))||{
-        symbol: value,
-        name: 'Privacy',
-        decimals: common.DECIMALS['PRV'],
-        pDecimals: common.DECIMALS['PRV'],
-        type: 0,
-        amount:amount,
-        pSymbol: 'pPRV',
-        default: true,
-        userId: 0,
-        verified: true };
-
-      // console.log(TAG,'createListFollowingToken begin findd ---  ',ObjFinded,value);
+      const tokenIdSearching = _.includes(value,'PRV')?common.PRV_TOKEN_ID:value;
+      let ObjFinded = getPrivacyDataByTokenID(tokenIdSearching) || {...this.coinPRV,amount:amount};
+      
       amount = !_.isNaN(result[value]) ? _.toNumber(result[value])*commission :0;
       amount = format.amountFull(amount,ObjFinded['pDecimals']??common.DECIMALS[value]);
       amount = _.isNaN(amount)?0:amount;
+      console.log(TAG,'createListFollowingToken begin findd tokenIdSearching ---  ',tokenIdSearching,' amount = ',amount);
       return {
         ...ObjFinded,
         id:value,
@@ -182,7 +208,7 @@ class DetailDevice extends BaseScreen {
       isStaked = Role!=-1 ;
       console.log(TAG,'fetchData VIRTUAL_TYPE getPublicKeyRole ',stakerStatus);
 
-      const listprivacyCustomToken:[] = listTokens;
+      // const listprivacyCustomToken:[] = listTokens;
       // dataResult = await VirtualNodeService.getRewardFromMiningkey(device) ?? {};
       
       // const {Result={}} = dataResult;
@@ -193,7 +219,7 @@ class DetailDevice extends BaseScreen {
       balancePRV = _.isNaN(balancePRV)?0:balancePRV;
       console.log(TAG,'fetchData VIRTUAL_TYPE 02');
 
-      listFollowingTokens = this.createListFollowingToken(Result,listprivacyCustomToken);
+      listFollowingTokens = this.createListFollowingToken(Result,listTokens);
       break;
     }
     default:{
@@ -354,9 +380,10 @@ class DetailDevice extends BaseScreen {
 
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
-      const id = item?.tokenId??'';
-      console.log(TAG,'handleWithdrawEachToken VIRTUAL_TYPE id ',item);
-      result = await device.requestWithdraw(accountMiner,wallet,_.includes(id,'PRV')?'':id).catch(console.log);
+      let tokenId = item?.tokenId??null;
+      tokenId = _.isEqual(tokenId,common.PRV_TOKEN_ID) ||_.isEqual(tokenId,'PRV') ?'':tokenId;
+      console.log(TAG,'handleWithdrawEachToken VIRTUAL_TYPE tokenId ',tokenId);
+      result = await device.requestWithdraw(accountMiner,wallet,tokenId).catch(console.log);
       break;
     }
     default:
@@ -394,8 +421,12 @@ class DetailDevice extends BaseScreen {
     case DEVICES.VIRTUAL_TYPE:{
       if( !_.isEmpty(listFollowingTokens) ){
         for(let i = 0;i<listFollowingTokens.length;i++){
-          const id = listFollowingTokens[i]?.id||'';
-          result = await device.requestWithdraw(accountMiner,wallet,_.includes(id,'PRV')?'':id).catch(console.log);
+          // const id = listFollowingTokens[i]?.id||'';
+          // result = await device.requestWithdraw(accountMiner,wallet,_.includes(id,'PRV')?'':id).catch(console.log);
+          let tokenId = listFollowingTokens[i]?.tokenId??null;
+          tokenId = _.isEqual(tokenId,common.PRV_TOKEN_ID) ||_.isEqual(tokenId,'PRV') ?'':tokenId;
+          console.log(TAG,'handlePressWithdraw VIRTUAL_TYPE tokenId ',tokenId);
+          result = await device.requestWithdraw(accountMiner,wallet,tokenId).catch(console.log);
         }
       }
       break;
@@ -672,6 +703,7 @@ const mapDispatch = { getAccountBalance,setDefaultAccount, reloadAccountFollowin
 export default connect(
   state => ({
     wallet:state.wallet,
+    getPrivacyDataByTokenID:selectedPrivacySeleclor.getPrivacyDataByTokenID(state),
     getAccountByName: accountSeleclor.getAccountByName(state),
     listTokens:tokenSeleclor.pTokens(state),
     listAccount: accountSeleclor.listAccount(state)
