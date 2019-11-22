@@ -127,7 +127,8 @@ class Swap extends React.Component {
             name: pToken?.name || item.name,
           };
         })
-        .filter(token => token.name && token.symbol), item => item.symbol && item.symbol.toLowerCase())];
+        .filter(token => token.name && token.symbol), item => item.symbol && item.symbol.toLowerCase())
+      ];
 
       this.setState({ chainPairs, tokens, inputToken: inputToken || tokens[0] }, () => {
         this.filterOutputList();
@@ -140,20 +141,37 @@ class Swap extends React.Component {
     }
   };
 
-  async getInputBalance() {
-    const { wallet } = this.props;
-    const { inputToken: token, dexMainAccount } = this.state;
-    const balance = await accountService.getBalance(dexMainAccount, wallet, token.id);
-    let prvBalance = balance;
+  async getInputBalance(balance) {
+    try {
+      const {wallet} = this.props;
+      const {inputToken: token, dexMainAccount} = this.state;
 
-    if (token !== PRV) {
-      prvBalance = await accountService.getBalance(dexMainAccount, wallet);
+      console.debug('INPUT BALANCE', balance);
+
+      if (!_.isNumber(balance)) {
+        balance = await accountService.getBalance(dexMainAccount, wallet, token.id);
+        const {inputToken} = this.state;
+
+        if (inputToken !== token) {
+          return;
+        }
+      }
+
+      this.setState({balance});
+
+      let prvBalance = balance;
+
+      if (token !== PRV) {
+        prvBalance = await accountService.getBalance(dexMainAccount, wallet);
+      }
+
+      this.setState({prvBalance});
+    } catch (error) {
+      console.debug('GET INPUT BALANCE ERROR', error);
     }
-
-    this.setState({ balance, prvBalance });
   }
 
-  selectInput = (token) => {
+  selectInput = (token, balance) => {
     this.inputRef.clear();
 
     this.setState({
@@ -165,7 +183,7 @@ class Swap extends React.Component {
       balance: 'Loading',
     }, () => {
       this.filterOutputList();
-      this.getInputBalance();
+      this.getInputBalance(balance);
     });
   };
 
@@ -199,39 +217,47 @@ class Swap extends React.Component {
   };
 
   async filterOutputList() {
-    const { inputToken: token, chainPairs, tokens, outputToken } = this.state;
+    try {
+      const {inputToken: token, chainPairs, tokens, outputToken} = this.state;
 
-    const pairs = chainPairs
-      .filter(pair => Object.keys(pair).includes(token.id));
-    const outputList = _.orderBy(
-      pairs
-        .map(pair => Object.keys(pair).find(key => key !== token.id))
-        .map(id => tokens.find(token => token.id.includes(id)))
-        .filter(item => item)
-      , item => item.symbol && item.symbol.toLowerCase());
+      const pairs = chainPairs
+        .filter(pair => Object.keys(pair).includes(token.id));
+      const outputList = _.orderBy(
+        pairs
+          .map(pair => Object.keys(pair).find(key => key !== token.id))
+          .map(id => tokens.find(token => token.id.includes(id)))
+          .filter(item => item)
+        , item => item.symbol && item.symbol.toLowerCase());
 
-    this.setState({
-      pairs,
-      outputList,
-      outputToken: outputToken || outputList[0],
-    }, this.calculateOutputValue);
+      this.setState({
+        pairs,
+        outputList,
+        outputToken: outputToken || outputList[0],
+      }, this.calculateOutputValue);
+    } catch (error) {
+      console.debug('FILTER OUTPUT LIST', error);
+    }
   }
 
   calculateOutputValue() {
-    const { pairs, outputToken, inputToken, inputValue } = this.state;
+    try {
+      const {pairs, outputToken, inputToken, inputValue} = this.state;
 
-    if (!outputToken || !_.isNumber(inputValue) || _.isNaN(inputValue)) {
-      return this.setState({ outputValue: 0 });
+      if (!outputToken || !_.isNumber(inputValue) || _.isNaN(inputValue)) {
+        return this.setState({outputValue: 0});
+      }
+
+      const pair = pairs.find(i => Object.keys(i).includes(outputToken.id));
+      const inputPool = pair[inputToken.id];
+      const outputPool = pair[outputToken.id];
+      const initialPool = inputPool * outputPool;
+      const newInputPool = inputPool + inputValue - 0;
+      const newOutputPoolWithFee = _.ceil(initialPool / newInputPool);
+      const outputValue = outputPool - newOutputPoolWithFee;
+      this.setState({outputValue});
+    } catch (error) {
+      console.debug('CALCULATE OUTPUT', error);
     }
-
-    const pair = pairs.find(i => Object.keys(i).includes(outputToken.id));
-    const inputPool = pair[inputToken.id];
-    const outputPool = pair[outputToken.id];
-    const initialPool = inputPool * outputPool;
-    const newInputPool = inputPool + inputValue - 0;
-    const newOutputPoolWithFee = _.ceil(initialPool / newInputPool);
-    const outputValue = outputPool - newOutputPoolWithFee;
-    this.setState({ outputValue });
   }
 
   async tradePToken(account, tradingFee, networkFee, networkFeeUnit, stopPrice) {
@@ -303,7 +329,6 @@ class Swap extends React.Component {
         const { outputValue, outputToken } = this.state;
         this.setState({ showSwapSuccess: true, showTradeConfirm: false });
         onAddHistory(new TradeHistory(result, inputToken, outputToken, inputValue, outputValue, networkFee, networkFeeUnit, tradingFee, stopPrice));
-        await this.loadData();
       }
     } catch (error) {
       this.setState({ tradeError: MESSAGES.TRADE_ERROR });

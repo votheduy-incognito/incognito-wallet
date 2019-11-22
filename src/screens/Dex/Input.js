@@ -70,8 +70,9 @@ class Input extends React.Component {
 
   selectToken = (token) => {
     const { onSelectToken } = this.props;
+    const { tokenBalances } = this.state;
     this.closeDialog();
-    onSelectToken(token);
+    onSelectToken(token, tokenBalances[token.id]);
   };
 
   handleSearch = (text) => {
