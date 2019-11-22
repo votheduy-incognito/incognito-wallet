@@ -6,9 +6,11 @@ import { View, Text, Button } from '@components/core';
 import formatUtils from '@utils/format';
 import {TRANSFER_STATUS} from '@src/redux/actions/dex';
 import FullScreenLoading from '@components/FullScreenLoading/index';
+import TransactionID from './TransactionID';
 import stylesheet from './style';
 
 const DexHistory = ({
+  txId,
   amount,
   pDecimals,
   account,
@@ -22,34 +24,35 @@ const DexHistory = ({
   loading,
 }) => (
   <View style={stylesheet.wrapper}>
-    <Text style={stylesheet.title} numberOfLines={1}>
+    <Text style={stylesheet.title} numberOfLines={2}>
       Withdraw {formatUtils.amountFull(amount, pDecimals)} {tokenSymbol} to {account}
     </Text>
     <View style={stylesheet.row}>
       <Text style={stylesheet.field}>TYPE</Text>
       <Text style={stylesheet.textRight}>Withdraw</Text>
     </View>
+    <TransactionID txId={txId} />
     <View style={stylesheet.row}>
       <Text style={stylesheet.field}>TIME</Text>
       <Text style={stylesheet.textRight}>{moment(time).format('DD MMM YYYY hh:mm A')}</Text>
     </View>
     <View style={stylesheet.row}>
       <Text style={stylesheet.field}>STATUS</Text>
-      <Text style={[stylesheet.textRight, stylesheet[status]]}>
+      <Text style={[stylesheet.textRight, stylesheet[status]]} numberOfLines={2}>
         {status === TRANSFER_STATUS.INTERRUPTED ? 'Paused' : _.capitalize(status) }
       </Text>
     </View>
     <View style={stylesheet.row}>
       <Text style={stylesheet.field}>AMOUNT</Text>
-      <Text style={stylesheet.textRight}>{formatUtils.amountFull(amount, pDecimals)} {tokenSymbol}</Text>
+      <Text style={stylesheet.textRight} numberOfLines={2}>{formatUtils.amountFull(amount, pDecimals)} {tokenSymbol}</Text>
     </View>
     <View style={stylesheet.row}>
       <Text style={stylesheet.field}>NETWORK FEE</Text>
-      <Text style={stylesheet.textRight}>{formatUtils.amountFull(networkFee, networkFeeDecimals)} {networkFeeUnit}</Text>
+      <Text style={stylesheet.textRight} numberOfLines={2}>{formatUtils.amountFull(networkFee, networkFeeDecimals)} {networkFeeUnit}</Text>
     </View>
     <View style={stylesheet.row}>
       <Text style={stylesheet.field}>TO</Text>
-      <Text style={stylesheet.textRight}>{account}</Text>
+      <Text style={stylesheet.textRight} numberOfLines={2}>{account}</Text>
     </View>
     {status === TRANSFER_STATUS.INTERRUPTED && <Button style={stylesheet.button} title="Try again" onPress={onContinue} />}
     <FullScreenLoading

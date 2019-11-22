@@ -175,7 +175,7 @@ class Transfer extends React.PureComponent {
     } catch (error) {
       WithdrawHistory.currentWithdraw = null;
       onUpdateHistory(newHistory);
-      new ExHandler(error).showErrorToast();
+      throw error;
     }
   }
 

@@ -34,7 +34,7 @@ function getDepositStatus(history) {
       } else if (result.isInMempool) {
         return TRANSFER_STATUS.PENDING;
       } else if (result.err) {
-        return TRANSFER_STATUS.PENDING;
+        return TRANSFER_STATUS.UNSUCCESSFUL;
       }
     })
     .catch((error) => error.message);
@@ -68,7 +68,7 @@ function getWithdrawStatus(history) {
         return TRANSFER_STATUS.UNSUCCESSFUL;
       }
     })
-    .catch(() => TRANSFER_STATUS.UNSUCCESSFUL);
+    .catch((error) => error.message);
 }
 
 function getTradeStatus(history) {

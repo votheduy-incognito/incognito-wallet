@@ -14,6 +14,18 @@ export default StyleSheet.create({
     maxWidth: '100%',
     ...FONT.STYLE.medium,
   },
+  txButton: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  id: {
+    flex: 1,
+    marginLeft: 10,
+    paddingRight: 20,
+  },
+  ellipsis: {
+    flex: 1
+  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -50,7 +62,7 @@ export default StyleSheet.create({
   },
   field: {
     color: COLORS.lightGrey1,
-    width: 180,
+    width: 170,
     fontSize: 14,
   },
   button: {
