@@ -43,7 +43,8 @@ class GetStartedContainer extends Component {
     let accounts = await wallet.listAccount();
 
     if(!accounts.find(item => item.AccountName === DEX.MAIN_ACCOUNT)) {
-      await accountService.createAccount(DEX.MAIN_ACCOUNT, wallet);
+      const firstAccount = accounts[0];
+      await accountService.createAccount(DEX.MAIN_ACCOUNT, wallet, accountService.parseShard(firstAccount));
     }
 
     if(!accounts.find(item => item.AccountName === DEX.WITHDRAW_ACCOUNT)) {
