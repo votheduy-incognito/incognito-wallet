@@ -223,8 +223,9 @@ class DetailDevice extends BaseScreen {
       break;
     }
     default:{
-      const stakerStatus =(!_.isEmpty(account)&& !_.isEmpty(wallet)? await accountService.stakerStatus(account,wallet).catch(console.log):-1)??{};
-      console.log(TAG,'fetchData stakerStatus ',stakerStatus);
+      // const stakerStatus =(!_.isEmpty(account)&& !_.isEmpty(wallet)? await accountService.stakerStatus(account,wallet).catch(console.log):-1)??{};
+      const stakerStatus = await DeviceService.fetchStakeStatus(account,wallet);
+      console.log(TAG,'fetchData Node stakerStatus ',stakerStatus);
 
       const { Role= -1, ShardID= 0 } = stakerStatus;
       isStaked = Role!=-1 ;

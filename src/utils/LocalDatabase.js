@@ -1,7 +1,7 @@
 import User from '@models/user';
 import AsyncStorage from '@react-native-community/async-storage';
-import _ from 'lodash';
 import { CONSTANT_KEYS } from '@src/constants';
+import _ from 'lodash';
 
 const TAG = 'LocalDatabase';
 export const KEY_SAVE = {
@@ -41,23 +41,46 @@ export default class LocalDatabase {
     });
     await LocalDatabase.saveListDevices(list);
   }
-  static updateDevice = async (device)=>{
+  static updateDevice = async (deviceJson)=>{
     let list = await LocalDatabase.getListDevices();
-    const index = _.findIndex(list,['product_id',device.product_id]);
+    const index = _.findIndex(list,['product_id',deviceJson.product_id]);
     if(index >=0){
       list[index] = {
         ...list[index],
-        ...device
+        ...deviceJson
       };
     }else{
-      list.push(device);
+      list.push(deviceJson);
     }
     await LocalDatabase.saveListDevices(list);
+  }
+  /**
+   * return {JSON} : deviceInfo
+   */
+  static getDevice = async (product_id)=>{
+    if(_.isEmpty(product_id)) throw new Error('product_id is empty');
+
+    let list = await LocalDatabase.getListDevices();
+    const index = _.findIndex(list,['product_id',product_id]);
+    return list[index];
   }
   static saveListDevices = async (jsonListDevice: []) => {
     const listDevices = JSON.stringify(jsonListDevice);
     // console.log(TAG, ' saveListDevices begin ', listDevices);
     await LocalDatabase.saveValue(KEY_SAVE.LIST_DEVICE, listDevices);
+  };
+  static saveDeviceKeyInfo = async (product_id,keyInfo) => {
+    if(!_.isEmpty(product_id) && !_.isEmpty(keyInfo)){
+      const deviceJSON = await LocalDatabase.getDevice(product_id).catch(e=>throw new Error('device not found in local'))??undefined;
+      if(deviceJSON){
+        deviceJSON['keyInfo'] = {
+          ...deviceJSON['keyInfo'],
+          ...keyInfo
+        };
+        await LocalDatabase.updateDevice(deviceJSON);
+        console.log(TAG, ' saveDeviceKeyInfo end success deviceJSON=',deviceJSON);
+      }
+    }
   };
   static async logout() {
     return await AsyncStorage.multiRemove([

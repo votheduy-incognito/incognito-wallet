@@ -1,6 +1,7 @@
 /* eslint-disable import/no-cycle */
 import { CONSTANT_CONFIGS } from '@src/constants';
 import Device, { DATA_INFO } from '@src/models/device';
+import LocalDatabase from '@src/utils/LocalDatabase';
 import Util from '@src/utils/Util';
 import _ from 'lodash';
 import APIService, { METHOD } from './api/miner/APIService';
@@ -110,29 +111,35 @@ export default class VirtualNodeService {
 
   /**
    * 
-   * return [string]:[bls:key....]
+   * return [string]:key
    */
   static getPublicKeyMining = async(device:Device)=>{
+    let keyCompare = device?.PublicKeyMining||'';
     try {
-      let apiURL = await VirtualNodeService.buildURL(device);
-      if(!_.isEmpty(apiURL)){
-        apiURL = `${apiURL}/${LIST_ACTION.GET_PUBLIC_KEY_MINING.key}`;
-        const buildParams = LIST_ACTION.GET_PUBLIC_KEY_MINING.data;
-        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
       
-        
-        const {Result=''} = response;
-        let keyCompare = Result[0]??'';
-        const listKeyCompare = _.split(keyCompare,':');
-        keyCompare = _.size(listKeyCompare)>1?listKeyCompare[1]:''; 
-        keyCompare = _.isEmpty(keyCompare) && _.size(listKeyCompare) == 1 ? listKeyCompare[0]:keyCompare;
-        console.log(TAG,'getPublicKeyMining blsKEY',keyCompare);
-        return keyCompare;
+      if(_.isEmpty(keyCompare)){
+        let apiURL = await VirtualNodeService.buildURL(device);
+        if(!_.isEmpty(apiURL)){
+          apiURL = `${apiURL}/${LIST_ACTION.GET_PUBLIC_KEY_MINING.key}`;
+          const buildParams = LIST_ACTION.GET_PUBLIC_KEY_MINING.data;
+          const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
+          const {Result=''} = response;
+          keyCompare = Result[0]??'';
+          const listKeyCompare = _.split(keyCompare,':');
+          keyCompare = _.size(listKeyCompare)>1?listKeyCompare[1]:''; 
+          keyCompare = _.isEmpty(keyCompare) && _.size(listKeyCompare) == 1 ? listKeyCompare[0]:keyCompare;
+
+          // save to local
+          device.PublicKeyMining = keyCompare;
+          await LocalDatabase.saveDeviceKeyInfo(device.ProductId,{publicKeyMining:device.PublicKeyMining});
+          console.log(TAG,'getPublicKeyMining fetching blsKEY',keyCompare);
+        }
       }
     } catch (error) {
       console.log(TAG,'getPublicKeyMining error',error);
     }
-    return '';
+    console.log(TAG,'getPublicKeyMining end blsKEY',keyCompare);
+    return keyCompare;
   }
   
   static getPublicKeyRole = async(device:Device)=>{
