@@ -334,8 +334,11 @@ class Swap extends React.Component {
         onAddHistory(new TradeHistory(result, inputToken, outputToken, inputValue, outputValue, networkFee, networkFeeUnit, tradingFee, stopPrice));
       }
     } catch (error) {
-      console.debug('ERROR', error);
-      this.setState({ tradeError: MESSAGES.TRADE_ERROR });
+      if (accountService.isNotEnoughCoinError(error, inputValue, tokenFee, balance, prvBalance, prvFee)) {
+        this.setState({tradeError: MESSAGES.PENDING_TRANSACTIONS});
+      } else {
+        this.setState({tradeError: MESSAGES.TRADE_ERROR});
+      }
     } finally {
       this.setState({ sending: false });
     }

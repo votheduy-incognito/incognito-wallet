@@ -49,6 +49,8 @@ export const MESSAGES = {
   WITHDRAW_COMPLETED: 'Withdraw successfully. Your balance will update in a couple of minutes',
   WITHDRAW_BALANCE: 'PDexWithdraw account balance is insufficient',
   SOMETHING_WRONG: 'Something got stuck. Please make the withdrawal again.',
+  PENDING_TRANSACTIONS: 'It looks like you have a pending transaction.  Please either wait until that transaction is complete first.',
+  WITHDRAW_PROCESS: 'Withdrawing your funds...\n\nThis may take a couple of minutes. Please do not navigate away from the app.',
 };
 export const MILLISECOND = 1;
 export const SECOND = 1000 * MILLISECOND;
