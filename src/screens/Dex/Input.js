@@ -8,7 +8,6 @@ import CryptoIcon from '@components/CryptoIcon';
 import {COLORS} from '@src/styles';
 import formatUtil from '@utils/format';
 import accountService from '@services/wallet/accountService';
-import convert from '@utils/convert';
 import {inputStyle, modalStyle, tokenStyle, mainStyle} from './style';
 
 class Input extends React.Component {
@@ -197,16 +196,14 @@ class Input extends React.Component {
   }
 
   renderInput() {
-    const { value, onChange, onRef, token } = this.props;
-    const displayValue = _.isNil(value) ? '' : convert.toHumanAmount(value, token.pDecimals);
+    const { value, onChange } = this.props;
     return (
       <TextInput
-        ref={onRef}
         keyboardType="decimal-pad"
         style={inputStyle.input}
         placeholder={onChange ? '0.0' : ''}
         placeholderTextColor={COLORS.lightGrey1}
-        value={displayValue.toString()}
+        value={value}
         onChangeText={onChange}
       />
     );
@@ -262,7 +259,6 @@ Input.defaultProps = {
   value: undefined,
   balance: undefined,
   onChange: undefined,
-  onRef: undefined,
   account: null,
   wallet: null,
 };
@@ -275,7 +271,6 @@ Input.propTypes = {
   tokenList: PropTypes.array.isRequired,
   onSelectToken: PropTypes.func.isRequired,
   pool: PropTypes.number.isRequired,
-  onRef: PropTypes.func,
   onChange: PropTypes.func,
   account: PropTypes.object,
   wallet: PropTypes.object,

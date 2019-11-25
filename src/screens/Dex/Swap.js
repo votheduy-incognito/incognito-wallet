@@ -185,7 +185,7 @@ class Swap extends React.Component {
       inputError: null,
       balance: 'Loading',
     }, () => {
-      this.filterOutputList();
+      this.filterOutputList(() => this.changeInputValue(1));
       this.getInputBalance(balance);
     });
   };
@@ -217,9 +217,11 @@ class Swap extends React.Component {
         this.setState({ inputValue: number }, this.calculateOutputValue);
       }
     }
+
+    this.setState({ rawText: newValue.toString() });
   };
 
-  async filterOutputList() {
+  async filterOutputList(callback) {
     try {
       const {inputToken: token, chainPairs, tokens, outputToken} = this.state;
 
@@ -231,12 +233,14 @@ class Swap extends React.Component {
           .map(id => tokens.find(token => token.id.includes(id)))
           .filter(item => item)
         , item => item.symbol && item.symbol.toLowerCase());
-
       this.setState({
         pairs,
         outputList,
         outputToken: outputToken || outputList[0],
-      }, this.calculateOutputValue);
+      }, () => {
+        callback && callback();
+        this.calculateOutputValue();
+      });
     } catch (error) {
       console.debug('FILTER OUTPUT LIST', error);
     }
@@ -358,15 +362,12 @@ class Swap extends React.Component {
     this.setState({ showTradeConfirm: true });
   };
 
-  handleRef = (ref) => {
-    this.inputRef = ref;
-  };
-
   closeSuccessDialog = () => {
     const { inputToken } = this.state;
     this.setState({
       showSwapSuccess: false,
       inputValue: convertUtil.toOriginalAmount(1, inputToken.pDecimals),
+      rawText: '1',
       outputValue: null,
     }, () => {
       this.calculateOutputValue();
@@ -406,7 +407,6 @@ class Swap extends React.Component {
     const { wallet } = this.props;
     const {
       inputToken,
-      inputValue,
       outputToken,
       outputValue,
       outputList,
@@ -414,6 +414,7 @@ class Swap extends React.Component {
       tokens,
       inputError,
       dexMainAccount,
+      rawText,
       pair,
     } = this.state;
     return (
@@ -425,8 +426,7 @@ class Swap extends React.Component {
           headerTitle="From"
           balance={balance}
           token={inputToken}
-          value={inputValue}
-          onRef={this.handleRef}
+          value={rawText}
           account={dexMainAccount}
           wallet={wallet}
           pool={!!pair && !!inputToken && pair[inputToken.id]}
