@@ -7,10 +7,12 @@ import { setWallet } from '@src/redux/actions/wallet';
 import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
+import APIService from '@src/services/api/miner/APIService';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import { DEX } from '@src/utils/dex';
+import { DialogUpgradeToMainnet } from './ChildViews';
 import Home from './Home';
 
 class HomeContainer extends Component {
@@ -18,7 +20,8 @@ class HomeContainer extends Component {
     super(props);
     
     this.state = {
-      isReloading: false ,
+      isReloading: false,
+      isReceivedPRV: false
     };
   }
 
@@ -29,6 +32,9 @@ class HomeContainer extends Component {
     } catch (e) {
       new ExHandler(e).showErrorToast();
     }
+
+    // airdrop program
+    this.airdrop();
 
     navigation.addListener(
       'didFocus',
@@ -44,6 +50,25 @@ class HomeContainer extends Component {
     // reload tokens list if wallet was changed
     if (prevProps.wallet !== wallet) {
       this.getFollowingToken();
+    }
+  }
+
+  airdrop = async () => {
+    try {
+      const { account, getAccountByName } = this.props;
+      const pDexAccount = getAccountByName(DEX.MAIN_ACCOUNT);
+      const WalletAddress = account?.PaymentAddress;
+      const pDexWalletAddress = pDexAccount?.PaymentAddress;
+
+      const result = await APIService.airdrop1({ WalletAddress, pDexWalletAddress });
+
+      if (result?.status === 1) {
+        this.setState({
+          isReceivedPRV: true
+        });
+      }
+    } catch (e) {
+      new ExHandler(e);
     }
   }
 
@@ -143,24 +168,32 @@ class HomeContainer extends Component {
   };
 
   render() {
-    const { isReloading } = this.state;
+    const { isReloading, isReceivedPRV } = this.state;
     const { wallet, account, tokens, accountGettingBalanceList, tokenGettingBalanceList } = this.props;
 
     if (!wallet) return <LoadingContainer />;
 
     return (
-      <Home
-        account={account}
-        tokens={tokens}
-        reload={this.reload}
-        isReloading={isReloading}
-        handleAddFollowToken={this.onAddTokenToFollow}
-        handleCreateToken={this.onCreateToken}
-        handleSetting={this.onSetting}
-        accountGettingBalanceList={accountGettingBalanceList}
-        tokenGettingBalanceList={tokenGettingBalanceList}
-        onSelectToken={this.handleSelectToken}
-      />
+      <>
+        <Home
+          account={account}
+          tokens={tokens}
+          reload={this.reload}
+          isReloading={isReloading}
+          handleAddFollowToken={this.onAddTokenToFollow}
+          handleCreateToken={this.onCreateToken}
+          handleSetting={this.onSetting}
+          accountGettingBalanceList={accountGettingBalanceList}
+          tokenGettingBalanceList={tokenGettingBalanceList}
+          onSelectToken={this.handleSelectToken}
+        />
+        <DialogUpgradeToMainnet
+          isVisible={isReceivedPRV}
+          onButtonClick={()=>{
+            this.setState({isReceivedPRV: false});
+          }}
+        />
+      </>
     );
   }
 }
@@ -170,7 +203,8 @@ const mapState = state => ({
   wallet: state.wallet,
   tokens: tokenSeleclor.followed(state),
   accountGettingBalanceList: accountSeleclor.isGettingBalance(state),
-  tokenGettingBalanceList: tokenSeleclor.isGettingBalance(state)
+  tokenGettingBalanceList: tokenSeleclor.isGettingBalance(state),
+  getAccountByName: accountSeleclor.getAccountByName(state)
 });
 
 const mapDispatch = {
@@ -201,6 +235,7 @@ HomeContainer.propTypes = {
   getPTokenList: PropTypes.func.isRequired,
   getInternalTokenList: PropTypes.func.isRequired,
   setWallet: PropTypes.func.isRequired,
+  getAccountByName: PropTypes.func.isRequired,
   // loadAllPTokenHasBalance: PropTypes.func.isRequired,
 };
 

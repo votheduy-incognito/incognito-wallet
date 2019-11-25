@@ -420,12 +420,15 @@ export default class APIService {
     };
   }
   static async airdrop1({
-    WalletAddress
+    WalletAddress,
+    pDexWalletAddress
   }) {
     if (!WalletAddress) return throw new Error('Missing WalletAddress');
+    if (!pDexWalletAddress) return throw new Error('Missing pDexWalletAddress');
     
     const response = await http.post('auth/airdrop1', {
-      WalletAddress:WalletAddress
+      WalletAddress: WalletAddress,
+      pDexWalletAddress
     }).catch(console.log)??false;
     console.log(TAG,'airdrop1 end = ',response);
     return {

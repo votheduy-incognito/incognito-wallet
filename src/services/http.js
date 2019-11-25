@@ -52,7 +52,7 @@ instance.interceptors.response.use(res => {
   const originalRequest = errorData?.config;
 
   Log.log(`http respone error ${originalRequest?.method} ${originalRequest?.url}`)
-    .logDev(errorData);
+    .logDev(errorData, errResponse?.data);
 
   // can not get response, alert to user
   if (errorData?.isAxiosError && !errResponse) {

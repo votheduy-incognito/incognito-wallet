@@ -79,11 +79,13 @@ class Home extends React.Component {
             }
             <View style={homeStyle.addTokenContainer}>
               { !dexUtils.isDEXAccount(account.name) &&
-                <Button
-                  title="Issue your own token"
-                  onPress={handleCreateToken}
-                  style={homeStyle.addTokenBtn}
-                />
+                (
+                  <Button
+                    title="Issue your own token"
+                    onPress={handleCreateToken}
+                    style={homeStyle.addTokenBtn}
+                  />
+                )
               }
               <Text style={homeStyle.followTokenTitle}>Looking for available tokens?</Text>
               <TouchableWithoutFeedback onPress={handleAddFollowToken}>
