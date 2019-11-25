@@ -223,8 +223,9 @@ class DetailDevice extends BaseScreen {
       break;
     }
     default:{
-      const stakerStatus =(!_.isEmpty(account)&& !_.isEmpty(wallet)? await accountService.stakerStatus(account,wallet).catch(console.log):-1)??{};
-      console.log(TAG,'fetchData stakerStatus ',stakerStatus);
+      // const stakerStatus =(!_.isEmpty(account)&& !_.isEmpty(wallet)? await accountService.stakerStatus(account,wallet).catch(console.log):-1)??{};
+      const stakerStatus = await DeviceService.fetchStakeStatus(account,wallet);
+      console.log(TAG,'fetchData Node stakerStatus ',stakerStatus);
 
       const { Role= -1, ShardID= 0 } = stakerStatus;
       isStaked = Role!=-1 ;
@@ -510,6 +511,7 @@ class DetailDevice extends BaseScreen {
     const {device,isStaked} = this.state;
     const isCallStaked = device.isCallStaked;
     const stakeTitle = isStaked?'Stop':'Run';
+    const labelName = device.Type == DEVICES.VIRTUAL_TYPE? this.productName:device.qrCodeDeviceId;
     return (
       <TouchableOpacity
         style={style.top_container}
@@ -529,7 +531,7 @@ class DetailDevice extends BaseScreen {
         }}
       >
         <View style={style.top_container_group}>
-          <Text style={style.top_container_title} numberOfLines={1}>{this.productName}</Text>
+          <Text style={style.top_container_title} numberOfLines={1}>{labelName}</Text>
           <Text style={[style.group2_container_value2,DeviceService.getStyleStatus(device.Status.code)]}>{device.statusMessage()}</Text>
         </View>
         <View style={style.top_container_right_group}>

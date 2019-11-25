@@ -93,8 +93,8 @@
 		FE5C9FB42355E86E00AC6E90 /* PostGroteskBookItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 82D0A734BA634CDEBE9A3F26 /* PostGroteskBookItalic.otf */; };
 		FE5C9FB52355EE0100AC6E90 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4BA287542ADF445498FC2188 /* MaterialIcons.ttf */; };
 		FE86096522D747230050666A /* libFirebaseCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE86096422D747230050666A /* libFirebaseCore.a */; };
-		FE95AE0C2386489500F1DA40 /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE95AE0B2386489500F1DA40 /* Gomobile.framework */; };
-		FE95AE0D2386489500F1DA40 /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE95AE0B2386489500F1DA40 /* Gomobile.framework */; };
+		FE95AE0F2387F30100F1DA40 /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE95AE0E2387F30100F1DA40 /* Gomobile.framework */; };
+		FE95AE102387F30100F1DA40 /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE95AE0E2387F30100F1DA40 /* Gomobile.framework */; };
 		FED68302235DBC6A002F1A7C /* autonomous_config.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE6F886022DC3B510009C5AA /* autonomous_config.plist */; };
 		FEEBD6BF2355AD57006EFECD /* AutonomousZMQ.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */; };
 		FEEBD6C02355AD57006EFECD /* AutonomousZMQ.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -248,7 +248,7 @@
 		FE5C9FA72355D46900AC6E90 /* libreact-native-netinfo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-netinfo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE6F886022DC3B510009C5AA /* autonomous_config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = autonomous_config.plist; sourceTree = "<group>"; };
 		FE86096422D747230050666A /* libFirebaseCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libFirebaseCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		FE95AE0B2386489500F1DA40 /* Gomobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Gomobile.framework; sourceTree = "<group>"; };
+		FE95AE0E2387F30100F1DA40 /* Gomobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Gomobile.framework; sourceTree = "<group>"; };
 		FECCEDF722C379D900129059 /* AutonomousZMQ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AutonomousZMQ.framework; sourceTree = "<group>"; };
 		FEEBD6CD2355C724006EFECD /* RNZmqService.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNZmqService.xcodeproj; path = "../node_modules/react-native-zmq-service/ios/RNZmqService.xcodeproj"; sourceTree = "<group>"; };
 		FEEBD6D62355CA35006EFECD /* libreact-native-randombytes.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-randombytes.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -285,7 +285,7 @@
 				FE57448622F97A3700F2A2BC /* NetworkExtension.framework in Frameworks */,
 				82E467C899D04A02A0589EB9 /* libRNGestureHandler.a in Frameworks */,
 				3B50FECFE455494A8373E5A6 /* libRNVectorIcons.a in Frameworks */,
-				FE95AE0C2386489500F1DA40 /* Gomobile.framework in Frameworks */,
+				FE95AE0F2387F30100F1DA40 /* Gomobile.framework in Frameworks */,
 				A23A5B4BF797429292519AC6 /* libRNCAsyncStorage.a in Frameworks */,
 				36F7D5CE970D4799A075B466 /* libRNSVG.a in Frameworks */,
 				0D4F7FF3224B482F9DFC427A /* libRNReanimated.a in Frameworks */,
@@ -337,7 +337,7 @@
 				FE26D1872373D41A0040A54B /* NetworkExtension.framework in Frameworks */,
 				FE26D1882373D41A0040A54B /* libRNGestureHandler.a in Frameworks */,
 				FE26D1892373D41A0040A54B /* libRNVectorIcons.a in Frameworks */,
-				FE95AE0D2386489500F1DA40 /* Gomobile.framework in Frameworks */,
+				FE95AE102387F30100F1DA40 /* Gomobile.framework in Frameworks */,
 				FE26D18B2373D41A0040A54B /* libRNCAsyncStorage.a in Frameworks */,
 				FE26D18C2373D41A0040A54B /* libRNSVG.a in Frameworks */,
 				FE26D18D2373D41A0040A54B /* libRNReanimated.a in Frameworks */,
@@ -466,7 +466,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				FE95AE0B2386489500F1DA40 /* Gomobile.framework */,
+				FE95AE0E2387F30100F1DA40 /* Gomobile.framework */,
 				A7ED6691231E7AA600632177 /* game.mp3 */,
 				FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */,
 				FE6F885F22DC3B0E0009C5AA /* ZMQ */,

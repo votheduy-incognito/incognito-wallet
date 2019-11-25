@@ -30,6 +30,11 @@ export const template = {
     StakerAddress:'',
     Commission:1
   },
+  keyInfo:{
+    publicKeyMining:'',
+    publicKeyRole:''
+
+  },
   status:{
     code: -1,
     message:'Waiting'
@@ -84,6 +89,26 @@ export default class Device {
   }
   get isCallStaked(){
     return this.data.minerInfo?.isCallStaked||false;
+  }
+  get PublicKeyMining(){
+    return this.data.keyInfo?.publicKeyMining;
+  }
+  set PublicKeyMining(publicKeyMining:String){
+    const keyInfo = {
+      ...this.data.keyInfo,
+      publicKeyMining:publicKeyMining
+    };
+    this.data['keyInfo'] = keyInfo;
+  }
+  get PublicKeyRole(){
+    return this.data.keyInfo?.publicKeyRole;
+  }
+  set PublicKeyRole(publicKeyRole:String){
+    const keyInfo = {
+      ...this.data.keyInfo,
+      publicKeyRole:publicKeyRole
+    };
+    this.data['keyInfo'] = keyInfo;
   }
   static offlineStatus =()=>{
     return {

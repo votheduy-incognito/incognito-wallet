@@ -1,6 +1,7 @@
 /**
  * @providesModule AddSelfNode
  */
+import { ButtonExtension as Button, InputExtension as Input } from '@components/core';
 import Loader from '@components/DialogLoader';
 import routeNames from '@routers/routeNames';
 import BaseScreen from '@screens/BaseScreen';
@@ -11,11 +12,10 @@ import { onClickView } from '@src/utils/ViewUtil';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React, { useState, useRef, useEffect, createRef, forwardRef, useImperativeHandle } from 'react';
+import React, { useImperativeHandle, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { getTimeZone } from 'react-native-localize';
-import {Text,ButtonExtension as Button,InputExtension as Input} from '@components/core';
-import styles, {placeHolderColor} from './style';
+import styles, { placeHolderColor } from './style';
 
 const SHORT_DOMAIN_REGEX = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/;
 const FULL_DOMAIN_REGEX = /^(http)|(https):\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/;
@@ -23,7 +23,7 @@ const IP_ADDRESS_REGEX = /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(:[0-9]+)?$/;
 const LOCALHOST_REGEX = /^localhost(:[0-9]+)?$/;
 
 export const TAG = 'AddSelfNode';
-const ViewInput = forwardRef((props,ref)=>{
+const ViewInput = React.forwardRef((props,ref)=>{
   const {  textInput, item,item_container_input,label } = styles;
   let inputView = useRef(null);
   const [text,setText] = useState('');

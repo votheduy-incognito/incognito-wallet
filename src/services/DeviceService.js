@@ -20,6 +20,7 @@ const templateAction = {
 const timeout = 10;
 
 export default class DeviceService {
+  
   static formatForDisplayBalance = (balance:Number)=>{
     return format.amount(_.isNaN(balance)?0:balance,common.DECIMALS['PRV']);
   }
@@ -35,6 +36,17 @@ export default class DeviceService {
       styleStatus.color = '#26C64D';
     }
     return styleStatus;
+  }
+
+  /**
+   * if return {} => web-js error
+   * return { Role= -1, ShardID= 0 }
+   */
+  static fetchStakeStatus = async (account,wallet)=>{
+    if(_.isEmpty(account)) throw new Error(`${TAG} fetchStakeStatus: account is empty`);
+    if(_.isEmpty(wallet)) throw new Error(`${TAG} fetchStakeStatus: wallet is empty`);
+
+    return await accountService.stakerStatus(account,wallet).catch(e=>new ExHandler(e,`${TAG} fetchStakeStatus: web-js error`).showErrorToast())??{};
   }
 
   static fetchAndSavingInfoNodeStake = async(device:Device,isNeedSaving=false)=>{
