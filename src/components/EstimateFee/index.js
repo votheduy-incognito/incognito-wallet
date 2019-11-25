@@ -10,6 +10,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { change, destroy } from 'redux-form';
+import accountService from '@services/wallet/accountService';
+import {MESSAGES} from '@screens/Dex/constants';
 import EstimateFee from './EstimateFee';
 
 class EstimateFeeContainer extends Component {
@@ -122,9 +124,13 @@ class EstimateFeeContainer extends Component {
       return fee;
     } catch (e) {
       const { onEstimateFailed, estimateFeeData: { feeUnit } } = this.props;
-      this.setState({
-        estimateErrorMsg: new ExHandler(e, `Something went wrong while estimating ${feeUnit} fee for this transactions, please try again.`).message,
-      }, onEstimateFailed);
+      if (accountService.isNotEnoughCoinErrorCode(e)) {
+        this.setState({ estimateErrorMsg: MESSAGES.PENDING_TRANSACTIONS }, onEstimateFailed);
+      } else {
+        this.setState({
+          estimateErrorMsg: new ExHandler(e, `Something went wrong while estimating ${feeUnit} fee for this transactions, please try again.`).message,
+        }, onEstimateFailed);
+      }
       fee = null;
       minFee = null;
     } finally {

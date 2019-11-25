@@ -563,7 +563,7 @@ class Transfer extends React.PureComponent {
         isVisible={isVisible}
         overlayStyle={mainStyle.modal}
         overlayBackgroundColor={sending ? 'transparent' : 'white'}
-        windowBackgroundColor="rgba(0,0,0,0.8)"
+        windowBackgroundColor="rgba(0,0,0,0.6)"
       >
         <View>
           <View style={sending && mainStyle.hidden}>

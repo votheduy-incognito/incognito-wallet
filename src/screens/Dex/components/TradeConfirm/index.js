@@ -534,7 +534,7 @@ class TradeConfirm extends React.Component {
         isVisible={visible}
         overlayStyle={[style.dialog, sending && mainStyle.hiddenDialog]}
         overlayBackgroundColor={sending ? 'transparent' : 'white'}
-        windowBackgroundColor="rgba(0,0,0,0.8)"
+        windowBackgroundColor="rgba(0,0,0,0.6)"
       >
         <View>
           <View style={[style.dialogContent, sending && mainStyle.hidden]}>
