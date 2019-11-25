@@ -93,7 +93,7 @@ class Swap extends React.Component {
 
   loadData = async () => {
     const { wallet } = this.props;
-    const { inputToken, isLoading } = this.state;
+    const { isLoading } = this.state;
 
     if (isLoading) {
       return;
@@ -130,9 +130,14 @@ class Swap extends React.Component {
         .filter(token => token.name && token.symbol), item => item.symbol && item.symbol.toLowerCase())
       ];
 
-      this.setState({ chainPairs, tokens, inputToken: inputToken || tokens[0] }, () => {
-        this.filterOutputList();
-        this.getInputBalance();
+      this.setState({ chainPairs, tokens }, () => {
+        const { inputToken } = this.state;
+        if (inputToken) {
+          this.filterOutputList();
+          this.getInputBalance();
+        } else {
+          this.selectInput(tokens[0]);
+        }
       });
     } catch(error) {
       new ExHandler(error).showErrorToast();
@@ -172,11 +177,9 @@ class Swap extends React.Component {
   }
 
   selectInput = (token, balance) => {
-    this.inputRef.clear();
-
     this.setState({
       inputToken: token,
-      inputValue: 0,
+      inputValue: convertUtil.toOriginalAmount(1, token.pDecimals),
       outputToken: null,
       outputValue: null,
       inputError: null,
@@ -244,7 +247,7 @@ class Swap extends React.Component {
       const {pairs, outputToken, inputToken, inputValue} = this.state;
 
       if (!outputToken || !_.isNumber(inputValue) || _.isNaN(inputValue)) {
-        return this.setState({outputValue: 0});
+        return this.setState({ outputValue: 0 });
       }
 
       const pair = pairs.find(i => Object.keys(i).includes(outputToken.id));
@@ -254,7 +257,7 @@ class Swap extends React.Component {
       const newInputPool = inputPool + inputValue - 0;
       const newOutputPoolWithFee = _.ceil(initialPool / newInputPool);
       const outputValue = outputPool - newOutputPoolWithFee;
-      this.setState({outputValue});
+      this.setState({ outputValue, pair });
     } catch (error) {
       console.debug('CALCULATE OUTPUT', error);
     }
@@ -331,6 +334,7 @@ class Swap extends React.Component {
         onAddHistory(new TradeHistory(result, inputToken, outputToken, inputValue, outputValue, networkFee, networkFeeUnit, tradingFee, stopPrice));
       }
     } catch (error) {
+      console.debug('ERROR', error);
       this.setState({ tradeError: MESSAGES.TRADE_ERROR });
     } finally {
       this.setState({ sending: false });
@@ -356,12 +360,14 @@ class Swap extends React.Component {
   };
 
   closeSuccessDialog = () => {
+    const { inputToken } = this.state;
     this.setState({
       showSwapSuccess: false,
-      inputValue: 0,
-      outputValue: 0,
+      inputValue: convertUtil.toOriginalAmount(1, inputToken.pDecimals),
+      outputValue: null,
+    }, () => {
+      this.calculateOutputValue();
     });
-    this.inputRef.clear();
   };
 
   renderFee() {
@@ -405,6 +411,7 @@ class Swap extends React.Component {
       tokens,
       inputError,
       dexMainAccount,
+      pair,
     } = this.state;
     return (
       <View>
@@ -419,6 +426,7 @@ class Swap extends React.Component {
           onRef={this.handleRef}
           account={dexMainAccount}
           wallet={wallet}
+          pool={!!pair && !!inputToken && pair[inputToken.id]}
         />
         {!!inputError && (inputError !== MESSAGES.BALANCE_INSUFFICIENT || this.seenDepositGuide) && (
           <Text style={mainStyle.error}>
@@ -438,6 +446,7 @@ class Swap extends React.Component {
           account={dexMainAccount}
           wallet={wallet}
           value={_.isNumber(outputValue) ? formatUtil.amountFull(outputValue, outputToken?.pDecimals) : '0'}
+          pool={!!pair && !!outputToken && pair[outputToken.id]}
         />
       </View>
     );
