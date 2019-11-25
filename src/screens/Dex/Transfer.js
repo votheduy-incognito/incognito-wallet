@@ -561,9 +561,9 @@ class Transfer extends React.PureComponent {
     return (
       <Overlay
         isVisible={isVisible}
-        overlayStyle={mainStyle.modal}
+        overlayStyle={[mainStyle.modal, sending && mainStyle.hiddenDialog]}
         overlayBackgroundColor={sending ? 'transparent' : 'white'}
-        windowBackgroundColor="rgba(0,0,0,0.6)"
+        windowBackgroundColor={`rgba(0,0,0,${ sending ? 0.8 : 0.5})`}
       >
         <View>
           <View style={sending && mainStyle.hidden}>
@@ -648,7 +648,7 @@ class Transfer extends React.PureComponent {
   }
 
   render() {
-    const { transfer, sending } = this.state;
+    const { transfer } = this.state;
     const { success, account, token, action, amount } = transfer;
     return (
       <View>
