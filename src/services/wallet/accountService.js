@@ -515,6 +515,10 @@ export default class Account {
 
   static isNotEnoughCoinError(error, tokenAmount, tokenFee, tokenBalance, prvBalance, prvFee) {
     console.debug('ERROR', error, tokenAmount, tokenFee, tokenBalance, prvBalance, prvFee);
-    return tokenAmount + tokenFee < tokenBalance || prvBalance < prvFee;
+    return tokenAmount + tokenFee <= tokenBalance && prvBalance <= prvFee;
+  }
+
+  static isNotEnoughCoinErrorCode(error) {
+    return error.code === 'WEB_JS_ERROR(-5)';
   }
 }
