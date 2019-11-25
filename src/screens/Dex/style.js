@@ -240,6 +240,7 @@ export const mainStyle = StyleSheet.create({
   },
   hiddenDialog: {
     backgroundColor: 'transparent',
+    elevation: 0,
   },
 });
 
