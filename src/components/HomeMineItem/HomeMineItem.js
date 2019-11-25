@@ -158,6 +158,17 @@ class HomeMineItem extends React.Component {
       return  isOffline?images.ic_node_offline:images.ic_device;
     }
   }
+
+  handlePressRemoveDevice = onClickView(()=>{
+    const {item,deviceInfo} = this.state;
+    if(deviceInfo.Type == DEVICES.VIRTUAL_TYPE){
+      Alert.alert('Confirm','Are you sure to delete this item?',[{text:'Yes',onPress:async ()=>{
+        const {reloadList} = this.props;
+        await LocalDatabase.removeDevice(item);
+        reloadList&&reloadList();
+      }},{ text: 'Cancel'}],{cancelable: true});
+    }
+  });
   render() {
     const {item,deviceInfo,balance} = this.state;
     const {containerStyle} = this.props;
@@ -187,21 +198,17 @@ class HomeMineItem extends React.Component {
       }
     }
 
+    const labelName = deviceInfo.Type == DEVICES.VIRTUAL_TYPE? deviceInfo.Name:deviceInfo.qrCodeDeviceId;
+
     return (
       <TouchableScale
         style={[styles.container,containerStyle]}
-        onLongPress={()=>{
-          Alert.alert('Confirm','Are you sure to delete this item?',[{text:'Yes',onPress:async ()=>{
-            const {reloadList} = this.props;
-            await LocalDatabase.removeDevice(item);
-            reloadList();
-          }},{ text: 'Cancel'}],{cancelable: true});
-        }}
+        onLongPress={this.handlePressRemoveDevice}
         onPress={this.handleGotoDetailScreen}
       >
         <Image style={styles.imageLogo} source={this.getIconWithType()} />
         <View style={styles.groupLeft}>
-          <Text style={styles.groupLeft_title}>{deviceInfo.Name}</Text>
+          <Text style={styles.groupLeft_title}>{labelName}</Text>
           {_.isEmpty(textErrorDevice) && !_.isNil(balance)&&<Text style={styles.groupLeft_title2}>{`${balance} PRV`}</Text>}
           {!_.isEmpty(textErrorDevice) &&<Text style={styles.groupLeft_title2}>{textErrorDevice}</Text>}
 

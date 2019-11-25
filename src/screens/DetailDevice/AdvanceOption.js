@@ -1,10 +1,10 @@
+import { ButtonExtension, ListItem, Text } from '@components/core';
 import { imagesVector } from '@src/assets';
 import BottomSheet from '@src/components/BottomSheet';
 import TextStyle from '@src/styles/TextStyle';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import {Text,ButtonExtension, ListItem} from '@components/core';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import styles from './style';
 
@@ -85,7 +85,8 @@ class AdvanceOption extends Component {
         {labels.map((item,index)=>{
           return (
             <ListItem
-              disabled={index!=1?true:false}
+              // disabled={index!=1?true:false}
+              disabled
               disabledStyle={{opacity:0.3}}
               Component={TouchableOpacity}
               onPress={()=>{
