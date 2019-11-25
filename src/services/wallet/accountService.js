@@ -416,13 +416,13 @@ export default class Account {
     }
     return null;
   }
-  
+
   /**
-   * get all of tokens that have balance in the account, even it hasnt been added to following list 
+   * get all of tokens that have balance in the account, even it hasnt been added to following list
    * return array of { id: TokenID, amount }
-   * 
-   * @param {object} account 
-   * @param {object} wallet 
+   *
+   * @param {object} account
+   * @param {object} wallet
    */
   static async getListTokenHasBalance(account, wallet) {
     try {
@@ -511,5 +511,10 @@ export default class Account {
       throw e;
     }
     return result;
+  }
+
+  static isNotEnoughCoinError(error, tokenAmount, tokenFee, tokenBalance, prvBalance, prvFee) {
+    console.debug('ERROR', error, tokenAmount, tokenFee, tokenBalance, prvBalance, prvFee);
+    return tokenAmount + tokenFee < tokenBalance || prvBalance < prvFee;
   }
 }

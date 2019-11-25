@@ -93,7 +93,7 @@ class Swap extends React.Component {
 
   loadData = async () => {
     const { wallet } = this.props;
-    const { inputToken, isLoading } = this.state;
+    const { isLoading } = this.state;
 
     if (isLoading) {
       return;
@@ -130,9 +130,14 @@ class Swap extends React.Component {
         .filter(token => token.name && token.symbol), item => item.symbol && item.symbol.toLowerCase())
       ];
 
-      this.setState({ chainPairs, tokens, inputToken: inputToken || tokens[0] }, () => {
-        this.filterOutputList();
-        this.getInputBalance();
+      this.setState({ chainPairs, tokens }, () => {
+        const { inputToken } = this.state;
+        if (inputToken) {
+          this.filterOutputList();
+          this.getInputBalance();
+        } else {
+          this.selectInput(tokens[0]);
+        }
       });
     } catch(error) {
       new ExHandler(error).showErrorToast();
@@ -172,17 +177,15 @@ class Swap extends React.Component {
   }
 
   selectInput = (token, balance) => {
-    this.inputRef.clear();
-
     this.setState({
       inputToken: token,
-      inputValue: 0,
+      inputValue: convertUtil.toOriginalAmount(1, token.pDecimals),
       outputToken: null,
       outputValue: null,
       inputError: null,
       balance: 'Loading',
     }, () => {
-      this.filterOutputList();
+      this.filterOutputList(() => this.changeInputValue(1));
       this.getInputBalance(balance);
     });
   };
@@ -214,9 +217,11 @@ class Swap extends React.Component {
         this.setState({ inputValue: number }, this.calculateOutputValue);
       }
     }
+
+    this.setState({ rawText: newValue.toString() });
   };
 
-  async filterOutputList() {
+  async filterOutputList(callback) {
     try {
       const {inputToken: token, chainPairs, tokens, outputToken} = this.state;
 
@@ -228,12 +233,14 @@ class Swap extends React.Component {
           .map(id => tokens.find(token => token.id.includes(id)))
           .filter(item => item)
         , item => item.symbol && item.symbol.toLowerCase());
-
       this.setState({
         pairs,
         outputList,
         outputToken: outputToken || outputList[0],
-      }, this.calculateOutputValue);
+      }, () => {
+        callback && callback();
+        this.calculateOutputValue();
+      });
     } catch (error) {
       console.debug('FILTER OUTPUT LIST', error);
     }
@@ -244,7 +251,7 @@ class Swap extends React.Component {
       const {pairs, outputToken, inputToken, inputValue} = this.state;
 
       if (!outputToken || !_.isNumber(inputValue) || _.isNaN(inputValue)) {
-        return this.setState({outputValue: 0});
+        return this.setState({ outputValue: 0 });
       }
 
       const pair = pairs.find(i => Object.keys(i).includes(outputToken.id));
@@ -254,7 +261,7 @@ class Swap extends React.Component {
       const newInputPool = inputPool + inputValue - 0;
       const newOutputPoolWithFee = _.ceil(initialPool / newInputPool);
       const outputValue = outputPool - newOutputPoolWithFee;
-      this.setState({outputValue});
+      this.setState({ outputValue, pair });
     } catch (error) {
       console.debug('CALCULATE OUTPUT', error);
     }
@@ -331,7 +338,11 @@ class Swap extends React.Component {
         onAddHistory(new TradeHistory(result, inputToken, outputToken, inputValue, outputValue, networkFee, networkFeeUnit, tradingFee, stopPrice));
       }
     } catch (error) {
-      this.setState({ tradeError: MESSAGES.TRADE_ERROR });
+      if (accountService.isNotEnoughCoinError(error, inputValue, tokenFee, balance, prvBalance, prvFee)) {
+        this.setState({tradeError: MESSAGES.PENDING_TRANSACTIONS});
+      } else {
+        this.setState({tradeError: MESSAGES.TRADE_ERROR});
+      }
     } finally {
       this.setState({ sending: false });
     }
@@ -351,17 +362,16 @@ class Swap extends React.Component {
     this.setState({ showTradeConfirm: true });
   };
 
-  handleRef = (ref) => {
-    this.inputRef = ref;
-  };
-
   closeSuccessDialog = () => {
+    const { inputToken } = this.state;
     this.setState({
       showSwapSuccess: false,
-      inputValue: 0,
-      outputValue: 0,
+      inputValue: convertUtil.toOriginalAmount(1, inputToken.pDecimals),
+      rawText: '1',
+      outputValue: null,
+    }, () => {
+      this.calculateOutputValue();
     });
-    this.inputRef.clear();
   };
 
   renderFee() {
@@ -397,7 +407,6 @@ class Swap extends React.Component {
     const { wallet } = this.props;
     const {
       inputToken,
-      inputValue,
       outputToken,
       outputValue,
       outputList,
@@ -405,6 +414,8 @@ class Swap extends React.Component {
       tokens,
       inputError,
       dexMainAccount,
+      rawText,
+      pair,
     } = this.state;
     return (
       <View>
@@ -415,10 +426,10 @@ class Swap extends React.Component {
           headerTitle="From"
           balance={balance}
           token={inputToken}
-          value={inputValue}
-          onRef={this.handleRef}
+          value={rawText}
           account={dexMainAccount}
           wallet={wallet}
+          pool={!!pair && !!inputToken && pair[inputToken.id]}
         />
         {!!inputError && (inputError !== MESSAGES.BALANCE_INSUFFICIENT || this.seenDepositGuide) && (
           <Text style={mainStyle.error}>
@@ -438,6 +449,7 @@ class Swap extends React.Component {
           account={dexMainAccount}
           wallet={wallet}
           value={_.isNumber(outputValue) ? formatUtil.amountFull(outputValue, outputToken?.pDecimals) : '0'}
+          pool={!!pair && !!outputToken && pair[outputToken.id]}
         />
       </View>
     );

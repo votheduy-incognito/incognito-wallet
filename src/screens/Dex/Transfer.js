@@ -180,9 +180,9 @@ class Transfer extends React.PureComponent {
   }
 
   transfer = async () => {
-    const { onLoadData } = this.props;
+    const { onLoadData, wallet, dexMainAccount } = this.props;
     const { transfer, sending } = this.state;
-    const { action, error, token, amount, account } = transfer;
+    const { action, error, token, amount, account, fee, balance, feeUnit } = transfer;
 
     if (sending) {
       return;
@@ -196,8 +196,23 @@ class Transfer extends React.PureComponent {
         this.updateTransfer({ success: true });
         onLoadData();
       } catch (error) {
-        let errorMessage = action === 'deposit' ? MESSAGES.DEPOSIT_ERROR : MESSAGES.WITHDRAW_ERROR;
-        this.updateTransfer({ chainError: errorMessage });
+        let tokenFee = fee;
+        let prvBalance = 0;
+        let prvFee = 0;
+        let prvAccount = action === MESSAGES.DEPOSIT ? account : dexMainAccount;
+
+        if (token !== PRV && feeUnit === PRV.symbol) {
+          prvBalance = await accountService.getBalance(prvAccount, wallet);
+          prvFee = fee;
+          tokenFee = 0;
+        }
+
+        if (accountService.isNotEnoughCoinError(error, amount, tokenFee, balance, prvBalance, prvFee)) {
+          this.updateTransfer({chainError: MESSAGES.PENDING_TRANSACTIONS});
+        } else {
+          let errorMessage = action === 'deposit' ? MESSAGES.DEPOSIT_ERROR : MESSAGES.WITHDRAW_ERROR;
+          this.updateTransfer({ chainError: errorMessage });
+        }
       } finally {
         this.setState({ sending: false });
       }

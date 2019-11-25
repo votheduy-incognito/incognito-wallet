@@ -195,30 +195,51 @@ class Input extends React.Component {
     );
   }
 
+  renderInput() {
+    const { value, onChange } = this.props;
+    return (
+      <TextInput
+        keyboardType="decimal-pad"
+        style={inputStyle.input}
+        placeholder={onChange ? '0.0' : ''}
+        placeholderTextColor={COLORS.lightGrey1}
+        value={value}
+        onChangeText={onChange}
+      />
+    );
+  }
+
+  renderText() {
+    const { value } = this.props;
+    return (
+      <Text numberOfLines={1} style={[inputStyle.input, { marginLeft: 0 }]}>
+        {value}
+      </Text>
+    );
+  }
+
+  renderPool() {
+    const { token, pool } = this.props;
+    return (
+      <View style={[mainStyle.textRight, mainStyle.twoColumns]}>
+        <Text style={[inputStyle.headerTitle, inputStyle.headerBalanceTitle]}>Pool:</Text>
+        <Text style={inputStyle.balanceText}>{pool > 0 ? formatUtil.amountFull(pool, token.pDecimals) : 0}</Text>
+      </View>
+    );
+  }
+
   render() {
-    const { token, value, onChange, tokenList, headerTitle, onRef } = this.props;
+    const { token, onChange, tokenList, headerTitle } = this.props;
     return (
       <View style={inputStyle.wrapper}>
         <View style={inputStyle.header}>
           <Text style={inputStyle.headerTitle}>{headerTitle}</Text>
           {this.renderBalance()}
+          { !onChange && this.renderPool() }
         </View>
+        { !!onChange && this.renderPool() }
         <View style={inputStyle.content}>
-          {onChange ? (
-            <TextInput
-              ref={onRef}
-              keyboardType="decimal-pad"
-              style={inputStyle.input}
-              placeholder={onChange ? '0.0' : ''}
-              placeholderTextColor={COLORS.lightGrey1}
-              value={value}
-              onChangeText={onChange}
-            />
-          ) : (
-            <Text numberOfLines={1} style={[inputStyle.input, { marginLeft: 0 }]}>
-              {value}
-            </Text>
-          )}
+          {onChange ? this.renderInput() : this.renderText()}
           <TouchableOpacity
             onPress={this.showDialog}
             style={inputStyle.select}
@@ -238,7 +259,6 @@ Input.defaultProps = {
   value: undefined,
   balance: undefined,
   onChange: undefined,
-  onRef: undefined,
   account: null,
   wallet: null,
 };
@@ -250,7 +270,7 @@ Input.propTypes = {
   headerTitle: PropTypes.string.isRequired,
   tokenList: PropTypes.array.isRequired,
   onSelectToken: PropTypes.func.isRequired,
-  onRef: PropTypes.func,
+  pool: PropTypes.number.isRequired,
   onChange: PropTypes.func,
   account: PropTypes.object,
   wallet: PropTypes.object,
