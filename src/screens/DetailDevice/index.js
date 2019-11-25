@@ -443,7 +443,8 @@ class DetailDevice extends BaseScreen {
     }
     if(!_.isNil(result)){
       if(result){
-        this.showToastMessage('Withdrawing earnings to your Incognito Wallet. Balances will update in a few minutes.');
+        const message = device.Type == DEVICES.VIRTUAL_TYPE?'Withdrawing earnings to your Incognito Wallet. Balances will update in a few minutes.':'The withdrawal feature will be released later this week. Check back soon!';
+        this.showToastMessage(message);
       }else{
         this.showToastMessage('Withdrawals will be enabled once the mainnet launches in October 2019.');
       }
