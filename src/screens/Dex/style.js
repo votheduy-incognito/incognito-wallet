@@ -235,6 +235,12 @@ export const mainStyle = StyleSheet.create({
     paddingVertical: 5,
     ...FONT.STYLE.medium,
   },
+  hidden: {
+    display: 'none',
+  },
+  hiddenDialog: {
+    backgroundColor: 'transparent',
+  },
 });
 
 export const inputStyle = StyleSheet.create({

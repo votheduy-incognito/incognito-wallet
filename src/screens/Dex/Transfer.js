@@ -559,78 +559,89 @@ class Transfer extends React.PureComponent {
     const isVisible = !!account && !success;
 
     return (
-      <Overlay isVisible={isVisible} overlayStyle={mainStyle.modal}>
+      <Overlay
+        isVisible={isVisible}
+        overlayStyle={mainStyle.modal}
+        overlayBackgroundColor={sending ? 'transparent' : 'white'}
+        windowBackgroundColor="rgba(0,0,0,0.8)"
+      >
         <View>
-          <View style={mainStyle.modalHeader}>
-            <TouchableOpacity onPress={this.closeAmountPopUp} style={mainStyle.modalBack}>
-              <Image source={leftArrow} />
-            </TouchableOpacity>
-            <Text style={[mainStyle.modalHeaderText]}>
-              Amount
-            </Text>
-            <TouchableOpacity onPress={this.closePopUp}>
-              <Icon name="close" color={COLORS.white} />
-            </TouchableOpacity>
-          </View>
-          <View style={[mainStyle.modalContent, mainStyle.paddingTop]}>
-            <View style={[mainStyle.twoColumns, mainStyle.center, tokenStyle.wrapper, mainStyle.padding]}>
-              <Text style={tokenStyle.name}>{action === 'deposit' ? 'Deposit from' : 'Withdraw to'}:</Text>
-              <Text style={[mainStyle.textRight, mainStyle.longAccountName]} numberOfLines={1}>
-                {transfer?.account?.AccountName}
+          <View style={sending && mainStyle.hidden}>
+            <View style={mainStyle.modalHeader}>
+              <TouchableOpacity onPress={this.closeAmountPopUp} style={mainStyle.modalBack}>
+                <Image source={leftArrow} />
+              </TouchableOpacity>
+              <Text style={[mainStyle.modalHeaderText]}>
+                Amount
               </Text>
+              <TouchableOpacity onPress={this.closePopUp}>
+                <Icon name="close" color={COLORS.white} />
+              </TouchableOpacity>
             </View>
-            <View style={[mainStyle.twoColumns, mainStyle.center, tokenStyle.wrapper, mainStyle.padding]}>
-              <Text style={tokenStyle.name}>Balance:</Text>
-              <View style={[mainStyle.textRight, mainStyle.twoColumns]}>
-                { _.isNumber(balance) ?
-                  (
-                    <Text
-                      style={[tokenStyle.symbol, mainStyle.longAccountName]}
-                      numberOfLines={1}
-                    >
-                      {formatUtil.amountFull(balance, token?.pDecimals)}
-                    </Text>
-                  ) : <ActivityIndicator size="small" style={mainStyle.textRight} />
-                }
-                <Text>&nbsp;{token?.symbol}</Text>
+            <View style={[mainStyle.modalContent, mainStyle.paddingTop]}>
+              <View style={[mainStyle.twoColumns, mainStyle.center, tokenStyle.wrapper, mainStyle.padding]}>
+                <Text style={tokenStyle.name}>{action === 'deposit' ? 'Deposit from' : 'Withdraw to'}:</Text>
+                <Text style={[mainStyle.textRight, mainStyle.longAccountName]} numberOfLines={1}>
+                  {transfer?.account?.AccountName}
+                </Text>
               </View>
-            </View>
-            <ReactInput
-              style={tokenStyle.input}
-              placeholder="0.0"
-              placeholderColor={COLORS.lightGrey1}
-              keyboardType="decimal-pad"
-              onChangeText={this.changeAmount}
-              editable={_.isNumber(balance)}
-            />
-            {!!error && <Text style={[mainStyle.fee, mainStyle.error, mainStyle.center, tokenStyle.error]}>{error}</Text>}
-            {!!chainError && <Text style={[mainStyle.fee, mainStyle.error, mainStyle.center, tokenStyle.error]}>{chainError}</Text>}
-            <View style={mainStyle.modalEstimate}>
-              <EstimateFee
-                accountName={action === 'deposit' ? account?.AccountName : dexMainAccount?.AccountName}
-                estimateFeeData={{ feeUnit, fee, feeUnitByTokenId }}
-                onNewFeeData={this.handleSelectFee}
-                types={supportedFeeTypes}
-                dexToken={token}
-                dexBalance={balance}
-                amount={amount / Math.pow(10, token?.pDecimals || 0)}
-                toAddress={action === 'deposit' ? dexMainAccount?.PaymentAddress : dexWithdrawAccount?.PaymentAddress}
-                multiply={multiply || 1}
+              <View style={[mainStyle.twoColumns, mainStyle.center, tokenStyle.wrapper, mainStyle.padding]}>
+                <Text style={tokenStyle.name}>Balance:</Text>
+                <View style={[mainStyle.textRight, mainStyle.twoColumns]}>
+                  { _.isNumber(balance) ?
+                    (
+                      <Text
+                        style={[tokenStyle.symbol, mainStyle.longAccountName]}
+                        numberOfLines={1}
+                      >
+                        {formatUtil.amountFull(balance, token?.pDecimals)}
+                      </Text>
+                    ) : <ActivityIndicator size="small" style={mainStyle.textRight} />
+                  }
+                  <Text>&nbsp;{token?.symbol}</Text>
+                </View>
+              </View>
+              <ReactInput
+                style={tokenStyle.input}
+                placeholder="0.0"
+                placeholderColor={COLORS.lightGrey1}
+                keyboardType="decimal-pad"
+                onChangeText={this.changeAmount}
+                editable={_.isNumber(balance)}
+              />
+              {!!error && <Text style={[mainStyle.fee, mainStyle.error, mainStyle.center, tokenStyle.error]}>{error}</Text>}
+              {!!chainError && <Text style={[mainStyle.fee, mainStyle.error, mainStyle.center, tokenStyle.error]}>{chainError}</Text>}
+              <View style={mainStyle.modalEstimate}>
+                <EstimateFee
+                  accountName={action === 'deposit' ? account?.AccountName : dexMainAccount?.AccountName}
+                  estimateFeeData={{ feeUnit, fee, feeUnitByTokenId }}
+                  onNewFeeData={this.handleSelectFee}
+                  types={supportedFeeTypes}
+                  dexToken={token}
+                  dexBalance={balance}
+                  amount={amount / Math.pow(10, token?.pDecimals || 0)}
+                  toAddress={action === 'deposit' ? dexMainAccount?.PaymentAddress : dexWithdrawAccount?.PaymentAddress}
+                  multiply={multiply || 1}
+                />
+              </View>
+              <Button
+                title={_.capitalize(action)}
+                disabled={
+                  sending ||
+                  error ||
+                  !_.isNumber(amount) ||
+                  !_.isNumber(fee) ||
+                  !_.isNumber(balance)
+                }
+                style={tokenStyle.button}
+                onPress={this.transfer}
               />
             </View>
-            <Button
-              title={_.capitalize(action)}
-              disabled={
-                sending ||
-                error ||
-                !_.isNumber(amount) ||
-                !_.isNumber(fee) ||
-                !_.isNumber(balance)
-              }
-              style={tokenStyle.button}
-              onPress={this.transfer}
-            />
           </View>
+          <FullScreenLoading
+            open={sending}
+            mainText={action === 'withdraw' ? MESSAGES.WITHDRAW_PROCESS : ''}
+          />
         </View>
       </Overlay>
     );
@@ -652,7 +663,6 @@ class Transfer extends React.PureComponent {
           success={success}
           closePopUp={this.closePopUp}
         />
-        <FullScreenLoading open={sending} mainText={action === 'withdraw' ? 'Withdrawing your funds...\n\nThis may take a couple of minutes. Please do not navigate away from the app.' : ''} />
       </View>
     );
   }
