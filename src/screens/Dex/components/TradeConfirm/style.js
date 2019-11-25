@@ -107,7 +107,7 @@ export default StyleSheet.create({
   feeTitle: {
     color: COLORS.lightGrey9,
     fontSize: 15,
-    maxWidth: 100,
+    width: 100,
   },
   compare: {
     marginHorizontal: 5,

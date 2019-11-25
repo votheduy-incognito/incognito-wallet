@@ -22,7 +22,6 @@ import { Divider } from 'react-native-elements';
 import dexUtils, { DEX } from '@src/utils/dex';
 import ExchangeRate from '@screens/Dex/components/ExchangeRate';
 import LocalDatabase from '@utils/LocalDatabase';
-import FullScreenLoading from '@components/FullScreenLoading/index';
 import routeNames from '@routers/routeNames';
 import {TradeHistory} from '@models/dexHistory';
 import SwapSuccessDialog from './components/SwapSuccessDialog';
@@ -130,7 +129,7 @@ class Swap extends React.Component {
         .filter(token => token.name && token.symbol), item => item.symbol && item.symbol.toLowerCase())
       ];
 
-      this.setState({ chainPairs, tokens }, () => {
+      this.setState({ chainPairs, tokens }, async () => {
         const { inputToken } = this.state;
         if (inputToken) {
           this.filterOutputList();
@@ -150,9 +149,6 @@ class Swap extends React.Component {
     try {
       const {wallet} = this.props;
       const {inputToken: token, dexMainAccount} = this.state;
-
-      console.debug('INPUT BALANCE', balance);
-
       if (!_.isNumber(balance)) {
         balance = await accountService.getBalance(dexMainAccount, wallet, token.id);
         const {inputToken} = this.state;
@@ -185,8 +181,10 @@ class Swap extends React.Component {
       inputError: null,
       balance: 'Loading',
     }, () => {
-      this.filterOutputList(() => this.changeInputValue(1));
-      this.getInputBalance(balance);
+      this.filterOutputList(async () => {
+        await this.getInputBalance(balance);
+        this.changeInputValue(1);
+      });
     });
   };
 
@@ -195,7 +193,7 @@ class Swap extends React.Component {
   };
 
   changeInputValue = (newValue) => {
-    const {balance, inputToken} = this.state;
+    const { balance, inputToken } = this.state;
     let number = _.toNumber(newValue);
 
     if (_.isNaN(number)) {
@@ -522,7 +520,6 @@ class Swap extends React.Component {
               )}
             </View>
           </View>
-          <FullScreenLoading open={sending} />
           <SwapSuccessDialog
             inputToken={inputToken}
             inputValue={inputValue}

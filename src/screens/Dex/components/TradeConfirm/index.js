@@ -18,6 +18,7 @@ import {ExHandler} from '@services/exception';
 import greyRightArrow from '@src/assets/images/icons/grey_right_arrow.png';
 import {Overlay, Icon} from 'react-native-elements';
 import Help from '@components/Help';
+import FullScreenLoading from '@components/FullScreenLoading/index';
 import {PRV, MESSAGES, MIN_VALUE} from '../../constants';
 import style from './style';
 import { mainStyle } from '../../style';
@@ -283,17 +284,21 @@ class TradeConfirm extends React.Component {
         <TouchableOpacity style={mainStyle.twoColumns} onPress={this.toggleNetworkFee}>
           <View style={mainStyle.twoColumns}>
             <Text style={[style.fee, style.feeTitle]}>Network Fee</Text>
-            <Help title="Network Fee" content="Transactions on the Incognito Blockchain incur a small fee." />
+            <Help
+              title="Network Fee"
+              content="Transactions on the Incognito Blockchain incur a small fee."
+              marginLeft={-2}
+            />
           </View>
           <View style={[mainStyle.twoColumns, mainStyle.textRight]}>
-            {!expandNetworkFee &&
+            {!expandNetworkFee && (
               <View style={mainStyle.twoColumns}>
                 <Text numberOfLines={1} style={style.fee}>{displayFee || 0}</Text>
                 <Text style={style.fee}>
                   &nbsp;{networkFeeUnit}
                 </Text>
               </View>
-            }
+            )}
             <View>
               <Image source={chevronRight} style={[style.expandIcon, expandNetworkFee && style.expandIconActive]} />
             </View>
@@ -344,10 +349,10 @@ class TradeConfirm extends React.Component {
         <TouchableOpacity onPress={this.toggleTradingFee} style={mainStyle.twoColumns}>
           <View style={mainStyle.twoColumns}>
             <Text style={[style.feeTitle]}>Trading Fee</Text>
-            <Help title="Trading Fee" content="You’re paying this fee to initiate the trade." />
+            <Help title="Trading Fee" content="You’re paying this fee to initiate the trade." marginLeft={-2} />
           </View>
           <View style={[mainStyle.twoColumns, mainStyle.textRight]}>
-            {!expandTradingFee &&
+            {!expandTradingFee && (
               <View style={mainStyle.twoColumns}>
                 <Text numberOfLines={1} style={style.fee}>
                   {displayFee || 0}
@@ -356,7 +361,7 @@ class TradeConfirm extends React.Component {
                   &nbsp;{inputToken.symbol}
                 </Text>
               </View>
-            }
+            )}
             <View>
               <Image source={chevronRight} style={[style.expandIcon, expandTradingFee && style.expandIconActive]} />
             </View>
@@ -413,7 +418,7 @@ class TradeConfirm extends React.Component {
             />
           </View>
           <View style={[mainStyle.twoColumns, mainStyle.textRight]}>
-            {!expandStopPrice &&
+            {!expandStopPrice && (
               <View style={mainStyle.twoColumns}>
                 <Text numberOfLines={1} style={style.fee}>
                   {displayFee || 0}
@@ -422,7 +427,7 @@ class TradeConfirm extends React.Component {
                   &nbsp;{outputToken.symbol}
                 </Text>
               </View>
-            }
+            )}
             <View>
               <Image source={chevronRight} style={[style.expandIcon, expandStopPrice && style.expandIconActive]} />
             </View>
@@ -525,26 +530,34 @@ class TradeConfirm extends React.Component {
       stopPriceError,
     } = this.state;
     return (
-      <Overlay isVisible={visible} overlayStyle={style.dialog}>
-        <View style={style.dialogContent}>
-          <View style={[mainStyle.twoColumns, style.middle]}>
-            <Text style={style.dialogTitle}>Confirm your trade details</Text>
-            <TouchableOpacity style={style.closeIcon} onPress={onClose}>
-              <Icon name="close" size={20} />
-            </TouchableOpacity>
+      <Overlay
+        isVisible={visible}
+        overlayStyle={[style.dialog, sending && mainStyle.hiddenDialog]}
+        overlayBackgroundColor={sending ? 'transparent' : 'white'}
+        windowBackgroundColor="rgba(0,0,0,0.8)"
+      >
+        <View>
+          <View style={[style.dialogContent, sending && mainStyle.hidden]}>
+            <View style={[mainStyle.twoColumns, style.middle]}>
+              <Text style={style.dialogTitle}>Confirm your trade details</Text>
+              <TouchableOpacity style={style.closeIcon} onPress={onClose}>
+                <Icon name="close" size={20} />
+              </TouchableOpacity>
+            </View>
+            {this.renderFee()}
+            <Button
+              disabled={
+                sending ||
+                networkFeeError ||
+                tradingFeeError ||
+                stopPriceError
+              }
+              title="Confirm"
+              onPress={this.trade}
+            />
+            {!!tradeError && <Text style={[mainStyle.error, style.error, style.chainError]}>{tradeError}</Text>}
           </View>
-          {this.renderFee()}
-          <Button
-            disabled={
-              sending ||
-              networkFeeError ||
-              tradingFeeError ||
-              stopPriceError
-            }
-            title="Confirm"
-            onPress={this.trade}
-          />
-          {!!tradeError && <Text style={[mainStyle.error, style.error, style.chainError]}>{tradeError}</Text>}
+          <FullScreenLoading open={sending} />
         </View>
       </Overlay>
     );
