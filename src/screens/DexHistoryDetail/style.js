@@ -67,5 +67,10 @@ export default StyleSheet.create({
   },
   button: {
     marginTop: 50,
+  },
+  modal: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 0,
   }
 });
