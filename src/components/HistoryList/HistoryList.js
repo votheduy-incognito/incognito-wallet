@@ -119,7 +119,7 @@ const HistoryItem = ({ history, divider, navigation }) => {
 
   const { statusText, statusColor, statusNumber } = getStatusData(history.status, history.statusCode);
   const { typeText, balanceColor, balanceDirection } = getTypeData(history.type);
-  const amount = (history.amount && formatUtil.amount(history.amount, history.pDecimals)) || history.requestedAmount;
+  const amount = (history.amount && formatUtil.amount(history.amount, history.pDecimals)) || formatUtil.number(history.requestedAmount);
   // const [addressDirection, address] = getAddress(history);
   const onPress = () => {
     navigation?.navigate(routeNames.TxHistoryDetail, { data: { history, typeText, balanceColor, balanceDirection, statusText, statusColor, statusNumber } });

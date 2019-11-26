@@ -69,7 +69,7 @@ export default class Account {
     // create and send constant
     let result;
     try {
-      const infoStr = ![undefined, null].includes(info) && JSON.stringify(info);
+      const infoStr = ![undefined, null].includes(info) ? JSON.stringify(info) : undefined;
       result = await wallet.MasterAccount.child[
         indexAccount
       ].createAndSendNativeToken(paymentInfos, fee, isPrivacy, infoStr);

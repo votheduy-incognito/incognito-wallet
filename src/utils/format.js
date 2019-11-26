@@ -11,20 +11,21 @@ const fmt = {
 };
 
 const amountCreator = (bnFormat, maxDigits) => (amount, decimals) => {
-  let _maxDigits = maxDigits;
-  if (!_.isNumber(amount) || _.isNaN(amount)) {
+  try {
+    let _maxDigits = maxDigits;
+
+    const _amount = convertUtil.toHumanAmount(amount, decimals);
+    if (!Number.isFinite(_amount)) throw new Error('Can not format invalid amount');
+  
+    // if amount is too small, do not round it
+    if (_amount > 0 && _amount < 1) {
+      _maxDigits = undefined;
+    }
+  
+    return _amount ? new BigNumber(_amount).toFormat(_maxDigits, BigNumber.ROUND_DOWN, bnFormat) : 0;
+  } catch {
     return amount;
-  }
-
-  const _amount = convertUtil.toHumanAmount(amount, decimals);
-  if (!Number.isFinite(_amount)) throw new Error('Can not format invalid amount');
-
-  // if amount is too small, do not round it
-  if (_amount > 0 && _amount < 1) {
-    _maxDigits = undefined;
-  }
-
-  return _amount ? new BigNumber(_amount).toFormat(_maxDigits, BigNumber.ROUND_DOWN, bnFormat) : 0;
+  }  
 };
 
 const amountFull = amountCreator(fmt);

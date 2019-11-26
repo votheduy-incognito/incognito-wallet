@@ -48,15 +48,15 @@ export default class TxHistoryDetail extends Component {
     const fee = isUseTokenFee ? history?.feePToken : history?.fee;
     const feeUnit = isUseTokenFee ? history?.symbol : CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
     const formatFee = fee && formatUtil.amountFull(fee, isUseTokenFee ? history?.pDecimals : CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY);
-    const amount = convertUtil.toHumanAmount(history.amount, history.pDecimals) || history.requestedAmount;
+    const amountStr = (history.amount && formatUtil.amount(history.amount, history.pDecimals)) || formatUtil.number(history.requestedAmount);
 
     return (
       <ScrollView>
         <Container style={styleSheet.container}>
-          {!! amount && this.renderRow(
+          {!! history.amount && this.renderRow(
             {
               label: typeText,
-              valueText: `${balanceDirection} ${formatUtil.amount(amount)} ${history.symbol}`,
+              valueText: `${balanceDirection} ${amountStr} ${history.symbol}`,
               valueTextStyle: { color: balanceColor }
             })
           }
