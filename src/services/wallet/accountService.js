@@ -69,9 +69,10 @@ export default class Account {
     // create and send constant
     let result;
     try {
+      const infoStr = ![undefined, null].includes(info) && JSON.stringify(info);
       result = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendNativeToken(paymentInfos, fee, isPrivacy, info);
+      ].createAndSendNativeToken(paymentInfos, fee, isPrivacy, infoStr);
 
       console.log(
         'Spendingcoin after sendConstant: ',

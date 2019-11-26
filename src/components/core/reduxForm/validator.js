@@ -71,6 +71,9 @@ const regexp = (pattern, { message } = {}) => value =>
   pattern && !pattern.test(value) ?
     messageHanlder(message, value, pattern) ?? 'Invalid data' : undefined;
 
+const maxBytes = (max, { message } = {}) => value =>
+  value && new Blob([String(value)])?.size > max ? messageHanlder(message, value, max) ?? `Must be less than or equal ${formatUtils.number(max)} bytes` : undefined;
+
 const incognitoAddress = (value, { message } = {}) => value => value && !accountService.checkPaymentAddress(value) ? messageHanlder(message, value) ?? 'Invalid address'  :undefined;
 
 const ethAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'ETH', 'both') ? messageHanlder(message, value) ?? 'Invalid ETH address' : undefined;
@@ -115,6 +118,7 @@ export default {
   required,
   maxLength,
   minLength,
+  maxBytes,
   number,
   minValue,
   maxValue,

@@ -11,7 +11,7 @@ import LoadingTx from '@src/components/LoadingTx';
 import EstimateFee from '@src/components/EstimateFee';
 import CurrentBalance from '@src/components/CurrentBalance';
 import { isExchangeRatePToken } from '@src/services/wallet/RpcClientService';
-import { createForm, InputQRField, InputMaxValueField, validator } from '@src/components/core/reduxForm';
+import { createForm, InputQRField, InputField, InputMaxValueField, validator } from '@src/components/core/reduxForm';
 import { ExHandler } from '@src/services/exception';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { homeStyle } from './style';
@@ -24,6 +24,10 @@ const initialFormValues = {
 };
 const Form = createForm(formName, {
   initialValues: initialFormValues
+});
+
+const descriptionMaxBytes = validator.maxBytes(1, {
+  message: 'The description is too long'
 });
 
 class SendCrypto extends React.Component {
@@ -226,6 +230,17 @@ class SendCrypto extends React.Component {
                     keyboardType: 'decimal-pad'
                   }}
                   validate={this.getAmountValidator()}
+                />
+                <Field
+                  component={InputField}
+                  inputStyle={homeStyle.descriptionInput}
+                  containerStyle={homeStyle.descriptionInput}
+                  componentProps={{ multiline: true, numberOfLines: 10 }}
+                  name='message'
+                  placeholder='Message'
+                  label='Memo (optional)'
+                  style={[homeStyle.input, homeStyle.descriptionInput, { marginBottom: 25 }]}
+                  validate={descriptionMaxBytes}
                 />
                 <EstimateFee
                   accountName={account?.name}

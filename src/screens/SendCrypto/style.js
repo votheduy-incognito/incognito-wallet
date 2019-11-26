@@ -18,5 +18,8 @@ export const homeStyle = StyleSheet.create({
   },
   input: {
     marginBottom: 15
+  },
+  descriptionInput: {
+    height: 60,
   }
 });
