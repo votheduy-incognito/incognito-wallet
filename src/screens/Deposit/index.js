@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { connect } from 'react-redux';
-import { genCentralizedDepositAddress, genERC20DepositAddress, genETHDepositAddress } from '@src/services/api/deposit';
+import { genCentralizedDepositAddress, genERC20DepositAddress, genETHDepositAddress, genERC20CentralizedDepositAddress } from '@src/services/api/deposit';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import Deposit from './Deposit';
@@ -33,13 +33,24 @@ class DepositContainer extends Component {
           currencyType: selectedPrivacy?.currencyType,
         });
       } else if (selectedPrivacy?.isErc20Token) {
-        address = await genERC20DepositAddress({
-          paymentAddress: selectedPrivacy?.paymentAddress,
-          walletAddress: selectedPrivacy?.paymentAddress,
-          tokenId: selectedPrivacy?.tokenId,
-          tokenContractID: selectedPrivacy?.contractId,
-          currencyType: selectedPrivacy?.currencyType,
-        });
+        // event
+        if (this.__special_erc20__(selectedPrivacy?.tokenId)) {
+          address = await genERC20CentralizedDepositAddress({
+            paymentAddress: selectedPrivacy?.paymentAddress,
+            walletAddress: selectedPrivacy?.paymentAddress,
+            tokenId: selectedPrivacy?.tokenId,
+            tokenContractID: selectedPrivacy?.contractId,
+            currencyType: selectedPrivacy?.currencyType,
+          });
+        } else {
+          address = await genERC20DepositAddress({
+            paymentAddress: selectedPrivacy?.paymentAddress,
+            walletAddress: selectedPrivacy?.paymentAddress,
+            tokenId: selectedPrivacy?.tokenId,
+            tokenContractID: selectedPrivacy?.contractId,
+            currencyType: selectedPrivacy?.currencyType,
+          });
+        }
       } else {
         address = await genCentralizedDepositAddress({
           paymentAddress: selectedPrivacy?.paymentAddress,
@@ -58,6 +69,16 @@ class DepositContainer extends Component {
     } catch (e) {
       throw e;
     }
+  }
+
+  // event
+  __special_erc20__ = (tokenId) => {
+    return [
+      '716fd1009e2a1669caacc36891e707bfdf02590f96ebd897548e8963c95ebac0',
+      '1ff2da446abfebea3ba30385e2ca99b0f0bbeda5c6371f4c23c939672b429a42',
+      '1a32a6beaf79d435ff3b7fde2e166c2d67f61a64d4e482bb6633668516c1531f',
+      '9e1142557e63fd20dee7f3c9524ffe0aa41198c494aa8d36447d12e85f0ddce7'
+    ].includes(tokenId);
   }
 
   render() {
