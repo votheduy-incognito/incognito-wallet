@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Field, formValueSelector, isValid, change } from 'redux-form';
 import { connect } from 'react-redux';
 import convertUtil from '@src/utils/convert';
+import formatUtil from '@src/utils/format';
 import { Container, ScrollView, View, Button } from '@src/components/core';
 import { openQrScanner } from '@src/components/QrCodeScanner';
 import ReceiptModal, { openReceipt } from '@src/components/Receipt';
@@ -75,7 +76,7 @@ class SendCrypto extends React.Component {
     this.setState({
       maxAmountValidator: validator.maxValue(maxAmount, {
         message: maxAmount > 0
-          ? `Max amount you can send is ${maxAmount} ${selectedPrivacy?.symbol}`
+          ? `Max amount you can send is ${formatUtil.number(maxAmount)} ${selectedPrivacy?.symbol}`
           : 'Your balance is not enough to send'
       }),
     });

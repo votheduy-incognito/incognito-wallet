@@ -84,7 +84,7 @@ class Withdraw extends React.Component {
     this.setState({
       maxAmountValidator: validator.maxValue(maxAmount, {
         message: maxAmount > 0 
-          ? `Max amount you can withdraw is ${maxAmount} ${selectedPrivacy?.symbol}`
+          ? `Max amount you can withdraw is ${formatUtil.number(maxAmount)} ${selectedPrivacy?.symbol}`
           : 'Your balance is not enough to withdraw'
       }),
     });

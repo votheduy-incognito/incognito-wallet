@@ -1,6 +1,6 @@
 import walletValidator from 'wallet-address-validator';
 import accountService from '@src/services/wallet/accountService';
-import { CONSTANT_COMMONS } from '@src/constants';
+import formatUtils from '@src/utils/format';
 
 const isSafeInteger = number => {
   const n = Number(n);
@@ -52,13 +52,13 @@ const number = ({ message } = {}) => value => {
 };
 
 const minValue = (min, { message } = {}) => value =>
-  value && value < min ? messageHanlder(message, value, min) ?? `Must be at least ${min}` : undefined;
+  value && value < min ? messageHanlder(message, value, min) ?? `Must be at least ${formatUtils.number(min)}` : undefined;
 
 const maxValue = (max, { message } = {}) => value =>
-  value && value > max ? messageHanlder(message, value, max) ?? `Must be less than or equal ${max}` : undefined;
+  value && value > max ? messageHanlder(message, value, max) ?? `Must be less than or equal ${formatUtils.number(max)}` : undefined;
 
 const largerThan = (min, { message } = {}) => value =>
-  value && value <= min ? messageHanlder(message, value, min) ?? `Must be larger than ${min}` : undefined;
+  value && value <= min ? messageHanlder(message, value, min) ?? `Must be larger than ${formatUtils.number(min)}` : undefined;
 
 const email = (value, { message } = {}) =>
   value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ?
@@ -91,7 +91,7 @@ const tomoAddress = (value, { message } = {}) => value => !walletValidator.valid
 const combinedAmount = [
   required(),
   number(),
-  minValue(CONSTANT_COMMONS.MIN_AMOUNT_REQUIRED, { message: `Please enter an amount greater than ${CONSTANT_COMMONS.MIN_AMOUNT_REQUIRED}.` })
+  largerThan(0, { message: 'Please enter an amount greater than 0' })
 ];
 
 const combinedNanoAmount = [
