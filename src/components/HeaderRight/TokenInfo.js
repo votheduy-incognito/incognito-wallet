@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Icons from 'react-native-vector-icons/SimpleLineIcons';
 import { COLORS } from '@src/styles';
+import formatUtil from '@src/utils/format';
 import { Text, View, Container, Modal, TouchableOpacity, Divider } from '../core';
 import CryptoIcon from '../CryptoIcon';
 import { tokenInfoStyle } from './style';
@@ -37,12 +38,13 @@ class TokenInfo extends Component {
       return <SimpleInfo text='There has nothing to display' />;
     }
 
-    const { name, symbol, externalSymbol, incognitoTotalSupply, incognitoOwnerAddress, tokenId, contractId } = selectedPrivacy;
+    const { name, symbol, externalSymbol, incognitoTotalSupply, incognitoOwnerAddress, tokenId, contractId, amount, pDecimals } = selectedPrivacy;
 
     const infos = [
       { label: 'Name', value: name },
       { label: 'Symbol', value: symbol },
       { label: 'Original Symbol', value: externalSymbol },
+      { label: 'Balance', value: formatUtil.amountFull(amount, pDecimals) },
       { label: 'Token supply', value: incognitoTotalSupply },
       { label: 'Token ID', value: tokenId },
       { label: 'Contract ID', value: contractId },

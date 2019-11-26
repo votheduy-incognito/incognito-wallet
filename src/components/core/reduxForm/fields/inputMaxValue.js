@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TouchableOpacity, TextInput, Text } from '@src/components/core';
+import formatUtil from '@src/utils/format';
 import { COLORS } from '@src/styles';
 import createField from './createField';
 
@@ -25,7 +26,7 @@ const renderCustomField = ({ input, meta, maxValue, ...props }) => {
             marginBottom: 5,
           }}
           onPress={() => {
-            onChange(String(Number(maxValue)));
+            onChange(formatUtil.number(Number(maxValue)));
           }}
         >
           <Text style={{ color: COLORS.primary  }}>Max</Text>

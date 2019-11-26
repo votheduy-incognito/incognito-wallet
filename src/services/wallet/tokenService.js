@@ -97,11 +97,12 @@ export default class Token {
     let response;
     const hasPrivacyForNativeToken = true;
     const hasPrivacyForPToken = true;
-
+    const infoStr = ![undefined, null].includes(info) ? JSON.stringify(info) : undefined;
+    
     try {
       response = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendPrivacyToken(paymentInfos, submitParam, feeNativeToken, feePToken, hasPrivacyForNativeToken, hasPrivacyForPToken, info);
+      ].createAndSendPrivacyToken(paymentInfos, submitParam, feeNativeToken, feePToken, hasPrivacyForNativeToken, hasPrivacyForPToken, infoStr);
 
       await saveWallet(wallet);
     } catch (e) {

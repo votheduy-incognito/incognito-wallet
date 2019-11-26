@@ -33,6 +33,7 @@ class Withdraw extends React.Component {
 
     this.state = {
       maxAmountValidator: undefined,
+      minAmountValidator: undefined,
       estimateFeeData: {},
       supportedFeeTypes: [],
       feeForBurn: 0
@@ -49,19 +50,36 @@ class Withdraw extends React.Component {
   }
 
   componentDidMount() {
-    this.setFormValidator({ maxAmount: this.getMaxAmount() });
+    this.setFormValidator({ maxAmount: this.getMaxAmount(), minAmount: this.getMinAmount() });
     this.getSupportedFeeTypes();
   }
 
   
   componentDidUpdate(prevProps, prevState) {
+    const { selectedPrivacy } = this.props;
+    const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
     const { estimateFeeData: { fee, feeUnitByTokenId } } = this.state;
     const { estimateFeeData: { fee: oldFee, feeUnitByTokenId: oldFeeUnitByTokenId } } = prevState;
+
+    if (selectedPrivacy?.pDecimals !== oldSelectedPrivacy?.pDecimals) {
+      // need to re-calc min amount if token decimals was changed
+      this.setFormValidator({ minAmount: this.getMinAmount() });
+    }
 
     if (fee !== oldFee || feeUnitByTokenId !== oldFeeUnitByTokenId) {
       // need to re-calc max amount can be send if fee was changed
       this.setFormValidator({ maxAmount: this.getMaxAmount() });
     }
+  }
+
+  getMinAmount = () => {
+    // MIN = 1 nano
+    const { selectedPrivacy } = this.props;
+    if (selectedPrivacy?.pDecimals) {
+      return 1/(10**selectedPrivacy.pDecimals);
+    }
+
+    return 0;
   }
 
   getMaxAmount = () => {
@@ -78,16 +96,26 @@ class Withdraw extends React.Component {
     return Math.max(maxAmount, 0);
   }
 
-  setFormValidator = ({ maxAmount }) => {
+  setFormValidator = ({ maxAmount, minAmount }) => {
     const { selectedPrivacy } = this.props;
 
-    this.setState({
-      maxAmountValidator: validator.maxValue(maxAmount, {
-        message: maxAmount > 0 
-          ? `Max amount you can withdraw is ${maxAmount} ${selectedPrivacy?.symbol}`
-          : 'Your balance is not enough to withdraw'
-      }),
-    });
+    if (maxAmount) {
+      this.setState({
+        maxAmountValidator: validator.maxValue(maxAmount, {
+          message: maxAmount > 0 
+            ? `Max amount you can withdraw is ${formatUtil.number(maxAmount)} ${selectedPrivacy?.symbol}`
+            : 'Your balance is not enough to withdraw'
+        }),
+      });
+    }
+
+    if (minAmount) {
+      this.setState({
+        minAmountValidator: validator.minValue(minAmount, {
+          message: `Amount must be larger than ${formatUtil.number(minAmount)} ${selectedPrivacy?.symbol}`
+        }),
+      });
+    }
   }
 
   handleSubmit = async values => {
@@ -176,7 +204,7 @@ class Withdraw extends React.Component {
   }
 
   render() {
-    const { maxAmountValidator, supportedFeeTypes, estimateFeeData, feeForBurn, isUsedPRVFee } = this.state;
+    const { maxAmountValidator, minAmountValidator, supportedFeeTypes, estimateFeeData, feeForBurn, isUsedPRVFee } = this.state;
     const { fee, feeUnit } = estimateFeeData;
     const { selectedPrivacy, isFormValid, amount, account } = this.props;
     const addressValidator = this.getAddressValidator(selectedPrivacy?.externalSymbol, selectedPrivacy?.isErc20Token);
@@ -211,7 +239,8 @@ class Withdraw extends React.Component {
                   }}
                   validate={[
                     ...validator.combinedAmount,
-                    ...maxAmountValidator ? [maxAmountValidator] : []
+                    ...maxAmountValidator ? [maxAmountValidator] : [],
+                    ...minAmountValidator ? [minAmountValidator] : []
                   ]}
                 />
                 <EstimateFee

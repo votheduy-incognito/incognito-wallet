@@ -22,9 +22,11 @@ class SendCryptoContainer extends Component {
     };
   }
 
+  getTxInfo = ({ message } = {}) => message
+
   _handleSendMainCrypto = async values => {
     const { account, wallet, selectedPrivacy, getAccountBalanceBound } = this.props;
-    const { toAddress, amount, fee, feeUnit } = values;
+    const { toAddress, amount, fee, feeUnit, message } = values;
     const fromAddress = selectedPrivacy?.paymentAddress;
     const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
     const originalFee = Number(fee);
@@ -33,12 +35,14 @@ class SendCryptoContainer extends Component {
       paymentAddressStr: toAddress, amount: originalAmount
     }];
 
+    const info = this.getTxInfo({ message });
+
     try {
       this.setState({
         isSending: true
       });
       
-      const res = await accountService.createAndSendNativeToken(paymentInfos, originalFee, true, account, wallet);
+      const res = await accountService.createAndSendNativeToken(paymentInfos, originalFee, true, account, wallet, info);
 
       if (res.txId) {
         const receiptData = {
@@ -70,7 +74,7 @@ class SendCryptoContainer extends Component {
 
   _handleSendToken = async values => {
     const { account, wallet, tokens, selectedPrivacy, getTokenBalanceBound } = this.props;
-    const { toAddress, amount, fee, feeUnit } = values;
+    const { toAddress, amount, fee, feeUnit, message } = values;
     const fromAddress = selectedPrivacy?.paymentAddress;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
     const originalFee = Number(fee);
@@ -89,6 +93,8 @@ class SendCryptoContainer extends Component {
       }
     };
 
+    const info = this.getTxInfo({ message });
+
     try {
       this.setState({ isSending: true });
       const res = await tokenService.createSendPToken(
@@ -98,6 +104,7 @@ class SendCryptoContainer extends Component {
         wallet,
         null,
         isUseTokenFee ? originalFee : 0,
+        info
       );
 
       if (res.txId) {
