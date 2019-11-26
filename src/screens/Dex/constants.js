@@ -60,3 +60,4 @@ export const MIN_VALUE = 50;
 export const MAX_TRIED = 50;
 export const MAX_WAITING_TIME = 5 * MINUTE;
 export const MULTIPLY = 6;
+export const LIMIT_HISTORY = 5;

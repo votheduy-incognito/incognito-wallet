@@ -4,7 +4,7 @@ import _ from 'lodash';
 import {
   Button,
   Image,
-  Text, TouchableOpacity,
+  Text,
   View,
 } from '@src/components/core';
 import downArrow from '@src/assets/images/icons/down_arrow.png';
@@ -24,6 +24,7 @@ import ExchangeRate from '@screens/Dex/components/ExchangeRate';
 import LocalDatabase from '@utils/LocalDatabase';
 import routeNames from '@routers/routeNames';
 import {TradeHistory} from '@models/dexHistory';
+import RecentHistory from '@screens/Dex/components/RecentHistory';
 import SwapSuccessDialog from './components/SwapSuccessDialog';
 import Transfer from './Transfer';
 import Input from './Input';
@@ -91,7 +92,7 @@ class Swap extends React.Component {
   }
 
   loadData = async () => {
-    const { wallet } = this.props;
+    const { wallet, onGetHistories } = this.props;
     const { isLoading } = this.state;
 
     if (isLoading) {
@@ -102,6 +103,8 @@ class Swap extends React.Component {
       let accounts = await wallet.listAccount();
       accounts = accounts.filter(account => !dexUtils.isDEXAccount(account.name || account.AccountName));
       this.setState( { accounts });
+
+      onGetHistories();
 
       this.setState({ isLoading: true });
       const pTokens = await getTokenList();
@@ -336,7 +339,7 @@ class Swap extends React.Component {
         onAddHistory(new TradeHistory(result, inputToken, outputToken, inputValue, outputValue, networkFee, networkFeeUnit, tradingFee, stopPrice));
       }
     } catch (error) {
-      if (accountService.isNotEnoughCoinError(error, inputValue, tokenFee, balance, prvBalance, prvFee)) {
+      if (accountService.isNotEnoughCoinError(error, inputValue + tradingFee, tokenFee, balance, prvBalance, prvFee)) {
         this.setState({tradeError: MESSAGES.PENDING_TRANSACTIONS});
       } else {
         this.setState({tradeError: MESSAGES.TRADE_ERROR});
@@ -344,11 +347,6 @@ class Swap extends React.Component {
     } finally {
       this.setState({ sending: false });
     }
-  };
-
-  goToHistory = () => {
-    const { navigation } = this.props;
-    navigation.navigate(routeNames.DexHistory);
   };
 
   swap = async () => {
@@ -471,7 +469,16 @@ class Swap extends React.Component {
       balance,
       prvBalance,
     } = this.state;
-    const { wallet, transferAction, onClosePopUp, histories, onAddHistory, onUpdateHistory } = this.props;
+    const {
+      wallet,
+      transferAction,
+      onClosePopUp,
+      histories,
+      onAddHistory,
+      onUpdateHistory,
+      onGetHistoryStatus,
+      navigation,
+    } = this.props;
     let { inputError } = this.state;
 
     if (inputError === MESSAGES.BALANCE_INSUFFICIENT && !this.seenDepositGuide) {
@@ -513,12 +520,12 @@ class Swap extends React.Component {
                 disabledStyle={mainStyle.disabledButton}
                 onPress={this.swap}
               />
-              {histories?.length > 0 && (
-                <TouchableOpacity onPress={this.goToHistory}>
-                  <Text style={mainStyle.viewHistoryText}>View trade history</Text>
-                </TouchableOpacity>
-              )}
             </View>
+            <RecentHistory
+              histories={histories}
+              onGetHistoryStatus={onGetHistoryStatus}
+              navigation={navigation}
+            />
           </View>
           <SwapSuccessDialog
             inputToken={inputToken}
@@ -560,10 +567,11 @@ Swap.propTypes = {
   navigation: PropTypes.object.isRequired,
   onClosePopUp: PropTypes.func.isRequired,
   transferAction: PropTypes.string,
-  onShowPopUp: PropTypes.func.isRequired,
   onShowDepositGuide: PropTypes.func.isRequired,
   onAddHistory: PropTypes.func.isRequired,
   onUpdateHistory: PropTypes.func.isRequired,
+  onGetHistoryStatus: PropTypes.func.isRequired,
+  onGetHistories: PropTypes.func.isRequired,
 };
 
 export default Swap;

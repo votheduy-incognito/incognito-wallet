@@ -1,6 +1,12 @@
 import formatUtil from '@utils/format';
 import { MESSAGES, PRV } from '@screens/Dex/constants';
 
+function parseHistory(history, historyObject) {
+  Object.keys(historyObject).forEach(key => history[key] = historyObject[key]);
+  history.updatedAt = history.updatedAt || history.lockTime || 0;
+  return history;
+}
+
 export class TradeHistory {
   constructor(res, inputToken, outputToken, inputValue, outputValue, networkFee, networkFeeUnit, tradingFee, stopPrice) {
     if (!res) {
@@ -20,12 +26,12 @@ export class TradeHistory {
     this.networkFeeUnit = networkFeeUnit;
     this.tradingFee = formatUtil.amountFull(tradingFee, inputToken.pDecimals);
     this.stopPrice = formatUtil.amountFull(stopPrice, outputToken.pDecimals);
+    this.updatedAt = Math.floor(new Date().getTime() / 1000);
   }
 
   static load(historyObject) {
     const history = new TradeHistory();
-    Object.keys(historyObject).forEach(key => history[key] = historyObject[key]);
-    return history;
+    return parseHistory(history, historyObject);
   }
 }
 
@@ -50,10 +56,9 @@ export class WithdrawHistory {
     this.account = account.AccountName;
     this.paymentAddress = account.PaymentAddress;
     this.checking = false;
+    this.updatedAt = Math.floor(new Date().getTime() / 1000);
 
     WithdrawHistory.currentWithdraw = this;
-
-    console.debug('CREATED WITHDRAW HISTORY', res.txId);
   }
 
   updateTx2(res) {
@@ -62,16 +67,14 @@ export class WithdrawHistory {
     this.checking = false;
     this.status = undefined;
     this.lockTime = res.lockTime;
-
-    console.debug('UPDATE HISTORY', this);
+    this.updatedAt = Math.floor(new Date().getTime() / 1000);
   }
 
   static currentWithdraw = null;
 
   static load(historyObject) {
     const history = new WithdrawHistory();
-    Object.keys(historyObject).forEach(key => history[key] = historyObject[key]);
-    return history;
+    return parseHistory(history, historyObject);
   }
 }
 
@@ -90,11 +93,11 @@ export class DepositHistory {
     this.networkFee = formatUtil.amountFull(networkFee, networkFeeUnit === token.symbol ? token.pDecimals : PRV.pDecimals);
     this.networkFeeUnit = networkFeeUnit;
     this.account = account.AccountName;
+    this.updatedAt = Math.floor(new Date().getTime() / 1000);
   }
 
   static load(historyObject) {
     const history = new DepositHistory();
-    Object.keys(historyObject).forEach(key => history[key] = historyObject[key]);
-    return history;
+    return parseHistory(history, historyObject);
   }
 }

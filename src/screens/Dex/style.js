@@ -228,13 +228,6 @@ export const mainStyle = StyleSheet.create({
   accountIcon: {
     marginRight: 10,
   },
-  viewHistoryText: {
-    textAlign: 'center',
-    color: COLORS.primary,
-    marginTop: 20,
-    paddingVertical: 5,
-    ...FONT.STYLE.medium,
-  },
   hidden: {
     display: 'none',
   },
