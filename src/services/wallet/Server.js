@@ -18,14 +18,14 @@ export const KEY = {
   },
   {
     id: 'testnet',
-    default:true,
+    default:false,
     address: TESTNET_SERVER_ADDRESS,
     username: '',
     password: '',
     name: 'Testnet'
   },{
     id: 'mainnet',
-    default: false,
+    default: true,
     address: MAINNET_SERVER_ADDRESS,
     username: '',
     password: '',
