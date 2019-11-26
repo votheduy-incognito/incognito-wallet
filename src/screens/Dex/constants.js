@@ -6,7 +6,7 @@ export const DEX_CHAIN_ACCOUNT = {
 export const PRV_ID = '0000000000000000000000000000000000000000000000000000000000000004';
 export const PRV = {
   id: PRV_ID,
-  name: 'PRV',
+  name: 'Privacy',
   symbol: 'PRV',
   pDecimals: 9,
   hasIcon: true,
@@ -60,3 +60,4 @@ export const MIN_VALUE = 50;
 export const MAX_TRIED = 50;
 export const MAX_WAITING_TIME = 5 * MINUTE;
 export const MULTIPLY = 6;
+export const LIMIT_HISTORY = 5;

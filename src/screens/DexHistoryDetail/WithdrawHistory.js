@@ -1,4 +1,5 @@
 import React from 'react';
+import { Overlay } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import moment from 'moment';
@@ -55,10 +56,17 @@ const DexHistory = ({
       <Text style={stylesheet.textRight} numberOfLines={2}>{account}</Text>
     </View>
     {status === TRANSFER_STATUS.INTERRUPTED && <Button style={stylesheet.button} title="Try again" onPress={onContinue} />}
-    <FullScreenLoading
-      open={loading}
-      mainText={'Withdrawing your funds...\n\nThis may take a couple of minutes. Please do not navigate away from the app.'}
-    />
+    <Overlay
+      isVisible={loading}
+      overlayStyle={stylesheet.modal}
+      overlayBackgroundColor="transparent"
+      windowBackgroundColor="rgba(0,0,0,0.8)"
+    >
+      <FullScreenLoading
+        open={loading}
+        mainText={'Withdrawing your funds...\n\nThis may take a couple of minutes. Please do not navigate away from the app.'}
+      />
+    </Overlay>
   </View>
 );
 

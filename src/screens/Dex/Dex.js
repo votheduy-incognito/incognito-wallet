@@ -74,7 +74,7 @@ class Dex extends React.Component {
   }
 
   render() {
-    const { wallet, navigation, histories, onAddHistory, onUpdateHistory } = this.props;
+    const { wallet, navigation, histories, onAddHistory, onUpdateHistory, onGetHistoryStatus, onGetHistories } = this.props;
     const { mode, transferAction, showDepositGuide } = this.state;
     const { Component } = mode;
     return (
@@ -99,6 +99,8 @@ class Dex extends React.Component {
           histories={histories}
           onAddHistory={onAddHistory}
           onUpdateHistory={onUpdateHistory}
+          onGetHistoryStatus={onGetHistoryStatus}
+          onGetHistories={onGetHistories}
         />
         <DepositGuide
           onClose={this.closeDepositGuide}
@@ -115,6 +117,8 @@ Dex.propTypes = {
   histories: PropTypes.array.isRequired,
   onAddHistory: PropTypes.func.isRequired,
   onUpdateHistory: PropTypes.func.isRequired,
+  onGetHistoryStatus: PropTypes.func.isRequired,
+  onGetHistories: PropTypes.func.isRequired,
 };
 
 

@@ -4,14 +4,15 @@ import _ from 'lodash';
 import { Icon } from 'react-native-elements';
 import {View, Text, ActivityIndicator, TouchableOpacity} from '@components/core';
 import { COLORS } from '@src/styles';
+import formatUtils from '@utils/format';
 import stylesheet from './style';
 
-const DepositHistory = ({ amount, tokenSymbol, status, account, onPress, isLastItem }) => (
-  <TouchableOpacity style={[stylesheet.history, stylesheet.row, isLastItem && stylesheet.lastItem]} onPress={onPress}>
+const WithdrawHistory = ({ amount, tokenSymbol, pDecimals, account, status, onPress, isLastItem, style }) => (
+  <TouchableOpacity style={[stylesheet.history, stylesheet.row, isLastItem && stylesheet.lastItem, style]} onPress={onPress}>
     <View style={[stylesheet.shortInfo]}>
-      <Text style={stylesheet.historyType}>Deposit</Text>
+      <Text style={stylesheet.historyType}>Withdraw</Text>
       <Text style={stylesheet.shortDesc} numberOfLines={2}>
-        {`${amount} ${tokenSymbol} From ${account}`}
+        {`${formatUtils.amountFull(amount, pDecimals)} ${tokenSymbol} to ${account}`}
       </Text>
     </View>
     <View style={[stylesheet.textRight, stylesheet.row, stylesheet.historyStatus]}>
@@ -26,18 +27,21 @@ const DepositHistory = ({ amount, tokenSymbol, status, account, onPress, isLastI
   </TouchableOpacity>
 );
 
-DepositHistory.defaultProps = {
+WithdrawHistory.defaultProps = {
   status: undefined,
   isLastItem: false,
+  style: {},
 };
 
-DepositHistory.propTypes = {
+WithdrawHistory.propTypes = {
   tokenSymbol: PropTypes.string.isRequired,
-  amount: PropTypes.string.isRequired,
-  onPress: PropTypes.func.isRequired,
+  amount: PropTypes.number.isRequired,
+  pDecimals: PropTypes.number.isRequired,
   account: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired,
+  style: PropTypes.object,
   status: PropTypes.string,
   isLastItem: PropTypes.bool,
 };
 
-export default DepositHistory;
+export default WithdrawHistory;

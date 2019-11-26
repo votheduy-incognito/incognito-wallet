@@ -46,7 +46,7 @@ export default StyleSheet.create({
     marginLeft: 10,
   },
   successful: {
-    color: COLORS.primary,
+    color: COLORS.green,
   },
   refunded: {
     color: COLORS.orange,
@@ -67,5 +67,10 @@ export default StyleSheet.create({
   },
   button: {
     marginTop: 50,
+  },
+  modal: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 0,
   }
 });

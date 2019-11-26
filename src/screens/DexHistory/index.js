@@ -6,13 +6,10 @@ import _ from 'lodash';
 import {ScrollView, Text, View} from '@components/core';
 import {getHistories, getHistoryStatus, NOT_CHANGE_STATUS, TRANSFER_STATUS, MAX_ERROR_TRIED} from '@src/redux/actions/dex';
 import routeNames from '@routers/routeNames';
-import BaseScreen from '@screens/BaseScreen';
 import HeaderBar from '@components/HeaderBar/HeaderBar';
 import {COLORS} from '@src/styles';
 import {MESSAGES} from '@screens/Dex/constants';
-import TradeHistory from './TradeHistory';
-import DepositHistory from './DepositHistory';
-import WithdrawHistory from './WithdrawHistory';
+import { TradeHistory, DepositHistory, WithdrawHistory } from '@src/components/DexHistoryItem';
 import stylesheet from './style';
 
 const HISTORY_TYPES = {
@@ -23,23 +20,18 @@ const HISTORY_TYPES = {
 
 const appRecently = [];
 
-class DexHistory extends BaseScreen {
+class DexHistory extends React.Component {
   state = {
     recently: undefined,
   };
 
-  static instance;
-
   componentDidMount() {
     const { navigation } = this.props;
     this.loadData();
-    DexHistory.instance = this;
-
     this.listener = navigation.addListener('didFocus', this.loadData);
   }
 
   componentWillUnmount() {
-    DexHistory.instance = null;
     this.listener.remove();
   }
 
@@ -127,7 +119,7 @@ class DexHistory extends BaseScreen {
       histories = [];
     }
 
-    const allHistories = _.orderBy([...histories], (item) => item.lockTime ? item.lockTime : 0, ['desc']);
+    const allHistories = _.orderBy([...histories], ['updatedAt'], ['desc']);
     const recentlyHistories = _.remove(allHistories, item => recently.includes(item.txId));
 
     return (
@@ -159,7 +151,6 @@ DexHistory.propTypes = {
   getHistories: PropTypes.func.isRequired,
   getHistoryStatus: PropTypes.func.isRequired,
 };
-
 
 export default connect(
   mapState,

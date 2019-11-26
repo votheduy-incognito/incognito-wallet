@@ -97,17 +97,20 @@ const DexHistoryDetail = ({ navigation, wallet, updateHistory, getHistoryStatus 
   const History = HISTORY_TYPES[history.type];
 
   const continueWithdraw = async () => {
-    const accounts = await wallet.listAccount();
-    const dexWithdrawAccount = accounts.find(item => item.AccountName === DEX.WITHDRAW_ACCOUNT);
-    const { tokenId, amount, networkFee, networkFeeUnit, pDecimals, paymentAddress, account: accountName, tokenSymbol, tokenName } = history;
-    const token = { id: tokenId, symbol: tokenSymbol, pDecimals, name: tokenName || '' };
-    const account = { AccountName: accountName, PaymentAddress: paymentAddress };
-    const fee = _.floor(networkFee / 2, 0);
+    if (loading) {
+      return;
+    }
 
-    WithdrawHistory.currentWithdraw = history;
-    setLoading(true);
 
     try {
+      WithdrawHistory.currentWithdraw = history;
+      setLoading(true);
+      const accounts = await wallet.listAccount();
+      const dexWithdrawAccount = accounts.find(item => item.AccountName === DEX.WITHDRAW_ACCOUNT);
+      const { tokenId, amount, networkFee, networkFeeUnit, pDecimals, paymentAddress, account: accountName, tokenSymbol, tokenName } = history;
+      const token = { id: tokenId, symbol: tokenSymbol, pDecimals, name: tokenName || '' };
+      const account = { AccountName: accountName, PaymentAddress: paymentAddress };
+      const fee = _.floor(networkFee / 2, 0);
       let res;
       if (token.id === PRV.id) {
         console.debug('CONTINUE STEP PRV');

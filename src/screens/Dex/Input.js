@@ -86,6 +86,11 @@ class Input extends React.Component {
     this.setState({ filteredTokens });
   };
 
+  clearInput = () => {
+    const { onChange } = this.props;
+    onChange('');
+  };
+
   renderTokenBalance(token) {
     const { account, wallet } = this.props;
     const { tokenBalances } = this.state;
@@ -99,7 +104,7 @@ class Input extends React.Component {
     }
 
     return (
-      <Text style={[mainStyle.textRight, { maxWidth: 130 }]} numberOfLines={1}>
+      <Text style={[mainStyle.textRight, { maxWidth: 160, paddingLeft: 5, alignSelf: 'flex-start' }]} numberOfLines={1}>
         {formatUtil.amount(tokenBalances[token.id], token.pDecimals || 0)}
       </Text>
     );
@@ -108,7 +113,7 @@ class Input extends React.Component {
   renderDialog() {
     const { showDialog, filteredTokens } = this.state;
     return (
-      <Overlay isVisible={showDialog} overlayStyle={modalStyle.dialog}>
+      <Overlay isVisible={showDialog} overlayStyle={modalStyle.dialog} onBackdropPress={this.closeDialog}>
         <View>
           <View style={modalStyle.header}>
             <Text>Select token</Text>
@@ -175,37 +180,31 @@ class Input extends React.Component {
     );
   }
 
-  renderBalance() {
-    const { balance, token } = this.props;
-
-    if (balance !== 'Loading' && !_.isNumber(balance)) {
-      return null;
-    }
-
-    return (
-      <View style={inputStyle.headerBalance}>
-        <Text style={[inputStyle.headerTitle, inputStyle.headerBalanceTitle]}>Balance:</Text>
-        {balance === 'Loading' ?
-          <View style={inputStyle.balanceText}><ActivityIndicator size="small" /></View> : (
-            <Text style={inputStyle.balanceText}>
-              {formatUtil.amount(balance, token?.pDecimals)}
-            </Text>
-          )}
-      </View>
-    );
-  }
-
   renderInput() {
-    const { value, onChange } = this.props;
+    const { value, onChange, disabled } = this.props;
     return (
-      <TextInput
-        keyboardType="decimal-pad"
-        style={inputStyle.input}
-        placeholder={onChange ? '0.0' : ''}
-        placeholderTextColor={COLORS.lightGrey1}
-        value={value}
-        onChangeText={onChange}
-      />
+      <View style={inputStyle.inputContainer}>
+        <TextInput
+          keyboardType="decimal-pad"
+          style={inputStyle.input}
+          placeholder={onChange ? '0.0' : ''}
+          placeholderTextColor={COLORS.lightGrey1}
+          value={value}
+          onChangeText={onChange}
+          onFocus={this.focus}
+          onBlur={this.blur}
+          editable={!disabled}
+        />
+        {_.toString(value).length > 5 &&
+          <TouchableOpacity style={inputStyle.clearIcon} onPress={this.clearInput}>
+            <Icon
+              name="cancel"
+              color={COLORS.lightGrey1}
+              size={18}
+            />
+          </TouchableOpacity>
+        }
+      </View>
     );
   }
 
@@ -218,32 +217,19 @@ class Input extends React.Component {
     );
   }
 
-  renderPool() {
-    const { token, pool } = this.props;
-    return (
-      <View style={[mainStyle.textRight, mainStyle.twoColumns]}>
-        <Text style={[inputStyle.headerTitle, inputStyle.headerBalanceTitle]}>Pool:</Text>
-        <Text style={inputStyle.balanceText}>{pool > 0 ? formatUtil.amountFull(pool, token.pDecimals) : 0}</Text>
-      </View>
-    );
-  }
-
   render() {
-    const { token, onChange, tokenList, headerTitle } = this.props;
+    const { token, onChange, tokenList, headerTitle, disabled } = this.props;
     return (
       <View style={inputStyle.wrapper}>
         <View style={inputStyle.header}>
           <Text style={inputStyle.headerTitle}>{headerTitle}</Text>
-          {this.renderBalance()}
-          { !onChange && this.renderPool() }
         </View>
-        { !!onChange && this.renderPool() }
         <View style={inputStyle.content}>
           {onChange ? this.renderInput() : this.renderText()}
           <TouchableOpacity
             onPress={this.showDialog}
             style={inputStyle.select}
-            disabled={tokenList.length <= 0}
+            disabled={tokenList.length <= 0 || disabled}
           >
             {token ? this.renderToken() : this.renderSelectButton()}
           </TouchableOpacity>
@@ -261,6 +247,7 @@ Input.defaultProps = {
   onChange: undefined,
   account: null,
   wallet: null,
+  disabled: false,
 };
 
 Input.propTypes = {
@@ -270,10 +257,10 @@ Input.propTypes = {
   headerTitle: PropTypes.string.isRequired,
   tokenList: PropTypes.array.isRequired,
   onSelectToken: PropTypes.func.isRequired,
-  pool: PropTypes.number.isRequired,
   onChange: PropTypes.func,
   account: PropTypes.object,
   wallet: PropTypes.object,
+  disabled: PropTypes.bool,
 };
 
 export default Input;

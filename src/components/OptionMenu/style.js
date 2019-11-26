@@ -56,7 +56,7 @@ const style = StyleSheet.create({
   itemText: {},
   itemDescText: {
     fontSize: 15,
-    color: '#8C9A9D',
+    color: COLORS.lightGrey1,
     marginTop: 5,
   },
   menuItem: {
