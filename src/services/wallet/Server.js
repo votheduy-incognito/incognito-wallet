@@ -1,10 +1,8 @@
 import storage from '@src/services/storage';
-import {
-  TESTNET_SERVER_ADDRESS,
-  MAINNET_SERVER_ADDRESS,
-} from 'react-native-dotenv';
 import _ from 'lodash';
+import { MAINNET_SERVER_ADDRESS, TESTNET_SERVER_ADDRESS } from 'react-native-dotenv';
 
+const isMainnet = global.isMainnet??true;
 let cachedList = null;
 export const KEY = {
   SERVER: '$servers',
@@ -18,14 +16,14 @@ export const KEY = {
   },
   {
     id: 'testnet',
-    default:false,
+    default:!isMainnet,
     address: TESTNET_SERVER_ADDRESS,
     username: '',
     password: '',
     name: 'Testnet'
   },{
     id: 'mainnet',
-    default: true,
+    default: isMainnet,
     address: MAINNET_SERVER_ADDRESS,
     username: '',
     password: '',
@@ -61,7 +59,7 @@ export default class Server {
   static async getDefaultIfNullGettingDefaulList() {
     const list = await Server.get().catch(console.log) || KEY.DEFAULT_LIST_SERVER;
     const found = list?.find(_ => _.default);
-    // console.log('getDefaultIfNullGettingDefaulList found = ',found);
+    console.log('getDefaultIfNullGettingDefaulList found = ',found);
     return found;
   }
 
