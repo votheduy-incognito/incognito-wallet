@@ -6,7 +6,7 @@ export const DEX_CHAIN_ACCOUNT = {
 export const PRV_ID = '0000000000000000000000000000000000000000000000000000000000000004';
 export const PRV = {
   id: PRV_ID,
-  name: 'PRV',
+  name: 'Privacy',
   symbol: 'PRV',
   pDecimals: 9,
   hasIcon: true,

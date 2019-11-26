@@ -96,7 +96,8 @@ export const mainStyle = StyleSheet.create({
   },
   divider: {
     flex: 1,
-    backgroundColor: COLORS.lightGrey5,
+    borderBottomWidth: 1,
+    borderColor: COLORS.lightGrey5,
   },
   fee: {
     marginTop: 5,
@@ -121,7 +122,6 @@ export const mainStyle = StyleSheet.create({
   },
   button: {
     flex: 1,
-    marginLeft: 5,
   },
   disabledButton: {
     backgroundColor: COLORS.lightGrey2,
@@ -164,8 +164,10 @@ export const mainStyle = StyleSheet.create({
     maxWidth: 120,
   },
   error: {
-    fontSize: 14,
+    fontSize: 15,
     color: COLORS.red,
+    marginTop: 5,
+    marginBottom: 5,
   },
   modal: {
     margin: 0,
@@ -230,6 +232,7 @@ export const mainStyle = StyleSheet.create({
   },
   hidden: {
     display: 'none',
+    opacity: 0,
   },
   hiddenDialog: {
     backgroundColor: 'transparent',
@@ -241,24 +244,32 @@ export const inputStyle = StyleSheet.create({
   wrapper: {
 
   },
+  inputContainer: {
+    flexDirection: 'row',
+    flex: 1,
+  },
+  clearIcon: {
+    position: 'absolute',
+    right: 16,
+    top: 18,
+  },
   header: {
     flexDirection: 'row',
   },
   headerTitle: {
     color: COLORS.lightGrey1,
-    fontSize: 16,
+    fontSize: 15,
   },
   headerBalance: {
-    marginLeft: 'auto',
     flexDirection: 'row',
   },
   headerBalanceTitle: {
-    fontSize: 14,
+    fontSize: 15,
+    width: 70,
   },
   balanceText: {
-    fontSize: 14,
-    marginLeft: 10,
-    color: COLORS.dark1,
+    fontSize: 15,
+    flex: 1,
   },
   content: {
     flexDirection: 'row',
@@ -277,7 +288,7 @@ export const inputStyle = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 26,
-    paddingRight: 20,
+    paddingRight: 40,
     maxHeight: 55,
     marginLeft: -3,
     color: COLORS.dark1,
@@ -313,16 +324,16 @@ export const modalStyle = StyleSheet.create({
   search: {
     marginHorizontal: 25,
     marginBottom: 15,
-    height: 36,
+    height: 40,
     backgroundColor: COLORS.lightGrey6,
     paddingHorizontal: 20,
   },
   token: {
     flexDirection: 'row',
-    alignItems: 'center',
     borderBottomColor: COLORS.lightGrey5,
     borderBottomWidth: 1,
     paddingVertical: 10,
+    alignItems: 'center',
   },
   lastItem: {
     borderBottomWidth: 0,
@@ -332,7 +343,7 @@ export const modalStyle = StyleSheet.create({
   },
   tokenName: {
     color: COLORS.lightGrey1,
-    marginTop: 4,
+    marginTop: 10,
     fontSize: 14,
   },
   tokenSymbol: {

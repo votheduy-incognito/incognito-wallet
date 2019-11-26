@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {
+  ActivityIndicator,
   Button,
   Image,
   Text,
@@ -22,14 +23,14 @@ import { Divider } from 'react-native-elements';
 import dexUtils, { DEX } from '@src/utils/dex';
 import ExchangeRate from '@screens/Dex/components/ExchangeRate';
 import LocalDatabase from '@utils/LocalDatabase';
-import routeNames from '@routers/routeNames';
 import {TradeHistory} from '@models/dexHistory';
 import RecentHistory from '@screens/Dex/components/RecentHistory';
+import PoolSize from '@screens/Dex/components/PoolSize';
 import SwapSuccessDialog from './components/SwapSuccessDialog';
 import Transfer from './Transfer';
 import Input from './Input';
 import {PRV, MESSAGES, MIN_INPUT} from './constants';
-import { mainStyle } from './style';
+import {inputStyle, mainStyle} from './style';
 import { CHAIN_PAIRS, CHAIN_TOKENS } from './mock_data';
 import TradeConfirm from './components/TradeConfirm';
 
@@ -109,7 +110,7 @@ class Swap extends React.Component {
       this.setState({ isLoading: true });
       const pTokens = await getTokenList();
       const pairs = await getPDEPairs();
-      const chainTokens = await tokenService.getPrivacyTokens();
+      const chainTokens = (await tokenService.getPrivacyTokens()).map(item => ({ ...item, name: `Incognito ${item.name}`}));
       // const pairs = CHAIN_PAIRS;
       // const chainTokens = CHAIN_TOKENS;
 
@@ -125,8 +126,8 @@ class Swap extends React.Component {
             ...item,
             pDecimals: Math.min(pToken?.pDecimals || 0, 9),
             hasIcon: !!pToken,
-            symbol: pToken?.symbol || item.symbol,
-            name: pToken?.name || item.name,
+            symbol: pToken?.pSymbol || item.symbol,
+            name: pToken?  `Private ${pToken.name}` : item.name,
           };
         })
         .filter(token => token.name && token.symbol), item => item.symbol && item.symbol.toLowerCase())
@@ -186,7 +187,8 @@ class Swap extends React.Component {
     }, () => {
       this.filterOutputList(async () => {
         await this.getInputBalance(balance);
-        this.changeInputValue(1);
+        const { inputValue } = this.state;
+        this.changeInputValue(convertUtil.toHumanAmount(inputValue, token.pDecimals));
       });
     });
   };
@@ -199,7 +201,9 @@ class Swap extends React.Component {
     const { balance, inputToken } = this.state;
     let number = _.toNumber(newValue);
 
-    if (_.isNaN(number)) {
+    if (newValue.length === 0) {
+      this.setState({ inputError: null, inputValue: 0 }, this.calculateOutputValue);
+    } else if (_.isNaN(number)) {
       this.setState({inputError: MESSAGES.MUST_BE_NUMBER });
     } else {
       number = _.toNumber(convertUtil.toOriginalAmount(number, inputToken.pDecimals));
@@ -376,16 +380,8 @@ class Swap extends React.Component {
       inputValue,
       outputToken,
       outputValue,
+      pair,
     } = this.state;
-
-    if (
-      !outputToken ||
-      !outputValue ||
-      !_.isNumber(outputValue) ||
-      !inputValue || !_.isNumber(inputValue)
-    ) {
-      return null;
-    }
 
     return (
       <View style={mainStyle.feeWrapper}>
@@ -395,6 +391,31 @@ class Swap extends React.Component {
           outputToken={outputToken}
           outputValue={outputValue}
         />
+        <PoolSize
+          inputToken={inputToken}
+          pair={pair}
+          outputToken={outputToken}
+        />
+      </View>
+    );
+  }
+
+  renderBalance() {
+    const { balance, inputToken } = this.state;
+
+    if (balance !== 'Loading' && !_.isNumber(balance)) {
+      return null;
+    }
+
+    return (
+      <View style={inputStyle.headerBalance}>
+        <Text style={[inputStyle.headerTitle, inputStyle.headerBalanceTitle]}>Balance:</Text>
+        {balance === 'Loading' ?
+          <View><ActivityIndicator size="small" /></View> : (
+            <Text style={inputStyle.balanceText} numberOfLines={1}>
+              {formatUtil.amount(balance, inputToken?.pDecimals)}
+            </Text>
+          )}
       </View>
     );
   }
@@ -412,6 +433,7 @@ class Swap extends React.Component {
       dexMainAccount,
       rawText,
       pair,
+      isLoading,
     } = this.state;
     return (
       <View>
@@ -426,12 +448,14 @@ class Swap extends React.Component {
           account={dexMainAccount}
           wallet={wallet}
           pool={!!pair && !!inputToken && pair[inputToken.id]}
+          disabled={isLoading}
         />
         {!!inputError && (inputError !== MESSAGES.BALANCE_INSUFFICIENT || this.seenDepositGuide) && (
           <Text style={mainStyle.error}>
             {inputError}
           </Text>
         )}
+        {this.renderBalance()}
         <View style={mainStyle.arrowWrapper}>
           <Divider style={mainStyle.divider} />
           <Image source={downArrow} style={mainStyle.arrow} />
@@ -493,6 +517,21 @@ class Swap extends React.Component {
               {this.renderInputs()}
               <View style={mainStyle.dottedDivider} />
               {this.renderFee()}
+              <View style={[mainStyle.actionsWrapper]}>
+                <Button
+                  title="Trade"
+                  style={[mainStyle.button]}
+                  disabled={
+                    sending ||
+                    inputError ||
+                    !outputValue ||
+                    outputValue <= 0 ||
+                    isLoading
+                  }
+                  disabledStyle={mainStyle.disabledButton}
+                  onPress={this.swap}
+                />
+              </View>
             </View>
             <Transfer
               dexMainAccount={dexMainAccount}
@@ -507,20 +546,6 @@ class Swap extends React.Component {
               onAddHistory={onAddHistory}
               onUpdateHistory={onUpdateHistory}
             />
-            <View style={[mainStyle.actionsWrapper]}>
-              <Button
-                title="Trade"
-                style={[mainStyle.button]}
-                disabled={
-                  sending ||
-                  inputError ||
-                  !outputValue ||
-                  outputValue <= 0
-                }
-                disabledStyle={mainStyle.disabledButton}
-                onPress={this.swap}
-              />
-            </View>
             <RecentHistory
               histories={histories}
               onGetHistoryStatus={onGetHistoryStatus}

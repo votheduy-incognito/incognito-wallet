@@ -452,7 +452,7 @@ class Transfer extends React.PureComponent {
     }
 
     return (
-      <Text style={[mainStyle.textRight, { maxWidth: 130 }]} numberOfLines={1}>
+      <Text style={[mainStyle.textRight, { width: 140, paddingLeft: 5, alignSelf: 'flex-start' }]} numberOfLines={1}>
         {formatUtil.amount(tokenBalances[token.id], token.pDecimals || 0)}
       </Text>
     );

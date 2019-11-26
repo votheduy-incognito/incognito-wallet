@@ -139,8 +139,9 @@ export const getHistoryStatus = (history) => async (dispatch) => {
   const status = await getStatus(history);
   history.status = status;
   if (status === TRANSFER_STATUS.UNSUCCESSFUL) {
-    history.errorTried = history.errorTried > 0 ? history.errorTried++ : 1;
+    history.errorTried = history.errorTried > 0 ? ++history.errorTried : 1;
   }
+
   history.updatedAt = Math.floor(new Date().getTime() / 1000);
   dispatch(getHistoryStatusSuccess(history));
 };

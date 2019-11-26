@@ -7,8 +7,8 @@ import { COLORS } from '@src/styles';
 import formatUtils from '@utils/format';
 import stylesheet from './style';
 
-const WithdrawHistory = ({ amount, tokenSymbol, pDecimals, account, status, onPress, isLastItem }) => (
-  <TouchableOpacity style={[stylesheet.history, stylesheet.row, isLastItem && stylesheet.lastItem]} onPress={onPress}>
+const WithdrawHistory = ({ amount, tokenSymbol, pDecimals, account, status, onPress, isLastItem, style }) => (
+  <TouchableOpacity style={[stylesheet.history, stylesheet.row, isLastItem && stylesheet.lastItem, style]} onPress={onPress}>
     <View style={[stylesheet.shortInfo]}>
       <Text style={stylesheet.historyType}>Withdraw</Text>
       <Text style={stylesheet.shortDesc} numberOfLines={2}>
@@ -30,6 +30,7 @@ const WithdrawHistory = ({ amount, tokenSymbol, pDecimals, account, status, onPr
 WithdrawHistory.defaultProps = {
   status: undefined,
   isLastItem: false,
+  style: {},
 };
 
 WithdrawHistory.propTypes = {
@@ -38,6 +39,7 @@ WithdrawHistory.propTypes = {
   pDecimals: PropTypes.number.isRequired,
   account: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
+  style: PropTypes.object,
   status: PropTypes.string,
   isLastItem: PropTypes.bool,
 };

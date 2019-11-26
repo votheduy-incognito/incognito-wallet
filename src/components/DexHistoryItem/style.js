@@ -26,9 +26,10 @@ export default StyleSheet.create({
   },
   icon: {
     marginLeft: 10,
+    marginRight: -5,
   },
   successful: {
-    color: COLORS.primary,
+    color: COLORS.green,
   },
   refunded: {
     color: COLORS.orange,

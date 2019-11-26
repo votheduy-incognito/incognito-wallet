@@ -46,7 +46,7 @@ export default StyleSheet.create({
     marginLeft: 10,
   },
   successful: {
-    color: COLORS.primary,
+    color: COLORS.green,
   },
   refunded: {
     color: COLORS.orange,

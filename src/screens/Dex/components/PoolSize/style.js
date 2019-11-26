@@ -4,22 +4,23 @@ import { COLORS } from '@src/styles';
 export default StyleSheet.create({
   twoColumns: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
+    marginTop: 10,
   },
   feeTitle: {
+    width: 130,
     fontSize: 13,
     color: COLORS.lightGrey1,
   },
   fee: {
     fontSize: 13,
-    textAlign: 'center',
+    textAlign: 'right',
+    marginBottom: 4,
   },
   textRight: {
     textAlign: 'right',
     marginLeft: 'auto',
   },
-  ellipsis: {
+  flex: {
     flex: 1,
   },
 });

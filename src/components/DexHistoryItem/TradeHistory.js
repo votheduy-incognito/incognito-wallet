@@ -6,8 +6,8 @@ import {View, Text, ActivityIndicator, TouchableOpacity} from '@components/core'
 import { COLORS } from '@src/styles';
 import stylesheet from './style';
 
-const TradeHistory = ({ inputToken, inputValue, outputToken, outputValue, status, onPress, isLastItem }) => (
-  <TouchableOpacity style={[stylesheet.history, stylesheet.row, isLastItem && stylesheet.lastItem]} onPress={onPress}>
+const TradeHistory = ({ inputToken, inputValue, outputToken, outputValue, status, onPress, isLastItem, style }) => (
+  <TouchableOpacity style={[stylesheet.history, stylesheet.row, isLastItem && stylesheet.lastItem, style]} onPress={onPress}>
     <View style={[stylesheet.shortInfo]}>
       <Text style={stylesheet.historyType}>Trade</Text>
       <Text style={stylesheet.shortDesc} numberOfLines={2}>
@@ -29,6 +29,7 @@ const TradeHistory = ({ inputToken, inputValue, outputToken, outputValue, status
 TradeHistory.defaultProps = {
   status: undefined,
   isLastItem: false,
+  style: {},
 };
 
 TradeHistory.propTypes = {
@@ -37,6 +38,7 @@ TradeHistory.propTypes = {
   outputToken: PropTypes.string.isRequired,
   outputValue: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
+  style: PropTypes.object,
   status: PropTypes.string,
   isLastItem: PropTypes.bool,
 };

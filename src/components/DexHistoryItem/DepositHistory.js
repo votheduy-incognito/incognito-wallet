@@ -6,8 +6,8 @@ import {View, Text, ActivityIndicator, TouchableOpacity} from '@components/core'
 import { COLORS } from '@src/styles';
 import stylesheet from './style';
 
-const DepositHistory = ({ amount, tokenSymbol, status, account, onPress, isLastItem }) => (
-  <TouchableOpacity style={[stylesheet.history, stylesheet.row, isLastItem && stylesheet.lastItem]} onPress={onPress}>
+const DepositHistory = ({ amount, tokenSymbol, status, account, onPress, isLastItem, style }) => (
+  <TouchableOpacity style={[stylesheet.history, stylesheet.row, isLastItem && stylesheet.lastItem, style]} onPress={onPress}>
     <View style={[stylesheet.shortInfo]}>
       <Text style={stylesheet.historyType}>Deposit</Text>
       <Text style={stylesheet.shortDesc} numberOfLines={2}>
@@ -29,6 +29,7 @@ const DepositHistory = ({ amount, tokenSymbol, status, account, onPress, isLastI
 DepositHistory.defaultProps = {
   status: undefined,
   isLastItem: false,
+  style: {},
 };
 
 DepositHistory.propTypes = {
@@ -36,6 +37,7 @@ DepositHistory.propTypes = {
   amount: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
   account: PropTypes.string.isRequired,
+  style: PropTypes.object,
   status: PropTypes.string,
   isLastItem: PropTypes.bool,
 };

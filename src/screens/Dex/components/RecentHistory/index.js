@@ -16,6 +16,9 @@ const HISTORY_TYPES = {
 };
 
 class RecentHistory extends React.PureComponent {
+  focus = true;
+  getting = false;
+
   componentDidMount() {
     const { navigation } = this.props;
     this.focusListener = navigation.addListener('didFocus', () => {
@@ -39,14 +42,24 @@ class RecentHistory extends React.PureComponent {
   }
 
   getStatus = () => {
+    if (this.getting) {
+      return;
+    }
+
     const { histories, onGetHistoryStatus } = this.props;
+    const promises = [];
+    this.getting = true;
 
     (histories || []).forEach(item => {
       if ((!NOT_CHANGE_STATUS.includes(item.status)) ||
         (item.status === TRANSFER_STATUS.UNSUCCESSFUL && item.errorTried < MAX_ERROR_TRIED)) {
-        onGetHistoryStatus(item);
+        promises.push(onGetHistoryStatus(item));
       }
     });
+
+    Promise.all(promises)
+      .then(() => this.getting = false)
+      .catch(() => this.getting = false);
   };
 
   goToDetail(history) {
@@ -59,13 +72,15 @@ class RecentHistory extends React.PureComponent {
     navigation.navigate(routeNames.DexHistory);
   };
 
-  renderHistory(list, history) {
+  renderHistory(list, history, index) {
     const History = HISTORY_TYPES[history.type];
     return (
       <History
         {...history}
         key={history.txId}
         onPress={this.goToDetail.bind(this, history)}
+        isLastItem={index === list.length - 1}
+        style={stylesheet.history}
       />
     );
   }
@@ -80,19 +95,19 @@ class RecentHistory extends React.PureComponent {
     const allHistories = _.orderBy(histories, ['updatedAt'], ['desc']).slice(0, LIMIT_HISTORY);
     return (
       <View style={[mainStyle.content, stylesheet.recentHistory]}>
-        <View style={stylesheet.container}>
-          <View style={stylesheet.wrapper}>
-            <Text style={stylesheet.title}>Recent activity</Text>
-            <View>
-              {allHistories.map(this.renderHistory.bind(this, allHistories))}
-            </View>
+        <View style={stylesheet.wrapper}>
+          <View style={[mainStyle.twoColumns, stylesheet.header]}>
+            <Text style={stylesheet.title}>Recent transactions</Text>
+            {histories?.length > LIMIT_HISTORY && (
+              <TouchableOpacity onPress={this.goToHistory} style={mainStyle.textRight}>
+                <Text style={stylesheet.viewHistoryText}>View all</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+          <View>
+            {allHistories.map(this.renderHistory.bind(this, allHistories))}
           </View>
         </View>
-        {histories?.length > LIMIT_HISTORY && (
-          <TouchableOpacity onPress={this.goToHistory}>
-            <Text style={stylesheet.viewHistoryText}>View more</Text>
-          </TouchableOpacity>
-        )}
       </View>
     );
   }
