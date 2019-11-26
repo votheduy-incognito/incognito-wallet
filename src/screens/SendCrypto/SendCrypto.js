@@ -32,20 +32,28 @@ class SendCrypto extends React.Component {
     this.state = {
       supportedFeeTypes: [],
       maxAmountValidator: undefined,
+      minAmountValidator: undefined,
       estimateFeeData: {},
     };
   }
 
   componentDidMount() {
-    this.setFormValidation({ maxAmount: this.getMaxAmount() });
+    this.setFormValidation({ maxAmount: this.getMaxAmount(), minAmount: this.getMinAmount() });
     this.getSupportedFeeTypes();
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const { selectedPrivacy } = this.props;
+    const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
     const { estimateFeeData: { fee, feeUnit } } = this.state;
     const { estimateFeeData: { fee: oldFee, feeUnit: oldFeeUnit } } = prevState;
     const { receiptData } = this.props;
    
+    if (selectedPrivacy?.pDecimals !== oldSelectedPrivacy?.pDecimals) {
+      // need to re-calc min amount if token decimals was changed
+      this.setFormValidation({ minAmount: this.getMinAmount() });
+    }
+
     if (fee !== oldFee || feeUnit !== oldFeeUnit) {
       // need to re-calc max amount can be send if fee was changed
       this.setFormValidation({ maxAmount: this.getMaxAmount() });
@@ -54,6 +62,16 @@ class SendCrypto extends React.Component {
     if (receiptData?.txId !== prevProps.receiptData?.txId) {
       openReceipt(receiptData);
     }
+  }
+
+  getMinAmount = () => {
+    // MIN = 1 nano
+    const { selectedPrivacy } = this.props;
+    if (selectedPrivacy?.pDecimals) {
+      return 1/(10**selectedPrivacy.pDecimals);
+    }
+
+    return 0;
   }
 
   getMaxAmount = () => {
@@ -70,16 +88,26 @@ class SendCrypto extends React.Component {
     return Math.max(maxAmount, 0);
   }
 
-  setFormValidation = ({ maxAmount }) => {
+  setFormValidation = ({ maxAmount, minAmount }) => {
     const { selectedPrivacy } = this.props;
 
-    this.setState({
-      maxAmountValidator: validator.maxValue(maxAmount, {
-        message: maxAmount > 0
-          ? `Max amount you can send is ${formatUtil.number(maxAmount)} ${selectedPrivacy?.symbol}`
-          : 'Your balance is not enough to send'
-      }),
-    });
+    if (maxAmount) {
+      this.setState({
+        maxAmountValidator: validator.maxValue(maxAmount, {
+          message: maxAmount > 0
+            ? `Max amount you can send is ${formatUtil.number(maxAmount)} ${selectedPrivacy?.symbol}`
+            : 'Your balance is not enough to send'
+        }),
+      });
+    }
+
+    if (minAmount) {
+      this.setState({
+        minAmountValidator: validator.minValue(minAmount, {
+          message: `Amount must be larger than ${formatUtil.number(minAmount)} ${selectedPrivacy?.symbol}`
+        }),
+      });
+    }
   }
 
   handleQrScanAddress = () => {
@@ -143,9 +171,11 @@ class SendCrypto extends React.Component {
 
   getAmountValidator = () => {
     const { selectedPrivacy } = this.props;
-    const { maxAmountValidator } = this.state;
+    const { maxAmountValidator, minAmountValidator } = this.state;
 
     const val = [];
+
+    if (minAmountValidator) val.push(minAmountValidator);
 
     if (maxAmountValidator) val.push(maxAmountValidator);
 
