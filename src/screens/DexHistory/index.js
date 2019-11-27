@@ -4,7 +4,7 @@ import { RefreshControl } from 'react-native';
 import {connect} from 'react-redux';
 import _ from 'lodash';
 import {ScrollView, Text, View} from '@components/core';
-import {getHistories, getHistoryStatus, NOT_CHANGE_STATUS, TRANSFER_STATUS, MAX_ERROR_TRIED} from '@src/redux/actions/dex';
+import {getHistories, getHistoryStatus, NOT_CHANGE_STATUS, MAX_ERROR_TRIED, RETRY_STATUS} from '@src/redux/actions/dex';
 import routeNames from '@routers/routeNames';
 import HeaderBar from '@components/HeaderBar/HeaderBar';
 import {COLORS} from '@src/styles';
@@ -53,7 +53,7 @@ class DexHistory extends React.Component {
     const recently = appRecently;
     histories.forEach(item => {
       if ((!NOT_CHANGE_STATUS.includes(item.status)) ||
-        (item.status === TRANSFER_STATUS.UNSUCCESSFUL && item.errorTried < MAX_ERROR_TRIED)) {
+        (RETRY_STATUS.includes(item.status) && item.errorTried < MAX_ERROR_TRIED)) {
         getHistoryStatus(item);
         if (!recently.includes(item)) {
           recently.push(item.txId);
