@@ -648,6 +648,28 @@ class DetailDevice extends BaseScreen {
 
   }
 
+  handleCallBackUpdateFirmware = async()=>{
+    // const {
+    //   device,
+    // } = this.state;
+    
+    // device && device.Type == DEVICES.MINER_TYPE && (NodeService.checkUpdatingVersion(device).then(data=>{
+    //   this.showToastMessage('Update Firware result  ' +JSON.stringify(data));
+    // }));
+  };
+
+  handleReset = async()=>{
+    const {
+      device,
+    } = this.state;
+    const result = await NodeService.reset(device);
+    if(result){
+      // remove in call
+      await LocalDatabase.removeDevice(device.toJSON());
+      this.onPressBack();
+    }
+  };
+
   render() {
     const {
       device,
@@ -663,18 +685,9 @@ class DetailDevice extends BaseScreen {
         {this.renderHeader()}
         <AdvanceOption
           ref={this.advanceOptionView}
-          handleReset={async()=>{
-            const result = await NodeService.reset(device);
-            if(result){
-              // remove in call
-              await LocalDatabase.removeDevice(device.toJSON());
-              this.onPressBack();
-            }
-          }}
-          handleUpdateUpdateFirware={async()=>{
-            const result = await NodeService.updateFirware(device);
-            alert(`Update Firware result = ${JSON.stringify(result)}`);
-          }}
+          handleReset={this.handleReset}
+          device={device}
+          handleUpdateFirmware={this.handleCallBackUpdateFirmware}
           handleUpdateWifi={()=>{}}
         />
         <Image style={style.bg_top} source={bgTop} />

@@ -347,7 +347,7 @@ export default class APIService {
     const response = await APIService.getURL(METHOD.GET, url, params, true);
     return response;
   }
-
+  
   static async removeProduct(params) {
     const url = API.REMOVE_PRODUCT_API;
 
