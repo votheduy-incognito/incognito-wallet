@@ -20,7 +20,6 @@ export default StyleSheet.create({
   },
   id: {
     flex: 1,
-    marginLeft: 10,
     paddingRight: 20,
   },
   ellipsis: {
@@ -62,7 +61,7 @@ export default StyleSheet.create({
   },
   field: {
     color: COLORS.lightGrey1,
-    width: 170,
+    width: 155,
     fontSize: 14,
   },
   button: {

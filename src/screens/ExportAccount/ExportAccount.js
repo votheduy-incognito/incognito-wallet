@@ -43,7 +43,7 @@ const ExportAccount = ({ account }) => (
       {renderItem('PUBLIC KEY', account?.PublicKeyCheckEncode)}
       {renderItem('READONLY KEY', account?.ReadonlyKey)}
       {renderItem('VALIDATOR KEY', account?.ValidatorKey)}
-      {__DEV__ ? renderItem('Shard', parseShard(account?.PublicKeyBytes)) : null}
+      {(__DEV__ || global.isDEV) ? renderItem('Shard', parseShard(account?.PublicKeyBytes)) : null}
     </View>
   </ScrollView>
 );

@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import moment from 'moment';
 import { View, Text } from '@components/core';
+import formatUtils from '@utils/format';
 import TransactionID from './TransactionID';
 import stylesheet from './style';
 
@@ -12,7 +12,7 @@ const DepositHistory = ({
   account,
   tokenSymbol,
   status,
-  time,
+  lockTime,
   networkFee,
   networkFeeUnit,
 }) => (
@@ -27,7 +27,7 @@ const DepositHistory = ({
     <TransactionID txId={txId} />
     <View style={stylesheet.row}>
       <Text style={stylesheet.field}>TIME</Text>
-      <Text style={stylesheet.textRight}>{moment(time).format('DD MMM YYYY hh:mm A')}</Text>
+      <Text style={stylesheet.textRight}>{formatUtils.formatUnixDateTime(lockTime)}</Text>
     </View>
     <View style={stylesheet.row}>
       <Text style={stylesheet.field}>STATUS</Text>
@@ -59,7 +59,7 @@ DepositHistory.propTypes = {
   account: PropTypes.string.isRequired,
   networkFee: PropTypes.string.isRequired,
   networkFeeUnit: PropTypes.string.isRequired,
-  time: PropTypes.number.isRequired,
+  lockTime: PropTypes.number.isRequired,
   status: PropTypes.string,
 };
 

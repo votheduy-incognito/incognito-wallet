@@ -1,6 +1,18 @@
 import {COLORS, FONT, SPACING} from '@src/styles';
 import { StyleSheet } from 'react-native';
 
+export const dexStyle = StyleSheet.create({
+  actionContainer: {
+    flex: 1,
+  },
+  leftButton: {
+    marginRight: 5,
+  },
+  rightButton: {
+    marginLeft: 5,
+  },
+});
+
 export const mainStyle = StyleSheet.create({
   wrapper: {
     width: '100%',

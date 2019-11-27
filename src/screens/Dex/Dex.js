@@ -4,8 +4,8 @@ import {View, Image, Button} from '@src/components/core';
 import OptionMenu from '@components/OptionMenu/OptionMenu';
 import withdrawBlack from '@assets/images/icons/withdraw_black.png';
 import DepositGuide from '@screens/Dex/components/DepositGuide';
-import Swap from './Swap';
-import Pool from './Pool';
+import Swap from './components/Swap';
+import Pool from './components/Pool';
 import { mainStyle } from './style';
 
 const MODES = [
@@ -56,22 +56,6 @@ class Dex extends React.Component {
     this.setState({ showDepositGuide: false });
     this.showPopUp('deposit');
   };
-
-
-  renderModes() {
-    // const { mode } = this.state;
-    // return MODES.map(item => (
-    //   <TouchableOpacity
-    //     key={item.name}
-    //     style={[mainStyle.mode, mode === item && mainStyle.modeActive]}
-    //     onPress={this.changeMode.bind(this, item)}
-    //   >
-    //     <Text style={mainStyle.modeText}>{item.name}</Text>
-    //   </TouchableOpacity>
-    // ));
-
-    return null;
-  }
 
   render() {
     const { wallet, navigation, histories, onAddHistory, onUpdateHistory, onGetHistoryStatus, onGetHistories } = this.props;

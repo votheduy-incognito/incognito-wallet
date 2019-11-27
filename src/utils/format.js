@@ -41,6 +41,7 @@ const toFixed = (number, decimals = 0) => {
 
   return number;
 };
+const formatUnixDateTime = (dateTime, formatPattern = 'MMMM DD YYYY, HH:mm') => moment.unix(dateTime).format(formatPattern);
 
 const number = num => {
   const rs = new BigNumber(num);
@@ -57,6 +58,7 @@ export default {
   amount,
   amountFull,
   formatDateTime,
+  formatUnixDateTime,
   toMiliSecond,
   toFixed,
   number,

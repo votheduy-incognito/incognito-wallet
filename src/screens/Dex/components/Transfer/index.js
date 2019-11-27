@@ -20,15 +20,15 @@ import {Icon, Overlay} from 'react-native-elements';
 import {COLORS} from '@src/styles';
 import accountIcon from '@src/assets/images/icons/account_icon.png';
 import leftArrow from '@src/assets/images/icons/left_arrow.png';
-import CryptoIcon from '@components/CryptoIcon/index';
+import CryptoIcon from '@components/CryptoIcon';
 import EstimateFee from '@components/EstimateFee';
-import FullScreenLoading from '@components/FullScreenLoading/index';
+import FullScreenLoading from '@components/FullScreenLoading';
 import tokenService from '@services/wallet/tokenService';
 import {DepositHistory, WithdrawHistory} from '@models/dexHistory';
 import Toast from '@components/core/Toast/Toast';
-import TransferSuccessPopUp from './components/TransferSuccessPopUp';
-import {PRV, WAIT_TIME, MESSAGES, MIN_INPUT, MULTIPLY, MAX_WAITING_TIME} from './constants';
-import { mainStyle, tokenStyle } from './style';
+import TransferSuccessPopUp from '../TransferSuccessPopUp';
+import {PRV, WAIT_TIME, MESSAGES, MIN_INPUT, MULTIPLY, MAX_WAITING_TIME} from '../../constants';
+import { mainStyle, tokenStyle } from '../../style';
 
 const MAX_TRIED = MAX_WAITING_TIME / WAIT_TIME;
 
@@ -183,6 +183,10 @@ class Transfer extends React.PureComponent {
     const { onLoadData, wallet, dexMainAccount } = this.props;
     const { transfer, sending } = this.state;
     const { action, error, token, amount, account, fee, balance, feeUnit } = transfer;
+    let tokenFee = fee;
+    let prvBalance = 0;
+    let prvFee = 0;
+    let prvAccount = action === MESSAGES.DEPOSIT ? account : dexMainAccount;
 
     if (sending) {
       return;
@@ -191,22 +195,20 @@ class Transfer extends React.PureComponent {
     if (!error && token && amount && account && !sending) {
       this.updateTransfer({ chainError: null });
       try {
+        if (token !== PRV && feeUnit === PRV.symbol) {
+          prvBalance = await accountService.getBalance(prvAccount, wallet);
+          prvFee = fee;
+          tokenFee = 0;
+
+          if (prvFee > prvBalance) {
+            return this.updateTransfer({chainError: MESSAGES.NOT_ENOUGH_NETWORK_FEE});
+          }
+        }
         this.setState({ sending: true });
         await this[action](transfer);
         this.updateTransfer({ success: true });
         onLoadData();
       } catch (error) {
-        let tokenFee = fee;
-        let prvBalance = 0;
-        let prvFee = 0;
-        let prvAccount = action === MESSAGES.DEPOSIT ? account : dexMainAccount;
-
-        if (token !== PRV && feeUnit === PRV.symbol) {
-          prvBalance = await accountService.getBalance(prvAccount, wallet);
-          prvFee = fee;
-          tokenFee = 0;
-        }
-
         if (accountService.isNotEnoughCoinError(error, amount, tokenFee, balance, prvBalance, prvFee)) {
           this.updateTransfer({chainError: MESSAGES.PENDING_TRANSACTIONS});
         } else {
