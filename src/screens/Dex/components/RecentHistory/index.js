@@ -5,7 +5,7 @@ import {Text, TouchableOpacity, View} from '@components/core';
 import routeNames from '@routers/routeNames';
 import { MESSAGES, LIMIT_HISTORY } from '@screens/Dex/constants';
 import { TradeHistory, DepositHistory, WithdrawHistory } from '@src/components/DexHistoryItem';
-import { MAX_ERROR_TRIED, NOT_CHANGE_STATUS, TRANSFER_STATUS } from '@src/redux/actions/dex';
+import { MAX_ERROR_TRIED, NOT_CHANGE_STATUS, RETRY_STATUS } from '@src/redux/actions/dex';
 import { mainStyle } from '@screens/Dex/style';
 import stylesheet from './style';
 
@@ -52,7 +52,7 @@ class RecentHistory extends React.PureComponent {
 
     (histories || []).forEach(item => {
       if ((!NOT_CHANGE_STATUS.includes(item.status)) ||
-        (item.status === TRANSFER_STATUS.UNSUCCESSFUL && item.errorTried < MAX_ERROR_TRIED)) {
+        (RETRY_STATUS.includes(item.status) && item.errorTried < MAX_ERROR_TRIED)) {
         promises.push(onGetHistoryStatus(item));
       }
     });

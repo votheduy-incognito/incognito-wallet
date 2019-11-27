@@ -27,6 +27,11 @@ export const NOT_CHANGE_STATUS = [
   TRANSFER_STATUS.INTERRUPTED
 ];
 
+export const RETRY_STATUS = [
+  TRANSFER_STATUS.UNSUCCESSFUL,
+  TRANSFER_STATUS.INTERRUPTED
+];
+
 export const MAX_ERROR_TRIED = 10;
 
 const HISTORY_TYPES = {
@@ -115,7 +120,7 @@ export const getHistories = () => async (dispatch) => {
   const formattedHistories = histories.map(item => {
     const history = HISTORY_TYPES[item.type].load(item);
 
-    if (history.status === TRANSFER_STATUS.UNSUCCESSFUL && history.errorTried < MAX_ERROR_TRIED) {
+    if (RETRY_STATUS.includes(history.status) && history.errorTried < MAX_ERROR_TRIED) {
       history.status = undefined;
     } else {
       history.status = NOT_CHANGE_STATUS.includes(item.status) ? item.status : undefined;
