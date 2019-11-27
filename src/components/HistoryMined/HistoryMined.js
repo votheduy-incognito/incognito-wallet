@@ -68,7 +68,8 @@ class HistoryMined extends React.Component {
     const {name = '',symbol = '',amount = 0,pSymbol='', id = '',tokenId} = item;
     const isPRV = _.isEqual(symbol,'PRV');
     const symbolUI = isPRV?symbol:pSymbol;
-    const nameUI = isPRV?name:`Private ${symbol}`;
+    // const nameUI = isPRV?name:`Private ${symbol}`;
+    const nameUI = isPRV?name:`${symbol}`;
     const {icon = null} = this.getData(item)??{};
     // const imgSrc = isPRV ? withdrawNodeDisabled : withdrawNode;
     const imgSrc =  withdrawNode;
