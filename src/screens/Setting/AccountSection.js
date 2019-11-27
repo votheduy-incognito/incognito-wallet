@@ -17,6 +17,21 @@ import { connect } from 'react-redux';
 import Section from './Section';
 import { accountSection } from './style';
 
+let lastAccount;
+let clickedTime = 0;
+
+function isDev(account) {
+  if (lastAccount !== account) {
+    clickedTime = 0;
+  }
+  lastAccount = account;
+  clickedTime++;
+
+  if (clickedTime === 7) {
+    global.isDEV = true;
+  }
+}
+
 const createItem = (account, onSwitch, onExport, onDelete, isActive) => (
   <Swipeout
     style={accountSection.swipeoutButton}
@@ -25,7 +40,7 @@ const createItem = (account, onSwitch, onExport, onDelete, isActive) => (
     ]}
   >
     <View style={accountSection.container}>
-      <TouchableOpacity style={accountSection.name} onPress={() => onSwitch(account)}>
+      <TouchableOpacity style={accountSection.name} onPress={() => onSwitch(account) && isDev(account)}>
         <View style={[accountSection.indicator, isActive && accountSection.indicatorActive]} />
         <FIcons name={isActive ? 'user-check' : 'user'} size={20} color={isActive ? COLORS.primary : COLORS.lightGrey4} />
         <Text numberOfLines={1} ellipsizeMode='middle' style={isActive ? accountSection.nameTextActive : accountSection.nameText}>{account?.name}</Text>
