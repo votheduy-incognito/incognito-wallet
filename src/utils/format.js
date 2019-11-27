@@ -47,6 +47,11 @@ const number = num => {
   return rs.isFinite() ? rs.toFormat() : num;
 };
 
+const numberWithNoGroupSeparator = num => {
+  const rs = new BigNumber(num);
+  return rs.isFinite() ? rs.toFormat({ ...BigNumber.config().FORMAT, groupSize: 0 }) : num;
+};
+
 
 export default {
   amount,
@@ -55,4 +60,5 @@ export default {
   toMiliSecond,
   toFixed,
   number,
+  numberWithNoGroupSeparator,
 };
