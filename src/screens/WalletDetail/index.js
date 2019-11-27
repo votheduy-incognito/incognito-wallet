@@ -35,18 +35,18 @@ class WalletDetailContainer extends Component {
     super();
 
     this.state = {
-      theme: null
+      theme: THEMES.dark
     };
   }
 
   static navigationOptions = ({ navigation }) => {
     const { title, subTitle, selectedPrivacy, optionMenu, theme } = navigation.state.params || {};
-    const infoIconColor = (selectedPrivacy?.isIncognitoToken || selectedPrivacy?.isMainCrypto) ? COLORS.white : COLORS.black;
+    const infoIconColor = COLORS.white;
     return {
       title: title ?? '---',
       subTitle: (title || subTitle) ? subTitle : 'Loading information...',
       theme,
-      headerRight: theme && (
+      headerRight: (
         <View style={styles.headerRight}>
           <TokenInfo selectedPrivacy={selectedPrivacy} iconColor={infoIconColor} />
           <WalletDetailOptionMenu menu={optionMenu} iconColor={infoIconColor} />
@@ -57,7 +57,6 @@ class WalletDetailContainer extends Component {
 
   componentDidMount() {
     this.setHeaderData();
-    this.applyTheme();
   }
 
   componentDidUpdate(prevProps) {

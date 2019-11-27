@@ -24,7 +24,7 @@ const style = StyleSheet.create({
     color: COLORS.white,
   },
   subTitle: {
-    fontSize: 18,
+    ...TextStyle.normalText,
     color: COLORS.lightGrey1,
   },
   left: {

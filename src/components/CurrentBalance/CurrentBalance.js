@@ -5,7 +5,10 @@ import styles from './style';
 
 const CurrentBalance = ({ amount, symbol }) => (
   <View style={styles.container}>
-    <Text style={styles.balance}>{amount} {symbol}</Text>
+    <View style={styles.balanceContainer}>
+      <Text style={styles.balance} numberOfLines={1} ellipsizeMode='tail'>{amount}</Text>
+      <Text style={styles.balanceSymbol} numberOfLines={1} ellipsizeMode='tail'>{symbol}</Text>
+    </View>
     <Text style={styles.desc}>Current balance</Text>
   </View>
 );
