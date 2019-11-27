@@ -2,7 +2,6 @@ import React from 'react';
 import { Overlay } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import moment from 'moment';
 import { View, Text, Button } from '@components/core';
 import formatUtils from '@utils/format';
 import {TRANSFER_STATUS} from '@src/redux/actions/dex';
@@ -17,7 +16,7 @@ const DexHistory = ({
   account,
   tokenSymbol,
   status,
-  time,
+  lockTime,
   networkFee,
   networkFeeUnit,
   networkFeeDecimals,
@@ -35,7 +34,7 @@ const DexHistory = ({
     <TransactionID txId={txId} />
     <View style={stylesheet.row}>
       <Text style={stylesheet.field}>TIME</Text>
-      <Text style={stylesheet.textRight}>{moment(time).format('DD MMM YYYY hh:mm A')}</Text>
+      <Text style={stylesheet.textRight}>{formatUtils.formatUnixDateTime(lockTime)}</Text>
     </View>
     <View style={stylesheet.row}>
       <Text style={stylesheet.field}>STATUS</Text>
@@ -85,7 +84,7 @@ DexHistory.propTypes = {
   networkFeeUnit: PropTypes.string.isRequired,
   networkFeeDecimals: PropTypes.number.isRequired,
   onContinue: PropTypes.func.isRequired,
-  time: PropTypes.number.isRequired,
+  lockTime: PropTypes.number.isRequired,
   loading: PropTypes.bool,
   status: PropTypes.string,
 };
