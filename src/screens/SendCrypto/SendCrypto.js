@@ -26,7 +26,7 @@ const Form = createForm(formName, {
   initialValues: initialFormValues
 });
 
-const descriptionMaxBytes = validator.maxBytes(512, {
+const descriptionMaxBytes = validator.maxBytes(500, {
   message: 'The description is too long'
 });
 
