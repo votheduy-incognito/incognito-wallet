@@ -20,15 +20,15 @@ import {Icon, Overlay} from 'react-native-elements';
 import {COLORS} from '@src/styles';
 import accountIcon from '@src/assets/images/icons/account_icon.png';
 import leftArrow from '@src/assets/images/icons/left_arrow.png';
-import CryptoIcon from '@components/CryptoIcon/index';
+import CryptoIcon from '@components/CryptoIcon';
 import EstimateFee from '@components/EstimateFee';
-import FullScreenLoading from '@components/FullScreenLoading/index';
+import FullScreenLoading from '@components/FullScreenLoading';
 import tokenService from '@services/wallet/tokenService';
 import {DepositHistory, WithdrawHistory} from '@models/dexHistory';
 import Toast from '@components/core/Toast/Toast';
-import TransferSuccessPopUp from './components/TransferSuccessPopUp';
-import {PRV, WAIT_TIME, MESSAGES, MIN_INPUT, MULTIPLY, MAX_WAITING_TIME} from './constants';
-import { mainStyle, tokenStyle } from './style';
+import TransferSuccessPopUp from '../TransferSuccessPopUp';
+import {PRV, WAIT_TIME, MESSAGES, MIN_INPUT, MULTIPLY, MAX_WAITING_TIME} from '../../constants';
+import { mainStyle, tokenStyle } from '../../style';
 
 const MAX_TRIED = MAX_WAITING_TIME / WAIT_TIME;
 

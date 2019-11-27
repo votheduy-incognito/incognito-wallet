@@ -26,13 +26,12 @@ import LocalDatabase from '@utils/LocalDatabase';
 import {TradeHistory} from '@models/dexHistory';
 import RecentHistory from '@screens/Dex/components/RecentHistory';
 import PoolSize from '@screens/Dex/components/PoolSize';
-import SwapSuccessDialog from './components/SwapSuccessDialog';
-import Transfer from './Transfer';
-import Input from './Input';
-import {PRV, MESSAGES, MIN_INPUT} from './constants';
-import {inputStyle, mainStyle} from './style';
-import { CHAIN_PAIRS, CHAIN_TOKENS } from './mock_data';
-import TradeConfirm from './components/TradeConfirm';
+import SwapSuccessDialog from '../SwapSuccessDialog';
+import Transfer from '../Transfer';
+import Input from '../Input';
+import TradeConfirm from '../TradeConfirm';
+import {PRV, MESSAGES, MIN_INPUT} from '../../constants';
+import {inputStyle, mainStyle} from '../../style';
 
 class Swap extends React.Component {
   constructor(props) {

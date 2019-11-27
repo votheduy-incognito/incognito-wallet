@@ -8,7 +8,8 @@ import CryptoIcon from '@components/CryptoIcon';
 import {COLORS} from '@src/styles';
 import formatUtil from '@utils/format';
 import accountService from '@services/wallet/accountService';
-import {inputStyle, modalStyle, tokenStyle, mainStyle} from './style';
+import {modalStyle, tokenStyle, mainStyle} from '../../style';
+import stylesheet from './style';
 
 class Input extends React.Component {
   constructor(props) {
@@ -161,7 +162,7 @@ class Input extends React.Component {
     const { token } = this.props;
     // Put token id to key of CryptoIcon to load new token image
     return (
-      <View style={inputStyle.token}>
+      <View style={stylesheet.token}>
         <CryptoIcon
           key={token.id}
           tokenId={token.id}
@@ -183,10 +184,10 @@ class Input extends React.Component {
   renderInput() {
     const { value, onChange, disabled } = this.props;
     return (
-      <View style={inputStyle.inputContainer}>
+      <View style={stylesheet.inputContainer}>
         <TextInput
           keyboardType="decimal-pad"
-          style={inputStyle.input}
+          style={stylesheet.input}
           placeholder={onChange ? '0.0' : ''}
           placeholderTextColor={COLORS.lightGrey1}
           value={value}
@@ -196,13 +197,13 @@ class Input extends React.Component {
           editable={!disabled}
         />
         {_.toString(value).length > 5 &&
-          <TouchableOpacity style={inputStyle.clearIcon} onPress={this.clearInput}>
-            <Icon
-              name="cancel"
-              color={COLORS.lightGrey1}
-              size={18}
-            />
-          </TouchableOpacity>
+        <TouchableOpacity style={stylesheet.clearIcon} onPress={this.clearInput}>
+          <Icon
+            name="cancel"
+            color={COLORS.lightGrey1}
+            size={18}
+          />
+        </TouchableOpacity>
         }
       </View>
     );
@@ -211,7 +212,7 @@ class Input extends React.Component {
   renderText() {
     const { value } = this.props;
     return (
-      <Text numberOfLines={1} style={[inputStyle.input, { marginLeft: 0 }]}>
+      <Text numberOfLines={1} style={[stylesheet.input, { marginLeft: 0 }]}>
         {value}
       </Text>
     );
@@ -220,15 +221,15 @@ class Input extends React.Component {
   render() {
     const { token, onChange, tokenList, headerTitle, disabled } = this.props;
     return (
-      <View style={inputStyle.wrapper}>
-        <View style={inputStyle.header}>
-          <Text style={inputStyle.headerTitle}>{headerTitle}</Text>
+      <View style={stylesheet.wrapper}>
+        <View style={stylesheet.header}>
+          <Text style={stylesheet.headerTitle}>{headerTitle}</Text>
         </View>
-        <View style={inputStyle.content}>
+        <View style={stylesheet.content}>
           {onChange ? this.renderInput() : this.renderText()}
           <TouchableOpacity
             onPress={this.showDialog}
-            style={inputStyle.select}
+            style={stylesheet.select}
             disabled={tokenList.length <= 0 || disabled}
           >
             {token ? this.renderToken() : this.renderSelectButton()}
@@ -243,7 +244,6 @@ class Input extends React.Component {
 Input.defaultProps = {
   token: null,
   value: undefined,
-  balance: undefined,
   onChange: undefined,
   account: null,
   wallet: null,
@@ -253,7 +253,6 @@ Input.defaultProps = {
 Input.propTypes = {
   token: PropTypes.object,
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  balance: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   headerTitle: PropTypes.string.isRequired,
   tokenList: PropTypes.array.isRequired,
   onSelectToken: PropTypes.func.isRequired,
