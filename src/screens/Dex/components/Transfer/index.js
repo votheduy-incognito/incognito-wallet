@@ -183,6 +183,10 @@ class Transfer extends React.PureComponent {
     const { onLoadData, wallet, dexMainAccount } = this.props;
     const { transfer, sending } = this.state;
     const { action, error, token, amount, account, fee, balance, feeUnit } = transfer;
+    let tokenFee = fee;
+    let prvBalance = 0;
+    let prvFee = 0;
+    let prvAccount = action === MESSAGES.DEPOSIT ? account : dexMainAccount;
 
     if (sending) {
       return;
@@ -191,22 +195,20 @@ class Transfer extends React.PureComponent {
     if (!error && token && amount && account && !sending) {
       this.updateTransfer({ chainError: null });
       try {
+        if (token !== PRV && feeUnit === PRV.symbol) {
+          prvBalance = await accountService.getBalance(prvAccount, wallet);
+          prvFee = fee;
+          tokenFee = 0;
+
+          if (prvFee > prvBalance) {
+            return this.updateTransfer({chainError: MESSAGES.NOT_ENOUGH_NETWORK_FEE});
+          }
+        }
         this.setState({ sending: true });
         await this[action](transfer);
         this.updateTransfer({ success: true });
         onLoadData();
       } catch (error) {
-        let tokenFee = fee;
-        let prvBalance = 0;
-        let prvFee = 0;
-        let prvAccount = action === MESSAGES.DEPOSIT ? account : dexMainAccount;
-
-        if (token !== PRV && feeUnit === PRV.symbol) {
-          prvBalance = await accountService.getBalance(prvAccount, wallet);
-          prvFee = fee;
-          tokenFee = 0;
-        }
-
         if (accountService.isNotEnoughCoinError(error, amount, tokenFee, balance, prvBalance, prvFee)) {
           this.updateTransfer({chainError: MESSAGES.PENDING_TRANSACTIONS});
         } else {
