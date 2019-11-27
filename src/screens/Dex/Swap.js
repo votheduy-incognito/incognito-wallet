@@ -151,8 +151,8 @@ class Swap extends React.Component {
 
   async getInputBalance(balance) {
     try {
-      const {wallet} = this.props;
-      const {inputToken: token, dexMainAccount} = this.state;
+      const { wallet } = this.props;
+      const {inputToken: token, dexMainAccount, balance: prevBalance} = this.state;
       if (!_.isNumber(balance)) {
         balance = await accountService.getBalance(dexMainAccount, wallet, token.id);
         const {inputToken} = this.state;
@@ -162,7 +162,10 @@ class Swap extends React.Component {
         }
       }
 
-      this.setState({balance});
+      if (balance !== prevBalance) {
+        const { inputValue, inputToken } = this.state;
+        this.setState({ balance }, () => this.changeInputValue(convertUtil.toHumanAmount(inputValue, inputToken.pDecimals)));
+      }
 
       let prvBalance = balance;
 
@@ -170,7 +173,7 @@ class Swap extends React.Component {
         prvBalance = await accountService.getBalance(dexMainAccount, wallet);
       }
 
-      this.setState({prvBalance});
+      this.setState({ prvBalance });
     } catch (error) {
       console.debug('GET INPUT BALANCE ERROR', error);
     }
@@ -185,10 +188,10 @@ class Swap extends React.Component {
       inputError: null,
       balance: 'Loading',
     }, () => {
-      this.filterOutputList(async () => {
-        await this.getInputBalance(balance);
+      this.filterOutputList(() => {
         const { inputValue } = this.state;
         this.changeInputValue(convertUtil.toHumanAmount(inputValue, token.pDecimals));
+        this.getInputBalance(balance);
       });
     });
   };
