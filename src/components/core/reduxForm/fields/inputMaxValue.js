@@ -26,7 +26,7 @@ const renderCustomField = ({ input, meta, maxValue, ...props }) => {
             marginBottom: 5,
           }}
           onPress={() => {
-            onChange(formatUtil.number(Number(maxValue)));
+            onChange(formatUtil.numberWithNoGroupSeparator(Number(maxValue)));
           }}
         >
           <Text style={{ color: COLORS.primary  }}>Max</Text>
