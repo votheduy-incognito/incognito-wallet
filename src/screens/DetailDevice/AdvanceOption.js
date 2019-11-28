@@ -105,7 +105,7 @@ class AdvanceOption extends Component {
         {labels.map((item,index)=>{
           return (
             <ListItem
-              // disabled={index!=1?true:false}
+              disabled={index!=2?true:false}
               // disabled
               disabledStyle={{opacity:0.3}}
               Component={TouchableOpacity}
