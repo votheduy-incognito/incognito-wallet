@@ -28,7 +28,8 @@ export const template = {
     qrCodeDeviceId:'',
     PaymentAddress:'',
     StakerAddress:'',
-    Commission:1
+    Commission:1,
+    isUpdating:false,
   },
   keyInfo:{
     publicKeyMining:'',
@@ -80,6 +81,9 @@ export default class Device {
   }
   isSyncing =()=>{
     return this.data.status.code == Device.CODE_SYNCING;
+  }
+  isUpdatingFirmware =()=>{
+    return this.data.minerInfo?.isUpdating??false;
   }
   isReady =()=>{
     return this.data.status.code == Device.CODE_START;

@@ -6,6 +6,7 @@ import Util from '@src/utils/Util';
 import _ from 'lodash';
 import APIService from './api/miner/APIService';
 import FirebaseService, { DEVICE_CHANNEL_FORMAT, FIREBASE_PASS, MAIL_UID_FORMAT, PHONE_CHANNEL_FORMAT } from './FirebaseService';
+import { ExHandler } from './exception';
 
 const TAG = 'NodeService';
 const password = `${FIREBASE_PASS}`;
@@ -17,6 +18,10 @@ const timeout = 10;
 export const LIST_ACTION={
   UPDATE_FIRMWARE:{
     key:'update_firmware',
+    data:undefined
+  },
+  CHECK_VERSION:{
+    key:'check_version',
     data:undefined
   },
   GET_IP:{
@@ -135,13 +140,31 @@ export default class NodeService {
         return dataResult;
       }
     } catch (error) {
-      console.log(TAG,'reset error = ',error);
+      console.log(TAG,'updateFirware error = ',error);
       return null;
     }
 
     return null;
   }
   
+  static checkVersion = async(device:Device,chain='incognito')=>{
+    
+    try {
+      if(!_.isEmpty(device)){
+        const action = LIST_ACTION.CHECK_VERSION;
+        const dataResult = await Util.excuteWithTimeout(NodeService.send(device.data,action,chain,Action.TYPE.PRODUCT_CONTROL),8);
+        console.log(TAG,'checkVersion send dataResult = ',dataResult);
+        const { status = -1, data, message= ''} = dataResult;
+        if(status === 1){
+          return data;
+        }
+      }
+    } catch (error) {
+      console.log(TAG,'checkVersion error = ',error);
+    }
+
+    return null;
+  }
 
   static pingGetIP = async(device:Device,chain='incognito')=>{
     
@@ -250,6 +273,38 @@ export default class NodeService {
     }
 
     return null;
+  }
+
+  /**
+   * {isHave:false,current:0.0,node:0.0}
+   */
+  static checkUpdatingVersion = async (device:Device)=>{
+    let dataResult = {isHave:false,current:undefined,node:undefined};
+    try {
+      const {data ,status = 0} = await APIService.getSystemPlatform().catch(e=>new ExHandler(e).showWarningToast())??{} ;
+      if(!_.isEqual(status,0)){
+        const {
+          created_at,
+          id,
+          status = 0,
+          version=''
+        } = data;
+        const nodeVersion = await NodeService.checkVersion(device);
+        console.log(TAG,'checkUpdatingVersion nodeVersion ',nodeVersion);
+        // compare to node's version
+        dataResult = {
+          ...dataResult,
+          isHave: !_.isEqual(nodeVersion,version),
+          current:version,
+          node:nodeVersion
+        };
+        return dataResult;
+      }
+    } catch (error) {
+      console.log(TAG,'checkUpdatingVersion error ',error);
+      new ExHandler(error).throw();
+    }
+    return dataResult;
   }
 
 }

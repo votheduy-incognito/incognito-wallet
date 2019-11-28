@@ -181,4 +181,25 @@ export default class DeviceService {
    return balance;
  }
 
+ /**
+  * return {1}: begin to updating
+  * {-1}: error
+  * * {0}: updating
+  */
+ static updateFirmwareForNode= async(device:Device)=>{
+   try {
+     console.log(TAG,'updateFirmwareForNode begin -- ',device.isUpdatingFirmware());
+     if(!device.isUpdatingFirmware()){
+       console.log(TAG,'updateFirmwareForNode begin01');
+       const {data,status} = await NodeService.updateFirware(device).catch(console.log)??{};
+       await LocalDatabase.saveUpdatingFirware(device.ProductId,true);
+       return 0;
+     }
+   } catch (error) {
+     return -1;
+   }
+   
+   return 1;
+ }
+
 }

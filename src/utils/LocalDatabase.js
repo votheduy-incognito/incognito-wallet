@@ -82,6 +82,19 @@ export default class LocalDatabase {
       }
     }
   };
+  static saveUpdatingFirware = async (product_id,isUpdating) => {
+    if(!_.isEmpty(product_id)){
+      const deviceJSON = await LocalDatabase.getDevice(product_id).catch(e=>throw new Error('device not found in local'))??undefined;
+      if(deviceJSON){
+        deviceJSON['minerInfo'] = {
+          ...deviceJSON['minerInfo'],
+          isUpdating:isUpdating
+        };
+        await LocalDatabase.updateDevice(deviceJSON);
+        console.log(TAG, ' saveUpdatingFirware end success deviceJSON=',deviceJSON);
+      }
+    }
+  };
   static async logout() {
     return await AsyncStorage.multiRemove([
       KEY_SAVE.USER,

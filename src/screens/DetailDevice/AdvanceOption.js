@@ -1,12 +1,13 @@
 import { ButtonExtension, ListItem, Text } from '@components/core';
-import { imagesVector } from '@src/assets';
+import images, { imagesVector } from '@src/assets';
 import BottomSheet from '@src/components/BottomSheet';
 import TextStyle from '@src/styles/TextStyle';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Image } from 'react-native';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import styles from './style';
+import { DialogUpdateFirmware } from './DialogNotify';
 
 const style = StyleSheet.create({
   container: {
@@ -20,20 +21,32 @@ const style = StyleSheet.create({
     color:'#91A4A6'
   }
 });
-// const labels = [{title:'Change WiFi network',subtitle:'Connect Node to a different network'},{title:'Factory reset',subtitle:'Remove all data and start again'},{title:'Update Firware',subtitle:'Remove all data and start again'}];
-const labels = [{title:'Change WiFi network',subtitle:'Connect Node to a different network'},{title:'Factory reset',subtitle:'Remove all data and start again'}];
+// const labels = [{title:'Change WiFi network',subtitle:'Connect Node to a different network'},{title:'Factory reset',subtitle:'Remove all data and start again'},{title:'Update Firmware',subtitle:'Remove all data and start again'}];
+const labels = [{title:'Change WiFi network',subtitle:'Connect Node to a different network'},{title:'Factory reset',subtitle:'Remove all data and start again'},{title:'Update firmware',subtitle:'Get Node perform better'}];
 class AdvanceOption extends Component {
   constructor(props){
     super(props);
     this.state={
       isShowMessage:false,
+      isDialogUpdateFirmware:false,
     };
     this.mainView = React.createRef();
   }
   render(){
+    const {isDialogUpdateFirmware} = this.state;
+    const {device} = this.props;
     return (
       <>
         {this.renderDialogNotify()}
+        <DialogUpdateFirmware
+          visible={isDialogUpdateFirmware}
+          onClose={()=>{
+            this.setState({
+              isDialogUpdateFirmware:false
+            });
+          }}
+          device={device}
+        />
         <BottomSheet ref={this.mainView} contentView={this.renderContent()} />
       </>
     );
@@ -78,6 +91,13 @@ class AdvanceOption extends Component {
   close = ()=>{
     this.mainView?.current.close();
   }
+  leftIcon = (index)=>{
+    switch(index){
+    case 0: return imagesVector.ic_update_wifi();
+    case 1: return imagesVector.ic_factory_reset();
+    default:return <Image source={images.ic_upgrade_firmware} />;
+    } 
+  }
   renderContent = ()=>{
     
     return (
@@ -86,12 +106,12 @@ class AdvanceOption extends Component {
           return (
             <ListItem
               // disabled={index!=1?true:false}
-              disabled
+              // disabled
               disabledStyle={{opacity:0.3}}
               Component={TouchableOpacity}
               onPress={()=>{
                 this.close();
-                const {handleUpdateWifi,handleReset,handleUpdateUpdateFirware} = this.props;
+                const {handleUpdateWifi,handleReset,handleUpdateFirmware} = this.props;
                 if(index === 0){
                   handleUpdateWifi && handleUpdateWifi();
                 }else if(index === 1){
@@ -99,13 +119,16 @@ class AdvanceOption extends Component {
                     isShowMessage:true
                   });
                 }else{
-                  handleUpdateUpdateFirware && handleUpdateUpdateFirware();
+                  this.setState({
+                    isDialogUpdateFirmware:true
+                  });
                 }
       
               }}
               key={item.title}
               containerStyle={style.container}
-              leftIcon={index==0?imagesVector.ic_update_wifi():imagesVector.ic_factory_reset()}
+              // leftIcon={this.leftIcon(index)}
+              leftElement={this.leftIcon(index)}
               titleStyle={style.textItem}
               title={item.title}
               subtitleStyle={style.textSubtitle}
@@ -121,6 +144,6 @@ class AdvanceOption extends Component {
 AdvanceOption.propTypes = {
   handleReset: PropTypes.func,
   handleUpdateWifi: PropTypes.func,
-  handleUpdateUpdateFirware: PropTypes.func
+  handleUpdateFirmware: PropTypes.func
 };
 export default AdvanceOption;
