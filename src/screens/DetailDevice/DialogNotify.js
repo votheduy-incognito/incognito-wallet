@@ -52,7 +52,7 @@ const ProcessingUpgrade = React.memo(({device,isUpdating,onSuccess,onFail,onClos
         return new Error('Have new version');
       }else{
         setTextContent('Node firmware is upgraded successfully.');
-        onSuccess&&onSuccess();
+        onSuccess&&onSuccess(current);
       }
       setLoading(false);
       return true;
@@ -63,7 +63,7 @@ const ProcessingUpgrade = React.memo(({device,isUpdating,onSuccess,onFail,onClos
     async ()=>{
       if(isUpdating){
         console.log(TAG,'ProcessingUpgrade memo updating ------');
-        await Util.tryAtMost(processingUpgrade,5,3);
+        await Util.tryAtMost(processingUpgrade,15,3);
       }
     },
     [isUpdating]
@@ -134,8 +134,9 @@ export const DialogUpdateFirmware = React.memo(({handleUpdate,visible,device,onC
     [visible]
   );
 
-  const handleUpgradeSuccess =  useCallback(async() => {
+  const handleUpgradeSuccess =  useCallback(async(newVersion) => {
     // setUpdating(false);
+    setTextTitle(`Node v${newVersion??''}`);
     await LocalDatabase.saveUpdatingFirware(device.ProductId,false);
   },[isUpdating]);
   
