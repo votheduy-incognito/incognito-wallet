@@ -257,7 +257,7 @@ class Swap extends React.Component {
     try {
       const {pairs, outputToken, inputToken, inputValue} = this.state;
 
-      if (!outputToken || !_.isNumber(inputValue) || _.isNaN(inputValue)) {
+      if (!outputToken || !_.isNumber(inputValue) || _.isNaN(inputValue) || inputValue === 0) {
         return this.setState({ outputValue: 0 });
       }
 
