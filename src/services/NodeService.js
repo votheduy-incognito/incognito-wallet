@@ -275,7 +275,11 @@ export default class NodeService {
     return null;
   }
 
+  /**
+   * {isHave:false,current:0.0,node:0.0}
+   */
   static checkUpdatingVersion = async (device:Device)=>{
+    let dataResult = {isHave:false,current:undefined,node:undefined};
     try {
       const {data ,status = 0} = await APIService.getSystemPlatform().catch(e=>new ExHandler(e).showWarningToast())??{} ;
       if(!_.isEqual(status,0)){
@@ -288,13 +292,19 @@ export default class NodeService {
         const nodeVersion = await NodeService.checkVersion(device);
         console.log(TAG,'checkUpdatingVersion nodeVersion ',nodeVersion);
         // compare to node's version
-        return !_.isEqual(nodeVersion,version);
+        dataResult = {
+          ...dataResult,
+          isHave: !_.isEqual(nodeVersion,version),
+          current:version,
+          node:nodeVersion
+        };
+        return dataResult;
       }
     } catch (error) {
       console.log(TAG,'checkUpdatingVersion error ',error);
       new ExHandler(error).throw();
     }
-    return false;
+    return dataResult;
   }
 
 }

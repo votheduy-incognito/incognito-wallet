@@ -649,13 +649,6 @@ class DetailDevice extends BaseScreen {
   }
 
   handleCallBackUpdateFirmware = async()=>{
-    // const {
-    //   device,
-    // } = this.state;
-    
-    // device && device.Type == DEVICES.MINER_TYPE && (NodeService.checkUpdatingVersion(device).then(data=>{
-    //   this.showToastMessage('Update Firware result  ' +JSON.stringify(data));
-    // }));
   };
 
   handleReset = async()=>{

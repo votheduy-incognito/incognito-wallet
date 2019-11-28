@@ -1,10 +1,10 @@
 import { ButtonExtension, ListItem, Text } from '@components/core';
-import { imagesVector } from '@src/assets';
+import images, { imagesVector } from '@src/assets';
 import BottomSheet from '@src/components/BottomSheet';
 import TextStyle from '@src/styles/TextStyle';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Image } from 'react-native';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import styles from './style';
 import { DialogUpdateFirmware } from './DialogNotify';
@@ -22,7 +22,7 @@ const style = StyleSheet.create({
   }
 });
 // const labels = [{title:'Change WiFi network',subtitle:'Connect Node to a different network'},{title:'Factory reset',subtitle:'Remove all data and start again'},{title:'Update Firmware',subtitle:'Remove all data and start again'}];
-const labels = [{title:'Change WiFi network',subtitle:'Connect Node to a different network'},{title:'Factory reset',subtitle:'Remove all data and start again'},{title:'Update Firmware',subtitle:'Remove all data and start again'}];
+const labels = [{title:'Change WiFi network',subtitle:'Connect Node to a different network'},{title:'Factory reset',subtitle:'Remove all data and start again'},{title:'Update firmware',subtitle:'Get Node perform better'}];
 class AdvanceOption extends Component {
   constructor(props){
     super(props);
@@ -91,6 +91,13 @@ class AdvanceOption extends Component {
   close = ()=>{
     this.mainView?.current.close();
   }
+  leftIcon = (index)=>{
+    switch(index){
+    case 0: return imagesVector.ic_update_wifi();
+    case 1: return imagesVector.ic_factory_reset();
+    default:return <Image source={images.ic_upgrade_firmware} />;
+    } 
+  }
   renderContent = ()=>{
     
     return (
@@ -120,7 +127,8 @@ class AdvanceOption extends Component {
               }}
               key={item.title}
               containerStyle={style.container}
-              leftIcon={index==0?imagesVector.ic_update_wifi():imagesVector.ic_factory_reset()}
+              // leftIcon={this.leftIcon(index)}
+              leftElement={this.leftIcon(index)}
               titleStyle={style.textItem}
               title={item.title}
               subtitleStyle={style.textSubtitle}
