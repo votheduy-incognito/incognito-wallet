@@ -23,18 +23,14 @@ class PoolSize extends React.Component {
     const inputPool = pair[inputToken.id];
     const outputPool = pair[outputToken.id];
 
-    const formattedInputPool = formatUtil.amountFull(inputPool, inputToken.pDecimals);
-    const formattedOutputPool = formatUtil.amountFull(outputPool, outputToken.pDecimals);
+    const formattedInputPool = formatUtil.amount(inputPool, inputToken.pDecimals);
+    const formattedOutputPool = formatUtil.amount(outputPool, outputToken.pDecimals);
     return (
       <View style={style.twoColumns}>
-        <Text style={[style.feeTitle]}>Current Pool Size:</Text>
+        <Text style={[style.feeTitle]}>Pool Size:</Text>
         <View style={[style.flex, style.textRight]}>
-          <Text style={style.fee} numberOfLines={1}>
-            {formattedInputPool} {inputToken.symbol}
-          </Text>
-          <Text style={style.fee}>+</Text>
-          <Text style={style.fee} numberOfLines={1}>
-            {formattedOutputPool} {outputToken.symbol}
+          <Text style={style.fee} numberOfLines={2}>
+            {formattedInputPool} {inputToken.symbol} + {formattedOutputPool} {outputToken.symbol}
           </Text>
         </View>
       </View>

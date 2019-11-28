@@ -7,7 +7,7 @@ export default StyleSheet.create({
     marginTop: 10,
   },
   feeTitle: {
-    width: 130,
+    width: 70,
     fontSize: 13,
     color: COLORS.lightGrey1,
   },
