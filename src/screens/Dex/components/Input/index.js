@@ -8,7 +8,7 @@ import CryptoIcon from '@components/CryptoIcon';
 import {COLORS} from '@src/styles';
 import formatUtil from '@utils/format';
 import accountService from '@services/wallet/accountService';
-import {modalStyle, tokenStyle, mainStyle} from '../../style';
+import {modalStyle, tokenStyle, mainStyle, inputStyle} from '../../style';
 import stylesheet from './style';
 
 class Input extends React.Component {
@@ -181,6 +181,24 @@ class Input extends React.Component {
     );
   }
 
+  renderBalance() {
+    const { balance, token } = this.props;
+
+    console.debug('BALANCE', balance, formatUtil.amount(balance, token?.pDecimals));
+
+    return (
+      <View style={[inputStyle.headerBalance, mainStyle.textRight]}>
+        <Text style={[inputStyle.headerTitle, inputStyle.headerBalanceTitle]}>Balance:</Text>
+        {balance === 'Loading' ?
+          <View><ActivityIndicator size="small" /></View> : (
+            <Text style={inputStyle.balanceText} numberOfLines={1}>
+              {formatUtil.amount(balance, token?.pDecimals)}
+            </Text>
+          )}
+      </View>
+    );
+  }
+
   renderInput() {
     const { value, onChange, disabled } = this.props;
     return (
@@ -224,6 +242,7 @@ class Input extends React.Component {
       <View style={stylesheet.wrapper}>
         <View style={stylesheet.header}>
           <Text style={stylesheet.headerTitle}>{headerTitle}</Text>
+          {!!onChange && this.renderBalance()}
         </View>
         <View style={stylesheet.content}>
           {onChange ? this.renderInput() : this.renderText()}
@@ -245,6 +264,7 @@ Input.defaultProps = {
   token: null,
   value: undefined,
   onChange: undefined,
+  balance: 0,
   account: null,
   wallet: null,
   disabled: false,
@@ -256,6 +276,7 @@ Input.propTypes = {
   headerTitle: PropTypes.string.isRequired,
   tokenList: PropTypes.array.isRequired,
   onSelectToken: PropTypes.func.isRequired,
+  balance: PropTypes.number,
   onChange: PropTypes.func,
   account: PropTypes.object,
   wallet: PropTypes.object,

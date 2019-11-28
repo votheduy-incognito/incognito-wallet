@@ -281,7 +281,7 @@ export const inputStyle = StyleSheet.create({
   },
   balanceText: {
     fontSize: 15,
-    flex: 1,
+    maxWidth: 200,
   },
   content: {
     flexDirection: 'row',

@@ -32,7 +32,7 @@ class ExchangeRate extends React.Component {
         <Text style={[style.feeTitle]}>Exchange Rate:</Text>
         <Text style={[style.fee, style.textRight, style.ellipsis]} numberOfLines={1}>
           1 {inputToken.symbol} =&nbsp;
-          {outputToken.pDecimals > 0 ? formatUtil.amountFull(rawRate, outputToken.pDecimals) : _.ceil(rawRate, 9)}
+          {formatUtil.amount(rawRate, outputToken.pDecimals)}
           &nbsp;{outputToken?.symbol}
         </Text>
       </View>

@@ -402,26 +402,6 @@ class Swap extends React.Component {
     );
   }
 
-  renderBalance() {
-    const { balance, inputToken } = this.state;
-
-    if (balance !== 'Loading' && !_.isNumber(balance)) {
-      return null;
-    }
-
-    return (
-      <View style={inputStyle.headerBalance}>
-        <Text style={[inputStyle.headerTitle, inputStyle.headerBalanceTitle]}>Balance:</Text>
-        {balance === 'Loading' ?
-          <View><ActivityIndicator size="small" /></View> : (
-            <Text style={inputStyle.balanceText} numberOfLines={1}>
-              {formatUtil.amount(balance, inputToken?.pDecimals)}
-            </Text>
-          )}
-      </View>
-    );
-  }
-
   renderInputs() {
     const { wallet } = this.props;
     const {
@@ -457,7 +437,6 @@ class Swap extends React.Component {
             {inputError}
           </Text>
         )}
-        {this.renderBalance()}
         <View style={mainStyle.arrowWrapper}>
           <Divider style={mainStyle.divider} />
           <Image source={downArrow} style={mainStyle.arrow} />
