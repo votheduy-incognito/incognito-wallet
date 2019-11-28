@@ -22,7 +22,7 @@ const amountCreator = (bnFormat, maxDigits) => (amount, decimals) => {
       _maxDigits = undefined;
     }
   
-    return _amount ? new BigNumber(_amount).toFormat(_maxDigits, BigNumber.ROUND_DOWN, bnFormat) : 0;
+    return _amount ? new BigNumber(_amount).toFormat(_maxDigits, BigNumber.ROUND_DOWN, bnFormat)?.replace(/((\.0+)|0+)$/g, '') : 0;
   } catch {
     return amount;
   }  
