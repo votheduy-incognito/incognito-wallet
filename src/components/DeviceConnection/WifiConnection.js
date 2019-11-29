@@ -27,7 +27,7 @@ class WifiConnection extends BaseConnection {
           console.log(TAG, 'fetchCurrentConnect begin02 ');
           try {
             Wifi.getSSID(SSID => {
-              console.log(TAG, 'fetchCurrentConnect getSSID', SSID);
+              console.log(TAG, 'fetchCurrentConnect getSSID=', SSID);
               this.currentConnect = new ObjConnection();
               this.currentConnect.id = SSID;
               this.currentConnect.name = SSID;
@@ -57,24 +57,25 @@ class WifiConnection extends BaseConnection {
 
   connectDevice = (device: ObjConnection) => {
     const pro = new Promise((resolve, reject) => {
-      Wifi.connectSecure(device.name,PASS_HOSPOT,false,false, error => {
-        console.log(TAG, 'connectDevice OKKKKK ---');
+      Wifi.connectSecure(device.name,PASS_HOSPOT,false,true, error => {
+        console.log(TAG, 'connectDevice begin --- error = ',error);
         if (!error) {
           Wifi.getSSID(SSID => {
-            console.log(TAG, 'connectDevice getSSID --- ', SSID);
+            console.log(TAG, 'connectDevice begin 01 getSSID --- ', SSID);
             this.currentConnect = new ObjConnection();
             this.currentConnect.id = SSID;
             this.currentConnect.name = SSID;
             resolve(_.isEqual(device.name,SSID));
           });
         } else {
+          console.log(TAG, 'connectDevice --- error ngon = ',error);
           // resolve(false);
           reject(new Error(error));
         }
       });
       
     });
-    return Util.excuteWithTimeout(pro,15);
+    return Util.excuteWithTimeout(pro,15).catch(e=>console.log('connectDevice --- failed end'));
     // return pro;
 
   };

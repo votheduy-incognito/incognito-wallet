@@ -541,15 +541,6 @@ class SetupDevice extends BaseComponent {
 
   }
 
-  // _handleConnectionChange = async (isConnected) => {
-
-  //   let device = isConnected && await this.deviceId?.current?.getCurrentConnect();
-  //   this.isHaveNetwork = !_.isEmpty(device?.name||'') && !_.includes(device?.name||'', HOTPOT);
-  //   console.log(TAG,`_handleConnectionChange: ${this.isHaveNetwork} ,name = ${device?.name}`);
-  //   this.setState({
-  //     isConnected: isConnected
-  //   });
-  // };
 
   _handleConnectionChange = async (state) => {
 
