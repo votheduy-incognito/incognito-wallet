@@ -7,6 +7,10 @@ export default StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center'
   },
+  row: {
+    flexDirection: 'row',
+    flex: 3,
+  },
   rowText: {
     display: 'flex',
     flexDirection: 'row',
