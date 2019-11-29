@@ -64,7 +64,7 @@ class DeviceConnection extends Component {
 
   connectDevice = async (device: ObjConnection) => {
     console.log(TAG, 'connectDevice begin  = ',JSON.stringify(device)||'');
-    let result = await this.connection.connectDevice(device).catch(e=>new ExHandler(e,'connectDevice fail').showWarningToast());
+    let result = await this.connection.connectDevice(device).catch(console.log);
 
     if(result){
       // console.log(TAG, 'connectDevice begin true ---- ');
