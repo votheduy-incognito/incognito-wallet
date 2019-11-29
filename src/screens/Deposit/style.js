@@ -53,7 +53,6 @@ export const waitingDepositStyle = StyleSheet.create({
   textHighlight: {
     ...FONT.STYLE.medium,
     color: COLORS.dark1,
-    marginBottom: 20,
     fontSize: 15,
     lineHeight: 23,
   }
