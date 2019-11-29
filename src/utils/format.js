@@ -10,7 +10,18 @@ const fmt = {
   groupSize: 3,
 };
 
-const DECIMAL_FORMAT = /((\.0+)|(\..*0+)|\.)$/g;
+const removeTrailingZeroes = (amountString) => {
+  let formattedString = amountString;
+  while(formattedString.length > 0 && (
+    (formattedString.includes('.') && formattedString[formattedString.length - 1] === '0') ||
+      formattedString[formattedString.length - 1] === '.'
+  )
+  ) {
+    formattedString = formattedString.slice(0, formattedString.length - 1);
+  }
+
+  return formattedString;
+};
 
 const amountCreator = (bnFormat, maxDigits) => (amount, decimals) => {
   try {
@@ -24,7 +35,7 @@ const amountCreator = (bnFormat, maxDigits) => (amount, decimals) => {
       _maxDigits = undefined;
     }
 
-    return _amount ? new BigNumber(_amount).toFormat(_maxDigits, BigNumber.ROUND_DOWN, bnFormat)?.replace(DECIMAL_FORMAT, '') : 0;
+    return _amount ? removeTrailingZeroes(new BigNumber(_amount).toFormat(_maxDigits, BigNumber.ROUND_DOWN, bnFormat)) : 0;
   } catch {
     return amount;
   }
@@ -38,7 +49,7 @@ const formatDateTime = (dateTime, formatPartern) => moment(dateTime).format(form
 const toMiliSecond = (second) => second * 1000;
 const toFixed = (number, decimals = 0) => {
   if (_.isNumber(number) && !_.isNaN(number)) {
-    return number.toFixed(decimals).replace(DECIMAL_FORMAT, '');
+    return removeTrailingZeroes(number.toFixed(decimals));
   }
 
   return number;
@@ -55,7 +66,6 @@ const numberWithNoGroupSeparator = num => {
   return rs.isFinite() ? rs.toFormat({ ...BigNumber.config().FORMAT, groupSize: 0 }) : num;
 };
 
-
 export default {
   amount,
   amountFull,
@@ -66,3 +76,13 @@ export default {
   number,
   numberWithNoGroupSeparator,
 };
+
+// console.debug('TEST REMOVE TRAILING ZEROES');
+// const CASES = [
+//   '100.00',
+//   '100.10',
+//   '202.10',
+//   '100.00',
+//   '100.001',
+// ];
+// CASES.forEach(item => console.debug(item, removeTrailingZeroes(item)));
