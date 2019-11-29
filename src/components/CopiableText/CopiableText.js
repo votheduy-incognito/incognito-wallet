@@ -6,6 +6,12 @@ import React from 'react';
 import { Icon } from 'react-native-elements';
 import styleSheet from './style';
 
+function handlePress(text, { copiedMessage }, onPress) {
+  clipboard.set(text, { copiedMessage });
+  if(onPress) {
+    onPress();
+  }
+}
 
 const CopiableText = ({
   text,
@@ -16,12 +22,12 @@ const CopiableText = ({
   copiedMessage,
   showCopyIcon = true,
   oneLine = false,
-  iconStyle
+  onPress,
 }) => (
   <TouchableOpacity
     style={[styleSheet.textBox, style]}
     {...containerProps}
-    onPress={() => clipboard.set(text, { copiedMessage })}
+    onPress={() => handlePress(text, { copiedMessage }, onPress)}
   >
     {children || (
       <Text

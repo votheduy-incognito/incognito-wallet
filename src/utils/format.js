@@ -10,22 +10,24 @@ const fmt = {
   groupSize: 3,
 };
 
+const DECIMAL_FORMAT = /((\.0+)|(\..*0+)|\.)$/g;
+
 const amountCreator = (bnFormat, maxDigits) => (amount, decimals) => {
   try {
     let _maxDigits = maxDigits;
 
     const _amount = convertUtil.toHumanAmount(amount, decimals);
     if (!Number.isFinite(_amount)) throw new Error('Can not format invalid amount');
-  
+
     // if amount is too small, do not round it
     if (_amount > 0 && _amount < 1) {
       _maxDigits = undefined;
     }
-  
-    return _amount ? new BigNumber(_amount).toFormat(_maxDigits, BigNumber.ROUND_DOWN, bnFormat)?.replace(/((\.0+)|0+)$/g, '') : 0;
+
+    return _amount ? new BigNumber(_amount).toFormat(_maxDigits, BigNumber.ROUND_DOWN, bnFormat)?.replace(DECIMAL_FORMAT, '') : 0;
   } catch {
     return amount;
-  }  
+  }
 };
 
 const amountFull = amountCreator(fmt);
@@ -36,7 +38,7 @@ const formatDateTime = (dateTime, formatPartern) => moment(dateTime).format(form
 const toMiliSecond = (second) => second * 1000;
 const toFixed = (number, decimals = 0) => {
   if (_.isNumber(number) && !_.isNaN(number)) {
-    return number.toFixed(decimals).replace(/((\.0+)|0+)$/g, '');
+    return number.toFixed(decimals).replace(DECIMAL_FORMAT, '');
   }
 
   return number;

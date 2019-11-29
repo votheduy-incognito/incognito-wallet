@@ -1,11 +1,22 @@
 import {
   Wallet
 } from 'incognito-chain-web-js/build/wallet';
+import _ from 'lodash';
 import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
 import { CONSTANT_KEYS } from '@src/constants';
+import { getTokenList } from '@services/api/token';
 import { saveWallet, updateStatusHistory } from './WalletService';
 import { listPrivacyTokens, listCustomTokens } from './RpcClientService';
+
+export const PRV = {
+  id: '0000000000000000000000000000000000000000000000000000000000000004',
+  name: 'Privacy',
+  symbol: 'PRV',
+  pDecimals: 9,
+  hasIcon: true,
+  originalSymbol: 'PRV',
+};
 
 export default class Token {
   // static async createSendCustomToken(param, fee, account, wallet) {
@@ -98,7 +109,7 @@ export default class Token {
     const hasPrivacyForNativeToken = true;
     const hasPrivacyForPToken = true;
     const infoStr = ![undefined, null].includes(info) ? JSON.stringify(info) : undefined;
-    
+
     try {
       response = await wallet.MasterAccount.child[
         indexAccount
@@ -229,6 +240,32 @@ export default class Token {
     } catch (e) {
       throw e;
     }
+  }
+
+  static async getAllTokens() {
+    const pTokens = await getTokenList();
+    const chainTokens = await Token.getPrivacyTokens();
+    const tokens = [ PRV, ..._([...chainTokens, ...pTokens])
+      .map(item => ({
+        ...item,
+        id: item.tokenId || item.id,
+      }))
+      .uniqBy(item => item.id)
+      .map(item => {
+        const pToken = pTokens.find(token => token.tokenId === item.id);
+        return {
+          ...item,
+          pDecimals: Math.min(pToken?.pDecimals || 0, 9),
+          hasIcon: !!pToken,
+          symbol: pToken?.pSymbol || item.symbol,
+          name: pToken? pToken.name : item.name,
+          displayName: pToken?  `Private ${pToken.name}` : `Incognito ${item.name}`,
+        };
+      })
+      .filter(token => token.name && token.symbol)
+      .orderBy(item => _.isString(item.symbol) && item.symbol.toLowerCase())
+      .value()];
+    return tokens;
   }
 }
 
