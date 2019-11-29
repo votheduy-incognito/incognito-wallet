@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from '@src/styles';
+import {COLORS, DECOR, FONT} from '@src/styles';
 
 export const sendReceiveGroupStyle = StyleSheet.create({
   container: {
@@ -49,7 +49,7 @@ export const tokenInfoStyle = StyleSheet.create({
     color: COLORS.lightGrey1,
   },
   infoItems: {
-    
+
   },
   infoItem: {
     flexDirection: 'row',
@@ -61,5 +61,37 @@ export const tokenInfoStyle = StyleSheet.create({
   },
   infoItemValue: {
     flex: 1,
-  }
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  copyText: {
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    backgroundColor: COLORS.transparent,
+    borderWidth: 1,
+    borderColor: COLORS.lightGrey1,
+    textAlign: 'center',
+    borderRadius: 20,
+    overflow: 'hidden',
+    fontSize: 14,
+    ...FONT.STYLE.medium,
+  },
+  rightBlock: {
+    flexBasis: 30,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  copied: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 50,
+    padding: 10,
+    backgroundColor: COLORS.toastBackgroundDefault,
+    borderRadius: 4,
+  },
+  copiedMessage: {
+    color: COLORS.white,
+    fontSize: 14,
+  },
 });

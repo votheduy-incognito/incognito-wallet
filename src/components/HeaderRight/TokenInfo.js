@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import Icons from 'react-native-vector-icons/SimpleLineIcons';
 import { COLORS } from '@src/styles';
 import formatUtil from '@src/utils/format';
+import CopiableText from '@src/components/CopiableText';
+import {Icon} from 'react-native-elements';
 import { Text, View, Container, Modal, TouchableOpacity, Divider } from '../core';
 import CryptoIcon from '../CryptoIcon';
 import { tokenInfoStyle } from './style';
@@ -13,26 +15,52 @@ class TokenInfo extends Component {
     super();
 
     this.state = {
-      isShowInfo: false
+      isShowInfo: false,
+      copied: false,
     };
   }
 
-  renderInfoItem = (label, value, { useDivider } = {}) => {
+  closeCopied = () => {
+    this.setState({ copied: true });
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(() => {
+      this.setState({ copied: false });
+    }, 1000);
+  };
+
+  renderInfoItem = (label, value, { useDivider } = {}, copyable = false) => {
     if (value === undefined || value === null || value === '') return null;
 
     return (
       <>
         <View style={tokenInfoStyle.infoItem}>
           <Text numberOfLines={1} ellipsizeMode="middle" style={tokenInfoStyle.infoItemLabel}>{label}</Text>
-          <Text numberOfLines={1} ellipsizeMode="middle" style={tokenInfoStyle.infoItemValue}>{value}</Text>
+          {copyable ? (
+            <CopiableText
+              text={value}
+              style={[tokenInfoStyle.infoItemValue, tokenInfoStyle.row]}
+              onPress={this.closeCopied}
+            >
+              <Text numberOfLines={1} ellipsizeMode="middle" style={tokenInfoStyle.infoItemValue}>
+                {value}
+              </Text>
+              <View style={tokenInfoStyle.rightBlock}>
+                <Icon name="copy" type="font-awesome" size={18} />
+              </View>
+            </CopiableText>
+          )
+            :
+            <Text numberOfLines={1} ellipsizeMode="middle" style={tokenInfoStyle.infoItemValue}>{value}</Text>
+          }
         </View>
         { useDivider && <Divider color={COLORS.lightGrey5} /> }
       </>
     );
-  }
+  };
 
   renderInfo = () => {
     const { selectedPrivacy } = this.props;
+    const { copied } = this.state;
 
     if (!selectedPrivacy) {
       return <SimpleInfo text='There has nothing to display' />;
@@ -46,7 +74,7 @@ class TokenInfo extends Component {
       { label: 'Original Symbol', value: externalSymbol },
       { label: 'Balance', value: formatUtil.amountFull(amount, pDecimals) },
       { label: 'Token supply', value: incognitoTotalSupply },
-      { label: 'Token ID', value: tokenId },
+      { label: 'Token ID', value: tokenId, copyable: true },
       { label: 'Contract ID', value: contractId },
       { label: 'Owner address', value: incognitoOwnerAddress },
     ].filter(i => ![undefined, null, ''].includes(i.value));
@@ -62,12 +90,18 @@ class TokenInfo extends Component {
         </View>
         <View style={tokenInfoStyle.infoItems}>
           {
-            infos.map((info, index) => this.renderInfoItem(info.label, info.value, { useDivider: (index < infos.length - 1) }))
+            infos.map((info, index) => this.renderInfoItem(info.label, info.value, { useDivider: (index < infos.length - 1) }, info.copyable))
           }
         </View>
+        {!!copied &&
+        (
+          <View style={tokenInfoStyle.copied}>
+            <Text style={tokenInfoStyle.copiedMessage}>Token ID was copied</Text>
+          </View>
+        )}
       </Container>
     );
-  }
+  };
 
   handleToggle = () => {
     this.setState(({ isShowInfo }) => ({ isShowInfo: !isShowInfo }));
