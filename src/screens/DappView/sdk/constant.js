@@ -1,4 +1,4 @@
-const SDK_MODULE = 'incognitoWallet';
+const SDK_MODULE = 'pappSdk';
 
 const DATA_NAMES = {
   TOKEN_INFO: 'token_info',

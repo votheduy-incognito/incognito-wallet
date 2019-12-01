@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
-import {  View, Text, WebView, Button, TouchableOpacity, Modal } from '@src/components/core';
+import PropTypes from 'prop-types';
+import {  View, Text, WebView, TouchableOpacity, Modal } from '@src/components/core';
 import Icons from 'react-native-vector-icons/Ionicons';
 import convertUtil from '@src/utils/convert';
 import { ExHandler } from '@src/services/exception';
@@ -18,7 +19,14 @@ const updateDataToDapp = (data) => {
   const paymentAddress = selectedPrivacy?.paymentAddress;
 
   paymentAddress && sdk.sendUpdatePaymentAddress(paymentAddress);
-  selectedPrivacy && sdk.sendUpdateTokenInfo({ balance, symbol: selectedPrivacy?.symbol, name: selectedPrivacy?.name });
+  selectedPrivacy && sdk.sendUpdateTokenInfo({
+    balance,
+    id: selectedPrivacy?.tokenId,
+    symbol: selectedPrivacy?.symbol,
+    name: selectedPrivacy?.name,
+    nanoBalance: selectedPrivacy?.amount,
+    pDecimals: selectedPrivacy?.pDecimals
+  });
   listSupportedToken && sdk.sendListToken(listSupportedToken);
 };
 
@@ -100,7 +108,7 @@ class DappView extends PureComponent {
     updateDataToDapp({ selectedPrivacy, listSupportedToken });
   }
 
-  onLoadDappError = (e) => {
+  onLoadDappError = () => {
     alert('This Daap can not be opened!');
   }
 
@@ -153,7 +161,7 @@ class DappView extends PureComponent {
 
   render() {
     const { modalData } = this.state;
-    const { account, selectedPrivacy, url } = this.props;
+    const {  url } = this.props;
     return (
       <View style={styles.container}>
         {this.renderControlBar()}
@@ -181,5 +189,12 @@ class DappView extends PureComponent {
   }
 }
 
+DappView.propTypes = {
+  selectedPrivacy: PropTypes.object.isRequired,
+  url: PropTypes.object.isRequired,
+  onCloseDapp: PropTypes.func.isRequired,
+  onSelectPrivacyToken: PropTypes.func.isRequired,
+  listSupportedToken: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
 
 export default DappView;

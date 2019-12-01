@@ -58,6 +58,7 @@
     "path-browserify": "0.0.0",
     "process": "^0.11.10",
     "prop-types": "^15.7.2",
+    "proxy-polyfill": "^0.3.0",
     "punycode": "^1.4.1",
     "querystring-es3": "^0.2.1",
     "random-bytes": "^1.0.0",

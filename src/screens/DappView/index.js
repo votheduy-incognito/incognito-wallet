@@ -1,11 +1,7 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Container, View } from '@src/components/core';
 import { accountSeleclor, tokenSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
-import convertUtil from '@src/utils/convert';
-import formatUtil from '@src/utils/format';
-import accountService from '@src/services/wallet/accountService';
-import tokenService from '@src/services/wallet/tokenService';
 import { getBalance } from '@src/redux/actions/account';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import LoadingTx from '@src/components/LoadingTx';
@@ -62,10 +58,8 @@ class DappViewContainer extends PureComponent {
 
   handleSelectPrivacyToken = tokenID => {
     if (typeof tokenID === 'string') {
-      this.setState({ tokenID }, () => {
-        this.getPrivacyToken(tokenID);
-        this.reloadBalance(tokenID);
-      });
+      this.getPrivacyToken(tokenID);
+      this.reloadBalance(tokenID);
     } else {
       throw new Error('handleSelectPrivacyToken tokenID must be a tring');
     }
@@ -84,11 +78,13 @@ class DappViewContainer extends PureComponent {
     const { tokens } = this.props;
 
     const list = [{
-      [CONSTANT_COMMONS.PRV_TOKEN_ID]: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV
+      id: CONSTANT_COMMONS.PRV_TOKEN_ID,
+      symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
+      name: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV
     }];
 
     tokens?.forEach(token => {
-      token?.id && list.push({ [token?.id]: token?.symbol });
+      token?.id && list.push({ id: token?.id, symbol: token?.symbol, name: token?.name });
     });
 
     this.setState({ listSupportedToken: list });
@@ -126,6 +122,18 @@ const mapState = state => ({
 const mapDispatch = {
   getAccountBalanceBound: getBalance,
   getTokenBalanceBound: getTokenBalance
+};
+
+DappViewContainer.defaultProps = {
+  tokens: []
+};
+
+DappViewContainer.propTypes = {
+  getAccountBalanceBound: PropTypes.func.isRequired,
+  getTokenBalanceBound: PropTypes.func.isRequired,
+  selectPrivacyByTokenID: PropTypes.func.isRequired,
+  tokens: PropTypes.array,
+  account: PropTypes.object.isRequired,
 };
 
 export default connect(mapState, mapDispatch)(DappViewContainer);

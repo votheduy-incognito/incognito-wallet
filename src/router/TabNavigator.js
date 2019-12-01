@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
 const Tab = createMaterialTopTabNavigator({
   [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { header: () => null, tabBarLabel: renderTab('wallet', 'Wallet') }),
   [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Nodes', header: () => null, tabBarLabel: renderTab('miner', 'Nodes') }),
-  [ROUTE_NAMES.DApps]: navigationOptionsHandler(Game, { title: 'pApps', header: () => null, tabBarLabel: renderTab('dapps', 'pApps')}),
+  [ROUTE_NAMES.DApps]: navigationOptionsHandler(Dapps, { title: 'pApps', header: () => null, tabBarLabel: renderTab('dapps', 'pApps')}),
   [ROUTE_NAMES.Dex]: navigationOptionsHandler(Dex, { title: 'pDex', header: () => null, tabBarLabel: renderTab('dex', 'pDex')}),
 }, {
   initialRouteName: ROUTE_NAMES.Home,

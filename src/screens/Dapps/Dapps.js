@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
-import { Container, TextInput, Button, View, Text } from '@src/components/core';
+import { Container, TextInput, Button, View } from '@src/components/core';
 import DappView from '@src/screens/DappView';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
-import Icons from 'react-native-vector-icons/Ionicons';
 import styles from './style';
 
 
@@ -10,7 +9,7 @@ class Dapps extends PureComponent {
   constructor() {
     super();
     this.state = {
-      url: 'http://192.168.0.87:9000',
+      url: '',
       openDapp: false,
     };
   }
