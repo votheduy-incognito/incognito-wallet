@@ -81,6 +81,7 @@ class HistoryMined extends React.Component {
         }}
       >
         {!_.isEmpty(icon)?<Image style={styles.imageLogo} source={icon} />:<CryptoIcon tokenId={tokenId} />}
+        {/* <CryptoIcon tokenId={tokenId} /> */}
         <View style={styles.groupLeft}>
           <Text style={styles.groupLeft_title}>{nameUI}</Text>
           <Text style={styles.groupRight_title}>{`${amount} ${symbolUI}`}</Text>

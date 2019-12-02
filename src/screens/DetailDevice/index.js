@@ -29,6 +29,7 @@ import React from 'react';
 import { Image, RefreshControl, ScrollView, TouchableOpacity, View } from 'react-native';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import { connect } from 'react-redux';
+import Token from '@src/services/wallet/tokenService';
 import AdvanceOption from './AdvanceOption';
 import Loader, { Earning } from './Loader';
 import style from './style';
@@ -61,6 +62,7 @@ class DetailDevice extends BaseScreen {
       accountMiner:{},
       isStaked:undefined,
       wallet:wallet,
+      listTokens:[],
       isShowMessage:false,
       isFetching:false,
       balancePRV:undefined,
@@ -75,8 +77,15 @@ class DetailDevice extends BaseScreen {
 
   onResume = async ()=>{
     console.log(TAG,'onResume begin');
-    const {device,isFetching } = this.state;
+    const {device,isFetching,listTokens } = this.state;
     const product_id = device.ProductId;
+    if(_.isEmpty(listTokens)){
+      const listTokens = await Token.getAllTokens();
+      console.log(TAG,'onResume begin 01 listTokens = ',listTokens);
+      this.setState({
+        listTokens:listTokens
+      });
+    }
     if(!_.isEmpty(product_id)){
       let listDevice = await LocalDatabase.getListDevices()||[];
       const deviceNewJSON =  listDevice.find(item=>_.isEqual(item.product_id,product_id));
@@ -174,7 +183,8 @@ class DetailDevice extends BaseScreen {
     // console.log(TAG,'createListFollowingToken begin ',commission);
     return Object.keys(result).map((value,index)=>{
       const tokenIdSearching = _.includes(value,'PRV')?common.PRV_TOKEN_ID:value;
-      let ObjFinded = getPrivacyDataByTokenID(tokenIdSearching) || {...this.coinPRV,amount:amount};
+      // let ObjFinded = getPrivacyDataByTokenID(tokenIdSearching) || {...this.coinPRV,amount:amount};
+      let ObjFinded = listprivacyCustomToken.find(itemToken=>_.isEqual(itemToken.id,tokenIdSearching))|| {...this.coinPRV,amount:amount};
       
       amount = !_.isNaN(result[value]) ? _.toNumber(result[value])*commission :0;
       amount = format.amountFull(amount,ObjFinded['pDecimals']??common.DECIMALS[value]);
@@ -183,6 +193,7 @@ class DetailDevice extends BaseScreen {
       return {
         ...ObjFinded,
         id:value,
+        tokenId:tokenIdSearching,
         amount:amount,
       };
     });
@@ -190,15 +201,18 @@ class DetailDevice extends BaseScreen {
 
   fetchData = async ()=>{
     // get balance
-    const {device,wallet,accountMiner} = this.state;
-    const {listTokens,getAccountByName} = this.props;
+    const {device,wallet,accountMiner,listTokens} = this.state;
+    const {getAccountByName} = this.props;
     let dataResult = {};
     let balancePRV = 0;
     let listFollowingTokens = [];
     const account = _.isEmpty(accountMiner)? await getAccountByName(device.accountName()):accountMiner;
    
     let isStaked = -1 ;
-    const Result = await DeviceService.getRewardAmountAllToken(device).catch(e=>new ExHandler(e).showWarningToast())??{};
+    // const Result = await DeviceService.getRewardAmountAllToken(device).catch(e=>new ExHandler(e).showWarningToast())??{};
+    // TODO hien.ton test
+    const Result = {PRV:100000000,'497159cf6c9f8d5a7cffd38d392649fee7b61558689ba631b26ef1b2dd8c9a06':230000000};
+    //////
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
       const stakerStatus = await VirtualNodeService.getPublicKeyRole(device) ??{};
@@ -714,7 +728,7 @@ export default connect(
     wallet:state.wallet,
     getPrivacyDataByTokenID:selectedPrivacySeleclor.getPrivacyDataByTokenID(state),
     getAccountByName: accountSeleclor.getAccountByName(state),
-    listTokens:tokenSeleclor.pTokens(state),
+    // listTokens:tokenSeleclor.pTokens(state),
     listAccount: accountSeleclor.listAccount(state)
   }),
   mapDispatch
