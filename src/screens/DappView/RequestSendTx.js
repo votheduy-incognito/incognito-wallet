@@ -11,6 +11,8 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
 import { requestSendTxStyle } from './style';
 
+const DEFAULT_FEE = 30; // in nano
+
 class RequestSendTx extends Component {
   constructor(props) {
     super(props);
@@ -21,7 +23,7 @@ class RequestSendTx extends Component {
 
   _handleSendNativeToken = async ({ toAddress, nanoAmount, fee, info }) => {
     const { account, wallet } = this.props;
-    fee = fee || 0.002 * 1e9;
+    fee = fee || DEFAULT_FEE;
     const originalAmount = nanoAmount;
     const originalFee = Number(fee);
 
@@ -50,11 +52,11 @@ class RequestSendTx extends Component {
   _handleSendToken = async ({ toAddress, nanoAmount, feeUnit, fee, info }) => {
     const { selectedPrivacy, account, wallet } = this.props;
     feeUnit = feeUnit || selectedPrivacy?.symbol;
-    fee = 0;
+    fee = fee || DEFAULT_FEE;
 
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
     const originalFee = Number(fee);
-    const isUseTokenFee = feeUnit !== CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
+    const isUseTokenFee = false; //feeUnit !== CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
     const originalAmount = nanoAmount;
     const tokenObject = {
       Privacy : true,
@@ -121,12 +123,15 @@ class RequestSendTx extends Component {
   render() {
     const { isSending } = this.state;
     const { onCancel, selectedPrivacy, toAddress, amount, url } = this.props;
+    const fee = DEFAULT_FEE; // default in PRV
+
     return (
       <Container style={requestSendTxStyle.container}>
         <Text style={requestSendTxStyle.title}> REQUEST SEND TX </Text>
         {this.renderData('DAPP URL', url)}
         {this.renderData('To address', toAddress)}
         {this.renderData('Amount', `${formatUtil.amount(amount, selectedPrivacy?.pDecimals)} ${selectedPrivacy?.symbol}`)}
+        {this.renderData('Fee', `${formatUtil.amount(fee, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}`)}
 
         <View style={requestSendTxStyle.groupBtn}>
           <Button style={requestSendTxStyle.cancelBtn} title='Cancel' onPress={onCancel} />

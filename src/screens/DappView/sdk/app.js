@@ -22,7 +22,7 @@ class SDK {
     }
   }
 
-  sendUpdateTokenInfo({ id, balance, symbol, name, nanoBalance, pDecimals }) {
+  sendUpdateTokenInfo({ id, balance, symbol, name, nanoBalance, pDecimals = 0 }) {
     if (typeof id !== 'string') throw new Error('invalid token id');
     if (typeof balance !== 'number' || balance < 0) throw new Error('invalid token balance');
     if (!Number.isInteger(nanoBalance) || nanoBalance < 0) throw new Error('invalid token nanoBalance');
