@@ -104,10 +104,10 @@ class AddInternalToken extends Component {
       TokenSymbol: symbol,
       TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.INIT,
       TokenAmount: Number(amount),
-      TokenReceivers: {
+      TokenReceivers: [{
         PaymentAddress: account?.PaymentAddress,
         Amount: Number(amount)
-      }
+      }]
     };
 
     try {

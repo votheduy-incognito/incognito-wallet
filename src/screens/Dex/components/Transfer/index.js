@@ -87,10 +87,10 @@ class Transfer extends React.PureComponent {
       TokenSymbol: token.symbol,
       TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
       TokenAmount: amount,
-      TokenReceivers: {
+      TokenReceivers: [{
         PaymentAddress: toAccount.PaymentAddress,
         Amount: amount
-      }
+      }]
     };
 
     console.debug('SEND PTOKEN', paymentInfo, fromAccount.AccountName, toAccount.AccountName, amount, prvFee, tokenFee, tokenObject);
