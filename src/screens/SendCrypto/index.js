@@ -87,10 +87,10 @@ class SendCryptoContainer extends Component {
       TokenSymbol: selectedPrivacy?.symbol,
       TokenTxType: type,
       TokenAmount: originalAmount,
-      TokenReceivers: {
+      TokenReceivers: [{
         PaymentAddress: toAddress,
         Amount: originalAmount
-      }
+      }]
     };
 
     const info = this.getTxInfo({ message });

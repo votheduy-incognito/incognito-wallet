@@ -62,10 +62,10 @@ class RequestSendTx extends Component {
       TokenSymbol: selectedPrivacy?.symbol,
       TokenTxType: type,
       TokenAmount: originalAmount,
-      TokenReceivers: {
+      TokenReceivers: [{
         PaymentAddress: toAddress,
         Amount: originalAmount
-      }
+      }]
     };
 
     try {

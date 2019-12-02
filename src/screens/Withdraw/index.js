@@ -53,10 +53,10 @@ class WithdrawContainer extends Component {
       TokenSymbol: selectedPrivacy?.symbol,
       TokenTxType: type,
       TokenAmount: originalAmount + (isUsedPRVFee ? 0 : feeForBurn),
-      TokenReceivers: {
+      TokenReceivers: [{
         PaymentAddress: tempAddress,
         Amount: originalAmount + (isUsedPRVFee ? 0 : feeForBurn)
-      }
+      }]
     };
 
     const paymentInfo = {

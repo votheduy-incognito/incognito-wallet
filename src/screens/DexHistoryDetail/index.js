@@ -40,10 +40,10 @@ const sendPToken = (wallet, fromAccount, toAccount, token, amount, paymentInfo, 
     TokenSymbol: token.symbol,
     TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
     TokenAmount: amount,
-    TokenReceivers: {
+    TokenReceivers: [{
       PaymentAddress: toAccount.PaymentAddress,
       Amount: amount
-    }
+    }]
   };
 
   console.debug('SEND PTOKEN', tokenObject, amount, prvFee, tokenFee, fromAccount.AccountName);
