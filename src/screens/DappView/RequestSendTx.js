@@ -19,7 +19,7 @@ class RequestSendTx extends Component {
     };
   }
 
-  _handleSendNativeToken = async ({ toAddress, nanoAmount, fee }) => {
+  _handleSendNativeToken = async ({ toAddress, nanoAmount, fee, info }) => {
     const { account, wallet } = this.props;
     fee = fee || 0.002 * 1e9;
     const originalAmount = nanoAmount;
@@ -33,8 +33,8 @@ class RequestSendTx extends Component {
       this.setState({
         isSending: true
       });
-      
-      const res = await accountService.createAndSendNativeToken(paymentInfos, originalFee, true, account, wallet);
+
+      const res = await accountService.createAndSendNativeToken(paymentInfos, originalFee, true, account, wallet, info);
       if (res.txId) {
         return res;
       } else {
@@ -47,7 +47,7 @@ class RequestSendTx extends Component {
     }
   }
 
-  _handleSendToken = async ({ toAddress, nanoAmount, feeUnit, fee }) => {
+  _handleSendToken = async ({ toAddress, nanoAmount, feeUnit, fee, info }) => {
     const { selectedPrivacy, account, wallet } = this.props;
     feeUnit = feeUnit || selectedPrivacy?.symbol;
     fee = 0;
@@ -78,6 +78,7 @@ class RequestSendTx extends Component {
         wallet,
         null,
         isUseTokenFee ? originalFee : 0,
+        info
       );
 
       if (res.txId) {
@@ -94,13 +95,12 @@ class RequestSendTx extends Component {
 
   handleSendTx = async () => {
     try {
-      const { selectedPrivacy, toAddress, amount, pendingTxId, onSendSuccess } = this.props;
+      const { selectedPrivacy, toAddress, amount, info, pendingTxId, onSendSuccess } = this.props;
       let sendFn;
-      
       if (selectedPrivacy?.isToken) sendFn = this._handleSendToken;
       if (selectedPrivacy?.isMainCrypto) sendFn = this._handleSendNativeToken;
 
-      const res = await sendFn({ toAddress, nanoAmount: amount, pendingTxId });
+      const res = await sendFn({ toAddress, nanoAmount: amount, pendingTxId, info });
       onSendSuccess(res);
     } catch (e) {
       const { onSendFailed } = this.props;
@@ -148,6 +148,10 @@ const mapState = state => ({
 const mapDispatch = {
 };
 
+RequestSendTx.defaultProps = {
+  info: null
+};
+
 RequestSendTx.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onSendSuccess: PropTypes.func.isRequired,
@@ -157,6 +161,7 @@ RequestSendTx.propTypes = {
   wallet: PropTypes.object.isRequired,
   toAddress: PropTypes.string.isRequired,
   amount: PropTypes.number.isRequired,
+  info: PropTypes.string,
   url: PropTypes.string.isRequired,
   pendingTxId: PropTypes.number.isRequired,
 };

@@ -51,7 +51,7 @@ class DappView extends PureComponent {
     this.setState({ modalData: null });
   }
 
-  onRequestSendTx = ({ toAddress, amount, pendingTxId }) => {
+  onRequestSendTx = ({ toAddress, amount, pendingTxId, info }) => {
     const { selectedPrivacy, url } = this.props;
     this.setState({
       modalData: (
@@ -59,6 +59,7 @@ class DappView extends PureComponent {
           url={url}
           toAddress={toAddress}
           amount={amount}
+          info={info}
           pendingTxId={pendingTxId}
           selectedPrivacy={selectedPrivacy}
           onCancel={() => {
