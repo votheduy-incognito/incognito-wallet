@@ -19,7 +19,7 @@ import { Text,ButtonExtension,InputExtension as Input } from '@src/components/co
 import styles from './styles';
 
 export const TAG = 'GetStartedAddNode';
-const titleStep = ['Make sure Node is plugged in.','Connect Node to Wi-Fi','Scan the code at the base of the device'];
+const titleStep = ['Make sure Node is plugged in.','Connect Node to\nyour home Wi-Fi','Scan the code at the base of the device'];
 const titleButton = ['Done, next step','Next','Next'];
 const GetQrcode = React.memo(({onSuccess})=>{
   const [deviceId,setDeviceId] = useState('');
@@ -35,7 +35,7 @@ const GetQrcode = React.memo(({onSuccess})=>{
         console.log(TAG,'openQrScanner  == data',data);
         const checked = await Util.excuteWithTimeout(APIService.qrCodeCheck({QRCode:dataReader})).catch(console.log)||{};
         const {data='',status = -1 } = checked??{};
-        const isPassed =  _.isEqual(status,1);
+        const isPassed =  _.isEqual(status,1) || __DEV__;
         setIdPassedValidate(isPassed);
         setDeviceId(dataReader);
         setErrorMessage(isPassed?'':data);

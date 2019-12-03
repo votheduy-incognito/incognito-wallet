@@ -7,6 +7,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FlatList, Image, TouchableOpacity, View } from 'react-native';
+import { DEVICES } from '@src/constants/miner';
 import CryptoIcon from '../CryptoIcon';
 import styles from './style';
 
@@ -17,7 +18,7 @@ class HistoryMined extends React.Component {
     const {listItems} = props;
     this.state = {
       listItems:listItems,
-      deviceInfo : Device.getInstance(),
+      // deviceInfo : Device.getInstance(),
       isFetching:false,
       isLoadMore:false,
       loading:false
@@ -32,42 +33,43 @@ class HistoryMined extends React.Component {
     return null;
   }
 
-  componentDidMount(){
-    const {item,isActive} = this.props;
-    let {deviceInfo} = this.state;
-    if(isActive){
-      NodeService.send(item,LIST_ACTION.CHECK_STATUS).then(dataResult=>{
-        const { status = -1, data, message= 'Offline',productId = -1 } = dataResult;
-        if(item.product_id === productId ){
-          deviceInfo.data.status ={
-            code:status,
-            message:message
-          };
-          this.setState({
-            deviceInfo:deviceInfo
-          });
-        }
-      // ViewUtil.showAlert(JSON.stringify(data));
-      }).catch(err=>{
-        this.setDeviceOffline();
-      });
-    }else{
-      this.setDeviceOffline();
-    }
-  }
-  setDeviceOffline =()=>{
-    let {deviceInfo} = this.state;
-    deviceInfo.Status =Device.offlineStatus();
-    this.setState({
-      deviceInfo:deviceInfo,
-    });
-  };
+  // componentDidMount(){
+  //   const {item,isActive} = this.props;
+  //   let {deviceInfo} = this.state;
+  // if(isActive && deviceInfo && deviceInfo.ProductId == DEVICES.MINER_TYPE ){
+  //   NodeService.send(item,LIST_ACTION.CHECK_STATUS).then(dataResult=>{
+  //     const { status = -1, data, message= 'Offline',productId = -1 } = dataResult;
+  //     if(item.product_id === productId ){
+  //       deviceInfo.data.status ={
+  //         code:status,
+  //         message:message
+  //       };
+  //       this.setState({
+  //         deviceInfo:deviceInfo
+  //       });
+  //     }
+  //   // ViewUtil.showAlert(JSON.stringify(data));
+  //   }).catch(err=>{
+  //     this.setDeviceOffline();
+  //   });
+  // }else{
+  //   this.setDeviceOffline();
+  // }
+  // }
+  // setDeviceOffline =()=>{
+  //   let {deviceInfo} = this.state;
+  //   deviceInfo.Status = Device.offlineStatus();
+  //   this.setState({
+  //     deviceInfo:deviceInfo,
+  //   });
+  // };
 
   renderItem=({ item,index })=> {
     const {onPress,listItems,onPressWithdraw} = this.props;
     const {name = '',symbol = '',amount = 0,pSymbol='', id = '',tokenId} = item;
     const isPRV = _.isEqual(symbol,'PRV');
     const symbolUI = isPRV?symbol:pSymbol;
+    console.log(TAG,`renderItem index = ${index} --- item=${JSON.stringify(item)}`);
     // const nameUI = isPRV?name:`Private ${symbol}`;
     const nameUI = isPRV?name:`${symbol}`;
     const {icon = null} = this.getData(item)??{};
@@ -81,6 +83,7 @@ class HistoryMined extends React.Component {
         }}
       >
         {!_.isEmpty(icon)?<Image style={styles.imageLogo} source={icon} />:<CryptoIcon tokenId={tokenId} />}
+        {/* <CryptoIcon tokenId={tokenId} /> */}
         <View style={styles.groupLeft}>
           <Text style={styles.groupLeft_title}>{nameUI}</Text>
           <Text style={styles.groupRight_title}>{`${amount} ${symbolUI}`}</Text>
