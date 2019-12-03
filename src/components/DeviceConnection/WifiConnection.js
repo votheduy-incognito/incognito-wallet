@@ -27,6 +27,7 @@ class WifiConnection extends BaseConnection {
           console.log(TAG, 'fetchCurrentConnect begin02 ');
           try {
             Wifi.getSSID(SSID => {
+              SSID = _.isEqual('Cannot detect SSID',SSID) || _.isEqual('<unknown ssid>',SSID) ?'':SSID;
               console.log(TAG, 'fetchCurrentConnect getSSID=', SSID);
               this.currentConnect = new ObjConnection();
               this.currentConnect.id = SSID;
@@ -62,6 +63,7 @@ class WifiConnection extends BaseConnection {
         if (!error) {
           Wifi.getSSID(SSID => {
             console.log(TAG, 'connectDevice begin 01 getSSID --- ', SSID);
+            
             this.currentConnect = new ObjConnection();
             this.currentConnect.id = SSID;
             this.currentConnect.name = SSID;

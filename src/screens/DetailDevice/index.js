@@ -209,9 +209,10 @@ class DetailDevice extends BaseScreen {
     const account = _.isEmpty(accountMiner)? await getAccountByName(device.accountName()):accountMiner;
    
     let isStaked = -1 ;
-    // const Result = await DeviceService.getRewardAmountAllToken(device).catch(e=>new ExHandler(e).showWarningToast())??{};
+    const Result = await DeviceService.getRewardAmountAllToken(device).catch(e=>new ExHandler(e).showWarningToast())??{};
+
     // TODO hien.ton test
-    const Result = {PRV:100000000,'497159cf6c9f8d5a7cffd38d392649fee7b61558689ba631b26ef1b2dd8c9a06':230000000};
+    // const Result = {PRV:100000000,'ba1e1865f97bc445a87e61fcec0880237b3c1747768b713d6e1706fde25a8c93':12330000000,'4946b16a08a9d4afbdf416edf52ef15073db0fc4a63e78eb9de80f94f6c0852a':230000000,'ffd8d42dc40a8d166ea4848baf8b5f6e912ad79875f4373070b59392b1756c8f':250000000};
     //////
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
@@ -410,6 +411,7 @@ class DetailDevice extends BaseScreen {
       }
       break;
     }
+    console.log(TAG,'handleWithdrawEachToken END result ',result);
     if(!_.isNil(result)){
       if(result){
         this.showToastMessage('Withdrawing earnings to your Incognito Wallet. Balances will update in a few minutes.');
