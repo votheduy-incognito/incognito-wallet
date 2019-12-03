@@ -5,6 +5,7 @@ import Icons from 'react-native-vector-icons/Ionicons';
 import convertUtil from '@src/utils/convert';
 import { ExHandler } from '@src/services/exception';
 import { COLORS } from '@src/styles';
+import Validator from './sdk/validator';
 import RequestSendTx from './RequestSendTx';
 import { APPSDK, ERRORSDK, CONSTANTSDK } from './sdk';
 import styles from './style';
@@ -51,7 +52,12 @@ class DappView extends PureComponent {
     this.setState({ modalData: null });
   }
 
-  onRequestSendTx = ({ toAddress, amount, pendingTxId, info }) => {
+  onRequestSendTx = ({ toAddress, amount, pendingTxId, info } = {}) => {
+    new Validator('onRequestSendTx toAddress', toAddress).required().paymentAddress();
+    new Validator('onRequestSendTx amount', amount).required().amount();
+    new Validator('onRequestSendTx pendingTxId', pendingTxId).required().string();
+    new Validator('onRequestSendTx info', info).string();
+
     const { selectedPrivacy, url } = this.props;
     this.setState({
       modalData: (
@@ -71,7 +77,7 @@ class DappView extends PureComponent {
             this.closeModal();
           }}
           onSendFailed={e => {
-            sdk?.sendUpdateTxPendingResult({ pendingTxId, error: ERRORSDK.createError('send_tx_error', e?.message) });
+            sdk?.sendUpdateTxPendingResult({ pendingTxId, error: ERRORSDK.createError(ERRORSDK.ERROR_CODE.SEND_TX_ERROR, e?.message) });
             this.closeModal();
           }}
         />
@@ -80,7 +86,7 @@ class DappView extends PureComponent {
   }
 
   onSdkSelectPrivacyById = tokenID => {
-    if (!tokenID) throw new Error('Can not change to invalid tokenID');
+    new Validator('onSdkSelectPrivacyById tokenID', tokenID).required().string();
     
     const { onSelectPrivacyToken } = this.props;
     onSelectPrivacyToken(tokenID);
@@ -89,7 +95,12 @@ class DappView extends PureComponent {
   onWebViewData = async (e) => {
     try {
       const payload = e.nativeEvent.data;
+      new Validator('onWebViewData payload', payload).required().string();
+
       const [ command, data ] = payload?.split('|');
+      new Validator('onWebViewData command', command).required().string();
+      new Validator('onWebViewData data', data).string();
+
       const parsedData = JSON.parse(data);
       
       switch(command) {
@@ -100,7 +111,7 @@ class DappView extends PureComponent {
         this.onSdkSelectPrivacyById(parsedData?.tokenID);
       }
     } catch (e) {
-      new ExHandler(e, 'Can not process Dapp request.').showErrorToast();
+      new ExHandler(e, 'The pApp occured an error. Please try again.').showErrorToast();
     }
   }
 
