@@ -5,7 +5,6 @@ import routeNames from '@src/router/routeNames';
 import { ConfirmedTx, FailedTx, SuccessTx } from '@src/services/wallet/WalletService';
 import { COLORS } from '@src/styles';
 import formatUtil from '@src/utils/format';
-import convertUtil from '@src/utils/convert';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Swipeout from 'react-native-swipeout';
@@ -35,6 +34,10 @@ const getStatusData = (status, statusCode) => {
   case FailedTx:
     statusText = 'Failed';
     statusColor = COLORS.red;
+    break;
+  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.EXPIRED:
+    statusText = 'Expired';
+    statusColor = COLORS.orange;
     break;
   default:
     statusText = '';

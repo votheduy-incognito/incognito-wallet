@@ -33,6 +33,7 @@ const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, dec
       statusCode: h?.status,
       cancelable: h?.cancelable,
       currencyType: h?.currencyType,
+      decentralized: h?.decentralized
     });
   });
 
@@ -89,7 +90,7 @@ class HistoryTokenContainer extends Component {
 
   handleCancelEtaHistory = async history => {
     try {
-      const data = await removeHistory({ historyId: history?.id, currencyType: history?.currencyType});
+      const data = await removeHistory({ historyId: history?.id, currencyType: history?.currencyType, isDecentralized: history?.decentralized });
       if (data) {
         Toast.showSuccess('Canceled');
         this.handleLoadHistory();

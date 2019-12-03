@@ -80,7 +80,8 @@ export default {
     STATUS_TEXT: {
       SUCCESS: 'SUCCESS',
       FAILED: 'FAILED',
-      PENDING: 'PENDING'
+      PENDING: 'PENDING',
+      EXPIRED: 'EXPIRED'
     }
   },
   TRACK_LOG_EVENT,
