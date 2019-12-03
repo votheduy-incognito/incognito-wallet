@@ -1,5 +1,6 @@
-import { COLORS, THEME } from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
+import { scaleInApp } from '@src/styles/TextStyle';
 
 const style = StyleSheet.create({
   container: {
@@ -8,36 +9,63 @@ const style = StyleSheet.create({
   form: {
     width: '100%',
     flexDirection: 'row',
-    flex: 1
+    alignItems: 'center',
+    flexBasis: 80,
+    padding: 20,
+    backgroundColor: COLORS.black
+  },
+  content: {
+    flex: 1,
+    backgroundColor: '#F2F6F6'
   },
   input: {
     flex: 1,
+    paddingHorizontal: 10,
     marginRight: 20,
+    backgroundColor: '#979797',
+    borderRadius: 8,
+    color: COLORS.white
   },
   submitBtn: {
-    backgroundColor: COLORS.blue,
-    minWidth: 100
+    backgroundColor: COLORS.transparent,
+    borderColor: COLORS.white,
+    borderWidth: 2,
+    overflow: 'hidden',
+    minWidth: 100,
+    borderRadius: 8
   },
-  controlContainer: {
-    flexDirection: 'row',
-    alignItems: 'center'
+});
+
+export const pappItemStyle = StyleSheet.create({
+  container: {
+    backgroundColor: COLORS.white,
+    borderRadius: 8,
+    overflow: 'hidden',
+    maxHeight: 600
   },
-  navigateGroup: {
-    flexDirection: 'row',
-    marginRight: 20,
+  imageContainer: {
   },
-  urlText: {
-    flex: 1,
-    borderBottomColor: COLORS.lightGrey3,
-    borderBottomWidth: 1
+  image: {
+    height: 400,
+    backgroundColor: 'red',
+    width: '100%',
+    resizeMode: 'cover'
   },
-  btnGroup: {
-    flexDirection: 'row',
-    marginLeft: 20
+  infoContainer: {
+    padding: 20,
   },
-  controlBtn: {
-    fontSize: 40,
-    marginRight: 30,
+  title: {
+    fontSize: scaleInApp(24),
+    color: '#0E1010',
+    letterSpacing: 0,
+    marginVertical: 5,
+    ...FONT.STYLE.medium
+  },
+  desc: {
+    fontSize: scaleInApp(16),
+    color: COLORS.lightGrey9,
+    letterSpacing: 0,
+    lineHeight: scaleInApp(23),
   }
 });
 
