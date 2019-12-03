@@ -1,21 +1,21 @@
 import React, { PureComponent } from 'react';
 import { Container, TextInput, Button, View } from '@src/components/core';
-import DappView from '@src/screens/DappView';
+import PappView from '@src/screens/PappView';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import styles from './style';
 
 
-class Dapps extends PureComponent {
+class Papps extends PureComponent {
   constructor() {
     super();
     this.state = {
       url: 'http://192.168.0.124:9000',
-      openDapp: false,
+      openPapp: false,
     };
   }
 
   urlValidator = (url) => {
-    if (!url) throw new CustomError(ErrorCode.daaps_invalid_daap_url);
+    if (!url) throw new CustomError(ErrorCode.paaps_invalid_daap_url);
     return true;
   }
 
@@ -23,10 +23,10 @@ class Dapps extends PureComponent {
     try {
       const { url } = this.state;
       if (this.urlValidator(url)) {
-        this.setState({ openDapp:  true });
+        this.setState({ openPapp:  true });
       }
     } catch (e) {
-      new ExHandler(e, 'Sorry, we can not open this Dapp.').showErrorToast();
+      new ExHandler(e, 'Sorry, we can not open this Papp.').showErrorToast();
     }
   }
 
@@ -34,23 +34,23 @@ class Dapps extends PureComponent {
     this.setState({ url });
   }
 
-  closeDapp = () => {
-    this.setState({ openDapp: false });
+  closePapp = () => {
+    this.setState({ openPapp: false });
   }
 
   render() {
-    const { url, openDapp } = this.state;
+    const { url, openPapp } = this.state;
 
-    if (openDapp) {
+    if (openPapp) {
       return (
-        <DappView url={url} onCloseDapp={this.closeDapp} />
+        <PappView url={url} onClosePapp={this.closePapp} />
       );
     }
 
     return (
       <Container style={styles.container}>
         <View style={styles.form}>
-          <TextInput placeholder='Dapp URL (https://game-url.com)' style={styles.input} value={url} onChangeText={this.onChangeUrl} />
+          <TextInput placeholder='Papp URL (https://game-url.com)' style={styles.input} value={url} onChangeText={this.onChangeUrl} />
           <Button title='Go' style={styles.submitBtn} onPress={this.onGo} />
         </View>
       </Container>
@@ -58,4 +58,4 @@ class Dapps extends PureComponent {
   }
 }
 
-export default Dapps;
+export default Papps;

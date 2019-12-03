@@ -7,9 +7,9 @@ import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import LoadingTx from '@src/components/LoadingTx';
 import { CONSTANT_COMMONS } from '@src/constants';
 import LoadingContainer from '@src/components/LoadingContainer';
-import DappView from './DappView';
+import PappView from './PappView';
 
-class DappViewContainer extends PureComponent {
+class PappViewContainer extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -100,7 +100,7 @@ class DappViewContainer extends PureComponent {
 
     return (
       <>
-        <DappView
+        <PappView
           {...this.props}
           selectedPrivacy={selectedPrivacy}
           listSupportedToken={listSupportedToken}
@@ -124,11 +124,11 @@ const mapDispatch = {
   getTokenBalanceBound: getTokenBalance
 };
 
-DappViewContainer.defaultProps = {
+PappViewContainer.defaultProps = {
   tokens: []
 };
 
-DappViewContainer.propTypes = {
+PappViewContainer.propTypes = {
   getAccountBalanceBound: PropTypes.func.isRequired,
   getTokenBalanceBound: PropTypes.func.isRequired,
   selectPrivacyByTokenID: PropTypes.func.isRequired,
@@ -136,4 +136,4 @@ DappViewContainer.propTypes = {
   account: PropTypes.object.isRequired,
 };
 
-export default connect(mapState, mapDispatch)(DappViewContainer);
+export default connect(mapState, mapDispatch)(PappViewContainer);

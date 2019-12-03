@@ -12,7 +12,7 @@ import styles from './style';
 
 let sdk : APPSDK= null;
 
-const updateDataToDapp = (data) => {
+const updateDataToPapp = (data) => {
   if (!sdk) return;
 
   const { selectedPrivacy, listSupportedToken } = data;
@@ -31,7 +31,7 @@ const updateDataToDapp = (data) => {
   listSupportedToken && sdk.sendListToken(listSupportedToken);
 };
 
-class DappView extends PureComponent {
+class PappView extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -43,7 +43,7 @@ class DappView extends PureComponent {
 
   static getDerivedStateFromProps(nextProps) {
     const { selectedPrivacy, listSupportedToken } = nextProps;
-    updateDataToDapp({ selectedPrivacy, listSupportedToken });
+    updateDataToPapp({ selectedPrivacy, listSupportedToken });
 
     return null;
   }
@@ -115,12 +115,12 @@ class DappView extends PureComponent {
     }
   }
 
-  onDappLoaded = () => {
+  onPappLoaded = () => {
     const { selectedPrivacy, listSupportedToken } = this.props;
-    updateDataToDapp({ selectedPrivacy, listSupportedToken });
+    updateDataToPapp({ selectedPrivacy, listSupportedToken });
   }
 
-  onLoadDappError = () => {
+  onLoadPappError = () => {
     alert('This Daap can not be opened!');
   }
 
@@ -150,11 +150,11 @@ class DappView extends PureComponent {
   }
 
   renderControlBar = () => {
-    const { url, onCloseDapp } = this.props;
+    const { url, onClosePapp } = this.props;
     const onClose = () => {
       this.webviewInstance = null;
       sdk = null;
-      onCloseDapp();
+      onClosePapp();
     };
     return (
       <View style={styles.controlContainer}>
@@ -189,8 +189,8 @@ class DappView extends PureComponent {
           allowsBackForwardNavigationGestures
           cacheEnabled={false}
           cacheMode='LOAD_NO_CACHE'
-          onError={this.onLoadDappError}
-          onLoadEnd={this.onDappLoaded}
+          onError={this.onLoadPappError}
+          onLoadEnd={this.onPappLoaded}
           onMessage={this.onWebViewData}
         />
         <Modal visible={!!modalData}>
@@ -201,12 +201,12 @@ class DappView extends PureComponent {
   }
 }
 
-DappView.propTypes = {
+PappView.propTypes = {
   selectedPrivacy: PropTypes.object.isRequired,
   url: PropTypes.object.isRequired,
-  onCloseDapp: PropTypes.func.isRequired,
+  onClosePapp: PropTypes.func.isRequired,
   onSelectPrivacyToken: PropTypes.func.isRequired,
   listSupportedToken: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default DappView;
+export default PappView;

@@ -1,19 +1,19 @@
 import React, { PureComponent } from 'react';
 
-import Dapps from './Dapps';
+import Papps from './Papps';
 
-class DappsContainer extends PureComponent {
+class PappsContainer extends PureComponent {
   constructor(props) {
     super(props);
   }
 
   render() {
     return (
-      <Dapps
+      <Papps
         {...this.props}
       />
     );
   }
 }
 
-export default DappsContainer;
+export default PappsContainer;

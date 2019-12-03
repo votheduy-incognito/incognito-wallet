@@ -13,7 +13,7 @@ class Game extends React.Component {
     let mainText;
     let subText;
 
-    if (displayName === 'DApps') {
+    if (displayName === 'pApps') {
       mainText = 'pApps are coming soon.';
       subText = 'The first privacy-first applications built on Incognito. Watch this space.';
     } else {

@@ -4,7 +4,7 @@ import React from 'react';
 import { Platform, StatusBar as RNComponent, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
-const whiteScreens = ['Game', 'DApps', 'GetStarted'];
+const whiteScreens = ['Game', 'pApps', 'GetStarted'];
 const blue2Screens = [];
 const blue1Screens = ['Wizard','HomeMine','DetailDevice'];
 const dark2Screen = ['Dex', 'DexHistory', 'DexHistoryDetail'];

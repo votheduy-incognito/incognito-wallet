@@ -35,9 +35,10 @@ export default {
   Withdraw: 'Withdraw',
   Wizard: 'Wizard',
   Game: 'Game',
-  DApps: 'DApps',
   Dex: 'Dex',
   DexHistory: 'DexHistory',
   DexHistoryDetail: 'DexHistoryDetail',
-  TxHistoryDetail: 'TxHistoryDetail'
+  TxHistoryDetail: 'TxHistoryDetail',
+  pApp: 'pApp',
+  pApps: 'pApps',
 };

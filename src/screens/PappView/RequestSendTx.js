@@ -128,7 +128,7 @@ class RequestSendTx extends Component {
     return (
       <Container style={requestSendTxStyle.container}>
         <Text style={requestSendTxStyle.title}> REQUEST SEND TX </Text>
-        {this.renderData('DAPP URL', url)}
+        {this.renderData('PAPP URL', url)}
         {this.renderData('To address', toAddress)}
         {this.renderData('Amount', `${formatUtil.amount(amount, selectedPrivacy?.pDecimals)} ${selectedPrivacy?.symbol}`)}
         {this.renderData('Fee', `${formatUtil.amount(fee, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}`)}
