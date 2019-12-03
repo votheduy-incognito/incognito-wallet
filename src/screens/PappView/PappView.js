@@ -1,10 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {  View, Text, WebView, TouchableOpacity, Modal } from '@src/components/core';
-import Icons from 'react-native-vector-icons/Ionicons';
+import {  View, WebView, Modal } from '@src/components/core';
 import convertUtil from '@src/utils/convert';
 import { ExHandler } from '@src/services/exception';
-import { COLORS } from '@src/styles';
 import Validator from './sdk/validator';
 import RequestSendTx from './RequestSendTx';
 import { APPSDK, ERRORSDK, CONSTANTSDK } from './sdk';
@@ -15,20 +13,24 @@ let sdk : APPSDK= null;
 const updateDataToPapp = (data) => {
   if (!sdk) return;
 
-  const { selectedPrivacy, listSupportedToken } = data;
-  const balance = selectedPrivacy?.amount && convertUtil.toHumanAmount(selectedPrivacy?.amount, selectedPrivacy.pDecimals);
-  const paymentAddress = selectedPrivacy?.paymentAddress;
-
-  paymentAddress && sdk.sendUpdatePaymentAddress(paymentAddress);
-  selectedPrivacy && sdk.sendUpdateTokenInfo({
-    balance,
-    id: selectedPrivacy?.tokenId,
-    symbol: selectedPrivacy?.symbol,
-    name: selectedPrivacy?.name,
-    nanoBalance: selectedPrivacy?.amount,
-    pDecimals: selectedPrivacy?.pDecimals
-  });
-  listSupportedToken && sdk.sendListToken(listSupportedToken);
+  try {
+    const { selectedPrivacy, listSupportedToken } = data;
+    const balance = selectedPrivacy?.amount && convertUtil.toHumanAmount(selectedPrivacy?.amount, selectedPrivacy.pDecimals);
+    const paymentAddress = selectedPrivacy?.paymentAddress;
+  
+    paymentAddress && sdk.sendUpdatePaymentAddress(paymentAddress);
+    selectedPrivacy && sdk.sendUpdateTokenInfo({
+      balance,
+      id: selectedPrivacy?.tokenId,
+      symbol: selectedPrivacy?.symbol,
+      name: selectedPrivacy?.name,
+      nanoBalance: selectedPrivacy?.amount,
+      pDecimals: selectedPrivacy?.pDecimals
+    });
+    listSupportedToken && sdk.sendListToken(listSupportedToken);
+  } catch (e) {
+    new ExHandler(e).showErrorToast();
+  }  
 };
 
 class PappView extends PureComponent {
@@ -46,6 +48,12 @@ class PappView extends PureComponent {
     updateDataToPapp({ selectedPrivacy, listSupportedToken });
 
     return null;
+  }
+
+  componentWillUnmount() {
+    // clear sdk data
+    sdk.resetStore();
+    sdk = null;
   }
 
   closeModal = () => {
@@ -124,19 +132,6 @@ class PappView extends PureComponent {
     alert('This Daap can not be opened!');
   }
 
-  renderControlButton = ({ onPress, name, size = 25, style }) => {
-    return (
-      <TouchableOpacity onPress={onPress} style={styles.controlBtn}>
-        <Icons
-          name={name}
-          size={size}
-          color={COLORS.lightGrey3}
-          style={style}
-        />
-      </TouchableOpacity>
-    );
-  }
-
   onGoBack = () => {
     this.webviewInstance?.goBack();
   }
@@ -149,37 +144,14 @@ class PappView extends PureComponent {
     this.webviewInstance?.reload();
   }
 
-  renderControlBar = () => {
-    const { url, onClosePapp } = this.props;
-    const onClose = () => {
-      this.webviewInstance = null;
-      sdk = null;
-      onClosePapp();
-    };
-    return (
-      <View style={styles.controlContainer}>
-        <View style={styles.navigateGroup}>
-          {this.renderControlButton({ name: 'ios-arrow-back', onPress: this.onGoBack, style: { marginRight: 20 } })}
-          {this.renderControlButton({ name: 'ios-arrow-forward', onPress: this.onGoForward })}
-          {this.renderControlButton({ name: 'ios-refresh', onPress: this.onReload })}
-        </View>
-        <Text style={styles.urlText} numberOfLines={1} ellipsizeMode="tail">{url}</Text>
-        <View style={styles.btnGroup}>
-          {this.renderControlButton({ name: 'ios-close', onPress: onClose, size: 60 })}
-        </View>
-      </View>
-    );
-  }
-
   render() {
     const { modalData } = this.state;
     const {  url } = this.props;
     return (
       <View style={styles.container}>
-        {this.renderControlBar()}
         <WebView
           ref={webview => {
-            if (webview) {
+            if (webview?.webViewRef?.current) {
               sdk = new APPSDK(webview);
               this.webviewInstance = webview;
             }
@@ -204,7 +176,6 @@ class PappView extends PureComponent {
 PappView.propTypes = {
   selectedPrivacy: PropTypes.object.isRequired,
   url: PropTypes.object.isRequired,
-  onClosePapp: PropTypes.func.isRequired,
   onSelectPrivacyToken: PropTypes.func.isRequired,
   listSupportedToken: PropTypes.arrayOf(PropTypes.object).isRequired,
 };

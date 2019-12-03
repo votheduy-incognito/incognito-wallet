@@ -1,28 +1,57 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { View } from '@src/components/core';
 import { accountSeleclor, tokenSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { getBalance } from '@src/redux/actions/account';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import LoadingTx from '@src/components/LoadingTx';
+import SimpleInfo from '@src/components/SimpleInfo';
+import SelectToken from '@src/components/HeaderRight/SelectToken';
 import { CONSTANT_COMMONS } from '@src/constants';
 import LoadingContainer from '@src/components/LoadingContainer';
+import { COLORS } from '@src/styles';
+import styles from './style';
 import PappView from './PappView';
 
 class PappViewContainer extends PureComponent {
   constructor(props) {
     super(props);
+
     this.state = {
       selectedPrivacy: null,
-      listSupportedToken: null
+      listSupportedToken: null,
+      url: props.navigation.getParam('url')
     };
 
     this.reloadBalanceTimeout = null;
   }
 
+  static navigationOptions = ({ navigation }) => {
+    const { title, onSelectToken, selectedPrivacy } = navigation.state.params || {};
+
+    return {
+      title: title ?? 'Get crypto rich',
+      theme: {
+        textColor: COLORS.white,
+        backgroundColor: COLORS.black
+      },
+      headerRight: (
+        <View style={styles.headerRight}>
+          <View style={styles.chooseTokenIcon}>
+            <SelectToken onSelect={onSelectToken} selectedPrivacy={selectedPrivacy} />
+          </View>
+        </View>
+        
+      )
+    };
+  }
+
   componentDidMount() {
     this.handleSelectPrivacyToken(CONSTANT_COMMONS.PRV_TOKEN_ID);
     this.listSupportedToken();
+    this.setHeaderTitle();
+    this.setHeaderData({ onSelectToken: this.handleSelectPrivacyToken });
   }
 
   componentWillUnmount() {
@@ -30,6 +59,18 @@ class PappViewContainer extends PureComponent {
       clearInterval(this.reloadBalanceTimeout);
       this.reloadBalanceTimeout = undefined;
     }
+  }
+
+  setHeaderTitle = () => {
+    const { navigation } = this.props;
+    let title = navigation.getParam('appName');
+
+    this.setHeaderData({ title });
+  }
+
+  setHeaderData = (data = {}) => {
+    const { navigation } = this.props;
+    navigation.setParams(data);
   }
 
   /**
@@ -58,8 +99,10 @@ class PappViewContainer extends PureComponent {
 
   handleSelectPrivacyToken = tokenID => {
     if (typeof tokenID === 'string') {
-      this.getPrivacyToken(tokenID);
+      const selectedPrivacy = this.getPrivacyToken(tokenID);
       this.reloadBalance(tokenID);
+
+      this.setHeaderData({ selectedPrivacy });
     } else {
       throw new Error('handleSelectPrivacyToken tokenID must be a tring');
     }
@@ -72,6 +115,8 @@ class PappViewContainer extends PureComponent {
     if (selectedPrivacy) {
       this.setState({ selectedPrivacy });
     }
+
+    return selectedPrivacy;
   }
 
   listSupportedToken = () => {
@@ -92,7 +137,15 @@ class PappViewContainer extends PureComponent {
   }
 
   render() {
-    const { isSending, selectedPrivacy, listSupportedToken } = this.state;
+    const { isSending, selectedPrivacy, listSupportedToken, url } = this.state;
+    if (!url) {
+      return (
+        <SimpleInfo
+          text='Can not open pApp without a URL'
+          type='warning'
+        />
+      );
+    }
 
     if (!selectedPrivacy || !listSupportedToken) {
       return <LoadingContainer />;
@@ -102,6 +155,7 @@ class PappViewContainer extends PureComponent {
       <>
         <PappView
           {...this.props}
+          url={url}
           selectedPrivacy={selectedPrivacy}
           listSupportedToken={listSupportedToken}
           onSelectPrivacyToken={this.handleSelectPrivacyToken}
@@ -129,6 +183,7 @@ PappViewContainer.defaultProps = {
 };
 
 PappViewContainer.propTypes = {
+  navigation: PropTypes.object.isRequired,
   getAccountBalanceBound: PropTypes.func.isRequired,
   getTokenBalanceBound: PropTypes.func.isRequired,
   selectPrivacyByTokenID: PropTypes.func.isRequired,

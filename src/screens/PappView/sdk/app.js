@@ -1,5 +1,8 @@
+import pappSdk from 'papp-sdk';
 import CONSTANTSDK from './constant';
 
+
+const { resetStore } = pappSdk;
 const { DATA_NAMES, SDK_MODULE } = CONSTANTSDK;
 
 class SDK {
@@ -12,14 +15,15 @@ class SDK {
   }
 
   sendScript(script) {
-    try {
-      this.webViewInstance.injectJavaScript(`
-        ${script}
-        true;
-      `);
-    } catch (e) {
-      console.error('Send script to daap view failed', e);
-    }
+    this.webViewInstance.injectJavaScript(`
+      ${script}
+      true;
+    `);
+    console.log('sendScript', script);
+  }
+
+  resetStore() {
+    resetStore();
   }
 
   sendUpdateTokenInfo({ id, balance, symbol, name, nanoBalance, pDecimals = 0 }) {

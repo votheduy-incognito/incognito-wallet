@@ -3,11 +3,15 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Platform, StatusBar as RNComponent, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import routeNames from '@src/router/routeNames';
+
+const { pApps, pApp } = routeNames;
 
 const whiteScreens = ['Game', 'pApps', 'GetStarted'];
 const blue2Screens = [];
 const blue1Screens = ['Wizard','HomeMine','DetailDevice'];
 const dark2Screen = ['Dex', 'DexHistory', 'DexHistoryDetail'];
+const blackScreen = [pApps, pApp];
 
 const isIOS = Platform.OS === 'ios';
 const isIphoneX = DeviceInfo.hasNotch();
@@ -30,6 +34,9 @@ const StatusBar = React.memo(({ currentScreen }) => {
   } else if (dark2Screen.includes(currentScreen)) {
     backgroundColor = COLORS.dark2;
     textColor = 'light-content';
+  } else if (blackScreen.includes(currentScreen)) {
+    backgroundColor = COLORS.black;
+    textColor = COLORS.white;
   } else {
     backgroundColor = COLORS.dark4;
     textColor = 'light-content';

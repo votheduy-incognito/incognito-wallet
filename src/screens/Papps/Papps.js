@@ -1,16 +1,15 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { Container, TextInput, Button, View } from '@src/components/core';
-import PappView from '@src/screens/PappView';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
+import routeNames from '@src/router/routeNames';
 import styles from './style';
-
 
 class Papps extends PureComponent {
   constructor() {
     super();
     this.state = {
       url: 'http://192.168.0.124:9000',
-      openPapp: false,
     };
   }
 
@@ -23,7 +22,8 @@ class Papps extends PureComponent {
     try {
       const { url } = this.state;
       if (this.urlValidator(url)) {
-        this.setState({ openPapp:  true });
+        const { navigation } = this.props;
+        navigation.navigate(routeNames.pApp, { url, appName: 'Gsasd sdd' });
       }
     } catch (e) {
       new ExHandler(e, 'Sorry, we can not open this Papp.').showErrorToast();
@@ -34,18 +34,8 @@ class Papps extends PureComponent {
     this.setState({ url });
   }
 
-  closePapp = () => {
-    this.setState({ openPapp: false });
-  }
-
   render() {
-    const { url, openPapp } = this.state;
-
-    if (openPapp) {
-      return (
-        <PappView url={url} onClosePapp={this.closePapp} />
-      );
-    }
+    const { url } = this.state;
 
     return (
       <Container style={styles.container}>
@@ -57,5 +47,9 @@ class Papps extends PureComponent {
     );
   }
 }
+
+Papps.propTypes = {
+  navigation: PropTypes.object.isRequired
+};
 
 export default Papps;
