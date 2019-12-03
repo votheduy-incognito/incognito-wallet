@@ -36,7 +36,7 @@ class App extends PureComponent {
         console.log('Firebase notification worked');
       })
       .catch((e) => {
-        new ExHandler(new CustomError(ErrorCode.firebase_init_failed, { rawError: e })).showErrorToast();
+        __DEV__ && new ExHandler(new CustomError(ErrorCode.firebase_init_failed, { rawError: e })).showErrorToast();
       });
   }
 
