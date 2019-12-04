@@ -62,19 +62,26 @@ class DeviceConnection extends Component {
     this.connection = connection;
   };
 
-  connectDevice = async (device: ObjConnection) => {
+  connectDevice = async (device: ObjConnection,isHOTPOST = false) => {
     console.log(TAG, 'connectDevice begin  = ',JSON.stringify(device)||'');
     let result = await this.connection.connectDevice(device).catch(console.log);
 
     if(result){
       // console.log(TAG, 'connectDevice begin true ---- ');
       const checkConnectWifi = async ()=>{
-        const isConnected = ((await NetInfo.fetch())?.isConnected)||false;
-        if(!isConnected){
+        const state = await NetInfo.fetch().catch(console.log);
+        const {isConnected = false, isInternetReachable = false, details: 
+          { ipAddress= '',
+            subnet= '',
+            isConnectionExpensive= false }} = state ??{};
+        console.log(TAG, 'connectDevice begin 0000 ---- ',state);
+        
+        const isConnectedCombined = isHOTPOST?(_.includes(ipAddress,'10.42.') && isConnected):isConnected;
+        if(!isConnectedCombined){
           await Util.delay(1);
         }
-        console.log(TAG, 'connectDevice begin 111---- ',isConnected);
-        return isConnected?isConnected : new Error('is connected fail ');
+        console.log(TAG, 'connectDevice begin 111---- ',isConnectedCombined);
+        return isConnectedCombined?isConnectedCombined : new Error('have not connected ');
       };
 
       result = await Util.tryAtMost (checkConnectWifi,20,1);
