@@ -78,7 +78,7 @@ class WifiConnection extends BaseConnection {
       
     });
     return Util.excuteWithTimeout(pro,15).catch(e=>console.log('connectDevice --- failed end'));
-    // return pro;
+    // return Util.excuteWithTimeout(pro,15);
 
   };
 
