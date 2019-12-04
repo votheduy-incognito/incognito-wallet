@@ -34,6 +34,9 @@ const style = StyleSheet.create({
     minWidth: 100,
     borderRadius: 8
   },
+  pappItem: {
+    marginVertical: 15
+  },
 });
 
 export const pappItemStyle = StyleSheet.create({

@@ -6,17 +6,28 @@ import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import routeNames from '@src/router/routeNames';
 import { COLORS } from '@src/styles';
 import rollDiceImg from '@src/assets/images/papp/diceroll.png';
+import helloWorldImg from '@src/assets/images/papp/helloworld.jpg';
 import PappItem from './PappItem';
 import styles from './style';
 
-const PAPPS = [{
-  id: 1,
-  name: 'Get crypto rich',
-  image: rollDiceImg,
-  url: 'https://enigmatic-sea-09447.herokuapp.com/',
-  title: 'Get crypto rich',
-  desc: 'Predict the outcome,  shake the dice, win the crypto.'
-}];
+const PAPPS = [
+  {
+    id: 1,
+    name: 'Hello World',
+    image: helloWorldImg,
+    url: 'https://enigmatic-sea-09447.herokuapp.com/hello.html',
+    title: 'Hello World',
+    desc: 'The first pApp!'
+  },
+  {
+    id: 1,
+    name: 'Get crypto rich',
+    image: rollDiceImg,
+    url: 'https://enigmatic-sea-09447.herokuapp.com/',
+    title: 'Get crypto rich',
+    desc: 'Predict the outcome,  shake the dice, win the crypto.'
+  }
+];
 
 class Papps extends PureComponent {
   constructor() {
@@ -65,6 +76,7 @@ class Papps extends PureComponent {
             {
               PAPPS.map(({ id, image, desc, name, url, title }) => (
                 <PappItem
+                  style={styles.pappItem}
                   key={id}
                   image={image}
                   title={title}

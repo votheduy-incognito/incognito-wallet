@@ -6,7 +6,7 @@ import { AppRegistry } from 'react-native';
 import { name as appName } from './app.json';
 
 const TAG = 'index';
-global.isMainnet = true;
+global.isMainnet = false;
 console.disableYellowBox = true;
 
 AppRegistry.registerRunnable(appName, async initParams => {

@@ -12,9 +12,9 @@ class PappItem extends Component {
   }
 
   render() {
-    const { image, title, desc } = this.props;
+    const { image, title, desc, style } = this.props;
     return (
-      <TouchableOpacity style={pappItemStyle.container} onPress={this.handleOpen}>
+      <TouchableOpacity style={[pappItemStyle.container, style]} onPress={this.handleOpen}>
         <View style={pappItemStyle.imageContainer}>
           <Image style={pappItemStyle.image} source={image} />
         </View>
@@ -28,7 +28,8 @@ class PappItem extends Component {
 }
 
 PappItem.defaultProps = {
-  onPress: null
+  onPress: null,
+  style: null
 }; 
 
 PappItem.propTypes = {
@@ -36,7 +37,8 @@ PappItem.propTypes = {
   url: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   desc: PropTypes.string.isRequired,
-  onPress: PropTypes.func
+  onPress: PropTypes.func,
+  style: PropTypes.object
 };
 
 export default PappItem;
