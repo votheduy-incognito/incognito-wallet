@@ -17,20 +17,20 @@ class Deposit extends React.Component {
   }
 
   componentDidMount() {
-    this.handleGenAddress();
+    this.handleGetData();
   }
 
-  handleGenAddress = () => {
-    const { handleGenAddress } = this.props;
+  handleGetData = () => {
+    const { handleGenAddress, handleGetMinMaxAmount } = this.props;
 
-    return handleGenAddress()
+    return Promise.all([handleGenAddress(), handleGetMinMaxAmount()])
       .catch(() => {
         this.setState({ hasError: true });
       });
   }
 
   render() {
-    const { depositAddress, selectedPrivacy } = this.props;
+    const { depositAddress, selectedPrivacy, min, max } = this.props;
     const { hasError } = this.state;
 
     if (hasError) {
@@ -51,7 +51,7 @@ class Deposit extends React.Component {
       (
         <ScrollView style={style.container}>
           <Container style={style.mainContainer}>
-            <WaitingDeposit selectedPrivacy={selectedPrivacy} depositAddress={depositAddress} />
+            <WaitingDeposit selectedPrivacy={selectedPrivacy} depositAddress={depositAddress} min={min} max={max} />
           </Container>
         </ScrollView>
       )
@@ -62,12 +62,17 @@ class Deposit extends React.Component {
 Deposit.defaultProps = {
   depositAddress: null,
   selectedPrivacy: null,
+  min: null,
+  max: null
 };
 
 Deposit.propTypes = {
+  min: PropTypes.number,
+  max: PropTypes.number,
   depositAddress: PropTypes.string,
   selectedPrivacy: PropTypes.object,
   handleGenAddress: PropTypes.func.isRequired,
+  handleGetMinMaxAmount: PropTypes.func.isRequired,
 };
 
 export default Deposit;
