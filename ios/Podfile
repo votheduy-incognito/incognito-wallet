@@ -77,6 +77,8 @@ target 'constantWalletMobile' do
   pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
   pod 'RNLocalize', :path => '../node_modules/react-native-localize'
   pod 'react-native-iot-wifi', :path => '../node_modules/react-native-iot-wifi'
+  pod 'react-native-network-info', :path => '../node_modules/react-native-network-info'
+  pod 'RNWifi', :path => '../node_modules/react-native-wifi-reborn'
   pod 'RNOS', :path => '../node_modules/react-native-os'
   pod 'TcpSockets', :path => '../node_modules/react-native-tcp'
 
@@ -85,6 +87,7 @@ target 'constantWalletMobile' do
   pod 'RNSensors', :path => '../node_modules/react-native-sensors'
   pod 'react-native-camera', :path => '../node_modules/react-native-camera'
   pod 'RCTRestart', :path => '../node_modules/react-native-restart/ios'
+  
   # Pods for constantWalletMobile
 
   target 'constantWalletMobile-tvOSTests' do

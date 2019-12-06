@@ -461,6 +461,38 @@ export default class APIService {
     
   }
 
+  /**
+   * 
+   * @param {*} QRCode 
+   * @returns {
+        status:0,
+        data: {WifiName ='', Status = false}
+      }
+   */
+  static async qrCodeCheckGetWifi({
+    QRCode
+  }) {
+    if (!QRCode) return throw new Error('Missing QRCode');
+    try {
+      let response = await http.post('stake/qr-code-check-get-wifi', {
+        QRCode:QRCode
+      });
+      const {WifiName ='', Status = false} = response??{};
+      console.log(TAG,'qrCodeCheckGetWifi end = ',response);
+      return {
+        status:Status?1:0,
+        data:response
+      };
+    } catch (error) {
+      const message = new ExHandler(error,'QR-Code is invalid. Please try again').message;
+      return {
+        status:0,
+        data:message
+      };
+    }
+    
+  }
+
   static async requestWithdraw({
     ProductID,
     ValidatorKey,

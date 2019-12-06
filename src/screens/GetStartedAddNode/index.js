@@ -153,7 +153,7 @@ class GetStartedAddNode extends BaseScreen {
           )}
           {!isFail && <LongLoading />}
         </>
-      ):<GetQrcode onSuccess={(qrCode)=>{this.setState({deviceId:qrCode});}} />; 
+      ):<GetQrcode onSuccess={this.handleScanQrcodeSuccess} />; 
       break;
     }
     
@@ -169,6 +169,10 @@ class GetStartedAddNode extends BaseScreen {
     this.setState({
       currentPage:currentPage
     });
+  }
+
+  handleScanQrcodeSuccess= async(qrCode)=>{
+    this.setState({deviceId:qrCode});
   }
 
   handleFinish =()=>{
