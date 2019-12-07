@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {  View, WebView, Modal } from '@src/components/core';
+import { View, WebView, Modal } from '@src/components/core';
 import convertUtil from '@src/utils/convert';
-import { ExHandler } from '@src/services/exception';
+import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
 import Validator from './sdk/validator';
 import RequestSendTx from './RequestSendTx';
 import { APPSDK, ERRORSDK, CONSTANTSDK } from './sdk';
@@ -38,14 +38,17 @@ class PappView extends PureComponent {
     super(props);
     this.state = {
       modalData: null,
+      isLoaded: false
     };
     
     this.webviewInstance = null;
   }
 
-  static getDerivedStateFromProps(nextProps) {
+  static getDerivedStateFromProps(nextProps, prevState) {
     const { selectedPrivacy, listSupportedToken } = nextProps;
-    updateDataToPapp({ selectedPrivacy, listSupportedToken });
+    const { isLoaded } = prevState;
+
+    isLoaded && updateDataToPapp({ selectedPrivacy, listSupportedToken });
 
     return null;
   }
@@ -125,11 +128,15 @@ class PappView extends PureComponent {
 
   onPappLoaded = () => {
     const { selectedPrivacy, listSupportedToken } = this.props;
-    updateDataToPapp({ selectedPrivacy, listSupportedToken });
+    setTimeout(() => {
+      this.setState({ isLoaded: true }, () => {
+        updateDataToPapp({ selectedPrivacy, listSupportedToken });
+      });
+    }, 2000);
   }
 
-  onLoadPappError = () => {
-    alert('This Daap can not be opened!');
+  onLoadPappError = (e) => {
+    new ExHandler(new CustomError(ErrorCode.papp_can_not_opened, { rawError: e })).showErrorToast();
   }
 
   onGoBack = () => {

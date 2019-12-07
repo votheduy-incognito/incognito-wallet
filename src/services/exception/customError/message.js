@@ -33,4 +33,5 @@ export default {
   [CODE.addErc20Token_not_found]: 'This BEP2 token has been added.',
   [CODE.api_qrcode_fail_ProductNotFound]: 'This QR code is unfamiliar. Please try again.',
   [CODE.api_qrcode_fail_QRCodeAlreadyStaked]: 'You\'ve already set up this Node.',
+  [CODE.papp_can_not_opened]: 'Sorry, we can not open this pApp. Please try again or check the pApp URL.'
 };

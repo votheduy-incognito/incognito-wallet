@@ -76,7 +76,7 @@ class PappViewContainer extends PureComponent {
   /**
    * duration in ms
    */
-  reloadBalance = (tokenID, duration = 5 * 1000) => {
+  reloadBalance = (tokenID, duration = 30 * 1000) => {
     // clear prev task
     if (this.reloadBalanceTimeout) {
       clearInterval(this.reloadBalanceTimeout);

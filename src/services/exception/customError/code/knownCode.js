@@ -63,7 +63,8 @@ const staking = {
 };
 
 const papps = {
-  paaps_invalid_daap_url: knownError(-28)
+  paaps_invalid_daap_url: knownError(-28),
+  papp_can_not_opened: knownError(-41)
 };
 
 const addBep2Token = {
