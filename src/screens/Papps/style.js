@@ -50,7 +50,6 @@ export const pappItemStyle = StyleSheet.create({
   },
   image: {
     height: 400,
-    backgroundColor: 'red',
     width: '100%',
     resizeMode: 'cover'
   },

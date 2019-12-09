@@ -22,9 +22,9 @@ FollowingTokenListContainer.defaultProps = {
 FollowingTokenListContainer.propTypes = {
 };
 
-const mapState = state => ({
-  tokens: tokenSeleclor.followed(state),
-  account: accountSeleclor.defaultAccount(state),
+const mapState = (state, props) => ({
+  tokens: props?.tokens || tokenSeleclor.followed(state),
+  account: props?.account ||  accountSeleclor.defaultAccount(state),
   wallet: state.wallet,
   accountGettingBalanceList: accountSeleclor.isGettingBalance(state),
   tokenGettingBalanceList: tokenSeleclor.isGettingBalance(state),

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { View, WebView, Modal } from '@src/components/core';
 import convertUtil from '@src/utils/convert';
 import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
+import { CONSTANT_COMMONS } from '@src/constants';
 import Validator from './sdk/validator';
 import RequestSendTx from './RequestSendTx';
 import { APPSDK, ERRORSDK, CONSTANTSDK } from './sdk';
@@ -33,6 +34,24 @@ const updateDataToPapp = (data) => {
   }  
 };
 
+const getListSupportedToken = (supportTokenIds = [], tokens = []) => {
+  const list = {
+    [CONSTANT_COMMONS.PRV_TOKEN_ID]: {
+      id: CONSTANT_COMMONS.PRV_TOKEN_ID,
+      symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
+      name: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV
+    }
+  };
+
+  const supportTokens = tokens.filter(token => supportTokenIds.includes(token?.id));
+
+  supportTokens?.forEach(token => {
+    token?.id && (list[token?.id] = { id: token?.id, symbol: token?.symbol, name: token?.name });
+  });
+
+  return Object.values(list);
+};
+
 class PappView extends PureComponent {
   constructor(props) {
     super(props);
@@ -45,9 +64,10 @@ class PappView extends PureComponent {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const { selectedPrivacy, listSupportedToken } = nextProps;
+    const { selectedPrivacy, supportTokenIds, tokens } = nextProps;
     const { isLoaded } = prevState;
 
+    const listSupportedToken = getListSupportedToken(supportTokenIds, tokens);
     isLoaded && updateDataToPapp({ selectedPrivacy, listSupportedToken });
 
     return null;
@@ -103,6 +123,15 @@ class PappView extends PureComponent {
     onSelectPrivacyToken(tokenID);
   }
 
+  onSdkSetSupportListTokenById = tokenIds => {
+    new Validator('onSdkSetSupportListTokenById tokenIds', tokenIds).required().array();
+
+    const filterIds = tokenIds.filter(id => typeof id === 'string');
+    
+    const { onSetListSupportTokenById } = this.props;
+    onSetListSupportTokenById(filterIds);
+  }
+
   onWebViewData = async (e) => {
     try {
       const payload = e.nativeEvent.data;
@@ -113,13 +142,16 @@ class PappView extends PureComponent {
       new Validator('onWebViewData data', data).string();
 
       const parsedData = JSON.parse(data);
-      
+
       switch(command) {
       case CONSTANTSDK.COMMANDS.SEND_TX:
         this.onRequestSendTx(parsedData);
         break;
       case CONSTANTSDK.COMMANDS.SELECT_PRIVACY_TOKEN_BY_ID:
         this.onSdkSelectPrivacyById(parsedData?.tokenID);
+        break;
+      case CONSTANTSDK.COMMANDS.SET_LIST_SUPPORT_TOKEN_BY_ID:
+        this.onSdkSetSupportListTokenById(parsedData?.tokenIds);
       }
     } catch (e) {
       new ExHandler(e, 'The pApp occured an error. Please try again.').showErrorToast();
@@ -185,6 +217,7 @@ PappView.propTypes = {
   url: PropTypes.object.isRequired,
   onSelectPrivacyToken: PropTypes.func.isRequired,
   listSupportedToken: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onSetListSupportTokenById: PropTypes.func.isRequired,
 };
 
 export default PappView;

@@ -11,8 +11,10 @@ import SelectToken from '@src/components/HeaderRight/SelectToken';
 import { CONSTANT_COMMONS } from '@src/constants';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { COLORS } from '@src/styles';
+import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
 import styles from './style';
 import PappView from './PappView';
+
 
 class PappViewContainer extends PureComponent {
   constructor(props) {
@@ -20,7 +22,7 @@ class PappViewContainer extends PureComponent {
 
     this.state = {
       selectedPrivacy: null,
-      listSupportedToken: null,
+      supportTokenIds: [CONSTANT_COMMONS.PRV_TOKEN_ID],
       url: props.navigation.getParam('url')
     };
 
@@ -28,7 +30,7 @@ class PappViewContainer extends PureComponent {
   }
 
   static navigationOptions = ({ navigation }) => {
-    const { title, onSelectToken, selectedPrivacy } = navigation.state.params || {};
+    const { title, onSelectToken, selectedPrivacy, supportTokenIds } = navigation.state.params || {};
 
     return {
       title: title ?? 'Get crypto rich',
@@ -39,7 +41,7 @@ class PappViewContainer extends PureComponent {
       headerRight: (
         <View style={styles.headerRight}>
           <View style={styles.chooseTokenIcon}>
-            <SelectToken onSelect={onSelectToken} selectedPrivacy={selectedPrivacy} />
+            <SelectToken onSelect={onSelectToken} selectedPrivacy={selectedPrivacy} supportTokenIds={supportTokenIds} />
           </View>
         </View>
         
@@ -48,10 +50,10 @@ class PappViewContainer extends PureComponent {
   }
 
   componentDidMount() {
+    const { supportTokenIds } = this.state;
     this.handleSelectPrivacyToken(CONSTANT_COMMONS.PRV_TOKEN_ID);
-    this.listSupportedToken();
     this.setHeaderTitle();
-    this.setHeaderData({ onSelectToken: this.handleSelectPrivacyToken });
+    this.setHeaderData({ onSelectToken: this.handleSelectPrivacyToken, supportTokenIds });
   }
 
   componentWillUnmount() {
@@ -98,13 +100,26 @@ class PappViewContainer extends PureComponent {
   }
 
   handleSelectPrivacyToken = tokenID => {
-    if (typeof tokenID === 'string') {
-      const selectedPrivacy = this.getPrivacyToken(tokenID);
-      this.reloadBalance(tokenID);
+    try {
+      if (typeof tokenID === 'string') {
+        const { supportTokenIds } = this.state;
 
-      this.setHeaderData({ selectedPrivacy });
-    } else {
-      throw new Error('handleSelectPrivacyToken tokenID must be a tring');
+        if (!supportTokenIds.includes(tokenID)) {
+          throw new CustomError(ErrorCode.papp_the_token_is_not_supported);
+        }
+        const selectedPrivacy = this.getPrivacyToken(tokenID);
+  
+        if (selectedPrivacy) {
+          this.reloadBalance(tokenID);
+          this.setHeaderData({ selectedPrivacy });
+        } else {
+          throw new CustomError(ErrorCode.papp_the_token_is_not_supported);
+        }
+      } else {
+        throw new Error('Please use an invalid token ID');
+      }
+    } catch (e) {
+      new ExHandler(e).showErrorToast();
     }
   }
 
@@ -119,25 +134,19 @@ class PappViewContainer extends PureComponent {
     return selectedPrivacy;
   }
 
-  listSupportedToken = () => {
-    const { tokens } = this.props;
-
-    const list = [{
-      id: CONSTANT_COMMONS.PRV_TOKEN_ID,
-      symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
-      name: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV
-    }];
-
-    tokens?.forEach(token => {
-      token?.id && list.push({ id: token?.id, symbol: token?.symbol, name: token?.name });
-    });
-
-    this.setState({ listSupportedToken: list });
-    return list;
+  handleSetListSupportTokenById = tokenIds => {
+    if (tokenIds instanceof Array) {
+      const ids = [CONSTANT_COMMONS.PRV_TOKEN_ID, ...tokenIds];
+      this.setState({ supportTokenIds: ids }, () => {
+        this.setHeaderData({ supportTokenIds: ids });
+      });
+    } else {
+      throw new Error('Please use a valid token id list.');
+    }
   }
 
   render() {
-    const { isSending, selectedPrivacy, listSupportedToken, url } = this.state;
+    const { isSending, selectedPrivacy, supportTokenIds, url } = this.state;
     if (!url) {
       return (
         <SimpleInfo
@@ -147,7 +156,7 @@ class PappViewContainer extends PureComponent {
       );
     }
 
-    if (!selectedPrivacy || !listSupportedToken) {
+    if (!selectedPrivacy) {
       return <LoadingContainer />;
     }
 
@@ -157,8 +166,9 @@ class PappViewContainer extends PureComponent {
           {...this.props}
           url={url}
           selectedPrivacy={selectedPrivacy}
-          listSupportedToken={listSupportedToken}
+          supportTokenIds={supportTokenIds}
           onSelectPrivacyToken={this.handleSelectPrivacyToken}
+          onSetListSupportTokenById={this.handleSetListSupportTokenById}
         />
         { isSending && <LoadingTx /> }
       </>

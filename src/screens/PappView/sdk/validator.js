@@ -49,6 +49,10 @@ class Validator {
     return this._onCondition(() => typeof this.value === 'string', message);
   }
 
+  array(message = 'Must be an array') {
+    return this._onCondition(() => this.value instanceof Array, message);
+  }
+
   boolean(message = 'Must be boolean') {
     return this._onCondition(() => typeof this.value === 'boolean', message);
   }
