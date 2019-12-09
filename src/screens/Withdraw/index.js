@@ -4,18 +4,31 @@ import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
 import { addERC20TxWithdraw, addETHTxWithdraw, genCentralizedWithdrawAddress, updatePTokenFee } from '@src/services/api/withdraw';
-import { CustomError, ErrorCode } from '@src/services/exception';
+import { getMinMaxWithdrawAmount } from '@src/services/api/misc';
+import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import tokenService from '@src/services/wallet/tokenService';
 import convertUtil from '@src/utils/convert';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import LoadingContainer from '@src/components/LoadingContainer';
 import SimpleInfo from '@src/components/SimpleInfo';
 import Withdraw from './Withdraw';
 
 class WithdrawContainer extends Component {
   constructor() {
     super();
+
+    this.state = {
+      minAmount: null,
+      maxAmount: null,
+      isReady: false,
+      hasError: false
+    };
+  }
+
+  componentDidMount() {
+    this.getMinMaxAmount();
   }
 
   getTokenObject = ({ amount }) => {
@@ -129,6 +142,19 @@ class WithdrawContainer extends Component {
     }
   }
 
+  getMinMaxAmount = async () => {
+    try {
+      const { selectedPrivacy } = this.props;
+      const [min, max] = await getMinMaxWithdrawAmount(selectedPrivacy?.tokenId);
+      this.setState({ minAmount: min, maxAmount: max });
+    } catch(e) {
+      new ExHandler(e, 'Can not get min/max amount withdraw, please try again.').showErrorToast();
+      this.setState({ hasError: true });
+    } finally {
+      this.setState({ isReady: true });
+    }
+  }
+
   getWithdrawAddress = async ({ amount, paymentAddress }) => {
     try {
       let address;
@@ -209,6 +235,11 @@ class WithdrawContainer extends Component {
 
   render() {
     const { selectedPrivacy } = this.props;
+    const { minAmount, maxAmount, isReady, hasError } = this.state;
+
+    if (!isReady) {
+      return <LoadingContainer />;
+    }
 
     if (selectedPrivacy && selectedPrivacy?.amount <= 0) {
       return (
@@ -219,7 +250,7 @@ class WithdrawContainer extends Component {
       );
     }
 
-    if (!selectedPrivacy) {
+    if (!selectedPrivacy || hasError) {
       return (
         <SimpleInfo
           type='warning'
@@ -232,6 +263,8 @@ class WithdrawContainer extends Component {
     return (
       <Withdraw
         {...this.props}
+        minAmount={minAmount}
+        maxAmount={maxAmount}
         handleCentralizedWithdraw={this.handleCentralizedWithdraw}
         handleDecentralizedWithdraw={this.handleDecentralizedWithdraw}
       />

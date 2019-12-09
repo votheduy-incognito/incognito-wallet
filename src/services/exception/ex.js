@@ -23,8 +23,7 @@ class Exception {
    * `defaultMessage` will be used as friendly message (which displays to users, not for debugging)
    */
   constructor(exception : any, defaultMessage: string) {
-    this.message = defaultMessage;
-    
+    this.message;
     if (isValidException(exception)) {
       this.exception = exception;
 
@@ -53,20 +52,19 @@ class Exception {
     /**
      * Message for UI (display to user)
      */
-    this.message = this.message ?? this._getUnexpectedMessageError(exception);
+    this.message = this.message ?? this._getUnexpectedMessageError(exception, defaultMessage);
 
     this._log2Console();
   }
 
-  _getUnexpectedMessageError(exception) {
-    const defaultMsg = 'Sorry! Something went wrong.';
+  _getUnexpectedMessageError(exception, defaultMessage) {
     const message = exception?.message || '';
 
     if (message) {
-      return `${defaultMsg}\n\nMORE: ${message}`;
+      return `${defaultMessage}\n\nMORE: ${message}`;
     }
 
-    return defaultMsg;
+    return defaultMessage;
   }
 
   /**

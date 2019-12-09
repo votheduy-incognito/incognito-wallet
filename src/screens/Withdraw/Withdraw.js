@@ -74,26 +74,28 @@ class Withdraw extends React.Component {
 
   getMinAmount = () => {
     // MIN = 1 nano
-    const { selectedPrivacy } = this.props;
+    const { selectedPrivacy, minAmount } = this.props;
+    let min = 0;
     if (selectedPrivacy?.pDecimals) {
-      return 1/(10**selectedPrivacy.pDecimals);
+      min = 1/(10**selectedPrivacy.pDecimals);
     }
 
-    return 0;
+    return Math.max(min, minAmount);
   }
 
   getMaxAmount = () => {
-    const { selectedPrivacy } = this.props;
+    const { selectedPrivacy, maxAmount } = this.props;
     const { estimateFeeData: { fee }, feeForBurn, isUsedPRVFee } = this.state;
+    let max = 0;
     let amount = selectedPrivacy?.amount;
 
     if (!isUsedPRVFee) {
       amount-= (fee + feeForBurn) || 0;
     }
     
-    const maxAmount = convertUtil.toHumanAmount(amount, selectedPrivacy?.pDecimals);
+    max = convertUtil.toHumanAmount(amount, selectedPrivacy?.pDecimals);
 
-    return Math.max(maxAmount, 0);
+    return Math.min(maxAmount, max);
   }
 
   setFormValidator = ({ maxAmount, minAmount }) => {
@@ -292,6 +294,8 @@ class Withdraw extends React.Component {
 Withdraw.defaultProps = {
   amount: null,
   isFormValid: false,
+  minAmount: null,
+  maxAmount: null
 };
 
 Withdraw.propTypes = {
@@ -299,8 +303,11 @@ Withdraw.propTypes = {
   handleDecentralizedWithdraw: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   selectedPrivacy: PropTypes.object.isRequired,
+  account: PropTypes.object.isRequired,
   isFormValid: PropTypes.bool,
   amount: PropTypes.string,
+  minAmount: PropTypes.number,
+  maxAmount: PropTypes.number
 };
 
 const mapState = state => ({
