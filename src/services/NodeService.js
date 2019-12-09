@@ -6,7 +6,8 @@ import Util from '@src/utils/Util';
 import _ from 'lodash';
 import APIService from './api/miner/APIService';
 import FirebaseService, { DEVICE_CHANNEL_FORMAT, FIREBASE_PASS, MAIL_UID_FORMAT, PHONE_CHANNEL_FORMAT } from './FirebaseService';
-import { ExHandler } from './exception';
+import { ExHandler, CustomError } from './exception';
+import knownCode from './exception/customError/code/knownCode';
 
 const TAG = 'NodeService';
 const password = `${FIREBASE_PASS}`;
@@ -55,10 +56,35 @@ export default class NodeService {
       firebase.signIn( mailProductId,password).then(uid=>{
         resolve(uid);
       }).catch(e=>{
-        reject(e);
+        reject(new CustomError(knownCode.node_auth_firebase_fail,{rawCode:e}));
       });
-    });
+    }); 
+  }
+  static verifyProductCode = async(verifyCode)=> {
+    // console.log(TAG,' verifyProductCode begin');
     
+    const errorObj = new CustomError(knownCode.node_verify_code_fail);
+    
+    const params = {
+      verify_code: verifyCode
+    };
+    console.log(TAG,' verifyProductCode begin 02');
+    try {
+      const response = await Util.excuteWithTimeout(APIService.verifyCode(params),timeout);
+      // console.log(TAG, 'callVerifyCode Verify Code Response: ', response);
+      const { status } = response;
+      if (status == 1) {
+        console.log(TAG,'verifyProductCode successfully');
+        const { product } = response.data;
+        return product;
+      }
+    } catch (error) {
+      console.log('Error try catch:', error);
+      return error;
+      
+    }
+    
+    return errorObj;
   }
   static send = (product, actionExcute = templateAction, chain = 'incognito',type = 'incognito',dataToSend={},timeout = 5) => {
     return new Promise((resolve,reject)=>{

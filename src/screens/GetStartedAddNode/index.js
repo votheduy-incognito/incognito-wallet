@@ -9,53 +9,67 @@ import APIService from '@src/services/api/miner/APIService';
 import { scaleInApp } from '@src/styles/TextStyle';
 import LocalDatabase from '@src/utils/LocalDatabase';
 import Util from '@src/utils/Util';
-import { onClickView } from '@src/utils/ViewUtil';
+import ViewUtil, { onClickView } from '@src/utils/ViewUtil';
 import _ from 'lodash';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import { Image, ScrollView, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { Text,ButtonExtension,InputExtension as Input } from '@src/components/core';
+import knownCode from '@src/services/exception/customError/code/knownCode';
 import styles from './styles';
 
 export const TAG = 'GetStartedAddNode';
-const titleStep = ['Make sure Node is plugged in.','Connect Node to\nyour home Wi-Fi','Scan the code at the base of the device'];
+const titleStep = ['Make sure Node is plugged in.','Scan the code at the base of the device','Connect Node to\nyour home Wi-Fi'];
 const titleButton = ['Done, next step','Next','Next'];
-const GetQrcode = React.memo(({onSuccess})=>{
-  const [deviceId,setDeviceId] = useState('');
+const GetQrcode = React.memo(({onSuccess,qrCode = ''})=>{
+  const [deviceId,setDeviceId] = useState(qrCode);
+  const [loading,setLoading] = useState(false);
   const [isPassedValidate,setIdPassedValidate] = useState(false);
   const [errorMessage,setErrorMessage] = useState(''); 
+  const verifyQrcode = async (qrcode)=>{
+    if(!_.isEmpty(qrcode)){
+      setLoading(true);
+      console.log(TAG,'openQrScanner  == data',data);
+      const checked = await Util.excuteWithTimeout(APIService.qrCodeCheck({QRCode:qrcode})).catch(console.log)||{};
+      const {data='',status = -1 } = checked??{};
+      const isPassed =  _.isEqual(status,1) || __DEV__;
+      setIdPassedValidate(isPassed);
+      setDeviceId(qrcode);
+      setErrorMessage(isPassed?'':data);
+      isPassed && onSuccess && onSuccess(qrcode);
+      setLoading(false);
+    }
+  };
+  useMemo(()=>verifyQrcode(qrCode),[qrCode]);
   const handleQrcode = useCallback(onClickView(()=>{
     openQrScanner(async dataReader => {
-      if(_.isEmpty(dataReader)){
+      if(_.isEmpty(dataReader)) {
         setDeviceId('');
         setIdPassedValidate(false);
         setErrorMessage('Please scan QR code to get a verification code');
       }else{
-        console.log(TAG,'openQrScanner  == data',data);
-        const checked = await Util.excuteWithTimeout(APIService.qrCodeCheck({QRCode:dataReader})).catch(console.log)||{};
-        const {data='',status = -1 } = checked??{};
-        const isPassed =  _.isEqual(status,1) || __DEV__;
-        setIdPassedValidate(isPassed);
         setDeviceId(dataReader);
-        setErrorMessage(isPassed?'':data);
-        isPassed && onSuccess && onSuccess(dataReader);
+        verifyQrcode(dataReader);
       }
+      
     });
   }),[deviceId]);
   return (
     <>
       <Image style={styles.content_step1} source={images.ic_getstarted_scan_device} />
+      
       {!isPassedValidate ?(
         <TouchableOpacity onPress={handleQrcode}>
           <Image style={styles.content_step1} source={images.ic_getstarted_qrcode} />
           <Text style={styles.step3_text}>Tap to scan</Text>
         </TouchableOpacity>
-      ):(
+      ):(loading?ViewUtil.loadingComponent(): (
         <>
           <Icon size={scaleInApp(50)} color='#25CDD6' name="check" type='simple-line-icon' />
           <Text style={[styles.step3_text,{color:'#25CDD6'}]}>Scan complete</Text>
         </>
+      )
       )}
       {!isPassedValidate && (
         <Text style={[styles.text,styles.errorText,styles.item_container_error]}>{errorMessage}</Text>
@@ -77,6 +91,7 @@ class GetStartedAddNode extends BaseScreen {
       currentPage:0,
       currentConnect:{name:'',password:''},
       errorMessage:'',
+      errorInSetUp:null,
       isPassedValidate:true,
       deviceId:null
     };
@@ -136,8 +151,24 @@ class GetStartedAddNode extends BaseScreen {
       childView = <Image style={styles.content_step1_image} source={images.ic_getstarted_device} />; 
       break;
     }
+    // case 1:{
+    //   childView = this.renderContentStep2();
+    //   break;
+    // }
     case 1:{
-      childView = this.renderContentStep2();
+      const {isPassedValidate} = this.state;
+      let isFail = !_.isEmpty(errorMessage);
+      childView = (
+        <>
+          {isFail && (
+            <Text
+              style={[styles.text, styles.item,styles.errorText]}
+            >{errorMessage}
+            </Text>
+          )}
+          <GetQrcode qrCode={deviceId} onSuccess={this.handleScanQrcodeSuccess} />
+        </>
+      ); 
       break;
     }
     case 2:{
@@ -153,7 +184,7 @@ class GetStartedAddNode extends BaseScreen {
           )}
           {!isFail && <LongLoading />}
         </>
-      ):<GetQrcode onSuccess={this.handleScanQrcodeSuccess} />; 
+      ): this.renderContentStep2(); 
       break;
     }
     
@@ -201,9 +232,17 @@ class GetStartedAddNode extends BaseScreen {
         
       }
     }catch(e){
+      let currentPage = 0;
+      const {code,message = '' } = e;
+      switch(code){
+      case(knownCode.node_verify_code_fail):
+        currentPage = 2;
+        break;
+      }
       this.setState({
         loading:false,
-        currentPage:0
+        errorInSetUp:e,
+        currentPage:currentPage
       });
     }
     
@@ -220,7 +259,7 @@ class GetStartedAddNode extends BaseScreen {
         ...childView,
         onPress:async()=>{
           const device = await this.viewSetupDevice.current?.getCurrentConnect();
-          const name = device?.name||'';
+          const name = device?.name||this.wifiNameValue;
           this.wifiNameValue = name;
           this.setState({
             currentPage:1,
@@ -233,29 +272,11 @@ class GetStartedAddNode extends BaseScreen {
       };
       break;
     }
-    case 1:{
-      childView = {
-        ...childView,
-        onPress:()=>{
-          const isPassedValidate = !_.isEmpty(this.wifiNameValue);
-          this.setState({
-            isPassedValidate:isPassedValidate,
-            currentPage:isPassedValidate? 2:1,
-            currentConnect:{
-              name:this.wifiNameValue,
-              password:this.wifiPassValue
-            }
-          });
-        },
-      }; 
-      break;
-    }
     case 2:{
       childView = {
         ...childView,
         onPress:()=>{
-          const {deviceId} = this.state;
-          const isPassedValidate = !_.isEmpty(deviceId);
+          const isPassedValidate = !_.isEmpty(this.wifiNameValue);
           if(isPassedValidate){
             this.setState({
               isPassedValidate:true
@@ -268,6 +289,26 @@ class GetStartedAddNode extends BaseScreen {
               isPassedValidate:false,
             });
           }
+        
+          
+        },
+      }; 
+      break;
+    }
+    case 1:{
+      childView = {
+        ...childView,
+        onPress:()=>{
+          const {deviceId} = this.state;
+          const isPassedValidate = !_.isEmpty(deviceId);
+          this.setState({
+            isPassedValidate:isPassedValidate,
+            currentPage:isPassedValidate? 2:1,
+            currentConnect:{
+              name:this.wifiNameValue,
+              password:this.wifiPassValue
+            }
+          });
         }
       };
       break;
@@ -297,11 +338,12 @@ class GetStartedAddNode extends BaseScreen {
   }
 
   render() {
-    const { loading,currentPage,currentConnect } = this.state;
+    const { loading,currentPage,currentConnect,errorMessage } = this.state;
 
     return (
       <View style={styles.container}>
         <StepIndicator stepCount={3} currentPage={currentPage} ref={this.viewStepIndicator} />
+        <Text>{errorMessage}</Text>
         <ScrollView>
           {this.renderTitle()}
           {this.renderContent()}

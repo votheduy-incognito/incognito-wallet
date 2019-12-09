@@ -4,6 +4,8 @@
 import _ from 'lodash';
 import { Linking } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
+import { CustomError } from '@src/services/exception';
+import knownCode from '@src/services/exception/customError/code/knownCode';
 // import timer from 'react-native-timer';
 const timer = require('react-native-timer');
 
@@ -129,7 +131,8 @@ export default class Util {
       const ss = Util.createRandomString(10);
       console.log(TAG,'excuteWithTimeout random string = ',ss);
       timer.setTimeout(ss,function() {
-        reject(new Error('timeout'));
+        
+        reject(new CustomError(knownCode.timeout_promise,{message:'timeout '+ ss}));
         timer.clearTimeout(ss);
       }, timeSecond * 1000);
       promise.then(resolve, reject);

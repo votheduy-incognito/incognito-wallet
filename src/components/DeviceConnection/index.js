@@ -77,12 +77,13 @@ class DeviceConnection extends Component {
             isConnectionExpensive= false }} = state ??{};
         console.log(TAG, 'connectDevice begin 0000 ---- ',state);
         let isConnectedCombined  = false;
-        if(Platform.OS == 'ios'){
-          isConnectedCombined = isHOTPOST?((_.includes(ipAddress,'10.42.') || !isInternetReachable ) && isConnected):isConnected;
-        }else{
-          isConnectedCombined = isHOTPOST?(_.includes(ipAddress,'10.42.') && isConnected):isConnected;
-        }
-        // const isConnectedCombined = isHOTPOST?(_.includes(ipAddress,'10.42.') && isConnected):isConnected;
+        // if(Platform.OS == 'ios'){
+        //   isConnectedCombined = isHOTPOST?((_.includes(ipAddress,'10.42.') || !isInternetReachable ) && isConnected):isConnected;
+        // }else{
+        //   isConnectedCombined = isHOTPOST?(_.includes(ipAddress,'10.42.') && isConnected):isConnected;
+        // }
+
+        isConnectedCombined = isHOTPOST?(await this.isConnectedWithNodeHotspot() && isConnected):isConnected;
         
         console.log(TAG, 'connectDevice begin 111---- ',isConnectedCombined);
         return isConnectedCombined?isConnectedCombined : new Error('have not connected ');
@@ -93,7 +94,9 @@ class DeviceConnection extends Component {
     }
     return result;
   };
-
+  isConnectedWithNodeHotspot = ():Promise<Boolean>=>{
+    return this.connection.isConnectedWithNodeHotspot();
+  }
   removeConnectionDevice = async (device: ObjConnection) => {
     // console.log(TAG, 'removeConnectionDevice begin result = ',JSON.stringify(device)||'');
     let result = await this.connection.removeConnection(device);

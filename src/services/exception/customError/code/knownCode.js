@@ -13,6 +13,7 @@ const knownError = codeCreator(TYPES.KNOWN_ERROR);
 // format: component_code_id
 
 const app = {
+  timeout_promise: knownError(-2),
   firebase_init_failed: knownError(-8),
   network_make_request_failed: knownError(-9),
   wallet_can_not_create_new_wallet: knownError(-14),
@@ -57,6 +58,8 @@ const importAccount = {
 const node = {
   node_duplicate: knownError(-22),
   node_invalid_host: knownError(-23),
+  node_auth_firebase_fail:knownError(-32),
+  node_verify_code_fail:knownError(-33),
 };
 
 const validator = {

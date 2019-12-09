@@ -26,6 +26,8 @@ import { getTimeZone } from 'react-native-localize';
 import StepIndicator from 'react-native-step-indicator';
 import ZMQService from 'react-native-zmq-service';
 import { connect } from 'react-redux';
+import { ExHandler, CustomError } from '@src/services/exception';
+import knownCode from '@src/services/exception/customError/code/knownCode';
 import BaseComponent from '../BaseComponent';
 import styles from './style';
 
@@ -259,21 +261,35 @@ class SetupDevice extends BaseComponent {
       });
       this.deviceIdFromQrcode = deviceIdFromQrcode;
       const resultStep1 = await this.checkConnectHotspot();
-      let callVerifyCode = this.callVerifyCode;
-      this.CurrentPositionStep = 2;
-      const resultStep2  = (resultStep1 && await Util.tryAtMost(callVerifyCode,TIMES_VERIFY,2)) || false;
+      if(!resultStep1){
+        this.setState({
+          currentPositionStep:1,
+        });
+      }
+      const resultStep2  = resultStep1 ? await this.tryVerifyCode():false ;
+      
+      // this.CurrentPositionStep = 2;
+      // let callVerifyCode = this.callVerifyCode;
       console.log(TAG,'handleSetUpPress callVerifyCode end =======',resultStep2);
       errorMsg = resultStep2 ? '':errorMessage;
       // !resultStep2 && !_.isNil(this.deviceMiner) && this.deviceId?.current?.removeConnectionDevice(this.deviceMiner);
     } catch (error) {
-      errorMsg = errorMessage;
-      
       console.log(TAG,'handleSetUpPress error: ', error);
+      if(error instanceof CustomError){
+        console.log(TAG,'handleSetUpPress error01');
+        errorMsg = error.message??errorMessage;
+        new ExHandler(error).throw();
+      }
     }finally{
       !_.isNil(this.deviceMiner) && this.deviceId?.current?.removeConnectionDevice(this.deviceMiner);
+      // this.setState({
+      //   loading: false,
+      //   currentPositionStep:0,
+      //   isDoingSetUp:false,
+      //   errorMessage:errorMsg
+      // });
       this.setState({
         loading: false,
-        currentPositionStep:0,
         isDoingSetUp:false,
         errorMessage:errorMsg
       });
@@ -344,9 +360,9 @@ class SetupDevice extends BaseComponent {
     } catch (error) {
       console.log(TAG,'changeDeviceName error');
       __DEV__ && this.showToastMessage(error.message);
+      throw new Error(errMessage);
     }
-
-    return throw new Error(errMessage);
+ 
   }
 
   handleSubmit = onClickView(async() => {
@@ -423,7 +439,7 @@ class SetupDevice extends BaseComponent {
         {this.renderWifiPassword()}
         {/* {this.renderToastMessage()} */}
 
-        <View style={{width: 0,height: 0,opacity:0}}>
+        <View style={styleHideView}>
           <CreateAccount ref={this.viewCreateAccount} navigation={navigation} />
         </View>
       </View>
@@ -452,8 +468,8 @@ class SetupDevice extends BaseComponent {
     });
   }
   sendZMQ = async ()=> {
-    const { validSSID, validWPA, ssid, wpa, longitude, latitude } = this.state;
-    if (validSSID && validWPA) {
+    const { validSSID, validWPA, ssid, wpa, longitude, latitude,isRenderUI } = this.state;
+    if (!isRenderUI || validSSID && validWPA) {
       Keyboard.dismiss();
 
       this.setState({
@@ -621,23 +637,23 @@ class SetupDevice extends BaseComponent {
   }
 
   checkIsConnectedWithHotspot = async ()=>{
-    let device = await this.deviceId?.current?.getCurrentConnect();
-    let isConnectedHotpostStep1 = !_.isEmpty(device?.name||'') && _.includes(device?.name||'', HOTPOT);
-    console.log(TAG,'checkIsConnectedWithHotspot begin: ', HOTPOT);
-    if(!isConnectedHotpostStep1){
-      const state = await NetInfo.fetch().catch(console.log);
-      const {isConnected = false, isInternetReachable = false,details =null} = state ??{};
-      const { ipAddress = '',isConnectionExpensive = false } = details ??{};
-      return isConnected && !isInternetReachable;
-      // if(isConnected && _.includes(ipAddress,'10.42.')){
-      //   return true;
-      // }
-    }
-    return true; 
+    // let device = await this.deviceId?.current?.getCurrentConnect();
+    // let isConnectedHotpostStep1 = !_.isEmpty(device?.name||'') && _.includes(device?.name||'', HOTPOT);
+    // console.log(TAG,'checkIsConnectedWithHotspot begin: ', HOTPOT);
+    // if(!isConnectedHotpostStep1){
+    //   const state = await NetInfo.fetch().catch(console.log);
+    //   const {isConnected = false, isInternetReachable = false,details =null} = state ??{};
+    //   const { ipAddress = '',isConnectionExpensive = false } = details ??{};
+    //   return isConnected && !isInternetReachable;
+    //   // if(isConnected && _.includes(ipAddress,'10.42.')){
+    //   //   return true;
+    //   // }
+    // }
+    return await this.deviceId?.current?.isConnectedWithNodeHotspot(); 
   }
   checkConnectHotspot = async  ()=> {
 
-    const { validSSID, validWPA } = this.state;
+    const { validSSID, validWPA,isRenderUI } = this.state;
 
     let isConnectedHotpost = await this.checkIsConnectedWithHotspot();
     let device = null;
@@ -652,7 +668,7 @@ class SetupDevice extends BaseComponent {
     if(!device){
       device = await this.deviceId?.current?.getCurrentConnect();
     }
-    console.log(TAG,'checkConnectHotspot begin01 : ', device);
+    console.log(TAG,'checkConnectHotspot begin01 : ', device,'-validSSID = ',validSSID,'validWPA = ',validWPA);
 
     if(Platform.OS === 'ios'){
       this.isHaveNetwork = false;
@@ -664,8 +680,8 @@ class SetupDevice extends BaseComponent {
       // isConnectedHotpost = !_.isEmpty(device) && !this.isHaveNetwork;
       // this.isHaveNetwork = false;
     }
-
-    if (isConnectedHotpost && validSSID && validWPA) {
+    const isCheckWifi = isRenderUI?validSSID && validWPA:true;
+    if (isConnectedHotpost && isCheckWifi) {
       let ssid = device?.name?.toLowerCase()||'';
       const product = (HOTPOT??CONSTANT_MINER.PRODUCT_TYPE).toLowerCase();
       console.log(TAG,'checkConnectHotspot SSID---: ', ssid,'=== HOTPOT = ',HOTPOT);
@@ -681,56 +697,39 @@ class SetupDevice extends BaseComponent {
     return false;
   }
 
-  authFirebase = async () =>{
+  /**
+   * func will retried 3 times
+   */
+  authFirebase = async (addProduct) =>{
     try {
-      const {addProduct} = this.state;
-      const authFirebase = await Util.excuteWithTimeout(NodeService.authFirebase(addProduct),7);
+      const authFirebaseFunc = Util.excuteWithTimeout(NodeService.authFirebase(addProduct),7);
+      let authFirebase = await Util.tryAtMost(authFirebaseFunc,3,3);
       return authFirebase;
     } catch (error) {
-      return new Error('timeout');
+      new ExHandler(error).throw();
     }
   }
 
-  callVerifyCode = async()=> {
-    // console.log(TAG,' callVerifyCode begin');
-    const { verifyCode, isConnected } = this.state;
-    console.log(TAG,' callVerifyCode begin01 connected = ',isConnected);
-    const errorObj = new Error('callVerifyCode fail');
-    if (this.isHaveNetwork) {
-      const params = {
-        verify_code: verifyCode
+  tryVerifyCode = async()=> {
+    
+    try {
+      const { verifyCode } = this.state;
+      console.log(TAG,' tryVerifyCode begin01 connected = ',this.isHaveNetwork);
+    
+      const promiseNetwork = ()=>{
+        return this.isHaveNetwork?NodeService.verifyProductCode(verifyCode):new Error('no internet');
       };
-      console.log(TAG,' callVerifyCode begin 02');
-      try {
-        const response = await APIService.verifyCode(params);
-        // console.log(TAG, 'callVerifyCode Verify Code Response: ', response);
-        const { status } = response;
-        if (status == 1) {
-          console.log(TAG,'callVerifyCode successfully');
-          const { product } = response.data;
-          if (product) {
-            this.setState({
-              addProduct: product,
-              showModal:true
-            });
-            __DEV__ && this.showToastMessage('authFirebase begin');
-            let authFirebase = this.authFirebase;
-            await Util.tryAtMost(authFirebase,3,3).catch(console.log);
-
-            if(__DEV__) this.showToastMessage('authFirebase end');
-
-            return true;
-          }
-        } else {
-          if(__DEV__) this.showToastMessage('callVerifyCode fail and retry');
-        }
-      } catch (error) {
-        console.log('Error try catch:', error);
-      }
+      const resultStep2  = await Util.tryAtMost(promiseNetwork,TIMES_VERIFY,2);
+      return resultStep2;
+    } catch (error) {
+      new ExHandler(new CustomError(knownCode.node_verify_code_fail)).throw();
     }
-    return errorObj;
+    
   }
+
+  
 }
+
 
 SetupDevice.propTypes = {
   currentConnect: PropTypes.objectOf(PropTypes.object),
