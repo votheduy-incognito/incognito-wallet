@@ -3,7 +3,7 @@ import Util from '@utils/Util';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View,Platform } from 'react-native';
 import { ExHandler } from '@src/services/exception';
 import BaseConnection, { ObjConnection } from './BaseConnection';
 import style from './style';
@@ -73,18 +73,22 @@ class DeviceConnection extends Component {
         const {isConnected = false, isInternetReachable = false, details: 
           { ipAddress= '',
             subnet= '',
+            ssid='',
             isConnectionExpensive= false }} = state ??{};
         console.log(TAG, 'connectDevice begin 0000 ---- ',state);
-        
-        const isConnectedCombined = isHOTPOST?(_.includes(ipAddress,'10.42.') && isConnected):isConnected;
-        if(!isConnectedCombined){
-          await Util.delay(1);
+        let isConnectedCombined  = false;
+        if(Platform.OS == 'ios'){
+          isConnectedCombined = isHOTPOST?((_.includes(ipAddress,'10.42.') || !isInternetReachable ) && isConnected):isConnected;
+        }else{
+          isConnectedCombined = isHOTPOST?(_.includes(ipAddress,'10.42.') && isConnected):isConnected;
         }
+        // const isConnectedCombined = isHOTPOST?(_.includes(ipAddress,'10.42.') && isConnected):isConnected;
+        
         console.log(TAG, 'connectDevice begin 111---- ',isConnectedCombined);
         return isConnectedCombined?isConnectedCombined : new Error('have not connected ');
       };
 
-      result = await Util.tryAtMost (checkConnectWifi,20,1);
+      result = await Util.tryAtMost (checkConnectWifi,25,2);
       console.log(TAG, 'connectDevice begin 01 result =  ',result);
     }
     return result;

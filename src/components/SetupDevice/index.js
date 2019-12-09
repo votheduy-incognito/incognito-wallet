@@ -30,7 +30,7 @@ import BaseComponent from '../BaseComponent';
 import styles from './style';
 
 export const TAG = 'SetupDevice';
-const HOTPOT = 'TheMiner';
+let HOTPOT = 'TheMiner';
 const errorMessage = 'Can\'t connect Node. Please check the internert information and try again';
 const TIMES_VERIFY = 30;
 const labels = ['Connect Hotpot','Send Wifi Info','Verify Code'];
@@ -105,9 +105,14 @@ class SetupDevice extends BaseComponent {
       };
     }
   }
-  componentDidMount(){
+  async componentDidMount(){
     super.componentDidMount();
     // this.callVerifyCode();
+    // hien.ton test 
+    // const state = await NetInfo.fetch().catch(console.log);
+    // const {isConnected = false, isInternetReachable = false} = state ??{};
+    // console.log(TAG, 'componentDidMount state ',state);
+    //////
     this.connection =  NetInfo.addEventListener(this._handleConnectionChange);
   }
   componentWillUnmount() {
@@ -210,12 +215,27 @@ class SetupDevice extends BaseComponent {
   connectHotspot = async ()=>{
     const errorObj = new Error('connectHotspot fail');
     try {
+      // call api to get wifi's name    
+      const response = await Util.excuteWithTimeout(APIService.qrCodeCheckGetWifi({QRCode:this.deviceIdFromQrcode}),3).catch(console.log);
+      let {WifiName = '', Status= false} = response?.data ??{};
       this.deviceMiner = new ObjConnection();
-      let suffix = _.split(this.deviceIdFromQrcode,'-')[1];
-      suffix = !_.isEmpty(suffix) && _.size(suffix) == 6 ?`-${suffix}`:'';
-      console.log(TAG,'connectHotspot begin  suffix= ',suffix);
-      this.deviceMiner.name = `${HOTPOT}${suffix}`;
-      this.deviceMiner.id = `${HOTPOT}${suffix}`;
+      console.log(TAG,'connectHotspot begin0000 wifiname  = ',WifiName);
+      if(_.isEmpty(WifiName)){
+        let suffix = _.split(this.deviceIdFromQrcode,'-')[1];
+        suffix = !_.isEmpty(suffix) && _.size(suffix) == 6 ?`-${suffix}`:'';
+        
+        WifiName = `${HOTPOT}${suffix}`;
+        WifiName = `${HOTPOT}${suffix}`;
+      }else{
+
+        let name = _.split(WifiName,'-')[0];
+        HOTPOT = name;
+      }
+      console.log(TAG,'connectHotspot begin end wifiname  = ',WifiName,'-HOTPOT = ',HOTPOT);
+      this.deviceMiner.name = WifiName;
+      this.deviceMiner.id = WifiName;
+
+      
       const result = await this.deviceId?.current?.connectDevice(this.deviceMiner,true);
       console.log(TAG,'connectHotspot end result = ',result);
       return result?this.deviceMiner:errorObj;
@@ -244,11 +264,13 @@ class SetupDevice extends BaseComponent {
       const resultStep2  = (resultStep1 && await Util.tryAtMost(callVerifyCode,TIMES_VERIFY,2)) || false;
       console.log(TAG,'handleSetUpPress callVerifyCode end =======',resultStep2);
       errorMsg = resultStep2 ? '':errorMessage;
+      // !resultStep2 && !_.isNil(this.deviceMiner) && this.deviceId?.current?.removeConnectionDevice(this.deviceMiner);
     } catch (error) {
       errorMsg = errorMessage;
-      !_.isNil(this.deviceMiner) && this.deviceId?.current?.removeConnectionDevice(this.deviceMiner);
+      
       console.log(TAG,'handleSetUpPress error: ', error);
     }finally{
+      !_.isNil(this.deviceMiner) && this.deviceId?.current?.removeConnectionDevice(this.deviceMiner);
       this.setState({
         loading: false,
         currentPositionStep:0,
@@ -299,8 +321,8 @@ class SetupDevice extends BaseComponent {
           PaymentAddress:PaymentAddress
         }),5).catch(console.log);
         // }
-        console.log(TAG,'changeDeviceName resultRequest = ',resultRequest);
-        console.log(TAG,'changeDeviceName end result  = ',result);
+        // console.log(TAG,'changeDeviceName resultRequest = ',resultRequest);
+        // console.log(TAG,'changeDeviceName end result  = ',result);
         const dataRequestStake = resultRequest.data||{}; // {"PaymentAddress","Commission","StakerAddress"}
         if(!_.isEmpty(dataRequestStake) && !_.isEmpty(dataRequestStake.PaymentAddress)){
           // save to local
@@ -544,11 +566,15 @@ class SetupDevice extends BaseComponent {
 
   _handleConnectionChange = async (state) => {
     console.log(TAG,'_handleConnectionChange: begin state =',state);
-    const {isInternetReachable = false ,type = '',isConnected = false  } = state ??{};
+    const {isInternetReachable = false ,type = '',isConnected = false,details={}  } = state ??{};
+    const {ssid = ''  } = details ??{};
 
     // const isConnected = isConnected && (_.includes(type,'cellular') || _.includes(type,'wifi'));
     // let device = isConnected && await this.deviceId?.current?.getCurrentConnect();
     // this.isHaveNetwork = !_.isEmpty(device?.name||'') && !_.includes(device?.name||'', HOTPOT);
+    // if(Platform.OS == 'ios'){
+    //   this.isHaveNetwork = isInternetReachable &&isConnected;
+    // }
     this.isHaveNetwork = isInternetReachable &&isConnected;
     
     console.log(TAG,`_handleConnectionChange: ${this.isHaveNetwork}`);
@@ -583,8 +609,8 @@ class SetupDevice extends BaseComponent {
   }
 
   getCurrentConnect = async ()=>{
-    const netInfo = await NetInfo.fetch();
-    console.log(TAG,'getCurrentConnect netInfo = ',netInfo);
+    // const netInfo = await NetInfo.fetch();
+    // console.log(TAG,'getCurrentConnect netInfo = ',netInfo);
     let device = await this.deviceId?.current?.getCurrentConnect();
     return device;
   };
@@ -595,24 +621,28 @@ class SetupDevice extends BaseComponent {
   }
 
   checkIsConnectedWithHotspot = async ()=>{
-    const state = await NetInfo.fetch().catch(console.log);
-    const {isConnected = false, isInternetReachable = false,details =null} = state ??{};
-    const { ipAddress = '',isConnectionExpensive = false } = details ??{};
-    if(isConnected && _.includes(ipAddress,'10.42.')){
-      return true;
+    let device = await this.deviceId?.current?.getCurrentConnect();
+    let isConnectedHotpostStep1 = !_.isEmpty(device?.name||'') && _.includes(device?.name||'', HOTPOT);
+    console.log(TAG,'checkIsConnectedWithHotspot begin: ', HOTPOT);
+    if(!isConnectedHotpostStep1){
+      const state = await NetInfo.fetch().catch(console.log);
+      const {isConnected = false, isInternetReachable = false,details =null} = state ??{};
+      const { ipAddress = '',isConnectionExpensive = false } = details ??{};
+      return isConnected && !isInternetReachable;
+      // if(isConnected && _.includes(ipAddress,'10.42.')){
+      //   return true;
+      // }
     }
-    return false; 
+    return true; 
   }
   checkConnectHotspot = async  ()=> {
 
     const { validSSID, validWPA } = this.state;
 
-    // let device = await this.deviceId?.current?.getCurrentConnect();
-    // let isConnectedHotpost = !_.isEmpty(device?.name||'') && _.includes(device?.name||'', HOTPOT);
     let isConnectedHotpost = await this.checkIsConnectedWithHotspot();
     let device = null;
     this.CurrentPositionStep = 0;
-    console.log(TAG,'checkConnectHotspot begin: ', validSSID,validWPA);
+    console.log(TAG,'checkConnectHotspot begin isConnectedHotpost : ', isConnectedHotpost);
     if(!isConnectedHotpost){
       const connectHotspot = this.connectHotspot;
       device = await Util.tryAtMost(connectHotspot,3,1);
@@ -622,21 +652,26 @@ class SetupDevice extends BaseComponent {
     if(!device){
       device = await this.deviceId?.current?.getCurrentConnect();
     }
+    console.log(TAG,'checkConnectHotspot begin01 : ', device);
 
     if(Platform.OS === 'ios'){
       this.isHaveNetwork = false;
       isConnectedHotpost = !_.isEmpty(device) ;
     }else{
-      isConnectedHotpost = !_.isEmpty(device) && !this.isHaveNetwork;
       this.isHaveNetwork = false;
+      isConnectedHotpost = !_.isEmpty(device) ;
+
+      // isConnectedHotpost = !_.isEmpty(device) && !this.isHaveNetwork;
+      // this.isHaveNetwork = false;
     }
 
     if (isConnectedHotpost && validSSID && validWPA) {
       let ssid = device?.name?.toLowerCase()||'';
-      const product = CONSTANT_MINER.PRODUCT_TYPE.toLowerCase();
-      console.log(TAG,'checkConnectHotspot SSID---: ', ssid);
+      const product = (HOTPOT??CONSTANT_MINER.PRODUCT_TYPE).toLowerCase();
+      console.log(TAG,'checkConnectHotspot SSID---: ', ssid,'=== HOTPOT = ',HOTPOT);
       if (_.includes(ssid, product)) {
         this.CurrentPositionStep = 1;
+        console.log(TAG,'checkConnectHotspot OKKKKKK');
         await this.cleanOldDataForSetup();
         let result = await Util.excuteWithTimeout(this.sendZMQ(),250);
 

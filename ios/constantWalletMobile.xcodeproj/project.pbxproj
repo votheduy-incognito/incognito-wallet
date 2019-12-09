@@ -81,6 +81,7 @@
 		FE26D1A82373D41A0040A54B /* AutonomousZMQ.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FE26D1DC2373E7A80040A54B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE26D1DB2373E7A80040A54B /* GoogleService-Info.plist */; };
 		FE26D1DE2373E7E60040A54B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FE26D1DD2373E7E60040A54B /* GoogleService-Info.plist */; };
+		FE44A8FA23997BA3009DA0DE /* libreact-native-network-info.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE44A8F923997BA3009DA0DE /* libreact-native-network-info.a */; };
 		FE57448622F97A3700F2A2BC /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE57448522F97A3700F2A2BC /* NetworkExtension.framework */; };
 		FE5C9FA82355D46900AC6E90 /* libreact-native-netinfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5C9FA72355D46900AC6E90 /* libreact-native-netinfo.a */; };
 		FE5C9FAD2355E86E00AC6E90 /* PostGroteskBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 570EC87F438D402B8F1B76AE /* PostGroteskBold.otf */; };
@@ -243,6 +244,7 @@
 		FE26D1B22373D41E0040A54B /* constantWalletMobile_dev-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "constantWalletMobile_dev-Info.plist"; path = "/Users/hienton/HienData/Projects/Company/incognito-chain-wallet-client-app/ios/constantWalletMobile_dev-Info.plist"; sourceTree = "<absolute>"; };
 		FE26D1DB2373E7A80040A54B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FE26D1DD2373E7E60040A54B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		FE44A8F923997BA3009DA0DE /* libreact-native-network-info.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-network-info.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AutonomousZMQ.framework; path = "../node_modules/react-native-zmq-service/ios/AutonomousZMQ.framework"; sourceTree = "<group>"; };
 		FE57448522F97A3700F2A2BC /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		FE5C9FA72355D46900AC6E90 /* libreact-native-netinfo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-netinfo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -325,6 +327,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FE44A8FA23997BA3009DA0DE /* libreact-native-network-info.a in Frameworks */,
 				FE26D17E2373D41A0040A54B /* libreact-native-netinfo.a in Frameworks */,
 				FE26D17F2373D41A0040A54B /* libreact-native-iot-wifi.a in Frameworks */,
 				FE26D1802373D41A0040A54B /* libreact-native-camera.a in Frameworks */,
@@ -435,6 +438,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FE44A8F923997BA3009DA0DE /* libreact-native-network-info.a */,
 				FE5C9FA72355D46900AC6E90 /* libreact-native-netinfo.a */,
 				FEEBD6E62355CC2A006EFECD /* libreact-native-iot-wifi.a */,
 				FEEBD6E22355CBB3006EFECD /* libreact-native-camera.a */,
@@ -1338,7 +1342,7 @@
 				CODE_SIGN_ENTITLEMENTS = constantWalletMobile/constantWalletMobile.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 35;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
@@ -1375,7 +1379,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 				);
-				MARKETING_VERSION = 34.3;
+				MARKETING_VERSION = 35.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1401,7 +1405,7 @@
 				CODE_SIGN_ENTITLEMENTS = constantWalletMobile/constantWalletMobile.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 35;
 				DEVELOPMENT_TEAM = G63A8CY3DS;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1437,7 +1441,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 				);
-				MARKETING_VERSION = 34.3;
+				MARKETING_VERSION = 35.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
