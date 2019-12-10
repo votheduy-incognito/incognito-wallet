@@ -48,7 +48,7 @@ export const LIST_ACTION={
 };
 export default class NodeService {
   static authFirebase = (product) =>{
-    return new Promise((resolve,reject)=>{
+    const pros =  new Promise((resolve,reject)=>{
       let productId = product.product_id;
       const firebase = new FirebaseService();// FirebaseService.getShareManager();
       let mailProductId = `${productId}${MAIL_UID_FORMAT}`;
@@ -59,6 +59,7 @@ export default class NodeService {
         reject(new CustomError(knownCode.node_auth_firebase_fail,{rawCode:e}));
       });
     }); 
+    return Util.excuteWithTimeout(pros,7);
   }
   static verifyProductCode = async(verifyCode)=> {
     // console.log(TAG,' verifyProductCode begin');

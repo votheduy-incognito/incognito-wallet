@@ -33,6 +33,33 @@ import styles from './style';
 
 export const TAG = 'SetupDevice';
 let HOTPOT = 'TheMiner';
+const deviceTest ={ address: 'US',
+  address_lat: 37.09024,
+  address_long: -95.712891,
+  address_street: null,
+  city: null,
+  common_name: null,
+  country: null,
+  country_code: null,
+  created_at: 'Mon, 12 Aug 2019 07:47:04 GMT',
+  created_from: 'ios',
+  deleted: false,
+  id: 3369,
+  is_checkin: 1,
+  neighborhood: null,
+  platform: 'MINER',
+  product_id: 'e799d259-ae06-4f64-b05b-8934d802b305',
+  product_name: 'The Miner',
+  region: null,
+  route: null,
+  state: null,
+  state_code: null,
+  street_number: null,
+  timezone: 'Asia/Ho_Chi_Minh',
+  town: null,
+  user_id: 1425,
+  verify_code: 'AFB94E64-3FFE-4D1D-BB6C-A757AFCF61BF.1565596011816',
+  zip: null };
 const errorMessage = 'Can\'t connect Node. Please check the internert information and try again';
 const TIMES_VERIFY = 30;
 const labels = ['Connect Hotpot','Send Wifi Info','Verify Code'];
@@ -114,6 +141,7 @@ class SetupDevice extends BaseComponent {
     // const state = await NetInfo.fetch().catch(console.log);
     // const {isConnected = false, isInternetReachable = false} = state ??{};
     // console.log(TAG, 'componentDidMount state ',state);
+    this.authFirebase(deviceTest).then(data=>console.log('componentDidMount state ',data)).catch(console.warn);
     //////
     this.connection =  NetInfo.addEventListener(this._handleConnectionChange);
   }
@@ -266,13 +294,14 @@ class SetupDevice extends BaseComponent {
           currentPositionStep:1,
         });
       }
-      const resultStep2  = resultStep1 ? await this.tryVerifyCode():false ;
+      let productInfo  = resultStep1 ? await this.tryVerifyCode():{} ;
+      let resultStep2  = !_.isEmpty(productInfo) ? await this.authFirebase(productInfo):false ;
       
       // this.CurrentPositionStep = 2;
       // let callVerifyCode = this.callVerifyCode;
       console.log(TAG,'handleSetUpPress callVerifyCode end =======',resultStep2);
       errorMsg = resultStep2 ? '':errorMessage;
-      // !resultStep2 && !_.isNil(this.deviceMiner) && this.deviceId?.current?.removeConnectionDevice(this.deviceMiner);
+      
     } catch (error) {
       console.log(TAG,'handleSetUpPress error: ', error);
       if(error instanceof CustomError){
@@ -700,16 +729,24 @@ class SetupDevice extends BaseComponent {
   /**
    * func will retried 3 times
    */
-  authFirebase = async (addProduct) =>{
+  authFirebase = async (productInfo) =>{
     try {
-      const authFirebaseFunc = Util.excuteWithTimeout(NodeService.authFirebase(addProduct),7);
-      let authFirebase = await Util.tryAtMost(authFirebaseFunc,3,3);
+      if(_.isEmpty(productInfo)){
+        return {};
+      }
+      console.log(TAG,' authFirebase begin productInfo = ',productInfo);
+      const authFirebaseFunc = NodeService.authFirebase;
+      let authFirebase = await Util.tryAtMost(authFirebaseFunc(productInfo),3,3);
+      // let authFirebase = await Util.tryAtMost(authFirebaseFunc(productInfo),3,3);
       return authFirebase;
     } catch (error) {
       new ExHandler(error).throw();
     }
   }
 
+  /**
+   * @returns:[JSON]: product info
+   */
   tryVerifyCode = async()=> {
     
     try {
