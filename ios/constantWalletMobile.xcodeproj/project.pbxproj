@@ -691,7 +691,7 @@
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = G63A8CY3DS;
 						LastSwiftMigration = 1020;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.AccessWiFi = {
 								enabled = 1;
@@ -718,7 +718,7 @@
 					};
 					FE26D1772373D41A0040A54B = {
 						DevelopmentTeam = G63A8CY3DS;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -1342,7 +1342,7 @@
 				CODE_SIGN_ENTITLEMENTS = constantWalletMobile/constantWalletMobile.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 36;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
@@ -1379,7 +1379,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 				);
-				MARKETING_VERSION = 35.1;
+				MARKETING_VERSION = 36.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1405,7 +1405,7 @@
 				CODE_SIGN_ENTITLEMENTS = constantWalletMobile/constantWalletMobile.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 36;
 				DEVELOPMENT_TEAM = G63A8CY3DS;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1441,7 +1441,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 				);
-				MARKETING_VERSION = 35.1;
+				MARKETING_VERSION = 36.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

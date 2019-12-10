@@ -12,7 +12,7 @@ const prefix_Api = isMainnet?'':'test-';
 
 // const API_BASE_URL =  String(TEMPLATE_API_BASE_URL).replace(regex,prefix_Api);
 const API_BASE_URL = isMainnet? API_BASE_URL_MAINNET:API_BASE_URL_TESTNET;
-const BUILD_VERSION = `3.3.6${isMainnet?'':'-'+API_BASE_URL}`;
+const BUILD_VERSION = `3.3.8${isMainnet?'':'-'+API_BASE_URL}`;
 const EXPLORER_CONSTANT_CHAIN_URL = String(TEMPLATE_EXPLORER_CONSTANT_CHAIN_URL).replace(regex,prefix_network);
 const MASTER_NODE_ADDRESS=isMainnet?MAINNET_SERVER_ADDRESS:TESTNET_SERVER_ADDRESS;
 const DEFAULT_LIST_SERVER = KEY.DEFAULT_LIST_SERVER;
