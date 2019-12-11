@@ -400,6 +400,7 @@ export const modalStyle = StyleSheet.create({
     height: 40,
     backgroundColor: COLORS.lightGrey6,
     paddingHorizontal: 20,
+    color: COLORS.dark1,
   },
   token: {
     flexDirection: 'row',
@@ -456,6 +457,7 @@ export const tokenStyle = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.lightGrey5,
     paddingVertical: 5,
+    color: COLORS.dark1,
   },
   error: {
     marginBottom: 10,
