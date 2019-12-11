@@ -15,7 +15,7 @@ const PAPPS = [
     id: 1,
     name: 'Hello World',
     image: helloWorldImg,
-    url: 'https://enigmatic-sea-09447.herokuapp.com/hello.html',
+    url: 'https://guarded-bastion-39159.herokuapp.com/',
     title: 'Hello World',
     desc: 'The first pApp!'
   },
@@ -33,7 +33,7 @@ class Papps extends PureComponent {
   constructor() {
     super();
     this.state = {
-      url: 'http://192.168.1.13:9000',
+      url: '',
     };
   }
 
@@ -59,7 +59,13 @@ class Papps extends PureComponent {
   }
 
   onChangeUrl = url => {
-    this.setState({ url });
+    this.setState({ url }); 
+  }
+
+  handleAddProtocol = () => {
+    this.setState(({ url }) => {
+      return { url: url ? url : 'http://' };
+    }); 
   }
 
   render() {
@@ -68,7 +74,15 @@ class Papps extends PureComponent {
     return (
       <View style={styles.container}>
         <View style={styles.form}>
-          <TextInput placeholder='Search or enter website URL' placeholderTextColor={COLORS.lightGrey4} style={styles.input} value={url} onChangeText={this.onChangeUrl} />
+          <TextInput
+            autoCapitalize='none'
+            placeholder='Search or enter website URL'
+            placeholderTextColor={COLORS.lightGrey4}
+            style={styles.input}
+            value={url}
+            onChangeText={this.onChangeUrl}
+            onFocus={this.handleAddProtocol}
+          />
           <Button title='GO' style={styles.submitBtn} onPress={this.onGo} />
         </View>
         <ScrollView contentContainerStyle={{ minHeight: '100%' }}>

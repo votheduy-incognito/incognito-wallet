@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { CONSTANT_COMMONS } from '@src/constants';
 import tokenData from '@src/constants/tokenData';
 import CryptoItem from './CryptoItem';
 
