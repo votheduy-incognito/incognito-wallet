@@ -22,7 +22,7 @@ class Exception {
    * `exception` can be a Error object or a string
    * `defaultMessage` will be used as friendly message (which displays to users, not for debugging)
    */
-  constructor(exception : any, defaultMessage: string) {
+  constructor(exception : any, defaultMessage: string = 'Opps! Something went wrong.') {
     this.message;
     if (isValidException(exception)) {
       this.exception = exception;
@@ -61,7 +61,7 @@ class Exception {
     const message = exception?.message || '';
 
     if (message) {
-      return `${defaultMessage}\n\nMORE: ${message}`;
+      return `${defaultMessage}\n${message ? message : ''}`;
     }
 
     return defaultMessage;

@@ -62,8 +62,10 @@ const staking = {
   click_stake: knownError(-26),
 };
 
-const dapps = {
-  daaps_invalid_daap_url: knownError(-28)
+const papps = {
+  paaps_invalid_daap_url: knownError(-28),
+  papp_can_not_opened: knownError(-41),
+  papp_the_token_is_not_supported: knownError(-42)
 };
 
 const addBep2Token = {
@@ -90,7 +92,7 @@ export default {
   ...node,
   ...validator,
   ...staking,
-  ...dapps,
+  ...papps,
   ...addBep2Token,
   ...addErc20Token,
   ...dex,

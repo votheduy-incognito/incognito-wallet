@@ -17,6 +17,7 @@ import Setting from '@screens/Setting';
 import DexHistory from '@screens/DexHistory';
 import DexHistoryDetail from '@screens/DexHistoryDetail';
 import HeaderBar from '@src/components/HeaderBar';
+import pApp from '@src/screens/PappView';
 import { navigationOptionsHandler } from '@src/utils/router';
 import ROUTE_NAMES from './routeNames';
 import TabNavigator from './TabNavigator';
@@ -40,6 +41,7 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'You' }),
     [ROUTE_NAMES.DexHistory]: navigationOptionsHandler(DexHistory, { header: () => null }),
     [ROUTE_NAMES.DexHistoryDetail]: navigationOptionsHandler(DexHistoryDetail, { header: () => null }),
+    [ROUTE_NAMES.pApp]: navigationOptionsHandler(pApp),
   },
   {
     initialRouteName: ROUTE_NAMES.RootTab,

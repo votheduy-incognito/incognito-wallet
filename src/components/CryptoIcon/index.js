@@ -21,6 +21,15 @@ class CryptoIcon extends Component {
     tokenId && !onlyDefault && this.getUri({ tokenId });
   }
 
+  componentDidUpdate(prevProps) {
+    const { tokenId, onlyDefault } = this.props;
+    const { tokenId: oldTokenId, onlyDefault: oldOnlyDefault } = prevProps;
+
+    if (tokenId !== oldTokenId || onlyDefault !== oldOnlyDefault) {
+      this.getUri({ tokenId });
+    }
+  }
+
   getUri = async ({ tokenId }) => {
     const { getIconUrlFromTokenId, logoStyle } = this.props;
     let uri;

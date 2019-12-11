@@ -23,7 +23,7 @@ export default {
   [CODE.node_invalid_host]: 'This address is not a valid domain or ip address. Please try another.',
   [CODE.getStarted_load_token_failed]: 'Somthing went wrong while loading data, please check your connection and try again or contact us for help.',
   [CODE.user_login_failed]: 'We have an authorization issue.',
-  [CODE.daaps_invalid_daap_url]: 'Please enter a valid Dapp URL',
+  [CODE.paaps_invalid_daap_url]: 'Please enter a valid pApp URL',
   [CODE.web_js_import_invalid_key]: 'Please make sure this private key is valid.',
   [CODE.web_js_can_not_use_this_token_for_fee]: 'Can not use this token for fee, please try another.',
   [CODE.estimate_fee_does_not_support_type_of_fee]: 'Can not use this token for fee, please try another.',
@@ -33,4 +33,6 @@ export default {
   [CODE.addErc20Token_not_found]: 'This BEP2 token has been added.',
   [CODE.api_qrcode_fail_ProductNotFound]: 'This QR code is unfamiliar. Please try again.',
   [CODE.api_qrcode_fail_QRCodeAlreadyStaked]: 'You\'ve already set up this Node.',
+  [CODE.papp_can_not_opened]: 'Sorry, we can not open this pApp. Please try again or check the pApp URL.',
+  [CODE.papp_the_token_is_not_supported]: 'This token is not supported in the pApp.'
 };
