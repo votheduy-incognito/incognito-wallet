@@ -57,6 +57,9 @@ export default class FirebaseService {
       }
     }
   }
+  /**
+   * @returns [string] : uid
+   */
   signIn = async(username, password) => {
     
     return new Promise((resolve,reject)=>{
@@ -66,6 +69,9 @@ export default class FirebaseService {
         this.currentUserName  = username;
         console.log(TAG,' signIn begin02 has authenticated = ',this.currentUserName);
         resolve(this.firebase.auth().currentUser?.uid||'');
+        /// test
+        // reject('fail firebase');
+        ////
       } else {
         this.createFirebaseAccount(username, password).then(user=>{
           

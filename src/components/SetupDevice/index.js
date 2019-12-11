@@ -138,10 +138,10 @@ class SetupDevice extends BaseComponent {
     super.componentDidMount();
     // this.callVerifyCode();
     // hien.ton test 
-    // const state = await NetInfo.fetch().catch(console.log);
-    // const {isConnected = false, isInternetReachable = false} = state ??{};
-    // console.log(TAG, 'componentDidMount state ',state);
-    this.authFirebase(deviceTest).then(data=>console.log('componentDidMount state ',data)).catch(console.warn);
+    const state = await NetInfo.fetch().catch(console.log);
+    const {isConnected = false, isInternetReachable = false} = state ??{};
+    console.log(TAG, 'componentDidMount state ',state);
+    // this.authFirebase(deviceTest).then(data=>console.log('componentDidMount state ',data)).catch(console.warn);
     //////
     this.connection =  NetInfo.addEventListener(this._handleConnectionChange);
   }
@@ -182,6 +182,27 @@ class SetupDevice extends BaseComponent {
     );
   }
 
+  renderStepDoingSetup=()=>{
+    const { container, textInput, item, errorText } = styles;
+    const {
+      showModal,
+      currentPositionStep,
+      isDoingSetUp,
+    } = this.state;
+    if(!isDoingSetUp){
+      return undefined;
+    }
+    return (
+      <StepIndicator
+        direction='vertical'
+        stepCount={labels.length}
+        customStyles={customStyles}
+        currentPosition={currentPositionStep}
+        labels={labels}
+      />
+    );
+  }
+
   renderWifiPassword=()=>{
     const { container, textInput, item, errorText } = styles;
     const {
@@ -200,15 +221,7 @@ class SetupDevice extends BaseComponent {
     // let isDoingSetUp = true;
 
     return (
-      isDoingSetUp? (
-        <StepIndicator
-          direction='vertical'
-          stepCount={labels.length}
-          customStyles={customStyles}
-          currentPosition={currentPositionStep}
-          labels={labels}
-        />
-      ):(
+      isDoingSetUp? this.renderStepDoingSetup():(
         <View style={[styles.modal, styles.modal3]}>
 
           { validSSID && validWPA ? null : (
@@ -296,6 +309,7 @@ class SetupDevice extends BaseComponent {
       }
       let productInfo  = resultStep1 ? await this.tryVerifyCode():{} ;
       let resultStep2  = !_.isEmpty(productInfo) ? await this.authFirebase(productInfo):false ;
+      const listNodeResult = !_.isEmpty(productInfo) && await this.saveProductList(productInfo);
       
       // this.CurrentPositionStep = 2;
       // let callVerifyCode = this.callVerifyCode;
@@ -326,10 +340,10 @@ class SetupDevice extends BaseComponent {
     return errorMsg;
   });
 
-  changeDeviceName = async(name,qrCodeDevice='')=>{
+  changeDeviceName = async(name,qrCodeDevice=undefined)=>{
     let errMessage = '';
     try {
-      this.qrCodeDeviceId = qrCodeDevice;
+      this.deviceIdFromQrcode = qrCodeDevice??this.deviceIdFromQrcode;
       const {addProduct} = this.state;
       let fetchProductInfo = {};
       if (this.validWallName && !_.isEmpty(addProduct) ) {
@@ -411,7 +425,7 @@ class SetupDevice extends BaseComponent {
         // create account
         // console.log(TAG,'handleSubmit fetchData = ',fetchProductInfo);
         let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
-        // const PrivateKey = result.PrivateKey;
+        
         const {PrivateKey = '',AccountName = '',PaymentAddress = '',PublicKeyCheckEncode='',ValidatorKey = ''} = result??{};
         result = await NodeService.sendValidatorKey(Device.getInstance(addProduct),ValidatorKey);
 
@@ -534,7 +548,7 @@ class SetupDevice extends BaseComponent {
           action: 'send_wifi_info',
           ssid: `'${ssid}'`,
           wpa: wpa,
-          product_name:`${CONSTANT_MINER.PRODUCT_NAME}_${this.qrCodeDeviceId}`,
+          product_name:`${CONSTANT_MINER.PRODUCT_NAME}_${this.deviceIdFromQrcode}`,
           product_type: DEVICES.MINER_TYPE,
           source:  Platform.OS,
           verify_code: verify_code,
@@ -622,7 +636,7 @@ class SetupDevice extends BaseComponent {
     // }
     this.isHaveNetwork = isInternetReachable &&isConnected;
     
-    console.log(TAG,`_handleConnectionChange: ${this.isHaveNetwork}`);
+    console.log(TAG,`_handleConnectionChange: ${this.isHaveNetwork}-ssid=${ssid}`);
     this.setState({
       isConnected: isConnected
     });
@@ -735,12 +749,14 @@ class SetupDevice extends BaseComponent {
         return {};
       }
       console.log(TAG,' authFirebase begin productInfo = ',productInfo);
-      const authFirebaseFunc = NodeService.authFirebase;
-      let authFirebase = await Util.tryAtMost(authFirebaseFunc(productInfo),3,3);
+      const authFirebaseFunc = ()=> {
+        return NodeService.authFirebase(productInfo);
+      };
+      let authFirebase = await Util.tryAtMost(authFirebaseFunc,3,3);
       // let authFirebase = await Util.tryAtMost(authFirebaseFunc(productInfo),3,3);
       return authFirebase;
     } catch (error) {
-      new ExHandler(error).throw();
+      new ExHandler(new CustomError(knownCode.node_auth_firebase_fail,{rawCode:error})).throw();
     }
   }
 
@@ -757,6 +773,9 @@ class SetupDevice extends BaseComponent {
         return this.isHaveNetwork?NodeService.verifyProductCode(verifyCode):new Error('no internet');
       };
       const resultStep2  = await Util.tryAtMost(promiseNetwork,TIMES_VERIFY,2);
+      this.setState({
+        addProduct:resultStep2
+      });
       return resultStep2;
     } catch (error) {
       new ExHandler(new CustomError(knownCode.node_verify_code_fail)).throw();
@@ -764,7 +783,6 @@ class SetupDevice extends BaseComponent {
     
   }
 
-  
 }
 
 

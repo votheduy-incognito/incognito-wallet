@@ -2,6 +2,7 @@ import { locationPermission } from '@utils/PermissionUtil';
 import Util from '@utils/Util';
 import _ from 'lodash';
 import { Alert, Platform } from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
 import { PASS_HOSPOT } from 'react-native-dotenv';
 // import Wifi from 'react-native-iot-wifi';
 import WifiManager from 'react-native-wifi-reborn';
@@ -24,7 +25,10 @@ class WifiConnection extends BaseConnection {
     console.log(TAG, 'fetchCurrentConnect begin ------');
     let pro = async()=>{
       try {
-        let SSID = await WifiManager.getCurrentWifiSSID();
+        const state = await NetInfo.fetch().catch(console.log);
+        const {isConnected = false, isInternetReachable = false,details =null} = state ??{};
+        const { ipAddress = '',isConnectionExpensive = false,ssid='' } = details ??{};
+        let SSID = _.isEmpty(ssid) ? await WifiManager.getCurrentWifiSSID():ssid;
         
         SSID = _.isEqual('Cannot detect SSID',SSID) || _.isEqual('<unknown ssid>',SSID) ?'':SSID;
         console.log(TAG, 'fetchCurrentConnect getSSID=', SSID);

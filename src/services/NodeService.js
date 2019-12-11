@@ -47,6 +47,13 @@ export const LIST_ACTION={
   },
 };
 export default class NodeService {
+  static getAName = async ()=>{
+    const listNode = await LocalDatabase.getListDevices()||[];
+    const subfix = Date.now()%1000;
+    const value = listNode?.length+1;
+    const nodeName =  _.padEnd(`Node ${value}`,10,subfix);
+    return nodeName;
+  }
   static authFirebase = (product) =>{
     const pros =  new Promise((resolve,reject)=>{
       let productId = product.product_id;

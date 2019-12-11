@@ -17,6 +17,7 @@ import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { Text,ButtonExtension,InputExtension as Input } from '@src/components/core';
 import knownCode from '@src/services/exception/customError/code/knownCode';
+import NodeService from '@src/services/NodeService';
 import styles from './styles';
 
 export const TAG = 'GetStartedAddNode';
@@ -93,7 +94,7 @@ class GetStartedAddNode extends BaseScreen {
       errorMessage:'',
       errorInSetUp:null,
       isPassedValidate:true,
-      deviceId:null
+      QRCode:null
     };
     this.viewStepIndicator = React.createRef();
     this.viewSetupDevice = React.createRef();
@@ -143,7 +144,7 @@ class GetStartedAddNode extends BaseScreen {
   }
 
   renderContent=()=>{
-    const {currentPage,deviceId,currentConnect,errorMessage,loading} = this.state;
+    const {currentPage,QRCode,currentConnect,errorMessage,loading} = this.state;
     
     let childView ;
     switch(currentPage){
@@ -166,7 +167,7 @@ class GetStartedAddNode extends BaseScreen {
             >{errorMessage}
             </Text>
           )}
-          <GetQrcode qrCode={deviceId} onSuccess={this.handleScanQrcodeSuccess} />
+          <GetQrcode qrCode={QRCode} onSuccess={this.handleScanQrcodeSuccess} />
         </>
       ); 
       break;
@@ -202,8 +203,8 @@ class GetStartedAddNode extends BaseScreen {
     });
   }
 
-  handleScanQrcodeSuccess= async(qrCode)=>{
-    this.setState({deviceId:qrCode});
+  handleScanQrcodeSuccess = async(qrCode)=>{
+    this.setState({QRCode:qrCode});
   }
 
   handleFinish =()=>{
@@ -217,12 +218,11 @@ class GetStartedAddNode extends BaseScreen {
         loading:true,
         currentPage:2,
       });
-      const deviceIdFromQrcode = this.state.deviceId;
+      const deviceIdFromQrcode = this.state.QRCode;
       
       const errorMessage = await this.viewSetupDevice.current.handleSetUpPress(deviceIdFromQrcode);
-      const listNode = await LocalDatabase.getListDevices()||[];
-      const subfix = Date.now()%1000;
-      const nodeName =  _.padEnd(`Node ${listNode.length+1}`,10,subfix);
+      
+      const nodeName = await NodeService.getAName();
       const deviceObj =  await this.viewSetupDevice.current.changeDeviceName(nodeName)||null; 
       console.log(TAG,'handleStepConnect errorMessage ',errorMessage ,deviceObj);
       if(_.isEmpty(errorMessage) && !_.isNil(deviceObj)){
@@ -238,6 +238,10 @@ class GetStartedAddNode extends BaseScreen {
       case(knownCode.node_verify_code_fail):
         currentPage = 2;
         break;
+      case (knownCode.node_auth_firebase_fail):{
+        currentPage=2;
+        break;
+      }
       }
       this.setState({
         loading:false,
@@ -299,8 +303,8 @@ class GetStartedAddNode extends BaseScreen {
       childView = {
         ...childView,
         onPress:()=>{
-          const {deviceId} = this.state;
-          const isPassedValidate = !_.isEmpty(deviceId);
+          const {QRCode} = this.state;
+          const isPassedValidate = !_.isEmpty(QRCode);
           this.setState({
             isPassedValidate:isPassedValidate,
             currentPage:isPassedValidate? 2:1,
@@ -338,12 +342,13 @@ class GetStartedAddNode extends BaseScreen {
   }
 
   render() {
-    const { loading,currentPage,currentConnect,errorMessage } = this.state;
+    const { loading,currentPage,currentConnect,errorMessage,errorInSetUp } = this.state;
+    const rootCauseMessage = errorInSetUp?.message??'';
 
     return (
       <View style={styles.container}>
         <StepIndicator stepCount={3} currentPage={currentPage} ref={this.viewStepIndicator} />
-        <Text>{errorMessage}</Text>
+        <Text style={styles.errorText}>{rootCauseMessage}</Text>
         <ScrollView>
           {this.renderTitle()}
           {this.renderContent()}
