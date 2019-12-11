@@ -45,19 +45,38 @@ export const MESSAGES = {
   DEPOSIT: 'deposit',
   WITHDRAW: 'withdraw',
   TRADE: 'trade',
+  ADD_LIQUIDITY: 'add liquidity',
+  REMOVE_LIQUIDITY: 'remove liquidity',
   RETRY_WITHDRAW: 'Withdraw unsuccessful. Please go into withdraw detail in history to retry.',
   WITHDRAW_COMPLETED: 'Withdraw successfully. Your balance will update in a couple of minutes',
   WITHDRAW_BALANCE: 'PDexWithdraw account balance is insufficient',
   SOMETHING_WRONG: 'Something got stuck. Please make the withdrawal again.',
-  PENDING_TRANSACTIONS: 'It looks like you have a pending transaction.  Please either wait until that transaction is complete first.',
+  PENDING_TRANSACTIONS: 'Please wait for your previous transaction to finish processing. Simply try again later.',
   WITHDRAW_PROCESS: 'Withdrawing your funds...\n\nThis may take a couple of minutes. Please do not navigate away from the app.',
+  SHARE_INSUFFICIENT: 'Your share is insufficient.',
+  MUST_BE_INTEGER: 'Please enter a whole number (not a fraction).',
+  NOT_ENOUGH_NETWORK_FEE_ADD: 'Please top up PRV to cover the network fee.',
+  ADD_LIQUIDITY_PROCESS: 'Adding your pair...\n\nThis may take a couple of minutes. Please do not navigate away from the app.',
+  CANCEL_LIQUIDITY_PROCESS: 'Canceling your request...\n\nThis may take a couple of minutes. Please do not navigate away from the app.',
+  ACCOUNT_NOT_FOUND: 'Depositing account not found.',
+  NOT_ENOUGH_BALANCE_ADD: (symbol) => `Please top up ${symbol} to complete this action.`,
+  TX_REJECTED: 'We seem to have hit a snag. Please try again later.',
+  REMOVE_LIQUIDITY_SUCCESS_TITLE: 'Liquidity removal initiated',
+  REMOVE_LIQUIDITY_SUCCESS: 'Your balance will update a couple of minutes once liquidity removal is complete.',
+  ADD_LIQUIDITY_SUCCESS_TITLE: 'Adding a pair',
+  ADD_LIQUIDITY_SUCCESS: 'Your pair will be listed in a couple of minutes.',
+  CANCEL_ADD_LIQUIDITY_SUCCESS_TITLE: 'Cancelling your request to add a pair.',
+  CANCEL_ADD_LIQUIDITY_SUCCESS: 'Your balance will update in a couple of minutes after the request is complete.',
+  NO_PAIR: 'You haven\'t added any pairs yet.',
 };
 export const MILLISECOND = 1;
 export const SECOND = 1000 * MILLISECOND;
 export const MINUTE = 60 * SECOND;
 export const MIN_INPUT = 1;
 export const MIN_VALUE = 50;
-export const MAX_TRIED = 50;
 export const MAX_WAITING_TIME = 5 * MINUTE;
 export const MULTIPLY = 6;
+export const REMOVE_LIQUIDITY_TX_SIZE = 20;
 export const LIMIT_HISTORY = 5;
+export const MIN_CANCEL_VALUE = 1;
+export const MAX_LENGTH = 20;

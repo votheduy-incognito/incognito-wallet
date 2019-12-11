@@ -23,6 +23,12 @@ function addHistory(history, histories = []) {
   return newHistories;
 }
 
+function deleteHistory(history, histories = []) {
+  const newHistories = [...histories.filter(item => item.txId !== history.txId)];
+  LocalDatabase.saveDexHistory(newHistories);
+  return newHistories;
+}
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
   case types.GET_HISTORIES:
@@ -44,6 +50,11 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       histories: updateHistory(action.payload, state.histories),
+    };
+  case types.DELETE_HISTORY:
+    return {
+      ...state,
+      histories: deleteHistory(action.payload, state.histories),
     };
   default:
     return state;

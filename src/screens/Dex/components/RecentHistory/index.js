@@ -3,17 +3,11 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {Text, TouchableOpacity, View} from '@components/core';
 import routeNames from '@routers/routeNames';
-import { MESSAGES, LIMIT_HISTORY } from '@screens/Dex/constants';
-import { TradeHistory, DepositHistory, WithdrawHistory } from '@src/components/DexHistoryItem';
+import { LIMIT_HISTORY } from '@screens/Dex/constants';
+import HISTORY_TYPES from '@src/components/DexHistoryItem';
 import { MAX_ERROR_TRIED, NOT_CHANGE_STATUS, RETRY_STATUS } from '@src/redux/actions/dex';
 import { mainStyle } from '@screens/Dex/style';
 import stylesheet from './style';
-
-const HISTORY_TYPES = {
-  [MESSAGES.DEPOSIT]: DepositHistory,
-  [MESSAGES.WITHDRAW]: WithdrawHistory,
-  [MESSAGES.TRADE]: TradeHistory,
-};
 
 class RecentHistory extends React.PureComponent {
   focus = true;

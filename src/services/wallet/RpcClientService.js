@@ -229,9 +229,25 @@ export async function getPDETradeStatus(txId) {
   return client.getPDETradeStatus(txId);
 }
 
+export async function getPDEContributionStatus(pairId) {
+  const client = await getRpcClient();
+  return client.getPDEContributionStatus(pairId);
+}
+
+export async function getPDEWithdrawalStatus(txId) {
+  const client = await getRpcClient();
+  console.debug('TX', txId);
+  return client.getPDEWithdrawalStatus(txId);
+}
+
 export async function getTransactionByHash(txId) {
   const client = await getRpcClient();
   return client.getTransactionByHash(txId);
+}
+
+export async function getEstimateFeePerKB(paymentAddress) {
+  const client = await getRpcClient();
+  return client.getEstimateFeePerKB(paymentAddress);
 }
 
 setRpcClientInterceptor();

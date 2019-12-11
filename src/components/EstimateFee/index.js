@@ -281,7 +281,7 @@ class EstimateFeeContainer extends Component {
 }
 
 const mapState = (state, props) => ({
-  selectedPrivacy: props?.selectedPrivacy || selectedPrivacySeleclor.selectedPrivacy(state, props.dexToken),
+  selectedPrivacy: props?.selectedPrivacy || selectedPrivacySeleclor.selectedPrivacy(state),
   account: accountSeleclor.getAccountByName(state)(props.accountName),
   wallet: state.wallet,
 });

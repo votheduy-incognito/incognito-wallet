@@ -6,7 +6,7 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import { defaultAccount } from './account';
 import { followed, pTokens, internalTokens } from './token';
 
-export const selectedPrivacyTokenID = (state, dexToken) => state?.selectedPrivacy?.tokenID || dexToken?.id;
+export const selectedPrivacyTokenID = (state) => state?.selectedPrivacy?.tokenID;
 
 export const getPrivacyDataByTokenID = createSelector(
   defaultAccount,

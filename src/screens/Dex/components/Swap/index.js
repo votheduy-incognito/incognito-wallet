@@ -2,79 +2,67 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {
-  ActivityIndicator,
   Button,
   Image,
   Text,
   View,
 } from '@src/components/core';
 import downArrow from '@src/assets/images/icons/down_arrow.png';
-import { RefreshControl, ScrollView } from 'react-native';
 import accountService from '@services/wallet/accountService';
-import tokenService from '@services/wallet/tokenService';
-import { getTokenList } from '@src/services/api/token';
-import {
-  getPDEPairs,
-} from '@src/services/wallet/RpcClientService';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
-import { ExHandler } from '@services/exception';
 import { Divider } from 'react-native-elements';
-import dexUtils, { DEX } from '@src/utils/dex';
 import ExchangeRate from '@screens/Dex/components/ExchangeRate';
 import LocalDatabase from '@utils/LocalDatabase';
 import {TradeHistory} from '@models/dexHistory';
-import RecentHistory from '@screens/Dex/components/RecentHistory';
 import PoolSize from '@screens/Dex/components/PoolSize';
 import SwapSuccessDialog from '../SwapSuccessDialog';
-import Transfer from '../Transfer';
 import Input from '../Input';
 import TradeConfirm from '../TradeConfirm';
-import {PRV, MESSAGES, MIN_INPUT} from '../../constants';
-import {inputStyle, mainStyle} from '../../style';
+import { PRV, MESSAGES, MIN_INPUT } from '../../constants';
+import { mainStyle } from '../../style';
 
 class Swap extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      inputToken: undefined,
-      inputValue: undefined,
-      outputToken: undefined,
-      outputValue: undefined,
-      outputList: [],
-      balance: 'Loading',
-      prvBalance: 0,
-      inputError: undefined,
-      chainPairs: [],
-      tokens: [],
-      dexMainAccount: {},
-      accounts: [],
-      showSwapSuccess: false,
+      ...props.tradeParams,
       showTradeConfirm: false,
-      sending: false,
     };
-
-    this.interval = null;
-    this.listener = null;
   }
 
   async componentDidMount() {
-    const { navigation } = this.props;
     this.seenDepositGuide = await LocalDatabase.getSeenDepositGuide() || false;
-    await this.createAccounts();
     this.loadData();
-
-    this.listener = navigation.addListener('didFocus', this.loadData);
   }
 
-  componentWillUnmount() {
-    clearInterval(this.interval);
+  componentDidUpdate(prevProps, prevState) {
+    const { pairs, pairTokens, onUpdateTradeParams } = this.props;
 
-    if (this.listener) {
-      this.listener.remove();
-      this.listener = null;
+    if (pairs.length > 0 && pairTokens.length > 0 && (pairs !== prevProps.pairs || pairTokens !== prevProps.pairTokens)) {
+      this.loadData();
+    }
+
+    if (this.state !== prevState) {
+      onUpdateTradeParams(prevState);
     }
   }
+
+  loadData = () => {
+    const { pairTokens } = this.props;
+    const { inputToken } = this.state;
+
+    if (!pairTokens || pairTokens.length <= 0) {
+      return;
+    }
+
+    if (inputToken) {
+      this.filterOutputList();
+      this.getInputBalance();
+    } else {
+      this.selectInput(pairTokens[0]);
+    }
+  };
 
   async updateSeenDepositGuide() {
     this.seenDepositGuide = true;
@@ -83,75 +71,10 @@ class Swap extends React.Component {
     onShowDepositGuide();
   }
 
-  async createAccounts() {
-    const { wallet } = this.props;
-    const accounts = await wallet.listAccount();
-    const dexMainAccount = accounts.find(item => item.AccountName === DEX.MAIN_ACCOUNT);
-    const dexWithdrawAccount = accounts.find(item => item.AccountName === DEX.WITHDRAW_ACCOUNT);
-    this.setState({ dexMainAccount, dexWithdrawAccount });
-  }
-
-  loadData = async () => {
-    const { wallet, onGetHistories } = this.props;
-    const { isLoading } = this.state;
-
-    if (isLoading) {
-      return;
-    }
-
-    try {
-      let accounts = await wallet.listAccount();
-      accounts = accounts.filter(account => !dexUtils.isDEXAccount(account.name || account.AccountName));
-      this.setState( { accounts });
-
-      onGetHistories();
-
-      this.setState({ isLoading: true });
-      const pTokens = await getTokenList();
-      const pairs = await getPDEPairs();
-      const chainTokens = (await tokenService.getPrivacyTokens()).map(item => ({ ...item, name: `Incognito ${item.name}`}));
-      // const pairs = CHAIN_PAIRS;
-      // const chainTokens = CHAIN_TOKENS;
-
-      const chainPairs = _.map(pairs.state.PDEPoolPairs, pair => ({
-        [pair.Token1IDStr]: pair.Token1PoolValue,
-        [pair.Token2IDStr]: pair.Token2PoolValue,
-      })).filter(pair => _.every(pair, value => value > 0));
-      const tokens = [PRV, ..._.orderBy(chainTokens
-        .filter(token => chainPairs.find(pair => Object.keys(pair).includes(token.id)))
-        .map(item => {
-          const pToken = pTokens.find(token => token.tokenId === item.id);
-          return {
-            ...item,
-            pDecimals: Math.min(pToken?.pDecimals || 0, 9),
-            hasIcon: !!pToken,
-            symbol: pToken?.pSymbol || item.symbol,
-            name: pToken?  `Private ${pToken.name}` : item.name,
-          };
-        })
-        .filter(token => token.name && token.symbol), item => item.symbol && item.symbol.toLowerCase())
-      ];
-
-      this.setState({ chainPairs, tokens }, async () => {
-        const { inputToken } = this.state;
-        if (inputToken) {
-          this.filterOutputList();
-          this.getInputBalance();
-        } else {
-          this.selectInput(tokens[0]);
-        }
-      });
-    } catch(error) {
-      new ExHandler(error).showErrorToast();
-    } finally {
-      this.setState({ isLoading: false });
-    }
-  };
-
   async getInputBalance(balance) {
+    const { wallet, dexMainAccount } = this.props;
+    const { inputToken: token, balance: prevBalance } = this.state;
     try {
-      const { wallet } = this.props;
-      const {inputToken: token, dexMainAccount, balance: prevBalance} = this.state;
       if (!_.isNumber(balance)) {
         balance = await accountService.getBalance(dexMainAccount, wallet, token.id);
         const {inputToken} = this.state;
@@ -203,7 +126,7 @@ class Swap extends React.Component {
     const { balance, inputToken } = this.state;
     let number = _.toNumber(newValue);
 
-    if (newValue.length === 0) {
+    if (!newValue || newValue.length === 0) {
       this.setState({ inputError: null, inputValue: 0 }, this.calculateOutputValue);
     } else if (_.isNaN(number)) {
       this.setState({inputError: MESSAGES.MUST_BE_NUMBER });
@@ -225,23 +148,30 @@ class Swap extends React.Component {
       }
     }
 
-    this.setState({ rawText: newValue.toString() });
+    this.setState({ rawText: newValue ? newValue.toString() : '' });
   };
 
   async filterOutputList(callback) {
     try {
-      const {inputToken: token, chainPairs, tokens, outputToken} = this.state;
+      const { inputToken: token, outputToken } = this.state;
+      const { pairTokens, pairs } = this.props;
 
-      const pairs = chainPairs
-        .filter(pair => Object.keys(pair).includes(token.id));
-      const outputList = _.orderBy(
-        pairs
-          .map(pair => Object.keys(pair).find(key => key !== token.id))
-          .map(id => tokens.find(token => token.id.includes(id)))
-          .filter(item => item)
-        , item => item.symbol && item.symbol.toLowerCase());
+      const outputPairs = pairs.filter(pair => pair[token.id]);
+      const outputList = _(outputPairs)
+        .map(pair => {
+          const id = pair.keys.find(key => key !== token.id);
+          const pool = pair[id];
+          return ({ id, pool });
+        })
+        .map(({ id, pool }) => ({
+          ...pairTokens.find(token => token.id === id),
+          pool: convertUtil.toRealTokenValue(pairTokens, id, pool),
+        }))
+        .filter(item => item)
+        .orderBy(['hasIcon', 'pool', item => item.symbol && item.symbol.toLowerCase()], ['desc', 'desc', 'asc'])
+        .value();
       this.setState({
-        pairs,
+        outputPairs,
         outputList,
         outputToken: outputToken || outputList[0],
       }, () => {
@@ -255,13 +185,13 @@ class Swap extends React.Component {
 
   calculateOutputValue() {
     try {
-      const {pairs, outputToken, inputToken, inputValue} = this.state;
+      const {outputPairs, outputToken, inputToken, inputValue} = this.state;
 
       if (!outputToken || !_.isNumber(inputValue) || _.isNaN(inputValue) || inputValue === 0) {
         return this.setState({ outputValue: 0 });
       }
 
-      const pair = pairs.find(i => Object.keys(i).includes(outputToken.id));
+      const pair = outputPairs.find(i => Object.keys(i).includes(outputToken.id));
       const inputPool = pair[inputToken.id];
       const outputPool = pair[outputToken.id];
       const initialPool = inputPool * outputPool;
@@ -304,8 +234,8 @@ class Swap extends React.Component {
   }
 
   trade = async (networkFee, networkFeeUnit, tradingFee, stopPrice) => {
-    const { wallet } = this.props;
-    const { sending, dexMainAccount, balance, inputToken, inputValue } = this.state;
+    const { wallet, dexMainAccount } = this.props;
+    const { sending, balance, inputToken, inputValue } = this.state;
     let prvBalance;
     let prvFee = 0;
     let tokenFee = 0;
@@ -403,24 +333,22 @@ class Swap extends React.Component {
   }
 
   renderInputs() {
-    const { wallet } = this.props;
+    const { wallet, dexMainAccount, pairTokens, isLoading } = this.props;
     const {
       inputToken,
       outputToken,
       outputValue,
       outputList,
       balance,
-      tokens,
       inputError,
-      dexMainAccount,
       rawText,
       pair,
-      isLoading,
     } = this.state;
+
     return (
       <View>
         <Input
-          tokenList={tokens}
+          tokenList={pairTokens}
           onSelectToken={this.selectInput}
           onChange={this.changeInputValue}
           headerTitle="From"
@@ -457,14 +385,10 @@ class Swap extends React.Component {
   }
 
   render() {
+    const { isLoading } = this.props;
     const {
       outputValue,
       sending,
-      isLoading,
-      dexMainAccount,
-      dexWithdrawAccount,
-      accounts,
-      tokens,
       inputToken,
       inputValue,
       outputToken,
@@ -476,13 +400,7 @@ class Swap extends React.Component {
     } = this.state;
     const {
       wallet,
-      transferAction,
-      onClosePopUp,
-      histories,
-      onAddHistory,
-      onUpdateHistory,
-      onGetHistoryStatus,
-      navigation,
+      dexMainAccount,
     } = this.props;
     let { inputError } = this.state;
 
@@ -492,92 +410,67 @@ class Swap extends React.Component {
 
     return (
       <View style={mainStyle.componentWrapper}>
-        <ScrollView refreshControl={<RefreshControl refreshing={isLoading} onRefresh={this.loadData} />}>
-          <View style={mainStyle.scrollView}>
-            <View style={mainStyle.content}>
-              {this.renderInputs()}
-              <View style={mainStyle.dottedDivider} />
-              {this.renderFee()}
-              <View style={[mainStyle.actionsWrapper]}>
-                <Button
-                  title="Trade"
-                  style={[mainStyle.button]}
-                  disabled={
-                    sending ||
-                    inputError ||
-                    !outputValue ||
-                    outputValue <= 0 ||
-                    isLoading
-                  }
-                  disabledStyle={mainStyle.disabledButton}
-                  onPress={this.swap}
-                />
-              </View>
+        <View>
+          <View style={mainStyle.content}>
+            {this.renderInputs()}
+            <View style={mainStyle.dottedDivider} />
+            {this.renderFee()}
+            <View style={[mainStyle.actionsWrapper]}>
+              <Button
+                title="Trade"
+                style={[mainStyle.button]}
+                disabled={
+                  sending ||
+                  inputError ||
+                  !outputValue ||
+                  outputValue <= 0 ||
+                  isLoading
+                }
+                disabledStyle={mainStyle.disabledButton}
+                onPress={this.swap}
+              />
             </View>
-            <Transfer
-              dexMainAccount={dexMainAccount}
-              dexWithdrawAccount={dexWithdrawAccount}
-              wallet={wallet}
-              accounts={accounts}
-              tokens={tokens}
-              action={transferAction}
-              onClosePopUp={onClosePopUp}
-              inputToken={inputToken}
-              onLoadData={this.loadData}
-              onAddHistory={onAddHistory}
-              onUpdateHistory={onUpdateHistory}
-            />
-            <RecentHistory
-              histories={histories}
-              onGetHistoryStatus={onGetHistoryStatus}
-              navigation={navigation}
-            />
           </View>
-          <SwapSuccessDialog
-            inputToken={inputToken}
-            inputValue={inputValue}
-            outputToken={outputToken}
-            outputValue={outputValue}
-            showSwapSuccess={showSwapSuccess}
-            closeSuccessDialog={this.closeSuccessDialog}
-          />
-          <TradeConfirm
-            visible={showTradeConfirm}
-            account={dexMainAccount}
-            wallet={wallet}
-            inputToken={inputToken || {}}
-            inputValue={inputValue}
-            outputToken={outputToken || {}}
-            outputValue={outputValue}
-            onClose={() => this.setState({ showTradeConfirm: false, tradeError: null })}
-            onTrade={this.trade}
-            tradeError={tradeError}
-            sending={sending}
-            inputBalance={balance}
-            prvBalance={prvBalance}
-          />
-        </ScrollView>
+        </View>
+        <SwapSuccessDialog
+          inputToken={inputToken}
+          inputValue={inputValue}
+          outputToken={outputToken}
+          outputValue={outputValue}
+          showSwapSuccess={showSwapSuccess}
+          closeSuccessDialog={this.closeSuccessDialog}
+        />
+        <TradeConfirm
+          visible={showTradeConfirm}
+          account={dexMainAccount}
+          wallet={wallet}
+          inputToken={inputToken || {}}
+          inputValue={inputValue}
+          outputToken={outputToken || {}}
+          outputValue={outputValue}
+          onClose={() => this.setState({ showTradeConfirm: false, tradeError: null })}
+          onTrade={this.trade}
+          tradeError={tradeError}
+          sending={sending}
+          inputBalance={balance}
+          prvBalance={prvBalance}
+        />
         {/*<WithdrawalInProgress />*/}
       </View>
     );
   }
 }
 
-Swap.defaultProps = {
-  transferAction: null,
-};
-
 Swap.propTypes = {
-  histories: PropTypes.array.isRequired,
   wallet: PropTypes.object.isRequired,
-  navigation: PropTypes.object.isRequired,
-  onClosePopUp: PropTypes.func.isRequired,
-  transferAction: PropTypes.string,
   onShowDepositGuide: PropTypes.func.isRequired,
   onAddHistory: PropTypes.func.isRequired,
-  onUpdateHistory: PropTypes.func.isRequired,
-  onGetHistoryStatus: PropTypes.func.isRequired,
-  onGetHistories: PropTypes.func.isRequired,
+  onUpdateTradeParams: PropTypes.func.isRequired,
+  dexMainAccount: PropTypes.object.isRequired,
+  pairs: PropTypes.array.isRequired,
+  pairTokens: PropTypes.array.isRequired,
+  tradeParams: PropTypes.object.isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
 
 export default Swap;

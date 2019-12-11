@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   TouchableOpacity
 } from '@src/components/core';
-import { ScrollView, TextInput as ReactInput } from 'react-native';
+import {ScrollView, TextInput as ReactInput, Keyboard, TouchableWithoutFeedback} from 'react-native';
 import accountService from '@services/wallet/accountService';
 import { isExchangeRatePToken } from '@src/services/wallet/RpcClientService';
 import {CONSTANT_COMMONS} from '@src/constants';
@@ -350,6 +350,7 @@ class Transfer extends React.PureComponent {
       const originalAmount = _.toNumber(convertUtil.toOriginalAmount(number, transfer.token.pDecimals));
 
       if (originalAmount > balance) {
+        amount = originalAmount;
         error = MESSAGES.BALANCE_INSUFFICIENT;
       } else if (originalAmount < MIN_INPUT) {
         error = `Please enter a number greater than or equal to ${formatUtil.amountFull(MIN_INPUT, transfer.token.pDecimals)}.`;
@@ -537,7 +538,7 @@ class Transfer extends React.PureComponent {
 
   renderAmountPopup() {
     const { transfer, sending } = this.state;
-    const { dexMainAccount, dexWithdrawAccount } = this.props;
+    const { dexMainAccount, dexWithdrawAccount, onSelectPrivacyByTokenID } = this.props;
     const {
       token,
       balance,
@@ -566,85 +567,91 @@ class Transfer extends React.PureComponent {
         overlayStyle={[mainStyle.modal, sending && mainStyle.hiddenDialog]}
         overlayBackgroundColor={sending ? 'transparent' : 'white'}
         windowBackgroundColor={`rgba(0,0,0,${ sending ? 0.8 : 0.5})`}
+        onBackdropPress={Keyboard.dismiss}
       >
-        <View>
-          <View style={sending && mainStyle.hidden}>
-            <View style={mainStyle.modalHeader}>
-              <TouchableOpacity onPress={this.closeAmountPopUp} style={mainStyle.modalBack}>
-                <Image source={leftArrow} />
-              </TouchableOpacity>
-              <Text style={[mainStyle.modalHeaderText]}>
-                Amount
-              </Text>
-              <TouchableOpacity onPress={this.closePopUp}>
-                <Icon name="close" color={COLORS.white} />
-              </TouchableOpacity>
-            </View>
-            <View style={[mainStyle.modalContent, mainStyle.paddingTop]}>
-              <View style={[mainStyle.twoColumns, mainStyle.center, tokenStyle.wrapper, mainStyle.padding]}>
-                <Text style={tokenStyle.name}>{action === 'deposit' ? 'Deposit from' : 'Withdraw to'}:</Text>
-                <Text style={[mainStyle.textRight, mainStyle.longAccountName]} numberOfLines={1}>
-                  {transfer?.account?.AccountName}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View>
+            <View style={sending && mainStyle.hidden}>
+              <View style={mainStyle.modalHeader}>
+                <TouchableOpacity onPress={this.closeAmountPopUp} style={mainStyle.modalBack}>
+                  <Image source={leftArrow} />
+                </TouchableOpacity>
+                <Text style={[mainStyle.modalHeaderText]}>
+                  Amount
                 </Text>
+                <TouchableOpacity onPress={this.closePopUp}>
+                  <Icon name="close" color={COLORS.white} />
+                </TouchableOpacity>
               </View>
-              <View style={[mainStyle.twoColumns, mainStyle.center, tokenStyle.wrapper, mainStyle.padding]}>
-                <Text style={tokenStyle.name}>Balance:</Text>
-                <View style={[mainStyle.textRight, mainStyle.twoColumns]}>
-                  { _.isNumber(balance) ?
-                    (
-                      <Text
-                        style={[tokenStyle.symbol, mainStyle.longAccountName]}
-                        numberOfLines={1}
-                      >
-                        {formatUtil.amountFull(balance, token?.pDecimals)}
-                      </Text>
-                    ) : <ActivityIndicator size="small" style={mainStyle.textRight} />
-                  }
-                  <Text>&nbsp;{token?.symbol}</Text>
+              <View style={[mainStyle.modalContent, mainStyle.paddingTop]}>
+                <View style={[mainStyle.twoColumns, mainStyle.center, tokenStyle.wrapper, mainStyle.padding]}>
+                  <Text style={tokenStyle.name}>{action === 'deposit' ? 'Deposit from' : 'Withdraw to'}:</Text>
+                  <Text style={[mainStyle.textRight, mainStyle.longAccountName]} numberOfLines={1}>
+                    {transfer?.account?.AccountName}
+                  </Text>
                 </View>
-              </View>
-              <ReactInput
-                style={tokenStyle.input}
-                placeholder="0.0"
-                placeholderColor={COLORS.lightGrey1}
-                keyboardType="decimal-pad"
-                onChangeText={this.changeAmount}
-                editable={_.isNumber(balance)}
-              />
-              {!!error && <Text style={[mainStyle.fee, mainStyle.error, mainStyle.center, tokenStyle.error]}>{error}</Text>}
-              {!!chainError && <Text style={[mainStyle.fee, mainStyle.error, mainStyle.center, tokenStyle.error]}>{chainError}</Text>}
-              <View style={mainStyle.modalEstimate}>
-                <EstimateFee
-                  accountName={action === 'deposit' ? account?.AccountName : dexMainAccount?.AccountName}
-                  estimateFeeData={{ feeUnit, fee, feeUnitByTokenId }}
-                  onNewFeeData={this.handleSelectFee}
-                  types={supportedFeeTypes}
-                  dexToken={token}
-                  dexBalance={balance}
-                  amount={amount / Math.pow(10, token?.pDecimals || 0)}
-                  toAddress={action === 'deposit' ? dexMainAccount?.PaymentAddress : dexWithdrawAccount?.PaymentAddress}
-                  multiply={multiply || 1}
+                <View style={[mainStyle.twoColumns, mainStyle.center, tokenStyle.wrapper, mainStyle.padding]}>
+                  <Text style={tokenStyle.name}>Balance:</Text>
+                  <View style={[mainStyle.textRight, mainStyle.twoColumns]}>
+                    { _.isNumber(balance) ?
+                      (
+                        <Text
+                          style={[tokenStyle.symbol, mainStyle.longAccountName]}
+                          numberOfLines={1}
+                        >
+                          {formatUtil.amountFull(balance, token?.pDecimals)}
+                        </Text>
+                      ) : <ActivityIndicator size="small" style={mainStyle.textRight} />
+                    }
+                    <Text>&nbsp;{token?.symbol}</Text>
+                  </View>
+                </View>
+                <ReactInput
+                  style={tokenStyle.input}
+                  placeholder="0.0"
+                  placeholderColor={COLORS.lightGrey1}
+                  keyboardType="decimal-pad"
+                  onChangeText={this.changeAmount}
+                  editable={_.isNumber(balance)}
+                />
+                {!!error && <Text style={[mainStyle.fee, mainStyle.error, mainStyle.center, tokenStyle.error]}>{error}</Text>}
+                {!!chainError && <Text style={[mainStyle.fee, mainStyle.error, mainStyle.center, tokenStyle.error]}>{chainError}</Text>}
+                {isVisible && (
+                  <View style={mainStyle.modalEstimate}>
+                    <EstimateFee
+                      accountName={action === 'deposit' ? account?.AccountName : dexMainAccount?.AccountName}
+                      estimateFeeData={{feeUnit, fee, feeUnitByTokenId}}
+                      onNewFeeData={this.handleSelectFee}
+                      types={supportedFeeTypes}
+                      dexToken={token}
+                      selectedPrivacy={onSelectPrivacyByTokenID(token?.id)}
+                      dexBalance={balance}
+                      amount={amount <= balance ? amount / Math.pow(10, token?.pDecimals || 0) : null}
+                      toAddress={action === 'deposit' ? dexMainAccount?.PaymentAddress : dexWithdrawAccount?.PaymentAddress}
+                      multiply={multiply || 1}
+                    />
+                  </View>
+                )}
+                <Button
+                  title={_.capitalize(action)}
+                  disabled={
+                    sending ||
+                    error ||
+                    !_.isNumber(amount) ||
+                    !_.isNumber(fee) ||
+                    !_.isNumber(balance)
+                  }
+                  style={tokenStyle.button}
+                  onPress={this.transfer}
                 />
               </View>
-              <Button
-                title={_.capitalize(action)}
-                disabled={
-                  sending ||
-                  error ||
-                  !_.isNumber(amount) ||
-                  !_.isNumber(fee) ||
-                  !_.isNumber(balance)
-                }
-                style={tokenStyle.button}
-                onPress={this.transfer}
-              />
             </View>
+            <FullScreenLoading
+              open={sending}
+              mainText={action === 'withdraw' ? MESSAGES.WITHDRAW_PROCESS : ''}
+            />
           </View>
-          <FullScreenLoading
-            open={sending}
-            mainText={action === 'withdraw' ? MESSAGES.WITHDRAW_PROCESS : ''}
-          />
-        </View>
+        </TouchableWithoutFeedback>
       </Overlay>
     );
   }
@@ -689,6 +696,7 @@ Transfer.propTypes = {
   inputToken: PropTypes.object,
   onClosePopUp: PropTypes.func.isRequired,
   onLoadData: PropTypes.func.isRequired,
+  onSelectPrivacyByTokenID: PropTypes.func.isRequired,
 };
 
 export default Transfer;

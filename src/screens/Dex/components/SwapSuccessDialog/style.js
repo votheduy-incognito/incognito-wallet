@@ -21,7 +21,7 @@ export const mainStyle = StyleSheet.create({
     resizeMode: 'contain'
   },
   dialogTitle: {
-    fontSize: 20,
+    fontSize: 18,
     marginTop: 10,
     marginBottom: 5,
     ...FONT.STYLE.medium,

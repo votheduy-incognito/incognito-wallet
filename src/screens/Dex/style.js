@@ -1,15 +1,81 @@
-import {COLORS, FONT, SPACING} from '@src/styles';
+import {COLORS, FONT} from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 export const dexStyle = StyleSheet.create({
   actionContainer: {
     flex: 1,
   },
-  leftButton: {
-    marginRight: 5,
+  options: {
+    minHeight: 75,
+    minWidth: 45,
   },
-  rightButton: {
-    marginLeft: 5,
+  header: {
+    marginHorizontal: 25,
+    backgroundColor: COLORS.dark5,
+    padding: 5,
+    flexDirection: 'row',
+    flex: 1,
+    borderRadius: 4,
+    marginTop: -5,
+  },
+  mode: {
+    flex: 1,
+    borderRadius: 4,
+  },
+  activeMode: {
+    backgroundColor: COLORS.dark2,
+  },
+  activeText: {
+    color: COLORS.primary,
+  },
+  headerText: {
+    textAlign: 'center',
+    fontSize: 14,
+    paddingVertical: 5,
+    color: COLORS.white,
+    ...FONT.STYLE.medium,
+  },
+  scrollViewContainer: {
+    flex: 1,
+    padding: 15,
+    paddingTop: 80,
+  },
+  pool: {
+    paddingTop: 55,
+  },
+  scrollViewHeader: {
+    position: 'absolute',
+    height: 100,
+    top: 0,
+    left: 0,
+    right: 0,
+    paddingTop: 15,
+    paddingHorizontal: 15,
+    backgroundColor: COLORS.dark5,
+    flexDirection: 'row',
+  },
+  mainButton: {
+    marginBottom: 15,
+    backgroundColor: COLORS.dark5,
+    borderColor: COLORS.dark6,
+    borderWidth: 1,
+    flex: 1,
+  },
+  actions: {
+    position: 'absolute',
+    left: 15,
+    right: 15,
+    top: 8,
+    ...FONT.STYLE.medium,
+  },
+  actionText: {
+    color: COLORS.white,
+    marginRight: 10,
+  },
+  selector: {
+    padding: 10,
+    paddingHorizontal: 20,
+    marginRight: -20,
   },
 });
 
@@ -20,6 +86,9 @@ export const mainStyle = StyleSheet.create({
     backgroundColor: COLORS.lightGrey6,
   },
   componentWrapper: {
+    flex: 1,
+  },
+  flex: {
     flex: 1,
   },
   header: {
@@ -76,9 +145,6 @@ export const mainStyle = StyleSheet.create({
   },
   modeActive: {
     backgroundColor: COLORS.primary,
-  },
-  scrollView: {
-    padding: 15,
   },
   dottedDivider: {
     height: 10,
@@ -137,12 +203,6 @@ export const mainStyle = StyleSheet.create({
   },
   disabledButton: {
     backgroundColor: COLORS.lightGrey2,
-  },
-  mainButton: {
-    flex: 1,
-    backgroundColor: COLORS.green,
-    marginLeft: 15,
-    marginRight: 45,
   },
   depositButton: {
     marginRight: 5,
@@ -277,11 +337,12 @@ export const inputStyle = StyleSheet.create({
   },
   headerBalanceTitle: {
     fontSize: 15,
-    width: 70,
+    maxWidth: 80,
+    marginRight: 5,
   },
   balanceText: {
     fontSize: 15,
-    maxWidth: 200,
+    maxWidth: 170,
   },
   content: {
     flexDirection: 'row',

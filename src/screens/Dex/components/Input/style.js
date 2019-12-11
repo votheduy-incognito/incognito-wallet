@@ -9,10 +9,12 @@ export default StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
   },
-  clearIcon: {
+  clearIconWrapper: {
     position: 'absolute',
     right: 16,
-    top: 18,
+    alignSelf: 'center',
+  },
+  clearIcon: {
   },
   header: {
     flexDirection: 'row',
