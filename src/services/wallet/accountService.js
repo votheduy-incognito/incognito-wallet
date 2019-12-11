@@ -439,7 +439,7 @@ export default class Account {
           id: tokenData?.TokenID,
         })) || [];
       } else {
-        throw new Error('Can not get list token has balance of non-existed account');
+        throw new Error('Can not get list coin has balance of non-existed account');
       }
     } catch (e) {
       throw e;

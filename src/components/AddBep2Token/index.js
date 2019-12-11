@@ -50,7 +50,7 @@ export class AddBep2TokenContainer extends Component {
       await getPTokenList();
       // update new wallet to store
       setWallet(wallet);
-      Toast.showSuccess('Success! You added a token.');
+      Toast.showSuccess('Success! You added a coin.');
       
       // clear prev data
       this.setState({ data: null });
@@ -70,7 +70,7 @@ export class AddBep2TokenContainer extends Component {
         await this.detectBEP2Token(originalSymbol);
       }
     } catch (e) {
-      new ExHandler(e, 'Can not search this BEP2 token, please try again.').showErrorToast();
+      new ExHandler(e, 'Can not search this BEP2 coin, please try again.').showErrorToast();
     } finally {
       this.setState({ isSearching: false });
     }

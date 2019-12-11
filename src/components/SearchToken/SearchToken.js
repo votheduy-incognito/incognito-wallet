@@ -35,7 +35,7 @@ class SearchToken extends Component {
       const { selected } = this.state;
 
       if (selected.includes(tokenId)) {
-        Toast.showInfo('This token is already in your following list');
+        Toast.showInfo('This coin is already in your following list');
       }
 
       this.setState(({ processingTokens }) => ({
@@ -48,7 +48,7 @@ class SearchToken extends Component {
       // adding to following list
       await handleAddFollowToken(tokenId);
     } catch (e) {
-      new ExHandler(e, 'Sorry, can not add this token to your list. Please try again.').showErrorToast();
+      new ExHandler(e, 'Sorry, can not add this coin to your list. Please try again.').showErrorToast();
     } finally {
       this.setState(({ processingTokens }) => {
         const newList = remove(processingTokens, id => id === tokenId);
@@ -71,7 +71,7 @@ class SearchToken extends Component {
       // adding to following list
       await handleRemoveFollowToken(tokenId);
     } catch (e) {
-      new ExHandler(e, 'Sorry, can not remove this token from your list. Please try again.').showErrorToast();
+      new ExHandler(e, 'Sorry, can not remove this coin from your list. Please try again.').showErrorToast();
     } finally {
       this.setState(({ processingTokens }) => {
         const newList = remove(processingTokens, id => id === tokenId);
@@ -131,7 +131,7 @@ class SearchToken extends Component {
         <BackButton />
         <Icons name="ios-search" style={searchPTokenStyle.inputIcon} color='white' size={24} />
         <TextInput
-          placeholder='Search for a token'
+          placeholder='Search for a privacy coin'
           placeholderTextColor={COLORS.white}
           style={searchPTokenStyle.searchInput}
           selectionColor={COLORS.white}
@@ -159,7 +159,7 @@ class SearchToken extends Component {
         <Text style={emptyStyle.title}>Oh no!</Text>
         <Text style={emptyStyle.desc}>Tokens you are looking for is</Text>
         <Text style={emptyStyle.desc}>not available.</Text>
-        <Button style={emptyStyle.button} title='Add a token manually' onPress={this.hanldeAddTokenManually} />
+        <Button style={emptyStyle.button} title='Issue your own privacy coin' onPress={this.hanldeAddTokenManually} />
       </View>
     );
   }
@@ -200,7 +200,7 @@ class SearchToken extends Component {
         <TouchableOpacity style={{ height: 60}} onPress={this.hanldeAddTokenManually}>
           <View style={searchPTokenStyle.followBtn}>
             <Image source={addIcon} style={searchPTokenStyle.followBtnIcon} />
-            <Text style={searchPTokenStyle.followBtnText}>Add a token manually</Text>
+            <Text style={searchPTokenStyle.followBtnText}>Issue your own privacy coin</Text>
           </View>
         </TouchableOpacity>
       </View>

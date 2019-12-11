@@ -33,8 +33,8 @@ class Wizard extends Component {
       },
       {
         index: 2,
-        title: 'Issue your own token',
-        desc: 'Create your own privacy-protecting token with a single tap. How many will you issue? What will you call it?',
+        title: 'Issue a privacy coin',
+        desc: 'Create your own privacy-protecting coin with a single tap. How many will you issue? What will you call it?',
         image: require('@src/assets/images/wizard/issue_token.png'),
         buttonText: 'Okay I got it',
         onPress: this.handleFinish,

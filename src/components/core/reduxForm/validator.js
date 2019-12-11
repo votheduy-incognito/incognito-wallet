@@ -110,8 +110,8 @@ const combinedTOMOAddress = [required(), tomoAddress()];
 const combinedBTCAddress = [required(), btcAddress()];
 const combinedBNBAddress = [required(), bnbAddress()];
 const combinedUnknownAddress = [required(), minLength(15)];
-const combinedTokenName = [required(), minLength(3), maxLength(50), regexp(/\w+$/i, { message: 'Please use a valid token name (Ex: "My Token, Token-1,..").' })];
-const combinedTokenSymbol = [required(), minLength(2), maxLength(10), regexp(/^[A-Z]+$/, { message: 'Please use a valid token symbol (Ex: "SYM").' })];
+const combinedTokenName = [required(), minLength(3), maxLength(50), regexp(/\w+$/i, { message: 'Please use a valid coin name (Ex: "My Coin, Coin-1,..").' })];
+const combinedTokenSymbol = [required(), minLength(2), maxLength(10), regexp(/^[A-Z]+$/, { message: 'Please use a valid coin ticker (Ex: "SYM").' })];
 const combinedAccountName = [required(), minLength(1), maxLength(50), regexp(/\w+$/i, { message: 'Please use a valid account name (Ex: "Cat, Account-1,..").' })];
 
 export default {

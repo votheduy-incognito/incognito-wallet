@@ -141,11 +141,11 @@ export class SearchTokenContainer extends PureComponent {
     
     const token = (foundInternalToken && internalTokenModel.toJson(foundInternalToken)) || foundPToken?.convertToToken();
 
-    if (!token) throw new Error('Can not follow empty token');
+    if (!token) throw new Error('Can not follow empty coin');
 
     await accountService.addFollowingTokens([token], account, wallet);
 
-    Toast.showSuccess('Token added');
+    Toast.showSuccess('Coin added');
 
     // update new wallet to store
     setWallet(wallet);
@@ -158,7 +158,7 @@ export class SearchTokenContainer extends PureComponent {
     // update new wallet to store
     setWallet(updatedWallet);
 
-    Toast.showInfo('Token removed');
+    Toast.showInfo('Coin removed');
   }
 
   getPTokens = async () => {

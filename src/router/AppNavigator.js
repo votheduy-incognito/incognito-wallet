@@ -30,7 +30,7 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.ImportAccount]: navigationOptionsHandler(ImportAccount, { title: 'Import Account' }),
     [ROUTE_NAMES.ExportAccount]: navigationOptionsHandler(ExportAccount),
     [ROUTE_NAMES.FollowToken]: navigationOptionsHandler(FollowToken, { header: () => null }),
-    [ROUTE_NAMES.CreateToken]: navigationOptionsHandler(CreateToken, { title: 'Issue a token' }),
+    [ROUTE_NAMES.CreateToken]: navigationOptionsHandler(CreateToken, { title: 'Issue a privacy coin' }),
     [ROUTE_NAMES.AddToken]: navigationOptionsHandler(AddToken, { title: 'Add manually' }),
     [ROUTE_NAMES.WalletDetail]: navigationOptionsHandler(WalletDetail),
     [ROUTE_NAMES.ReceiveCrypto]: navigationOptionsHandler(ReceiveCrypto, { title: 'Receive' }),
