@@ -501,13 +501,13 @@ export default class Account {
     return result;
   }
 
-  static async createAndSendWithdrawDexTx(wallet, account, fee, withdrawalToken1IDStr, withdrawalShare1Amt, withdrawalToken2IDStr, withdrawalShare2Amt, info = '') {
+  static async createAndSendWithdrawDexTx(wallet, account, fee, withdrawalToken1IDStr, withdrawalToken2IDStr, withdrawalShareAmt, info = '') {
     let indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
     let result;
     try {
       result = await wallet.MasterAccount.child[
         indexAccount
-      ].createAndSendWithdrawDexTx(fee, withdrawalToken1IDStr, withdrawalShare1Amt, withdrawalToken2IDStr, withdrawalShare2Amt, info);
+      ].createAndSendWithdrawDexTx(fee, withdrawalToken1IDStr, withdrawalToken2IDStr, withdrawalShareAmt, info);
     } catch (e) {
       throw e;
     }
@@ -515,6 +515,11 @@ export default class Account {
   }
 
   static isNotEnoughCoinError(error, tokenAmount, tokenFee, tokenBalance, prvBalance, prvFee) {
+    tokenAmount = tokenAmount || 0;
+    tokenFee = tokenFee || 0;
+    tokenBalance = tokenBalance || 0;
+    prvBalance = prvBalance || 0;
+    prvFee = prvFee || 0;
     console.debug('ERROR', error, tokenAmount, tokenFee, tokenBalance, prvFee, prvBalance);
     console.debug('CONDITION', tokenAmount + tokenFee <= tokenBalance, prvFee <= prvBalance);
     return tokenAmount + tokenFee <= tokenBalance && prvFee <= prvBalance;

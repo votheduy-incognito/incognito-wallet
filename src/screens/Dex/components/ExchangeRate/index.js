@@ -8,7 +8,7 @@ import {
 import formatUtil from '@utils/format';
 import style from './style';
 
-class ExchangeRate extends React.Component {
+class ExchangeRate extends React.PureComponent {
   render() {
     const {
       inputToken,

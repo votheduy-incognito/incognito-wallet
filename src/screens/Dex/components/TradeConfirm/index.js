@@ -80,6 +80,7 @@ class TradeConfirm extends React.Component {
 
     if (visible !== prevProps.visible && visible) {
       this.updateData();
+      this.getSupportedFeeTypes(inputToken);
     }
   }
 
@@ -116,7 +117,7 @@ class TradeConfirm extends React.Component {
       const isUsed = await isExchangeRatePToken(token.id);
       isUsed && supportedFeeTypes.push(token.symbol);
     } catch (e) {
-      new ExHandler(e);
+      new ExHandler(e).showErrorToast();
     } finally {
       this.setState({
         supportedFeeTypes: [...supportedFeeTypes, CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV]

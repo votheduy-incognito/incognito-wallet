@@ -7,7 +7,7 @@ import { Icon, Overlay } from 'react-native-elements';
 import CryptoIcon from '@components/CryptoIcon';
 import {COLORS} from '@src/styles';
 import formatUtil from '@utils/format';
-import accountService from '@services/wallet/accountService';
+import {MAX_LENGTH} from '@screens/Dex/constants';
 import {modalStyle, tokenStyle, mainStyle, inputStyle} from '../../style';
 import stylesheet from './style';
 
@@ -17,9 +17,11 @@ class Input extends React.Component {
     this.state = {
       showDialog: false,
       filteredTokens: props.tokenList || [],
-      tokenBalances: {},
-      gettingBalance: false,
     };
+  }
+
+  componentDidMount() {
+    this.handleSearch('');
   }
 
   componentDidUpdate(prevProps) {
@@ -40,40 +42,10 @@ class Input extends React.Component {
     this.handleSearch('');
   };
 
-  async getBalances() {
-    const { account } = this.props;
-    const { gettingBalance, filteredTokens } = this.state;
-    if (gettingBalance || !account) {
-      return;
-    }
-
-    this.setState({ gettingBalance, tokenBalances: {} });
-
-    const promises = [];
-    for (const token of filteredTokens) {
-      promises.push(this.getTokenBalance(token));
-    }
-
-    await Promise.all(promises);
-  }
-
-  getTokenBalance(token) {
-    const { account, wallet } = this.props;
-    return accountService
-      .getBalance(account, wallet, token.id)
-      .then(balance => {
-        const { tokenBalances } = this.state;
-        tokenBalances[token.id] = balance;
-        this.setState({ tokenBalances });
-      })
-      .catch(() => null);
-  }
-
   selectToken = (token) => {
     const { onSelectToken } = this.props;
-    const { tokenBalances } = this.state;
     this.closeDialog();
-    onSelectToken(token, tokenBalances[token.id]);
+    onSelectToken(token);
   };
 
   handleSearch = (text) => {
@@ -83,7 +55,7 @@ class Input extends React.Component {
       .filter(token =>
         token.name.toLowerCase().includes(_.trim(searchText)) ||
         token.symbol.toLowerCase().includes(_.trim(searchText))
-      ) : tokenList;
+      ) : tokenList.slice(0, MAX_LENGTH);
     this.setState({ filteredTokens });
   };
 
@@ -92,32 +64,13 @@ class Input extends React.Component {
     onChange('');
   };
 
-  renderTokenBalance(token) {
-    const { account, wallet } = this.props;
-    const { tokenBalances } = this.state;
-
-    if (!account || !wallet || !token) {
-      return null;
-    }
-
-    if (tokenBalances[token.id] === undefined) {
-      return <ActivityIndicator size="small" style={mainStyle.textRight} />;
-    }
-
-    return (
-      <Text style={[mainStyle.textRight, { maxWidth: 160, paddingLeft: 5, alignSelf: 'flex-start' }]} numberOfLines={1}>
-        {formatUtil.amount(tokenBalances[token.id], token.pDecimals || 0)}
-      </Text>
-    );
-  }
-
   renderDialog() {
     const { showDialog, filteredTokens } = this.state;
     return (
       <Overlay isVisible={showDialog} overlayStyle={modalStyle.dialog} onBackdropPress={this.closeDialog}>
         <View>
           <View style={modalStyle.header}>
-            <Text>Select token</Text>
+            <Text>Select coin</Text>
             <TouchableOpacity style={modalStyle.closeButton} onPress={this.closeDialog}>
               <Icon name="close" size={20} />
             </TouchableOpacity>
@@ -148,7 +101,6 @@ class Input extends React.Component {
                     <Text style={modalStyle.tokenSymbol}>{item.symbol}</Text>
                     <Text style={modalStyle.tokenName}>{item.name}</Text>
                   </View>
-                  {this.renderTokenBalance(item)}
                 </TouchableOpacity>
               ))}
             </View>
@@ -183,9 +135,6 @@ class Input extends React.Component {
 
   renderBalance() {
     const { balance, token } = this.props;
-
-    console.debug('BALANCE', balance, formatUtil.amount(balance, token?.pDecimals));
-
     return (
       <View style={[inputStyle.headerBalance, mainStyle.textRight]}>
         <Text style={[inputStyle.headerTitle, inputStyle.headerBalanceTitle]}>Balance:</Text>
@@ -214,15 +163,17 @@ class Input extends React.Component {
           onBlur={this.blur}
           editable={!disabled}
         />
-        {_.toString(value).length > 5 &&
-        <TouchableOpacity style={stylesheet.clearIcon} onPress={this.clearInput}>
-          <Icon
-            name="cancel"
-            color={COLORS.lightGrey1}
-            size={18}
-          />
-        </TouchableOpacity>
-        }
+        {_.toString(value).length > 5 && (
+          <View style={stylesheet.clearIconWrapper}>
+            <TouchableOpacity style={stylesheet.clearIcon} onPress={this.clearInput}>
+              <Icon
+                name="cancel"
+                color={COLORS.lightGrey1}
+                size={18}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     );
   }
@@ -265,8 +216,6 @@ Input.defaultProps = {
   value: undefined,
   onChange: undefined,
   balance: 0,
-  account: null,
-  wallet: null,
   disabled: false,
 };
 
@@ -278,8 +227,6 @@ Input.propTypes = {
   onSelectToken: PropTypes.func.isRequired,
   balance: PropTypes.number,
   onChange: PropTypes.func,
-  account: PropTypes.object,
-  wallet: PropTypes.object,
   disabled: PropTypes.bool,
 };
 

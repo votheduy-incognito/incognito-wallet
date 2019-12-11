@@ -8,15 +8,8 @@ import {getHistories, getHistoryStatus, NOT_CHANGE_STATUS, MAX_ERROR_TRIED, RETR
 import routeNames from '@routers/routeNames';
 import HeaderBar from '@components/HeaderBar/HeaderBar';
 import {COLORS} from '@src/styles';
-import {MESSAGES} from '@screens/Dex/constants';
-import { TradeHistory, DepositHistory, WithdrawHistory } from '@src/components/DexHistoryItem';
+import HISTORY_TYPES from '@src/components/DexHistoryItem';
 import stylesheet from './style';
-
-const HISTORY_TYPES = {
-  [MESSAGES.DEPOSIT]: DepositHistory,
-  [MESSAGES.WITHDRAW]: WithdrawHistory,
-  [MESSAGES.TRADE]: TradeHistory,
-};
 
 const appRecently = [];
 

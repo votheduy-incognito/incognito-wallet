@@ -13,7 +13,6 @@ import { initWallet } from '@src/services/wallet/WalletService';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import { DEX } from '@src/utils/dex';
 import accountService from '@src/services/wallet/accountService';
 import GetStarted from './GetStarted';
@@ -57,7 +56,6 @@ class GetStartedContainer extends Component {
     reloadAccountList();
 
     navigation.navigate(routeNames.Home,{isNeedUpgrade: this.isNeedUpgrade});
-    // navigation.navigate(routeNames.Dex);
   };
 
   getExistedWallet = async () => {

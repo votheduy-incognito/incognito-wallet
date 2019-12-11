@@ -101,3 +101,73 @@ export class DepositHistory {
     return parseHistory(history, historyObject);
   }
 }
+
+export class AddLiquidityHistory {
+  constructor(res, pairId, tokenParams1, tokenParams2, inputFee, outputFee, account) {
+    if (!res) {
+      return;
+    }
+    this.pairId = pairId;
+    this.txId = res.txId;
+    this.lockTime = res.lockTime;
+    this.txId1 = res.txId;
+    this.lockTime1 = res.lockTime;
+
+    this.token1 = tokenParams1;
+    this.token2 = tokenParams2;
+
+    this.type = MESSAGES.ADD_LIQUIDITY;
+    this.inputFee = inputFee;
+    this.outputFee = outputFee;
+    this.account = account.AccountName || account.name;
+    this.paymentAddress = account.PaymentAddress;
+    this.updatedAt = Math.floor(new Date().getTime() / 1000);
+  }
+
+  updateTx2(res) {
+    this.txId2 = res.txId;
+    this.cancelTx = undefined;
+    this.lockTime2 = res.lockTime;
+    this.status = undefined;
+    this.lockTime = res.lockTime;
+    this.updatedAt = Math.floor(new Date().getTime() / 1000);
+  }
+
+  cancel(res) {
+    this.cancelTx = res.txId;
+    this.cancelLockTime = res.lockTime;
+    this.status = undefined;
+    this.lockTime = res.lockTime;
+    this.updatedAt = Math.floor(new Date().getTime() / 1000);
+  }
+
+  static load(historyObject) {
+    const history = new AddLiquidityHistory();
+    return parseHistory(history, historyObject);
+  }
+
+  static currentHistory = null;
+}
+
+export class RemoveLiquidityHistory {
+  constructor(res, shareValue, tokenParams1, tokenParams2, fee, account) {
+    if (!res) {
+      return;
+    }
+    this.txId = res.txId;
+    this.lockTime = res.lockTime;
+    this.token1 = tokenParams1;
+    this.token2 = tokenParams2;
+    this.shareValue = shareValue;
+    this.type = MESSAGES.REMOVE_LIQUIDITY;
+    this.fee = fee;
+    this.account = account.AccountName || account.name;
+    this.paymentAddress = account.PaymentAddress;
+    this.updatedAt = Math.floor(new Date().getTime() / 1000);
+  }
+
+  static load(historyObject) {
+    const history = new AddLiquidityHistory();
+    return parseHistory(history, historyObject);
+  }
+}

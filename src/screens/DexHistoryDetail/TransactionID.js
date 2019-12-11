@@ -6,10 +6,10 @@ import {CONSTANT_CONFIGS} from '@src/constants';
 import external from '@assets/images/icons/external.png';
 import stylesheet from './style';
 
-const TransactionID = ({ txId }) => {
+const TransactionID = ({ txId, title }) => {
   return (
     <View style={stylesheet.row}>
-      <Text style={stylesheet.field}>TRANSACTION ID</Text>
+      <Text style={stylesheet.field}>{title || 'TRANSACTION ID'}</Text>
       <TouchableOpacity style={stylesheet.txButton} onPress={() => { linkingService.openUrl(`${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txId}`); }}>
         <Text style={[stylesheet.textRight, stylesheet.id]} numberOfLines={1} ellipsizeMode="middle">{txId}</Text>
         <Image
@@ -23,7 +23,12 @@ const TransactionID = ({ txId }) => {
   );
 };
 
+TransactionID.defaultProps = {
+  title: 'TRANSACTION ID',
+};
+
 TransactionID.propTypes = {
+  title: PropTypes.string,
   txId: PropTypes.string.isRequired,
 };
 
