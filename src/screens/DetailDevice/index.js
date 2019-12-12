@@ -216,12 +216,12 @@ class DetailDevice extends BaseScreen {
     //////
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
-      const stakerStatus = await VirtualNodeService.getPublicKeyRole(device) ??{};
-      console.log(TAG,'fetchData VIRTUAL_TYPE stakerStatus ',stakerStatus);
-
-      const { Role= -1, ShardID= 0 } = stakerStatus;
-      isStaked = Role!=-1 ;
-      console.log(TAG,'fetchData VIRTUAL_TYPE getPublicKeyRole ',stakerStatus);
+      // const stakerStatus = await VirtualNodeService.getPublicKeyRole(device) ??{};
+      // console.log(TAG,'fetchData VIRTUAL_TYPE stakerStatus ',stakerStatus);
+      // const { Role= -1, ShardID= 0 } = stakerStatus;
+      // isStaked = Role!=-1 ;
+      isStaked = await VirtualNodeService.isStaked(device).catch(console.log) ?? false ;
+      console.log(TAG,'fetchData VIRTUAL_TYPE isStaked ',isStaked);
 
       // const listprivacyCustomToken:[] = listTokens;
       // dataResult = await VirtualNodeService.getRewardFromMiningkey(device) ?? {};
