@@ -19,7 +19,7 @@ export const DATA_INFO = [{'status':'ready', 'message':'online','code':DEVICE_ST
   {'status':'mining', 'message':'earning','code':DEVICE_STATUS.CODE_MINING},
   {'status':'offline', 'message':__DEV__?'offline_online':'online','code':DEVICE_STATUS.CODE_START},
   {'status':'pending','message':__DEV__?'pending_queueing':'queueing','code':DEVICE_STATUS.CODE_PENDING},
-  {'status':'notmining', 'message':__DEV__?'notmining_online':'online','code':DEVICE_STATUS.CODE_START},
+  {'status':'notmining', 'message':__DEV__?'notmining_queueing':'queueing','code':DEVICE_STATUS.CODE_START},
   {'status':'waiting', 'message':__DEV__?'waiting_queueing':'queueing','code':DEVICE_STATUS.CODE_MINING}];
 export const template = {
   minerInfo:{

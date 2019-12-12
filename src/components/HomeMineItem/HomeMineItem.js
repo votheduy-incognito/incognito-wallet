@@ -183,12 +183,12 @@ class HomeMineItem extends React.Component {
       if(deviceInfo.isSyncing()){
         if(!isFetchedBalance){
           // textErrorDevice = 'Waiting to become a validator';
-          textErrorDevice = deviceInfo.Type == DEVICES.VIRTUAL_TYPE? 'Waiting to become a validator':'You’re all set up!\nEarning will begin within 12 hours.';
+          textErrorDevice = deviceInfo.Type == DEVICES.VIRTUAL_TYPE? 'Waiting to become a validator':'You’re all set up!\nEarning will begin within 24 hours.';
         }else if(balance == -1){
           textErrorDevice = descriptionMasterNodeOffline;
         }
       }else if(deviceInfo.isReady()){
-        textErrorDevice = deviceInfo.Type == DEVICES.VIRTUAL_TYPE? 'Tap here to stake':'You’re all set up!\nEarning will begin within 12 hours.';
+        textErrorDevice = deviceInfo.Type == DEVICES.VIRTUAL_TYPE? 'Tap here to stake':'You’re all set up!\nEarning will begin within 24 hours.';
       }else if(!isFetchedBalance && deviceInfo.isOffline()){
         textErrorDevice = descriptionNodeOffline;
       }else if(balance == -1){
