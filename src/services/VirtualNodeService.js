@@ -18,6 +18,17 @@ const TAG = 'VirtualNodeService';
 const timeout = 8;
 const PREFIX_BLS_PARAMS = 'bls:';
 export const LIST_ACTION={
+  GET_BEACON_BEST_STATE_DETAIL:{
+    key:'getbeaconbeststatedetail',
+    data:(params=[])=>{
+      return {
+        'jsonrpc': '1.0',
+        'method': 'getbeaconbeststatedetail',
+        'params': params,
+        'id': 1
+      };
+    }
+  },
   GET_PUBLIC_KEY_ROLE:{
     key:'getpublickeyrole',
     data:(params=[])=>{
@@ -122,6 +133,7 @@ export default class VirtualNodeService {
         if(!_.isEmpty(apiURL)){
           apiURL = `${apiURL}/${LIST_ACTION.GET_PUBLIC_KEY_MINING.key}`;
           const buildParams = LIST_ACTION.GET_PUBLIC_KEY_MINING.data;
+          console.log(TAG,'getPublicKeyMining params = ',buildParams);
           const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
           const {Result=''} = response;
           keyCompare = Result[0]??'';
@@ -144,7 +156,7 @@ export default class VirtualNodeService {
   
   static getPublicKeyRole = async(device:Device)=>{
     try {
-      let apiURL = await VirtualNodeService.buildURL(device);
+      let apiURL = await VirtualNodeService.buildURL(device,false);
       if(!_.isEmpty(apiURL)){
         let blsKey = await VirtualNodeService.getPublicKeyMining(device).catch(err=>{
           console.log(TAG,'getPublicKeyRole getPublicKeyMining error');
@@ -165,6 +177,36 @@ export default class VirtualNodeService {
       console.log(TAG,'getPublicKeyMining error',error);
     }
     return '';
+  }
+
+  static isStaked  = async(device:Device)=>{
+    try {
+      let apiURL = await VirtualNodeService.buildURL(device,true);
+      if(!_.isEmpty(apiURL)){
+        let blsKey = await VirtualNodeService.getPublicKeyMining(device).catch(err=>{
+          console.log(TAG,'getPublicKeyRole getPublicKeyMining error');
+        })||'';
+
+        if(!_.isEmpty(blsKey)){
+
+          apiURL = `${apiURL}/${LIST_ACTION.GET_BEACON_BEST_STATE_DETAIL.key}`;
+          // [`${PREFIX_BLS_PARAMS}${blsKey}`]
+          const buildParams = LIST_ACTION.GET_BEACON_BEST_STATE_DETAIL.data();
+          const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
+      
+          console.log(TAG,'isStaked GET_BEACON_BEST_STATE_DETAIL',response);
+          const {Result={}} = response??{};
+
+          const {ShardCommittee=[],ShardPendingValidator=[],CandidateShardWaitingForNextRandom=[]} = Result??{};
+          let findItemIndex = _.includes(JSON.stringify(ShardCommittee),blsKey) || _.includes(JSON.stringify(ShardPendingValidator),blsKey) || _.includes(JSON.stringify(CandidateShardWaitingForNextRandom),blsKey);
+
+          return findItemIndex;
+        }
+      }
+    } catch (error) {
+      console.log(TAG,'isStaked error',error);
+    }
+    return false;
   }
 
   /*
