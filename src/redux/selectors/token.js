@@ -13,7 +13,7 @@ const getIconUrlFromTokenId = createSelector(
   (_internalTokens, _pTokens) => memoize((tokenID) => {
     const isNativeToken = tokenID === CONSTANT_COMMONS.PRV_TOKEN_ID; // PRV
     const pToken = _pTokens?.find(t => t.tokenId === tokenID);
-    // const formatedTokenId = String(tokenID).toLowerCase();
+    const formatedTokenId = String(tokenID).toLowerCase();
     let uri;
 
     if (pToken?.tokenId || isNativeToken) { // use token symbol for pTokens or PRV
@@ -29,10 +29,7 @@ const getIconUrlFromTokenId = createSelector(
       uri = `${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${formatedSymbol}@2x.png`;
     } else {
       // use token id for incognito tokens
-      // uri = `${CONSTANT_CONFIGS.INCOGNITO_TOKEN_ICON_URL}/${formatedTokenId}.png`;
-
-      // dont use incognito tokens for now
-      uri = null;
+      uri = `${CONSTANT_CONFIGS.INCOGNITO_TOKEN_ICON_URL}/${formatedTokenId}.png`;
     }
 
     return uri;
