@@ -21,7 +21,8 @@ const api = {
   api_transfer_fail: apiError(-100003),
   api_add_private_token_already_existed: apiError(-1023),
   api_qrcode_fail_ProductNotFound: apiError(-80008),
-  api_qrcode_fail_QRCodeAlreadyStaked: apiError(-80009)
+  api_qrcode_fail_QRCodeAlreadyStaked: apiError(-80009),
+  api_invalid_size_upload_file: apiError(-8002)
 };
 
 

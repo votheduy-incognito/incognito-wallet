@@ -97,7 +97,7 @@ instance.interceptors.response.use(res => {
 
 export const setTokenHeader = token => {
   try {
-    instance.defaults.headers.Authorization = `Bearer ${token}`;
+    axios.defaults.headers.Authorization = `Bearer ${token}`;
   } catch {
     throw new Error('Can not set token request');
   }
@@ -120,4 +120,3 @@ export default instance;
     axios#patch(url[, data[, config]])
     axios#getUri([config])
  */
-

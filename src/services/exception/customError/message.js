@@ -21,7 +21,7 @@ export default {
   [CODE.web_js_import_existed_account]: 'Please make sure this private key is valid and does not already exist on your device.',
   [CODE.node_duplicate]: 'This node already exists on your device. Please try another.',
   [CODE.node_invalid_host]: 'This address is not a valid domain or ip address. Please try another.',
-  [CODE.getStarted_load_token_failed]: 'Somthing went wrong while loading data, please check your connection and try again or contact us for help.',
+  [CODE.getStarted_load_token_failed]: 'Something\'s gone wrong. Please check your connection and try again, or contact go@incognito.org.',
   [CODE.user_login_failed]: 'We have an authorization issue.',
   [CODE.paaps_invalid_daap_url]: 'Please enter a valid pApp URL',
   [CODE.web_js_import_invalid_key]: 'Please make sure this private key is valid.',
@@ -34,5 +34,6 @@ export default {
   [CODE.api_qrcode_fail_ProductNotFound]: 'This QR code is unfamiliar. Please try again.',
   [CODE.api_qrcode_fail_QRCodeAlreadyStaked]: 'You\'ve already set up this Node.',
   [CODE.papp_can_not_opened]: 'Sorry, we can not open this pApp. Please try again or check the pApp URL.',
-  [CODE.papp_the_token_is_not_supported]: 'This token is not supported in the pApp.'
+  [CODE.papp_the_token_is_not_supported]: 'This token is not supported in the pApp.',
+  [CODE.api_invalid_size_upload_file]: 'Upload file\'s size is invalid, file size must be less than 50kB'
 };

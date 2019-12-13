@@ -1,6 +1,7 @@
 import Erc20Token from '@src/models/erc20Token';
 import PToken from '@src/models/pToken';
 import BEP2Token from '@models/bep2Token';
+import IncognitoCoinInfo from '@src/models/incognitoCoinInfo';
 import http from '@src/services/http';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import axios from 'axios';
@@ -57,4 +58,31 @@ export const addBEP2Token = ({ symbol, name, originalSymbol }) => {
     Name: name,
     OriginalSymbol: originalSymbol,
   }).then(res => new PToken(res));
+};
+
+export const addTokenInfo = ({ tokenId, symbol, name, logoFile, description = '', showOwnerAddress = false }) => {
+  if (!symbol) throw new Error('Missing symbol');
+  if (!name) throw new Error('Missing name');
+  if (!tokenId) throw new Error('Missing tokenId');
+  if (!logoFile) throw new Error('Missing logoFile');
+
+  const form = new FormData();
+  form.append('File', {
+    name: logoFile.name,
+    uri: logoFile.uri,
+    type: 'image/png'
+  });
+
+  form.append('TokenID', tokenId);
+  form.append('Name', name);
+  form.append('Description', description);
+  form.append('Symbol', symbol);
+  form.append('IsPrivacy', 'true');
+  form.append('ShowOwnerAddress', showOwnerAddress);
+
+  return http.post('storage/upload/token-info', form, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    }
+  }).then(res => new IncognitoCoinInfo(res));
 };
