@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { TextInput } from 'react-native';
-import { Container, Button, View, ScrollView } from '@src/components/core';
+import { Container, Button, View, ScrollView, TextInput } from '@src/components/core';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import routeNames from '@src/router/routeNames';
 import { COLORS } from '@src/styles';
@@ -79,6 +78,7 @@ class Papps extends PureComponent {
             placeholder='Search or enter website URL'
             placeholderTextColor={COLORS.lightGrey4}
             style={styles.input}
+            inputStyle={{ color: COLORS.white }}
             value={url}
             onChangeText={this.onChangeUrl}
             onFocus={this.handleAddProtocol}

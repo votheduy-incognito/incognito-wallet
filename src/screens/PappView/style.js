@@ -7,7 +7,7 @@ const style = StyleSheet.create({
   },
   webview: {
     flex: 1,
-    minHeight: 500
+    minHeight: 500,
   },
   headerRight: {
     paddingHorizontal: 10

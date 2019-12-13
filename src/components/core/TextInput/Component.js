@@ -53,9 +53,9 @@ const TextInput = ({
         ]}
       >
         <RNComponent
-          {...props}
           allowFontScaling={false}
           placeholderTextColor={COLORS.lightGrey3}
+          {...props}
           style={[
             styleSheet.input,
             inputStyle,

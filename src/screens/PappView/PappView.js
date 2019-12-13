@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { View, WebView, Modal } from '@src/components/core';
+import SimpleInfo from '@src/components/SimpleInfo';
 import convertUtil from '@src/utils/convert';
 import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
 import { CONSTANT_COMMONS } from '@src/constants';
@@ -57,7 +58,8 @@ class PappView extends PureComponent {
     super(props);
     this.state = {
       modalData: null,
-      isLoaded: false
+      isLoaded: false,
+      hasWebViewError: false,
     };
     
     this.webviewInstance = null;
@@ -75,7 +77,7 @@ class PappView extends PureComponent {
 
   componentWillUnmount() {
     // clear sdk data
-    sdk.resetStore();
+    sdk?.resetStore();
     sdk = null;
   }
 
@@ -168,7 +170,8 @@ class PappView extends PureComponent {
   }
 
   onLoadPappError = (e) => {
-    new ExHandler(new CustomError(ErrorCode.papp_can_not_opened, { rawError: e })).showErrorToast();
+    this.setState({ hasWebViewError: true });
+    new ExHandler(new CustomError(ErrorCode.papp_can_not_opened, { rawError: e }));
   }
 
   onGoBack = () => {
@@ -184,8 +187,18 @@ class PappView extends PureComponent {
   }
 
   render() {
-    const { modalData } = this.state;
+    const { modalData, hasWebViewError } = this.state;
     const {  url } = this.props;
+
+    if (hasWebViewError) {
+      return (
+        <SimpleInfo
+          text={`We can not open "${url}". Please make sure you are using a correct pApp URL.`}
+          type='warning'
+        />
+      );
+    }
+    
     return (
       <View style={styles.container}>
         <WebView
