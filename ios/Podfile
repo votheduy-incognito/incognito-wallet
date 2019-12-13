@@ -87,6 +87,8 @@ target 'constantWalletMobile' do
   pod 'RNSensors', :path => '../node_modules/react-native-sensors'
   pod 'react-native-camera', :path => '../node_modules/react-native-camera'
   pod 'RCTRestart', :path => '../node_modules/react-native-restart/ios'
+
+  pod 'react-native-webview', :path => '../node_modules/react-native-webview'
   
   # Pods for constantWalletMobile
 
@@ -94,8 +96,6 @@ target 'constantWalletMobile' do
     inherit! :search_paths
     # Pods for testing
     # pod 'react-native-udp', :path => '../node_modules/react-native-udp'
-
-
 
   end
 

@@ -77,7 +77,7 @@ const DialogUpgradeToMainnet = React.memo(({ isVisible = true ,onButtonClick })=
             <Text style={style.titleText}>Welcome to Incognito! Here’s a little something to get you started.</Text>
             <View style={style.items}>
               {
-                ['1 PRV is on its way to your default account', '1.1 PRV is on its way to your trading account (pDEX)']
+                ['0.1 PRV is on its way to your default account', '0.1 PRV is on its way to your trading account (pDEX)']
                   .map((text) => (
                     <View key={text} style={style.item}>
                       <Icons name='check' color={COLORS.green} style={style.itemIcon} size={28} />

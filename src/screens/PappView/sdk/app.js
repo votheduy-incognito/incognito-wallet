@@ -15,11 +15,13 @@ class SDK {
   }
 
   sendScript(script) {
-    this.webViewInstance.injectJavaScript(`
-      ${script}
-      true;
-    `);
-    console.log('sendScript', script);
+    if (this.webViewInstance?.webViewRef?.current) {
+      this.webViewInstance.injectJavaScript(`
+        ${script}
+        true;
+      `);
+      console.log('sendScript', script);
+    }
   }
 
   resetStore() {

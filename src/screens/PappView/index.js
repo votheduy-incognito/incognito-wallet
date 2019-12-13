@@ -13,6 +13,7 @@ import LoadingContainer from '@src/components/LoadingContainer';
 import { COLORS } from '@src/styles';
 import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
 import styles from './style';
+import PappError from './PappError';
 import PappView from './PappView';
 
 
@@ -161,7 +162,7 @@ class PappViewContainer extends PureComponent {
     }
 
     return (
-      <>
+      <PappError>
         <PappView
           {...this.props}
           url={url}
@@ -171,7 +172,7 @@ class PappViewContainer extends PureComponent {
           onSetListSupportTokenById={this.handleSetListSupportTokenById}
         />
         { isSending && <LoadingTx /> }
-      </>
+      </PappError>
     );
   }
 }
