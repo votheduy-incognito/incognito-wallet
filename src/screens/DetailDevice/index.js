@@ -217,7 +217,10 @@ class DetailDevice extends BaseScreen {
     const Result = await DeviceService.getRewardAmountAllToken(device).catch(e=>new ExHandler(e).showWarningToast())??{};
 
     // TODO hien.ton test
-    // const Result = {PRV:100000000,'ba1e1865f97bc445a87e61fcec0880237b3c1747768b713d6e1706fde25a8c93':12330000000,'4946b16a08a9d4afbdf416edf52ef15073db0fc4a63e78eb9de80f94f6c0852a':230000000,'ffd8d42dc40a8d166ea4848baf8b5f6e912ad79875f4373070b59392b1756c8f':250000000};
+    // const Result = { '1ff2da446abfebea3ba30385e2ca99b0f0bbeda5c6371f4c23c939672b429a42': 3,
+    // '716fd1009e2a1669caacc36891e707bfdf02590f96ebd897548e8963c95ebac0': 20,
+    // 'PRV': 534302015709,
+    // 'b832e5d3b1f01a4f0623f7fe91d6673461e1f5d37d91fe78c5c2e6183ff39696': 105885 };
     //////
     switch(device.Type){
     case DEVICES.VIRTUAL_TYPE:{
