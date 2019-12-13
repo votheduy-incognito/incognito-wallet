@@ -16,7 +16,7 @@ const PAPPS = [
     image: helloWorldImg,
     url: 'http://35.185.237.133/',
     title: 'Hello World',
-    desc: 'The first pApp!'
+    desc: 'This is a demonstration of a basic pApp'
   },
   // {
   //   id: 1,
