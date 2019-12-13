@@ -56,6 +56,7 @@ export default StyleSheet.create({
     flex: 1,
     fontSize: 16,
     paddingRight: 35,
+    color: COLORS.dark1,
     ...FONT.STYLE.normal,
   },
   fullInput: {

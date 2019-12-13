@@ -199,11 +199,15 @@ class Pool extends React.Component {
 
   remove = async () => {
     const { account, onAddHistory, wallet } = this.props;
-    const { pair, topText, bottomText, fee, shareValue } = this.state;
+    const { pair, topText, bottomText, fee, shareValue, removing } = this.state;
     const { token1, token2 } = pair;
     let newHistory;
 
     console.debug('REMOVE LIQUIDITY', fee);
+
+    if (removing) {
+      return;
+    }
 
     try {
       this.setState({ removing: true });

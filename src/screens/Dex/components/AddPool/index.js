@@ -405,13 +405,17 @@ class Pool extends React.Component {
 
   add = async () => {
     const { account, onAddHistory, onUpdateHistory, onUpdateParams } = this.props;
-    const { inputToken, inputValue, outputToken, outputValue, inputFee, outputFee } = this.state;
+    const { inputToken, inputValue, outputToken, outputValue, inputFee, outputFee, adding } = this.state;
     const pa = account.PaymentAddress;
     const timestamp = new Date().getTime().toString();
     const pairId = `${pa.slice(0, 6)}-${inputToken.symbol}-${outputToken.symbol}-${timestamp}`;
     let newHistory;
 
     console.debug('ADD LIQUIDITY', inputFee, outputFee, inputValue, outputValue, pairId);
+
+    if (adding) {
+      return;
+    }
 
     try {
       this.setState({ adding: true });
