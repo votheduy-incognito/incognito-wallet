@@ -77,6 +77,11 @@ class DetailDevice extends BaseScreen {
 
   onResume = async ()=>{
     console.log(TAG,'onResume begin');
+    // hienton test
+    // const paymentAdressTested = '112t8rnX8fxHyqCdELNvzfQFfT4MyYN584Cfxus9XojtBCrEkvsGbxQn7ZrB5s9veiA64BMfJVNSkFNU32bp1duneaShaEq2nCFSKSVNTB5U';
+    // const rewardAmountFromAddress  =  await DeviceService.getRewardAmountWithPaymentAddress(paymentAdressTested,'',true);
+    // console.log(TAG,'onResume test = ',rewardAmountFromAddress);
+    ///
     const {device,isFetching,listTokens } = this.state;
     const product_id = device.ProductId;
     if(_.isEmpty(listTokens)){
