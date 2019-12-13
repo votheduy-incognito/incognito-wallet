@@ -80,7 +80,7 @@ class Withdraw extends React.Component {
       min = 1/(10**selectedPrivacy.pDecimals);
     }
 
-    return Math.max(min, minAmount);
+    return minAmount ? Math.max(min, minAmount) : min;
   }
 
   getMaxAmount = () => {
@@ -95,7 +95,7 @@ class Withdraw extends React.Component {
     
     max = convertUtil.toHumanAmount(amount, selectedPrivacy?.pDecimals);
 
-    return Math.min(maxAmount, max);
+    return maxAmount ? Math.min(maxAmount, max) : max;
   }
 
   setFormValidator = ({ maxAmount, minAmount }) => {
