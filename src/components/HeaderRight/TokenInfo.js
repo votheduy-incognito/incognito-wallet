@@ -73,8 +73,8 @@ class TokenInfo extends Component {
       { label: 'Symbol', value: symbol },
       { label: 'Original Symbol', value: externalSymbol },
       { label: 'Balance', value: formatUtil.amountFull(amount, pDecimals) },
-      { label: 'Token supply', value: incognitoTotalSupply },
-      { label: 'Token ID', value: tokenId, copyable: true },
+      { label: 'Coin supply', value: incognitoTotalSupply },
+      { label: 'Coin ID', value: tokenId, copyable: true },
       { label: 'Contract ID', value: contractId },
       { label: 'Owner address', value: incognitoOwnerAddress },
     ].filter(i => ![undefined, null, ''].includes(i.value));
@@ -96,7 +96,7 @@ class TokenInfo extends Component {
         {!!copied &&
         (
           <View style={tokenInfoStyle.copied}>
-            <Text style={tokenInfoStyle.copiedMessage}>Token ID was copied</Text>
+            <Text style={tokenInfoStyle.copiedMessage}>Coin ID was copied</Text>
           </View>
         )}
       </Container>
@@ -116,7 +116,7 @@ class TokenInfo extends Component {
         <TouchableOpacity onPress={this.handleToggle}>
           <Icons name='info' style={tokenInfoStyle.icon} size={24} color={iconColor} />
         </TouchableOpacity>
-        <Modal visible={isShowInfo} close={this.handleToggle} containerStyle={tokenInfoStyle.modalContainer} closeBtnColor={COLORS.primary} headerText='Token info'>
+        <Modal visible={isShowInfo} close={this.handleToggle} containerStyle={tokenInfoStyle.modalContainer} closeBtnColor={COLORS.primary} headerText='Coin info'>
           {this.renderInfo()}
         </Modal>
       </View>

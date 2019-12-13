@@ -259,7 +259,7 @@ export default class Token {
           hasIcon: !!pToken,
           symbol: pToken?.pSymbol || item.symbol,
           name: pToken? pToken.name : item.name,
-          displayName: pToken?  `Private ${pToken.name}` : `Incognito ${item.name}`,
+          displayName: pToken?  `Privacy ${pToken.name}` : `Incognito ${item.name}`,
         };
       })
       .filter(token => token.name && token.symbol)

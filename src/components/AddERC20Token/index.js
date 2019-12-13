@@ -53,7 +53,7 @@ export class AddERC20TokenContainer extends Component {
       await getPTokenList();
       // update new wallet to store
       setWallet(wallet);
-      Toast.showSuccess('Success! You added a token.');
+      Toast.showSuccess('Success! You added a coin.');
       
       // clear prev data
       this.setState({ data: null });
@@ -77,7 +77,7 @@ export class AddERC20TokenContainer extends Component {
         // TODO: search by symbol
       }
     } catch (e) {
-      new ExHandler(e, 'Can not search this ERC20 token, please try again.').showErrorToast();
+      new ExHandler(e, 'Can not search this ERC20 coin, please try again.').showErrorToast();
     } finally {
       this.setState({ isSearching: false });
     }

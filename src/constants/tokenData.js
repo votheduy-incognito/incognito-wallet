@@ -17,7 +17,7 @@ const DATA = {
 };
 
 const parse = token => ({
-  typeName: 'Custom token',
+  typeName: 'Custom coin',
   symbol: token?.symbol,
   name: token?.name,
   isTokenFollowedByUser: true,

@@ -17,7 +17,7 @@ class ImportAccountContainer extends Component {
       const { followDefaultTokens } = this.props;
       await followDefaultTokens(account);
     } catch (e) {
-      console.error('Can not follow default tokens for this account', e);
+      console.error('Can not follow default coins for this account', e);
     }
   }
 

@@ -110,7 +110,7 @@ class WalletDetailContainer extends Component {
     if (selectedPrivacy?.tokenId === CONSTANT_COMMONS.PRV_TOKEN_ID) {
       title = 'Privacy';
     } else {
-      title = selectedPrivacy?.externalSymbol ? `Private ${selectedPrivacy.externalSymbol}` : selectedPrivacy.name;
+      title = selectedPrivacy?.externalSymbol ? `Privacy ${selectedPrivacy.externalSymbol}` : selectedPrivacy.name;
     }
     navigation.setParams({
       title,
@@ -126,8 +126,8 @@ class WalletDetailContainer extends Component {
       options.push({
         id: 'unfollow',
         icon: <Image source={unfollowTokenIcon} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
-        label: 'Remove token',
-        desc: 'Any existing balance will reappear when the token is added back',
+        label: 'Remove coin',
+        desc: 'Any existing balance will reappear when the coin is added back',
         handlePress: () => this.handleUnfollowTokenBtn(selectedPrivacy?.tokenId)
       });
     }
@@ -155,7 +155,7 @@ class WalletDetailContainer extends Component {
       // update new wallet to store
       setWallet(updatedWallet);
 
-      Toast.showInfo('Token removed');
+      Toast.showInfo('Coin removed');
       navigation.goBack();
     } catch (e) {
       new ExHandler(e).showErrorToast();

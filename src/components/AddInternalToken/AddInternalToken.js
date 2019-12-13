@@ -114,7 +114,7 @@ class AddInternalToken extends Component {
       this.setState({ isCreatingOrSending: true });
       const res = await Token.createSendPToken(tokenObject, Number(fee) || 0, account, wallet);
       if (res.txId) {
-        Toast.showSuccess('Create token successfully');
+        Toast.showSuccess('Create coin successfully');
 
         // update new wallet to store
         setWallet(wallet);
@@ -170,7 +170,7 @@ class AddInternalToken extends Component {
                 <Field
                   component={InputField}
                   name='name'
-                  placeholder='Enter token name'
+                  placeholder='Enter coin name'
                   label='Name'
                   style={styleSheet.input}
                   validate={validator.combinedTokenName}
@@ -179,15 +179,15 @@ class AddInternalToken extends Component {
                   component={InputField}
                   componentProps={{ autoCapitalize: 'characters' }}
                   name='symbol'
-                  placeholder='Enter token symbol'
-                  label='Symbol'
+                  placeholder='Enter coin ticker'
+                  label='Ticker'
                   style={styleSheet.input}
                   validate={validator.combinedTokenSymbol}
                 />
                 <Field
                   component={InputField}
                   name='amount'
-                  placeholder='Enter number of tokens'
+                  placeholder='Enter number of coins'
                   label='Total supply'
                   style={styleSheet.input}
                   componentProps={{
