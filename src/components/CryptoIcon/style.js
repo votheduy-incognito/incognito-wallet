@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { COLORS } from '@src/styles';
 
 export default StyleSheet.create({
   container: {
@@ -6,10 +7,14 @@ export default StyleSheet.create({
     justifyContent: 'center',
     width: 35,
     height: 35,
+    borderRadius: 17,
+    overflow: 'hidden',
+    backgroundColor: COLORS.lightGrey10
   },
   logo: {
-    width: 30,
-    height: 30,
+    width: 36,
+    height: 36,
+    overflow: 'hidden',
     resizeMode: 'contain'
   },
   hidden: {
