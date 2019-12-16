@@ -29,15 +29,6 @@ class TokenItem extends Component {
     }
   };
 
-  hasIcon = () => {
-    const { token } = this.props;
-    if (token?.isPrivateToken || token?.isPrivateCoin) {
-      return true;
-    }
-
-    return false;
-  }
-
   getNetworkNameColor = (token) => {
     let color = COLORS.black;
 
@@ -64,7 +55,7 @@ class TokenItem extends Component {
     return (
       <View style={[ itemStyle.container, divider && itemStyle.divider ]}>
         <View style={itemStyle.logoContainer}>
-          <CryptoIcon tokenId={token.tokenId} onlyDefault={!this.hasIcon()} />
+          <CryptoIcon tokenId={token.tokenId} />
         </View>
         <View style={itemStyle.infoContainer}>
           <Text style={itemStyle.name} numberOfLines={1} ellipsizeMode='tail'>{token.name}</Text>
