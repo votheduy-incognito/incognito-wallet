@@ -4,7 +4,6 @@ import EstimateFee from '@src/components/EstimateFee';
 import LoadingTx from '@src/components/LoadingTx';
 import StakeValidatorTypeSelector from '@src/components/StakeValidatorTypeSelector';
 import { CONSTANT_COMMONS } from '@src/constants';
-import tokenData from '@src/constants/tokenData';
 import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
 import convertUtil from '@src/utils/convert';
 import formatUtil from '@src/utils/format';
@@ -168,7 +167,7 @@ class SelfStaking extends BaseScreen {
                 amount={convertUtil.toHumanAmount(amount, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)}
                 toAddress={toAddress}
                 style={styles.estFee}
-                feeText={`${formatUtil.amountFull(fee, feeUnit === tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : null)} ${feeUnit}`}
+                feeText={`${formatUtil.amountFull(fee, feeUnit === CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY : null)} ${feeUnit}`}
               />
               <Button disabled={!isCanSubmit} title='Stake' style={styles.stakeButton} onPress={this.handleStake} />
             </>

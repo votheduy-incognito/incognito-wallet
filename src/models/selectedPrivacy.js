@@ -16,6 +16,18 @@ function getNetworkName() {
   return name;
 }
 
+function combineData(pData, incognitoData, defaultData) {
+  if (this.isPToken) {
+    return pData;
+  }
+
+  if (this.isIncognitoToken) {
+    return incognitoData;
+  }
+
+  return defaultData;
+}
+
 class SelectedPrivacy {
   constructor(account = {}, token = {}, pTokenData: PToken = {}) {
     this.currencyType = pTokenData.currencyType;
@@ -27,8 +39,8 @@ class SelectedPrivacy {
     this.isIncognitoToken = !this.isPToken && !this.isMainCrypto; // is tokens were issued from users
     this.isErc20Token = this.isPrivateToken && this.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20;
     this.isBep2Token = this.isPrivateToken && this.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB_BEP2;
-    this.symbol = this.isToken ? token.symbol : CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
-    this.name = this.isToken ? (pTokenData.name || token.name) : CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
+    this.symbol = combineData.call(this, pTokenData?.pSymbol, token?.symbol, CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV);
+    this.name = combineData.call(this, pTokenData?.name, token?.name, 'Privacy');
     this.amount = (this.isToken ? token.amount : account.value) || 0;
     this.tokenId = this.isMainCrypto ? CONSTANT_COMMONS.PRV_TOKEN_ID : token.id;
     this.contractId = pTokenData.contractId;

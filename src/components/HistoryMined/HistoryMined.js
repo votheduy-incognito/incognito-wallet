@@ -1,6 +1,5 @@
 import { Text } from '@components/core';
 import withdrawNode from '@src/assets/images/icons/withdraw-node.png';
-import tokenData from '@src/constants/tokenData';
 import Device from '@src/models/device';
 import NodeService, { LIST_ACTION } from '@src/services/NodeService';
 import _ from 'lodash';
@@ -95,12 +94,8 @@ class HistoryMined extends React.Component {
     );
   };
   getData = (token) => {
-    const additionData = tokenData.DATA[token?.tokenId] || tokenData.parse(token);
-    const { metaData, othertokenData } = token;
     const data = {
-      ...additionData,
-      ...metaData,
-      ...othertokenData
+      ...token
     };
     // console.log(TAG,'getData begin ==== ',additionData,symbolUI);
     // console.log(TAG,'getData end ==== ',data);

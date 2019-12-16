@@ -157,19 +157,19 @@ class HomeContainer extends Component {
     }
   };
 
-  handleSelectToken = (token) => {
-    if (!token) return;
+  handleSelectToken = (tokenId) => {
+    if (!tokenId) return;
 
     const { setSelectedPrivacy, navigation } = this.props;
 
-    setSelectedPrivacy(token?.id);
+    setSelectedPrivacy(tokenId);
 
     navigation.navigate(routeNames.WalletDetail);
   };
 
   render() {
     const { isReloading, isReceivedPRV } = this.state;
-    const { wallet, account, tokens, accountGettingBalanceList, tokenGettingBalanceList } = this.props;
+    const { wallet, account, tokens } = this.props;
 
     if (!wallet) return <LoadingContainer />;
 
@@ -183,8 +183,6 @@ class HomeContainer extends Component {
           handleAddFollowToken={this.onAddTokenToFollow}
           handleCreateToken={this.onCreateToken}
           handleSetting={this.onSetting}
-          accountGettingBalanceList={accountGettingBalanceList}
-          tokenGettingBalanceList={tokenGettingBalanceList}
           onSelectToken={this.handleSelectToken}
         />
         <DialogUpgradeToMainnet
@@ -202,8 +200,6 @@ const mapState = state => ({
   account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet,
   tokens: tokenSeleclor.followed(state),
-  accountGettingBalanceList: accountSeleclor.isGettingBalance(state),
-  tokenGettingBalanceList: tokenSeleclor.isGettingBalance(state),
   getAccountByName: accountSeleclor.getAccountByName(state)
 });
 
@@ -224,8 +220,6 @@ HomeContainer.propTypes = {
   navigation: PropTypes.object.isRequired,
   account: PropTypes.object.isRequired,
   tokens: PropTypes.array.isRequired,
-  tokenGettingBalanceList: PropTypes.array.isRequired,
-  accountGettingBalanceList: PropTypes.array.isRequired,
   wallet: PropTypes.object.isRequired,
   reloadAccountFollowingToken: PropTypes.func.isRequired,
   getAccountBalance: PropTypes.func.isRequired,

@@ -20,11 +20,6 @@ class FollowingTokenList extends Component {
                 amount: account?.value ?? null,
                 name: 'Incognito',
                 fullName: 'Privacy',
-                metaData: {
-                  pSymbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
-                  pDecimals: CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY,
-                  decimals: CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
-                }
               }}
               isGettingBalance={accountGettingBalanceList?.includes(account?.name)}
               onPress={() => onSelectToken(CONSTANT_COMMONS.PRV_TOKEN_ID)}

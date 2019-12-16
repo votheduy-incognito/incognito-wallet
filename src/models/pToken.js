@@ -29,14 +29,6 @@ class PToken {
       name: this.name,
       symbol: this.pSymbol,
       isInit: false,
-      metaData: {
-        decimals: this.decimals,
-        pDecimals: this.pDecimals,
-        pSymbol: this.pSymbol,
-        symbol: this.symbol,
-        contractId: this.contractId,
-        currencyType: this.currencyType,
-      }
       // listTxs,
       // image,
       // amount

@@ -13,7 +13,6 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { setWallet } from '@src/redux/actions/wallet';
-import tokenData from '@src/constants/tokenData';
 import { ExHandler } from '@src/services/exception';
 import styleSheet from './style';
 
@@ -152,7 +151,7 @@ class AddInternalToken extends Component {
   renderBalance = () => {
     const { account } = this.props;
 
-    return <Text style={styleSheet.balance}>{` Balance: ${ formatUtil.amount(account.value, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY) } ${ tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY }`}</Text>;
+    return <Text style={styleSheet.balance}>{` Balance: ${ formatUtil.amount(account.value, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY) } ${ CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV }`}</Text>;
   }
 
   render() {
@@ -200,7 +199,7 @@ class AddInternalToken extends Component {
                     ? <Text>Calculating fee...</Text>
                     : typeof fee === 'number' && (
                       <Text style={isNotEnoughFee && styleSheet.error}>
-                        Issuance fee: {formatUtil.amountFull(fee, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)} {tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY}
+                        Issuance fee: {formatUtil.amountFull(fee, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)} {CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}
                         {isNotEnoughFee && ' (please top up your balance to cover the fee)' }
                       </Text>
                     )
