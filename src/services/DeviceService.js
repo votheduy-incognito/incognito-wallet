@@ -31,7 +31,8 @@ export default class DeviceService {
     }else if(code === Device.CODE_MINING || code === Device.CODE_PENDING){
       styleStatus.color = '#25CDD6';
     }else if(code === Device.CODE_SYNCING){
-      styleStatus.color = '#262727';
+      // styleStatus.color = '#262727';
+      styleStatus.color = '#25CDD6';
     }else if(code === Device.CODE_START){
       styleStatus.color = '#26C64D';
     }
@@ -74,33 +75,36 @@ export default class DeviceService {
   }
 
 
-  static fetchAndSavingInfoNodeStake = async(device:Device,isNeedSaving=false)=>{
+  // static fetchAndSavingInfoNodeStake = async(device:Device,isNeedSaving=false)=>{
     
-    try {
-      let fetchProductInfo = device.toJSON()??{};
-      const paymentAddress =  device.PaymentAddressFromServer;
+  //   try {
       
-      const resultRequest =  await Util.excuteWithTimeout(APIService.fetchInfoNodeStake({
-        PaymentAddress:paymentAddress
-      }),5).catch(console.log);
-      const dataRequestStake = resultRequest.data||{};
-      if(isNeedSaving && !_.isEmpty(dataRequestStake)){
-        
-        fetchProductInfo.minerInfo = {
-          ...fetchProductInfo.minerInfo,
-          ...dataRequestStake
-        };
-        !_.isEmpty(fetchProductInfo) && await LocalDatabase.updateDevice(fetchProductInfo);
-      }
-
-      return dataRequestStake;
+  //     const paymentAddress =  device.PaymentAddressFromServer;
       
-    } catch (error) {
-      console.log(TAG,'fetchAndSavingInfoNodeStake error = ',error);
-    }
+  //     const resultRequest =  await Util.excuteWithTimeout(APIService.fetchInfoNodeStake({
+  //       PaymentAddress:paymentAddress
+  //     }),5).catch(console.log);
+  //     const dataRequestStake = resultRequest.data||{};
+  //     if(isNeedSaving && !_.isEmpty(dataRequestStake)){
+  //       const {StakerAddress = ''} = dataRequestStake??{};
+  //       device.isCallStaked = !_.isEmpty(StakerAddress);
+  //       let fetchProductInfo = device.toJSON()??{};
+  //       fetchProductInfo.minerInfo = {
+  //         ...fetchProductInfo.minerInfo,
+  //         ...dataRequestStake
+  //       };
+  //       console.log(TAG,'fetchAndSavingInfoNodeStake fetchProductInfo = ',fetchProductInfo);
+  //       !_.isEmpty(fetchProductInfo) && await LocalDatabase.updateDevice(fetchProductInfo);
+  //     }
 
-    return null;
-  }
+  //     return dataRequestStake;
+      
+  //   } catch (error) {
+  //     console.log(TAG,'fetchAndSavingInfoNodeStake error = ',error);
+  //   }
+
+  //   return null;
+  // }
 
 
   /**

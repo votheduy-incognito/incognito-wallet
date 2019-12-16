@@ -294,7 +294,7 @@ class SetupDevice extends BaseComponent {
           ...fetchProductInfo,
           product_type:DEVICES.MINER_TYPE,
           minerInfo:{
-            isCallStaked:true,
+            isCallStaked:false,
             qrCodeDeviceId:this.deviceIdFromQrcode,
           },
         };

@@ -95,8 +95,8 @@ export default class Device {
     return this.data.minerInfo?.isCallStaked||false;
   }
   set isCallStaked(isCallStaked:Boolean){
-    this.data['keyInfo'] = {
-      ...this.data.keyInfo,
+    this.data['minerInfo'] = {
+      ...this.data.minerInfo,
       isCallStaked:isCallStaked
     };
   }

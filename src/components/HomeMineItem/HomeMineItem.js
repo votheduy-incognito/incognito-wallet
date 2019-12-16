@@ -19,7 +19,11 @@ import styles from './style';
 const TAG = 'HomeMineItem';
 const descriptionNodeOffline = 'Check if your node is running';
 const descriptionMasterNodeOffline = 'Reconnecting to the network. Please wait.';
-// const desciptionMasterAndNodeOffline = 'Balance will reload when Master node is back online.';
+const descriptionPNodeUnStaked = 'Your Node is borrowing the required PRV from the pool.\nThis may take up to 24 hours.';
+const descriptionPNodeStaked = 'Your Node is now waiting\nto join a committee, where\nit will start earning';
+const descriptionVNodeUnStaked = 'Tap here to stake';
+const descriptionVNodeStaked = 'Waiting to become a validator';
+
 class HomeMineItem extends React.Component {
   constructor(props){
     super(props);
@@ -182,9 +186,9 @@ class HomeMineItem extends React.Component {
       if(deviceInfo.isSyncing()){
         if(!isFetchedBalance){
           if(deviceInfo.Type == DEVICES.VIRTUAL_TYPE){
-            textErrorDevice = 'Waiting to become a validator';
+            textErrorDevice = descriptionVNodeStaked;
           }else{
-            textErrorDevice = isStaked ?'Your Node is now waiting to join a committee,\nwhere it will start earning' :'Your Node is borrowing the required PRV from the pool.\nThis may take up to 24 hours.';
+            textErrorDevice = isStaked ?descriptionPNodeStaked :descriptionPNodeUnStaked;
           }
         }else if(balance == -1){
           textErrorDevice = descriptionMasterNodeOffline;
@@ -192,9 +196,9 @@ class HomeMineItem extends React.Component {
       }else if(deviceInfo.isReady()){
         
         if(deviceInfo.Type == DEVICES.VIRTUAL_TYPE){
-          textErrorDevice = isStaked ?'Waiting to become a validator': 'Tap here to stake';
+          textErrorDevice = isStaked ?descriptionVNodeStaked: descriptionVNodeUnStaked;
         }else{
-          textErrorDevice = isStaked ?'Your Node is now waiting to join a committee,\nwhere it will start earning' :'Your Node is borrowing the required PRV from the pool.\nThis may take up to 24 hours.';
+          textErrorDevice = isStaked ?descriptionPNodeStaked :descriptionPNodeUnStaked;
         }
         
       }else if(!isFetchedBalance && deviceInfo.isOffline()){
