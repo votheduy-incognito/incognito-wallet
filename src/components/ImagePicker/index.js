@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import picker from 'react-native-document-picker';
+import picker from 'react-native-image-picker';
 import rnfs from 'react-native-fs';
-import { ExHandler } from '@src/services/exception';
+import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
+import { debounce } from 'lodash';
 import ImagePicker from './ImagePicker';
 
 class ImagePickerContainer extends Component {
+  constructor() {
+    super();
+    this.handlePick = debounce(this.handlePick.bind(this), 300);
+  }
 
   getRealPath = (file) => {
     return rnfs.DocumentDirectoryPath + `/${file.name}`;
@@ -13,22 +18,58 @@ class ImagePickerContainer extends Component {
 
   handlePick = async () => {
     try {
-      const { onPick } = this.props;
-      const file = await picker.pick({
-        type: 'image/png',
+      return await new Promise((resolve, reject) => {
+        const { onPick, maxSize } = this.props;
+        const options = {
+          title: 'Select Image',
+          takePhotoButtonTitle: null,
+          mediaType: 'photo',
+        };
+
+        picker.showImagePicker(options, (response) => {
+          if (response.didCancel) {
+            // console.log('User cancelled image picker');
+          } else if (response.error) {
+            return reject(response.error);
+          } else {
+            // You can also display the image using data:
+            // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+            if (!response.uri) {
+              return reject(new Error('File is not selected'));
+            }
+
+            const file = {
+              name: response.fileName,
+              type: response.type,
+              size: response.fileSize,
+              uri: response.uri,
+            };
+
+            const realPath = this.getRealPath(file);
+  
+            file.realPath = realPath;
+      
+            if (file.type !== 'image/png') {
+              return reject(new CustomError(ErrorCode.document_picker_must_be_png));
+            }
+
+            if (maxSize && file.size > maxSize) {
+              return reject(new CustomError(ErrorCode.document_picker_oversize));
+            }
+      
+            if (typeof onPick === 'function') {
+              onPick(file);
+            }
+            
+            resolve(file);
+          }
+        });
+  
+  
+        
       });
-      const realPath = this.getRealPath(file);
-
-      file.realPath = realPath;
-
-      if (typeof onPick === 'function') {
-        onPick(file);
-      }
     } catch (e) {
-      if (picker.isCancel(e)) {
-        return null;
-      }
-      new ExHandler(e).showErrorToast();
+      new ExHandler(e, 'Sorry, we can not use this file.').showErrorToast();
     } 
   }
 
@@ -41,11 +82,13 @@ class ImagePickerContainer extends Component {
 }
 
 ImagePickerContainer.defaultProps = {
-  file: null
+  file: null,
+  maxSize: null // in bit
 };
 
 ImagePickerContainer.propTypes = {
   onPick: PropTypes.func.isRequired,
+  maxSize: PropTypes.number,
   file: PropTypes.shape({
     name: PropTypes.string,
     type: PropTypes.string,

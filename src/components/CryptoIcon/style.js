@@ -5,8 +5,6 @@ export default StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 35,
-    height: 35,
     borderRadius: 17,
     overflow: 'hidden',
     backgroundColor: COLORS.lightGrey10

@@ -25,25 +25,9 @@ const style = StyleSheet.create({
   descriptionInput: {
     height: 60,
   },
-  noteText: {
-    fontSize: FONT.SIZE.small,
-    fontWeight: 'bold',
-    marginVertical: 15
-  },
   submitBtn: {
-    marginTop: 40,
     borderRadius: 4,
-  },
-  title: {
-    fontSize: THEME.text.largeTitleSize,
-    fontWeight: 'bold'
-  },
-  balance: {
-    textAlign: 'center'
-  },
-  error: {
-    color: COLORS.red,
-    fontSize: FONT.SIZE.small,
+    width: 100
   },
   showMyAddressContainer: {
     flexDirection: 'row',
@@ -51,24 +35,24 @@ const style = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 20,
   },
-  showMyAddressLabel: {
-    flex: 1
-  },
   switch: {
     height: '100%',
     marginBottom: 0
   },
-  ownerAddressContainer: {
-    alignItems: 'flex-start'
+  btnGroup: {
+    marginTop: 40,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
-  ownerAddressLabel: {
-    marginBottom: 10,
-    fontSize: 14
+  closeBtn: {
+    backgroundColor: COLORS.transparent,
+    width: 100,
+    borderColor: COLORS.primary
   },
-  ownerAddressValue: {
-    paddingHorizontal: 1,
-    color: COLORS.lightGrey1
-  }
+  closeBtnText: {
+    color: COLORS.primary
+  },
 });
 
 export default style;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Container } from '@src/components/core';
+import { View } from '@src/components/core';
 import { CONSTANT_COMMONS } from '@src/constants';
 import CryptoItemCard from '../CryptoItemCard';
 
@@ -10,7 +10,7 @@ class FollowingTokenList extends Component {
     const { accountGettingBalanceList, tokenGettingBalanceList, onSelectToken, account, tokens, excludeTokenIds } = this.props;
 
     return (
-      <Container>
+      <View>
         {
           !excludeTokenIds.includes(CONSTANT_COMMONS.PRV_TOKEN_ID) && (
             <CryptoItemCard
@@ -36,7 +36,7 @@ class FollowingTokenList extends Component {
             />
           ))
         }
-      </Container>
+      </View>
     );
   }
 }

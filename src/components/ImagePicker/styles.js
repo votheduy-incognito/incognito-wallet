@@ -15,7 +15,9 @@ const style = StyleSheet.create({
     marginRight: 30,
     overflow: 'hidden'
   },
-  rightContainer: {},
+  rightContainer: {
+    flex: 1
+  },
   image: {
     width: 100,
     height: 100,
@@ -25,7 +27,7 @@ const style = StyleSheet.create({
     backgroundColor: COLORS.transparent,
     borderWidth: 1,
     borderColor: COLORS.primary,
-    width: '60%'
+    maxWidth: 300
   },
   buttonText: {
     color: COLORS.primary,

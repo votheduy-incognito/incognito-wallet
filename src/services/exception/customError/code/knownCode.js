@@ -17,7 +17,12 @@ const app = {
   network_make_request_failed: knownError(-9),
   wallet_can_not_create_new_wallet: knownError(-14),
   wallet_can_not_load_existed_wallet: knownError(-15),
-  user_login_failed: knownError(-27)
+  user_login_failed: knownError(-27),
+};
+
+const document_picker = {
+  document_picker_oversize: knownError(-43),
+  document_picker_must_be_png: knownError(-44)
 };
 
 const estimateFee = {
@@ -96,4 +101,5 @@ export default {
   ...addBep2Token,
   ...addErc20Token,
   ...dex,
+  ...document_picker
 };

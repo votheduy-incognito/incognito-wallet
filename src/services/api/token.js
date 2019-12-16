@@ -64,14 +64,13 @@ export const addTokenInfo = ({ tokenId, symbol, name, logoFile, description = ''
   if (!symbol) throw new Error('Missing symbol');
   if (!name) throw new Error('Missing name');
   if (!tokenId) throw new Error('Missing tokenId');
-  if (!logoFile) throw new Error('Missing logoFile');
 
   const form = new FormData();
-  form.append('File', {
+  form.append('File', logoFile ? {
     name: logoFile.name,
     uri: logoFile.uri,
     type: 'image/png'
-  });
+  } : undefined);
 
   form.append('TokenID', tokenId);
   form.append('Name', name);
@@ -79,7 +78,7 @@ export const addTokenInfo = ({ tokenId, symbol, name, logoFile, description = ''
   form.append('Symbol', symbol);
   form.append('IsPrivacy', 'true');
   form.append('ShowOwnerAddress', Number(showOwnerAddress) || 0);
-  form.append('OwnerAddress', ownerAddress);
+  ownerAddress && form.append('OwnerAddress', ownerAddress);
 
   return http.post('storage/upload/token-info', form, {
     headers: {

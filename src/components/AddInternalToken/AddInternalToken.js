@@ -1,4 +1,4 @@
-import { Text, Button, View, Toast } from '@src/components/core';
+import { Text, Button, View, Toast, TextInput } from '@src/components/core';
 import LoadingTx from '@src/components/LoadingTx';
 import { Field, change, isValid, formValueSelector } from 'redux-form';
 import { createForm, InputField, ImagePickerField, SwitchField, validator } from '@src/components/core/reduxForm';
@@ -16,6 +16,7 @@ import React, { Component } from 'react';
 import { setWallet } from '@src/redux/actions/wallet';
 import { ExHandler } from '@src/services/exception';
 import styleSheet from './style';
+import CopiableText from '../CopiableText';
 
 const formName = 'addInternalToken';
 const selector = formValueSelector(formName);
@@ -225,15 +226,21 @@ class AddInternalToken extends Component {
                     containerStyle={styleSheet.descriptionInput}
                     componentProps={{ multiline: true, numberOfLines: 10 }}
                     name='description'
-                    placeholder='Explain what your token is for, how users can get it, and any other details of your project. 255 character max.'
+                    placeholder='Explain what your token is for, how users can get it, and any other details of your project. 255 characters max.'
                     label='Description'
                     style={[styleSheet.input, styleSheet.descriptionInput, { marginBottom: 25 }]}
                     validate={descriptionMaxLength}
                   />
                 </View>
                 <View style={styleSheet.block}>
+                  <View>
+                    <CopiableText text={account.PaymentAddress} style={styleSheet.ownerAddressContainer} copiedMessage='Owner address was copied'>
+                      <Text style={styleSheet.ownerAddressLabel}>Owner address</Text>
+                      <Text style={styleSheet.ownerAddressValue} numberOfLines={1} ellipsizeMode="middle">{account.PaymentAddress}</Text>
+                    </CopiableText>
+                  </View>
                   <View style={styleSheet.showMyAddressContainer}>
-                    <Text>Display my Incognito Address (Optional)</Text>
+                    <Text style={styleSheet.showMyAddressLabel}>Display my Incognito Address (Optional)</Text>
                     <Field
                       component={SwitchField}
                       name='showOwnerAddress'
@@ -246,7 +253,9 @@ class AddInternalToken extends Component {
                   <Field
                     component={ImagePickerField}
                     name='logo'
-                    text={'Upload your coin\'s logo (optional)'}
+                    text={'Upload your coin\'s icon (optional, PNG and less than 50kb)'}
+                    textButton='Upload'
+                    maxSize={1024 * 50 * 8} // 50kb
                     style={styleSheet.input}
                   />
                 </View>

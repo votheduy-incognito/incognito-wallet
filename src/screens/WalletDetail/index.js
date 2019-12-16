@@ -110,7 +110,7 @@ class WalletDetailContainer extends Component {
     if (selectedPrivacy?.tokenId === CONSTANT_COMMONS.PRV_TOKEN_ID) {
       title = 'Privacy';
     } else {
-      title = selectedPrivacy?.externalSymbol ? `Privacy ${selectedPrivacy.externalSymbol}` : selectedPrivacy.name;
+      title = selectedPrivacy?.externalSymbol ? `Privacy ${selectedPrivacy?.externalSymbol}` : selectedPrivacy?.name;
     }
     navigation.setParams({
       title,

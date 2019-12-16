@@ -36,5 +36,7 @@ export default {
   [CODE.api_qrcode_fail_QRCodeAlreadyStaked]: 'You\'ve already set up this Node.',
   [CODE.papp_can_not_opened]: 'Sorry, we can not open this pApp. Please try again or check the pApp URL.',
   [CODE.papp_the_token_is_not_supported]: 'This token is not supported in the pApp.',
-  [CODE.api_invalid_size_upload_file]: 'Upload file\'s size is invalid, file size must be less than 50kB'
+  [CODE.api_invalid_size_upload_file]: 'Upload file\'s size is invalid, file size must be less than 50kB',
+  [CODE.document_picker_oversize]: 'File size is too large, please use a smaller one.',
+  [CODE.document_picker_must_be_png]: 'Please use a PNG image.'
 };
