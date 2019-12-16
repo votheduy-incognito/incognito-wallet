@@ -59,9 +59,9 @@ class AddInternalToken extends Component {
     navigation?.popToTop();
   };
 
-  handleSaveCoinInfo = async ({ logoFile, tokenId, name, symbol, showOwnerAddress, description }) => {
+  handleSaveCoinInfo = async ({ logoFile, tokenId, name, symbol, showOwnerAddress, description, ownerAddress }) => {
     try {
-      return await addTokenInfo({ logoFile, tokenId, name, symbol, showOwnerAddress, description });
+      return await addTokenInfo({ logoFile, tokenId, name, symbol, showOwnerAddress, description, ownerAddress });
     } catch (e) {
       new ExHandler(e, 'Your coin logo has been not saved yet, but you can update it again in Coin Detail screen.').showWarningToast();
     }
@@ -131,6 +131,7 @@ class AddInternalToken extends Component {
           name: tokenName,
           symbol: tokenSymbol,
           logoFile: logo,
+          ownerAddress: account?.PaymentAddress,
           showOwnerAddress,
           description
         }).catch(() => {

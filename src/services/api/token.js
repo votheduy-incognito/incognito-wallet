@@ -60,7 +60,7 @@ export const addBEP2Token = ({ symbol, name, originalSymbol }) => {
   }).then(res => new PToken(res));
 };
 
-export const addTokenInfo = ({ tokenId, symbol, name, logoFile, description = '', showOwnerAddress = false }) => {
+export const addTokenInfo = ({ tokenId, symbol, name, logoFile, description = '', showOwnerAddress = false, ownerAddress }) => {
   if (!symbol) throw new Error('Missing symbol');
   if (!name) throw new Error('Missing name');
   if (!tokenId) throw new Error('Missing tokenId');
@@ -78,11 +78,23 @@ export const addTokenInfo = ({ tokenId, symbol, name, logoFile, description = ''
   form.append('Description', description);
   form.append('Symbol', symbol);
   form.append('IsPrivacy', 'true');
-  form.append('ShowOwnerAddress', showOwnerAddress);
+  form.append('ShowOwnerAddress', Number(showOwnerAddress) || 0);
+  form.append('OwnerAddress', ownerAddress);
 
   return http.post('storage/upload/token-info', form, {
     headers: {
       'Content-Type': 'multipart/form-data',
     }
   }).then(res => new IncognitoCoinInfo(res));
+};
+
+/**
+ * get incognito token info from backend, if `tokenId` is not passed in then get info for all tokens
+ * @param {string} tokenId 
+ */
+export const getTokenInfo = ({ tokenId }) => {
+  const endpoint = tokenId ? 'pcustomtoken/get' : 'pcustomtoken/list';
+
+  return http.get(endpoint, tokenId ? { params: { TokenID: tokenId } } : undefined )
+    .then(res => new IncognitoCoinInfo(res));
 };

@@ -12,7 +12,7 @@ class IncognitoCoinInfo {
     this.userID = data?.UserID;
     this.ownerAddress = data?.OwnerAddress;
     this.description = data?.Description;
-    this.showOwnerAddress = data?.ShowOwnerAddress;
+    this.showOwnerAddress = Boolean(data?.ShowOwnerAddress);
   }
 }
 

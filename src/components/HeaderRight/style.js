@@ -61,6 +61,7 @@ export const tokenInfoStyle = StyleSheet.create({
   },
   infoItemValue: {
     flex: 1,
+    paddingHorizontal: 4
   },
   row: {
     flexDirection: 'row',

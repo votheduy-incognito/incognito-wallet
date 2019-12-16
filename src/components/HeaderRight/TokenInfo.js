@@ -5,6 +5,8 @@ import { COLORS } from '@src/styles';
 import formatUtil from '@src/utils/format';
 import CopiableText from '@src/components/CopiableText';
 import {Icon} from 'react-native-elements';
+import { getTokenInfo } from '@src/services/api/token';
+import { ExHandler } from '@src/services/exception';
 import { Text, View, Container, Modal, TouchableOpacity, Divider } from '../core';
 import CryptoIcon from '../CryptoIcon';
 import { tokenInfoStyle } from './style';
@@ -17,16 +19,44 @@ class TokenInfo extends Component {
     this.state = {
       isShowInfo: false,
       copied: false,
+      copiedLabel: null,
+      incognitoInfo: null
     };
   }
 
-  closeCopied = () => {
-    this.setState({ copied: true });
+  componentDidMount() {
+    const { selectedPrivacy } = this.props;
+    this.handleGetIncognitoTokenInfo(selectedPrivacy?.tokenId);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { selectedPrivacy } = this.props;
+    const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
+
+    if (selectedPrivacy?.isIncognitoToken && (selectedPrivacy?.tokenId !== oldSelectedPrivacy?.tokenId)) {
+      this.handleGetIncognitoTokenInfo(selectedPrivacy.tokenId);
+    }
+  }
+
+  closeCopied = (label) => {
+    this.setState({ copied: true, copiedLabel: label });
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
       this.setState({ copied: false });
     }, 1000);
   };
+
+  handleGetIncognitoTokenInfo = async (tokenId) => {
+    try {
+      if (!tokenId) return;
+
+      const info = await getTokenInfo({ tokenId });
+      this.setState({ incognitoInfo: info });
+      return info;
+    } catch (e) {
+      new ExHandler(e, 'Can not show the token information in detail right now.').showWarningToast();
+    }
+  }
 
   renderInfoItem = (label, value, { useDivider } = {}, copyable = false) => {
     if (value === undefined || value === null || value === '') return null;
@@ -39,7 +69,7 @@ class TokenInfo extends Component {
             <CopiableText
               text={value}
               style={[tokenInfoStyle.infoItemValue, tokenInfoStyle.row]}
-              onPress={this.closeCopied}
+              onPress={() => this.closeCopied(label)}
             >
               <Text numberOfLines={1} ellipsizeMode="middle" style={tokenInfoStyle.infoItemValue}>
                 {value}
@@ -60,23 +90,24 @@ class TokenInfo extends Component {
 
   renderInfo = () => {
     const { selectedPrivacy } = this.props;
-    const { copied } = this.state;
+    const { copied, copiedLabel, incognitoInfo } = this.state;
 
     if (!selectedPrivacy) {
       return <SimpleInfo text='There has nothing to display' />;
     }
 
-    const { name, symbol, externalSymbol, incognitoTotalSupply, incognitoOwnerAddress, tokenId, contractId, amount, pDecimals } = selectedPrivacy;
+    const { name, symbol, externalSymbol, tokenId, contractId, amount, pDecimals, incognitoTotalSupply } = selectedPrivacy;
 
     const infos = [
       { label: 'Name', value: name },
       { label: 'Symbol', value: symbol },
       { label: 'Original Symbol', value: externalSymbol },
-      { label: 'Balance', value: formatUtil.amountFull(amount, pDecimals) },
-      { label: 'Coin supply', value: incognitoTotalSupply },
+      { label: 'Coin supply', value: incognitoTotalSupply ? formatUtil.amount(incognitoTotalSupply, pDecimals) : undefined },
+      { label: 'Balance', value: formatUtil.amount(amount, pDecimals) },
       { label: 'Coin ID', value: tokenId, copyable: true },
-      { label: 'Contract ID', value: contractId },
-      { label: 'Owner address', value: incognitoOwnerAddress },
+      { label: 'Contract ID', value: contractId, copyable: true  },
+      { label: 'Owner address', value: incognitoInfo?.showOwnerAddress ? incognitoInfo?.ownerAddress : undefined, copyable: true  },
+      { label: 'Description', value: incognitoInfo?.description },
     ].filter(i => ![undefined, null, ''].includes(i.value));
 
     return (
@@ -96,7 +127,7 @@ class TokenInfo extends Component {
         {!!copied &&
         (
           <View style={tokenInfoStyle.copied}>
-            <Text style={tokenInfoStyle.copiedMessage}>Coin ID was copied</Text>
+            <Text style={tokenInfoStyle.copiedMessage}>{copiedLabel} was copied</Text>
           </View>
         )}
       </Container>

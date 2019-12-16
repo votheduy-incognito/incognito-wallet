@@ -53,6 +53,7 @@ class SelectedPrivacy {
     this.isDecentralized = this.isToken && (this.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) || this.isErc20Token;
     this.isCentralized = this.isToken && !this.isDecentralized;
     this.networkName = getNetworkName.call(this);
+    this.incognitoTotalSupply = this.isIncognitoToken && Number(token?.totalSupply) || 0;
   }
 }
 
