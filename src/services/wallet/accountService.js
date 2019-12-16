@@ -5,6 +5,7 @@ import storage from '@src/services/storage';
 import axios from 'axios';
 import { KeyWallet, Wallet,AccountWallet } from 'incognito-chain-web-js/build/wallet';
 import _ from 'lodash';
+import AccountModel from '@models/account';
 import { getUserUnfollowTokenIDs, setUserUnfollowTokenIDs } from './tokenService';
 import { getActiveShard } from './RpcClientService';
 import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
@@ -414,6 +415,34 @@ export default class Account {
 
     } catch (e) {
       console.warn(TAG,'getAccountWithBLSPubKey error =',e );
+    }
+    return null;
+  }
+  
+  /**
+   *
+   * @param {string} blsKey
+   * @param {object} wallet
+   * @returns :AccountModel: template
+   */
+  static async getFullDataOfAccount(accountName,wallet) {
+    try {
+      let accountWallet = null;
+      if(!_.isEmpty(accountName)){
+        console.log(TAG,'getFullDataOfAccount begin');
+        const listAccounts = await loadListAccountWithBLSPubKey(wallet)||[];
+        console.log(TAG,'getFullDataOfAccount listAccount ',listAccounts);
+        let account:JSON = listAccounts.find(item=> _.isEqual(item.AccountName,accountName));
+
+        let accountTemp:AccountModel = account? await wallet.getAccountByName(account.AccountName):null;
+        console.log(TAG,'getFullDataOfAccount end ---- ',account);
+        // accountWallet = account? new AccountModel(account):null;
+        accountWallet = accountTemp? new AccountModel({...accountTemp.toJSON(),...account}):null;
+      }
+      return accountWallet;
+
+    } catch (e) {
+      console.warn(TAG,'getFullDataOfAccount error =',e );
     }
     return null;
   }

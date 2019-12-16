@@ -213,9 +213,9 @@ class DetailDevice extends BaseScreen {
     let listFollowingTokens = [];
     const account = _.isEmpty(accountMiner)? await getAccountByName(device.accountName()):accountMiner;
    
-    let isStaked = -1 ;
+    let isStaked = await DeviceService.isStaked(device,wallet).catch(console.log) ?? false  ;
     const Result = await DeviceService.getRewardAmountAllToken(device).catch(e=>new ExHandler(e).showWarningToast())??{};
-
+    
     // TODO hien.ton test
     // const Result = { '1ff2da446abfebea3ba30385e2ca99b0f0bbeda5c6371f4c23c939672b429a42': 3,
     // '716fd1009e2a1669caacc36891e707bfdf02590f96ebd897548e8963c95ebac0': 20,
@@ -228,7 +228,7 @@ class DetailDevice extends BaseScreen {
       // console.log(TAG,'fetchData VIRTUAL_TYPE stakerStatus ',stakerStatus);
       // const { Role= -1, ShardID= 0 } = stakerStatus;
       // isStaked = Role!=-1 ;
-      isStaked = await VirtualNodeService.isStaked(device).catch(console.log) ?? false ;
+      
       console.log(TAG,'fetchData VIRTUAL_TYPE isStaked ',isStaked);
 
       // const listprivacyCustomToken:[] = listTokens;
@@ -247,11 +247,11 @@ class DetailDevice extends BaseScreen {
     }
     default:{
       // const stakerStatus =(!_.isEmpty(account)&& !_.isEmpty(wallet)? await accountService.stakerStatus(account,wallet).catch(console.log):-1)??{};
-      const stakerStatus = await DeviceService.fetchStakeStatus(account,wallet);
-      console.log(TAG,'fetchData Node stakerStatus ',stakerStatus);
+      // const stakerStatus = await DeviceService.fetchStakeStatus(account,wallet);
+      // console.log(TAG,'fetchData Node stakerStatus ',stakerStatus);
 
-      const { Role= -1, ShardID= 0 } = stakerStatus;
-      isStaked = Role!=-1 ;
+      // const { Role= -1, ShardID= 0 } = stakerStatus;
+      // isStaked = Role!=-1 ;
 
       // dataResult = await VirtualNodeService.getRewardAmount(device,device.StakerAddressFromServer,true) ?? {} ;
       // const Result = await DeviceService.getRewardAmountWithPaymentAddress(device.StakerAddressFromServer,'',true)??{};
@@ -534,7 +534,6 @@ class DetailDevice extends BaseScreen {
   }
   renderTop = ()=>{
     const {device,isStaked} = this.state;
-    const isCallStaked = device.isCallStaked;
     const stakeTitle = isStaked?'Stop':'Run';
     const labelName = device.Type == DEVICES.VIRTUAL_TYPE? this.productName:device.qrCodeDeviceId;
     return (
@@ -571,7 +570,7 @@ class DetailDevice extends BaseScreen {
               {imagesVector.ic_setting()}
             </TouchableOpacity>
           )}
-          {device.Type === DEVICES.VIRTUAL_TYPE && !device.isOffline() && !device.isEarning() && (!_.isNil(isStaked) && !isStaked) &&!isCallStaked? (
+          {device.Type === DEVICES.VIRTUAL_TYPE && !device.isOffline() && !device.isEarning() && (!_.isNil(isStaked) && !isStaked) ? (
             <ButtonExtension
               titleStyle={style.group2_container_button_text}
               buttonStyle={style.group2_container_button}

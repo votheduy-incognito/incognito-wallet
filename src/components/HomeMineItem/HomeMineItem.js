@@ -169,26 +169,34 @@ class HomeMineItem extends React.Component {
       }},{ text: 'Cancel'}],{cancelable: true});
     }
   });
-  render() {
-    const {item,deviceInfo,balance} = this.state;
-    const {containerStyle} = this.props;
-
-    const styleStatus = this.getStyleStatus();
+  getDescriptionStatus = ()=>{
+    const {deviceInfo,balance} = this.state;
+    
     const isFetchedBalance = !_.isNil(balance) && !_.isNaN(balance);
     let textErrorDevice ='';
+    const isStaked = deviceInfo && deviceInfo.isCallStaked;
     if(deviceInfo.isWaiting()){
       textErrorDevice = '---';
     }else{
 
       if(deviceInfo.isSyncing()){
         if(!isFetchedBalance){
-          // textErrorDevice = 'Waiting to become a validator';
-          textErrorDevice = deviceInfo.Type == DEVICES.VIRTUAL_TYPE? 'Waiting to become a validator':'You’re all set up!\nEarning will begin within 24 hours.';
+          if(deviceInfo.Type == DEVICES.VIRTUAL_TYPE){
+            textErrorDevice = 'Waiting to become a validator';
+          }else{
+            textErrorDevice = isStaked ?'Your Node is now waiting to join a committee,\nwhere it will start earning' :'Your Node is borrowing the required PRV from the pool.\nThis may take up to 24 hours.';
+          }
         }else if(balance == -1){
           textErrorDevice = descriptionMasterNodeOffline;
         }
       }else if(deviceInfo.isReady()){
-        textErrorDevice = deviceInfo.Type == DEVICES.VIRTUAL_TYPE? 'Tap here to stake':'You’re all set up!\nEarning will begin within 24 hours.';
+        
+        if(deviceInfo.Type == DEVICES.VIRTUAL_TYPE){
+          textErrorDevice = isStaked ?'Waiting to become a validator': 'Tap here to stake';
+        }else{
+          textErrorDevice = isStaked ?'Your Node is now waiting to join a committee,\nwhere it will start earning' :'Your Node is borrowing the required PRV from the pool.\nThis may take up to 24 hours.';
+        }
+        
       }else if(!isFetchedBalance && deviceInfo.isOffline()){
         textErrorDevice = descriptionNodeOffline;
       }else if(balance == -1){
@@ -197,6 +205,14 @@ class HomeMineItem extends React.Component {
         textErrorDevice = 'Please refresh to reload your balance';
       }
     }
+    return textErrorDevice;
+  }
+  render() {
+    const {deviceInfo,balance} = this.state;
+    const {containerStyle} = this.props;
+    const styleStatus = this.getStyleStatus();
+    let textErrorDevice = this.getDescriptionStatus();
+    
 
     const labelName = deviceInfo.Type == DEVICES.VIRTUAL_TYPE? deviceInfo.Name:deviceInfo.qrCodeDeviceId;
 

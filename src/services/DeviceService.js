@@ -28,7 +28,7 @@ export default class DeviceService {
     let styleStatus = {color:'#91A4A6'};
     if(code === Device.CODE_STOP){
       styleStatus.color = '#91A4A6';
-    }else if(code === Device.CODE_MINING){
+    }else if(code === Device.CODE_MINING || code === Device.CODE_PENDING){
       styleStatus.color = '#25CDD6';
     }else if(code === Device.CODE_SYNCING){
       styleStatus.color = '#262727';
@@ -39,6 +39,7 @@ export default class DeviceService {
   }
 
   /**
+   * dont use => wrong response data.
    * if return {} => web-js error
    * return { Role= -1, ShardID= 0 }
    */
@@ -48,6 +49,30 @@ export default class DeviceService {
 
     return await accountService.stakerStatus(account,wallet).catch(e=>new ExHandler(e,`${TAG} fetchStakeStatus: web-js error`).showErrorToast())??{};
   }
+
+  static isStaked  = async(device:Device,wallet)=>{
+    try {
+      if(device && device.isCallStaked){
+        return true;
+      }
+      switch(device.Type){
+      case DEVICES.VIRTUAL_TYPE:
+        return await VirtualNodeService.isStaked(device);
+          
+      default:{
+        const accountName = device.accountName();
+        const accountModel = await accountService.getFullDataOfAccount(accountName,wallet);
+        return !_.isEmpty(accountModel?.BLSPublicKey) && await VirtualNodeService.checkStakedWithBlsKey(accountModel.BLSPublicKey);
+      }
+      }
+      
+
+    } catch (error) {
+      console.log(TAG,'isStaked error',error);
+    }
+    return false;
+  }
+
 
   static fetchAndSavingInfoNodeStake = async(device:Device,isNeedSaving=false)=>{
     
