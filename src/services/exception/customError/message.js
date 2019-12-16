@@ -19,6 +19,7 @@ export default {
   [CODE.importAccount_failed]: 'Account was not imported, please try again.',
   [CODE.importAccount_existed]: 'This account already exists on your device. Please try another.',
   [CODE.web_js_import_existed_account]: 'Please make sure this private key is valid and does not already exist on your device.',
+  [CODE.web_js_import_invalid_key_2]: 'Please try again with a valid private key.',
   [CODE.node_duplicate]: 'This node already exists on your device. Please try another.',
   [CODE.node_invalid_host]: 'This address is not a valid domain or ip address. Please try another.',
   [CODE.getStarted_load_token_failed]: 'Something\'s gone wrong. Please check your connection and try again, or contact go@incognito.org.',

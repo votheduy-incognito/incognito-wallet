@@ -72,7 +72,7 @@ class ImportAccount extends Component {
 
       this.goBack();
     } catch (e) {
-      new ExHandler(e).showErrorToast();
+      new ExHandler(e, 'Import account failed, please try again.').showErrorToast();
     }
   };
 
