@@ -17,7 +17,9 @@ try {
     'initPTokenContributionTx',
     'initPRVTradeTx',
     'initPTokenTradeTx',
-    'withdrawDexTx'
+    'withdrawDexTx',
+    'hybridDecryptionASM',
+    'hybridEncryptionASM'
   ];
   const syncMethods = [
     'scalarMultBase',
