@@ -19,7 +19,11 @@ import styles from './style';
 const TAG = 'HomeMineItem';
 const descriptionNodeOffline = 'Check if your node is running';
 const descriptionMasterNodeOffline = 'Reconnecting to the network. Please wait.';
-// const desciptionMasterAndNodeOffline = 'Balance will reload when Master node is back online.';
+const descriptionPNodeUnStaked = 'Your Node is borrowing the required PRV from the pool.\nThis may take up to 24 hours.';
+const descriptionPNodeStaked = 'Your Node is now waiting\nto join a committee, where\nit will start earning';
+const descriptionVNodeUnStaked = 'Tap here to stake';
+const descriptionVNodeStaked = 'Waiting to become a validator';
+
 class HomeMineItem extends React.Component {
   constructor(props){
     super(props);
@@ -169,26 +173,34 @@ class HomeMineItem extends React.Component {
       }},{ text: 'Cancel'}],{cancelable: true});
     }
   });
-  render() {
-    const {item,deviceInfo,balance} = this.state;
-    const {containerStyle} = this.props;
-
-    const styleStatus = this.getStyleStatus();
+  getDescriptionStatus = ()=>{
+    const {deviceInfo,balance} = this.state;
+    
     const isFetchedBalance = !_.isNil(balance) && !_.isNaN(balance);
     let textErrorDevice ='';
+    const isStaked = deviceInfo && deviceInfo.isCallStaked;
     if(deviceInfo.isWaiting()){
       textErrorDevice = '---';
     }else{
 
       if(deviceInfo.isSyncing()){
         if(!isFetchedBalance){
-          // textErrorDevice = 'Waiting to become a validator';
-          textErrorDevice = deviceInfo.Type == DEVICES.VIRTUAL_TYPE? 'Waiting to become a validator':'You’re all set up!\nEarning will begin within 24 hours.';
+          if(deviceInfo.Type == DEVICES.VIRTUAL_TYPE){
+            textErrorDevice = descriptionVNodeStaked;
+          }else{
+            textErrorDevice = isStaked ?descriptionPNodeStaked :descriptionPNodeUnStaked;
+          }
         }else if(balance == -1){
           textErrorDevice = descriptionMasterNodeOffline;
         }
       }else if(deviceInfo.isReady()){
-        textErrorDevice = deviceInfo.Type == DEVICES.VIRTUAL_TYPE? 'Tap here to stake':'You’re all set up!\nEarning will begin within 24 hours.';
+        
+        if(deviceInfo.Type == DEVICES.VIRTUAL_TYPE){
+          textErrorDevice = isStaked ?descriptionVNodeStaked: descriptionVNodeUnStaked;
+        }else{
+          textErrorDevice = isStaked ?descriptionPNodeStaked :descriptionPNodeUnStaked;
+        }
+        
       }else if(!isFetchedBalance && deviceInfo.isOffline()){
         textErrorDevice = descriptionNodeOffline;
       }else if(balance == -1){
@@ -197,6 +209,14 @@ class HomeMineItem extends React.Component {
         textErrorDevice = 'Please refresh to reload your balance';
       }
     }
+    return textErrorDevice;
+  }
+  render() {
+    const {deviceInfo,balance} = this.state;
+    const {containerStyle} = this.props;
+    const styleStatus = this.getStyleStatus();
+    let textErrorDevice = this.getDescriptionStatus();
+    
 
     const labelName = deviceInfo.Type == DEVICES.VIRTUAL_TYPE? deviceInfo.Name:deviceInfo.qrCodeDeviceId;
 

@@ -15,11 +15,11 @@ export const DEVICE_STATUS = {
   CODE_OFFLINE : -2
 };
 export const DATA_INFO = [{'status':'ready', 'message':'online','code':DEVICE_STATUS.CODE_START},
-  {'status':'syncing',  'message':__DEV__?'syncing_online':'online','code':DEVICE_STATUS.CODE_SYNCING},
+  {'status':'syncing',  'message':__DEV__?'syncing_queueing':'queueing','code':DEVICE_STATUS.CODE_SYNCING},
   {'status':'mining', 'message':'earning','code':DEVICE_STATUS.CODE_MINING},
   {'status':'offline', 'message':__DEV__?'offline_online':'online','code':DEVICE_STATUS.CODE_START},
   {'status':'pending','message':__DEV__?'pending_queueing':'queueing','code':DEVICE_STATUS.CODE_PENDING},
-  {'status':'notmining', 'message':__DEV__?'notmining_queueing':'queueing','code':DEVICE_STATUS.CODE_START},
+  {'status':'notmining', 'message':__DEV__?'notmining_online':'online','code':DEVICE_STATUS.CODE_START},
   {'status':'waiting', 'message':__DEV__?'waiting_queueing':'queueing','code':DEVICE_STATUS.CODE_MINING}];
 export const template = {
   minerInfo:{
@@ -94,6 +94,12 @@ export default class Device {
   get isCallStaked(){
     return this.data.minerInfo?.isCallStaked||false;
   }
+  set isCallStaked(isCallStaked:Boolean){
+    this.data['minerInfo'] = {
+      ...this.data.minerInfo,
+      isCallStaked:isCallStaked
+    };
+  }
   get PublicKeyMining(){
     return this.data.keyInfo?.publicKeyMining;
   }
@@ -108,11 +114,10 @@ export default class Device {
     return this.data.keyInfo?.publicKeyRole;
   }
   set PublicKeyRole(publicKeyRole:String){
-    const keyInfo = {
+    this.data['keyInfo'] = {
       ...this.data.keyInfo,
       publicKeyRole:publicKeyRole
     };
-    this.data['keyInfo'] = keyInfo;
   }
   static offlineStatus =()=>{
     return {

@@ -257,6 +257,12 @@ export default class NodeService {
       }),5).catch(console.log);
       const dataRequestStake = resultRequest.data||{};
       if( !_.isEmpty(dataRequestStake)){
+        const {StakerAddress = ''} = dataRequestStake??{};
+
+        device.isCallStaked = !_.isEmpty(StakerAddress);
+        
+        fetchProductInfo = device.toJSON()??{};
+
         fetchProductInfo['minerInfo'] = {
           ...fetchProductInfo.minerInfo,
           ...dataRequestStake

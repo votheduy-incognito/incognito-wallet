@@ -28,10 +28,11 @@ export default class DeviceService {
     let styleStatus = {color:'#91A4A6'};
     if(code === Device.CODE_STOP){
       styleStatus.color = '#91A4A6';
-    }else if(code === Device.CODE_MINING){
+    }else if(code === Device.CODE_MINING || code === Device.CODE_PENDING){
       styleStatus.color = '#25CDD6';
     }else if(code === Device.CODE_SYNCING){
-      styleStatus.color = '#262727';
+      // styleStatus.color = '#262727';
+      styleStatus.color = '#25CDD6';
     }else if(code === Device.CODE_START){
       styleStatus.color = '#26C64D';
     }
@@ -39,6 +40,7 @@ export default class DeviceService {
   }
 
   /**
+   * dont use => wrong response data.
    * if return {} => web-js error
    * return { Role= -1, ShardID= 0 }
    */
@@ -49,33 +51,60 @@ export default class DeviceService {
     return await accountService.stakerStatus(account,wallet).catch(e=>new ExHandler(e,`${TAG} fetchStakeStatus: web-js error`).showErrorToast())??{};
   }
 
-  static fetchAndSavingInfoNodeStake = async(device:Device,isNeedSaving=false)=>{
-    
+  static isStaked  = async(device:Device,wallet)=>{
     try {
-      let fetchProductInfo = device.toJSON()??{};
-      const paymentAddress =  device.PaymentAddressFromServer;
-      
-      const resultRequest =  await Util.excuteWithTimeout(APIService.fetchInfoNodeStake({
-        PaymentAddress:paymentAddress
-      }),5).catch(console.log);
-      const dataRequestStake = resultRequest.data||{};
-      if(isNeedSaving && !_.isEmpty(dataRequestStake)){
-        
-        fetchProductInfo.minerInfo = {
-          ...fetchProductInfo.minerInfo,
-          ...dataRequestStake
-        };
-        !_.isEmpty(fetchProductInfo) && await LocalDatabase.updateDevice(fetchProductInfo);
+      if(device && device.isCallStaked){
+        return true;
       }
-
-      return dataRequestStake;
+      switch(device.Type){
+      case DEVICES.VIRTUAL_TYPE:
+        return await VirtualNodeService.isStaked(device);
+          
+      default:{
+        const accountName = device.accountName();
+        const accountModel = await accountService.getFullDataOfAccount(accountName,wallet);
+        return !_.isEmpty(accountModel?.BLSPublicKey) && await VirtualNodeService.checkStakedWithBlsKey(accountModel.BLSPublicKey);
+      }
+      }
       
-    } catch (error) {
-      console.log(TAG,'fetchAndSavingInfoNodeStake error = ',error);
-    }
 
-    return null;
+    } catch (error) {
+      console.log(TAG,'isStaked error',error);
+    }
+    return false;
   }
+
+
+  // static fetchAndSavingInfoNodeStake = async(device:Device,isNeedSaving=false)=>{
+    
+  //   try {
+      
+  //     const paymentAddress =  device.PaymentAddressFromServer;
+      
+  //     const resultRequest =  await Util.excuteWithTimeout(APIService.fetchInfoNodeStake({
+  //       PaymentAddress:paymentAddress
+  //     }),5).catch(console.log);
+  //     const dataRequestStake = resultRequest.data||{};
+  //     if(isNeedSaving && !_.isEmpty(dataRequestStake)){
+  //       const {StakerAddress = ''} = dataRequestStake??{};
+  //       device.isCallStaked = !_.isEmpty(StakerAddress);
+  //       let fetchProductInfo = device.toJSON()??{};
+  //       fetchProductInfo.minerInfo = {
+  //         ...fetchProductInfo.minerInfo,
+  //         ...dataRequestStake
+  //       };
+  //       console.log(TAG,'fetchAndSavingInfoNodeStake fetchProductInfo = ',fetchProductInfo);
+  //       !_.isEmpty(fetchProductInfo) && await LocalDatabase.updateDevice(fetchProductInfo);
+  //     }
+
+  //     return dataRequestStake;
+      
+  //   } catch (error) {
+  //     console.log(TAG,'fetchAndSavingInfoNodeStake error = ',error);
+  //   }
+
+  //   return null;
+  // }
 
 
   /**
