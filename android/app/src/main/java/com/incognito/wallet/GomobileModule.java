@@ -168,6 +168,28 @@ public class GomobileModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void hybridDecryptionASM(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "staking: begin");
+            successCallback.invoke(null, Gomobile.hybridDecryptionASM(data));
+        } catch (Exception e) {
+            Log.d(TAG, "staking: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
+
+    @ReactMethod
+    public void hybridEncryptionASM(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "staking: begin");
+            successCallback.invoke(null, Gomobile.hybridEncryptionASM(data));
+        } catch (Exception e) {
+            Log.d(TAG, "staking: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
+
+    @ReactMethod
     public void generateBLSKeyPairFromSeed(String data, Callback successCallback) {
         try {
             Log.d(TAG, "generateBLSKeyPairFromSeed: begin");

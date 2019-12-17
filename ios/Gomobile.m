@@ -127,6 +127,28 @@ RCT_EXPORT_METHOD(initPRVTradeTx:(NSString *)data callback:(RCTResponseSenderBlo
   }
 }
 
+//exports a method hybridDecryptionASM to javascript
+RCT_EXPORT_METHOD(hybridDecryptionASM:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileHybridDecryptionASM(data,nil);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
+//exports a method hybridEncryptionASM to javascript
+RCT_EXPORT_METHOD(hybridEncryptionASM:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileHybridEncryptionASM(data,nil);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
 //exports a method initPTokenTradeTx to javascript
 RCT_EXPORT_METHOD(initPTokenTradeTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
   @try{
