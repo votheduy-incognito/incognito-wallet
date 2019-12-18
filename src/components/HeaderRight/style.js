@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import {COLORS, DECOR, FONT} from '@src/styles';
+import {COLORS, FONT} from '@src/styles';
 
 export const sendReceiveGroupStyle = StyleSheet.create({
   container: {
@@ -23,6 +23,15 @@ export const tokenInfoStyle = StyleSheet.create({
   container: {
 
   },
+  updateBtn: {
+    backgroundColor: COLORS.transparent,
+    borderColor: COLORS.primary,
+    height: 30
+  },
+  updateBtnText: {
+    color: COLORS.primary,
+    ...FONT.STYLE.medium
+  },
   icon: {
     marginHorizontal: 10
   },
@@ -30,7 +39,7 @@ export const tokenInfoStyle = StyleSheet.create({
     backgroundColor: COLORS.white
   },
   infoContainer: {
-    padding: 35
+    padding: 35,
   },
   header: {
     flexDirection: 'row',
@@ -61,6 +70,7 @@ export const tokenInfoStyle = StyleSheet.create({
   },
   infoItemValue: {
     flex: 1,
+    paddingHorizontal: 4
   },
   row: {
     flexDirection: 'row',

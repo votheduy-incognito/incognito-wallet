@@ -4,18 +4,26 @@ import { StyleSheet } from 'react-native';
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    height: 1000
+    height: 1000,
   },
   form: {
     flex: 1,
     flexDirection: 'column',
-    width: '100%'
+    width: '100%',
+  },
+  block: {
+    backgroundColor: COLORS.white,
+    paddingVertical: 15,
+    marginBottom: 10
   },
   desc: {
     marginBottom: 10
   },
   input: {
     marginBottom: 15
+  },
+  descriptionInput: {
+    height: 60,
   },
   noteText: {
     fontSize: FONT.SIZE.small,
@@ -37,6 +45,30 @@ const style = StyleSheet.create({
     color: COLORS.red,
     fontSize: FONT.SIZE.small,
   },
+  showMyAddressContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 20,
+  },
+  showMyAddressLabel: {
+    flex: 1
+  },
+  switch: {
+    height: '100%',
+    marginBottom: 0
+  },
+  ownerAddressContainer: {
+    alignItems: 'flex-start'
+  },
+  ownerAddressLabel: {
+    marginBottom: 10,
+    fontSize: 14
+  },
+  ownerAddressValue: {
+    paddingHorizontal: 1,
+    color: COLORS.lightGrey1
+  }
 });
 
 export default style;

@@ -5,7 +5,10 @@ import { COLORS } from '@src/styles';
 import formatUtil from '@src/utils/format';
 import CopiableText from '@src/components/CopiableText';
 import {Icon} from 'react-native-elements';
-import { Text, View, Container, Modal, TouchableOpacity, Divider } from '../core';
+import { getTokenInfo } from '@src/services/api/token';
+import { ExHandler } from '@src/services/exception';
+import TokenInfoUpdate from '@src/components/TokenInfoUpdate';
+import { Text, View, Container, Modal, TouchableOpacity, Divider, Button, ScrollView } from '../core';
 import CryptoIcon from '../CryptoIcon';
 import { tokenInfoStyle } from './style';
 import SimpleInfo from '../SimpleInfo';
@@ -17,20 +20,67 @@ class TokenInfo extends Component {
     this.state = {
       isShowInfo: false,
       copied: false,
+      copiedLabel: null,
+      incognitoInfo: null,
+      showUpdateInfoView: false
     };
   }
 
-  closeCopied = () => {
-    this.setState({ copied: true });
+  componentDidMount() {
+    const { selectedPrivacy } = this.props;
+    this.handleGetIncognitoTokenInfo(selectedPrivacy?.tokenId);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { selectedPrivacy } = this.props;
+    const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
+
+    if (selectedPrivacy?.isIncognitoToken && (selectedPrivacy?.tokenId !== oldSelectedPrivacy?.tokenId)) {
+      this.handleGetIncognitoTokenInfo(selectedPrivacy.tokenId);
+    }
+  }
+
+  closeCopied = (label) => {
+    this.setState({ copied: true, copiedLabel: label });
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
       this.setState({ copied: false });
     }, 1000);
   };
 
-  renderInfoItem = (label, value, { useDivider } = {}, copyable = false) => {
+  handleGetIncognitoTokenInfo = async (tokenId) => {
+    try {
+      if (!tokenId) return;
+
+      const info = await getTokenInfo({ tokenId });
+      this.setState({ incognitoInfo: info });
+      return info;
+    } catch (e) {
+      new ExHandler(e);
+    }
+  }
+
+  handleUpdated = info => {
+    if (info?.tokenID) {
+      this.handleGetIncognitoTokenInfo(info.tokenID);
+    }
+  }
+
+  handleCloseUpdateView = () => this.setState({ showUpdateInfoView: false })
+
+  handleShowUpdateView = () => this.setState({ showUpdateInfoView: true })
+
+  renderInfoItem = (label, value, { useDivider, copyable = false, multiline = false } = {}) => {
     if (value === undefined || value === null || value === '') return null;
 
+    const renderValue = (v, multiline) => {
+      if (multiline) {
+        return <Text style={tokenInfoStyle.infoItemValue}>{value}</Text>;
+      } else {
+        return <Text numberOfLines={1} ellipsizeMode="middle" style={tokenInfoStyle.infoItemValue}>{value}</Text>;
+      }
+    };
+    
     return (
       <>
         <View style={tokenInfoStyle.infoItem}>
@@ -39,18 +89,16 @@ class TokenInfo extends Component {
             <CopiableText
               text={value}
               style={[tokenInfoStyle.infoItemValue, tokenInfoStyle.row]}
-              onPress={this.closeCopied}
+              onPress={() => this.closeCopied(label)}
             >
-              <Text numberOfLines={1} ellipsizeMode="middle" style={tokenInfoStyle.infoItemValue}>
-                {value}
-              </Text>
+              {renderValue(value, multiline)}
               <View style={tokenInfoStyle.rightBlock}>
                 <Icon name="copy" type="font-awesome" size={18} />
               </View>
             </CopiableText>
           )
             :
-            <Text numberOfLines={1} ellipsizeMode="middle" style={tokenInfoStyle.infoItemValue}>{value}</Text>
+            renderValue(value, multiline)
           }
         </View>
         { useDivider && <Divider color={COLORS.lightGrey5} /> }
@@ -60,23 +108,24 @@ class TokenInfo extends Component {
 
   renderInfo = () => {
     const { selectedPrivacy } = this.props;
-    const { copied } = this.state;
+    const { copied, copiedLabel, incognitoInfo } = this.state;
 
     if (!selectedPrivacy) {
       return <SimpleInfo text='There has nothing to display' />;
     }
 
-    const { name, symbol, externalSymbol, incognitoTotalSupply, incognitoOwnerAddress, tokenId, contractId, amount, pDecimals } = selectedPrivacy;
+    const { name, symbol, externalSymbol, tokenId, contractId, amount, pDecimals, incognitoTotalSupply } = selectedPrivacy;
 
     const infos = [
       { label: 'Name', value: name },
       { label: 'Symbol', value: symbol },
       { label: 'Original Symbol', value: externalSymbol },
-      { label: 'Balance', value: formatUtil.amountFull(amount, pDecimals) },
-      { label: 'Coin supply', value: incognitoTotalSupply },
+      { label: 'Coin supply', value: incognitoTotalSupply ? formatUtil.amount(incognitoTotalSupply, pDecimals) : undefined },
+      { label: 'Balance', value: formatUtil.amount(amount, pDecimals) },
       { label: 'Coin ID', value: tokenId, copyable: true },
-      { label: 'Contract ID', value: contractId },
-      { label: 'Owner address', value: incognitoOwnerAddress },
+      { label: 'Contract ID', value: contractId, copyable: true  },
+      { label: 'Owner address', value: incognitoInfo?.showOwnerAddress ? incognitoInfo?.ownerAddress : undefined, copyable: true  },
+      { label: 'Description', value: incognitoInfo?.description, multiline: true },
     ].filter(i => ![undefined, null, ''].includes(i.value));
 
     return (
@@ -87,16 +136,19 @@ class TokenInfo extends Component {
             <Text numberOfLines={1} ellipsizeMode="middle" style={tokenInfoStyle.headerText}>{selectedPrivacy?.name}</Text>
             <Text numberOfLines={1} ellipsizeMode="middle" style={tokenInfoStyle.headerSubText}>{selectedPrivacy?.networkName}</Text>
           </View>
+          {/* {
+            incognitoInfo?.isOwner && <Button title='Update' style={tokenInfoStyle.updateBtn} titleStyle={tokenInfoStyle.updateBtnText} onPress={this.handleShowUpdateView} />
+          } */}
         </View>
         <View style={tokenInfoStyle.infoItems}>
           {
-            infos.map((info, index) => this.renderInfoItem(info.label, info.value, { useDivider: (index < infos.length - 1) }, info.copyable))
+            infos.map((info, index) => this.renderInfoItem(info.label, info.value, { useDivider: (index < infos.length - 1), copyable: info.copyable, multiline: info.multiline },))
           }
         </View>
         {!!copied &&
         (
           <View style={tokenInfoStyle.copied}>
-            <Text style={tokenInfoStyle.copiedMessage}>Coin ID was copied</Text>
+            <Text style={tokenInfoStyle.copiedMessage}>{copiedLabel} was copied</Text>
           </View>
         )}
       </Container>
@@ -104,11 +156,19 @@ class TokenInfo extends Component {
   };
 
   handleToggle = () => {
-    this.setState(({ isShowInfo }) => ({ isShowInfo: !isShowInfo }));
+    this.setState(({ isShowInfo }) => {
+      const newState = !isShowInfo;
+
+      if (newState === false) {
+        this.handleCloseUpdateView();
+      }
+
+      return { isShowInfo: newState };
+    });
   }
 
   render() {
-    const { isShowInfo } = this.state;
+    const { isShowInfo, incognitoInfo, showUpdateInfoView } = this.state;
     const { iconColor } = this.props;
 
     return (
@@ -117,7 +177,12 @@ class TokenInfo extends Component {
           <Icons name='info' style={tokenInfoStyle.icon} size={24} color={iconColor} />
         </TouchableOpacity>
         <Modal visible={isShowInfo} close={this.handleToggle} containerStyle={tokenInfoStyle.modalContainer} closeBtnColor={COLORS.primary} headerText='Coin info'>
-          {this.renderInfo()}
+          <ScrollView>
+            { showUpdateInfoView
+              ? incognitoInfo && <TokenInfoUpdate incognitoInfo={incognitoInfo} onUpdated={this.handleUpdated} onClose={this.handleCloseUpdateView} />
+              : this.renderInfo()
+            }
+          </ScrollView>
         </Modal>
       </View>
     );

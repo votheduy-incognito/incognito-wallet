@@ -1,14 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Container, ScrollView, View, Text, RefreshControl, Button, Image} from '@src/components/core';
-import CryptoItemCard from '@src/components/CryptoItemCard';
-import tokenData from '@src/constants/tokenData';
-import { CONSTANT_COMMONS } from '@src/constants';
 import setting from '@src/assets/images/setting_white.png';
 import { TouchableWithoutFeedback } from 'react-native';
 import { Icon } from 'react-native-elements';
 import dexUtils from '@utils/dex';
 import {COLORS} from '@src/styles';
+import FollowingTokenList from '@src/components/FollowingTokenList/FollowingTokenList';
 import { homeStyle } from './style';
 
 class Home extends React.Component {
@@ -16,8 +14,6 @@ class Home extends React.Component {
     const {
       account,
       tokens,
-      accountGettingBalanceList,
-      tokenGettingBalanceList,
       onSelectToken,
       handleAddFollowToken,
       handleCreateToken,
@@ -49,34 +45,11 @@ class Home extends React.Component {
         >
           <View style={homeStyle.bgStyle} />
           <Container style={homeStyle.mainContainer}>
-            <CryptoItemCard
-              style={homeStyle.cryptoItem}
-              token={{
-                symbol: tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY,
-                id: CONSTANT_COMMONS.PRV_TOKEN_ID,
-                amount: account?.value ?? null,
-                name: 'Incognito',
-                fullName: 'Privacy',
-                metaData: {
-                  pSymbol: tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY,
-                  pDecimals: CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY,
-                  decimals: CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
-                }
-              }}
-              isGettingBalance={accountGettingBalanceList?.includes(account?.name)}
-              onPress={onSelectToken}
+            <FollowingTokenList
+              account={account}
+              tokens={tokens}
+              onSelectToken={onSelectToken}
             />
-            {
-            tokens?.map(token => (
-              <CryptoItemCard
-                style={homeStyle.cryptoItem}
-                key={token.id}
-                token={token}
-                isGettingBalance={tokenGettingBalanceList?.includes(token?.id)}
-                onPress={onSelectToken}
-              />
-            ))
-            }
             <View style={homeStyle.addTokenContainer}>
               { !dexUtils.isDEXAccount(account.name) &&
                 (
@@ -107,16 +80,12 @@ class Home extends React.Component {
 }
 
 Home.defaultProps = {
-  tokenGettingBalanceList: [],
-  accountGettingBalanceList: [],
   account: null,
   tokens: [],
   isReloading: false
 };
 
 Home.propTypes = {
-  tokenGettingBalanceList: PropTypes.array,
-  accountGettingBalanceList: PropTypes.array,
   account: PropTypes.object,
   tokens: PropTypes.array,
   onSelectToken: PropTypes.func.isRequired,

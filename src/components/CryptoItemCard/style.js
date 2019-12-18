@@ -9,14 +9,9 @@ export default StyleSheet.create({
     borderBottomWidth: 1,
   },
   logoContainer: {
-    flex: 1,
+    paddingRight: 20,
     justifyContent: 'center',
     alignItems: 'flex-start',
-  },
-  logo: {
-    width: 25,
-    height: 25,
-    resizeMode: 'contain'
   },
   cryptoNameContainer: {
     flex: 3,

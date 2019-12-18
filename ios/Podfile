@@ -89,6 +89,8 @@ target 'constantWalletMobile' do
   pod 'RCTRestart', :path => '../node_modules/react-native-restart/ios'
 
   pod 'react-native-webview', :path => '../node_modules/react-native-webview'
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
   
   # Pods for constantWalletMobile
 

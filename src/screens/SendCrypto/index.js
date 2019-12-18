@@ -4,7 +4,6 @@ import LoadingContainer from '@src/components/LoadingContainer';
 import { connect } from 'react-redux';
 import convertUtil from '@src/utils/convert';
 import formatUtil from '@src/utils/format';
-import tokenData from '@src/constants/tokenData';
 import accountService from '@src/services/wallet/accountService';
 import tokenService from '@src/services/wallet/tokenService';
 import { getBalance } from '@src/redux/actions/account';
@@ -78,7 +77,7 @@ class SendCryptoContainer extends Component {
     const fromAddress = selectedPrivacy?.paymentAddress;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
     const originalFee = Number(fee);
-    const isUseTokenFee = feeUnit !== tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY;
+    const isUseTokenFee = feeUnit !== CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
     const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
     const tokenObject = {
       Privacy : true,

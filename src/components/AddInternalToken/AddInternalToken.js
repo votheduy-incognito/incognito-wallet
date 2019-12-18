@@ -1,28 +1,30 @@
-import { Text, Button, View, Toast } from '@src/components/core';
+import { Text, Button, View, Toast, TextInput } from '@src/components/core';
 import LoadingTx from '@src/components/LoadingTx';
 import { Field, change, isValid, formValueSelector } from 'redux-form';
-import { createForm, InputField, validator } from '@src/components/core/reduxForm';
+import { createForm, InputField, ImagePickerField, SwitchField, validator } from '@src/components/core/reduxForm';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withNavigation } from 'react-navigation';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { getEstimateFeeForPToken } from '@src/services/wallet/RpcClientService';
+import { addTokenInfo } from '@src/services/api/token';
 import Token from '@src/services/wallet/tokenService';
 import formatUtil from '@src/utils/format';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { setWallet } from '@src/redux/actions/wallet';
-import tokenData from '@src/constants/tokenData';
 import { ExHandler } from '@src/services/exception';
 import styleSheet from './style';
+import CopiableText from '../CopiableText';
 
 const formName = 'addInternalToken';
 const selector = formValueSelector(formName);
 const initialValues = {
-  fromAddress: ''
+  showOwnerAddress: false
 };
 const Form = createForm(formName, { initialValues });
+const descriptionMaxLength = validator.maxLength(255);
 
 class AddInternalToken extends Component {
   constructor(props) {
@@ -57,6 +59,14 @@ class AddInternalToken extends Component {
     const { navigation } = this.props;
     navigation?.popToTop();
   };
+
+  handleSaveCoinInfo = async ({ logoFile, tokenId, name, symbol, showOwnerAddress, description, ownerAddress }) => {
+    try {
+      return await addTokenInfo({ logoFile, tokenId, name, symbol, showOwnerAddress, description, ownerAddress });
+    } catch (e) {
+      new ExHandler(e, 'Your coin logo has been not saved yet, but you can update it again in Coin Detail screen.').showWarningToast();
+    }
+  }
 
   // estimate fee when user update isPrivacy or amount, and toAddress is not null
   handleEstimateFee = async (values) => {
@@ -94,7 +104,7 @@ class AddInternalToken extends Component {
   handleCreateSendToken = async (values) => {
     const { account, wallet, setWallet } = this.props;
 
-    const { name, symbol, amount } = values;
+    const { name, symbol, amount, logo, showOwnerAddress, description } = values;
     const { fee } = this.state;
 
     const tokenObject = {
@@ -114,7 +124,21 @@ class AddInternalToken extends Component {
       this.setState({ isCreatingOrSending: true });
       const res = await Token.createSendPToken(tokenObject, Number(fee) || 0, account, wallet);
       if (res.txId) {
+        const { tokenID, tokenName, tokenSymbol } = res;
         Toast.showSuccess('Create coin successfully');
+
+        await this.handleSaveCoinInfo({
+          tokenId: tokenID,
+          name: tokenName,
+          symbol: tokenSymbol,
+          logoFile: logo,
+          ownerAddress: account?.PaymentAddress,
+          showOwnerAddress,
+          description
+        }).catch(() => {
+          // err is no matter, the user can update their token info later in Coin Detail screen
+          // so just let them pass this process
+        });
 
         // update new wallet to store
         setWallet(wallet);
@@ -152,7 +176,7 @@ class AddInternalToken extends Component {
   renderBalance = () => {
     const { account } = this.props;
 
-    return <Text style={styleSheet.balance}>{` Balance: ${ formatUtil.amount(account.value, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY) } ${ tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY }`}</Text>;
+    return <Text style={styleSheet.balance}>{` Balance: ${ formatUtil.amount(account.value, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY) } ${ CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV }`}</Text>;
   }
 
   render() {
@@ -167,40 +191,81 @@ class AddInternalToken extends Component {
           {({ handleSubmit, submitting }) => (
             <>
               <View style={styleSheet.fields}>
-                <Field
-                  component={InputField}
-                  name='name'
-                  placeholder='Enter coin name'
-                  label='Name'
-                  style={styleSheet.input}
-                  validate={validator.combinedTokenName}
-                />
-                <Field
-                  component={InputField}
-                  componentProps={{ autoCapitalize: 'characters' }}
-                  name='symbol'
-                  placeholder='Enter coin ticker'
-                  label='Ticker'
-                  style={styleSheet.input}
-                  validate={validator.combinedTokenSymbol}
-                />
-                <Field
-                  component={InputField}
-                  name='amount'
-                  placeholder='Enter number of coins'
-                  label='Total supply'
-                  style={styleSheet.input}
-                  componentProps={{
-                    keyboardType: 'decimal-pad'
-                  }}
-                  validate={[...validator.combinedNanoAmount]}
-                />
+                <View style={styleSheet.block}>
+                  <Field
+                    component={InputField}
+                    name='name'
+                    placeholder='Enter coin name'
+                    label='Name'
+                    style={styleSheet.input}
+                    validate={validator.combinedTokenName}
+                  />
+                  <Field
+                    component={InputField}
+                    componentProps={{ autoCapitalize: 'characters' }}
+                    name='symbol'
+                    placeholder='Enter coin ticker'
+                    label='Ticker'
+                    style={styleSheet.input}
+                    validate={validator.combinedTokenSymbol}
+                  />
+                  <Field
+                    component={InputField}
+                    name='amount'
+                    placeholder='Enter number of coins'
+                    label='Total supply'
+                    style={styleSheet.input}
+                    componentProps={{
+                      keyboardType: 'decimal-pad'
+                    }}
+                    validate={[...validator.combinedNanoAmount]}
+                  />
+                  <Field
+                    component={InputField}
+                    inputStyle={styleSheet.descriptionInput}
+                    containerStyle={styleSheet.descriptionInput}
+                    componentProps={{ multiline: true, numberOfLines: 10 }}
+                    name='description'
+                    placeholder='Explain what your token is for, how users can get it, and any other details of your project. 255 characters max.'
+                    label='Description'
+                    style={[styleSheet.input, styleSheet.descriptionInput, { marginBottom: 25 }]}
+                    validate={descriptionMaxLength}
+                  />
+                </View>
+                <View style={styleSheet.block}>
+                  <View>
+                    <CopiableText text={account.PaymentAddress} style={styleSheet.ownerAddressContainer} copiedMessage='Owner address was copied'>
+                      <Text style={styleSheet.ownerAddressLabel}>Owner address</Text>
+                      <Text style={styleSheet.ownerAddressValue} numberOfLines={1} ellipsizeMode="middle">{account.PaymentAddress}</Text>
+                    </CopiableText>
+                  </View>
+                  <View style={styleSheet.showMyAddressContainer}>
+                    <Text style={styleSheet.showMyAddressLabel}>Display my Incognito Address (Optional)</Text>
+                    <Field
+                      component={SwitchField}
+                      name='showOwnerAddress'
+                      style={[styleSheet.input, styleSheet.switch]}
+                    />
+                  </View>
+                </View>
+                
+                <View style={styleSheet.block}>
+                  <Field
+                    component={ImagePickerField}
+                    name='logo'
+                    text={'Upload your coin\'s icon (optional, PNG and less than 50kb)'}
+                    textButton='Upload'
+                    maxSize={1024 * 50 * 8} // 50kb
+                    style={styleSheet.input}
+                  />
+                </View>
+                
                 {
                   isGettingFee
                     ? <Text>Calculating fee...</Text>
                     : typeof fee === 'number' && (
                       <Text style={isNotEnoughFee && styleSheet.error}>
-                        Issuance fee: {formatUtil.amountFull(fee, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)} {tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY}
+                        Issuance fee: {formatUtil.amountFull(fee, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)} {CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}
                         {isNotEnoughFee && ' (please top up your balance to cover the fee)' }
                       </Text>
                     )
@@ -209,7 +274,7 @@ class AddInternalToken extends Component {
               <Button
                 disabled={!isCanSubmit}
                 title={
-                  isGettingFee ? 'Calculating fee...' : 'Issue'
+                  isGettingFee ? 'Calculating fee...' : 'Issue your coin'
                 }
                 style={styleSheet.submitBtn}
                 onPress={handleSubmit(this.handleCreateSendToken)}
