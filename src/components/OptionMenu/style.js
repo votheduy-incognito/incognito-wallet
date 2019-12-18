@@ -52,6 +52,7 @@ const style = StyleSheet.create({
   textContainer: {
     display: 'flex',
     flexDirection: 'column',
+    flex: 1,
   },
   itemText: {},
   itemDescText: {
