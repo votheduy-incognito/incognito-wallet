@@ -93,9 +93,8 @@ class Input extends React.Component {
                 >
                   <CryptoIcon
                     tokenId={item.id}
-                    logoStyle={tokenStyle.logo}
+                    size={25}
                     onlyDefault={!item.hasIcon}
-                    containerStyle={{ width: 30, height: 30 }}
                   />
                   <View style={modalStyle.tokenInfo}>
                     <Text style={modalStyle.tokenSymbol}>{item.symbol}</Text>
@@ -119,8 +118,7 @@ class Input extends React.Component {
           key={token.id}
           tokenId={token.id}
           onlyDefault={!token.hasIcon}
-          logoStyle={{ width: 20, height: 20 }}
-          containerStyle={{ width: 25, height: 25 }}
+          size={20}
         />
         <Text style={modalStyle.tokenInfo}>{token.symbol}</Text>
       </View>

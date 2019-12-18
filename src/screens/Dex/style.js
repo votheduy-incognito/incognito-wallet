@@ -310,6 +310,9 @@ export const mainStyle = StyleSheet.create({
     backgroundColor: 'transparent',
     elevation: 0,
   },
+  tokenIcon: {
+    paddingRight: 10,
+  }
 });
 
 export const inputStyle = StyleSheet.create({
@@ -431,9 +434,7 @@ export const tokenStyle = StyleSheet.create({
     marginTop: 10,
   },
   logo: {
-    width: 25,
-    height: 25,
-    marginRight: 2,
+    paddingRight: 20,
   },
   symbol: {
     color: COLORS.dark1,

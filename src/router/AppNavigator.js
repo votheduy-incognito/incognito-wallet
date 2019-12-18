@@ -52,7 +52,8 @@ const AppNavigator = createStackNavigator(
       return {
         title,
         header: HeaderBar,
-        headerBackground: THEME.header.backgroundColor
+        headerBackground: THEME.header.backgroundColor,
+        gesturesEnabled: false,
       };
     }
   }

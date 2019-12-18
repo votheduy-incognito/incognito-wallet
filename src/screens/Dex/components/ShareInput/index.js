@@ -61,21 +61,23 @@ class ShareInput extends React.Component {
                 >
                   <View style={modalStyle.tokenInfo}>
                     <View style={mainStyle.twoColumns}>
-                      <CryptoIcon
-                        key={item.token1.id}
-                        tokenId={item.token1.id}
-                        logoStyle={stylesheet.logo}
-                        containerStyle={{ width: 25, height: 25 }}
-                      />
+                      <View style={mainStyle.tokenIcon}>
+                        <CryptoIcon
+                          key={item.token1.id}
+                          tokenId={item.token1.id}
+                          size={22}
+                        />
+                      </View>
                       <Text style={modalStyle.tokenSymbol}>{item.token1.name} ({item.token1.symbol})</Text>
                     </View>
                     <View style={mainStyle.twoColumns}>
-                      <CryptoIcon
-                        key={item.token2.id}
-                        tokenId={item.token2.id}
-                        logoStyle={stylesheet.logo}
-                        containerStyle={{ width: 25, height: 25 }}
-                      />
+                      <View style={mainStyle.tokenIcon}>
+                        <CryptoIcon
+                          key={item.token2.id}
+                          tokenId={item.token2.id}
+                          size={22}
+                        />
+                      </View>
                       <Text style={modalStyle.tokenSymbol}>{item.token2.name} ({item.token2.symbol})</Text>
                     </View>
                   </View>
@@ -96,8 +98,7 @@ class ShareInput extends React.Component {
           <CryptoIcon
             key={pair.token1.id}
             tokenId={pair.token1.id}
-            logoStyle={{ width: 20, height: 20 }}
-            containerStyle={{ width: 25, height: 25 }}
+            size={22}
           />
           <Text style={modalStyle.tokenInfo}>{pair.token1.symbol}</Text>
         </View>
@@ -105,8 +106,7 @@ class ShareInput extends React.Component {
           <CryptoIcon
             key={pair.token2.id}
             tokenId={pair.token2.id}
-            logoStyle={{ width: 20, height: 20 }}
-            containerStyle={{ width: 25, height: 25 }}
+            size={22}
           />
           <Text style={modalStyle.tokenInfo}>{pair.token2.symbol}</Text>
         </View>
