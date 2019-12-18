@@ -48,8 +48,8 @@ class ImagePickerContainer extends Component {
             const realPath = this.getRealPath(file);
   
             file.realPath = realPath;
-      
-            if (file.type !== 'image/png') {
+
+            if (!/\.png$/.test(file.name)) {
               return reject(new CustomError(ErrorCode.document_picker_must_be_png));
             }
 
@@ -60,7 +60,7 @@ class ImagePickerContainer extends Component {
             if (typeof onPick === 'function') {
               onPick(file);
             }
-            
+           
             resolve(file);
           }
         });
