@@ -5,9 +5,9 @@ import LocalDatabase from '@src/utils/LocalDatabase';
 import Util from '@src/utils/Util';
 import _ from 'lodash';
 import APIService from './api/miner/APIService';
-import FirebaseService, { DEVICE_CHANNEL_FORMAT, FIREBASE_PASS, MAIL_UID_FORMAT, PHONE_CHANNEL_FORMAT } from './FirebaseService';
-import { ExHandler, CustomError } from './exception';
+import { CustomError, ExHandler } from './exception';
 import knownCode from './exception/customError/code/knownCode';
+import FirebaseService, { DEVICE_CHANNEL_FORMAT, FIREBASE_PASS, MAIL_UID_FORMAT, PHONE_CHANNEL_FORMAT } from './FirebaseService';
 
 const TAG = 'NodeService';
 const password = `${FIREBASE_PASS}`;
@@ -15,7 +15,7 @@ const templateAction = {
   key:'',
   data:{}
 };
-const timeout = 10;
+const timeout = 18;
 export const LIST_ACTION={
   UPDATE_FIRMWARE:{
     key:'update_firmware',
@@ -97,7 +97,7 @@ export default class NodeService {
   static send = (product, actionExcute = templateAction, chain = 'incognito',type = 'incognito',dataToSend={},timeout = 5) => {
     return new Promise((resolve,reject)=>{
       const productId = product.product_id;
-      console.log(TAG, 'ProductId: ', product.product_id);
+      console.log(TAG, 'send ProductId: ', product.product_id);
       if (productId) {
         const firebase = new FirebaseService();
         const uid = firebase.getUID()||'';
@@ -262,7 +262,7 @@ export default class NodeService {
             type:action?.type||'',
             data:action?.data||{}
           };
-          console.log(TAG,'sendValidatorKey send init data = ',params);
+          console.log(TAG,'sendValidatorKey send init params = ',params);
           const response = await APIService.sendValidatorKey(data,params);
           const uid = dataResult?.uid||'';
         
@@ -322,7 +322,9 @@ export default class NodeService {
     let dataResult = {isHave:false,current:undefined,node:undefined};
     try {
       const {data ,status = 0} = await APIService.getSystemPlatform().catch(e=>new ExHandler(e).showWarningToast())??{} ;
+      console.log(TAG,'checkUpdatingVersion begin ');
       if(!_.isEqual(status,0)){
+        console.log(TAG,'checkUpdatingVersion begin01 ');
         const {
           created_at,
           id,

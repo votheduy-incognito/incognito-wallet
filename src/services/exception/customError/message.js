@@ -37,6 +37,7 @@ export default {
   [CODE.api_qrcode_fail_QRCodeAlreadyStaked]: 'You\'ve already set up this Node.',
   [CODE.node_auth_firebase_fail]: 'Can not authorization firebase.',
   [CODE.node_verify_code_fail]: 'Please check your home wifi info to node verified with our system',
+  [CODE.node_create_account_fail]: 'Can not create account for Node',
   [CODE.papp_can_not_opened]: 'Sorry, we can not open this pApp. Please try again or check the pApp URL.',
   [CODE.papp_the_token_is_not_supported]: 'This token is not supported in the pApp.',
   [CODE.api_invalid_size_upload_file]: 'Upload file\'s size is invalid, file size must be less than 50kB',

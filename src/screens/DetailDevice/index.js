@@ -10,7 +10,7 @@ import common from '@src/constants/common';
 import { DEVICES } from '@src/constants/miner';
 import Device from '@src/models/device';
 import { getBalance as getAccountBalance, reloadAccountFollowingToken, setDefaultAccount, switchAccount } from '@src/redux/actions/account';
-import { accountSeleclor, selectedPrivacySeleclor, tokenSeleclor } from '@src/redux/selectors';
+import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
 import APIService from '@src/services/api/miner/APIService';
 import DeviceService from '@src/services/DeviceService';
@@ -18,6 +18,7 @@ import { ExHandler } from '@src/services/exception';
 import NodeService, { LIST_ACTION } from '@src/services/NodeService';
 import VirtualNodeService from '@src/services/VirtualNodeService';
 import accountService from '@src/services/wallet/accountService';
+import Token from '@src/services/wallet/tokenService';
 import { COLORS } from '@src/styles';
 import format from '@src/utils/format';
 import LocalDatabase from '@src/utils/LocalDatabase';
@@ -29,7 +30,6 @@ import React from 'react';
 import { Image, RefreshControl, ScrollView, TouchableOpacity, View } from 'react-native';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import { connect } from 'react-redux';
-import Token from '@src/services/wallet/tokenService';
 import AdvanceOption from './AdvanceOption';
 import Loader, { Earning } from './Loader';
 import style from './style';
@@ -86,7 +86,7 @@ class DetailDevice extends BaseScreen {
     const product_id = device.ProductId;
     if(_.isEmpty(listTokens)){
       const listTokens = await Token.getAllTokens();
-      console.log(TAG,'onResume begin 01 listTokens = ',listTokens);
+      // console.log(TAG,'onResume begin 01 listTokens = ',listTokens);
       this.setState({
         listTokens:listTokens
       });
@@ -94,7 +94,7 @@ class DetailDevice extends BaseScreen {
     if(!_.isEmpty(product_id)){
       let listDevice = await LocalDatabase.getListDevices()||[];
       const deviceNewJSON =  listDevice.find(item=>_.isEqual(item.product_id,product_id));
-      console.log(TAG,'onResume begin new -- ',deviceNewJSON);
+      // console.log(TAG,'onResume begin new -- ',deviceNewJSON);
       this.setState({
         isStaked:undefined,
         device:Device.getInstance(deviceNewJSON)
@@ -289,7 +289,7 @@ class DetailDevice extends BaseScreen {
           loading: true
         });
         const dataResult = await NodeService.send(device.data,action,chain);
-        // console.log(TAG,'callAndUpdateAction send dataResult = ',dataResult);
+        console.log(TAG,'callAndUpdateAction send dataResult = ',dataResult);
         const { data={status:Device.offlineStatus()}, productId = -1 } = dataResult;
 
         if(device.data.product_id === productId ){

@@ -1,14 +1,14 @@
-import React, { useImperativeHandle, useRef, useState, useEffect, useCallback, useMemo } from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
-import { ButtonExtension, ListItem, Text ,View} from '@components/core';
-import TextStyle from '@src/styles/TextStyle';
-import Dialog, { DialogContent } from 'react-native-popup-dialog';
-import NodeService from '@src/services/NodeService';
+import { ButtonExtension, Text, View } from '@components/core';
 import { DEVICES } from '@src/constants/miner';
-import ViewUtil from '@src/utils/ViewUtil';
 import DeviceService from '@src/services/DeviceService';
+import NodeService from '@src/services/NodeService';
+import TextStyle from '@src/styles/TextStyle';
 import LocalDatabase from '@src/utils/LocalDatabase';
 import Util from '@src/utils/Util';
+import ViewUtil from '@src/utils/ViewUtil';
+import React, { useCallback, useMemo } from 'react';
+import { StyleSheet } from 'react-native';
+import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import styles from './style';
 
 const TAG = 'DialogNotify';
@@ -29,7 +29,7 @@ const Loading = React.memo((props)=>{
   return (
     <View style={styles.dialog_content}>
       {ViewUtil.loadingComponent()}
-      <Text style={styles.dialog_content_text}>Wait a momment</Text>
+      <Text style={styles.dialog_content_text}>Wait a moment</Text>
     </View>
   );
 });
@@ -46,8 +46,8 @@ const ProcessingUpgrade = React.memo(({device,isUpdating,onSuccess,onFail,onClos
     if(device && device.Type == DEVICES.MINER_TYPE){
       console.log(TAG,'processingUpgrade begin isUpdating = ');
       setLoading(true);
-      // const isHave = await NodeService.checkUpdatingVersion(device);
-      const {isHave=false,current,node} = await NodeService.checkUpdatingVersion(device).catch(console.log);
+      const {isHave=false,current,node} = await NodeService.checkUpdatingVersion(device).catch(console.log)??{};
+      console.log(TAG,'processingUpgrade begin 01');
       if(isHave){
         return new Error('Have new version');
       }else{

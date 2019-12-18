@@ -21,6 +21,7 @@ class WifiConnection extends BaseConnection {
     this.fetchCurrentConnect();
   };
   
+  
   fetchCurrentConnect =  ():Promise<ObjConnection> => {
     console.log(TAG, 'fetchCurrentConnect begin ------');
     let pro = async()=>{
@@ -161,9 +162,14 @@ class WifiConnection extends BaseConnection {
   };
 
   isConnectedWithNodeHotspot = async ()=>{
-    const defaultGateway = await NetworkInfo.getGatewayIPAddress();
+    const prefixHotspotIP = '10.42.';
+    const defaultGateway = await NetworkInfo.getGatewayIPAddress().catch(console.log)??'';
+    const isValidateIpAdrress = _.includes(defaultGateway,prefixHotspotIP);
     console.log(TAG, 'isConnectedWithNodeHotspot new ---- defaultGateway=', defaultGateway);
-    return _.includes(defaultGateway,'10.42.');
+    const state = await NetInfo.fetch().catch(console.log);
+    const {isConnected = false, isInternetReachable = false,details =null} = state ??{};
+    const { ipAddress = '',isConnectionExpensive = false,ssid='' } = details ??{};
+    return isValidateIpAdrress || (isConnected && !isInternetReachable) || (isConnected && _.includes(ipAddress,prefixHotspotIP) );
   }
 
   destroy = () => {};

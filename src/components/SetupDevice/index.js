@@ -11,6 +11,9 @@ import { ObjConnection } from '@src/components/DeviceConnection/BaseConnection';
 import { CONSTANT_MINER } from '@src/constants';
 import { DEVICES } from '@src/constants/miner';
 import Device from '@src/models/device';
+import { getAccountByName } from '@src/redux/selectors/account';
+import { CustomError, ExHandler } from '@src/services/exception';
+import knownCode from '@src/services/exception/customError/code/knownCode';
 import NodeService from '@src/services/NodeService';
 import SSHService from '@src/services/SSHService';
 import Util from '@src/utils/Util';
@@ -26,12 +29,13 @@ import { getTimeZone } from 'react-native-localize';
 import StepIndicator from 'react-native-step-indicator';
 import ZMQService from 'react-native-zmq-service';
 import { connect } from 'react-redux';
-import { ExHandler, CustomError } from '@src/services/exception';
-import knownCode from '@src/services/exception/customError/code/knownCode';
 import BaseComponent from '../BaseComponent';
 import styles from './style';
 
 export const TAG = 'SetupDevice';
+const styleHideView = {
+  opacity: 0,width: 0,height: 0
+};
 let HOTPOT = 'TheMiner';
 const deviceTest ={ address: 'US',
   address_lat: 37.09024,
@@ -138,9 +142,9 @@ class SetupDevice extends BaseComponent {
     super.componentDidMount();
     // this.callVerifyCode();
     // hien.ton test 
-    const state = await NetInfo.fetch().catch(console.log);
-    const {isConnected = false, isInternetReachable = false} = state ??{};
-    console.log(TAG, 'componentDidMount state ',state);
+    // const state = await NetInfo.fetch().catch(console.log);
+    // const {isConnected = false, isInternetReachable = false} = state ??{};
+    // console.log(TAG, 'componentDidMount state ',state);
     // this.authFirebase(deviceTest).then(data=>console.log('componentDidMount state ',data)).catch(console.warn);
     //////
     this.connection =  NetInfo.addEventListener(this._handleConnectionChange);
@@ -148,7 +152,6 @@ class SetupDevice extends BaseComponent {
   componentWillUnmount() {
     super.componentWillUnmount();
     this.connection && this.connection();
-    // NetInfo.removeEventListener('connectionChange', this._handleConnectionChange);
   }
 
   renderDeviceName=()=>{
@@ -308,13 +311,13 @@ class SetupDevice extends BaseComponent {
         });
       }
       let productInfo  = resultStep1 ? await this.tryVerifyCode():{} ;
-      let resultStep2  = !_.isEmpty(productInfo) ? await this.authFirebase(productInfo):false ;
-      const listNodeResult = !_.isEmpty(productInfo) && await this.saveProductList(productInfo);
+      let resultFuid  = !_.isEmpty(productInfo) ? await this.authFirebase(productInfo):'' ;
+      const isSaveNodeResult = !_.isEmpty(productInfo) && await this.saveProductList(productInfo);
       
       // this.CurrentPositionStep = 2;
       // let callVerifyCode = this.callVerifyCode;
-      console.log(TAG,'handleSetUpPress callVerifyCode end =======',resultStep2);
-      errorMsg = resultStep2 ? '':errorMessage;
+      console.log(TAG,'handleSetUpPress callVerifyCode end =======',resultFuid);
+      errorMsg = !_.isEmpty(resultFuid) ? '':errorMessage;
       
     } catch (error) {
       console.log(TAG,'handleSetUpPress error: ', error);
@@ -340,14 +343,33 @@ class SetupDevice extends BaseComponent {
     return errorMsg;
   });
 
-  changeDeviceName = async(name,qrCodeDevice=undefined)=>{
+  createAccount= async(accountName)=>{
+    try {
+      if(!_.isEmpty(accountName)){
+        const {getAccountByName} = this.props;
+        let accountNode = await getAccountByName(accountName);
+        console.log(TAG,'createAccount begin name = ',accountName,'-isHaveAccount = ',!_.isEmpty(accountNode));
+        // create account of node with qrcode
+        accountNode = _.isEmpty(accountNode) ? await this.viewCreateAccount?.current?.createAccount(accountName):accountNode;
+        return accountNode;
+      }else{
+        new ExHandler(new CustomError(knownCode.node_create_account_fail),'account name is empty').showWarningToast();
+      }
+    } catch (error) {
+      new ExHandler(new CustomError(knownCode.node_create_account_fail)).showWarningToast();
+    }
+    return {};
+  }
+
+  
+  changeDeviceName = async(name,qrCodeDevice=undefined,accountModel=undefined)=>{
     let errMessage = '';
     try {
       this.deviceIdFromQrcode = qrCodeDevice??this.deviceIdFromQrcode;
       const {addProduct} = this.state;
       let fetchProductInfo = {};
       if (this.validWallName && !_.isEmpty(addProduct) ) {
-        console.log(TAG,'changeDeviceName begin');
+        console.log(TAG,'changeDeviceName begin name = ',name);
         fetchProductInfo = await this.updateDeviceNameRequest(addProduct.product_id,name)||{};
         fetchProductInfo = {
           ...fetchProductInfo,
@@ -358,12 +380,12 @@ class SetupDevice extends BaseComponent {
           },
         };
 
-        const listResult =  await this.saveProductList(fetchProductInfo);
+        const isSaveNodeResult =  await this.saveProductList(fetchProductInfo);
         // console.log(TAG,'changeDeviceName saved - listResult = ',listResult);
       }
       if(!_.isEmpty(fetchProductInfo)){
         const {product_id} = fetchProductInfo;
-        let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
+        let result = !_.isEmpty(accountModel) ?accountModel: await this.createAccount(fetchProductInfo.product_name);
         const {PrivateKey = '',AccountName = '',PaymentAddress = '',PublicKeyCheckEncode='',ValidatorKey = ''} = result;
         console.log(TAG,'changeDeviceName sendPrivateKey begin');
         result = await NodeService.sendValidatorKey(Device.getInstance(addProduct),ValidatorKey);
@@ -391,9 +413,9 @@ class SetupDevice extends BaseComponent {
           };
 
           await LocalDatabase.updateDevice(fetchProductInfo);
-          console.log(TAG,'changeDeviceName end update = ',fetchProductInfo);
+          console.log(TAG,'changeDeviceName requestStake update = ',fetchProductInfo);
         }
-
+        console.log(TAG,'changeDeviceName end ',result);
         if(!_.isEmpty(result)){
           return result;
         }
@@ -449,9 +471,10 @@ class SetupDevice extends BaseComponent {
   });
   saveProductList = async (deviceInfo) =>{
     try {
-      let listLocalDevice = await LocalDatabase.getListDevices();
-      listLocalDevice.push(deviceInfo);
-      await LocalDatabase.saveListDevices(listLocalDevice);
+      // let listLocalDevice = await LocalDatabase.getListDevices();
+      // listLocalDevice.push(deviceInfo);
+      // await LocalDatabase.saveListDevices(listLocalDevice);
+      await LocalDatabase.updateDevice(deviceInfo);
       // const response = await APIService.getProductList(true);
       // const { status, data } = response;
       // if (status == 1) {
@@ -459,9 +482,9 @@ class SetupDevice extends BaseComponent {
       //   await LocalDatabase.saveListDevices(data);
       //   return data;
       // }
-      return listLocalDevice;
+      return true;
     } catch (error) {
-      return undefined;
+      return false;
     }
   }
 
@@ -471,9 +494,7 @@ class SetupDevice extends BaseComponent {
       loading
     } = this.state;
     const {isRenderUI,navigation} = this.props;
-    const styleHideView = {
-      opacity: 0,width: 0,height: 0
-    };
+    
     return (
       <View style={[container,isRenderUI?undefined:styleHideView]}>
         <DeviceConnection ref={this.deviceId} />
@@ -602,7 +623,7 @@ class SetupDevice extends BaseComponent {
         const {isConnected = false, isInternetReachable = false} = state ??{};
         console.log(TAG, 'connectZMQ checkConnectWifi00 isConnected = ',isConnected);
         
-        const isConnectedCombined = isConnected && isInternetReachable && this.isHaveNetwork;
+        const isConnectedCombined = isConnected && (isInternetReachable||this.isHaveNetwork);
         
         console.log(TAG, 'connectZMQ checkConnectWifi isConnected end ----- ',isConnectedCombined);
 
@@ -634,7 +655,7 @@ class SetupDevice extends BaseComponent {
     // if(Platform.OS == 'ios'){
     //   this.isHaveNetwork = isInternetReachable &&isConnected;
     // }
-    this.isHaveNetwork = isInternetReachable &&isConnected;
+    this.isHaveNetwork = isConnected && (isInternetReachable || !(await this.deviceId?.current?.isConnectedWithNodeHotspot()));
     
     console.log(TAG,`_handleConnectionChange: ${this.isHaveNetwork}-ssid=${ssid}`);
     this.setState({
@@ -795,9 +816,11 @@ SetupDevice.defaultProps = {
   isRenderUI:true
 };
 const mapDispatch = { };
-
+const mapStateToProps = state => ({
+  getAccountByName: getAccountByName(state),
+});
 export default connect(
-  state => ({}),
+  mapStateToProps,
   mapDispatch,
   null,
   {
