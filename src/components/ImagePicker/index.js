@@ -49,7 +49,7 @@ class ImagePickerContainer extends Component {
   
             file.realPath = realPath;
 
-            if (!/\.png$/.test(file.name)) {
+            if (!/\.png$/.test(String(file?.name).toLowerCase())) {
               return reject(new CustomError(ErrorCode.document_picker_must_be_png));
             }
 
