@@ -107,8 +107,8 @@ class EstimateFee extends Component {
   }
 
   handleSelectFeeType = (type) => {
-    const { onNewFeeData } = this.props;
-    if (typeof onNewFeeData === 'function') {
+    const { onNewFeeData, estimateFeeData } = this.props;
+    if (typeof onNewFeeData === 'function' && estimateFeeData?.feeUnitByTokenId !== type?.tokenId) {
       onNewFeeData({ feeUnitByTokenId: type?.tokenId, feeUnit: type?.symbol, fee: null });
     }
   }
