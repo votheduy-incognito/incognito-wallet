@@ -19,7 +19,7 @@ class CryptoItemContainer extends Component {
     if (!data) return null;
 
     const fullName = data?.isPToken ? `Privacy ${data?.externalSymbol}` : data?.isMainCrypto ? 'Privacy' : data?.name;
-    const name = data?.isMainCrypto ? 'Incognito' : data?.name;
+    const name = data?.networkName;
 
     const cryptoItemProps = {
       ...this.props,
@@ -45,7 +45,6 @@ class CryptoItemContainer extends Component {
 
 CryptoItemContainer.defaultProps = {
   onPress: null,
-  token: null,
   style: null,
   isGettingBalanceList: [],
   data: null
@@ -53,14 +52,13 @@ CryptoItemContainer.defaultProps = {
 
 CryptoItemContainer.propTypes = {
   onPress: PropTypes.func,
-  token: PropTypes.object,
   isGettingBalanceList: PropTypes.array,
   style: PropTypes.object,
   data: PropTypes.object
 };
 
 const mapState = (state, props) => ({
-  data: selectedPrivacySeleclor.getPrivacyDataByTokenID(state)(props?.token?.id),
+  data: selectedPrivacySeleclor.getPrivacyDataByTokenID(state)(props?.tokenId),
   isGettingBalanceList: sharedSeleclor.isGettingBalance(state)
 });
 

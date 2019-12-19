@@ -26,8 +26,6 @@ const mapState = (state, props) => ({
   tokens: props?.tokens || tokenSeleclor.followed(state),
   account: props?.account ||  accountSeleclor.defaultAccount(state),
   wallet: state.wallet,
-  accountGettingBalanceList: accountSeleclor.isGettingBalance(state),
-  tokenGettingBalanceList: tokenSeleclor.isGettingBalance(state),
   getAccountByName: accountSeleclor.getAccountByName(state)
 });
 

@@ -99,10 +99,11 @@ class SearchToken extends Component {
     try {
       const { tokens } = this.props;
       const { query } = this.state;
+
       const filteredTokenIds = tokens
         .filter(t => {
           const lowerCaseTerm = query ? String(query).toLowerCase() : query;
-          const lowerCaseTokenName = [t.name, t.symbol, t.networkName].join(' ')?.toLowerCase();
+          const lowerCaseTokenName = [t.name, t.symbol, t.networkName, t.pSymbol].join(' ')?.toLowerCase();
           return lowerCaseTokenName.includes(lowerCaseTerm || '');
         }).map(t => t.tokenId);
       this.setState({ filteredTokenIds });
@@ -221,7 +222,6 @@ SearchToken.propTypes = {
   tokens: PropTypes.arrayOf(PropTypes.shape({
     tokenId: PropTypes.string.isRequired,
     symbol: PropTypes.string.isRequired,
-    pSymbol: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
   })).isRequired,
   handleAddFollowToken: PropTypes.func.isRequired,
