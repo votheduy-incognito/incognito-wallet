@@ -14,6 +14,25 @@ import accountService from '@services/wallet/accountService';
 import {MESSAGES} from '@screens/Dex/constants';
 import EstimateFee from './EstimateFee';
 
+const DEFAULT_FEE = 10; // in nano
+const CACHED_FEE = {
+  // token_id_for_use.token_id_for_fee.total_amount_of_the_token: fee
+};
+const DEFAULT_TYPES = {
+  tokenId: CONSTANT_COMMONS.PRV_TOKEN_ID,
+  symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV
+};
+
+const getTypes = (types) => {
+  const _types = {};
+  _types[DEFAULT_TYPES.tokenId] = DEFAULT_TYPES;
+  types?.forEach(type => {
+    type?.tokenId && (_types[type.tokenId] = type);
+  });
+
+  return Object.values(_types);
+};
+
 class EstimateFeeContainer extends Component {
   constructor(props) {
     super(props);
@@ -23,9 +42,16 @@ class EstimateFeeContainer extends Component {
       estimateErrorMsg: null,
       userFee: undefined,  // high priority
       minFee: undefined,
+      types: []
     };
 
     this.handleEstimateFee = debounce(this.handleEstimateFee.bind(this), 1000);
+  }
+
+  static getDerivedStateFromProps(nextProps) {
+    const { types } = nextProps;
+    
+    return { types: getTypes(types) };
   }
 
   componentDidMount() {
@@ -56,7 +82,8 @@ class EstimateFeeContainer extends Component {
 
   selectDefaultFeeType = () => {
     // select a type as default, priority: selectedPrivacy > PRV > first type
-    const { types, selectedPrivacy } = this.props;
+    const { selectedPrivacy } = this.props;
+    const { types } = this.state;
 
     const defaultType = types.find(t => t.tokenId === selectedPrivacy.tokenId) || types.find(t => t.tokenId === CONSTANT_COMMONS.PRV_TOKEN_ID) || types[0];
 
@@ -77,12 +104,52 @@ class EstimateFeeContainer extends Component {
     }
 
     if (typeof onNewFeeData === 'function') {
-      onNewFeeData({
+      const newEstimateFeeData = {
         ...estimateFeeData || {},
         ...fee !== undefined ? { fee } : {},
         ...feeUnitByTokenId !== undefined ? { feeUnitByTokenId } : {},
-        ...feeUnit !== undefined ? { feeUnit } : {}
+        ...feeUnit !== undefined ? { feeUnit } : {},
+      };
+
+      onNewFeeData({
+        ...newEstimateFeeData,
+        isUseTokenFee: newEstimateFeeData?.feeUnitByTokenId !== CONSTANT_COMMONS.PRV_TOKEN_ID,
       });
+    }
+  }
+
+  /**
+   * help to make sure the `handleGetFeeFn` always return a valid fee
+   */
+  feeGuarantor = async (handleGetFeeFn, sendTokenId, feeTokenId, amount) => {
+    let fee;
+    const key = `${sendTokenId}.${feeTokenId}.${amount}`;
+    try {
+      const cachedFee = Number(CACHED_FEE[key]) || 0;
+
+      if (cachedFee) {
+        // has cached fee, return it and try to re-estimate for later (dont need to wait for it)
+        fee = cachedFee;
+        handleGetFeeFn()
+          .then(fee => {
+            // cache latest fee
+            CACHED_FEE[key] = Number(fee) > cachedFee ? fee : cachedFee;
+          });
+      } else {
+        // has a no cached fee, do estimate
+        fee = await handleGetFeeFn();
+      }
+
+      if (Number.isInteger(fee) && fee > 0) {
+        return fee;
+      } else {
+        throw new Error('Fee is invalid, use default fee instead');
+      }
+    } catch {
+      fee = DEFAULT_FEE;
+    } finally {
+      // cache it
+      CACHED_FEE[key] = fee;
     }
   }
 
@@ -102,14 +169,14 @@ class EstimateFeeContainer extends Component {
       });
 
       if (feeUnitByTokenId === selectedPrivacy?.tokenId && selectedPrivacy.isToken) { // estimate fee in pToken [pETH, pBTC, ...]
-        fee = await this._handleEstimateTokenFee();
+        fee = await this.feeGuarantor(this._handleEstimateTokenFee, selectedPrivacy?.tokenId, feeUnitByTokenId, selectedPrivacy?.amount);
       } else if (feeUnitByTokenId === CONSTANT_COMMONS.PRV_TOKEN_ID) {
         // estimate fee in PRV
         if (selectedPrivacy?.isToken) {
-          fee = await this._estimateFeeForToken();
+          fee = await this.feeGuarantor(this._estimateFeeForToken, selectedPrivacy?.tokenId, feeUnitByTokenId, selectedPrivacy?.amount);
         }
         if (selectedPrivacy?.isMainCrypto) {
-          fee = await this._estimateFeeForMainCrypto();
+          fee = await this.feeGuarantor(this._estimateFeeForMainCrypto, selectedPrivacy?.tokenId, feeUnitByTokenId, selectedPrivacy?.amount);
         }
       } else {
         throw new CustomError(ErrorCode.estimate_fee_does_not_support_type_of_fee);
@@ -253,13 +320,13 @@ class EstimateFeeContainer extends Component {
   })
 
   render() {
-    const { isGettingFee, estimateErrorMsg, minFee } = this.state;
+    const { isGettingFee, estimateErrorMsg, minFee, types } = this.state;
     const { selectedPrivacy, style, account, feeText, estimateFeeData } = this.props;
     const { feeUnitByTokenId, fee, feeUnit } = estimateFeeData || {};
     const feePDecimals = this.getPDecimals(selectedPrivacy, feeUnitByTokenId);
     const txt = feeText ?? (fee && `${formatUtil.amountFull(fee, feePDecimals)} ${feeUnit}`);
 
-    if (account && selectedPrivacy) {
+    if (account && selectedPrivacy && types.length) {
       return (
         <EstimateFee
           {...this.props}
@@ -270,6 +337,7 @@ class EstimateFeeContainer extends Component {
           setUserFee={this.setUserFee}
           minFee={minFee}
           style={style}
+          types={types}
           feeText={txt}
           feePDecimals={feePDecimals}
         />
