@@ -3,7 +3,7 @@ import CONFIG from '@src/constants/config';
 import { CustomError, ErrorCode, ExHandler } from './exception';
 
 const HEADERS = {'Content-Type': 'application/json'};
-const TIMEOUT = 10000;
+const TIMEOUT = 20000;
 
 const instance = axios.create({
   baseURL: CONFIG.TEST_URL,
