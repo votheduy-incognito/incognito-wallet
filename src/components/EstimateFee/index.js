@@ -18,6 +18,20 @@ const DEFAULT_FEE = 10; // in nano
 const CACHED_FEE = {
   // token_id_for_use.token_id_for_fee.total_amount_of_the_token: fee
 };
+const DEFAULT_TYPES = {
+  tokenId: CONSTANT_COMMONS.PRV_TOKEN_ID,
+  symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV
+};
+
+const getTypes = (types) => {
+  const _types = {};
+  _types[DEFAULT_TYPES.tokenId] = DEFAULT_TYPES;
+  types?.forEach(type => {
+    type?.tokenId && (_types[type.tokenId] = type);
+  });
+
+  return Object.values(_types);
+};
 
 class EstimateFeeContainer extends Component {
   constructor(props) {
@@ -37,19 +51,7 @@ class EstimateFeeContainer extends Component {
   static getDerivedStateFromProps(nextProps) {
     const { types } = nextProps;
     
-    if (types?.find(type => type.tokenId === CONSTANT_COMMONS.PRV_TOKEN_ID)) {
-      return {
-        types: [
-          {
-            tokenId: CONSTANT_COMMONS.PRV_TOKEN_ID,
-            symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV
-          },
-          ...types,
-        ]
-      };
-    }
-
-    return { types };
+    return { types: getTypes(types) };
   }
 
   componentDidMount() {
@@ -335,6 +337,7 @@ class EstimateFeeContainer extends Component {
           setUserFee={this.setUserFee}
           minFee={minFee}
           style={style}
+          types={types}
           feeText={txt}
           feePDecimals={feePDecimals}
         />

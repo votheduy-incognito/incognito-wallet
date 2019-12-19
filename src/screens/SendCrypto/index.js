@@ -73,11 +73,10 @@ class SendCryptoContainer extends Component {
 
   _handleSendToken = async values => {
     const { account, wallet, tokens, selectedPrivacy, getTokenBalanceBound } = this.props;
-    const { toAddress, amount, fee, feeUnit, message } = values;
+    const { toAddress, amount, fee, feeUnit, message, isUseTokenFee } = values;
     const fromAddress = selectedPrivacy?.paymentAddress;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
     const originalFee = Number(fee);
-    const isUseTokenFee = feeUnit !== CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
     const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
     const tokenObject = {
       Privacy : true,

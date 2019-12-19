@@ -49,8 +49,8 @@ class SendCrypto extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const { selectedPrivacy } = this.props;
     const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
-    const { estimateFeeData: { fee, feeUnit } } = this.state;
-    const { estimateFeeData: { fee: oldFee, feeUnit: oldFeeUnit } } = prevState;
+    const { estimateFeeData: { fee, feeUnitByTokenId } } = this.state;
+    const { estimateFeeData: { fee: oldFee, feeUnitByTokenId: oldFeeUnitByTokenId } } = prevState;
     const { receiptData } = this.props;
    
     if (selectedPrivacy?.pDecimals !== oldSelectedPrivacy?.pDecimals) {
@@ -58,7 +58,7 @@ class SendCrypto extends React.Component {
       this.setFormValidation({ minAmount: this.getMinAmount() });
     }
 
-    if (fee !== oldFee || feeUnit !== oldFeeUnit) {
+    if (fee !== oldFee || feeUnitByTokenId !== oldFeeUnitByTokenId) {
       // need to re-calc max amount can be send if fee was changed
       this.setFormValidation({ maxAmount: this.getMaxAmount() });
     }
@@ -80,11 +80,12 @@ class SendCrypto extends React.Component {
 
   getMaxAmount = () => {
     const { selectedPrivacy } = this.props;
-    const { estimateFeeData: { fee, feeUnit } } = this.state;
+    const { estimateFeeData: { fee = 0, feeUnitByTokenId } } = this.state;
     let amount = selectedPrivacy?.amount;
 
-    if (feeUnit === selectedPrivacy?.symbol) {
-      amount-= fee || 0;
+    if (feeUnitByTokenId === selectedPrivacy?.tokenId) {
+      const newAmount = (Number(amount) || 0) - (Number(fee) || 0);
+      amount = newAmount > 0 ? newAmount : 0;
     }
 
     const maxAmount = convertUtil.toHumanAmount(amount, selectedPrivacy?.pDecimals);
@@ -95,7 +96,7 @@ class SendCrypto extends React.Component {
   setFormValidation = ({ maxAmount, minAmount }) => {
     const { selectedPrivacy } = this.props;
 
-    if (maxAmount) {
+    if (Number.isFinite(maxAmount)) {
       this.setState({
         maxAmountValidator: validator.maxValue(maxAmount, {
           message: maxAmount > 0
@@ -105,7 +106,7 @@ class SendCrypto extends React.Component {
       });
     }
 
-    if (minAmount) {
+    if (Number.isFinite(minAmount)) {
       this.setState({
         minAmountValidator: validator.minValue(minAmount, {
           message: `Amount must be larger than ${formatUtil.number(minAmount)} ${selectedPrivacy?.symbol}`
@@ -130,10 +131,10 @@ class SendCrypto extends React.Component {
   handleSend = async values => {
     try {
       const { handleSend } = this.props;
-      const { estimateFeeData: { fee, feeUnit } } = this.state;
+      const { estimateFeeData: { fee, feeUnit, isUseTokenFee } } = this.state;
 
       if (typeof handleSend === 'function') {
-        await handleSend({ ...values, fee, feeUnit });
+        await handleSend({ ...values, fee, feeUnit, isUseTokenFee });
       }
     } catch (e) {
       new ExHandler(e, 'Something went wrong. Just tap the Send button again.').showErrorToast();
@@ -154,18 +155,17 @@ class SendCrypto extends React.Component {
   }
 
   getSupportedFeeTypes = async () => {
-    const supportedFeeTypes = [{
-      tokenId: CONSTANT_COMMONS.PRV_TOKEN_ID,
-      symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV
-    }];
+    const supportedFeeTypes = [];
 
     try {
       const { selectedPrivacy } = this.props;
       const isUsed = await isExchangeRatePToken(selectedPrivacy.tokenId);
-      isUsed && supportedFeeTypes.push({
-        tokenId: selectedPrivacy.tokenId,
-        symbol: selectedPrivacy.symbol
-      });
+      if (isUsed && supportedFeeTypes.find(type => type?.tokenId !== selectedPrivacy?.tokenId)) {
+        supportedFeeTypes.push({
+          tokenId: selectedPrivacy.tokenId,
+          symbol: selectedPrivacy.symbol
+        });
+      }
     } catch (e) {
       new ExHandler(e);
     } finally {
@@ -196,13 +196,8 @@ class SendCrypto extends React.Component {
 
   render() {
     const { supportedFeeTypes, estimateFeeData } = this.state;
-    const { isSending, selectedPrivacy, amount, toAddress, isFormValid, account } = this.props;
-    const types = [CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV];
+    const { isSending, amount, toAddress, isFormValid, account } = this.props;
     const maxAmount = this.getMaxAmount();
-
-    if (selectedPrivacy?.symbol !== CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV) {
-      types.unshift(selectedPrivacy?.symbol);
-    }
 
     return (
       <ScrollView style={homeStyle.container}>
