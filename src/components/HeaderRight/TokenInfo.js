@@ -10,6 +10,7 @@ import { ExHandler } from '@src/services/exception';
 import TokenInfoUpdate from '@src/components/TokenInfoUpdate';
 import { Text, View, Container, Modal, TouchableOpacity, Divider, Button, ScrollView } from '../core';
 import CryptoIcon from '../CryptoIcon';
+import VerifiedText from '../VerifiedText';
 import { tokenInfoStyle } from './style';
 import SimpleInfo from '../SimpleInfo';
 
@@ -114,7 +115,7 @@ class TokenInfo extends Component {
       return <SimpleInfo text='There has nothing to display' />;
     }
 
-    const { name, symbol, externalSymbol, tokenId, contractId, amount, pDecimals, incognitoTotalSupply } = selectedPrivacy;
+    const { name, symbol, externalSymbol, tokenId, contractId, amount, pDecimals, incognitoTotalSupply, isVerified } = selectedPrivacy;
 
     const infos = [
       { label: 'Name', value: name },
@@ -134,7 +135,13 @@ class TokenInfo extends Component {
             <CryptoIcon size={70} tokenId={tokenId} />
           </View>
           <View style={tokenInfoStyle.headerTextContainer}>
-            <Text numberOfLines={1} ellipsizeMode="middle" style={tokenInfoStyle.headerText}>{selectedPrivacy?.symbol} {!selectedPrivacy?.isPrivateCoin && selectedPrivacy?.networkName}</Text>
+            <VerifiedText
+              text={`${selectedPrivacy?.symbol} ${!selectedPrivacy?.isPrivateCoin ? selectedPrivacy?.networkName : ''}`} 
+              numberOfLines={1} 
+              ellipsizeMode="middle"
+              style={tokenInfoStyle.headerText}
+              isVerified={isVerified}
+            />
             <Text numberOfLines={1} ellipsizeMode="middle" style={tokenInfoStyle.headerSubText}>{selectedPrivacy?.displayName}</Text>
           </View>
         </View>

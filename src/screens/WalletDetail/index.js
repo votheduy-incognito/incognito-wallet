@@ -16,6 +16,7 @@ import unfollowTokenIcon from '@src/assets/images/icons/unfollowToken.png';
 import { ExHandler } from '@src/services/exception';
 import { COLORS } from '@src/styles';
 import { CONSTANT_COMMONS } from '@src/constants';
+import VerifiedText from '@src/components/VerifiedText';
 import WalletDetail from './WalletDetail';
 import styles from './style';
 
@@ -43,7 +44,7 @@ class WalletDetailContainer extends Component {
     const { title, subTitle, selectedPrivacy, optionMenu, theme } = navigation.state.params || {};
     const infoIconColor = COLORS.white;
     return {
-      title: title ?? '---',
+      title: <VerifiedText text={title} style={styles.headerTitleText} isVerified={selectedPrivacy?.isVerified} /> ?? '---',
       subTitle: (title || subTitle) ? subTitle : 'Loading information...',
       theme,
       headerRight: (

@@ -3,15 +3,16 @@ import PropTypes from 'prop-types';
 import { View, Text, TouchableScale, ActivityIndicator } from '@src/components/core';
 import CryptoIcon from '@src/components/CryptoIcon';
 import formatUtil from '@src/utils/format';
+import VerifiedText from '@src/components/VerifiedText';
 import cryptoItemStyle from './style';
 
-const CryptoItem = ({ fullName, name, amount, onPress, symbol, isGettingBalance, style, pDecimals, tokenId, rightComponent }) => (
+const CryptoItem = ({ fullName, name, amount, onPress, symbol, isGettingBalance, style, pDecimals, tokenId, rightComponent, isVerified }) => (
   <TouchableScale style={[cryptoItemStyle.container, style]} onPress={amount != null ? onPress : null}>
     <View style={cryptoItemStyle.logoContainer}>
       <CryptoIcon tokenId={tokenId} />
     </View>
     <View style={cryptoItemStyle.cryptoNameContainer}>
-      <Text style={cryptoItemStyle.mainNameText} numberOfLines={1} ellipsizeMode="tail">{fullName}</Text>
+      <VerifiedText text={fullName} numberOfLines={1} ellipsizeMode="tail" style={cryptoItemStyle.mainNameText} isVerified={isVerified} />
       <Text style={cryptoItemStyle.subNameText} numberOfLines={1} ellipsizeMode="tail">{name}</Text>
     </View>
     <View style={cryptoItemStyle.rightContainer}>
@@ -41,7 +42,8 @@ CryptoItem.defaultProps = {
   style: null,
   pDecimals: null,
   tokenId: null,
-  rightComponent: null
+  rightComponent: null,
+  isVerified: false
 };
 
 CryptoItem.propTypes = {
@@ -54,7 +56,8 @@ CryptoItem.propTypes = {
   isGettingBalance: PropTypes.bool,
   style: PropTypes.object,
   tokenId: PropTypes.string,
-  rightComponent: PropTypes.node
+  rightComponent: PropTypes.node,
+  isVerified: PropTypes.bool,
 };
 
 export default CryptoItem;

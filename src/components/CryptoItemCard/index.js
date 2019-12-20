@@ -31,7 +31,8 @@ class CryptoItemContainer extends Component {
       externalSymbol: data?.externalSymbol,
       pDecimals: data?.pDecimals,
       onPress: this.handlePress,
-      isGettingBalance: isGettingBalanceList?.includes(data?.tokenId)
+      isGettingBalance: isGettingBalanceList?.includes(data?.tokenId),
+      isVerified: data?.isVerified
     };
 
     return (

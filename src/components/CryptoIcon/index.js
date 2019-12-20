@@ -91,7 +91,7 @@ class CryptoIcon extends Component {
 
   render() {
     const { uri, imageComponent, verifiedFlagStyle, verifiedFlagSize } = this.state;
-    const { onlyDefault, containerStyle, logoStyle, size, token } = this.props;
+    const { onlyDefault, containerStyle, logoStyle, size, token, showVerifyFlag } = this.props;
     const { isVerified } = token || {};
 
     return (
@@ -103,7 +103,7 @@ class CryptoIcon extends Component {
               : imageComponent
           }
         </View>
-        { isVerified && (
+        { showVerifyFlag && isVerified && (
           <View style={[styleSheet.verifiedFlagContainer, verifiedFlagStyle]}>
             <Icons style={[styleSheet.verifiedFlag]} name='check-circle' size={verifiedFlagSize} />
           </View>
@@ -120,6 +120,7 @@ CryptoIcon.defaultProps = {
   logoStyle: null,
   size: 40,
   token: null,
+  showVerifyFlag: false
 };
 
 CryptoIcon.propTypes = {
@@ -129,6 +130,7 @@ CryptoIcon.propTypes = {
   logoStyle: PropTypes.object,
   token: PropTypes.object,
   size: PropTypes.number,
+  showVerifyFlag: PropTypes.bool,
 };
 
 
