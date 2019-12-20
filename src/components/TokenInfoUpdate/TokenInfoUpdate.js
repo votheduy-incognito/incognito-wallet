@@ -50,7 +50,7 @@ class TokenInfoUpdate extends Component {
                 </View>
                 <View style={styleSheet.block}>
                   <View style={styleSheet.showMyAddressContainer}>
-                    <Text>Display my Incognito Address (Optional)</Text>
+                    <Text style={styleSheet.showMyAddressLabel}>Display my Incognito Address (Optional)</Text>
                     <Field
                       component={SwitchField}
                       name='showOwnerAddress'

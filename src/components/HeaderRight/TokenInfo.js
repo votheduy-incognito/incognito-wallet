@@ -125,33 +125,49 @@ class TokenInfo extends Component {
       { label: 'Coin ID', value: tokenId, copyable: true },
       { label: 'Contract ID', value: contractId, copyable: true  },
       { label: 'Owner address', value: incognitoInfo?.showOwnerAddress ? incognitoInfo?.ownerAddress : undefined, copyable: true  },
-      { label: 'Description', value: incognitoInfo?.description, multiline: true },
     ].filter(i => ![undefined, null, ''].includes(i.value));
 
     return (
-      <Container style={tokenInfoStyle.infoContainer}>
+      <View style={tokenInfoStyle.infoContainer}>
         <View style={tokenInfoStyle.header}>
-          <CryptoIcon tokenId={tokenId} />
+          <View style={tokenInfoStyle.iconContainer}>
+            <CryptoIcon size={70} tokenId={tokenId} />
+          </View>
           <View style={tokenInfoStyle.headerTextContainer}>
-            <Text numberOfLines={1} ellipsizeMode="middle" style={tokenInfoStyle.headerText}>{selectedPrivacy?.name}</Text>
-            <Text numberOfLines={1} ellipsizeMode="middle" style={tokenInfoStyle.headerSubText}>{selectedPrivacy?.networkName}</Text>
+            <Text numberOfLines={1} ellipsizeMode="middle" style={tokenInfoStyle.headerText}>{selectedPrivacy?.symbol} {!selectedPrivacy?.isPrivateCoin && selectedPrivacy?.networkName}</Text>
+            <Text numberOfLines={1} ellipsizeMode="middle" style={tokenInfoStyle.headerSubText}>{selectedPrivacy?.displayName}</Text>
           </View>
-          {/* {
-            incognitoInfo?.isOwner && <Button title='Update' style={tokenInfoStyle.updateBtn} titleStyle={tokenInfoStyle.updateBtnText} onPress={this.handleShowUpdateView} />
-          } */}
         </View>
-        <View style={tokenInfoStyle.infoItems}>
-          {
-            infos.map((info, index) => this.renderInfoItem(info.label, info.value, { useDivider: (index < infos.length - 1), copyable: info.copyable, multiline: info.multiline },))
-          }
-        </View>
-        {!!copied &&
-        (
-          <View style={tokenInfoStyle.copied}>
-            <Text style={tokenInfoStyle.copiedMessage}>{copiedLabel} was copied</Text>
-          </View>
-        )}
-      </Container>
+        <ScrollView>
+          <Container>
+            {
+              incognitoInfo?.description && (
+                <View style={tokenInfoStyle.descContainer}>
+                  <Text>{incognitoInfo?.description}</Text>
+                </View>
+              )
+            }
+            <View style={tokenInfoStyle.infoItems}>
+              {
+                infos.map((info, index) => this.renderInfoItem(info.label, info.value, { useDivider: (index < infos.length - 1), copyable: info.copyable, multiline: info.multiline },))
+              }
+            </View>
+            {!!copied &&
+            (
+              <View style={tokenInfoStyle.copied}>
+                <Text style={tokenInfoStyle.copiedMessage}>{copiedLabel} was copied</Text>
+              </View>
+            )}
+            {
+              incognitoInfo?.isOwner && (
+                <View style={tokenInfoStyle.updateBtnContainer}>
+                  <Button title='Update' style={tokenInfoStyle.updateBtn} titleStyle={tokenInfoStyle.updateBtnText} onPress={this.handleShowUpdateView} />
+                </View>
+              )
+            }
+          </Container>
+        </ScrollView>
+      </View>
     );
   };
 
@@ -177,12 +193,10 @@ class TokenInfo extends Component {
           <Icons name='info' style={tokenInfoStyle.icon} size={24} color={iconColor} />
         </TouchableOpacity>
         <Modal visible={isShowInfo} close={this.handleToggle} containerStyle={tokenInfoStyle.modalContainer} closeBtnColor={COLORS.primary} headerText='Coin info'>
-          <ScrollView>
-            { showUpdateInfoView
-              ? incognitoInfo && <TokenInfoUpdate incognitoInfo={incognitoInfo} onUpdated={this.handleUpdated} onClose={this.handleCloseUpdateView} />
-              : this.renderInfo()
-            }
-          </ScrollView>
+          { showUpdateInfoView
+            ? incognitoInfo && <TokenInfoUpdate incognitoInfo={incognitoInfo} onUpdated={this.handleUpdated} onClose={this.handleCloseUpdateView} />
+            : this.renderInfo()
+          }
         </Modal>
       </View>
     );

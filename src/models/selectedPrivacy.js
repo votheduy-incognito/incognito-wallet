@@ -58,6 +58,7 @@ class SelectedPrivacy {
     this.isBep2Token = this.isPrivateToken && this.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB_BEP2;
     this.symbol = combineData.call(this, pTokenData?.pSymbol, token?.symbol, CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV);
     this.name = combineData.call(this, pTokenData?.name, token?.name, 'Privacy');
+    this.displayName = combineData.call(this, `Privacy ${pTokenData?.symbol}`, token?.name, 'Privacy');
     this.amount = (this.isToken ? token.amount : account.value) || 0;
     this.tokenId = this.isMainCrypto ? CONSTANT_COMMONS.PRV_TOKEN_ID : tokenId;
     this.contractId = pTokenData.contractId;

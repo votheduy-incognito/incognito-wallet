@@ -13,7 +13,7 @@ const style = StyleSheet.create({
   },
   block: {
     backgroundColor: COLORS.white,
-    paddingVertical: 15,
+    // paddingVertical: 15,
     marginBottom: 10
   },
   desc: {
@@ -23,7 +23,7 @@ const style = StyleSheet.create({
     marginBottom: 15
   },
   descriptionInput: {
-    height: 60,
+    height: 80,
   },
   submitBtn: {
     borderRadius: 4,
@@ -38,6 +38,9 @@ const style = StyleSheet.create({
   switch: {
     height: '100%',
     marginBottom: 0
+  },
+  showMyAddressLabel: {
+    flex: 1
   },
   btnGroup: {
     marginTop: 40,

@@ -21,7 +21,24 @@ export const sendReceiveGroupStyle = StyleSheet.create({
 
 export const tokenInfoStyle = StyleSheet.create({
   container: {
-
+  },
+  descContainer: {
+    marginBottom: 40,
+  },
+  desc: {
+    fontSize: 16,
+    letterSpacing: 0,
+    lineHeight: 23,
+  },
+  iconContainer: {
+    height: 70,
+    width: 70,
+    bottom: -20,
+    marginLeft: 20
+  },
+  updateBtnContainer: {
+    paddingVertical: 20,
+    marginBottom: 200
   },
   updateBtn: {
     backgroundColor: COLORS.transparent,
@@ -39,26 +56,30 @@ export const tokenInfoStyle = StyleSheet.create({
     backgroundColor: COLORS.white
   },
   infoContainer: {
-    padding: 35,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center' ,
     marginBottom: 35,
+    backgroundColor: COLORS.blue1,
+    top: -1
   },
   headerTextContainer: {
     marginLeft: 20,
     flex: 1
   },
   headerText: {
-    fontSize: 24,
-    color: COLORS.dark1
+    fontSize: 18,
+    color: COLORS.white
   },
   headerSubText: {
-    color: COLORS.lightGrey1,
+    color: COLORS.white,
+    textTransform: 'uppercase',
+    fontSize: 14,
+    lineHeight: 32
   },
   infoItems: {
-
+    marginBottom: 200
   },
   infoItem: {
     flexDirection: 'row',
