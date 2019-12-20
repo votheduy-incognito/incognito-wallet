@@ -2,19 +2,20 @@ import moment from 'moment';
 import _ from 'lodash';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { BigNumber } from 'bignumber.js';
+import {DECIMAL_SEPARATOR, GROUP_SEPARATOR} from '@src/resources/separator';
 import convertUtil from './convert';
 
 const fmt = {
-  decimalSeparator: '.',
-  groupSeparator: ',',
+  decimalSeparator: DECIMAL_SEPARATOR,
+  groupSeparator: GROUP_SEPARATOR,
   groupSize: 3,
 };
 
 const removeTrailingZeroes = (amountString) => {
   let formattedString = amountString;
   while(formattedString.length > 0 && (
-    (formattedString.includes('.') && formattedString[formattedString.length - 1] === '0') ||
-      formattedString[formattedString.length - 1] === '.'
+    (formattedString.includes(DECIMAL_SEPARATOR) && formattedString[formattedString.length - 1] === '0') ||
+      formattedString[formattedString.length - 1] === DECIMAL_SEPARATOR
   )
   ) {
     formattedString = formattedString.slice(0, formattedString.length - 1);
@@ -54,16 +55,16 @@ const toFixed = (number, decimals = 0) => {
 
   return number;
 };
-const formatUnixDateTime = (dateTime, formatPattern = 'MMMM DD YYYY, HH:mm') => moment.unix(dateTime).format(formatPattern);
+const formatUnixDateTime = (dateTime, formatPattern = 'MMM DD YYYY, HH:mm') => moment.unix(dateTime).format(formatPattern);
 
 const number = num => {
   const rs = new BigNumber(num);
-  return rs.isFinite() ? rs.toFormat() : num;
+  return rs.isFinite() ? rs.toFormat(fmt) : num;
 };
 
 const numberWithNoGroupSeparator = num => {
   const rs = new BigNumber(num);
-  return rs.isFinite() ? rs.toFormat({ ...BigNumber.config().FORMAT, groupSize: 0 }) : num;
+  return rs.isFinite() ? rs.toFormat({ ...BigNumber.config().FORMAT, decimalSeparator: DECIMAL_SEPARATOR, groupSize: 0 }) : num;
 };
 
 export default {

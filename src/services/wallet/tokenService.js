@@ -5,9 +5,9 @@ import _ from 'lodash';
 import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
 import { CONSTANT_KEYS } from '@src/constants';
-import { getTokenList } from '@services/api/token';
+import { getTokenList, getChainTokenList } from '@services/api/token';
 import { saveWallet, updateStatusHistory } from './WalletService';
-import { listPrivacyTokens, listCustomTokens } from './RpcClientService';
+import { listCustomTokens } from './RpcClientService';
 
 export const PRV = {
   id: '0000000000000000000000000000000000000000000000000000000000000004',
@@ -17,6 +17,7 @@ export const PRV = {
   hasIcon: true,
   originalSymbol: 'PRV',
 };
+
 
 export default class Token {
   // static async createSendCustomToken(param, fee, account, wallet) {
@@ -164,14 +165,11 @@ export default class Token {
     return response;
   }
 
-  static async getPrivacyTokens() {
-    try {
-      const data = await listPrivacyTokens();
-      const tokens = data.listPrivacyToken || [];
+  static getPrivacyTokens() {
+    return getChainTokenList().then(data => {
+      const tokens = data || [];
       return tokens && tokens.map(tokenModel.fromJson);
-    } catch (e) {
-      throw e;
-    }
+    });
   }
 
   static async getNormalTokens() {

@@ -37,7 +37,8 @@ class Toast extends Component {
       duration: 2500,
       ...typeof config === 'object' ? config : {},
       icon: <Icon type='material' name='error' size={20} color={COLORS.white} />,
-      containerStyle: styles.errorContainer
+      containerStyle: styles.errorContainer,
+      duration: 4000,
     });
   }
 

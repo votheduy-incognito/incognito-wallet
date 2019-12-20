@@ -23,6 +23,7 @@ export const TRANSFER_STATUS = {
   INTERRUPTED: 'tap to try again',
   FAILED: 'failed',
   REFUNDED: 'refunded',
+  PART_REFUNFED: 'part-refunded',
   REJECTED: 'unsuccessful',
   CANCELED: 'canceled',
 };
@@ -38,7 +39,7 @@ export const ADD_LIQUIDITY_STATUS = [
   TRANSFER_STATUS.PENDING,
   TRANSFER_STATUS.SUCCESSFUL,
   TRANSFER_STATUS.REFUNDED,
-  TRANSFER_STATUS.CANCELED,
+  TRANSFER_STATUS.PART_REFUNFED,
 ];
 
 export const REMOVE_LIQUIDITY_STATUS = [
@@ -163,7 +164,12 @@ function getAddLiquidityStatus(history) {
 
       if (result.isInBlock) {
         const res = await getPDEContributionStatus(history.pairId);
-        return ADD_LIQUIDITY_STATUS[res.state];
+        const status = ADD_LIQUIDITY_STATUS[res.Status];
+        if (status === TRANSFER_STATUS.PART_REFUNFED) {
+          return res;
+        }
+
+        return status;
       } else if (result.isInMempool) {
         return TRANSFER_STATUS.PENDING;
       } else if (result.err) {
@@ -235,13 +241,22 @@ export const getHistoryStatusSuccess = (history) => ({
 });
 
 export const getHistoryStatus = (history) => async (dispatch) => {
-  const status = await getStatus(history);
-  history.status = status;
-  if (status === TRANSFER_STATUS.UNSUCCESSFUL) {
-    history.errorTried = history.errorTried > 0 ? ++history.errorTried : 1;
+  const res = await getStatus(history);
+
+  if (typeof res === 'string') {
+    const status = res;
+    if (status === TRANSFER_STATUS.UNSUCCESSFUL) {
+      history.errorTried = history.errorTried > 0 ? ++history.errorTried : 1;
+    }
+
+    history.updatedAt = Math.floor(new Date().getTime() / 1000);
+    history.status = status;
+  } else if (typeof res === 'object') {
+    history.token1.ReturnedAmount = res.TokenID1Str === history.token1.TokenID ? res.Returned1Amount : res.Returned2Amount;
+    history.token2.ReturnedAmount = res.TokenID2Str === history.token1.TokenID ? res.Returned1Amount : res.Returned2Amount;
+    history.status = TRANSFER_STATUS.SUCCESSFUL;
   }
 
-  history.updatedAt = Math.floor(new Date().getTime() / 1000);
   dispatch(getHistoryStatusSuccess(history));
 };
 

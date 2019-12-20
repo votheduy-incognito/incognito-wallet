@@ -49,13 +49,15 @@ class Input extends React.Component {
   };
 
   handleSearch = (text) => {
-    const { tokenList } = this.props;
+    const { tokenList, onlyPToken } = this.props;
     const searchText = text.toLowerCase();
     const filteredTokens = _.trim(searchText).length > 0 ? (tokenList || [])
       .filter(token =>
         token.name.toLowerCase().includes(_.trim(searchText)) ||
         token.symbol.toLowerCase().includes(_.trim(searchText))
-      ) : tokenList.slice(0, MAX_LENGTH);
+      ) : tokenList
+      .filter(token => onlyPToken ? token.hasIcon : true)
+      .slice(0, MAX_LENGTH);
     this.setState({ filteredTokens });
   };
 
@@ -94,7 +96,6 @@ class Input extends React.Component {
                   <CryptoIcon
                     tokenId={item.id}
                     size={25}
-                    onlyDefault={!item.hasIcon}
                   />
                   <View style={modalStyle.tokenInfo}>
                     <Text style={modalStyle.tokenSymbol}>{item.symbol}</Text>
@@ -117,7 +118,6 @@ class Input extends React.Component {
         <CryptoIcon
           key={token.id}
           tokenId={token.id}
-          onlyDefault={!token.hasIcon}
           size={20}
         />
         <Text style={modalStyle.tokenInfo}>{token.symbol}</Text>
@@ -215,6 +215,7 @@ Input.defaultProps = {
   onChange: undefined,
   balance: 0,
   disabled: false,
+  onlyPToken: false,
 };
 
 Input.propTypes = {
@@ -226,6 +227,7 @@ Input.propTypes = {
   balance: PropTypes.number,
   onChange: PropTypes.func,
   disabled: PropTypes.bool,
+  onlyPToken: PropTypes.bool,
 };
 
 export default Input;

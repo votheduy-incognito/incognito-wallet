@@ -15,6 +15,9 @@ import ShareInput from '@screens/Dex/components/ShareInput';
 import RemoveSuccessDialog from '@screens/Dex/components/RemoveSuccessDialog';
 import SharePercent from '@screens/Dex/components/SharePercent';
 import Loading from '@screens/Dex/components/Loading';
+import {ExHandler} from '@services/exception';
+import CODE from '@services/exception/customError/code';
+import convertUtil from '@utils/convert';
 import {
   DEX_CHAIN_ACCOUNT,
   MESSAGES,
@@ -54,11 +57,6 @@ class Pool extends React.Component {
   }
 
   loadData() {
-    const { wallet, account } = this.props;
-
-    accountService.getBalance(account, wallet)
-      .then(balance => this.setState({ prvBalance: balance }));
-
     this.filterList();
     this.estimateFee();
   }
@@ -78,13 +76,13 @@ class Pool extends React.Component {
 
   changeShare = (text) => {
     const { pair } = this.state;
-    let number = _.toNumber(text);
+    let number = convertUtil.toNumber(text);
     let value = 0;
     let error;
 
     if (text.length === 0) {
       error = null;
-    } else if (_.isNaN(number)) {
+    } else if (_.isNaN(number) || Math.abs(number % 1) > 0) {
       error = MESSAGES.MUST_BE_INTEGER;
     } else {
       value = number;
@@ -103,39 +101,60 @@ class Pool extends React.Component {
     }, this.calculateValue);
   };
 
+  isUserPair = (tokenIds) => key => {
+    const { accounts } = this.props;
+    if (tokenIds.every(item => key.includes(item))) {
+      return accounts.some(account => key.includes(account.PaymentAddress));
+    }
+  };
+
+  findShareKey(shares, tokenIds) {
+    return Object.keys(shares).find(this.isUserPair(tokenIds));
+  }
+
   filterList() {
-    const { pairs, tokens, shares, account } = this.props;
-    const pa = account.PaymentAddress;
-    const userPairs = pairs.filter(item => {
-      const tokenIds = item.keys;
-      const shareKey = Object.keys(shares).find(key => key.includes(pa) && tokenIds.every(item => key.includes(item)));
-      return shareKey && shares[shareKey] > 0;
-    }).map(pairInfo => {
-      const tokenIds = pairInfo.keys;
-      const token1 = tokens.find(item => item.id === tokenIds[0]);
-      const token2 = tokens.find(item => item.id === tokenIds[1]);
-      const shareKey = Object.keys(shares).find(key => key.includes(pa) && tokenIds.every(item => key.includes(item)));
+    const { pairs, tokens, shares } = this.props;
+    const userPairs = pairs
+      .map(pairInfo => {
+        const tokenIds = pairInfo.keys;
+        const token1 = tokens.find(item => item.id === tokenIds[0]);
+        const token2 = tokens.find(item => item.id === tokenIds[1]);
+        const shareKey = this.findShareKey(shares, tokenIds);
 
-      let totalShare = 0;
-      _.map(shares, (value, key) => {
-        if (key.includes(tokenIds[0]) && key.includes(tokenIds[1])) {
-          totalShare += value;
+        if (!shareKey) {
+          return null;
         }
-      });
 
-      return {
-        shareKey: shareKey.slice(shareKey.indexOf(tokenIds[0])),
-        token1,
-        token2,
-        [tokenIds[0]]: pairInfo[tokenIds[0]],
-        [tokenIds[1]]: pairInfo[tokenIds[1]],
-        share: shares[shareKey],
-        totalShare,
-      };
-    });
+        let totalShare = 0;
+        _.map(shares, (value, key) => {
+          if (key.includes(tokenIds[0]) && key.includes(tokenIds[1])) {
+            totalShare += value;
+          }
+        });
+
+        return {
+          shareKey: shareKey.slice(shareKey.indexOf(tokenIds[0])),
+          token1,
+          token2,
+          [tokenIds[0]]: pairInfo[tokenIds[0]],
+          [tokenIds[1]]: pairInfo[tokenIds[1]],
+          share: shares[shareKey],
+          totalShare,
+        };
+      })
+      .filter(pair => pair && pair.share > 0);
+
+    console.debug('SHARES', userPairs);
 
     let { pair } = this.state;
-    pair = pair ? userPairs.find(item => item.shareKey === pair.shareKey) : (userPairs.length > 0 ? userPairs[0] : null);
+    const p = pair && userPairs.find(item => item.shareKey === pair.shareKey);
+    if (p) {
+      pair = p;
+    } else if (userPairs.length > 0) {
+      pair = userPairs[0];
+    } else {
+      pair = null;
+    }
 
     this.setState({ userPairs, pair }, this.calculateValue);
   }
@@ -184,11 +203,14 @@ class Pool extends React.Component {
     };
   }
 
-  validateFee() {
-    const { fee, prvBalance } = this.state;
-
-    if (fee > prvBalance) {
-      throw new Error(MESSAGES.NOT_ENOUGH_NETWORK_FEE_ADD);
+  async validateFee(account) {
+    const { wallet } = this.props;
+    const { fee } = this.state;
+    const balance = await accountService.getBalance(account, wallet);
+    if (fee > balance) {
+      const error = new Error();
+      error.code = CODE.NOT_ENOUGH_NETWORK_FEE_ADD;
+      throw error;
     }
   }
 
@@ -198,7 +220,7 @@ class Pool extends React.Component {
   };
 
   remove = async () => {
-    const { account, onAddHistory, wallet } = this.props;
+    const { accounts, onAddHistory, wallet } = this.props;
     const { pair, topText, bottomText, fee, shareValue, removing } = this.state;
     const { token1, token2 } = pair;
     let newHistory;
@@ -211,7 +233,8 @@ class Pool extends React.Component {
 
     try {
       this.setState({ removing: true });
-      this.validateFee();
+      const account = accounts.find(item => pair.shareKey.includes(item.PaymentAddress));
+      await this.validateFee(account);
       const res = await accountService.createAndSendWithdrawDexTx(wallet, account, fee, token1.id, token2.id, shareValue);
       const token1Params = this.createTokenParams(token1, topText);
       const token2Params = this.createTokenParams(token2, bottomText);
@@ -219,8 +242,7 @@ class Pool extends React.Component {
       onAddHistory(newHistory);
       this.setState({ showSuccess: true });
     } catch (error) {
-      console.debug('REMOVE ERROR', error);
-      Toast.showError((error.message));
+      Toast.showError(new ExHandler(error).getMessage(MESSAGES.TRADE_ERROR));
     } finally {
       this.setState({ removing: false });
     }
@@ -363,7 +385,7 @@ Pool.propTypes = {
   wallet: PropTypes.object.isRequired,
   onUpdateParams: PropTypes.func.isRequired,
   onAddHistory: PropTypes.func.isRequired,
-  account: PropTypes.object.isRequired,
+  accounts: PropTypes.array.isRequired,
   pairs: PropTypes.array.isRequired,
   tokens: PropTypes.array.isRequired,
   params: PropTypes.object.isRequired,

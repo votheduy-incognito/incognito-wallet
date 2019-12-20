@@ -6,6 +6,7 @@ import storage from '@src/services/storage';
 import axios from 'axios';
 import { AccountWallet, KeyWallet, Wallet } from 'incognito-chain-web-js/build/wallet';
 import _ from 'lodash';
+import {STACK_TRACE} from '@services/exception/customError/code/webjsCode';
 import { CustomError, ErrorCode } from '../exception';
 import { getActiveShard } from './RpcClientService';
 import { getUserUnfollowTokenIDs, setUserUnfollowTokenIDs } from './tokenService';
@@ -418,7 +419,7 @@ export default class Account {
     }
     return null;
   }
-  
+
   /**
    *
    * @param {string} blsKey
@@ -543,18 +544,11 @@ export default class Account {
     return result;
   }
 
-  static isNotEnoughCoinError(error, tokenAmount, tokenFee, tokenBalance, prvBalance, prvFee) {
-    tokenAmount = tokenAmount || 0;
-    tokenFee = tokenFee || 0;
-    tokenBalance = tokenBalance || 0;
-    prvBalance = prvBalance || 0;
-    prvFee = prvFee || 0;
-    console.debug('ERROR', error, tokenAmount, tokenFee, tokenBalance, prvFee, prvBalance);
-    console.debug('CONDITION', tokenAmount + tokenFee <= tokenBalance, prvFee <= prvBalance);
-    return tokenAmount + tokenFee <= tokenBalance && prvFee <= prvBalance;
-  }
-
   static isNotEnoughCoinErrorCode(error) {
     return error.code === 'WEB_JS_ERROR(-5)';
+  }
+
+  static isPendingTx(error) {
+    return error.stackTrace.includes(STACK_TRACE.REPLACEMENT);
   }
 }

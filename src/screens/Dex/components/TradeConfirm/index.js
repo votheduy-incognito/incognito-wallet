@@ -14,7 +14,6 @@ import { isExchangeRatePToken } from '@src/services/wallet/RpcClientService';
 import {CONSTANT_COMMONS} from '@src/constants';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
-import {ExHandler} from '@services/exception';
 import greyRightArrow from '@src/assets/images/icons/grey_right_arrow.png';
 import {Overlay, Icon} from 'react-native-elements';
 import Help from '@components/Help';
@@ -24,23 +23,21 @@ import style from './style';
 import { mainStyle } from '../../style';
 
 function parseFee(rawFee, token) {
-  rawFee = rawFee.replace ? rawFee.replace(/,/g, '') : rawFee;
-  rawFee = !_.isNaN(_.toNumber(rawFee)) ? _.toNumber(rawFee) : 0;
+  rawFee = convertUtil.toNumber(rawFee, true);
+  rawFee = rawFee > 0 ? rawFee : 0;
   rawFee = convertUtil.toOriginalAmount(rawFee, token?.pDecimals);
 
   return _.floor(rawFee, 0);
 }
 
 function isNumber(text) {
-  // const number = _.toNumber(text);
-
   return _.isNumber(text);
 }
 
 function formatFee(fee, pDecimals) {
   const feeString = isNumber(fee) ? formatUtil.amountFull(fee, pDecimals) : fee;
-  const feeInput = feeString ? feeString.replace(/,/g, '') : '';
-  const feeNumber = _.isString(fee) ? _.toNumber(fee) : 0;
+  const feeInput = feeString || '';
+  const feeNumber = _.isString(fee) ? convertUtil.toNumber(fee, true) : 0;
   const originalFee = feeNumber > 0 ? convertUtil.toOriginalAmount(feeNumber, pDecimals) : 0;
   const displayFee = originalFee > 0 ? formatUtil.amountFull(originalFee, pDecimals) : feeString;
 
@@ -116,8 +113,6 @@ class TradeConfirm extends React.Component {
     try {
       const isUsed = await isExchangeRatePToken(token.id);
       isUsed && supportedFeeTypes.push(token.symbol);
-    } catch (e) {
-      new ExHandler(e).showErrorToast();
     } finally {
       this.setState({
         supportedFeeTypes: [...supportedFeeTypes, CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV]
@@ -128,7 +123,7 @@ class TradeConfirm extends React.Component {
   handleSelectFee = (type) => {
     const { inputToken } = this.props;
     const { networkFee, pDecimals: previousPDecimals } = this.state;
-    const networkFeeNumber = _.toNumber(networkFee.replace ? networkFee.replace(/,/g, '') : 0);
+    const networkFeeNumber = convertUtil.toNumber(networkFee.replace ? networkFee : 0, true);
     const pDecimals = type === inputToken.symbol ? inputToken.pDecimals : PRV.pDecimals || 0;
 
     if (networkFee && !_.isNaN(networkFeeNumber)) {
@@ -144,7 +139,7 @@ class TradeConfirm extends React.Component {
   };
 
   changeFee = (text) => {
-    const networkFee = _.toNumber(text.replace(/,/g, ''));
+    const networkFee = convertUtil.toNumber(text, true);
 
     if (networkFee >= 0) {
       const { pDecimals } = this.state;
@@ -163,7 +158,7 @@ class TradeConfirm extends React.Component {
   };
 
   changeTradingFee = (text) => {
-    const tradingFee = _.toNumber(text.replace(/,/g, ''));
+    const tradingFee = convertUtil.toNumber(text, true);
     if (!_.isNaN(tradingFee) && tradingFee >= 0) {
       const { inputValue, inputToken } = this.props;
       const originalTradingFee = convertUtil.toOriginalAmount(tradingFee, inputToken.pDecimals || 0);
@@ -177,7 +172,7 @@ class TradeConfirm extends React.Component {
   };
 
   changeTradingFeePercent = (text) => {
-    const tradingPercent = _.toNumber(text.replace(/,/g, ''));
+    const tradingPercent = convertUtil.toNumber(text, true);
     if (!_.isNaN(tradingPercent) && tradingPercent >= 0) {
       const {inputValue, inputToken} = this.props;
       const tradingFee = formatUtil.amountFull(inputValue * (tradingPercent / 100), inputToken.pDecimals);
@@ -190,7 +185,7 @@ class TradeConfirm extends React.Component {
   };
 
   changeStopPrice = (text) => {
-    const stopPrice = _.toNumber(text.replace(/,/g, ''));
+    const stopPrice = convertUtil.toNumber(text, true);
     const { outputValue, outputToken } = this.props;
 
     if (!_.isNaN(stopPrice) && stopPrice > 0) {
@@ -207,7 +202,7 @@ class TradeConfirm extends React.Component {
 
   changeStopPricePercent = (text) => {
     const { outputValue, outputToken } = this.props;
-    const stopPricePercent = _.toNumber(text.replace(/,/g, ''));
+    const stopPricePercent = convertUtil.toNumber(text, true);
     if (!_.isNaN(stopPricePercent) && stopPricePercent < 100) {
       const stopPrice = formatUtil.amountFull(outputValue * ((100 - stopPricePercent) / 100), outputToken.pDecimals);
       this.setState({ stopPrice, stopPriceError: null, stopPriceErrorField: null, });

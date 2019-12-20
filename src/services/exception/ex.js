@@ -2,6 +2,19 @@ import { Toast } from '@src/components/core';
 import CustomError from './customError/customError';
 import Message from './customError/message';
 
+const CODES = {
+  CAN_NOT_SEND_TX: '-4002',
+  CAN_NOT_SEND_PTOKEN_TX: '-1003',
+  REPLACEMENT: '-1022',
+  NOT_ENOUGH_COIN: 'WEB_JS_ERROR(-5)',
+};
+
+const MESSAGES = {
+  PENDING_TX: 'Please wait for your previous transaction to finish processing. Simply try again later.',
+  CAN_NOT_SEND_TX: 'It looks like your transaction didn\'t go through.  Please wait a few minutes and try again',
+  GENERAL: 'Something went wrong. Please try again.',
+};
+
 const isValidException = exception => {
   if  (exception instanceof Error) {
     return true;
@@ -16,14 +29,13 @@ const isValidException = exception => {
 
 class Exception {
   /**
-   * 
-   * @param {any} exception 
-   * @param {string} defaultMessage 
+   *
+   * @param {any} exception
+   * @param {string} defaultMessage
    * `exception` can be a Error object or a string
    * `defaultMessage` will be used as friendly message (which displays to users, not for debugging)
    */
   constructor(exception : any, defaultMessage: string = 'Opps! Something went wrong.') {
-    this.message;
     if (isValidException(exception)) {
       this.exception = exception;
 
@@ -68,8 +80,8 @@ class Exception {
   }
 
   /**
-   * 
-   * @param {string} message 
+   *
+   * @param {string} message
    * override exception message.
    * Use for debug, log,...
    */
@@ -79,8 +91,8 @@ class Exception {
   }
 
   /**
-   * 
-   * @param {string} message 
+   *
+   * @param {string} message
    * Override exception message.
    * Use for UI
    */
@@ -97,6 +109,8 @@ class Exception {
       User message: ${this.message}
       Debug message: ${this.debugMessage}
       Error code: ${this.exception?.code}
+      StackTrace: ${this.exception?.stackTrace}
+      StackTraceCode: ${this.exception?.stackTraceCode}
       Stack: ${this.exception.stack}
     `;
 
@@ -129,11 +143,16 @@ class Exception {
    * Show a toast to UI, use `message` as default.
    * If __DEV__ is true, `debugMessage` will be displayed too.
    */
-  showErrorToast() {
+  showErrorToast(showCode = false) {
     let msg = this.message;
     if (__DEV__) {
       msg = `${msg}\n****** DEBUG ******\n(${this.debugMessage})`;
     }
+
+    if (showCode) {
+      return Toast.showError(this.getMessage(msg));
+    }
+
     msg && Toast.showError(msg);
     return this;
   }
@@ -149,6 +168,31 @@ class Exception {
     }
     msg && Toast.showWarning(msg);
     return this;
+  }
+
+  getMessage(defaultMessage) {
+    try {
+      if (this.exception.stackTrace) {
+        const stackCode = this.exception.stackTraceCode;
+        if (
+          stackCode === `${CODES.CAN_NOT_SEND_TX}: ${CODES.REPLACEMENT}` ||
+          stackCode === `${CODES.CAN_NOT_SEND_PTOKEN_TX}: ${CODES.REPLACEMENT}`
+        ) {
+          return `${MESSAGES.PENDING_TX} (${stackCode})`;
+        }
+        return `${MESSAGES.CAN_NOT_SEND_TX} (${stackCode})`;
+      }
+
+      if (this.exception.code === CODES.NOT_ENOUGH_COIN) {
+        return `${MESSAGES.PENDING_TX} ${CODES.NOT_ENOUGH_COIN}`;
+      }
+
+      return `${defaultMessage || MESSAGES.GENERAL} (${this.exception.code})`;
+    } catch (error) {
+      return error;
+    }
+
+    // return `${this.exception.message} ${this.exception.stack}`;
   }
 
   /**

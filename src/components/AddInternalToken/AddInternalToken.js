@@ -102,7 +102,7 @@ class AddInternalToken extends Component {
       // update fee
       this.setState({ fee });
     } catch(e){
-      new ExHandler(e).showErrorToast();
+      new ExHandler(e).showErrorToast(true);
     } finally {
       this.setState({ isGettingFee: false });
     }
@@ -159,7 +159,7 @@ class AddInternalToken extends Component {
         throw new Error('Something went wrong. Please refresh the screen.');
       }
     } catch (e) {
-      new ExHandler(e).showErrorToast();
+      new ExHandler(e).showErrorToast(true);
     } finally {
       this.setState({ isCreatingOrSending: false });
     }
@@ -301,7 +301,7 @@ class AddInternalToken extends Component {
                     />
                   </View>
                 </View>
-                
+
                 <View style={styleSheet.block}>
                   <Field
                     component={ImagePickerField}
@@ -312,7 +312,7 @@ class AddInternalToken extends Component {
                     validate={imageValidate}
                   />
                 </View>
-                
+
                 {
                   isGettingFee
                     ? <Text>Calculating fee...</Text>

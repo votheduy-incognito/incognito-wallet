@@ -143,7 +143,14 @@ export class AddLiquidityHistory {
 
   static load(historyObject) {
     const history = new AddLiquidityHistory();
-    return parseHistory(history, historyObject);
+    const parsedHistory = parseHistory(history, historyObject);
+
+    parsedHistory.token1.ReturnedAmount = parsedHistory.token1.ReturnedAmount || 0;
+    parsedHistory.token2.ReturnedAmount = parsedHistory.token2.ReturnedAmount || 0;
+    parsedHistory.token1.ContributedAmount = parsedHistory.token1.TokenAmount - parsedHistory.token1.ReturnedAmount;
+    parsedHistory.token2.ContributedAmount = parsedHistory.token2.TokenAmount - parsedHistory.token2.ReturnedAmount;
+
+    return parsedHistory;
   }
 
   static currentHistory = null;

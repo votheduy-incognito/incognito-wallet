@@ -11,7 +11,7 @@ import { getTokenList } from '@services/api/token';
 import { getPDEPairs } from '@services/wallet/RpcClientService';
 import tokenService from '@services/wallet/tokenService';
 import _ from 'lodash';
-import { PRV } from '@screens/Dex/constants';
+import {PRIORITY_LIST, PRV} from '@screens/Dex/constants';
 import { ExHandler } from '@services/exception';
 import {accountSeleclor, selectedPrivacySeleclor} from '@src/redux/selectors';
 import convertUtil from '@utils/convert';
@@ -29,8 +29,6 @@ class DexContainer extends Component {
   };
 
   componentDidMount() {
-    const { navigation } = this.props;
-    this.listener = navigation.addListener('didFocus', this.loadData);
     this.loadData();
   }
 
@@ -45,16 +43,19 @@ class DexContainer extends Component {
 
   async updateAccount() {
     const { wallet } = this.props;
-    let accounts = await wallet.listAccount();
+    const accounts = await wallet.listAccount();
     const dexMainAccount = accounts.find(item => item.AccountName === DEX.MAIN_ACCOUNT);
     const dexWithdrawAccount = accounts.find(item => item.AccountName === DEX.WITHDRAW_ACCOUNT);
-    accounts = accounts.filter(account => !dexUtils.isDEXAccount(account.name || account.AccountName));
     this.setState({ dexMainAccount, dexWithdrawAccount, accounts });
   }
 
   loadData = async () => {
-    const { getHistories } = this.props;
+    const { getHistories, navigation } = this.props;
     const { loading } = this.state;
+
+    if (!this.listener) {
+      this.listener = navigation.addListener('didFocus', this.loadData);
+    }
 
     if (loading) {
       return;
@@ -65,8 +66,8 @@ class DexContainer extends Component {
       getHistories();
       this.setState({ loading: true });
       const pTokens = await getTokenList();
-      const chainPairs = await getPDEPairs();
       const chainTokens = await tokenService.getPrivacyTokens();
+      const chainPairs = await getPDEPairs();
       const tokens = [ PRV, ..._([...chainTokens, ...pTokens])
         .uniqBy(item => item.tokenId || item.id)
         .map(item => {
@@ -80,7 +81,10 @@ class DexContainer extends Component {
             name: pToken?  `Privacy ${pToken.name}` : `Incognito ${item.name}`,
           };
         })
-        .orderBy(item => _.isString(item.symbol) && item.symbol.toLowerCase())
+        .orderBy([
+          'hasIcon',
+          item => _.isString(item.symbol) && item.symbol.toLowerCase(),
+        ], ['desc', 'asc'])
         .value()];
       const pairs = _(chainPairs.state.PDEPoolPairs)
         .map(pair => ({
@@ -95,7 +99,12 @@ class DexContainer extends Component {
       const shares = chainPairs.state.PDEShares;
       const pairTokens = _(tokens)
         .filter(token => pairs.find(pair => pair.keys.includes(token.id)))
-        .orderBy(['hasIcon', token => _.maxBy(pairs, pair => pair.keys.includes(token.id) ? pair.total : 0).total], ['desc', 'desc'])
+        .orderBy([
+          item => PRIORITY_LIST.indexOf(item?.id) > -1 ? PRIORITY_LIST.indexOf(item?.id) : 100,
+          'hasIcon',
+          token => _.maxBy(pairs, pair => pair.keys.includes(token.id) ? pair.total : 0).total],
+        ['asc', 'desc', 'desc']
+        )
         .value();
       this.setState({ pairs, pairTokens, tokens, shares });
     } catch(error) {
@@ -116,7 +125,6 @@ class DexContainer extends Component {
       getHistories,
       account,
       selectPrivacyByTokenID,
-      followedTokens,
     } = this.props;
     const { dexMainAccount, dexWithdrawAccount, accounts, tokens, pairTokens, pairs, loading, shares } = this.state;
 
@@ -135,7 +143,6 @@ class DexContainer extends Component {
         dexMainAccount={dexMainAccount}
         dexWithdrawAccount={dexWithdrawAccount}
         accounts={accounts}
-        followedTokens={followedTokens}
         tokens={tokens}
         pairTokens={pairTokens}
         pairs={pairs}
@@ -149,7 +156,6 @@ class DexContainer extends Component {
 }
 
 const mapState = state => ({
-  followedTokens: state.token?.followed,
   account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet,
   histories: state.dex.histories,

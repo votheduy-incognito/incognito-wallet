@@ -1,6 +1,7 @@
 import walletValidator from 'wallet-address-validator';
 import accountService from '@src/services/wallet/accountService';
 import formatUtils from '@src/utils/format';
+import convert from '@utils/convert';
 
 const isSafeInteger = number => {
   const n = Number(n);
@@ -36,10 +37,10 @@ const maxLength = (max, { message } = {}) => value =>
 const minLength = (min, { message } = {}) => value =>
   value && value.length < min ? messageHanlder(message, value, min) ?? `Must be at least ${min} characters` : undefined;
 
-const isInteger = ({ message } = {}) => value => value && !Number.isInteger(Number(value)) ? messageHanlder(message, value) ?? 'Must be a integer number' : undefined;
+const isInteger = ({ message } = {}) => value => value && !Number.isInteger(convert.toNumber(value)) ? messageHanlder(message, value) ?? 'Must be a integer number' : undefined;
 
 const number = ({ message } = {}) => value => {
-  const number = Number(value);
+  const number = convert.toNumber(value);
   if (value && isNaN(number)) {
     return messageHanlder(message, value) ?? 'Must be a number';
   }
@@ -171,4 +172,3 @@ export default {
   combinedAccountName,
   fileTypes,
   maxFileSize
-};

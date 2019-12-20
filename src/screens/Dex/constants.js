@@ -12,6 +12,28 @@ export const PRV = {
   hasIcon: true,
   originalSymbol: 'PRV',
 };
+
+const BIG_COINS = {
+  PRV: PRV_ID,
+  USDT: '716fd1009e2a1669caacc36891e707bfdf02590f96ebd897548e8963c95ebac0',
+  BTC: 'b832e5d3b1f01a4f0623f7fe91d6673461e1f5d37d91fe78c5c2e6183ff39696',
+  ETH: 'ffd8d42dc40a8d166ea4848baf8b5f6e912ad79875f4373070b59392b1756c8f',
+  BUSD: '9e1142557e63fd20dee7f3c9524ffe0aa41198c494aa8d36447d12e85f0ddce7',
+  USDC: '1ff2da446abfebea3ba30385e2ca99b0f0bbeda5c6371f4c23c939672b429a42',
+  BNB: 'b2655152784e8639fa19521a7035f331eea1f1e911b2f3200a507ebb4554387b',
+  DAI: '3f89c75324b46f13c7b036871060e641d996a24c09b3065835cb1d38b799d6c1',
+};
+
+export const PRIORITY_LIST = [
+  BIG_COINS.PRV,
+  BIG_COINS.USDT,
+  BIG_COINS.USDC,
+  BIG_COINS.BUSD,
+  BIG_COINS.DAI,
+  BIG_COINS.BTC,
+  BIG_COINS.ETH,
+  BIG_COINS.BNB,
+];
 export const WAIT_TIME = 30000;
 export const SHORT_WAIT_TIME = 3000;
 export const STEPS = [
@@ -54,7 +76,7 @@ export const MESSAGES = {
   PENDING_TRANSACTIONS: 'Please wait for your previous transaction to finish processing. Simply try again later.',
   WITHDRAW_PROCESS: 'Withdrawing your funds...\n\nThis may take a couple of minutes. Please do not navigate away from the app.',
   SHARE_INSUFFICIENT: 'Your share is insufficient.',
-  MUST_BE_INTEGER: 'Please enter a whole number (not a fraction).',
+  MUST_BE_INTEGER: 'Please enter a whole positive number (not a fraction).',
   NOT_ENOUGH_NETWORK_FEE_ADD: 'Please top up PRV to cover the network fee.',
   ADD_LIQUIDITY_PROCESS: 'Adding your pair...\n\nThis may take a couple of minutes. Please do not navigate away from the app.',
   CANCEL_LIQUIDITY_PROCESS: 'Canceling your request...\n\nThis may take a couple of minutes. Please do not navigate away from the app.',

@@ -88,6 +88,7 @@ const addErc20Token = {
 
 const dex = {
   WITHDRAW_FAIL: knownError(-40),
+  NOT_ENOUGH_NETWORK_FEE_ADD: (-41),
 };
 
 
