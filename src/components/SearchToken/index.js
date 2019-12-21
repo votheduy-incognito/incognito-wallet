@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { fromPairs } from 'lodash';
 import { withNavigation } from 'react-navigation';
 import { accountSeleclor, tokenSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import accountService from '@src/services/wallet/accountService';
@@ -50,7 +51,7 @@ export class SearchTokenContainer extends PureComponent {
       const { internalTokens } = this.state;
       const { followedTokens, pTokens, getPrivacyDataByTokenID } = this.props;
       const followedTokenIds: Array = followedTokens.map(t => t?.id) || [];
-      const allTokenIds = Object.keys(Object.fromEntries([
+      const allTokenIds = Object.keys(fromPairs([
         ...internalTokens?.map(t => ([t?.id])) || [],
         ...pTokens?.map(t => ([t?.tokenId])) || []
       ]));

@@ -12,7 +12,7 @@ const Form = createForm(formName, {
   keepDirtyOnReinitialize: true,
 });
 const descriptionMaxLength = validator.maxLength(255);
-
+const isEmail = validator.email();
 
 class TokenInfoUpdate extends Component {
   constructor(props) {
@@ -22,11 +22,14 @@ class TokenInfoUpdate extends Component {
   }
 
   render() {
-    const { incognitoInfo: { description, showOwnerAddress, image, updatedAt } = {}, onUpdate, onClose, isUpdating } = this.props;
+    const { incognitoInfo: { description, showOwnerAddress, image, updatedAt, ownerWebsite, ownerName, ownerEmail } = {}, onUpdate, onClose, isUpdating } = this.props;
 
     const initialValues = {
       description,
-      showOwnerAddress
+      showOwnerAddress,
+      ownerName,
+      ownerWebsite,
+      ownerEmail
     };
 
     return (
@@ -47,6 +50,38 @@ class TokenInfoUpdate extends Component {
                     style={[styleSheet.input, styleSheet.descriptionInput, { marginBottom: 25 }]}
                     validate={descriptionMaxLength}
                   />
+                  <Field
+                    component={InputField}
+                    name='ownerName'
+                    placeholder='Enter creator name'
+                    label='Creator'
+                    maxLength={100}
+                    style={styleSheet.input}
+                  />
+                  <Field
+                    component={InputField}
+                    name='ownerWebsite'
+                    placeholder='Enter project or coin URL'
+                    componentProps={{
+                      autoCapitalize: 'none'
+                    }}
+                    maxLength={100}
+                    label='Website'
+                    style={styleSheet.input}
+                  />
+                  <Field
+                    component={InputField}
+                    componentProps={{
+                      keyboardType: 'email-address',
+                      autoCapitalize: 'none'
+                    }}
+                    maxLength={100}
+                    name='ownerEmail'
+                    placeholder='Enter the official email address for your coin or project'
+                    label='Email address'
+                    style={styleSheet.input}
+                    validate={isEmail}
+                  />
                 </View>
                 <View style={styleSheet.block}>
                   <View style={styleSheet.showMyAddressContainer}>
@@ -59,6 +94,7 @@ class TokenInfoUpdate extends Component {
                   </View>
                 </View>
                 
+                
                 <View style={styleSheet.block}>
                   <Field
                     component={ImagePickerField}
@@ -67,7 +103,7 @@ class TokenInfoUpdate extends Component {
                     textButton='Upload'
                     style={styleSheet.input}
                     maxSize={1024 * 50 * 8} // 50kb
-                    defaultImageUri={`${image}?t=${updatedAt}`}
+                    defaultImageUri={image && `${image}?t=${updatedAt}`}
                   />
                 </View>
               </View>

@@ -28,12 +28,12 @@ export default StyleSheet.create({
   mainNameText: {
     ...THEME.text.defaultTextStyle,
     fontWeight: '400',
-    marginBottom: 3
   },
   subNameText: {
     ...THEME.text.defaultTextStyle,
     color: COLORS.lightGrey1,
     fontSize: 14,
+    marginTop: 3
   },
   amountText: {
 

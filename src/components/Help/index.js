@@ -17,7 +17,11 @@ const Help = ({ title, content, marginLeft }) => {
       <Overlay isVisible={visible} overlayStyle={stylesheet.dialog} onBackdropPress={() => setVisible(false)}>
         <View>
           <View style={stylesheet.header}>
-            <Text style={stylesheet.title}>{title}</Text>
+            {
+              React.isValidElement(title)
+                ? title
+                : <Text style={stylesheet.title}>{title}</Text>
+            }
           </View>
           <ScrollView style={stylesheet.content}>
             {_.isString(content) ? <Text>{content}</Text> : content}

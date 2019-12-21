@@ -60,7 +60,7 @@ const maxValue = (max, { message } = {}) => value =>
 const largerThan = (min, { message } = {}) => value =>
   value && value <= min ? messageHanlder(message, value, min) ?? `Must be larger than ${formatUtils.number(min)}` : undefined;
 
-const email = (value, { message } = {}) =>
+const email = ({ message } = {}) => value =>
   value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ?
     messageHanlder(message, value) ?? 'Invalid email address' : undefined;
 

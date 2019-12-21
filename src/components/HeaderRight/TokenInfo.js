@@ -148,7 +148,7 @@ class TokenInfo extends Component {
         <ScrollView>
           <Container>
             {
-              incognitoInfo?.description && (
+              !!incognitoInfo?.description && (
                 <View style={tokenInfoStyle.descContainer}>
                   <Text>{incognitoInfo?.description}</Text>
                 </View>
@@ -166,7 +166,7 @@ class TokenInfo extends Component {
               </View>
             )}
             {
-              incognitoInfo?.isOwner && (
+              !!incognitoInfo?.isOwner && (
                 <View style={tokenInfoStyle.updateBtnContainer}>
                   <Button title='Update' style={tokenInfoStyle.updateBtn} titleStyle={tokenInfoStyle.updateBtnText} onPress={this.handleShowUpdateView} />
                 </View>
@@ -201,7 +201,7 @@ class TokenInfo extends Component {
         </TouchableOpacity>
         <Modal visible={isShowInfo} close={this.handleToggle} containerStyle={tokenInfoStyle.modalContainer} closeBtnColor={COLORS.primary} headerText='Coin info'>
           { showUpdateInfoView
-            ? incognitoInfo && <TokenInfoUpdate incognitoInfo={incognitoInfo} onUpdated={this.handleUpdated} onClose={this.handleCloseUpdateView} />
+            ? !!incognitoInfo && <TokenInfoUpdate incognitoInfo={incognitoInfo} onUpdated={this.handleUpdated} onClose={this.handleCloseUpdateView} />
             : this.renderInfo()
           }
         </Modal>

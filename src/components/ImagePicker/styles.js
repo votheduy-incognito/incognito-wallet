@@ -1,4 +1,4 @@
-import { COLORS, THEME, FONT } from '@src/styles';
+import { COLORS } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
@@ -11,7 +11,7 @@ const style = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     flexBasis: 100,
-    backgroundColor: '#979797',
+    backgroundColor: COLORS.lightGrey10,
     marginRight: 30,
     overflow: 'hidden'
   },
