@@ -632,7 +632,6 @@ class SetupDevice extends BaseComponent {
       homeWifi.name = ssid;
       homeWifi.password = wpa;
       await Util.tryAtMost(this.deviceId?.current?.connectAWifi(homeWifi),2,2);
-      // await this.deviceId?.current?.connectAWifi(homeWifi);
     } catch (error) {
       console.log(error);
     }
@@ -683,12 +682,6 @@ class SetupDevice extends BaseComponent {
     const {isInternetReachable = false ,type = '',isConnected = false,details={}  } = state ??{};
     const {ssid = ''  } = details ??{};
 
-    // const isConnected = isConnected && (_.includes(type,'cellular') || _.includes(type,'wifi'));
-    // let device = isConnected && await this.deviceId?.current?.getCurrentConnect();
-    // this.isHaveNetwork = !_.isEmpty(device?.name||'') && !_.includes(device?.name||'', HOTPOT);
-    // if(Platform.OS == 'ios'){
-    //   this.isHaveNetwork = isInternetReachable &&isConnected;
-    // }
     this.isHaveNetwork = isConnected && (isInternetReachable || !(await this.deviceId?.current?.isConnectedWithNodeHotspot()));
     
     console.log(TAG,`_handleConnectionChange: ${this.isHaveNetwork}-ssid=${ssid}`);
@@ -723,8 +716,6 @@ class SetupDevice extends BaseComponent {
   }
 
   getCurrentConnect = async ()=>{
-    // const netInfo = await NetInfo.fetch();
-    // console.log(TAG,'getCurrentConnect netInfo = ',netInfo);
     let device = await this.deviceId?.current?.getCurrentConnect();
     return device;
   };
@@ -735,18 +726,6 @@ class SetupDevice extends BaseComponent {
   }
 
   checkIsConnectedWithHotspot = async ()=>{
-    // let device = await this.deviceId?.current?.getCurrentConnect();
-    // let isConnectedHotpostStep1 = !_.isEmpty(device?.name||'') && _.includes(device?.name||'', HOTPOT);
-    // console.log(TAG,'checkIsConnectedWithHotspot begin: ', HOTPOT);
-    // if(!isConnectedHotpostStep1){
-    //   const state = await NetInfo.fetch().catch(console.log);
-    //   const {isConnected = false, isInternetReachable = false,details =null} = state ??{};
-    //   const { ipAddress = '',isConnectionExpensive = false } = details ??{};
-    //   return isConnected && !isInternetReachable;
-    //   // if(isConnected && _.includes(ipAddress,'10.42.')){
-    //   //   return true;
-    //   // }
-    // }
     return await this.deviceId?.current?.isConnectedWithNodeHotspot(); 
   }
   
@@ -782,8 +761,8 @@ class SetupDevice extends BaseComponent {
       // isConnectedHotpost = !_.isEmpty(device) && !this.isHaveNetwork;
       // this.isHaveNetwork = false;
     }
-    const isCheckWifi = isRenderUI?validSSID && validWPA:true;
-    if (isConnectedHotpost && isCheckWifi) {
+    const isCheckInputWifiInfo = isRenderUI?validSSID && validWPA:true;
+    if (isConnectedHotpost && isCheckInputWifiInfo) {
       let ssid = device?.name?.toLowerCase()||'';
       const product = (HOTPOT??CONSTANT_MINER.PRODUCT_TYPE).toLowerCase();
       console.log(TAG,'checkConnectHotspot SSID---: ', ssid,'=== HOTPOT = ',HOTPOT);
@@ -815,7 +794,6 @@ class SetupDevice extends BaseComponent {
         return NodeService.authFirebase(productInfo);
       };
       let authFirebase = await Util.tryAtMost(authFirebaseFunc,3,3);
-      // let authFirebase = await Util.tryAtMost(authFirebaseFunc(productInfo),3,3);
       this.showLogConnect(authFirebase?'Auth Firebase=> SUCCESS':'Auth Firebase=> FAIL');
       return authFirebase;
     } catch (error) {
@@ -836,7 +814,7 @@ class SetupDevice extends BaseComponent {
     
       const promiseNetwork = ()=>{
         console.log(TAG,' tryVerifyCode begin02 ---- connected = ',this.isHaveNetwork);
-        return this.isHaveNetwork ? NodeService.verifyProductCode(verifyCode):new Error('no internet');
+        return this.isHaveNetwork ? NodeService.verifyProductCode(verifyCode):Promise(new Error('no internet'));
       };
       const resultStep2  = await Util.tryAtMost(promiseNetwork,TIMES_VERIFY,2);
       this.setState({
