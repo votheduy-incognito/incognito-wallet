@@ -257,67 +257,75 @@ export default class FirebaseService {
     
     console.log(TAG,'startListenData Current Channel:', currentChannel);
     // console.log(TAG,'startListenData Channel: ', channel);
-
-    //Update current subcribed channel
-    if (channel) {
-      let result = false;
+    let result = false;
+    try {
       await this.isAuth(this.username,this.password);
       const fuid = this.getUID();
       let path = `/${fuid}/${channel}`;
-      console.log('startListenData Update Path: ', path);
-      currentChannel = channel;
+      //Update current subcribed channel
+      if (channel) {
+        console.log('startListenData Update Path: ', path);
+        currentChannel = channel;
       
-      // await this.firebase.database().ref(path).remove();
-      const snapshot =  await this.firebase.database().ref(path).once('child_added');
       
-      console.log(TAG,'startListenData begin------- ',snapshot);
-      if (snapshot.exists()) {
+        const snapshot =  await this.firebase.database().ref(path).once('child_added');
+      
+        console.log(TAG,'startListenData begin------- ');
+        if (snapshot.exists()) {
         // snapshot.forEach(hihi=>{
         //   console.log(TAG,'startListenData begin kakakaa------- ',hihi);
         // });
-        const dict = snapshot.exists()? snapshot.val():null;
-        console.log('startListenData begin-------0000---- data : ', dict);
-        const { data = {} } = dict;
-        const snapshotKey = snapshot.key??'';
-        console.log(TAG,'startListenData snapshotKey: ', snapshotKey);
-        if (!_.isEmpty(data)) {
-          const { action } = data;
-          console.log(TAG,'startListenData Action: ', action);
-          if (action) {
-            console.log(TAG,'startListenData Action01 ');
-            let arr = this.dictCallback[action];
-            console.log(TAG,'startListenData Action02 ');
-            if (arr) {
-              console.log(TAG, 'startListenData Arr: ', arr);
-              arr.forEach(dict => {
-                const { key ,callback } = dict;
-                if (this.dictKey[key] == 1) {
-                  if (action !== 'update_firmware_status') {
-                    this.dictKey[key] = 0;
+          const dictValue = snapshot.exists()? snapshot.val():null;
+          console.log('startListenData begin-------0000---- data : ', dictValue);
+          const timeNanoNow = _.now()* 1000000;
+          const { data = {},time = timeNanoNow } = dictValue;
+          const snapshotKey = snapshot.key??'';
+          let isNeedClear  = (timeNanoNow - time) >(3*60*1000*1000000);
+          console.log(TAG,'startListenData snapshotKey: ', snapshotKey);
+          if (!_.isEmpty(data)) {
+            const { action } = data;
+          
+            console.log(TAG,'startListenData Action: ', action,'--- _.now() - timestamp = ',timeNanoNow - time);
+            if (action) {
+              console.log(TAG,'startListenData Action01 ');
+              let arr = this.dictCallback[action];
+              console.log(TAG,'startListenData Action02 ');
+              if (arr) {
+                console.log(TAG, 'startListenData Arr: ', arr);
+                arr.forEach(dict => {
+                  const { key ,callback } = dict;
+                  if (this.dictKey[key] == 1) {
+                    result = true;
+                    if (action !== 'update_firmware_status') {
+                      this.dictKey[key] = 0;
+                    }
+                    console.log(TAG,'startListenData Return callback = ',key);
+                    callback && callback({status:STATUS_CODE.SERVER, ...data});
+                    timer.clearTimeout(key);
                   }
-                  console.log(TAG,'startListenData Return callback = ',key);
-                  callback({status:STATUS_CODE.SERVER, ...data});
-                  timer.clearTimeout(key);
-                  result = true;
+                });
+                if (action !== 'update_firmware_status') {
+                  this.dictCallback[action] = null;
                 }
-              });
-              if (action !== 'update_firmware_status') {
-                this.dictCallback[action] = null;
               }
-            }
             
-            const childPath = `/${fuid}/${channel}/${snapshotKey}`;
-            console.log(TAG,'startListenData Action03 Child Path: ', childPath);
-            !_.isEmpty(fuid)&& !_.isEmpty(snapshotKey) && await this.firebase.database().ref(childPath).remove().catch(console.log);
-            console.log(TAG,'startListenData Action04 End--------');
+              const childPath = `/${fuid}/${channel}/${snapshotKey}`;
+              console.log(TAG,'startListenData Action03 Child Path: ', childPath,'-isNeedClear = ',isNeedClear);
+              result  && !_.isEmpty(fuid)&& !_.isEmpty(snapshotKey) && await this.firebase.database().ref(childPath).remove();
+              console.log(TAG,'startListenData Action04 End--------');
+            }
+          
           }
+        
         }
-        return result;
       }
-      console.log(TAG,'startListenData Action05 End--------');
-      
+      !result && await this.firebase.database().ref(path).remove();
+    } catch (error) {
+      console.log(TAG,'startListenData error ');
     }
-    return false;
+    console.log(TAG,'startListenData Action05 End--------result = ',result);
+    
+    return result;
   }
 
   stopListenData = ()=>{
@@ -464,24 +472,76 @@ export default class FirebaseService {
       // let chanel = `/${uid}/` + action.source;
       // await this.firebase.database().ref(chanel).remove().catch(console.log);
       const pushData = async ()=>{
+        console.log(TAG, 'send pushData begin ------');
         await this.isAuth(this.username,this.password);
         const temp  = await this.push(path,json).catch(console.log)??false;
-        return temp?temp:new Error('pushData  fail');
+        // return temp?temp:new Error('pushData  fail');
+        return temp;
       };
-      const resultPush = await Util.tryAtMost(pushData,3,5).catch(e=>{
-        console.log(TAG, 'send tryAtMost-pushData HienTON= ',e);
+      // const fetchData = async ()=>{
+      //   console.log(TAG, 'send fetchData begin ------');
+      //   let receiveData = false;
+      //   try {
+      //     receiveData =  await Util.excuteWithTimeout(this.startListenData(actionSource),8);
+      //     console.log(TAG, 'send fetchData receiveData ------',receiveData);
+      //   } catch (error) {
+      //     console.log(TAG, 'send tryAtMost-fetchData error ',error);
+      //   }
+      //   const resultPush = receiveData?true: await Util.tryAtMost(pushData,3,3).catch(e=>{
+      //     console.log(TAG, 'send tryAtMost-pushData HienTON= ',e);
+      //   });
+        
+      //   return receiveData?receiveData:new Error('fetchData fail');
+      // };
+
+      const fetchData = async ()=>{
+        console.log(TAG, 'send fetchData begin ------');
+        let receiveData = false;
+        try {
+          receiveData =  await Util.excuteWithTimeout(this.startListenData(actionSource),8);
+          console.log(TAG, 'send fetchData receiveData ------',receiveData);
+        } catch (error) {
+          console.log(TAG, 'send tryAtMost-fetchData error ',error);
+        }
+        
+        // return receiveData?receiveData:new Error('fetchData fail');
+        return receiveData;
+      };
+
+      const codeData  = async ()=>{
+        console.log(TAG, 'send codeData begin ------');
+        let receiveData = false;
+        try {
+          let [isPush,isFetch] = await Promise.all([pushData(),fetchData()]);
+          // receiveData =  await Util.excuteWithTimeout(this.startListenData(actionSource),8);
+          console.log(TAG, 'send codeData receiveData ------',isPush,'-isFetch = ',isFetch);
+          receiveData = isPush && isFetch;
+        } catch (error) {
+          console.log(TAG, 'send tryAtMost-codeData error ',error);
+        }
+        
+        return receiveData?receiveData:new Error('codeData fail');
+      };
+
+      const resultReceive = await Util.tryAtMost(codeData,4,3).catch(e=>{
+        console.log(TAG, 'send tryAtMost-fetchData= ',e);
         this.checkTimeout(action, onCallback);
       });
       
-      if(resultPush){
-        const fetchData = async ()=>{
-          const temp = await Util.excuteWithTimeout(this.startListenData(actionSource),5);
-          return temp?temp:new Error('fetchData fail');
-        };
-        await Util.tryAtMost(fetchData,3,3).catch(e=>{
-          console.log(TAG, 'send tryAtMost-fetchData= ',e);
-          this.checkTimeout(action, onCallback);
-        });
+      // const resultPush = await Util.tryAtMost(pushData,3,5).catch(e=>{
+      //   console.log(TAG, 'send tryAtMost-pushData HienTON= ',e);
+      //   this.checkTimeout(action, onCallback);
+      // });
+      
+      if(resultReceive){
+        // const fetchData = async ()=>{
+        //   const temp = await Util.excuteWithTimeout(this.startListenData(actionSource),5);
+        //   return temp?temp:new Error('fetchData fail');
+        // };
+        // await Util.tryAtMost(fetchData,3,3).catch(e=>{
+        //   console.log(TAG, 'send tryAtMost-fetchData= ',e);
+        //   this.checkTimeout(action, onCallback);
+        // });
       }else{
         this.checkTimeout(action, onCallback);
       }

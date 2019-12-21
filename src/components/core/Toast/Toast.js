@@ -34,6 +34,7 @@ class Toast extends Component {
 
   static showError(msg, config?) {
     Toast.show(msg, {
+      duration: 2500,
       ...typeof config === 'object' ? config : {},
       icon: <Icon type='material' name='error' size={20} color={COLORS.white} />,
       containerStyle: styles.errorContainer
@@ -51,6 +52,7 @@ class Toast extends Component {
 
   static showWarning(msg, config?) {
     Toast.show(msg, {
+      duration: 2500,
       ...typeof config === 'object' ? config : {},
       icon: <Icon type='material' name='warning' size={20} color={COLORS.dark1} />,
       containerStyle: styles.warningContainer,

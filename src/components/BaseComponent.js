@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import { ExHandler } from '@src/services/exception';
+import { Component } from 'react';
 import { AppState } from 'react-native';
-// import Toast from 'react-native-easy-toast';
-import  { scaleInApp} from '@src/styles/TextStyle';
 import { Toast } from './core';
 
 export const TAG = 'BaseComponent';
@@ -16,6 +15,7 @@ const callIfBackToThisRoute = (props, call) => {
   });
   return listener;
 };
+const isTestConnect = true;
 class BaseComponent extends Component {
   constructor(props) {
     super(props);
@@ -35,26 +35,11 @@ class BaseComponent extends Component {
     this.subs?.forEach(sub => sub?.remove());
     AppState.removeEventListener('change', this.handleAppStateChange);
   }
-
+  showLogConnect=(message)=>{
+    isTestConnect && new ExHandler(new Error(message),message).showWarningToast();
+  }
   onResume = () => {};
 
-  // renderToastMessage = () => {
-  //   return (
-  //     <Toast
-  //       style={{marginHorizontal:scaleInApp(20)}}
-  //       position="center"
-  //       ref={toast => {
-  //         this.toast = toast;
-  //       }}
-  //     />
-  //   );
-  // };
-
-  // showToastMessage = (text = '', callback = null) => {
-  //   if (text && this.toast) {
-  //     this.toast.show(text, 500, callback);
-  //   }
-  // };
 
   showToastMessage = (text = '', callback?) => {
     if (text ) {

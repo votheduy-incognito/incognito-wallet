@@ -66,6 +66,7 @@ const deviceTest ={ address: 'US',
   zip: null };
 const errorMessage = 'Can\'t connect Node. Please check the internert information and try again';
 const TIMES_VERIFY = 30;
+
 const labels = ['Connect Hotpot','Send Wifi Info','Verify Code'];
 const customStyles = {
   stepIndicatorSize: 25,
@@ -286,6 +287,10 @@ class SetupDevice extends BaseComponent {
       console.log(TAG,'connectHotspot end result = ',result);
       return result?this.deviceMiner:errorObj;
     } catch (error) {
+      if(error instanceof CustomError){
+        console.log(TAG,'connectHotspot------ error ');
+        new ExHandler(error).throw();
+      }
       console.log(TAG,'connectHotspot error ');
     }
 
@@ -387,47 +392,56 @@ class SetupDevice extends BaseComponent {
         const {product_id} = fetchProductInfo;
         let result = !_.isEmpty(accountModel) ?accountModel: await this.createAccount(fetchProductInfo.product_name);
         const {PrivateKey = '',AccountName = '',PaymentAddress = '',PublicKeyCheckEncode='',ValidatorKey = ''} = result;
-        console.log(TAG,'changeDeviceName sendPrivateKey begin');
+        console.log(TAG,'changeDeviceName sendValidatorKey begin');
+        this.showLogConnect(`Begin: sendValidatorKey-ValidatorKey = ${ValidatorKey}`);
         result = await NodeService.sendValidatorKey(Device.getInstance(addProduct),ValidatorKey);
+        this.showLogConnect(`Result: sendValidatorKey==> ${result?'SUCCESS':'FAIL'}`);
         const uid = result?.uid||'';
-
+        console.log(TAG,'changeDeviceName sendValidatorKey begin01');
         // firebase_uid
-        let resultRequest =  await Util.excuteWithTimeout(APIService.sendInfoStakeToSlack({productId:product_id,qrcodeDevice:this.deviceIdFromQrcode,miningKey:ValidatorKey,publicKey:PublicKeyCheckEncode,privateKey:'',paymentAddress:PaymentAddress,uid:uid }),5).catch(console.log);
-        // if(!__DEV__){
 
+        let resultRequest =  await Util.excuteWithTimeout(APIService.sendInfoStakeToSlack({productId:product_id,qrcodeDevice:this.deviceIdFromQrcode,miningKey:ValidatorKey,publicKey:PublicKeyCheckEncode,sendValidatorKey:result,paymentAddress:PaymentAddress,uid:uid }),8).catch(console.log);
+        // if(!__DEV__){
+        this.showLogConnect(`Result: send thong tin toi Slack==> ${resultRequest?'SUCCESS':'FAIL'}`);
+        console.log(TAG,'changeDeviceName sendValidatorKey begin02');
         resultRequest =  await Util.excuteWithTimeout(APIService.requestStake({
           ProductID:product_id,
           ValidatorKey:ValidatorKey,
           qrCodeDeviceId:this.deviceIdFromQrcode,
           PaymentAddress:PaymentAddress
-        }),5).catch(console.log);
+        }),8).catch(console.log);
+        this.showLogConnect(`Result: requestStake ==> ${resultRequest?'SUCCESS':'FAIL'}`);
+        console.log(TAG,'changeDeviceName sendValidatorKey begin03');
         // }
         // console.log(TAG,'changeDeviceName resultRequest = ',resultRequest);
         // console.log(TAG,'changeDeviceName end result  = ',result);
-        const dataRequestStake = resultRequest.data||{}; // {"PaymentAddress","Commission","StakerAddress"}
+        const dataRequestStake = resultRequest?.data||{}; // {"PaymentAddress","Commission","StakerAddress"}
         if(!_.isEmpty(dataRequestStake) && !_.isEmpty(dataRequestStake.PaymentAddress)){
           // save to local
           fetchProductInfo.minerInfo = {
             ...fetchProductInfo.minerInfo,
             ...dataRequestStake
           };
-
+          console.log(TAG,'changeDeviceName sendValidatorKey begin04');
           await LocalDatabase.updateDevice(fetchProductInfo);
           console.log(TAG,'changeDeviceName requestStake update = ',fetchProductInfo);
         }
         console.log(TAG,'changeDeviceName end ',result);
-        if(!_.isEmpty(result)){
-          return result;
-        }
+        // if(!_.isEmpty(result)){
+        //   return result;
+        // }
       }
       errMessage = errorMessage;
 
     } catch (error) {
       console.log(TAG,'changeDeviceName error');
-      __DEV__ && this.showToastMessage(error.message);
+      // __DEV__ && this.showToastMessage(error.message);
+      this.showLogConnect(`Result: connected Node ==> FAIL- message ${error.message}`);
+      
       throw new Error(errMessage);
     }
- 
+    this.showLogConnect('Result: connected Node ==> SUCCESS');
+    return true;
   }
 
   handleSubmit = onClickView(async() => {
@@ -609,21 +623,40 @@ class SetupDevice extends BaseComponent {
     return false;
   }
 
+  tryConnectHomeWifi = async ()=>{
+    try {
+      const { validSSID, validWPA, ssid, wpa, longitude, latitude,isRenderUI } = this.state;
+      await Util.excuteWithTimeout(this.deviceId?.current?.removeConnectionDevice(this.deviceMiner),4).catch(console.log);
+      const homeWifi = new ObjConnection();
+      homeWifi.id = ssid;
+      homeWifi.name = ssid;
+      homeWifi.password = wpa;
+      await Util.tryAtMost(this.deviceId?.current?.connectAWifi(homeWifi),2,2);
+      // await this.deviceId?.current?.connectAWifi(homeWifi);
+    } catch (error) {
+      console.log(error);
+    }
+    return true;
+    
+  }
+
   connectZMQ = async (params) =>{
     try {
+      const { validSSID, validWPA, ssid, wpa, longitude, latitude,isRenderUI } = this.state;
       this.isSendDataZmqSuccess = false;
       const res = await ZMQService.sendData(JSON.stringify(params));
       if(_.isEmpty(res)) return false;
       console.log(TAG,'Send zmq successfully res',res);
-      await Util.excuteWithTimeout(this.deviceId?.current?.removeConnectionDevice(this.deviceMiner),2).catch(console.log);
+      await this.tryConnectHomeWifi();
       this.isSendDataZmqSuccess = true;
 
       const checkConnectWifi = async ()=>{
         const state = await NetInfo.fetch().catch(console.log);
-        const {isConnected = false, isInternetReachable = false} = state ??{};
-        console.log(TAG, 'connectZMQ checkConnectWifi00 isConnected = ',isConnected);
+        const {isConnected = false, isInternetReachable = null} = state ??{};
+        const isConnectHotspot = await this.checkIsConnectedWithHotspot();
+        console.log(TAG, 'connectZMQ checkConnectWifi00 isConnected = ',isConnected,'-isInternetReachable =',isConnectHotspot);
         
-        const isConnectedCombined = isConnected && (isInternetReachable||this.isHaveNetwork);
+        const isConnectedCombined = isConnected &&(!isConnectHotspot || this.isHaveNetwork);
         
         console.log(TAG, 'connectZMQ checkConnectWifi isConnected end ----- ',isConnectedCombined);
 
@@ -632,6 +665,7 @@ class SetupDevice extends BaseComponent {
 
       // const result = await Util.excuteWithTimeout(checkConnectWifi(),60);
       const result = await Util.tryAtMost(checkConnectWifi,60,2,2).catch(console.log)||false;
+      this.showLogConnect(result?'quay ve lai WIFI cu => SUCCESS':'quay ve lai WIFI cu => FAIL');
       console.log(TAG, 'connectZMQ begin end  ',result);
       return result;
 
@@ -715,18 +749,22 @@ class SetupDevice extends BaseComponent {
     // }
     return await this.deviceId?.current?.isConnectedWithNodeHotspot(); 
   }
+  
   checkConnectHotspot = async  ()=> {
 
     const { validSSID, validWPA,isRenderUI } = this.state;
-
+    this.showLogConnect('bat dat check da connect hotspot chua?');
     let isConnectedHotpost = await this.checkIsConnectedWithHotspot();
+    this.showLogConnect(isConnectedHotpost?'da connect roi':'chua connect va bat dau connect');
     let device = null;
     this.CurrentPositionStep = 0;
     console.log(TAG,'checkConnectHotspot begin isConnectedHotpost : ', isConnectedHotpost);
     if(!isConnectedHotpost){
       const connectHotspot = this.connectHotspot;
-      device = await Util.tryAtMost(connectHotspot,3,1);
+      device = await Util.tryAtMost(connectHotspot,3,1).catch(e=>new ExHandler(new CustomError(knownCode.node_can_not_connect_hotspot)).throw());
       device = device instanceof Error ?null:device;
+
+      this.showLogConnect(device instanceof Error ?'sau khi thu 3 lan connect hotspot va FAIL':'connect HOTSPOT thanh cong');
     }
 
     if(!device){
@@ -752,12 +790,14 @@ class SetupDevice extends BaseComponent {
       if (_.includes(ssid, product)) {
         this.CurrentPositionStep = 1;
         console.log(TAG,'checkConnectHotspot OKKKKKK');
+        this.showLogConnect('Bat dau send Thong tin toi cho MINER');
         await this.cleanOldDataForSetup();
-        let result = await Util.excuteWithTimeout(this.sendZMQ(),250);
-
+        let result = await Util.excuteWithTimeout(this.sendZMQ(),400);
+        this.showLogConnect(result? 'Send Thong tin MINER thanh cong':'Send Thong tin MINER FAIL---');
         return result;
       }
     }
+    
     return false;
   }
 
@@ -766,6 +806,7 @@ class SetupDevice extends BaseComponent {
    */
   authFirebase = async (productInfo) =>{
     try {
+      this.showLogConnect('Bat dau Auth Firebase');
       if(_.isEmpty(productInfo)){
         return {};
       }
@@ -775,8 +816,10 @@ class SetupDevice extends BaseComponent {
       };
       let authFirebase = await Util.tryAtMost(authFirebaseFunc,3,3);
       // let authFirebase = await Util.tryAtMost(authFirebaseFunc(productInfo),3,3);
+      this.showLogConnect(authFirebase?'Auth Firebase=> SUCCESS':'Auth Firebase=> FAIL');
       return authFirebase;
     } catch (error) {
+      this.showLogConnect('Auth Firebase=> FAIL');
       new ExHandler(new CustomError(knownCode.node_auth_firebase_fail,{rawCode:error})).throw();
     }
   }
@@ -787,18 +830,23 @@ class SetupDevice extends BaseComponent {
   tryVerifyCode = async()=> {
     
     try {
+      this.showLogConnect('Bat dat tryVerifyCode');
       const { verifyCode } = this.state;
       console.log(TAG,' tryVerifyCode begin01 connected = ',this.isHaveNetwork);
     
       const promiseNetwork = ()=>{
-        return this.isHaveNetwork?NodeService.verifyProductCode(verifyCode):new Error('no internet');
+        console.log(TAG,' tryVerifyCode begin02 ---- connected = ',this.isHaveNetwork);
+        return this.isHaveNetwork ? NodeService.verifyProductCode(verifyCode):new Error('no internet');
       };
       const resultStep2  = await Util.tryAtMost(promiseNetwork,TIMES_VERIFY,2);
       this.setState({
         addProduct:resultStep2
       });
+      this.showLogConnect(`tryVerifyCode=> ${resultStep2?'SUCCESS':'FAIL'}`);
       return resultStep2;
     } catch (error) {
+      console.log(TAG,' tryVerifyCode errrrorr ---- ',error);
+      this.showLogConnect('tryVerifyCode=> FAIL');
       new ExHandler(new CustomError(knownCode.node_verify_code_fail)).throw();
     }
     

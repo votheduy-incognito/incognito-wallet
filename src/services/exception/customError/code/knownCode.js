@@ -61,6 +61,7 @@ const node = {
   node_auth_firebase_fail:knownError(-32),
   node_verify_code_fail:knownError(-33),
   node_create_account_fail: knownError(-34),
+  node_can_not_connect_hotspot: knownError(-35),
 };
 
 const validator = {

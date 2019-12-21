@@ -3,8 +3,7 @@ import Util from '@utils/Util';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { View,Platform } from 'react-native';
-import { ExHandler } from '@src/services/exception';
+import { Platform, View } from 'react-native';
 import BaseConnection, { ObjConnection } from './BaseConnection';
 import style from './style';
 import WifiConnection from './WifiConnection';
@@ -62,9 +61,15 @@ class DeviceConnection extends Component {
     this.connection = connection;
   };
 
+  connectAWifi = async (device: ObjConnection) => {
+    console.log(TAG, 'connectAWifi begin  = ',JSON.stringify(device)||'');
+    let result = await this.connection.connectDevice(device).catch(console.log)??false;
+    return result;
+  };
+
   connectDevice = async (device: ObjConnection,isHOTPOST = false) => {
     console.log(TAG, 'connectDevice begin  = ',JSON.stringify(device)||'');
-    let result = await this.connection.connectDevice(device).catch(console.log);
+    let result = await this.connection.connectDevice(device);//.catch(e=>e instanceof CustomError? new ExHandler(e).throw():null)??false;
 
     if(result){
       // console.log(TAG, 'connectDevice begin true ---- ');
@@ -99,7 +104,8 @@ class DeviceConnection extends Component {
   }
   removeConnectionDevice = async (device: ObjConnection) => {
     // console.log(TAG, 'removeConnectionDevice begin result = ',JSON.stringify(device)||'');
-    let result = await this.connection.removeConnection(device);
+    let result = Platform.OS =='android'? await this.connection.removeConnection(device):true;
+    // let result = await this.connection.removeConnection(device);
     console.log(TAG, 'removeConnectionDevice begin result = ',result);
     return result;
   };

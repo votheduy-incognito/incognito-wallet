@@ -252,7 +252,7 @@ class SetupWifiDevice extends BaseScreen {
         let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
         const PrivateKey  = result.PrivateKey;
         console.log(TAG,'handleSubmit PrivateKey = ',PrivateKey);
-        result = await NodeService.sendPrivateKey(Device.getInstance(addProduct),PrivateKey);
+        result = await NodeService.sendValidatorKey(Device.getInstance(addProduct),PrivateKey);
 
         if(!_.isEmpty(result)){
           this.goToScreen(routeNames.HomeMine);

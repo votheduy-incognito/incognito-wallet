@@ -1,12 +1,14 @@
+import NetInfo from '@react-native-community/netinfo';
+import { CustomError, ExHandler } from '@src/services/exception';
+import knownCode from '@src/services/exception/customError/code/knownCode';
 import { locationPermission } from '@utils/PermissionUtil';
 import Util from '@utils/Util';
 import _ from 'lodash';
-import { Alert, Platform } from 'react-native';
-import NetInfo from '@react-native-community/netinfo';
+import { Platform } from 'react-native';
 import { PASS_HOSPOT } from 'react-native-dotenv';
+import { NetworkInfo } from 'react-native-network-info';
 // import Wifi from 'react-native-iot-wifi';
 import WifiManager from 'react-native-wifi-reborn';
-import { NetworkInfo } from 'react-native-network-info';
 import BaseConnection, { ObjConnection } from './BaseConnection';
 
 export const TAG = 'WifiConnection';
@@ -29,7 +31,8 @@ class WifiConnection extends BaseConnection {
         const state = await NetInfo.fetch().catch(console.log);
         const {isConnected = false, isInternetReachable = false,details =null} = state ??{};
         const { ipAddress = '',isConnectionExpensive = false,ssid='' } = details ??{};
-        let SSID = _.isEmpty(ssid) ? await WifiManager.getCurrentWifiSSID():ssid;
+        SSID =  await WifiManager.getCurrentWifiSSID();
+        let SSID = _.isEmpty(SSID) ? ssid:SSID;
         
         SSID = _.isEqual('Cannot detect SSID',SSID) || _.isEqual('<unknown ssid>',SSID) ?'':SSID;
         console.log(TAG, 'fetchCurrentConnect getSSID=', SSID);
@@ -105,22 +108,41 @@ class WifiConnection extends BaseConnection {
     return false;
   } 
 
-  connectDevice = (device: ObjConnection) => {
+  connectDevice = (wifiObj: ObjConnection) => {
    
     const pro = async() => {
       try {
-        let SSID = device.name;
+        let SSID = wifiObj.name;
+        const logHandler = new ExHandler(new CustomError(knownCode.node_can_not_connect_hotspot));
         console.log(TAG, 'connectDevice begin000 --- name = ',SSID);
-        const data = await WifiManager.connectToProtectedSSID(SSID,PASS_HOSPOT,false);
+        const password = wifiObj.password || PASS_HOSPOT;
+        let data = await WifiManager.connectToProtectedSSID(SSID,password,false).catch(e=>{
+          console.log(TAG, 'connectToProtectedSSID begin --- error ,',e);
+          logHandler.throw();}
+        );
         console.log(TAG, 'connectDevice begin111 --- data = ',data);
-        await Util.delay(4);
+        await Util.delay(3);
+        if(_.isEmpty(data)){
+          await Util.delay(3);
+          data = await this.fetchCurrentConnect();
+          console.log(TAG, 'connectDevice begin222--- data = ',data);
+          
+          if(_.isEmpty(data)){
+            // IOS 13.2
+            // await Util.delay(3);
+            // data = await this.isConnectedWithNodeHotspot();
+            // data ? null:logHandler.throw();
+          }else{
+            !_.isEqual(data.name,SSID) ? logHandler.throw():null;
+          }
+        }
         
         this.currentConnect = new ObjConnection();
         this.currentConnect.id = SSID;
         this.currentConnect.name = SSID;
         return true;
       } catch (error) {
-        throw new Error(error);
+        error instanceof CustomError && new ExHandler(error).throw();
       }
     };
 

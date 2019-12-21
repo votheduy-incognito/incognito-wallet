@@ -15,6 +15,7 @@ import _ from 'lodash';
 import React from 'react';
 import { Image, ScrollView, View } from 'react-native';
 import { connect } from 'react-redux';
+import { DialogNotify } from './DialogNotify';
 import GetQrcode from './GetQrCode';
 import styles from './styles';
 
@@ -173,6 +174,68 @@ class GetStartedAddNode extends BaseScreen {
     this.goToScreen(routeNames.HomeMine);
   }
 
+  handleSetupComplete =()=>{
+    // will show a pop-up message    
+    this.CurrenPage = 4;
+  }
+
+  handleStepTestConnect = async ()=>{
+    
+    try{
+      this.setState({
+        loading:true,
+        currentPage:2,
+      });
+      // setup complete
+      // await Util.delay(3);
+      // await Util.delay(3).then(this.handleSetupComplete);
+      // setup fail
+      // new ExHandler(new CustomError(knownCode.node_verify_code_fail)).showWarningToast().throw();
+      // new ExHandler(new CustomError(knownCode.node_auth_firebase_fail)).showWarningToast().throw();
+      // new ExHandler(new Error('Something’s not right. Please try again.')).showWarningToast().throw();
+      ////
+      const deviceIdFromQrcode = this.state.QRCode;
+      
+      const errorMessage = await this.viewSetupDevice.current.handleSetUpPress(deviceIdFromQrcode);
+      
+      const nodeName = deviceIdFromQrcode || await NodeService.getAName();
+      const deviceObj =  await this.viewSetupDevice.current.changeDeviceName(nodeName,deviceIdFromQrcode,this.accountNode)||null; 
+      console.log(TAG,'handleStepConnect errorMessage ',errorMessage ,deviceObj);
+      if(_.isEmpty(errorMessage) && !_.isNil(deviceObj)){
+        this.handleSetupComplete();
+      }else{
+        this.showToastMessage(errorMessage);
+        this.setState({
+          loading:false,
+          errorInSetUp:null,
+          currentPage:2
+        });
+        
+      }
+    }catch(e){
+      let currentPage = 0;
+      const {code,message = '' } = e;
+      switch(code){
+      case(knownCode.node_verify_code_fail):
+        currentPage = 2;
+        break;
+      case (knownCode.node_can_not_connect_hotspot):
+        currentPage = 0;
+        break;
+      case (knownCode.node_auth_firebase_fail):{
+        currentPage=2;
+        break;
+      }
+      }
+      this.setState({
+        loading:false,
+        errorInSetUp:e,
+        currentPage:currentPage
+      });
+    }
+    
+  }
+
   handleStepConnect = async ()=>{
     try{
       this.setState({
@@ -187,7 +250,7 @@ class GetStartedAddNode extends BaseScreen {
       const deviceObj =  await this.viewSetupDevice.current.changeDeviceName(nodeName,deviceIdFromQrcode,this.accountNode)||null; 
       console.log(TAG,'handleStepConnect errorMessage ',errorMessage ,deviceObj);
       if(_.isEmpty(errorMessage) && !_.isNil(deviceObj)){
-        this.handleFinish();
+        this.handleSetupComplete();
       }else{
         this.showToastMessage(errorMessage);
         
@@ -228,6 +291,7 @@ class GetStartedAddNode extends BaseScreen {
           this.wifiNameValue = name;
           this.setState({
             currentPage:1,
+            errorInSetUp:null,
             currentConnect:{
               ...currentConnect,
               name:name
@@ -241,12 +305,23 @@ class GetStartedAddNode extends BaseScreen {
       childView = {
         ...childView,
         onPress:()=>{
-          const isPassedValidate = !_.isEmpty(this.wifiNameValue);
+          const wifiName = _.trim(this.wifiNameValue);
+          const isPassedValidate = !_.isEmpty(wifiName);
+          
           if(isPassedValidate){
             this.setState({
-              isPassedValidate:true
+              isPassedValidate:true,
+              currentConnect:{
+                ...currentConnect,
+                name:wifiName,
+                password:this.wifiPassValue
+              }
             },()=>{
-              this.handleStepConnect();
+              // hienton test
+              
+              this.handleStepTestConnect();
+              /////
+              // this.handleStepConnect();
             });
             
           }else{
@@ -312,11 +387,13 @@ class GetStartedAddNode extends BaseScreen {
         <View style={styleHideView}>
           <CreateAccount ref={this.viewCreateAccount} navigation={navigation} />
         </View>
+        <DialogNotify visible={currentPage==4} onClose={this.handleFinish} />
         <StepIndicator stepCount={3} currentPage={currentPage} ref={this.viewStepIndicator} />
-        <Text style={styles.errorText}>{rootCauseMessage}</Text>
+        
         <ScrollView>
           {this.renderTitle()}
           {this.renderContent()}
+          <Text style={styles.errorText}>{rootCauseMessage}</Text>
           {this.renderFooter()}
           <SetupDevice ref={this.viewSetupDevice} isRenderUI={false} currentConnect={currentConnect} />
         </ScrollView>

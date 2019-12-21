@@ -97,7 +97,7 @@ export default class NodeService {
   static send = (product, actionExcute = templateAction, chain = 'incognito',type = 'incognito',dataToSend={},timeout = 5) => {
     return new Promise((resolve,reject)=>{
       const productId = product.product_id;
-      console.log(TAG, 'send ProductId: ', product.product_id);
+      console.log(TAG, 'send ProductId: ', productId);
       if (productId) {
         const firebase = new FirebaseService();
         const uid = firebase.getUID()||'';
@@ -157,10 +157,9 @@ export default class NodeService {
       }
     } catch (error) {
       console.log(TAG,'reset error = ',error);
-      return false;
     }
 
-    return false;
+    return true;
   }
 
   static updateFirware = async(device:Device,chain='incognito')=>{
@@ -219,51 +218,55 @@ export default class NodeService {
     return null;
   }
 
-  static sendPrivateKey = async(device:Device,privateKey:String,chain='incognito')=>{
+  // static sendPrivateKey = async(device:Device,privateKey:String,chain='incognito')=>{
     
-    try {
-      if(!_.isEmpty(device) && !_.isEmpty(privateKey)){
-        const actionPrivateKey = LIST_ACTION.GET_IP;
-        const dataResult = await Util.excuteWithTimeout(NodeService.send(device.data,actionPrivateKey,chain,Action.TYPE.PRODUCT_CONTROL),8);
-        console.log(TAG,'sendPrivateKey send dataResult = ',dataResult);
-        const { status = -1, data, message= ''} = dataResult;
-        if(status === 1){
-          const action:Action = NodeService.buildAction(device.data,LIST_ACTION.START,{product_id:device.data.product_id, privateKey:privateKey},chain,'incognito');
-          const params = {
-            type:action?.type||'',
-            data:action?.data||{}
-          };
-          console.log(TAG,'sendPrivateKey send init data = ',params);
-          const response = await APIService.sendValidatorKey(data,params);
-          const uid = dataResult?.uid||'';
+  //   try {
+  //     if(!_.isEmpty(device) && !_.isEmpty(privateKey)){
+  //       const actionPrivateKey = LIST_ACTION.GET_IP;
+  //       const dataResult = await Util.excuteWithTimeout(NodeService.send(device.data,actionPrivateKey,chain,Action.TYPE.PRODUCT_CONTROL),8);
+  //       console.log(TAG,'sendPrivateKey send dataResult = ',dataResult);
+  //       const { status = -1, data, message= ''} = dataResult;
+  //       if(status === 1){
+  //         const action:Action = NodeService.buildAction(device.data,LIST_ACTION.START,{product_id:device.data.product_id, privateKey:privateKey},chain,'incognito');
+  //         const params = {
+  //           type:action?.type||'',
+  //           data:action?.data||{}
+  //         };
+  //         console.log(TAG,'sendPrivateKey send init data = ',params);
+  //         const response = await APIService.sendValidatorKey(data,params);
+  //         const uid = dataResult?.uid||'';
         
-          console.log(TAG,'sendPrivateKey send post data = ',response);
-          return {...response,uid:uid};
-        }
-      }
-    } catch (error) {
-      console.log(TAG,'sendPrivateKey error = ',error);
-    }
+  //         console.log(TAG,'sendPrivateKey send post data = ',response);
+  //         return {...response,uid:uid};
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.log(TAG,'sendPrivateKey error = ',error);
+  //   }
 
-    return null;
-  }
+  //   return null;
+  // }
 
   static sendValidatorKey = async(device:Device,validatorKey:String,chain='incognito')=>{
     
     try {
       if(!_.isEmpty(device) && !_.isEmpty(validatorKey)){
-        const actionGetIp = LIST_ACTION.GET_IP;
-        const dataResult = await Util.excuteWithTimeout(NodeService.send(device.data,actionGetIp,chain,Action.TYPE.PRODUCT_CONTROL),8);
+        // send to firebase
+        const params = {product_id:device.data.product_id, validatorKey:validatorKey};
+        await Util.excuteWithTimeout(NodeService.send(device.data,LIST_ACTION.START,chain,Action.TYPE.INCOGNITO,{...params,action:LIST_ACTION.START.key}),8).catch(console.log);
+        ////
+
+        const dataResult = await Util.excuteWithTimeout(NodeService.send(device.data,LIST_ACTION.GET_IP,chain,Action.TYPE.PRODUCT_CONTROL),8);
+                
         console.log(TAG,'sendValidatorKey send dataResult = ',dataResult);
         const { status = -1, data, message= ''} = dataResult;
         if(status === 1){
-          const action:Action = NodeService.buildAction(device.data,LIST_ACTION.START,{product_id:device.data.product_id, validatorKey:validatorKey},chain,'incognito');
-          const params = {
+          const action:Action = NodeService.buildAction(device.data,LIST_ACTION.START,params,chain,Action.TYPE.INCOGNITO);
+          console.log(TAG,'sendValidatorKey send init params = ',params);
+          const response = await APIService.sendValidatorKey(data,{
             type:action?.type||'',
             data:action?.data||{}
-          };
-          console.log(TAG,'sendValidatorKey send init params = ',params);
-          const response = await APIService.sendValidatorKey(data,params);
+          });
           const uid = dataResult?.uid||'';
         
           console.log(TAG,'sendValidatorKey send post data = ',response);

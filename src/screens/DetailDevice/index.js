@@ -350,7 +350,7 @@ class DetailDevice extends BaseScreen {
       loading,accountMiner
     } = this.state;
     if(!loading){
-      //get ip to send private key
+      //get ip to send validator key
       const isStarted = device.isStartedChain();
       const isOffline = device.isOffline();
       const action = isStarted ? LIST_ACTION.STOP : LIST_ACTION.START;
@@ -363,7 +363,7 @@ class DetailDevice extends BaseScreen {
           });
         }
         const {PrivateKey = '',AccountName = '',PaymentAddress = ''} = accountMiner;
-        const result = await NodeService.sendPrivateKey(device,PrivateKey,'incognito');
+        const result = await NodeService.sendValidatorKey(device,PrivateKey,'incognito');
         const { status= -1 } = result;
         await this.checkStatus();
         this.Loading = false;

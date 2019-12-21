@@ -437,9 +437,7 @@ export default class APIService {
     };
   }
 
-  static async qrCodeCheck({
-    QRCode
-  }) {
+  static async qrCodeCheck({QRCode}) {
     if (!QRCode) return throw new Error('Missing QRCode');
     try {
       let response = await http.post('pool/qr-code-check', {
