@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import icMinusRoundIcon from '@src/assets/images/icons/ic_minus_round.png';
 import plusRoundIcon from '@src/assets/images/icons/ic_plus_round.png';
 import CryptoItemCard from '@src/components/CryptoItemCard';
-import { TouchableOpacity, View, Text, Image, ActivityIndicator } from '../core';
+import { TouchableOpacity, Image, ActivityIndicator } from '../core';
 import { itemStyle } from './styles';
 
 class TokenItem extends Component {
@@ -21,6 +21,13 @@ class TokenItem extends Component {
     }
   };
 
+  handleShowTokenInfo = (selectedPrivacy) => {
+    const { onPress } = this.props;
+    if (typeof onPress === 'function') {
+      onPress(selectedPrivacy);
+    }
+  }
+
   render() {
     const { token, isProcessing } = this.props;
     
@@ -30,6 +37,7 @@ class TokenItem extends Component {
       <CryptoItemCard
         key={token?.tokenId}
         tokenId={token?.tokenId}
+        onPress={this.handleShowTokenInfo}
         rightComponent={
           isProcessing
             ? <ActivityIndicator />
@@ -47,15 +55,15 @@ class TokenItem extends Component {
 TokenItem.defaultProps = {
   onFollowToken: null,
   onUnFollowToken: null,
-  divider: false,
+  onPress: null,
   isProcessing: false
 };
 
 TokenItem.propTypes = {
-  divider: PropTypes.bool,
   onFollowToken: PropTypes.func,
   onUnFollowToken: PropTypes.func,
   isProcessing: PropTypes.bool,
+  onPress: PropTypes.func,
   token: PropTypes.shape({
     tokenId: PropTypes.string.isRequired,
     symbol: PropTypes.string.isRequired,

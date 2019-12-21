@@ -10,6 +10,7 @@ import addIcon from '@src/assets/images/icons/add_outline.png';
 import { ExHandler } from '@src/services/exception';
 import { debounce, remove } from 'lodash';
 import routeNames from '@src/router/routeNames';
+import TokenInfo, { showTokenInfo } from '@src/components/HeaderRight/TokenInfo';
 import { searchPTokenStyle, emptyStyle } from './styles';
 import TokenItem from './TokenItem';
 
@@ -88,6 +89,7 @@ class SearchToken extends Component {
         onUnFollowToken={this.handleUnFollowToken}
         token={item}
         isProcessing={processingTokens.includes(item.tokenId)}
+        onPress={showTokenInfo}
         divider
       />
     );
@@ -213,6 +215,7 @@ class SearchToken extends Component {
       <View style={searchPTokenStyle.container}>
         {this.renderHeader()}
         {this.renderTokenList()}
+        <TokenInfo />
       </View>
     );
   }

@@ -8,11 +8,26 @@ import {Icon} from 'react-native-elements';
 import { getTokenInfo } from '@src/services/api/token';
 import { ExHandler } from '@src/services/exception';
 import TokenInfoUpdate from '@src/components/TokenInfoUpdate';
+import LoadingContainer from '@src/components/LoadingContainer';
 import { Text, View, Container, Modal, TouchableOpacity, Divider, Button, ScrollView } from '../core';
 import CryptoIcon from '../CryptoIcon';
 import VerifiedText from '../VerifiedText';
 import { tokenInfoStyle } from './style';
 import SimpleInfo from '../SimpleInfo';
+
+let component;
+
+export const showTokenInfo = (selectedPrivacy) => {
+  try {
+    const { setState, handleToggle } = component || {};
+
+    if (typeof setState === 'function' && typeof handleToggle === 'function' && selectedPrivacy?.tokenId) {
+      component.setState({ selectedPrivacy }, () => component.handleToggle(true));
+    }
+  } catch (e) {
+    new ExHandler(e, 'Can not show this token info.').showWarningToast();
+  }
+};
 
 class TokenInfo extends Component {
   constructor() {
@@ -23,18 +38,29 @@ class TokenInfo extends Component {
       copied: false,
       copiedLabel: null,
       incognitoInfo: null,
-      showUpdateInfoView: false
+      showUpdateInfoView: false,
+      selectedPrivacy: null,
+      isGettingInfo: false,
     };
   }
 
-  componentDidMount() {
-    const { selectedPrivacy } = this.props;
-    this.handleGetIncognitoTokenInfo(selectedPrivacy?.tokenId);
+  static getDerivedStateFromProps(nextProps, nextState) {
+    const { selectedPrivacy: selectedPrivacyProps } = nextProps;
+    const { selectedPrivacy: selectedPrivacyState } = nextState;
+
+    return { selectedPrivacy: selectedPrivacyProps || selectedPrivacyState };
   }
 
-  componentDidUpdate(prevProps) {
-    const { selectedPrivacy } = this.props;
-    const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
+  componentDidMount() {
+    const { selectedPrivacy } = this.state;
+    this.handleGetIncognitoTokenInfo(selectedPrivacy?.tokenId);
+
+    component = this;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { selectedPrivacy } = this.state;
+    const { selectedPrivacy: oldSelectedPrivacy } = prevState;
 
     if (selectedPrivacy?.isIncognitoToken && (selectedPrivacy?.tokenId !== oldSelectedPrivacy?.tokenId)) {
       this.handleGetIncognitoTokenInfo(selectedPrivacy.tokenId);
@@ -50,14 +76,17 @@ class TokenInfo extends Component {
   };
 
   handleGetIncognitoTokenInfo = async (tokenId) => {
+    let info = null;
     try {
       if (!tokenId) return;
+      this.setState({ isGettingInfo: true });
+      info = await getTokenInfo({ tokenId });
 
-      const info = await getTokenInfo({ tokenId });
-      this.setState({ incognitoInfo: info });
       return info;
     } catch (e) {
       new ExHandler(e);
+    } finally {
+      this.setState({ isGettingInfo: false, incognitoInfo: info });
     }
   }
 
@@ -108,8 +137,7 @@ class TokenInfo extends Component {
   };
 
   renderInfo = () => {
-    const { selectedPrivacy } = this.props;
-    const { copied, copiedLabel, incognitoInfo } = this.state;
+    const { copied, copiedLabel, incognitoInfo, selectedPrivacy } = this.state;
 
     if (!selectedPrivacy) {
       return <SimpleInfo text='There has nothing to display' />;
@@ -178,31 +206,43 @@ class TokenInfo extends Component {
     );
   };
 
-  handleToggle = () => {
-    this.setState(({ isShowInfo }) => {
-      const newState = !isShowInfo;
+  handleToggle = (isShow) => {
+    this.setState(({ isShowInfo, incognitoInfo }) => {
+      const newIsShowInfo = isShow ?? !isShowInfo;
+      let newIncognitoInfo = incognitoInfo;
 
-      if (newState === false) {
+      if (newIsShowInfo === false) {
         this.handleCloseUpdateView();
+        newIncognitoInfo = null;
       }
-
-      return { isShowInfo: newState };
+      
+      return { isShowInfo: newIsShowInfo, incognitoInfo: newIncognitoInfo };
     });
   }
 
   render() {
-    const { isShowInfo, incognitoInfo, showUpdateInfoView } = this.state;
-    const { iconColor } = this.props;
-
+    const { isShowInfo, incognitoInfo, showUpdateInfoView, isGettingInfo } = this.state;
+    const { iconColor, selectedPrivacy } = this.props;
+    const showInfoIcon = !!selectedPrivacy?.tokenId;
+      
     return (
       <View style={tokenInfoStyle.container}>
-        <TouchableOpacity onPress={this.handleToggle}>
-          <Icons name='info' style={tokenInfoStyle.icon} size={24} color={iconColor} />
-        </TouchableOpacity>
-        <Modal visible={isShowInfo} close={this.handleToggle} containerStyle={tokenInfoStyle.modalContainer} closeBtnColor={COLORS.primary} headerText='Coin info'>
-          { showUpdateInfoView
-            ? !!incognitoInfo && <TokenInfoUpdate incognitoInfo={incognitoInfo} onUpdated={this.handleUpdated} onClose={this.handleCloseUpdateView} />
-            : this.renderInfo()
+        {
+          showInfoIcon && (
+            <TouchableOpacity onPress={() => this.handleToggle()}>
+              <Icons name='info' style={tokenInfoStyle.icon} size={24} color={iconColor} />
+            </TouchableOpacity>
+          )
+        }
+        <Modal visible={isShowInfo} close={() => this.handleToggle()} containerStyle={tokenInfoStyle.modalContainer} closeBtnColor={COLORS.primary} headerText='Coin info'>
+          {
+            isGettingInfo
+              ? <LoadingContainer />
+              : (
+                showUpdateInfoView
+                  ? !!incognitoInfo && <TokenInfoUpdate incognitoInfo={incognitoInfo} onUpdated={this.handleUpdated} onClose={this.handleCloseUpdateView} />
+                  : this.renderInfo()
+              )
           }
         </Modal>
       </View>
@@ -211,12 +251,14 @@ class TokenInfo extends Component {
 }
 
 TokenInfo.defaultProps = {
-  iconColor: COLORS.black
+  iconColor: COLORS.black,
+  selectedPrivacy: null
 };
 
 TokenInfo.propTypes = {
-  selectedPrivacy: PropTypes.object.isRequired,
+  selectedPrivacy: PropTypes.object,
   iconColor: PropTypes.string,
+
 };
 
 export default TokenInfo;

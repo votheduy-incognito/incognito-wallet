@@ -64,7 +64,6 @@ export const addTokenInfo = ({ tokenId, symbol, name, logoFile, description = ''
   if (!symbol) throw new Error('Missing symbol');
   if (!name) throw new Error('Missing name');
   if (!tokenId) throw new Error('Missing tokenId');
-  if (!txId) throw new Error('Missing txId');
   
   const form = new FormData();
   form.append('File', logoFile ? {
