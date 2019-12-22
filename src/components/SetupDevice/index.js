@@ -15,7 +15,6 @@ import { getAccountByName } from '@src/redux/selectors/account';
 import { CustomError, ExHandler } from '@src/services/exception';
 import knownCode from '@src/services/exception/customError/code/knownCode';
 import NodeService from '@src/services/NodeService';
-import SSHService from '@src/services/SSHService';
 import Util from '@src/utils/Util';
 import { onClickView } from '@src/utils/ViewUtil';
 import LocalDatabase from '@utils/LocalDatabase';
@@ -662,7 +661,6 @@ class SetupDevice extends BaseComponent {
         return isConnectedCombined?isConnectedCombined : new Error('is connected fail ');
       };
 
-      // const result = await Util.excuteWithTimeout(checkConnectWifi(),60);
       const result = await Util.tryAtMost(checkConnectWifi,60,2,2).catch(console.log)||false;
       this.showLogConnect(result?'quay ve lai WIFI cu => SUCCESS':'quay ve lai WIFI cu => FAIL');
       console.log(TAG, 'connectZMQ begin end  ',result);
@@ -719,12 +717,7 @@ class SetupDevice extends BaseComponent {
     let device = await this.deviceId?.current?.getCurrentConnect();
     return device;
   };
-  cleanOldDataForSetup = async ()=>{
-    const result = await SSHService.run('10.42.0.1','sudo rm -r /home/nuc/aos/inco-data/ && sudo rm -r /home/nuc/aos/inco-eth-kovan-data/ && sudo docker rm -f inc_miner && sudo docker rm -f inc_kovan').catch(console.log);
-    console.log(TAG,'cleanOldDataForSetup data = ',result);
-    return !_.isEmpty(result) ;
-  }
-
+  
   checkIsConnectedWithHotspot = async ()=>{
     return await this.deviceId?.current?.isConnectedWithNodeHotspot(); 
   }
@@ -735,43 +728,35 @@ class SetupDevice extends BaseComponent {
     this.showLogConnect('bat dat check da connect hotspot chua?');
     let isConnectedHotpost = await this.checkIsConnectedWithHotspot();
     this.showLogConnect(isConnectedHotpost?'da connect roi':'chua connect va bat dau connect');
-    let device = null;
+    let objConnection = null;
     this.CurrentPositionStep = 0;
     console.log(TAG,'checkConnectHotspot begin isConnectedHotpost : ', isConnectedHotpost);
     if(!isConnectedHotpost){
       const connectHotspot = this.connectHotspot;
-      device = await Util.tryAtMost(connectHotspot,3,1).catch(e=>new ExHandler(new CustomError(knownCode.node_can_not_connect_hotspot)).throw());
-      device = device instanceof Error ?null:device;
+      objConnection = await Util.tryAtMost(connectHotspot,3,1).catch(e=>new ExHandler(new CustomError(knownCode.node_can_not_connect_hotspot)).throw());
+      objConnection = objConnection instanceof Error ?null:objConnection;
 
-      this.showLogConnect(device instanceof Error ?'sau khi thu 3 lan connect hotspot va FAIL':'connect HOTSPOT thanh cong');
+      this.showLogConnect(objConnection ?`connect HOTSPOT - name = ${objConnection.name||''} thanh cong`:'sau khi thu 3 lan connect hotspot va FAIL');
     }
 
-    if(!device){
-      device = await this.deviceId?.current?.getCurrentConnect();
+    if(!objConnection){
+      objConnection = await this.deviceId?.current?.getCurrentConnect();
     }
-    console.log(TAG,'checkConnectHotspot begin01 : ', device,'-validSSID = ',validSSID,'validWPA = ',validWPA);
+    console.log(TAG,'checkConnectHotspot begin01 : ', objConnection,'-validSSID = ',validSSID,'validWPA = ',validWPA);
 
-    if(Platform.OS === 'ios'){
-      this.isHaveNetwork = false;
-      isConnectedHotpost = !_.isEmpty(device) ;
-    }else{
-      this.isHaveNetwork = false;
-      isConnectedHotpost = !_.isEmpty(device) ;
-
-      // isConnectedHotpost = !_.isEmpty(device) && !this.isHaveNetwork;
-      // this.isHaveNetwork = false;
-    }
+    this.isHaveNetwork = false;
+    isConnectedHotpost = !_.isEmpty(objConnection) ;
     const isCheckInputWifiInfo = isRenderUI?validSSID && validWPA:true;
     if (isConnectedHotpost && isCheckInputWifiInfo) {
-      let ssid = device?.name?.toLowerCase()||'';
+      let ssid = objConnection?.name?.toLowerCase()||'';
       const product = (HOTPOT??CONSTANT_MINER.PRODUCT_TYPE).toLowerCase();
       console.log(TAG,'checkConnectHotspot SSID---: ', ssid,'=== HOTPOT = ',HOTPOT);
       if (_.includes(ssid, product)) {
         this.CurrentPositionStep = 1;
         console.log(TAG,'checkConnectHotspot OKKKKKK');
         this.showLogConnect('Bat dau send Thong tin toi cho MINER');
-        await this.cleanOldDataForSetup();
-        let result = await Util.excuteWithTimeout(this.sendZMQ(),400);
+        await NodeService.cleanOldDataForSetup();
+        let result = await Util.excuteWithTimeout(this.sendZMQ(),450);
         this.showLogConnect(result? 'Send Thong tin MINER thanh cong':'Send Thong tin MINER FAIL---');
         return result;
       }
@@ -790,8 +775,9 @@ class SetupDevice extends BaseComponent {
         return {};
       }
       console.log(TAG,' authFirebase begin productInfo = ',productInfo);
-      const authFirebaseFunc = ()=> {
-        return NodeService.authFirebase(productInfo);
+      const authFirebaseFunc = async ()=> {
+        const result = await NodeService.authFirebase(productInfo);
+        return result ? result: new CustomError(knownCode.node_auth_firebase_fail);
       };
       let authFirebase = await Util.tryAtMost(authFirebaseFunc,3,3);
       this.showLogConnect(authFirebase?'Auth Firebase=> SUCCESS':'Auth Firebase=> FAIL');
@@ -812,9 +798,9 @@ class SetupDevice extends BaseComponent {
       const { verifyCode } = this.state;
       console.log(TAG,' tryVerifyCode begin01 connected = ',this.isHaveNetwork);
     
-      const promiseNetwork = ()=>{
+      const promiseNetwork = async ()=>{
         console.log(TAG,' tryVerifyCode begin02 ---- connected = ',this.isHaveNetwork);
-        return this.isHaveNetwork ? NodeService.verifyProductCode(verifyCode):Promise(new Error('no internet'));
+        return this.isHaveNetwork ? await NodeService.verifyProductCode(verifyCode):new Error('no internet');
       };
       const resultStep2  = await Util.tryAtMost(promiseNetwork,TIMES_VERIFY,2);
       this.setState({

@@ -1,11 +1,11 @@
 /**
  * @providesModule Util
  */
+import { CustomError } from '@src/services/exception';
+import knownCode from '@src/services/exception/customError/code/knownCode';
 import _ from 'lodash';
 import { Linking } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
-import { CustomError } from '@src/services/exception';
-import knownCode from '@src/services/exception/customError/code/knownCode';
 // import timer from 'react-native-timer';
 const timer = require('react-native-timer');
 
@@ -105,6 +105,11 @@ export default class Util {
     }
   }
 
+  /**
+   * @param {Promise} promiseFunc - promiseFunc will be retried when return Error object.
+   * @param {Int} count  = 6
+   * @param {Int} delayToTry  = 1 second
+   */
    static tryAtMost = async(promiseFunc, count = 6,delayToTry = 1) =>{
      if (count > 0 && promiseFunc ) {
        const result = await promiseFunc().catch(e => e);
@@ -126,7 +131,12 @@ export default class Util {
     return pwd.join('');
   }
 
-  static excuteWithTimeout = (promise, timeSecond = 1) => {
+  /**
+   * @param {Promise} promiseObj - promiseObj will be retried when return Error object.
+   * @param {Int} count  = 6
+   * @param {Int} delayToTry  = 1 second
+   */
+  static excuteWithTimeout = (promiseObj, timeSecond = 1) => {
     return new Promise(function(resolve, reject) {
       const ss = Util.createRandomString(10);
       console.log(TAG,'excuteWithTimeout random string = ',ss);
@@ -135,7 +145,7 @@ export default class Util {
         reject(new CustomError(knownCode.timeout_promise,{message:'timeout '+ ss}));
         timer.clearTimeout(ss);
       }, timeSecond * 1000);
-      promise.then(resolve, reject);
+      promiseObj.then(resolve, reject);
     });
   };
 }

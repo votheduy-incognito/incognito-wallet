@@ -8,6 +8,7 @@ import APIService from './api/miner/APIService';
 import { CustomError, ExHandler } from './exception';
 import knownCode from './exception/customError/code/knownCode';
 import FirebaseService, { DEVICE_CHANNEL_FORMAT, FIREBASE_PASS, MAIL_UID_FORMAT, PHONE_CHANNEL_FORMAT } from './FirebaseService';
+import SSHService from './SSHService';
 
 const TAG = 'NodeService';
 const password = `${FIREBASE_PASS}`;
@@ -350,6 +351,12 @@ export default class NodeService {
       new ExHandler(error).throw();
     }
     return dataResult;
+  }
+
+  static cleanOldDataForSetup = async ()=>{
+    const result = await SSHService.run('10.42.0.1','sudo rm -r /home/nuc/aos/inco-data/ && sudo rm -r /home/nuc/aos/inco-eth-kovan-data/ && sudo docker rm -f inc_miner && sudo docker rm -f inc_kovan').catch(console.log);
+    console.log(TAG,'cleanOldDataForSetup data = ',result);
+    return !_.isEmpty(result) ;
   }
 
 }

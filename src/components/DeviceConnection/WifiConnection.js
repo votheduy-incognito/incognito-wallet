@@ -6,8 +6,8 @@ import Util from '@utils/Util';
 import _ from 'lodash';
 import { Platform } from 'react-native';
 import { PASS_HOSPOT } from 'react-native-dotenv';
+import Wifi from 'react-native-iot-wifi';
 import { NetworkInfo } from 'react-native-network-info';
-// import Wifi from 'react-native-iot-wifi';
 import WifiManager from 'react-native-wifi-reborn';
 import BaseConnection, { ObjConnection } from './BaseConnection';
 
@@ -88,20 +88,24 @@ class WifiConnection extends BaseConnection {
   };
 
   removeConnection=async (device: ObjConnection) => {
-    // return new Promise((resolve, reject) => {
-    //   let SSID = device?.name||'';
-    //   console.log(TAG, 'removeConnection begin result = ',device?.name||'');
-    //   Wifi.removeSSID(SSID,false,error => {
-    //     resolve(!error);
-    //   });
-      
-    //   resolve(true);
-    // });
+    
 
     try {
       let SSID = device?.name||'';
-      const result = !_.isEmpty(SSID) && await WifiManager.disconnectFromSSID(SSID);
-      return true;
+      let result = false;
+      if(Platform.OS == 'android'){
+        const removeWifiFunc =  new Promise((resolve, reject) => {
+          console.log(TAG, 'removeConnection begin result = ',device?.name||'');
+          Wifi.removeSSID(SSID,false,error => {
+            resolve(!error);
+          });
+          resolve(true);
+        });
+        result =  !_.isEmpty(SSID) && await removeWifiFunc();
+      }else{
+        result =  !_.isEmpty(SSID) && await WifiManager.disconnectFromSSID(SSID);
+      }
+      return result;
     } catch (error) {
       console.log(TAG,'removeConnection error = ',error);
     }
