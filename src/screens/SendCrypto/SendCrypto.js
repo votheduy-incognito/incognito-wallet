@@ -155,12 +155,16 @@ class SendCrypto extends React.Component {
   }
 
   getSupportedFeeTypes = async () => {
-    const supportedFeeTypes = [];
+    const supportedFeeTypes = [{
+      tokenId: CONSTANT_COMMONS.PRV_TOKEN_ID,
+      symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV
+    }];
 
     try {
       const { selectedPrivacy } = this.props;
       const isUsed = await isExchangeRatePToken(selectedPrivacy.tokenId);
-      if (isUsed && supportedFeeTypes.find(type => type?.tokenId !== selectedPrivacy?.tokenId)) {
+
+      if (isUsed) {
         supportedFeeTypes.push({
           tokenId: selectedPrivacy.tokenId,
           symbol: selectedPrivacy.symbol
