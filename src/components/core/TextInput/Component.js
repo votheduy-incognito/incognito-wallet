@@ -14,6 +14,9 @@ const TextInput = ({
   onFocus,
   onBlur,
   clearable,
+  value,
+  maxLength,
+  defaultValue,
   ...props
 }) => {
   const [focus, setFocus] = useState(false);
@@ -42,6 +45,11 @@ const TextInput = ({
     }
   }
 
+  function getLength() {
+    const data = value || defaultValue || '';
+    return data?.length || 0;
+  }
+
   return (
     <View style={[styleSheet.container, style]}>
       {label && <Text style={[styleSheet.label, focus && styleSheet.labelFocus]}>{label}</Text>}
@@ -55,6 +63,7 @@ const TextInput = ({
         <RNComponent
           allowFontScaling={false}
           placeholderTextColor={COLORS.lightGrey3}
+          maxLength={maxLength}
           {...props}
           style={[
             styleSheet.input,
@@ -71,6 +80,14 @@ const TextInput = ({
         ) }
         {prependView}
       </View>
+      {
+        maxLength > 0 && (
+          <View style={styleSheet.maxLengthContainer}>
+            <Text style={styleSheet.maxLengthText}>{getLength()}/{maxLength}</Text>
+          </View>
+        )
+      }
+      
     </View>
   );
 };
