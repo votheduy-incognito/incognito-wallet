@@ -58,16 +58,25 @@ export default class NodeService {
   static authFirebase = (product) =>{
     const pros =  new Promise((resolve,reject)=>{
       let productId = product.product_id;
-      const firebase = new FirebaseService();// FirebaseService.getShareManager();
+      // hienton test
+      const firebase = new FirebaseService();
       let mailProductId = `${productId}${MAIL_UID_FORMAT}`;
       let password = `${FIREBASE_PASS}`;
+      // Util.delay(7).then(()=>{
+      //   firebase.signIn( mailProductId,password).then(uid=>{
+      //     resolve(uid);
+      //   }).catch(e=>{
+      //     reject(new CustomError(knownCode.node_auth_firebase_fail,{rawCode:e}));
+      //   });
+      // });
       firebase.signIn( mailProductId,password).then(uid=>{
         resolve(uid);
       }).catch(e=>{
         reject(new CustomError(knownCode.node_auth_firebase_fail,{rawCode:e}));
       });
+      
     }); 
-    return Util.excuteWithTimeout(pros,7);
+    return Util.excuteWithTimeout(pros,12);
   }
   static verifyProductCode = async(verifyCode)=> {
     // console.log(TAG,' verifyProductCode begin');

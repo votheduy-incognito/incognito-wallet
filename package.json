@@ -50,7 +50,7 @@
     "firebase": "^6.4.1",
     "formik": "^1.5.3",
     "https-browserify": "0.0.1",
-    "incognito-chain-web-js": "https://github.com/incognitochain/incognito-chain-web-js.git#listoutcoins",
+    "incognito-chain-web-js": "https://github.com/incognitochain/incognito-chain-web-js.git#test-net",
     "intl": "^1.2.5",
     "lodash": "^4.17.11",
     "memoize-one": "^5.0.5",

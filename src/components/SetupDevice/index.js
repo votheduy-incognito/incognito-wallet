@@ -626,13 +626,15 @@ class SetupDevice extends BaseComponent {
     try {
       const { validSSID, validWPA, ssid, wpa, longitude, latitude,isRenderUI } = this.state;
       await Util.excuteWithTimeout(this.deviceId?.current?.removeConnectionDevice(this.deviceMiner),4).catch(console.log);
+      await Util.delay(3);
       const homeWifi = new ObjConnection();
       homeWifi.id = ssid;
       homeWifi.name = ssid;
       homeWifi.password = wpa;
       await Util.tryAtMost(this.deviceId?.current?.connectAWifi(homeWifi),2,2);
     } catch (error) {
-      console.log(error);
+      console.log(TAG,'tryConnectHomeWifi error - ',error);
+      return false;
     }
     return true;
     
@@ -648,20 +650,21 @@ class SetupDevice extends BaseComponent {
       await this.tryConnectHomeWifi();
       this.isSendDataZmqSuccess = true;
 
-      const checkConnectWifi = async ()=>{
-        const state = await NetInfo.fetch().catch(console.log);
-        const {isConnected = false, isInternetReachable = null} = state ??{};
-        const isConnectHotspot = await this.checkIsConnectedWithHotspot();
-        console.log(TAG, 'connectZMQ checkConnectWifi00 isConnected = ',isConnected,'-isInternetReachable =',isConnectHotspot);
+      // const checkConnectWifi = async ()=>{
+      //   const state = await NetInfo.fetch().catch(console.log);
+      //   const {isConnected = false, isInternetReachable = null} = state ??{};
+      //   const isConnectHotspot = await this.checkIsConnectedWithHotspot();
+      //   console.log(TAG, 'connectZMQ checkConnectWifi00 isConnected = ',isConnected,'-isInternetReachable =',isConnectHotspot);
         
-        const isConnectedCombined = isConnected &&(!isConnectHotspot || this.isHaveNetwork);
+      //   const isConnectedCombined = isConnected &&(!isConnectHotspot || this.isHaveNetwork);
         
-        console.log(TAG, 'connectZMQ checkConnectWifi isConnected end ----- ',isConnectedCombined);
+      //   console.log(TAG, 'connectZMQ checkConnectWifi isConnected end ----- ',isConnectedCombined);
 
-        return isConnectedCombined?isConnectedCombined : new Error('is connected fail ');
-      };
+      //   return isConnectedCombined?isConnectedCombined : new Error('is connected fail ');
+      // };
 
-      const result = await Util.tryAtMost(checkConnectWifi,60,2,2).catch(console.log)||false;
+      // const result = await Util.tryAtMost(checkConnectWifi,60,2,2).catch(console.log)||false;
+      const result = await Util.delay(5)??true;
       this.showLogConnect(result?'quay ve lai WIFI cu => SUCCESS':'quay ve lai WIFI cu => FAIL');
       console.log(TAG, 'connectZMQ begin end  ',result);
       return result;
@@ -726,8 +729,14 @@ class SetupDevice extends BaseComponent {
 
     const { validSSID, validWPA,isRenderUI } = this.state;
     this.showLogConnect('bat dat check da connect hotspot chua?');
+    // hienton test
+    // await Util.delay(2);
+    
     let isConnectedHotpost = await this.checkIsConnectedWithHotspot();
     this.showLogConnect(isConnectedHotpost?'da connect roi':'chua connect va bat dau connect');
+    
+    // await Util.delay(2);
+    ///////////////
     let objConnection = null;
     this.CurrentPositionStep = 0;
     console.log(TAG,'checkConnectHotspot begin isConnectedHotpost : ', isConnectedHotpost);
@@ -774,10 +783,12 @@ class SetupDevice extends BaseComponent {
       if(_.isEmpty(productInfo)){
         return {};
       }
-      console.log(TAG,' authFirebase begin productInfo = ',productInfo);
+      
       const authFirebaseFunc = async ()=> {
-        const result = await NodeService.authFirebase(productInfo);
-        return result ? result: new CustomError(knownCode.node_auth_firebase_fail);
+        console.log(TAG,' authFirebase retry ----- begin ');
+        const resultFbUID = await NodeService.authFirebase(productInfo).catch(e=>console.log(TAG,' authFirebase catch error = ',e)) ?? '';
+        console.log(TAG,' authFirebase retry ----- end result =',resultFbUID);
+        return _.isEmpty( resultFbUID) ? new CustomError(knownCode.node_auth_firebase_fail):resultFbUID;
       };
       let authFirebase = await Util.tryAtMost(authFirebaseFunc,3,3);
       this.showLogConnect(authFirebase?'Auth Firebase=> SUCCESS':'Auth Firebase=> FAIL');
@@ -800,7 +811,9 @@ class SetupDevice extends BaseComponent {
     
       const promiseNetwork = async ()=>{
         console.log(TAG,' tryVerifyCode begin02 ---- connected = ',this.isHaveNetwork);
-        return this.isHaveNetwork ? await NodeService.verifyProductCode(verifyCode):new Error('no internet');
+        // const result = this.isHaveNetwork ? await NodeService.verifyProductCode(verifyCode).catch(console.log):new Error('no internet');
+        const result = await NodeService.verifyProductCode(verifyCode).catch(console.log)??false;
+        return result? result : new Error('no internet');
       };
       const resultStep2  = await Util.tryAtMost(promiseNetwork,TIMES_VERIFY,2);
       this.setState({

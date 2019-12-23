@@ -23,7 +23,10 @@ class WifiConnection extends BaseConnection {
     this.fetchCurrentConnect();
   };
   
-  
+  /**
+   * throw ex with 3s timeout
+   * return {null ||ObjConnection}
+   */
   fetchCurrentConnect =  ():Promise<ObjConnection> => {
     console.log(TAG, 'fetchCurrentConnect begin ------');
     let pro = async()=>{
@@ -48,48 +51,10 @@ class WifiConnection extends BaseConnection {
       }
       return null;
     };
-
-    // const pro =  new Promise((resolve, reject) => {
-    //   Wifi.isApiAvailable(available => {
-    //     console.log(TAG,'fetchCurrentConnect begin 01 = ', available ? 'available' : 'failed');
-    //     if (available) {
-    //       console.log(TAG, 'fetchCurrentConnect begin02 ');
-    //       try {
-    //         // hien.ton test
-    //         // NetworkInfo.getIPAddress().then(ipAddress => {
-    //         //   console.log(TAG, 'fetchCurrentConnect new - getIPAddress ',ipAddress);
-    //         // });
-    //         // NetworkInfo.getGatewayIPAddress().then(defaultGateway => {
-
-    //         //   console.log(TAG, 'fetchCurrentConnect new ---- defaultGateway=', defaultGateway);
-    //         // });
-    //         // NetworkInfo.getSSID().then(ssid => {
-    //         //   console.log(TAG, 'fetchCurrentConnect new ---- getSSID=', ssid);
-    //         // });
-    //         /////////
-    //         Wifi.getSSID(SSID => {
-    //           SSID = _.isEqual('Cannot detect SSID',SSID) || _.isEqual('<unknown ssid>',SSID) ?'':SSID;
-    //           console.log(TAG, 'fetchCurrentConnect getSSID=', SSID);
-    //           this.currentConnect = new ObjConnection();
-    //           this.currentConnect.id = SSID;
-    //           this.currentConnect.name = SSID;
-    //           resolve(this.currentConnect);
-    //         });
-    //       } catch (error) {
-    //         resolve(null);
-    //       }
-          
-    //     }else{
-    //       resolve(null);
-    //     }
-    //   });
-    // });
     return Util.excuteWithTimeout(pro(),3);
   };
 
   removeConnection=async (device: ObjConnection) => {
-    
-
     try {
       let SSID = device?.name||'';
       let result = false;
@@ -112,6 +77,9 @@ class WifiConnection extends BaseConnection {
     return false;
   } 
 
+  /**
+   * 
+   */
   connectDevice = (wifiObj: ObjConnection) => {
    
     const pro = async() => {
@@ -149,53 +117,23 @@ class WifiConnection extends BaseConnection {
         error instanceof CustomError && new ExHandler(error).throw();
       }
     };
-
-    // const pro = new Promise((resolve,reject)=>{
-    //   Wifi.connectSecure(device.name,PASS_HOSPOT,false,true, error => {
-    //     console.log(TAG, 'connectDevice begin --- error = ',error);
-        
-    //     if (!error || _.isEqual('already associated.',error)) {
-          
-    //       Util.delay(3).then(this.fetchCurrentConnect).then(objConnection=>{
-    //         // dont get objConnection with IOS 13 #bug
-    //         let SSID = device.name ??'';
-    //         this.currentConnect = new ObjConnection();
-    //         this.currentConnect.id = SSID;
-    //         this.currentConnect.name = SSID;
-    //         console.log(TAG, 'connectDevice begin 01 getSSID --- ', SSID);
-    //         resolve(true);
-    //       });
-    //       // Wifi.getSSID(SSID => {
-    //       //   console.log(TAG, 'connectDevice begin 01 getSSID --- ', SSID);
-                
-    //       //   this.currentConnect = new ObjConnection();
-    //       //   this.currentConnect.id = SSID;
-    //       //   this.currentConnect.name = SSID;
-    //       //   resolve(_.isEqual(device.name,SSID));
-    //       // });
-    //     } else {
-    //       console.log(TAG, 'connectDevice --- error ngon = ',error);
-    //       reject(new Error(error));
-         
-    //     }
-        
-          
-    //   });
-    // }); 
-      
     return Util.excuteWithTimeout(pro(),15);
-  
   };
 
   isConnectedWithNodeHotspot = async ()=>{
-    const prefixHotspotIP = '10.42.';
-    const defaultGateway = await NetworkInfo.getGatewayIPAddress().catch(console.log)??'';
-    const isValidateIpAdrress = _.includes(defaultGateway,prefixHotspotIP);
-    console.log(TAG, 'isConnectedWithNodeHotspot new ---- defaultGateway=', defaultGateway);
-    const state = await NetInfo.fetch().catch(console.log);
-    const {isConnected = false, isInternetReachable = false,details =null} = state ??{};
-    const { ipAddress = '',isConnectionExpensive = false,ssid='' } = details ??{};
-    return isValidateIpAdrress || (isConnected && !isInternetReachable) || (isConnected && _.includes(ipAddress,prefixHotspotIP) );
+    try {
+      const prefixHotspotIP = '10.42.';
+      const defaultGateway = await NetworkInfo.getGatewayIPAddress().catch(console.log)??'';
+      const isValidateIpAdrress = _.includes(defaultGateway,prefixHotspotIP);
+      console.log(TAG, 'isConnectedWithNodeHotspot new ---- defaultGateway=', defaultGateway);
+      const state = await NetInfo.fetch().catch(console.log);
+      const {isConnected = false, isInternetReachable = false,details =null} = state ??{};
+      const { ipAddress = '',isConnectionExpensive = false,ssid='' } = details ??{};
+      return isValidateIpAdrress || (isConnected && !isInternetReachable) || (isConnected && _.includes(ipAddress,prefixHotspotIP) );
+    } catch (error) {
+      return null;
+    }
+    
   }
 
   destroy = () => {};
