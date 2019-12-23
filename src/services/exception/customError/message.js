@@ -1,6 +1,7 @@
 import CODE from './code';
 
 export default {
+  [CODE.timeout_promise]: 'Timeout excuting funtion',
   [CODE.estimate_fee_with_zero_balance]: 'Can not calculate fee on zero balance, please check your amount.',
   [CODE.firebase_init_failed]: 'Firebase service can not run on your app, please contact us for supporting.',
   [CODE.network_make_request_failed]: 'Opps! We have a connection proplem, please check your internet.',
@@ -34,6 +35,10 @@ export default {
   [CODE.addErc20Token_not_found]: 'This BEP2 coin has been added.',
   [CODE.api_qrcode_fail_ProductNotFound]: 'This QR code is unfamiliar. Please try again.',
   [CODE.api_qrcode_fail_QRCodeAlreadyStaked]: 'You\'ve already set up this Node.',
+  [CODE.node_auth_firebase_fail]: 'Can not authorization firebase.',
+  [CODE.node_verify_code_fail]: 'Please check your home wifi info to node verified with our system',
+  [CODE.node_create_account_fail]: 'Can not create account for Node',
+  [CODE.node_can_not_connect_hotspot]: 'Can not find Node\'s hotspot',
   [CODE.papp_can_not_opened]: 'Sorry, we can not open this pApp. Please try again or check the pApp URL.',
   [CODE.papp_the_token_is_not_supported]: 'This token is not supported in the pApp.',
   [CODE.api_invalid_size_upload_file]: 'Upload file\'s size is invalid, file size must be less than 50kB',

@@ -77,7 +77,8 @@ export default class Device {
     return this.data.status.message === template.status.message;
   }
   isEarning =()=>{
-    return this.data.status.code == Device.CODE_MINING;
+    const {code,message,status} = this.Status??Device.offlineStatus();
+    return _.isEqual(code,Device.CODE_MINING) && _.isEqual(status,'mining');
   }
   isSyncing =()=>{
     return this.data.status.code == Device.CODE_SYNCING;

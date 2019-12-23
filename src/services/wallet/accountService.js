@@ -1,15 +1,15 @@
 /* eslint-disable import/no-cycle */
+import AccountModel from '@models/account';
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
 import axios from 'axios';
-import { KeyWallet, Wallet,AccountWallet } from 'incognito-chain-web-js/build/wallet';
+import { AccountWallet, KeyWallet, Wallet } from 'incognito-chain-web-js/build/wallet';
 import _ from 'lodash';
-import AccountModel from '@models/account';
-import { getUserUnfollowTokenIDs, setUserUnfollowTokenIDs } from './tokenService';
-import { getActiveShard } from './RpcClientService';
-import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
 import { CustomError, ErrorCode } from '../exception';
+import { getActiveShard } from './RpcClientService';
+import { getUserUnfollowTokenIDs, setUserUnfollowTokenIDs } from './tokenService';
+import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
 
 const TAG = 'Account';
 
@@ -434,10 +434,10 @@ export default class Account {
         console.log(TAG,'getFullDataOfAccount listAccount ',listAccounts);
         let account:JSON = listAccounts.find(item=> _.isEqual(item.AccountName,accountName));
 
-        let accountTemp:AccountModel = account? await wallet.getAccountByName(account.AccountName):null;
+        let accountTemp = account? await wallet.getAccountByName(account.AccountName):null;
         console.log(TAG,'getFullDataOfAccount end ---- ',account);
         // accountWallet = account? new AccountModel(account):null;
-        accountWallet = accountTemp? new AccountModel({...accountTemp.toJSON(),...account}):null;
+        accountWallet = accountTemp? new AccountModel({...accountTemp,...account}):null;
       }
       return accountWallet;
 

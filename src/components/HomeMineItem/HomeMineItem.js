@@ -165,7 +165,7 @@ class HomeMineItem extends React.Component {
 
   handlePressRemoveDevice = onClickView(()=>{
     const {item,deviceInfo} = this.state;
-    if(deviceInfo.Type == DEVICES.VIRTUAL_TYPE){
+    if(deviceInfo.Type == DEVICES.VIRTUAL_TYPE || __DEV__){
       Alert.alert('Confirm','Are you sure to delete this item?',[{text:'Yes',onPress:async ()=>{
         const {reloadList} = this.props;
         await LocalDatabase.removeDevice(item);

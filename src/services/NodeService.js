@@ -5,8 +5,10 @@ import LocalDatabase from '@src/utils/LocalDatabase';
 import Util from '@src/utils/Util';
 import _ from 'lodash';
 import APIService from './api/miner/APIService';
+import { CustomError, ExHandler } from './exception';
+import knownCode from './exception/customError/code/knownCode';
 import FirebaseService, { DEVICE_CHANNEL_FORMAT, FIREBASE_PASS, MAIL_UID_FORMAT, PHONE_CHANNEL_FORMAT } from './FirebaseService';
-import { ExHandler } from './exception';
+import SSHService from './SSHService';
 
 const TAG = 'NodeService';
 const password = `${FIREBASE_PASS}`;
@@ -14,7 +16,7 @@ const templateAction = {
   key:'',
   data:{}
 };
-const timeout = 10;
+const timeout = 18;
 export const LIST_ACTION={
   UPDATE_FIRMWARE:{
     key:'update_firmware',
@@ -46,24 +48,66 @@ export const LIST_ACTION={
   },
 };
 export default class NodeService {
+  static getAName = async ()=>{
+    const listNode = await LocalDatabase.getListDevices()||[];
+    const subfix = Date.now()%1000;
+    const value = listNode?.length+1;
+    const nodeName =  _.padEnd(`Node ${value}`,10,subfix);
+    return nodeName;
+  }
   static authFirebase = (product) =>{
-    return new Promise((resolve,reject)=>{
+    const pros =  new Promise((resolve,reject)=>{
       let productId = product.product_id;
-      const firebase = new FirebaseService();// FirebaseService.getShareManager();
+      // hienton test
+      const firebase = new FirebaseService();
       let mailProductId = `${productId}${MAIL_UID_FORMAT}`;
       let password = `${FIREBASE_PASS}`;
+      // Util.delay(7).then(()=>{
+      //   firebase.signIn( mailProductId,password).then(uid=>{
+      //     resolve(uid);
+      //   }).catch(e=>{
+      //     reject(new CustomError(knownCode.node_auth_firebase_fail,{rawCode:e}));
+      //   });
+      // });
       firebase.signIn( mailProductId,password).then(uid=>{
         resolve(uid);
       }).catch(e=>{
-        reject(e);
+        reject(new CustomError(knownCode.node_auth_firebase_fail,{rawCode:e}));
       });
-    });
+      
+    }); 
+    return Util.excuteWithTimeout(pros,12);
+  }
+  static verifyProductCode = async(verifyCode)=> {
+    // console.log(TAG,' verifyProductCode begin');
     
+    const errorObj = new CustomError(knownCode.node_verify_code_fail);
+    
+    const params = {
+      verify_code: verifyCode
+    };
+    console.log(TAG,' verifyProductCode begin 02');
+    try {
+      const response = await Util.excuteWithTimeout(APIService.verifyCode(params),timeout);
+      // console.log(TAG, 'callVerifyCode Verify Code Response: ', response);
+      const { status } = response;
+      if (status == 1) {
+        console.log(TAG,'verifyProductCode successfully');
+        const { product } = response.data;
+        return product;
+      }
+    } catch (error) {
+      console.log('Error try catch:', error);
+      return error;
+      
+    }
+    
+    return errorObj;
   }
   static send = (product, actionExcute = templateAction, chain = 'incognito',type = 'incognito',dataToSend={},timeout = 5) => {
     return new Promise((resolve,reject)=>{
       const productId = product.product_id;
-      console.log(TAG, 'ProductId: ', product.product_id);
+      console.log(TAG, 'send ProductId: ', productId);
       if (productId) {
         const firebase = new FirebaseService();
         const uid = firebase.getUID()||'';
@@ -123,10 +167,9 @@ export default class NodeService {
       }
     } catch (error) {
       console.log(TAG,'reset error = ',error);
-      return false;
     }
 
-    return false;
+    return true;
   }
 
   static updateFirware = async(device:Device,chain='incognito')=>{
@@ -185,51 +228,55 @@ export default class NodeService {
     return null;
   }
 
-  static sendPrivateKey = async(device:Device,privateKey:String,chain='incognito')=>{
+  // static sendPrivateKey = async(device:Device,privateKey:String,chain='incognito')=>{
     
-    try {
-      if(!_.isEmpty(device) && !_.isEmpty(privateKey)){
-        const actionPrivateKey = LIST_ACTION.GET_IP;
-        const dataResult = await Util.excuteWithTimeout(NodeService.send(device.data,actionPrivateKey,chain,Action.TYPE.PRODUCT_CONTROL),8);
-        console.log(TAG,'sendPrivateKey send dataResult = ',dataResult);
-        const { status = -1, data, message= ''} = dataResult;
-        if(status === 1){
-          const action:Action = NodeService.buildAction(device.data,LIST_ACTION.START,{product_id:device.data.product_id, privateKey:privateKey},chain,'incognito');
-          const params = {
-            type:action?.type||'',
-            data:action?.data||{}
-          };
-          console.log(TAG,'sendPrivateKey send init data = ',params);
-          const response = await APIService.sendValidatorKey(data,params);
-          const uid = dataResult?.uid||'';
+  //   try {
+  //     if(!_.isEmpty(device) && !_.isEmpty(privateKey)){
+  //       const actionPrivateKey = LIST_ACTION.GET_IP;
+  //       const dataResult = await Util.excuteWithTimeout(NodeService.send(device.data,actionPrivateKey,chain,Action.TYPE.PRODUCT_CONTROL),8);
+  //       console.log(TAG,'sendPrivateKey send dataResult = ',dataResult);
+  //       const { status = -1, data, message= ''} = dataResult;
+  //       if(status === 1){
+  //         const action:Action = NodeService.buildAction(device.data,LIST_ACTION.START,{product_id:device.data.product_id, privateKey:privateKey},chain,'incognito');
+  //         const params = {
+  //           type:action?.type||'',
+  //           data:action?.data||{}
+  //         };
+  //         console.log(TAG,'sendPrivateKey send init data = ',params);
+  //         const response = await APIService.sendValidatorKey(data,params);
+  //         const uid = dataResult?.uid||'';
         
-          console.log(TAG,'sendPrivateKey send post data = ',response);
-          return {...response,uid:uid};
-        }
-      }
-    } catch (error) {
-      console.log(TAG,'sendPrivateKey error = ',error);
-    }
+  //         console.log(TAG,'sendPrivateKey send post data = ',response);
+  //         return {...response,uid:uid};
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.log(TAG,'sendPrivateKey error = ',error);
+  //   }
 
-    return null;
-  }
+  //   return null;
+  // }
 
   static sendValidatorKey = async(device:Device,validatorKey:String,chain='incognito')=>{
     
     try {
       if(!_.isEmpty(device) && !_.isEmpty(validatorKey)){
-        const actionGetIp = LIST_ACTION.GET_IP;
-        const dataResult = await Util.excuteWithTimeout(NodeService.send(device.data,actionGetIp,chain,Action.TYPE.PRODUCT_CONTROL),8);
+        // send to firebase
+        const params = {product_id:device.data.product_id, validatorKey:validatorKey};
+        await Util.excuteWithTimeout(NodeService.send(device.data,LIST_ACTION.START,chain,Action.TYPE.INCOGNITO,{...params,action:LIST_ACTION.START.key}),8).catch(console.log);
+        ////
+
+        const dataResult = await Util.excuteWithTimeout(NodeService.send(device.data,LIST_ACTION.GET_IP,chain,Action.TYPE.PRODUCT_CONTROL),8);
+                
         console.log(TAG,'sendValidatorKey send dataResult = ',dataResult);
         const { status = -1, data, message= ''} = dataResult;
         if(status === 1){
-          const action:Action = NodeService.buildAction(device.data,LIST_ACTION.START,{product_id:device.data.product_id, validatorKey:validatorKey},chain,'incognito');
-          const params = {
+          const action:Action = NodeService.buildAction(device.data,LIST_ACTION.START,params,chain,Action.TYPE.INCOGNITO);
+          console.log(TAG,'sendValidatorKey send init params = ',params);
+          const response = await APIService.sendValidatorKey(data,{
             type:action?.type||'',
             data:action?.data||{}
-          };
-          console.log(TAG,'sendValidatorKey send init data = ',params);
-          const response = await APIService.sendValidatorKey(data,params);
+          });
           const uid = dataResult?.uid||'';
         
           console.log(TAG,'sendValidatorKey send post data = ',response);
@@ -288,7 +335,9 @@ export default class NodeService {
     let dataResult = {isHave:false,current:undefined,node:undefined};
     try {
       const {data ,status = 0} = await APIService.getSystemPlatform().catch(e=>new ExHandler(e).showWarningToast())??{} ;
+      console.log(TAG,'checkUpdatingVersion begin ');
       if(!_.isEqual(status,0)){
+        console.log(TAG,'checkUpdatingVersion begin01 ');
         const {
           created_at,
           id,
@@ -311,6 +360,12 @@ export default class NodeService {
       new ExHandler(error).throw();
     }
     return dataResult;
+  }
+
+  static cleanOldDataForSetup = async ()=>{
+    const result = await SSHService.run('10.42.0.1','sudo rm -r /home/nuc/aos/inco-data/ && sudo rm -r /home/nuc/aos/inco-eth-kovan-data/ && sudo docker rm -f inc_miner && sudo docker rm -f inc_kovan').catch(console.log);
+    console.log(TAG,'cleanOldDataForSetup data = ',result);
+    return !_.isEmpty(result) ;
   }
 
 }

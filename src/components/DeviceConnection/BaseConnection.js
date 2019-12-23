@@ -3,6 +3,7 @@ export class ObjConnection {
   constructor() {
     this.id = -1;
     this.name = '';
+    this.password = '';
   }
 }
 class BaseConnection {

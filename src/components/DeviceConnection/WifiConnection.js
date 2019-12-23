@@ -1,11 +1,14 @@
+import NetInfo from '@react-native-community/netinfo';
+import { CustomError, ExHandler } from '@src/services/exception';
+import knownCode from '@src/services/exception/customError/code/knownCode';
 import { locationPermission } from '@utils/PermissionUtil';
 import Util from '@utils/Util';
 import _ from 'lodash';
-import { Alert, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import { PASS_HOSPOT } from 'react-native-dotenv';
 import Wifi from 'react-native-iot-wifi';
-// import WifiManager from 'react-native-wifi-reborn';
 import { NetworkInfo } from 'react-native-network-info';
+import WifiManager from 'react-native-wifi-reborn';
 import BaseConnection, { ObjConnection } from './BaseConnection';
 
 export const TAG = 'WifiConnection';
@@ -20,140 +23,118 @@ class WifiConnection extends BaseConnection {
     this.fetchCurrentConnect();
   };
   
+  /**
+   * throw ex with 3s timeout
+   * return {null ||ObjConnection}
+   */
   fetchCurrentConnect =  ():Promise<ObjConnection> => {
     console.log(TAG, 'fetchCurrentConnect begin ------');
-    // let pro = async()=>{
-    //   try {
-    //     let SSID = await WifiManager.getCurrentWifiSSID();
+    let pro = async()=>{
+      try {
+        const state = await NetInfo.fetch().catch(console.log);
+        const {isConnected = false, isInternetReachable = false,details =null} = state ??{};
+        const { ipAddress = '',isConnectionExpensive = false,ssid='' } = details ??{};
+        SSID =  await WifiManager.getCurrentWifiSSID();
+        let SSID = _.isEmpty(SSID) ? ssid:SSID;
         
-    //     SSID = _.isEqual('Cannot detect SSID',SSID) || _.isEqual('<unknown ssid>',SSID) ?'':SSID;
-    //     console.log(TAG, 'fetchCurrentConnect getSSID=', SSID);
-    //     this.currentConnect = new ObjConnection();
-    //     this.currentConnect.id = SSID;
-    //     this.currentConnect.name = SSID;
-        
-    //     console.log('Your current connected wifi SSID is ' + SSID);
-    //     return this.currentConnect;
-    //   } catch (error) {
-    //     console.log('Cannot get current SSID!', error);
-    //   }
-    //   return null;
-    // };
-
-    const pro =  new Promise((resolve, reject) => {
-      Wifi.isApiAvailable(available => {
-        console.log(TAG,'fetchCurrentConnect begin 01 = ', available ? 'available' : 'failed');
-        if (available) {
-          console.log(TAG, 'fetchCurrentConnect begin02 ');
-          try {
-            // hien.ton test
-            // NetworkInfo.getIPAddress().then(ipAddress => {
-            //   console.log(TAG, 'fetchCurrentConnect new - getIPAddress ',ipAddress);
-            // });
-            // NetworkInfo.getGatewayIPAddress().then(defaultGateway => {
-              
-            //   console.log(TAG, 'fetchCurrentConnect new ---- defaultGateway=', defaultGateway);
-            // });
-            // NetworkInfo.getSSID().then(ssid => {
-            //   console.log(TAG, 'fetchCurrentConnect new ---- getSSID=', ssid);
-            // });
-            /////////
-            Wifi.getSSID(SSID => {
-              SSID = _.isEqual('Cannot detect SSID',SSID) || _.isEqual('<unknown ssid>',SSID) ?'':SSID;
-              console.log(TAG, 'fetchCurrentConnect getSSID=', SSID);
-              this.currentConnect = new ObjConnection();
-              this.currentConnect.id = SSID;
-              this.currentConnect.name = SSID;
-              resolve(this.currentConnect);
-            });
-          } catch (error) {
-            resolve(null);
-          }
-          
-        }else{
-          resolve(null);
+        SSID = _.isEqual('Cannot detect SSID',SSID) || _.isEqual('<unknown ssid>',SSID) ?'':SSID;
+        console.log(TAG, 'fetchCurrentConnect getSSID=', SSID);
+        if(!_.isEmpty(SSID)){
+          this.currentConnect = new ObjConnection();
+          this.currentConnect.id = SSID;
+          this.currentConnect.name = SSID;        
+          console.log('Your current connected wifi SSID is ' + SSID);
+          return this.currentConnect;
         }
-      });
-    });
-    return Util.excuteWithTimeout(pro,3);
+      } catch (error) {
+        console.log('Cannot get current SSID!', error);
+      }
+      return null;
+    };
+    return Util.excuteWithTimeout(pro(),3);
   };
 
   removeConnection=async (device: ObjConnection) => {
-    return new Promise((resolve, reject) => {
+    try {
       let SSID = device?.name||'';
-      console.log(TAG, 'removeConnection begin result = ',device?.name||'');
-      Wifi.removeSSID(SSID,false,error => {
-        resolve(!error);
-      });
-      
-      resolve(true);
-    });
-    // try {
-    //   let SSID = device?.name||'';
-    //   const result = await WifiManager.disconnectFromSSID(SSID);
-    //   return true;
-    // } catch (error) {
-    //   console.log(TAG,'removeConnection error = ',error);
-    // }
-    // return false;
+      let result = false;
+      if(Platform.OS == 'android'){
+        const removeWifiFunc =  new Promise((resolve, reject) => {
+          console.log(TAG, 'removeConnection begin result = ',device?.name||'');
+          Wifi.removeSSID(SSID,false,error => {
+            resolve(!error);
+          });
+          resolve(true);
+        });
+        result =  !_.isEmpty(SSID) && await removeWifiFunc();
+      }else{
+        result =  !_.isEmpty(SSID) && await WifiManager.disconnectFromSSID(SSID);
+      }
+      return result;
+    } catch (error) {
+      console.log(TAG,'removeConnection error = ',error);
+    }
+    return false;
   } 
 
-  connectDevice = (device: ObjConnection) => {
+  /**
+   * 
+   */
+  connectDevice = (wifiObj: ObjConnection) => {
    
-    // const pro = async() => {
-    //   try {
-    //     let SSID = device.name;
-    //     console.log(TAG, 'connectDevice begin000 --- name = ',SSID);
-    //     const data = await WifiManager.connectToProtectedSSID(SSID,PASS_HOSPOT,false);
-    //     console.log(TAG, 'connectDevice begin111 --- data = ',data);
-    //     await Util.delay(4);
-        
-    //     this.currentConnect = new ObjConnection();
-    //     this.currentConnect.id = SSID;
-    //     this.currentConnect.name = SSID;
-    //     return true;
-    //   } catch (error) {
-    //     throw new Error('Connection failed!');
-    //   }
-    // };
-
-    const pro = new Promise((resolve,reject)=>{
-      Wifi.connectSecure(device.name,PASS_HOSPOT,false,true, error => {
-        console.log(TAG, 'connectDevice begin --- error = ',error);
-        
-        if (!error || _.isEqual('already associated.',error)) {
+    const pro = async() => {
+      try {
+        let SSID = wifiObj.name;
+        const logHandler = new ExHandler(new CustomError(knownCode.node_can_not_connect_hotspot));
+        console.log(TAG, 'connectDevice begin000 --- name = ',SSID);
+        const password = wifiObj.password || PASS_HOSPOT;
+        let data = await WifiManager.connectToProtectedSSID(SSID,password,false).catch(e=>{
+          console.log(TAG, 'connectToProtectedSSID begin --- error ,',e);
+          logHandler.throw();}
+        );
+        console.log(TAG, 'connectDevice begin111 --- data = ',data);
+        await Util.delay(3);
+        if(_.isEmpty(data)){
+          await Util.delay(3);
+          data = await this.fetchCurrentConnect();
+          console.log(TAG, 'connectDevice begin222--- data = ',data);
           
-          Util.delay(3).then(this.fetchCurrentConnect).then(objConnection=>{
-            // dont get objConnection with IOS 13 #bug
-            let SSID = device.name ??'';
-            this.currentConnect = new ObjConnection();
-            this.currentConnect.id = SSID;
-            this.currentConnect.name = SSID;
-            console.log(TAG, 'connectDevice begin 01 getSSID --- ', SSID);
-            resolve(true);
-          });
-          // Wifi.getSSID(SSID => {
-          //   console.log(TAG, 'connectDevice begin 01 getSSID --- ', SSID);
-                
-          //   this.currentConnect = new ObjConnection();
-          //   this.currentConnect.id = SSID;
-          //   this.currentConnect.name = SSID;
-          //   resolve(_.isEqual(device.name,SSID));
-          // });
-        } else {
-          console.log(TAG, 'connectDevice --- error ngon = ',error);
-          reject(new Error(error));
-         
+          if(_.isEmpty(data)){
+            // IOS 13.2
+            // await Util.delay(3);
+            // data = await this.isConnectedWithNodeHotspot();
+            // data ? null:logHandler.throw();
+          }else{
+            !_.isEqual(data.name,SSID) ? logHandler.throw():null;
+          }
         }
         
-          
-      });
-    }); 
-      
-    return Util.excuteWithTimeout(pro,15).catch(e=>console.log('connectDevice --- failed end'));
-    // return Util.excuteWithTimeout(pro,15);
-
+        this.currentConnect = new ObjConnection();
+        this.currentConnect.id = SSID;
+        this.currentConnect.name = SSID;
+        return true;
+      } catch (error) {
+        error instanceof CustomError && new ExHandler(error).throw();
+      }
+    };
+    return Util.excuteWithTimeout(pro(),15);
   };
+
+  isConnectedWithNodeHotspot = async ()=>{
+    try {
+      const prefixHotspotIP = '10.42.';
+      const defaultGateway = await NetworkInfo.getGatewayIPAddress().catch(console.log)??'';
+      const isValidateIpAdrress = _.includes(defaultGateway,prefixHotspotIP);
+      console.log(TAG, 'isConnectedWithNodeHotspot new ---- defaultGateway=', defaultGateway);
+      const state = await NetInfo.fetch().catch(console.log);
+      const {isConnected = false, isInternetReachable = false,details =null} = state ??{};
+      const { ipAddress = '',isConnectionExpensive = false,ssid='' } = details ??{};
+      return isValidateIpAdrress || (isConnected && !isInternetReachable) || (isConnected && _.includes(ipAddress,prefixHotspotIP) );
+    } catch (error) {
+      return null;
+    }
+    
+  }
 
   destroy = () => {};
 
@@ -174,31 +155,6 @@ class WifiConnection extends BaseConnection {
     } catch (error) {
       return Promise.reject(error);
     }
-  };
-
-  alertBluetooth = () => {
-    Alert.alert(
-      'Turn on Wifi',
-      '',
-      [
-        {
-          text: 'Ask me later',
-          onPress: () => console.log('Ask me later pressed')
-        },
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel'
-        },
-        {
-          text: 'OK',
-          onPress: () => {
-            Util.openSetting('Bluetooth');
-          }
-        }
-      ],
-      { cancelable: false }
-    );
   };
 
   getDeviceSavedList = async () => {

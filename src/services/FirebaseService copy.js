@@ -98,9 +98,8 @@ export default class FirebaseService {
     const email = this.firebase.auth().currentUser?.email ||'';
     if (!_.isEmpty(email) && _.isEqual(email,username)) {
       this.currentUserName  = username;
-      this.currentUser  = this.firebase.auth().currentUser;
       console.log(TAG,' signIn begin02 has authenticated = ',this.currentUserName);
-      return this.currentUser?.uid||'';
+      return this.firebase.auth().currentUser?.uid||'';
       /// test
       // reject('fail firebase');
       ////
@@ -109,7 +108,6 @@ export default class FirebaseService {
         console.log(TAG,' signIn begin04 error = ',e);
         throw e;
       });
-      this.currentUser  = user;
       console.log(TAG,' signIn begin03 has authenticated = ',user?.email);
       
       this.currentUserName  = username;
@@ -124,7 +122,7 @@ export default class FirebaseService {
       let prevUser = this.firebase.auth().currentUser;
       
       const credential = firebaseRN.auth.EmailAuthProvider.credential(username, password);
-      // await prevUser.unlink(credential);
+      await prevUser.unlink(credential);
       // Sign in user with another account
       const userCredential = await this.firebase.auth().signInWithCredential(credential).catch((error) =>{
         console.log('signInWithCredential 0000 Error', error);
@@ -135,7 +133,7 @@ export default class FirebaseService {
 
       console.log(TAG,'signInWithCredential begin success = ',user?.email);
       // await user.delete();
-      await prevUser.linkWithCredential(credential).catch(console.log);
+      // await prevUser.linkWithCredential(credential);
       // await this.firebase.auth().signInWithCredential(credential);
       return userCredential;
     } catch (error) {
@@ -151,33 +149,32 @@ export default class FirebaseService {
       console.log(TAG,'createFirebaseAccount begin');
       // const credential = firebaseRN.auth.EmailAuthProvider.credential(username, password);
       console.log(TAG,'createFirebaseAccount begin 01');
-      //   this.signInWithCredential(username, password).then(authResult => {
-      //     const user = authResult?.user;
+      // this.signInWithCredential(username, password).then(authResult => {
+      //   const user = authResult?.user;
 
-      //     // If you need to do anything with the user, do it here
-      //     // The user will be logged in automatically by the
-      //     // `onAuthStateChanged` listener we set up in App.js earlier
-      //     console.log(TAG,'createFirebaseAccount begin success ', username);
-      //     this.currentUserName = username;
-      //     resolve(user);
-      //   }, (error) =>{
-      //     console.log(TAG,'createFirebaseAccount begin error ', username);
-      //     this.firebase
-      //       .auth()
-      //       .createUserWithEmailAndPassword(username, password)
-      //       .then(user => {
-      //         this.currentUser  = user; 
-      //         resolve(user);
-      //       })
-      //       .catch(err => {
-      //         const { code, message } = err;
-      //         // For details of error codes, see the docs
-      //         // The message contains the default Firebase string
-      //         // representation of the error
-      //         console.log('Create account error: ', err);
-      //         reject(err);
-      //       });
-      //   });
+      //   // If you need to do anything with the user, do it here
+      //   // The user will be logged in automatically by the
+      //   // `onAuthStateChanged` listener we set up in App.js earlier
+      //   console.log(TAG,'createFirebaseAccount begin success ', username);
+      //   this.currentUserName = username;
+      //   resolve(user);
+      // }, (error) =>{
+      //   console.log(TAG,'createFirebaseAccount begin error ', username);
+      //   this.firebase
+      //     .auth()
+      //     .createUserWithEmailAndPassword(username, password)
+      //     .then(user => {
+      //       resolve(user);
+      //     })
+      //     .catch(err => {
+      //       const { code, message } = err;
+      //       // For details of error codes, see the docs
+      //       // The message contains the default Firebase string
+      //       // representation of the error
+      //       console.log('Create account error: ', err);
+      //       reject(err);
+      //     });
+      // });
       // });
       
       this.firebase
@@ -191,7 +188,6 @@ export default class FirebaseService {
           // `onAuthStateChanged` listener we set up in App.js earlier
           console.log(TAG,'createFirebaseAccount begin success ', username);
           this.currentUserName = username;
-          this.currentUser  = user; 
           resolve(user);
         })
         .catch(error => {
@@ -201,7 +197,6 @@ export default class FirebaseService {
             .auth()
             .createUserWithEmailAndPassword(username, password)
             .then(user => {
-              this.currentUser  = user; 
               resolve(user);
             })
             .catch(err => {
@@ -220,7 +215,7 @@ export default class FirebaseService {
     try {
       // const randomString = Util.createRandomString(16)||'FB-Node';
       this.firebase = firebaseRN.app();
-      this.currentUser  = this.firebase.auth().currentUser;
+      
       console.log(TAG,'configurateDatabase');
       // const currentUser = this.firebase.auth().currentUser;
       // if(!_.isNil(currentUser)){
@@ -257,81 +252,63 @@ export default class FirebaseService {
     
     console.log(TAG,'startListenData Current Channel:', currentChannel);
     // console.log(TAG,'startListenData Channel: ', channel);
-    let result = false;
-    try {
-      await this.isAuth(this.username,this.password);
-      const fuid = this.getUID();
+
+    //Update current subcribed channel
+    if (channel) {
+      const fuid = this.firebase.auth().currentUser?.uid??'';
       let path = `/${fuid}/${channel}`;
-      //Update current subcribed channel
-      if (channel) {
-        console.log('startListenData Update Path: ', path);
-        currentChannel = channel;
+      console.log('startListenData Update Path: ', path);
+      currentChannel = channel;
+      // await this.firebase.database().ref(path).remove();
+      const snapshot =  await this.firebase.database().ref(path).once('child_added');
       
-      
-        const snapshot =  await this.firebase.database().ref(path).once('child_added');
-      
-        console.log(TAG,'startListenData begin------- ');
-        if (snapshot.exists()) {
-        // snapshot.forEach(hihi=>{
-        //   console.log(TAG,'startListenData begin kakakaa------- ',hihi);
-        // });
-          const dictValue = snapshot.exists()? snapshot.val():null;
-          console.log('startListenData begin-------0000---- data : ', dictValue);
-          const timeNanoNow = _.now()* 1000000;
-          const { data = {},time = timeNanoNow } = dictValue;
-          const snapshotKey = snapshot.key??'';
-          let isNeedClear  = (timeNanoNow - time) >(3*60*1000*1000000);
-          console.log(TAG,'startListenData snapshotKey: ', snapshotKey);
-          if (!_.isEmpty(data)) {
-            const { action } = data;
-          
-            console.log(TAG,'startListenData Action: ', action,'--- _.now() - timestamp = ',timeNanoNow - time);
-            if (action) {
-              console.log(TAG,'startListenData Action01 ');
-              let arr = this.dictCallback[action];
-              console.log(TAG,'startListenData Action02 ');
-              if (arr) {
-                console.log(TAG, 'startListenData Arr: ', arr);
-                arr.forEach(dict => {
-                  const { key ,callback } = dict;
-                  if (this.dictKey[key] == 1) {
-                    result = true;
-                    if (action !== 'update_firmware_status') {
-                      this.dictKey[key] = 0;
-                    }
-                    console.log(TAG,'startListenData Return callback = ',key);
-                    callback && callback({status:STATUS_CODE.SERVER, ...data});
-                    timer.clearTimeout(key);
+      // console.log(TAG,'startListenData begin------- ',snapshot);
+      if (snapshot.exists()) {
+        let dict = snapshot.val();
+        console.log('startListenData begin-------0000---- data : ', dict);
+        const { data = {} } = dict;
+        const snapshotKey = snapshot.key??'';
+        console.log(TAG,'startListenData snapshotKey: ', snapshotKey);
+        if (!_.isEmpty(data)) {
+          const { action } = data;
+          console.log(TAG,'startListenData Action: ', action);
+          if (action) {
+            console.log(TAG,'startListenData Action01 ');
+            let arr = this.dictCallback[action];
+            console.log(TAG,'startListenData Action02 ');
+            if (arr) {
+              console.log(TAG, 'startListenData Arr: ', arr);
+              arr.forEach(dict => {
+                const { key ,callback } = dict;
+                if (this.dictKey[key] == 1) {
+                  if (action !== 'update_firmware_status') {
+                    this.dictKey[key] = 0;
                   }
-                });
-                if (action !== 'update_firmware_status') {
-                  this.dictCallback[action] = null;
+                  console.log(TAG,'startListenData Return callback = ',key);
+                  callback({status:STATUS_CODE.SERVER, ...data});
+                  timer.clearTimeout(key);
                 }
+              });
+              if (action !== 'update_firmware_status') {
+                this.dictCallback[action] = null;
               }
-            
-              const childPath = `/${fuid}/${channel}/${snapshotKey}`;
-              console.log(TAG,'startListenData Action03 Child Path: ', childPath,'-isNeedClear = ',isNeedClear);
-              result  && !_.isEmpty(fuid)&& !_.isEmpty(snapshotKey) && await this.firebase.database().ref(childPath).remove();
-              console.log(TAG,'startListenData Action04 End--------');
             }
-          
+            
+            const childPath = `/${fuid}/${channel}/${snapshotKey}`;
+            console.log(TAG,'startListenData Action03 Child Path: ', childPath);
+            !_.isEmpty(fuid)&& !_.isEmpty(snapshotKey) &&await this.firebase.database().ref(childPath).remove().catch(console.log);
           }
-        
         }
+        return true;
       }
-      !result && await this.firebase.database().ref(path).remove();
-    } catch (error) {
-      console.log(TAG,'startListenData error ');
+      return false;
     }
-    console.log(TAG,'startListenData Action05 End--------result = ',result);
-    
-    return result;
   }
 
   stopListenData = ()=>{
     console.log('stopListenData begin');
     let funcExcute = new Promise((resolve,reject)=>{
-      if (!_.isNull(this.currentUser)) {
+      if (!_.isNull(this.firebase.auth().currentUser)) {
         let path = `/${this.getUID()}/` + currentChannel;
         console.log(TAG,'stopListenData Path: ', path);
         this.firebase
@@ -352,7 +329,7 @@ export default class FirebaseService {
   }
   logout = async ()=>{
     console.log(TAG,'logout begin');
-    if (this.currentUser !== null) {
+    if (this.firebase.auth().currentUser !== null) {
       //stopListenData
       let result = await this.stopListenData().catch(console.log);
       console.log(TAG,'logout stop result= ',result);
@@ -389,27 +366,17 @@ export default class FirebaseService {
 
   isAuth = async (username, password)=> {
     console.log('isAuth begin username =',username );
-    let fuid = this.getUID();
-    const email = this.firebase.auth().currentUser?.email ||'';
-    if(!_.isEqual(email ,username)){
-      fuid = await this.signIn(username,password).catch(console.log)||undefined;
-    }
-    // fuid = await this.signIn(username,password).catch(console.log)||undefined;
-    
-    console.log('isAuth end uid =',fuid );
-    return fuid;
+    const uid = await this.signIn(username,password).catch(console.log)||undefined;
+    console.log('isAuth end uid =',uid );
+    return uid;
   }
 
   sendAction = async (username, password, action, onCallback, timeout)=> {
-    console.log(TAG,`sendAction Username: ${username}-password=${password}`);
-    this.username = username;
-    this.password = password;
-    // await this.send(action, onCallback, timeout);
-
+    console.log(TAG,`Username: ${username}-password=${password}-action=${action}`);
     const fbuid = await this.isAuth(username, password);
     const getFBUID = this.getUID();
-    // console.log('sendAction isEqual =',_.isEqual(fbuid,getFBUID));
-    if (_.isEqual(fbuid,getFBUID)) {
+    console.log('sendAction isEqual =',_.isEqual(fbuid,getFBUID));
+    if (fbuid) {
       await this.send(action, onCallback, timeout);
     } else {
       console.log('You input invalid data');
@@ -437,9 +404,8 @@ export default class FirebaseService {
   //     }
   //   });
   // }
-  push = async (path,jsondata)=>{
-    // await this.isAuth(this.username,this.password);
-    const temp = Util.excuteWithTimeout(new Promise((resolve,reject)=>{
+  push = (path,jsondata):Promise<Boolean>=>{
+    return Util.excuteWithTimeout(new Promise((resolve,reject)=>{
       this.firebase
         .database()
         .ref(path)
@@ -448,10 +414,9 @@ export default class FirebaseService {
           resolve(_.isNil(error));
         });
     }),5);
-    return await temp.catch(console.log)||false;
   }
   send = async(action, onCallback, timeout)=>{
-    
+    // await this.startListenData(action.source);
     if (onCallback) {
       this.addActionCallback(action, onCallback);
     }
@@ -464,91 +429,44 @@ export default class FirebaseService {
       //time: (new Date().getTime()) * 1000
     };
     console.log(TAG, 'send JSON: ', json);
-    await this.isAuth(this.username,this.password);
     const uid = this.getUID();
     let path = `/${uid}/` + action.dest;
     console.log(TAG,'send Path: ', path);
     if(!_.isEmpty(uid)){
       // let chanel = `/${uid}/` + action.source;
       // await this.firebase.database().ref(chanel).remove().catch(console.log);
-      const pushData = async ()=>{
-        console.log(TAG, 'send pushData begin ------');
-        await this.isAuth(this.username,this.password);
-        const temp  = await this.push(path,json).catch(console.log)??false;
-        // return temp?temp:new Error('pushData  fail');
-        return temp;
-      };
-      // const fetchData = async ()=>{
-      //   console.log(TAG, 'send fetchData begin ------');
-      //   let receiveData = false;
-      //   try {
-      //     receiveData =  await Util.excuteWithTimeout(this.startListenData(actionSource),8);
-      //     console.log(TAG, 'send fetchData receiveData ------',receiveData);
-      //   } catch (error) {
-      //     console.log(TAG, 'send tryAtMost-fetchData error ',error);
-      //   }
-      //   const resultPush = receiveData?true: await Util.tryAtMost(pushData,3,3).catch(e=>{
-      //     console.log(TAG, 'send tryAtMost-pushData HienTON= ',e);
-      //   });
-        
-      //   return receiveData?receiveData:new Error('fetchData fail');
-      // };
-
-      const fetchData = async ()=>{
-        console.log(TAG, 'send fetchData begin ------');
-        let receiveData = false;
-        try {
-          receiveData =  await Util.excuteWithTimeout(this.startListenData(actionSource),8);
-          console.log(TAG, 'send fetchData receiveData ------',receiveData);
-        } catch (error) {
-          console.log(TAG, 'send tryAtMost-fetchData error ',error);
-        }
-        
-        // return receiveData?receiveData:new Error('fetchData fail');
-        return receiveData;
-      };
-
-      const codeData  = async ()=>{
-        console.log(TAG, 'send codeData begin ------');
-        let receiveData = false;
-        try {
-          let [isPush,isFetch] = await Promise.all([pushData(),fetchData()]);
-          // receiveData =  await Util.excuteWithTimeout(this.startListenData(actionSource),8);
-          console.log(TAG, 'send codeData receiveData ------',isPush,'-isFetch = ',isFetch);
-          receiveData = isPush && isFetch;
-        } catch (error) {
-          console.log(TAG, 'send tryAtMost-codeData error ',error);
-        }
-        
-        return receiveData?receiveData:new Error('codeData fail');
-      };
-
-      const resultReceive = await Util.tryAtMost(codeData,4,3).catch(e=>{
-        console.log(TAG, 'send tryAtMost-fetchData= ',e);
-        this.checkTimeout(action, onCallback);
-      });
-      
-      // const resultPush = await Util.tryAtMost(pushData,3,5).catch(e=>{
-      //   console.log(TAG, 'send tryAtMost-pushData HienTON= ',e);
-      //   this.checkTimeout(action, onCallback);
-      // });
-      
-      if(resultReceive){
-        // const fetchData = async ()=>{
-        //   const temp = await Util.excuteWithTimeout(this.startListenData(actionSource),5);
-        //   return temp?temp:new Error('fetchData fail');
-        // };
-        // await Util.tryAtMost(fetchData,3,3).catch(e=>{
-        //   console.log(TAG, 'send tryAtMost-fetchData= ',e);
-        //   this.checkTimeout(action, onCallback);
-        // });
+      const resultPush = await this.push(path,json).catch(console.log)??false;
+      if(resultPush){
+        const fetchData = ()=>{
+          return Util.excuteWithTimeout(this.startListenData(actionSource),5);
+        };
+        await Util.tryAtMost(fetchData,3,3).catch(e=>{
+          console.log(TAG, 'send tryAtMost-fetchData= ',e);
+          this.checkTimeout(action, onCallback);
+        });
       }else{
         this.checkTimeout(action, onCallback);
       }
+      // this.firebase
+      //   .database()
+      //   .ref(path)
+      //   .push(json, error => {
+      //     if (_.isNil(error)) {
+      //       if (onCallback) {
+      //         timer.setTimeout(action.key??'',() => {
+      //           console.log(TAG, 'send setTimeout ', action.key);
+      //           this.checkTimeout(action, onCallback);
+      //         }, timeout * 1000);
+      //       }
+      //     } else {
+      //       console.log(TAG,'send Error:', error);
+      //       return new Error(error);
+      //     }
+      //   });
     }
   }
   getUID =()=>{
-    return this.currentUser?.uid||'';
+    return this.firebase.auth()?.currentUser?.uid||'';
   }
   brainSource=(source)=>{
     return this.getUID() + '/' + source;
