@@ -147,6 +147,7 @@ class EstimateFeeContainer extends Component {
       }
     } catch {
       fee = DEFAULT_FEE;
+      return fee;
     } finally {
       // cache it
       CACHED_FEE[key] = fee;
