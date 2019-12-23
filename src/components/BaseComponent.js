@@ -1,3 +1,4 @@
+import { CONSTANT_CONFIGS } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
 import { Component } from 'react';
 import { AppState } from 'react-native';
@@ -15,7 +16,7 @@ const callIfBackToThisRoute = (props, call) => {
   });
   return listener;
 };
-const isTestConnect = true;
+const isTestConnect = __DEV__ || !CONSTANT_CONFIGS.isMainnet;
 class BaseComponent extends Component {
   constructor(props) {
     super(props);
