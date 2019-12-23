@@ -1,7 +1,7 @@
 import http from '@src/services/http';
 import { CONSTANT_COMMONS } from '@src/constants';
 
-export const genCentralizedWithdrawAddress = ({ amount, paymentAddress, walletAddress, tokenId, currencyType }) => {
+export const genCentralizedWithdrawAddress = ({ amount, paymentAddress, walletAddress, tokenId, currencyType, memo }) => {
   if (!paymentAddress) return throw new Error('Missing paymentAddress');
   if (!walletAddress) return throw new Error('Missing walletAddress');
   if (!tokenId) return throw new Error('Missing tokenId');
@@ -19,6 +19,7 @@ export const genCentralizedWithdrawAddress = ({ amount, paymentAddress, walletAd
     PaymentAddress: paymentAddress,
     WalletAddress: walletAddress,
     PrivacyTokenAddress: tokenId,
+    ...memo ? { Memo: memo } : {}
   }).then(res => res?.Address);
 };
 

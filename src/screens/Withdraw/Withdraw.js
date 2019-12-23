@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { isExchangeRatePToken } from '@src/services/wallet/RpcClientService';
 import { connect } from 'react-redux';
+import { detectToken } from '@src/utils/misc';
 import { change, Field, formValueSelector, isValid } from 'redux-form';
 import style from './style';
 
@@ -26,6 +27,9 @@ const Form = createForm(formName, {
   initialValues: initialFormValues
 });
 
+const memoMaxLength = validator.maxLength(125, {
+  message: 'The memo is too long'
+});
 
 class Withdraw extends React.Component {
   constructor(props) {
@@ -125,7 +129,7 @@ class Withdraw extends React.Component {
       let res;
       const { estimateFeeData: { fee }, isUsedPRVFee, feeForBurn } = this.state;
       const {  handleCentralizedWithdraw, handleDecentralizedWithdraw, navigation, selectedPrivacy } = this.props;
-      const { amount, toAddress } = values;
+      const { amount, toAddress, memo } = values;
 
       if (selectedPrivacy?.isDecentralized) {
         res = await handleDecentralizedWithdraw({
@@ -141,7 +145,8 @@ class Withdraw extends React.Component {
           remoteAddress: toAddress,
           fee,
           isUsedPRVFee,
-          feeForBurn
+          feeForBurn,
+          memo
         });
       }
 
@@ -209,7 +214,8 @@ class Withdraw extends React.Component {
     const { maxAmountValidator, minAmountValidator, supportedFeeTypes, estimateFeeData, feeForBurn, isUsedPRVFee } = this.state;
     const { fee, feeUnit } = estimateFeeData;
     const { selectedPrivacy, isFormValid, amount, account } = this.props;
-    const addressValidator = this.getAddressValidator(selectedPrivacy?.externalSymbol, selectedPrivacy?.isErc20Token);
+    const { externalSymbol, isErc20Token, name: tokenName } = selectedPrivacy || {};
+    const addressValidator = this.getAddressValidator(externalSymbol, isErc20Token);
     const maxAmount = this.getMaxAmount();
     
 
@@ -226,13 +232,14 @@ class Withdraw extends React.Component {
                   component={InputQRField}
                   name='toAddress'
                   label='To'
-                  placeholder='Enter wallet address'
+                  placeholder={`Enter your ${tokenName}  address`}
                   style={style.input}
                   validate={addressValidator}
                 />
                 <Field
                   component={InputMaxValueField}
                   name='amount'
+                  label='Amount'
                   placeholder='Amount'
                   style={style.input}
                   maxValue={maxAmount}
@@ -245,6 +252,21 @@ class Withdraw extends React.Component {
                     ...minAmountValidator ? [minAmountValidator] : []
                   ]}
                 />
+                {
+                  detectToken.ispBNB(selectedPrivacy?.tokenId) && (
+                    <View style={style.memoContainer}>
+                      <Field
+                        component={InputQRField}
+                        name='memo'
+                        label='Memo (ontional)'
+                        placeholder='Enter a memo (max 125 characters)'
+                        style={style.input}
+                        validate={memoMaxLength}
+                      />
+                      <Text style={style.memoText}>* For withdrawals to wallets on exchanges (e.g. Binance, etc.), enter your memo to avoid loss of funds.</Text>
+                    </View> 
+                  )
+                }
                 <EstimateFee
                   accountName={account?.name}
                   estimateFeeData={estimateFeeData}
