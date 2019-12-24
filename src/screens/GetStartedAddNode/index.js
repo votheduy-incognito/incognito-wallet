@@ -46,6 +46,9 @@ class GetStartedAddNode extends BaseScreen {
     this.wifiPassValue = '';
     this.accountNode=null;
   }
+  componentDidMount(){
+    super.componentDidMount();
+  }
 
   renderTitle =()=>{
     const {currentPage,currentConnect} = this.state;

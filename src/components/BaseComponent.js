@@ -1,8 +1,7 @@
-import { CONSTANT_CONFIGS } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
 import { Component } from 'react';
 import { AppState } from 'react-native';
-import { Toast } from './core';
+import DeviceLog from './DeviceLog';
 
 export const TAG = 'BaseComponent';
 
@@ -16,7 +15,7 @@ const callIfBackToThisRoute = (props, call) => {
   });
   return listener;
 };
-const isTestConnect = __DEV__ || !CONSTANT_CONFIGS.isMainnet;
+
 class BaseComponent extends Component {
   constructor(props) {
     super(props);
@@ -37,15 +36,16 @@ class BaseComponent extends Component {
     AppState.removeEventListener('change', this.handleAppStateChange);
   }
   showLogConnect=(message)=>{
-    isTestConnect && new ExHandler(new Error(message),message).showWarningToast();
+    DeviceLog.show(); //
+  }
+  logOnView=(message)=>{
+    DeviceLog.logInfo(message);
   }
   onResume = () => {};
 
 
-  showToastMessage = (text = '', callback?) => {
-    if (text ) {
-      Toast.showInfo(text);
-    }
+  showToastMessage = (message = '', callback?) => {
+    message && new ExHandler(new Error(message),message).showWarningToast();
   };
 
   handleAppStateChange = nextAppState => {

@@ -392,16 +392,16 @@ class SetupDevice extends BaseComponent {
         let result = !_.isEmpty(accountModel) ?accountModel: await this.createAccount(fetchProductInfo.product_name);
         const {PrivateKey = '',AccountName = '',PaymentAddress = '',PublicKeyCheckEncode='',ValidatorKey = ''} = result;
         console.log(TAG,'changeDeviceName sendValidatorKey begin');
-        this.showLogConnect(`Begin: sendValidatorKey-ValidatorKey = ${ValidatorKey}`);
+        this.logOnView(`Begin: sendValidatorKey-ValidatorKey = ${ValidatorKey}`);
         result = await NodeService.sendValidatorKey(Device.getInstance(addProduct),ValidatorKey);
-        this.showLogConnect(`Result: sendValidatorKey==> ${result?'SUCCESS':'FAIL'}`);
+        this.logOnView(`Result: sendValidatorKey==> ${result?'SUCCESS':'FAIL'}`);
         const uid = result?.uid||'';
         console.log(TAG,'changeDeviceName sendValidatorKey begin01');
         // firebase_uid
 
         let resultRequest =  await Util.excuteWithTimeout(APIService.sendInfoStakeToSlack({productId:product_id,qrcodeDevice:this.deviceIdFromQrcode,miningKey:ValidatorKey,publicKey:PublicKeyCheckEncode,sendValidatorKey:result,paymentAddress:PaymentAddress,uid:uid }),8).catch(console.log);
         // if(!__DEV__){
-        this.showLogConnect(`Result: send thong tin toi Slack==> ${resultRequest?'SUCCESS':'FAIL'}`);
+        this.logOnView(`Result: send thong tin toi Slack==> ${resultRequest?'SUCCESS':'FAIL'}`);
         console.log(TAG,'changeDeviceName sendValidatorKey begin02');
         resultRequest =  await Util.excuteWithTimeout(APIService.requestStake({
           ProductID:product_id,
@@ -409,7 +409,7 @@ class SetupDevice extends BaseComponent {
           qrCodeDeviceId:this.deviceIdFromQrcode,
           PaymentAddress:PaymentAddress
         }),8).catch(console.log);
-        this.showLogConnect(`Result: requestStake ==> ${resultRequest?'SUCCESS':'FAIL'}`);
+        this.logOnView(`Result: requestStake ==> ${resultRequest?'SUCCESS':'FAIL'}`);
         console.log(TAG,'changeDeviceName sendValidatorKey begin03');
         // }
         // console.log(TAG,'changeDeviceName resultRequest = ',resultRequest);
@@ -435,11 +435,11 @@ class SetupDevice extends BaseComponent {
     } catch (error) {
       console.log(TAG,'changeDeviceName error');
       // __DEV__ && this.showToastMessage(error.message);
-      this.showLogConnect(`Result: connected Node ==> FAIL- message ${error.message}`);
+      this.logOnView(`Result: connected Node ==> FAIL- message ${error.message}`);
       
       throw new Error(errMessage);
     }
-    this.showLogConnect('Result: connected Node ==> SUCCESS');
+    this.logOnView('Result: connected Node ==> SUCCESS');
     return true;
   }
 
@@ -665,7 +665,7 @@ class SetupDevice extends BaseComponent {
 
       // const result = await Util.tryAtMost(checkConnectWifi,60,2,2).catch(console.log)||false;
       const result = await Util.delay(5)??true;
-      this.showLogConnect(result?'quay ve lai WIFI cu => SUCCESS':'quay ve lai WIFI cu => FAIL');
+      this.logOnView(result?'quay ve lai WIFI cu => SUCCESS':'quay ve lai WIFI cu => FAIL');
       console.log(TAG, 'connectZMQ begin end  ',result);
       return result;
 
@@ -728,12 +728,12 @@ class SetupDevice extends BaseComponent {
   checkConnectHotspot = async  ()=> {
 
     const { validSSID, validWPA,isRenderUI } = this.state;
-    this.showLogConnect('bat dat check da connect hotspot chua?');
+    this.logOnView('bat dat check da connect hotspot chua?');
     // hienton test
     // await Util.delay(2);
     
     let isConnectedHotpost = await this.checkIsConnectedWithHotspot();
-    this.showLogConnect(isConnectedHotpost?'da connect roi':'chua connect va bat dau connect');
+    this.logOnView(isConnectedHotpost?'da connect roi':'chua connect va bat dau connect');
     
     // await Util.delay(2);
     ///////////////
@@ -745,7 +745,7 @@ class SetupDevice extends BaseComponent {
       objConnection = await Util.tryAtMost(connectHotspot,3,1).catch(e=>new ExHandler(new CustomError(knownCode.node_can_not_connect_hotspot)).throw());
       objConnection = objConnection instanceof Error ?null:objConnection;
 
-      this.showLogConnect(objConnection ?`connect HOTSPOT - name = ${objConnection.name||''} thanh cong`:'sau khi thu 3 lan connect hotspot va FAIL');
+      this.logOnView(objConnection ?`connect HOTSPOT - name = ${objConnection.name||''} thanh cong`:'sau khi thu 3 lan connect hotspot va FAIL');
     }
 
     if(!objConnection){
@@ -763,10 +763,10 @@ class SetupDevice extends BaseComponent {
       if (_.includes(ssid, product)) {
         this.CurrentPositionStep = 1;
         console.log(TAG,'checkConnectHotspot OKKKKKK');
-        this.showLogConnect('Bat dau send Thong tin toi cho MINER');
+        this.logOnView('Bat dau send Thong tin toi cho MINER');
         await NodeService.cleanOldDataForSetup();
         let result = await Util.excuteWithTimeout(this.sendZMQ(),450);
-        this.showLogConnect(result? 'Send Thong tin MINER thanh cong':'Send Thong tin MINER FAIL---');
+        this.logOnView(result? 'Send Thong tin MINER thanh cong':'Send Thong tin MINER FAIL---');
         return result;
       }
     }
@@ -779,7 +779,7 @@ class SetupDevice extends BaseComponent {
    */
   authFirebase = async (productInfo) =>{
     try {
-      this.showLogConnect('Bat dau Auth Firebase');
+      this.logOnView('Bat dau Auth Firebase');
       if(_.isEmpty(productInfo)){
         return {};
       }
@@ -791,10 +791,10 @@ class SetupDevice extends BaseComponent {
         return _.isEmpty( resultFbUID) ? new CustomError(knownCode.node_auth_firebase_fail):resultFbUID;
       };
       let authFirebase = await Util.tryAtMost(authFirebaseFunc,3,3);
-      this.showLogConnect(authFirebase?'Auth Firebase=> SUCCESS':'Auth Firebase=> FAIL');
+      this.logOnView(authFirebase?'Auth Firebase=> SUCCESS':'Auth Firebase=> FAIL');
       return authFirebase;
     } catch (error) {
-      this.showLogConnect('Auth Firebase=> FAIL');
+      this.logOnView('Auth Firebase=> FAIL');
       new ExHandler(new CustomError(knownCode.node_auth_firebase_fail,{rawCode:error})).throw();
     }
   }
@@ -805,7 +805,7 @@ class SetupDevice extends BaseComponent {
   tryVerifyCode = async()=> {
     
     try {
-      this.showLogConnect('Bat dat tryVerifyCode');
+      this.logOnView('Bat dat tryVerifyCode');
       const { verifyCode } = this.state;
       console.log(TAG,' tryVerifyCode begin01 connected = ',this.isHaveNetwork);
     
@@ -819,11 +819,11 @@ class SetupDevice extends BaseComponent {
       this.setState({
         addProduct:resultStep2
       });
-      this.showLogConnect(`tryVerifyCode=> ${resultStep2?'SUCCESS':'FAIL'}`);
+      this.logOnView(`tryVerifyCode=> ${resultStep2?'SUCCESS':'FAIL'}`);
       return resultStep2;
     } catch (error) {
       console.log(TAG,' tryVerifyCode errrrorr ---- ',error);
-      this.showLogConnect('tryVerifyCode=> FAIL');
+      this.logOnView('tryVerifyCode=> FAIL');
       new ExHandler(new CustomError(knownCode.node_verify_code_fail)).throw();
     }
     
