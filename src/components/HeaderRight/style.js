@@ -25,6 +25,10 @@ export const tokenInfoStyle = StyleSheet.create({
   descContainer: {
     marginBottom: 40,
   },
+  verifyText: {
+    color: COLORS.green,
+    ...FONT.STYLE.medium
+  },
   desc: {
     fontSize: 16,
     letterSpacing: 0,

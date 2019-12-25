@@ -176,6 +176,9 @@ class TokenInfo extends Component {
         <ScrollView>
           <Container>
             {
+              isVerified && <VerifiedText containerStyle={{ marginBottom: 10 }} style={tokenInfoStyle.verifyText} text='Verified Coin' isVerified={isVerified} />
+            }
+            {
               !!incognitoInfo?.description && (
                 <View style={tokenInfoStyle.descContainer}>
                   <Text>{incognitoInfo?.description}</Text>
