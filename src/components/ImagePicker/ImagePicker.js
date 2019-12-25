@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, View, Image, Text, TouchableOpacity } from '@src/components/core';
+import defaultTokenIcon from '@src/assets/images/icons/default_token_icon.png';
 import styles from './styles';
 
 class ImagePicker extends Component {
 
   render() {
     const { onPick, file, text, defaultImageUri, textButton } = this.props;
+    const uri = file?.uri || defaultImageUri;
 
     return (
       <TouchableOpacity style={styles.container} onPress={onPick}>
         <View style={styles.leftContainer}>
-          {
-            (file?.uri || defaultImageUri) && <Image style={styles.image} source={{ uri: file.uri || defaultImageUri }} />
-          }
+          <Image style={styles.image} source={uri ? { uri } : defaultTokenIcon} />
         </View>
         <View style={styles.rightContainer}>
           <Text style={styles.text}>{text || 'Upload your image'}</Text>

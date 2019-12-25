@@ -112,7 +112,7 @@ export const getPTokenList = () => async (dispatch) => {
   try {
     const tokens = await getTokenList();
 
-    dispatch(setListPToken(tokens?.filter((t: PToken) => t.verified)));
+    dispatch(setListPToken(tokens));
     
     return tokens;
   } catch (e) {

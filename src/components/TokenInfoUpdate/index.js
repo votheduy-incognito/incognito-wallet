@@ -29,6 +29,7 @@ class TokenInfoUpdateContainer extends Component {
         tokenId: incognitoInfo?.tokenID,
         symbol: incognitoInfo?.symbol,
         name: incognitoInfo?.name,
+        txId: incognitoInfo?.txId,
         ...isNotEmpty(description) ? { description } : {},
         ...isNotEmpty(showOwnerAddress) ? { showOwnerAddress } : {},
         ...isNotEmpty(logo) ? { logoFile: logo } : {}

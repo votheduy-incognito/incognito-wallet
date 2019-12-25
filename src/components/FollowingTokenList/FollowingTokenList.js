@@ -7,21 +7,14 @@ import CryptoItemCard from '../CryptoItemCard';
 
 class FollowingTokenList extends Component {
   render() {
-    const { accountGettingBalanceList, tokenGettingBalanceList, onSelectToken, account, tokens, excludeTokenIds } = this.props;
+    const { onSelectToken, account, tokens, excludeTokenIds } = this.props;
 
     return (
       <View>
         {
           !excludeTokenIds.includes(CONSTANT_COMMONS.PRV_TOKEN_ID) && (
             <CryptoItemCard
-              token={{
-                symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
-                id: CONSTANT_COMMONS.PRV_TOKEN_ID,
-                amount: account?.value ?? null,
-                name: 'Incognito',
-                fullName: 'Privacy',
-              }}
-              isGettingBalance={accountGettingBalanceList?.includes(account?.name)}
+              tokenId={CONSTANT_COMMONS.PRV_TOKEN_ID}
               onPress={() => onSelectToken(CONSTANT_COMMONS.PRV_TOKEN_ID)}
             />
           )
@@ -31,8 +24,7 @@ class FollowingTokenList extends Component {
             <CryptoItemCard
               key={token?.id}
               onPress={() => onSelectToken(token?.id)}
-              token={token}
-              isGettingBalance={tokenGettingBalanceList?.includes(token?.id)}
+              tokenId={token?.id}
             />
           ))
         }
@@ -42,15 +34,11 @@ class FollowingTokenList extends Component {
 }
 
 FollowingTokenList.defaultProps = {
-  accountGettingBalanceList: [],
-  tokenGettingBalanceList: [],
   tokens: [],
   excludeTokenIds: []
 };
 
 FollowingTokenList.propTypes = {
-  accountGettingBalanceList: PropTypes.arrayOf(PropTypes.string),
-  tokenGettingBalanceList: PropTypes.arrayOf(PropTypes.string),
   onSelectToken: PropTypes.func.isRequired,
   account: PropTypes.object.isRequired,
   tokens: PropTypes.arrayOf(PropTypes.object),

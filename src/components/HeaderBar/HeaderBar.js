@@ -19,7 +19,11 @@ const HeaderBar = (props) => {
       </View>
       <View style={styles.center}>
         <View style={styles.titleGroup}>
-          <Text style={[styles.title, headerTitleStyle, textColor && { color: textColor }]} numberOfLines={1} ellipsizeMode='tail'>{title}</Text>
+          {
+            React.isValidElement(title)
+              ? title
+              : <Text style={[styles.title, headerTitleStyle, textColor && { color: textColor }]} numberOfLines={1} ellipsizeMode='tail'>{title}</Text>
+          }
           { subTitle && <Text style={[styles.subTitle, headerSubTitleStyle]} numberOfLines={1} ellipsizeMode='tail'>{subTitle}</Text>}
         </View>
       </View>

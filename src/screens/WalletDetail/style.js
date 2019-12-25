@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { THEME, FONT, COLORS } from '@src/styles';
+import TextStyle from '@src/styles/TextStyle';
 
 const style = StyleSheet.create({
   container: {
@@ -119,6 +120,11 @@ const style = StyleSheet.create({
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  headerTitleText: {
+    ...TextStyle.bigText,
+    ...FONT.STYLE.bold,
+    color: COLORS.white,
   }
 });
 

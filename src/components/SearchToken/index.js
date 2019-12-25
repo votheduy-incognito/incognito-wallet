@@ -2,8 +2,9 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { fromPairs } from 'lodash';
 import { withNavigation } from 'react-navigation';
-import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
+import { accountSeleclor, tokenSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import accountService from '@src/services/wallet/accountService';
 import tokenService from '@src/services/wallet/tokenService';
 import { getPTokenList } from '@src/redux/actions/token';
@@ -13,55 +14,8 @@ import PToken from '@src/models/pToken';
 import internalTokenModel from '@src/models/token';
 import { ExHandler } from '@src/services/exception';
 import { View } from 'react-native';
-import { CONSTANT_COMMONS } from '@src/constants';
-import { NETWORK_NAME_ID } from './TokenItem';
 import SearchToken from './SearchToken';
 import { Toast, ActivityIndicator, } from '../core';
-
-const normalizeToken = ({ data, isPToken, isInternalToken }) => {
-  if (isPToken) {
-    const isPrivateToken = data?.type === CONSTANT_COMMONS.PRIVATE_TOKEN_TYPE.TOKEN;
-    const isERC20 = isPrivateToken && data?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20;
-    const isBep2 = isPrivateToken && data?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB_BEP2;
-    const isPrivateCoin = data?.type === CONSTANT_COMMONS.PRIVATE_TOKEN_TYPE.COIN;
-    let networkNameId;
-    let networkName;
-
-    if (isPrivateCoin) {
-      networkNameId = NETWORK_NAME_ID.USE_COIN_NAME;
-      networkName = `${data?.name} network`;
-    } else if (isERC20) {
-      networkNameId = NETWORK_NAME_ID.ERC20;
-      networkName = 'ERC20 network';
-    } else if (isBep2) {
-      networkNameId = NETWORK_NAME_ID.BEP2;
-      networkName = 'BEP2 network';
-    }
-    
-    return ({
-      tokenId: data?.tokenId,
-      name: data?.name,
-      symbol: data?.symbol,
-      isPrivateToken,
-      isPrivateCoin,
-      isBep2,
-      isERC20,
-      networkNameId,
-      networkName
-    });
-  }
-
-  if (isInternalToken) {
-    return ({
-      tokenId: data?.id,
-      name: data?.name,
-      symbol: data?.symbol,
-      isIncognitoToken: true,
-      networkNameId: NETWORK_NAME_ID.INCOGNITO,
-      networkName: 'Incognito network'
-    });
-  }
-};
 
 export class SearchTokenContainer extends PureComponent {
   state = {
@@ -95,19 +49,18 @@ export class SearchTokenContainer extends PureComponent {
   getAvaiableTokens = async () => {
     try {
       const { internalTokens } = this.state;
-      const { pTokens, followedTokens } = this.props;
+      const { followedTokens, pTokens, getPrivacyDataByTokenID } = this.props;
       const followedTokenIds: Array = followedTokens.map(t => t?.id) || [];
-
-      const normalizedTokens = [
-        ...internalTokens
-          ?.filter(t => !pTokens?.find(pToken => pToken.tokenId === t.id))
-          ?.map(t => normalizeToken({ data: t, isInternalToken: true })) || [],
-        ...pTokens?.map(t => normalizeToken({ data: t, isPToken: true })) || []
-      ];
+      const allTokenIds = Object.keys(fromPairs([
+        ...internalTokens?.map(t => ([t?.id])) || [],
+        ...pTokens?.map(t => ([t?.tokenId])) || []
+      ]));
 
       const tokens = [];
 
-      normalizedTokens?.forEach(token => {
+      allTokenIds?.forEach(tokenId => {
+        const token = getPrivacyDataByTokenID(tokenId);
+
         if (token?.name && token?.symbol && token.tokenId) {
           let _token = { ...token };
 
@@ -118,7 +71,7 @@ export class SearchTokenContainer extends PureComponent {
           tokens.push(_token);
         }
       });
-
+      
       this.setState({ tokens });
 
       return tokens || [];
@@ -208,6 +161,7 @@ export class SearchTokenContainer extends PureComponent {
 
 const mapStateToProps = (state) => ({
   followedTokens: tokenSeleclor.followed(state),
+  getPrivacyDataByTokenID: selectedPrivacySeleclor.getPrivacyDataByTokenID(state),
   pTokens: pTokens(state),
   account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet
@@ -230,6 +184,7 @@ SearchTokenContainer.propTypes = {
   account: PropTypes.object.isRequired,
   wallet: PropTypes.object.isRequired,
   setWallet: PropTypes.func.isRequired,
+  getPrivacyDataByTokenID: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
 };
 

@@ -10,6 +10,7 @@ import addIcon from '@src/assets/images/icons/add_outline.png';
 import { ExHandler } from '@src/services/exception';
 import { debounce, remove } from 'lodash';
 import routeNames from '@src/router/routeNames';
+import TokenInfo, { showTokenInfo } from '@src/components/HeaderRight/TokenInfo';
 import { searchPTokenStyle, emptyStyle } from './styles';
 import TokenItem from './TokenItem';
 
@@ -88,6 +89,7 @@ class SearchToken extends Component {
         onUnFollowToken={this.handleUnFollowToken}
         token={item}
         isProcessing={processingTokens.includes(item.tokenId)}
+        onPress={showTokenInfo}
         divider
       />
     );
@@ -99,10 +101,11 @@ class SearchToken extends Component {
     try {
       const { tokens } = this.props;
       const { query } = this.state;
+
       const filteredTokenIds = tokens
         .filter(t => {
           const lowerCaseTerm = query ? String(query).toLowerCase() : query;
-          const lowerCaseTokenName = [t.name, t.symbol, t.networkName].join(' ')?.toLowerCase();
+          const lowerCaseTokenName = [t.name, t.symbol, t.networkName, t.pSymbol].join(' ')?.toLowerCase();
           return lowerCaseTokenName.includes(lowerCaseTerm || '');
         }).map(t => t.tokenId);
       this.setState({ filteredTokenIds });
@@ -212,6 +215,7 @@ class SearchToken extends Component {
       <View style={searchPTokenStyle.container}>
         {this.renderHeader()}
         {this.renderTokenList()}
+        <TokenInfo />
       </View>
     );
   }
@@ -221,7 +225,6 @@ SearchToken.propTypes = {
   tokens: PropTypes.arrayOf(PropTypes.shape({
     tokenId: PropTypes.string.isRequired,
     symbol: PropTypes.string.isRequired,
-    pSymbol: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
   })).isRequired,
   handleAddFollowToken: PropTypes.func.isRequired,

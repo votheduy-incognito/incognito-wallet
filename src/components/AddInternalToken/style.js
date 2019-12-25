@@ -4,12 +4,24 @@ import { StyleSheet } from 'react-native';
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    height: 1000,
   },
   form: {
     flex: 1,
     flexDirection: 'column',
     width: '100%',
+  },
+  verifyInfoContainer: {
+    marginTop: 25,
+  },
+  verifyInfoHeader: {
+    flexDirection: 'row',
+  },
+  verifyInfoLabel: {
+    fontSize: 14,
+    marginBottom: 10,
+    marginLeft: 10,
+    top: -2,
+    fontStyle: 'italic'
   },
   block: {
     backgroundColor: COLORS.white,

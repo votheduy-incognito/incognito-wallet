@@ -46,7 +46,7 @@ class AddToken extends Component {
               <Icons name='angle-right' style={styles.selectNetworkValueIcon} size={16} />
             </TouchableOpacity>
           </View>
-          <Modal visible={isShowChooseType} close={this.toggleChooseType} containerStyle={styles.modalContainer} headerText='Select a network'>
+          <Modal visible={isShowChooseType} close={this.toggleChooseType} containerStyle={styles.modalContainer} headerText='Select a token type'>
             <Container style={styles.typesContainer}>
               {
                 Object.values(TYPES).map((TYPE, index, allType) => (

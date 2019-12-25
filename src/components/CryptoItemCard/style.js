@@ -18,7 +18,7 @@ export default StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
   },
-  balanceContainer: {
+  rightContainer: {
     flex: 3,
     flexDirection: 'column',
     justifyContent: 'center',
@@ -27,12 +27,13 @@ export default StyleSheet.create({
   text: {},
   mainNameText: {
     ...THEME.text.defaultTextStyle,
-    fontWeight: '400'
+    fontWeight: '400',
   },
   subNameText: {
     ...THEME.text.defaultTextStyle,
     color: COLORS.lightGrey1,
     fontSize: 14,
+    marginTop: 3
   },
   amountText: {
 

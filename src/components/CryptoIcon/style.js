@@ -5,13 +5,10 @@ export default StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 17,
     overflow: 'hidden',
     backgroundColor: COLORS.lightGrey10
   },
   logo: {
-    width: 36,
-    height: 36,
     overflow: 'hidden',
     resizeMode: 'contain'
   },
@@ -23,5 +20,14 @@ export default StyleSheet.create({
     position: 'absolute',
     alignItems: 'center',
     height: '100%'
+  },
+  verifiedFlagContainer: {
+    backgroundColor: COLORS.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+  },
+  verifiedFlag: {
+    color: COLORS.green,
   },
 });
