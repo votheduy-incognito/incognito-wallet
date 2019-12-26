@@ -4,14 +4,6 @@ export const DEX_CHAIN_ACCOUNT = {
   PaymentAddress: '15pABFiJVeh9D5uiQEhQX4SVibGGbdAVipQxBdxkmDqAJaoG1EdFKHBrNfs'
 };
 export const PRV_ID = '0000000000000000000000000000000000000000000000000000000000000004';
-export const PRV = {
-  id: PRV_ID,
-  name: 'Privacy',
-  symbol: 'PRV',
-  pDecimals: 9,
-  hasIcon: true,
-  originalSymbol: 'PRV',
-};
 
 const BIG_COINS = {
   PRV: PRV_ID,

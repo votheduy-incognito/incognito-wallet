@@ -56,9 +56,9 @@ const style = StyleSheet.create({
   },
   group_first_open:{
     width:'100%',
-    paddingHorizontal:scaleInApp(20),
-    marginBottom:scaleInApp(20),
+    paddingHorizontal: 25,
     alignSelf:'flex-end',
+    backgroundColor: COLORS.white,
   },
   group_first_open_text01:{
     textAlign:'center',

@@ -29,6 +29,7 @@ import accountService from '@services/wallet/accountService';
 import {ExHandler} from '@services/exception';
 import DialogLoader from '@components/DialogLoader';
 import PrimaryRefreshControl from '@components/core/PrimaryRefreshControl';
+import WelcomeNodes from '@screens/Node/components/Welcome';
 import style from './style';
 import Header from './Header';
 import VNode from './components/VNode';
@@ -492,17 +493,11 @@ class Node extends BaseScreen {
 
   renderNode({ item }) {
     const {
-      listDevice,
       isFetching,
       withdrawing,
       withdrawRequests,
       lastWithdrawTxs,
     } = this.state;
-
-    if (!isFetching && _.isEmpty(listDevice)) {
-      return this.renderFirstOpenApp();
-    }
-
 
     if (item.Type === DEVICES.MINER_TYPE) {
       return (

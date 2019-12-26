@@ -12,6 +12,7 @@ import {
   getEstimateFeeForPToken,
   getTransactionByHash
 } from '@services/wallet/RpcClientService';
+import {PRV} from '@services/wallet/tokenService';
 import dexUtils from '@utils/dex';
 import {AddLiquidityHistory} from '@models/dexHistory';
 import addLiquidityIcon from '@src/assets/images/icons/add_liquidity.png';
@@ -22,7 +23,7 @@ import CODE from '@src/services/exception/customError/code';
 import {ExHandler} from '@services/exception';
 import Input from '../Input';
 import Loading from '../Loading';
-import {DEX_CHAIN_ACCOUNT, MESSAGES, MIN_INPUT, MULTIPLY, PRV, PRV_ID, SECOND} from '../../constants';
+import {DEX_CHAIN_ACCOUNT, MESSAGES, MIN_INPUT, MULTIPLY, PRV_ID, SECOND} from '../../constants';
 import {mainStyle} from '../../style';
 
 class Pool extends React.Component {
@@ -107,7 +108,7 @@ class Pool extends React.Component {
   async estimateFee(token, amount) {
     let fee;
     try {
-      if (token === PRV) {
+      if (token.id === PRV_ID) {
         fee = await this.estimateFeeForMainCrypto(amount);
       } else {
         fee = await this.estimateFeeForToken(token, amount);
@@ -368,7 +369,7 @@ class Pool extends React.Component {
 
   addToken = (token, value, pairId, fee) => {
     const { wallet, account } = this.props;
-    if (token === PRV) {
+    if (token.id === PRV_ID) {
       return accountService.createAndSendTxWithNativeTokenContribution(wallet, account, fee, pairId, value);
     } else {
       const tokenParams = this.createTokenParams(token);

@@ -17,7 +17,7 @@ import _ from 'lodash';
 import Device from '@models/device';
 import {DEX_CHAIN_ACCOUNT} from '@screens/Dex/constants';
 import routeNames from '@routers/routeNames';
-import { USDT_TOKEN_ID } from 'react-native-dotenv';
+import config from '@src/constants/config';
 import style from './styles';
 import AddStake from './AddStake';
 
@@ -38,8 +38,18 @@ class AddStakeContainer extends BaseScreen {
   }
 
   async componentDidMount() {
-    this.getStakeAmount().catch((error) => new ExHandler(error).showErrorToast(true));
-    this.getBalance().catch((error) => new ExHandler(error).showErrorToast(true));
+    const { navigation } = this.props;
+    this.listener = navigation.addListener(
+      'didFocus',
+      () => {
+        this.getStakeAmount().catch((error) => new ExHandler(error).showErrorToast(true));
+        this.getBalance().catch((error) => new ExHandler(error).showErrorToast(true));
+      }
+    );
+  }
+
+  componentWillUnmount() {
+    this.listener.remove();
   }
 
 
@@ -79,10 +89,10 @@ class AddStakeContainer extends BaseScreen {
   handleBuy = async () => {
     const { navigation } = this.props;
     const { balance, amount } = this.state;
-    const neededAmount = amount - balance + 1;
+    const neededAmount = amount - balance + 1e9;
     navigation.navigate(routeNames.Dex, {
       outputValue: neededAmount,
-      inputTokenId: USDT_TOKEN_ID || '880ea0787f6c1555e59e3958a595086b7802fc7a38276bcd80d4525606557fbc',
+      inputTokenId: config.USDT_TOKEN_ID,
       outputTokenId: CONSTANT_COMMONS.PRV.id,
       mode: 'trade',
     });

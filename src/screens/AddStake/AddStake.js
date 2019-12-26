@@ -3,7 +3,6 @@ import LoadingTx from '@src/components/LoadingTx';
 import PropTypes from 'prop-types';
 import React from 'react';
 import BaseScreen from '@src/screens/BaseScreen';
-import {COLORS, FONT} from '@src/styles';
 import {CONSTANT_COMMONS} from '@src/constants';
 import formatUtils from '@src/utils/format';
 import convert from '@src/utils/convert';
@@ -24,11 +23,11 @@ class AddStake extends BaseScreen {
   }
 
   renderBuy() {
-    const { amount, onBuy } = this.props;
+    const { amount, onBuy, fee } = this.props;
     const formatAmount = formatUtils.amount(amount, pDecimals);
     return (
       <View style={styles.buy}>
-        <Text style={[styles.desc, styles.firstLine]}>You need {formatAmount} PRV to stake this node.</Text>
+        <Text style={[styles.desc, styles.firstLine]}>You need {formatAmount} PRV + {formatUtils.amount(fee, pDecimals)} {symbol} to stake this node.</Text>
         <Text style={styles.desc}>Please make sure you also have enough to cover the network fee.</Text>
         <Button style={styles.button} title="Buy PRV" onPress={onBuy} />
       </View>

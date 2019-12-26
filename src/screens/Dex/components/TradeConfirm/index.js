@@ -11,6 +11,7 @@ import {
 import { TextInput } from 'react-native';
 import chevronRight from '@src/assets/images/icons/chevron_right.png';
 import { isExchangeRatePToken } from '@src/services/wallet/RpcClientService';
+import {PRV} from '@services/wallet/tokenService';
 import {CONSTANT_COMMONS} from '@src/constants';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
@@ -18,7 +19,7 @@ import greyRightArrow from '@src/assets/images/icons/grey_right_arrow.png';
 import {Overlay, Icon} from 'react-native-elements';
 import Help from '@components/Help';
 import FullScreenLoading from '@components/FullScreenLoading/index';
-import {PRV, MESSAGES, MIN_VALUE} from '../../constants';
+import {MESSAGES, MIN_VALUE, PRV_ID} from '../../constants';
 import style from './style';
 import { mainStyle } from '../../style';
 
@@ -485,7 +486,7 @@ class TradeConfirm extends React.Component {
               <Text style={style.balanceSymbol}>{inputToken.symbol}</Text>
             </View>
           </View>
-          { inputToken !== PRV && (
+          { inputToken.id !== PRV_ID && (
             <View style={[mainStyle.textRight]}>
               <View>
                 <Text style={[style.grey, mainStyle.textRight]}>Balance:</Text>

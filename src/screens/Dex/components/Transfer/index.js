@@ -23,12 +23,12 @@ import leftArrow from '@src/assets/images/icons/left_arrow.png';
 import CryptoIcon from '@components/CryptoIcon';
 import EstimateFee from '@components/EstimateFee';
 import FullScreenLoading from '@components/FullScreenLoading';
-import tokenService from '@services/wallet/tokenService';
+import tokenService, {PRV} from '@services/wallet/tokenService';
 import {DepositHistory, WithdrawHistory} from '@models/dexHistory';
 import Toast from '@components/core/Toast/Toast';
 import VerifiedText from '@components/VerifiedText/index';
 import TransferSuccessPopUp from '../TransferSuccessPopUp';
-import {PRV, WAIT_TIME, MESSAGES, MIN_INPUT, MULTIPLY, MAX_WAITING_TIME} from '../../constants';
+import {WAIT_TIME, MESSAGES, MIN_INPUT, MULTIPLY, MAX_WAITING_TIME, PRV_ID} from '../../constants';
 import { mainStyle, modalStyle, tokenStyle } from '../../style';
 
 const MAX_TRIED = MAX_WAITING_TIME / WAIT_TIME;
@@ -133,7 +133,7 @@ class Transfer extends React.PureComponent {
   async deposit({ token, amount, account, fee, feeUnit }) {
     const { dexMainAccount, onAddHistory } = this.props;
     let res;
-    if (token === PRV) {
+    if (token.id === PRV_ID) {
       res = await this.sendPRV(account, dexMainAccount, amount, fee);
     } else {
       res = await this.sendPToken(account, dexMainAccount, token, amount, null, feeUnit === PRV.symbol ? fee : 0, feeUnit !== PRV.symbol ? fee : 0);
@@ -152,7 +152,7 @@ class Transfer extends React.PureComponent {
     let res2;
 
     try {
-      if (token === PRV) {
+      if (token.id === PRV_ID) {
         res1 = await sendPRV(dexMainAccount, dexWithdrawAccount, amount + fee, fee);
         newHistory = new WithdrawHistory(res1, token, amount, rawFee, PRV.symbol, account);
         WithdrawHistory.currentWithdraw = newHistory;
@@ -200,7 +200,7 @@ class Transfer extends React.PureComponent {
     if (!error && token && amount && account && !sending) {
       this.updateTransfer({ chainError: null });
       try {
-        if (token !== PRV && feeUnit === PRV.symbol) {
+        if (token.id !== PRV_ID && feeUnit === PRV.symbol) {
           prvBalance = await accountService.getBalance(prvAccount, wallet);
           prvFee = fee;
           if (prvFee > prvBalance) {
