@@ -14,9 +14,7 @@ const TextInput = ({
   onFocus,
   onBlur,
   clearable,
-  value,
   maxLength,
-  defaultValue,
   ...props
 }) => {
   const [focus, setFocus] = useState(false);
@@ -46,6 +44,7 @@ const TextInput = ({
   }
 
   function getLength() {
+    const { value, defaultValue } = props || {};
     const data = value || defaultValue || '';
     return data?.length || 0;
   }
@@ -102,6 +101,7 @@ TextInput.defaultProps = {
   onFocus: undefined,
   onBlur: undefined,
   style: null,
+  maxLength: null
 };
 
 TextInput.propTypes = {
@@ -114,6 +114,7 @@ TextInput.propTypes = {
   onBlur: PropTypes.func,
   onFocus: PropTypes.func,
   style: PropTypes.object,
+  maxLength: PropTypes.number
 };
 
 export default TextInput;
