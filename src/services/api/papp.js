@@ -56,3 +56,19 @@ export const submitPapp = ({
     return new PappModel(res);
   });
 };
+
+
+
+export const getPappList = ({ keyword, status, type, userId, page = 1, limit = 1000 } = {}) => http.get('papp/list', {
+  params: {
+    limit,
+    page,
+    ...userId ? { user_id: userId } : {},
+    ...type ? { type } : {},
+    ...status ? { status } : {},
+    ...keyword ? { keyword } : {},
+  }
+}).then(res => {
+  const { PApps } = res || {};
+  return PApps?.map(papp => new PappModel(papp));
+});

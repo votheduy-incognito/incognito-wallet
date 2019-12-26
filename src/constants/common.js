@@ -33,6 +33,24 @@ const TRACK_LOG_EVENT_STATUS = {
   PASS:'PASS',
   FAIL:'FAIL'
 };
+
+const PAPP = {
+  TYPE: {
+    EXCHANGE: 1,
+    THUNDER_CORE_GAME: 2,
+    GAME: 3,
+    MARKETPLACE: 4,
+    SOCIAL: 5,
+    UTILITY: 6,
+    OTHER: 7
+  },
+  STATUS: {
+    REVIEWING: 1,
+    APPROVED: 2,
+    REJECTED: 3
+  }
+};
+
 export default {
   // old varibles, maybe remove later
   STAKING_TYPES: {
@@ -52,6 +70,7 @@ export default {
   CRYPTO_SYMBOL,
   TOKEN_SYMBOL,
   TOKEN_ID,
+  PAPP,
   PRV_TOKEN_ID: '0000000000000000000000000000000000000000000000000000000000000004',
   DECIMALS: {
     MAIN_CRYPTO_CURRENCY: 9,

@@ -1,33 +1,12 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Container, Button, View, ScrollView, TextInput, TouchableOpacity } from '@src/components/core';
+import { Container, Button, View, ScrollView, TextInput, TouchableOpacity, RefreshControl } from '@src/components/core';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import routeNames from '@src/router/routeNames';
 import { COLORS } from '@src/styles';
-// import rollDiceImg from '@src/assets/images/papp/diceroll.png';
 import Icons from 'react-native-vector-icons/MaterialIcons';
-import helloWorldImg from '@src/assets/images/papp/helloworld.png';
 import PappItem from './PappItem';
 import styles from './style';
-
-const PAPPS = [
-  {
-    id: 1,
-    name: 'Hello World',
-    image: helloWorldImg,
-    url: 'http://35.185.237.133/',
-    title: 'Hello World',
-    desc: 'This is a demonstration of a basic pApp'
-  },
-  // {
-  //   id: 1,
-  //   name: 'Get crypto rich',
-  //   image: rollDiceImg,
-  //   url: 'https://enigmatic-sea-09447.herokuapp.com/',
-  //   title: 'Get crypto rich',
-  //   desc: 'Predict the outcome,  shake the dice, win the crypto.'
-  // }
-];
 
 class Papps extends PureComponent {
   constructor() {
@@ -46,12 +25,12 @@ class Papps extends PureComponent {
   onGo = (pApp = {}) => {
     try {
       const { url } = this.state;
-      const { name, url: pappUrl } = pApp;
-      const _url = pappUrl || url;
+      const { title, link } = pApp;
+      const _url = link || url;
 
       if (this.urlValidator(_url)) {
         const { navigation } = this.props;
-        navigation.navigate(routeNames.pApp, { url: _url, appName: name ?? _url });
+        navigation.navigate(routeNames.pApp, { url: _url, appName: title ?? _url });
       }
     } catch (e) {
       new ExHandler(e, 'Sorry, we can not open this Papp.').showErrorToast();
@@ -80,6 +59,7 @@ class Papps extends PureComponent {
 
   render() {
     const { url } = this.state;
+    const { papps, onReload, isGettingPapps } = this.props;
 
     return (
       <View style={styles.container}>
@@ -105,19 +85,26 @@ class Papps extends PureComponent {
             <Icons name='add' color={COLORS.white} size={30} />
           </Button>
         </View>
-        <ScrollView contentContainerStyle={{ minHeight: '100%' }}>
+        <ScrollView
+          contentContainerStyle={{ minHeight: '100%' }}
+          refreshControl={(
+            <RefreshControl
+              refreshing={isGettingPapps}
+              onRefresh={onReload}
+            />
+          )}
+        >
           <Container style={styles.content}>
             {
-              PAPPS.map(({ id, image, desc, name, url, title }) => (
+              papps?.map(({ id, image1, shortDescription, link, title }) => (
                 <PappItem
                   style={styles.pappItem}
                   key={id}
-                  image={image}
+                  imageUrl={image1}
                   title={title}
-                  desc={desc}
-                  url={url}
-                  name={name}
-                  onPress={() => this.onGo({ id, image, desc, name, url, title })}
+                  desc={shortDescription}
+                  url={link}
+                  onPress={() => this.onGo({ id, link, title })}
                 />
               ))
             }
@@ -128,8 +115,15 @@ class Papps extends PureComponent {
   }
 }
 
+Papps.defaultProps = {
+  papps: []
+};
+
 Papps.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  papps: PropTypes.arrayOf(PropTypes.object),
+  onReload: PropTypes.func.isRequired,
+  isGettingPapps: PropTypes.bool.isRequired
 };
 
 export default Papps;
