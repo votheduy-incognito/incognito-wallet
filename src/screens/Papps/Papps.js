@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Container, Button, View, ScrollView, TextInput } from '@src/components/core';
+import { Container, Button, View, ScrollView, TextInput, TouchableOpacity } from '@src/components/core';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import routeNames from '@src/router/routeNames';
 import { COLORS } from '@src/styles';
 // import rollDiceImg from '@src/assets/images/papp/diceroll.png';
+import Icons from 'react-native-vector-icons/MaterialIcons';
 import helloWorldImg from '@src/assets/images/papp/helloworld.png';
 import PappItem from './PappItem';
 import styles from './style';
@@ -67,6 +68,16 @@ class Papps extends PureComponent {
     }); 
   }
 
+  onSubmitted = (/* pappInfo */) => {
+    const { navigation } = this.props;
+    navigation?.pop();
+  }
+
+  hanldeSubmitApp = () => {
+    const { navigation } = this.props;
+    navigation?.navigate(routeNames.PappSubmit, { onSubmitted: this.onSubmitted }); 
+  }
+
   render() {
     const { url } = this.state;
 
@@ -78,12 +89,21 @@ class Papps extends PureComponent {
             placeholder='Search or enter website URL'
             placeholderTextColor={COLORS.lightGrey4}
             style={styles.input}
-            inputStyle={{ color: COLORS.white }}
+            inputStyle={{ color: COLORS.white, paddingLeft: 10, }}
+            containerStyle={{ borderBottomWidth: 0 }}
             value={url}
             onChangeText={this.onChangeUrl}
             onFocus={this.handleAddProtocol}
+            onSubmitEditing={this.onGo}
+            prependView={(
+              <TouchableOpacity style={styles.goBtn} onPress={this.onGo}>
+                <Icons name='search' color={COLORS.white} size={30} />
+              </TouchableOpacity>
+            )}
           />
-          <Button title='GO' style={styles.submitBtn} onPress={this.onGo} />
+          <Button style={styles.submitBtn} onPress={this.hanldeSubmitApp}>
+            <Icons name='add' color={COLORS.white} size={30} />
+          </Button>
         </View>
         <ScrollView contentContainerStyle={{ minHeight: '100%' }}>
           <Container style={styles.content}>

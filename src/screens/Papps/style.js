@@ -20,19 +20,24 @@ const style = StyleSheet.create({
   },
   input: {
     flex: 1,
-    paddingHorizontal: 10,
     marginRight: 20,
     backgroundColor: '#979797',
     borderRadius: 8,
     color: COLORS.white
+  },
+  goBtn: {
+    height: '100%',
+    width: 40,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   submitBtn: {
     backgroundColor: COLORS.transparent,
     borderColor: COLORS.white,
     borderWidth: 2,
     overflow: 'hidden',
-    minWidth: 100,
-    borderRadius: 8
+    borderRadius: 8,
+    marginHorizontal: 3
   },
   pappItem: {
     marginVertical: 15
