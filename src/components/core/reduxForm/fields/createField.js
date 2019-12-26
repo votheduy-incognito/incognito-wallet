@@ -13,7 +13,7 @@ const customField = (field, render) => {
       <View style={styleSheet.field}>
         {render(renderProps)}
       </View>
-      {fieldProps?.meta?.visited && fieldProps?.meta?.error && <Text style={styleSheet.errorText}>{fieldProps.meta.error}</Text>}
+      {(fieldProps?.meta?.visited || fieldProps?.meta?.touched) && fieldProps?.meta?.error && <Text style={styleSheet.errorText}>{fieldProps.meta.error}</Text>}
     </View>
   );
 };

@@ -91,6 +91,36 @@ const bnbAddress = (value, { message } = {}) => value => {
 // the same as ETH
 const tomoAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'ETH', 'both') ? messageHanlder(message, value) ?? 'Invalid TOMO address' : undefined;
 
+/**
+ * 
+ * image/png, image/jpg, image/jpeg,...
+ */
+const fileTypes = (typeList, { message } = {}) => value => {
+  if (!value) return;
+  
+  const fileType = value?.type;
+  const found = typeList.find(type => {
+    if (!type) return false;
+    const pattern = new RegExp(`${type}$`, 'i');
+    return pattern.test(fileType);
+  });
+  return !found ? messageHanlder(message, value, typeList) ?? `Please use a valid type (${typeList?.join(', ')})` : undefined;
+};
+
+const maxFileSize = (sizeInBytes, { message } = {}) => value => {
+  if (!value) return;
+  
+  const fileSize = Math.round(Number(value?.size / (1024 * 8)) || 0);
+
+  if (fileSize <= 0) {
+    return 'Invalid file, please choose another file';
+  }
+
+  return fileSize > sizeInBytes ? messageHanlder(message, value, sizeInBytes) ?? `Please use a file smaller than ${sizeInBytes}kb` : undefined;
+};
+
+
+
 const combinedAmount = [
   required(),
   number(),
@@ -139,5 +169,7 @@ export default {
   notInList,
   combinedTokenName,
   combinedTokenSymbol,
-  combinedAccountName
+  combinedAccountName,
+  fileTypes,
+  maxFileSize
 };
