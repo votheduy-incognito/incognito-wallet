@@ -12,6 +12,10 @@ const Form = createForm(formName, {
   keepDirtyOnReinitialize: true,
 });
 const isEmail = validator.email();
+const imageValidate = [
+  validator.fileTypes(['image/png']),
+  validator.maxFileSize(50),
+];
 
 class TokenInfoUpdate extends Component {
   constructor(props) {
@@ -99,8 +103,8 @@ class TokenInfoUpdate extends Component {
                     text={'Update your coin\'s icon (optional, PNG and less than 50kb, changes will be reflected in about 1 hour.)'}
                     textButton='Upload'
                     style={styleSheet.input}
-                    maxSize={1024 * 50 * 8} // 50kb
                     defaultImageUri={image && `${image}?t=${updatedAt}`}
+                    validate={imageValidate}
                   />
                 </View>
               </View>
