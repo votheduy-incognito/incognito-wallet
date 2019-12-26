@@ -32,8 +32,15 @@ class Rewards extends PureComponent {
           key={data.length}
         >
           {
-            data.map(({ id, pDecimals, balance, symbol }) => (
-              <Reward key={id} tokenId={id} pDecimals={pDecimals} symbol={symbol} balance={balance} />
+            data.map(({ id, pDecimals, balance, symbol, isVerified }) => (
+              <Reward
+                key={id}
+                tokenId={id}
+                pDecimals={pDecimals}
+                symbol={symbol}
+                balance={balance}
+                isVerified={isVerified}
+              />
             ))
           }
         </Swiper>

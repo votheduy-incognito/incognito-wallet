@@ -1,17 +1,17 @@
 import LoadingContainer from '@src/components/LoadingContainer';
 import { getBalance, getInternalTokenList, getPTokenList, setListToken } from '@src/redux/actions/token';
 import { setDefaultAccount } from '@src/redux/actions/account';
-import { addHistory, getHistories, updateHistory, getHistoryStatus } from '@src/redux/actions/dex';
+import {addHistory, getHistories, updateHistory, getHistoryStatus, updatePairs} from '@src/redux/actions/dex';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import dexUtils, {DEX} from '@utils/dex';
+import dexUtil, {DEX} from '@utils/dex';
 import { getTokenList } from '@services/api/token';
 import { getPDEPairs } from '@services/wallet/RpcClientService';
 import tokenService from '@services/wallet/tokenService';
 import _ from 'lodash';
-import {PRIORITY_LIST, PRV} from '@screens/Dex/constants';
+import {PRIORITY_LIST} from '@screens/Dex/constants';
 import { ExHandler } from '@services/exception';
 import {accountSeleclor, selectedPrivacySeleclor} from '@src/redux/selectors';
 import convertUtil from '@utils/convert';
@@ -50,7 +50,7 @@ class DexContainer extends Component {
   }
 
   loadData = async () => {
-    const { getHistories, navigation } = this.props;
+    const { getHistories, navigation, updatePairs } = this.props;
     const { loading } = this.state;
 
     if (!this.listener) {
@@ -68,24 +68,7 @@ class DexContainer extends Component {
       const pTokens = await getTokenList();
       const chainTokens = await tokenService.getPrivacyTokens();
       const chainPairs = await getPDEPairs();
-      const tokens = [ PRV, ..._([...chainTokens, ...pTokens])
-        .uniqBy(item => item.tokenId || item.id)
-        .map(item => {
-          const pToken = pTokens.find(token => token.tokenId === (item.tokenId || item.id ));
-          return {
-            ...item,
-            id: item.tokenId || item.id,
-            pDecimals: Math.min(pToken?.pDecimals || 0, 9),
-            hasIcon: !!pToken,
-            symbol: pToken?.pSymbol || item.symbol,
-            name: pToken?  `Privacy ${pToken.name}` : `Incognito ${item.name}`,
-          };
-        })
-        .orderBy([
-          'hasIcon',
-          item => _.isString(item.symbol) && item.symbol.toLowerCase(),
-        ], ['desc', 'asc'])
-        .value()];
+      const tokens = tokenService.mergeTokens(chainTokens, pTokens);
       const pairs = _(chainPairs.state.PDEPoolPairs)
         .map(pair => ({
           [pair.Token1IDStr]: pair.Token1PoolValue,
@@ -107,6 +90,7 @@ class DexContainer extends Component {
         )
         .value();
       this.setState({ pairs, pairTokens, tokens, shares });
+      updatePairs(pairs);
     } catch(error) {
       new ExHandler(error).showErrorToast();
     } finally {
@@ -173,6 +157,7 @@ const mapDispatch = {
   addHistory,
   updateHistory,
   getHistoryStatus,
+  updatePairs,
 };
 
 DexContainer.propTypes = {
@@ -185,7 +170,7 @@ DexContainer.propTypes = {
   updateHistory: PropTypes.func.isRequired,
   getHistoryStatus: PropTypes.func.isRequired,
   selectPrivacyByTokenID: PropTypes.func.isRequired,
-  followedTokens: PropTypes.array.isRequired,
+  updatePairs: PropTypes.func.isRequired,
 };
 
 export default connect(

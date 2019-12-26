@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { View, Text, ActivityIndicator } from '@src/components/core';
-import {TextInput, ScrollView, TouchableOpacity} from 'react-native';
+import {TextInput, TouchableOpacity, VirtualizedList} from 'react-native';
 import { Icon, Overlay } from 'react-native-elements';
 import CryptoIcon from '@components/CryptoIcon';
 import {COLORS} from '@src/styles';
 import formatUtil from '@utils/format';
-import {MAX_LENGTH} from '@screens/Dex/constants';
-import {modalStyle, tokenStyle, mainStyle, inputStyle} from '../../style';
+import VerifiedText from '@components/VerifiedText/index';
+import {modalStyle, mainStyle, inputStyle} from '../../style';
 import stylesheet from './style';
 
 class Input extends React.Component {
@@ -18,6 +18,8 @@ class Input extends React.Component {
       showDialog: false,
       filteredTokens: props.tokenList || [],
     };
+
+    this.renderTokenItem = this.renderTokenItem.bind(this);
   }
 
   componentDidMount() {
@@ -56,8 +58,7 @@ class Input extends React.Component {
         token.name.toLowerCase().includes(_.trim(searchText)) ||
         token.symbol.toLowerCase().includes(_.trim(searchText))
       ) : tokenList
-      .filter(token => onlyPToken ? token.hasIcon : true)
-      .slice(0, MAX_LENGTH);
+      .filter(token => onlyPToken ? token.hasIcon : true);
     this.setState({ filteredTokens });
   };
 
@@ -65,6 +66,29 @@ class Input extends React.Component {
     const { onChange } = this.props;
     onChange('');
   };
+
+  renderTokenItem({ item, index }) {
+    const { filteredTokens } = this.state;
+    return (
+      <TouchableOpacity
+        key={item.id}
+        style={[modalStyle.token, index === filteredTokens.length - 1 && modalStyle.lastItem]}
+        onPress={() => this.selectToken(item)}
+      >
+        <CryptoIcon
+          tokenId={item.id}
+          size={25}
+        />
+        <View style={[mainStyle.twoColumns, mainStyle.flex]}>
+          <View style={modalStyle.tokenInfo}>
+            <VerifiedText text={item.displayName} style={modalStyle.tokenSymbol} isVerified={item.isVerified} />
+            <Text style={modalStyle.tokenName}>{item.name}</Text>
+          </View>
+          <Text style={[modalStyle.tokenSymbol, mainStyle.textRight]}>{item.symbol}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
 
   renderDialog() {
     const { showDialog, filteredTokens } = this.state;
@@ -86,26 +110,13 @@ class Input extends React.Component {
               onChangeText={this.handleSearch}
             />
           </View>
-          <ScrollView style={modalStyle.container}>
-            <View>
-              {filteredTokens.map((item, index) =>(
-                <TouchableOpacity
-                  key={item.id}
-                  style={[modalStyle.token, index === filteredTokens.length - 1 && modalStyle.lastItem]}
-                  onPress={() => this.selectToken(item)}
-                >
-                  <CryptoIcon
-                    tokenId={item.id}
-                    size={25}
-                  />
-                  <View style={modalStyle.tokenInfo}>
-                    <Text style={modalStyle.tokenSymbol}>{item.symbol}</Text>
-                    <Text style={modalStyle.tokenName}>{item.name}</Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </ScrollView>
+          <VirtualizedList
+            data={filteredTokens}
+            renderItem={this.renderTokenItem}
+            getItem={(data, index) => data[index]}
+            getItemCount={data => data.length}
+            style={modalStyle.container}
+          />
         </View>
       </Overlay>
     );
@@ -121,7 +132,7 @@ class Input extends React.Component {
           tokenId={token.id}
           size={20}
         />
-        <Text style={modalStyle.tokenInfo}>{token.symbol}</Text>
+        <VerifiedText text={token.symbol} style={modalStyle.tokenInfo} isVerified={token.isVerified} />
       </View>
     );
   }

@@ -5,17 +5,20 @@ import _ from 'lodash';
 import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
 import { CONSTANT_KEYS } from '@src/constants';
-import { getTokenList, getChainTokenList } from '@services/api/token';
+import { getChainTokenList } from '@services/api/token';
+import {PRIORITY_LIST} from '@screens/Dex/constants';
 import { saveWallet, updateStatusHistory } from './WalletService';
 import { listCustomTokens } from './RpcClientService';
 
 export const PRV = {
   id: '0000000000000000000000000000000000000000000000000000000000000004',
-  name: 'Privacy',
+  name: 'Incognito',
+  displayName: 'Privacy',
   symbol: 'PRV',
   pDecimals: 9,
   hasIcon: true,
   originalSymbol: 'PRV',
+  isVerified: true,
 };
 
 
@@ -240,32 +243,27 @@ export default class Token {
     }
   }
 
-  static async getAllTokens() {
-    const pTokens = await getTokenList();
-    const chainTokens = await Token.getPrivacyTokens();
-    return this.mergeTokens(chainTokens, pTokens);
-  }
-
   static mergeTokens(chainTokens, pTokens) {
     return [PRV, ..._([...chainTokens, ...pTokens])
-      .map(item => ({
-        ...item,
-        id: item.tokenId || item.id,
-      }))
-      .uniqBy(item => item.id)
+      .uniqBy(item => item.tokenId || item.id)
       .map(item => {
-        const pToken = pTokens.find(token => token.tokenId === item.id);
+        const pToken = pTokens.find(token => token.tokenId === (item.tokenId || item.id ));
         return {
           ...item,
+          id: item.tokenId || item.id,
           pDecimals: Math.min(pToken?.pDecimals || 0, 9),
           hasIcon: !!pToken,
           symbol: pToken?.pSymbol || item.symbol,
+          displayName: pToken ? `Privacy ${pToken.symbol}` : `Incognito ${item.name}`,
           name: pToken ? pToken.name : item.name,
-          displayName: pToken ? `Privacy ${pToken.name}` : `Incognito ${item.name}`,
+          isVerified: pToken?.verified,
         };
       })
-      .filter(token => token.name && token.symbol)
-      .orderBy(item => _.isString(item.symbol) && item.symbol.toLowerCase())
+      .orderBy([
+        'hasIcon',
+        item => PRIORITY_LIST.indexOf(item?.id) > -1 ? PRIORITY_LIST.indexOf(item?.id) : 100,
+        item => _.isString(item.symbol) && item.symbol.toLowerCase(),
+      ], ['desc', 'asc'])
       .value()];
   }
 

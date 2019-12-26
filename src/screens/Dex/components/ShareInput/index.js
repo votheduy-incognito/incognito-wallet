@@ -7,6 +7,7 @@ import CryptoIcon from '@components/CryptoIcon';
 import {COLORS} from '@src/styles';
 import formatUtil from '@utils/format';
 import { MESSAGES } from '@screens/Dex/constants';
+import VerifiedText from '@components/VerifiedText/index';
 import {modalStyle, mainStyle, inputStyle} from '../../style';
 import stylesheet from './style';
 
@@ -68,7 +69,11 @@ class ShareInput extends React.Component {
                           size={22}
                         />
                       </View>
-                      <Text style={modalStyle.tokenSymbol}>{item.token1.name} ({item.token1.symbol})</Text>
+                      <VerifiedText
+                        isVerified={item.token1.isVerified}
+                        style={modalStyle.tokenSymbol}
+                        text={`${item.token1.name} (${item.token1.symbol})`}
+                      />
                     </View>
                     <View style={mainStyle.twoColumns}>
                       <View style={mainStyle.tokenIcon}>
@@ -78,7 +83,11 @@ class ShareInput extends React.Component {
                           size={22}
                         />
                       </View>
-                      <Text style={modalStyle.tokenSymbol}>{item.token2.name} ({item.token2.symbol})</Text>
+                      <VerifiedText
+                        isVerified={item.token2.isVerified}
+                        style={modalStyle.tokenSymbol}
+                        text={`${item.token2.name} (${item.token2.symbol})`}
+                      />
                     </View>
                   </View>
                 </TouchableOpacity>

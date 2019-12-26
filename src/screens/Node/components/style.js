@@ -61,7 +61,8 @@ export const rewardStyle = StyleSheet.create({
   slider: {
     height: 130,
     marginBottom: 20,
-    width: 200,
+    width: 220,
+    marginLeft: 20,
   },
   container: {
     justifyContent: 'flex-start',
@@ -69,6 +70,9 @@ export const rewardStyle = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
+    width: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   itemLeft: {
     marginRight: 'auto',

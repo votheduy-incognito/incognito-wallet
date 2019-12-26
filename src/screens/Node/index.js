@@ -28,6 +28,7 @@ import {onClickView} from '@utils/ViewUtil';
 import accountService from '@services/wallet/accountService';
 import {ExHandler} from '@services/exception';
 import DialogLoader from '@components/DialogLoader';
+import PrimaryRefreshControl from '@components/core/PrimaryRefreshControl';
 import style from './style';
 import Header from './Header';
 import VNode from './components/VNode';
@@ -75,6 +76,8 @@ const updateBeaconInfo = async (listDevice) => {
             allTokens = tokenService.mergeTokens(chainTokens, allTokens);
           }
         }
+
+        console.debug('ALL TOKENS', allTokens);
       });
     promises.push(rPromise);
   }
@@ -105,7 +108,6 @@ class Node extends BaseScreen {
   async componentDidMount() {
     const { navigation } = this.props;
     this.listener = navigation.addListener('didFocus', this.handleRefresh);
-    allTokens = await LocalDatabase.getListToken();
 
     if (allTokens.length === 0) {
       allTokens.push(PRV);
@@ -366,7 +368,7 @@ class Node extends BaseScreen {
         const { listDevice } = this.state;
         const newListDevice = await Promise.all(listDevice.map(this.getNodeInfo));
         await LocalDatabase.saveListDevices(newListDevice);
-        await LocalDatabase.saveListToken(allTokens);
+        // await LocalDatabase.saveListToken(allTokens);
         this.setState({ listDevice: newListDevice, isFetching: false });
       })
       .catch(error => {
@@ -557,8 +559,9 @@ class Node extends BaseScreen {
           onEndReachedThreshold={0.7}
           ListEmptyComponent={this.renderEmptyComponent()}
           renderItem={this.renderNode}
-          onRefresh={this.handleRefresh}
-          refreshing={isFetching}
+          refreshControl={
+            <PrimaryRefreshControl onRefresh={this.handleRefresh} refreshing={isFetching} />
+          }
         />
       </View>
     );

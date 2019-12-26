@@ -286,3 +286,10 @@ export const deleteHistorySuccess = (history) => ({
 export const deleteHistory = (history) => async(dispatch) => {
   dispatch(deleteHistorySuccess(history));
 };
+
+export const updatePairs = (pairs) => async(dispatch) => {
+  dispatch({
+    type: types.UPDATE_PAIRS,
+    payload: pairs,
+  });
+};

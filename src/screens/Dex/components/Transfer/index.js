@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   TouchableOpacity
 } from '@src/components/core';
-import {ScrollView, TextInput as ReactInput, Keyboard, TouchableWithoutFeedback, TextInput} from 'react-native';
+import {ScrollView, TextInput as ReactInput, Keyboard, TouchableWithoutFeedback, TextInput, VirtualizedList} from 'react-native';
 import accountService from '@services/wallet/accountService';
 import { isExchangeRatePToken } from '@src/services/wallet/RpcClientService';
 import {CONSTANT_COMMONS} from '@src/constants';
@@ -26,8 +26,9 @@ import FullScreenLoading from '@components/FullScreenLoading';
 import tokenService from '@services/wallet/tokenService';
 import {DepositHistory, WithdrawHistory} from '@models/dexHistory';
 import Toast from '@components/core/Toast/Toast';
+import VerifiedText from '@components/VerifiedText/index';
 import TransferSuccessPopUp from '../TransferSuccessPopUp';
-import {PRV, WAIT_TIME, MESSAGES, MIN_INPUT, MULTIPLY, MAX_WAITING_TIME, MAX_LENGTH} from '../../constants';
+import {PRV, WAIT_TIME, MESSAGES, MIN_INPUT, MULTIPLY, MAX_WAITING_TIME} from '../../constants';
 import { mainStyle, modalStyle, tokenStyle } from '../../style';
 
 const MAX_TRIED = MAX_WAITING_TIME / WAIT_TIME;
@@ -41,6 +42,7 @@ class Transfer extends React.PureComponent {
       balances: [],
       sending: false,
     };
+    this.renderTokenItem = this.renderTokenItem.bind(this);
   }
 
   componentDidMount() {
@@ -402,8 +404,7 @@ class Transfer extends React.PureComponent {
       .filter(token =>
         token.name.toLowerCase().includes(_.trim(searchText)) ||
         token.symbol.toLowerCase().includes(_.trim(searchText))
-      ) : tokens
-      .slice(0, MAX_LENGTH);
+      ) : tokens;
     this.setState({ filteredTokens });
   };
 
@@ -473,6 +474,27 @@ class Transfer extends React.PureComponent {
     );
   }
 
+  renderTokenItem({ item, index }) {
+    const { filteredTokens } = this.state;
+    return (
+      <TouchableOpacity
+        key={item.id}
+        onPress={() => this.selectToken(item)}
+        activeOpacity={0.5}
+        style={[mainStyle.modalItem, index === filteredTokens.length - 1 && mainStyle.lastItem]}
+      >
+        <CryptoIcon tokenId={item.id} size={25} />
+        <View style={[mainStyle.twoColumns, mainStyle.flex]}>
+          <View style={modalStyle.tokenInfo}>
+            <VerifiedText text={item.displayName} style={modalStyle.tokenSymbol} isVerified={item.isVerified} />
+            <Text style={modalStyle.tokenName}>{item.name}</Text>
+          </View>
+          <Text style={[modalStyle.tokenSymbol, mainStyle.textRight]}>{item.symbol}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+
   renderTokenPopup() {
     const { transfer, filteredTokens } = this.state;
     const { action } = this.props;
@@ -497,22 +519,13 @@ class Transfer extends React.PureComponent {
                 onChangeText={this.handleSearch}
               />
             </View>
-            <ScrollView style={mainStyle.modalContent}>
-              {filteredTokens.map((item, index) => (
-                <TouchableOpacity
-                  key={item.id}
-                  onPress={() => this.selectToken(item)}
-                  activeOpacity={0.5}
-                  style={[mainStyle.modalItem, index === filteredTokens.length - 1 && mainStyle.lastItem]}
-                >
-                  <CryptoIcon tokenId={item.id} />
-                  <View style={tokenStyle.info}>
-                    <Text style={tokenStyle.symbol}>{item.symbol}</Text>
-                    <Text style={[tokenStyle.name, tokenStyle.modalName]}>{item.name}</Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+            <VirtualizedList
+              data={filteredTokens}
+              renderItem={this.renderTokenItem}
+              getItem={(data, index) => data[index]}
+              getItemCount={data => data.length}
+              style={modalStyle.container}
+            />
           </View>
         )}
       </Overlay>
