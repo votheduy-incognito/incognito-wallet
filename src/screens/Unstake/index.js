@@ -56,8 +56,12 @@ class UnstakeContainer extends BaseScreen {
       const { device, fee } = this.state;
       const account = device.Account;
       const validatorKey = account.ValidatorKey;
-      await accountService.createAndSendStopAutoStakingTx(wallet, account, fee, account.PaymentAddress, validatorKey);
+      const name = device.AccountName;
+      const rs = await accountService.createAndSendStopAutoStakingTx(wallet, account, fee, account.PaymentAddress, validatorKey);
       const listDevice = await LocalDatabase.getListDevices()||[];
+      await LocalDatabase.saveListDevices(listDevice);
+      const deviceIndex =  listDevice.findIndex(item => _.isEqual(Device.getInstance(item).AccountName, name));
+      listDevice[deviceIndex].minerInfo.unstakeTx = rs.txId;
       await LocalDatabase.saveListDevices(listDevice);
       Toast.showInfo('Unstaking completed!');
       navigation.goBack();

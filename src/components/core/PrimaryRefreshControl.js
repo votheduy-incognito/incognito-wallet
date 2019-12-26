@@ -17,4 +17,4 @@ PrimaryRefreshControl.propTypes = {
   onRefresh: PropTypes.func.isRequired,
 };
 
-export default React.memo(PrimaryRefreshControl);
+export default PrimaryRefreshControl;

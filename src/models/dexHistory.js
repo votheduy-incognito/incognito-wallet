@@ -1,5 +1,6 @@
 import formatUtil from '@utils/format';
-import { MESSAGES, PRV } from '@screens/Dex/constants';
+import { MESSAGES } from '@screens/Dex/constants';
+import {PRV} from '@services/wallet/tokenService';
 
 function parseHistory(history, historyObject) {
   Object.keys(historyObject).forEach(key => history[key] = historyObject[key]);

@@ -21,6 +21,11 @@ const style = StyleSheet.create({
     right: 0,
     backgroundColor: COLORS.dark2,
   },
+  buyButton: {
+    marginTop: 15,
+    marginHorizontal: 15,
+    marginBottom: 90,
+  },
   title: {
     fontSize: 24,
     color: COLORS.white,
@@ -46,7 +51,6 @@ const style = StyleSheet.create({
   },
   list: {
     paddingHorizontal: 15,
-    height: 100,
   },
   container_first_app:{
     flex: 1,

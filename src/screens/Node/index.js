@@ -1,15 +1,13 @@
 import _ from 'lodash';
 import React from 'react';
-import {FlatList, Image, View} from 'react-native';
+import {FlatList, View, ScrollView, RefreshControl} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import {Alert, Text} from '@components/core';
+import {Alert, Button} from '@components/core';
 import BaseScreen from '@screens/BaseScreen';
-import images from '@src/assets';
 import routeNames from '@src/router/routeNames';
 import APIService from '@src/services/api/miner/APIService';
 import LocalDatabase from '@utils/LocalDatabase';
 import Util from '@utils/Util';
-import {Button} from 'react-native-elements';
 import Device from '@models/device';
 import {
   getBeaconBestStateDetail,
@@ -28,8 +26,10 @@ import {onClickView} from '@utils/ViewUtil';
 import accountService from '@services/wallet/accountService';
 import {ExHandler} from '@services/exception';
 import DialogLoader from '@components/DialogLoader';
-import PrimaryRefreshControl from '@components/core/PrimaryRefreshControl';
 import WelcomeNodes from '@screens/Node/components/Welcome';
+import linkingService from '@services/linking';
+import {CONSTANT_CONFIGS} from '@src/constants';
+import COLORS from '@src/styles/colors';
 import style from './style';
 import Header from './Header';
 import VNode from './components/VNode';
@@ -77,8 +77,6 @@ const updateBeaconInfo = async (listDevice) => {
             allTokens = tokenService.mergeTokens(chainTokens, allTokens);
           }
         }
-
-        console.debug('ALL TOKENS', allTokens);
       });
     promises.push(rPromise);
   }
@@ -276,7 +274,7 @@ class Node extends BaseScreen {
       rewards[PRV.id] = rewards[PRV.symbol];
       delete rewards[PRV.symbol];
 
-      Object.keys(device.Rewards).forEach(key => {
+      Object.keys(rewards).forEach(key => {
         actualRewards[key] = rewards[key] * commission;
       });
 
@@ -287,9 +285,10 @@ class Node extends BaseScreen {
   };
 
   getVNodeInfo = (device) => {
-    const account = device.Account;
-    if (account) {
-      device.Rewards = nodeRewards[account.PublicKeyCheckEncode] || {};
+    const publicKey = device.PublicKey;
+
+    if (publicKey) {
+      device.Rewards = nodeRewards[publicKey] || {};
     }
 
     return device;
@@ -303,13 +302,12 @@ class Node extends BaseScreen {
 
     if (device.IsVNode) {
       newKey = await VirtualNodeService.getPublicKeyMining(device);
-    } else if (!blsKey) {
+    } else {
       newKey = await NodeService.getBLSKey(device);
     }
 
     if (newKey && blsKey !== newKey) {
       blsKey = newKey;
-      device.StakeTx = null;
     }
 
     if (newKey) {
@@ -317,6 +315,8 @@ class Node extends BaseScreen {
     } else {
       device.setIsOnline(Math.max(device.IsOnline - 1, 0));
     }
+
+    console.debug('IS ONLINE', device.IsOnline);
 
     if (blsKey) {
       const nodeInfo = (committees.AutoStaking.find(node => node.MiningPubKey.bls === blsKey) || {});
@@ -331,6 +331,12 @@ class Node extends BaseScreen {
         device.Status = 'committee';
       } else {
         device.Status = null;
+      }
+
+      if (!isAutoStake) {
+        device.UnstakeTx = null;
+      } else {
+        device.StakeTx = null;
       }
 
       device.PublicKeyMining = blsKey;
@@ -456,41 +462,6 @@ class Node extends BaseScreen {
     this.goToScreen(routeNames.ImportAccount);
   };
 
-  renderEmptyComponent =()=>{
-    const {isFetching} = this.state;
-    return (
-      !isFetching && (
-        <View style={{flex:1,justifyContent:'center',alignItems:'center' }}>
-          <Image source={images.ic_no_finding_device} />
-        </View>
-      )
-    );
-  };
-
-  renderFirstOpenApp = () => {
-    return (
-      <View style={style.container_first_app}>
-        <Image resizeMode="cover" source={images.bg_first} style={{ position: 'absolute',width:'100%',height:'100%'}} />
-        <View style={style.group_first_open}>
-          <Text style={style.group_first_open_text01}>Welcome!</Text>
-          <Text style={style.group_first_open_text02}>Add a Node to start</Text>
-          <Button
-            titleStyle={style.textTitleButton}
-            buttonStyle={[style.button,{backgroundColor:'#101111'}]}
-            onPress={this.handleAddVirtualNodePress}
-            title='Add a Virtual Node'
-          />
-          <Button
-            titleStyle={style.textTitleButton}
-            buttonStyle={style.button}
-            onPress={this.handleAddNodePress}
-            title='Add a Node Device'
-          />
-        </View>
-      </View>
-    );
-  };
-
   renderNode({ item }) {
     const {
       isFetching,
@@ -537,7 +508,7 @@ class Node extends BaseScreen {
     } = this.state;
 
     if (!isFetching && _.isEmpty(listDevice)) {
-      return this.renderFirstOpenApp();
+      return <WelcomeNodes onAddVNode={this.handleAddVirtualNodePress} onAddPNode={this.handleAddNodePress} />;
     }
 
     return (
@@ -545,19 +516,30 @@ class Node extends BaseScreen {
         <View style={style.background} />
         <Header goToScreen={this.goToScreen} isFetching={isFetching} />
         <DialogLoader loading={loading} />
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={[{ flexGrow: 1}]}
-          style={style.list}
-          data={listDevice}
-          keyExtractor={item => String(item.ProductId)}
-          onEndReachedThreshold={0.7}
-          ListEmptyComponent={this.renderEmptyComponent()}
-          renderItem={this.renderNode}
-          refreshControl={
-            <PrimaryRefreshControl onRefresh={this.handleRefresh} refreshing={isFetching} />
-          }
-        />
+        <ScrollView refreshControl={(
+          <RefreshControl
+            onRefresh={this.handleRefresh}
+            refreshing={isFetching}
+            tintColor={COLORS.primary}
+            colors={[COLORS.primary]}
+          />
+        )}
+        >
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={[{ flexGrow: 1}]}
+            style={style.list}
+            data={listDevice}
+            keyExtractor={item => String(item.ProductId)}
+            onEndReachedThreshold={0.7}
+            renderItem={this.renderNode}
+          />
+          <Button
+            style={style.buyButton}
+            title="Buy another Node"
+            onPress={() => { linkingService.openUrl(CONSTANT_CONFIGS.NODE_URL); }}
+          />
+        </ScrollView>
       </View>
     );
   }

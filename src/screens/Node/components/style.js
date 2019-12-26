@@ -12,7 +12,9 @@ const style = StyleSheet.create({
     shadowColor: '#DCDDDD',
     shadowOffset: { height: 2, width: 0 },
     marginBottom: 15,
-    elevation: 5,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: COLORS.transparent,
   },
   row: {
     flexDirection: 'row',

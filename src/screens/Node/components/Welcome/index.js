@@ -1,32 +1,39 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text, Image, View, Button } from '@components/core';
+import { Text, Image, View, Button, ScrollView } from '@components/core';
 import nodeImg from '@assets/images/node.png';
+import linkingService from '@services/linking';
+import {CONSTANT_CONFIGS} from '@src/constants';
 import styles from './style';
 
 const WelcomeNodes = ({ onAddPNode, onAddVNode }) => (
-  <View style={styles.container}>
+  <ScrollView style={styles.container}>
     <Text style={styles.title}>My Nodes</Text>
     <View style={styles.pNode}>
-      <Image source={nodeImg} />
+      <Image style={styles.pNodeImg} source={nodeImg} />
       <Button
-        titleStyle={styles.textTitleButton}
-        buttonStyle={styles.button}
+        style={styles.pNodeButton}
         onPress={onAddPNode}
         title='Add a Node Device'
+      />
+      <Text style={styles.buyText}>Don’t have a Node yet</Text>
+      <Button
+        title="Buy another Node"
+        buttonStyle={styles.buyButton}
+        onPress={() => { linkingService.openUrl(CONSTANT_CONFIGS.NODE_URL); }}
       />
     </View>
 
     <View>
-      <Text style={styles.group_first_open_text02}>Add a Node to start</Text>
+      <Text style={styles.vNodeTitle}>Experience node operators</Text>
       <Button
-        titleStyle={styles.textTitleButton}
-        buttonStyle={[styles.button,{backgroundColor:'#101111'}]}
+        titleStyle={styles.vNodeText}
+        buttonStyle={styles.vNodeButton}
         onPress={onAddVNode}
         title='Add a Virtual Node'
       />
     </View>
-  </View>
+  </ScrollView>
 );
 
 WelcomeNodes.propTypes = {

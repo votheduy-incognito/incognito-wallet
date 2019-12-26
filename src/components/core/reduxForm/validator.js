@@ -93,12 +93,12 @@ const bnbAddress = (value, { message } = {}) => value => {
 const tomoAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'ETH', 'both') ? messageHanlder(message, value) ?? 'Invalid TOMO address' : undefined;
 
 /**
- * 
+ *
  * image/png, image/jpg, image/jpeg,...
  */
 const fileTypes = (typeList, { message } = {}) => value => {
   if (!value) return;
-  
+
   const fileType = value?.type;
   const found = typeList.find(type => {
     if (!type) return false;
@@ -171,4 +171,5 @@ export default {
   combinedTokenSymbol,
   combinedAccountName,
   fileTypes,
-  maxFileSize
+  maxFileSize,
+};

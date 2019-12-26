@@ -119,8 +119,14 @@ export default class Device {
   get IsAutoStake() {
     return this.data.minerInfo.isAutoStake;
   }
+  set UnstakeTx(txId) {
+    this.data.minerInfo.unstakeTx = txId;
+  }
+  get UnstakeTx() {
+    return this.data.minerInfo.unstakeTx;
+  }
   get Unstaking() {
-    return !!this.Status && !this.IsAutoStake;
+    return this.UnstakeTx || (!!this.Status && !this.IsAutoStake);
   }
   get Host(){
     return this.data.minerInfo?.ipAddress||'';

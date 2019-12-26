@@ -4,7 +4,7 @@ import _ from 'lodash';
 import {View, Text, Button, TouchableOpacity} from '@components/core';
 import formatUtils from '@utils/format';
 import {TRANSFER_STATUS} from '@src/redux/actions/dex';
-import { PRV } from '@src/screens/Dex/constants';
+import {PRV} from '@services/wallet/tokenService';
 import TransactionID from './TransactionID';
 import TokenID from './TokenID';
 import stylesheet from './style';
@@ -13,7 +13,6 @@ const DexHistory = ({
   pairId,
   txId,
   txId2,
-  cancelTx,
   lockTime,
   account,
   status,
@@ -105,13 +104,11 @@ const DexHistory = ({
 DexHistory.defaultProps = {
   status: '',
   txId2: '',
-  cancelTx: '',
 };
 
 DexHistory.propTypes = {
   txId: PropTypes.string.isRequired,
   txId2: PropTypes.string,
-  cancelTx: PropTypes.string,
   lockTime: PropTypes.number.isRequired,
   pairId: PropTypes.string.isRequired,
   token1: PropTypes.shape({

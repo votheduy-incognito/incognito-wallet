@@ -11,7 +11,7 @@ import tradeIcon from '@src/assets/images/icons/trade_icon.png';
 import addLiquidityIcon from '@src/assets/images/icons/add_liquidity_icon.png';
 import removeLiquidityIcon from '@src/assets/images/icons/remove_liquidity_icon.png';
 import dexUtils from '@utils/dex';
-import PrimaryRefreshControl from '@components/core/PrimaryRefreshControl';
+import COLORS from '@src/styles/colors';
 import AddPool from './components/AddPool';
 import RemovePool from './components/RemovePool';
 import Swap from './components/Swap';
@@ -320,7 +320,12 @@ class Dex extends React.Component {
   renderRefreshControl() {
     const { isLoading, onLoadData } = this.props;
     return (
-      <PrimaryRefreshControl refreshing={isLoading} onRefresh={onLoadData} />
+      <RefreshControl
+        refreshing={isLoading}
+        onRefresh={onLoadData}
+        tintColor={COLORS.primary}
+        colors={[COLORS.primary]}
+      />
     );
   }
 

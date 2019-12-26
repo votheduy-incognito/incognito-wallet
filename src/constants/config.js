@@ -20,6 +20,7 @@ import {
   TEST_URL,
   USDT_TOKEN_ID_MAINNET,
   USDT_TOKEN_ID_TESTNET,
+  NODE_URL,
 } from 'react-native-dotenv';
 
 const TAG = 'Config';
@@ -57,9 +58,10 @@ let DATA_EXPORT = {
   DEX_BINANCE_TOKEN_URL,
   BUILD_VERSION,
   ETHERSCAN_URL,
-  BINANCE_EXPLORER_URL
+  BINANCE_EXPLORER_URL,
   USDT_TOKEN_ID,
-} ;
+  NODE_URL,
+};
 
 export default {
   ...DATA_EXPORT
