@@ -107,16 +107,15 @@ const fileTypes = (typeList, { message } = {}) => value => {
   return !found ? messageHanlder(message, value, typeList) ?? `Please use a valid type (${typeList?.join(', ')})` : undefined;
 };
 
-const maxFileSize = (sizeInBytes, { message } = {}) => value => {
+const maxFileSize = (sizeInKBytes, { message } = {}) => value => {
   if (!value) return;
+  const fileSize = Math.ceil(Number(value?.size / 1024) || 0);
   
-  const fileSize = Math.round(Number(value?.size / (1024 * 8)) || 0);
-
   if (fileSize <= 0) {
     return 'Invalid file, please choose another file';
   }
 
-  return fileSize > sizeInBytes ? messageHanlder(message, value, sizeInBytes) ?? `Please use a file smaller than ${sizeInBytes}kb` : undefined;
+  return fileSize > sizeInKBytes ? messageHanlder(message, value, sizeInKBytes) ?? `Please use a file smaller than ${sizeInKBytes}kb` : undefined;
 };
 
 
