@@ -17,7 +17,8 @@ import {
   PASSWORD_SECRET_KEY,
   SHARD_ID,
   TESTNET_SERVER_ADDRESS,
-  TEST_URL
+  TEST_URL,
+  USDT_TOKEN_ID,
 } from 'react-native-dotenv';
 
 const TAG = 'Config';
@@ -55,6 +56,7 @@ let DATA_EXPORT = {
   BUILD_VERSION,
   ETHERSCAN_URL,
   BINANCE_EXPLORER_URL
+  USDT_TOKEN_ID,
 } ;
 
 export default {

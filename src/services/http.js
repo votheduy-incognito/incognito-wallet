@@ -71,7 +71,7 @@ instance.interceptors.response.use(res => {
           onAccessTokenFetched(token);
         });
       } else {
-        console.error('Token was expired, but can not re-new it!');
+        console.debug('Token was expired, but can not re-new it!');
       }
     }
 

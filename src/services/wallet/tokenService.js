@@ -243,7 +243,11 @@ export default class Token {
   static async getAllTokens() {
     const pTokens = await getTokenList();
     const chainTokens = await Token.getPrivacyTokens();
-    const tokens = [ PRV, ..._([...chainTokens, ...pTokens])
+    return this.mergeTokens(chainTokens, pTokens);
+  }
+
+  static mergeTokens(chainTokens, pTokens) {
+    return [PRV, ..._([...chainTokens, ...pTokens])
       .map(item => ({
         ...item,
         id: item.tokenId || item.id,
@@ -256,14 +260,19 @@ export default class Token {
           pDecimals: Math.min(pToken?.pDecimals || 0, 9),
           hasIcon: !!pToken,
           symbol: pToken?.pSymbol || item.symbol,
-          name: pToken? pToken.name : item.name,
-          displayName: pToken?  `Privacy ${pToken.name}` : `Incognito ${item.name}`,
+          name: pToken ? pToken.name : item.name,
+          displayName: pToken ? `Privacy ${pToken.name}` : `Incognito ${item.name}`,
         };
       })
       .filter(token => token.name && token.symbol)
       .orderBy(item => _.isString(item.symbol) && item.symbol.toLowerCase())
       .value()];
-    return tokens;
+  }
+
+  static flatTokens(tokens) {
+    const tokenDict = {};
+    tokens.forEach(item => tokenDict[item.id] = item);
+    return tokenDict;
   }
 }
 

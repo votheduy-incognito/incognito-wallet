@@ -6,6 +6,7 @@ const CODES = {
   CAN_NOT_SEND_TX: '-4002',
   CAN_NOT_SEND_PTOKEN_TX: '-1003',
   REPLACEMENT: '-1022',
+  DOUBLE_SPEND: '-1017',
   NOT_ENOUGH_COIN: 'WEB_JS_ERROR(-5)',
 };
 
@@ -176,7 +177,9 @@ class Exception {
         const stackCode = this.exception.stackTraceCode;
         if (
           stackCode === `${CODES.CAN_NOT_SEND_TX}: ${CODES.REPLACEMENT}` ||
-          stackCode === `${CODES.CAN_NOT_SEND_PTOKEN_TX}: ${CODES.REPLACEMENT}`
+          stackCode === `${CODES.CAN_NOT_SEND_TX}: ${CODES.DOUBLE_SPEND}` ||
+          stackCode === `${CODES.CAN_NOT_SEND_PTOKEN_TX}: ${CODES.REPLACEMENT}` ||
+          stackCode === `${CODES.CAN_NOT_SEND_PTOKEN_TX}: ${CODES.DOUBLE_SPEND}`
         ) {
           return `${MESSAGES.PENDING_TX} (${stackCode})`;
         }

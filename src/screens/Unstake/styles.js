@@ -18,7 +18,7 @@ export default StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    marginBottom: 20,
+    marginBottom: 15,
     ...FONT.STYLE.medium,
   },
   row: {
@@ -32,15 +32,21 @@ export default StyleSheet.create({
     color: COLORS.lightGrey1,
   },
   button: {
+    backgroundColor: COLORS.red,
     marginTop: 40,
   },
   buy: {
-    marginTop: 55,
+    marginTop: 20,
   },
   desc: {
     color: COLORS.lightGrey9,
   },
   firstLine: {
     marginBottom: 20,
+  },
+  error: {
+    marginTop: 10,
+    color: COLORS.red,
+    fontSize: 14,
   },
 });

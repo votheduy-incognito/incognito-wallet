@@ -50,7 +50,7 @@ class EstimateFeeContainer extends Component {
 
   static getDerivedStateFromProps(nextProps) {
     const { types } = nextProps;
-    
+
     return { types: getTypes(types) };
   }
 
@@ -160,6 +160,8 @@ class EstimateFeeContainer extends Component {
     try {
       const { userFee } = this.state;
       const { selectedPrivacy, amount, toAddress, estimateFeeData: { feeUnitByTokenId }, multiply } = this.props;
+
+      console.debug('EST', amount, toAddress, selectedPrivacy);
 
       if (!amount || !toAddress || !selectedPrivacy) {
         return;

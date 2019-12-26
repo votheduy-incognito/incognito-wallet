@@ -18,7 +18,7 @@ import Home from './Home';
 class HomeContainer extends Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
       isReloading: false,
       isReceivedPRV: false
@@ -34,7 +34,7 @@ class HomeContainer extends Component {
     }
 
     // airdrop program
-    this.airdrop();
+    // this.airdrop();
 
     navigation.addListener(
       'didFocus',

@@ -3,7 +3,6 @@ import AccountModel from '@models/account';
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
-import axios from 'axios';
 import { AccountWallet, KeyWallet, Wallet } from 'incognito-chain-web-js/build/wallet';
 import _ from 'lodash';
 import {STACK_TRACE} from '@services/exception/customError/code/webjsCode';
@@ -90,74 +89,15 @@ export default class Account {
     return result;
   }
 
-  static async sendGameConstant(paymentInfos, fee, isPrivacy, account, wallet, info) {
+  static async createAndSendStopAutoStakingTx(wallet, account, feeNativeToken, candidatePaymentAddress, candidateMiningSeedKey) {
+    const indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
     let result;
-    try {
-      const url = CONSTANT_CONFIGS.MASTER_NODE_ADDRESS;
-      const paymentAddress = {
-        [paymentInfos[0].paymentAddressStr]: paymentInfos[0].amount
-      };
-      const data = {
-        'jsonrpc':'1.0',
-        'id': '1',
-        'method':'createandsendtransaction',
-        'params':[
-          account.PrivateKey,
-          paymentAddress,
-          5,
-          0,
-          null,
-          info || ''
-        ],
-      };
-
-      console.log('sendGameConstant', JSON.stringify(data));
-      const res = await axios.post(url, data);
-      if (res?.data?.Result) {
-        return res.data.Result;
-      } else if (res?.data?.Error) {
-        throw res.data.Error;
-      }
-    } catch (e) {
-      console.log('sendGameConstant', e);
-      throw e;
-    }
+    result = await wallet.MasterAccount.child[
+      indexAccount
+    ].createAndSendStopAutoStakingTx(feeNativeToken, candidatePaymentAddress, candidateMiningSeedKey);
+    await saveWallet(wallet);
+    await Wallet.resetProgressTx();
     return result;
-  }
-
-  static async sendGameToken(
-    submitParam,
-    account,
-    info,
-  ) {
-    try {
-      const url = CONSTANT_CONFIGS.MASTER_NODE_ADDRESS;
-      const data = {
-        'jsonrpc':'1.0',
-        'id': '1',
-        'method':'createandsendprivacycustomtokentransaction',
-        'params':[
-          account.PrivateKey,
-          null,
-          5,
-          0,
-          submitParam,
-          0,
-          info || '',
-        ],
-      };
-      console.log('Send Game Token', JSON.stringify(data));
-      const res = await axios.post(url, data);
-
-      if (res?.data?.Result) {
-        return res.data.Result;
-      } else if (res?.data?.Error) {
-        throw res.data.Error;
-      }
-    } catch (e) {
-      console.log('sendGameToken error', e);
-      throw e;
-    }
   }
 
   // param = { type: Number(stakingType), burningAddress: BurnAddress }
@@ -192,7 +132,7 @@ export default class Account {
     if (!wallet) throw new Error('Missing wallet');
     // param: payment address string, amount in Number (miliconstant)
     await Wallet.resetProgressTx();
-    const indexAccount = wallet.getAccountIndexByName(account.name);
+    const indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
     const candidateMiningSeedKey = account.ValidatorKey;
     // create and send constant
     let result;
@@ -359,16 +299,10 @@ export default class Account {
    * @param {object} wallet
    */
   static async createAndSendWithdrawRewardTx(tokenID, account, wallet) {
-    let indexAccount = wallet.getAccountIndexByName(account.name);
-    let result;
-    try {
-      result = await wallet.MasterAccount.child[
-        indexAccount
-      ].createAndSendWithdrawRewardTx(tokenID);
-    } catch (e) {
-      throw e;
-    }
-    return result;
+    const indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
+    return wallet.MasterAccount.child[
+      indexAccount
+    ].createAndSendWithdrawRewardTx(tokenID);
   }
 
   /**

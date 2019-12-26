@@ -1,14 +1,11 @@
 /* eslint-disable import/no-cycle */
 import AddDevice from '@src/screens/AddDevice';
-import DetailDevice from '@screens/DetailDevice';
-import HomeMine from '@screens/HomeMine';
+import Node from '@src/screens/Node';
 import { createStackNavigator } from 'react-navigation-stack';
 import SetupWifiDevice from '@screens/SetupWifiDevice';
 import AddNode from '@src/screens/AddNode';
 import AddStake from '@src/screens/AddStake';
-import TextStyle, { scaleInApp } from '@src/styles/TextStyle';
-import { sizeHeader } from '@src/components/HeaderBar/style';
-import { imagesVector } from '@src/assets';
+import Unstake from '@src/screens/Unstake';
 import AddSelfNode from '@src/screens/AddSelfNode';
 import HeaderBar from '@src/components/HeaderBar';
 import { navigationOptionsHandler } from '@src/utils/router';
@@ -28,13 +25,13 @@ const GetStaredMineStake = createStackNavigator(
 );
 const MinerNavigator = createStackNavigator(
   {
-    [ROUTE_NAMES.HomeMine]: navigationOptionsHandler(HomeMine,{ header: null }),
+    [ROUTE_NAMES.Node]: navigationOptionsHandler(Node,{ header: null }),
     [ROUTE_NAMES.AddDevice]: navigationOptionsHandler(AddDevice, { title: 'Select router' }),
     [ROUTE_NAMES.AddNode]: navigationOptionsHandler(AddNode, { title: 'Add Node' }),
     [ROUTE_NAMES.AddStake]: navigationOptionsHandler(AddStake, { title: 'Stake' }),
+    [ROUTE_NAMES.Unstake]: navigationOptionsHandler(Unstake, { title: 'Unstake' }),
     [ROUTE_NAMES.SetupWifiDevice]: navigationOptionsHandler(SetupWifiDevice, { title: 'Setup Wifi' }),
     [ROUTE_NAMES.AddSelfNode]: navigationOptionsHandler(AddSelfNode, { title: 'Virtual Node' }),
-    [ROUTE_NAMES.DetailDevice]: navigationOptionsHandler(DetailDevice,{header:null}),
     [ROUTE_NAMES.GetStaredMineStake]: navigationOptionsHandler(GetStaredMineStake, { title: null }),
   },
   {
@@ -48,7 +45,7 @@ const MinerNavigator = createStackNavigator(
         headerBackground: THEME.header.backgroundColor
       };
     },
-    initialRouteName:ROUTE_NAMES.HomeMine,
+    initialRouteName:ROUTE_NAMES.Node,
     headerMode: 'screen'
   }
 );

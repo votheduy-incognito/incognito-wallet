@@ -490,6 +490,7 @@ class Transfer extends React.PureComponent {
             </View>
             <View>
               <TextInput
+                autoCorrect={false}
                 placeholder="Search"
                 style={[modalStyle.search, modalStyle.transferSearch]}
                 placeholderTextColor={COLORS.lightGrey1}

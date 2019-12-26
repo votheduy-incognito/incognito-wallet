@@ -118,7 +118,7 @@ export default class Util {
          if(_.isNumber(delayToTry)){
            await Util.delay(delayToTry);
          }
-         return await Util.tryAtMost(promiseFunc, count - 1); 
+         return await Util.tryAtMost(promiseFunc, count - 1);
        }
        return result;
      }
@@ -126,7 +126,7 @@ export default class Util {
    };
 
   static createRandomString= (length) =>{
-    
+
     let pwd = _.sampleSize(chars, length || 12) ; // lodash v4: use _.sampleSize
     return pwd.join('');
   }
@@ -140,7 +140,7 @@ export default class Util {
       const ss = Util.createRandomString(10);
       console.log(TAG,'excuteWithTimeout random string = ',ss);
       timer.setTimeout(ss,function() {
-        
+
         reject(new CustomError(knownCode.timeout_promise,{message:'timeout '+ ss}));
         timer.clearTimeout(ss);
       }, timeSecond * 1000);

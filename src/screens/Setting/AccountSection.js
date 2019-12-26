@@ -32,6 +32,10 @@ function isDev(account) {
   }
 }
 
+function isNodeAccount(name, devices) {
+  return devices.find(device => device.IsPNode && device.AccountName === name);
+}
+
 const createItem = (account, onSwitch, onExport, onDelete, isActive) => (
   <Swipeout
     style={accountSection.swipeoutButton}
@@ -52,8 +56,7 @@ const createItem = (account, onSwitch, onExport, onDelete, isActive) => (
   </Swipeout>
 );
 
-
-const AccountSection = ({ navigation, defaultAccount, listAccount, removeAccount, switchAccount }) => {
+const AccountSection = ({ navigation, defaultAccount, listAccount, removeAccount, switchAccount, devices }) => {
   const onHandleSwitchAccount = onClickView(async account => {
     try {
       if (defaultAccount?.name === account?.name) {
@@ -123,7 +126,7 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, removeAccount
     }
   ];
 
-  const isDeletable = (account) => listAccount.length > 1 && !dexUtils.isDEXAccount(account?.name);
+  const isDeletable = (account) => listAccount.length > 1 && !dexUtils.isDEXAccount(account?.name) && !isNodeAccount(account?.name, devices);
 
   return (
     <Section
@@ -158,6 +161,7 @@ AccountSection.propTypes = {
   listAccount: PropTypes.arrayOf(PropTypes.object).isRequired,
   switchAccount: PropTypes.func.isRequired,
   removeAccount: PropTypes.func.isRequired,
+  devices: PropTypes.array.isRequired,
 };
 
 const mapState = state => ({

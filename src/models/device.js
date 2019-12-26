@@ -1,7 +1,5 @@
-
-import { DEVICES } from '@src/constants/miner';
+import {DEVICES} from '@src/constants/miner';
 import accountService from '@src/services/wallet/accountService';
-import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
 
 export const DEVICE_STATUS = {
@@ -25,16 +23,21 @@ export const template = {
   minerInfo:{
     account:{},
     isCallStaked:false,
-    qrCodeDeviceId:'',
-    PaymentAddress:'',
-    StakerAddress:'',
+    qrCodeDeviceId: '',
+    PaymentAddress: '',
+    StakerAddress: '',
+    validatorKey: '',
     Commission:1,
     isUpdating:false,
+    publicKey: '',
+    rewards: {},
+    isOnline: 0,
+    accountName: '',
+    stakeTx: '',
   },
   keyInfo:{
     publicKeyMining:'',
     publicKeyRole:''
-
   },
   status:{
     code: -1,
@@ -47,10 +50,8 @@ export const template = {
   verify_code:'',
   user_id:-1,
   deleted:false,
-
   product_type:DEVICES.MINER_TYPE
 };
-const TAG = 'Device';
 export default class Device {
   static CODE_UNKNOWN = DEVICE_STATUS.CODE_UNKNOWN;
   static CODE_STOP = DEVICE_STATUS.CODE_STOP;
@@ -60,47 +61,12 @@ export default class Device {
   static CODE_SYNCING = DEVICE_STATUS.CODE_SYNCING;
   static CODE_OFFLINE = DEVICE_STATUS.CODE_OFFLINE;
 
-  //  SYNCING = 1
-  // READY   = 2
-  // MINING  = 3
-  // STOP    = 4
   constructor(data){
     this.data = {...template, ...data,status:template.status};
   }
-  isStartedChain=()=>{
-    return this.data.status.code!=Device.CODE_OFFLINE && this.data.status.code!=Device.CODE_UNKNOWN && this.data.status.code !== Device.CODE_STOP;
-  }
-  isOffline =()=>{
-    return this.data.status.code == Device.CODE_OFFLINE || (this.data.status.code == Device.CODE_UNKNOWN && this.data.status.message !== template.status.message);
-  }
-  isWaiting =()=>{
-    return this.data.status.message === template.status.message;
-  }
-  isEarning =()=>{
-    const {code,message,status} = this.Status??Device.offlineStatus();
-    return _.isEqual(code,Device.CODE_MINING) && _.isEqual(status,'mining');
-  }
-  isSyncing =()=>{
-    return this.data.status.code == Device.CODE_SYNCING;
-  }
   isUpdatingFirmware =()=>{
     return this.data.minerInfo?.isUpdating??false;
-  }
-  isReady =()=>{
-    return this.data.status.code == Device.CODE_START;
-  }
-  accountName = () =>{
-    return this.data.minerInfo?.account?.name||this.Name;
-  }
-  get isCallStaked(){
-    return this.data.minerInfo?.isCallStaked||false;
-  }
-  set isCallStaked(isCallStaked:Boolean){
-    this.data['minerInfo'] = {
-      ...this.data.minerInfo,
-      isCallStaked:isCallStaked
-    };
-  }
+  };
   get PublicKeyMining(){
     return this.data.keyInfo?.publicKeyMining;
   }
@@ -111,33 +77,62 @@ export default class Device {
     };
     this.data['keyInfo'] = keyInfo;
   }
-  get PublicKeyRole(){
-    return this.data.keyInfo?.publicKeyRole;
+  set PublicKey(publicKey) {
+    this.data.minerInfo.publicKey = publicKey;
   }
-  set PublicKeyRole(publicKeyRole:String){
-    this.data['keyInfo'] = {
-      ...this.data.keyInfo,
-      publicKeyRole:publicKeyRole
-    };
+  get PublicKey() {
+    return this.data.minerInfo.publicKey;
   }
-  static offlineStatus =()=>{
-    return {
-      code:Device.CODE_OFFLINE,
-      message:'offline'
-    };
+  get IsOnline() {
+    return this.data.minerInfo.isOnline;
   }
-  static outOfStatus =(statusMessage?)=>{
-    const status = DATA_INFO[0];
-    return {
-      ...status,
-      'message':__DEV__?`${statusMessage}_online`:'online'
-    };
+  setIsOnline(result) {
+    this.data.minerInfo.isOnline = result;
+  }
+  set Rewards(rewards) {
+    this.data.minerInfo.rewards = rewards;
+  }
+  get Rewards() {
+    return this.data.minerInfo.rewards;
+  }
+  get Account() {
+    return this.data?.minerInfo?.account;
+  }
+  set Account(account) {
+    this.data.minerInfo.account = account;
+  }
+  get AccountName() {
+    return this.data.minerInfo.account?.AccountName;
+  }
+  set StakeTx(tx) {
+    this.data.minerInfo.stakeTx = tx;
+  }
+  get StakeTx() {
+    return this.data.minerInfo.stakeTx;
+  }
+  get Staked() {
+    return !!this.PublicKey || !!this.StakeTx;
+  }
+  set IsAutoStake(result) {
+    this.data.minerInfo.isAutoStake = result;
+  }
+  get IsAutoStake() {
+    return this.data.minerInfo.isAutoStake;
+  }
+  get Unstaking() {
+    return !!this.Status && !this.IsAutoStake;
   }
   get Host(){
     return this.data.minerInfo?.ipAddress||'';
   }
+  set Host(ip){
+    this.data.minerInfo.ipAddress = ip;
+  }
   get Port(){
     return this.data.minerInfo?.port||'';
+  }
+  set Port(port) {
+    this.data.minerInfo.port = port;
   }
 
   get APIUrl(){
@@ -147,23 +142,11 @@ export default class Device {
 
     return !_.isEmpty(this.Host) && !_.isEmpty(this.Port) ? `${this.Host}:${this.Port}` : '';
   }
-  set Status(status:{}){
-    // const item = DATA_INFO.find((i)=>{
-    //   return _.isEqual(i.code,status.code) && (_.isEqual(i.status,status.message)||_.isEqual(i.status,status.status)) ;
-    // })|| Device.offlineStatus();
-    // const dataResponseCombinded =  {'code': item.code ,'message':item.message };
-    this.data.status = status;
+  set Status(status) {
+    this.data.minerInfo.status = status;
   }
-
-  get Status(){
-    let status = this.data.status;
-    // if(this.Type != DEVICES.VIRTUAL_TYPE){
-    //   const item = DATA_INFO.find((i)=>{
-    //     return _.isEqual(i.code,status.code) &&  (_.isEqual(i.status,status.message));
-    //   })|| Device.offlineStatus();
-    //   status =  {'code': item.code ,'message':item.message };
-    // }
-    return  status||template.status;
+  get Status() {
+    return this.data.minerInfo.status;
   }
 
   get Name(){
@@ -174,28 +157,8 @@ export default class Device {
   }
 
   balance = async(account,wallet)=>{
-    const result = (!_.isEmpty(account)&& !_.isEmpty(wallet) && await accountService.getBalance(account,wallet))||0;
-    return result;
-  }
-
-  saveAccount = async (account)=>{
-    if(!_.isEmpty(account)){
-      let listLocalDevice = await LocalDatabase.getListDevices();
-      this.data.minerInfo['account'] = {
-        ...account
-      };
-      const index = listLocalDevice.findIndex(item=> _.isEqual(item?.product_id,this.data.product_id));
-      listLocalDevice[index] = this.data;
-      await LocalDatabase.saveListDevices(listLocalDevice);
-      return true;
-    }
-    return false;
-  }
-
-  requestWithdraw = async(account,wallet,tokenID )=>{
-    const result = (!_.isNil(tokenID) && !_.isEmpty(account)&& !_.isEmpty(wallet) && await accountService.createAndSendWithdrawRewardTx(tokenID, account,wallet).catch(console.log))??null;
-    return result;
-  }
+    return (!_.isEmpty(account) && !_.isEmpty(wallet) && await accountService.getBalance(account, wallet)) || 0;
+  };
 
   get ProductId(){
     return this.data.product_id ?? '';
@@ -205,8 +168,8 @@ export default class Device {
     return this.data.minerInfo?.qrCodeDeviceId ?? '';
   }
 
-  get StakerAddressFromServer(){
-    return this.data.minerInfo?.StakerAddress ?? '';
+  get PaymentAddress() {
+    return this.data.minerInfo.account?.PaymentAddress;
   }
 
   get PaymentAddressFromServer(){
@@ -217,24 +180,23 @@ export default class Device {
     return this.data.minerInfo?.Commission ?? 1;
   }
 
+  get IsPNode() {
+    return this.Type === DEVICES.MINER_TYPE;
+  }
+
+  get IsVNode() {
+    return this.Type === DEVICES.VIRTUAL_TYPE;
+  }
+
+  get StakerAddress() {
+    return this.data.minerInfo.StakerAddress;
+  }
+
   toJSON(){
     return this.data;
-  }
-  statusMessage =()=>{
-    let status = this.data.status;
-    if(this.Type != DEVICES.VIRTUAL_TYPE){
-      if(status.code == template.status.code){
-        return template.status.message;
-      }
-      const item = DATA_INFO.find((i)=>{
-        return _.isEqual(i.code,status.code);
-      })|| Device.offlineStatus();
-      status =  {'code': item.code ,'message':item.message};
-    }
-    return status.message||'';
   }
   static getInstance = (data=template):Device =>{
     return new Device(data);
   }
-  
+
 }

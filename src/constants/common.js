@@ -99,4 +99,10 @@ export default {
     symbol: 'PRV',
     pDecimals: 9,
   },
+  USDT: {
+    id: '716fd1009e2a1669caacc36891e707bfdf02590f96ebd897548e8963c95ebac0',
+    pDecimals: 9,
+    name: 'Tether',
+    symbol: 'pUSDT',
+  },
 };

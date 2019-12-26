@@ -83,6 +83,24 @@ class Dex extends React.Component {
     }
   ];
 
+  componentDidMount() {
+    const { navigation } = this.props;
+    this.listener = navigation.addListener('didFocus', () => {
+      const { navigation } = this.props;
+      console.debug('DEX', navigation);
+      if (navigation.state?.params?.mode) {
+        const mode = navigation.state.params.mode;
+        this.setState({ mode });
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    if (this.listener) {
+      this.listener.remove();
+    }
+  }
+
   changeMode(mode) {
     console.debug('CHANGE MODE', mode);
     this.setState({ mode });

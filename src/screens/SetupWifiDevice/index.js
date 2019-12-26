@@ -255,7 +255,7 @@ class SetupWifiDevice extends BaseScreen {
         result = await NodeService.sendValidatorKey(Device.getInstance(addProduct),PrivateKey);
 
         if(!_.isEmpty(result)){
-          this.goToScreen(routeNames.HomeMine);
+          this.goToScreen(routeNames.Node);
           return;
         }
       }

@@ -240,7 +240,7 @@ class GetStartedAddNode extends BaseScreen {
 
       console.log('Substring', this.nodes[0]?.id, this.nodes[0]?.id.substring(this.nodes[0]?.id.length - 6), id.substring(id.length - 6));
       if (connectedNode) {
-        childView = <Button onPress={onReset} title="Reset" />;
+        childView = <Button title="Reset" />;
       } else {
         childView = isPassedValidate && loading ? (
           <>
@@ -297,7 +297,7 @@ class GetStartedAddNode extends BaseScreen {
 
   handleFinish =()=>{
     console.log(TAG,'handleFinish ');
-    this.goToScreen(routeNames.HomeMine);
+    this.goToScreen(routeNames.Node);
   }
 
   handleStepConnect = async ()=>{

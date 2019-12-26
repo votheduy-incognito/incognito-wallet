@@ -1,27 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import {
-  Button,
-  Image,
-  Text, TouchableOpacity,
-  View,
-} from '@src/components/core';
+import {Button, Image, Text, TouchableOpacity, View,} from '@src/components/core';
 import downArrow from '@src/assets/images/icons/down_arrow.png';
 import accountService from '@services/wallet/accountService';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
-import { Divider } from 'react-native-elements';
+import {Divider} from 'react-native-elements';
 import ExchangeRate from '@screens/Dex/components/ExchangeRate';
 import LocalDatabase from '@utils/LocalDatabase';
 import {TradeHistory} from '@models/dexHistory';
 import PoolSize from '@screens/Dex/components/PoolSize';
 import {ExHandler} from '@services/exception';
-import {PRV, MESSAGES, MIN_INPUT, PRIORITY_LIST} from '@screens/Dex/constants';
+import {MESSAGES, MIN_INPUT, PRIORITY_LIST, PRV} from '@screens/Dex/constants';
 import SwapSuccessDialog from '../SwapSuccessDialog';
 import Input from '../Input';
 import TradeConfirm from '../TradeConfirm';
-import { mainStyle } from '../../style';
+import {mainStyle} from '../../style';
 
 class Swap extends React.Component {
   constructor(props) {
@@ -35,6 +30,25 @@ class Swap extends React.Component {
   async componentDidMount() {
     this.seenDepositGuide = await LocalDatabase.getSeenDepositGuide() || false;
     this.loadData();
+
+    const { navigation } = this.props;
+    this.listener = navigation.addListener('didFocus', () => {
+      const { navigation } = this.props;
+      if (navigation.state?.params?.inputTokenId) {
+        const { pairTokens } = this.props;
+        const { inputTokenId, outputTokenId, outputValue } = navigation.state.params;
+        const inputToken = pairTokens.find(item => item.id === inputTokenId);
+        const outputToken = pairTokens.find(item => item.id === outputTokenId);
+        const inputValue = this.calculateInputValue(outputToken, outputValue, inputToken);
+        this.selectInput(inputToken, inputValue, outputToken);
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    if (this.listener) {
+      this.listener.remove();
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -204,6 +218,21 @@ class Swap extends React.Component {
       });
     } catch (error) {
       console.debug('FILTER OUTPUT LIST', error);
+    }
+  }
+
+  calculateInputValue(outputToken, outputValue, inputToken) {
+    try {
+      const { pairs } = this.props;
+      const pair = pairs.find(i => Object.keys(i).includes(outputToken.id));
+      const inputPool = pair[inputToken.id];
+      const outputPool = pair[outputToken.id];
+      const initialPool = inputPool * outputPool;
+      const newOutputPool = outputPool - outputValue;
+      const newInputPool = _.ceil(initialPool / newOutputPool);
+      return newInputPool - inputPool;
+    } catch (error) {
+      console.debug('CALCULATE INPUT', error);
     }
   }
 
@@ -501,6 +530,7 @@ Swap.propTypes = {
   pairTokens: PropTypes.array.isRequired,
   tradeParams: PropTypes.object.isRequired,
   isLoading: PropTypes.bool.isRequired,
+  navigation: PropTypes.object.isRequired,
 };
 
 export default Swap;

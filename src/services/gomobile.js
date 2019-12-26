@@ -19,7 +19,8 @@ try {
     'initPTokenTradeTx',
     'withdrawDexTx',
     'hybridDecryptionASM',
-    'hybridEncryptionASM'
+    'hybridEncryptionASM',
+    'stopAutoStaking',
   ];
   const syncMethods = [
     'scalarMultBase',
@@ -35,7 +36,7 @@ try {
             if (error) {
               reject(error);
             }
-  
+
             log(`${methodName} called successfully with result`, result);
             return resolve(result);
           });

@@ -79,6 +79,7 @@ class Input extends React.Component {
           </View>
           <View>
             <TextInput
+              autoCorrect={false}
               placeholder="Search"
               style={modalStyle.search}
               placeholderTextColor={COLORS.lightGrey1}

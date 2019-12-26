@@ -232,13 +232,25 @@ export async function getPDETradeStatus(txId) {
 
 export async function getPDEContributionStatus(pairId) {
   const client = await getRpcClient();
-  const res = await client.getPDEContributionStatus(pairId);
+  const res = await client.getPDEContributionStatusV2(pairId);
   return res.state;
 }
 
 export async function getPDEWithdrawalStatus(txId) {
   const client = await getRpcClient();
   return client.getPDEWithdrawalStatus(txId);
+}
+
+export function getBlockChainInfo() {
+  return getRpcClient().getBlockChainInfo();
+}
+
+export function getBeaconBestStateDetail() {
+  return getRpcClient().getBeaconBestStateDetail();
+}
+
+export function listRewardAmount() {
+  return getRpcClient().listRewardAmount();
 }
 
 export async function getTransactionByHash(txId) {

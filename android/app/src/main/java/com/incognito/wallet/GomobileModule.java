@@ -190,6 +190,17 @@ public class GomobileModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void stopAutoStaking(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "stop staking: begin");
+            successCallback.invoke(null, Gomobile.stopAutoStaking(data));
+        } catch (Exception e) {
+            Log.d(TAG, "stop staking: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
+
+    @ReactMethod
     public void generateBLSKeyPairFromSeed(String data, Callback successCallback) {
         try {
             Log.d(TAG, "generateBLSKeyPairFromSeed: begin");
