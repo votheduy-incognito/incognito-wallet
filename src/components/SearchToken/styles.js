@@ -13,6 +13,12 @@ export const itemStyle = StyleSheet.create({
     alignItems: 'flex-start',
     marginRight: 20,
   },
+  rightComponentContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 40,
+    height: 40,
+  },
   logo: {
     width: 30,
     height: 30,

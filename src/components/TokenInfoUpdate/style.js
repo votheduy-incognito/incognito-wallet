@@ -1,10 +1,9 @@
-import { FONT, THEME, COLORS } from '@src/styles';
+import { COLORS } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    height: 1000,
   },
   form: {
     flex: 1,

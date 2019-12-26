@@ -18,7 +18,7 @@ class TokenInfoUpdateContainer extends Component {
       isUpdating: false
     };
 
-    this.handleUpdateInfo = debounce(this.handleUpdateInfo, 1000);
+    this.handleUpdateInfo = debounce(this.handleUpdateInfo, 300);
   }
 
   handleUpdateInfo = async ({ description, showOwnerAddress, logo } = {}) => {

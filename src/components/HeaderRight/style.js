@@ -22,6 +22,23 @@ export const sendReceiveGroupStyle = StyleSheet.create({
 export const tokenInfoStyle = StyleSheet.create({
   container: {
   },
+  infoItemValueContainer: {
+    flexDirection: 'row',
+    flex: 1
+  },
+  infoItemValue: {
+    flex: 1
+  },
+  link: {
+    flex: 1,
+    borderBottomWidth: 0.5,
+    borderStyle: 'dashed',
+    borderColor: COLORS.green,
+    alignSelf: 'flex-start'
+  },
+  linkText: {
+    color: COLORS.green
+  },
   descContainer: {
     marginBottom: 40,
   },
@@ -40,19 +57,6 @@ export const tokenInfoStyle = StyleSheet.create({
     bottom: -20,
     marginLeft: 20
   },
-  updateBtnContainer: {
-    paddingVertical: 20,
-    marginBottom: 200
-  },
-  updateBtn: {
-    backgroundColor: COLORS.transparent,
-    borderColor: COLORS.primary,
-    height: 30
-  },
-  updateBtnText: {
-    color: COLORS.primary,
-    ...FONT.STYLE.medium
-  },
   icon: {
     marginHorizontal: 10
   },
@@ -60,6 +64,16 @@ export const tokenInfoStyle = StyleSheet.create({
     backgroundColor: COLORS.white
   },
   infoContainer: {
+    flex: 1
+  },
+  contentContainer: {
+    flex: 1,
+  },
+  content: {
+    flex: 1
+  },
+  updateBtnContainer: {
+    marginTop: 30,
   },
   header: {
     flexDirection: 'row',
@@ -93,8 +107,8 @@ export const tokenInfoStyle = StyleSheet.create({
     width: 150,
     color: COLORS.lightGrey1,
   },
-  infoItemValue: {
-    flex: 1,
+  infoItemValueCopy: {
+    flexBasis: 60,
     paddingHorizontal: 4
   },
   row: {
