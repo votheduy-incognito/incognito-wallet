@@ -155,7 +155,7 @@ class WithdrawContainer extends Component {
     }
   }
 
-  getWithdrawAddress = async ({ amount, paymentAddress }) => {
+  getWithdrawAddress = async ({ amount, paymentAddress, memo }) => {
     try {
       let address;
       const { selectedPrivacy } = this.props;
@@ -168,6 +168,7 @@ class WithdrawContainer extends Component {
         walletAddress,
         tokenId: selectedPrivacy?.tokenId,
         currencyType: selectedPrivacy?.currencyType,
+        memo
       });
       
       return address;
@@ -176,9 +177,9 @@ class WithdrawContainer extends Component {
     }
   }
 
-  handleCentralizedWithdraw = async ({ amount, fee, isUsedPRVFee, feeForBurn, remoteAddress }) => {
+  handleCentralizedWithdraw = async ({ amount, fee, isUsedPRVFee, feeForBurn, remoteAddress, memo }) => {
     try {
-      const tempAddress = await this.getWithdrawAddress({ amount, paymentAddress: remoteAddress });
+      const tempAddress = await this.getWithdrawAddress({ amount, paymentAddress: remoteAddress, memo });
       const tx = await this.handleSendToken({ tempAddress, amount, fee, isUsedPRVFee, feeForBurn });
 
       if (tx && !isUsedPRVFee) {
