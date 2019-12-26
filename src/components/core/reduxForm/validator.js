@@ -98,7 +98,6 @@ const tomoAddress = (value, { message } = {}) => value => !walletValidator.valid
  */
 const fileTypes = (typeList, { message } = {}) => value => {
   if (!value) return;
-
   const fileType = value?.type;
   const found = typeList.find(type => {
     if (!type) return false;
