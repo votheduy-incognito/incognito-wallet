@@ -141,7 +141,7 @@ class SetupDevice extends BaseComponent {
   async componentDidMount(){
     super.componentDidMount();
     // this.callVerifyCode();
-    // hien.ton test 
+    // hien.ton test
     // const state = await NetInfo.fetch().catch(console.log);
     // const {isConnected = false, isInternetReachable = false} = state ??{};
     // console.log(TAG, 'componentDidMount state ',state);
@@ -263,7 +263,7 @@ class SetupDevice extends BaseComponent {
     const errorObj = new Error('connectHotspot fail');
     try {
       await APIService.trackLog({action:funcName, message:`call service qrCodeCheckGetWifi - qrcode = ${this.deviceIdFromQrcode}`});
-      // call api to get wifi's name    
+      // call api to get wifi's name
       const response = await Util.excuteWithTimeout(APIService.qrCodeCheckGetWifi({QRCode:this.deviceIdFromQrcode}),3).catch(console.log);
       let {WifiName = '', Status= false} = response?.data ??{};
       this.logOnView(TAG + ' get hotspot server WifiName = ' + WifiName);
@@ -272,7 +272,7 @@ class SetupDevice extends BaseComponent {
       if(_.isEmpty(WifiName)){
         let suffix = _.split(this.deviceIdFromQrcode,'-')[1];
         suffix = !_.isEmpty(suffix) && _.size(suffix) == 6 ?`-${suffix}`:'';
-        
+
         WifiName = `${HOTPOT}${suffix}`;
         WifiName = `${HOTPOT}${suffix}`;
       }else{
@@ -287,7 +287,7 @@ class SetupDevice extends BaseComponent {
       this.logOnView(`${TAG} Begin: connect HOTSPOT WifiName=${WifiName}-------`);
 
       const result = await this.deviceId?.current?.connectDevice(this.deviceMiner,true);
-      
+
       this.logOnView(TAG+' END: connect HOTSPOT WifiName = '+WifiName + '-------result = '+result);
       await APIService.trackLog({action:funcName, message:`connectHotspot ${result?'SUCCESS':'FAIL va retry'} HOTSPOT = ${WifiName}`});
       console.log(TAG,'connectHotspot end result = ',result);
@@ -325,12 +325,12 @@ class SetupDevice extends BaseComponent {
       let productInfo  = resultStep1 ? await this.tryVerifyCode():{} ;
       let resultFuid  = !_.isEmpty(productInfo) ? await this.authFirebase(productInfo):'' ;
       const isSaveNodeResult = !_.isEmpty(productInfo) && await this.saveProductList(productInfo);
-      
+
       // this.CurrentPositionStep = 2;
       // let callVerifyCode = this.callVerifyCode;
       console.log(TAG,'handleSetUpPress callVerifyCode end =======',resultFuid);
       errorMsg = !_.isEmpty(resultFuid) ? '':errorMessage;
-      
+
     } catch (error) {
       this.logOnView(`${TAG} - handleSetUpPress error hotspot = ${error?.message??''}`);
       console.log(TAG,'handleSetUpPress error: ', error);
@@ -374,7 +374,7 @@ class SetupDevice extends BaseComponent {
     return {};
   }
 
-  
+
   changeDeviceName = async(name,qrCodeDevice=undefined,accountModel=undefined)=>{
     let errMessage = '';
     const funcName = `${this.deviceIdFromQrcode}-changeDeviceName`;
@@ -416,10 +416,10 @@ class SetupDevice extends BaseComponent {
 
         let resultRequest =  await Util.excuteWithTimeout(APIService.sendInfoStakeToSlack({productId:product_id,qrcodeDevice:this.deviceIdFromQrcode,miningKey:ValidatorKey,publicKey:PublicKeyCheckEncode,sendValidatorKey:result,paymentAddress:PaymentAddress,uid:uid }),8).catch(console.log);
         // if(!__DEV__){
-        
+
         await APIService.trackLog({action:funcName, message:`Result: send Slack==> ${resultRequest?'SUCCESS':'FAIL'}`});
         this.logOnView(`Result: send Slack==> ${resultRequest?'SUCCESS':'FAIL'}`);
-        
+
 
         console.log(TAG,'changeDeviceName sendValidatorKey begin02');
         resultRequest =  await Util.excuteWithTimeout(APIService.requestStake({
@@ -459,7 +459,7 @@ class SetupDevice extends BaseComponent {
       // __DEV__ && this.showToastMessage(error.message);
       await APIService.trackLog({action:funcName, message:`Result: connected Node ==> ERROR- message ${error.message}`});
       this.logOnView(`Result: connected Node ==> FAIL- message ${error.message}`);
-      
+
       throw new Error(errMessage);
     }
     await APIService.trackLog({action:funcName, message:'Result: connected Node ==> SUCCESS'});
@@ -484,12 +484,12 @@ class SetupDevice extends BaseComponent {
         // create account
         // console.log(TAG,'handleSubmit fetchData = ',fetchProductInfo);
         let result = await this.viewCreateAccount?.current?.createAccount(fetchProductInfo.product_name);
-        
+
         const {PrivateKey = '',AccountName = '',PaymentAddress = '',PublicKeyCheckEncode='',ValidatorKey = ''} = result??{};
         result = await NodeService.sendValidatorKey(Device.getInstance(addProduct),ValidatorKey);
 
         if(!_.isEmpty(result)){
-          this.goToScreen(routeNames.HomeMine);
+          this.goToScreen(routeNames.Node);
           return;
         }
       }
@@ -531,7 +531,7 @@ class SetupDevice extends BaseComponent {
       loading
     } = this.state;
     const {isRenderUI,navigation} = this.props;
-    
+
     return (
       <View style={[container,isRenderUI?undefined:styleHideView]}>
         <DeviceConnection ref={this.deviceId} />
@@ -662,7 +662,7 @@ class SetupDevice extends BaseComponent {
       return false;
     }
     return true;
-    
+
   }
 
   connectZMQ = async (params) =>{
@@ -677,7 +677,7 @@ class SetupDevice extends BaseComponent {
       let res = await Util.tryAtMost(sendZMQ,3,3);
       this.logOnView('connectZMQ sendZMQ ----- begin ');
       // const res = await ZMQService.sendData(JSON.stringify(params));
-      
+
       if(_.isEmpty(res)) return false;
 
       this.logOnView('Send zmq successfully & tryConnectHomeWifi');
@@ -691,18 +691,18 @@ class SetupDevice extends BaseComponent {
       //   const {isConnected = false, isInternetReachable = null} = state ??{};
       //   const isConnectHotspot = await this.checkIsConnectedWithHotspot();
       //   console.log(TAG, 'connectZMQ checkConnectWifi00 isConnected = ',isConnected,'-isInternetReachable =',isConnectHotspot);
-        
+
       //   const isConnectedCombined = isConnected &&(!isConnectHotspot || this.isHaveNetwork);
-        
+
       //   console.log(TAG, 'connectZMQ checkConnectWifi isConnected end ----- ',isConnectedCombined);
 
       //   return isConnectedCombined?isConnectedCombined : new Error('is connected fail ');
       // };
 
       // const result = await Util.tryAtMost(checkConnectWifi,60,2,2).catch(console.log)||false;
-      
+
       const result = await Util.delay(5)??true;
-      
+
       this.logOnView(result?'quay ve lai WIFI cu => SUCCESS':'quay ve lai WIFI cu => FAIL');
       console.log(TAG, 'connectZMQ begin end  ',result);
       return result;
@@ -723,7 +723,7 @@ class SetupDevice extends BaseComponent {
     const {ssid = ''  } = details ??{};
 
     this.isHaveNetwork = isConnected && (isInternetReachable || !(await this.checkIsConnectedWithHotspot()));
-    
+
     console.log(TAG,`_handleConnectionChange: ${this.isHaveNetwork}-ssid=${ssid}`);
     this.setState({
       isConnected: isConnected
@@ -759,22 +759,22 @@ class SetupDevice extends BaseComponent {
     let device = await this.deviceId?.current?.getCurrentConnect();
     return device;
   };
-  
+
   checkIsConnectedWithHotspot = async ()=>{
-    return await this.deviceId?.current?.isConnectedWithNodeHotspot(); 
+    return await this.deviceId?.current?.isConnectedWithNodeHotspot();
   }
-  
+
   checkConnectHotspot = async  ()=> {
     const funcName = `${this.deviceIdFromQrcode}-checkConnectHotspot`;
     const { validSSID, validWPA,isRenderUI } = this.state;
     this.logOnView('bat dat check da connect hotspot chua?');
     // hienton test
     // await Util.delay(2);
-    
+
     let isConnectedHotpost = await this.checkIsConnectedWithHotspot();
     await APIService.trackLog({action:funcName, message:isConnectedHotpost?'Da connect HOTSPOT':'Chua connect HOTSPOT'});
     this.logOnView(isConnectedHotpost?'da connect roi':'chua connect va bat dau connect');
-    
+
     // await Util.delay(2);
     ///////////////
     let objConnection = null;
@@ -819,7 +819,7 @@ class SetupDevice extends BaseComponent {
         // return false;
       }
     }
-    
+
     return false;
   }
 
@@ -829,13 +829,13 @@ class SetupDevice extends BaseComponent {
   authFirebase = async (productInfo) =>{
     const funcName = `${this.deviceIdFromQrcode}-authFirebase`;
     try {
-      
+
       await APIService.trackLog({action:funcName, message:'Bat dau Auth Firebase'});
       this.logOnView('Bat dau Auth Firebase');
       if(_.isEmpty(productInfo)){
         return {};
       }
-      
+
       const authFirebaseFunc = async ()=> {
         console.log(TAG,' authFirebase retry ----- begin ');
         const resultFbUID = await NodeService.authFirebase(productInfo).catch(e=>console.log(TAG,' authFirebase catch error = ',e)) ?? '';
@@ -866,7 +866,7 @@ class SetupDevice extends BaseComponent {
 
       const { verifyCode } = this.state;
       console.log(TAG,' tryVerifyCode begin01 connected = ',this.isHaveNetwork);
-    
+
       const promiseNetwork = async ()=>{
         console.log(TAG,' tryVerifyCode begin02 ---- connected = ',this.isHaveNetwork);
         // const result = this.isHaveNetwork ? await NodeService.verifyProductCode(verifyCode).catch(console.log):new Error('no internet');
@@ -888,7 +888,7 @@ class SetupDevice extends BaseComponent {
       this.logOnView('tryVerifyCode=> FAIL');
       new ExHandler(new CustomError(knownCode.node_verify_code_fail)).throw();
     }
-    
+
   }
 
 }
