@@ -279,6 +279,9 @@ class Node extends BaseScreen {
       });
 
       device.Rewards = actualRewards;
+      device.setIsOnline(MAX_RETRY);
+    } else {
+      device.setIsOnline(Math.max(device.IsOnline - 1, 0));
     }
 
     return device;
@@ -352,6 +355,10 @@ class Node extends BaseScreen {
       const listAccount = await wallet.listAccount();
       const rawAccount = await accountService.getAccountWithBLSPubKey(blsKey, wallet);
       device.Account = listAccount.find(item => item.AccountName === rawAccount?.name);
+
+      if (device.Account) {
+        device.ValidatorKey = device.Account.ValidatorKey;
+      }
     }
 
     if (device.IsVNode) {
@@ -433,11 +440,10 @@ class Node extends BaseScreen {
         withdrawRequests[PaymentAddress] = tokenIds;
         this.setState({ withdrawRequests }, this.startWithdraw);
       } else {
-        const { ValidatorKey } = (account || {});
         await APIService.requestWithdraw({
           ProductID: device.ProductId,
           QRCode: device.qrCodeDeviceId,
-          ValidatorKey: ValidatorKey,
+          ValidatorKey: device.ValidatorKey,
           PaymentAddress: device.PaymentAddressFromServer
         });
       }
