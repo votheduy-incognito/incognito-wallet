@@ -132,9 +132,8 @@ export default class Util {
   }
 
   /**
-   * @param {Promise} promiseObj - promiseObj will be retried when return Error object.
-   * @param {Int} count  = 6
-   * @param {Int} delayToTry  = 1 second
+   * @param {Promise} promiseObj
+   * @param {Int} timeSecond  = 1
    */
   static excuteWithTimeout = (promiseObj, timeSecond = 1) => {
     return new Promise(function(resolve, reject) {

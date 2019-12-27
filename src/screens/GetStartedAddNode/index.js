@@ -46,6 +46,9 @@ class GetStartedAddNode extends BaseScreen {
     this.wifiPassValue = '';
     this.accountNode=null;
   }
+  componentDidMount(){
+    super.componentDidMount();
+  }
 
   renderTitle =()=>{
     const {currentPage,currentConnect} = this.state;
@@ -165,6 +168,7 @@ class GetStartedAddNode extends BaseScreen {
   })
 
   handleScanQrcodeSuccess = async(qrCode)=>{
+    this.logOnView(`Scan Qrcode = ${qrCode}`);
     this.createAccount(qrCode);
     this.setState({QRCode:qrCode});
   }

@@ -72,6 +72,7 @@
     "react-native-console-time-polyfill": "^1.2.1",
     "react-native-crypto": "^2.1.2",
     "react-native-device-info": "^5.0.1",
+    "react-native-device-log": "https://github.com/bright-systems/react-native-device-log.git",
     "react-native-dotenv": "^0.2.0",
     "react-native-easy-toast": "^1.2.0",
     "react-native-elements": "^1.1.0",

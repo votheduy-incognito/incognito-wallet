@@ -1,4 +1,5 @@
 import NetInfo from '@react-native-community/netinfo';
+import APIService from '@src/services/api/miner/APIService';
 import Util from '@utils/Util';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -87,7 +88,7 @@ class DeviceConnection extends Component {
             ssid='',
             isConnectionExpensive= false }} = state ??{};
         console.log(TAG, 'connectDevice begin 0000 ---- ',state);
-        const isConnectedCombined  = isHOTPOST?(isConnected && await this.isConnectedWithNodeHotspot()):isConnected;
+        const isConnectedCombined  = isHOTPOST?( await this.isConnectedWithNodeHotspot()):isConnected;
         
         console.log(TAG, 'connectDevice begin 111---- ',isConnectedCombined);
         return isConnectedCombined?isConnectedCombined : new Error('have not connected ');
@@ -98,8 +99,12 @@ class DeviceConnection extends Component {
     }
     return result;
   };
-  isConnectedWithNodeHotspot = ():Promise<Boolean>=>{
-    return this.connection.isConnectedWithNodeHotspot();
+  isConnectedWithNodeHotspot = async ():Promise<Boolean>=>{
+    try {
+      return await APIService.pingHotspot();
+    } catch (error) {
+      return false;
+    }
   }
   removeConnectionDevice = async (objConnection: ObjConnection) => {
     // console.log(TAG, 'removeConnectionDevice begin result = ',JSON.stringify(device)||'');

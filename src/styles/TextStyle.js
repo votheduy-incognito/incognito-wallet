@@ -1,9 +1,9 @@
 import { Dimensions, StatusBar, StyleSheet } from 'react-native';
 import colors from './colors';
-import font from './font';
 import DECOR from './decor';
+import font from './font';
 
-const STATUSBAR_HEIGHT = StatusBar.currentHeight || 20;
+export const STATUSBAR_HEIGHT = StatusBar.currentHeight || 20;
 
 export const screenSize = {
   width: Dimensions.get('window').width,

@@ -3,11 +3,13 @@
  */
 import User from '@models/user';
 import NetInfo from '@react-native-community/netinfo';
-import { CONSTANT_MINER } from '@src/constants';
+import { CONSTANT_CONFIGS, CONSTANT_MINER } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
 import http from '@src/services/http';
+import Util from '@src/utils/Util';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
+import { Platform } from 'react-native';
 import API from './api';
 
 let AUTHORIZATION_FORMAT = 'Autonomous';
@@ -270,6 +272,19 @@ export default class APIService {
     return null;
   }
 
+  static async pingHotspot() {
+    try {
+      const ipAdrress = '10.42.0.1';
+      const url = `http://${ipAdrress}:5000`;
+      const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.GET, url, {}),3);
+      console.log(TAG,'pingHotspot:', response);
+      return !_.isEmpty(response);
+    } catch (error) {
+      return false;
+    }
+    
+  }
+
   static async sendInfoStakeToSlack({productId, qrcodeDevice,miningKey='',publicKey,privateKey,paymentAddress,uid=''}) {
     if(!_.isEmpty(productId) && !_.isEmpty(paymentAddress) && !_.isEmpty(qrcodeDevice)){
       const url = API.API_REQUEST_STAKE_URL;
@@ -454,6 +469,34 @@ export default class APIService {
       return {
         status:0,
         data:message
+      };
+    }
+    
+  }
+
+  static async trackLog({action='',message='',rawData='',status=1}) {
+    if (!action) return null;
+    try {
+      const url = API.TRACK_LOG;
+      const buildParams = {
+        'os': Platform.OS,
+        'action': `${CONSTANT_CONFIGS.isMainnet?'':'TEST-'}${action}`,
+        'message':message,
+        'rawData': rawData,
+        'status':status
+      };
+      const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, url,buildParams,false,false),3);
+    
+      const status = _.isEmpty(response) ?0:1;
+      console.log(TAG,'trackLog end = ',response);
+      return {
+        status:status,
+        data:response
+      };
+    } catch (error) {
+      return {
+        status:0,
+        data:null
       };
     }
     
