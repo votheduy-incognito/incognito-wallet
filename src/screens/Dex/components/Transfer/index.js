@@ -200,6 +200,7 @@ class Transfer extends React.PureComponent {
     if (!error && token && amount && account && !sending) {
       this.updateTransfer({ chainError: null });
       try {
+        this.setState({ sending: true });
         if (token.id !== PRV_ID && feeUnit === PRV.symbol) {
           prvBalance = await accountService.getBalance(prvAccount, wallet);
           prvFee = fee;
@@ -207,7 +208,6 @@ class Transfer extends React.PureComponent {
             return this.updateTransfer({chainError: MESSAGES.NOT_ENOUGH_NETWORK_FEE});
           }
         }
-        this.setState({ sending: true });
         await this[action](transfer);
         this.updateTransfer({ success: true });
         onLoadData();

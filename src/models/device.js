@@ -125,6 +125,12 @@ export default class Device {
   get UnstakeTx() {
     return this.data.minerInfo.unstakeTx;
   }
+  set ValidatorKey(key) {
+    this.data.minerInfo.validatorKey = key;
+  }
+  get ValidatorKey() {
+    return this.data.minerInfo.validatorKey || this.Account?.ValidatorKey;
+  }
   get Unstaking() {
     return this.UnstakeTx || (!!this.Status && !this.IsAutoStake);
   }
