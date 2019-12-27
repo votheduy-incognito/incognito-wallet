@@ -7,7 +7,7 @@ import {
 } from '@src/components/core';
 import formatUtil from '@utils/format';
 import {mainStyle} from '@screens/Dex/style';
-import { PRV } from '@screens/Dex/constants';
+import {PRV} from '@services/wallet/tokenService';
 import style from './style';
 
 class NetworkFee extends React.PureComponent {

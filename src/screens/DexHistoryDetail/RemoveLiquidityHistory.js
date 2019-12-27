@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { View, Text, Button } from '@components/core';
 import formatUtils from '@utils/format';
 import {TRANSFER_STATUS} from '@src/redux/actions/dex';
-import { PRV } from '@src/screens/Dex/constants';
+import {PRV} from '@services/wallet/tokenService';
 import TransactionID from './TransactionID';
 import TokenID from './TokenID';
 import stylesheet from './style';

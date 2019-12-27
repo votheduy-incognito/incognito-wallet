@@ -1,125 +1,166 @@
-import BaseScreen from '@screens/BaseScreen';
-import BorrowStake from '@src/components/BorrowStake';
-import { createForm, InputQRField } from '@src/components/core/reduxForm';
-import SelfStaking from '@src/components/SelfStaking';
-import Device from '@src/models/device';
-import LocalDatabase from '@src/utils/LocalDatabase';
-import _ from 'lodash';
 import React from 'react';
 import { View } from 'react-native';
-import { ButtonGroup } from 'react-native-elements';
-import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import {compose} from 'redux';
+import {connect} from 'react-redux';
+import BaseScreen from '@screens/BaseScreen';
+import {CONSTANT_COMMONS} from '@src/constants';
+import {ExHandler} from '@services/exception';
+import accountService from '@services/wallet/accountService';
+import {
+  getEstimateFeeForNativeToken,
+  getStakingAmount
+} from '@services/wallet/RpcClientService';
+import {Toast} from '@components/core/index';
+import LocalDatabase from '@utils/LocalDatabase';
+import _ from 'lodash';
+import Device from '@models/device';
+import {DEX_CHAIN_ACCOUNT} from '@screens/Dex/constants';
+import routeNames from '@routers/routeNames';
+import config from '@src/constants/config';
 import style from './styles';
+import AddStake from './AddStake';
 
-const buttons = ['Stake', 'Borrow & Stake'];
-const formName = 'addErc20Token';
-const Form = createForm(formName, {
-  enableReinitialize: true,
-  keepDirtyOnReinitialize: true,
-});
-const FieldQrcode = (props)=>(
-  <InputQRField
-    {...props}
-    containerStyle={style.input_container}
-    underlineColorAndroid="transparent"
-    inputStyle={style.input}
-    placeholder="Enter device serial number"
-    maxLength={100}
-    numberOfLines={1}
-  />
-);
 export const TAG = 'AddStake';
 
-class AddStake extends BaseScreen {
+const stakeType = CONSTANT_COMMONS.STAKING_TYPES.SHARD;
+
+class AddStakeContainer extends BaseScreen {
   constructor(props) {
     super(props);
-    const {navigation}= props;
+    const { navigation }= props;
     const { params } = navigation.state;
-    const accountInfo = params ? params.accountInfo : null;
-    console.log(TAG,'constructor begin =',accountInfo);
+    const { device } = params;
+
     this.state = {
-      loading: true,
-      errorText:'',
-      accountInfo:accountInfo,
-      selectedIndex:0
+      device,
     };
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    return null;
-  }
-  updateIndex=(selectedIndex)=> {
-    this.setState({selectedIndex});
-  }
-  renderTabs=()=>{
-    const { selectedIndex } = this.state;
-    return(
-      <ButtonGroup
-        onPress={this.updateIndex}
-        selectedIndex={selectedIndex}
-        buttons={buttons}
-        textStyle={style.tab_text}
-        buttonStyle={style.tab_button}
-        selectedTextStyle={style.tab_text_selected}
-        selectedButtonStyle={style.tab_button_selected}
-        containerStyle={style.tab_container}
-      />
+  async componentDidMount() {
+    const { navigation } = this.props;
+    this.listener = navigation.addListener(
+      'didFocus',
+      () => {
+        this.getStakeAmount().catch((error) => new ExHandler(error).showErrorToast(true));
+        this.getBalance().catch((error) => new ExHandler(error).showErrorToast(true));
+      }
     );
   }
-  renderBorrowStake = ()=>{
-    const {selectedIndex} = this.state;
-    return selectedIndex === 1?<BorrowStake />:undefined; 
+
+  componentWillUnmount() {
+    this.listener.remove();
   }
-  renderStake = ()=>{
-    const {accountInfo,selectedIndex} = this.state;
+
+
+  estimateFee = async (amount) => {
+    try {
+      const { device } = this.state;
+      const { wallet } = this.props;
+      const account = device.Account;
+      const fromAddress = account.PaymentAddress;
+      const accountWallet = wallet.getAccountByName(account.AccountName);
+      const fee = await getEstimateFeeForNativeToken(
+        fromAddress,
+        DEX_CHAIN_ACCOUNT.PaymentAddress,
+        amount,
+        accountWallet,
+      );
+      this.setState({ fee });
+    } catch (e) {
+      this.setState({ fee: 100 });
+    }
+  };
+
+  async getStakeAmount() {
+    const amount = await getStakingAmount(stakeType);
+    this.setState({ amount });
+    this.estimateFee(amount);
+  }
+
+  async getBalance() {
+    const { wallet } = this.props;
+    const { device } = this.state;
+    const account = device.Account;
+    const balance = await accountService.getBalance(account, wallet);
+    this.setState({ balance });
+  }
+
+  handleBuy = async () => {
     const { navigation } = this.props;
-    
-    return (selectedIndex === 1?<BorrowStake />: (
-      <SelfStaking
-        onCallBackStaked={async (rs)=>{
-          const minerAccountName = accountInfo?.minerAccountName||'';
-          if(!_.isEmpty(minerAccountName)){
-          // get list device 
-            let listDevice = await LocalDatabase.getListDevices()||[];
-            const deviceIndex =  listDevice.findIndex(item=>_.isEqual(Device.getInstance(item).accountName(),minerAccountName));
-            if(deviceIndex>=0) listDevice[deviceIndex].minerInfo['isCallStaked'] = true;
-            await LocalDatabase.saveListDevices(listDevice);
-          }
-          this.onPressBack();
-        }}
-        minerAccountName={accountInfo.minerAccountName}
-        funderAccountName={accountInfo.funderAccountName}
-        navigation={navigation}
-      />
-    ));
+    const { balance, amount } = this.state;
+    const neededAmount = amount - balance + 1e9;
+    navigation.navigate(routeNames.Dex, {
+      outputValue: neededAmount,
+      inputTokenId: config.USDT_TOKEN_ID,
+      outputTokenId: CONSTANT_COMMONS.PRV.id,
+      mode: 'trade',
+    });
+  };
+
+  async handleStakeSuccess(rs) {
+    const { navigation } = this.props;
+    const { device } = this.state;
+    const name = device.AccountName;
+    const listDevice = await LocalDatabase.getListDevices()||[];
+    const deviceIndex =  listDevice.findIndex(item => _.isEqual(Device.getInstance(item).AccountName, name));
+    listDevice[deviceIndex].minerInfo.stakeTx = rs.txId;
+    await LocalDatabase.saveListDevices(listDevice);
+    Toast.showInfo('Stake completed!');
+
+    navigation.goBack();
   }
+
+  handleStake = async () => {
+    try {
+      const { device, fee } = this.state;
+      const { wallet } = this.props;
+      const account = device.Account;
+      const paymentAddress = account.PaymentAddress;
+      this.setState({ isStaking: true });
+      const param = { type: stakeType };
+      const rs = await accountService.staking(param, fee, paymentAddress, account, wallet, paymentAddress, true);
+      this.handleStakeSuccess(rs);
+    } catch (e) {
+      new ExHandler(e).showErrorToast(true);
+    } finally {
+      this.setState({ isStaking: false });
+    }
+  };
 
   render() {
-    const { loading ,validAmount,errorText,selectedIndex} = this.state;
-
+    const { navigation, wallet } = this.props;
+    const { device, amount, fee, isStaking, balance } = this.state;
+    const account = device.Account;
     return (
       <View style={style.container}>
-        {/* {this.renderTabs()} */}
-        {this.renderStake()}
-        {/* {this.renderBorrowStake()} */}
+        <AddStake
+          account={account}
+          navigation={navigation}
+          wallet={wallet}
+          type={stakeType}
+          amount={amount}
+          fee={fee}
+          onStake={this.handleStake}
+          onBuy={this.handleBuy}
+          isStaking={isStaking}
+          balance={balance}
+        />
       </View>
     );
   }
-
-  set loading(isLoading) {
-    this.setState({
-      loading: isLoading
-    });
-  }
-
 }
 
-AddStake.propTypes = {};
+AddStakeContainer.propTypes = {
+  wallet: PropTypes.object.isRequired,
+};
 
-AddStake.defaultProps = {};
-const mapStateToProps = state => ({});
-const mapDispatchToProps = {};
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AddStake);
+AddStakeContainer.defaultProps = {};
+
+const mapStateToProps = (state) => ({
+  wallet: state?.wallet,
+});
+
+export default compose(
+  connect(mapStateToProps)
+)(AddStakeContainer);

@@ -1,26 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import {
-  Button,
-  Image,
-  Text,
-  View,
-} from '@src/components/core';
+import {Button, Image, Text, TouchableOpacity, View,} from '@src/components/core';
 import downArrow from '@src/assets/images/icons/down_arrow.png';
 import accountService from '@services/wallet/accountService';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
-import { Divider } from 'react-native-elements';
+import {Divider} from 'react-native-elements';
+import {PRV} from '@services/wallet/tokenService';
 import ExchangeRate from '@screens/Dex/components/ExchangeRate';
 import LocalDatabase from '@utils/LocalDatabase';
 import {TradeHistory} from '@models/dexHistory';
 import PoolSize from '@screens/Dex/components/PoolSize';
+import {ExHandler} from '@services/exception';
+import {MESSAGES, MIN_INPUT, PRIORITY_LIST} from '@screens/Dex/constants';
 import SwapSuccessDialog from '../SwapSuccessDialog';
 import Input from '../Input';
 import TradeConfirm from '../TradeConfirm';
-import { PRV, MESSAGES, MIN_INPUT } from '../../constants';
-import { mainStyle } from '../../style';
+import {mainStyle} from '../../style';
 
 class Swap extends React.Component {
   constructor(props) {
@@ -34,6 +31,25 @@ class Swap extends React.Component {
   async componentDidMount() {
     this.seenDepositGuide = await LocalDatabase.getSeenDepositGuide() || false;
     this.loadData();
+
+    const { navigation } = this.props;
+    this.listener = navigation.addListener('didFocus', () => {
+      const { navigation } = this.props;
+      if (navigation.state?.params?.inputTokenId) {
+        const { pairTokens } = this.props;
+        const { inputTokenId, outputTokenId, outputValue } = navigation.state.params;
+        const inputToken = pairTokens.find(item => item.id === inputTokenId);
+        const outputToken = pairTokens.find(item => item.id === outputTokenId);
+        const inputValue = this.calculateInputValue(outputToken, outputValue, inputToken);
+        this.selectInput(inputToken, convertUtil.toHumanAmount(inputValue, inputToken.pDecimals), outputToken);
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    if (this.listener) {
+      this.listener.remove();
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -57,8 +73,12 @@ class Swap extends React.Component {
     }
 
     if (inputToken) {
-      this.filterOutputList();
-      this.getInputBalance();
+      if (pairTokens.find(item => item.id === inputToken.id)) {
+        this.filterOutputList();
+        this.getInputBalance();
+      } else {
+        this.selectInput(pairTokens[0]);
+      }
     } else {
       this.selectInput(pairTokens[0]);
     }
@@ -86,7 +106,10 @@ class Swap extends React.Component {
 
       if (balance !== prevBalance) {
         const { inputValue, inputToken } = this.state;
-        this.setState({ balance }, () => this.changeInputValue(convertUtil.toHumanAmount(inputValue, inputToken.pDecimals)));
+        this.setState({ balance }, () => {
+          const value = convertUtil.toHumanAmount(inputValue, inputToken.pDecimals);
+          this.changeInputValue(formatUtil.toFixed(value, inputToken.pDecimals));
+        });
       }
 
       let prvBalance = balance;
@@ -101,11 +124,11 @@ class Swap extends React.Component {
     }
   }
 
-  selectInput = (token, balance) => {
+  selectInput = (token, value = 1, outputToken) => {
     this.setState({
       inputToken: token,
-      inputValue: convertUtil.toOriginalAmount(1, token.pDecimals),
-      outputToken: null,
+      inputValue: convertUtil.toOriginalAmount(value, token.pDecimals),
+      outputToken: outputToken,
       outputValue: null,
       inputError: null,
       balance: 'Loading',
@@ -113,7 +136,7 @@ class Swap extends React.Component {
       this.filterOutputList(() => {
         const { inputValue } = this.state;
         this.changeInputValue(convertUtil.toHumanAmount(inputValue, token.pDecimals));
-        this.getInputBalance(balance);
+        this.getInputBalance();
       });
     });
   };
@@ -124,17 +147,22 @@ class Swap extends React.Component {
 
   changeInputValue = (newValue) => {
     const { balance, inputToken } = this.state;
-    let number = _.toNumber(newValue);
+    let number = convertUtil.toNumber(newValue);
 
     if (!newValue || newValue.length === 0) {
       this.setState({ inputError: null, inputValue: 0 }, this.calculateOutputValue);
     } else if (_.isNaN(number)) {
       this.setState({inputError: MESSAGES.MUST_BE_NUMBER });
     } else {
-      number = _.toNumber(convertUtil.toOriginalAmount(number, inputToken.pDecimals));
+      number = convertUtil.toOriginalAmount(number, inputToken.pDecimals, inputToken.pDecimals !== 0);
       if (number < MIN_INPUT) {
         this.setState({
           inputError: MESSAGES.GREATER_OR_EQUAL(MIN_INPUT, inputToken.pDecimals),
+          inputValue: 0,
+        }, this.calculateOutputValue);
+      } else if (!Number.isInteger(number)) {
+        this.setState({
+          inputError: MESSAGES.MUST_BE_INTEGER,
           inputValue: 0,
         }, this.calculateOutputValue);
       } else if (number > balance) {
@@ -153,9 +181,10 @@ class Swap extends React.Component {
 
   async filterOutputList(callback) {
     try {
-      const { inputToken: token, outputToken } = this.state;
+      const { inputToken: token } = this.state;
       const { pairTokens, pairs } = this.props;
 
+      let { outputToken } = this.state;
       const outputPairs = pairs.filter(pair => pair[token.id]);
       const outputList = _(outputPairs)
         .map(pair => {
@@ -168,8 +197,18 @@ class Swap extends React.Component {
           pool: convertUtil.toRealTokenValue(pairTokens, id, pool),
         }))
         .filter(item => item)
-        .orderBy(['hasIcon', 'pool', item => item.symbol && item.symbol.toLowerCase()], ['desc', 'desc', 'asc'])
+        .orderBy([
+          item => PRIORITY_LIST.indexOf(item?.id) > -1 ? PRIORITY_LIST.indexOf(item?.id) : 100,
+          'hasIcon',
+          'pool',
+          item => item.symbol && item.symbol.toLowerCase(),
+        ], ['asc', 'desc', 'desc', 'asc'])
         .value();
+
+      if (outputToken && !outputList.find(item => item.id === outputToken.id)) {
+        outputToken = null;
+      }
+
       this.setState({
         outputPairs,
         outputList,
@@ -180,6 +219,24 @@ class Swap extends React.Component {
       });
     } catch (error) {
       console.debug('FILTER OUTPUT LIST', error);
+    }
+  }
+
+  calculateInputValue(outputToken, outputValue, inputToken) {
+    try {
+      const { pairs } = this.props;
+      const pair = pairs.find(i => {
+        const keys = Object.keys(i);
+        return keys.includes(outputToken.id) && keys.includes(inputToken.id);
+      });
+      const inputPool = pair[inputToken.id];
+      const outputPool = pair[outputToken.id];
+      const initialPool = inputPool * outputPool;
+      const newOutputPool = outputPool - outputValue;
+      const newInputPool = _.ceil(initialPool / newOutputPool);
+      return newInputPool - inputPool;
+    } catch (error) {
+      console.debug('CALCULATE INPUT', error);
     }
   }
 
@@ -233,6 +290,12 @@ class Swap extends React.Component {
     }
   }
 
+  swapTokens = () => {
+    const { inputToken, inputValue, outputToken } = this.state;
+
+    this.selectInput(outputToken, convertUtil.toHumanAmount(inputValue, inputToken.pDecimals), inputToken);
+  };
+
   trade = async (networkFee, networkFeeUnit, tradingFee, stopPrice) => {
     const { wallet, dexMainAccount } = this.props;
     const { sending, balance, inputToken, inputValue } = this.state;
@@ -275,11 +338,7 @@ class Swap extends React.Component {
         onAddHistory(new TradeHistory(result, inputToken, outputToken, inputValue, outputValue, networkFee, networkFeeUnit, tradingFee, stopPrice));
       }
     } catch (error) {
-      if (accountService.isNotEnoughCoinError(error, inputValue + tradingFee, tokenFee, balance, prvBalance, prvFee)) {
-        this.setState({tradeError: MESSAGES.PENDING_TRANSACTIONS});
-      } else {
-        this.setState({tradeError: MESSAGES.TRADE_ERROR});
-      }
+      this.setState({ tradeError: new ExHandler(error).getMessage(MESSAGES.TRADE_ERROR) });
     } finally {
       this.setState({ sending: false });
     }
@@ -359,6 +418,7 @@ class Swap extends React.Component {
           wallet={wallet}
           pool={!!pair && !!inputToken && pair[inputToken.id]}
           disabled={isLoading}
+          onlyPToken
         />
         {!!inputError && (inputError !== MESSAGES.BALANCE_INSUFFICIENT || this.seenDepositGuide) && (
           <Text style={mainStyle.error}>
@@ -367,7 +427,9 @@ class Swap extends React.Component {
         )}
         <View style={mainStyle.arrowWrapper}>
           <Divider style={mainStyle.divider} />
-          <Image source={downArrow} style={mainStyle.arrow} />
+          <TouchableOpacity onPress={this.swapTokens}>
+            <Image source={downArrow} style={mainStyle.arrow} />
+          </TouchableOpacity>
           <Divider style={mainStyle.divider} />
         </View>
         <Input
@@ -379,6 +441,7 @@ class Swap extends React.Component {
           wallet={wallet}
           value={_.isNumber(outputValue) ? formatUtil.amountFull(outputValue, outputToken?.pDecimals) : '0'}
           pool={!!pair && !!outputToken && pair[outputToken.id]}
+          onlyPToken
         />
       </View>
     );
@@ -471,6 +534,7 @@ Swap.propTypes = {
   pairTokens: PropTypes.array.isRequired,
   tradeParams: PropTypes.object.isRequired,
   isLoading: PropTypes.bool.isRequired,
+  navigation: PropTypes.object.isRequired,
 };
 
 export default Swap;

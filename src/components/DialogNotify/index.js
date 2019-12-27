@@ -2,28 +2,14 @@ import { ButtonExtension, Text, View } from '@components/core';
 import { DEVICES } from '@src/constants/miner';
 import DeviceService from '@src/services/DeviceService';
 import NodeService from '@src/services/NodeService';
-import TextStyle from '@src/styles/TextStyle';
 import LocalDatabase from '@src/utils/LocalDatabase';
 import Util from '@src/utils/Util';
 import ViewUtil from '@src/utils/ViewUtil';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet } from 'react-native';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import styles from './style';
 
 const TAG = 'DialogNotify';
-const style = StyleSheet.create({
-  container: {
-  },
-  textItem:{
-    ...TextStyle.normalText,
-    color:'black'
-  },
-  textSubtitle:{
-    ...TextStyle.minimizeText,
-    color:'#91A4A6'
-  }
-});
 
 const Loading = React.memo((props)=>{
   return (
@@ -89,9 +75,9 @@ const ProcessingUpgrade = React.memo(({device,isUpdating,onSuccess,onFail,onClos
 
 export const DialogUpdateFirmware = React.memo(({handleUpdate,visible,device,onClose})=>{
   // const {  textInput, item,item_container_input,label } = styles;
-  
+
   const [isShowMessage,setIsShowMessage] = React.useState(false);
-  
+
   const [loading,setLoading] = React.useState(false);
   const [isHaveUpdate,setHaveUpdate] = React.useState(false);
   const [isUpdating,setUpdating] = React.useState(device.isUpdatingFirmware());
@@ -111,7 +97,7 @@ export const DialogUpdateFirmware = React.memo(({handleUpdate,visible,device,onC
           setTextContent('New update available. Please tap to update.');
           setLableButton('Update Now');
         }
-      }else{ 
+      }else{
         setTextContent('You’re all up to date.');
         setLableButton('OK');
         if(isUpdating){
@@ -128,7 +114,7 @@ export const DialogUpdateFirmware = React.memo(({handleUpdate,visible,device,onC
       return true;
     }
   };
-  
+
   useMemo(
     ()=>requestVersion().catch(console.log),
     [visible]
@@ -139,8 +125,8 @@ export const DialogUpdateFirmware = React.memo(({handleUpdate,visible,device,onC
     setTextTitle(`Node v${newVersion??''}`);
     await LocalDatabase.saveUpdatingFirware(device.ProductId,false);
   },[isUpdating]);
-  
-  
+
+
   const onTouchOutside = useCallback(() => {
     console.log(TAG,'DialogUpdateFirmware onTouchOutside');
     setIsShowMessage(false);
@@ -150,7 +136,7 @@ export const DialogUpdateFirmware = React.memo(({handleUpdate,visible,device,onC
     console.log(TAG,'DialogUpdateFirmware onPressButton',isUpdating,'-isHaveUpdate = ',isHaveUpdate);
     if(isHaveUpdate && !isUpdating ){
       setLoading(true);
-      // send action 
+      // send action
       const result= await DeviceService.updateFirmwareForNode(device);
       if(result >= 0){
         setUpdating(true);
@@ -163,8 +149,8 @@ export const DialogUpdateFirmware = React.memo(({handleUpdate,visible,device,onC
       onClose&&onClose();
     }
   },[isHaveUpdate]);
-  
-  
+
+
   return (
     <Dialog
       width={0.8}
@@ -174,7 +160,7 @@ export const DialogUpdateFirmware = React.memo(({handleUpdate,visible,device,onC
     >
       <DialogContent style={styles.dialog_container}>
         <Text style={styles.dialog_title_text}>{textTitle}</Text>
-        
+
         {isUpdating?<ProcessingUpgrade device={device} isUpdating={isUpdating} onSuccess={handleUpgradeSuccess} onClose={()=>onClose&&onClose()} />:(
           loading?<Loading />: (
             <>
@@ -191,7 +177,7 @@ export const DialogUpdateFirmware = React.memo(({handleUpdate,visible,device,onC
           )
         )}
       </DialogContent>
-       
+
     </Dialog>
   );
 });

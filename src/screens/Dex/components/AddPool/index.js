@@ -12,15 +12,18 @@ import {
   getEstimateFeeForPToken,
   getTransactionByHash
 } from '@services/wallet/RpcClientService';
+import {PRV} from '@services/wallet/tokenService';
 import dexUtils from '@utils/dex';
 import {AddLiquidityHistory} from '@models/dexHistory';
 import addLiquidityIcon from '@src/assets/images/icons/add_liquidity.png';
 import {CONSTANT_COMMONS} from '@src/constants';
 import NetworkFee from '@screens/Dex/components/NetworkFee';
 import AddSuccessDialog from '@screens/Dex/components/AddSuccessDialog';
+import CODE from '@src/services/exception/customError/code';
+import {ExHandler} from '@services/exception';
 import Input from '../Input';
 import Loading from '../Loading';
-import {DEX_CHAIN_ACCOUNT, MESSAGES, MIN_INPUT, MULTIPLY, PRV, PRV_ID, SECOND} from '../../constants';
+import {DEX_CHAIN_ACCOUNT, MESSAGES, MIN_INPUT, MULTIPLY, PRV_ID, SECOND} from '../../constants';
 import {mainStyle} from '../../style';
 
 class Pool extends React.Component {
@@ -56,12 +59,12 @@ class Pool extends React.Component {
     }
   }
 
-  estimateFeeForMainCrypto = async (amount) => {
+  estimateFeeForMainCrypto = (amount) => {
     try {
       const { account, wallet } = this.props;
       const fromAddress = account.PaymentAddress;
-      const accountWallet = wallet.getAccountByName(account?.name);
-      return await getEstimateFeeForNativeToken(
+      const accountWallet = wallet.getAccountByName(account?.AccountName);
+      return getEstimateFeeForNativeToken(
         fromAddress,
         DEX_CHAIN_ACCOUNT.PaymentAddress,
         amount,
@@ -72,11 +75,11 @@ class Pool extends React.Component {
     }
   };
 
-  estimateFeeForToken = async (token, amount) => {
+  estimateFeeForToken = (token, amount) => {
     try{
       const { account, wallet } = this.props;
       const fromAddress = account.PaymentAddress;
-      const accountWallet = wallet.getAccountByName(account?.name);
+      const accountWallet = wallet.getAccountByName(account?.AccountName);
       const tokenObject = {
         Privacy: true,
         TokenID: token.id,
@@ -90,7 +93,7 @@ class Pool extends React.Component {
         }
       };
 
-      return await getEstimateFeeForPToken(
+      return getEstimateFeeForPToken(
         fromAddress,
         DEX_CHAIN_ACCOUNT.PaymentAddress,
         amount,
@@ -104,10 +107,14 @@ class Pool extends React.Component {
 
   async estimateFee(token, amount) {
     let fee;
-    if (token === PRV) {
-      fee = await this.estimateFeeForMainCrypto(amount);
-    } else {
-      fee = await this.estimateFeeForToken(token, amount);
+    try {
+      if (token.id === PRV_ID) {
+        fee = await this.estimateFeeForMainCrypto(amount);
+      } else {
+        fee = await this.estimateFeeForToken(token, amount);
+      }
+    } catch (error) {
+      //
     }
 
     if (fee) {
@@ -235,19 +242,22 @@ class Pool extends React.Component {
   };
 
   parseText(text, token, balance) {
-    let number = _.toNumber(text);
+    let number = convertUtil.toNumber(text);
     let value = 0;
     let error;
 
-    if (!number) {
+    if (!text || text.length === 0) {
       error = null;
     } else if (_.isNaN(number)) {
       error = MESSAGES.MUST_BE_NUMBER;
     } else {
-      number = _.toNumber(convertUtil.toOriginalAmount(number, token.pDecimals));
+      number = convertUtil.toOriginalAmount(number, token.pDecimals, token.pDecimals !== 0);
       value = number;
       if (number < MIN_INPUT) {
         error = MESSAGES.GREATER_OR_EQUAL(MIN_INPUT, token.pDecimals);
+        value = 0;
+      } else if (!Number.isInteger(number)) {
+        error = MESSAGES.MUST_BE_INTEGER;
         value = 0;
       } else if (number > balance) {
         error = MESSAGES.BALANCE_INSUFFICIENT;
@@ -279,10 +289,9 @@ class Pool extends React.Component {
 
   filterList() {
     let { inputToken, outputToken: currentOutputToken } = this.state;
-    const { tokens, pairs, followedTokens } = this.props;
+    const { tokens, pairs } = this.props;
 
     const inputList = _(tokens)
-      .orderBy([token => (token.id === PRV_ID || followedTokens.find(item => item.id === token.id)) ? 1 : 0, 'hasIcon'], ['desc', 'desc'])
       .value();
     inputToken = inputToken || inputList[0];
 
@@ -360,7 +369,7 @@ class Pool extends React.Component {
 
   addToken = (token, value, pairId, fee) => {
     const { wallet, account } = this.props;
-    if (token === PRV) {
+    if (token.id === PRV_ID) {
       return accountService.createAndSendTxWithNativeTokenContribution(wallet, account, fee, pairId, value);
     } else {
       const tokenParams = this.createTokenParams(token);
@@ -395,7 +404,9 @@ class Pool extends React.Component {
     }
 
     if (total > prvBalance) {
-      throw new Error(MESSAGES.NOT_ENOUGH_NETWORK_FEE_ADD);
+      const error = new Error();
+      error.code = CODE.NOT_ENOUGH_NETWORK_FEE_ADD;
+      throw error;
     }
   }
 
@@ -432,11 +443,7 @@ class Pool extends React.Component {
       newHistory.updateTx2(res2);
       this.setState({ showSuccess: true });
     } catch (error) {
-      if (accountService.isNotEnoughCoinErrorCode(error)) {
-        Toast.showError(MESSAGES.PENDING_TRANSACTIONS);
-      } else {
-        Toast.showError(error.message);
-      }
+      Toast.showError(new ExHandler(error).getMessage(MESSAGES.TRADE_ERROR));
     } finally {
       if (newHistory) {
         newHistory.status = undefined;
@@ -461,6 +468,8 @@ class Pool extends React.Component {
       inputError,
       outputError,
     } = this.state;
+
+    console.debug('FEE', inputFee, outputFee);
 
     return (
       <View style={mainStyle.feeWrapper}>
@@ -613,7 +622,6 @@ Pool.propTypes = {
   tokens: PropTypes.array.isRequired,
   params: PropTypes.object.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  followedTokens: PropTypes.array.isRequired,
 };
 
 export default Pool;

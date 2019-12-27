@@ -20,6 +20,11 @@ const webJs = {
   web_js_not_enough_coin: webjsError(-5)
 };
 
+export const STACK_TRACE = {
+  REPLACEMENT: 'Replacement or Cancel Tx Error',
+  NOT_ENOUGH_COIN: 'Not enough coin',
+};
+
 export default {
   ...webJs,
 };

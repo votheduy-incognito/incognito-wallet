@@ -362,7 +362,7 @@ export default class APIService {
     const response = await APIService.getURL(METHOD.GET, url, params, true);
     return response;
   }
-  
+
   static async removeProduct(params) {
     const url = API.REMOVE_PRODUCT_API;
 
@@ -421,7 +421,7 @@ export default class APIService {
     PaymentAddress
   }) {
     if (!PaymentAddress) return throw new Error('Missing paymentAddress');
-   
+
     const response = await http.get('pool/request-stake',
       {
         params: {
@@ -440,7 +440,7 @@ export default class APIService {
   }) {
     if (!WalletAddress) return throw new Error('Missing WalletAddress');
     if (!pDexWalletAddress) return throw new Error('Missing pDexWalletAddress');
-    
+
     const response = await http.post('auth/airdrop1', {
       WalletAddress: WalletAddress,
       pDexWalletAddress
@@ -471,7 +471,7 @@ export default class APIService {
         data:message
       };
     }
-    
+
   }
 
   static async trackLog({action='',message='',rawData='',status=1}) {
@@ -503,8 +503,8 @@ export default class APIService {
   }
 
   /**
-   * 
-   * @param {*} QRCode 
+   *
+   * @param {*} QRCode
    * @returns {
         status:0,
         data: {WifiName ='', Status = false}
@@ -531,30 +531,20 @@ export default class APIService {
         data:message
       };
     }
-    
+
   }
 
   static async requestWithdraw({
     ProductID,
     ValidatorKey,
-    qrCodeDeviceId,
+    QRCode,
     PaymentAddress
   }) {
-    if (!PaymentAddress) return throw new Error('Missing paymentAddress');
-    if (!ProductID) return throw new Error('Missing ProductID');
-    if (!qrCodeDeviceId) return throw new Error('Missing qrCodeDeviceId');
-    if (!ValidatorKey) return throw new Error('Missing ValidatorKey');
-
-    const response = await http.post('stake/withdraw', {
-      ProductID:ProductID,
-      ValidatorKey:ValidatorKey ,
-      QRCode: qrCodeDeviceId,
-      PaymentAddress:PaymentAddress
-    }).catch(console.log);
-    console.log(TAG,'requestWithdraw end = ',response);
-    return {
-      status:!_.isEmpty(response) ?1:0,
-      data:response
-    };
+    return http.post('pool/request-withdraw', {
+      ProductID,
+      ValidatorKey,
+      QRCode,
+      PaymentAddress
+    });
   }
 }

@@ -4,8 +4,8 @@ import Device from '@src/models/device';
 import LocalDatabase from '@src/utils/LocalDatabase';
 import Util from '@src/utils/Util';
 import _ from 'lodash';
+import APIService, {METHOD} from '@services/api/miner/APIService';
 import ZMQService from 'react-native-zmq-service';
-import APIService from './api/miner/APIService';
 import { CustomError, ExHandler } from './exception';
 import knownCode from './exception/customError/code/knownCode';
 import FirebaseService, { DEVICE_CHANNEL_FORMAT, FIREBASE_PASS, MAIL_UID_FORMAT, PHONE_CHANNEL_FORMAT } from './FirebaseService';
@@ -47,6 +47,15 @@ export const LIST_ACTION={
     key:'stop',
     data:undefined
   },
+  GET_PUBLIC_KEY_MINING:{
+    key:'getpublickeymining',
+    data:{
+      'jsonrpc': '1.0',
+      'method': 'getpublickeymining',
+      'params': [],
+      'id': 1
+    }
+  },
 };
 export default class NodeService {
   static getAName = async ()=>{
@@ -75,15 +84,15 @@ export default class NodeService {
       }).catch(e=>{
         reject(new CustomError(knownCode.node_auth_firebase_fail,{rawCode:e}));
       });
-      
-    }); 
+
+    });
     return Util.excuteWithTimeout(pros,12);
   }
   static verifyProductCode = async(verifyCode)=> {
     // console.log(TAG,' verifyProductCode begin');
-    
+
     const errorObj = new CustomError(knownCode.node_verify_code_fail);
-    
+
     const params = {
       verify_code: verifyCode
     };
@@ -100,9 +109,9 @@ export default class NodeService {
     } catch (error) {
       console.log('Error try catch:', error);
       return error;
-      
+
     }
-    
+
     return errorObj;
   }
   static send = (product, actionExcute = templateAction, chain = 'incognito',type = 'incognito',dataToSend={},timeout = 5) => {
@@ -134,13 +143,13 @@ export default class NodeService {
       }
     });
 
-   
-    
+
+
   };
   static buildAction =(product,actionExcute = templateAction,data, chain = 'incognito',type = 'incognito')=>{
     const productId = product.product_id || '';
     if (productId) {
-      console.log(TAG, 'ProductId: ', product.product_id);  
+      console.log(TAG, 'ProductId: ', product.product_id);
       const phoneChannel = `${productId}${PHONE_CHANNEL_FORMAT}`;
       const deviceChannel = `${productId}${DEVICE_CHANNEL_FORMAT}`;
       const dataToSend = data||{};
@@ -157,7 +166,7 @@ export default class NodeService {
   };
 
   static reset = async(device:Device,chain='incognito')=>{
-    
+
     try {
       if(!_.isEmpty(device)){
         const actionReset = LIST_ACTION.RESET;
@@ -174,7 +183,7 @@ export default class NodeService {
   }
 
   static updateFirware = async(device:Device,chain='incognito')=>{
-    
+
     try {
       if(!_.isEmpty(device)){
         const actionReset = LIST_ACTION.UPDATE_FIRMWARE;
@@ -190,9 +199,9 @@ export default class NodeService {
 
     return null;
   }
-  
+
   static checkVersion = async(device:Device,chain='incognito')=>{
-    
+
     try {
       if(!_.isEmpty(device)){
         const action = LIST_ACTION.CHECK_VERSION;
@@ -211,7 +220,7 @@ export default class NodeService {
   }
 
   static pingGetIP = async(device:Device,chain='incognito')=>{
-    
+
     try {
       if(!_.isEmpty(device)){
         const action = LIST_ACTION.GET_IP;
@@ -230,7 +239,7 @@ export default class NodeService {
   }
 
   // static sendPrivateKey = async(device:Device,privateKey:String,chain='incognito')=>{
-    
+
   //   try {
   //     if(!_.isEmpty(device) && !_.isEmpty(privateKey)){
   //       const actionPrivateKey = LIST_ACTION.GET_IP;
@@ -246,7 +255,7 @@ export default class NodeService {
   //         console.log(TAG,'sendPrivateKey send init data = ',params);
   //         const response = await APIService.sendValidatorKey(data,params);
   //         const uid = dataResult?.uid||'';
-        
+
   //         console.log(TAG,'sendPrivateKey send post data = ',response);
   //         return {...response,uid:uid};
   //       }
@@ -259,7 +268,7 @@ export default class NodeService {
   // }
 
   static sendValidatorKey = async(device:Device,validatorKey:String,chain='incognito')=>{
-    
+
     try {
       if(!_.isEmpty(device) && !_.isEmpty(validatorKey)){
         // send to firebase
@@ -268,7 +277,7 @@ export default class NodeService {
         ////
 
         const dataResult = await Util.excuteWithTimeout(NodeService.send(device.data,LIST_ACTION.GET_IP,chain,Action.TYPE.PRODUCT_CONTROL),8);
-                
+
         console.log(TAG,'sendValidatorKey send dataResult = ',dataResult);
         const { status = -1, data, message= ''} = dataResult;
         if(status === 1){
@@ -279,7 +288,7 @@ export default class NodeService {
             data:action?.data||{}
           });
           const uid = dataResult?.uid||'';
-        
+
           console.log(TAG,'sendValidatorKey send post data = ',response);
           return {...response,uid:uid};
         }
@@ -295,11 +304,11 @@ export default class NodeService {
    * return : {"PaymentAddress","Commission","StakerAddress"}
    */
   static fetchAndSavingInfoNodeStake = async(device:Device,isNeedSaving=false)=>{
-    
+
     try {
       let fetchProductInfo = device.toJSON()??{};
       const paymentAddress =  device.PaymentAddressFromServer;
-      
+
       const resultRequest =  await Util.excuteWithTimeout(APIService.fetchInfoNodeStake({
         PaymentAddress:paymentAddress
       }),5).catch(console.log);
@@ -308,7 +317,7 @@ export default class NodeService {
         const {StakerAddress = ''} = dataRequestStake??{};
 
         device.isCallStaked = !_.isEmpty(StakerAddress);
-        
+
         fetchProductInfo = device.toJSON()??{};
 
         fetchProductInfo['minerInfo'] = {
@@ -321,7 +330,7 @@ export default class NodeService {
       }
 
       return fetchProductInfo['minerInfo'];
-      
+
     } catch (error) {
       console.log(TAG,'fetchAndSavingInfoNodeStake error = ',error);
     }
@@ -382,4 +391,21 @@ export default class NodeService {
     
   }
 
+  static getBLSKey = async (device:Device, chain = 'incognito') => {
+    try {
+      const action = LIST_ACTION.GET_IP;
+      const res = await Util.excuteWithTimeout(NodeService.send(device.data,action,chain,Action.TYPE.PRODUCT_CONTROL),8);
+      const ip = res.data;
+      device.Host = ip;
+      const port = 9334;
+      const url = `http://${ip}:${port}/`;
+      const buildParams = LIST_ACTION.GET_PUBLIC_KEY_MINING.data;
+      const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, url, buildParams, false,false), timeout);
+      return _.split(response.Result, ':')[1];
+    } catch (error) {
+      console.debug(TAG,'getBLSKey error = ',error);
+    }
+
+    return null;
+  };
 }

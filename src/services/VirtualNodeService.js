@@ -1,10 +1,10 @@
 /* eslint-disable import/no-cycle */
-import { CONSTANT_CONFIGS } from '@src/constants';
-import Device, { DATA_INFO } from '@src/models/device';
+import {CONSTANT_CONFIGS} from '@src/constants';
+import Device, {DATA_INFO} from '@src/models/device';
 import LocalDatabase from '@src/utils/LocalDatabase';
 import Util from '@src/utils/Util';
 import _ from 'lodash';
-import APIService, { METHOD } from './api/miner/APIService';
+import APIService, {METHOD} from './api/miner/APIService';
 import Server from './wallet/Server';
 
 
@@ -96,9 +96,9 @@ export const LIST_ACTION={
       'method': 'getchainminingstatus',
       'params': [],
       'id': 1
-    }  
+    }
   }
-  
+
 };
 export default class VirtualNodeService {
 
@@ -110,7 +110,7 @@ export default class VirtualNodeService {
         const buildParams = LIST_ACTION.GET_MINING_INFO.data;
         console.log(TAG,'getMiningInfo buildParams = ',buildParams);
         const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
-      
+
         console.log(TAG,'getMiningInfo result',response);
         return response;
       }
@@ -121,39 +121,25 @@ export default class VirtualNodeService {
   }
 
   /**
-   * 
+   *
    * return [string]:key
    */
   static getPublicKeyMining = async(device:Device)=>{
-    let keyCompare = device?.PublicKeyMining||'';
     try {
-      
-      if(_.isEmpty(keyCompare)){
-        let apiURL = await VirtualNodeService.buildURL(device);
-        if(!_.isEmpty(apiURL)){
-          apiURL = `${apiURL}/${LIST_ACTION.GET_PUBLIC_KEY_MINING.key}`;
-          const buildParams = LIST_ACTION.GET_PUBLIC_KEY_MINING.data;
-          console.log(TAG,'getPublicKeyMining params = ',buildParams);
-          const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
-          const {Result=''} = response;
-          keyCompare = Result[0]??'';
-          const listKeyCompare = _.split(keyCompare,':');
-          keyCompare = _.size(listKeyCompare)>1?listKeyCompare[1]:''; 
-          keyCompare = _.isEmpty(keyCompare) && _.size(listKeyCompare) == 1 ? listKeyCompare[0]:keyCompare;
-
-          // save to local
-          device.PublicKeyMining = keyCompare;
-          await LocalDatabase.saveDeviceKeyInfo(device.ProductId,{publicKeyMining:device.PublicKeyMining});
-          console.log(TAG,'getPublicKeyMining fetching blsKEY',keyCompare);
-        }
+      let apiURL = await VirtualNodeService.buildURL(device);
+      if(!_.isEmpty(apiURL)){
+        apiURL = `${apiURL}/${LIST_ACTION.GET_PUBLIC_KEY_MINING.key}`;
+        const buildParams = LIST_ACTION.GET_PUBLIC_KEY_MINING.data;
+        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false), 3);
+        const {Result=''} = response;
+        const data = Result[0]??'';
+        return _.split(data, ':')[1];
       }
     } catch (error) {
       console.log(TAG,'getPublicKeyMining error',error);
     }
-    console.log(TAG,'getPublicKeyMining end blsKEY',keyCompare);
-    return keyCompare;
-  }
-  
+  };
+
   static getPublicKeyRole = async(device:Device)=>{
     try {
       let apiURL = await VirtualNodeService.buildURL(device,false);
@@ -167,7 +153,7 @@ export default class VirtualNodeService {
           apiURL = `${apiURL}/${LIST_ACTION.GET_PUBLIC_KEY_ROLE.key}`;
           const buildParams = LIST_ACTION.GET_PUBLIC_KEY_ROLE.data([`${PREFIX_BLS_PARAMS}${blsKey}`]);
           const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
-      
+
           console.log(TAG,'getPublicKeyRole result',response);
           const {Result=''} = response;
           return Result;
@@ -184,7 +170,7 @@ export default class VirtualNodeService {
       if(device && device.isCallStaked){
         return true;
       }
-      
+
       let blsKey = await VirtualNodeService.getPublicKeyMining(device).catch(err=>{
         console.log(TAG,'isStaked getPublicKeyMining error');
       })||'';
@@ -195,7 +181,7 @@ export default class VirtualNodeService {
         await LocalDatabase.updateDevice(device.toJSON());
         return findItemIndex;
       }
-      
+
     } catch (error) {
       console.log(TAG,'isStaked error',error);
     }
@@ -204,15 +190,15 @@ export default class VirtualNodeService {
 
   static checkStakedWithBlsKey  = async(blsKey:String)=>{
     try {
-      
+
       let apiURL = await VirtualNodeService.buildURL(null,true);
       if(!_.isEmpty(apiURL) && !_.isEmpty(blsKey) ){
-        
+
 
         apiURL = `${apiURL}/${LIST_ACTION.GET_BEACON_BEST_STATE_DETAIL.key}`;
         const buildParams = LIST_ACTION.GET_BEACON_BEST_STATE_DETAIL.data();
         const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
-      
+
         console.log(TAG,'checkStakedWithBlsKey GET_BEACON_BEST_STATE_DETAIL',response);
         const {Result={}} = response??{};
 
@@ -220,7 +206,7 @@ export default class VirtualNodeService {
         let findItemIndex = _.includes(JSON.stringify(ShardCommittee),blsKey) || _.includes(JSON.stringify(ShardPendingValidator),blsKey) || _.includes(JSON.stringify(CandidateShardWaitingForNextRandom),blsKey);
         return findItemIndex;
       }
-      
+
     } catch (error) {
       console.log(TAG,'checkStakedWithBlsKey error',error);
     }
@@ -237,7 +223,7 @@ export default class VirtualNodeService {
         apiURL = `${apiURL}/${LIST_ACTION.GET_PRIVACY_CUSTOM_TOKEN.key}`;
         const buildParams = LIST_ACTION.GET_PRIVACY_CUSTOM_TOKEN.data;
         const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
-      
+
         console.log(TAG,'getPrivacyCustomToken result',response);
         const {Result={}} = response;
         return Result['ListCustomToken']??[];
@@ -250,7 +236,7 @@ export default class VirtualNodeService {
 
   static getRewardAmount = async(device:Device,paymentAddress,isFullNode=false)=>{
     try {
-      
+
       let apiURL = await VirtualNodeService.buildURL(device,isFullNode);
       console.log(TAG,'getRewardAmount begin',apiURL);
       if(!_.isEmpty(apiURL) && !_.isEmpty(paymentAddress)){
@@ -260,7 +246,7 @@ export default class VirtualNodeService {
         // if(_.includes(apiURL,'192.168.11.27')){
         //   console.log(TAG,'getRewardAmount result',response,apiURL);
         // }
-        
+
         return response;
       }
     } catch (error) {
@@ -272,11 +258,11 @@ export default class VirtualNodeService {
   static getRewardFromMiningkey = async(device:Device)=>{
     let response = {Result:{}};
     try {
-      
+
       let blsKey = await VirtualNodeService.getPublicKeyMining(device).catch(err=>{
         console.log(TAG,'getRewardFromMiningkey getPublicKeyMining error');
       })||'';
-      
+
       let apiURL = await VirtualNodeService.buildURL(device,true);
       if(!_.isEmpty(apiURL) && !_.isEmpty(blsKey)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_MINER_REWARD_FROM_MINING_KEY.key}`;
@@ -284,7 +270,7 @@ export default class VirtualNodeService {
         // console.log(TAG,'getRewardFromMiningkey begin ----');
         // response = await Util.excuteWithTimeout(Util.delay(10),timeout).catch(console.log)||null;
         response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout).catch(console.log)||null;
-      
+
         console.log(TAG,'getRewardFromMiningkey result',response);
         return response;
       }
@@ -294,7 +280,7 @@ export default class VirtualNodeService {
 
     return response;
   }
-  
+
   static getChainMiningStatus = async(device:Device)=>{
     let dataResponseCombinded = {'status': Device.offlineStatus()};
     try {
@@ -304,8 +290,8 @@ export default class VirtualNodeService {
       const shardID = dataResult.Result?.ShardID ?? undefined;
 
       let apiURL = await VirtualNodeService.buildURL(device);
-      
-      
+
+
       if(!_.isEmpty(apiURL) && !_.isNil(shardID)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_CHAIN_MINING_STATUS.key}`;
         const buildParams = {
@@ -313,7 +299,7 @@ export default class VirtualNodeService {
           'params': [shardID]
         };
         const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false),timeout);
-        
+
         const {Result ,Method} = response ?? {};
         const item = DATA_INFO.find((item)=>{
           return _.isEqual(Result,item.status);

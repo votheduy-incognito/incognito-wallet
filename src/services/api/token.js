@@ -8,9 +8,37 @@ import axios from 'axios';
 
 let BEP2Tokens = [];
 
-export const getTokenList = () =>
-  http.get('ptoken/list')
-    .then(res => res.map(token => new PToken(token)));
+let getTokenPromise;
+let getChainTokenPromise;
+
+export const getTokenList = () => {
+  if (!getTokenPromise) {
+    getTokenPromise = http.get('ptoken/list')
+      .then(res => {
+        getTokenPromise = null;
+        return res.map(token => new PToken(token));
+      })
+      .finally(() => {
+        getTokenPromise = null;
+      });
+  }
+
+  return getTokenPromise;
+};
+
+export const getChainTokenList = () => {
+  if (!getChainTokenPromise) {
+    getChainTokenPromise = http.get('/pcustomtoken/list-from-chain')
+      .then(res => {
+        return res.Tokens;
+      })
+      .finally(() => {
+        getChainTokenPromise = null;
+      });
+  }
+
+  return getChainTokenPromise;
+};
 
 export const detectERC20Token = erc20Address => {
   if (!erc20Address) throw new Error('Missing erc20Address to detect');
@@ -93,7 +121,7 @@ export const addTokenInfo = ({ tokenId, symbol, name, logoFile, description = ''
 
 /**
  * get incognito token info from backend, if `tokenId` is not passed in then get info for all tokens
- * @param {string} tokenId 
+ * @param {string} tokenId
  */
 export const getTokenInfo = ({ tokenId }) => {
   const endpoint = tokenId ? 'pcustomtoken/get' : 'pcustomtoken/list';

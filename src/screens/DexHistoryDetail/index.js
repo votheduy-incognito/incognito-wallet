@@ -2,18 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {Overlay} from 'react-native-elements';
-import {Button, View} from '@components/core';
+import {Button, ScrollView, View} from '@components/core';
 import FullScreenLoading from '@components/FullScreenLoading/index';
 import HeaderBar from '@components/HeaderBar/HeaderBar';
 import {COLORS} from '@src/styles';
-import {MAX_WAITING_TIME, MESSAGES, MIN_CANCEL_VALUE, PRV, SHORT_WAIT_TIME} from '@screens/Dex/constants';
+import {MAX_WAITING_TIME, MESSAGES, MIN_CANCEL_VALUE, SHORT_WAIT_TIME} from '@screens/Dex/constants';
 import {CONSTANT_COMMONS} from '@src/constants';
-import tokenService from '@services/wallet/tokenService';
+import tokenService, {PRV} from '@services/wallet/tokenService';
 import accountService from '@services/wallet/accountService';
 import Toast from '@components/core/Toast/Toast';
 import {DEX} from '@utils/dex';
 import {deleteHistory, getHistoryStatus, updateHistory} from '@src/redux/actions/dex';
 import {connect} from 'react-redux';
+import {ExHandler} from '@services/exception';
 import TradeHistory from './TradeHistory';
 import WithdrawHistory from './WithdrawHistory';
 import DepositHistory from './DepositHistory';
@@ -141,9 +142,8 @@ const DexHistoryDetail = ({ navigation, wallet, updateHistory, getHistoryStatus,
       await getHistoryStatus(history);
       Toast.showSuccess(MESSAGES.WITHDRAW_COMPLETED);
     } catch (error) {
-      console.debug('CONTINUE WITHDRAW FAILED', error);
       updateHistory(history);
-      Toast.showError(error.message);
+      Toast.showError(new ExHandler(error).getMessage());
     } finally {
       setLoading('');
     }
@@ -186,11 +186,7 @@ const DexHistoryDetail = ({ navigation, wallet, updateHistory, getHistoryStatus,
       updateHistory(history);
       Toast.showSuccess(`${MESSAGES.ADD_LIQUIDITY_SUCCESS_TITLE}. ${MESSAGES.ADD_LIQUIDITY_SUCCESS}`);
     } catch (e) {
-      if (accountService.isNotEnoughCoinErrorCode(e)) {
-        Toast.showError(MESSAGES.PENDING_TRANSACTIONS);
-      } else {
-        Toast.showError(e.message);
-      }
+      Toast.showError(new ExHandler(e).getMessage());
     } finally {
       setLoading(null);
     }
@@ -210,11 +206,7 @@ const DexHistoryDetail = ({ navigation, wallet, updateHistory, getHistoryStatus,
       updateHistory(history);
       Toast.showSuccess(`${MESSAGES.CANCEL_ADD_LIQUIDITY_SUCCESS_TITLE}. ${MESSAGES.CANCEL_ADD_LIQUIDITY_SUCCESS}`);
     } catch (e) {
-      if (accountService.isNotEnoughCoinErrorCode(e)) {
-        Toast.showError(MESSAGES.PENDING_TRANSACTIONS);
-      } else {
-        Toast.showError(e.message);
-      }
+      Toast.showError(new ExHandler(e).getMessage());
     } finally {
       setLoading(null);
     }
@@ -236,28 +228,30 @@ const DexHistoryDetail = ({ navigation, wallet, updateHistory, getHistoryStatus,
         navigation={navigation}
         scene={{ descriptor: { options } }}
       />
-      <History
-        {...history}
-        onContinue={continueWithdraw}
-        onAdd={continueAdd}
-        onCancel={onCancelAdd}
-        loading={loading}
-      />
-      <Overlay
-        isVisible={!!loading}
-        overlayStyle={stylesheet.modal}
-        overlayBackgroundColor="transparent"
-        windowBackgroundColor="rgba(0,0,0,0.8)"
-      >
-        <FullScreenLoading
-          open={!!loading}
-          mainText={loading}
+      <ScrollView style={stylesheet.scrollView}>
+        <History
+          {...history}
+          onContinue={continueWithdraw}
+          onAdd={continueAdd}
+          onCancel={onCancelAdd}
+          loading={loading}
         />
-      </Overlay>
-      <View style={stylesheet.row}>
-        {!!global.isDEV && <Button style={stylesheet.delete} title="Delete" onPress={onDelete} />}
-        {!!global.isDEV && <Button style={stylesheet.button} title="Refresh" onPress={onGetStatus} />}
-      </View>
+        <Overlay
+          isVisible={!!loading}
+          overlayStyle={stylesheet.modal}
+          overlayBackgroundColor="transparent"
+          windowBackgroundColor="rgba(0,0,0,0.8)"
+        >
+          <FullScreenLoading
+            open={!!loading}
+            mainText={loading}
+          />
+        </Overlay>
+        <View style={stylesheet.row}>
+          {!!global.isDEV && <Button style={stylesheet.delete} title="Delete" onPress={onDelete} />}
+          {!!global.isDEV && <Button style={stylesheet.button} title="Refresh" onPress={onGetStatus} />}
+        </View>
+      </ScrollView>
     </View>
   );
 };

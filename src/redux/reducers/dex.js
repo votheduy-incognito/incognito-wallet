@@ -56,6 +56,11 @@ const reducer = (state = initialState, action) => {
       ...state,
       histories: deleteHistory(action.payload, state.histories),
     };
+  case types.UPDATE_PAIRS:
+    return {
+      ...state,
+      pairs: action.payload,
+    };
   default:
     return state;
   }

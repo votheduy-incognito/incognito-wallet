@@ -50,7 +50,7 @@ class EstimateFeeContainer extends Component {
 
   static getDerivedStateFromProps(nextProps) {
     const { types } = nextProps;
-    
+
     return { types: getTypes(types) };
   }
 
@@ -161,6 +161,8 @@ class EstimateFeeContainer extends Component {
       const { userFee } = this.state;
       const { selectedPrivacy, amount, toAddress, estimateFeeData: { feeUnitByTokenId }, multiply } = this.props;
 
+      console.debug('EST', amount, toAddress, selectedPrivacy);
+
       if (!amount || !toAddress || !selectedPrivacy) {
         return;
       }
@@ -218,7 +220,7 @@ class EstimateFeeContainer extends Component {
       const fee = await getEstimateFeeForNativeToken(
         fromAddress,
         toAddress,
-        convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals),
+        convertUtil.toOriginalAmount(convertUtil.toNumber(amount), selectedPrivacy?.pDecimals),
         accountWallet,
       );
 
@@ -233,7 +235,7 @@ class EstimateFeeContainer extends Component {
       const { account, wallet, selectedPrivacy, toAddress, amount, dexBalance } = this.props;
       const fromAddress = selectedPrivacy?.paymentAddress;
       const accountWallet = wallet.getAccountByName(account?.name);
-      const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
+      const originalAmount = convertUtil.toOriginalAmount(convertUtil.toNumber(amount), selectedPrivacy?.pDecimals);
       const tokenObject = {
         Privacy: true,
         TokenID: selectedPrivacy?.tokenId,
@@ -268,7 +270,7 @@ class EstimateFeeContainer extends Component {
       const { account, wallet, selectedPrivacy, toAddress, amount, dexBalance } = this.props;
       const fromAddress = selectedPrivacy?.paymentAddress;
       const accountWallet = wallet.getAccountByName(account?.name);
-      const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
+      const originalAmount = convertUtil.toOriginalAmount(convertUtil.toNumber(amount), selectedPrivacy?.pDecimals);
       const tokenObject = {
         Privacy: true,
         TokenID: selectedPrivacy?.tokenId,

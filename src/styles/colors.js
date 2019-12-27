@@ -28,6 +28,8 @@ const COLORS = {
   lightGrey11: '#EDEDED',
   lightGrey12: '#F3F3F3',
   lightGrey13: '#E6EEEF',
+  lightGrey14: '#FAFAFA',
+  lightGrey15: '#DCDDDD',
 
   toastBackgroundDefault: 'rgba(107, 141, 143, 0.8)',
   toastBackgroundError: 'rgba(255, 101, 47, 0.8)',

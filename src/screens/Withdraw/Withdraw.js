@@ -58,7 +58,7 @@ class Withdraw extends React.Component {
     this.getSupportedFeeTypes();
   }
 
-  
+
   componentDidUpdate(prevProps, prevState) {
     const { selectedPrivacy } = this.props;
     const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
@@ -96,7 +96,7 @@ class Withdraw extends React.Component {
     if (!isUsedPRVFee) {
       amount-= (fee + feeForBurn) || 0;
     }
-    
+
     max = convertUtil.toHumanAmount(amount, selectedPrivacy?.pDecimals);
 
     return maxAmount ? Math.min(maxAmount, max) : max;
@@ -108,7 +108,7 @@ class Withdraw extends React.Component {
     if (maxAmount) {
       this.setState({
         maxAmountValidator: validator.maxValue(maxAmount, {
-          message: maxAmount > 0 
+          message: maxAmount > 0
             ? `Max amount you can withdraw is ${formatUtil.number(maxAmount)} ${selectedPrivacy?.symbol}`
             : 'Your balance is not enough to withdraw'
         }),
@@ -158,7 +158,7 @@ class Withdraw extends React.Component {
 
       throw new Error('Withdraw failed');
     } catch (e) {
-      new ExHandler(e, 'Something went wrong. Please try again.').showErrorToast();
+      new ExHandler(e, 'Something went wrong. Please try again.').showErrorToast(true);
     }
   }
 
@@ -217,7 +217,7 @@ class Withdraw extends React.Component {
     const { externalSymbol, isErc20Token, name: tokenName } = selectedPrivacy || {};
     const addressValidator = this.getAddressValidator(externalSymbol, isErc20Token);
     const maxAmount = this.getMaxAmount();
-    
+
 
     return (
       <ScrollView style={style.container}>
@@ -298,7 +298,7 @@ class Withdraw extends React.Component {
                           </Text>
                         )
                       }
-                      
+
                     </View>
                   )}
                 />

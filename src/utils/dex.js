@@ -35,6 +35,13 @@ export default {
     return name === DEX.WITHDRAW_ACCOUNT.toLowerCase();
   },
 
+  getPair(tokenId1, tokenId2, pairs) {
+    return pairs.find(pair => {
+      const keys = Object.keys(pair);
+      return keys.includes(tokenId1) && keys.includes(tokenId2);
+    });
+  },
+
   calculateValue(inputToken, inputValue, outputToken, pair) {
     if (!pair) {
       return;

@@ -5,11 +5,11 @@ import { Platform, StatusBar as RNComponent, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import routeNames from '@src/router/routeNames';
 
-const { pApps, pApp, GetStarted, Game, Wizard, HomeMine, DetailDevice, Dex, DexHistory, DexHistoryDetail } = routeNames;
+const { pApps, pApp, GetStarted, Game, Wizard, Node, Dex, DexHistory, DexHistoryDetail } = routeNames;
 
 const whiteScreens = [Game, GetStarted];
 const blue2Screens = [];
-const blue1Screens = [Wizard, HomeMine, DetailDevice];
+const blue1Screens = [Wizard, Node];
 const dark2Screen = [Dex, DexHistory, DexHistoryDetail];
 const blackScreen = [pApps, pApp];
 

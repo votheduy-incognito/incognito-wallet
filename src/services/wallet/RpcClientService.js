@@ -220,8 +220,9 @@ export function isExchangeRatePToken(tokenID)  {
 
 export async function getPDEPairs() {
   const client = await getRpcClient();
-  const beaconState = await client.getBeaconBestState();
-  return client.getPDEState(beaconState.bestState.BeaconHeight);
+  const beaconHeight = await client.getBeaconHeight();
+
+  return client.getPDEState(beaconHeight);
 }
 
 export async function getPDETradeStatus(txId) {
@@ -231,13 +232,25 @@ export async function getPDETradeStatus(txId) {
 
 export async function getPDEContributionStatus(pairId) {
   const client = await getRpcClient();
-  return client.getPDEContributionStatus(pairId);
+  const res = await client.getPDEContributionStatusV2(pairId);
+  return res.state;
 }
 
 export async function getPDEWithdrawalStatus(txId) {
   const client = await getRpcClient();
-  console.debug('TX', txId);
   return client.getPDEWithdrawalStatus(txId);
+}
+
+export function getBlockChainInfo() {
+  return getRpcClient().getBlockChainInfo();
+}
+
+export function getBeaconBestStateDetail() {
+  return getRpcClient().getBeaconBestStateDetail();
+}
+
+export function listRewardAmount() {
+  return getRpcClient().listRewardAmount();
 }
 
 export async function getTransactionByHash(txId) {

@@ -27,7 +27,6 @@ export default StyleSheet.create({
     backgroundColor: COLORS.dark3,
   },
   loadingIcon: {
-    marginTop: 6,
     marginHorizontal: 2,
   },
   disabled: {

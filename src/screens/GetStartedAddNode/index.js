@@ -66,7 +66,7 @@ class GetStartedAddNode extends BaseScreen {
     const {currentConnect,isPassedValidate} = this.state;
     const {text,item,item_container_input,errorText} = styles;
     return (
-      <>          
+      <>
         <Input
           underlineColorAndroid="transparent"
           containerStyle={item}
@@ -93,11 +93,11 @@ class GetStartedAddNode extends BaseScreen {
 
   renderContent=()=>{
     const {currentPage,QRCode,currentConnect,errorMessage,loading} = this.state;
-    
+
     let childView ;
     switch(currentPage){
     case 0:{
-      childView = <Image style={styles.content_step1_image} source={images.ic_getstarted_device} />; 
+      childView = <Image style={styles.content_step1_image} source={images.ic_getstarted_device} />;
       break;
     }
     // case 1:{
@@ -116,7 +116,7 @@ class GetStartedAddNode extends BaseScreen {
           )}
           <GetQrcode qrCode={QRCode} onSuccess={this.handleScanQrcodeSuccess} />
         </>
-      ); 
+      );
       break;
     }
     case 2:{
@@ -132,10 +132,10 @@ class GetStartedAddNode extends BaseScreen {
           )}
           {!isFail && <LongLoading />}
         </>
-      ): this.renderContentStep2(); 
+      ): this.renderContentStep2();
       break;
     }
-    
+
     }
     return (
       <View style={styles.content}>
@@ -175,16 +175,16 @@ class GetStartedAddNode extends BaseScreen {
 
   handleFinish =()=>{
     console.log(TAG,'handleFinish ');
-    this.goToScreen(routeNames.HomeMine);
+    this.goToScreen(routeNames.Node);
   }
 
   handleSetupComplete =()=>{
-    // will show a pop-up message    
+    // will show a pop-up message
     this.CurrenPage = 4;
   }
 
   handleStepTestConnect = async ()=>{
-    
+
     try{
       this.setState({
         loading:true,
@@ -199,11 +199,11 @@ class GetStartedAddNode extends BaseScreen {
       // new ExHandler(new Error('Something’s not right. Please try again.')).showWarningToast().throw();
       ////
       const deviceIdFromQrcode = this.state.QRCode;
-      
+
       const errorMessage = await this.viewSetupDevice.current.handleSetUpPress(deviceIdFromQrcode);
-      
+
       const nodeName = deviceIdFromQrcode || await NodeService.getAName();
-      const deviceObj =  await this.viewSetupDevice.current.changeDeviceName(nodeName,deviceIdFromQrcode,this.accountNode)||null; 
+      const deviceObj =  await this.viewSetupDevice.current.changeDeviceName(nodeName,deviceIdFromQrcode,this.accountNode)||null;
       console.log(TAG,'handleStepConnect errorMessage ',errorMessage ,deviceObj);
       if(_.isEmpty(errorMessage) && !_.isNil(deviceObj)){
         this.handleSetupComplete();
@@ -214,7 +214,7 @@ class GetStartedAddNode extends BaseScreen {
           errorInSetUp:null,
           currentPage:2
         });
-        
+
       }
     }catch(e){
       let currentPage = 0;
@@ -237,7 +237,7 @@ class GetStartedAddNode extends BaseScreen {
         currentPage:currentPage
       });
     }
-    
+
   }
 
   handleStepConnect = async ()=>{
@@ -247,17 +247,17 @@ class GetStartedAddNode extends BaseScreen {
         currentPage:2,
       });
       const deviceIdFromQrcode = this.state.QRCode;
-      
+
       const errorMessage = await this.viewSetupDevice.current.handleSetUpPress(deviceIdFromQrcode);
-      
+
       const nodeName = deviceIdFromQrcode || await NodeService.getAName();
-      const deviceObj =  await this.viewSetupDevice.current.changeDeviceName(nodeName,deviceIdFromQrcode,this.accountNode)||null; 
+      const deviceObj =  await this.viewSetupDevice.current.changeDeviceName(nodeName,deviceIdFromQrcode,this.accountNode)||null;
       console.log(TAG,'handleStepConnect errorMessage ',errorMessage ,deviceObj);
       if(_.isEmpty(errorMessage) && !_.isNil(deviceObj)){
         this.handleSetupComplete();
       }else{
         this.showToastMessage(errorMessage);
-        
+
       }
     }catch(e){
       let currentPage = 0;
@@ -277,7 +277,7 @@ class GetStartedAddNode extends BaseScreen {
         currentPage:currentPage
       });
     }
-    
+
   }
 
   renderFooter=()=>{
@@ -311,7 +311,7 @@ class GetStartedAddNode extends BaseScreen {
         onPress:()=>{
           const wifiName = _.trim(this.wifiNameValue);
           const isPassedValidate = !_.isEmpty(wifiName);
-          
+
           if(isPassedValidate){
             this.setState({
               isPassedValidate:true,
@@ -322,21 +322,21 @@ class GetStartedAddNode extends BaseScreen {
               }
             },()=>{
               // hienton test
-              
+
               this.handleStepTestConnect();
               /////
               // this.handleStepConnect();
             });
-            
+
           }else{
             this.setState({
               isPassedValidate:false,
             });
           }
-        
-          
+
+
         },
-      }; 
+      };
       break;
     }
     case 1:{
@@ -378,14 +378,14 @@ class GetStartedAddNode extends BaseScreen {
         />
       </View>
     );
-    
+
   }
 
   render() {
     const { loading,currentPage,currentConnect,errorMessage,errorInSetUp } = this.state;
     const rootCauseMessage = errorInSetUp?.message??'';
     const {isRenderUI,navigation} = this.props;
-    
+
     return (
       <View style={styles.container}>
         <View style={styleHideView}>
@@ -393,7 +393,7 @@ class GetStartedAddNode extends BaseScreen {
         </View>
         <DialogNotify visible={currentPage==4} onClose={this.handleFinish} />
         <StepIndicator stepCount={3} currentPage={currentPage} ref={this.viewStepIndicator} />
-        
+
         <ScrollView>
           {this.renderTitle()}
           {this.renderContent()}

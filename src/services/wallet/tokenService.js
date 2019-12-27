@@ -5,18 +5,22 @@ import _ from 'lodash';
 import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
 import { CONSTANT_KEYS } from '@src/constants';
-import { getTokenList } from '@services/api/token';
+import { getChainTokenList } from '@services/api/token';
+import {PRIORITY_LIST} from '@screens/Dex/constants';
 import { saveWallet, updateStatusHistory } from './WalletService';
-import { listPrivacyTokens, listCustomTokens } from './RpcClientService';
+import { listCustomTokens } from './RpcClientService';
 
 export const PRV = {
   id: '0000000000000000000000000000000000000000000000000000000000000004',
-  name: 'Privacy',
+  name: 'Incognito',
+  displayName: 'Privacy',
   symbol: 'PRV',
   pDecimals: 9,
   hasIcon: true,
   originalSymbol: 'PRV',
+  isVerified: true,
 };
+
 
 export default class Token {
   // static async createSendCustomToken(param, fee, account, wallet) {
@@ -164,14 +168,11 @@ export default class Token {
     return response;
   }
 
-  static async getPrivacyTokens() {
-    try {
-      const data = await listPrivacyTokens();
-      const tokens = data.listPrivacyToken || [];
+  static getPrivacyTokens() {
+    return getChainTokenList().then(data => {
+      const tokens = data || [];
       return tokens && tokens.map(tokenModel.fromJson);
-    } catch (e) {
-      throw e;
-    }
+    });
   }
 
   static async getNormalTokens() {
@@ -242,30 +243,34 @@ export default class Token {
     }
   }
 
-  static async getAllTokens() {
-    const pTokens = await getTokenList();
-    const chainTokens = await Token.getPrivacyTokens();
-    const tokens = [ PRV, ..._([...chainTokens, ...pTokens])
-      .map(item => ({
-        ...item,
-        id: item.tokenId || item.id,
-      }))
-      .uniqBy(item => item.id)
+  static mergeTokens(chainTokens, pTokens) {
+    return [PRV, ..._([...chainTokens, ...pTokens])
+      .uniqBy(item => item.tokenId || item.id)
       .map(item => {
-        const pToken = pTokens.find(token => token.tokenId === item.id);
+        const pToken = pTokens.find(token => token.tokenId === (item.tokenId || item.id ));
         return {
           ...item,
+          id: item.tokenId || item.id,
           pDecimals: Math.min(pToken?.pDecimals || 0, 9),
           hasIcon: !!pToken,
           symbol: pToken?.pSymbol || item.symbol,
-          name: pToken? pToken.name : item.name,
-          displayName: pToken?  `Privacy ${pToken.name}` : `Incognito ${item.name}`,
+          displayName: pToken ? `Privacy ${pToken.symbol}` : `Incognito ${item.name}`,
+          name: pToken ? pToken.name : item.name,
+          isVerified: pToken?.verified,
         };
       })
-      .filter(token => token.name && token.symbol)
-      .orderBy(item => _.isString(item.symbol) && item.symbol.toLowerCase())
+      .orderBy([
+        'hasIcon',
+        item => PRIORITY_LIST.indexOf(item?.id) > -1 ? PRIORITY_LIST.indexOf(item?.id) : 100,
+        item => _.isString(item.symbol) && item.symbol.toLowerCase(),
+      ], ['desc', 'asc'])
       .value()];
-    return tokens;
+  }
+
+  static flatTokens(tokens) {
+    const tokenDict = {};
+    tokens.forEach(item => tokenDict[item.id] = item);
+    return tokenDict;
   }
 }
 

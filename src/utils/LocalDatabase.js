@@ -7,6 +7,7 @@ const TAG = 'LocalDatabase';
 export const KEY_SAVE = {
   USER: CONSTANT_KEYS.USER,
   LIST_DEVICE:CONSTANT_KEYS.LIST_DEVICE,
+  LIST_TOKEN:CONSTANT_KEYS.LIST_TOKEN,
   DEX: CONSTANT_KEYS.DEX,
   DEX_HISTORY: CONSTANT_KEYS.DEX_HISTORY,
   SEEN_DEPOSIT_GUIDE: CONSTANT_KEYS.SEEN_DEPOSIT_GUIDE,
@@ -34,13 +35,12 @@ export default class LocalDatabase {
     );
   };
 
-  static removeDevice = async (device)=>{
-    let list = await LocalDatabase.getListDevices();
-    _.remove(list,item=>{
-      return item.product_id == device.product_id;
-    });
+  static removeDevice = async (device, list) => {
+    list = list.filter(item => item.ProductId !== device.ProductId);
     await LocalDatabase.saveListDevices(list);
-  }
+    return list;
+  };
+
   static updateDevice = async (deviceJson)=>{
     let list = await LocalDatabase.getListDevices();
     const index = _.findIndex(list,['product_id',deviceJson.product_id]);
@@ -63,11 +63,17 @@ export default class LocalDatabase {
     let list = await LocalDatabase.getListDevices();
     const index = _.findIndex(list,['product_id',product_id]);
     return list[index];
-  }
+  };
   static saveListDevices = async (jsonListDevice: []) => {
     const listDevices = JSON.stringify(jsonListDevice);
-    // console.log(TAG, ' saveListDevices begin ', listDevices);
     await LocalDatabase.saveValue(KEY_SAVE.LIST_DEVICE, listDevices);
+  };
+  static getListToken = async () => {
+    let list = await LocalDatabase.getValue(KEY_SAVE.LIST_TOKEN);
+    return JSON.parse(list || '[]');
+  };
+  static saveListToken = (listToken) => {
+    return LocalDatabase.saveValue(KEY_SAVE.LIST_TOKEN, JSON.stringify(listToken));
   };
   static saveDeviceKeyInfo = async (product_id,keyInfo) => {
     if(!_.isEmpty(product_id) && !_.isEmpty(keyInfo)){

@@ -44,5 +44,6 @@ export default {
   [CODE.api_invalid_size_upload_file]: 'Upload file\'s size is invalid, file size must be less than 50kB',
   [CODE.document_picker_oversize]: 'File size is too large, please use a smaller one.',
   [CODE.document_picker_must_be_png]: 'Please use a PNG image.',
-  [CODE.api_invalid_type_upload_file]: 'Your upload file type is incorrect.'
+  [CODE.api_invalid_type_upload_file]: 'Your upload file type is incorrect.',
+  [CODE.NOT_ENOUGH_NETWORK_FEE_ADD]: 'Please top up PRV to cover the network fee.',
 };

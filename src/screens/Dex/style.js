@@ -11,72 +11,26 @@ export const dexStyle = StyleSheet.create({
   },
   header: {
     marginHorizontal: 25,
-    backgroundColor: COLORS.dark5,
-    padding: 5,
     flexDirection: 'row',
     flex: 1,
-    borderRadius: 4,
-    marginTop: -5,
+    justifyContent: 'space-between',
   },
   mode: {
-    flex: 1,
-    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  activeMode: {
-    backgroundColor: COLORS.dark2,
-  },
-  activeText: {
-    color: COLORS.primary,
-  },
-  headerText: {
-    textAlign: 'center',
-    fontSize: 14,
-    paddingVertical: 5,
+  modeText: {
+    marginTop: 10,
     color: COLORS.white,
-    ...FONT.STYLE.medium,
   },
   scrollViewContainer: {
     flex: 1,
     padding: 15,
-    paddingTop: 80,
   },
-  pool: {
-    paddingTop: 55,
-  },
-  scrollViewHeader: {
-    position: 'absolute',
-    height: 100,
-    top: 0,
-    left: 0,
-    right: 0,
-    paddingTop: 15,
-    paddingHorizontal: 15,
-    backgroundColor: COLORS.dark5,
-    flexDirection: 'row',
-  },
-  mainButton: {
-    marginBottom: 15,
-    backgroundColor: COLORS.dark5,
-    borderColor: COLORS.dark6,
-    borderWidth: 1,
-    flex: 1,
-  },
-  actions: {
-    position: 'absolute',
-    left: 15,
-    right: 15,
-    top: 8,
+  active: {
+    color: COLORS.primary,
     ...FONT.STYLE.medium,
-  },
-  actionText: {
-    color: COLORS.white,
-    marginRight: 10,
-  },
-  selector: {
-    padding: 10,
-    paddingHorizontal: 20,
-    marginRight: -20,
-  },
+  }
 });
 
 export const mainStyle = StyleSheet.create({
@@ -273,7 +227,11 @@ export const mainStyle = StyleSheet.create({
     left: 30,
   },
   modalContent: {
-    maxHeight: 600,
+    maxHeight: 400,
+    paddingHorizontal: 25,
+  },
+  longContent: {
+    maxHeight: 800,
     paddingHorizontal: 25,
   },
   padding: {
@@ -404,6 +362,9 @@ export const modalStyle = StyleSheet.create({
     backgroundColor: COLORS.lightGrey6,
     paddingHorizontal: 20,
     color: COLORS.dark1,
+  },
+  transferSearch: {
+    marginVertical: 20,
   },
   token: {
     flexDirection: 'row',

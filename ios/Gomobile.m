@@ -127,6 +127,16 @@ RCT_EXPORT_METHOD(initPRVTradeTx:(NSString *)data callback:(RCTResponseSenderBlo
   }
 }
 
+RCT_EXPORT_METHOD(initPTokenTradeTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileInitPTokenTradeTx(data,nil);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
 //exports a method hybridDecryptionASM to javascript
 RCT_EXPORT_METHOD(hybridDecryptionASM:(NSString *)data callback:(RCTResponseSenderBlock)callback){
   @try{
@@ -149,10 +159,10 @@ RCT_EXPORT_METHOD(hybridEncryptionASM:(NSString *)data callback:(RCTResponseSend
   }
 }
 
-//exports a method initPTokenTradeTx to javascript
-RCT_EXPORT_METHOD(initPTokenTradeTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+//exports a method stopAutoStaking to javascript
+RCT_EXPORT_METHOD(stopAutoStaking:(NSString *)data callback:(RCTResponseSenderBlock)callback){
   @try{
-    NSString *rs = GomobileInitPTokenTradeTx(data,nil);
+    NSString *rs = GomobileStopAutoStaking(data,nil);
     callback(@[[NSNull null], rs]);
   }
   @catch(NSException *exception){

@@ -4,7 +4,7 @@ import _ from 'lodash';
 import {View, Text, Button, TouchableOpacity} from '@components/core';
 import formatUtils from '@utils/format';
 import {TRANSFER_STATUS} from '@src/redux/actions/dex';
-import { PRV } from '@src/screens/Dex/constants';
+import {PRV} from '@services/wallet/tokenService';
 import TransactionID from './TransactionID';
 import TokenID from './TokenID';
 import stylesheet from './style';
@@ -13,7 +13,6 @@ const DexHistory = ({
   pairId,
   txId,
   txId2,
-  cancelTx,
   lockTime,
   account,
   status,
@@ -53,7 +52,39 @@ const DexHistory = ({
       <Text style={stylesheet.textRight} numberOfLines={1}>{formatUtils.amountFull(inputFee + outputFee, PRV.pDecimals)} {PRV.symbol}</Text>
     </View>
     <TokenID text={token1.TokenID} label={`${token1.TokenSymbol} COIN ID`} />
+    {!!token1.ReturnedAmount && (
+    <>
+      <View style={stylesheet.row}>
+        <Text style={stylesheet.field}>{`${token1.TokenSymbol} CONTRIBUTED AMOUNT`}</Text>
+        <Text
+          style={stylesheet.textRight}
+          numberOfLines={1}
+        >{formatUtils.amountFull(token1.ContributedAmount, token1.PDecimals)}
+        </Text>
+      </View>
+      <View style={stylesheet.row}>
+        <Text style={stylesheet.field}>{`${token1.TokenSymbol} RETURNED AMOUNT`}</Text>
+        <Text
+          style={stylesheet.textRight}
+          numberOfLines={1}
+        >{formatUtils.amountFull(token1.ReturnedAmount, token1.PDecimals)}
+        </Text>
+      </View>
+    </>
+    )}
     <TokenID text={token2.TokenID} label={`${token2.TokenSymbol} COIN ID`} />
+    {!!token2.ReturnedAmount && (
+    <>
+      <View style={stylesheet.row}>
+        <Text style={stylesheet.field}>{`${token2.TokenSymbol} CONTRIBUTED AMOUNT`}</Text>
+        <Text style={stylesheet.textRight} numberOfLines={1}>{formatUtils.amountFull(token2.ContributedAmount, token2.PDecimals)}</Text>
+      </View>
+      <View style={stylesheet.row}>
+        <Text style={stylesheet.field}>{`${token2.TokenSymbol} RETURNED AMOUNT`}</Text>
+        <Text style={stylesheet.textRight} numberOfLines={1}>{formatUtils.amountFull(token2.ReturnedAmount, token2.PDecimals)}</Text>
+      </View>
+    </>
+    )}
     <View style={stylesheet.row}>
       <Text style={stylesheet.field}>FROM</Text>
       <Text style={stylesheet.textRight} numberOfLines={1}>{account}</Text>
@@ -73,13 +104,11 @@ const DexHistory = ({
 DexHistory.defaultProps = {
   status: '',
   txId2: '',
-  cancelTx: '',
 };
 
 DexHistory.propTypes = {
   txId: PropTypes.string.isRequired,
   txId2: PropTypes.string,
-  cancelTx: PropTypes.string,
   lockTime: PropTypes.number.isRequired,
   pairId: PropTypes.string.isRequired,
   token1: PropTypes.shape({
@@ -87,12 +116,16 @@ DexHistory.propTypes = {
     TokenSymbol: PropTypes.string.isRequired,
     PDecimals: PropTypes.number.isRequired,
     TokenAmount: PropTypes.number.isRequired,
+    ReturnedAmount: PropTypes.number,
+    ContributedAmount: PropTypes.number,
   }).isRequired,
   token2: PropTypes.shape({
     TokenID: PropTypes.string.isRequired,
     TokenSymbol: PropTypes.string.isRequired,
     PDecimals: PropTypes.number.isRequired,
     TokenAmount: PropTypes.number.isRequired,
+    ReturnedAmount: PropTypes.number,
+    ContributedAmount: PropTypes.number,
   }).isRequired,
   inputFee: PropTypes.number.isRequired,
   outputFee: PropTypes.number.isRequired,

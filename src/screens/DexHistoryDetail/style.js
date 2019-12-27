@@ -2,6 +2,9 @@ import { COLORS, FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
+  scrollView: {
+    marginBottom: 55,
+  },
   wrapper: {
     marginTop: 40,
     paddingHorizontal: 20,

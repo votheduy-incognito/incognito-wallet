@@ -107,7 +107,7 @@ class RequestSendTx extends Component {
     } catch (e) {
       const { onSendFailed } = this.props;
       onSendFailed(e);
-      new ExHandler(e).showErrorToast();
+      new ExHandler(e).showErrorToast(true);
     }
   }
 

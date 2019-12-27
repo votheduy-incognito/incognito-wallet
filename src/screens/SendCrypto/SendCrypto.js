@@ -52,7 +52,7 @@ class SendCrypto extends React.Component {
     const { estimateFeeData: { fee, feeUnitByTokenId } } = this.state;
     const { estimateFeeData: { fee: oldFee, feeUnitByTokenId: oldFeeUnitByTokenId } } = prevState;
     const { receiptData } = this.props;
-   
+
     if (selectedPrivacy?.pDecimals !== oldSelectedPrivacy?.pDecimals) {
       // need to re-calc min amount if token decimals was changed
       this.setFormValidation({ minAmount: this.getMinAmount() });
@@ -137,7 +137,7 @@ class SendCrypto extends React.Component {
         await handleSend({ ...values, fee, feeUnit, isUseTokenFee });
       }
     } catch (e) {
-      new ExHandler(e, 'Something went wrong. Just tap the Send button again.').showErrorToast();
+      new ExHandler(e, 'Something went wrong. Just tap the Send button again.').showErrorToast(true);
     }
   }
 
