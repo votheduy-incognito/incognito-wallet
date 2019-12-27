@@ -1,6 +1,6 @@
-import { ExHandler } from '@src/services/exception';
 import { Component } from 'react';
 import { AppState } from 'react-native';
+import { Toast } from './core';
 import DeviceLog from './DeviceLog';
 
 export const TAG = 'BaseComponent';
@@ -45,7 +45,8 @@ class BaseComponent extends Component {
 
 
   showToastMessage = (message = '', callback?) => {
-    message && new ExHandler(new Error(message),message).showWarningToast();
+    // message && new ExHandler(new Error(message),message).showWarningToast();
+    message && Toast.showInfo(message);
   };
 
   handleAppStateChange = nextAppState => {

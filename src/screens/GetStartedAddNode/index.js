@@ -168,6 +168,7 @@ class GetStartedAddNode extends BaseScreen {
   })
 
   handleScanQrcodeSuccess = async(qrCode)=>{
+    this.logOnView(`Scan Qrcode = ${qrCode}`);
     this.createAccount(qrCode);
     this.setState({QRCode:qrCode});
   }

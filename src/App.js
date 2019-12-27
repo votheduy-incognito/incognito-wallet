@@ -57,9 +57,10 @@ class App extends PureComponent {
               console.debug('CurrentScreen', currentScreen);
             }}
           />
+          {isShowDeviceLog && <DeviceLog />}
           <QrScanner />
           <Toast />
-          {isShowDeviceLog && <DeviceLog />}
+          
         </AppScreen>
       </Provider>
     );

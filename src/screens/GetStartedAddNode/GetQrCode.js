@@ -1,5 +1,6 @@
 import images from '@src/assets';
 import { Text } from '@src/components/core';
+import DeviceLog from '@src/components/DeviceLog';
 import { openQrScanner } from '@src/components/QrCodeScanner';
 import APIService from '@src/services/api/miner/APIService';
 import { scaleInApp } from '@src/styles/TextStyle';
@@ -17,12 +18,13 @@ const  GetQrcode = React.memo(({onSuccess,qrCode = ''})=>{
   const [loading,setLoading] = useState(false);
   const [isPassedValidate,setIdPassedValidate] = useState(false);
   const [errorMessage,setErrorMessage] = useState(''); 
-  const verifyQrcode = async (qrcode)=>{
+  const verifyQrcode = onClickView( async (qrcode)=>{
     if(!_.isEmpty(qrcode)){
       setLoading(true);
-      console.log(TAG,'openQrScanner  == data',data);
-      const checked = await Util.excuteWithTimeout(APIService.qrCodeCheck({QRCode:qrcode})).catch(console.log)||{};
+      DeviceLog.logInfo(`${TAG}-verifyQrcode begin- value = ${qrCode}`);
+      const checked = await Util.excuteWithTimeout(APIService.qrCodeCheck({QRCode:qrcode}),6).catch(console.log)||{};
       const {data='',status = -1 } = checked??{};
+      DeviceLog.logInfo(`${TAG}-verifyQrcode result = ${JSON.stringify(checked)}`);
       const isPassed =  _.isEqual(status,1) || __DEV__;
       setIdPassedValidate(isPassed);
       setDeviceId(qrcode);
@@ -30,7 +32,7 @@ const  GetQrcode = React.memo(({onSuccess,qrCode = ''})=>{
       isPassed && onSuccess && onSuccess(qrcode);
       setLoading(false);
     }
-  };
+  });
   useMemo(()=>verifyQrcode(qrCode),[qrCode]);
   const handleQrcode = useCallback(onClickView(()=>{
     openQrScanner(async dataReader => {

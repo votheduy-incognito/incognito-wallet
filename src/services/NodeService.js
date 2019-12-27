@@ -4,6 +4,7 @@ import Device from '@src/models/device';
 import LocalDatabase from '@src/utils/LocalDatabase';
 import Util from '@src/utils/Util';
 import _ from 'lodash';
+import ZMQService from 'react-native-zmq-service';
 import APIService from './api/miner/APIService';
 import { CustomError, ExHandler } from './exception';
 import knownCode from './exception/customError/code/knownCode';
@@ -361,11 +362,24 @@ export default class NodeService {
     }
     return dataResult;
   }
+  static sendZMQ = async (params)=> {
+    if(!_.isEmpty(params)){
+      console.log(TAG,' connectZMQ sendZMQ ----- begin ');
+      const result = await Util.excuteWithTimeout(ZMQService.sendData(JSON.stringify(params)),4).catch(e=>console.log(TAG,' connectZMQ sendZMQ ----- catch error = ',e));
+      return result;
+    }
+    return '';
+  };
 
   static cleanOldDataForSetup = async ()=>{
-    const result = await SSHService.run('10.42.0.1','sudo rm -r /home/nuc/aos/inco-data/ && sudo rm -r /home/nuc/aos/inco-eth-kovan-data/ && sudo docker rm -f inc_miner && sudo docker rm -f inc_kovan').catch(console.log);
-    console.log(TAG,'cleanOldDataForSetup data = ',result);
-    return !_.isEmpty(result) ;
+    try {
+      const result = await SSHService.run('10.42.0.1','sudo rm -r /home/nuc/aos/inco-data/ && sudo rm -r /home/nuc/aos/inco-eth-kovan-data/ && sudo docker rm -f inc_miner && sudo docker rm -f inc_kovan');
+      console.log(TAG,'cleanOldDataForSetup data = ',result);
+      return !_.isEmpty(result) ;
+    } catch (error) {
+      return false; 
+    }
+    
   }
 
 }
