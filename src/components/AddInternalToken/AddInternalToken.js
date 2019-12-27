@@ -28,6 +28,10 @@ const initialValues = {
 const Form = createForm(formName, { initialValues });
 const descriptionMaxLength = validator.maxLength(255);
 const isEmail = validator.email();
+const imageValidate = [
+  validator.fileTypes(['image/png']),
+  validator.maxFileSize(50),
+];
 
 class AddInternalToken extends Component {
   constructor(props) {
@@ -304,8 +308,8 @@ class AddInternalToken extends Component {
                     name='logo'
                     text={'Upload your coin\'s icon (optional, PNG and less than 50kb)'}
                     textButton='Upload'
-                    maxSize={1024 * 50 * 8} // 50kb
                     style={styleSheet.input}
+                    validate={imageValidate}
                   />
                 </View>
                 

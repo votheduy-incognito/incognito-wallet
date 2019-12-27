@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import picker from 'react-native-image-picker';
+import fileType from 'react-native-file-type';
 import rnfs from 'react-native-fs';
 import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
 import { debounce } from 'lodash';
@@ -26,42 +27,47 @@ class ImagePickerContainer extends Component {
           mediaType: 'photo',
         };
 
-        picker.showImagePicker(options, (response) => {
-          if (response.didCancel) {
-            // console.log('User cancelled image picker');
-          } else if (response.error) {
-            return reject(response.error);
-          } else {
-            // You can also display the image using data:
-            // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-            if (!response.uri) {
-              return reject(new Error('File is not selected'));
-            }
-
-            const file = {
-              name: response.fileName,
-              type: response.type,
-              size: response.fileSize,
-              uri: response.uri,
-            };
-
-            const realPath = this.getRealPath(file);
+        picker.showImagePicker(options, async (response) => {
+          try {
+            if (response.didCancel) {
+              // console.log('User cancelled image picker');
+            } else if (response.error) {
+              return reject(response.error);
+            } else {
+              // You can also display the image using data:
+              // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+              if (!response.uri) {
+                return reject(new Error('File is not selected'));
+              }
   
-            file.realPath = realPath;
-
-            if (!/\.png$/.test(String(file?.name).toLowerCase())) {
-              return reject(new CustomError(ErrorCode.document_picker_must_be_png));
+              if (!response.type) {
+                const typeInfo = await fileType(response.path);
+                response.type = typeInfo?.mime;
+              }
+  
+              const file = {
+                name: response.fileName,
+                type: response.type,
+                size: response.fileSize,
+                uri: response.uri,
+              };
+  
+              const realPath = this.getRealPath(file);
+    
+              file.realPath = realPath;
+  
+              if (maxSize && file.size > maxSize) {
+                return reject(new CustomError(ErrorCode.document_picker_oversize));
+              }
+        
+              if (typeof onPick === 'function') {
+                onPick(file);
+              }
+             
+              resolve(file);
             }
-
-            if (maxSize && file.size > maxSize) {
-              return reject(new CustomError(ErrorCode.document_picker_oversize));
-            }
-      
-            if (typeof onPick === 'function') {
-              onPick(file);
-            }
-           
-            resolve(file);
+          } catch (e) {
+            reject(e);
           }
         });
   

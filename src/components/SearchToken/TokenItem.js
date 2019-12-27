@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import icMinusRoundIcon from '@src/assets/images/icons/ic_minus_round.png';
 import plusRoundIcon from '@src/assets/images/icons/ic_plus_round.png';
 import CryptoItemCard from '@src/components/CryptoItemCard';
-import { TouchableOpacity, Image, ActivityIndicator } from '../core';
+import { TouchableOpacity, Image, View, ActivityIndicator } from '../core';
 import { itemStyle } from './styles';
 
 class TokenItem extends Component {
@@ -38,15 +38,19 @@ class TokenItem extends Component {
         key={token?.tokenId}
         tokenId={token?.tokenId}
         onPress={this.handleShowTokenInfo}
-        rightComponent={
-          isProcessing
-            ? <ActivityIndicator />
-            : (
-              <TouchableOpacity style={itemStyle.toggle} onPress={this._handlePress}>
-                <Image style={itemStyle.toggleImg} source={token?.isFollowed ? icMinusRoundIcon : plusRoundIcon} />
-              </TouchableOpacity>
-            )
-        }
+        rightComponent={(
+          <View style={itemStyle.rightComponentContainer}>
+            {
+              isProcessing
+                ? <ActivityIndicator />
+                : (
+                  <TouchableOpacity style={itemStyle.toggle} onPress={this._handlePress}>
+                    <Image style={itemStyle.toggleImg} source={token?.isFollowed ? icMinusRoundIcon : plusRoundIcon} />
+                  </TouchableOpacity>
+                )
+            }
+          </View>
+        )}
       />
     );
   }
@@ -66,10 +70,6 @@ TokenItem.propTypes = {
   onPress: PropTypes.func,
   token: PropTypes.shape({
     tokenId: PropTypes.string.isRequired,
-    symbol: PropTypes.string.isRequired,
-    pSymbol: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    networkName: PropTypes.string.isRequired,
   }).isRequired
 };
 

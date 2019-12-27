@@ -40,7 +40,7 @@ class AddToken extends Component {
       <Container style={styles.container}>
         <View>
           <View style={styles.selectNetworkButtonGroup}>
-            <Text style={styles.selectNetworkButtonLabel}>Select a network</Text>
+            <Text style={styles.selectNetworkButtonLabel}>Select a token type</Text>
             <TouchableOpacity onPress={this.toggleChooseType} style={styles.selectNetworkButton}>
               <Text style={styles.selectNetworkValue}>{type}</Text>
               <Icons name='angle-right' style={styles.selectNetworkValueIcon} size={16} />
