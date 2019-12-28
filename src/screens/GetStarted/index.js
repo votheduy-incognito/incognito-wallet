@@ -55,8 +55,7 @@ class GetStartedContainer extends Component {
     const { reloadAccountList } = this.props;
     reloadAccountList();
 
-    // navigation.navigate(routeNames.Home,{isNeedUpgrade: this.isNeedUpgrade});
-    navigation.navigate(routeNames.Node);
+    navigation.navigate(routeNames.Home,{isNeedUpgrade: this.isNeedUpgrade});    
   };
 
   getExistedWallet = async () => {
