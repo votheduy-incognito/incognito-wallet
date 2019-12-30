@@ -98,19 +98,19 @@ export const addTokenInfo = ({ tokenId, symbol, name, logoFile, description = ''
     name: logoFile.name,
     uri: logoFile.uri,
     type: 'image/png'
-  } : undefined);
+  } : null);
 
   form.append('TokenID', tokenId);
-  form.append('Name', name);
-  form.append('Description', description);
-  form.append('Symbol', symbol);
+  form.append('Name', name ?? '');
+  form.append('Description', description ?? '');
+  form.append('Symbol', symbol ?? '');
   form.append('IsPrivacy', 'true');
-  form.append('OwnerName', ownerName);
-  form.append('OwnerEmail', ownerEmail);
-  form.append('OwnerWebsite', ownerWebsite);
+  form.append('OwnerName', ownerName ?? '');
+  form.append('OwnerEmail', ownerEmail ?? '');
+  form.append('OwnerWebsite', ownerWebsite ?? '');
   form.append('ShowOwnerAddress', Number(showOwnerAddress) || 0);
   form.append('TxID', txId);
-  ownerAddress && form.append('OwnerAddress', ownerAddress);
+  ownerAddress && form.append('OwnerAddress', ownerAddress ?? '');
 
   return http.post('storage/upload/token-info', form, {
     headers: {
