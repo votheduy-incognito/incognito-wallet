@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Platform } from 'react-native';
 import picker from 'react-native-image-picker';
 import fileType from 'react-native-file-type';
 import rnfs from 'react-native-fs';
@@ -27,7 +28,7 @@ class ImagePickerContainer extends Component {
           mediaType: 'photo',
         };
 
-        picker.showImagePicker(options, async (response) => {
+        picker.launchImageLibrary(options, async (response) => {
           try {
             if (response.didCancel) {
               // console.log('User cancelled image picker');
@@ -44,7 +45,17 @@ class ImagePickerContainer extends Component {
                 const typeInfo = await fileType(response.path);
                 response.type = typeInfo?.mime;
               }
-  
+
+              /**
+               * this lib "react-native-image-picker" is not working well on iOS, can only detect jpg format, otherwise format will fallback to jpg too!
+               */
+              if (Platform.OS === 'ios') {
+                const dotIndex = response?.fileName?.lastIndexOf('.') || 0;
+                const mime = response?.fileName?.substring(dotIndex+1);
+
+                response.type = mime ? `image/${mime}` : 'image/jpeg';
+              }
+              
               const file = {
                 name: response.fileName,
                 type: response.type,
