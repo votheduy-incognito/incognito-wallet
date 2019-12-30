@@ -10,7 +10,6 @@ import moreIcon from '@src/assets/images/icons/more_icon.png';
 import unfollowTokenIcon from '@src/assets/images/icons/unfollowToken.png';
 import withdrawBlack from '@assets/images/icons/withdraw_black.png';
 import OptionMenu from '@components/OptionMenu/OptionMenu';
-import {COLORS} from '@src/styles';
 import Rewards from './Rewards';
 import styles from './style';
 
@@ -67,7 +66,7 @@ class VNode extends React.Component {
       id: 'delete',
       icon: <Image source={unfollowTokenIcon} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
       label: 'Remove virtual node',
-      desc: 'Remove your virtual node.',
+      desc: 'Remove this node from your display.',
       handlePress: () => this.removeDevice(item),
     });
 
@@ -76,7 +75,7 @@ class VNode extends React.Component {
         id: 'unstake',
         icon: <Image source={withdrawBlack} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
         label: 'Unstake',
-        desc: 'Remove your virtual node.',
+        desc: 'Stop staking and withdraw staked amount.',
         handlePress: () => onUnstake(item),
       });
     }
@@ -92,9 +91,6 @@ class VNode extends React.Component {
     const rewards = item.Rewards;
     const isEmptyRewards = _.isEmpty(rewards) || !_.some(rewards, value => value > 0);
     const pendingWithdraw = withdrawing && withdrawTxs && withdrawTxs.length > 0;
-
-    // console.debug('PENDING', labelName, isEmptyRewards, withdrawing, withdrawTxs, pendingWithdraw, withdrawTxs.length);
-
     return (
       <View style={styles.container}>
         <View style={styles.row}>

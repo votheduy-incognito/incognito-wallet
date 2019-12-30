@@ -6,7 +6,7 @@ import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import dexUtil, {DEX} from '@utils/dex';
+import {DEX} from '@utils/dex';
 import { getTokenList } from '@services/api/token';
 import { getPDEPairs } from '@services/wallet/RpcClientService';
 import tokenService from '@services/wallet/tokenService';

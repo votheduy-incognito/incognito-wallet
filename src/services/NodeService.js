@@ -386,9 +386,9 @@ export default class NodeService {
       console.log(TAG,'cleanOldDataForSetup data = ',result);
       return !_.isEmpty(result) ;
     } catch (error) {
-      return false; 
+      return false;
     }
-    
+
   }
 
   static getBLSKey = async (device:Device, chain = 'incognito') => {
@@ -407,5 +407,16 @@ export default class NodeService {
     }
 
     return null;
+  };
+
+  static isWithdrawable = async (device:Device) => {
+    try {
+      const response = await APIService.getRequestWithdraw(device.PaymentAddress);
+      const status = response.Status;
+      return status !== 1;
+    } catch (error) {
+      console.debug('isWithdrawable', error);
+      return true;
+    }
   };
 }

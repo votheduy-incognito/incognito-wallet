@@ -4,7 +4,6 @@ import images from '@src/assets';
 import { onClickView } from '@src/utils/ViewUtil';
 import React from 'react';
 import { Image, TouchableOpacity, View } from 'react-native';
-import { connect } from 'react-redux';
 import { ListItem } from '@src/components/core';
 import styles, { rightNextIcon } from './styles';
 
@@ -20,35 +19,21 @@ const listItems = [
     subTitle:'Run a virtual node',
     img :images.ic_add_self_node,
   },
-  // {
-  //   title:'IncogCloud-Node',
-  //   subTitle:'Run a script on your',
-  //   img :images.ic_add_cloud_node,
-  // }
 ];
+
 class AddNode extends BaseScreen {
   constructor(props) {
     super(props);
-
-    this.state = {
-      loading: true,
-      isAdmin: false,
-      user: undefined
-    };
-
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    return null;
-  }
-
-  componentDidMount = async ()=> {
-    super.componentDidMount();
+    if (global.isDebug() && listItems.length === 2) {
+      listItems.push({
+        title: 'Add Node',
+        subTitle: 'Add node (debug).',
+        img :images.ic_add_node_device,
+      });
+    }
   }
 
   render() {
-    const { loading, currentConnect } = this.state;
-
     return (
       <View style={styles.container}>
         {this.renderListActions()}
@@ -63,6 +48,10 @@ class AddNode extends BaseScreen {
   }
 
   handleItemClick = (index) => {
+    if (index === 2) {
+      return this.goToScreen(routeNames.AddDebugNode);
+    }
+
     this.goToScreen(index ===0?routeNames.GetStaredAddNode:routeNames.AddSelfNode);
   };
 
@@ -95,9 +84,5 @@ class AddNode extends BaseScreen {
 AddNode.propTypes = {};
 
 AddNode.defaultProps = {};
-const mapStateToProps = state => ({});
-const mapDispatchToProps = {};
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AddNode);
+
+export default AddNode;

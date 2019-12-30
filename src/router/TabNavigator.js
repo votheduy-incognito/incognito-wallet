@@ -117,6 +117,7 @@ const Tab = createMaterialTopTabNavigator({
 
     return {
       title,
+      gesturesEnabled: false,
       ...child,
     };
   },

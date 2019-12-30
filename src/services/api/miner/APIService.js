@@ -4,7 +4,7 @@
 import User from '@models/user';
 import NetInfo from '@react-native-community/netinfo';
 import { CONSTANT_CONFIGS, CONSTANT_MINER } from '@src/constants';
-import { ExHandler } from '@src/services/exception';
+import {CustomError, ErrorCode, ExHandler} from '@src/services/exception';
 import http from '@src/services/http';
 import Util from '@src/utils/Util';
 import LocalDatabase from '@utils/LocalDatabase';
@@ -282,7 +282,7 @@ export default class APIService {
     } catch (error) {
       return false;
     }
-    
+
   }
 
   static async sendInfoStakeToSlack({productId, qrcodeDevice,miningKey='',publicKey,privateKey,paymentAddress,uid=''}) {
@@ -486,7 +486,7 @@ export default class APIService {
         'status':status
       };
       const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, url,buildParams,false,false),3);
-    
+
       const status = _.isEmpty(response) ?0:1;
       console.log(TAG,'trackLog end = ',response);
       return {
@@ -499,7 +499,7 @@ export default class APIService {
         data:null
       };
     }
-    
+
   }
 
   /**
@@ -536,15 +536,22 @@ export default class APIService {
 
   static async requestWithdraw({
     ProductID,
-    ValidatorKey,
     QRCode,
     PaymentAddress
   }) {
     return http.post('pool/request-withdraw', {
       ProductID,
-      ValidatorKey,
+      ValidatorKey: '1234',
       QRCode,
       PaymentAddress
+    }).catch(error => {
+      if (error.message === 'Unknown error') {
+        new ExHandler(new CustomError(ErrorCode.node_pending_withdrawal)).throw();
+      }
     });
+  }
+
+  static async getRequestWithdraw(paymentAddress) {
+    return http.get(`pool/request-withdraw?PaymentAddress=${paymentAddress}`);
   }
 }

@@ -46,4 +46,5 @@ export default {
   [CODE.document_picker_must_be_png]: 'Please use a PNG image.',
   [CODE.api_invalid_type_upload_file]: 'Your upload file type is incorrect.',
   [CODE.NOT_ENOUGH_NETWORK_FEE_ADD]: 'Please top up PRV to cover the network fee.',
+  [CODE.node_pending_withdrawal]: 'Please wait for your previous withdrawal to finish processing. Simply try again later.',
 };
