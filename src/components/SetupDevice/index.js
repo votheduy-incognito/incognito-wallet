@@ -293,6 +293,7 @@ class SetupDevice extends BaseComponent {
       console.log(TAG,'connectHotspot end result = ',result);
       return result?this.deviceMiner:errorObj;
     } catch (error) {
+      await APIService.trackLog({action:funcName, message:`Connect HOTSPOT error_catch = ${error?.message||''}`});
       if(error instanceof CustomError){
         this.logOnView(`${TAG} - connectHotspot error hotspot = ${this.deviceIdFromQrcode}`);
         console.log(TAG,`connectHotspot error hotspot = ${this.deviceIdFromQrcode}`);
@@ -576,6 +577,7 @@ class SetupDevice extends BaseComponent {
       this.setState({
         loading: true
       });
+      this.logOnView(`sendZMQ wifi ${ssid}-pass = ${wpa} `);
       const deviceId = DeviceInfo.getUniqueId();
       var date = new Date();
       const verify_code = `${deviceId}.${date.getTime()}`;
@@ -605,7 +607,7 @@ class SetupDevice extends BaseComponent {
         const params = {
           action: 'send_wifi_info',
           ssid: `'${ssid}'`,
-          wpa: wpa,
+          wpa: `'${wpa}'`,
           product_name:`${CONSTANT_MINER.PRODUCT_NAME}_${this.deviceIdFromQrcode}`,
           product_type: DEVICES.MINER_TYPE,
           source:  Platform.OS,
@@ -647,17 +649,19 @@ class SetupDevice extends BaseComponent {
   }
 
   tryConnectHomeWifi = async ()=>{
+    const { validSSID, validWPA, ssid, wpa, longitude, latitude,isRenderUI } = this.state;
     try {
-      const { validSSID, validWPA, ssid, wpa, longitude, latitude,isRenderUI } = this.state;
+      this.logOnView(`tryConnectHomeWifi BEGIN remove ssid = ${this.deviceMiner?.name??''}`);
       await Util.excuteWithTimeout(this.deviceId?.current?.removeConnectionDevice(this.deviceMiner),4).catch(console.log);
       await Util.delay(3);
-      const homeWifi = new ObjConnection();
-      homeWifi.id = ssid;
+      let homeWifi = new ObjConnection();
+      homeWifi.id = ssid,
       homeWifi.name = ssid;
       homeWifi.password = wpa;
-      await Util.tryAtMost(this.deviceId?.current?.connectAWifi(homeWifi),2,2);
+      this.logOnView(`tryConnectHomeWifi BEGIN connect ssid = ${ssid}-pass=${wpa}`);
+      await this.deviceId?.current?.connectAWifi(homeWifi);
     } catch (error) {
-      this.logOnView('tryConnectHomeWifi ERROR');
+      this.logOnView(`tryConnectHomeWifi ERROR ssid = ${ssid} = ${error?.message||''}`);
       console.log(TAG,'tryConnectHomeWifi error - ',error);
       return false;
     }
@@ -667,7 +671,7 @@ class SetupDevice extends BaseComponent {
 
   connectZMQ = async (params) =>{
     try {
-      const { validSSID, validWPA, ssid, wpa, longitude, latitude,isRenderUI } = this.state;
+      // const { validSSID, validWPA, ssid, wpa, longitude, latitude,isRenderUI } = this.state;
       this.isSendDataZmqSuccess = false;
       const sendZMQ = async ()=> {
         this.logOnView('connectZMQ sendZMQ ----- begin ');
