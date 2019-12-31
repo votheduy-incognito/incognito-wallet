@@ -4,7 +4,7 @@ import Util from '@utils/Util';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
 import BaseConnection, { ObjConnection } from './BaseConnection';
 import style from './style';
 import WifiConnection from './WifiConnection';
@@ -108,8 +108,8 @@ class DeviceConnection extends Component {
   }
   removeConnectionDevice = async (objConnection: ObjConnection) => {
     // console.log(TAG, 'removeConnectionDevice begin result = ',JSON.stringify(device)||'');
-    let result = Platform.OS =='android'? await this.connection.removeConnection(objConnection):true;
-    // let result = await this.connection.removeConnection(device);
+    // let result = Platform.OS =='android'? await this.connection.removeConnection(objConnection):true;
+    let result = await Util.excuteWithTimeout(this.connection.removeConnection(objConnection),4).catch(console.log);
     console.log(TAG, 'removeConnectionDevice begin result = ',result);
     return result;
   };

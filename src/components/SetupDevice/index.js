@@ -64,7 +64,7 @@ const deviceTest ={ address: 'US',
   verify_code: 'AFB94E64-3FFE-4D1D-BB6C-A757AFCF61BF.1565596011816',
   zip: null };
 const errorMessage = 'Can\'t connect Node. Please check the internert information and try again';
-const TIMES_VERIFY = 30;
+const TIMES_VERIFY = 50;
 
 const labels = ['Connect Hotpot','Send Wifi Info','Verify Code'];
 const customStyles = {
@@ -283,6 +283,7 @@ class SetupDevice extends BaseComponent {
       console.log(TAG,'connectHotspot begin end wifiname  = ',WifiName,'-HOTPOT = ',HOTPOT);
       this.deviceMiner.name = WifiName;
       this.deviceMiner.id = WifiName;
+      
       await APIService.trackLog({action:funcName, message:`Connect HOTSPOT = ${WifiName}`});
       this.logOnView(`${TAG} Begin: connect HOTSPOT WifiName=${WifiName}-------`);
 
@@ -341,13 +342,7 @@ class SetupDevice extends BaseComponent {
         new ExHandler(error).throw();
       }
     }finally{
-      !_.isNil(this.deviceMiner) && this.deviceId?.current?.removeConnectionDevice(this.deviceMiner);
-      // this.setState({
-      //   loading: false,
-      //   currentPositionStep:0,
-      //   isDoingSetUp:false,
-      //   errorMessage:errorMsg
-      // });
+      !_.isNil(this.deviceMiner) && await this.deviceId?.current?.removeConnectionDevice(this.deviceMiner);
       this.setState({
         loading: false,
         isDoingSetUp:false,
@@ -652,7 +647,7 @@ class SetupDevice extends BaseComponent {
     const { validSSID, validWPA, ssid, wpa, longitude, latitude,isRenderUI } = this.state;
     try {
       this.logOnView(`tryConnectHomeWifi BEGIN remove ssid = ${this.deviceMiner?.name??''}`);
-      await Util.excuteWithTimeout(this.deviceId?.current?.removeConnectionDevice(this.deviceMiner),4).catch(console.log);
+      await this.deviceId?.current?.removeConnectionDevice(this.deviceMiner);
       await Util.delay(3);
       let homeWifi = new ObjConnection();
       homeWifi.id = ssid,
@@ -764,6 +759,10 @@ class SetupDevice extends BaseComponent {
     return device;
   };
 
+  getHotspotName = ()=>{
+    return this.deviceMiner?.name ||'';
+  };
+
   checkIsConnectedWithHotspot = async ()=>{
     return await this.deviceId?.current?.isConnectedWithNodeHotspot();
   }
@@ -772,18 +771,18 @@ class SetupDevice extends BaseComponent {
     const funcName = `${this.deviceIdFromQrcode}-checkConnectHotspot`;
     const { validSSID, validWPA,isRenderUI } = this.state;
     this.logOnView('bat dat check da connect hotspot chua?');
-    // hienton test
-    // await Util.delay(2);
 
     let isConnectedHotpost = await this.checkIsConnectedWithHotspot();
     await APIService.trackLog({action:funcName, message:isConnectedHotpost?'Da connect HOTSPOT':'Chua connect HOTSPOT'});
     this.logOnView(isConnectedHotpost?'da connect roi':'chua connect va bat dau connect');
 
-    // await Util.delay(2);
+    ///
+    // test
+    // !isConnectedHotpost ? new ExHandler(new CustomError(knownCode.node_can_not_connect_hotspot)).showWarningToast().throw():true;
+    ///
     ///////////////
     let objConnection = null;
     this.CurrentPositionStep = 0;
-    // console.log(TAG,'checkConnectHotspot begin isConnectedHotpost : ', isConnectedHotpost);
     if(!isConnectedHotpost){
       const connectHotspot = this.connectHotspot;
       objConnection = await Util.tryAtMost(connectHotspot,3,1).catch(e=>new ExHandler(new CustomError(knownCode.node_can_not_connect_hotspot)).throw());
@@ -796,7 +795,7 @@ class SetupDevice extends BaseComponent {
       objConnection = await this.deviceId?.current?.getCurrentConnect();
     }
     console.log(TAG,'checkConnectHotspot begin01 : ', objConnection,'-validSSID = ',validSSID,'validWPA = ',validWPA);
-    await APIService.trackLog({action:funcName, message:`Connect HOTSPOT PASS -> getCurrentConnect=${objConnection?.name||''}`});
+    await APIService.trackLog({action:funcName, message:`Connect HOTSPOT PASSED -> CurrentConnect=${objConnection?.name||''}`});
     this.isHaveNetwork = false;
     isConnectedHotpost = !_.isEmpty(objConnection) ;
     const isCheckInputWifiInfo = isRenderUI?validSSID && validWPA:true;
@@ -818,9 +817,6 @@ class SetupDevice extends BaseComponent {
         await APIService.trackLog({action:funcName, message:result? 'Send Thong tin Node PASSED':'Send Thong tin Node FAIL'});
         this.logOnView(result? 'Send Thong tin MINER thanh cong':'Send Thong tin MINER FAIL---');
         return result;
-
-        // this.logOnView('Send Thong tin MINER thanh cong');
-        // return false;
       }
     }
 
@@ -853,7 +849,7 @@ class SetupDevice extends BaseComponent {
 
       return authFirebase;
     } catch (error) {
-      await APIService.trackLog({action:funcName, message:'Auth Firebase=> ERROR'});
+      await APIService.trackLog({action:funcName, message:'Auth Firebase=> ERROR',rawData:`error message = ${error?.message||''}`});
       this.logOnView('Auth Firebase=> FAIL');
       new ExHandler(new CustomError(knownCode.node_auth_firebase_fail,{rawCode:error})).throw();
     }
@@ -873,7 +869,6 @@ class SetupDevice extends BaseComponent {
 
       const promiseNetwork = async ()=>{
         console.log(TAG,' tryVerifyCode begin02 ---- connected = ',this.isHaveNetwork);
-        // const result = this.isHaveNetwork ? await NodeService.verifyProductCode(verifyCode).catch(console.log):new Error('no internet');
         const result = await NodeService.verifyProductCode(verifyCode).catch(console.log)??false;
         return result? result : new Error('no internet');
       };
