@@ -1,4 +1,5 @@
 import NetInfo from '@react-native-community/netinfo';
+import APIService from '@src/services/api/miner/APIService';
 import { CustomError, ExHandler } from '@src/services/exception';
 import knownCode from '@src/services/exception/customError/code/knownCode';
 import { locationPermission } from '@utils/PermissionUtil';
@@ -7,8 +8,8 @@ import _ from 'lodash';
 import { Platform } from 'react-native';
 import { PASS_HOSPOT } from 'react-native-dotenv';
 import Wifi from 'react-native-iot-wifi';
-import { NetworkInfo } from 'react-native-network-info';
 import WifiManager from 'react-native-wifi-reborn';
+import DeviceLog from '../DeviceLog';
 import BaseConnection, { ObjConnection } from './BaseConnection';
 
 export const TAG = 'WifiConnection';
@@ -81,30 +82,36 @@ class WifiConnection extends BaseConnection {
    * 
    */
   connectDevice = (wifiObj: ObjConnection) => {
-   
+    
     const pro = async() => {
+      const funcName = 'connectDevice';
+      let SSID = wifiObj?.name??'';
+      const password = wifiObj?.password || PASS_HOSPOT;
       try {
-        let SSID = wifiObj.name;
+        
         const logHandler = new ExHandler(new CustomError(knownCode.node_can_not_connect_hotspot));
         console.log(TAG, 'connectDevice begin000 --- name = ',SSID);
-        const password = wifiObj.password || PASS_HOSPOT;
+        
+        DeviceLog.logInfo(`${TAG} connectDevice ssid=${SSID}-pass=${password}`);
         let data = await WifiManager.connectToProtectedSSID(SSID,password,false).catch(e=>{
           console.log(TAG, 'connectToProtectedSSID begin --- error ,',e);
-          logHandler.throw();}
-        );
+          APIService.trackLog({action:funcName, message:`connectToProtectedSSID error catch ${SSID} -pass=${password}`,rawData:`errorMessage=${e.message??''}`});
+          logHandler.throw();
+        });
         console.log(TAG, 'connectDevice begin111 --- data = ',data);
         await Util.delay(3);
         if(_.isEmpty(data)){
           await Util.delay(3);
           data = await this.fetchCurrentConnect();
           console.log(TAG, 'connectDevice begin222--- data = ',data);
-          
+          DeviceLog.logInfo(`${TAG} connectDevice data.name=${data?.name||''}`);
           if(_.isEmpty(data)){
             // IOS 13.2
             // await Util.delay(3);
             // data = await this.isConnectedWithNodeHotspot();
             // data ? null:logHandler.throw();
           }else{
+            
             !_.isEqual(data.name,SSID) ? logHandler.throw():null;
           }
         }
@@ -114,27 +121,28 @@ class WifiConnection extends BaseConnection {
         this.currentConnect.name = SSID;
         return true;
       } catch (error) {
+        await APIService.trackLog({action:funcName, message:`error catch ${SSID} -pass=${password}`});
         error instanceof CustomError && new ExHandler(error).throw();
       }
     };
     return Util.excuteWithTimeout(pro(),15);
   };
 
-  isConnectedWithNodeHotspot = async ()=>{
-    try {
-      const prefixHotspotIP = '10.42.';
-      const defaultGateway = await NetworkInfo.getGatewayIPAddress().catch(console.log)??'';
-      const isValidateIpAdrress = _.includes(defaultGateway,prefixHotspotIP);
-      console.log(TAG, 'isConnectedWithNodeHotspot new ---- defaultGateway=', defaultGateway);
-      const state = await NetInfo.fetch().catch(console.log);
-      const {isConnected = false, isInternetReachable = false,details =null} = state ??{};
-      const { ipAddress = '',isConnectionExpensive = false,ssid='' } = details ??{};
-      return isValidateIpAdrress || (isConnected && !isInternetReachable) || (isConnected && _.includes(ipAddress,prefixHotspotIP) );
-    } catch (error) {
-      return null;
-    }
+  // isConnectedWithNodeHotspot = async ()=>{
+  //   try {
+  //     const prefixHotspotIP = '10.42.';
+  //     const defaultGateway = await NetworkInfo.getGatewayIPAddress().catch(console.log)??'';
+  //     const isValidateIpAdrress = _.includes(defaultGateway,prefixHotspotIP);
+  //     console.log(TAG, 'isConnectedWithNodeHotspot new ---- defaultGateway=', defaultGateway);
+  //     const state = await NetInfo.fetch().catch(console.log);
+  //     const {isConnected = false, isInternetReachable = false,details =null} = state ??{};
+  //     const { ipAddress = '',isConnectionExpensive = false,ssid='' } = details ??{};
+  //     return isValidateIpAdrress || (isConnected && !isInternetReachable) || (isConnected && _.includes(ipAddress,prefixHotspotIP) );
+  //   } catch (error) {
+  //     return null;
+  //   }
     
-  }
+  // }
 
   destroy = () => {};
 
