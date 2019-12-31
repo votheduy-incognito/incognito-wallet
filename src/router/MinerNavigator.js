@@ -7,6 +7,7 @@ import AddNode from '@src/screens/AddNode';
 import AddStake from '@src/screens/AddStake';
 import Unstake from '@src/screens/Unstake';
 import AddSelfNode from '@src/screens/AddSelfNode';
+import AddDebugNode from '@screens/AddDebugNode';
 import HeaderBar from '@src/components/HeaderBar';
 import { navigationOptionsHandler } from '@src/utils/router';
 import { THEME } from '@src/styles';
@@ -28,6 +29,7 @@ const MinerNavigator = createStackNavigator(
     [ROUTE_NAMES.Node]: navigationOptionsHandler(Node,{ header: null }),
     [ROUTE_NAMES.AddDevice]: navigationOptionsHandler(AddDevice, { title: 'Select router' }),
     [ROUTE_NAMES.AddNode]: navigationOptionsHandler(AddNode, { title: 'Add Node' }),
+    [ROUTE_NAMES.AddDebugNode]: navigationOptionsHandler(AddDebugNode, { title: 'Add Node' }),
     [ROUTE_NAMES.AddStake]: navigationOptionsHandler(AddStake, { title: 'Stake' }),
     [ROUTE_NAMES.Unstake]: navigationOptionsHandler(Unstake, { title: 'Unstake' }),
     [ROUTE_NAMES.SetupWifiDevice]: navigationOptionsHandler(SetupWifiDevice, { title: 'Setup Wifi' }),
@@ -42,7 +44,8 @@ const MinerNavigator = createStackNavigator(
       return {
         title,
         header: HeaderBar,
-        headerBackground: THEME.header.backgroundColor
+        headerBackground: THEME.header.backgroundColor,
+        gesturesEnabled: false,
       };
     },
     initialRouteName:ROUTE_NAMES.Node,

@@ -113,7 +113,7 @@ class PNode extends React.Component {
                 title="Withdraw"
                 buttonStyle={styles.withdrawButton}
                 disabledStyle={styles.withdrawButtonDisabled}
-                disabled={isEmptyRewards}
+                disabled={isEmptyRewards || !item.IsWithdrawable}
                 onPress={() => onWithdraw(item)}
               />
             </View>

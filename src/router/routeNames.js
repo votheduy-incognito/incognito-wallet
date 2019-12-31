@@ -23,6 +23,7 @@ export default {
   Node: 'Node',
   AddWallScreen: 'AddWallScreen',
   AddNode: 'AddNode',
+  AddDebugNode: 'AddDebugNode',
   AddStake:'AddStake',
   Unstake:'Unstake',
   Profile: 'Profile',

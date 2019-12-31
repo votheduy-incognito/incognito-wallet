@@ -9,6 +9,10 @@ const TAG = 'index';
 global.isMainnet = true;
 console.disableYellowBox = true;
 
+global.isDebug = () => {
+  return __DEV__ || global.isDEV;
+};
+
 AppRegistry.registerRunnable(appName, async initParams => {
   const { default:serverService} = await import('@src/services/wallet/Server');
   const serverDefault  = await serverService.getDefaultIfNullGettingDefaulList() ??{};

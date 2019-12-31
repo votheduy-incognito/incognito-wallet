@@ -111,7 +111,7 @@ export default class Device {
     return this.data.minerInfo.stakeTx;
   }
   get Staked() {
-    return !!this.PublicKey || !!this.StakeTx;
+    return !!this.Status || !!this.StakeTx;
   }
   set IsAutoStake(result) {
     this.data.minerInfo.isAutoStake = result;
@@ -133,6 +133,12 @@ export default class Device {
   }
   get Unstaking() {
     return this.UnstakeTx || (!!this.Status && !this.IsAutoStake);
+  }
+  set IsWithdrawable(bool) {
+    this.data.minerInfo.isDrawable = bool;
+  }
+  get IsWithdrawable() {
+    return this.data.minerInfo.isDrawable;
   }
   get Host(){
     return this.data.minerInfo?.ipAddress||'';
@@ -181,7 +187,7 @@ export default class Device {
   }
 
   get PaymentAddress() {
-    return this.data.minerInfo.account?.PaymentAddress;
+    return this.data.minerInfo.account?.PaymentAddress || this.data.minerInfo.PaymentAddress;
   }
 
   get PaymentAddressFromServer(){

@@ -284,6 +284,10 @@ class Node extends BaseScreen {
       device.setIsOnline(Math.max(device.IsOnline - 1, 0));
     }
 
+    if (device.PaymentAddress) {
+      device.IsWithdrawable = await NodeService.isWithdrawable(device);
+    }
+
     return device;
   };
 
@@ -446,6 +450,7 @@ class Node extends BaseScreen {
           ValidatorKey: device.ValidatorKey,
           PaymentAddress: device.PaymentAddressFromServer
         });
+        device.IsWithdrawable = await NodeService.isWithdrawable(device);
       }
       const message = 'Withdrawing earnings to your Incognito Wallet. Balances will update in a few minutes.';
       this.showToastMessage(message);
