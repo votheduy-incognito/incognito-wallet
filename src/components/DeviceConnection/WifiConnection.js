@@ -84,7 +84,7 @@ class WifiConnection extends BaseConnection {
   connectDevice = (wifiObj: ObjConnection) => {
     
     const pro = async() => {
-      const funcName = 'connectDevice';
+      const funcName = `${TAG}-connectDevice`;
       let SSID = wifiObj?.name??'';
       const password = wifiObj?.password || PASS_HOSPOT;
       try {
@@ -102,18 +102,18 @@ class WifiConnection extends BaseConnection {
         await Util.delay(3);
         if(_.isEmpty(data)){
           await Util.delay(3);
-          data = await this.fetchCurrentConnect();
-          console.log(TAG, 'connectDevice begin222--- data = ',data);
-          DeviceLog.logInfo(`${TAG} connectDevice data.name=${data?.name||''}`);
-          if(_.isEmpty(data)){
-            // IOS 13.2
-            // await Util.delay(3);
-            // data = await this.isConnectedWithNodeHotspot();
-            // data ? null:logHandler.throw();
-          }else{
+          // data = await this.fetchCurrentConnect();
+          // console.log(TAG, 'connectDevice begin222--- data = ',data);
+          // DeviceLog.logInfo(`${TAG} connectDevice data.name=${data?.name||''}`);
+          // if(_.isEmpty(data)){
+          //   // IOS 13.2
+          //   // await Util.delay(3);
+          //   // data = await this.isConnectedWithNodeHotspot();
+          //   // data ? null:logHandler.throw();
+          // }else{
             
-            !_.isEqual(data.name,SSID) ? logHandler.throw():null;
-          }
+          //   !_.isEqual(data.name,SSID) ? logHandler.throw():null;
+          // }
         }
         
         this.currentConnect = new ObjConnection();

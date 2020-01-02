@@ -3,6 +3,7 @@ import StepIndicator from '@components/StepIndicator';
 import BaseScreen from '@screens/BaseScreen';
 import CreateAccount from '@screens/CreateAccount';
 import images from '@src/assets';
+import ConnectInstruction from '@src/components/ConnectInstruction';
 import { ButtonExtension, InputExtension as Input, Text } from '@src/components/core';
 import SetupDevice from '@src/components/SetupDevice';
 import { getAccountByName } from '@src/redux/selectors/account';
@@ -35,6 +36,7 @@ class GetStartedAddNode extends BaseScreen {
       currentPage:0,
       currentConnect:{name:'',password:''},
       errorMessage:'',
+      isShowInstructor:false,
       errorInSetUp:null,
       isPassedValidate:true,
       QRCode:null
@@ -48,6 +50,7 @@ class GetStartedAddNode extends BaseScreen {
   }
   componentDidMount(){
     super.componentDidMount();
+    // this.onResume();
   }
 
   renderTitle =()=>{
@@ -63,7 +66,7 @@ class GetStartedAddNode extends BaseScreen {
   }
 
   renderContentStep2 =()=>{
-    const {currentConnect,isPassedValidate} = this.state;
+    const {currentConnect,isPassedValidate,} = this.state;
     const {text,item,item_container_input,errorText} = styles;
     return (
       <>
@@ -196,6 +199,7 @@ class GetStartedAddNode extends BaseScreen {
       // setup fail
       // new ExHandler(new CustomError(knownCode.node_verify_code_fail)).showWarningToast().throw();
       // new ExHandler(new CustomError(knownCode.node_auth_firebase_fail)).showWarningToast().throw();
+      // new ExHandler(new CustomError(knownCode.node_can_not_connect_hotspot)).showWarningToast().throw();
       // new ExHandler(new Error('Something’s not right. Please try again.')).showWarningToast().throw();
       ////
       const deviceIdFromQrcode = this.state.QRCode;
@@ -224,7 +228,9 @@ class GetStartedAddNode extends BaseScreen {
         currentPage = 2;
         break;
       case (knownCode.node_can_not_connect_hotspot):
-        currentPage = 0;
+        currentPage = 2;
+        // need show instruction
+
         break;
       case (knownCode.node_auth_firebase_fail):{
         currentPage=2;
@@ -233,12 +239,16 @@ class GetStartedAddNode extends BaseScreen {
       }
       this.setState({
         loading:false,
+        isShowInstructor:currentPage == 2,
         errorInSetUp:e,
         currentPage:currentPage
       });
     }
 
   }
+  // componentWillMount(){
+  //   console.log(TAG,'componentWillMount ---- ');
+  // }
 
   handleStepConnect = async ()=>{
     try{
@@ -277,7 +287,20 @@ class GetStartedAddNode extends BaseScreen {
         currentPage:currentPage
       });
     }
+  }
 
+  onResume = async ()=>{
+    const {isShowInstructor,errorInSetUp} = this.state;
+    console.log(TAG,'onResume ---- ');
+    // Toast.showInfo('onResume isShowInstructor = '+isShowInstructor);
+    
+    if(isShowInstructor ){
+      const isConnectedHotspot = await this.viewSetupDevice.current?.checkIsConnectedWithHotspot()??false;
+      this.setState({
+        errorInSetUp:isConnectedHotspot?null:errorInSetUp,
+        isShowInstructor:!isConnectedHotspot
+      });
+    }
   }
 
   renderFooter=()=>{
@@ -382,10 +405,10 @@ class GetStartedAddNode extends BaseScreen {
   }
 
   render() {
-    const { loading,currentPage,currentConnect,errorMessage,errorInSetUp } = this.state;
+    const { loading,currentPage,currentConnect,errorMessage,errorInSetUp,isShowInstructor } = this.state;
     const rootCauseMessage = errorInSetUp?.message??'';
     const {isRenderUI,navigation} = this.props;
-
+    const hotspotName = this.viewSetupDevice?.current?.getHotspotName()??'';
     return (
       <View style={styles.container}>
         <View style={styleHideView}>
@@ -401,6 +424,7 @@ class GetStartedAddNode extends BaseScreen {
           {this.renderFooter()}
           <SetupDevice ref={this.viewSetupDevice} isRenderUI={false} currentConnect={currentConnect} />
         </ScrollView>
+        {isShowInstructor &&<ConnectInstruction hotspotName={hotspotName} />}
       </View>
     );
   }
