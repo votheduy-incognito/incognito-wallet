@@ -1,6 +1,6 @@
 import { COLORS } from '@src/styles';
 import TextStyle, { scaleInApp, screenSize } from '@src/styles/TextStyle';
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 const FLAG_SIZE = 14;
 
@@ -26,14 +26,8 @@ export default StyleSheet.create({
     borderRadius: FLAG_SIZE,
     marginLeft: 4
   },
-  verifiedFlag: {
-    color: COLORS.green,
-    ...Platform.OS === 'ios'
-      ? {
-        height: FLAG_SIZE,
-        width: FLAG_SIZE
-      }
-      : {}
+  row: {
+    marginVertical:scaleInApp(3)
   },
   textTitle: {
     ...TextStyle.bigText,
@@ -42,6 +36,12 @@ export default StyleSheet.create({
   },
   text: {
     ...TextStyle.mediumText,
+    letterSpacing:1,
     color:'black'
+  },
+  bold: {
+    ...TextStyle.mediumText,
+    color:'black',
+    fontWeight:'500'
   },
 });

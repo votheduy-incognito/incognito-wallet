@@ -64,7 +64,7 @@ const deviceTest ={ address: 'US',
   verify_code: 'AFB94E64-3FFE-4D1D-BB6C-A757AFCF61BF.1565596011816',
   zip: null };
 const errorMessage = 'Can\'t connect Node. Please check the internert information and try again';
-const TIMES_VERIFY = 50;
+const TIMES_VERIFY = 90;
 
 const labels = ['Connect Hotpot','Send Wifi Info','Verify Code'];
 const customStyles = {
@@ -262,31 +262,35 @@ class SetupDevice extends BaseComponent {
     const funcName = `${this.deviceIdFromQrcode}-connectHotspot`;
     const errorObj = new Error('connectHotspot fail');
     try {
-      await APIService.trackLog({action:funcName, message:`call service qrCodeCheckGetWifi - qrcode = ${this.deviceIdFromQrcode}`});
-      // call api to get wifi's name
-      const response = await Util.excuteWithTimeout(APIService.qrCodeCheckGetWifi({QRCode:this.deviceIdFromQrcode}),3).catch(console.log);
-      let {WifiName = '', Status= false} = response?.data ??{};
-      this.logOnView(TAG + ' get hotspot server WifiName = ' + WifiName);
-      this.deviceMiner = new ObjConnection();
-      console.log(TAG,'connectHotspot begin0000 wifiname  = ',WifiName);
-      if(_.isEmpty(WifiName)){
-        let suffix = _.split(this.deviceIdFromQrcode,'-')[1];
-        suffix = !_.isEmpty(suffix) && _.size(suffix) == 6 ?`-${suffix}`:'';
+      this.logOnView(`${TAG} Begin: connect HOTSPOT-----`);
+      // await APIService.trackLog({action:funcName, message:`call service qrCodeCheckGetWifi - qrcode = ${this.deviceIdFromQrcode}`});
+      // // call api to get wifi's name
+      // const response = await Util.excuteWithTimeout(APIService.qrCodeCheckGetWifi({QRCode:this.deviceIdFromQrcode}),3).catch(console.log);
+      // let {WifiName = '', Status= false} = response?.data ??{};
+      // this.logOnView(TAG + ' get hotspot server WifiName = ' + WifiName);
+      // this.deviceMiner = new ObjConnection();
+      // console.log(TAG,'connectHotspot begin0000 wifiname  = ',WifiName);
+      // if(_.isEmpty(WifiName)){
+      //   let suffix = _.split(this.deviceIdFromQrcode,'-')[1];
+      //   suffix = !_.isEmpty(suffix) && _.size(suffix) == 6 ?`-${suffix}`:'';
 
-        WifiName = `${HOTPOT}${suffix}`;
-        WifiName = `${HOTPOT}${suffix}`;
-      }else{
+      //   WifiName = `${HOTPOT}${suffix}`;
+      //   WifiName = `${HOTPOT}${suffix}`;
+      // }else{
 
-        let name = _.split(WifiName,'-')[0];
-        HOTPOT = name;
-      }
-      console.log(TAG,'connectHotspot begin end wifiname  = ',WifiName,'-HOTPOT = ',HOTPOT);
-      this.deviceMiner.name = WifiName;
-      this.deviceMiner.id = WifiName;
+      //   let name = _.split(WifiName,'-')[0];
+      //   HOTPOT = name;
+      // }
+      // console.log(TAG,'connectHotspot begin end wifiname  = ',WifiName,'-HOTPOT = ',HOTPOT);
+      // this.deviceMiner.name = WifiName;
+      // this.deviceMiner.id = WifiName;
       
+      // await APIService.trackLog({action:funcName, message:`Connect HOTSPOT = ${WifiName}`});
+      // this.logOnView(`${TAG} Begin: connect HOTSPOT WifiName=${WifiName}-------`);
+      let WifiName = this.getHotspotName();
+      WifiName = _.isEmpty(WifiName)?(await this.fetchHotspotInfo())?.name:WifiName;
       await APIService.trackLog({action:funcName, message:`Connect HOTSPOT = ${WifiName}`});
-      this.logOnView(`${TAG} Begin: connect HOTSPOT WifiName=${WifiName}-------`);
-
+      this.logOnView(`${TAG} Begin: connect HOTSPOT WifiName=${WifiName}`);
       const result = await this.deviceId?.current?.connectDevice(this.deviceMiner,true);
 
       this.logOnView(TAG+' END: connect HOTSPOT WifiName = '+WifiName + '-------result = '+result);
@@ -318,6 +322,7 @@ class SetupDevice extends BaseComponent {
         errorMessage:''
       });
       this.deviceIdFromQrcode = deviceIdFromQrcode;
+      const hotspotConnection = await this.fetchHotspotInfo();
       const resultStep1 = await this.checkConnectHotspot();
       if(!resultStep1){
         this.setState({
@@ -759,8 +764,45 @@ class SetupDevice extends BaseComponent {
     return device;
   };
 
+  fetchHotspotInfo = async ()=>{
+    const qrCode = this.deviceIdFromQrcode;
+    const funcName = `${qrCode}-getHotspotName`;
+    let hotspotName = this.deviceMiner?.name ||'';
+    try {
+      if(_.isEmpty(hotspotName)&& !_.isEmpty(qrCode)){
+        await APIService.trackLog({action:funcName, message:`call service qrCodeCheckGetWifi - qrcode = ${qrCode}`});
+        // call api to get wifi's name
+        const response = await Util.excuteWithTimeout(APIService.qrCodeCheckGetWifi({QRCode:qrCode}),3).catch(console.log);
+        let {WifiName = '', Status= false} = response?.data ??{};
+        this.logOnView(TAG + ' get hotspot server WifiName = ' + WifiName);
+        this.deviceMiner = new ObjConnection();
+        if(_.isEmpty(WifiName)){
+          let suffix = _.split(qrCode,'-')[1];
+          suffix = !_.isEmpty(suffix) && _.size(suffix) == 6 ?`-${suffix}`:'';
+  
+          WifiName = `${HOTPOT}${suffix}`;
+          WifiName = `${HOTPOT}${suffix}`;
+        }else{
+  
+          let name = _.split(WifiName,'-')[0];
+          HOTPOT = name;
+        }
+        hotspotName = WifiName;
+        this.deviceMiner.name = WifiName;
+        this.deviceMiner.id = WifiName;
+       
+      }
+    } catch (error) {
+      this.logOnView(`${TAG}-${funcName} : catch error =${error?.message}`);
+      await APIService.trackLog({action:funcName, message:`catch error qrcode = ${qrCode}`,rawData:`error message=${error?.message}`});
+    }
+    
+    return this.deviceMiner;
+  };
+
   getHotspotName = ()=>{
-    return this.deviceMiner?.name ||'';
+    let hotspotName = this.deviceMiner?.name ||'';
+    return hotspotName;
   };
 
   checkIsConnectedWithHotspot = async ()=>{
@@ -792,7 +834,9 @@ class SetupDevice extends BaseComponent {
     }
 
     if(!objConnection){
+      this.logOnView('connect HOTSPOT - objConnection is Null and init ');
       objConnection = await this.deviceId?.current?.getCurrentConnect();
+      objConnection = objConnection?objConnection:this.deviceMiner;
     }
     console.log(TAG,'checkConnectHotspot begin01 : ', objConnection,'-validSSID = ',validSSID,'validWPA = ',validWPA);
     await APIService.trackLog({action:funcName, message:`Connect HOTSPOT PASSED -> CurrentConnect=${objConnection?.name||''}`});
@@ -830,7 +874,7 @@ class SetupDevice extends BaseComponent {
     const funcName = `${this.deviceIdFromQrcode}-authFirebase`;
     try {
 
-      await APIService.trackLog({action:funcName, message:'Bat dau Auth Firebase'});
+      await APIService.trackLog({action:funcName, message:'Bat dau Auth Firebase',rawData:`productInfo = ${JSON.stringify(productInfo)}`});
       this.logOnView('Bat dau Auth Firebase');
       if(_.isEmpty(productInfo)){
         return {};
@@ -860,11 +904,13 @@ class SetupDevice extends BaseComponent {
    */
   tryVerifyCode = async()=> {
     const funcName = `${this.deviceIdFromQrcode}-tryVerifyCode`;
+    const { verifyCode } = this.state;
     try {
-      await APIService.trackLog({action:funcName, message:'Bat dat tryVerifyCode'});
+      
+      await APIService.trackLog({action:funcName, message:`Bat dat tryVerifyCode - ${verifyCode}`});
       this.logOnView('Bat dat tryVerifyCode');
 
-      const { verifyCode } = this.state;
+      
       console.log(TAG,' tryVerifyCode begin01 connected = ',this.isHaveNetwork);
 
       const promiseNetwork = async ()=>{

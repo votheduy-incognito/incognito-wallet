@@ -4,7 +4,7 @@
 import User from '@models/user';
 import NetInfo from '@react-native-community/netinfo';
 import { CONSTANT_CONFIGS, CONSTANT_MINER } from '@src/constants';
-import {CustomError, ErrorCode, ExHandler} from '@src/services/exception';
+import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import http from '@src/services/http';
 import Util from '@src/utils/Util';
 import LocalDatabase from '@utils/LocalDatabase';
@@ -50,6 +50,7 @@ export default class APIService {
     if (isLogin){
       const userObject:User = await LocalDatabase.getUserInfo();
       user = userObject?.data||{};
+      // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IjFENUVBQUMzLUQzMTUtNEIxQy1CNEI1LTZBQkFEMUM2MzBDREBtaW5lclguY29tIiwiZXhwIjoxNTc1MjA5ODI2LCJpZCI6MTU5MzI2fQ.GChhKLlRC9IVzr7HwwBbo41JllOBH8gX2PuyWO6UVpM';
       const token = user.token;
       console.log(TAG,'getURL token',token);
       header= {
@@ -81,7 +82,7 @@ export default class APIService {
           // console.log(TAG,'getURL Response data:', resJson);
           return resJson;
         }else if (res.status == 401){
-
+          console.log(TAG,'getURL 401 -----');
           let response = await APIService.handleRefreshToken(method, url, params, isLogin, user);
           return response;
         }else {
@@ -202,7 +203,7 @@ export default class APIService {
   }
   static async handleRefreshToken(method, url, params, isLogin, user){
     console.log('handleRefreshToken');
-    console.log('User:', user);
+    console.log('User---------:', user);
     const header= {
       'Authorization': `${AUTHORIZATION_FORMAT} ${user.refresh_token}`
     };
@@ -226,6 +227,11 @@ export default class APIService {
         if (status){
           const {token} = data;
           user.token = token;
+          if(!_.isEmpty(token)){
+            console.log(TAG,'handleRefreshToken save local');
+            await LocalDatabase.saveUserInfo(JSON.stringify(user));
+          }
+         
 
           let response =  await APIService.getURL(method, url, params, isLogin);
 
@@ -234,9 +240,10 @@ export default class APIService {
           return null;
         }
 
-      }else if (res.status == 401){
-        return APIService.handleRefreshToken(user);
       }
+      // else if (res.status == 401){
+      //   return APIService.handleRefreshToken(user);
+      // }
     }catch(error){
       console.log('Error:', error);
       return null;

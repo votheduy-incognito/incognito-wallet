@@ -16,9 +16,9 @@ class ConnectInstruction extends Component {
     const {hotspotName='Node'} = this.props;
     return (
       <>
-        <Text style={[styleSheet.text]}>1. Go to &quot;System Settings -&gt; Wifi&quot;</Text>
-        <Text style={[styleSheet.text]}>{`2. Connect HOTSPOT "${hotspotName}" with password "${PASS_HOSPOT}", wait 3-5s on System Wi-Fi page`}</Text>
-        <Text style={[styleSheet.text]}>3. Return to Incognito App and setup</Text>
+        <Text style={[styleSheet.text,styleSheet.row]}>1. Go to &quot;System Settings -&gt; Wifi&quot;</Text>
+        <Text style={[styleSheet.text,styleSheet.row]}>2. Connect hotspot &quot;<Text style={[styleSheet.bold]}>{hotspotName}</Text>&quot; with password &quot;<Text style={[styleSheet.bold]}>{PASS_HOSPOT}</Text>&quot;, wait 3-5s on System Wi-Fi page</Text>
+        <Text style={[styleSheet.text,styleSheet.row]}>3. Return to Incognito App and setup</Text>
       </>
     );
   }

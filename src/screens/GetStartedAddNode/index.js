@@ -223,15 +223,17 @@ class GetStartedAddNode extends BaseScreen {
     }catch(e){
       let currentPage = 0;
       const {code,message = '' } = e;
+      let isShowInstructor = false;
       switch(code){
       case(knownCode.node_verify_code_fail):
         currentPage = 2;
         break;
-      case (knownCode.node_can_not_connect_hotspot):
+      case (knownCode.node_can_not_connect_hotspot):{
         currentPage = 2;
         // need show instruction
-
+        isShowInstructor = true;
         break;
+      }
       case (knownCode.node_auth_firebase_fail):{
         currentPage=2;
         break;
@@ -239,17 +241,14 @@ class GetStartedAddNode extends BaseScreen {
       }
       this.setState({
         loading:false,
-        isShowInstructor:currentPage == 2,
+        isShowInstructor:isShowInstructor,
         errorInSetUp:e,
         currentPage:currentPage
       });
     }
 
   }
-  // componentWillMount(){
-  //   console.log(TAG,'componentWillMount ---- ');
-  // }
-
+  
   handleStepConnect = async ()=>{
     try{
       this.setState({
