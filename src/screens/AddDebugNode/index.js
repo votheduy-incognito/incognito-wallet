@@ -34,8 +34,8 @@ class AddDebugNode extends BaseScreen {
         product_type: DEVICES.MINER_TYPE
       });
       const listDevice = await LocalDatabase.getListDevices();
-      listDevice.push(node);
-      await LocalDatabase.saveListDevices(listDevice);
+      const newListDevice = [node, ...listDevice];
+      await LocalDatabase.saveListDevices(newListDevice);
       this.goToScreen(routeNames.Node);
     } finally {
       this.setState({ loading: false });

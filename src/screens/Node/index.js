@@ -30,6 +30,7 @@ import WelcomeNodes from '@screens/Node/components/Welcome';
 import linkingService from '@services/linking';
 import {CONSTANT_CONFIGS} from '@src/constants';
 import COLORS from '@src/styles/colors';
+import convert from '@utils/convert';
 import style from './style';
 import Header from './Header';
 import VNode from './components/VNode';
@@ -37,7 +38,7 @@ import PNode from './components/PNode';
 
 export const TAG = 'Node';
 const MAX_RETRY = 5;
-const BLOCK_TIME = 40 * 1000;
+const BLOCK_TIME = 60 * 1000;
 
 let allTokens = [PRV];
 let beaconHeight;
@@ -96,9 +97,7 @@ class Node extends BaseScreen {
       timeToUpdate: Date.now(),
       isFetching: false,
       loading: false,
-      withdrawing: false,
-      withdrawRequests: [],
-      lastWithdrawTxs: {},
+      withdrawRequests: {},
     };
 
     this.renderNode = this.renderNode.bind(this);
@@ -107,6 +106,10 @@ class Node extends BaseScreen {
   async componentDidMount() {
     const { navigation } = this.props;
     this.listener = navigation.addListener('didFocus', this.handleRefresh);
+
+    const withdrawRequests = await LocalDatabase.getWithdrawRequests();
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({ withdrawRequests }, this.startWithdraw);
 
     if (allTokens.length === 0) {
       allTokens.push(PRV);
@@ -127,59 +130,76 @@ class Node extends BaseScreen {
     await this.createSignIn();
   }
 
-  startWithdraw() {
+  async startWithdraw() {
     const { withdrawRequests } = this.state;
 
-    if (!withdrawRequests || !Object.keys(withdrawRequests).length) {
+    console.debug('START WITHDRAW', withdrawRequests);
+    await LocalDatabase.saveWithdrawRequests(withdrawRequests);
+
+    if (!withdrawRequests || !Object.keys(withdrawRequests).length || this.timeout) {
       return;
     }
 
-    this.setState({ withdrawing: true }, this.sendWithdrawTx);
+    this.timeout = setTimeout(this.sendWithdrawTx, BLOCK_TIME);
   }
 
   sendWithdrawTx = async () => {
     const { wallet } = this.props;
-    const { withdrawRequests, lastWithdrawTxs } = this.state;
+    const { withdrawRequests, listDevice } = this.state;
     const addresses = Object.keys(withdrawRequests);
     const listAccount = await wallet.listAccount();
-    for (const paymentAddress of addresses) {
-      const tokenIds = withdrawRequests[paymentAddress];
+    const requests = addresses
+      .filter(address => withdrawRequests[address].tokenIds)
+      .map(address => ({
+        paymentAddress: address,
+        tokenIds: withdrawRequests[address].tokenIds,
+        lastTokenId: withdrawRequests[address].lastTokenId,
+      }));
+    while (requests.length > 0) {
+      const request = requests.pop();
+      const { tokenIds, paymentAddress, lastTokenId } = request;
 
-      if (!tokenIds || !tokenIds.length) {
-        delete withdrawRequests[paymentAddress];
-        continue;
+      if (lastTokenId) {
+        const device = listDevice.find(item => item.PaymentAddress === paymentAddress);
+        delete device.Rewards[lastTokenId];
+        this.setState({ listDevice });
       }
 
       const tokenId = tokenIds.pop();
       const account = listAccount.find(item => item.PaymentAddress === paymentAddress);
       await accountService.createAndSendWithdrawRewardTx(tokenId, account, wallet)
-        .then(res => lastWithdrawTxs[paymentAddress] = res.txId)
+        .then(res => {
+          withdrawRequests[paymentAddress].lastTx = res.txId;
+          withdrawRequests[paymentAddress].lastTokenId = tokenId;
+        })
         .catch(() => null);
 
-      if (!tokenIds || !tokenIds.length) {
-        delete withdrawRequests[paymentAddress];
+      if (tokenIds.length === 0) {
         this.waitTxComplete(paymentAddress);
       }
+      await LocalDatabase.saveWithdrawRequests(withdrawRequests);
     }
 
-    if (withdrawRequests && Object.keys(withdrawRequests).length > 0) {
-      setTimeout(this.sendWithdrawTx, BLOCK_TIME);
+    if (_.some(withdrawRequests, request => request.tokenIds.length > 0)) {
+      this.timeout = setTimeout(this.sendWithdrawTx, BLOCK_TIME);
     }
   };
 
   async updateNodeRewards(paymentAddress) {
-    const { listDevice, lastWithdrawTxs } = this.state;
+    const { listDevice, withdrawRequests } = this.state;
     const device = listDevice.find(item => item.PaymentAddress === paymentAddress);
     device.Rewards = {};
 
     await LocalDatabase.saveListDevices(listDevice);
-    delete lastWithdrawTxs[paymentAddress];
+    delete withdrawRequests[paymentAddress];
+    await LocalDatabase.saveWithdrawRequests(withdrawRequests);
+    this.setState({ withdrawRequests });
   }
 
   waitTxComplete = async (paymentAddress) => {
-    const { lastWithdrawTxs } = this.state;
-    if (lastWithdrawTxs[paymentAddress]) {
-      const tx = lastWithdrawTxs[paymentAddress];
+    const { withdrawRequests } = this.state;
+    const tx = withdrawRequests[paymentAddress].lastTx;
+    if (tx) {
       try {
         const res = await getTransactionByHash(tx);
         if (!res.isInMempool) {
@@ -190,10 +210,12 @@ class Node extends BaseScreen {
       }
     }
 
-    if (lastWithdrawTxs && Object.keys(lastWithdrawTxs).length > 0) {
-      setTimeout(() => this.waitTxComplete(paymentAddress), BLOCK_TIME);
-    } else {
-      this.setState({ withdrawing: false });
+    if (withdrawRequests[paymentAddress]) {
+      this.timeout = setTimeout(() => this.waitTxComplete(paymentAddress), BLOCK_TIME);
+    }
+
+    if (Object.keys(withdrawRequests).length === 0) {
+      this.timeout = null;
     }
   };
 
@@ -323,8 +345,6 @@ class Node extends BaseScreen {
       device.setIsOnline(Math.max(device.IsOnline - 1, 0));
     }
 
-    console.debug('IS ONLINE', device.IsOnline);
-
     if (blsKey) {
       const nodeInfo = (committees.AutoStaking.find(node => node.MiningPubKey.bls === blsKey) || {});
       const isAutoStake = nodeInfo.IsAutoStake;
@@ -332,7 +352,10 @@ class Node extends BaseScreen {
 
       if (JSON.stringify(committees.ShardPendingValidator).includes(blsKey)) {
         device.Status = 'waiting';
-      } else if (JSON.stringify(committees.CandidateShardWaitingForNextRandom).includes(blsKey)) {
+      } else if (
+        JSON.stringify(committees.CandidateShardWaitingForNextRandom).includes(blsKey) ||
+        JSON.stringify(committees.CandidateShardWaitingForCurrentRandom).includes(blsKey)
+      ) {
         device.Status = 'random';
       } else if (JSON.stringify(committees.ShardCommittee).includes(blsKey)) {
         device.Status = 'committee';
@@ -371,6 +394,14 @@ class Node extends BaseScreen {
       device = await this.getPNodeInfo(device);
     }
 
+    if (device.Rewards && Object.keys(device.Rewards).length > 0) {
+      Object.keys(device.Rewards).forEach(id => {
+        if (device.Rewards[id] === 0) {
+          delete device.Rewards[id];
+        }
+      });
+    }
+
     return device;
   };
 
@@ -386,8 +417,7 @@ class Node extends BaseScreen {
         const { listDevice } = this.state;
         const newListDevice = await Promise.all(listDevice.map(this.getNodeInfo));
         await LocalDatabase.saveListDevices(newListDevice);
-        // await LocalDatabase.saveListToken(allTokens);
-        this.setState({ listDevice: newListDevice, isFetching: false });
+        this.setState({ listDevice: newListDevice, isFetching: false }, this.startWithdraw);
       })
       .catch(error => {
         this.setState({ isFetching: false });
@@ -433,15 +463,21 @@ class Node extends BaseScreen {
 
   handlePressWithdraw = onClickView(async (device) => {
     try {
-      const { withdrawRequests = [] } = this.state;
+      const { withdrawRequests = {} } = this.state;
       const account = device.Account;
       const rewards = device.Rewards;
       this.setState({ loading: true });
       if (device.IsVNode) {
         const { PaymentAddress } = (account || {});
-        const tokenIds = withdrawRequests[PaymentAddress] || [];
-        Object.keys(rewards).forEach(id => !tokenIds.includes(id) && tokenIds.push(id));
-        withdrawRequests[PaymentAddress] = tokenIds;
+        const tokenIds = _(Object.keys(rewards))
+          .filter(id => rewards[id] > 0)
+          .orderBy(id => {
+            const value = rewards[id];
+            const token = allTokens.find(token => token.id === id);
+            return convert.toHumanAmount(value, token.pDecimals);
+          })
+          .value();
+        withdrawRequests[PaymentAddress] = { tokenIds };
         this.setState({ withdrawRequests }, this.startWithdraw);
       } else {
         await APIService.requestWithdraw({
@@ -452,7 +488,7 @@ class Node extends BaseScreen {
         });
         device.IsWithdrawable = await NodeService.isWithdrawable(device);
       }
-      const message = 'Withdrawing earnings to your Incognito Wallet. Balances will update in a few minutes.';
+      const message = 'Withdrawal initiated! This process may take up to 2 hours. Please do not close the app until withdrawal is complete and your balance is updated.';
       this.showToastMessage(message);
     } catch(error) {
       new ExHandler(error).showErrorToast(true);
@@ -476,9 +512,7 @@ class Node extends BaseScreen {
   renderNode({ item }) {
     const {
       isFetching,
-      withdrawing,
       withdrawRequests,
-      lastWithdrawTxs,
     } = this.state;
 
     if (item.Type === DEVICES.MINER_TYPE) {
@@ -505,8 +539,7 @@ class Node extends BaseScreen {
         onWithdraw={this.handlePressWithdraw}
         onUnstake={this.handlePressUnstake}
         isFetching={!!isFetching}
-        withdrawing={withdrawing}
-        withdrawTxs={withdrawRequests[account?.PaymentAddress] || lastWithdrawTxs[account?.PaymentAddress]}
+        withdrawTxs={withdrawRequests[account?.PaymentAddress]}
       />
     );
   }

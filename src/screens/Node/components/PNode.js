@@ -12,11 +12,16 @@ import OptionMenu from '@components/OptionMenu/OptionMenu';
 import Toast from '@components/core/Toast/Toast';
 import { DialogUpdateFirmware } from '@components/DialogNotify';
 import {COLORS} from '@src/styles';
-import styles from './style';
+import withdrawBlack from '@assets/images/icons/withdraw_black.png';
+import FixModal from '@screens/Node/components/FixModal';
+import wifiOnline from '@assets/images/icons/online_wifi_icon.png';
+import wifiOffline from '@assets/images/icons/offline_wifi_icon.png';
+import accountKey from '@assets/images/icons/account_key.png';
 import Rewards from './Rewards';
+import styles from './style';
 
 const MESSAGES = {
-  UNSTAKING: 'Unstaking in process',
+  UNSTAKING: 'unstaking in process',
 };
 
 class PNode extends React.Component {
@@ -32,24 +37,28 @@ class PNode extends React.Component {
     }
 
     const account = item.AccountName;
-    let style = styles.greyText;
-    let text = `Acc: ${account}`;
+    let text = `Account: ${account}`;
 
     if (!account) {
-      text = `Acc: ${item.Name}`;
+      text = `Account: ${item.Name}`;
     }
 
     const isUnstaking = item.Unstaking;
     if (isUnstaking) {
       return (
         <View style={styles.row}>
-          <Text style={[styles.desc, style]}>{MESSAGES.UNSTAKING}</Text>
+          <Text style={[styles.desc]}>{text} ({MESSAGES.UNSTAKING})</Text>
           <ActivityIndicator style={styles.loading} size="small" color={COLORS.lightGrey1} />
         </View>
       );
     }
 
-    return <Text style={[styles.desc, style]}>{text}</Text>;
+    return (
+      <View style={[styles.row, styles.centerAlign, styles.desc]}>
+        <Image source={accountKey} style={[styles.icon]} />
+        <Text>{text}</Text>
+      </View>
+    );
   };
 
   showIp = () => {
@@ -62,7 +71,7 @@ class PNode extends React.Component {
   };
 
   renderMenu() {
-    const { isFetching } = this.props;
+    const { isFetching, item, onWithdraw } = this.props;
     const menu = [];
 
     if (isFetching) {
@@ -77,20 +86,44 @@ class PNode extends React.Component {
       handlePress: this.updateFirmware,
     });
 
+    if (!isFetching) {
+      const rewards = item.Rewards;
+      const pendingWithdraw = !item.IsWithdrawable;
+      const isEmptyRewards = _.isEmpty(rewards) || !_.some(rewards, value => value > 0);
+      let onClick = () => onWithdraw(item);
+      let label = 'Withdraw';
+
+      if (pendingWithdraw || isEmptyRewards) {
+        onClick = null;
+        label = (
+          <View style={styles.withdrawMenuItem}>
+            <Text style={styles.withdrawText}>Withdraw</Text>
+            { !!pendingWithdraw && <ActivityIndicator size="small" /> }
+          </View>
+        );
+      }
+
+      menu.push({
+        id: 'withdraw',
+        icon: <Image source={withdrawBlack} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
+        label: label,
+        desc: 'Withdraw your rewards.',
+        handlePress: onClick,
+      });
+    }
+
     return <OptionMenu data={menu} icon={<Image source={moreIcon} />} />;
   }
 
   render() {
-    const {item, isFetching, onWithdraw, allTokens} = this.props;
+    const {item, isFetching, allTokens} = this.props;
     const { showUpdateFirmware } = this.state;
     const labelName = item.Name;
-    const rewards = item.Rewards;
-    const isEmptyRewards = _.isEmpty(rewards) || _.some(rewards, value => !(value > 0));
 
     return (
       <View style={styles.container}>
         <View style={styles.row}>
-          <TouchableOpacity onPress={this.showIp} style={[styles.itemLeft, styles.imageWrapper]}>
+          <TouchableOpacity onPress={this.showIp} style={[styles.itemLeft, styles.imageWrapper, styles.hidden]}>
             <Image source={item.IsOnline ? onlineIcon : offlineIcon} />
           </TouchableOpacity>
           <View style={styles.itemCenter}>
@@ -100,24 +133,19 @@ class PNode extends React.Component {
             {this.renderMenu()}
           </View>
         </View>
-        <View style={styles.row}>
-          <View style={styles.itemLeft}>
-            <View style={styles.row}>
-              <Text>Node {labelName}</Text>
+        <View>
+          <View style={[styles.row, styles.centerAlign]}>
+            <View style={[styles.row, styles.centerAlign]}>
+              <Image source={item.IsOnline ? wifiOnline : wifiOffline} style={[styles.icon]} />
+              <Text style={[styles.itemLeft, !item.isOnline && styles.greyText]}>Device {labelName}</Text>
             </View>
-            {this.getDescriptionStatus()}
+            {!isFetching && !item.IsOnline && (
+              <View style={styles.itemRight}>
+                <FixModal item={item} />
+              </View>
+            )}
           </View>
-          { !isFetching && (
-            <View style={styles.itemRight}>
-              <Button
-                title="Withdraw"
-                buttonStyle={styles.withdrawButton}
-                disabledStyle={styles.withdrawButtonDisabled}
-                disabled={isEmptyRewards || !item.IsWithdrawable}
-                onPress={() => onWithdraw(item)}
-              />
-            </View>
-          )}
+          {this.getDescriptionStatus()}
         </View>
         <DialogUpdateFirmware
           visible={showUpdateFirmware}

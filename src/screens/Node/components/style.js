@@ -36,7 +36,7 @@ const style = StyleSheet.create({
     marginBottom: 20,
   },
   desc: {
-    marginTop: 2,
+    marginTop: 15,
   },
   greyText: {
     color: COLORS.lightGrey1,
@@ -44,19 +44,38 @@ const style = StyleSheet.create({
   greenText: {
     color: COLORS.green,
   },
-  withdrawButton: {
-    backgroundColor: COLORS.green,
-  },
-  withdrawButtonDisabled: {
+  withdrawMenuItem: {
+    flexDirection: 'row',
     opacity: 0.4,
   },
+  withdrawText: {
+    marginRight: 15,
+  },
   stakeButton: {
-    marginTop: 20,
-    backgroundColor: COLORS.black,
+    height: 30,
+    minWidth: 80,
   },
   loading: {
     marginLeft: 10,
-  }
+  },
+  hidden: {
+    opacity: 0,
+  },
+  fixButton: {
+    backgroundColor: COLORS.dark3,
+  },
+  centerAlign: {
+    alignItems: 'center',
+  },
+  icon: {
+    marginRight: 10,
+    width: 20,
+    height: 16,
+    resizeMode: 'contain',
+  },
+  disabled: {
+    opacity: 0.6,
+  },
 });
 
 export const rewardStyle = StyleSheet.create({
