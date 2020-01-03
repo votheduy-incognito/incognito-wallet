@@ -130,10 +130,11 @@ class Withdraw extends React.Component {
       const { estimateFeeData: { fee }, isUsedPRVFee, feeForBurn } = this.state;
       const {  handleCentralizedWithdraw, handleDecentralizedWithdraw, navigation, selectedPrivacy } = this.props;
       const { amount, toAddress, memo } = values;
+      const convertedAmount = convertUtil.toNumber(amount);
 
       if (selectedPrivacy?.isDecentralized) {
         res = await handleDecentralizedWithdraw({
-          amount,
+          amount: convertedAmount,
           remoteAddress: toAddress,
           fee,
           isUsedPRVFee,
@@ -141,7 +142,7 @@ class Withdraw extends React.Component {
         });
       } else {
         res = await handleCentralizedWithdraw({
-          amount,
+          amount: convertedAmount,
           remoteAddress: toAddress,
           fee,
           isUsedPRVFee,
@@ -264,7 +265,7 @@ class Withdraw extends React.Component {
                         validate={memoMaxLength}
                       />
                       <Text style={style.memoText}>* For withdrawals to wallets on exchanges (e.g. Binance, etc.), enter your memo to avoid loss of funds.</Text>
-                    </View> 
+                    </View>
                   )
                 }
                 <EstimateFee
