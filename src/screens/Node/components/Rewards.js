@@ -1,14 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Swiper from 'react-native-swiper';
-import {View} from '@components/core';
+import {ActivityIndicator, View} from '@components/core';
 import _ from 'lodash';
 import convert from '@utils/convert';
 import {PRV_ID} from '@screens/Dex/constants';
 import { rewardStyle } from './style';
 import Reward from './Reward';
 
-const Rewards = ({ rewards: propRewards, allTokens }) => {
+const Rewards = ({ rewards: propRewards, allTokens, item }) => {
+  if (!allTokens || allTokens.length === 0) {
+    return <ActivityIndicator />;
+  }
+
   const rewards = !_.isEmpty(propRewards) ? propRewards : { [PRV_ID] : 0};
   const data = _(Object.keys(rewards))
     .map(id => {
@@ -26,7 +30,7 @@ const Rewards = ({ rewards: propRewards, allTokens }) => {
         activeDotStyle={rewardStyle.activeDot}
         showsPagination
         loop
-        key={data.length}
+        key={`${item.ProductId}-${data.length}`}
       >
         {
           data.map(({ id, pDecimals, balance, symbol, isVerified }) => (
@@ -48,6 +52,7 @@ const Rewards = ({ rewards: propRewards, allTokens }) => {
 Rewards.propTypes = {
   allTokens: PropTypes.array.isRequired,
   rewards: PropTypes.object.isRequired,
+  item: PropTypes.object.isRequired,
 };
 
 export default Rewards;

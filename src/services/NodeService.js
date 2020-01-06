@@ -304,7 +304,6 @@ export default class NodeService {
    * return : {"PaymentAddress","Commission","StakerAddress"}
    */
   static fetchAndSavingInfoNodeStake = async(device:Device,isNeedSaving=false)=>{
-
     try {
       let fetchProductInfo = device.toJSON()??{};
       const paymentAddress =  device.PaymentAddressFromServer;

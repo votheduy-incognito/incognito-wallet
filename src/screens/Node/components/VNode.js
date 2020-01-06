@@ -153,7 +153,7 @@ class VNode extends React.Component {
             <Image source={item.IsOnline ? onlineIcon : offlineIcon} />
           </View>
           <View style={styles.itemCenter}>
-            { isFetching ? <ActivityIndicator size="large" /> : <Rewards rewards={item.Rewards} allTokens={allTokens} /> }
+            { isFetching ? <ActivityIndicator /> : <Rewards item={item} rewards={item.Rewards} allTokens={allTokens} /> }
           </View>
           <View style={[styles.itemRight, styles.imageWrapper]}>
             {this.renderMenu()}

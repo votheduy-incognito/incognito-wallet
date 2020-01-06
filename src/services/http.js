@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { CONSTANT_CONFIGS } from '@src/constants';
+import {CONSTANT_CONFIGS, CONSTANT_KEYS} from '@src/constants';
 import Log from '@src/services/log';
+import storageService from '@services/storage';
 import { CustomError, ErrorCode, ExHandler } from './exception';
 
 const HEADERS = {'Content-Type': 'application/json'};
@@ -78,6 +79,8 @@ instance.interceptors.response.use(res => {
     const retryOriginalRequest = new Promise((resolve) => {
       addSubscriber(accessToken => {
         originalRequest.headers.Authorization = 'Bearer ' + accessToken;
+        setTokenHeader(accessToken);
+        storageService.setItem(CONSTANT_KEYS.DEVICE_TOKEN, accessToken);
         resolve(instance(originalRequest));
       });
     });

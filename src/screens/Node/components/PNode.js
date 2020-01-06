@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 
-import {Text, Button, Image, View, ActivityIndicator, TouchableOpacity} from '@components/core';
+import {Text, Image, View, ActivityIndicator, TouchableOpacity} from '@components/core';
 import offlineIcon from '@src/assets/images/icons/offline_icon.png';
 import onlineIcon from '@src/assets/images/icons/online_icon.png';
 import moreIcon from '@src/assets/images/icons/more_icon.png';
@@ -127,7 +127,7 @@ class PNode extends React.Component {
             <Image source={item.IsOnline ? onlineIcon : offlineIcon} />
           </TouchableOpacity>
           <View style={styles.itemCenter}>
-            { isFetching ? <ActivityIndicator size="large" /> : <Rewards rewards={item.Rewards} allTokens={allTokens} /> }
+            { isFetching ? <ActivityIndicator size="large" /> : <Rewards item={item} rewards={item.Rewards} allTokens={allTokens} /> }
           </View>
           <View style={[styles.itemRight, styles.imageWrapper]}>
             {this.renderMenu()}
