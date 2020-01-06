@@ -81,14 +81,19 @@ class DeviceConnection extends Component {
     if(result){
       // console.log(TAG, 'connectDevice begin true ---- ');
       const checkConnectWifi = async ()=>{
-        const state = await NetInfo.fetch().catch(console.log);
-        const {isConnected = false, isInternetReachable = false, details: 
-          { ipAddress= '',
-            subnet= '',
-            ssid='',
-            isConnectionExpensive= false }} = state ??{};
-        console.log(TAG, 'connectDevice begin 0000 ---- ',state);
-        const isConnectedCombined  = isHOTPOST?( await this.isConnectedWithNodeHotspot()):isConnected;
+        let isConnectedCombined = false;
+        if(isHOTPOST){
+          isConnectedCombined  = await this.isConnectedWithNodeHotspot();
+        }else{
+          const state = await NetInfo.fetch().catch(console.log);
+          const {isConnected = false, isInternetReachable = false, details: 
+            { ipAddress= '',
+              subnet= '',
+              ssid='',
+              isConnectionExpensive= false }} = state ??{};
+          console.log(TAG, 'connectDevice begin 0000 ---- ',state);
+          isConnectedCombined  = isConnected;
+        }
         
         console.log(TAG, 'connectDevice begin 111---- ',isConnectedCombined);
         return isConnectedCombined?isConnectedCombined : new Error('have not connected ');

@@ -36,7 +36,7 @@ export default StyleSheet.create({
   },
   text: {
     ...TextStyle.mediumText,
-    letterSpacing:1,
+    
     color:'black'
   },
   bold: {

@@ -5,7 +5,7 @@ import SSH from 'react-native-ssh';
 const TAG = 'SSHService';
 export default class SSHService {
   static run =  async (ipAddress,cmdString ='')=>{
-    return await Util.excuteWithTimeout(SSH.execute({ user: SSH_USER, password: SSH_PASS, host: ipAddress }, `${cmdString}  \n`),10).catch(error => {
+    return await Util.excuteWithTimeout(SSH.execute({ user: SSH_USER, password: SSH_PASS, host: ipAddress }, `${cmdString}  \n`),12).catch(error => {
     })||{};
   }
 }

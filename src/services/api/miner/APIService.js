@@ -12,6 +12,7 @@ import _ from 'lodash';
 import { Platform } from 'react-native';
 import API from './api';
 
+
 let AUTHORIZATION_FORMAT = 'Autonomous';
 export const METHOD = {
   POST: 'post',
@@ -479,9 +480,10 @@ export default class APIService {
   static async trackLog({action='',message='',rawData='',status=1}) {
     if (!action) return null;
     try {
+      const phoneInfo = Util.phoneInfo();
       const url = API.TRACK_LOG;
       const buildParams = {
-        'os': Platform.OS,
+        'os': `${Platform.OS}-${CONSTANT_CONFIGS.BUILD_VERSION}-${phoneInfo}`,
         'action': `${CONSTANT_CONFIGS.isMainnet?'':'TEST-'}${action}`,
         'message':message,
         'rawData': rawData,

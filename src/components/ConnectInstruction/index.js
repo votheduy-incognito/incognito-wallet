@@ -16,9 +16,12 @@ class ConnectInstruction extends Component {
     const {hotspotName='Node'} = this.props;
     return (
       <>
-        <Text style={[styleSheet.text,styleSheet.row]}>1. Go to &quot;System Settings -&gt; Wifi&quot;</Text>
-        <Text style={[styleSheet.text,styleSheet.row]}>2. Connect hotspot &quot;<Text style={[styleSheet.bold]}>{hotspotName}</Text>&quot; with password &quot;<Text style={[styleSheet.bold]}>{PASS_HOSPOT}</Text>&quot;, wait 3-5s on System Wi-Fi page</Text>
-        <Text style={[styleSheet.text,styleSheet.row]}>3. Return to Incognito App and setup</Text>
+        <Text style={[styleSheet.text,styleSheet.row]}>1. Go to &quot;System Settings&quot; on your device</Text>
+        <Text style={[styleSheet.text,styleSheet.row]}>2. Tap &quot;Wifi&quot;</Text>
+        <Text style={[styleSheet.text,styleSheet.row]}>3. Select your Node Wi-Fi name: <Text style={styleSheet.bold}>{hotspotName}</Text></Text>
+        <Text style={[styleSheet.text,styleSheet.row]}>4. Enter password:<Text style={[styleSheet.bold]}>{PASS_HOSPOT}</Text></Text>
+        <Text style={[styleSheet.text,styleSheet.row]}>5. Wait a few seconds to connect</Text>
+        <Text style={[styleSheet.text,styleSheet.row]}>6. Return to the Incognito app and continue Node setup</Text>
       </>
     );
   }

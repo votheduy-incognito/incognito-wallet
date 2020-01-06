@@ -32,11 +32,13 @@ class WifiConnection extends BaseConnection {
     console.log(TAG, 'fetchCurrentConnect begin ------');
     let pro = async()=>{
       try {
-        const state = await NetInfo.fetch().catch(console.log);
-        const {isConnected = false, isInternetReachable = false,details =null} = state ??{};
-        const { ipAddress = '',isConnectionExpensive = false,ssid='' } = details ??{};
-        SSID =  await WifiManager.getCurrentWifiSSID();
-        let SSID = _.isEmpty(SSID) ? ssid:SSID;
+        let SSID =  await WifiManager.getCurrentWifiSSID();
+        if(_.isEmpty(SSID)){
+          const state = await NetInfo.fetch().catch(console.log);
+          const {isConnected = false, isInternetReachable = false,details =null} = state ??{};
+          const { ipAddress = '',isConnectionExpensive = false,ssid='' } = details ??{};
+          SSID =  ssid;
+        }
         
         SSID = _.isEqual('Cannot detect SSID',SSID) || _.isEqual('<unknown ssid>',SSID) ?'':SSID;
         console.log(TAG, 'fetchCurrentConnect getSSID=', SSID);
@@ -49,6 +51,48 @@ class WifiConnection extends BaseConnection {
         }
       } catch (error) {
         console.log('Cannot get current SSID!', error);
+      }
+      return null;
+    };
+    return Util.excuteWithTimeout(pro(),4);
+  };
+
+  fetchCurrentConnectWithError =  ():Promise<ObjConnection> => {
+    console.log(TAG, 'fetchCurrentConnectWithError begin ------');
+    
+    let pro = async()=>{
+      const funcName = 'fetchCurrentConnectWithError';
+      let errorSSID = null;
+      try {
+        let SSID =  await WifiManager.getCurrentWifiSSID().catch(error=>{
+          DeviceLog.logInfo(`${TAG} WifiManager.getCurrentWifiSSID() error =${error?.message}`);
+          errorSSID = error;
+        });
+
+        if(_.isEmpty(SSID)){
+          const state = await NetInfo.fetch().catch(console.log);
+          const {isConnected = false, isInternetReachable = false,details =null} = state ??{};
+          const { ipAddress = '',isConnectionExpensive = false,ssid='' } = details ??{};
+          SSID =  ssid;
+          
+        }
+      
+        DeviceLog.logInfo(`${TAG} fetchCurrentConnectWithError ssid=${SSID}-${errorSSID?.message}`);
+        _.isEmpty(SSID) && !errorSSID && throw errorSSID;
+        
+        SSID = _.isEqual('Cannot detect SSID',SSID) || _.isEqual('<unknown ssid>',SSID) ?'':SSID;
+        console.log(TAG, 'fetchCurrentConnectWithError getSSID=', SSID);
+        if(!_.isEmpty(SSID)){
+          this.currentConnect = new ObjConnection();
+          this.currentConnect.id = SSID;
+          this.currentConnect.name = SSID;        
+          console.log(TAG,'Your current connected wifi SSID is ' + SSID);
+          return this.currentConnect;
+        }
+      } catch (error) {
+        console.log(TAG,'Cannot get current SSID!', error);
+        APIService.trackLog({action:funcName, message:`error catch ${error?.message}`,rawData:`errorMessage=${error.message??''}`});
+        new ExHandler(new CustomError(knownCode.node_can_not_get_wifi_name),error?.message).throw();
       }
       return null;
     };
@@ -95,6 +139,7 @@ class WifiConnection extends BaseConnection {
         DeviceLog.logInfo(`${TAG} connectDevice ssid=${SSID}-pass=${password}`);
         let data = await WifiManager.connectToProtectedSSID(SSID,password,false).catch(e=>{
           console.log(TAG, 'connectToProtectedSSID begin --- error ,',e);
+          DeviceLog.logInfo(`${TAG} connectDevice connectToProtectedSSID error ${e?.message}`);
           APIService.trackLog({action:funcName, message:`connectToProtectedSSID error catch ${SSID} -pass=${password}`,rawData:`errorMessage=${e.message??''}`});
           logHandler.throw();
         });
@@ -102,18 +147,20 @@ class WifiConnection extends BaseConnection {
         await Util.delay(3);
         if(_.isEmpty(data)){
           await Util.delay(3);
-          // data = await this.fetchCurrentConnect();
-          // console.log(TAG, 'connectDevice begin222--- data = ',data);
-          // DeviceLog.logInfo(`${TAG} connectDevice data.name=${data?.name||''}`);
-          // if(_.isEmpty(data)){
-          //   // IOS 13.2
-          //   // await Util.delay(3);
-          //   // data = await this.isConnectedWithNodeHotspot();
-          //   // data ? null:logHandler.throw();
-          // }else{
+          data = await this.fetchCurrentConnectWithError().catch(e=>{
+            e instanceof CustomError ? new ExHandler(e).throw():null;
+          });
+          console.log(TAG, 'connectDevice begin222--- data = ',data);
+          DeviceLog.logInfo(`${TAG} connectDevice data.name=${data?.name||''}`);
+          if(_.isEmpty(data)){
+            // IOS 13.2
+            // await Util.delay(3);
+            // data = await this.isConnectedWithNodeHotspot();
+            // logHandler.throw();
+          }else{
             
-          //   !_.isEqual(data.name,SSID) ? logHandler.throw():null;
-          // }
+            !_.isEqual(data.name,SSID) ? logHandler.throw():null;
+          }
         }
         
         this.currentConnect = new ObjConnection();

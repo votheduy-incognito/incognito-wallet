@@ -191,6 +191,7 @@ class GetStartedAddNode extends BaseScreen {
     try{
       this.setState({
         loading:true,
+        errorInSetUp:null,
         currentPage:2,
       });
       // setup complete
@@ -222,7 +223,8 @@ class GetStartedAddNode extends BaseScreen {
       }
     }catch(e){
       let currentPage = 0;
-      const {code,message = '' } = e;
+      const code = e?.code;
+      // const {code,message = '' } = e;
       let isShowInstructor = false;
       switch(code){
       case(knownCode.node_verify_code_fail):
@@ -412,9 +414,17 @@ class GetStartedAddNode extends BaseScreen {
 
   }
 
+  getErrorMessage = ()=>{
+    const { errorInSetUp } = this.state;
+    const message  = errorInSetUp?.message||'';
+    const code  = errorInSetUp?.code??0;
+    return !_.isEmpty(errorInSetUp)?`[${code}]${message}`:'';
+  }
+
   render() {
     const { loading,currentPage,currentConnect,errorMessage,errorInSetUp,isShowInstructor } = this.state;
-    const rootCauseMessage = errorInSetUp?.message??'';
+    
+    const rootCauseMessage = this.getErrorMessage();
     const {isRenderUI,navigation} = this.props;
     const hotspotName = this.viewSetupDevice?.current?.getHotspotName()??'';
     return (

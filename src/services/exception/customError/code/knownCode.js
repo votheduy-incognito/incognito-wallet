@@ -63,6 +63,7 @@ const node = {
   node_create_account_fail: knownError(-34),
   node_can_not_connect_hotspot: knownError(-35),
   node_pending_withdrawal: knownError(-36),
+  node_can_not_get_wifi_name: knownError(-37),
 };
 
 const validator = {
