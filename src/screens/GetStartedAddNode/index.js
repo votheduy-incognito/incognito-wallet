@@ -4,7 +4,7 @@ import BaseScreen from '@screens/BaseScreen';
 import CreateAccount from '@screens/CreateAccount';
 import images from '@src/assets';
 import ConnectInstruction from '@src/components/ConnectInstruction';
-import { ButtonExtension, InputExtension as Input, Text } from '@src/components/core';
+import {ButtonExtension, InputExtension as Input, Text, TouchableOpacity} from '@src/components/core';
 import SetupDevice from '@src/components/SetupDevice';
 import { getAccountByName } from '@src/redux/selectors/account';
 import routeNames from '@src/router/routeNames';
@@ -14,7 +14,7 @@ import NodeService from '@src/services/NodeService';
 import { onClickView } from '@src/utils/ViewUtil';
 import _ from 'lodash';
 import React from 'react';
-import { Image, ScrollView, View } from 'react-native';
+import {Image, KeyboardAvoidingView, ScrollView, View} from 'react-native';
 import { connect } from 'react-redux';
 import { DialogNotify } from './DialogNotify';
 import GetQrcode from './GetQrCode';
@@ -293,7 +293,7 @@ class GetStartedAddNode extends BaseScreen {
     const {isShowInstructor,errorInSetUp} = this.state;
     console.log(TAG,'onResume ---- ');
     // Toast.showInfo('onResume isShowInstructor = '+isShowInstructor);
-    
+
     if(isShowInstructor ){
       const isConnectedHotspot = await this.viewSetupDevice.current?.checkIsConnectedWithHotspot()??false;
       this.setState({
@@ -399,6 +399,15 @@ class GetStartedAddNode extends BaseScreen {
           onPress={childView.onPress}
           title={childView.title}
         />
+        {currentPage === 0 && (
+          <TouchableOpacity
+            onPress={() => this.goToScreen(routeNames.LinkDevice)}
+          >
+            <Text style={styles.linkBtn}>
+              Add an existing node
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
 

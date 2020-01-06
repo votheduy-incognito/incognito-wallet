@@ -44,6 +44,7 @@ export const template = {
     message:'Waiting'
   },
   is_checkin: 0,
+  linked: false,
   platform: 'MINER',
   product_id: '',
   product_name: 'Miner',
@@ -208,6 +209,10 @@ export default class Device {
 
   get StakerAddress() {
     return this.data.minerInfo.StakerAddress;
+  }
+
+  get IsLinked() {
+    return !!this.data.linked;
   }
 
   toJSON(){

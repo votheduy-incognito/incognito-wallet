@@ -163,7 +163,7 @@ class VNode extends React.Component {
           <View style={[styles.row, styles.centerAlign]}>
             <View style={[styles.row, styles.centerAlign]}>
               <Image source={item.IsOnline ? wifiOnline : wifiOffline} style={[styles.icon]} />
-              <Text style={[styles.itemLeft, !item.isOnline && styles.greyText]}>Node {labelName}</Text>
+              <Text style={[styles.itemLeft, !item.IsOnline && styles.greyText]}>Node {labelName}</Text>
             </View>
             {!isFetching && !item.IsOnline && (
               <View style={styles.itemRight}>

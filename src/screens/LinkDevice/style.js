@@ -6,6 +6,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     padding: 25,
   },
+  input: {
+    marginBottom: 15
+  },
 });
 
 export default styles;

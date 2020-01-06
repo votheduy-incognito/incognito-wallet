@@ -302,19 +302,21 @@ class Node extends BaseScreen {
       .finally(() => this.setState({ isFetching: false }));
   }
 
-  handleGetNodeInfoCompleted = async ({ device, index}) => {
+  handleGetNodeInfoCompleted = async ({ device, index }) => {
     const { listDevice, loadedDevices } = this.state;
 
     if (device) {
-      listDevice[index] = device;
-      await LocalDatabase.saveListDevices(listDevice);
+      const deviceIndex = listDevice.findIndex(item => item.ProductId === device.ProductId);
+      if (deviceIndex) {
+        listDevice[deviceIndex] = device;
+        await LocalDatabase.saveListDevices(listDevice);
+      }
     }
 
     loadedDevices.push(index);
-    console.debug('INFO COMPLETED', device.Type, device.Name);
 
     this.setState({ listDevice, loadedDevices }, () => {
-      if (loadedDevices.length === listDevice.length) {
+      if (loadedDevices.length >= listDevice.length) {
         this.startWithdraw();
       }
     });
@@ -374,6 +376,8 @@ class Node extends BaseScreen {
           .value();
         withdrawRequests[PaymentAddress] = { tokenIds };
         this.setState({ withdrawRequests }, this.startWithdraw);
+        const message = 'Withdrawl initiated! This process may take up to 2 hours. Please do not close the app until withdrawal is complete and your balance is updated.';
+        this.showToastMessage(message);
       } else {
         await APIService.requestWithdraw({
           ProductID: device.ProductId,
@@ -382,9 +386,9 @@ class Node extends BaseScreen {
           PaymentAddress: device.PaymentAddressFromServer
         });
         device.IsWithdrawable = await NodeService.isWithdrawable(device);
+        const message = 'Withdrawl initiated! This process may take up to 48 hours. Please do not close the app until withdrawal is complete and your balance is updated.';
+        this.showToastMessage(message);
       }
-      const message = 'Withdrawal initiated! This process may take up to 2 hours. Please do not close the app until withdrawal is complete and your balance is updated.';
-      this.showToastMessage(message);
     } catch(error) {
       new ExHandler(error).showErrorToast(true);
     } finally {
@@ -440,13 +444,16 @@ class Node extends BaseScreen {
     } = this.state;
 
     if (!isFetching && _.isEmpty(listDevice)) {
-      return <WelcomeNodes onAddVNode={this.handleAddVirtualNodePress} onAddPNode={this.handleAddNodePress} />;
+      return <WelcomeNodes
+        onAddVNode={this.handleAddVirtualNodePress}
+        onAddPNode={this.handleAddNodePress}
+      />;
     }
 
     return (
       <View style={style.container}>
         <View style={style.background} />
-        <Header goToScreen={this.goToScreen} isFetching={listDevice.length !== loadedDevices.length || isFetching} />
+        <Header goToScreen={this.goToScreen} isFetching={listDevice.length > loadedDevices.length || isFetching} />
         <DialogLoader loading={loading} />
         <ScrollView refreshControl={(
           <RefreshControl

@@ -36,7 +36,7 @@ export const login = async ({ fresh = false } = {}) => {
       const newToken = await getToken();
 
       // save new token to device storage
-      storageService.setItem(CONSTANT_KEYS.DEVICE_TOKEN, newToken);
+      await storageService.setItem(CONSTANT_KEYS.DEVICE_TOKEN, newToken);
       token = newToken;
     }
 

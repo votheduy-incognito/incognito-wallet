@@ -300,42 +300,19 @@ export default class NodeService {
     return null;
   }
 
-  /***
-   * return : {"PaymentAddress","Commission","StakerAddress"}
-   */
-  static fetchAndSavingInfoNodeStake = async(device:Device,isNeedSaving=false)=>{
+  static fetchAndSavingInfoNodeStake = async (device)=>{
     try {
-      let fetchProductInfo = device.toJSON()??{};
       const paymentAddress =  device.PaymentAddressFromServer;
-
-      const resultRequest =  await Util.excuteWithTimeout(APIService.fetchInfoNodeStake({
-        PaymentAddress:paymentAddress
-      }),5).catch(console.log);
-      const dataRequestStake = resultRequest.data||{};
-      if( !_.isEmpty(dataRequestStake)){
-        const {StakerAddress = ''} = dataRequestStake??{};
-
-        device.isCallStaked = !_.isEmpty(StakerAddress);
-
-        fetchProductInfo = device.toJSON()??{};
-
-        fetchProductInfo['minerInfo'] = {
-          ...fetchProductInfo.minerInfo,
-          ...dataRequestStake
-        };
-      }
-      if(isNeedSaving && !_.isEmpty(fetchProductInfo)){
-        await LocalDatabase.updateDevice(fetchProductInfo);
-      }
-
-      return fetchProductInfo['minerInfo'];
-
+      const data = await APIService.fetchInfoNodeStake({ PaymentAddress:paymentAddress });
+      const fetchProductInfo = device.toJSON()??{};
+      fetchProductInfo['minerInfo'] = {
+        ...fetchProductInfo.minerInfo,
+        ...data
+      };
     } catch (error) {
       console.log(TAG,'fetchAndSavingInfoNodeStake error = ',error);
     }
-
-    return null;
-  }
+  };
 
   /**
    * {isHave:false,current:0.0,node:0.0}
@@ -393,7 +370,7 @@ export default class NodeService {
   static getBLSKey = async (device:Device, chain = 'incognito') => {
     try {
       const action = LIST_ACTION.GET_IP;
-      const res = await Util.excuteWithTimeout(NodeService.send(device.data,action,chain,Action.TYPE.PRODUCT_CONTROL),8);
+      const res = await Util.excuteWithTimeout(NodeService.send(device.data,action,chain,Action.TYPE.PRODUCT_CONTROL),5);
       const ip = res.data;
       device.Host = ip;
       const port = 9334;
@@ -417,5 +394,13 @@ export default class NodeService {
       console.debug('isWithdrawable', error);
       return true;
     }
+  };
+
+  static getInfoByQrCode = (qrCode) => {
+    return Util.excuteWithTimeout(APIService.getInfoByQrCode(qrCode), timeout);
+  };
+
+  static getLog = (device) => {
+    return APIService.getLog(device.qrCodeDeviceId);
   };
 }

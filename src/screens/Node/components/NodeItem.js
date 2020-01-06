@@ -1,16 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import VirtualNodeService from '@services/VirtualNodeService';
 import NodeService from '@services/NodeService';
 import accountService from '@services/wallet/accountService';
 import {PRV} from '@services/wallet/tokenService';
 import {ExHandler} from '@services/exception';
+import {PRV_ID} from '@screens/Dex/constants';
 import VNode from './VNode';
 import PNode from './PNode';
 
 export const TAG = 'Node';
 
 const MAX_RETRY = 5;
+const TIMEOUT = 2; // 2 minutes
 
 class NodeItem extends React.Component {
   state = { loading: false };
@@ -23,6 +26,7 @@ class NodeItem extends React.Component {
   }
 
   async getPNodeInfo(device) {
+    const { wallet } = this.props;
     await NodeService.fetchAndSavingInfoNodeStake(device);
     const actualRewards = {};
     const commission = device.CommissionFromServer;
@@ -38,6 +42,32 @@ class NodeItem extends React.Component {
       });
 
       device.Rewards = actualRewards;
+    }
+
+    const listAccount = await wallet.listAccount();
+    device.Account = listAccount.find(item => item.PaymentAddress === device.PaymentAddress);
+
+    if (device.Account) {
+      device.ValidatorKey = device.Account.ValidatorKey;
+    }
+
+    if (device.IsLinked) {
+      const res = await NodeService.getLog(device);
+      const log = res.Data;
+      const { updatedAt } = log;
+      if (updatedAt) {
+        const startTime = moment(updatedAt);
+        const endTime = moment();
+        const duration = moment.duration(endTime.diff(startTime));
+        const minutes = duration.asMinutes();
+
+        if (minutes > TIMEOUT) {
+          device.setIsOnline(Math.max(device.IsOnline - 1, 0));
+        } else {
+          device.setIsOnline(MAX_RETRY);
+        }
+      }
+    } else if (device.Host) {
       device.setIsOnline(MAX_RETRY);
     } else {
       device.setIsOnline(Math.max(device.IsOnline - 1, 0));
@@ -133,8 +163,6 @@ class NodeItem extends React.Component {
       device = await this.getPNodeInfo(device);
     }
 
-    console.debug('NODE BEFORE', device.AccountName, device.Rewards);
-
     if (device.Rewards && Object.keys(device.Rewards).length > 0) {
       Object.keys(device.Rewards).forEach(id => {
         if (device.Rewards[id] === 0) {
@@ -143,8 +171,9 @@ class NodeItem extends React.Component {
       });
     }
 
-    console.debug('NODE AFTER', device.AccountName, device.Rewards);
-    console.debug('NODE', device.Type, device);
+    if (!device.Rewards || Object.keys(device.Rewards).length === 0) {
+      device.Rewards = { [PRV_ID]: 0 };
+    }
 
     return device;
   }
@@ -181,6 +210,7 @@ class NodeItem extends React.Component {
           item={item}
           allTokens={allTokens}
           onImportAccount={onImport}
+          onRemoveDevice={onRemove}
           onWithdraw={onWithdraw}
           isFetching={!!isFetching || !!loading}
         />

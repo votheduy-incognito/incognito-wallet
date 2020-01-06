@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
-import {Text, Image, View, ActivityIndicator, TouchableOpacity} from '@components/core';
+import {Text, Image, View, ActivityIndicator, TouchableOpacity, Button} from '@components/core';
 import offlineIcon from '@src/assets/images/icons/offline_icon.png';
 import onlineIcon from '@src/assets/images/icons/online_icon.png';
 import moreIcon from '@src/assets/images/icons/more_icon.png';
@@ -17,20 +17,26 @@ import FixModal from '@screens/Node/components/FixModal';
 import wifiOnline from '@assets/images/icons/online_wifi_icon.png';
 import wifiOffline from '@assets/images/icons/offline_wifi_icon.png';
 import accountKey from '@assets/images/icons/account_key.png';
+import unfollowTokenIcon from '@assets/images/icons/unfollowToken.png';
 import Rewards from './Rewards';
 import styles from './style';
 
 const MESSAGES = {
+  ACCOUNT_NOT_FOUND: 'Missing account',
   UNSTAKING: 'unstaking in process',
 };
 
 class PNode extends React.Component {
-  state = {
-    showUpdateFirmware: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      showUpdateFirmware: false,
+    };
+    this.removeDevice = _.debounce(props.onRemoveDevice, 100);
+  }
 
   getDescriptionStatus = () => {
-    const { item, isFetching } = this.props;
+    const { item, isFetching, onImportAccount } = this.props;
 
     if (isFetching) {
       return null;
@@ -40,7 +46,21 @@ class PNode extends React.Component {
     let text = `Account: ${account}`;
 
     if (!account) {
-      text = `Account: ${item.Name}`;
+      return (
+        <View style={[styles.row, styles.desc, styles.centerAlign]}>
+          <View style={[styles.row, styles.centerAlign]}>
+            <Image source={accountKey} style={[styles.icon, styles.disabled]} />
+            <Text style={styles.greyText}>{MESSAGES.ACCOUNT_NOT_FOUND}</Text>
+          </View>
+          <View style={styles.itemRight}>
+            <Button
+              title="Import"
+              buttonStyle={styles.stakeButton}
+              onPress={onImportAccount}
+            />
+          </View>
+        </View>
+      );
     }
 
     const isUnstaking = item.Unstaking;
@@ -85,6 +105,16 @@ class PNode extends React.Component {
       desc: 'Get Node perform better.',
       handlePress: this.updateFirmware,
     });
+
+    if (global.isDebug()) {
+      menu.push({
+        id: 'delete',
+        icon: <Image source={unfollowTokenIcon} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
+        label: 'Remove physical node',
+        desc: 'Remove this node from your display. (DEBUG)',
+        handlePress: () => this.removeDevice(item),
+      });
+    }
 
     if (!isFetching) {
       const rewards = item.Rewards;
@@ -137,7 +167,7 @@ class PNode extends React.Component {
           <View style={[styles.row, styles.centerAlign]}>
             <View style={[styles.row, styles.centerAlign]}>
               <Image source={item.IsOnline ? wifiOnline : wifiOffline} style={[styles.icon]} />
-              <Text style={[styles.itemLeft, !item.isOnline && styles.greyText]}>Device {labelName}</Text>
+              <Text style={[styles.itemLeft, !item.IsOnline && styles.greyText]}>Device {labelName}</Text>
             </View>
             {!isFetching && !item.IsOnline && (
               <View style={styles.itemRight}>
@@ -165,6 +195,8 @@ PNode.propTypes = {
   item: PropTypes.object.isRequired,
   allTokens: PropTypes.array.isRequired,
   onWithdraw: PropTypes.func.isRequired,
+  onRemoveDevice: PropTypes.func.isRequired,
+  onImportAccount: PropTypes.func.isRequired,
   isFetching: PropTypes.bool.isRequired,
 };
 

@@ -6,6 +6,7 @@ import { CustomError, ErrorCode, ExHandler } from './exception';
 
 const HEADERS = {'Content-Type': 'application/json'};
 const TIMEOUT = 20000;
+let currentAccessToken = '';
 
 const instance = axios.create({
   baseURL: CONSTANT_CONFIGS.API_BASE_URL,
@@ -33,7 +34,13 @@ instance.interceptors.request.use(config => {
   Log.log(`http ${config?.method} ${config?.baseURL}/${config?.url}`)
     .logDev(config);
 
-  return config;
+  return {
+    ...config,
+    headers: {
+      ...config.headers,
+      Authorization: 'Bearer ' + currentAccessToken,
+    }
+  };
 }, error => {
   Log.log('http request error', error?.message)
     .logDev(error);
@@ -100,6 +107,7 @@ instance.interceptors.response.use(res => {
 
 export const setTokenHeader = token => {
   try {
+    currentAccessToken = token;
     axios.defaults.headers.Authorization = `Bearer ${token}`;
   } catch {
     throw new Error('Can not set token request');
