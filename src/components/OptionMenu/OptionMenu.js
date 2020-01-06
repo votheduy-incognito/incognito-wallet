@@ -67,7 +67,11 @@ class OptionMenu extends Component {
                   >
                     <View style={styleSheet.icon}>{item?.icon}</View>
                     <View style={styleSheet.textContainer}>
-                      <Text style={styleSheet.itemText}>{item?.label}</Text>
+                      {
+                        item?.label && typeof item.label === 'string' ?
+                          <Text style={styleSheet.itemText}>{item?.label}</Text>
+                          : item.label
+                      }
                       <Text style={styleSheet.itemDescText}>{item?.desc}</Text>
                     </View>
                   </TouchableOpacity>

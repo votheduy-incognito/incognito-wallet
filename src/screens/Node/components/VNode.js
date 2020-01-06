@@ -6,17 +6,21 @@ import {Text, Button, Image, View, ActivityIndicator} from '@components/core';
 import offlineIcon from '@src/assets/images/icons/offline_icon.png';
 import onlineIcon from '@src/assets/images/icons/online_icon.png';
 import moreIcon from '@src/assets/images/icons/more_icon.png';
+import wifiOffline from '@src/assets/images/icons/offline_wifi_icon.png';
+import wifiOnline from '@src/assets/images/icons/online_wifi_icon.png';
+import accountKey from '@src/assets/images/icons/account_key.png';
 
 import unfollowTokenIcon from '@src/assets/images/icons/unfollowToken.png';
 import withdrawBlack from '@assets/images/icons/withdraw_black.png';
 import OptionMenu from '@components/OptionMenu/OptionMenu';
+import FixModal from '@screens/Node/components/FixModal';
 import Rewards from './Rewards';
 import styles from './style';
 
 const MESSAGES = {
-  ACCOUNT_NOT_FOUND: 'Associated account not found',
+  ACCOUNT_NOT_FOUND: 'Missing account',
   STAKE_REQUIRED: 'Stake required',
-  UNSTAKING: 'Unstaking in process',
+  UNSTAKING: 'unstaking in process',
 };
 
 class VNode extends React.Component {
@@ -26,41 +30,70 @@ class VNode extends React.Component {
   }
 
   getDescriptionStatus = () => {
-    const { item, isFetching } = this.props;
+    const { item, isFetching, onStake, onImportAccount } = this.props;
 
     if (isFetching) {
       return null;
     }
 
     const account = item.AccountName;
-    const hasStaked = item.Staked;
     const isUnstaking = item.Unstaking;
-    let style = styles.greyText;
+    const hasStaked = item.Staked;
     let text = `Acc: ${account}`;
 
     if (!account) {
-      text = MESSAGES.ACCOUNT_NOT_FOUND;
+      return (
+        <View style={[styles.row, styles.desc, styles.centerAlign]}>
+          <View style={[styles.row, styles.centerAlign]}>
+            <Image source={accountKey} style={[styles.icon, styles.disabled]} />
+            <Text style={styles.greyText}>{MESSAGES.ACCOUNT_NOT_FOUND}</Text>
+          </View>
+          <View style={styles.itemRight}>
+            <Button
+              title="Import"
+              buttonStyle={styles.stakeButton}
+              onPress={onImportAccount}
+            />
+          </View>
+        </View>
+      );
     } else if (isUnstaking) {
       return (
         <View style={styles.row}>
-          <Text style={[styles.desc, style]}>{MESSAGES.UNSTAKING}</Text>
+          <Text style={styles.desc}>{text} ({MESSAGES.UNSTAKING})</Text>
         </View>
       );
     } else if (!hasStaked) {
-      text = MESSAGES.STAKE_REQUIRED;
-      style = styles.greenText;
+      return (
+        <View style={[styles.row, styles.desc, styles.centerAlign]}>
+          <View style={[styles.row, styles.centerAlign]}>
+            <Image source={accountKey} style={[styles.icon]} />
+            <Text>{text}</Text>
+          </View>
+          <View style={styles.itemRight}>
+            <Button title="Stake" buttonStyle={styles.stakeButton} onPress={() => onStake(item)} />
+          </View>
+        </View>
+      );
     }
 
-    return <Text style={[styles.desc, style]}>{text}</Text>;
+    return (
+      <View style={[styles.row, styles.centerAlign, styles.desc]}>
+        <Image source={accountKey} style={[styles.icon]} />
+        <Text>{text}</Text>
+      </View>
+    );
   };
 
   renderMenu() {
     const menu = [];
-    const { item, onUnstake, isFetching } = this.props;
+    const { item, onUnstake, isFetching, onWithdraw, withdrawTxs } = this.props;
 
     if (isFetching) {
       return null;
     }
+
+    const hasAccount = !!item.AccountName;
 
     menu.push({
       id: 'delete',
@@ -80,61 +113,73 @@ class VNode extends React.Component {
       });
     }
 
+    if (!isFetching && hasAccount) {
+      const rewards = item.Rewards;
+      const isEmptyRewards = _.isEmpty(rewards) || !_.some(rewards, value => value > 0);
+      const pendingWithdraw =  !!withdrawTxs;
+      let onClick = () => onWithdraw(item);
+      let label = 'Withdraw';
+
+      if (pendingWithdraw || isEmptyRewards) {
+        onClick = null;
+        label = (
+          <View style={styles.withdrawMenuItem}>
+            <Text style={styles.withdrawText}>Withdraw</Text>
+            { !!pendingWithdraw && <ActivityIndicator size="small" /> }
+          </View>
+        );
+      }
+
+      menu.push({
+        id: 'withdraw',
+        icon: <Image source={withdrawBlack} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
+        label: label,
+        desc: 'Withdraw your rewards.',
+        handlePress: onClick,
+      });
+    }
+
     return <OptionMenu data={menu} icon={<Image source={moreIcon} />} />;
   }
 
   render() {
-    const {item, allTokens, onImportAccount, isFetching, onStake, onWithdraw, withdrawing, withdrawTxs} = this.props;
+    const {item, allTokens, isFetching} = this.props;
     const labelName = item.Name;
-    const hasAccount = !!item.AccountName;
-    const hasStaked = item.Staked;
-    const rewards = item.Rewards;
-    const isEmptyRewards = _.isEmpty(rewards) || !_.some(rewards, value => value > 0);
-    const pendingWithdraw = withdrawing && withdrawTxs && withdrawTxs.length > 0;
+
     return (
       <View style={styles.container}>
         <View style={styles.row}>
-          <View style={[styles.itemLeft, styles.imageWrapper]}>
+          <View style={[styles.itemLeft, styles.imageWrapper, styles.hidden]}>
             <Image source={item.IsOnline ? onlineIcon : offlineIcon} />
           </View>
           <View style={styles.itemCenter}>
-            { isFetching ? <ActivityIndicator size="large" /> : <Rewards rewards={item.Rewards} allTokens={allTokens} /> }
+            { isFetching ? <ActivityIndicator /> : <Rewards item={item} rewards={item.Rewards} allTokens={allTokens} /> }
           </View>
           <View style={[styles.itemRight, styles.imageWrapper]}>
             {this.renderMenu()}
           </View>
         </View>
-        <View style={styles.row}>
-          <View style={styles.itemLeft}>
-            <View style={styles.row}>
-              <Text>Node {labelName}</Text>
+        <View>
+          <View style={[styles.row, styles.centerAlign]}>
+            <View style={[styles.row, styles.centerAlign]}>
+              <Image source={item.IsOnline ? wifiOnline : wifiOffline} style={[styles.icon]} />
+              <Text style={[styles.itemLeft, !item.IsOnline && styles.greyText]}>Node {labelName}</Text>
             </View>
-            {this.getDescriptionStatus()}
+            {!isFetching && !item.IsOnline && (
+              <View style={styles.itemRight}>
+                <FixModal item={item} />
+              </View>
+            )}
           </View>
-          { !isFetching && hasAccount && (
-            <View style={styles.itemRight}>
-              <Button
-                title="Withdraw"
-                key={pendingWithdraw ? 'pending' : 'button'}
-                buttonStyle={styles.withdrawButton}
-                onPress={() => onWithdraw(item)}
-                disabled={pendingWithdraw || isEmptyRewards}
-                disabledStyle={styles.withdrawButtonDisabled}
-                isAsync={pendingWithdraw}
-                isLoading={pendingWithdraw}
-              />
-            </View>
-          )}
+          {this.getDescriptionStatus()}
         </View>
-        { !isFetching && !hasAccount && <Button title="Import account" buttonStyle={styles.stakeButton} onPress={onImportAccount} /> }
-        { !isFetching && hasAccount && !hasStaked && <Button title="Stake now" buttonStyle={styles.stakeButton} onPress={() => onStake(item)} />}
       </View>
     );
   }
 }
 
 VNode.defaultProps = {
-  withdrawTxs: [],
+  withdrawTxs: null,
 };
 
 VNode.propTypes = {
@@ -145,9 +190,8 @@ VNode.propTypes = {
   onStake: PropTypes.func.isRequired,
   onWithdraw: PropTypes.func.isRequired,
   isFetching: PropTypes.bool.isRequired,
-  withdrawing: PropTypes.bool.isRequired,
   onUnstake: PropTypes.func.isRequired,
-  withdrawTxs: PropTypes.array,
+  withdrawTxs: PropTypes.object,
 };
 
 export default VNode;

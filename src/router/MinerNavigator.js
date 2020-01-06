@@ -7,7 +7,7 @@ import AddNode from '@src/screens/AddNode';
 import AddStake from '@src/screens/AddStake';
 import Unstake from '@src/screens/Unstake';
 import AddSelfNode from '@src/screens/AddSelfNode';
-import AddDebugNode from '@screens/AddDebugNode';
+import LinkDevice from '@screens/LinkDevice';
 import HeaderBar from '@src/components/HeaderBar';
 import { navigationOptionsHandler } from '@src/utils/router';
 import { THEME } from '@src/styles';
@@ -29,7 +29,7 @@ const MinerNavigator = createStackNavigator(
     [ROUTE_NAMES.Node]: navigationOptionsHandler(Node,{ header: null }),
     [ROUTE_NAMES.AddDevice]: navigationOptionsHandler(AddDevice, { title: 'Select router' }),
     [ROUTE_NAMES.AddNode]: navigationOptionsHandler(AddNode, { title: 'Add Node' }),
-    [ROUTE_NAMES.AddDebugNode]: navigationOptionsHandler(AddDebugNode, { title: 'Add Node' }),
+    [ROUTE_NAMES.LinkDevice]: navigationOptionsHandler(LinkDevice, { title: 'Link Device' }),
     [ROUTE_NAMES.AddStake]: navigationOptionsHandler(AddStake, { title: 'Stake' }),
     [ROUTE_NAMES.Unstake]: navigationOptionsHandler(Unstake, { title: 'Unstake' }),
     [ROUTE_NAMES.SetupWifiDevice]: navigationOptionsHandler(SetupWifiDevice, { title: 'Setup Wifi' }),

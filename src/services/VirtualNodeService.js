@@ -130,7 +130,7 @@ export default class VirtualNodeService {
       if(!_.isEmpty(apiURL)){
         apiURL = `${apiURL}/${LIST_ACTION.GET_PUBLIC_KEY_MINING.key}`;
         const buildParams = LIST_ACTION.GET_PUBLIC_KEY_MINING.data;
-        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false), 3);
+        const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false), 5);
         const {Result=''} = response;
         const data = Result[0]??'';
         return _.split(data, ':')[1];

@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
-import {Text, Button, Image, View, ActivityIndicator, TouchableOpacity} from '@components/core';
+import {Text, Image, View, ActivityIndicator, TouchableOpacity, Button} from '@components/core';
 import offlineIcon from '@src/assets/images/icons/offline_icon.png';
 import onlineIcon from '@src/assets/images/icons/online_icon.png';
 import moreIcon from '@src/assets/images/icons/more_icon.png';
@@ -12,44 +12,73 @@ import OptionMenu from '@components/OptionMenu/OptionMenu';
 import Toast from '@components/core/Toast/Toast';
 import { DialogUpdateFirmware } from '@components/DialogNotify';
 import {COLORS} from '@src/styles';
-import styles from './style';
+import withdrawBlack from '@assets/images/icons/withdraw_black.png';
+import FixModal from '@screens/Node/components/FixModal';
+import wifiOnline from '@assets/images/icons/online_wifi_icon.png';
+import wifiOffline from '@assets/images/icons/offline_wifi_icon.png';
+import accountKey from '@assets/images/icons/account_key.png';
+import unfollowTokenIcon from '@assets/images/icons/unfollowToken.png';
 import Rewards from './Rewards';
+import styles from './style';
 
 const MESSAGES = {
-  UNSTAKING: 'Unstaking in process',
+  ACCOUNT_NOT_FOUND: 'Missing account',
+  UNSTAKING: 'unstaking in process',
 };
 
 class PNode extends React.Component {
-  state = {
-    showUpdateFirmware: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      showUpdateFirmware: false,
+    };
+    this.removeDevice = _.debounce(props.onRemoveDevice, 100);
+  }
 
   getDescriptionStatus = () => {
-    const { item, isFetching } = this.props;
+    const { item, isFetching, onImportAccount } = this.props;
 
     if (isFetching) {
       return null;
     }
 
     const account = item.AccountName;
-    let style = styles.greyText;
-    let text = `Acc: ${account}`;
+    let text = `Account: ${account}`;
 
     if (!account) {
-      text = `Acc: ${item.Name}`;
+      return (
+        <View style={[styles.row, styles.desc, styles.centerAlign]}>
+          <View style={[styles.row, styles.centerAlign]}>
+            <Image source={accountKey} style={[styles.icon, styles.disabled]} />
+            <Text style={styles.greyText}>{MESSAGES.ACCOUNT_NOT_FOUND}</Text>
+          </View>
+          <View style={styles.itemRight}>
+            <Button
+              title="Import"
+              buttonStyle={styles.stakeButton}
+              onPress={onImportAccount}
+            />
+          </View>
+        </View>
+      );
     }
 
     const isUnstaking = item.Unstaking;
     if (isUnstaking) {
       return (
         <View style={styles.row}>
-          <Text style={[styles.desc, style]}>{MESSAGES.UNSTAKING}</Text>
+          <Text style={[styles.desc]}>{text} ({MESSAGES.UNSTAKING})</Text>
           <ActivityIndicator style={styles.loading} size="small" color={COLORS.lightGrey1} />
         </View>
       );
     }
 
-    return <Text style={[styles.desc, style]}>{text}</Text>;
+    return (
+      <View style={[styles.row, styles.centerAlign, styles.desc]}>
+        <Image source={accountKey} style={[styles.icon]} />
+        <Text>{text}</Text>
+      </View>
+    );
   };
 
   showIp = () => {
@@ -62,7 +91,7 @@ class PNode extends React.Component {
   };
 
   renderMenu() {
-    const { isFetching } = this.props;
+    const { isFetching, item, onWithdraw } = this.props;
     const menu = [];
 
     if (isFetching) {
@@ -77,47 +106,76 @@ class PNode extends React.Component {
       handlePress: this.updateFirmware,
     });
 
+    if (global.isDebug()) {
+      menu.push({
+        id: 'delete',
+        icon: <Image source={unfollowTokenIcon} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
+        label: 'Remove physical node',
+        desc: 'Remove this node from your display. (DEBUG)',
+        handlePress: () => this.removeDevice(item),
+      });
+    }
+
+    if (!isFetching) {
+      const rewards = item.Rewards;
+      const pendingWithdraw = !item.IsWithdrawable;
+      const isEmptyRewards = _.isEmpty(rewards) || !_.some(rewards, value => value > 0);
+      let onClick = () => onWithdraw(item);
+      let label = 'Withdraw';
+
+      if (pendingWithdraw || isEmptyRewards) {
+        onClick = null;
+        label = (
+          <View style={styles.withdrawMenuItem}>
+            <Text style={styles.withdrawText}>Withdraw</Text>
+            { !!pendingWithdraw && <ActivityIndicator size="small" /> }
+          </View>
+        );
+      }
+
+      menu.push({
+        id: 'withdraw',
+        icon: <Image source={withdrawBlack} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
+        label: label,
+        desc: 'Withdraw your rewards.',
+        handlePress: onClick,
+      });
+    }
+
     return <OptionMenu data={menu} icon={<Image source={moreIcon} />} />;
   }
 
   render() {
-    const {item, isFetching, onWithdraw, allTokens} = this.props;
+    const {item, isFetching, allTokens} = this.props;
     const { showUpdateFirmware } = this.state;
     const labelName = item.Name;
-    const rewards = item.Rewards;
-    const isEmptyRewards = _.isEmpty(rewards) || _.some(rewards, value => !(value > 0));
 
     return (
       <View style={styles.container}>
         <View style={styles.row}>
-          <TouchableOpacity onPress={this.showIp} style={[styles.itemLeft, styles.imageWrapper]}>
+          <TouchableOpacity onPress={this.showIp} style={[styles.itemLeft, styles.imageWrapper, styles.hidden]}>
             <Image source={item.IsOnline ? onlineIcon : offlineIcon} />
           </TouchableOpacity>
           <View style={styles.itemCenter}>
-            { isFetching ? <ActivityIndicator size="large" /> : <Rewards rewards={item.Rewards} allTokens={allTokens} /> }
+            { isFetching ? <ActivityIndicator size="large" /> : <Rewards item={item} rewards={item.Rewards} allTokens={allTokens} /> }
           </View>
           <View style={[styles.itemRight, styles.imageWrapper]}>
             {this.renderMenu()}
           </View>
         </View>
-        <View style={styles.row}>
-          <View style={styles.itemLeft}>
-            <View style={styles.row}>
-              <Text>Node {labelName}</Text>
+        <View>
+          <View style={[styles.row, styles.centerAlign]}>
+            <View style={[styles.row, styles.centerAlign]}>
+              <Image source={item.IsOnline ? wifiOnline : wifiOffline} style={[styles.icon]} />
+              <Text style={[styles.itemLeft, !item.IsOnline && styles.greyText]}>Device {labelName}</Text>
             </View>
-            {this.getDescriptionStatus()}
+            {!isFetching && !item.IsOnline && (
+              <View style={styles.itemRight}>
+                <FixModal item={item} />
+              </View>
+            )}
           </View>
-          { !isFetching && (
-            <View style={styles.itemRight}>
-              <Button
-                title="Withdraw"
-                buttonStyle={styles.withdrawButton}
-                disabledStyle={styles.withdrawButtonDisabled}
-                disabled={isEmptyRewards || !item.IsWithdrawable}
-                onPress={() => onWithdraw(item)}
-              />
-            </View>
-          )}
+          {this.getDescriptionStatus()}
         </View>
         <DialogUpdateFirmware
           visible={showUpdateFirmware}
@@ -137,6 +195,8 @@ PNode.propTypes = {
   item: PropTypes.object.isRequired,
   allTokens: PropTypes.array.isRequired,
   onWithdraw: PropTypes.func.isRequired,
+  onRemoveDevice: PropTypes.func.isRequired,
+  onImportAccount: PropTypes.func.isRequired,
   isFetching: PropTypes.bool.isRequired,
 };
 

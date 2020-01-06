@@ -22,17 +22,6 @@ const listItems = [
 ];
 
 class AddNode extends BaseScreen {
-  constructor(props) {
-    super(props);
-    if (global.isDebug() && listItems.length === 2) {
-      listItems.push({
-        title: 'Add Node',
-        subTitle: 'Add node (debug).',
-        img :images.ic_add_node_device,
-      });
-    }
-  }
-
   render() {
     return (
       <View style={styles.container}>
@@ -49,7 +38,7 @@ class AddNode extends BaseScreen {
 
   handleItemClick = (index) => {
     if (index === 2) {
-      return this.goToScreen(routeNames.AddDebugNode);
+      return this.goToScreen(routeNames.LinkDevice);
     }
 
     this.goToScreen(index ===0?routeNames.GetStaredAddNode:routeNames.AddSelfNode);

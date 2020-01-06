@@ -63,7 +63,7 @@ class UnstakeContainer extends BaseScreen {
       const deviceIndex =  listDevice.findIndex(item => _.isEqual(Device.getInstance(item).AccountName, name));
       listDevice[deviceIndex].minerInfo.unstakeTx = rs.txId;
       await LocalDatabase.saveListDevices(listDevice);
-      Toast.showInfo('Unstaking completed!');
+      Toast.showInfo('Unstaking complete.');
       navigation.goBack();
     } catch (e) {
       new ExHandler(e).showErrorToast(true);

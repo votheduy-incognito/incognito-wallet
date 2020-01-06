@@ -4,7 +4,7 @@ export default {
   [CODE.timeout_promise]: 'Timeout excuting funtion',
   [CODE.estimate_fee_with_zero_balance]: 'Can not calculate fee on zero balance, please check your amount.',
   [CODE.firebase_init_failed]: 'Firebase service can not run on your app, please contact us for supporting.',
-  [CODE.network_make_request_failed]: 'Opps! We have a connection proplem, please check your internet.',
+  [CODE.network_make_request_failed]: 'Something went wrong. Please make sure you\'re connected to the internet and try again.',
   [CODE.player_have_pending_transactions]: 'Player has pending transactions.',
   [CODE.api_device_id_existed]: 'This device has been registed.',
   [CODE.web_js_token_balance_is_zero]: 'Your balance is not enough.',
@@ -46,5 +46,5 @@ export default {
   [CODE.document_picker_must_be_png]: 'Please use a PNG image.',
   [CODE.api_invalid_type_upload_file]: 'Your upload file type is incorrect.',
   [CODE.NOT_ENOUGH_NETWORK_FEE_ADD]: 'Please top up PRV to cover the network fee.',
-  [CODE.node_pending_withdrawal]: 'Please wait for your previous withdrawal to finish processing. Simply try again later.',
+  [CODE.node_pending_withdrawal]: 'Please wait for your previous withdrawal request to finish processing. Simply try again later.',
 };

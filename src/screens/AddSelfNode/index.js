@@ -48,6 +48,7 @@ const ViewInput = React.forwardRef((props,ref)=>{
       placeholder="192.168.1.1:1002 or node.example.com"
       label='IP address or domain'
       defaultValue={text}
+      autoCapitalize="none"
       clearable
     />
   );

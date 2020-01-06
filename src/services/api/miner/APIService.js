@@ -417,23 +417,18 @@ export default class APIService {
       data:response
     };
   }
-  static async fetchInfoNodeStake({
+
+  static fetchInfoNodeStake({
     PaymentAddress
   }) {
-    if (!PaymentAddress) return throw new Error('Missing paymentAddress');
-
-    const response = await http.get('pool/request-stake',
+    return http.get('pool/request-stake',
       {
         params: {
           PaymentAddress:PaymentAddress
         }
-      }).catch(console.log);
-    console.log(TAG,'fetchInfoNodeStake end = ',response);
-    return {
-      status:!_.isEmpty(response) ?1:0,
-      data:response
-    };
+      });
   }
+
   static async airdrop1({
     WalletAddress,
     pDexWalletAddress
@@ -553,5 +548,16 @@ export default class APIService {
 
   static async getRequestWithdraw(paymentAddress) {
     return http.get(`pool/request-withdraw?PaymentAddress=${paymentAddress}`);
+  }
+
+  static getInfoByQrCode(QRCode) {
+    return http.post('pool/qr-code-get', {
+      QRCode,
+    });
+  }
+
+  static getLog(qrCode) {
+    const url = `${API.GET_LOG}?qrcode=${qrCode}`;
+    return APIService.getURL(METHOD.GET, url,false,false);
   }
 }

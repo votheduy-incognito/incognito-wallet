@@ -1,5 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
 import {FlatList, View, ScrollView, RefreshControl} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Alert, Button} from '@components/core';
@@ -15,13 +17,9 @@ import {
   getTransactionByHash,
   listRewardAmount
 } from '@services/wallet/RpcClientService';
-import VirtualNodeService from '@services/VirtualNodeService';
 import tokenService, {PRV} from '@services/wallet/tokenService';
 import {getTokenList} from '@services/api/token';
-import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
 import NodeService from '@services/NodeService';
-import {DEVICES} from '@src/constants/miner';
 import {onClickView} from '@utils/ViewUtil';
 import accountService from '@services/wallet/accountService';
 import {ExHandler} from '@services/exception';
@@ -30,18 +28,23 @@ import WelcomeNodes from '@screens/Node/components/Welcome';
 import linkingService from '@services/linking';
 import {CONSTANT_CONFIGS} from '@src/constants';
 import COLORS from '@src/styles/colors';
+import convert from '@utils/convert';
+import NodeItem from '@screens/Node/components/NodeItem';
 import style from './style';
 import Header from './Header';
-import VNode from './components/VNode';
-import PNode from './components/PNode';
 
 export const TAG = 'Node';
-const MAX_RETRY = 5;
-const BLOCK_TIME = 40 * 1000;
+const BLOCK_TIME = 60 * 1000;
 
 let allTokens = [PRV];
 let beaconHeight;
-let committees = { AutoStaking: [], ShardPendingValidator: {}, CandidateShardWaitingForNextRandom: [], ShardCommittee: {} };
+let committees = {
+  AutoStaking: [],
+  ShardPendingValidator: {},
+  CandidateShardWaitingForNextRandom: [],
+  CandidateShardWaitingForCurrentRandom: [],
+  ShardCommittee: {},
+};
 let nodeRewards = {};
 
 const updateBeaconInfo = async (listDevice) => {
@@ -92,13 +95,12 @@ class Node extends BaseScreen {
     this.state = {
       selectedIndex: 0,
       listDevice: [],
+      loadedDevices: [],
       balancePRV:0,
       timeToUpdate: Date.now(),
       isFetching: false,
       loading: false,
-      withdrawing: false,
-      withdrawRequests: [],
-      lastWithdrawTxs: {},
+      withdrawRequests: {},
     };
 
     this.renderNode = this.renderNode.bind(this);
@@ -107,6 +109,10 @@ class Node extends BaseScreen {
   async componentDidMount() {
     const { navigation } = this.props;
     this.listener = navigation.addListener('didFocus', this.handleRefresh);
+
+    const withdrawRequests = await LocalDatabase.getWithdrawRequests();
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({ withdrawRequests }, this.startWithdraw);
 
     if (allTokens.length === 0) {
       allTokens.push(PRV);
@@ -127,59 +133,76 @@ class Node extends BaseScreen {
     await this.createSignIn();
   }
 
-  startWithdraw() {
+  async startWithdraw() {
     const { withdrawRequests } = this.state;
 
-    if (!withdrawRequests || !Object.keys(withdrawRequests).length) {
+    console.debug('START WITHDRAW', withdrawRequests);
+    await LocalDatabase.saveWithdrawRequests(withdrawRequests);
+
+    if (!withdrawRequests || !Object.keys(withdrawRequests).length || this.timeout) {
       return;
     }
 
-    this.setState({ withdrawing: true }, this.sendWithdrawTx);
+    this.timeout = setTimeout(this.sendWithdrawTx, BLOCK_TIME);
   }
 
   sendWithdrawTx = async () => {
     const { wallet } = this.props;
-    const { withdrawRequests, lastWithdrawTxs } = this.state;
+    const { withdrawRequests, listDevice } = this.state;
     const addresses = Object.keys(withdrawRequests);
     const listAccount = await wallet.listAccount();
-    for (const paymentAddress of addresses) {
-      const tokenIds = withdrawRequests[paymentAddress];
+    const requests = addresses
+      .filter(address => withdrawRequests[address].tokenIds)
+      .map(address => ({
+        paymentAddress: address,
+        tokenIds: withdrawRequests[address].tokenIds,
+        lastTokenId: withdrawRequests[address].lastTokenId,
+      }));
+    while (requests.length > 0) {
+      const request = requests.pop();
+      const { tokenIds, paymentAddress, lastTokenId } = request;
 
-      if (!tokenIds || !tokenIds.length) {
-        delete withdrawRequests[paymentAddress];
-        continue;
+      if (lastTokenId) {
+        const device = listDevice.find(item => item.PaymentAddress === paymentAddress);
+        delete device.Rewards[lastTokenId];
+        this.setState({ listDevice });
       }
 
       const tokenId = tokenIds.pop();
       const account = listAccount.find(item => item.PaymentAddress === paymentAddress);
       await accountService.createAndSendWithdrawRewardTx(tokenId, account, wallet)
-        .then(res => lastWithdrawTxs[paymentAddress] = res.txId)
+        .then(res => {
+          withdrawRequests[paymentAddress].lastTx = res.txId;
+          withdrawRequests[paymentAddress].lastTokenId = tokenId;
+        })
         .catch(() => null);
 
-      if (!tokenIds || !tokenIds.length) {
-        delete withdrawRequests[paymentAddress];
+      if (tokenIds.length === 0) {
         this.waitTxComplete(paymentAddress);
       }
+      await LocalDatabase.saveWithdrawRequests(withdrawRequests);
     }
 
-    if (withdrawRequests && Object.keys(withdrawRequests).length > 0) {
-      setTimeout(this.sendWithdrawTx, BLOCK_TIME);
+    if (_.some(withdrawRequests, request => request.tokenIds.length > 0)) {
+      this.timeout = setTimeout(this.sendWithdrawTx, BLOCK_TIME);
     }
   };
 
   async updateNodeRewards(paymentAddress) {
-    const { listDevice, lastWithdrawTxs } = this.state;
+    const { listDevice, withdrawRequests } = this.state;
     const device = listDevice.find(item => item.PaymentAddress === paymentAddress);
     device.Rewards = {};
 
     await LocalDatabase.saveListDevices(listDevice);
-    delete lastWithdrawTxs[paymentAddress];
+    delete withdrawRequests[paymentAddress];
+    await LocalDatabase.saveWithdrawRequests(withdrawRequests);
+    this.setState({ withdrawRequests });
   }
 
   waitTxComplete = async (paymentAddress) => {
-    const { lastWithdrawTxs } = this.state;
-    if (lastWithdrawTxs[paymentAddress]) {
-      const tx = lastWithdrawTxs[paymentAddress];
+    const { withdrawRequests } = this.state;
+    const tx = withdrawRequests[paymentAddress].lastTx;
+    if (tx) {
       try {
         const res = await getTransactionByHash(tx);
         if (!res.isInMempool) {
@@ -190,10 +213,12 @@ class Node extends BaseScreen {
       }
     }
 
-    if (lastWithdrawTxs && Object.keys(lastWithdrawTxs).length > 0) {
-      setTimeout(() => this.waitTxComplete(paymentAddress), BLOCK_TIME);
-    } else {
-      this.setState({ withdrawing: false });
+    if (withdrawRequests[paymentAddress]) {
+      this.timeout = setTimeout(() => this.waitTxComplete(paymentAddress), BLOCK_TIME);
+    }
+
+    if (Object.keys(withdrawRequests).length === 0) {
+      this.timeout = null;
     }
   };
 
@@ -263,117 +288,6 @@ class Node extends BaseScreen {
     return filterProducts;
   };
 
-  getPNodeInfo = async (device) => {
-    await NodeService.fetchAndSavingInfoNodeStake(device);
-    const actualRewards = {};
-    const commission = device.CommissionFromServer;
-
-    if (device.StakerAddress) {
-      const rewards = await accountService.getRewardAmount('', device.StakerAddress, true);
-
-      rewards[PRV.id] = rewards[PRV.symbol];
-      delete rewards[PRV.symbol];
-
-      Object.keys(rewards).forEach(key => {
-        actualRewards[key] = rewards[key] * commission;
-      });
-
-      device.Rewards = actualRewards;
-      device.setIsOnline(MAX_RETRY);
-    } else {
-      device.setIsOnline(Math.max(device.IsOnline - 1, 0));
-    }
-
-    if (device.PaymentAddress) {
-      device.IsWithdrawable = await NodeService.isWithdrawable(device);
-    }
-
-    return device;
-  };
-
-  getVNodeInfo = (device) => {
-    const publicKey = device.PublicKey;
-
-    if (publicKey) {
-      device.Rewards = nodeRewards[publicKey] || {};
-    }
-
-    return device;
-  };
-
-  getNodeInfo = async (device) => {
-    const { wallet } = this.props;
-    let publicKey = device.PublicKey;
-    let blsKey = device.PublicKeyMining;
-    let newKey;
-
-    if (device.IsVNode) {
-      newKey = await VirtualNodeService.getPublicKeyMining(device);
-    } else {
-      newKey = await NodeService.getBLSKey(device);
-    }
-
-    if (newKey && blsKey !== newKey) {
-      blsKey = newKey;
-    }
-
-    if (newKey) {
-      device.setIsOnline(MAX_RETRY);
-    } else {
-      device.setIsOnline(Math.max(device.IsOnline - 1, 0));
-    }
-
-    console.debug('IS ONLINE', device.IsOnline);
-
-    if (blsKey) {
-      const nodeInfo = (committees.AutoStaking.find(node => node.MiningPubKey.bls === blsKey) || {});
-      const isAutoStake = nodeInfo.IsAutoStake;
-      const newPublicKey = nodeInfo.IncPubKey;
-
-      if (JSON.stringify(committees.ShardPendingValidator).includes(blsKey)) {
-        device.Status = 'waiting';
-      } else if (JSON.stringify(committees.CandidateShardWaitingForNextRandom).includes(blsKey)) {
-        device.Status = 'random';
-      } else if (JSON.stringify(committees.ShardCommittee).includes(blsKey)) {
-        device.Status = 'committee';
-      } else {
-        device.Status = null;
-      }
-
-      if (!isAutoStake) {
-        device.UnstakeTx = null;
-      } else {
-        device.StakeTx = null;
-      }
-
-      device.PublicKeyMining = blsKey;
-      device.IsAutoStake = isAutoStake;
-
-      if (newPublicKey && newPublicKey !== publicKey) {
-        publicKey = newPublicKey;
-        device.Account = {};
-        device.PublicKey = publicKey;
-        device.StakeTx = null;
-      }
-
-      const listAccount = await wallet.listAccount();
-      const rawAccount = await accountService.getAccountWithBLSPubKey(blsKey, wallet);
-      device.Account = listAccount.find(item => item.AccountName === rawAccount?.name);
-
-      if (device.Account) {
-        device.ValidatorKey = device.Account.ValidatorKey;
-      }
-    }
-
-    if (device.IsVNode) {
-      device = this.getVNodeInfo(device);
-    } else {
-      device = await this.getPNodeInfo(device);
-    }
-
-    return device;
-  };
-
   async getFullInfo() {
     const { listDevice } = this.state;
 
@@ -381,19 +295,32 @@ class Node extends BaseScreen {
       return this.setState({ isFetching: false });
     }
 
+    this.setState({ loadedDevices: [] });
+
     updateBeaconInfo(listDevice)
-      .then(async () => {
-        const { listDevice } = this.state;
-        const newListDevice = await Promise.all(listDevice.map(this.getNodeInfo));
-        await LocalDatabase.saveListDevices(newListDevice);
-        // await LocalDatabase.saveListToken(allTokens);
-        this.setState({ listDevice: newListDevice, isFetching: false });
-      })
-      .catch(error => {
-        this.setState({ isFetching: false });
-        new ExHandler(error).showErrorToast(true);
-      });
+      .catch(error => new ExHandler(error).showErrorToast(true))
+      .finally(() => this.setState({ isFetching: false }));
   }
+
+  handleGetNodeInfoCompleted = async ({ device, index }) => {
+    const { listDevice, loadedDevices } = this.state;
+
+    if (device) {
+      const deviceIndex = listDevice.findIndex(item => item.ProductId === device.ProductId);
+      if (deviceIndex) {
+        listDevice[deviceIndex] = device;
+        await LocalDatabase.saveListDevices(listDevice);
+      }
+    }
+
+    loadedDevices.push(index);
+
+    this.setState({ listDevice, loadedDevices }, () => {
+      if (loadedDevices.length >= listDevice.length) {
+        this.startWithdraw();
+      }
+    });
+  };
 
   handleRefresh = async () => {
     const { isFetching } = this.state;
@@ -433,16 +360,24 @@ class Node extends BaseScreen {
 
   handlePressWithdraw = onClickView(async (device) => {
     try {
-      const { withdrawRequests = [] } = this.state;
+      const { withdrawRequests = {} } = this.state;
       const account = device.Account;
       const rewards = device.Rewards;
       this.setState({ loading: true });
       if (device.IsVNode) {
         const { PaymentAddress } = (account || {});
-        const tokenIds = withdrawRequests[PaymentAddress] || [];
-        Object.keys(rewards).forEach(id => !tokenIds.includes(id) && tokenIds.push(id));
-        withdrawRequests[PaymentAddress] = tokenIds;
+        const tokenIds = _(Object.keys(rewards))
+          .filter(id => rewards[id] > 0)
+          .orderBy(id => {
+            const value = rewards[id];
+            const token = allTokens.find(token => token.id === id);
+            return convert.toHumanAmount(value, token.pDecimals);
+          })
+          .value();
+        withdrawRequests[PaymentAddress] = { tokenIds };
         this.setState({ withdrawRequests }, this.startWithdraw);
+        const message = 'Withdrawl initiated! This process may take up to 2 hours. Please do not close the app until withdrawal is complete and your balance is updated.';
+        this.showToastMessage(message);
       } else {
         await APIService.requestWithdraw({
           ProductID: device.ProductId,
@@ -451,9 +386,9 @@ class Node extends BaseScreen {
           PaymentAddress: device.PaymentAddressFromServer
         });
         device.IsWithdrawable = await NodeService.isWithdrawable(device);
+        const message = 'Withdrawl initiated! This process may take up to 48 hours. Please do not close the app until withdrawal is complete and your balance is updated.';
+        this.showToastMessage(message);
       }
-      const message = 'Withdrawing earnings to your Incognito Wallet. Balances will update in a few minutes.';
-      this.showToastMessage(message);
     } catch(error) {
       new ExHandler(error).showErrorToast(true);
     } finally {
@@ -473,40 +408,29 @@ class Node extends BaseScreen {
     this.goToScreen(routeNames.ImportAccount);
   };
 
-  renderNode({ item }) {
+  renderNode({ item, index }) {
+    const { wallet } = this.props;
     const {
       isFetching,
-      withdrawing,
       withdrawRequests,
-      lastWithdrawTxs,
     } = this.state;
 
-    if (item.Type === DEVICES.MINER_TYPE) {
-      return (
-        <PNode
-          item={item}
-          allTokens={allTokens}
-          onImportAccount={this.importAccount}
-          onWithdraw={this.handlePressWithdraw}
-          isFetching={!!isFetching}
-        />
-      );
-    }
-
-    const account = item.Account;
-
     return (
-      <VNode
-        item={item}
+      <NodeItem
+        wallet={wallet}
+        committees={committees}
+        nodeRewards={nodeRewards}
         allTokens={allTokens}
-        onRemoveDevice={this.handlePressRemoveDevice}
-        onImportAccount={this.importAccount}
+        withdrawRequests={withdrawRequests}
+        item={item}
+        isFetching={isFetching}
+        index={index}
         onStake={this.handlePressStake}
-        onWithdraw={this.handlePressWithdraw}
         onUnstake={this.handlePressUnstake}
-        isFetching={!!isFetching}
-        withdrawing={withdrawing}
-        withdrawTxs={withdrawRequests[account?.PaymentAddress] || lastWithdrawTxs[account?.PaymentAddress]}
+        onWithdraw={this.handlePressWithdraw}
+        onRemove={this.handlePressRemoveDevice}
+        onGetInfoCompleted={this.handleGetNodeInfoCompleted}
+        onImport={this.importAccount}
       />
     );
   }
@@ -516,16 +440,20 @@ class Node extends BaseScreen {
       listDevice,
       isFetching,
       loading,
+      loadedDevices,
     } = this.state;
 
     if (!isFetching && _.isEmpty(listDevice)) {
-      return <WelcomeNodes onAddVNode={this.handleAddVirtualNodePress} onAddPNode={this.handleAddNodePress} />;
+      return <WelcomeNodes
+        onAddVNode={this.handleAddVirtualNodePress}
+        onAddPNode={this.handleAddNodePress}
+      />;
     }
 
     return (
       <View style={style.container}>
         <View style={style.background} />
-        <Header goToScreen={this.goToScreen} isFetching={isFetching} />
+        <Header goToScreen={this.goToScreen} isFetching={listDevice.length > loadedDevices.length || isFetching} />
         <DialogLoader loading={loading} />
         <ScrollView refreshControl={(
           <RefreshControl
