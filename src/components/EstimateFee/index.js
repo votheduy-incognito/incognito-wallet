@@ -14,7 +14,7 @@ import accountService from '@services/wallet/accountService';
 import {MESSAGES} from '@screens/Dex/constants';
 import EstimateFee from './EstimateFee';
 
-const DEFAULT_FEE = 10; // in nano
+const DEFAULT_FEE = 30; // in nano
 const CACHED_FEE = {
   // token_id_for_use.token_id_for_fee.total_amount_of_the_token: fee
 };
@@ -372,7 +372,7 @@ EstimateFeeContainer.defaultProps = {
   onEstimateFailed: null,
   dexToken: null,
   dexBalance: 0,
-  multiply: 1,
+  multiply: 2,
 };
 
 EstimateFeeContainer.propTypes = {
