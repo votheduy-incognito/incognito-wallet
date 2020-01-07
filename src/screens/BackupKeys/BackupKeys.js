@@ -1,0 +1,64 @@
+import {
+  Container,
+  Text,
+  Button,
+  View,
+  ScrollView
+} from '@src/components/core';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import Icons from 'react-native-vector-icons/Ionicons';
+import CopiableText from '@src/components/CopiableText';
+import style from './style';
+
+class BackupKeys extends Component {
+  renderAccountItem = (name, key) => {
+    return (
+      <CopiableText key={name} text={`${name}: ${key}`} copiedMessage={`Copied account "${name}"`} style={style.accountItemContainer}>
+        <View style={style.accountItemHeader}>
+          <Text style={style.accountItemNameText}>{name}</Text>
+          <Icons name='md-copy' style={style.copyIcon} />
+        </View>
+        <View style={style.accountItemKey}>
+          <Text style={style.accountItemKeyText}>{key}</Text>
+        </View>
+      </CopiableText>
+    );
+  }
+
+  render() {
+    const { onSaveAs, onCopyAll, backupData } = this.props;
+
+    return (
+      <View style={style.container}>
+        <ScrollView>
+          <Container style={style.topGroup}>
+            {
+              backupData?.map(pair => {
+                const [name, key] = Object.entries(pair)?.flat() || [];
+                return this.renderAccountItem(name, key);
+              })
+            }
+          </Container>
+        </ScrollView>
+        <View style={style.bottomGroup}>
+          <Text style={style.bottomGroupText}>Copy or Save to backup file</Text>
+          <Button style={style.saveAsBtn} titleStyle={style.saveAsBtnText} title='Save as' onPress={onSaveAs} isAsync />
+          <Button style={style.copyAllButton} title='Copy All' onPress={onCopyAll} />
+        </View>
+      </View>
+    );
+  }
+}
+
+BackupKeys.defaultProps = {
+  backupData: [],
+};
+
+BackupKeys.propTypes = {
+  backupData: PropTypes.arrayOf(PropTypes.object),
+  onSaveAs: PropTypes.func.isRequired,
+  onCopyAll: PropTypes.func.isRequired,
+};
+
+export default BackupKeys;
