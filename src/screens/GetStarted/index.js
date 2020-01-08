@@ -3,6 +3,7 @@ import { CONSTANT_KEYS, CONSTANT_CONFIGS } from '@src/constants';
 import { reloadWallet, reloadAccountList } from '@src/redux/actions/wallet';
 import { followDefaultTokens } from '@src/redux/actions/account';
 import { getPTokenList } from '@src/redux/actions/token';
+import { loadPin } from '@src/redux/actions/pin';
 import { accountSeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
 import storageService from '@src/services/storage';
@@ -35,7 +36,7 @@ class GetStartedContainer extends Component {
   onError = msg => this.setState({ errorMsg: msg });
 
   goHome = async () => {
-    const { navigation } = this.props;
+    const { navigation, pin } = this.props;
 
     const wallet = await this.getExistedWallet();
 
@@ -55,7 +56,11 @@ class GetStartedContainer extends Component {
     const { reloadAccountList } = this.props;
     reloadAccountList();
 
-    navigation.navigate(routeNames.Home,{isNeedUpgrade: this.isNeedUpgrade});    
+    if (pin) {
+      navigation.navigate(routeNames.AddPin, { action: 'login', redirectRoute: routeNames.Home });
+    } else {
+      navigation.navigate(routeNames.Home,{isNeedUpgrade: this.isNeedUpgrade});
+    }
   };
 
   getExistedWallet = async () => {
@@ -74,8 +79,9 @@ class GetStartedContainer extends Component {
   }
 
   initApp = async () => {
+    const { loadPin } = this.props;
     try {
-
+      await loadPin();
       this.setState({ isInitialing: true });
       console.log('initApp CONSTANT_CONFIGS = ',CONSTANT_CONFIGS);
       const serverLocalList = await serverService.get()??[];
@@ -184,10 +190,11 @@ class GetStartedContainer extends Component {
   }
 }
 
-const mapDispatch = { reloadWallet, getPTokenList, followDefaultTokens, reloadAccountList };
+const mapDispatch = { reloadWallet, getPTokenList, followDefaultTokens, reloadAccountList, loadPin };
 
 const mapState = state => ({
   account: accountSeleclor.defaultAccount(state),
+  pin: state.pin.pin,
 });
 
 GetStartedContainer.propTypes = {

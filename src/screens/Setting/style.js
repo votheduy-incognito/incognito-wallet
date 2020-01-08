@@ -42,7 +42,7 @@ export const sectionStyle = StyleSheet.create({
     flexDirection: 'row',
     borderTopWidth: DECOR.borderWidth,
     borderColor: COLORS.lightGrey5,
-    paddingVertical: 10,
+    paddingVertical: 20,
     paddingHorizontal: 20
   },
   lastItem: {
@@ -116,4 +116,33 @@ export const accountSection = StyleSheet.create({
   swipeoutButton: {
     backgroundColor: COLORS.transparent
   }
+});
+
+export const pinSection = StyleSheet.create({
+  item: {
+    backgroundColor: COLORS.white,
+    borderTopWidth: DECOR.borderWidth,
+    borderColor: COLORS.lightGrey5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  name: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    marginRight: 20,
+  },
+  switch: {
+    width: 40,
+    height: 14,
+    borderRadius: 25,
+    padding: 0,
+  },
+  circle: {
+    width: 22,
+    height: 22,
+    borderRadius: 20,
+  },
 });

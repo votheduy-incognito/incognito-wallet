@@ -26,7 +26,6 @@ Gomobile.framework
 
 # Android/IntelliJ
 #
-build/
 .idea
 .gradle
 local.properties
@@ -64,6 +63,9 @@ buck-out/
 ios/Pods
 ios/Podfile.lock
 ios/GoogleService-Info\.plist
+ios/constantWalletMobile/Index/
+ios/constantWalletMobile/ModuleCache.noindex/
+ios/constantWalletMobile/Logs/
 
 android/app/src/main/assets/index.android.bundle
 android/app/google-services\.json

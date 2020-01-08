@@ -87,11 +87,13 @@ target 'constantWalletMobile' do
   pod 'RNSensors', :path => '../node_modules/react-native-sensors'
   pod 'react-native-camera', :path => '../node_modules/react-native-camera'
   pod 'RCTRestart', :path => '../node_modules/react-native-restart/ios'
+  pod 'TouchID', :path => "../node_modules/react-native-touch-id"
 
   pod 'react-native-webview', :path => '../node_modules/react-native-webview'
   pod 'RNFS', :path => '../node_modules/react-native-fs'
   pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
   
+
   # Pods for constantWalletMobile
 
   target 'constantWalletMobile-tvOSTests' do

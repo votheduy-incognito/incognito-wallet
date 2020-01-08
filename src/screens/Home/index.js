@@ -10,6 +10,7 @@ import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import APIService from '@src/services/api/miner/APIService';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { AppState } from 'react-native';
 import { connect } from 'react-redux';
 import { DEX } from '@src/utils/dex';
 import { DialogUpgradeToMainnet } from './ChildViews';
@@ -21,7 +22,8 @@ class HomeContainer extends Component {
 
     this.state = {
       isReloading: false,
-      isReceivedPRV: false
+      isReceivedPRV: false,
+      appState: '',
     };
   }
 
@@ -35,6 +37,8 @@ class HomeContainer extends Component {
 
     // airdrop program
     // this.airdrop();
+
+    AppState.addEventListener('change', this.handleLogin);
 
     navigation.addListener(
       'didFocus',
@@ -52,6 +56,21 @@ class HomeContainer extends Component {
       this.getFollowingToken();
     }
   }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleLogin);
+  }
+
+  handleLogin = (nextAppState) => {
+    const { appState } = this.state;
+    if (appState.match(/background/) && nextAppState === 'active') {
+      const { navigation, pin } = this.props;
+      if (pin) {
+        navigation.navigate(routeNames.AddPin, {action: 'login'});
+      }
+    }
+    this.setState({ appState: nextAppState });
+  };
 
   airdrop = async () => {
     try {
@@ -198,6 +217,7 @@ class HomeContainer extends Component {
 
 const mapState = state => ({
   account: accountSeleclor.defaultAccount(state),
+  pin: state.pin.pin,
   wallet: state.wallet,
   tokens: tokenSeleclor.followed(state),
   getAccountByName: accountSeleclor.getAccountByName(state)
@@ -230,6 +250,7 @@ HomeContainer.propTypes = {
   getInternalTokenList: PropTypes.func.isRequired,
   setWallet: PropTypes.func.isRequired,
   getAccountByName: PropTypes.func.isRequired,
+  pin: PropTypes.string.isRequired,
   // loadAllPTokenHasBalance: PropTypes.func.isRequired,
 };
 
