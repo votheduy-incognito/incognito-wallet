@@ -1,3 +1,4 @@
+import Wifi from '@josectobar/react-native-iot-wifi';
 import NetInfo from '@react-native-community/netinfo';
 import APIService from '@src/services/api/miner/APIService';
 import { CustomError, ExHandler } from '@src/services/exception';
@@ -7,7 +8,6 @@ import Util from '@utils/Util';
 import _ from 'lodash';
 import { Platform } from 'react-native';
 import { PASS_HOSPOT } from 'react-native-dotenv';
-import Wifi from 'react-native-iot-wifi';
 import WifiManager from 'react-native-wifi-reborn';
 import DeviceLog from '../DeviceLog';
 import BaseConnection, { ObjConnection } from './BaseConnection';
@@ -143,8 +143,19 @@ class WifiConnection extends BaseConnection {
           APIService.trackLog({action:funcName, message:`connectToProtectedSSID error catch ${SSID} -pass=${password}`,rawData:`errorMessage=${e.message??''}`});
           logHandler.throw();
         });
+        
         console.log(TAG, 'connectDevice begin111 --- data = ',data);
         await Util.delay(3);
+        // isForceUse Wifi
+        // if(Platform.OS == 'android'){
+        //   try {
+        //     WifiManager.forceWifiUsage(true);  
+        //   } catch (error) {
+        //     console.log(TAG, 'connectDevice forceWifiUsage error = ',error);
+        //     DeviceLog.logInfo(`${TAG} connectDevice forceWifiUsage error ${error?.message}`);
+        //   }
+          
+        // }
         if(_.isEmpty(data)){
           await Util.delay(3);
           data = await this.fetchCurrentConnectWithError().catch(e=>{

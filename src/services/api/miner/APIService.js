@@ -288,7 +288,7 @@ export default class APIService {
       console.log(TAG,'pingHotspot:', response);
       return !_.isEmpty(response);
     } catch (error) {
-      return false;
+      return null;
     }
 
   }

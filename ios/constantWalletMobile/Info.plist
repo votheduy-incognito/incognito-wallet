@@ -60,7 +60,7 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Will you allow this app to always know your location?</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Do you allow ${PRODUCT_NAME} to know your current location?</string>
+	<string>This will help Node find your home Wi-Fi</string>
 	<key>NSMotionUsageDescription</key>
 	<string>${PRODUCT_NAME} Motion Usage</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import BaseConnection, { ObjConnection } from './BaseConnection';
+// import IOTWifiConnection from './IOTWifiConnection';
 import style from './style';
 import WifiConnection from './WifiConnection';
 
@@ -58,6 +59,7 @@ class DeviceConnection extends Component {
   }
 
   init = () => {
+    // const connection: BaseConnection = Platform.OS == 'android'?new IOTWifiConnection() : new WifiConnection();
     const connection: BaseConnection = new WifiConnection();
     this.connection = connection;
   };
@@ -108,7 +110,7 @@ class DeviceConnection extends Component {
     try {
       return await APIService.pingHotspot();
     } catch (error) {
-      return false;
+      return null;
     }
   }
   removeConnectionDevice = async (objConnection: ObjConnection) => {

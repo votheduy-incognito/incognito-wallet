@@ -1,5 +1,6 @@
 /* eslint-disable import/no-cycle */
 import APIService, { METHOD } from '@services/api/miner/APIService';
+import DeviceLog from '@src/components/DeviceLog';
 import Action from '@src/models/Action';
 import Device from '@src/models/device';
 import LocalDatabase from '@src/utils/LocalDatabase';
@@ -330,10 +331,11 @@ export default class NodeService {
   static cleanOldDataForSetup = async ()=>{
     try {
       const pathData = '/home/nuc/aos/data';
-      const rmConfigFile = `rm ${pathData}/os_config.json rm ${pathData}/os_config.json rm ${pathData}/user.json rm ${pathData}/product_id.json`;
+      const rmConfigFile = `sudo rm ${pathData}/os_config.json ${pathData}/product_key.json ${pathData}/user.json ${pathData}/product_id.json`;
       const result = await SSHService.run('10.42.0.1',`sudo rm -r /home/nuc/aos/inco-data/;sudo rm -r /home/nuc/aos/inco-eth-kovan-data/;sudo docker rm -f inc_miner;sudo docker rm -f inc_kovan;${rmConfigFile}`);
       console.log(TAG,'cleanOldDataForSetup data = ',result);
-      return !_.isEmpty(result) ;
+      DeviceLog.logInfo('cleanOldDataForSetup result = ' + _.toString(result));
+      return true ;
     } catch (error) {
       return false;
     }

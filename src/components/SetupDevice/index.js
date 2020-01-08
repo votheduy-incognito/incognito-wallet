@@ -15,6 +15,7 @@ import { getAccountByName } from '@src/redux/selectors/account';
 import { CustomError, ExHandler } from '@src/services/exception';
 import knownCode from '@src/services/exception/customError/code/knownCode';
 import NodeService from '@src/services/NodeService';
+import SSHService from '@src/services/SSHService';
 import Util from '@src/utils/Util';
 import { onClickView } from '@src/utils/ViewUtil';
 import LocalDatabase from '@utils/LocalDatabase';
@@ -795,12 +796,21 @@ class SetupDevice extends BaseComponent {
     return await this.deviceId?.current?.isConnectedWithNodeHotspot();
   }
 
+  doubleCheckIsConnectedWithHotspot = async ()=>{
+    let result = await this.checkIsConnectedWithHotspot();
+    if(_.isNil(result)){
+      result = await SSHService.testConnect();
+      this.logOnView('doubleCheckIsConnectedWithHotspot testConnect result = '+ _.toString(result));
+    }
+    return result;
+  }
+
   checkConnectHotspot = async  ()=> {
     const funcName = `${this.deviceIdFromQrcode}-checkConnectHotspot`;
     const { validSSID, validWPA,isRenderUI } = this.state;
-    this.logOnView('bat dat check da connect hotspot chua?');
+    this.logOnView('bat dau check da connect hotspot chua?');
 
-    let isConnectedHotpost = await this.checkIsConnectedWithHotspot();
+    let isConnectedHotpost = await this.doubleCheckIsConnectedWithHotspot();
     await APIService.trackLog({action:funcName, message:isConnectedHotpost?'Da connect HOTSPOT':'Chua connect HOTSPOT'});
     this.logOnView(isConnectedHotpost?'da connect roi':'chua connect va bat dau connect');
 
@@ -818,7 +828,7 @@ class SetupDevice extends BaseComponent {
 
       this.logOnView(objConnection ?`${TAG} checkConnectHotspot connect HOTSPOT - name = ${objConnection.name||''} thanh cong`:'sau khi thu 3 lan connect hotspot va FAIL');
     }
-    isConnectedHotpost = await this.checkIsConnectedWithHotspot();
+    isConnectedHotpost = await this.doubleCheckIsConnectedWithHotspot();
     if(!isConnectedHotpost){
       !_.isNil(this.deviceMiner) && await this.deviceId?.current?.removeConnectionDevice(this.deviceMiner);
       new ExHandler(new CustomError(knownCode.node_can_not_connect_hotspot)).throw();
