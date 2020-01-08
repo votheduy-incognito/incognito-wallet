@@ -45,7 +45,7 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.DexHistoryDetail]: navigationOptionsHandler(DexHistoryDetail, { header: () => null }),
     [ROUTE_NAMES.pApp]: navigationOptionsHandler(pApp),
     [ROUTE_NAMES.AddPin]: navigationOptionsHandler(AddPIN, { header: () => null }),
-    [ROUTE_NAMES.BackupKeys]: navigationOptionsHandler(BackupKeys, { title: 'Back up Keys' }),
+    [ROUTE_NAMES.BackupKeys]: navigationOptionsHandler(BackupKeys, { title: 'Back up private keys' }),
   },
   {
     initialRouteName: ROUTE_NAMES.RootTab,

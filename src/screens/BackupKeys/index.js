@@ -105,7 +105,7 @@ class BackupKeysContainer extends Component {
   handleCopyAll = () => {
     const { backupDataStr } = this.state;
 
-    clipboard.set(backupDataStr, { copiedMessage: 'Copied all accounts' });
+    clipboard.set(backupDataStr, { copiedMessage: 'All keys copied' });
     this.markBackedUp();
   }
 

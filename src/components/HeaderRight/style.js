@@ -153,6 +153,7 @@ export const backupStyle = StyleSheet.create({
   button: {
     backgroundColor: COLORS.transparent,
     borderColor: COLORS.white,
+    width: 80,
     height: 30
   },
   buttonText: {

@@ -14,7 +14,7 @@ import style from './style';
 class BackupKeys extends Component {
   renderAccountItem = (name, key) => {
     return (
-      <CopiableText key={name} text={`${name}: ${key}`} copiedMessage={`Copied account "${name}"`} style={style.accountItemContainer}>
+      <CopiableText key={name} text={`${name}: ${key}`} copiedMessage={`"${name}" private key was copied`} style={style.accountItemContainer}>
         <View style={style.accountItemHeader}>
           <Text style={style.accountItemNameText}>{name}</Text>
           <Icons name='md-copy' style={style.copyIcon} />
@@ -42,9 +42,9 @@ class BackupKeys extends Component {
           </Container>
         </ScrollView>
         <View style={style.bottomGroup}>
-          <Text style={style.bottomGroupText}>Copy or Save to backup file</Text>
-          <Button style={style.saveAsBtn} titleStyle={style.saveAsBtnText} title='Save as' onPress={onSaveAs} isAsync />
-          <Button style={style.copyAllButton} title='Copy All' onPress={onCopyAll} />
+          <Text style={style.bottomGroupText}>Back up all keys</Text>
+          <Button style={style.saveAsBtn} titleStyle={style.saveAsBtnText} title='Choose back up option' onPress={onSaveAs} isAsync />
+          <Button style={style.copyAllButton} title='Copy all keys' onPress={onCopyAll} />
         </View>
       </View>
     );
