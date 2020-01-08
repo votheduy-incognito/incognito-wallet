@@ -27,7 +27,7 @@ class BackupKeys extends Component {
   }
 
   render() {
-    const { onSaveAs, onCopyAll, backupData } = this.props;
+    const { onSaveAs, onCopyAll, backupData, getNameKey } = this.props;
 
     return (
       <View style={style.container}>
@@ -35,7 +35,7 @@ class BackupKeys extends Component {
           <Container style={style.topGroup}>
             {
               backupData?.map(pair => {
-                const [name, key] = Object.entries(pair)?.flat() || [];
+                const [name, key] = getNameKey(pair);
                 return this.renderAccountItem(name, key);
               })
             }
@@ -59,6 +59,7 @@ BackupKeys.propTypes = {
   backupData: PropTypes.arrayOf(PropTypes.object),
   onSaveAs: PropTypes.func.isRequired,
   onCopyAll: PropTypes.func.isRequired,
+  getNameKey: PropTypes.func.isRequired,
 };
 
 export default BackupKeys;

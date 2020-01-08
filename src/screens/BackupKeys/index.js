@@ -14,11 +14,16 @@ import LoadingContainer from '@src/components/LoadingContainer';
 import { CONSTANT_KEYS } from '@src/constants';
 import BackupKeys from './BackupKeys';
 
-let prevAccounts;
+const getNameKey = obj => {
+  const name = Object.keys(obj)[0];
+  const key = Object.values(obj)[0];
+
+  return [name, key];
+};
 
 const convertToString = (backupData) => {
-  return backupData.map(pair => {
-    const [name, key] = Object.entries(pair)?.flat() || [];
+  return backupData?.map(pair => {
+    const [ name, key ] = getNameKey(pair);
     return `AccountName: ${name}\nPrivateKey:${key}`;
   })
     ?.join('\n\n') || '';
@@ -48,15 +53,18 @@ class BackupKeysContainer extends Component {
     this.state = {
       backupData: [],
       backupDataStr: '',
+      prevAccounts: []
     };
 
     this.handleSaveFile = debounce(this.handleSaveFile.bind(this), 300);
     this.handleCopyAll = debounce(this.handleCopyAll.bind(this), 300);
   }
 
-  static getDerivedStateFromProps(nextProps) {
-    let newState = {};
+  static getDerivedStateFromProps(nextProps, prevState) {
     const { accounts } = nextProps;
+    const { prevAccounts } = prevState;
+
+    let newState = { prevAccounts };
 
     if (prevAccounts !== accounts) {
       const { backupData, backupDataStr } = getBackupData(accounts) || {};
@@ -65,11 +73,13 @@ class BackupKeysContainer extends Component {
         backupData,
         backupDataStr
       };
-
-      prevAccounts = accounts;
     }
 
     return newState;
+  }
+
+  markBackedUp = () => {
+    storageService.setItem(CONSTANT_KEYS.IS_BACKEDUP_ACCOUNT, JSON.stringify(true));
   }
   
   handleSaveFile = async () => {
@@ -86,7 +96,7 @@ class BackupKeysContainer extends Component {
     const isShared = shared?.action === Share.sharedAction;
 
     if (isShared) {
-      storageService.setItem(CONSTANT_KEYS.IS_BACKEDUP_ACCOUNT, JSON.stringify(true));
+      this.markBackedUp();
     }
 
     return { path, shared, isShared };
@@ -96,6 +106,7 @@ class BackupKeysContainer extends Component {
     const { backupDataStr } = this.state;
 
     clipboard.set(backupDataStr, { copiedMessage: 'Copied all accounts' });
+    this.markBackedUp();
   }
 
   
@@ -117,6 +128,7 @@ class BackupKeysContainer extends Component {
           onSaveAs={this.handleSaveFile}
           onCopyAll={this.handleCopyAll}
           backupData={backupData}
+          getNameKey={getNameKey}
         />
       );
     }

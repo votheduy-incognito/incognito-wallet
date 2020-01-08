@@ -144,3 +144,18 @@ export const tokenInfoStyle = StyleSheet.create({
     fontSize: 14,
   },
 });
+
+
+export const backupStyle = StyleSheet.create({
+  container: {
+    paddingHorizontal: 15,
+  },
+  button: {
+    backgroundColor: COLORS.transparent,
+    borderColor: COLORS.white,
+    height: 30
+  },
+  buttonText: {
+    color: COLORS.white
+  },
+});
