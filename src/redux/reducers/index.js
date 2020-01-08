@@ -8,6 +8,7 @@ import token from './token';
 import selectedPrivacy from './selectedPrivacy';
 import app from './app';
 import dex from './dex';
+import pin from './pin';
 import globalReducer from './globalReducer';
 
 const rootReducer = reduceReducers(
@@ -19,6 +20,7 @@ const rootReducer = reduceReducers(
     selectedPrivacy,
     app,
     dex,
+    pin,
     form: formReducer
   }),
   globalReducer

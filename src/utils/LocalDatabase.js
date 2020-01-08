@@ -12,6 +12,7 @@ export const KEY_SAVE = {
   DEX_HISTORY: CONSTANT_KEYS.DEX_HISTORY,
   SEEN_DEPOSIT_GUIDE: CONSTANT_KEYS.SEEN_DEPOSIT_GUIDE,
   WITHDRAW_REQUESTS: CONSTANT_KEYS.WITHDRAW_REQUESTS,
+  PIN: CONSTANT_KEYS.PIN,
 };
 export default class LocalDatabase {
   static async getValue(key: String): String {
@@ -154,5 +155,15 @@ export default class LocalDatabase {
 
   static async saveWithdrawRequests(requests) {
     await LocalDatabase.saveValue(KEY_SAVE.WITHDRAW_REQUESTS, JSON.stringify(requests));
+  }
+  
+  static async getPIN() {
+    const pin = await LocalDatabase.getValue(KEY_SAVE.PIN);
+    return pin || '';
+  }
+
+  static async savePIN(newPin) {
+    const pin = await LocalDatabase.saveValue(KEY_SAVE.PIN, newPin);
+    return pin || '';
   }
 }

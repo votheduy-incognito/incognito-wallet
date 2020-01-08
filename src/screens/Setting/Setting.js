@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import LocalDatabase from '@utils/LocalDatabase';
 import Device from '@models/device';
+import PINSection from '@screens/Setting/PINSection';
 import AccountSection from './AccountSection';
 import NetworkSection from './NetworkSection';
 import { settingStyle } from './style';
@@ -38,6 +39,7 @@ class Setting extends React.Component {
             navigation={navigation}
             defaultServerId={defaultServerId}
           />
+          <PINSection navigation={navigation} />
         </View>
         <TouchableOpacity onPress={async()=>{
           if(__DEV__){

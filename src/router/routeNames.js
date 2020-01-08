@@ -42,4 +42,5 @@ export default {
   TxHistoryDetail: 'TxHistoryDetail',
   pApp: 'pApp',
   pApps: 'pApps',
+  AddPin: 'AddPin',
 };
