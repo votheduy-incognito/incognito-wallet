@@ -86,7 +86,7 @@ export class SearchTokenContainer extends PureComponent {
     navigation?.pop();
   }
 
-  handleAddFollowToken = async (tokenId: Array) => {
+  handleAddFollowToken = async (tokenId) => {
     const { pTokens, account, wallet, setWallet } = this.props;
     const { internalTokens } = this.state;
     const foundPToken : PToken = pTokens?.find((pToken: PToken) => pToken.tokenId === tokenId);
