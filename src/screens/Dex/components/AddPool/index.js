@@ -242,7 +242,7 @@ class Pool extends React.Component {
   };
 
   parseText(text, token, balance) {
-    let number = convertUtil.toNumber(text);
+    let number = convertUtil.toNumber(text, true);
     let value = 0;
     let error;
 
@@ -395,11 +395,11 @@ class Pool extends React.Component {
     const { inputToken, inputValue, outputToken, outputValue, inputFee, outputFee, prvBalance } = this.state;
     let total = inputFee + outputFee;
 
-    if (inputToken === PRV) {
+    if (inputToken?.id === PRV.id) {
       total += inputValue;
     }
 
-    if (outputToken === PRV) {
+    if (outputToken?.id === PRV.id) {
       total += outputValue;
     }
 
