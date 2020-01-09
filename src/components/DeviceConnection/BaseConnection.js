@@ -17,6 +17,7 @@ class BaseConnection {
   init = () => {};
 
   connectDevice = async (device: ObjConnection) => {};
+  connectLastConnection = async (name:String) => {};
   removeConnection = async (device: ObjConnection) => {};
 
   destroy = () => {};

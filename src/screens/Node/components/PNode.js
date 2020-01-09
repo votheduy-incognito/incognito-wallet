@@ -102,9 +102,13 @@ class PNode extends React.Component {
     menu.push({
       id: 'update',
       icon: <Image source={firmwareIcon} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
-      label: 'Update firmware',
+      label:(
+        <View style={styles.withdrawMenuItem}>
+          <Text style={styles.withdrawText}>Update firmware</Text>
+        </View>
+      ),
       desc: 'Get Node perform better.',
-      handlePress: this.updateFirmware,
+      handlePress: null,
     });
 
     if (global.isDebug()) {
