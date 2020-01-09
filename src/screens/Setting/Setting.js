@@ -6,6 +6,7 @@ import React from 'react';
 import LocalDatabase from '@utils/LocalDatabase';
 import Device from '@models/device';
 import PINSection from '@screens/Setting/PINSection';
+import BackupHeaderBtn from '@src/components/HeaderRight/Backup';
 import AccountSection from './AccountSection';
 import NetworkSection from './NetworkSection';
 import { settingStyle } from './style';
@@ -16,6 +17,16 @@ class Setting extends React.Component {
     this.state = {
       defaultServerId: 1,
       devices: [],
+    };
+  }
+
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerRight: (
+        <View>
+          <BackupHeaderBtn navigation={navigation} />
+        </View>
+      )
     };
   }
 

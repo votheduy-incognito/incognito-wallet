@@ -16,10 +16,10 @@ const pinLength = [1, 2, 3, 4, 5, 6];
 const opacity = 0.1;
 
 const optionalConfigObject = {
-  title: 'Authentication Required', // Android
+  title: 'Unlock', // Android
   imageColor: '#e00606', // Android
   imageErrorColor: '#ff0000', // Android
-  sensorDescription: 'Touch sensor', // Android
+  sensorDescription: 'Touch the fingerprint sensor on your device', // Android
   sensorErrorDescription: 'Failed', // Android
   cancelText: 'Cancel', // Android
   fallbackLabel: '', // iOS (if empty, then label is hidden)
