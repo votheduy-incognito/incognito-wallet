@@ -84,6 +84,10 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, removeAccount
     navigation.navigate(ROUTE_NAMES.CreateAccount, { onSwitchAccount: onHandleSwitchAccount });
   };
 
+  const handleBackup = () => {
+    navigation.navigate(ROUTE_NAMES.BackupKeys);
+  };
+
   const handleDelete = account => {
     Alert.alert(
       `Delete account "${account?.name}"?`,
@@ -123,6 +127,13 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, removeAccount
       desc: 'Create a new account',
       label: 'Create',
       handlePress: handleCreate
+    },
+    {
+      id: 'backup',
+      icon: <Icon type='material' name="backup" size={25} />,
+      desc: 'Backup your account keys',
+      label: 'Backup',
+      handlePress: handleBackup
     }
   ];
 

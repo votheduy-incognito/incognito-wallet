@@ -1,16 +1,26 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
+import storageService from '@src/services/storage';
 import { Icon } from 'react-native-elements';
 import SwitchToggle from 'react-native-switch-toggle';
 import routeNames from '@routers/routeNames';
 import {connect} from 'react-redux';
-import {Text, TouchableOpacity} from '@components/core';
+import {Text, TouchableOpacity, Alert} from '@components/core';
 import {pinSection, sectionStyle} from '@screens/Setting/style';
+import { CONSTANT_KEYS } from '@src/constants';
 import {COLORS} from '@src/styles';
 import Section from './Section';
 
 const PINSection = ({ navigation, pin }) => {
+  const [isBackedUpAccount, setBackupAccount] = useState(false);
+  
   const items = [];
+
+  navigation.addListener('willFocus', () => {
+    storageService.getItem(CONSTANT_KEYS.IS_BACKEDUP_ACCOUNT)
+      .then((isBackedUp) => setBackupAccount(!!JSON.parse(isBackedUp)))
+      .catch(() => setBackupAccount(false));
+  });
 
   if (!pin) {
     items.push({
@@ -34,6 +44,26 @@ const PINSection = ({ navigation, pin }) => {
     });
   }
 
+  const showLockAlert = () => {
+    Alert.alert(
+      'Backup your account first',
+      'Please back up your accounts before using pass code',
+      [
+        {
+          text: 'Later',
+          style: 'cancel'
+        },
+        {
+          text: 'Back up now',
+          onPress: () => {
+            navigation?.navigate(routeNames.BackupKeys);
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
   const togglePin = () => {
     if (pin) {
       navigation.navigate(routeNames.AddPin, { action: 'remove' });
@@ -42,13 +72,17 @@ const PINSection = ({ navigation, pin }) => {
     }
   };
 
+  const handlePressToggle = () => {
+    return isBackedUpAccount ? togglePin() : showLockAlert();
+  };
+
   return (
     <Section
       label="Security"
       customItems={[
         <TouchableOpacity
           key="PIN"
-          onPress={togglePin}
+          onPress={handlePressToggle}
           style={[
             sectionStyle.item,
             pinSection.item,
@@ -59,7 +93,7 @@ const PINSection = ({ navigation, pin }) => {
           <SwitchToggle
             containerStyle={pinSection.switch}
             circleStyle={pinSection.circle}
-            onPress={togglePin}
+            onPress={handlePressToggle}
             switchOn={!!pin}
             backgroundColorOn={COLORS.dark1}
             backgroundColorOff={COLORS.lightGrey5}
