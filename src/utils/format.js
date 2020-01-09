@@ -50,7 +50,7 @@ const formatDateTime = (dateTime, formatPattern) => moment(dateTime).format(form
 const toMiliSecond = (second) => second * 1000;
 const toFixed = (number, decimals = 0) => {
   if (_.isNumber(number) && !_.isNaN(number)) {
-    return removeTrailingZeroes(number.toFixed(decimals));
+    return removeTrailingZeroes(number.toFixed(decimals).replace('.', DECIMAL_SEPARATOR));
   }
 
   return number;

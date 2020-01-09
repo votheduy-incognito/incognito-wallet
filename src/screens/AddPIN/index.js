@@ -81,9 +81,6 @@ class AddPIN extends React.Component {
 
   isCorrectPin(pin2) {
     const { pin } = this.props;
-
-    console.debug('VALIDATE', convertUtil.toHash(pin2), pin);
-
     if (convertUtil.toHash(pin2) !== pin) {
       this.handleAnimation();
       return false;

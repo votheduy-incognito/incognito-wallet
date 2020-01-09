@@ -16,7 +16,7 @@ const WelcomeNodes = ({ onAddPNode, onAddVNode }) => (
         onPress={onAddPNode}
         title='Add a Node Device'
       />
-      <Text style={styles.buyText}>Don’t have a Node yet</Text>
+      <Text style={styles.buyText}>Don&apos;t have a node yet?</Text>
       <Button
         title="Buy another Node"
         buttonStyle={styles.buyButton}
@@ -25,7 +25,7 @@ const WelcomeNodes = ({ onAddPNode, onAddVNode }) => (
     </View>
 
     <View>
-      <Text style={styles.vNodeTitle}>Experience node operators</Text>
+      <Text style={styles.vNodeTitle}>Experienced node operators</Text>
       <Button
         titleStyle={styles.vNodeText}
         buttonStyle={styles.vNodeButton}

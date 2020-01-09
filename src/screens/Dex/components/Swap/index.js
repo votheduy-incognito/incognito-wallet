@@ -274,7 +274,7 @@ class Swap extends React.Component {
 
     console.debug('TRADE TOKEN', tradingFee, networkFee, networkFeeUnit, stopPrice, inputToken.symbol, outputToken.symbol, inputValue);
 
-    if (inputToken === PRV) {
+    if (inputToken?.id === PRV.id) {
       return accountService.createAndSendNativeTokenTradeRequestTx(
         wallet,
         account,
@@ -310,7 +310,7 @@ class Swap extends React.Component {
     let result;
 
     try {
-      if (inputToken === PRV) {
+      if (inputToken?.id === PRV.id) {
         prvFee = networkFee;
         prvBalance = balance;
         tokenFee = prvFee;
