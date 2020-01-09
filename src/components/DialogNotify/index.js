@@ -73,7 +73,7 @@ const ProcessingUpgrade = React.memo(({device,isUpdating,onSuccess,onFail,onClos
   );
 });
 
-export const DialogUpdateFirmware = React.memo(({handleUpdate,visible,device,onClose})=>{
+export const DialogUpdateFirmware = React.memo(({visible,device,onClose})=>{
   // const {  textInput, item,item_container_input,label } = styles;
 
   const [isShowMessage,setIsShowMessage] = React.useState(false);
@@ -143,7 +143,6 @@ export const DialogUpdateFirmware = React.memo(({handleUpdate,visible,device,onC
         setLableButton('OK');
         setTextContent('Updating... It might take about 5 mins.');
       }
-      handleUpdate && handleUpdate();
       setLoading(false);
     }else{
       onClose&&onClose();
