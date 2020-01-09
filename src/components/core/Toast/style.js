@@ -1,4 +1,4 @@
-import { SPACING, COLORS, UTILS, DECOR } from '@src/styles';
+import { COLORS, DECOR } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
@@ -13,6 +13,7 @@ const style = StyleSheet.create({
     margin: 30,
     borderWidth: DECOR.borderWidth,
     borderRadius: 4,
+    paddingTop: 20
   },
   message: {
     color: COLORS.white,
@@ -38,6 +39,13 @@ const style = StyleSheet.create({
     backgroundColor: COLORS.toastBackgroundSuccess,
     borderColor: '#019788',
   },
+  closeBtn: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    fontSize: 12,
+    padding: 3
+  }
 });
 
 export default style;

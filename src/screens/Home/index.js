@@ -8,11 +8,14 @@ import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import APIService from '@src/services/api/miner/APIService';
+import { countFollowToken } from '@src/services/api/token';
+import storageService from '@src/services/storage';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { AppState } from 'react-native';
 import { connect } from 'react-redux';
 import { DEX } from '@src/utils/dex';
+import { CONSTANT_KEYS } from '@src/constants';
 import { DialogUpgradeToMainnet } from './ChildViews';
 import Home from './Home';
 
@@ -31,6 +34,7 @@ class HomeContainer extends Component {
     const { navigation, clearSelectedPrivacy } = this.props;
     try {
       await this.reload();
+      this.handleCountFollowedToken();
     } catch (e) {
       new ExHandler(e).showErrorToast();
     }
@@ -59,6 +63,21 @@ class HomeContainer extends Component {
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this.handleLogin);
+  }
+
+  handleCountFollowedToken = async () => {
+    try {
+      const { tokens, account } = this.props;
+      const isChecked = !!JSON.parse(await storageService.getItem(CONSTANT_KEYS.IS_CHECK_FOLLOWED_TOKEN));
+      const tokenIds = tokens.map(t => t.id);
+  
+      if (!isChecked) {
+        countFollowToken(tokenIds, account?.PublicKey).catch(null);
+        storageService.setItem(CONSTANT_KEYS.IS_CHECK_FOLLOWED_TOKEN, JSON.stringify(true));
+      }
+    } catch (e) {
+      new ExHandler(e);
+    }
   }
 
   handleLogin = (nextAppState) => {

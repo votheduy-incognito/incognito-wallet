@@ -3,6 +3,7 @@ import AccountModel from '@models/account';
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
+import { countFollowToken, countUnfollowToken } from '@src/services/api/token';
 import { AccountWallet, KeyWallet, Wallet } from 'incognito-chain-web-js/build/wallet';
 import _ from 'lodash';
 import {STACK_TRACE} from '@services/exception/customError/code/webjsCode';
@@ -255,6 +256,10 @@ export default class Account {
     const followList = tokens.map(t => t.ID);
     const prevList = await getUserUnfollowTokenIDs();
     const newList = _.difference(prevList, followList);
+
+    // track then token
+    countFollowToken(followList, account?.PublicKey).catch(null);
+
     setUserUnfollowTokenIDs(newList);
   }
 
@@ -269,6 +274,9 @@ export default class Account {
 
     prevList.push(tokenId);
     setUserUnfollowTokenIDs(prevList);
+
+    // track then token
+    countUnfollowToken(tokenId, account?.PublicKey).catch(null);
 
     return wallet;
   }

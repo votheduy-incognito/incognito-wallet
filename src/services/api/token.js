@@ -129,3 +129,31 @@ export const getTokenInfo = ({ tokenId }) => {
   return http.get(endpoint, tokenId ? { params: { TokenID: tokenId } } : undefined )
     .then(res => new IncognitoCoinInfo(res));
 };
+
+/**
+ * 
+ * @param {array} tokenIds is array of token id (string)
+ */
+export const countFollowToken = (tokenIds, accountPublicKey) => {
+  if (!tokenIds) throw new Error('Missing tokenIds');
+  if (!accountPublicKey) throw new Error('Missing accountPublicKey');
+
+  return http.post('pcustomtoken/follow/add', {
+    TokenIDs: tokenIds,
+    PublicKey: accountPublicKey
+  });
+};
+
+/**
+ * 
+ * @param {string} tokenId 
+ */
+export const countUnfollowToken = (tokenId, accountPublicKey) => {
+  if (!tokenId) throw new Error('Missing tokenId');
+  if (!accountPublicKey) throw new Error('Missing accountPublicKey');
+
+  return http.post('pcustomtoken/follow/remove', {
+    TokenID: tokenId,
+    PublicKey: accountPublicKey
+  });
+};

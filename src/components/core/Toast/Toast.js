@@ -6,6 +6,7 @@ import Text from '../Text';
 import styles from './style';
 
 let instance;
+const DURATION = 5000;
 
 class Toast extends Component {
   constructor(props) {
@@ -34,11 +35,10 @@ class Toast extends Component {
 
   static showError(msg, config?) {
     Toast.show(msg, {
-      duration: 2500,
+      duration: config?.duration || 10000,
       ...typeof config === 'object' ? config : {},
       icon: <Icon type='material' name='error' size={20} color={COLORS.white} />,
       containerStyle: styles.errorContainer,
-      duration: 4000,
     });
   }
 
@@ -46,16 +46,15 @@ class Toast extends Component {
     Toast.show(msg, {
       icon: <Icon type='material' name='info' size={20} color={COLORS.white} />,
       containerStyle: styles.infoContainer,
-      duration: 2500,
       ...typeof config === 'object' ? config : {},
     });
   }
 
   static showWarning(msg, config?) {
     Toast.show(msg, {
-      duration: 2500,
       ...typeof config === 'object' ? config : {},
       icon: <Icon type='material' name='warning' size={20} color={COLORS.dark1} />,
+      closeIconProps: { color: COLORS.dark1 },
       containerStyle: styles.warningContainer,
       messageStyle: styles.warningMessage
     });
@@ -65,8 +64,13 @@ class Toast extends Component {
     instance = this;
   }
 
+  handleClose = () => {
+    this.setState({ animation: null, msg: null });
+  }
+
   show = (msg, config = {}) => {
     const { opacityAni, animation } = this.state;
+    config.duration = config?.duration || DURATION;
 
     // stop exist animation
     if (animation && typeof animation.stop === 'function') {
@@ -85,7 +89,7 @@ class Toast extends Component {
             duration: 300,
           }
         ),
-        Animated.delay(config?.duration || 4000),
+        Animated.delay(config?.duration),
         Animated.timing(
           opacityAni,
           {
@@ -120,7 +124,8 @@ class Toast extends Component {
               }
             ]
           }
-        >
+        > 
+          <Icon onPress={this.handleClose} type='material' name='cancel' size={14} color={COLORS.white} containerStyle={styles.closeBtn} {...config?.closeIconProps || {}} />
           {config?.icon}
           <Text
             numberOfLines={10}
@@ -143,3 +148,4 @@ class Toast extends Component {
 }
 
 export default Toast;
+ 
