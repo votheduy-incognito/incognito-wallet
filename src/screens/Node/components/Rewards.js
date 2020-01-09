@@ -20,6 +20,7 @@ const Rewards = ({ rewards: propRewards, allTokens, item }) => {
       const token = allTokens.find(token => token.id === id);
       return token && { ...token, balance: value, displayBalance: convert.toHumanAmount(value, token.pDecimals) };
     })
+    .filter(token => token)
     .orderBy([token => token.id === PRV_ID, 'displayBalance'], ['desc', 'desc'])
     .value();
 

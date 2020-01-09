@@ -122,13 +122,13 @@ class PNode extends React.Component {
       const isEmptyRewards = _.isEmpty(rewards) || !_.some(rewards, value => value > 0);
       let onClick = () => onWithdraw(item);
       let label = 'Withdraw';
+      let desc = 'This might take up to 12 hours.';
 
       if (pendingWithdraw || isEmptyRewards) {
         onClick = null;
         label = (
           <View style={styles.withdrawMenuItem}>
-            <Text style={styles.withdrawText}>Withdraw</Text>
-            { !!pendingWithdraw && <ActivityIndicator size="small" /> }
+            <Text style={styles.withdrawText}>Withdraw processing</Text>
           </View>
         );
       }
@@ -137,7 +137,7 @@ class PNode extends React.Component {
         id: 'withdraw',
         icon: <Image source={withdrawBlack} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
         label: label,
-        desc: 'Withdraw your rewards.',
+        desc: desc,
         handlePress: onClick,
       });
     }
