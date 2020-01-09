@@ -5,6 +5,7 @@ import { CustomError } from '@src/services/exception';
 import knownCode from '@src/services/exception/customError/code/knownCode';
 import _ from 'lodash';
 import { Linking } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import { NavigationActions, StackActions } from 'react-navigation';
 // import timer from 'react-native-timer';
 const timer = require('react-native-timer');
@@ -32,6 +33,14 @@ export default class Util {
           ((prevHash << 5) - prevHash + currVal.charCodeAt(0)) | 0,
         0
       );
+  };
+
+  static phoneInfo = () => {
+    try {
+      return `${DeviceInfo.getBrand()}-${DeviceInfo.getSystemVersion()}`;
+    } catch (error) {
+      return'';
+    }
   };
 
   static openSetting = async (

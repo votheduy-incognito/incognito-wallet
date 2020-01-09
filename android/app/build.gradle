@@ -77,6 +77,9 @@ import com.android.build.OutputFile
 
 project.ext.react = [
         entryFile   : "index.js",
+        // bundleAssetName: "index.android.bundle",
+        // bundleInDebug: true,
+        // bundleInRelease: true,
         enableHermes: true,  // clean and rebuild if changing
 ]
 
@@ -134,7 +137,7 @@ android {
         applicationId "com.incognito.wallet"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 57
+        versionCode 58
         versionName "3.5.0"
         missingDimensionStrategy 'react-native-camera', 'general'
     }

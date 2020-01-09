@@ -1,10 +1,11 @@
 /* eslint-disable import/no-cycle */
+import APIService, { METHOD } from '@services/api/miner/APIService';
+import DeviceLog from '@src/components/DeviceLog';
 import Action from '@src/models/Action';
 import Device from '@src/models/device';
 import LocalDatabase from '@src/utils/LocalDatabase';
 import Util from '@src/utils/Util';
 import _ from 'lodash';
-import APIService, {METHOD} from '@services/api/miner/APIService';
 import ZMQService from 'react-native-zmq-service';
 import { CustomError, ExHandler } from './exception';
 import knownCode from './exception/customError/code/knownCode';
@@ -238,35 +239,6 @@ export default class NodeService {
     return null;
   }
 
-  // static sendPrivateKey = async(device:Device,privateKey:String,chain='incognito')=>{
-
-  //   try {
-  //     if(!_.isEmpty(device) && !_.isEmpty(privateKey)){
-  //       const actionPrivateKey = LIST_ACTION.GET_IP;
-  //       const dataResult = await Util.excuteWithTimeout(NodeService.send(device.data,actionPrivateKey,chain,Action.TYPE.PRODUCT_CONTROL),8);
-  //       console.log(TAG,'sendPrivateKey send dataResult = ',dataResult);
-  //       const { status = -1, data, message= ''} = dataResult;
-  //       if(status === 1){
-  //         const action:Action = NodeService.buildAction(device.data,LIST_ACTION.START,{product_id:device.data.product_id, privateKey:privateKey},chain,'incognito');
-  //         const params = {
-  //           type:action?.type||'',
-  //           data:action?.data||{}
-  //         };
-  //         console.log(TAG,'sendPrivateKey send init data = ',params);
-  //         const response = await APIService.sendValidatorKey(data,params);
-  //         const uid = dataResult?.uid||'';
-
-  //         console.log(TAG,'sendPrivateKey send post data = ',response);
-  //         return {...response,uid:uid};
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.log(TAG,'sendPrivateKey error = ',error);
-  //   }
-
-  //   return null;
-  // }
-
   static sendValidatorKey = async(device:Device,validatorKey:String,chain='incognito')=>{
 
     try {
@@ -358,9 +330,12 @@ export default class NodeService {
 
   static cleanOldDataForSetup = async ()=>{
     try {
-      const result = await SSHService.run('10.42.0.1','sudo rm -r /home/nuc/aos/inco-data/ && sudo rm -r /home/nuc/aos/inco-eth-kovan-data/ && sudo docker rm -f inc_miner && sudo docker rm -f inc_kovan');
+      const pathData = '/home/nuc/aos/data';
+      const rmConfigFile = `sudo rm ${pathData}/os_config.json ${pathData}/product_key.json ${pathData}/user.json ${pathData}/product_id.json`;
+      const result = await SSHService.run('10.42.0.1',`sudo rm -r /home/nuc/aos/inco-data/;sudo rm -r /home/nuc/aos/inco-eth-kovan-data/;sudo docker rm -f inc_miner;sudo docker rm -f inc_kovan;${rmConfigFile}`);
       console.log(TAG,'cleanOldDataForSetup data = ',result);
-      return !_.isEmpty(result) ;
+      DeviceLog.logInfo('cleanOldDataForSetup result = ' + _.toString(result));
+      return true ;
     } catch (error) {
       return false;
     }

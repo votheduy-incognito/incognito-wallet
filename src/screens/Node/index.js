@@ -1,37 +1,32 @@
-import _ from 'lodash';
-import React from 'react';
-import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {FlatList, View, ScrollView, RefreshControl} from 'react-native';
-import DeviceInfo from 'react-native-device-info';
-import {Alert, Button} from '@components/core';
+import { Alert, Button } from '@components/core';
+import DialogLoader from '@components/DialogLoader';
+import Device from '@models/device';
 import BaseScreen from '@screens/BaseScreen';
+import NodeItem from '@screens/Node/components/NodeItem';
+import WelcomeNodes from '@screens/Node/components/Welcome';
+import { getTokenList } from '@services/api/token';
+import { ExHandler } from '@services/exception';
+import linkingService from '@services/linking';
+import NodeService from '@services/NodeService';
+import accountService from '@services/wallet/accountService';
+import { getBeaconBestStateDetail, getBlockChainInfo, getTransactionByHash, listRewardAmount } from '@services/wallet/RpcClientService';
+import tokenService, { PRV } from '@services/wallet/tokenService';
+import { CONSTANT_CONFIGS } from '@src/constants';
 import routeNames from '@src/router/routeNames';
 import APIService from '@src/services/api/miner/APIService';
-import LocalDatabase from '@utils/LocalDatabase';
-import Util from '@utils/Util';
-import Device from '@models/device';
-import {
-  getBeaconBestStateDetail,
-  getBlockChainInfo,
-  getTransactionByHash,
-  listRewardAmount
-} from '@services/wallet/RpcClientService';
-import tokenService, {PRV} from '@services/wallet/tokenService';
-import {getTokenList} from '@services/api/token';
-import NodeService from '@services/NodeService';
-import {onClickView} from '@utils/ViewUtil';
-import accountService from '@services/wallet/accountService';
-import {ExHandler} from '@services/exception';
-import DialogLoader from '@components/DialogLoader';
-import WelcomeNodes from '@screens/Node/components/Welcome';
-import linkingService from '@services/linking';
-import {CONSTANT_CONFIGS} from '@src/constants';
 import COLORS from '@src/styles/colors';
 import convert from '@utils/convert';
-import NodeItem from '@screens/Node/components/NodeItem';
-import style from './style';
+import LocalDatabase from '@utils/LocalDatabase';
+import Util from '@utils/Util';
+import { onClickView } from '@utils/ViewUtil';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { FlatList, RefreshControl, ScrollView, View } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
+import { connect } from 'react-redux';
 import Header from './Header';
+import style from './style';
 
 export const TAG = 'Node';
 const BLOCK_TIME = 60 * 1000;
@@ -324,7 +319,9 @@ class Node extends BaseScreen {
 
   handleRefresh = async () => {
     const { isFetching } = this.state;
-
+    // to refresh token
+    let getListNodeToRefreshToken = await APIService.getProductList(true);
+    //////
     let list = (await LocalDatabase.getListDevices()) || [];
     list = list.map(item => Device.getInstance(item));
 

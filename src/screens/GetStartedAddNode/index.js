@@ -4,7 +4,7 @@ import BaseScreen from '@screens/BaseScreen';
 import CreateAccount from '@screens/CreateAccount';
 import images from '@src/assets';
 import ConnectInstruction from '@src/components/ConnectInstruction';
-import {ButtonExtension, InputExtension as Input, Text, TouchableOpacity} from '@src/components/core';
+import { ButtonExtension, InputExtension as Input, Text, TouchableOpacity } from '@src/components/core';
 import SetupDevice from '@src/components/SetupDevice';
 import { getAccountByName } from '@src/redux/selectors/account';
 import routeNames from '@src/router/routeNames';
@@ -14,7 +14,7 @@ import NodeService from '@src/services/NodeService';
 import { onClickView } from '@src/utils/ViewUtil';
 import _ from 'lodash';
 import React from 'react';
-import {Image, KeyboardAvoidingView, ScrollView, View} from 'react-native';
+import { Image, ScrollView, View } from 'react-native';
 import { connect } from 'react-redux';
 import { DialogNotify } from './DialogNotify';
 import GetQrcode from './GetQrCode';
@@ -191,6 +191,7 @@ class GetStartedAddNode extends BaseScreen {
     try{
       this.setState({
         loading:true,
+        errorInSetUp:null,
         currentPage:2,
       });
       // setup complete
@@ -222,16 +223,19 @@ class GetStartedAddNode extends BaseScreen {
       }
     }catch(e){
       let currentPage = 0;
-      const {code,message = '' } = e;
+      const code = e?.code;
+      // const {code,message = '' } = e;
+      let isShowInstructor = false;
       switch(code){
       case(knownCode.node_verify_code_fail):
         currentPage = 2;
         break;
-      case (knownCode.node_can_not_connect_hotspot):
+      case (knownCode.node_can_not_connect_hotspot):{
         currentPage = 2;
         // need show instruction
-
+        isShowInstructor = true;
         break;
+      }
       case (knownCode.node_auth_firebase_fail):{
         currentPage=2;
         break;
@@ -239,17 +243,14 @@ class GetStartedAddNode extends BaseScreen {
       }
       this.setState({
         loading:false,
-        isShowInstructor:currentPage == 2,
+        isShowInstructor:isShowInstructor,
         errorInSetUp:e,
         currentPage:currentPage
       });
     }
 
   }
-  // componentWillMount(){
-  //   console.log(TAG,'componentWillMount ---- ');
-  // }
-
+  
   handleStepConnect = async ()=>{
     try{
       this.setState({
@@ -295,7 +296,7 @@ class GetStartedAddNode extends BaseScreen {
     // Toast.showInfo('onResume isShowInstructor = '+isShowInstructor);
 
     if(isShowInstructor ){
-      const isConnectedHotspot = await this.viewSetupDevice.current?.checkIsConnectedWithHotspot()??false;
+      const isConnectedHotspot = true;//await this.viewSetupDevice.current?.checkIsConnectedWithHotspot()??false;
       this.setState({
         errorInSetUp:isConnectedHotspot?null:errorInSetUp,
         isShowInstructor:!isConnectedHotspot
@@ -413,9 +414,17 @@ class GetStartedAddNode extends BaseScreen {
 
   }
 
+  getErrorMessage = ()=>{
+    const { errorInSetUp } = this.state;
+    const message  = errorInSetUp?.message||'';
+    const code  = errorInSetUp?.code??0;
+    return !_.isEmpty(errorInSetUp)?`[${code}]${message}`:'';
+  }
+
   render() {
     const { loading,currentPage,currentConnect,errorMessage,errorInSetUp,isShowInstructor } = this.state;
-    const rootCauseMessage = errorInSetUp?.message??'';
+    
+    const rootCauseMessage = this.getErrorMessage();
     const {isRenderUI,navigation} = this.props;
     const hotspotName = this.viewSetupDevice?.current?.getHotspotName()??'';
     return (
