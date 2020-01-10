@@ -639,7 +639,7 @@ class SetupDevice extends BaseComponent {
     try {
       this.logOnView(`tryConnectHomeWifi BEGIN remove ssid = ${this.deviceMiner?.name??''}`);
       await this.deviceId?.current?.removeConnectionDevice(this.deviceMiner);
-      await Util.delay(3);
+      await Util.delay(5);
       let homeWifi = new ObjConnection();
       homeWifi.id = ssid,
       homeWifi.name = ssid;

@@ -5,7 +5,7 @@ import unfollowTokenIcon from '@assets/images/icons/unfollowToken.png';
 import withdrawBlack from '@assets/images/icons/withdraw_black.png';
 import { ActivityIndicator, Button, Image, Text, TouchableOpacity, View } from '@components/core';
 import Toast from '@components/core/Toast/Toast';
-import { DialogUpdateFirmware } from '@components/DialogNotify';
+// import { DialogUpdateFirmware } from '@components/DialogNotify';
 import OptionMenu from '@components/OptionMenu/OptionMenu';
 import FixModal from '@screens/Node/components/FixModal';
 import firmwareIcon from '@src/assets/images/icons/firmware.png';
@@ -184,7 +184,7 @@ class PNode extends React.Component {
               </View>
               {this.getDescriptionStatus()}
             </View>
-            <DialogUpdateFirmware
+            {/* <DialogUpdateFirmware
               visible={showUpdateFirmware}
               onClose={()=>
                 this.setState({
@@ -192,7 +192,7 @@ class PNode extends React.Component {
                 })
               }
               device={item}
-            />
+            /> */}
           </>
         )}
       </View>
