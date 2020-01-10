@@ -1,21 +1,22 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import _ from 'lodash';
-
-import {Text, Button, Image, View, ActivityIndicator} from '@components/core';
-import offlineIcon from '@src/assets/images/icons/offline_icon.png';
-import onlineIcon from '@src/assets/images/icons/online_icon.png';
-import moreIcon from '@src/assets/images/icons/more_icon.png';
-import wifiOffline from '@src/assets/images/icons/offline_wifi_icon.png';
-import wifiOnline from '@src/assets/images/icons/online_wifi_icon.png';
-import accountKey from '@src/assets/images/icons/account_key.png';
-
-import unfollowTokenIcon from '@src/assets/images/icons/unfollowToken.png';
 import withdrawBlack from '@assets/images/icons/withdraw_black.png';
+import { ActivityIndicator, Button, Image, Text, View } from '@components/core';
 import OptionMenu from '@components/OptionMenu/OptionMenu';
 import FixModal from '@screens/Node/components/FixModal';
+import accountKey from '@src/assets/images/icons/account_key.png';
+import moreIcon from '@src/assets/images/icons/more_icon.png';
+import offlineIcon from '@src/assets/images/icons/offline_icon.png';
+import wifiOffline from '@src/assets/images/icons/offline_wifi_icon.png';
+import onlineIcon from '@src/assets/images/icons/online_icon.png';
+import wifiOnline from '@src/assets/images/icons/online_wifi_icon.png';
+import unfollowTokenIcon from '@src/assets/images/icons/unfollowToken.png';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Loader from './Loader';
 import Rewards from './Rewards';
 import styles from './style';
+
+
 
 const MESSAGES = {
   ACCOUNT_NOT_FOUND: 'Missing account',
@@ -148,34 +149,40 @@ class VNode extends React.Component {
 
     return (
       <View style={styles.container}>
-        <View style={styles.row}>
-          <View style={[styles.itemLeft, styles.imageWrapper, styles.hidden]}>
-            <Image source={item.IsOnline ? onlineIcon : offlineIcon} />
-          </View>
-          <View style={styles.itemCenter}>
-            { isFetching ? <ActivityIndicator size="large" /> : <Rewards item={item} rewards={item.Rewards} allTokens={allTokens} /> }
-          </View>
-          <View style={[styles.itemRight, styles.imageWrapper]}>
-            {this.renderMenu()}
-          </View>
-        </View>
-        <View>
-          <View style={[styles.row, styles.centerAlign]}>
-            <View style={[styles.row, styles.centerAlign]}>
-              <Image source={item.IsOnline ? wifiOnline : wifiOffline} style={[styles.icon]} />
-              <Text style={[styles.itemLeft, !item.IsOnline && styles.greyText]}>Node {labelName}</Text>
-            </View>
-            {!isFetching && !item.IsOnline && (
-              <View style={styles.itemRight}>
-                <FixModal item={item} />
+        { isFetching ? <Loader /> : (
+          <>
+            <View style={styles.row}>
+              <View style={[styles.itemLeft, styles.imageWrapper, styles.hidden]}>
+                <Image source={item.IsOnline ? onlineIcon : offlineIcon} />
               </View>
-            )}
-          </View>
-          {this.getDescriptionStatus()}
-        </View>
+              <View style={styles.itemCenter}>
+                { isFetching ? <ActivityIndicator size="large" /> : <Rewards item={item} rewards={item.Rewards} allTokens={allTokens} /> }
+              </View>
+              <View style={[styles.itemRight, styles.imageWrapper]}>
+                {this.renderMenu()}
+              </View>
+            </View>
+            <View>
+              <View style={[styles.row, styles.centerAlign]}>
+                <View style={[styles.row, styles.centerAlign]}>
+                  <Image source={item.IsOnline ? wifiOnline : wifiOffline} style={[styles.icon]} />
+                  <Text style={[styles.itemLeft, !item.IsOnline && styles.greyText]}>Node {labelName}</Text>
+                </View>
+                {!isFetching && !item.IsOnline && (
+                  <View style={styles.itemRight}>
+                    <FixModal item={item} />
+                  </View>
+                )}
+              </View>
+              {this.getDescriptionStatus()}
+            </View>
+          </>
+        )
+        }
       </View>
     );
   }
+  
 }
 
 VNode.defaultProps = {
