@@ -1,25 +1,26 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-
-import {Text, Image, View, ActivityIndicator, TouchableOpacity, Button} from '@components/core';
+import accountKey from '@assets/images/icons/account_key.png';
+import wifiOffline from '@assets/images/icons/offline_wifi_icon.png';
+import wifiOnline from '@assets/images/icons/online_wifi_icon.png';
+import unfollowTokenIcon from '@assets/images/icons/unfollowToken.png';
+import withdrawBlack from '@assets/images/icons/withdraw_black.png';
+import { ActivityIndicator, Button, Image, Text, TouchableOpacity, View } from '@components/core';
+import Toast from '@components/core/Toast/Toast';
+// import { DialogUpdateFirmware } from '@components/DialogNotify';
+import OptionMenu from '@components/OptionMenu/OptionMenu';
+import FixModal from '@screens/Node/components/FixModal';
+import firmwareIcon from '@src/assets/images/icons/firmware.png';
+import moreIcon from '@src/assets/images/icons/more_icon.png';
 import offlineIcon from '@src/assets/images/icons/offline_icon.png';
 import onlineIcon from '@src/assets/images/icons/online_icon.png';
-import moreIcon from '@src/assets/images/icons/more_icon.png';
-
-import firmwareIcon from '@src/assets/images/icons/firmware.png';
-import OptionMenu from '@components/OptionMenu/OptionMenu';
-import Toast from '@components/core/Toast/Toast';
-import { DialogUpdateFirmware } from '@components/DialogNotify';
-import {COLORS} from '@src/styles';
-import withdrawBlack from '@assets/images/icons/withdraw_black.png';
-import FixModal from '@screens/Node/components/FixModal';
-import wifiOnline from '@assets/images/icons/online_wifi_icon.png';
-import wifiOffline from '@assets/images/icons/offline_wifi_icon.png';
-import accountKey from '@assets/images/icons/account_key.png';
-import unfollowTokenIcon from '@assets/images/icons/unfollowToken.png';
+import { COLORS } from '@src/styles';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Loader from './Loader';
 import Rewards from './Rewards';
 import styles from './style';
+
+
 
 const MESSAGES = {
   ACCOUNT_NOT_FOUND: 'Missing account',
@@ -101,9 +102,13 @@ class PNode extends React.Component {
     menu.push({
       id: 'update',
       icon: <Image source={firmwareIcon} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
-      label: 'Update firmware',
+      label:(
+        <View style={styles.withdrawMenuItem}>
+          <Text style={styles.withdrawText}>Update firmware</Text>
+        </View>
+      ),
       desc: 'Get Node perform better.',
-      handlePress: this.updateFirmware,
+      handlePress: null,
     });
 
     if (global.isDebug()) {
@@ -122,13 +127,15 @@ class PNode extends React.Component {
       const isEmptyRewards = _.isEmpty(rewards) || !_.some(rewards, value => value > 0);
       let onClick = () => onWithdraw(item);
       let label = 'Withdraw';
-      let desc = 'This might take up to 12 hours.';
-
+      let desc = 'Withdraw your rewards.';
       if (pendingWithdraw || isEmptyRewards) {
+        if (pendingWithdraw) {
+          desc = 'This might take up to 12 hours.';
+        }
         onClick = null;
         label = (
           <View style={styles.withdrawMenuItem}>
-            <Text style={styles.withdrawText}>Withdraw processing</Text>
+            <Text style={styles.withdrawText}>Withdraw {pendingWithdraw ? 'processing' : ''}</Text>
           </View>
         );
       }
@@ -152,40 +159,44 @@ class PNode extends React.Component {
 
     return (
       <View style={styles.container}>
-        <View style={styles.row}>
-          <TouchableOpacity onPress={this.showIp} style={[styles.itemLeft, styles.imageWrapper, styles.hidden]}>
-            <Image source={item.IsOnline ? onlineIcon : offlineIcon} />
-          </TouchableOpacity>
-          <View style={styles.itemCenter}>
-            { isFetching ? <ActivityIndicator size="large" /> : <Rewards item={item} rewards={item.Rewards} allTokens={allTokens} /> }
-          </View>
-          <View style={[styles.itemRight, styles.imageWrapper]}>
-            {this.renderMenu()}
-          </View>
-        </View>
-        <View>
-          <View style={[styles.row, styles.centerAlign]}>
-            <View style={[styles.row, styles.centerAlign]}>
-              <Image source={item.IsOnline ? wifiOnline : wifiOffline} style={[styles.icon]} />
-              <Text style={[styles.itemLeft, !item.IsOnline && styles.greyText]}>Device {labelName}</Text>
-            </View>
-            {!isFetching && !item.IsOnline && (
-              <View style={styles.itemRight}>
-                <FixModal item={item} />
+        { isFetching ? <Loader /> : (
+          <>
+            <View style={styles.row}>
+              <TouchableOpacity onPress={this.showIp} style={[styles.itemLeft, styles.imageWrapper, styles.hidden]}>
+                <Image source={item.IsOnline ? onlineIcon : offlineIcon} />
+              </TouchableOpacity>
+              <View style={styles.itemCenter}>
+                { isFetching ? <ActivityIndicator size="large" /> : <Rewards item={item} rewards={item.Rewards} allTokens={allTokens} /> }
               </View>
-            )}
-          </View>
-          {this.getDescriptionStatus()}
-        </View>
-        <DialogUpdateFirmware
-          visible={showUpdateFirmware}
-          onClose={()=>
-            this.setState({
-              showUpdateFirmware:false
-            })
-          }
-          device={item}
-        />
+              <View style={[styles.itemRight, styles.imageWrapper]}>
+                {this.renderMenu()}
+              </View>
+            </View>
+            <View>
+              <View style={[styles.row, styles.centerAlign]}>
+                <View style={[styles.row, styles.centerAlign]}>
+                  <Image source={item.IsOnline ? wifiOnline : wifiOffline} style={[styles.icon]} />
+                  <Text style={[styles.itemLeft, !item.IsOnline && styles.greyText]}>Device {labelName}</Text>
+                </View>
+                {!isFetching && !item.IsOnline && (
+                  <View style={styles.itemRight}>
+                    <FixModal item={item} />
+                  </View>
+                )}
+              </View>
+              {this.getDescriptionStatus()}
+            </View>
+            {/* <DialogUpdateFirmware
+              visible={showUpdateFirmware}
+              onClose={()=>
+                this.setState({
+                  showUpdateFirmware:false
+                })
+              }
+              device={item}
+            /> */}
+          </>
+        )}
       </View>
     );
   }

@@ -122,9 +122,36 @@ class WifiConnection extends BaseConnection {
     return false;
   } 
 
-  /**
-   * 
-   */
+  connectLastConnection = async (SSID:String) => {
+    const pro = async() => {
+      const logHandler = new ExHandler(new CustomError(knownCode.node_can_not_connect_hotspot));
+      const funcName = `${TAG}-connectLastConnection`;
+      
+      try {
+        if(Platform.OS == 'ios'){
+          const connect = await WifiManager.connectToSSID(SSID);
+          console.log(funcName, 'IOS  = ',connect);
+        }else{
+          const connectWifiFunc =  new Promise((resolve, reject) => {
+            
+            Wifi.connect(SSID,false,error => {
+              resolve(!error);
+            });
+            resolve(true);
+          });
+          const connect = !_.isEmpty(SSID) && await connectWifiFunc();
+          console.log(funcName, 'Android  = ',connect);
+        }
+        return true;
+      } catch (error) {
+        await APIService.trackLog({action:funcName, message:`error catch ${SSID}`});
+        
+      }
+      return false;
+    };
+    return Util.excuteWithTimeout(pro(),15);
+  };
+
   connectDevice = (wifiObj: ObjConnection) => {
     
     const pro = async() => {

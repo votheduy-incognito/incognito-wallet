@@ -65,7 +65,7 @@ const deviceTest ={ address: 'US',
   verify_code: 'AFB94E64-3FFE-4D1D-BB6C-A757AFCF61BF.1565596011816',
   zip: null };
 const errorMessage = 'Can\'t connect Node. Please check the internert information and try again';
-const TIMES_VERIFY = 90;
+const TIMES_VERIFY = 120;
 
 const labels = ['Connect Hotpot','Send Wifi Info','Verify Code'];
 const customStyles = {
@@ -141,8 +141,9 @@ class SetupDevice extends BaseComponent {
   }
   async componentDidMount(){
     super.componentDidMount();
-    // this.callVerifyCode();
+    
     // hien.ton test
+    // this.tryVerifyCode();
     // const state = await NetInfo.fetch().catch(console.log);
     // const {isConnected = false, isInternetReachable = false} = state ??{};
     // console.log(TAG, 'componentDidMount state ',state);
@@ -638,7 +639,7 @@ class SetupDevice extends BaseComponent {
     try {
       this.logOnView(`tryConnectHomeWifi BEGIN remove ssid = ${this.deviceMiner?.name??''}`);
       await this.deviceId?.current?.removeConnectionDevice(this.deviceMiner);
-      await Util.delay(3);
+      await Util.delay(5);
       let homeWifi = new ObjConnection();
       homeWifi.id = ssid,
       homeWifi.name = ssid;
@@ -913,17 +914,25 @@ class SetupDevice extends BaseComponent {
   tryVerifyCode = async()=> {
     const funcName = `${this.deviceIdFromQrcode}-tryVerifyCode`;
     const { verifyCode } = this.state;
+    let count = 0;
+    // const verifyCode = 'HIEN-TEST-verifyCode-011111';
     try {
       
-      await APIService.trackLog({action:funcName, message:`Bat dat tryVerifyCode - ${verifyCode}`});
+      await APIService.trackLog({action:funcName, message:`Bat dau tryVerifyCode - ${verifyCode}`});
       this.logOnView('Bat dat tryVerifyCode');
 
       
       console.log(TAG,' tryVerifyCode begin01 connected = ',this.isHaveNetwork);
+      
 
       const promiseNetwork = async ()=>{
+        count++;
+        
         console.log(TAG,' tryVerifyCode begin02 ---- connected = ',this.isHaveNetwork);
+        this.logOnView('tryVerifyCode--');
         const result = await NodeService.verifyProductCode(verifyCode).catch(console.log)??false;
+        // await APIService.trackLog({action:funcName, message:`tryVerifyCode count- ${count}`});
+        this.logOnView(`tryVerifyCode result=${result},count-${count}`);
         return result? result : new Error('no internet');
       };
       const resultStep2  = await Util.tryAtMost(promiseNetwork,TIMES_VERIFY,2);
@@ -932,12 +941,12 @@ class SetupDevice extends BaseComponent {
       });
 
       await APIService.trackLog({action:funcName, message:`tryVerifyCode => ${resultStep2?'SUCCESS':'FAIL'}`});
-      this.logOnView(`tryVerifyCode=> ${resultStep2?'SUCCESS':'FAIL'}`);
+      this.logOnView(`tryVerifyCode=> ${resultStep2?'SUCCESS':'FAIL'} -- count =${count}`);
 
       return resultStep2;
     } catch (error) {
       console.log(TAG,' tryVerifyCode errrrorr ---- ',error);
-      await APIService.trackLog({action:funcName,message:`code = ${verifyCode}`, rawData:`tryVerifyCode => ERROR = ${error?.message}`});
+      await APIService.trackLog({action:funcName,message:`code = ${verifyCode}`, rawData:`tryVerifyCode => ERROR = ${error?.message}-- count =${count}`});
       this.logOnView('tryVerifyCode=> FAIL');
       new ExHandler(new CustomError(knownCode.node_verify_code_fail)).showWarningToast().throw();
     }

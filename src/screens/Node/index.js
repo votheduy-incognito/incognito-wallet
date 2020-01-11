@@ -383,7 +383,7 @@ class Node extends BaseScreen {
           PaymentAddress: device.PaymentAddressFromServer
         });
         device.IsWithdrawable = await NodeService.isWithdrawable(device);
-        const message = 'Withdrawl initiated! This process may take up to 48 hours. Please do not close the app until withdrawal is complete and your balance is updated.';
+        const message = 'Withdrawl initiated! This process may take up to 12 hours. Please do not close the app until withdrawal is complete and your balance is updated.';
         this.showToastMessage(message);
       }
     } catch(error) {

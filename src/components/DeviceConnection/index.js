@@ -71,7 +71,10 @@ class DeviceConnection extends Component {
       const wifiCurrent = await this.getCurrentConnect();
       const isConnected = _.isEqual(wifiName,wifiCurrent?.name);
       console.log(TAG, 'connectAWifi begin  = ',wifiName);
-      result = isConnected? true : await this.connection.connectDevice(device).catch(console.log);
+      result = isConnected? true : await this.connection.connectDevice(device).catch(async e=>{
+        console.log(TAG, 'connectAWifi ERRRORRR  = ',wifiName);
+        await this.connection.connectLastConnection(wifiName);
+      });
     }
     return result??false;
   };

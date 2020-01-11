@@ -99,12 +99,12 @@ export default class NodeService {
     };
     console.log(TAG,' verifyProductCode begin 02');
     try {
-      const response = await Util.excuteWithTimeout(APIService.verifyCode(params),timeout);
+      const response = await Util.excuteWithTimeout(APIService.verifyCode(params),8);
       // console.log(TAG, 'callVerifyCode Verify Code Response: ', response);
-      const { status } = response;
+      const { status, data = {}} = response;
       if (status == 1) {
         console.log(TAG,'verifyProductCode successfully');
-        const { product } = response.data;
+        const { product } = data;
         return product;
       }
     } catch (error) {
