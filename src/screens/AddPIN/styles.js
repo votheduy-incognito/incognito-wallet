@@ -1,6 +1,15 @@
-import TextStyle, { FontStyle, scaleInApp } from '@src/styles/TextStyle';
 import { StyleSheet } from 'react-native';
-import {COLORS} from '@src/styles';
+import { COLORS } from '@src/styles';
+import dimension from '@src/styles/utils';
+
+const deviceWidth = dimension.deviceWidth();
+let keyboardWidth = 300;
+let keySize = 60;
+
+if (deviceWidth > 400) {
+  keyboardWidth = 360;
+  keySize = 80;
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -33,17 +42,17 @@ const styles = StyleSheet.create({
   keyboard: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: 300,
+    width: keyboardWidth,
     marginLeft: 'auto',
     marginRight: 'auto',
   },
   key: {
-    width: 60,
-    height: 60,
+    width: keySize,
+    height: keySize,
     margin: 20,
     borderWidth: 1,
     borderColor: COLORS.dark1,
-    borderRadius: 30,
+    borderRadius: keySize / 2,
     justifyContent: 'center',
     alignContent: 'center',
     flexDirection: 'row',
