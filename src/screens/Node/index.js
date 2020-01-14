@@ -9,7 +9,12 @@ import { ExHandler } from '@services/exception';
 import linkingService from '@services/linking';
 import NodeService from '@services/NodeService';
 import accountService from '@services/wallet/accountService';
-import { getBeaconBestStateDetail, getBlockChainInfo, getTransactionByHash, listRewardAmount } from '@services/wallet/RpcClientService';
+import {
+  getBeaconBestStateDetail,
+  getBlockChainInfo,
+  getTransactionByHash,
+  listRewardAmount
+} from '@services/wallet/RpcClientService';
 import tokenService, { PRV } from '@services/wallet/tokenService';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import routeNames from '@src/router/routeNames';
@@ -194,8 +199,18 @@ class Node extends BaseScreen {
     this.setState({ withdrawRequests });
   }
 
-  waitTxComplete = async (paymentAddress) => {
+  waitTxComplete = async (paymentAddress, time = 0) => {
     const { withdrawRequests } = this.state;
+
+    if (time > 5) {
+      delete withdrawRequests[paymentAddress];
+      await LocalDatabase.saveWithdrawRequests(withdrawRequests);
+      if (Object.keys(withdrawRequests).length === 0) {
+        this.timeout = null;
+      }
+      return;
+    }
+
     const tx = withdrawRequests[paymentAddress].lastTx;
     if (tx) {
       try {
@@ -209,7 +224,7 @@ class Node extends BaseScreen {
     }
 
     if (withdrawRequests[paymentAddress]) {
-      this.timeout = setTimeout(() => this.waitTxComplete(paymentAddress), BLOCK_TIME);
+      this.timeout = setTimeout(() => this.waitTxComplete(paymentAddress, time + 1), BLOCK_TIME);
     }
 
     if (Object.keys(withdrawRequests).length === 0) {
@@ -370,7 +385,8 @@ class Node extends BaseScreen {
             const token = allTokens.find(token => token.id === id);
             return convert.toHumanAmount(value, token.pDecimals);
           })
-          .value();
+          .value()
+          .uniq();
         withdrawRequests[PaymentAddress] = { tokenIds };
         this.setState({ withdrawRequests }, this.startWithdraw);
         const message = 'Withdrawl initiated! This process may take up to 2 hours. Please do not close the app until withdrawal is complete and your balance is updated.';
