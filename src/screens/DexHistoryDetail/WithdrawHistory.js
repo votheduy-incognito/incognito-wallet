@@ -20,6 +20,7 @@ const DexHistory = ({
   networkFee,
   networkFeeUnit,
   networkFeeDecimals,
+  paymentAddress,
   onContinue,
   loading,
 }) => (
@@ -54,6 +55,7 @@ const DexHistory = ({
       <Text style={stylesheet.field}>TO</Text>
       <Text style={stylesheet.textRight} numberOfLines={2}>{account}</Text>
     </View>
+    <TransactionID txId={paymentAddress} title="PAYMENT ADDRESS" />
     {status === TRANSFER_STATUS.INTERRUPTED && <Button style={stylesheet.button} title="Try again" onPress={onContinue} />}
     <Overlay
       isVisible={loading}
@@ -83,6 +85,7 @@ DexHistory.propTypes = {
   networkFee: PropTypes.number.isRequired,
   networkFeeUnit: PropTypes.string.isRequired,
   networkFeeDecimals: PropTypes.number.isRequired,
+  paymentAddress: PropTypes.string.isRequired,
   onContinue: PropTypes.func.isRequired,
   lockTime: PropTypes.number.isRequired,
   loading: PropTypes.bool,

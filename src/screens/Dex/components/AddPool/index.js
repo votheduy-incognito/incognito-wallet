@@ -23,7 +23,7 @@ import CODE from '@src/services/exception/customError/code';
 import {ExHandler} from '@services/exception';
 import Input from '../Input';
 import Loading from '../Loading';
-import {DEX_CHAIN_ACCOUNT, MESSAGES, MIN_INPUT, MULTIPLY, PRV_ID, SECOND} from '../../constants';
+import {DEX_CHAIN_ACCOUNT, MESSAGES, MIN_INPUT, MIN_VALUE, MULTIPLY, PRV_ID, SECOND} from '../../constants';
 import {mainStyle} from '../../style';
 
 class Pool extends React.Component {
@@ -40,7 +40,6 @@ class Pool extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { pairs, tokens, onUpdateParams } = this.props;
-    const { inputValue, outputValue } = this.state;
 
     if (tokens.length > 0 && (pairs !== prevProps.pairs || tokens !== prevProps.tokens)) {
       this.loadData();
@@ -50,13 +49,14 @@ class Pool extends React.Component {
       onUpdateParams(this.state);
     }
 
-    if (inputValue !== prevState.inputValue) {
-      this.estimateInputFee();
-    }
-
-    if (outputValue !== prevState.outputValue) {
-      this.estimateOutputFee();
-    }
+    // const { inputValue, outputValue } = this.state;
+    // if (inputValue !== prevState.inputValue) {
+    //   this.estimateInputFee();
+    // }
+    //
+    // if (outputValue !== prevState.outputValue) {
+    //   this.estimateOutputFee();
+    // }
   }
 
   estimateFeeForMainCrypto = (amount) => {
@@ -143,26 +143,28 @@ class Pool extends React.Component {
   }
 
   estimateInputFee = async () => {
-    const { inputToken, inputValue } = this.state;
-    let fee = 0;
-    this.setState({ inputFee: fee });
-    if (inputValue) {
-      fee = await this.estimateFee(inputToken, inputValue);
-    }
-    this.setState({ inputFee: fee });
-
-    console.debug('ESTIMATE INPUT FEE', fee);
+    // const { inputToken, inputValue } = this.state;
+    // let fee = 0;
+    // this.setState({ inputFee: fee });
+    // if (inputValue) {
+    //   fee = await this.estimateFee(inputToken, inputValue);
+    // }
+    // this.setState({ inputFee: fee });
+    //
+    // console.debug('ESTIMATE INPUT FEE', fee);
+    this.setState({ inputFee: MIN_VALUE });
   };
 
   estimateOutputFee = async () => {
-    const { outputValue, outputToken } = this.state;
-    let fee = 0;
-    this.setState({ outputFee: fee });
-    if (outputValue) {
-      fee = await this.estimateFee(outputToken, outputValue);
-    }
-    this.setState({ outputFee: fee });
-    console.debug('ESTIMATE OUTPUT FEE', fee);
+    // const { outputValue, outputToken } = this.state;
+    // let fee = 100;
+    // this.setState({ outputFee: fee });
+    // if (outputValue) {
+    //   fee = await this.estimateFee(outputToken, outputValue);
+    // }
+    // this.setState({ outputFee: fee });
+    // console.debug('ESTIMATE OUTPUT FEE', fee);
+    this.setState({ outputFee: MIN_VALUE });
   };
 
   async getBalance(token, valueKey) {
@@ -242,7 +244,7 @@ class Pool extends React.Component {
   };
 
   parseText(text, token, balance) {
-    let number = convertUtil.toNumber(text, true);
+    let number = convertUtil.toNumber(text);
     let value = 0;
     let error;
 

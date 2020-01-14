@@ -65,8 +65,6 @@ export default {
       text = text.replace(/,/g, '');
     }
 
-    console.debug('CONVERT', originalText, text);
-
     return _.toNumber(text);
   },
 
