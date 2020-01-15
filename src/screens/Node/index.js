@@ -385,8 +385,8 @@ class Node extends BaseScreen {
             const token = allTokens.find(token => token.id === id);
             return convert.toHumanAmount(value, token.pDecimals);
           })
-          .value()
-          .uniq();
+          .uniq()
+          .value();
         withdrawRequests[PaymentAddress] = { tokenIds };
         this.setState({ withdrawRequests }, this.startWithdraw);
         const message = 'Withdrawl initiated! This process may take up to 2 hours. Please do not close the app until withdrawal is complete and your balance is updated.';
