@@ -35,7 +35,6 @@ export default {
   Deposit: 'Deposit',
   Withdraw: 'Withdraw',
   Wizard: 'Wizard',
-  Game: 'Game',
   Dex: 'Dex',
   DexHistory: 'DexHistory',
   DexHistoryDetail: 'DexHistoryDetail',

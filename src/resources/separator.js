@@ -6,12 +6,17 @@ let groupSeparator = ',';
 
 try {
   if (Platform.OS === 'ios') {
-    const keyboard = (NativeModules.SettingsManager.settings.AppleKeyboards ||
-      NativeModules.SettingsManager.settings.ApplePasscodeKeyboards)[0];
-    locale = keyboard.slice(0, keyboard.indexOf('_'));
+    const settings = NativeModules.SettingsManager.settings || {};
+    const keyboard = settings.AppleLocale ||
+      (settings.AppleKeyboards || settings.ApplePasscodeKeyboards)[0];
+    if (keyboard.length <= 6) {
+      locale = keyboard.split('_')[1];
+    } else {
+      locale = keyboard.slice(0, keyboard.indexOf('_'));
+    }
   } else {
     locale = NativeModules.I18nManager.localeIdentifier;
-    locale = locale.slice(0, locale.indexOf('_'));
+    locale = locale.split('_')[1];
   }
 
   if (1.1.toLocaleString(locale).indexOf(',') > -1) {
@@ -21,6 +26,8 @@ try {
     decimalSeparator = '.';
     groupSeparator = ',';
   }
+
+  console.debug('LOCALE', locale, decimalSeparator, groupSeparator);
 } catch (error) {
   console.debug('ERROR', error);
 }

@@ -624,7 +624,7 @@ class Transfer extends React.PureComponent {
                       dexBalance={balance}
                       amount={amount <= balance ? amount / Math.pow(10, token?.pDecimals || 0) : null}
                       toAddress={action === 'deposit' ? dexMainAccount?.PaymentAddress : dexWithdrawAccount?.PaymentAddress}
-                      multiply={multiply || 1}
+                      multiply={multiply || 2}
                     />
                   </View>
                 )}
