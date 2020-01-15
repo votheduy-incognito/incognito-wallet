@@ -3,12 +3,24 @@ import { COLORS } from '@src/styles';
 import dimension from '@src/styles/utils';
 
 const deviceWidth = dimension.deviceWidth();
+const deviceHeight = dimension.deviceHeight();
 let keyboardWidth = 300;
 let keySize = 60;
+let margin = 20;
+let inputMargin = 45;
 
 if (deviceWidth > 400) {
-  keyboardWidth = 360;
-  keySize = 80;
+  if (deviceHeight > 760) {
+    keyboardWidth = 360;
+    keySize = 80;
+  } else {
+    keyboardWidth = 330;
+    keySize = 70;
+  }
+} else if (deviceHeight < 600) {
+  keyboardWidth = 240;
+  margin = 10;
+  inputMargin = 30;
 }
 
 const styles = StyleSheet.create({
@@ -26,7 +38,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginLeft: 'auto',
     marginRight: 'auto',
-    marginVertical: 50,
+    marginVertical: inputMargin,
   },
   dot: {
     width: 20,
@@ -49,7 +61,7 @@ const styles = StyleSheet.create({
   key: {
     width: keySize,
     height: keySize,
-    margin: 20,
+    margin: margin,
     borderWidth: 1,
     borderColor: COLORS.dark1,
     borderRadius: keySize / 2,

@@ -7,10 +7,7 @@ import { connect } from 'react-redux';
 import {updatePin} from '@src/redux/actions/pin';
 import {Icon} from 'react-native-elements';
 import convertUtil from '@utils/convert';
-import dimensions from '@src/styles/utils';
 import styles from './styles';
-
-console.debug('DEVICE WIDTH', dimensions.deviceWidth());
 
 export const TAG = 'AddPIN';
 
