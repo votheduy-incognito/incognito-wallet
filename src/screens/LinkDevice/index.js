@@ -49,7 +49,7 @@ class LinkDevice extends BaseScreen {
     }
   };
 
-  handleChangeQRCode = async (qrCode) => {
+  handleGetNodeInfo = async (qrCode) => {
     if (!qrCode) {
       return;
     }
@@ -72,6 +72,11 @@ class LinkDevice extends BaseScreen {
     } finally {
       this.setState({ loading: false });
     }
+  };
+
+  handleChangeQRCode = async (qrCode) => {
+    this.setState({ qrCode });
+    this.handleGetNodeInfo(qrCode);
   };
 
   render() {
