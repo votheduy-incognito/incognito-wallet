@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import {View, Text, Image} from 'react-native';
 import PropTypes from 'prop-types';
-import { TouchableOpacity, Container, ScrollView } from '@src/components/core';
+import { TouchableOpacity, Container, ScrollView, Button } from '@src/components/core';
 import { CONSTANT_CONFIGS, CONSTANT_COMMONS } from '@src/constants';
 import formatUtil from '@src/utils/format';
 import linkingService from '@src/services/linking';
 import external from '@src/assets/images/icons/external.png';
 import CopiableText from '@components/CopiableText/index';
 import {Icon} from 'react-native-elements';
+import QrCodeAddress from '@src/components/QrCodeAddress';
 import styleSheet from './styles';
 
 export default class TxHistoryDetail extends Component {
@@ -60,6 +61,31 @@ export default class TxHistoryDetail extends Component {
     );
   }
 
+  handleRetryExpiredDeposit = ({ id, decentralized, walletAddress, currencyType, userPaymentAddress, privacyTokenAddress, erc20TokenAddress, type }) => {
+    const { onRetryExpiredDeposit } = this.props;
+
+    return onRetryExpiredDeposit({ id, decentralized, walletAddress, currencyType, userPaymentAddress, privacyTokenAddress, erc20TokenAddress, type });
+  }
+
+  renderStatusValue = (statusText, statusColor, statusNumber, canRetryExpiredDeposit, history) => {
+    const text = (
+      <Text style={[styleSheet.statusText, { color: statusColor }]}>{`${statusText} ${(!!statusNumber || statusNumber === 0) ? `[${statusNumber}]` : ''}`}</Text>
+    );
+
+    return (
+      <View style={styleSheet.statusValueContainer}>
+        {text}
+        { canRetryExpiredDeposit && <Button style={styleSheet.statusRetryBtn} title='Retry' onPress={() => this.handleRetryExpiredDeposit(history)} /> }
+      </View>
+    );
+  }
+
+  renderQrCode = (data) => {
+    return (
+      <QrCodeAddress data={data} />
+    );
+  }
+
   render() {
     const { data } = this.props;
     const { typeText, balanceDirection, statusText, balanceColor, statusColor, statusNumber, history } = data;
@@ -68,6 +94,7 @@ export default class TxHistoryDetail extends Component {
     const feeUnit = isUseTokenFee ? history?.symbol : CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
     const formatFee = fee && formatUtil.amountFull(fee, isUseTokenFee ? history?.pDecimals : CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY);
     const amountStr = (history.amount && formatUtil.amount(history.amount, history.pDecimals)) || formatUtil.number(history.requestedAmount);
+    const canRetryExpiredDeposit = history?.canRetryExpiredDeposit;
 
     return (
       <ScrollView>
@@ -80,10 +107,18 @@ export default class TxHistoryDetail extends Component {
             })
           }
           {!!fee && this.renderRow({ label: 'Fee', valueText: `${formatFee} ${feeUnit}` })}
-          {!!statusText && this.renderRow({ label: 'Status', valueText: `${statusText} ${(!!statusNumber || statusNumber === 0) ? `[${statusNumber}]` : ''}`, valueTextStyle: { color: statusColor } })}
+          {!!statusText && this.renderRow({ label: 'Status', valueComponent: this.renderStatusValue(statusText, statusColor, statusNumber, canRetryExpiredDeposit, history) })}
+          {!!history?.id && this.renderRow({ label: 'ID', valueText: history?.id }) }
           {!!history?.time && this.renderRow({ label: 'Time', valueText: formatUtil.formatDateTime(history?.time) })}
+          {!!history?.expiredAt && this.renderRow({ label: 'Expired at', valueText: formatUtil.formatDateTime(history?.expiredAt) })}
           {!!history?.incognitoTx && this.renderRow({ label: 'TxID', valueComponent: this.renderTxId(history?.incognitoTx) })}
           {!!history?.toAddress && this.renderRow({ label: 'To address', valueText: history?.toAddress, valueTextProps: { ellipsizeMode: 'middle' }, copyable: true })}
+          {!!history?.depositAddress && (
+            <View style={styleSheet.depositAddressContainer}>
+              <Text>Deposit address</Text>
+              {this.renderQrCode(history?.depositAddress)}
+            </View>
+          )}
         </Container>
       </ScrollView>
     );
@@ -99,5 +134,6 @@ TxHistoryDetail.propTypes = {
     statusColor: PropTypes.string,
     statusNumber: PropTypes.string,
     history: PropTypes.object
-  }).isRequired
+  }).isRequired,
+  onRetryExpiredDeposit: PropTypes.func.isRequired
 };

@@ -44,4 +44,22 @@ export default StyleSheet.create({
     paddingHorizontal: 5,
     borderRadius: 3
   },
+  statusValueContainer: {
+    flex: 3,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  statusText: {
+    textAlign: 'left',
+    flex: 1
+  },
+  statusRetryBtn: {
+    height: 25,
+    marginLeft: 20
+  },
+  depositAddressContainer: {
+    marginTop: 20,
+    alignItems: 'center'
+  },
 });

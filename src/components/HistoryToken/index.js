@@ -33,7 +33,14 @@ const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, dec
       statusCode: h?.status,
       cancelable: h?.cancelable,
       currencyType: h?.currencyType,
-      decentralized: h?.decentralized
+      decentralized: h?.decentralized,
+      walletAddress: h?.walletAddress,
+      privacyTokenAddress: h?.privacyTokenAddress,
+      erc20TokenAddress: h?.erc20TokenAddress,
+      userPaymentAddress: h?.userPaymentAddress,
+      canRetryExpiredDeposit: h?.canRetryExpiredDeposit,
+      expiredAt: h?.expiredAt,
+      depositAddress: h?.address
     });
   });
 
