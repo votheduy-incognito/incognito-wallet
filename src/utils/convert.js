@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {DECIMAL_SEPARATOR} from '@src/resources/separator';
+import {getDecimalSeparator} from '@src/resources/separator';
 
 const checkAmount = (amount) => {
   if (!Number.isFinite(amount)) throw new Error('Can not format invalid amount');
@@ -18,8 +18,7 @@ export default {
       checkAmount(amount);
 
       const decision_rate = Number(decimals) ? 10 ** (Number(decimals)) : 1;
-      const _amount = amount / decision_rate;
-      return _amount;
+      return amount / decision_rate;
     } catch {
       return originAmount;
     }
@@ -49,13 +48,13 @@ export default {
   },
 
   toNumber(text, autoCorrect = false) {
+    const originalText = text;
+
     if (typeof text !== 'string') {
       return text;
     }
 
-    const originalText = text;
-
-    if (DECIMAL_SEPARATOR === ',') {
+    if (getDecimalSeparator() === ',') {
       text = text.replace(/\./g, '_');
       text = text.replace(/,/g, '.');
       text = text.replace(/_/g, ',');
@@ -64,6 +63,8 @@ export default {
     if (autoCorrect) {
       text = text.replace(/,/g, '');
     }
+
+    console.debug('CONVERT NUMBER', getDecimalSeparator(), originalText, text, _.toNumber(text));
 
     return _.toNumber(text);
   },

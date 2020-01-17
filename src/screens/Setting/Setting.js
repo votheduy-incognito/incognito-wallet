@@ -7,6 +7,7 @@ import LocalDatabase from '@utils/LocalDatabase';
 import Device from '@models/device';
 import PINSection from '@screens/Setting/PINSection';
 import BackupHeaderBtn from '@src/components/HeaderRight/Backup';
+import SeparatorSection from '@screens/Setting/SeparatorSection';
 import AccountSection from './AccountSection';
 import NetworkSection from './NetworkSection';
 import { settingStyle } from './style';
@@ -28,7 +29,7 @@ class Setting extends React.Component {
         </View>
       )
     };
-  }
+  };
 
   componentDidMount() {
     this.getDevices();
@@ -51,6 +52,7 @@ class Setting extends React.Component {
             defaultServerId={defaultServerId}
           />
           <PINSection navigation={navigation} />
+          <SeparatorSection />
         </View>
         <TouchableOpacity onPress={async()=>{
           if(__DEV__){

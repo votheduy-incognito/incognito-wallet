@@ -13,6 +13,7 @@ export const KEY_SAVE = {
   SEEN_DEPOSIT_GUIDE: CONSTANT_KEYS.SEEN_DEPOSIT_GUIDE,
   WITHDRAW_REQUESTS: CONSTANT_KEYS.WITHDRAW_REQUESTS,
   PIN: CONSTANT_KEYS.PIN,
+  DECIMAL_SEPARATOR: '$decimal_separator',
 };
 export default class LocalDatabase {
   static async getValue(key: String): String {
@@ -156,7 +157,7 @@ export default class LocalDatabase {
   static async saveWithdrawRequests(requests) {
     await LocalDatabase.saveValue(KEY_SAVE.WITHDRAW_REQUESTS, JSON.stringify(requests));
   }
-  
+
   static async getPIN() {
     const pin = await LocalDatabase.getValue(KEY_SAVE.PIN);
     return pin || '';
@@ -165,5 +166,13 @@ export default class LocalDatabase {
   static async savePIN(newPin) {
     const pin = await LocalDatabase.saveValue(KEY_SAVE.PIN, newPin);
     return pin || '';
+  }
+
+  static saveDecimalSeparator(separator) {
+    return LocalDatabase.saveValue(KEY_SAVE.DECIMAL_SEPARATOR, separator);
+  }
+
+  static getDecimalSeparator() {
+    return LocalDatabase.getValue(KEY_SAVE.DECIMAL_SEPARATOR);
   }
 }

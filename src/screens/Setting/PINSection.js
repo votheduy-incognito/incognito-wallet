@@ -13,8 +13,6 @@ import Section from './Section';
 
 const PINSection = ({ navigation, pin }) => {
   const [isBackedUpAccount, setBackupAccount] = useState(false);
-  
-  const items = [];
 
   navigation.addListener('willFocus', () => {
     storageService.getItem(CONSTANT_KEYS.IS_BACKEDUP_ACCOUNT)
@@ -22,27 +20,6 @@ const PINSection = ({ navigation, pin }) => {
       .catch(() => setBackupAccount(false));
   });
 
-  if (!pin) {
-    items.push({
-      title: 'Add PIN code',
-      desc: 'Add pin code',
-      icon: <Icon type='material' name="add" size={20} />,
-      handlePress: () => navigation.navigate(routeNames.AddPin, { action: 'create' }),
-    });
-  } else {
-    items.push({
-      title: 'Change PIN code',
-      desc: 'Change pin code',
-      icon: <Icon type='material' name="edit" size={20} />,
-      handlePress: () => navigation.navigate(routeNames.AddPin, { action: 'change' }),
-    });
-    items.push({
-      title: 'Remove PIN code',
-      desc: 'Remove pin code',
-      icon: <Icon type='material' name="remove" size={20} />,
-      handlePress: () => navigation.navigate(routeNames.AddPin, { action: 'remove' }),
-    });
-  }
 
   const showLockAlert = () => {
     Alert.alert(
