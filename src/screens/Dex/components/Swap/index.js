@@ -14,6 +14,8 @@ import {TradeHistory} from '@models/dexHistory';
 import PoolSize from '@screens/Dex/components/PoolSize';
 import {ExHandler} from '@services/exception';
 import {MESSAGES, MIN_INPUT, PRIORITY_LIST} from '@screens/Dex/constants';
+import {logEvent} from '@services/firebase';
+import {CONSTANT_EVENTS} from '@src/constants';
 import SwapSuccessDialog from '../SwapSuccessDialog';
 import Input from '../Input';
 import TradeConfirm from '../TradeConfirm';
@@ -273,7 +275,6 @@ class Swap extends React.Component {
     };
 
     console.debug('TRADE TOKEN', tradingFee, networkFee, networkFeeUnit, stopPrice, inputToken.symbol, outputToken.symbol, inputValue);
-
     if (inputToken?.id === PRV.id) {
       return accountService.createAndSendNativeTokenTradeRequestTx(
         wallet,
@@ -298,7 +299,7 @@ class Swap extends React.Component {
 
   trade = async (networkFee, networkFeeUnit, tradingFee, stopPrice) => {
     const { wallet, dexMainAccount } = this.props;
-    const { sending, balance, inputToken, inputValue } = this.state;
+    const { sending, balance, inputToken, inputValue, outputToken } = this.state;
     let prvBalance;
     let prvFee = 0;
     let tokenFee = 0;
@@ -330,14 +331,35 @@ class Swap extends React.Component {
         return this.setState({ tradeError: MESSAGES.NOT_ENOUGH_NETWORK_FEE });
       }
 
+      await logEvent(CONSTANT_EVENTS.TRADE, {
+        inputTokenId: inputToken.id,
+        inputTokenSymbol: inputToken.symbol,
+        outputTokenId: outputToken.id,
+        outputTokenSymbol: outputToken.symbol,
+      });
       result = await this.tradePToken(dexMainAccount, tradingFee, networkFee, networkFeeUnit, stopPrice);
       if (result && result.txId) {
         const { onAddHistory } = this.props;
         const { outputValue, outputToken } = this.state;
         this.setState({ showSwapSuccess: true, showTradeConfirm: false });
+
+        await logEvent(CONSTANT_EVENTS.TRADE_SUCCESS, {
+          inputTokenId: inputToken.id,
+          inputTokenSymbol: inputToken.symbol,
+          outputTokenId: outputToken.id,
+          outputTokenSymbol: outputToken.symbol,
+        });
+
         onAddHistory(new TradeHistory(result, inputToken, outputToken, inputValue, outputValue, networkFee, networkFeeUnit, tradingFee, stopPrice));
       }
     } catch (error) {
+      await logEvent(CONSTANT_EVENTS.TRADE_FAILED, {
+        inputTokenId: inputToken.id,
+        inputTokenSymbol: inputToken.symbol,
+        outputTokenId: outputToken.id,
+        outputTokenSymbol: outputToken.symbol,
+      });
+
       this.setState({ tradeError: new ExHandler(error).getMessage(MESSAGES.TRADE_ERROR) });
     } finally {
       this.setState({ sending: false });

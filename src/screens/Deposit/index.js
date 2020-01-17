@@ -4,9 +4,10 @@ import LoadingContainer from '@src/components/LoadingContainer';
 import { connect } from 'react-redux';
 import { genCentralizedDepositAddress, genERC20DepositAddress, genETHDepositAddress } from '@src/services/api/deposit';
 import { getMinMaxDepositAmount } from '@src/services/api/misc';
-import { CONSTANT_COMMONS } from '@src/constants';
+import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { ExHandler } from '@src/services/exception';
+import {logEvent} from '@services/firebase';
 import Deposit from './Deposit';
 
 class DepositContainer extends Component {
@@ -18,6 +19,14 @@ class DepositContainer extends Component {
       min: null,
       max: null
     };
+  }
+
+  componentDidMount() {
+    const { selectedPrivacy } = this.props;
+    logEvent(CONSTANT_EVENTS.DEPOSIT, {
+      tokenId: selectedPrivacy.tokenId,
+      tokenSymbol: selectedPrivacy.symbol,
+    });
   }
 
   getMinMaxAmount = async () => {

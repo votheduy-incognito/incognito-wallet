@@ -1,19 +1,23 @@
 import firebase from 'react-native-firebase';
 import _ from 'lodash';
-import LocalDatabase from '@src/utils/LocalDatabase';
+import DeviceInfo from 'react-native-device-info';
 
 export const notifications = firebase.notifications;
 const TAG = 'firebase';
-export const logEvent = async (event,eventParams = {},isGetUserInfo = true)=>{
+
+export const logEvent = async (event, data = {}) => {
   if(!_.isEmpty(event)){
     try {
-      let user = isGetUserInfo ? await LocalDatabase.getUserInfo().catch(console.log):null;
-      user = _.isEmpty(user)?{}:{email:user.toJSON().email};
-      firebase.analytics().logEvent(event, {...user, ...eventParams});  
+      const deviceId = DeviceInfo.getUniqueId();
+      const instance = firebase.analytics();
+      const result = await instance.logEvent(event, {
+        deviceId,
+        ...data,
+      });
+      console.debug(TAG, 'logEvent success', result, event);
     } catch (error) {
-      console.log(TAG,'logEvent error = ',error);
+      console.debug(TAG,'logEvent error = ',error);
     }
-    
   }
 };
 export const initFirebaseNotification = async () => {
@@ -42,7 +46,7 @@ export const createNotificationChannel = (channelId, channelName, channelDesc) =
 
 export const buildNotification = ({ id, title, body , data, androidChannelId } = {}) => {
   const noti = new notifications.Notification().setNotificationId(id);
-  
+
   title && noti.setTitle(title);
   body && noti.setBody(body);
   data && noti.setData(data);
@@ -51,7 +55,7 @@ export const buildNotification = ({ id, title, body , data, androidChannelId } =
     .android.setPriority(firebase.notifications.Android.Priority.High) // set priority in Android
     .android.setChannelId(androidChannelId) // should be the same when creating channel for Android
     .android.setAutoCancel(true); // To remove notification when tapped on it
-  
+
   return noti;
 };
 

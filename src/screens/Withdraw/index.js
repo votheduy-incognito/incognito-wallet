@@ -1,5 +1,5 @@
 import { Button, Container, Text } from '@src/components/core';
-import { CONSTANT_COMMONS } from '@src/constants';
+import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
@@ -13,6 +13,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import LoadingContainer from '@src/components/LoadingContainer';
 import SimpleInfo from '@src/components/SimpleInfo';
+import {logEvent} from '@services/firebase';
 import Withdraw from './Withdraw';
 
 class WithdrawContainer extends Component {
@@ -29,6 +30,13 @@ class WithdrawContainer extends Component {
 
   componentDidMount() {
     this.getMinMaxAmount();
+
+    const { selectedPrivacy } = this.props;
+
+    logEvent(CONSTANT_EVENTS.VIEW_WITHDRAW, {
+      tokenId: selectedPrivacy?.tokenId,
+      tokenSymbol: selectedPrivacy?.symbol,
+    });
   }
 
   getTokenObject = ({ amount }) => {
@@ -170,7 +178,7 @@ class WithdrawContainer extends Component {
         currencyType: selectedPrivacy?.currencyType,
         memo
       });
-      
+
       return address;
     } catch (e) {
       throw new CustomError(ErrorCode.withdraw_gen_withdraw_address_failed, { rawError: e });
@@ -198,7 +206,7 @@ class WithdrawContainer extends Component {
       const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
       const tx = await this.handleBurningToken({ remoteAddress, amount, fee, isUsedPRVFee, feeForBurn });
 
-      // ERC20 
+      // ERC20
       if (selectedPrivacy?.isErc20Token) {
         return await addERC20TxWithdraw({
           amount,

@@ -13,7 +13,8 @@ import CurrentBalance from '@src/components/CurrentBalance';
 import { isExchangeRatePToken } from '@src/services/wallet/RpcClientService';
 import { createForm, InputQRField, InputField, InputMaxValueField, validator } from '@src/components/core/reduxForm';
 import { ExHandler } from '@src/services/exception';
-import { CONSTANT_COMMONS } from '@src/constants';
+import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
+import {logEvent} from '@services/firebase';
 import { homeStyle } from './style';
 
 const formName = 'sendCrypto';
@@ -129,17 +130,30 @@ class SendCrypto extends React.Component {
   }
 
   handleSend = async values => {
+    const { selectedPrivacy } = this.props;
     try {
       const { handleSend } = this.props;
       const { estimateFeeData: { fee, feeUnit, isUseTokenFee } } = this.state;
 
       if (typeof handleSend === 'function') {
+        await logEvent(CONSTANT_EVENTS.SEND, {
+          tokenId: selectedPrivacy.tokenId,
+          tokenSymbol: selectedPrivacy.symbol,
+        });
         await handleSend({ ...values, fee, feeUnit, isUseTokenFee });
+        await logEvent(CONSTANT_EVENTS.SEND_SUCCESS, {
+          tokenId: selectedPrivacy.tokenId,
+          tokenSymbol: selectedPrivacy.symbol,
+        });
       }
     } catch (e) {
+      await logEvent(CONSTANT_EVENTS.SEND_FAILED, {
+        tokenId: selectedPrivacy.tokenId,
+        tokenSymbol: selectedPrivacy.symbol,
+      });
       new ExHandler(e, 'Something went wrong. Just tap the Send button again.').showErrorToast(true);
     }
-  }
+  };
 
   handleSelectFee = (estimateFeeData) => {
     this.setState({ estimateFeeData });

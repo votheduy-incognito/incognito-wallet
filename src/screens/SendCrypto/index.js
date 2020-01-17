@@ -9,7 +9,8 @@ import tokenService from '@src/services/wallet/tokenService';
 import { getBalance } from '@src/redux/actions/account';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
-import { CONSTANT_COMMONS } from '@src/constants';
+import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
+import {logEvent} from '@services/firebase';
 import SendCrypto from './SendCrypto';
 
 class SendCryptoContainer extends Component {
@@ -20,6 +21,15 @@ class SendCryptoContainer extends Component {
       receiptData: null
     };
   }
+
+  componentDidMount() {
+    const { selectedPrivacy } = this.props;
+    logEvent(CONSTANT_EVENTS.VIEW_SEND, {
+      tokenId: selectedPrivacy.tokenId,
+      tokenSymbol: selectedPrivacy.symbol,
+    });
+  }
+
 
   getTxInfo = ({ message } = {}) => message
 

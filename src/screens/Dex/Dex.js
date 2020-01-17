@@ -12,6 +12,8 @@ import addLiquidityIcon from '@src/assets/images/icons/add_liquidity_icon.png';
 import removeLiquidityIcon from '@src/assets/images/icons/remove_liquidity_icon.png';
 import dexUtils from '@utils/dex';
 import COLORS from '@src/styles/colors';
+import {logEvent} from '@services/firebase';
+import {CONSTANT_EVENTS} from '@src/constants';
 import AddPool from './components/AddPool';
 import RemovePool from './components/RemovePool';
 import Swap from './components/Swap';
@@ -86,7 +88,12 @@ class Dex extends React.Component {
 
   componentDidMount() {
     const { navigation } = this.props;
-    this.listener = navigation.addListener('didFocus', () => {
+    this.listener = navigation.addListener('didFocus', async () => {
+      const { mode } = this.state;
+      if (mode === MODES.SWAP) {
+        await logEvent(CONSTANT_EVENTS.VIEW_TRADE);
+      }
+
       const { navigation } = this.props;
       if (navigation.state?.params?.mode) {
         const mode = navigation.state.params.mode;

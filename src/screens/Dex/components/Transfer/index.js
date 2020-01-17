@@ -12,7 +12,7 @@ import {
 import {ScrollView, TextInput as ReactInput, Keyboard, TouchableWithoutFeedback, TextInput, VirtualizedList} from 'react-native';
 import accountService from '@services/wallet/accountService';
 import { isExchangeRatePToken } from '@src/services/wallet/RpcClientService';
-import {CONSTANT_COMMONS} from '@src/constants';
+import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
 import {ExHandler} from '@services/exception';
@@ -27,6 +27,7 @@ import tokenService, {PRV} from '@services/wallet/tokenService';
 import {DepositHistory, WithdrawHistory} from '@models/dexHistory';
 import Toast from '@components/core/Toast/Toast';
 import VerifiedText from '@components/VerifiedText/index';
+import {logEvent} from '@services/firebase';
 import TransferSuccessPopUp from '../TransferSuccessPopUp';
 import {WAIT_TIME, MESSAGES, MIN_INPUT, MULTIPLY, MAX_WAITING_TIME, PRV_ID} from '../../constants';
 import { mainStyle, modalStyle, tokenStyle } from '../../style';
@@ -133,10 +134,30 @@ class Transfer extends React.PureComponent {
   async deposit({ token, amount, account, fee, feeUnit }) {
     const { dexMainAccount, onAddHistory } = this.props;
     let res;
-    if (token.id === PRV_ID) {
-      res = await this.sendPRV(account, dexMainAccount, amount, fee);
-    } else {
-      res = await this.sendPToken(account, dexMainAccount, token, amount, null, feeUnit === PRV.symbol ? fee : 0, feeUnit !== PRV.symbol ? fee : 0);
+
+    await logEvent(CONSTANT_EVENTS.DEPOSIT_PDEX, {
+      tokenId: token.id,
+      tokenSymbol: token.symbol,
+    });
+
+    try {
+      if (!token.id || token.id === PRV_ID) {
+        res = await this.sendPRV(account, dexMainAccount, amount, fee);
+      } else {
+        res = await this.sendPToken(account, dexMainAccount, token, amount, null, feeUnit === PRV.symbol ? fee : 0, feeUnit !== PRV.symbol ? fee : 0);
+      }
+
+      await logEvent(CONSTANT_EVENTS.DEPOSIT_PDEX_SUCCESS, {
+        tokenId: token.id,
+        tokenSymbol: token.symbol,
+      });
+    } catch (e) {
+      await logEvent(CONSTANT_EVENTS.DEPOSIT_PDEX_FAILED, {
+        tokenId: token.id,
+        tokenSymbol: token.symbol,
+      });
+
+      throw e;
     }
 
     onAddHistory(new DepositHistory(res, token, amount, fee, feeUnit, account));
@@ -152,7 +173,11 @@ class Transfer extends React.PureComponent {
     let res2;
 
     try {
-      if (token.id === PRV_ID) {
+      await logEvent(CONSTANT_EVENTS.WITHDRAW_PDEX, {
+        tokenId: token.id,
+        tokenSymbol: token.symbol,
+      });
+      if (!token.id || token.id === PRV_ID) {
         res1 = await sendPRV(dexMainAccount, dexWithdrawAccount, amount + fee, fee);
         newHistory = new WithdrawHistory(res1, token, amount, rawFee, PRV.symbol, account);
         WithdrawHistory.currentWithdraw = newHistory;
@@ -178,7 +203,16 @@ class Transfer extends React.PureComponent {
       WithdrawHistory.currentWithdraw = null;
       onUpdateHistory(newHistory);
       Toast.showSuccess(MESSAGES.WITHDRAW_COMPLETED);
+
+      await logEvent(CONSTANT_EVENTS.WITHDRAW_PDEX_SUCCESS, {
+        tokenId: token.id,
+        tokenSymbol: token.symbol,
+      });
     } catch (error) {
+      await logEvent(CONSTANT_EVENTS.WITHDRAW_PDEX_FAILED, {
+        tokenId: token.id,
+        tokenSymbol: token.symbol,
+      });
       WithdrawHistory.currentWithdraw = null;
       onUpdateHistory(newHistory);
       throw error;

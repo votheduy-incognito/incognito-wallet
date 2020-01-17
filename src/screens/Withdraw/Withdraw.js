@@ -3,7 +3,7 @@ import { createForm, InputMaxValueField, InputQRField, validator } from '@src/co
 import CurrentBalance from '@src/components/CurrentBalance';
 import EstimateFee from '@src/components/EstimateFee';
 import LoadingTx from '@src/components/LoadingTx';
-import { CONSTANT_COMMONS } from '@src/constants';
+import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
 import { ExHandler } from '@src/services/exception';
 import convertUtil from '@src/utils/convert';
 import formatUtil from '@src/utils/format';
@@ -14,6 +14,7 @@ import { isExchangeRatePToken } from '@src/services/wallet/RpcClientService';
 import { connect } from 'react-redux';
 import { detectToken } from '@src/utils/misc';
 import { change, Field, formValueSelector, isValid } from 'redux-form';
+import {logEvent} from '@services/firebase';
 import style from './style';
 
 const formName = 'withdraw';
@@ -57,7 +58,6 @@ class Withdraw extends React.Component {
     this.setFormValidator({ maxAmount: this.getMaxAmount(), minAmount: this.getMinAmount() });
     this.getSupportedFeeTypes();
   }
-
 
   componentDidUpdate(prevProps, prevState) {
     const { selectedPrivacy } = this.props;
@@ -125,13 +125,18 @@ class Withdraw extends React.Component {
   }
 
   handleSubmit = async values => {
+    const { selectedPrivacy } = this.props;
     try {
       let res;
       const { estimateFeeData: { fee }, isUsedPRVFee, feeForBurn } = this.state;
-      const {  handleCentralizedWithdraw, handleDecentralizedWithdraw, navigation, selectedPrivacy } = this.props;
+      const {  handleCentralizedWithdraw, handleDecentralizedWithdraw, navigation } = this.props;
       const { amount, toAddress, memo } = values;
       const convertedAmount = convertUtil.toNumber(amount);
 
+      await logEvent(CONSTANT_EVENTS.WITHDRAW, {
+        tokenId: selectedPrivacy?.tokenId,
+        tokenSymbol: selectedPrivacy?.symbol,
+      });
       if (selectedPrivacy?.isDecentralized) {
         res = await handleDecentralizedWithdraw({
           amount: convertedAmount,
@@ -153,12 +158,23 @@ class Withdraw extends React.Component {
 
       if (res) {
         Toast.showSuccess('Success! You withdrew funds.');
+
+        await logEvent(CONSTANT_EVENTS.WITHDRAW_SUCCESS, {
+          tokenId: selectedPrivacy?.tokenId,
+          tokenSymbol: selectedPrivacy?.symbol,
+        });
+
         navigation.goBack();
         return res;
       }
 
       throw new Error('Withdraw failed');
     } catch (e) {
+      await logEvent(CONSTANT_EVENTS.WITHDRAW, {
+        tokenId: selectedPrivacy?.tokenId,
+        tokenSymbol: selectedPrivacy?.symbol,
+      });
+
       new ExHandler(e, 'Something went wrong. Please try again.').showErrorToast(true);
     }
   }
@@ -202,7 +218,7 @@ class Withdraw extends React.Component {
       const isUsed = await isExchangeRatePToken(selectedPrivacy.tokenId);
       isUsed && supportedFeeTypes.push({
         tokenId: selectedPrivacy.tokenId,
-        symbol: selectedPrivacy.symbol
+        tokenSymbol: selectedPrivacy.symbol
       });
     } catch (e) {
       new ExHandler(e);
