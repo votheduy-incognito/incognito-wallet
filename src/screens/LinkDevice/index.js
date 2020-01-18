@@ -81,7 +81,7 @@ class LinkDevice extends BaseScreen {
 
   render() {
     const { container } = styles;
-    const { loading, nodeInfo, qrCode } = this.state;
+    const { loading, nodeInfo } = this.state;
     return (
       <View style={container}>
         <Loader loading={loading} />
@@ -92,7 +92,6 @@ class LinkDevice extends BaseScreen {
           label='QR Code'
           placeholder='Enter your node qr code'
           style={styles.input}
-          value={qrCode}
         />
         { !!nodeInfo && (
         <>
