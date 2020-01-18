@@ -218,7 +218,7 @@ class Withdraw extends React.Component {
       const isUsed = await isExchangeRatePToken(selectedPrivacy.tokenId);
       isUsed && supportedFeeTypes.push({
         tokenId: selectedPrivacy.tokenId,
-        tokenSymbol: selectedPrivacy.symbol
+        symbol: selectedPrivacy.symbol
       });
     } catch (e) {
       new ExHandler(e);
