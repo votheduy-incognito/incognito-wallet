@@ -1,5 +1,4 @@
 import { ScrollView, Text, TouchableOpacity, View } from '@src/components/core';
-import { CONSTANT_CONFIGS } from '@src/constants';
 import { getPassphrase } from '@src/services/wallet/passwordService';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -8,6 +7,7 @@ import Device from '@models/device';
 import PINSection from '@screens/Setting/PINSection';
 import BackupHeaderBtn from '@src/components/HeaderRight/Backup';
 import SeparatorSection from '@screens/Setting/SeparatorSection';
+import AppUpdater from '@components/AppUpdater/index';
 import AccountSection from './AccountSection';
 import NetworkSection from './NetworkSection';
 import { settingStyle } from './style';
@@ -60,7 +60,7 @@ class Setting extends React.Component {
             alert(JSON.stringify('passphrase =' + passphrase));
           }
         }}
-        ><Text style={settingStyle.textVersion}>{`v${CONSTANT_CONFIGS.BUILD_VERSION}`}</Text>
+        ><Text style={settingStyle.textVersion}>{`v${AppUpdater.appVersion}`}</Text>
         </TouchableOpacity>
       </ScrollView>
     );

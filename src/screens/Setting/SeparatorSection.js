@@ -31,7 +31,7 @@ const SeparatorSection = () => {
             pinSection.item,
           ]}
         >
-          <Text style={pinSection.name}>Use comma as decimal separator instead of period</Text>
+          <Text style={pinSection.name}>Use decimal comma instead of point</Text>
           <SwitchToggle
             containerStyle={pinSection.switch}
             circleStyle={pinSection.circle}
