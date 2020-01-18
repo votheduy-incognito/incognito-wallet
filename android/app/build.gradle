@@ -84,6 +84,7 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -137,8 +138,8 @@ android {
         applicationId "com.incognito.wallet"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 60
-        versionName "3.5.2"
+        versionCode 61
+        versionName "3.6.0"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     signingConfigs {
@@ -162,15 +163,24 @@ android {
     }
     buildTypes {
         release {
+            resValue "string", "CodePushDeploymentKey", '"1IKsmeDfHkZ2uxo3CvcCamuLdUTazow5b3tAu"'
             resValue 'string', 'app_name', '"Incognito Wallet"'
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
         }
         debug {
+            resValue "string", "CodePushDeploymentKey", '"DKYq2x5W3PEMjVs_BSzQygQD26Q0oOYIb8OXM"'
             resValue 'string', 'app_name', '"Debug Incognito Wallet"'
             applicationIdSuffix '.debug'
             debuggable true
+        }
+        releaseStaging {
+            initWith release
+            resValue 'string', 'app_name', '"Staging Incognito Wallet"'
+            resValue "string", "CodePushDeploymentKey", '"_BjHPzC-bAXNbHE-OUSfpecVQUdSR5plKDhhp"'
+            applicationIdSuffix '.staging'
+            matchingFallbacks = ['release']
         }
     }
 //    productFlavors {
@@ -228,6 +238,7 @@ dependencies {
         def hermesPath = "../../node_modules/hermes-engine/android/";
         debugImplementation files(hermesPath + "hermes-debug.aar")
         releaseImplementation files(hermesPath + "hermes-release.aar")
+        releaseStagingImplementation files(hermesPath + "hermes-release.aar")
     } else {
         implementation jscFlavor
     }
@@ -243,3 +254,5 @@ task copyDownloadableDepsToLibs(type: Copy) {
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 apply plugin: 'com.google.gms.google-services'
+googleServices { disableVersionCheck = true }
+

@@ -1,5 +1,6 @@
+import codePush from 'react-native-code-push';
 import AppScreen from '@src/components/AppScreen';
-import { StatusBar, Toast } from '@src/components/core';
+import {StatusBar, Toast} from '@src/components/core';
 import DeviceLog from '@src/components/DeviceLog';
 import QrScanner from '@src/components/QrCodeScanner';
 import configureStore from '@src/redux/store';
@@ -10,11 +11,11 @@ import { initFirebaseNotification } from '@src/services/firebase';
 import React, { PureComponent } from 'react';
 import 'react-native-console-time-polyfill';
 import { Provider } from 'react-redux';
-import { CONSTANT_CONFIGS } from './constants';
+import AppUpdater from '@components/AppUpdater/index';
 
-const TAG = 'App';
-const isShowDeviceLog = !CONSTANT_CONFIGS.isMainnet;
+const isShowDeviceLog = false;
 const store = configureStore();
+const codePushOptions = { checkFrequency: codePush.CheckFrequency.MANUAL };
 
 // gets the current screen from navigation state
 function getActiveRouteName(navigationState) {
@@ -58,13 +59,13 @@ class App extends PureComponent {
             }}
           />
           {isShowDeviceLog && <DeviceLog />}
+          <AppUpdater />
           <QrScanner />
           <Toast />
-          
         </AppScreen>
       </Provider>
     );
   }
 }
 
-export default App;
+export default codePush(codePushOptions)(App);

@@ -1,3 +1,4 @@
+import codePush from 'react-native-code-push';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { getBalance as getAccountBalance, reloadAccountFollowingToken, /** loadAllPTokenHasBalance */ } from '@src/redux/actions/account';
 import { clearSelectedPrivacy, setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
@@ -16,6 +17,7 @@ import { AppState } from 'react-native';
 import { connect } from 'react-redux';
 import { DEX } from '@src/utils/dex';
 import { CONSTANT_KEYS } from '@src/constants';
+import AppUpdater from '@components/AppUpdater/index';
 import { DialogUpgradeToMainnet } from './ChildViews';
 import Home from './Home';
 
@@ -70,7 +72,7 @@ class HomeContainer extends Component {
       const { tokens, account } = this.props;
       const isChecked = !!JSON.parse(await storageService.getItem(CONSTANT_KEYS.IS_CHECK_FOLLOWED_TOKEN));
       const tokenIds = tokens.map(t => t.id);
-  
+
       if (!isChecked) {
         countFollowToken(tokenIds, account?.PublicKey).catch(null);
         storageService.setItem(CONSTANT_KEYS.IS_CHECK_FOLLOWED_TOKEN, JSON.stringify(true));
@@ -78,12 +80,13 @@ class HomeContainer extends Component {
     } catch (e) {
       new ExHandler(e);
     }
-  }
+  };
 
   handleLogin = (nextAppState) => {
     const { appState } = this.state;
     if (appState.match(/background/) && nextAppState === 'active') {
       const { navigation, pin } = this.props;
+      AppUpdater.update();
       if (pin) {
         navigation.navigate(routeNames.AddPin, {action: 'login'});
       }
