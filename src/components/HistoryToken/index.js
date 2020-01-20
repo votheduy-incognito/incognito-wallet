@@ -19,7 +19,8 @@ const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, dec
   historiesFromApi && historiesFromApi.forEach((h) => {
     data.push({
       id: h?.id,
-      incognitoTx: h?.incognitoTx,
+      inchainTx: h?.inchainTx,
+      outchainTx: h?.outchainTx,
       time: h?.updatedAt,
       type: h?.addressType,
       toAddress: h?.userPaymentAddress,
