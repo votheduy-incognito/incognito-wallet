@@ -10,6 +10,9 @@ import {CONSTANT_CONFIGS} from '@src/constants';
 
 import styles from './styles';
 
+let displayedNews = false;
+let ignored = false;
+
 class AppUpdater extends PureComponent {
   static instance = null;
 
@@ -39,10 +42,15 @@ class AppUpdater extends PureComponent {
   };
 
   async handleDisplayNews() {
+    if (displayedNews) {
+      return;
+    }
+
     try {
       const metadata = await codePush.getUpdateMetadata();
       const {isFirstRun, description, label} = metadata;
       if (isFirstRun && description) {
+        displayedNews = true;
         this.setState({
           news: description,
           appVersion: `${CONSTANT_CONFIGS.BUILD_VERSION}.${label.substring(1)}`
@@ -66,8 +74,11 @@ class AppUpdater extends PureComponent {
     case codePush.SyncStatus.UP_TO_DATE:
       this.handleDisplayNews();
       break;
+    case codePush.SyncStatus.UPDATE_IGNORED:
+      ignored = true;
+      break;
     case codePush.SyncStatus.UNKNOWN_ERROR:
-      Toast.showError('Update failed.');
+      console.debug('Update failed.');
       this.setState({downloading: false, updating: false});
       break;
     }
@@ -79,6 +90,10 @@ class AppUpdater extends PureComponent {
   };
 
   async checkNewVersion() {
+    if (ignored) {
+      return;
+    }
+
     try {
       await codePush.sync({
         updateDialog: {
