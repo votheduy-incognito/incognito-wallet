@@ -47,10 +47,10 @@ export default class TxHistoryDetail extends Component {
     );
   };
 
-  renderTxId = txID => {
+  renderTxId = (txLink) => {
     return (
-      <TouchableOpacity style={styleSheet.txButton} onPress={() => { linkingService.openUrl(`${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txID}`); }}>
-        {this.renderText({ text: txID, style: [styleSheet.valueText, { paddingRight: 20 }], textProps: { ellipsizeMode: 'middle' } })}
+      <TouchableOpacity style={styleSheet.txButton} onPress={() => { linkingService.openUrl(txLink); }}>
+        {this.renderText({ text: txLink, style: [styleSheet.valueText, { paddingRight: 20 }], textProps: { ellipsizeMode: 'middle' } })}
         <Image
           source={external}
           resizeMode="contain"
@@ -111,7 +111,8 @@ export default class TxHistoryDetail extends Component {
           {!!history?.id && this.renderRow({ label: 'ID', valueText: history?.id }) }
           {!!history?.time && this.renderRow({ label: 'Time', valueText: formatUtil.formatDateTime(history?.time) })}
           {!!history?.expiredAt && this.renderRow({ label: 'Expired at', valueText: formatUtil.formatDateTime(history?.expiredAt) })}
-          {!!history?.incognitoTx && this.renderRow({ label: 'TxID', valueComponent: this.renderTxId(history?.incognitoTx) })}
+          {!!history?.inchainTx && this.renderRow({ label: 'TxID', valueComponent: this.renderTxId(history?.inchainTx) })}
+          {!!history?.outchainTx && this.renderRow({ label: 'Outchain TxID', valueComponent: this.renderTxId(history?.outchainTx) })}
           {!!history?.toAddress && this.renderRow({ label: 'To address', valueText: history?.toAddress, valueTextProps: { ellipsizeMode: 'middle' }, copyable: true })}
           {!!history?.depositAddress && (
             <View style={styleSheet.depositAddressContainer}>
