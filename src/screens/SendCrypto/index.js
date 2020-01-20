@@ -4,13 +4,13 @@ import LoadingContainer from '@src/components/LoadingContainer';
 import { connect } from 'react-redux';
 import convertUtil from '@src/utils/convert';
 import formatUtil from '@src/utils/format';
-import tokenData from '@src/constants/tokenData';
 import accountService from '@src/services/wallet/accountService';
 import tokenService from '@src/services/wallet/tokenService';
 import { getBalance } from '@src/redux/actions/account';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
-import { CONSTANT_COMMONS } from '@src/constants';
+import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
+import {logEvent} from '@services/firebase';
 import SendCrypto from './SendCrypto';
 
 class SendCryptoContainer extends Component {
@@ -22,23 +22,36 @@ class SendCryptoContainer extends Component {
     };
   }
 
+  componentDidMount() {
+    const { selectedPrivacy } = this.props;
+    logEvent(CONSTANT_EVENTS.VIEW_SEND, {
+      tokenId: selectedPrivacy.tokenId,
+      tokenSymbol: selectedPrivacy.symbol,
+    });
+  }
+
+
+  getTxInfo = ({ message } = {}) => message
+
   _handleSendMainCrypto = async values => {
     const { account, wallet, selectedPrivacy, getAccountBalanceBound } = this.props;
-    const { toAddress, amount, fee, feeUnit } = values;
+    const { toAddress, amount, fee, feeUnit, message } = values;
     const fromAddress = selectedPrivacy?.paymentAddress;
-    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
-    const originalFee = Number(fee);
+    const originalAmount = convertUtil.toOriginalAmount(convertUtil.toNumber(amount), selectedPrivacy?.pDecimals);
+    const originalFee = convertUtil.toNumber(fee);
 
     const paymentInfos = [{
       paymentAddressStr: toAddress, amount: originalAmount
     }];
 
+    const info = this.getTxInfo({ message });
+
     try {
       this.setState({
         isSending: true
       });
-      
-      const res = await accountService.sendConstant(paymentInfos, originalFee, true, account, wallet);
+
+      const res = await accountService.createAndSendNativeToken(paymentInfos, originalFee, true, account, wallet, info);
 
       if (res.txId) {
         const receiptData = {
@@ -59,10 +72,10 @@ class SendCryptoContainer extends Component {
 
         setTimeout(() => getAccountBalanceBound(account), 10000);
       } else {
-        throw new Error(`Sent failed. Please try again! Detail: ${res.err.Message || res.err }`);
+        throw new Error('Sent tx, but doesnt have txID, please check it');
       }
     } catch (e) {
-      throw new Error(`Sent failed. Please try again! Detail:' ${e.message}`);
+      throw e;
     } finally {
       this.setState({ isSending: false });
     }
@@ -70,12 +83,11 @@ class SendCryptoContainer extends Component {
 
   _handleSendToken = async values => {
     const { account, wallet, tokens, selectedPrivacy, getTokenBalanceBound } = this.props;
-    const { toAddress, amount, fee, feeUnit } = values;
+    const { toAddress, amount, fee, feeUnit, message, isUseTokenFee } = values;
     const fromAddress = selectedPrivacy?.paymentAddress;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
-    const originalFee = Number(fee);
-    const isUseTokenFee = feeUnit !== tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY;
-    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
+    const originalFee = convertUtil.toNumber(fee);
+    const originalAmount = convertUtil.toOriginalAmount(convertUtil.toNumber(amount), selectedPrivacy?.pDecimals);
     const tokenObject = {
       Privacy : true,
       TokenID: selectedPrivacy?.tokenId,
@@ -83,21 +95,24 @@ class SendCryptoContainer extends Component {
       TokenSymbol: selectedPrivacy?.symbol,
       TokenTxType: type,
       TokenAmount: originalAmount,
-      TokenReceivers: {
+      TokenReceivers: [{
         PaymentAddress: toAddress,
         Amount: originalAmount
-      }
+      }]
     };
+
+    const info = this.getTxInfo({ message });
 
     try {
       this.setState({ isSending: true });
-      const res = await tokenService.createSendPrivacyCustomToken(
+      const res = await tokenService.createSendPToken(
         tokenObject,
         isUseTokenFee ? 0 : originalFee,
         account,
         wallet,
         null,
         isUseTokenFee ? originalFee : 0,
+        info
       );
 
       if (res.txId) {
@@ -116,14 +131,14 @@ class SendCryptoContainer extends Component {
         };
 
         this.setState({ receiptData });
-        
-        const foundToken = tokens.find(t => t.id === selectedPrivacy?.tokenId);
+
+        const foundToken = tokens?.find(t => t.id === selectedPrivacy?.tokenId);
         foundToken && setTimeout(() => getTokenBalanceBound(foundToken), 10000);
       } else {
-        throw new Error(`Send token failed. Please try again! Detail: ${res.err.Message || res.err }`);
+        throw new Error('Sent tx, but doesnt have txID, please check it');
       }
     } catch (e) {
-      throw new Error(`Send token failed. Please try again! Detail:' ${e.message}`);
+      throw e;
     } finally {
       this.setState({ isSending: false });
     }
@@ -165,12 +180,18 @@ const mapDispatch = {
 };
 
 SendCryptoContainer.defaultProps = {
-  selectedPrivacy: null
+  selectedPrivacy: null,
+  tokens: null
 };
 
 SendCryptoContainer.propTypes = {
   navigation: PropTypes.object.isRequired,
+  account: PropTypes.object.isRequired,
+  wallet: PropTypes.object.isRequired,
   selectedPrivacy: PropTypes.object,
+  getAccountBalanceBound: PropTypes.func.isRequired,
+  getTokenBalanceBound: PropTypes.func.isRequired,
+  tokens: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default connect(

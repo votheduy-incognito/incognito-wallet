@@ -2,70 +2,57 @@ package com.incognito.wallet;
 
 import android.app.Application;
 
+import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
-import com.sensors.RNSensorsPackage;
-import com.zmxv.RNSound.RNSoundPackage;
-import com.reactlibrary.RNZmqServicePackage;
-import com.tadasr.IOTWifi.IOTWifiPackage;
-import io.invertase.firebase.RNFirebasePackage;
-import io.invertase.firebase.auth.RNFirebaseAuthPackage;
-import io.invertase.firebase.database.RNFirebaseDatabasePackage;
-import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
-import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
-import org.reactnative.camera.RNCameraPackage;
-import com.bitgo.randombytes.RandomBytesPackage;
-import com.swmansion.reanimated.ReanimatedPackage;
-import com.horcrux.svg.SvgPackage;
-import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
-import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 
-import java.util.Arrays;
 import java.util.List;
+
+import io.invertase.firebase.auth.RNFirebaseAuthPackage;
+import io.invertase.firebase.database.RNFirebaseDatabasePackage;
+import io.invertase.firebase.fabric.crashlytics.RNFirebaseCrashlyticsPackage;
+import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
+import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
+import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
+
+import com.microsoft.codepush.react.CodePush;
 
 public class MainApplication extends Application implements ReactApplication {
 
-  private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-    @Override
-    public boolean getUseDeveloperSupport() {
-      return BuildConfig.DEBUG;
-    }
+  private final ReactNativeHost mReactNativeHost =
+          new ReactNativeHost(this) {
+            @Override
+            public boolean getUseDeveloperSupport() {
+              return BuildConfig.DEBUG;
+            }
 
-    @Override
-    protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-            new RNSensorsPackage(),
-            new RNSoundPackage(),
-            new RNZmqServicePackage(),
-            new RNDeviceInfo(),
-            new IOTWifiPackage(),
-            new RNFirebasePackage(),
-            new RNCameraPackage(),
-            new RandomBytesPackage(),
-            new ReanimatedPackage(),
-            new SvgPackage(),
-            new AsyncStoragePackage(),
-            new VectorIconsPackage(),
-            new RNGestureHandlerPackage(),
-            new GomobilePackage(),
-            new RNFirebaseAuthPackage(),
-            new RNFirebaseDatabasePackage(),
-            new RNFirebaseMessagingPackage(),
-            new RNFirebaseNotificationsPackage()
-      );
-    }
+            @Override
+            protected List<ReactPackage> getPackages() {
+              @SuppressWarnings("UnnecessaryLocalVariable")
+              List<ReactPackage> packages = new PackageList(this).getPackages();
+              // Packages that cannot be autolinked yet can be added manually here, for example:
+              packages.add(new RNFirebaseAuthPackage());
+              packages.add(new RNFirebaseDatabasePackage());
+              packages.add(new RNFirebaseMessagingPackage());
+              packages.add(new RNFirebaseNotificationsPackage());
+              packages.add(new RNFirebaseCrashlyticsPackage());
+              packages.add(new RNFirebaseAnalyticsPackage());
+              packages.add(new GomobilePackage());
+              return packages;
+            }
 
-    @Override
-    protected String getJSMainModuleName() {
-      return "index";
-    }
-  };
+            @Override
+            protected String getJSMainModuleName() {
+              return "index";
+            }
+
+            @Override
+            protected String getJSBundleFile() {
+              return CodePush.getJSBundleFile();
+            }
+          };
 
   @Override
   public ReactNativeHost getReactNativeHost() {

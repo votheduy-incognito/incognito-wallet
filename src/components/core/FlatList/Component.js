@@ -2,10 +2,10 @@ import ActivityIndicator from '@src/components/core/ActivityIndicator';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FlatList as RNFlatList } from 'react-native';
-import { ListItem } from 'react-native-elements';
 import { View } from '..';
 import Text from '../Text/Component';
 import style from './style';
+import ListItem from './ListItem';
 /**
 * @augments {Component<{  listItem:any>}
 */

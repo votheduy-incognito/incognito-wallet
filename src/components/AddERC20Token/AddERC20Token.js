@@ -2,82 +2,48 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'redux-form';
 import { createForm, InputField, InputQRField, validator } from '@src/components/core/reduxForm';
-import { Button, ScrollView, Text } from '@src/components/core';
+import { Button, View } from '@src/components/core';
 import styles from './style';
 
 
-const formName = 'addErc20Token';
-const initialFormValues = {
-  symbol: '',
-  name: '',
-  address: '',
-  decimals: '0'
-};
+const formName = 'addBep2Token';
 const Form = createForm(formName, {
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
 });
 const isRequired = validator.required();
+
 const isNumber = validator.number({ message: 'Decimals must be a number' });
 
 
 class AddERC20Token extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      erc20Data: initialFormValues,
-    };
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps?.erc20Data !== prevState.erc20Data) {
-      return {
-        erc20Data: nextProps?.erc20Data ? {
-          ...nextProps?.erc20Data,
-          decimals: nextProps?.erc20Data?.decimals ? String(nextProps?.erc20Data?.decimals) : '0'
-        } : null
-      };
-    }
-    return null;
   }
 
   handleFormChange = (values, dispatch, props, previousValues) => {
+    const { onSearch } = this.props;
     const { address } = values;
     const { address: oldAddress } = previousValues;
-
     if (address !== oldAddress) {
-      this.handleSearchByAddress(address);
+      onSearch(values);
     }
-  }
+  };
 
-  handleSearchByAddress = address => {
-    const { onSearch } = this.props;
-    onSearch({ address });
-  }
-
-  handleAdd = values => {
-    if (!values) return;
-
-    const { name, symbol, address, decimals } = values;
-    const { onAddErc20Token } = this.props;
-    return onAddErc20Token({
-      name,
-      symbol,
-      contractId: address,
-      decimals
-    });
+  processFormData = (data = {}) => {
+    return {
+      ...data,
+      decimals: data?.decimals ? String(data.decimals) : ''
+    };
   }
 
   render() {
-    const { erc20Data } = this.state;
-    const { isSearching } = this.props;
-
+    const { isSearching, onAdd, data } = this.props;
     return (
-      <Form initialValues={erc20Data} onChange={this.handleFormChange} style={styles.container}>
+      <Form initialValues={data && this.processFormData(data)} onChange={this.handleFormChange} style={styles.container}>
         {({ handleSubmit, submitting }) => (
           <>
-            <ScrollView style={styles.fields}>
-              <Text style={styles.desc}>Add any ERC20 token here. Support will be added for other types soon.</Text>
+            <View style={styles.fields}>
               <Field
                 component={InputQRField}
                 name='address'
@@ -86,42 +52,37 @@ class AddERC20Token extends Component {
                 style={styles.input}
                 validate={isRequired}
               />
-              <Field
-                component={InputField}
-                name='symbol'
-                label='Symbol'
-                style={styles.input}
-                validate={isRequired}
-                componentProps={{
-                  editable: false
-                }}
-              />
-              <Field
-                component={InputField}
-                name='name'
-                label='Name'
-                style={styles.input}
-                validate={isRequired}
-                componentProps={{
-                  editable: false
-                }}
-              />
-              <Field
-                component={InputField}
-                name='decimals'
-                label='Decimals'
-                style={styles.input}
-                componentProps={{
-                  editable: false
-                }}
-                validate={[isRequired, isNumber]}
-              />
-            </ScrollView>
+              { data?.symbol ? (
+                <Field
+                  component={InputField}
+                  name='symbol'
+                  label='Symbol'
+                  style={styles.input}
+                  validate={isRequired}
+                  componentProps={{
+                    editable: false
+                  }}
+                />
+              ) : null}
+              { data?.decimals ? (
+                <Field
+                  component={InputField}
+                  name='decimals'
+                  label='Decimals'
+                  style={styles.input}
+                  componentProps={{
+                    editable: false
+                  }}
+                  validate={[isRequired, isNumber]}
+                />
+              ) : null}
+            </View>
             <Button
-              title='Add'
+              title='Add manually'
               style={styles.submitBtn}
-              onPress={handleSubmit(this.handleAdd)}
+              onPress={handleSubmit(onAdd)}
               isAsync
+              disabled={!data || isSearching || submitting}
               isLoading={isSearching || submitting}
             />
           </>
@@ -132,13 +93,25 @@ class AddERC20Token extends Component {
 }
 
 AddERC20Token.defaultProps = {
-  isSearching: false
+  isSearching: false,
+  data: {
+    symbol: '',
+    name: '',
+    address: '',
+    decimals: null
+  }
 };
 
 AddERC20Token.propTypes = {
-  onAddErc20Token: PropTypes.func.isRequired,
+  onAdd: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
   isSearching: PropTypes.bool,
+  data: PropTypes.shape({
+    symbol: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired,
+    decimals: PropTypes.number.isRequired,
+  })
 };
 
 

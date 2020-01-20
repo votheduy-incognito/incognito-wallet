@@ -1,4 +1,4 @@
-# Constant Chain Wallet Client App
+# Incognito Chain Wallet
 
 Setup React Native following this guide: [React Native Setup](https://facebook.github.io/react-native/docs/getting-started)
 

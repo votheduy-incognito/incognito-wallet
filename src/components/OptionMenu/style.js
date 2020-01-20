@@ -48,16 +48,16 @@ const style = StyleSheet.create({
     height: 30,
     justifyContent: 'center',
     width: 30,
-    color: COLORS.white
   },
   textContainer: {
     display: 'flex',
     flexDirection: 'column',
+    flex: 1,
   },
   itemText: {},
   itemDescText: {
     fontSize: 15,
-    color: '#8C9A9D',
+    color: COLORS.lightGrey1,
     marginTop: 5,
   },
   menuItem: {

@@ -9,7 +9,7 @@ export const homeStyle = StyleSheet.create({
   form: {
   },
   submitBtn: {
-    marginTop: 20,
+    marginTop: 20
   },
   feeText: {
     textAlign: 'center',
@@ -18,5 +18,8 @@ export const homeStyle = StyleSheet.create({
   },
   input: {
     marginBottom: 15
+  },
+  descriptionInput: {
+    height: 60,
   }
 });

@@ -1,6 +1,5 @@
 import {
   Container,
-  Toast,
   Button,
   View
 } from '@src/components/core';
@@ -8,12 +7,11 @@ import { Field } from 'redux-form';
 import { createForm, InputField, validator } from '@src/components/core/reduxForm';
 import PropTypes from 'prop-types';
 import React from 'react';
-import AccountModel from '@src/models/account';
+import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import styleSheet from './style';
 
 const formName = 'createAccount';
 const Form = createForm(formName);
-const isRequired = validator.required();
 
 const CreateAccount = ({ navigation, accountList, createAccount }) => {
   const goBack = () => {
@@ -28,16 +26,13 @@ const CreateAccount = ({ navigation, accountList, createAccount }) => {
           _account => lowerCase(_account.name) === lowerCase(accountName)
         )
       ) {
-        Toast.showError(
-          'You already have an account with this name. Please try another.'
-        );
-        return;
+        throw new CustomError(ErrorCode.createAccount_existed_name);
       }
 
       const account = await createAccount(accountName);
 
       if (!account) {
-        throw new Error('Account was not created! Please try again.');
+        throw new CustomError(ErrorCode.createAccount_failed);
       }
 
       // switch to this account
@@ -48,7 +43,7 @@ const CreateAccount = ({ navigation, accountList, createAccount }) => {
 
       goBack();
     } catch (e) {
-      Toast.showError('Account was not created! Please try again.');
+      new ExHandler(e, 'Account was not created! Please try again.').showErrorToast();
     }
   };
 
@@ -62,7 +57,7 @@ const CreateAccount = ({ navigation, accountList, createAccount }) => {
               name='accountName'
               placeholder='Account Name'
               label='Account Name'
-              validate={[isRequired]}
+              validate={validator.combinedAccountName}
             />
             <Button
               title='Create account'

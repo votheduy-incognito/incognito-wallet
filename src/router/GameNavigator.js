@@ -1,4 +1,4 @@
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import Game from '@src/screens/Game';
 import ROUTE_NAMES from './routeNames';
 

@@ -1,26 +1,52 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Image } from 'react-native';
+import { withNavigation } from 'react-navigation';
 import { TouchableOpacity } from '@src/components/core';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { THEME } from '@src/styles';
 
-const BackButton = ({ onPress }) => (
-  <TouchableOpacity
-    onPress={onPress}
-    style={{
-      display: 'flex',
-      justifyContent: 'center',
-      width: 50,
-      paddingLeft: 5,
-      height: THEME.header.headerHeight
-    }}
-  >
-    <Icon name='chevron-left' color='white' size={30} />
-  </TouchableOpacity>
-);
+import chevronLeft from '@src/assets/images/icons/chevron-left-icon.png';
 
-BackButton.propTypes = {
-  onPress: PropTypes.func.isRequired,
+const BackButton = ({ onPress, width, height, size, navigation }) => {
+  const back = () => navigation?.pop();
+
+  return (
+    <TouchableOpacity
+      onPress={onPress || back}
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        width: width,
+        paddingLeft: 5,
+        height: height
+      }}
+    >
+      <Image
+        style={{
+          height: size,
+          width: '100%',
+        }}
+        resizeMode="contain"
+        resizeMethod="resize"
+        source={chevronLeft}
+      />
+    </TouchableOpacity>
+  );
 };
 
-export default BackButton;
+BackButton.propTypes = {
+  onPress: PropTypes.func,
+  width: PropTypes.number,
+  height: PropTypes.number,
+  size: PropTypes.number,
+  navigation: PropTypes.object.isRequired
+};
+
+BackButton.defaultProps = {
+  width: 50,
+  size: 20,
+  height: THEME.header.headerHeight,
+  onPress: null
+};
+
+export default withNavigation(BackButton);

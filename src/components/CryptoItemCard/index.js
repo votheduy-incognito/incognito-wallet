@@ -1,69 +1,38 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import tokenData from '@src/constants/tokenData';
+import { connect } from 'react-redux';
+import { selectedPrivacySeleclor, sharedSeleclor } from '@src/redux/selectors';
 import CryptoItem from './CryptoItem';
 
 class CryptoItemContainer extends Component {
-  constructor() {
-    super();
-
-    this.state = { data: null };
-  }
-
-  componentDidMount() {
-    const { token } = this.props;
-
-    if (token) {
-      this.getData(token);
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    const { token: oldToken } = prevProps;
-    const { token } = this.props;
-
-    if (oldToken?.symbol !== token?.symbol) {
-      this.getData(token);
-    }
-  }
-
-  getData = (token) => {
-    const additionData = tokenData.DATA[token?.symbol] || tokenData.parse(token);
-    const { metaData, ...othertokenData } = token;
-    const data = {
-      ...additionData,
-      ...metaData,
-      ...othertokenData,
-      externalSymbol: metaData?.symbol,
-    };
-    this.setState({ data });
-  }
 
   handlePress = () => {
-    const { onPress } = this.props;
-    const { data } = this.state;
+    const { onPress, data } = this.props;
     if (typeof onPress === 'function') {
       onPress(data);
     }
-  }
-
+  };
+  
   render() {
-    const { data } = this.state;
-    const { token } = this.props;
+    const { data, isGettingBalanceList } = this.props;
 
     if (!data) return null;
 
-    const fullName = data?.pSymbol ? `Private ${data?.externalSymbol}` : data.name;
+    const fullName = data?.displayName;
+    const name = data?.networkName;
 
     const cryptoItemProps = {
       ...this.props,
-      fullName: data.fullName ?? fullName,
-      name: data.name,
-      amount: token?.amount,
-      symbol: data.symbol,
+      fullName,
+      name,
+      amount: data?.amount,
+      symbol: data?.symbol,
+      tokenId: data?.tokenId,
       externalSymbol: data?.externalSymbol,
-      pDecimals: data.pDecimals,
+      pDecimals: data?.pDecimals,
       onPress: this.handlePress,
+      isGettingBalance: isGettingBalanceList?.includes(data?.tokenId),
+      isVerified: data?.isVerified
     };
 
     return (
@@ -74,18 +43,24 @@ class CryptoItemContainer extends Component {
   }
 }
 
+
 CryptoItemContainer.defaultProps = {
   onPress: null,
-  token: null,
   style: null,
-  isGettingBalance: false
+  isGettingBalanceList: [],
+  data: null
 };
 
 CryptoItemContainer.propTypes = {
   onPress: PropTypes.func,
-  token: PropTypes.object,
-  isGettingBalance: PropTypes.bool,
-  style: PropTypes.object
+  isGettingBalanceList: PropTypes.array,
+  style: PropTypes.object,
+  data: PropTypes.object
 };
 
-export default CryptoItemContainer;
+const mapState = (state, props) => ({
+  data: selectedPrivacySeleclor.getPrivacyDataByTokenID(state)(props?.tokenId),
+  isGettingBalanceList: sharedSeleclor.isGettingBalance(state)
+});
+
+export default connect(mapState)(CryptoItemContainer);

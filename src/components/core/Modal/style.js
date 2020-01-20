@@ -4,17 +4,28 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   closeBtn: {
     paddingHorizontal: 15,
-    paddingVertical: 5
+    paddingVertical: 5,
+    position: 'absolute',
+    left: 10,
   },
   container: {
     flex: 1,
-    paddingTop: 0
+    paddingTop: 0,
+  },
+  containerSafeView: {
+    flex: 1,
+    backgroundColor: THEME.header.backgroundColor,
   },
   header: {
     alignItems: 'center',
-    backgroundColor: COLORS.transparent,
+    backgroundColor: THEME.header.backgroundColor,
     flexDirection: 'row',
     height: THEME.modal.headerHeight,
-    justifyContent: 'flex-end'
+    justifyContent: 'center',
+  },
+  headerText: {
+    fontSize: 20,
+    marginHorizontal: 60,
+    color: COLORS.white
   }
 });

@@ -1,47 +1,75 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { TouchableOpacity, View, Text,  } from '../core';
+import icMinusRoundIcon from '@src/assets/images/icons/ic_minus_round.png';
+import plusRoundIcon from '@src/assets/images/icons/ic_plus_round.png';
+import CryptoItemCard from '@src/components/CryptoItemCard';
+import { TouchableOpacity, Image, View, ActivityIndicator } from '../core';
 import { itemStyle } from './styles';
 
-class TokenItem extends PureComponent {
+class TokenItem extends Component {
 
   _handlePress = () => {
-    const { onPress, token } = this.props;
+    const { onFollowToken, onUnFollowToken, token } = this.props;
+    if (token?.isFollowed) {
+      if (typeof onUnFollowToken === 'function') {
+        onUnFollowToken(token.tokenId);
+      }
+    } else {
+      if (typeof onFollowToken === 'function') {
+        onFollowToken(token.tokenId);
+      }
+    }
+  };
+
+  handleShowTokenInfo = (selectedPrivacy) => {
+    const { onPress } = this.props;
     if (typeof onPress === 'function') {
-      onPress(token.tokenId);
+      onPress(selectedPrivacy);
     }
   }
 
   render() {
-    const { token, selected, divider } = this.props;
-
+    const { token, isProcessing } = this.props;
+    
     if (!token) return null;
 
     return (
-      <TouchableOpacity onPress={this._handlePress} style={[ itemStyle.container, divider && itemStyle.divider ]}>
-        <View>
-          <Text style={selected && itemStyle.highlight}>{token.name} ({token.symbol})</Text>
-        </View>
-      </TouchableOpacity>
+      <CryptoItemCard
+        key={token?.tokenId}
+        tokenId={token?.tokenId}
+        onPress={this.handleShowTokenInfo}
+        rightComponent={(
+          <View style={itemStyle.rightComponentContainer}>
+            {
+              isProcessing
+                ? <ActivityIndicator />
+                : (
+                  <TouchableOpacity style={itemStyle.toggle} onPress={this._handlePress}>
+                    <Image style={itemStyle.toggleImg} source={token?.isFollowed ? icMinusRoundIcon : plusRoundIcon} />
+                  </TouchableOpacity>
+                )
+            }
+          </View>
+        )}
+      />
     );
   }
 }
 
 TokenItem.defaultProps = {
+  onFollowToken: null,
+  onUnFollowToken: null,
   onPress: null,
-  selected: false,
-  divider: false,
+  isProcessing: false
 };
 
 TokenItem.propTypes = {
-  selected: PropTypes.bool,
-  divider: PropTypes.bool,
+  onFollowToken: PropTypes.func,
+  onUnFollowToken: PropTypes.func,
+  isProcessing: PropTypes.bool,
   onPress: PropTypes.func,
   token: PropTypes.shape({
     tokenId: PropTypes.string.isRequired,
-    symbol: PropTypes.string.isRequired,
-    pSymbol: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
   }).isRequired
 };
 

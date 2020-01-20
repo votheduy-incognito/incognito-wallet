@@ -1,45 +1,121 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Toast, Image } from '@src/components/core';
+import { Toast, Image, View } from '@src/components/core';
 import { getBalance , getBalance as getAccountBalance } from '@src/redux/actions/account';
 import LoadingContainer from '@src/components/LoadingContainer';
 import accountService from '@src/services/wallet/accountService';
 import { setWallet } from '@src/redux/actions/wallet';
 import { accountSeleclor, selectedPrivacySeleclor, tokenSeleclor, sharedSeleclor } from '@src/redux/selectors';
 import WalletDetailOptionMenu from '@src/components/HeaderRight/WalletDetailOptionMenu';
+import TokenInfo from '@src/components/HeaderRight/TokenInfo';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import ROUTE_NAMES from '@src/router/routeNames';
 import withdrawIcon from '@src/assets/images/icons/withdraw.png';
 import unfollowTokenIcon from '@src/assets/images/icons/unfollowToken.png';
+import { ExHandler } from '@src/services/exception';
+import { COLORS } from '@src/styles';
+import { CONSTANT_COMMONS } from '@src/constants';
+import VerifiedText from '@src/components/VerifiedText';
 import WalletDetail from './WalletDetail';
+import styles from './style';
+
+const THEMES = {
+  light: {
+    textColor: COLORS.dark4,
+    backgroundColor: COLORS.white
+  },
+  dark: {
+    textColor: COLORS.white,
+    backgroundColor: COLORS.dark4
+  }
+};
 
 class WalletDetailContainer extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      theme: THEMES.dark
+    };
+  }
+
   static navigationOptions = ({ navigation }) => {
+    const { title, subTitle, selectedPrivacy, optionMenu, theme } = navigation.state.params || {};
+    const infoIconColor = COLORS.white;
     return {
-      title: navigation.state.params?.title,
-      headerRight: <WalletDetailOptionMenu menu={navigation.state.params?.optionMenu} />
+      title: <VerifiedText text={title} style={styles.headerTitleText} isVerified={selectedPrivacy?.isVerified} /> ?? '---',
+      subTitle: (title || subTitle) ? subTitle : 'Loading information...',
+      theme,
+      headerRight: (
+        <View style={styles.headerRight}>
+          <TokenInfo selectedPrivacy={selectedPrivacy} iconColor={infoIconColor} />
+          <WalletDetailOptionMenu menu={optionMenu} iconColor={infoIconColor} />
+        </View>
+      )
     };
   }
 
   componentDidMount() {
-    this.setTitle();
-    this.setOptionMenu();
+    this.setHeaderData();
   }
 
   componentDidUpdate(prevProps) {
     const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
     const { selectedPrivacy } = this.props;
-    if (oldSelectedPrivacy?.symbol !== selectedPrivacy?.symbol) {
-      this.setTitle();
-      this.setOptionMenu();
+    if (oldSelectedPrivacy?.tokenId !== selectedPrivacy?.tokenId) {
+      this.setHeaderData();
     }
+  }
+
+  applyTheme = () => {
+    const { selectedPrivacy } = this.props;
+    const mode = (selectedPrivacy?.isIncognitoToken || selectedPrivacy?.isMainCrypto) ? 'dark' : 'light';
+
+    let t = THEMES[mode];
+
+    if (!t) {
+      console.warn(`Invalid mode ${mode}, fallback to light mode`);
+      t = THEMES.dark;
+    }
+
+    this.setState({ theme: { ...t } });
+    this.setHeaderTheme(t);
+
+    return t;
+  }
+
+  setHeaderData = () => {
+    this.setTitle();
+    this.setOptionMenu();
+    this.setTokenInfo();
+  }
+
+  setHeaderTheme = (theme) => {
+    const { navigation } = this.props;
+    navigation.setParams({
+      theme
+    });
+  }
+
+  setTokenInfo = () => {
+    const { navigation, selectedPrivacy } = this.props;
+    navigation.setParams({
+      selectedPrivacy
+    });
   }
 
   setTitle = () => {
     const { navigation, selectedPrivacy } = this.props;
+    let title;
+    if (selectedPrivacy?.tokenId === CONSTANT_COMMONS.PRV_TOKEN_ID) {
+      title = 'Privacy';
+    } else {
+      title = selectedPrivacy?.externalSymbol ? `Privacy ${selectedPrivacy?.externalSymbol}` : selectedPrivacy?.name;
+    }
     navigation.setParams({
-      title: selectedPrivacy?.name
+      title,
+      subTitle: selectedPrivacy?.networkName
     });
   }
 
@@ -51,8 +127,8 @@ class WalletDetailContainer extends Component {
       options.push({
         id: 'unfollow',
         icon: <Image source={unfollowTokenIcon} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
-        label: 'Remove token',
-        desc: 'Any existing balance will reappear when the token is added back',
+        label: 'Remove coin',
+        desc: 'Any existing balance will reappear when the coin is added back',
         handlePress: () => this.handleUnfollowTokenBtn(selectedPrivacy?.tokenId)
       });
     }
@@ -80,10 +156,10 @@ class WalletDetailContainer extends Component {
       // update new wallet to store
       setWallet(updatedWallet);
 
-      Toast.showInfo('Token removed');
+      Toast.showInfo('Coin removed');
       navigation.goBack();
-    } catch {
-      Toast.showError('Something went wrong. Please try again.');
+    } catch (e) {
+      new ExHandler(e).showErrorToast();
     }
   }
 
@@ -104,9 +180,9 @@ class WalletDetailContainer extends Component {
   }
 
   render() {
+    const { theme } = this.state;
     const { wallet, account, selectedPrivacy, navigation, isGettingBalanceList, ...otherProps } = this.props;
-
-    if (!selectedPrivacy) {
+    if (!selectedPrivacy || !theme) {
       return <LoadingContainer />;
     }
 
@@ -118,6 +194,7 @@ class WalletDetailContainer extends Component {
         isGettingBalanceList={isGettingBalanceList}
         navigation={navigation}
         hanldeLoadBalance={this.onLoadBalance}
+        theme={theme}
         {...otherProps}
       />
     );

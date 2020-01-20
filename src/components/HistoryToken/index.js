@@ -1,16 +1,17 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withNavigation } from 'react-navigation';
-import { ScrollView, Toast, RefreshControl, Button } from '@src/components/core';
+import { Button, RefreshControl, ScrollView, Toast } from '@src/components/core';
 import HistoryList from '@src/components/HistoryList';
 import LoadingContainer from '@src/components/LoadingContainer';
-import tokenService from '@src/services/wallet/tokenService';
-import { getpTokenHistory, removeHistory } from '@src/services/api/history';
-import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { CONSTANT_COMMONS } from '@src/constants';
+import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import ROUTE_NAMES from '@src/router/routeNames';
+import { getpTokenHistory, removeHistory } from '@src/services/api/history';
+import { ExHandler } from '@src/services/exception';
+import tokenService from '@src/services/wallet/tokenService';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { withNavigation } from 'react-navigation';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 
 const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, decimals, pDecimals) => {
   const data = [];
@@ -32,6 +33,14 @@ const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, dec
       statusCode: h?.status,
       cancelable: h?.cancelable,
       currencyType: h?.currencyType,
+      decentralized: h?.decentralized,
+      walletAddress: h?.walletAddress,
+      privacyTokenAddress: h?.privacyTokenAddress,
+      erc20TokenAddress: h?.erc20TokenAddress,
+      userPaymentAddress: h?.userPaymentAddress,
+      canRetryExpiredDeposit: h?.canRetryExpiredDeposit,
+      expiredAt: h?.expiredAt,
+      depositAddress: h?.address
     });
   });
 
@@ -41,13 +50,13 @@ const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, dec
       incognitoTx: h?.txID,
       time: h?.time,
       type: h?.isIn ?  CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE : CONSTANT_COMMONS.HISTORY.TYPE.SEND,
-      toAddress: h?.receivers[0],
-      amount: h?.amount,
+      toAddress: h?.receivers?.length && h?.receivers[0],
+      amount: h?.amountPToken,
       symbol: h?.tokenSymbol,
       decimals,
       pDecimals,
       status: h?.status,
-      fee: h?.fee * (10 ** CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY), // convert to nano fee (HistoryList require)
+      fee: h?.amountNativeToken,
       feePToken: h?.feePToken,
     });
   });
@@ -88,13 +97,13 @@ class HistoryTokenContainer extends Component {
 
   handleCancelEtaHistory = async history => {
     try {
-      const data = await removeHistory({ historyId: history?.id, currencyType: history?.currencyType});
+      const data = await removeHistory({ historyId: history?.id, currencyType: history?.currencyType, isDecentralized: history?.decentralized });
       if (data) {
         Toast.showSuccess('Canceled');
         this.handleLoadHistory();
       }
-    } catch {
-      Toast.showError('Something went wrong. Please try again.');
+    } catch (e) {
+      new ExHandler(e, 'Cancel this transaction failed, please try again.').showErrorToast();
     }
   }
 
@@ -113,7 +122,8 @@ class HistoryTokenContainer extends Component {
         historiesFromApi,
         histories
       });
-      
+    } catch (e) {
+      new ExHandler(e).showErrorToast();
     } finally {
       this.setState({ isLoading: false });
     }
@@ -136,8 +146,8 @@ class HistoryTokenContainer extends Component {
       const histories = await getpTokenHistory({ paymentAddress, tokenId: selectedPrivacy?.tokenId });
 
       return histories;
-    } catch {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+    } catch (e) {
+      throw e;
     }
   }
 
@@ -158,8 +168,8 @@ class HistoryTokenContainer extends Component {
       });
 
       return histories;
-    } catch {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+    } catch (e) {
+      throw e;
     }
   };
 
@@ -192,14 +202,14 @@ class HistoryTokenContainer extends Component {
     const { isLoading, histories, historiesFromApi } = this.state;
     const { selectedPrivacy } = this.props;
 
-    if (isLoading || !selectedPrivacy) {
+    if (!selectedPrivacy) {
       return <LoadingContainer />;
     }
 
     return (
       <ScrollView
         contentContainerStyle={{
-          flex: 1
+          minHeight: '100%'
         }}
         refreshControl={(
           <RefreshControl

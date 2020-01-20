@@ -1,23 +1,22 @@
-import { setTokenHeader } from '@src/services/http';
-import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
-import { reloadWallet } from '@src/redux/actions/wallet';
+import { login } from '@src/services/auth';
+import { CONSTANT_KEYS, CONSTANT_CONFIGS } from '@src/constants';
+import { reloadWallet, reloadAccountList } from '@src/redux/actions/wallet';
 import { followDefaultTokens } from '@src/redux/actions/account';
-import routeNames from '@src/router/routeNames';
-import { getToken } from '@src/services/api/user';
-import { savePassword } from '@src/services/wallet/passwordService';
 import { getPTokenList } from '@src/redux/actions/token';
+import { loadPin } from '@src/redux/actions/pin';
+import { accountSeleclor } from '@src/redux/selectors';
+import routeNames from '@src/router/routeNames';
+import storageService from '@src/services/storage';
+import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
+import { savePassword } from '@src/services/wallet/passwordService';
 import serverService from '@src/services/wallet/Server';
 import { initWallet } from '@src/services/wallet/WalletService';
-import { accountSeleclor } from '@src/redux/selectors';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { createError, messageCode } from '@src/services/errorHandler';
 import { connect } from 'react-redux';
-import storageService from '@src/services/storage';
-import DeviceInfo from 'react-native-device-info';
-import { getToken as getFirebaseToken } from '@src/services/firebase';
+import { DEX } from '@src/utils/dex';
+import accountService from '@src/services/wallet/accountService';
 import GetStarted from './GetStarted';
-
 
 class GetStartedContainer extends Component {
   constructor() {
@@ -36,9 +35,32 @@ class GetStartedContainer extends Component {
 
   onError = msg => this.setState({ errorMsg: msg });
 
-  goHome = () => {
-    const { navigation } = this.props;
-    navigation.navigate(routeNames.Home);
+  goHome = async () => {
+    const { navigation, pin } = this.props;
+
+    const wallet = await this.getExistedWallet();
+
+    let accounts = await wallet.listAccount();
+
+    if(!accounts.find(item => item.AccountName === DEX.MAIN_ACCOUNT)) {
+      const firstAccount = accounts[0];
+      await accountService.createAccount(DEX.MAIN_ACCOUNT, wallet, accountService.parseShard(firstAccount));
+    }
+
+    if(!accounts.find(item => item.AccountName === DEX.WITHDRAW_ACCOUNT)) {
+      accounts = await wallet.listAccount();
+      const dexMainAccount = accounts.find(item => item.AccountName === DEX.MAIN_ACCOUNT);
+      await accountService.createAccount(DEX.WITHDRAW_ACCOUNT, wallet, accountService.parseShard(dexMainAccount));
+    }
+
+    const { reloadAccountList } = this.props;
+    reloadAccountList();
+
+    if (pin) {
+      navigation.navigate(routeNames.AddPin, { action: 'login', redirectRoute: routeNames.Home });
+    } else {
+      navigation.navigate(routeNames.Home,{isNeedUpgrade: this.isNeedUpgrade});
+    }
   };
 
   getExistedWallet = async () => {
@@ -52,21 +74,34 @@ class GetStartedContainer extends Component {
       }
       return null;
     } catch (e) {
-      this.onError('Can not load existed wallet.');
+      throw new CustomError(ErrorCode.wallet_can_not_load_existed_wallet, { rawError: e });
     }
   }
 
   initApp = async () => {
+    const { loadPin } = this.props;
     try {
+      await loadPin();
       this.setState({ isInitialing: true });
-      const token = await this.checkDeviceToken();
+      console.log('initApp CONSTANT_CONFIGS = ',CONSTANT_CONFIGS);
+      const serverLocalList = await serverService.get()??[];
+      // this.isNeedUpgrade = !_.isEmpty(serverLocalList) && CONSTANT_CONFIGS.DEFAULT_LIST_SERVER.length != serverLocalList.length;
+      this.isNeedUpgrade = CONSTANT_CONFIGS.DEFAULT_LIST_SERVER.length != serverLocalList?.length;
+      if (this.isNeedUpgrade) {
+        await storageService.clear();
+        await storageService.setItem(CONSTANT_KEYS.DISPLAYED_WIZARD, String(true));
+      }
+      const { getPTokenList } = this.props;
+      await login();
 
-      if (token) {
-        // console.log('Device token', token);
-        setTokenHeader(token);
+      try {
+        const pTokens = await getPTokenList();
+        this.setState({ pTokens });
+      } catch (e) {
+        throw new CustomError(ErrorCode.getStarted_load_token_failed, { rawError: e });
       }
 
-      if (!(await serverService.get())) {
+      if (this.isNeedUpgrade || !(serverLocalList)) {
         await serverService.setDefaultList();
       }
       const wallet = await this.getExistedWallet();
@@ -82,7 +117,9 @@ class GetStartedContainer extends Component {
       this.goHome();
     } catch (e) {
       this.setState({ isInitialing: false, isCreating: false });
-      this.onError('Something went wrong while opening wallet, please try again');
+      this.onError(
+        new ExHandler(e, 'Sorry, something went wrong while opening the wallet. Please check your connection or re-install the application and try again.').writeLog().message
+      );
     }
   };
 
@@ -94,60 +131,23 @@ class GetStartedContainer extends Component {
       const wallet = await this.getExistedWallet();
 
       if (wallet) {
-        return throw createError({ code: messageCode.code.can_not_create_wallet_on_existed });
+        return throw new CustomError(ErrorCode.getStarted_can_not_create_wallet_on_existed);
       }
 
-      return initWallet();
+      requestAnimationFrame(() => {
+        return initWallet();
+      });
     } catch (e) {
-      throw e;
+      throw new CustomError(ErrorCode.wallet_can_not_create_new_wallet, { rawError: e });
     }
   };
 
-  getExistedDeviceToken = async () => {
-    try {
-      const token = await storageService.getItem(CONSTANT_KEYS.DEVICE_TOKEN);
-      return token;
-    } catch (e) {
-      throw createError({ code: messageCode.code.load_device_token_failed });
-    }
-  }
-
-  registerToken = async () => {
-    try {
-      const fbToken = await getFirebaseToken();
-      const uniqueId = DeviceInfo.getUniqueID();
-      const token = await getToken(uniqueId, fbToken);
-
-      return token;
-    } catch (e) {
-      throw e;
-    }
-  }
-
-  checkDeviceToken = async () => {
-    try {
-      const fbToken = await getFirebaseToken();
-      // console.log('fbToken', fbToken);
-      const token = await this.getExistedDeviceToken();
-      if (!token) {
-        const tokenData = await this.registerToken();
-        storageService.setItem(CONSTANT_KEYS.DEVICE_TOKEN, tokenData?.token);
-        return tokenData?.token;
-      } else {
-        return token;
-      }
-    } catch (e) {
-      throw e;
-    }
-  }
-
   setDefaultPToken = async () => {
     try {
-      const { account, getPTokenList, followDefaultTokens } = this.props;
+      const { account, followDefaultTokens } = this.props;
+      const { pTokens } = this.state;
 
       if (!account) throw new Error('Missing account');
-
-      const pTokens = await getPTokenList();
 
       await followDefaultTokens(account, pTokens);
     } catch {
@@ -168,7 +168,7 @@ class GetStartedContainer extends Component {
         throw new Error('Load new wallet failed');
       }
     } catch (e) {
-      this.onError('Can not create new wallet, please try again');
+      throw e;
     }
   };
 
@@ -190,18 +190,24 @@ class GetStartedContainer extends Component {
   }
 }
 
-const mapDispatch = { reloadWallet, getPTokenList, followDefaultTokens };
+const mapDispatch = { reloadWallet, getPTokenList, followDefaultTokens, reloadAccountList, loadPin };
 
 const mapState = state => ({
   account: accountSeleclor.defaultAccount(state),
+  pin: state.pin.pin,
 });
 
 GetStartedContainer.propTypes = {
   reloadWallet: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   getPTokenList: PropTypes.func.isRequired,
-  account: PropTypes.object.isRequired,
+  account: PropTypes.object,
+  reloadAccountList: PropTypes.func.isRequired,
   followDefaultTokens: PropTypes.func.isRequired,
+};
+
+GetStartedContainer.defaultProps = {
+  account: null
 };
 
 export default connect(

@@ -1,18 +1,33 @@
 import { StyleSheet } from 'react-native';
+import { COLORS } from '@src/styles';
 
 export default StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 30,
-    height: 30,
+    overflow: 'hidden',
+    backgroundColor: COLORS.lightGrey10
   },
   logo: {
-    width: 25,
-    height: 25,
+    overflow: 'hidden',
     resizeMode: 'contain'
   },
   hidden: {
     display: 'none'
+  },
+  loadingIcon: {
+    justifyContent: 'center',
+    position: 'absolute',
+    alignItems: 'center',
+    height: '100%'
+  },
+  verifiedFlagContainer: {
+    backgroundColor: COLORS.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+  },
+  verifiedFlag: {
+    color: COLORS.green,
   },
 });

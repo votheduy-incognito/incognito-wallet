@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { connect } from 'react-redux';
 import { genCentralizedDepositAddress, genERC20DepositAddress, genETHDepositAddress } from '@src/services/api/deposit';
-import { CONSTANT_COMMONS } from '@src/constants';
-import { messageCode, createError } from '@src/services/errorHandler';
+import { getMinMaxDepositAmount } from '@src/services/api/misc';
+import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
+import { ExHandler } from '@src/services/exception';
+import {logEvent} from '@services/firebase';
 import Deposit from './Deposit';
 
 class DepositContainer extends Component {
@@ -13,11 +15,34 @@ class DepositContainer extends Component {
     super();
 
     this.state = {
-      address: null
+      address: null,
+      min: null,
+      max: null
     };
   }
 
-  getDepositAddress = async amount => {
+  componentDidMount() {
+    const { selectedPrivacy } = this.props;
+    logEvent(CONSTANT_EVENTS.DEPOSIT, {
+      tokenId: selectedPrivacy.tokenId,
+      tokenSymbol: selectedPrivacy.symbol,
+    });
+  }
+
+  getMinMaxAmount = async () => {
+    try {
+      const { selectedPrivacy } = this.props;
+      const [min, max] = await getMinMaxDepositAmount(selectedPrivacy?.tokenId);
+
+      this.setState({
+        min, max
+      });
+    } catch (e) {
+      new ExHandler(e, 'Can not get min/max amount to deposit').showErrorToast();
+    }
+  }
+
+  getDepositAddress = async () => {
     try {
       let address;
       const { selectedPrivacy } = this.props;
@@ -28,7 +53,6 @@ class DepositContainer extends Component {
 
       if (selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) {
         address = await genETHDepositAddress({
-          amount,
           paymentAddress: selectedPrivacy?.paymentAddress,
           walletAddress: selectedPrivacy?.paymentAddress,
           tokenId: selectedPrivacy?.tokenId,
@@ -36,7 +60,6 @@ class DepositContainer extends Component {
         });
       } else if (selectedPrivacy?.isErc20Token) {
         address = await genERC20DepositAddress({
-          amount,
           paymentAddress: selectedPrivacy?.paymentAddress,
           walletAddress: selectedPrivacy?.paymentAddress,
           tokenId: selectedPrivacy?.tokenId,
@@ -45,7 +68,6 @@ class DepositContainer extends Component {
         });
       } else {
         address = await genCentralizedDepositAddress({
-          amount,
           paymentAddress: selectedPrivacy?.paymentAddress,
           walletAddress: selectedPrivacy?.paymentAddress,
           tokenId: selectedPrivacy?.tokenId,
@@ -53,21 +75,32 @@ class DepositContainer extends Component {
         });
       }
 
+      if (!address) {
+        throw new Error('Can not gen new deposit address');
+      }
+
       this.setState({ address });
       return address;
     } catch (e) {
-      throw createError({ code: messageCode.code.gen_deposit_address_failed });
+      throw e;
     }
   }
 
   render() {
     const { selectedPrivacy } = this.props;
-    const { address } = this.state;
+    const { address, min, max } = this.state;
 
     if (!selectedPrivacy) return <LoadingContainer />;
 
     return (
-      <Deposit selectedPrivacy={selectedPrivacy} depositAddress={address} handleGenAddress={this.getDepositAddress} />
+      <Deposit
+        selectedPrivacy={selectedPrivacy}
+        depositAddress={address}
+        handleGenAddress={this.getDepositAddress}
+        handleGetMinMaxAmount={this.getMinMaxAmount}
+        min={min}
+        max={max}
+      />
     );
   }
 }

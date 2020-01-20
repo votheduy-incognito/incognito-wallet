@@ -7,10 +7,18 @@ export default StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center'
   },
+  row: {
+    flexDirection: 'row',
+    flex: 3,
+  },
   rowText: {
     display: 'flex',
     flexDirection: 'row',
-    marginVertical: 5,
+    marginVertical: 2,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.lightGrey6,
+    paddingBottom: 2,
+    marginHorizontal: 10,
   },
   icon: {
     fontSize: 100,
@@ -23,22 +31,35 @@ export default StyleSheet.create({
     color: COLORS.lightGrey1,
     fontSize: 15,
     marginVertical: 2,
-    textAlign: 'right'
   },
   valueText: {
     flex: 3,
-    color: COLORS.dark1,
+    color: COLORS.black,
     fontSize: 15,
     marginVertical: 2,
   },
   txButton: {
     flex: 3,
-    backgroundColor: COLORS.green,
     paddingVertical: 3,
     paddingHorizontal: 5,
     borderRadius: 3
   },
-  txButtonText: {
-    color: COLORS.white
+  statusValueContainer: {
+    flex: 3,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  statusText: {
+    textAlign: 'left',
+    flex: 1
+  },
+  statusRetryBtn: {
+    height: 25,
+    marginLeft: 20
+  },
+  depositAddressContainer: {
+    marginTop: 20,
+    alignItems: 'center'
   },
 });

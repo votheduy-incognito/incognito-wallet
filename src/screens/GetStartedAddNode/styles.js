@@ -1,6 +1,7 @@
 import { StyleSheet,Image } from 'react-native';
 import TextStyle, { scaleInApp, FontStyle } from '@src/styles/TextStyle';
 import images from '@src/assets';
+import {COLORS} from '@src/styles';
 
 const sizeImage = Image.resolveAssetSource(images.ic_getstarted_device);
 const scale = 0.7;
@@ -55,6 +56,7 @@ const styles = StyleSheet.create({
   },
   button:{
     backgroundColor:'#25CDD6',
+    marginHorizontal:scaleInApp(20),
     padding:scaleInApp(10),
     borderRadius:scaleInApp(4),
   },
@@ -80,7 +82,12 @@ const styles = StyleSheet.create({
     borderBottomColor: '#E5E9EA',
     borderBottomWidth: scaleInApp(1),
     paddingVertical:scaleInApp(10),
-  }
+  },
+  linkBtn: {
+    marginVertical: 15,
+    color: COLORS.primary,
+    alignSelf: 'center',
+  },
 });
 
 export default styles;

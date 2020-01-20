@@ -4,7 +4,6 @@ import { StyleSheet } from 'react-native';
 const style = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    marginBottom: 5,
   },
   row: {
     ...THEME.textInput,
@@ -30,7 +29,14 @@ const style = StyleSheet.create({
   focus: {
     borderColor: COLORS.blue,
     borderBottomWidth: DECOR.borderWidth + 0.5
-  }
+  },
+  maxLengthContainer: {
+    alignSelf: 'flex-end'
+  },
+  maxLengthText: {
+    fontSize: 10,
+    color: COLORS.lightGrey8
+  },
 });
 
 export default style;

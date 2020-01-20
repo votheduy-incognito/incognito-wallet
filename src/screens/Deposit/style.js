@@ -15,7 +15,25 @@ export default StyleSheet.create({
   },
   submitBtn: {
     marginTop: 30
-  }
+  },
+  errorContainer: {
+    marginTop: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorIcon: {
+    color: COLORS.orange,
+    fontSize: 60,
+  },
+  errorText: {
+    maxWidth: 400,
+    textAlign: 'center',
+  },
+  errorText2: {
+    marginTop: 5,
+    maxWidth: 500,
+    textAlign: 'center',
+  },
 });
 
 export const waitingDepositStyle = StyleSheet.create({
@@ -28,11 +46,14 @@ export const waitingDepositStyle = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
-    color: COLORS.lightGrey3
+    color: COLORS.lightGrey1,
+    fontSize: 13,
+    lineHeight: 18,
   },
   textHighlight: {
     ...FONT.STYLE.medium,
     color: COLORS.dark1,
-    marginBottom: 10,
+    fontSize: 15,
+    lineHeight: 23,
   }
 });

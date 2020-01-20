@@ -1,31 +1,24 @@
-import { COLORS, DECOR, THEME } from '@src/styles';
+import { COLORS, THEME } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: COLORS.white,
-    borderRadius: DECOR.borderRadiusBorder,
-    shadowOffset: { width: 2, height: 0 },
-    elevation: 3,
-    padding: 13
+    padding: 20,
+    borderBottomColor: COLORS.lightGrey6,
+    borderBottomWidth: 1,
   },
   logoContainer: {
-    flex: 1,
+    paddingRight: 20,
     justifyContent: 'center',
     alignItems: 'flex-start',
-  },
-  logo: {
-    width: 25,
-    height: 25,
-    resizeMode: 'contain'
   },
   cryptoNameContainer: {
     flex: 3,
     flexDirection: 'column',
     justifyContent: 'center',
   },
-  balanceContainer: {
+  rightContainer: {
     flex: 3,
     flexDirection: 'column',
     justifyContent: 'center',
@@ -34,12 +27,13 @@ export default StyleSheet.create({
   text: {},
   mainNameText: {
     ...THEME.text.defaultTextStyle,
-    fontWeight: '400'
+    fontWeight: '400',
   },
   subNameText: {
     ...THEME.text.defaultTextStyle,
-    color: COLORS.lightGrey3,
+    color: COLORS.lightGrey1,
     fontSize: 14,
+    marginTop: 3
   },
   amountText: {
 

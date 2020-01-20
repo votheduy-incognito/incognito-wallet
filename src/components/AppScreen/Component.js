@@ -16,7 +16,7 @@ class AppScreen extends PureComponent {
   render() {
     const { children } = this.props;
     return (
-      <SafeAreaView style={styles.container} forceInset={{ bottom: 'never' }}>
+      <SafeAreaView style={styles.container} forceInset={{ top: 'never', bottom: 'never' }}>
         {children}
       </SafeAreaView>
     );

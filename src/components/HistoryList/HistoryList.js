@@ -1,19 +1,13 @@
 
-import {
-  Container,
-  Divider,
-  Text,
-  View,
-  TouchableOpacity
-} from '@src/components/core';
-import Swipeout from 'react-native-swipeout';
-import { ConfirmedTx, SuccessTx, FailedTx } from '@src/services/wallet/WalletService';
-import { COLORS } from '@src/styles';
-import PropTypes from 'prop-types';
-import React from 'react';
-import formatUtil from '@src/utils/format';
+import { Container, Divider, Text, TouchableOpacity, View } from '@src/components/core';
 import { CONSTANT_COMMONS } from '@src/constants';
 import routeNames from '@src/router/routeNames';
+import { ConfirmedTx, FailedTx, SuccessTx } from '@src/services/wallet/WalletService';
+import { COLORS } from '@src/styles';
+import formatUtil from '@src/utils/format';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Swipeout from 'react-native-swipeout';
 import styleSheet from './style';
 
 const getStatusData = (status, statusCode) => {
@@ -41,6 +35,10 @@ const getStatusData = (status, statusCode) => {
     statusText = 'Failed';
     statusColor = COLORS.red;
     break;
+  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.EXPIRED:
+    statusText = 'Expired';
+    statusColor = COLORS.orange;
+    break;
   default:
     statusText = '';
     statusColor = COLORS.lightGrey1;
@@ -57,6 +55,7 @@ const getTypeData = type => {
   let typeText;
   let balanceDirection;
   let balanceColor;
+  
   switch (type) {
   case CONSTANT_COMMONS.HISTORY.TYPE.WITHDRAW:
     typeText = 'Withdraw';
@@ -123,6 +122,7 @@ const HistoryItem = ({ history, divider, navigation }) => {
 
   const { statusText, statusColor, statusNumber } = getStatusData(history.status, history.statusCode);
   const { typeText, balanceColor, balanceDirection } = getTypeData(history.type);
+  const amount = (history.amount && formatUtil.amount(history.amount, history.pDecimals)) || formatUtil.number(history.requestedAmount);
   // const [addressDirection, address] = getAddress(history);
   const onPress = () => {
     navigation?.navigate(routeNames.TxHistoryDetail, { data: { history, typeText, balanceColor, balanceDirection, statusText, statusColor, statusNumber } });
@@ -155,14 +155,9 @@ const HistoryItem = ({ history, divider, navigation }) => {
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {`${balanceDirection} `}
             {
-              history.amount
-                ? formatUtil.amount(history.amount, history.pDecimals)
-                : formatUtil.amount(history.requestedAmount)
-            } 
-            {' '}
-            { history.symbol }
+              amount ? `${balanceDirection} ${amount} ${ history.symbol }` : ''
+            }
           </Text>
           <Text
             style={[styleSheet.statusText, { color: statusColor }]}
@@ -173,7 +168,7 @@ const HistoryItem = ({ history, divider, navigation }) => {
           </Text>
         </View>
       </TouchableOpacity>
-      {divider && <Divider height={2} color={COLORS.lightGrey6} />}
+      {divider && <Divider height={2} style={styleSheet.divider} color={COLORS.lightGrey6} />}
     </>
   );
 };
@@ -194,8 +189,7 @@ const HistoryList = ({ histories, actionButton, onCancelEtaHistory, navigation }
         <View style={styleSheet.content}>
           {
             histories.map((history, index) => (
-              <HistoryItemWrapper key={history.id} history={history} divider={index < (histories.length - 1)} onCancelEtaHistory={onCancelEtaHistory} navigation={navigation} />
-            ))
+              <HistoryItemWrapper key={history.id} history={history} divider={index < (histories.length - 1)} onCancelEtaHistory={onCancelEtaHistory} navigation={navigation} />))
           }
         </View>
       </Container>
@@ -229,11 +223,19 @@ HistoryItem.propTypes = {
     toAddress: PropTypes.string, 
     statusCode: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     cancelable: PropTypes.bool,
+    canRetryExpiredDeposit: PropTypes.bool,
     pDecimals: PropTypes.number,
     requestedAmount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     status: PropTypes.string,
+    expiredAt: PropTypes.string,
+    depositAddress: PropTypes.string,
+    userPaymentAddress: PropTypes.string,
+    erc20TokenAddress: PropTypes.string,
+    privacyTokenAddress: PropTypes.string,
+    walletAddress: PropTypes.string,
   }),
   divider: PropTypes.bool,
+  navigation: PropTypes.object.isRequired
 };
 
 HistoryList.defaultProps = {
@@ -245,7 +247,8 @@ HistoryList.defaultProps = {
 HistoryList.propTypes = {
   histories: PropTypes.array,
   actionButton: PropTypes.element,
-  onCancelEtaHistory: PropTypes.func
+  onCancelEtaHistory: PropTypes.func,
+  navigation: PropTypes.object.isRequired
 };
 
 EmptyHistory.defaultProps = {

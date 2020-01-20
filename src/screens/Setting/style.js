@@ -1,5 +1,6 @@
 import { COLORS, FONT, SPACING, DECOR } from '@src/styles';
 import { StyleSheet } from 'react-native';
+import TextStyle from '@src/styles/TextStyle';
 
 const HEADER_HEIGHT = 35;
 
@@ -7,6 +8,13 @@ export const settingStyle = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.lightGrey6
+  },
+  textVersion:{
+    ...TextStyle.smallText,
+    backgroundColor: COLORS.lightGrey6,
+    color:COLORS.lightGrey1,
+    textAlign:'center',
+    padding: 10,
   }
 });
 
@@ -34,7 +42,7 @@ export const sectionStyle = StyleSheet.create({
     flexDirection: 'row',
     borderTopWidth: DECOR.borderWidth,
     borderColor: COLORS.lightGrey5,
-    paddingVertical: 10,
+    paddingVertical: 20,
     paddingHorizontal: 20
   },
   lastItem: {
@@ -108,4 +116,33 @@ export const accountSection = StyleSheet.create({
   swipeoutButton: {
     backgroundColor: COLORS.transparent
   }
+});
+
+export const pinSection = StyleSheet.create({
+  item: {
+    backgroundColor: COLORS.white,
+    borderTopWidth: DECOR.borderWidth,
+    borderColor: COLORS.lightGrey5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  name: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    marginRight: 20,
+  },
+  switch: {
+    width: 40,
+    height: 14,
+    borderRadius: 25,
+    padding: 0,
+  },
+  circle: {
+    width: 22,
+    height: 22,
+    borderRadius: 20,
+  },
 });

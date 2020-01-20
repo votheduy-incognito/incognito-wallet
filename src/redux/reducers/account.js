@@ -1,6 +1,7 @@
 import type from '@src/redux/types/account';
 import _ from 'lodash';
 
+const TAG = 'reducers-account';
 const initialState = {
   list: [],
   defaultAccountName: '',
@@ -9,9 +10,11 @@ const initialState = {
 
 const setAccount = (list, account) => {
   let newList = [...list];
+  // console.log(TAG,'setAccount account = ',account);
   try {
     const foundIndex = list.findIndex(a => a.name === account.name);
     if (foundIndex >= 0) {
+      console.log(TAG,'setAccount 01');
       newList[foundIndex] = account;
     } else {
       newList.push(account);
@@ -19,6 +22,7 @@ const setAccount = (list, account) => {
   } catch(e) {
     console.error(e);
   }
+  // console.log(TAG,'setAccount end  = ',newList);
   return newList;
 };
 

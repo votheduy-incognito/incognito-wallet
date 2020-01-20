@@ -1,41 +1,49 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, TouchableOpacity, ActivityIndicator } from '@src/components/core';
+import { View, Text, TouchableScale, ActivityIndicator } from '@src/components/core';
 import CryptoIcon from '@src/components/CryptoIcon';
 import formatUtil from '@src/utils/format';
+import VerifiedText from '@src/components/VerifiedText';
 import cryptoItemStyle from './style';
 
-const CryptoItem = ({ fullName, name, amount, externalSymbol, onPress, symbol, isGettingBalance, style, pDecimals }) => (
-  <TouchableOpacity style={[cryptoItemStyle.container, style]} onPress={amount != null ? onPress : null}>
+const CryptoItem = ({ fullName, name, amount, onPress, symbol, isGettingBalance, style, pDecimals, tokenId, rightComponent, isVerified }) => (
+  <TouchableScale style={[cryptoItemStyle.container, style]} onPress={amount != null ? onPress : null}>
     <View style={cryptoItemStyle.logoContainer}>
-      <CryptoIcon symbol={externalSymbol || symbol} />
+      <CryptoIcon tokenId={tokenId} />
     </View>
     <View style={cryptoItemStyle.cryptoNameContainer}>
-      <Text style={cryptoItemStyle.mainNameText}>{fullName}</Text>
-      <Text style={cryptoItemStyle.subNameText}>{name}</Text>
+      <VerifiedText text={fullName} numberOfLines={1} ellipsizeMode="tail" style={cryptoItemStyle.mainNameText} isVerified={isVerified} />
+      <Text style={cryptoItemStyle.subNameText} numberOfLines={1} ellipsizeMode="tail">{name}</Text>
     </View>
-    <View style={cryptoItemStyle.balanceContainer}>
-      { isGettingBalance ? 
-        <ActivityIndicator /> : (
-          amount != null ?
-            <Text style={cryptoItemStyle.amountText} numberOfLines={1} ellipsizeMode="tail">{formatUtil.amount(amount, pDecimals)} {symbol}</Text> :
-            <Text style={cryptoItemStyle.getAmountFailedText}>---</Text>
-        )
+    <View style={cryptoItemStyle.rightContainer}>
+      {
+        rightComponent ?
+          rightComponent
+          : (
+            isGettingBalance ?
+              <ActivityIndicator size="small" /> : (
+                amount != null ?
+                  <Text style={cryptoItemStyle.amountText} numberOfLines={1} ellipsizeMode="tail">{formatUtil.amount(amount, pDecimals)} {symbol}</Text> :
+                  <Text style={cryptoItemStyle.getAmountFailedText}>---</Text>
+              )
+          )
       }
     </View>
-  </TouchableOpacity>
+  </TouchableScale>
 );
 
 CryptoItem.defaultProps = {
   fullName: 'Sample name',
   name: 'Name',
   amount: 0,
-  externalSymbol: null,
   onPress: null,
   symbol: null,
   isGettingBalance: false,
   style: null,
   pDecimals: null,
+  tokenId: null,
+  rightComponent: null,
+  isVerified: false
 };
 
 CryptoItem.propTypes = {
@@ -43,11 +51,13 @@ CryptoItem.propTypes = {
   fullName: PropTypes.string,
   name: PropTypes.string,
   amount: PropTypes.number,
-  externalSymbol: PropTypes.string,
   onPress: PropTypes.func,
   symbol: PropTypes.string,
   isGettingBalance: PropTypes.bool,
-  style: PropTypes.object
+  style: PropTypes.object,
+  tokenId: PropTypes.string,
+  rightComponent: PropTypes.node,
+  isVerified: PropTypes.bool,
 };
 
 export default CryptoItem;

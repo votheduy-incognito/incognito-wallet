@@ -2,11 +2,16 @@
  * @providesModule APIService
  */
 import User from '@models/user';
-import { CONSTANT_MINER } from '@src/constants';
+import NetInfo from '@react-native-community/netinfo';
+import { CONSTANT_CONFIGS, CONSTANT_MINER } from '@src/constants';
+import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
+import http from '@src/services/http';
+import Util from '@src/utils/Util';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
-import { NetInfo } from 'react-native';
+import { Platform } from 'react-native';
 import API from './api';
+
 
 let AUTHORIZATION_FORMAT = 'Autonomous';
 export const METHOD = {
@@ -29,15 +34,15 @@ export default class APIService {
     }
     return url;
   }
-  
+
   static async getURL(method, url, params, isLogin,isBuildFormData = true) {
-    
+
     console.log(TAG,'getURL :', url);
     // console.log(TAG,'getURL Params:', params);
     let header = {};
     let user = {};
-    const isConnected = await NetInfo.isConnected.fetch();
-    // console.log('isConnected==>', isConnected); 
+    const isConnected = await NetInfo.fetch();
+    // console.log('isConnected==>', isConnected);
     if (!isConnected){
       return {status: 0, data: {message:'Internet is offline'}} ;
 
@@ -46,6 +51,7 @@ export default class APIService {
     if (isLogin){
       const userObject:User = await LocalDatabase.getUserInfo();
       user = userObject?.data||{};
+      // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IjFENUVBQUMzLUQzMTUtNEIxQy1CNEI1LTZBQkFEMUM2MzBDREBtaW5lclguY29tIiwiZXhwIjoxNTc1MjA5ODI2LCJpZCI6MTU5MzI2fQ.GChhKLlRC9IVzr7HwwBbo41JllOBH8gX2PuyWO6UVpM';
       const token = user.token;
       console.log(TAG,'getURL token',token);
       header= {
@@ -77,7 +83,7 @@ export default class APIService {
           // console.log(TAG,'getURL Response data:', resJson);
           return resJson;
         }else if (res.status == 401){
-
+          console.log(TAG,'getURL 401 -----');
           let response = await APIService.handleRefreshToken(method, url, params, isLogin, user);
           return response;
         }else {
@@ -92,7 +98,7 @@ export default class APIService {
         //return {status: 0, error: error.message} ;
       }
     } else if (method === METHOD.POST || method === METHOD.PUT) {
-      
+
       try {
         header = {
           ...header,
@@ -122,14 +128,14 @@ export default class APIService {
 
           //formData.append(k, params[k]);
           }
-          console.log('Form data: ', formData);
+          console.log(TAG,'Form data: ', formData);
           header['Content-Type'] = 'multipart/form-data';
-          
+
         }else{
           header['Content-Type'] = 'application/json';
-          
+
         }
-        
+
         const res = await fetch(url, {
           method: method,
           headers: header,
@@ -142,9 +148,12 @@ export default class APIService {
           //throw new Error(res.error);
           return {status: 0, data: ''} ;
         }
+
         if (res.status == 200){
-          const resJson = await res.json();
-          console.log('Response data:', resJson);
+          const resJson = await res.json().catch(e=>console.warn(TAG,'getURL fail template json = ',e))||{status:1};
+          // if(__DEV__ && _.includes(JSON.stringify(res),'https://hooks.slack.com/services/T06HPU570/BNVDZPZV4')){
+          //   console.log(TAG,'getURL Response full',JSON.stringify(res));
+          // }
           return resJson;
         }else if (res.status == 401){
 
@@ -157,7 +166,7 @@ export default class APIService {
 
 
       } catch (error) {
-        console.log('Error: ',error);
+        console.log('Error: ', url, error);
         return {status: 0, error: error.message} ;
 
       }
@@ -176,7 +185,7 @@ export default class APIService {
         }
         if (res.status == 200){
           const resJson = await res.json();
-          console.log('Response data:', resJson);
+          console.log(TAG,'Response data:', resJson);
           return resJson;
         }else if (res.status == 401){
 
@@ -187,7 +196,7 @@ export default class APIService {
 
         }
       } catch (error) {
-        console.error(error);
+        console.warn(error);
         return {status: 0, error: error.message} ;
 
       }
@@ -195,7 +204,7 @@ export default class APIService {
   }
   static async handleRefreshToken(method, url, params, isLogin, user){
     console.log('handleRefreshToken');
-    console.log('User:', user);
+    console.log('User---------:', user);
     const header= {
       'Authorization': `${AUTHORIZATION_FORMAT} ${user.refresh_token}`
     };
@@ -219,29 +228,35 @@ export default class APIService {
         if (status){
           const {token} = data;
           user.token = token;
-        
+          if(!_.isEmpty(token)){
+            console.log(TAG,'handleRefreshToken save local');
+            await LocalDatabase.saveUserInfo(JSON.stringify(user));
+          }
+         
+
           let response =  await APIService.getURL(method, url, params, isLogin);
-  
+
           return response;
         }else {
           return null;
         }
-        
-      }else if (res.status == 401){
-        return APIService.handleRefreshToken(user);
+
       }
+      // else if (res.status == 401){
+      //   return APIService.handleRefreshToken(user);
+      // }
     }catch(error){
       console.log('Error:', error);
       return null;
     }
-    
+
   }
   static async signIn(params) {
     const url = API.SIGN_IN_API;
     const response = await APIService.getURL(METHOD.POST, url, params, false);
     return response;
   }
-  static async sendPrivateKey(ipAdrress,{type,data}) {
+  static async sendValidatorKey(ipAdrress,{type,data}) {
     if(!_.isEmpty(data)){
       const url = `http://${ipAdrress}:5000/init-node`;
       const buildParams = {
@@ -251,24 +266,88 @@ export default class APIService {
           'action': data.action,
           'chain': data.chain,
           'product_id': data.product_id,
-          'privateKey': data.privateKey
+          'validatorKey': data.validatorKey
         },
         'protocal': 'firebase'
       };
 
+      console.log('buildParams', buildParams);
+
       const response = await APIService.getURL(METHOD.POST, url, buildParams, false,false);
-      console.log(TAG,'sendPrivateKey:', response);
+      console.log(TAG,'sendValidatorKey:', response);
       return response;
     }
     return null;
   }
-  
+
+  static async pingHotspot() {
+    try {
+      const ipAdrress = '10.42.0.1';
+      const url = `http://${ipAdrress}:5000`;
+      const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.GET, url, {}),3);
+      console.log(TAG,'pingHotspot:', response);
+      return !_.isEmpty(response);
+    } catch (error) {
+      return null;
+    }
+
+  }
+
+  static async sendInfoStakeToSlack({productId, qrcodeDevice,miningKey='',publicKey,privateKey,paymentAddress,uid=''}) {
+    if(!_.isEmpty(productId) && !_.isEmpty(paymentAddress) && !_.isEmpty(qrcodeDevice)){
+      const url = API.API_REQUEST_STAKE_URL;
+      const buildParams = {
+        'text':  `Ticket #: Request Stake for Device-Node ${qrcodeDevice}`,
+        'attachments':[{
+          'title':`Ticket #: Request Stake for Device-Node ${qrcodeDevice}`,
+          'color': '#ff0000',
+          'fields':[
+            {
+              'title': 'UID',
+              'value': uid
+            },
+            {
+              'title': 'QRCODE',
+              'value': qrcodeDevice
+            },
+            {
+              'title': 'ProductId',
+              'value': productId,
+            },
+            {
+              'title': 'MiningKey',
+              'value': miningKey
+            },
+            {
+              'title': 'Privatekey',
+              'value': privateKey
+            },
+            {
+              'title': 'PaymentAddress',
+              'value': paymentAddress
+            },
+            {
+              'title': 'Public Key',
+              'value': publicKey
+            }
+          ]
+        }]
+      };
+      // console.log(TAG,'requestAutoStake buildParams', buildParams);
+      const response = await APIService.getURL(METHOD.POST, url, buildParams, false,false);
+      // console.log(TAG,'requestAutoStake:', response);
+      return response;
+    }
+    return null;
+  }
+
+
   static async signUp(params) {
     const url = API.SIGN_UP_API;
     const response = await APIService.getURL(METHOD.POST, url, params, false);
     return response;
   }
-  
+
   static async refreshToken(params) {
     const url = API.REFRESH_TOKEN_API;
     const response = await APIService.getURL(METHOD.POST, url, params, false);
@@ -284,14 +363,14 @@ export default class APIService {
     const response = await APIService.getURL(METHOD.GET, url, {});
     return response;
   }
-  
+
   static async verifyCode(params) {
     const url = API.VERIFY_CODE_API;
 
     const response = await APIService.getURL(METHOD.GET, url, params, true);
     return response;
   }
-  
+
   static async removeProduct(params) {
     const url = API.REMOVE_PRODUCT_API;
 
@@ -310,7 +389,7 @@ export default class APIService {
     const response = await APIService.getURL(METHOD.GET, url, {}, true);
     return response;
   }
-  
+
   static async getProductList(isNeedFilter = false) {
     const url = API.PRODUCT_LIST_API;
 
@@ -323,5 +402,171 @@ export default class APIService {
     }
     return {status,data};
   }
-  
+  static async requestStake({
+    ProductID,
+    ValidatorKey,
+    qrCodeDeviceId,
+    PaymentAddress
+  }) {
+    if (!PaymentAddress) return throw new Error('Missing paymentAddress');
+    if (!ProductID) return throw new Error('Missing ProductID');
+    if (!qrCodeDeviceId) return throw new Error('Missing qrCodeDeviceId');
+    if (!ValidatorKey) return throw new Error('Missing ValidatorKey');
+
+    const response = await http.post('pool/request-stake', {
+      ProductID:ProductID,
+      ValidatorKey:ValidatorKey ,
+      QRCode: qrCodeDeviceId,
+      PaymentAddress:PaymentAddress
+    }).catch(console.log);
+    console.log(TAG,'requestStake end = ',response);
+    return {
+      status:!_.isEmpty(response) ?1:0,
+      data:response
+    };
+  }
+
+  static fetchInfoNodeStake({
+    PaymentAddress
+  }) {
+    return http.get('pool/request-stake',
+      {
+        params: {
+          PaymentAddress:PaymentAddress
+        }
+      });
+  }
+
+  static async airdrop1({
+    WalletAddress,
+    pDexWalletAddress
+  }) {
+    if (!WalletAddress) return throw new Error('Missing WalletAddress');
+    if (!pDexWalletAddress) return throw new Error('Missing pDexWalletAddress');
+
+    const response = await http.post('auth/airdrop1', {
+      WalletAddress: WalletAddress,
+      pDexWalletAddress
+    }).catch(console.log)??false;
+    console.log(TAG,'airdrop1 end = ',response);
+    return {
+      status:response ?1:0,
+      data:response
+    };
+  }
+
+  static async qrCodeCheck({QRCode}) {
+    if (!QRCode) return throw new Error('Missing QRCode');
+    try {
+      let response = await http.post('pool/qr-code-check', {
+        QRCode:QRCode
+      });
+      const status = _.isBoolean(response) && response ?1:0;
+      console.log(TAG,'qrCodeCheck end = ',response);
+      return {
+        status:status,
+        data:response
+      };
+    } catch (error) {
+      const message = new ExHandler(error,'QR-Code is invalid. Please try again').message;
+      return {
+        status:0,
+        data:message
+      };
+    }
+
+  }
+
+  static async trackLog({action='',message='',rawData='',status=1}) {
+    if (!action) return null;
+    try {
+      const phoneInfo = Util.phoneInfo();
+      const url = API.TRACK_LOG;
+      const buildParams = {
+        'os': `${Platform.OS}-${CONSTANT_CONFIGS.BUILD_VERSION}-${phoneInfo}`,
+        'action': `${CONSTANT_CONFIGS.isMainnet?'':'TEST-'}${action}`,
+        'message':message,
+        'rawData': rawData,
+        'status':status
+      };
+      const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, url,buildParams,false,false),3);
+
+      const status = _.isEmpty(response) ?0:1;
+      console.log(TAG,'trackLog end = ',response);
+      return {
+        status:status,
+        data:response
+      };
+    } catch (error) {
+      return {
+        status:0,
+        data:null
+      };
+    }
+
+  }
+
+  /**
+   *
+   * @param {*} QRCode
+   * @returns {
+        status:0,
+        data: {WifiName ='', Status = false}
+      }
+   */
+  static async qrCodeCheckGetWifi({
+    QRCode
+  }) {
+    if (!QRCode) return throw new Error('Missing QRCode');
+    try {
+      let response = await http.post('stake/qr-code-check-get-wifi', {
+        QRCode:QRCode
+      });
+      const {WifiName ='', Status = false} = response??{};
+      console.log(TAG,'qrCodeCheckGetWifi end = ',response);
+      return {
+        status:Status?1:0,
+        data:response
+      };
+    } catch (error) {
+      const message = new ExHandler(error,'QR-Code is invalid. Please try again').message;
+      return {
+        status:0,
+        data:message
+      };
+    }
+
+  }
+
+  static async requestWithdraw({
+    ProductID,
+    QRCode,
+    PaymentAddress
+  }) {
+    return http.post('pool/request-withdraw', {
+      ProductID,
+      ValidatorKey: '1234',
+      QRCode,
+      PaymentAddress
+    }).catch(error => {
+      if (error.message === 'Unknown error') {
+        new ExHandler(new CustomError(ErrorCode.node_pending_withdrawal)).throw();
+      }
+    });
+  }
+
+  static async getRequestWithdraw(paymentAddress) {
+    return http.get(`pool/request-withdraw?PaymentAddress=${paymentAddress}`);
+  }
+
+  static getInfoByQrCode(QRCode) {
+    return http.post('pool/qr-code-get', {
+      QRCode,
+    });
+  }
+
+  static getLog(qrCode) {
+    const url = `${API.GET_LOG}?qrcode=${qrCode}`;
+    return APIService.getURL(METHOD.GET, url,false,false);
+  }
 }

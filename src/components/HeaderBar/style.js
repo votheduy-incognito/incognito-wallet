@@ -13,10 +13,19 @@ const style = StyleSheet.create({
     height: sizeHeader.height,
     alignItems: 'center'
   },
+  titleGroup: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   title: {
     ...TextStyle.bigText,
     ...FONT.STYLE.bold,
     color: COLORS.white,
+  },
+  subTitle: {
+    ...TextStyle.normalText,
+    color: COLORS.lightGrey1,
   },
   left: {
     flex: 1,

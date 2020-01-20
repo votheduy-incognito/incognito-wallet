@@ -1,8 +1,8 @@
-import { Text, TouchableOpacity, View, Divider } from '@src/components/core';
+import { Text, TouchableOpacity, View, Modal } from '@src/components/core';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Modal } from 'react-native';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
+import { COLORS } from '@src/styles';
 import styleSheet from './style';
 
 class OptionMenu extends Component {
@@ -34,12 +34,13 @@ class OptionMenu extends Component {
             <EntypoIcons
               size={24}
               style={[styleSheet.iconBtn, iconStyle]}
+              color={COLORS.white}
               {...iconOtherProps}
               name="dots-three-vertical"
             />
           )}
         </TouchableOpacity>
-        <Modal animationType="slide" transparent visible={open}>
+        <Modal animationType="slide" transparent visible={open} close={this.handleToggle}>
           <TouchableOpacity
             onPress={() => this.handleToggle(false)}
             style={styleSheet.contentContainer}
@@ -66,7 +67,11 @@ class OptionMenu extends Component {
                   >
                     <View style={styleSheet.icon}>{item?.icon}</View>
                     <View style={styleSheet.textContainer}>
-                      <Text style={styleSheet.itemText}>{item?.label}</Text>
+                      {
+                        item?.label && typeof item.label === 'string' ?
+                          <Text style={styleSheet.itemText}>{item?.label}</Text>
+                          : item.label
+                      }
                       <Text style={styleSheet.itemDescText}>{item?.desc}</Text>
                     </View>
                   </TouchableOpacity>

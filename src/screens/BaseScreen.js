@@ -1,10 +1,20 @@
-import Util from '@src/utils/Util';
-import React from 'react';
-import { AppState } from 'react-native';
-import Toast from 'react-native-easy-toast';
 import BaseComponent from '@src/components/BaseComponent';
+import Util from '@src/utils/Util';
+import { AppState } from 'react-native';
+// import deviceLog, { InMemoryAdapter } from 'react-native-device-log';
 
-export const TAG = 'BaseScreen';
+// export const TAG = 'BaseScreen';
+// deviceLog.init(new InMemoryAdapter()
+//   ,{
+//     logToConsole : false,
+//     logRNErrors : true,
+//     maxNumberToRender : 2000,
+//     maxNumberToPersist : 2000
+//   }).then(() => {
+//   deviceLog.clear();
+// });
+
+// deviceLog.startTimer(`${TAG}-start-up`);
 
 class BaseScreen extends BaseComponent {
   constructor(props) {
@@ -48,7 +58,7 @@ class BaseScreen extends BaseComponent {
 
   goToScreen = (routeName, params = {}) => {
     const { navigation } = this.props;
-    navigation?.navigate(routeName, params);
+    navigation?.navigate(routeName, { ...params, goBackKey: navigation.state.key });
   };
 }
 

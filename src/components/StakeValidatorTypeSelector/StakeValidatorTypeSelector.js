@@ -90,7 +90,7 @@ class StakeValidatorTypeSelector extends Component {
     // const enoughMsg = `${account?.name ? `"${account?.name }"`: ''} successfully staked ${formatUtil.amount(stakeShard?.amount, CONSTANT_COMMONS.DECIMALS[CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV])} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}.`;
     // const notEnoughMsg = `Please make sure your account ${account?.name ? `"${account?.name }"`: ''} has enough ${formatUtil.amount(stakeShard?.amount, CONSTANT_COMMONS.DECIMALS[CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV])} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}`;
     // Please ensure that you have at least 1750 PRV in your account to stake.
-    const notEnoughMsg = `Please ensure that you have at least ${formatUtil.amount(stakeShard?.amount, CONSTANT_COMMONS.DECIMALS[CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV])} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV} in your account ${account?.name ? `"${account?.name }"`: ''} to stake.`;
+    const notEnoughMsg = `Please ensure you have ${formatUtil.amount(stakeShard?.amount, CONSTANT_COMMONS.DECIMALS[CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV])} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV} in your account ${account?.name ? `"${account?.name }"`: ''} to stake, and enough to cover the transaction fee (0.0001 PRV or more).`;
     return (
       <View style={[styles.container, style]}>
         {/* <Text style={styles.title}>What kind of validator?</Text>

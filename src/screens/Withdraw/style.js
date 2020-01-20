@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, THEME } from '@src/styles';
+import { COLORS } from '@src/styles';
 
 export default StyleSheet.create({
   container: {
@@ -10,7 +10,7 @@ export default StyleSheet.create({
   },
   feeText: {
     textAlign: 'center',
-    marginVertical: 10,
+    marginVertical: 3,
     fontSize: 14
   },
   form: {
@@ -22,5 +22,12 @@ export default StyleSheet.create({
   },
   input: {
     marginBottom: 10
+  },
+  memoContainer: {
+    marginTop: 10
+  },
+  memoText: {
+    fontSize: 14,
+    color: COLORS.lightGrey3
   },
 });

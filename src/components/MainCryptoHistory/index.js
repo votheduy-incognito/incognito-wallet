@@ -1,9 +1,9 @@
-import { RefreshControl, ScrollView, Toast } from '@src/components/core';
+import { RefreshControl, ScrollView } from '@src/components/core';
 import HistoryList from '@src/components/HistoryList';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { CONSTANT_COMMONS } from '@src/constants';
-import tokenData from '@src/constants/tokenData';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
+import { ExHandler } from '@src/services/exception';
 import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -16,11 +16,11 @@ const normalizeData = (histories, decimals, pDecimals) =>
     incognitoTx: h?.txID,
     time: h?.time,
     type: h?.isIn ? CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE : CONSTANT_COMMONS.HISTORY.TYPE.SEND,
-    toAddress: h?.receivers[0],
-    amount: h?.amount,
-    symbol: tokenData.SYMBOL.MAIN_CRYPTO_CURRENCY,
+    toAddress: h?.receivers?.length && h?.receivers[0],
+    amount: h?.amountNativeToken,
+    symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
     status: h?.status,
-    fee: h?.fee * (10 ** CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY), // convert to nano fee (HistoryList require)
+    fee: h?.feeNativeToken,
     decimals,
     pDecimals,
   }));
@@ -60,7 +60,6 @@ class MainCryptoHistory extends Component {
     this.setState({ isLoading: true });
     const { defaultAccount: { name } = {}, wallet } = this.props;
     let historiesNew = await this.loadAccountHistory(wallet, name).catch(console.log)||histories;
-
     this.setState({ histories:historiesNew,isLoading: false });
     console.log(TAG,'handleLoadHistory end');
   }
@@ -78,8 +77,8 @@ class MainCryptoHistory extends Component {
       const histories = await loadHistoryByAccount(wallet, accountName);
       console.log(TAG,'loadAccountHistory end');
       return histories;
-    } catch {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+    } catch (e) {
+      new ExHandler(e, 'Sorry, we can not load your history. Please pull down to reload.').showErrorToast();
     }
   };
 
@@ -97,14 +96,14 @@ class MainCryptoHistory extends Component {
     const { isLoading, histories } = this.state;
     const { selectedPrivacy } = this.props;
 
-    if (isLoading || !selectedPrivacy) {
+    if (!selectedPrivacy) {
       return <LoadingContainer />;
     }
 
     return (
       <ScrollView
         contentContainerStyle={{
-          flexGrow: 1
+          minHeight: '100%'
         }}
         refreshControl={(
           <RefreshControl
@@ -126,7 +125,8 @@ const mapState = state => ({
 });
 
 MainCryptoHistory.defaultProps = {
-  onLoad: null
+  onLoad: null,
+  selectedPrivacy: null,
 };
 
 MainCryptoHistory.propTypes = {

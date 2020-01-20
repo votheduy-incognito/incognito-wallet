@@ -1,10 +1,22 @@
+import { differenceBy } from 'lodash';
 import type from '@src/redux/types/account';
+import TokenModel from '@src/models/token';
 import walletType from '@src/redux/types/wallet';
 import accountService from '@src/services/wallet/accountService';
 import { getPassphrase } from '@src/services/wallet/passwordService';
-import { tokenSeleclor } from '../selectors';
+import { getUserUnfollowTokenIDs } from '@src/services/wallet/tokenService';
+import { tokenSeleclor, accountSeleclor } from '../selectors';
 import { getBalance as getTokenBalance, setListToken } from './token';
 
+/**
+ *  return basic account object from its name like its KEY, not including account methods (please use accountWallet instead) 
+ *
+ * @param {object} state redux state
+ * @param {string} accountName name of account you wanna get
+ */
+const getBasicAccountObjectByName = state => accountName => {
+  return accountSeleclor.getAccountByName(state)(accountName);
+};
 
 export const setAccount = (account = throw new Error('Account object is required')) => ({
   type: type.SET,
@@ -81,10 +93,12 @@ export const getBalance = (account) => async (dispatch, getState) => {
     }
 
     balance = await accountService.getBalance(account, wallet);
-    dispatch(setAccount({
+    const accountMerge = {
       ...account,
       value: balance
-    }));
+    };
+    // console.log(TAG,'getBalance = accountMerge = ',accountMerge);
+    dispatch(setAccount(accountMerge));
     
   } catch (e) {
     account && dispatch(setAccount({
@@ -99,8 +113,45 @@ export const getBalance = (account) => async (dispatch, getState) => {
   return balance??0;
 };
 
+export const loadAllPTokenHasBalance = account => async (dispatch, getState) => {
+  if (!account) {
+    throw new Error('Account is required');
+  }
 
-export const reloadAccountFollowingToken = (account = throw new Error('Account object is required')) => async (dispatch, getState) => {
+  const state = getState();
+  const wallet = state?.wallet;
+
+  if (!wallet) {
+    throw new Error('Wallet is not existed');
+  }
+
+  const allTokenData = await accountService.getListTokenHasBalance(account, wallet);
+  const followedToken = tokenSeleclor.followed(state);
+  const allIncognitoTokens = tokenSeleclor.internalTokens(state);
+
+  // get data of tokens that have balance
+  const allTokens = allTokenData?.map(tokenData => allIncognitoTokens?.find(t => t?.id === tokenData?.id));
+
+  const newTokens = differenceBy(allTokens, followedToken, 'id');
+
+  // if token id has been existed in USER UNFOLLOWING LIST, ignore it!
+  const userUnfollowedList = await getUserUnfollowTokenIDs();
+  const shouldAddTokens = newTokens?.filter(token => !userUnfollowedList?.includes(token.id));
+
+  if (shouldAddTokens?.length > 0) {
+    await accountService.addFollowingTokens(shouldAddTokens.map(TokenModel.toJson), account, wallet);
+
+    // update wallet object to store
+    dispatch({
+      type: walletType.SET,
+      data: wallet
+    });
+  }
+
+  return allTokens;
+};
+
+export const reloadAccountFollowingToken = (account = throw new Error('Account object is required'), { shouldLoadBalance = true } = {}) => async (dispatch, getState) => {
   try {
     const wallet = getState()?.wallet;
 
@@ -110,7 +161,7 @@ export const reloadAccountFollowingToken = (account = throw new Error('Account o
 
     const tokens = accountService.getFollowingTokens(account, wallet);
 
-    tokens.forEach(token => getTokenBalance(token)(dispatch, getState));
+    shouldLoadBalance && tokens.forEach(token => getTokenBalance(token)(dispatch, getState));
 
     dispatch(setListToken(tokens));
 
@@ -148,6 +199,34 @@ export const followDefaultTokens = (account = throw new Error('Account object is
     });
 
     return defaultTokens;
+  } catch (e) {
+    throw e;
+  }
+};
+
+export const switchAccount = (accountName) => async (dispatch, getState) => {
+  try {
+    if (!accountName) throw new Error('accountName is required');
+
+    const state = getState();
+    const wallet = state?.wallet;
+
+    if (!wallet) {
+      throw new Error('Wallet is not exist');
+    }
+
+    const account = getBasicAccountObjectByName(state)(accountName);
+    const defaultAccount = accountSeleclor.defaultAccount(state);
+
+    if (defaultAccount?.name === account?.name) {
+      return;
+    }
+
+    dispatch(setDefaultAccount(account));
+    await getBalance(account)(dispatch, getState).catch(() => null);
+    await reloadAccountFollowingToken(account)(dispatch, getState).catch(() => null);
+
+    return accountSeleclor.defaultAccount(state);
   } catch (e) {
     throw e;
   }

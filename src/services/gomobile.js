@@ -2,37 +2,67 @@ import { NativeModules } from 'react-native';
 
 const PrivacyGo = NativeModules.PrivacyGo;
 
-if (typeof PrivacyGo.aggregatedRangeProve === 'function' && typeof PrivacyGo.generateBLSKeyPairFromSeed === 'function') {
-  console.info('PrivacyGo was supported');
+const log = (...args) => console.log('GOMODULE', ...args);
+try {
+  const asyncMethods = [
+    'deriveSerialNumber',
+    'randomScalars',
+    'initPrivacyTx',
+    'initPrivacyTokenTx',
+    'initBurningRequestTx',
+    'initWithdrawRewardTx',
+    'staking',
+    'generateBLSKeyPairFromSeed',
+    'initPRVContributionTx',
+    'initPTokenContributionTx',
+    'initPRVTradeTx',
+    'initPTokenTradeTx',
+    'withdrawDexTx',
+    'hybridDecryptionASM',
+    'hybridEncryptionASM',
+    'stopAutoStaking',
+  ];
+  const syncMethods = [
+    'scalarMultBase',
+    'generateKeyFromSeed'
+  ];
 
-  global.aggregatedRangeProve = (data) => {
-    return new Promise((resolve, reject) => {
-      try {
-        PrivacyGo.aggregatedRangeProve(data, function(error, result) {
-          if (error) return reject(error);
+  asyncMethods.forEach(methodName => {
+    global[methodName] = (data) => {
+      return new Promise((resolve, reject) => {
+        try {
+          log(`${methodName} called with params`, data);
+          PrivacyGo[methodName](data, function(error, result) {
+            if (error) {
+              reject(error);
+            }
 
-          return resolve(result);
-        });
-      } catch (e) {
-        reject(e);
+            log(`${methodName} called successfully with result`, result);
+            return resolve(result);
+          });
+        } catch (e) {
+          log(`${methodName} called with error`, e);
+          reject(e);
+        }
+      });
+    };
+  });
+
+  syncMethods.forEach(methodName => {
+    global[methodName] = (input) => {
+      log(`${methodName} called with params`, input);
+
+      const rs = PrivacyGo[methodName](input);
+      log(`${methodName} called successfully with result`, rs);
+
+      if (rs === null) {
+        throw new Error(`${methodName} go module called with error`);
       }
-    });
-  };
+      return rs;
+    };
+  });
 
-  global.generateBLSKeyPairFromSeed = (data) => {
-    return new Promise((resolve, reject) => {
-      try {
-        PrivacyGo.generateBLSKeyPairFromSeed(data, function(error, result) {
-          if (error) return reject(error);
-
-          return resolve(result);
-        });
-      } catch (e) {
-        reject(e);
-      }
-    });
-  };
-} else {
-  // do somthing  else
-  console.warn('PrivacyGo doesn\'t support on this device!');
+  console.log('GO modules were loaded');
+} catch {
+  console.error('GO modules can not loaded');
 }

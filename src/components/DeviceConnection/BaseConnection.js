@@ -3,6 +3,7 @@ export class ObjConnection {
   constructor() {
     this.id = -1;
     this.name = '';
+    this.password = '';
   }
 }
 class BaseConnection {
@@ -16,6 +17,7 @@ class BaseConnection {
   init = () => {};
 
   connectDevice = async (device: ObjConnection) => {};
+  connectLastConnection = async (name:String) => {};
   removeConnection = async (device: ObjConnection) => {};
 
   destroy = () => {};

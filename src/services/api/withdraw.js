@@ -1,7 +1,7 @@
 import http from '@src/services/http';
 import { CONSTANT_COMMONS } from '@src/constants';
 
-export const genCentralizedWithdrawAddress = ({ amount, paymentAddress, walletAddress, tokenId, currencyType }) => {
+export const genCentralizedWithdrawAddress = ({ amount, paymentAddress, walletAddress, tokenId, currencyType, memo }) => {
   if (!paymentAddress) return throw new Error('Missing paymentAddress');
   if (!walletAddress) return throw new Error('Missing walletAddress');
   if (!tokenId) return throw new Error('Missing tokenId');
@@ -19,6 +19,7 @@ export const genCentralizedWithdrawAddress = ({ amount, paymentAddress, walletAd
     PaymentAddress: paymentAddress,
     WalletAddress: walletAddress,
     PrivacyTokenAddress: tokenId,
+    ...memo ? { Memo: memo } : {}
   }).then(res => res?.Address);
 };
 
@@ -70,5 +71,21 @@ export const addERC20TxWithdraw = ({ amount, originalAmount, paymentAddress, wal
     PrivacyTokenAddress: tokenId,
     IncognitoTx: burningTxId,
     WalletAddress: walletAddress ?? paymentAddress,
+  });
+};
+
+export const updatePTokenFee = ({ fee, paymentAddress  }) => {
+  if (!fee) return throw new Error('Missing fee');
+  if (!paymentAddress) return throw new Error('Missing paymentAddress');
+
+  const parseFee = Number(fee);
+
+  if (!Number.isFinite(parseFee) || parseFee === 0) {
+    return throw new Error('Invalid fee');
+  }
+
+  return http.post('ota/update-fee', {
+    Address: paymentAddress,
+    TokenFee: String(fee),
   });
 };

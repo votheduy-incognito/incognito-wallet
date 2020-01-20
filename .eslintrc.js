@@ -1,4 +1,5 @@
 module.exports = {
+  root: true,
   env: {
     browser: true,
     commonjs: true,
@@ -59,6 +60,6 @@ module.exports = {
     'react/jsx-one-expression-per-line': 0,
     'react/sort-comp': 0,
     'react/jsx-handler-names': 0,
-    'react/display-name': 0
+    'react/display-name': 0,
   }
 };

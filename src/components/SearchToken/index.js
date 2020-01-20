@@ -2,9 +2,9 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { fromPairs } from 'lodash';
 import { withNavigation } from 'react-navigation';
-import { differenceBy } from 'lodash';
-import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
+import { accountSeleclor, tokenSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import accountService from '@src/services/wallet/accountService';
 import tokenService from '@src/services/wallet/tokenService';
 import { getPTokenList } from '@src/redux/actions/token';
@@ -12,38 +12,29 @@ import { setWallet } from '@src/redux/actions/wallet';
 import { pTokens } from '@src/redux/selectors/token';
 import PToken from '@src/models/pToken';
 import internalTokenModel from '@src/models/token';
+import { ExHandler } from '@src/services/exception';
+import { View } from 'react-native';
 import SearchToken from './SearchToken';
 import { Toast, ActivityIndicator, } from '../core';
 
-const normalizeToken = ({ data, isPToken, isInternalToken }) => {
-  if (isPToken) {
-    return ({
-      tokenId: data?.tokenId,
-      name: data?.name,
-      symbol: data?.symbol,
-    });
-  }
-
-  if (isInternalToken) {
-    return ({
-      tokenId: data?.id,
-      name: data?.name,
-      symbol: data?.symbol,
-    });
-  }
-};
-
 export class SearchTokenContainer extends PureComponent {
   state = {
-    tokens: [],
+    tokens: null,
     internalTokens: [],
+    gettingToken: false,
   };
 
   componentDidMount() {
-    this.getPTokens();
-    this.getInternalTokens();
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({ gettingToken: true });
+    Promise.all([
+      this.getPTokens(),
+      this.getInternalTokens()
+    ])
+      .then(() => this.setState({ gettingToken: false }))
+      .catch(() => this.setState({ gettingToken: false }));
   }
-  
+
   componentDidUpdate(prevProps, prevState) {
     const { pTokens: oldPTokens, followedTokens: oldFollowedTokens } = prevProps;
     const { pTokens, followedTokens } = this.props;
@@ -58,24 +49,34 @@ export class SearchTokenContainer extends PureComponent {
   getAvaiableTokens = async () => {
     try {
       const { internalTokens } = this.state;
-      const { pTokens, followedTokens } = this.props;
+      const { followedTokens, pTokens, getPrivacyDataByTokenID } = this.props;
       const followedTokenIds: Array = followedTokens.map(t => t?.id) || [];
-      const normalizedTokens = [
-        ...internalTokens
-          ?.filter(t => !pTokens?.find(pToken => pToken.tokenId === t.id))
-          ?.map(t => normalizeToken({ data: t, isInternalToken: true })),
-        ...pTokens?.map(t => normalizeToken({ data: t, isPToken: true }))
-      ];
+      const allTokenIds = Object.keys(fromPairs([
+        ...internalTokens?.map(t => ([t?.id])) || [],
+        ...pTokens?.map(t => ([t?.tokenId])) || []
+      ]));
 
-      const tokens =  normalizedTokens?.filter(token => {
-        return token?.name && token?.symbol && token.tokenId && !followedTokenIds.includes(token.tokenId);
+      const tokens = [];
+
+      allTokenIds?.forEach(tokenId => {
+        const token = getPrivacyDataByTokenID(tokenId);
+
+        if (token?.name && token?.symbol && token.tokenId) {
+          let _token = { ...token };
+
+          if (followedTokenIds.includes(token.tokenId)) {
+            _token.isFollowed = true;
+          }
+
+          tokens.push(_token);
+        }
       });
-
+      
       this.setState({ tokens });
 
       return tokens || [];
-    } catch {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+    } catch (e) {
+      new ExHandler(e).showErrorToast();
     }
   };
 
@@ -85,71 +86,74 @@ export class SearchTokenContainer extends PureComponent {
     navigation?.pop();
   }
 
-  handleAddFollowToken = async (tokenIds: Array) => {
-    try {
-      const { pTokens, account, wallet, setWallet } = this.props;
-      const { internalTokens } = this.state;
-      const pTokenSelected = tokenIds.map(id => {
-        const foundPToken : PToken = pTokens.find((pToken: PToken) => pToken.tokenId === id);
-        const foundInternalToken = internalTokens.find(token => token.id === id);
-        if (foundPToken) {
-          return foundPToken.convertToToken();
-        }
+  handleAddFollowToken = async (tokenId) => {
+    const { pTokens, account, wallet, setWallet } = this.props;
+    const { internalTokens } = this.state;
+    const foundPToken : PToken = pTokens?.find((pToken: PToken) => pToken.tokenId === tokenId);
+    const foundInternalToken = !foundPToken && internalTokens?.find(token => token.id === tokenId);
+    
+    const token = (foundInternalToken && internalTokenModel.toJson(foundInternalToken)) || foundPToken?.convertToToken();
 
-        if (foundInternalToken) {
-          return internalTokenModel.toJson(foundInternalToken);
-        }
-      });
+    if (!token) throw new Error('Can not follow empty coin');
 
-      await accountService.addFollowingTokens(pTokenSelected, account, wallet);
+    await accountService.addFollowingTokens([token], account, wallet);
 
-      Toast.showSuccess('Token added');
+    Toast.showSuccess('Coin added');
 
-      // update new wallet to store
-      setWallet(wallet);
+    // update new wallet to store
+    setWallet(wallet);
+  }
 
-      this.goBack();
-    } catch {
-      Toast.showError(
-        'Something went wrong. Please tap the Add button again.'
-      );
-    }
-  };
+  handleRemoveFollowToken = async tokenId => {
+    const { account, wallet, setWallet } = this.props;
+    const updatedWallet = await accountService.removeFollowingToken(tokenId, account, wallet);
+
+    // update new wallet to store
+    setWallet(updatedWallet);
+
+    Toast.showInfo('Coin removed');
+  }
 
   getPTokens = async () => {
     try {
       const { getPTokenList } = this.props;
       await getPTokenList();
-    } catch {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+    } catch (e) {
+      new ExHandler(e).showErrorToast();
     }
   }
 
   getInternalTokens = async () => {
     try {
-      const tokens = await tokenService.getPrivacyTokens();
-      const { followedTokens } = this.props;
-
-      const internalTokens = differenceBy(tokens, followedTokens, 'id');
-
+      const internalTokens = await tokenService.getPrivacyTokens();
       this.setState({ internalTokens });
 
       return internalTokens;
-    } catch {
-      Toast.showError('Something went wrong. Please refresh the screen.');
+    } catch (e) {
+      new ExHandler(e).showErrorToast();
     }
   }
 
   render() {
-    const { tokens } = this.state;
-    const { account, wallet } = this.props;
+    const { tokens, gettingToken } = this.state;
+    const { account, wallet, followedTokens } = this.props;
 
-    if (!tokens || !account || !wallet) return <ActivityIndicator />;
+    if (!tokens || !account || !wallet || gettingToken) {
+      return (
+        <View style={{ height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="small" />
+        </View>
+      );
+    }
 
     return (
       <SearchToken
+        {...this.props}
         tokens={tokens}
+        followedTokens={followedTokens}
         handleAddFollowToken={this.handleAddFollowToken}
+        handleRemoveFollowToken={this.handleRemoveFollowToken}
+        onCancel={this.goBack}
       />
     );
   }
@@ -157,6 +161,7 @@ export class SearchTokenContainer extends PureComponent {
 
 const mapStateToProps = (state) => ({
   followedTokens: tokenSeleclor.followed(state),
+  getPrivacyDataByTokenID: selectedPrivacySeleclor.getPrivacyDataByTokenID(state),
   pTokens: pTokens(state),
   account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet
@@ -179,6 +184,7 @@ SearchTokenContainer.propTypes = {
   account: PropTypes.object.isRequired,
   wallet: PropTypes.object.isRequired,
   setWallet: PropTypes.func.isRequired,
+  getPrivacyDataByTokenID: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
 };
 

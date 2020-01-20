@@ -2,7 +2,6 @@ import COLORS from './colors';
 import DECOR from './decor';
 import FONTS from './font';
 import SPACINGS from './spacing';
-import { scaleInApp } from './TextStyle';
 
 const text = {
   errorText: {
@@ -21,16 +20,15 @@ const text = {
 };
 
 const header = {
-  headerHeight:  scaleInApp(55),
-  backgroundColor: COLORS.primary,
+  headerHeight:  DECOR.scaleInApp(55),
+  backgroundColor: COLORS.dark4,
   headerTintColor: COLORS.dark1
 };
-
 const opacityButton = {
   button: {
     backgroundColor: COLORS.blue,
     paddingHorizontal: 5,
-    borderRadius: DECOR.borderRadiusBorder,
+    borderRadius: 6,
     borderWidth: DECOR.borderWidth,
     borderColor: COLORS.transparent,
     height: DECOR.buttonHeight,
@@ -46,7 +44,7 @@ const opacityButton = {
     letterSpacing: 0
   },
   disabled: {
-    backgroundColor: COLORS.lightGrey1,
+    backgroundColor: COLORS.blue3,
   }
 };
 
@@ -77,7 +75,7 @@ const toast = {
 const textInput = {
   ...text.defaultTextStyle,
   borderBottomWidth: DECOR.borderWidth,
-  borderColor: COLORS.lightGrey1
+  borderColor: COLORS.lightGrey4
 };
 
 const divider = {
@@ -86,7 +84,7 @@ const divider = {
 };
 
 const modal = {
-  headerHeight: DECOR.buttonHeight
+  headerHeight: DECOR.scaleInApp(44)
 };
 
 export default {

@@ -1,83 +1,141 @@
-import React, { Component } from 'react';
-import { Platform } from 'react-native';
+import { Image, View } from '@src/components/core';
+import defaultTokenIcon from '@src/assets/images/icons/default_token_icon.png';
 import PropTypes from 'prop-types';
-import { View, ActivityIndicator, Image } from '@src/components/core';
+import React, { Component } from 'react';
+import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { COLORS } from '@src/styles';
-import { CONSTANT_CONFIGS } from '@src/constants';
+import { connect } from 'react-redux';
 import styleSheet from './style';
 
-export default class CryptoIcon extends Component {
+const getVerifiedFlagStyle = (size) => {
+  const verifiedFlagSize = Math.round(size * 0.5);
+  const verifiedFlagStyle = {
+    borderRadius: Math.round(verifiedFlagSize * 0.5),
+    bottom: -Math.round(verifiedFlagSize * 0.25),
+    right: -Math.round(verifiedFlagSize * 0.25),
+    width: verifiedFlagSize + 1,
+    height: verifiedFlagSize + 1
+  };
+
+  return [verifiedFlagSize, verifiedFlagStyle];
+};
+
+class CryptoIcon extends Component {
   constructor(props) {
     super(props);
     this.state = {
       uri: null,
-      isLoading: true,
+      imageComponent: null,
+      verifiedFlagStyle: null,
+      verifiedFlagSize: null
+    };
+  }
+
+  static getDerivedStateFromProps(nextProps) {
+    const { size } = nextProps;
+
+    const [verifiedFlagSize, verifiedFlagStyle] = getVerifiedFlagStyle(size);
+
+    return {
+      verifiedFlagStyle,
+      verifiedFlagSize
     };
   }
 
   componentDidMount() {
-    const { symbol } = this.props;
-    
-    this.getUri(symbol);
+    const { tokenId, onlyDefault } = this.props;
+
+    tokenId && !onlyDefault && this.getUri();
   }
 
-  preFormatSymbol = symbol => {
-    if (!symbol) return;
+  componentDidUpdate(prevProps) {
+    const { tokenId, onlyDefault } = this.props;
+    const { tokenId: oldTokenId, onlyDefault: oldOnlyDefault } = prevProps;
 
-    return String(symbol).toLowerCase();
+    if (tokenId !== oldTokenId || onlyDefault !== oldOnlyDefault) {
+      this.getUri();
+    }
   }
 
-  getUri = async symbol => {
-    const formatedSymbol = this.preFormatSymbol(symbol);
-    const uri =  formatedSymbol && `${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${formatedSymbol}@2x.png`;
-    this.setState({ uri });
+  getSize = () => {
+    const { size } = this.props;
+
+    return { width: Number(size), height: Number(size) };
   }
+
+  getUri = async () => {
+    const { token, logoStyle } = this.props;
+    const uri = token?.iconUrl;
+
+    this.setState({ uri, imageComponent: (
+      <Image
+        style={[styleSheet.logo, logoStyle, this.getSize()]}
+        source={{ uri: `${uri}?t=${new Date().getDate()}.${new Date().getHours()}` }}
+        onError={this.onLoadError}
+        onLoadStart={this.onLoadStart}
+        onLoadEnd={this.onLoadEnd}
+      />
+    ) });
+  };
 
   onLoadError = () => {
-    this.setState({ uri: null, isLoading: false });
-  }
+    this.setState({ uri: '' });
+  };
 
-  onLoadStart = () => {
-    this.setState({ isLoading: true });
-  }
-
-  onLoadEnd = () => {
-    this.setState({ isLoading: false });
-  }
-
-  renderDefault = () => <Icons name='circle' size={28} color={COLORS.primary} />
-
-  getStyle = (isLoading) => {
-    const styles = [styleSheet.logo];
-
-    return Platform.OS === 'android' ? [...styles, isLoading && styleSheet.hidden] : styles;
-  }
+  renderDefault = (logoStyle) => (
+    <Image
+      style={[styleSheet.logo, logoStyle, this.getSize()]}
+      source={defaultTokenIcon}
+    />
+  );
 
   render() {
-    const { uri, isLoading } = this.state;
+    const { uri, imageComponent, verifiedFlagStyle, verifiedFlagSize } = this.state;
+    const { onlyDefault, containerStyle, logoStyle, size, token, showVerifyFlag } = this.props;
+    const { isVerified } = token || {};
 
     return (
-      <View style={styleSheet.container}>
-        { isLoading && <ActivityIndicator /> }
-        {
-          uri 
-            ? (
-              <Image
-                style={this.getStyle(isLoading)}
-                source={{ uri }}
-                onError={this.onLoadError}
-                onLoadStart={this.onLoadStart}
-                onLoadEnd={this.onLoadEnd}
-              />
-            )
-            : this.renderDefault()
-        }
+      <View>
+        <View style={[styleSheet.container, containerStyle, { borderRadius: size }, this.getSize()]}>
+          {
+            onlyDefault || !uri
+              ? this.renderDefault(logoStyle)
+              : imageComponent
+          }
+        </View>
+        { showVerifyFlag && isVerified && (
+          <View style={[styleSheet.verifiedFlagContainer, verifiedFlagStyle]}>
+            <Icons style={[styleSheet.verifiedFlag]} name='check-circle' size={verifiedFlagSize} />
+          </View>
+        ) }
       </View>
     );
   }
 }
 
-CryptoIcon.propTypes = {
-  symbol: PropTypes.string.isRequired
+CryptoIcon.defaultProps = {
+  onlyDefault: false,
+  tokenId: null,
+  containerStyle: null,
+  logoStyle: null,
+  size: 40,
+  token: null,
+  showVerifyFlag: false
 };
+
+CryptoIcon.propTypes = {
+  tokenId: PropTypes.string,
+  onlyDefault: PropTypes.bool,
+  containerStyle: PropTypes.object,
+  logoStyle: PropTypes.object,
+  token: PropTypes.object,
+  size: PropTypes.number,
+  showVerifyFlag: PropTypes.bool,
+};
+
+
+const mapState = (state, props) => ({
+  token: props?.tokenId && selectedPrivacySeleclor.getPrivacyDataByTokenID(state)(props?.tokenId)
+});
+
+export default connect(mapState)(CryptoIcon);

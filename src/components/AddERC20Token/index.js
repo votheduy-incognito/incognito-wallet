@@ -5,78 +5,86 @@ import { debounce } from 'lodash';
 import { Toast } from '@src/components/core';
 import { accountSeleclor } from '@src/redux/selectors';
 import { setWallet } from '@src/redux/actions/wallet';
+import { getPTokenList } from '@src/redux/actions/token';
 import accountService from '@src/services/wallet/accountService';
 import { detectERC20Token, addERC20Token } from '@src/services/api/token';
 import LoadingContainer from '@src/components/LoadingContainer';
+import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
 import AddERC20Token from './AddERC20Token';
 
 export class AddERC20TokenContainer extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
     this.state = {
-      erc20Data: null,
-      isSearching: false
+      data: null,
+      isSearching: false,
     };
 
-    this.detectErc20Token = debounce(this.detectErc20Token.bind(this), 1000);
+    this.handleSearch = debounce(this.handleSearch.bind(this), 1000);
   }
-  
 
   detectErc20Token = async address => {
-    try {
-      if (!address) return;
-      const erc20Data = await detectERC20Token(address);
-      this.setState({ erc20Data });
-
-      return erc20Data;
-    } catch(e) {
-      Toast.showWarning('This ERC20 token doesn\'t seem to exist. Please check and try again.');
-      this.setState({ erc20Data: null });
-      throw e;
+    const data = await detectERC20Token(address);
+    if (!data) {
+      throw new CustomError(ErrorCode.addBep2Token_not_found);
     }
-  }
+    this.setState({ data });
+    return data;
+  };
 
-  addERC20Token = async values => {
+  handleAdd = async values => {
     try {
       if (!values) return;
-      
-      const { account, wallet, setWallet } = this.props;
-      const newPToken= await addERC20Token(values);
+      const { account, wallet, setWallet, getPTokenList } = this.props;
+      let newPToken;
+      const {name, symbol, address, decimals} = values;
+      const data = {
+        name,
+        symbol,
+        contractId: address,
+        decimals
+      };
 
+      newPToken = await addERC20Token(data);
       // add this new token to user following list
-      await accountService.addFollowingTokens([newPToken.convertToToken()], account, wallet);
 
+      await accountService.addFollowingTokens([newPToken.convertToToken()], account, wallet);
+      await getPTokenList();
       // update new wallet to store
       setWallet(wallet);
-
-      Toast.showSuccess('Success! You added a token.');
+      Toast.showSuccess('Success! You added a coin.');
+      
+      // clear prev data
+      this.setState({ data: null });
       return newPToken;
     } catch(e) {
-      Toast.showWarning('Something went wrong. Please try again.');
+      new ExHandler(e).showErrorToast();
       throw e;
     }
-  }
+  };
 
-  handleSearch = async ({ address, symbol } = {}) => {
+  handleSearch = async (values) => {
     try {
-      // clear previous result 
-      this.setState({ erc20Data: null, isSearching: true });
+      const { address, symbol } = values;
+      // clear previous result
+      this.setState({ data: null, isSearching: true });
 
       // search by address/contractId
       if (address) {
         await this.detectErc20Token(address);
-      } else  if (symbol) {
+      } else if (symbol) {
         // TODO: search by symbol
       }
     } catch (e) {
-      throw e;
+      new ExHandler(e, 'Can not search this ERC20 coin, please try again.').showErrorToast();
     } finally {
       this.setState({ isSearching: false });
     }
-  }
+  };
 
   render() {
-    const { erc20Data, isSearching } = this.state;
+    const { data, isSearching} = this.state;
     const { wallet, account } = this.props;
 
     if (!wallet || !account) {
@@ -85,9 +93,9 @@ export class AddERC20TokenContainer extends Component {
 
     return (
       <AddERC20Token
-        erc20Data={erc20Data}
+        data={data}
         isSearching={isSearching}
-        onAddErc20Token={this.addERC20Token}
+        onAdd={this.handleAdd}
         onSearch={this.handleSearch}
       />
     );
@@ -100,13 +108,15 @@ const mapState = state => ({
 });
 
 const mapDispatchToProps = {
-  setWallet
+  setWallet,
+  getPTokenList
 };
 
 AddERC20TokenContainer.propTypes = {
   account: PropTypes.object.isRequired,
   wallet: PropTypes.object.isRequired,
   setWallet: PropTypes.func.isRequired,
+  getPTokenList: PropTypes.func.isRequired,
 };
 
 export default connect(mapState, mapDispatchToProps)(AddERC20TokenContainer);

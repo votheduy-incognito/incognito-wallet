@@ -1,23 +1,31 @@
+import LongLoading from '@components/LongLoading';
 import StepIndicator from '@components/StepIndicator';
 import BaseScreen from '@screens/BaseScreen';
+import CreateAccount from '@screens/CreateAccount';
 import images from '@src/assets';
-import LongLoading from '@src/components/LongLoading';
-import { openQrScanner } from '@src/components/QrCodeScanner';
+import ConnectInstruction from '@src/components/ConnectInstruction';
+import { ButtonExtension, InputExtension as Input, Text, TouchableOpacity } from '@src/components/core';
 import SetupDevice from '@src/components/SetupDevice';
+import { getAccountByName } from '@src/redux/selectors/account';
 import routeNames from '@src/router/routeNames';
-import { scaleInApp } from '@src/styles/TextStyle';
-import LocalDatabase from '@src/utils/LocalDatabase';
+import { CustomError, ExHandler } from '@src/services/exception';
+import knownCode from '@src/services/exception/customError/code/knownCode';
+import NodeService from '@src/services/NodeService';
 import { onClickView } from '@src/utils/ViewUtil';
 import _ from 'lodash';
 import React from 'react';
-import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { Button, Icon, Input } from 'react-native-elements';
+import { Image, ScrollView, View } from 'react-native';
 import { connect } from 'react-redux';
+import { DialogNotify } from './DialogNotify';
+import GetQrcode from './GetQrCode';
 import styles from './styles';
 
 export const TAG = 'GetStartedAddNode';
-const titleStep = ['Make sure Node is plugged in.','Connect Node to Wi-Fi','Scan the code at the base of the device'];
+const titleStep = ['Make sure Node is plugged in.','Scan the code at the base of the device','Connect Node to\nyour home Wi-Fi'];
 const titleButton = ['Done, next step','Next','Next'];
+const styleHideView = {
+  opacity: 0,width: 0,height: 0
+};
 
 class GetStartedAddNode extends BaseScreen {
   constructor(props) {
@@ -28,27 +36,26 @@ class GetStartedAddNode extends BaseScreen {
       currentPage:0,
       currentConnect:{name:'',password:''},
       errorMessage:'',
+      isShowInstructor:false,
+      errorInSetUp:null,
       isPassedValidate:true,
-      deviceId:null
+      QRCode:null
     };
     this.viewStepIndicator = React.createRef();
     this.viewSetupDevice = React.createRef();
+    this.viewCreateAccount = React.createRef();
     this.wifiNameValue = '';
     this.wifiPassValue = '';
+    this.accountNode=null;
   }
-
-  handleQrcode = onClickView(()=>{
-    openQrScanner(data => {
-      console.log(TAG,'openQrScanner  == data',data);
-      this.setState({
-        deviceId:data
-      });
-    });
-  });
+  componentDidMount(){
+    super.componentDidMount();
+    // this.onResume();
+  }
 
   renderTitle =()=>{
     const {currentPage,currentConnect} = this.state;
-    const headerStep = `STEP ${currentPage+1}`;
+    // const headerStep = `STEP ${currentPage+1}`;
     console.log(TAG,'renderTitle ',currentConnect);
     return (
       <>
@@ -59,10 +66,10 @@ class GetStartedAddNode extends BaseScreen {
   }
 
   renderContentStep2 =()=>{
-    const {currentConnect,isPassedValidate} = this.state;
+    const {currentConnect,isPassedValidate,} = this.state;
     const {text,item,item_container_input,errorText} = styles;
     return (
-      <>          
+      <>
         <Input
           underlineColorAndroid="transparent"
           containerStyle={item}
@@ -87,26 +94,32 @@ class GetStartedAddNode extends BaseScreen {
     );
   }
 
-  renderViewComplete =()=>{
-    return (
-      <>
-        <Icon size={scaleInApp(50)} color='#25CDD6' name="check" type='simple-line-icon' />
-        <Text style={[styles.step3_text,{color:'#25CDD6'}]}>Scan complete</Text>
-      </>
-    );
-  }
-
   renderContent=()=>{
-    const {currentPage,deviceId,currentConnect,errorMessage,loading} = this.state;
-    
+    const {currentPage,QRCode,currentConnect,errorMessage,loading} = this.state;
+
     let childView ;
     switch(currentPage){
     case 0:{
-      childView = <Image style={styles.content_step1_image} source={images.ic_getstarted_device} />; 
+      childView = <Image style={styles.content_step1_image} source={images.ic_getstarted_device} />;
       break;
     }
+    // case 1:{
+    //   childView = this.renderContentStep2();
+    //   break;
+    // }
     case 1:{
-      childView = this.renderContentStep2(); 
+      let isFail = !_.isEmpty(errorMessage);
+      childView = (
+        <>
+          {isFail && (
+            <Text
+              style={[styles.text, styles.item,styles.errorText]}
+            >{errorMessage}
+            </Text>
+          )}
+          <GetQrcode qrCode={QRCode} onSuccess={this.handleScanQrcodeSuccess} />
+        </>
+      );
       break;
     }
     case 2:{
@@ -119,37 +132,13 @@ class GetStartedAddNode extends BaseScreen {
               style={[styles.text, styles.item,styles.errorText]}
             >{errorMessage}
             </Text>
-          )
-          }
+          )}
           {!isFail && <LongLoading />}
         </>
-      ):(
-        <>
-          <Image style={styles.content_step1} source={images.ic_getstarted_scan_device} />
-          {_.isEmpty(deviceId)?(
-            <TouchableOpacity onPress={this.handleQrcode}>
-              <Image style={styles.content_step1} source={images.ic_getstarted_qrcode} />
-              <Text style={styles.step3_text}>Tap to scan</Text>
-            </TouchableOpacity>
-          ):this.renderViewComplete()}
-          
-          {!isPassedValidate && _.isEmpty(deviceId)?(
-            <Text
-              style={[styles.text,styles.errorText,styles.item_container_error]}
-            >Please scan QR code to get a verification code
-            </Text>
-          ):(
-            <Text
-              style={[styles.text,styles.item_container_input,{ textAlign:'center',paddingBottom:2}]}
-            >{deviceId??''}
-            </Text>
-          )}
-
-        </>
-      ); 
+      ): this.renderContentStep2();
       break;
     }
-    
+
     }
     return (
       <View style={styles.content}>
@@ -164,33 +153,154 @@ class GetStartedAddNode extends BaseScreen {
     });
   }
 
-  handleFinish =()=>{
-    console.log(TAG,'handleFinish ');
-    this.goToScreen(routeNames.HomeMine);
+  createAccount = onClickView(async(qrCode)=>{
+    try {
+      if(!_.isEmpty(qrCode)){
+        const {getAccountByName} = this.props;
+        this.accountNode = _.isEmpty(this.accountNode)? await getAccountByName(qrCode): this.accountNode;
+        // create account of node with qrcode
+        console.log(TAG,'createAccount 00 accountNode ',this.accountNode);
+        this.accountNode = _.isEmpty(this.accountNode) ? await this.viewCreateAccount?.current?.createAccount(qrCode):this.accountNode;
+        console.log(TAG,'createAccount 01 accountNode ',this.accountNode);
+      }else{
+        new ExHandler(new CustomError(knownCode.node_create_account_fail),'QR-Code is empty').showWarningToast();
+      }
+    } catch (error) {
+      new ExHandler(new CustomError(knownCode.node_create_account_fail)).showWarningToast();
+    }
+  })
+
+  handleScanQrcodeSuccess = async(qrCode)=>{
+    this.logOnView(`Scan Qrcode = ${qrCode}`);
+    this.createAccount(qrCode);
+    this.setState({QRCode:qrCode});
   }
 
-  handleStepConnect = async ()=>{
-    this.setState({
-      loading:true,
-      currentPage:2,
-    });
-    const deviceIdFromQrcode = this.state.deviceId;
-    
-    const errorMessage = await this.viewSetupDevice.current.handleSetUpPress(deviceIdFromQrcode);
-    const listNode = await LocalDatabase.getListDevices()||[];
-    const subfix = Date.now()%1000;
-    const nodeName =  _.padEnd(`Node ${listNode.length+1}`,10,subfix);
-    const deviceObj = _.isEmpty(errorMessage) ? await this.viewSetupDevice.current.changeDeviceName(nodeName):null; 
-    console.log(TAG,'handleStepConnect errorMessage ',errorMessage ,deviceObj);
-    if(_.isEmpty(errorMessage) && !_.isNil(deviceObj)){
-      this.handleFinish();
-    }else{
-      this.showToastMessage(errorMessage);
+  handleFinish =()=>{
+    console.log(TAG,'handleFinish ');
+    this.goToScreen(routeNames.Node);
+  }
+
+  handleSetupComplete =()=>{
+    // will show a pop-up message
+    this.CurrenPage = 4;
+  }
+
+  handleStepTestConnect = async ()=>{
+
+    try{
+      this.setState({
+        loading:true,
+        errorInSetUp:null,
+        currentPage:2,
+      });
+      // setup complete
+      // await Util.delay(3);
+      // await Util.delay(3).then(this.handleSetupComplete);
+      // setup fail
+      // new ExHandler(new CustomError(knownCode.node_verify_code_fail)).showWarningToast().throw();
+      // new ExHandler(new CustomError(knownCode.node_auth_firebase_fail)).showWarningToast().throw();
+      // new ExHandler(new CustomError(knownCode.node_can_not_connect_hotspot)).showWarningToast().throw();
+      // new ExHandler(new Error('Something’s not right. Please try again.')).showWarningToast().throw();
+      ////
+      const deviceIdFromQrcode = this.state.QRCode;
+
+      const errorMessage = await this.viewSetupDevice.current.handleSetUpPress(deviceIdFromQrcode);
+
+      const nodeName = deviceIdFromQrcode || await NodeService.getAName();
+      const deviceObj =  await this.viewSetupDevice.current.changeDeviceName(nodeName,deviceIdFromQrcode,this.accountNode)||null;
+      console.log(TAG,'handleStepConnect errorMessage ',errorMessage ,deviceObj);
+      if(_.isEmpty(errorMessage) && !_.isNil(deviceObj)){
+        this.handleSetupComplete();
+      }else{
+        this.showToastMessage(errorMessage);
+        this.setState({
+          loading:false,
+          errorInSetUp:null,
+          currentPage:2
+        });
+
+      }
+    }catch(e){
+      let currentPage = 0;
+      const code = e?.code;
+      // const {code,message = '' } = e;
+      let isShowInstructor = false;
+      switch(code){
+      case(knownCode.node_verify_code_fail):
+        currentPage = 2;
+        break;
+      case (knownCode.node_can_not_connect_hotspot):{
+        currentPage = 2;
+        // need show instruction
+        isShowInstructor = true;
+        break;
+      }
+      case (knownCode.node_auth_firebase_fail):{
+        currentPage=2;
+        break;
+      }
+      }
       this.setState({
         loading:false,
-        currentPage:0
+        isShowInstructor:isShowInstructor,
+        errorInSetUp:e,
+        currentPage:currentPage
       });
-      // this.setState({errorMessage:errorMessage,loading:false});
+    }
+
+  }
+  
+  handleStepConnect = async ()=>{
+    try{
+      this.setState({
+        loading:true,
+        currentPage:2,
+      });
+      const deviceIdFromQrcode = this.state.QRCode;
+
+      const errorMessage = await this.viewSetupDevice.current.handleSetUpPress(deviceIdFromQrcode);
+
+      const nodeName = deviceIdFromQrcode || await NodeService.getAName();
+      const deviceObj =  await this.viewSetupDevice.current.changeDeviceName(nodeName,deviceIdFromQrcode,this.accountNode)||null;
+      console.log(TAG,'handleStepConnect errorMessage ',errorMessage ,deviceObj);
+      if(_.isEmpty(errorMessage) && !_.isNil(deviceObj)){
+        this.handleSetupComplete();
+      }else{
+        this.showToastMessage(errorMessage);
+
+      }
+    }catch(e){
+      let currentPage = 0;
+      const {code,message = '' } = e;
+      switch(code){
+      case(knownCode.node_verify_code_fail):
+        currentPage = 2;
+        break;
+      case (knownCode.node_auth_firebase_fail):{
+        currentPage=2;
+        break;
+      }
+      }
+      this.setState({
+        loading:false,
+        errorInSetUp:e,
+        currentPage:currentPage
+      });
+    }
+  }
+
+  onResume = async ()=>{
+    const {isShowInstructor,errorInSetUp} = this.state;
+    console.log(TAG,'onResume ---- ');
+    // Toast.showInfo('onResume isShowInstructor = '+isShowInstructor);
+
+    if(isShowInstructor ){
+      const isConnectedHotspot = true;//await this.viewSetupDevice.current?.checkIsConnectedWithHotspot()??false;
+      this.setState({
+        errorInSetUp:isConnectedHotspot?null:errorInSetUp,
+        isShowInstructor:!isConnectedHotspot
+      });
     }
   }
 
@@ -205,10 +315,11 @@ class GetStartedAddNode extends BaseScreen {
         ...childView,
         onPress:async()=>{
           const device = await this.viewSetupDevice.current?.getCurrentConnect();
-          const name = device?.name||'';
+          const name = device?.name||this.wifiNameValue;
           this.wifiNameValue = name;
           this.setState({
             currentPage:1,
+            errorInSetUp:null,
             currentConnect:{
               ...currentConnect,
               name:name
@@ -218,11 +329,46 @@ class GetStartedAddNode extends BaseScreen {
       };
       break;
     }
+    case 2:{
+      childView = {
+        ...childView,
+        onPress:()=>{
+          const wifiName = _.trim(this.wifiNameValue);
+          const isPassedValidate = !_.isEmpty(wifiName);
+
+          if(isPassedValidate){
+            this.setState({
+              isPassedValidate:true,
+              currentConnect:{
+                ...currentConnect,
+                name:wifiName,
+                password:this.wifiPassValue
+              }
+            },()=>{
+              // hienton test
+
+              this.handleStepTestConnect();
+              /////
+              // this.handleStepConnect();
+            });
+
+          }else{
+            this.setState({
+              isPassedValidate:false,
+            });
+          }
+
+
+        },
+      };
+      break;
+    }
     case 1:{
       childView = {
         ...childView,
         onPress:()=>{
-          const isPassedValidate = !_.isEmpty(this.wifiNameValue);
+          const {QRCode} = this.state;
+          const isPassedValidate = !_.isEmpty(QRCode);
           this.setState({
             isPassedValidate:isPassedValidate,
             currentPage:isPassedValidate? 2:1,
@@ -231,28 +377,6 @@ class GetStartedAddNode extends BaseScreen {
               password:this.wifiPassValue
             }
           });
-        },
-      }; 
-      break;
-    }
-    case 2:{
-      childView = {
-        ...childView,
-        onPress:()=>{
-          const {deviceId} = this.state;
-          const isPassedValidate = !_.isEmpty(deviceId);
-          if(isPassedValidate){
-            this.setState({
-              isPassedValidate:true
-            },()=>{
-              this.handleStepConnect();
-            });
-            
-          }else{
-            this.setState({
-              isPassedValidate:false,
-            });
-          }
         }
       };
       break;
@@ -268,7 +392,7 @@ class GetStartedAddNode extends BaseScreen {
     }
     return (
       <View style={styles.footer}>
-        <Button
+        <ButtonExtension
           disabled={loading}
           loading={loading}
           titleStyle={styles.textTitleButton}
@@ -276,23 +400,49 @@ class GetStartedAddNode extends BaseScreen {
           onPress={childView.onPress}
           title={childView.title}
         />
+        {currentPage === 0 && (
+          <TouchableOpacity
+            onPress={() => this.goToScreen(routeNames.LinkDevice)}
+          >
+            <Text style={styles.linkBtn}>
+              Add an existing node
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
-    
+
+  }
+
+  getErrorMessage = ()=>{
+    const { errorInSetUp } = this.state;
+    const message  = errorInSetUp?.message||'';
+    const code  = errorInSetUp?.code??0;
+    return !_.isEmpty(errorInSetUp)?`[${code}]${message}`:'';
   }
 
   render() {
-    const { loading,currentPage,currentConnect } = this.state;
-
+    const { loading,currentPage,currentConnect,errorMessage,errorInSetUp,isShowInstructor } = this.state;
+    
+    const rootCauseMessage = this.getErrorMessage();
+    const {isRenderUI,navigation} = this.props;
+    const hotspotName = this.viewSetupDevice?.current?.getHotspotName()??'';
     return (
       <View style={styles.container}>
+        <View style={styleHideView}>
+          <CreateAccount ref={this.viewCreateAccount} navigation={navigation} />
+        </View>
+        <DialogNotify visible={currentPage==4} onClose={this.handleFinish} />
         <StepIndicator stepCount={3} currentPage={currentPage} ref={this.viewStepIndicator} />
+
         <ScrollView>
           {this.renderTitle()}
           {this.renderContent()}
+          <Text style={styles.errorText}>{rootCauseMessage}</Text>
           {this.renderFooter()}
           <SetupDevice ref={this.viewSetupDevice} isRenderUI={false} currentConnect={currentConnect} />
         </ScrollView>
+        {isShowInstructor &&<ConnectInstruction hotspotName={hotspotName} />}
       </View>
     );
   }
@@ -302,7 +452,9 @@ class GetStartedAddNode extends BaseScreen {
 GetStartedAddNode.propTypes = {};
 
 GetStartedAddNode.defaultProps = {};
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  getAccountByName: getAccountByName(state),
+});
 const mapDispatchToProps = {};
 export default connect(
   mapStateToProps,

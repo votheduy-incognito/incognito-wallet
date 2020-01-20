@@ -1,19 +1,40 @@
 import { Alert, Divider, Text, Toast, TouchableOpacity, View } from '@src/components/core';
 import OptionMenu from '@src/components/OptionMenu';
-import { getBalance as getAccountBalance, reloadAccountFollowingToken, removeAccount, setDefaultAccount } from '@src/redux/actions/account';
+import { removeAccount, switchAccount } from '@src/redux/actions/account';
 import { accountSeleclor } from '@src/redux/selectors';
 import ROUTE_NAMES from '@src/router/routeNames';
+import { ExHandler } from '@src/services/exception';
 import { COLORS } from '@src/styles';
 import { onClickView } from '@src/utils/ViewUtil';
+import dexUtils from '@src/utils/dex';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Icon } from 'react-native-elements';
 import Swipeout from 'react-native-swipeout';
 import Icons from 'react-native-vector-icons/Entypo';
 import FIcons from 'react-native-vector-icons/Feather';
-import MdIcons from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import Section from './Section';
 import { accountSection } from './style';
+
+let lastAccount;
+let clickedTime = 0;
+
+function isDev(account) {
+  if (lastAccount !== account) {
+    clickedTime = 0;
+  }
+  lastAccount = account;
+  clickedTime++;
+
+  if (clickedTime === 7) {
+    global.isDEV = true;
+  }
+}
+
+function isNodeAccount(name, devices) {
+  return devices.find(device => device.IsPNode && device.AccountName === name);
+}
 
 const createItem = (account, onSwitch, onExport, onDelete, isActive) => (
   <Swipeout
@@ -23,10 +44,10 @@ const createItem = (account, onSwitch, onExport, onDelete, isActive) => (
     ]}
   >
     <View style={accountSection.container}>
-      <TouchableOpacity style={accountSection.name} onPress={() => onSwitch(account)}>
+      <TouchableOpacity style={accountSection.name} onPress={() => onSwitch(account) && isDev(account)}>
         <View style={[accountSection.indicator, isActive && accountSection.indicatorActive]} />
         <FIcons name={isActive ? 'user-check' : 'user'} size={20} color={isActive ? COLORS.primary : COLORS.lightGrey4} />
-        <Text style={isActive ? accountSection.nameTextActive : accountSection.nameText}>{account?.name}</Text>
+        <Text numberOfLines={1} ellipsizeMode='middle' style={isActive ? accountSection.nameTextActive : accountSection.nameText}>{account?.name}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={accountSection.actionBtn} onPress={() => onExport(account)}>
         <Icons name='key' size={20} color={COLORS.lightGrey3} />
@@ -35,15 +56,19 @@ const createItem = (account, onSwitch, onExport, onDelete, isActive) => (
   </Swipeout>
 );
 
-
-const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAccount, reloadAccountFollowingToken, getAccountBalance, removeAccount }) => {
+const AccountSection = ({ navigation, defaultAccount, listAccount, removeAccount, switchAccount, devices }) => {
   const onHandleSwitchAccount = onClickView(async account => {
     try {
-      await setDefaultAccount(account);
-      await getAccountBalance(account);
-      await reloadAccountFollowingToken(account);
-    } catch {
-      console.warn('Switched account successfully, but can not load account details, please reload manually');
+      if (defaultAccount?.name === account?.name) {
+        Toast.showInfo(`Your current account is "${account?.name}"`);
+        return;
+      }
+
+      await switchAccount(account?.name);
+
+      Toast.showInfo(`Switched to account "${account?.name}"`);
+    } catch (e) {
+      new ExHandler(e, `Can not switch to account "${account?.name}", please try again.`).showErrorToast();
     }
   });
 
@@ -57,6 +82,10 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAcc
 
   const handleCreate = () => {
     navigation.navigate(ROUTE_NAMES.CreateAccount, { onSwitchAccount: onHandleSwitchAccount });
+  };
+
+  const handleBackup = () => {
+    navigation.navigate(ROUTE_NAMES.BackupKeys);
   };
 
   const handleDelete = account => {
@@ -74,8 +103,8 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAcc
             try {
               await removeAccount(account);
               Toast.showSuccess('Account removed.');
-            } catch {
-              Toast.showError('Something went wrong. Please try again.');
+            } catch (e) {
+              new ExHandler(e, `Can not delete account ${account?.name}, please try again.`).showErrorToast();
             }
           }
         }
@@ -87,19 +116,28 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAcc
   const menu = [
     {
       id: 'import',
-      icon: <MdIcons name="input" size={25} />,
+      icon: <Icon type='material' name="input" size={25} />,
       desc: 'Import an existing account',
       label: 'Import',
       handlePress: handleImport
     },
     {
       id: 'create',
-      icon: <MdIcons name="add" size={25} />,
+      icon: <Icon type='material' name="add" size={25} />,
       desc: 'Create a new account',
       label: 'Create',
       handlePress: handleCreate
+    },
+    {
+      id: 'backup',
+      icon: <Icon type='material' name="backup" size={25} />,
+      desc: 'Backup your account keys',
+      label: 'Backup',
+      handlePress: handleBackup
     }
   ];
+
+  const isDeletable = (account) => listAccount.length > 1 && !dexUtils.isDEXAccount(account?.name) && !isNodeAccount(account?.name, devices);
 
   return (
     <Section
@@ -116,7 +154,7 @@ const AccountSection = ({ navigation, defaultAccount, listAccount, setDefaultAcc
                   account,
                   onHandleSwitchAccount,
                   handleExportKey,
-                  listAccount.length > 1 ? handleDelete : null,
+                  isDeletable(account) ? handleDelete : null,
                   account?.name === defaultAccount?.name
                 )
             }
@@ -132,10 +170,9 @@ AccountSection.propTypes = {
   navigation: PropTypes.object.isRequired,
   defaultAccount: PropTypes.object.isRequired,
   listAccount: PropTypes.arrayOf(PropTypes.object).isRequired,
-  setDefaultAccount: PropTypes.func.isRequired,
-  reloadAccountFollowingToken: PropTypes.func.isRequired,
-  getAccountBalance: PropTypes.func.isRequired,
+  switchAccount: PropTypes.func.isRequired,
   removeAccount: PropTypes.func.isRequired,
+  devices: PropTypes.array.isRequired,
 };
 
 const mapState = state => ({
@@ -143,6 +180,6 @@ const mapState = state => ({
   listAccount: accountSeleclor.listAccount(state)
 });
 
-const mapDispatch = { setDefaultAccount, reloadAccountFollowingToken, getAccountBalance, removeAccount };
+const mapDispatch = { removeAccount, switchAccount };
 
 export default connect(mapState, mapDispatch)(AccountSection);

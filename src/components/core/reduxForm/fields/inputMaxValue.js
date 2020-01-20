@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TouchableOpacity, TextInput, Text } from '@src/components/core';
+import formatUtil from '@src/utils/format';
 import { COLORS } from '@src/styles';
 import createField from './createField';
 
@@ -17,14 +18,15 @@ const renderCustomField = ({ input, meta, maxValue, ...props }) => {
       prependView={(
         <TouchableOpacity
           style={{
-            paddingHorizontal: 10,
+            paddingHorizontal: 15,
             paddingVertical: 5,
             borderWidth: 1,
             borderRadius: 15,
-            borderColor: COLORS.primary 
+            borderColor: COLORS.primary,
+            marginBottom: 5,
           }}
           onPress={() => {
-            onChange(String(Number(maxValue)));
+            onChange(formatUtil.numberWithNoGroupSeparator(Number(maxValue)));
           }}
         >
           <Text style={{ color: COLORS.primary  }}>Max</Text>

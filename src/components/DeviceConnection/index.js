@@ -1,9 +1,12 @@
+import NetInfo from '@react-native-community/netinfo';
+import APIService from '@src/services/api/miner/APIService';
 import Util from '@utils/Util';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { NetInfo, View } from 'react-native';
+import { View } from 'react-native';
 import BaseConnection, { ObjConnection } from './BaseConnection';
+// import IOTWifiConnection from './IOTWifiConnection';
 import style from './style';
 import WifiConnection from './WifiConnection';
 
@@ -21,16 +24,16 @@ class DeviceConnection extends Component {
 
     this.init();
   }
-  
-  getCurrentConnect = async ():Promise<ObjConnection> => {
-    // await Util.delay(3);
-    console.log(TAG, 'getCurrentConnect begin ', this.connection.currentConnect);
 
-    const currentConnect =  await this.connection.fetchCurrentConnect();
-    console.log(TAG, 'getCurrentConnect end ', currentConnect);
+  /**
+   * timeout 3s
+   * return {ObjConnection|| null}
+   */
+  getCurrentConnect = async ():Promise<ObjConnection> => {
+    const currentConnect =  await this.connection.fetchCurrentConnect().catch(console.log);
     return currentConnect;
   };
-  
+
   componentDidMount = async () => {
     const listDevice = await this.getDeviceSavedList();
     if (_.isEmpty(listDevice)) {
@@ -56,37 +59,67 @@ class DeviceConnection extends Component {
   }
 
   init = () => {
+    // const connection: BaseConnection = Platform.OS == 'android'?new IOTWifiConnection() : new WifiConnection();
     const connection: BaseConnection = new WifiConnection();
     this.connection = connection;
   };
 
-  connectDevice = async (device: ObjConnection) => {
+  connectAWifi = async (device: ObjConnection) => {
+    const wifiName = device?.name||'';
+    let result = false;
+    if(!_.isEmpty(wifiName)){
+      const wifiCurrent = await this.getCurrentConnect();
+      const isConnected = _.isEqual(wifiName,wifiCurrent?.name);
+      console.log(TAG, 'connectAWifi begin  = ',wifiName);
+      result = isConnected? true : await this.connection.connectDevice(device).catch(async e=>{
+        console.log(TAG, 'connectAWifi ERRRORRR  = ',wifiName);
+        await this.connection.connectLastConnection(wifiName);
+      });
+    }
+    return result??false;
+  };
+
+  connectDevice = async (device: ObjConnection,isHOTPOST = false) => {
     console.log(TAG, 'connectDevice begin  = ',JSON.stringify(device)||'');
-    let result = await this.connection.connectDevice(device);
-    
+    let result = await this.connection.connectDevice(device);//.catch(e=>e instanceof CustomError? new ExHandler(e).throw():null)??false;
+
     if(result){
       // console.log(TAG, 'connectDevice begin true ---- ');
       const checkConnectWifi = async ()=>{
-        const isConnected = await NetInfo.isConnected.fetch();
-        // while(!isConnected){
-          
-        // }
-        if(!isConnected){
-          await Util.delay(1);
+        let isConnectedCombined = false;
+        if(isHOTPOST){
+          isConnectedCombined  = await this.isConnectedWithNodeHotspot();
+        }else{
+          const state = await NetInfo.fetch().catch(console.log);
+          const {isConnected = false, isInternetReachable = false, details: 
+            { ipAddress= '',
+              subnet= '',
+              ssid='',
+              isConnectionExpensive= false }} = state ??{};
+          console.log(TAG, 'connectDevice begin 0000 ---- ',state);
+          isConnectedCombined  = isConnected;
         }
-        // console.log(TAG, 'connectDevice begin 111---- ',isConnected);
-        return isConnected?isConnected : new Error('is connected fail ');
+        
+        console.log(TAG, 'connectDevice begin 111---- ',isConnectedCombined);
+        return isConnectedCombined?isConnectedCombined : new Error('have not connected ');
       };
 
-      result = await Util.tryAtMost (checkConnectWifi,20,1);
+      result = await Util.tryAtMost (checkConnectWifi,25,2);
       console.log(TAG, 'connectDevice begin 01 result =  ',result);
     }
     return result;
   };
-
-  removeConnectionDevice = async (device: ObjConnection) => {
+  isConnectedWithNodeHotspot = async ():Promise<Boolean>=>{
+    try {
+      return await APIService.pingHotspot();
+    } catch (error) {
+      return null;
+    }
+  }
+  removeConnectionDevice = async (objConnection: ObjConnection) => {
     // console.log(TAG, 'removeConnectionDevice begin result = ',JSON.stringify(device)||'');
-    let result = await this.connection.removeConnection(device);
+    // let result = Platform.OS =='android'? await this.connection.removeConnection(objConnection):true;
+    let result = await Util.excuteWithTimeout(this.connection.removeConnection(objConnection),4).catch(console.log);
     console.log(TAG, 'removeConnectionDevice begin result = ',result);
     return result;
   };
@@ -94,32 +127,6 @@ class DeviceConnection extends Component {
 
   selectDevice = async (selectedDevice = {}) => {
     console.log(TAG, 'selectDevice begin = ', selectedDevice);
-  };
-
-  saveItemConnectedInLocal = selectedDevice => {
-    // const { callbackGettingListPairedDevices } = this.props;
-    // if (Platform.OS === 'ios') {
-    //   const address = !_.isEmpty(selectedDevice) ? selectedDevice.url : '';
-    //   const name = !_.isEmpty(selectedDevice) ? selectedDevice?.name : '';
-    //   LocalDatabase.savePrinterWifiAddress(address, name);
-    //   callbackGettingListPairedDevices([{ name, address, checked: true }]);
-    // } else {
-    //   console.log(TAG, 'saveItemConnectedInLocal begin ', selectedDevice);
-    //   // save bluetooth
-    //   let { pairedDevice } = this.state;
-    //   const address = selectedDevice?.address;
-    //   const name = selectedDevice?.name;
-    //   const itemIndex = pairedDevice.findIndex(
-    //     item => item.address === selectedDevice.address
-    //   );
-    //   if (itemIndex > -1) {
-    //     pairedDevice[itemIndex].checked = true;
-    //   } else {
-    //     pairedDevice = [...pairedDevice, { name, address, checked: true }];
-    //   }
-    //   console.log(TAG, 'saveItemConnectedInLocal begin01 ', pairedDevice);
-    //   callbackGettingListPairedDevices(pairedDevice);
-    // }
   };
 
   checkRegular = async () => {
@@ -139,8 +146,6 @@ class DeviceConnection extends Component {
   };
 
   getDeviceSavedList = async () => {
-    // const { callbackGettingListPairedDevices } = this.props;
-
     return [];
   };
 

@@ -1,40 +1,51 @@
 import { createSelector } from 'reselect';
+
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import memoize from 'memoize-one';
 import { CONSTANT_COMMONS } from '@src/constants';
+import { ExHandler } from '@src/services/exception';
 import { defaultAccount } from './account';
 import { followed, pTokens, internalTokens } from './token';
 
-export const selectedPrivacySymbol = state => state?.selectedPrivacy?.symbol;
+export const selectedPrivacyTokenID = (state) => state?.selectedPrivacy?.tokenID;
 
-export const getPrivacyDataBySymbol = createSelector(
+export const getPrivacyDataByTokenID = createSelector(
   defaultAccount,
   internalTokens,
   pTokens,
   followed,
-  (account, _internalTokens, _pTokens, _followed) => memoize((pSymbol) => {
-    let internalTokenData = _followed.find(t => t?.symbol === pSymbol);
+  (account, _internalTokens, _pTokens, _followed) => memoize((tokenID) => {
+    try {
+      let internalTokenData = _followed.find(t => t?.id === tokenID);
 
-    if (!internalTokenData) {
-      // 'PRV' is not a token
-      internalTokenData = _internalTokens?.find(t => t?.symbol !== CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV && t?.symbol === pSymbol);
+      if (!internalTokenData) {
+        // 'PRV' is not a token
+        internalTokenData = _internalTokens?.find(t => t?.id !== CONSTANT_COMMONS.PRV_TOKEN_ID && t?.id === tokenID);
+      }
+  
+      const pTokenData = _pTokens?.find(t => t?.tokenId === tokenID);
+  
+      if (!internalTokenData && !pTokenData && tokenID !== CONSTANT_COMMONS.PRV_TOKEN_ID) {
+        throw new Error(`Can not find coin with id ${tokenID}`);
+      }
+  
+      return new SelectedPrivacy(account, internalTokenData, pTokenData);
+    } catch (e) {
+      new ExHandler(e);
     }
-
-    const pTokenData = _pTokens?.find(t => t?.pSymbol === pSymbol);
-
-    return new SelectedPrivacy(account, internalTokenData, pTokenData);
   })
 );
 
 export const selectedPrivacy = createSelector(
-  selectedPrivacySymbol,
-  getPrivacyDataBySymbol,
+  selectedPrivacyTokenID,
+  getPrivacyDataByTokenID,
   (selectedSymbol, getFn) => {
     return getFn(selectedSymbol);
   }
 );
 
 export default {
-  selectedPrivacySymbol,
+  getPrivacyDataByTokenID,
+  selectedPrivacyTokenID,
   selectedPrivacy
 };

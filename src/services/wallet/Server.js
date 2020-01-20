@@ -1,16 +1,43 @@
 import storage from '@src/services/storage';
-import { CONSTANT_KEYS, CONSTANT_CONFIGS } from '@src/constants';
+import _ from 'lodash';
+import { MAINNET_SERVER_ADDRESS, TESTNET_SERVER_ADDRESS } from 'react-native-dotenv';
 
+const isMainnet = global.isMainnet??true;
 let cachedList = null;
-
+export const KEY = {
+  SERVER: '$servers',
+  DEFAULT_LIST_SERVER:[{
+    id: 'local',
+    default: false,
+    address: 'http://localhost:9334',
+    username: '',
+    password: '',
+    name: 'Local'
+  },
+  {
+    id: 'testnet',
+    default:!isMainnet,
+    address: TESTNET_SERVER_ADDRESS,
+    username: '',
+    password: '',
+    name: 'Testnet'
+  },{
+    id: 'mainnet',
+    default: isMainnet,
+    address: MAINNET_SERVER_ADDRESS,
+    username: '',
+    password: '',
+    name: 'Mainnet'
+  }]
+};
 export default class Server {
   static get() {
     if (cachedList) {
       return Promise.resolve(cachedList);
     }
-    return storage.getItem(CONSTANT_KEYS.SERVERS)
+    return storage.getItem(KEY.SERVER)
       .then(strData => {
-        cachedList = JSON.parse(strData);
+        cachedList = JSON.parse(strData)||[];
         return cachedList;
       });
   }
@@ -20,12 +47,20 @@ export default class Server {
       .then(result => {
         if (result && result.length) {
           for (const s of result) {
+            // console.log('getDefault s = ',s);
             if (s.default) {
               return s;
             }
           }
         }
       });
+  }
+
+  static async getDefaultIfNullGettingDefaulList() {
+    const list = await Server.get().catch(console.log) || KEY.DEFAULT_LIST_SERVER;
+    const found = list?.find(_ => _.default);
+    console.log('getDefaultIfNullGettingDefaulList found = ',found);
+    return found;
   }
 
   static async setDefault(defaultServer) {
@@ -48,11 +83,15 @@ export default class Server {
     }
   }
 
+  static isMainnet(network):Boolean{
+    return  _.isEqual(network?.id,'mainnet');
+  }
+
   static setDefaultList() {
     try {
-      cachedList = CONSTANT_CONFIGS.DEFAULT_LIST_SERVER;
+      cachedList = KEY.DEFAULT_LIST_SERVER;
       const strData = JSON.stringify(cachedList);
-      return storage.setItem(CONSTANT_KEYS.SERVERS, strData);
+      return storage.setItem(KEY.SERVER, strData);
     } catch (e) {
       throw e;
     }
@@ -61,6 +100,6 @@ export default class Server {
   static set(servers) {
     cachedList = servers;
     const strData = JSON.stringify(cachedList);
-    return storage.setItem(CONSTANT_KEYS.SERVERS, strData);
+    return storage.setItem(KEY.SERVER, strData);
   }
 }

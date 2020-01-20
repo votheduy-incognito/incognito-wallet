@@ -1,33 +1,37 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Modal as RNComponent } from 'react-native';
-import MdIcons from 'react-native-vector-icons/MaterialIcons';
-import AppScreen from '@src/components/AppScreen';
+import { Modal as RNComponent,SafeAreaView, Text } from 'react-native';
+import { Icon } from 'react-native-elements';
+import { COLORS } from '@src/styles';
 import { TouchableOpacity, View } from '..';
 import styleSheet from './style';
 
 const Modal = ({
   children,
   close,
+  headerText,
+  transparent,
   containerStyle,
   closeBtnColor,
+  closeOnBack,
   isShowHeader,
   ...otherProps
 }) => (
-  <RNComponent animationType="fade" {...otherProps}>
-    <AppScreen>
+  <RNComponent transparent={transparent} animationType="fade" onRequestClose={closeOnBack && close} {...otherProps}>
+    <SafeAreaView style={[styleSheet.containerSafeView, transparent && { backgroundColor: 'transparent' }]}>
       <View style={[styleSheet.container, containerStyle]}>
-        {isShowHeader && close && (
+        {isShowHeader && (close || headerText) && (
           <View style={styleSheet.header}>
             <TouchableOpacity onPress={close} style={styleSheet.closeBtn}>
-              <MdIcons name="close" size={30} color={closeBtnColor} />
+              <Icon name='close' type='material' size={30} color={closeBtnColor} />
             </TouchableOpacity>
+            <Text style={styleSheet.headerText} numberOfLines={1} ellipsizeMode='tail'>{headerText}</Text>
           </View>
         )}
-
+          
         {children}
       </View>
-    </AppScreen>
+    </SafeAreaView>
   </RNComponent>
 );
 
@@ -35,8 +39,11 @@ Modal.defaultProps = {
   children: null,
   close: null,
   containerStyle: null,
-  closeBtnColor: null,
-  isShowHeader: true
+  closeBtnColor: COLORS.primary,
+  isShowHeader: true,
+  transparent: false,
+  headerText: null,
+  closeOnBack: true
 };
 
 Modal.propTypes = {
@@ -44,7 +51,10 @@ Modal.propTypes = {
   close: PropTypes.func,
   containerStyle: PropTypes.object,
   closeBtnColor: PropTypes.string,
-  isShowHeader: PropTypes.bool
+  isShowHeader: PropTypes.bool,
+  transparent: PropTypes.bool,
+  headerText: PropTypes.string,
+  closeOnBack: PropTypes.bool
 };
 
 export default Modal;

@@ -1,11 +1,15 @@
-import { ActivityIndicator, Text, View } from '@src/components/core';
+import { ActivityIndicator, Text, View, TouchableScale } from '@src/components/core';
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity as RNComponent } from 'react-native';
+import { Button as ButtonElements } from 'react-native-elements';
 import styleSheet from './style';
 
-const Button = ({ title, children, style, titleStyle, type, onPress, loadingColor, disabled, isLoading: isLoadingProps, prepend, isAsync, ...props }) => {
+export const ButtonExtension = React.memo((props)=>{
+  const titleProps = {allowFontScaling:false,...(props?.titleProps??{})};
+  return ( <ButtonElements titleProps={titleProps} {...props}  />);
+});
+const Button = ({ title, children, textContainerStyle, buttonStyle, style, titleStyle, type, onPress, loadingColor, disabled, isLoading: isLoadingProps, prepend, isAsync, disabledStyle, disabledTitleStyle, ...props }) => {
   const [ isLoading, setLoading ] = useState(false);
   useEffect(() => {
     setLoading(isLoadingProps);
@@ -15,11 +19,13 @@ const Button = ({ title, children, style, titleStyle, type, onPress, loadingColo
     if (isLoading || disabled) return null;
 
     if (typeof onPress === 'function') {
-      const pressed = onPress();
-      if (pressed instanceof Promise) {
-        setLoading(true);
-        pressed.finally(() => setLoading(false));
-      }
+      requestAnimationFrame(() => {
+        const pressed = onPress();
+        if (pressed instanceof Promise) {
+          setLoading(true);
+          pressed.finally(() => setLoading(false));
+        }
+      });
     }
   };
 
@@ -31,19 +37,45 @@ const Button = ({ title, children, style, titleStyle, type, onPress, loadingColo
   };
 
   return (
-    <RNComponent {...props} onPress={handlePress} style={[styleSheet.button, type && styleSheet[`${type}Style`], disabled && styleSheet.disabled, style]} activeOpacity={0.9}>
+    <TouchableScale
+      {...props}
+      onPress={handlePress}
+      style={[
+        styleSheet.button,
+        type && styleSheet[`${type}Style`],
+        disabled && styleSheet.disabled,
+        disabled && disabledStyle,
+        buttonStyle,
+        style,
+      ]}
+    >
       {
         children ? renderChild(children) : (
           <>
             { prepend }
-            <View style={styleSheet.textContainer}>
-              <Text style={[styleSheet.text, titleStyle]} numberOfLines={1} ellipsizeMode='tail'>{title}</Text>
+            <View style={
+              [
+                styleSheet.textContainer,
+                textContainerStyle
+              ]}
+            >
+              <Text
+                style={[
+                  styleSheet.text,
+                  disabled ? disabledTitleStyle : {},
+                  titleStyle,
+                ]}
+                numberOfLines={1}
+                ellipsizeMode='tail'
+              >
+                {title}
+              </Text>
             </View>
             { isAsync && isLoading && <ActivityIndicator style={[styleSheet.loadingIcon]} color={loadingColor} size='small' /> }
           </>
         )
       }
-    </RNComponent>
+    </TouchableScale>
   );
 };
 
@@ -58,7 +90,11 @@ Button.defaultProps = {
   title: null,
   children: null,
   type: null,
-  disabled: false
+  disabled: false,
+  disabledStyle: null,
+  disabledTitleStyle: null,
+  buttonStyle: null,
+  textContainerStyle: null,
 };
 
 Button.propTypes = {
@@ -72,13 +108,17 @@ Button.propTypes = {
     PropTypes.object,
     PropTypes.array
   ]),
+  buttonStyle: PropTypes.object,
+  textContainerStyle: PropTypes.object,
   titleStyle: PropTypes.object,
   title: PropTypes.string,
   children: PropTypes.oneOfType([
     PropTypes.node,
     PropTypes.arrayOf(PropTypes.node)
   ]),
-  type: PropTypes.oneOf(['primary', 'danger', 'secondary'])
+  type: PropTypes.oneOf(['primary', 'danger', 'secondary']),
+  disabledStyle: PropTypes.shape({}),
+  disabledTitleStyle: PropTypes.shape({}),
 };
 
 export default Button;

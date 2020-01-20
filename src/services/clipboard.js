@@ -2,16 +2,16 @@ import { Clipboard } from 'react-native';
 import { Toast } from '@src/components/core';
 
 const ClipboardService = {
-  set(str) {
+  set(str, { copiedMessage, errorMessage }) {
     try {
       if (str && typeof str === 'string') {
         Clipboard.setString(str);
-        Toast.showInfo('Copied');
+        Toast.showInfo(copiedMessage ?? 'Copied');
       } else {
         throw new Error('Clipboard data must be string');
       }
     } catch {
-      Toast.showError('Please tap again to copy.');
+      Toast.showError(errorMessage ?? 'Please tap again to copy.');
     }
   },
 

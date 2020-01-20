@@ -1,10 +1,16 @@
 /**
  * @providesModule Util
  */
+import { CustomError } from '@src/services/exception';
+import knownCode from '@src/services/exception/customError/code/knownCode';
 import _ from 'lodash';
 import { Linking } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import { NavigationActions, StackActions } from 'react-navigation';
+// import timer from 'react-native-timer';
+const timer = require('react-native-timer');
 
+const chars = 'abcdefghijklmnopqrstufwxyzABCDEFGHIJKLMNOPQRSTUFWXYZ1234567890';
 const TAG = 'Util';
 export default class Util {
   static getIconLinkWithSymbol=(symbol = '')=>{
@@ -13,6 +19,7 @@ export default class Util {
   static resetRoute = (navigation, routeName, params = {}) => {
     const resetAction = StackActions.reset({
       index: 0,
+      key: null,
       actions: [NavigationActions.navigate({ routeName, params })]
     });
 
@@ -26,6 +33,14 @@ export default class Util {
           ((prevHash << 5) - prevHash + currVal.charCodeAt(0)) | 0,
         0
       );
+  };
+
+  static phoneInfo = () => {
+    try {
+      return `${DeviceInfo.getBrand()}-${DeviceInfo.getSystemVersion()}`;
+    } catch (error) {
+      return'';
+    }
   };
 
   static openSetting = async (
@@ -99,6 +114,11 @@ export default class Util {
     }
   }
 
+  /**
+   * @param {Promise} promiseFunc - promiseFunc will be retried when return Error object.
+   * @param {Int} count  = 6
+   * @param {Int} delayToTry  = 1 second
+   */
    static tryAtMost = async(promiseFunc, count = 6,delayToTry = 1) =>{
      if (count > 0 && promiseFunc ) {
        const result = await promiseFunc().catch(e => e);
@@ -107,19 +127,43 @@ export default class Util {
          if(_.isNumber(delayToTry)){
            await Util.delay(delayToTry);
          }
-         return await Util.tryAtMost(promiseFunc, count - 1); 
+         return await Util.tryAtMost(promiseFunc, count - 1);
        }
        return result;
      }
      return Promise.reject(`Tried ${count} times and failed`);
    };
 
-  static excuteWithTimeout = (promise, timeSecond = 1) => {
+  static createRandomString= (length) =>{
+
+    let pwd = _.sampleSize(chars, length || 12) ; // lodash v4: use _.sampleSize
+    return pwd.join('');
+  }
+
+  /**
+   * @param {Promise} promiseObj
+   * @param {Int} timeSecond  = 1
+   */
+  static excuteWithTimeout = (promiseObj, timeSecond = 1) => {
     return new Promise(function(resolve, reject) {
-      setTimeout(function() {
-        reject(new Error('timeout'));
+      const ss = Util.createRandomString(10);
+      console.log(TAG,'excuteWithTimeout random string = ',ss);
+      timer.setTimeout(ss,function() {
+        console.log(TAG,'excuteWithTimeout FAILLLLLLLLL random string = ',ss);
+        reject(new CustomError(knownCode.timeout_promise,{message:'timeout '+ ss}));
+        timer.clearTimeout(ss);
       }, timeSecond * 1000);
-      promise.then(resolve, reject);
+      const resolveWrap = (data?)=>{
+        timer?.clearTimeout(ss);
+        console.log(TAG,'excuteWithTimeout resolveWrap clear = ',ss);
+        resolve(data);
+      };
+      const rejectWrap = (error?)=>{
+        timer?.clearTimeout(ss);
+        console.log(TAG,'excuteWithTimeout rejectWrap clear = ',ss);
+        reject(error);
+      };
+      promiseObj.then(resolveWrap, rejectWrap);
     });
   };
 }

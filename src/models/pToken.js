@@ -12,12 +12,12 @@ class PToken {
     this.contractId = data.ContractID;
     this.decimals = data.Decimals;
     this.pDecimals = data.PDecimals;
-    this.type = data.Type;
+    this.type = data.Type; // coin or token
     this.pSymbol = data.PSymbol;
     this.default = data.Default;
     this.userId = data.UserID;
     this.verified = data.Verified;
-    this.currencyType = data.CurrencyType;
+    this.currencyType = data.CurrencyType; // including ERC20, BEP1, BEP2,...
   }
   /**
    * Convert to data structure of token which stored in wallet object
@@ -29,14 +29,6 @@ class PToken {
       name: this.name,
       symbol: this.pSymbol,
       isInit: false,
-      metaData: {
-        decimals: this.decimals,
-        pDecimals: this.pDecimals,
-        pSymbol: this.pSymbol,
-        symbol: this.symbol,
-        contractId: this.contractId,
-        currencyType: this.currencyType,
-      }
       // listTxs,
       // image,
       // amount

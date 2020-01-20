@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
-import convertUtil from '@src/utils/convert';
+import formatUtil from '@src/utils/format';
 import CurrentBalance from './CurrentBalance';
 
-const CurrentBalanceContainer = ({ selectedPrivacy, amount, symbol }) => {
+const CurrentBalanceContainer = ({ selectedPrivacy, symbol }) => {
   if (!selectedPrivacy) return null;
 
-  return <CurrentBalance amount={amount ?? convertUtil.toHumanAmount(selectedPrivacy?.amount, selectedPrivacy?.pDecimals)} symbol={symbol ?? selectedPrivacy?.symbol} />;
+  return <CurrentBalance amount={formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy?.pDecimals)} symbol={symbol ?? selectedPrivacy?.symbol} />;
 };
 
 const mapState = state => ({
@@ -18,13 +18,11 @@ const mapState = state => ({
 CurrentBalanceContainer.defaultProps = {
   selectedPrivacy: null,
   symbol: null,
-  amount: null
 };
 
 CurrentBalanceContainer.propTypes = {
   selectedPrivacy: PropTypes.object,
   symbol: PropTypes.string,
-  amount: PropTypes.oneOfType([ PropTypes.number, PropTypes.string])
 };
 
 export default connect(mapState)(CurrentBalanceContainer);

@@ -1,25 +1,28 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import { createBottomTabNavigator, getActiveChildNavigationOptions } from 'react-navigation';
+import { StyleSheet, View } from 'react-native';
+import {Text} from '@components/core';
+import { getActiveChildNavigationOptions } from 'react-navigation';
+import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { navigationOptionsHandler } from '@src/utils/router';
 import Home from '@src/screens/Home';
-import Setting from '@src/screens/Setting';
+import Papps from '@src/screens/Papps';
 import { COLORS } from '@src/styles';
 import TabBarIcon from '@src/components/TabBarIcon';
-import icMinerActive from '@src/assets/images/icons/ic_tab_miner_active.png';
-import icMinerDeactive from '@src/assets/images/icons/ic_tab_miner_deactive.png';
-import icWalletActive from '@src/assets/images/icons/walletActive.png';
-import icWalletInactive from '@src/assets/images/icons/walletInactive.png';
-import icIncognitoActive from '@src/assets/images/icons/incognitoActive.png';
-import icIncognitoInactive from '@src/assets/images/icons/incognitoInactive.png';
-import icWhalesActive from '@src/assets/images/icons/ic_tab_whales_active.png';
-import icWhalesInactive from '@src/assets/images/icons/ic_tab_whales_deactive.png';
+import icMinerActive from '@src/assets/images/icons/ic_tab_nodes_active.png';
+import icMinerDeactive from '@src/assets/images/icons/ic_tab_nodes_deactive.png';
+import icWalletActive from '@src/assets/images/icons/ic_tab_wallet_active.png';
+import icWalletInactive from '@src/assets/images/icons/ic_tab_wallet_deactive.png';
+import icDappsActive from '@src/assets/images/icons/ic_tab_dapps_active.png';
+import icDappsInactive from '@src/assets/images/icons/ic_tab_dapps_deactive.png';
+import icDexActive from '@src/assets/images/icons/ic_tab_dex_active.png';
+import icDexInactive from '@src/assets/images/icons/ic_tab_dex_deactive.png';
 import HeaderBar from '@src/components/HeaderBar';
+import Dex from '@src/screens/Dex';
+import {FontStyle} from '@src/styles/TextStyle';
 import MinerNavigator from './MinerNavigator';
-import GameNavigator from './GameNavigator';
 import ROUTE_NAMES from './routeNames';
 
-const TabIcon = (type, { focused }) => {
+const TabIcon = (type, title, { focused }) => {
   let active = null;
   let inactive = null;
 
@@ -32,49 +35,73 @@ const TabIcon = (type, { focused }) => {
     active = icMinerActive;
     inactive = icMinerDeactive;
     break;
-  case 'setting':
-    active = icIncognitoActive;
-    inactive = icIncognitoInactive;
+  case 'papps':
+    active = icDappsActive;
+    inactive = icDappsInactive;
     break;
-  case 'game':
-    active = icWhalesActive;
-    inactive = icWhalesInactive;
+  case 'dex':
+    active = icDexActive;
+    inactive = icDexInactive;
   }
+
   return (
-    <TabBarIcon
-      image={focused ? active
-        : inactive}
-    />
+    <View style={styles.tabBarLabel}>
+      <TabBarIcon
+        image={focused ? active
+          : inactive}
+      />
+      <Text style={[styles.labelStyle, focused ? styles.activeLabel : {}]}>{title.toUpperCase()}</Text>
+    </View>
   );
 };
-const renderTab = (type) => TabIcon.bind(null, type);
+const renderTab = (type, title) => TabIcon.bind(null, type, title);
 
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 10,
-    height: 80
+    paddingBottom: 30,
+    height: 95,
+    backgroundColor: COLORS.white,
+  },
+  activeLabel: {
+    color: COLORS.dark1,
+    fontSize: 10,
+    ...FontStyle.bold,
+  },
+  tabBarLabel: {
+    flexDirection: 'column',
+    flex: 1,
+    width: 70,
+    alignItems: 'center',
   },
   labelStyle: {
     textTransform: 'uppercase',
     fontSize: 10,
     fontWeight: '500',
     letterSpacing: 1,
-    textAlign: 'center'
+    textAlign: 'center',
+    marginTop: 4,
+    color: COLORS.lightGrey1,
   },
+  indicator: {
+    opacity: 0,
+  }
 });
 
-const Tab = createBottomTabNavigator({
-  [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { title: 'Wallet', tabBarIcon: renderTab('wallet') }),
-  [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Nodes', header:() => null, tabBarIcon: renderTab('miner') }),
-  [ROUTE_NAMES.Game]: navigationOptionsHandler(GameNavigator, { title: 'Whales', header:() => null, tabBarIcon: renderTab('game')}),
-  [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'You', tabBarIcon: renderTab('setting') }),
+const Tab = createMaterialTopTabNavigator({
+  [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { header: () => null, tabBarLabel: renderTab('wallet', 'Wallet') }),
+  [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Nodes', header: () => null, tabBarLabel: renderTab('miner', 'Nodes') }),
+  [ROUTE_NAMES.pApps]: navigationOptionsHandler(Papps, { title: 'pApps', header: () => null, tabBarLabel: renderTab('papps', 'pApps')}),
+  [ROUTE_NAMES.Dex]: navigationOptionsHandler(Dex, { title: 'pDex', header: () => null, tabBarLabel: renderTab('dex', 'pDex')}),
 }, {
   initialRouteName: ROUTE_NAMES.Home,
+  swipeEnabled: false,
+  animationEnabled: true,
+  tabBarPosition: 'bottom',
   tabBarOptions: {
     style: styles.container,
-    labelStyle: styles.labelStyle,
     tabStyle: styles.tabStyle,
-    activeTintColor: COLORS.blue
+    indicatorStyle: styles.indicator,
   },
   defaultNavigationOptions: {
     header: HeaderBar
@@ -90,9 +117,10 @@ const Tab = createBottomTabNavigator({
 
     return {
       title,
+      gesturesEnabled: false,
       ...child,
     };
-  }
+  },
 });
 
 export default Tab;

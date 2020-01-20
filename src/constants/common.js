@@ -4,7 +4,8 @@ const CRYPTO_SYMBOL = {
   ETH: 'ETH',
   BNB: 'BNB',
   USD: 'USD',
-  KCS: 'KCS'
+  KCS: 'KCS',
+  TOMO: 'TOMO'
 };
 
 const TOKEN_SYMBOL = {
@@ -15,10 +16,23 @@ const TOKEN_SYMBOL = {
   pKCS: 'pKCS'
 };
 
+const TOKEN_ID = {
+  pETH: 'ffd8d42dc40a8d166ea4848baf8b5f6e912ad79875f4373070b59392b1756c8f',
+  pBTC: 'b832e5d3b1f01a4f0623f7fe91d6673461e1f5d37d91fe78c5c2e6183ff39696',
+  pBNB: 'b2655152784e8639fa19521a7035f331eea1f1e911b2f3200a507ebb4554387b',
+};
+
 const AMOUNT_MAX_FRACTION_DIGITS = 4;
 
-const MIN_AMOUNT_REQUIRED = 1/10**AMOUNT_MAX_FRACTION_DIGITS;
-
+const TRACK_LOG_EVENT = {
+  CLICK_STAKING:'click_staking'
+};
+const TRACK_LOG_EVENT_STATUS = {
+  BEGIN:'INIT',
+  DOING:'DOING',
+  PASS:'PASS',
+  FAIL:'FAIL'
+};
 export default {
   // old varibles, maybe remove later
   STAKING_TYPES: {
@@ -32,12 +46,13 @@ export default {
   DEFRAGMENT_MIN_FEE: 0.01,
   DEFRAGMENT_SET_DEFAULT_PRIVACY: true,
 
-  MIN_AMOUNT_REQUIRED,
   AMOUNT_MAX_FRACTION_DIGITS,
 
   // for new app
   CRYPTO_SYMBOL,
   TOKEN_SYMBOL,
+  TOKEN_ID,
+  PRV_TOKEN_ID: '0000000000000000000000000000000000000000000000000000000000000004',
   DECIMALS: {
     MAIN_CRYPTO_CURRENCY: 9,
     [CRYPTO_SYMBOL.PRV]: 9,
@@ -48,7 +63,7 @@ export default {
   },
   ADDRESS_TYPE: {
     DEPOSIT: 1,
-    WITHDRAW: 2 
+    WITHDRAW: 2
   },
   PRIVATE_TOKEN_CURRENCY_TYPE: {
     ETH: 1,
@@ -58,9 +73,9 @@ export default {
     BNB_BEP2: 5,
     USD: 6
   },
-  PTOKEN_TYPE: {
+  PRIVATE_TOKEN_TYPE: {
     COIN: 0,
-    ERC20: 1
+    TOKEN: 1 // including ERC20, BEP1, BEP2,...
   },
   HISTORY: {
     TYPE: {
@@ -72,7 +87,22 @@ export default {
     STATUS_TEXT: {
       SUCCESS: 'SUCCESS',
       FAILED: 'FAILED',
-      PENDING: 'PENDING'
+      PENDING: 'PENDING',
+      EXPIRED: 'EXPIRED'
     }
-  }
+  },
+  TRACK_LOG_EVENT,
+  TRACK_LOG_EVENT_STATUS,
+  PRV: {
+    id: '0000000000000000000000000000000000000000000000000000000000000004',
+    name: 'PRV',
+    symbol: 'PRV',
+    pDecimals: 9,
+  },
+  USDT: {
+    id: '716fd1009e2a1669caacc36891e707bfdf02590f96ebd897548e8963c95ebac0',
+    pDecimals: 9,
+    name: 'Tether',
+    symbol: 'pUSDT',
+  },
 };

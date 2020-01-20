@@ -1,11 +1,11 @@
 import { Toast } from '@src/components/core';
+import AccountModel from '@src/models/account';
+import { followDefaultTokens } from '@src/redux/actions/account';
 import { reloadAccountList } from '@src/redux/actions/wallet';
 import accountService from '@src/services/wallet/accountService';
-import { followDefaultTokens } from '@src/redux/actions/account';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import AccountModel from '@src/models/account';
 import CreateAccount from './CreateAccount';
 
 class CreateAccountContainer extends Component {
@@ -27,10 +27,9 @@ class CreateAccountContainer extends Component {
       followDefaultTokens(serializedAccount);
 
       return serializedAccount;
-    } catch {
-      Toast.showError('Something went wrong. Please try again.');
+    } catch (e) {
+      throw e;
     }
-    return null;
   };
 
   render() {
@@ -46,7 +45,7 @@ const mapState = state => ({
 const mapDispatch = { reloadAccountList, followDefaultTokens };
 
 CreateAccountContainer.propTypes = {
-  wallet: PropTypes.objectOf(PropTypes.object),
+  wallet: PropTypes.object.isRequired,
   reloadAccountList: PropTypes.func.isRequired,
   followDefaultTokens: PropTypes.func.isRequired,
 };

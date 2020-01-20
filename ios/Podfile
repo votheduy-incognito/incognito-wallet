@@ -1,52 +1,135 @@
 # Uncomment the next line to define a global platform for your project
 platform :ios, '9.0'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 # Required by RNFirebase
+pod 'Firebase/Analytics'
 pod 'Firebase/Core', '~> 6.3.0'
 pod 'Firebase/Messaging', '~> 6.3.0'
-pod 'Firebase/Auth'
-pod 'Firebase/Database'
-
-# pod 'React', :path => '../node_modules/react-native', :subspecs => [
-#     'Core',
-#     'CxxBridge'
-# ]
-
-# pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
-
-# Third party deps podspec link
-# pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
-
-# pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
-#  pod 'RNSound', :path => '../node_modules/react-native-sound'
-# pod 'RNSensors', :path => '../node_modules/react-native-sensors'
-
-
+pod 'Firebase/Auth', '~> 6.3.0'
+pod 'Firebase/Database', '~> 6.3.0'
+pod 'Fabric', '~> 1.10.2'
+pod 'Crashlytics', '~> 3.13.2'
+pod 'GoogleIDFASupport', '~> 3.14.0'
 target 'constantWalletMobile' do
   # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
   # use_frameworks!
+#  inherit! :search_paths
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
+  pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
+  pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"
+  pod 'RCTTypeSafety', :path => "../node_modules/react-native/Libraries/TypeSafety"
+  pod 'React', :path => '../node_modules/react-native/'
+  pod 'React-Core', :path => '../node_modules/react-native/'
+  pod 'React-CoreModules', :path => '../node_modules/react-native/React/CoreModules'
+  pod 'React-Core/DevSupport', :path => '../node_modules/react-native/'
+  pod 'React-RCTActionSheet', :path => '../node_modules/react-native/Libraries/ActionSheetIOS'
+  pod 'React-RCTAnimation', :path => '../node_modules/react-native/Libraries/NativeAnimation'
+  pod 'React-RCTBlob', :path => '../node_modules/react-native/Libraries/Blob'
+  pod 'React-RCTImage', :path => '../node_modules/react-native/Libraries/Image'
+  pod 'React-RCTLinking', :path => '../node_modules/react-native/Libraries/LinkingIOS'
+  pod 'React-RCTNetwork', :path => '../node_modules/react-native/Libraries/Network'
+  pod 'React-RCTSettings', :path => '../node_modules/react-native/Libraries/Settings'
+  pod 'React-RCTText', :path => '../node_modules/react-native/Libraries/Text'
+  pod 'React-RCTVibration', :path => '../node_modules/react-native/Libraries/Vibration'
+  pod 'React-Core/RCTWebSocket', :path => '../node_modules/react-native/'
 
-  # Pods for constantWalletMobile
+  pod 'React-cxxreact', :path => '../node_modules/react-native/ReactCommon/cxxreact'
+  pod 'React-jsi', :path => '../node_modules/react-native/ReactCommon/jsi'
+  pod 'React-jsiexecutor', :path => '../node_modules/react-native/ReactCommon/jsiexecutor'
+  pod 'React-jsinspector', :path => '../node_modules/react-native/ReactCommon/jsinspector'
+  pod 'ReactCommon/jscallinvoker', :path => "../node_modules/react-native/ReactCommon"
+  pod 'ReactCommon/turbomodule/core', :path => "../node_modules/react-native/ReactCommon"
+  pod 'Yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
 
-  target 'constantWalletMobile-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
-    # pod 'react-native-udp', :path => '../node_modules/react-native-udp'
+  pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
+  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
+  pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
+  pod 'NMSSH', '~> 2.2.5'
+  pod 'RNSound', :path => '../node_modules/react-native-sound'
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+  pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+  pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
+  pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
+#  pod 'Permission-BluetoothPeripheral', :path => "#{permissions_path}/BluetoothPeripheral.podspec"
+  pod 'Permission-Calendars', :path => "#{permissions_path}/Calendars.podspec"
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera.podspec"
+  pod 'Permission-Contacts', :path => "#{permissions_path}/Contacts.podspec"
+  pod 'Permission-FaceID', :path => "#{permissions_path}/FaceID.podspec"
+  pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways.podspec"
+  pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse.podspec"
+  pod 'Permission-MediaLibrary', :path => "#{permissions_path}/MediaLibrary.podspec"
+  # pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone.podspec"
+  pod 'Permission-Motion', :path => "#{permissions_path}/Motion.podspec"
+  pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications.podspec"
+  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary.podspec"
+  pod 'Permission-Reminders', :path => "#{permissions_path}/Reminders.podspec"
+  pod 'Permission-Siri', :path => "#{permissions_path}/Siri.podspec"
+  pod 'Permission-SpeechRecognition', :path => "#{permissions_path}/SpeechRecognition.podspec"
+  pod 'Permission-StoreKit', :path => "#{permissions_path}/StoreKit.podspec"
 
+
+  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
+  pod 'RNLocalize', :path => '../node_modules/react-native-localize'
+  pod 'react-native-network-info', :path => '../node_modules/react-native-network-info'
+  pod 'RNWifi', :path => '../node_modules/react-native-wifi-reborn'
+  pod 'RNOS', :path => '../node_modules/react-native-os'
+  pod 'TcpSockets', :path => '../node_modules/react-native-tcp'
+  pod 'react-native-iot-wifi', :path => '../node_modules/@josectobar/react-native-iot-wifi'
+#  pod 'RNZmqService', :path => '../node_modules/react-native-zmq-service'
+  pod 'RNFirebase', :path => '../node_modules/react-native-firebase/ios'
+  pod 'RNSensors', :path => '../node_modules/react-native-sensors'
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+  pod 'RCTRestart', :path => '../node_modules/react-native-restart/ios'
+  pod 'TouchID', :path => "../node_modules/react-native-touch-id"
+
+  pod 'react-native-webview', :path => '../node_modules/react-native-webview'
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+  pod 'CodePush', :path => '../node_modules/react-native-code-push'
+
+
+
+  # React-Native is not great about React double-including from the Podfile
+  post_install do |installer|
+    installer.pods_project.targets.each do |target|
+      if target.name == "React"
+        target.remove_from_project
+      end
+
+      # It removes React & Yoga from the Pods project, as it is already included in the main project.
+      targets_to_ignore = %w(React yoga)
+      if targets_to_ignore.include? target.name
+        target.remove_from_project
+      end
+    end
+
+    installer.pods_project.build_configurations.each do |config|
+      if config.name == 'Staging'
+          config.build_settings['CONFIGURATION_TEMP_DIR'] = '$(PROJECT_TEMP_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)'
+          config.build_settings['CONFIGURATION_BUILD_DIR'] = '$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)'
+      end
+    end
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+          if config.name == 'Staging'
+              config.build_settings['CONFIGURATION_TEMP_DIR'] = '$(PROJECT_TEMP_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)'
+              config.build_settings['PODS_CONFIGURATION_BUILD_DIR'] = '${PODS_BUILD_DIR}/Release$(EFFECTIVE_PLATFORM_NAME)'
+          end
+      end
+    end
+
+#    rnfirebase = installer.pods_project.targets.find { |target| target.name == 'RNFirebase' }
+#    rnfirebase.build_configurations.each do |config|
+#      config.build_settings['HEADER_SEARCH_PATHS'] = '$(inherited) ${PODS_ROOT}/Headers/Public/**'
+#    end
   end
-
-  target 'constantWalletMobileTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
-end
-
-target 'constantWalletMobile-tvOS' do
-  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
-  # use_frameworks!
-
-  # Pods for constantWalletMobile-tvOS
+  # use_native_modules!
 end
 
 #post_install do |installer|

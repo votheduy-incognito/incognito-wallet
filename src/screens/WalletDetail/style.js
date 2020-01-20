@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { THEME, FONT, COLORS } from '@src/styles';
+import TextStyle from '@src/styles/TextStyle';
 
 const style = StyleSheet.create({
   container: {
@@ -10,10 +11,10 @@ const style = StyleSheet.create({
     width: '100%',
     backgroundColor: COLORS.white
   },
-  boxHeader: { 
+  boxHeader: {
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'center',   
+    justifyContent: 'center',
     paddingBottom: 15,
     backgroundColor: COLORS.primary,
   },
@@ -21,31 +22,43 @@ const style = StyleSheet.create({
     flex: 1,
     width: '100%',
   },
+  balanceContainer: {
+    flexDirection: 'row',
+    marginHorizontal: 40,
+  },
   balance: {
     color: COLORS.white,
-    fontSize: 28,   
-    textAlign: 'center', 
+    fontSize: 32,
+    textAlign: 'center',
     letterSpacing: 0,
+    ...FONT.STYLE.medium
+  },
+  balanceSymbol: {
+    color: COLORS.white,
+    fontSize: 20,
+    textAlign: 'center',
+    letterSpacing: 0,
+    marginLeft: 7,
     ...FONT.STYLE.medium
   },
   boxBalance: {
     alignItems: 'center',
-    justifyContent: 'center',    
+    justifyContent: 'center',
     textAlign: 'center',
-    marginTop: 15,
-    marginBottom: 42,
+    marginTop: 40,
+    marginBottom: 10,
     height: 35
   },
   getFree : {
     textAlign: 'center',
-    fontSize: 16    
+    fontSize: 16
   },
-  btnStyle: {    
+  btnStyle: {
     width: '45%',
     margin: 10
   },
   unfollowBtn: {
-    
+
   },
   unfollowText: {
     color: COLORS.primary
@@ -56,20 +69,31 @@ const style = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    maxWidth: 116,
+    maxWidth: 100,
     paddingVertical: 12,
-    backgroundColor: COLORS.white,
-    shadowOffset: { width: 2, height: 0 },
-    elevation: 3,
-    marginHorizontal: 3,
+    marginHorizontal: 10,
     marginVertical: 3,
-    height: 80
+  },
+  buttonImg: {
+    width: 75,
+    backgroundColor: COLORS.primary,
+    height: 65,
+    borderRadius: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   actionButtonIcon: {
-    height: 20,
-    width: 20,
+    width: '100%',
+    height: 40,
     resizeMode: 'contain',
-    marginBottom: 7,
+  },
+  buttonText: {
+    marginTop: 12,
+    fontSize: 12,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    color: COLORS.white,
+    ...FONT.STYLE.medium,
   },
   boxButton : {
     flex: 1,
@@ -79,8 +103,8 @@ const style = StyleSheet.create({
   noteText: {
     fontSize: FONT.SIZE.small,
     fontWeight: 'bold',
-    marginVertical: 15,    
-  },  
+    marginVertical: 15,
+  },
   submitBtn: {
     marginTop: 30
   },
@@ -92,6 +116,15 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     flexWrap: 'wrap'
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  headerTitleText: {
+    ...TextStyle.bigText,
+    ...FONT.STYLE.bold,
+    color: COLORS.white,
   }
 });
 

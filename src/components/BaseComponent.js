@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { AppState } from 'react-native';
-// import Toast from 'react-native-easy-toast';
-import  { scaleInApp} from '@src/styles/TextStyle';
 import { Toast } from './core';
+import DeviceLog from './DeviceLog';
 
 export const TAG = 'BaseComponent';
 
@@ -16,6 +15,7 @@ const callIfBackToThisRoute = (props, call) => {
   });
   return listener;
 };
+
 class BaseComponent extends Component {
   constructor(props) {
     super(props);
@@ -35,31 +35,18 @@ class BaseComponent extends Component {
     this.subs?.forEach(sub => sub?.remove());
     AppState.removeEventListener('change', this.handleAppStateChange);
   }
-
+  showLogConnect=(message)=>{
+    DeviceLog.show(); //
+  }
+  logOnView=(message)=>{
+    DeviceLog.logInfo(message);
+  }
   onResume = () => {};
 
-  // renderToastMessage = () => {
-  //   return (
-  //     <Toast
-  //       style={{marginHorizontal:scaleInApp(20)}}
-  //       position="center"
-  //       ref={toast => {
-  //         this.toast = toast;
-  //       }}
-  //     />
-  //   );
-  // };
 
-  // showToastMessage = (text = '', callback = null) => {
-  //   if (text && this.toast) {
-  //     this.toast.show(text, 500, callback);
-  //   }
-  // };
-
-  showToastMessage = (text = '', callback?) => {
-    if (text ) {
-      Toast.showInfo(text);
-    }
+  showToastMessage = (message = '', callback?) => {
+    // message && new ExHandler(new Error(message),message).showWarningToast();
+    message && Toast.showInfo(message);
   };
 
   handleAppStateChange = nextAppState => {
@@ -67,7 +54,7 @@ class BaseComponent extends Component {
       this.appState.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
-      // this.onResume();
+      this.onResume();
       // console.log('App has come to the foreground!');
     }
     this.appState = nextAppState;

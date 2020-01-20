@@ -1,10 +1,17 @@
 /* eslint-disable import/no-cycle */
 import AccountModel from '@src/models/account';
 import storage from '@src/services/storage';
-import { ConfirmedTx as ConfirmedTxWallet, FailedTx as FailedTxWallet, genImageFromStr as genImageFromStrWallet, RpcClient, SuccessTx as SuccessTxWallet, Wallet } from 'incognito-chain-web-js/build/wallet';
-import { randomBytes } from 'react-native-randombytes';
-import { getPassphrase } from './passwordService';
-import { getMaxShardNumber } from './RpcClientService';
+import {
+  ConfirmedTx as ConfirmedTxWallet,
+  FailedTx as FailedTxWallet,
+  genImageFromStr as genImageFromStrWallet,
+  RpcClient,
+  SuccessTx as SuccessTxWallet,
+  Wallet
+} from 'incognito-chain-web-js/build/wallet';
+import {randomBytes} from 'react-native-randombytes';
+import {getPassphrase} from './passwordService';
+import {getMaxShardNumber} from './RpcClientService';
 import Server from './Server';
 
 const numOfAccount = 1;
@@ -18,19 +25,16 @@ export const FailedTx = FailedTxWallet;
 export async function loadListAccount(wallet) {
   try {
     const listAccountRaw = (await wallet.listAccount()) || [];
-    const listAccount =
-      listAccountRaw.map(account => new AccountModel(account)) || [];
-
-    return listAccount;
+    return listAccountRaw.map(account => new AccountModel(account)) || [];
   } catch (e) {
     throw e;
   }
 }
 
 /**
- * 
+ *
  * @param {object} wallet
- * @returns [{{string} AccountName, {string} BLSPublicKey, {int} Index}]  
+ * @returns [{{string} AccountName, {string} BLSPublicKey, {int} Index}]
  */
 export async function loadListAccountWithBLSPubKey(wallet) {
   try {
@@ -59,41 +63,25 @@ export async function loadWallet(passphrase) {
 
   try {
     Wallet.ShardNumber = await getMaxShardNumber();
-    console.log('Wallet.ShardNumber: ', Wallet.ShardNumber);
   } catch (e) {
     console.log(e);
   }
 
-  console.log('Wallet when load wallet:', Wallet);
   const wallet = new Wallet();
   wallet.Storage = storage;
 
   await wallet.loadWallet(passphrase);
-  console.log('Wallet after loading', wallet);
 
-  if (wallet.Name) {
-    // update status history
-    updateStatusHistory(wallet);
-    return wallet;
-  }
-  return false;
+  return wallet?.Name ? wallet : false;
 }
 
 export async function initWallet() {
   try {
-    console.log('storage', storage);
     const passphrase = await getPassphrase();
     const wallet = new Wallet();
     wallet.Storage = storage;
-
-    console.log('wallet.Storage: ', wallet.Storage);
-
-    console.log('wallet.Storage.setItem: ', typeof wallet.Storage.setItem);
-
     wallet.init(passphrase, numOfAccount, walletName, storage, null);
-
     await wallet.save(passphrase);
-    console.log('Wallet after initing kraken: ', wallet);
     return wallet;
   } catch (e) {
     throw e;
@@ -112,13 +100,12 @@ export function deleteWallet(wallet) {
 
 export async function loadHistoryByAccount(wallet, accountName) {
   wallet.Storage = storage;
+  await updateStatusHistory(wallet).catch(() => console.warn('History statuses were not updated'));
   return (await wallet.getHistoryByAccount(accountName)) || [];
 }
 
 export async function updateStatusHistory(wallet) {
-  console.log('UPDATING HISTORY STATUS....');
   await wallet.updateStatusHistory();
-  console.log('UPDATING HISTORY STATUS....DONE');
   await saveWallet(wallet);
   // wallet.save(await getPassphrase());
 }

@@ -15,10 +15,10 @@ const style = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: COLORS.orange,
     marginVertical: 10,
+    marginHorizontal: 10,
+    maxWidth: 200,
+    maxHeight: 40,
     borderRadius: 20,
-  },
-  retryText: {
-    color: COLORS.white
   },
   errorText: {
     ...THEME.text.errorText,
@@ -61,30 +61,7 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 10,
-    minHeight: 55
-  },
-  rate: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignContent: 'center',
-    paddingVertical: 5,
-    flex: 1,
-  },
-  rateTextHighlight: {
-    ...FONT.STYLE.medium,
-    color: COLORS.white,
-    backgroundColor: COLORS.primary,
-    paddingHorizontal: 15,
-    lineHeight: 20,
-    paddingVertical: 5,
-    borderRadius: 15,
-    overflow: 'hidden',
-    textAlignVertical: 'center',
-    textAlign: 'center',
-  },
-  rateText: {
-    fontWeight: '100',
-    color: COLORS.lightGrey3
+    minHeight: 60
   },
   box: {
     borderWidth: 1,
@@ -92,6 +69,91 @@ const style = StyleSheet.create({
     borderColor: COLORS.lightGrey4,
     backgroundColor: COLORS.white,
     overflow: 'hidden'
+  },
+  changeFeeModal: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.overlayBlackLight,
+  },
+  changeFeeForm: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    maxWidth: 350,
+    minHeight: 200,
+    padding: 20,
+    paddingVertical: 30,
+    backgroundColor: COLORS.white,
+    shadowOffset: {
+      height: 2,
+      width: 0
+    },
+    shadowColor: 'rgba(208,208,208,0.5)',
+    shadowOpacity: 1,
+    elevation: 3,
+    shadowRadius: 1.2,
+    borderRadius: 6,
+  },
+  feeInputWrapper: {
+    marginHorizontal: 25,
+    marginBottom: 40,
+    marginTop: 20,
+    flexDirection: 'row',
+  },
+  changeFeeInput: {
+    flex: 1,
+    minWidth: 200,
+  },
+  changeFeeBtnGroup: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 50,
+  },
+  changeFeeBtn: {
+    marginLeft: 5,
+    backgroundColor: COLORS.transparent,
+    borderColor: COLORS.primary,
+    borderBottomWidth: 1,
+  },
+  changeFeeSubmitBtn: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
+    borderBottomWidth: 1,
+    marginRight: 5,
+  },
+  changeFeeSubmitText: {
+    color: COLORS.white
+  },
+  changeFeeResetText: {
+    color: COLORS.blue
+  },
+  feeTextContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20
+  },
+  changeFeeLightBtn: {
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    marginTop: 20,
+  },
+  changeFeeText: {
+    ...FONT.STYLE.medium,
+    color: COLORS.blue,
+    fontSize: 16,
+  },
+  feeTextTitle: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#657576',
+    marginBottom: 12
+  },
+  rateText: {
+    fontSize: 14,
   }
 });
 

@@ -1,201 +1,234 @@
-import Action from '@src/models/Action';
+import common from '@src/constants/common';
+import { DEVICES } from '@src/constants/miner';
 import Device from '@src/models/device';
+import accountService from '@src/services/wallet/accountService';
+import format from '@src/utils/format';
+import LocalDatabase from '@src/utils/LocalDatabase';
 import Util from '@src/utils/Util';
 import _ from 'lodash';
 import APIService from './api/miner/APIService';
-import FirebaseService, { DEVICE_CHANNEL_FORMAT, FIREBASE_PASS, MAIL_UID_FORMAT, PHONE_CHANNEL_FORMAT } from './FirebaseService';
+import { ExHandler } from './exception';
+import NodeService from './NodeService';
+import VirtualNodeService from './VirtualNodeService';
 
 const TAG = 'DeviceService';
-const password = `${FIREBASE_PASS}`;
+
 const templateAction = {
   key:'',
   data:{}
 };
 const timeout = 10;
-export const LIST_ACTION={
-  UPDATE_FIRMWARE:{
-    key:'update_firmware',
-    data:undefined
-  },
-  GET_IP:{
-    key:'ip_address',
-    data:undefined
-  },
-  RESET:{
-    key:'factory_reset',
-    data:undefined
-  },
-  CHECK_STATUS:{
-    key:'status',
-    data:undefined
-  },
-  START:{
-    key:'start',
-    data:undefined
-  },
-  STOP:{
-    key:'stop',
-    data:undefined
-  },
-};
+
 export default class DeviceService {
-  static authFirebase = (product) =>{
-    return new Promise((resolve,reject)=>{
-      let productId = product.product_id;
-      const firebase = new FirebaseService();// FirebaseService.getShareManager();
-      let mailProductId = `${productId}${MAIL_UID_FORMAT}`;
-      let password = `${FIREBASE_PASS}`;
-      firebase.signIn( mailProductId,password).then(uid=>{
-        resolve(uid);
-      }).catch(e=>{
-        reject(e);
-      });
-    //   firebase.auth(
-    //     mailProductId,
-    //     password,
-    //     uid => {
-    //       resolve(uid);
-    //       console.log(TAG,'authFirebase successfully: ', uid);
-    //     },
-    //     error => {
-    //       reject(error);
-    //       console.log(TAG,'authFirebase error: ', error);
-    //     }
-    //   );
-    });
-    
+  
+  static formatForDisplayBalance = (balance:Number)=>{
+    return format.amount(_.isNaN(balance)?0:balance,common.DECIMALS['PRV']);
   }
-  static send = (product, actionExcute = templateAction, chain = 'incognito',type = 'incognito',dataToSend={},timeout = 5) => {
-    return new Promise((resolve,reject)=>{
-      const productId = product.product_id;
-      console.log(TAG, 'ProductId: ', product.product_id);
-      if (productId) {
-        const firebase = new FirebaseService();//FirebaseService.getShareManager();
-        const mailProductId = `${productId}${MAIL_UID_FORMAT}`;
-        const action = DeviceService.buildAction(product,actionExcute,dataToSend,chain,type);
-        const callBack = res => {
-          const {status = -1,data} = res;
-          console.log(TAG,'send Result: ', res);
-          if (status >= 0) {
-            resolve({...data,productId:productId});
-          } else {
-            console.log(TAG,'send Timeout action = ' + actionExcute.key);
-            reject('Timeout action = '+  actionExcute.key);
-          }
-        };
-        firebase.sendAction(
-          mailProductId,
-          password,
-          action,
-          callBack,
-          timeout
-        );
-      }
-    });
-
-   
-    
-  };
-  static buildAction =(product,actionExcute = templateAction,data, chain = 'incognito',type = 'incognito')=>{
-    const productId = product.product_id || '';
-    if (productId) {
-      console.log(TAG, 'ProductId: ', product.product_id);  
-      const phoneChannel = `${productId}${PHONE_CHANNEL_FORMAT}`;
-      const deviceChannel = `${productId}${DEVICE_CHANNEL_FORMAT}`;
-      const dataToSend = data||{};
-      const action = new Action(
-        type,
-        phoneChannel,
-        { action: actionExcute.key, chain: chain, type: type, ...dataToSend },
-        'firebase',
-        deviceChannel
-      );
-      return action;
+  static getStyleStatus = (code)=>{
+    let styleStatus = {color:'#91A4A6'};
+    if(code === Device.CODE_STOP){
+      styleStatus.color = '#91A4A6';
+    }else if(code === Device.CODE_MINING || code === Device.CODE_PENDING){
+      styleStatus.color = '#25CDD6';
+    }else if(code === Device.CODE_SYNCING){
+      // styleStatus.color = '#262727';
+      styleStatus.color = '#25CDD6';
+    }else if(code === Device.CODE_START){
+      styleStatus.color = '#26C64D';
     }
-    return null;
-  };
+    return styleStatus;
+  }
 
-  static reset = async(device:Device,chain='incognito')=>{
-    
+  /**
+   * dont use => wrong response data.
+   * if return {} => web-js error
+   * return { Role= -1, ShardID= 0 }
+   */
+  static fetchStakeStatus = async (account,wallet)=>{
+    if(_.isEmpty(account)) throw new Error(`${TAG} fetchStakeStatus: account is empty`);
+    if(_.isEmpty(wallet)) throw new Error(`${TAG} fetchStakeStatus: wallet is empty`);
+
+    return await accountService.stakerStatus(account,wallet).catch(e=>new ExHandler(e,`${TAG} fetchStakeStatus: web-js error`).showErrorToast())??{};
+  }
+
+  static isStaked  = async(device:Device,wallet)=>{
     try {
-      if(!_.isEmpty(device)){
-        const actionReset = LIST_ACTION.RESET;
-        const dataResult = await Util.excuteWithTimeout(DeviceService.send(device.data,actionReset,chain,Action.TYPE.PRODUCT_CONTROL),timeout);
-        console.log(TAG,'reset send dataResult = ',dataResult);
-        // const { status = -1, data, message= ''} = dataResult;
-        return _.isEqual(dataResult?.status,1);
+      if(device && device.isCallStaked){
+        return true;
       }
-    } catch (error) {
-      console.log(TAG,'reset error = ',error);
-      return false;
-    }
+      switch(device.Type){
+      case DEVICES.VIRTUAL_TYPE:
+        return await VirtualNodeService.isStaked(device);
+          
+      default:{
+        const accountName = device.accountName();
+        const accountModel = await accountService.getFullDataOfAccount(accountName,wallet);
+        return !_.isEmpty(accountModel?.BLSPublicKey) && await VirtualNodeService.checkStakedWithBlsKey(accountModel.BLSPublicKey);
+      }
+      }
+      
 
+    } catch (error) {
+      console.log(TAG,'isStaked error',error);
+    }
     return false;
   }
 
-  static updateFirware = async(device:Device,chain='incognito')=>{
-    
-    try {
-      if(!_.isEmpty(device)){
-        const actionReset = LIST_ACTION.UPDATE_FIRMWARE;
-        const dataResult = await Util.excuteWithTimeout(DeviceService.send(device.data,actionReset,chain,Action.TYPE.PRODUCT_CONTROL),timeout);
-        console.log(TAG,'updateFirware send dataResult = ',dataResult);
-        // const { status = -1, data, message= ''} = dataResult;
-        return dataResult;
-      }
-    } catch (error) {
-      console.log(TAG,'reset error = ',error);
-      return null;
-    }
 
-    return null;
+  // static fetchAndSavingInfoNodeStake = async(device:Device,isNeedSaving=false)=>{
+    
+  //   try {
+      
+  //     const paymentAddress =  device.PaymentAddressFromServer;
+      
+  //     const resultRequest =  await Util.excuteWithTimeout(APIService.fetchInfoNodeStake({
+  //       PaymentAddress:paymentAddress
+  //     }),5).catch(console.log);
+  //     const dataRequestStake = resultRequest.data||{};
+  //     if(isNeedSaving && !_.isEmpty(dataRequestStake)){
+  //       const {StakerAddress = ''} = dataRequestStake??{};
+  //       device.isCallStaked = !_.isEmpty(StakerAddress);
+  //       let fetchProductInfo = device.toJSON()??{};
+  //       fetchProductInfo.minerInfo = {
+  //         ...fetchProductInfo.minerInfo,
+  //         ...dataRequestStake
+  //       };
+  //       console.log(TAG,'fetchAndSavingInfoNodeStake fetchProductInfo = ',fetchProductInfo);
+  //       !_.isEmpty(fetchProductInfo) && await LocalDatabase.updateDevice(fetchProductInfo);
+  //     }
+
+  //     return dataRequestStake;
+      
+  //   } catch (error) {
+  //     console.log(TAG,'fetchAndSavingInfoNodeStake error = ',error);
+  //   }
+
+  //   return null;
+  // }
+
+
+  /**
+   *
+   * @param {string} paymentAddrStr
+   * @param {string} tokenID
+   * @returns {number}
+   */
+  static getRewardAmountWithPaymentAddress = async(paymentAddrStr,tokenID = '',isGetAll = false)=>{
+    const result = !_.isEmpty(paymentAddrStr) ? await accountService.getRewardAmount(tokenID, paymentAddrStr,isGetAll).catch(e=>new ExHandler(e).showWarningToast()):null;
+    console.log(TAG,'getRewardAmountWithPaymentAddress result = ',result);
+    return result;
   }
-  
 
-  static pingGetIP = async(device:Device,chain='incognito')=>{
-    
-    try {
-      if(!_.isEmpty(device)){
-        const action = LIST_ACTION.GET_IP;
-        const dataResult = await Util.excuteWithTimeout(DeviceService.send(device.data,action,chain,Action.TYPE.PRODUCT_CONTROL),8);
-        console.log(TAG,'pingGetIP send dataResult = ',dataResult);
-        const { status = -1, data, message= ''} = dataResult;
-        if(status === 1){
-          return data;
-        }
-      }
-    } catch (error) {
-      console.log(TAG,'pingGetIP error = ',error);
-    }
-
-    return null;
-  }
-
-  static sendPrivateKey = async(device:Device,privateKey:String,chain='incognito')=>{
-    
-    try {
-      if(!_.isEmpty(device) && !_.isEmpty(privateKey)){
-        const actionPrivateKey = LIST_ACTION.GET_IP;
-        const dataResult = await Util.excuteWithTimeout(DeviceService.send(device.data,actionPrivateKey,chain,Action.TYPE.PRODUCT_CONTROL),8);
-        console.log(TAG,'sendPrivateKey send dataResult = ',dataResult);
-        const { status = -1, data, message= ''} = dataResult;
-        if(status === 1){
-          const action:Action = DeviceService.buildAction(device.data,LIST_ACTION.START,{product_id:device.data.product_id, privateKey:privateKey},chain,'incognito');
-          const params = {
-            type:action?.type||'',
-            data:action?.data||{}
-          };
-          console.log(TAG,'sendPrivateKey send init data = ',params);
-          const response = await APIService.sendPrivateKey(data,params);
+  /** 
+    * Result : null -> network have problem,
+    *{}: not earning
+  */
+ static getRewardAmountAllToken = async (deviceInfo:Device)=>{
+   let Result = null;
+   try {
+     if(!_.isEmpty(deviceInfo)){
+       switch(deviceInfo.Type){
+       case DEVICES.VIRTUAL_TYPE:{
         
-          console.log(TAG,'sendPrivateKey send post data = ',response);
-          return response;
-        }
-      }
-    } catch (error) {
-      console.log(TAG,'sendPrivateKey error = ',error);
-    }
+         const dataResult = await VirtualNodeService.getRewardFromMiningkey(deviceInfo);
+         console.log(TAG,'getRewardAmountAllToken VIRTUAL_TYPE ',dataResult);
+         Result = dataResult?.Result;
+         break;
+       }
+       default:{
+         //  let stakerAddress =  deviceInfo.StakerAddressFromServer;
+         //  stakerAddress =  _.isEmpty(stakerAddress) ? await NodeService.fetchAndSavingInfoNodeStake(deviceInfo,true)?.StakerAddress:stakerAddress;
+         const dataStaked = await NodeService.fetchAndSavingInfoNodeStake(deviceInfo,true);
+         let stakerAddress =  dataStaked?.StakerAddress ??'';
+         console.log(TAG,'getRewardAmountAllToken NODE begin = ',dataStaked);
+         if(_.isEmpty(stakerAddress)){
+           Result = {PRV:null};
+         }else{
+           Result = await DeviceService.getRewardAmountWithPaymentAddress(stakerAddress,'',true);
+         }
+       }
+       }
+     }
+   } catch (error) {
+     new ExHandler(error,'getRewardAmountAllToken error').showWarningToast().throw();
+   }
+  
+   return Result;
+ }
 
-    return null;
-  }
+ //  /** 
+ //     * balance : null -> node die,
+ //     *-1: full-node die 
+ //   */
+ //  static getRewardAmount = async (deviceInfo:Device)=>{
+ //    let balance = null;
+ //    if(!_.isEmpty(deviceInfo)){
+ //      switch(deviceInfo.Type){
+ //      case DEVICES.VIRTUAL_TYPE:{
+ //        console.log(TAG,'getRewardAmount VIRTUAL_TYPE begin');
+ //        let dataResult = await VirtualNodeService.getRewardFromMiningkey(deviceInfo);
+
+ //        balance = _.isNil(dataResult) || _.isNil(dataResult.Result) ?-1:dataResult.Result?.PRV;
+ //        console.log(TAG,'getRewardAmount VIRTUAL_TYPE dataResult = ',dataResult,deviceInfo.Name,balance);
+ //        break;
+ //      }
+ //      default:{
+ //        let stakerAddress =  deviceInfo.StakerAddressFromServer;
+ //        stakerAddress =  _.isEmpty(stakerAddress) ? await NodeService.fetchAndSavingInfoNodeStake(deviceInfo,true)?.StakerAddress:stakerAddress;
+ //        balance = _.isEmpty(stakerAddress)? 0: await NodeService.balanceToken(stakerAddress,'',false);
+ //        balance = _.isNaN(balance)? 0:balance;
+ //      }
+ //      }
+ //    }
+ //    balance = _.isNil(balance)||_.isNaN(balance)?null:balance;
+ //    console.log(TAG,'getRewardAmount balance = ',balance,deviceInfo.Name);
+ //    return balance;
+ //  }
+
+ /** 
+    * balance : null -> node die,
+    *-1: full-node die 
+  */
+ static getRewardAmount = async (deviceInfo:Device)=>{
+   let balance = null;
+   if(!_.isEmpty(deviceInfo)){
+     const Result = await DeviceService.getRewardAmountAllToken(deviceInfo).catch(console.log) ?? null;
+     balance = _.isNil(Result) ?-1:Result?.PRV;
+     
+     switch(deviceInfo.Type){
+     case DEVICES.VIRTUAL_TYPE:{       
+       console.log(TAG,'getRewardAmount VIRTUAL_TYPE dataResult = ',Result,deviceInfo.Name,balance);
+       break;
+     }
+     default:{
+       balance = _.isNaN(balance)? 0:balance;
+     }
+     }
+   }
+   balance = _.isNil(balance)||_.isNaN(balance)?null:balance;
+   console.log(TAG,'getRewardAmount end balance = ',balance,deviceInfo.Name);
+   return balance;
+ }
+
+ /**
+  * return {1}: begin to updating
+  * {-1}: error
+  * * {0}: updating
+  */
+ static updateFirmwareForNode= async(device:Device)=>{
+   try {
+     console.log(TAG,'updateFirmwareForNode begin -- ',device.isUpdatingFirmware());
+     if(!device.isUpdatingFirmware()){
+       console.log(TAG,'updateFirmwareForNode begin01');
+       const {data,status} = await NodeService.updateFirware(device).catch(console.log)??{};
+       await LocalDatabase.saveUpdatingFirware(device.ProductId,true);
+       return 0;
+     }
+   } catch (error) {
+     return -1;
+   }
+   
+   return 1;
+ }
+
 }

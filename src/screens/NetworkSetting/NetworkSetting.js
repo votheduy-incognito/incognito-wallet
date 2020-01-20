@@ -1,6 +1,9 @@
 import { Container, ScrollView } from '@src/components/core';
+import DialogLoader from '@src/components/DialogLoader';
+import { onClickView } from '@src/utils/ViewUtil';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import RNRestart from 'react-native-restart';
 import NetworkItem, { networkItemShape } from './NetworkItem';
 
 class NetworkSetting extends Component {
@@ -8,7 +11,8 @@ class NetworkSetting extends Component {
     super();
     this.state = {
       activeNetworkId: null,
-      expandedNetworkId: null
+      expandedNetworkId: null,
+      loading:false
     };
   }
 
@@ -22,21 +26,30 @@ class NetworkSetting extends Component {
     this.setState({ activeNetworkId: found?.id });
   };
 
-  handleActive = network => {
+  handleActive = async network => {
     const { setDefaultNetwork } = this.props;
-    setDefaultNetwork(network);
-    this.setState({ activeNetworkId: network?.id });
+    this.setState({loading:true});
+    await setDefaultNetwork(network);
+    this.setState({ loading:false },()=>{
+      RNRestart.Restart();  
+    });
+    
+    // clone data
+    // this.setState({ activeNetworkId: network?.id,loading:false },()=>{
+      
+    // });
   };
 
   handleExpand = networkId => {
-    this.setState(({ expandedNetworkId }) => ({
-      // operating like a toggle
-      expandedNetworkId: networkId === expandedNetworkId ? null : networkId
-    }));
+    
+    // this.setState(({ expandedNetworkId }) => ({
+    //   // operating like a toggle
+    //   expandedNetworkId: networkId === expandedNetworkId ? null : networkId
+    // }));
   };
 
   render() {
-    const { activeNetworkId, expandedNetworkId } = this.state;
+    const { activeNetworkId, expandedNetworkId,loading } = this.state;
     const { networks, reloadNetworks } = this.props;
 
     return (
@@ -49,12 +62,13 @@ class NetworkSetting extends Component {
                 network={network}
                 active={network?.id === activeNetworkId}
                 expanded={network?.id === expandedNetworkId}
-                onActive={() => this.handleActive(network)}
+                onActive={onClickView(()=>this.handleActive(network))}
                 onExpand={() => this.handleExpand(network?.id)}
                 reloadNetworks={reloadNetworks}
               />
             ))}
         </Container>
+        <DialogLoader loading={loading} />
       </ScrollView>
     );
   }

@@ -22,9 +22,6 @@ const commonPlugins = [
       }
     }
   ],
-
-  // minify
-  'babel-plugin-transform-remove-undefined'
 ];
 
 const commonPresets = [
@@ -33,26 +30,23 @@ const commonPresets = [
   'module:react-native-dotenv'
 ];
 
-module.exports = {
-  env: {
-    development: {
-      presets: [...commonPresets],
-      plugins: [...commonPlugins]
-    },
-    test: {
-      presets: [...commonPresets],
-      plugins: [...commonPlugins]
-    },
-    production: {
-      presets: [...commonPresets],
-      plugins: [
-        ...commonPlugins,
+module.exports = function(api) {
+  const isDev = api.env('development');
+  const config = {
+    presets: [...commonPresets],
+    plugins: [...commonPlugins],
+  };
 
-        // minify
-        'babel-plugin-transform-remove-console',
-        'babel-plugin-transform-remove-debugger'
-      ]
-    }
-  },
-  retainLines: true
+  if (!isDev) {
+    config.plugins = [
+      ...config.plugins,
+      // minify
+      ['babel-plugin-transform-remove-console', { 'exclude': [ 'debug' ] }],
+      'babel-plugin-transform-remove-debugger',
+      'babel-plugin-transform-remove-undefined'
+    ];
+  }
+
+  console.log('BABEL CONFIG', config);
+  return config;
 };
