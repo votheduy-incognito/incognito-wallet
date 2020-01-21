@@ -48,11 +48,11 @@ const number = ({ message } = {}) => value => {
 };
 
 const minValue = (min, { message } = {}) => value =>
-  value && value < min ? messageHanlder(message, value, min) ?? `Must be at least ${formatUtils.number(min)}` : undefined;
+  value && convert.toNumber(value) < min ? messageHanlder(message, value, min) ?? `Must be at least ${formatUtils.number(min)}` : undefined;
 
-const maxValue = (max, { message } = {}) => value => {
-  return value && convert.toNumber(value) > max ? messageHanlder(message, value, max) ?? `Must be less than or equal ${formatUtils.number(max)}` : undefined;
-};
+const maxValue = (max, { message } = {}) => value =>
+  value && convert.toNumber(value) > max ? messageHanlder(message, value, max) ?? `Must be less than or equal ${formatUtils.number(max)}` : undefined;
+
 const largerThan = (min, { message } = {}) => value =>
   value && value <= min ? messageHanlder(message, value, min) ?? `Must be larger than ${formatUtils.number(min)}` : undefined;
 
