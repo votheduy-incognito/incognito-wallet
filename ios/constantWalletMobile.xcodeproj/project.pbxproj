@@ -891,6 +891,7 @@
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/../node_modules/react-native-zmq-service/ios/**",
 					"$(PROJECT_DIR)/../node_modules/react-native-ssh/ios/**",
+					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -911,6 +912,7 @@
 					"$(SRCROOT)/../node_modules/react-native-tcp/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-ssh/ios/**",
+					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
 				);
 				INFOPLIST_FILE = constantWalletMobile/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -919,6 +921,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
+					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
 				);
 				MARKETING_VERSION = 47;
 				OTHER_LDFLAGS = (
