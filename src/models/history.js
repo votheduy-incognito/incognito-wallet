@@ -45,7 +45,6 @@ class History {
 
     return {
       id: data?.ID,
-      address: data.Address,
       updatedAt: data.UpdatedAt,
       expiredAt: data.ExpiredAt,
       addressType: data.AddressType,
@@ -64,6 +63,7 @@ class History {
       cancelable: data.Status === 0,
       walletAddress: data.WalletAddress,
       canRetryExpiredDeposit: data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT && statusText === CONSTANT_COMMONS.HISTORY.STATUS_TEXT.EXPIRED,
+      depositTmpAddress: data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT && data.Address
     };
   }
 }

@@ -62,4 +62,7 @@ export default StyleSheet.create({
     marginTop: 20,
     alignItems: 'center'
   },
+  copyBlock: {
+    marginLeft: 5
+  }
 });
