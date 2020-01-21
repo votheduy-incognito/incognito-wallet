@@ -4,9 +4,7 @@ import OptionMenu from '@components/OptionMenu/OptionMenu';
 import FixModal from '@screens/Node/components/FixModal';
 import accountKey from '@src/assets/images/icons/account_key.png';
 import moreIcon from '@src/assets/images/icons/more_icon.png';
-import offlineIcon from '@src/assets/images/icons/offline_icon.png';
 import wifiOffline from '@src/assets/images/icons/offline_wifi_icon.png';
-import onlineIcon from '@src/assets/images/icons/online_icon.png';
 import wifiOnline from '@src/assets/images/icons/online_wifi_icon.png';
 import unfollowTokenIcon from '@src/assets/images/icons/unfollowToken.png';
 import _ from 'lodash';
@@ -153,7 +151,7 @@ class VNode extends React.Component {
           <>
             <View style={styles.row}>
               <View style={[styles.itemLeft, styles.imageWrapper, styles.hidden]}>
-                <Image source={item.IsOnline ? onlineIcon : offlineIcon} />
+                <Image />
               </View>
               <View style={styles.itemCenter}>
                 { isFetching ? <ActivityIndicator size="large" /> : <Rewards item={item} rewards={item.Rewards} allTokens={allTokens} /> }
@@ -182,7 +180,7 @@ class VNode extends React.Component {
       </View>
     );
   }
-  
+
 }
 
 VNode.defaultProps = {
