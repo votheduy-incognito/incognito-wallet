@@ -5,13 +5,10 @@ import unfollowTokenIcon from '@assets/images/icons/unfollowToken.png';
 import withdrawBlack from '@assets/images/icons/withdraw_black.png';
 import { ActivityIndicator, Button, Image, Text, TouchableOpacity, View } from '@components/core';
 import Toast from '@components/core/Toast/Toast';
-// import { DialogUpdateFirmware } from '@components/DialogNotify';
 import OptionMenu from '@components/OptionMenu/OptionMenu';
 import FixModal from '@screens/Node/components/FixModal';
 import firmwareIcon from '@src/assets/images/icons/firmware.png';
 import moreIcon from '@src/assets/images/icons/more_icon.png';
-import offlineIcon from '@src/assets/images/icons/offline_icon.png';
-import onlineIcon from '@src/assets/images/icons/online_icon.png';
 import { COLORS } from '@src/styles';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -19,8 +16,6 @@ import React from 'react';
 import Loader from './Loader';
 import Rewards from './Rewards';
 import styles from './style';
-
-
 
 const MESSAGES = {
   ACCOUNT_NOT_FOUND: 'Missing account',
@@ -162,9 +157,9 @@ class PNode extends React.Component {
         { isFetching ? <Loader /> : (
           <>
             <View style={styles.row}>
-              <TouchableOpacity onPress={this.showIp} style={[styles.itemLeft, styles.imageWrapper, styles.hidden]}>
-                <Image source={item.IsOnline ? onlineIcon : offlineIcon} />
-              </TouchableOpacity>
+              <View style={[styles.itemLeft, styles.imageWrapper, styles.hidden]}>
+                <Image />
+              </View>
               <View style={styles.itemCenter}>
                 { isFetching ? <ActivityIndicator size="large" /> : <Rewards item={item} rewards={item.Rewards} allTokens={allTokens} /> }
               </View>
@@ -174,10 +169,10 @@ class PNode extends React.Component {
             </View>
             <View>
               <View style={[styles.row, styles.centerAlign]}>
-                <View style={[styles.row, styles.centerAlign]}>
+                <TouchableOpacity onPress={this.showIp} style={[styles.row, styles.centerAlign]}>
                   <Image source={item.IsOnline ? wifiOnline : wifiOffline} style={[styles.icon]} />
                   <Text style={[styles.itemLeft, !item.IsOnline && styles.greyText]}>Device {labelName}</Text>
-                </View>
+                </TouchableOpacity>
                 {!isFetching && !item.IsOnline && (
                   <View style={styles.itemRight}>
                     <FixModal item={item} />
