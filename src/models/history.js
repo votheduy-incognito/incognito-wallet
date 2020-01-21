@@ -42,7 +42,6 @@ const getStatusText = (status, currencyType, isDecentralized) => {
 class History {
   static parsePrivateTokenFromApi(data = {}) {
     const statusText = getStatusText(data.Status, data.CurrencyType, data.Decentralized);
-
     return {
       id: data?.ID,
       updatedAt: data.UpdatedAt,
@@ -60,7 +59,7 @@ class History {
       incognitoAmount: data.IncognitoAmount,
       outchainTx: data.OutChainTx,
       inchainTx: data.InChainTx,
-      cancelable: data.Status === 0,
+      cancelable: data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT && [CONSTANT_COMMONS.HISTORY.STATUS_TEXT.EXPIRED,CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING].includes(statusText),
       walletAddress: data.WalletAddress,
       canRetryExpiredDeposit: data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT && statusText === CONSTANT_COMMONS.HISTORY.STATUS_TEXT.EXPIRED,
       depositTmpAddress: data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT && data.Address
