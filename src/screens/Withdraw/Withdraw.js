@@ -15,6 +15,8 @@ import { connect } from 'react-redux';
 import { detectToken } from '@src/utils/misc';
 import { change, Field, formValueSelector, isValid } from 'redux-form';
 import {logEvent} from '@services/firebase';
+import accountService from '@services/wallet/accountService';
+import {MESSAGES} from '@screens/Dex/constants';
 import style from './style';
 
 const formName = 'withdraw';
@@ -129,7 +131,7 @@ class Withdraw extends React.Component {
     try {
       let res;
       const { estimateFeeData: { fee }, isUsedPRVFee, feeForBurn } = this.state;
-      const {  handleCentralizedWithdraw, handleDecentralizedWithdraw, navigation } = this.props;
+      const { account, wallet, handleCentralizedWithdraw, handleDecentralizedWithdraw, navigation } = this.props;
       const { amount, toAddress, memo } = values;
       const convertedAmount = convertUtil.toNumber(amount);
 
@@ -137,6 +139,15 @@ class Withdraw extends React.Component {
         tokenId: selectedPrivacy?.tokenId,
         tokenSymbol: selectedPrivacy?.symbol,
       });
+
+      if (isUsedPRVFee) {
+        const prvBalance = await accountService.getBalance(account, wallet);
+
+        if (prvBalance < fee) {
+          throw new Error(MESSAGES.NOT_ENOUGH_NETWORK_FEE);
+        }
+      }
+
       if (selectedPrivacy?.isDecentralized) {
         res = await handleDecentralizedWithdraw({
           amount: convertedAmount,
@@ -170,14 +181,18 @@ class Withdraw extends React.Component {
 
       throw new Error('Withdraw failed');
     } catch (e) {
-      await logEvent(CONSTANT_EVENTS.WITHDRAW, {
+      await logEvent(CONSTANT_EVENTS.WITHDRAW_FAILED, {
         tokenId: selectedPrivacy?.tokenId,
         tokenSymbol: selectedPrivacy?.symbol,
       });
 
-      new ExHandler(e, 'Something went wrong. Please try again.').showErrorToast(true);
+      if (e.message === MESSAGES.NOT_ENOUGH_NETWORK_FEE) {
+        Toast.showError(e.message);
+      } else {
+        new ExHandler(e, 'Something went wrong. Please try again.').showErrorToast(true);
+      }
     }
-  }
+  };
 
   shouldDisabledSubmit = () => {
     const { estimateFeeData: { fee } } = this.state;
@@ -343,6 +358,7 @@ Withdraw.propTypes = {
   navigation: PropTypes.object.isRequired,
   selectedPrivacy: PropTypes.object.isRequired,
   account: PropTypes.object.isRequired,
+  wallet: PropTypes.object.isRequired,
   isFormValid: PropTypes.bool,
   amount: PropTypes.string,
   minAmount: PropTypes.number,

@@ -11,6 +11,8 @@ import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
 import {logEvent} from '@services/firebase';
+import {MESSAGES} from '@screens/Dex/constants';
+import Toast from '@components/core/Toast/Toast';
 import SendCrypto from './SendCrypto';
 
 class SendCryptoContainer extends Component {
@@ -31,7 +33,7 @@ class SendCryptoContainer extends Component {
   }
 
 
-  getTxInfo = ({ message } = {}) => message
+  getTxInfo = ({ message } = {}) => message;
 
   _handleSendMainCrypto = async values => {
     const { account, wallet, selectedPrivacy, getAccountBalanceBound } = this.props;
@@ -79,7 +81,7 @@ class SendCryptoContainer extends Component {
     } finally {
       this.setState({ isSending: false });
     }
-  }
+  };
 
   _handleSendToken = async values => {
     const { account, wallet, tokens, selectedPrivacy, getTokenBalanceBound } = this.props;
@@ -105,6 +107,15 @@ class SendCryptoContainer extends Component {
 
     try {
       this.setState({ isSending: true });
+
+      if (!isUseTokenFee) {
+        const prvBalance = await accountService.getBalance(account, wallet);
+
+        if (prvBalance < originalFee) {
+          throw new Error(MESSAGES.NOT_ENOUGH_NETWORK_FEE);
+        }
+      }
+
       const res = await tokenService.createSendPToken(
         tokenObject,
         isUseTokenFee ? 0 : originalFee,
@@ -142,7 +153,7 @@ class SendCryptoContainer extends Component {
     } finally {
       this.setState({ isSending: false });
     }
-  }
+  };
 
   handleSend = () => {
     const { selectedPrivacy } = this.props;

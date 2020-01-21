@@ -5,17 +5,12 @@ import convert from '@utils/convert';
 
 const isSafeInteger = number => {
   const n = Number(n);
-
-  if (Math.abs(number) > Number.MAX_SAFE_INTEGER) {
-    return false;
-  }
-
-  return true;
+  return Math.abs(number) <= Number.MAX_SAFE_INTEGER;
 };
 
 const messageHanlder = (message, fieldValue, inputValue) => {
   if (typeof message === 'function') {
-    return message(fieldValue, inputValue);
+    return message(convert.toNumber(fieldValue), convert.toNumber(inputValue));
   }
   return message && String(message);
 };
@@ -55,9 +50,9 @@ const number = ({ message } = {}) => value => {
 const minValue = (min, { message } = {}) => value =>
   value && value < min ? messageHanlder(message, value, min) ?? `Must be at least ${formatUtils.number(min)}` : undefined;
 
-const maxValue = (max, { message } = {}) => value =>
-  value && value > max ? messageHanlder(message, value, max) ?? `Must be less than or equal ${formatUtils.number(max)}` : undefined;
-
+const maxValue = (max, { message } = {}) => value => {
+  return value && convert.toNumber(value) > max ? messageHanlder(message, value, max) ?? `Must be less than or equal ${formatUtils.number(max)}` : undefined;
+};
 const largerThan = (min, { message } = {}) => value =>
   value && value <= min ? messageHanlder(message, value, min) ?? `Must be larger than ${formatUtils.number(min)}` : undefined;
 
@@ -111,7 +106,7 @@ const fileTypes = (typeList, { message } = {}) => value => {
 const maxFileSize = (sizeInKBytes, { message } = {}) => value => {
   if (!value) return;
   const fileSize = Math.ceil(Number(value?.size / 1024) || 0);
-  
+
   if (fileSize <= 0) {
     return 'Invalid file, please choose another file';
   }
