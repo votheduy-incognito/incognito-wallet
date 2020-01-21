@@ -102,7 +102,7 @@ class PNode extends React.Component {
           <Text style={styles.withdrawText}>Update firmware</Text>
         </View>
       ),
-      desc: 'Get Node perform better.',
+      desc: 'Get Node perform better',
       handlePress: null,
     });
 
@@ -121,11 +121,11 @@ class PNode extends React.Component {
       const pendingWithdraw = !item.IsWithdrawable;
       const isEmptyRewards = _.isEmpty(rewards) || !_.some(rewards, value => value > 0);
       let onClick = () => onWithdraw(item);
-      let label = 'Withdraw';
-      let desc = 'Withdraw your rewards.';
+      let label = 'Withdraw earnings';
+      let desc = 'Withdraw your rewards';
       if (pendingWithdraw || isEmptyRewards) {
         if (pendingWithdraw) {
-          desc = 'This might take up to 12 hours.';
+          desc = 'This might take up to 24 hours';
         }
         onClick = null;
         label = (
