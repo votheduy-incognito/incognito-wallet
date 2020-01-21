@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Field, formValueSelector, isValid, change } from 'redux-form';
+import { Field, formValueSelector, isValid } from 'redux-form';
 import { connect } from 'react-redux';
 import convertUtil from '@src/utils/convert';
 import formatUtil from '@src/utils/format';
 import { Container, ScrollView, View, Button } from '@src/components/core';
-import { openQrScanner } from '@src/components/QrCodeScanner';
 import ReceiptModal, { openReceipt } from '@src/components/Receipt';
 import LoadingTx from '@src/components/LoadingTx';
 import EstimateFee from '@src/components/EstimateFee';
@@ -15,6 +14,8 @@ import { createForm, InputQRField, InputField, InputMaxValueField, validator } f
 import { ExHandler } from '@src/services/exception';
 import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
 import {logEvent} from '@services/firebase';
+import Toast from '@components/core/Toast/Toast';
+import {MESSAGES} from '@screens/Dex/constants';
 import { homeStyle } from './style';
 
 const formName = 'sendCrypto';
@@ -77,7 +78,7 @@ class SendCrypto extends React.Component {
     }
 
     return 0;
-  }
+  };
 
   getMaxAmount = () => {
     const { selectedPrivacy } = this.props;
@@ -92,7 +93,7 @@ class SendCrypto extends React.Component {
     const maxAmount = convertUtil.toHumanAmount(amount, selectedPrivacy?.pDecimals);
 
     return Math.max(maxAmount, 0);
-  }
+  };
 
   setFormValidation = ({ maxAmount, minAmount }) => {
     const { selectedPrivacy } = this.props;
@@ -114,20 +115,7 @@ class SendCrypto extends React.Component {
         }),
       });
     }
-  }
-
-  handleQrScanAddress = () => {
-    openQrScanner(data => {
-      this.updateFormValues('toAddress', data);
-    });
-  }
-
-  updateFormValues = (field, value) => {
-    const { rfChange } = this.props;
-    if (typeof rfChange === 'function') {
-      rfChange(formName, field, value);
-    }
-  }
+  };
 
   handleSend = async values => {
     const { selectedPrivacy } = this.props;
@@ -151,22 +139,24 @@ class SendCrypto extends React.Component {
         tokenId: selectedPrivacy.tokenId,
         tokenSymbol: selectedPrivacy.symbol,
       });
-      new ExHandler(e, 'Something went wrong. Just tap the Send button again.').showErrorToast(true);
+
+      if (e.message === MESSAGES.NOT_ENOUGH_NETWORK_FEE) {
+        Toast.showError(e.message);
+      } else {
+        new ExHandler(e, 'Something went wrong. Just tap the Send button again.').showErrorToast(true);
+      }
     }
   };
 
   handleSelectFee = (estimateFeeData) => {
     this.setState({ estimateFeeData });
-  }
+  };
 
   shouldDisabledSubmit = () => {
     const { estimateFeeData: { fee } } = this.state;
-    if (fee !== 0 && !fee) {
-      return true;
-    }
 
-    return false;
-  }
+    return fee !== 0 && !fee;
+  };
 
   getSupportedFeeTypes = async () => {
     const supportedFeeTypes = [{
@@ -189,7 +179,7 @@ class SendCrypto extends React.Component {
     } finally {
       this.setState({ supportedFeeTypes });
     }
-  }
+  };
 
   getAmountValidator = () => {
     const { selectedPrivacy } = this.props;
@@ -210,7 +200,7 @@ class SendCrypto extends React.Component {
     }
 
     return val;
-  }
+  };
 
   render() {
     const { supportedFeeTypes, estimateFeeData } = this.state;
@@ -288,7 +278,6 @@ SendCrypto.propTypes = {
   account: PropTypes.object.isRequired,
   receiptData: PropTypes.object,
   handleSend: PropTypes.func.isRequired,
-  rfChange: PropTypes.func.isRequired,
   isSending: PropTypes.bool,
   isFormValid: PropTypes.bool,
   amount: PropTypes.string,
@@ -301,11 +290,6 @@ const mapState = state => ({
   isFormValid: isValid(formName)(state)
 });
 
-const mapDispatch = {
-  rfChange: change
-};
-
 export default connect(
-  mapState,
-  mapDispatch
+  mapState
 )(SendCrypto);

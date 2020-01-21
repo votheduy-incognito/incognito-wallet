@@ -4,9 +4,7 @@ import OptionMenu from '@components/OptionMenu/OptionMenu';
 import FixModal from '@screens/Node/components/FixModal';
 import accountKey from '@src/assets/images/icons/account_key.png';
 import moreIcon from '@src/assets/images/icons/more_icon.png';
-import offlineIcon from '@src/assets/images/icons/offline_icon.png';
 import wifiOffline from '@src/assets/images/icons/offline_wifi_icon.png';
-import onlineIcon from '@src/assets/images/icons/online_icon.png';
 import wifiOnline from '@src/assets/images/icons/online_wifi_icon.png';
 import unfollowTokenIcon from '@src/assets/images/icons/unfollowToken.png';
 import _ from 'lodash';
@@ -100,7 +98,7 @@ class VNode extends React.Component {
       id: 'delete',
       icon: <Image source={unfollowTokenIcon} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
       label: 'Remove virtual node',
-      desc: 'Remove this node from your display.',
+      desc: 'Remove this node from your display',
       handlePress: () => this.removeDevice(item),
     });
 
@@ -109,7 +107,7 @@ class VNode extends React.Component {
         id: 'unstake',
         icon: <Image source={withdrawBlack} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
         label: 'Unstake',
-        desc: 'Stop staking and withdraw staked amount.',
+        desc: 'Stop staking and withdraw staked amount',
         handlePress: () => onUnstake(item),
       });
     }
@@ -119,14 +117,15 @@ class VNode extends React.Component {
       const isEmptyRewards = _.isEmpty(rewards) || !_.some(rewards, value => value > 0);
       const pendingWithdraw =  !!withdrawTxs;
       let onClick = () => onWithdraw(item);
-      let label = 'Withdraw';
+      let label = 'Withdraw earnings';
+      let desc = 'Withdraw your rewards';
 
       if (pendingWithdraw || isEmptyRewards) {
         onClick = null;
+
         label = (
           <View style={styles.withdrawMenuItem}>
-            <Text style={styles.withdrawText}>Withdraw</Text>
-            { !!pendingWithdraw && <ActivityIndicator size="small" /> }
+            <Text style={styles.withdrawText}>{pendingWithdraw ? 'Withdrawal in process' : 'Withdraw earnings'}</Text>
           </View>
         );
       }
@@ -135,7 +134,7 @@ class VNode extends React.Component {
         id: 'withdraw',
         icon: <Image source={withdrawBlack} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
         label: label,
-        desc: 'Withdraw your rewards.',
+        desc: desc,
         handlePress: onClick,
       });
     }
@@ -153,7 +152,7 @@ class VNode extends React.Component {
           <>
             <View style={styles.row}>
               <View style={[styles.itemLeft, styles.imageWrapper, styles.hidden]}>
-                <Image source={item.IsOnline ? onlineIcon : offlineIcon} />
+                <Image />
               </View>
               <View style={styles.itemCenter}>
                 { isFetching ? <ActivityIndicator size="large" /> : <Rewards item={item} rewards={item.Rewards} allTokens={allTokens} /> }
@@ -182,7 +181,7 @@ class VNode extends React.Component {
       </View>
     );
   }
-  
+
 }
 
 VNode.defaultProps = {

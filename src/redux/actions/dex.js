@@ -119,15 +119,16 @@ function getWithdrawStatus(history) {
 
 function getTradeStatus(history) {
   return getTransactionByHash(history.txId)
-    .then(async result => {
+    .then(result => {
       if (result.isInMempool) {
         return TRANSFER_STATUS.PENDING;
       } else if (result.err) {
         return TRANSFER_STATUS.UNSUCCESSFUL;
       }
+
+      return getPDETradeStatus(history.txId)
+        .then(result => TRADE_STATUS[result.state]);
     })
-    .then(() => getPDETradeStatus(history.txId))
-    .then(result => TRADE_STATUS[result.state])
     .catch((error) => error.message);
 }
 

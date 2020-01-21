@@ -177,13 +177,13 @@ class AddPIN extends React.Component {
 
     if (!pin) {
       if (nextPin) {
-        return <Text style={styles.title}>Please re-enter your passcode.</Text>;
+        return <Text style={styles.title}>Please re-enter your passcode</Text>;
       }
-      return <Text style={styles.title}>Enter a new passcode.</Text>;
+      return <Text style={styles.title}>Enter a new passcode</Text>;
     }
 
     if (pin) {
-      return <Text style={styles.title}>Enter your passcode.</Text>;
+      return <Text style={styles.title}>Enter your passcode</Text>;
     }
   }
 
