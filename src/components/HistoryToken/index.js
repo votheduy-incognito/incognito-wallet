@@ -19,7 +19,8 @@ const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, dec
   historiesFromApi && historiesFromApi.forEach((h) => {
     data.push({
       id: h?.id,
-      incognitoTx: h?.incognitoTx,
+      inchainTx: h?.inchainTx,
+      outchainTx: h?.outchainTx,
       time: h?.updatedAt,
       type: h?.addressType,
       toAddress: h?.userPaymentAddress,
@@ -40,14 +41,14 @@ const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, dec
       userPaymentAddress: h?.userPaymentAddress,
       canRetryExpiredDeposit: h?.canRetryExpiredDeposit,
       expiredAt: h?.expiredAt,
-      depositAddress: h?.address
+      depositAddress: h?.depositTmpAddress
     });
   });
 
   histories && histories.forEach(h => {
     data.push({
       id: h?.txID,
-      incognitoTx: h?.txID,
+      incognitoTxID: h?.txID,
       time: h?.time,
       type: h?.isIn ?  CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE : CONSTANT_COMMONS.HISTORY.TYPE.SEND,
       toAddress: h?.receivers?.length && h?.receivers[0],
