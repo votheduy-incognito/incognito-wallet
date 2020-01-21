@@ -5,6 +5,28 @@ const checkAmount = (amount) => {
   if (!Number.isFinite(amount)) throw new Error('Can not format invalid amount');
 };
 
+const toNumber = (text, autoCorrect = false) => {
+  const originalText = text;
+
+  if (typeof text !== 'string') {
+    return text;
+  }
+
+  if (getDecimalSeparator() === ',') {
+    text = text.replace(/\./g, '_');
+    text = text.replace(/,/g, '.');
+    text = text.replace(/_/g, ',');
+  }
+
+  if (autoCorrect) {
+    text = text.replace(/,/g, '');
+  }
+
+  console.debug('CONVERT NUMBER', getDecimalSeparator(), originalText, text, _.toNumber(text));
+
+  return _.toNumber(text);
+};
+
 export default {
   /**
    *
@@ -14,7 +36,7 @@ export default {
    */
   toHumanAmount(originAmount, decimals) {
     try {
-      const amount = Number(originAmount);
+      const amount = toNumber(originAmount);
       checkAmount(amount);
 
       const decision_rate = Number(decimals) ? 10 ** (Number(decimals)) : 1;
@@ -31,7 +53,7 @@ export default {
      */
   },
   toOriginalAmount(humanAmount, decimals, round = true) {
-    const amount = Number(humanAmount);
+    const amount = toNumber(humanAmount);
     checkAmount(amount);
 
     const decision_rate = Number(decimals) ? 10**(Number(decimals)) : 1;
@@ -47,27 +69,7 @@ export default {
     return value / Math.pow(10, token?.pDecimals || 0);
   },
 
-  toNumber(text, autoCorrect = false) {
-    const originalText = text;
-
-    if (typeof text !== 'string') {
-      return text;
-    }
-
-    if (getDecimalSeparator() === ',') {
-      text = text.replace(/\./g, '_');
-      text = text.replace(/,/g, '.');
-      text = text.replace(/_/g, ',');
-    }
-
-    if (autoCorrect) {
-      text = text.replace(/,/g, '');
-    }
-
-    console.debug('CONVERT NUMBER', getDecimalSeparator(), originalText, text, _.toNumber(text));
-
-    return _.toNumber(text);
-  },
+  toNumber,
 
   toHash(text) {
     let hash = 0, i, chr;
