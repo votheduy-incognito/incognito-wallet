@@ -98,7 +98,7 @@ class VNode extends React.Component {
       id: 'delete',
       icon: <Image source={unfollowTokenIcon} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
       label: 'Remove virtual node',
-      desc: 'Remove this node from your display.',
+      desc: 'Remove this node from your display',
       handlePress: () => this.removeDevice(item),
     });
 
@@ -107,7 +107,7 @@ class VNode extends React.Component {
         id: 'unstake',
         icon: <Image source={withdrawBlack} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
         label: 'Unstake',
-        desc: 'Stop staking and withdraw staked amount.',
+        desc: 'Stop staking and withdraw staked amount',
         handlePress: () => onUnstake(item),
       });
     }
@@ -117,23 +117,22 @@ class VNode extends React.Component {
       const isEmptyRewards = _.isEmpty(rewards) || !_.some(rewards, value => value > 0);
       const pendingWithdraw =  !!withdrawTxs;
       let onClick = () => onWithdraw(item);
-      let label = 'Withdraw';
+      let label = 'Withdraw earning';
+      let desc = 'Withdraw your rewards';
 
       if (pendingWithdraw || isEmptyRewards) {
         onClick = null;
-        label = (
-          <View style={styles.withdrawMenuItem}>
-            <Text style={styles.withdrawText}>Withdraw</Text>
-            { !!pendingWithdraw && <ActivityIndicator size="small" /> }
-          </View>
-        );
+
+        if (pendingWithdraw) {
+          desc = 'Withdrawal in process';
+        }
       }
 
       menu.push({
         id: 'withdraw',
         icon: <Image source={withdrawBlack} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
         label: label,
-        desc: 'Withdraw your rewards.',
+        desc: desc,
         handlePress: onClick,
       });
     }

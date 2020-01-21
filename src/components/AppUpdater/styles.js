@@ -1,5 +1,8 @@
 import {StyleSheet} from 'react-native';
 import {FontStyle} from '@src/styles/TextStyle';
+import dimension from '@src/styles/utils';
+
+const deviceWidth = dimension.deviceWidth();
 
 const styles = StyleSheet.create({
   title: {
@@ -15,6 +18,7 @@ const styles = StyleSheet.create({
   newDesc: {
     marginTop: 20,
     lineHeight: 25,
+    maxWidth: deviceWidth - 30,
   },
   icon: {
     position: 'absolute',
