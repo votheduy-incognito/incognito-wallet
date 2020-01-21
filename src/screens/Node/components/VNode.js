@@ -117,15 +117,17 @@ class VNode extends React.Component {
       const isEmptyRewards = _.isEmpty(rewards) || !_.some(rewards, value => value > 0);
       const pendingWithdraw =  !!withdrawTxs;
       let onClick = () => onWithdraw(item);
-      let label = 'Withdraw earning';
+      let label = 'Withdraw earnings';
       let desc = 'Withdraw your rewards';
 
       if (pendingWithdraw || isEmptyRewards) {
         onClick = null;
 
-        if (pendingWithdraw) {
-          desc = 'Withdrawal in process';
-        }
+        label = (
+          <View style={styles.withdrawMenuItem}>
+            <Text style={styles.withdrawText}>{pendingWithdraw ? 'Withdrawal in process' : 'Withdraw earnings'}</Text>
+          </View>
+        );
       }
 
       menu.push({

@@ -130,7 +130,7 @@ class PNode extends React.Component {
         onClick = null;
         label = (
           <View style={styles.withdrawMenuItem}>
-            <Text style={styles.withdrawText}>Withdraw {pendingWithdraw ? 'processing' : ''}</Text>
+            <Text style={styles.withdrawText}>{pendingWithdraw ? 'Withdrawal in process' : 'Withdraw earnings'}</Text>
           </View>
         );
       }
@@ -149,7 +149,6 @@ class PNode extends React.Component {
 
   render() {
     const {item, isFetching, allTokens} = this.props;
-    const { showUpdateFirmware } = this.state;
     const labelName = item.Name;
 
     return (
