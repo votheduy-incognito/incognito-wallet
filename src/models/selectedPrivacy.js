@@ -28,16 +28,14 @@ function combineData(pData, incognitoData, defaultData) {
   return defaultData;
 }
 
-function getIconUrl() {
+function getIconUrl(chainTokenImageUri) {
   let uri;
 
   if (this.isMainCrypto || this.isPToken) {
     let formatedSymbol = String(this.externalSymbol || this.symbol).toLowerCase();
     uri = `${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${formatedSymbol}@2x.png`;
   } else {
-    const formatedTokenId = String(this.tokenId).toLowerCase();
-    // use token id for incognito tokens
-    uri = `${CONSTANT_CONFIGS.INCOGNITO_TOKEN_ICON_URL}/${formatedTokenId}.png`;
+    uri = chainTokenImageUri;
   }
 
   return uri;
@@ -73,7 +71,7 @@ class SelectedPrivacy {
     this.networkName = getNetworkName.call(this);
     this.incognitoTotalSupply = this.isIncognitoToken && Number(token?.totalSupply) || 0;
     this.isVerified = combineData.call(this, pTokenData?.verified, token?.verified, true); // PRV always is verified
-    this.iconUrl = getIconUrl.call(this);
+    this.iconUrl = getIconUrl.call(this, token?.image);
   }
 }
 
