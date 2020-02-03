@@ -5,7 +5,7 @@ import _ from 'lodash';
 import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
 import { CONSTANT_KEYS } from '@src/constants';
-import { getChainTokenList } from '@services/api/token';
+import { getTokenInfo } from '@services/api/token';
 import {PRIORITY_LIST} from '@screens/Dex/constants';
 import { saveWallet, updateStatusHistory } from './WalletService';
 import { listCustomTokens } from './RpcClientService';
@@ -169,10 +169,7 @@ export default class Token {
   }
 
   static getPrivacyTokens() {
-    return getChainTokenList().then(data => {
-      const tokens = data || [];
-      return tokens && tokens.map(tokenModel.fromJson);
-    });
+    return getTokenInfo();
   }
 
   static async getNormalTokens() {

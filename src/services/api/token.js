@@ -123,11 +123,13 @@ export const addTokenInfo = ({ tokenId, symbol, name, logoFile, description = ''
  * get incognito token info from backend, if `tokenId` is not passed in then get info for all tokens
  * @param {string} tokenId
  */
-export const getTokenInfo = ({ tokenId }) => {
+export const getTokenInfo = ({ tokenId } = {}) => {
   const endpoint = tokenId ? 'pcustomtoken/get' : 'pcustomtoken/list';
 
   return http.get(endpoint, tokenId ? { params: { TokenID: tokenId } } : undefined )
-    .then(res => new IncognitoCoinInfo(res));
+    .then(res => {
+      return tokenId ? new IncognitoCoinInfo(res) : res.map(token => new IncognitoCoinInfo(token));
+    });
 };
 
 /**

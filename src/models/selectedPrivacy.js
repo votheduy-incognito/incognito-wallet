@@ -72,7 +72,7 @@ class SelectedPrivacy {
     this.isCentralized = this.isToken && !this.isDecentralized;
     this.networkName = getNetworkName.call(this);
     this.incognitoTotalSupply = this.isIncognitoToken && Number(token?.totalSupply) || 0;
-    this.isVerified = combineData.call(this, pTokenData?.verified, false, true); // PRV always is verified
+    this.isVerified = combineData.call(this, pTokenData?.verified, token?.verified, true); // PRV always is verified
     this.iconUrl = getIconUrl.call(this);
   }
 }
