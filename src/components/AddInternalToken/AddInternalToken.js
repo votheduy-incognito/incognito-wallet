@@ -113,6 +113,7 @@ class AddInternalToken extends Component {
 
     const { name, symbol, amount, logo, showOwnerAddress, description, ownerName, ownerEmail, ownerWebsite } = values;
     const { fee } = this.state;
+    const parseAmount = Number(amount);
 
     const tokenObject = {
       Privacy : true,
@@ -120,10 +121,10 @@ class AddInternalToken extends Component {
       TokenName: name,
       TokenSymbol: symbol,
       TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.INIT,
-      TokenAmount: Number(amount),
+      TokenAmount: parseAmount,
       TokenReceivers: [{
         PaymentAddress: account?.PaymentAddress,
-        Amount: Number(amount)
+        Amount: parseAmount
       }]
     };
 
@@ -145,7 +146,8 @@ class AddInternalToken extends Component {
           ownerName,
           ownerEmail,
           ownerWebsite,
-          txId: res.txId
+          txId: res.txId,
+          amount: parseAmount
         }).catch(() => {
           // err is no matter, the user can update their token info later in Coin Detail screen
           // so just let them pass this process
