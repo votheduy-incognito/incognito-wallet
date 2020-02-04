@@ -292,6 +292,7 @@ class Dex extends React.Component {
       onUpdateHistory,
       onLoadData,
       onSelectPrivacyByTokenID,
+      navigation,
     } = this.props;
     const { mode, addLiquidityParams, tradeParams, transferAction } = this.state;
 
@@ -319,6 +320,7 @@ class Dex extends React.Component {
         onAddHistory={onAddHistory}
         onUpdateHistory={onUpdateHistory}
         onSelectPrivacyByTokenID={onSelectPrivacyByTokenID}
+        navigation={navigation}
       />
     );
   }

@@ -33,10 +33,12 @@
     "deployIOS:dev": "appcenter codepush release-react -a 0xSiris/Incognito -t \"47\" -d Development --development",
     "deployIOS:prod": "appcenter codepush release-react -a 0xSiris/Incognito -t \"47\" -d Production -x",
     "deployIOS:staging": "appcenter codepush release-react -a 0xSiris/Incognito -t \"47\" -d Staging -x",
-    "deployAndroid:dev": "appcenter codepush release-react -a 0xSiris/Incognito-Android -t \"~3.6.0\" -d Development --development -x",
-    "deployAndroid:staging": "appcenter codepush release-react -a 0xSiris/Incognito-Android -t \"~3.6.0\" -d Staging -x",
+    "deployAndroid:dev": "appcenter codepush release-react -a 0xSiris/Incognito-Android -t \"3.6.0\" -d Development --development -x",
+    "deployAndroid:staging": "appcenter codepush release-react -a 0xSiris/Incognito-Android -t \"3.6.0\" -d Staging -x",
+    "deployAndroid:prod": "appcenter codepush release-react -a 0xSiris/Incognito-Android -t \"3.6.0\" -d Production -x",
     "deploy:dev": "yarn deployIOS:dev && yarn deployAndroid:dev",
-    "deploy:staging": "yarn deployIOS:staging && yarn deployAndroid:staging"
+    "deploy:staging": "yarn deployIOS:staging && yarn deployAndroid:staging",
+    "deploy:prod": "yarn deployIOS:prod && yarn deployAndroid:prod"
   },
   "dependencies": {
     "@josectobar/react-native-iot-wifi": "https://github.com/josectobar/react-native-iot-wifi.git",

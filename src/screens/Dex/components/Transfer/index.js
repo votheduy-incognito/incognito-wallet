@@ -24,10 +24,12 @@ import CryptoIcon from '@components/CryptoIcon';
 import EstimateFee from '@components/EstimateFee';
 import FullScreenLoading from '@components/FullScreenLoading';
 import tokenService, {PRV} from '@services/wallet/tokenService';
+import AddPin from '@screens/AddPIN';
 import {DepositHistory, WithdrawHistory} from '@models/dexHistory';
 import Toast from '@components/core/Toast/Toast';
 import VerifiedText from '@components/VerifiedText/index';
 import {logEvent} from '@services/firebase';
+import routeNames from '@routers/routeNames';
 import TransferSuccessPopUp from '../TransferSuccessPopUp';
 import {WAIT_TIME, MESSAGES, MIN_INPUT, MULTIPLY, MAX_WAITING_TIME, PRV_ID} from '../../constants';
 import { mainStyle, modalStyle, tokenStyle } from '../../style';
@@ -164,7 +166,7 @@ class Transfer extends React.PureComponent {
   }
 
   async withdraw({ token, amount, account, fee: rawFee }) {
-    const { dexMainAccount, dexWithdrawAccount, onAddHistory, onUpdateHistory } = this.props;
+    const { dexMainAccount, dexWithdrawAccount, onAddHistory, onUpdateHistory, navigation } = this.props;
     const { waitUntil, sendPRV, sendPToken, checkCorrectBalance } = this;
     const fee = _.floor(rawFee / 2, 0);
 
@@ -173,14 +175,15 @@ class Transfer extends React.PureComponent {
     let res2;
 
     try {
+      WithdrawHistory.withdrawing = true;
       await logEvent(CONSTANT_EVENTS.WITHDRAW_PDEX, {
         tokenId: token.id,
         tokenSymbol: token.symbol,
       });
+
       if (!token.id || token.id === PRV_ID) {
         res1 = await sendPRV(dexMainAccount, dexWithdrawAccount, amount + fee, fee);
         newHistory = new WithdrawHistory(res1, token, amount, rawFee, PRV.symbol, account);
-        WithdrawHistory.currentWithdraw = newHistory;
         onAddHistory(newHistory);
         await waitUntil(checkCorrectBalance(dexWithdrawAccount, PRV, amount + fee), WAIT_TIME);
         res2 = await this.sendPRV(dexWithdrawAccount, account, amount, fee);
@@ -216,6 +219,11 @@ class Transfer extends React.PureComponent {
       WithdrawHistory.currentWithdraw = null;
       onUpdateHistory(newHistory);
       throw error;
+    } finally {
+      WithdrawHistory.withdrawing = false;
+      if (AddPin.waiting) {
+        navigation.navigate(routeNames.AddPin, {action: 'login'});
+      }
     }
   }
 
@@ -727,6 +735,7 @@ Transfer.propTypes = {
   onClosePopUp: PropTypes.func.isRequired,
   onLoadData: PropTypes.func.isRequired,
   onSelectPrivacyByTokenID: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
 };
 
 export default Transfer;
