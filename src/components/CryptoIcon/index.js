@@ -43,17 +43,17 @@ class CryptoIcon extends Component {
   }
 
   componentDidMount() {
-    const { tokenId, onlyDefault } = this.props;
+    const { tokenId, onlyDefault, uri } = this.props;
 
-    tokenId && !onlyDefault && this.getUri();
+    tokenId && !onlyDefault && this.getUri(uri);
   }
 
   componentDidUpdate(prevProps) {
-    const { tokenId, onlyDefault } = this.props;
-    const { tokenId: oldTokenId, onlyDefault: oldOnlyDefault } = prevProps;
+    const { onlyDefault, uri } = this.props;
+    const { onlyDefault: oldOnlyDefault, uri: oldUri } = prevProps;
 
-    if (tokenId !== oldTokenId || onlyDefault !== oldOnlyDefault) {
-      this.getUri();
+    if (onlyDefault !== oldOnlyDefault || uri !== oldUri) {
+      this.getUri(uri);
     }
   }
 
@@ -63,19 +63,19 @@ class CryptoIcon extends Component {
     return { width: Number(size), height: Number(size) };
   }
 
-  getUri = async () => {
+  getUri = async (defaultUri) => {
     const { token, logoStyle } = this.props;
-    const uri = token?.iconUrl;
+    const _uri = defaultUri || token?.iconUrl;
 
-    this.setState({ uri, imageComponent: (
+    this.setState(({ uri }) => uri !== _uri && ({ uri: _uri, imageComponent: (
       <Image
         style={[styleSheet.logo, logoStyle, this.getSize()]}
-        source={{ uri: `${uri}?t=${new Date().getDate()}.${new Date().getHours()}` }}
+        source={{ uri: `${_uri}?t=${new Date().getDate()}.${new Date().getHours()}` }}
         onError={this.onLoadError}
         onLoadStart={this.onLoadStart}
         onLoadEnd={this.onLoadEnd}
       />
-    ) });
+    ) }));
   };
 
   onLoadError = () => {
@@ -120,7 +120,8 @@ CryptoIcon.defaultProps = {
   logoStyle: null,
   size: 40,
   token: null,
-  showVerifyFlag: false
+  showVerifyFlag: false,
+  uri: null,
 };
 
 CryptoIcon.propTypes = {
@@ -131,6 +132,7 @@ CryptoIcon.propTypes = {
   token: PropTypes.object,
   size: PropTypes.number,
   showVerifyFlag: PropTypes.bool,
+  uri: PropTypes.string,
 };
 
 
