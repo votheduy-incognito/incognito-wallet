@@ -80,6 +80,13 @@ class DexContainer extends Component {
         .orderBy('total', 'desc')
         .value();
       const shares = chainPairs.state.PDEShares;
+
+      Object.keys(shares).forEach(key => {
+        if (shares[key] === 0){
+          delete shares[key];
+        }
+      });
+
       const pairTokens = _(tokens)
         .filter(token => pairs.find(pair => pair.keys.includes(token.id)))
         .orderBy([

@@ -90,7 +90,17 @@ const addErc20Token = {
 
 const dex = {
   WITHDRAW_FAIL: knownError(-40),
-  NOT_ENOUGH_NETWORK_FEE_ADD: (-41),
+  NOT_ENOUGH_NETWORK_FEE_ADD: knownError(-61),
+};
+
+const chain = {
+  INVALID_ACCOUNT: knownError(-1001),
+
+  INVALID_TIME: knownError(-1002),
+
+  INVALID_FEE: knownError(-1016),
+
+  PENDING_TX: knownError(-6005),
 };
 
 
@@ -109,5 +119,6 @@ export default {
   ...addBep2Token,
   ...addErc20Token,
   ...dex,
-  ...document_picker
+  ...document_picker,
+  ...chain,
 };
