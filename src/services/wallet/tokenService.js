@@ -253,7 +253,7 @@ export default class Token {
           symbol: pToken?.pSymbol || item.symbol,
           displayName: pToken ? `Privacy ${pToken.symbol}` : `Incognito ${item.name}`,
           name: pToken ? pToken.name : item.name,
-          isVerified: pToken?.verified,
+          isVerified: item.verified || pToken?.verified,
         };
       })
       .orderBy([
