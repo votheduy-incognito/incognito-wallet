@@ -5,6 +5,7 @@ import {ActivityIndicator, View} from '@components/core';
 import _ from 'lodash';
 import convert from '@utils/convert';
 import {PRV_ID} from '@screens/Dex/constants';
+import {PRV} from '@services/wallet/tokenService';
 import { rewardStyle } from './style';
 import Reward from './Reward';
 
@@ -23,6 +24,10 @@ const Rewards = ({ rewards: propRewards, allTokens, item }) => {
     .filter(token => token)
     .orderBy([token => token.id === PRV_ID, 'displayBalance'], ['desc', 'desc'])
     .value();
+
+  if (!data.find(item => item.id === PRV_ID)) {
+    data.push({ ...PRV, balance: 0, displayBalance: 0 });
+  }
 
   return (
     <View style={rewardStyle.slider}>

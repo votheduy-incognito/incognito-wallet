@@ -2,7 +2,7 @@ import { login } from '@src/services/auth';
 import { CONSTANT_KEYS, CONSTANT_CONFIGS } from '@src/constants';
 import { reloadWallet, reloadAccountList } from '@src/redux/actions/wallet';
 import { followDefaultTokens } from '@src/redux/actions/account';
-import { getPTokenList } from '@src/redux/actions/token';
+import { getPTokenList, getInternalTokenList } from '@src/redux/actions/token';
 import { loadPin } from '@src/redux/actions/pin';
 import { accountSeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
@@ -91,11 +91,12 @@ class GetStartedContainer extends Component {
         await storageService.clear();
         await storageService.setItem(CONSTANT_KEYS.DISPLAYED_WIZARD, String(true));
       }
-      const { getPTokenList } = this.props;
+      const { getPTokenList, getInternalTokenList } = this.props;
       await login();
 
       try {
         const pTokens = await getPTokenList();
+        await getInternalTokenList();
         this.setState({ pTokens });
       } catch (e) {
         throw new CustomError(ErrorCode.getStarted_load_token_failed, { rawError: e });
@@ -190,7 +191,7 @@ class GetStartedContainer extends Component {
   }
 }
 
-const mapDispatch = { reloadWallet, getPTokenList, followDefaultTokens, reloadAccountList, loadPin };
+const mapDispatch = { reloadWallet, getPTokenList, getInternalTokenList, followDefaultTokens, reloadAccountList, loadPin };
 
 const mapState = state => ({
   account: accountSeleclor.defaultAccount(state),
@@ -201,6 +202,7 @@ GetStartedContainer.propTypes = {
   reloadWallet: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   getPTokenList: PropTypes.func.isRequired,
+  getInternalTokenList: PropTypes.func.isRequired,
   account: PropTypes.object,
   reloadAccountList: PropTypes.func.isRequired,
   followDefaultTokens: PropTypes.func.isRequired,

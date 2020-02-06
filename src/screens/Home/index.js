@@ -1,4 +1,3 @@
-import codePush from 'react-native-code-push';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { getBalance as getAccountBalance, reloadAccountFollowingToken, /** loadAllPTokenHasBalance */ } from '@src/redux/actions/account';
 import { clearSelectedPrivacy, setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
@@ -17,7 +16,9 @@ import { AppState } from 'react-native';
 import { connect } from 'react-redux';
 import { DEX } from '@src/utils/dex';
 import { CONSTANT_KEYS } from '@src/constants';
-import AppUpdater from '@components/AppUpdater/index';
+import AppUpdater from '@components/AppUpdater';
+import AddPin from '@screens/AddPIN';
+import {WithdrawHistory} from '@models/dexHistory';
 import { DialogUpgradeToMainnet } from './ChildViews';
 import Home from './Home';
 
@@ -87,8 +88,13 @@ class HomeContainer extends Component {
     if (appState.match(/background/) && nextAppState === 'active') {
       const { navigation, pin } = this.props;
       AppUpdater.update();
-      if (pin) {
+      if (pin && !WithdrawHistory.withdrawing) {
         navigation.navigate(routeNames.AddPin, {action: 'login'});
+        AddPin.waiting = false;
+      }
+
+      if (WithdrawHistory.withdrawing) {
+        AddPin.waiting = true;
       }
     }
     this.setState({ appState: nextAppState });

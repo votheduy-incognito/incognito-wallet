@@ -156,6 +156,8 @@ class TokenInfo extends Component {
       { label: 'Coin ID', value: tokenId, copyable: true },
       { label: 'Contract ID', value: contractId, copyable: true, link: `${CONSTANT_CONFIGS.ETHERSCAN_URL}/token/${contractId}` },
       { label: 'Owner address', value: incognitoInfo?.showOwnerAddress ? incognitoInfo?.ownerAddress : undefined, copyable: true  },
+      { label: 'Owner email', value: incognitoInfo?.ownerEmail, copyable: true  },
+      { label: 'Owner website', value: incognitoInfo?.ownerWebsite, link: incognitoInfo?.ownerWebsite, copyable: true  },
     ].filter(i => ![undefined, null, ''].includes(i.value));
 
     return (

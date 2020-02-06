@@ -72,6 +72,7 @@ export class WithdrawHistory {
   }
 
   static currentWithdraw = null;
+  static withdrawing = false;
 
   static load(historyObject) {
     const history = new WithdrawHistory();

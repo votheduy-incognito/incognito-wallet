@@ -28,6 +28,7 @@ class CryptoItemContainer extends Component {
       amount: data?.amount,
       symbol: data?.symbol,
       tokenId: data?.tokenId,
+      iconUrl: data?.iconUrl,
       externalSymbol: data?.externalSymbol,
       pDecimals: data?.pDecimals,
       onPress: this.handlePress,

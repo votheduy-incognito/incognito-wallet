@@ -28,6 +28,8 @@ const optionalConfigObject = {
 };
 
 class AddPIN extends React.Component {
+  static waiting = false;
+
   constructor(props) {
     super(props);
 

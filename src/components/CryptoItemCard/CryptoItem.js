@@ -6,10 +6,10 @@ import formatUtil from '@src/utils/format';
 import VerifiedText from '@src/components/VerifiedText';
 import cryptoItemStyle from './style';
 
-const CryptoItem = ({ fullName, name, amount, onPress, symbol, isGettingBalance, style, pDecimals, tokenId, rightComponent, isVerified }) => (
+const CryptoItem = ({ fullName, iconUrl, name, amount, onPress, symbol, isGettingBalance, style, pDecimals, tokenId, rightComponent, isVerified }) => (
   <TouchableScale style={[cryptoItemStyle.container, style]} onPress={amount != null ? onPress : null}>
     <View style={cryptoItemStyle.logoContainer}>
-      <CryptoIcon tokenId={tokenId} />
+      <CryptoIcon uri={iconUrl} tokenId={tokenId} />
     </View>
     <View style={cryptoItemStyle.cryptoNameContainer}>
       <VerifiedText text={fullName} numberOfLines={1} ellipsizeMode="tail" style={cryptoItemStyle.mainNameText} isVerified={isVerified} />
@@ -43,7 +43,8 @@ CryptoItem.defaultProps = {
   pDecimals: null,
   tokenId: null,
   rightComponent: null,
-  isVerified: false
+  isVerified: false,
+  iconUrl: null,
 };
 
 CryptoItem.propTypes = {
@@ -58,6 +59,7 @@ CryptoItem.propTypes = {
   tokenId: PropTypes.string,
   rightComponent: PropTypes.node,
   isVerified: PropTypes.bool,
+  iconUrl: PropTypes.string,
 };
 
 export default CryptoItem;

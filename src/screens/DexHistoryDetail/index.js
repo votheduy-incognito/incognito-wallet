@@ -15,6 +15,8 @@ import {DEX} from '@utils/dex';
 import {deleteHistory, getHistoryStatus, updateHistory} from '@src/redux/actions/dex';
 import {connect} from 'react-redux';
 import {ExHandler} from '@services/exception';
+import AddPin from '@screens/AddPIN';
+import routeNames from '@routers/routeNames';
 import TradeHistory from './TradeHistory';
 import WithdrawHistory from './WithdrawHistory';
 import DepositHistory from './DepositHistory';
@@ -118,6 +120,7 @@ const DexHistoryDetail = ({ navigation, wallet, updateHistory, getHistoryStatus,
     }
 
     try {
+      WithdrawHistory.withdrawing = true;
       setLoading(MESSAGES.WITHDRAW_PROCESS);
       const accounts = await wallet.listAccount();
       const dexWithdrawAccount = accounts.find(item => item.AccountName === DEX.WITHDRAW_ACCOUNT);
@@ -145,7 +148,11 @@ const DexHistoryDetail = ({ navigation, wallet, updateHistory, getHistoryStatus,
       updateHistory(history);
       Toast.showError(new ExHandler(error).getMessage());
     } finally {
+      WithdrawHistory.withdrawing = false;
       setLoading('');
+      if (AddPin.waiting) {
+        navigation.navigate(routeNames.AddPin, {action: 'login'});
+      }
     }
   };
 

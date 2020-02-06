@@ -7,7 +7,6 @@ class TokenModel {
     name: data.Name,
     symbol: data.Symbol,
     isInit: data.isInit,
-    image: data.Image,
     listTxs: data.ListTxs,
   });
 
@@ -18,7 +17,6 @@ class TokenModel {
     Name: data.name,
     Symbol: data.symbol,
     isInit: data.isInit,
-    Image: data.image,
     ListTxs: data.listTxs,
   });
 }

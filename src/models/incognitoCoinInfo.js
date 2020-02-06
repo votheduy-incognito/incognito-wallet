@@ -1,10 +1,10 @@
 class IncognitoCoinInfo {
   constructor(data = {}) {
-    this.id = data?.ID;
+    this.id = data?.TokenID;
+    this.tokenID = data?.TokenID;
     this.createdAt = data?.CreatedAt;
     this.updatedAt = data?.UpdatedAt;
     this.deletedAt = data?.DeletedAt;
-    this.tokenID = data?.TokenID;
     this.image = data?.Image;
     this.isPrivacy = data?.IsPrivacy;
     this.name = data?.Name;
@@ -17,6 +17,9 @@ class IncognitoCoinInfo {
     this.ownerName = data?.OwnerName;
     this.ownerEmail = data?.OwnerEmail;
     this.ownerWebsite = data?.OwnerWebsite;
+    this.totalSupply = data?.Amount;
+    this.verified = data?.Verified || false;
+    this.amount = 0;
   }
 }
 

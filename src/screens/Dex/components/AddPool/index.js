@@ -34,8 +34,6 @@ class Pool extends React.Component {
 
   componentDidMount() {
     this.loadData();
-    this.estimateInputFee();
-    this.estimateOutputFee();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -49,14 +47,15 @@ class Pool extends React.Component {
       onUpdateParams(this.state);
     }
 
-    // const { inputValue, outputValue } = this.state;
-    // if (inputValue !== prevState.inputValue) {
-    //   this.estimateInputFee();
-    // }
-    //
-    // if (outputValue !== prevState.outputValue) {
-    //   this.estimateOutputFee();
-    // }
+    const { inputBalance, outputBalance, inputFee, outputFee, inputToken, outputToken } = this.state;
+
+    if (inputBalance > prevState.inputBalance || (inputBalance && (!inputFee || inputToken !== prevState.inputToken))) {
+      this.estimateInputFee();
+    }
+
+    if (outputBalance > prevState.outputBalance || (outputBalance && (!outputFee || outputToken !== prevState.outputToken))) {
+      this.estimateOutputFee();
+    }
   }
 
   estimateFeeForMainCrypto = (amount) => {
@@ -114,7 +113,8 @@ class Pool extends React.Component {
         fee = await this.estimateFeeForToken(token, amount);
       }
     } catch (error) {
-      //
+      console.debug('ESTIMATE FEE ERROR', error);
+      fee = MIN_VALUE;
     }
 
     if (fee) {
@@ -122,7 +122,7 @@ class Pool extends React.Component {
     }
   }
 
-  loadData() {
+  async loadData() {
     const { tokens, wallet, account } = this.props;
     const { inputToken, outputToken } = this.state;
 
@@ -143,28 +143,15 @@ class Pool extends React.Component {
   }
 
   estimateInputFee = async () => {
-    // const { inputToken, inputValue } = this.state;
-    // let fee = 0;
-    // this.setState({ inputFee: fee });
-    // if (inputValue) {
-    //   fee = await this.estimateFee(inputToken, inputValue);
-    // }
-    // this.setState({ inputFee: fee });
-    //
-    // console.debug('ESTIMATE INPUT FEE', fee);
-    this.setState({ inputFee: MIN_VALUE });
+    const { inputToken, inputBalance } = this.state;
+    const fee = await this.estimateFee(inputToken, inputBalance);
+    this.setState({ inputFee: fee });
   };
 
   estimateOutputFee = async () => {
-    // const { outputValue, outputToken } = this.state;
-    // let fee = 100;
-    // this.setState({ outputFee: fee });
-    // if (outputValue) {
-    //   fee = await this.estimateFee(outputToken, outputValue);
-    // }
-    // this.setState({ outputFee: fee });
-    // console.debug('ESTIMATE OUTPUT FEE', fee);
-    this.setState({ outputFee: MIN_VALUE });
+    const { outputToken, outputBalance } = this.state;
+    const fee = await this.estimateFee(outputToken, outputBalance);
+    this.setState({ outputFee: fee });
   };
 
   async getBalance(token, valueKey) {

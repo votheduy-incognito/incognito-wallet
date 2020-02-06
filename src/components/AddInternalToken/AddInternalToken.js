@@ -14,6 +14,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { setWallet } from '@src/redux/actions/wallet';
+import { getInternalTokenList } from '@src/redux/actions/token';
 import { ExHandler } from '@src/services/exception';
 import styleSheet from './style';
 import CopiableText from '../CopiableText';
@@ -100,7 +101,7 @@ class AddInternalToken extends Component {
       const fee =  await getEstimateFeeForPToken(fromAddress, toAddress, Number(amount), tokenObject, accountWallet);
 
       // update fee
-      this.setState({ fee });
+      this.setState({ fee: Number(fee * 2) || 50 });
     } catch(e){
       new ExHandler(e).showErrorToast(true);
     } finally {
@@ -109,10 +110,11 @@ class AddInternalToken extends Component {
   };
 
   handleCreateSendToken = async (values) => {
-    const { account, wallet, setWallet } = this.props;
+    const { account, wallet, setWallet, getInternalTokenList } = this.props;
 
     const { name, symbol, amount, logo, showOwnerAddress, description, ownerName, ownerEmail, ownerWebsite } = values;
     const { fee } = this.state;
+    const parseAmount = Number(amount);
 
     const tokenObject = {
       Privacy : true,
@@ -120,10 +122,10 @@ class AddInternalToken extends Component {
       TokenName: name,
       TokenSymbol: symbol,
       TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.INIT,
-      TokenAmount: Number(amount),
+      TokenAmount: parseAmount,
       TokenReceivers: [{
         PaymentAddress: account?.PaymentAddress,
-        Amount: Number(amount)
+        Amount: parseAmount
       }]
     };
 
@@ -145,11 +147,15 @@ class AddInternalToken extends Component {
           ownerName,
           ownerEmail,
           ownerWebsite,
-          txId: res.txId
+          txId: res.txId,
+          amount: parseAmount
         }).catch(() => {
           // err is no matter, the user can update their token info later in Coin Detail screen
           // so just let them pass this process
         });
+
+        // refetch internal token list
+        getInternalTokenList().catch(null);
 
         // update new wallet to store
         setWallet(wallet);
@@ -364,7 +370,8 @@ AddInternalToken.propTypes = {
 
 const mapDispatch = {
   rfChange: change,
-  setWallet
+  setWallet,
+  getInternalTokenList
 };
 
 const mapState = state => ({
