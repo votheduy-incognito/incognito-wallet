@@ -55,8 +55,8 @@ class Input extends React.Component {
     const searchText = text.toLowerCase();
     const filteredTokens = _.trim(searchText).length > 0 ? (tokenList || [])
       .filter(token =>
-        token.name.toLowerCase().includes(_.trim(searchText)) ||
-        token.symbol.toLowerCase().includes(_.trim(searchText))
+        token?.name?.toLowerCase?.().includes(_.trim(searchText)) ||
+        token?.symbol?.toLowerCase?.().includes(_.trim(searchText))
       ) : tokenList
       .filter(token => onlyPToken ? token.hasIcon : true);
     this.setState({ filteredTokens });
