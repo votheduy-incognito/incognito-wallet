@@ -18,7 +18,7 @@ const Rewards = ({ rewards: propRewards, allTokens, item }) => {
   const data = _(Object.keys(rewards))
     .map(id => {
       const value = rewards[id];
-      const token = allTokens.find(token => token.id === id);
+      const token = allTokens.find(token => token.id === id) || {};
       return token && { ...token, balance: value, displayBalance: convert.toHumanAmount(value, token.pDecimals) };
     })
     .filter(token => token)

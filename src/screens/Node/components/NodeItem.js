@@ -192,7 +192,6 @@ class NodeItem extends React.Component {
 
   render() {
     const {
-      withdrawRequests,
       item,
       allTokens,
       onStake,
@@ -217,8 +216,6 @@ class NodeItem extends React.Component {
       );
     }
 
-    const account = item.Account;
-
     return (
       <VNode
         item={item}
@@ -229,7 +226,6 @@ class NodeItem extends React.Component {
         onUnstake={onUnstake}
         onWithdraw={onWithdraw}
         isFetching={!!isFetching || !!loading}
-        withdrawTxs={withdrawRequests[account?.PaymentAddress]}
       />
     );
   }
@@ -240,7 +236,6 @@ NodeItem.propTypes = {
   committees: PropTypes.object.isRequired,
   nodeRewards: PropTypes.object.isRequired,
   allTokens: PropTypes.array.isRequired,
-  withdrawRequests: PropTypes.object.isRequired,
   item: PropTypes.object.isRequired,
   isFetching: PropTypes.bool.isRequired,
   index: PropTypes.number.isRequired,

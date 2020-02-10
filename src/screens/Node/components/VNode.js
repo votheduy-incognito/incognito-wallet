@@ -86,7 +86,7 @@ class VNode extends React.Component {
 
   renderMenu() {
     const menu = [];
-    const { item, onUnstake, isFetching, onWithdraw, withdrawTxs } = this.props;
+    const { item, onUnstake, isFetching, onWithdraw } = this.props;
 
     if (isFetching) {
       return null;
@@ -115,19 +115,12 @@ class VNode extends React.Component {
     if (!isFetching && hasAccount) {
       const rewards = item.Rewards;
       const isEmptyRewards = _.isEmpty(rewards) || !_.some(rewards, value => value > 0);
-      const pendingWithdraw =  !!withdrawTxs;
       let onClick = () => onWithdraw(item);
       let label = 'Withdraw earnings';
       let desc = 'Withdraw your rewards';
 
-      if (pendingWithdraw || isEmptyRewards) {
+      if (isEmptyRewards) {
         onClick = null;
-
-        label = (
-          <View style={styles.withdrawMenuItem}>
-            <Text style={styles.withdrawText}>{pendingWithdraw ? 'Withdrawal in process' : 'Withdraw earnings'}</Text>
-          </View>
-        );
       }
 
       menu.push({
@@ -184,10 +177,6 @@ class VNode extends React.Component {
 
 }
 
-VNode.defaultProps = {
-  withdrawTxs: null,
-};
-
 VNode.propTypes = {
   item: PropTypes.object.isRequired,
   allTokens: PropTypes.array.isRequired,
@@ -197,7 +186,6 @@ VNode.propTypes = {
   onWithdraw: PropTypes.func.isRequired,
   isFetching: PropTypes.bool.isRequired,
   onUnstake: PropTypes.func.isRequired,
-  withdrawTxs: PropTypes.object,
 };
 
 export default VNode;

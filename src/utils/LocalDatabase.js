@@ -11,7 +11,6 @@ export const KEY_SAVE = {
   DEX: CONSTANT_KEYS.DEX,
   DEX_HISTORY: CONSTANT_KEYS.DEX_HISTORY,
   SEEN_DEPOSIT_GUIDE: CONSTANT_KEYS.SEEN_DEPOSIT_GUIDE,
-  WITHDRAW_REQUESTS: CONSTANT_KEYS.WITHDRAW_REQUESTS,
   PIN: CONSTANT_KEYS.PIN,
   DECIMAL_SEPARATOR: '$decimal_separator',
 };
@@ -147,15 +146,6 @@ export default class LocalDatabase {
   static async getSeenDepositGuide() {
     const seenDepositGuide = (await LocalDatabase.getValue(KEY_SAVE.SEEN_DEPOSIT_GUIDE)) || '';
     return _.isEmpty(seenDepositGuide) ? false : JSON.parse(seenDepositGuide);
-  }
-
-  static async getWithdrawRequests() {
-    const requests = (await LocalDatabase.getValue(KEY_SAVE.WITHDRAW_REQUESTS)) || '';
-    return _.isEmpty(requests) ? {} : JSON.parse(requests);
-  }
-
-  static async saveWithdrawRequests(requests) {
-    await LocalDatabase.saveValue(KEY_SAVE.WITHDRAW_REQUESTS, JSON.stringify(requests));
   }
 
   static async getPIN() {
