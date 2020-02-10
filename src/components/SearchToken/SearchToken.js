@@ -122,9 +122,9 @@ class SearchToken extends Component {
     this.setState({ query: null }, this.filter);
   };
 
-  hanldeAddTokenManually = () => {
+  handleAddTokenManually = () => {
     const { navigation } = this.props;
-    navigation?.navigate(routeNames.AddToken);
+    navigation?.navigate(routeNames.AddToken, { type: 'ERC20' });
   };
 
   renderHeader() {
@@ -200,10 +200,10 @@ class SearchToken extends Component {
           </ScrollView>
         </View>
 
-        <TouchableOpacity style={{ height: 60}} onPress={this.hanldeAddTokenManually}>
+        <TouchableOpacity style={{ height: 60}} onPress={this.handleAddTokenManually}>
           <View style={searchPTokenStyle.followBtn}>
             <Image source={addIcon} style={searchPTokenStyle.followBtnIcon} />
-            <Text style={searchPTokenStyle.followBtnText}>Issue your own privacy coin</Text>
+            <Text style={searchPTokenStyle.followBtnText}>Add manually</Text>
           </View>
         </TouchableOpacity>
       </View>
