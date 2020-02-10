@@ -444,8 +444,8 @@ class Transfer extends React.PureComponent {
     const searchText = text.toLowerCase();
     const filteredTokens = _.trim(searchText).length > 0 ? (tokens || [])
       .filter(token =>
-        token.name.toLowerCase().includes(_.trim(searchText)) ||
-        token.symbol.toLowerCase().includes(_.trim(searchText))
+        token?.name?.toLowerCase?.().includes(_.trim(searchText)) ||
+        token?.symbol?.toLowerCase?.().includes(_.trim(searchText))
       ) : tokens;
     this.setState({ filteredTokens });
   };
