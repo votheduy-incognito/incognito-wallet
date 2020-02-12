@@ -18,6 +18,8 @@
 		36F7D5CE970D4799A075B466 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F36E2A27EA945A6BA652F08 /* libRNSVG.a */; };
 		3B50FECFE455494A8373E5A6 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ECBE1563D1B5449E86A7658F /* libRNVectorIcons.a */; };
 		3EF0EC91E7FE4B16A434459C /* libRNZmqService.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE70DDA39F794DA9B6544C35 /* libRNZmqService.a */; };
+		7179093823F1542200699569 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7179093723F1542200699569 /* AdSupport.framework */; };
+		7179093A23F1543500699569 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7179093923F1543500699569 /* iAd.framework */; };
 		718202A123F2AEAA000941E9 /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 718202A023F2AEAA000941E9 /* Gomobile.framework */; };
 		7951D9F679874B4EA8E3CFEE /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27AAED89E8AD4248BBC41F79 /* libRNFirebase.a */; };
 		82E467C899D04A02A0589EB9 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB08C251E22B438096EA6169 /* libRNGestureHandler.a */; };
@@ -121,6 +123,8 @@
 		6024CBE183FA4307ABE2C4F5 /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
 		66AB9A7871F643BA80A04830 /* libIOTWifi.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libIOTWifi.a; sourceTree = "<group>"; };
 		7139BB1E57B94AE2A6C8F4AF /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
+		7179093723F1542200699569 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		7179093923F1543500699569 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		718202A023F2AEAA000941E9 /* Gomobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Gomobile.framework; sourceTree = "<group>"; };
 		77EBA14081508832CECFA40E /* libPods-constantWalletMobileTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-constantWalletMobileTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B1D10FDD4BB4B9780BB82C4 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
@@ -202,10 +206,12 @@
 				FEEBD6BF2355AD57006EFECD /* AutonomousZMQ.framework in Frameworks */,
 				9A35DA29B0814E0E85D3F53B /* libRNDeviceInfo.a in Frameworks */,
 				7951D9F679874B4EA8E3CFEE /* libRNFirebase.a in Frameworks */,
+				7179093823F1542200699569 /* AdSupport.framework in Frameworks */,
 				C2E73AA50DDC4747BAD7CC54 /* libRNOS.a in Frameworks */,
 				D7BDB11DB76A47B9A686E426 /* libTcpSockets.a in Frameworks */,
 				3EF0EC91E7FE4B16A434459C /* libRNZmqService.a in Frameworks */,
 				1EBA2F750D7D4CEC919D9242 /* libRNSSH.a in Frameworks */,
+				7179093A23F1543500699569 /* iAd.framework in Frameworks */,
 				AE8298EED2198D3E9F15B11C /* libPods-constantWalletMobile.a in Frameworks */,
 				227D14BDEE8B5572A5757F41 /* libPods-constantWalletMobile.a in Frameworks */,
 			);
@@ -295,6 +301,8 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7179093923F1543500699569 /* iAd.framework */,
+				7179093723F1542200699569 /* AdSupport.framework */,
 				FE44A8F923997BA3009DA0DE /* libreact-native-network-info.a */,
 				FE5C9FA72355D46900AC6E90 /* libreact-native-netinfo.a */,
 				FEEBD6E62355CC2A006EFECD /* libreact-native-iot-wifi.a */,
@@ -742,7 +750,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 				);
-				MARKETING_VERSION = 47.1;
+				MARKETING_VERSION = 48.6.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -805,7 +813,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 				);
-				MARKETING_VERSION = 47.1;
+				MARKETING_VERSION = 48.6.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -919,7 +927,7 @@
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
 				);
-				MARKETING_VERSION = 47.1;
+				MARKETING_VERSION = 48.6.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
