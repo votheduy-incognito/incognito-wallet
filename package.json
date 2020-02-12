@@ -22,7 +22,7 @@
     "ios:device": "react-native run-ios --device=\"iHien11\"",
     "ios": "react-native run-ios --simulator=\"iPhone 6s\"",
     "buildIosDebug": "react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios",
-    "buildRelease": "npx jetify && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle && cd android && ./gradlew app:bundleRelease",
+    "buildRelease": "npx jetify && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle && cd android && ./gradlew app:assembleRelease",
     "buildStaging": "npx jetify && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle && cd android && ./gradlew app:assembleReleaseStaging",
     "test": "jest",
     "lint": "eslint .",

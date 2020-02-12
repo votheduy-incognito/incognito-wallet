@@ -121,6 +121,12 @@ class VNode extends React.Component {
 
       if (isEmptyRewards) {
         onClick = null;
+
+        label = (
+          <View style={styles.withdrawMenuItem}>
+            <Text style={styles.withdrawText}>Withdraw earnings</Text>
+          </View>
+        );
       }
 
       menu.push({
