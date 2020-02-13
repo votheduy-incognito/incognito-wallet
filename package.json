@@ -1,6 +1,6 @@
 {
   "name": "constantWalletMobile",
-  "version": "3.6.0",
+  "version": "3.6.1",
   "private": true,
   "rnpm": {
     "assets": [
@@ -185,6 +185,7 @@
     "metro-react-native-babel-preset": "^0.53.1",
     "prettier-eslint": "^9.0.0",
     "react-test-renderer": "16.8.3",
+    "reactotron-react-native": "^4.0.3",
     "redux-devtools-extension": "^2.13.8",
     "rn-nodeify": "github:tradle/rn-nodeify"
   },

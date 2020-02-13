@@ -6,13 +6,13 @@ import ERROR from './customError/code';
 const CODES = {
   CAN_NOT_SEND_TX: '-4002',
   CAN_NOT_SEND_PTOKEN_TX: '-1003',
-  REPLACEMENT: '-1022',
-  DOUBLE_SPEND: '-1017',
+  REPLACEMENT: '-6009',
+  DOUBLE_SPEND: '-6005',
   NOT_ENOUGH_COIN: 'WEB_JS_ERROR(-5)',
-  INVALID_FEE: '-1004',
+  INVALID_FEE: '-1016',
   INVALID_TX: '-1001',
   INVALID_INPUT: '-1003',
-  INVALID_TIME: '-1002',
+  INVALID_TIME: '-6008',
 };
 
 const MESSAGES = {
@@ -181,31 +181,24 @@ class Exception {
       if (this.exception.stackTrace) {
         const stackCode = this.exception.stackTraceCode;
         if (
-          stackCode === `${CODES.CAN_NOT_SEND_TX}: ${CODES.REPLACEMENT}` ||
-          stackCode === `${CODES.CAN_NOT_SEND_TX}: ${CODES.DOUBLE_SPEND}` ||
-          stackCode === `${CODES.CAN_NOT_SEND_PTOKEN_TX}: ${CODES.REPLACEMENT}` ||
-          stackCode === `${CODES.CAN_NOT_SEND_PTOKEN_TX}: ${CODES.DOUBLE_SPEND}`
+          stackCode.indexOf(CODES.REPLACEMENT) === 0 ||
+          stackCode.indexOf(CODES.DOUBLE_SPEND) === 0
         ) {
           return `${MESSAGES.PENDING_TX} (${ERROR.PENDING_TX})`;
         }
 
-        if (
-          stackCode === `${CODES.CAN_NOT_SEND_TX}: ${CODES.INVALID_FEE}` ||
-          stackCode === `${CODES.CAN_NOT_SEND_PTOKEN_TX}: ${CODES.INVALID_FEE}`
-        ) {
+        if (stackCode.indexOf(CODES.INVALID_FEE) === 0) {
           return `${MESSAGES.CAN_NOT_SEND_TX} (${ERROR.INVALID_FEE})`;
         }
 
         if (
-          stackCode === `${CODES.CAN_NOT_SEND_PTOKEN_TX}: ${CODES.INVALID_TX}`
+          stackCode === `${CODES.CAN_NOT_SEND_PTOKEN_TX}: ${CODES.INVALID_TX}` ||
+          stackCode === `${CODES.CAN_NOT_SEND_TX}: ${CODES.INVALID_TX}`
         ) {
           return `${MESSAGES.CAN_NOT_SEND_TX} (${ERROR.INVALID_ACCOUNT})`;
         }
 
-        if (
-          stackCode === `${CODES.CAN_NOT_SEND_TX}: ${CODES.INVALID_TIME}` ||
-          stackCode === `${CODES.CAN_NOT_SEND_PTOKEN_TX}: ${CODES.INVALID_TIME}`
-        ) {
+        if (stackCode.indexOf(CODES.INVALID_TIME) === 0) {
           return `${MESSAGES.CAN_NOT_SEND_TX} (${ERROR.INVALID_TIME})`;
         }
 

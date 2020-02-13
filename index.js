@@ -13,6 +13,10 @@ global.isDebug = () => {
   return __DEV__ || global.isDEV;
 };
 
+if(__DEV__) {
+  import('./ReactotronConfig').then(() => console.log('Reactotron Configured'));
+}
+
 AppRegistry.registerRunnable(appName, async initParams => {
   const { default:serverService} = await import('@src/services/wallet/Server');
   const serverDefault  = await serverService.getDefaultIfNullGettingDefaulList() ??{};
