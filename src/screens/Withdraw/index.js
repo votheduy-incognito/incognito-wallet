@@ -164,25 +164,21 @@ class WithdrawContainer extends Component {
   }
 
   getWithdrawAddress = async ({ amount, paymentAddress, memo }) => {
-    try {
-      let address;
-      const { selectedPrivacy } = this.props;
-      const walletAddress = selectedPrivacy?.paymentAddress;
+    let address;
+    const { selectedPrivacy } = this.props;
+    const walletAddress = selectedPrivacy?.paymentAddress;
 
-      // centralized floW: BTC, BNB,...
-      address = await genCentralizedWithdrawAddress({
-        amount,
-        paymentAddress,
-        walletAddress,
-        tokenId: selectedPrivacy?.tokenId,
-        currencyType: selectedPrivacy?.currencyType,
-        memo
-      });
+    // centralized floW: BTC, BNB,...
+    address = await genCentralizedWithdrawAddress({
+      amount,
+      paymentAddress,
+      walletAddress,
+      tokenId: selectedPrivacy?.tokenId,
+      currencyType: selectedPrivacy?.currencyType,
+      memo
+    });
 
-      return address;
-    } catch (e) {
-      throw new CustomError(ErrorCode.withdraw_gen_withdraw_address_failed, { rawError: e });
-    }
+    return address;
   }
 
   handleCentralizedWithdraw = async ({ amount, fee, isUsedPRVFee, feeForBurn, remoteAddress, memo }) => {
