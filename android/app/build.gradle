@@ -138,8 +138,8 @@ android {
         applicationId "com.incognito.wallet"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 64
-        versionName "3.6.1"
+        versionCode 66
+        versionName "3.6.2"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     signingConfigs {
