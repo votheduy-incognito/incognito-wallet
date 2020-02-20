@@ -18,9 +18,9 @@
 		36F7D5CE970D4799A075B466 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F36E2A27EA945A6BA652F08 /* libRNSVG.a */; };
 		3B50FECFE455494A8373E5A6 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ECBE1563D1B5449E86A7658F /* libRNVectorIcons.a */; };
 		3EF0EC91E7FE4B16A434459C /* libRNZmqService.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE70DDA39F794DA9B6544C35 /* libRNZmqService.a */; };
-		714444B423F3B78C00A1AEBE /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 714444B323F3B78C00A1AEBE /* Gomobile.framework */; };
 		7179093823F1542200699569 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7179093723F1542200699569 /* AdSupport.framework */; };
 		7179093A23F1543500699569 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7179093923F1543500699569 /* iAd.framework */; };
+		71BBC90323FE60F3002CA71E /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71BBC90223FE60F3002CA71E /* Gomobile.framework */; };
 		7951D9F679874B4EA8E3CFEE /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27AAED89E8AD4248BBC41F79 /* libRNFirebase.a */; };
 		82E467C899D04A02A0589EB9 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB08C251E22B438096EA6169 /* libRNGestureHandler.a */; };
 		86ED14E621B04B6EAF5271CA /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B5521124109464CB94BB248 /* Fontisto.ttf */; };
@@ -123,9 +123,9 @@
 		6024CBE183FA4307ABE2C4F5 /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
 		66AB9A7871F643BA80A04830 /* libIOTWifi.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libIOTWifi.a; sourceTree = "<group>"; };
 		7139BB1E57B94AE2A6C8F4AF /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
-		714444B323F3B78C00A1AEBE /* Gomobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Gomobile.framework; path = ../../../Downloads/Gomobile.framework; sourceTree = "<group>"; };
 		7179093723F1542200699569 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		7179093923F1543500699569 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
+		71BBC90223FE60F3002CA71E /* Gomobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Gomobile.framework; sourceTree = "<group>"; };
 		77EBA14081508832CECFA40E /* libPods-constantWalletMobileTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-constantWalletMobileTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B1D10FDD4BB4B9780BB82C4 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		803049AD3941440A9310525A /* libRNDeviceInfo-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNDeviceInfo-tvOS.a"; sourceTree = "<group>"; };
@@ -211,7 +211,7 @@
 				3EF0EC91E7FE4B16A434459C /* libRNZmqService.a in Frameworks */,
 				1EBA2F750D7D4CEC919D9242 /* libRNSSH.a in Frameworks */,
 				7179093A23F1543500699569 /* iAd.framework in Frameworks */,
-				714444B423F3B78C00A1AEBE /* Gomobile.framework in Frameworks */,
+				71BBC90323FE60F3002CA71E /* Gomobile.framework in Frameworks */,
 				AE8298EED2198D3E9F15B11C /* libPods-constantWalletMobile.a in Frameworks */,
 				227D14BDEE8B5572A5757F41 /* libPods-constantWalletMobile.a in Frameworks */,
 			);
@@ -335,7 +335,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				714444B323F3B78C00A1AEBE /* Gomobile.framework */,
+				71BBC90223FE60F3002CA71E /* Gomobile.framework */,
 				A7ED6691231E7AA600632177 /* game.mp3 */,
 				FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */,
 				FE6F885F22DC3B0E0009C5AA /* ZMQ */,
@@ -713,7 +713,7 @@
 				CODE_SIGN_ENTITLEMENTS = constantWalletMobile/constantWalletMobile.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 63;
+				CURRENT_PROJECT_VERSION = 66;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = G63A8CY3DS;
 				ENABLE_BITCODE = NO;
@@ -750,7 +750,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 				);
-				MARKETING_VERSION = 48.6.1;
+				MARKETING_VERSION = 49.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -777,7 +777,7 @@
 				CODE_SIGN_ENTITLEMENTS = constantWalletMobile/constantWalletMobile.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 63;
+				CURRENT_PROJECT_VERSION = 66;
 				DEVELOPMENT_TEAM = G63A8CY3DS;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -813,7 +813,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 				);
-				MARKETING_VERSION = 48.6.1;
+				MARKETING_VERSION = 49.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -887,7 +887,7 @@
 				CODE_SIGN_ENTITLEMENTS = constantWalletMobile/constantWalletMobile.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 63;
+				CURRENT_PROJECT_VERSION = 66;
 				DEVELOPMENT_TEAM = G63A8CY3DS;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -927,7 +927,7 @@
 					"$(SRCROOT)/../node_modules/react-native-zmq-service/ios/**",
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)",
 				);
-				MARKETING_VERSION = 48.6.1;
+				MARKETING_VERSION = 49.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

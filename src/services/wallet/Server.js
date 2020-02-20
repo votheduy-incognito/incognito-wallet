@@ -38,6 +38,18 @@ export default class Server {
     return storage.getItem(KEY.SERVER)
       .then(strData => {
         cachedList = JSON.parse(strData)||[];
+        const mainnetServer = cachedList.find(item => item.address.includes('https://mainnet.incognito.org/fullnode'));
+        const testnetServer = cachedList.find(item => item.address.includes('https://test-mobile.incognito.org'));
+
+        if (mainnetServer) {
+          mainnetServer.address = 'https://lb-fullnode.incognito.org/fullnode';
+        }
+
+        if (testnetServer) {
+          testnetServer.address = 'https://test-node.incognito.org';
+        }
+
+        storage.setItem(KEY.SERVER, JSON.stringify(cachedList));
         return cachedList;
       });
   }

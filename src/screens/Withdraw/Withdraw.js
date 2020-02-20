@@ -178,8 +178,6 @@ class Withdraw extends React.Component {
         navigation.goBack();
         return res;
       }
-
-      throw new Error('Withdraw failed');
     } catch (e) {
       await logEvent(CONSTANT_EVENTS.WITHDRAW_FAILED, {
         tokenId: selectedPrivacy?.tokenId,
@@ -290,7 +288,7 @@ class Withdraw extends React.Component {
                       <Field
                         component={InputQRField}
                         name='memo'
-                        label='Memo (ontional)'
+                        label='Memo (optional)'
                         placeholder='Enter a memo (max 125 characters)'
                         style={style.input}
                         validate={memoMaxLength}

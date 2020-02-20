@@ -23,7 +23,8 @@ const api = {
   api_qrcode_fail_ProductNotFound: apiError(-80008),
   api_qrcode_fail_QRCodeAlreadyStaked: apiError(-80009),
   api_invalid_size_upload_file: apiError(-8002),
-  api_invalid_type_upload_file: apiError(-8001)
+  api_invalid_type_upload_file: apiError(-8001),
+  api_bnb_memo_required: apiError(-1027)
 };
 
 
