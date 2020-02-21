@@ -263,4 +263,9 @@ export async function getEstimateFeePerKB(paymentAddress) {
   return client.getEstimateFeePerKB(paymentAddress);
 }
 
+export async function getNodeTime() {
+  const client = await getRpcClient();
+  return client.getNodeTime();
+}
+
 setRpcClientInterceptor();
