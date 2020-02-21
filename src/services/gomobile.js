@@ -1,6 +1,20 @@
 import { NativeModules } from 'react-native';
+import {getNodeTime} from '@services/wallet/RpcClientService';
 
 const PrivacyGo = NativeModules.PrivacyGo;
+const requiredTimeMethods = [
+  'initPrivacyTx',
+  'stopAutoStaking',
+  'staking',
+  'initPrivacyTokenTx',
+  'initBurningRequestTx',
+  'initWithdrawRewardTx',
+  'initPRVContributionTx',
+  'initPTokenContributionTx',
+  'initPRVTradeTx',
+  'initPTokenTradeTx',
+  'withdrawDexTx',
+];
 
 const log = (...args) => console.log('GOMODULE', ...args);
 try {
@@ -29,17 +43,31 @@ try {
 
   asyncMethods.forEach(methodName => {
     global[methodName] = (data) => {
-      return new Promise((resolve, reject) => {
+      return new Promise(async (resolve, reject) => {
         try {
           log(`${methodName} called with params`, data);
-          PrivacyGo[methodName](data, function(error, result) {
-            if (error) {
-              reject(error);
-            }
 
-            log(`${methodName} called successfully with result`, result);
-            return resolve(result);
-          });
+          if (requiredTimeMethods.includes(methodName)) {
+            const time = await getNodeTime();
+            PrivacyGo[methodName](data, time, function(error, result) {
+              if (error) {
+                reject(error);
+              }
+
+              console.debug(methodName, time);
+              log(`${methodName} called successfully with result`, time);
+              return resolve(result);
+            });
+          } else {
+            PrivacyGo[methodName](data, function (error, result) {
+              if (error) {
+                reject(error);
+              }
+
+              log(`${methodName} called successfully with result`, result);
+              return resolve(result);
+            });
+          }
         } catch (e) {
           log(`${methodName} called with error`, e);
           reject(e);
