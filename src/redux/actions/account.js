@@ -9,7 +9,7 @@ import { tokenSeleclor, accountSeleclor } from '../selectors';
 import { getBalance as getTokenBalance, setListToken } from './token';
 
 /**
- *  return basic account object from its name like its KEY, not including account methods (please use accountWallet instead) 
+ *  return basic account object from its name like its KEY, not including account methods (please use accountWallet instead)
  *
  * @param {object} state redux state
  * @param {string} accountName name of account you wanna get
@@ -42,7 +42,8 @@ export const removeAccount = (account = throw new Error('Account is required')) 
       throw new Error('Wallet is not existed, can not remove account right now');
     }
 
-    const { PrivateKey, name, }  = account;
+    const { PrivateKey }  = account;
+
     const passphrase = await getPassphrase();
     await accountService.removeAccount(
       PrivateKey,
@@ -51,8 +52,8 @@ export const removeAccount = (account = throw new Error('Account is required')) 
     );
 
     dispatch({
-      type: type.REMOVE_BY_NAME,
-      data: name
+      type: type.REMOVE_BY_PRIVATE_KEY,
+      data: PrivateKey
     });
 
     return true;
@@ -99,7 +100,7 @@ export const getBalance = (account) => async (dispatch, getState) => {
     };
     // console.log(TAG,'getBalance = accountMerge = ',accountMerge);
     dispatch(setAccount(accountMerge));
-    
+
   } catch (e) {
     account && dispatch(setAccount({
       ...account,
@@ -175,7 +176,7 @@ export const followDefaultTokens = (account = throw new Error('Account object is
   try {
     const state = getState();
     const wallet = state?.wallet;
-    const pTokens = pTokenList || tokenSeleclor.pTokens(state);  
+    const pTokens = pTokenList || tokenSeleclor.pTokens(state);
 
     if (!wallet) {
       throw new Error('Wallet is not exist');
@@ -191,7 +192,7 @@ export const followDefaultTokens = (account = throw new Error('Account object is
     if (defaultTokens?.length > 0) {
       await accountService.addFollowingTokens(defaultTokens, account, wallet);
     }
-    
+
     // update wallet object to store
     dispatch({
       type: walletType.SET,

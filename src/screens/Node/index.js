@@ -12,7 +12,6 @@ import accountService from '@services/wallet/accountService';
 import {
   getBeaconBestStateDetail,
   getBlockChainInfo,
-  getTransactionByHash,
   listRewardAmount
 } from '@services/wallet/RpcClientService';
 import tokenService, { PRV } from '@services/wallet/tokenService';
@@ -20,7 +19,6 @@ import { CONSTANT_CONFIGS } from '@src/constants';
 import routeNames from '@src/router/routeNames';
 import APIService from '@src/services/api/miner/APIService';
 import COLORS from '@src/styles/colors';
-import convert from '@utils/convert';
 import LocalDatabase from '@utils/LocalDatabase';
 import Util from '@utils/Util';
 import { onClickView } from '@utils/ViewUtil';
@@ -235,9 +233,10 @@ class Node extends BaseScreen {
 
   handleRefresh = async () => {
     const { isFetching } = this.state;
+    
     // to refresh token
-    let getListNodeToRefreshToken = await APIService.getProductList(true);
-    //////
+    APIService.getProductList(true);
+
     let list = (await LocalDatabase.getListDevices()) || [];
     list = list.map(item => Device.getInstance(item));
 

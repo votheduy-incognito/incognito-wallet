@@ -13,6 +13,7 @@ export const KEY_SAVE = {
   SEEN_DEPOSIT_GUIDE: CONSTANT_KEYS.SEEN_DEPOSIT_GUIDE,
   PIN: CONSTANT_KEYS.PIN,
   DECIMAL_SEPARATOR: '$decimal_separator',
+  VERIFY_CODE: '$verify_code',
 };
 export default class LocalDatabase {
   static async getValue(key: String): String {
@@ -164,5 +165,13 @@ export default class LocalDatabase {
 
   static getDecimalSeparator() {
     return LocalDatabase.getValue(KEY_SAVE.DECIMAL_SEPARATOR);
+  }
+
+  static saveVerifyCode(verifyCode) {
+    return LocalDatabase.saveValue(KEY_SAVE.VERIFY_CODE, verifyCode);
+  }
+
+  static getVerifyCode() {
+    return LocalDatabase.getValue(KEY_SAVE.VERIFY_CODE);
   }
 }
