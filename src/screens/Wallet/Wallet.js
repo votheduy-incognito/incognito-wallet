@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Container, ScrollView, View, Text, RefreshControl, Button, Image} from '@src/components/core';
-import setting from '@src/assets/images/setting_white.png';
+import {Container, ScrollView, View, Text, RefreshControl, Button} from '@src/components/core';
 import { TouchableWithoutFeedback } from 'react-native';
 import { Icon } from 'react-native-elements';
 import dexUtils from '@utils/dex';
 import {COLORS} from '@src/styles';
 import FollowingTokenList from '@src/components/FollowingTokenList/FollowingTokenList';
+import SettingIcon from '@components/SettingIcon';
 import { homeStyle } from './style';
 
-class Home extends React.Component {
+class Wallet extends React.Component {
   render() {
     const {
       account,
@@ -25,9 +25,7 @@ class Home extends React.Component {
     return (
       <View style={homeStyle.wrapper}>
         <View style={homeStyle.header}>
-          <TouchableWithoutFeedback onPress={handleSetting}>
-            <Image source={setting} style={homeStyle.setting} />
-          </TouchableWithoutFeedback>
+          <SettingIcon />
           <View style={homeStyle.headerTitleContainer}>
             <Text style={homeStyle.title} numberOfLines={1} ellipsizeMode='middle'>{account.name}</Text>
           </View>
@@ -79,13 +77,13 @@ class Home extends React.Component {
   }
 }
 
-Home.defaultProps = {
+Wallet.defaultProps = {
   account: null,
   tokens: [],
   isReloading: false
 };
 
-Home.propTypes = {
+Wallet.propTypes = {
   account: PropTypes.object,
   tokens: PropTypes.array,
   onSelectToken: PropTypes.func.isRequired,
@@ -96,4 +94,4 @@ Home.propTypes = {
   isReloading: PropTypes.bool,
 };
 
-export default Home;
+export default Wallet;

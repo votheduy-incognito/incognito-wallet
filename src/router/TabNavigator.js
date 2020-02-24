@@ -4,20 +4,20 @@ import {Text} from '@components/core';
 import { getActiveChildNavigationOptions } from 'react-navigation';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { navigationOptionsHandler } from '@src/utils/router';
+import Wallet from '@src/screens/Wallet';
 import Home from '@src/screens/Home';
-import Papps from '@src/screens/Papps';
+import Community from '@src/screens/Community';
 import { COLORS } from '@src/styles';
 import TabBarIcon from '@src/components/TabBarIcon';
 import icMinerActive from '@src/assets/images/icons/ic_tab_nodes_active.png';
 import icMinerDeactive from '@src/assets/images/icons/ic_tab_nodes_deactive.png';
 import icWalletActive from '@src/assets/images/icons/ic_tab_wallet_active.png';
 import icWalletInactive from '@src/assets/images/icons/ic_tab_wallet_deactive.png';
-import icDappsActive from '@src/assets/images/icons/ic_tab_dapps_active.png';
-import icDappsInactive from '@src/assets/images/icons/ic_tab_dapps_deactive.png';
-import icDexActive from '@src/assets/images/icons/ic_tab_dex_active.png';
-import icDexInactive from '@src/assets/images/icons/ic_tab_dex_deactive.png';
+import icHomeActive from '@src/assets/images/icons/ic_home_active.png';
+import icHomeDeactive from '@src/assets/images/icons/ic_home_deactive.png';
+import icCommunityActive from '@src/assets/images/icons/ic_community_active.png';
+import icCommunityDeactive from '@src/assets/images/icons/ic_community_deactive.png';
 import HeaderBar from '@src/components/HeaderBar';
-import Dex from '@src/screens/Dex';
 import {FontStyle} from '@src/styles/TextStyle';
 import MinerNavigator from './MinerNavigator';
 import ROUTE_NAMES from './routeNames';
@@ -35,13 +35,13 @@ const TabIcon = (type, title, { focused }) => {
     active = icMinerActive;
     inactive = icMinerDeactive;
     break;
-  case 'papps':
-    active = icDappsActive;
-    inactive = icDappsInactive;
+  case 'home':
+    active = icHomeActive;
+    inactive = icHomeDeactive;
     break;
-  case 'dex':
-    active = icDexActive;
-    inactive = icDexInactive;
+  case 'community':
+    active = icCommunityActive;
+    inactive = icCommunityDeactive;
   }
 
   return (
@@ -89,12 +89,12 @@ const styles = StyleSheet.create({
 });
 
 const Tab = createMaterialTopTabNavigator({
-  [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { header: () => null, tabBarLabel: renderTab('wallet', 'Wallet') }),
+  [ROUTE_NAMES.Home]: navigationOptionsHandler(Home, { header: () => null, tabBarLabel: renderTab('home', 'Home') }),
   [ROUTE_NAMES.RootMiner]: navigationOptionsHandler(MinerNavigator, { title: 'Nodes', header: () => null, tabBarLabel: renderTab('miner', 'Nodes') }),
-  [ROUTE_NAMES.pApps]: navigationOptionsHandler(Papps, { title: 'pApps', header: () => null, tabBarLabel: renderTab('papps', 'pApps')}),
-  [ROUTE_NAMES.Dex]: navigationOptionsHandler(Dex, { title: 'pDex', header: () => null, tabBarLabel: renderTab('dex', 'pDex')}),
+  [ROUTE_NAMES.Wallet]: navigationOptionsHandler(Wallet, { header: () => null, tabBarLabel: renderTab('wallet', 'Wallet') }),
+  [ROUTE_NAMES.Community]: navigationOptionsHandler(Community, { header: () => null, tabBarLabel: renderTab('community', 'Community') }),
 }, {
-  initialRouteName: ROUTE_NAMES.Home,
+  initialRouteName: ROUTE_NAMES.Wallet,
   swipeEnabled: false,
   animationEnabled: true,
   tabBarPosition: 'bottom',

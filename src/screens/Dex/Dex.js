@@ -14,6 +14,7 @@ import dexUtils from '@utils/dex';
 import COLORS from '@src/styles/colors';
 import {logEvent} from '@services/firebase';
 import {CONSTANT_EVENTS} from '@src/constants';
+import BackButton from '@components/BackButton/index';
 import AddPool from './components/AddPool';
 import RemovePool from './components/RemovePool';
 import Swap from './components/Swap';
@@ -149,6 +150,7 @@ class Dex extends React.Component {
     const { mode } = this.state;
     return (
       <View style={dexStyle.header}>
+        <BackButton size={20} width={20} />
         <TouchableOpacity style={dexStyle.mode} onPress={() => this.showPopUp('deposit')}>
           <Image source={depositIcon} />
           <Text style={dexStyle.modeText}>Deposit</Text>

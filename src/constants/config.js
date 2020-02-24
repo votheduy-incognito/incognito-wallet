@@ -30,6 +30,7 @@ const regex = /<%=.*%>/;
 const isMainnet = global.isMainnet??true;
 
 export const prefix_network = isMainnet ?'mainnet':'testnet';
+export const MAIN_WEBSITE = 'https://incognito.org';
 const prefix_Api = isMainnet?'':'test-';
 
 const API_BASE_URL = isMainnet? API_BASE_URL_MAINNET:API_BASE_URL_TESTNET;
@@ -59,6 +60,7 @@ let DATA_EXPORT = {
   BINANCE_EXPLORER_URL,
   USDT_TOKEN_ID,
   NODE_URL,
+  MAIN_WEBSITE,
 };
 
 export default {

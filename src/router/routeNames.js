@@ -3,7 +3,7 @@ export default {
   RootSplash: 'RootSplash',
   RootMiner: 'RootMiner',
   RootTab: 'RootTab',
-  Home: 'Home',
+  Wallet: 'Wallet',
   Setting: 'Setting',
   NetworkSetting: 'NetworkSetting',
   CreateAccount: 'CreateAccount',
@@ -40,5 +40,7 @@ export default {
   pApp: 'pApp',
   pApps: 'pApps',
   AddPin: 'AddPin',
-  BackupKeys: 'BackupKeys'
+  BackupKeys: 'BackupKeys',
+  Home: 'Home',
+  Community: 'Community',
 };

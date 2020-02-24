@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Modal as RNComponent,SafeAreaView, Text } from 'react-native';
+import { Modal as RNComponent, Text } from 'react-native';
+import { SafeAreaView } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import { COLORS } from '@src/styles';
 import { TouchableOpacity, View } from '..';
@@ -18,7 +19,7 @@ const Modal = ({
   ...otherProps
 }) => (
   <RNComponent transparent={transparent} animationType="fade" onRequestClose={closeOnBack && close} {...otherProps}>
-    <SafeAreaView style={[styleSheet.containerSafeView, transparent && { backgroundColor: 'transparent' }]}>
+    <SafeAreaView style={[styleSheet.containerSafeView, transparent && { backgroundColor: 'transparent' }]} forceInset={{ bottom: 'never' }}>
       <View style={[styleSheet.container, containerStyle]}>
         {isShowHeader && (close || headerText) && (
           <View style={styleSheet.header}>
@@ -28,7 +29,7 @@ const Modal = ({
             <Text style={styleSheet.headerText} numberOfLines={1} ellipsizeMode='tail'>{headerText}</Text>
           </View>
         )}
-          
+
         {children}
       </View>
     </SafeAreaView>
