@@ -1,16 +1,16 @@
 /* eslint-disable import/no-cycle */
 import AccountModel from '@models/account';
-import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
+import {CONSTANT_CONFIGS, CONSTANT_KEYS} from '@src/constants';
 import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
-import { countFollowToken, countUnfollowToken } from '@src/services/api/token';
-import { AccountWallet, KeyWallet, Wallet } from 'incognito-chain-web-js/build/wallet';
+import {countFollowToken, countUnfollowToken} from '@src/services/api/token';
+import {AccountWallet, KeyWallet, Wallet} from 'incognito-chain-web-js/build/wallet';
 import _ from 'lodash';
 import {STACK_TRACE} from '@services/exception/customError/code/webjsCode';
-import { CustomError, ErrorCode } from '../exception';
-import { getActiveShard } from './RpcClientService';
-import { getUserUnfollowTokenIDs, setUserUnfollowTokenIDs } from './tokenService';
-import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
+import {CustomError, ErrorCode} from '../exception';
+import {getActiveShard} from './RpcClientService';
+import {getUserUnfollowTokenIDs, setUserUnfollowTokenIDs} from './tokenService';
+import {loadListAccountWithBLSPubKey, saveWallet} from './WalletService';
 
 const TAG = 'Account';
 
@@ -174,21 +174,9 @@ export default class Account {
     return result;
   }
 
-  // // create new account
-  // static async createAccount(accountName, wallet) {
-  //   const activeShardNumber = await getActiveShard();
-  //   let shardID = CONSTANT_CONFIGS.SHARD_ID;
-  //   if (shardID) {
-  //     shardID = Math.floor(Math.random() * (activeShardNumber - 1));
-  //   }
-
-  //   return wallet.createNewAccount(accountName, shardID);
-  // }
-
-  // create new account hienton
   static async createAccount(accountName, wallet, initShardID) {
     const activeShardNumber = await getActiveShard();
-    let shardID = _.isNumber(initShardID) ? initShardID : CONSTANT_CONFIGS.SHARD_ID;
+    let shardID = _.isNumber(initShardID) ? initShardID : undefined;
     if (
       shardID &&
       (parseInt(shardID) >= parseInt(activeShardNumber) ||
@@ -197,8 +185,7 @@ export default class Account {
       shardID = Math.floor(Math.random() * (activeShardNumber - 1));
     }
 
-    const result = await wallet.createNewAccount(accountName, shardID);
-    return result;
+    return await wallet.createNewAccount(accountName, shardID);
   }
 
   // get progress tx
