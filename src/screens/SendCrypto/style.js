@@ -1,25 +1,37 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet} from 'react-native';
+import { COLORS } from '@src/styles';
 
-export const homeStyle = StyleSheet.create({
+const style = StyleSheet.create({
   container: {
+    backgroundColor: COLORS.lightGrey6,
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+    height: '100%',
   },
-  mainContainer: {
-    flex: 1,
+  content: {
+    backgroundColor: COLORS.white,
+    maxHeight: '100%',
+    borderRadius: 10,
+    overflow: 'hidden',
   },
-  form: {
+  modes: {
+    flexDirection: 'row',
   },
-  submitBtn: {
-    marginTop: 20
+  mode: {
+    width: '50%',
+    paddingVertical: 15,
   },
-  feeText: {
+  modeText: {
     textAlign: 'center',
-    marginVertical: 10,
-    fontSize: 14
   },
-  input: {
-    marginBottom: 15
+  deactiveMode: {
+    backgroundColor: COLORS.lightGrey7,
+    borderColor: COLORS.lightGrey5,
+    borderWidth: 1,
   },
-  descriptionInput: {
-    height: 60,
-  }
+  deactiveModeText: {
+    color: COLORS.lightGrey1,
+  },
 });
+
+export default style;

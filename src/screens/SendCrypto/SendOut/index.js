@@ -1,18 +1,18 @@
-import { Button, Container, Text } from '@src/components/core';
+import { Button, Container, Text } from '@components/core/index';
 import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
-import routeNames from '@src/router/routeNames';
-import { addERC20TxWithdraw, addETHTxWithdraw, genCentralizedWithdrawAddress, updatePTokenFee } from '@src/services/api/withdraw';
-import { getMinMaxWithdrawAmount } from '@src/services/api/misc';
-import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
-import tokenService from '@src/services/wallet/tokenService';
-import convertUtil from '@src/utils/convert';
+import routeNames from '@routers/routeNames';
+import { addERC20TxWithdraw, addETHTxWithdraw, genCentralizedWithdrawAddress, updatePTokenFee } from '@services/api/withdraw';
+import { getMinMaxWithdrawAmount } from '@services/api/misc';
+import { ExHandler } from '@services/exception';
+import tokenService from '@services/wallet/tokenService';
+import convertUtil from '@utils/convert';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import LoadingContainer from '@src/components/LoadingContainer';
-import SimpleInfo from '@src/components/SimpleInfo';
+import LoadingContainer from '@components/LoadingContainer';
+import SimpleInfo from '@components/SimpleInfo';
 import {logEvent} from '@services/firebase';
 import Withdraw from './Withdraw';
 
@@ -39,28 +39,6 @@ class WithdrawContainer extends Component {
     });
   }
 
-  getTokenObject = ({ amount }) => {
-    const { selectedPrivacy } = this.props;
-    const fromAddress = selectedPrivacy?.paymentAddress;
-    const toAddress = fromAddress; // est fee on the same network, dont care which address will be send to
-    const originalAmount = convertUtil.toOriginalAmount(Number(amount), selectedPrivacy?.pDecimals);
-
-    const tokenObject = {
-      Privacy: true,
-      TokenID: selectedPrivacy?.tokenId,
-      TokenName: selectedPrivacy?.name,
-      TokenSymbol: selectedPrivacy?.symbol,
-      TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
-      TokenAmount: originalAmount,
-      TokenReceivers: {
-        PaymentAddress: toAddress,
-        Amount: originalAmount
-      }
-    };
-
-    return tokenObject;
-  }
-
   handleSendToken = async ({ tempAddress, amount, fee, isUsedPRVFee, feeForBurn }) => {
     const { account, wallet, selectedPrivacy } = this.props;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
@@ -85,28 +63,21 @@ class WithdrawContainer extends Component {
       amount: feeForBurn,
     };
 
-    try {
-      const res = await tokenService.createSendPToken(
-        tokenObject,
-        isUsedPRVFee ? originalFee : 0,
-        account,
-        wallet,
-        isUsedPRVFee  ? paymentInfo : null,
-        isUsedPRVFee ? 0 : originalFee
-      );
+    const res = await tokenService.createSendPToken(
+      tokenObject,
+      isUsedPRVFee ? originalFee : 0,
+      account,
+      wallet,
+      isUsedPRVFee  ? paymentInfo : null,
+      isUsedPRVFee ? 0 : originalFee
+    );
 
-      if (res.txId) {
-        // const foundToken = tokens?.find(t => t.id === selectedPrivacy?.tokenId);
-        // foundToken && setTimeout(() => getTokenBalanceBound(foundToken), 10000);
-
-        return res;
-      } else {
-        throw new Error('Sent tx, but doesnt have txID, please check it');
-      }
-    } catch (e) {
-      throw e;
+    if (res.txId) {
+      return res;
+    } else {
+      throw new Error('Sent tx, but doesnt have txID, please check it');
     }
-  }
+  };
 
   handleBurningToken = async ({ amount, fee, isUsedPRVFee, remoteAddress, feeForBurn }) => {
     const { account, wallet, selectedPrivacy } = this.props;
@@ -138,9 +109,6 @@ class WithdrawContainer extends Component {
       );
 
       if (res.txId) {
-        // const foundToken = tokens?.find(t => t.id === selectedPrivacy?.tokenId);
-        // foundToken && setTimeout(() => getTokenBalanceBound(foundToken), 10000);
-
         return res;
       } else {
         throw new Error('Burned token, but doesnt have txID, please check it');
@@ -148,7 +116,7 @@ class WithdrawContainer extends Component {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   getMinMaxAmount = async () => {
     try {
@@ -161,7 +129,7 @@ class WithdrawContainer extends Component {
     } finally {
       this.setState({ isReady: true });
     }
-  }
+  };
 
   getWithdrawAddress = async ({ amount, paymentAddress, memo }) => {
     let address;

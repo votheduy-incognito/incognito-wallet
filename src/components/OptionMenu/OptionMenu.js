@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import { COLORS } from '@src/styles';
+import {TextInput} from 'react-native';
+import {Icon} from 'react-native-elements';
 import styleSheet from './style';
 
 class OptionMenu extends Component {
@@ -24,6 +26,8 @@ class OptionMenu extends Component {
       title,
       data,
       style,
+      placeholder,
+      onSearch,
     } = this.props;
     const { open } = this.state;
 
@@ -48,11 +52,24 @@ class OptionMenu extends Component {
             <View style={styleSheet.content}>
               <View style={styleSheet.barIcon} />
               {title && <Text style={styleSheet.title}>{title}</Text>}
+              { onSearch ? (
+                <View style={styleSheet.search}>
+                  <Icon name="search" />
+                  <TextInput
+                    style={styleSheet.input}
+                    placeholderTextColor={COLORS.lightGrey1}
+                    placeholder={placeholder}
+                    onChangeText={onSearch}
+                    autoCorrect={false}
+                    autoCapitalize={false}
+                  />
+                </View>
+              ) : null }
               <ScrollView style={styleSheet.scrollView}>
                 {data.map((item, index) => {
                   const handleItemPress = () => {
                     if (typeof item?.handlePress === 'function') {
-                      item.handlePress();
+                      item.handlePress(item.id);
                     }
 
                     this.handleToggle(false);
@@ -92,7 +109,9 @@ OptionMenu.defaultProps = {
   icon: null,
   iconProps: {},
   style: null,
-  data: []
+  data: [],
+  onSearch: undefined,
+  placeholder: '',
 };
 
 OptionMenu.propTypes = {
@@ -108,7 +127,9 @@ OptionMenu.propTypes = {
       icon: PropTypes.element,
       handlePress: PropTypes.func
     })
-  )
+  ),
+  onSearch: PropTypes.func,
+  placeholder: PropTypes.string,
 };
 
 export default OptionMenu;

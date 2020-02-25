@@ -35,6 +35,17 @@ const style = StyleSheet.create({
     left: UTILS.deviceWidth()/2,
     transform: [{ translateX: -25}]
   },
+  search: {
+    backgroundColor: COLORS.lightGrey6,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  input: {
+    height: 55,
+    marginLeft: 10,
+    flex: 1,
+  },
   contentContainer: {
     alignItems: 'center',
     backgroundColor: COLORS.overlayBlack,
@@ -75,8 +86,11 @@ const style = StyleSheet.create({
     borderBottomColor: COLORS.lightGrey6
   },
   title: {
-    fontWeight: '500',
-    marginBottom: SPACING.small
+    fontSize: 12,
+    marginLeft: 15,
+    marginBottom: 10,
+    letterSpacing: 1.5,
+    color: COLORS.lightGrey1,
   }
 });
 

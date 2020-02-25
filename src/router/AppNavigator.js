@@ -9,9 +9,8 @@ import ImportAccount from '@src/screens/ImportAccount';
 import NetworkSetting from '@src/screens/NetworkSetting';
 import WalletDetail from '@src/screens/WalletDetail';
 import ReceiveCrypto from '@src/screens/ReceiveCrypto';
-import SendCrypto from '@src/screens/SendCrypto';
+import SendCrypto from '@screens/SendCrypto';
 import Deposit from '@src/screens/Deposit';
-import Withdraw from '@src/screens/Withdraw';
 import TxHistoryDetail from '@src/screens/TxHistoryDetail';
 import Setting from '@screens/Setting';
 import DexHistory from '@screens/DexHistory';
@@ -33,13 +32,12 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.ImportAccount]: navigationOptionsHandler(ImportAccount, { title: 'Import Account' }),
     [ROUTE_NAMES.ExportAccount]: navigationOptionsHandler(ExportAccount),
     [ROUTE_NAMES.FollowToken]: navigationOptionsHandler(FollowToken, { header: () => null }),
-    [ROUTE_NAMES.CreateToken]: navigationOptionsHandler(CreateToken, { title: 'Issue a privacy coin' }),
+    [ROUTE_NAMES.CreateToken]: navigationOptionsHandler(CreateToken, { title: 'Issue your own privacy coin' }),
     [ROUTE_NAMES.AddToken]: navigationOptionsHandler(AddToken, { title: 'Add manually' }),
     [ROUTE_NAMES.WalletDetail]: navigationOptionsHandler(WalletDetail),
     [ROUTE_NAMES.ReceiveCrypto]: navigationOptionsHandler(ReceiveCrypto, { title: 'Receive' }),
     [ROUTE_NAMES.SendCrypto]: navigationOptionsHandler(SendCrypto, { title: 'Send' }),
     [ROUTE_NAMES.Deposit]: navigationOptionsHandler(Deposit),
-    [ROUTE_NAMES.Withdraw]: navigationOptionsHandler(Withdraw),
     [ROUTE_NAMES.TxHistoryDetail]: navigationOptionsHandler(TxHistoryDetail, { title: 'History Detail' }),
     [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'You' }),
     [ROUTE_NAMES.DexHistory]: navigationOptionsHandler(DexHistory, { header: () => null }),

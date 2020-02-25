@@ -12,6 +12,7 @@ import React, { Component } from 'react';
 import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import EmptyHistory from '@components/HistoryList/EmptyHistory/index';
 
 const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, decimals, pDecimals) => {
   const data = [];
@@ -195,7 +196,7 @@ class HistoryTokenContainer extends Component {
           style={{
             position: 'absolute',
             width: '100%',
-            bottom: 100,
+            bottom: 30,
           }}
         />
       );
@@ -210,6 +211,10 @@ class HistoryTokenContainer extends Component {
 
     if (!selectedPrivacy) {
       return <LoadingContainer />;
+    }
+
+    if (!histories || !histories.length) {
+      return (<EmptyHistory actionButton={this.renderActionButton()} />);
     }
 
     return (
