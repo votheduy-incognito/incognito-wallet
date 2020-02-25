@@ -11,6 +11,21 @@ const style = StyleSheet.create({
     width: '100%',
     backgroundColor: COLORS.white
   },
+  btnContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 15,
+    marginTop: 20,
+  },
+  btn: {
+    width: '50%',
+    alignItems: 'center',
+  },
+  btn2: {
+    width: '33%',
+    alignItems: 'center',
+  },
   boxHeader: {
     width: '100%',
     alignItems: 'center',
@@ -45,7 +60,7 @@ const style = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',
-    marginTop: 40,
+    marginTop: 20,
     marginBottom: 10,
     height: 35
   },

@@ -9,18 +9,20 @@ export const homeStyle = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
+    height: 55,
   },
   headerTitleContainer: {
     flex: 1,
-    paddingHorizontal: 3
+    marginLeft: 'auto',
+    marginRight: 0,
+    paddingRight: 25,
   },
   title: {
     fontSize: 18,
     color: COLORS.white,
-    marginLeft: 'auto',
-    marginRight: 'auto',
     ...FONT.STYLE.bold,
     marginVertical: 20,
+    textAlign: 'right',
   },
   container: {
     flex: 1,
@@ -63,7 +65,7 @@ export const homeStyle = StyleSheet.create({
   },
   followTokenTitle: {
     fontSize: FONT.SIZE.regular,
-    marginTop: 30,
+    marginTop: 20,
   },
   followTokenBtn: {
     flexDirection: 'row',

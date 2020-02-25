@@ -1,4 +1,3 @@
-
 import { Container, Divider, Text, TouchableOpacity, View } from '@src/components/core';
 import { CONSTANT_COMMONS } from '@src/constants';
 import routeNames from '@src/router/routeNames';
@@ -8,6 +7,7 @@ import formatUtil from '@src/utils/format';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Swipeout from 'react-native-swipeout';
+import EmptyHistory from './EmptyHistory';
 import styleSheet from './style';
 
 const getStatusData = (status, statusCode) => {
@@ -19,7 +19,7 @@ const getStatusData = (status, statusCode) => {
     statusNumber = statusCode;
     statusText = 'Pending';
     statusColor = COLORS.blue;
-    break; 
+    break;
   case SuccessTx:
     statusNumber = null;
     statusText = 'Pending';
@@ -55,7 +55,7 @@ const getTypeData = type => {
   let typeText;
   let balanceDirection;
   let balanceColor;
-  
+
   switch (type) {
   case CONSTANT_COMMONS.HISTORY.TYPE.WITHDRAW:
     typeText = 'Withdraw';
@@ -173,15 +173,6 @@ const HistoryItem = ({ history, divider, navigation }) => {
   );
 };
 
-const EmptyHistory = ({ actionButton }) => (
-  <Container style={styleSheet.noHistoryContainer}>
-    <Text style={styleSheet.noHistoryText}>No transactions yet.</Text>
-    <View style={styleSheet.noHistoryActionButton}>
-      {actionButton}
-    </View>
-  </Container>
-);
-
 const HistoryList = ({ histories, actionButton, onCancelEtaHistory, navigation }) => (
   histories && histories.length
     ? (
@@ -219,8 +210,8 @@ HistoryItem.propTypes = {
     type: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     symbol: PropTypes.string,
-    fromAddress: PropTypes.string, 
-    toAddress: PropTypes.string, 
+    fromAddress: PropTypes.string,
+    toAddress: PropTypes.string,
     statusCode: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     cancelable: PropTypes.bool,
     canRetryExpiredDeposit: PropTypes.bool,
@@ -249,14 +240,6 @@ HistoryList.propTypes = {
   actionButton: PropTypes.element,
   onCancelEtaHistory: PropTypes.func,
   navigation: PropTypes.object.isRequired
-};
-
-EmptyHistory.defaultProps = {
-  actionButton: null
-};
-
-EmptyHistory.propTypes = {
-  actionButton: PropTypes.element
 };
 
 export default HistoryList;

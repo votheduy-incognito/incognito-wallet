@@ -38,7 +38,7 @@ const buttons = [
   },
   {
     image: icInvent,
-    title: 'Invent',
+    title: 'Issue',
     desc: 'a new privacy coin',
     route: ROUTE_NAMES.CreateToken,
   },

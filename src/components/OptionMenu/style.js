@@ -22,6 +22,9 @@ const style = StyleSheet.create({
     paddingBottom: 50,
     width: UTILS.deviceWidth()
   },
+  scrollView: {
+    maxHeight: 350,
+  },
   barIcon: {
     backgroundColor: COLORS.white,
     width: 50,
@@ -52,6 +55,7 @@ const style = StyleSheet.create({
   textContainer: {
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'center',
     flex: 1,
   },
   itemText: {},

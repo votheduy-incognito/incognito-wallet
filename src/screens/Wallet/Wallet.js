@@ -7,6 +7,7 @@ import dexUtils from '@utils/dex';
 import {COLORS} from '@src/styles';
 import FollowingTokenList from '@src/components/FollowingTokenList/FollowingTokenList';
 import SettingIcon from '@components/SettingIcon';
+import AccountSelect from '@screens/Wallet/AccountSelect';
 import { homeStyle } from './style';
 
 class Wallet extends React.Component {
@@ -17,7 +18,6 @@ class Wallet extends React.Component {
       onSelectToken,
       handleAddFollowToken,
       handleCreateToken,
-      handleSetting,
       reload,
       isReloading
     } = this.props;
@@ -27,10 +27,8 @@ class Wallet extends React.Component {
         <View style={homeStyle.header}>
           <SettingIcon />
           <View style={homeStyle.headerTitleContainer}>
-            <Text style={homeStyle.title} numberOfLines={1} ellipsizeMode='middle'>{account.name}</Text>
+            <AccountSelect name={account.name} />
           </View>
-          {/* Use below empty view to push the title to middle */}
-          <View style={homeStyle.setting} />
         </View>
         <ScrollView
           style={homeStyle.container}
@@ -52,7 +50,7 @@ class Wallet extends React.Component {
               { !dexUtils.isDEXAccount(account.name) &&
                 (
                   <Button
-                    title="Issue a privacy coin"
+                    title="Issue your own privacy coin"
                     onPress={handleCreateToken}
                     style={homeStyle.addTokenBtn}
                   />
@@ -61,7 +59,7 @@ class Wallet extends React.Component {
               <Text style={homeStyle.followTokenTitle}>Looking for a privacy coin?</Text>
               <TouchableWithoutFeedback onPress={handleAddFollowToken}>
                 <View style={homeStyle.followTokenBtn}>
-                  <Text style={homeStyle.followTokenText}>Add coins to your list</Text>
+                  <Text style={homeStyle.followTokenText}>Search existing coins</Text>
                   <Icon
                     containerStyle={[homeStyle.followTokenIcon]}
                     name="chevron-right"

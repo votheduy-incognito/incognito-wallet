@@ -33,8 +33,8 @@ class Wizard extends Component {
       },
       {
         index: 2,
-        title: 'Issue a privacy coin',
-        desc: 'Create your own privacy-protecting coin with a single tap. How many will you issue? What will you call it?',
+        title: 'Issue your own privacy coin',
+        desc: 'Create your own privacy-protecting coin with a single tap. How many will you invent? What will you call it?',
         image: require('@src/assets/images/wizard/issue_token.png'),
         buttonText: 'Okay I got it',
         onPress: this.handleFinish,
@@ -49,7 +49,7 @@ class Wizard extends Component {
   getData = currenIndex => {
     let newIndex = currenIndex + 1;
     const data = this.screenData[newIndex];
-    
+
     if (data) {
       return { data, newIndex };
     }
@@ -104,7 +104,7 @@ class Wizard extends Component {
             </ScrollView>
           ))
         }
-        
+
       </ScrollView>
     );
   }

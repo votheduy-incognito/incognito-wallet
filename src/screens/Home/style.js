@@ -1,4 +1,6 @@
-import { StyleSheet } from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
+
+const deviceHeight = Dimensions.get('screen').height;
 
 const style = StyleSheet.create({
   container: {
@@ -13,7 +15,7 @@ const style = StyleSheet.create({
     maxWidth: 320,
     marginLeft: 'auto',
     marginRight: 'auto',
-    marginTop: 15,
+    marginTop: deviceHeight < 750 ? 15 : 80,
   },
   btn: {
     width: '33%',
