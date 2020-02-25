@@ -1,22 +1,23 @@
-import { Button, Container, ScrollView, Toast, Text, View } from '@src/components/core';
-import { createForm, InputMaxValueField, InputQRField, validator } from '@src/components/core/reduxForm';
-import CurrentBalance from '@src/components/CurrentBalance';
-import EstimateFee from '@src/components/EstimateFee';
-import LoadingTx from '@src/components/LoadingTx';
+import { Button, Container, ScrollView, Toast, Text, View } from '@components/core';
+import { createForm, InputMaxValueField, InputQRField, validator } from '@components/core/reduxForm';
+import EstimateFee from '@components/EstimateFee';
+import LoadingTx from '@components/LoadingTx';
 import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
-import { ExHandler } from '@src/services/exception';
-import convertUtil from '@src/utils/convert';
-import formatUtil from '@src/utils/format';
+import { ExHandler } from '@services/exception';
+import convertUtil from '@utils/convert';
+import formatUtil from '@utils/format';
 import memmoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { isExchangeRatePToken } from '@src/services/wallet/RpcClientService';
+import { isExchangeRatePToken } from '@services/wallet/RpcClientService';
 import { connect } from 'react-redux';
-import { detectToken } from '@src/utils/misc';
+import { detectToken } from '@utils/misc';
 import { change, Field, formValueSelector, isValid } from 'redux-form';
 import {logEvent} from '@services/firebase';
 import accountService from '@services/wallet/accountService';
 import {MESSAGES} from '@screens/Dex/constants';
+import TokenSelect from '@components/TokenSelect';
+import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
 import style from './style';
 
 const formName = 'withdraw';
@@ -238,7 +239,12 @@ class Withdraw extends React.Component {
     } finally {
       this.setState({ supportedFeeTypes });
     }
-  }
+  };
+
+  handleSelectToken = (tokenId) => {
+    const { setSelectedPrivacy } = this.props;
+    setSelectedPrivacy(tokenId);
+  };
 
   render() {
     const { maxAmountValidator, minAmountValidator, supportedFeeTypes, estimateFeeData, feeForBurn, isUsedPRVFee } = this.state;
@@ -253,7 +259,10 @@ class Withdraw extends React.Component {
       <ScrollView style={style.container}>
         <Container style={style.mainContainer}>
           <View style={style.currentBalanceContainer}>
-            <CurrentBalance />
+            <TokenSelect
+              onSelect={this.handleSelectToken}
+              onlyPToken
+            />
           </View>
           <Form style={style.form}>
             {({ handleSubmit, submitting }) => (
@@ -332,7 +341,7 @@ class Withdraw extends React.Component {
                     </View>
                   )}
                 />
-                <Button title='Withdraw' style={style.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSubmit)} isAsync isLoading={submitting} />
+                <Button title='Send' style={style.submitBtn} disabled={this.shouldDisabledSubmit()} onPress={handleSubmit(this.handleSubmit)} isAsync isLoading={submitting} />
                 {submitting && <LoadingTx />}
               </>
             )}
@@ -353,6 +362,7 @@ Withdraw.defaultProps = {
 Withdraw.propTypes = {
   handleCentralizedWithdraw: PropTypes.func.isRequired,
   handleDecentralizedWithdraw: PropTypes.func.isRequired,
+  setSelectedPrivacy: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   selectedPrivacy: PropTypes.object.isRequired,
   account: PropTypes.object.isRequired,
@@ -370,7 +380,8 @@ const mapState = state => ({
 });
 
 const mapDispatch = {
-  rfChange: change
+  rfChange: change,
+  setSelectedPrivacy,
 };
 
 export default connect(

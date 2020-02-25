@@ -5,7 +5,7 @@ const style = StyleSheet.create({
   container: {
     position: 'relative',
     alignItems: 'center',
-    height: '100%',
+    flex: 1,
   },
   text: {
     color: COLORS.lightGrey1,

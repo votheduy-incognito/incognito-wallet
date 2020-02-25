@@ -2,20 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Field, formValueSelector, isValid } from 'redux-form';
 import { connect } from 'react-redux';
-import convertUtil from '@src/utils/convert';
-import formatUtil from '@src/utils/format';
-import { Container, ScrollView, View, Button } from '@src/components/core';
-import ReceiptModal, { openReceipt } from '@src/components/Receipt';
-import LoadingTx from '@src/components/LoadingTx';
-import EstimateFee from '@src/components/EstimateFee';
-import CurrentBalance from '@src/components/CurrentBalance';
-import { isExchangeRatePToken } from '@src/services/wallet/RpcClientService';
-import { createForm, InputQRField, InputField, InputMaxValueField, validator } from '@src/components/core/reduxForm';
-import { ExHandler } from '@src/services/exception';
+import convertUtil from '@utils/convert';
+import formatUtil from '@utils/format';
+import { Container, ScrollView, View, Button, Toast } from '@components/core';
+import ReceiptModal, { openReceipt } from '@components/Receipt';
+import LoadingTx from '@components/LoadingTx';
+import EstimateFee from '@components/EstimateFee';
+import { isExchangeRatePToken } from '@services/wallet/RpcClientService';
+import { createForm, InputQRField, InputField, InputMaxValueField, validator } from '@components/core/reduxForm';
+import { ExHandler } from '@services/exception';
 import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
 import {logEvent} from '@services/firebase';
-import Toast from '@components/core/Toast/Toast';
 import {MESSAGES} from '@screens/Dex/constants';
+import TokenSelect from '@components/TokenSelect';
+import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
 import { homeStyle } from './style';
 
 const formName = 'sendCrypto';
@@ -202,6 +202,11 @@ class SendCrypto extends React.Component {
     return val;
   };
 
+  handleSelectToken = (tokenId) => {
+    const { setSelectedPrivacy } = this.props;
+    setSelectedPrivacy(tokenId);
+  };
+
   render() {
     const { supportedFeeTypes, estimateFeeData } = this.state;
     const { isSending, amount, toAddress, isFormValid, account } = this.props;
@@ -210,7 +215,7 @@ class SendCrypto extends React.Component {
     return (
       <ScrollView style={homeStyle.container}>
         <Container style={homeStyle.mainContainer}>
-          <CurrentBalance />
+          <TokenSelect onSelect={this.handleSelectToken} />
           <Form>
             {({ handleSubmit }) => (
               <View style={homeStyle.form}>
@@ -278,6 +283,7 @@ SendCrypto.propTypes = {
   account: PropTypes.object.isRequired,
   receiptData: PropTypes.object,
   handleSend: PropTypes.func.isRequired,
+  setSelectedPrivacy: PropTypes.func.isRequired,
   isSending: PropTypes.bool,
   isFormValid: PropTypes.bool,
   amount: PropTypes.string,
@@ -290,6 +296,11 @@ const mapState = state => ({
   isFormValid: isValid(formName)(state)
 });
 
+const mapDispatch = {
+  setSelectedPrivacy,
+};
+
 export default connect(
-  mapState
+  mapState,
+  mapDispatch,
 )(SendCrypto);

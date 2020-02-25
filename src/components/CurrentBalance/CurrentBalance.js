@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { View, Text } from '@src/components/core';
 import styles from './style';
 
-const CurrentBalance = ({ amount, symbol }) => (
+const CurrentBalance = ({ amount, symbol, select }) => (
   <View style={styles.container}>
     <View style={styles.balanceContainer}>
       <Text style={styles.balance} numberOfLines={1} ellipsizeMode='tail'>{amount}</Text>
       <Text style={styles.balanceSymbol} numberOfLines={1} ellipsizeMode='tail'>{symbol}</Text>
+      { select ? select : null }
     </View>
     <Text style={styles.desc}>Current balance</Text>
   </View>

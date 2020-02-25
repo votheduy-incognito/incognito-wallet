@@ -7,7 +7,6 @@ import formatUtil from '@src/utils/format';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Swipeout from 'react-native-swipeout';
-import EmptyHistory from './EmptyHistory';
 import styleSheet from './style';
 
 const getStatusData = (status, statusCode) => {
@@ -174,18 +173,14 @@ const HistoryItem = ({ history, divider, navigation }) => {
 };
 
 const HistoryList = ({ histories, actionButton, onCancelEtaHistory, navigation }) => (
-  histories && histories.length
-    ? (
-      <Container style={styleSheet.container}>
-        <View style={styleSheet.content}>
-          {
-            histories.map((history, index) => (
-              <HistoryItemWrapper key={history.id} history={history} divider={index < (histories.length - 1)} onCancelEtaHistory={onCancelEtaHistory} navigation={navigation} />))
-          }
-        </View>
-      </Container>
-    )
-    : <EmptyHistory actionButton={actionButton} />
+  <Container style={styleSheet.container}>
+    <View style={styleSheet.content}>
+      {
+        histories.map((history, index) => (
+          <HistoryItemWrapper key={history.id} history={history} divider={index < (histories.length - 1)} onCancelEtaHistory={onCancelEtaHistory} navigation={navigation} />))
+      }
+    </View>
+  </Container>
 );
 
 HistoryItem.defaultProps = {
