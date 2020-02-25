@@ -10,8 +10,6 @@ import { accountSeleclor, selectedPrivacySeleclor, tokenSeleclor, sharedSeleclor
 import WalletDetailOptionMenu from '@src/components/HeaderRight/WalletDetailOptionMenu';
 import TokenInfo from '@src/components/HeaderRight/TokenInfo';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
-import ROUTE_NAMES from '@src/router/routeNames';
-import withdrawIcon from '@src/assets/images/icons/withdraw.png';
 import unfollowTokenIcon from '@src/assets/images/icons/unfollowToken.png';
 import { ExHandler } from '@src/services/exception';
 import { COLORS } from '@src/styles';
@@ -54,7 +52,7 @@ class WalletDetailContainer extends Component {
         </View>
       )
     };
-  }
+  };
 
   componentDidMount() {
     this.setHeaderData();
@@ -68,42 +66,18 @@ class WalletDetailContainer extends Component {
     }
   }
 
-  applyTheme = () => {
-    const { selectedPrivacy } = this.props;
-    const mode = (selectedPrivacy?.isIncognitoToken || selectedPrivacy?.isMainCrypto) ? 'dark' : 'light';
-
-    let t = THEMES[mode];
-
-    if (!t) {
-      console.warn(`Invalid mode ${mode}, fallback to light mode`);
-      t = THEMES.dark;
-    }
-
-    this.setState({ theme: { ...t } });
-    this.setHeaderTheme(t);
-
-    return t;
-  }
-
   setHeaderData = () => {
     this.setTitle();
     this.setOptionMenu();
     this.setTokenInfo();
-  }
-
-  setHeaderTheme = (theme) => {
-    const { navigation } = this.props;
-    navigation.setParams({
-      theme
-    });
-  }
+  };
 
   setTokenInfo = () => {
     const { navigation, selectedPrivacy } = this.props;
     navigation.setParams({
       selectedPrivacy
     });
-  }
+  };
 
   setTitle = () => {
     const { navigation, selectedPrivacy } = this.props;
@@ -117,7 +91,7 @@ class WalletDetailContainer extends Component {
       title,
       subTitle: selectedPrivacy?.networkName
     });
-  }
+  };
 
   setOptionMenu = () => {
     const { navigation, selectedPrivacy } = this.props;
@@ -133,20 +107,10 @@ class WalletDetailContainer extends Component {
       });
     }
 
-    if (selectedPrivacy?.isWithdrawable) {
-      options.push({
-        id: 'withdraw',
-        icon: <Image source={withdrawIcon} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
-        label: 'Withdraw',
-        desc: 'Withdraw funds to another crypto wallet',
-        handlePress: () => navigation.navigate(ROUTE_NAMES.Withdraw)
-      });
-    }
-
     navigation.setParams({
       optionMenu: options
     });
-  }
+  };
 
   handleUnfollowTokenBtn = async tokenId => {
     try {
@@ -161,7 +125,7 @@ class WalletDetailContainer extends Component {
     } catch (e) {
       new ExHandler(e).showErrorToast();
     }
-  }
+  };
 
   onLoadBalance = () => {
     try {
@@ -177,7 +141,7 @@ class WalletDetailContainer extends Component {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   render() {
     const { theme } = this.state;

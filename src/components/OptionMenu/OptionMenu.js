@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View, Modal } from '@src/components/core';
+import { Text, TouchableOpacity, View, Modal, ScrollView } from '@src/components/core';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
@@ -48,35 +48,37 @@ class OptionMenu extends Component {
             <View style={styleSheet.content}>
               <View style={styleSheet.barIcon} />
               {title && <Text style={styleSheet.title}>{title}</Text>}
-              {data.map((item, index) => {
-                const handleItemPress = () => {
-                  if (typeof item?.handlePress === 'function') {
-                    item.handlePress();
-                  }
+              <ScrollView style={styleSheet.scrollView}>
+                {data.map((item, index) => {
+                  const handleItemPress = () => {
+                    if (typeof item?.handlePress === 'function') {
+                      item.handlePress();
+                    }
 
-                  this.handleToggle(false);
-                };
-                return (
-                  <TouchableOpacity
-                    key={item?.id}
-                    onPress={handleItemPress}
-                    style={[
-                      styleSheet.menuItem,
-                      index < (data.length - 1) && styleSheet.itemDivider
-                    ]}
-                  >
-                    <View style={styleSheet.icon}>{item?.icon}</View>
-                    <View style={styleSheet.textContainer}>
-                      {
+                    this.handleToggle(false);
+                  };
+                  return (
+                    <TouchableOpacity
+                      key={item?.id}
+                      onPress={handleItemPress}
+                      style={[
+                        styleSheet.menuItem,
+                        index < (data.length - 1) && styleSheet.itemDivider
+                      ]}
+                    >
+                      <View style={styleSheet.icon}>{item?.icon}</View>
+                      <View style={styleSheet.textContainer}>
+                        {
                         item?.label && typeof item.label === 'string' ?
                           <Text style={styleSheet.itemText}>{item?.label}</Text>
                           : item.label
-                      }
-                      <Text style={styleSheet.itemDescText}>{item?.desc}</Text>
-                    </View>
-                  </TouchableOpacity>
-                );
-              })}
+                        }
+                        { item?.desc ? <Text style={styleSheet.itemDescText}>{item?.desc}</Text> : null }
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
             </View>
           </TouchableOpacity>
         </Modal>

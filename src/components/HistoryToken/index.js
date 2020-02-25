@@ -1,4 +1,4 @@
-import { Button, RefreshControl, ScrollView, Toast } from '@src/components/core';
+import {Button, RefreshControl, ScrollView, Toast} from '@src/components/core';
 import HistoryList from '@src/components/HistoryList';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { CONSTANT_COMMONS } from '@src/constants';
@@ -113,7 +113,7 @@ class HistoryTokenContainer extends Component {
       this.setState({ isLoading: true });
       const { wallet, defaultAccount } = this.props;
       const token = this.getToken(this.props);
-  
+
       const [histories, historiesFromApi] = await Promise.all([
         this.loadTokentHistory(wallet, defaultAccount, token),
         this.getHistoryFromApi()
@@ -188,16 +188,21 @@ class HistoryTokenContainer extends Component {
     if (selectedPrivacy?.isDeposable) {
       return (
         <Button
-          title='Make a deposit'
           onPress={() => {
             navigation.navigate(ROUTE_NAMES.Deposit);
+          }}
+          title="Shield your crypto"
+          style={{
+            position: 'absolute',
+            width: '100%',
+            bottom: 100,
           }}
         />
       );
     }
 
     return null;
-  }
+  };
 
   render() {
     const { isLoading, histories, historiesFromApi } = this.state;

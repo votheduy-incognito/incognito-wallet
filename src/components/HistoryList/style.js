@@ -51,7 +51,7 @@ const style = StyleSheet.create({
     ...FONT.STYLE.medium,
     fontSize: 20,
     textAlign: 'center',
-    marginVertical: 40,
+    lineHeight: 24,
   },
   noHistoryActionButton: {
     width: 200
