@@ -4,7 +4,7 @@ import { COLORS, FONT } from '@src/styles';
 const style = StyleSheet.create({
   container: {
     padding: 30,
-    backgroundColor: COLORS.lightGrey14,
+    backgroundColor: COLORS.lightGrey6,
   },
   title: {
     fontSize: 24,
