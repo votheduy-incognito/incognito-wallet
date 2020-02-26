@@ -285,8 +285,8 @@ class SetupWifi extends PureComponent {
       throw new CustomError(knownCode.node_can_not_connect_hotspot);
     }
 
-    this.addStep({name: 'Check node hotspot'});
     await Util.delay(60);
+    this.addStep({name: 'Check node hotspot'});
 
     await LocalDatabase.saveVerifyCode(verifyCode);
     this.setState({ lastVerifyCode: verifyCode });
@@ -424,7 +424,7 @@ class SetupWifi extends PureComponent {
         ValidatorKey: ValidatorKey,
         qrCodeDeviceId: qrCode,
         PaymentAddress: PaymentAddress
-      }),8);
+      }),60);
       this.addStep({ name: 'Send stake request success', detail: response });
       await APIService.trackLog({action:funcName, message:`Result: requestStake ==> ${response?'SUCCESS':'FAIL'}`});
       const dataRequestStake = response?.data||{};
