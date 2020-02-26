@@ -5,25 +5,19 @@ const style = StyleSheet.create({
   container: {
     paddingTop: 20,
     backgroundColor: COLORS.dark2,
-  },
-  textContainer: {
-    marginTop: 15,
+    flexDirection: 'row',
+    height: 100,
     alignItems: 'center',
+    paddingLeft: 25,
   },
   title: {
     fontSize: 24,
     color: COLORS.white,
     marginBottom: 8,
   },
-  desc: {
-    fontSize: 16,
-    lineHeight: 22,
-    color: COLORS.white,
-    textAlign: 'center',
+  icon :{
+    marginLeft: 'auto',
   },
-  image: {
-    marginTop: 20,
-  }
 });
 
 export default style;

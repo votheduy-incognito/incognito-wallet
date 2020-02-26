@@ -1,21 +1,23 @@
 import {Button, RefreshControl, ScrollView, Toast} from '@src/components/core';
 import HistoryList from '@src/components/HistoryList';
 import LoadingContainer from '@src/components/LoadingContainer';
-import { CONSTANT_COMMONS } from '@src/constants';
-import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
+import {CONSTANT_COMMONS} from '@src/constants';
+import {accountSeleclor, selectedPrivacySeleclor} from '@src/redux/selectors';
 import ROUTE_NAMES from '@src/router/routeNames';
-import { getpTokenHistory, removeHistory } from '@src/services/api/history';
-import { ExHandler } from '@src/services/exception';
+import {getpTokenHistory, removeHistory} from '@src/services/api/history';
+import {ExHandler} from '@src/services/exception';
 import tokenService from '@src/services/wallet/tokenService';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { withNavigation } from 'react-navigation';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
+import React, {Component} from 'react';
+import {withNavigation} from 'react-navigation';
+import {connect} from 'react-redux';
+import {compose} from 'redux';
 import EmptyHistory from '@components/HistoryList/EmptyHistory/index';
 
 const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, decimals, pDecimals) => {
   const data = [];
+
+  console.debug('COMBINE');
 
   historiesFromApi && historiesFromApi.forEach((h) => {
     data.push({
@@ -62,6 +64,8 @@ const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, dec
       feePToken: h?.feePToken,
     });
   });
+
+  console.debug('DATA', data);
 
   return data.sort((a, b) => new Date(a.time).getTime() < new Date(b.time).getTime() ? 1 : -1);
 };
@@ -145,9 +149,7 @@ class HistoryTokenContainer extends Component {
         return;
       }
 
-      const histories = await getpTokenHistory({ paymentAddress, tokenId: selectedPrivacy?.tokenId });
-
-      return histories;
+      return await getpTokenHistory({paymentAddress, tokenId: selectedPrivacy?.tokenId});
     } catch (e) {
       throw e;
     }
@@ -190,7 +192,7 @@ class HistoryTokenContainer extends Component {
       return (
         <Button
           onPress={() => {
-            navigation.navigate(ROUTE_NAMES.Deposit);
+            navigation.navigate(ROUTE_NAMES.Shield);
           }}
           title="Shield your crypto"
           style={{
@@ -213,7 +215,7 @@ class HistoryTokenContainer extends Component {
       return <LoadingContainer />;
     }
 
-    if (!histories || !histories.length) {
+    if ((!histories || !histories.length) && (!historiesFromApi || !historiesFromApi.length)) {
       return (<EmptyHistory actionButton={this.renderActionButton()} />);
     }
 

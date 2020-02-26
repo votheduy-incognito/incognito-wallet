@@ -16,7 +16,7 @@ const buttons = [
     image: icShield,
     title: 'Shield',
     desc: 'your crypto',
-    route: ROUTE_NAMES.Deposit,
+    route: ROUTE_NAMES.Shield,
   },
   {
     image: icSend,
@@ -28,7 +28,7 @@ const buttons = [
     image: icReceive,
     title: 'Receive',
     desc: 'anonymously',
-    route: ROUTE_NAMES.ReceiveCrypto,
+    route: ROUTE_NAMES.ReceiveCoin,
   },
   {
     image: icTrade,

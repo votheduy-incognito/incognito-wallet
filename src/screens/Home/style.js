@@ -15,7 +15,7 @@ const style = StyleSheet.create({
     maxWidth: 320,
     marginLeft: 'auto',
     marginRight: 'auto',
-    marginTop: deviceHeight < 750 ? 15 : 80,
+    marginTop: deviceHeight < 750 ? 35 : 80,
   },
   btn: {
     width: '33%',

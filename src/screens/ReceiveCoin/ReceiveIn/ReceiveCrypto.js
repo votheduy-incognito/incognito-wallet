@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Container, ScrollView, Text } from '@src/components/core';
-import QrCodeAddress from '@src/components/QrCodeAddress';
+import { Container, ScrollView, Text } from '@components/core/index';
+import QrCodeAddress from '@components/QrCodeAddress/index';
 import { homeStyle } from './style';
 
 

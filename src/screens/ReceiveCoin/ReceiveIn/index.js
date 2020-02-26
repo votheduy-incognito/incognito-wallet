@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import LoadingContainer from '@src/components/LoadingContainer';
+import LoadingContainer from '@components/LoadingContainer/index';
 import { connect } from 'react-redux';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import ReceiveCrypto from './ReceiveCrypto';

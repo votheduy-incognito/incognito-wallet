@@ -2,9 +2,6 @@ import { StyleSheet } from 'react-native';
 import { FONT, COLORS } from '@src/styles';
 
 export default StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   mainContainer: {
     flex: 1,
   },
@@ -38,8 +35,8 @@ export default StyleSheet.create({
 
 export const waitingDepositStyle = StyleSheet.create({
   container: {
-    flex: 1,
-    marginTop: 80,
+    backgroundColor: COLORS.white,
+    padding: 20,
   },
   textContainer: {
     paddingHorizontal: 20,
@@ -47,13 +44,13 @@ export const waitingDepositStyle = StyleSheet.create({
   text: {
     textAlign: 'center',
     color: COLORS.lightGrey1,
-    fontSize: 13,
+    fontSize: 14,
     lineHeight: 18,
   },
   textHighlight: {
     ...FONT.STYLE.medium,
     color: COLORS.dark1,
-    fontSize: 15,
+    fontSize: 14,
     lineHeight: 23,
   }
 });

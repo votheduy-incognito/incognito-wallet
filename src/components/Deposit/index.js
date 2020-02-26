@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import LoadingContainer from '@src/components/LoadingContainer';
+import LoadingContainer from '@components/LoadingContainer';
 import { connect } from 'react-redux';
-import { genCentralizedDepositAddress, genERC20DepositAddress, genETHDepositAddress } from '@src/services/api/deposit';
-import { getMinMaxDepositAmount } from '@src/services/api/misc';
+import { genCentralizedDepositAddress, genERC20DepositAddress, genETHDepositAddress } from '@services/api/deposit';
+import { getMinMaxDepositAmount } from '@services/api/misc';
 import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
-import { ExHandler } from '@src/services/exception';
+import { ExHandler } from '@services/exception';
 import {logEvent} from '@services/firebase';
 import Deposit from './Deposit';
 
@@ -40,7 +40,7 @@ class DepositContainer extends Component {
     } catch (e) {
       new ExHandler(e, 'Can not get min/max amount to deposit').showErrorToast();
     }
-  }
+  };
 
   getDepositAddress = async () => {
     try {
@@ -84,10 +84,10 @@ class DepositContainer extends Component {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   render() {
-    const { selectedPrivacy } = this.props;
+    const { selectedPrivacy, amount } = this.props;
     const { address, min, max } = this.state;
 
     if (!selectedPrivacy) return <LoadingContainer />;
@@ -100,6 +100,7 @@ class DepositContainer extends Component {
         handleGetMinMaxAmount={this.getMinMaxAmount}
         min={min}
         max={max}
+        amount={amount}
       />
     );
   }
@@ -113,10 +114,12 @@ const mapDispatch = { };
 
 DepositContainer.defaultProps = {
   selectedPrivacy: null,
+  amount: 0,
 };
 
 DepositContainer.propTypes = {
   selectedPrivacy: PropTypes.object,
+  amount: PropTypes.number,
 };
 
 

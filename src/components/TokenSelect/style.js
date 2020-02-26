@@ -8,6 +8,11 @@ const style = StyleSheet.create({
     position: 'absolute',
     right: -40,
     bottom: -10,
+    height: 54,
+  },
+  iconContainer: {
+    width: 200,
+    paddingLeft: 150,
   },
 });
 
