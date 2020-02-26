@@ -78,15 +78,15 @@ class ShareInput extends React.Component {
                     <View style={mainStyle.twoColumns}>
                       <View style={mainStyle.tokenIcon}>
                         <CryptoIcon
-                          key={item.token2.id}
-                          tokenId={item.token2.id}
+                          key={item.token2?.id}
+                          tokenId={item.token2?.id}
                           size={22}
                         />
                       </View>
                       <VerifiedText
-                        isVerified={item.token2.isVerified}
+                        isVerified={item.token2?.isVerified}
                         style={modalStyle.tokenSymbol}
-                        text={`${item.token2.name} (${item.token2.symbol})`}
+                        text={`${item.token2?.name} (${item.token2?.symbol})`}
                       />
                     </View>
                   </View>
@@ -101,6 +101,11 @@ class ShareInput extends React.Component {
 
   renderToken() {
     const { pair } = this.props;
+
+    if (!pair || !pair.token1 || !pair.token2) {
+      return;
+    }
+
     return (
       <View style={stylesheet.pair}>
         <View style={stylesheet.token}>

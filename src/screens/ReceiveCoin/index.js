@@ -3,19 +3,19 @@ import PropTypes from 'prop-types';
 import { TouchableOpacity, View, Text, ScrollView } from '@src/components/core';
 import {useSelector} from 'react-redux';
 import {selectedPrivacySeleclor} from '@src/redux/selectors';
-import SendIn from './SendIn';
-import SendOut from './SendOut';
+import ReceiveOut from '@src/components/Deposit';
+import ReceiveIn from './ReceiveIn';
 
 import styles from './style';
 
 const modes = [
   {
     text: 'In Network',
-    component: SendIn,
+    component: ReceiveIn,
   },
   {
     text: 'Out Network',
-    component: SendOut,
+    component: ReceiveOut,
   }
 ];
 

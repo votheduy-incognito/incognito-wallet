@@ -16,7 +16,13 @@ class OptionMenu extends Component {
   }
 
   handleToggle = isOpen => {
+    const { onClose } = this.props;
+
     this.setState(({ open }) => ({ open: isOpen ?? !open }));
+
+    if (onClose) {
+      onClose();
+    }
   };
 
   render() {
@@ -111,6 +117,7 @@ OptionMenu.defaultProps = {
   style: null,
   data: [],
   onSearch: undefined,
+  onClose: undefined,
   placeholder: '',
 };
 
@@ -129,6 +136,7 @@ OptionMenu.propTypes = {
     })
   ),
   onSearch: PropTypes.func,
+  onClose: PropTypes.func,
   placeholder: PropTypes.string,
 };
 

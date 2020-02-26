@@ -15,6 +15,7 @@ import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
 import {logEvent} from '@services/firebase';
 import {MESSAGES} from '@screens/Dex/constants';
 import TokenSelect from '@components/TokenSelect';
+import CurrentBalance from '@components/CurrentBalance';
 import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
 import { homeStyle } from './style';
 
@@ -215,7 +216,7 @@ class SendCrypto extends React.Component {
     return (
       <ScrollView style={homeStyle.container}>
         <Container style={homeStyle.mainContainer}>
-          <TokenSelect onSelect={this.handleSelectToken} />
+          <CurrentBalance select={<TokenSelect onSelect={this.handleSelectToken} />} />
           <Form>
             {({ handleSubmit }) => (
               <View style={homeStyle.form}>

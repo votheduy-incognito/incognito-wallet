@@ -18,6 +18,7 @@ import accountService from '@services/wallet/accountService';
 import {MESSAGES} from '@screens/Dex/constants';
 import TokenSelect from '@components/TokenSelect';
 import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
+import CurrentBalance from '@components/CurrentBalance';
 import style from './style';
 
 const formName = 'withdraw';
@@ -259,9 +260,10 @@ class Withdraw extends React.Component {
       <ScrollView style={style.container}>
         <Container style={style.mainContainer}>
           <View style={style.currentBalanceContainer}>
-            <TokenSelect
+            <CurrentBalance select={<TokenSelect
               onSelect={this.handleSelectToken}
               onlyPToken
+            />}
             />
           </View>
           <Form style={style.form}>

@@ -199,12 +199,12 @@ class WithdrawContainer extends Component {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   goToDeposit = () => {
     const { navigation } = this.props;
-    navigation?.replace(routeNames.Deposit);
-  }
+    navigation?.replace(routeNames.Shield);
+  };
 
   render() {
     const { selectedPrivacy } = this.props;

@@ -30,7 +30,7 @@ class WalletDetail extends Component {
 
   handleDepositBtn = () => {
     const { navigation } = this.props;
-    navigation.navigate(ROUTE_NAMES.Deposit);
+    navigation.navigate(ROUTE_NAMES.Shield);
   };
 
   handleSendBtn = () => {
@@ -40,7 +40,7 @@ class WalletDetail extends Component {
 
   handleReceiveBtn = () => {
     const { navigation } = this.props;
-    navigation.navigate(ROUTE_NAMES.ReceiveCrypto);
+    navigation.navigate(ROUTE_NAMES.ReceiveCoin);
   };
 
   renderActionButton = ({ label, icon, onPress, isDeposable }) => (
