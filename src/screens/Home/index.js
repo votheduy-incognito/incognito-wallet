@@ -9,6 +9,7 @@ import icInvent from '@assets/images/icons/ic_invent_btn.png';
 import IconTextButton from '@screens/Home/IconTextButton';
 import ROUTE_NAMES from '@routers/routeNames';
 
+import LinearGradient from 'react-native-linear-gradient';
 import styles from './style';
 
 const buttons = [
@@ -50,17 +51,27 @@ const Home = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 1}}
+      colors={[
+        '#063436',
+        '#006970'
+      ]}
+      style={styles.container}
+    >
       <HomeHeader />
-      <View style={styles.btnContainer}>
-        {buttons.map(({ image, title, desc, route }) => (
-          <View style={styles.btn} key={title}>
-            <IconTextButton image={image} title={title} desc={desc} onPress={() => goToScreen(route)} />
-          </View>
-        )
-        )}
+      <View style={styles.content}>
+        <View style={styles.btnContainer}>
+          {buttons.map(({ image, title, desc, route }) => (
+            <View style={styles.btn} key={title}>
+              <IconTextButton image={image} title={title} desc={desc} onPress={() => goToScreen(route)} />
+            </View>
+          )
+          )}
+        </View>
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 
