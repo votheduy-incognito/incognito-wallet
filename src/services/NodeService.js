@@ -85,7 +85,7 @@ export default class NodeService {
 
   static verifyProductCode = async(verifyCode)=> {
     const params = { verify_code: verifyCode };
-    const response = await Util.excuteWithTimeout(APIService.verifyCode(params),8);
+    const response = await Util.excuteWithTimeout(APIService.verifyCode(params), 60);
     const { status, data = {}} = response;
     if (status === 1) {
       const { product } = data;
