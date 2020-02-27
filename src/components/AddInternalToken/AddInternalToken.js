@@ -16,6 +16,7 @@ import React, { Component } from 'react';
 import { setWallet } from '@src/redux/actions/wallet';
 import { getInternalTokenList } from '@src/redux/actions/token';
 import { ExHandler } from '@src/services/exception';
+import ROUTES_NAME from '@routers/routeNames';
 import styleSheet from './style';
 import CopiableText from '../CopiableText';
 import Help from '../Help';
@@ -65,7 +66,7 @@ class AddInternalToken extends Component {
 
   goBack = () => {
     const { navigation } = this.props;
-    navigation?.popToTop();
+    navigation?.navigate(ROUTES_NAME.Wallet);
   };
 
   handleSaveCoinInfo = async (data) => {

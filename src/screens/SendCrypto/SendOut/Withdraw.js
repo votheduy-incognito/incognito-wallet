@@ -19,6 +19,7 @@ import {MESSAGES} from '@screens/Dex/constants';
 import TokenSelect from '@components/TokenSelect';
 import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
 import CurrentBalance from '@components/CurrentBalance';
+import ROUTES_NAME from '@routers/routeNames';
 import style from './style';
 
 const formName = 'withdraw';
@@ -77,6 +78,11 @@ class Withdraw extends React.Component {
     if (fee !== oldFee || feeUnitByTokenId !== oldFeeUnitByTokenId) {
       // need to re-calc max amount can be send if fee was changed
       this.setFormValidator({ maxAmount: this.getMaxAmount() });
+    }
+
+    if (oldSelectedPrivacy !== selectedPrivacy && selectedPrivacy) {
+      this.setFormValidator({ maxAmount: this.getMaxAmount(), minAmount: this.getMinAmount() });
+      this.getSupportedFeeTypes();
     }
   }
 
@@ -177,7 +183,9 @@ class Withdraw extends React.Component {
           tokenSymbol: selectedPrivacy?.symbol,
         });
 
-        navigation.goBack();
+        navigation.pop();
+        navigation.navigate(ROUTES_NAME.Wallet);
+        navigation.navigate(ROUTES_NAME.WalletDetail);
         return res;
       }
     } catch (e) {
@@ -250,20 +258,21 @@ class Withdraw extends React.Component {
   render() {
     const { maxAmountValidator, minAmountValidator, supportedFeeTypes, estimateFeeData, feeForBurn, isUsedPRVFee } = this.state;
     const { fee, feeUnit } = estimateFeeData;
-    const { selectedPrivacy, isFormValid, amount, account } = this.props;
+    const { selectedPrivacy, isFormValid, amount, account, selectable } = this.props;
     const { externalSymbol, isErc20Token, name: tokenName } = selectedPrivacy || {};
     const addressValidator = this.getAddressValidator(externalSymbol, isErc20Token);
     const maxAmount = this.getMaxAmount();
 
-
     return (
       <ScrollView style={style.container}>
         <Container style={style.mainContainer}>
-          <View style={style.currentBalanceContainer}>
-            <CurrentBalance select={<TokenSelect
-              onSelect={this.handleSelectToken}
-              onlyPToken
-            />}
+          <View>
+            <CurrentBalance select={selectable ? (
+              <TokenSelect
+                onSelect={this.handleSelectToken}
+                onlyPToken
+              />
+            ) : null}
             />
           </View>
           <Form style={style.form}>
@@ -358,7 +367,8 @@ Withdraw.defaultProps = {
   amount: null,
   isFormValid: false,
   minAmount: null,
-  maxAmount: null
+  maxAmount: null,
+  selectable: true,
 };
 
 Withdraw.propTypes = {
@@ -372,7 +382,8 @@ Withdraw.propTypes = {
   isFormValid: PropTypes.bool,
   amount: PropTypes.string,
   minAmount: PropTypes.number,
-  maxAmount: PropTypes.number
+  maxAmount: PropTypes.number,
+  selectable: PropTypes.bool,
 };
 
 const mapState = state => ({

@@ -19,7 +19,7 @@ const WaitingDeposit = ({selectedPrivacy, depositAddress, min, max, amount}) => 
           {
             formatAmount ?
               `Send ${formatAmount} ${externalSymbol} to the address below to receive ${formatAmount} privacy ${externalSymbol} (${symbol}) in your Incognito wallet.`
-              : `Send ${externalSymbol} to the address below to receive privacy ${externalSymbol} (${symbol}) in your Incognito wallet.`
+              : `Receive ${externalSymbol} privately from outside the Incognito network using the address below:`
           }
         </Text>
         <Dashed />

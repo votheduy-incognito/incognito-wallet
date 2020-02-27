@@ -69,6 +69,11 @@ class SendCrypto extends React.Component {
     if (receiptData?.txId !== prevProps.receiptData?.txId) {
       openReceipt(receiptData);
     }
+
+    if (oldSelectedPrivacy !== selectedPrivacy && selectedPrivacy) {
+      this.setFormValidation({ maxAmount: this.getMaxAmount(), minAmount: this.getMinAmount() });
+      this.getSupportedFeeTypes();
+    }
   }
 
   getMinAmount = () => {
@@ -210,13 +215,15 @@ class SendCrypto extends React.Component {
 
   render() {
     const { supportedFeeTypes, estimateFeeData } = this.state;
-    const { isSending, amount, toAddress, isFormValid, account } = this.props;
+    const { isSending, amount, toAddress, isFormValid, account, selectable } = this.props;
     const maxAmount = this.getMaxAmount();
 
     return (
       <ScrollView style={homeStyle.container}>
         <Container style={homeStyle.mainContainer}>
-          <CurrentBalance select={<TokenSelect onSelect={this.handleSelectToken} />} />
+          <CurrentBalance
+            select={selectable ? <TokenSelect onSelect={this.handleSelectToken} /> : null}
+          />
           <Form>
             {({ handleSubmit }) => (
               <View style={homeStyle.form}>
@@ -277,6 +284,7 @@ SendCrypto.defaultProps = {
   isFormValid: false,
   amount: null,
   toAddress: null,
+  selectable: true,
 };
 
 SendCrypto.propTypes = {
@@ -289,6 +297,7 @@ SendCrypto.propTypes = {
   isFormValid: PropTypes.bool,
   amount: PropTypes.string,
   toAddress: PropTypes.string,
+  selectable: PropTypes.bool,
 };
 
 const mapState = state => ({

@@ -1,8 +1,6 @@
-import { Button, Container, Text } from '@components/core/index';
 import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
-import routeNames from '@routers/routeNames';
 import { addERC20TxWithdraw, addETHTxWithdraw, genCentralizedWithdrawAddress, updatePTokenFee } from '@services/api/withdraw';
 import { getMinMaxWithdrawAmount } from '@services/api/misc';
 import { ExHandler } from '@services/exception';
@@ -147,7 +145,7 @@ class WithdrawContainer extends Component {
     });
 
     return address;
-  }
+  };
 
   handleCentralizedWithdraw = async ({ amount, fee, isUsedPRVFee, feeForBurn, remoteAddress, memo }) => {
     try {
@@ -162,7 +160,7 @@ class WithdrawContainer extends Component {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   handleDecentralizedWithdraw = async ({ amount, fee, isUsedPRVFee, feeForBurn, remoteAddress }) => {
     try {
@@ -201,26 +199,12 @@ class WithdrawContainer extends Component {
     }
   };
 
-  goToDeposit = () => {
-    const { navigation } = this.props;
-    navigation?.replace(routeNames.Shield);
-  };
-
   render() {
     const { selectedPrivacy } = this.props;
     const { minAmount, maxAmount, isReady, hasError } = this.state;
 
     if (!isReady) {
       return <LoadingContainer />;
-    }
-
-    if (selectedPrivacy && selectedPrivacy?.amount <= 0) {
-      return (
-        <Container style={{ flex: 1, justifyContent: 'center', alignItems: 'center', }}>
-          <Text style={{ padding: 20, textAlign: 'center'}}>Please deposit more {selectedPrivacy?.symbol} to your wallet.</Text>
-          <Button style={{ maxWidth: 200 }} title='Deposit' onPress={this.goToDeposit} />
-        </Container>
-      );
     }
 
     if (!selectedPrivacy || hasError) {
@@ -247,9 +231,6 @@ class WithdrawContainer extends Component {
 
 const mapState = state => ({
   tokens: state.token?.followed,
-  selectedPrivacy: selectedPrivacySeleclor.selectedPrivacy(state),
-  wallet: state.wallet,
-  account: accountSeleclor.defaultAccount(state)
 });
 
 const mapDispatch = { getTokenBalanceBound: getTokenBalance };

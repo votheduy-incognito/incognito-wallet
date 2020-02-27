@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {KeyboardAvoidingView, ScrollView, View} from 'react-native';
 import {Button, TextInput, Text, TouchableOpacity} from '@components/core/index';
 import {useDispatch, useSelector} from 'react-redux';
 import {selectedPrivacySeleclor} from '@src/redux/selectors';
@@ -13,6 +13,7 @@ import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
 import CryptoIcon from '@components/CryptoIcon/index';
 import VerifiedText from '@components/VerifiedText/index';
 import {Icon} from 'react-native-elements';
+import {isIOS} from '@utils/platform';
 import withDepositAmount from './DepositAmount.enhance';
 import {styled} from './DepositAmount.styled';
 import {validateForm} from './DepositAmount.utils';
@@ -21,7 +22,7 @@ const DepositAmount = props => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const dispatch = useDispatch();
   const {symbol, tokenId, isVerified} = selectedPrivacy;
-  const {min, max, onComplete} = props;
+  const {min, max, onComplete, showGuide} = props;
   const [state, setState] = React.useState({
     value,
     validated: {
@@ -57,7 +58,7 @@ const DepositAmount = props => {
   };
 
   return (
-    <View style={styled.container}>
+    <View style={showGuide && styled.container}>
       <View style={styled.textContainer}>
         <View>
           <TextInput
@@ -100,15 +101,24 @@ const DepositAmount = props => {
         />
 
       </View>
-      <TouchableOpacity
-        style={styled.floatBtn}
-        onPress={() => navigation.navigate(routeNames.WhyShield)}
-      >
-        <View style={styled.btnIcon}>
-          <Icon name="chevron-right" />
-        </View>
-        <Text style={styled.text}>Find out why</Text>
-      </TouchableOpacity>
+      { showGuide ? (
+        <KeyboardAvoidingView
+          contentContainerStyle={{ position: 'absolute', bottom: 0 }}
+          style={{ position: 'absolute', bottom: 0 }}
+          keyboardVerticalOffset={isIOS() ? 160 : 0}
+          behavior={isIOS() ? 'position' : undefined}
+        >
+          <TouchableOpacity
+            style={styled.floatBtn}
+            onPress={() => navigation.navigate(routeNames.WhyShield)}
+          >
+            <View style={styled.btnIcon}>
+              <Icon name="chevron-right" />
+            </View>
+            <Text style={styled.text}>Find out why</Text>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
+      ) : null}
     </View>
   );
 };
@@ -117,6 +127,11 @@ DepositAmount.propTypes = {
   min: PropTypes.number.isRequired,
   max: PropTypes.number.isRequired,
   onComplete: PropTypes.func.isRequired,
+  showGuide: PropTypes.bool,
+};
+
+DepositAmount.defaultProps = {
+  showGuide: false,
 };
 
 export default withDepositAmount(DepositAmount);

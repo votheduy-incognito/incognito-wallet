@@ -110,7 +110,6 @@ class Dex extends React.Component {
   }
 
   changeMode(mode) {
-    console.debug('CHANGE MODE', mode);
     this.setState({ mode });
   }
 

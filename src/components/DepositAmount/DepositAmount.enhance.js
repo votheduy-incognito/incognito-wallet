@@ -3,7 +3,6 @@ import {selectedPrivacySeleclor, tokenSeleclor} from '@src/redux/selectors';
 import {useDispatch, useSelector} from 'react-redux';
 import {getMinMaxDepositAmount} from '@services/api/misc';
 import {ExHandler} from '@services/exception';
-import withLayout from '@components/Layout/index';
 import {compose} from 'recompose';
 import LoadingContainer from '@components/LoadingContainer/index';
 import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
@@ -66,4 +65,4 @@ const enhance = WrappedComp => props => {
   return <WrappedComp {...{...props, min, max}} />;
 };
 
-export default compose(withLayout, enhance);
+export default compose(enhance);

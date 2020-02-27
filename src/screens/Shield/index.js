@@ -1,7 +1,7 @@
 import React from 'react';
 import Deposit from '@src/components/Deposit';
 import withLayout from '@components/Layout/index';
-import DepositAmount from './DepositAmount';
+import DepositAmount from '@components/DepositAmount';
 
 const Shield = () => {
   const [amount, setAmount] = React.useState(0);
@@ -17,8 +17,10 @@ const Shield = () => {
     );
   }
 
+  const LayoutInput = withLayout(DepositAmount);
+
   return (
-    <DepositAmount onComplete={handleShield} />
+    <LayoutInput onComplete={handleShield} showGuide />
   );
 };
 

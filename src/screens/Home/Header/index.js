@@ -6,20 +6,12 @@ import styles from './style';
 
 const HomeHeader = () => {
   return (
-    <LinearGradient
-      start={{x: 0, y: 0}}
-      end={{x: 1, y: 1}}
-      colors={[
-        '#063436',
-        '#006970'
-      ]}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <Text style={styles.title}>Incognito</Text>
       <View style={styles.icon}>
         <SettingIcon />
       </View>
-    </LinearGradient>
+    </View>
   );
 };
 
