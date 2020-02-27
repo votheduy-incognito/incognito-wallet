@@ -274,7 +274,7 @@ class SetupWifi extends PureComponent {
           this.addStep({ name: 'Send validator key error', detail: error.message });
           throw error;
         });
-    }, 5, 10);
+    }, 5, 15);
 
     this.addStep({ name: 'Send validator key success', detail: updateResult });
 

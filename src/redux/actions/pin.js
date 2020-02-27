@@ -14,7 +14,6 @@ export const updatePin = (newPin) => async (dispatch) => {
   const hashPin = convertUtil.toHash(newPin);
   await LocalDatabase.savePIN(hashPin);
 
-  console.debug('UPDATE', newPin, hashPin);
   dispatch({
     type: type.UPDATE,
     payload: hashPin,

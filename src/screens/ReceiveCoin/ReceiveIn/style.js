@@ -2,9 +2,6 @@ import { StyleSheet } from 'react-native';
 import { COLORS, FONT } from '@src/styles';
 
 export const homeStyle = StyleSheet.create({
-  container: {
-    flex: 1
-  },
   mainContainer: {
     flex: 1,
   },

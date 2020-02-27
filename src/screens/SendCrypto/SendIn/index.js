@@ -178,9 +178,6 @@ class SendCryptoContainer extends Component {
 }
 
 const mapState = state => ({
-  selectedPrivacy: selectedPrivacySeleclor.selectedPrivacy(state),
-  account: accountSeleclor.defaultAccount(state),
-  wallet: state.wallet,
   tokens: state.token.followed
 });
 

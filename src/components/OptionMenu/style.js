@@ -1,5 +1,6 @@
 import { COLORS, DECOR, SPACING, UTILS, THEME } from '@src/styles';
 import { StyleSheet } from 'react-native';
+import {isIOS} from '@utils/platform';
 
 const style = StyleSheet.create({
   container: {
@@ -19,11 +20,11 @@ const style = StyleSheet.create({
     borderTopLeftRadius: DECOR.borderRadiusBorder,
     borderTopRightRadius: DECOR.borderRadiusBorder,
     paddingTop: SPACING.small,
-    paddingBottom: 50,
+    paddingBottom: isIOS() ? 45 : 25,
     width: UTILS.deviceWidth()
   },
   scrollView: {
-    maxHeight: 350,
+    maxHeight: 250,
   },
   barIcon: {
     backgroundColor: COLORS.white,
@@ -45,6 +46,7 @@ const style = StyleSheet.create({
     height: 55,
     marginLeft: 10,
     flex: 1,
+    color: COLORS.dark1,
   },
   contentContainer: {
     alignItems: 'center',

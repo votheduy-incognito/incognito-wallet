@@ -35,12 +35,12 @@ class WalletDetail extends Component {
 
   handleSendBtn = () => {
     const { navigation } = this.props;
-    navigation.navigate(ROUTE_NAMES.SendCrypto);
+    navigation.navigate(ROUTE_NAMES.SendCrypto, { origin: ROUTE_NAMES.WalletDetail });
   };
 
   handleReceiveBtn = () => {
     const { navigation } = this.props;
-    navigation.navigate(ROUTE_NAMES.ReceiveCoin);
+    navigation.navigate(ROUTE_NAMES.ReceiveCoin, { origin: ROUTE_NAMES.WalletDetail });
   };
 
   renderActionButton = ({ label, icon, onPress, isDeposable }) => (

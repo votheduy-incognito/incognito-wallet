@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { useSelector, shallowEqual } from 'react-redux';
+import {useSelector, shallowEqual, useDispatch} from 'react-redux';
 import { View } from '@components/core';
 import OptionMenu from '@components/OptionMenu';
-import {tokenSeleclor} from '@src/redux/selectors';
+import {selectedPrivacySeleclor, tokenSeleclor} from '@src/redux/selectors';
 import {Icon} from 'react-native-elements';
 import CryptoIcon from '@components/CryptoIcon';
 import VerifiedText from '@components/VerifiedText/index';
 import TokenNetworkName from '@components/TokenNetworkName/index';
+import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
 import styles from './style';
 
 const generateMenu = (tokens, onSelect) => {
@@ -45,6 +46,8 @@ const TokenSelect = ({ onSelect, onlyPToken, size, style, iconStyle, showOrigina
     pTokens: tokenSeleclor.pTokens(state),
     internalTokens: tokenSeleclor.internalTokens(state),
   }), shallowEqual);
+  const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const dispatch = useDispatch();
 
   const getFullDataOfFollowTokens = () => {
     const tokens = followedTokens.map(item => {
@@ -67,6 +70,20 @@ const TokenSelect = ({ onSelect, onlyPToken, size, style, iconStyle, showOrigina
       return allTokens;
     }
 
+    if (!onlyPToken) {
+      return [{
+        id: '0000000000000000000000000000000000000000000000000000000000000004',
+        name: 'Incognito',
+        displayName: 'Privacy',
+        symbol: 'PRV',
+        displaySymbol: 'PRV',
+        pDecimals: 9,
+        hasIcon: true,
+        originalSymbol: 'PRV',
+        verified: true,
+      }, ...tokens];
+    }
+
     return tokens;
   };
 
@@ -75,6 +92,18 @@ const TokenSelect = ({ onSelect, onlyPToken, size, style, iconStyle, showOrigina
 
     setMenu(newMenu);
   }, [followedTokens]);
+
+  React.useEffect(() => {
+    if (onlyPToken && !selectedPrivacy.isPToken) {
+      const firstFollowPToken = followedTokens.find(item => pTokens.find(token => token.tokenId === item.id));
+
+      if (firstFollowPToken) {
+        dispatch(setSelectedPrivacy(firstFollowPToken.id));
+      } else {
+        dispatch(setSelectedPrivacy(pTokens[0].tokenId));
+      }
+    }
+  }, [onlyPToken]);
 
   React.useEffect(() => {
     if (onlyPToken) {
@@ -133,7 +162,7 @@ const TokenSelect = ({ onSelect, onlyPToken, size, style, iconStyle, showOrigina
       <OptionMenu
         data={menu}
         title="SELECT TOKEN"
-        placeholder="Name, Symbol, or Address"
+        placeholder="Name or Symbol"
         onSearch={handleSearch}
         onClose={handleClearSearch}
         style={[styles.select, style]}

@@ -53,7 +53,7 @@ const Home = ({ navigation }) => {
   return (
     <LinearGradient
       start={{x: 0, y: 0}}
-      end={{x: 1, y: 1}}
+      end={{x: 0.5, y: 0.5}}
       colors={[
         '#063436',
         '#006970'

@@ -21,8 +21,6 @@ class UnstakeContainer extends BaseScreen {
     const { params } = navigation.state;
     const { device } = params;
 
-    console.debug('UNSTAKE', device);
-
     this.state = {
       device,
       isUnstaking: false,
