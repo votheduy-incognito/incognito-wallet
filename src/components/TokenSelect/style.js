@@ -7,7 +7,7 @@ const style = StyleSheet.create({
   select: {
     position: 'absolute',
     right: -40,
-    bottom: -10,
+    bottom: -16,
     height: 54,
   },
   iconContainer: {

@@ -10,6 +10,7 @@ import CryptoIcon from '@components/CryptoIcon';
 import VerifiedText from '@components/VerifiedText/index';
 import TokenNetworkName from '@components/TokenNetworkName/index';
 import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
+import COLORS from '@src/styles/colors';
 import styles from './style';
 
 const generateMenu = (tokens, onSelect) => {
@@ -168,7 +169,7 @@ const TokenSelect = ({ onSelect, onlyPToken, size, style, iconStyle, showOrigina
         style={[styles.select, style]}
         icon={(
           <View style={[styles.iconContainer, iconStyle]}>
-            <Icon name="chevron-down" size={size} type="material-community" />
+            <Icon name="chevron-down" size={size} type="material-community" color={COLORS.primary} />
           </View>
         )}
       />

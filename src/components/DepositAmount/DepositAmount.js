@@ -1,8 +1,8 @@
 import React from 'react';
-import {KeyboardAvoidingView, ScrollView, View} from 'react-native';
+import {KeyboardAvoidingView, View} from 'react-native';
 import {Button, TextInput, Text, TouchableOpacity} from '@components/core/index';
 import {useDispatch, useSelector} from 'react-redux';
-import {selectedPrivacySeleclor} from '@src/redux/selectors';
+import {accountSeleclor, selectedPrivacySeleclor, tokenSeleclor} from '@src/redux/selectors';
 import PropTypes from 'prop-types';
 import {useNavigation} from 'react-navigation-hooks';
 import {ExHandler} from '@services/exception';
@@ -14,12 +14,20 @@ import CryptoIcon from '@components/CryptoIcon/index';
 import VerifiedText from '@components/VerifiedText/index';
 import {Icon} from 'react-native-elements';
 import {isIOS} from '@utils/platform';
-import withDepositAmount from './DepositAmount.enhance';
-import {styled} from './DepositAmount.styled';
+import PToken from '@models/pToken';
+import internalTokenModel from '@models/token';
+import accountService from '@services/wallet/accountService';
+import {setWallet} from '@src/redux/actions/wallet';
 import {validateForm} from './DepositAmount.utils';
+import {styled} from './DepositAmount.styled';
+import withDepositAmount from './DepositAmount.enhance';
 
 const DepositAmount = props => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const pTokens = useSelector(tokenSeleclor.pTokens);
+  const internalTokens = useSelector(tokenSeleclor.internalTokens);
+  const account = useSelector(accountSeleclor.defaultAccount);
+  const wallet = useSelector(state => state.wallet);
   const dispatch = useDispatch();
   const {symbol, tokenId, isVerified} = selectedPrivacy;
   const {min, max, onComplete, showGuide} = props;
@@ -47,6 +55,13 @@ const DepositAmount = props => {
         });
       }
 
+      const foundPToken : PToken = pTokens?.find((pToken: PToken) => pToken.tokenId === tokenId);
+      const foundInternalToken = !foundPToken && internalTokens?.find(token => token.id === tokenId);
+      const token = (foundInternalToken && internalTokenModel.toJson(foundInternalToken)) || foundPToken?.convertToToken();
+      await accountService.addFollowingTokens([token], account, wallet);
+
+      dispatch(setWallet(wallet));
+
       onComplete(value);
     } catch (error) {
       new ExHandler(error).showErrorToast();
@@ -56,6 +71,8 @@ const DepositAmount = props => {
   const handleSelectToken = (tokenId) => {
     dispatch(setSelectedPrivacy(tokenId));
   };
+
+  const Wrapper = isIOS() ? KeyboardAvoidingView : View;
 
   return (
     <View style={showGuide && styled.container}>
@@ -85,6 +102,7 @@ const DepositAmount = props => {
               style={{
                 height: 40,
                 right: -25,
+                bottom: -10,
               }}
               iconStyle={{
                 width: 150,
@@ -102,7 +120,7 @@ const DepositAmount = props => {
 
       </View>
       { showGuide ? (
-        <KeyboardAvoidingView
+        <Wrapper
           contentContainerStyle={{ position: 'absolute', bottom: 0 }}
           style={{ position: 'absolute', bottom: 0 }}
           keyboardVerticalOffset={isIOS() ? 160 : 0}
@@ -117,7 +135,7 @@ const DepositAmount = props => {
             </View>
             <Text style={styled.text}>Find out why</Text>
           </TouchableOpacity>
-        </KeyboardAvoidingView>
+        </Wrapper>
       ) : null}
     </View>
   );

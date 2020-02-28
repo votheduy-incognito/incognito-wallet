@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   tabBarLabel: {
     flexDirection: 'column',
     flex: 1,
-    width: 70,
+    width: 100,
     alignItems: 'center',
   },
   labelStyle: {

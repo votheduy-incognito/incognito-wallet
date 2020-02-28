@@ -24,12 +24,6 @@ class Wallet extends React.Component {
 
     return (
       <View style={homeStyle.wrapper}>
-        <View style={homeStyle.header}>
-          <SettingIcon />
-          <View style={homeStyle.headerTitleContainer}>
-            <AccountSelect name={account.name} />
-          </View>
-        </View>
         <ScrollView
           style={homeStyle.container}
           refreshControl={(
@@ -39,8 +33,7 @@ class Wallet extends React.Component {
             />
           )}
         >
-          <View style={homeStyle.bgStyle} />
-          <Container style={homeStyle.mainContainer}>
+          <View style={homeStyle.mainContainer}>
             <FollowingTokenList
               account={account}
               tokens={tokens}
@@ -68,7 +61,7 @@ class Wallet extends React.Component {
                 </View>
               </TouchableWithoutFeedback>
             </View>
-          </Container>
+          </View>
         </ScrollView>
       </View>
     );

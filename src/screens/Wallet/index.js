@@ -2,7 +2,6 @@ import LoadingContainer from '@src/components/LoadingContainer';
 import { getBalance as getAccountBalance, reloadAccountFollowingToken, /** loadAllPTokenHasBalance */ } from '@src/redux/actions/account';
 import { clearSelectedPrivacy, setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import { getBalance, getInternalTokenList, getPTokenList, setListToken } from '@src/redux/actions/token';
-import accountService from '@src/services/wallet/accountService';
 import { setWallet } from '@src/redux/actions/wallet';
 import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
@@ -19,6 +18,7 @@ import { CONSTANT_KEYS } from '@src/constants';
 import AppUpdater from '@components/AppUpdater';
 import AddPin from '@screens/AddPIN';
 import {WithdrawHistory} from '@models/dexHistory';
+import { withRoundHeaderLayout } from '@src/hoc';
 import { DialogUpgradeToMainnet } from './ChildViews';
 import Wallet from './Wallet';
 
@@ -163,28 +163,6 @@ class HomeContainer extends Component {
     navigation.navigate(routeNames.Setting, { isPrivacy: true });
   };
 
-  getTokenBalance = async token => {
-    try {
-      const { getBalance } = this.props;
-      await getBalance(token);
-    } catch (e) {
-      throw new CustomError(ErrorCode.home_load_balance_failed, { rawError: e });
-    }
-  };
-
-  removeOldTomo = async () => {
-    try {
-      const tomoTokenId = 'ba1e1865f97bc445a87e61fcec0880237b3c1747768b713d6e1706fde25a8c93';
-      const { account, wallet, setWallet } = this.props;
-      const updatedWallet = await accountService.removeFollowingToken(tomoTokenId, account, wallet);
-
-      // update new wallet to store
-      setWallet(updatedWallet);
-    } catch (e) {
-      new ExHandler(e);
-    }
-  }
-
   getAccountBalance = async account => {
     try {
       const { getAccountBalance } = this.props;
@@ -286,4 +264,4 @@ HomeContainer.propTypes = {
 export default connect(
   mapState,
   mapDispatch
-)(HomeContainer);
+)(withRoundHeaderLayout(HomeContainer));

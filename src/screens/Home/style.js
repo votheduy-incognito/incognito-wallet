@@ -1,11 +1,10 @@
-import {Dimensions, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {COLORS} from '@src/styles';
-
-const deviceHeight = Dimensions.get('screen').height;
 
 const style = StyleSheet.create({
   container: {
     flex: 1,
+    marginHorizontal: 15,
   },
   btnContainer: {
     flexDirection: 'row',
@@ -16,7 +15,7 @@ const style = StyleSheet.create({
     maxWidth: 320,
     marginLeft: 'auto',
     marginRight: 'auto',
-    marginTop: deviceHeight < 750 ? 35 : 80,
+    marginTop: 10,
   },
   content: {
     flex: 1,

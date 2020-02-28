@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {Image, Text, View} from '@src/components/core';
 import OptionMenu from '@components/OptionMenu';
@@ -11,18 +10,19 @@ import {Icon} from 'react-native-elements';
 import {COLORS} from '@src/styles';
 import styles from './style';
 
-const AccountSelect = ({ name }) => {
+const AccountSelect = () => {
   const [menu, setMenu] = React.useState([]);
-  const { listAccount } = useSelector(state => ({
-    listAccount: accountSeleclor.listAccount(state)
+  const { listAccount, account } = useSelector(state => ({
+    listAccount: accountSeleclor.listAccount(state),
+    account: accountSeleclor.defaultAccount(state),
   }), shallowEqual);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
     const newMenu = [];
-    listAccount.forEach(account => {
-      const accountName = account.name || account.AccountName;
-      const isCurrentAccount = name === accountName;
+    listAccount.forEach(item => {
+      const accountName = item.name || item.AccountName;
+      const isCurrentAccount = account?.name === accountName;
 
       newMenu.push({
         id: accountName,
@@ -50,18 +50,15 @@ const AccountSelect = ({ name }) => {
     <OptionMenu
       data={menu}
       style={styles.container}
+      toggleStyle={styles.toggle}
       icon={(
         <View style={styles.textContainer}>
-          <Text numberOfLines={1} style={styles.title}>{name}</Text>
+          <Text numberOfLines={1} style={styles.title}>{account?.name}</Text>
           <Icon name="chevron-down" color={COLORS.primary} type="material-community" />
         </View>
       )}
     />
   );
-};
-
-AccountSelect.propTypes = {
-  name: PropTypes.string.isRequired,
 };
 
 export default AccountSelect;

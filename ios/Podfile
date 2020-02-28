@@ -93,7 +93,6 @@ target 'constantWalletMobile' do
   pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
   pod 'CodePush', :path => '../node_modules/react-native-code-push'
   pod 'AppsFlyerFramework'
-  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
   # React-Native is not great about React double-including from the Podfile
   post_install do |installer|

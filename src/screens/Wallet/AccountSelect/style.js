@@ -3,21 +3,19 @@ import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
   container: {
-    alignItems: 'flex-end',
-    textAlign: 'right',
     height: 54,
+  },
+  toggle: {
+    width: 200,
+    justifyContent: 'flex-start',
   },
   textContainer: {
     flexDirection: 'row',
-    marginRight: -15,
   },
   title: {
     fontSize: 18,
     color: COLORS.white,
     ...FONT.STYLE.bold,
-    textAlign: 'right',
-    width: 200,
-    marginRight: 10,
   }
 });
 
