@@ -33,6 +33,7 @@ class OptionMenu extends Component {
       title,
       data,
       style,
+      toggleStyle,
       placeholder,
       onSearch,
     } = this.props;
@@ -40,7 +41,7 @@ class OptionMenu extends Component {
 
     return (
       <View style={[styleSheet.container, style]}>
-        <TouchableOpacity onPress={() => this.handleToggle()} style={styleSheet.toggleBtn}>
+        <TouchableOpacity onPress={() => this.handleToggle()} style={[styleSheet.toggleBtn, toggleStyle]}>
           {icon || (
             <EntypoIcons
               size={24}
@@ -122,6 +123,7 @@ OptionMenu.defaultProps = {
   icon: null,
   iconProps: {},
   style: null,
+  toggleStyle: null,
   data: [],
   onSearch: undefined,
   onClose: undefined,
@@ -133,6 +135,7 @@ OptionMenu.propTypes = {
   iconProps: PropTypes.object,
   icon: PropTypes.element,
   style: PropTypes.oneOfType([ PropTypes.object, PropTypes.arrayOf(PropTypes.object) ]),
+  toggleStyle: PropTypes.object,
   data: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string,

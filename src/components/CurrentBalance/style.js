@@ -15,15 +15,28 @@ const style = StyleSheet.create({
     flexDirection: 'row',
   },
   balance: {
-    fontSize: 28,
+    fontSize: 22,
     paddingRight: 5,
   },
   balanceSymbol: {
-    fontSize: 28,
+    fontSize: 22,
+  },
+  selectText: {
+    fontSize: 18,
+    marginLeft: 5,
   },
   desc: {
     fontSize: 14,
-    color: COLORS.lightGrey3
+    marginBottom: 5,
+  },
+  selectContainer: {
+    borderWidth: 1,
+    borderRadius: 6,
+    borderColor: COLORS.lightGrey5,
+    paddingRight: 30,
+    paddingLeft: 10,
+    paddingVertical: 2,
+    flexDirection: 'row',
   }
 });
 

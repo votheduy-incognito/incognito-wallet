@@ -17,8 +17,6 @@ import EmptyHistory from '@components/HistoryList/EmptyHistory/index';
 const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, decimals, pDecimals) => {
   const data = [];
 
-  console.debug('COMBINE');
-
   historiesFromApi && historiesFromApi.forEach((h) => {
     data.push({
       id: h?.id,
@@ -64,8 +62,6 @@ const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, dec
       feePToken: h?.feePToken,
     });
   });
-
-  console.debug('DATA', data);
 
   return data.sort((a, b) => new Date(a.time).getTime() < new Date(b.time).getTime() ? 1 : -1);
 };

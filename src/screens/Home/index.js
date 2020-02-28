@@ -1,6 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {View} from '@src/components/core';
-import HomeHeader from '@screens/Home/Header';
 import icShield from '@assets/images/icons/ic_shield_btn.png';
 import icSend from '@assets/images/icons/ic_send_btn.png';
 import icReceive from '@assets/images/icons/ic_receive_btn.png';
@@ -9,7 +9,9 @@ import icInvent from '@assets/images/icons/ic_invent_btn.png';
 import IconTextButton from '@screens/Home/IconTextButton';
 import ROUTE_NAMES from '@routers/routeNames';
 
-import LinearGradient from 'react-native-linear-gradient';
+import { withRoundHeaderLayout } from '@src/hoc';
+
+import Card from '@components/Card';
 import styles from './style';
 
 const buttons = [
@@ -51,28 +53,21 @@ const Home = ({ navigation }) => {
   };
 
   return (
-    <LinearGradient
-      start={{x: 0, y: 0}}
-      end={{x: 0.5, y: 0.5}}
-      colors={[
-        '#063436',
-        '#006970'
-      ]}
-      style={styles.container}
-    >
-      <HomeHeader />
-      <View style={styles.content}>
-        <View style={styles.btnContainer}>
-          {buttons.map(({ image, title, desc, route }) => (
-            <View style={styles.btn} key={title}>
-              <IconTextButton image={image} title={title} desc={desc} onPress={() => goToScreen(route)} />
-            </View>
-          )
-          )}
-        </View>
+    <Card style={styles.container}>
+      <View style={styles.btnContainer}>
+        {buttons.map(({ image, title, desc, route }) => (
+          <View style={styles.btn} key={title}>
+            <IconTextButton image={image} title={title} desc={desc} onPress={() => goToScreen(route)} />
+          </View>
+        )
+        )}
       </View>
-    </LinearGradient>
+    </Card>
   );
 };
 
-export default Home;
+Home.propTypes = {
+  navigation: PropTypes.object.isRequired,
+};
+
+export default withRoundHeaderLayout(Home);

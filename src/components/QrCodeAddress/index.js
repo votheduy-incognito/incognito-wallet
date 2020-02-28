@@ -10,7 +10,7 @@ const AccountAddress = ({ data, containerStyle, textStyle, iconStyle }) => (
     {
       data ? (
         <>
-          <QrCodeGenerate value={data} style={accountAddressStyle.qrCode} size={150} />
+          <QrCodeGenerate value={data} style={accountAddressStyle.qrCode} size={100} />
           <CopiableText
             oneLine
             showCopyIcon

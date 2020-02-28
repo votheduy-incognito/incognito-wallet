@@ -10,7 +10,7 @@ const toNumber = (text, autoCorrect = false) => {
     return text;
   }
 
-  if (getDecimalSeparator() === ',') {
+  if (getDecimalSeparator() === ',' && !text?.includes?.('e+') && !text?.includes?.('e-')) {
     text = text.replace(/\./g, '_');
     text = text.replace(/,/g, '.');
     text = text.replace(/_/g, ',');

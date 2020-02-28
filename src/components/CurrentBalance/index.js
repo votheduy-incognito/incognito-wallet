@@ -12,6 +12,7 @@ const CurrentBalanceContainer = ({ selectedPrivacy, symbol, select }) => {
     amount={formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy?.pDecimals)}
     symbol={symbol ?? selectedPrivacy?.symbol}
     select={select}
+    tokenId={selectedPrivacy.tokenId}
   />;
 };
 
@@ -22,11 +23,13 @@ const mapState = state => ({
 CurrentBalanceContainer.defaultProps = {
   selectedPrivacy: null,
   symbol: null,
+  select: null,
 };
 
 CurrentBalanceContainer.propTypes = {
   selectedPrivacy: PropTypes.object,
   symbol: PropTypes.string,
+  select: PropTypes.element,
 };
 
 export default connect(mapState)(CurrentBalanceContainer);

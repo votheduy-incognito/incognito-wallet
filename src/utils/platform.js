@@ -5,5 +5,5 @@ export function isIOS() {
 }
 
 export function isAndroid() {
-  Platform.OS === 'android';
+  return Platform.OS === 'android';
 }

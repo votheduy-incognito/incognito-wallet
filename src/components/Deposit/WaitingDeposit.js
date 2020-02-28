@@ -1,14 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Text, View} from '@components/core/';
+import {Button, Text, View} from '@components/core/';
 import QrCodeAddress from '@components/QrCodeAddress/';
 import format from '@utils/format';
 import {Dashed} from '@components/Line/';
+import {useNavigation} from 'react-navigation-hooks';
+import ROUTES_NAME from '@routers/routeNames';
 import {waitingDepositStyle} from './style';
 
 const WaitingDeposit = ({selectedPrivacy, depositAddress, min, max, amount}) => {
+  const navigation = useNavigation();
   const formatAmount = format.amountFull(amount);
-  const {symbol, externalSymbol} = selectedPrivacy;
+  const {externalSymbol, symbol} = selectedPrivacy;
+
+  const handleCheckStatus = () => {
+    navigation.pop();
+    navigation.navigate(ROUTES_NAME.WalletDetail);
+  };
 
   return (
     <View style={waitingDepositStyle.container}>
@@ -18,13 +26,13 @@ const WaitingDeposit = ({selectedPrivacy, depositAddress, min, max, amount}) => 
         >
           {
             formatAmount ?
-              `Send ${formatAmount} ${externalSymbol} to the address below to receive ${formatAmount} privacy ${externalSymbol} (${symbol}) in your Incognito wallet.`
-              : `Receive ${externalSymbol} privately from outside the Incognito network using the address below:`
+              `Shield ${formatAmount} ${externalSymbol} by sending it to the address below within 60 MINUTES ONLY:`
+              : `Receive ${externalSymbol} privately from outside the Incognito network using the address below within 60 MINUTES ONLY:`
           }
         </Text>
         <Dashed />
-        {min && (
-          <Text style={[waitingDepositStyle.text, {marginVertical: 10}]}>
+        {!!min && (
+          <Text style={[waitingDepositStyle.text]}>
             The minimum deposit is
             <Text
               style={[
@@ -37,7 +45,7 @@ const WaitingDeposit = ({selectedPrivacy, depositAddress, min, max, amount}) => 
             Smaller amounts will not be processed.
           </Text>
         )}
-        {max && (
+        {!!max && (
           <Text style={[waitingDepositStyle.text, {marginVertical: 10}]}>
             The maximum deposit is
             <Text
@@ -51,16 +59,17 @@ const WaitingDeposit = ({selectedPrivacy, depositAddress, min, max, amount}) => 
             Larger amounts will not be processed.
           </Text>
         )}
+        { (min || max) ? <Dashed /> : null }
       </View>
       <QrCodeAddress data={depositAddress} />
+      <Button
+        onPress={handleCheckStatus}
+        title="Check transaction status"
+        style={waitingDepositStyle.btn}
+      />
+      <Dashed />
       <Text style={[waitingDepositStyle.text]}>
-        This address will expire in
-        <Text
-          style={[waitingDepositStyle.text, waitingDepositStyle.textHighlight]}
-        >
-          &nbsp;60 minutes&nbsp;
-        </Text>
-        and can only be used once.
+        {`You'll receive ${formatAmount} privacy ${externalSymbol} (${symbol}) in your Incognito wallet a few minutes after your transfer is complete.`}
       </Text>
     </View>
   );

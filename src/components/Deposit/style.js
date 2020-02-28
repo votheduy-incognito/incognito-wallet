@@ -38,14 +38,15 @@ export const waitingDepositStyle = StyleSheet.create({
     backgroundColor: COLORS.white,
     padding: 20,
   },
-  textContainer: {
-    paddingHorizontal: 20,
-  },
   text: {
     textAlign: 'center',
     color: COLORS.lightGrey1,
     fontSize: 14,
     lineHeight: 18,
+    marginVertical: 5,
+  },
+  btn :{
+    marginVertical: 10,
   },
   textHighlight: {
     ...FONT.STYLE.medium,
