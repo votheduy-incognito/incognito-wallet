@@ -5,7 +5,7 @@ import BaseScreen from '@screens/BaseScreen';
 import NodeItem from '@screens/Node/components/NodeItem';
 import WelcomeNodes from '@screens/Node/components/Welcome';
 import { getTokenList } from '@services/api/token';
-import { ExHandler } from '@services/exception';
+import {CustomError, ErrorCode, ExHandler} from '@services/exception';
 import linkingService from '@services/linking';
 import NodeService from '@services/NodeService';
 import accountService from '@services/wallet/accountService';
@@ -50,9 +50,23 @@ const updateBeaconInfo = async (listDevice) => {
   const currentHeight = beacon.Height;
   const promises = [];
 
+  if (!committees) {
+    committees = {
+      AutoStaking: [],
+      ShardPendingValidator: {},
+      CandidateShardWaitingForNextRandom: [],
+      CandidateShardWaitingForCurrentRandom: [],
+      ShardCommittee: {},
+    };
+  }
+
   if (currentHeight !== beaconHeight) {
     if(!listDevice.every(device => committees.AutoStaking.find(node => node.MiningPubKey.bls === device.PublicKeyMining))) {
       const cPromise = getBeaconBestStateDetail().then(data => {
+        if (!_.has(data, 'AutoStaking')) {
+          throw new CustomError(ErrorCode.FULLNODE_DOWN);
+        }
+
         committees = data;
       });
       promises.push(cPromise);
@@ -211,7 +225,9 @@ class Node extends BaseScreen {
     this.setState({ loadedDevices: [] });
 
     updateBeaconInfo(listDevice)
-      .catch(error => new ExHandler(error).showErrorToast(true))
+      .catch(error => {
+        new ExHandler(error).showErrorToast(true);
+      })
       .finally(() => this.setState({ isFetching: false }));
   }
 
@@ -233,7 +249,7 @@ class Node extends BaseScreen {
 
   handleRefresh = async () => {
     const { isFetching } = this.state;
-    
+
     // to refresh token
     APIService.getProductList(true);
 
