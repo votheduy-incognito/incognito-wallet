@@ -59,7 +59,7 @@ class GetStartedContainer extends Component {
     if (pin) {
       navigation.navigate(routeNames.AddPin, { action: 'login', redirectRoute: routeNames.Home });
     } else {
-      navigation.navigate(routeNames.Home,{isNeedUpgrade: this.isNeedUpgrade});
+      navigation.navigate(routeNames.Home);
     }
   };
 
@@ -84,13 +84,7 @@ class GetStartedContainer extends Component {
       await loadPin();
       this.setState({ isInitialing: true });
       console.log('initApp CONSTANT_CONFIGS = ',CONSTANT_CONFIGS);
-      const serverLocalList = await serverService.get()??[];
-      // this.isNeedUpgrade = !_.isEmpty(serverLocalList) && CONSTANT_CONFIGS.DEFAULT_LIST_SERVER.length != serverLocalList.length;
-      this.isNeedUpgrade = CONSTANT_CONFIGS.DEFAULT_LIST_SERVER.length != serverLocalList?.length;
-      if (this.isNeedUpgrade) {
-        await storageService.clear();
-        await storageService.setItem(CONSTANT_KEYS.DISPLAYED_WIZARD, String(true));
-      }
+      const serverLocalList = await serverService.get() ?? [];
       const { getPTokenList, getInternalTokenList } = this.props;
       await login();
 
@@ -102,12 +96,13 @@ class GetStartedContainer extends Component {
         throw new CustomError(ErrorCode.getStarted_load_token_failed, { rawError: e });
       }
 
-      if (this.isNeedUpgrade || !(serverLocalList)) {
+      if (!(serverLocalList) || serverLocalList.length === 0) {
         await serverService.setDefaultList();
       }
+
       const wallet = await this.getExistedWallet();
 
-      // loaded wallet & then continue to Home screen
+      // loaded wallet & then continue to Wallet screen
       if (!wallet) {
         this.setState({ isCreating: true });
         // create new Wallet

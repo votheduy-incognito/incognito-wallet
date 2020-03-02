@@ -6,7 +6,7 @@ export const dexStyle = StyleSheet.create({
     flex: 1,
   },
   options: {
-    minHeight: 75,
+    minHeight: 55,
     minWidth: 45,
   },
   header: {

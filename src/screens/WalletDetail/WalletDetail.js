@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {Text, View, ActivityIndicator, Image, TouchableScale} from '@src/components/core';
+import Card from '@components/Card';
 import ROUTE_NAMES from '@src/router/routeNames';
 import { COLORS } from '@src/styles';
 import HistoryToken from '@src/components/HistoryToken';
 import MainCryptoHistory from '@src/components/MainCryptoHistory';
 import formatUtil from '@src/utils/format';
-import sendIcon from '@src/assets/images/icons/send.png';
-import depositIcon from '@src/assets/images/icons/deposit_pig.png';
-import receiveIcon from '@src/assets/images/icons/qrCode.png';
+import sendIcon from '@src/assets/images/icons/ic_send_btn.png';
+import depositIcon from '@src/assets/images/icons/ic_shield_btn.png';
+import receiveIcon from '@src/assets/images/icons/ic_receive_btn.png';
 import { ExHandler } from '@src/services/exception';
 import dexUtils from '@src/utils/dex';
 import styles from './style';
@@ -18,53 +19,41 @@ class WalletDetail extends Component {
     super();
   }
 
-  goHome = () => {
-    const { navigation } = this.props;
-    navigation.navigate(ROUTE_NAMES.RootApp);
-  };
-
-  hanldeLoadBalance = async () => {
+  handleLoadBalance = async () => {
     try {
       const { hanldeLoadBalance } = this.props;
       return await hanldeLoadBalance();
     } catch (e) {
       new ExHandler(e, 'Pull down to reload you balance.').showErrorToast();
     }
-  }
+  };
 
   handleDepositBtn = () => {
     const { navigation } = this.props;
-    navigation.navigate(ROUTE_NAMES.Deposit);
-  }
-
-  handleWithdrawBtn = () => {
-    const { navigation } = this.props;
-    navigation.navigate(ROUTE_NAMES.Withdraw);
-  }
+    navigation.navigate(ROUTE_NAMES.Shield);
+  };
 
   handleSendBtn = () => {
     const { navigation } = this.props;
-    navigation.navigate(ROUTE_NAMES.SendCrypto);
-  }
+    navigation.navigate(ROUTE_NAMES.SendCrypto, { origin: ROUTE_NAMES.WalletDetail });
+  };
 
   handleReceiveBtn = () => {
     const { navigation } = this.props;
-    navigation.navigate(ROUTE_NAMES.ReceiveCrypto);
-  }
+    navigation.navigate(ROUTE_NAMES.ReceiveCoin, { origin: ROUTE_NAMES.WalletDetail });
+  };
 
-  renderActionButton = ({ label, icon, onPress }) => (
-    <TouchableScale onPress={onPress} style={styles.actionButton}>
-      <View style={styles.buttonImg}>
-        <Image source={icon} style={styles.actionButtonIcon} />
-      </View>
-      {this.renderText(label, { style: styles.buttonText })}
+  renderActionButton = ({ label, icon, onPress, isDeposable }) => (
+    <TouchableScale onPress={onPress} style={isDeposable ? styles.btn2 : styles.btn}>
+      <Image source={icon} />
+      <Text>{label}</Text>
     </TouchableScale>
   );
 
   renderText = (text, { style, ...props } = {}) => {
     const { theme } = this.props;
     return <Text numberOfLines={1} ellipsizeMode='tail' {...props} style={[style, { color: theme?.textColor }]}>{text}</Text>;
-  }
+  };
 
   render() {
     const { selectedPrivacy, navigation, isGettingBalanceList, theme, account } = this.props;
@@ -84,26 +73,26 @@ class WalletDetail extends Component {
                 )
             }
           </View>
-          <View style={styles.buttonRow}>
-            {!dexUtils.isDEXMainAccount(account.name) && this.renderActionButton({ label: 'Send', icon: sendIcon, onPress: this.handleSendBtn })}
-            {!dexUtils.isDEXWithdrawAccount(account.name) && this.renderActionButton({ label: 'Receive', icon: receiveIcon, onPress: this.handleReceiveBtn })}
+          <Card style={styles.btnContainer}>
+            {!dexUtils.isDEXMainAccount(account.name) && this.renderActionButton({ label: 'Send', icon: sendIcon, onPress: this.handleSendBtn, isDeposable })}
+            {!dexUtils.isDEXWithdrawAccount(account.name) && this.renderActionButton({ label: 'Receive', icon: receiveIcon, onPress: this.handleReceiveBtn, isDeposable })}
             {
-              isDeposable && this.renderActionButton({ label: 'Deposit', icon: depositIcon, onPress: this.handleDepositBtn })
+              isDeposable && this.renderActionButton({ label: 'Shield', icon: depositIcon, onPress: this.handleDepositBtn, isDeposable })
             }
-          </View>
+          </Card>
         </View>
         <View style={styles.container}>
           {
             selectedPrivacy?.isToken && (
               <View style={styles.historyContainer}>
-                <HistoryToken navigation={navigation} onLoad={this.hanldeLoadBalance} />
+                <HistoryToken navigation={navigation} onLoad={this.handleLoadBalance} />
               </View>
             )
           }
           {
             selectedPrivacy?.isMainCrypto && (
               <View style={styles.historyContainer}>
-                <MainCryptoHistory navigation={navigation} onLoad={this.hanldeLoadBalance} />
+                <MainCryptoHistory navigation={navigation} onLoad={this.handleLoadBalance} />
               </View>
             )
           }

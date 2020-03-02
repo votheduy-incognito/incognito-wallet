@@ -16,7 +16,6 @@ import {
   NODE_URL,
   PASSPHRASE_WALLET_DEFAULT,
   PASSWORD_SECRET_KEY,
-  SHARD_ID,
   TESTNET_SERVER_ADDRESS,
   TEST_URL,
   USDT_TOKEN_ID_MAINNET,
@@ -31,6 +30,7 @@ const regex = /<%=.*%>/;
 const isMainnet = global.isMainnet??true;
 
 export const prefix_network = isMainnet ?'mainnet':'testnet';
+export const MAIN_WEBSITE = 'https://incognito.org';
 const prefix_Api = isMainnet?'':'test-';
 
 const API_BASE_URL = isMainnet? API_BASE_URL_MAINNET:API_BASE_URL_TESTNET;
@@ -49,7 +49,6 @@ let DATA_EXPORT = {
   INCOGNITO_TOKEN_ICON_URL,
   API_BASE_URL,
   PASSWORD_SECRET_KEY,
-  SHARD_ID: SHARD_ID || -1,
   EXPLORER_CONSTANT_CHAIN_URL,
   DEFAULT_LIST_SERVER,
   PASSPHRASE_WALLET_DEFAULT,
@@ -61,6 +60,7 @@ let DATA_EXPORT = {
   BINANCE_EXPLORER_URL,
   USDT_TOKEN_ID,
   NODE_URL,
+  MAIN_WEBSITE,
 };
 
 export default {
@@ -71,7 +71,6 @@ export default {
 //   INCOGNITO_TOKEN_ICON_URL,
 //   API_BASE_URL,
 //   PASSWORD_SECRET_KEY,
-//   SHARD_ID: SHARD_ID || -1,
 //   EXPLORER_CONSTANT_CHAIN_URL,
 //   DEFAULT_LIST_SERVER,
 //   PASSPHRASE_WALLET_DEFAULT,

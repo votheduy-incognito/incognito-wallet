@@ -1,8 +1,5 @@
-/* eslint-disable import/no-cycle */
-import AddDevice from '@src/screens/AddDevice';
 import Node from '@src/screens/Node';
 import { createStackNavigator } from 'react-navigation-stack';
-import SetupWifiDevice from '@screens/SetupWifiDevice';
 import AddNode from '@src/screens/AddNode';
 import AddStake from '@src/screens/AddStake';
 import Unstake from '@src/screens/Unstake';
@@ -27,12 +24,10 @@ const GetStaredMineStake = createStackNavigator(
 const MinerNavigator = createStackNavigator(
   {
     [ROUTE_NAMES.Node]: navigationOptionsHandler(Node,{ header: null }),
-    [ROUTE_NAMES.AddDevice]: navigationOptionsHandler(AddDevice, { title: 'Select router' }),
     [ROUTE_NAMES.AddNode]: navigationOptionsHandler(AddNode, { title: 'Add Node' }),
     [ROUTE_NAMES.LinkDevice]: navigationOptionsHandler(LinkDevice, { title: 'Link Device' }),
     [ROUTE_NAMES.AddStake]: navigationOptionsHandler(AddStake, { title: 'Stake' }),
     [ROUTE_NAMES.Unstake]: navigationOptionsHandler(Unstake, { title: 'Unstake' }),
-    [ROUTE_NAMES.SetupWifiDevice]: navigationOptionsHandler(SetupWifiDevice, { title: 'Setup Wifi' }),
     [ROUTE_NAMES.AddSelfNode]: navigationOptionsHandler(AddSelfNode, { title: 'Virtual Node' }),
     [ROUTE_NAMES.GetStaredMineStake]: navigationOptionsHandler(GetStaredMineStake, { title: null }),
   },

@@ -5,7 +5,8 @@ export default StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 10
+    padding: 10,
+    paddingTop: 0,
   },
   copyIcon: {
     marginLeft: 3

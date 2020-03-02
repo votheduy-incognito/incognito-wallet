@@ -1,5 +1,6 @@
 import { COLORS, DECOR, SPACING, UTILS, THEME } from '@src/styles';
 import { StyleSheet } from 'react-native';
+import {isIOS} from '@utils/platform';
 
 const style = StyleSheet.create({
   container: {
@@ -19,8 +20,11 @@ const style = StyleSheet.create({
     borderTopLeftRadius: DECOR.borderRadiusBorder,
     borderTopRightRadius: DECOR.borderRadiusBorder,
     paddingTop: SPACING.small,
-    paddingBottom: 50,
+    paddingBottom: isIOS() ? 45 : 25,
     width: UTILS.deviceWidth()
+  },
+  scrollView: {
+    maxHeight: 250,
   },
   barIcon: {
     backgroundColor: COLORS.white,
@@ -31,6 +35,18 @@ const style = StyleSheet.create({
     top: -28,
     left: UTILS.deviceWidth()/2,
     transform: [{ translateX: -25}]
+  },
+  search: {
+    backgroundColor: COLORS.lightGrey6,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  input: {
+    height: 55,
+    marginLeft: 10,
+    flex: 1,
+    color: COLORS.dark1,
   },
   contentContainer: {
     alignItems: 'center',
@@ -52,6 +68,7 @@ const style = StyleSheet.create({
   textContainer: {
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'center',
     flex: 1,
   },
   itemText: {},
@@ -71,8 +88,11 @@ const style = StyleSheet.create({
     borderBottomColor: COLORS.lightGrey6
   },
   title: {
-    fontWeight: '500',
-    marginBottom: SPACING.small
+    fontSize: 12,
+    marginLeft: 15,
+    marginBottom: 10,
+    letterSpacing: 1.5,
+    color: COLORS.lightGrey1,
   }
 });
 

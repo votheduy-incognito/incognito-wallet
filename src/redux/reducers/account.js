@@ -26,10 +26,10 @@ const setAccount = (list, account) => {
   return newList;
 };
 
-const removeByName = (list, accountName) => {
+const removeByPrivateKey = (list, privateKey) => {
   const newList = [...list];
   try {
-    _.remove(newList, _item => _item.name === accountName);
+    _.remove(newList, (_item) => _item.PrivateKey === privateKey);
   } catch(e) {
     console.error(e);
   }
@@ -62,18 +62,18 @@ const reducer = (state = initialState, action) => {
       ...state,
       list: [...action.data],
     };
-  case type.REMOVE_BY_NAME:
-    newList = removeByName(state.list, action.data);
+  case type.REMOVE_BY_PRIVATE_KEY:
+    newList = removeByPrivateKey(state.list, action.data);
     return {
       ...state,
       list: newList,
     };
-  case type.GET_BALANCE: 
+  case type.GET_BALANCE:
     return {
       ...state,
       isGettingBalance: setGettingBalance(state.isGettingBalance, action.data)
     };
-  case type.GET_BALANCE_FINISH: 
+  case type.GET_BALANCE_FINISH:
     return {
       ...state,
       isGettingBalance: removeGettingBalance(state.isGettingBalance, action.data)

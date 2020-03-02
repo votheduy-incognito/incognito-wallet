@@ -65,22 +65,15 @@ export default class NodeService {
     const value = listNode?.length+1;
     const nodeName =  _.padEnd(`Node ${value}`,10,subfix);
     return nodeName;
-  }
+  };
+
   static authFirebase = (product) =>{
     const pros =  new Promise((resolve,reject)=>{
-      let productId = product.product_id;
-      // hienton test
+      const productId = product.product_id;
       const firebase = new FirebaseService();
-      let mailProductId = `${productId}${MAIL_UID_FORMAT}`;
-      let password = `${FIREBASE_PASS}`;
-      // Util.delay(7).then(()=>{
-      //   firebase.signIn( mailProductId,password).then(uid=>{
-      //     resolve(uid);
-      //   }).catch(e=>{
-      //     reject(new CustomError(knownCode.node_auth_firebase_fail,{rawCode:e}));
-      //   });
-      // });
-      firebase.signIn( mailProductId,password).then(uid=>{
+      const mailProductId = `${productId}${MAIL_UID_FORMAT}`;
+      const password = `${FIREBASE_PASS}`;
+      firebase.signIn(mailProductId, password).then(uid=>{
         resolve(uid);
       }).catch(e=>{
         reject(new CustomError(knownCode.node_auth_firebase_fail,{rawCode:e}));
@@ -88,34 +81,19 @@ export default class NodeService {
 
     });
     return Util.excuteWithTimeout(pros,12);
-  }
+  };
+
   static verifyProductCode = async(verifyCode)=> {
-    // console.log(TAG,' verifyProductCode begin');
-
-    const errorObj = new CustomError(knownCode.node_verify_code_fail);
-
-    const params = {
-      verify_code: verifyCode
-    };
-    console.log(TAG,' verifyProductCode begin 02');
-    try {
-      const response = await Util.excuteWithTimeout(APIService.verifyCode(params),8);
-      // console.log(TAG, 'callVerifyCode Verify Code Response: ', response);
-      const { status, data = {}} = response;
-      if (status == 1) {
-        console.log(TAG,'verifyProductCode successfully');
-        const { product } = data;
-        return product;
-      }
-    } catch (error) {
-      console.log('Error try catch:', error);
-      return error;
-
+    const params = { verify_code: verifyCode };
+    const response = await Util.excuteWithTimeout(APIService.verifyCode(params), 60);
+    const { status, data = {}} = response;
+    if (status === 1) {
+      const { product } = data;
+      return product;
     }
+  };
 
-    return errorObj;
-  }
-  static send = (product, actionExcute = templateAction, chain = 'incognito',type = 'incognito',dataToSend={},timeout = 5) => {
+  static send = (product, actionExcute = templateAction, chain = 'incognito',type = 'incognito',dataToSend={}, timeout = 20) => {
     return new Promise((resolve,reject)=>{
       const productId = product.product_id;
       console.log(TAG, 'send ProductId: ', productId);
@@ -124,8 +102,16 @@ export default class NodeService {
         const uid = firebase.getUID()||'';
         const mailProductId = `${productId}${MAIL_UID_FORMAT}`;
         const action = NodeService.buildAction(product,actionExcute,dataToSend,chain,type);
+
+
         const callBack = res => {
           const {status = -1,data} = res;
+
+          console.debug('SEND FIREBASE', JSON.stringify({
+            res,
+            action,
+          }));
+
           console.log(TAG,'send Result: ', res);
           if (status >= 0) {
             resolve({...data,productId:productId,uid:uid});
@@ -134,6 +120,14 @@ export default class NodeService {
             reject('Timeout action = '+  actionExcute.key);
           }
         };
+
+        console.debug('SEND FIREBASE', JSON.stringify({
+          mailProductId,
+          password,
+          action,
+          timeout
+        }));
+
         firebase.sendAction(
           mailProductId,
           password,
@@ -239,38 +233,23 @@ export default class NodeService {
     return null;
   }
 
-  static sendValidatorKey = async(device:Device,validatorKey:String,chain='incognito')=>{
-
-    try {
-      if(!_.isEmpty(device) && !_.isEmpty(validatorKey)){
-        // send to firebase
-        const params = {product_id:device.data.product_id, validatorKey:validatorKey};
-        await Util.excuteWithTimeout(NodeService.send(device.data,LIST_ACTION.START,chain,Action.TYPE.INCOGNITO,{...params,action:LIST_ACTION.START.key}),8).catch(console.log);
-        ////
-
-        const dataResult = await Util.excuteWithTimeout(NodeService.send(device.data,LIST_ACTION.GET_IP,chain,Action.TYPE.PRODUCT_CONTROL),8);
-
-        console.log(TAG,'sendValidatorKey send dataResult = ',dataResult);
-        const { status = -1, data, message= ''} = dataResult;
-        if(status === 1){
-          const action:Action = NodeService.buildAction(device.data,LIST_ACTION.START,params,chain,Action.TYPE.INCOGNITO);
-          console.log(TAG,'sendValidatorKey send init params = ',params);
-          const response = await APIService.sendValidatorKey(data,{
-            type:action?.type||'',
-            data:action?.data||{}
-          });
-          const uid = dataResult?.uid||'';
-
-          console.log(TAG,'sendValidatorKey send post data = ',response);
-          return {...response,uid:uid};
-        }
+  static sendValidatorKey = async(device:Device,validatorKey:String,chain='incognito', addStep)=>{
+    if(!_.isEmpty(device) && !_.isEmpty(validatorKey)){
+      const params = {product_id:device.data.product_id, validatorKey:validatorKey};
+      await NodeService.send(device.data,LIST_ACTION.START,chain,Action.TYPE.INCOGNITO,{...params,action:LIST_ACTION.START.key}, 20, addStep);
+      const dataResult = await NodeService.send(device.data,LIST_ACTION.GET_IP,chain,Action.TYPE.PRODUCT_CONTROL, null, 20, addStep);
+      const { status = -1, data} = dataResult;
+      if(status === 1){
+        const action:Action = NodeService.buildAction(device.data,LIST_ACTION.START,params,chain,Action.TYPE.INCOGNITO);
+        const response = await APIService.sendValidatorKey(data,{
+          type:action?.type||'',
+          data:action?.data||{}
+        });
+        const uid = dataResult?.uid||'';
+        return {...response,uid:uid};
       }
-    } catch (error) {
-      console.log(TAG,'sendValidatorKey error = ',error);
     }
-
-    return null;
-  }
+  };
 
   static fetchAndSavingInfoNodeStake = async (device)=>{
     try {

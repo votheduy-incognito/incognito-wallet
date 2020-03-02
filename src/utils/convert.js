@@ -6,13 +6,11 @@ const checkAmount = (amount) => {
 };
 
 const toNumber = (text, autoCorrect = false) => {
-  const originalText = text;
-
   if (typeof text !== 'string') {
     return text;
   }
 
-  if (getDecimalSeparator() === ',') {
+  if (getDecimalSeparator() === ',' && !text?.includes?.('e+') && !text?.includes?.('e-')) {
     text = text.replace(/\./g, '_');
     text = text.replace(/,/g, '.');
     text = text.replace(/_/g, ',');
@@ -21,8 +19,6 @@ const toNumber = (text, autoCorrect = false) => {
   if (autoCorrect) {
     text = text.replace(/,/g, '');
   }
-
-  console.debug('CONVERT NUMBER', getDecimalSeparator(), originalText, text, _.toNumber(text));
 
   return _.toNumber(text);
 };

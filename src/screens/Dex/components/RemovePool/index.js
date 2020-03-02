@@ -254,7 +254,7 @@ class Pool extends React.Component {
       fee,
     } = this.state;
 
-    if (!pair) {
+    if (!pair || !pair.token1 || !pair.token2) {
       return null;
     }
 

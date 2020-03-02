@@ -294,6 +294,10 @@ class Swap extends React.Component {
   swapTokens = () => {
     const { inputToken, inputValue, outputToken } = this.state;
 
+    if (!inputToken || !outputToken) {
+      return;
+    }
+
     this.selectInput(outputToken, convertUtil.toHumanAmount(inputValue, inputToken.pDecimals), inputToken);
   };
 

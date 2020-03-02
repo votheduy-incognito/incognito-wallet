@@ -1,17 +1,18 @@
-import { Button, RefreshControl, ScrollView, Toast } from '@src/components/core';
+import {Button, RefreshControl, ScrollView, Toast} from '@src/components/core';
 import HistoryList from '@src/components/HistoryList';
 import LoadingContainer from '@src/components/LoadingContainer';
-import { CONSTANT_COMMONS } from '@src/constants';
-import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
+import {CONSTANT_COMMONS} from '@src/constants';
+import {accountSeleclor, selectedPrivacySeleclor} from '@src/redux/selectors';
 import ROUTE_NAMES from '@src/router/routeNames';
-import { getpTokenHistory, removeHistory } from '@src/services/api/history';
-import { ExHandler } from '@src/services/exception';
+import {getpTokenHistory, removeHistory} from '@src/services/api/history';
+import {ExHandler} from '@src/services/exception';
 import tokenService from '@src/services/wallet/tokenService';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { withNavigation } from 'react-navigation';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
+import React, {Component} from 'react';
+import {withNavigation} from 'react-navigation';
+import {connect} from 'react-redux';
+import {compose} from 'redux';
+import EmptyHistory from '@components/HistoryList/EmptyHistory/index';
 
 const combineHistory = (histories, historiesFromApi, symbol, externalSymbol, decimals, pDecimals) => {
   const data = [];
@@ -113,7 +114,7 @@ class HistoryTokenContainer extends Component {
       this.setState({ isLoading: true });
       const { wallet, defaultAccount } = this.props;
       const token = this.getToken(this.props);
-  
+
       const [histories, historiesFromApi] = await Promise.all([
         this.loadTokentHistory(wallet, defaultAccount, token),
         this.getHistoryFromApi()
@@ -144,9 +145,7 @@ class HistoryTokenContainer extends Component {
         return;
       }
 
-      const histories = await getpTokenHistory({ paymentAddress, tokenId: selectedPrivacy?.tokenId });
-
-      return histories;
+      return await getpTokenHistory({paymentAddress, tokenId: selectedPrivacy?.tokenId});
     } catch (e) {
       throw e;
     }
@@ -188,16 +187,21 @@ class HistoryTokenContainer extends Component {
     if (selectedPrivacy?.isDeposable) {
       return (
         <Button
-          title='Make a deposit'
           onPress={() => {
-            navigation.navigate(ROUTE_NAMES.Deposit);
+            navigation.navigate(ROUTE_NAMES.Shield);
+          }}
+          title="Shield your crypto"
+          style={{
+            position: 'absolute',
+            width: '100%',
+            bottom: 30,
           }}
         />
       );
     }
 
     return null;
-  }
+  };
 
   render() {
     const { isLoading, histories, historiesFromApi } = this.state;
@@ -205,6 +209,10 @@ class HistoryTokenContainer extends Component {
 
     if (!selectedPrivacy) {
       return <LoadingContainer />;
+    }
+
+    if ((!histories || !histories.length) && (!historiesFromApi || !historiesFromApi.length)) {
+      return (<EmptyHistory actionButton={this.renderActionButton()} />);
     }
 
     return (

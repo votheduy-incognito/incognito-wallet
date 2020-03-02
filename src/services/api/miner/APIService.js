@@ -3,13 +3,13 @@
  */
 import User from '@models/user';
 import NetInfo from '@react-native-community/netinfo';
-import { CONSTANT_CONFIGS, CONSTANT_MINER } from '@src/constants';
-import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
+import {CONSTANT_CONFIGS, CONSTANT_MINER} from '@src/constants';
+import {CustomError, ErrorCode, ExHandler} from '@src/services/exception';
 import http from '@src/services/http';
 import Util from '@src/utils/Util';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
-import { Platform } from 'react-native';
+import {Platform} from 'react-native';
 import API from './api';
 
 
@@ -93,7 +93,7 @@ export default class APIService {
 
 
       } catch (error) {
-        console.error(error);
+        console.debug('API ERROR', error);
         throw error;
         //return {status: 0, error: error.message} ;
       }
@@ -202,6 +202,7 @@ export default class APIService {
       }
     }
   }
+
   static async handleRefreshToken(method, url, params, isLogin, user){
     console.log('handleRefreshToken');
     console.log('User---------:', user);
@@ -232,7 +233,7 @@ export default class APIService {
             console.log(TAG,'handleRefreshToken save local');
             await LocalDatabase.saveUserInfo(JSON.stringify(user));
           }
-         
+
 
           let response =  await APIService.getURL(method, url, params, isLogin);
 
@@ -251,11 +252,13 @@ export default class APIService {
     }
 
   }
+
   static async signIn(params) {
     const url = API.SIGN_IN_API;
     const response = await APIService.getURL(METHOD.POST, url, params, false);
     return response;
   }
+
   static async sendValidatorKey(ipAdrress,{type,data}) {
     if(!_.isEmpty(data)){
       const url = `http://${ipAdrress}:5000/init-node`;
@@ -278,6 +281,17 @@ export default class APIService {
       return response;
     }
     return null;
+  }
+
+  static async updateValidatorKey(qrCode, validatorKey) {
+    const url = `http://10.42.0.1:5000/update-key?qrcode=${qrCode}&validatorKey=${validatorKey}`;
+    const data = await APIService.getURL(METHOD.GET, url);
+
+    if (data.status !== 1) {
+      throw new Error('Send validator key failed');
+    }
+
+    return data.status === 1;
   }
 
   static async pingHotspot() {
@@ -368,6 +382,9 @@ export default class APIService {
     const url = API.VERIFY_CODE_API;
 
     const response = await APIService.getURL(METHOD.GET, url, params, true);
+
+    console.debug('VERIFY CODE RESPONSE', response);
+
     return response;
   }
 
@@ -418,10 +435,10 @@ export default class APIService {
       ValidatorKey:ValidatorKey ,
       QRCode: qrCodeDeviceId,
       PaymentAddress:PaymentAddress
-    }).catch(console.log);
-    console.log(TAG,'requestStake end = ',response);
+    });
+
     return {
-      status:!_.isEmpty(response) ?1:0,
+      status:!_.isEmpty(response) ? 1:0,
       data:response
     };
   }

@@ -58,10 +58,10 @@ public class GomobileModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void initPrivacyTx(String data, Callback successCallback) {
+    public void initPrivacyTx(String data, Integer time, Callback successCallback) {
         try {
             Log.d(TAG, "initPrivacyTx: begin");
-            successCallback.invoke(null, Gomobile.initPrivacyTx(data));
+            successCallback.invoke(null, Gomobile.initPrivacyTx(data, time));
         } catch (Exception e) {
             Log.d(TAG, "initPrivacyTx: error");
             successCallback.invoke(e.getMessage(), null);
@@ -69,10 +69,10 @@ public class GomobileModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void initPrivacyTokenTx(String data, Callback successCallback) {
+    public void initPrivacyTokenTx(String data, Integer time, Callback successCallback) {
         try {
             Log.d(TAG, "initPrivacyTokenTx: begin");
-            successCallback.invoke(null, Gomobile.initPrivacyTokenTx(data));
+            successCallback.invoke(null, Gomobile.initPrivacyTokenTx(data, time));
         } catch (Exception e) {
             Log.d(TAG, "initPrivacyTokenTx: error");
             successCallback.invoke(e.getMessage(), null);
@@ -80,10 +80,10 @@ public class GomobileModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void initBurningRequestTx(String data, Callback successCallback) {
+    public void initBurningRequestTx(String data, Integer time, Callback successCallback) {
         try {
             Log.d(TAG, "initBurningRequestTx: begin");
-            successCallback.invoke(null, Gomobile.initBurningRequestTx(data));
+            successCallback.invoke(null, Gomobile.initBurningRequestTx(data, time));
         } catch (Exception e) {
             Log.d(TAG, "initBurningRequestTx: error");
             successCallback.invoke(e.getMessage(), null);
@@ -91,10 +91,10 @@ public class GomobileModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void initWithdrawRewardTx(String data, Callback successCallback) {
+    public void initWithdrawRewardTx(String data, Integer time, Callback successCallback) {
         try {
             Log.d(TAG, "initWithdrawRewardTx: begin");
-            successCallback.invoke(null, Gomobile.initWithdrawRewardTx(data));
+            successCallback.invoke(null, Gomobile.initWithdrawRewardTx(data, time));
         } catch (Exception e) {
             Log.d(TAG, "initWithdrawRewardTx: error");
             successCallback.invoke(e.getMessage(), null);
@@ -102,10 +102,10 @@ public class GomobileModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void staking(String data, Callback successCallback) {
+    public void staking(String data, Integer time, Callback successCallback) {
         try {
             Log.d(TAG, "staking: begin");
-            successCallback.invoke(null, Gomobile.staking(data));
+            successCallback.invoke(null, Gomobile.staking(data, time));
         } catch (Exception e) {
             Log.d(TAG, "staking: error");
             successCallback.invoke(e.getMessage(), null);
@@ -113,10 +113,10 @@ public class GomobileModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void initPRVContributionTx(String data, Callback successCallback) {
+    public void initPRVContributionTx(String data, Integer time, Callback successCallback) {
         try {
             Log.d(TAG, "staking: begin");
-            successCallback.invoke(null, Gomobile.initPRVContributionTx(data));
+            successCallback.invoke(null, Gomobile.initPRVContributionTx(data, time));
         } catch (Exception e) {
             Log.d(TAG, "staking: error");
             successCallback.invoke(e.getMessage(), null);
@@ -124,10 +124,10 @@ public class GomobileModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void initPTokenContributionTx(String data, Callback successCallback) {
+    public void initPTokenContributionTx(String data, Integer time, Callback successCallback) {
         try {
             Log.d(TAG, "staking: begin");
-            successCallback.invoke(null, Gomobile.initPTokenContributionTx(data));
+            successCallback.invoke(null, Gomobile.initPTokenContributionTx(data, time));
         } catch (Exception e) {
             Log.d(TAG, "staking: error");
             successCallback.invoke(e.getMessage(), null);
@@ -135,10 +135,10 @@ public class GomobileModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void initPRVTradeTx(String data, Callback successCallback) {
+    public void initPRVTradeTx(String data, Integer time, Callback successCallback) {
         try {
             Log.d(TAG, "staking: begin");
-            successCallback.invoke(null, Gomobile.initPRVTradeTx(data));
+            successCallback.invoke(null, Gomobile.initPRVTradeTx(data, time));
         } catch (Exception e) {
             Log.d(TAG, "staking: error");
             successCallback.invoke(e.getMessage(), null);
@@ -146,10 +146,10 @@ public class GomobileModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void initPTokenTradeTx(String data, Callback successCallback) {
+    public void initPTokenTradeTx(String data, Integer time, Callback successCallback) {
         try {
             Log.d(TAG, "staking: begin");
-            successCallback.invoke(null, Gomobile.initPTokenTradeTx(data));
+            successCallback.invoke(null, Gomobile.initPTokenTradeTx(data, time));
         } catch (Exception e) {
             Log.d(TAG, "staking: error");
             successCallback.invoke(e.getMessage(), null);
@@ -157,10 +157,10 @@ public class GomobileModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void withdrawDexTx(String data, Callback successCallback) {
+    public void withdrawDexTx(String data, Integer time, Callback successCallback) {
         try {
             Log.d(TAG, "staking: begin");
-            successCallback.invoke(null, Gomobile.withdrawDexTx(data));
+            successCallback.invoke(null, Gomobile.withdrawDexTx(data, time));
         } catch (Exception e) {
             Log.d(TAG, "staking: error");
             successCallback.invoke(e.getMessage(), null);
@@ -190,10 +190,10 @@ public class GomobileModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void stopAutoStaking(String data, Callback successCallback) {
+    public void stopAutoStaking(String data, Integer time, Callback successCallback) {
         try {
             Log.d(TAG, "stop staking: begin");
-            successCallback.invoke(null, Gomobile.stopAutoStaking(data));
+            successCallback.invoke(null, Gomobile.stopAutoStaking(data, time));
         } catch (Exception e) {
             Log.d(TAG, "stop staking: error");
             successCallback.invoke(e.getMessage(), null);
