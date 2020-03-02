@@ -20,7 +20,7 @@ class LinkDevice extends BaseScreen {
       loading: false,
     };
 
-    this.handleChangeQRCode = _.debounce(this.handleChangeQRCode, 2000);
+    this.handleGetNodeInfo = _.debounce(this.handleGetNodeInfo, 2000);
   }
 
   addNode = async () => {
