@@ -12,7 +12,7 @@ import { getPDEPairs } from '@services/wallet/RpcClientService';
 import tokenService from '@services/wallet/tokenService';
 import _ from 'lodash';
 import {PRIORITY_LIST} from '@screens/Dex/constants';
-import { ExHandler } from '@services/exception';
+import {CustomError, ErrorCode, ExHandler} from '@services/exception';
 import {accountSeleclor, selectedPrivacySeleclor} from '@src/redux/selectors';
 import convertUtil from '@utils/convert';
 import Dex from './Dex';
@@ -69,6 +69,11 @@ class DexContainer extends Component {
       const chainTokens = await tokenService.getPrivacyTokens();
       const chainPairs = await getPDEPairs();
       const tokens = tokenService.mergeTokens(chainTokens, pTokens);
+
+      if (!_.has(chainPairs, 'state.PDEPoolPairs')) {
+        throw new CustomError(ErrorCode.FULLNODE_DOWN);
+      }
+
       const pairs = _(chainPairs.state.PDEPoolPairs)
         .map(pair => ({
           [pair.Token1IDStr]: pair.Token1PoolValue,

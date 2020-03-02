@@ -101,6 +101,8 @@ const chain = {
   INVALID_FEE: knownError(-1016),
 
   PENDING_TX: knownError(-6005),
+
+  FULLNODE_DOWN: knownError(-9999),
 };
 
 
