@@ -15,7 +15,7 @@ import {
   listRewardAmount
 } from '@services/wallet/RpcClientService';
 import tokenService, { PRV } from '@services/wallet/tokenService';
-import { CONSTANT_CONFIGS } from '@src/constants';
+import { CONSTANT_CONFIGS, MESSAGES } from '@src/constants';
 import routeNames from '@src/router/routeNames';
 import APIService from '@src/services/api/miner/APIService';
 import COLORS from '@src/styles/colors';
@@ -297,7 +297,7 @@ class Node extends BaseScreen {
           .filter(id => rewards[id] > 0);
         await this.sendWithdrawTx(PaymentAddress, tokenIds);
 
-        const message = 'Withdrawal initiated! Your balance will update in approximately 5 minutes.';
+        const message = MESSAGES.VNODE_WITHDRAWAL;
         this.showToastMessage(message);
       } else {
         await APIService.requestWithdraw({
@@ -307,7 +307,7 @@ class Node extends BaseScreen {
           PaymentAddress: device.PaymentAddressFromServer
         });
         device.IsWithdrawable = await NodeService.isWithdrawable(device);
-        const message = 'Withdrawal initiated! This process may take up to 24 hours. Your balance will update when the process is complete.';
+        const message = MESSAGES.PNODE_WITHDRAWAL;
         this.showToastMessage(message);
       }
     } catch(error) {

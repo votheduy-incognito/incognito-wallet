@@ -4,3 +4,4 @@ export { default as CONSTANT_COMMONS } from './common';
 export { default as CONSTANT_APP } from './app';
 export { default as CONSTANT_MINER } from './miner';
 export { default as CONSTANT_EVENTS } from './events';
+export { default as MESSAGES } from './messages';

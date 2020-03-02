@@ -38,7 +38,11 @@ class NodeItem extends React.Component {
       delete rewards[PRV.symbol];
 
       Object.keys(rewards).forEach(key => {
-        actualRewards[key] = rewards[key] * commission;
+        actualRewards[key] = Math.round(rewards[key] * commission);
+
+        if (actualRewards[key] <= 0) {
+          delete actualRewards[key];
+        }
       });
 
       device.Rewards = actualRewards;
