@@ -74,6 +74,10 @@ class SendCrypto extends React.Component {
       this.setFormValidation({ maxAmount: this.getMaxAmount(), minAmount: this.getMinAmount() });
       this.getSupportedFeeTypes();
     }
+
+    if (oldSelectedPrivacy && selectedPrivacy && oldSelectedPrivacy.amount !== selectedPrivacy.amount) {
+      this.setFormValidation({ maxAmount: this.getMaxAmount(), minAmount: this.getMinAmount() });
+    }
   }
 
   getMinAmount = () => {
