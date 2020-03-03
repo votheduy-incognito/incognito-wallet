@@ -25,41 +25,10 @@ const WaitingDeposit = ({selectedPrivacy, depositAddress, min, max, amount}) => 
           style={[waitingDepositStyle.text, waitingDepositStyle.textHighlight]}
         >
           {
-            formatAmount ?
-              `Shield ${formatAmount} ${externalSymbol} by sending it to the address below within 60 MINUTES ONLY:`
-              : `Receive ${externalSymbol} privately from outside the Incognito network using the address below within 60 MINUTES ONLY:`
+            `Receive${formatAmount ? ` ${formatAmount} ` : ' '}${externalSymbol} privately from outside the Incognito network using the address below:`
           }
         </Text>
         <Dashed />
-        {!!min && (
-          <Text style={[waitingDepositStyle.text]}>
-            The minimum deposit is
-            <Text
-              style={[
-                waitingDepositStyle.text,
-                waitingDepositStyle.textHighlight,
-              ]}
-            >
-              {` ${min} ${selectedPrivacy?.externalSymbol}. `}
-            </Text>
-            Smaller amounts will not be processed.
-          </Text>
-        )}
-        {!!max && (
-          <Text style={[waitingDepositStyle.text, {marginVertical: 10}]}>
-            The maximum deposit is
-            <Text
-              style={[
-                waitingDepositStyle.text,
-                waitingDepositStyle.textHighlight,
-              ]}
-            >
-              {` ${max} ${selectedPrivacy?.externalSymbol}. `}
-            </Text>
-            Larger amounts will not be processed.
-          </Text>
-        )}
-        { (min || max) ? <Dashed /> : null }
       </View>
       <QrCodeAddress data={depositAddress} />
       <Button
@@ -68,9 +37,15 @@ const WaitingDeposit = ({selectedPrivacy, depositAddress, min, max, amount}) => 
         style={waitingDepositStyle.btn}
       />
       <Dashed />
-      <Text style={[waitingDepositStyle.text]}>
-        {`You'll receive ${formatAmount} privacy ${externalSymbol} (${symbol}) in your Incognito wallet a few minutes after your transfer is complete.`}
+      <Text style={waitingDepositStyle.text}>
+        Note: This address is unique to this request, will expire in 60 minutes, and can only be used once. Please wait a few minutes for your anonymized coins to show in your wallet.
       </Text>
+      { (min) ? <Dashed /> : null }
+      {!!min && (
+        <Text style={[waitingDepositStyle.text]}>
+          {`The minimum amount you can anonymously receive from outside the Incognito network is ${min}. Smaller amounts will not be processed.`}
+        </Text>
+      )}
     </View>
   );
 };

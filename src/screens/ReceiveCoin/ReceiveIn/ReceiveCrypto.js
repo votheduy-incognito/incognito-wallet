@@ -12,8 +12,10 @@ class ReceiveCrypto extends React.Component {
     return (
       <ScrollView style={homeStyle.container}>
         <Container style={homeStyle.mainContainer}>
-          <Text style={[homeStyle.desc, { marginBottom: 5, marginTop: 10 }]}>Simply scan this QR code from</Text>
-          <Text style={homeStyle.desc}>the sending wallet.</Text>
+          <Text style={[homeStyle.desc, { marginBottom: 5, marginTop: 10 }]}>
+            This is your Incognito multi-currency wallet address.
+            Use it to receive privacy coins from another Incognito wallet.
+          </Text>
           <QrCodeAddress
             data={selectedPrivacy.paymentAddress}
             containerStyle={{ width: 250, paddingLeft: 10, paddingRight: 35, }}
