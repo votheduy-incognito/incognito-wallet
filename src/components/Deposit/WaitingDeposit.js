@@ -33,7 +33,7 @@ const WaitingDeposit = ({selectedPrivacy, depositAddress, min, max, amount}) => 
       <QrCodeAddress data={depositAddress} />
       <Button
         onPress={handleCheckStatus}
-        title="Check transaction status"
+        title="Check transaction details"
         style={waitingDepositStyle.btn}
       />
       <Dashed />
