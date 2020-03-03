@@ -11,6 +11,7 @@ import VerifiedText from '@components/VerifiedText/index';
 import TokenNetworkName from '@components/TokenNetworkName/index';
 import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
 import COLORS from '@src/styles/colors';
+import { COINS } from '@src/constants';
 import styles from './style';
 
 const generateMenu = (tokens, onSelect) => {
@@ -36,105 +37,74 @@ const generateMenu = (tokens, onSelect) => {
       });
     });
 
+  console.debug('MENU', tokens.slice(0, 10));
+
   return newMenu;
 };
 
 const TokenSelect = ({ onSelect, onlyPToken, size, style, iconStyle, showOriginalSymbol }) => {
   const [menu, setMenu] = React.useState([]);
   const [allTokens, setAllTokens] = React.useState([]);
-  const { followedTokens, pTokens, internalTokens } = useSelector(state => ({
-    followedTokens: tokenSeleclor.followed(state),
+  const { pTokens, internalTokens } = useSelector(state => ({
     pTokens: tokenSeleclor.pTokens(state),
     internalTokens: tokenSeleclor.internalTokens(state),
   }), shallowEqual);
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const dispatch = useDispatch();
 
-  const getFullDataOfFollowTokens = () => {
-    const tokens = followedTokens.map(item => {
-      let token = pTokens.find(token => token.tokenId === item.id);
+  React.useEffect(() => {
+    let allTokens;
 
-      if (!token) {
-        if (!onlyPToken) {
-          token = internalTokens.find(token => token.id === item.id);
-          token.displaySymbol = token.symbol;
-        }
-      } else {
-        token.id = token.tokenId;
-        token.displaySymbol = showOriginalSymbol ? token.symbol : token.pSymbol;
-      }
-
-      return token;
-    }).filter(item => item);
-
-    if (!tokens || !tokens.length) {
-      return allTokens;
+    if (onlyPToken) {
+      allTokens = _(pTokens)
+        .map(item => ({
+          ...item,
+          id: item.tokenId,
+          displaySymbol: showOriginalSymbol ? item.symbol : item.pSymbol,
+        }));
+    } else {
+      allTokens = _(internalTokens)
+        .filter(token => token.name && token.symbol)
+        .filter(item => !pTokens.find(i => i.tokenId === item.id))
+        .concat(pTokens.map(item => ({
+          ...item,
+          id: item.tokenId,
+        })))
+        .map(item => ({
+          ...item,
+          displaySymbol: showOriginalSymbol ? item.symbol : (item.pSymbol || item.symbol),
+        }));
     }
 
+    allTokens = allTokens
+      .orderBy(item => COINS.POPULAR_COIN_IDS.indexOf(item.id), 'desc')
+      .value();
+
     if (!onlyPToken) {
-      return [{
+      allTokens = [{
         id: '0000000000000000000000000000000000000000000000000000000000000004',
         name: 'Incognito',
         displayName: 'Privacy',
         symbol: 'PRV',
         displaySymbol: 'PRV',
         pDecimals: 9,
-        hasIcon: true,
         originalSymbol: 'PRV',
         verified: true,
-      }, ...tokens];
+      }, ...allTokens];
     }
 
-    return tokens;
-  };
-
-  React.useEffect(() => {
-    const newMenu = generateMenu(getFullDataOfFollowTokens(), onSelect);
-
-    setMenu(newMenu);
-  }, [followedTokens]);
-
-  React.useEffect(() => {
     if (onlyPToken && !selectedPrivacy.isPToken) {
-      const firstFollowPToken = followedTokens.find(item => pTokens.find(token => token.tokenId === item.id));
+      const firstPToken = allTokens.find(item => pTokens.find(token => token.tokenId === item.id));
 
-      if (firstFollowPToken) {
-        dispatch(setSelectedPrivacy(firstFollowPToken.id));
+      if (firstPToken) {
+        dispatch(setSelectedPrivacy(firstPToken.id));
       } else {
         dispatch(setSelectedPrivacy(pTokens[0].tokenId));
       }
     }
-  }, [onlyPToken]);
 
-  React.useEffect(() => {
-    if (onlyPToken) {
-      const allTokens = pTokens.map(item => ({
-        ...item,
-        id: item.tokenId,
-        displaySymbol: showOriginalSymbol ? item.symbol : item.pSymbol,
-      }));
-      return setAllTokens(allTokens);
-    }
+    // console.debug('ALL', allTokens);
 
-    const allTokens = internalTokens
-      .filter(token => token.name && token.symbol)
-      .concat(pTokens.map(item => ({
-        ...item,
-        id: item.tokenId,
-      })))
-      .concat([{
-        id: '0000000000000000000000000000000000000000000000000000000000000004',
-        name: 'Incognito',
-        displayName: 'Privacy',
-        symbol: 'PRV',
-        pDecimals: 9,
-        originalSymbol: 'PRV',
-        verified: true,
-      }])
-      .map(item => ({
-        ...item,
-        displaySymbol: showOriginalSymbol ? item.symbol : (item.pSymbol || item.symbol),
-      }));
     setAllTokens(allTokens);
   }, [internalTokens, pTokens]);
 
@@ -150,7 +120,7 @@ const TokenSelect = ({ onSelect, onlyPToken, size, style, iconStyle, showOrigina
       const newMenu = generateMenu(tokens, onSelect);
       setMenu(newMenu);
     } else {
-      setMenu(generateMenu(getFullDataOfFollowTokens(), onSelect));
+      setMenu(generateMenu(allTokens, onSelect));
     }
   };
 

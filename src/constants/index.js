@@ -5,3 +5,4 @@ export { default as CONSTANT_APP } from './app';
 export { default as CONSTANT_MINER } from './miner';
 export { default as CONSTANT_EVENTS } from './events';
 export { default as MESSAGES } from './messages';
+export { default as COINS } from './coin';
