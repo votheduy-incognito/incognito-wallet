@@ -37,8 +37,6 @@ const generateMenu = (tokens, onSelect) => {
       });
     });
 
-  console.debug('MENU', tokens.slice(0, 10));
-
   return newMenu;
 };
 
