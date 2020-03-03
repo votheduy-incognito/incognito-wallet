@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TouchableOpacity, View, Text, ScrollView } from '@src/components/core';
+import {TouchableOpacity, View, Text, ScrollView, ActivityIndicator} from '@src/components/core';
 import {useNavigationParam} from 'react-navigation-hooks';
 import ROUTES_NAME from '@routers/routeNames';
 import {shallowEqual, useSelector} from 'react-redux';
@@ -38,6 +38,12 @@ const SendCoin = ({ navigation }) => {
   };
 
   const Component = mode.component;
+
+  if (!selectedPrivacy) {
+    return (
+      <ActivityIndicator />
+    );
+  }
 
   return (
     <View style={styles.container}>
