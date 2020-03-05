@@ -44,22 +44,22 @@ const Receipt = ({info, onBack, onSaveReceivers}) => {
     title,
   } = info;
   const [btnSave, setBtnSave] = React.useState(null);
-  React.useEffect(() => {
-    renderBtnSaveReceiver();
-  }, []);
-  const renderBtnSaveReceiver = async () => {
-    const isAddrExist = (await isFieldExist('address', toAddress)).error;
-    if (!isAddrExist) {
-      await setBtnSave(
-        <Button
-          style={styleSheet.btnSaveReceivers}
-          title="Save this address"
-          onPress={onSaveReceivers}
-          titleStyle={styleSheet.titleReceivers}
-        />,
-      );
-    }
-  };
+  // React.useEffect(() => {
+  //   renderBtnSaveReceiver();
+  // }, []);
+  // const renderBtnSaveReceiver = async () => {
+  //   const isAddrExist = (await isFieldExist('address', toAddress)).error;
+  //   if (!isAddrExist) {
+  //     await setBtnSave(
+  //       <Button
+  //         style={styleSheet.btnSaveReceivers}
+  //         title="Save this address"
+  //         onPress={onSaveReceivers}
+  //         titleStyle={styleSheet.titleReceivers}
+  //       />,
+  //     );
+  //   }
+  // };
   return (
     <ScrollView style={styleSheet.container}>
       <Container style={styleSheet.content}>

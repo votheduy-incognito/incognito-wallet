@@ -292,7 +292,6 @@ class SendCrypto extends React.Component {
                   placeholder="Enter wallet address"
                   style={homeStyle.input}
                   validate={validator.combinedIncognitoAddress}
-                  onFocus={onShowFrequentReceivers}
                 />
                 <Field
                   component={InputMaxValueField}
