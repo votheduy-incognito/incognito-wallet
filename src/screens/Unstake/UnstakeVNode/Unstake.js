@@ -5,9 +5,7 @@ import formatUtils from '@utils/format';
 import LoadingTx from '@components/LoadingTx/LoadingTx';
 import {CONSTANT_COMMONS} from '@src/constants';
 import {MESSAGES} from '@screens/Dex/constants';
-import styles from './styles';
-
-export const TAG = 'Unstake';
+import styles from '../styles';
 
 const pDecimals = CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY;
 const symbol = CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;

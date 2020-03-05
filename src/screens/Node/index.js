@@ -291,7 +291,7 @@ class Node extends BaseScreen {
       const account = device.Account;
       const rewards = device.Rewards;
       this.setState({ loading: true });
-      if (device.IsVNode) {
+      if ((device.IsVNode) || (device.Unstaked)) {
         const { PaymentAddress } = (account || {});
         const tokenIds = Object.keys(rewards)
           .filter(id => rewards[id] > 0);

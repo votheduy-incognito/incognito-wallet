@@ -4,7 +4,7 @@ import {View} from '@src/components/core';
 import icShield from '@assets/images/icons/ic_shield_btn.png';
 import icSend from '@assets/images/icons/ic_send_btn.png';
 import icReceive from '@assets/images/icons/ic_receive_btn.png';
-import icTrade from '@assets/images/icons/ic_trade_btn.png';
+import icTrade from '@assets/images/icons/ic_trade.png';
 import icInvent from '@assets/images/icons/ic_invent_btn.png';
 import IconTextButton from '@screens/Home/IconTextButton';
 import ROUTE_NAMES from '@routers/routeNames';

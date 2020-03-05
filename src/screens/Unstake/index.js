@@ -1,20 +1,11 @@
-import React from 'react';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import {compose} from 'redux';
 import {connect} from 'react-redux';
-import BaseScreen from '@screens/BaseScreen';
-import {ExHandler} from '@services/exception';
-import accountService from '@services/wallet/accountService';
-import { getEstimateFeePerKB } from '@services/wallet/RpcClientService';
-import { ActivityIndicator, Toast } from '@components/core';
-import LocalDatabase from '@utils/LocalDatabase';
-import _ from 'lodash';
-import Device from '@models/device';
-import Unstake from './Unstake';
+import {ActivityIndicator} from '@components/core/index';
+import UnstakeVNode from './UnstakeVNode';
+import UnstakePNode from './UnstakePNode';
 
-export const TAG = 'Unstake';
-
-class UnstakeContainer extends BaseScreen {
+class UnstakeContainer extends PureComponent {
   constructor(props) {
     super(props);
     const { navigation }= props;
@@ -23,67 +14,37 @@ class UnstakeContainer extends BaseScreen {
 
     this.state = {
       device,
-      isUnstaking: false,
     };
   }
 
-  async componentDidMount() {
-    this.getBalance().catch((error) => new ExHandler(error).showErrorToast(true));
-  }
-
-  async getBalance() {
-    const { wallet } = this.props;
-    const { device } = this.state;
-    const account = device.Account;
-    const balance = await accountService.getBalance(account, wallet);
-    const data = await getEstimateFeePerKB(account.PaymentAddress);
-    const fee = data.unitFee * 10;
-    this.setState({ balance, fee: fee * 10 });
-  }
-
-  handleUnstake = async () => {
-    const { isUnstaking } = this.state;
-
-    if (isUnstaking) {
-      return;
-    }
-
-    try {
-      this.setState({ isUnstaking: true });
-      const { wallet, navigation } = this.props;
-      const { device, fee } = this.state;
-      const account = device.Account;
-      const validatorKey = account.ValidatorKey;
-      const name = device.AccountName;
-      const rs = await accountService.createAndSendStopAutoStakingTx(wallet, account, fee, account.PaymentAddress, validatorKey);
-      const listDevice = await LocalDatabase.getListDevices()||[];
-      await LocalDatabase.saveListDevices(listDevice);
-      const deviceIndex =  listDevice.findIndex(item => _.isEqual(Device.getInstance(item).AccountName, name));
-      listDevice[deviceIndex].minerInfo.unstakeTx = rs.txId;
-      await LocalDatabase.saveListDevices(listDevice);
-      Toast.showInfo('Unstaking complete.');
-      navigation.goBack();
-    } catch (e) {
-      new ExHandler(e).showErrorToast(true);
-    } finally {
-      this.setState({ isUnstaking: false });
-    }
+  handleCompleteUnstake = async () => {
+    const { navigation } = this.props;
+    navigation.goBack();
   };
 
   render() {
-    const { device, fee, isUnstaking, balance } = this.state;
+    const { wallet } = this.props;
+    const { device } = this.state;
 
-    if (fee === undefined) {
+    if (!device) {
       return <ActivityIndicator size="small" />;
     }
 
+    if (device.IsPNode && !device.Unstaked) {
+      return (
+        <UnstakePNode
+          device={device}
+          wallet={wallet}
+          onFinish={this.handleCompleteUnstake}
+        />
+      );
+    }
+
     return (
-      <Unstake
+      <UnstakeVNode
         device={device}
-        balance={balance}
-        fee={fee}
-        isUnstaking={isUnstaking}
-        onUnstake={this.handleUnstake}
+        wallet={wallet}
+        onFinish={this.handleCompleteUnstake}
       />
     );
   }
@@ -91,6 +52,7 @@ class UnstakeContainer extends BaseScreen {
 
 UnstakeContainer.propTypes = {
   wallet: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired,
 };
 
 UnstakeContainer.defaultProps = {};
@@ -99,6 +61,4 @@ const mapStateToProps = (state) => ({
   wallet: state?.wallet,
 });
 
-export default compose(
-  connect(mapStateToProps)
-)(UnstakeContainer);
+export default connect(mapStateToProps)(UnstakeContainer);

@@ -32,37 +32,35 @@ class Swap extends React.Component {
 
   async componentDidMount() {
     this.seenDepositGuide = await LocalDatabase.getSeenDepositGuide() || false;
-    this.loadData();
-
-    const { navigation } = this.props;
-    this.listener = navigation.addListener('didFocus', () => {
-      const { navigation } = this.props;
-      if (navigation.state?.params?.inputTokenId) {
-        const { pairTokens } = this.props;
-        const { inputTokenId, outputTokenId, outputValue } = navigation.state.params;
-        const inputToken = pairTokens.find(item => item.id === inputTokenId);
-        const outputToken = pairTokens.find(item => item.id === outputTokenId);
-        const inputValue = this.calculateInputValue(outputToken, outputValue, inputToken);
-        this.selectInput(inputToken, convertUtil.toHumanAmount(inputValue, inputToken.pDecimals), outputToken);
-      }
-    });
-  }
-
-  componentWillUnmount() {
-    if (this.listener) {
-      this.listener.remove();
-    }
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { pairs, pairTokens, onUpdateTradeParams } = this.props;
+    const { inputToken } = this.state;
 
     if (pairs.length > 0 && pairTokens.length > 0 && (pairs !== prevProps.pairs || pairTokens !== prevProps.pairTokens)) {
       this.loadData();
     }
 
+    if (!prevState.inputToken && inputToken) {
+      this.buyToken();
+    }
+
     if (this.state !== prevState) {
       onUpdateTradeParams(prevState);
+    }
+  }
+
+  buyToken() {
+    const { navigation } = this.props;
+
+    if (navigation.state?.params?.inputTokenId) {
+      const { pairTokens } = this.props;
+      const { inputTokenId, outputTokenId, outputValue } = navigation.state.params;
+      const inputToken = pairTokens.find(item => item.id === inputTokenId);
+      const outputToken = pairTokens.find(item => item.id === outputTokenId);
+      const inputValue = this.calculateInputValue(outputToken, outputValue, inputToken);
+      this.selectInput(inputToken, convertUtil.toHumanAmount(inputValue, inputToken.pDecimals), outputToken);
     }
   }
 

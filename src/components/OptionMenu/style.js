@@ -23,9 +23,6 @@ const style = StyleSheet.create({
     paddingBottom: isIOS() ? 45 : 25,
     width: UTILS.deviceWidth()
   },
-  scrollView: {
-    maxHeight: 250,
-  },
   barIcon: {
     backgroundColor: COLORS.white,
     width: 50,

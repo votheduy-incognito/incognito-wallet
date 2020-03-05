@@ -11,8 +11,8 @@ const style = StyleSheet.create({
     height: 54,
   },
   iconContainer: {
-    width: 200,
-    paddingLeft: 150,
+    width: 400,
+    paddingLeft: 350,
   },
 });
 

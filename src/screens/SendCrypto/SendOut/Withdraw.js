@@ -20,6 +20,7 @@ import TokenSelect from '@components/TokenSelect';
 import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
 import CurrentBalance from '@components/CurrentBalance';
 import ROUTES_NAME from '@routers/routeNames';
+import {RefreshControl} from 'react-native';
 import style from './style';
 
 const formName = 'withdraw';
@@ -256,15 +257,38 @@ class Withdraw extends React.Component {
   };
 
   render() {
-    const { maxAmountValidator, minAmountValidator, supportedFeeTypes, estimateFeeData, feeForBurn, isUsedPRVFee } = this.state;
+    const {
+      maxAmountValidator,
+      minAmountValidator,
+      supportedFeeTypes,
+      estimateFeeData,
+      feeForBurn,
+      isUsedPRVFee,
+    } = this.state;
     const { fee, feeUnit } = estimateFeeData;
-    const { selectedPrivacy, isFormValid, amount, account, selectable } = this.props;
+    const {
+      selectedPrivacy,
+      isFormValid,
+      amount,
+      account,
+      selectable,
+      reloading,
+      onReloadBalance,
+    } = this.props;
     const { externalSymbol, isErc20Token, name: tokenName } = selectedPrivacy || {};
     const addressValidator = this.getAddressValidator(externalSymbol, isErc20Token);
     const maxAmount = this.getMaxAmount();
 
     return (
-      <ScrollView style={style.container}>
+      <ScrollView
+        style={style.container}
+        refreshControl={(
+          <RefreshControl
+            refreshing={reloading}
+            onRefresh={onReloadBalance}
+          />
+        )}
+      >
         <Container style={style.mainContainer}>
           <View>
             <CurrentBalance select={selectable ? (
@@ -369,6 +393,7 @@ Withdraw.defaultProps = {
   minAmount: null,
   maxAmount: null,
   selectable: true,
+  reloading: false,
 };
 
 Withdraw.propTypes = {
@@ -384,6 +409,8 @@ Withdraw.propTypes = {
   minAmount: PropTypes.number,
   maxAmount: PropTypes.number,
   selectable: PropTypes.bool,
+  reloading: PropTypes.bool,
+  onReloadBalance: PropTypes.func.isRequired,
 };
 
 const mapState = state => ({

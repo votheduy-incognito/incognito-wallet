@@ -13,14 +13,10 @@ import { COLORS } from '@src/styles';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { MESSAGES } from '@src/constants';
 import Loader from './Loader';
 import Rewards from './Rewards';
 import styles from './style';
-
-const MESSAGES = {
-  ACCOUNT_NOT_FOUND: 'Missing account',
-  UNSTAKING: 'unstaking in process',
-};
 
 class PNode extends React.Component {
   constructor(props) {
@@ -32,7 +28,7 @@ class PNode extends React.Component {
   }
 
   getDescriptionStatus = () => {
-    const { item, isFetching, onImportAccount } = this.props;
+    const { item, isFetching, onImportAccount, onStake } = this.props;
 
     if (isFetching) {
       return null;
@@ -59,12 +55,29 @@ class PNode extends React.Component {
       );
     }
 
-    const isUnstaking = item.Unstaking;
+    const isUnstaking = item.StakerAddress ? item.IsUnstaking : (item.Staked && item.Unstaking);
     if (isUnstaking) {
       return (
         <View style={styles.row}>
           <Text style={[styles.desc]}>{text} ({MESSAGES.UNSTAKING})</Text>
-          <ActivityIndicator style={styles.loading} size="small" color={COLORS.lightGrey1} />
+        </View>
+      );
+    }
+
+
+    const unstakedPNode = item.Unstaked;
+    const hasStaked = item.Staked;
+
+    if (!hasStaked && unstakedPNode) {
+      return (
+        <View style={[styles.row, styles.desc, styles.centerAlign]}>
+          <View style={[styles.row, styles.centerAlign]}>
+            <Image source={accountKey} style={[styles.icon]} />
+            <Text>{text}</Text>
+          </View>
+          <View style={styles.itemRight}>
+            <Button title="Stake" buttonStyle={styles.stakeButton} onPress={() => onStake(item)} />
+          </View>
         </View>
       );
     }
@@ -82,12 +95,8 @@ class PNode extends React.Component {
     Toast.showInfo(item.Host);
   };
 
-  updateFirmware = () => {
-    this.setState({ showUpdateFirmware: true });
-  };
-
   renderMenu() {
-    const { isFetching, item, onWithdraw } = this.props;
+    const { isFetching, item, onWithdraw, onUnstake } = this.props;
     const menu = [];
 
     if (isFetching) {
@@ -111,36 +120,44 @@ class PNode extends React.Component {
         id: 'delete',
         icon: <Image source={unfollowTokenIcon} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
         label: 'Remove physical node',
-        desc: 'Remove this node from your display. (DEBUG)',
+        desc: 'Remove this node from your display.',
         handlePress: () => this.removeDevice(item),
       });
     }
 
-    if (!isFetching) {
-      const rewards = item.Rewards;
-      const pendingWithdraw = !item.IsWithdrawable;
-      const isEmptyRewards = _.isEmpty(rewards) || !_.some(rewards, value => value > 0);
-      let onClick = () => onWithdraw(item);
-      let label = 'Withdraw earnings';
-      let desc = 'Withdraw your rewards';
-      if (pendingWithdraw || isEmptyRewards) {
-        if (pendingWithdraw) {
-          desc = 'This might take up to 24 hours';
-        }
-        onClick = null;
-        label = (
-          <View style={styles.withdrawMenuItem}>
-            <Text style={styles.withdrawText}>{pendingWithdraw ? 'Withdrawal in process' : 'Withdraw earnings'}</Text>
-          </View>
-        );
+    const rewards = item.Rewards;
+    const pendingWithdraw = !item.IsWithdrawable;
+    const isEmptyRewards = _.isEmpty(rewards) || !_.some(rewards, value => value > 0);
+    let onClick = () => onWithdraw(item);
+    let label = 'Withdraw earnings';
+    let desc = 'Withdraw your rewards';
+    if (pendingWithdraw || isEmptyRewards) {
+      if (pendingWithdraw) {
+        desc = 'This might take up to 24 hours';
       }
+      onClick = null;
+      label = (
+        <View style={styles.withdrawMenuItem}>
+          <Text style={styles.withdrawText}>{pendingWithdraw ? 'Withdrawal in process' : 'Withdraw earnings'}</Text>
+        </View>
+      );
+    }
 
+    menu.push({
+      id: 'withdraw',
+      icon: <Image source={withdrawBlack} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
+      label: label,
+      desc: desc,
+      handlePress: onClick,
+    });
+
+    if (item.Account && !item.IsUnstaking && (item.StakerAddress || (item.Staked && item.IsAutoStake))) {
       menu.push({
-        id: 'withdraw',
+        id: MESSAGES.PNODE_UNSTAKE_LABEL,
         icon: <Image source={withdrawBlack} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
-        label: label,
-        desc: desc,
-        handlePress: onClick,
+        label: MESSAGES.PNODE_UNSTAKE_LABEL,
+        desc: MESSAGES.PNODE_UNSTAKE_DESC,
+        handlePress: () => onUnstake(item),
       });
     }
 
@@ -200,8 +217,10 @@ PNode.propTypes = {
   item: PropTypes.object.isRequired,
   allTokens: PropTypes.array.isRequired,
   onWithdraw: PropTypes.func.isRequired,
+  onUnstake: PropTypes.func.isRequired,
   onRemoveDevice: PropTypes.func.isRequired,
   onImportAccount: PropTypes.func.isRequired,
+  onStake: PropTypes.func.isRequired,
   isFetching: PropTypes.bool.isRequired,
 };
 

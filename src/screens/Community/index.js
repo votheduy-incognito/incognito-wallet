@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {WebView} from 'react-native-webview';
-import {BackHandler, Image} from 'react-native';
+import {Image} from 'react-native';
 import {ActivityIndicator, TouchableOpacity, View} from '@components/core';
 import { MAIN_WEBSITE } from '@src/constants/config';
 import chevronLeft from '@assets/images/icons/chevron-left-icon.png';
@@ -10,11 +10,6 @@ const Community = () => {
   const webViewRef = useRef();
   const [loading, setLoading] = useState(true);
   const [backable, setBackable] = useState(false);
-
-  const backHandler = () => {
-    goBack();
-    return true;
-  };
 
   const goBack = () => {
     webViewRef.current.goBack();
@@ -29,14 +24,6 @@ const Community = () => {
       setBackable(state.canGoBack);
     }
   };
-
-  useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', backHandler);
-
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress', backHandler);
-    };
-  }, []);
 
   return (
     <View style={styles.container}>

@@ -30,6 +30,9 @@ class Pool extends React.Component {
   constructor(props) {
     super(props);
     this.state = props.params;
+
+    this.estimateInputFee = _.debounce(this.estimateInputFee.bind(this), 100);
+    this.estimateOutputFee = _.debounce(this.estimateOutputFee.bind(this), 100);
   }
 
   componentDidMount() {

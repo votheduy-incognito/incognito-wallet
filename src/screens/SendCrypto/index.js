@@ -1,10 +1,13 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
-import {TouchableOpacity, View, Text, ScrollView, ActivityIndicator} from '@src/components/core';
+import {TouchableOpacity, View, Text, ActivityIndicator} from '@src/components/core';
 import {useNavigationParam} from 'react-navigation-hooks';
 import ROUTES_NAME from '@routers/routeNames';
-import {shallowEqual, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {accountSeleclor, selectedPrivacySeleclor} from '@src/redux/selectors';
+import {getBalance} from '@src/redux/actions/account';
+import {getBalance as getTokenBalance} from '@src/redux/actions/token';
+import {PRV_ID} from '@screens/Dex/constants';
 import SendIn from './SendIn';
 import SendOut from './SendOut';
 
@@ -23,18 +26,29 @@ const modes = [
 
 const SendCoin = ({ navigation }) => {
   const [mode, setMode] = React.useState(modes[0]);
+  const [reloading, setReloading] = React.useState(false);
   const origin = useNavigationParam('origin');
   const { wallet, account, selectedPrivacy } = useSelector(state => ({
     selectedPrivacy: selectedPrivacySeleclor.selectedPrivacy(state),
     account: accountSeleclor.defaultAccount(state),
     wallet: state.wallet,
   }));
-
+  const dispatch = useDispatch();
   const selectable = origin !== ROUTES_NAME.WalletDetail;
   const switchable = selectable || (!selectable && selectedPrivacy.isPToken);
 
   const switchMode = (item) => {
     setMode(item);
+  };
+
+  const reloadBalance = async () => {
+    setReloading(true);
+    if (selectedPrivacy.tokenId === PRV_ID) {
+      await dispatch(getBalance(account));
+    } else {
+      await dispatch(getTokenBalance(selectedPrivacy));
+    }
+    setReloading(false);
   };
 
   const Component = mode.component;
@@ -44,6 +58,12 @@ const SendCoin = ({ navigation }) => {
       <ActivityIndicator />
     );
   }
+
+  useEffect(() => {
+    if (origin !== ROUTES_NAME.WalletDetail) {
+      reloadBalance();
+    }
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -65,6 +85,8 @@ const SendCoin = ({ navigation }) => {
           selectedPrivacy={selectedPrivacy}
           account={account}
           wallet={wallet}
+          onReloadBalance={reloadBalance}
+          reloading={reloading}
         />
       </View>
     </View>

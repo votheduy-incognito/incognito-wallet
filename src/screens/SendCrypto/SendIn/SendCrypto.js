@@ -23,6 +23,7 @@ import {MESSAGES} from '@screens/Dex/constants';
 import TokenSelect from '@components/TokenSelect';
 import CurrentBalance from '@components/CurrentBalance';
 import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
+import {RefreshControl} from 'react-native';
 import {homeStyle} from './style';
 
 export const formName = 'sendCrypto';
@@ -258,11 +259,21 @@ class SendCrypto extends React.Component {
       account,
       selectable,
       onShowFrequentReceivers,
+      onReloadBalance,
+      reloading,
     } = this.props;
     const maxAmount = this.getMaxAmount();
 
     return (
-      <ScrollView style={homeStyle.container}>
+      <ScrollView
+        style={homeStyle.container}
+        refreshControl={(
+          <RefreshControl
+            refreshing={reloading}
+            onRefresh={onReloadBalance}
+          />
+        )}
+      >
         <Container style={homeStyle.mainContainer}>
           <CurrentBalance
             select={
@@ -342,6 +353,7 @@ SendCrypto.defaultProps = {
   amount: null,
   toAddress: null,
   selectable: true,
+  reloading: false,
 };
 
 SendCrypto.propTypes = {
@@ -356,6 +368,8 @@ SendCrypto.propTypes = {
   toAddress: PropTypes.string,
   selectable: PropTypes.bool,
   onShowFrequentReceivers: PropTypes.func.isRequired,
+  reloading: PropTypes.bool,
+  onReloadBalance: PropTypes.func.isRequired,
 };
 
 const mapState = state => ({
