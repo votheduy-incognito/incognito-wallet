@@ -62,7 +62,7 @@
     "firebase": "^6.4.1",
     "formik": "^1.5.3",
     "https-browserify": "0.0.1",
-    "incognito-chain-web-js": "https://github.com/incognitochain/incognito-chain-web-js",
+    "incognito-chain-web-js": "https://github.com/incognitochain/incognito-chain-web-js#3.6.3.2",
     "intl": "^1.2.5",
     "lodash": "^4.17.11",
     "memoize-one": "^5.0.5",
