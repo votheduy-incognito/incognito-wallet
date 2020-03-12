@@ -13,7 +13,6 @@ export const KEY_SAVE = {
   SEEN_DEPOSIT_GUIDE: CONSTANT_KEYS.SEEN_DEPOSIT_GUIDE,
   PIN: CONSTANT_KEYS.PIN,
   DECIMAL_SEPARATOR: '$decimal_separator',
-  FREQUENT_RECEIVERS: CONSTANT_KEYS.FREQUENT_RECEIVERS,
   VERIFY_CODE: '$verify_code',
 };
 export default class LocalDatabase {
@@ -193,26 +192,6 @@ export default class LocalDatabase {
     return LocalDatabase.getValue(KEY_SAVE.DECIMAL_SEPARATOR);
   }
 
-  static async getFrequentReceivers() {
-    const receivers = JSON.parse(
-      await LocalDatabase.getValue(KEY_SAVE.FREQUENT_RECEIVERS),
-    );
-    return _.isEmpty(receivers) ? [] : receivers;
-  }
-
-  static async setFrequentReceivers(receiver = {name: '', address: ''}) {
-    const oldReceivers = await this.getFrequentReceivers();
-    const {name, address} = receiver;
-    const isReceiverExist = oldReceivers.some(
-      item => item?.address === address || item?.name === name,
-    );
-    if (isReceiverExist) {
-      throw Error('User exist!');
-    }
-    const newReceivers = JSON.stringify([...oldReceivers, receiver]);
-    return LocalDatabase.saveValue(KEY_SAVE.FREQUENT_RECEIVERS, newReceivers);
-  }
-
   static saveVerifyCode(verifyCode) {
     return LocalDatabase.saveValue(KEY_SAVE.VERIFY_CODE, verifyCode);
   }
@@ -220,4 +199,12 @@ export default class LocalDatabase {
   static getVerifyCode() {
     return LocalDatabase.getValue(KEY_SAVE.VERIFY_CODE);
   }
+
+  static getSyncReceivers = keySync => {
+    return LocalDatabase.getValue(keySync);
+  };
+
+  static setSyncReceivers = (keySync, value) => {
+    return LocalDatabase.saveValue(keySync, JSON.stringify(value));
+  };
 }

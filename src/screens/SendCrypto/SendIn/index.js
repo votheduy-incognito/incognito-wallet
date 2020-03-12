@@ -8,14 +8,15 @@ import accountService from '@services/wallet/accountService';
 import tokenService from '@services/wallet/tokenService';
 import {getBalance} from '@src/redux/actions/account';
 import {getBalance as getTokenBalance} from '@src/redux/actions/token';
-import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
+import {CONSTANT_COMMONS, CONSTANT_EVENTS, CONSTANT_KEYS} from '@src/constants';
 import {logEvent} from '@services/firebase';
 import {MESSAGES} from '@screens/Dex/constants';
 import {actionToggleModal as toggleModal} from '@src/components/Modal';
 import routeNames from '@src/router/routeNames';
 import {ExHandler} from '@src/services/exception';
-import LocalDatabase from '@src/utils/LocalDatabase';
 import {change as rfOnChangeValue} from 'redux-form';
+import {sendInReceiversSelector} from '@src/redux/selectors/receivers';
+import {HEADER_TITLE_RECEIVERS} from '@src/redux/types/receivers';
 import SendCrypto, {formName} from './SendCrypto';
 
 class SendCryptoContainer extends Component {
@@ -196,21 +197,20 @@ class SendCryptoContainer extends Component {
   onShowFrequentReceivers = async () => {
     const {navigation} = this.props;
     try {
-      const receivers = await LocalDatabase.getFrequentReceivers();
-      if(receivers.length > 0){
-        navigation.navigate(routeNames.SendInFrequentReceiversModal, {
-          receivers,
-          onSelectedItem: this.onSelectedItem,
-        });
-      }
+      navigation.navigate(routeNames.FrequentReceivers, {
+        keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
+        onSelectedItem: this.onSelectedItem,
+        headerTitle: HEADER_TITLE_RECEIVERS.ADDRESS_BOOK,
+      });
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
   };
 
-  onSelectedItem = toAddress => {
-    const {rfOnChangeValue} = this.props;
-    rfOnChangeValue(formName, 'toAddress', toAddress);
+  onSelectedItem = info => {
+    const {rfOnChangeValue, navigation} = this.props;
+    rfOnChangeValue(formName, 'toAddress', info.address);
+    navigation.pop();
   };
 
   render() {
@@ -239,6 +239,7 @@ class SendCryptoContainer extends Component {
 
 const mapState = state => ({
   tokens: state.token.followed,
+  receivers: sendInReceiversSelector(state).receivers,
 });
 
 const mapDispatch = {

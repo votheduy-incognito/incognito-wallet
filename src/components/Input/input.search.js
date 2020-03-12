@@ -13,6 +13,7 @@ const styled = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 10,
     backgroundColor: COLORS.white,
+    height: 40,
   },
   input: {
     flex: 1,
@@ -25,9 +26,9 @@ const styled = StyleSheet.create({
 });
 
 const SearchInput = props => {
-  const {onClearText, value, ...rest} = props;
+  const {onClearText, value, containerStyled, ...rest} = props;
   return (
-    <View style={styled.container}>
+    <View style={[styled.container, containerStyled]}>
       <SearchIcon />
       <TextInput style={styled.input} {...{...rest, value}} />
       {value.length > 0 && (
@@ -41,10 +42,12 @@ const SearchInput = props => {
 
 SearchInput.defaultProps = {
   onClearText: () => null,
+  containerStyled: null,
 };
 
 SearchInput.propTypes = {
   onClearText: PropTypes.func,
+  containerStyled: PropTypes.any,
 };
 
 export default SearchInput;

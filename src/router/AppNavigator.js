@@ -22,7 +22,9 @@ import WhyShield from '@src/screens/WhyShield';
 import {navigationOptionsHandler} from '@src/utils/router';
 import Dex from '@screens/Dex';
 import Shield from '@screens/Shield';
-import SendInFrequentReceivers, {SendInFrequentReceiversModal} from '@src/screens/SendCrypto/SendInFrequentReceivers';
+import FrequentReceivers, {
+  FrequentReceiversForm,
+} from '@src/screens/SendCrypto/FrequentReceivers';
 import ROUTE_NAMES from './routeNames';
 import TabNavigator from './TabNavigator';
 
@@ -82,17 +84,11 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.WhyShield]: navigationOptionsHandler(WhyShield, {
       title: 'Why Shield?',
     }),
-    [ROUTE_NAMES.SendInFrequentReceivers]: navigationOptionsHandler(
-      SendInFrequentReceivers,
-      {
-        title: 'Frequent receivers',
-      },
+    [ROUTE_NAMES.FrequentReceiversForm]: navigationOptionsHandler(
+      FrequentReceiversForm,
     ),
-    [ROUTE_NAMES.SendInFrequentReceiversModal]: navigationOptionsHandler(
-      SendInFrequentReceiversModal,
-      {
-        title: 'Frequent receivers',
-      },
+    [ROUTE_NAMES.FrequentReceivers]: navigationOptionsHandler(
+      FrequentReceivers,
     ),
   },
   {

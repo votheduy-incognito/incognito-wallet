@@ -1,42 +1,69 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TextInput, TouchableOpacity, Image } from '@src/components/core';
-import { openQrScanner } from '@src/components/QrCodeScanner';
-import { scaleInApp } from '@src/styles/TextStyle';
+import {StyleSheet, TouchableOpacity} from 'react-native';
+import {TextInput, Image, View} from '@src/components/core';
+import {openQrScanner} from '@src/components/QrCodeScanner';
+import {scaleInApp} from '@src/styles/TextStyle';
 import qrCodeScanner from '@src/assets/images/icons/qr_code_scanner.png';
+import {AddressBookIcon} from '@src/components/Icons';
+import {COLORS} from '@src/styles';
 import createField from './createField';
 
-const renderCustomField = ({ input, ...props }) => {
-  const { onChange, onBlur, onFocus, value } = input;
+const styled = StyleSheet.create({
+  prepend: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  line: {
+    width: 1,
+    height: 20,
+    backgroundColor: COLORS.lightGrey1,
+    marginHorizontal: 10,
+  },
+});
+
+const renderCustomField = ({
+  input,
+  onOpenAddressBook,
+  showNavAddrBook,
+  ...props
+}) => {
+  const {onChange, onBlur, onFocus, value} = input;
   return (
     <TextInput
       {...props}
-      onChangeText={(t) => onChange(t)}
+      onChangeText={t => onChange(t)}
       onBlur={onBlur}
       onFocus={onFocus}
       defaultValue={value}
       prependView={(
-        <TouchableOpacity
-          style={{
-            height: '100%',
-            paddingLeft: 15,
-            justifyContent: 'center'
-          }}
-          onPress={() => {
-            openQrScanner(data => {
-              onChange(data);
-            });
-          }}
-        >
-          <Image
-            source={qrCodeScanner}
-            style={{
-              width: scaleInApp(20),
-              height: scaleInApp(20),
-              resizeMode: 'contain',
+        <View style={styled.prepend}>
+          {showNavAddrBook && (
+            <>
+              <TouchableOpacity onPress={onOpenAddressBook}>
+                <AddressBookIcon />
+              </TouchableOpacity>
+              <View style={styled.line} />
+            </>
+          )}
+          <TouchableOpacity
+            onPress={() => {
+              openQrScanner(data => {
+                onChange(data);
+              });
             }}
-          />
-        </TouchableOpacity>
+          >
+            <Image
+              source={qrCodeScanner}
+              style={{
+                width: scaleInApp(16),
+                height: scaleInApp(16),
+                resizeMode: 'contain',
+              }}
+            />
+          </TouchableOpacity>
+        </View>
       )}
     />
   );
@@ -44,16 +71,19 @@ const renderCustomField = ({ input, ...props }) => {
 
 renderCustomField.propTypes = {
   input: PropTypes.object,
+  onOpenAddressBook: PropTypes.func,
+  showNavAddrBook: PropTypes.bool,
 };
 
 renderCustomField.defaultProps = {
   input: null,
+  onOpenAddressBook: () => null,
+  showNavAddrBook: false,
 };
 
 const InputQRField = createField({
   fieldName: 'InputQRField',
-  render: renderCustomField
+  render: renderCustomField,
 });
-
 
 export default InputQRField;

@@ -27,7 +27,11 @@ const ModalComponent = props => {
     );
   };
   return (
-    <Modal animationType="slide" transparent visible={visible}>
+    <Modal
+      presentationStyle="fullScreen"
+      animationType="slide"
+      visible={visible}
+    >
       <TouchableWithoutFeedback style={styled.overlay} onPress={handleToggle}>
         {data}
       </TouchableWithoutFeedback>

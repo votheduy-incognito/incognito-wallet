@@ -12,8 +12,11 @@ import formatUtil from '@src/utils/format';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import {CONSTANT_COMMONS} from '@src/constants';
-import {isFieldExist} from '@src/screens/SendCrypto/SendInFrequentReceivers/SendInFrequentReceivers.utils';
+import {CONSTANT_COMMONS, CONSTANT_KEYS} from '@src/constants';
+import {useBtnSaveReceiver} from '@src/screens/SendCrypto/FrequentReceivers/FrequentReceivers.hooks';
+import {sendInReceiversSelector} from '@src/redux/selectors/receivers';
+import {useSelector, useDispatch} from 'react-redux';
+import {actionUpdateRecently} from '@src/redux/actions/receivers';
 import styleSheet from './style';
 
 const Row = ({label, value, valueProps}) => (
@@ -43,23 +46,26 @@ const Receipt = ({info, onBack, onSaveReceivers}) => {
     pDecimals,
     title,
   } = info;
-  const [btnSave, setBtnSave] = React.useState(null);
-  // React.useEffect(() => {
-  //   renderBtnSaveReceiver();
-  // }, []);
-  // const renderBtnSaveReceiver = async () => {
-  //   const isAddrExist = (await isFieldExist('address', toAddress)).error;
-  //   if (!isAddrExist) {
-  //     await setBtnSave(
-  //       <Button
-  //         style={styleSheet.btnSaveReceivers}
-  //         title="Save this address"
-  //         onPress={onSaveReceivers}
-  //         titleStyle={styleSheet.titleReceivers}
-  //       />,
-  //     );
-  //   }
-  // };
+  const dispatch = useDispatch();
+  const {receivers} = useSelector(sendInReceiversSelector);
+  const [btnSaveReceiver] = useBtnSaveReceiver({
+    onSaveReceivers,
+    toAddress,
+    receivers,
+  });
+  const onUpdateRecentlyAddress = async () => {
+    await dispatch(
+      actionUpdateRecently({
+        keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
+        receiver: {
+          address: toAddress,
+        },
+      }),
+    );
+  };
+  React.useEffect(() => {
+    onUpdateRecentlyAddress();
+  }, []);
   return (
     <ScrollView style={styleSheet.container}>
       <Container style={styleSheet.content}>
@@ -109,7 +115,7 @@ const Receipt = ({info, onBack, onSaveReceivers}) => {
           title="Back to Wallet"
           onPress={onBack}
         />
-        {btnSave}
+        {btnSaveReceiver}
       </Container>
     </ScrollView>
   );

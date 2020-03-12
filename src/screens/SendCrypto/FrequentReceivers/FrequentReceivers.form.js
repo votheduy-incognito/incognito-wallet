@@ -3,17 +3,20 @@ import {View, Text} from 'react-native';
 import {TextInput} from '@src/shared/components/input';
 import {Button} from '@src/components/core';
 import PropTypes from 'prop-types';
+import {COLORS} from '@src/styles';
 import {styled} from './FrequentReceivers.styled';
+import withForm from './FrequentReceivers.withForm';
 
 const Form = props => {
   const {
     onSaveReceiver,
     inputName,
-    saved,
     toAddress,
     onChangeText,
     inputAddr,
+    action,
   } = props;
+  const isUpdate = action === 'update';
   return (
     <View style={styled.container}>
       <TextInput
@@ -35,13 +38,16 @@ const Form = props => {
         value={toAddress}
         editable={false}
         validated={inputAddr.validated}
+        style={{
+          color: COLORS.lightGrey1,
+        }}
       />
-      <Text style={styled.tip}>
-        *Save the address for more better sending experience in future.
-      </Text>
       <Button
-        title={saved ? 'Saved' : 'Save to address book'}
+        title={isUpdate ? 'Save changes' : 'Save to address book'}
         onPress={onSaveReceiver}
+        style={{
+          marginTop: 50,
+        }}
       />
     </View>
   );
@@ -66,6 +72,7 @@ Form.propTypes = {
   saved: PropTypes.bool.isRequired,
   toAddress: PropTypes.string.isRequired,
   onChangeText: PropTypes.func.isRequired,
+  action: PropTypes.string.isRequired,
 };
 
-export default Form;
+export default withForm(Form);
