@@ -1,5 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {COLORS, FONT} from '@src/styles';
+import dimensions from '@src/styles/utils';
 
 export const styled = StyleSheet.create({
   container: {
@@ -10,8 +11,17 @@ export const styled = StyleSheet.create({
     borderRadius: 8,
     padding: 20,
   },
+  label: {
+    color: COLORS.lightGrey1,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 5,
+    marginBottom: 15,
+    textAlign: 'center',
+  },
   btnStyle: {
-    marginTop: 35,
+    marginTop: 25,
+    marginBottom: 10,
   },
   error: {
     color: COLORS.red,
@@ -19,13 +29,16 @@ export const styled = StyleSheet.create({
     fontSize: 14,
   },
   token: {
-    position: 'absolute',
-    right: 20,
-    bottom: 20,
+    width: '100%',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     flexDirection: 'row',
+    borderColor: COLORS.lightGrey5,
+    borderWidth: 1,
   },
   tokenText: {
     marginLeft: 10,
+    marginTop: 4,
   },
   floatBtn: {
     position: 'absolute',
@@ -45,5 +58,17 @@ export const styled = StyleSheet.create({
   },
   text: {
     ...FONT.STYLE.bold,
+  },
+  toggle: {
+    width: dimensions.deviceWidth() * 2,
+    marginRight: -400,
+    paddingRight: 405,
+  },
+  selector: {
+    paddingLeft: 100,
+    paddingRight: 25,
+    left: dimensions.deviceWidth() / 2 - 30,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
   }
 });

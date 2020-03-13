@@ -259,7 +259,6 @@ class SendCrypto extends React.Component {
       account,
       selectable,
       onShowFrequentReceivers,
-      onReloadBalance,
       reloading,
     } = this.props;
     const maxAmount = this.getMaxAmount();
@@ -270,7 +269,6 @@ class SendCrypto extends React.Component {
         refreshControl={(
           <RefreshControl
             refreshing={reloading}
-            onRefresh={onReloadBalance}
           />
         )}
       >
@@ -368,7 +366,7 @@ SendCrypto.propTypes = {
   selectable: PropTypes.bool,
   onShowFrequentReceivers: PropTypes.func.isRequired,
   reloading: PropTypes.bool,
-  onReloadBalance: PropTypes.func.isRequired,
+  Balance: PropTypes.func.isRequired,
 };
 
 const mapState = state => ({

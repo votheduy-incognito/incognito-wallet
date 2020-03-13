@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, FlatList, Image, View, ScrollView, Text, TouchableOpacity, Toast, Container } from '@src/components/core';
-import { TextInput } from 'react-native';
+import {Button, FlatList, Image, View, ScrollView, Text, TouchableOpacity, Toast, Container} from '@src/components/core';
+import {TextInput} from 'react-native';
 import BackButton from '@src/components/BackButton';
 import Icons from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '@src/styles';
 import sadFace from '@src/assets/images/sad_face.png';
-import addIcon from '@src/assets/images/icons/add_outline.png';
-import { ExHandler } from '@src/services/exception';
-import { debounce, remove } from 'lodash';
+import addIcon from '@src/assets/images/icons/ic_add_round.png';
+import {ExHandler} from '@src/services/exception';
+import {debounce, remove} from 'lodash';
 import routeNames from '@src/router/routeNames';
-import TokenInfo, { showTokenInfo } from '@src/components/HeaderRight/TokenInfo';
-import { searchPTokenStyle, emptyStyle } from './styles';
+import TokenInfo, {showTokenInfo} from '@src/components/HeaderRight/TokenInfo';
+import {searchPTokenStyle, emptyStyle} from './styles';
 import TokenItem from './TokenItem';
 
 class SearchToken extends Component {
@@ -159,10 +159,10 @@ class SearchToken extends Component {
     return (
       <View style={emptyStyle.container}>
         <Image source={sadFace} style={emptyStyle.image} />
-        <Text style={emptyStyle.title}>Oh no!</Text>
-        <Text style={emptyStyle.desc}>Tokens you are looking for is</Text>
-        <Text style={emptyStyle.desc}>not available.</Text>
-        <Button style={emptyStyle.button} title='Issue your own privacy coin' onPress={this.hanldeAddTokenManually} />
+        <Text style={emptyStyle.title}>Coin not found</Text>
+        <Text style={emptyStyle.desc}>Check coin details and try again.</Text>
+        <Text style={emptyStyle.desc}>Sure you’re right? Try adding it manually.</Text>
+        <Button style={emptyStyle.button} title='Add manually' onPress={this.handleAddTokenManually} />
       </View>
     );
   }
@@ -200,7 +200,7 @@ class SearchToken extends Component {
           </ScrollView>
         </View>
 
-        <TouchableOpacity style={{ height: 60}} onPress={this.handleAddTokenManually}>
+        <TouchableOpacity style={{ height: 90}} onPress={this.handleAddTokenManually}>
           <View style={searchPTokenStyle.followBtn}>
             <Image source={addIcon} style={searchPTokenStyle.followBtnIcon} />
             <Text style={searchPTokenStyle.followBtnText}>Add manually</Text>

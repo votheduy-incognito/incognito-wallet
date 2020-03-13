@@ -30,20 +30,26 @@ class Swap extends React.Component {
     };
   }
 
+  loadBuyPair = false;
+
   async componentDidMount() {
     this.seenDepositGuide = await LocalDatabase.getSeenDepositGuide() || false;
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { pairs, pairTokens, onUpdateTradeParams } = this.props;
-    const { inputToken } = this.state;
+    const { inputToken, outputToken, inputValue, outputValue } = this.state;
 
     if (pairs.length > 0 && pairTokens.length > 0 && (pairs !== prevProps.pairs || pairTokens !== prevProps.pairTokens)) {
       this.loadData();
     }
 
-    if (!prevState.inputToken && inputToken) {
+    if ((!prevState.outputValue || !prevState.inputValue)
+      && !this.loadBuyPair
+      && inputValue && outputValue
+      && inputToken && outputToken) {
       this.buyToken();
+      this.loadBuyPair = true;
     }
 
     if (this.state !== prevState) {
@@ -59,8 +65,11 @@ class Swap extends React.Component {
       const { inputTokenId, outputTokenId, outputValue } = navigation.state.params;
       const inputToken = pairTokens.find(item => item.id === inputTokenId);
       const outputToken = pairTokens.find(item => item.id === outputTokenId);
-      const inputValue = this.calculateInputValue(outputToken, outputValue, inputToken);
-      this.selectInput(inputToken, convertUtil.toHumanAmount(inputValue, inputToken.pDecimals), outputToken);
+      const inputValue = outputValue ?
+        this.calculateInputValue(outputToken, outputValue, inputToken)
+        : convertUtil.toOriginalAmount(1, inputToken?.pDecimals);
+
+      this.selectInput(inputToken, convertUtil.toHumanAmount(inputValue, inputToken?.pDecimals), outputToken);
     }
   }
 
@@ -272,7 +281,6 @@ class Swap extends React.Component {
       TokenSymbol: inputToken.symbol,
     };
 
-    console.debug('TRADE TOKEN', tradingFee, networkFee, networkFeeUnit, stopPrice, inputToken.symbol, outputToken.symbol, inputValue);
     if (inputToken?.id === PRV.id) {
       return accountService.createAndSendNativeTokenTradeRequestTx(
         wallet,

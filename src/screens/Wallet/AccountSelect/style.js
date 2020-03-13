@@ -16,6 +16,10 @@ const style = StyleSheet.create({
     fontSize: 18,
     color: COLORS.white,
     ...FONT.STYLE.bold,
+  },
+  item: {
+    paddingVertical: 5,
+    paddingHorizontal: 15,
   }
 });
 

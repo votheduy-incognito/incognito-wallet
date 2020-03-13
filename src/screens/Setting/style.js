@@ -71,6 +71,10 @@ export const accountSection = StyleSheet.create({
     borderTopWidth: DECOR.borderWidth,
     borderColor: COLORS.lightGrey5
   },
+  image: {
+    resizeMode: 'contain',
+    width: 30,
+  },
   importButton: {
   },
   importButtonText: {

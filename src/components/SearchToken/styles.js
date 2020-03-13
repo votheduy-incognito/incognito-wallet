@@ -100,17 +100,16 @@ export const searchPTokenStyle = StyleSheet.create({
   },
   followBtn: {
     marginTop: 15,
-    marginLeft: 25,
+    marginLeft: 20,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 30,
   },
   followBtnIcon: {
-    width: 30,
-    height: 30,
+
   },
   followBtnText: {
-    marginLeft: 25,
+    marginLeft: 20,
     fontSize: 16,
     color: COLORS.primary,
     ...FontStyle.medium,

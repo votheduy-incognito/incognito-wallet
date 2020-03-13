@@ -1,12 +1,13 @@
 import React from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import {Text, View} from '@src/components/core';
+import {Text, View, Image} from '@src/components/core';
 import OptionMenu from '@components/OptionMenu';
 import { switchAccount } from '@src/redux/actions/account';
 import {accountSeleclor} from '@src/redux/selectors';
 import {Icon} from 'react-native-elements';
 import {COLORS} from '@src/styles';
-import FIcons from 'react-native-vector-icons/Feather';
+import activeAccount from '@src/assets/images/icons/ic_account_active.png';
+import deactiveAccount from '@src/assets/images/icons/ic_account_deactive.png';
 import styles from './style';
 
 const AccountSelect = () => {
@@ -25,7 +26,7 @@ const AccountSelect = () => {
 
       newMenu.push({
         id: accountName,
-        icon: <FIcons name={isCurrentAccount ? 'user-check' : 'user'} size={40} color={isCurrentAccount ? COLORS.primary : COLORS.lightGrey4} />,
+        icon: <Image style={{width:35}} resizeMode="contain" source={isCurrentAccount ? activeAccount : deactiveAccount} />,
         label: (
           <Text style={{
             marginLeft: 10,
@@ -51,6 +52,7 @@ const AccountSelect = () => {
       style={styles.container}
       toggleStyle={styles.toggle}
       maxHeight={500}
+      itemStyle={styles.item}
       icon={(
         <View style={styles.textContainer}>
           <Text numberOfLines={1} style={styles.title}>{account?.name}</Text>

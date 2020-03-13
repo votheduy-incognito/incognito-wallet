@@ -5,6 +5,8 @@ import formatUtil from '@src/utils/format';
 import { COLORS } from '@src/styles';
 import createField from './createField';
 
+let inputRef;
+
 const renderCustomField = ({ input, meta, maxValue, ...props }) => {
   const { onChange, onBlur, onFocus, value } = input;
 
@@ -15,6 +17,9 @@ const renderCustomField = ({ input, meta, maxValue, ...props }) => {
       onBlur={onBlur}
       onFocus={onFocus}
       defaultValue={value}
+      onRef={(ref) => {
+        inputRef = ref;
+      }}
       prependView={(
         <TouchableOpacity
           style={{
@@ -27,6 +32,7 @@ const renderCustomField = ({ input, meta, maxValue, ...props }) => {
           }}
           onPress={() => {
             onChange(formatUtil.numberWithNoGroupSeparator(Number(maxValue)));
+            inputRef?.current?.focus?.();
           }}
         >
           <Text style={{ color: COLORS.primary  }}>Max</Text>

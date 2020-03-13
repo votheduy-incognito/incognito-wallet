@@ -37,6 +37,7 @@ class OptionMenu extends Component {
       placeholder,
       onSearch,
       maxHeight,
+      itemStyle,
     } = this.props;
     const { open } = this.state;
 
@@ -93,7 +94,8 @@ class OptionMenu extends Component {
                         onPress={handleItemPress}
                         style={[
                           styleSheet.menuItem,
-                          index < (data.length - 1) && styleSheet.itemDivider
+                          index < (data.length - 1) && styleSheet.itemDivider,
+                          itemStyle,
                         ]}
                       >
                         <View style={styleSheet.icon}>{item?.icon}</View>
@@ -130,6 +132,7 @@ OptionMenu.defaultProps = {
   onClose: undefined,
   placeholder: '',
   maxHeight: 250,
+  itemStyle: null,
 };
 
 OptionMenu.propTypes = {
@@ -137,6 +140,7 @@ OptionMenu.propTypes = {
   iconProps: PropTypes.object,
   icon: PropTypes.element,
   style: PropTypes.oneOfType([ PropTypes.object, PropTypes.arrayOf(PropTypes.object) ]),
+  itemStyle: PropTypes.object,
   toggleStyle: PropTypes.object,
   data: PropTypes.arrayOf(
     PropTypes.shape({

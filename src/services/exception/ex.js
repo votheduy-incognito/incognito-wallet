@@ -6,6 +6,7 @@ import ERROR from './customError/code';
 const CODES = {
   CAN_NOT_SEND_TX: '-4002',
   CAN_NOT_SEND_PTOKEN_TX: '-1003',
+  OLD_REPLACEMENT: '-1022',
   REPLACEMENT: '-6009',
   DOUBLE_SPEND: '-6005',
   NOT_ENOUGH_COIN: 'WEB_JS_ERROR(-5)',
@@ -182,7 +183,8 @@ class Exception {
         const stackCode = this.exception.stackTraceCode;
         if (
           stackCode.indexOf(CODES.REPLACEMENT) === 0 ||
-          stackCode.indexOf(CODES.DOUBLE_SPEND) === 0
+          stackCode.indexOf(CODES.DOUBLE_SPEND) === 0 ||
+          stackCode.includes(`${CODES.CAN_NOT_SEND_PTOKEN_TX}: ${CODES.OLD_REPLACEMENT}`)
         ) {
           return `${MESSAGES.PENDING_TX} (${ERROR.PENDING_TX})`;
         }

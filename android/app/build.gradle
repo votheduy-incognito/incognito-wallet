@@ -262,9 +262,3 @@ apply from: file("../../node_modules/@react-native-community/cli-platform-androi
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 apply plugin: 'com.google.gms.google-services'
 googleServices { disableVersionCheck = true }
-
-configurations.all {
-     resolutionStrategy {
-       force "com.facebook.soloader:soloader:0.8.0"
-     }
-}

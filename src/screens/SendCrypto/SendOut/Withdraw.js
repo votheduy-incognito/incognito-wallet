@@ -110,8 +110,10 @@ class Withdraw extends React.Component {
 
     max = convertUtil.toHumanAmount(amount, selectedPrivacy?.pDecimals);
 
-    return maxAmount ? Math.min(maxAmount, max) : max;
-  }
+    max = maxAmount ? Math.min(maxAmount, max) : max;
+
+    return max;
+  };
 
   setFormValidator = ({ maxAmount, minAmount }) => {
     const { selectedPrivacy } = this.props;
@@ -273,7 +275,6 @@ class Withdraw extends React.Component {
       account,
       selectable,
       reloading,
-      onReloadBalance,
     } = this.props;
     const { externalSymbol, isErc20Token, name: tokenName } = selectedPrivacy || {};
     const addressValidator = this.getAddressValidator(externalSymbol, isErc20Token);
@@ -285,7 +286,6 @@ class Withdraw extends React.Component {
         refreshControl={(
           <RefreshControl
             refreshing={reloading}
-            onRefresh={onReloadBalance}
           />
         )}
       >
@@ -318,12 +318,13 @@ class Withdraw extends React.Component {
                   style={style.input}
                   maxValue={maxAmount}
                   componentProps={{
-                    keyboardType: 'decimal-pad'
+                    keyboardType: 'decimal-pad',
                   }}
                   validate={[
                     ...validator.combinedAmount,
                     ...maxAmountValidator ? [maxAmountValidator] : [],
-                    ...minAmountValidator ? [minAmountValidator] : []
+                    ...minAmountValidator ? [minAmountValidator] : [],
+                    ...detectToken.ispNEO(selectedPrivacy?.tokenId) ? [...validator.combinedNanoAmount] : [],
                   ]}
                 />
                 {
@@ -410,7 +411,6 @@ Withdraw.propTypes = {
   maxAmount: PropTypes.number,
   selectable: PropTypes.bool,
   reloading: PropTypes.bool,
-  onReloadBalance: PropTypes.func.isRequired,
 };
 
 const mapState = state => ({

@@ -41,12 +41,12 @@ const SendCoin = ({ navigation }) => {
     setMode(item);
   };
 
-  const reloadBalance = async () => {
+  const reloadBalance = () => {
     setReloading(true);
     if (selectedPrivacy.tokenId === PRV_ID) {
-      await dispatch(getBalance(account));
+      dispatch(getBalance(account));
     } else {
-      await dispatch(getTokenBalance(selectedPrivacy));
+      dispatch(getTokenBalance(selectedPrivacy));
     }
     setReloading(false);
   };
@@ -85,7 +85,6 @@ const SendCoin = ({ navigation }) => {
           selectedPrivacy={selectedPrivacy}
           account={account}
           wallet={wallet}
-          onReloadBalance={reloadBalance}
           reloading={reloading}
         />
       </View>

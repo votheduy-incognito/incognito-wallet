@@ -40,7 +40,7 @@ const generateMenu = (tokens, onSelect) => {
   return newMenu;
 };
 
-const TokenSelect = ({ onSelect, onlyPToken, size, style, iconStyle, showOriginalSymbol }) => {
+const TokenSelect = ({ onSelect, onlyPToken, size, style, iconStyle, showOriginalSymbol, toggleStyle }) => {
   const [menu, setMenu] = React.useState([]);
   const [allTokens, setAllTokens] = React.useState([]);
   const { pTokens, internalTokens } = useSelector(state => ({
@@ -134,6 +134,7 @@ const TokenSelect = ({ onSelect, onlyPToken, size, style, iconStyle, showOrigina
         placeholder="Name or Symbol"
         onSearch={handleSearch}
         onClose={handleClearSearch}
+        toggleStyle={toggleStyle}
         style={[styles.select, style]}
         icon={(
           <View style={[styles.iconContainer, iconStyle]}>
@@ -152,6 +153,7 @@ TokenSelect.propTypes = {
   size: PropTypes.number,
   style: PropTypes.object,
   iconStyle: PropTypes.object,
+  toggleStyle: PropTypes.object,
 };
 
 TokenSelect.defaultProps = {
@@ -160,6 +162,7 @@ TokenSelect.defaultProps = {
   size: 30,
   style: null,
   iconStyle: null,
+  toggleStyle: null,
 };
 
 export default TokenSelect;

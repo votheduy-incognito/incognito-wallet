@@ -30,7 +30,7 @@ const Unstake = ({ device, fee, isUnstaking, balance, onUnstake }) => {
           </View>
         </View>
         <View style={styles.buy}>
-          <Text style={[styles.desc, styles.firstLine]}>Unstaking will take approximately 48 hours.</Text>
+          <Text style={[styles.desc, styles.firstLine]}>Unstaking will complete after the next time you earn.</Text>
           <Text style={styles.desc}>Are you sure you want to unstake this node?</Text>
           <Button disabled={isNotEnoughBalance} style={styles.button} title="Unstake" onPress={onUnstake} />
           {isNotEnoughBalance && <Text style={styles.error}>{MESSAGES.NOT_ENOUGH_NETWORK_FEE_ADD}</Text>}

@@ -13,7 +13,7 @@ const Unstake = ({ device, isUnstaking, onUnstake }) => {
           <Text style={styles.title}>Node {name}</Text>
         </View>
         <View style={styles.buy}>
-          <Text style={[styles.desc, styles.firstLine]}>Unstaking will take approximately 48 hours.</Text>
+          <Text style={[styles.desc, styles.firstLine]}>Unstaking will complete after the next time you earn.</Text>
           <Text style={styles.desc}>Are you sure you want to unstake this node?</Text>
           <Button style={styles.button} title="Unstake" onPress={onUnstake} />
         </View>
