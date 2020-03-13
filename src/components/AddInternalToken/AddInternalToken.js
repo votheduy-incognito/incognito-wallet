@@ -295,7 +295,7 @@ class AddInternalToken extends Component {
                 <View style={styleSheet.block}>
                   <View>
                     <CopiableText text={account.PaymentAddress} style={styleSheet.ownerAddressContainer} copiedMessage='Owner address was copied'>
-                      <Text style={styleSheet.ownerAddressLabel}>Owner address</Text>
+                      <Text style={styleSheet.ownerAddressLabel}>Your owner address</Text>
                       <Text style={styleSheet.ownerAddressValue} numberOfLines={1} ellipsizeMode="middle">{account.PaymentAddress}</Text>
                     </CopiableText>
                   </View>
@@ -313,7 +313,7 @@ class AddInternalToken extends Component {
                   <Field
                     component={ImagePickerField}
                     name='logo'
-                    text={'Upload your coin\'s icon (optional, PNG and less than 50kb)'}
+                    text="Upload an icon for your coin (optional, PNG and less than 50kb)"
                     textButton='Upload'
                     style={styleSheet.input}
                     validate={imageValidate}

@@ -14,7 +14,29 @@ import { withRoundHeaderLayout } from '@src/hoc';
 
 import Card from '@components/Card';
 import {BIG_COINS} from '@screens/Dex/constants';
+import {useSelector} from 'react-redux';
+import accountSeleclor from '@src/redux/selectors/account';
+import dexUtil from '@utils/dex';
 import styles from './style';
+
+const sendItem = {
+  image: icSend,
+  title: 'Send',
+  desc: 'anonymously',
+  route: ROUTE_NAMES.SendCrypto,
+};
+const receiveItem = {
+  image: icReceive,
+  title: 'Receive',
+  desc: 'anonymously',
+  route: ROUTE_NAMES.ReceiveCoin,
+};
+const shieldItem =  {
+  image: icShield,
+  title: 'Shield',
+  desc: 'your crypto',
+  route: ROUTE_NAMES.Shield,
+};
 
 const buttons = [
   {
@@ -26,24 +48,9 @@ const buttons = [
       outputTokenId: BIG_COINS.PRV,
     },
   },
-  {
-    image: icShield,
-    title: 'Shield',
-    desc: 'your crypto',
-    route: ROUTE_NAMES.Shield,
-  },
-  {
-    image: icSend,
-    title: 'Send',
-    desc: 'anonymously',
-    route: ROUTE_NAMES.SendCrypto,
-  },
-  {
-    image: icReceive,
-    title: 'Receive',
-    desc: 'anonymously',
-    route: ROUTE_NAMES.ReceiveCoin,
-  },
+  shieldItem,
+  sendItem,
+  receiveItem,
   {
     image: icInvent,
     title: 'Issue',
@@ -59,16 +66,36 @@ const buttons = [
 ];
 
 const Home = ({ navigation }) => {
+  const account = useSelector(accountSeleclor.defaultAccount);
+
   const goToScreen = (route, params) => {
     navigation.navigate(route, params);
+  };
+
+  const isDisabled = (item) => {
+    if (item === sendItem && dexUtil.isDEXMainAccount(account.name)) {
+      return true;
+    }
+
+    if ((item === receiveItem || item === shieldItem) && dexUtil.isDEXWithdrawAccount(account.name)) {
+      return true;
+    }
+
+    return false;
   };
 
   return (
     <Card style={styles.container}>
       <View style={styles.btnContainer}>
-        {buttons.map(({ image, title, desc, route, params }) => (
-          <View style={styles.btn} key={title}>
-            <IconTextButton image={image} title={title} desc={desc} onPress={() => goToScreen(route, params)} />
+        {buttons.map((item) => (
+          <View style={styles.btn} key={item.title}>
+            <IconTextButton
+              image={item.image}
+              title={item.title}
+              desc={item.desc}
+              disabled={isDisabled(item)}
+              onPress={() => goToScreen(item.route, item.params)}
+            />
           </View>
         )
         )}

@@ -10,7 +10,6 @@ import {waitingDepositStyle} from './style';
 
 const WaitingDeposit = ({selectedPrivacy, depositAddress, min, amount}) => {
   const navigation = useNavigation();
-  const formatAmount = format.amountFull(amount);
   const {externalSymbol} = selectedPrivacy;
 
   const thisRoute = navigation?.state?.routeName;
@@ -28,8 +27,8 @@ const WaitingDeposit = ({selectedPrivacy, depositAddress, min, amount}) => {
         >
           {
             thisRoute === ROUTES_NAME.ReceiveCoin ?
-              `Receive ${externalSymbol} anonymously from outside \nthe Incognito network using the address below:`
-              : `Shield ${externalSymbol} from prying eyes \nby sending it to the address below:`
+              `Receive your ${externalSymbol} anonymously from outside the \nIncognito network using the address below:`
+              : `Shield your ${externalSymbol} from prying eyes \nby sending it to the address below:`
           }
         </Text>
         <Dashed />
@@ -50,7 +49,7 @@ const WaitingDeposit = ({selectedPrivacy, depositAddress, min, amount}) => {
       { (min) ? <Dashed /> : null }
       {!!min && (
         <Text style={[waitingDepositStyle.text]}>
-          {`The minimum amount you can anonymously receive from outside the Incognito network is ${min}. Smaller amounts will not be processed.`}
+          {`The minimum amount you can anonymously receive from outside the Incognito network is ${min} ${externalSymbol}. Smaller amounts will not be processed.`}
         </Text>
       )}
     </View>

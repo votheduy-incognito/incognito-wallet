@@ -58,7 +58,7 @@ const AppNavigator = createStackNavigator(
       title: 'Send',
     }),
     [ROUTE_NAMES.Shield]: navigationOptionsHandler(Shield, {
-      title: 'Shield Your Crypto',
+      title: 'Shield your crypto',
     }),
     [ROUTE_NAMES.TxHistoryDetail]: navigationOptionsHandler(TxHistoryDetail, {
       title: 'History Detail',

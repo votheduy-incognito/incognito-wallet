@@ -55,7 +55,9 @@ const DepositAmount = props => {
   const Wrapper = isIOS() ? KeyboardAvoidingView : View;
 
   const isReceive = navigation?.state?.routeName === routeNames.ReceiveCoin;
-  const label = isReceive ? 'Which currency do you want\n to receive anonymously?' : 'Which currency do you want to shield?';
+  const label = isReceive ?
+    'Which cryptocurrency do you want \nto receive anonymously?'
+    : 'Which cryptocurrency do you want to shield?';
   const btnTitle = isReceive ? 'Receive' : 'Shield';
 
   return (
@@ -64,7 +66,11 @@ const DepositAmount = props => {
         <Text style={styled.label}>{label}</Text>
         <View style={styled.token}>
           <CryptoIcon key={tokenId} tokenId={tokenId} size={30} />
-          <VerifiedText text={originalSymbol} isVerified={isVerified} style={styled.tokenText} />
+          <VerifiedText
+            text={originalSymbol}
+            isVerified={isVerified}
+            containerStyle={styled.tokenText}
+          />
           <TokenSelect
             onSelect={handleSelectToken}
             onlyPToken
