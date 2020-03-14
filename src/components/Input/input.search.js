@@ -30,7 +30,7 @@ const SearchInput = props => {
   return (
     <View style={[styled.container, containerStyled]}>
       <SearchIcon />
-      <TextInput style={styled.input} {...{...rest, value}} />
+      <TextInput style={styled.input} {...{...rest, value}} autoCorrect={false} />
       {value.length > 0 && (
         <TouchableOpacity onPress={onClearText}>
           <ClearIcon />

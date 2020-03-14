@@ -18,7 +18,6 @@ class ReceiveCrypto extends React.Component {
           </Text>
           <QrCodeAddress
             data={selectedPrivacy.paymentAddress}
-            containerStyle={{ width: 250, paddingLeft: 10, paddingRight: 35, }}
             iconStyle={{ marginLeft: 5 }}
           />
         </Container>

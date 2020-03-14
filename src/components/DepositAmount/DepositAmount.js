@@ -56,7 +56,7 @@ const DepositAmount = props => {
 
   const isReceive = navigation?.state?.routeName === routeNames.ReceiveCoin;
   const label = isReceive ?
-    'Which cryptocurrency do you want \nto receive anonymously?'
+    'Which cryptocurrency do you want to receive anonymously?'
     : 'Which cryptocurrency do you want to shield?';
   const btnTitle = isReceive ? 'Receive' : 'Shield';
 

@@ -28,7 +28,7 @@ const FrequentReceiversEmpty = () => {
   return (
     <View style={styled.container}>
       <Image style={styled.imgEmpty} source={srcEmpty} />
-      <Text style={styled.title}>{'Your address book \nis currently empty'}</Text>
+      <Text style={styled.title}>Your address book is currently empty</Text>
     </View>
   );
 };

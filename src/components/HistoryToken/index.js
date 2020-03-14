@@ -115,15 +115,22 @@ class HistoryTokenContainer extends Component {
       const { wallet, defaultAccount } = this.props;
       const token = this.getToken(this.props);
 
-      const [histories, historiesFromApi] = await Promise.all([
-        this.loadTokentHistory(wallet, defaultAccount, token),
-        this.getHistoryFromApi()
-      ]);
+      if (token) {
+        const [histories, historiesFromApi] = await Promise.all([
+          this.loadTokentHistory(wallet, defaultAccount, token),
+          this.getHistoryFromApi()
+        ]);
 
-      this.setState({
-        historiesFromApi,
-        histories
-      });
+        this.setState({
+          historiesFromApi,
+          histories
+        });
+      } else {
+        this.setState({
+          historiesFromApi: [],
+          histories: [],
+        });
+      }
     } catch (e) {
       new ExHandler(e).showErrorToast();
     } finally {

@@ -2,6 +2,8 @@ import {StyleSheet} from 'react-native';
 import {COLORS, FONT} from '@src/styles';
 import dimensions from '@src/styles/utils';
 
+const deviceWidth = dimensions.deviceWidth();
+
 export const styled = StyleSheet.create({
   container: {
     flex: 1,
@@ -60,15 +62,17 @@ export const styled = StyleSheet.create({
     ...FONT.STYLE.bold,
   },
   toggle: {
-    width: dimensions.deviceWidth() * 2,
+    width: deviceWidth * 2,
     marginRight: -400,
     paddingRight: 405,
   },
   selector: {
     paddingLeft: 100,
     paddingRight: 25,
-    left: dimensions.deviceWidth() / 2 - 30,
+    left: deviceWidth / 2 - ( deviceWidth < 400 ? 40 : 5),
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
   }
 });
+
+console.debug('WIDTH', deviceWidth);

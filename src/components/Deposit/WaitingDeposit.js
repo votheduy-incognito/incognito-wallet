@@ -27,8 +27,8 @@ const WaitingDeposit = ({selectedPrivacy, depositAddress, min, amount}) => {
         >
           {
             thisRoute === ROUTES_NAME.ReceiveCoin ?
-              `Receive your ${externalSymbol} anonymously from outside the \nIncognito network using the address below:`
-              : `Shield your ${externalSymbol} from prying eyes \nby sending it to the address below:`
+              `Receive your ${externalSymbol} anonymously from outside the Incognito network using the address below:`
+              : `Shield your ${externalSymbol} from prying eyes by sending it to the address below:`
           }
         </Text>
         <Dashed />

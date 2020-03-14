@@ -164,9 +164,6 @@ const Modal = props => {
         onChangeText={onChangeKeySearch}
         placeholder="Search by name or address"
         onClearText={onClearAddress}
-        onSubmitEditing={() =>
-          keySearch.trim().length > 0 ? onSelectedAddress(keySearch) : null
-        }
         containerStyled={{
           marginBottom: 10,
         }}
