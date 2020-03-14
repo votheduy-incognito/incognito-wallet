@@ -8,10 +8,11 @@ import {useNavigation} from 'react-navigation-hooks';
 import ROUTES_NAME from '@routers/routeNames';
 import {waitingDepositStyle} from './style';
 
-const WaitingDeposit = ({selectedPrivacy, depositAddress, min, max, amount}) => {
+const WaitingDeposit = ({selectedPrivacy, depositAddress, min, amount}) => {
   const navigation = useNavigation();
-  const formatAmount = format.amountFull(amount);
-  const {externalSymbol, symbol} = selectedPrivacy;
+  const {externalSymbol} = selectedPrivacy;
+
+  const thisRoute = navigation?.state?.routeName;
 
   const handleCheckStatus = () => {
     navigation.pop();
@@ -25,12 +26,17 @@ const WaitingDeposit = ({selectedPrivacy, depositAddress, min, max, amount}) => 
           style={[waitingDepositStyle.text, waitingDepositStyle.textHighlight]}
         >
           {
-            `Receive${formatAmount ? ` ${formatAmount} ` : ' '}${externalSymbol} privately from outside the Incognito network using the address below:`
+            thisRoute === ROUTES_NAME.ReceiveCoin ?
+              `Receive your ${externalSymbol} anonymously from outside the Incognito network using the address below:`
+              : `Shield your ${externalSymbol} from prying eyes by sending it to the address below:`
           }
         </Text>
         <Dashed />
       </View>
       <QrCodeAddress data={depositAddress} />
+      <Text style={waitingDepositStyle.text}>
+        Note: This address is unique to this request, will expire in 60 minutes, and can only be used once.
+      </Text>
       <Button
         onPress={handleCheckStatus}
         title="Check transaction details"
@@ -38,12 +44,12 @@ const WaitingDeposit = ({selectedPrivacy, depositAddress, min, max, amount}) => 
       />
       <Dashed />
       <Text style={waitingDepositStyle.text}>
-        Note: This address is unique to this request, will expire in 60 minutes, and can only be used once. Please wait a few minutes for your anonymized coins to show in your wallet.
+        Please wait a few minutes for your anonymized coins to show in your wallet.
       </Text>
       { (min) ? <Dashed /> : null }
       {!!min && (
         <Text style={[waitingDepositStyle.text]}>
-          {`The minimum amount you can anonymously receive from outside the Incognito network is ${min}. Smaller amounts will not be processed.`}
+          {`The minimum amount you can anonymously receive from outside the Incognito network is ${min} ${externalSymbol}. Smaller amounts will not be processed.`}
         </Text>
       )}
     </View>

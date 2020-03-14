@@ -7,13 +7,16 @@ import accountService from '@services/wallet/accountService';
 import {PRV} from '@services/wallet/tokenService';
 import {ExHandler} from '@services/exception';
 import {PRV_ID} from '@screens/Dex/constants';
+import {getUnstakePNodeStatus} from '@services/api/node';
+import Device from '@models/device';
+import _ from 'lodash';
 import VNode from './VNode';
 import PNode from './PNode';
 
 export const TAG = 'Node';
 
 const MAX_RETRY = 5;
-const TIMEOUT = 2; // 2 minutes
+const TIMEOUT = 5; // 2 minutes
 
 class NodeItem extends React.Component {
   state = { loading: false };
@@ -25,13 +28,67 @@ class NodeItem extends React.Component {
     }
   }
 
-  async getPNodeInfo(device) {
-    const { wallet } = this.props;
-    await NodeService.fetchAndSavingInfoNodeStake(device);
-    const actualRewards = {};
-    const commission = device.CommissionFromServer;
+  async getPNodeInfo(item) {
+    const deviceData = await NodeService.fetchAndSavingInfoNodeStake(item);
+    const device = Device.getInstance(deviceData);
+
+    if (device.IsLinked) {
+      const res = await NodeService.getLog(device);
+      const log = res.Data;
+
+      const { updatedAt } = log;
+
+      if (updatedAt) {
+        const startTime = moment(updatedAt);
+        const endTime = moment();
+        const duration = moment.duration(endTime.diff(startTime));
+        const minutes = duration.asMinutes();
+
+        if (minutes > TIMEOUT) {
+          device.setIsOnline(Math.max(device.IsOnline - 1, 0));
+        } else {
+          device.setIsOnline(MAX_RETRY);
+        }
+      }
+    } else {
+      const ip = await NodeService.pingGetIP(device);
+
+      if (ip) {
+        device.setIsOnline(MAX_RETRY);
+      } else {
+        device.setIsOnline(Math.max(device.IsOnline - 1, 0));
+      }
+    }
+
+    if (device.PaymentAddress) {
+      const { wallet } = this.props;
+
+      const listAccount = await wallet.listAccount();
+      device.IsWithdrawable = await NodeService.isWithdrawable(device);
+      device.UnstakeStatus = await getUnstakePNodeStatus({ paymentAddress: device.PaymentAddress });
+      device.Account = listAccount.find(item => item.PaymentAddress === device.PaymentAddress);
+
+      if (device.Account) {
+        device.ValidatorKey = device.Account.ValidatorKey;
+        device.PublicKey = device.Account.PublicKey;
+
+        const listAccounts = await wallet.listAccountWithBLSPubKey();
+        const account = listAccounts.find(item=> _.isEqual(item.AccountName, device.AccountName));
+
+        device.PublicKeyMining = account.BLSPublicKey;
+      }
+
+      const { committees } = this.props;
+      if (device.Unstaked && !JSON.stringify(committees.AutoStaking).includes(device.ValidatorKey)) {
+        device.IsWithdrawable = true;
+        device.StakerAddress = null;
+        return this.getVNodeInfo(device, true);
+      }
+    }
 
     if (device.StakerAddress) {
+      const actualRewards = {};
+      const commission = device.CommissionFromServer;
       const rewards = await accountService.getRewardAmount('', device.StakerAddress, true);
 
       rewards[PRV.id] = rewards[PRV.symbol];
@@ -48,74 +105,26 @@ class NodeItem extends React.Component {
       device.Rewards = actualRewards;
     }
 
-    const listAccount = await wallet.listAccount();
-    device.Account = listAccount.find(item => item.PaymentAddress === device.PaymentAddress);
-
-    if (device.Account) {
-      device.ValidatorKey = device.Account.ValidatorKey;
-    }
-
-    if (device.IsLinked) {
-      const res = await NodeService.getLog(device);
-      const log = res.Data;
-      const { updatedAt } = log;
-      if (updatedAt) {
-        const startTime = moment(updatedAt);
-        const endTime = moment();
-        const duration = moment.duration(endTime.diff(startTime));
-        const minutes = duration.asMinutes();
-
-        if (minutes > TIMEOUT) {
-          device.setIsOnline(Math.max(device.IsOnline - 1, 0));
-        } else {
-          device.setIsOnline(MAX_RETRY);
-        }
-      }
-    } else if (device.Host) {
-      device.setIsOnline(MAX_RETRY);
-    } else {
-      device.setIsOnline(Math.max(device.IsOnline - 1, 0));
-    }
-
-    if (device.PaymentAddress) {
-      device.IsWithdrawable = await NodeService.isWithdrawable(device);
-    }
-
     return device;
   }
 
-  async getVNodeInfo(device) {
+  async getVNodeInfo(device, skipGetNewKey = false) {
     const { nodeRewards } = this.props;
-    const publicKey = device.PublicKey;
-
-    if (publicKey) {
-      device.Rewards = nodeRewards[publicKey] || {};
-    }
-
-    return device;
-  }
-
-  async getNodeInfo() {
-    const { wallet, item, committees } = this.props;
-    let device = item;
+    const { wallet, committees } = this.props;
     let publicKey = device.PublicKey;
     let blsKey = device.PublicKeyMining;
-    let newKey;
 
-    if (device.IsVNode) {
-      newKey = await VirtualNodeService.getPublicKeyMining(device);
-    } else {
-      newKey = await NodeService.getBLSKey(device);
-    }
+    if (!skipGetNewKey) {
+      const newKey = await VirtualNodeService.getPublicKeyMining(device);
+      if (newKey && blsKey !== newKey) {
+        blsKey = newKey;
+      }
 
-    if (newKey && blsKey !== newKey) {
-      blsKey = newKey;
-    }
-
-    if (newKey) {
-      device.setIsOnline(MAX_RETRY);
-    } else {
-      device.setIsOnline(Math.max(device.IsOnline - 1, 0));
+      if (newKey) {
+        device.setIsOnline(MAX_RETRY);
+      } else {
+        device.setIsOnline(Math.max(device.IsOnline - 1, 0));
+      }
     }
 
     if (blsKey) {
@@ -160,6 +169,16 @@ class NodeItem extends React.Component {
         device.ValidatorKey = device.Account.ValidatorKey;
       }
     }
+
+    if (publicKey) {
+      device.Rewards = nodeRewards[publicKey] || {};
+    }
+
+    return device;
+  }
+
+  async getNodeInfo() {
+    let { item: device } = this.props;
 
     if (device.IsVNode) {
       device = await this.getVNodeInfo(device);
@@ -215,6 +234,8 @@ class NodeItem extends React.Component {
           onImportAccount={onImport}
           onRemoveDevice={onRemove}
           onWithdraw={onWithdraw}
+          onUnstake={onUnstake}
+          onStake={onStake}
           isFetching={!!isFetching || !!loading}
         />
       );

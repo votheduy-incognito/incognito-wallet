@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { TouchableOpacity, View, Text, ScrollView } from '@src/components/core';
 import {useSelector} from 'react-redux';
 import {selectedPrivacySeleclor} from '@src/redux/selectors';
-import {useNavigationParam} from 'react-navigation-hooks';
-import ROUTES_NAME from '@routers/routeNames';
 import ReceiveOut from '@src/components/Deposit';
 import DepositAmount from '@components/DepositAmount';
+import {useNavigationParam} from 'react-navigation-hooks';
+import ROUTES_NAME from '@routers/routeNames';
 import ReceiveIn from './ReceiveIn';
 
 import styles from './style';
@@ -24,7 +24,7 @@ const modes = [
 
 const ReceiveCoin = ({ navigation }) => {
   const [mode, setMode] = React.useState(modes[0]);
-  const [amount, setAmount] = React.useState(0);
+  const [amount, setAmount] = React.useState(null);
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const origin = useNavigationParam('origin');
   const selectable = origin !== ROUTES_NAME.WalletDetail;
@@ -40,7 +40,7 @@ const ReceiveCoin = ({ navigation }) => {
 
   let Component = mode.component;
 
-  if (mode === modes[1] && selectable && !amount) {
+  if (mode === modes[1] && amount !== 0) {
     Component = DepositAmount;
   }
 

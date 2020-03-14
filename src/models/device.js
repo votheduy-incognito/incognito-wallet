@@ -141,6 +141,18 @@ export default class Device {
   get IsWithdrawable() {
     return this.data.minerInfo.isDrawable;
   }
+  set UnstakeStatus(status) {
+    this.data.minerInfo.unstakeStatus = status;
+  }
+  get UnstakeStatus() {
+    return this.data.minerInfo.unstakeStatus;
+  }
+  get IsUnstaking() {
+    return this.UnstakeStatus === 1;
+  }
+  get Unstaked() {
+    return this.UnstakeStatus === 2;
+  }
   get Host(){
     return this.data.minerInfo?.ipAddress||'';
   }
@@ -209,6 +221,10 @@ export default class Device {
 
   get StakerAddress() {
     return this.data.minerInfo.StakerAddress;
+  }
+
+  set StakerAddress(stakerAddress) {
+    this.data.minerInfo.StakerAddress = stakerAddress;
   }
 
   get IsLinked() {

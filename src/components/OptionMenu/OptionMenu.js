@@ -36,6 +36,8 @@ class OptionMenu extends Component {
       toggleStyle,
       placeholder,
       onSearch,
+      maxHeight,
+      itemStyle,
     } = this.props;
     const { open } = this.state;
 
@@ -77,7 +79,7 @@ class OptionMenu extends Component {
                     />
                   </View>
                 ) : null }
-                <ScrollView style={styleSheet.scrollView}>
+                <ScrollView style={{maxHeight}}>
                   {data.map((item, index) => {
                     const handleItemPress = () => {
                       if (typeof item?.handlePress === 'function') {
@@ -92,7 +94,8 @@ class OptionMenu extends Component {
                         onPress={handleItemPress}
                         style={[
                           styleSheet.menuItem,
-                          index < (data.length - 1) && styleSheet.itemDivider
+                          index < (data.length - 1) && styleSheet.itemDivider,
+                          itemStyle,
                         ]}
                       >
                         <View style={styleSheet.icon}>{item?.icon}</View>
@@ -128,6 +131,8 @@ OptionMenu.defaultProps = {
   onSearch: undefined,
   onClose: undefined,
   placeholder: '',
+  maxHeight: 250,
+  itemStyle: null,
 };
 
 OptionMenu.propTypes = {
@@ -135,6 +140,7 @@ OptionMenu.propTypes = {
   iconProps: PropTypes.object,
   icon: PropTypes.element,
   style: PropTypes.oneOfType([ PropTypes.object, PropTypes.arrayOf(PropTypes.object) ]),
+  itemStyle: PropTypes.object,
   toggleStyle: PropTypes.object,
   data: PropTypes.arrayOf(
     PropTypes.shape({
@@ -148,6 +154,7 @@ OptionMenu.propTypes = {
   onSearch: PropTypes.func,
   onClose: PropTypes.func,
   placeholder: PropTypes.string,
+  maxHeight: PropTypes.number,
 };
 
 export default OptionMenu;

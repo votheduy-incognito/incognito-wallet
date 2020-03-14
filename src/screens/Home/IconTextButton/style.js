@@ -23,7 +23,10 @@ const style = StyleSheet.create({
     fontSize: 14,
     color: COLORS.lightGrey1,
     textAlign: 'center',
-  }
+  },
+  disabled: {
+    opacity: 0.4,
+  },
 });
 
 export default style;

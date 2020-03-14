@@ -4,34 +4,58 @@ import {View} from '@src/components/core';
 import icShield from '@assets/images/icons/ic_shield_btn.png';
 import icSend from '@assets/images/icons/ic_send_btn.png';
 import icReceive from '@assets/images/icons/ic_receive_btn.png';
-import icTrade from '@assets/images/icons/ic_trade_btn.png';
+import icTrade from '@assets/images/icons/ic_trade.png';
 import icInvent from '@assets/images/icons/ic_invent_btn.png';
+import icBuy from '@assets/images/icons/ic_buy_prv.png';
 import IconTextButton from '@screens/Home/IconTextButton';
 import ROUTE_NAMES from '@routers/routeNames';
 
 import { withRoundHeaderLayout } from '@src/hoc';
 
 import Card from '@components/Card';
+import {BIG_COINS} from '@screens/Dex/constants';
+import {useSelector} from 'react-redux';
+import accountSeleclor from '@src/redux/selectors/account';
+import dexUtil from '@utils/dex';
 import styles from './style';
+
+const sendItem = {
+  image: icSend,
+  title: 'Send',
+  desc: 'anonymously',
+  route: ROUTE_NAMES.SendCrypto,
+};
+const receiveItem = {
+  image: icReceive,
+  title: 'Receive',
+  desc: 'anonymously',
+  route: ROUTE_NAMES.ReceiveCoin,
+};
+const shieldItem =  {
+  image: icShield,
+  title: 'Shield',
+  desc: 'your crypto',
+  route: ROUTE_NAMES.Shield,
+};
 
 const buttons = [
   {
-    image: icShield,
-    title: 'Shield',
-    desc: 'your crypto',
-    route: ROUTE_NAMES.Shield,
+    image: icBuy,
+    title: 'Buy PRV',
+    route: ROUTE_NAMES.Dex,
+    params: {
+      inputTokenId: BIG_COINS.USDT,
+      outputTokenId: BIG_COINS.PRV,
+    },
   },
+  shieldItem,
+  sendItem,
+  receiveItem,
   {
-    image: icSend,
-    title: 'Send',
-    desc: 'anonymously',
-    route: ROUTE_NAMES.SendCrypto,
-  },
-  {
-    image: icReceive,
-    title: 'Receive',
-    desc: 'anonymously',
-    route: ROUTE_NAMES.ReceiveCoin,
+    image: icInvent,
+    title: 'Issue',
+    desc: 'a new privacy coin',
+    route: ROUTE_NAMES.CreateToken,
   },
   {
     image: icTrade,
@@ -39,25 +63,39 @@ const buttons = [
     desc: 'anonymously',
     route: ROUTE_NAMES.Dex,
   },
-  {
-    image: icInvent,
-    title: 'Issue',
-    desc: 'a new privacy coin',
-    route: ROUTE_NAMES.CreateToken,
-  },
 ];
 
 const Home = ({ navigation }) => {
-  const goToScreen = (route) => {
-    navigation.navigate(route);
+  const account = useSelector(accountSeleclor.defaultAccount);
+
+  const goToScreen = (route, params) => {
+    navigation.navigate(route, params);
+  };
+
+  const isDisabled = (item) => {
+    if (item === sendItem && dexUtil.isDEXMainAccount(account.name)) {
+      return true;
+    }
+
+    if ((item === receiveItem || item === shieldItem) && dexUtil.isDEXWithdrawAccount(account.name)) {
+      return true;
+    }
+
+    return false;
   };
 
   return (
     <Card style={styles.container}>
       <View style={styles.btnContainer}>
-        {buttons.map(({ image, title, desc, route }) => (
-          <View style={styles.btn} key={title}>
-            <IconTextButton image={image} title={title} desc={desc} onPress={() => goToScreen(route)} />
+        {buttons.map((item) => (
+          <View style={styles.btn} key={item.title}>
+            <IconTextButton
+              image={item.image}
+              title={item.title}
+              desc={item.desc}
+              disabled={isDisabled(item)}
+              onPress={() => goToScreen(item.route, item.params)}
+            />
           </View>
         )
         )}

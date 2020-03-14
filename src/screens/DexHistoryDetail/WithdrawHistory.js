@@ -33,6 +33,7 @@ const DexHistory = ({
       <Text style={stylesheet.textRight}>Withdraw</Text>
     </View>
     <TransactionID txId={txId} />
+    <TransactionID txId={txId} title="TRANSACTION ID 2" />
     <View style={stylesheet.row}>
       <Text style={stylesheet.field}>TIME</Text>
       <Text style={stylesheet.textRight}>{formatUtils.formatUnixDateTime(lockTime)}</Text>

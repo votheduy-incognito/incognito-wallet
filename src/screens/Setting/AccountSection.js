@@ -1,4 +1,4 @@
-import { Alert, Divider, Text, Toast, TouchableOpacity, View } from '@src/components/core';
+import {Alert, Divider, Image, Text, Toast, TouchableOpacity, View} from '@src/components/core';
 import OptionMenu from '@src/components/OptionMenu';
 import { removeAccount, switchAccount } from '@src/redux/actions/account';
 import { accountSeleclor } from '@src/redux/selectors';
@@ -12,8 +12,9 @@ import React from 'react';
 import { Icon } from 'react-native-elements';
 import Swipeout from 'react-native-swipeout';
 import Icons from 'react-native-vector-icons/Entypo';
-import FIcons from 'react-native-vector-icons/Feather';
 import { connect } from 'react-redux';
+import activeAccount from '@assets/images/icons/ic_account_active.png';
+import deactiveAccount from '@assets/images/icons/ic_account_deactive.png';
 import Section from './Section';
 import { accountSection } from './style';
 
@@ -46,7 +47,7 @@ const createItem = (account, onSwitch, onExport, onDelete, isActive) => (
     <View style={accountSection.container}>
       <TouchableOpacity style={accountSection.name} onPress={() => onSwitch(account) && isDev(account)}>
         <View style={[accountSection.indicator, isActive && accountSection.indicatorActive]} />
-        <FIcons name={isActive ? 'user-check' : 'user'} size={20} color={isActive ? COLORS.primary : COLORS.lightGrey4} />
+        <Image style={accountSection.image} source={isActive ? activeAccount : deactiveAccount} />
         <Text numberOfLines={1} ellipsizeMode='middle' style={isActive ? accountSection.nameTextActive : accountSection.nameText}>{account?.name}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={accountSection.actionBtn} onPress={() => onExport(account)}>

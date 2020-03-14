@@ -193,9 +193,10 @@ function getRemoveLiquidityStatus(history) {
       } else if (result.err) {
         return TRANSFER_STATUS.UNSUCCESSFUL;
       }
+
+      const pdeStatus = await getPDEWithdrawalStatus(history.txId);
+      return REMOVE_LIQUIDITY_STATUS[pdeStatus.state];
     })
-    .then(() => getPDEWithdrawalStatus(history.txId))
-    .then(result => REMOVE_LIQUIDITY_STATUS[result.state])
     .catch((error) => error.message);
 }
 

@@ -254,12 +254,13 @@ export default class NodeService {
   static fetchAndSavingInfoNodeStake = async (device)=>{
     try {
       const paymentAddress =  device.PaymentAddressFromServer;
-      const data = await APIService.fetchInfoNodeStake({ PaymentAddress:paymentAddress });
+      const data = await APIService.fetchInfoNodeStake({ PaymentAddress: paymentAddress });
       const fetchProductInfo = device.toJSON()??{};
       fetchProductInfo['minerInfo'] = {
         ...fetchProductInfo.minerInfo,
         ...data
       };
+      return fetchProductInfo;
     } catch (error) {
       console.log(TAG,'fetchAndSavingInfoNodeStake error = ',error);
     }

@@ -41,18 +41,16 @@ export const homeStyle = StyleSheet.create({
   },
   followTokenBtn: {
     flexDirection: 'row',
-    marginVertical: 10,
-    justifyContent: 'center',
+    marginTop: 0,
+    padding: 20,
     alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.lightGrey5,
   },
   followTokenText: {
-    ...FONT.STYLE.medium,
-    fontSize: 15,
-    color: COLORS.primary,
     justifyContent: 'center',
   },
   followTokenIcon: {
-    marginTop: 1,
-    height: 24,
+    marginRight: 20,
   },
 });

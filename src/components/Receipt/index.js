@@ -3,6 +3,8 @@ import {withNavigation, NavigationActions} from 'react-navigation';
 import {Modal} from '@src/components/core';
 import routeNames from '@src/router/routeNames';
 import {ExHandler} from '@src/services/exception';
+import {CONSTANT_KEYS} from '@src/constants';
+import {compose} from 'recompose';
 import Receipt from './Receipt';
 import styleSheet from './style';
 
@@ -78,8 +80,10 @@ class ReceiptModal extends Component {
     try {
       const {navigation} = this.props;
       const {info} = this.state;
-      navigation.navigate(routeNames.SendInFrequentReceivers, {
+      navigation.navigate(routeNames.FrequentReceiversForm, {
         info,
+        keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
+        headerTitle: 'Save address',
       });
       this.closeReceipt();
     } catch (error) {
@@ -106,5 +110,5 @@ class ReceiptModal extends Component {
   }
 }
 
-export default withNavigation(ReceiptModal);
+export default compose(withNavigation)(ReceiptModal);
 export {closeReceipt, openReceipt};

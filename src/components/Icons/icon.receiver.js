@@ -2,15 +2,14 @@ import React from 'react';
 import {Image} from 'react-native';
 import srcReceiverIcon from '@src/assets/images/icons/receiver.png';
 
-const ReceiverIcon = () => {
+const ReceiverIcon = props => {
+  const defaultStyle = {
+    width: 20,
+    height: 20,
+  };
+  const {style, source, ...rest} = props;
   return (
-    <Image
-      source={srcReceiverIcon}
-      style={{
-        width: 48,
-        height: 48,
-      }}
-    />
+    <Image source={srcReceiverIcon} style={[defaultStyle, style]} {...rest} />
   );
 };
 

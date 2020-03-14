@@ -11,6 +11,7 @@ import app from './app';
 import dex from './dex';
 import pin from './pin';
 import globalReducer from './globalReducer';
+import receivers from './receivers';
 
 const rootReducer = reduceReducers(
   combineReducers({
@@ -24,6 +25,7 @@ const rootReducer = reduceReducers(
     pin,
     form: formReducer,
     modal: modalReducer,
+    receivers,
   }),
   globalReducer,
 );

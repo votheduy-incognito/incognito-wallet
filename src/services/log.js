@@ -22,7 +22,7 @@ class Log {
     if (__DEV__) {
       console.debug.apply(null, arguments);
     }
-    
+
     return this;
   }
 }

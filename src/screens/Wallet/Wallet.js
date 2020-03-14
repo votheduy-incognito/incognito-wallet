@@ -1,14 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Container, ScrollView, View, Text, RefreshControl, Button} from '@src/components/core';
-import { TouchableWithoutFeedback } from 'react-native';
-import { Icon } from 'react-native-elements';
+import {ScrollView, View, Text, RefreshControl, Button, TouchableOpacity, Image} from '@src/components/core';
 import dexUtils from '@utils/dex';
-import {COLORS} from '@src/styles';
 import FollowingTokenList from '@src/components/FollowingTokenList/FollowingTokenList';
-import SettingIcon from '@components/SettingIcon';
-import AccountSelect from '@screens/Wallet/AccountSelect';
-import { homeStyle } from './style';
+import iconAdd from '@src/assets/images/icons/ic_add_round.png';
+import {homeStyle} from './style';
 
 class Wallet extends React.Component {
   render() {
@@ -39,6 +35,10 @@ class Wallet extends React.Component {
               tokens={tokens}
               onSelectToken={onSelectToken}
             />
+            <TouchableOpacity onPress={handleAddFollowToken} style={homeStyle.followTokenBtn}>
+              <Image source={iconAdd} style={homeStyle.followTokenIcon} />
+              <Text style={homeStyle.followTokenText}>Add a coin your list</Text>
+            </TouchableOpacity>
             <View style={homeStyle.addTokenContainer}>
               { !dexUtils.isDEXAccount(account.name) &&
                 (
@@ -49,17 +49,6 @@ class Wallet extends React.Component {
                   />
                 )
               }
-              <Text style={homeStyle.followTokenTitle}>Looking for a privacy coin?</Text>
-              <TouchableWithoutFeedback onPress={handleAddFollowToken}>
-                <View style={homeStyle.followTokenBtn}>
-                  <Text style={homeStyle.followTokenText}>Search existing coins</Text>
-                  <Icon
-                    containerStyle={[homeStyle.followTokenIcon]}
-                    name="chevron-right"
-                    color={COLORS.primary}
-                  />
-                </View>
-              </TouchableWithoutFeedback>
             </View>
           </View>
         </ScrollView>

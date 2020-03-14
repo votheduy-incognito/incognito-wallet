@@ -43,7 +43,7 @@ class HomeContainer extends Component {
     }
 
     // airdrop program
-    // this.airdrop();
+    this.airdrop();
 
     AppState.addEventListener('change', this.handleLogin);
 

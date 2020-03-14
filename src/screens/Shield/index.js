@@ -4,13 +4,13 @@ import withLayout from '@components/Layout/index';
 import DepositAmount from '@components/DepositAmount';
 
 const Shield = () => {
-  const [amount, setAmount] = React.useState(0);
+  const [amount, setAmount] = React.useState(null);
 
   const handleShield = (value) => {
     setAmount(value);
   };
 
-  if (amount) {
+  if (amount === 0) {
     const Layout = withLayout(Deposit);
     return (
       <Layout amount={amount} />

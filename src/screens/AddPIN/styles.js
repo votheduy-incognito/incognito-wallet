@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
   },
   fingerprint: {
     position: 'absolute',
+    zIndex: 1,
     right: 20,
     top: 20,
   },

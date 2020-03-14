@@ -1,5 +1,5 @@
-import { ScrollView, Text, TouchableOpacity, View } from '@src/components/core';
-import { getPassphrase } from '@src/services/wallet/passwordService';
+import {ScrollView, Text, TouchableOpacity, View} from '@src/components/core';
+import {getPassphrase} from '@src/services/wallet/passwordService';
 import PropTypes from 'prop-types';
 import React from 'react';
 import LocalDatabase from '@utils/LocalDatabase';
@@ -10,7 +10,8 @@ import SeparatorSection from '@screens/Setting/SeparatorSection';
 import AppUpdater from '@components/AppUpdater/index';
 import AccountSection from './AccountSection';
 import NetworkSection from './NetworkSection';
-import { settingStyle } from './style';
+import {settingStyle} from './style';
+import FrequentReceiverSection from './FrequentReceiversSection';
 
 class Setting extends React.Component {
   constructor() {
@@ -21,13 +22,13 @@ class Setting extends React.Component {
     };
   }
 
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = ({navigation}) => {
     return {
       headerRight: (
         <View>
           <BackupHeaderBtn navigation={navigation} />
         </View>
-      )
+      ),
     };
   };
 
@@ -36,15 +37,17 @@ class Setting extends React.Component {
   }
 
   async getDevices() {
-    const devices = (await LocalDatabase.getListDevices()).map(device => Device.getInstance(device));
-    this.setState({ devices });
+    const devices = (await LocalDatabase.getListDevices()).map(device =>
+      Device.getInstance(device),
+    );
+    this.setState({devices});
   }
 
   render() {
-    const { defaultServerId, devices } = this.state;
-    const { navigation } = this.props;
+    const {defaultServerId, devices} = this.state;
+    const {navigation} = this.props;
     return (
-      <ScrollView contentContainerStyle={{ flexGrow:1 }}>
+      <ScrollView contentContainerStyle={{flexGrow: 1}}>
         <View style={settingStyle.container}>
           <AccountSection navigation={navigation} devices={devices} />
           <NetworkSection
@@ -53,14 +56,22 @@ class Setting extends React.Component {
           />
           <PINSection navigation={navigation} />
           <SeparatorSection />
+          <FrequentReceiverSection />
         </View>
-        <TouchableOpacity onPress={async()=>{
-          if(__DEV__){
-            const passphrase = await getPassphrase();
-            alert(JSON.stringify('passphrase =' + passphrase));
-          }
-        }}
-        ><Text style={settingStyle.textVersion}>{`v${AppUpdater.appVersion}`}</Text>
+        <TouchableOpacity
+          onPress={async () => {
+            if (__DEV__) {
+              const passphrase = await getPassphrase();
+              alert(JSON.stringify('passphrase =' + passphrase));
+            }
+          }}
+        >
+          <Text
+            style={
+              settingStyle.textVersion
+            }
+          >{`v${AppUpdater.appVersion}`}
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     );
@@ -68,7 +79,7 @@ class Setting extends React.Component {
 }
 
 Setting.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
 };
 
 export default Setting;

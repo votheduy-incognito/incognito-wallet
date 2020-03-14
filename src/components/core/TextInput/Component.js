@@ -15,10 +15,17 @@ const TextInput = ({
   onBlur,
   clearable,
   maxLength,
+  onRef,
   ...props
 }) => {
   const [focus, setFocus] = useState(false);
   let textInput = React.createRef();
+
+  React.useEffect(() => {
+    if (textInput && onRef) {
+      onRef(textInput);
+    }
+  }, [textInput]);
 
   function handleFocus() {
     setFocus(true);
@@ -86,7 +93,7 @@ const TextInput = ({
           </View>
         )
       }
-      
+
     </View>
   );
 };
