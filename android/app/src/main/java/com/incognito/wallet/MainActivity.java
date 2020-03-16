@@ -4,6 +4,8 @@ import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
 import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
+import android.content.res.Configuration;
+import android.os.Build;
 
 public class MainActivity extends ReactActivity {
 
@@ -24,5 +26,14 @@ public class MainActivity extends ReactActivity {
             return new RNGestureHandlerEnabledRootView(MainActivity.this);
         }
       };
+    }
+
+    // Workaround appcompat-1.1.0 bug https://issuetracker.google.com/issues/141132133
+    @Override
+    public void applyOverrideConfiguration(Configuration overrideConfiguration) {
+        if (Build.VERSION.SDK_INT >= 21 && Build.VERSION.SDK_INT <= 25) {
+            return;
+        }
+        super.applyOverrideConfiguration(overrideConfiguration);
     }
 }
