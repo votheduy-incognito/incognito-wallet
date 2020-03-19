@@ -1,6 +1,6 @@
 import React from 'react';
-import {KeyboardAvoidingView, View} from 'react-native';
-import {Button, Text, TouchableOpacity} from '@components/core/index';
+import {View} from 'react-native';
+import {Button, Text} from '@components/core/index';
 import {useDispatch, useSelector} from 'react-redux';
 import {accountSeleclor, selectedPrivacySeleclor, tokenSeleclor} from '@src/redux/selectors';
 import PropTypes from 'prop-types';
@@ -11,12 +11,11 @@ import TokenSelect from '@components/TokenSelect/index';
 import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
 import CryptoIcon from '@components/CryptoIcon/index';
 import VerifiedText from '@components/VerifiedText/index';
-import {Icon} from 'react-native-elements';
-import {isIOS} from '@utils/platform';
 import PToken from '@models/pToken';
 import internalTokenModel from '@models/token';
 import accountService from '@services/wallet/accountService';
 import {setWallet} from '@src/redux/actions/wallet';
+import FloatButton from '@src/components/FloatButton';
 import {styled} from './DepositAmount.styled';
 import withDepositAmount from './DepositAmount.enhance';
 
@@ -51,8 +50,6 @@ const DepositAmount = props => {
   const handleSelectToken = (tokenId) => {
     dispatch(setSelectedPrivacy(tokenId));
   };
-
-  const Wrapper = isIOS() ? KeyboardAvoidingView : View;
 
   const isReceive = navigation?.state?.routeName === routeNames.ReceiveCoin;
   const label = isReceive ?
@@ -92,22 +89,7 @@ const DepositAmount = props => {
 
       </View>
       { showGuide ? (
-        <Wrapper
-          contentContainerStyle={{ position: 'absolute', bottom: 0 }}
-          style={{ position: 'absolute', bottom: 0 }}
-          keyboardVerticalOffset={isIOS() ? 160 : 0}
-          behavior={isIOS() ? 'position' : undefined}
-        >
-          <TouchableOpacity
-            style={styled.floatBtn}
-            onPress={() => navigation.navigate(routeNames.WhyShield)}
-          >
-            <View style={styled.btnIcon}>
-              <Icon name="chevron-right" />
-            </View>
-            <Text style={styled.text}>Find out why</Text>
-          </TouchableOpacity>
-        </Wrapper>
+        <FloatButton onPress={() => navigation.navigate(routeNames.WhyShield)} label='Find out why' />
       ) : null}
     </View>
   );
