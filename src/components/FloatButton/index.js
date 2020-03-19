@@ -11,8 +11,8 @@ const Wrapper = isIOS() ? KeyboardAvoidingView : View;
 const FloatButton = ({ onPress, label }) => {
   return (
     <Wrapper
-      contentContainerStyle={{ position: 'absolute', bottom: 0 }}
-      style={{ position: 'absolute', bottom: 0 }}
+      contentContainerStyle={{ position: 'absolute', bottom: 0, left: 0 }}
+      style={{ position: 'absolute', bottom: 0, left: 0 }}
       keyboardVerticalOffset={isIOS() ? 160 : 0}
       behavior={isIOS() ? 'position' : undefined}
     >

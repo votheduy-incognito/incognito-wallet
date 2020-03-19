@@ -9,6 +9,7 @@ import icInvent from '@assets/images/icons/ic_invent_btn.png';
 import icBuy from '@assets/images/icons/ic_buy_prv.png';
 import IconTextButton from '@screens/Home/IconTextButton';
 import ROUTE_NAMES from '@routers/routeNames';
+import Feedback from '@src/components/Feedback';
 
 import { withRoundHeaderLayout } from '@src/hoc';
 
@@ -99,6 +100,7 @@ const Home = ({ navigation }) => {
           </View>
         )
         )}
+        <Feedback />
       </View>
     </Card>
   );
