@@ -7,6 +7,7 @@ import icReceive from '@assets/images/icons/ic_receive_btn.png';
 import icTrade from '@assets/images/icons/ic_trade.png';
 import icInvent from '@assets/images/icons/ic_invent_btn.png';
 import icBuy from '@assets/images/icons/ic_buy_prv.png';
+import icPapp from '@assets/images/icons/ic_papp.png';
 import IconTextButton from '@screens/Home/IconTextButton';
 import ROUTE_NAMES from '@routers/routeNames';
 
@@ -37,6 +38,12 @@ const shieldItem =  {
   desc: 'your crypto',
   route: ROUTE_NAMES.Shield,
 };
+const pappItem = {
+  image: icPapp,
+  title: 'pApp',
+  desc: 'pApp',
+  route: ROUTE_NAMES.pApps,
+};
 
 const buttons = [
   {
@@ -63,6 +70,7 @@ const buttons = [
     desc: 'anonymously',
     route: ROUTE_NAMES.Dex,
   },
+  pappItem,
 ];
 
 const Home = ({ navigation }) => {
