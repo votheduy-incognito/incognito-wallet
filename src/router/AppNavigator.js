@@ -10,6 +10,7 @@ import NetworkSetting from '@src/screens/NetworkSetting';
 import WalletDetail from '@src/screens/WalletDetail';
 import ReceiveCoin from '@src/screens/ReceiveCoin';
 import SendCrypto from '@screens/SendCrypto';
+import pApps from '@screens/Papps';
 import TxHistoryDetail from '@src/screens/TxHistoryDetail';
 import Setting from '@screens/Setting';
 import DexHistory from '@screens/DexHistory';
@@ -89,6 +90,9 @@ const AppNavigator = createStackNavigator(
     ),
     [ROUTE_NAMES.FrequentReceivers]: navigationOptionsHandler(
       FrequentReceivers,
+    ),
+    [ROUTE_NAMES.pApps]: navigationOptionsHandler(
+      pApps,
     ),
   },
   {
