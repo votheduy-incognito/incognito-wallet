@@ -227,7 +227,7 @@ class PappView extends PureComponent {
 
 PappView.propTypes = {
   selectedPrivacy: PropTypes.object.isRequired,
-  url: PropTypes.object.isRequired,
+  url: PropTypes.string.isRequired,
   onSelectPrivacyToken: PropTypes.func.isRequired,
   listSupportedToken: PropTypes.arrayOf(PropTypes.object).isRequired,
   onSetListSupportTokenById: PropTypes.func.isRequired,
