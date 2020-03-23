@@ -10,9 +10,6 @@ const style = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    flexBasis: 80,
-    padding: 20,
-    backgroundColor: COLORS.black
   },
   content: {
     flex: 1,
@@ -22,17 +19,18 @@ const style = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     marginRight: 20,
-    backgroundColor: '#979797',
-    borderRadius: 8,
-    color: COLORS.white
+    backgroundColor: COLORS.white,
+    borderRadius: 10,
+    color: COLORS.black
   },
   submitBtn: {
     backgroundColor: COLORS.transparent,
     borderColor: COLORS.white,
     borderWidth: 2,
     overflow: 'hidden',
-    minWidth: 100,
-    borderRadius: 8
+    minWidth: 70,
+    borderRadius: 8,
+    marginRight: 3,
   },
   pappItem: {
     marginVertical: 15

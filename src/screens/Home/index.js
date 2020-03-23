@@ -42,7 +42,6 @@ const shieldItem =  {
 const pappItem = {
   image: icPapp,
   title: 'pApp',
-  desc: 'pApp',
   route: ROUTE_NAMES.pApps,
 };
 

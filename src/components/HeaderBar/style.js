@@ -28,9 +28,9 @@ const style = StyleSheet.create({
     color: COLORS.lightGrey1,
   },
   left: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    flexBasis: 60,
   },
   center: {
     flex: 3,
@@ -41,6 +41,9 @@ const style = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end'
+  },
+  customHeader: {
+    flex: 1,
   }
 });
 
