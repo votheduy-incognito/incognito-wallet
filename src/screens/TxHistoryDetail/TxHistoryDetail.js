@@ -59,13 +59,13 @@ export default class TxHistoryDetail extends Component {
         />
       </TouchableOpacity>
     );
-  }
+  };
 
   handleRetryExpiredDeposit = ({ id, decentralized, walletAddress, currencyType, userPaymentAddress, privacyTokenAddress, erc20TokenAddress, type }) => {
     const { onRetryExpiredDeposit } = this.props;
 
     return onRetryExpiredDeposit({ id, decentralized, walletAddress, currencyType, userPaymentAddress, privacyTokenAddress, erc20TokenAddress, type });
-  }
+  };
 
   renderStatusValue = (statusText, statusColor, statusNumber, canRetryExpiredDeposit, history) => {
     const text = (
@@ -78,13 +78,13 @@ export default class TxHistoryDetail extends Component {
         { canRetryExpiredDeposit && <Button style={styleSheet.statusRetryBtn} title='Retry' onPress={() => this.handleRetryExpiredDeposit(history)} /> }
       </View>
     );
-  }
+  };
 
   renderQrCode = (data) => {
     return (
       <QrCodeAddress data={data} />
     );
-  }
+  };
 
   render() {
     const { data } = this.props;
@@ -115,6 +115,8 @@ export default class TxHistoryDetail extends Component {
           {!!history?.inchainTx && this.renderRow({ label: 'Inchain TxID', valueComponent: this.renderTxId(history?.inchainTx) })}
           {!!history?.outchainTx && this.renderRow({ label: 'Outchain TxID', valueComponent: this.renderTxId(history?.outchainTx) })}
           {!!history?.toAddress && this.renderRow({ label: 'To address', valueText: history?.toAddress, valueTextProps: { ellipsizeMode: 'middle' }, copyable: true })}
+          {!!history?.symbol && this.renderRow({ label: 'Coin', valueText: history.symbol })}
+          {!!history?.erc20TokenAddress && this.renderRow({ label: 'Contract', valueText: history.erc20TokenAddress, copyable: true })}
           {!!history?.depositAddress && (
             <View style={styleSheet.depositAddressContainer}>
               <Text>Deposit address</Text>
