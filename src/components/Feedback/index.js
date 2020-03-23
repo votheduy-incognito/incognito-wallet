@@ -13,7 +13,7 @@ export default function Feedback() {
     const { width, height } = Dimensions.get('window');
     const deviceInfomation = `${await deviceInfo.getModel()}, OS version ${Platform.Version}, screen size: ${PixelRatio.getPixelSizeForLayoutSize(height)}x${PixelRatio.getPixelSizeForLayoutSize(width)}`;
     const email = 'go@incognito.org';
-    let content = `***\nPlease include as much info as possible.\n\n***\n\n${deviceInfomation}\n\nThanks for your support!\nIncognito mobile team.`;
+    let content = `\n\n\n\n***\nLet the wallet team know your thoughts in as much detail as possible. Thanks for helping us build a better product!\n***\n\n${deviceInfomation}\n\nThanks for your support!\nIncognito mobile team.`;
     
     // almost Android devices are using Gmail, so use html template as default on Android
     if (isAndroid()) {
