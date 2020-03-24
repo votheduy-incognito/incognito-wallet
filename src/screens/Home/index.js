@@ -6,6 +6,7 @@ import icSend from '@assets/images/icons/ic_send_btn.png';
 import icReceive from '@assets/images/icons/ic_receive_btn.png';
 import icTrade from '@assets/images/icons/ic_trade.png';
 import icInvent from '@assets/images/icons/ic_invent_btn.png';
+import icPower from '@assets/images/icons/ic_power.png';
 import icBuy from '@assets/images/icons/ic_buy_prv.png';
 import icPapp from '@assets/images/icons/ic_papp.png';
 import IconTextButton from '@screens/Home/IconTextButton';
@@ -19,6 +20,8 @@ import {BIG_COINS} from '@screens/Dex/constants';
 import {useSelector} from 'react-redux';
 import accountSeleclor from '@src/redux/selectors/account';
 import dexUtil from '@utils/dex';
+import LinkingService from '@src/services/linking';
+import { CONSTANT_CONFIGS } from '@src/constants';
 import styles from './style';
 
 const sendItem = {
@@ -39,10 +42,17 @@ const shieldItem =  {
   desc: 'your crypto',
   route: ROUTE_NAMES.Shield,
 };
+
 const pappItem = {
   image: icPapp,
   title: 'pApp',
   route: ROUTE_NAMES.pApps,
+};
+
+const powerItem = {
+  image: icPower,
+  title: 'Power',
+  onPress: () => LinkingService.openUrl(CONSTANT_CONFIGS.NODE_URL),
 };
 
 const buttons = [
@@ -71,6 +81,7 @@ const buttons = [
     route: ROUTE_NAMES.Dex,
   },
   pappItem,
+  powerItem
 ];
 
 const Home = ({ navigation }) => {
@@ -102,7 +113,7 @@ const Home = ({ navigation }) => {
               title={item.title}
               desc={item.desc}
               disabled={isDisabled(item)}
-              onPress={() => goToScreen(item.route, item.params)}
+              onPress={item.onPress || (() => goToScreen(item.route, item.params))}
             />
           </View>
         )
