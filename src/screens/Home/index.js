@@ -22,6 +22,8 @@ import accountSeleclor from '@src/redux/selectors/account';
 import dexUtil from '@utils/dex';
 import LinkingService from '@src/services/linking';
 import { CONSTANT_CONFIGS } from '@src/constants';
+import LocalDatabase from '@utils/LocalDatabase';
+import {withdraw} from '@services/api/withdraw';
 import styles from './style';
 
 const sendItem = {
@@ -102,6 +104,25 @@ const Home = ({ navigation }) => {
 
     return false;
   };
+
+  const tryLastWithdrawal = async () => {
+    try {
+      const txs = await LocalDatabase.getWithdrawalData();
+
+      for (const tx in txs) {
+        if (tx) {
+          await withdraw(tx);
+          await LocalDatabase.removeWithdrawalData(tx.burningTxId);
+        }
+      }
+    } catch (e) {
+      //
+    }
+  };
+
+  React.useEffect(() => {
+    tryLastWithdrawal();
+  }, []);
 
   return (
     <Card style={styles.container}>
