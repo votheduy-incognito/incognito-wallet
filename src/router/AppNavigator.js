@@ -26,6 +26,7 @@ import Shield from '@screens/Shield';
 import FrequentReceivers, {
   FrequentReceiversForm,
 } from '@src/screens/SendCrypto/FrequentReceivers';
+import NodeHelp from '@screens/NodeHelp';
 import ROUTE_NAMES from './routeNames';
 import TabNavigator from './TabNavigator';
 
@@ -93,6 +94,12 @@ const AppNavigator = createStackNavigator(
     ),
     [ROUTE_NAMES.pApps]: navigationOptionsHandler(
       pApps,
+    ),
+    [ROUTE_NAMES.NodeHelp]: navigationOptionsHandler(
+      NodeHelp,
+      {
+        title: 'Need help?'
+      }
     ),
   },
   {

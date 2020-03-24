@@ -1,16 +1,13 @@
-import { StyleSheet,Image } from 'react-native';
+import { StyleSheet } from 'react-native';
 import TextStyle, { scaleInApp, FontStyle } from '@src/styles/TextStyle';
-import images from '@src/assets';
 import {COLORS} from '@src/styles';
 
-const sizeImage = Image.resolveAssetSource(images.ic_getstarted_device);
-const scale = 0.7;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
     padding:scaleInApp(20),
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   item: {
     marginVertical: scaleInApp(10)
@@ -29,6 +26,7 @@ const styles = StyleSheet.create({
   },
   title2:{
     marginVertical:scaleInApp(10),
+    marginTop: 25,
     ...TextStyle.bigText,
     ...FontStyle.medium,
     width:'75%',
@@ -44,15 +42,25 @@ const styles = StyleSheet.create({
   },
   content_step1_image:{
     alignSelf:'center',
-    width:sizeImage.width*scale,
-    height:sizeImage.height*scale
+    resizeMode: 'contain',
+  },
+  content_step2_image:{
+    alignSelf:'center',
+    resizeMode: 'contain',
+    width: '100%',
+    height: 70,
+  },
+  content_step3_image:{
+    alignSelf:'center',
+    resizeMode: 'contain',
+    marginTop: 20,
   },
   content_step1:{
     alignSelf:'center'
   },
   footer:{
-    marginVertical:scaleInApp(20),
-    flexDirection:'column'
+    marginVertical: scaleInApp(20),
+    flexDirection: 'column',
   },
   button:{
     backgroundColor:'#25CDD6',
@@ -88,6 +96,52 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     alignSelf: 'center',
   },
+  centerText: {
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  divider: {
+    width: '100%',
+    height: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.lightGrey5,
+    marginBottom: 15,
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  guideLine: {
+    marginTop: 15,
+  },
+  bold: {
+    ...FontStyle.bold,
+  },
+  icon: {
+    marginHorizontal: 5,
+  },
+  center: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  guide: {
+    marginBottom: 25,
+  },
+  log: {
+    marginTop: 20,
+    flexDirection: 'row',
+  },
+  logIcon: {
+    marginRight: 15,
+    width: 20,
+    height: 20,
+    paddingTop: 3,
+  },
+  disabledText: {
+    color: COLORS.lightGrey1,
+  },
+  headerRight: {
+    marginRight: 15,
+  }
 });
 
 export default styles;

@@ -1,13 +1,15 @@
 import StepIndicator from '@components/StepIndicator';
 import BaseScreen from '@screens/BaseScreen';
-import ConnectInstruction from '@src/components/ConnectInstruction';
-import {View} from '@src/components/core';
+import {TouchableOpacity, View} from '@src/components/core';
 import {getAccountByName} from '@src/redux/selectors/account';
 import routeNames from '@src/router/routeNames';
 import React from 'react';
 import {connect} from 'react-redux';
 import FirstScreen from '@screens/GetStartedAddNode/components/FirstScreen';
 import { locationPermission } from '@src/utils/PermissionUtil';
+import TurnOffCellular from '@screens/GetStartedAddNode/components/TurnOffCellular';
+import {COLORS} from '@src/styles';
+import {Icon} from 'react-native-elements';
 import ScanQRCode from './components/ScanQRCode';
 import SetupWifi from './components/SetupWifi';
 import {DialogNotify} from './components/BackUpAccountDialog';
@@ -26,13 +28,25 @@ class GetStartedAddNode extends BaseScreen {
   constructor(props) {
     super(props);
     this.state = {
-      isShowInstructor: false,
       qrCode: null,
       account: null,
       step: 0,
       hotspotSSID: '',
     };
   }
+
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerRight: (
+        <TouchableOpacity
+          onPress={() => navigation.navigate(routeNames.NodeHelp)}
+          style={styles.headerRight}
+        >
+          <Icon name="help-outline" color={COLORS.white} />
+        </TouchableOpacity>
+      )
+    };
+  };
 
   componentDidMount() {
     locationPermission();
@@ -46,17 +60,6 @@ class GetStartedAddNode extends BaseScreen {
 
   handleSetupComplete = () => {
     this.setState({ success: true });
-  };
-
-  onResume = async () => {
-    const {isShowInstructor, errorInSetUp} = this.state;
-    if (isShowInstructor) {
-      const isConnectedHotspot = true;
-      this.setState({
-        errorInSetUp: isConnectedHotspot ? null : errorInSetUp,
-        isShowInstructor: !isConnectedHotspot
-      });
-    }
   };
 
   nextScreen = () => {
@@ -90,6 +93,12 @@ class GetStartedAddNode extends BaseScreen {
 
     if (step === 2) {
       return (
+        <TurnOffCellular onNext={this.nextScreen} />
+      );
+    }
+
+    if (step === 3) {
+      return (
         <SetupWifi
           onNext={this.handleSetupComplete}
           qrCode={qrCode}
@@ -101,14 +110,12 @@ class GetStartedAddNode extends BaseScreen {
   }
 
   render() {
-    const {success, step, isShowInstructor} = this.state;
-    const hotspotName = this.viewSetupDevice?.current?.getHotspotName() ?? '';
+    const {success, step} = this.state;
     return (
       <View style={styles.container}>
         <DialogNotify visible={success} onClose={this.handleFinish} />
-        <StepIndicator stepCount={3} currentPage={step} />
+        <StepIndicator stepCount={4} currentPage={step} />
         {this.renderStep()}
-        {isShowInstructor && <ConnectInstruction hotspotName={hotspotName} />}
       </View>
     );
   }

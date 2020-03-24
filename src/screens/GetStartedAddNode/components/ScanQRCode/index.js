@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import {ButtonExtension, Text, Toast} from '@src/components/core';
+import {Button, Text, Toast} from '@src/components/core';
 import {getAccountByName} from '@src/redux/selectors/account';
 import { reloadAccountList } from '@src/redux/actions/wallet';
 import _ from 'lodash';
@@ -109,11 +109,9 @@ class ScanQRCode extends Component {
 
     return (
       <View style={styles.footer}>
-        <ButtonExtension
+        <Button
           disabled={loading || !qrCode || !account}
           loading={loading}
-          titleStyle={styles.textTitleButton}
-          buttonStyle={styles.button}
           onPress={this.handleNext}
           title="Next"
         />

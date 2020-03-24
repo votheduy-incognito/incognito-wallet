@@ -7,7 +7,6 @@ const images = {
   bg_top_detail: require('./images/bg_top_detail.png'),
   ic_add_node_device:require('./images/ic_add_node_device.png'),
   ic_add_self_node:require('./images/ic_add_self_node.png'),
-  ic_getstarted_device:require('./images/ic_getstarted_device.png'),
   ic_getstarted_scan_device:require('./images/ic_getstarted_scan_device.png'),
   ic_getstarted_qrcode: require('./images/ic_getstarted_qrcode.png'),
 };
