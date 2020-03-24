@@ -86,4 +86,10 @@ export default StyleSheet.create({
     fontSize: 14,
     color: COLORS.lightGrey3,
   },
+  warning: {
+    fontSize: 14,
+    color: COLORS.lightGrey3,
+    textAlign: 'center',
+    marginBottom: 15,
+  }
 });
