@@ -28,6 +28,7 @@ import React from 'react';
 import { FlatList, RefreshControl, ScrollView, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { connect } from 'react-redux';
+import WelcomeSetupNode from './components/WelcomeSetupNode';
 import Header from './Header';
 import style from './style';
 
@@ -111,6 +112,7 @@ class Node extends BaseScreen {
       timeToUpdate: Date.now(),
       isFetching: false,
       loading: false,
+      showWelcomeSetupNode: false,
     };
 
     this.renderNode = this.renderNode.bind(this);
@@ -118,7 +120,15 @@ class Node extends BaseScreen {
 
   async componentDidMount() {
     const { navigation } = this.props;
-    this.listener = navigation.addListener('didFocus', this.handleRefresh);
+    this.listener = navigation.addListener('didFocus', () => {
+      this.handleRefresh();
+
+      const { setupNode } = navigation?.state?.params || {};
+
+      if (setupNode) {
+        this.setState({showWelcomeSetupNode: true});
+      }
+    });
 
     if (allTokens.length === 0) {
       allTokens.push(PRV);
@@ -138,6 +148,10 @@ class Node extends BaseScreen {
   async componentWillMount(){
     await this.createSignIn();
   }
+
+  closeWelcomeSetupNode = () => {
+    this.setState({ showWelcomeSetupNode: false });
+  };
 
   sendWithdrawTx = async (paymentAddress, tokenIds) => {
     const { wallet } = this.props;
@@ -360,6 +374,7 @@ class Node extends BaseScreen {
       isFetching,
       loading,
       loadedDevices,
+      showWelcomeSetupNode,
     } = this.state;
 
     if (!isFetching && _.isEmpty(listDevice)) {
@@ -400,6 +415,7 @@ class Node extends BaseScreen {
             onPress={() => { linkingService.openUrl(CONSTANT_CONFIGS.NODE_URL); }}
           />
         </ScrollView>
+        <WelcomeSetupNode visible={showWelcomeSetupNode} onClose={this.closeWelcomeSetupNode} />
       </View>
     );
   }

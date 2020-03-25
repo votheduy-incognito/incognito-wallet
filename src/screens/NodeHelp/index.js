@@ -50,7 +50,7 @@ const NodeHelp = () => {
           <Text style={styles.bold}>
           Case 3 - Send validator key failed:&nbsp;&nbsp;
           </Text>
-          Please make sure your Mobile data is off, and your phone is less than 1m away from the node.
+          Please make sure your Mobile data is off, and your phone is less than 1 meter away from the node.
         </Text>
         <Text style={[styles.marginTop, styles.text]}>
           <Text style={styles.bold}>

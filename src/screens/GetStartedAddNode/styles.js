@@ -112,9 +112,11 @@ const styles = StyleSheet.create({
   },
   guideLine: {
     marginTop: 15,
+    fontSize: 14,
   },
   bold: {
     ...FontStyle.bold,
+    fontSize: 14,
   },
   icon: {
     marginHorizontal: 5,

@@ -25,14 +25,14 @@ const Guide = () => (
       </View>
     ) : (
       <View style={{marginTop: 10}}>
-        <View style={[styles.row, styles.guideLine]}>
-          <Text style={styles.bold}>Step 1:</Text>
-          <Text>&nbsp;Swipe down from the top of your screen</Text>
-        </View>
-        <View style={[styles.row, styles.guideLine]}>
+        <Text style={[styles.guideLine]}>
+          <Text style={[styles.bold]}>Step 1:</Text>
+          &nbsp;Swipe down from the top of your screen
+        </Text>
+        <Text style={[styles.guideLine]}>
           <Text style={styles.bold}>Step 2:</Text>
-          <Text>&nbsp;Turn off your mobile data</Text>
-        </View>
+          &nbsp;Turn off your mobile data
+        </Text>
       </View>
     )}
   </View>
