@@ -374,6 +374,9 @@ class Withdraw extends React.Component {
                   onOpenAddressBook={onShowFrequentReceivers}
                   showNavAddrBook
                 />
+                {(isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) &&
+                  <Text style={style.warning}>Please withdraw to ethereum wallet address only. Withdrawals to smart contract addresses may be lost.</Text>
+                }
                 <Field
                   component={InputMaxValueField}
                   name="amount"
