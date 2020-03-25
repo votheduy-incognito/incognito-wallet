@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View } from '@src/components/core';
@@ -10,14 +10,15 @@ import SimpleInfo from '@src/components/SimpleInfo';
 import SelectToken from '@src/components/HeaderRight/SelectToken';
 import { CONSTANT_COMMONS } from '@src/constants';
 import LoadingContainer from '@src/components/LoadingContainer';
-import { COLORS } from '@src/styles';
 import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
 import styles from './style';
 import PappError from './PappError';
 import PappView from './PappView';
+import SearchForm from '../Papps/SearchForm';
 
+const searchFormRef = React.createRef();
 
-class PappViewContainer extends PureComponent {
+class PappViewContainer extends Component {
   constructor(props) {
     super(props);
 
@@ -31,30 +32,32 @@ class PappViewContainer extends PureComponent {
   }
 
   static navigationOptions = ({ navigation }) => {
-    const { title, onSelectToken, selectedPrivacy, supportTokenIds } = navigation.state.params || {};
+    const { onSelectToken, selectedPrivacy, supportTokenIds, onGo } = navigation.state.params || {};
 
     return {
-      title: title ?? 'Get crypto rich',
-      theme: {
-        textColor: COLORS.white,
-        backgroundColor: COLORS.black
-      },
-      headerRight: (
-        <View style={styles.headerRight}>
-          <View style={styles.chooseTokenIcon}>
-            <SelectToken onSelect={onSelectToken} selectedPrivacy={selectedPrivacy} supportTokenIds={supportTokenIds} />
-          </View>
-        </View>
-        
-      )
+      customHeader: (
+        <SearchForm
+          ref={searchFormRef}
+          onGo={onGo}
+          append={(
+            <View style={styles.chooseTokenIcon}>
+              <SelectToken onSelect={onSelectToken} selectedPrivacy={selectedPrivacy} supportTokenIds={supportTokenIds} />
+            </View>
+          )}
+        />
+      ),
     };
+  }
+
+  onGo = ({url}) => {
+    this.setState({ url });
   }
 
   componentDidMount() {
     const { supportTokenIds } = this.state;
+
     this.handleSelectPrivacyToken(CONSTANT_COMMONS.PRV_TOKEN_ID);
-    this.setHeaderTitle();
-    this.setHeaderData({ onSelectToken: this.handleSelectPrivacyToken, supportTokenIds });
+    this.setHeaderData({ onSelectToken: this.handleSelectPrivacyToken, supportTokenIds, onGo: this.onGo });
   }
 
   componentWillUnmount() {
@@ -62,13 +65,6 @@ class PappViewContainer extends PureComponent {
       clearInterval(this.reloadBalanceTimeout);
       this.reloadBalanceTimeout = undefined;
     }
-  }
-
-  setHeaderTitle = () => {
-    const { navigation } = this.props;
-    let title = navigation.getParam('appName');
-
-    this.setHeaderData({ title });
   }
 
   setHeaderData = (data = {}) => {
@@ -170,6 +166,7 @@ class PappViewContainer extends PureComponent {
           supportTokenIds={supportTokenIds}
           onSelectPrivacyToken={this.handleSelectPrivacyToken}
           onSetListSupportTokenById={this.handleSetListSupportTokenById}
+          onChangeUrl={searchFormRef?.current?.setUrl}
         />
         { isSending && <LoadingTx /> }
       </PappError>
@@ -200,6 +197,7 @@ PappViewContainer.propTypes = {
   selectPrivacyByTokenID: PropTypes.func.isRequired,
   tokens: PropTypes.array,
   account: PropTypes.object.isRequired,
+  onGo: PropTypes.func.isRequired,
 };
 
 export default connect(mapState, mapDispatch)(PappViewContainer);

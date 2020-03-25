@@ -11,7 +11,7 @@ const whiteScreens = [Game, GetStarted, AddPin, Community];
 const blue2Screens = [];
 const blue1Screens = [Wizard, Node];
 const dark2Screen = [Dex, DexHistory, DexHistoryDetail];
-const blackScreen = [pApps, pApp];
+const blackScreen = [];
 
 const isIOS = Platform.OS === 'ios';
 const isIphoneX = DeviceInfo.hasNotch();

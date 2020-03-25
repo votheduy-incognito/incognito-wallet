@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import routeNames from '@src/router/routeNames';
-import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
 import Papps from './Papps';
 import SearchForm from './SearchForm';
 
@@ -22,23 +21,11 @@ class PappsContainer extends PureComponent {
     navigation?.setParams({onGo: this.onGo});
   }
 
-  urlValidator = (url) => {
-    // eslint-disable-next-line
-    if (!(/(http(s)?:\/\/)./g.test(url))) throw new CustomError(ErrorCode.paaps_invalid_daap_url);
-    return true;
-  }
-
   onGo = (pApp = {}) => {
-    try {
-      const { name, url } = pApp;
-
-      if (this.urlValidator(url)) {
-        const { navigation } = this.props;
-        navigation?.navigate(routeNames.pApp, { url, appName: name ?? url });
-      }
-    } catch (e) {
-      new ExHandler(e, 'Sorry, we can not open this Papp.').showErrorToast();
-    }
+    const { name, url } = pApp;
+    const { navigation } = this.props;
+    
+    navigation?.navigate(routeNames.pApp, { url, appName: name ?? url});
   }
 
   render() {
