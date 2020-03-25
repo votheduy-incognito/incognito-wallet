@@ -98,9 +98,10 @@ const List = ({
   onUpdate,
   shouldDisabledItem,
   label = 'All',
+  styledContainer = null,
 }) => {
   return (
-    <View style={listStyled.container}>
+    <View style={[listStyled.container, styledContainer]}>
       <ScrollView>
         <Text style={listStyled.all}>{label}</Text>
         {receivers.map((item, key, arr) => (
@@ -194,6 +195,7 @@ const Modal = props => {
             onDelete={onDelete}
             onUpdate={onUpdate}
             shouldDisabledItem={shouldDisabledItem}
+            styledContainer={{flex: 1}}
           />
         ) : (
           <EmptyList
