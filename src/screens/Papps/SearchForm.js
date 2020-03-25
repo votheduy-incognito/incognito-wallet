@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, TextInput } from '@src/components/core';
+import Icons from 'react-native-vector-icons/Ionicons';
 import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
 import { COLORS } from '@src/styles';
 import styles from './style';
@@ -69,6 +70,7 @@ class SearchForm extends Component {
           onFocus={this.handleAddProtocol}
           onSubmitEditing={this.onSubmit}
           returnKeyType='go'
+          appendView={<Icons name='ios-search' size={20} color={COLORS.lightGrey4} style={{marginRight: 5}} />}
         />
         {
           React.isValidElement(append) && append

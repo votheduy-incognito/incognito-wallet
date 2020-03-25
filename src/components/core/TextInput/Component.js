@@ -10,6 +10,7 @@ const TextInput = ({
   inputStyle,
   style,
   prependView,
+  appendView,
   label,
   onFocus,
   onBlur,
@@ -66,6 +67,7 @@ const TextInput = ({
           focus && styleSheet.focus
         ]}
       >
+        {appendView}
         <RNComponent
           allowFontScaling={false}
           placeholderTextColor={COLORS.lightGrey3}
@@ -103,6 +105,7 @@ TextInput.defaultProps = {
   containerStyle: null,
   inputStyle: null,
   prependView: null,
+  appendView: null,
   clearable: false,
   onChangeText: undefined,
   onFocus: undefined,
@@ -115,6 +118,7 @@ TextInput.propTypes = {
   containerStyle: PropTypes.object,
   inputStyle: PropTypes.object,
   prependView: PropTypes.element,
+  appendView: PropTypes.element,
   label: PropTypes.string,
   clearable: PropTypes.bool,
   onChangeText: PropTypes.func,

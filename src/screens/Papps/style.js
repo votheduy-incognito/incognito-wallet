@@ -18,10 +18,10 @@ const style = StyleSheet.create({
   },
   input: {
     flex: 1,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     marginRight: 20,
     backgroundColor: COLORS.white,
-    borderRadius: 10,
+    borderRadius: 20,
     color: COLORS.black
   },
   submitBtn: {
