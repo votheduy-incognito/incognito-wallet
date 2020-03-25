@@ -49,10 +49,10 @@ class CryptoIcon extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { onlyDefault, uri } = this.props;
-    const { onlyDefault: oldOnlyDefault, uri: oldUri } = prevProps;
+    const { onlyDefault, uri, tokenId } = this.props;
+    const { onlyDefault: oldOnlyDefault, uri: oldUri, tokenId: oldTokenId } = prevProps;
 
-    if (onlyDefault !== oldOnlyDefault || uri !== oldUri) {
+    if (onlyDefault !== oldOnlyDefault || uri !== oldUri || tokenId !== oldTokenId) {
       this.getUri(uri);
     }
   }

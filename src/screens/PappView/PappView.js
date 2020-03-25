@@ -160,8 +160,14 @@ class PappView extends PureComponent {
     }
   }
 
-  onPappLoaded = () => {
-    const { selectedPrivacy, listSupportedToken } = this.props;
+  onPappLoaded = (syntheticEvent) => {
+    const { selectedPrivacy, listSupportedToken, onChangeUrl } = this.props;
+    const { nativeEvent } = syntheticEvent;
+
+    if (typeof onChangeUrl === 'function') {
+      onChangeUrl(nativeEvent?.url);
+    }
+
     setTimeout(() => {
       this.setState({ isLoaded: true }, () => {
         updateDataToPapp({ selectedPrivacy, listSupportedToken });
@@ -231,6 +237,7 @@ PappView.propTypes = {
   onSelectPrivacyToken: PropTypes.func.isRequired,
   listSupportedToken: PropTypes.arrayOf(PropTypes.object).isRequired,
   onSetListSupportTokenById: PropTypes.func.isRequired,
+  onChangeUrl: PropTypes.func.isRequired,
 };
 
 export default PappView;
