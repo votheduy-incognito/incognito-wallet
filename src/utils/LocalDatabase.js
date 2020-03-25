@@ -14,6 +14,7 @@ export const KEY_SAVE = {
   PIN: CONSTANT_KEYS.PIN,
   DECIMAL_SEPARATOR: '$decimal_separator',
   VERIFY_CODE: '$verify_code',
+  WITHDRAWAL_DATA: CONSTANT_KEYS.WITHDRAWAL_DATA,
 };
 export default class LocalDatabase {
   static async getValue(key: String): String {
@@ -206,5 +207,44 @@ export default class LocalDatabase {
 
   static setSyncReceivers = (keySync, value) => {
     return LocalDatabase.saveValue(keySync, JSON.stringify(value));
+  };
+
+  /**
+   * @returns {Array<Object>}
+   */
+  static getWithdrawalData = () => {
+    try {
+      const jsonData = LocalDatabase.getValue(KEY_SAVE.WITHDRAWAL_DATA);
+
+      if (!jsonData || _.isEmpty(jsonData)) {
+        return [];
+      }
+
+      return JSON.parse(jsonData);
+    } catch {
+      return [];
+    }
+  };
+
+  /**
+   * Add withdrawal data
+   * @param {Object}data
+   * @returns {Promise<void>}
+   */
+  static addWithdrawalData = async (data) => {
+    const txs = await LocalDatabase.getWithdrawalData();
+    txs.push(data);
+    return LocalDatabase.saveValue(KEY_SAVE.WITHDRAWAL_DATA, JSON.stringify(txs));
+  };
+
+  /**
+   * Remove withdrawal data
+   * @param {string} burningTxId
+   * @returns {Promise<void>}
+   */
+  static removeWithdrawalData = async (burningTxId) => {
+    let txs = await LocalDatabase.getWithdrawalData();
+    txs = txs.filter(tx => tx.burningTxId !== burningTxId);
+    return LocalDatabase.saveValue(KEY_SAVE.WITHDRAWAL_DATA, JSON.stringify(txs));
   };
 }

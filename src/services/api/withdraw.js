@@ -23,7 +23,7 @@ export const genCentralizedWithdrawAddress = ({ amount, paymentAddress, walletAd
   }).then(res => res?.Address);
 };
 
-export const addETHTxWithdraw = ({ amount, originalAmount, paymentAddress, walletAddress, tokenId, burningTxId, currencyType  }) => {
+const addETHTxWithdraw = ({ amount, originalAmount, paymentAddress, walletAddress, tokenId, burningTxId, currencyType  }) => {
   if (!paymentAddress) return throw new Error('Missing paymentAddress');
   if (!tokenId) return throw new Error('Missing tokenId');
   if (!burningTxId) return throw new Error('Missing burningTxId');
@@ -48,7 +48,7 @@ export const addETHTxWithdraw = ({ amount, originalAmount, paymentAddress, walle
   });
 };
 
-export const addERC20TxWithdraw = ({ amount, originalAmount, paymentAddress, walletAddress, tokenContractID, tokenId, burningTxId, currencyType  }) => {
+const addERC20TxWithdraw = ({ amount, originalAmount, paymentAddress, walletAddress, tokenContractID, tokenId, burningTxId, currencyType  }) => {
   if (!paymentAddress) return throw new Error('Missing paymentAddress');
   if (!tokenId) return throw new Error('Missing tokenId');
   if (!tokenContractID) return throw new Error('Missing tokenContractID');
@@ -72,6 +72,17 @@ export const addERC20TxWithdraw = ({ amount, originalAmount, paymentAddress, wal
     IncognitoTx: burningTxId,
     WalletAddress: walletAddress ?? paymentAddress,
   });
+};
+
+export const withdraw = (data) => {
+  const { isErc20Token, externalSymbol } = data;
+  if (isErc20Token) {
+    return addERC20TxWithdraw(data);
+  } else if (
+    externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH
+  ) {
+    return addETHTxWithdraw(data);
+  }
 };
 
 export const updatePTokenFee = ({ fee, paymentAddress  }) => {

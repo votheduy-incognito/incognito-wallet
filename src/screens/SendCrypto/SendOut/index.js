@@ -1,10 +1,9 @@
 import {CONSTANT_COMMONS, CONSTANT_EVENTS, CONSTANT_KEYS} from '@src/constants';
 import {getBalance as getTokenBalance} from '@src/redux/actions/token';
 import {
-  addERC20TxWithdraw,
-  addETHTxWithdraw,
   genCentralizedWithdrawAddress,
   updatePTokenFee,
+  withdraw,
 } from '@services/api/withdraw';
 import {getMinMaxWithdrawAmount} from '@services/api/misc';
 import {ExHandler} from '@services/exception';
@@ -20,6 +19,7 @@ import {change as rfOnChangeValue} from 'redux-form';
 import routeNames from '@src/router/routeNames';
 import {withdrawReceiversSelector} from '@src/redux/selectors/receivers';
 import {HEADER_TITLE_RECEIVERS} from '@src/redux/types/receivers';
+import LocalDatabase from '@utils/LocalDatabase';
 import Withdraw, {formName} from './Withdraw';
 
 class WithdrawContainer extends Component {
@@ -34,7 +34,7 @@ class WithdrawContainer extends Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.getMinMaxAmount();
 
     const {selectedPrivacy} = this.props;
@@ -233,32 +233,22 @@ class WithdrawContainer extends Component {
         feeForBurn,
       });
 
-      // ERC20
-      if (selectedPrivacy?.isErc20Token) {
-        await addERC20TxWithdraw({
-          amount,
-          originalAmount,
-          paymentAddress: remoteAddress,
-          walletAddress: selectedPrivacy?.paymentAddress,
-          tokenContractID: selectedPrivacy?.contractId,
-          tokenId: selectedPrivacy?.tokenId,
-          burningTxId: tx?.txId,
-          currencyType: selectedPrivacy?.currencyType,
-        });
-      } else if (
-        selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH
-      ) {
-        // ETH
-        await addETHTxWithdraw({
-          amount,
-          originalAmount,
-          paymentAddress: remoteAddress,
-          walletAddress: selectedPrivacy?.paymentAddress,
-          tokenId: selectedPrivacy?.tokenId,
-          burningTxId: tx?.txId,
-          currencyType: selectedPrivacy?.currencyType,
-        });
-      }
+      const data = {
+        amount,
+        originalAmount,
+        paymentAddress: remoteAddress,
+        walletAddress: selectedPrivacy?.paymentAddress,
+        tokenContractID: selectedPrivacy?.contractId,
+        tokenId: selectedPrivacy?.tokenId,
+        burningTxId: tx?.txId,
+        currencyType: selectedPrivacy?.currencyType,
+        isErc20Token: selectedPrivacy?.isErc20Token,
+        externalSymbol: selectedPrivacy?.externalSymbol,
+      };
+
+      await LocalDatabase.addWithdrawalData(data);
+      await withdraw(data);
+      await LocalDatabase.removeWithdrawalData(data.burningTxId);
 
       return tx;
     } catch (e) {
