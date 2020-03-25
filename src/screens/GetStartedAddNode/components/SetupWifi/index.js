@@ -5,7 +5,13 @@ import DeviceInfo from 'react-native-device-info';
 import {getTimeZone} from 'react-native-localize';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import {ButtonExtension, InputExtension as Input, Text, TouchableOpacity} from '@src/components/core';
+import {
+  ActivityIndicator,
+  Button,
+  InputExtension as Input,
+  Text,
+  TouchableOpacity
+} from '@src/components/core';
 import knownCode from '@src/services/exception/customError/code/knownCode';
 import NodeService from '@src/services/NodeService';
 import APIService from '@services/api/miner/APIService';
@@ -13,11 +19,12 @@ import Util from '@utils/Util';
 import {CustomError} from '@services/exception';
 import {PASS_HOSPOT} from 'react-native-dotenv';
 import LocalDatabase from '@utils/LocalDatabase';
-import Device from '@models/device';
 import {DEVICES} from '@src/constants/miner';
 import {CONSTANT_MINER} from '@src/constants';
 import clipboard from '@services/clipboard';
 import LongLoading from '@components/LongLoading/index';
+import {Icon} from 'react-native-elements';
+import {COLORS} from '@src/styles';
 import styles from '../../styles';
 
 export const TAG = 'SetupWifi';
@@ -74,8 +81,6 @@ class SetupWifi extends PureComponent {
   async getLastVerifyCode() {
     const lastVerifyCode = await LocalDatabase.getVerifyCode();
     this.setState({ lastVerifyCode });
-
-    console.debug('LAST VERIFY CODE', lastVerifyCode);
   }
 
   addStep(step) {
@@ -206,7 +211,7 @@ class SetupWifi extends PureComponent {
     }
 
     return (
-      <View style={styles.content}>
+      <View>
         <Input
           underlineColorAndroid="transparent"
           containerStyle={item}
@@ -285,10 +290,10 @@ class SetupWifi extends PureComponent {
       throw new CustomError(knownCode.node_can_not_connect_hotspot);
     }
 
+    await LocalDatabase.saveVerifyCode(verifyCode);
     await Util.delay(60);
     this.addStep({name: 'Check node hotspot'});
 
-    await LocalDatabase.saveVerifyCode(verifyCode);
     this.setState({ lastVerifyCode: verifyCode });
 
     if (Platform.OS === 'android') {
@@ -505,27 +510,43 @@ class SetupWifi extends PureComponent {
   };
 
   renderFooter = () => {
-    const { loading } = this.state;
+    const {steps, loading} = this.state;
     return (
       <View style={styles.footer}>
-        <ButtonExtension
+        <Button
           disabled={loading}
           loading={loading}
-          titleStyle={styles.textTitleButton}
-          buttonStyle={styles.button}
           onPress={this.handleNext}
-          title="Next"
+          title={steps.length > 0 ? 'Retry' : 'Next'}
         />
       </View>
     );
   };
+
+  renderStep(step, isLastStep) {
+    const {loading} = this.state;
+    return (
+      <View style={styles.log}>
+        { isLastStep && loading ? <ActivityIndicator style={styles.logIcon} size="small" /> : (
+          <Icon
+            containerStyle={styles.logIcon}
+            color={COLORS.primary}
+            size={14}
+            name="checkbox-blank-circle"
+            type="material-community"
+          />
+        )}
+        <Text style={!isLastStep ? styles.disabledText : null}>{step.name}</Text>
+      </View>
+    );
+  }
 
   renderLogs() {
     const { steps } = this.state;
     return (
       <View style={{ }}>
         <ScrollView
-          style={{ height: 100, marginHorizontal: 30, }}
+          style={{ height: 100 }}
           ref={ref => this.scrollView = ref}
           onContentSizeChange={() => {
             if (this.scrollView) {
@@ -535,9 +556,7 @@ class SetupWifi extends PureComponent {
           onPress={this.copyLogs}
         >
           <TouchableOpacity onPress={this.copyLogs}>
-            {steps.map(step => (
-              <Text style={{ marginTop: 10 }}>{step.name}</Text>
-            ))}
+            {steps.map((step, index) => this.renderStep(step, index === steps.length - 1))}
           </TouchableOpacity>
         </ScrollView>
       </View>
@@ -552,18 +571,16 @@ class SetupWifi extends PureComponent {
   };
 
   render() {
-    const { step } = this.state;
+    const {steps} = this.state;
     const rootCauseMessage = this.getErrorMessage();
 
     return (
       <View>
         <ScrollView>
           <Text style={styles.title2}>Connect Node to your home Wi-Fi</Text>
-          {this.renderContent()}
+          {steps.length > 0 ? this.renderLogs() : this.renderContent()}
           <Text style={styles.errorText}>{rootCauseMessage}</Text>
-          <Text>{step}</Text>
           {this.renderFooter()}
-          {this.renderLogs()}
         </ScrollView>
       </View>
     );

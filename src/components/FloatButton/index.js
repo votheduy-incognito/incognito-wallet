@@ -1,20 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {isIOS} from '@utils/platform';
-import {KeyboardAvoidingView, View} from 'react-native';
 import {Icon} from 'react-native-elements';
-import { TouchableOpacity, Text } from '../core';
+import { TouchableOpacity, Text, View } from '../core';
 import styled from './styles';
 
-const Wrapper = isIOS() ? KeyboardAvoidingView : View;
-
-const FloatButton = ({ onPress, label }) => {
+const FloatButton = ({ onPress, label, style }) => {
   return (
-    <Wrapper
-      contentContainerStyle={{ position: 'absolute', bottom: 0, left: 0 }}
-      style={{ position: 'absolute', bottom: 0, left: 0 }}
-      keyboardVerticalOffset={isIOS() ? 160 : 0}
-      behavior={isIOS() ? 'position' : undefined}
+    <View
+      style={[{ position: 'absolute', bottom: 0, left: 0 }, style]}
     >
       <TouchableOpacity
         style={styled.floatBtn}
@@ -25,13 +18,18 @@ const FloatButton = ({ onPress, label }) => {
         </View>
         <Text style={styled.text}>{label}</Text>
       </TouchableOpacity>
-    </Wrapper>
+    </View>
   );
 };
 
 FloatButton.propTypes = {
   onPress: PropTypes.func.isRequired,
   label: PropTypes.string.isRequired,
+  style: PropTypes.object,
+};
+
+FloatButton.defaultProps = {
+  style: null,
 };
 
 export default FloatButton;

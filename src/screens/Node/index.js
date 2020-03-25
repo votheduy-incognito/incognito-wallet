@@ -272,7 +272,7 @@ class Node extends BaseScreen {
   };
 
   handleAddNodePress=()=>{
-    this.goToScreen(routeNames.GetStaredMineStake);
+    this.goToScreen(routeNames.GetStaredAddNode);
   };
 
   handlePressRemoveDevice = (item) => {

@@ -17,7 +17,6 @@ export default {
   AddSelfNode: 'AddSelfNode',
   MineStack: 'MineStack',
   HomeStack: 'HomeStack',
-  GetStaredMineStake: 'GetStaredMineStake',
   GetStaredAddNode: 'GetStaredAddNode',
   Node: 'Node',
   AddWallScreen: 'AddWallScreen',
@@ -46,4 +45,5 @@ export default {
   WhyShield: 'WhyShield',
   FrequentReceiversForm: 'FrequentReceiversForm',
   FrequentReceivers: 'FrequentReceivers',
+  NodeHelp: 'NodeHelp',
 };

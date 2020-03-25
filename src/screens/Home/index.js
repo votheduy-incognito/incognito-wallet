@@ -111,7 +111,6 @@ const Home = ({ navigation }) => {
             <IconTextButton
               image={item.image}
               title={item.title}
-              desc={item.desc}
               disabled={isDisabled(item)}
               onPress={item.onPress || (() => goToScreen(item.route, item.params))}
             />
