@@ -60,7 +60,7 @@ class CryptoIcon extends Component {
   getSize = () => {
     const { size } = this.props;
 
-    return { width: Number(size), height: Number(size) };
+    return { width: Number(size-1.5), height: Number(size-1.5) };
   }
 
   getUri = async (defaultUri) => {
