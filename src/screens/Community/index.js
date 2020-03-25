@@ -1,4 +1,6 @@
 import React, { useRef, useState } from 'react';
+import PropTypes from 'prop-types';
+import { withNavigationFocus } from 'react-navigation';
 import {WebView} from 'react-native-webview';
 import {Image} from 'react-native';
 import {ActivityIndicator, TouchableOpacity, View} from '@components/core';
@@ -6,14 +8,22 @@ import { MAIN_WEBSITE } from '@src/constants/config';
 import chevronLeft from '@assets/images/icons/chevron-left-icon.png';
 import styles from './style';
 
-const Community = () => {
+const Community = ({ navigation, isFocused }) => {
   const webViewRef = useRef();
   const [loading, setLoading] = useState(true);
   const [backable, setBackable] = useState(false);
 
+  if (isFocused) {
+    const { uri: _uri } = navigation?.state?.params || {};
+
+    if (_uri) {
+      webViewRef?.current?.injectJavaScript(`location.href = '${_uri}';`);
+      navigation?.setParams({ uri: null });
+    }
+  }
+
   const goBack = () => {
     webViewRef.current.goBack();
-
     if (backable) {
       setBackable(false);
     }
@@ -28,7 +38,9 @@ const Community = () => {
   return (
     <View style={styles.container}>
       <WebView
-        onLoadEnd={() => setLoading(false)}
+        onLoadEnd={() => {
+          setLoading(false);
+        }}
         userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1"
         source={{ uri: MAIN_WEBSITE }}
         ref={webViewRef}
@@ -76,4 +88,9 @@ const Community = () => {
   );
 };
 
-export default Community;
+Community.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  isFocused: PropTypes.bool.isRequired,
+};
+
+export default withNavigationFocus(Community);

@@ -54,7 +54,10 @@ const pappItem = {
 const powerItem = {
   image: icPower,
   title: 'Power',
-  onPress: () => LinkingService.openUrl(CONSTANT_CONFIGS.NODE_URL),
+  route: ROUTE_NAMES.Community,
+  params: {
+    uri: CONSTANT_CONFIGS.NODE_URL,
+  },
 };
 
 const buttons = [
