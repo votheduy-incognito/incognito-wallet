@@ -6,7 +6,7 @@ const NodeHelp = () => {
   return (
     <ScrollView style={styles.container}>
       <Text style={[styles.title, styles.marginTop]}>
-        Important notes
+        IMPORTANT NOTES
       </Text>
       <View>
         <Text style={styles.title}>
@@ -29,10 +29,10 @@ const NodeHelp = () => {
       </View>
       <View style={{ paddingBottom: 60, marginTop: 20 }}>
         <Text style={styles.title}>
-        Troubleshoot
+          TROUBLESHOOT
         </Text>
-        <Text style={styles.text}>
-        What to do if you encounter one of the following error messages:
+        <Text style={[styles.title, styles.text]}>
+          What to do if you encounter one of the following error messages:
         </Text>
         <Text style={[styles.marginTop, styles.text]}>
           <Text style={styles.bold}>

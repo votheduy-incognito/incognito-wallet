@@ -8,6 +8,7 @@ const style = StyleSheet.create({
   text: {
     color: COLORS.lightGrey1,
     lineHeight: 26,
+    ...FONT.STYLE.normal,
   },
   title: {
     ...FONT.STYLE.bold,
