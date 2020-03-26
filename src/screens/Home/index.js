@@ -56,7 +56,7 @@ const powerItem = {
   title: 'Power',
   route: ROUTE_NAMES.Community,
   params: {
-    uri: CONSTANT_CONFIGS.NODE_URL,
+    uri: 'https://incognito.org/t/node/338',
   },
 };
 
