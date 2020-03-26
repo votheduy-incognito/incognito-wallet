@@ -118,16 +118,20 @@ class Node extends BaseScreen {
     this.renderNode = this.renderNode.bind(this);
   }
 
+  hasShowWelcomeNode = false;
+
   async componentDidMount() {
     const { navigation } = this.props;
     this.listener = navigation.addListener('didFocus', () => {
-      this.handleRefresh();
 
-      const { setupNode } = navigation?.state?.params || {};
+      const {setupNode} = navigation?.state?.params || this.props.navigation.dangerouslyGetParent()?.state?.params || {};
 
-      if (setupNode) {
+      if (setupNode && !this.hasShowWelcomeNode) {
+        this.hasShowWelcomeNode = true;
         this.setState({showWelcomeSetupNode: true});
       }
+
+      this.handleRefresh();
     });
 
     if (allTokens.length === 0) {

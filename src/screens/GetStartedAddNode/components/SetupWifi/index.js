@@ -291,7 +291,7 @@ class SetupWifi extends PureComponent {
     }
 
     await LocalDatabase.saveVerifyCode(verifyCode);
-    await Util.delay(60);
+    await Util.delay(180);
     this.addStep({name: 'Check node hotspot'});
 
     this.setState({ lastVerifyCode: verifyCode });

@@ -127,7 +127,7 @@ export default class Util {
          if(_.isNumber(delayToTry)){
            await Util.delay(delayToTry);
          }
-         return await Util.tryAtMost(promiseFunc, count - 1);
+         return await Util.tryAtMost(promiseFunc, count - 1, delayToTry);
        }
        return result;
      }

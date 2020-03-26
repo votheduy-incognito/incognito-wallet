@@ -32,6 +32,7 @@ class GetStartedAddNode extends BaseScreen {
       account: null,
       step: 0,
       hotspotSSID: '',
+      success: false,
     };
   }
 
@@ -54,6 +55,8 @@ class GetStartedAddNode extends BaseScreen {
 
   handleFinish = () => {
     this.setState({ success: false }, () => {
+      // Need to navigate to RootMiner to pass params
+      this.goToScreen(routeNames.RootMiner, {setupNode: true});
       this.goToScreen(routeNames.Node, {setupNode: true});
     });
   };
