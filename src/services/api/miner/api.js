@@ -1,6 +1,5 @@
-
-import { CONSTANT_MINER } from '@src/constants';
-import { API_MINER_URL, API_REQUEST_STAKE_URL, TRACK_LOG_URL } from 'react-native-dotenv';
+import { CONSTANT_MINER, CONSTANT_CONFIGS } from '@src/constants';
+import { API_MINER_URL, API_REQUEST_STAKE_URL } from 'react-native-dotenv';
 
 const API_URL = API_MINER_URL || '';
 export default class API {
@@ -14,6 +13,6 @@ export default class API {
   static REFRESH_TOKEN_API = `${API_URL}/refresh-token`;
   static UPDATE_PRODUCT_API = `${API_URL}/product`;
   static API_REQUEST_STAKE_URL= API_REQUEST_STAKE_URL;
-  static TRACK_LOG=`${TRACK_LOG_URL}/app-logs`;
-  static GET_LOG=`${TRACK_LOG_URL}/device`;
+  static TRACK_LOG=`${CONSTANT_CONFIGS.TRACK_LOG_URL}/app-logs`;
+  static GET_LOG=`${CONSTANT_CONFIGS.TRACK_LOG_URL}/device`;
 }
