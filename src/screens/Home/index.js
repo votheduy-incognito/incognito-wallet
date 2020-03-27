@@ -55,8 +55,8 @@ const powerItem = {
   image: icPower,
   title: 'Power',
   route: ROUTE_NAMES.Community,
-  params: {
-    uri: 'https://incognito.org/t/node/338',
+  onPress: () => {
+    LinkingService.openUrl(CONSTANT_CONFIGS.NODE_URL);
   },
 };
 
