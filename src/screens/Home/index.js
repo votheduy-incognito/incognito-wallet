@@ -56,7 +56,7 @@ const powerItem = {
   title: 'Power',
   route: ROUTE_NAMES.Community,
   onPress: () => {
-    LinkingService.openUrl(CONSTANT_CONFIGS.NODE_URL);
+    LinkingService.openUrl('https://node.incognito.org/payment.html?utm_source=app&utm_medium=homepage%20app&utm_campaign=pnode');
   },
 };
 
