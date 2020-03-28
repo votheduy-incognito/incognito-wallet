@@ -16,6 +16,7 @@ import {ExHandler} from '@services/exception';
 import {MESSAGES, MIN_INPUT, PRIORITY_LIST} from '@screens/Dex/constants';
 import {logEvent} from '@services/firebase';
 import {CONSTANT_EVENTS} from '@src/constants';
+import routeNames from '@src/router/routeNames';
 import SwapSuccessDialog from '../SwapSuccessDialog';
 import Input from '../Input';
 import TradeConfirm from '../TradeConfirm';
@@ -479,6 +480,16 @@ class Swap extends React.Component {
     );
   }
 
+  goToPriceHistory = () => {
+    const { inputToken, outputToken } = this.state;
+    const pairName = inputToken?.symbol && outputToken?.symbol && `${inputToken?.symbol}-${outputToken?.symbol}`;
+
+    if (pairName) {
+      const { navigation } = this.props;
+      navigation.navigate(routeNames.PriceChartCrypto, { pair: pairName });
+    }
+  }
+
   render() {
     const { isLoading } = this.props;
     const {
@@ -525,6 +536,9 @@ class Swap extends React.Component {
                 onPress={this.swap}
               />
             </View>
+            <TouchableOpacity style={mainStyle.priceHistoryContainer} onPress={this.goToPriceHistory}>
+              <Text style={mainStyle.priceHistoryText}>Price history</Text>
+            </TouchableOpacity>
           </View>
         </View>
         <SwapSuccessDialog

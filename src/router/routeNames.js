@@ -52,4 +52,5 @@ export default {
   UniswapHistoryDetail: 'UniswapHistoryDetail',
   WhySend: 'WhySend',
   WhyReceive: 'WhyReceive'
+  PriceChartCrypto: 'PriceChartCrypto',
 };
