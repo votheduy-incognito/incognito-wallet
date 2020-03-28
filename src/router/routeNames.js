@@ -50,4 +50,5 @@ export default {
   pUniswap: 'pUniswap',
   UniswapHistory: 'UniswapHistory',
   UniswapHistoryDetail: 'UniswapHistoryDetail',
+  PriceChartCrypto: 'PriceChartCrypto',
 };

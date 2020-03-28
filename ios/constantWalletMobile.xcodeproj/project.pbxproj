@@ -12,6 +12,7 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		200D83612429FDB300A16696 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200D83602429FDB300A16696 /* File.swift */; };
 		20B559AF22C393B10079FC06 /* Gomobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B559AE22C393B10079FC06 /* Gomobile.m */; };
 		227D14BDEE8B5572A5757F41 /* libPods-constantWalletMobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EFC1329943BE2D10F4F58719 /* libPods-constantWalletMobile.a */; };
 		36F7D5CE970D4799A075B466 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F36E2A27EA945A6BA652F08 /* libRNSVG.a */; };
@@ -94,6 +95,7 @@
 		197F2DDD8A55EC308CB3AD47 /* Pods-constantWalletMobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-constantWalletMobile.debug.xcconfig"; path = "Target Support Files/Pods-constantWalletMobile/Pods-constantWalletMobile.debug.xcconfig"; sourceTree = "<group>"; };
 		1B5521124109464CB94BB248 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		1FE9C669E1BF469DA6A28690 /* libRNRandomBytes-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNRandomBytes-tvOS.a"; sourceTree = "<group>"; };
+		200D83602429FDB300A16696 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		20160FCB034340829E942C14 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		20B559AD22C393920079FC06 /* Gomobile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Gomobile.h; sourceTree = "<group>"; };
 		20B559AE22C393B10079FC06 /* Gomobile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Gomobile.m; sourceTree = "<group>"; };
@@ -321,6 +323,7 @@
 			isa = PBXGroup;
 			children = (
 				7144D81B24373E68005224F2 /* Gomobile.framework */,
+				200D83602429FDB300A16696 /* File.swift */,
 				A7ED6691231E7AA600632177 /* game.mp3 */,
 				FE52DCEE22DC685E003203EF /* AutonomousZMQ.framework */,
 				FE6F885F22DC3B0E0009C5AA /* ZMQ */,
@@ -648,6 +651,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				20B559AF22C393B10079FC06 /* Gomobile.m in Sources */,
+				200D83612429FDB300A16696 /* File.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);

@@ -160,3 +160,17 @@ export const backupStyle = StyleSheet.create({
     color: COLORS.white
   },
 });
+
+export const priceChartStyle = StyleSheet.create({
+  textContainer: {
+    minWidth: 100,
+  },
+  title: {
+    fontSize: 14,
+    color: COLORS.white,
+    ...FONT.STYLE.medium,
+  },
+  icon: {
+    color: COLORS.white
+  }
+});
