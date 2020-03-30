@@ -9,6 +9,7 @@ import icInvent from '@assets/images/icons/ic_invent_btn.png';
 import icPower from '@assets/images/icons/ic_power.png';
 import icBuy from '@assets/images/icons/ic_buy_prv.png';
 import icPapp from '@assets/images/icons/ic_papp.png';
+import icUniswap from '@assets/images/icons/ic_uniswap.png';
 import IconTextButton from '@screens/Home/IconTextButton';
 import ROUTE_NAMES from '@routers/routeNames';
 import Feedback from '@src/components/Feedback';
@@ -61,6 +62,13 @@ const powerItem = {
     LinkingService.openUrl('https://node.incognito.org/payment.html?utm_source=app&utm_medium=homepage%20app&utm_campaign=pnode');
   },
 };
+
+const pUniswapItem = {
+  image: icUniswap,
+  title: 'pUniswap',
+  route: ROUTE_NAMES.pUniswap,
+};
+
 const buttons = [
   {
     image: icBuy,
@@ -85,7 +93,8 @@ const buttons = [
     route: ROUTE_NAMES.Dex,
   },
   pappItem,
-  powerItem
+  powerItem,
+  pUniswapItem,
 ];
 
 const Home = ({ navigation }) => {
@@ -101,6 +110,10 @@ const Home = ({ navigation }) => {
     }
 
     if ((item === receiveItem || item === shieldItem) && dexUtil.isDEXWithdrawAccount(account.name)) {
+      return true;
+    }
+
+    if (item === pUniswapItem && global.isMainnet) {
       return true;
     }
 
