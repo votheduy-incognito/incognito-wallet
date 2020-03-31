@@ -1,20 +1,7 @@
-import axios from 'axios';
 import {CONSTANT_CONFIGS, TRADING} from '@src/constants';
 import TradingToken from '@models/tradingToken';
 import TradingQuote from '@models/tradingQuote';
 import http from '@services/http';
-
-const instance = axios.create({
-  baseURL: CONSTANT_CONFIGS.OX_EXCHANGE_URL,
-});
-
-instance.interceptors.response.use(res => {
-  const result = res?.data;
-
-  return Promise.resolve(result);
-}, errorData => {
-  return Promise.reject(errorData?.response?.data);
-});
 
 /**
  * Get all tradable tokens on 0x exchange
@@ -36,28 +23,61 @@ export async function get0xTokens() {
 
 /**
  * Get quote of a trading pair on 0x exchange
- * @param {Object} sellToken The ERC20 token
- * @param {Number} sellAmount The amount of sellToken (in sellToken units) you want to send.
- * @param {Object} buyToken The ERC20 token
+ * @param {Object<{
+ *   sellToken: Object,
+ *   sellAmount: String,
+ *   buyToken: Object,
+ *   slippagePercentage: String,
+ * }>}
  * @returns {Promise<TradingQuote>}
  */
-export async function get0xQuote({sellToken, sellAmount, buyToken}) {
-  const url = `swap/v0/quote?sellToken=${sellToken.symbol}&buyToken=${buyToken.symbol}&sellAmount=${sellAmount}`;
-  const data = await instance.get(url);
+export async function get0xQuote({
+  sellToken,
+  sellAmount,
+  buyToken,
+  slippagePercentage,
+}) {
+  const url = generateQuoteURL({
+    sellToken: sellToken.symbol,
+    sellAmount,
+    buyToken: buyToken.symbol,
+    slippagePercentage,
+  });
+
+  console.debug('URL', url);
+
+  const data = await http.get(url);
   return new TradingQuote({
-    address: data.to,
+    to: data.to,
     price: data.price,
     amount: data.buyAmount,
+    data: data.data,
   });
 }
 
 /**
  * Get quote of a trading pair on 0x exchange
- * @param {String} sellToken The ERC20 token address or symbol of the token you want to send. "ETH" can be provided as a valid sellToken.
- * @param {Number} sellAmount The amount of sellToken (in sellToken units) you want to send.
- * @param {String} buyToken The ERC20 token address or symbol of the token you want to receive.
+ * @param {Object<{
+ *   sellToken: String,
+ *   sellAmount: String,
+ *   buyToken: String,
+ *   slippagePercentage: String,
+ * }>}
  * @returns {String}
  */
-export function generateQuoteURL({sellToken, sellAmount, buyToken}) {
-  return `${CONSTANT_CONFIGS.OX_EXCHANGE_URL}swap/v0/quote?sellToken=${sellToken}&buyToken=${buyToken}&sellAmount=${sellAmount}`;
+export function generateQuoteURL({
+  sellToken,
+  sellAmount,
+  buyToken,
+  slippagePercentage
+}) {
+  let url = `/uniswap/get0xRate?SrcTokenName=${sellToken}&DestTokenName=${buyToken}&Amount=${sellAmount}`;
+
+  if (slippagePercentage) {
+    url = `${url}&SlippageRate=${slippagePercentage}`;
+  } else {
+    url = `${url}&SlippageRate=${0.01}`;
+  }
+
+  return url;
 }

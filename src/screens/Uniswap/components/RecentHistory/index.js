@@ -39,7 +39,7 @@ class RecentHistory extends React.PureComponent {
       return null;
     }
 
-    const allHistories = _.orderBy(histories, ['updatedAt', 'lockTime'], ['desc', 'desc']).slice(0, LIMIT_HISTORY);
+    const allHistories = _.orderBy(histories, ['lockTime', 'updatedAt'], ['desc', 'desc']).slice(0, LIMIT_HISTORY);
 
     return (
       <View style={[mainStyle.content, stylesheet.recentHistory]}>
