@@ -9,6 +9,7 @@ import stylesheet from './style';
 import TransactionID from './TransactionID';
 
 const DepositHistory = ({
+  id,
   dbId,
   txId,
   amount,
@@ -46,7 +47,7 @@ const DepositHistory = ({
       <Text style={[stylesheet.textRight, stylesheet[status]]} numberOfLines={2}>
         {
           _.capitalize(
-            DepositHistoryModel.currentDeposit?.id === history.id ? 'pending' :
+            DepositHistoryModel.currentDeposit?.id === id ? 'pending' :
               status
           )}
       </Text>
@@ -63,7 +64,7 @@ const DepositHistory = ({
       <Text style={stylesheet.field}>FROM</Text>
       <Text style={stylesheet.textRight} numberOfLines={2}>{account}</Text>
     </View>
-    {status === TRANSFER_STATUS.INTERRUPTED && DepositHistoryModel.currentDeposit?.id !== history.id &&
+    {status === TRANSFER_STATUS.INTERRUPTED && DepositHistoryModel.currentDeposit?.id !== id &&
     <Button style={stylesheet.button} title="Try again" onPress={onDeposit} />
     }
   </View>

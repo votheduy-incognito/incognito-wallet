@@ -10,12 +10,11 @@ import {Divider} from 'react-native-elements';
 import ExchangeRate from '@screens/Uniswap/components/ExchangeRate';
 import {ExHandler} from '@services/exception';
 import {MESSAGES, MIN_INPUT,KYBER_TRADE_ABI, KYBER_TRADE_ADDRESS, OX_TRADE_ABI, OX_TRADE_ADDRESS} from '@screens/Uniswap/constants';
-import {execute, getQuote} from '@services/trading';
-import {generateQuoteURL} from '@services/trading/0x';
-import {logEvent} from '@services/firebase';
-import CONSTANT_EVENTS from '@src/constants/events';
+import {execute, execute0x, getQuote} from '@services/trading';
+import {generateQuoteURL, get0xQuote} from '@services/trading/0x';
 import {TradeHistory} from '@models/uniswapHistory';
 import TradingToken from '@models/tradingToken';
+import TradeConfirm from '../TradeConfirm';
 import SwapSuccessDialog from '../SwapSuccessDialog';
 import Input from '../Input';
 import {mainStyle} from '../../style';
@@ -25,6 +24,7 @@ class Swap extends React.Component {
     super(props);
     this.state = {
       ...props.tradeParams,
+      showTradeConfirm: false,
     };
 
     this.getPairQuoteData = _.debounce(this.getPairQuoteData.bind(this), 500);
@@ -184,6 +184,13 @@ class Swap extends React.Component {
 
   async getPairQuote() {
     this.setState({ loadingOutput: true });
+
+    const {inputError} = this.state;
+
+    if (inputError === 'Asset liquidity is insufficient.') {
+      this.setState({ inputError: '' });
+    }
+
     this.getPairQuoteData();
   }
 
@@ -197,6 +204,12 @@ class Swap extends React.Component {
         protocol: outputToken?.protocol,
       });
 
+      const {inputError} = this.state;
+
+      if (inputError === 'Asset liquidity is insufficient.') {
+        this.setState({ inputError: '' });
+      }
+
       const { amount: outputValue, price } = quote;
       this.setState({ outputValue, price });
     } catch (error) {
@@ -206,30 +219,34 @@ class Swap extends React.Component {
     }
   }
 
-  trade0x = async () => {
+  trade0x = async (stopPricePercent = 0.01) => {
     const {dexMainAccount, wallet} = this.props;
     const {inputToken, inputValue, outputToken} = this.state;
 
     const originalValue = convertUtil.toDecimals(inputValue, inputToken).toString();
+    const {to: quoteTo, data: quoteData} = await get0xQuote({
+      sellToken: inputToken,
+      sellAmount: originalValue,
+      buyToken: outputToken,
+      protocol: outputToken?.protocol,
+      slippagePercentage: (stopPricePercent / 100),
+    });
 
     const data = {
       sourceToken: inputToken.address,
       sourceQuantity: originalValue,
       destToken: outputToken.address,
-      quoteUrl: generateQuoteURL({
-        buyToken: outputToken.symbol,
-        sellToken: inputToken.symbol,
-        sellAmount: originalValue,
-      }),
       tradeABI: OX_TRADE_ABI,
       tradeDeployedAddress: OX_TRADE_ADDRESS,
       privateKey: dexMainAccount.PrivateKey,
+      quoteTo,
+      quoteData,
     };
 
     const res = await accountService.sign0x(wallet, dexMainAccount, data);
     const {signBytes, input, timestamp} = res;
 
-    return execute({
+    return execute0x({
       timestamp,
       icAddress: dexMainAccount.PaymentAddress,
       signBytes,
@@ -242,9 +259,9 @@ class Swap extends React.Component {
     });
   };
 
-  tradeKyber = async () => {
+  tradeKyber = async (stopPrice) => {
     const {dexMainAccount, wallet} = this.props;
-    const {inputToken, inputValue, outputToken, outputValue} = this.state;
+    const {inputToken, inputValue, outputToken} = this.state;
     const data = {
       sourceToken: inputToken.address,
       sourceQuantity: inputValue.toString(),
@@ -257,7 +274,7 @@ class Swap extends React.Component {
       tradeABI: KYBER_TRADE_ABI,
       tradeDeployedAddress: KYBER_TRADE_ADDRESS,
       privateKey: dexMainAccount.PrivateKey,
-      expectRate: outputValue.toString(),
+      expectRate: convertUtil.toDecimals(stopPrice, outputToken).toString(),
     };
 
     const res = await accountService.signKyber(wallet, dexMainAccount, data);
@@ -276,12 +293,14 @@ class Swap extends React.Component {
     });
   };
 
-  async tradePToken() {
+  async tradePToken(stopPrice, stopPricePercent) {
     const {outputToken} = this.state;
 
-    let tradeMethod = outputToken.is0x() ? this.trade0x : this.tradeKyber;
+    if (outputToken.is0x()) {
+      return this.trade0x(stopPricePercent);
+    }
 
-    return tradeMethod();
+    return this.tradeKyber(stopPrice);
   }
 
   swapTokens = () => {
@@ -299,7 +318,25 @@ class Swap extends React.Component {
     return onGetBalance(token);
   };
 
-  trade = async () => {
+  showTradeConfirm = () => {
+    const {
+      sending,
+      balance,
+      inputToken,
+      inputValue,
+    } = this.state;
+    if (sending) {
+      return;
+    }
+
+    if (balance < inputValue) {
+      return this.setState({ tradeError: MESSAGES.NOT_ENOUGH_BALANCE_TO_TRADE(inputToken.symbol) });
+    }
+
+    this.setState({ showTradeConfirm: true });
+  };
+
+  trade = async (stopPrice, stopPricePercent) => {
     const {
       sending,
       balance,
@@ -323,21 +360,7 @@ class Swap extends React.Component {
         return this.setState({ tradeError: MESSAGES.NOT_ENOUGH_BALANCE_TO_TRADE(inputToken.symbol) });
       }
 
-      await logEvent(CONSTANT_EVENTS.TRADE_UNISWAP, {
-        inputTokenId: inputToken.id,
-        inputTokenSymbol: inputToken.symbol,
-        outputTokenId: outputToken.id,
-        outputTokenSymbol: outputToken.symbol,
-      });
-
-      result = await this.tradePToken();
-
-      await logEvent(CONSTANT_EVENTS.TRADE_UNISWAP_SUCCESS, {
-        inputTokenId: inputToken.id,
-        inputTokenSymbol: inputToken.symbol,
-        outputTokenId: outputToken.id,
-        outputTokenSymbol: outputToken.symbol,
-      });
+      result = await this.tradePToken(stopPrice, stopPricePercent);
 
       const history = new TradeHistory({
         id: result,
@@ -349,15 +372,8 @@ class Swap extends React.Component {
       });
       history.status = 'pending';
       onAddHistory(history);
-      this.setState({ showSwapSuccess: true });
+      this.setState({ showSwapSuccess: true, showTradeConfirm: false, });
     } catch (error) {
-      await logEvent(CONSTANT_EVENTS.TRADE_UNISWAP_FAILED, {
-        inputTokenId: inputToken.id,
-        inputTokenSymbol: inputToken.symbol,
-        outputTokenId: outputToken.id,
-        outputTokenSymbol: outputToken.symbol,
-      });
-
       this.setState({ tradeError: new ExHandler(error).getMessage(MESSAGES.TRADE_ERROR) });
     } finally {
       this.setState({ sending: false });
@@ -469,6 +485,7 @@ class Swap extends React.Component {
       showSwapSuccess,
       inputError,
       loadingOutput,
+      showTradeConfirm,
     } = this.state;
     const {
       isLoading,
@@ -486,6 +503,7 @@ class Swap extends React.Component {
                 title="Trade"
                 style={[mainStyle.button]}
                 disabled={
+                  sending ||
                   inputError ||
                   !outputValue ||
                   outputValue <= 0 ||
@@ -493,9 +511,7 @@ class Swap extends React.Component {
                   loadingOutput
                 }
                 disabledStyle={mainStyle.disabledButton}
-                onPress={this.trade}
-                isAsync={sending}
-                isLoading={sending}
+                onPress={this.showTradeConfirm}
               />
             </View>
           </View>
@@ -507,6 +523,16 @@ class Swap extends React.Component {
           outputValue={outputValue}
           showSwapSuccess={showSwapSuccess}
           closeSuccessDialog={this.closeSuccessDialog}
+        />
+        <TradeConfirm
+          inputToken={inputToken}
+          inputValue={inputValue}
+          outputToken={outputToken}
+          outputValue={outputValue}
+          onClose={() => this.setState({ showTradeConfirm: false, tradeError: null })}
+          onTrade={this.trade}
+          visible={showTradeConfirm}
+          sending={sending}
         />
       </View>
     );
@@ -521,7 +547,6 @@ Swap.propTypes = {
   tokens: PropTypes.array.isRequired,
   tradeParams: PropTypes.object.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  scAddress: PropTypes.string.isRequired,
 };
 
 export default Swap;

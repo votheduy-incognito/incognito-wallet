@@ -79,9 +79,7 @@ class UniswapHistory extends React.Component {
     const { histories } = this.props;
     const { isFetching } = this.state;
 
-    const allHistories = _.orderBy([...histories], ['updatedAt'], ['desc']);
-
-    console.debug('HISTORIES', allHistories, histories);
+    const allHistories = _.orderBy(histories, ['lockTime', 'updatedAt'], ['desc', 'desc']);
 
     return (
       <View style={stylesheet.container}>

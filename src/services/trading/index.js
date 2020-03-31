@@ -159,6 +159,29 @@ export async function execute({
   });
 }
 
+/**
+ * Execute trading
+ * @param {String} timestamp
+ * @param {String} signBytes
+ * @param {String} dAppAddress Smart contract address
+ * @param {String} input
+ * @returns {Promise<String>}
+ */
+export async function execute0x({
+  timestamp,
+  signBytes,
+  dAppAddress,
+  input,
+}) {
+  const url = '/uniswap/execute0x';
+  return http.post(url, {
+    'Timestamp': timestamp,
+    'SignBytes': signBytes,
+    'DappAddress': dAppAddress,
+    'Input': input,
+  });
+}
+
 export async function getRequest(id) {
   const res = await http.get(`uniswap/getUniswapById?id=${id}`);
 

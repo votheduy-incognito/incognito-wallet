@@ -482,10 +482,9 @@ export default class Account {
   }
 
   static generateIncognitoContractAddress(wallet, account) {
-    const indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
-    return wallet.MasterAccount.child[
-      indexAccount
-    ].generateIncognitoContractAddress(account.PrivateKey);
+    return global.generateIncognitoContractAddress(JSON.stringify({
+      privateKey: account.PrivateKey,
+    }));
   }
 
   static sign0x(wallet, account, {
@@ -494,7 +493,8 @@ export default class Account {
     sourceTokenName,
     destToken,
     destTokenName,
-    quoteUrl,
+    quoteTo,
+    quoteData,
     tradeABI,
     tradeDeployedAddress,
     privateKey,
@@ -508,7 +508,8 @@ export default class Account {
       sourceTokenName,
       destToken,
       destTokenName,
-      quoteUrl,
+      quoteTo,
+      quoteData,
       tradeABI,
       tradeDeployedAddress,
       privateKey,
