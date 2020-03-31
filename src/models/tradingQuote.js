@@ -6,6 +6,8 @@ class TradingQuote {
 
     this.price = json.price;
     this.amount = json.amount;
+    this.to = json.to;
+    this.data = json.data;
   }
 }
 

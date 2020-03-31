@@ -49,11 +49,6 @@ const ETH_TOKEN_ID = isMainnet ?
   'ffd8d42dc40a8d166ea4848baf8b5f6e912ad79875f4373070b59392b1756c8f' :
   'ffd8d42dc40a8d166ea4848baf8b5f6e9fe0e9c30d60062eb7d44a8df9e00854';
 
-const OX_EXCHANGE_URL_MAINNET = 'https://api.0x.org/';
-const OX_EXCHANGE_URL_TESTNET = 'https://kovan.api.0x.org/';
-
-const OX_EXCHANGE_URL = isMainnet ? OX_EXCHANGE_URL_MAINNET : OX_EXCHANGE_URL_TESTNET;
-
 export default {
   isMainnet,
   CRYPTO_ICON_URL,
@@ -73,6 +68,5 @@ export default {
   NODE_URL,
   TRACK_LOG_URL,
   MAIN_WEBSITE,
-  OX_EXCHANGE_URL,
   ETH_TOKEN_ID,
 };

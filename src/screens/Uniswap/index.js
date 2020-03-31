@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {DEX} from '@utils/dex';
+import dexUtil from '@utils/dex';
 import {ExHandler} from '@services/exception';
 import {accountSeleclor, selectedPrivacySeleclor} from '@src/redux/selectors';
 import {getAllTradingTokens} from '@services/trading';
@@ -8,7 +8,6 @@ import {useNavigation} from 'react-navigation-hooks';
 import accountService from '@services/wallet/accountService';
 import {addHistory, getHistories, updateHistory, getHistoryStatus} from '@src/redux/actions/uniswap';
 import {ActivityIndicator} from '@components/core/index';
-import FullScreenLoading from '@components/FullScreenLoading/index';
 import Uniswap from './Uniswap';
 
 const UniswapContainer = () => {
@@ -28,8 +27,9 @@ const UniswapContainer = () => {
 
   const loadAccount = async () => {
     const accounts = await wallet.listAccount();
-    const dexMainAccount = accounts.find(item => item.AccountName === DEX.MAIN_ACCOUNT);
-    const dexWithdrawAccount = accounts.find(item => item.AccountName === DEX.WITHDRAW_ACCOUNT);
+
+    const dexMainAccount = accounts.find(item => dexUtil.isDEXMainAccount(item.AccountName));
+    const dexWithdrawAccount = accounts.find(item => dexUtil.isDEXWithdrawAccount(item.AccountName));
     setDexMainAccount(dexMainAccount);
     setDexWithdrawAccount(dexWithdrawAccount);
     setAccounts(accounts);
