@@ -1,11 +1,11 @@
 import type from '@src/redux/types/token';
-import { unionBy, remove } from 'lodash';
+import {unionBy, remove} from 'lodash';
 
 const initialState = {
   followed: [],
   pTokens: null,
   internalTokens: null,
-  isGettingBalance: []
+  isGettingBalance: [],
 };
 
 const setToken = (list, token) => {
@@ -15,7 +15,7 @@ const setToken = (list, token) => {
     if (foundIndex >= 0) {
       newList[foundIndex] = token;
     }
-  } catch(e) {
+  } catch (e) {
     throw new Error('Save token failed');
   }
   return newList;
@@ -25,7 +25,7 @@ const removeTokenById = (list, tokenId) => {
   let newList = [...list];
   try {
     newList = remove(newList, t => t.id === tokenId);
-  } catch(e) {
+  } catch (e) {
     throw new Error('Remove token failed');
   }
   return newList;
@@ -35,14 +35,14 @@ const setBulkToken = (list, tokens) => {
   let newList = [...list];
   try {
     newList = unionBy(tokens, list, 'id');
-  } catch(e) {
+  } catch (e) {
     throw new Error('Save tokens failed');
   }
   return newList;
 };
 
 const setListToken = (list, tokens) => {
-  const newTokens =  tokens?.map(token => {
+  const newTokens = tokens?.map(token => {
     const cachedToken = list?.find(t => t.id === token.id);
 
     // if cached token (in redux store) has its amount, keep it!
@@ -82,38 +82,54 @@ const reducer = (state = initialState, action) => {
       ...state,
       followed: newList,
     };
-  case type.GET_BALANCE: 
+  case type.GET_BALANCE:
     return {
       ...state,
-      isGettingBalance: setGettingBalance(state.isGettingBalance, action.data)
+      isGettingBalance: setGettingBalance(
+        state.isGettingBalance,
+        action.data,
+      ),
     };
-  case type.GET_BALANCE_FINISH: 
+  case type.GET_BALANCE_FINISH:
     return {
       ...state,
-      isGettingBalance: removeGettingBalance(state.isGettingBalance, action.data)
+      isGettingBalance: removeGettingBalance(
+        state.isGettingBalance,
+        action.data,
+      ),
     };
   case type.REMOVE_BY_ID:
     newList = removeTokenById(state.followed, action.data);
     return {
       ...state,
-      followed: newList
+      followed: newList,
     };
   case type.SET_LIST:
     newList = setListToken(state.followed, action.data);
     return {
       ...state,
-      followed: newList
-    }; 
+      followed: newList,
+    };
   case type.SET_PTOKEN_LIST:
     return {
       ...state,
-      pTokens: setListToken(state.followed, action.data)
-    }; 
+      pTokens: setListToken(state.followed, action.data),
+    };
   case type.SET_INTERNAL_LIST:
     return {
       ...state,
-      internalTokens: setListToken(state.followed, action.data)
-    }; 
+      internalTokens: setListToken(state.followed, action.data),
+    };
+  case type.ADD_FOLLOW_TOKEN_SUCCESS: {
+    return {
+      ...state,
+    };
+  }
+  case type.ADD_FOLLOW_TOKEN_FAIL: {
+    return {
+      ...state,
+    };
+  }
   default:
     return state;
   }

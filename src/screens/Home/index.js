@@ -12,10 +12,8 @@ import icPapp from '@assets/images/icons/ic_papp.png';
 import icUniswap from '@assets/images/icons/ic_uniswap.png';
 import IconTextButton from '@screens/Home/IconTextButton';
 import ROUTE_NAMES from '@routers/routeNames';
+import {withRoundHeaderLayout} from '@src/hoc';
 import Feedback from '@src/components/Feedback';
-
-import { withRoundHeaderLayout } from '@src/hoc';
-
 import Card from '@components/Card';
 import {BIG_COINS} from '@screens/Dex/constants';
 import {useSelector} from 'react-redux';
@@ -39,7 +37,7 @@ const receiveItem = {
   desc: 'anonymously',
   route: ROUTE_NAMES.ReceiveCoin,
 };
-const shieldItem =  {
+const shieldItem = {
   image: icShield,
   title: 'Shield',
   desc: 'your crypto',
@@ -95,19 +93,22 @@ const buttons = [
   pUniswapItem,
 ];
 
-const Home = ({ navigation }) => {
+const Home = ({navigation}) => {
   const account = useSelector(accountSeleclor.defaultAccount);
 
   const goToScreen = (route, params) => {
     navigation.navigate(route, params);
   };
 
-  const isDisabled = (item) => {
+  const isDisabled = item => {
     if (item === sendItem && dexUtil.isDEXMainAccount(account.name)) {
       return true;
     }
 
-    if ((item === receiveItem || item === shieldItem) && dexUtil.isDEXWithdrawAccount(account.name)) {
+    if (
+      (item === receiveItem || item === shieldItem) &&
+      dexUtil.isDEXWithdrawAccount(account.name)
+    ) {
       return true;
     }
 
@@ -140,7 +141,7 @@ const Home = ({ navigation }) => {
   return (
     <Card style={styles.container}>
       <View style={styles.btnContainer}>
-        {buttons.map((item) => (
+        {buttons.map(item => (
           <View style={styles.btn} key={item.title}>
             <IconTextButton
               image={item.image}
@@ -149,8 +150,7 @@ const Home = ({ navigation }) => {
               onPress={item.onPress || (() => goToScreen(item.route, item.params))}
             />
           </View>
-        )
-        )}
+        ))}
         <Feedback />
       </View>
     </Card>

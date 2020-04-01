@@ -2,9 +2,15 @@ import React from 'react';
 import {View} from '@components/core';
 import SettingIcon from '@components/SettingIcon/index';
 import AccountSelect from '@screens/Wallet/AccountSelect';
+import {NotificationIcon} from '@src/components/Icons';
+import {useSelector} from 'react-redux';
+import {dataNotificationsSelector} from '@src/screens/Notification/Notification.selector';
+import withFCM from '@src/screens/Notification/Notification.withFCM';
+import {compose} from 'recompose';
 import styles from './style';
 
 const withTopRoundHeaderLayout = WrappedComp => props => {
+  const {isReadAll} = useSelector(dataNotificationsSelector);
   return (
     <View style={styles.container}>
       <View style={styles.specialBg} />
@@ -12,6 +18,7 @@ const withTopRoundHeaderLayout = WrappedComp => props => {
         <View style={styles.account}>
           <AccountSelect />
         </View>
+        <NotificationIcon isReadAll={isReadAll} />
         <SettingIcon />
       </View>
       <View style={styles.content}>
@@ -21,5 +28,4 @@ const withTopRoundHeaderLayout = WrappedComp => props => {
   );
 };
 
-
-export default withTopRoundHeaderLayout;
+export default compose(withFCM, withTopRoundHeaderLayout);

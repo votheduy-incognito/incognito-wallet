@@ -2,7 +2,7 @@ import axios from 'axios';
 import {CONSTANT_CONFIGS, CONSTANT_KEYS} from '@src/constants';
 import Log from '@src/services/log';
 import storageService from '@services/storage';
-import { CustomError, ErrorCode, ExHandler } from './exception';
+import {CustomError, ErrorCode, ExHandler} from './exception';
 
 const HEADERS = {'Content-Type': 'application/json'};
 const TIMEOUT = 20000;
@@ -13,8 +13,8 @@ const instance = axios.create({
   timeout: TIMEOUT,
   headers: {
     ...HEADERS,
-    Authorization: ''
-  }
+    Authorization: '',
+  },
 });
 
 let renewToken = null;
@@ -22,7 +22,9 @@ let pendingSubscribers = [];
 let isAlreadyFetchingAccessToken = false;
 
 function onAccessTokenFetched(accessToken) {
-  pendingSubscribers = pendingSubscribers.filter(callback => callback(accessToken));
+  pendingSubscribers = pendingSubscribers.filter(callback =>
+    callback(accessToken),
+  );
 }
 
 function addSubscriber(callback) {
@@ -30,80 +32,79 @@ function addSubscriber(callback) {
 }
 
 // Add a request interceptor
-instance.interceptors.request.use(config => {
-  Log.log(`http ${config?.method} ${config?.baseURL}/${config?.url}`)
-    .logDev(config);
+instance.interceptors.request.use(
+  config => {
+    return {
+      ...config,
+      headers: {
+        ...config.headers,
+        Authorization: 'Bearer ' + currentAccessToken,
+      },
+    };
+  },
+  error => {
+    return Promise.reject(error);
+  },
+);
 
-  return {
-    ...config,
-    headers: {
-      ...config.headers,
-      Authorization: 'Bearer ' + currentAccessToken,
+instance.interceptors.response.use(
+  res => {
+    const config = res?.config;
+    const result = res?.data?.Result;
+    return Promise.resolve(result);
+  },
+  errorData => {
+    const errResponse = errorData?.response;
+    const originalRequest = errorData?.config;
+
+    // can not get response, alert to user
+    if (errorData?.isAxiosError && !errResponse) {
+      return new ExHandler(
+        new CustomError(ErrorCode.network_make_request_failed),
+      ).throw();
     }
-  };
-}, error => {
-  Log.log('http request error', error?.message)
-    .logDev(error);
 
-  return Promise.reject(error);
-});
+    // Unauthorized
+    if (errResponse?.status === 401) {
+      Log.log('Token was expired');
 
-instance.interceptors.response.use(res => {
-  const config = res?.config;
-  const result = res?.data?.Result;
-
-  Log.logDev(`http response ${config?.url}`, result);
-
-  return Promise.resolve(result);
-}, errorData => {
-  const errResponse = errorData?.response;
-  const originalRequest = errorData?.config;
-
-  Log.log(`http respone error ${originalRequest?.method} ${originalRequest?.url}`)
-    .logDev(errorData, errResponse?.data);
-
-  // can not get response, alert to user
-  if (errorData?.isAxiosError && !errResponse) {
-    return new ExHandler(new CustomError(ErrorCode.network_make_request_failed)).throw();
-  }
-
-  // Unauthorized
-  if (errResponse?.status === 401) {
-    Log.log('Token was expired');
-
-    if (!isAlreadyFetchingAccessToken) {
-      isAlreadyFetchingAccessToken = true;
-      if (typeof renewToken === 'function') {
-        renewToken().then(token => {
-          isAlreadyFetchingAccessToken = false;
-          onAccessTokenFetched(token);
-        });
-      } else {
-        console.debug('Token was expired, but can not re-new it!');
+      if (!isAlreadyFetchingAccessToken) {
+        isAlreadyFetchingAccessToken = true;
+        if (typeof renewToken === 'function') {
+          renewToken().then(token => {
+            isAlreadyFetchingAccessToken = false;
+            onAccessTokenFetched(token);
+          });
+        } else {
+          console.debug('Token was expired, but can not re-new it!');
+        }
       }
+
+      const retryOriginalRequest = new Promise(resolve => {
+        addSubscriber(accessToken => {
+          originalRequest.headers.Authorization = 'Bearer ' + accessToken;
+          setTokenHeader(accessToken);
+          storageService.setItem(CONSTANT_KEYS.DEVICE_TOKEN, accessToken);
+          resolve(instance(originalRequest));
+        });
+      });
+
+      return retryOriginalRequest;
     }
 
-    const retryOriginalRequest = new Promise((resolve) => {
-      addSubscriber(accessToken => {
-        originalRequest.headers.Authorization = 'Bearer ' + accessToken;
-        setTokenHeader(accessToken);
-        storageService.setItem(CONSTANT_KEYS.DEVICE_TOKEN, accessToken);
-        resolve(instance(originalRequest));
+    // get response of error
+    // wrap the error with CustomError to custom error message, or logging
+    const data = errResponse?.data;
+    if (data && data.Error) {
+      throw new CustomError(data.Error?.Code, {
+        name: CustomError.TYPES.API_ERROR,
+        message: data.Error?.Message,
       });
-    });
+    }
 
-    return retryOriginalRequest;
-  }
-
-  // get response of error
-  // wrap the error with CustomError to custom error message, or logging
-  const data = errResponse?.data;
-  if (data && data.Error) {
-    throw new CustomError(data.Error?.Code, { name: CustomError.TYPES.API_ERROR, message: data.Error?.Message });
-  }
-
-  return Promise.reject(errorData);
-});
+    return Promise.reject(errorData);
+  },
+);
 
 export const setTokenHeader = token => {
   try {
@@ -114,8 +115,9 @@ export const setTokenHeader = token => {
   }
 };
 
-export const setRenewToken = (fn) => {
-  if (typeof fn !== 'function') throw new Error('setRenewToken must be recieved a function');
+export const setRenewToken = fn => {
+  if (typeof fn !== 'function')
+    throw new Error('setRenewToken must be recieved a function');
   renewToken = fn;
 };
 

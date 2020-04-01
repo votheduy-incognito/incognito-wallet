@@ -74,3 +74,6 @@ Temp
 
 # VSCODE
 .vscode/
+
+android/.settings/
+android/.project

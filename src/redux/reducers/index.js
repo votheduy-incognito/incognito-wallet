@@ -2,6 +2,7 @@ import {combineReducers} from 'redux';
 import reduceReducers from 'reduce-reducers';
 import {reducer as formReducer} from 'redux-form';
 import {modalReducer} from '@src/components/Modal';
+import notification from '@src/screens/Notification/Notification.reducer';
 import wallet from './wallet';
 import account from './account';
 import server from './server';
@@ -28,6 +29,7 @@ const rootReducer = reduceReducers(
     form: formReducer,
     modal: modalReducer,
     receivers,
+    notification,
   }),
   globalReducer,
 );
