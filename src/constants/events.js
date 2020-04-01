@@ -29,4 +29,6 @@ export default {
   WITHDRAW_UNISWAP : 'withdraw_uniswap',
   WITHDRAW_UNISWAP_SUCCESS : 'withdraw_uniswap_success',
   WITHDRAW_UNISWAP_FAILED : 'withdraw_uniswap_failed',
+  
+  NOTIFICATION: 'notification',
 };

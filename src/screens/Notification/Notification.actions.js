@@ -1,0 +1,241 @@
+import {ExHandler} from '@src/services/exception';
+import routeNames from '@src/router/routeNames';
+import {accountSeleclor, selectedPrivacySeleclor} from '@src/redux/selectors';
+import {
+  actionSwitchAccount,
+  actionReloadFollowingToken,
+} from '@src/redux/actions/account';
+import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
+import {actionAddFollowToken} from '@src/redux/actions';
+import {CONSTANT_COMMONS} from '@src/constants';
+import {
+  ACTION_FETCHING,
+  ACTION_FETCHED,
+  ACTION_FETCH_FAIL,
+  ACTION_LOAD_MORE,
+  ACTION_READ_ALL,
+  ACTION_DELETE,
+  ACTION_READ,
+  ACTION_INIT,
+  ACTION_REFRESH,
+  ACTION_HAS_NOTI,
+  ACTION_UPDATE_RECENTLY,
+} from './Notification.constant';
+import {
+  apiGetListNotifications,
+  apiDeleteNotification,
+  apiUpdateNotification,
+  apiUpdateAllNotifications,
+  apiInitNotifications,
+} from './Notification.services';
+import {
+  dataNotificationsSelector,
+  notificationSelector,
+} from './Notification.selector';
+import {mappingData, delay} from './Notification.utils';
+
+export const actionHasNoti = payload => ({
+  type: ACTION_HAS_NOTI,
+  payload,
+});
+
+export const actionInit = () => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const list = accountSeleclor.listAccount(state);
+    const body = {
+      Data: [
+        ...list.map(item => ({
+          PublicKey: item?.PublicKeyCheckEncode,
+          Wallet: item?.PaymentAddress,
+          AccountName: item?.AccountName || item?.name,
+        })),
+      ],
+    };
+    const data = await apiInitNotifications(body);
+    if (data) {
+      await dispatch(actionFetch());
+      await dispatch({
+        type: ACTION_INIT,
+      });
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const actionRefresh = () => ({
+  type: ACTION_REFRESH,
+});
+
+export const actionFetching = () => ({
+  type: ACTION_FETCHING,
+});
+
+export const actionFetched = payload => ({
+  type: ACTION_FETCHED,
+  payload,
+});
+
+export const actionFetchFail = () => ({
+  type: ACTION_FETCH_FAIL,
+});
+
+export const actionLoadmore = () => ({
+  type: ACTION_LOAD_MORE,
+});
+
+export const actionReadAll = payload => ({
+  type: ACTION_READ_ALL,
+  payload,
+});
+
+export const actionDelete = payload => ({
+  type: ACTION_DELETE,
+  payload,
+});
+
+export const actionRead = payload => ({
+  type: ACTION_READ,
+  payload,
+});
+
+export const actionFetchRead = item => async dispatch => {
+  try {
+    const payload = await apiUpdateNotification(item);
+    if (payload) {
+      return await dispatch(actionRead(item));
+    }
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
+};
+
+export const actionFetchReadAll = () => async dispatch => {
+  try {
+    const payload = await apiUpdateAllNotifications();
+    if (payload) {
+      return await dispatch(actionReadAll(payload));
+    }
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
+};
+
+export const actionFetchDelete = item => async dispatch => {
+  try {
+    const payload = await apiDeleteNotification(item);
+    if (payload) {
+      return await dispatch(actionDelete(item));
+    }
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
+};
+
+export const actionFetch = (data = {loadmore: false}) => async (
+  dispatch,
+  getState,
+) => {
+  try {
+    const state = getState();
+    const {isFetching} = notificationSelector(state);
+    if (isFetching) {
+      return;
+    }
+    await dispatch(actionFetching());
+    const {page: pageCurrent, limit, list: oldList} = dataNotificationsSelector(
+      state,
+    );
+    const {loadmore} = data;
+    const page = loadmore ? pageCurrent : 1;
+    const {List, IsReadAll} = await apiGetListNotifications({
+      page,
+      limit,
+    });
+    const over = List.length < limit;
+    const list = loadmore
+      ? [...oldList, ...mappingData(List)]
+      : [...mappingData(List)];
+    await dispatch(
+      actionFetched({
+        list: [...new Set(list)],
+        over,
+        isReadAll: IsReadAll === 'true' || IsReadAll === true,
+        page,
+      }),
+    );
+  } catch (error) {
+    await dispatch(actionFetchFail());
+    new ExHandler(error).showErrorToast();
+  }
+};
+
+export const actionUpdateRecently = payload => ({
+  type: ACTION_UPDATE_RECENTLY,
+  payload,
+});
+
+export const actionNavigate = (item, navigation) => async (
+  dispatch,
+  getState,
+) => {
+  try {
+    const {id, type, publicKey, tokenId} = item;
+    const rootState = getState();
+    const accountList = accountSeleclor.listAccount(rootState);
+    switch (type) {
+    case 'broadcast': {
+      navigation.navigate(routeNames.Home);
+      await new Promise.all([dispatch(actionFetch())]);
+      return;
+    }
+    case 'reward-node':
+    case 'unstake-success': {
+      await delay(50);
+      navigation.navigate(routeNames.Node);
+      await new Promise.all([
+        dispatch(actionUpdateRecently(item)),
+        dispatch(actionFetchRead({id})),
+        dispatch(actionFetch()),
+      ]);
+      break;
+    }
+    case 'withdraw-coin':
+    case 'withdraw-success':
+    case 'balance-update':
+    case 'deposit-update': {
+      navigation.navigate(routeNames.WalletDetail);
+      const token = {
+        ...selectedPrivacySeleclor.getPrivacyDataByTokenID(rootState),
+        id: tokenId,
+        ID: tokenId,
+      };
+
+      const accountUpdated = accountList.find(
+        item => item.PublicKeyCheckEncode === publicKey,
+      );
+      await dispatch(setSelectedPrivacy(tokenId));
+      await dispatch(
+        actionSwitchAccount(
+            accountUpdated?.AccountName || accountUpdated?.name,
+        ),
+      );
+      if (token?.isToken || tokenId !== CONSTANT_COMMONS.PRV_TOKEN_ID) {
+        await dispatch(actionAddFollowToken(tokenId));
+      }
+      await dispatch(actionReloadFollowingToken());
+      await new Promise.all([
+        dispatch(actionUpdateRecently(item)),
+        dispatch(actionFetchRead({id})),
+        dispatch(actionFetch()),
+      ]);
+      break;
+    }
+    default:
+      break;
+    }
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
+};

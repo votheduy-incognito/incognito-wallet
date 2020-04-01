@@ -55,9 +55,9 @@ class AppUpdater extends PureComponent {
           news: description,
           appVersion: `${CONSTANT_CONFIGS.BUILD_VERSION}.${label.substring(1)}`
         });
-
-        AppUpdater.appVersion = `${CONSTANT_CONFIGS.BUILD_VERSION}.${label.substring(1)}`;
       }
+
+      AppUpdater.appVersion = `${CONSTANT_CONFIGS.BUILD_VERSION}.${label.substring(1)}`;
     } catch (error) {
       console.debug('DISPLAY NEWS', error);
     }
