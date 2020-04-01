@@ -8,8 +8,9 @@
 #import <React/RCTBridgeDelegate.h>
 #import <UIKit/UIKit.h>
 #import <AppsFlyerLib/AppsFlyerTracker.h>
+@import UserNotifications;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, AppsFlyerTrackerDelegate, RCTBridgeDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, AppsFlyerTrackerDelegate, RCTBridgeDelegate, UNUserNotificationCenterDelegate>
 
 @property (nonatomic, strong) UIWindow *window;
 
