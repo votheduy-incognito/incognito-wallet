@@ -1,0 +1,11 @@
+export const ACTION_FETCHING = '[notification] Fetching data';
+export const ACTION_FETCHED = '[notification] Fetched data';
+export const ACTION_FETCH_FAIL = '[notification] Fetch fail data';
+export const ACTION_LOAD_MORE = '[notification] Load more data';
+export const ACTION_READ_ALL = '[notification] Read all data';
+export const ACTION_DELETE = '[notification] Delete data';
+export const ACTION_READ = '[notification] Read data';
+export const ACTION_INIT = '[notification] Init data';
+export const ACTION_REFRESH = '[notification] Refresh data';
+export const ACTION_HAS_NOTI = '[notification] Has notification';
+export const ACTION_UPDATE_RECENTLY = '[notification] Update recently';

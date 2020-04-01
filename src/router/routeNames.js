@@ -45,6 +45,7 @@ export default {
   WhyShield: 'WhyShield',
   FrequentReceiversForm: 'FrequentReceiversForm',
   FrequentReceivers: 'FrequentReceivers',
+  Notification: 'Notification',
   NodeHelp: 'NodeHelp',
   pUniswap: 'pUniswap',
   UniswapHistory: 'UniswapHistory',

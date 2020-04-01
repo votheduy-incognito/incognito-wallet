@@ -1,4 +1,4 @@
-import { genNamspace } from '@src/utils/reduxUtils';
+import {genNamspace} from '@src/utils/reduxUtils';
 
 const n = genNamspace('TOKEN');
 
@@ -12,6 +12,8 @@ const TYPES = {
   SET_LIST: n('SET_LIST'),
   SET_PTOKEN_LIST: n('SET_PTOKEN_LIST'),
   SET_INTERNAL_LIST: n('SET_INTERNAL_LIST'),
+  ADD_FOLLOW_TOKEN_SUCCESS: n('ADD_FOLLOW_TOKEN_SUCCESS'),
+  ADD_FOLLOW_TOKEN_FAIL: n('ADD_FOLLOW_TOKEN_FAIL'),
 };
 
 export default TYPES;
