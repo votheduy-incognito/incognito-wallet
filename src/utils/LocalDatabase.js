@@ -15,6 +15,7 @@ export const KEY_SAVE = {
   PIN: CONSTANT_KEYS.PIN,
   DECIMAL_SEPARATOR: '$decimal_separator',
   VERIFY_CODE: '$verify_code',
+  DEVICE_ID: '$device_id',
   WITHDRAWAL_DATA: CONSTANT_KEYS.WITHDRAWAL_DATA,
 };
 export default class LocalDatabase {
@@ -248,7 +249,7 @@ export default class LocalDatabase {
     txs = txs.filter(tx => tx.burningTxId !== burningTxId);
     return LocalDatabase.saveValue(KEY_SAVE.WITHDRAWAL_DATA, JSON.stringify(txs));
   };
-  
+
   static async saveUniswapHistory(swapHistory) {
     await LocalDatabase.saveValue(
       KEY_SAVE.UNISWAP_HISTORY,
@@ -260,5 +261,16 @@ export default class LocalDatabase {
     const swapHistory =
       (await LocalDatabase.getValue(KEY_SAVE.UNISWAP_HISTORY)) || '';
     return _.isEmpty(swapHistory) ? [] : JSON.parse(swapHistory);
+  }
+
+  static saveDeviceId(deviceId) {
+    return LocalDatabase.saveValue(
+      KEY_SAVE.DEVICE_ID,
+      deviceId,
+    );
+  }
+
+  static getDeviceId() {
+    return LocalDatabase.getValue(KEY_SAVE.DEVICE_ID) || '';
   }
 }

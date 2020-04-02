@@ -7,11 +7,7 @@ import serverService from '@src/services/wallet/Server';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import Util from '@src/utils/Util';
-import ROUTE_NAMES from '@src/router/routeNames';
 import storageService from '@src/services/storage';
-import { CONSTANT_CONFIGS } from '@src/constants';
-import _ from 'lodash';
 import NetworkSetting from './NetworkSetting';
 
 const NetworkSettingContainer = ({
@@ -48,19 +44,11 @@ const NetworkSettingContainer = ({
   const handleSetDefaultNetwork = async network => {
     try {
       await serverService.setDefault(network);
-      // const isMainnet =  serverService.isMainnet(network);
-      // await storageService.removeItem(CONSTANT_KEYS.DEVICE_TOKEN);
       const walletDBClone = await storageService.getItem('Wallet_Clone')??'';
       const walletDB =  await storageService.getItem('Wallet') ?? '';
       await storageService.setItem('Wallet_Clone',walletDB);
       await storageService.setItem('Wallet',walletDBClone);
 
-      // const wallet = await reloadWallet();
-      // await getAccountBalance(account);
-
-      // if (wallet) {
-      //   Toast.showInfo('You successfully changed networks.');
-      // }
       Toast.showInfo('You successfully changed networks.');
     } catch {
       Toast.showError(

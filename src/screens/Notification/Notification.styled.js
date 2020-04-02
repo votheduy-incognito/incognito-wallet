@@ -29,7 +29,7 @@ export const styled = StyleSheet.create({
   title: {
     color: COLORS.black,
     fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.regular,
+    fontSize: 15,
     lineHeight: FONT.SIZE.regular + 6,
   },
   desc: {
@@ -57,5 +57,8 @@ export const styled = StyleSheet.create({
   },
   notifyRead: {
     backgroundColor: COLORS.lightGrey4,
+  },
+  account: {
+    width: 10,
   },
 });
