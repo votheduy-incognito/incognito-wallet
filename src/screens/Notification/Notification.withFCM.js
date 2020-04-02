@@ -1,5 +1,5 @@
 import React from 'react';
-import {AppState} from 'react-native';
+import {AppState, Platform} from 'react-native';
 import {
   actionNavigate,
   normalizedData,
@@ -128,8 +128,13 @@ const enhance = WrappedComponent =>
 
         localNotification
           .android.setChannelId(channelId)
-          .android.setSmallIcon('ic_launcher')
           .android.setPriority(firebase.notifications.Android.Priority.High);
+
+
+        if (Platform.Version > 25) {
+          localNotification
+            .android.setSmallIcon('ic_launcher');
+        }
       }
 
       return firebase

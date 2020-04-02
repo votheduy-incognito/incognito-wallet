@@ -1,10 +1,11 @@
 import storageService from '@src/services/storage';
-import { setTokenHeader, setRenewToken } from '@src/services/http';
-import { CONSTANT_KEYS } from '@src/constants';
-import { getToken as getFirebaseToken } from '@src/services/firebase';
+import {setTokenHeader} from '@src/services/http';
+import {CONSTANT_KEYS} from '@src/constants';
+import {getToken as getFirebaseToken} from '@src/services/firebase';
 import DeviceInfo from 'react-native-device-info';
-import { getToken as getUserToken } from '@src/services/api/user';
-import { CustomError, ErrorCode } from './exception';
+import {getToken as getUserToken} from '@src/services/api/user';
+import LocalDatabase from '@utils/LocalDatabase';
+import {CustomError, ErrorCode} from './exception';
 
 export const getToken = async () => {
   let firebaseToken = '';
@@ -15,43 +16,24 @@ export const getToken = async () => {
     firebaseToken = DeviceInfo.getUniqueId() + new Date().getTime();
     console.debug('Can not get firebase token');
   }
-  const uniqueId = DeviceInfo.getUniqueId();
+  const uniqueId = (await LocalDatabase.getDeviceId()) || DeviceInfo.getUniqueId();
   const tokenData = await getUserToken(uniqueId, firebaseToken);
+
+  await LocalDatabase.saveDeviceId(uniqueId);
   const { token } = tokenData;
 
   return token;
 };
 
 // if "fresh" is true, dont use savedToken, have to get new one
-export const login = async ({ fresh = false } = {}) => {
+export const login = async () => {
   try {
-    let token;
-    if (!fresh) {
-      // get existed token
-      token = await storageService.getItem(CONSTANT_KEYS.DEVICE_TOKEN);
-    }
-
-    // if not existed, get new one
-    if (!token) {
-      const newToken = await getToken();
-
-      // save new token to device storage
-      await storageService.setItem(CONSTANT_KEYS.DEVICE_TOKEN, newToken);
-      token = newToken;
-    }
-
-    // set the token to axios header
+    const token = await getToken();
     setTokenHeader(token);
-
     return token;
   } catch (e) {
     throw new CustomError(ErrorCode.user_login_failed, { rawError: e });
   }
 };
 
-export const logout = async () => {
-  storageService.clear(CONSTANT_KEYS.DEVICE_TOKEN);
-};
-
-
-setRenewToken(() => login({ fresh: true }));
+global.login = login;
