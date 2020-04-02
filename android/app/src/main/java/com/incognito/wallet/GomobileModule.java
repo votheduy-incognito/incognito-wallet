@@ -290,4 +290,26 @@ public class GomobileModule extends ReactContextBaseJavaModule {
             successCallback.invoke(e.getMessage(), null);
         }
     }
+
+    @ReactMethod
+    public void signPoolWithdraw(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "Sign 0x: begin");
+            successCallback.invoke(null, Gomobile.signPoolWithdraw(data));
+        } catch (Exception e) {
+            Log.d(TAG, "Sign 0x: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
+
+    @ReactMethod
+    public void getSignPublicKey(String data, Callback successCallback) {
+        try {
+            Log.d(TAG, "Sign 0x: begin");
+            successCallback.invoke(null, Gomobile.getSignPublicKey(data));
+        } catch (Exception e) {
+            Log.d(TAG, "Sign 0x: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
 }
