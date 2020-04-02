@@ -214,10 +214,29 @@ RCT_EXPORT_METHOD(signKyber:(NSString *)data callback:(RCTResponseSenderBlock)ca
   }
 }
 
-//exports a method signKyber to javascript
 RCT_EXPORT_METHOD(withdrawSmartContractBalance:(NSString *)data callback:(RCTResponseSenderBlock)callback){
   @try{
     NSString *rs = GomobileWithdrawSmartContractBalance(data, nil);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
+RCT_EXPORT_METHOD(getSignPublicKey:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileGetSignPublicKey(data, nil);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
+RCT_EXPORT_METHOD(signPoolWithdraw:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileSignPoolWithdraw(data, nil);
     callback(@[[NSNull null], rs]);
   }
   @catch(NSException *exception){

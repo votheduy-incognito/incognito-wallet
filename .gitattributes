@@ -1,3 +1,0 @@
-*.pbxproj -text
-Gomobile.framework filter=lfs diff=lfs merge=lfs -text
-Gomobile filter=lfs diff=lfs merge=lfs -text
