@@ -15,37 +15,38 @@ const requiredTimeMethods = [
   'initPTokenTradeTx',
   'withdrawDexTx',
 ];
+const asyncMethods = [
+  'deriveSerialNumber',
+  'randomScalars',
+  'initPrivacyTx',
+  'initPrivacyTokenTx',
+  'initBurningRequestTx',
+  'initWithdrawRewardTx',
+  'staking',
+  'generateBLSKeyPairFromSeed',
+  'initPRVContributionTx',
+  'initPTokenContributionTx',
+  'initPRVTradeTx',
+  'initPTokenTradeTx',
+  'withdrawDexTx',
+  'hybridDecryptionASM',
+  'hybridEncryptionASM',
+  'stopAutoStaking',
+  'generateIncognitoContractAddress',
+  'withdrawSmartContractBalance',
+  'sign0x',
+  'signKyber',
+  'getSignPublicKey',
+  'signPoolWithdraw',
+];
+const syncMethods = [
+  'scalarMultBase',
+  'generateKeyFromSeed'
+];
 
 const log = (...args) => console.log('GOMODULE', ...args);
 
 try {
-  const asyncMethods = [
-    'deriveSerialNumber',
-    'randomScalars',
-    'initPrivacyTx',
-    'initPrivacyTokenTx',
-    'initBurningRequestTx',
-    'initWithdrawRewardTx',
-    'staking',
-    'generateBLSKeyPairFromSeed',
-    'initPRVContributionTx',
-    'initPTokenContributionTx',
-    'initPRVTradeTx',
-    'initPTokenTradeTx',
-    'withdrawDexTx',
-    'hybridDecryptionASM',
-    'hybridEncryptionASM',
-    'stopAutoStaking',
-    'generateIncognitoContractAddress',
-    'withdrawSmartContractBalance',
-    'sign0x',
-    'signKyber',
-  ];
-  const syncMethods = [
-    'scalarMultBase',
-    'generateKeyFromSeed'
-  ];
-
   asyncMethods.forEach(methodName => {
     global[methodName] = (data) => {
       return new Promise(async (resolve, reject) => {
@@ -98,3 +99,53 @@ try {
 } catch {
   console.error('GO modules can not loaded');
 }
+
+/**
+ * Sign staking pool withdraw
+ * @param {string} privateKey
+ * @param {string} paymentAddress
+ * @param {string | number} amount
+ * @returns {Promise<string>} signatureEncode
+ */
+export const signPoolWithdraw = (privateKey, paymentAddress, amount) => {
+  if (!privateKey) {
+    throw new Error('Private key is missing');
+  }
+
+  if (!paymentAddress) {
+    throw new Error('Payment address is missing');
+  }
+
+  if (!Number.isInteger(Number.parseInt(amount))) {
+    throw new Error('Amount is invalid');
+  }
+
+  const args = {
+    data: {
+      privateKey,
+      paymentAddress,
+      amount: amount.toString(),
+    }
+  };
+
+  return global.signPoolWithdraw(JSON.stringify(args));
+};
+
+/**
+ * Get sign public key
+ * @param {string} privateKey
+ * @returns {Promise<string>} signPublicKeyEncode
+ */
+export const getSignPublicKey = (privateKey) => {
+  if (!privateKey) {
+    throw new Error('Private key is missing');
+  }
+
+  const args = {
+    data: {
+      privateKey,
+    }
+  };
+
+  return global.getSignPublicKey(JSON.stringify(args));
+};
