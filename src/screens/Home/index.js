@@ -92,7 +92,7 @@ const buttons = [
   },
   pappItem,
   powerItem,
-  pUniswapItem,
+  // pUniswapItem,
 ];
 
 const Home = ({navigation}) => {
