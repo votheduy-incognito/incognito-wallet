@@ -43,6 +43,33 @@ const withNotification = WrappedComponent => props => {
   return <WrappedComponent {...{...props, swipeoutConfigs}} />;
 };
 
+const Title = React.memo(({title}) => {
+  if (title.includes('balance updated')) {
+    let accountName = title.substring(0, title.lastIndexOf(' balance updated'));
+
+    if (accountName.length > 10) {
+      accountName = `${accountName.substring(0, 10)}...`;
+    }
+
+    return (
+      <Text style={styled.title}>
+        <Text>
+          {accountName}
+        </Text>
+        <Text>
+          &nbsp;balance updated!
+        </Text>
+      </Text>
+    );
+  }
+
+  return (
+    <Text style={styled.title}>
+      {title}
+    </Text>
+  );
+});
+
 const Notification = React.memo(
   ({item, firstChild, lastChild, swipeoutConfigs}) => {
     const {title, desc, read, time} = item;
@@ -50,6 +77,7 @@ const Notification = React.memo(
     const dispatch = useDispatch();
     const handleNav = async () =>
       await dispatch(actionNavigate(item, navigation));
+
     return (
       <Swipeout {...swipeoutConfigs}>
         <TouchableWithoutFeedback
@@ -76,7 +104,7 @@ const Notification = React.memo(
             </View>
             <View style={styled.info}>
               <View style={styled.hook}>
-                <Text style={styled.title}>{title}</Text>
+                <Title title={title} />
                 <Text style={styled.time}>{format.formatDateTime(time)}</Text>
               </View>
               <Text style={styled.desc}>{desc}</Text>

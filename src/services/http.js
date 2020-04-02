@@ -70,8 +70,8 @@ instance.interceptors.response.use(
 
       if (!isAlreadyFetchingAccessToken) {
         isAlreadyFetchingAccessToken = true;
-        if (typeof renewToken === 'function') {
-          renewToken().then(token => {
+        if (typeof global.login === 'function') {
+          global.login().then(token => {
             isAlreadyFetchingAccessToken = false;
             onAccessTokenFetched(token);
           });
@@ -84,7 +84,6 @@ instance.interceptors.response.use(
         addSubscriber(accessToken => {
           originalRequest.headers.Authorization = 'Bearer ' + accessToken;
           setTokenHeader(accessToken);
-          storageService.setItem(CONSTANT_KEYS.DEVICE_TOKEN, accessToken);
           resolve(instance(originalRequest));
         });
       });
