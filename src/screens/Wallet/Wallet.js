@@ -37,7 +37,7 @@ class Wallet extends React.Component {
             />
             <TouchableOpacity onPress={handleAddFollowToken} style={homeStyle.followTokenBtn}>
               <Image source={iconAdd} style={homeStyle.followTokenIcon} />
-              <Text style={homeStyle.followTokenText}>Add a coin your list</Text>
+              <Text style={homeStyle.followTokenText}>Add a coin to your list</Text>
             </TouchableOpacity>
             <View style={homeStyle.addTokenContainer}>
               { !dexUtils.isDEXAccount(account.name) &&
