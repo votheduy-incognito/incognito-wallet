@@ -5,6 +5,8 @@ import { BigNumber } from 'bignumber.js';
 import {getDecimalSeparator, getGroupSeparator} from '@src/resources/separator';
 import convertUtil from './convert';
 
+export const SHORT_DATE_TIME_FORMAT = 'DD MMM hh:mm A';
+
 const removeTrailingZeroes = (amountString) => {
   let formattedString = amountString;
   while(formattedString.length > 0 && (
