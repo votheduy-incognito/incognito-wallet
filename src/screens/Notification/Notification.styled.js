@@ -29,7 +29,7 @@ export const styled = StyleSheet.create({
   title: {
     color: COLORS.black,
     fontFamily: FONT.NAME.regular,
-    fontSize: 15,
+    fontSize: 14,
     lineHeight: FONT.SIZE.regular + 6,
   },
   desc: {
