@@ -1,5 +1,5 @@
 import React from 'react';
-import {AppState, Platform} from 'react-native';
+import {AppState} from 'react-native';
 import {
   actionNavigate,
   normalizedData,
@@ -96,51 +96,50 @@ const enhance = WrappedComponent =>
     };
 
     handleSendNotificationToSystem(notification) {
-      if (!notification?.data) {
-        return;
-      }
-
-      const {ID, Title, Content} = notification.data;
-
-      if (sentIds[ID]) {
-        return;
-      }
-
-      const id = v4();
-      sentIds[ID] = id;
-
-      const localNotification = new firebase.notifications.Notification({
-        sound: 'default',
-        show_in_foreground: true,
-      })
-        .setNotificationId(id)
-        .setTitle(Title)
-        .setBody(Content)
-        .setData(notification.data);
-
-      if (isAndroid()) {
-        const channel = new firebase.notifications.Android.Channel(
-          channelId,
-          channelName,
-          firebase.notifications.Android.Importance.Max
-        ).setDescription(channelDescription);
-        firebase.notifications().android.createChannel(channel);
-
-        localNotification
-          .android.setChannelId(channelId)
-          .android.setPriority(firebase.notifications.Android.Priority.High);
-
-
-        if (Platform.Version > 25) {
-          localNotification
-            .android.setSmallIcon('ic_launcher');
+      try {
+        if (!notification?.data) {
+          return;
         }
-      }
 
-      return firebase
-        .notifications()
-        .displayNotification(localNotification)
-        .catch(err => console.error(err));
+        const {ID, Title, Content} = notification.data;
+
+        if (sentIds[ID]) {
+          return;
+        }
+
+        const id = v4();
+        sentIds[ID] = id;
+
+        const localNotification = new firebase.notifications.Notification({
+          sound: 'default',
+          show_in_foreground: true,
+        })
+          .setNotificationId(id)
+          .setTitle(Title)
+          .setBody(Content)
+          .setData(notification.data);
+
+        if (isAndroid()) {
+          const channel = new firebase.notifications.Android.Channel(
+            channelId,
+            channelName,
+            firebase.notifications.Android.Importance.Max
+          ).setDescription(channelDescription);
+          firebase.notifications().android.createChannel(channel);
+
+          localNotification
+            .android.setChannelId(channelId)
+            .android.setSmallIcon('ic_notification_system')
+            .android.setPriority(firebase.notifications.Android.Priority.High);
+        }
+
+        return firebase
+          .notifications()
+          .displayNotification(localNotification)
+          .catch(err => console.error(err));
+      } catch {
+        //
+      }
     }
 
     onListenerEventFCM = async () => {
@@ -157,6 +156,7 @@ const enhance = WrappedComponent =>
       this.removeNotificationListener = firebase
         .notifications()
         .onNotification(notification => {
+          this.handleHasNotification(notification);
           this.handleSendNotificationToSystem(notification);
         });
       this.removeNotificationOpenedListener = firebase
