@@ -35,7 +35,7 @@ const parseShard = (bytes) => {
   return (lastByte % 8).toString();
 };
 
-const ExportAccount = ({ account }) => (
+const ExportAccount = ({account, token}) => (
   <ScrollView contentContainerStyle={{ minHeight: '100%' }}>
     <View style={styleSheet.container}>
       {renderItem('YOUR INCOGNITO ADDRESS', account?.PaymentAddress)}
@@ -43,13 +43,19 @@ const ExportAccount = ({ account }) => (
       {renderItem('PUBLIC KEY', account?.PublicKeyCheckEncode)}
       {renderItem('READONLY KEY', account?.ReadonlyKey)}
       {renderItem('VALIDATOR KEY', account?.ValidatorKey)}
+      {(__DEV__ || global.isDEV) ? renderItem('DEVICE TOKEN', token) : null}
       {(__DEV__ || global.isDEV) ? renderItem('Shard', parseShard(account?.PublicKeyBytes)) : null}
     </View>
   </ScrollView>
 );
 
+ExportAccount.defaultProps = {
+  token: ''
+};
+
 ExportAccount.propTypes = {
-  account: PropTypes.object.isRequired
+  account: PropTypes.object.isRequired,
+  token: PropTypes.string,
 };
 
 ExportItem.propTypes = {

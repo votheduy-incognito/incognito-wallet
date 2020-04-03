@@ -3,7 +3,7 @@ import {Text, TouchableWithoutFeedback, View} from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import {BtnDelete, BtnRead} from '@src/components/Button';
 import {CircleIcon} from '@src/components/Icons';
-import format from '@src/utils/format';
+import format, {SHORT_DATE_TIME_FORMAT} from '@src/utils/format';
 import PropTypes from 'prop-types';
 import {useDispatch} from 'react-redux';
 import {COLORS} from '@src/styles';
@@ -48,7 +48,7 @@ const Title = React.memo(({title}) => {
     let accountName = title.substring(0, title.lastIndexOf(' balance updated'));
 
     if (accountName.length > 10) {
-      accountName = `${accountName.substring(0, 10)}...`;
+      accountName = `${accountName.substring(0, 8)}...`;
     }
 
     return (
@@ -105,7 +105,7 @@ const Notification = React.memo(
             <View style={styled.info}>
               <View style={styled.hook}>
                 <Title title={title} />
-                <Text style={styled.time}>{format.formatDateTime(time)}</Text>
+                <Text style={styled.time}>{format.formatDateTime(time, SHORT_DATE_TIME_FORMAT)}</Text>
               </View>
               <Text style={styled.desc}>{desc}</Text>
             </View>

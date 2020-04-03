@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { Toast } from '@src/components/core';
 import CustomError from './customError/customError';
 import Message from './customError/message';
@@ -180,7 +181,7 @@ class Exception {
   getMessage(defaultMessage) {
     try {
       if (this.exception.stackTrace) {
-        const stackCode = this.exception.stackTraceCode;
+        const stackCode = _.toString(this.exception.stackTraceCode) || '';
         if (
           stackCode.indexOf(CODES.REPLACEMENT) === 0 ||
           stackCode.indexOf(CODES.DOUBLE_SPEND) === 0 ||
@@ -213,7 +214,7 @@ class Exception {
 
       return `${defaultMessage || MESSAGES.GENERAL} (${this.exception.code})`;
     } catch (error) {
-      return error;
+      return (error.message);
     }
 
     // return `${this.exception.message} ${this.exception.stack}`;
