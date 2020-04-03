@@ -187,7 +187,7 @@ class PNode extends React.Component {
               <View style={[styles.row, styles.centerAlign]}>
                 <TouchableOpacity onPress={this.showIp} style={[styles.row, styles.centerAlign]}>
                   <Image source={item.IsOnline ? wifiOnline : wifiOffline} style={[styles.icon]} />
-                  <Text style={[styles.itemLeft, !item.IsOnline && styles.greyText]}>Device {labelName}</Text>
+                  <Text style={[styles.itemLeft, !item.IsOnline && styles.greyText]}>Node {labelName}</Text>
                 </TouchableOpacity>
                 {!isFetching && !item.IsOnline && (
                   <View style={styles.itemRight}>
