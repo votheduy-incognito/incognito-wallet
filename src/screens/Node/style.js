@@ -18,6 +18,8 @@ const style = StyleSheet.create({
     position: 'absolute',
     height: 173,
     left: 0,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
     right: 0,
     backgroundColor: COLORS.dark2,
   },
