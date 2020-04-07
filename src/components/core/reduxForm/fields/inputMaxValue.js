@@ -17,6 +17,7 @@ const renderCustomField = ({ input, meta, maxValue, ...props }) => {
       onBlur={onBlur}
       onFocus={onFocus}
       defaultValue={value}
+      returnKeyType="done"
       onRef={(ref) => {
         inputRef = ref;
       }}

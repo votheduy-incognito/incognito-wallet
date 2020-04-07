@@ -71,6 +71,7 @@ const TextInput = ({
         <RNComponent
           allowFontScaling={false}
           placeholderTextColor={COLORS.lightGrey3}
+          returnKeyType="done"
           maxLength={maxLength}
           {...props}
           style={[
