@@ -1,9 +1,16 @@
-import { Text, TouchableOpacity, View, Modal, ScrollView } from '@src/components/core';
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  Modal,
+  ScrollView,
+  BaseTextInput as TextInput,
+} from '@src/components/core';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import { COLORS } from '@src/styles';
-import {KeyboardAvoidingView, TextInput} from 'react-native';
+import {KeyboardAvoidingView} from 'react-native';
 import {Icon} from 'react-native-elements';
 import {isAndroid} from '@utils/platform';
 import styleSheet from './style';

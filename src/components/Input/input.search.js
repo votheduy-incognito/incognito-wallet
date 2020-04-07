@@ -1,5 +1,6 @@
 import React from 'react';
-import {View, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {BaseTextInput as TextInput} from '@components/core';
 import {SearchIcon, ClearIcon} from '@src/components/Icons';
 import {FONT, COLORS} from '@src/styles';
 import PropTypes from 'prop-types';
@@ -30,7 +31,12 @@ const SearchInput = props => {
   return (
     <View style={[styled.container, containerStyled]}>
       <SearchIcon />
-      <TextInput style={styled.input} {...{...rest, value}} autoCorrect={false} />
+      <TextInput
+        style={styled.input}
+        {...{...rest, value}}
+        autoCorrect={false}
+        returnKeyType="done"
+      />
       {value.length > 0 && (
         <TouchableOpacity onPress={onClearText}>
           <ClearIcon />

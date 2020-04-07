@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { View, Text, ActivityIndicator } from '@src/components/core';
-import {TextInput, TouchableOpacity, VirtualizedList} from 'react-native';
+import { View, Text, ActivityIndicator, BaseTextInput as TextInput } from '@src/components/core';
+import {TouchableOpacity, VirtualizedList} from 'react-native';
 import { Icon, Overlay } from 'react-native-elements';
 import CryptoIcon from '@components/CryptoIcon';
 import {COLORS} from '@src/styles';

@@ -6,9 +6,10 @@ import {
   Text,
   View,
   ActivityIndicator,
-  TouchableOpacity
+  TouchableOpacity,
+  BaseTextInput as TextInput,
 } from '@src/components/core';
-import {TextInput as ReactInput, Keyboard, TouchableWithoutFeedback} from 'react-native';
+import {Keyboard, TouchableWithoutFeedback} from 'react-native';
 import accountService from '@services/wallet/accountService';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
@@ -162,7 +163,7 @@ class WithdrawSmartContract extends React.PureComponent {
                     <Text>&nbsp;{token?.symbol}</Text>
                   </View>
                 </View>
-                <ReactInput
+                <TextInput
                   style={tokenStyle.input}
                   placeholder="0.0"
                   placeholderColor={COLORS.lightGrey1}

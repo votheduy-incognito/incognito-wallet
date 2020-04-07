@@ -1,7 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Button } from '@src/components/core';
-import { TextInput, ScrollView, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  Button,
+  BaseTextInput as TextInput,
+} from '@src/components/core';
+import { ScrollView, TouchableOpacity } from 'react-native';
 import { Icon, Overlay } from 'react-native-elements';
 import CryptoIcon from '@components/CryptoIcon';
 import {COLORS} from '@src/styles';

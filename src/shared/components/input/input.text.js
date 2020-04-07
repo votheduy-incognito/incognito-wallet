@@ -1,5 +1,6 @@
 import React from 'react';
-import {View, Text, TextInput} from 'react-native';
+import {View, Text} from 'react-native';
+import {BaseTextInput as TextInput} from '@components/core';
 import PropTypes from 'prop-types';
 import {commonStyled as styled} from './input.styled';
 

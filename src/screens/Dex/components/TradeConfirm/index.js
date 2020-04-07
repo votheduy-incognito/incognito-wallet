@@ -7,8 +7,8 @@ import {
   Text,
   View,
   TouchableOpacity,
+  BaseTextInput as TextInput,
 } from '@src/components/core';
-import { TextInput } from 'react-native';
 import chevronRight from '@src/assets/images/icons/chevron_right.png';
 import { isExchangeRatePToken } from '@src/services/wallet/RpcClientService';
 import {PRV} from '@services/wallet/tokenService';
