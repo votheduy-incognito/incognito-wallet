@@ -7,9 +7,10 @@ import {
   Text,
   View,
   ActivityIndicator,
-  TouchableOpacity
+  TouchableOpacity,
+  BaseTextInput as TextInput,
 } from '@src/components/core';
-import {ScrollView, TextInput as ReactInput, Keyboard, TouchableWithoutFeedback, TextInput, VirtualizedList} from 'react-native';
+import {ScrollView, Keyboard, TouchableWithoutFeedback, VirtualizedList} from 'react-native';
 import accountService from '@services/wallet/accountService';
 import {getTransactionByHash, isExchangeRatePToken} from '@src/services/wallet/RpcClientService';
 import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
@@ -696,7 +697,7 @@ class Transfer extends React.PureComponent {
                     <Text>&nbsp;{token?.symbol}</Text>
                   </View>
                 </View>
-                <ReactInput
+                <TextInput
                   style={tokenStyle.input}
                   placeholder="0.0"
                   placeholderColor={COLORS.lightGrey1}

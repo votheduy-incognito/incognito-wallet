@@ -1,7 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Button, FlatList, Image, View, ScrollView, Text, TouchableOpacity, Toast, Container} from '@src/components/core';
-import {TextInput} from 'react-native';
+import {
+  Button,
+  FlatList,
+  Image,
+  View,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  Toast,
+  Container,
+  BaseTextInput as TextInput,
+} from '@src/components/core';
 import BackButton from '@src/components/BackButton';
 import Icons from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '@src/styles';
