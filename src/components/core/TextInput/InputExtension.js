@@ -15,7 +15,7 @@ const InputExtension = React.forwardRef((props,ref)=>{
   const labelProps = {allowFontScaling:false,...(props?.labelProps??{})};
   const errorProps = {allowFontScaling:false,...(props?.errorProps??{})};
   const inputContainerStyle = {...(props?.inputContainerStyle),borderBottomWidth:0};
-  return <Input ref={ref} errorStyle={{ color: COLORS.errorMessage }} inputComponent={TextInput} {...props} labelProps={labelProps} errorProps={errorProps} inputContainerStyle={inputContainerStyle} />;
+  return <Input returnKeyType="done" ref={ref} errorStyle={{ color: COLORS.errorMessage }} inputComponent={TextInput} {...props} labelProps={labelProps} errorProps={errorProps} inputContainerStyle={inputContainerStyle} />;
 });
 
 
