@@ -1,15 +1,15 @@
 import React from 'react';
-import {View, TouchableOpacity, Text} from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
 import PropTypes from 'prop-types';
-import {commonStyled} from './Button.styled';
+import { commonStyled } from './Button.styled';
 
 const Button = props => {
-  const {icon, title, styledContainer, styledTitle} = props;
+  const { icon, title, styledContainer, styledTitle, hiddenTitle } = props;
   return (
     <TouchableOpacity {...props}>
       <View style={[commonStyled.container, styledContainer]}>
         {icon}
-        <Text style={[commonStyled.title, styledTitle]}>{title}</Text>
+        {hiddenTitle && hiddenTitle ? null : <Text style={[commonStyled.title, styledTitle]}>{title}</Text>}
       </View>
     </TouchableOpacity>
   );

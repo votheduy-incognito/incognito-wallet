@@ -10,6 +10,8 @@ import NetworkSetting from '@src/screens/NetworkSetting';
 import WalletDetail from '@src/screens/WalletDetail';
 import ReceiveCoin from '@src/screens/ReceiveCoin';
 import SendCrypto from '@screens/SendCrypto';
+import WhySend from '@screens/WhySend';
+import WhyReceive from '@screens/WhyReceive';
 import pApps from '@screens/Papps';
 import TxHistoryDetail from '@src/screens/TxHistoryDetail';
 import Setting from '@screens/Setting';
@@ -114,6 +116,18 @@ const AppNavigator = createStackNavigator(
       NodeHelp,
       {
         title: 'Need help?'
+      }
+    ),
+    [ROUTE_NAMES.WhySend]: navigationOptionsHandler(
+      WhySend,
+      {
+        title: 'Send'
+      }
+    ),
+    [ROUTE_NAMES.WhyReceive]: navigationOptionsHandler(
+      WhyReceive,
+      {
+        title: 'Receive'
       }
     ),
   },

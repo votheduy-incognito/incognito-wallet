@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TouchableOpacity, View, Text, ScrollView } from '@src/components/core';
-import {useSelector} from 'react-redux';
-import {selectedPrivacySeleclor} from '@src/redux/selectors';
+import { useSelector } from 'react-redux';
+import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import ReceiveOut from '@src/components/Deposit';
 import DepositAmount from '@components/DepositAmount';
-import {useNavigationParam} from 'react-navigation-hooks';
+import { useNavigationParam } from 'react-navigation-hooks';
+import { BtnQuestion } from '@src/components/Button';
 import ROUTES_NAME from '@routers/routeNames';
 import ReceiveIn from './ReceiveIn';
+
 
 import styles from './style';
 
@@ -23,6 +25,9 @@ const modes = [
 ];
 
 const ReceiveCoin = ({ navigation }) => {
+  ReceiveCoin.navigationOptions = {
+    headerRight: <BtnQuestion onPress={() => navigation.navigate(ROUTES_NAME.WhyReceive)} />
+  };
   const [mode, setMode] = React.useState(modes[0]);
   const [amount, setAmount] = React.useState(null);
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
