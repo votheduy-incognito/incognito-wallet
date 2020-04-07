@@ -36,6 +36,7 @@ const renderCustomField = ({
       onChangeText={t => onChange(t)}
       onBlur={onBlur}
       onFocus={onFocus}
+      returnKeyType="done"
       defaultValue={value}
       prependView={(
         <View style={styled.prepend}>

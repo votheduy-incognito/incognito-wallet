@@ -26,3 +26,4 @@ export { default as TouchableOpacity } from './TouchableOpacity';
 export { default as TouchableScale } from './TouchableScale';
 export { default as Select } from './Select';
 export { default as WebView } from './WebView';
+export { default as BaseTextInput } from './BaseTextInput';
