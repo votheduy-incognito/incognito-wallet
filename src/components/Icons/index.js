@@ -7,3 +7,4 @@ export {default as NotificationIcon} from './icon.notificationsIcon';
 export {default as ReadAllIcon} from './icon.readAll';
 export {default as CircleIcon} from './icon.circle';
 export {default as ReadIcon} from './icon.read';
+export {default as QuestionIcon} from './icon.question';
