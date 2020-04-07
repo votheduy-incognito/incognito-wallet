@@ -50,4 +50,6 @@ export default {
   pUniswap: 'pUniswap',
   UniswapHistory: 'UniswapHistory',
   UniswapHistoryDetail: 'UniswapHistoryDetail',
+  WhySend: 'WhySend',
+  WhyReceive: 'WhyReceive'
 };
