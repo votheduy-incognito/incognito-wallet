@@ -1,16 +1,16 @@
 import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {TouchableOpacity, View, Text, ActivityIndicator} from '@src/components/core';
-import {useNavigationParam} from 'react-navigation-hooks';
+import {useNavigationParam } from 'react-navigation-hooks';
 import ROUTES_NAME from '@routers/routeNames';
 import {useDispatch, useSelector} from 'react-redux';
 import {accountSeleclor, selectedPrivacySeleclor} from '@src/redux/selectors';
-import {getBalance} from '@src/redux/actions/account';
+import {getBalance } from '@src/redux/actions/account';
 import {getBalance as getTokenBalance} from '@src/redux/actions/token';
 import {PRV_ID} from '@screens/Dex/constants';
+import {BtnQuestion} from '@src/components/Button';
 import SendIn from './SendIn';
 import SendOut from './SendOut';
-
 import styles from './style';
 
 const modes = [
@@ -25,6 +25,9 @@ const modes = [
 ];
 
 const SendCoin = ({ navigation }) => {
+  SendCoin.navigationOptions = {
+    headerRight: <BtnQuestion onPress={() => navigation.navigate(ROUTES_NAME.WhySend)} />
+  };
   const [mode, setMode] = React.useState(modes[0]);
   const [reloading, setReloading] = React.useState(false);
   const origin = useNavigationParam('origin');
@@ -69,7 +72,7 @@ const SendCoin = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.content}>
         <View style={styles.modes}>
-          {modes.slice(0, switchable ? 2 : 0) ?.map(item => (
+          {modes.slice(0, switchable ? 2 : 0)?.map(item => (
             <TouchableOpacity
               key={item.text}
               onPress={() => switchMode(item)}
