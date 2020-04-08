@@ -7,7 +7,8 @@ import {
 } from '@src/redux/actions/account';
 import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
 import {actionAddFollowToken} from '@src/redux/actions';
-import {CONSTANT_COMMONS} from '@src/constants';
+import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
+import {logEvent} from '@services/firebase';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -181,9 +182,12 @@ export const actionNavigate = (item, navigation) => async (
   getState,
 ) => {
   try {
-    const {id, type, publicKey, tokenId} = item;
+    const {id, type, publicKey, tokenId, screen, screenParams} = item;
     const rootState = getState();
     const accountList = accountSeleclor.listAccount(rootState);
+
+    await logEvent(CONSTANT_EVENTS.CLICK_NOTIFICATION, { type });
+
     switch (type) {
     case 'broadcast': {
       navigation.navigate(routeNames.Home);
@@ -230,6 +234,19 @@ export const actionNavigate = (item, navigation) => async (
         dispatch(actionFetchRead({id})),
         dispatch(actionFetch()),
       ]);
+      break;
+    }
+    case 'go-to-screen': {
+      const params = {};
+
+      const rawParams = (screenParams || '').split('&');
+
+      rawParams.forEach(param => {
+        const parts = param.split('=');
+        params[parts[0]] = parts[1];
+      });
+
+      navigation.navigate(screen, params);
       break;
     }
     default:
