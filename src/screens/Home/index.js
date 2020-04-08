@@ -20,9 +20,10 @@ import {useSelector} from 'react-redux';
 import accountSeleclor from '@src/redux/selectors/account';
 import dexUtil from '@utils/dex';
 import LinkingService from '@src/services/linking';
-import { CONSTANT_CONFIGS } from '@src/constants';
+import {CONSTANT_EVENTS} from '@src/constants';
 import LocalDatabase from '@utils/LocalDatabase';
 import {withdraw} from '@services/api/withdraw';
+import {logEvent} from '@services/firebase';
 import styles from './style';
 
 const sendItem = {
@@ -63,6 +64,7 @@ const pUniswapItem = {
   image: icUniswap,
   title: 'pUniswap',
   route: ROUTE_NAMES.pUniswap,
+  event: CONSTANT_EVENTS.CLICK_HOME_UNISWAP
 };
 
 const buttons = [
@@ -74,6 +76,7 @@ const buttons = [
       inputTokenId: BIG_COINS.USDT,
       outputTokenId: BIG_COINS.PRV,
     },
+    event: CONSTANT_EVENTS.CLICK_HOME_BUY,
   },
   shieldItem,
   sendItem,
@@ -87,6 +90,7 @@ const buttons = [
     image: icTrade,
     title: 'Trade',
     route: ROUTE_NAMES.Dex,
+    event: CONSTANT_EVENTS.CLICK_HOME_TRADE
   },
   pappItem,
   powerItem,
@@ -96,8 +100,9 @@ const buttons = [
 const Home = ({navigation}) => {
   const account = useSelector(accountSeleclor.defaultAccount);
 
-  const goToScreen = (route, params) => {
+  const goToScreen = (route, params, event) => {
     navigation.navigate(route, params);
+    logEvent(event);
   };
 
   const isDisabled = item => {
@@ -147,7 +152,7 @@ const Home = ({navigation}) => {
               image={item.image}
               title={item.title}
               disabled={isDisabled(item)}
-              onPress={item.onPress || (() => goToScreen(item.route, item.params))}
+              onPress={item.onPress || (() => goToScreen(item.route, item.params, item.event))}
             />
           </View>
         ))}
