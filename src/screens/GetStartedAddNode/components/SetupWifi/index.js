@@ -226,6 +226,7 @@ class SetupWifi extends PureComponent {
         <Input
           underlineColorAndroid="transparent"
           containerStyle={item}
+          autoCapitalize="none" 
           inputContainerStyle={item_container_input}
           inputStyle={[text]}
           autoCapitalize="none"
