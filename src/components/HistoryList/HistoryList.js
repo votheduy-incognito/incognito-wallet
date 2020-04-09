@@ -61,7 +61,7 @@ const getStatusData = (status, statusCode) => {
   };
 };
 
-const getTypeData = type => {
+const getTypeData = (type, history) => {
   let typeText;
   let balanceDirection;
   let balanceColor;
@@ -73,7 +73,7 @@ const getTypeData = type => {
     balanceDirection = '-';
     break;
   case CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT:
-    typeText = 'Deposit';
+    typeText = history?.userPaymentAddress ? 'Deposit' : 'Withdraw to pDEX';
     balanceColor = COLORS.green;
     balanceDirection = '+';
     break;
@@ -131,7 +131,7 @@ const HistoryItem = ({ history, divider, navigation }) => {
   }
 
   const { statusText, statusColor, statusNumber } = getStatusData(history.status, history.statusCode);
-  const { typeText, balanceColor, balanceDirection } = getTypeData(history.type);
+  const { typeText, balanceColor, balanceDirection } = getTypeData(history.type, history);
   const amount = (history.amount && formatUtil.amount(history.amount, history.pDecimals)) || formatUtil.number(history.requestedAmount);
   // const [addressDirection, address] = getAddress(history);
   const onPress = () => {

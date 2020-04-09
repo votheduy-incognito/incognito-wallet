@@ -16,6 +16,8 @@ export const logEvent = async (event, data = {}) => {
         deviceId,
         ...data,
       });
+
+      // console.debug('FIREBASE EVENT', event);
     } catch (error) {
       console.debug(TAG, 'logEvent error = ', error);
     }

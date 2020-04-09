@@ -10,6 +10,8 @@ export const normalizedData = item => {
     read: item?.IsRead === 'true' || item?.IsRead === true,
     tokenId: item?.TokenID ? item?.TokenID : CONSTANT_COMMONS.PRV_TOKEN_ID,
     publicKey: item?.PublicKey ? item?.PublicKey : '',
+    screen: item?.Screen || '',
+    screenParams: item?.ScreenParams || '',
   };
 };
 

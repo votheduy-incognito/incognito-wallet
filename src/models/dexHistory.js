@@ -180,3 +180,4 @@ export class RemoveLiquidityHistory {
     return parseHistory(history, historyObject);
   }
 }
+

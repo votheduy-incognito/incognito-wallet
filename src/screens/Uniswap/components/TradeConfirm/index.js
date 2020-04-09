@@ -16,6 +16,8 @@ import greyRightArrow from '@src/assets/images/icons/grey_right_arrow.png';
 import {Overlay, Icon} from 'react-native-elements';
 import Help from '@components/Help';
 import FullScreenLoading from '@components/FullScreenLoading/index';
+import {isIOS} from '@utils/platform';
+import {KeyboardAvoidingView} from 'react-native';
 import {MESSAGES} from '../../constants';
 import style from './style';
 import { mainStyle } from '../../style';
@@ -231,6 +233,9 @@ class TradeConfirm extends React.Component {
       tradingFeeError,
       stopPriceError,
     } = this.state;
+
+    const Wrapper = isIOS() ? KeyboardAvoidingView : View;
+
     return (
       <Overlay
         isVisible={visible}
@@ -239,7 +244,11 @@ class TradeConfirm extends React.Component {
         windowBackgroundColor={`rgba(0,0,0,${ sending ? 0.8 : 0.5})`}
       >
         <View>
-          <View style={[style.dialogContent, sending && mainStyle.hidden]}>
+          <Wrapper
+            behavior="padding"
+            keyboardVerticalOffset={200}
+            style={[style.dialogContent, sending && mainStyle.hidden]}
+          >
             <View style={[mainStyle.twoColumns, style.middle]}>
               <Text style={style.dialogTitle}>Confirm your trade details</Text>
               <TouchableOpacity style={style.closeIcon} onPress={onClose}>
@@ -258,7 +267,7 @@ class TradeConfirm extends React.Component {
               onPress={this.trade}
             />
             {!!tradeError && <Text style={[mainStyle.error, style.error, style.chainError]}>{tradeError}</Text>}
-          </View>
+          </Wrapper>
           <FullScreenLoading open={sending} />
         </View>
       </Overlay>
