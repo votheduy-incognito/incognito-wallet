@@ -7,6 +7,10 @@ import LoadingContainer from '@src/components/LoadingContainer';
 import { View } from '@src/components/core';
 import PriceChartSelector from '@src/components/HeaderRight/PriceChartSelector';
 import SimpleInfo from '@src/components/SimpleInfo';
+import ChartActions from './ChartActions';
+import LatestPrice from './LatestPrice';
+import { BY_HOUR, BY_DAY, BY_WEEK, BY_MONTH, BY_YEAR } from './util';
+
 
 function round(number) {
   return Number.parseFloat(number).toFixed(5);
@@ -31,7 +35,10 @@ const DEFAULT_PAIR = 'PRV-pUSDT';
 class PriceChartCrypto extends Component {
   state = {
     data: null,
-    label: null
+    label: null,
+    intervalMs: 3600,
+    latestPrice: 0,
+    diffPercent: 0,
   };
 
   static navigationOptions = ({ navigation }) => {
@@ -56,7 +63,8 @@ class PriceChartCrypto extends Component {
   }
 
   getPriceData(pair) {
-    const intervalMs = 6 * 3600; // 6 hrs
+    // const intervalMs = 1 * 3600; // 6 hrs
+    const { intervalMs } = this.state;
     return axios.get(`https://prices.incognito.best/api/candles/${pair}?granularity=${intervalMs}&start=1552987804&end=${Math.round(Date.now()/1000)}`)
       .then(res => res?.data);
   }
@@ -65,7 +73,11 @@ class PriceChartCrypto extends Component {
     // reset
     this.setState({ data: null }, async () => {
       const data = await this.getPriceData(pair);
+      const latestPrice = data.length > 0 ? data[data.length -1].close : 0;
+      const prevPrice = data.length > 0 ? data[data.length -2].close : 0;
+      const diffPercent = ((latestPrice/prevPrice -1)*100).toFixed(5);
 
+      this.setState({ latestPrice, diffPercent });
       if (data instanceof Array) {
         const { navigation } = this.props;
         this.setState({ label: pair, data: parseData(data, pair) });
@@ -77,10 +89,53 @@ class PriceChartCrypto extends Component {
     });
   }
 
+  handleChangePeriodTime = (intervalMs) => {
+    this.setState({ intervalMs, data: null }, async () => {
+      const { label: pair} = this.state;
+      const data = await this.getPriceData(pair);
+      console.log('data', data);
+      const latestPrice = data.length > 0 ? data[data.length -1].close : 0;
+      const prevPrice = data.length > 0 ? data[data.length -2].close : 0;
+      console.log('latestPrice', latestPrice, prevPrice);
+      const diffPercent = ((latestPrice/prevPrice -1)*100).toFixed(5);
+      console.log('diffPercent', diffPercent);
+      this.setState({ data: parseData(data, pair), diffPercent});
+    });
+  }
+  getLatestPrice = () => {
+    const { label, data, latestPrice } = this.state;
+    // return data && data.length > 0 ? '$' + latestPrice.toFixed(5) + ' ' + (label || '').split('-')[1]: null;
+    return latestPrice.toFixed(5) + ' ' + (label || 'PRV-PRV').split('-')[1];
+  }
+  handlingChartData = data => {
+    const { intervalMs } = this.state;
+    switch(intervalMs) {
+    case BY_HOUR: {
+      return data.slice(-12);
+    }
+    case BY_DAY: {
+      return data.slice(-7);
+    }
+    case BY_WEEK: {
+      return data.slice(-4);
+    }
+    case BY_MONTH: {
+      return data.slice(-12);
+    }
+    case BY_YEAR: {
+      return data.slice(-5);
+    }
+    default: return data;
+    }
+  }
   render() {
-    const { label, data } = this.state;
-    return !data ? <LoadingContainer /> : (
-      data.length ? <PriceChart label={label} data={data} /> : <SimpleInfo text={label} subText='does not have any data' />
+    const { label, data, intervalMs, diffPercent } = this.state;
+    return (
+      <View style={{ flex: 1 }}>
+        <LatestPrice price={this.getLatestPrice()} diffPercent={diffPercent} />
+        <ChartActions value={intervalMs} onPress={this.handleChangePeriodTime} />
+        {!data ? <LoadingContainer /> : data.length ? <PriceChart onChangePeriodTime={this.handleChangePeriodTime} label={label} data={this.handlingChartData(data)} chartType={intervalMs} /> : <SimpleInfo text={label} subText='does not have any data' />}
+      </View>
     );
   }
 }
