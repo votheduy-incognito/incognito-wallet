@@ -6,6 +6,8 @@ import { TouchableOpacity } from '@src/components/core';
 import { THEME } from '@src/styles';
 
 import chevronLeft from '@src/assets/images/icons/chevron-left-icon.png';
+import {generateTestId} from '@utils/misc';
+import {HEADER} from '@src/constants/elements';
 
 const BackButton = ({ onPress, width, height, size, navigation }) => {
   const back = () => navigation?.pop();
@@ -20,6 +22,7 @@ const BackButton = ({ onPress, width, height, size, navigation }) => {
         paddingLeft: 5,
         height: height
       }}
+      {...generateTestId(HEADER.BACK_BUTTON)}
     >
       <Image
         style={{
