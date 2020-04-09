@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { View, Text } from '@components/core';
 import formatUtils from '@utils/format';
-import TransactionID from './TransactionID';
+import TokenID from '@screens/UniswapHistoryDetail/TokenID';
 import stylesheet from './style';
 
 const TradeHistory = ({
@@ -16,6 +16,7 @@ const TradeHistory = ({
   outputValue,
   status,
   lockTime,
+  stopPrice,
 }) => (
   <View style={stylesheet.wrapper}>
     <Text numberOfLines={2} style={stylesheet.title}>
@@ -29,7 +30,7 @@ const TradeHistory = ({
       <Text style={stylesheet.field}>ID</Text>
       <Text style={stylesheet.textRight}>{dbId}</Text>
     </View>
-    <TransactionID txId={txId} title="ERC20 TX" />
+    <TokenID text={txId} label="ERC20 TX" />
     <View style={stylesheet.row}>
       <Text style={stylesheet.field}>TIME</Text>
       <Text style={stylesheet.textRight}>{formatUtils.formatUnixDateTime(lockTime)}</Text>
@@ -45,6 +46,10 @@ const TradeHistory = ({
     <View style={stylesheet.row}>
       <Text style={stylesheet.field}>YOU GET (ESTIMATED)</Text>
       <Text style={stylesheet.textRight} numberOfLines={2}>{outputValue} {outputToken}</Text>
+    </View>
+    <View style={stylesheet.row}>
+      <Text style={stylesheet.field}>MINIMUM AMOUNT</Text>
+      <Text style={stylesheet.textRight} numberOfLines={2}>{stopPrice} {outputToken}</Text>
     </View>
   </View>
 );

@@ -298,7 +298,7 @@ export const inputStyle = StyleSheet.create({
   },
   headerBalanceTitle: {
     fontSize: 15,
-    maxWidth: 80,
+    maxWidth: 160,
     marginRight: 5,
   },
   balanceText: {

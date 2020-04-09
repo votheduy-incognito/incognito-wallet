@@ -487,36 +487,43 @@ export default class Account {
     }));
   }
 
-  static sign0x(wallet, account, {
+  static async sign0x(wallet, {
     sourceToken,
     sourceQuantity,
-    sourceTokenName,
     destToken,
-    destTokenName,
     quoteTo,
     quoteData,
     tradeABI,
     tradeDeployedAddress,
     privateKey,
   }) {
-    const indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
-    return wallet.MasterAccount.child[
-      indexAccount
-    ].sign0x({
-      sourceToken,
-      sourceQuantity,
-      sourceTokenName,
-      destToken,
-      destTokenName,
-      quoteTo,
-      quoteData,
-      tradeABI,
-      tradeDeployedAddress,
-      privateKey,
-    });
+    const data = {
+      data: {
+        sourceToken,
+        sourceQuantity,
+
+        destToken,
+        quoteTo,
+        quoteData,
+
+        tradeABI,
+        tradeDeployedAddress,
+
+        privateKey,
+      }
+    };
+
+    const rawData = await global.sign0x(JSON.stringify(data));
+    const result = JSON.parse(rawData);
+    const {signBytes, timestamp, input} = result;
+    return {
+      signBytes,
+      timestamp,
+      input,
+    };
   }
 
-  static signKyber(wallet, account, {
+  static async signKyber(wallet, {
     sourceToken,
     sourceQuantity,
     destToken,
@@ -525,18 +532,30 @@ export default class Account {
     privateKey,
     expectRate,
   }) {
-    const indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
-    return wallet.MasterAccount.child[
-      indexAccount
-    ].signKyber({
-      sourceToken,
-      sourceQuantity,
-      destToken,
-      tradeABI,
-      tradeDeployedAddress,
-      privateKey,
-      expectRate,
-    });
+    const data = {
+      data:{
+        sourceToken,
+        sourceQuantity,
+
+        destToken,
+
+        tradeABI,
+        tradeDeployedAddress,
+
+        expectRate,
+
+        privateKey,
+      }
+    };
+
+    const rawData = await global.signKyber(JSON.stringify(data));
+    const result = JSON.parse(rawData);
+    const {signBytes, timestamp, input} = result;
+    return {
+      signBytes,
+      timestamp,
+      input,
+    };
   }
 
   static withdrawSmartContract(wallet, account, tokenAddress) {

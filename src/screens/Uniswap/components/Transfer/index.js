@@ -32,13 +32,14 @@ import routeNames from '@routers/routeNames';
 import {depositToSmartContract, submitBurnProof} from '@services/trading';
 import {logEvent} from '@services/firebase';
 import dexUtil from '@utils/dex';
+import {TRANSFER_STATUS} from '@src/redux/actions/uniswap';
 import TransferSuccessPopUp from '../TransferSuccessPopUp';
 import {WAIT_TIME, MESSAGES, MIN_INPUT, MULTIPLY, MAX_WAITING_TIME, PRV_ID} from '../../constants';
 import { mainStyle, modalStyle, tokenStyle } from '../../style';
 
 const MAX_TRIED = MAX_WAITING_TIME / WAIT_TIME;
 
-class Transfer extends React.PureComponent {
+class Transfer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -66,6 +67,23 @@ class Transfer extends React.PureComponent {
     }
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state !== nextState) {
+      return true;
+    }
+
+    if (this.props !== nextProps) {
+      // eslint-disable-next-line react/destructuring-assignment
+      const diffKeys = Object.keys(this.props).filter(key => !_.isFunction(this.props[key]) && this.props[key] !== nextProps[key]);
+
+      if (diffKeys.length === 1 && diffKeys[0] === 'accounts') {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   updateTransfer(newTransfer, cb) {
     const { transfer } = this.state;
     this.setState({ transfer: {...transfer, ...newTransfer} }, cb);
@@ -86,14 +104,17 @@ class Transfer extends React.PureComponent {
     };
   };
 
-  checkCorrectBalance = (account, token, value) => {
+  checkCorrectBalance = (account, token, value, prvFee) => {
     const { wallet } = this.props;
     let tried = 0;
     return async (resolve, reject) => {
       const balance = await accountService.getBalance(account, wallet, token.id);
       if (balance >= value) {
-        clearInterval(this.interval);
-        resolve(balance);
+        const prvBalance = await accountService.getBalance(account, wallet);
+        if (!prvFee || prvBalance >= prvFee) {
+          clearInterval(this.interval);
+          resolve(balance);
+        }
       }
 
       if (tried++ > MAX_TRIED) {
@@ -143,20 +164,20 @@ class Transfer extends React.PureComponent {
       tokenSymbol: token.symbol,
     });
 
-    const paymentInfo = {
+    const prvFee = feeUnit === PRV.symbol ? fee : 0;
+    const tokenFee = feeUnit !== PRV.symbol ? fee : 0;
+
+    const paymentInfo = prvFee ? {
       paymentAddressStr: dexMainAccount.PaymentAddress,
       amount: fee,
-    };
+    } : null;
 
     try {
       let res = {};
 
       if (!dexUtil.isDEXMainAccount(account.AccountName)) {
-        res = await this.sendPToken(account, dexMainAccount, token, amount, paymentInfo, feeUnit === PRV.symbol ? fee : 0, feeUnit !== PRV.symbol ? fee : 0);
+        res = await this.sendPToken(account, dexMainAccount, token, amount + tokenFee, paymentInfo, prvFee, tokenFee);
       }
-
-      const prvFee = feeUnit === PRV.symbol ? fee : 0;
-      const tokenFee = feeUnit !== PRV.symbol ? fee : 0;
 
       const history = new DepositHistory({
         res,
@@ -171,7 +192,7 @@ class Transfer extends React.PureComponent {
       if (!dexUtil.isDEXMainAccount(account.AccountName)) {
         onAddHistory(history);
         await this.waitUntil(this.waitTxComplete(res.txId), WAIT_TIME);
-        await this.waitUntil(this.checkCorrectBalance(dexMainAccount, PRV, amount + fee), WAIT_TIME);
+        await this.waitUntil(this.checkCorrectBalance(dexMainAccount, token, amount + tokenFee, prvFee), WAIT_TIME);
       }
 
       const burnRes = await depositToSmartContract({
@@ -258,7 +279,9 @@ class Transfer extends React.PureComponent {
         res2 = await this.sendPToken(dexWithdrawAccount, account, token, amount, null, tokenFee ? 0 : fee, tokenFee);
       }
 
-      newHistory.updateTx2(res2);
+      newHistory.txId2 = res2.txId;
+      newHistory.updatedAt = Math.floor(new Date().getTime() / 1000);
+      newHistory.status = TRANSFER_STATUS.PENDING;
       WithdrawHistory.currentWithdraw = null;
       onUpdateHistory(newHistory);
       Toast.showSuccess(MESSAGES.WITHDRAW_COMPLETED);
@@ -682,7 +705,7 @@ class Transfer extends React.PureComponent {
                   </Text>
                 </View>
                 <View style={[mainStyle.twoColumns, mainStyle.center, tokenStyle.wrapper, mainStyle.padding]}>
-                  <Text style={tokenStyle.name}>Balance:</Text>
+                  <Text style={tokenStyle.name}>{action === 'withdraw' ? 'pDEX Balance:' : 'Balance:'}</Text>
                   <View style={[mainStyle.textRight, mainStyle.twoColumns]}>
                     { _.isNumber(balance) ?
                       (
@@ -719,7 +742,7 @@ class Transfer extends React.PureComponent {
                       dexBalance={balance}
                       amount={amount <= balance ? amount / Math.pow(10, token?.pDecimals || 0) : null}
                       toAddress={action === 'deposit' ? dexMainAccount?.PaymentAddress : dexWithdrawAccount?.PaymentAddress}
-                      multiply={2}
+                      multiply={4}
                     />
                   </View>
                 )}

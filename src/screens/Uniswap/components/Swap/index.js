@@ -14,6 +14,8 @@ import {execute, execute0x, getQuote} from '@services/trading';
 import {generateQuoteURL, get0xQuote} from '@services/trading/0x';
 import {TradeHistory} from '@models/uniswapHistory';
 import TradingToken from '@models/tradingToken';
+import {logEvent} from '@services/firebase';
+import {CONSTANT_EVENTS} from '@src/constants';
 import TradeConfirm from '../TradeConfirm';
 import SwapSuccessDialog from '../SwapSuccessDialog';
 import Input from '../Input';
@@ -88,18 +90,25 @@ class Swap extends React.Component {
     }
   }
 
-  selectInput = (token, value = 1, outputToken) => {
+  selectInput = (inputToken, value = 1, outputToken) => {
     this.setState({
-      inputToken: token,
-      inputValue: convertUtil.toOriginalAmount(value, token.pDecimals),
-      outputToken: outputToken,
+      inputToken: inputToken,
+      inputValue: convertUtil.toOriginalAmount(value, inputToken.pDecimals),
+      outputToken: null,
       outputValue: null,
       inputError: null,
       balance: 'Loading',
     }, () => {
       this.filterOutputList(() => {
-        const { inputValue } = this.state;
-        this.changeInputValue(convertUtil.toHumanAmount(inputValue, token.pDecimals));
+        const {inputValue, outputList} = this.state;
+
+        const token = outputToken && outputList.find(token => token.id === outputToken.id);
+
+        if (token) {
+          this.selectOutput(token);
+        }
+
+        this.changeInputValue(convertUtil.toHumanAmount(inputValue, inputToken.pDecimals));
         this.getInputBalance();
       });
     });
@@ -140,7 +149,7 @@ class Swap extends React.Component {
       }
     }
 
-    this.setState({ rawText: newValue ? newValue.toString() : '' });
+    this.setState({ rawText: newValue ? formatUtil.toFixed(newValue, inputToken?.pDecimals) : '' });
   };
 
   async filterOutputList(callback) {
@@ -196,7 +205,13 @@ class Swap extends React.Component {
 
   async getPairQuoteData() {
     try {
-      const {outputToken, inputToken, inputValue} = this.state;
+      const {outputToken, inputToken, inputValue, inputError} = this.state;
+
+      if (inputError && inputError !== 'Asset liquidity is insufficient.') {
+        this.setState({outputValue: 0, price: 0});
+        return;
+      }
+
       const quote = await getQuote({
         sellToken: inputToken,
         sellAmount: inputValue,
@@ -204,16 +219,24 @@ class Swap extends React.Component {
         protocol: outputToken?.protocol,
       });
 
-      const {inputError} = this.state;
+      const {inputValue: currentInputValue} = this.state;
 
-      if (inputError === 'Asset liquidity is insufficient.') {
-        this.setState({ inputError: '' });
+      if (inputValue === currentInputValue) {
+        const {inputError: currentInputError} = this.state;
+
+        if (currentInputError === 'Asset liquidity is insufficient.') {
+          this.setState({inputError: ''});
+        }
+
+        const {amount: outputValue, price} = quote;
+        this.setState({outputValue, price});
       }
-
-      const { amount: outputValue, price } = quote;
-      this.setState({ outputValue, price });
     } catch (error) {
-      this.setState({ inputError: 'Asset liquidity is insufficient.' });
+      this.setState({
+        inputError: 'Asset liquidity is insufficient.',
+        outputValue: 0,
+        price: 0,
+      });
     } finally {
       this.setState({ loadingOutput: false });
     }
@@ -243,7 +266,7 @@ class Swap extends React.Component {
       quoteData,
     };
 
-    const res = await accountService.sign0x(wallet, dexMainAccount, data);
+    const res = await accountService.sign0x(wallet, data);
     const {signBytes, input, timestamp} = res;
 
     return execute0x({
@@ -262,9 +285,12 @@ class Swap extends React.Component {
   tradeKyber = async (stopPrice) => {
     const {dexMainAccount, wallet} = this.props;
     const {inputToken, inputValue, outputToken} = this.state;
+
+    const originalValue = convertUtil.toDecimals(inputValue, inputToken).toString();
+
     const data = {
       sourceToken: inputToken.address,
-      sourceQuantity: inputValue.toString(),
+      sourceQuantity: originalValue,
       destToken: outputToken.address,
       quoteUrl: generateQuoteURL({
         buyToken: outputToken.symbol,
@@ -277,7 +303,7 @@ class Swap extends React.Component {
       expectRate: convertUtil.toDecimals(stopPrice, outputToken).toString(),
     };
 
-    const res = await accountService.signKyber(wallet, dexMainAccount, data);
+    const res = await accountService.signKyber(wallet, data);
     const {signBytes, input, timestamp} = res;
 
     return execute({
@@ -304,13 +330,18 @@ class Swap extends React.Component {
   }
 
   swapTokens = () => {
-    const { inputToken, inputValue, outputToken } = this.state;
+    const {inputToken, inputValue, outputToken} = this.state;
+    const {tokens} = this.props;
 
     if (!inputToken || !outputToken) {
       return;
     }
 
-    this.selectInput(outputToken, convertUtil.toHumanAmount(inputValue, inputToken.pDecimals), inputToken);
+    const rawInput = tokens.find(token => token.id === outputToken.id);
+
+    this.setState({outputValue: 0, price: 0});
+
+    this.selectInput(rawInput, convertUtil.toHumanAmount(inputValue, inputToken.pDecimals), inputToken);
   };
 
   getBalance = (token) => {
@@ -330,7 +361,7 @@ class Swap extends React.Component {
     }
 
     if (balance < inputValue) {
-      return this.setState({ tradeError: MESSAGES.NOT_ENOUGH_BALANCE_TO_TRADE(inputToken.symbol) });
+      return this.setState({ inputError: MESSAGES.NOT_ENOUGH_BALANCE_TO_TRADE(inputToken.symbol) });
     }
 
     this.setState({ showTradeConfirm: true });
@@ -360,7 +391,21 @@ class Swap extends React.Component {
         return this.setState({ tradeError: MESSAGES.NOT_ENOUGH_BALANCE_TO_TRADE(inputToken.symbol) });
       }
 
+      logEvent(CONSTANT_EVENTS.TRADE_UNISWAP, {
+        inputTokenId: inputToken.id,
+        inputTokenSymbol: inputToken.symbol,
+        outputTokenId: outputToken.id,
+        outputTokenSymbol: outputToken.symbol,
+        protocol: outputToken.protocol,
+      });
       result = await this.tradePToken(stopPrice, stopPricePercent);
+      await logEvent(CONSTANT_EVENTS.TRADE_SUCCESS, {
+        inputTokenId: inputToken.id,
+        inputTokenSymbol: inputToken.symbol,
+        outputTokenId: outputToken.id,
+        outputTokenSymbol: outputToken.symbol,
+        protocol: outputToken.protocol,
+      });
 
       const history = new TradeHistory({
         id: result,
@@ -369,11 +414,20 @@ class Swap extends React.Component {
         outputToken,
         inputValue,
         outputValue,
+        stopPrice,
       });
       history.status = 'pending';
       onAddHistory(history);
       this.setState({ showSwapSuccess: true, showTradeConfirm: false, });
     } catch (error) {
+      logEvent(CONSTANT_EVENTS.TRADE_UNISWAP_FAILED, {
+        inputTokenId: inputToken.id,
+        inputTokenSymbol: inputToken.symbol,
+        outputTokenId: outputToken.id,
+        outputTokenSymbol: outputToken.symbol,
+        protocol: outputToken.protocol,
+      });
+
       this.setState({ tradeError: new ExHandler(error).getMessage(MESSAGES.TRADE_ERROR) });
     } finally {
       this.setState({ sending: false });
@@ -384,10 +438,11 @@ class Swap extends React.Component {
     const { inputToken } = this.state;
     this.setState({
       showSwapSuccess: false,
-      inputValue: convertUtil.toOriginalAmount(1, inputToken.pDecimals),
+      inputError: convertUtil.toOriginalAmount(1, inputToken.pDecimals),
       rawText: '1',
       outputValue: null,
     }, () => {
+      this.changeInputValue('1');
       this.getPairQuote();
     });
   };

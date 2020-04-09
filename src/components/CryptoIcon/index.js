@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { Image, View } from '@src/components/core';
 import defaultTokenIcon from '@src/assets/images/icons/default_token_icon.png';
 import PropTypes from 'prop-types';
@@ -65,7 +66,14 @@ class CryptoIcon extends Component {
 
   getUri = async (defaultUri) => {
     const { token, logoStyle } = this.props;
-    const _uri = defaultUri || token?.iconUrl;
+    const components = (defaultUri || token?.iconUrl || '').split('/');
+    const lastComponent = _.last(components);
+
+    if (lastComponent && lastComponent.replace) {
+      components[components.length - 1] = encodeURIComponent(lastComponent);
+    }
+
+    const _uri = components.join('/');
 
     this.setState(({ uri }) => uri !== _uri && ({ uri: _uri, imageComponent: (
       <Image

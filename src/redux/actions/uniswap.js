@@ -11,7 +11,7 @@ export const TRANSFER_STATUS = {
   SUCCESSFUL: 'successful',
   UNSUCCESSFUL: 'unsuccessful',
   INTERRUPTED: 'tap to try again',
-  FAILED: 'failed',
+  FAILED: 'unsuccessful',
   REFUNDED: 'refunded',
   PART_REFUNFED: 'part-refunded',
   REJECTED: 'unsuccessful',
@@ -19,28 +19,28 @@ export const TRANSFER_STATUS = {
 };
 
 export const DEPOSIT_STATUS = {
-  1: TRANSFER_STATUS.PENDING,
-  2: TRANSFER_STATUS.PENDING,
-  3: TRANSFER_STATUS.FAILED,
-  4: TRANSFER_STATUS.SUCCESSFUL,
-  5: TRANSFER_STATUS.FAILED,
-  6: TRANSFER_STATUS.FAILED,
+  1: TRANSFER_STATUS.PENDING, // EthSubmitBurnProofToDeposit
+  2: TRANSFER_STATUS.PENDING, // EthSubmitingBurnProofToSM
+  3: TRANSFER_STATUS.FAILED, // EthSubmitBurnProofToSMFailed
+  4: TRANSFER_STATUS.SUCCESSFUL, // EthSubmitBurnProofToSMSucceed
+  5: TRANSFER_STATUS.FAILED, // UniswapFailedGettingBurnProof
+  6: TRANSFER_STATUS.FAILED, // UniswapBurnProofInvalid
 };
 
 export const TRADE_STATUS = {
-  7: TRANSFER_STATUS.PENDING,
-  8: TRANSFER_STATUS.PENDING,
-  9: TRANSFER_STATUS.SUCCESSFUL,
-  10: TRANSFER_STATUS.FAILED,
+  7: TRANSFER_STATUS.PENDING, // ExecuteOnSM
+  8: TRANSFER_STATUS.PENDING, // ExecutingOnSM
+  9: TRANSFER_STATUS.SUCCESSFUL, // ExecutingOnSMSucceed
+  10: TRANSFER_STATUS.FAILED, // ExecuteOnSMFailed
   17: TRANSFER_STATUS.PENDING,
 };
 
 export const WITHDRAW_STATUS = {
-  12: TRANSFER_STATUS.PENDING,
-  13: TRANSFER_STATUS.PENDING,
-  14: TRANSFER_STATUS.FAILED,
-  15: TRANSFER_STATUS.FAILED,
-  16: TRANSFER_STATUS.SUCCESSFUL,
+  12: TRANSFER_STATUS.PENDING, // EthWithdrawRequest
+  13: TRANSFER_STATUS.PENDING, // EthWithdrawRequesting
+  14: TRANSFER_STATUS.FAILED, // EthWithdrawRequestFailed
+  15: TRANSFER_STATUS.FAILED, // EthWithdrawRequestCreateNewEtaRecordFailed
+  16: TRANSFER_STATUS.SUCCESSFUL, // EthWithdrawRequestSucceed
 };
 
 export const NOT_CHANGE_STATUS = [
@@ -163,7 +163,7 @@ export const getHistories = () => async (dispatch) => {
   const formattedHistories = histories.map(item => HISTORY_TYPES[item.type].load(item));
 
   (histories || []).forEach(item => {
-    if (!item.status || (!NOT_CHANGE_STATUS.includes(item.status)) ||
+    if (!item.status || item.status === TRANSFER_STATUS.PENDING || (!NOT_CHANGE_STATUS.includes(item.status)) ||
       (RETRY_STATUS.includes(item.status) && item.errorTried < MAX_ERROR_TRIED)) {
       dispatch(getHistoryStatus(item));
     }

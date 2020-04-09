@@ -7,6 +7,7 @@ import {ScrollView, Text, View} from '@components/core';
 import {getHistories, getHistoryStatus} from '@src/redux/actions/uniswap';
 import routeNames from '@routers/routeNames';
 import HISTORY_TYPES from '@src/components/UniswapHistoryItem';
+import {LIMIT_HISTORY} from '@screens/Uniswap/constants';
 import stylesheet from './style';
 
 class UniswapHistory extends React.Component {
@@ -53,7 +54,7 @@ class UniswapHistory extends React.Component {
     return (
       <History
         {...history}
-        key={history.txId}
+        key={history.id}
         onPress={this.goToDetail.bind(this, history)}
         isLastItem={index === list.length - 1}
       />
@@ -79,7 +80,10 @@ class UniswapHistory extends React.Component {
     const { histories } = this.props;
     const { isFetching } = this.state;
 
-    const allHistories = _.orderBy(histories, ['lockTime', 'updatedAt'], ['desc', 'desc']);
+    const allHistories = _(histories)
+      .filter(item => item?.lockTime)
+      .orderBy(['lockTime'], ['desc'])
+      .value();
 
     return (
       <View style={stylesheet.container}>
