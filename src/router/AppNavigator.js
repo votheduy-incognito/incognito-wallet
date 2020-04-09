@@ -119,7 +119,6 @@ const AppNavigator = createStackNavigator(
         title: 'Need help?'
       }
     ),
-<<<<<<< HEAD
     [ROUTE_NAMES.WhySend]: navigationOptionsHandler(
       WhySend,
       {
@@ -132,9 +131,7 @@ const AppNavigator = createStackNavigator(
         title: 'Receive'
       }
     ),
-=======
     [ROUTE_NAMES.PriceChartCrypto]: navigationOptionsHandler(PriceChartCrypto, { title: 'Price Chart' }),
->>>>>>> Add price chart
   },
   {
     initialRouteName: ROUTE_NAMES.RootTab,
