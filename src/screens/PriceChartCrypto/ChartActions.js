@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
   btn: {
     width: btnWidth,
-    backgroundcolor: '#FAFAFA',
+    backgroundColor: '#FAFAFA',
     borderColor: '#F1F1F1',
     borderWidth: 1,
     borderRadius: 5,
