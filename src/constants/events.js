@@ -19,6 +19,10 @@ export default {
   WITHDRAW_PDEX_SUCCESS : 'withdraw_pdex_success',
   WITHDRAW_PDEX_FAILED : 'withdraw_pdex_failed',
 
+  CLICK_HOME_BUY: 'click_home_buy',
+  CLICK_HOME_TRADE: 'click_home_trade',
+  CLICK_HOME_UNISWAP: 'click_home_uniswap',
+
   DEPOSIT_UNISWAP : 'deposit_uniswap',
   DEPOSIT_UNISWAP_SUCCESS : 'deposit_uniswap_success',
   DEPOSIT_UNISWAP_FAILED : 'deposit_uniswap_failed',
@@ -29,6 +33,12 @@ export default {
   WITHDRAW_UNISWAP : 'withdraw_uniswap',
   WITHDRAW_UNISWAP_SUCCESS : 'withdraw_uniswap_success',
   WITHDRAW_UNISWAP_FAILED : 'withdraw_uniswap_failed',
-  
+
+  WITHDRAW_UNISWAP_SC : 'withdraw_uniswap_sc',
+  WITHDRAW_UNISWAP_SC_SUCCESS : 'withdraw_uniswap_sc_success',
+  WITHDRAW_UNISWAP_SC_FAILED : 'withdraw_uniswap_sc_failed',
+
   NOTIFICATION: 'notification',
+
+  CLICK_NOTIFICATION: 'click_notification',
 };

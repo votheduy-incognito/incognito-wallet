@@ -58,7 +58,11 @@ class Input extends React.Component {
   handleSearch = (text) => {
     const { tokenList } = this.props;
     const searchText = text.toLowerCase();
-    const filteredTokens = _.trim(searchText).length > 0 ? (tokenList || []) : tokenList;
+    const filteredTokens = _.trim(searchText).length > 0 ? (tokenList || [])
+      .filter(token =>
+        token?.name?.toLowerCase?.().includes(_.trim(searchText)) ||
+        token?.symbol?.toLowerCase?.().includes(_.trim(searchText))
+      ) : tokenList;
     this.setState({ filteredTokens });
   };
 
@@ -148,11 +152,11 @@ class Input extends React.Component {
   renderBalance() {
     const { balance, token } = this.props;
     return (
-      <View style={[inputStyle.headerBalance, mainStyle.textRight]}>
-        <Text style={[inputStyle.headerTitle, inputStyle.headerBalanceTitle]}>Balance:</Text>
+      <View style={[mainStyle.textRight]}>
+        <Text style={[inputStyle.headerTitle, mainStyle.textRight]}>Smart contract balance</Text>
         {balance === 'Loading' ?
-          <View><ActivityIndicator size="small" /></View> : (
-            <Text style={inputStyle.balanceText} numberOfLines={1}>
+          <View style={mainStyle.textRight}><ActivityIndicator size="small" /></View> : (
+            <Text style={[inputStyle.balanceText, mainStyle.textRight]} numberOfLines={1}>
               {formatUtil.amount(balance, token?.pDecimals)}
             </Text>
           )}

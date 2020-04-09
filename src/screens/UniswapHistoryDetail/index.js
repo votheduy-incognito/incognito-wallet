@@ -10,7 +10,7 @@ import tokenService, {PRV} from '@services/wallet/tokenService';
 import accountService from '@services/wallet/accountService';
 import Toast from '@components/core/Toast/Toast';
 import {DEX} from '@utils/dex';
-import {deleteHistory, getHistoryStatus, updateHistory} from '@src/redux/actions/uniswap';
+import {deleteHistory, getHistoryStatus, TRANSFER_STATUS, updateHistory} from '@src/redux/actions/uniswap';
 import {connect} from 'react-redux';
 import {ExHandler} from '@services/exception';
 import AddPin from '@screens/AddPIN';
@@ -66,14 +66,16 @@ const waitUntil = (func, ms) => {
   });
 };
 
-const checkCorrectBalance = (wallet, account, token, value) => {
+const checkCorrectBalance = (wallet, account, token, value, prvFee) => {
   let tried = 0;
   return async (resolve, reject) => {
     const balance = await accountService.getBalance(account, wallet, token.id);
-    console.debug('BALANCE', balance, value);
     if (balance >= value) {
-      clearInterval(currentInterval);
-      return resolve(balance);
+      const prvBalance = await accountService.getBalance(account, wallet);
+      if (!prvFee || prvBalance >= prvFee) {
+        clearInterval(currentInterval);
+        resolve(balance);
+      }
     }
 
     if (tried++ > MAX_TRIED) {
@@ -82,7 +84,7 @@ const checkCorrectBalance = (wallet, account, token, value) => {
   };
 };
 
-const DexHistoryDetail = ({ navigation, wallet, updateHistory, getHistoryStatus, deleteHistory }) => {
+const UniswapHistoryDetail = ({ navigation, wallet, updateHistory, getHistoryStatus, deleteHistory }) => {
   const { params } = navigation.state;
   const { history } = params;
   const [loading, setLoading] = React.useState(false);
@@ -100,15 +102,16 @@ const DexHistoryDetail = ({ navigation, wallet, updateHistory, getHistoryStatus,
       const dexMainAccount = accounts.find(item => item.AccountName === DEX.MAIN_ACCOUNT);
       const {networkFee, networkFeeUnit, tokenId, amount, burnTxId} = history;
       const scAddress = await accountService.generateIncognitoContractAddress(wallet, dexMainAccount);
+      const fee = _.floor(networkFee / 2, 0);
 
-      const prvFee = networkFeeUnit === PRV.symbol ? networkFee : 0;
-      const tokenFee = networkFeeUnit !== PRV.symbol ? networkFee : 0;
+      const prvFee = networkFeeUnit === PRV.symbol ? fee : 0;
+      const tokenFee = networkFeeUnit !== PRV.symbol ? fee : 0;
       const token = {id: tokenId};
       let burnRes;
 
       if (!burnTxId) {
 
-        await waitUntil(checkCorrectBalance(wallet, dexMainAccount, token, amount + networkFee), WAIT_TIME);
+        await waitUntil(checkCorrectBalance(wallet, dexMainAccount, token, amount + tokenFee, prvFee), WAIT_TIME);
 
         burnRes = await depositToSmartContract({
           token,
@@ -130,6 +133,7 @@ const DexHistoryDetail = ({ navigation, wallet, updateHistory, getHistoryStatus,
         tokenId: token?.id,
         burningTxId: burnTxId || burnRes.txId,
       });
+      history.status = TRANSFER_STATUS.PENDING;
       updateHistory(history);
 
       Toast.showSuccess(MESSAGES.DEPOSIT_SUCCESS);
@@ -137,10 +141,6 @@ const DexHistoryDetail = ({ navigation, wallet, updateHistory, getHistoryStatus,
       updateHistory(history);
       Toast.showError(new ExHandler(error).getMessage());
     } finally {
-      if (DepositHistoryModel.currentDeposit) {
-        getHistoryStatus(DepositHistory.currentDeposit);
-      }
-      DepositHistoryModel.currentDeposit = null;
       setLoading('');
     }
   };
@@ -160,16 +160,17 @@ const DexHistoryDetail = ({ navigation, wallet, updateHistory, getHistoryStatus,
       const account = { AccountName: accountName, PaymentAddress: paymentAddress };
       const fee = _.floor(networkFee / 2, 0);
 
+      const prvFee = networkFeeUnit === PRV.symbol ? fee : 0;
       const tokenFee = networkFeeUnit !== PRV.symbol ? fee : 0;
-      await waitUntil(checkCorrectBalance(wallet, dexWithdrawAccount, token, amount + tokenFee), SHORT_WAIT_TIME);
+      await waitUntil(checkCorrectBalance(wallet, dexWithdrawAccount, token, amount + tokenFee, prvFee), SHORT_WAIT_TIME);
       const res = await sendPToken(wallet, dexWithdrawAccount, account, token, amount, null, tokenFee ? 0 : fee, tokenFee);
 
-      history.updateTx2(res);
+      history.txId2 = res.txId;
+      history.updatedAt = Math.floor(new Date().getTime() / 1000);
+      history.status = TRANSFER_STATUS.PENDING;
       updateHistory(history);
-      await getHistoryStatus(history);
       Toast.showSuccess(MESSAGES.WITHDRAW_COMPLETED);
     } catch (error) {
-      updateHistory(history);
       Toast.showError(new ExHandler(error).getMessage());
     } finally {
       WithdrawHistoryModel.withdrawing = false;
@@ -229,7 +230,7 @@ const mapDispatch = {
 };
 
 
-DexHistoryDetail.propTypes = {
+UniswapHistoryDetail.propTypes = {
   wallet: PropTypes.object.isRequired,
   updateHistory: PropTypes.func.isRequired,
   getHistoryStatus: PropTypes.func.isRequired,
@@ -247,4 +248,4 @@ DexHistoryDetail.propTypes = {
 export default connect(
   mapState,
   mapDispatch
-)(DexHistoryDetail);
+)(UniswapHistoryDetail);

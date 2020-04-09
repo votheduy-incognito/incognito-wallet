@@ -26,7 +26,7 @@ const WithdrawSC = ({
       <Text style={stylesheet.field}>ID</Text>
       <Text style={stylesheet.textRight}>{dbId}</Text>
     </View>
-    <TokenID txId={txId} label="ERC20 TX" />
+    <TokenID text={txId} label="ERC20 TX" />
     <View style={stylesheet.row}>
       <Text style={stylesheet.field}>TIME</Text>
       <Text style={stylesheet.textRight}>{formatUtils.formatUnixDateTime(lockTime)}</Text>

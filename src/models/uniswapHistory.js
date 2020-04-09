@@ -21,6 +21,7 @@ export class TradeHistory {
       outputToken,
       inputValue,
       outputValue,
+      stopPrice,
     } = data;
 
     this.id = v4();
@@ -34,6 +35,7 @@ export class TradeHistory {
     this.outputValue = formatUtil.amountFull(outputValue, outputToken.pDecimals);
     this.type = MESSAGES.TRADE;
     this.updatedAt = Math.floor(new Date().getTime() / 1000);
+    this.stopPrice = stopPrice;
   }
 
   static load(historyObject) {
@@ -67,15 +69,6 @@ export class WithdrawHistory {
     this.updatedAt = Math.floor(new Date().getTime() / 1000);
 
     WithdrawHistory.currentWithdraw = this;
-  }
-
-  updateTx2(res) {
-    this.txId2 = res.txId;
-    this.lockTime2 = res.lockTime;
-    this.checking = false;
-    this.status = undefined;
-    this.lockTime = res.lockTime;
-    this.updatedAt = Math.floor(new Date().getTime() / 1000);
   }
 
   static currentWithdraw = null;

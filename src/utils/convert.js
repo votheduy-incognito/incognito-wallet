@@ -6,7 +6,7 @@ const checkAmount = (amount) => {
   if (!Number.isFinite(amount)) throw new Error('Can not format invalid amount');
 };
 
-const toNumber = (text, autoCorrect = false) => {
+const replaceDecimals = (text, autoCorrect = false) => {
   if (typeof text !== 'string') {
     return text;
   }
@@ -21,7 +21,13 @@ const toNumber = (text, autoCorrect = false) => {
     text = text.replace(/,/g, '');
   }
 
-  return _.toNumber(text);
+  return text;
+};
+
+const toNumber = (text, autoCorrect = false) => {
+  const number = replaceDecimals(text, autoCorrect);
+
+  return _.toNumber(number);
 };
 
 export default {
@@ -80,7 +86,7 @@ export default {
   },
 
   toPDecimals(number, token) {
-    return BigNumber(number)
+    return BigNumber(replaceDecimals(number, true))
       .dividedBy(BigNumber(10).pow(token.decimals))
       .multipliedBy(BigNumber(10).pow(token.pDecimals))
       .dividedToIntegerBy(1)
@@ -88,7 +94,7 @@ export default {
   },
 
   toDecimals(number, token) {
-    return BigNumber(number)
+    return BigNumber(replaceDecimals(number, true))
       .dividedBy(BigNumber(10).pow(token.pDecimals))
       .multipliedBy(BigNumber(10).pow(token.decimals))
       .dividedToIntegerBy(1)
