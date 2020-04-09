@@ -5,9 +5,12 @@ import {
   processColor
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {CandleStickChart} from 'react-native-charts-wrapper';
+import {LineChart} from 'react-native-charts-wrapper';
 import update from 'immutability-helper';
 import moment from 'moment';
+import { BY_HOUR, BY_DAY, BY_WEEK, BY_MONTH, BY_YEAR } from '@src/screens/PriceChartCrypto/util';
+
+const extractLineData = data => data.map(e => ({ y: e.close }));
 
 class PriceChart extends Component {
   constructor(props) {
@@ -16,7 +19,7 @@ class PriceChart extends Component {
     this.state = {
       data: {
         dataSets: [{
-          values: props.data,
+          values: extractLineData(props.data),
           label: props.label,
           config: {
             highlightColor: processColor('darkgray'),
@@ -41,7 +44,16 @@ class PriceChart extends Component {
 
     this.x = 0;
   }
-
+  formatDateByChartType = (d) => {
+    const { chartType } = this.props;
+    switch(chartType) {
+    case BY_HOUR: return d.format('DD MMM HH:mm');
+    case BY_DAY, BY_WEEK: return d.format('DD MMM');
+    case BY_MONTH: return d.format('MMM');
+    case BY_YEAR: return d.format('YYYY');
+    default: return d.format('DD MMM HH:mm');
+    }
+  }
   componentWillMount() {
     this.setState((state) => {
       const { data } = this.props;
@@ -52,16 +64,17 @@ class PriceChart extends Component {
             drawGridLines: false,
             position: 'BOTTOM',
             yOffset: 5,
-            valueFormatter: data.map(item => moment(item.time).format('DD MMM HH:mm')),
-            labelRotationAngle: -90,
+            valueFormatter: data.map(item => this.formatDateByChartType(moment(item.time))),
+            labelRotationAngle: -90
           }
         },
         yAxis: {
           $set: {
             left: {
-              axisMinimum: 0
+              // axisMinimum: 0,
+              enabled: false
             },
-            right: {enabled: false}
+            right: {enabled: true}
           }
         },
         zoomXValue: {
@@ -85,13 +98,13 @@ class PriceChart extends Component {
 
   render() {
     const { data, marker, xAxis, yAxis } = this.state;
-    const { data: dataSet } = this.props;
-    const dataLen = dataSet?.length || 0;
+    // const { data: dataSet } = this.props;
+    // const dataLen = dataSet?.length || 0;
 
     return (
       <View style={{flex: 1}}>
         <View style={styles.container}>
-          <CandleStickChart
+          <LineChart
             style={styles.chart}
             data={data}
             marker={marker}
@@ -99,7 +112,7 @@ class PriceChart extends Component {
             xAxis={xAxis}
             yAxis={yAxis}
             maxVisibleValueCount={1}
-            zoom={{scaleX: 10, scaleY: 1.5, xValue: dataLen, yValue: dataLen ? dataSet[dataLen - 1]?.open : 0}}
+            // zoom={{scaleX: 10, scaleY: 1.5, xValue: dataLen, yValue: dataLen ? dataSet[dataLen - 1]?.open : 0}}
             // onChange={(event) => console.log(event.nativeEvent)}
             // onSelect={this.handleSelect.bind(this)}
           />
@@ -113,7 +126,6 @@ class PriceChart extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5FCFF'
   },
   chart: {
     flex: 1
@@ -128,7 +140,8 @@ PriceChart.propTypes = {
     shadowL: PropTypes.number.isRequired,
     shadowH: PropTypes.number.isRequired,
   })).isRequired,
-  label: PropTypes.string.isRequired
+  label: PropTypes.string.isRequired,
+  chartType: PropTypes.number.isRequired,
 };
 
 export default PriceChart;
