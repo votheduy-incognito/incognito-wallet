@@ -4,6 +4,7 @@ import TradingQuote from '@models/tradingQuote';
 import http from '@services/http';
 import BigNumber from 'bignumber.js';
 import formatUtils from '@utils/format';
+import convert from '@utils/convert';
 
 /**
  * Get all tradable tokens on Kyber exchange
@@ -46,17 +47,16 @@ export async function getKyberQuote({sellToken, sellAmount, buyToken}) {
   const data = await http.get(url);
   const {ExpectedRate} = data;
 
+  const originalSellAmount = BigNumber(sellAmount)
+    .dividedBy(BigNumber(10).pow(sellToken.decimals));
+  const originalPrice = BigNumber(ExpectedRate)
+    .dividedBy(BigNumber(10).pow(18));
+  const amount = BigNumber(originalPrice)
+    .multipliedBy(originalSellAmount)
+    .multipliedBy(BigNumber(10).pow(buyToken.decimals));
+
   return new TradingQuote({
-    price: formatUtils.amountFull(BigNumber(ExpectedRate)
-      .dividedBy(BigNumber(10).pow(sellToken.decimals))
-      .multipliedBy(BigNumber(10).pow(sellToken.pDecimals))
-      .dividedToIntegerBy(1)
-      .toNumber(), sellToken.pDecimals
-    ),
-    amount: BigNumber(ExpectedRate)
-      .multipliedBy(
-        BigNumber(sellAmount)
-          .dividedBy(BigNumber(10).pow(sellToken.decimals))
-      )
+    price: originalPrice.toString(),
+    amount,
   });
 }

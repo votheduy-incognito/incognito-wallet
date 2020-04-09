@@ -48,7 +48,7 @@ const amountFull = amountCreator();
 
 const amount = amountCreator(CONSTANT_COMMONS.AMOUNT_MAX_FRACTION_DIGITS);
 
-const formatDateTime = (dateTime, formatPattern) => moment(dateTime).format(formatPattern || 'DD MMM hh:mm:ss A');
+const formatDateTime = (dateTime, formatPattern) => moment(dateTime).format(formatPattern || 'DD MMM hh:mm A');
 const toMiliSecond = (second) => second * 1000;
 const toFixed = (number, decimals = 0) => {
   if (_.isNumber(number) && !_.isNaN(number)) {

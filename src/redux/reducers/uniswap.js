@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import types from '@src/redux/types/uniswap';
 import LocalDatabase from '@src/utils/LocalDatabase';
 
@@ -18,7 +19,7 @@ function updateHistory(history, histories = []) {
 }
 
 function addHistory(history, histories = []) {
-  const newHistories = [...histories, history];
+  const newHistories = _.uniqBy([...histories, history], item => item.id);
   LocalDatabase.saveUniswapHistory(newHistories);
   return newHistories;
 }
@@ -31,11 +32,13 @@ function deleteHistory(history, histories = []) {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-  case types.GET_HISTORIES:
+  case types.GET_HISTORIES: {
+    const histories = _.uniqBy(action.payload, item => item.id);
     return {
       ...state,
-      histories: action.payload,
+      histories,
     };
+  }
   case types.GET_HISTORY_STATUS:
     return {
       ...state,

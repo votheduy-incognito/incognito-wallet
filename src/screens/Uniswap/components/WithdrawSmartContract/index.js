@@ -7,7 +7,7 @@ import {
   View,
   ActivityIndicator,
   TouchableOpacity,
-  BaseTextInput as TextInput,
+  InputWithMax,
 } from '@src/components/core';
 import {Keyboard, TouchableWithoutFeedback} from 'react-native';
 import accountService from '@services/wallet/accountService';
@@ -18,6 +18,8 @@ import {COLORS} from '@src/styles';
 import {withdrawSmartContract} from '@services/trading';
 import {WithdrawSCHistory} from '@models/uniswapHistory';
 import {ExHandler} from '@services/exception';
+import {CONSTANT_EVENTS} from '@src/constants';
+import {logEvent} from '@services/firebase';
 import TransferSuccessPopUp from '../TransferSuccessPopUp';
 import {MESSAGES, MIN_INPUT} from '../../constants';
 import { mainStyle, tokenStyle } from '../../style';
@@ -41,7 +43,16 @@ class WithdrawSmartContract extends React.PureComponent {
 
     try {
       this.setState({ sending: true });
+      await logEvent(CONSTANT_EVENTS.WITHDRAW_UNISWAP_SC, {
+        tokenId: token.id,
+        tokenSymbol: token.symbol,
+      });
       const res = await accountService.withdrawSmartContract(wallet, dexMainAccount, token.address);
+
+      await logEvent(CONSTANT_EVENTS.WITHDRAW_UNISWAP_SC_SUCCESS, {
+        tokenId: token.id,
+        tokenSymbol: token.symbol,
+      });
       const {signBytes, timestamp} = res;
 
       const id = await withdrawSmartContract({
@@ -64,6 +75,11 @@ class WithdrawSmartContract extends React.PureComponent {
 
       this.setState({ success: true });
     } catch (error) {
+      await logEvent(CONSTANT_EVENTS.WITHDRAW_UNISWAP_SC_FAILED, {
+        tokenId: token.id,
+        tokenSymbol: token.symbol,
+      });
+
       this.setState({ error: new ExHandler(error).getMessage() });
     } finally {
       this.setState({ sending: false });
@@ -76,6 +92,9 @@ class WithdrawSmartContract extends React.PureComponent {
       amount: 0,
       sending: false,
       success: false,
+      error: null,
+      chainError: null,
+      text: '',
     });
 
     onClosePopUp();
@@ -109,6 +128,7 @@ class WithdrawSmartContract extends React.PureComponent {
     this.setState({
       error,
       amount,
+      text,
       chainError: null,
     });
   };
@@ -120,6 +140,7 @@ class WithdrawSmartContract extends React.PureComponent {
       amount,
       success,
       chainError,
+      text,
     } = this.state;
     let { error } = this.state;
 
@@ -163,13 +184,15 @@ class WithdrawSmartContract extends React.PureComponent {
                     <Text>&nbsp;{token?.symbol}</Text>
                   </View>
                 </View>
-                <TextInput
+                <InputWithMax
                   style={tokenStyle.input}
                   placeholder="0.0"
                   placeholderColor={COLORS.lightGrey1}
                   keyboardType="decimal-pad"
                   onChangeText={this.changeAmount}
                   editable={_.isNumber(balance)}
+                  maxValue={_.isNumber(balance) ? formatUtil.amountFull(balance, token.pDecimals) : ''}
+                  value={text}
                 />
                 {!!error && <Text style={[mainStyle.fee, mainStyle.error, mainStyle.center, tokenStyle.error]}>{error}</Text>}
                 {!!chainError && <Text style={[mainStyle.fee, mainStyle.error, mainStyle.center, tokenStyle.error]}>{chainError}</Text>}

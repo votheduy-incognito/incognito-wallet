@@ -27,3 +27,4 @@ export { default as TouchableScale } from './TouchableScale';
 export { default as Select } from './Select';
 export { default as WebView } from './WebView';
 export { default as BaseTextInput } from './BaseTextInput';
+export { default as InputWithMax } from './InputWithMax';

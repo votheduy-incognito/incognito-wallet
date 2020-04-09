@@ -11,6 +11,7 @@ import stylesheet from './style';
 
 const DexHistory = ({
   txId,
+  txId2,
   amount,
   pDecimals,
   account,
@@ -33,7 +34,7 @@ const DexHistory = ({
       <Text style={stylesheet.textRight}>Withdraw</Text>
     </View>
     <TransactionID txId={txId} />
-    <TransactionID txId={txId} title="TRANSACTION ID 2" />
+    <TransactionID txId={txId2} title="TRANSACTION ID 2" />
     <View style={stylesheet.row}>
       <Text style={stylesheet.field}>TIME</Text>
       <Text style={stylesheet.textRight}>{formatUtils.formatUnixDateTime(lockTime)}</Text>
