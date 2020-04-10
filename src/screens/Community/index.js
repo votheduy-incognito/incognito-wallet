@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withNavigationFocus } from 'react-navigation';
 import {WebView} from 'react-native-webview';
@@ -12,7 +12,11 @@ const Community = ({ navigation, isFocused }) => {
   const webViewRef = useRef();
   const [loading, setLoading] = useState(true);
   const [backable, setBackable] = useState(false);
+  const [url, setUrl] = useState(false);
 
+  useEffect(()=>{
+    setUrl(MAIN_WEBSITE);
+  },[]);
   if (isFocused) {
     const { uri: _uri } = navigation?.state?.params || {};
 
@@ -30,7 +34,7 @@ const Community = ({ navigation, isFocused }) => {
   };
 
   const stateHandler = (state) => {
-    if (!state.url.includes(MAIN_WEBSITE)) {
+    if (!state.url.includes(url)) {
       setBackable(state.canGoBack);
     }
   };
@@ -42,7 +46,7 @@ const Community = ({ navigation, isFocused }) => {
           setLoading(false);
         }}
         userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1"
-        source={{ uri: MAIN_WEBSITE }}
+        source={{ uri: url }}
         ref={webViewRef}
         onNavigationStateChange={stateHandler}
         injectedJavaScript={`
