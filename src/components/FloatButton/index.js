@@ -6,7 +6,7 @@ import { TouchableOpacity, Text, View } from '../core';
 import styled from './styles';
 
 
-const FloatButton = ({ onPress, label, style, isFeedback }) => {
+const FloatButton = ({ onPress, label, style }) => {
   return (
     <View
       style={[{ position: 'absolute', bottom: 0, left: 0 }, style]}
@@ -16,10 +16,7 @@ const FloatButton = ({ onPress, label, style, isFeedback }) => {
         onPress={onPress}
       >
         <View style={styled.btnIcon}>
-
-          {isFeedback && isFeedback ?
-            <Image source={require('../../assets/images/icons/ic_feedback_btn.png')} style={styled.icon} /> :
-            <Icon name="chevron-right" />}
+          <Image source={require('../../assets/images/icons/ic_feedback_btn.png')} style={styled.icon} />
         </View>
         <Text style={styled.text}>{label}</Text>
       </TouchableOpacity>
