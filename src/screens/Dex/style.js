@@ -270,7 +270,17 @@ export const mainStyle = StyleSheet.create({
   },
   tokenIcon: {
     paddingRight: 10,
-  }
+  },
+  priceHistoryContainer: {
+    marginTop: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+  },
+  priceHistoryText: {
+    textAlign: 'center',
+    color: COLORS.primary,
+    ...FONT.STYLE.medium
+  },
 });
 
 export const inputStyle = StyleSheet.create({
