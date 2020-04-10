@@ -13,5 +13,5 @@ export default function Feedback() {
     LinkingService.openUrl('https://incognito.org/c/help/45');
   };
 
-  return (<FloatButton onPress={sendFeedback} label='Feedback' />);
+  return (<FloatButton onPress={sendFeedback} isFeedback label='Feedback' />);
 }

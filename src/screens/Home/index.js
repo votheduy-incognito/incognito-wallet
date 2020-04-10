@@ -12,7 +12,7 @@ import icPapp from '@assets/images/icons/ic_papp.png';
 import IconTextButton from '@screens/Home/IconTextButton';
 import ROUTE_NAMES from '@routers/routeNames';
 import Feedback from '@src/components/Feedback';
-
+import FloatButton from '@src/components/FloatButton';
 import { withRoundHeaderLayout } from '@src/hoc';
 
 import Card from '@components/Card';
@@ -144,7 +144,7 @@ const Home = ({ navigation }) => {
           </View>
         )
         )}
-        <Feedback />
+        <FloatButton onPress={() => navigation.navigate('Community')} isFeedback label='Feedback' />
       </View>
     </Card>
   );

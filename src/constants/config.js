@@ -30,7 +30,7 @@ const regex = /<%=.*%>/;
 const isMainnet = global.isMainnet??true;
 
 export const prefix_network = isMainnet ?'mainnet':'testnet';
-export const MAIN_WEBSITE = 'https://incognito.org/latest?utm_source=mobileapp';
+export const MAIN_WEBSITE = 'https://incognito.org/c/help/45';
 const prefix_Api = isMainnet?'':'test-';
 
 const API_BASE_URL = isMainnet? API_BASE_URL_MAINNET:API_BASE_URL_TESTNET;
