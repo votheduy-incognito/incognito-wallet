@@ -12,10 +12,8 @@ const Community = ({ navigation, isFocused }) => {
   const webViewRef = useRef();
   const [loading, setLoading] = useState(true);
   const [backable, setBackable] = useState(false);
-  const [url, setUrl] = useState(false);
-
+  
   useEffect(()=>{
-    setUrl(MAIN_WEBSITE);
   },[]);
   if (isFocused) {
     const { uri: _uri } = navigation?.state?.params || {};
@@ -34,7 +32,7 @@ const Community = ({ navigation, isFocused }) => {
   };
 
   const stateHandler = (state) => {
-    if (!state.url.includes(url)) {
+    if (!state.url.includes(MAIN_WEBSITE)) {
       setBackable(state.canGoBack);
     }
   };
@@ -46,7 +44,7 @@ const Community = ({ navigation, isFocused }) => {
           setLoading(false);
         }}
         userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1"
-        source={{ uri: url }}
+        source={{ uri: MAIN_WEBSITE }}
         ref={webViewRef}
         onNavigationStateChange={stateHandler}
         injectedJavaScript={`
