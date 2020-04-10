@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {View} from '@src/components/core';
+import { View } from '@src/components/core';
 import icShield from '@assets/images/icons/ic_shield_btn.png';
 import icSend from '@assets/images/icons/ic_send_btn.png';
 import icReceive from '@assets/images/icons/ic_receive_btn.png';
@@ -12,54 +12,55 @@ import icPapp from '@assets/images/icons/ic_papp.png';
 import IconTextButton from '@screens/Home/IconTextButton';
 import ROUTE_NAMES from '@routers/routeNames';
 import Feedback from '@src/components/Feedback';
-
+import FloatButton from '@src/components/FloatButton';
 import { withRoundHeaderLayout } from '@src/hoc';
 
 import Card from '@components/Card';
-import {BIG_COINS} from '@screens/Dex/constants';
-import {useSelector} from 'react-redux';
+import { BIG_COINS } from '@screens/Dex/constants';
+import { useSelector } from 'react-redux';
 import accountSeleclor from '@src/redux/selectors/account';
 import dexUtil from '@utils/dex';
 import LinkingService from '@src/services/linking';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import LocalDatabase from '@utils/LocalDatabase';
-import {withdraw} from '@services/api/withdraw';
+import { withdraw } from '@services/api/withdraw';
 import styles from './style';
 
 const sendItem = {
   image: icSend,
   title: 'Send',
-  desc: 'anonymously',
+  desc: 'Anonymously',
   route: ROUTE_NAMES.SendCrypto,
 };
 const receiveItem = {
   image: icReceive,
   title: 'Receive',
-  desc: 'anonymously',
+  desc: 'Anonymously',
   route: ROUTE_NAMES.ReceiveCoin,
 };
-const shieldItem =  {
+const shieldItem = {
   image: icShield,
   title: 'Shield',
-  desc: 'your crypto',
+  desc: 'Your crypto',
   route: ROUTE_NAMES.Shield,
 };
 
 const pappItem = {
   image: icPapp,
-  title: 'pApp',
+  title: 'Browse',
+  desc: 'Search URL',
   route: ROUTE_NAMES.pApps,
 };
 
 const powerItem = {
   image: icPower,
-  title: 'Power',
+  title: 'Buy Node',
+  desc: 'Plug & play',
   route: ROUTE_NAMES.Community,
   onPress: () => {
-    LinkingService.openUrl(CONSTANT_CONFIGS.NODE_URL);
+    LinkingService.openUrl('https://node.incognito.org/payment.html?utm_source=app&utm_medium=homepage%20app&utm_campaign=pnode');
   },
 };
-
 const buttons = [
   {
     image: icBuy,
@@ -76,13 +77,11 @@ const buttons = [
   {
     image: icInvent,
     title: 'Issue',
-    desc: 'a new privacy coin',
     route: ROUTE_NAMES.CreateToken,
   },
   {
     image: icTrade,
     title: 'Trade',
-    desc: 'anonymously',
     route: ROUTE_NAMES.Dex,
   },
   pappItem,
@@ -141,7 +140,7 @@ const Home = ({ navigation }) => {
           </View>
         )
         )}
-        <Feedback />
+        <FloatButton onPress={() => navigation.navigate('Community', { uri: 'https://incognito.org/c/help/45' })} label='Feedback' />
       </View>
     </Card>
   );

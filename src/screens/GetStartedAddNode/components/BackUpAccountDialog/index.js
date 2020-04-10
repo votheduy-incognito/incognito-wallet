@@ -13,12 +13,12 @@ export const DialogNotify = React.memo(({ visible, onClose })=>{
     >
       <DialogContent style={styles.dialog_container}>
         <Text style={styles.dialog_title_text}>
-          A wallet has been created for you. Remember to copy your private key and keep it somewhere safe.
+          Now, keep Node safe!
         </Text>
 
         <View style={styles.dialog_content}>
           <Text style={styles.dialog_content_text}>
-            Now, keep Node safe!
+            A wallet has been created for you. Remember to copy your private key and keep it somewhere safe.  
           </Text>
         </View>
         <ButtonExtension

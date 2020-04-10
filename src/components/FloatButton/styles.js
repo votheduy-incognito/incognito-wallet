@@ -1,17 +1,21 @@
-import {StyleSheet} from 'react-native';
-import {COLORS, FONT} from '@src/styles';
+import { StyleSheet } from 'react-native';
+import { COLORS, FONT } from '@src/styles';
 
 export default StyleSheet.create({
   floatBtn: {
     position: 'absolute',
     bottom: 10,
+    left: 0,
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
+    height: 40,
   },
   btnIcon: {
     backgroundColor: COLORS.white,
-    borderRadius: 50,
+    borderRadius: 20,
+    borderColor: COLORS.white,
+    borderWidth: 0,
     width: 40,
     height: 40,
     justifyContent: 'center',
@@ -27,6 +31,10 @@ export default StyleSheet.create({
     elevation: 5,
   },
   text: {
-    ...FONT.STYLE.bold,
+    ...FONT.STYLE.medium,
   },
+  icon: {
+    width: 70,
+    height: 70,
+  }
 });

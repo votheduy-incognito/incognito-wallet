@@ -228,6 +228,7 @@ class SetupWifi extends PureComponent {
           containerStyle={item}
           inputContainerStyle={item_container_input}
           inputStyle={[text]}
+          autoCapitalize="none"
           placeholder="Password"
           errorStyle={[errorText, {textAlign: 'left', marginLeft: 0}]}
           errorMessage={error}

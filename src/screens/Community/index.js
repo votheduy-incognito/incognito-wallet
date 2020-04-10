@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withNavigationFocus } from 'react-navigation';
 import {WebView} from 'react-native-webview';
@@ -12,7 +12,9 @@ const Community = ({ navigation, isFocused }) => {
   const webViewRef = useRef();
   const [loading, setLoading] = useState(true);
   const [backable, setBackable] = useState(false);
-
+  
+  useEffect(()=>{
+  },[]);
   if (isFocused) {
     const { uri: _uri } = navigation?.state?.params || {};
 

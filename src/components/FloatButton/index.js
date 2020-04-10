@@ -1,8 +1,10 @@
 import React from 'react';
+import { Image } from 'react-native';
 import PropTypes from 'prop-types';
-import {Icon} from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 import { TouchableOpacity, Text, View } from '../core';
 import styled from './styles';
+
 
 const FloatButton = ({ onPress, label, style }) => {
   return (
@@ -14,7 +16,7 @@ const FloatButton = ({ onPress, label, style }) => {
         onPress={onPress}
       >
         <View style={styled.btnIcon}>
-          <Icon name="chevron-right" />
+          <Image source={require('../../assets/images/icons/ic_feedback_btn.png')} style={styled.icon} />
         </View>
         <Text style={styled.text}>{label}</Text>
       </TouchableOpacity>

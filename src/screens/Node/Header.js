@@ -13,7 +13,6 @@ const Header = ({ goToScreen, isFetching }) => (
       buttonStyle={style.addNodeButton}
       disabledStyle={style.addNodeButtonDisabled}
       titleStyle={style.addNodeText}
-      disabled={isFetching}
       title="Add a node"
     />
   </View>

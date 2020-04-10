@@ -13,6 +13,17 @@ const getStatusData = (status, statusCode) => {
   let statusText;
   let statusColor;
   let statusNumber;
+  // if (decentralized && decentralized === 1) {
+  //   if (statusCode && (statusCode === 9 || statusCode === 10)) {
+  //     statusText = 'Failed';
+  //     statusColor = COLORS.red;
+  //     return {
+  //       statusText,
+  //       statusColor,
+  //       statusNumber
+  //     };
+  //   }
+  // }
   switch (status) {
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING:
     statusNumber = statusCode;
@@ -155,7 +166,7 @@ const HistoryItem = ({ history, divider, navigation }) => {
             ellipsizeMode="tail"
           >
             {
-              amount ? `${balanceDirection} ${amount} ${ history.symbol }` : ''
+              amount ? `${balanceDirection} ${amount} ${history.symbol}` : ''
             }
           </Text>
           <Text
@@ -208,6 +219,7 @@ HistoryItem.propTypes = {
     fromAddress: PropTypes.string,
     toAddress: PropTypes.string,
     statusCode: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    decentralized: PropTypes.number,
     cancelable: PropTypes.bool,
     canRetryExpiredDeposit: PropTypes.bool,
     pDecimals: PropTypes.number,

@@ -12,8 +12,8 @@ const IconTextButton = ({ onPress, image, title, desc, disabled }) => {
     >
       <View style={[styles.btn, disabled && styles.disabled]}>
         <Image style={styles.image} source={image} />
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.desc}>{desc}</Text>
+        <Text allowFontScaling={false} style={styles.title}>{title}</Text>
+        <Text allowFontScaling={false} style={styles.desc}>{desc}</Text>
       </View>
     </TouchableOpacity>
   );
