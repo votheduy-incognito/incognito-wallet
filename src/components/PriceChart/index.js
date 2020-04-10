@@ -98,8 +98,8 @@ class PriceChart extends Component {
 
   render() {
     const { data, marker, xAxis, yAxis } = this.state;
-    // const { data: dataSet } = this.props;
-    // const dataLen = dataSet?.length || 0;
+    const { data: dataSet, isShowAll } = this.props;
+    const dataLen = dataSet?.length || 0;
 
     return (
       <View style={{flex: 1}}>
@@ -112,7 +112,8 @@ class PriceChart extends Component {
             xAxis={xAxis}
             yAxis={yAxis}
             maxVisibleValueCount={1}
-            // zoom={{scaleX: 10, scaleY: 1.5, xValue: dataLen, yValue: dataLen ? dataSet[dataLen - 1]?.open : 0}}
+            zoom={isShowAll ? {scaleX: 10, scaleY: 1.5, xValue: dataLen, yValue: dataLen ? dataSet[dataLen - 1]?.close : 0}: {}}
+            // zoom={{}}
             // onChange={(event) => console.log(event.nativeEvent)}
             // onSelect={this.handleSelect.bind(this)}
           />
@@ -142,6 +143,7 @@ PriceChart.propTypes = {
   })).isRequired,
   label: PropTypes.string.isRequired,
   chartType: PropTypes.number.isRequired,
+  isShowAll: PropTypes.bool.isRequired
 };
 
 export default PriceChart;

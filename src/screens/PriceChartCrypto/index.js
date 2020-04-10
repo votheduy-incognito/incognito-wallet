@@ -39,6 +39,7 @@ class PriceChartCrypto extends Component {
     intervalMs: 3600,
     latestPrice: 0,
     diffPercent: 0,
+    isShowAll: false,
   };
 
   static navigationOptions = ({ navigation }) => {
@@ -74,8 +75,8 @@ class PriceChartCrypto extends Component {
     this.setState({ data: null }, async () => {
       const data = await this.getPriceData(pair);
       const latestPrice = data.length > 0 ? data[data.length -1].close : 0;
-      const prevPrice = data.length > 0 ? data[data.length -2].close : 0;
-      const diffPercent = ((latestPrice/prevPrice -1)*100).toFixed(5);
+      const prevPrice = data.length > 1 ? data[data.length -2].close : null;
+      const diffPercent = prevPrice ? ((latestPrice/prevPrice -1)*100).toFixed(5) : 0;
 
       this.setState({ latestPrice, diffPercent });
       if (data instanceof Array) {
@@ -89,16 +90,13 @@ class PriceChartCrypto extends Component {
     });
   }
 
-  handleChangePeriodTime = (intervalMs) => {
-    this.setState({ intervalMs, data: null }, async () => {
+  handleChangePeriodTime = (intervalMs, isShowAll = false) => {
+    this.setState({ intervalMs, isShowAll, data: null }, async () => {
       const { label: pair} = this.state;
       const data = await this.getPriceData(pair);
-      console.log('data', data);
       const latestPrice = data.length > 0 ? data[data.length -1].close : 0;
       const prevPrice = data.length > 0 ? data[data.length -2].close : 0;
-      console.log('latestPrice', latestPrice, prevPrice);
       const diffPercent = ((latestPrice/prevPrice -1)*100).toFixed(5);
-      console.log('diffPercent', diffPercent);
       this.setState({ data: parseData(data, pair), diffPercent});
     });
   }
@@ -108,13 +106,13 @@ class PriceChartCrypto extends Component {
     return latestPrice.toFixed(5) + ' ' + (label || 'PRV-PRV').split('-')[1];
   }
   handlingChartData = data => {
-    const { intervalMs } = this.state;
+    const { intervalMs, isShowAll } = this.state;
     switch(intervalMs) {
     case BY_HOUR: {
       return data.slice(-12);
     }
     case BY_DAY: {
-      return data.slice(-7);
+      return !isShowAll ? data.slice(-7) : data;
     }
     case BY_WEEK: {
       return data.slice(-4);
@@ -129,12 +127,12 @@ class PriceChartCrypto extends Component {
     }
   }
   render() {
-    const { label, data, intervalMs, diffPercent } = this.state;
+    const { label, data, intervalMs, diffPercent, isShowAll } = this.state;
     return (
       <View style={{ flex: 1 }}>
         <LatestPrice price={this.getLatestPrice()} diffPercent={diffPercent} />
-        <ChartActions value={intervalMs} onPress={this.handleChangePeriodTime} />
-        {!data ? <LoadingContainer /> : data.length ? <PriceChart onChangePeriodTime={this.handleChangePeriodTime} label={label} data={this.handlingChartData(data)} chartType={intervalMs} /> : <SimpleInfo text={label} subText='does not have any data' />}
+        <ChartActions value={intervalMs} isShowAll={isShowAll} onPress={this.handleChangePeriodTime} />
+        {!data ? <LoadingContainer /> : data.length ? <PriceChart onChangePeriodTime={this.handleChangePeriodTime} label={label} data={this.handlingChartData(data)} chartType={intervalMs} isShowAll={isShowAll} /> : <SimpleInfo text={label} subText='does not have any data' />}
       </View>
     );
   }

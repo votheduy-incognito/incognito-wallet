@@ -7,14 +7,14 @@ import { BY_HOUR, BY_DAY, BY_WEEK, BY_MONTH, BY_YEAR } from './util';
 
 const btnWidth = Math.round(Dimensions.get('window').width/7);
 
-const ChartActions = ({ onPress, value }) => (
+const ChartActions = ({ onPress, value, isShowAll }) => (
   <View style={styles.container}>
     <TouchableOpacity onPress={() => onPress(BY_HOUR)} style={value == BY_HOUR ? styles.btnActive : styles.btn}><Text style={value == BY_HOUR ? styles.btnText : styles.btnTextActive}>1H</Text></TouchableOpacity>
-    <TouchableOpacity onPress={() => onPress(BY_DAY)} style={value == BY_DAY ? styles.btnActive : styles.btn}><Text style={value == BY_DAY ? styles.btnText : styles.btnTextActive}>24H</Text></TouchableOpacity>
+    <TouchableOpacity onPress={() => onPress(BY_DAY)} style={value == BY_DAY && !isShowAll ? styles.btnActive : styles.btn}><Text style={value == BY_DAY && !isShowAll  ? styles.btnText : styles.btnTextActive}>24H</Text></TouchableOpacity>
     <TouchableOpacity onPress={() => onPress(BY_WEEK)} style={value == BY_WEEK ? styles.btnActive : styles.btn}><Text style={value == BY_WEEK ? styles.btnText : styles.btnTextActive}>Week</Text></TouchableOpacity>
     <TouchableOpacity onPress={() => onPress(BY_MONTH)} style={value == BY_MONTH ? styles.btnActive : styles.btn}><Text style={value == BY_MONTH ? styles.btnText : styles.btnTextActive}>Month</Text></TouchableOpacity>
     <TouchableOpacity onPress={() => onPress(BY_YEAR)} style={value == BY_YEAR ? styles.btnActive : styles.btn}><Text style={value == BY_YEAR ? styles.btnText : styles.btnTextActive}>Year</Text></TouchableOpacity>
-    <TouchableOpacity style={styles.btn}><Text style={styles.btnTextActive}>Alltime</Text></TouchableOpacity>
+    <TouchableOpacity onPress={() => onPress(BY_DAY, true)} style={value == BY_DAY && isShowAll ? styles.btnActive : styles.btn}><Text style={value == BY_DAY && isShowAll ? styles.btnText : styles.btnTextActive}>Alltime</Text></TouchableOpacity>
   </View>
 );
 
@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
 
 ChartActions.propTypes = {
   onPress: PropTypes.func.isRequired,
-  value: PropTypes.number.isRequired
+  value: PropTypes.number.isRequired,
+  isShowAll: PropTypes.bool.isRequired
 };
 
 export default ChartActions;
