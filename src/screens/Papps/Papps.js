@@ -6,14 +6,14 @@ import PappItem from './PappItem';
 import styles from './style';
 
 const PAPPS = [
-  {
-    id: 1,
-    name: 'Hello World',
-    image: helloWorldImg,
-    url: 'http://35.185.237.133/',
-    title: 'Hello World',
-    desc: 'This is a demonstration of a basic pApp'
-  },
+  // {
+  //   id: 1,
+  //   name: 'Hello World',
+  //   image: helloWorldImg,
+  //   url: 'http://35.185.237.133/',
+  //   title: 'Hello World',
+  //   desc: 'This is a demonstration of a basic pApp'
+  // },
   // {
   //   id: 1,
   //   name: 'Get crypto rich',

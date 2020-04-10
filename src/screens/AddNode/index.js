@@ -10,12 +10,12 @@ import styles, { rightNextIcon } from './styles';
 export const TAG = 'AddNode';
 const listItems = [
   {
-    title:'Device',
+    title:'Node',
     subTitle:'Plug in and connect',
     img :images.ic_add_node_device,
   },
   {
-    title:'Virtual Node',
+    title:'Node Virtual',
     subTitle:'Run a virtual node',
     img :images.ic_add_self_node,
   },

@@ -38,7 +38,7 @@ const receiveItem = {
   desc: 'anonymously',
   route: ROUTE_NAMES.ReceiveCoin,
 };
-const shieldItem =  {
+const shieldItem = {
   image: icShield,
   title: 'Shield',
   desc: 'your crypto',
@@ -47,13 +47,13 @@ const shieldItem =  {
 
 const pappItem = {
   image: icPapp,
-  title: 'pApp',
+  title: 'Browse',
   route: ROUTE_NAMES.pApps,
 };
 
 const powerItem = {
   image: icPower,
-  title: 'Power',
+  title: 'Buy Node',
   route: ROUTE_NAMES.Community,
   onPress: () => {
     LinkingService.openUrl(CONSTANT_CONFIGS.NODE_URL);
@@ -76,7 +76,7 @@ const buttons = [
   {
     image: icInvent,
     title: 'Issue',
-    desc: 'a new privacy coin',
+    desc: 'a privacy coin',
     route: ROUTE_NAMES.CreateToken,
   },
   {
@@ -135,6 +135,7 @@ const Home = ({ navigation }) => {
             <IconTextButton
               image={item.image}
               title={item.title}
+              desc={item.desc}
               disabled={isDisabled(item)}
               onPress={item.onPress || (() => goToScreen(item.route, item.params))}
             />
