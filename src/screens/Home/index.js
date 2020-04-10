@@ -144,7 +144,7 @@ const Home = ({ navigation }) => {
           </View>
         )
         )}
-        <FloatButton onPress={() => navigation.navigate('Community', { uri: 'https://incognito.org/c/help/45' })} isFeedback label='Feedback' />
+        <FloatButton onPress={() => navigation.navigate('Community', { uri: 'https://incognito.org/c/help/45' })} label='Feedback' />
       </View>
     </Card>
   );

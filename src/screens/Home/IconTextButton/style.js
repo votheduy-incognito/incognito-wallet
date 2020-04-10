@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
   btn: {
-    paddingVertical: 10,
+    paddingVertical: 8,
     alignItems: 'center',
     height: 130,
   },
@@ -14,13 +14,13 @@ const style = StyleSheet.create({
     resizeMode: 'contain',
   },
   title: {
-    fontSize: 16,
+    fontSize: 15,
     lineHeight: 34,
     color: COLORS.black,
     textAlign: 'center',
   },
   desc: {
-    fontSize: 16,
+    fontSize: 15,
     color: COLORS.lightGrey1,
     textAlign: 'center',
   },
