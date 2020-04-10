@@ -55,7 +55,7 @@ const pappItem = {
 const powerItem = {
   image: icPower,
   title: 'Buy Node',
-  desc: 'Plug and play',
+  desc: 'Plug & play',
   route: ROUTE_NAMES.Community,
   onPress: () => {
     LinkingService.openUrl('https://node.incognito.org/payment.html?utm_source=app&utm_medium=homepage%20app&utm_campaign=pnode');
