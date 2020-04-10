@@ -13,17 +13,17 @@ const getStatusData = (status, statusCode, decentralized) => {
   let statusText;
   let statusColor;
   let statusNumber;
-  if (decentralized && decentralized === 1) {
-    if (statusCode && (statusCode === 9 || statusCode === 10)) {
-      statusText = 'Failed';
-      statusColor = COLORS.red;
-      return {
-        statusText,
-        statusColor,
-        statusNumber
-      };
-    }
-  }
+  // if (decentralized && decentralized === 1) {
+  //   if (statusCode && (statusCode === 9 || statusCode === 10)) {
+  //     statusText = 'Failed';
+  //     statusColor = COLORS.red;
+  //     return {
+  //       statusText,
+  //       statusColor,
+  //       statusNumber
+  //     };
+  //   }
+  // }
   switch (status) {
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING:
     statusNumber = statusCode;
