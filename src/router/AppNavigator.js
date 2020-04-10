@@ -22,6 +22,7 @@ import pApp from '@src/screens/PappView';
 import AddPIN from '@src/screens/AddPIN';
 import BackupKeys from '@src/screens/BackupKeys';
 import WhyShield from '@src/screens/WhyShield';
+import PriceChartCrypto from '@src/screens/PriceChartCrypto';
 import {navigationOptionsHandler} from '@src/utils/router';
 import Dex from '@screens/Dex';
 import pUniswap from '@screens/Uniswap';
@@ -130,6 +131,7 @@ const AppNavigator = createStackNavigator(
         title: 'Receive'
       }
     ),
+    [ROUTE_NAMES.PriceChartCrypto]: navigationOptionsHandler(PriceChartCrypto, { title: 'Price Chart' }),
   },
   {
     initialRouteName: ROUTE_NAMES.RootTab,
