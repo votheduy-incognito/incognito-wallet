@@ -5,13 +5,17 @@ export default StyleSheet.create({
   floatBtn: {
     position: 'absolute',
     bottom: 10,
+    left: 0,
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
+    height: 40,
   },
   btnIcon: {
-    // backgroundColor: COLORS.white,
-    borderRadius: 50,
+    backgroundColor: COLORS.white,
+    borderRadius: 20,
+    borderColor: COLORS.white,
+    borderWidth: 0,
     width: 40,
     height: 40,
     justifyContent: 'center',
@@ -30,7 +34,7 @@ export default StyleSheet.create({
     ...FONT.STYLE.medium,
   },
   icon: {
-    width: 60,
-    height: 60
+    width: 70,
+    height: 70,
   }
 });
