@@ -9,7 +9,7 @@ import React from 'react';
 import Swipeout from 'react-native-swipeout';
 import styleSheet from './style';
 
-const getStatusData = (status, statusCode, decentralized) => {
+const getStatusData = (status, statusCode) => {
   let statusText;
   let statusColor;
   let statusNumber;
@@ -130,7 +130,7 @@ const HistoryItem = ({ history, divider, navigation }) => {
     return null;
   }
 
-  const { statusText, statusColor, statusNumber } = getStatusData(history.status, history.statusCode, history.decentralized);
+  const { statusText, statusColor, statusNumber } = getStatusData(history.status, history.statusCode);
   const { typeText, balanceColor, balanceDirection } = getTypeData(history.type);
   const amount = (history.amount && formatUtil.amount(history.amount, history.pDecimals)) || formatUtil.number(history.requestedAmount);
   // const [addressDirection, address] = getAddress(history);
