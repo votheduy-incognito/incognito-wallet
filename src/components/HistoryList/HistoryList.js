@@ -9,10 +9,21 @@ import React from 'react';
 import Swipeout from 'react-native-swipeout';
 import styleSheet from './style';
 
-const getStatusData = (status, statusCode) => {
+const getStatusData = (status, statusCode, decentralized) => {
   let statusText;
   let statusColor;
   let statusNumber;
+  if (decentralized && decentralized === 1) {
+    if (statusCode && (statusCode === 9 || statusCode === 10)) {
+      statusText = 'Failed';
+      statusColor = COLORS.red;
+      return {
+        statusText,
+        statusColor,
+        statusNumber
+      };
+    }
+  }
   switch (status) {
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING:
     statusNumber = statusCode;
@@ -119,7 +130,7 @@ const HistoryItem = ({ history, divider, navigation }) => {
     return null;
   }
 
-  const { statusText, statusColor, statusNumber } = getStatusData(history.status, history.statusCode);
+  const { statusText, statusColor, statusNumber } = getStatusData(history.status, history.statusCode, history.decentralized);
   const { typeText, balanceColor, balanceDirection } = getTypeData(history.type);
   const amount = (history.amount && formatUtil.amount(history.amount, history.pDecimals)) || formatUtil.number(history.requestedAmount);
   // const [addressDirection, address] = getAddress(history);
@@ -155,7 +166,7 @@ const HistoryItem = ({ history, divider, navigation }) => {
             ellipsizeMode="tail"
           >
             {
-              amount ? `${balanceDirection} ${amount} ${ history.symbol }` : ''
+              amount ? `${balanceDirection} ${amount} ${history.symbol}` : ''
             }
           </Text>
           <Text
@@ -208,6 +219,7 @@ HistoryItem.propTypes = {
     fromAddress: PropTypes.string,
     toAddress: PropTypes.string,
     statusCode: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    decentralized: PropTypes.number,
     cancelable: PropTypes.bool,
     canRetryExpiredDeposit: PropTypes.bool,
     pDecimals: PropTypes.number,
