@@ -1,5 +1,5 @@
-import {StyleSheet} from 'react-native';
-import {COLORS, FONT} from '@src/styles';
+import { StyleSheet } from 'react-native';
+import { COLORS, FONT } from '@src/styles';
 
 export default StyleSheet.create({
   floatBtn: {
@@ -30,7 +30,7 @@ export default StyleSheet.create({
     ...FONT.STYLE.medium,
   },
   icon: {
-    width: 40, 
-    height: 40 
+    width: 60,
+    height: 60
   }
 });
