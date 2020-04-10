@@ -65,7 +65,6 @@ const buttons = [
   {
     image: icBuy,
     title: 'Buy PRV',
-    desc: 'Anonymously',
     route: ROUTE_NAMES.Dex,
     params: {
       inputTokenId: BIG_COINS.USDT,
@@ -78,13 +77,11 @@ const buttons = [
   {
     image: icInvent,
     title: 'Issue',
-    desc: 'A coin',
     route: ROUTE_NAMES.CreateToken,
   },
   {
     image: icTrade,
     title: 'Trade',
-    desc: 'Anonymously',
     route: ROUTE_NAMES.Dex,
   },
   pappItem,
@@ -137,7 +134,6 @@ const Home = ({ navigation }) => {
             <IconTextButton
               image={item.image}
               title={item.title}
-              desc={item.desc}
               disabled={isDisabled(item)}
               onPress={item.onPress || (() => goToScreen(item.route, item.params))}
             />
