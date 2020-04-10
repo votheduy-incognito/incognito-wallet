@@ -10,7 +10,7 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   btnIcon: {
-    backgroundColor: COLORS.white,
+    // backgroundColor: COLORS.white,
     borderRadius: 50,
     width: 40,
     height: 40,
@@ -27,6 +27,10 @@ export default StyleSheet.create({
     elevation: 5,
   },
   text: {
-    ...FONT.STYLE.bold,
+    ...FONT.STYLE.medium,
   },
+  icon: {
+    width: 40, 
+    height: 40 
+  }
 });

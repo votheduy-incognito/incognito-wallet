@@ -16,7 +16,7 @@ const style = StyleSheet.create({
   },
   background: {
     position: 'absolute',
-    height: 173,
+    height: 120,
     left: 0,
     right: 0,
     backgroundColor: COLORS.dark2,

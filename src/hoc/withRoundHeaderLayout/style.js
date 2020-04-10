@@ -24,8 +24,6 @@ const style = StyleSheet.create({
     height: 1040,
     top: -920,
     position: 'absolute',
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
   },
 });
 
