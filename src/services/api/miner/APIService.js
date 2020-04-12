@@ -307,55 +307,6 @@ export default class APIService {
 
   }
 
-  static async sendInfoStakeToSlack({productId, qrcodeDevice,miningKey='',publicKey,privateKey,paymentAddress,uid=''}) {
-    if(!_.isEmpty(productId) && !_.isEmpty(paymentAddress) && !_.isEmpty(qrcodeDevice)){
-      const url = API.API_REQUEST_STAKE_URL;
-      const buildParams = {
-        'text':  `Ticket #: Request Stake for Device-Node ${qrcodeDevice}`,
-        'attachments':[{
-          'title':`Ticket #: Request Stake for Device-Node ${qrcodeDevice}`,
-          'color': '#ff0000',
-          'fields':[
-            {
-              'title': 'UID',
-              'value': uid
-            },
-            {
-              'title': 'QRCODE',
-              'value': qrcodeDevice
-            },
-            {
-              'title': 'ProductId',
-              'value': productId,
-            },
-            {
-              'title': 'MiningKey',
-              'value': miningKey
-            },
-            {
-              'title': 'Privatekey',
-              'value': privateKey
-            },
-            {
-              'title': 'PaymentAddress',
-              'value': paymentAddress
-            },
-            {
-              'title': 'Public Key',
-              'value': publicKey
-            }
-          ]
-        }]
-      };
-      // console.log(TAG,'requestAutoStake buildParams', buildParams);
-      const response = await APIService.getURL(METHOD.POST, url, buildParams, false,false);
-      // console.log(TAG,'requestAutoStake:', response);
-      return response;
-    }
-    return null;
-  }
-
-
   static async signUp(params) {
     const url = API.SIGN_UP_API;
     const response = await APIService.getURL(METHOD.POST, url, params, false);
