@@ -13,7 +13,7 @@ commands:
         - run:
             name: Install node_modules
             command: |
-              yarn
+              yarn install --frozen-lockfile
   login_appcenter:
       description: "Install and login appcenter"
       steps:

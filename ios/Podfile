@@ -11,7 +11,7 @@ pod 'Firebase/Database', '~> 6.3.0'
 pod 'Fabric', '~> 1.10.2'
 pod 'Crashlytics', '~> 3.13.2'
 pod 'GoogleIDFASupport', '~> 3.14.0'
-target 'constantWalletMobile' do
+target 'Incognito' do
   # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
   # use_frameworks!
 #  inherit! :search_paths
@@ -79,7 +79,6 @@ target 'constantWalletMobile' do
   pod 'RNWifi', :path => '../node_modules/react-native-wifi-reborn'
   pod 'RNOS', :path => '../node_modules/react-native-os'
   pod 'TcpSockets', :path => '../node_modules/react-native-tcp'
-  pod 'react-native-iot-wifi', :path => '../node_modules/@josectobar/react-native-iot-wifi'
 #  pod 'RNZmqService', :path => '../node_modules/react-native-zmq-service'
   pod 'RNFirebase', :path => '../node_modules/react-native-firebase/ios'
   pod 'react-native-camera', :path => '../node_modules/react-native-camera'
