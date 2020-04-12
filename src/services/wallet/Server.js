@@ -1,6 +1,6 @@
 import storage from '@src/services/storage';
 import _ from 'lodash';
-import { MAINNET_SERVER_ADDRESS, TESTNET_SERVER_ADDRESS } from 'react-native-dotenv';
+import {CONSTANT_CONFIGS} from '@src/constants';
 
 const isMainnet = global.isMainnet??true;
 let cachedList = null;
@@ -17,14 +17,14 @@ export const KEY = {
   {
     id: 'testnet',
     default:!isMainnet,
-    address: TESTNET_SERVER_ADDRESS,
+    address: CONSTANT_CONFIGS.TESTNET_FULLNODE,
     username: '',
     password: '',
     name: 'Testnet'
   },{
     id: 'mainnet',
     default: isMainnet,
-    address: MAINNET_SERVER_ADDRESS,
+    address: CONSTANT_CONFIGS.MAINNET_FULLNODE,
     username: '',
     password: '',
     name: 'Mainnet'
