@@ -34,8 +34,8 @@ export const actionFetch = ({loadmore = true}) => async (
   try {
     const state = getState();
     const {isFetching, data} = stakeHistorySelector(state);
-    const {page: pageCurrent, limit, items: oldItems} = data;
-    if (isFetching) {
+    const {page: pageCurrent, limit, items: oldItems, over} = data;
+    if (isFetching && over) {
       return;
     }
     const {PaymentAddress} = pStakeAccountSelector(state);

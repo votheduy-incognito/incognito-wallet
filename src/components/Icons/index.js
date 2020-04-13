@@ -23,3 +23,4 @@ export {default as ThreeDotsVerIcon} from './icon.threeDotsVerIcon';
 export {default as BackIcon} from './icon.back';
 export {default as ArrowRightPrimaryIcon} from './icon.arrowRightPrimaryIcon';
 export {default as SmileIcon} from './icon.smile';
+export {default as CloseIcon} from './icon.close';

@@ -17,6 +17,7 @@ const styled = StyleSheet.create({
     padding: 20,
     width: '100%',
     zIndex: 100,
+    minWidth: 320,
   },
 });
 

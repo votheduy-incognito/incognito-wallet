@@ -6,6 +6,7 @@ import BackButton from '@src/components/BackButton';
 import {STEP_FLOW} from '@screens/Stake/stake.constant';
 import {actionToggleModal} from '@src/components/Modal';
 import {FONT, COLORS, THEME} from '@src/styles';
+import {BtnClose} from '@src/components/Button';
 import {actionChangeFLowStep} from '../../stake.actions';
 
 const styled = StyleSheet.create({
@@ -15,9 +16,8 @@ const styled = StyleSheet.create({
     borderTopRightRadius: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
     position: 'relative',
-    padding: 20,
+    justifyContent: 'space-between',
   },
   title: {
     fontFamily: FONT.NAME.regular,
@@ -25,15 +25,17 @@ const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.medium + 6,
     color: COLORS.white,
   },
-  btnBack: {
-    position: 'absolute',
-    left: 5,
+  btnClose: {
+    marginRight: 20,
   },
 });
 
 const Header = () => {
   const dispatch = useDispatch();
   const {step, headerTitle, activeFlow} = useSelector(activeFlowSelector);
+
+  const handleToggleModal = async () => await dispatch(actionToggleModal());
+
   const handleBack = async () => {
     switch (step) {
     case STEP_FLOW.TYPE_AMOUNT: {
@@ -45,12 +47,7 @@ const Header = () => {
       );
     }
     default:
-      await dispatch(
-        actionToggleModal({
-          visible: false,
-          data: null,
-        }),
-      );
+      await handleToggleModal();
     }
   };
   if (step === STEP_FLOW.SHOW_STATUS) {
@@ -58,10 +55,11 @@ const Header = () => {
   }
   return (
     <View style={styled.container}>
-      <View style={styled.btnBack}>
-        <BackButton onPress={handleBack} />
-      </View>
+      <BackButton onPress={handleBack} />
       <Text style={styled.title}>{headerTitle}</Text>
+      <View style={styled.btnClose}>
+        <BtnClose onPress={handleToggleModal} />
+      </View>
     </View>
   );
 };

@@ -22,21 +22,20 @@ const styled = StyleSheet.create({
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 6,
     color: COLORS.black,
-    flex: 1,
     textAlign: 'right',
-    paddingLeft: 20,
+    marginLeft: 'auto',
   },
 });
 
 export const Hook = ({data}) => {
-  const {leftText, rightText, disabled} = data;
+  const {leftText, rightText, disabled, leftTextStyle, rightTextStyle} = data;
   if (disabled) {
     return null;
   }
   return (
     <View style={styled.hook}>
-      <Text style={styled.leftText}>{leftText}</Text>
-      <Text style={styled.rightText} numberOfLines={1} ellipsizeMode="middle">
+      <Text style={[styled.leftText, leftTextStyle]}>{leftText}</Text>
+      <Text style={[styled.rightText, rightTextStyle]} numberOfLines={1}>
         {rightText}
       </Text>
     </View>
@@ -48,6 +47,8 @@ Hook.defaultProps = {
     leftText: '',
     rightText: '',
     disabled: false,
+    leftTextStyle: null,
+    rightTextStyle: null,
   },
 };
 
@@ -56,6 +57,8 @@ Hook.propTypes = {
     leftText: PropTypes.string,
     rightText: PropTypes.string,
     disabled: PropTypes.bool,
+    leftTextStyle: PropTypes.any,
+    rightTextStyle: PropTypes.any,
   }),
 };
 export default Hook;

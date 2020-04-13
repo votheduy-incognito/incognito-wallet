@@ -27,6 +27,7 @@ const styled = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
+    maxHeight: '50%',
   },
   account: {
     flexDirection: 'row',
@@ -34,8 +35,6 @@ const styled = StyleSheet.create({
     borderBottomColor: COLORS.lightGrey1,
     borderBottomWidth: 0.5,
     alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: COLORS.white,
   },
   accountName: {
     fontFamily: FONT.NAME.regular,
@@ -43,6 +42,8 @@ const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.regular + 6,
     color: COLORS.black,
     marginLeft: 20,
+    maxWidth: 100,
+    textAlign: 'left',
     flex: 1,
   },
   accountBalance: {
@@ -50,8 +51,9 @@ const styled = StyleSheet.create({
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 6,
     color: COLORS.lightGrey1,
-    flex: 1,
     textAlign: 'right',
+    maxWidth: 100,
+    marginLeft: 5,
   },
   lastChild: {
     borderBottomLeftRadius: 8,
@@ -61,6 +63,10 @@ const styled = StyleSheet.create({
   icon: {
     width: 20,
     height: 20,
+  },
+  balanceContainer: {
+    flexDirection: 'row',
+    marginLeft: 'auto',
   },
 });
 
@@ -81,17 +87,16 @@ const Account = props => {
     <TouchableWithoutFeedback onPress={onChooseAccount}>
       <View style={[styled.account, lastChild ? styled.lastChild : null]}>
         <AccountIcon source={srcAccountIcon} style={styled.icon} />
-        <Text
-          style={styled.accountName}
-          ellipsizeMode="middle"
-          numberOfLines={1}
-        >
+        <Text style={styled.accountName} numberOfLines={1}>
           {account?.name || account?.AccountName}
         </Text>
         {shouldShowBalance && (
-          <Text style={styled.accountBalance}>
-            {`${format.amountFull(account?.value || 0, pDecimals)} ${symbol}`}
-          </Text>
+          <View style={styled.balanceContainer}>
+            <Text style={styled.accountBalance} numberOfLines={1}>
+              {`${format.amount(account?.value || 0, pDecimals)}`}
+            </Text>
+            <Text style={styled.accountBalance}>{symbol}</Text>
+          </View>
         )}
       </View>
     </TouchableWithoutFeedback>

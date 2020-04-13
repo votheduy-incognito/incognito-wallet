@@ -44,7 +44,7 @@ const enhance = WrappedComp => props => {
   } = useSelector(stakeDataSelector);
   const dispatch = useDispatch();
   const feeData = {
-    leftText: 'Fee',
+    leftText: 'Fee:',
     rightText: format.amountFull(fee.value, pDecimals),
     disabled: activeFlow !== DEPOSIT_FLOW,
   };

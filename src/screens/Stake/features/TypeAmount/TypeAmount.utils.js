@@ -71,6 +71,9 @@ export const getHookFactories = ({account, activeFlow, balancePStake}) => {
     id: 0,
     leftText: '',
     rightText: account?.name || account?.AccountName,
+    rightTextStyle: {
+      maxWidth: '40%',
+    },
   };
   let hookBalance = {
     id: 1,
@@ -80,7 +83,7 @@ export const getHookFactories = ({account, activeFlow, balancePStake}) => {
   switch (activeFlow) {
   case DEPOSIT_FLOW: {
     hookBalance.leftText = 'Balance:';
-    hookBalance.rightText = `${format.amountFull(
+    hookBalance.rightText = `${format.amount(
         account?.value || 0,
         pDecimals,
     )} ${symbol}`;
@@ -89,7 +92,7 @@ export const getHookFactories = ({account, activeFlow, balancePStake}) => {
   }
   case WITHDRAW_FLOW: {
     hookBalance.leftText = 'pStake balance:';
-    hookBalance.rightText = `${format.amountFull(
+    hookBalance.rightText = `${format.amount(
       balancePStake || 0,
       pDecimals,
     )} ${symbol}`;

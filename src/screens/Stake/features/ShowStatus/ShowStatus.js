@@ -84,12 +84,15 @@ const ShowStatus = () => {
     {
       id: 0,
       leftText: 'Amount:',
-      rightText: `${format.amountFull(amount, pDecimals)} ${symbol} `,
+      rightText: `${format.amount(amount, pDecimals)} ${symbol} `,
     },
     {
       id: 1,
       leftText: `${headerTitle}:`,
       rightText: account?.name || account?.AccountName,
+      rightTextStyle: {
+        maxWidth: '40%',
+      },
     },
   ];
   const onHandlePress = async () => {
