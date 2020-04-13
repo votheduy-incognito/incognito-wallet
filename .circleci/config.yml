@@ -66,7 +66,7 @@ jobs:
       - run: yarn buildNext
       - run: chmod +x .circleci/slack-upload.sh
       - run: cp android/app/build/outputs/apk/releaseNext/app-releaseNext.apk ./$APP_VERSION-next.apk
-      - run: bash .circleci/slack-upload.sh -f ./$APP_VERSION-next.apk -c '$SLACK_CHANNEL' -s $SLACK_API_KEY -n "$APP_VERSION-next" -x "$LAST_COMMIT_MESSAGE"
+      - run: bash .circleci/slack-upload.sh -f ./$APP_VERSION-next.apk -c '$SLACK_CHANNEL' -s $SLACK_API_KEY -n "$APP_VERSION-next" -x "\"$LAST_COMMIT_MESSAGE\""
   build_android_release:
     executor:
       name: rn/linux_android
@@ -77,7 +77,7 @@ jobs:
       - run: yarn buildRelease
       - run: chmod +x .circleci/slack-upload.sh
       - run: cp android/app/build/outputs/apk/release/app-release.apk ./$APP_VERSION.apk
-      - run: bash .circleci/slack-upload.sh -f ./$APP_VERSION.apk -c '$SLACK_CHANNEL' -s $SLACK_API_KEY -n "$APP_VERSION" -x "$LAST_COMMIT_MESSAGE"
+      - run: bash .circleci/slack-upload.sh -f ./$APP_VERSION.apk -c '$SLACK_CHANNEL' -s $SLACK_API_KEY -n "$APP_VERSION" -x "\"$LAST_COMMIT_MESSAGE\""
   push_android_staging:
     executor:
       name: rn/linux_android
@@ -87,7 +87,7 @@ jobs:
       - login_appcenter
       - get_app_info
       - run: yarn deployAndroid:staging
-      - run: curl -X POST -H "Content-type:application/json" --data '{"text":'"Deploy Android $APP_VERSION successfully!"'}' $SLACK_HOOK
+      - run: curl -X POST -H "Content-type:application/json" --data '{"text":"'"Deploy Android $APP_VERSION successfully!"'"}' $SLACK_HOOK
   push_ios_staging:
     executor:
       name: rn/linux_android
@@ -97,7 +97,7 @@ jobs:
       - login_appcenter
       - get_app_info
       - run: yarn deployIOS:staging
-      - run: curl -X POST -H 'Content-type:application/json' --data '{"text":'"Deploy iOS $APP_VERSION successfully!"'}' $SLACK_HOOK
+      - run: curl -X POST -H 'Content-type:application/json' --data '{"text":"'"Deploy iOS $APP_VERSION successfully!"'"}' $SLACK_HOOK
 
 orbs:
   rn: react-native-community/react-native@4.1.0
