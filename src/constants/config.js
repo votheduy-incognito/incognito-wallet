@@ -2,14 +2,12 @@ import {
   PASSPHRASE_WALLET_DEFAULT,
   PASSWORD_SECRET_KEY,
 } from 'react-native-dotenv';
+import {MAINNET_FULLNODE, TESTNET_FULLNODE} from '@services/wallet/Server';
 import pkg from '../../package.json';
 
-const isMainnet = global.isMainnet??true;
+const isMainnet = global.isMainnet ?? true;
 
 export const MAIN_WEBSITE = 'https://incognito.org/latest?utm_source=mobileapp';
-
-const MAINNET_FULLNODE = 'https://lb-fullnode.incognito.org/fullnode';
-const TESTNET_FULLNODE = 'https://test-node.incognito.org';
 
 const API_BASE_URL = isMainnet?
   'https://api.incognito.org' :
@@ -44,6 +42,8 @@ const ETH_TOKEN_ID = isMainnet ?
   'ffd8d42dc40a8d166ea4848baf8b5f6e9fe0e9c30d60062eb7d44a8df9e00854';
 
 const CRYPTO_ICON_URL = 'https://s3.amazonaws.com/incognito-org/wallet/cryptocurrency-icons/32@2x/color';
+
+console.debug('IS MAINNET CONFIG', isMainnet);
 
 export default {
   isMainnet,

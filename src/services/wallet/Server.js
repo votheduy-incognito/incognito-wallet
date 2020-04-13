@@ -1,6 +1,8 @@
 import storage from '@src/services/storage';
 import _ from 'lodash';
-import {CONSTANT_CONFIGS} from '@src/constants';
+
+export const MAINNET_FULLNODE = 'https://lb-fullnode.incognito.org/fullnode';
+export const TESTNET_FULLNODE = 'https://test-node.incognito.org';
 
 const isMainnet = global.isMainnet??true;
 let cachedList = null;
@@ -17,14 +19,14 @@ export const KEY = {
   {
     id: 'testnet',
     default:!isMainnet,
-    address: CONSTANT_CONFIGS.TESTNET_FULLNODE,
+    address: TESTNET_FULLNODE,
     username: '',
     password: '',
     name: 'Testnet'
   },{
     id: 'mainnet',
     default: isMainnet,
-    address: CONSTANT_CONFIGS.MAINNET_FULLNODE,
+    address: MAINNET_FULLNODE,
     username: '',
     password: '',
     name: 'Mainnet'

@@ -25,6 +25,9 @@ AppRegistry.registerRunnable(appName, async initParams => {
     (_.isEmpty(serverDefault)
       ? global.isMainnet
       : serverService.isMainnet(serverDefault)) ?? true;
+
+  console.debug('IS MAINNET', global.isMainnet);
+
   const {default: App} = await import('@src/App');
   AppRegistry.registerComponent(appName, () => App);
   AppRegistry.runApplication(appName, initParams);

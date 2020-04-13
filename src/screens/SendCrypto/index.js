@@ -1,10 +1,10 @@
 import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
-import {TouchableOpacity, View, Text, ActivityIndicator} from '@src/components/core';
+import {TouchableOpacity, View, Text, ActivityIndicator, Toast} from '@src/components/core';
 import {useNavigationParam } from 'react-navigation-hooks';
 import ROUTES_NAME from '@routers/routeNames';
 import {useDispatch, useSelector} from 'react-redux';
-import {accountSeleclor, selectedPrivacySeleclor} from '@src/redux/selectors';
+import {accountSeleclor, selectedPrivacySeleclor, settingsSelector} from '@src/redux/selectors';
 import {getBalance } from '@src/redux/actions/account';
 import {getBalance as getTokenBalance} from '@src/redux/actions/token';
 import {PRV_ID} from '@screens/Dex/constants';
@@ -31,16 +31,27 @@ const SendCoin = ({ navigation }) => {
   const [mode, setMode] = React.useState(modes[0]);
   const [reloading, setReloading] = React.useState(false);
   const origin = useNavigationParam('origin');
-  const { wallet, account, selectedPrivacy } = useSelector(state => ({
+  const { wallet, account, selectedPrivacy, settings, getPrivacyDataByTokenID } = useSelector(state => ({
     selectedPrivacy: selectedPrivacySeleclor.selectedPrivacy(state),
     account: accountSeleclor.defaultAccount(state),
     wallet: state.wallet,
+    settings: settingsSelector.settings(state),
+    getPrivacyDataByTokenID: selectedPrivacySeleclor.getPrivacyDataByTokenID(state),
   }));
   const dispatch = useDispatch();
   const selectable = origin !== ROUTES_NAME.WalletDetail;
   const switchable = selectable || (!selectable && selectedPrivacy.isPToken);
 
   const switchMode = (item) => {
+    if (item.text === 'Out Network') {
+      const tokenId = selectedPrivacy.tokenId;
+      const tokenData = getPrivacyDataByTokenID(tokenId);
+      if (settings.disableDecentralized && tokenData?.isDecentralized) {
+        Toast.showError('Incognito for smart contracts is coming soon! In preparation, shield, receive-out network, and send-out network features have been temporarily disabled. All features will be re-enabled on 15 April. Thanks for your patience.');
+        return false;
+      }
+    }
+
     setMode(item);
   };
 
