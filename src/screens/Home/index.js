@@ -1,6 +1,7 @@
 import React from 'react';
+import {ScrollView} from 'react-native';
 import PropTypes from 'prop-types';
-import { View } from '@src/components/core';
+import {View} from '@src/components/core';
 import icShield from '@assets/images/icons/ic_shield_btn.png';
 import icSend from '@assets/images/icons/ic_send_btn.png';
 import icReceive from '@assets/images/icons/ic_receive_btn.png';
@@ -15,8 +16,8 @@ import ROUTE_NAMES from '@routers/routeNames';
 import {withRoundHeaderLayout} from '@src/hoc';
 import FloatButton from '@src/components/FloatButton';
 import Card from '@components/Card';
-import { BIG_COINS } from '@screens/Dex/constants';
-import { useSelector } from 'react-redux';
+import {BIG_COINS} from '@screens/Dex/constants';
+import {useSelector} from 'react-redux';
 import accountSeleclor from '@src/redux/selectors/account';
 import dexUtil from '@utils/dex';
 import LinkingService from '@src/services/linking';
@@ -24,6 +25,8 @@ import {CONSTANT_EVENTS} from '@src/constants';
 import LocalDatabase from '@utils/LocalDatabase';
 import {withdraw} from '@services/api/withdraw';
 import {logEvent} from '@services/firebase';
+import icStake from '@assets/images/icons/stake_icon.png';
+import RightMenu from '@screens/Stake/features/RightMenu';
 import styles from './style';
 
 const sendItem = {
@@ -58,7 +61,9 @@ const powerItem = {
   desc: 'Plug & play',
   route: ROUTE_NAMES.Community,
   onPress: () => {
-    LinkingService.openUrl('https://node.incognito.org/payment.html?utm_source=app&utm_medium=homepage%20app&utm_campaign=pnode');
+    LinkingService.openUrl(
+      'https://node.incognito.org/payment.html?utm_source=app&utm_medium=homepage%20app&utm_campaign=pnode',
+    );
   },
 };
 
@@ -66,7 +71,7 @@ const pUniswapItem = {
   image: icUniswap,
   title: 'pUniswap',
   route: ROUTE_NAMES.pUniswap,
-  event: CONSTANT_EVENTS.CLICK_HOME_UNISWAP
+  event: CONSTANT_EVENTS.CLICK_HOME_UNISWAP,
 };
 
 const buttons = [
@@ -92,11 +97,16 @@ const buttons = [
     image: icTrade,
     title: 'Trade',
     route: ROUTE_NAMES.Dex,
-    event: CONSTANT_EVENTS.CLICK_HOME_TRADE
+    event: CONSTANT_EVENTS.CLICK_HOME_TRADE,
   },
   pappItem,
   powerItem,
   // pUniswapItem,
+  {
+    image: icStake,
+    title: 'Stake',
+    route: ROUTE_NAMES.Stake,
+  },
 ];
 
 const Home = ({navigation}) => {
@@ -150,19 +160,30 @@ const Home = ({navigation}) => {
 
   return (
     <Card style={styles.container}>
-      <View style={styles.btnContainer}>
-        {buttons.map(item => (
-          <View style={styles.btn} key={item.title}>
-            <IconTextButton
-              image={item.image}
-              title={item.title}
-              disabled={isDisabled(item)}
-              onPress={item.onPress || (() => goToScreen(item.route, item.params, item.event))}
-            />
-          </View>
-        ))}
-        <FloatButton onPress={() => navigation.navigate('Community', { uri: 'https://incognito.org/c/help/45' })} label='Feedback' />
-      </View>
+      <ScrollView>
+        <View style={styles.btnContainer}>
+          {buttons.map(item => (
+            <View style={styles.btn} key={item.title}>
+              <IconTextButton
+                image={item.image}
+                title={item.title}
+                disabled={isDisabled(item)}
+                onPress={
+                  item.onPress || (() => goToScreen(item.route, item.params))
+                }
+              />
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+      <FloatButton
+        onPress={() =>
+          navigation.navigate('Community', {
+            uri: 'https://incognito.org/c/help/45',
+          })
+        }
+        label="Feedback"
+      />
     </Card>
   );
 };

@@ -84,6 +84,7 @@ export default {
   toFixed,
   number,
   numberWithNoGroupSeparator,
+  amountCreator
 };
 
 // console.debug('TEST REMOVE TRAILING ZEROES');

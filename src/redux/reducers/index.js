@@ -3,6 +3,8 @@ import reduceReducers from 'reduce-reducers';
 import {reducer as formReducer} from 'redux-form';
 import {modalReducer} from '@src/components/Modal';
 import notification from '@src/screens/Notification/Notification.reducer';
+import stake from '@screens/Stake/stake.reducer';
+import stakeHistory from '@screens/StakeHistory/stakeHistory.reducer';
 import wallet from './wallet';
 import account from './account';
 import server from './server';
@@ -32,6 +34,8 @@ const rootReducer = reduceReducers(
     receivers,
     notification,
     settings,
+    stake,
+    stakeHistory,
   }),
   globalReducer,
 );

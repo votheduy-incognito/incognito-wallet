@@ -124,7 +124,6 @@
 		93B29E8475554D32A767FB11 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		96FC8B27D07249A5AD7223A5 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Medium.ttf"; path = "../src/assets/fonts/Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		97C3A54F4B934DA1A6004B78 /* libRNSSH.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSSH.a; sourceTree = "<group>"; };
-		9F36E2A27EA945A6BA652F08 /* libRNSVG.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSVG.a; sourceTree = "<group>"; };
 		A37F2762BA3D42388EA0979D /* PostGroteskMediumItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = PostGroteskMediumItalic.otf; path = ../src/assets/fonts/PostGroteskMediumItalic.otf; sourceTree = "<group>"; };
 		A3DE260718B44BD4834DE46F /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		AC3439C990274B2AA62796BA /* libRNReanimated.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNReanimated.a; sourceTree = "<group>"; };
@@ -173,7 +172,6 @@
 				82E467C899D04A02A0589EB9 /* libRNGestureHandler.a in Frameworks */,
 				3B50FECFE455494A8373E5A6 /* libRNVectorIcons.a in Frameworks */,
 				A23A5B4BF797429292519AC6 /* libRNCAsyncStorage.a in Frameworks */,
-				36F7D5CE970D4799A075B466 /* libRNSVG.a in Frameworks */,
 				7144D81C24373E68005224F2 /* Gomobile.framework in Frameworks */,
 				0D4F7FF3224B482F9DFC427A /* libRNReanimated.a in Frameworks */,
 				FEEBD6BF2355AD57006EFECD /* AutonomousZMQ.framework in Frameworks */,
@@ -214,7 +212,6 @@
 				AF1B701A774B4C75BB5DD399 /* libRNGestureHandler-tvOS.a */,
 				CDB44AB3155F477CB290D577 /* libRNVectorIcons-tvOS.a */,
 				3D828B2179CD4981AB6E75EE /* libRNCAsyncStorage.a */,
-				9F36E2A27EA945A6BA652F08 /* libRNSVG.a */,
 				AC3439C990274B2AA62796BA /* libRNReanimated.a */,
 				18DA0D45522B402982193615 /* libRNRandomBytes.a */,
 				40DA4B90D00A4AC983FDC44B /* libRNSVG-tvOS.a */,

@@ -17,6 +17,7 @@ import {DEX} from '@src/utils/dex';
 import accountService from '@src/services/wallet/accountService';
 import {actionInit} from '@src/screens/Notification';
 import GetStarted from './GetStarted';
+import {STAKE} from '../Stake/stake.utils';
 
 class GetStartedContainer extends Component {
   constructor() {
@@ -61,6 +62,23 @@ class GetStartedContainer extends Component {
           DEX.WITHDRAW_ACCOUNT,
           wallet,
           accountService.parseShard(dexMainAccount),
+        );
+      }
+      if (
+        !accounts.some(
+          item =>
+            item?.AccountName === STAKE.MAIN_ACCOUNT ||
+            item?.name === STAKE.MAIN_ACCOUNT,
+        )
+      ) {
+        accounts = await wallet.listAccount();
+        const dexWithdrawAccount = accounts.find(
+          item => item.AccountName === DEX.WITHDRAW_ACCOUNT,
+        );
+        await accountService.createAccount(
+          STAKE.MAIN_ACCOUNT,
+          wallet,
+          accountService.parseShard(dexWithdrawAccount),
         );
       }
 

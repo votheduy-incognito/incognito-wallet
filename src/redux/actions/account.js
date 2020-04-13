@@ -5,6 +5,7 @@ import walletType from '@src/redux/types/wallet';
 import accountService from '@src/services/wallet/accountService';
 import {getPassphrase} from '@src/services/wallet/passwordService';
 import {getUserUnfollowTokenIDs} from '@src/services/wallet/tokenService';
+import convert from '@src/utils/convert';
 import {tokenSeleclor, accountSeleclor} from '../selectors';
 import {getBalance as getTokenBalance, setListToken} from './token';
 
@@ -291,6 +292,55 @@ export const actionReloadFollowingToken = () => async (dispatch, getState) => {
     );
     await dispatch(setListToken(followed));
     return followed;
+  } catch (error) {
+    throw Error(error);
+  }
+};
+
+export const actionSendNativeToken = ({
+  account,
+  amount,
+  fee,
+  toAddress,
+  pDecimals,
+}) => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const wallet = state?.wallet;
+    const originalAmount = convert.toOriginalAmount(
+      convert.toNumber(amount),
+      pDecimals,
+    );
+    const originalFee = convert.toNumber(fee);
+    const paymentInfos = [
+      {
+        paymentAddressStr: toAddress,
+        amount: originalAmount,
+      },
+    ];
+    const res = await accountService.createAndSendNativeToken(
+      paymentInfos,
+      originalFee,
+      true,
+      account,
+      wallet,
+      '',
+    );
+    if (res.txId) {
+      return res;
+    }
+  } catch (error) {
+    throw Error(error);
+  }
+};
+
+export const actionLoadAllBalance = () => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const accounts = accountSeleclor.listAccount(state);
+    await new Promise.all(
+      accounts.map(async account => await dispatch(getBalance(account))),
+    );
   } catch (error) {
     throw Error(error);
   }

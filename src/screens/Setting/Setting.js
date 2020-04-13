@@ -12,6 +12,7 @@ import AccountSection from './AccountSection';
 import NetworkSection from './NetworkSection';
 import {settingStyle} from './style';
 import FrequentReceiverSection from './FrequentReceiversSection';
+import StakeSection from './StakeSection';
 
 class Setting extends React.Component {
   constructor() {
@@ -57,6 +58,7 @@ class Setting extends React.Component {
           <PINSection navigation={navigation} />
           <SeparatorSection />
           <FrequentReceiverSection />
+          <StakeSection />
         </View>
         <TouchableOpacity
           onPress={async () => {
@@ -66,11 +68,8 @@ class Setting extends React.Component {
             }
           }}
         >
-          <Text
-            style={
-              settingStyle.textVersion
-            }
-          >{`v${AppUpdater.appVersion}`}
+          <Text style={settingStyle.textVersion}>
+            {`v${AppUpdater.appVersion}`}
           </Text>
         </TouchableOpacity>
       </ScrollView>
