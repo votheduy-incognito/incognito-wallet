@@ -15,12 +15,16 @@ const styled = StyleSheet.create({
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 6,
     color: COLORS.lightGrey1,
+    textAlign: 'left',
   },
   rightText: {
-    fontFamily: FONT.NAME.medium,
+    fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 6,
     color: COLORS.black,
+    flex: 1,
+    textAlign: 'right',
+    paddingLeft: 20,
   },
 });
 
@@ -32,7 +36,9 @@ export const Hook = ({data}) => {
   return (
     <View style={styled.hook}>
       <Text style={styled.leftText}>{leftText}</Text>
-      <Text style={styled.rightText}>{rightText}</Text>
+      <Text style={styled.rightText} numberOfLines={1} ellipsizeMode="middle">
+        {rightText}
+      </Text>
     </View>
   );
 };

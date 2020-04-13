@@ -28,10 +28,6 @@ const styled = StyleSheet.create({
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
   },
-  hook: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   account: {
     flexDirection: 'row',
     padding: 20,
@@ -47,12 +43,15 @@ const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.regular + 6,
     color: COLORS.black,
     marginLeft: 20,
+    flex: 1,
   },
   accountBalance: {
-    fontFamily: FONT.NAME.medium,
+    fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 6,
     color: COLORS.lightGrey1,
+    flex: 1,
+    textAlign: 'right',
   },
   lastChild: {
     borderBottomLeftRadius: 8,
@@ -81,12 +80,14 @@ const Account = props => {
   return (
     <TouchableWithoutFeedback onPress={onChooseAccount}>
       <View style={[styled.account, lastChild ? styled.lastChild : null]}>
-        <View style={styled.hook}>
-          <AccountIcon source={srcAccountIcon} style={styled.icon} />
-          <Text style={styled.accountName}>
-            {account?.name || account?.AccountName}
-          </Text>
-        </View>
+        <AccountIcon source={srcAccountIcon} style={styled.icon} />
+        <Text
+          style={styled.accountName}
+          ellipsizeMode="middle"
+          numberOfLines={1}
+        >
+          {account?.name || account?.AccountName}
+        </Text>
         {shouldShowBalance && (
           <Text style={styled.accountBalance}>
             {`${format.amountFull(account?.value || 0, pDecimals)} ${symbol}`}

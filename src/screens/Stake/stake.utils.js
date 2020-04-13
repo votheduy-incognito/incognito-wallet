@@ -22,7 +22,7 @@ export const mappingData = (dataMasterAddress, dataStakerInfo) => {
     minToWithdraw: dataMasterAddress?.MinToWithdraw || 0,
     currentRewardRate: dataMasterAddress?.CurrentRewardRate || 50,
     stakingMasterAddress: dataMasterAddress?.StakingMasterAddress || '',
-    balance: dataStakerInfo?.Balance || 0,
+    balance: dataStakerInfo?.Balance + dataStakerInfo?.RewardBalance || 0,
     rewardDate: new Date(dataStakerInfo?.RewardDate).getTime(),
     pDecimals,
     symbol,
