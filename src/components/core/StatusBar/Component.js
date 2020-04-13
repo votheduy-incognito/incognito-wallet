@@ -1,28 +1,48 @@
-import { COLORS } from '@src/styles';
+import {COLORS} from '@src/styles';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Platform, StatusBar as RNComponent, View } from 'react-native';
+import {Platform, StatusBar as RNComponent, View} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import routeNames from '@src/router/routeNames';
 
-const { pApps, pApp, GetStarted, Game, Wizard, Node, Dex, DexHistory, DexHistoryDetail, AddPin, Community } = routeNames;
+const {
+  pApps,
+  pApp,
+  GetStarted,
+  Game,
+  Wizard,
+  Node,
+  Dex,
+  DexHistory,
+  DexHistoryDetail,
+  AddPin,
+  Community,
+  Stake,
+} = routeNames;
 
 const whiteScreens = [Game, GetStarted, AddPin, Community];
 const blue2Screens = [];
 const blue1Screens = [Wizard, Node];
 const dark2Screen = [Dex, DexHistory, DexHistoryDetail];
 const blackScreen = [];
+const linearScreen = [Stake];
 
 const isIOS = Platform.OS === 'ios';
 const isIphoneX = DeviceInfo.hasNotch();
 
-const STATUS_BAR_HEIGHT = isIOS ? isIphoneX ? 40 : 20 : RNComponent.currentHeight;
+export const STATUS_BAR_HEIGHT = isIOS
+  ? isIphoneX
+    ? 40
+    : 20
+  : RNComponent.currentHeight;
 
-const StatusBar = React.memo(({ currentScreen }) => {
+const StatusBar = React.memo(({currentScreen}) => {
   let backgroundColor;
   let textColor;
 
-  if (whiteScreens.includes(currentScreen)) {
+  if (linearScreen.includes(currentScreen)) {
+    return null;
+  } else if (whiteScreens.includes(currentScreen)) {
     backgroundColor = COLORS.white;
     textColor = 'dark-content';
   } else if (blue2Screens.includes(currentScreen)) {
@@ -49,11 +69,12 @@ const StatusBar = React.memo(({ currentScreen }) => {
   }
 
   return (
-    <View style={{
-      width: '100%',
-      height: STATUS_BAR_HEIGHT,
-      backgroundColor: backgroundColor,
-    }}
+    <View
+      style={{
+        width: '100%',
+        height: STATUS_BAR_HEIGHT,
+        backgroundColor: backgroundColor,
+      }}
     >
       <RNComponent barStyle={textColor} />
     </View>

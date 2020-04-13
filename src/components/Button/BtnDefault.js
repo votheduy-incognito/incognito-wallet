@@ -1,12 +1,17 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  ActivityIndicator,
+} from 'react-native';
 import PropTypes from 'prop-types';
-import {FONT} from '@src/styles';
+import {FONT, COLORS} from '@src/styles';
 
 const styled = StyleSheet.create({
   title: {
     color: '#fff',
-    fontFamily: FONT.NAME.regular,
+    fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular + 2,
   },
   btnStyle: {
@@ -18,12 +23,21 @@ const styled = StyleSheet.create({
     backgroundColor: '#25CDD6',
     borderRadius: 4,
   },
+  disabled: {
+    backgroundColor: COLORS.lightGrey5,
+  },
+  indicator: {
+    marginLeft: 15,
+  },
 });
 
 const BtnLinear = props => {
-  const {title, titleStyle, btnStyle, ...rest} = props;
+  const {title, titleStyle, btnStyle, disabled, loading, ...rest} = props;
   return (
-    <TouchableOpacity style={[styled.btnStyle, btnStyle]} {...rest}>
+    <TouchableOpacity
+      style={[styled.btnStyle, disabled ? styled.disabled : null, btnStyle]}
+      {...{...rest, disabled}}
+    >
       <Text
         style={[styled.title, titleStyle]}
         ellipsizeMode="middle"
@@ -31,6 +45,13 @@ const BtnLinear = props => {
       >
         {title}
       </Text>
+      {loading && (
+        <ActivityIndicator
+          size="small"
+          color={COLORS.white}
+          style={styled.indicator}
+        />
+      )}
     </TouchableOpacity>
   );
 };
@@ -39,12 +60,16 @@ BtnLinear.defaultProps = {
   title: '',
   titleStyle: {},
   btnStyle: {},
+  disabled: false,
+  loading: false,
 };
 
 BtnLinear.propTypes = {
   title: PropTypes.string,
   titleStyle: PropTypes.any,
   btnStyle: PropTypes.any,
+  disabled: PropTypes.bool,
+  loading: PropTypes.bool,
 };
 
 export default BtnLinear;

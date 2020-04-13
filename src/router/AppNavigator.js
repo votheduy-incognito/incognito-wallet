@@ -34,6 +34,10 @@ import FrequentReceivers, {
 } from '@src/screens/SendCrypto/FrequentReceivers';
 import Notification from '@src/screens/Notification';
 import NodeHelp from '@screens/NodeHelp';
+import Stake from '@screens/Stake';
+import StakeHistory from '@screens/StakeHistory';
+import StakeRecoverAccount from '@screens/Stake/features/RecoverAccount';
+import StakeHistoryDetail from '@screens/StakeHistory/features/Detail';
 import ROUTE_NAMES from './routeNames';
 import TabNavigator from './TabNavigator';
 
@@ -97,9 +101,12 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.UniswapHistory]: navigationOptionsHandler(UniswapHistory, {
       title: 'History',
     }),
-    [ROUTE_NAMES.UniswapHistoryDetail]: navigationOptionsHandler(UniswapHistoryDetail, {
-      title: 'Transaction Detail',
-    }),
+    [ROUTE_NAMES.UniswapHistoryDetail]: navigationOptionsHandler(
+      UniswapHistoryDetail,
+      {
+        title: 'Transaction Detail',
+      },
+    ),
     [ROUTE_NAMES.WhyShield]: navigationOptionsHandler(WhyShield, {
       title: 'Why Shield?',
     }),
@@ -110,27 +117,34 @@ const AppNavigator = createStackNavigator(
       FrequentReceivers,
     ),
     [ROUTE_NAMES.Notification]: navigationOptionsHandler(Notification),
-    [ROUTE_NAMES.pApps]: navigationOptionsHandler(
-      pApps,
-    ),
-    [ROUTE_NAMES.NodeHelp]: navigationOptionsHandler(
-      NodeHelp,
+    [ROUTE_NAMES.pApps]: navigationOptionsHandler(pApps),
+    [ROUTE_NAMES.NodeHelp]: navigationOptionsHandler(NodeHelp, {
+      title: 'Need help?',
+    }),
+    [ROUTE_NAMES.Stake]: navigationOptionsHandler(Stake, {
+      header: () => null,
+    }),
+    [ROUTE_NAMES.StakeHistory]: navigationOptionsHandler(StakeHistory, {
+      title: 'Activities',
+    }),
+    [ROUTE_NAMES.StakeRecoverAccount]: navigationOptionsHandler(
+      StakeRecoverAccount,
       {
-        title: 'Need help?'
-      }
+        title: 'Recover Account',
+      },
     ),
-    [ROUTE_NAMES.WhySend]: navigationOptionsHandler(
-      WhySend,
+    [ROUTE_NAMES.StakeHistoryDetail]: navigationOptionsHandler(
+      StakeHistoryDetail,
       {
-        title: 'Send'
-      }
+        title: 'Activities Detail',
+      },
     ),
-    [ROUTE_NAMES.WhyReceive]: navigationOptionsHandler(
-      WhyReceive,
-      {
-        title: 'Receive'
-      }
-    ),
+    [ROUTE_NAMES.WhySend]: navigationOptionsHandler(WhySend, {
+      title: 'Send',
+    }),
+    [ROUTE_NAMES.WhyReceive]: navigationOptionsHandler(WhyReceive, {
+      title: 'Receive',
+    }),
     [ROUTE_NAMES.PriceChartCrypto]: navigationOptionsHandler(PriceChartCrypto, { title: 'Price Chart' }),
   },
   {

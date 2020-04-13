@@ -8,6 +8,7 @@ const Input = React.forwardRef((props, ref) => {
   const {
     label,
     labelStyle,
+    errorStyle,
     validated,
     containerStyled,
     showBorderBottom,
@@ -55,7 +56,7 @@ const Input = React.forwardRef((props, ref) => {
         onBlur={onBlur}
       />
       {validated && validated.error && (
-        <Text style={styled.error}>{validated.message}</Text>
+        <Text style={[styled.error, errorStyle]}>{validated.message}</Text>
       )}
     </View>
   );
@@ -70,6 +71,7 @@ Input.defaultProps = {
   containerStyled: {},
   showBorderBottom: true,
   labelStyle: {},
+  errorStyle: {},
 };
 
 Input.propTypes = {
@@ -81,6 +83,7 @@ Input.propTypes = {
   containerStyled: PropTypes.any,
   labelStyle: PropTypes.any,
   showBorderBottom: PropTypes.bool,
+  errorStyle: PropTypes.any,
 };
 
 export default Input;

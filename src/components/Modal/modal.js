@@ -1,46 +1,49 @@
 import React from 'react';
-import {View, StyleSheet, Modal, TouchableWithoutFeedback} from 'react-native';
+import {
+  Modal,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  SafeAreaView,
+} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import PropTypes from 'prop-types';
 import {COLORS} from '@src/styles';
+import PropTypes from 'prop-types';
 import {modalSelector} from './modal.selector';
 import {actionToggleModal} from './modal.actions';
 
 const styled = StyleSheet.create({
-  overlay: {
+  container: {
     flex: 1,
-    backgroundColor: COLORS.overlayBlack,
-    position: 'relative',
-    zIndex: 1,
+    backgroundColor: COLORS.overlayBlackDark,
+    width: '100%',
   },
 });
-
 const ModalComponent = props => {
+  const {shouldCloseModalWhenTapOverlay} = props;
   const {visible, data} = useSelector(modalSelector);
   const dispatch = useDispatch();
-  const handleToggle = () => {
-    dispatch(
-      actionToggleModal({
-        visible: !visible,
-        data: visible ? null : data,
-      }),
-    );
-  };
+  const handleToggle = async () =>
+    shouldCloseModalWhenTapOverlay ? await dispatch(actionToggleModal()) : null;
   return (
     <Modal
-      presentationStyle="fullScreen"
+      presentationStyle="overFullScreen"
       animationType="slide"
       visible={visible}
+      transparent
     >
-      <TouchableWithoutFeedback style={styled.overlay} onPress={handleToggle}>
-        {data}
+      <TouchableWithoutFeedback onPress={handleToggle}>
+        <SafeAreaView style={styled.container}>{data}</SafeAreaView>
       </TouchableWithoutFeedback>
     </Modal>
   );
 };
 
-ModalComponent.defaultProps = {};
+ModalComponent.defaultProps = {
+  shouldCloseModalWhenTapOverlay: true,
+};
 
-ModalComponent.propTypes = {};
+ModalComponent.propTypes = {
+  shouldCloseModalWhenTapOverlay: PropTypes.bool,
+};
 
 export default ModalComponent;
