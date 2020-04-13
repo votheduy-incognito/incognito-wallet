@@ -3,7 +3,7 @@ import {Text, View, ImageBackground} from 'react-native';
 import Modal, {actionToggleModal} from '@src/components/Modal';
 import {BtnDefault} from '@src/components/Button';
 import {useDispatch, useSelector} from 'react-redux';
-import {ArrowUpIcon} from '@src/components/Icons';
+import {ArrowUpIcon, SmileIcon} from '@src/components/Icons';
 import {getDecimalSeparator} from '@src/resources/separator';
 import sourceBackground from '@assets/images/icons/stake_background.png';
 import {styled} from './stake.styled';
@@ -92,7 +92,7 @@ const Stake = () => {
               numberOfLine={1}
               ellipsizeMode="middle"
             >
-              {balanceCurrent}
+              {balanceCurrent === 0 ? '0.00' : balanceCurrent}
             </Text>
             <Text style={styled.symbol}>{symbol}</Text>
             {staked && (
@@ -101,12 +101,13 @@ const Stake = () => {
               </View>
             )}
           </View>
-          <Text style={styled.desc}>
-            Current rate:
+          <View style={styled.interestRateContainer}>
+            <Text style={styled.desc}>Current rate:</Text>
             <Text style={[styled.desc, {color: '#FF8D01'}]}>
-              {` ${currentRewardRate}% APR`}
+              {`${currentRewardRate}% APR`}
             </Text>
-          </Text>
+            <SmileIcon />
+          </View>
         </View>
         <BtnDefault
           title={staked ? 'Add more funds' : 'Add funds to stake'}

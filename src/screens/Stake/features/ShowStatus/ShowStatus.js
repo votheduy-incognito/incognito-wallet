@@ -45,7 +45,7 @@ const styled = StyleSheet.create({
     marginVertical: 25,
   },
   warning: {
-    color: '#f40000',
+    color: COLORS.black,
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 6,

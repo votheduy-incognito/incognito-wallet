@@ -1,13 +1,19 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {ThreeDotsVerIcon} from '@src/components/Icons';
 
-const styled = StyleSheet.create({});
+const styled = StyleSheet.create({
+  container: {
+    padding: 5,
+  },
+});
 
 const BtnThreeDotsVer = props => {
   return (
     <TouchableOpacity {...props}>
-      <ThreeDotsVerIcon />
+      <View style={styled.container}>
+        <ThreeDotsVerIcon />
+      </View>
     </TouchableOpacity>
   );
 };

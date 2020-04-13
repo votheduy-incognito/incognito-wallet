@@ -1,6 +1,4 @@
 import {createSelector} from 'reselect';
-import convert from '@src/utils/convert';
-import {CONSTANT_COMMONS} from '@src/constants';
 import {STEP_FLOW, DEPOSIT_FLOW, WITHDRAW_FLOW} from './stake.constant';
 import {isStakeAccount} from './stake.utils';
 
@@ -74,8 +72,9 @@ export const activeFlowSelector = createSelector(
         ? 'OK'
         : 'Back up your account';
       hook.titleStatus = 'Deposit is in progress';
-      hook.warningStatus =
-          'Back up your staking account to keep your assets safe.';
+      hook.warningStatus = createStake.backup
+        ? ''
+        : 'Back up your staking account to keep your assets safe.';
       break;
     case WITHDRAW_FLOW:
       hook.btnSubmitAmount = 'Withdraw';
@@ -106,7 +105,7 @@ export const activeFlowSelector = createSelector(
       if (activeFlow === DEPOSIT_FLOW) {
         hook = {
           ...hook,
-          headerTitle: 'Deposit from',
+          headerTitle: 'Amount',
           from: account?.PaymentAddress,
           to: stakingMasterAddress,
           walletAccount: wallet.getAccountByName(
@@ -117,7 +116,7 @@ export const activeFlowSelector = createSelector(
       if (activeFlow === WITHDRAW_FLOW) {
         hook = {
           ...hook,
-          headerTitle: 'Withdraw to',
+          headerTitle: 'Amount',
           from: pStakeAccount?.PaymentAddress,
           to: account?.PaymentAddress,
           walletAccount: wallet.getAccountByName(

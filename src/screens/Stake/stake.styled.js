@@ -32,12 +32,11 @@ export const styled = StyleSheet.create({
     alignItems: 'center',
   },
   desc: {
-    textAlign: 'center',
-    marginTop: 30,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.large,
     lineHeight: FONT.SIZE.large + 6,
     color: COLORS.black,
+    marginRight: 5
   },
   title: {
     fontFamily: FONT.NAME.regular,
@@ -74,5 +73,11 @@ export const styled = StyleSheet.create({
     resizeMode: 'cover', // or 'stretch'
     position: 'absolute',
     flex: 1,
+  },
+  interestRateContainer: {
+    flexDirection: 'row',
+    marginTop: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

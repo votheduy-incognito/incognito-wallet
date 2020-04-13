@@ -16,7 +16,8 @@ export const styled = StyleSheet.create({
     fontSize: FONT.SIZE.large,
     lineHeight: FONT.SIZE.large + 6,
     color: COLORS.black,
-    marginBottom: 15
+    marginBottom: 15,
+    marginTop: 65,
   },
   btnSubmit: {
     marginTop: 20,
