@@ -16,7 +16,7 @@ import {styled} from './stakeHistory.styled';
 import withStakeHistory from './stakeHistory.enhance';
 
 const Item = props => {
-  const {type, status, amount, statusColor, symbol} = props;
+  const {type, status, amount, statusColor, symbol, lastChild} = props;
   const navigation = useNavigation();
   const handleOnPress = () => {
     navigation.navigate(routeNames.StakeHistoryDetail, {
@@ -25,7 +25,7 @@ const Item = props => {
   };
   return (
     <TouchableWithoutFeedback onPress={handleOnPress}>
-      <View style={styled.item}>
+      <View style={[styled.item, lastChild ? styled.lastChild : null]}>
         <View style={styled.hook}>
           <Text style={styled.type}>{type}</Text>
           <Text style={styled.amount}>{`${amount} ${symbol}`}</Text>
@@ -46,12 +46,14 @@ const StakeHistory = props => {
       <FlatList
         style={styled.flatList}
         data={items}
-        renderItem={({item}) => <Item {...item} />}
+        renderItem={({item, index}) => (
+          <Item {...{...item, lastChild: index === items.length - 1}} />
+        )}
         keyExtractor={item => item.id}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={0.1}
         onEndReached={onLoadmore}
         ListFooterComponent={over ? null : <LoadingContainer />}
       />
@@ -64,6 +66,8 @@ Item.propTypes = {
   status: PropTypes.string.isRequired,
   amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   statusColor: PropTypes.string.isRequired,
+  symbol: PropTypes.string.isRequired,
+  lastChild: PropTypes.bool.isRequired,
 };
 
 StakeHistory.propTypes = {

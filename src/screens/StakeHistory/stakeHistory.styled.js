@@ -20,6 +20,9 @@ export const styled = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  lastChild: {
+    borderBottomColor: 'transparent',
+  },
   type: {
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.regular,

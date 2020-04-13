@@ -24,6 +24,9 @@ const enhance = WrappedComp => props => {
   const onRefresh = () => fetchData({loadmore: false});
   const onLoadmore = async () => {
     try {
+      if (over) {
+        return;
+      }
       await dispatch(actionChangePage(page + 1));
       await fetchData();
     } catch (error) {

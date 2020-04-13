@@ -22,7 +22,7 @@ const styled = StyleSheet.create({
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 6,
     textAlign: 'center',
-    color: '#f40000',
+    color: COLORS.black,
   },
 });
 
