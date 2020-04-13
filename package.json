@@ -1,6 +1,6 @@
 {
   "name": "constantWalletMobile",
-  "version": "3.6.5",
+  "version": "3.6.5.1",
   "private": true,
   "rnpm": {
     "assets": [
@@ -24,11 +24,12 @@
     "buildIosDebug": "react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios",
     "buildRelease": "npx jetify && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle && cd android && ./gradlew app:assembleRelease",
     "buildStaging": "npx jetify && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle && cd android && ./gradlew app:assembleReleaseStaging",
+    "buildNext": "npx jetify && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle && cd android && ./gradlew app:assembleReleaseNext",
     "test": "jest",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
     "ios:clean": "yarn cache clean && rm -rf ~/Library/Developer/Xcode/DerivedData",
-    "postinstall": "./node_modules/.bin/rn-nodeify --install crypto,stream,vm --hack",
+    "postinstall": "./node_modules/.bin/rn-nodeify --install crypto,stream,vm --hack && npx jetify",
     "devtools": "react-devtools",
     "deployIOS:dev": "appcenter codepush release-react -a 0xSiris/Incognito -t \"49.5\" -d Development --development",
     "deployIOS:prod": "appcenter codepush release-react -a 0xSiris/Incognito -t \"49.5\" -d Production -x",
@@ -41,7 +42,6 @@
     "deploy:prod": "yarn deployIOS:prod && yarn deployAndroid:prod"
   },
   "dependencies": {
-    "@josectobar/react-native-iot-wifi": "https://github.com/josectobar/react-native-iot-wifi.git",
     "@react-native-community/async-storage": "^1.3.4",
     "@react-native-community/netinfo": "^5.0.0",
     "@tradle/react-native-http": "^2.0.1",
@@ -62,9 +62,10 @@
     "firebase": "^6.4.1",
     "formik": "^1.5.3",
     "https-browserify": "0.0.1",
-    "incognito-chain-web-js": "https://github.com/incognitochain/incognito-chain-web-js#3.6.5.d",
     "immutability-helper": "^3.0.1",
+    "incognito-chain-web-js": "https://github.com/incognitochain/incognito-chain-web-js#3.6.5.d",
     "intl": "^1.2.5",
+    "jetifier": "^1.6.5",
     "lodash": "^4.17.11",
     "memoize-one": "^5.0.5",
     "moment": "^2.24.0",

@@ -48,16 +48,14 @@ class AppUpdater extends PureComponent {
 
     try {
       const metadata = await codePush.getUpdateMetadata();
-      const {isFirstRun, description, label} = metadata || {};
+      const {isFirstRun, description} = metadata || {};
       if (isFirstRun && description) {
         displayedNews = true;
         this.setState({
           news: description,
-          appVersion: `${CONSTANT_CONFIGS.BUILD_VERSION}.${label.substring(1)}`
+          appVersion: CONSTANT_CONFIGS.BUILD_VERSION
         });
       }
-
-      AppUpdater.appVersion = `${CONSTANT_CONFIGS.BUILD_VERSION}.${label.substring(1)}`;
     } catch (error) {
       console.debug('DISPLAY NEWS', error);
     }

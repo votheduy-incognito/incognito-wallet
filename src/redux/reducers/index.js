@@ -14,6 +14,7 @@ import uniswap from './uniswap';
 import pin from './pin';
 import globalReducer from './globalReducer';
 import receivers from './receivers';
+import settings from './settings';
 
 const rootReducer = reduceReducers(
   combineReducers({
@@ -30,6 +31,7 @@ const rootReducer = reduceReducers(
     modal: modalReducer,
     receivers,
     notification,
+    settings,
   }),
   globalReducer,
 );

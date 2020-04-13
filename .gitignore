@@ -59,18 +59,14 @@ buck-out/
 .env.*
 
 ios/Pods
-ios/Podfile.lock
-ios/GoogleService-Info\.plist
-ios/constantWalletMobile/Index/
-ios/constantWalletMobile/ModuleCache.noindex/
-ios/constantWalletMobile/Logs/
+ios/Incognito/Index/
+ios/Incognito/ModuleCache.noindex/
+ios/Incognito/Logs/
 
 android/app/src/main/assets/index.android.bundle
 android/app/google-services\.json
 TempData.js
 Temp
-
-/yarn.lock
 
 # VSCODE
 .vscode/

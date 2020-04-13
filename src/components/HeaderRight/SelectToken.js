@@ -9,7 +9,6 @@ import { tokenInfoStyle } from './style';
 import SimpleInfo from '../SimpleInfo';
 import FollowingTokenList from '../FollowingTokenList';
 
-
 class TokenInfo extends Component {
   constructor() {
     super();

@@ -1,5 +1,3 @@
-import {KEY} from '@src/services/wallet/Server';
-
 const isMainnet = global.isMainnet ?? true;
 const prefix_network = 'testnet';
 const KEYS = {
@@ -55,5 +53,4 @@ const MERGE_KEY = isMainnet ? KEYS : KEYS_TESTNET;
 export default {
   ...MERGE_KEY,
   PASSPHRASE_KEY_REVERVE: PASSPHRASE_KEY_REVERVE,
-  SERVERS: KEY.SERVER,
 };

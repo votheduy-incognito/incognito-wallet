@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {useSelector, shallowEqual, useDispatch} from 'react-redux';
-import { View } from '@components/core';
+import {Toast, View} from '@components/core';
 import OptionMenu from '@components/OptionMenu';
-import {selectedPrivacySeleclor, tokenSeleclor} from '@src/redux/selectors';
+import {selectedPrivacySeleclor, tokenSeleclor, settingsSelector} from '@src/redux/selectors';
 import {Icon} from 'react-native-elements';
 import CryptoIcon from '@components/CryptoIcon';
 import VerifiedText from '@components/VerifiedText/index';
@@ -43,16 +43,17 @@ const generateMenu = (tokens, onSelect) => {
 const TokenSelect = ({ onSelect, onlyPToken, size, style, iconStyle, showOriginalSymbol, toggleStyle }) => {
   const [menu, setMenu] = React.useState([]);
   const [allTokens, setAllTokens] = React.useState([]);
-  const { pTokens, internalTokens } = useSelector(state => ({
+  const {pTokens, internalTokens, settings, getPrivacyDataByTokenID} = useSelector(state => ({
     pTokens: tokenSeleclor.pTokens(state),
     internalTokens: tokenSeleclor.internalTokens(state),
+    getPrivacyDataByTokenID: selectedPrivacySeleclor.getPrivacyDataByTokenID(state),
+    settings: settingsSelector.settings(state),
   }), shallowEqual);
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
     let allTokens;
-
     if (onlyPToken) {
       allTokens = _(pTokens)
         .map(item => ({
@@ -104,6 +105,32 @@ const TokenSelect = ({ onSelect, onlyPToken, size, style, iconStyle, showOrigina
     setAllTokens(allTokens);
   }, [internalTokens, pTokens]);
 
+  const isTokenSelectable = (tokenId) => {
+    if (!tokenId) {
+      return false;
+    }
+
+    const tokenData = getPrivacyDataByTokenID(tokenId);
+    if (settings.disableDecentralized && onlyPToken && tokenData?.isDecentralized) {
+      Toast.showError('Incognito for smart contracts is coming soon! In preparation, shield, receive-out network, and send-out network features have been temporarily disabled. All features will be re-enabled on 15 April. Thanks for your patience.');
+      return false;
+    }
+
+    return true;
+  };
+
+  const selectToken = tokenId => {
+    if (isTokenSelectable(tokenId)) {
+      onSelect(tokenId);
+    }
+  };
+
+  React.useEffect(() => {
+    if (!isTokenSelectable(selectedPrivacy?.tokenId) && allTokens && allTokens.length > 0) {
+      onSelect(allTokens[0].id);
+    }
+  }, [selectedPrivacy, allTokens]);
+
   const handleSearch = (text) => {
     if (text) {
       const searchText = _.toLower(_.trim(text));
@@ -113,10 +140,10 @@ const TokenSelect = ({ onSelect, onlyPToken, size, style, iconStyle, showOrigina
           _.toLower(item.symbol).includes(searchText)
         );
 
-      const newMenu = generateMenu(tokens, onSelect);
+      const newMenu = generateMenu(tokens, selectToken);
       setMenu(newMenu);
     } else {
-      setMenu(generateMenu(allTokens, onSelect));
+      setMenu(generateMenu(allTokens, selectToken));
     }
   };
 

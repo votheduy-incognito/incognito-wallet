@@ -96,7 +96,7 @@ const buttons = [
   },
   pappItem,
   powerItem,
-  pUniswapItem,
+  // pUniswapItem,
 ];
 
 const Home = ({navigation}) => {
@@ -104,7 +104,10 @@ const Home = ({navigation}) => {
 
   const goToScreen = (route, params, event) => {
     navigation.navigate(route, params);
-    logEvent(event);
+
+    if (event) {
+      logEvent(event);
+    }
   };
 
   const isDisabled = item => {

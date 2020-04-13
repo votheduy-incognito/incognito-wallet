@@ -1,6 +1,8 @@
 import storage from '@src/services/storage';
 import _ from 'lodash';
-import { MAINNET_SERVER_ADDRESS, TESTNET_SERVER_ADDRESS } from 'react-native-dotenv';
+
+export const MAINNET_FULLNODE = 'https://lb-fullnode.incognito.org/fullnode';
+export const TESTNET_FULLNODE = 'https://test-node.incognito.org';
 
 const isMainnet = global.isMainnet??true;
 let cachedList = null;
@@ -17,14 +19,14 @@ export const KEY = {
   {
     id: 'testnet',
     default:!isMainnet,
-    address: TESTNET_SERVER_ADDRESS,
+    address: TESTNET_FULLNODE,
     username: '',
     password: '',
     name: 'Testnet'
   },{
     id: 'mainnet',
     default: isMainnet,
-    address: MAINNET_SERVER_ADDRESS,
+    address: MAINNET_FULLNODE,
     username: '',
     password: '',
     name: 'Mainnet'
