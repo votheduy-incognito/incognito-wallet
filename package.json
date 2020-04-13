@@ -24,6 +24,7 @@
     "buildIosDebug": "react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios",
     "buildRelease": "npx jetify && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle && cd android && ./gradlew app:assembleRelease",
     "buildStaging": "npx jetify && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle && cd android && ./gradlew app:assembleReleaseStaging",
+    "buildNext": "npx jetify && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle && cd android && ./gradlew app:assembleReleaseNext",
     "test": "jest",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
