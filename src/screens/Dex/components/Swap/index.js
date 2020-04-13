@@ -536,9 +536,9 @@ class Swap extends React.Component {
                 onPress={this.swap}
               />
             </View>
-            <TouchableOpacity style={mainStyle.priceHistoryContainer} onPress={this.goToPriceHistory}>
-              <Text style={mainStyle.priceHistoryText}>Price history</Text>
-            </TouchableOpacity>
+            {/*<TouchableOpacity style={mainStyle.priceHistoryContainer} onPress={this.goToPriceHistory}>*/}
+            {/*  <Text style={mainStyle.priceHistoryText}>Price history</Text>*/}
+            {/*</TouchableOpacity>*/}
           </View>
         </View>
         <SwapSuccessDialog
