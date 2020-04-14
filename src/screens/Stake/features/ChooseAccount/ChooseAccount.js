@@ -20,6 +20,9 @@ import {
   activeFlowSelector,
 } from '@screens/Stake/stake.selector';
 import {DEPOSIT_FLOW} from '@screens/Stake/stake.constant';
+import {ExHandler} from '@src/services/exception';
+import {getTotalBalance} from '@screens/Stake/stake.utils';
+import _ from 'lodash';
 import withChoseAccount from './ChooseAccount.enhance';
 
 const styled = StyleSheet.create({
@@ -73,15 +76,31 @@ const styled = StyleSheet.create({
 const Account = props => {
   const {account, lastChild} = props;
   const dispatch = useDispatch();
-  const {pDecimals, symbol} = useSelector(stakeDataSelector);
+  const {
+    pDecimals,
+    symbol,
+    balance,
+    currentRewardRate,
+    rewardDate,
+  } = useSelector(stakeDataSelector);
   const {activeFlow} = useSelector(activeFlowSelector);
   const shouldShowBalance = activeFlow === DEPOSIT_FLOW;
   const onChooseAccount = async () => {
-    await dispatch(
-      actionChangeFlowAccount({
-        account,
-      }),
-    );
+    try {
+      const balancePStake = await getTotalBalance({
+        balance,
+        currentRewardRate,
+        rewardDate,
+      });
+      await dispatch(
+        actionChangeFlowAccount({
+          account,
+          balancePStake,
+        }),
+      );
+    } catch (error) {
+      new ExHandler(error).showErrorToast();
+    }
   };
   return (
     <TouchableWithoutFeedback onPress={onChooseAccount}>
@@ -93,7 +112,7 @@ const Account = props => {
         {shouldShowBalance && (
           <View style={styled.balanceContainer}>
             <Text style={styled.accountBalance} numberOfLines={1}>
-              {`${format.amount(account?.value || 0, pDecimals)}`}
+              {`${format.amount(_.floor(account?.value, 0) || 0, pDecimals)}`}
             </Text>
             <Text style={styled.accountBalance}>{symbol}</Text>
           </View>

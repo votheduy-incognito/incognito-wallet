@@ -26,8 +26,9 @@ const enhance = WrappedComp => props => {
         message: '',
       },
     },
+    error: null,
   });
-  const {amount} = state;
+  const {amount, error} = state;
   const fee = useSelector(feeStakeSelector);
   const loading = useSelector(loadingSubmitAmountSelector);
   const validAmount = !amount.validated.error && amount.value !== 0;
@@ -40,7 +41,7 @@ const enhance = WrappedComp => props => {
     maxToStake,
     minToWithdraw,
     pDecimals,
-    balance: balancePStake,
+    balancePStake,
   } = useSelector(stakeDataSelector);
   const dispatch = useDispatch();
   const feeData = {
@@ -75,7 +76,10 @@ const enhance = WrappedComp => props => {
         break;
       }
     } catch (error) {
-      new ExHandler(error).showErrorToast();
+      await setState({
+        ...state,
+        error: new ExHandler(error).getMessageError(),
+      });
     }
   };
   const onValidateAmount = value =>
@@ -95,6 +99,7 @@ const enhance = WrappedComp => props => {
         value,
         validated: onValidateAmount(value),
       },
+      error: null,
     });
 
   const handleCalcFee = async () => {
@@ -107,6 +112,26 @@ const enhance = WrappedComp => props => {
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
+  };
+
+  const handleShowMax = async () => {
+    let max = 0;
+    switch (activeFlow) {
+    case DEPOSIT_FLOW: {
+      max = format.amount(maxToStake, pDecimals);
+      break;
+    }
+    case WITHDRAW_FLOW: {
+      max = format.amount(balancePStake, pDecimals);
+      break;
+    }
+    default:
+      break;
+    }
+    return await setState({
+      ...state,
+      amount: {...amount, value: max, validated: onValidateAmount(max)},
+    });
   };
 
   React.useEffect(() => {
@@ -146,6 +171,8 @@ const enhance = WrappedComp => props => {
           fee,
           feeData,
           loading,
+          error,
+          handleShowMax,
         }}
       />
     </ErrorBoundary>

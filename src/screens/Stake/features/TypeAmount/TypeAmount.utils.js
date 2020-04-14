@@ -4,6 +4,7 @@ import {validator} from '@src/components/core/reduxForm';
 import {noError} from '@src/components/Input/input.utils';
 import {CONSTANT_COMMONS} from '@src/constants';
 import format from '@src/utils/format';
+import _ from 'lodash';
 
 export const validatedAmount = ({
   value,
@@ -82,20 +83,16 @@ export const getHookFactories = ({account, activeFlow, balancePStake}) => {
   };
   switch (activeFlow) {
   case DEPOSIT_FLOW: {
+    const balance = format.amount(_.floor(account?.value, 0) || 0, pDecimals);
     hookBalance.leftText = 'Balance:';
-    hookBalance.rightText = `${format.amount(
-        account?.value || 0,
-        pDecimals,
-    )} ${symbol}`;
+    hookBalance.rightText = `${balance} ${symbol}`;
     hookAccount.leftText = 'Deposit from:';
     break;
   }
   case WITHDRAW_FLOW: {
+    const balance = format.amount(_.floor(balancePStake), pDecimals);
     hookBalance.leftText = 'pStake balance:';
-    hookBalance.rightText = `${format.amount(
-      balancePStake || 0,
-      pDecimals,
-    )} ${symbol}`;
+    hookBalance.rightText = `${balance} ${symbol}`;
     hookAccount.leftText = 'Withdraw to:';
     break;
   }

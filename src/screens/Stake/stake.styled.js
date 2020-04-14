@@ -9,9 +9,9 @@ export const styled = StyleSheet.create({
   wrapper: {
     flex: 1,
     padding: 20,
-    justifyContent: 'center',
     margin: 20,
     borderRadius: 10,
+    justifyContent: 'center',
   },
   specialBg: {
     backgroundColor: COLORS.dark4,
@@ -36,7 +36,7 @@ export const styled = StyleSheet.create({
     fontSize: FONT.SIZE.large,
     lineHeight: FONT.SIZE.large + 6,
     color: COLORS.black,
-    marginRight: 5
+    marginRight: 5,
   },
   title: {
     fontFamily: FONT.NAME.regular,
@@ -49,7 +49,7 @@ export const styled = StyleSheet.create({
     flexDirection: 'row',
   },
   balance: {
-    fontFamily: FONT.NAME.medium,
+    fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.superLarge + 5,
     lineHeight: FONT.SIZE.superLarge + 10,
     color: COLORS.black,

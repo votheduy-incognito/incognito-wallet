@@ -9,21 +9,24 @@ export const styled = StyleSheet.create({
     padding: 20,
   },
   input: {
-    borderBottomColor: COLORS.lightGrey5,
-    borderBottomWidth: 2,
-    textAlign: 'center',
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.large,
     lineHeight: FONT.SIZE.large + 6,
     color: COLORS.black,
-    marginBottom: 15,
-    marginTop: 65,
+    paddingRight: 10,
   },
   btnSubmit: {
     marginTop: 20,
   },
   error: {
+    color: '#f40000',
     textAlign: 'center',
-    marginTop: 10,
+  },
+  errorInput: {
+    color: '#f40000',
+  },
+  containerInput: {
+    marginTop: 65,
+    marginBottom: 5,
   },
 });

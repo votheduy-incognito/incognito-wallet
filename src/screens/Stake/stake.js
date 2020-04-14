@@ -1,26 +1,41 @@
 import React from 'react';
-import {Text, View, ImageBackground} from 'react-native';
+import {
+  Text,
+  View,
+  ImageBackground,
+  ScrollView,
+  RefreshControl,
+} from 'react-native';
 import Modal, {actionToggleModal} from '@src/components/Modal';
 import {BtnDefault} from '@src/components/Button';
 import {useDispatch, useSelector} from 'react-redux';
 import {ArrowUpIcon, SmileIcon} from '@src/components/Icons';
-import {getDecimalSeparator} from '@src/resources/separator';
 import sourceBackground from '@assets/images/icons/stake_background.png';
+import PropTypes from 'prop-types';
+import format from '@src/utils/format';
+import _ from 'lodash';
 import {styled} from './stake.styled';
 import withStake from './stake.enhance';
 import StakeModal from './stake.modal';
 import {actionChangeFLowStep} from './stake.actions';
 import {DEPOSIT_FLOW, STEP_FLOW} from './stake.constant';
-import {stakeDataSelector} from './stake.selector';
-import {calInterestRate} from './stake.utils';
+import {stakeDataSelector, stakeSelector} from './stake.selector';
+import {getTotalBalance} from './stake.utils';
 import Header from './stake.header';
 import StakePoolCommunity from './features/StakePoolCommunity';
 
-const Stake = () => {
+const Stake = props => {
   const dispatch = useDispatch();
-  const {balance, symbol, staked, currentRewardRate, rewardDate} = useSelector(
-    stakeDataSelector,
-  );
+  const {fetchData} = props;
+  const {isFetching} = useSelector(stakeSelector);
+  const {
+    balance,
+    symbol,
+    staked,
+    currentRewardRate,
+    rewardDate,
+    pDecimals,
+  } = useSelector(stakeDataSelector);
   const initialState = {
     balanceCurrent: 0,
     duration: 1,
@@ -45,18 +60,16 @@ const Stake = () => {
   };
   const handleReCalBalance = async () => {
     try {
-      const interestRate = calInterestRate(
+      const totalBalance = await getTotalBalance({
         balance,
         currentRewardRate,
         rewardDate,
-      );
-      const totalBalance = ((balance + interestRate) / 1e9)
-        .toFixed(6)
-        .replace('.', getDecimalSeparator());
-      if (!isNaN(totalBalance)) {
+      });
+      const totalBalanceFixed = format.amount(_.floor(totalBalance), pDecimals);
+      if (!isNaN(totalBalanceFixed)) {
         await setState({
           ...state,
-          balanceCurrent: totalBalance,
+          balanceCurrent: totalBalanceFixed,
         });
       }
     } catch (error) {
@@ -68,7 +81,7 @@ const Stake = () => {
   };
   React.useEffect(() => {
     if (balance !== 0) {
-      const intervalId = setInterval(handleReCalBalance, 100);
+      const intervalId = setInterval(handleReCalBalance, 500);
       return () => {
         clearInterval(intervalId);
       };
@@ -83,44 +96,54 @@ const Stake = () => {
     <View style={styled.container}>
       <Header />
       <ImageBackground source={sourceBackground} style={styled.background} />
-      <View style={styled.wrapper}>
-        <View style={styled.hook}>
-          <Text style={styled.title}>Staking balance</Text>
-          <View style={styled.balanceContainer}>
-            <Text
-              style={styled.balance}
-              numberOfLine={1}
-              ellipsizeMode="middle"
-            >
-              {balanceCurrent === 0 ? '0.00' : balanceCurrent}
-            </Text>
-            <Text style={styled.symbol}>{symbol}</Text>
-            {staked && (
-              <View style={styled.arrow}>
-                <ArrowUpIcon />
-              </View>
-            )}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{flexGrow: 1}}
+        refreshControl={
+          <RefreshControl refreshing={isFetching} onRefresh={fetchData} />
+        }
+      >
+        <View style={styled.wrapper}>
+          <View style={styled.hook}>
+            <Text style={styled.title}>Staking balance</Text>
+            <View style={styled.balanceContainer}>
+              <Text
+                style={styled.balance}
+                numberOfLine={1}
+                ellipsizeMode="middle"
+              >
+                {balanceCurrent === 0 ? '0.00' : balanceCurrent}
+              </Text>
+              <Text style={styled.symbol}>{symbol}</Text>
+              {staked && (
+                <View style={styled.arrow}>
+                  <ArrowUpIcon />
+                </View>
+              )}
+            </View>
+            <View style={styled.interestRateContainer}>
+              <Text style={styled.desc}>Current rate:</Text>
+              <Text style={[styled.desc, {color: '#FF8D01'}]}>
+                {`${currentRewardRate}% APR`}
+              </Text>
+              <SmileIcon />
+            </View>
           </View>
-          <View style={styled.interestRateContainer}>
-            <Text style={styled.desc}>Current rate:</Text>
-            <Text style={[styled.desc, {color: '#FF8D01'}]}>
-              {`${currentRewardRate}% APR`}
-            </Text>
-            <SmileIcon />
-          </View>
+          <BtnDefault
+            title={staked ? 'Add more funds' : 'Add funds to stake'}
+            btnStyle={styled.btnStake}
+            onPress={handleStartStake}
+          />
+          <StakePoolCommunity />
         </View>
-        <BtnDefault
-          title={staked ? 'Add more funds' : 'Add funds to stake'}
-          btnStyle={styled.btnStake}
-          onPress={handleStartStake}
-        />
-        <StakePoolCommunity />
-      </View>
+      </ScrollView>
       <Modal shouldCloseModalWhenTapOverlay={false} />
     </View>
   );
 };
 
-Stake.propTypes = {};
+Stake.propTypes = {
+  fetchData: PropTypes.func.isRequired,
+};
 
 export default withStake(Stake);

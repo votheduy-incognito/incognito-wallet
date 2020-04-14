@@ -44,6 +44,7 @@ const initialState = {
     balance: 0,
     currentRewardRate: '',
     stakingMasterAddress: '',
+    balancePStake: 0,
   },
   fee: {
     isFetching: false,
@@ -101,7 +102,7 @@ export default (state = initialState, action) => {
     };
   }
   case ACTION_CHANGE_FLOW_ACCOUNT: {
-    const {account} = action.payload;
+    const {account, balancePStake} = action.payload;
     const {activeFlow} = state.flow;
     switch (activeFlow) {
     case DEPOSIT_FLOW:
@@ -119,6 +120,9 @@ export default (state = initialState, action) => {
           ...state.data,
           maxToStake: account?.value,
         },
+        fee: {
+          ...initialState.fee,
+        },
       };
     case WITHDRAW_FLOW: {
       return {
@@ -130,6 +134,10 @@ export default (state = initialState, action) => {
             account,
             step: STEP_FLOW.TYPE_AMOUNT,
           },
+        },
+        data: {
+          ...state.data,
+          balancePStake,
         },
       };
     }

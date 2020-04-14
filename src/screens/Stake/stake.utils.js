@@ -1,5 +1,6 @@
 import {CONSTANT_COMMONS} from '@src/constants';
 import {ExHandler} from '@src/services/exception';
+import {getNodeTime} from '@src/services/wallet/RpcClientService';
 
 export const STAKE = {
   MAIN_ACCOUNT: 'pStake',
@@ -30,9 +31,13 @@ export const mappingData = (dataMasterAddress, dataStakerInfo) => {
   };
 };
 
-export const calInterestRate = (balance = 0, rate = 50, rewardDate) => {
+export const calInterestRate = (
+  nowToMilSec = new Date().getTime(),
+  balance = 0,
+  rate = 50,
+  rewardDate,
+) => {
   try {
-    const nowToMilSec = new Date().getTime();
     const rewardDateToMilSec = new Date(rewardDate).getTime();
     const duration = nowToMilSec - rewardDateToMilSec;
     if (duration < 0) {
@@ -40,12 +45,32 @@ export const calInterestRate = (balance = 0, rate = 50, rewardDate) => {
     }
     const interestRate =
       (balance * (rate / 100) * duration) / (365 * 24 * 60 * 60 * 1000);
+
     if (!isNaN(interestRate)) {
       return interestRate;
     }
     return 0;
   } catch (error) {
     new ExHandler(error).showErrorToast();
+    return 0;
+  }
+};
+
+export const getTotalBalance = async ({
+  balance,
+  currentRewardRate,
+  rewardDate,
+}) => {
+  try {
+    const now = await getNodeTime();
+    const interestRate = calInterestRate(
+      now * 1000,
+      balance,
+      currentRewardRate,
+      rewardDate,
+    );
+    return balance + interestRate;
+  } catch (error) {
     return 0;
   }
 };

@@ -23,7 +23,7 @@ const enhance = WrappedComp => props => {
   if (!isFetched) {
     return <LoadingContainer />;
   }
-  return <WrappedComp {...{...props}} />;
+  return <WrappedComp {...{...props, fetchData}} />;
 };
 
 export default compose(withHeader, enhance);
