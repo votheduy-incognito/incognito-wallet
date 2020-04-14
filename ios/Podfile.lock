@@ -4,10 +4,7 @@ PODS:
   - boost-for-react-native (1.63.0)
   - BVLinearGradient (2.5.6):
     - React
-  - Charts (3.3.0):
-    - Charts/Core (= 3.3.0)
-  - Charts/Core (3.3.0)
-  - CodePush (6.2.0):
+  - CodePush (6.0.0):
     - Base64 (~> 1.1)
     - JWT (~> 3.0.0-beta.7)
     - React
@@ -122,33 +119,33 @@ PODS:
   - nanopb/decode (0.3.901)
   - nanopb/encode (0.3.901)
   - NMSSH (2.2.9)
-  - Permission-Calendars (2.1.0):
+  - Permission-Calendars (2.0.2):
     - RNPermissions
-  - Permission-Camera (2.1.0):
+  - Permission-Camera (2.0.2):
     - RNPermissions
-  - Permission-Contacts (2.1.0):
+  - Permission-Contacts (2.0.2):
     - RNPermissions
-  - Permission-FaceID (2.1.0):
+  - Permission-FaceID (2.0.2):
     - RNPermissions
-  - Permission-LocationAlways (2.1.0):
+  - Permission-LocationAlways (2.0.2):
     - RNPermissions
-  - Permission-LocationWhenInUse (2.1.0):
+  - Permission-LocationWhenInUse (2.0.2):
     - RNPermissions
-  - Permission-MediaLibrary (2.1.0):
+  - Permission-MediaLibrary (2.0.2):
     - RNPermissions
-  - Permission-Motion (2.1.0):
+  - Permission-Motion (2.0.2):
     - RNPermissions
-  - Permission-Notifications (2.1.0):
+  - Permission-Notifications (2.0.2):
     - RNPermissions
-  - Permission-PhotoLibrary (2.1.0):
+  - Permission-PhotoLibrary (2.0.2):
     - RNPermissions
-  - Permission-Reminders (2.1.0):
+  - Permission-Reminders (2.0.2):
     - RNPermissions
-  - Permission-Siri (2.1.0):
+  - Permission-Siri (2.0.2):
     - RNPermissions
-  - Permission-SpeechRecognition (2.1.0):
+  - Permission-SpeechRecognition (2.0.2):
     - RNPermissions
-  - Permission-StoreKit (2.1.0):
+  - Permission-StoreKit (2.0.2):
     - RNPermissions
   - Protobuf (3.9.2)
   - RCTRequired (0.61.2)
@@ -328,13 +325,13 @@ PODS:
     - React
   - react-native-keep-awake (4.0.0):
     - React
-  - react-native-netinfo (5.7.0):
+  - react-native-netinfo (5.0.1):
     - React
   - react-native-network-info (5.2.1):
     - React
   - react-native-randombytes (3.5.3):
     - React
-  - react-native-webview (7.6.0):
+  - react-native-webview (7.4.3):
     - React
   - React-RCTActionSheet (0.61.2):
     - React-Core/RCTActionSheetHeaders (= 0.61.2)
@@ -371,13 +368,9 @@ PODS:
     - React-cxxreact (= 0.61.2)
     - React-jsi (= 0.61.2)
     - ReactCommon/jscallinvoker (= 0.61.2)
-  - RNCAsyncStorage (1.9.0):
+  - RNCAsyncStorage (1.6.2):
     - React
-  - RNCharts (0.5.7):
-    - Charts (= 3.3.0)
-    - React
-    - SwiftyJSON (= 5.0)
-  - RNDeviceInfo (5.5.4):
+  - RNDeviceInfo (5.2.1):
     - React
   - RNFirebase (5.5.7):
     - Firebase/Core
@@ -388,15 +381,15 @@ PODS:
     - Fabric
     - Firebase/Core
     - React
-  - RNFS (2.16.6):
+  - RNFS (2.16.2):
     - React
   - RNGestureHandler (1.3.0):
     - React
-  - RNLocalize (1.4.0):
+  - RNLocalize (1.3.1):
     - React
   - RNOS (1.2.5):
     - React
-  - RNPermissions (2.1.0):
+  - RNPermissions (2.0.2):
     - React
   - RNReanimated (1.2.0):
     - React
@@ -404,10 +397,9 @@ PODS:
     - React
   - RNVectorIcons (6.6.0):
     - React
-  - RNWifi (2.4.0):
+  - RNWifi (2.2.4):
     - React
   - SSZipArchive (2.2.2)
-  - SwiftyJSON (5.0.0)
   - TcpSockets (3.3.2):
     - React
   - TouchID (4.4.1):
@@ -477,7 +469,6 @@ DEPENDENCIES:
   - ReactCommon/jscallinvoker (from `../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
-  - RNCharts (from `../node_modules/react-native-charts-wrapper`)
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFirebase (from `../node_modules/react-native-firebase/ios`)
   - RNFS (from `../node_modules/react-native-fs`)
@@ -498,7 +489,6 @@ SPEC REPOS:
     - AppsFlyerFramework
     - Base64
     - boost-for-react-native
-    - Charts
     - Crashlytics
     - Fabric
     - Firebase
@@ -520,7 +510,6 @@ SPEC REPOS:
     - NMSSH
     - Protobuf
     - SSZipArchive
-    - SwiftyJSON
 
 EXTERNAL SOURCES:
   BVLinearGradient:
@@ -621,8 +610,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
-  RNCharts:
-    :path: "../node_modules/react-native-charts-wrapper"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
   RNFirebase:
@@ -657,8 +644,7 @@ SPEC CHECKSUMS:
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
-  Charts: e0dd4cd8f257bccf98407b58183ddca8e8d5b578
-  CodePush: 3285d39e9865e0a37a415417402bf568ce49268a
+  CodePush: 58d8b6595f46057ca1f49c55fb6860ad7fd38ce3
   Crashlytics: 2dfd686bcb918dc10ee0e76f7f853fe42c7bd552
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
   Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
@@ -683,20 +669,20 @@ SPEC CHECKSUMS:
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   NMSSH: eb4a63d52631d3ffe348181793bb19434b01c32a
-  Permission-Calendars: c2f840fbbeb89e75c833c8208142bbf6b1630d40
-  Permission-Camera: 1e569ca13fe65357c0ad22776b1f3ce81586c488
-  Permission-Contacts: 080e6be8b2ce9d0754775d6d8f04763e51c3c10e
-  Permission-FaceID: 9d4b105d20bed67b83fec3b8f7485b7408162cd7
-  Permission-LocationAlways: 9e4b9178bc0fa140d91a9f3aaa0d583945fbeb8a
-  Permission-LocationWhenInUse: c189fa01a57ba2b6db7a256411f1ddb69da066f0
-  Permission-MediaLibrary: b213416690891309f5422076acc48b63fe249955
-  Permission-Motion: bffba6b2650aa8b8eb76a25d35008301dbbb144f
-  Permission-Notifications: 04eb3a199410fec1feba56dd6c2459e19acb9f3d
-  Permission-PhotoLibrary: 8791df0255cb31825f051b7f5826dac21b9c21fd
-  Permission-Reminders: 7904632719e8449a355278f5675445c3549704b6
-  Permission-Siri: b1d8be760b2e7ff0f16d7731c3266c2463063690
-  Permission-SpeechRecognition: 5e6c84e94164e5f6046a1098f6d9814dc61d51d0
-  Permission-StoreKit: 687a1ddc43dd76cc279ffabaf8c1debea7a74303
+  Permission-Calendars: 36599553ccfb54d3b9af5a777102b22b71decd0c
+  Permission-Camera: 626e0ac1c9e92e680b223522dcf9344bb1041fff
+  Permission-Contacts: bd8980f2a060853da7673012dab313bb5a087a86
+  Permission-FaceID: 3e8b5afdf136d1bbbfdc5c7279505880d8c7229b
+  Permission-LocationAlways: 94832b8fa358c939cc16c142e6eb15b8b0c6ffd1
+  Permission-LocationWhenInUse: 75577651fdcc5bc34e1c41641989e13cfeac903a
+  Permission-MediaLibrary: c81ab01798b7c1faf23ea232995932af377a6d66
+  Permission-Motion: bb39c790053463bf5ab3b7635154465a0cacfece
+  Permission-Notifications: e48255cd901bf9d294b9833bfaf51b82e8f67a77
+  Permission-PhotoLibrary: 5ff534553bd84abcd1190bc80a7dcb8671a41e1a
+  Permission-Reminders: b79269dae7faa7746bc024b4b27c19d3b71683fb
+  Permission-Siri: 9153edff3f884db18d4e68fa57adb1f6462e53e1
+  Permission-SpeechRecognition: 40d5647d06c602aceebe4b5540a14e7b52a34172
+  Permission-StoreKit: 465934988b7161f7e7c6072d6c30ce0e0fe7f757
   Protobuf: 67fb42ba613def994e61854de2b3164f13790cc4
   RCTRequired: c639d59ed389cfb1f1203f65c2ea946d8ec586e2
   RCTRestart: dd19aab87fc1118e05b6b5b91b959105647f56b4
@@ -711,10 +697,10 @@ SPEC CHECKSUMS:
   react-native-camera: 21cf4ed26cf432ceb1fae959aa6924943fd6f714
   react-native-image-picker: 7a85cf7b0a53845f03ae52fb4592a2748ded069b
   react-native-keep-awake: afad8a51dfef9fe9655a6344771be32c8596d774
-  react-native-netinfo: becc6dd2bb2335aa85a8adbaefc8e206125e6177
+  react-native-netinfo: f85616b5f5819085624f2c26dcb98ff3ab013a41
   react-native-network-info: d1290ffc0bd0709e11436f5b8d7f605dcc5c4530
   react-native-randombytes: 3638d24759d67c68f6ccba60c52a7a8a8faa6a23
-  react-native-webview: db4682f1698ab4b17a5e88f951031d203ff8aea8
+  react-native-webview: 82d6456dfae1b3ef70c3939135536342afc96373
   React-RCTActionSheet: 89b037c0fb7d2671607cb645760164e7e0c013f6
   React-RCTAnimation: e3cefa93c38c004c318f7ec04b883eb14b8b8235
   React-RCTBlob: d26ac0e313fbf14e7203473fd593ccaaeee8329e
@@ -725,25 +711,23 @@ SPEC CHECKSUMS:
   React-RCTText: e3ef6191cdb627855ff7fe8fa0c1e14094967fb8
   React-RCTVibration: fb54c732fd20405a76598e431aa2f8c2bf527de9
   ReactCommon: 5848032ed2f274fcb40f6b9ec24067787c42d479
-  RNCAsyncStorage: 453cd7c335ec9ba3b877e27d02238956b76f3268
-  RNCharts: d364ca2085e24edb9ee0390d3fb7209257daa44c
-  RNDeviceInfo: 6a3d16fce033f6979c4a6a41e62244d183e8c765
+  RNCAsyncStorage: 60a80e72d95bf02a01cace55d3697d9724f0d77f
+  RNDeviceInfo: 086e9644cc00dbe9bcf26de2fbcb1d9f475c84d0
   RNFirebase: 3c0d26909841ad3c72ca46d85aba333ef49903bc
-  RNFS: 2bd9eb49dc82fa9676382f0585b992c424cd59df
+  RNFS: 0d4191b1052bef9ce70deff00a5b4169c62bbd9b
   RNGestureHandler: 5329a942fce3d41c68b84c2c2276ce06a696d8b0
-  RNLocalize: b6df30cc25ae736d37874f9bce13351db2f56796
+  RNLocalize: 07eb7a91d10021cdf59d80061ebf3adb8a5b5688
   RNOS: c3ca1e6bdeb868076fca62f2188848f2b267d19c
-  RNPermissions: 48da5fbe2d85ed8d29c7e623576fc4632054f800
+  RNPermissions: 9525b0f4d209fdf9a373d52d1492ae2943e691e5
   RNReanimated: 1b52415c4302f198cb581282a0166690bad62c43
   RNSVG: a53a5de0d90ec96a6502cc3a4534dfcc0c130622
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
-  RNWifi: 1747f039612dd494192ba6c8bc498606ad9f3ec4
+  RNWifi: a73163c18dd7ebf722e299d343764a4e1fabb808
   SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
-  SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
   TcpSockets: 14306fb79f9750ea7d2ddd02d8bed182abb01797
   TouchID: ba4c656d849cceabc2e4eef722dea5e55959ecf4
   Yoga: 14927e37bd25376d216b150ab2a561773d57911f
 
-PODFILE CHECKSUM: 899d6b82eb31e73b2256eed0805bdd598d1a1042
+PODFILE CHECKSUM: ac6e346c1142889bd9a44d66d7a0c60cc785f5fb
 
 COCOAPODS: 1.8.4

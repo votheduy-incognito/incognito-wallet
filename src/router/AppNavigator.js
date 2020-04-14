@@ -145,7 +145,7 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.WhyReceive]: navigationOptionsHandler(WhyReceive, {
       title: 'Receive',
     }),
-    [ROUTE_NAMES.PriceChartCrypto]: navigationOptionsHandler(PriceChartCrypto, { title: 'Price Chart' }),
+    [ROUTE_NAMES.PriceChartCrypto]: navigationOptionsHandler(PriceChartCrypto, { title: 'Price chart' }),
   },
   {
     initialRouteName: ROUTE_NAMES.RootTab,

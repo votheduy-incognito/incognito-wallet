@@ -8083,14 +8083,6 @@ react-native-camera@3.8.0:
   dependencies:
     prop-types "^15.6.2"
 
-react-native-charts-wrapper@^0.5.7:
-  version "0.5.7"
-  resolved "https://registry.yarnpkg.com/react-native-charts-wrapper/-/react-native-charts-wrapper-0.5.7.tgz#13cdb387ede67f4292b92c8b03a8f15de3a7a2f7"
-  integrity sha512-d1lOSN47YRUqFGOht4uBP+P7N7OvtRrhgwTOdTNlXC+ZmoveBIIE+bl65uwGkS08kUUBudRBugsCRkf5MB/p2w==
-  dependencies:
-    prop-types "^15.5.10"
-    react "16.8.3"
-
 react-native-code-push@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/react-native-code-push/-/react-native-code-push-6.0.0.tgz#4b91159b3ed9495fd8cbf39b07a93e921f810420"
@@ -8640,16 +8632,6 @@ react@16.10.2:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
-
-react@16.8.3:
-  version "16.8.3"
-  resolved "https://registry.yarnpkg.com/react/-/react-16.8.3.tgz#c6f988a2ce895375de216edcfaedd6b9a76451d9"
-  integrity sha512-3UoSIsEq8yTJuSu0luO1QQWYbgGEILm+eJl2QN/VLDi7hL+EN18M3q3oVZwmVzzBJ3DkM7RMdRwBmZZ+b4IzSA==
-  dependencies:
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-    prop-types "^15.6.2"
-    scheduler "^0.13.3"
 
 reactotron-core-client@2.8.10:
   version "2.8.10"

@@ -14,8 +14,8 @@ if [[ ! -z "${IOS_BUILD_CONFIGURATION}" ]]; then
 
   NEW_FILE_NAME=$APP_VERSION-IOS_BUILD_CONFIGURATION
 
-  cp $FILE $NEW_FILE_NAME
+  cp $FILE $NEW_FILE_NAME.ipa
 
   chmod +x .circleci/slack-upload.sh
-  .circleci/slack-upload.sh -f $NEW_FILE_NAME.ipa -c '$SLACK_CHANNEL' -s $SLACK_API_KEY -n "$NEW_FILE_NAME" -x "$LAST_COMMIT_MESSAGE"
+  .circleci/slack-upload.sh -f $NEW_FILE_NAME.ipa -c '$SLACK_CHANNEL' -s $SLACK_API_KEY -n "$NEW_FILE_NAME" -x "\"$LAST_COMMIT_MESSAGE\""
 fi

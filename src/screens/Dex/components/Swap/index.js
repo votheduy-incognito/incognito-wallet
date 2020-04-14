@@ -481,14 +481,27 @@ class Swap extends React.Component {
   }
 
   goToPriceHistory = () => {
-    const { inputToken, outputToken } = this.state;
+    const {pairs, tokens} = this.props;
+    const {inputToken, outputToken} = this.state;
     const pairName = inputToken?.symbol && outputToken?.symbol && `${inputToken?.symbol}-${outputToken?.symbol}`;
 
+    const tokenPairs = [];
+
+    pairs.forEach(pair => {
+      const tokenIds = Object.keys(pair).filter(key => key !== 'total' && key !== 'keys');
+      const token1 = tokens.find(item => item.id === tokenIds[0]);
+      const token2 = tokens.find(item => item.id === tokenIds[1]);
+
+      if (token1 && token2 && token1.hasIcon && token2.hasIcon) {
+        tokenPairs.push(`${token1.symbol}-${token2.symbol}`);
+      }
+    });
+
     if (pairName) {
-      const { navigation } = this.props;
-      navigation.navigate(routeNames.PriceChartCrypto, { pair: pairName });
+      const {navigation} = this.props;
+      navigation.navigate(routeNames.PriceChartCrypto, { currentPair: pairName, tokenPairs });
     }
-  }
+  };
 
   render() {
     const { isLoading } = this.props;
@@ -536,9 +549,11 @@ class Swap extends React.Component {
                 onPress={this.swap}
               />
             </View>
-            {/*<TouchableOpacity style={mainStyle.priceHistoryContainer} onPress={this.goToPriceHistory}>*/}
-            {/*  <Text style={mainStyle.priceHistoryText}>Price history</Text>*/}
-            {/*</TouchableOpacity>*/}
+            {!global.isMainnet && (
+              <TouchableOpacity style={mainStyle.priceHistoryContainer} onPress={this.goToPriceHistory}>
+                <Text style={mainStyle.priceHistoryText}>Price history</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
         <SwapSuccessDialog
