@@ -14,7 +14,7 @@ const ChartActions = ({ onPress, value, isShowAll }) => (
     <TouchableOpacity onPress={() => onPress(BY_WEEK)} style={value == BY_WEEK ? styles.btnActive : styles.btn}><Text style={value == BY_WEEK ? styles.btnText : styles.btnTextActive}>Week</Text></TouchableOpacity>
     <TouchableOpacity onPress={() => onPress(BY_MONTH)} style={value == BY_MONTH ? styles.btnActive : styles.btn}><Text style={value == BY_MONTH ? styles.btnText : styles.btnTextActive}>Month</Text></TouchableOpacity>
     <TouchableOpacity onPress={() => onPress(BY_YEAR)} style={value == BY_YEAR ? styles.btnActive : styles.btn}><Text style={value == BY_YEAR ? styles.btnText : styles.btnTextActive}>Year</Text></TouchableOpacity>
-    <TouchableOpacity onPress={() => onPress(BY_DAY, true)} style={value == BY_DAY && isShowAll ? styles.btnActive : styles.btn}><Text style={value == BY_DAY && isShowAll ? styles.btnText : styles.btnTextActive}>Alltime</Text></TouchableOpacity>
+    <TouchableOpacity onPress={() => onPress(BY_DAY, true)} style={value == BY_DAY && isShowAll ? styles.btnActive : styles.btn}><Text style={value == BY_DAY && isShowAll ? styles.btnText : styles.btnTextActive}>All time</Text></TouchableOpacity>
   </View>
 );
 
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     alignItems: 'center'
-  },  
+  },
   btnText: {
     color: 'white',
     fontSize: 12

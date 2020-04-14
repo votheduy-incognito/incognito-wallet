@@ -91,7 +91,6 @@ target 'Incognito' do
   pod 'CodePush', :path => '../node_modules/react-native-code-push'
   pod 'AppsFlyerFramework'
   pod 'react-native-keep-awake', :path => '../node_modules/react-native-keep-awake'
-  pod 'RNCharts', :path => '../node_modules/react-native-charts-wrapper'
 
   # React-Native is not great about React double-including from the Podfile
   post_install do |installer|
