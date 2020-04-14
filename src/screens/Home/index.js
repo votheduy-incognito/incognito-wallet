@@ -101,7 +101,7 @@ const buttons = [
   },
   pappItem,
   powerItem,
-  // pUniswapItem,
+  pUniswapItem,
   {
     image: icStake,
     title: 'Stake',
