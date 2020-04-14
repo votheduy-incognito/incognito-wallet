@@ -5,6 +5,8 @@ import { createForm, InputField, validator } from '@src/components/core/reduxFor
 import { View, TouchableOpacity, Text, ActivityIndicator, Button, Modal } from '@src/components/core';
 import convert from '@src/utils/convert';
 import formatUtils from '@utils/format';
+import {generateTestId} from '@utils/misc';
+import {GENERAL} from '@src/constants/elements';
 import styles from './styles';
 
 const getAnotherTypeOfFee = (types, feeUnitByTokenId) => {
@@ -175,7 +177,7 @@ class EstimateFee extends Component {
     const { feeText } = this.props;
 
     if (typeof feeText === 'string') {
-      return <Text>{feeText}</Text>;
+      return <Text {...generateTestId(GENERAL.NETWORK_FEE)}>{feeText}</Text>;
     } else if (React.isValidElement(feeText)) {
       return feeText;
     }

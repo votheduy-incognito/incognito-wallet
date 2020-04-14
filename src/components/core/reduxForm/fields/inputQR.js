@@ -7,6 +7,8 @@ import {scaleInApp} from '@src/styles/TextStyle';
 import qrCodeScanner from '@src/assets/images/icons/qr_code_scanner.png';
 import {AddressBookIcon} from '@src/components/Icons';
 import {COLORS} from '@src/styles';
+import {generateTestId} from '@utils/misc';
+import {SEND} from '@src/constants/elements';
 import createField from './createField';
 
 const styled = StyleSheet.create({
@@ -42,7 +44,7 @@ const renderCustomField = ({
         <View style={styled.prepend}>
           {showNavAddrBook && (
             <>
-              <TouchableOpacity onPress={onOpenAddressBook}>
+              <TouchableOpacity onPress={onOpenAddressBook} {...generateTestId(SEND.ADDRESS_BOOK_ICON)}>
                 <AddressBookIcon />
               </TouchableOpacity>
               <View style={styled.line} />

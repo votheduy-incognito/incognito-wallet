@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text } from '@src/components/core';
+import {generateTestId} from '@utils/misc';
+import {HEADER} from '@src/constants/elements';
 import BackButton from '../BackButton';
 import styles from './style';
 
@@ -18,7 +20,7 @@ const HeaderBar = (props) => {
         { index > 0 && <BackButton onPress={back} />}
       </View>
       {
-        customHeader ? 
+        customHeader ?
           (
             <View style={styles.customHeader}>{customHeader}</View>
           )
@@ -29,12 +31,12 @@ const HeaderBar = (props) => {
                   {
                     React.isValidElement(title)
                       ? title
-                      : <Text style={[styles.title, headerTitleStyle, textColor && { color: textColor }]} numberOfLines={1} ellipsizeMode='tail'>{title}</Text>
+                      : <Text style={[styles.title, headerTitleStyle, textColor && { color: textColor }]} numberOfLines={1} ellipsizeMode='tail' {...generateTestId(HEADER.TITLE)}>{title}</Text>
                   }
-                  { subTitle && <Text style={[styles.subTitle, headerSubTitleStyle]} numberOfLines={1} ellipsizeMode='tail'>{subTitle}</Text>}
+                  { subTitle && <Text style={[styles.subTitle, headerSubTitleStyle]} numberOfLines={1} ellipsizeMode='tail' {...generateTestId(HEADER.SUBTITLE)}>{subTitle}</Text>}
                 </View>
               </View>
-              <View style={styles.right}>
+              <View style={styles.right} {...generateTestId(HEADER.RIGHT_BUTTON)}>
                 { headerRight }
               </View>
             </>
