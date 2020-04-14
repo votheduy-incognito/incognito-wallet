@@ -14,15 +14,10 @@ export const notificationInitialize = async () => {
 
 // Request permission
 export const requestPermission = async () => {
-  const enabled = await firebase.messaging().hasPermission();
-  if (enabled) {
-    // Do nothing
-  } else {
-    try {
-      await firebase.messaging().requestPermission();
-    } catch (error) {
-      // Do something
-    }
+  try {
+    await firebase.messaging().requestPermission();
+  } catch (error) {
+    console.log('Err while trying to request permission: ' + error.message || '');
   }
 };
 
@@ -37,7 +32,7 @@ export const registerToken = async () => {
 // Check permission
 export const checkPermission = async () => {
   const enabled = await firebase.messaging().hasPermission();
-  if (enabled) {
+  if (enabled && enabled) {
     await registerToken();
   } else {
     await requestPermission();
