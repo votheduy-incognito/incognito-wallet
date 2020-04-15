@@ -135,7 +135,7 @@ const Stake = props => {
           <StakePoolCommunity />
         </View>
       </ScrollView>
-      <Modal shouldCloseModalWhenTapOverlay={false} />
+      <Modal shouldCloseModalWhenTapOverlay />
     </View>
   );
 };

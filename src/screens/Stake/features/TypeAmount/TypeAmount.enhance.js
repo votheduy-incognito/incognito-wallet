@@ -15,6 +15,7 @@ import {
 import {ExHandler} from '@src/services/exception';
 import format from '@src/utils/format';
 import {DEPOSIT_FLOW, WITHDRAW_FLOW} from '@screens/Stake/stake.constant';
+import convert from '@src/utils/convert';
 import {validatedAmount, getHookFactories} from './TypeAmount.utils';
 
 const enhance = WrappedComp => props => {
@@ -118,19 +119,24 @@ const enhance = WrappedComp => props => {
     let max = 0;
     switch (activeFlow) {
     case DEPOSIT_FLOW: {
-      max = format.amount(maxToStake, pDecimals);
+      max = convert.toHumanAmount(maxToStake, pDecimals);
       break;
     }
     case WITHDRAW_FLOW: {
-      max = format.amount(balancePStake, pDecimals);
+      max = convert.toHumanAmount(balancePStake, pDecimals);
       break;
     }
     default:
       break;
     }
+    const maxValue = format.numberWithNoGroupSeparator(Number(max));
     return await setState({
       ...state,
-      amount: {...amount, value: max, validated: onValidateAmount(max)},
+      amount: {
+        ...amount,
+        value: maxValue,
+        validated: onValidateAmount(max),
+      },
     });
   };
 
