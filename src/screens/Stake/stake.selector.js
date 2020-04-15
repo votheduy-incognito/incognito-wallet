@@ -35,7 +35,7 @@ export const createStakeSelector = createSelector(
 
 export const createUnStakeSelector = createSelector(
   stakeSelector,
-  stake => stake.createUnStake,
+  state => state.createUnStake,
 );
 
 export const feeStakeSelector = createSelector(
@@ -78,7 +78,7 @@ export const activeFlowSelector = createSelector(
       break;
     case WITHDRAW_FLOW:
       hook.btnSubmitAmount = 'Withdraw';
-      hook.btnSubmitStatus = 'Continue trading';
+      hook.btnSubmitStatus = 'Continue';
       hook.titleStatus = 'Withdrawal is in progress';
       break;
     default:

@@ -32,7 +32,7 @@ const styled = StyleSheet.create({
   },
 });
 
-const StakeHeader = props => {
+const StakeHeader = () => {
   const navigation = useNavigation();
   const hasNotch = isIOS() && DeviceInfo.hasNotch();
   return (

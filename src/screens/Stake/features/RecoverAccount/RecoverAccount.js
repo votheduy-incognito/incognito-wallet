@@ -50,7 +50,7 @@ const RecoverAccount = props => {
               successfully recover your old pStake account.
             </Text>
             <Button
-              title="Import"
+              title="Recover"
               style={styled.submitBtn}
               onPress={handleSubmit(handleImportAccount)}
               isAsync

@@ -67,12 +67,6 @@ export const actionFetch = () => async (dispatch, getState) => {
       await apiGetMasterAddress(),
       await apiGetStakerInfo({paymentAddress: pStakeAccount?.PaymentAddress}),
     ]);
-    console.log(
-      'dataMasterAddress',
-      dataMasterAddress,
-      'dataStakerInfo',
-      dataStakerInfo,
-    );
     const payload = mappingData(dataMasterAddress, dataStakerInfo);
     await dispatch(actionFetched(payload));
   } catch (error) {
@@ -88,7 +82,9 @@ export const actionChangeFLowStep = (
   payload,
 });
 
-export const actionChangeFlowAccount = (payload = {account: null}) => ({
+export const actionChangeFlowAccount = (
+  payload = {account: null, balancePStake: 0},
+) => ({
   type: ACTION_CHANGE_FLOW_ACCOUNT,
   payload,
 });

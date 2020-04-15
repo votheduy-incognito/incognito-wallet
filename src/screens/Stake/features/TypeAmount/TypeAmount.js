@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {View, Text} from 'react-native';
 import {BtnDefault} from '@src/components/Button';
 import {TextInput} from '@src/components/Input';
 import PropTypes from 'prop-types';
@@ -17,6 +17,8 @@ const TypeAmount = props => {
     shouldDisabled,
     feeData,
     loading,
+    error,
+    handleShowMax,
   } = props;
   return (
     <View style={styled.container}>
@@ -24,7 +26,7 @@ const TypeAmount = props => {
         <Hook key={item.id} data={item} />
       ))}
       <TextInput
-        errorStyle={styled.error}
+        errorStyle={styled.errorInput}
         placeholder="0.0"
         style={styled.input}
         keyboardType="decimal-pad"
@@ -33,8 +35,14 @@ const TypeAmount = props => {
         maxLength={50}
         onChangeText={handleOnChangeAmount}
         autoFocus
+        inputMax={{
+          visible: true,
+          handleShowMax,
+        }}
+        containerInputStyle={styled.containerInput}
       />
       <Hook data={feeData} />
+      {error && <Text style={styled.error}>{error}</Text>}
       <BtnDefault
         btnStyle={styled.btnSubmit}
         title={btnSubmitAmount}
@@ -66,6 +74,8 @@ TypeAmount.propTypes = {
   }).isRequired,
   feeData: PropTypes.any.isRequired,
   loading: PropTypes.bool.isRequired,
+  error: PropTypes.string.isRequired,
+  handleShowMax: PropTypes.func.isRequired,
 };
 
 export default withTypeAmount(TypeAmount);

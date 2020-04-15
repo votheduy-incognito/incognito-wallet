@@ -4,7 +4,7 @@ import {ThreeDotsVerIcon} from '@src/components/Icons';
 
 const styled = StyleSheet.create({
   container: {
-    padding: 5,
+    padding: 10,
   },
 });
 
