@@ -1,6 +1,7 @@
 import {CONSTANT_COMMONS} from '@src/constants';
 import {ExHandler} from '@src/services/exception';
 import {getNodeTime} from '@src/services/wallet/RpcClientService';
+import format from '@src/utils/format';
 
 export const STAKE = {
   MAIN_ACCOUNT: 'pStake',
@@ -24,29 +25,28 @@ export const mappingData = (dataMasterAddress, dataStakerInfo) => {
     currentRewardRate: dataMasterAddress?.CurrentRewardRate || 50,
     stakingMasterAddress: dataMasterAddress?.StakingMasterAddress || '',
     balance: dataStakerInfo?.Balance + dataStakerInfo?.RewardBalance || 0,
-    rewardDate: new Date(dataStakerInfo?.RewardDate).getTime(),
+    rewardDate: dataStakerInfo?.RewardDate || '',
     pDecimals,
     symbol,
     maxToStake: 0,
+    rewardDateToMilSec: new Date(dataStakerInfo?.RewardDate).getTime(),
   };
 };
 
 export const calInterestRate = (
-  nowToMilSec = new Date().getTime(),
+  nowToMilSec,
   balance = 0,
   rate = 50,
-  rewardDate,
+  rewardDateToMilSec,
 ) => {
   try {
-    const rewardDateToMilSec = new Date(rewardDate).getTime();
     const duration = nowToMilSec - rewardDateToMilSec;
     if (duration < 0) {
       return 0;
     }
     const interestRate =
       (balance * (rate / 100) * duration) / (365 * 24 * 60 * 60 * 1000);
-
-    if (!isNaN(interestRate)) {
+    if (!isNaN(Number(interestRate))) {
       return interestRate;
     }
     return 0;
@@ -56,21 +56,17 @@ export const calInterestRate = (
   }
 };
 
-export const getTotalBalance = async ({
+export const getTotalBalance = ({
+  nodeTime,
   balance,
   currentRewardRate,
-  rewardDate,
+  rewardDateToMilSec,
 }) => {
-  try {
-    const now = await getNodeTime();
-    const interestRate = calInterestRate(
-      now * 1000,
-      balance,
-      currentRewardRate,
-      rewardDate,
-    );
-    return balance + interestRate;
-  } catch (error) {
-    return 0;
-  }
+  const interestRate = calInterestRate(
+    nodeTime,
+    balance,
+    currentRewardRate,
+    rewardDateToMilSec,
+  );
+  return balance + interestRate;
 };

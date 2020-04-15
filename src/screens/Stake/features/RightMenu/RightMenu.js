@@ -62,6 +62,7 @@ const RightMenu = () => {
             onCloseMenu={async () => await dispatch(actionToggleModal())}
           />
         ),
+        shouldCloseModalWhenTapOverlay: true,
       }),
     );
   };

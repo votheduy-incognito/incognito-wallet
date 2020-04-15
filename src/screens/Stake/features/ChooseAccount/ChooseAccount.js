@@ -81,16 +81,21 @@ const Account = props => {
     symbol,
     balance,
     currentRewardRate,
-    rewardDate,
+    rewardDateToMilSec,
+    nodeTime,
+    localTime,
   } = useSelector(stakeDataSelector);
   const {activeFlow} = useSelector(activeFlowSelector);
   const shouldShowBalance = activeFlow === DEPOSIT_FLOW;
   const onChooseAccount = async () => {
     try {
-      const balancePStake = await getTotalBalance({
+      const localTimeCurrent = new Date().getTime();
+      const nodeTimeCurrent = nodeTime + (localTimeCurrent - localTime);
+      const balancePStake = getTotalBalance({
+        nodeTime: nodeTimeCurrent,
         balance,
         currentRewardRate,
-        rewardDate,
+        rewardDateToMilSec,
       });
       await dispatch(
         actionChangeFlowAccount({

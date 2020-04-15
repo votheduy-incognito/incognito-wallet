@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {COLORS} from '@src/styles';
-import PropTypes from 'prop-types';
 import {modalSelector} from './modal.selector';
 import {actionToggleModal} from './modal.actions';
 
@@ -18,9 +17,10 @@ const styled = StyleSheet.create({
     width: '100%',
   },
 });
-const ModalComponent = props => {
-  const {shouldCloseModalWhenTapOverlay} = props;
-  const {visible, data} = useSelector(modalSelector);
+const ModalComponent = () => {
+  const {visible, data, shouldCloseModalWhenTapOverlay} = useSelector(
+    modalSelector,
+  );
   const dispatch = useDispatch();
   const handleToggle = async () =>
     shouldCloseModalWhenTapOverlay ? await dispatch(actionToggleModal()) : null;
@@ -38,12 +38,8 @@ const ModalComponent = props => {
   );
 };
 
-ModalComponent.defaultProps = {
-  shouldCloseModalWhenTapOverlay: true,
-};
+ModalComponent.defaultProps = {};
 
-ModalComponent.propTypes = {
-  shouldCloseModalWhenTapOverlay: PropTypes.bool,
-};
+ModalComponent.propTypes = {};
 
 export default ModalComponent;
