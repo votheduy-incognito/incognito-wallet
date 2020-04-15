@@ -6,39 +6,14 @@ import {CONSTANT_COMMONS} from '@src/constants';
 import format from '@src/utils/format';
 import _ from 'lodash';
 
-export const validatedAmount = ({
-  value,
-  activeFlow,
-  minToStake,
-  maxToStake,
-  minToWithdraw,
-  balancePStake,
-}) => {
-  const pDecimals = CONSTANT_COMMONS.PRV.pDecimals;
-  let min;
-  let max;
+export const validatedAmount = ({value, min, max, pDecimals}) => {
   const required = validator.required()(value);
   const number = validator.number()(value);
-  switch (activeFlow) {
-  case DEPOSIT_FLOW: {
-    min = minToStake;
-    max = maxToStake;
-    break;
-  }
-  case WITHDRAW_FLOW: {
-    min = minToWithdraw;
-    max = balancePStake;
-    break;
-  }
-  default:
-    break;
-  }
-  const minValue = validator.minValue(convert.toHumanAmount(min, pDecimals))(
-    value,
-  );
-  const maxValue = validator.maxValue(convert.toHumanAmount(max, pDecimals))(
-    value,
-  );
+  const minAmount = _.floor(convert.toHumanAmount(min, pDecimals), 4);
+  const maxAmount = _.floor(convert.toHumanAmount(max, pDecimals), 4);
+  const minValue = validator.minValue(minAmount)(value);
+  const maxValue = validator.maxValue(maxAmount)(value);
+  console.log('maxAmount', maxAmount);
   if (required) {
     return {
       error: true,
@@ -63,6 +38,12 @@ export const validatedAmount = ({
       message: maxValue,
     };
   }
+  if (maxAmount === 0) {
+    return {
+      error: true,
+      message: 'Your balance is not enough to send',
+    };
+  }
   return noError;
 };
 
@@ -83,14 +64,14 @@ export const getHookFactories = ({account, activeFlow, balancePStake}) => {
   };
   switch (activeFlow) {
   case DEPOSIT_FLOW: {
-    const balance = format.amount(_.floor(account?.value, 0) || 0, pDecimals);
+    const balance = format.balance(account?.value || 0, pDecimals, 4);
     hookBalance.leftText = 'Balance:';
     hookBalance.rightText = `${balance} ${symbol}`;
     hookAccount.leftText = 'Deposit from:';
     break;
   }
   case WITHDRAW_FLOW: {
-    const balance = format.amount(_.floor(balancePStake), pDecimals);
+    const balance = format.balance(balancePStake, pDecimals, 4);
     hookBalance.leftText = 'pStake balance:';
     hookBalance.rightText = `${balance} ${symbol}`;
     hookAccount.leftText = 'Withdraw to:';

@@ -72,10 +72,7 @@ const Stake = props => {
         currentRewardRate,
         rewardDateToMilSec,
       });
-      const totalBalanceFixed = _.floor(
-        convert.toHumanAmount(totalBalance, pDecimals),
-        6,
-      );
+      const totalBalanceFixed = format.balance(totalBalance, pDecimals, 6);
       const nextNodeTimeCurrent = nextNodeTime + 300;
       await setState({
         ...state,
@@ -125,8 +122,7 @@ const Stake = props => {
             <View style={styled.balanceContainer}>
               <Text
                 style={styled.balance}
-                numberOfLine={1}
-                ellipsizeMode="middle"
+                numberOfLines={1}
               >
                 {balanceCurrent === 0 ? '0.00' : balanceCurrent}
               </Text>

@@ -1,4 +1,6 @@
 import {createSelector} from 'reselect';
+import convert from '@src/utils/convert';
+import _ from 'lodash';
 import {STEP_FLOW, DEPOSIT_FLOW, WITHDRAW_FLOW} from './stake.constant';
 import {isStakeAccount} from './stake.utils';
 
@@ -7,15 +9,18 @@ export const stakeSelector = createSelector(
   stake => stake,
 );
 
-export const stakeDataSelector = createSelector(stakeSelector, stake => {
-  const {data} = stake;
-  const {balance} = data;
-  const staked = balance !== 0;
-  return {
-    ...data,
-    staked,
-  };
-});
+export const stakeDataSelector = createSelector(
+  stakeSelector,
+  stake => {
+    const {data} = stake;
+    const {balance} = data;
+    const staked = balance !== 0;
+    return {
+      ...data,
+      staked,
+    };
+  },
+);
 
 export const flowStakeSelector = createSelector(
   stakeSelector,
@@ -54,7 +59,14 @@ export const activeFlowSelector = createSelector(
     const {activeFlow} = flow;
     const activedFlowData = flow[activeFlow];
     const {step, account} = activedFlowData;
-    const {stakingMasterAddress} = data;
+    const {
+      stakingMasterAddress,
+      minToStake,
+      maxToStake,
+      minToWithdraw,
+      pDecimals,
+      balancePStake,
+    } = data;
     let hook = {
       headerTitle: '',
       btnSubmitAmount: '',
@@ -64,6 +76,8 @@ export const activeFlowSelector = createSelector(
       from: '',
       to: '',
       walletAccount: null,
+      min: 0,
+      max: 0,
     };
     switch (activeFlow) {
     case DEPOSIT_FLOW:
@@ -111,6 +125,12 @@ export const activeFlowSelector = createSelector(
           walletAccount: wallet.getAccountByName(
               account?.name || account?.AccountName,
           ),
+          min: minToStake,
+          max: maxToStake,
+          maxTypeAmount: _.floor(
+            convert.toHumanAmount(maxToStake, pDecimals),
+            4,
+          ),
         };
       }
       if (activeFlow === WITHDRAW_FLOW) {
@@ -121,6 +141,12 @@ export const activeFlowSelector = createSelector(
           to: account?.PaymentAddress,
           walletAccount: wallet.getAccountByName(
               pStakeAccount?.name || pStakeAccount?.AccountName,
+          ),
+          min: minToWithdraw,
+          max: balancePStake,
+          maxTypeAmount: _.floor(
+            convert.toHumanAmount(balancePStake, pDecimals),
+            4,
           ),
         };
       }

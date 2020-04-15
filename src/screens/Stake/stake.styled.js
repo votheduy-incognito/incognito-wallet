@@ -45,21 +45,26 @@ export const styled = StyleSheet.create({
     color: COLORS.lightGrey1,
   },
   balanceContainer: {
-    marginTop: 10,
+    marginTop: 20,
     flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'center',
   },
   balance: {
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.superLarge + 5,
     lineHeight: FONT.SIZE.superLarge + 10,
     color: COLORS.black,
-    marginTop: 10,
+    textAlign: 'right',
+    maxWidth: '100%',
+    width: 'auto',
   },
   symbol: {
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 6,
     color: COLORS.black,
+    marginHorizontal: 5,
   },
   btnStake: {
     marginTop: 25,

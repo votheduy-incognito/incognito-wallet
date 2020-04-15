@@ -45,7 +45,7 @@ const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.regular + 6,
     color: COLORS.black,
     marginLeft: 20,
-    maxWidth: 100,
+    maxWidth: '100%',
     textAlign: 'left',
     flex: 1,
   },
@@ -117,7 +117,7 @@ const Account = props => {
         {shouldShowBalance && (
           <View style={styled.balanceContainer}>
             <Text style={styled.accountBalance} numberOfLines={1}>
-              {`${format.amount(_.floor(account?.value, 0) || 0, pDecimals)}`}
+              {`${format.balance(account?.value || 0, pDecimals, 4)}`}
             </Text>
             <Text style={styled.accountBalance}>{symbol}</Text>
           </View>
