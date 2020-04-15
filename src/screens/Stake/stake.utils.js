@@ -20,7 +20,7 @@ export const mappingData = (dataMasterAddress, dataStakerInfo) => {
   const {pDecimals, symbol} = CONSTANT_COMMONS.PRV;
   return {
     minToStake: dataMasterAddress?.MinToStake || 0,
-    minToWithdraw: dataMasterAddress?.MinToWithdraw || 0,
+    minToWithdraw: 1,
     currentRewardRate: dataMasterAddress?.CurrentRewardRate || 50,
     stakingMasterAddress: dataMasterAddress?.StakingMasterAddress || '',
     balance: dataStakerInfo?.Balance + dataStakerInfo?.RewardBalance || 0,

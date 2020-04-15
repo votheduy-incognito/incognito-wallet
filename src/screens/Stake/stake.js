@@ -66,12 +66,10 @@ const Stake = props => {
         rewardDate,
       });
       const totalBalanceFixed = format.amount(_.floor(totalBalance), pDecimals);
-      if (!isNaN(totalBalanceFixed)) {
-        await setState({
-          ...state,
-          balanceCurrent: totalBalanceFixed,
-        });
-      }
+      await setState({
+        ...state,
+        balanceCurrent: totalBalanceFixed,
+      });
     } catch (error) {
       await setState({
         ...state,
