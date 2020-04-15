@@ -14,6 +14,7 @@ import sourceBackground from '@assets/images/icons/stake_background.png';
 import PropTypes from 'prop-types';
 import format from '@src/utils/format';
 import _ from 'lodash';
+import convert from '@src/utils/convert';
 import {styled} from './stake.styled';
 import withStake from './stake.enhance';
 import StakeModal from './stake.modal';
@@ -33,15 +34,17 @@ const Stake = props => {
     symbol,
     staked,
     currentRewardRate,
-    rewardDate,
+    rewardDateToMilSec,
     pDecimals,
+    nodeTime,
   } = useSelector(stakeDataSelector);
   const initialState = {
     balanceCurrent: 0,
     duration: 1,
+    nextNodeTime: null,
   };
   const [state, setState] = React.useState(initialState);
-  const {balanceCurrent} = state;
+  const {balanceCurrent, nextNodeTime} = state;
   const handleStartStake = async () => {
     await new Promise.all([
       dispatch(
@@ -60,15 +63,24 @@ const Stake = props => {
   };
   const handleReCalBalance = async () => {
     try {
-      const totalBalance = await getTotalBalance({
+      if (!nextNodeTime) {
+        return;
+      }
+      const totalBalance = getTotalBalance({
+        nodeTime: nextNodeTime,
         balance,
         currentRewardRate,
-        rewardDate,
+        rewardDateToMilSec,
       });
-      const totalBalanceFixed = format.amount(_.floor(totalBalance), pDecimals);
+      const totalBalanceFixed = _.floor(
+        convert.toHumanAmount(totalBalance, pDecimals),
+        6,
+      );
+      const nextNodeTimeCurrent = nextNodeTime + 300;
       await setState({
         ...state,
         balanceCurrent: totalBalanceFixed,
+        nextNodeTime: nextNodeTimeCurrent,
       });
     } catch (error) {
       await setState({
@@ -79,7 +91,7 @@ const Stake = props => {
   };
   React.useEffect(() => {
     if (balance !== 0) {
-      const intervalId = setInterval(handleReCalBalance, 500);
+      const intervalId = setInterval(handleReCalBalance, 300);
       return () => {
         clearInterval(intervalId);
       };
@@ -89,7 +101,13 @@ const Stake = props => {
         balanceCurrent: 0,
       });
     }
-  }, [balance]);
+  }, [balance, nextNodeTime]);
+  React.useEffect(() => {
+    setState({
+      ...state,
+      nextNodeTime: nodeTime,
+    });
+  }, [nodeTime]);
   return (
     <View style={styled.container}>
       <Header />
@@ -135,7 +153,7 @@ const Stake = props => {
           <StakePoolCommunity />
         </View>
       </ScrollView>
-      <Modal shouldCloseModalWhenTapOverlay />
+      <Modal />
     </View>
   );
 };

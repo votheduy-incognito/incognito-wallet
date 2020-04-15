@@ -4,7 +4,7 @@ import {CONSTANT_COMMONS, CONSTANT_CONFIGS} from '@src/constants';
 const STATUS_HISTORY = {
   0: 'Pending',
   1: 'Processing',
-  2: 'Success',
+  2: 'Successful',
   3: 'Failed',
   4: 'Queued',
 };

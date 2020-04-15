@@ -1,4 +1,7 @@
-import {getEstimateFeeForNativeToken} from '@src/services/wallet/RpcClientService';
+import {
+  getEstimateFeeForNativeToken,
+  getNodeTime,
+} from '@src/services/wallet/RpcClientService';
 import convert from '@src/utils/convert';
 import {getSignPublicKey, signPoolWithdraw} from '@src/services/gomobile';
 import {actionSendNativeToken} from '@src/redux/actions/account';
@@ -63,12 +66,23 @@ export const actionFetch = () => async (dispatch, getState) => {
       return;
     }
     await dispatch(actionFetching());
-    const [dataMasterAddress, dataStakerInfo] = await new Promise.all([
+    const [
+      dataMasterAddress,
+      dataStakerInfo,
+      nodeTimeCurrent,
+    ] = await new Promise.all([
       await apiGetMasterAddress(),
       await apiGetStakerInfo({paymentAddress: pStakeAccount?.PaymentAddress}),
+      await getNodeTime(),
     ]);
     const payload = mappingData(dataMasterAddress, dataStakerInfo);
-    await dispatch(actionFetched(payload));
+    await dispatch(
+      actionFetched({
+        ...payload,
+        nodeTime: nodeTimeCurrent * 1000,
+        localTime: new Date().getTime(),
+      }),
+    );
   } catch (error) {
     await dispatch(actionFetchFail());
     throw Error(error);

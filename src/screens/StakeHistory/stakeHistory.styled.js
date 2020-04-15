@@ -13,7 +13,7 @@ export const styled = StyleSheet.create({
     padding: 15,
   },
   item: {
-    borderBottomColor: COLORS.lightGrey2,
+    borderBottomColor: COLORS.lightGrey4,
     borderBottomWidth: 1,
     paddingVertical: 20,
     flexDirection: 'row',
@@ -27,6 +27,7 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 6,
+    color: COLORS.black
   },
   amount: {
     fontFamily: FONT.NAME.regular,

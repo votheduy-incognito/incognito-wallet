@@ -16,6 +16,7 @@ import {ExHandler} from '@src/services/exception';
 import format from '@src/utils/format';
 import {DEPOSIT_FLOW, WITHDRAW_FLOW} from '@screens/Stake/stake.constant';
 import convert from '@src/utils/convert';
+import _ from 'lodash';
 import {validatedAmount, getHookFactories} from './TypeAmount.utils';
 
 const enhance = WrappedComp => props => {
@@ -129,12 +130,12 @@ const enhance = WrappedComp => props => {
     default:
       break;
     }
-    const maxValue = format.numberWithNoGroupSeparator(Number(max));
+    const maxValue = _.floor(max, 4);
     return await setState({
       ...state,
       amount: {
         ...amount,
-        value: maxValue,
+        value: String(maxValue),
         validated: onValidateAmount(max),
       },
     });

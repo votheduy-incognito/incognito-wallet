@@ -26,4 +26,7 @@ const enhance = WrappedComp => props => {
   return <WrappedComp {...{...props, fetchData}} />;
 };
 
-export default compose(withHeader, enhance);
+export default compose(
+  withHeader,
+  enhance,
+);
