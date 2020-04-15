@@ -16,6 +16,7 @@ import {TradeHistory} from '@models/uniswapHistory';
 import TradingToken from '@models/tradingToken';
 import {logEvent} from '@services/firebase';
 import {CONSTANT_EVENTS} from '@src/constants';
+import ROUTE_NAMES from '@routers/routeNames';
 import TradeConfirm from '../TradeConfirm';
 import SwapSuccessDialog from '../SwapSuccessDialog';
 import Input from '../Input';
@@ -544,6 +545,7 @@ class Swap extends React.Component {
     } = this.state;
     const {
       isLoading,
+      navigation,
     } = this.props;
 
     return (
@@ -567,6 +569,11 @@ class Swap extends React.Component {
                 }
                 disabledStyle={mainStyle.disabledButton}
                 onPress={this.showTradeConfirm}
+              />
+              <Button
+                title="Get Testnet ETH"
+                style={[mainStyle.button, { marginTop: 20 }]}
+                onPress={() => navigation.navigate(ROUTE_NAMES.GetETH)}
               />
             </View>
           </View>

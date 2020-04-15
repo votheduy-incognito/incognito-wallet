@@ -71,7 +71,7 @@ const powerItem = {
 const pUniswapItem = {
   image: icUniswap,
   title: 'pUniswap',
-  route: ROUTE_NAMES.pUniswap,
+  route: global.isMainnet ? ROUTE_NAMES.pUniswapLaunch : ROUTE_NAMES.pUniswap,
   event: CONSTANT_EVENTS.CLICK_HOME_UNISWAP,
 };
 
@@ -138,10 +138,6 @@ const Home = ({ navigation }) => {
       (item === receiveItem || item === shieldItem) &&
       dexUtil.isDEXWithdrawAccount(account.name)
     ) {
-      return true;
-    }
-
-    if (item === pUniswapItem && global.isMainnet) {
       return true;
     }
 
