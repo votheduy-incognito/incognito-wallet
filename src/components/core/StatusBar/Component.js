@@ -6,8 +6,6 @@ import DeviceInfo from 'react-native-device-info';
 import routeNames from '@src/router/routeNames';
 
 const {
-  pApps,
-  pApp,
   GetStarted,
   Game,
   Wizard,
@@ -17,10 +15,11 @@ const {
   DexHistoryDetail,
   AddPin,
   Community,
+  Home,
   Stake,
 } = routeNames;
 
-const whiteScreens = [Game, GetStarted, AddPin, Community];
+const whiteScreens = [Game, GetStarted, AddPin, Community, Home];
 const blue2Screens = [];
 const blue1Screens = [Wizard, Node];
 const dark2Screen = [Dex, DexHistory, DexHistoryDetail];
