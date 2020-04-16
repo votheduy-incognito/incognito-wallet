@@ -99,7 +99,11 @@ const style = StyleSheet.create({
     fontSize: 17,
     fontFamily: FONT.NAME.regular,
     textAlign: 'center'
-  }
+  },
+  copyIcon: {
+    flexBasis: 20,
+    paddingRight: 10
+  },
 });
 
 export default style;

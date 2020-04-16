@@ -5,19 +5,27 @@ import React, { useState } from 'react';
 import { TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
 import clipboard from '@src/services/clipboard';
 import QrCodeGenerate from '@src/components/QrCodeGenerate';
+import { BtnQRCode } from '@src/components/Button';
+import { Icon } from 'react-native-elements';
+import { COLORS } from '@src/styles';
 import styleSheet from './style';
 
 
-const ExportItem = ({ label, data, onPress }) => (
-  <TouchableOpacity onPress={onPress} style={styleSheet.itemContainer}>
+const ExportItem = ({ label, data, onPress, onPressQRCode }) => (
+  <View onPress={onPress} style={styleSheet.itemContainer}>
     <View style={styleSheet.content}>
       <Text style={[styleSheet.itemLabel]}>{label}</Text>
       <Text numberOfLines={1} ellipsizeMode="middle" style={styleSheet.itemData}>
         {data}
       </Text>
     </View>
-    <CopiableText showCopyIcon onPress={() => { clipboard.set(data, { copiedMessage: `${label} was copied.` }); }} style={styleSheet.copiableIco} />
-  </TouchableOpacity>
+    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingEnd: 10 }}>
+      <BtnQRCode onPress={onPressQRCode} style={{ paddingEnd: 5 }} />
+      <TouchableOpacity onPress={onPress}>
+        <Icon type='material' name="content-copy" size={25} style={[styleSheet.copyIcon]} color={COLORS.primary} />
+      </TouchableOpacity>
+    </View>
+  </View>
 );
 
 
@@ -75,10 +83,13 @@ const ExportAccount = ({ account, token }) => {
         <ExportItem
           label={label}
           data={value}
-          onPress={() => {
+          onPressQRCode={() => {
             setItemQRCode(value);
             setLableQRCode(label);
             setShowQRCodeKey(true);
+          }}
+          onPress={() => {
+            clipboard.set(value, { copiedMessage: `${label} was copied.` });
           }}
         />
       )
@@ -113,7 +124,8 @@ ExportAccount.propTypes = {
 ExportItem.propTypes = {
   label: PropTypes.string.isRequired,
   data: PropTypes.string.isRequired,
-  onPress: PropTypes.func.isRequired
+  onPress: PropTypes.func.isRequired,
+  onPressQRCode: PropTypes.func.isRequired,
 };
 
 export default ExportAccount;

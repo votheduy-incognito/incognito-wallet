@@ -92,7 +92,7 @@ const buttons = [
   receiveItem,
   {
     image: icInvent,
-    title: 'Mint a coin',
+    title: 'Issue a coin',
     route: ROUTE_NAMES.CreateToken,
   },
   {
