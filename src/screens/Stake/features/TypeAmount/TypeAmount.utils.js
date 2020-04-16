@@ -13,7 +13,6 @@ export const validatedAmount = ({value, min, max, pDecimals}) => {
   const maxAmount = _.floor(convert.toHumanAmount(max, pDecimals), 4);
   const minValue = validator.minValue(minAmount)(value);
   const maxValue = validator.maxValue(maxAmount)(value);
-  console.log('maxAmount', maxAmount);
   if (required) {
     return {
       error: true,
@@ -24,6 +23,12 @@ export const validatedAmount = ({value, min, max, pDecimals}) => {
     return {
       error: true,
       message: number,
+    };
+  }
+  if (maxAmount === 0) {
+    return {
+      error: true,
+      message: 'Your balance is not enough to send',
     };
   }
   if (minValue) {
@@ -38,12 +43,7 @@ export const validatedAmount = ({value, min, max, pDecimals}) => {
       message: maxValue,
     };
   }
-  if (maxAmount === 0) {
-    return {
-      error: true,
-      message: 'Your balance is not enough to send',
-    };
-  }
+
   return noError;
 };
 
