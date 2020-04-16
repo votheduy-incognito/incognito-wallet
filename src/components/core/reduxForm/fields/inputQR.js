@@ -25,6 +25,21 @@ const styled = StyleSheet.create({
   },
 });
 
+// We have to support user use this format: "bitcoin:AS3sa...", and this currently format: "abdcdFAS..."
+// And also need to check generic data type
+const getAddress = (text) => {
+  if (text && typeof text === 'string') {
+    let indexSpec = text.indexOf(':');
+    if (indexSpec != -1) {
+      return text.substring(indexSpec + 1, text.length);
+    } else {
+      return text;
+    }
+  } else {
+    return '';
+  }
+};
+
 const renderCustomField = ({
   input,
   onOpenAddressBook,
@@ -53,7 +68,8 @@ const renderCustomField = ({
           <TouchableOpacity
             onPress={() => {
               openQrScanner(data => {
-                onChange(data);
+                let res = getAddress(data);
+                onChange(res);
               });
             }}
           >
