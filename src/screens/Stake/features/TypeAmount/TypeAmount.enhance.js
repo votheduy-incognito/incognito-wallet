@@ -15,6 +15,7 @@ import {
 import {ExHandler} from '@src/services/exception';
 import format from '@src/utils/format';
 import {DEPOSIT_FLOW, WITHDRAW_FLOW} from '@screens/Stake/stake.constant';
+import {getDecimalSeparator} from '@src/resources/separator';
 import {validatedAmount, getHookFactories} from './TypeAmount.utils';
 
 const enhance = WrappedComp => props => {
@@ -117,7 +118,7 @@ const enhance = WrappedComp => props => {
       ...state,
       amount: {
         ...amount,
-        value: String(maxTypeAmount),
+        value: String(maxTypeAmount).replace('.', getDecimalSeparator()),
         validated: onValidateAmount(maxTypeAmount),
       },
     });

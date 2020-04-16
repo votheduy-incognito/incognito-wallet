@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
 import {useNavigation} from 'react-navigation-hooks';
 import {actionToggleModal} from '@src/components/Modal';
 import routeNames from '@src/router/routeNames';
-import {DEPOSIT_FLOW} from '@screens/Stake/stake.constant';
+import {DEPOSIT_FLOW, WITHDRAW_FLOW} from '@screens/Stake/stake.constant';
 import Hook from '@screens/Stake/features/Hook';
 import format from '@src/utils/format';
 import LocalDatabase from '@src/utils/LocalDatabase';
@@ -99,16 +99,21 @@ const ShowStatus = () => {
     switch (activeFlow) {
     case DEPOSIT_FLOW: {
       if (backup) {
-        break;
+        navigation.navigate(routeNames.StakeHistory);
+      } else {
+        await LocalDatabase.saveBackupStakeKey();
+        navigation.navigate(routeNames.BackupKeys);
       }
-      await LocalDatabase.saveBackupStakeKey();
-      navigation.navigate(routeNames.BackupKeys);
       break;
     }
-    default:
+    case WITHDRAW_FLOW: {
+      navigation.navigate(routeNames.StakeHistory);
       break;
     }
-    navigation.navigate(routeNames.StakeHistory);
+    default: {
+      break;
+    }
+    }
     await dispatch(actionToggleModal());
   };
   return (
