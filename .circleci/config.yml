@@ -5,7 +5,7 @@ commands:
       - run:
           name: Setup Environment Variables
           command: |
-            echo "export LAST_COMMIT_MESSAGE="$(git show -s --format=%s)"" >> $BASH_ENV
+            echo "export LAST_COMMIT_MESSAGE=\"$(git show -s --format=%s)\"" >> $BASH_ENV
             echo "export APP_VERSION="$(sed 's/.*\"version\": \"\(.*\)\".*/\1/;t;d' ./package.json)"" >> $BASH_ENV
   install_modules:
       description: "Install node_modules"
