@@ -15,8 +15,6 @@ import {
 import {ExHandler} from '@src/services/exception';
 import format from '@src/utils/format';
 import {DEPOSIT_FLOW, WITHDRAW_FLOW} from '@screens/Stake/stake.constant';
-import convert from '@src/utils/convert';
-import _ from 'lodash';
 import {validatedAmount, getHookFactories} from './TypeAmount.utils';
 
 const enhance = WrappedComp => props => {
