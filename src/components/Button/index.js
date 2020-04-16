@@ -9,3 +9,4 @@ export {default as BtnThreeDotsVer} from './BtnThreeDotsVer';
 export {default as BtnBack} from './BtnBack';
 export {default as BtnClose} from './BtnClose';
 export {default as BtnMax} from './BtnMax';
+export {default as BtnQRCode} from './BtnQRCode';
