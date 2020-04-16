@@ -8,7 +8,7 @@ import styleSheet from './style';
 
 function handlePress(text, { copiedMessage }, onPress) {
   clipboard.set(text, { copiedMessage });
-  if(onPress) {
+  if (onPress) {
     onPress();
   }
 }
@@ -29,7 +29,7 @@ const CopiableText = ({
     {...containerProps}
     onPress={() => handlePress(text, { copiedMessage }, onPress)}
   >
-    {children || (
+    {children || text ? (
       <Text
         style={styleSheet.text}
         {...(oneLine ? { numberOfLines: 1, ellipsizeMode: 'middle' } : {})}
@@ -37,7 +37,7 @@ const CopiableText = ({
       >
         {text}
       </Text>
-    )}
+    ) : null}
     {showCopyIcon && (
       <Icon type='material' name="content-copy" size={20} style={styleSheet.copyIcon} color={COLORS.primary} />
     )}
