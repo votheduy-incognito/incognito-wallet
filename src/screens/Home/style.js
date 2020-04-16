@@ -10,7 +10,6 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
-    justifyContent: 'center',
     width: '100%',
     maxWidth: 320,
     marginLeft: 'auto',
@@ -26,6 +25,16 @@ const style = StyleSheet.create({
   btn: {
     width: '33%',
     alignItems: 'center',
+  },
+  header: {
+    flexDirection: 'row',
+    alignContent: 'center',
+    height: 70,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  accTitle: {
+    color: COLORS.black
   }
 });
 
