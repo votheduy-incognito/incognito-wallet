@@ -13,7 +13,7 @@ const getStatusData = (status, statusCode, decentralized) => {
   let statusText;
   let statusColor;
   let statusNumber;
-  if (decentralized && decentralized) {
+  if (decentralized) {
     if (statusCode && (statusCode === 9 || statusCode === 10)) {
       statusText = 'Failed';
       statusColor = COLORS.red;
