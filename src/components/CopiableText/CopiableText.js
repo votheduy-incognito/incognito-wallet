@@ -29,7 +29,7 @@ const CopiableText = ({
     {...containerProps}
     onPress={() => handlePress(text, { copiedMessage }, onPress)}
   >
-    {children || text ? (
+    {children || (
       <Text
         style={styleSheet.text}
         {...(oneLine ? { numberOfLines: 1, ellipsizeMode: 'middle' } : {})}
@@ -37,9 +37,9 @@ const CopiableText = ({
       >
         {text}
       </Text>
-    ) : null}
+    )}
     {showCopyIcon && (
-      <Icon type='material' name="content-copy" size={20} style={styleSheet.copyIcon} color={COLORS.primary} />
+      <Icon type='material' name="content-copy" size={20} style={[styleSheet.copyIcon, oneLine ? { marginBottom: 10 } : {}]} color={COLORS.primary} />
     )}
   </TouchableOpacity>
 );

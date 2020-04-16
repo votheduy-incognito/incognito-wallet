@@ -143,41 +143,12 @@ const enhance = WrappedComponent =>
       }
     }
 
-    onListenerEventFCM = async () => {
-      firebase.messaging().onMessage(notification => {
-        this.handleHasNotification(notification);
-        this.handleSendNotificationToSystem(notification);
-      });
-      AppState.addEventListener('change', this._handleAppStateChange);
-      this.removeNotificationDisplayedListener = firebase
-        .notifications()
-        .onNotificationDisplayed(notification => {
-          this.handleHasNotification(notification);
-        });
-      this.removeNotificationListener = firebase
-        .notifications()
-        .onNotification(notification => {
-          this.handleHasNotification(notification);
-          this.handleSendNotificationToSystem(notification);
-        });
-      this.removeNotificationOpenedListener = firebase
-        .notifications()
-        .onNotificationOpened(notificationOpen => {
-          const notification = notificationOpen.notification;
-          this.onNavigateNotification(notification);
-        });
-      const notificationOpen = await firebase
-        .notifications()
-        .getInitialNotification();
-      if (notificationOpen) {
-        const notification = notificationOpen.notification;
-        this.onNavigateNotification(notification);
-      }
+    onListenerTokenChange = async () => {
       await this.getFCMToken();
     };
 
     componentDidMount() {
-      this.onListenerEventFCM();
+      this.onListenerTokenChange();
     }
 
     componentDidUpdate(prevProps) {
@@ -186,13 +157,6 @@ const enhance = WrappedComponent =>
       if (!_.isEqual(accountList, oldAccountList)) {
         initNotification();
       }
-    }
-
-    componentWillUnmount() {
-      this.removeNotificationDisplayedListener();
-      this.removeNotificationListener();
-      this.removeNotificationOpenedListener();
-      AppState.removeEventListener('change', this._handleAppStateChange);
     }
 
     render() {
