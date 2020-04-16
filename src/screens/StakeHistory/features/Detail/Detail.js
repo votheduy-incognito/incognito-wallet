@@ -57,8 +57,6 @@ const Item = props => {
 
 const Detail = () => {
   const data = useNavigationParam('data');
-  console.log('data', data);
-
   return (
     <View style={styled.container}>
       <Item title="ID:" desc={data?.id} />

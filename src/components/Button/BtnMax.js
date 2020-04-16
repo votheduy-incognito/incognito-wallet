@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {View, StyleSheet, TouchableWithoutFeedback, Text} from 'react-native';
 import {COLORS, FONT} from '@src/styles';
 
 const styled = StyleSheet.create({
@@ -19,11 +19,11 @@ const styled = StyleSheet.create({
 
 const BtnMax = props => {
   return (
-    <TouchableOpacity {...props}>
+    <TouchableWithoutFeedback {...props}>
       <View style={styled.container}>
         <Text style={styled.max}>Max</Text>
       </View>
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
   );
 };
 

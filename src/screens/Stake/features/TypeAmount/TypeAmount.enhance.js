@@ -35,16 +35,15 @@ const enhance = WrappedComp => props => {
   const loading = useSelector(loadingSubmitAmountSelector);
   const validAmount = !amount.validated.error && amount.value !== 0;
   const shouldDisabled = !validAmount || loading;
-  const {btnSubmitAmount, activeFlow, account} = useSelector(
-    activeFlowSelector,
-  );
   const {
-    minToStake,
-    maxToStake,
-    minToWithdraw,
-    pDecimals,
-    balancePStake,
-  } = useSelector(stakeDataSelector);
+    btnSubmitAmount,
+    activeFlow,
+    account,
+    min,
+    max,
+    maxTypeAmount,
+  } = useSelector(activeFlowSelector);
+  const {pDecimals, balancePStake} = useSelector(stakeDataSelector);
   const dispatch = useDispatch();
   const feeData = {
     leftText: 'Fee:',
@@ -87,13 +86,11 @@ const enhance = WrappedComp => props => {
   const onValidateAmount = value =>
     validatedAmount({
       value,
-      activeFlow,
-      minToStake,
-      minToWithdraw,
-      maxToStake,
-      balancePStake,
+      min,
+      max,
+      pDecimals,
     });
-  const handleOnChangeAmount = async value =>
+  const handleOnChangeAmount = async value => {
     await setState({
       ...state,
       amount: {
@@ -103,6 +100,7 @@ const enhance = WrappedComp => props => {
       },
       error: null,
     });
+  };
 
   const handleCalcFee = async () => {
     try {
@@ -117,26 +115,12 @@ const enhance = WrappedComp => props => {
   };
 
   const handleShowMax = async () => {
-    let max = 0;
-    switch (activeFlow) {
-    case DEPOSIT_FLOW: {
-      max = convert.toHumanAmount(maxToStake, pDecimals);
-      break;
-    }
-    case WITHDRAW_FLOW: {
-      max = convert.toHumanAmount(balancePStake, pDecimals);
-      break;
-    }
-    default:
-      break;
-    }
-    const maxValue = _.floor(max, 4);
     return await setState({
       ...state,
       amount: {
         ...amount,
-        value: String(maxValue),
-        validated: onValidateAmount(max),
+        value: String(maxTypeAmount),
+        validated: onValidateAmount(maxTypeAmount),
       },
     });
   };

@@ -136,7 +136,7 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.StakeHistoryDetail]: navigationOptionsHandler(
       StakeHistoryDetail,
       {
-        title: 'Activities Detail',
+        title: 'Activity Detail',
       },
     ),
     [ROUTE_NAMES.WhySend]: navigationOptionsHandler(WhySend, {
