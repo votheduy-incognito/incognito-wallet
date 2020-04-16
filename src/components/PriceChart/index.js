@@ -3,7 +3,6 @@ import _ from 'lodash';
 import {
   StyleSheet,
   View,
-  processColor,
   Dimensions,
 } from 'react-native';
 import PropTypes from 'prop-types';
@@ -19,33 +18,29 @@ const chartHeight = screenHeight - 500;
 class PriceChart extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       data: {},
-      marker: {
-        enabled: true,
-        markerColor: processColor('#2c3e50'),
-        textColor: processColor('white'),
-      },
     };
-
-    this.parseChartData(props.data);
-
-    this.x = 0;
   }
 
   formatDateByChartType = (d) => {
-    const { chartType } = this.props;
+    const {chartType, isShowAll} = this.props;
+
+    if (isShowAll) {
+      return d.format('MMM YYYY');
+    }
+
     switch(chartType) {
     case BY_HOUR:
-      return d.format('HH');
+      return d.format('HH:mm');
     case BY_DAY:
+      return d.format('HH:mm');
     case BY_WEEK:
-      return d.format('D MMM');
+      return d.format('DD MMM');
     case BY_MONTH:
-      return d.format('MMM YYYY');
+      return d.format('D MMM');
     case BY_YEAR:
-      return d.format('YYYY');
+      return d.format('MMM YYYY');
     default:
       return d.format('DD MMM');
     }
@@ -64,10 +59,26 @@ class PriceChart extends Component {
       return;
     }
 
-    data.forEach(item => {
-      const momentObject = moment.unix(item.time);
+    const seperator = data.length > 12 ? Math.floor(data.length / 6) : 1;
 
-      labels.push(this.formatDateByChartType(momentObject));
+    data.forEach((item, index) => {
+      const momentObject = moment.unix(item.time);
+      const newLabel = this.formatDateByChartType(momentObject);
+
+      if (index % seperator === 0 && index !== data.length - 2) {
+        if (!labels.includes(newLabel)) {
+          labels.push(newLabel);
+        } else {
+          labels.push('');
+        }
+      } else if(index === data.length -1) {
+        labels.push(newLabel);
+      } else if(index === data.length - 2 && labels.length < 6) {
+        labels.push(newLabel);
+      } else {
+        labels.push('');
+      }
+
       setData.push(item.value);
     });
 
@@ -101,6 +112,7 @@ class PriceChart extends Component {
             width={screenWidth - 64}
             paddingLeft={64}
             height={chartHeight}
+            fromZero
             chartConfig={{
               backgroundColor: '#fff',
               backgroundGradientFrom: '#fff',
@@ -118,7 +130,6 @@ class PriceChart extends Component {
               },
               strokeWidth: 1,
             }}
-            verticalLabelRotation={90}
           />
         </View>
       </View>
@@ -143,7 +154,6 @@ PriceChart.propTypes = {
     shadowL: PropTypes.number.isRequired,
     shadowH: PropTypes.number.isRequired,
   })).isRequired,
-  label: PropTypes.string.isRequired,
   chartType: PropTypes.number.isRequired,
   isShowAll: PropTypes.bool.isRequired
 };

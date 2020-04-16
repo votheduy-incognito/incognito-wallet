@@ -493,7 +493,14 @@ class Swap extends React.Component {
       const token2 = tokens.find(item => item.id === tokenIds[1]);
 
       if (token1 && token2 && token1.hasIcon && token2.hasIcon) {
-        tokenPairs.push(`${token1.symbol}-${token2.symbol}`);
+        tokenPairs.push({
+          tokenSymbol1: token1.symbol,
+          tokenSymbol2: token2.symbol,
+          tokenPool1: convertUtil.toHumanAmount(pair[tokenIds[0]], token1.pDecimals),
+          tokenPool2: convertUtil.toHumanAmount(pair[tokenIds[1]], token2.pDecimals),
+          pair1: `${token1.symbol}-${token2.symbol}`,
+          pair2: `${token2.symbol}-${token1.symbol}`,
+        });
       }
     });
 
