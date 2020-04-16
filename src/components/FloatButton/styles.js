@@ -5,7 +5,7 @@ export default StyleSheet.create({
   floatBtn: {
     position: 'absolute',
     bottom: 10,
-    left: 0,
+    left: 10,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
