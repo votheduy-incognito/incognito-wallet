@@ -9,21 +9,22 @@ import React from 'react';
 import Swipeout from 'react-native-swipeout';
 import styleSheet from './style';
 
-const getStatusData = (status, statusCode) => {
+const getStatusData = (status, statusCode, decentralized) => {
   let statusText;
   let statusColor;
   let statusNumber;
-  // if (decentralized && decentralized === 1) {
-  //   if (statusCode && (statusCode === 9 || statusCode === 10)) {
-  //     statusText = 'Failed';
-  //     statusColor = COLORS.red;
-  //     return {
-  //       statusText,
-  //       statusColor,
-  //       statusNumber
-  //     };
-  //   }
-  // }
+  if (decentralized) {
+    if (statusCode && (statusCode === 9 || statusCode === 10)) {
+      statusText = 'Failed';
+      statusColor = COLORS.red;
+      return {
+        statusText,
+        statusColor,
+        statusNumber
+      };
+    }
+  }
+
   switch (status) {
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING:
     statusNumber = statusCode;
@@ -130,7 +131,7 @@ const HistoryItem = ({ history, divider, navigation }) => {
     return null;
   }
 
-  const { statusText, statusColor, statusNumber } = getStatusData(history.status, history.statusCode);
+  const { statusText, statusColor, statusNumber } = getStatusData(history.status, history.statusCode, history.decentralized);
   const { typeText, balanceColor, balanceDirection } = getTypeData(history.type, history);
   const amount = (history.amount && formatUtil.amount(history.amount, history.pDecimals)) || formatUtil.number(history.requestedAmount);
   // const [addressDirection, address] = getAddress(history);
