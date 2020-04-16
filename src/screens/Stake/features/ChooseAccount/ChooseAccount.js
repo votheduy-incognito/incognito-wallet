@@ -6,6 +6,7 @@ import {
   Text,
   TouchableWithoutFeedback,
   RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import {COLORS, FONT} from '@src/styles';
 import {accountSeleclor} from '@src/redux/selectors';
@@ -22,16 +23,9 @@ import {
 import {DEPOSIT_FLOW} from '@screens/Stake/stake.constant';
 import {ExHandler} from '@src/services/exception';
 import {getTotalBalance} from '@screens/Stake/stake.utils';
-import _ from 'lodash';
 import withChoseAccount from './ChooseAccount.enhance';
 
 const styled = StyleSheet.create({
-  accountContainer: {
-    backgroundColor: COLORS.white,
-    borderBottomLeftRadius: 8,
-    borderBottomRightRadius: 8,
-    maxHeight: '50%',
-  },
   account: {
     flexDirection: 'row',
     padding: 20,
@@ -74,7 +68,7 @@ const styled = StyleSheet.create({
 });
 
 const Account = props => {
-  const {account, lastChild} = props;
+  const {account, lastChild, isLoadingBalance} = props;
   const dispatch = useDispatch();
   const {
     pDecimals,
@@ -89,6 +83,9 @@ const Account = props => {
   const shouldShowBalance = activeFlow === DEPOSIT_FLOW;
   const onChooseAccount = async () => {
     try {
+      if (isLoadingBalance) {
+        return;
+      }
       const localTimeCurrent = new Date().getTime();
       const nodeTimeCurrent = nodeTime + (localTimeCurrent - localTime);
       const balancePStake = getTotalBalance({
@@ -107,21 +104,31 @@ const Account = props => {
       new ExHandler(error).showErrorToast();
     }
   };
+  const renderBalance = () => {
+    if (isLoadingBalance) {
+      return <ActivityIndicator size="small" />;
+    }
+    if (shouldShowBalance) {
+      return (
+        <View style={styled.balanceContainer}>
+          <Text style={styled.accountBalance} numberOfLines={1}>
+            {`${format.amount(account?.value || 0, pDecimals)}`}
+          </Text>
+          <Text style={styled.accountBalance}>{symbol}</Text>
+        </View>
+      );
+    }
+    return null;
+  };
   return (
     <TouchableWithoutFeedback onPress={onChooseAccount}>
       <View style={[styled.account, lastChild ? styled.lastChild : null]}>
         <AccountIcon source={srcAccountIcon} style={styled.icon} />
+
         <Text style={styled.accountName} numberOfLines={1}>
           {account?.name || account?.AccountName}
         </Text>
-        {shouldShowBalance && (
-          <View style={styled.balanceContainer}>
-            <Text style={styled.accountBalance} numberOfLines={1}>
-              {`${format.balance(account?.value || 0, pDecimals, 4)}`}
-            </Text>
-            <Text style={styled.accountBalance}>{symbol}</Text>
-          </View>
-        )}
+        {renderBalance()}
       </View>
     </TouchableWithoutFeedback>
   );
@@ -130,32 +137,32 @@ const Account = props => {
 const ChooseAccount = props => {
   const {fetchData} = props;
   const accountList = useSelector(accountSeleclor.listAccount);
-  const refreshing = useSelector(accountSeleclor.isGettingBalance);
+  const isGettingBalance = useSelector(accountSeleclor.isGettingBalance);
+  const refreshing = isGettingBalance.length > 0;
   return (
-    <View style={styled.accountContainer}>
-      <ScrollView
-        refreshControl={(
-          <RefreshControl
-            refreshing={refreshing.length > 0}
-            onRefresh={fetchData}
-          />
-        )}
-      >
-        {accountList.map((account, index) => (
-          <Account
-            account={account}
-            key={account?.name || account?.AccountName}
-            lastChild={accountList.length - 1 === index}
-          />
-        ))}
-      </ScrollView>
-    </View>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={fetchData} />
+      }
+    >
+      {accountList.map((account, index) => (
+        <Account
+          isLoadingBalance={isGettingBalance.includes(
+            account?.name || account?.AccountName,
+          )}
+          account={account}
+          key={account?.name || account?.AccountName}
+          lastChild={accountList.length - 1 === index}
+        />
+      ))}
+    </ScrollView>
   );
 };
 
 Account.propTypes = {
   account: PropTypes.any.isRequired,
   lastChild: PropTypes.bool.isRequired,
+  isLoadingBalance: PropTypes.bool.isRequired,
 };
 
 ChooseAccount.propTypes = {

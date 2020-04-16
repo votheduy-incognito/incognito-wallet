@@ -108,6 +108,7 @@ const ShowStatus = () => {
     default:
       break;
     }
+    navigation.navigate(routeNames.StakeHistory);
     await dispatch(actionToggleModal());
   };
   return (
