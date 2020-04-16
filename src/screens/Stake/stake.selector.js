@@ -129,7 +129,7 @@ export const activeFlowSelector = createSelector(
           max: maxToStake,
           maxTypeAmount: _.floor(
             convert.toHumanAmount(maxToStake, pDecimals),
-            4,
+            9,
           ),
         };
       }
@@ -146,7 +146,7 @@ export const activeFlowSelector = createSelector(
           max: balancePStake,
           maxTypeAmount: _.floor(
             convert.toHumanAmount(balancePStake, pDecimals),
-            4,
+            9,
           ),
         };
       }

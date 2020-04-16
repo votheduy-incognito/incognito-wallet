@@ -4,12 +4,10 @@ import srcBackIcon from '@src/assets/images/icons/back.png';
 
 const styled = StyleSheet.create({
   defaultStyle: {
-    width: 10,
-    height: 18,
+    width: 12,
+    height: 20,
   },
-  container: {
-    padding: 10,
-  },
+  container: {},
 });
 
 const ReadIcon = props => {

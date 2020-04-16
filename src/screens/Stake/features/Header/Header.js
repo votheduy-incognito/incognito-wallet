@@ -2,11 +2,10 @@ import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {activeFlowSelector} from '@screens/Stake/stake.selector';
 import {useSelector, useDispatch} from 'react-redux';
-import BackButton from '@src/components/BackButton';
 import {STEP_FLOW} from '@screens/Stake/stake.constant';
 import {actionToggleModal} from '@src/components/Modal';
 import {FONT, COLORS, THEME} from '@src/styles';
-import {BtnClose} from '@src/components/Button';
+import {BtnClose, BtnBack} from '@src/components/Button';
 import {actionChangeFLowStep} from '../../stake.actions';
 
 const styled = StyleSheet.create({
@@ -17,7 +16,9 @@ const styled = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',
-    justifyContent: 'space-between',
+    paddingVertical: 20,
+    paddingHorizontal: 15,
+    zIndex: 1,
   },
   title: {
     fontFamily: FONT.NAME.regular,
@@ -25,15 +26,28 @@ const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.medium + 6,
     color: COLORS.white,
   },
+  titleContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    top: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   btnClose: {
-    marginRight: 20,
+    marginLeft: 'auto',
+  },
+  btnBack: {
+    zIndex: 1,
+    position: 'relative',
   },
 });
 
 const Header = () => {
   const dispatch = useDispatch();
   const {step, headerTitle, activeFlow} = useSelector(activeFlowSelector);
-
+  const shouldHideBackBtn = STEP_FLOW.CHOOSE_ACCOUNT === step;
   const handleToggleModal = async () => await dispatch(actionToggleModal());
 
   const handleBack = async () => {
@@ -55,8 +69,14 @@ const Header = () => {
   }
   return (
     <View style={styled.container}>
-      <BackButton onPress={handleBack} />
-      <Text style={styled.title}>{headerTitle}</Text>
+      {!shouldHideBackBtn && (
+        <View style={styled.btnBack}>
+          <BtnBack onPress={handleBack} />
+        </View>
+      )}
+      <View style={styled.titleContainer}>
+        <Text style={styled.title}>{headerTitle}</Text>
+      </View>
       <View style={styled.btnClose}>
         <BtnClose onPress={handleToggleModal} />
       </View>

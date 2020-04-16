@@ -5,7 +5,7 @@ import {COLORS} from '@src/styles';
 
 const CloseIcon = props => {
   const {colorIcon} = props;
-  return <Icon name="close" color={colorIcon} />;
+  return <Icon name="close" color={colorIcon} size={28} />;
 };
 
 CloseIcon.defaultProps = {

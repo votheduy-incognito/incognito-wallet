@@ -43,12 +43,12 @@ const styled = StyleSheet.create({
   lastChild: {
     borderBottomWidth: 0,
   },
-  btnClose: {
-    fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 6,
-    color: COLORS.black,
-  },
+  // btnClose: {
+  //   fontFamily: FONT.NAME.regular,
+  //   fontSize: FONT.SIZE.regular,
+  //   lineHeight: FONT.SIZE.regular + 6,
+  //   color: COLORS.black,
+  // },
 });
 
 const MenuItem = ({data, lastChild}) => {
@@ -66,13 +66,16 @@ const MenuItem = ({data, lastChild}) => {
   );
 };
 
-const Menu = ({data, onCloseMenu}) => {
+const Menu = ({
+  data,
+  // onCloseMenu
+}) => {
   return (
     <View style={styled.container}>
       <View style={styled.menu}>
-        <TouchableOpacity onPress={onCloseMenu}>
+        {/* <TouchableOpacity onPress={onCloseMenu}>
           <Text style={styled.btnClose}>Close</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         {data.map((item, index) => (
           <MenuItem
             data={item}
@@ -87,7 +90,7 @@ const Menu = ({data, onCloseMenu}) => {
 
 Menu.propTypes = {
   data: PropTypes.array.isRequired,
-  onCloseMenu: PropTypes.func.isRequired,
+  // onCloseMenu: PropTypes.func.isRequired,
 };
 
 MenuItem.propTypes = {

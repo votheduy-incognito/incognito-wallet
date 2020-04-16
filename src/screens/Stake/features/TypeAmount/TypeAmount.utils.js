@@ -9,8 +9,8 @@ import _ from 'lodash';
 export const validatedAmount = ({value, min, max, pDecimals}) => {
   const required = validator.required()(value);
   const number = validator.number()(value);
-  const minAmount = _.floor(convert.toHumanAmount(min, pDecimals), 4);
-  const maxAmount = _.floor(convert.toHumanAmount(max, pDecimals), 4);
+  const minAmount = _.floor(convert.toHumanAmount(min, pDecimals), 9);
+  const maxAmount = _.floor(convert.toHumanAmount(max, pDecimals), 9);
   const minValue = validator.minValue(minAmount)(value);
   const maxValue = validator.maxValue(maxAmount)(value);
   if (required) {
@@ -64,14 +64,14 @@ export const getHookFactories = ({account, activeFlow, balancePStake}) => {
   };
   switch (activeFlow) {
   case DEPOSIT_FLOW: {
-    const balance = format.balance(account?.value || 0, pDecimals, 4);
+    const balance = format.amount(_.floor(account?.value || 0, 0), pDecimals);
     hookBalance.leftText = 'Balance:';
     hookBalance.rightText = `${balance} ${symbol}`;
     hookAccount.leftText = 'Deposit from:';
     break;
   }
   case WITHDRAW_FLOW: {
-    const balance = format.balance(balancePStake, pDecimals, 4);
+    const balance = format.amount(_.floor(balancePStake, 0), pDecimals);
     hookBalance.leftText = 'pStake balance:';
     hookBalance.rightText = `${balance} ${symbol}`;
     hookAccount.leftText = 'Withdraw to:';

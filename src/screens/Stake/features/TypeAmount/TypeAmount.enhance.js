@@ -141,7 +141,7 @@ const enhance = WrappedComp => props => {
         validated: onValidateAmount(amount.value),
       },
     });
-  }, []);
+  }, [fee.value]);
   return (
     <ErrorBoundary>
       <WrappedComp
