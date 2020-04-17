@@ -19,6 +19,7 @@ export const KEY_SAVE = {
   WITHDRAWAL_DATA: CONSTANT_KEYS.WITHDRAWAL_DATA,
   BACKUP_STAKE_KEY: CONSTANT_KEYS.BACKUP_STAKE_KEY,
   VIEW_UNISWAP_TOOLTIP: '$uniswap_tooltip',
+  UNISWAP_AIRDROP: '$uniswap_airdrop',
 };
 export default class LocalDatabase {
   static async getValue(key: String): String {
@@ -306,6 +307,24 @@ export default class LocalDatabase {
   static resetViewUniswapTooltip() {
     return LocalDatabase.saveValue(
       KEY_SAVE.VIEW_UNISWAP_TOOLTIP,
+      '',
+    );
+  }
+
+  static async getUniswapAirdrop() {
+    return !!(await LocalDatabase.getValue(KEY_SAVE.UNISWAP_AIRDROP));
+  }
+
+  static saveUniswapAirdrop() {
+    return LocalDatabase.saveValue(
+      KEY_SAVE.UNISWAP_AIRDROP,
+      JSON.stringify(true),
+    );
+  }
+
+  static resetUniswapAirdrop() {
+    return LocalDatabase.saveValue(
+      KEY_SAVE.UNISWAP_AIRDROP,
       '',
     );
   }
