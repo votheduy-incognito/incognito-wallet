@@ -328,7 +328,7 @@ class Withdraw extends React.Component {
         fetch('https://etherscan.io/address/' + address).
           then((resp) => { return resp.text(); })
           .then((text) => {
-            this.setState({ shouldBlockETHWrongAddress: !(text.includes('Address' && text.includes(address))) });
+            this.setState({ shouldBlockETHWrongAddress: !((text.includes('Address') && text.includes(address))) });
           })
           .catch(() => {
             alert('Could not validate ETH address for now, please try again');
