@@ -1,7 +1,7 @@
 import {CONSTANT_COMMONS} from '@src/constants';
 import {ExHandler} from '@src/services/exception';
-import {getNodeTime} from '@src/services/wallet/RpcClientService';
-import format from '@src/utils/format';
+import _ from 'lodash';
+import convert from '@src/utils/convert';
 
 export const STAKE = {
   MAIN_ACCOUNT: 'pStake',
@@ -19,17 +19,28 @@ export const isStakeAccount = account => {
 
 export const mappingData = (dataMasterAddress, dataStakerInfo) => {
   const {pDecimals, symbol} = CONSTANT_COMMONS.PRV;
+  const balance = dataStakerInfo?.Balance + dataStakerInfo?.RewardBalance || 0;
+  const minToStake = dataMasterAddress?.MinToStake || 0;
+  const balanceToHumanAmount = _.floor(convert.toHumanAmount(balance, 9));
+  const minToStakeToHunmanAmount = _.floor(
+    convert.toHumanAmount(minToStake, 9),
+  );
+  const shouldCalInterestRate =
+    balanceToHumanAmount >= minToStakeToHunmanAmount;
   return {
-    minToStake: dataMasterAddress?.MinToStake || 0,
+    minToStake: minToStake,
     minToWithdraw: 1,
     currentRewardRate: dataMasterAddress?.CurrentRewardRate || 50,
     stakingMasterAddress: dataMasterAddress?.StakingMasterAddress || '',
-    balance: dataStakerInfo?.Balance + dataStakerInfo?.RewardBalance || 0,
+    balance,
     rewardDate: dataStakerInfo?.RewardDate || '',
     pDecimals,
     symbol,
     maxToStake: 0,
     rewardDateToMilSec: new Date(dataStakerInfo?.RewardDate).getTime(),
+    balanceToHumanAmount,
+    minToStakeToHunmanAmount,
+    shouldCalInterestRate,
   };
 };
 
