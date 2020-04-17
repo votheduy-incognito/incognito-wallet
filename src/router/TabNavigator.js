@@ -58,8 +58,7 @@ const renderTab = (type, title) => TabIcon.bind(null, type, title);
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 10,
-    // paddingBottom: 30,
-    height: 95,
+    height: 70,
     backgroundColor: COLORS.white,
   },
   // activeLabel: {
