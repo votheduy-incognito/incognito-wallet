@@ -11,13 +11,29 @@ const DevSection = () => {
     RNRestart.Restart();
   };
 
+  const resetUniswapAirdrop = async () => {
+    await LocalDatabase.resetUniswapAirdrop();
+    RNRestart.Restart();
+  };
+
   return (
     <Section
       label="Dev Tools"
       customItems={[
         <TouchableOpacity
-          key="separator"
+          key="uniswap-tooltip"
           onPress={resetUniswapTooltip}
+          activeOpacity={0.5}
+          style={[
+            sectionStyle.item,
+            pinSection.item,
+          ]}
+        >
+          <Text style={pinSection.name}>Reset uniswap airdrop</Text>
+        </TouchableOpacity>,
+        <TouchableOpacity
+          key="uniswap-airdrop"
+          onPress={resetUniswapAirdrop}
           activeOpacity={0.5}
           style={[
             sectionStyle.item,

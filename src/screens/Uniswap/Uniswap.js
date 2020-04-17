@@ -15,6 +15,7 @@ import Airdrop from '@screens/Uniswap/components/Airdrop';
 import WithdrawMainnet from '@screens/Uniswap/components/WithdrawMainnet';
 import routeNames from '@routers/routeNames';
 import {ExHandler} from '@services/exception';
+import LocalDatabase from '@utils/LocalDatabase';
 import RecentHistory from './components/RecentHistory';
 import Swap from './components/Swap';
 import {dexStyle, mainStyle} from './style';
@@ -42,27 +43,31 @@ class Uniswap extends React.Component {
 
   async componentDidMount() {
     try {
-      const {scAddress} = this.props;
-      const balance = await getUniswapBalance(scAddress, {
-        address: '0x0000000000000000000000000000000000000000' ,
-        decimals: 18,
-        pDecimals: 9,
-      });
+      const hasAirdrop = await LocalDatabase.getUniswapAirdrop();
 
-      if (!balance) {
-        await airdrop(scAddress);
-        this.showPopUp();
+      if (hasAirdrop) {
+        return;
       }
+
+      this.showPopUp();
+      LocalDatabase.saveUniswapAirdrop();
     } catch (e) {
       console.debug('AIRDROP', e);
       new ExHandler(e).showErrorToast();
     }
   }
 
-  showPopUp = (name) => {
+  showPopUp = async (name) => {
     // this.setState({ transferAction: name });
     // this.closeWithdrawOptionsPopUp();
-    this.setState({ showAirdrop: true });
+    try {
+      const {scAddress} = this.props;
+      await airdrop(scAddress);
+      this.setState({showAirdrop: true});
+    } catch (e) {
+      console.debug('AIRDROP', e);
+      new ExHandler(e).showErrorToast();
+    }
   };
 
   closePopUp = () => {
