@@ -1,4 +1,4 @@
-import {CONSTANT_COMMONS} from '@src/constants';
+import { CONSTANT_COMMONS } from '@src/constants';
 
 export const normalizedData = item => {
   return {
@@ -11,7 +11,7 @@ export const normalizedData = item => {
     tokenId: item?.TokenID ? item?.TokenID : CONSTANT_COMMONS.PRV_TOKEN_ID,
     publicKey: item?.PublicKey ? item?.PublicKey : '',
     screen: item?.Screen || '',
-    screenParams: item?.ScreenParams || '',
+    screenParams: item?.screenParams || item?.ScreenParams || '',
   };
 };
 
