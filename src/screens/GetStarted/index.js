@@ -71,14 +71,9 @@ class GetStartedContainer extends Component {
             item?.name === STAKE.MAIN_ACCOUNT,
         )
       ) {
-        accounts = await wallet.listAccount();
-        const dexWithdrawAccount = accounts.find(
-          item => item.AccountName === DEX.WITHDRAW_ACCOUNT,
-        );
         await accountService.createAccount(
           STAKE.MAIN_ACCOUNT,
           wallet,
-          accountService.parseShard(dexWithdrawAccount),
         );
       }
 
