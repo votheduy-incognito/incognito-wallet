@@ -23,6 +23,8 @@ import {
 import {DEPOSIT_FLOW} from '@screens/Stake/stake.constant';
 import {ExHandler} from '@src/services/exception';
 import {getTotalBalance} from '@screens/Stake/stake.utils';
+import convert from '@src/utils/convert';
+import _ from 'lodash';
 import withChoseAccount from './ChooseAccount.enhance';
 
 const styled = StyleSheet.create({
@@ -78,6 +80,7 @@ const Account = props => {
     rewardDateToMilSec,
     nodeTime,
     localTime,
+    shouldCalInterestRate,
   } = useSelector(stakeDataSelector);
   const {activeFlow} = useSelector(activeFlowSelector);
   const shouldShowBalance = activeFlow === DEPOSIT_FLOW;
@@ -86,14 +89,17 @@ const Account = props => {
       if (isLoadingBalance) {
         return;
       }
-      const localTimeCurrent = new Date().getTime();
-      const nodeTimeCurrent = nodeTime + (localTimeCurrent - localTime);
-      const balancePStake = getTotalBalance({
-        nodeTime: nodeTimeCurrent,
-        balance,
-        currentRewardRate,
-        rewardDateToMilSec,
-      });
+      let balancePStake = balance;
+      if (shouldCalInterestRate) {
+        const localTimeCurrent = new Date().getTime();
+        const nodeTimeCurrent = nodeTime + (localTimeCurrent - localTime);
+        balancePStake = getTotalBalance({
+          nodeTime: nodeTimeCurrent,
+          balance,
+          currentRewardRate,
+          rewardDateToMilSec,
+        });
+      }
       await dispatch(
         actionChangeFlowAccount({
           account,

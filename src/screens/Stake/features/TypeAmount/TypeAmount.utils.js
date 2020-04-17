@@ -5,6 +5,7 @@ import {noError} from '@src/components/Input/input.utils';
 import {CONSTANT_COMMONS} from '@src/constants';
 import format from '@src/utils/format';
 import _ from 'lodash';
+import React from 'react';
 
 export const validatedAmount = ({value, min, max, pDecimals}) => {
   const required = validator.required()(value);
@@ -82,3 +83,20 @@ export const getHookFactories = ({account, activeFlow, balancePStake}) => {
   }
   return [hookAccount, hookBalance];
 };
+
+export const useDebounce = (text, delay) => {
+  delay = delay || 500;
+  const [debounced, setDebounced] = React.useState(text);
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebounced(text);
+    }, delay);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [text, delay]);
+
+  return debounced;
+};
+
+

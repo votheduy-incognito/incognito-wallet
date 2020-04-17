@@ -37,7 +37,12 @@ const Stake = props => {
     rewardDateToMilSec,
     pDecimals,
     nodeTime,
+    shouldCalInterestRate,
   } = useSelector(stakeDataSelector);
+  const balanceToHunmanAmount = _.floor(
+    convert.toHumanAmount(balance, pDecimals),
+    9,
+  );
   const initialState = {
     balanceCurrent: 0,
     duration: 1,
@@ -87,7 +92,7 @@ const Stake = props => {
     }
   };
   React.useEffect(() => {
-    if (balance !== 0) {
+    if (balance !== 0 && shouldCalInterestRate) {
       const intervalId = setInterval(handleReCalBalance, 300);
       return () => {
         clearInterval(intervalId);
@@ -95,7 +100,7 @@ const Stake = props => {
     } else {
       setState({
         ...state,
-        balanceCurrent: 0,
+        balanceCurrent: format.balance(balance, pDecimals, 6),
       });
     }
   }, [balance, nextNodeTime]);
@@ -120,10 +125,7 @@ const Stake = props => {
           <View style={styled.hook}>
             <Text style={styled.title}>Staking balance</Text>
             <View style={styled.balanceContainer}>
-              <Text
-                style={styled.balance}
-                numberOfLines={1}
-              >
+              <Text style={styled.balance} numberOfLines={1}>
                 {balanceCurrent === 0 ? '0.00' : balanceCurrent}
               </Text>
               <Text style={styled.symbol}>{symbol}</Text>

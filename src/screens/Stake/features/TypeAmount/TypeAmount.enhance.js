@@ -16,7 +16,11 @@ import {ExHandler} from '@src/services/exception';
 import format from '@src/utils/format';
 import {DEPOSIT_FLOW, WITHDRAW_FLOW} from '@screens/Stake/stake.constant';
 import {getDecimalSeparator} from '@src/resources/separator';
-import {validatedAmount, getHookFactories} from './TypeAmount.utils';
+import {
+  validatedAmount,
+  getHookFactories,
+  useDebounce,
+} from './TypeAmount.utils';
 
 const enhance = WrappedComp => props => {
   const [state, setState] = React.useState({
@@ -33,7 +37,6 @@ const enhance = WrappedComp => props => {
   const fee = useSelector(feeStakeSelector);
   const loading = useSelector(loadingSubmitAmountSelector);
   const validAmount = !amount.validated.error && amount.value !== 0;
-  const shouldDisabled = !validAmount || loading || !!error;
   const {
     btnSubmitAmount,
     activeFlow,
@@ -42,6 +45,7 @@ const enhance = WrappedComp => props => {
     max,
     maxTypeAmount,
   } = useSelector(activeFlowSelector);
+  const debouncedVal = useDebounce(amount.value);
   const {pDecimals, balancePStake} = useSelector(stakeDataSelector);
   const dispatch = useDispatch();
   const feeData = {
@@ -49,9 +53,28 @@ const enhance = WrappedComp => props => {
     rightText: format.amountFull(fee.value, pDecimals),
     disabled: activeFlow !== DEPOSIT_FLOW,
   };
+  const handleShouldDisabled = () => {
+    switch (activeFlow) {
+    case DEPOSIT_FLOW: {
+      return (
+        !validAmount ||
+          loading ||
+          !!error ||
+          fee.value === 0 ||
+          !fee.isFetched
+      );
+    }
+    case WITHDRAW_FLOW: {
+      return !validAmount || loading || !!error;
+    }
+    default:
+      return false;
+    }
+  };
+  const shouldDisabled = handleShouldDisabled();
   const onSubmitAmount = async () => {
     try {
-      if (shouldDisabled || fee.isFetching || !!error) {
+      if (shouldDisabled) {
         return;
       }
       switch (activeFlow) {
@@ -100,11 +123,9 @@ const enhance = WrappedComp => props => {
       error: null,
     });
   };
-
   const handleCalcFee = async () => {
     try {
-      const shouldFetchFee =
-        validAmount && activeFlow === DEPOSIT_FLOW && !fee.isFetched;
+      const shouldFetchFee = validAmount && !fee.isFetched;
       if (shouldFetchFee) {
         await dispatch(actionFetchFee());
       }
@@ -116,28 +137,21 @@ const enhance = WrappedComp => props => {
       });
     }
   };
-
-  const handleShowMax = async () => {
-    return await setState({
+  const handleShowMax = async () =>
+    await setState({
       ...state,
       amount: {
         ...amount,
         value: String(maxTypeAmount).replace('.', getDecimalSeparator()),
         validated: onValidateAmount(maxTypeAmount),
       },
+      error: null,
     });
-  };
-
   React.useEffect(() => {
-    switch (activeFlow) {
-    case DEPOSIT_FLOW: {
+    if (debouncedVal && activeFlow === DEPOSIT_FLOW) {
       handleCalcFee();
-      return;
     }
-    default:
-      return;
-    }
-  }, [amount.value, activeFlow]);
+  }, [debouncedVal]);
   React.useEffect(() => {
     setState({
       ...state,
