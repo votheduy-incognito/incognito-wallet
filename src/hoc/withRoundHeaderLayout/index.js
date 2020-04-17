@@ -16,7 +16,6 @@ const withTopRoundHeaderLayout = WrappedComp => props => {
       <View style={styles.specialBg} />
       <View style={styles.header}>
         <AccountSelect />
-        <NotificationIcon isReadAll={isReadAll} />
         <SettingIcon />
       </View>
       <View style={styles.content}>

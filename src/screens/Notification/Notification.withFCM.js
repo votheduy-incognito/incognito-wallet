@@ -130,7 +130,6 @@ const enhance = WrappedComponent =>
           localNotification
             .android.setChannelId(channelId)
             .android.setSmallIcon('ic_notification_system')
-            .android.setAutoCancel(true)
             .android.setPriority(firebase.notifications.Android.Priority.High);
         }
 
@@ -145,18 +144,26 @@ const enhance = WrappedComponent =>
     onListenerEventFCM = async () => {
       firebase.messaging().onMessage(notification => {
         this.handleHasNotification(notification);
+        this.handleSendNotificationToSystem(notification);
       });
       AppState.addEventListener('change', this._handleAppStateChange);
+      this.removeNotificationDisplayedListener = firebase
+        .notifications()
+        .onNotificationDisplayed(notification => {
+          this.handleHasNotification(notification);
+        });
       this.removeNotificationListener = firebase
         .notifications()
         .onNotification(notification => {
           this.handleHasNotification(notification);
+          this.handleSendNotificationToSystem(notification);
         });
       this.removeNotificationOpenedListener = firebase
         .notifications()
         .onNotificationOpened(notificationOpen => {
           const notification = notificationOpen.notification;
           this.onNavigateNotification(notification);
+          firebase.notifications().removeDeliveredNotification(notification._notificationId ? notification._notificationId : notification.notificationId);
         });
       const notificationOpen = await firebase
         .notifications()
@@ -173,8 +180,8 @@ const enhance = WrappedComponent =>
     }
 
     componentDidUpdate(prevProps) {
-      const {accountList, initNotification} = this.props;
-      const {accountList: oldAccountList} = prevProps;
+      const { accountList, initNotification } = this.props;
+      const { accountList: oldAccountList } = prevProps;
       if (!_.isEqual(accountList, oldAccountList)) {
         initNotification();
       }
