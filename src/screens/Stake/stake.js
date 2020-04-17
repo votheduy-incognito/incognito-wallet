@@ -134,15 +134,15 @@ const Stake = props => {
               )}
             </View>
             <View style={styled.interestRateContainer}>
-              <Text style={styled.desc}>Current rate:</Text>
               <Text style={[styled.desc, {color: '#FF8D01'}]}>
-                {`${currentRewardRate}% APR`}
+                {`${currentRewardRate}%`}
               </Text>
-              <SmileIcon />
+              <Text style={styled.desc}>Annual Rate</Text>
+              {/* <SmileIcon /> */}
             </View>
           </View>
           <BtnDefault
-            title={staked ? 'Add more funds' : 'Add funds to stake'}
+            title={staked ? 'Stake more' : 'Stake'}
             btnStyle={styled.btnStake}
             onPress={handleStartStake}
           />

@@ -33,7 +33,7 @@ const enhance = WrappedComp => props => {
   const fee = useSelector(feeStakeSelector);
   const loading = useSelector(loadingSubmitAmountSelector);
   const validAmount = !amount.validated.error && amount.value !== 0;
-  const shouldDisabled = !validAmount || loading;
+  const shouldDisabled = !validAmount || loading || !!error;
   const {
     btnSubmitAmount,
     activeFlow,
@@ -51,7 +51,7 @@ const enhance = WrappedComp => props => {
   };
   const onSubmitAmount = async () => {
     try {
-      if (shouldDisabled || fee.isFetching) {
+      if (shouldDisabled || fee.isFetching || !!error) {
         return;
       }
       switch (activeFlow) {
@@ -109,7 +109,10 @@ const enhance = WrappedComp => props => {
         await dispatch(actionFetchFee());
       }
     } catch (error) {
-      new ExHandler(error).showErrorToast();
+      await setState({
+        ...state,
+        error: new ExHandler(error).getMessageError(),
+      });
     }
   };
 

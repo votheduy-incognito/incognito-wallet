@@ -60,7 +60,7 @@ export const actionFetch = () => async (dispatch, getState) => {
     const pStakeAccount = pStakeAccountSelector(state);
     const {isFetching} = stakeSelector(state);
     if (!pStakeAccount) {
-      throw Error('pStake account can\'t not found!');
+      throw new Error('pStake account can\'t not found!');
     }
     if (isFetching) {
       return;
@@ -85,7 +85,7 @@ export const actionFetch = () => async (dispatch, getState) => {
     );
   } catch (error) {
     await dispatch(actionFetchFail());
-    throw Error(error);
+    throw new Error(error);
   }
 };
 
@@ -144,7 +144,7 @@ export const actionFetchFee = () => async (dispatch, getState) => {
     await dispatch(actionFetchedFee(feeEst));
   } catch (error) {
     await dispatch(actionFetchFailFee());
-    throw Error(error);
+    throw new Error(error);
   }
 };
 
@@ -192,7 +192,7 @@ export const actionFetchCreateStake = ({amount, fee}) => async (
       await getSignPublicKey(pStakeAccount?.PrivateKey),
     ]);
     if (!tx?.txId) {
-      throw Error('No txId');
+      throw new Error('No txId');
     }
     const payload = await apiCreateStake({
       PStakeAddress: pStakeAccount?.PaymentAddress,
@@ -210,7 +210,7 @@ export const actionFetchCreateStake = ({amount, fee}) => async (
     }
   } catch (error) {
     await dispatch(actionFetchFailCreateStake());
-    throw Error(error);
+    throw new Error(error);
   }
 };
 
@@ -267,6 +267,6 @@ export const actionFetchCreateUnStake = ({amount}) => async (
     }
   } catch (error) {
     await dispatch(actionFetchFailCreateUnStake());
-    throw Error(error);
+    throw new Error(error);
   }
 };

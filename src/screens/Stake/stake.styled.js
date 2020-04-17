@@ -32,7 +32,7 @@ export const styled = StyleSheet.create({
     alignItems: 'center',
   },
   desc: {
-    fontFamily: FONT.NAME.medium,
+    fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.large,
     lineHeight: FONT.SIZE.large + 6,
     color: COLORS.black,
