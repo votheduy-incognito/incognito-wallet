@@ -7,6 +7,7 @@ import configureStore from '@src/redux/store';
 import AppContainer from '@src/router';
 import ROUTE_NAMES from '@src/router/routeNames';
 import { notificationInitialize } from '@src/services/notification';
+import NavigationService from '@src/services/NavigationService';
 import React, { useEffect, useState } from 'react';
 import 'react-native-console-time-polyfill';
 import { Provider } from 'react-redux';
@@ -47,6 +48,7 @@ const App = () => {
         <StatusBar currentScreen={currentScreen} />
         <AppScreen>
           <AppContainer
+            ref={navigatorRef => NavigationService.setTopLevelNavigator(navigatorRef)}
             onNavigationStateChange={(prevState, currentState) => {
               const currentScreen = getActiveRouteName(currentState);
               setCurrentScreen(currentScreen);

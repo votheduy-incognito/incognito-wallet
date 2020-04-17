@@ -1,14 +1,27 @@
 /* eslint-disable no-unused-vars */
+import { ExHandler } from '@src/services/exception';
+import routeNames from '@src/router/routeNames';
 import firebase from 'react-native-firebase';
 import { Platform } from 'react-native';
+import { logEvent } from '@services/firebase';
+import {
+  actionNavigate,
+  normalizedData,
+  actionHasNoti,
+  actionFetch,
+  actionInit,
+} from '@src/screens/Notification';
+import { CONSTANT_COMMONS, CONSTANT_EVENTS } from '@src/constants';
+import { mappingData, delay } from '../screens/Notification/Notification.utils';
 import LogManager from './LogManager';
+import NavigationService from './NavigationService';
 
 const notifications = firebase.notifications();
 
 export const notificationInitialize = async () => {
   checkPermission();
   registerNotificationInBackground();
-  registerWatchingNotificationOpened();
+  // registerWatchingNotificationOpened();
   registerHearingNotification();
 };
 
@@ -66,7 +79,9 @@ const registerWatchingNotificationOpened = () => {
       //   NavigationService.navigate(RouteKeys.DetailTransactionPopup, { transfer: JSON.parse(data.payload) || null });
       // Do something for logic
       // Dismiss this notification
-      firebase.notifications().removeDeliveredNotification(notificationOpen.notification && notificationOpen.notification._notificationId || '');
+      // let a = normalizedData(notificationOpen.notification?.data);
+      // NavigationService.navigate(a.screenParams);
+      // firebase.notifications().removeDeliveredNotification(notificationOpen.notification && notificationOpen.notification._notificationId || '');
     }
   });
 };
