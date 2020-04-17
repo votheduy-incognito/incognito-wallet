@@ -111,7 +111,8 @@ const enhance = WrappedComp => props => {
     } catch (error) {
       await setState({
         ...state,
-        error: new ExHandler(error).getMessageError(),
+        error: 'Oops, something went wrong. Please try a different amount.',
+        // new ExHandler(error).getMessageError(),
       });
     }
   };
