@@ -1,7 +1,7 @@
-import {CONSTANT_CONFIGS, TRADING} from '@src/constants';
+import {TRADING} from '@src/constants';
 import TradingToken from '@models/tradingToken';
 import TradingQuote from '@models/tradingQuote';
-import http from '@services/http';
+import http from '@services/thttp';
 
 /**
  * Get all tradable tokens on 0x exchange
@@ -43,8 +43,6 @@ export async function get0xQuote({
     buyToken: buyToken.symbol,
     slippagePercentage,
   });
-
-  console.debug('URL', url);
 
   const data = await http.get(url);
   return new TradingQuote({

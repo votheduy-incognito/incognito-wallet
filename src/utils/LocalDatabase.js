@@ -18,6 +18,7 @@ export const KEY_SAVE = {
   DEVICE_ID: '$device_id',
   WITHDRAWAL_DATA: CONSTANT_KEYS.WITHDRAWAL_DATA,
   BACKUP_STAKE_KEY: CONSTANT_KEYS.BACKUP_STAKE_KEY,
+  VIEW_UNISWAP_TOOLTIP: '$uniswap_tooltip',
 };
 export default class LocalDatabase {
   static async getValue(key: String): String {
@@ -287,5 +288,25 @@ export default class LocalDatabase {
 
   static getBackupStakeKey() {
     return LocalDatabase.getValue(KEY_SAVE.BACKUP_STAKE_KEY);
+  }
+
+  static async getViewUniswapTooltip() {
+    const value = !!(await LocalDatabase.getValue(KEY_SAVE.VIEW_UNISWAP_TOOLTIP));
+    this.saveViewUniswapTooltip();
+    return value;
+  }
+
+  static saveViewUniswapTooltip() {
+    return LocalDatabase.saveValue(
+      KEY_SAVE.VIEW_UNISWAP_TOOLTIP,
+      JSON.stringify(true),
+    );
+  }
+
+  static resetViewUniswapTooltip() {
+    return LocalDatabase.saveValue(
+      KEY_SAVE.VIEW_UNISWAP_TOOLTIP,
+      '',
+    );
   }
 }

@@ -1,5 +1,4 @@
 import {ScrollView, Text, TouchableOpacity, View} from '@src/components/core';
-import {getPassphrase} from '@src/services/wallet/passwordService';
 import PropTypes from 'prop-types';
 import React from 'react';
 import LocalDatabase from '@utils/LocalDatabase';
@@ -8,6 +7,7 @@ import PINSection from '@screens/Setting/PINSection';
 import BackupHeaderBtn from '@src/components/HeaderRight/Backup';
 import SeparatorSection from '@screens/Setting/SeparatorSection';
 import AppUpdater from '@components/AppUpdater/index';
+import DevSection from '@screens/Setting/DevSection';
 import AccountSection from './AccountSection';
 import NetworkSection from './NetworkSection';
 import {settingStyle} from './style';
@@ -59,15 +59,10 @@ class Setting extends React.Component {
           <SeparatorSection />
           <FrequentReceiverSection />
           <StakeSection />
+
+          {global.isDebug() && <DevSection />}
         </View>
-        <TouchableOpacity
-          onPress={async () => {
-            if (__DEV__) {
-              const passphrase = await getPassphrase();
-              alert(JSON.stringify('passphrase =' + passphrase));
-            }
-          }}
-        >
+        <TouchableOpacity>
           <Text style={settingStyle.textVersion}>
             {`v${AppUpdater.appVersion}`}
           </Text>

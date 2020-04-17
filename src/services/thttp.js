@@ -1,6 +1,8 @@
 import axios from 'axios';
-import {CONSTANT_CONFIGS} from '@src/constants';
-import Log from '@src/services/log';
+import {getToken as getFirebaseToken} from '@services/firebase';
+import DeviceInfo from 'react-native-device-info';
+import LocalDatabase from '@utils/LocalDatabase';
+import userModel from '@models/user';
 import {CustomError, ErrorCode, ExHandler} from './exception';
 
 const HEADERS = {'Content-Type': 'application/json'};
@@ -8,7 +10,7 @@ const TIMEOUT = 20000;
 let currentAccessToken = '';
 
 const instance = axios.create({
-  baseURL: CONSTANT_CONFIGS.API_BASE_URL,
+  baseURL: 'https://test-api2.incognito.org',
   timeout: TIMEOUT,
   headers: {
     ...HEADERS,
@@ -16,7 +18,6 @@ const instance = axios.create({
   },
 });
 
-let renewToken = null;
 let pendingSubscribers = [];
 let isAlreadyFetchingAccessToken = false;
 
@@ -28,6 +29,27 @@ function onAccessTokenFetched(accessToken) {
 
 function addSubscriber(callback) {
   pendingSubscribers.push(callback);
+}
+
+async function login() {
+  try {
+    let firebaseToken = '';
+    try {
+      firebaseToken = await getFirebaseToken();
+    } catch (error) {
+      // Use this to authenticate app for device without Google Services (Chinese Phone)
+      firebaseToken = DeviceInfo.getUniqueId() + new Date().getTime();
+      console.debug('Can not get firebase token');
+    }
+    const uniqueId = (await LocalDatabase.getDeviceId()) || DeviceInfo.getUniqueId();
+    const tokenData = await instance.post('/auth/new-token', { DeviceID: uniqueId, DeviceToken: firebaseToken })
+      .then(userModel.parseTokenData);
+    const { token } = tokenData;
+    setTokenHeader(token);
+    return token;
+  } catch (e) {
+    throw new CustomError(ErrorCode.user_login_failed, { rawError: e });
+  }
 }
 
 // Add a request interceptor
@@ -65,18 +87,12 @@ instance.interceptors.response.use(
 
     // Unauthorized
     if (errResponse?.status === 401) {
-      Log.log('Token was expired');
-
       if (!isAlreadyFetchingAccessToken) {
         isAlreadyFetchingAccessToken = true;
-        if (typeof global.login === 'function') {
-          global.login().then(token => {
-            isAlreadyFetchingAccessToken = false;
-            onAccessTokenFetched(token);
-          });
-        } else {
-          console.debug('Token was expired, but can not re-new it!');
-        }
+        login().then(token => {
+          isAlreadyFetchingAccessToken = false;
+          onAccessTokenFetched(token);
+        });
       }
 
       const retryOriginalRequest = new Promise(resolve => {
@@ -113,21 +129,4 @@ export const setTokenHeader = token => {
   }
 };
 
-export const setRenewToken = fn => {
-  if (typeof fn !== 'function')
-    throw new Error('setRenewToken must be recieved a function');
-  renewToken = fn;
-};
-
 export default instance;
-/**
- * Document: https://github.com/axios/axios#instance-methodsaxios#request(config)
-    axios#get(url[, config])
-    axios#delete(url[, config])
-    axios#head(url[, config])
-    axios#options(url[, config])
-    axios#post(url[, data[, config]])
-    axios#put(url[, data[, config]])
-    axios#patch(url[, data[, config]])
-    axios#getUri([config])
- */

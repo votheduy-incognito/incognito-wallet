@@ -13,6 +13,7 @@ import CryptoIcon from '@components/CryptoIcon';
 import {COLORS} from '@src/styles';
 import formatUtil from '@utils/format';
 import VerifiedText from '@components/VerifiedText/index';
+import {CONSTANT_CONFIGS} from '@src/constants';
 import {modalStyle, mainStyle, inputStyle} from '../../style';
 import stylesheet from './style';
 
@@ -82,6 +83,7 @@ class Input extends React.Component {
         <CryptoIcon
           tokenId={item.id}
           size={25}
+          uri={`${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${item.symbol}@2x.png`}
         />
         <View style={[mainStyle.twoColumns, mainStyle.flex]}>
           <View style={modalStyle.tokenInfo}>
@@ -137,6 +139,7 @@ class Input extends React.Component {
           key={token.id}
           tokenId={token.id}
           size={20}
+          uri={`${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${token.symbol}@2x.png`}
         />
         <VerifiedText text={token.symbol} style={modalStyle.tokenInfo} isVerified={token.isVerified} />
       </View>
