@@ -1,10 +1,8 @@
 import {CONSTANT_COMMONS, TRADING} from '@src/constants';
 import TradingToken from '@models/tradingToken';
 import TradingQuote from '@models/tradingQuote';
-import http from '@services/http';
+import http from '@services/thttp';
 import BigNumber from 'bignumber.js';
-import formatUtils from '@utils/format';
-import convert from '@utils/convert';
 
 /**
  * Get all tradable tokens on Kyber exchange

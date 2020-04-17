@@ -12,8 +12,6 @@ import ReceiveCoin from '@src/screens/ReceiveCoin';
 import SendCrypto from '@screens/SendCrypto';
 import WhySend from '@screens/WhySend';
 import WhyReceive from '@screens/WhyReceive';
-import PUniswapLaunch from '@screens/PUniswapLaunch';
-import GetETH from '@screens/GetETH';
 import pApps from '@screens/Papps';
 import TxHistoryDetail from '@src/screens/TxHistoryDetail';
 import Setting from '@screens/Setting';
@@ -40,6 +38,7 @@ import Stake from '@screens/Stake';
 import StakeHistory from '@screens/StakeHistory';
 import StakeRecoverAccount from '@screens/Stake/features/RecoverAccount';
 import StakeHistoryDetail from '@screens/StakeHistory/features/Detail';
+import UniswapHelp from '@screens/UniswapHelp';
 import ROUTE_NAMES from './routeNames';
 import TabNavigator from './TabNavigator';
 
@@ -147,11 +146,8 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.WhyReceive]: navigationOptionsHandler(WhyReceive, {
       title: 'Receive',
     }),
-    [ROUTE_NAMES.pUniswapLaunch]: navigationOptionsHandler(PUniswapLaunch, {
-      title: 'pUniswap',
-    }),
-    [ROUTE_NAMES.GetETH]: navigationOptionsHandler(GetETH, {
-      title: 'Get Testnet ETH Guide',
+    [ROUTE_NAMES.UniswapHelp]: navigationOptionsHandler(UniswapHelp, {
+      title: 'FAQs',
     }),
     [ROUTE_NAMES.PriceChartCrypto]: navigationOptionsHandler(PriceChartCrypto, { title: 'Price chart' }),
   },

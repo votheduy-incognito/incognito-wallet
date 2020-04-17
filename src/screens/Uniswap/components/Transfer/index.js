@@ -13,7 +13,7 @@ import {
 import {ScrollView, Keyboard, TouchableWithoutFeedback, VirtualizedList} from 'react-native';
 import accountService from '@services/wallet/accountService';
 import {getTransactionByHash, isExchangeRatePToken} from '@src/services/wallet/RpcClientService';
-import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
+import {CONSTANT_COMMONS, CONSTANT_CONFIGS, CONSTANT_EVENTS} from '@src/constants';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
 import {ExHandler} from '@services/exception';
@@ -602,7 +602,7 @@ class Transfer extends React.Component {
         activeOpacity={0.5}
         style={[mainStyle.modalItem, index === filteredTokens.length - 1 && mainStyle.lastItem]}
       >
-        <CryptoIcon tokenId={item.id} size={25} />
+        <CryptoIcon tokenId={item.id} size={25} uri={`${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${item.symbol}@2x.png`}/>
         <View style={[mainStyle.twoColumns, mainStyle.flex]}>
           <View style={modalStyle.tokenInfo}>
             <Text style={modalStyle.tokenSymbol}>{item.symbol}</Text>

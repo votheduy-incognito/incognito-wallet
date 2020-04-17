@@ -78,7 +78,7 @@ const UniswapContainer = () => {
     loadData();
   }, []);
 
-  if (!dexMainAccount) {
+  if (!dexMainAccount || !scAddress) {
     return <ActivityIndicator size="small" />;
   }
 

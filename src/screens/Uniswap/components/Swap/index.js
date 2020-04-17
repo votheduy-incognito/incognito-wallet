@@ -570,11 +570,6 @@ class Swap extends React.Component {
                 disabledStyle={mainStyle.disabledButton}
                 onPress={this.showTradeConfirm}
               />
-              <Button
-                title="Get Testnet ETH"
-                style={[mainStyle.button, { marginTop: 20 }]}
-                onPress={() => navigation.navigate(ROUTE_NAMES.GetETH)}
-              />
             </View>
           </View>
         </View>

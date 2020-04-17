@@ -57,6 +57,5 @@ export default {
   StakeRecoverAccount: 'StakeRecoverAccount',
   StakeHistoryDetail: 'StakeHistoryDetail',
   PriceChartCrypto: 'PriceChartCrypto',
-  pUniswapLaunch: 'pUniswapLaunch',
-  GetETH: 'GetETH',
+  UniswapHelp: 'UniswapHelp',
 };

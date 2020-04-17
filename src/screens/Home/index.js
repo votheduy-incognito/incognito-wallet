@@ -1,7 +1,7 @@
 import React from 'react';
-import { ScrollView, StatusBar } from 'react-native';
+import { ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
-import { View } from '@src/components/core';
+import {TouchableOpacity, View} from '@src/components/core';
 import icShield from '@assets/images/icons/ic_shield_btn.png';
 import icSend from '@assets/images/icons/ic_send_btn.png';
 import icReceive from '@assets/images/icons/ic_receive_btn.png';
@@ -14,7 +14,6 @@ import icPapp from '@assets/images/icons/ic_papp.png';
 import icUniswap from '@assets/images/icons/ic_uniswap.png';
 import IconTextButton from '@screens/Home/IconTextButton';
 import ROUTE_NAMES from '@routers/routeNames';
-import FloatButton from '@src/components/FloatButton';
 import { BIG_COINS } from '@screens/Dex/constants';
 import SettingIcon from '@components/SettingIcon/index';
 import { useSelector } from 'react-redux';
@@ -28,6 +27,7 @@ import { logEvent } from '@services/firebase';
 import icStake from '@assets/images/icons/stake_icon.png';
 import AccountSelect from '@screens/Wallet/AccountSelect';
 import { COLORS } from '@src/styles';
+import Tooltip from '@components/Tooltip';
 import styles from './style';
 
 const sendItem = {
@@ -71,7 +71,7 @@ const powerItem = {
 const pUniswapItem = {
   image: icUniswap,
   title: 'pUniswap',
-  route: global.isMainnet ? ROUTE_NAMES.pUniswapLaunch : ROUTE_NAMES.pUniswap,
+  route: ROUTE_NAMES.pUniswap,
   event: CONSTANT_EVENTS.CLICK_HOME_UNISWAP,
 };
 
@@ -116,10 +116,12 @@ const buttons = [
       uri: 'https://incognito.org/c/help/45',
     }
   },
+  pUniswapItem,
 ];
 
 const Home = ({ navigation }) => {
   const account = useSelector(accountSeleclor.defaultAccount);
+  const [viewUniswap, setViewUniswap] = React.useState(undefined);
 
   const goToScreen = (route, params, event) => {
     navigation.navigate(route, params);
@@ -159,12 +161,26 @@ const Home = ({ navigation }) => {
     }
   };
 
+  const closeTooltip = () => {
+    setViewUniswap(true);
+  };
+
+  const getViewUniswap = async () => {
+    const viewUniswap = await LocalDatabase.getViewUniswapTooltip();
+    setViewUniswap(viewUniswap);
+
+    setTimeout(closeTooltip, 7000);
+  };
+
   React.useEffect(() => {
     tryLastWithdrawal();
+    getViewUniswap();
+
+    navigation.addListener('didBlur', closeTooltip);
   }, []);
 
   return (
-    <View style={{ flex: 1 }}>
+    <TouchableOpacity style={{ flex: 1 }} onPress={closeTooltip}>
       <View style={styles.header}>
         <AccountSelect customTitleStyle={styles.accTitle} icoColor={COLORS.black} />
         <SettingIcon />
@@ -173,6 +189,13 @@ const Home = ({ navigation }) => {
         <View style={styles.btnContainer}>
           {buttons.map(item => (
             <View style={styles.btn} key={item.title}>
+              {item === pUniswapItem &&
+              viewUniswap === false && (
+                <Tooltip
+                  title="New"
+                  desc="Uniswap has gone Incognito."
+                />
+              )}
               <IconTextButton
                 image={item.image}
                 title={item.title}
@@ -194,7 +217,7 @@ const Home = ({ navigation }) => {
         }
         label="Feedback"
       /> */}
-    </View>
+    </TouchableOpacity>
   );
 };
 
