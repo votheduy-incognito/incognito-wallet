@@ -18,11 +18,11 @@ import NavigationService from './NavigationService';
 
 const notifications = firebase.notifications();
 
-export const notificationInitialize = async () => {
-  checkPermission();
-  registerNotificationInBackground();
+export const notificationInitialize = async (store) => {
+  // checkPermission();
+  // registerNotificationInBackground();
   // registerWatchingNotificationOpened();
-  registerHearingNotification();
+  // registerHearingNotification(store);
 };
 
 // Request permission
@@ -86,7 +86,8 @@ const registerWatchingNotificationOpened = () => {
   });
 };
 
-const registerHearingNotification = () => {
+const registerHearingNotification = (store) => {
+  console.log(LogManager.parseJsonObjectToJsonString(store));
   var notificationDisplayedListener = firebase.notifications().onNotificationDisplayed((notification) => {
     console.log('notificationDisplayedListener: ' + LogManager.parseJsonObjectToJsonString(notification));
     // Process your notification as required
@@ -98,30 +99,30 @@ const registerHearingNotification = () => {
     // I will check token exist here for displaying notification or not
     // Do something here ....
 
-    if (Platform.OS === 'android') {
-      const channelId = new firebase.notifications.Android.Channel('Default', 'Default', firebase.notifications.Android.Importance.High);
-      firebase.notifications().android.createChannel(channelId);
-      let notificationDisplayed = new firebase.notifications.Notification({
-        data: notification.data,
-        sound: 'default',
-        show_in_foreground: true,
-        title: notification.title,
-        body: notification.body,
-      });
-      notificationDisplayed
-        .android.setPriority(firebase.notifications.Android.Priority.Max)
-        .android.setChannelId('Default')
-        .android.setVibrate(1000);
-      firebase.notifications().displayNotification(notificationDisplayed);
-    } else {
-      const localNotification = new firebase.notifications.Notification()
-        .setNotificationId(notification._notificationId)
-        .setTitle(notification._title && notification._title || '')
-        .setBody(notification._body)
-        .setData(notification._data);
+    // if (Platform.OS === 'android') {
+    //   const channelId = new firebase.notifications.Android.Channel('Default', 'Default', firebase.notifications.Android.Importance.High);
+    //   firebase.notifications().android.createChannel(channelId);
+    //   let notificationDisplayed = new firebase.notifications.Notification({
+    //     data: notification.data,
+    //     sound: 'default',
+    //     show_in_foreground: true,
+    //     title: notification.title,
+    //     body: notification.body,
+    //   });
+    //   notificationDisplayed
+    //     .android.setPriority(firebase.notifications.Android.Priority.Max)
+    //     .android.setChannelId('Default')
+    //     .android.setVibrate(1000);
+    //   firebase.notifications().displayNotification(notificationDisplayed);
+    // } else {
+    //   const localNotification = new firebase.notifications.Notification()
+    //     .setNotificationId(notification._notificationId)
+    //     .setTitle(notification._title && notification._title || '')
+    //     .setBody(notification._body)
+    //     .setData(notification._data);
 
-      firebase.notifications().displayNotification(localNotification);
-    }
+    //   firebase.notifications().displayNotification(localNotification);
+    // }
 
     // If want to remove every notification before, do it! by id and free
     // firebase.notifications().removeDeliveredNotification(localNotification.notificationId);
