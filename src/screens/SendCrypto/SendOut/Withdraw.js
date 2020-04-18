@@ -14,7 +14,7 @@ import {
 } from '@components/core/reduxForm';
 import EstimateFee from '@components/EstimateFee';
 import LoadingTx from '@components/LoadingTx';
-import { CONSTANT_COMMONS, CONSTANT_EVENTS } from '@src/constants';
+import { CONSTANT_COMMONS, CONSTANT_EVENTS, CONSTANT_CONFIGS } from '@src/constants';
 import { ExHandler } from '@services/exception';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
@@ -325,10 +325,10 @@ class Withdraw extends React.Component {
     if (isETH && address != '') {
       try {
         // Testnet: https://kovan.etherscan.io/address/
-        fetch('https://etherscan.io/address/' + address).
+        fetch(CONSTANT_CONFIGS.ETHERSCAN_URL + '/address/' + address).
           then((resp) => { return resp.text(); })
           .then((text) => {
-            this.setState({ shouldBlockETHWrongAddress: !(text.includes('Address' && text.includes(address))) });
+            this.setState({ shouldBlockETHWrongAddress: !((text.includes('Address') && text.includes(address))) });
           })
           .catch(() => {
             alert('Could not validate ETH address for now, please try again');
