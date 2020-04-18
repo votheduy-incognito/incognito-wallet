@@ -90,9 +90,9 @@ class Input extends React.Component {
             <Text style={modalStyle.tokenSymbol}>{item.symbol}</Text>
             <Text style={modalStyle.tokenName}>{item.name}</Text>
           </View>
-          <Text style={[modalStyle.tokenSymbol, mainStyle.textRight]}>
-            {_.castArray(item.protocol).join(', ')}
-          </Text>
+          {/*<Text style={[modalStyle.tokenSymbol, mainStyle.textRight]}>*/}
+          {/*  {_.castArray(item.protocol).join(', ')}*/}
+          {/*</Text>*/}
         </View>
       </TouchableOpacity>
     );

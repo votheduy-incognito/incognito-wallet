@@ -16,7 +16,6 @@ const { PROTOCOLS } = TRADING;
  */
 export async function getAllTradingTokens() {
   const allArrays = await Promise.all([
-    get0xTokens(),
     getKyberTokens(),
   ]);
 

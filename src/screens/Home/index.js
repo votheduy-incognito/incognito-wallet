@@ -11,7 +11,7 @@ import icPower from '@assets/images/icons/ic_power.png';
 import icBuy from '@assets/images/icons/ic_buy_prv.png';
 import icFeedback from '@assets/images/icons/ic_feedback.png';
 import icPapp from '@assets/images/icons/ic_papp.png';
-import icUniswap from '@assets/images/icons/ic_uniswap.png';
+import icKyber from '@assets/images/icons/ic_kyber.png';
 import IconTextButton from '@screens/Home/IconTextButton';
 import ROUTE_NAMES from '@routers/routeNames';
 import { BIG_COINS } from '@screens/Dex/constants';
@@ -69,8 +69,8 @@ const powerItem = {
 };
 
 const pUniswapItem = {
-  image: icUniswap,
-  title: 'pUniswap',
+  image: icKyber,
+  title: 'pKyber',
   route: ROUTE_NAMES.pUniswap,
   event: CONSTANT_EVENTS.CLICK_HOME_UNISWAP,
 };
@@ -193,7 +193,7 @@ const Home = ({ navigation }) => {
               viewUniswap === false && (
                 <Tooltip
                   title="New"
-                  desc="Uniswap has gone Incognito."
+                  desc="Kyber Network has gone Incognito."
                 />
               )}
               <IconTextButton
