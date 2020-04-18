@@ -35,6 +35,7 @@ import ROUTES_NAME from '@routers/routeNames';
 import { RefreshControl } from 'react-native';
 import Modal, { actionToggleModal } from '@src/components/Modal';
 import { COLORS } from '@src/styles';
+import LogManager from '@src/services/LogManager';
 import style from './style';
 import Receipt from './Withdraw.receipt';
 
@@ -324,14 +325,13 @@ class Withdraw extends React.Component {
   checkIfValidAddressETH = (address, isETH) => {
     if (isETH && address != '') {
       try {
-        // Testnet: https://kovan.etherscan.io/address/
         let url = CONSTANT_CONFIGS.ETHERSCAN_URL + '/address/' + address;
         fetch(url).
-          then((resp) => { return resp.text(); })
+          then(async (resp) => {
+            return resp.text();
+          })
           .then((text) => {
-            let hasAddressValid = (text.includes(`<img id="icon" class="u-xs-avatar rounded mt-n1 mr-1" src="" alt="" />
-            Address
-            <span id='mainaddress' class='text-size-address text-secondary text-break mr-1' data-placement='top'>${address}</span>'`));
+            let hasAddressValid = text.includes('\nAddress\n<span id=\'mainaddress\' class=\'text-size-address text-secondary text-break mr-1\' data-placement=\'top\'>' + address + '</span>');
             this.setState({ shouldBlockETHWrongAddress: !hasAddressValid });
           })
           .catch(() => {
