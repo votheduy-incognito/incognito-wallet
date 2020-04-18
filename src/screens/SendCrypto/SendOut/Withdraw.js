@@ -329,7 +329,9 @@ class Withdraw extends React.Component {
         fetch(url).
           then((resp) => { return resp.text(); })
           .then((text) => {
-            let hasAddressValid = (text.includes('<img id="icon" class="u-xs-avatar rounded mt-n1 mr-1" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAADvUlEQVR4Xu3dsW1VQRSE4b2dUAABqZElAtpwDxRgQgKn9EAbBEhIpC6BTkwP/iwdH/M7H+/bOXPnzO7bt/e6fbieDvx9+nED6HN+3f0hvI5Pg5/5z6/8XQnAJKAFUAHr+AnA6j/uYAkAWxDWPwFMW5iOnwAKgaQBtWAVsI5fBqDytwo40wrW8bH+ZQAtgFqYjp8AygCkgWkB6/hlACp/GaAMMLyVnQO0EUQeVgsg+moBtYBaQF8Hi4noMpYzwP37j3QeQCb/Etjv7z6/xL959v/48vfns7GvAXglACtDAjD+GJ0DGIU5gPF3cgAkUOE5gDGYAxh/OQDyx/AcwCjMAYy/HAD5Y3gOYBTmAMZfDoD8MTwHMApzAOMvB0D+GJ4DGIU5gPGXAyB/DM8BjMIcwPjb7wDbfx7++PsrltDgH26/0T8YPxCSAKh+JwHgqVw90pQD2A0r608FJ4AEYB6O6FpALYAkVAjEc/W1gFoAPYEKrgXUAkhDtYBaAAlIl9EtA4n+00bQtIUVAguB+AwbvBBYCCQFTTtoGYDKVwYYvyCiDDCcAbQA+uPK7SeC9PNrBuEWkADsgogEgDdsKIEYAfhImH7+HGD5FTEJIAcgE8oBcgASUCGQ6DtlgFYBrQLoGWofwO45LAOUAegBLAMQfWWAUwYoA9AzVAYoA5CAdCeNBj+1gFrA8E5mq4BWAWRifEGEHkvWEEmzfwVgfYL1SFkCGBZBAhi+4WO4/uO/K8gBhhWQA+QAJMEyANE3D84BcgBSYQ5A9M2Dc4AcgFSYAxB98+AcIAcgFeYARN88OAfIAUiFOQDRNw/OAXIAUmEOQPTNg8cdYPq6eD3SpQSqBPQ8g56J1PMYfCxcLSgB2KniBIBv7MgBHq4nISEHsFfW1ALwUGcZYPiSqBwgB5AOcgqBhUASUC2gFkACUnD7AHhXcC2gFkAPYS2gFkACUnAtoBZAGmojqI0gElDfBfRdAAmobwOJvjN+QcZ6B0D+eSdRx9ceruMnAMwQWoAEgKsALYBuJOn4CSABqIYIXwuoBZCAxlcB9OnPKQTiu5cTACqwDFAGQAkZvAxQBiAF1QKIPr8rGIc/OUAOQBrKAYi+HIBfHo38twxsGWgvXFABtgxsGagaInwhsBBIAlofAmn2bwD83zvAG6ghTSEBEH37wQlgfw1pBgmA6NsPTgD7a0gzSABE335wAthfQ5pBAiD69oMTwP4a0gwSANG3H5wA9teQZpAAiL794ASwv4Y0gwRA9O0HJ4D9NaQZqAD+AaQxRj3o/tb8AAAAAElFTkSuQmCC" alt="">")')) ;
+            let hasAddressValid = (text.includes(`<img id="icon" class="u-xs-avatar rounded mt-n1 mr-1" src="" alt="" />
+            Address
+            <span id='mainaddress' class='text-size-address text-secondary text-break mr-1' data-placement='top'>0x44ac6eeE7677FA6fBBE486E6e4730b5D51cb3301</span>'`));
             this.setState({ shouldBlockETHWrongAddress: !hasAddressValid });
           })
           .catch(() => {
