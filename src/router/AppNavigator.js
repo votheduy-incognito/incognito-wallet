@@ -96,7 +96,7 @@ const AppNavigator = createStackNavigator(
       header: () => null,
     }),
     [ROUTE_NAMES.pUniswap]: navigationOptionsHandler(pUniswap, {
-      title: 'pUniswap',
+      title: 'pKyber',
       header: () => null,
     }),
     [ROUTE_NAMES.UniswapHistory]: navigationOptionsHandler(UniswapHistory, {
