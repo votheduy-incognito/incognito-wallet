@@ -331,7 +331,7 @@ class Withdraw extends React.Component {
           .then((text) => {
             let hasAddressValid = (text.includes(`<img id="icon" class="u-xs-avatar rounded mt-n1 mr-1" src="" alt="" />
             Address
-            <span id='mainaddress' class='text-size-address text-secondary text-break mr-1' data-placement='top'>0x44ac6eeE7677FA6fBBE486E6e4730b5D51cb3301</span>'`));
+            <span id='mainaddress' class='text-size-address text-secondary text-break mr-1' data-placement='top'>${address}</span>'`));
             this.setState({ shouldBlockETHWrongAddress: !hasAddressValid });
           })
           .catch(() => {
