@@ -208,7 +208,7 @@ const DexHistoryDetail = ({ navigation, wallet, updateHistory, getHistoryStatus,
       setLoading(MESSAGES.CANCEL_LIQUIDITY_PROCESS);
       const { paymentAddress, token1, pairId, inputFee } = history;
       const account = await validate(paymentAddress, {...token1, TokenAmount: MIN_CANCEL_VALUE}, pairId, inputFee);
-      const res = await addToken(wallet, account, token1, token1.TokenAmount, pairId, inputFee);
+      const res = await addToken(wallet, account, token1, MIN_CANCEL_VALUE, pairId, inputFee);
       history.cancel(res);
       updateHistory(history);
       Toast.showSuccess(`${MESSAGES.CANCEL_ADD_LIQUIDITY_SUCCESS_TITLE}. ${MESSAGES.CANCEL_ADD_LIQUIDITY_SUCCESS}`);
