@@ -57,7 +57,7 @@ const AccountSelect = ({ customTitleStyle, icoColor }) => {
       icon={(
         <View style={styles.textContainer}>
           <Text numberOfLines={1} style={[styles.title, customTitleStyle]}>{account?.name}</Text>
-          <Ionicons name="ios-arrow-down" color={icoColor ? icoColor : COLORS.white} size={15} />
+          <Ionicons name="ios-arrow-down" color={icoColor ? icoColor : COLORS.white} size={17} />
         </View>
       )}
     />

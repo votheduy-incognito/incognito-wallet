@@ -4,7 +4,6 @@ import {COLORS} from '@src/styles';
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 15,
   },
   btnContainer: {
     flexDirection: 'row',

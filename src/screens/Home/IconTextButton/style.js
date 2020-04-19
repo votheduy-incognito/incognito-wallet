@@ -1,19 +1,24 @@
 import { COLORS, FONT } from '@src/styles';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
+const { width } = Dimensions.get('window');
 const style = StyleSheet.create({
   btn: {
-    paddingVertical: 8,
+    paddingVertical: 20,
     alignItems: 'center',
-    height: 110,
+    height: 130,
+    width: width / 3,
+    marginBottom: 20,
+    alignSelf: 'center',
+    marginRight: 15,
   },
   image: {
     marginBottom: 3,
-    height: 50,
+    height: 60,
     resizeMode: 'contain',
   },
   title: {
-    fontSize: 15,
+    fontSize: 16,
     lineHeight: 30,
     color: COLORS.black,
     fontFamily: FONT.NAME.regular,

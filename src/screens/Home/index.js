@@ -185,7 +185,7 @@ const Home = ({ navigation }) => {
         <AccountSelect customTitleStyle={styles.accTitle} icoColor={COLORS.black} />
         <SettingIcon />
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{justifyContent: 'center', flex: 1}}>
         <View style={styles.btnContainer}>
           {buttons.map(item => (
             <View style={styles.btn} key={item.title}>
