@@ -10,3 +10,4 @@ export {default as BtnBack} from './BtnBack';
 export {default as BtnClose} from './BtnClose';
 export {default as BtnMax} from './BtnMax';
 export {default as BtnQRCode} from './BtnQRCode';
+export {default as BtnSetting} from './BtnSetting';
