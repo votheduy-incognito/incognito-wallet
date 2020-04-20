@@ -20,6 +20,7 @@ const BackButton = ({ onPress, width, height, size, navigation }) => {
         justifyContent: 'center',
         width: width,
         paddingLeft: 5,
+        paddingRight: 5,
         height: height
       }}
       {...generateTestId(HEADER.BACK_BUTTON)}
