@@ -1,22 +1,22 @@
-import { COLORS } from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
   btn: {
     paddingVertical: 8,
     alignItems: 'center',
-    height: 130,
+    height: 110,
   },
   image: {
-    marginBottom: 5,
-    width: 45,
-    height: 45,
+    marginBottom: 3,
+    height: 50,
     resizeMode: 'contain',
   },
   title: {
     fontSize: 15,
-    lineHeight: 34,
+    lineHeight: 30,
     color: COLORS.black,
+    fontFamily: FONT.NAME.regular,
     textAlign: 'center',
   },
   desc: {

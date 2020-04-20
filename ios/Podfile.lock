@@ -2,9 +2,6 @@ PODS:
   - AppsFlyerFramework (5.1.0)
   - Base64 (1.1.2)
   - boost-for-react-native (1.63.0)
-  - Charts (3.3.0):
-    - Charts/Core (= 3.3.0)
-  - Charts/Core (3.3.0)
   - CodePush (6.0.0):
     - Base64 (~> 1.1)
     - JWT (~> 3.0.0-beta.7)
@@ -371,10 +368,6 @@ PODS:
     - ReactCommon/jscallinvoker (= 0.61.2)
   - RNCAsyncStorage (1.6.2):
     - React
-  - RNCharts (0.5.7):
-    - Charts (= 3.3.0)
-    - React
-    - SwiftyJSON (= 5.0)
   - RNDeviceInfo (5.2.1):
     - React
   - RNFirebase (5.5.7):
@@ -405,7 +398,6 @@ PODS:
   - RNWifi (2.2.4):
     - React
   - SSZipArchive (2.2.2)
-  - SwiftyJSON (5.0.0)
   - TcpSockets (3.3.2):
     - React
   - TouchID (4.4.1):
@@ -474,7 +466,6 @@ DEPENDENCIES:
   - ReactCommon/jscallinvoker (from `../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
-  - RNCharts (from `../node_modules/react-native-charts-wrapper`)
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFirebase (from `../node_modules/react-native-firebase/ios`)
   - RNFS (from `../node_modules/react-native-fs`)
@@ -495,7 +486,6 @@ SPEC REPOS:
     - AppsFlyerFramework
     - Base64
     - boost-for-react-native
-    - Charts
     - Crashlytics
     - Fabric
     - Firebase
@@ -517,7 +507,6 @@ SPEC REPOS:
     - NMSSH
     - Protobuf
     - SSZipArchive
-    - SwiftyJSON
 
 EXTERNAL SOURCES:
   CodePush:
@@ -616,8 +605,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
-  RNCharts:
-    :path: "../node_modules/react-native-charts-wrapper"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
   RNFirebase:
@@ -651,7 +638,6 @@ SPEC CHECKSUMS:
   AppsFlyerFramework: b5e6d0d1718c445eeb151769e97246c00ae4628d
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
-  Charts: e0dd4cd8f257bccf98407b58183ddca8e8d5b578
   CodePush: 58d8b6595f46057ca1f49c55fb6860ad7fd38ce3
   Crashlytics: 2dfd686bcb918dc10ee0e76f7f853fe42c7bd552
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
@@ -720,7 +706,6 @@ SPEC CHECKSUMS:
   React-RCTVibration: fb54c732fd20405a76598e431aa2f8c2bf527de9
   ReactCommon: 5848032ed2f274fcb40f6b9ec24067787c42d479
   RNCAsyncStorage: 60a80e72d95bf02a01cace55d3697d9724f0d77f
-  RNCharts: d364ca2085e24edb9ee0390d3fb7209257daa44c
   RNDeviceInfo: 086e9644cc00dbe9bcf26de2fbcb1d9f475c84d0
   RNFirebase: 3c0d26909841ad3c72ca46d85aba333ef49903bc
   RNFS: 0d4191b1052bef9ce70deff00a5b4169c62bbd9b
@@ -733,11 +718,10 @@ SPEC CHECKSUMS:
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   RNWifi: a73163c18dd7ebf722e299d343764a4e1fabb808
   SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
-  SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
   TcpSockets: 14306fb79f9750ea7d2ddd02d8bed182abb01797
   TouchID: ba4c656d849cceabc2e4eef722dea5e55959ecf4
   Yoga: 14927e37bd25376d216b150ab2a561773d57911f
 
-PODFILE CHECKSUM: 4666707ebe0880cc3fbcf7e2ef4f8a0407eb689d
+PODFILE CHECKSUM: bb6adeaef9f0a4f776fe995e1d0e32fd5b88d94f
 
 COCOAPODS: 1.8.4

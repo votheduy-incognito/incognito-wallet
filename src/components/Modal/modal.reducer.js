@@ -3,6 +3,7 @@ import {ACTION_TOGGLE_MODAL} from './modal.constant';
 const initialState = {
   visible: false,
   data: null,
+  shouldCloseModalWhenTapOverlay: false,
 };
 
 export default (state = initialState, action) => {

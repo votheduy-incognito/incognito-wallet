@@ -11,7 +11,7 @@ const InputWithMax = ({ style, maxValue, onChangeText, ...props }) => {
     <View>
       <BaseTextInput
         {...props}
-        style={[style, {paddingRight: 60}]}
+        style={[style, {paddingRight: 50}]}
         onChangeText={onChangeText}
       />
       <TouchableOpacity

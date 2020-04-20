@@ -1,5 +1,5 @@
 import React from 'react';
-import {AppState} from 'react-native';
+import { AppState } from 'react-native';
 import {
   actionNavigate,
   normalizedData,
@@ -8,21 +8,21 @@ import {
   actionInit,
 } from '@src/screens/Notification';
 import firebase from 'react-native-firebase';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import {compose} from 'recompose';
-import {withNavigation} from 'react-navigation';
-import {ExHandler} from '@src/services/exception';
+import { compose } from 'recompose';
+import { withNavigation } from 'react-navigation';
+import { ExHandler } from '@src/services/exception';
 import ErrorBoundary from '@src/components/ErrorBoundary/ErrorBoundary';
 import _ from 'lodash';
-import {accountSeleclor} from '@src/redux/selectors';
-import {v4} from 'uuid';
-import {isAndroid} from '@utils/platform';
+import { accountSeleclor } from '@src/redux/selectors';
+import { v4 } from 'uuid';
+import { isAndroid } from '@utils/platform';
 import {
   notificationSelector,
   recentlyNotificationSelector,
 } from './Notification.selector';
-import {actionUpdateRecently} from './Notification.actions';
+import { actionUpdateRecently } from './Notification.actions';
 
 const sentIds = {};
 const channelId = 'Incognito';
@@ -40,7 +40,7 @@ const enhance = WrappedComponent =>
 
     onNavigateNotification = async notification => {
       try {
-        const {navigateNotification, navigation} = this.props;
+        const { navigateNotification, navigation } = this.props;
         await navigateNotification(
           normalizedData(notification?.data),
           navigation,
@@ -49,7 +49,7 @@ const enhance = WrappedComponent =>
         new ExHandler(error).showErrorToast();
       }
     };
-    onFetchNotifications = async ({fetchNotifications}) => {
+    onFetchNotifications = async ({ fetchNotifications }) => {
       try {
         await fetchNotifications();
       } catch (error) {
@@ -58,11 +58,11 @@ const enhance = WrappedComponent =>
     };
 
     _handleAppStateChange = async nextAppState => {
-      const {appState} = this.state;
+      const { appState } = this.state;
       if (appState.match(/inactive|background/) && nextAppState === 'active') {
         await this.onFetchNotifications(this.props);
       }
-      await this.setState({appState: nextAppState});
+      await this.setState({ appState: nextAppState });
     };
 
     getFCMToken = async () => {
@@ -101,7 +101,7 @@ const enhance = WrappedComponent =>
           return;
         }
 
-        const {ID, Title, Content} = notification.data;
+        const { ID, Title, Content } = notification.data;
 
         if (sentIds[ID]) {
           return;
@@ -130,7 +130,6 @@ const enhance = WrappedComponent =>
           localNotification
             .android.setChannelId(channelId)
             .android.setSmallIcon('ic_notification_system')
-            .android.setAutoCancel(true)
             .android.setPriority(firebase.notifications.Android.Priority.High);
         }
 
@@ -142,7 +141,6 @@ const enhance = WrappedComponent =>
         //
       }
     }
-
     onListenerEventFCM = async () => {
       firebase.messaging().onMessage(notification => {
         this.handleHasNotification(notification);
@@ -165,6 +163,7 @@ const enhance = WrappedComponent =>
         .onNotificationOpened(notificationOpen => {
           const notification = notificationOpen.notification;
           this.onNavigateNotification(notification);
+          firebase.notifications().removeDeliveredNotification(notification._notificationId ? notification._notificationId : notification.notificationId);
         });
       const notificationOpen = await firebase
         .notifications()
@@ -181,18 +180,11 @@ const enhance = WrappedComponent =>
     }
 
     componentDidUpdate(prevProps) {
-      const {accountList, initNotification} = this.props;
-      const {accountList: oldAccountList} = prevProps;
+      const { accountList, initNotification } = this.props;
+      const { accountList: oldAccountList } = prevProps;
       if (!_.isEqual(accountList, oldAccountList)) {
         initNotification();
       }
-    }
-
-    componentWillUnmount() {
-      this.removeNotificationDisplayedListener();
-      this.removeNotificationListener();
-      this.removeNotificationOpenedListener();
-      AppState.removeEventListener('change', this._handleAppStateChange);
     }
 
     render() {

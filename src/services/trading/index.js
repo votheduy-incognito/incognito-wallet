@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import {get0xQuote, get0xTokens,} from '@services/trading/0x';
 import {CONSTANT_COMMONS, CONSTANT_CONFIGS, TRADING} from '@src/constants';
-import http from '@src/services/http';
+import http from '@src/services/thttp';
 import {getKyberQuote, getKyberTokens} from '@services/trading/kyber';
 import BigNumber from 'bignumber.js';
 import convertUtils from '@utils/convert';
@@ -16,7 +16,6 @@ const { PROTOCOLS } = TRADING;
  */
 export async function getAllTradingTokens() {
   const allArrays = await Promise.all([
-    get0xTokens(),
     getKyberTokens(),
   ]);
 
@@ -88,7 +87,6 @@ export async function getUniswapBalance(scAddress, token) {
     .dividedToIntegerBy(1)
     .toNumber();
 }
-
 
 /**
  * Withdraw balance
@@ -233,4 +231,15 @@ export const depositToSmartContract = async ({
     dexMainAccount,
     wallet,
   );
+};
+
+/**
+ * Airdrop using for test
+ * @param address
+ * @returns *
+ */
+export const airdrop = async (address) => {
+  return http.post('uniswap/airdrop', {
+    DestTokens: address,
+  });
 };

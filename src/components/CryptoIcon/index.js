@@ -44,16 +44,16 @@ class CryptoIcon extends Component {
   }
 
   componentDidMount() {
-    const { tokenId, onlyDefault, uri } = this.props;
+    const { tokenId, uri } = this.props;
 
-    tokenId && !onlyDefault && this.getUri(uri);
+    tokenId && this.getUri(uri);
   }
 
   componentDidUpdate(prevProps) {
-    const { onlyDefault, uri, tokenId } = this.props;
-    const { onlyDefault: oldOnlyDefault, uri: oldUri, tokenId: oldTokenId } = prevProps;
+    const { uri, tokenId } = this.props;
+    const { uri: oldUri, tokenId: oldTokenId } = prevProps;
 
-    if (onlyDefault !== oldOnlyDefault || uri !== oldUri || tokenId !== oldTokenId) {
+    if (uri !== oldUri || tokenId !== oldTokenId) {
       this.getUri(uri);
     }
   }
@@ -73,7 +73,7 @@ class CryptoIcon extends Component {
       components[components.length - 1] = encodeURIComponent(lastComponent);
     }
 
-    const _uri = components.join('/');
+    const _uri = components.join('/').toLowerCase();
 
     this.setState(({ uri }) => uri !== _uri && ({ uri: _uri, imageComponent: (
       <Image
@@ -99,14 +99,14 @@ class CryptoIcon extends Component {
 
   render() {
     const { uri, imageComponent, verifiedFlagStyle, verifiedFlagSize } = this.state;
-    const { onlyDefault, containerStyle, logoStyle, size, token, showVerifyFlag } = this.props;
+    const { containerStyle, logoStyle, size, token, showVerifyFlag } = this.props;
     const { isVerified } = token || {};
 
     return (
       <View>
         <View style={[styleSheet.container, containerStyle, { borderRadius: size }, this.getSize()]}>
           {
-            onlyDefault || !uri
+            !uri
               ? this.renderDefault(logoStyle)
               : imageComponent
           }
@@ -122,7 +122,6 @@ class CryptoIcon extends Component {
 }
 
 CryptoIcon.defaultProps = {
-  onlyDefault: false,
   tokenId: null,
   containerStyle: null,
   logoStyle: null,
@@ -134,7 +133,6 @@ CryptoIcon.defaultProps = {
 
 CryptoIcon.propTypes = {
   tokenId: PropTypes.string,
-  onlyDefault: PropTypes.bool,
   containerStyle: PropTypes.object,
   logoStyle: PropTypes.object,
   token: PropTypes.object,

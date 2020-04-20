@@ -7,10 +7,15 @@ import addLiquidityIcon from '@src/assets/images/icons/add_liquidity_icon.png';
 import COLORS from '@src/styles/colors';
 import BackButton from '@components/BackButton/index';
 import WithdrawSmartContract from '@screens/Uniswap/components/WithdrawSmartContract';
-import {getUniswapBalance} from '@services/trading';
-import withdrawBlack from '@assets/images/icons/withdraw_black.png';
-import OptionMenu from '@components/OptionMenu/OptionMenu';
+import {airdrop, getUniswapBalance} from '@services/trading';
 import dexUtil from '@utils/dex';
+import WithdrawalOptions from '@screens/Uniswap/components/WithdrawOptions';
+import {Icon} from 'react-native-elements';
+import Airdrop from '@screens/Uniswap/components/Airdrop';
+import WithdrawMainnet from '@screens/Uniswap/components/WithdrawMainnet';
+import routeNames from '@routers/routeNames';
+import {ExHandler} from '@services/exception';
+import LocalDatabase from '@utils/LocalDatabase';
 import RecentHistory from './components/RecentHistory';
 import Swap from './components/Swap';
 import {dexStyle, mainStyle} from './style';
@@ -18,6 +23,9 @@ import {dexStyle, mainStyle} from './style';
 class Uniswap extends React.Component {
   state = {
     showWithdraw: false,
+    showWithdrawToPDex: false,
+    showAirdrop: false,
+    showWithdrawMainnet: false,
     tradeParams: {
       inputToken: undefined,
       inputValue: undefined,
@@ -33,30 +41,54 @@ class Uniswap extends React.Component {
     },
   };
 
-  menu = [
-    {
-      id: 'withdraw',
-      icon: <Image source={withdrawBlack} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
-      label: 'Withdraw',
-      desc: 'Withdraw funds from your pDEX account to \nanother account',
-      handlePress: () => this.showPopUp('withdraw'),
-    }
-  ];
+  async componentDidMount() {
+    try {
+      const hasAirdrop = await LocalDatabase.getUniswapAirdrop();
 
-  showPopUp = (name) => {
-    this.setState({ transferAction: name });
+      if (hasAirdrop) {
+        return;
+      }
+
+      this.showPopUp();
+      LocalDatabase.saveUniswapAirdrop();
+    } catch (e) {
+      console.debug('AIRDROP', e);
+      new ExHandler(e).showErrorToast();
+    }
+  }
+
+  showPopUp = async (name) => {
+    // this.setState({ transferAction: name });
+    // this.closeWithdrawOptionsPopUp();
+    try {
+      const {scAddress} = this.props;
+      await airdrop(scAddress);
+      this.setState({showAirdrop: true});
+    } catch (e) {
+      console.debug('AIRDROP', e);
+      new ExHandler(e).showErrorToast();
+    }
   };
 
   closePopUp = () => {
-    this.setState({ transferAction: null });
+    this.setState({ showAirdrop: false });
   };
 
-  showWithdrawPopUp = () => {
-    this.setState({ showWithdraw: true });
+  showWithdrawOptionsPopUp = () => {
+    this.setState({ showWithdrawMainnet: true });
   };
 
-  closeWithdrawPopUp = () => {
-    this.setState({ showWithdraw: false });
+  closeWithdrawOptionsPopUp = () => {
+    this.setState({ showWithdrawMainnet: false });
+  };
+
+  showWithdrawToPDexPopUp = () => {
+    this.setState({ showWithdrawToPDex: true });
+    this.closeWithdrawOptionsPopUp();
+  };
+
+  closeWithdrawToPDexPopUp = () => {
+    this.setState({ showWithdrawToPDex: false });
   };
 
   updateTradeParams = (params, cb) => {
@@ -74,6 +106,7 @@ class Uniswap extends React.Component {
   };
 
   renderModes() {
+    const { navigation } = this.props;
     return (
       <View style={dexStyle.header}>
         <BackButton size={20} width={20} />
@@ -81,9 +114,13 @@ class Uniswap extends React.Component {
           <Image source={depositIcon} />
           <Text style={dexStyle.modeText}>Deposit</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={dexStyle.mode} onPress={this.showWithdrawPopUp}>
+        <TouchableOpacity style={dexStyle.mode} onPress={this.showWithdrawOptionsPopUp}>
           <Image source={addLiquidityIcon} />
-          <Text style={dexStyle.modeText}>Withdraw to pDEX</Text>
+          <Text style={dexStyle.modeText}>Withdraw</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={dexStyle.mode} onPress={() => navigation.navigate(routeNames.UniswapHelp)}>
+          <Icon name="help-outline" color={COLORS.primary} />
+          <Text style={dexStyle.modeText}>FAQs</Text>
         </TouchableOpacity>
       </View>
     );
@@ -94,9 +131,6 @@ class Uniswap extends React.Component {
       <View style={mainStyle.header}>
         <View style={mainStyle.twoColumns}>
           {this.renderModes()}
-          <View style={dexStyle.options}>
-            <OptionMenu data={this.menu} style={mainStyle.textRight} />
-          </View>
         </View>
       </View>
     );
@@ -189,7 +223,14 @@ class Uniswap extends React.Component {
 
   render() {
     const {histories, onGetHistoryStatus, navigation, onAddHistory, wallet, dexMainAccount} = this.props;
-    const {showWithdraw, balance, tradeParams} = this.state;
+    const {
+      showWithdraw,
+      balance,
+      tradeParams,
+      showWithdrawToPDex,
+      showAirdrop,
+      showWithdrawMainnet,
+    } = this.state;
     return (
       <View style={mainStyle.wrapper}>
         {this.renderHeader()}
@@ -205,14 +246,22 @@ class Uniswap extends React.Component {
         </View>
         {this.renderTransfer()}
         <WithdrawSmartContract
-          visible={showWithdraw}
+          visible={showWithdrawToPDex}
           wallet={wallet}
           balance={balance}
           onAddHistory={onAddHistory}
-          onClosePopUp={this.closeWithdrawPopUp}
+          onClosePopUp={this.closeWithdrawToPDexPopUp}
           token={tradeParams?.inputToken}
           dexMainAccount={dexMainAccount}
         />
+        <WithdrawalOptions
+          onWithdrawPDEX={this.showWithdrawToPDexPopUp}
+          onWithdraw={() => this.showPopUp('withdraw')}
+          onClose={this.closeWithdrawOptionsPopUp}
+          visible={showWithdraw}
+        />
+        <Airdrop visible={showAirdrop} onClose={this.closePopUp} />
+        <WithdrawMainnet visible={showWithdrawMainnet} onClose={this.closeWithdrawOptionsPopUp} />
       </View>
     );
   }

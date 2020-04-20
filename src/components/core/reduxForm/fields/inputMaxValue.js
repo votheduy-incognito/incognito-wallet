@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { TouchableOpacity, TextInput, Text } from '@src/components/core';
 import formatUtil from '@src/utils/format';
 import { COLORS } from '@src/styles';
+import {generateTestId} from '@utils/misc';
+import {SEND} from '@src/constants/elements';
 import createField from './createField';
 
 let inputRef;
@@ -35,6 +37,7 @@ const renderCustomField = ({ input, meta, maxValue, ...props }) => {
             onChange(formatUtil.numberWithNoGroupSeparator(Number(maxValue)));
             inputRef?.current?.focus?.();
           }}
+          {...generateTestId(SEND.MAX_BUTTON)}
         >
           <Text style={{ color: COLORS.primary  }}>Max</Text>
         </TouchableOpacity>

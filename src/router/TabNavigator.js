@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import {Text} from '@components/core';
 import { getActiveChildNavigationOptions } from 'react-navigation';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { navigationOptionsHandler } from '@src/utils/router';
@@ -18,7 +17,6 @@ import icHomeDeactive from '@src/assets/images/icons/ic_home_deactive.png';
 import icCommunityActive from '@src/assets/images/icons/ic_community_active.png';
 import icCommunityDeactive from '@src/assets/images/icons/ic_community_deactive.png';
 import HeaderBar from '@src/components/HeaderBar';
-import {FontStyle} from '@src/styles/TextStyle';
 import MinerNavigator from './MinerNavigator';
 import ROUTE_NAMES from './routeNames';
 
@@ -26,7 +24,7 @@ const TabIcon = (type, title, { focused }) => {
   let active = null;
   let inactive = null;
 
-  switch(type) {
+  switch (type) {
   case 'wallet':
     active = icWalletActive;
     inactive = icWalletInactive;
@@ -50,7 +48,8 @@ const TabIcon = (type, title, { focused }) => {
         image={focused ? active
           : inactive}
       />
-      <Text style={[styles.labelStyle, focused ? styles.activeLabel : {}]}>{title.toUpperCase()}</Text>
+      {/* Remove title for a while */}
+      {/* <Text style={[styles.labelStyle, focused ? styles.activeLabel : {}]}>{title.toUpperCase()}</Text> */}
     </View>
   );
 };
@@ -59,30 +58,29 @@ const renderTab = (type, title) => TabIcon.bind(null, type, title);
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 10,
-    paddingBottom: 30,
-    height: 95,
+    height: 70,
     backgroundColor: COLORS.white,
   },
-  activeLabel: {
-    color: COLORS.dark1,
-    fontSize: 10,
-    ...FontStyle.bold,
-  },
+  // activeLabel: {
+  //   color: COLORS.dark1,
+  //   fontSize: 10,
+  //   ...FontStyle.bold,
+  // },
   tabBarLabel: {
     flexDirection: 'column',
     flex: 1,
     width: 100,
     alignItems: 'center',
   },
-  labelStyle: {
-    textTransform: 'uppercase',
-    fontSize: 10,
-    fontWeight: '500',
-    letterSpacing: 1,
-    textAlign: 'center',
-    marginTop: 4,
-    color: COLORS.lightGrey1,
-  },
+  // labelStyle: {
+  //   textTransform: 'uppercase',
+  //   fontSize: 10,
+  //   fontWeight: '500',
+  //   letterSpacing: 1,
+  //   textAlign: 'center',
+  //   marginTop: 4,
+  //   color: COLORS.lightGrey1,
+  // },
   indicator: {
     opacity: 0,
   }
@@ -106,7 +104,7 @@ const Tab = createMaterialTopTabNavigator({
   defaultNavigationOptions: {
     header: HeaderBar
   },
-  headerMode:'screen',
+  headerMode: 'screen',
   navigationOptions: ({ navigation, screenProps }) => {
     const child = getActiveChildNavigationOptions(navigation, screenProps);
     const { routeName } = navigation.state.routes[navigation.state.index];

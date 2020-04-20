@@ -14,26 +14,28 @@ import {
 } from '@components/core/reduxForm';
 import EstimateFee from '@components/EstimateFee';
 import LoadingTx from '@components/LoadingTx';
-import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
-import {ExHandler} from '@services/exception';
+import { CONSTANT_COMMONS, CONSTANT_EVENTS, CONSTANT_CONFIGS } from '@src/constants';
+import { ExHandler } from '@services/exception';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
 import memmoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {isExchangeRatePToken} from '@services/wallet/RpcClientService';
-import {connect} from 'react-redux';
-import {detectToken} from '@utils/misc';
-import {change, Field, formValueSelector, isValid} from 'redux-form';
-import {logEvent} from '@services/firebase';
+import { isExchangeRatePToken } from '@services/wallet/RpcClientService';
+import { connect } from 'react-redux';
+import { detectToken } from '@utils/misc';
+import { change, Field, formValueSelector, isValid } from 'redux-form';
+import { logEvent } from '@services/firebase';
 import accountService from '@services/wallet/accountService';
-import {MESSAGES} from '@screens/Dex/constants';
+import { MESSAGES } from '@screens/Dex/constants';
 import TokenSelect from '@components/TokenSelect';
-import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
+import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import CurrentBalance from '@components/CurrentBalance';
 import ROUTES_NAME from '@routers/routeNames';
-import {RefreshControl} from 'react-native';
-import Modal, {actionToggleModal} from '@src/components/Modal';
+import { RefreshControl } from 'react-native';
+import Modal, { actionToggleModal } from '@src/components/Modal';
+import { COLORS } from '@src/styles';
+import LogManager from '@src/services/LogManager';
 import style from './style';
 import Receipt from './Withdraw.receipt';
 
@@ -62,12 +64,13 @@ class Withdraw extends React.Component {
       estimateFeeData: {},
       supportedFeeTypes: [],
       feeForBurn: 0,
+      shouldBlockETHWrongAddress: false
     };
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const {
-      estimateFeeData: {fee, feeUnitByTokenId},
+      estimateFeeData: { fee, feeUnitByTokenId },
     } = prevState;
 
     return {
@@ -85,23 +88,23 @@ class Withdraw extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const {selectedPrivacy} = this.props;
-    const {selectedPrivacy: oldSelectedPrivacy} = prevProps;
+    const { selectedPrivacy } = this.props;
+    const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
     const {
-      estimateFeeData: {fee, feeUnitByTokenId},
+      estimateFeeData: { fee, feeUnitByTokenId },
     } = this.state;
     const {
-      estimateFeeData: {fee: oldFee, feeUnitByTokenId: oldFeeUnitByTokenId},
+      estimateFeeData: { fee: oldFee, feeUnitByTokenId: oldFeeUnitByTokenId },
     } = prevState;
 
     if (selectedPrivacy?.pDecimals !== oldSelectedPrivacy?.pDecimals) {
       // need to re-calc min amount if token decimals was changed
-      this.setFormValidator({minAmount: this.getMinAmount()});
+      this.setFormValidator({ minAmount: this.getMinAmount() });
     }
 
     if (fee !== oldFee || feeUnitByTokenId !== oldFeeUnitByTokenId) {
       // need to re-calc max amount can be send if fee was changed
-      this.setFormValidator({maxAmount: this.getMaxAmount()});
+      this.setFormValidator({ maxAmount: this.getMaxAmount() });
     }
 
     if (oldSelectedPrivacy !== selectedPrivacy && selectedPrivacy) {
@@ -115,7 +118,7 @@ class Withdraw extends React.Component {
 
   getMinAmount = () => {
     // MIN = 1 nano
-    const {selectedPrivacy, minAmount} = this.props;
+    const { selectedPrivacy, minAmount } = this.props;
     let min = 0;
     if (selectedPrivacy?.pDecimals) {
       min = 1 / 10 ** selectedPrivacy.pDecimals;
@@ -125,9 +128,9 @@ class Withdraw extends React.Component {
   };
 
   getMaxAmount = () => {
-    const {selectedPrivacy, maxAmount} = this.props;
+    const { selectedPrivacy, maxAmount } = this.props;
     const {
-      estimateFeeData: {fee},
+      estimateFeeData: { fee },
       feeForBurn,
       isUsedPRVFee,
     } = this.state;
@@ -145,8 +148,8 @@ class Withdraw extends React.Component {
     return max;
   };
 
-  setFormValidator = ({maxAmount, minAmount}) => {
-    const {selectedPrivacy} = this.props;
+  setFormValidator = ({ maxAmount, minAmount }) => {
+    const { selectedPrivacy } = this.props;
 
     if (maxAmount) {
       this.setState({
@@ -173,11 +176,11 @@ class Withdraw extends React.Component {
   };
 
   handleSubmit = async values => {
-    const {selectedPrivacy, actionToggleModal} = this.props;
+    const { selectedPrivacy, actionToggleModal } = this.props;
     try {
       let res;
       const {
-        estimateFeeData: {fee},
+        estimateFeeData: { fee },
         isUsedPRVFee,
         feeForBurn,
       } = this.state;
@@ -187,7 +190,7 @@ class Withdraw extends React.Component {
         handleCentralizedWithdraw,
         handleDecentralizedWithdraw,
       } = this.props;
-      const {amount, toAddress, memo} = values;
+      const { amount, toAddress, memo } = values;
       const convertedAmount = convertUtil.toNumber(amount);
       await logEvent(CONSTANT_EVENTS.WITHDRAW, {
         tokenId: selectedPrivacy?.tokenId,
@@ -258,7 +261,7 @@ class Withdraw extends React.Component {
 
   shouldDisabledSubmit = () => {
     const {
-      estimateFeeData: {fee},
+      estimateFeeData: { fee },
     } = this.state;
     if (fee !== 0 && !fee) {
       return true;
@@ -268,7 +271,7 @@ class Withdraw extends React.Component {
   };
 
   handleSelectFee = estimateFeeData => {
-    this.setState({estimateFeeData});
+    this.setState({ estimateFeeData });
   };
 
   getAddressValidator = memmoize((externalSymbol, isErc20Token) => {
@@ -296,7 +299,7 @@ class Withdraw extends React.Component {
     ];
 
     try {
-      const {selectedPrivacy} = this.props;
+      const { selectedPrivacy } = this.props;
       const isUsed = await isExchangeRatePToken(selectedPrivacy.tokenId);
       isUsed &&
         supportedFeeTypes.push({
@@ -306,14 +309,39 @@ class Withdraw extends React.Component {
     } catch (e) {
       new ExHandler(e);
     } finally {
-      this.setState({supportedFeeTypes});
+      this.setState({ supportedFeeTypes });
     }
   };
 
   handleSelectToken = tokenId => {
-    const {setSelectedPrivacy} = this.props;
+    const { setSelectedPrivacy } = this.props;
+    console.log(tokenId);
     setSelectedPrivacy(tokenId);
+    this.setState({
+      shouldBlockETHWrongAddress: false
+    });
   };
+
+  checkIfValidAddressETH = (address, isETH) => {
+    if (isETH && address != '') {
+      try {
+        let url = CONSTANT_CONFIGS.ETHERSCAN_URL + '/address/' + address;
+        fetch(url).
+          then(async (resp) => {
+            return resp.text();
+          })
+          .then((text) => {
+            let hasAddressValid = text.includes('\nAddress\n<span id=\'mainaddress\' class=\'text-size-address text-secondary text-break mr-1\' data-placement=\'top\'>' + address + '</span>');
+            this.setState({ shouldBlockETHWrongAddress: !hasAddressValid });
+          })
+          .catch(() => {
+            alert('Could not validate ETH address for now, please try again');
+          });
+      } catch (err) {
+        alert('Could not validate ETH address for now, please try again');
+      }
+    }
+  }
 
   render() {
     const {
@@ -324,7 +352,7 @@ class Withdraw extends React.Component {
       feeForBurn,
       isUsedPRVFee,
     } = this.state;
-    const {fee, feeUnit} = estimateFeeData;
+    const { fee, feeUnit } = estimateFeeData;
     const {
       selectedPrivacy,
       isFormValid,
@@ -334,14 +362,15 @@ class Withdraw extends React.Component {
       onShowFrequentReceivers,
       reloading,
     } = this.props;
-    const {externalSymbol, isErc20Token, name: tokenName} =
+    const { externalSymbol, isErc20Token, name: tokenName } =
       selectedPrivacy || {};
     const addressValidator = this.getAddressValidator(
       externalSymbol,
       isErc20Token,
     );
     const maxAmount = this.getMaxAmount();
-
+    let isETH = isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
+    let { shouldBlockETHWrongAddress } = this.state;
     return (
       <ScrollView
         style={style.container}
@@ -362,10 +391,11 @@ class Withdraw extends React.Component {
             />
           </View>
           <Form style={style.form}>
-            {({handleSubmit, submitting}) => (
+            {({ handleSubmit, submitting }) => (
               <>
                 <Field
                   component={InputQRField}
+                  onChange={(text) => { this.checkIfValidAddressETH(text, isETH); }}
                   name="toAddress"
                   label="To"
                   placeholder={`Enter your ${tokenName}  address`}
@@ -375,7 +405,7 @@ class Withdraw extends React.Component {
                   showNavAddrBook
                 />
                 {(isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) &&
-                  <Text style={style.warning}>Please withdraw to ethereum wallet address only. Withdrawals to smart contract addresses may be lost.</Text>
+                  <Text style={[style.warning, shouldBlockETHWrongAddress ? { color: COLORS.red } : {}]}>{shouldBlockETHWrongAddress ? 'Please withdraw to ethereum wallet address only. \nCan not withdraw to smart contract address.' : 'Please withdraw to ethereum wallet address only. Withdrawals to smart contract addresses will be lost.'}</Text>
                 }
                 <Field
                   component={InputMaxValueField}

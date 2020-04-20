@@ -7,6 +7,7 @@ const COLORS = {
   blue1: '#0A3A3C',
   blue2: '#01828A',
   blue3: '#ACE9EC',
+  blue4: '#004AA9',
   red: '#FE4D4D',
   green: '#26C64D',
   dark1: '#101111',
@@ -30,6 +31,7 @@ const COLORS = {
   lightGrey13: '#E6EEEF',
   lightGrey14: '#FAFAFA',
   lightGrey15: '#DCDDDD',
+  lightGrey16: '#CCE2E2',
 
   toastBackgroundDefault: 'rgba(107, 141, 143, 0.8)',
   toastBackgroundError: 'rgba(255, 101, 47, 0.8)',

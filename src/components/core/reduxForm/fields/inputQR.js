@@ -7,6 +7,8 @@ import {scaleInApp} from '@src/styles/TextStyle';
 import qrCodeScanner from '@src/assets/images/icons/qr_code_scanner.png';
 import {AddressBookIcon} from '@src/components/Icons';
 import {COLORS} from '@src/styles';
+import {generateTestId} from '@utils/misc';
+import {SEND} from '@src/constants/elements';
 import createField from './createField';
 
 const styled = StyleSheet.create({
@@ -22,6 +24,21 @@ const styled = StyleSheet.create({
     marginHorizontal: 10,
   },
 });
+
+// We have to support user use this format: "bitcoin:AS3sa...", and this currently format: "abdcdFAS..."
+// And also need to check generic data type
+const getAddress = (text) => {
+  if (text && typeof text === 'string') {
+    let indexSpec = text.indexOf(':');
+    if (indexSpec != -1) {
+      return text.substring(indexSpec + 1, text.length);
+    } else {
+      return text;
+    }
+  } else {
+    return '';
+  }
+};
 
 const renderCustomField = ({
   input,
@@ -42,7 +59,7 @@ const renderCustomField = ({
         <View style={styled.prepend}>
           {showNavAddrBook && (
             <>
-              <TouchableOpacity onPress={onOpenAddressBook}>
+              <TouchableOpacity onPress={onOpenAddressBook} {...generateTestId(SEND.ADDRESS_BOOK_ICON)}>
                 <AddressBookIcon />
               </TouchableOpacity>
               <View style={styled.line} />
@@ -51,7 +68,8 @@ const renderCustomField = ({
           <TouchableOpacity
             onPress={() => {
               openQrScanner(data => {
-                onChange(data);
+                let res = getAddress(data);
+                onChange(res);
               });
             }}
           >

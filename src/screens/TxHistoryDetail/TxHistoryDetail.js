@@ -22,6 +22,7 @@ export default class TxHistoryDetail extends Component {
     <CopiableText
       text={text}
       style={[styleSheet.row]}
+      oneLine
       copiedMessage={`${label} was copied.`}
     >
       <Text numberOfLines={1} ellipsizeMode="middle" style={style}>

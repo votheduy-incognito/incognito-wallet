@@ -2,8 +2,11 @@ import accountService from '@src/services/wallet/accountService';
 import {accountSeleclor} from '@src/redux/selectors';
 import internalTokenModel from '@models/token';
 import PToken from '@src/models/pToken';
-import {setWallet} from './wallet';
+import {CustomError, ErrorCode} from '@src/services/exception';
+import {getPassphrase} from '@src/services/wallet/passwordService';
+import {setWallet, reloadAccountList} from './wallet';
 import {actionAddFollowTokenSuccess, actionAddFollowTokenFail} from './token';
+import {followDefaultTokens, getBalance} from './account';
 
 export const actionAddFollowToken = tokenId => async (dispatch, getState) => {
   try {
@@ -25,6 +28,27 @@ export const actionAddFollowToken = tokenId => async (dispatch, getState) => {
     await dispatch(actionAddFollowTokenSuccess(tokenId));
   } catch (error) {
     dispatch(actionAddFollowTokenFail(tokenId));
+    throw Error(error);
+  }
+};
+
+export const actionImportAccount = ({privateKey, accountName}) => async (
+  dispatch,
+  getState,
+) => {
+  try {
+    const state = getState();
+    const wallet = state?.wallet;
+    const passphrase = await getPassphrase();
+    const isImported = await accountService.importAccount(
+      privateKey,
+      accountName,
+      passphrase,
+      wallet,
+    );
+    if (!isImported) throw new CustomError(ErrorCode.importAccount_failed);
+    await dispatch(reloadAccountList());
+  } catch (error) {
     throw Error(error);
   }
 };

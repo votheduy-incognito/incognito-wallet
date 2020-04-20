@@ -226,6 +226,10 @@ class Exception {
   throw() {
     throw this.exception;
   }
+
+  getMessageError(){
+    return this.message;
+  }
 }
 
 export default Exception;

@@ -1,105 +1,96 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 import {
   StyleSheet,
   View,
-  processColor
+  processColor,
+  Dimensions,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {LineChart} from 'react-native-charts-wrapper';
-import update from 'immutability-helper';
+import {LineChart} from '@src/components/Charts';
 import moment from 'moment';
 import { BY_HOUR, BY_DAY, BY_WEEK, BY_MONTH, BY_YEAR } from '@src/screens/PriceChartCrypto/util';
 
-const extractLineData = data => data.map(e => ({ y: e.close }));
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
+
+const chartHeight = screenHeight - 500;
 
 class PriceChart extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      data: {
-        dataSets: [{
-          values: extractLineData(props.data),
-          label: props.label,
-          config: {
-            highlightColor: processColor('darkgray'),
-            shadowColor: processColor('black'),
-            shadowWidth: 1,
-            shadowColorSameAsCandle: true,
-            increasingColor: processColor('#71BD6A'),
-            increasingPaintStyle: 'FILL',
-            decreasingColor: processColor('#D14B5A')
-          },
-          xAxis: {},
-          yAxis: {},
-        }],
-      },
+      data: {},
       marker: {
         enabled: true,
         markerColor: processColor('#2c3e50'),
         textColor: processColor('white'),
       },
-      
     };
+
+    this.parseChartData(props.data);
 
     this.x = 0;
   }
+
   formatDateByChartType = (d) => {
     const { chartType } = this.props;
     switch(chartType) {
-    case BY_HOUR: return d.format('DD MMM HH:mm');
-    case BY_DAY, BY_WEEK: return d.format('DD MMM');
-    case BY_MONTH: return d.format('MMM');
-    case BY_YEAR: return d.format('YYYY');
-    default: return d.format('DD MMM HH:mm');
+    case BY_HOUR:
+      return d.format('HH');
+    case BY_DAY:
+    case BY_WEEK:
+      return d.format('D MMM');
+    case BY_MONTH:
+      return d.format('MMM YYYY');
+    case BY_YEAR:
+      return d.format('YYYY');
+    default:
+      return d.format('DD MMM');
     }
+  };
+
+  componentDidMount() {
+    const {data} = this.props;
+    this.parseChartData(data);
   }
-  componentWillMount() {
-    this.setState((state) => {
-      const { data } = this.props;
-      return update(state, {
-        xAxis: {
-          $set: {
-            drawLabels: true,
-            drawGridLines: false,
-            position: 'BOTTOM',
-            yOffset: 5,
-            valueFormatter: data.map(item => this.formatDateByChartType(moment(item.time))),
-            labelRotationAngle: -90
-          }
-        },
-        yAxis: {
-          $set: {
-            left: {
-              // axisMinimum: 0,
-              enabled: false
-            },
-            right: {enabled: true}
-          }
-        },
-        zoomXValue: {
-          $set: 1
-        }
-      }
-      );
+
+  parseChartData(data) {
+    const labels = [];
+    const setData = [];
+
+    if (!data || !data.length) {
+      return;
+    }
+
+    data.forEach(item => {
+      const momentObject = moment.unix(item.time);
+
+      labels.push(this.formatDateByChartType(momentObject));
+      setData.push(item.value);
     });
+
+    const chartData = {
+      labels: labels,
+      datasets: [
+        {
+          data: setData,
+          color: () => '#00D0D8', // optional
+          strokeWidth: 0 // optional
+        }
+      ],
+    };
+
+    this.setState({data: chartData});
   }
-
-  // handleSelect(event) {
-  //   let entry = event.nativeEvent;
-  //   if (entry == null) {
-  //     this.setState({...this.state, selectedEntry: null});
-  //   } else {
-  //     this.setState({...this.state, selectedEntry: JSON.stringify(entry)});
-  //   }
-
-  //   console.log(event.nativeEvent);
-  // }
 
   render() {
-    const { data, marker, xAxis, yAxis } = this.state;
-    const { data: dataSet, isShowAll } = this.props;
-    const dataLen = dataSet?.length || 0;
+    const { data } = this.state;
+
+    if (_.isEmpty(data)) {
+      return null;
+    }
 
     return (
       <View style={{flex: 1}}>
@@ -107,18 +98,29 @@ class PriceChart extends Component {
           <LineChart
             style={styles.chart}
             data={data}
-            marker={marker}
-            chartDescription={{text: 'Price chart'}}
-            xAxis={xAxis}
-            yAxis={yAxis}
-            maxVisibleValueCount={1}
-            zoom={isShowAll ? {scaleX: 10, scaleY: 1.5, xValue: dataLen, yValue: dataLen ? dataSet[dataLen - 1]?.close : 0}: {}}
-            // zoom={{}}
-            // onChange={(event) => console.log(event.nativeEvent)}
-            // onSelect={this.handleSelect.bind(this)}
+            width={screenWidth - 64}
+            paddingLeft={64}
+            height={chartHeight}
+            chartConfig={{
+              backgroundColor: '#fff',
+              backgroundGradientFrom: '#fff',
+              backgroundGradientTo: '#fff',
+              decimalPlaces: 4, // optional, defaults to 2dp
+              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              style: {
+                borderRadius: 16
+              },
+              propsForDots: {
+                r: '4',
+                strokeWidth: '2',
+                stroke: '#00D0D8'
+              },
+              strokeWidth: 1,
+            }}
+            verticalLabelRotation={90}
           />
         </View>
-
       </View>
     );
   }

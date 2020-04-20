@@ -17,6 +17,9 @@ export const KEY_SAVE = {
   VERIFY_CODE: '$verify_code',
   DEVICE_ID: '$device_id',
   WITHDRAWAL_DATA: CONSTANT_KEYS.WITHDRAWAL_DATA,
+  BACKUP_STAKE_KEY: CONSTANT_KEYS.BACKUP_STAKE_KEY,
+  VIEW_UNISWAP_TOOLTIP: '$uniswap_tooltip',
+  UNISWAP_AIRDROP: '$uniswap_airdrop',
 };
 export default class LocalDatabase {
   static async getValue(key: String): String {
@@ -233,10 +236,13 @@ export default class LocalDatabase {
    * @param {Object}data
    * @returns {Promise<void>}
    */
-  static addWithdrawalData = async (data) => {
+  static addWithdrawalData = async data => {
     const txs = await LocalDatabase.getWithdrawalData();
     txs.push(data);
-    return LocalDatabase.saveValue(KEY_SAVE.WITHDRAWAL_DATA, JSON.stringify(txs));
+    return LocalDatabase.saveValue(
+      KEY_SAVE.WITHDRAWAL_DATA,
+      JSON.stringify(txs),
+    );
   };
 
   /**
@@ -244,10 +250,13 @@ export default class LocalDatabase {
    * @param {string} burningTxId
    * @returns {Promise<void>}
    */
-  static removeWithdrawalData = async (burningTxId) => {
+  static removeWithdrawalData = async burningTxId => {
     let txs = await LocalDatabase.getWithdrawalData();
     txs = txs.filter(tx => tx.burningTxId !== burningTxId);
-    return LocalDatabase.saveValue(KEY_SAVE.WITHDRAWAL_DATA, JSON.stringify(txs));
+    return LocalDatabase.saveValue(
+      KEY_SAVE.WITHDRAWAL_DATA,
+      JSON.stringify(txs),
+    );
   };
 
   static async saveUniswapHistory(swapHistory) {
@@ -264,13 +273,59 @@ export default class LocalDatabase {
   }
 
   static saveDeviceId(deviceId) {
-    return LocalDatabase.saveValue(
-      KEY_SAVE.DEVICE_ID,
-      deviceId,
-    );
+    return LocalDatabase.saveValue(KEY_SAVE.DEVICE_ID, deviceId);
   }
 
   static getDeviceId() {
     return LocalDatabase.getValue(KEY_SAVE.DEVICE_ID) || '';
+  }
+
+  static saveBackupStakeKey() {
+    return LocalDatabase.saveValue(
+      KEY_SAVE.BACKUP_STAKE_KEY,
+      JSON.stringify(true),
+    );
+  }
+
+  static getBackupStakeKey() {
+    return LocalDatabase.getValue(KEY_SAVE.BACKUP_STAKE_KEY);
+  }
+
+  static async getViewUniswapTooltip() {
+    const value = !!(await LocalDatabase.getValue(KEY_SAVE.VIEW_UNISWAP_TOOLTIP));
+    this.saveViewUniswapTooltip();
+    return value;
+  }
+
+  static saveViewUniswapTooltip() {
+    return LocalDatabase.saveValue(
+      KEY_SAVE.VIEW_UNISWAP_TOOLTIP,
+      JSON.stringify(true),
+    );
+  }
+
+  static resetViewUniswapTooltip() {
+    return LocalDatabase.saveValue(
+      KEY_SAVE.VIEW_UNISWAP_TOOLTIP,
+      '',
+    );
+  }
+
+  static async getUniswapAirdrop() {
+    return !!(await LocalDatabase.getValue(KEY_SAVE.UNISWAP_AIRDROP));
+  }
+
+  static saveUniswapAirdrop() {
+    return LocalDatabase.saveValue(
+      KEY_SAVE.UNISWAP_AIRDROP,
+      JSON.stringify(true),
+    );
+  }
+
+  static resetUniswapAirdrop() {
+    return LocalDatabase.saveValue(
+      KEY_SAVE.UNISWAP_AIRDROP,
+      '',
+    );
   }
 }

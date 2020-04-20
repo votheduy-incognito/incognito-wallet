@@ -1,6 +1,7 @@
 import React from 'react';
+import { ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
-import { View } from '@src/components/core';
+import {TouchableOpacity, View} from '@src/components/core';
 import icShield from '@assets/images/icons/ic_shield_btn.png';
 import icSend from '@assets/images/icons/ic_send_btn.png';
 import icReceive from '@assets/images/icons/ic_receive_btn.png';
@@ -8,22 +9,25 @@ import icTrade from '@assets/images/icons/ic_trade.png';
 import icInvent from '@assets/images/icons/ic_invent_btn.png';
 import icPower from '@assets/images/icons/ic_power.png';
 import icBuy from '@assets/images/icons/ic_buy_prv.png';
+import icFeedback from '@assets/images/icons/ic_feedback.png';
 import icPapp from '@assets/images/icons/ic_papp.png';
-import icUniswap from '@assets/images/icons/ic_uniswap.png';
+import icKyber from '@assets/images/icons/ic_kyber.png';
 import IconTextButton from '@screens/Home/IconTextButton';
 import ROUTE_NAMES from '@routers/routeNames';
-import {withRoundHeaderLayout} from '@src/hoc';
-import FloatButton from '@src/components/FloatButton';
-import Card from '@components/Card';
 import { BIG_COINS } from '@screens/Dex/constants';
+import SettingIcon from '@components/SettingIcon/index';
 import { useSelector } from 'react-redux';
 import accountSeleclor from '@src/redux/selectors/account';
 import dexUtil from '@utils/dex';
 import LinkingService from '@src/services/linking';
-import {CONSTANT_EVENTS} from '@src/constants';
+import { CONSTANT_EVENTS } from '@src/constants';
 import LocalDatabase from '@utils/LocalDatabase';
-import {withdraw} from '@services/api/withdraw';
-import {logEvent} from '@services/firebase';
+import { withdraw } from '@services/api/withdraw';
+import { logEvent } from '@services/firebase';
+import icStake from '@assets/images/icons/stake_icon.png';
+import AccountSelect from '@screens/Wallet/AccountSelect';
+import { COLORS } from '@src/styles';
+import Tooltip from '@components/Tooltip';
 import styles from './style';
 
 const sendItem = {
@@ -58,18 +62,21 @@ const powerItem = {
   desc: 'Plug & play',
   route: ROUTE_NAMES.Community,
   onPress: () => {
-    LinkingService.openUrl('https://node.incognito.org/payment.html?utm_source=app&utm_medium=homepage%20app&utm_campaign=pnode');
+    LinkingService.openUrl(
+      'https://node.incognito.org/payment.html?utm_source=app&utm_medium=homepage%20app&utm_campaign=pnode',
+    );
   },
 };
 
 const pUniswapItem = {
-  image: icUniswap,
-  title: 'pUniswap',
+  image: icKyber,
+  title: 'pKyber',
   route: ROUTE_NAMES.pUniswap,
-  event: CONSTANT_EVENTS.CLICK_HOME_UNISWAP
+  event: CONSTANT_EVENTS.CLICK_HOME_UNISWAP,
 };
 
 const buttons = [
+  shieldItem,
   {
     image: icBuy,
     title: 'Buy PRV',
@@ -80,27 +87,41 @@ const buttons = [
     },
     event: CONSTANT_EVENTS.CLICK_HOME_BUY,
   },
-  shieldItem,
+
   sendItem,
   receiveItem,
   {
     image: icInvent,
-    title: 'Issue',
+    title: 'Issue a coin',
     route: ROUTE_NAMES.CreateToken,
   },
   {
     image: icTrade,
     title: 'Trade',
     route: ROUTE_NAMES.Dex,
-    event: CONSTANT_EVENTS.CLICK_HOME_TRADE
+    event: CONSTANT_EVENTS.CLICK_HOME_TRADE,
+  },
+  powerItem,
+  {
+    image: icStake,
+    title: 'Stake PRV',
+    route: ROUTE_NAMES.Stake,
   },
   pappItem,
-  powerItem,
-  // pUniswapItem,
+  {
+    image: icFeedback,
+    title: 'Feedback',
+    route: ROUTE_NAMES.Community,
+    params: {
+      uri: 'https://incognito.org/c/help/45',
+    }
+  },
+  pUniswapItem,
 ];
 
-const Home = ({navigation}) => {
+const Home = ({ navigation }) => {
   const account = useSelector(accountSeleclor.defaultAccount);
+  const [viewUniswap, setViewUniswap] = React.useState(undefined);
 
   const goToScreen = (route, params, event) => {
     navigation.navigate(route, params);
@@ -122,10 +143,6 @@ const Home = ({navigation}) => {
       return true;
     }
 
-    if (item === pUniswapItem && global.isMainnet) {
-      return true;
-    }
-
     return false;
   };
 
@@ -144,26 +161,63 @@ const Home = ({navigation}) => {
     }
   };
 
+  const closeTooltip = () => {
+    setViewUniswap(true);
+  };
+
+  const getViewUniswap = async () => {
+    const viewUniswap = await LocalDatabase.getViewUniswapTooltip();
+    setViewUniswap(viewUniswap);
+
+    setTimeout(closeTooltip, 7000);
+  };
+
   React.useEffect(() => {
     tryLastWithdrawal();
+    getViewUniswap();
+
+    navigation.addListener('didBlur', closeTooltip);
   }, []);
 
   return (
-    <Card style={styles.container}>
-      <View style={styles.btnContainer}>
-        {buttons.map(item => (
-          <View style={styles.btn} key={item.title}>
-            <IconTextButton
-              image={item.image}
-              title={item.title}
-              disabled={isDisabled(item)}
-              onPress={item.onPress || (() => goToScreen(item.route, item.params, item.event))}
-            />
-          </View>
-        ))}
-        <FloatButton onPress={() => navigation.navigate('Community', { uri: 'https://incognito.org/c/help/45' })} label='Feedback' />
+    <TouchableOpacity style={{ flex: 1 }} onPress={closeTooltip}>
+      <View style={styles.header}>
+        <AccountSelect customTitleStyle={styles.accTitle} icoColor={COLORS.black} />
+        <SettingIcon />
       </View>
-    </Card>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.btnContainer}>
+          {buttons.map(item => (
+            <View style={styles.btn} key={item.title}>
+              {item === pUniswapItem &&
+              viewUniswap === false && (
+                <Tooltip
+                  title="New"
+                  desc="Kyber Network has gone Incognito."
+                />
+              )}
+              <IconTextButton
+                image={item.image}
+                title={item.title}
+                disabled={isDisabled(item)}
+                onPress={
+                  item.onPress || (() => goToScreen(item.route, item.params))
+                }
+              />
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+      {/* No need to use this anymore, wait for new update if needed, currently temporary move to list btns*/}
+      {/* <FloatButton
+        onPress={() =>
+          navigation.navigate('Community', {
+            uri: 'https://incognito.org/c/help/45',
+          })
+        }
+        label="Feedback"
+      /> */}
+    </TouchableOpacity>
   );
 };
 
@@ -171,4 +225,4 @@ Home.propTypes = {
   navigation: PropTypes.object.isRequired,
 };
 
-export default withRoundHeaderLayout(Home);
+export default React.memo(Home);

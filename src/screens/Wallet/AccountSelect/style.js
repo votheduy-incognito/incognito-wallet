@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native';
 const style = StyleSheet.create({
   container: {
     height: 54,
+    alignSelf: 'center',
   },
   toggle: {
     width: 200,
@@ -11,11 +12,16 @@ const style = StyleSheet.create({
   },
   textContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   title: {
-    fontSize: 18,
+    fontSize: 17,
     color: COLORS.white,
-    ...FONT.STYLE.bold,
+    fontFamily: FONT.NAME.medium,
+    marginEnd: 5,
+    alignContent: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   item: {
     paddingVertical: 5,

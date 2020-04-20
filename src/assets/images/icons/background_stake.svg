@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="375px" height="814px" viewBox="0 0 375 814" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>Group 29</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="375" height="814"></rect>
+        <rect id="path-3" x="0" y="0" width="375" height="814"></rect>
+        <filter x="-59.8%" y="-33.9%" width="219.5%" height="167.9%" filterUnits="objectBoundingBox" id="filter-5">
+            <feGaussianBlur stdDeviation="50" in="SourceGraphic"></feGaussianBlur>
+        </filter>
+        <filter x="-74.6%" y="-60.1%" width="249.3%" height="220.3%" filterUnits="objectBoundingBox" id="filter-6">
+            <feGaussianBlur stdDeviation="50" in="SourceGraphic"></feGaussianBlur>
+        </filter>
+        <rect id="path-7" x="0" y="0" width="375" height="814"></rect>
+        <filter x="-59.8%" y="-33.9%" width="219.5%" height="167.9%" filterUnits="objectBoundingBox" id="filter-9">
+            <feGaussianBlur stdDeviation="50" in="SourceGraphic"></feGaussianBlur>
+        </filter>
+        <filter x="-101.4%" y="-57.7%" width="302.7%" height="215.5%" filterUnits="objectBoundingBox" id="filter-10">
+            <feGaussianBlur stdDeviation="50" in="SourceGraphic"></feGaussianBlur>
+        </filter>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="1">
+            <g id="Group-4">
+                <g id="Group-29">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <g id="Mask"></g>
+                    <g id="bg" mask="url(#mask-2)">
+                        <g transform="translate(0.000000, -475.000000)">
+                            <mask id="mask-4" fill="white">
+                                <use xlink:href="#path-3"></use>
+                            </mask>
+                            <use id="Mask" stroke="none" fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-3"></use>
+                            <g id="Group" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" mask="url(#mask-4)" opacity="0.317406064">
+                                <g transform="translate(-42.000000, 126.000000)">
+                                    <rect id="Rectangle-Copy" fill="#25CDD6" filter="url(#filter-5)" x="0" y="0" width="251" height="442" rx="74"></rect>
+                                    <rect id="Rectangle-Copy-3" fill="#ECA545" filter="url(#filter-6)" x="259" y="192.533958" width="201" height="249.466042" rx="74"></rect>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                    <g id="bg-copy" opacity="0.599400112" mask="url(#mask-2)">
+                        <g transform="translate(0.000000, 597.000000)">
+                            <mask id="mask-8" fill="white">
+                                <use xlink:href="#path-7"></use>
+                            </mask>
+                            <use id="Mask" stroke="none" fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-7"></use>
+                            <g id="Group" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" mask="url(#mask-8)" opacity="0.820754278">
+                                <g transform="translate(-42.000000, 126.000000)">
+                                    <rect id="Rectangle-Copy" fill="#25CDD6" filter="url(#filter-9)" x="0" y="0" width="251" height="442" rx="74"></rect>
+                                    <rect id="Rectangle" fill="#0F3B80" filter="url(#filter-10)" transform="translate(343.000000, 136.119438) rotate(-360.000000) translate(-343.000000, -136.119438) " x="269" y="6.21077283" width="148" height="259.81733" rx="74"></rect>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

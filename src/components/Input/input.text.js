@@ -1,16 +1,38 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import {BaseTextInput as TextInput} from '@components/core';
 import PropTypes from 'prop-types';
+import {BtnMax} from '@src/components/Button';
+import {COLORS} from '@src/styles';
 import {commonStyled as styled} from './input.styled';
+
+const inputStyled = StyleSheet.create({
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomColor: COLORS.lightGrey1,
+    borderBottomWidth: 1,
+    paddingBottom: 10,
+  },
+  inputFocused: {
+    borderBottomColor: COLORS.primary,
+  },
+  input: {
+    flex: 1,
+  },
+});
 
 const Input = React.forwardRef((props, ref) => {
   const {
     label,
     labelStyle,
+    errorStyle,
     validated,
     containerStyled,
     showBorderBottom,
+    hook,
+    inputMax,
+    containerInputStyle,
     ...rest
   } = props;
   const [state, setState] = React.useState({
@@ -43,19 +65,24 @@ const Input = React.forwardRef((props, ref) => {
           {label}
         </Text>
       )}
-      <TextInput
-        {...rest}
-        ref={ref}
+      <View
         style={[
-          styled.input,
-          isFocused ? styled.inputFocused : null,
-          rest.style ? rest.style : null,
+          inputStyled.inputContainer,
+          isFocused && inputStyled.inputFocused,
+          containerInputStyle && containerInputStyle,
         ]}
-        onFocus={onFocus}
-        onBlur={onBlur}
-      />
+      >
+        <TextInput
+          {...rest}
+          ref={ref}
+          style={[inputStyled.input, rest.style ? rest.style : null]}
+          onFocus={onFocus}
+          onBlur={onBlur}
+        />
+        {inputMax.visible && <BtnMax onPress={inputMax.handleShowMax} />}
+      </View>
       {validated && validated.error && (
-        <Text style={styled.error}>{validated.message}</Text>
+        <Text style={[styled.error, errorStyle]}>{validated.message}</Text>
       )}
     </View>
   );
@@ -70,6 +97,13 @@ Input.defaultProps = {
   containerStyled: {},
   showBorderBottom: true,
   labelStyle: {},
+  errorStyle: {},
+  hook: () => null,
+  inputMax: {
+    visible: false,
+    handleShowMax: () => null,
+  },
+  containerInputStyle: null,
 };
 
 Input.propTypes = {
@@ -81,6 +115,13 @@ Input.propTypes = {
   containerStyled: PropTypes.any,
   labelStyle: PropTypes.any,
   showBorderBottom: PropTypes.bool,
+  errorStyle: PropTypes.any,
+  hook: PropTypes.element,
+  inputMax: PropTypes.shape({
+    visible: PropTypes.bool.isRequired,
+    handleShowMax: PropTypes.func.isRequired,
+  }),
+  containerInputStyle: PropTypes.any,
 };
 
 export default Input;

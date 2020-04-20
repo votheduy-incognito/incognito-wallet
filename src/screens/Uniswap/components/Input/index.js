@@ -13,6 +13,7 @@ import CryptoIcon from '@components/CryptoIcon';
 import {COLORS} from '@src/styles';
 import formatUtil from '@utils/format';
 import VerifiedText from '@components/VerifiedText/index';
+import {CONSTANT_CONFIGS} from '@src/constants';
 import {modalStyle, mainStyle, inputStyle} from '../../style';
 import stylesheet from './style';
 
@@ -82,15 +83,16 @@ class Input extends React.Component {
         <CryptoIcon
           tokenId={item.id}
           size={25}
+          uri={`${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${item.symbol}@2x.png`}
         />
         <View style={[mainStyle.twoColumns, mainStyle.flex]}>
           <View style={modalStyle.tokenInfo}>
             <Text style={modalStyle.tokenSymbol}>{item.symbol}</Text>
             <Text style={modalStyle.tokenName}>{item.name}</Text>
           </View>
-          <Text style={[modalStyle.tokenSymbol, mainStyle.textRight]}>
-            {_.castArray(item.protocol).join(', ')}
-          </Text>
+          {/*<Text style={[modalStyle.tokenSymbol, mainStyle.textRight]}>*/}
+          {/*  {_.castArray(item.protocol).join(', ')}*/}
+          {/*</Text>*/}
         </View>
       </TouchableOpacity>
     );
@@ -137,6 +139,7 @@ class Input extends React.Component {
           key={token.id}
           tokenId={token.id}
           size={20}
+          uri={`${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${token.symbol}@2x.png`}
         />
         <VerifiedText text={token.symbol} style={modalStyle.tokenInfo} isVerified={token.isVerified} />
       </View>

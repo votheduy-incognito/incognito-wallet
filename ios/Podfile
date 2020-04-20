@@ -34,7 +34,6 @@ target 'Incognito' do
   pod 'React-RCTText', :path => '../node_modules/react-native/Libraries/Text'
   pod 'React-RCTVibration', :path => '../node_modules/react-native/Libraries/Vibration'
   pod 'React-Core/RCTWebSocket', :path => '../node_modules/react-native/'
-
   pod 'React-cxxreact', :path => '../node_modules/react-native/ReactCommon/cxxreact'
   pod 'React-jsi', :path => '../node_modules/react-native/ReactCommon/jsi'
   pod 'React-jsiexecutor', :path => '../node_modules/react-native/ReactCommon/jsiexecutor'
@@ -91,7 +90,6 @@ target 'Incognito' do
   pod 'CodePush', :path => '../node_modules/react-native-code-push'
   pod 'AppsFlyerFramework'
   pod 'react-native-keep-awake', :path => '../node_modules/react-native-keep-awake'
-  pod 'RNCharts', :path => '../node_modules/react-native-charts-wrapper'
 
   # React-Native is not great about React double-including from the Podfile
   post_install do |installer|

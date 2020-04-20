@@ -24,6 +24,8 @@ import TokenSelect from '@components/TokenSelect';
 import CurrentBalance from '@components/CurrentBalance';
 import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
 import {RefreshControl} from 'react-native';
+import {generateTestId} from '@utils/misc';
+import {SEND} from '@src/constants/elements';
 import {homeStyle} from './style';
 
 export const formName = 'sendCrypto';
@@ -292,6 +294,7 @@ class SendCrypto extends React.Component {
                   validate={validator.combinedIncognitoAddress}
                   showNavAddrBook
                   onOpenAddressBook={onShowFrequentReceivers}
+                  {...generateTestId(SEND.ADDRESS_INPUT)}
                 />
                 <Field
                   component={InputMaxValueField}
@@ -304,6 +307,7 @@ class SendCrypto extends React.Component {
                     keyboardType: 'decimal-pad',
                   }}
                   validate={this.getAmountValidator()}
+                  {...generateTestId(SEND.AMOUNT_INPUT)}
                 />
                 <Field
                   component={InputField}
@@ -319,6 +323,7 @@ class SendCrypto extends React.Component {
                     {marginBottom: 25},
                   ]}
                   validate={descriptionMaxBytes}
+                  {...generateTestId(SEND.MEMO_INPUT)}
                 />
                 <EstimateFee
                   accountName={account?.name}
@@ -333,6 +338,7 @@ class SendCrypto extends React.Component {
                   style={homeStyle.submitBtn}
                   disabled={this.shouldDisabledSubmit()}
                   onPress={handleSubmit(this.handleSend)}
+                  {...generateTestId(SEND.SUBMIT_BUTTON)}
                 />
               </View>
             )}

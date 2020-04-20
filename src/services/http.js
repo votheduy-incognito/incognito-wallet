@@ -1,7 +1,6 @@
 import axios from 'axios';
-import {CONSTANT_CONFIGS, CONSTANT_KEYS} from '@src/constants';
+import {CONSTANT_CONFIGS} from '@src/constants';
 import Log from '@src/services/log';
-import storageService from '@services/storage';
 import {CustomError, ErrorCode, ExHandler} from './exception';
 
 const HEADERS = {'Content-Type': 'application/json'};
