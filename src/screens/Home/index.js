@@ -89,6 +89,12 @@ const pUniswapItem = {
   event: CONSTANT_EVENTS.CLICK_HOME_UNISWAP,
 };
 
+const pStakeItem = {
+  image: icStake,
+  title: 'Stake PRV',
+  route: ROUTE_NAMES.Stake,
+};
+
 const buttons = [
   shieldItem,
   {
@@ -116,11 +122,7 @@ const buttons = [
     event: CONSTANT_EVENTS.CLICK_HOME_TRADE,
   },
   powerItem,
-  {
-    image: icStake,
-    title: 'Stake PRV',
-    route: ROUTE_NAMES.Stake,
-  },
+  pStakeItem,
   pappItem,
   {
     image: icFeedback,
@@ -133,6 +135,8 @@ const buttons = [
   },
   pUniswapItem,
 ];
+
+const tooltipType = '2';
 
 const Home = ({ navigation }) => {
   const account = useSelector(accountSeleclor.defaultAccount);
@@ -177,11 +181,11 @@ const Home = ({ navigation }) => {
   };
 
   const closeTooltip = () => {
-    setViewUniswap(true);
+    setViewUniswap(tooltipType);
   };
 
   const getViewUniswap = async () => {
-    const viewUniswap = await LocalDatabase.getViewUniswapTooltip();
+    const viewUniswap = await LocalDatabase.getViewUniswapTooltip(tooltipType);
     setViewUniswap(viewUniswap);
 
     setTimeout(closeTooltip, 7000);
@@ -204,11 +208,11 @@ const Home = ({ navigation }) => {
         <View style={styles.btnContainer}>
           {buttons.map(item => (
             <View style={styles.btn} key={item.title}>
-              {item === pUniswapItem &&
-                viewUniswap === false && (
+              {item === pStakeItem &&
+                viewUniswap !== tooltipType && (
                 <Tooltip
                   title="New"
-                  desc="Kyber Network has gone Incognito."
+                  desc="Join a PRV staking pool. Get a 57% annual return. Interest paid every second."
                 />
               )}
               <IconTextButton
@@ -223,15 +227,6 @@ const Home = ({ navigation }) => {
           ))}
         </View>
       </ScrollView>
-      {/* No need to use this anymore, wait for new update if needed, currently temporary move to list btns*/}
-      {/* <FloatButton
-        onPress={() =>
-          navigation.navigate('Community', {
-            uri: 'https://incognito.org/c/help/45',
-          })
-        }
-        label="Feedback"
-      /> */}
     </TouchableOpacity>
   );
 };
