@@ -7,10 +7,9 @@ const style = StyleSheet.create({
     paddingVertical: 20,
     alignItems: 'center',
     height: 130,
-    width: width / 3,
+    width: (width - 40) / 3,
     marginBottom: 20,
-    alignSelf: 'center',
-    marginRight: 15,
+    alignSelf: 'flex-start',
   },
   image: {
     marginBottom: 3,
