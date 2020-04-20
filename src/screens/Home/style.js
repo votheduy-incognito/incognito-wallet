@@ -7,14 +7,14 @@ const style = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    justifyContent: 'center', 
-    flex: 1
   },
   btnContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
+    alignContent: 'center',
     width: width - 40,
+    height: '100%',
     marginLeft: 20,
     marginRight: 20,
     marginTop: 10,
