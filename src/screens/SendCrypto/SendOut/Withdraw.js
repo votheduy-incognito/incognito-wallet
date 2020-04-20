@@ -414,7 +414,7 @@ class Withdraw extends React.Component {
                 />
                 {(isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) && (
                   <Text style={[style.warning, shouldBlockETHWrongAddress ? { color: COLORS.red } : {}]}>
-                    Please withdraw to ethereum wallet address only
+                    Please withdraw to wallet addresses only.
                   </Text>
                 )}
                 <Field
