@@ -8,10 +8,11 @@ export const styled = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
-    padding: 20,
+    // padding: 20,
     margin: 20,
     borderRadius: 10,
     justifyContent: 'center',
+    // backgroundColor: `red`
   },
   specialBg: {
     backgroundColor: COLORS.dark4,

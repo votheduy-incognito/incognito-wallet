@@ -9,19 +9,21 @@ import {
 import Modal, {actionToggleModal} from '@src/components/Modal';
 import {BtnDefault} from '@src/components/Button';
 import {useDispatch, useSelector} from 'react-redux';
-import {ArrowUpIcon, SmileIcon} from '@src/components/Icons';
+import {ArrowUpIcon} from '@src/components/Icons';
 import sourceBackground from '@assets/images/icons/stake_background.png';
 import PropTypes from 'prop-types';
 import format from '@src/utils/format';
-import _ from 'lodash';
-import convert from '@src/utils/convert';
 import {styled} from './stake.styled';
 import withStake from './stake.enhance';
 import StakeModal from './stake.modal';
 import {actionChangeFLowStep} from './stake.actions';
 import {DEPOSIT_FLOW, STEP_FLOW} from './stake.constant';
 import {stakeDataSelector, stakeSelector} from './stake.selector';
-import {getTotalBalance} from './stake.utils';
+import {
+  getTotalBalance,
+  MAX_DIGITS_BALANCE_PSTAKE,
+  TIMEOUT_CAL_REALTIME_BALANCE_PSTAKE,
+} from './stake.utils';
 import Header from './stake.header';
 import StakePoolCommunity from './features/StakePoolCommunity';
 
@@ -39,10 +41,6 @@ const Stake = props => {
     nodeTime,
     shouldCalInterestRate,
   } = useSelector(stakeDataSelector);
-  const balanceToHunmanAmount = _.floor(
-    convert.toHumanAmount(balance, pDecimals),
-    9,
-  );
   const initialState = {
     balanceCurrent: 0,
     duration: 1,
@@ -77,8 +75,13 @@ const Stake = props => {
         currentRewardRate,
         rewardDateToMilSec,
       });
-      const totalBalanceFixed = format.balance(totalBalance, pDecimals, 6);
-      const nextNodeTimeCurrent = nextNodeTime + 300;
+      const totalBalanceFixed = format.balance(
+        totalBalance,
+        pDecimals,
+        MAX_DIGITS_BALANCE_PSTAKE,
+      );
+      const nextNodeTimeCurrent =
+        nextNodeTime + TIMEOUT_CAL_REALTIME_BALANCE_PSTAKE;
       await setState({
         ...state,
         balanceCurrent: totalBalanceFixed,
@@ -93,14 +96,21 @@ const Stake = props => {
   };
   React.useEffect(() => {
     if (balance !== 0 && shouldCalInterestRate) {
-      const intervalId = setInterval(handleReCalBalance, 300);
+      const intervalId = setInterval(
+        handleReCalBalance,
+        TIMEOUT_CAL_REALTIME_BALANCE_PSTAKE,
+      );
       return () => {
         clearInterval(intervalId);
       };
     } else {
       setState({
         ...state,
-        balanceCurrent: format.balance(balance, pDecimals, 6),
+        balanceCurrent: format.balance(
+          balance,
+          pDecimals,
+          MAX_DIGITS_BALANCE_PSTAKE,
+        ),
       });
     }
   }, [balance, nextNodeTime]);
@@ -140,7 +150,6 @@ const Stake = props => {
                 {`${currentRewardRate}%`}
               </Text>
               <Text style={styled.desc}>Annual Rate</Text>
-              {/* <SmileIcon /> */}
             </View>
           </View>
           <BtnDefault
