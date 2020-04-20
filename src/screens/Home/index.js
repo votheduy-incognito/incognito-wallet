@@ -1,5 +1,9 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, Dimensions, PixelRatio, Platform} from 'react-native';
+import LinkingService from '@src/services/linking';
+import AppUpdater from '@components/AppUpdater/index';
+import {isIOS} from '@utils/platform';
+import deviceInfo from 'react-native-device-info';
 import PropTypes from 'prop-types';
 import { TouchableOpacity, View } from '@src/components/core';
 import icShield from '@assets/images/icons/ic_shield_btn.png';
@@ -19,7 +23,6 @@ import SettingIcon from '@components/SettingIcon/index';
 import { useSelector } from 'react-redux';
 import accountSeleclor from '@src/redux/selectors/account';
 import dexUtil from '@utils/dex';
-import LinkingService from '@src/services/linking';
 import { CONSTANT_EVENTS } from '@src/constants';
 import LocalDatabase from '@utils/LocalDatabase';
 import { withdraw } from '@services/api/withdraw';
@@ -67,7 +70,18 @@ const powerItem = {
     );
   },
 };
+const sendFeedback = async () => {
+  const buildVersion = AppUpdater.appVersion;
+  const { width, height } = Dimensions.get('window');
+  const deviceInfomation = `${await deviceInfo.getModel()}, OS version ${Platform.Version}, screen size: ${PixelRatio.getPixelSizeForLayoutSize(height)}x${PixelRatio.getPixelSizeForLayoutSize(width)}`;
+  const title = `Incognito wallet ${buildVersion} ${isIOS() ? 'iOS' : 'Android'} ${deviceInfomation} feedback`;
+  const email = 'go@incognito.org';
+  let content = 'Please include as much detail as possible. Thanks for your time!';
+  
 
+  LinkingService.openUrl(`mailto:${email}?subject=${title}&body=${content}`);
+
+};
 const pUniswapItem = {
   image: icKyber,
   title: 'pKyber',
@@ -114,9 +128,10 @@ const buttons = [
     image: icFeedback,
     title: 'Feedback',
     route: ROUTE_NAMES.Community,
-    params: {
-      uri: 'https://incognito.org/c/help/45',
-    }
+    // params: {
+    //   uri: 'https://incognito.org/c/help/45',
+    // }
+    onPress: () => sendFeedback()
   },
   pUniswapItem,
 ];
