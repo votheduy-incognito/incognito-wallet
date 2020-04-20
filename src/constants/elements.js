@@ -44,4 +44,11 @@ export const TOKEN = {
   TRANSACTION_TIME: 'transaction-time',
   TRANSACTION_STATUS: 'transaction-status',
   TRANSACTION_CONTENT: 'transaction-content',
+  CURRENT: 'current-token-name',
+  RECEIVE_BTN: 'receive-btn'
+};
+
+export const COPYABLE_ADDRESS = {
+  ADDRESS: 'address',
+  CPY_ICO: 'copy_icon',
 };
