@@ -1,19 +1,22 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
 import {COLORS} from '@src/styles';
 
+const {width} = Dimensions.get('window');
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 15,
+  },
+  contentContainer: {
+    justifyContent: 'center', 
+    flex: 1
   },
   btnContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
-    width: '100%',
-    maxWidth: 320,
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    width: width - 40,
+    marginLeft: 20,
+    marginRight: 20,
     marginTop: 10,
   },
   content: {
@@ -31,7 +34,9 @@ const style = StyleSheet.create({
     alignContent: 'center',
     height: 70,
     alignItems: 'center',
-    justifyContent: 'space-around',
+    paddingEnd: 20,
+    paddingLeft: 20,
+    justifyContent: 'space-between',
   },
   accTitle: {
     color: COLORS.black

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView } from 'react-native';
 import PropTypes from 'prop-types';
-import {TouchableOpacity, View} from '@src/components/core';
+import { TouchableOpacity, View } from '@src/components/core';
 import icShield from '@assets/images/icons/ic_shield_btn.png';
 import icSend from '@assets/images/icons/ic_send_btn.png';
 import icReceive from '@assets/images/icons/ic_receive_btn.png';
@@ -185,12 +185,12 @@ const Home = ({ navigation }) => {
         <AccountSelect customTitleStyle={styles.accTitle} icoColor={COLORS.black} />
         <SettingIcon />
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.contentContainer}>
         <View style={styles.btnContainer}>
           {buttons.map(item => (
             <View style={styles.btn} key={item.title}>
               {item === pUniswapItem &&
-              viewUniswap === false && (
+                viewUniswap === false && (
                 <Tooltip
                   title="New"
                   desc="Kyber Network has gone Incognito."

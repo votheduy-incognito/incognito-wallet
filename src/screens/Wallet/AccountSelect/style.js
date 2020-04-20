@@ -15,7 +15,7 @@ const style = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 17,
+    fontSize: 18,
     color: COLORS.white,
     fontFamily: FONT.NAME.medium,
     marginEnd: 5,
