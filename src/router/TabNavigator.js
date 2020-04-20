@@ -59,7 +59,6 @@ const styles = StyleSheet.create({
   container: {
     paddingVertical: 10,
     height: 70,
-    marginBottom: 25,
     backgroundColor: COLORS.white,
   },
   // activeLabel: {
