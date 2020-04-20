@@ -2,6 +2,8 @@ import { View, Text } from '@src/components/core';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {generateTestId} from '@utils/misc';
+import {WALLET} from '@src/constants/elements';
 import styleSheet from './style';
 
 class VerifiedText extends Component {
@@ -16,7 +18,7 @@ class VerifiedText extends Component {
 
     return (
       <View style={[styleSheet.container, containerStyle]}>
-        <Text {...textProps} style={[styleSheet.text, style]}>{text}</Text>
+        <Text {...textProps} style={[styleSheet.text, style]} {...generateTestId(WALLET.TOKEN_CODE)}>{text}</Text>
         { isVerified && (
           <View style={styleSheet.verifiedFlagContainer}>
             <Icons style={styleSheet.verifiedFlag} name='check-circle' size={14} />
