@@ -23,8 +23,6 @@ import {
 import {DEPOSIT_FLOW} from '@screens/Stake/stake.constant';
 import {ExHandler} from '@src/services/exception';
 import {getTotalBalance} from '@screens/Stake/stake.utils';
-import convert from '@src/utils/convert';
-import _ from 'lodash';
 import withChoseAccount from './ChooseAccount.enhance';
 
 const styled = StyleSheet.create({

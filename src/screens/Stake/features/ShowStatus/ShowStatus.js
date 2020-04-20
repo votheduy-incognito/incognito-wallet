@@ -6,6 +6,7 @@ import {
   activeFlowSelector,
   createStakeSelector,
   stakeDataSelector,
+  pStakeAccountSelector,
 } from '@screens/Stake/stake.selector';
 import {COLORS, FONT} from '@src/styles';
 import {BtnDefault} from '@src/components/Button';
@@ -78,6 +79,7 @@ const ShowStatus = () => {
     warningStatus,
     activeFlow,
   } = useSelector(activeFlowSelector);
+  const pStakeAccount = useSelector(pStakeAccountSelector);
   const {backup} = useSelector(createStakeSelector);
   const {symbol, pDecimals} = useSelector(stakeDataSelector);
   const hookFactories = [
@@ -102,7 +104,9 @@ const ShowStatus = () => {
         navigation.navigate(routeNames.StakeHistory);
       } else {
         await LocalDatabase.saveBackupStakeKey();
-        navigation.navigate(routeNames.BackupKeys);
+        navigation.navigate(routeNames.ExportAccount, {
+          account: pStakeAccount,
+        });
       }
       break;
     }
@@ -128,7 +132,6 @@ const ShowStatus = () => {
           <Text style={styled.warning}>{warningStatus}</Text>
         </View>
       )}
-
       <BtnDefault
         title={btnSubmitStatus}
         btnStyle={styled.btnSubmit}
