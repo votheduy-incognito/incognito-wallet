@@ -9,6 +9,8 @@ import activeAccount from '@src/assets/images/icons/ic_account_active.png';
 import deactiveAccount from '@src/assets/images/icons/ic_account_deactive.png';
 import PropTypes from 'prop-types';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { generateTestId } from '@utils/misc';
+import { WALLET } from '@src/constants/elements';
 import styles from './style';
 
 const AccountSelect = ({ customTitleStyle, icoColor }) => {
@@ -54,6 +56,7 @@ const AccountSelect = ({ customTitleStyle, icoColor }) => {
       toggleStyle={styles.toggle}
       maxHeight={500}
       itemStyle={styles.item}
+      {...generateTestId(WALLET.ACCOUNT_SELECT_BTN)}
       icon={(
         <View style={styles.textContainer}>
           <Text numberOfLines={1} style={[styles.title, customTitleStyle]}>{account?.name}</Text>
