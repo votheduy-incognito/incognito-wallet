@@ -4,6 +4,8 @@ import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Icon } from 'react-native-elements';
+import { generateTestId } from '@utils/misc';
+import { COPYABLE_ADDRESS } from '@src/constants/elements';
 import styleSheet from './style';
 
 function handlePress(text, { copiedMessage }, onPress) {
@@ -34,12 +36,13 @@ const CopiableText = ({
         style={styleSheet.text}
         {...(oneLine ? { numberOfLines: 1, ellipsizeMode: 'middle' } : {})}
         {...textProps}
+        {...generateTestId(COPYABLE_ADDRESS.ADDRESS)}
       >
         {text}
       </Text>
     )}
     {showCopyIcon && (
-      <Icon type='material' name="content-copy" size={20} style={[styleSheet.copyIcon, oneLine ? { marginBottom: 10 } : {}]} color={COLORS.primary} />
+      <Icon type='material' name="content-copy" size={20} style={[styleSheet.copyIcon, oneLine ? { marginBottom: 10 } : {}]} color={COLORS.primary} {...generateTestId(COPYABLE_ADDRESS.CPY_ICO)} />
     )}
   </TouchableOpacity>
 );
