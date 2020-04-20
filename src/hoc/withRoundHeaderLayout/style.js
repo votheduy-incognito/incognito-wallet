@@ -12,7 +12,7 @@ const style = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 20,
     paddingEnd: 20,
-    justifyContent: 'space-around'
+    justifyContent: 'space-between'
   },
   content: {
     flex: 1,
