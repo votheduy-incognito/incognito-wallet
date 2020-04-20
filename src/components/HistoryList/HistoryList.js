@@ -6,6 +6,8 @@ import { COLORS } from '@src/styles';
 import formatUtil from '@src/utils/format';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { generateTestId } from '@utils/misc';
+import { TOKEN } from '@src/constants/elements';
 import Swipeout from 'react-native-swipeout';
 import styleSheet from './style';
 
@@ -147,6 +149,7 @@ const HistoryItem = ({ history, divider, navigation }) => {
             style={[styleSheet.typeText]}
             numberOfLines={1}
             ellipsizeMode="tail"
+            {...generateTestId(TOKEN.TRANSACTION_TYPE)}
           >
             {typeText}
           </Text>
@@ -154,6 +157,7 @@ const HistoryItem = ({ history, divider, navigation }) => {
             style={styleSheet.timeText}
             numberOfLines={1}
             ellipsizeMode="tail"
+            {...generateTestId(TOKEN.TRANSACTION_TIME)}
           >
             {formatUtil.formatDateTime(history.time)}
           </Text>
@@ -165,6 +169,7 @@ const HistoryItem = ({ history, divider, navigation }) => {
             }]}
             numberOfLines={1}
             ellipsizeMode="tail"
+            {...generateTestId(TOKEN.TRANSACTION_CONTENT)}
           >
             {
               amount ? `${balanceDirection} ${amount} ${history.symbol}` : ''
@@ -174,6 +179,7 @@ const HistoryItem = ({ history, divider, navigation }) => {
             style={[styleSheet.statusText, { color: statusColor }]}
             numberOfLines={1}
             ellipsizeMode="tail"
+            {...generateTestId(TOKEN.TRANSACTION_STATUS)}
           >
             {statusText} {(!!statusNumber || statusNumber === 0) ? `[${statusNumber}]` : null}
           </Text>
