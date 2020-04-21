@@ -295,7 +295,10 @@ class Withdraw extends React.Component {
     if (fee !== 0 && !fee) {
       return true;
     }
-
+    const { shouldBlockETHWrongAddress } = this.state;
+    if (shouldBlockETHWrongAddress) {
+      return true;
+    }
     return false;
   };
 
