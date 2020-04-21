@@ -21,6 +21,7 @@ const KEYS = {
   WITHDRAWAL_DATA: '$WITHDRAWAL_DATA',
   SUBSCRIBE_TOPIC_KEY: 'all-production',
   BACKUP_STAKE_KEY: '$BACKUP_STAKE_KEY',
+  SCREEN_STAKE_GUIDE: '$SCREEN_STAKE_GUIDE',
 };
 
 const KEYS_TESTNET = {
@@ -44,6 +45,7 @@ const KEYS_TESTNET = {
   WITHDRAWAL_DATA: `${prefix_network}_$WITHDRAWAL_DATA`,
   SUBSCRIBE_TOPIC_KEY: 'all-staging',
   BACKUP_STAKE_KEY: `${prefix_network}_$BACKUP_STAKE_KEY`,
+  SCREEN_STAKE_GUIDE: `${prefix_network}_$SCREEN_STAKE_GUIDE`,
 };
 
 const PASSPHRASE_KEY_REVERVE = isMainnet

@@ -11,13 +11,15 @@ import Header from './features/Header';
 
 const styled = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignSelf: 'center',
-    padding: 20,
-    width: '100%',
-    zIndex: 100,
     minWidth: 320,
+    flex: 1,
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    left: 0,
+    bottom: 0,
+    padding: 20,
+    justifyContent: 'center',
   },
 });
 

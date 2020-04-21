@@ -78,7 +78,7 @@ const Header = () => {
         <Text style={styled.title}>{headerTitle}</Text>
       </View>
       <View style={styled.btnClose}>
-        <BtnClose onPress={handleToggleModal} />
+        <BtnClose colorIcon={COLORS.white} onPress={handleToggleModal} />
       </View>
     </View>
   );
