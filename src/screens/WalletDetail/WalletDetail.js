@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Text, View, ActivityIndicator, Image, TouchableScale} from '@src/components/core';
+import { Text, View, ActivityIndicator, Image, TouchableScale } from '@src/components/core';
 import Card from '@components/Card';
 import ROUTE_NAMES from '@src/router/routeNames';
 import { COLORS } from '@src/styles';
@@ -12,6 +12,8 @@ import depositIcon from '@src/assets/images/icons/ic_shield_btn.png';
 import receiveIcon from '@src/assets/images/icons/ic_receive_btn.png';
 import { ExHandler } from '@src/services/exception';
 import dexUtils from '@src/utils/dex';
+import { generateTestId } from '@utils/misc';
+import { TOKEN } from '@src/constants/elements';
 import styles from './style';
 
 class WalletDetail extends Component {
@@ -44,7 +46,11 @@ class WalletDetail extends Component {
   };
 
   renderActionButton = ({ label, icon, onPress, isDeposable }) => (
-    <TouchableScale onPress={onPress} style={isDeposable ? styles.btn2 : styles.btn}>
+    <TouchableScale
+      onPress={onPress}
+      style={isDeposable ? styles.btn2 : styles.btn}
+      {...generateTestId(label === 'Send' ? TOKEN.SEND : (label === 'Receive' ? TOKEN.RECEIVE : TOKEN.SHIELD))}
+    >
       <Image source={icon} />
       <Text>{label}</Text>
     </TouchableScale>

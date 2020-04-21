@@ -7,6 +7,8 @@ import { useSelector } from 'react-redux';
 import { dataNotificationsSelector } from '@src/screens/Notification/Notification.selector';
 import withFCM from '@src/screens/Notification/Notification.withFCM';
 import { compose } from 'recompose';
+import {generateTestId} from '@utils/misc';
+import {HEADER} from '@src/constants/elements';
 import styles from './style';
 
 const withTopRoundHeaderLayout = WrappedComp => props => {

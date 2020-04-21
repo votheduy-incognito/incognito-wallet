@@ -16,9 +16,10 @@ const styled = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 20,
-    paddingTop: 40,
+    paddingTop: 30,
   },
   hasNotch: {
+    paddingTop: 40,
   },
   title: {
     fontFamily: FONT.NAME.medium,
@@ -27,9 +28,8 @@ const styled = StyleSheet.create({
     color: COLORS.black,
     paddingTop: 2,
   },
-  right: {
-    padding: 5,
-  },
+  right: {},
+  left: {},
 });
 
 const StakeHeader = () => {

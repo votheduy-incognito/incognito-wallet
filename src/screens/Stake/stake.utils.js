@@ -3,6 +3,9 @@ import {ExHandler} from '@src/services/exception';
 import _ from 'lodash';
 import convert from '@src/utils/convert';
 
+export const MAX_DIGITS_BALANCE_PSTAKE = 9;
+export const TIMEOUT_CAL_REALTIME_BALANCE_PSTAKE = 70;
+
 export const STAKE = {
   MAIN_ACCOUNT: 'pStake',
 };

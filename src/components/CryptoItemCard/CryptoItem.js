@@ -4,6 +4,8 @@ import { View, Text, TouchableScale, ActivityIndicator } from '@src/components/c
 import CryptoIcon from '@src/components/CryptoIcon';
 import formatUtil from '@src/utils/format';
 import VerifiedText from '@src/components/VerifiedText';
+import { generateTestId } from '@utils/misc';
+import { WALLET } from '@src/constants/elements';
 import cryptoItemStyle from './style';
 
 const CryptoItem = ({ fullName, iconUrl, name, amount, onPress, symbol, isGettingBalance, style, pDecimals, tokenId, rightComponent, isVerified }) => (
@@ -13,7 +15,7 @@ const CryptoItem = ({ fullName, iconUrl, name, amount, onPress, symbol, isGettin
     </View>
     <View style={cryptoItemStyle.cryptoNameContainer}>
       <VerifiedText text={fullName} numberOfLines={1} ellipsizeMode="tail" style={cryptoItemStyle.mainNameText} isVerified={isVerified} />
-      <Text style={cryptoItemStyle.subNameText} numberOfLines={1} ellipsizeMode="tail">{name}</Text>
+      <Text style={cryptoItemStyle.subNameText} numberOfLines={1} ellipsizeMode="tail" {...generateTestId(WALLET.TOKEN_NAME)}>{name}</Text>
     </View>
     <View style={cryptoItemStyle.rightContainer}>
       {
@@ -23,7 +25,7 @@ const CryptoItem = ({ fullName, iconUrl, name, amount, onPress, symbol, isGettin
             isGettingBalance ?
               <ActivityIndicator size="small" /> : (
                 amount != null ?
-                  <Text style={cryptoItemStyle.amountText} numberOfLines={1} ellipsizeMode="tail">{formatUtil.amount(amount, pDecimals)} {symbol}</Text> :
+                  <Text style={cryptoItemStyle.amountText} numberOfLines={1} ellipsizeMode="tail" {...generateTestId(WALLET.TOKEN_ITEM_VAL)}>{formatUtil.amount(amount, pDecimals)} {symbol}</Text> :
                   <Text style={cryptoItemStyle.getAmountFailedText}>---</Text>
               )
           )
@@ -48,7 +50,7 @@ CryptoItem.defaultProps = {
 };
 
 CryptoItem.propTypes = {
-  pDecimals: PropTypes.oneOfType([ PropTypes.number, PropTypes.string ]),
+  pDecimals: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   fullName: PropTypes.string,
   name: PropTypes.string,
   amount: PropTypes.number,
