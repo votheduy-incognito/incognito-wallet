@@ -354,12 +354,8 @@ class Withdraw extends React.Component {
       shouldBlockETHWrongAddress: false
     });
 
-    change('', 'toAddress', '');
-
-    const { externalSymbol, isErc20Token } = selectedPrivacy || {};
-    let isETH = isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
-    let ETHValid = walletValidator.validate(tempAddress, 'ETH', 'both');
-    this.checkIfValidAddressETH(tempAddress, isETH, ETHValid);
+    const { rfChange } = this.props;
+    rfChange('withdraw', 'toAddress', null);
   };
 
   checkIfValidAddressETH = (address, isETH, isETHValid) => {
