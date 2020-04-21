@@ -7,13 +7,14 @@ import CurrentBalance from './CurrentBalance';
 
 const CurrentBalanceContainer = ({ selectedPrivacy, symbol, select }) => {
   if (!selectedPrivacy) return null;
-
-  return <CurrentBalance
-    amount={formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy?.pDecimals)}
-    symbol={symbol ?? selectedPrivacy?.symbol}
-    select={select}
-    tokenId={selectedPrivacy.tokenId}
-  />;
+  return (
+    <CurrentBalance
+      amount={formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy?.pDecimals)}
+      symbol={symbol ?? selectedPrivacy?.symbol}
+      select={select}
+      tokenId={selectedPrivacy.tokenId}
+    />
+  );
 };
 
 const mapState = state => ({
