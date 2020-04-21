@@ -66,6 +66,7 @@ class Withdraw extends React.Component {
       supportedFeeTypes: [],
       feeForBurn: 0,
       shouldBlockETHWrongAddress: false,
+      tempAddress: ''
     };
   }
 
@@ -318,12 +319,19 @@ class Withdraw extends React.Component {
   };
 
   handleSelectToken = tokenId => {
-    const { setSelectedPrivacy } = this.props;
-    console.log(tokenId);
+    const { setSelectedPrivacy, selectedPrivacy } = this.props;
+    const { tempAddress } = this.state;
     setSelectedPrivacy(tokenId);
     this.setState({
       shouldBlockETHWrongAddress: false
     });
+
+    change('', 'toAddress', '');
+
+    const { externalSymbol, isErc20Token } = selectedPrivacy || {};
+    let isETH = isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
+    let ETHValid = walletValidator.validate(tempAddress, 'ETH', 'both');
+    this.checkIfValidAddressETH(tempAddress, isETH, ETHValid);
   };
 
   checkIfValidAddressETH = (address, isETH, isETHValid) => {
@@ -335,7 +343,6 @@ class Withdraw extends React.Component {
             return response.json();
           })
           .then((data) => {
-            console.log(LogManager.parseJsonObjectToJsonString(data));
             if (data && data.Result === false) {
               this.setState({ shouldBlockETHWrongAddress: true });
             } else {
@@ -403,6 +410,9 @@ class Withdraw extends React.Component {
                 <Field
                   component={InputQRField}
                   onChange={(text) => {
+                    this.setState({ tempAddress: text }, () => {
+
+                    });
                     // I wanna check text is ETH valid coin
                     let ETHValid = walletValidator.validate(text, 'ETH', 'both');
                     this.checkIfValidAddressETH(text, isETH, ETHValid);

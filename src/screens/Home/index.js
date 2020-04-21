@@ -84,7 +84,7 @@ const sendFeedback = async () => {
 };
 const pUniswapItem = {
   image: icKyber,
-  title: 'pKyber',
+  title: 'pKyber (testnet)',
   route: ROUTE_NAMES.pUniswap,
   event: CONSTANT_EVENTS.CLICK_HOME_UNISWAP,
 };
@@ -123,7 +123,7 @@ const buttons = [
   },
   powerItem,
   pStakeItem,
-  pappItem,
+  pUniswapItem,
   {
     image: icFeedback,
     title: 'Feedback',
@@ -133,7 +133,7 @@ const buttons = [
     // }
     onPress: () => sendFeedback()
   },
-  pUniswapItem,
+  
 ];
 
 const tooltipType = '2';
