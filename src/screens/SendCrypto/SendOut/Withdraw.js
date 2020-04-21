@@ -267,7 +267,10 @@ class Withdraw extends React.Component {
     if (fee !== 0 && !fee) {
       return true;
     }
-
+    const { shouldBlockETHWrongAddress } = this.state;
+    if (shouldBlockETHWrongAddress) {
+      return true;
+    }
     return false;
   };
 
@@ -399,10 +402,10 @@ class Withdraw extends React.Component {
               <>
                 <Field
                   component={InputQRField}
-                  onChange={(text) => { 
+                  onChange={(text) => {
                     // I wanna check text is ETH valid coin
                     let ETHValid = walletValidator.validate(text, 'ETH', 'both');
-                    this.checkIfValidAddressETH(text, isETH, ETHValid); 
+                    this.checkIfValidAddressETH(text, isETH, ETHValid);
                   }}
                   name="toAddress"
                   label="To"
