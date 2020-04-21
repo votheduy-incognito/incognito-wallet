@@ -123,7 +123,7 @@ const buttons = [
   },
   powerItem,
   pStakeItem,
-  pUniswapItem,
+  // pUniswapItem,
   {
     image: icFeedback,
     title: 'Feedback',
