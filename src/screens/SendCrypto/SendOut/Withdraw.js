@@ -354,9 +354,14 @@ class Withdraw extends React.Component {
       shouldBlockETHWrongAddress: false
     });
 
+    this.clearAddressField();
+  };
+
+  clearAddressField = () => {
     const { rfChange } = this.props;
     rfChange('withdraw', 'toAddress', null);
-  };
+    this.setState({ shouldBlockETHWrongAddress: false });
+  }
 
   checkIfValidAddressETH = (address, isETH, isETHValid) => {
     if (isETH && isETHValid && address != '') {
@@ -446,7 +451,11 @@ class Withdraw extends React.Component {
                   placeholder={`Enter your ${tokenName} address`}
                   style={style.input}
                   validate={addressValidator}
-                  onOpenAddressBook={onShowFrequentReceivers}
+                  onOpenAddressBook={()=>{
+                    // onChange will not works for now, we have to refactor after.
+                    this.clearAddressField(); 
+                    // Clear address field for a while before going to refactor.
+                    onShowFrequentReceivers(); }}
                   showNavAddrBook
                 />
                 {(isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) && (
