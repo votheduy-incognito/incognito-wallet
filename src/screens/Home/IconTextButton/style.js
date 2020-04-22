@@ -6,7 +6,7 @@ const style = StyleSheet.create({
   btn: {
     paddingVertical: 20,
     alignItems: 'center',
-    height: 130,
+    height: 120,
     width: (width - 40) / 3,
     marginBottom: 15,
     alignSelf: 'flex-start',
