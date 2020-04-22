@@ -208,7 +208,7 @@ const Home = ({ navigation }) => {
   return (
     <TouchableOpacity style={{ flex: 1 }} onPress={closeTooltip}>
       <SafeAreaView>
-        <ScrollView contentContainerStyle={{ }}>
+        <ScrollView contentContainerStyle={{height: '100%'}}>
           <View>
             <Text numberOfLines={3} multiLine style={styles.titleHeader}>{'Incognito mode \nFor your crypto'}
             </Text>
