@@ -14,7 +14,7 @@ const style = StyleSheet.create({
     alignItems: 'center',
     alignContent: 'center',
     width: width,
-    marginTop: 10,
+    marginTop: 20,
   },
   content: {
     flex: 1,
@@ -38,8 +38,8 @@ const style = StyleSheet.create({
   },
   titleHeader: {
     fontFamily: FONT.NAME.bold,
-    fontSize: 25,
-    marginTop: 10,
+    fontSize: 26,
+    marginTop: 20,
     marginLeft: 35,
     marginEnd: 35,
   }
