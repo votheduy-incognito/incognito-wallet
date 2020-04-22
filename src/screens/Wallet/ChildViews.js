@@ -30,7 +30,6 @@ const style = StyleSheet.create({
   },
   item: {
     flexDirection: 'row',
-    alignItems: 'center',
     marginVertical: 8,
   },
   itemIcon: {
@@ -48,7 +47,7 @@ const style = StyleSheet.create({
     color: COLORS.lightGrey9,
     letterSpacing: 0,
     lineHeight: scaleInApp(23),
-    marginBottom: scaleInApp(10),
+    marginBottom: scaleInApp(3),
   },
   buttonText: {
     fontSize: scaleInApp(16),
