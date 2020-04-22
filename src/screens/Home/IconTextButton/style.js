@@ -6,14 +6,14 @@ const style = StyleSheet.create({
   btn: {
     paddingVertical: 20,
     alignItems: 'center',
-    height: height > 640 ? 115 : 100,
+    height: 120,
     width: (width - 40) / 3,
     marginBottom: 15,
     alignSelf: 'flex-start',
   },
   image: {
     marginBottom: 3,
-    height: height > 640 ? 60 : 50,
+    height: 60,
     resizeMode: 'contain',
   },
   title: {
