@@ -7,7 +7,7 @@ const style = StyleSheet.create({
   select: {
     position: 'absolute',
     right: -40,
-    bottom: -30,
+    bottom: -27, // Should be a half
     height: 54,
   },
   iconContainer: {
