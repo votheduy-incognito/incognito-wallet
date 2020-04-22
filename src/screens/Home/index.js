@@ -36,7 +36,7 @@ import styles from './style';
 
 const settingItem = {
   image: icSetting,
-  title: 'Setting',
+  title: 'Settings',
   desc: '',
   route: ROUTE_NAMES.Setting,
 };
