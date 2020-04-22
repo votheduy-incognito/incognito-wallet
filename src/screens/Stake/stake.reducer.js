@@ -19,6 +19,7 @@ import {
   ACTION_FETCHED_CREATE_UNSTAKE,
   ACTION_FETCH_FAIL_CREATE_UNSTAKE,
   ACTION_BACKUP_CREATE_STAKE,
+  ACTION_TOGGLE_GUIDE,
 } from './stake.constant';
 import {DEFAULT_REWARD_RATE} from './stake.utils';
 
@@ -63,6 +64,12 @@ const initialState = {
     isFetched: false,
     data: null,
   },
+  createUnStakeRewards: {
+    isFetching: false,
+    isFetched: false,
+    data: null,
+  },
+  guide: null,
 };
 
 export default (state = initialState, action) => {
@@ -267,6 +274,12 @@ export default (state = initialState, action) => {
         isFetched: false,
         isFetching: false,
       },
+    };
+  }
+  case ACTION_TOGGLE_GUIDE: {
+    return {
+      ...state,
+      guide: true,
     };
   }
   default:

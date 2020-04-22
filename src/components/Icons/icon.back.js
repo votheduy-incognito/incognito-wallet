@@ -7,19 +7,16 @@ const styled = StyleSheet.create({
     width: 12,
     height: 20,
   },
-  container: {},
 });
 
 const ReadIcon = props => {
   const {style, source, ...rest} = props;
   return (
-    <View style={styled.container}>
-      <Image
-        source={srcBackIcon}
-        style={[styled.defaultStyle, style]}
-        {...rest}
-      />
-    </View>
+    <Image
+      source={srcBackIcon}
+      style={[styled.defaultStyle, style]}
+      {...rest}
+    />
   );
 };
 

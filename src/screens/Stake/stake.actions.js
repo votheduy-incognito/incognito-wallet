@@ -23,12 +23,17 @@ import {
   ACTION_FETCHED_CREATE_UNSTAKE,
   ACTION_FETCH_FAIL_CREATE_UNSTAKE,
   ACTION_BACKUP_CREATE_STAKE,
+  ACTION_FETCHING_CREATE_UNSTAKE_REWARDS,
+  ACTION_FETCH_FAIL_CREATE_UNSTAKE_REWARDS,
+  ACTION_FETCHED_CREATE_UNSTAKE_REWARDS,
+  ACTION_TOGGLE_GUIDE,
 } from './stake.constant';
 import {
   apiGetMasterAddress,
   apiGetStakerInfo,
   apiCreateStake,
   apiUnStake,
+  apiUnStakeRewards,
 } from './stake.services';
 import {
   stakeSelector,
@@ -75,12 +80,6 @@ export const actionFetch = () => async (dispatch, getState) => {
       await apiGetStakerInfo({paymentAddress: pStakeAccount?.PaymentAddress}),
       await getNodeTime(),
     ]);
-    console.log(
-      'dataMasterAddress',
-      dataMasterAddress,
-      'dataStakerInfo',
-      dataStakerInfo,
-    );
     const payload = mappingData(dataMasterAddress, dataStakerInfo);
     await dispatch(
       actionFetched({
@@ -276,3 +275,64 @@ export const actionFetchCreateUnStake = ({amount}) => async (
     throw new Error(error);
   }
 };
+
+export const actionFetchingCreateUnStakeRewards = () => ({
+  type: ACTION_FETCHING_CREATE_UNSTAKE_REWARDS,
+});
+
+export const actionFetchedCreateUnStakeRewards = payload => ({
+  type: ACTION_FETCHED_CREATE_UNSTAKE_REWARDS,
+  payload,
+});
+
+export const actionFetchFailCreateUnStakeRewards = () => ({
+  type: ACTION_FETCH_FAIL_CREATE_UNSTAKE_REWARDS,
+});
+
+export const actionFetchCreateUnStakeRewards = ({amount}) => async (
+  dispatch,
+  getState,
+) => {
+  try {
+    const state = getState();
+    const {isFetching} = createUnStakeSelector(state);
+    if (isFetching) {
+      return;
+    }
+    await dispatch(actionFetchingCreateUnStakeRewards());
+    const pStakeAccount = pStakeAccountSelector(state);
+    const {account} = activeFlowSelector(state);
+    const originalAmount = convert.toOriginalAmount(
+      convert.toNumber(amount),
+      CONSTANT_COMMONS.PRV.pDecimals,
+    );
+    const signEncode = await signPoolWithdraw(
+      pStakeAccount?.PrivateKey,
+      account?.PaymentAddress,
+      originalAmount,
+    );
+    const data = {
+      PStakeAddress: pStakeAccount?.PaymentAddress,
+      PaymentAddress: account?.PaymentAddress,
+      Amount: originalAmount,
+      SignEncode: signEncode,
+    };
+    const payload = await apiUnStakeRewards(data);
+    if (payload?.ID) {
+      return await new Promise.all([
+        await dispatch(actionFetchedCreateUnStakeRewards(payload)),
+        await dispatch(
+          actionChangeFlowAmount({amount: payload?.Amount || amount}),
+        ),
+        await dispatch(actionFetch()),
+      ]);
+    }
+  } catch (error) {
+    await dispatch(actionFetchFailCreateUnStakeRewards());
+    throw new Error(error);
+  }
+};
+
+export const actionToggleGuide = () => ({
+  type: ACTION_TOGGLE_GUIDE,
+});

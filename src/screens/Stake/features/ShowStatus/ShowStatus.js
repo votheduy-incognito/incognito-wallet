@@ -19,6 +19,7 @@ import Hook from '@screens/Stake/features/Hook';
 import format from '@src/utils/format';
 import LocalDatabase from '@src/utils/LocalDatabase';
 import withShowStatus from './ShowStatus.enhance';
+import ShowStatusDeposit from './ShowStatus.deposit';
 
 const styled = StyleSheet.create({
   container: {
@@ -120,6 +121,14 @@ const ShowStatus = () => {
     }
     await dispatch(actionToggleModal());
   };
+  if (activeFlow === DEPOSIT_FLOW) {
+    return (
+      <ShowStatusDeposit
+        btnSubmitStatus={btnSubmitStatus}
+        onHandlePress={onHandlePress}
+      />
+    );
+  }
   return (
     <View style={styled.container}>
       <BlockChecked title={titleStatus} />

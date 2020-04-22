@@ -1,9 +1,9 @@
 import React from 'react';
 import {
   StyleSheet,
-  TouchableOpacity,
   Text,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {FONT, COLORS} from '@src/styles';
@@ -37,6 +37,7 @@ const BtnLinear = props => {
     <TouchableOpacity
       style={[styled.btnStyle, disabled ? styled.disabled : null, btnStyle]}
       {...{...rest, disabled}}
+      activeOpacity={0.9}
     >
       <Text
         style={[styled.title, titleStyle]}
