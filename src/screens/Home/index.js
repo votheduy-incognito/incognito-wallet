@@ -209,7 +209,7 @@ const Home = ({ navigation }) => {
     <TouchableWithoutFeedback style={{ flex: 1 }} onPress={closeTooltip}>
       <ScrollView>
         <View>
-          <Text numberOfLines={3} multiLine style={styles.titleHeader}>{'Incognito mode \nFor your crypto'}
+          <Text numberOfLines={3} multiLine style={styles.titleHeader}>{'Incognito mode \nfor your crypto'}
           </Text>
           <View style={styles.btnContainer}>
             {buttons.map(item => (
