@@ -9,6 +9,7 @@ import {AddressBookIcon} from '@src/components/Icons';
 import {COLORS} from '@src/styles';
 import {generateTestId} from '@utils/misc';
 import {SEND} from '@src/constants/elements';
+import { change, Field, formValueSelector, isValid } from 'redux-form';
 import createField from './createField';
 
 const styled = StyleSheet.create({
@@ -50,6 +51,8 @@ const renderCustomField = ({
   return (
     <TextInput
       {...props}
+      // Damn, it should be the like below, but temporary   
+      // onChangeText={t => input.onChange(t)}
       onChangeText={t => onChange(t)}
       onBlur={onBlur}
       onFocus={onFocus}
