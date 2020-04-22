@@ -10,9 +10,9 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import EntypoIcons from 'react-native-vector-icons/Entypo';
 import { COLORS } from '@src/styles';
-import {KeyboardAvoidingView} from 'react-native';
-import {Icon} from 'react-native-elements';
-import {isAndroid} from '@utils/platform';
+import { KeyboardAvoidingView } from 'react-native';
+import { Icon } from 'react-native-elements';
+import { isAndroid } from '@utils/platform';
 import styleSheet from './style';
 
 class OptionMenu extends Component {
@@ -45,12 +45,13 @@ class OptionMenu extends Component {
       onSearch,
       maxHeight,
       itemStyle,
+      isDropDown,
     } = this.props;
     const { open } = this.state;
 
     return (
       <View style={[styleSheet.container, style]}>
-        <TouchableOpacity onPress={() => this.handleToggle()} style={[styleSheet.toggleBtn, toggleStyle]}>
+        <TouchableOpacity onPress={() => this.handleToggle()} style={[styleSheet.toggleBtn, isDropDown ? {width: 150} : {}, toggleStyle]}>
           {icon || (
             <EntypoIcons
               size={24}
@@ -73,7 +74,7 @@ class OptionMenu extends Component {
               <View style={styleSheet.content}>
                 <View style={styleSheet.barIcon} />
                 {title && <Text style={styleSheet.title}>{title}</Text>}
-                { onSearch ? (
+                {onSearch ? (
                   <View style={styleSheet.search}>
                     <Icon name="search" />
                     <TextInput
@@ -85,8 +86,8 @@ class OptionMenu extends Component {
                       autoCapitalize={false}
                     />
                   </View>
-                ) : null }
-                <ScrollView style={{maxHeight}}>
+                ) : null}
+                <ScrollView style={{ maxHeight }}>
                   {data.map((item, index) => {
                     const handleItemPress = () => {
                       if (typeof item?.handlePress === 'function') {
@@ -108,11 +109,11 @@ class OptionMenu extends Component {
                         <View style={styleSheet.icon}>{item?.icon}</View>
                         <View style={styleSheet.textContainer}>
                           {
-                        item?.label && typeof item.label === 'string' ?
-                          <Text style={styleSheet.itemText}>{item?.label}</Text>
-                          : item.label
+                            item?.label && typeof item.label === 'string' ?
+                              <Text style={styleSheet.itemText}>{item?.label}</Text>
+                              : item.label
                           }
-                          { item?.desc ? <Text style={styleSheet.itemDescText}>{item?.desc}</Text> : null }
+                          {item?.desc ? <Text style={styleSheet.itemDescText}>{item?.desc}</Text> : null}
                         </View>
                       </TouchableOpacity>
                     );
@@ -140,14 +141,16 @@ OptionMenu.defaultProps = {
   placeholder: '',
   maxHeight: 250,
   itemStyle: null,
+  isDropDown: false,
 };
 
 OptionMenu.propTypes = {
   title: PropTypes.string,
   iconProps: PropTypes.object,
   icon: PropTypes.element,
-  style: PropTypes.oneOfType([ PropTypes.object, PropTypes.arrayOf(PropTypes.object) ]),
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.arrayOf(PropTypes.object)]),
   itemStyle: PropTypes.object,
+  isDropDown: PropTypes.bool,
   toggleStyle: PropTypes.object,
   data: PropTypes.arrayOf(
     PropTypes.shape({
