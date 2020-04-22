@@ -295,7 +295,7 @@ class AddInternalToken extends Component {
                 <View style={styleSheet.block}>
                   <View>
                     <CopiableText text={account.PaymentAddress} style={styleSheet.ownerAddressContainer} copiedMessage='Owner address was copied'>
-                      <Text style={styleSheet.ownerAddressLabel}>Your owner address</Text>
+                      <Text style={styleSheet.ownerAddressLabel}>Creator address</Text>
                       <Text style={styleSheet.ownerAddressValue} numberOfLines={1} ellipsizeMode="middle">{account.PaymentAddress}</Text>
                     </CopiableText>
                   </View>
@@ -334,7 +334,7 @@ class AddInternalToken extends Component {
               <Button
                 disabled={!isCanSubmit}
                 title={
-                  isGettingFee ? 'Calculating fee...' : 'Issue your coin'
+                  isGettingFee ? 'Calculating fee...' : 'Issue a privacy coin'
                 }
                 style={styleSheet.submitBtn}
                 onPress={handleSubmit(this.handleCreateSendToken)}

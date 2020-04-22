@@ -443,7 +443,7 @@ class Withdraw extends React.Component {
                   }}
                   name="toAddress"
                   label="To"
-                  placeholder={`Enter your ${tokenName}  address`}
+                  placeholder={`Enter your ${tokenName} address`}
                   style={style.input}
                   validate={addressValidator}
                   onOpenAddressBook={onShowFrequentReceivers}

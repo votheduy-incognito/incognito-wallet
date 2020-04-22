@@ -21,7 +21,7 @@ const style = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 10,
     top: -2,
-    fontStyle: 'italic'
+    // fontStyle: 'italic'
   },
   block: {
     backgroundColor: COLORS.white,
@@ -35,7 +35,7 @@ const style = StyleSheet.create({
     marginBottom: 15
   },
   descriptionInput: {
-    height: 60,
+    height: 80,
   },
   noteText: {
     fontSize: FONT.SIZE.small,
