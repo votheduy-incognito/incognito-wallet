@@ -10,7 +10,8 @@ export default StyleSheet.create({
   },
   logo: {
     overflow: 'hidden',
-    resizeMode: 'contain'
+    resizeMode: 'contain',
+    alignSelf: 'center',
   },
   hidden: {
     display: 'none'

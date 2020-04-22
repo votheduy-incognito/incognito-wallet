@@ -7,12 +7,13 @@ const style = StyleSheet.create({
   select: {
     position: 'absolute',
     right: -40,
-    bottom: -16,
+    bottom: -27, // Should be a half
     height: 54,
   },
   iconContainer: {
     width: 400,
     paddingLeft: 350,
+    zIndex: 10
   },
 });
 
