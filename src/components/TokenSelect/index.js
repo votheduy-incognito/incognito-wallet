@@ -159,6 +159,7 @@ const TokenSelect = ({ onSelect, onlyPToken, size, style, iconStyle, showOrigina
         placeholder="Name or Symbol"
         onSearch={handleSearch}
         onClose={handleClearSearch}
+        isDropDown
         toggleStyle={toggleStyle}
         style={[styles.select, style]}
         icon={(

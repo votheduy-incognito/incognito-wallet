@@ -13,7 +13,7 @@ const style = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     height: '100%',
-    width: 150,
+    width: 45,
   },
   content: {
     backgroundColor: COLORS.white,

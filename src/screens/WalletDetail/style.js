@@ -134,7 +134,7 @@ const style = StyleSheet.create({
   },
   headerRight: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   headerTitleText: {
     ...TextStyle.bigText,
