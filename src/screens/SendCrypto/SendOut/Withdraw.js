@@ -403,6 +403,7 @@ class Withdraw extends React.Component {
       account,
       selectable,
       onShowFrequentReceivers,
+      onSelectedValue,
       reloading,
     } = this.props;
     const { externalSymbol, isErc20Token, name: tokenName } =
@@ -437,10 +438,11 @@ class Withdraw extends React.Component {
             {({ handleSubmit, submitting }) => (
               <>
                 <Field
+                  // This is temporarily
+                  autoFocus
                   component={InputQRField}
-                  onChange={(text) => {
+                  onChange={(event, text) => {
                     this.setState({ tempAddress: text }, () => {
-
                     });
                     // I wanna check text is ETH valid coin
                     let ETHValid = walletValidator.validate(text, 'ETH', 'both');
