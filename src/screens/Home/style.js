@@ -14,7 +14,6 @@ const style = StyleSheet.create({
     alignItems: 'center',
     alignContent: 'center',
     width: width,
-    height: '100%',
     marginTop: 10,
   },
   content: {
@@ -32,9 +31,7 @@ const style = StyleSheet.create({
     alignContent: 'center',
     height: 120,
     alignItems: 'center',
-    paddingEnd: 35,
-    paddingLeft: 35,
-    justifyContent: 'space-between',
+    
   },
   accTitle: {
     color: COLORS.black
@@ -42,6 +39,9 @@ const style = StyleSheet.create({
   titleHeader: {
     fontFamily: FONT.NAME.bold,
     fontSize: 25,
+    marginTop: 10,
+    marginLeft: 35,
+    marginEnd: 35,
   }
 });
 

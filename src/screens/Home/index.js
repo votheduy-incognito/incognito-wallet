@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, Dimensions, PixelRatio, Platform } from 'react-native';
+import { ScrollView, Dimensions, PixelRatio, Platform, SafeAreaView, TouchableWithoutFeedback } from 'react-native';
 import LinkingService from '@src/services/linking';
 import AppUpdater from '@components/AppUpdater/index';
 import { isIOS } from '@utils/platform';
@@ -206,37 +206,35 @@ const Home = ({ navigation }) => {
   }, []);
 
   return (
-    <TouchableOpacity style={{ flex: 1 }} onPress={closeTooltip}>
-      <View style={styles.header}>
-        {/* <AccountSelect customTitleStyle={styles.accTitle} icoColor={COLORS.black} />
-        <SettingIcon /> */}
-        <Text numberOfLines={3} multiLine style={styles.titleHeader}>Incognito mode for your crypto
-        </Text>
-      </View>
-      <ScrollView contentContainerStyle={{ justifyContent: 'center' }}>
-        <View style={styles.btnContainer}>
-          {buttons.map(item => (
-            <View style={styles.btn} key={item.title}>
-              {item === pStakeItem &&
-                viewUniswap !== tooltipType && (
-                <Tooltip
-                  title="New"
-                  desc="Join a PRV staking pool. Get a 57% annual return. Interest paid every second."
+    <TouchableWithoutFeedback style={{ flex: 1 }} onPress={closeTooltip}>
+      <ScrollView>
+        <View>
+          <Text numberOfLines={3} multiLine style={styles.titleHeader}>{'Incognito mode \nFor your crypto'}
+          </Text>
+          <View style={styles.btnContainer}>
+            {buttons.map(item => (
+              <View style={styles.btn} key={item.title}>
+                {item === pStakeItem &&
+                  viewUniswap !== tooltipType && (
+                  <Tooltip
+                    title="New"
+                    desc="Join a PRV staking pool. Get a 57% annual return. Interest paid every second."
+                  />
+                )}
+                <IconTextButton
+                  image={item.image}
+                  title={item.title}
+                  disabled={isDisabled(item)}
+                  onPress={
+                    item.onPress || (() => goToScreen(item.route, item.params))
+                  }
                 />
-              )}
-              <IconTextButton
-                image={item.image}
-                title={item.title}
-                disabled={isDisabled(item)}
-                onPress={
-                  item.onPress || (() => goToScreen(item.route, item.params))
-                }
-              />
-            </View>
-          ))}
+              </View>
+            ))}
+          </View>
         </View>
       </ScrollView>
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
   );
 };
 
