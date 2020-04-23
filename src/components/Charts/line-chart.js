@@ -320,6 +320,7 @@ class LineChart extends AbstractChart {
       segments,
       transparent = false,
       paddingLeft,
+      chartConfig,
     } = this.props;
     const { labels = [] } = data;
     const {
@@ -337,6 +338,8 @@ class LineChart extends AbstractChart {
       verticalLabelRotation,
       horizontalLabelRotation
     };
+
+    const { backgroundColor } = chartConfig;
 
     const datas = this.getDatas(data.datasets);
 
@@ -358,7 +361,7 @@ class LineChart extends AbstractChart {
             height={height + legendOffset}
             rx={borderRadius}
             ry={borderRadius}
-            fill="url(#backgroundGradient)"
+            fill={backgroundColor || 'white'}
             fillOpacity={transparent ? 0 : 1}
           />
           <G x="0" y={legendOffset}>

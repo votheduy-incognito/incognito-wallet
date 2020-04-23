@@ -506,7 +506,7 @@ class Swap extends React.Component {
 
     if (pairName) {
       const {navigation} = this.props;
-      navigation.navigate(routeNames.PriceChartCrypto, { currentPair: pairName, tokenPairs });
+      navigation.navigate(routeNames.PriceChartCrypto, { pair: pairName, tokenPairs });
     }
   };
 

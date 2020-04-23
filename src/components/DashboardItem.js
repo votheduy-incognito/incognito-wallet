@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
     ...FONT.STYLE.medium,
     textAlign: 'center',
     marginBottom: 4,
+    fontSize: 12,
   },
   text: {
     textAlign: 'center',

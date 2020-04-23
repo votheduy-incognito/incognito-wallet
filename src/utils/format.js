@@ -88,12 +88,12 @@ const balance = (amount, decimals, maxDigits) => {
   } catch {
     return amount;
   }
-}
+};
 
 const formatWithNotation = (number, noOfDigits = 2) => {
-  const millionNotation = Math.pow(10, 6);
-  const kiloNotation = Math.pow(10, 3);
-  const miliNotation = Math.pow(10, -3);
+  const millionNotation = Math.pow(10, 6 + noOfDigits);
+  const kiloNotation = Math.pow(10, 3 + noOfDigits);
+  const miliNotation = Math.pow(10, -3 + noOfDigits);
 
   if (number >= millionNotation) {
     return (Math.floor(number / Math.pow(10, 6 - noOfDigits)) / Math.pow(10, noOfDigits)).toString() + 'M';

@@ -32,9 +32,9 @@ class PriceChart extends Component {
 
     switch(chartType) {
     case BY_HOUR:
-      return d.format('HH:mm');
+      return d.format('H');
     case BY_DAY:
-      return d.format('HH:mm');
+      return d.format('H');
     case BY_WEEK:
       return d.format('DD MMM');
     case BY_MONTH:
@@ -117,6 +117,7 @@ class PriceChart extends Component {
               backgroundColor: '#fff',
               backgroundGradientFrom: '#fff',
               backgroundGradientTo: '#fff',
+              backgroundGradient: '#fff',
               decimalPlaces: 4, // optional, defaults to 2dp
               color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
