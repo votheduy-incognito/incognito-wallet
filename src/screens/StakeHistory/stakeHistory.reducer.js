@@ -1,3 +1,6 @@
+import AsyncStorage from '@react-native-community/async-storage';
+import persistReducer from 'redux-persist/es/persistReducer';
+import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -14,9 +17,12 @@ const initialState = {
     items: [],
     over: false,
   },
+  storage: {
+    history: [],
+  },
 };
 
-export default (state = initialState, action) => {
+const stakeHistoryReducer = (state = initialState, action) => {
   switch (action.type) {
   case ACTION_FETCHING: {
     return {
@@ -53,3 +59,12 @@ export default (state = initialState, action) => {
     return state;
   }
 };
+
+const persistConfig = {
+  key: 'stakeHistory',
+  storage: AsyncStorage,
+  whitelist: ['storage'],
+  stateReconciler: autoMergeLevel2,
+};
+
+export default persistReducer(persistConfig, stakeHistoryReducer);

@@ -90,12 +90,7 @@ export const styled = StyleSheet.create({
     bottom: 0,
     top: 0,
   },
-  interestRateContainer: {
-    flexDirection: 'row',
-    marginTop: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+
   overlay: {
     backgroundColor: 'rgba(0,0,0,0.9)',
     flex: 1,
@@ -125,5 +120,18 @@ export const styledActions = StyleSheet.create({
   },
   btnStake: {
     marginTop: 10,
+  },
+});
+
+export const styledInterestRate = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    marginTop: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tooltip: {
+    bottom: 20,
+    right: 18,
   },
 });

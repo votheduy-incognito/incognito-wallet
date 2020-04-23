@@ -17,7 +17,8 @@ const webJs = {
   web_js_import_invalid_key: webjsError(-2005),
   web_js_import_invalid_key_2: webjsError(-2),
   web_js_can_not_use_this_token_for_fee: webjsError(-4009),
-  web_js_not_enough_coin: webjsError(-5)
+  web_js_not_enough_coin: webjsError(-5),
+  web_js_can_not_created_tx: webjsError(-3002),
 };
 
 export const STACK_TRACE = {
