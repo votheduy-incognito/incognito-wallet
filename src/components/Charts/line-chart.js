@@ -8,9 +8,13 @@ import {
   Circle,
   Polyline,
   Rect,
-  G, Line, Text
+  G, Line, Text, Path
 } from 'react-native-svg';
 import AbstractChart from './abstract-chart';
+
+/*
+  I updated this file from https://github.com/indiespirit/react-native-chart-kit
+ */
 
 class LineChart extends AbstractChart {
   label = React.createRef();
@@ -33,6 +37,39 @@ class LineChart extends AbstractChart {
     }
     const { propsForDots = {} } = chartConfig;
     return { r: '4', ...propsForDots };
+  };
+
+  getBezierLinePoints = (dataset, config) => {
+    const { width, height, paddingRight, paddingTop, data } = config;
+    if (dataset.data.length === 0) {
+      return 'M0,0';
+    }
+
+    const datas = this.getDatas(data);
+    const x = i =>
+      Math.floor(
+        paddingRight + (i * (width - paddingRight)) / dataset.data.length
+      );
+    const baseHeight = this.calcBaseHeight(datas, height);
+    const y = i => {
+      const yHeight = this.calcHeight(dataset.data[i], datas, height);
+      return Math.floor(((baseHeight - yHeight) / 4) * 3 + paddingTop);
+    };
+
+    return [`M${x(0)},${y(0)}`]
+      .concat(
+        dataset.data.slice(0, -1).map((_, i) => {
+          const x_mid = (x(i) + x(i + 1)) / 2;
+          const y_mid = (y(i) + y(i + 1)) / 2;
+          const cp_x1 = (x_mid + x(i)) / 2;
+          const cp_x2 = (x_mid + x(i + 1)) / 2;
+          return (
+            `Q ${cp_x1}, ${y(i)}, ${x_mid}, ${y_mid}` +
+            ` Q ${cp_x2}, ${y(i + 1)}, ${x(i + 1)}, ${y(i + 1)}`
+          );
+        })
+      )
+      .join(' ');
   };
 
   renderDots = config => {
@@ -92,6 +129,21 @@ class LineChart extends AbstractChart {
       });
     });
     return output;
+  };
+
+  renderBezierLine = config => {
+    return config.data.map((dataset, index) => {
+      const result = this.getBezierLinePoints(dataset, config);
+      return (
+        <Path
+          key={index}
+          d={result}
+          fill="none"
+          stroke={this.getColor(dataset, 0.2)}
+          strokeWidth={this.getStrokeWidth(dataset)}
+        />
+      );
+    });
   };
 
   renderLine = config => {
@@ -190,6 +242,7 @@ class LineChart extends AbstractChart {
           y={y}
           textAnchor={verticalLabelRotation === 0 ? 'middle' : 'start'}
           {...this.getPropsForLabels()}
+          fontSize={10}
         >
           {`${formatXLabel(label)}${xAxisLabel}`}
         </Text>
@@ -272,7 +325,7 @@ class LineChart extends AbstractChart {
     const {
       borderRadius = 0,
       paddingTop = 16,
-      paddingRight = 16,
+      paddingRight = 32,
       margin = 0,
       marginRight = 0,
       paddingBottom = 0,
@@ -338,7 +391,7 @@ class LineChart extends AbstractChart {
               })}
             </G>
             <G>
-              {this.renderLine({
+              {this.renderBezierLine({
                 ...config,
                 ...this.props.chartConfig,
                 paddingRight,

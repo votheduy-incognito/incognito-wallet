@@ -88,6 +88,26 @@ const balance = (amount, decimals, maxDigits) => {
   } catch {
     return amount;
   }
+}
+
+const formatWithNotation = (number, noOfDigits = 2) => {
+  const millionNotation = Math.pow(10, 6);
+  const kiloNotation = Math.pow(10, 3);
+  const miliNotation = Math.pow(10, -3);
+
+  if (number >= millionNotation) {
+    return (Math.floor(number / Math.pow(10, 6 - noOfDigits)) / Math.pow(10, noOfDigits)).toString() + 'M';
+  }
+
+  if (number >= kiloNotation) {
+    return (Math.floor(number / Math.pow(10, 3 - noOfDigits)) / Math.pow(10, noOfDigits)).toString() + 'K';
+  }
+
+  if (number >= miliNotation) {
+    return _.floor(number, noOfDigits);
+  }
+
+  return number;
 };
 
 export default {
@@ -100,15 +120,6 @@ export default {
   number,
   numberWithNoGroupSeparator,
   amountCreator,
-  balance
+  balance,
+  formatWithNotation,
 };
-
-// console.debug('TEST REMOVE TRAILING ZEROES');
-// const CASES = [
-//   '100.00',
-//   '100.10',
-//   '202.10',
-//   '100.00',
-//   '100.001',
-// ];
-// CASES.forEach(item => console.debug(item, removeTrailingZeroes(item)));

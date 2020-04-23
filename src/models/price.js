@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 class PriceModel {
   constructor(json) {
     if (!json) {
@@ -6,7 +8,7 @@ class PriceModel {
 
     this.pair = json.Pair;
     this.time = json.Timestamp;
-    this.value = json.Value;
+    this.value = _.floor(json.Value, 4);
   }
 }
 

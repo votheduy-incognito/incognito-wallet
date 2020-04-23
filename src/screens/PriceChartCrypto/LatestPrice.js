@@ -1,23 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { StyleSheet } from 'react-native';
 import {
-  View, Text, StyleSheet, Image
-} from 'react-native';
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+} from '@src/components/core';
+import {COLORS} from '@src/styles';
 import priceUp from './img/price_up.png';
 import priceDown from './img/price_down.png';
 
-const LatestPrice = ({ price, diffPercent }) => (
+const LatestPrice = ({price, diffPercent, otherToken, onSwitchToken}) => (
   <View style={styles.container}>
     <View style={styles.label}><Text style={styles.textLabel}>Current price</Text></View>
     <View style={styles.priceContainer}>
       <Text style={styles.textPrice}>{price}</Text>
-      <View style={styles.arrow}>
-        <Text style={diffPercent >= 0 ? styles.arrowText : styles.arrowTextDown}>{diffPercent || '0.00000'}%</Text>
-        <Image source={diffPercent >= 0 ? priceUp : priceDown} />
-      </View>
+      { diffPercent !== 'NaN' && diffPercent ? (
+        <View style={styles.arrow}>
+          <Text style={diffPercent >= 0 ? styles.arrowText : styles.arrowTextDown}>{diffPercent || '0.00'}%</Text>
+          <Image source={diffPercent >= 0 ? priceUp : priceDown} />
+        </View>
+      ) : null }
     </View>
-    <View style={styles.label}><Text style={styles.textLabel}>Liquidily pool</Text></View>
-    <View style={styles.priceContainer}><Text style={styles.textPrice}>100,000$</Text></View>
+    <TouchableOpacity onPress={onSwitchToken}>
+      <Text style={styles.link}>View {otherToken} price</Text>
+    </TouchableOpacity>
   </View>
 );
 
@@ -47,7 +55,12 @@ const styles = StyleSheet.create({
   arrow: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    marginLeft: 10
+    marginLeft: 10,
+    marginBottom: 2,
+  },
+  link: {
+    color: COLORS.primary,
+    fontSize: 14,
   },
   arrowText: {
     color: '#00A351'
