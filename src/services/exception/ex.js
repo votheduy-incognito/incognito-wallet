@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Toast } from '@src/components/core';
+import {Toast} from '@src/components/core';
 import CustomError from './customError/customError';
 import Message from './customError/message';
 import ERROR from './customError/code';
@@ -18,13 +18,15 @@ const CODES = {
 };
 
 const MESSAGES = {
-  PENDING_TX: 'Please wait for your previous transaction to finish processing. Simply try again later.',
-  CAN_NOT_SEND_TX: 'It looks like your transaction didn\'t go through.  Please wait a few minutes and try again',
+  PENDING_TX:
+    'Please wait for your previous transaction to finish processing. Simply try again later.',
+  CAN_NOT_SEND_TX:
+    'It looks like your transaction didn\'t go through.  Please wait a few minutes and try again',
   GENERAL: 'Something went wrong. Please try again.',
 };
 
 const isValidException = exception => {
-  if  (exception instanceof Error) {
+  if (exception instanceof Error) {
     return true;
   }
 
@@ -43,7 +45,10 @@ class Exception {
    * `exception` can be a Error object or a string
    * `defaultMessage` will be used as friendly message (which displays to users, not for debugging)
    */
-  constructor(exception : any, defaultMessage: string = 'Opps! Something went wrong.') {
+  constructor(
+    exception: any,
+    defaultMessage: string = 'Opps! Something went wrong.',
+  ) {
     if (isValidException(exception)) {
       this.exception = exception;
 
@@ -52,9 +57,11 @@ class Exception {
         this.message = exception?.message;
         this.debugMessage = exception?.rawError?.stack;
       } else if (exception.name === CustomError.TYPES.API_ERROR) {
-        Message[this.exception?.code] && (this.message = Message[this.exception.code]);
+        Message[(this.exception?.code)] &&
+          (this.message = Message[this.exception.code]);
       } else if (exception.name === CustomError.TYPES.WEB_JS_ERROR) {
-        Message[this.exception?.code] && (this.message = Message[this.exception.code]);
+        Message[(this.exception?.code)] &&
+          (this.message = Message[this.exception.code]);
       }
     } else if (typeof exception === 'string') {
       this.exception = new Error(exception);
@@ -72,7 +79,9 @@ class Exception {
     /**
      * Message for UI (display to user)
      */
-    this.message = this.message ?? this._getUnexpectedMessageError(exception, defaultMessage);
+    this.message =
+      this.message ??
+      this._getUnexpectedMessageError(exception, defaultMessage);
 
     this._log2Console();
   }
@@ -135,12 +144,13 @@ class Exception {
    * write log to memory or display on console.
    * Uses both memory & console as default.
    */
-  writeLog({ useDisk = false, useConsole = true } = {}) {
+  writeLog({useDisk = false, useConsole = true} = {}) {
     if (useDisk) {
       // TODO write log to file, or memory?
     }
 
-    if (!__DEV__ && useConsole) { // only use on production, we always log to console on dev already!
+    if (!__DEV__ && useConsole) {
+      // only use on production, we always log to console on dev already!
       this._log2Console();
     }
 
@@ -185,7 +195,9 @@ class Exception {
         if (
           stackCode.indexOf(CODES.REPLACEMENT) === 0 ||
           stackCode.indexOf(CODES.DOUBLE_SPEND) === 0 ||
-          stackCode.includes(`${CODES.CAN_NOT_SEND_PTOKEN_TX}: ${CODES.OLD_REPLACEMENT}`)
+          stackCode.includes(
+            `${CODES.CAN_NOT_SEND_PTOKEN_TX}: ${CODES.OLD_REPLACEMENT}`,
+          )
         ) {
           return `${MESSAGES.PENDING_TX} (${ERROR.PENDING_TX})`;
         }
@@ -195,7 +207,8 @@ class Exception {
         }
 
         if (
-          stackCode === `${CODES.CAN_NOT_SEND_PTOKEN_TX}: ${CODES.INVALID_TX}` ||
+          stackCode ===
+            `${CODES.CAN_NOT_SEND_PTOKEN_TX}: ${CODES.INVALID_TX}` ||
           stackCode === `${CODES.CAN_NOT_SEND_TX}: ${CODES.INVALID_TX}`
         ) {
           return `${MESSAGES.CAN_NOT_SEND_TX} (${ERROR.INVALID_ACCOUNT})`;
@@ -214,7 +227,7 @@ class Exception {
 
       return `${defaultMessage || MESSAGES.GENERAL} (${this.exception.code})`;
     } catch (error) {
-      return (error.message);
+      return error.message;
     }
 
     // return `${this.exception.message} ${this.exception.stack}`;
@@ -227,8 +240,34 @@ class Exception {
     throw this.exception;
   }
 
-  getMessageError(){
-    return this.message;
+  getMessageError() {
+    const exception = this.exception;
+    if (isValidException(exception)) {
+      const name = exception?.name || null;
+      const code = exception?.code || null;
+      const message = exception?.message || MESSAGES.GENERAL;
+      if (name) {
+        switch (name) {
+        case CustomError.TYPES.WEB_JS_ERROR:
+        case CustomError.TYPES.API_ERROR: {
+          return Message[code] ? Message[code] : message;
+        }
+        case CustomError.TYPES.KNOWN_ERROR: {
+          return message;
+        }
+        default:
+          return message;
+        }
+      }
+    }
+    if (typeof exception === 'string') {
+      return exception;
+    }
+    return MESSAGES.GENERAL;
+  }
+
+  toastMessageError() {
+    return Toast.showError(this.getMessageError());
   }
 }
 

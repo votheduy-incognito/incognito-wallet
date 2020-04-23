@@ -9,7 +9,7 @@ const btnWidth = Math.round(Dimensions.get('window').width/7);
 
 const ChartActions = ({ onPress, value, isShowAll }) => (
   <View style={styles.container}>
-    <TouchableOpacity onPress={() => onPress(BY_HOUR)} style={value == BY_HOUR ? styles.btnActive : styles.btn}><Text style={value == BY_HOUR ? styles.btnText : styles.btnTextActive}>1H</Text></TouchableOpacity>
+    <TouchableOpacity onPress={() => onPress(BY_HOUR)} style={value == BY_HOUR ? styles.btnActive : styles.btn}><Text style={value == BY_HOUR ? styles.btnText : styles.btnTextActive}>12H</Text></TouchableOpacity>
     <TouchableOpacity onPress={() => onPress(BY_DAY)} style={value == BY_DAY && !isShowAll ? styles.btnActive : styles.btn}><Text style={value == BY_DAY && !isShowAll  ? styles.btnText : styles.btnTextActive}>24H</Text></TouchableOpacity>
     <TouchableOpacity onPress={() => onPress(BY_WEEK)} style={value == BY_WEEK ? styles.btnActive : styles.btn}><Text style={value == BY_WEEK ? styles.btnText : styles.btnTextActive}>Week</Text></TouchableOpacity>
     <TouchableOpacity onPress={() => onPress(BY_MONTH)} style={value == BY_MONTH ? styles.btnActive : styles.btn}><Text style={value == BY_MONTH ? styles.btnText : styles.btnTextActive}>Month</Text></TouchableOpacity>

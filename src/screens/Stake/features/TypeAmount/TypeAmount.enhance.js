@@ -12,10 +12,12 @@ import {
   feeStakeSelector,
   loadingSubmitAmountSelector,
 } from '@screens/Stake/stake.selector';
-import {ExHandler} from '@src/services/exception';
+import {ExHandler, CustomError} from '@src/services/exception';
 import format from '@src/utils/format';
 import {DEPOSIT_FLOW, WITHDRAW_FLOW} from '@screens/Stake/stake.constant';
 import {getDecimalSeparator} from '@src/resources/separator';
+import {actionToggleModal} from '@src/components/Modal';
+import LoadingModal from '@src/components/Modal/features/LoadingModal';
 import {
   validatedAmount,
   getHookFactories,

@@ -1,13 +1,14 @@
 import React from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {COLORS, FONT} from '@src/styles';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {BtnClose} from '@src/components/Button';
 import {ArrowRightPrimaryIcon} from '@src/components/Icons';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import PropTypes from 'prop-types';
 import {stakeDataSelector} from './stake.selector';
+import {actionToggleGuide} from './stake.actions';
 
 const styled = StyleSheet.create({
   wrapper: {
@@ -64,10 +65,11 @@ const styled = StyleSheet.create({
   },
 });
 
-const StakeGuide = props => {
+const StakeGuide = () => {
   const navigation = useNavigation();
   const {currentRewardRate} = useSelector(stakeDataSelector);
-  const {toggleGuideHomeStake} = props;
+  const dispatch = useDispatch();
+  const toggleGuideHomeStake = async () => await dispatch(actionToggleGuide());
   const handleBuyPRV = async () => {
     navigation.navigate(routeNames.Dex);
     await toggleGuideHomeStake();
@@ -109,8 +111,6 @@ const StakeGuide = props => {
   );
 };
 
-StakeGuide.propTypes = {
-  toggleGuideHomeStake: PropTypes.func.isRequired,
-};
+StakeGuide.propTypes = {};
 
 export default StakeGuide;

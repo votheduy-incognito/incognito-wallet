@@ -4,9 +4,8 @@ import withHeader from '@src/components/Hoc/withHeader';
 import {ExHandler} from '@src/services/exception';
 import {useDispatch, useSelector} from 'react-redux';
 import LoadingContainer from '@src/components/LoadingContainer';
-import LocalDatabase from '@src/utils/LocalDatabase';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import Modal, {actionToggleModal} from '@src/components/Modal';
+import {actionToggleModal} from '@src/components/Modal';
 import {
   actionFetch,
   actionToggleGuide,
@@ -21,10 +20,6 @@ const enhance = WrappedComp => props => {
   const {isFetched} = useSelector(stakeSelector);
   const fetchData = async () => {
     try {
-      const guideHomeStake = await LocalDatabase.getScreenStakeGuilde();
-      if (guideHomeStake) {
-        await dispatch(actionToggleGuide());
-      }
       await dispatch(actionFetch());
     } catch (error) {
       new ExHandler(error).showErrorToast();
@@ -44,18 +39,8 @@ const enhance = WrappedComp => props => {
           step: STEP_FLOW.CHOOSE_ACCOUNT,
         }),
       ),
-      toggleGuideHomeStake(),
+      dispatch(actionToggleGuide()),
     ]);
-  };
-  const toggleGuideHomeStake = async () => {
-    try {
-      await new Promise.all([
-        await LocalDatabase.saveScreenStakeGuide(),
-        await dispatch(actionToggleGuide()),
-      ]);
-    } catch (error) {
-      new ExHandler(error).showErrorToast();
-    }
   };
   React.useEffect(() => {
     fetchData();
@@ -65,10 +50,7 @@ const enhance = WrappedComp => props => {
   }
   return (
     <ErrorBoundary>
-      <WrappedComp
-        {...{...props, fetchData, handleStartStake, toggleGuideHomeStake}}
-      />
-      <Modal />
+      <WrappedComp {...{...props, fetchData, handleStartStake}} />
     </ErrorBoundary>
   );
 };

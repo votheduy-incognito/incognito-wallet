@@ -6,7 +6,14 @@ import convert from '@src/utils/convert';
 export const MAX_DIGITS_BALANCE_PSTAKE = 9;
 export const TIMEOUT_CAL_REALTIME_BALANCE_PSTAKE = 70;
 export const DEFAULT_REWARD_RATE = 57;
-
+export const ERROR_MESSAGE = {
+  txId: 'Opps! Something went wrong. Can not create a tx!',
+  signPublicKeyEncode:
+    'Opps! Something went wrong. Can not get sign public key encode!',
+  signEncode: 'Opps! Something went wrong. Can not get sign encode!',
+  createUnStake: 'Opps! Something went wrong. Can not withdraw!',
+  createStake: 'Opps! Something went wrong. Can not deposit!',
+};
 export const STAKE = {
   MAIN_ACCOUNT: 'pStake',
 };
@@ -34,12 +41,15 @@ export const mappingData = (dataMasterAddress, dataStakerInfo) => {
   const rewardBalance = dataStakerInfo?.RewardBalance || 0;
   const totalBalance = balance + rewardBalance;
   const staked = balance !== 0;
+  /**
+   * currentRewardRate: staked
+      ? dataStakerInfo?.RewardRate
+      : dataMasterAddress?.CurrentRewardRate || DEFAULT_REWARD_RATE,
+   */
   return {
     minToStake: minToStake,
     minToWithdraw: 1,
-    currentRewardRate: staked
-      ? dataStakerInfo?.RewardRate
-      : dataMasterAddress?.CurrentRewardRate || DEFAULT_REWARD_RATE,
+    currentRewardRate: DEFAULT_REWARD_RATE,
     stakingMasterAddress: dataMasterAddress?.StakingMasterAddress || '',
     balance,
     rewardDate: dataStakerInfo?.RewardDate || '',

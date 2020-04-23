@@ -6,12 +6,11 @@ import { priceChartStyle } from './style';
 
 const PriceChartSelector = ({ pairs, currentPair, onPress }) => {
   if (!pairs || pairs?.length === 0) return null;
-
   return (
     <OptionMenu
       data={pairs?.map(pair => ({
-        id: pair,
-        label: pair,
+        id: pair.pair1,
+        label: pair.pair1,
         handlePress: onPress
       }))}
       toggleStyle={priceChartStyle.textContainer}

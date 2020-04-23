@@ -4,10 +4,27 @@ import {
   ACTION_FETCHED,
   ACTION_FETCH_FAIL,
   ACTION_CHANGE_PAGE,
+  ACTION_UPDATE_STORAGE_HISTORY,
+  ACTION_REMOVE_STORAGE_HISTORY,
+  ACTION_CLEAN_STORAGE_HISTORY,
 } from './stakeHistory.constant';
 import {api} from './stakeHistory.services';
 import {stakeHistorySelector} from './stakeHistory.selector';
 import {mappingData} from './stakeHistory.utils';
+
+export const actionUpdateStorageHistory = payload => ({
+  type: ACTION_UPDATE_STORAGE_HISTORY,
+  payload,
+});
+
+export const actionRemoveStorageHistory = payload => ({
+  type: ACTION_REMOVE_STORAGE_HISTORY,
+  payload,
+});
+
+export const actionCleanStorageHistory = () => ({
+  type: ACTION_CLEAN_STORAGE_HISTORY,
+});
 
 export const actionChangePage = payload => ({
   type: ACTION_CHANGE_PAGE,

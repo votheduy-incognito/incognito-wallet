@@ -1,37 +1,14 @@
 import React from 'react';
-import {View, StyleSheet, Text, TouchableWithoutFeedback} from 'react-native';
-import {useNavigationParam} from 'react-navigation-hooks';
-import {COLORS, FONT} from '@src/styles';
+import {View, Text, TouchableWithoutFeedback} from 'react-native';
 import PropTypes from 'prop-types';
 import {OpenByWebIcon} from '@src/components/Icons';
 import LinkingService from '@src/services/linking';
-
-const styled = StyleSheet.create({
-  container: {
-    padding: 20,
-  },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderBottomColor: COLORS.lightGrey2,
-    borderBottomWidth: 0.5,
-    paddingVertical: 5,
-  },
-  title: {
-    flex: 2,
-    fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 6,
-    color: COLORS.lightGrey1,
-  },
-  desc: {
-    flex: 4,
-    fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 6,
-    color: COLORS.black,
-  },
-});
+import {BtnDefault} from '@src/components/Button';
+import {COLORS} from '@src/styles';
+import {createStakeSelector} from '@src/screens/Stake/stake.selector';
+import {useSelector} from 'react-redux';
+import {styled} from './Detail.styled';
+import withDetail from './Detail.enhance';
 
 const Item = props => {
   const {title, desc, color, icon, onPressItem} = props;
@@ -55,8 +32,9 @@ const Item = props => {
   );
 };
 
-const Detail = () => {
-  const data = useNavigationParam('data');
+const Detail = props => {
+  const {handleRetryDeposit, data} = props;
+  const {isFetching} = useSelector(createStakeSelector);
   return (
     <View style={styled.container}>
       <Item title="ID:" desc={data?.id} />
@@ -74,6 +52,15 @@ const Detail = () => {
       <Item title="Type:" desc={data?.type} />
       <Item title="User ID:" desc={data?.userId} />
       <Item title="Payment Address: " desc={data?.paymentAddress} />
+      {data?.retryDeposit && (
+        <BtnDefault
+          title={`Retry deposit${isFetching ? '...' : ''}`}
+          btnStyle={styled.btnRetry}
+          onPress={handleRetryDeposit}
+          loading={isFetching}
+          disabled={isFetching}
+        />
+      )}
     </View>
   );
 };
@@ -92,6 +79,9 @@ Item.propTypes = {
   icon: PropTypes.element,
 };
 
-Detail.propTypes = {};
+Detail.propTypes = {
+  handleRetryDeposit: PropTypes.func.isRequired,
+  data: PropTypes.any.isRequired,
+};
 
-export default Detail;
+export default withDetail(Detail);

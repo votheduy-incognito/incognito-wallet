@@ -4,7 +4,7 @@ import {CheckedGreenIcon} from '@src/components/Icons';
 import {useSelector, useDispatch} from 'react-redux';
 import {
   activeFlowSelector,
-  createStakeSelector,
+  storageStakeSelector,
   stakeDataSelector,
   pStakeAccountSelector,
 } from '@screens/Stake/stake.selector';
@@ -81,7 +81,7 @@ const ShowStatus = () => {
     activeFlow,
   } = useSelector(activeFlowSelector);
   const pStakeAccount = useSelector(pStakeAccountSelector);
-  const {backup} = useSelector(createStakeSelector);
+  const {backup} = useSelector(storageStakeSelector);
   const {symbol, pDecimals} = useSelector(stakeDataSelector);
   const hookFactories = [
     {
@@ -104,7 +104,6 @@ const ShowStatus = () => {
       if (backup) {
         navigation.navigate(routeNames.StakeHistory);
       } else {
-        await LocalDatabase.saveBackupStakeKey();
         navigation.navigate(routeNames.ExportAccount, {
           account: pStakeAccount,
         });
