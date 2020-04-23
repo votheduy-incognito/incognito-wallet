@@ -10,7 +10,6 @@ export const dataStakeHistorySelector = createSelector(
   stakeHistory => {
     const {items} = stakeHistory.data;
     const {history} = stakeHistory.storage;
-    console.log('history', history.map(item => item.createdAt));
     return {
       ...stakeHistory.data,
       items:

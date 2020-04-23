@@ -12,11 +12,14 @@ import {
   feeStakeSelector,
   loadingSubmitAmountSelector,
 } from '@screens/Stake/stake.selector';
-import {ExHandler, CustomError} from '@src/services/exception';
+import {ExHandler} from '@src/services/exception';
 import format from '@src/utils/format';
 import {DEPOSIT_FLOW, WITHDRAW_FLOW} from '@screens/Stake/stake.constant';
 import {getDecimalSeparator} from '@src/resources/separator';
-import {actionToggleModal} from '@src/components/Modal';
+import {
+  actionToggleModal,
+  actionToggleLoadingModal,
+} from '@src/components/Modal';
 import LoadingModal from '@src/components/Modal/features/LoadingModal';
 import {
   validatedAmount,
@@ -79,6 +82,13 @@ const enhance = WrappedComp => props => {
       if (shouldDisabled) {
         return;
       }
+      await dispatch(
+        actionToggleLoadingModal({
+          toggle: true,
+          title:
+            'Please wait, this may take a couple of minutes.\nPlease do not navigate away from the screen.',
+        }),
+      );
       switch (activeFlow) {
       case DEPOSIT_FLOW: {
         await dispatch(
@@ -101,6 +111,7 @@ const enhance = WrappedComp => props => {
         break;
       }
     } catch (error) {
+      await dispatch(actionToggleLoadingModal());
       await setState({
         ...state,
         error: new ExHandler(error).getMessageError(),

@@ -6,8 +6,12 @@ import convert from '@src/utils/convert';
 import {getSignPublicKey, signPoolWithdraw} from '@src/services/gomobile';
 import {actionSendNativeToken} from '@src/redux/actions/account';
 import {CONSTANT_COMMONS} from '@src/constants';
-import {actionUpdateStorageHistory,actionRemoveStorageHistory} from '@src/screens/StakeHistory/stakeHistory.actions';
+import {
+  actionUpdateStorageHistory,
+  actionRemoveStorageHistory,
+} from '@src/screens/StakeHistory/stakeHistory.actions';
 import {v4} from 'uuid';
+import {actionToggleLoadingModal} from '@src/components/Modal';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -47,7 +51,6 @@ import {
   feeStakeSelector,
 } from './stake.selector';
 import {mappingData, ERROR_MESSAGE} from './stake.utils';
-
 
 export const actionFetching = () => ({
   type: ACTION_FETCHING,
@@ -226,6 +229,7 @@ export const actionFetchCreateStake = ({amount, fee}) => async (
       IncognitoTx: tx?.txId,
     });
     if (payload?.ID) {
+      await dispatch(actionToggleLoadingModal());
       return await new Promise.all([
         await dispatch(actionFetchedCreateStake(payload)),
         await dispatch(
@@ -338,6 +342,7 @@ export const actionFetchCreateUnStake = ({amount}) => async (
     };
     const payload = await apiUnStake(data);
     if (payload?.ID) {
+      await dispatch(actionToggleLoadingModal());
       return await new Promise.all([
         await dispatch(actionFetchedCreateUnStake(payload)),
         await dispatch(

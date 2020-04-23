@@ -74,11 +74,10 @@ const StakeInterestRate = props => {
       <Text style={[styled.desc, {color: '#FF8D01'}]}>{`${rate}%`}</Text>
       <Text style={styled.desc}>{desc}</Text>
       <TouchableOpacity onPress={toggleTooltip}>
-        <QuestionIcon icon={srcQuestionIcon} />
+        <QuestionIcon style={styledInterestRate.icon} icon={srcQuestionIcon} />
       </TouchableOpacity>
       {visible && (
         <TooltipDefault
-          // title="New"
           desc="APY is your annual rate of return. Rewards are compounded every second."
           containerStyled={styledInterestRate.tooltip}
         />

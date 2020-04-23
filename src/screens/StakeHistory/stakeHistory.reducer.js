@@ -35,11 +35,23 @@ const stakeHistoryReducer = (state = initialState, action) => {
     };
   }
   case ACTION_FETCHED: {
+    const {items} = action.payload;
     return {
       ...state,
       isFetching: false,
       isFetched: true,
       data: {...state.data, ...action.payload},
+      storage: {
+        ...state.storage,
+        history: [
+          ...state.storage.history.filter(
+            historyItem =>
+              ![...items].some(
+                item => item?.incognitoTx === historyItem?.incognitoTx,
+              ),
+          ),
+        ],
+      },
     };
   }
   case ACTION_FETCH_FAIL: {
