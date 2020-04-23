@@ -5,7 +5,7 @@ import {ExHandler} from '@src/services/exception';
 import {useDispatch, useSelector} from 'react-redux';
 import LoadingContainer from '@src/components/LoadingContainer';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import Modal, {actionToggleModal} from '@src/components/Modal';
+import {actionToggleModal} from '@src/components/Modal';
 import {
   actionFetch,
   actionToggleGuide,
@@ -51,7 +51,6 @@ const enhance = WrappedComp => props => {
   return (
     <ErrorBoundary>
       <WrappedComp {...{...props, fetchData, handleStartStake}} />
-      <Modal />
     </ErrorBoundary>
   );
 };

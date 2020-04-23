@@ -6,7 +6,11 @@ import {
   ACTION_FETCHED,
   ACTION_FETCH_FAIL,
   ACTION_CHANGE_PAGE,
+  ACTION_UPDATE_STORAGE_HISTORY,
+  ACTION_REMOVE_STORAGE_HISTORY,
+  ACTION_CLEAN_STORAGE_HISTORY,
 } from './stakeHistory.constant';
+import {standardizeData} from './stakeHistory.utils';
 
 const initialState = {
   isFetching: false,
@@ -52,6 +56,38 @@ const stakeHistoryReducer = (state = initialState, action) => {
       data: {
         ...state.data,
         page,
+      },
+    };
+  }
+  case ACTION_UPDATE_STORAGE_HISTORY: {
+    const item = standardizeData(action.payload);
+    return {
+      ...state,
+      storage: {
+        ...state.storage,
+        history: [...state.storage.history, item],
+      },
+    };
+  }
+  case ACTION_REMOVE_STORAGE_HISTORY: {
+    const id = action.payload;
+    if (!id) {
+      return state;
+    }
+    return {
+      ...state,
+      storage: {
+        ...state.storage,
+        history: [...state.storage.history.filter(item => item?.id !== id)],
+      },
+    };
+  }
+  case ACTION_CLEAN_STORAGE_HISTORY: {
+    return {
+      ...state,
+      storage: {
+        ...state.storage,
+        history: [],
       },
     };
   }

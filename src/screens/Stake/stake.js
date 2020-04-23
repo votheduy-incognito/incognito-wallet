@@ -26,7 +26,6 @@ import Header from './stake.header';
 import StakePoolCommunity from './features/StakePoolCommunity';
 import StakeBalance from './stake.balance';
 import StakeGuide from './stake.guide';
-import {DEFAULT_REWARD_RATE} from './stake.utils';
 
 const StakeActions = props => {
   const {handleStartStake} = props;
@@ -91,7 +90,7 @@ const StakeInterestRate = props => {
 const Stake = props => {
   const {fetchData} = props;
   const {isFetching} = useSelector(stakeSelector);
-  // const {currentRewardRate} = useSelector(stakeDataSelector);
+  const {currentRewardRate} = useSelector(stakeDataSelector);
   return (
     <View style={styled.container}>
       <Header />
@@ -112,7 +111,7 @@ const Stake = props => {
           </View>
         </ScrollView>
       </View>
-      <StakeInterestRate rate={DEFAULT_REWARD_RATE} desc="APY" />
+      <StakeInterestRate rate={currentRewardRate} desc="APY" />
       <StakeActions {...props} />
       <StakePoolCommunity />
     </View>

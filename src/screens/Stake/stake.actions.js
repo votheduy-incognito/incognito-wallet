@@ -6,6 +6,8 @@ import convert from '@src/utils/convert';
 import {getSignPublicKey, signPoolWithdraw} from '@src/services/gomobile';
 import {actionSendNativeToken} from '@src/redux/actions/account';
 import {CONSTANT_COMMONS} from '@src/constants';
+import {actionUpdateStorageHistory,actionRemoveStorageHistory} from '@src/screens/StakeHistory/stakeHistory.actions';
+import {v4} from 'uuid';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -44,7 +46,8 @@ import {
   createStakeSelector,
   feeStakeSelector,
 } from './stake.selector';
-import {mappingData} from './stake.utils';
+import {mappingData, ERROR_MESSAGE} from './stake.utils';
+
 
 export const actionFetching = () => ({
   type: ACTION_FETCHING,
@@ -174,15 +177,28 @@ export const actionFetchCreateStake = ({amount, fee}) => async (
   dispatch,
   getState,
 ) => {
+  const state = getState();
+  const {isFetching} = createStakeSelector(state);
+  if (isFetching) {
+    return;
+  }
+  const pStakeAccount = pStakeAccountSelector(state);
+  const {account} = activeFlowSelector(state);
+  const {stakingMasterAddress} = stakeDataSelector(state);
+  const stakeHistoryItem = {
+    ID: v4(),
+    Amount: convert.toOriginalAmount(
+      convert.toNumber(amount),
+      CONSTANT_COMMONS.PRV.pDecimals,
+    ),
+    Type: 1,
+    Status: 0,
+    IncognitoTx: null,
+    MasterAddress: stakingMasterAddress,
+    PaymentAddress: pStakeAccount?.PaymentAddress,
+    CreatedAt: new Date().getTime(),
+  };
   try {
-    const state = getState();
-    const {isFetching} = createStakeSelector(state);
-    if (isFetching) {
-      return;
-    }
-    const pStakeAccount = pStakeAccountSelector(state);
-    const {account} = activeFlowSelector(state);
-    const {stakingMasterAddress} = stakeDataSelector(state);
     await dispatch(actionFetchingCreateStake());
     const [tx, signPublicKeyEncode] = await new Promise.all([
       await dispatch(
@@ -197,10 +213,12 @@ export const actionFetchCreateStake = ({amount, fee}) => async (
       await getSignPublicKey(pStakeAccount?.PrivateKey),
     ]);
     if (!tx?.txId) {
-      throw 'Opps! Something went wrong. Can not create a tx!';
+      throw ERROR_MESSAGE.txId;
+    } else {
+      stakeHistoryItem.IncognitoTx = tx?.txId;
     }
     if (!signPublicKeyEncode) {
-      throw 'Opps! Something went wrong. Can not get sign key!';
+      throw ERROR_MESSAGE.signPublicKeyEncode;
     }
     const payload = await apiCreateStake({
       PStakeAddress: pStakeAccount?.PaymentAddress,
@@ -215,6 +233,58 @@ export const actionFetchCreateStake = ({amount, fee}) => async (
         ),
         await dispatch(actionFetch()),
       ]);
+    } else {
+      throw ERROR_MESSAGE.createStake;
+    }
+  } catch (error) {
+    await dispatch(actionFetchFailCreateStake());
+    if (stakeHistoryItem.IncognitoTx) {
+      await dispatch(
+        actionUpdateStorageHistory({
+          ...stakeHistoryItem,
+          Status: 3,
+          RetryDeposit: true,
+        }),
+      );
+    }
+    throw error;
+  }
+};
+
+export const actionRetryCreateState = ({txId, id}) => async (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const {isFetching} = createStakeSelector(state);
+  if (isFetching) {
+    return;
+  }
+  try {
+    await dispatch(actionFetchingCreateStake());
+    const pStakeAccount = pStakeAccountSelector(state);
+    const signPublicKeyEncode = await getSignPublicKey(
+      pStakeAccount?.PrivateKey,
+    );
+    if (!txId) {
+      throw ERROR_MESSAGE.txId;
+    }
+    if (!signPublicKeyEncode) {
+      throw ERROR_MESSAGE.signPublicKeyEncode;
+    }
+    const payload = await apiCreateStake({
+      PStakeAddress: pStakeAccount?.PaymentAddress,
+      SignPublicKeyEncode: signPublicKeyEncode,
+      IncognitoTx: txId,
+    });
+    if (payload?.ID) {
+      return await new Promise.all([
+        await dispatch(actionFetchedCreateStake(payload)),
+        await dispatch(actionFetch()),
+        await dispatch(actionRemoveStorageHistory(id)),
+      ]);
+    } else {
+      throw ERROR_MESSAGE.createStake;
     }
   } catch (error) {
     await dispatch(actionFetchFailCreateStake());
@@ -258,7 +328,7 @@ export const actionFetchCreateUnStake = ({amount}) => async (
       originalAmount,
     );
     if (!signEncode) {
-      throw 'Opps! Something went wrong. Can not get sign key!';
+      throw ERROR_MESSAGE.signEncode;
     }
     const data = {
       PStakeAddress: pStakeAccount?.PaymentAddress,
@@ -275,6 +345,8 @@ export const actionFetchCreateUnStake = ({amount}) => async (
         ),
         await dispatch(actionFetch()),
       ]);
+    } else {
+      throw ERROR_MESSAGE.createUnStake;
     }
   } catch (error) {
     await dispatch(actionFetchFailCreateUnStake());

@@ -260,10 +260,14 @@ class Exception {
         }
       }
     }
-    if(typeof exception === 'string'){
+    if (typeof exception === 'string') {
       return exception;
     }
     return MESSAGES.GENERAL;
+  }
+
+  toastMessageError() {
+    return Toast.showError(this.getMessageError());
   }
 }
 

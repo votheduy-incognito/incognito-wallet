@@ -4,7 +4,7 @@ import {ExHandler} from '@src/services/exception';
 import {useSelector} from 'react-redux';
 import {removeAccount} from '@src/redux/actions/account';
 import {actionImportAccount} from '@src/redux/actions';
-import Modal, {actionToggleModal} from '@src/components/Modal';
+import {actionToggleModal} from '@src/components/Modal';
 import {pStakeAccountSelector} from '@screens/Stake/stake.selector';
 import {actionFetch as actionFetchStake} from '@screens/Stake/stake.actions';
 import RecoverAccountSuccess from './RecoverAccountSuccess';
@@ -35,7 +35,6 @@ const enhance = WrappedComp => props => {
   return (
     <ErrorBoundary>
       <WrappedComp {...{...props, handleImportAccount}} />
-      <Modal />
     </ErrorBoundary>
   );
 };
