@@ -293,11 +293,17 @@ class Withdraw extends React.Component {
     const {
       estimateFeeData: { fee },
     } = this.state;
+    const {
+      isFormValid
+    } = this.props;
     if (fee !== 0 && !fee) {
       return true;
     }
     const { shouldBlockETHWrongAddress } = this.state;
     if (shouldBlockETHWrongAddress) {
+      return true;
+    }
+    if (!isFormValid) {
       return true;
     }
     return false;
@@ -453,11 +459,12 @@ class Withdraw extends React.Component {
                   placeholder={`Enter your ${tokenName} address`}
                   style={style.input}
                   validate={addressValidator}
-                  onOpenAddressBook={()=>{
+                  onOpenAddressBook={() => {
                     // onChange will not works for now, we have to refactor after.
-                    this.clearAddressField(); 
+                    this.clearAddressField();
                     // Clear address field for a while before going to refactor.
-                    onShowFrequentReceivers(); }}
+                    onShowFrequentReceivers();
+                  }}
                   showNavAddrBook
                 />
                 {(isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) && (
@@ -503,9 +510,9 @@ class Withdraw extends React.Component {
                   estimateFeeData={estimateFeeData}
                   onNewFeeData={this.handleSelectFee}
                   types={supportedFeeTypes}
-                  amount={isFormValid ? amount : null}
+                  amount={isFormValid && !shouldBlockETHWrongAddress ? amount : null}
                   toAddress={
-                    isFormValid ? selectedPrivacy?.paymentAddress : null
+                    isFormValid && !shouldBlockETHWrongAddress ? selectedPrivacy?.paymentAddress : null
                   } // est fee on the same network, dont care which address will be send to
                   feeText={(
                     <View>
