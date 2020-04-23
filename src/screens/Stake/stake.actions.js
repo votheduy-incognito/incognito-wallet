@@ -65,7 +65,7 @@ export const actionFetch = () => async (dispatch, getState) => {
     const pStakeAccount = pStakeAccountSelector(state);
     const {isFetching} = stakeSelector(state);
     if (!pStakeAccount) {
-      throw new Error('pStake account can\'t not found!');
+      throw 'pStake account can\'t not found!';
     }
     if (isFetching) {
       return;
@@ -90,7 +90,7 @@ export const actionFetch = () => async (dispatch, getState) => {
     );
   } catch (error) {
     await dispatch(actionFetchFail());
-    throw new Error(error);
+    throw error;
   }
 };
 
@@ -149,7 +149,7 @@ export const actionFetchFee = () => async (dispatch, getState) => {
     await dispatch(actionFetchedFee(feeEst));
   } catch (error) {
     await dispatch(actionFetchFailFee());
-    throw new Error(error);
+    throw error;
   }
 };
 
@@ -197,7 +197,10 @@ export const actionFetchCreateStake = ({amount, fee}) => async (
       await getSignPublicKey(pStakeAccount?.PrivateKey),
     ]);
     if (!tx?.txId) {
-      throw new Error('No txId');
+      throw 'Opps! Something went wrong. Can not create a tx!';
+    }
+    if (!signPublicKeyEncode) {
+      throw 'Opps! Something went wrong. Can not get sign key!';
     }
     const payload = await apiCreateStake({
       PStakeAddress: pStakeAccount?.PaymentAddress,
@@ -215,7 +218,7 @@ export const actionFetchCreateStake = ({amount, fee}) => async (
     }
   } catch (error) {
     await dispatch(actionFetchFailCreateStake());
-    throw new Error(error);
+    throw error;
   }
 };
 
@@ -254,6 +257,9 @@ export const actionFetchCreateUnStake = ({amount}) => async (
       account?.PaymentAddress,
       originalAmount,
     );
+    if (!signEncode) {
+      throw 'Opps! Something went wrong. Can not get sign key!';
+    }
     const data = {
       PStakeAddress: pStakeAccount?.PaymentAddress,
       PaymentAddress: account?.PaymentAddress,
@@ -272,7 +278,7 @@ export const actionFetchCreateUnStake = ({amount}) => async (
     }
   } catch (error) {
     await dispatch(actionFetchFailCreateUnStake());
-    throw new Error(error);
+    throw error;
   }
 };
 
@@ -329,7 +335,7 @@ export const actionFetchCreateUnStakeRewards = ({amount}) => async (
     }
   } catch (error) {
     await dispatch(actionFetchFailCreateUnStakeRewards());
-    throw new Error(error);
+    throw error;
   }
 };
 

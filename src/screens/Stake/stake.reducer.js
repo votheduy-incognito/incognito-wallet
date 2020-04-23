@@ -1,4 +1,8 @@
 import convert from '@src/utils/convert';
+import AsyncStorage from '@react-native-community/async-storage';
+import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2';
+import {persistReducer} from 'redux-persist';
+import {DEFAULT_REWARD_RATE} from './stake.utils';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -21,7 +25,6 @@ import {
   ACTION_BACKUP_CREATE_STAKE,
   ACTION_TOGGLE_GUIDE,
 } from './stake.constant';
-import {DEFAULT_REWARD_RATE} from './stake.utils';
 
 const initialState = {
   isFetching: false,
@@ -57,7 +60,6 @@ const initialState = {
     isFetching: false,
     isFetched: false,
     data: null,
-    backup: false,
   },
   createUnStake: {
     isFetching: false,
@@ -69,10 +71,13 @@ const initialState = {
     isFetched: false,
     data: null,
   },
-  guide: null,
+  storage: {
+    guide: false,
+    backup: false,
+  },
 };
 
-export default (state = initialState, action) => {
+const stakeReducer = (state = initialState, action) => {
   switch (action.type) {
   case ACTION_FETCHING: {
     return {
@@ -230,8 +235,8 @@ export default (state = initialState, action) => {
   case ACTION_BACKUP_CREATE_STAKE: {
     return {
       ...state,
-      createStake: {
-        ...state.createStake,
+      storage: {
+        ...state.storage,
         backup: true,
       },
     };
@@ -279,10 +284,22 @@ export default (state = initialState, action) => {
   case ACTION_TOGGLE_GUIDE: {
     return {
       ...state,
-      guide: true,
+      storage: {
+        ...state.storage,
+        guide: true,
+      },
     };
   }
   default:
     return state;
   }
 };
+
+const persistConfig = {
+  key: 'stake',
+  storage: AsyncStorage,
+  whitelist: ['storage'],
+  stateReconciler: autoMergeLevel2,
+};
+
+export default persistReducer(persistConfig, stakeReducer);
