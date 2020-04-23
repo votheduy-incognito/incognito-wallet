@@ -26,10 +26,10 @@ class PriceChartCrypto extends Component {
   };
 
   static navigationOptions = ({ navigation }) => {
-    const { handleSelectPair, currentPair, tokenPairs } = navigation.state.params || {};
+    const { handleSelectPair, pair, tokenPairs } = navigation.state.params || {};
     return {
       headerRight: (
-        <PriceChartSelector currentPair={currentPair} pairs={tokenPairs} onPress={handleSelectPair} />
+        <PriceChartSelector currentPair={pair} pairs={tokenPairs} onPress={handleSelectPair} />
       )
     };
   };
@@ -97,7 +97,7 @@ class PriceChartCrypto extends Component {
         this.setState({ label: pair, data });
 
         navigation?.setParams({
-          currentPair: pair,
+          pair,
         });
       }
     });
@@ -129,7 +129,7 @@ class PriceChartCrypto extends Component {
 
     switch(intervalMs) {
     case BY_HOUR: {
-      return data.slice(-24);
+      return data.slice(-12);
     }
     case BY_DAY: {
       return data.slice(-24);
@@ -162,7 +162,7 @@ class PriceChartCrypto extends Component {
         />
         {!!pair && (
           <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingRight: 20}}>
-            <DashboardItem title="Volume (24hrs)" text="" />
+            {/*<DashboardItem title="Volume (24hrs)" text="" />*/}
             <PoolSize pair={pair} />
           </View>
         )}
