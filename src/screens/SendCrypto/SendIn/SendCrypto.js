@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Field, formValueSelector, isValid} from 'redux-form';
-import {connect} from 'react-redux';
+import { Field, formValueSelector, isValid, change } from 'redux-form';
+import { connect } from 'react-redux';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
-import {Container, ScrollView, View, Button, Toast} from '@components/core';
-import ReceiptModal, {openReceipt} from '@components/Receipt';
+import { Container, ScrollView, View, Button, Toast } from '@components/core';
+import ReceiptModal, { openReceipt } from '@components/Receipt';
 import LoadingTx from '@components/LoadingTx';
 import EstimateFee from '@components/EstimateFee';
-import {isExchangeRatePToken} from '@services/wallet/RpcClientService';
+import { isExchangeRatePToken } from '@services/wallet/RpcClientService';
 import {
   createForm,
   InputQRField,
@@ -16,17 +16,18 @@ import {
   InputMaxValueField,
   validator,
 } from '@components/core/reduxForm';
-import {ExHandler} from '@services/exception';
-import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
-import {logEvent} from '@services/firebase';
-import {MESSAGES} from '@screens/Dex/constants';
+import { ExHandler } from '@services/exception';
+import { CONSTANT_COMMONS, CONSTANT_EVENTS } from '@src/constants';
+import { logEvent } from '@services/firebase';
+import { MESSAGES } from '@screens/Dex/constants';
 import TokenSelect from '@components/TokenSelect';
 import CurrentBalance from '@components/CurrentBalance';
-import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
-import {RefreshControl} from 'react-native';
-import {generateTestId} from '@utils/misc';
-import {SEND} from '@src/constants/elements';
-import {homeStyle} from './style';
+import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
+import { RefreshControl } from 'react-native';
+import { generateTestId } from '@utils/misc';
+import { SEND } from '@src/constants/elements';
+import LogManager from '@src/services/LogManager';
+import { homeStyle } from './style';
 
 export const formName = 'sendCrypto';
 const selector = formValueSelector(formName);
@@ -62,24 +63,24 @@ class SendCrypto extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const {selectedPrivacy} = this.props;
-    const {selectedPrivacy: oldSelectedPrivacy} = prevProps;
+    const { selectedPrivacy } = this.props;
+    const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
     const {
-      estimateFeeData: {fee, feeUnitByTokenId},
+      estimateFeeData: { fee, feeUnitByTokenId },
     } = this.state;
     const {
-      estimateFeeData: {fee: oldFee, feeUnitByTokenId: oldFeeUnitByTokenId},
+      estimateFeeData: { fee: oldFee, feeUnitByTokenId: oldFeeUnitByTokenId },
     } = prevState;
-    const {receiptData} = this.props;
+    const { receiptData } = this.props;
 
     if (selectedPrivacy?.pDecimals !== oldSelectedPrivacy?.pDecimals) {
       // need to re-calc min amount if token decimals was changed
-      this.setFormValidation({minAmount: this.getMinAmount()});
+      this.setFormValidation({ minAmount: this.getMinAmount() });
     }
 
     if (fee !== oldFee || feeUnitByTokenId !== oldFeeUnitByTokenId) {
       // need to re-calc max amount can be send if fee was changed
-      this.setFormValidation({maxAmount: this.getMaxAmount()});
+      this.setFormValidation({ maxAmount: this.getMaxAmount() });
     }
 
     if (receiptData?.txId !== prevProps.receiptData?.txId) {
@@ -97,7 +98,7 @@ class SendCrypto extends React.Component {
 
   getMinAmount = () => {
     // MIN = 1 nano
-    const {selectedPrivacy} = this.props;
+    const { selectedPrivacy } = this.props;
     if (selectedPrivacy?.pDecimals) {
       return 1 / 10 ** selectedPrivacy.pDecimals;
     }
@@ -106,9 +107,9 @@ class SendCrypto extends React.Component {
   };
 
   getMaxAmount = () => {
-    const {selectedPrivacy} = this.props;
+    const { selectedPrivacy } = this.props;
     const {
-      estimateFeeData: {fee = 0, feeUnitByTokenId},
+      estimateFeeData: { fee = 0, feeUnitByTokenId },
     } = this.state;
     let amount = selectedPrivacy?.amount;
 
@@ -125,16 +126,17 @@ class SendCrypto extends React.Component {
     return Math.max(maxAmount, 0);
   };
 
-  setFormValidation = ({maxAmount, minAmount}) => {
-    const {selectedPrivacy} = this.props;
+  setFormValidation = ({ maxAmount, minAmount }) => {
+    const { selectedPrivacy } = this.props;
 
     if (Number.isFinite(maxAmount)) {
+      this.reReduceMaxAmount();
       this.setState({
         maxAmountValidator: validator.maxValue(maxAmount, {
           message:
             maxAmount > 0
               ? `Max amount you can send is ${formatUtil.number(maxAmount)} ${
-                  selectedPrivacy?.symbol
+              selectedPrivacy?.symbol
               }`
               : 'Your balance is not enough to send',
         }),
@@ -153,11 +155,11 @@ class SendCrypto extends React.Component {
   };
 
   handleSend = async values => {
-    const {selectedPrivacy} = this.props;
+    const { selectedPrivacy } = this.props;
     try {
-      const {handleSend} = this.props;
+      const { handleSend } = this.props;
       const {
-        estimateFeeData: {fee, feeUnit, isUseTokenFee},
+        estimateFeeData: { fee, feeUnit, isUseTokenFee },
       } = this.state;
 
       if (typeof handleSend === 'function') {
@@ -165,7 +167,7 @@ class SendCrypto extends React.Component {
           tokenId: selectedPrivacy.tokenId,
           tokenSymbol: selectedPrivacy.symbol,
         });
-        await handleSend({...values, fee, feeUnit, isUseTokenFee});
+        await handleSend({ ...values, fee, feeUnit, isUseTokenFee });
         await logEvent(CONSTANT_EVENTS.SEND_SUCCESS, {
           tokenId: selectedPrivacy.tokenId,
           tokenSymbol: selectedPrivacy.symbol,
@@ -189,12 +191,12 @@ class SendCrypto extends React.Component {
   };
 
   handleSelectFee = estimateFeeData => {
-    this.setState({estimateFeeData});
+    this.setState({ estimateFeeData });
   };
 
   shouldDisabledSubmit = () => {
     const {
-      estimateFeeData: {fee},
+      estimateFeeData: { fee },
     } = this.state;
 
     return fee !== 0 && !fee;
@@ -209,7 +211,7 @@ class SendCrypto extends React.Component {
     ];
 
     try {
-      const {selectedPrivacy} = this.props;
+      const { selectedPrivacy } = this.props;
       const isUsed = await isExchangeRatePToken(selectedPrivacy.tokenId);
 
       if (isUsed) {
@@ -221,13 +223,13 @@ class SendCrypto extends React.Component {
     } catch (e) {
       new ExHandler(e);
     } finally {
-      this.setState({supportedFeeTypes});
+      this.setState({ supportedFeeTypes });
     }
   };
 
   getAmountValidator = () => {
-    const {selectedPrivacy} = this.props;
-    const {maxAmountValidator, minAmountValidator} = this.state;
+    const { selectedPrivacy } = this.props;
+    const { maxAmountValidator, minAmountValidator } = this.state;
 
     const val = [];
 
@@ -247,24 +249,43 @@ class SendCrypto extends React.Component {
   };
 
   handleSelectToken = tokenId => {
-    const {setSelectedPrivacy} = this.props;
+    const { setSelectedPrivacy } = this.props;
     setSelectedPrivacy(tokenId);
   };
+  // When click into Max button, auto set to max value with substract fee
+  // It should be refactored into a utils, not prefer this here.
+  reReduceMaxAmount = () => {
+    const { estimateFeeData } = this.state;
+    const {
+      selectedPrivacy,
+    } = this.props;
+    if (estimateFeeData?.fee) {
+      const {
+        estimateFeeData: { fee = 0 },
+      } = this.state;
+      let feeConvert = Number(convertUtil.toHumanAmount(fee, selectedPrivacy?.pDecimals));
+      let amountConvert = Number(convertUtil.toHumanAmount(selectedPrivacy?.amount || 0, selectedPrivacy?.pDecimals));
+      let maxable = (amountConvert - feeConvert);
+      const { rfChange } = this.props;
+      rfChange(formName, 'amount', `${maxable}`);
+    }
+  }
 
   render() {
-    const {supportedFeeTypes, estimateFeeData} = this.state;
+    const { supportedFeeTypes, estimateFeeData } = this.state;
     const {
       isSending,
       amount,
       toAddress,
       isFormValid,
       account,
+      rfChange,
       selectable,
       onShowFrequentReceivers,
+      selectedPrivacy,
       reloading,
     } = this.props;
-    const maxAmount = this.getMaxAmount();
-
+    let maxAmount = this.getMaxAmount();
     return (
       <ScrollView
         style={homeStyle.container}
@@ -283,7 +304,7 @@ class SendCrypto extends React.Component {
             }
           />
           <Form>
-            {({handleSubmit}) => (
+            {({ handleSubmit }) => (
               <View style={homeStyle.form}>
                 <Field
                   component={InputQRField}
@@ -313,14 +334,14 @@ class SendCrypto extends React.Component {
                   component={InputField}
                   inputStyle={homeStyle.descriptionInput}
                   containerStyle={homeStyle.descriptionInput}
-                  componentProps={{multiline: true, numberOfLines: 10}}
+                  componentProps={{ multiline: true, numberOfLines: 10 }}
                   name="message"
                   placeholder="Message"
                   label="Memo (optional)"
                   style={[
                     homeStyle.input,
                     homeStyle.descriptionInput,
-                    {marginBottom: 25},
+                    { marginBottom: 25 },
                   ]}
                   validate={descriptionMaxBytes}
                   {...generateTestId(SEND.MEMO_INPUT)}
@@ -385,6 +406,7 @@ const mapState = state => ({
 
 const mapDispatch = {
   setSelectedPrivacy,
+  rfChange: change,
 };
 
 export default connect(mapState, mapDispatch)(SendCrypto);

@@ -13,7 +13,6 @@ import {
   validator,
 } from '@components/core/reduxForm';
 import EstimateFee from '@components/EstimateFee';
-import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import LoadingTx from '@components/LoadingTx';
 import { CONSTANT_COMMONS, CONSTANT_EVENTS, CONSTANT_CONFIGS } from '@src/constants';
 import { ExHandler } from '@services/exception';
@@ -33,9 +32,8 @@ import { MESSAGES } from '@screens/Dex/constants';
 import TokenSelect from '@components/TokenSelect';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import CurrentBalance from '@components/CurrentBalance';
-import ROUTES_NAME from '@routers/routeNames';
 import { RefreshControl } from 'react-native';
-import Modal, { actionToggleModal } from '@src/components/Modal';
+import { actionToggleModal } from '@src/components/Modal';
 import { COLORS } from '@src/styles';
 import style from './style';
 import Receipt from './Withdraw.receipt';
@@ -182,6 +180,7 @@ class Withdraw extends React.Component {
     const { selectedPrivacy } = this.props;
 
     if (maxAmount) {
+      this.reReduceMaxAmount();
       this.setState({
         maxAmountValidator: validator.maxValue(maxAmount, {
           message:
@@ -391,6 +390,24 @@ class Withdraw extends React.Component {
       this.setState({ shouldBlockETHWrongAddress: false });
     }
   }
+  // When click into Max button, auto set to max value with substract fee
+
+  reReduceMaxAmount = () => {
+    const { estimateFeeData } = this.state;
+    const {
+      selectedPrivacy,
+    } = this.props;
+    if (estimateFeeData?.fee) {
+      const {
+        estimateFeeData: { fee = 0 },
+      } = this.state;
+      let feeConvert = Number(convertUtil.toHumanAmount(fee, selectedPrivacy?.pDecimals));
+      let amountConvert = Number(convertUtil.toHumanAmount(selectedPrivacy?.amount || 0, selectedPrivacy?.pDecimals));
+      let maxable = (amountConvert - feeConvert);
+      const { rfChange } = this.props;
+      rfChange(formName, 'amount', `${maxable}`);
+    }
+  }
 
   render() {
     const {
@@ -509,6 +526,7 @@ class Withdraw extends React.Component {
                   accountName={account?.name}
                   estimateFeeData={estimateFeeData}
                   onNewFeeData={this.handleSelectFee}
+                  onCalculatedFeeSuccess={this.onCalculatedFeeSuccess}
                   types={supportedFeeTypes}
                   amount={isFormValid && !shouldBlockETHWrongAddress ? amount : null}
                   toAddress={
