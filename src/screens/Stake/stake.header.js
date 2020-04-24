@@ -18,7 +18,7 @@ const styled = StyleSheet.create({
     top: 0,
     left: 20,
     right: 20,
-    paddingTop: 20
+    paddingTop: 20,
   },
   ios: {
     paddingTop: 30,
@@ -44,8 +44,8 @@ const StakeHeader = () => {
     <View
       style={[
         styled.container,
-        hasNotch && styled.hasNotch,
         ios && styled.ios,
+        hasNotch && styled.hasNotch,
       ]}
     >
       <View style={styled.left}>

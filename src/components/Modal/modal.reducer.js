@@ -1,9 +1,16 @@
-import {ACTION_TOGGLE_MODAL} from './modal.constant';
+import {
+  ACTION_TOGGLE_MODAL,
+  ACTION_TOGGLE_LOADING_MODAL,
+} from './modal.constant';
 
 const initialState = {
   visible: false,
   data: null,
   shouldCloseModalWhenTapOverlay: false,
+  loading: {
+    toggle: false,
+    title: '',
+  },
 };
 
 export default (state = initialState, action) => {
@@ -12,6 +19,15 @@ export default (state = initialState, action) => {
     return {
       ...state,
       ...action.payload,
+    };
+  }
+  case ACTION_TOGGLE_LOADING_MODAL: {
+    return {
+      ...state,
+      loading: {
+        ...state.loading,
+        ...action.payload,
+      },
     };
   }
   default:

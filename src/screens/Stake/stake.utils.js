@@ -11,8 +11,9 @@ export const ERROR_MESSAGE = {
   signPublicKeyEncode:
     'Opps! Something went wrong. Can not get sign public key encode!',
   signEncode: 'Opps! Something went wrong. Can not get sign encode!',
-  createUnStake: 'Opps! Something went wrong. Can not withdraw!',
-  createStake: 'Opps! Something went wrong. Can not deposit!',
+  createUnStake: 'Something went wrong. Try again later',
+  createStake:
+    'Something went wrong. Try again from your history in the top right menu.',
 };
 export const STAKE = {
   MAIN_ACCOUNT: 'pStake',

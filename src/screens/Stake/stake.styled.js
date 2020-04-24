@@ -134,4 +134,9 @@ export const styledInterestRate = StyleSheet.create({
     bottom: 20,
     right: 18,
   },
+  icon: {
+    width: 22,
+    height: 22,
+    marginBottom: 2,
+  },
 });

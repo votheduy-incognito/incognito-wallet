@@ -269,6 +269,15 @@ class Exception {
   toastMessageError() {
     return Toast.showError(this.getMessageError());
   }
+
+  getCodeError(){
+    const exception = this.exception;
+    if (isValidException(exception)) {
+      return exception?.code;
+    }
+    return null;
+  }
+
 }
 
 export default Exception;

@@ -15,10 +15,8 @@ const styled = StyleSheet.create({
     borderTopRightRadius: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    position: 'relative',
     paddingVertical: 20,
     paddingHorizontal: 15,
-    zIndex: 1,
   },
   title: {
     fontFamily: FONT.NAME.regular,
