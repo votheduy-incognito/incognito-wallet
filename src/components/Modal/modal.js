@@ -22,9 +22,11 @@ const ModalComponent = () => {
   const {visible, data, shouldCloseModalWhenTapOverlay} = useSelector(
     modalSelector,
   );
-  const {toggle: toggleLoading, title: titleLoading} = useSelector(
-    modalLoadingSelector,
-  );
+  const {
+    toggle: toggleLoading,
+    title: titleLoading,
+    desc: descLoading,
+  } = useSelector(modalLoadingSelector);
   const dispatch = useDispatch();
   const handleToggle = async () =>
     shouldCloseModalWhenTapOverlay ? await dispatch(actionToggleModal()) : null;
@@ -38,7 +40,9 @@ const ModalComponent = () => {
       <TouchableWithoutFeedback onPress={handleToggle}>
         <SafeAreaView style={styled.container}>
           {data}
-          {toggleLoading && <LoadingModal title={titleLoading} />}
+          {toggleLoading && (
+            <LoadingModal title={titleLoading} desc={descLoading} />
+          )}
         </SafeAreaView>
       </TouchableWithoutFeedback>
     </Modal>

@@ -1,12 +1,12 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import {ExHandler} from '@src/services/exception';
 import {useDispatch, useSelector} from 'react-redux';
 import {actionLoadAllBalance} from '@src/redux/actions/account';
 import {activeFlowSelector} from '@screens/Stake/stake.selector';
 import {DEPOSIT_FLOW} from '@screens/Stake/stake.constant';
 import {COLORS} from '@src/styles';
+import {Toast} from '@src/components/core';
 
 const styled = StyleSheet.create({
   accountContainer: {
@@ -26,7 +26,9 @@ const enhance = WrappedComp => props => {
     try {
       await dispatch(actionLoadAllBalance());
     } catch (error) {
-      new ExHandler(error).showErrorToast();
+      Toast.showError(
+        'This seems to be taking longer than usual. Please try again later.',
+      );
     }
   };
   React.useEffect(() => {

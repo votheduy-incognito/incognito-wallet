@@ -11,16 +11,13 @@ import {
   stakeDataSelector,
   feeStakeSelector,
   loadingSubmitAmountSelector,
+  stakeSelector,
 } from '@screens/Stake/stake.selector';
 import {ExHandler} from '@src/services/exception';
 import format from '@src/utils/format';
 import {DEPOSIT_FLOW, WITHDRAW_FLOW} from '@screens/Stake/stake.constant';
 import {getDecimalSeparator} from '@src/resources/separator';
-import {
-  actionToggleModal,
-  actionToggleLoadingModal,
-} from '@src/components/Modal';
-import LoadingModal from '@src/components/Modal/features/LoadingModal';
+import {actionToggleLoadingModal} from '@src/components/Modal';
 import {
   validatedAmount,
   getHookFactories,
@@ -39,6 +36,7 @@ const enhance = WrappedComp => props => {
     error: null,
   });
   const {amount, error} = state;
+  const {isFetching, isFetched} = useSelector(stakeSelector);
   const fee = useSelector(feeStakeSelector);
   const loading = useSelector(loadingSubmitAmountSelector);
   const validAmount = !amount.validated.error && amount.value !== 0;
@@ -70,7 +68,13 @@ const enhance = WrappedComp => props => {
       );
     }
     case WITHDRAW_FLOW: {
-      return !validAmount || loading || !!error;
+      return (
+        !validAmount ||
+          loading ||
+          !!error ||
+          isFetching ||
+          (!isFetched && !isFetching)
+      );
     }
     default:
       return false;
@@ -85,8 +89,8 @@ const enhance = WrappedComp => props => {
       await dispatch(
         actionToggleLoadingModal({
           toggle: true,
-          title:
-            'Please wait, this may take a couple of minutes.\nPlease do not navigate away from the screen.',
+          title: 'Completing this action...',
+          desc: 'Please do not navigate away from the app.',
         }),
       );
       switch (activeFlow) {

@@ -107,9 +107,7 @@ export const actionChangeFLowStep = (
   payload,
 });
 
-export const actionChangeFlowAccount = (
-  payload = {account: null, balancePStake: 0},
-) => ({
+export const actionChangeFlowAccount = (payload = {account: null}) => ({
   type: ACTION_CHANGE_FLOW_ACCOUNT,
   payload,
 });

@@ -7,14 +7,26 @@ import {actionImportAccount} from '@src/redux/actions';
 import {actionToggleModal} from '@src/components/Modal';
 import {pStakeAccountSelector} from '@screens/Stake/stake.selector';
 import {actionFetch as actionFetchStake} from '@screens/Stake/stake.actions';
+import {reloadAccountList} from '@src/redux/actions/wallet';
+import {isNotFoundStakeAccount} from '@src/screens/Stake/stake.utils';
 import RecoverAccountSuccess from './RecoverAccountSuccess';
 
 const enhance = WrappedComp => props => {
   const pStakeAccount = useSelector(pStakeAccountSelector);
   const handleImportAccount = async (values, dispatch) => {
+    const {privateKey} = values;
     try {
-      const {privateKey} = values;
+      if (isNotFoundStakeAccount(pStakeAccount)) {
+        throw 'Something went wrong! pStake account can\'t not found!';
+      }
+      if (pStakeAccount?.PrivateKey === privateKey) {
+        throw 'Please make sure this private key is valid and does not already exist on your device.';
+      }
+      if (!privateKey) {
+        throw 'Private key is not found';
+      }
       await dispatch(removeAccount(pStakeAccount));
+      await dispatch(reloadAccountList());
       await dispatch(
         actionImportAccount({
           privateKey,
@@ -29,7 +41,15 @@ const enhance = WrappedComp => props => {
         }),
       );
     } catch (error) {
-      new ExHandler(error).showErrorToast();
+      if (isNotFoundStakeAccount(pStakeAccount)) {
+        await dispatch(
+          actionImportAccount({
+            privateKey: pStakeAccount?.PrivateKey,
+            accountName: pStakeAccount?.name || pStakeAccount?.AccountName,
+          }),
+        );
+      }
+      new ExHandler(error).toastMessageError();
     }
   };
   return (

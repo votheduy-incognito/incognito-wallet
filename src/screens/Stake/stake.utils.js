@@ -29,6 +29,9 @@ export const isStakeAccount = account => {
   );
 };
 
+export const isNotFoundStakeAccount = pStakeAccount =>
+  _.isEmpty(pStakeAccount) || _.isEmpty(pStakeAccount?.PrivateKey);
+
 export const mappingData = (dataMasterAddress, dataStakerInfo) => {
   const {pDecimals, symbol} = CONSTANT_COMMONS.PRV;
   const balance = dataStakerInfo?.Balance || 0;
@@ -40,13 +43,8 @@ export const mappingData = (dataMasterAddress, dataStakerInfo) => {
   const shouldCalInterestRate =
     balanceToHumanAmount >= minToStakeToHunmanAmount;
   const rewardBalance = dataStakerInfo?.RewardBalance || 0;
-  const totalBalance = balance + rewardBalance;
+  const totalBalance = balance;
   const staked = balance !== 0;
-  /**
-   * currentRewardRate: staked
-      ? dataStakerInfo?.RewardRate
-      : dataMasterAddress?.CurrentRewardRate || DEFAULT_REWARD_RATE,
-   */
   return {
     minToStake: minToStake,
     minToWithdraw: 1,
@@ -64,10 +62,11 @@ export const mappingData = (dataMasterAddress, dataStakerInfo) => {
     rewardBalance,
     totalBalance,
     staked,
+    balancePStake: totalBalance,
   };
 };
 
-export const calInterestRate = ({
+export const calTotalBalance = ({
   nowToMilSec,
   balance = 0,
   rate = 50,
@@ -76,16 +75,16 @@ export const calInterestRate = ({
   try {
     const duration = nowToMilSec - rewardDateToMilSec;
     if (duration < 0) {
-      return 0;
+      return balance;
     }
-    const interestRate =
-      (balance * (rate / 100) * duration) / (365 * 24 * 60 * 60 * 1000);
-    if (!isNaN(Number(interestRate))) {
-      return interestRate;
+    const totalBalance =
+      balance * Math.pow(1 + rate / 100 / 365 / 24 / 3600 / 1000, duration);
+    if (!isNaN(Number(totalBalance))) {
+      return totalBalance;
     }
-    return 0;
+    return balance;
   } catch (error) {
     new ExHandler(error).showErrorToast();
-    return 0;
+    return balance;
   }
 };

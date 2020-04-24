@@ -115,7 +115,7 @@ const stakeReducer = (state = initialState, action) => {
     };
   }
   case ACTION_CHANGE_FLOW_ACCOUNT: {
-    const {account, balancePStake} = action.payload;
+    const {account} = action.payload;
     const {activeFlow} = state.flow;
     switch (activeFlow) {
     case DEPOSIT_FLOW:
@@ -147,10 +147,6 @@ const stakeReducer = (state = initialState, action) => {
             account,
             step: STEP_FLOW.TYPE_AMOUNT,
           },
-        },
-        data: {
-          ...state.data,
-          balancePStake,
         },
       };
     }

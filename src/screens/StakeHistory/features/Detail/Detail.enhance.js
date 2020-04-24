@@ -26,9 +26,8 @@ const enhance = WrappedComp => props => {
         actionToggleModal({
           data: (
             <LoadingModal
-              title={
-                'Retrying your deposit…\nThis may take a couple of minutes. Please do not navigate away from the screen.'
-              }
+              title="Retrying your deposit…"
+              desc="Please do not navigate away from the screen."
             />
           ),
           visible: true,

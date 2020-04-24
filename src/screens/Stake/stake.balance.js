@@ -6,7 +6,7 @@ import {useSelector} from 'react-redux';
 import {
   MAX_DIGITS_BALANCE_PSTAKE,
   TIMEOUT_CAL_REALTIME_BALANCE_PSTAKE,
-  calInterestRate,
+  calTotalBalance,
 } from './stake.utils';
 import {stakeDataSelector} from './stake.selector';
 import {styled} from './stake.styled';
@@ -35,14 +35,14 @@ const StakeBalance = () => {
       if (!nextNodeTime) {
         return;
       }
-      const interestRate = calInterestRate({
+      const balanceCurrent = calTotalBalance({
         nowToMilSec: nextNodeTime,
         balance,
         rate: currentRewardRate,
         rewardDateToMilSec,
       });
       const totalBalanceCurrent = format.balance(
-        totalBalance + interestRate,
+        balanceCurrent,
         pDecimals,
         MAX_DIGITS_BALANCE_PSTAKE,
       );
