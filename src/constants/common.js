@@ -5,7 +5,9 @@ const CRYPTO_SYMBOL = {
   BNB: 'BNB',
   USD: 'USD',
   KCS: 'KCS',
-  TOMO: 'TOMO'
+  TOMO: 'TOMO',
+  NEO: 'NEO',
+  XMR: 'XMR'
 };
 
 const TOKEN_SYMBOL = {

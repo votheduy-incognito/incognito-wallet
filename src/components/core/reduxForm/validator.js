@@ -76,6 +76,10 @@ const ethAddress = (value, { message } = {}) => value => !walletValidator.valida
 
 const btcAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'BTC', 'both') ? messageHanlder(message, value) ?? 'Invalid BTC address' : undefined;
 
+const neoAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'NEO', 'both') ? messageHanlder(message, value) ?? 'Invalid NEO address' : undefined;
+
+const xmrAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'XMR', 'both') ? messageHanlder(message, value) ?? 'Invalid Monero address' : undefined;
+
 const bnbAddress = (value, { message } = {}) => value => {
   const regexp = new RegExp('^(t)?(bnb)([a-z0-9]{39})$'); // t(for testnet) bnb + 39 a-z0-9
   if (!regexp.test(value)) {
@@ -133,6 +137,8 @@ const combinedIncognitoAddress = [required(), incognitoAddress()];
 const combinedETHAddress = [required(), ethAddress()];
 const combinedTOMOAddress = [required(), tomoAddress()];
 const combinedBTCAddress = [required(), btcAddress()];
+const combinedNEOAddress = [required(), neoAddress()];
+const combinedXMRAddress = [required(), xmrAddress()];
 const combinedBNBAddress = [required(), bnbAddress()];
 const combinedUnknownAddress = [required(), minLength(15)];
 const combinedTokenName = [required(), minLength(3), maxLength(50), regexp(/\w+$/i, { message: 'Please use a valid coin name (Ex: "My Coin, Coin-1,..").' })];
@@ -159,6 +165,8 @@ export default {
   combinedETHAddress,
   combinedTOMOAddress,
   combinedBTCAddress,
+  combinedNEOAddress,
+  combinedXMRAddress,
   ethAddress,
   btcAddress,
   notInList,
