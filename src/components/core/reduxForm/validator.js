@@ -70,7 +70,7 @@ const regexp = (pattern, { message } = {}) => value =>
 const maxBytes = (max, { message } = {}) => value =>
   value && new Blob([String(value)])?.size > max ? messageHanlder(message, value, max) ?? `Must be less than or equal ${formatUtils.number(max)} bytes` : undefined;
 
-const incognitoAddress = (value, { message } = {}) => value => value && !accountService.checkPaymentAddress(value) ? messageHanlder(message, value) ?? 'Invalid address'  :undefined;
+const incognitoAddress = (value, { message } = {}) => value => value && !accountService.checkPaymentAddress(value) ? messageHanlder(message, value) ?? 'Invalid address' : undefined;
 
 const ethAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'ETH', 'both') ? messageHanlder(message, value) ?? 'Invalid ETH address' : undefined;
 
@@ -79,6 +79,64 @@ const btcAddress = (value, { message } = {}) => value => !walletValidator.valida
 const neoAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'NEO', 'both') ? messageHanlder(message, value) ?? 'Invalid NEO address' : undefined;
 
 const xmrAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'XMR', 'both') ? messageHanlder(message, value) ?? 'Invalid Monero address' : undefined;
+
+const zenAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'ZEN', 'both') ? messageHanlder(message, value) ?? 'Invalid Zen address' : undefined;
+
+const zclAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'ZCL', 'both') ? messageHanlder(message, value) ?? 'Invalid ZCL address' : undefined;
+
+const zecAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'ZEC', 'both') ? messageHanlder(message, value) ?? 'Invalid ZEC address' : undefined;
+
+const votAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'VOT', 'both') ? messageHanlder(message, value) ?? 'Invalid VOT address' : undefined;
+
+const vtcAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'VTC', 'both') ? messageHanlder(message, value) ?? 'Invalid VTC address' : undefined;
+
+const sngAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'SNG', 'both') ? messageHanlder(message, value) ?? 'Invalid SNG address' : undefined;
+
+const xrpAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'XRP', 'both') ? messageHanlder(message, value) ?? 'Invalid XRP address' : undefined;
+
+const xrbAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'XRB', 'both') ? messageHanlder(message, value) ?? 'Invalid XRB address' : undefined;
+
+const qtumAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'QTUM', 'both') ? messageHanlder(message, value) ?? 'Invalid QTUM address' : undefined;
+
+const ptsAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'PTS', 'both') ? messageHanlder(message, value) ?? 'Invalid protoshares address' : undefined;
+
+const ppcAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'PPC', 'both') ? messageHanlder(message, value) ?? 'Invalid PPC address' : undefined;
+
+const gasAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'GAS', 'both') ? messageHanlder(message, value) ?? 'Invalid GAS address' : undefined;
+
+const nmcAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'NMC', 'both') ? messageHanlder(message, value) ?? 'Invalid NMC address' : undefined;
+
+const mecAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'MEC', 'both') ? messageHanlder(message, value) ?? 'Invalid MEC address' : undefined;
+
+const ltcAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'LTC', 'both') ? messageHanlder(message, value) ?? 'Invalid LTC address' : undefined;
+
+const kmdAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'KMD', 'both') ? messageHanlder(message, value) ?? 'Invalid KMD address' : undefined;
+
+const hushAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'HUSH', 'both') ? messageHanlder(message, value) ?? 'Invalid HUSH address' : undefined;
+
+const grlcAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'GRLC', 'both') ? messageHanlder(message, value) ?? 'Invalid GRLC address' : undefined;
+
+const frcAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'FRC', 'both') ? messageHanlder(message, value) ?? 'Invalid FRC address' : undefined;
+
+const dogeAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'DOGE', 'both') ? messageHanlder(message, value) ?? 'Invalid DOGE address' : undefined;
+
+const dgbAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'DGB', 'both') ? messageHanlder(message, value) ?? 'Invalid DGB address' : undefined;
+
+const dcrAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'DCR', 'both') ? messageHanlder(message, value) ?? 'Invalid DCR address' : undefined;
+
+const cloAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'CLO', 'both') ? messageHanlder(message, value) ?? 'Invalid CLO address' : undefined;
+
+const btgAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'BTG', 'both') ? messageHanlder(message, value) ?? 'Invalid BTG address' : undefined;
+
+const bchAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'BCH', 'both') ? messageHanlder(message, value) ?? 'Invalid BCH address' : undefined;
+
+const bioAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'BIO', 'both') ? messageHanlder(message, value) ?? 'Invalid BIO address' : undefined;
+
+const bvcAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'BVC', 'both') ? messageHanlder(message, value) ?? 'Invalid BVC address' : undefined;
+
+const bkxAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'BKX', 'both') ? messageHanlder(message, value) ?? 'Invalid BKX address' : undefined;
+
+const aurAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'AUR', 'both') ? messageHanlder(message, value) ?? 'Invalid AUR address' : undefined;
 
 const bnbAddress = (value, { message } = {}) => value => {
   const regexp = new RegExp('^(t)?(bnb)([a-z0-9]{39})$'); // t(for testnet) bnb + 39 a-z0-9
@@ -140,6 +198,37 @@ const combinedBTCAddress = [required(), btcAddress()];
 const combinedNEOAddress = [required(), neoAddress()];
 const combinedXMRAddress = [required(), xmrAddress()];
 const combinedBNBAddress = [required(), bnbAddress()];
+
+const combinedZenAddress = [required(), zenAddress()];
+const combinedZCLAddress = [required(), zclAddress()];
+const combinedZECAddress = [required(), zecAddress()];
+const combinedVOTAddress = [required(), votAddress()];
+const combinedVTCAddress = [required(), vtcAddress()];
+const combinedSNGAddress = [required(), sngAddress()];
+const combinedXRPAddress = [required(), xrpAddress()];
+const combinedXRBAddress = [required(), xrbAddress()];
+const combinedQTUMAddress = [required(), qtumAddress()];
+const combinedPTSAddress = [required(), ptsAddress()];
+const combinedPPCAddress = [required(), ppcAddress()];
+const combinedGASAddress = [required(), gasAddress()];
+const combinedNMCAddress = [required(), nmcAddress()];
+const combinedMECAddress = [required(), mecAddress()];
+const combinedLTCAddress = [required(), ltcAddress()];
+const combinedKMDAddress = [required(), kmdAddress()];
+const combinedHUSHAddress = [required(), hushAddress()];
+const combinedGRLCAddress = [required(), grlcAddress()];
+const combinedFRCAddress = [required(), frcAddress()];
+const combinedDOGEAddress = [required(), dogeAddress()];
+const combinedDGBAddress = [required(), dgbAddress()];
+const combinedDCRAddress = [required(), dcrAddress()];
+const combinedCLOAddress = [required(), cloAddress()];
+const combinedBTGAddress = [required(), btgAddress()];
+const combinedBCHAddress = [required(), bchAddress()];
+const combinedBIOAddress = [required(), bioAddress()];
+const combinedBVCAddress = [required(), bvcAddress()];
+const combinedBKXAddress = [required(), bkxAddress()];
+const combinedAURAddress = [required(), aurAddress()];
+
 const combinedUnknownAddress = [required(), minLength(15)];
 const combinedTokenName = [required(), minLength(3), maxLength(50), regexp(/\w+$/i, { message: 'Please use a valid coin name (Ex: "My Coin, Coin-1,..").' })];
 const combinedTokenSymbol = [required(), minLength(2), maxLength(10), regexp(/^[A-Z]+$/, { message: 'Please use a valid coin ticker (Ex: "SYM").' })];
@@ -167,6 +256,35 @@ export default {
   combinedBTCAddress,
   combinedNEOAddress,
   combinedXMRAddress,
+  combinedZenAddress,
+  combinedZCLAddress,
+  combinedZECAddress,
+  combinedVOTAddress,
+  combinedVTCAddress,
+  combinedSNGAddress,
+  combinedXRPAddress,
+  combinedXRBAddress,
+  combinedQTUMAddress,
+  combinedPTSAddress,
+  combinedPPCAddress,
+  combinedGASAddress,
+  combinedNMCAddress,
+  combinedMECAddress,
+  combinedLTCAddress,
+  combinedKMDAddress,
+  combinedHUSHAddress,
+  combinedGRLCAddress,
+  combinedFRCAddress,
+  combinedDOGEAddress,
+  combinedDGBAddress,
+  combinedDCRAddress,
+  combinedCLOAddress,
+  combinedBTGAddress,
+  combinedBCHAddress,
+  combinedBIOAddress,
+  combinedBVCAddress,
+  combinedBKXAddress,
+  combinedAURAddress,
   ethAddress,
   btcAddress,
   notInList,

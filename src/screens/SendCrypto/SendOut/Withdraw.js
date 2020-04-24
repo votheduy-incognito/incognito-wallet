@@ -327,6 +327,64 @@ class Withdraw extends React.Component {
       return validator.combinedNEOAddress;
     } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.XMR) {
       return validator.combinedXMRAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ZEN) {
+      return validator.combinedZenAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ZCL) {
+      return validator.combinedZCLAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ZEC) {
+      return validator.combinedZECAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.VOT) {
+      return validator.combinedVOTAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.VTC) {
+      return validator.combinedVTCAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.SNG) {
+      return validator.combinedSNGAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.XRB) {
+      return validator.combinedXRBAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.XRP) {
+      return validator.combinedXRPAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.QTUM) {
+      return validator.combinedQTUMAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.PTS) {
+      return validator.combinedPTSAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.PPC) {
+      return validator.combinedPPCAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.GAS) {
+      return validator.combinedGASAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.NMC) {
+      return validator.combinedNMCAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.MEC) {
+      return validator.combinedMECAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.LTC) {
+      return validator.combinedLTCAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.KMD) {
+      return validator.combinedKMDAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.HUSH) {
+      return validator.combinedHUSHAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.GRLC) {
+      return validator.combinedGRLCAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.FRC) {
+      return validator.combinedFRCAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.DOGE) {
+      return validator.combinedDOGEAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.DGB) {
+      return validator.combinedDGBAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.DCR) {
+      return validator.combinedDCRAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.CLO) {
+      return validator.combinedCLOAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BTG) {
+      return validator.combinedBTGAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BCH) {
+      return validator.combinedBCHAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BIO) {
+      return validator.combinedBIOAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BVC) {
+      return validator.combinedBVCAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BKX) {
+      return validator.combinedBKXAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.AUR) {
+      return validator.combinedAURAddress;
     }
 
     // default
