@@ -339,12 +339,12 @@ export const actionFetchCreateUnStake = ({amount}) => async (
       SignEncode: signEncode,
     };
     const payload = await apiUnStake(data);
-    if (payload?.ID) {
+    if (payload) {
       await dispatch(actionToggleLoadingModal());
       return await new Promise.all([
         await dispatch(actionFetchedCreateUnStake(payload)),
         await dispatch(
-          actionChangeFlowAmount({amount: payload?.Amount || amount}),
+          actionChangeFlowAmount({amount: originalAmount}),
         ),
         await dispatch(actionFetch()),
       ]);

@@ -109,9 +109,13 @@ const ShowStatus = () => {
     try {
       const message = Object.keys(pStakeAccount)
         .filter(key => !isEmpty(pStakeAccount[key]))
-        .map(key => `${Capitalize(key)}: ${pStakeAccount[key]}\n`)
+        .map(key =>
+          key === 'name' || key === 'AccountName' || key === 'PrivateKey'
+            ? `${Capitalize(key)}: ${pStakeAccount[key]}\n`
+            : '',
+        )
         .reduce((prevVal, curVal) => prevVal + curVal);
-      const title = 'Backup your accounts';
+      const title = 'Backup your staking pool account';
       let dir = null;
       if (isAndroid()) {
         dir = rnfs.ExternalDirectoryPath;
