@@ -9,35 +9,38 @@ const styled = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: COLORS.overlayBlackDark,
+    backgroundColor: 'rgba(0,0,0,0.8)',
   },
-  title: {
+  text: {
     color: COLORS.white,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 6,
+    lineHeight: FONT.SIZE.regular + 10,
     textAlign: 'center',
-    width: '90%',
+    width: '50%',
+  },
+  title: {
+    marginTop: 20,
+  },
+  desc: {
     marginTop: 20,
   },
 });
 
 const LoadingModal = props => {
-  const {title} = props;
+  const {title, desc} = props;
   return (
     <View style={styled.container}>
       <ActivityIndicator />
-      <Text style={styled.title}>{title}</Text>
+      {title && <Text style={[styled.text, styled.title]}>{title}</Text>}
+      {desc && <Text style={[styled.text, styled.desc]}>{desc}</Text>}
     </View>
   );
 };
 
-LoadingModal.defaultProps = {
-  title: 'Please wait a moment...',
-};
-
 LoadingModal.propTypes = {
-  title: PropTypes.string,
+  title: PropTypes.string.isRequired,
+  desc: PropTypes.string.isRequired,
 };
 
 export default LoadingModal;

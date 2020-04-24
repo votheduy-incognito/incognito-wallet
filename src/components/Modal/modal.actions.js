@@ -18,6 +18,7 @@ export const actionToggleLoadingModal = (
   payload = {
     toggle: false,
     title: '',
+    desc: '',
   },
 ) => ({
   type: ACTION_TOGGLE_LOADING_MODAL,

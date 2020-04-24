@@ -36,17 +36,19 @@ export const actionImportAccount = ({privateKey, accountName}) => async (
   dispatch,
   getState,
 ) => {
+  const state = getState();
+  const wallet = state?.wallet;
+  const passphrase = await getPassphrase();
   try {
-    const state = getState();
-    const wallet = state?.wallet;
-    const passphrase = await getPassphrase();
     const isImported = await accountService.importAccount(
       privateKey,
       accountName,
       passphrase,
       wallet,
     );
-    if (!isImported) throw new CustomError(ErrorCode.importAccount_failed);
+    if (!isImported) {
+      throw new CustomError(ErrorCode.importAccount_failed);
+    }
     await dispatch(reloadAccountList());
   } catch (error) {
     throw Error(error);

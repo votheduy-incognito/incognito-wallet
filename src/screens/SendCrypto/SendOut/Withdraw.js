@@ -555,7 +555,7 @@ class Withdraw extends React.Component {
               </>
             )}
           </Form>
-          {/* <Modal /> */}
+          <Modal />
         </Container>
       </ScrollView>
     );
