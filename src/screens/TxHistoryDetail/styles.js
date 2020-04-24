@@ -107,8 +107,9 @@ export default StyleSheet.create({
     fontFamily: FONT.NAME.regular, 
     width: width * 0.8, 
     height: 45, 
-    borderColor: 'black', 
-    borderWidth: 1, 
-    borderRadius: 8, 
+    borderColor: 'white',
+    borderBottomColor: 'gray', 
+    borderWidth: 0.5, 
+    borderRadius: 0, 
   }
 });
