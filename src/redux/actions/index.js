@@ -32,10 +32,11 @@ export const actionAddFollowToken = tokenId => async (dispatch, getState) => {
   }
 };
 
-export const actionImportAccount = ({privateKey, accountName}) => async (
-  dispatch,
-  getState,
-) => {
+export const actionImportAccount = ({
+  privateKey,
+  oldPrivateKey,
+  accountName,
+}) => async (dispatch, getState) => {
   const state = getState();
   const wallet = state?.wallet;
   const passphrase = await getPassphrase();
@@ -49,8 +50,15 @@ export const actionImportAccount = ({privateKey, accountName}) => async (
     if (!isImported) {
       throw new CustomError(ErrorCode.importAccount_failed);
     }
-    await dispatch(reloadAccountList());
   } catch (error) {
+    await accountService.importAccount(
+      oldPrivateKey,
+      accountName,
+      passphrase,
+      wallet,
+    );
     throw Error(error);
+  } finally {
+    await dispatch(reloadAccountList());
   }
 };

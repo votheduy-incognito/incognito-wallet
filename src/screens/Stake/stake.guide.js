@@ -67,7 +67,7 @@ const styled = StyleSheet.create({
 
 const StakeGuide = () => {
   const navigation = useNavigation();
-  const {currentRewardRate} = useSelector(stakeDataSelector);
+  const {defaultRewardRate} = useSelector(stakeDataSelector);
   const dispatch = useDispatch();
   const toggleGuideHomeStake = async () => await dispatch(actionToggleGuide());
   const handleBuyPRV = async () => {
@@ -87,7 +87,7 @@ const StakeGuide = () => {
       <Text style={styled.desc}>
         Get a
         <Text style={[styled.desc, {color: '#FF8D01'}]}>
-          {` ${currentRewardRate}% `}
+          {` ${defaultRewardRate}% `}
         </Text>
         annual return.
       </Text>
