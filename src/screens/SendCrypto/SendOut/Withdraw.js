@@ -66,6 +66,7 @@ class Withdraw extends React.Component {
       shouldBlockETHWrongAddress: false,
       tempAddress: '',
       listMinAmount: [],
+      amount: 0,
     };
   }
 
@@ -391,21 +392,23 @@ class Withdraw extends React.Component {
     }
   }
   // When click into Max button, auto set to max value with substract fee
-
   reReduceMaxAmount = () => {
-    const { estimateFeeData } = this.state;
+    const { estimateFeeData, amount } = this.state;
     const {
       selectedPrivacy,
+      rfChange
     } = this.props;
     if (estimateFeeData?.fee) {
       const {
         estimateFeeData: { fee = 0 },
       } = this.state;
+
       let feeConvert = Number(convertUtil.toHumanAmount(fee, selectedPrivacy?.pDecimals));
       let amountConvert = Number(convertUtil.toHumanAmount(selectedPrivacy?.amount || 0, selectedPrivacy?.pDecimals));
       let maxable = (amountConvert - feeConvert);
-      const { rfChange } = this.props;
-      rfChange(formName, 'amount', `${maxable}`);
+      if (Number(amount) >= maxable) {
+        rfChange(formName, 'amount', `${maxable}`);
+      }
     }
   }
 
@@ -490,6 +493,7 @@ class Withdraw extends React.Component {
                   </Text>
                 )}
                 <Field
+                  onChange={text => this.setState({ amount: text })}
                   component={InputMaxValueField}
                   name="amount"
                   label="Amount"

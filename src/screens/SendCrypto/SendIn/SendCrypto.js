@@ -51,6 +51,7 @@ class SendCrypto extends React.Component {
       maxAmountValidator: undefined,
       minAmountValidator: undefined,
       estimateFeeData: {},
+      amount: 0,
     };
   }
 
@@ -130,7 +131,6 @@ class SendCrypto extends React.Component {
     const { selectedPrivacy } = this.props;
 
     if (Number.isFinite(maxAmount)) {
-      this.reReduceMaxAmount();
       this.setState({
         maxAmountValidator: validator.maxValue(maxAmount, {
           message:
@@ -141,6 +141,10 @@ class SendCrypto extends React.Component {
               : 'Your balance is not enough to send',
         }),
       });
+      if (maxAmount > 0) {
+        this.reReduceMaxAmount();
+      }
+
     }
 
     if (Number.isFinite(minAmount)) {
@@ -255,19 +259,22 @@ class SendCrypto extends React.Component {
   // When click into Max button, auto set to max value with substract fee
   // It should be refactored into a utils, not prefer this here.
   reReduceMaxAmount = () => {
-    const { estimateFeeData } = this.state;
+    const { estimateFeeData, amount } = this.state;
     const {
       selectedPrivacy,
+      rfChange
     } = this.props;
     if (estimateFeeData?.fee) {
       const {
         estimateFeeData: { fee = 0 },
       } = this.state;
+
       let feeConvert = Number(convertUtil.toHumanAmount(fee, selectedPrivacy?.pDecimals));
       let amountConvert = Number(convertUtil.toHumanAmount(selectedPrivacy?.amount || 0, selectedPrivacy?.pDecimals));
       let maxable = (amountConvert - feeConvert);
-      const { rfChange } = this.props;
-      rfChange(formName, 'amount', `${maxable}`);
+      if (Number(amount) >= maxable) {
+        rfChange(formName, 'amount', `${maxable}`);
+      }
     }
   }
 
@@ -318,6 +325,7 @@ class SendCrypto extends React.Component {
                   {...generateTestId(SEND.ADDRESS_INPUT)}
                 />
                 <Field
+                  onChange={text => this.setState({ amount: text })}
                   component={InputMaxValueField}
                   name="amount"
                   placeholder="0.0"
