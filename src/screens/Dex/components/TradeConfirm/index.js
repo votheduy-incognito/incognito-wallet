@@ -407,7 +407,7 @@ class TradeConfirm extends React.Component {
       <View style={style.feeWrapper}>
         <TouchableOpacity onPress={this.toggleStopPrice} style={mainStyle.twoColumns}>
           <View style={mainStyle.twoColumns}>
-            <Text style={[style.fee, style.feeTitle]}>Minimum Amount</Text>
+            <Text style={[style.fee, style.feeTitle]}>Limit price slippage</Text>
             <Help
               title="Minimum Account"
               content="Taking into account movements in price, this is the minimum amount you will accept."

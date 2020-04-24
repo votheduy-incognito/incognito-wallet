@@ -180,7 +180,7 @@ export const mainStyle = StyleSheet.create({
   },
   accountBalance: {
     marginTop: 0,
-    maxWidth: 90,
+    maxWidth: 100,
     color: COLORS.dark1,
   },
   accountName: {
