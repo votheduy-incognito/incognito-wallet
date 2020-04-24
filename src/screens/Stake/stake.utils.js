@@ -45,10 +45,14 @@ export const mappingData = (dataMasterAddress, dataStakerInfo) => {
   const rewardBalance = dataStakerInfo?.RewardBalance || 0;
   const totalBalance = balance;
   const staked = balance !== 0;
+  const defaultRewardRate = DEFAULT_REWARD_RATE;
+  const currentRewardRate = staked
+    ? dataStakerInfo?.RewardRate
+    : dataMasterAddress?.CurrentRewardRate || defaultRewardRate;
   return {
     minToStake: minToStake,
     minToWithdraw: 1,
-    currentRewardRate: DEFAULT_REWARD_RATE,
+    currentRewardRate,
     stakingMasterAddress: dataMasterAddress?.StakingMasterAddress || '',
     balance,
     rewardDate: dataStakerInfo?.RewardDate || '',
@@ -63,6 +67,7 @@ export const mappingData = (dataMasterAddress, dataStakerInfo) => {
     totalBalance,
     staked,
     balancePStake: totalBalance,
+    defaultRewardRate,
   };
 };
 

@@ -9,27 +9,30 @@ import {pStakeAccountSelector} from '@screens/Stake/stake.selector';
 import {actionFetch as actionFetchStake} from '@screens/Stake/stake.actions';
 import {reloadAccountList} from '@src/redux/actions/wallet';
 import {isNotFoundStakeAccount} from '@src/screens/Stake/stake.utils';
+import {accountSeleclor} from '@src/redux/selectors';
 import RecoverAccountSuccess from './RecoverAccountSuccess';
 
 const enhance = WrappedComp => props => {
   const pStakeAccount = useSelector(pStakeAccountSelector);
+  const accountList = useSelector(accountSeleclor.listAccount);
   const handleImportAccount = async (values, dispatch) => {
     const {privateKey} = values;
     try {
       if (isNotFoundStakeAccount(pStakeAccount)) {
         throw 'Something went wrong! pStake account can\'t not found!';
       }
-      if (pStakeAccount?.PrivateKey === privateKey) {
+      if (
+        pStakeAccount?.PrivateKey === privateKey ||
+        accountList.some(item => item?.PrivateKey === privateKey) ||
+        !privateKey
+      ) {
         throw 'Please make sure this private key is valid and does not already exist on your device.';
       }
-      if (!privateKey) {
-        throw 'Private key is not found';
-      }
       await dispatch(removeAccount(pStakeAccount));
-      await dispatch(reloadAccountList());
       await dispatch(
         actionImportAccount({
           privateKey,
+          oldPrivateKey: pStakeAccount?.PrivateKey,
           accountName: pStakeAccount?.name || pStakeAccount?.AccountName,
         }),
       );
@@ -41,15 +44,9 @@ const enhance = WrappedComp => props => {
         }),
       );
     } catch (error) {
-      if (isNotFoundStakeAccount(pStakeAccount)) {
-        await dispatch(
-          actionImportAccount({
-            privateKey: pStakeAccount?.PrivateKey,
-            accountName: pStakeAccount?.name || pStakeAccount?.AccountName,
-          }),
-        );
-      }
       new ExHandler(error).toastMessageError();
+    } finally {
+      await dispatch(reloadAccountList());
     }
   };
   return (

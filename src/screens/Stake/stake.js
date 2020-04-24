@@ -89,7 +89,7 @@ const StakeInterestRate = props => {
 const Stake = props => {
   const {fetchData} = props;
   const {isFetching} = useSelector(stakeSelector);
-  const {currentRewardRate} = useSelector(stakeDataSelector);
+  const {defaultRewardRate} = useSelector(stakeDataSelector);
   return (
     <View style={styled.container}>
       <Header />
@@ -110,7 +110,7 @@ const Stake = props => {
           </View>
         </ScrollView>
       </View>
-      <StakeInterestRate rate={currentRewardRate} desc="APY" />
+      <StakeInterestRate rate={defaultRewardRate} desc="APY" />
       <StakeActions {...props} />
       <StakePoolCommunity />
     </View>
