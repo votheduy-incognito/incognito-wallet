@@ -84,19 +84,20 @@ export default StyleSheet.create({
     alignItems: 'center', 
     backgroundColor: '#00000040', 
     width: width, 
-    height: height
+    height: height,
+    zIndex: 1,
   },
   modalContent: {
     alignItems: 'center', 
     justifyContent: 'center', 
     width: width * 0.9, 
-    height: width * 0.7, 
+    height: width * 0.8, 
     backgroundColor: 'white', 
     borderRadius: 12, 
-    padding: 15 
+    padding: 15
   },
   titleModal: {
-    marginBottom: 20, 
+    marginBottom: 10, 
     fontSize: 17, 
     fontFamily: FONT.NAME.medium 
   },

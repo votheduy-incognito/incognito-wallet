@@ -21,6 +21,7 @@ class TxHistoryDetailContainer extends Component {
   state = {
     data: null,
     shouldShowTxModal: false,
+    errorTx: true,
     txOutchain: '',
   };
 
@@ -40,17 +41,20 @@ class TxHistoryDetailContainer extends Component {
     navigation.pop();
   }
 
-  retryExpiredDeposit = async (data) => {
+  retryExpiredDeposit = async (data, isDecentralized) => {
     try {
       if (data) {
         const { txOutchain } = this.state;
         const { decentralized } = data;
-        if (txOutchain === '') {
-          return;
+        if (isDecentralized) {
+          if (txOutchain === '') {
+            return;
+          }
+          let newData = { ...data.history, TxOutchain: txOutchain };
+          await retryExpiredDeposit(newData);
+        } else {
+          await retryExpiredDeposit(data);
         }
-        let newData = { ...data.history, TxOutchain: txOutchain };
-        await retryExpiredDeposit(newData);
-
         const decentralizedMSg = 'Your request has been sent, we will process it soon. The history status will be not changed';
         const centralizedMSg = 'Your request has been sent, we will process it soon. The history status will be updated';
 
@@ -62,7 +66,7 @@ class TxHistoryDetailContainer extends Component {
     }
   }
   renderModalTXOutchain = () => {
-    const { shouldShowTxModal } = this.state;
+    const { shouldShowTxModal, errorTx } = this.state;
     return (
       <Modal
         transparent
@@ -72,18 +76,36 @@ class TxHistoryDetailContainer extends Component {
           this.setState({ shouldShowTxModal: false });
         }}
       >
-        <TouchableWithoutFeedback onPress={() => this.setState({ shouldShowTxModal: false })}>
+        <TouchableWithoutFeedback onPress={() => this.setState({ shouldShowTxModal: false, errorTx: true })}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <Text style={styles.titleModal}>{'If you\'ve already sent funds to the deposit address, just enter your transaction ID here. Your balance will update within 24 hours.'}</Text>
-              <TextInput onChangeText={text => this.setState({ txOutchain: text })} returnKeyType="done" placeholder="TransactionID" numberOfLines={1} style={styles.txField} />
+              <TextInput
+                onChangeText={text => {
+                  if (text === '') {
+                    this.setState({ errorTx: true });
+                  } else {
+                    this.setState({ txOutchain: text, errorTx: false });
+                  }
+                }}
+                returnKeyType="done"
+                placeholder="TransactionID"
+                numberOfLines={1}
+                style={styles.txField}
+              />
+              <Text style={[styles.titleModal, { color: 'red', alignSelf: 'flex-start', marginLeft: 20, fontFamily: FONT.NAME.regular, fontSize: 14 }]}>{errorTx ? 'Tx required' : ''}</Text>
               <Button
-                style={styles.submitBTN}
+                style={[styles.submitBTN, { opacity: errorTx ? 0.5 : 1 }]}
+                disabled={errorTx}
                 title='Submit'
                 onPress={() => {
-                  const { data } = this.state;
-                  this.setState({ shouldShowTxModal: false });
-                  this.retryExpiredDeposit(data);
+                  const { data, txOutchain } = this.state;
+                  if (txOutchain != '') {
+                    this.retryExpiredDeposit(data, true);
+                    this.setState({ shouldShowTxModal: false, errorTx: false });
+                  } else {
+                    this.setState({ errorTx: true });
+                  }
                 }}
               />
             </View>
@@ -94,14 +116,24 @@ class TxHistoryDetailContainer extends Component {
   }
   render() {
     const { data } = this.state;
-
+    let decentralized = data?.history?.decentralized;
     if (!data) {
       return <LoadingContainer />;
     }
 
     return (
       <View>
-        <TxHistoryDetail {...this.props} data={data} onRetryExpiredDeposit={() => this.setState({ shouldShowTxModal: true })} />
+        <TxHistoryDetail
+          {...this.props}
+          data={data}
+          onRetryExpiredDeposit={() => {
+            if (decentralized) {
+              this.setState({ shouldShowTxModal: true });
+            } else {
+              this.retryExpiredDeposit(data?.history, false);
+            }
+          }}
+        />
         {this.renderModalTXOutchain()}
       </View>
     );
