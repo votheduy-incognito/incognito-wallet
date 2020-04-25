@@ -45,7 +45,6 @@ class TxHistoryDetailContainer extends Component {
     try {
       if (data) {
         const { txOutchain } = this.state;
-        const { decentralized } = data;
         if (isDecentralized) {
           if (txOutchain === '') {
             return;
@@ -55,10 +54,10 @@ class TxHistoryDetailContainer extends Component {
         } else {
           await retryExpiredDeposit(data);
         }
-        const decentralizedMSg = 'Your request has been sent, we will process it soon. The history status will be not changed';
+        const decentralizedMSg = 'Your request has been sent, we will process it soon.';
         const centralizedMSg = 'Your request has been sent, we will process it soon. The history status will be updated';
 
-        Toast.showInfo(decentralized ? decentralizedMSg : centralizedMSg);
+        Toast.showInfo(isDecentralized ? decentralizedMSg : centralizedMSg);
         this.goBack();
       }
     } catch (e) {
@@ -76,13 +75,13 @@ class TxHistoryDetailContainer extends Component {
           this.setState({ shouldShowTxModal: false });
         }}
       >
-        <TouchableWithoutFeedback onPress={() => this.setState({ shouldShowTxModal: false, errorTx: true })}>
+        <View>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <Text style={styles.titleModal}>{'If you\'ve already sent funds to the deposit address, just enter your transaction ID here. Your balance will update within 24 hours.'}</Text>
               <TextInput
                 onChangeText={text => {
-                  if (text === '') {
+                  if (text && text.trim().length === 0) {
                     this.setState({ errorTx: true });
                   } else {
                     this.setState({ txOutchain: text, errorTx: false });
@@ -93,24 +92,33 @@ class TxHistoryDetailContainer extends Component {
                 numberOfLines={1}
                 style={styles.txField}
               />
-              <Text style={[styles.titleModal, { color: 'red', alignSelf: 'flex-start', marginLeft: 20, fontFamily: FONT.NAME.regular, fontSize: 14 }]}>{errorTx ? 'Tx required' : ''}</Text>
-              <Button
-                style={[styles.submitBTN, { opacity: errorTx ? 0.5 : 1 }]}
-                disabled={errorTx}
-                title='Submit'
-                onPress={() => {
-                  const { data, txOutchain } = this.state;
-                  if (txOutchain != '') {
-                    this.retryExpiredDeposit(data, true);
-                    this.setState({ shouldShowTxModal: false, errorTx: false });
-                  } else {
-                    this.setState({ errorTx: true });
-                  }
-                }}
-              />
+              <Text style={[styles.titleModal, styles.warning]}>{errorTx ? 'Tx required' : ''}</Text>
+              <View style={{ flexDirection: 'row' }}>
+                <Button
+                  style={[styles.cancelBTN]}
+                  title='Cancel'
+                  onPress={async () => {
+                    this.setState({ shouldShowTxModal: false, errorTx: true });
+                  }}
+                />
+                <Button
+                  style={[styles.submitBTN, { opacity: errorTx ? 0.5 : 1 }]}
+                  disabled={errorTx}
+                  title='Submit'
+                  onPress={async () => {
+                    const { data, txOutchain } = this.state;
+                    if (txOutchain != '') {
+                      await this.retryExpiredDeposit(data, true);
+                      this.setState({ shouldShowTxModal: false, errorTx: false });
+                    } else {
+                      this.setState({ errorTx: true });
+                    }
+                  }}
+                />
+              </View>
             </View>
           </View>
-        </TouchableWithoutFeedback>
+        </View>
       </Modal>
     );
   }

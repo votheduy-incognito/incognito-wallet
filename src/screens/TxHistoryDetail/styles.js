@@ -64,6 +64,21 @@ export default StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     marginTop: 20,
+    marginLeft: 20,
+  },
+  cancelBTN: {
+    height: 45,
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginTop: 20,
+    backgroundColor: 'gray'
+  },
+  warning: {
+    color: 'red', 
+    alignSelf: 'flex-start', 
+    marginLeft: 15, 
+    fontFamily: FONT.NAME.regular, 
+    fontSize: 14 
   },
   depositAddressContainer: {
     marginTop: 20,
