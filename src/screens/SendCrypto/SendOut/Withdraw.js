@@ -19,6 +19,7 @@ import { ExHandler } from '@services/exception';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
 import memmoize from 'memoize-one';
+import walletValidator from 'wallet-address-validator';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { isExchangeRatePToken } from '@services/wallet/RpcClientService';
@@ -31,11 +32,9 @@ import { MESSAGES } from '@screens/Dex/constants';
 import TokenSelect from '@components/TokenSelect';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import CurrentBalance from '@components/CurrentBalance';
-import ROUTES_NAME from '@routers/routeNames';
 import { RefreshControl } from 'react-native';
-import Modal, { actionToggleModal } from '@src/components/Modal';
+import { actionToggleModal } from '@src/components/Modal';
 import { COLORS } from '@src/styles';
-import LogManager from '@src/services/LogManager';
 import style from './style';
 import Receipt from './Withdraw.receipt';
 
@@ -64,7 +63,10 @@ class Withdraw extends React.Component {
       estimateFeeData: {},
       supportedFeeTypes: [],
       feeForBurn: 0,
-      shouldBlockETHWrongAddress: false
+      shouldBlockETHWrongAddress: false,
+      tempAddress: '',
+      listMinAmount: [],
+      amount: 0,
     };
   }
 
@@ -79,12 +81,35 @@ class Withdraw extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
+    await this.getMinAmountAPI();
+    this.setBothAmount();
+    this.getSupportedFeeTypes();
+  }
+
+  getMinAmountAPI = async () => {
+    await fetch(CONSTANT_CONFIGS.API_BASE_URL + '/service/min-max-amount')
+      .then(res => res.json())
+      .then(fin => {
+        if (fin?.Result && Array.isArray(fin.Result)) {
+          this.setState({
+            listMinAmount: fin.Result
+          });
+        }
+      })
+      .catch(() => {
+
+      });
+  }
+
+  setMaxAmount() {
+    this.setFormValidator({ maxAmount: this.getMaxAmount() });
+  }
+  setBothAmount() {
     this.setFormValidator({
       maxAmount: this.getMaxAmount(),
       minAmount: this.getMinAmount(),
     });
-    this.getSupportedFeeTypes();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -99,19 +124,16 @@ class Withdraw extends React.Component {
 
     if (selectedPrivacy?.pDecimals !== oldSelectedPrivacy?.pDecimals) {
       // need to re-calc min amount if token decimals was changed
-      this.setFormValidator({ minAmount: this.getMinAmount() });
+      this.setMaxAmount();
     }
 
     if (fee !== oldFee || feeUnitByTokenId !== oldFeeUnitByTokenId) {
       // need to re-calc max amount can be send if fee was changed
-      this.setFormValidator({ maxAmount: this.getMaxAmount() });
+      this.setMaxAmount();
     }
 
     if (oldSelectedPrivacy !== selectedPrivacy && selectedPrivacy) {
-      this.setFormValidator({
-        maxAmount: this.getMaxAmount(),
-        minAmount: this.getMinAmount(),
-      });
+      this.setBothAmount();
       this.getSupportedFeeTypes();
     }
   }
@@ -122,6 +144,13 @@ class Withdraw extends React.Component {
     let min = 0;
     if (selectedPrivacy?.pDecimals) {
       min = 1 / 10 ** selectedPrivacy.pDecimals;
+    }
+    // Check in min-amount list
+    const { listMinAmount } = this.state;
+    for (let i = 0; i < listMinAmount.length; i++) {
+      if (selectedPrivacy?.tokenId === listMinAmount[i]?.TokenID) {
+        min = listMinAmount[i]?.MinAmount;
+      }
     }
 
     return minAmount ? Math.max(min, minAmount) : min;
@@ -152,6 +181,7 @@ class Withdraw extends React.Component {
     const { selectedPrivacy } = this.props;
 
     if (maxAmount) {
+      this.reReduceMaxAmount();
       this.setState({
         maxAmountValidator: validator.maxValue(maxAmount, {
           message:
@@ -263,10 +293,19 @@ class Withdraw extends React.Component {
     const {
       estimateFeeData: { fee },
     } = this.state;
+    const {
+      isFormValid
+    } = this.props;
     if (fee !== 0 && !fee) {
       return true;
     }
-
+    const { shouldBlockETHWrongAddress } = this.state;
+    if (shouldBlockETHWrongAddress) {
+      return true;
+    }
+    if (!isFormValid) {
+      return true;
+    }
     return false;
   };
 
@@ -284,6 +323,68 @@ class Withdraw extends React.Component {
       return validator.combinedBTCAddress;
     } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BNB) {
       return validator.combinedBNBAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.NEO) {
+      return validator.combinedNEOAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.XMR) {
+      return validator.combinedXMRAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ZEN) {
+      return validator.combinedZenAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ZCL) {
+      return validator.combinedZCLAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ZEC) {
+      return validator.combinedZECAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.VOT) {
+      return validator.combinedVOTAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.VTC) {
+      return validator.combinedVTCAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.SNG) {
+      return validator.combinedSNGAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.XRB) {
+      return validator.combinedXRBAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.XRP) {
+      return validator.combinedXRPAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.QTUM) {
+      return validator.combinedQTUMAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.PTS) {
+      return validator.combinedPTSAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.PPC) {
+      return validator.combinedPPCAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.GAS) {
+      return validator.combinedGASAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.NMC) {
+      return validator.combinedNMCAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.MEC) {
+      return validator.combinedMECAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.LTC) {
+      return validator.combinedLTCAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.KMD) {
+      return validator.combinedKMDAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.HUSH) {
+      return validator.combinedHUSHAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.GRLC) {
+      return validator.combinedGRLCAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.FRC) {
+      return validator.combinedFRCAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.DOGE) {
+      return validator.combinedDOGEAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.DGB) {
+      return validator.combinedDGBAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.DCR) {
+      return validator.combinedDCRAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.CLO) {
+      return validator.combinedCLOAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BTG) {
+      return validator.combinedBTGAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BCH) {
+      return validator.combinedBCHAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BIO) {
+      return validator.combinedBIOAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BVC) {
+      return validator.combinedBVCAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BKX) {
+      return validator.combinedBKXAddress;
+    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.AUR) {
+      return validator.combinedAURAddress;
     }
 
     // default
@@ -314,31 +415,61 @@ class Withdraw extends React.Component {
   };
 
   handleSelectToken = tokenId => {
-    const { setSelectedPrivacy } = this.props;
-    console.log(tokenId);
+    const { setSelectedPrivacy, selectedPrivacy } = this.props;
+    const { tempAddress } = this.state;
     setSelectedPrivacy(tokenId);
     this.setState({
       shouldBlockETHWrongAddress: false
     });
+
+    this.clearAddressField();
   };
 
-  checkIfValidAddressETH = (address, isETH) => {
-    if (isETH && address != '') {
+  clearAddressField = () => {
+    const { rfChange } = this.props;
+    rfChange('withdraw', 'toAddress', null);
+    this.setState({ shouldBlockETHWrongAddress: false });
+  }
+
+  checkIfValidAddressETH = (address, isETH, isETHValid) => {
+    if (isETH && isETHValid && address != '') {
       try {
-        let url = CONSTANT_CONFIGS.ETHERSCAN_URL + '/address/' + address;
-        fetch(url).
-          then(async (resp) => {
-            return resp.text();
+        let url = CONSTANT_CONFIGS.API_BASE_URL + '/eta/is-eth-account?address=' + address;
+        fetch(url)
+          .then((response) => {
+            return response.json();
           })
-          .then((text) => {
-            let hasAddressValid = text.includes('\nAddress\n<span id=\'mainaddress\' class=\'text-size-address text-secondary text-break mr-1\' data-placement=\'top\'>' + address + '</span>');
-            this.setState({ shouldBlockETHWrongAddress: !hasAddressValid });
-          })
-          .catch(() => {
-            alert('Could not validate ETH address for now, please try again');
+          .then((data) => {
+            if (data && data.Result === false) {
+              this.setState({ shouldBlockETHWrongAddress: true });
+            } else {
+              this.setState({ shouldBlockETHWrongAddress: false });
+            }
           });
       } catch (err) {
         alert('Could not validate ETH address for now, please try again');
+      }
+    } else {
+      this.setState({ shouldBlockETHWrongAddress: false });
+    }
+  }
+  // When click into Max button, auto set to max value with substract fee
+  reReduceMaxAmount = () => {
+    const { estimateFeeData, amount } = this.state;
+    const {
+      selectedPrivacy,
+      rfChange
+    } = this.props;
+    if (estimateFeeData?.fee) {
+      const {
+        estimateFeeData: { fee = 0 },
+      } = this.state;
+
+      let feeConvert = Number(convertUtil.toHumanAmount(fee, selectedPrivacy?.pDecimals));
+      let amountConvert = Number(convertUtil.toHumanAmount(selectedPrivacy?.amount || 0, selectedPrivacy?.pDecimals));
+      let maxable = (amountConvert - feeConvert);
+      if (Number(amount) >= maxable) {
+        rfChange(formName, 'amount', `${maxable}`);
       }
     }
   }
@@ -360,6 +491,7 @@ class Withdraw extends React.Component {
       account,
       selectable,
       onShowFrequentReceivers,
+      onSelectedValue,
       reloading,
     } = this.props;
     const { externalSymbol, isErc20Token, name: tokenName } =
@@ -394,20 +526,36 @@ class Withdraw extends React.Component {
             {({ handleSubmit, submitting }) => (
               <>
                 <Field
+                  // This is temporarily
+                  autoFocus
                   component={InputQRField}
-                  onChange={(text) => { this.checkIfValidAddressETH(text, isETH); }}
+                  onChange={(event, text) => {
+                    this.setState({ tempAddress: text }, () => {
+                    });
+                    // I wanna check text is ETH valid coin
+                    let ETHValid = walletValidator.validate(text, 'ETH', 'both');
+                    this.checkIfValidAddressETH(text, isETH, ETHValid);
+                  }}
                   name="toAddress"
                   label="To"
-                  placeholder={`Enter your ${tokenName}  address`}
+                  placeholder={`Enter your ${tokenName} address`}
                   style={style.input}
                   validate={addressValidator}
-                  onOpenAddressBook={onShowFrequentReceivers}
+                  onOpenAddressBook={() => {
+                    // onChange will not works for now, we have to refactor after.
+                    this.clearAddressField();
+                    // Clear address field for a while before going to refactor.
+                    onShowFrequentReceivers();
+                  }}
                   showNavAddrBook
                 />
-                {(isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) &&
-                  <Text style={[style.warning, shouldBlockETHWrongAddress ? { color: COLORS.red } : {}]}>{shouldBlockETHWrongAddress ? 'Please withdraw to ethereum wallet address only. \nCan not withdraw to smart contract address.' : 'Please withdraw to ethereum wallet address only. Withdrawals to smart contract addresses will be lost.'}</Text>
-                }
+                {(isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) && (
+                  <Text style={[style.warning, shouldBlockETHWrongAddress ? { color: COLORS.red } : {}]}>
+                    Please withdraw to a wallet address, not a smart contract address.
+                  </Text>
+                )}
                 <Field
+                  onChange={text => this.setState({ amount: text })}
                   component={InputMaxValueField}
                   name="amount"
                   label="Amount"
@@ -444,10 +592,11 @@ class Withdraw extends React.Component {
                   accountName={account?.name}
                   estimateFeeData={estimateFeeData}
                   onNewFeeData={this.handleSelectFee}
+                  onCalculatedFeeSuccess={this.onCalculatedFeeSuccess}
                   types={supportedFeeTypes}
-                  amount={isFormValid ? amount : null}
+                  amount={isFormValid && !shouldBlockETHWrongAddress ? amount : null}
                   toAddress={
-                    isFormValid ? selectedPrivacy?.paymentAddress : null
+                    isFormValid && !shouldBlockETHWrongAddress ? selectedPrivacy?.paymentAddress : null
                   } // est fee on the same network, dont care which address will be send to
                   feeText={(
                     <View>
@@ -490,7 +639,6 @@ class Withdraw extends React.Component {
               </>
             )}
           </Form>
-          <Modal />
         </Container>
       </ScrollView>
     );

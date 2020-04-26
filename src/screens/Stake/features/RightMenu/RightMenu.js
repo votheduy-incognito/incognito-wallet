@@ -1,5 +1,4 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
 import {BtnThreeDotsVer} from '@src/components/Button';
 import {useDispatch} from 'react-redux';
 import {actionToggleModal} from '@src/components/Modal';
@@ -10,8 +9,6 @@ import {actionChangeFLowStep} from '@screens/Stake/stake.actions';
 import {WITHDRAW_FLOW, STEP_FLOW} from '@screens/Stake/stake.constant';
 import StakeModal from '@screens/Stake/stake.modal';
 import {ActivitiesIcon, WithdrawIcon} from '@src/components/Icons';
-
-// const styled = StyleSheet.create({});
 
 const RightMenu = () => {
   const dispatch = useDispatch();
@@ -39,15 +36,22 @@ const RightMenu = () => {
   const rightMenuFactories = [
     {
       id: 0,
-      title: 'Activities',
-      desc: 'See your transaction history here',
+      title: 'Activity',
+      desc: 'See your staking history here',
       onPressItem: () => onHandlePressItem(onActivities),
       icon: <ActivitiesIcon />,
     },
+    // {
+    //   id: 1,
+    //   title: 'Withdraw rewards',
+    //   desc: 'Withdraw rewards PRV from your pStake account',
+    //   onPressItem: () => onHandlePressItem(onWithdraw),
+    //   icon: <WithdrawIcon />,
+    // },
     {
-      id: 1,
+      id: 2,
       title: 'Withdraw',
-      desc: 'Withdraw an amount of PRV from your pStake account',
+      desc: 'Withdraw PRV from your pStake account',
       onPressItem: () => onHandlePressItem(onWithdraw),
       icon: <WithdrawIcon />,
     },

@@ -27,6 +27,15 @@ export const ACTION_FETCHED_CREATE_UNSTAKE =
 export const ACTION_FETCH_FAIL_CREATE_UNSTAKE =
   '[stake] Fetch fail data create un stake';
 
+export const ACTION_FETCHING_CREATE_UNSTAKE_REWARDS =
+  '[stake] Fetching data create un stake rewards';
+export const ACTION_FETCHED_CREATE_UNSTAKE_REWARDS =
+  '[stake] Fetched data create un stake rewards';
+export const ACTION_FETCH_FAIL_CREATE_UNSTAKE_REWARDS =
+  '[stake] Fetch fail data create un stake rewards';
+
+export const ACTION_TOGGLE_GUIDE = '[stake] Toggle guide home stake';
+
 export const STEP_FLOW = {
   DEFAULT: 0,
   CHOOSE_ACCOUNT: 1,

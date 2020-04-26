@@ -59,7 +59,7 @@ const AppNavigator = createStackNavigator(
       header: () => null,
     }),
     [ROUTE_NAMES.CreateToken]: navigationOptionsHandler(CreateToken, {
-      title: 'Issue privacy coin',
+      title: 'Issue a privacy coin',
     }),
     [ROUTE_NAMES.AddToken]: navigationOptionsHandler(AddToken, {
       title: 'Add manually',

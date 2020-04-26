@@ -6,13 +6,13 @@ import thunkMiddleware from 'redux-thunk';
 import AsyncStorage from '@react-native-community/async-storage';
 import {persistStore, persistReducer} from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
-// import hardSet from 'redux-persist/lib/stateReconciler/hardSet'
 
 export default function configureStore(preloadedState) {
   const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
     whitelist: ['receivers'],
+    blacklist: ['stakeHistory', 'stake'],
     stateReconciler: autoMergeLevel2,
   };
   const persistedReducer = persistReducer(persistConfig, rootReducer);

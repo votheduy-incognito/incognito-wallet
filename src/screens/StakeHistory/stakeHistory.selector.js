@@ -7,5 +7,22 @@ export const stakeHistorySelector = createSelector(
 
 export const dataStakeHistorySelector = createSelector(
   stakeHistorySelector,
-  stakeHistory => stakeHistory.data,
+  stakeHistory => {
+    const {items} = stakeHistory.data;
+    const {history} = stakeHistory.storage;
+    return {
+      ...stakeHistory.data,
+      items:
+        history.length > 0
+          ? [
+            ...history.sort(
+              (a, b) =>
+                new Date(b.createdAt).getTime() -
+                  new Date(a.createdAt).getTime(),
+            ),
+            ...items,
+          ]
+          : [...items],
+    };
+  },
 );

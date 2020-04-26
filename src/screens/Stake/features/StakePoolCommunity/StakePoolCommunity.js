@@ -29,15 +29,15 @@ const Item = props => {
   );
 };
 
-const StakePoolCommunity = props => {
+const StakePoolCommunity = () => {
   const poolFactories = [
     {
       pool: 'Constant',
       icon: srcIconConstant,
-      link: 'https://www.myconstant.com/',
+      link: 'https://www.myconstant.com',
     },
     {
-      pool: 'JServer',
+      pool: 'JServers',
       icon: srcIconJSServer,
       link: 'http://jservers.com/',
     },

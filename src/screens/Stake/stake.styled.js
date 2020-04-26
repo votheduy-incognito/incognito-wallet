@@ -5,13 +5,20 @@ export const styled = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'transparent',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    position: 'relative',
   },
   wrapper: {
-    flex: 1,
-    padding: 20,
-    margin: 20,
     borderRadius: 10,
     justifyContent: 'center',
+  },
+  extra: {
+    flex: 1,
+    flexDirection: 'column',
+    marginTop: 20,
+    position: 'relative',
+    zIndex: 1,
   },
   specialBg: {
     backgroundColor: COLORS.dark4,
@@ -52,8 +59,8 @@ export const styled = StyleSheet.create({
   },
   balance: {
     fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.superLarge + 5,
-    lineHeight: FONT.SIZE.superLarge + 10,
+    fontSize: FONT.SIZE.large + 5,
+    lineHeight: FONT.SIZE.large + 10,
     color: COLORS.black,
     textAlign: 'right',
     maxWidth: '100%',
@@ -73,16 +80,63 @@ export const styled = StyleSheet.create({
     justifyContent: 'center',
   },
   background: {
-    width: '100%',
-    height: '100%',
+    // width: '100%',
+    // height: '100%',
     resizeMode: 'cover', // or 'stretch'
     position: 'absolute',
     flex: 1,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    top: 0,
   },
-  interestRateContainer: {
+
+  overlay: {
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    flex: 1,
+  },
+  blockStake: {
+    backgroundColor: 'red',
+  },
+});
+
+export const styledActions = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    top: 0,
+    zIndex: 100,
+  },
+  wrapper: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  btnStake: {
+    marginTop: 10,
+  },
+});
+
+export const styledInterestRate = StyleSheet.create({
+  container: {
     flexDirection: 'row',
     marginTop: 30,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  tooltip: {
+    bottom: 20,
+    right: 18,
+  },
+  icon: {
+    width: 22,
+    height: 22,
+    marginBottom: 2,
   },
 });

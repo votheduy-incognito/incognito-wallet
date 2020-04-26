@@ -4,14 +4,17 @@ import withHeader from '@src/components/Hoc/withHeader';
 import {ExHandler} from '@src/services/exception';
 import {useDispatch, useSelector} from 'react-redux';
 import LoadingContainer from '@src/components/LoadingContainer';
-import {stakeHistorySelector} from './stakeHistory.selector';
+import {
+  stakeHistorySelector,
+  dataStakeHistorySelector,
+} from './stakeHistory.selector';
 import {actionFetch, actionChangePage} from './stakeHistory.actions';
 import Empty from './stakeHistory.empty';
 
 const enhance = WrappedComp => props => {
   const dispatch = useDispatch();
-  const {data, isFetching, isFetched} = useSelector(stakeHistorySelector);
-  const {page, items, over} = data;
+  const {isFetching, isFetched} = useSelector(stakeHistorySelector);
+  const {page, items, over} = useSelector(dataStakeHistorySelector);
   const empty = items.length === 0;
   const refreshing = isFetching;
   const fetchData = async (params = {}) => {
@@ -49,4 +52,7 @@ const enhance = WrappedComp => props => {
   );
 };
 
-export default compose(withHeader, enhance);
+export default compose(
+  withHeader,
+  enhance,
+);

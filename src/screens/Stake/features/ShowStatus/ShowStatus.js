@@ -1,11 +1,12 @@
 import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, Share} from 'react-native';
 import {CheckedGreenIcon} from '@src/components/Icons';
 import {useSelector, useDispatch} from 'react-redux';
 import {
   activeFlowSelector,
-  createStakeSelector,
+  storageStakeSelector,
   stakeDataSelector,
+  pStakeAccountSelector,
 } from '@screens/Stake/stake.selector';
 import {COLORS, FONT} from '@src/styles';
 import {BtnDefault} from '@src/components/Button';
@@ -16,7 +17,14 @@ import routeNames from '@src/router/routeNames';
 import {DEPOSIT_FLOW, WITHDRAW_FLOW} from '@screens/Stake/stake.constant';
 import Hook from '@screens/Stake/features/Hook';
 import format from '@src/utils/format';
-import LocalDatabase from '@src/utils/LocalDatabase';
+import {ExHandler} from '@src/services/exception';
+import isEmpty from 'lodash/isEmpty';
+import Capitalize from 'lodash/capitalize';
+import {v4} from 'uuid';
+import rnfs from 'react-native-fs';
+import {isAndroid, isIOS} from '@src/utils/platform';
+import {actionBackupCreateStake} from '@screens/Stake/stake.actions';
+import ShowStatusDeposit from './ShowStatus.deposit';
 import withShowStatus from './ShowStatus.enhance';
 
 const styled = StyleSheet.create({
@@ -78,7 +86,8 @@ const ShowStatus = () => {
     warningStatus,
     activeFlow,
   } = useSelector(activeFlowSelector);
-  const {backup} = useSelector(createStakeSelector);
+  const pStakeAccount = useSelector(pStakeAccountSelector);
+  const {backup} = useSelector(storageStakeSelector);
   const {symbol, pDecimals} = useSelector(stakeDataSelector);
   const hookFactories = [
     {
@@ -95,14 +104,50 @@ const ShowStatus = () => {
       },
     },
   ];
+
+  const handleShareAccount = async () => {
+    try {
+      const message = Object.keys(pStakeAccount)
+        .filter(key => !isEmpty(pStakeAccount[key]))
+        .map(key =>
+          key === 'name' || key === 'AccountName' || key === 'PrivateKey'
+            ? `${Capitalize(key)}: ${pStakeAccount[key]}\n`
+            : '',
+        )
+        .reduce((prevVal, curVal) => prevVal + curVal);
+      const title = 'Backup your staking pool account';
+      let dir = null;
+      if (isAndroid()) {
+        dir = rnfs.ExternalDirectoryPath;
+      }
+      if (isIOS()) {
+        dir = rnfs.DocumentDirectoryPath;
+      }
+      if (!dir) {
+        throw 'Can\'t create a dir';
+      }
+      const url = `${dir}/pStake_keys_${v4()}.txt`;
+      const result = await Share.share({
+        message,
+        title,
+        url,
+      });
+      const shared = result?.action === Share.sharedAction;
+      if (shared) {
+        await dispatch(actionBackupCreateStake());
+      }
+    } catch (error) {
+      new ExHandler(error).showErrorToast();
+    }
+  };
+
   const onHandlePress = async () => {
     switch (activeFlow) {
     case DEPOSIT_FLOW: {
       if (backup) {
         navigation.navigate(routeNames.StakeHistory);
       } else {
-        await LocalDatabase.saveBackupStakeKey();
-        navigation.navigate(routeNames.BackupKeys);
+        await handleShareAccount();
       }
       break;
     }
@@ -116,6 +161,14 @@ const ShowStatus = () => {
     }
     await dispatch(actionToggleModal());
   };
+  if (activeFlow === DEPOSIT_FLOW) {
+    return (
+      <ShowStatusDeposit
+        btnSubmitStatus={btnSubmitStatus}
+        onHandlePress={onHandlePress}
+      />
+    );
+  }
   return (
     <View style={styled.container}>
       <BlockChecked title={titleStatus} />
@@ -128,7 +181,6 @@ const ShowStatus = () => {
           <Text style={styled.warning}>{warningStatus}</Text>
         </View>
       )}
-
       <BtnDefault
         title={btnSubmitStatus}
         btnStyle={styled.btnSubmit}

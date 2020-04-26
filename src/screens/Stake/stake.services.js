@@ -21,3 +21,12 @@ export const apiUnStake = (
     Amount: 0,
   },
 ) => http.post('pool/staker/create-unstake', data);
+
+export const apiUnStakeRewards = (
+  data = {
+    PStakeAddress: '',
+    SignEncode: '',
+    PaymentAddress: '',
+    Amount: 0,
+  },
+) => http.post('pool/staker/create-unstake-rewards', data);

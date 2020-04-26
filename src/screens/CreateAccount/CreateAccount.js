@@ -15,7 +15,7 @@ const Form = createForm(formName);
 
 const CreateAccount = ({ navigation, accountList, createAccount }) => {
   const goBack = () => {
-    navigation.popToTop();
+    navigation.pop();
   };
 
   const handleCreateAccount = async ({ accountName }) => {

@@ -10,15 +10,21 @@ import DeviceInfo from 'react-native-device-info';
 
 const styled = StyleSheet.create({
   container: {
-    position: 'relative',
+    position: 'absolute',
     zIndex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 20,
-    paddingTop: 40,
+    top: 0,
+    left: 20,
+    right: 20,
+    paddingTop: 20,
+  },
+  ios: {
+    paddingTop: 30,
   },
   hasNotch: {
+    paddingTop: 40,
   },
   title: {
     fontFamily: FONT.NAME.medium,
@@ -27,16 +33,21 @@ const styled = StyleSheet.create({
     color: COLORS.black,
     paddingTop: 2,
   },
-  right: {
-    padding: 5,
-  },
+  left: {},
 });
 
 const StakeHeader = () => {
   const navigation = useNavigation();
   const hasNotch = isIOS() && DeviceInfo.hasNotch();
+  const ios = isIOS();
   return (
-    <View style={[styled.container, hasNotch ? styled.hasNotch : null]}>
+    <View
+      style={[
+        styled.container,
+        ios && styled.ios,
+        hasNotch && styled.hasNotch,
+      ]}
+    >
       <View style={styled.left}>
         <BtnBack onPress={() => navigation.pop()} />
       </View>

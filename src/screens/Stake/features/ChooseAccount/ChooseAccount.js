@@ -14,17 +14,17 @@ import {useSelector, useDispatch} from 'react-redux';
 import {AccountIcon} from '@src/components/Icons';
 import format from '@src/utils/format';
 import PropTypes from 'prop-types';
-import {actionChangeFlowAccount} from '@screens/Stake/stake.actions';
+import {
+  actionChangeFlowAccount,
+  actionFetch,
+} from '@screens/Stake/stake.actions';
 import srcAccountIcon from '@src/assets/images/icons/account_staking_pool.png';
 import {
   stakeDataSelector,
   activeFlowSelector,
 } from '@screens/Stake/stake.selector';
-import {DEPOSIT_FLOW} from '@screens/Stake/stake.constant';
+import {DEPOSIT_FLOW, WITHDRAW_FLOW} from '@screens/Stake/stake.constant';
 import {ExHandler} from '@src/services/exception';
-import {getTotalBalance} from '@screens/Stake/stake.utils';
-import convert from '@src/utils/convert';
-import _ from 'lodash';
 import withChoseAccount from './ChooseAccount.enhance';
 
 const styled = StyleSheet.create({
@@ -72,16 +72,7 @@ const styled = StyleSheet.create({
 const Account = props => {
   const {account, lastChild, isLoadingBalance} = props;
   const dispatch = useDispatch();
-  const {
-    pDecimals,
-    symbol,
-    balance,
-    currentRewardRate,
-    rewardDateToMilSec,
-    nodeTime,
-    localTime,
-    shouldCalInterestRate,
-  } = useSelector(stakeDataSelector);
+  const {pDecimals, symbol} = useSelector(stakeDataSelector);
   const {activeFlow} = useSelector(activeFlowSelector);
   const shouldShowBalance = activeFlow === DEPOSIT_FLOW;
   const onChooseAccount = async () => {
@@ -89,23 +80,14 @@ const Account = props => {
       if (isLoadingBalance) {
         return;
       }
-      let balancePStake = balance;
-      if (shouldCalInterestRate) {
-        const localTimeCurrent = new Date().getTime();
-        const nodeTimeCurrent = nodeTime + (localTimeCurrent - localTime);
-        balancePStake = getTotalBalance({
-          nodeTime: nodeTimeCurrent,
-          balance,
-          currentRewardRate,
-          rewardDateToMilSec,
-        });
-      }
       await dispatch(
         actionChangeFlowAccount({
           account,
-          balancePStake,
         }),
       );
+      if (activeFlow === WITHDRAW_FLOW) {
+        await dispatch(actionFetch());
+      }
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }

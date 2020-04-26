@@ -4,20 +4,35 @@ import {ExHandler} from '@src/services/exception';
 import {useSelector} from 'react-redux';
 import {removeAccount} from '@src/redux/actions/account';
 import {actionImportAccount} from '@src/redux/actions';
-import Modal, {actionToggleModal} from '@src/components/Modal';
+import {actionToggleModal} from '@src/components/Modal';
 import {pStakeAccountSelector} from '@screens/Stake/stake.selector';
 import {actionFetch as actionFetchStake} from '@screens/Stake/stake.actions';
+import {reloadAccountList} from '@src/redux/actions/wallet';
+import {isNotFoundStakeAccount} from '@src/screens/Stake/stake.utils';
+import {accountSeleclor} from '@src/redux/selectors';
 import RecoverAccountSuccess from './RecoverAccountSuccess';
 
 const enhance = WrappedComp => props => {
   const pStakeAccount = useSelector(pStakeAccountSelector);
+  const accountList = useSelector(accountSeleclor.listAccount);
   const handleImportAccount = async (values, dispatch) => {
+    const {privateKey} = values;
     try {
-      const {privateKey} = values;
+      if (isNotFoundStakeAccount(pStakeAccount)) {
+        throw 'Something went wrong! pStake account can\'t not found!';
+      }
+      if (
+        pStakeAccount?.PrivateKey === privateKey ||
+        accountList.some(item => item?.PrivateKey === privateKey) ||
+        !privateKey
+      ) {
+        throw 'Please make sure this private key is valid and does not already exist on your device.';
+      }
       await dispatch(removeAccount(pStakeAccount));
       await dispatch(
         actionImportAccount({
           privateKey,
+          oldPrivateKey: pStakeAccount?.PrivateKey,
           accountName: pStakeAccount?.name || pStakeAccount?.AccountName,
         }),
       );
@@ -29,13 +44,14 @@ const enhance = WrappedComp => props => {
         }),
       );
     } catch (error) {
-      new ExHandler(error).showErrorToast();
+      new ExHandler(error).toastMessageError();
+    } finally {
+      await dispatch(reloadAccountList());
     }
   };
   return (
     <ErrorBoundary>
       <WrappedComp {...{...props, handleImportAccount}} />
-      <Modal />
     </ErrorBoundary>
   );
 };

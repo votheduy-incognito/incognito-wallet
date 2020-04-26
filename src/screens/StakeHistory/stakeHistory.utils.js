@@ -1,15 +1,15 @@
 import format from '@src/utils/format';
 import {CONSTANT_COMMONS, CONSTANT_CONFIGS} from '@src/constants';
 
-const STATUS_HISTORY = {
+export const STATUS_HISTORY = {
   0: 'Pending',
   1: 'Processing',
   2: 'Successful',
-  3: 'Failed',
+  3: 'Unsuccessful',
   4: 'Queued',
 };
 
-const STATUS_HISTORY_COLOR = {
+export const STATUS_HISTORY_COLOR = {
   0: '#00CFD9',
   1: '#FF8D01',
   2: '#23C64C',
@@ -44,6 +44,8 @@ export const standardizeData = item => {
     statusColor: STATUS_HISTORY_COLOR[item?.Status || 0],
     symbol: CONSTANT_COMMONS.PRV.symbol,
     txLink: `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${item?.IncognitoTx}`,
+    retryWithdraw: item?.RetryWithdraw || item?.Status === 3 || false,
+    retryDeposit: item?.RetryDeposit || item?.Status === 3 || false,
   };
 };
 

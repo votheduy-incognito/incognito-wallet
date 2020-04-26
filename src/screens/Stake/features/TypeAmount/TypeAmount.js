@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Keyboard} from 'react-native';
 import {BtnDefault} from '@src/components/Button';
 import {TextInput} from '@src/components/Input';
 import PropTypes from 'prop-types';
@@ -46,7 +46,10 @@ const TypeAmount = props => {
       <BtnDefault
         btnStyle={styled.btnSubmit}
         title={btnSubmitAmount}
-        onPress={onSubmitAmount}
+        onPress={() => {
+          Keyboard.dismiss();
+          onSubmitAmount();
+        }}
         disabled={shouldDisabled}
         loading={loading}
       />

@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types';
 import {COLORS, FONT} from '@src/styles';
 
@@ -43,12 +43,6 @@ const styled = StyleSheet.create({
   lastChild: {
     borderBottomWidth: 0,
   },
-  // btnClose: {
-  //   fontFamily: FONT.NAME.regular,
-  //   fontSize: FONT.SIZE.regular,
-  //   lineHeight: FONT.SIZE.regular + 6,
-  //   color: COLORS.black,
-  // },
 });
 
 const MenuItem = ({data, lastChild}) => {
@@ -66,16 +60,10 @@ const MenuItem = ({data, lastChild}) => {
   );
 };
 
-const Menu = ({
-  data,
-  // onCloseMenu
-}) => {
+const Menu = ({data}) => {
   return (
     <View style={styled.container}>
       <View style={styled.menu}>
-        {/* <TouchableOpacity onPress={onCloseMenu}>
-          <Text style={styled.btnClose}>Close</Text>
-        </TouchableOpacity> */}
         {data.map((item, index) => (
           <MenuItem
             data={item}
@@ -90,7 +78,6 @@ const Menu = ({
 
 Menu.propTypes = {
   data: PropTypes.array.isRequired,
-  // onCloseMenu: PropTypes.func.isRequired,
 };
 
 MenuItem.propTypes = {

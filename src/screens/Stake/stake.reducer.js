@@ -1,4 +1,8 @@
 import convert from '@src/utils/convert';
+import AsyncStorage from '@react-native-community/async-storage';
+import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2';
+import {persistReducer} from 'redux-persist';
+import {DEFAULT_REWARD_RATE} from './stake.utils';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -19,6 +23,7 @@ import {
   ACTION_FETCHED_CREATE_UNSTAKE,
   ACTION_FETCH_FAIL_CREATE_UNSTAKE,
   ACTION_BACKUP_CREATE_STAKE,
+  ACTION_TOGGLE_GUIDE,
 } from './stake.constant';
 
 const initialState = {
@@ -42,7 +47,7 @@ const initialState = {
     minToWithdraw: 0,
     maxToStake: 0,
     balance: 0,
-    currentRewardRate: '',
+    currentRewardRate: DEFAULT_REWARD_RATE,
     stakingMasterAddress: '',
     balancePStake: 0,
   },
@@ -55,16 +60,24 @@ const initialState = {
     isFetching: false,
     isFetched: false,
     data: null,
-    backup: false,
   },
   createUnStake: {
     isFetching: false,
     isFetched: false,
     data: null,
   },
+  createUnStakeRewards: {
+    isFetching: false,
+    isFetched: false,
+    data: null,
+  },
+  storage: {
+    guide: false,
+    backup: false,
+  },
 };
 
-export default (state = initialState, action) => {
+const stakeReducer = (state = initialState, action) => {
   switch (action.type) {
   case ACTION_FETCHING: {
     return {
@@ -102,7 +115,7 @@ export default (state = initialState, action) => {
     };
   }
   case ACTION_CHANGE_FLOW_ACCOUNT: {
-    const {account, balancePStake} = action.payload;
+    const {account} = action.payload;
     const {activeFlow} = state.flow;
     switch (activeFlow) {
     case DEPOSIT_FLOW:
@@ -134,10 +147,6 @@ export default (state = initialState, action) => {
             account,
             step: STEP_FLOW.TYPE_AMOUNT,
           },
-        },
-        data: {
-          ...state.data,
-          balancePStake,
         },
       };
     }
@@ -222,8 +231,8 @@ export default (state = initialState, action) => {
   case ACTION_BACKUP_CREATE_STAKE: {
     return {
       ...state,
-      createStake: {
-        ...state.createStake,
+      storage: {
+        ...state.storage,
         backup: true,
       },
     };
@@ -268,7 +277,25 @@ export default (state = initialState, action) => {
       },
     };
   }
+  case ACTION_TOGGLE_GUIDE: {
+    return {
+      ...state,
+      storage: {
+        ...state.storage,
+        guide: true,
+      },
+    };
+  }
   default:
     return state;
   }
 };
+
+const persistConfig = {
+  key: 'stake',
+  storage: AsyncStorage,
+  whitelist: ['storage'],
+  stateReconciler: autoMergeLevel2,
+};
+
+export default persistReducer(persistConfig, stakeReducer);

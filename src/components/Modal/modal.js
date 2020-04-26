@@ -7,8 +7,9 @@ import {
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {COLORS} from '@src/styles';
-import {modalSelector} from './modal.selector';
+import {modalSelector, modalLoadingSelector} from './modal.selector';
 import {actionToggleModal} from './modal.actions';
+import LoadingModal from './features/LoadingModal';
 
 const styled = StyleSheet.create({
   container: {
@@ -21,6 +22,11 @@ const ModalComponent = () => {
   const {visible, data, shouldCloseModalWhenTapOverlay} = useSelector(
     modalSelector,
   );
+  const {
+    toggle: toggleLoading,
+    title: titleLoading,
+    desc: descLoading,
+  } = useSelector(modalLoadingSelector);
   const dispatch = useDispatch();
   const handleToggle = async () =>
     shouldCloseModalWhenTapOverlay ? await dispatch(actionToggleModal()) : null;
@@ -32,7 +38,12 @@ const ModalComponent = () => {
       transparent
     >
       <TouchableWithoutFeedback onPress={handleToggle}>
-        <SafeAreaView style={styled.container}>{data}</SafeAreaView>
+        <SafeAreaView style={styled.container}>
+          {data}
+          {toggleLoading && (
+            <LoadingModal title={titleLoading} desc={descLoading} />
+          )}
+        </SafeAreaView>
       </TouchableWithoutFeedback>
     </Modal>
   );

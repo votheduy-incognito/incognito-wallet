@@ -330,7 +330,7 @@ export const actionSendNativeToken = ({
       return res;
     }
   } catch (error) {
-    throw Error(error);
+    throw error;
   }
 };
 

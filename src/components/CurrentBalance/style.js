@@ -11,8 +11,9 @@ const style = StyleSheet.create({
     flex: 1,
   },
   balanceContainer: {
-    flex: 1,
+    // flex: 1,
     flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   balance: {
     fontSize: 22,
@@ -35,6 +36,9 @@ const style = StyleSheet.create({
     borderColor: COLORS.lightGrey5,
     paddingRight: 30,
     paddingLeft: 10,
+    zIndex: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingVertical: 2,
     flexDirection: 'row',
   }

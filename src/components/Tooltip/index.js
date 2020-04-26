@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet } from 'react-native';
-import { View, Text } from '@components/core';
+import {StyleSheet} from 'react-native';
+import {View, Text} from '@components/core';
 import {COLORS, FONT} from '@src/styles';
 
 const styles = StyleSheet.create({
@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     bottom: 100,
     paddingVertical: 20,
     paddingHorizontal: 25,
-    width: 200,
+    width: 240,
     borderRadius: 8,
   },
   title: {
@@ -42,23 +42,26 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     left: '50%',
     right: '50%',
-    transform: [
-      {rotate: '180deg'}
-    ],
+    transform: [{rotate: '180deg'}],
   },
 });
 
-const Tooltip = ({title, desc}) => (
-  <View style={styles.container}>
-    <Text style={styles.title}>{title}</Text>
+const Tooltip = ({title, desc, containerStyled}) => (
+  <View style={[styles.container, containerStyled]}>
+    {!!title && <Text style={styles.title}>{title}</Text>}
     <Text style={styles.desc}>{desc}</Text>
     <View style={[styles.triangle]} />
   </View>
 );
 
+Tooltip.defaultProps = {
+  containerStyled: null,
+};
+
 Tooltip.propTypes = {
   title: PropTypes.string.isRequired,
   desc: PropTypes.string.isRequired,
+  containerStyled: PropTypes.any,
 };
 
 export default React.memo(Tooltip);

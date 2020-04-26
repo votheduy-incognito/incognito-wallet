@@ -11,7 +11,7 @@ const IconTextButton = ({ onPress, image, title, desc, disabled }) => {
       disabled={disabled}
     >
       <View style={[styles.btn, disabled && styles.disabled]}>
-        <Image style={styles.image} source={image} />
+        <Image style={styles.image} source={image} resizeMode="contain" resizeMethod="auto"/>
         <Text allowFontScaling={false} style={styles.title}>{title}</Text>
         <Text allowFontScaling={false} style={styles.desc}>{desc}</Text>
       </View>

@@ -15,7 +15,7 @@ const renderCustomField = ({ input, meta, maxValue, ...props }) => {
   return (
     <TextInput
       {...props}
-      onChangeText={(t) => onChange(t)}
+      onChangeText={(t) => input.onChange(t)}
       onBlur={onBlur}
       onFocus={onFocus}
       defaultValue={value}

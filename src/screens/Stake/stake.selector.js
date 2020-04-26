@@ -11,15 +11,7 @@ export const stakeSelector = createSelector(
 
 export const stakeDataSelector = createSelector(
   stakeSelector,
-  stake => {
-    const {data} = stake;
-    const {balance} = data;
-    const staked = balance !== 0;
-    return {
-      ...data,
-      staked,
-    };
-  },
+  stake => stake.data,
 );
 
 export const flowStakeSelector = createSelector(
@@ -48,14 +40,20 @@ export const feeStakeSelector = createSelector(
   stake => stake.fee,
 );
 
+export const storageStakeSelector = createSelector(
+  stakeSelector,
+  stake => stake.storage,
+);
+
 export const activeFlowSelector = createSelector(
   flowStakeSelector,
   stakeDataSelector,
   pStakeAccountSelector,
   state => state.wallet,
   feeStakeSelector,
-  createStakeSelector,
-  (flow, data, pStakeAccount, wallet, fee, createStake) => {
+  storageStakeSelector,
+  (flow, data, pStakeAccount, wallet, fee, storage) => {
+    const {backup} = storage;
     const {activeFlow} = flow;
     const activedFlowData = flow[activeFlow];
     const {step, account} = activedFlowData;
@@ -81,12 +79,10 @@ export const activeFlowSelector = createSelector(
     };
     switch (activeFlow) {
     case DEPOSIT_FLOW:
-      hook.btnSubmitAmount = fee.isFetching ? 'Estimate fee...' : 'Deposit';
-      hook.btnSubmitStatus = createStake.backup
-        ? 'OK'
-        : 'Back up your account';
+      hook.btnSubmitAmount = fee.isFetching ? 'Estimating fee...' : 'Deposit';
+      hook.btnSubmitStatus = backup ? 'OK' : 'Back up your account';
       hook.titleStatus = 'Deposit is in progress';
-      hook.warningStatus = createStake.backup
+      hook.warningStatus = backup
         ? ''
         : 'Back up your staking account to keep your assets safe.';
       break;

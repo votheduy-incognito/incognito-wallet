@@ -20,6 +20,7 @@ export const KEY_SAVE = {
   BACKUP_STAKE_KEY: CONSTANT_KEYS.BACKUP_STAKE_KEY,
   VIEW_UNISWAP_TOOLTIP: '$uniswap_tooltip',
   UNISWAP_AIRDROP: '$uniswap_airdrop',
+  SCREEN_STAKE_GUIDE: CONSTANT_KEYS.SCREEN_STAKE_GUIDE,
 };
 export default class LocalDatabase {
   static async getValue(key: String): String {
@@ -291,24 +292,21 @@ export default class LocalDatabase {
     return LocalDatabase.getValue(KEY_SAVE.BACKUP_STAKE_KEY);
   }
 
-  static async getViewUniswapTooltip() {
-    const value = !!(await LocalDatabase.getValue(KEY_SAVE.VIEW_UNISWAP_TOOLTIP));
-    this.saveViewUniswapTooltip();
+  static async getViewUniswapTooltip(type) {
+    const value = await LocalDatabase.getValue(KEY_SAVE.VIEW_UNISWAP_TOOLTIP);
+    this.saveViewUniswapTooltip(type);
     return value;
   }
 
-  static saveViewUniswapTooltip() {
+  static saveViewUniswapTooltip(type) {
     return LocalDatabase.saveValue(
       KEY_SAVE.VIEW_UNISWAP_TOOLTIP,
-      JSON.stringify(true),
+      type,
     );
   }
 
   static resetViewUniswapTooltip() {
-    return LocalDatabase.saveValue(
-      KEY_SAVE.VIEW_UNISWAP_TOOLTIP,
-      '',
-    );
+    return LocalDatabase.saveValue(KEY_SAVE.VIEW_UNISWAP_TOOLTIP, '');
   }
 
   static async getUniswapAirdrop() {
@@ -323,9 +321,17 @@ export default class LocalDatabase {
   }
 
   static resetUniswapAirdrop() {
+    return LocalDatabase.saveValue(KEY_SAVE.UNISWAP_AIRDROP, '');
+  }
+
+  static getScreenStakeGuilde() {
+    return LocalDatabase.getValue(KEY_SAVE.SCREEN_STAKE_GUIDE);
+  }
+
+  static saveScreenStakeGuide() {
     return LocalDatabase.saveValue(
-      KEY_SAVE.UNISWAP_AIRDROP,
-      '',
+      KEY_SAVE.SCREEN_STAKE_GUIDE,
+      JSON.stringify(true),
     );
   }
 }

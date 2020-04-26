@@ -1,6 +1,7 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 import { COLORS, SPACING, FONT } from '@src/styles';
 
+const { width, height } = Dimensions.get('window');
 export default StyleSheet.create({
   container: {
     backgroundColor: COLORS.white,
@@ -58,11 +59,57 @@ export default StyleSheet.create({
     height: 25,
     marginLeft: 20
   },
+  submitBTN: {
+    height: 45,
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginTop: 20,
+  },
   depositAddressContainer: {
     marginTop: 20,
     alignItems: 'center'
   },
   copyBlock: {
     marginLeft: 5
+  },
+  modalBackground: {
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    backgroundColor: '#00000040'
+  },
+  modalContainer:{
+    justifyContent: 'center', 
+    alignContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: '#00000040', 
+    width: width, 
+    height: height
+  },
+  modalContent: {
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    width: width * 0.9, 
+    height: width * 0.7, 
+    backgroundColor: 'white', 
+    borderRadius: 12, 
+    padding: 15 
+  },
+  titleModal: {
+    marginBottom: 20, 
+    fontSize: 17, 
+    fontFamily: FONT.NAME.medium 
+  },
+  txField: {
+    paddingRight: 10, 
+    paddingLeft: 10, 
+    fontSize: 18, 
+    fontFamily: FONT.NAME.regular, 
+    width: width * 0.8, 
+    height: 45, 
+    borderColor: 'white',
+    borderBottomColor: 'gray', 
+    borderWidth: 0.5, 
+    borderRadius: 0, 
   }
 });
