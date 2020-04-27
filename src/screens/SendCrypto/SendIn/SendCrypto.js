@@ -202,8 +202,16 @@ class SendCrypto extends React.Component {
     const {
       estimateFeeData: { fee },
     } = this.state;
-
-    return fee !== 0 && !fee;
+    if (fee !== 0 && !fee) {
+      return true;
+    }
+    const {
+      isFormValid
+    } = this.props;
+    if (!isFormValid) {
+      return true;
+    }
+    return false;
   };
 
   getSupportedFeeTypes = async () => {
