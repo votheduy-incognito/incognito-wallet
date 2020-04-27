@@ -45,11 +45,9 @@ const StakePendingItem = props => {
       ]}
       numberOfLines={1}
     >
-      {`${operator}${format.balance(
-        amount,
-        CONSTANT_COMMONS.PRV.pDecimals,
-        4,
-      )} ${CONSTANT_COMMONS.PRV.symbol}`}
+      {`${operator}${format.amount(amount, CONSTANT_COMMONS.PRV.pDecimals)} ${
+        CONSTANT_COMMONS.PRV.symbol
+      }`}
     </Text>
   );
 };
