@@ -83,19 +83,19 @@ const StakeGuide = () => {
           size={26}
         />
       </View>
-      <Text style={styled.title}>Got PRV?</Text>
+      <Text style={styled.title}>Multiply your PRV</Text>
       <Text style={styled.desc}>
-        Get a
+        Get
         <Text style={[styled.desc, {color: '#FF8D01'}]}>
           {` ${defaultRewardRate}% `}
         </Text>
-        annual return.
+        APY.
       </Text>
       <View style={styled.main}>
         <Text style={styled.desc}>
-          Join a staking pool and earn interest in every second.
+          Join a staking pool and earn interest every second. No minimum
+          investment.
         </Text>
-        <Text style={styled.desc}>Get staking in just minutes.</Text>
         <Text style={styled.desc}>Withdraw anytime.</Text>
       </View>
       <View style={styled.bottom}>

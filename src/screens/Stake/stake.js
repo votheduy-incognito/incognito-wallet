@@ -71,8 +71,8 @@ const StakeInterestRate = props => {
   }, [visible]);
   return (
     <View style={styledInterestRate.container}>
-      <Text style={[styled.desc, {color: '#FF8D01'}]}>{`${rate}%`}</Text>
-      <Text style={styled.desc}>{desc}</Text>
+      <Text style={[styledInterestRate.desc, {color: '#FF8D01'}]}>{`${rate}%`}</Text>
+      <Text style={styledInterestRate.desc}>{desc}</Text>
       <TouchableOpacity onPress={toggleTooltip}>
         <QuestionIcon style={styledInterestRate.icon} icon={srcQuestionIcon} />
       </TouchableOpacity>

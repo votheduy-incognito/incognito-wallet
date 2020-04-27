@@ -228,7 +228,8 @@ const Home = ({navigation}) => {
                 {item === pStakeItem && viewUniswap !== tooltipType && (
                   <Tooltip
                     title="New"
-                    desc="Join a PRV staking pool. Get a 57% annual return. Interest paid every second."
+                    desc="Join a PRV staking pool. Get 57% APY. Interest paid every second."
+                    containerStyled={styles.tooltip}
                   />
                 )}
                 <IconTextButton

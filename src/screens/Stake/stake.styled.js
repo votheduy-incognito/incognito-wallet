@@ -1,5 +1,7 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
 import {COLORS, FONT} from '@src/styles';
+
+const screenHeight = Math.round(Dimensions.get('window').height);
 
 export const styled = StyleSheet.create({
   container: {
@@ -8,6 +10,7 @@ export const styled = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 20,
     position: 'relative',
+    minHeight: screenHeight,
   },
   wrapper: {
     borderRadius: 10,
@@ -135,8 +138,13 @@ export const styledInterestRate = StyleSheet.create({
     right: 18,
   },
   icon: {
-    width: 22,
-    height: 22,
-    marginBottom: 2,
+    width: 20,
+    height: 20,
+  },
+  desc: {
+    fontFamily: FONT.NAME.regular,
+    fontSize: FONT.SIZE.large,
+    color: COLORS.black,
+    marginRight: 5,
   },
 });
