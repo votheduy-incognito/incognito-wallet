@@ -95,8 +95,7 @@ export default class TxHistoryDetail extends Component {
     const feeUnit = isUseTokenFee ? history?.symbol : CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
     const formatFee = fee && formatUtil.amountFull(fee, isUseTokenFee ? history?.pDecimals : CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY);
     const amountStr = (history.amount && formatUtil.amount(history.amount, history.pDecimals)) || formatUtil.number(history.requestedAmount);
-    const canRetryExpiredDeposit = history?.canRetryExpiredDeposit &&
-      !(!!history?.erc20TokenAddress || history?.symbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH);
+    const canRetryExpiredDeposit = history?.canRetryExpiredDeposit;
 
     return (
       <ScrollView>
