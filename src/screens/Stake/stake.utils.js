@@ -49,6 +49,9 @@ export const mappingData = (dataMasterAddress, dataStakerInfo) => {
     : dataMasterAddress?.CurrentRewardRate || defaultRewardRate;
   const shouldCalInterestRate = staked;
   // balanceToHumanAmount >= minToStakeToHunmanAmount;
+  const pendingBalance = dataStakerInfo?.PendingBalance || 0;
+  const unstakePendingBalance = dataStakerInfo?.UnstakePendingBalance || 0;
+  const showAllPending = pendingBalance !== 0 && unstakePendingBalance !== 0;
   return {
     minToStake: minToStake,
     minToWithdraw: 1,
@@ -68,6 +71,15 @@ export const mappingData = (dataMasterAddress, dataStakerInfo) => {
     staked,
     balancePStake: totalBalance,
     defaultRewardRate,
+    pendingBalance,
+    unstakePendingBalance,
+    showAllPending,
+    pendingBalanceToHumanAmount: _.floor(
+      convert.toHumanAmount(pendingBalance, 9),
+    ),
+    unstakePendingBalanceToHumanAmount: _.floor(
+      convert.toHumanAmount(unstakePendingBalance, 9),
+    ),
   };
 };
 

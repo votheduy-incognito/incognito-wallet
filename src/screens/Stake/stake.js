@@ -26,6 +26,7 @@ import Header from './stake.header';
 import StakePoolCommunity from './features/StakePoolCommunity';
 import StakeBalance from './stake.balance';
 import StakeGuide from './stake.guide';
+import StakePending from './stake.pending';
 
 const StakeActions = props => {
   const {handleStartStake} = props;
@@ -71,7 +72,9 @@ const StakeInterestRate = props => {
   }, [visible]);
   return (
     <View style={styledInterestRate.container}>
-      <Text style={[styledInterestRate.desc, {color: '#FF8D01'}]}>{`${rate}%`}</Text>
+      <Text style={[styledInterestRate.desc, {color: '#FF8D01'}]}>
+        {`${rate}%`}
+      </Text>
       <Text style={styledInterestRate.desc}>{desc}</Text>
       <TouchableOpacity onPress={toggleTooltip}>
         <QuestionIcon style={styledInterestRate.icon} icon={srcQuestionIcon} />
@@ -110,6 +113,7 @@ const Stake = props => {
           </View>
         </ScrollView>
       </View>
+      <StakePending />
       <StakeInterestRate rate={defaultRewardRate} desc="APY" />
       <StakeActions {...props} />
       <StakePoolCommunity />
