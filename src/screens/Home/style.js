@@ -42,6 +42,9 @@ const style = StyleSheet.create({
     marginTop: 20,
     marginLeft: 35,
     marginEnd: 35,
+  },
+  tooltip: {
+    bottom: 110
   }
 });
 
