@@ -21,8 +21,9 @@ class TxHistoryDetailContainer extends Component {
   state = {
     data: null,
     shouldShowTxModal: false,
-    errorTx: true,
+    errorTx: false,
     txOutchain: '',
+    shouldEnableBtn: false,
   };
 
   componentDidMount() {
@@ -65,60 +66,55 @@ class TxHistoryDetailContainer extends Component {
     }
   }
   renderModalTXOutchain = () => {
-    const { shouldShowTxModal, errorTx } = this.state;
+    const { shouldShowTxModal, errorTx, shouldEnableBtn } = this.state;
     return (
       <Modal
         transparent
         animationType="none"
         visible={shouldShowTxModal}
         onRequestClose={() => {
-          this.setState({ shouldShowTxModal: false });
+
         }}
       >
-        <View>
+        <TouchableWithoutFeedback onPress={() => { this.setState({ shouldShowTxModal: false, errorTx: false, shouldEnableBtn: false }); }}>
           <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.titleModal}>{'If you\'ve already sent funds to the deposit address, just enter your transaction ID here. Your balance will update within 24 hours.'}</Text>
-              <TextInput
-                onChangeText={text => {
-                  if (text && text.trim().length === 0) {
-                    this.setState({ errorTx: true });
-                  } else {
-                    this.setState({ txOutchain: text, errorTx: false });
-                  }
-                }}
-                returnKeyType="done"
-                placeholder="TransactionID"
-                numberOfLines={1}
-                style={styles.txField}
-              />
-              <Text style={[styles.titleModal, styles.warning]}>{errorTx ? 'Tx required' : ''}</Text>
-              <View style={{ flexDirection: 'row' }}>
-                <Button
-                  style={[styles.cancelBTN]}
-                  title='Cancel'
-                  onPress={async () => {
-                    this.setState({ shouldShowTxModal: false, errorTx: true });
-                  }}
-                />
-                <Button
-                  style={[styles.submitBTN, { opacity: errorTx ? 0.5 : 1 }]}
-                  disabled={errorTx}
-                  title='Submit'
-                  onPress={async () => {
-                    const { data, txOutchain } = this.state;
-                    if (txOutchain != '') {
-                      await this.retryExpiredDeposit(data, true);
-                      this.setState({ shouldShowTxModal: false, errorTx: false });
+            <TouchableWithoutFeedback onPress={() => { }}>
+              <View style={styles.modalContent}>
+                <Text style={styles.titleModal}>{'If you\'ve already sent funds to the deposit address, just enter your transaction ID here. Your balance will update within 24 hours.'}</Text>
+                <TextInput
+                  onChangeText={text => {
+                    if (text === '' || text.trim().length === 0) {
+                      this.setState({ errorTx: true, shouldEnableBtn: false });
                     } else {
-                      this.setState({ errorTx: true });
+                      this.setState({ txOutchain: text, errorTx: false, shouldEnableBtn: true });
                     }
                   }}
+                  returnKeyType="done"
+                  placeholder="TransactionID"
+                  numberOfLines={1}
+                  style={styles.txField}
                 />
+                <Text style={[styles.titleModal, styles.warning]}>{errorTx ? 'Tx required' : ''}</Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <Button
+                    style={[styles.submitBTN, { opacity: errorTx ? 0.8 : 1 }]}
+                    disabled={!shouldEnableBtn}
+                    title='Submit'
+                    onPress={async () => {
+                      const { data, txOutchain } = this.state;
+                      if (txOutchain != '') {
+                        await this.retryExpiredDeposit(data, true);
+                        this.setState({ shouldShowTxModal: false, errorTx: false });
+                      } else {
+                        this.setState({ errorTx: true });
+                      }
+                    }}
+                  />
+                </View>
               </View>
-            </View>
+            </TouchableWithoutFeedback>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
     );
   }

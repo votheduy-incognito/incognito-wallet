@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
   newDesc: {
     marginTop: 20,
     lineHeight: 25,
+    fontSize: 17,
     maxWidth: deviceWidth - 30,
   },
   icon: {

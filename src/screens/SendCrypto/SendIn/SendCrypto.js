@@ -267,23 +267,24 @@ class SendCrypto extends React.Component {
   // When click into Max button, auto set to max value with substract fee
   // It should be refactored into a utils, not prefer this here.
   reReduceMaxAmount = () => {
-    const { estimateFeeData, amount } = this.state;
-    const {
-      selectedPrivacy,
-      rfChange
-    } = this.props;
-    if (estimateFeeData?.fee) {
-      const {
-        estimateFeeData: { fee = 0 },
-      } = this.state;
+    // Holding on next stage
+    // const { estimateFeeData, amount } = this.state;
+    // const {
+    //   selectedPrivacy,
+    //   rfChange
+    // } = this.props;
+    // if (estimateFeeData?.fee) {
+    //   const {
+    //     estimateFeeData: { fee = 0 },
+    //   } = this.state;
 
-      let feeConvert = Number(convertUtil.toHumanAmount(fee, selectedPrivacy?.pDecimals));
-      let amountConvert = Number(convertUtil.toHumanAmount(selectedPrivacy?.amount || 0, selectedPrivacy?.pDecimals));
-      let maxable = (amountConvert - feeConvert);
-      if (Number(amount) >= maxable) {
-        rfChange(formName, 'amount', `${maxable}`);
-      }
-    }
+    //   let feeConvert = Number(convertUtil.toHumanAmount(fee, selectedPrivacy?.pDecimals));
+    //   let amountConvert = Number(convertUtil.toHumanAmount(selectedPrivacy?.amount || 0, selectedPrivacy?.pDecimals));
+    //   let maxable = (amountConvert - feeConvert);
+    //   if (Number(amount) >= maxable) {
+    //     rfChange(formName, 'amount', `${maxable}`);
+    //   }
+    // }
   }
 
   render() {
