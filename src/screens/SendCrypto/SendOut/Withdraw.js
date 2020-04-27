@@ -303,9 +303,9 @@ class Withdraw extends React.Component {
     if (shouldBlockETHWrongAddress) {
       return true;
     }
-    if (!isFormValid) {
-      return true;
-    }
+    // if (!isFormValid) {
+    //   return true;
+    // }
     return false;
   };
 
