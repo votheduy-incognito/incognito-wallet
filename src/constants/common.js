@@ -37,6 +37,7 @@ const CRYPTO_SYMBOL = {
   BVC: 'BVC',
   BKX: 'BKX',
   AUR: 'AUR',
+  ZIL: 'ZIL',
 };
 
 const TOKEN_SYMBOL = {

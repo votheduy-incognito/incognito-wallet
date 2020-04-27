@@ -1,7 +1,10 @@
 import walletValidator from 'wallet-address-validator';
 import accountService from '@src/services/wallet/accountService';
 import formatUtils from '@src/utils/format';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { validation } from '@zilliqa-js/util';
 import convert from '@utils/convert';
+
 
 const isSafeInteger = number => {
   const n = Number(n);
@@ -146,6 +149,12 @@ const bnbAddress = (value, { message } = {}) => value => {
   return undefined;
 };
 
+const zilAddress = (value, { message } = {}) => value => {
+  if (!validation.isBech32(value)) {
+    return messageHanlder(message, value) ?? 'Invalid ZIL address';
+  }
+  return undefined;
+};
 // the same as ETH
 const tomoAddress = (value, { message } = {}) => value => !walletValidator.validate(value, 'ETH', 'both') ? messageHanlder(message, value) ?? 'Invalid TOMO address' : undefined;
 
@@ -228,7 +237,7 @@ const combinedBIOAddress = [required(), bioAddress()];
 const combinedBVCAddress = [required(), bvcAddress()];
 const combinedBKXAddress = [required(), bkxAddress()];
 const combinedAURAddress = [required(), aurAddress()];
-
+const combinedZILAddress = [required(), zilAddress()];
 const combinedUnknownAddress = [required(), minLength(15)];
 const combinedTokenName = [required(), minLength(3), maxLength(50), regexp(/\w+$/i, { message: 'Please use a valid coin name (Ex: "My Coin, Coin-1,..").' })];
 const combinedTokenSymbol = [required(), minLength(2), maxLength(10), regexp(/^[A-Z]+$/, { message: 'Please use a valid coin ticker (Ex: "SYM").' })];
@@ -285,6 +294,7 @@ export default {
   combinedBVCAddress,
   combinedBKXAddress,
   combinedAURAddress,
+  combinedZILAddress,
   ethAddress,
   btcAddress,
   notInList,
