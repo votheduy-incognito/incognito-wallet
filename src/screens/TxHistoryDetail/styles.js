@@ -64,6 +64,21 @@ export default StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     marginTop: 20,
+    marginLeft: 20,
+  },
+  cancelBTN: {
+    height: 45,
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginTop: 20,
+    backgroundColor: 'gray'
+  },
+  warning: {
+    color: 'red', 
+    alignSelf: 'flex-start', 
+    marginLeft: 15, 
+    fontFamily: FONT.NAME.regular, 
+    fontSize: 14 
   },
   depositAddressContainer: {
     marginTop: 20,
@@ -84,19 +99,20 @@ export default StyleSheet.create({
     alignItems: 'center', 
     backgroundColor: '#00000040', 
     width: width, 
-    height: height
+    height: height,
+    zIndex: 1,
   },
   modalContent: {
     alignItems: 'center', 
     justifyContent: 'center', 
     width: width * 0.9, 
-    height: width * 0.7, 
+    height: width * 0.8, 
     backgroundColor: 'white', 
     borderRadius: 12, 
-    padding: 15 
+    padding: 15
   },
   titleModal: {
-    marginBottom: 20, 
+    marginBottom: 10, 
     fontSize: 17, 
     fontFamily: FONT.NAME.medium 
   },

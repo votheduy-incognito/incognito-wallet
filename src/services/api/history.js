@@ -31,7 +31,7 @@ export const retryExpiredDeposit = ({ id, decentralized, walletAddress, currency
   }
   if (typeof decentralized !== 'boolean') {
     return throw new Error('Invalid decentralized');
-  } 
+  }
   if (typeof walletAddress !== 'string') {
     return throw new Error('Invalid walletAddress');
   }
@@ -47,15 +47,14 @@ export const retryExpiredDeposit = ({ id, decentralized, walletAddress, currency
   if (typeof erc20TokenAddress !== 'string') {
     return throw new Error('Invalid erc20TokenAddress');
   }
-  if (typeof type !== 'number'){
+  if (typeof type !== 'number') {
     return throw new Error('Invalid type');
   }
-  if (typeof TxOutchain !== 'string') {
+  if (TxOutchain && typeof TxOutchain !== 'string') {
     return throw new Error('Invalid TxOutChain');
   }
-  return http.post('eta/retry', {
+  let body = {
     ID: id,
-    TxOutchain: TxOutchain,
     Decentralized: Number(decentralized),
     WalletAddress: walletAddress,
     AddressType: type,
@@ -63,5 +62,9 @@ export const retryExpiredDeposit = ({ id, decentralized, walletAddress, currency
     PaymentAddress: userPaymentAddress,
     PrivacyTokenAddress: privacyTokenAddress,
     Erc20TokenAddress: erc20TokenAddress,
-  });
+  };
+  if (TxOutchain) {
+    body.TxOutchain = TxOutchain;
+  }
+  return http.post('eta/retry', body);
 };
