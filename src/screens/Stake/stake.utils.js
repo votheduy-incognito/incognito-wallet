@@ -40,8 +40,6 @@ export const mappingData = (dataMasterAddress, dataStakerInfo) => {
   const minToStakeToHunmanAmount = _.floor(
     convert.toHumanAmount(minToStake, 9),
   );
-  const shouldCalInterestRate =
-    balanceToHumanAmount >= minToStakeToHunmanAmount;
   const rewardBalance = dataStakerInfo?.RewardBalance || 0;
   const totalBalance = balance;
   const staked = balance !== 0;
@@ -49,6 +47,8 @@ export const mappingData = (dataMasterAddress, dataStakerInfo) => {
   const currentRewardRate = staked
     ? dataStakerInfo?.RewardRate
     : dataMasterAddress?.CurrentRewardRate || defaultRewardRate;
+  const shouldCalInterestRate = staked;
+  // balanceToHumanAmount >= minToStakeToHunmanAmount;
   return {
     minToStake: minToStake,
     minToWithdraw: 1,
