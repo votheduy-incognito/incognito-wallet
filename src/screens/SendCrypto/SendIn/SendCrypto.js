@@ -205,6 +205,12 @@ class SendCrypto extends React.Component {
     if (fee !== 0 && !fee) {
       return true;
     }
+    const {
+      isFormValid
+    } = this.props;
+    if (!isFormValid) {
+      return true;
+    }
     return false;
   };
 

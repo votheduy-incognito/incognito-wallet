@@ -293,9 +293,6 @@ class Withdraw extends React.Component {
     const {
       estimateFeeData: { fee },
     } = this.state;
-    const {
-      isFormValid
-    } = this.props;
     if (fee !== 0 && !fee) {
       return true;
     }
@@ -303,9 +300,12 @@ class Withdraw extends React.Component {
     if (shouldBlockETHWrongAddress) {
       return true;
     }
-    // if (!isFormValid) {
-    //   return true;
-    // }
+    const {
+      isFormValid
+    } = this.props;
+    if (!isFormValid) {
+      return true;
+    }
     return false;
   };
 
