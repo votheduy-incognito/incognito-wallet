@@ -1,21 +1,23 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { TouchableOpacity, TextInput, Text } from '@src/components/core';
 import formatUtil from '@src/utils/format';
 import { COLORS } from '@src/styles';
-import {generateTestId} from '@utils/misc';
-import {SEND} from '@src/constants/elements';
+import { generateTestId } from '@utils/misc';
+import { SEND } from '@src/constants/elements';
 import createField from './createField';
 
-let inputRef;
 
-const renderCustomField = ({ input, meta, maxValue, ...props }) => {
+
+const renderCustomField = ({ input, meta, maxValue, autoFocus, ...props }) => {
   const { onChange, onBlur, onFocus, value } = input;
-
+  let inputRef;  
   return (
     <TextInput
       {...props}
-      onChangeText={(t) => input.onChange(t)}
+      onChangeText={(t) => {
+        input.onChange(t);
+      }}
       onBlur={onBlur}
       onFocus={onFocus}
       defaultValue={value}
@@ -34,12 +36,12 @@ const renderCustomField = ({ input, meta, maxValue, ...props }) => {
             marginBottom: 5,
           }}
           onPress={() => {
-            onChange(formatUtil.numberWithNoGroupSeparator(Number(maxValue)));
+            input.onChange(formatUtil.numberWithNoGroupSeparator(Number(maxValue)));
             inputRef?.current?.focus?.();
           }}
           {...generateTestId(SEND.MAX_BUTTON)}
         >
-          <Text style={{ color: COLORS.primary  }}>Max</Text>
+          <Text style={{ color: COLORS.primary }}>Max</Text>
         </TouchableOpacity>
       )}
     />
