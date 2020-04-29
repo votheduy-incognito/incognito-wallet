@@ -319,8 +319,6 @@ class SendCrypto extends React.Component {
                 />
                 <Field
                   onChange={(text) => {
-                    this.setFormValidation({ minAmount: this.getMinAmount() });
-                    this.setFormValidation({ maxAmount: this.getMaxAmount() });
                     rfFocus(formName, 'amount');
                   }}
                   component={InputMaxValueField}
