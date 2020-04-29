@@ -4,7 +4,6 @@ import {
   Dimensions,
   PixelRatio,
   Platform,
-  SafeAreaView,
   TouchableWithoutFeedback,
   RefreshControl,
 } from 'react-native';
@@ -14,19 +13,7 @@ import { isIOS } from '@utils/platform';
 import deviceInfo from 'react-native-device-info';
 import PropTypes from 'prop-types';
 import { View, Text } from '@src/components/core';
-import icShield from '@assets/images/icons/ic_shield_btn.png';
-import icSend from '@assets/images/icons/ic_send_btn.png';
-import icReceive from '@assets/images/icons/ic_receive_btn.png';
-import icTrade from '@assets/images/icons/ic_trade.png';
-import icSetting from '@assets/images/icons/ic_setting_btn.png';
-import icInvent from '@assets/images/icons/ic_invent_btn.png';
-import icPower from '@assets/images/icons/ic_power.png';
-import icBuy from '@assets/images/icons/ic_buy_prv.png';
-import icFeedback from '@assets/images/icons/ic_feedback.png';
-import icPapp from '@assets/images/icons/ic_papp.png';
-import icKyber from '@assets/images/icons/ic_kyber.png';
 import IconTextButton from '@screens/Home/IconTextButton';
-import ROUTE_NAMES from '@routers/routeNames';
 import { BIG_COINS } from '@screens/Dex/constants';
 import { useSelector } from 'react-redux';
 import accountSeleclor from '@src/redux/selectors/account';
@@ -35,55 +22,10 @@ import { CONSTANT_EVENTS } from '@src/constants';
 import LocalDatabase from '@utils/LocalDatabase';
 import { withdraw } from '@services/api/withdraw';
 import { logEvent } from '@services/firebase';
-import icStake from '@assets/images/icons/stake_icon.png';
 import Tooltip from '@components/Tooltip';
-import LogManager from '@src/services/LogManager';
 import styles from './style';
 import withHome from './Home.enhance';
 
-const settingItem = {
-  image: icSetting,
-  title: 'Settings',
-  desc: '',
-  route: ROUTE_NAMES.Setting,
-};
-const sendItem = {
-  image: icSend,
-  title: 'Send',
-  desc: 'Anonymously',
-  route: ROUTE_NAMES.SendCrypto,
-};
-const receiveItem = {
-  image: icReceive,
-  title: 'Receive',
-  desc: 'Anonymously',
-  route: ROUTE_NAMES.ReceiveCoin,
-};
-const shieldItem = {
-  image: icShield,
-  title: 'Shield',
-  desc: 'Your crypto',
-  route: ROUTE_NAMES.Shield,
-};
-
-const pappItem = {
-  image: icPapp,
-  title: 'Browse',
-  desc: 'Search URL',
-  route: ROUTE_NAMES.pApps,
-};
-
-const powerItem = {
-  image: icPower,
-  title: 'Buy Node',
-  desc: 'Plug & play',
-  route: ROUTE_NAMES.Community,
-  onPress: () => {
-    LinkingService.openUrl(
-      'https://node.incognito.org/payment.html?utm_source=app&utm_medium=homepage%20app&utm_campaign=pnode',
-    );
-  },
-};
 const sendFeedback = async () => {
   const buildVersion = AppUpdater.appVersion;
   const { width, height } = Dimensions.get('window');
@@ -101,59 +43,6 @@ const sendFeedback = async () => {
 
   LinkingService.openUrl(`mailto:${email}?subject=${title}&body=${content}`);
 };
-const pUniswapItem = {
-  image: icKyber,
-  title: 'pKyber (testnet)',
-  route: ROUTE_NAMES.pUniswap,
-  event: CONSTANT_EVENTS.CLICK_HOME_UNISWAP,
-};
-
-const pStakeItem = {
-  image: icStake,
-  title: 'Stake PRV',
-  route: ROUTE_NAMES.Stake,
-};
-
-const buttons = [
-  shieldItem,
-  {
-    image: icBuy,
-    title: 'Buy PRV',
-    route: ROUTE_NAMES.Dex,
-    params: {
-      inputTokenId: BIG_COINS.USDT,
-      outputTokenId: BIG_COINS.PRV,
-    },
-    event: CONSTANT_EVENTS.CLICK_HOME_BUY,
-  },
-
-  sendItem,
-  receiveItem,
-  {
-    image: icInvent,
-    title: 'Issue a coin',
-    route: ROUTE_NAMES.CreateToken,
-  },
-  {
-    image: icTrade,
-    title: 'Trade',
-    route: ROUTE_NAMES.Dex,
-    event: CONSTANT_EVENTS.CLICK_HOME_TRADE,
-  },
-  powerItem,
-  pStakeItem,
-  // pUniswapItem,
-  {
-    image: icFeedback,
-    title: 'Feedback',
-    route: ROUTE_NAMES.Community,
-    // params: {
-    //   uri: 'https://incognito.org/c/help/45',
-    // }
-    onPress: () => sendFeedback(),
-  },
-  settingItem,
-];
 
 const tooltipType = '2';
 
@@ -172,12 +61,12 @@ const Home = ({ navigation }) => {
   };
 
   const isDisabled = item => {
-    if (item === sendItem && dexUtil.isDEXMainAccount(account.name)) {
+    if (item?.sortId === 'Send' && dexUtil.isDEXMainAccount(account.name)) {
       return true;
     }
 
     if (
-      (item === receiveItem || item === shieldItem) &&
+      (item?.title === 'Receive' || item?.title === 'Shield') &&
       dexUtil.isDEXWithdrawAccount(account.name)
     ) {
       return true;
@@ -225,7 +114,7 @@ const Home = ({ navigation }) => {
           }
         }
       })
-      .catch(err => {
+      .catch(() => {
         console.log('Fetching configuration for home failed.');
       });
   };
