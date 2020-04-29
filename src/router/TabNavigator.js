@@ -92,7 +92,7 @@ const Tab = createMaterialTopTabNavigator({
   [ROUTE_NAMES.Wallet]: navigationOptionsHandler(Wallet, { header: () => null, tabBarLabel: renderTab('wallet', 'Wallet') }),
   [ROUTE_NAMES.Community]: navigationOptionsHandler(Community, { header: () => null, tabBarLabel: renderTab('community', 'Community') }),
 }, {
-  initialRouteName: ROUTE_NAMES.Wallet,
+  initialRouteName: ROUTE_NAMES.Home,
   swipeEnabled: false,
   animationEnabled: true,
   tabBarPosition: 'bottom',
