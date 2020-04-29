@@ -25,7 +25,7 @@ import React from 'react';
 import { isExchangeRatePToken } from '@services/wallet/RpcClientService';
 import { connect } from 'react-redux';
 import { detectToken } from '@utils/misc';
-import { change, Field, formValueSelector, isValid } from 'redux-form';
+import { change, Field, formValueSelector, isValid, focus } from 'redux-form';
 import { logEvent } from '@services/firebase';
 import accountService from '@services/wallet/accountService';
 import { MESSAGES } from '@screens/Dex/constants';
@@ -181,7 +181,6 @@ class Withdraw extends React.Component {
     const { selectedPrivacy } = this.props;
 
     if (maxAmount) {
-      this.reReduceMaxAmount();
       this.setState({
         maxAmountValidator: validator.maxValue(maxAmount, {
           message:
@@ -293,9 +292,6 @@ class Withdraw extends React.Component {
     const {
       estimateFeeData: { fee },
     } = this.state;
-    const {
-      isFormValid
-    } = this.props;
     if (fee !== 0 && !fee) {
       return true;
     }
@@ -303,6 +299,9 @@ class Withdraw extends React.Component {
     if (shouldBlockETHWrongAddress) {
       return true;
     }
+    const {
+      isFormValid
+    } = this.props;
     if (!isFormValid) {
       return true;
     }
@@ -456,25 +455,10 @@ class Withdraw extends React.Component {
     }
   }
   // When click into Max button, auto set to max value with substract fee
-  reReduceMaxAmount = () => {
+  reReduceMaxAmount = (amount) => {
     // Holding on next stage
-    // const { estimateFeeData, amount } = this.state;
-    // const {
-    //   selectedPrivacy,
-    //   rfChange
-    // } = this.props;
-    // if (estimateFeeData?.fee) {
-    //   const {
-    //     estimateFeeData: { fee = 0 },
-    //   } = this.state;
-
-    //   let feeConvert = Number(convertUtil.toHumanAmount(fee, selectedPrivacy?.pDecimals));
-    //   let amountConvert = Number(convertUtil.toHumanAmount(selectedPrivacy?.amount || 0, selectedPrivacy?.pDecimals));
-    //   let maxable = (amountConvert - feeConvert);
-    //   if (Number(amount) >= maxable) {
-    //     rfChange(formName, 'amount', `${maxable}`);
-    //   }
-    // }
+    const { rfChange } = this.props;
+    rfChange(formName, 'amount', `${amount}`);
   }
 
   render() {
@@ -496,6 +480,7 @@ class Withdraw extends React.Component {
       onShowFrequentReceivers,
       onSelectedValue,
       reloading,
+      rfFocus,
     } = this.props;
     const { externalSymbol, isErc20Token, name: tokenName } =
       selectedPrivacy || {};
@@ -558,7 +543,11 @@ class Withdraw extends React.Component {
                   </Text>
                 )}
                 <Field
-                  onChange={text => this.setState({ amount: text })}
+                  onChange={(text) => {
+                    this.setFormValidation({ minAmount: this.getMinAmount() });
+                    this.setFormValidation({ maxAmount: this.getMaxAmount() });
+                    rfFocus(formName, 'amount');
+                  }}
                   component={InputMaxValueField}
                   name="amount"
                   label="Amount"
@@ -681,6 +670,7 @@ const mapState = state => ({
 
 const mapDispatch = {
   rfChange: change,
+  rfFocus: focus,
   setSelectedPrivacy,
   actionToggleModal,
 };
