@@ -39,7 +39,7 @@ const style = StyleSheet.create({
   titleHeader: {
     fontFamily: FONT.NAME.bold,
     fontSize: 25,
-    marginTop: 25,
+    marginTop: 30,
     marginLeft: 35,
     marginEnd: 35,
   },
