@@ -9,6 +9,7 @@ import {getBalance } from '@src/redux/actions/account';
 import {getBalance as getTokenBalance} from '@src/redux/actions/token';
 import {PRV_ID} from '@screens/Dex/constants';
 import {BtnQuestion} from '@src/components/Button';
+import KeepAwake from 'react-native-keep-awake';
 import SendIn from './SendIn';
 import SendOut from './SendOut';
 import styles from './style';
@@ -101,6 +102,7 @@ const SendCoin = ({ navigation }) => {
           wallet={wallet}
           reloading={reloading}
         />
+        <KeepAwake />
       </View>
     </View>
   );

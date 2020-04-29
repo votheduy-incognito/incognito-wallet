@@ -53,7 +53,7 @@ const renderCustomField = ({
       {...props}
       // Damn, it should be the like below, but temporary   
       // onChangeText={t => input.onChange(t)}
-      onChangeText={t => onChange(t)}
+      onChangeText={t => input.onChange(t)}
       onBlur={onBlur}
       onFocus={onFocus}
       returnKeyType="done"
@@ -72,7 +72,7 @@ const renderCustomField = ({
             onPress={() => {
               openQrScanner(data => {
                 let res = getAddress(data);
-                onChange(res);
+                input.onChange(res);
               });
             }}
           >
