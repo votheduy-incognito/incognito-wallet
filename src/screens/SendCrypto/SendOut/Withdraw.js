@@ -544,8 +544,8 @@ class Withdraw extends React.Component {
                 )}
                 <Field
                   onChange={(text) => {
-                    this.setFormValidator({ minAmount: this.getMinAmount() });
-                    this.setFormValidator({ maxAmount: this.getMaxAmount() });
+                    // this.setFormValidator({ minAmount: this.getMinAmount() });
+                    // this.setFormValidator({ maxAmount: this.getMaxAmount() });
                     rfFocus(formName, 'amount');
                   }}
                   component={InputMaxValueField}
