@@ -110,7 +110,7 @@ const Home = ({ navigation }) => {
             setButtons(val.buttons);
           }
           if (val?.headerTitle) {
-            setHeaderTitle(val.headerTitle?.title || '');
+            setHeaderTitle(val.headerTitle?.title && val.headerTitle?.title.replace('\\n', '\n') || '');
           }
         }
       })
