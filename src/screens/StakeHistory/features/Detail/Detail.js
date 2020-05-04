@@ -52,7 +52,7 @@ const Detail = props => {
       <Item title="Type:" desc={data?.type} />
       <Item title="User ID:" desc={data?.userId} />
       <Item title="Payment Address: " desc={data?.paymentAddress} />
-      {data?.retryDeposit && (
+      {!!data?.retryDeposit && (
         <BtnDefault
           title={`Retry deposit${isFetching ? '...' : ''}`}
           btnStyle={styled.btnRetry}

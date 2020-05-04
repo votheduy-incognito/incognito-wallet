@@ -44,8 +44,8 @@ export const standardizeData = item => {
     statusColor: STATUS_HISTORY_COLOR[item?.Status || 0],
     symbol: CONSTANT_COMMONS.PRV.symbol,
     txLink: `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${item?.IncognitoTx}`,
-    retryWithdraw: false,
-    retryDeposit: !!(item?.RetryDeposit && item?.Status === 3 ) || false,
+    retryWithdraw: null,
+    retryDeposit: !!(item?.RetryDeposit && item?.Status === 3) || null,
   };
 };
 
