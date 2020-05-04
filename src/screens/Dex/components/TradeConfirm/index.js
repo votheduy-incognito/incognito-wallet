@@ -12,14 +12,15 @@ import {
 import chevronRight from '@src/assets/images/icons/chevron_right.png';
 import { isExchangeRatePToken } from '@src/services/wallet/RpcClientService';
 import {PRV} from '@services/wallet/tokenService';
-import {CONSTANT_COMMONS} from '@src/constants';
+import { CONSTANT_COMMONS } from '@src/constants';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
 import greyRightArrow from '@src/assets/images/icons/grey_right_arrow.png';
-import {Overlay, Icon} from 'react-native-elements';
+import { Overlay, Icon } from 'react-native-elements';
 import Help from '@components/Help';
 import FullScreenLoading from '@components/FullScreenLoading/index';
-import {MESSAGES, MIN_VALUE, PRV_ID} from '../../constants';
+import { DEFAULT_FEE } from '@components/EstimateFee/EstimateFee.utils';
+import { MESSAGES, MIN_VALUE, PRV_ID } from '../../constants';
 import style from './style';
 import { mainStyle } from '../../style';
 
@@ -91,7 +92,7 @@ class TradeConfirm extends React.Component {
     const stopPrice = outputValue - outputValue / 100;
     const stopPricePercent = 1;
     const pDecimals = networkFeeUnit === inputToken.symbol ? inputToken.pDecimals : PRV.pDecimals || 0;
-    const networkFee = MIN_VALUE;
+    const networkFee = DEFAULT_FEE * 20;
     this.setState({
       networkFee: formatUtil.amountFull(networkFee, pDecimals),
       networkFeeUnit,
