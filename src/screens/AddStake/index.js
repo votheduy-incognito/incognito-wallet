@@ -1,23 +1,27 @@
 import React from 'react';
 import { View } from 'react-native';
 import PropTypes from 'prop-types';
-import {compose} from 'redux';
-import {connect} from 'react-redux';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 import BaseScreen from '@screens/BaseScreen';
-import {CONSTANT_COMMONS} from '@src/constants';
-import {ExHandler} from '@services/exception';
+import { CONSTANT_COMMONS } from '@src/constants';
+import { ExHandler } from '@services/exception';
 import accountService from '@services/wallet/accountService';
 import {
   getEstimateFeeForNativeToken,
-  getStakingAmount
+  getStakingAmount,
 } from '@services/wallet/RpcClientService';
-import {Toast} from '@components/core/index';
+import { Toast } from '@components/core/index';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
 import Device from '@models/device';
-import {DEX_CHAIN_ACCOUNT} from '@screens/Dex/constants';
+import { DEX_CHAIN_ACCOUNT } from '@screens/Dex/constants';
 import routeNames from '@routers/routeNames';
 import config from '@src/constants/config';
+import {
+  DEFAULT_FEE,
+  DEFAULT_MULTIPLY,
+} from '@src/components/EstimateFee/EstimateFee.utils';
 import style from './styles';
 import AddStake from './AddStake';
 
@@ -28,7 +32,7 @@ const stakeType = CONSTANT_COMMONS.STAKING_TYPES.SHARD;
 class AddStakeContainer extends BaseScreen {
   constructor(props) {
     super(props);
-    const { navigation }= props;
+    const { navigation } = props;
     const { params } = navigation.state;
     const { device } = params;
 
@@ -39,21 +43,21 @@ class AddStakeContainer extends BaseScreen {
 
   async componentDidMount() {
     const { navigation } = this.props;
-    this.listener = navigation.addListener(
-      'didFocus',
-      () => {
-        this.getStakeAmount().catch((error) => new ExHandler(error).showErrorToast(true));
-        this.getBalance().catch((error) => new ExHandler(error).showErrorToast(true));
-      }
-    );
+    this.listener = navigation.addListener('didFocus', () => {
+      this.getStakeAmount().catch(error =>
+        new ExHandler(error).showErrorToast(true),
+      );
+      this.getBalance().catch(error =>
+        new ExHandler(error).showErrorToast(true),
+      );
+    });
   }
 
   componentWillUnmount() {
     this.listener.remove();
   }
 
-
-  estimateFee = async (amount) => {
+  estimateFee = async amount => {
     try {
       const { device } = this.state;
       const { wallet } = this.props;
@@ -68,7 +72,7 @@ class AddStakeContainer extends BaseScreen {
       );
       this.setState({ fee });
     } catch (e) {
-      this.setState({ fee: 100 });
+      this.setState({ fee: DEFAULT_FEE * DEFAULT_MULTIPLY });
     }
   };
 
@@ -102,8 +106,10 @@ class AddStakeContainer extends BaseScreen {
     const { navigation } = this.props;
     const { device } = this.state;
     const name = device.AccountName;
-    const listDevice = await LocalDatabase.getListDevices()||[];
-    const deviceIndex =  listDevice.findIndex(item => _.isEqual(Device.getInstance(item).AccountName, name));
+    const listDevice = (await LocalDatabase.getListDevices()) || [];
+    const deviceIndex = listDevice.findIndex(item =>
+      _.isEqual(Device.getInstance(item).AccountName, name),
+    );
     listDevice[deviceIndex].minerInfo.stakeTx = rs.txId;
     await LocalDatabase.saveListDevices(listDevice);
     Toast.showInfo('You staked successfully.');
@@ -119,7 +125,15 @@ class AddStakeContainer extends BaseScreen {
       const paymentAddress = account.PaymentAddress;
       this.setState({ isStaking: true });
       const param = { type: stakeType };
-      const rs = await accountService.staking(param, fee, paymentAddress, account, wallet, paymentAddress, true);
+      const rs = await accountService.staking(
+        param,
+        fee,
+        paymentAddress,
+        account,
+        wallet,
+        paymentAddress,
+        true,
+      );
       this.handleStakeSuccess(rs);
     } catch (e) {
       new ExHandler(e).showErrorToast(true);
@@ -157,10 +171,8 @@ AddStakeContainer.propTypes = {
 
 AddStakeContainer.defaultProps = {};
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   wallet: state?.wallet,
 });
 
-export default compose(
-  connect(mapStateToProps)
-)(AddStakeContainer);
+export default compose(connect(mapStateToProps))(AddStakeContainer);
