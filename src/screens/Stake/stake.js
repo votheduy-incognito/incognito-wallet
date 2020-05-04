@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
 import Tooltip from '@components/Tooltip/Tooltip';
 import {BtnDefault} from '@src/components/Button';
 import {QuestionIcon} from '@src/components/Icons';
-import srcQuestionIcon from '@src/assets/images/icons/question_black.png';
+import srcQuestionIcon from '@src/assets/images/icons/question_black_2.png';
 import TooltipDefault from '@components/Tooltip';
 import {styled, styledActions, styledInterestRate} from './stake.styled';
 import withStake from './stake.enhance';

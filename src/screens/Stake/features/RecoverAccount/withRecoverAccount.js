@@ -5,8 +5,14 @@ import {useSelector} from 'react-redux';
 import {removeAccount} from '@src/redux/actions/account';
 import {actionImportAccount} from '@src/redux/actions';
 import {actionToggleModal} from '@src/components/Modal';
-import {pStakeAccountSelector} from '@screens/Stake/stake.selector';
-import {actionFetch as actionFetchStake} from '@screens/Stake/stake.actions';
+import {
+  pStakeAccountSelector,
+  storageStakeSelector,
+} from '@screens/Stake/stake.selector';
+import {
+  actionFetch as actionFetchStake,
+  actionBackupCreateStake,
+} from '@screens/Stake/stake.actions';
 import {reloadAccountList} from '@src/redux/actions/wallet';
 import {isNotFoundStakeAccount} from '@src/screens/Stake/stake.utils';
 import {accountSeleclor} from '@src/redux/selectors';
@@ -15,8 +21,10 @@ import RecoverAccountSuccess from './RecoverAccountSuccess';
 const enhance = WrappedComp => props => {
   const pStakeAccount = useSelector(pStakeAccountSelector);
   const accountList = useSelector(accountSeleclor.listAccount);
+  const {backup} = useSelector(storageStakeSelector);
   const handleImportAccount = async (values, dispatch) => {
-    const {privateKey} = values;
+    const {privateKey: privateKeyValue} = values;
+    const privateKey = privateKeyValue?.trim();
     try {
       if (isNotFoundStakeAccount(pStakeAccount)) {
         throw 'Something went wrong! pStake account can\'t not found!';
@@ -37,6 +45,9 @@ const enhance = WrappedComp => props => {
         }),
       );
       await dispatch(actionFetchStake());
+      if (!backup) {
+        await dispatch(actionBackupCreateStake());
+      }
       await dispatch(
         actionToggleModal({
           visible: true,

@@ -138,8 +138,8 @@ export const styledInterestRate = StyleSheet.create({
     right: 18,
   },
   icon: {
-    width: 20,
-    height: 20,
+    width: 22,
+    height: 22,
   },
   desc: {
     fontFamily: FONT.NAME.regular,
