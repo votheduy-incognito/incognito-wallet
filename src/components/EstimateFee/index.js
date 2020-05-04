@@ -159,7 +159,7 @@ class EstimateFeeContainer extends Component {
         throw new Error('Fee is invalid, use default fee instead');
       }
     } catch {
-      fee = DEFAULT_FEE;
+      fee = DEFAULT_FEE * DEFAULT_MULTIPLY;
       return fee;
     } finally {
       // cache it
@@ -222,7 +222,7 @@ class EstimateFeeContainer extends Component {
           ErrorCode.estimate_fee_does_not_support_type_of_fee,
         );
       }
-
+      
       fee = fee * multiply;
       minFee = fee;
       fee = userFee > fee ? userFee : fee;
@@ -466,7 +466,7 @@ EstimateFeeContainer.defaultProps = {
   onEstimateFailed: null,
   dexToken: null,
   dexBalance: 0,
-  multiply: DEFAULT_MULTIPLY,
+  multiply: 2,
 };
 
 EstimateFeeContainer.propTypes = {
