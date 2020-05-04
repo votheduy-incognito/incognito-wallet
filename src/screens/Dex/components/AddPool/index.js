@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import {Button, Image, Text, View, Toast} from '@src/components/core';
+import { Button, Image, Text, View, Toast } from '@src/components/core';
 import accountService from '@services/wallet/accountService';
 import convertUtil from '@utils/convert';
-import {Divider} from 'react-native-elements';
+import { Divider } from 'react-native-elements';
 import ExchangeRate from '@screens/Dex/components/ExchangeRate';
 import PoolSize from '@screens/Dex/components/PoolSize';
 import {
@@ -12,19 +12,20 @@ import {
   getEstimateFeeForPToken,
   getTransactionByHash
 } from '@services/wallet/RpcClientService';
-import {PRV} from '@services/wallet/tokenService';
+import { PRV } from '@services/wallet/tokenService';
 import dexUtils from '@utils/dex';
-import {AddLiquidityHistory} from '@models/dexHistory';
+import { AddLiquidityHistory } from '@models/dexHistory';
 import addLiquidityIcon from '@src/assets/images/icons/add_liquidity.png';
-import {CONSTANT_COMMONS} from '@src/constants';
+import { CONSTANT_COMMONS } from '@src/constants';
 import NetworkFee from '@screens/Dex/components/NetworkFee';
 import AddSuccessDialog from '@screens/Dex/components/AddSuccessDialog';
 import CODE from '@src/services/exception/customError/code';
-import {ExHandler} from '@services/exception';
+import { ExHandler } from '@services/exception';
+import { DEFAULT_FEE } from '@components/EstimateFee/EstimateFee.utils';
 import Input from '../Input';
 import Loading from '../Loading';
-import {DEX_CHAIN_ACCOUNT, MESSAGES, MIN_INPUT, MIN_VALUE, MULTIPLY, PRV_ID, SECOND} from '../../constants';
-import {mainStyle} from '../../style';
+import { DEX_CHAIN_ACCOUNT, MESSAGES, MIN_INPUT, MULTIPLY, PRV_ID, SECOND } from '../../constants';
+import { mainStyle } from '../../style';
 
 class Pool extends React.Component {
   constructor(props) {
@@ -117,7 +118,7 @@ class Pool extends React.Component {
       }
     } catch (error) {
       console.debug('ESTIMATE FEE ERROR', error);
-      fee = MIN_VALUE;
+      fee = DEFAULT_FEE;
     }
 
     if (fee) {
