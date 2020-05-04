@@ -217,6 +217,13 @@ export const actionFetchCreateStake = ({amount, fee}) => async (
       throw ERROR_MESSAGE.txId;
     } else {
       stakeHistoryItem.IncognitoTx = tx?.txId;
+      await dispatch(
+        actionUpdateStorageHistory({
+          ...stakeHistoryItem,
+          Status: 3,
+          RetryDeposit: true,
+        }),
+      );
     }
     if (!signPublicKeyEncode) {
       throw ERROR_MESSAGE.signPublicKeyEncode;
@@ -234,6 +241,7 @@ export const actionFetchCreateStake = ({amount, fee}) => async (
           actionChangeFlowAmount({amount: payload?.Amount || amount}),
         ),
         await dispatch(actionFetch()),
+        await dispatch(actionRemoveStorageHistory(stakeHistoryItem?.ID)),
       ]);
     } else {
       throw ERROR_MESSAGE.createStake;
@@ -343,9 +351,7 @@ export const actionFetchCreateUnStake = ({amount}) => async (
       await dispatch(actionToggleLoadingModal());
       return await new Promise.all([
         await dispatch(actionFetchedCreateUnStake(payload)),
-        await dispatch(
-          actionChangeFlowAmount({amount: originalAmount}),
-        ),
+        await dispatch(actionChangeFlowAmount({amount: originalAmount})),
         await dispatch(actionFetch()),
       ]);
     } else {
