@@ -1,12 +1,13 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {ExHandler} from '@services/exception';
+import { ExHandler } from '@services/exception';
 import accountService from '@services/wallet/accountService';
 import { getEstimateFeePerKB } from '@services/wallet/RpcClientService';
 import { ActivityIndicator, Toast } from '@components/core';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
 import Device from '@models/device';
+import { DEFAULT_FEE } from '@src/components/EstimateFee/EstimateFee.utils';
 import Unstake from './Unstake';
 
 export const TAG = 'Unstake';
@@ -20,15 +21,20 @@ class UnstakeVNode extends PureComponent {
   }
 
   async componentDidMount() {
-    this.getBalance().catch((error) => new ExHandler(error).showErrorToast(true));
+    this.getBalance().catch(error => new ExHandler(error).showErrorToast(true));
   }
 
   async getBalance() {
     const { wallet, device } = this.props;
     const account = device.Account;
     const balance = await accountService.getBalance(account, wallet);
-    const data = await getEstimateFeePerKB(account.PaymentAddress);
-    const fee = data.unitFee * 10;
+    let fee;
+    try {
+      const data = await getEstimateFeePerKB(account.PaymentAddress);
+      fee = data.unitFee;
+    } catch (error) {
+      fee = DEFAULT_FEE;
+    }
     this.setState({ balance, fee: fee * 10 });
   }
 
@@ -45,10 +51,18 @@ class UnstakeVNode extends PureComponent {
       const account = device.Account;
       const validatorKey = account.ValidatorKey;
       const name = device.AccountName;
-      const rs = await accountService.createAndSendStopAutoStakingTx(wallet, account, fee, account.PaymentAddress, validatorKey);
-      const listDevice = await LocalDatabase.getListDevices()||[];
+      const rs = await accountService.createAndSendStopAutoStakingTx(
+        wallet,
+        account,
+        fee,
+        account.PaymentAddress,
+        validatorKey,
+      );
+      const listDevice = (await LocalDatabase.getListDevices()) || [];
       await LocalDatabase.saveListDevices(listDevice);
-      const deviceIndex =  listDevice.findIndex(item => _.isEqual(Device.getInstance(item).AccountName, name));
+      const deviceIndex = listDevice.findIndex(item =>
+        _.isEqual(Device.getInstance(item).AccountName, name),
+      );
       listDevice[deviceIndex].minerInfo.unstakeTx = rs.txId;
       await LocalDatabase.saveListDevices(listDevice);
       Toast.showInfo('Unstaking complete.');
