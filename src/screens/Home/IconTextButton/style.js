@@ -14,6 +14,7 @@ const style = StyleSheet.create({
   image: {
     marginBottom: 3,
     height: 60,
+    width: 60,
     resizeMode: 'contain',
   },
   title: {

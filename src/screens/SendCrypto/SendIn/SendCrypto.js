@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Field, formValueSelector, isValid, change } from 'redux-form';
+import { Field, formValueSelector, isValid, change, touch, focus } from 'redux-form';
 import { connect } from 'react-redux';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
@@ -129,7 +129,6 @@ class SendCrypto extends React.Component {
 
   setFormValidation = ({ maxAmount, minAmount }) => {
     const { selectedPrivacy } = this.props;
-
     if (Number.isFinite(maxAmount)) {
       this.setState({
         maxAmountValidator: validator.maxValue(maxAmount, {
@@ -141,10 +140,6 @@ class SendCrypto extends React.Component {
               : 'Your balance is not enough to send',
         }),
       });
-      if (maxAmount > 0) {
-        this.reReduceMaxAmount();
-      }
-
     }
 
     if (Number.isFinite(minAmount)) {
@@ -205,6 +200,12 @@ class SendCrypto extends React.Component {
     if (fee !== 0 && !fee) {
       return true;
     }
+    const {
+      isFormValid
+    } = this.props;
+    if (!isFormValid) {
+      return true;
+    }
     return false;
   };
 
@@ -239,6 +240,7 @@ class SendCrypto extends React.Component {
 
     const val = [];
 
+
     if (minAmountValidator) val.push(minAmountValidator);
 
     if (maxAmountValidator) val.push(maxAmountValidator);
@@ -250,8 +252,8 @@ class SendCrypto extends React.Component {
     if (selectedPrivacy.isMainCrypto || selectedPrivacy.isPToken) {
       val.push(...validator.combinedAmount);
     }
-
-    return val;
+    const values = Array.isArray(val) ? [...val] : [val];
+    return values;
   };
 
   handleSelectToken = tokenId => {
@@ -260,25 +262,10 @@ class SendCrypto extends React.Component {
   };
   // When click into Max button, auto set to max value with substract fee
   // It should be refactored into a utils, not prefer this here.
-  reReduceMaxAmount = () => {
+  reReduceMaxAmount = (amount) => {
     // Holding on next stage
-    // const { estimateFeeData, amount } = this.state;
-    // const {
-    //   selectedPrivacy,
-    //   rfChange
-    // } = this.props;
-    // if (estimateFeeData?.fee) {
-    //   const {
-    //     estimateFeeData: { fee = 0 },
-    //   } = this.state;
-
-    //   let feeConvert = Number(convertUtil.toHumanAmount(fee, selectedPrivacy?.pDecimals));
-    //   let amountConvert = Number(convertUtil.toHumanAmount(selectedPrivacy?.amount || 0, selectedPrivacy?.pDecimals));
-    //   let maxable = (amountConvert - feeConvert);
-    //   if (Number(amount) >= maxable) {
-    //     rfChange(formName, 'amount', `${maxable}`);
-    //   }
-    // }
+    const { rfChange } = this.props;
+    rfChange(formName, 'amount', `${amount}`);
   }
 
   render() {
@@ -289,7 +276,7 @@ class SendCrypto extends React.Component {
       toAddress,
       isFormValid,
       account,
-      rfChange,
+      rfFocus,
       selectable,
       onShowFrequentReceivers,
       selectedPrivacy,
@@ -317,6 +304,9 @@ class SendCrypto extends React.Component {
             {({ handleSubmit }) => (
               <View style={homeStyle.form}>
                 <Field
+                  onChange={(text) => {
+                    rfFocus(formName, 'toAddress');
+                  }}
                   component={InputQRField}
                   name="toAddress"
                   label="To"
@@ -328,7 +318,9 @@ class SendCrypto extends React.Component {
                   {...generateTestId(SEND.ADDRESS_INPUT)}
                 />
                 <Field
-                  onChange={text => this.setState({ amount: text })}
+                  onChange={(text) => {
+                    rfFocus(formName, 'amount');
+                  }}
                   component={InputMaxValueField}
                   name="amount"
                   placeholder="0.0"
@@ -418,6 +410,7 @@ const mapState = state => ({
 const mapDispatch = {
   setSelectedPrivacy,
   rfChange: change,
+  rfFocus: focus,
 };
 
 export default connect(mapState, mapDispatch)(SendCrypto);

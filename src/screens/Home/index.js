@@ -1,90 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ScrollView,
   Dimensions,
   PixelRatio,
   Platform,
-  SafeAreaView,
   TouchableWithoutFeedback,
+  RefreshControl,
 } from 'react-native';
 import LinkingService from '@src/services/linking';
 import AppUpdater from '@components/AppUpdater/index';
-import {isIOS} from '@utils/platform';
+import { isIOS } from '@utils/platform';
 import deviceInfo from 'react-native-device-info';
 import PropTypes from 'prop-types';
-import {View, Text} from '@src/components/core';
-import icShield from '@assets/images/icons/ic_shield_btn.png';
-import icSend from '@assets/images/icons/ic_send_btn.png';
-import icReceive from '@assets/images/icons/ic_receive_btn.png';
-import icTrade from '@assets/images/icons/ic_trade.png';
-import icSetting from '@assets/images/icons/ic_setting_btn.png';
-import icInvent from '@assets/images/icons/ic_invent_btn.png';
-import icPower from '@assets/images/icons/ic_power.png';
-import icBuy from '@assets/images/icons/ic_buy_prv.png';
-import icFeedback from '@assets/images/icons/ic_feedback.png';
-import icPapp from '@assets/images/icons/ic_papp.png';
-import icKyber from '@assets/images/icons/ic_kyber.png';
+import { View, Text } from '@src/components/core';
 import IconTextButton from '@screens/Home/IconTextButton';
-import ROUTE_NAMES from '@routers/routeNames';
-import {BIG_COINS} from '@screens/Dex/constants';
-import {useSelector} from 'react-redux';
+import { BIG_COINS } from '@screens/Dex/constants';
+import { useSelector } from 'react-redux';
 import accountSeleclor from '@src/redux/selectors/account';
 import dexUtil from '@utils/dex';
-import {CONSTANT_EVENTS} from '@src/constants';
+import { CONSTANT_EVENTS } from '@src/constants';
 import LocalDatabase from '@utils/LocalDatabase';
-import {withdraw} from '@services/api/withdraw';
-import {logEvent} from '@services/firebase';
-import icStake from '@assets/images/icons/stake_icon.png';
+import { withdraw } from '@services/api/withdraw';
+import { logEvent } from '@services/firebase';
 import Tooltip from '@components/Tooltip';
 import styles from './style';
 import withHome from './Home.enhance';
 
-const settingItem = {
-  image: icSetting,
-  title: 'Settings',
-  desc: '',
-  route: ROUTE_NAMES.Setting,
-};
-const sendItem = {
-  image: icSend,
-  title: 'Send',
-  desc: 'Anonymously',
-  route: ROUTE_NAMES.SendCrypto,
-};
-const receiveItem = {
-  image: icReceive,
-  title: 'Receive',
-  desc: 'Anonymously',
-  route: ROUTE_NAMES.ReceiveCoin,
-};
-const shieldItem = {
-  image: icShield,
-  title: 'Shield',
-  desc: 'Your crypto',
-  route: ROUTE_NAMES.Shield,
-};
-
-const pappItem = {
-  image: icPapp,
-  title: 'Browse',
-  desc: 'Search URL',
-  route: ROUTE_NAMES.pApps,
-};
-
-const powerItem = {
-  image: icPower,
-  title: 'Buy Node',
-  desc: 'Plug & play',
-  route: ROUTE_NAMES.Community,
-  onPress: () => {
-    LinkingService.openUrl(
-      'https://node.incognito.org/payment.html?utm_source=app&utm_medium=homepage%20app&utm_campaign=pnode',
-    );
-  },
-};
 const sendFeedback = async () => {
   const buildVersion = AppUpdater.appVersion;
-  const {width, height} = Dimensions.get('window');
+  const { width, height } = Dimensions.get('window');
   const deviceInfomation = `${await deviceInfo.getModel()}, OS version ${
     Platform.Version
   }, screen size: ${PixelRatio.getPixelSizeForLayoutSize(
@@ -99,63 +43,12 @@ const sendFeedback = async () => {
 
   LinkingService.openUrl(`mailto:${email}?subject=${title}&body=${content}`);
 };
-const pUniswapItem = {
-  image: icKyber,
-  title: 'pKyber (testnet)',
-  route: ROUTE_NAMES.pUniswap,
-  event: CONSTANT_EVENTS.CLICK_HOME_UNISWAP,
-};
-
-const pStakeItem = {
-  image: icStake,
-  title: 'Stake PRV',
-  route: ROUTE_NAMES.Stake,
-};
-
-const buttons = [
-  shieldItem,
-  {
-    image: icBuy,
-    title: 'Buy PRV',
-    route: ROUTE_NAMES.Dex,
-    params: {
-      inputTokenId: BIG_COINS.USDT,
-      outputTokenId: BIG_COINS.PRV,
-    },
-    event: CONSTANT_EVENTS.CLICK_HOME_BUY,
-  },
-
-  sendItem,
-  receiveItem,
-  {
-    image: icInvent,
-    title: 'Issue a coin',
-    route: ROUTE_NAMES.CreateToken,
-  },
-  {
-    image: icTrade,
-    title: 'Trade',
-    route: ROUTE_NAMES.Dex,
-    event: CONSTANT_EVENTS.CLICK_HOME_TRADE,
-  },
-  powerItem,
-  pStakeItem,
-  // pUniswapItem,
-  {
-    image: icFeedback,
-    title: 'Feedback',
-    route: ROUTE_NAMES.Community,
-    // params: {
-    //   uri: 'https://incognito.org/c/help/45',
-    // }
-    onPress: () => sendFeedback(),
-  },
-  settingItem,
-];
 
 const tooltipType = '2';
 
-const Home = ({navigation}) => {
+const Home = ({ navigation }) => {
+  const [buttons, setButtons] = useState([]);
+  const [headerTitle, setHeaderTitle] = useState([]);
   const account = useSelector(accountSeleclor.defaultAccount);
   const [viewUniswap, setViewUniswap] = React.useState(undefined);
 
@@ -168,12 +61,12 @@ const Home = ({navigation}) => {
   };
 
   const isDisabled = item => {
-    if (item === sendItem && dexUtil.isDEXMainAccount(account.name)) {
+    if (item?.sortId === 'Send' && dexUtil.isDEXMainAccount(account.name)) {
       return true;
     }
 
     if (
-      (item === receiveItem || item === shieldItem) &&
+      (item?.title === 'Receive' || item?.title === 'Shield') &&
       dexUtil.isDEXWithdrawAccount(account.name)
     ) {
       return true;
@@ -208,37 +101,97 @@ const Home = ({navigation}) => {
     setTimeout(closeTooltip, 7000);
   };
 
+  const getHomeConfiguration = () => {
+    fetch('https://api-data.incognito.org/home-configs')
+      .then((val) => val.json())
+      .then(val => {
+        if (val) {
+          if (val?.buttons && Array.isArray(val.buttons)) {
+            setButtons(val.buttons);
+          }
+          if (val?.headerTitle) {
+            setHeaderTitle(val.headerTitle?.title && val.headerTitle?.title.replace('\\n', '\n') || '');
+          }
+        }
+      })
+      .catch(() => {
+        console.log('Fetching configuration for home failed.');
+      });
+  };
+
   React.useEffect(() => {
+    getHomeConfiguration();
     tryLastWithdrawal();
     getViewUniswap();
 
     navigation.addListener('didBlur', closeTooltip);
   }, []);
+  const interactionById = (item) => {
+    switch (item.sortId) {
+    // Shield
+    // Send
+    // Receive
+    case 1:
+    case 3:
+    case 4:
+    case 5:
+    case 8:
+    case 10:
+      goToScreen(item?.route || '');
+      break;
+      // Buy PRV
+    case 2:
+      goToScreen(item?.route || '', {
+        inputTokenId: BIG_COINS.USDT,
+        outputTokenId: BIG_COINS.PRV,
+      }, CONSTANT_EVENTS.CLICK_HOME_BUY);
+      break;
+      // Issue a coin
+    case 6:
+      goToScreen(item?.route || '', {}, CONSTANT_EVENTS.CLICK_HOME_TRADE);
+      break;
+    case 7:
+      LinkingService.openUrl(
+        'https://node.incognito.org/payment.html?utm_source=app&utm_medium=homepage%20app&utm_campaign=pnode',
+      );
+      break;
+    case 9:
+      sendFeedback();
+      break;
+    default:
+      break;
+    }
+  };
 
   return (
-    <TouchableWithoutFeedback style={{flex: 1}} onPress={closeTooltip}>
-      <ScrollView>
+    <TouchableWithoutFeedback style={{ flex: 1 }} onPress={closeTooltip}>
+      <ScrollView
+        refreshControl={(
+          <RefreshControl
+            refreshing={false}
+            onRefresh={() => { getHomeConfiguration(); }}
+          />
+        )}
+      >
         <View>
           <Text numberOfLines={3} multiLine style={styles.titleHeader}>
-            {'Incognito mode \nfor your crypto'}
+            {headerTitle}
           </Text>
           <View style={styles.btnContainer}>
             {buttons.map(item => (
-              <View style={styles.btn} key={item.title}>
-                {item === pStakeItem && viewUniswap !== tooltipType && (
+              <View style={styles.btn} key={item.id}>
+                {item?.toolTip?.message != '' && item?.title === 'Stake PRV' && viewUniswap !== tooltipType && (
                   <Tooltip
-                    title="New"
-                    desc="Join a PRV staking pool. Get 57% APY. Interest paid every second."
+                    title={item?.toolTip?.title || 'News'}
+                    desc={item?.toolTip?.message || ''}
                     containerStyled={styles.tooltip}
                   />
                 )}
                 <IconTextButton
-                  image={item.image}
+                  image={item.icoUrl}
                   title={item.title}
                   disabled={isDisabled(item)}
-                  onPress={
-                    item.onPress || (() => goToScreen(item.route, item.params))
-                  }
+                  onPress={() => interactionById(item)}
                 />
               </View>
             ))}
