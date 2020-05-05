@@ -9,7 +9,7 @@ const InvestReward = ({ onPress, reward }) => (
     <View>
       <Text style={styles.description}>Your returns</Text>
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-        <Text style={[styles.reward, styles.bold]}>{reward}</Text>
+        <Text style={[styles.reward, styles.bold]} numberOfLines={1}>{reward}</Text>
         <Text style={styles.symbol}>PRV</Text>
       </View>
     </View>

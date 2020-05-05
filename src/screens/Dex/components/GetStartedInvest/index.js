@@ -13,7 +13,7 @@ import {getRewards} from '@services/api/pdefi';
 import _ from 'lodash';
 import {CONSTANT_COMMONS} from '@src/constants';
 import {PRV_ID} from '@screens/Dex/constants';
-import formatUtil from '@src/utils/format';
+import format from '@utils/format';
 import styles from './style';
 
 const items = [
@@ -50,7 +50,7 @@ const items = [
 ];
 
 let rewardInterval;
-const TIME = 70;
+const TIME = 100;
 
 const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
   const [loading, setLoading] = React.useState(true);
@@ -82,13 +82,6 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
         )) {
           return null;
         }
-
-        let totalShare = 0;
-        _.map(shares, (value, key) => {
-          if (key.includes(tokenIds[0]) && key.includes(tokenIds[1])) {
-            totalShare += value;
-          }
-        });
 
         return {
           share: shares[shareKey],
@@ -135,9 +128,18 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
       const prvReward1 = tokenId1 === PRV_ID ? reward1 : calculateOutputValue(PRV_ID, tokenId1, reward1);
       const prvReward2 = tokenId2 === PRV_ID ? reward2 : calculateOutputValue(PRV_ID, tokenId2, reward2);
 
-      totalReward = totalReward + Math.floor(total + prvReward1 + prvReward2) / 1e9;
+      totalReward = totalReward + total + prvReward1 + prvReward2;
     });
-    setTotalReward(formatUtil.amount(totalReward));
+
+    totalReward = Math.floor(totalReward);
+    const maxDigits = totalReward > 1000e9 ? 4 : 9;
+
+    const displayReward = format.balance(
+      totalReward,
+      9,
+      maxDigits,
+    );
+    setTotalReward(displayReward);
   };
 
   React.useEffect(() => {
@@ -194,6 +196,7 @@ GetStartedInvest.propTypes = {
   accounts: PropTypes.array.isRequired,
   pairs: PropTypes.array.isRequired,
   shares: PropTypes.array.isRequired,
+  tokens: PropTypes.array.isRequired,
 };
 
 export default GetStartedInvest;
