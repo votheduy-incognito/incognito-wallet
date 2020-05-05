@@ -132,7 +132,8 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
     });
 
     totalReward = Math.floor(totalReward);
-    const maxDigits = totalReward > 1000e9 ? 4 : 9;
+    let maxDigits = totalReward > 1000e9 ? 4 : 9;
+    maxDigits = totalReward > 1000000e9 ? 0 : maxDigits;
 
     const displayReward = format.balance(
       totalReward,
