@@ -15,6 +15,7 @@ import COLORS from '@src/styles/colors';
 import {logEvent} from '@services/firebase';
 import {CONSTANT_EVENTS} from '@src/constants';
 import BackButton from '@components/BackButton/index';
+import GetStartedInvest from '@screens/Dex/components/GetStartedInvest';
 import AddPool from './components/AddPool';
 import RemovePool from './components/RemovePool';
 import Swap from './components/Swap';
@@ -24,6 +25,7 @@ const MODES = {
   SWAP: 'trade',
   ADD: 'add',
   REMOVE: 'remove',
+  GET_STARTED_INVEST: 'get-started-invest',
 };
 
 class Dex extends React.Component {
@@ -106,7 +108,11 @@ class Dex extends React.Component {
   }
 
   changeMode(mode) {
-    this.setState({ mode });
+    const { isLoading } = this.props;
+
+    if (!isLoading) {
+      this.setState({mode});
+    }
   }
 
   showPopUp = (name) => {
@@ -154,9 +160,15 @@ class Dex extends React.Component {
           <Image source={tradeIcon} />
           <Text style={[dexStyle.modeText, mode === MODES.SWAP && dexStyle.active]}>Trade</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={dexStyle.mode} onPress={() => this.changeMode(MODES.ADD)}>
+        <TouchableOpacity style={dexStyle.mode} onPress={() => this.changeMode(MODES.GET_STARTED_INVEST)}>
           <Image source={addLiquidityIcon} />
-          <Text style={[dexStyle.modeText, mode === MODES.ADD && dexStyle.active]}>Add liquidity</Text>
+          <Text style={[
+            dexStyle.modeText,
+            mode === MODES.ADD || mode === MODES.GET_STARTED_INVEST && dexStyle.active
+          ]}
+          >
+            Invest
+          </Text>
         </TouchableOpacity>
       </View>
     );
@@ -229,6 +241,18 @@ class Dex extends React.Component {
       isLoading,
     } = this.props;
     const { addLiquidityParams, mode, removeLiquidityParams } = this.state;
+
+    if (mode === MODES.GET_STARTED_INVEST) {
+      return (
+        <GetStartedInvest
+          onPress={() => this.changeMode(MODES.ADD)}
+          shares={shares}
+          accounts={accounts}
+          pairs={pairs}
+          tokens={tokens}
+        />
+      );
+    }
 
     if (mode === MODES.ADD) {
       return (
@@ -336,18 +360,20 @@ class Dex extends React.Component {
 
   render() {
     const { histories, onGetHistoryStatus, navigation } = this.props;
-    const { showDepositGuide } = this.state;
+    const { showDepositGuide, mode } = this.state;
     return (
       <View style={mainStyle.wrapper}>
         {this.renderHeader()}
         <View style={[dexStyle.scrollViewContainer]}>
           <ScrollView refreshControl={this.renderRefreshControl()}>
             {this.renderMode()}
-            <RecentHistory
-              histories={histories}
-              onGetHistoryStatus={onGetHistoryStatus}
-              navigation={navigation}
-            />
+            { mode !== MODES.GET_STARTED_INVEST && (
+              <RecentHistory
+                histories={histories}
+                onGetHistoryStatus={onGetHistoryStatus}
+                navigation={navigation}
+              />
+            ) }
           </ScrollView>
         </View>
         {this.renderTransfer()}

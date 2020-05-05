@@ -72,7 +72,10 @@ class Input extends React.Component {
     return (
       <TouchableOpacity
         key={item.id}
-        style={[modalStyle.token, index === filteredTokens.length - 1 && modalStyle.lastItem]}
+        style={[
+          modalStyle.token,
+          index === filteredTokens.length - 1 && modalStyle.lastItem,
+        ]}
         onPress={() => this.selectToken(item)}
       >
         <CryptoIcon
@@ -198,7 +201,7 @@ class Input extends React.Component {
   }
 
   render() {
-    const { token, onChange, tokenList, headerTitle, disabled } = this.props;
+    const { token, onChange, tokenList, headerTitle, disabled, readOnly } = this.props;
     return (
       <View style={stylesheet.wrapper}>
         <View style={stylesheet.header}>
@@ -209,8 +212,11 @@ class Input extends React.Component {
           {onChange ? this.renderInput() : this.renderText()}
           <TouchableOpacity
             onPress={this.showDialog}
-            style={stylesheet.select}
-            disabled={tokenList.length <= 0 || disabled}
+            style={[
+              stylesheet.select,
+              readOnly && { borderWidth: 0 }
+            ]}
+            disabled={readOnly || tokenList.length <= 0 || disabled}
           >
             {token ? this.renderToken() : this.renderSelectButton()}
           </TouchableOpacity>

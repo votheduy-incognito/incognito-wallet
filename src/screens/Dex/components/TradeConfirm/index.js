@@ -84,11 +84,11 @@ class TradeConfirm extends React.Component {
   }
 
   updateData() {
-    const { inputToken, inputValue, outputValue, outputToken } = this.props;
+    const { inputToken, outputValue, outputToken } = this.props;
     const { supportedFeeTypes } = this.state;
     const networkFeeUnit = _.first(supportedFeeTypes) || PRV.symbol;
-    const tradingFee = inputValue / 400;
-    const tradingPercent = 0.25;
+    const tradingFee = 0;
+    const tradingPercent = 0;
     const stopPrice = outputValue - outputValue / 100;
     const stopPricePercent = 1;
     const pDecimals = networkFeeUnit === inputToken.symbol ? inputToken.pDecimals : PRV.pDecimals || 0;
