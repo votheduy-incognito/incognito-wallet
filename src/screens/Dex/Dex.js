@@ -164,7 +164,7 @@ class Dex extends React.Component {
           <Image source={addLiquidityIcon} />
           <Text style={[
             dexStyle.modeText,
-            mode === MODES.ADD || mode === MODES.GET_STARTED_INVEST && dexStyle.active
+            (mode === MODES.ADD || mode === MODES.GET_STARTED_INVEST) && dexStyle.active
           ]}
           >
             Invest
@@ -336,7 +336,7 @@ class Dex extends React.Component {
         tokens={transferTokens}
         action={transferAction}
         onClosePopUp={this.closePopUp}
-        inputToken={inputToken}
+        inputToken={mode === MODES.ADD ? undefined : inputToken}
         onLoadData={onLoadData}
         onAddHistory={onAddHistory}
         onUpdateHistory={onUpdateHistory}
