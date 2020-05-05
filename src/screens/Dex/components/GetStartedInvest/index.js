@@ -91,7 +91,8 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
       .filter(pair => pair && pair.share > 0)
       .map(item => item.account);
 
-    const rewards = _.flatten(await Promise.all(investAccounts.map(account => getRewards(account.PaymentAddress))));
+    const rewards = _.flatten(await Promise.all(investAccounts.map(account => getRewards(account.PaymentAddress))))
+      .filter(reward => reward.amount1 || reward.amount2);
     setRewards(rewards);
     setLoading(false);
   };
