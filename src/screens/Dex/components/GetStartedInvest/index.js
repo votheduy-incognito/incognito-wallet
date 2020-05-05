@@ -14,6 +14,7 @@ import _ from 'lodash';
 import {CONSTANT_COMMONS} from '@src/constants';
 import {PRV_ID} from '@screens/Dex/constants';
 import format from '@utils/format';
+import {getNodeTime} from '@services/wallet/RpcClientService';
 import styles from './style';
 
 const items = [
@@ -50,7 +51,8 @@ const items = [
 ];
 
 let rewardInterval;
-const TIME = 100;
+const TIME = 5000;
+let serverTime = 0;
 
 const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
   const [loading, setLoading] = React.useState(true);
@@ -93,6 +95,9 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
 
     const rewards = _.flatten(await Promise.all(investAccounts.map(account => getRewards(account.PaymentAddress))))
       .filter(reward => reward.amount1 || reward.amount2);
+    serverTime = (await getNodeTime()) - (TIME / 1000);
+
+    // const rewards = await getRewards('12RqXMEeH55Yw9JRBSe84zd81GgnMvSnMKQTucm29LrM1GwmrMyDZGaoSDY8oBL47L281SRnKbFhFWAyDLDWkHxdkZuiunG6pMWyvSH');
     setRewards(rewards);
     setLoading(false);
   };
@@ -119,16 +124,21 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
     let totalReward = 0;
     rewards.forEach(reward => {
       const {amount1, amount2, tokenId1, tokenId2, interestRate1, interestRate2, total, beaconTime} = reward;
-      const time = (new Date().getTime()) / 1000 - beaconTime;
+      serverTime += Math.floor(TIME / 1000);
 
-      const reward1 =
-        amount1 * time * interestRate1 / 100 / CONSTANT_COMMONS.YEAR_SECONDS;
-      const reward2 =
-        amount2 * time * interestRate2 / 100 / CONSTANT_COMMONS.YEAR_SECONDS;
+      const time = serverTime - beaconTime;
+
+      const reward1 = Math.floor(
+        amount1 * time * interestRate1 / 100 / CONSTANT_COMMONS.YEAR_SECONDS
+      );
+      const reward2 = Math.floor(
+        amount2 * time * interestRate2 / 100 / CONSTANT_COMMONS.YEAR_SECONDS
+      );
 
       const prvReward1 = tokenId1 === PRV_ID ? reward1 : calculateOutputValue(PRV_ID, tokenId1, reward1);
       const prvReward2 = tokenId2 === PRV_ID ? reward2 : calculateOutputValue(PRV_ID, tokenId2, reward2);
 
+      // console.debug('TOTAL REWARD', serverTime, time, (new Date().getTime()) / 1000, beaconTime, total, prvReward2, prvReward1, totalReward, amount2, reward2);
       totalReward = totalReward + total + prvReward1 + prvReward2;
     });
 
