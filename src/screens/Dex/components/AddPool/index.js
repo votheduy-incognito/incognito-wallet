@@ -515,6 +515,7 @@ class Pool extends React.Component {
           pool={!!pair && !!inputToken && pair[inputToken.id]}
           disabled={isLoading}
           balance={inputBalance}
+          readOnly
         />
         {!!inputError && (
           <Text style={mainStyle.error}>

@@ -60,12 +60,16 @@ const AMOUNT_MAX_FRACTION_DIGITS = 4;
 const TRACK_LOG_EVENT = {
   CLICK_STAKING:'click_staking'
 };
+
 const TRACK_LOG_EVENT_STATUS = {
   BEGIN:'INIT',
   DOING:'DOING',
   PASS:'PASS',
   FAIL:'FAIL'
 };
+
+const YEAR_SECONDS = 365 * 24 * 60 * 60;
+
 export default {
   // old varibles, maybe remove later
   STAKING_TYPES: {
@@ -138,4 +142,5 @@ export default {
     name: 'Tether',
     symbol: 'pUSDT',
   },
+  YEAR_SECONDS,
 };
