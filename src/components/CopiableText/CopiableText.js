@@ -3,8 +3,8 @@ import clipboard from '@src/services/clipboard';
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Icon } from 'react-native-elements';
 import { generateTestId } from '@utils/misc';
+import { Icon } from 'react-native-elements';
 import { COPYABLE_ADDRESS } from '@src/constants/elements';
 import styleSheet from './style';
 
@@ -27,6 +27,7 @@ const CopiableText = ({
   onPress,
 }) => (
   <TouchableOpacity
+    accessible={false}
     style={[styleSheet.textBox, style]}
     {...containerProps}
     onPress={() => handlePress(text, { copiedMessage }, onPress)}
