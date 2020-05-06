@@ -364,11 +364,12 @@ class Dex extends React.Component {
   render() {
     const { histories, onGetHistoryStatus, navigation } = this.props;
     const { showDepositGuide, mode } = this.state;
+    const Wrapper = mode === MODES.GET_STARTED_INVEST ? View : ScrollView;
     return (
       <View style={mainStyle.wrapper}>
         {this.renderHeader()}
         <View style={[dexStyle.scrollViewContainer]}>
-          <ScrollView refreshControl={this.renderRefreshControl()}>
+          <Wrapper refreshControl={this.renderRefreshControl()}>
             {this.renderMode()}
             { mode !== MODES.GET_STARTED_INVEST && (
               <RecentHistory
@@ -377,7 +378,7 @@ class Dex extends React.Component {
                 navigation={navigation}
               />
             ) }
-          </ScrollView>
+          </Wrapper>
         </View>
         {this.renderTransfer()}
         <DepositGuide
