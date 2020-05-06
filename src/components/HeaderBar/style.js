@@ -22,6 +22,7 @@ const style = StyleSheet.create({
     ...TextStyle.bigText,
     ...FONT.STYLE.bold,
     color: COLORS.white,
+    textAlign: 'center',
   },
   subTitle: {
     ...TextStyle.normalText,
@@ -30,17 +31,17 @@ const style = StyleSheet.create({
   left: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    flexBasis: 60,
+    flex: 1,
   },
   center: {
-    flex: 3,
+    flex: 4,
     flexDirection: 'row',
     justifyContent: 'center',
   },
   right: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   customHeader: {
     flex: 1,

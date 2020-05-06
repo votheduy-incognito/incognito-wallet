@@ -153,13 +153,16 @@ const AppNavigator = createStackNavigator(
   },
   {
     initialRouteName: ROUTE_NAMES.RootTab,
-    defaultNavigationOptions: ({navigation}) => {
-      const {routeName} = navigation.state;
+    defaultNavigationOptions: ({ navigation }) => {
+      const { routeName } = navigation.state;
       // You can do whatever you like here to pick the title based on the route name
       const title = routeName;
       return {
         title,
+        headerLayoutPreset: 'center',
         header: HeaderBar,
+        headerTitleAlign: 'center',
+        headerTitleStyle: { alignSelf: 'center', textAlign: 'center' },
         headerBackground: THEME.header.backgroundColor,
         gesturesEnabled: false,
       };
