@@ -535,7 +535,7 @@ export default class APIService {
     return APIService.getURL(METHOD.GET, url, false, false);
   }
 
-  static getBeaconBestStateDetail() {
+  static async getBeaconBestStateDetail() {
     const url = `${API.DEVICE}`;
     const params = {
       'jsonrpc': '1.0',
@@ -545,7 +545,7 @@ export default class APIService {
     };
     return APIService.getURL(METHOD.POST, url, params, true, true);
   }
-  static getListRewardAmount() {
+  static async getListRewardAmount() {
     const url = `${API.DEVICE}`;
     const params = {
       'jsonrpc': '1.0',

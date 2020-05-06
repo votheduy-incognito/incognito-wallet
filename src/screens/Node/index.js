@@ -74,7 +74,10 @@ const updateBeaconInfo = async (listDevice) => {
 
     const rPromise = getListRewardAmount()
       .then(async data => {
-        nodeRewards = data;
+        if (!data || !_.has(data, 'Result')) {
+          throw new CustomError(ErrorCode.FULLNODE_DOWN);
+        }
+        nodeRewards = data?.Result || {};
         let tokenIds = [];
 
         _.forEach(nodeRewards, reward => tokenIds.push(Object.keys(reward)));
