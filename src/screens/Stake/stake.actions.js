@@ -228,8 +228,6 @@ export const actionFetchCreateStake = ({ amount, fee }) => async (
     if (!signPublicKeyEncode) {
       throw ERROR_MESSAGE.signPublicKeyEncode;
     }
-    console.log('timeout create stake...');
-    await delay(3600000);
     const payload = await apiCreateStake({
       PStakeAddress: pStakeAccount?.PaymentAddress,
       SignPublicKeyEncode: signPublicKeyEncode,
