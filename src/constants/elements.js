@@ -9,6 +9,8 @@ export const GENERAL = {
   NETWORK_FEE: 'network-fee',
   EDIT_NETWORK_FEE: 'edit-network-fee',
   NETWORK_FEE_UNIT: 'network-fee-unit',
+  TRANSACTION_FEE: 'tx_fee',
+  WITHDRAW_FEE: 'withdraw_fee',
   SELECTED_NETWORK_FEE_UNIT: 'selected-network-fee-unit',
 };
 

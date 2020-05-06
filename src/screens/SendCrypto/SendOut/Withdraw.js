@@ -13,6 +13,7 @@ import {
   validator,
 } from '@components/core/reduxForm';
 import EstimateFee from '@components/EstimateFee';
+import { Icon } from 'react-native-elements';
 import LoadingTx from '@components/LoadingTx';
 import { CONSTANT_COMMONS, CONSTANT_EVENTS, CONSTANT_CONFIGS } from '@src/constants';
 import { ExHandler } from '@services/exception';
@@ -33,7 +34,7 @@ import TokenSelect from '@components/TokenSelect';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import CurrentBalance from '@components/CurrentBalance';
 import { RefreshControl } from 'react-native';
-import { SEND } from '@src/constants/elements';
+import { SEND, GENERAL } from '@src/constants/elements';
 import { actionToggleModal } from '@src/components/Modal';
 import { COLORS } from '@src/styles';
 import style from './style';
@@ -595,7 +596,7 @@ class Withdraw extends React.Component {
                   feeText={(
                     <View>
                       {fee && (
-                        <Text style={style.feeText}>
+                        <Text {...generateTestId(GENERAL.TRANSACTION_FEE)} style={style.feeText}>
                           Transaction fee:{' '}
                           {formatUtil.amountFull(
                             fee,
@@ -607,7 +608,7 @@ class Withdraw extends React.Component {
                         </Text>
                       )}
                       {feeForBurn && (
-                        <Text style={style.feeText}>
+                        <Text {...generateTestId(GENERAL.WITHDRAW_FEE)} style={style.feeText}>
                           Withdraw fee:{' '}
                           {formatUtil.amountFull(
                             feeForBurn,
