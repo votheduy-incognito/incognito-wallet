@@ -9,5 +9,8 @@ export const detectToken = {
 };
 
 export const generateTestId = (id) => {
-  return { accessibilityLabel: id, testID: id };
+  if (isIOS) {
+    return { testID: id };
+  } 
+  return { accessibilityLabel: id };
 };
