@@ -1,5 +1,5 @@
-import {CONSTANT_COMMONS} from '@src/constants';
-import {ExHandler} from '@src/services/exception';
+import { CONSTANT_COMMONS } from '@src/constants';
+import { ExHandler } from '@src/services/exception';
 import _ from 'lodash';
 import convert from '@src/utils/convert';
 
@@ -33,7 +33,7 @@ export const isNotFoundStakeAccount = pStakeAccount =>
   _.isEmpty(pStakeAccount) || _.isEmpty(pStakeAccount?.PrivateKey);
 
 export const mappingData = (dataMasterAddress, dataStakerInfo) => {
-  const {pDecimals, symbol} = CONSTANT_COMMONS.PRV;
+  const { pDecimals, symbol } = CONSTANT_COMMONS.PRV;
   const balance = dataStakerInfo?.Balance || 0;
   const minToStake = dataMasterAddress?.MinToStake || 0;
   const balanceToHumanAmount = _.floor(convert.toHumanAmount(balance, 9));
@@ -105,3 +105,5 @@ export const calTotalBalance = ({
     return balance;
   }
 };
+
+export const delay = timeout => new Promise(res => setTimeout(res, timeout));

@@ -3,15 +3,15 @@ import {
   getNodeTime,
 } from '@src/services/wallet/RpcClientService';
 import convert from '@src/utils/convert';
-import {getSignPublicKey, signPoolWithdraw} from '@src/services/gomobile';
-import {actionSendNativeToken} from '@src/redux/actions/account';
-import {CONSTANT_COMMONS} from '@src/constants';
+import { getSignPublicKey, signPoolWithdraw } from '@src/services/gomobile';
+import { actionSendNativeToken } from '@src/redux/actions/account';
+import { CONSTANT_COMMONS } from '@src/constants';
 import {
   actionUpdateStorageHistory,
   actionRemoveStorageHistory,
 } from '@src/screens/StakeHistory/stakeHistory.actions';
-import {v4} from 'uuid';
-import {actionToggleLoadingModal} from '@src/components/Modal';
+import { v4 } from 'uuid';
+import { actionToggleLoadingModal } from '@src/components/Modal';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -50,7 +50,7 @@ import {
   createStakeSelector,
   feeStakeSelector,
 } from './stake.selector';
-import {mappingData, ERROR_MESSAGE} from './stake.utils';
+import { mappingData, ERROR_MESSAGE, delay } from './stake.utils';
 
 export const actionFetching = () => ({
   type: ACTION_FETCHING,
@@ -69,7 +69,7 @@ export const actionFetch = () => async (dispatch, getState) => {
   try {
     const state = getState();
     const pStakeAccount = pStakeAccountSelector(state);
-    const {isFetching} = stakeSelector(state);
+    const { isFetching } = stakeSelector(state);
     if (!pStakeAccount) {
       throw 'pStake account can\'t not found!';
     }
@@ -83,7 +83,7 @@ export const actionFetch = () => async (dispatch, getState) => {
       nodeTimeCurrent,
     ] = await new Promise.all([
       await apiGetMasterAddress(),
-      await apiGetStakerInfo({paymentAddress: pStakeAccount?.PaymentAddress}),
+      await apiGetStakerInfo({ paymentAddress: pStakeAccount?.PaymentAddress }),
       await getNodeTime(),
     ]);
     const payload = mappingData(dataMasterAddress, dataStakerInfo);
@@ -101,18 +101,18 @@ export const actionFetch = () => async (dispatch, getState) => {
 };
 
 export const actionChangeFLowStep = (
-  payload = {activeFlow: 'deposit', step: 0},
+  payload = { activeFlow: 'deposit', step: 0 },
 ) => ({
   type: ACTION_CHANGE_FLOW_STEP,
   payload,
 });
 
-export const actionChangeFlowAccount = (payload = {account: null}) => ({
+export const actionChangeFlowAccount = (payload = { account: null }) => ({
   type: ACTION_CHANGE_FLOW_ACCOUNT,
   payload,
 });
 
-export const actionChangeFlowAmount = (payload = {amount: 0}) => ({
+export const actionChangeFlowAmount = (payload = { amount: 0 }) => ({
   type: ACTION_CHANGE_FLOW_AMOUNT,
   payload,
 });
@@ -133,9 +133,9 @@ export const actionFetchFailFee = () => ({
 export const actionFetchFee = () => async (dispatch, getState) => {
   try {
     const state = getState();
-    const {from, to, walletAccount} = activeFlowSelector(state);
-    const {pDecimals, maxToStake} = stakeDataSelector(state);
-    const {isFetching} = feeStakeSelector(state);
+    const { from, to, walletAccount } = activeFlowSelector(state);
+    const { pDecimals, maxToStake } = stakeDataSelector(state);
+    const { isFetching } = feeStakeSelector(state);
     if (isFetching) {
       return;
     }
@@ -174,18 +174,18 @@ export const actionFetchFailCreateStake = () => ({
   type: ACTION_FETCH_FAIL_CREATE_STAKE,
 });
 
-export const actionFetchCreateStake = ({amount, fee}) => async (
+export const actionFetchCreateStake = ({ amount, fee }) => async (
   dispatch,
   getState,
 ) => {
   const state = getState();
-  const {isFetching} = createStakeSelector(state);
+  const { isFetching } = createStakeSelector(state);
   if (isFetching) {
     return;
   }
   const pStakeAccount = pStakeAccountSelector(state);
-  const {account} = activeFlowSelector(state);
-  const {stakingMasterAddress} = stakeDataSelector(state);
+  const { account } = activeFlowSelector(state);
+  const { stakingMasterAddress } = stakeDataSelector(state);
   const stakeHistoryItem = {
     ID: v4(),
     Amount: convert.toOriginalAmount(
@@ -228,6 +228,8 @@ export const actionFetchCreateStake = ({amount, fee}) => async (
     if (!signPublicKeyEncode) {
       throw ERROR_MESSAGE.signPublicKeyEncode;
     }
+    console.log('timeout create stake...');
+    await delay(3600000);
     const payload = await apiCreateStake({
       PStakeAddress: pStakeAccount?.PaymentAddress,
       SignPublicKeyEncode: signPublicKeyEncode,
@@ -238,7 +240,7 @@ export const actionFetchCreateStake = ({amount, fee}) => async (
       return await new Promise.all([
         await dispatch(actionFetchedCreateStake(payload)),
         await dispatch(
-          actionChangeFlowAmount({amount: payload?.Amount || amount}),
+          actionChangeFlowAmount({ amount: payload?.Amount || amount }),
         ),
         await dispatch(actionFetch()),
         await dispatch(actionRemoveStorageHistory(stakeHistoryItem?.ID)),
@@ -261,12 +263,12 @@ export const actionFetchCreateStake = ({amount, fee}) => async (
   }
 };
 
-export const actionRetryCreateState = ({txId, id}) => async (
+export const actionRetryCreateState = ({ txId, id }) => async (
   dispatch,
   getState,
 ) => {
   const state = getState();
-  const {isFetching} = createStakeSelector(state);
+  const { isFetching } = createStakeSelector(state);
   if (isFetching) {
     return;
   }
@@ -315,19 +317,19 @@ export const actionFetchFailCreateUnStake = () => ({
   type: ACTION_FETCH_FAIL_CREATE_UNSTAKE,
 });
 
-export const actionFetchCreateUnStake = ({amount}) => async (
+export const actionFetchCreateUnStake = ({ amount }) => async (
   dispatch,
   getState,
 ) => {
   try {
     const state = getState();
-    const {isFetching} = createUnStakeSelector(state);
+    const { isFetching } = createUnStakeSelector(state);
     if (isFetching) {
       return;
     }
     await dispatch(actionFetchingCreateUnStake());
     const pStakeAccount = pStakeAccountSelector(state);
-    const {account} = activeFlowSelector(state);
+    const { account } = activeFlowSelector(state);
     const originalAmount = convert.toOriginalAmount(
       convert.toNumber(amount),
       CONSTANT_COMMONS.PRV.pDecimals,
@@ -351,7 +353,7 @@ export const actionFetchCreateUnStake = ({amount}) => async (
       await dispatch(actionToggleLoadingModal());
       return await new Promise.all([
         await dispatch(actionFetchedCreateUnStake(payload)),
-        await dispatch(actionChangeFlowAmount({amount: originalAmount})),
+        await dispatch(actionChangeFlowAmount({ amount: originalAmount })),
         await dispatch(actionFetch()),
       ]);
     } else {
@@ -376,19 +378,19 @@ export const actionFetchFailCreateUnStakeRewards = () => ({
   type: ACTION_FETCH_FAIL_CREATE_UNSTAKE_REWARDS,
 });
 
-export const actionFetchCreateUnStakeRewards = ({amount}) => async (
+export const actionFetchCreateUnStakeRewards = ({ amount }) => async (
   dispatch,
   getState,
 ) => {
   try {
     const state = getState();
-    const {isFetching} = createUnStakeSelector(state);
+    const { isFetching } = createUnStakeSelector(state);
     if (isFetching) {
       return;
     }
     await dispatch(actionFetchingCreateUnStakeRewards());
     const pStakeAccount = pStakeAccountSelector(state);
-    const {account} = activeFlowSelector(state);
+    const { account } = activeFlowSelector(state);
     const originalAmount = convert.toOriginalAmount(
       convert.toNumber(amount),
       CONSTANT_COMMONS.PRV.pDecimals,
@@ -409,7 +411,7 @@ export const actionFetchCreateUnStakeRewards = ({amount}) => async (
       return await new Promise.all([
         await dispatch(actionFetchedCreateUnStakeRewards(payload)),
         await dispatch(
-          actionChangeFlowAmount({amount: payload?.Amount || amount}),
+          actionChangeFlowAmount({ amount: payload?.Amount || amount }),
         ),
         await dispatch(actionFetch()),
       ]);
