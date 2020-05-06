@@ -9,7 +9,7 @@ import { WALLET } from '@src/constants/elements';
 import cryptoItemStyle from './style';
 
 const CryptoItem = ({ fullName, iconUrl, name, amount, onPress, symbol, isGettingBalance, style, pDecimals, tokenId, rightComponent, isVerified }) => (
-  <TouchableScale style={[cryptoItemStyle.container, style]} onPress={amount != null ? onPress : null}>
+  <TouchableScale accessible={false} style={[cryptoItemStyle.container, style]} onPress={amount != null ? onPress : null}>
     <View style={cryptoItemStyle.logoContainer}>
       <CryptoIcon uri={iconUrl} tokenId={tokenId} />
     </View>
