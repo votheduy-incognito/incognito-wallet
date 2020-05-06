@@ -45,7 +45,19 @@ export const TOKEN = {
   TRANSACTION_STATUS: 'transaction-status',
   TRANSACTION_CONTENT: 'transaction-content',
   CURRENT: 'current-token-name',
-  RECEIVE_BTN: 'receive-btn'
+  RECEIVE_BTN: 'receive-btn',
+  TOKEN_SEARCH: 'token_search',
+  TOKEN_CHECK: 'token_check_icon'
+};
+
+export const ACCOUNT = {
+  NAME: 'acc_name',
+  EDIT: 'acc_edit',
+  NETWORK: 'network',
+  PASSWORK_SWITCH: 'pass_switch',
+  DECIMAL_SWITCH: 'decimal_switch',
+  ADDRESS_IN_NETWORK: 'address_in_network',
+  ADDRESS_OUT_NETWORK: 'address_out_network',
 };
 
 export const COPYABLE_ADDRESS = {

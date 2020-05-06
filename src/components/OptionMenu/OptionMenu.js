@@ -12,6 +12,8 @@ import EntypoIcons from 'react-native-vector-icons/Entypo';
 import { COLORS } from '@src/styles';
 import { KeyboardAvoidingView } from 'react-native';
 import { Icon } from 'react-native-elements';
+import { generateTestId } from '@utils/misc';
+import { GENERAL, TOKEN } from '@src/constants/elements';
 import { isAndroid } from '@utils/platform';
 import styleSheet from './style';
 
@@ -51,9 +53,10 @@ class OptionMenu extends Component {
 
     return (
       <View style={[styleSheet.container, style]}>
-        <TouchableOpacity onPress={() => this.handleToggle()} style={[styleSheet.toggleBtn, isDropDown ? {width: 150} : {}, toggleStyle]}>
+        <TouchableOpacity accessible={false} onPress={() => this.handleToggle()} style={[styleSheet.toggleBtn, isDropDown ? { width: 150 } : {}, toggleStyle]}>
           {icon || (
             <EntypoIcons
+              {...generateTestId(TOKEN.TOKEN_CHECK)}
               size={24}
               style={[styleSheet.iconBtn, iconStyle]}
               color={COLORS.white}
@@ -64,6 +67,7 @@ class OptionMenu extends Component {
         </TouchableOpacity>
         <Modal animationType="slide" transparent visible={open} close={this.handleToggle} isShowHeader={false}>
           <TouchableOpacity
+            accessible={false}
             onPress={() => this.handleToggle(false)}
             style={styleSheet.contentContainer}
           >
@@ -78,6 +82,7 @@ class OptionMenu extends Component {
                   <View style={styleSheet.search}>
                     <Icon name="search" />
                     <TextInput
+                      {...generateTestId(TOKEN.TOKEN_SEARCH)}
                       style={styleSheet.input}
                       placeholderTextColor={COLORS.lightGrey1}
                       placeholder={placeholder}
@@ -98,6 +103,7 @@ class OptionMenu extends Component {
                     };
                     return (
                       <TouchableOpacity
+                        accessible={false}
                         key={item?.id}
                         onPress={handleItemPress}
                         style={[
@@ -110,10 +116,10 @@ class OptionMenu extends Component {
                         <View style={styleSheet.textContainer}>
                           {
                             item?.label && typeof item.label === 'string' ?
-                              <Text style={styleSheet.itemText}>{item?.label}</Text>
+                              <Text {...generateTestId(TOKEN.TOKEN_CODE)} style={styleSheet.itemText}>{item?.label}</Text>
                               : item.label
                           }
-                          {item?.desc ? <Text style={styleSheet.itemDescText}>{item?.desc}</Text> : null}
+                          {item?.desc ? <Text {...generateTestId(TOKEN.TOKEN_NAME)} style={styleSheet.itemDescText}>{item?.desc}</Text> : null}
                         </View>
                       </TouchableOpacity>
                     );

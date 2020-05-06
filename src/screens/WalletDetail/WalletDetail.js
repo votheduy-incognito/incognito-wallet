@@ -11,9 +11,9 @@ import sendIcon from '@src/assets/images/icons/ic_send_btn.png';
 import depositIcon from '@src/assets/images/icons/ic_shield_btn.png';
 import receiveIcon from '@src/assets/images/icons/ic_receive_btn.png';
 import { ExHandler } from '@src/services/exception';
+import { TOKEN } from '@src/constants/elements';
 import dexUtils from '@src/utils/dex';
 import { generateTestId } from '@utils/misc';
-import { TOKEN } from '@src/constants/elements';
 import styles from './style';
 
 class WalletDetail extends Component {
@@ -56,9 +56,9 @@ class WalletDetail extends Component {
     </TouchableScale>
   );
 
-  renderText = (text, { style, ...props } = {}) => {
+  renderText = (text, id, { style, ...props } = {}) => {
     const { theme } = this.props;
-    return <Text numberOfLines={1} ellipsizeMode='tail' {...props} style={[style, { color: theme?.textColor }]}>{text}</Text>;
+    return <Text {...generateTestId(id)} numberOfLines={1} ellipsizeMode='tail' {...props} style={[style, { color: theme?.textColor }]}>{text}</Text>;
   };
 
   render() {
@@ -73,8 +73,8 @@ class WalletDetail extends Component {
                 ? <ActivityIndicator color={COLORS.white} />
                 : (
                   <View style={styles.balanceContainer}>
-                    {this.renderText(formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy.pDecimals), { style: styles.balance })}
-                    {this.renderText(selectedPrivacy.symbol, { style: styles.balanceSymbol })}
+                    {this.renderText(formatUtil.amount(selectedPrivacy?.amount, selectedPrivacy.pDecimals), TOKEN.TOKEN_BALANCE, { style: styles.balance })}
+                    {this.renderText(selectedPrivacy.symbol, TOKEN.TOKEN_CODE, { style: styles.balanceSymbol })}
                   </View>
                 )
             }

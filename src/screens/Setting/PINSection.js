@@ -4,11 +4,13 @@ import storageService from '@src/services/storage';
 import { Icon } from 'react-native-elements';
 import SwitchToggle from 'react-native-switch-toggle';
 import routeNames from '@routers/routeNames';
-import {connect} from 'react-redux';
-import {Text, TouchableOpacity, Alert} from '@components/core';
-import {pinSection, sectionStyle} from '@screens/Setting/style';
+import { connect } from 'react-redux';
+import { Text, TouchableOpacity, Alert } from '@components/core';
+import { generateTestId } from '@utils/misc';
+import { ACCOUNT } from '@src/constants/elements';
+import { pinSection, sectionStyle } from '@screens/Setting/style';
 import { CONSTANT_KEYS } from '@src/constants';
-import {COLORS} from '@src/styles';
+import { COLORS } from '@src/styles';
 import Section from './Section';
 
 const PINSection = ({ navigation, pin }) => {
@@ -58,6 +60,7 @@ const PINSection = ({ navigation, pin }) => {
       label="Security"
       customItems={[
         <TouchableOpacity
+          accessible={false}
           key="PIN"
           onPress={handlePressToggle}
           style={[
@@ -68,6 +71,7 @@ const PINSection = ({ navigation, pin }) => {
           <Icon type='material' name="lock" size={20} containerStyle={pinSection.icon} />
           <Text style={pinSection.name}>Passcode</Text>
           <SwitchToggle
+            {...generateTestId(ACCOUNT.PASSWORK_SWITCH)}
             containerStyle={pinSection.switch}
             circleStyle={pinSection.circle}
             onPress={handlePressToggle}

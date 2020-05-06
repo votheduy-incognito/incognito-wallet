@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import SwitchToggle from 'react-native-switch-toggle';
-import {Text, TouchableOpacity} from '@components/core';
-import {pinSection, sectionStyle} from '@screens/Setting/style';
-import {COLORS} from '@src/styles';
-import {getDecimalSeparator, setDecimalSeparator as saveDecimalSeparator} from '@src/resources/separator';
+import { Text, TouchableOpacity } from '@components/core';
+import { pinSection, sectionStyle } from '@screens/Setting/style';
+import { COLORS } from '@src/styles';
+import { generateTestId } from '@utils/misc';
+import { ACCOUNT } from '@src/constants/elements';
+import { getDecimalSeparator, setDecimalSeparator as saveDecimalSeparator } from '@src/resources/separator';
 import Section from './Section';
 
 const SeparatorSection = () => {
@@ -33,6 +35,7 @@ const SeparatorSection = () => {
         >
           <Text style={pinSection.name}>Use decimal comma instead of point</Text>
           <SwitchToggle
+            {...generateTestId(ACCOUNT.DECIMAL_SWITCH)}
             containerStyle={pinSection.switch}
             circleStyle={pinSection.circle}
             onPress={togglePin}

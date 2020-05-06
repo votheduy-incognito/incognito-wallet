@@ -24,7 +24,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { isExchangeRatePToken } from '@services/wallet/RpcClientService';
 import { connect } from 'react-redux';
-import { detectToken } from '@utils/misc';
+import { detectToken, generateTestId } from '@utils/misc';
 import { change, Field, formValueSelector, isValid, focus } from 'redux-form';
 import { logEvent } from '@services/firebase';
 import accountService from '@services/wallet/accountService';
@@ -33,6 +33,7 @@ import TokenSelect from '@components/TokenSelect';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import CurrentBalance from '@components/CurrentBalance';
 import { RefreshControl } from 'react-native';
+import { SEND } from '@src/constants/elements';
 import { actionToggleModal } from '@src/components/Modal';
 import { COLORS } from '@src/styles';
 import style from './style';
@@ -535,6 +536,7 @@ class Withdraw extends React.Component {
                     // Clear address field for a while before going to refactor.
                     onShowFrequentReceivers();
                   }}
+                  {...generateTestId(SEND.ADDRESS_INPUT)}
                   showNavAddrBook
                 />
                 {(isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) && (

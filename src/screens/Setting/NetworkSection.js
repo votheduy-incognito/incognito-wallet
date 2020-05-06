@@ -2,6 +2,7 @@ import ROUTE_NAMES from '@src/router/routeNames';
 import serverService from '@src/services/wallet/Server';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import { ACCOUNT } from '@src/constants/elements';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import Section from './Section';
@@ -26,7 +27,7 @@ const NetworkSection = ({ navigation, defaultServer }) => {
       })
     }
   ];
-  return <Section label="Network" items={items} />;
+  return <Section id={ACCOUNT.NETWORK} label="Network" items={items} />;
 };
 
 NetworkSection.defaultProps = {

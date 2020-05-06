@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {StyleSheet, TouchableOpacity} from 'react-native';
-import {TextInput, Image, View} from '@src/components/core';
-import {openQrScanner} from '@src/components/QrCodeScanner';
-import {scaleInApp} from '@src/styles/TextStyle';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import { TextInput, Image, View } from '@src/components/core';
+import { openQrScanner } from '@src/components/QrCodeScanner';
+import { scaleInApp } from '@src/styles/TextStyle';
 import qrCodeScanner from '@src/assets/images/icons/qr_code_scanner.png';
-import {AddressBookIcon} from '@src/components/Icons';
-import {COLORS} from '@src/styles';
-import {generateTestId} from '@utils/misc';
-import {SEND} from '@src/constants/elements';
+import { AddressBookIcon } from '@src/components/Icons';
+import { COLORS } from '@src/styles';
+import { generateTestId } from '@utils/misc';
+import { SEND } from '@src/constants/elements';
 import { change, Field, formValueSelector, isValid } from 'redux-form';
 import createField from './createField';
 
@@ -47,7 +47,7 @@ const renderCustomField = ({
   showNavAddrBook,
   ...props
 }) => {
-  const {onChange, onBlur, onFocus, value} = input;
+  const { onChange, onBlur, onFocus, value } = input;
   return (
     <TextInput
       {...props}
@@ -69,6 +69,7 @@ const renderCustomField = ({
             </>
           )}
           <TouchableOpacity
+            {...generateTestId(SEND.QR_CODE_ICON)}
             onPress={() => {
               openQrScanner(data => {
                 let res = getAddress(data);

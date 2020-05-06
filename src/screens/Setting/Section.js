@@ -1,6 +1,8 @@
 import { Text, TouchableOpacity, View } from '@src/components/core';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { generateTestId } from '@utils/misc';
+import { ACCOUNT } from '@src/constants/elements';
 import { sectionStyle } from './style';
 
 const SectionItem = ({ data: { icon, title, desc, handlePress } }, lastItem) => (
@@ -13,20 +15,20 @@ const SectionItem = ({ data: { icon, title, desc, handlePress } }, lastItem) => 
   </TouchableOpacity>
 );
 
-const Section = ({ label, items, customItems, headerRight }) => (
+const Section = ({ id, label, items, customItems, headerRight }) => (
   <View style={sectionStyle.container}>
     <View style={sectionStyle.header}>
-      <Text style={sectionStyle.label}>{label}</Text>
+      <Text {...generateTestId(id)} style={sectionStyle.label}>{label}</Text>
       {headerRight}
     </View>
-    
+
     {customItems
       ? customItems
       : (
         <View style={sectionStyle.items}>
           {
             items &&
-              items.map((item, index) => <SectionItem key={index} data={item} lastItem={index === (items.length - 1)} />)
+            items.map((item, index) => <SectionItem key={index} data={item} lastItem={index === (items.length - 1)} />)
           }
         </View>
       )
@@ -49,7 +51,7 @@ Section.defaultProps = {
 Section.propTypes = {
   label: PropTypes.string,
   items: PropTypes.arrayOf(itemShape),
-  customItems: PropTypes.oneOfType([ PropTypes.arrayOf(PropTypes.element), PropTypes.element ]),
+  customItems: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.element), PropTypes.element]),
 };
 
 SectionItem.defaultProps = {

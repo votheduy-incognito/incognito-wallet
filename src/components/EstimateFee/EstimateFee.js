@@ -6,7 +6,7 @@ import { View, TouchableOpacity, Text, ActivityIndicator, Button, Modal } from '
 import convert from '@src/utils/convert';
 import formatUtils from '@utils/format';
 import {generateTestId} from '@utils/misc';
-import {GENERAL} from '@src/constants/elements';
+import {GENERAL, TOKEN} from '@src/constants/elements';
 import styles from './styles';
 
 const getAnotherTypeOfFee = (types, feeUnitByTokenId) => {
@@ -151,7 +151,7 @@ class EstimateFee extends Component {
                     keyboardType: 'decimal-pad'
                   }}
                   prependView={
-                    <Text>{feeUnit}</Text>
+                    <Text {...generateTestId(TOKEN.TOKEN_NAME)}>{feeUnit}</Text>
                   }
                   name='fee'
                   placeholder='Enter new fee'

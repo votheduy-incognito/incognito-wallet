@@ -143,7 +143,7 @@ const HistoryItem = ({ history, divider, navigation }) => {
 
   return (
     <>
-      <TouchableOpacity onPress={onPress} style={styleSheet.itemContainer}>
+      <TouchableOpacity accessible={false} onPress={onPress} style={styleSheet.itemContainer}>
         <View style={styleSheet.row}>
           <Text
             style={[styleSheet.typeText]}
@@ -187,6 +187,7 @@ const HistoryItem = ({ history, divider, navigation }) => {
       </TouchableOpacity>
       {divider && <Divider height={2} style={styleSheet.divider} color={COLORS.lightGrey6} />}
     </>
+
   );
 };
 

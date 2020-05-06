@@ -8,24 +8,26 @@ import {
   View,
 } from '@src/components/core';
 import OptionMenu from '@src/components/OptionMenu';
-import {removeAccount, switchAccount} from '@src/redux/actions/account';
-import {accountSeleclor} from '@src/redux/selectors';
+import { removeAccount, switchAccount } from '@src/redux/actions/account';
+import { accountSeleclor } from '@src/redux/selectors';
 import ROUTE_NAMES from '@src/router/routeNames';
-import {ExHandler} from '@src/services/exception';
-import {COLORS} from '@src/styles';
-import {onClickView} from '@src/utils/ViewUtil';
+import { ExHandler } from '@src/services/exception';
+import { COLORS } from '@src/styles';
+import { onClickView } from '@src/utils/ViewUtil';
 import dexUtils from '@src/utils/dex';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {Icon} from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 import Swipeout from 'react-native-swipeout';
 import Icons from 'react-native-vector-icons/Entypo';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
+import { generateTestId } from '@utils/misc';
+import { ACCOUNT } from '@src/constants/elements';
 import activeAccount from '@assets/images/icons/ic_account_active.png';
 import deactiveAccount from '@assets/images/icons/ic_account_deactive.png';
 import Section from './Section';
-import {accountSection} from './style';
-import {isStakeAccount} from '../Stake/stake.utils';
+import { accountSection } from './style';
+import { isStakeAccount } from '../Stake/stake.utils';
 
 let lastAccount;
 let clickedTime = 0;
@@ -63,6 +65,7 @@ const createItem = (account, onSwitch, onExport, onDelete, isActive) => (
   >
     <View style={accountSection.container}>
       <TouchableOpacity
+        accessible={false}
         style={accountSection.name}
         onPress={() => onSwitch(account) && isDev(account)}
       >
@@ -77,6 +80,7 @@ const createItem = (account, onSwitch, onExport, onDelete, isActive) => (
           source={isActive ? activeAccount : deactiveAccount}
         />
         <Text
+          {...generateTestId(ACCOUNT.NAME)}
           numberOfLines={1}
           ellipsizeMode="middle"
           style={
@@ -87,10 +91,11 @@ const createItem = (account, onSwitch, onExport, onDelete, isActive) => (
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
+        accessible={false}
         style={accountSection.actionBtn}
         onPress={() => onExport(account)}
       >
-        <Icons name="key" size={20} color={COLORS.lightGrey3} />
+        <Icons name="key" size={20} color={COLORS.lightGrey3} {...generateTestId(ACCOUNT.EDIT)} />
       </TouchableOpacity>
     </View>
   </Swipeout>
@@ -123,7 +128,7 @@ const AccountSection = ({
   });
 
   const handleExportKey = account => {
-    navigation.navigate(ROUTE_NAMES.ExportAccount, {account});
+    navigation.navigate(ROUTE_NAMES.ExportAccount, { account });
   };
 
   const handleImport = () => {
@@ -166,7 +171,7 @@ const AccountSection = ({
           },
         },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
   };
 
@@ -210,7 +215,7 @@ const AccountSection = ({
             <Icons
               name="dots-three-horizontal"
               size={20}
-              style={{color: COLORS.lightGrey1}}
+              style={{ color: COLORS.lightGrey1 }}
             />
           )}
           style={accountSection.optionMenu}
@@ -249,6 +254,6 @@ const mapState = state => ({
   listAccount: accountSeleclor.listAccount(state),
 });
 
-const mapDispatch = {removeAccount, switchAccount};
+const mapDispatch = { removeAccount, switchAccount };
 
 export default connect(mapState, mapDispatch)(AccountSection);
