@@ -410,7 +410,7 @@ class TradeConfirm extends React.Component {
           <View style={mainStyle.twoColumns}>
             <Text style={[style.fee, style.feeTitle]}>Limit price slippage</Text>
             <Help
-              title="Minimum Account"
+              title="Limit price slippage"
               content="Taking into account movements in price, this is the minimum amount you will accept."
               marginLeft={-40}
             />

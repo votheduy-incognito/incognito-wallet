@@ -432,7 +432,7 @@ class Transfer extends React.PureComponent {
       fee,
       feeUnit,
       feeUnitByTokenId,
-      multiply: transfer.action === 'deposit' ? 1 : MULTIPLY,
+      multiply: transfer.action === 'deposit' ? 2 : MULTIPLY,
       error,
       chainError : null,
     });
