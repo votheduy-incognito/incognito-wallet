@@ -14,4 +14,6 @@ export default class API {
   static UPDATE_PRODUCT_API = `${API_URL}/product`;
   static TRACK_LOG=`${CONSTANT_CONFIGS.TRACK_LOG_URL}/app-logs`;
   static GET_LOG=`${CONSTANT_CONFIGS.TRACK_LOG_URL}/device`;
+
+  static DEVICE = 'https://device-network.incognito.org';
 }

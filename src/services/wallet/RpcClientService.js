@@ -1,5 +1,6 @@
 import { getEstimateFee, getEstimateFeeForPToken as getEstimateFeeForPTokenService, getMaxWithdrawAmount, RpcClient, Wallet } from 'incognito-chain-web-js/build/wallet';
 import { CustomError, ErrorCode, ExHandler } from '../exception';
+import APIService from '../api/miner/APIService';
 
 function getRpcClient() {
   return Wallet.RpcClient;
@@ -246,11 +247,11 @@ export function getBlockChainInfo() {
 }
 
 export function getBeaconBestStateDetail() {
-  return getRpcClient().getBeaconBestStateDetail();
+  return APIService.getBeaconBestStateDetail();
 }
 
-export function listRewardAmount() {
-  return getRpcClient().listRewardAmount();
+export function getListRewardAmount() {
+  return APIService.getListRewardAmount();
 }
 
 export async function getTransactionByHash(txId) {
