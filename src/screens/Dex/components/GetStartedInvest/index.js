@@ -51,7 +51,7 @@ const items = [
 ];
 
 let rewardInterval;
-const TIME = 5000;
+const TIME = 100;
 let serverTime = 0;
 
 const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
@@ -94,7 +94,7 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
       .map(item => item.account);
 
     const rewards = _.flatten(await Promise.all(investAccounts.map(account => getRewards(account.PaymentAddress))))
-      .filter(reward => reward.amount1 || reward.amount2);
+      .filter(reward => reward.total);
     serverTime = (await getNodeTime()) - (TIME / 1000);
 
     // const rewards = await getRewards('12RqXMEeH55Yw9JRBSe84zd81GgnMvSnMKQTucm29LrM1GwmrMyDZGaoSDY8oBL47L281SRnKbFhFWAyDLDWkHxdkZuiunG6pMWyvSH');
@@ -104,6 +104,10 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
 
   const calculateOutputValue = (outputTokenId, inputTokenId, inputValue) => {
     try {
+      if (inputValue) {
+        return 0;
+      }
+
       const pair = pairs.find(i => {
         const keys = Object.keys(i);
         return keys.includes(outputTokenId) && keys.includes(inputTokenId);
@@ -124,7 +128,7 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
     let totalReward = 0;
     rewards.forEach(reward => {
       const {amount1, amount2, tokenId1, tokenId2, interestRate1, interestRate2, total, beaconTime} = reward;
-      serverTime += Math.floor(TIME / 1000);
+      serverTime += (TIME / 1000);
 
       const time = serverTime - beaconTime;
 
@@ -157,6 +161,10 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
   React.useEffect(() => {
     clearInterval(rewardInterval);
     loadData();
+
+    return () => {
+      clearInterval(rewardInterval);
+    };
   }, []);
 
   React.useEffect(() => {
