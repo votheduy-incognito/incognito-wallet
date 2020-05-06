@@ -58,4 +58,5 @@ export default {
   StakeHistoryDetail: 'StakeHistoryDetail',
   PriceChartCrypto: 'PriceChartCrypto',
   UniswapHelp: 'UniswapHelp',
+  BuyNodeScreen: 'BuyNodeScreen'
 };

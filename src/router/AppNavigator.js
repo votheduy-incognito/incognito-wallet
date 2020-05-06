@@ -1,5 +1,5 @@
-import {THEME} from '@src/styles';
-import {createStackNavigator} from 'react-navigation-stack';
+import { THEME } from '@src/styles';
+import { createStackNavigator } from 'react-navigation-stack';
 import CreateAccount from '@src/screens/CreateAccount';
 import ExportAccount from '@src/screens/ExportAccount';
 import FollowToken from '@src/screens/FollowToken';
@@ -23,7 +23,7 @@ import AddPIN from '@src/screens/AddPIN';
 import BackupKeys from '@src/screens/BackupKeys';
 import WhyShield from '@src/screens/WhyShield';
 import PriceChartCrypto from '@src/screens/PriceChartCrypto';
-import {navigationOptionsHandler} from '@src/utils/router';
+import { navigationOptionsHandler } from '@src/utils/router';
 import Dex from '@screens/Dex';
 import pUniswap from '@screens/Uniswap';
 import UniswapHistory from '@screens/UniswapHistory';
@@ -34,6 +34,7 @@ import FrequentReceivers, {
 } from '@src/screens/SendCrypto/FrequentReceivers';
 import Notification from '@src/screens/Notification';
 import NodeHelp from '@screens/NodeHelp';
+import BuyNodeScreen from '@screens/BuyNodeScreen';
 import Stake from '@screens/Stake';
 import StakeHistory from '@screens/StakeHistory';
 import StakeRecoverAccount from '@screens/Stake/features/RecoverAccount';
@@ -77,7 +78,7 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.TxHistoryDetail]: navigationOptionsHandler(TxHistoryDetail, {
       title: 'History Detail',
     }),
-    [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, {title: 'You'}),
+    [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'You' }),
     [ROUTE_NAMES.DexHistory]: navigationOptionsHandler(DexHistory, {
       header: () => null,
     }),
@@ -148,6 +149,10 @@ const AppNavigator = createStackNavigator(
     }),
     [ROUTE_NAMES.UniswapHelp]: navigationOptionsHandler(UniswapHelp, {
       title: 'FAQs',
+    }),
+    [ROUTE_NAMES.BuyNodeScreen]: navigationOptionsHandler(BuyNodeScreen, {
+      headerTitleStyle: { alignSelf: 'center' },
+      title: 'Buy Node',
     }),
     [ROUTE_NAMES.PriceChartCrypto]: navigationOptionsHandler(PriceChartCrypto, { title: 'Price chart' }),
   },

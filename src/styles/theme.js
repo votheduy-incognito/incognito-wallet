@@ -1,3 +1,5 @@
+import { ScreenWidth, ScreenHeight } from '@src/utils/devices';
+import { isIOS } from '@utils/platform';
 import COLORS from './colors';
 import DECOR from './decor';
 import FONTS from './font';
@@ -15,12 +17,38 @@ const text = {
     fontSize: FONTS.SIZE.regular,
     letterSpacing: 0
   },
+  headerTextStyle: {
+    ...FONTS.STYLE.bold,
+    color: COLORS.dark1,
+    fontSize: FONTS.SIZE.large,
+  },
+  boldTextStyle: {
+    ...FONTS.STYLE.bold,
+    color: COLORS.dark1,
+    fontSize: FONTS.SIZE.regular,
+  },
   defaultSize: FONTS.SIZE.regular,
   largeTitleSize: FONTS.SIZE.superLarge
 };
 
+const MARGIN = {
+  margin: 10,
+  marginRightDefault: {
+    marginRight: 15,
+  },
+  marginLeftDefault: {
+    marginLeft: 15
+  },
+  marginBottomDefault: {
+    marginBottom: 15
+  },
+  marginTopDefault: {
+    marginTop: 15
+  },
+};
+
 const header = {
-  headerHeight:  DECOR.scaleInApp(55),
+  headerHeight: DECOR.scaleInApp(55),
   backgroundColor: COLORS.dark4,
   headerTintColor: COLORS.dark1
 };
@@ -87,8 +115,37 @@ const modal = {
   headerHeight: DECOR.scaleInApp(44)
 };
 
+const BORDER_RADIUS = {
+  avatar: 12,
+};
+
+const SHADOW = {
+  imageAvatar: {
+    shadowColor: COLORS.black,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: isIOS ? 0 : 5,
+  }
+};
+
+const IMAGES = {
+  avatar: {
+    width: ScreenWidth * 0.22,
+    height: ScreenWidth * 0.22,
+    borderRadius: BORDER_RADIUS.avatar,
+  }
+};
+
 export default {
   header,
+  IMAGES,
+  BORDER_RADIUS,
+  MARGIN,
+  SHADOW,
   opacityButton,
   text,
   indicator,

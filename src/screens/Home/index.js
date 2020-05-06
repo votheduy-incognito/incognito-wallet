@@ -151,9 +151,10 @@ const Home = ({ navigation }) => {
       goToScreen(item?.route || '', {}, CONSTANT_EVENTS.CLICK_HOME_TRADE);
       break;
     case 7:
-      LinkingService.openUrl(
-        'https://node.incognito.org/payment.html?utm_source=app&utm_medium=homepage%20app&utm_campaign=pnode',
-      );
+      goToScreen('BuyNodeScreen');
+      // LinkingService.openUrl(
+      //   'https://node.incognito.org/payment.html?utm_source=app&utm_medium=homepage%20app&utm_campaign=pnode',
+      // );
       break;
     case 9:
       sendFeedback();
