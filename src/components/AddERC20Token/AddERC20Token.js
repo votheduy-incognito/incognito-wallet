@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'redux-form';
+import { generateTestId } from '@utils/misc';
+import { GENERAL, TOKEN } from '@src/constants/elements';
 import { createForm, InputField, InputQRField, validator } from '@src/components/core/reduxForm';
 import { Button, View } from '@src/components/core';
 import styles from './style';
@@ -78,6 +80,7 @@ class AddERC20Token extends Component {
               ) : null}
             </View>
             <Button
+              {...generateTestId(TOKEN.BTN_ADD)}
               title='Add manually'
               style={styles.submitBtn}
               onPress={handleSubmit(onAdd)}

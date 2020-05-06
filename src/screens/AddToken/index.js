@@ -5,6 +5,8 @@ import AddERC20Token from '@src/components/AddERC20Token';
 import AddBep2Token from '@src/components/AddBep2Token';
 import AddInternalToken from '@src/components/AddInternalToken';
 import { COLORS } from '@src/styles';
+import { generateTestId } from '@utils/misc';
+import { GENERAL, TOKEN } from '@src/constants/elements';
 import Icons from 'react-native-vector-icons/Fontisto';
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import styles from './style';
@@ -41,8 +43,8 @@ class AddToken extends Component {
         <View>
           <View style={styles.selectNetworkButtonGroup}>
             <Text style={styles.selectNetworkButtonLabel}>Select a token type</Text>
-            <TouchableOpacity onPress={this.toggleChooseType} style={styles.selectNetworkButton}>
-              <Text style={styles.selectNetworkValue}>{type}</Text>
+            <TouchableOpacity accessible={false} onPress={this.toggleChooseType} style={styles.selectNetworkButton}>
+              <Text {...generateTestId(TOKEN.TOKEN_CODE)} style={styles.selectNetworkValue}>{type}</Text>
               <Icons name='angle-right' style={styles.selectNetworkValueIcon} size={16} />
             </TouchableOpacity>
           </View>
@@ -51,7 +53,7 @@ class AddToken extends Component {
               {
                 Object.values(TYPES).map((TYPE, index, allType) => (
                   <>
-                    <TouchableOpacity key={TYPE.value} onPress={() => this.handlePressChooseType(TYPE.value)} style={styles.typeItem}>
+                    <TouchableOpacity accessible={false} key={TYPE.value} onPress={() => this.handlePressChooseType(TYPE.value)} style={styles.typeItem}>
                       <Text>{TYPE.label}</Text>
                       {
                         type === TYPE.value && <FeatherIcons name='check' size={24} color={COLORS.primary} />

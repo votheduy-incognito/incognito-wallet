@@ -12,16 +12,18 @@ import {
   Container,
   BaseTextInput as TextInput,
 } from '@src/components/core';
+import { generateTestId } from '@utils/misc';
+import { GENERAL, TOKEN } from '@src/constants/elements';
 import BackButton from '@src/components/BackButton';
 import Icons from 'react-native-vector-icons/Ionicons';
-import {COLORS} from '@src/styles';
+import { COLORS } from '@src/styles';
 import sadFace from '@src/assets/images/sad_face.png';
 import addIcon from '@src/assets/images/icons/ic_add_round.png';
-import {ExHandler} from '@src/services/exception';
-import {debounce, remove} from 'lodash';
+import { ExHandler } from '@src/services/exception';
+import { debounce, remove } from 'lodash';
 import routeNames from '@src/router/routeNames';
-import TokenInfo, {showTokenInfo} from '@src/components/HeaderRight/TokenInfo';
-import {searchPTokenStyle, emptyStyle} from './styles';
+import TokenInfo, { showTokenInfo } from '@src/components/HeaderRight/TokenInfo';
+import { searchPTokenStyle, emptyStyle } from './styles';
 import TokenItem from './TokenItem';
 
 class SearchToken extends Component {
@@ -144,6 +146,7 @@ class SearchToken extends Component {
         <BackButton />
         <Icons name="ios-search" style={searchPTokenStyle.inputIcon} color='white' size={24} />
         <TextInput
+          {...generateTestId(TOKEN.TOKEN_SEARCH)}
           placeholder='Search for a privacy coin'
           placeholderTextColor={COLORS.white}
           style={searchPTokenStyle.searchInput}
@@ -210,8 +213,8 @@ class SearchToken extends Component {
           </ScrollView>
         </View>
 
-        <TouchableOpacity style={{ height: 90}} onPress={this.handleAddTokenManually}>
-          <View style={searchPTokenStyle.followBtn}>
+        <TouchableOpacity accessible={false} style={{ height: 90 }} onPress={this.handleAddTokenManually}>
+          <View {...generateTestId(TOKEN.BTN_ADD)} style={searchPTokenStyle.followBtn}>
             <Image source={addIcon} style={searchPTokenStyle.followBtnIcon} />
             <Text style={searchPTokenStyle.followBtnText}>Add manually</Text>
           </View>

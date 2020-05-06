@@ -49,7 +49,8 @@ export const TOKEN = {
   CURRENT: 'current-token-name',
   RECEIVE_BTN: 'receive-btn',
   TOKEN_SEARCH: 'token_search',
-  TOKEN_CHECK: 'token_check_icon'
+  TOKEN_CHECK: 'token_check_icon',
+  BTN_ADD: 'btn_add',
 };
 
 export const ACCOUNT = {
