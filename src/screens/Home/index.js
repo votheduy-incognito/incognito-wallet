@@ -164,7 +164,7 @@ const Home = ({ navigation }) => {
   };
 
   return (
-    <TouchableWithoutFeedback style={{ flex: 1 }} onPress={closeTooltip}>
+    <TouchableWithoutFeedback accessible={false} style={{ flex: 1 }} onPress={closeTooltip}>
       <ScrollView
         refreshControl={(
           <RefreshControl
