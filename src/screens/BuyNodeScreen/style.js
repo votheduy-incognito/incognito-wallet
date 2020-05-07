@@ -31,6 +31,12 @@ const style = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     alignItems: 'center'
+  },
+  iconDropDown: {
+    alignSelf: 'center', 
+    justifyContent: 'center', 
+    height: 50,
+    marginEnd: 10
   }
 });
 

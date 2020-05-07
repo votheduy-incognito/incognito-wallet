@@ -4,7 +4,11 @@ import { withNavigationFocus, SafeAreaView } from 'react-navigation';
 import { Text, View, Image } from '@components/core';
 import nodeImg from '@src/assets/images/node_buy.png';
 import theme from '@src/styles/theme';
+import RNPickerSelect from 'react-native-picker-select';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet';
+import { LineView } from '@src/components/Line';
+import { COLORS } from '@src/styles';
 import styles from './style';
 
 const TOP_MOTTO_HEADER = 'Node is the simplest way to power the Incognito network and earn crypto. Just plug it in to get started.';
@@ -17,12 +21,28 @@ const MOTTO =
 
 const BuyNodeScreen = () => {
   let actionSheetRef = useRef(null);
-  const options = [
-    'Cancel',
-    '2',
-    '3',
-    '4',
-    '5'
+  const [currentQuantity, setCurrentQuantity] = useState('');
+  const quantity = [
+    {
+      label: '1',
+      value: '1',
+    },
+    {
+      label: '2',
+      value: '2',
+    },
+    {
+      label: '3',
+      value: '3',
+    },
+    {
+      label: '4',
+      value: '4',
+    },
+    {
+      label: '5',
+      value: '5',
+    },
   ];
 
   useEffect(() => {
@@ -54,14 +74,57 @@ const BuyNodeScreen = () => {
 
   const renderActionSheet = () => {
     return (
-      <ActionSheet
-        ref={o => actionSheetRef = o}
-        title={<Text style={{ color: '#000', fontSize: 18 }}>Which one do you like?</Text>}
-        options={options}
-        cancelButtonIndex={0}
-        destructiveButtonIndex={4}
-        onPress={(index) => { /* do something */ }}
-      />
+      <View style={[theme.FLEX.rowSpaceBetween, theme.FLEX.fullWidth, theme.MARGIN.marginTopDefault]}>
+        <Text style={[theme.MARGIN.marginRightDefault, theme.text.boldTextStyleMedium, theme.FLEX.alignViewSelfCenter]}>Select quantity</Text>
+        <RNPickerSelect
+          placeholder={{}} // Set placeholder to empyy object
+          items={quantity}
+          onValueChange={value => {
+            setCurrentQuantity(value);
+          }}
+          style={theme.INPUT.picker}
+          InputAccessoryView={() => null}
+          value={currentQuantity}
+          useNativeAndroidPickerStyle={false}
+          textInputProps={[theme.RECT.picker]}
+          Icon={() => {
+            return (
+              <View style={styles.iconDropDown}>
+                <Ionicons size={20} name="ios-arrow-down" color="black" />
+              </View>
+            );
+          }}
+        />
+      </View>
+    );
+  };
+
+  const renderTotalItem = (text, value, styleText, styleValue) => {
+    return (
+      <View style={[theme.FLEX.rowSpaceBetween, theme.MARGIN.marginBottomSmall]}>
+        <Text style={[theme.text.defaultTextStyle, theme.FLEX.alignViewSelfCenter, styleText]}>{`${text}`}</Text>
+        <Text style={[theme.text.defaultTextStyle, theme.FLEX.alignViewSelfCenter, styleValue]}>{`${value}`}</Text>
+      </View>
+    );
+  };
+
+  const renderTotal = () => {
+    return (
+      <View style={theme.MARGIN.marginTopDefault}>
+        <LineView color={COLORS.lightGrey1} style={theme.MARGIN.marginBottomDefault} />
+        {renderTotalItem('Subtotal', '798$')}
+        {renderTotalItem('Shipping', 'FREE')}
+        {renderTotalItem('Ships within 24 hours', '')}
+        <LineView color={COLORS.lightGrey1} />
+        {renderTotalItem('Total', '798$', {}, theme.text.boldTextStyleLarge)}
+        {renderTotalItem('Pay with Bitcoin', '0.086114 BTC', theme.text.boldTextStyleMedium, theme.text.boldTextStyleLarge)}
+      </View>
+    );
+  };
+
+  const renderPayment = () => {
+    return (
+      <View />
     );
   };
 
@@ -70,6 +133,8 @@ const BuyNodeScreen = () => {
       {renderNodeImgAndPrice()}
       {renderMotto()}
       {renderActionSheet()}
+      {renderTotal()}
+      {renderPayment()}
     </View>
   );
 };

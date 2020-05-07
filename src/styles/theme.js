@@ -27,6 +27,16 @@ const text = {
     color: COLORS.dark1,
     fontSize: FONTS.SIZE.regular,
   },
+  boldTextStyleMedium: {
+    ...FONTS.STYLE.bold,
+    color: COLORS.dark1,
+    fontSize: FONTS.SIZE.medium,
+  },
+  boldTextStyleLarge: {
+    ...FONTS.STYLE.bold,
+    color: COLORS.dark1,
+    fontSize: FONTS.SIZE.large,
+  },
   defaultSize: FONTS.SIZE.regular,
   largeTitleSize: FONTS.SIZE.superLarge
 };
@@ -41,6 +51,9 @@ const MARGIN = {
   },
   marginBottomDefault: {
     marginBottom: 15
+  },
+  marginBottomSmall: {
+    marginBottom: 10
   },
   marginTopDefault: {
     marginTop: 15
@@ -115,8 +128,37 @@ const modal = {
   headerHeight: DECOR.scaleInApp(44)
 };
 
+const FLEX = {
+  rowCenter: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignContents: 'center',
+  },
+  rowSpaceBetween: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignContents: 'center',
+  },
+  alignViewSelfCenter: {
+    alignSelf: 'center',
+  },
+  fullWidth: {
+    width: '100%',
+  },
+  fullHeight: {
+    height: '100%',
+  }
+};
+
+const SIZES = {
+  pickerView: {
+    height: 40
+  }
+};
+
 const BORDER_RADIUS = {
   avatar: 12,
+  picker: 8,
 };
 
 const SHADOW = {
@@ -140,10 +182,51 @@ const IMAGES = {
   }
 };
 
+const RECT = {
+  picker: {
+    borderRadius: BORDER_RADIUS.picker,
+    underlineColorAndroid: 'cyan',
+    borderColor: COLORS.lightGrey2,
+    borderWidth: 0.5,
+    height: SIZES.pickerView.height
+  }
+};
+
+const INPUT = {
+  picker: {
+    inputIOS: {
+      fontSize: FONTS.SIZE.medium,
+      paddingVertical: 12,
+      width: ScreenWidth * 0.4,
+      paddingHorizontal: 10,
+      borderWidth: 1,
+      borderColor: 'gray',
+      borderRadius: 4,
+      color: 'black',
+      paddingRight: 30, 
+    },
+    inputAndroid: {
+      fontSize: FONTS.SIZE.medium,
+      width: ScreenWidth * 0.4,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      borderWidth: 0.5,
+      borderColor: 'purple',
+      borderRadius: 8,
+      color: 'black',
+      paddingRight: 20, 
+    },
+  }
+};
+
 export default {
   header,
   IMAGES,
+  RECT,
+  FLEX,
+  INPUT,
   BORDER_RADIUS,
+  SIZES,
   MARGIN,
   SHADOW,
   opacityButton,
