@@ -1,14 +1,19 @@
 import React, { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withNavigationFocus, SafeAreaView } from 'react-navigation';
-import { Text, View, Image } from '@components/core';
+import { Text, View, Image, ScrollView } from '@components/core';
 import nodeImg from '@src/assets/images/node_buy.png';
 import theme from '@src/styles/theme';
 import RNPickerSelect from 'react-native-picker-select';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet';
+import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
+import TokenSelect from '@components/TokenSelect';
+import CurrentBalance from '@components/CurrentBalance';
+import { connect } from 'react-redux';
 import { LineView } from '@src/components/Line';
 import { COLORS } from '@src/styles';
+import { useNavigation } from 'react-navigation-hooks';
+import LogManager from '@src/services/LogManager';
 import styles from './style';
 
 const TOP_MOTTO_HEADER = 'Node is the simplest way to power the Incognito network and earn crypto. Just plug it in to get started.';
@@ -54,7 +59,7 @@ const BuyNodeScreen = () => {
       <View style={styles.containerHeader}>
         <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center' }}>
           <Image style={[theme.IMAGES.avatar, theme.SHADOW.imageAvatar]} resizeMode="contain" source={nodeImg} />
-          <Text style={[theme.text.defaultTextStyle, theme.MARGIN.marginLeftDefault]}> Node </Text>
+          <Text style={[theme.text.boldTextStyle, theme.MARGIN.marginLeftDefault]}> Node </Text>
         </View>
         <View>
           <Text style={theme.text.headerTextStyle}> 399$ </Text>
@@ -115,31 +120,58 @@ const BuyNodeScreen = () => {
         {renderTotalItem('Subtotal', '798$')}
         {renderTotalItem('Shipping', 'FREE')}
         {renderTotalItem('Ships within 24 hours', '')}
-        <LineView color={COLORS.lightGrey1} />
+        <LineView color={COLORS.lightGrey1} style={theme.MARGIN.marginBottomDefault} />
         {renderTotalItem('Total', '798$', {}, theme.text.boldTextStyleLarge)}
         {renderTotalItem('Pay with Bitcoin', '0.086114 BTC', theme.text.boldTextStyleMedium, theme.text.boldTextStyleLarge)}
+        <LineView color={COLORS.lightGrey1} style={theme.MARGIN.marginBottomDefault} />
       </View>
     );
   };
 
+  const handleSelectToken = tokenId => {
+    const navigation = useNavigation();
+    console.log(LogManager.parseJsonObjectToJsonString(navigation));
+    // const { setSelectedPrivacy } = this.props;
+    // setSelectedPrivacy(tokenId);
+  };
+
   const renderPayment = () => {
     return (
-      <View />
+      <View>
+        <View style={[theme.FLEX.rowSpaceBetween, {flex: 1}]}>
+          <Text style={[theme.text.defaultTextStyle, theme.FLEX.alignViewSelfCenter]}>Payment</Text>
+          <CurrentBalance
+            select={
+              (
+                <TokenSelect onSelect={handleSelectToken()} />
+              )
+            }
+          />
+        </View>
+      </View>
     );
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {renderNodeImgAndPrice()}
       {renderMotto()}
       {renderActionSheet()}
-      {renderTotal()}
       {renderPayment()}
-    </View>
+      {renderTotal()}
+    </ScrollView>
   );
 };
 
 BuyNodeScreen.propTypes = {
 };
 
-export default withNavigationFocus(BuyNodeScreen);
+
+const mapState = state => ({
+});
+
+const mapDispatch = {
+  setSelectedPrivacy,
+};
+
+export default connect(mapState, mapDispatch)(BuyNodeScreen);
