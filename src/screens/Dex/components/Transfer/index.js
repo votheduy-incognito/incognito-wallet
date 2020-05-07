@@ -10,29 +10,31 @@ import {
   TouchableOpacity,
   BaseTextInput as TextInput,
 } from '@src/components/core';
-import {ScrollView, Keyboard, TouchableWithoutFeedback, VirtualizedList} from 'react-native';
+import { ScrollView, Keyboard, TouchableWithoutFeedback, VirtualizedList } from 'react-native';
 import accountService from '@services/wallet/accountService';
 import { isExchangeRatePToken } from '@src/services/wallet/RpcClientService';
-import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
+import { CONSTANT_COMMONS, CONSTANT_EVENTS } from '@src/constants';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
-import {ExHandler} from '@services/exception';
-import {Icon, Overlay} from 'react-native-elements';
-import {COLORS} from '@src/styles';
+import { ExHandler } from '@services/exception';
+import { Icon, Overlay } from 'react-native-elements';
+import { COLORS } from '@src/styles';
 import accountIcon from '@src/assets/images/icons/account_icon.png';
+import { generateTestId } from '@utils/misc';
+import { GENERAL, TOKEN, ACCOUNT } from '@src/constants/elements';
 import leftArrow from '@src/assets/images/icons/left_arrow.png';
 import CryptoIcon from '@components/CryptoIcon';
 import EstimateFee from '@components/EstimateFee';
 import FullScreenLoading from '@components/FullScreenLoading';
-import tokenService, {PRV} from '@services/wallet/tokenService';
+import tokenService, { PRV } from '@services/wallet/tokenService';
 import AddPin from '@screens/AddPIN';
-import {DepositHistory, WithdrawHistory} from '@models/dexHistory';
+import { DepositHistory, WithdrawHistory } from '@models/dexHistory';
 import Toast from '@components/core/Toast/Toast';
 import VerifiedText from '@components/VerifiedText/index';
-import {logEvent} from '@services/firebase';
+import { logEvent } from '@services/firebase';
 import routeNames from '@routers/routeNames';
 import TransferSuccessPopUp from '../TransferSuccessPopUp';
-import {WAIT_TIME, MESSAGES, MIN_INPUT, MULTIPLY, MAX_WAITING_TIME, PRV_ID} from '../../constants';
+import { WAIT_TIME, MESSAGES, MIN_INPUT, MULTIPLY, MAX_WAITING_TIME, PRV_ID } from '../../constants';
 import { mainStyle, modalStyle, tokenStyle } from '../../style';
 
 const MAX_TRIED = MAX_WAITING_TIME / WAIT_TIME;
@@ -67,7 +69,7 @@ class Transfer extends React.PureComponent {
 
   updateTransfer(newTransfer, cb) {
     const { transfer } = this.state;
-    this.setState({ transfer: {...transfer, ...newTransfer} }, cb);
+    this.setState({ transfer: { ...transfer, ...newTransfer } }, cb);
   }
 
   checkCorrectBalance = (account, token, value) => {
@@ -189,8 +191,8 @@ class Transfer extends React.PureComponent {
         await waitUntil(checkCorrectBalance(dexWithdrawAccount, PRV, amount + fee), WAIT_TIME);
         res2 = await this.sendPRV(dexWithdrawAccount, account, amount, fee);
       } else {
-        const {transfer} = this.state;
-        const {feeUnit} = transfer;
+        const { transfer } = this.state;
+        const { feeUnit } = transfer;
         const paymentInfo = feeUnit === PRV.symbol ? {
           paymentAddressStr: dexWithdrawAccount.PaymentAddress,
           amount: fee,
@@ -223,7 +225,7 @@ class Transfer extends React.PureComponent {
     } finally {
       WithdrawHistory.withdrawing = false;
       if (AddPin.waiting) {
-        navigation.navigate(routeNames.AddPin, {action: 'login'});
+        navigation.navigate(routeNames.AddPin, { action: 'login' });
       }
     }
   }
@@ -248,7 +250,7 @@ class Transfer extends React.PureComponent {
           prvBalance = await accountService.getBalance(prvAccount, wallet);
           prvFee = fee;
           if (prvFee > prvBalance) {
-            return this.updateTransfer({chainError: MESSAGES.NOT_ENOUGH_NETWORK_FEE});
+            return this.updateTransfer({ chainError: MESSAGES.NOT_ENOUGH_NETWORK_FEE });
           }
         }
         await this[action](transfer);
@@ -273,7 +275,7 @@ class Transfer extends React.PureComponent {
         accountService.getBalance(account, wallet, token.id)
           .then(balance => {
             balances[index] = balance;
-            this.setState({balances: [...balances]});
+            this.setState({ balances: [...balances] });
           });
       });
     }
@@ -342,7 +344,7 @@ class Transfer extends React.PureComponent {
       fee: undefined,
       feeUnit: undefined,
     });
-    this.setState({balances: []});
+    this.setState({ balances: [] });
   };
 
   closeAmountPopUp = () => {
@@ -434,7 +436,7 @@ class Transfer extends React.PureComponent {
       feeUnitByTokenId,
       multiply: transfer.action === 'deposit' ? 1 : MULTIPLY,
       error,
-      chainError : null,
+      chainError: null,
     });
   };
 
@@ -460,15 +462,16 @@ class Transfer extends React.PureComponent {
       return <ActivityIndicator size="small" style={mainStyle.textRight} />;
     }
 
-    return  (
+    return (
       <View style={[mainStyle.twoColumns, mainStyle.textRight]}>
         <Text
+          {...generateTestId(TOKEN.TOKEN_BALANCE)}
           style={[tokenStyle.name, tokenStyle.modalName, mainStyle.textRight, mainStyle.accountBalance]}
           numberOfLines={1}
         >
           {formatUtil.amount(balances[index], token?.pDecimals)}
         </Text>
-        <Text style={[tokenStyle.name, tokenStyle.modalName, mainStyle.textRight, mainStyle.accountBalance]}>
+        <Text {...generateTestId(TOKEN.TOKEN_CODE)} style={[tokenStyle.name, tokenStyle.modalName, mainStyle.textRight, mainStyle.accountBalance]}>
           &nbsp;{token?.symbol}
         </Text>
       </View>
@@ -485,26 +488,27 @@ class Transfer extends React.PureComponent {
         {!account && !!token && (
           <View>
             <View style={mainStyle.modalHeader}>
-              <TouchableOpacity onPress={this.closeAccountPopUp} style={mainStyle.modalBack}>
+              <TouchableOpacity accessible={false} onPress={this.closeAccountPopUp} style={mainStyle.modalBack}>
                 <Image source={leftArrow} />
               </TouchableOpacity>
               <Text style={mainStyle.modalHeaderText}>
                 {transfer.action === 'deposit' ? 'Deposit from' : 'Withdraw to'}
               </Text>
-              <TouchableOpacity onPress={this.closePopUp}>
+              <TouchableOpacity accessible={false} onPress={this.closePopUp}>
                 <Icon name="close" color={COLORS.white} />
               </TouchableOpacity>
             </View>
             <ScrollView style={mainStyle.modalContent}>
               {accounts.map((item, index) => (
                 <TouchableOpacity
+                  accessible={false}
                   key={item.AccountName}
                   onPress={this.selectAccount.bind(this, item, index)}
                   style={[mainStyle.modalItem, index === accounts.length - 1 && mainStyle.lastItem]}
                   activeOpacity={0.5}
                 >
                   <Image source={accountIcon} style={mainStyle.accountIcon} />
-                  <Text numberOfLines={1} style={mainStyle.accountName}>{item.AccountName}</Text>
+                  <Text {...generateTestId(ACCOUNT.NAME)} numberOfLines={1} style={mainStyle.accountName}>{item.AccountName}</Text>
                   {this.renderAccountBalance(token, index)}
                 </TouchableOpacity>
               ))}
@@ -519,6 +523,7 @@ class Transfer extends React.PureComponent {
     const { filteredTokens } = this.state;
     return (
       <TouchableOpacity
+        accessible={false}
         key={item.id}
         onPress={() => this.selectToken(item)}
         activeOpacity={0.5}
@@ -528,9 +533,9 @@ class Transfer extends React.PureComponent {
         <View style={[mainStyle.twoColumns, mainStyle.flex]}>
           <View style={modalStyle.tokenInfo}>
             <VerifiedText text={item.displayName} style={modalStyle.tokenSymbol} isVerified={item.isVerified} />
-            <Text style={modalStyle.tokenName}>{item.name}</Text>
+            <Text {...generateTestId(TOKEN.TOKEN_CODE)} style={modalStyle.tokenName}>{item.name}</Text>
           </View>
-          <Text style={[modalStyle.tokenSymbol, mainStyle.textRight]}>{item.symbol}</Text>
+          <Text {...generateTestId(TOKEN.TOKEN_NAME)} style={[modalStyle.tokenSymbol, mainStyle.textRight]}>{item.symbol}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -553,6 +558,7 @@ class Transfer extends React.PureComponent {
             </View>
             <View>
               <TextInput
+                {...generateTestId(TOKEN.TOKEN_SEARCH)}
                 autoCorrect={false}
                 placeholder="Search"
                 style={[modalStyle.search, modalStyle.transferSearch]}
@@ -603,7 +609,7 @@ class Transfer extends React.PureComponent {
         isVisible={isVisible}
         overlayStyle={[mainStyle.modal, sending && mainStyle.hiddenDialog]}
         overlayBackgroundColor={sending ? 'transparent' : 'white'}
-        windowBackgroundColor={`rgba(0,0,0,${ sending ? 0.8 : 0.5})`}
+        windowBackgroundColor={`rgba(0,0,0,${sending ? 0.8 : 0.5})`}
         onBackdropPress={Keyboard.dismiss}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -630,7 +636,7 @@ class Transfer extends React.PureComponent {
                 <View style={[mainStyle.twoColumns, mainStyle.center, tokenStyle.wrapper, mainStyle.padding]}>
                   <Text style={tokenStyle.name}>Balance:</Text>
                   <View style={[mainStyle.textRight, mainStyle.twoColumns]}>
-                    { _.isNumber(balance) ?
+                    {_.isNumber(balance) ?
                       (
                         <Text
                           style={[tokenStyle.symbol, mainStyle.longAccountName]}
@@ -657,7 +663,7 @@ class Transfer extends React.PureComponent {
                   <View style={mainStyle.modalEstimate}>
                     <EstimateFee
                       accountName={action === 'deposit' ? account?.AccountName : dexMainAccount?.AccountName}
-                      estimateFeeData={{feeUnit, fee, feeUnitByTokenId}}
+                      estimateFeeData={{ feeUnit, fee, feeUnitByTokenId }}
                       onNewFeeData={this.handleSelectFee}
                       types={supportedFeeTypes}
                       dexToken={token}

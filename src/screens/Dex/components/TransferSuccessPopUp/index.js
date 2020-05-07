@@ -9,6 +9,8 @@ import {
 } from '@components/core/index';
 import formatUtil from '@utils/format';
 import {Overlay} from 'react-native-elements';
+import { generateTestId } from '@utils/misc';
+import { GENERAL, TOKEN, ACCOUNT } from '@src/constants/elements';
 import transferSuccess from '@assets/images/transfer_success.png';
 import { MESSAGES } from '../../constants';
 import { mainStyle } from './style';
@@ -39,10 +41,10 @@ class TransferSuccessPopUp extends React.Component {
             <View style={[mainStyle.twoColumns]}>
               <Text style={[mainStyle.fee, mainStyle.infoTitle]}>Amount:</Text>
               <View style={[mainStyle.textRight, mainStyle.twoColumns]}>
-                <Text numberOfLines={1} style={[mainStyle.fee, mainStyle.amount]}>
+                <Text {...generateTestId(TOKEN.TOKEN_BALANCE)} numberOfLines={1} style={[mainStyle.fee, mainStyle.amount]}>
                   {_.isNumber(amount) ? `${formatUtil.amountFull(amount, token?.pDecimals)}` : 0}
                 </Text>
-                <Text style={mainStyle.fee}>
+                <Text {...generateTestId(TOKEN.TOKEN_CODE)} style={mainStyle.fee}>
                   &nbsp;{token?.symbol}
                 </Text>
               </View>
@@ -51,12 +53,12 @@ class TransferSuccessPopUp extends React.Component {
               <Text style={[mainStyle.fee, mainStyle.infoTitle]}>
                 {action === 'deposit' ? 'Deposit from' : 'Withdraw to'}:
               </Text>
-              <Text numberOfLines={1} style={[mainStyle.fee, mainStyle.textRight, mainStyle.accountName]}>
+              <Text {...generateTestId(ACCOUNT.NAME)} numberOfLines={1} style={[mainStyle.fee, mainStyle.textRight, mainStyle.accountName]}>
                 {account?.AccountName}
               </Text>
             </View>
           </View>
-          <Button title="Continue trading" style={mainStyle.transferSuccessButton} onPress={closePopUp} />
+          <Button {...generateTestId(TOKEN.BTN_TRADE)} title="Continue trading" style={mainStyle.transferSuccessButton} onPress={closePopUp} />
         </View>
       </Overlay>
     );

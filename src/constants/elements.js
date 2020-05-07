@@ -51,6 +51,7 @@ export const TOKEN = {
   TOKEN_SEARCH: 'token_search',
   TOKEN_CHECK: 'token_check_icon',
   BTN_ADD: 'btn_add',
+  BTN_TRADE: 'btn_trade',
 };
 
 export const ACCOUNT = {

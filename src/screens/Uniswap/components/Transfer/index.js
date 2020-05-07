@@ -23,6 +23,8 @@ import accountIcon from '@src/assets/images/icons/account_icon.png';
 import leftArrow from '@src/assets/images/icons/left_arrow.png';
 import CryptoIcon from '@components/CryptoIcon';
 import EstimateFee from '@components/EstimateFee';
+import { generateTestId } from '@utils/misc';
+import { TOKEN } from '@src/constants/elements';
 import FullScreenLoading from '@components/FullScreenLoading';
 import tokenService, {PRV} from '@services/wallet/tokenService';
 import AddPin from '@screens/AddPIN';
@@ -597,6 +599,7 @@ class Transfer extends React.Component {
     const { filteredTokens } = this.state;
     return (
       <TouchableOpacity
+        accessible={false}
         key={item.id}
         onPress={() => this.selectToken(item)}
         activeOpacity={0.5}
@@ -605,8 +608,8 @@ class Transfer extends React.Component {
         <CryptoIcon tokenId={item.id} size={25} uri={`${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${item.symbol}@2x.png`}/>
         <View style={[mainStyle.twoColumns, mainStyle.flex]}>
           <View style={modalStyle.tokenInfo}>
-            <Text style={modalStyle.tokenSymbol}>{item.symbol}</Text>
-            <Text style={modalStyle.tokenName}>{item.name}</Text>
+            <Text {...generateTestId(TOKEN.TOKEN_CODE)} style={modalStyle.tokenSymbol}>{item.symbol}</Text>
+            <Text {...generateTestId(TOKEN.TOKEN_NAME)} style={modalStyle.tokenName}>{item.name}</Text>
           </View>
           <Text style={[modalStyle.tokenSymbol, mainStyle.textRight]}>{item.symbol}</Text>
         </View>
@@ -631,6 +634,7 @@ class Transfer extends React.Component {
             </View>
             <View>
               <TextInput
+                {...generateTestId(TOKEN.TOKEN_SEARCH)}
                 autoCorrect={false}
                 placeholder="Search"
                 style={[modalStyle.search, modalStyle.transferSearch]}
@@ -683,17 +687,17 @@ class Transfer extends React.Component {
         windowBackgroundColor={`rgba(0,0,0,${ sending ? 0.8 : 0.5})`}
         onBackdropPress={Keyboard.dismiss}
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <TouchableWithoutFeedback accessible={false} onPress={Keyboard.dismiss}>
           <View>
             <View style={sending && mainStyle.hidden}>
               <View style={mainStyle.modalHeader}>
-                <TouchableOpacity onPress={this.closeAmountPopUp} style={mainStyle.modalBack}>
+                <TouchableOpacity accessible={false} onPress={this.closeAmountPopUp} style={mainStyle.modalBack}>
                   <Image source={leftArrow} />
                 </TouchableOpacity>
                 <Text style={[mainStyle.modalHeaderText]}>
                   Amount
                 </Text>
-                <TouchableOpacity onPress={this.closePopUp}>
+                <TouchableOpacity accessible={false} onPress={this.closePopUp}>
                   <Icon name="close" color={COLORS.white} />
                 </TouchableOpacity>
               </View>
