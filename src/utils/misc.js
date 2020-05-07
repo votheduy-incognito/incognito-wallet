@@ -12,5 +12,5 @@ export const generateTestId = (id) => {
   if (isIOS) {
     return { testID: id };
   } 
-  return { accessibilityLabel: id };
+  return { accessibilityLabel: id, accessible: true };
 };
