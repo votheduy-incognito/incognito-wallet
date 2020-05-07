@@ -1,23 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import { generateTestId } from '@utils/misc';
+import { TRADE } from '@src/constants/elements';
 import { Icon } from 'react-native-elements';
 import {View, Text, ActivityIndicator, TouchableOpacity} from '@components/core';
 import { COLORS } from '@src/styles';
 import stylesheet from './style';
 
 const DepositHistory = ({ amount, tokenSymbol, status, account, onPress, isLastItem, style }) => (
-  <TouchableOpacity style={[stylesheet.history, stylesheet.row, isLastItem && stylesheet.lastItem, style]} onPress={onPress}>
+  <TouchableOpacity accessible={false} style={[stylesheet.history, stylesheet.row, isLastItem && stylesheet.lastItem, style]} onPress={onPress}>
     <View style={[stylesheet.shortInfo]}>
-      <Text style={stylesheet.historyType}>Deposit</Text>
-      <Text style={stylesheet.shortDesc} numberOfLines={2}>
+      <Text {...generateTestId(TRADE.TITLE)} style={stylesheet.historyType}>Deposit</Text>
+      <Text {...generateTestId(TRADE.CONTENT)} style={stylesheet.shortDesc} numberOfLines={2}>
         {`${amount} ${tokenSymbol} From ${account}`}
       </Text>
     </View>
     <View style={[stylesheet.textRight, stylesheet.row, stylesheet.historyStatus]}>
       {status === undefined ?
         <ActivityIndicator size="small" style={stylesheet.textRight} /> :
-        <Text style={[stylesheet.textRight, stylesheet[status]]}>{_.capitalize(status)}</Text>
+        <Text {...generateTestId(TRADE.STATUS)} style={[stylesheet.textRight, stylesheet[status]]}>{_.capitalize(status)}</Text>
       }
       <View style={stylesheet.icon}>
         <Icon name="chevron-right" color={COLORS.lightGrey1} />

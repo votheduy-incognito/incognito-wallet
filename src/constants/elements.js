@@ -64,6 +64,24 @@ export const ACCOUNT = {
   ADDRESS_OUT_NETWORK: 'address_out_network',
 };
 
+export const TRADE = {
+  EXCHANGE_RATE: 'exchange_rate',
+  TRADE_BTN: 'trade_btn',
+  STATUS: 'status',
+  CONTENT: 'content',
+  TITLE: 'title',
+  POOL: 'pool',
+  SWITCH: 'switch',
+  TOKEN_TO: 'token_to',
+  TOKEN_FROM: 'token_from',
+  MORE_ACT_MENU: 'more_act_menu',
+  DEPOSIT: 'deposit',
+  TRADE: 'trade',
+  LIQUIDITY: 'liquidity',
+  FROM_INPUT: 'from_input',
+  TO_INPUT: 'to_input'
+};
+
 export const COPYABLE_ADDRESS = {
   ADDRESS: 'address',
   CPY_ICO: 'copy_icon',

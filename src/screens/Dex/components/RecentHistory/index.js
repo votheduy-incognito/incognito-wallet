@@ -4,6 +4,8 @@ import _ from 'lodash';
 import {Text, TouchableOpacity, View} from '@components/core';
 import routeNames from '@routers/routeNames';
 import { LIMIT_HISTORY } from '@screens/Dex/constants';
+import { generateTestId } from '@utils/misc';
+import { TRADE } from '@src/constants/elements';
 import HISTORY_TYPES from '@src/components/DexHistoryItem';
 import { MAX_ERROR_TRIED, NOT_CHANGE_STATUS, RETRY_STATUS } from '@src/redux/actions/dex';
 import { mainStyle } from '@screens/Dex/style';

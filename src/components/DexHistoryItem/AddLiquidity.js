@@ -2,16 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Icon } from 'react-native-elements';
+import { generateTestId } from '@utils/misc';
+import { TRADE } from '@src/constants/elements';
 import {View, Text, ActivityIndicator, TouchableOpacity} from '@components/core';
 import { COLORS } from '@src/styles';
 import formatUtils from '@utils/format';
 import stylesheet from './style';
 
 const AddLiquidityHistory = ({ token1, token2, status, onPress, isLastItem, style }) => (
-  <TouchableOpacity style={[stylesheet.history, stylesheet.row, isLastItem && stylesheet.lastItem, style]} onPress={onPress}>
+  <TouchableOpacity accessible={false} style={[stylesheet.history, stylesheet.row, isLastItem && stylesheet.lastItem, style]} onPress={onPress}>
     <View style={[stylesheet.shortInfo]}>
-      <Text style={stylesheet.historyType}>Add liquidity</Text>
-      <Text style={stylesheet.shortDesc} numberOfLines={2}>
+      <Text {...generateTestId(TRADE.TITLE)} style={stylesheet.historyType}>Add liquidity</Text>
+      <Text {...generateTestId(TRADE.CONTENT)} style={stylesheet.shortDesc} numberOfLines={2}>
         {formatUtils.amountFull(token1.TokenAmount || 0, token1.PDecimals)} {token1.TokenSymbol}
         &nbsp;+ {formatUtils.amountFull(token2.TokenAmount || 0, token2.PDecimals)} {token2.TokenSymbol}
       </Text>
@@ -19,7 +21,7 @@ const AddLiquidityHistory = ({ token1, token2, status, onPress, isLastItem, styl
     <View style={[stylesheet.textRight, stylesheet.row, stylesheet.historyStatus]}>
       {status === undefined ?
         <ActivityIndicator size="small" style={stylesheet.textRight} /> :
-        <Text style={[stylesheet.textRight, stylesheet[status]]}>{_.capitalize(status)}</Text>
+        <Text {...generateTestId(TRADE.STATUS)} style={[stylesheet.textRight, stylesheet[status]]}>{_.capitalize(status)}</Text>
       }
       <View style={stylesheet.icon}>
         <Icon name="chevron-right" color={COLORS.lightGrey1} />

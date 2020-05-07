@@ -4,21 +4,23 @@ import _ from 'lodash';
 import { Icon } from 'react-native-elements';
 import {View, Text, ActivityIndicator, TouchableOpacity} from '@components/core';
 import { COLORS } from '@src/styles';
+import { generateTestId } from '@utils/misc';
+import { TRADE } from '@src/constants/elements';
 import formatUtils from '@utils/format';
 import stylesheet from './style';
 
 const WithdrawHistory = ({ amount, tokenSymbol, pDecimals, account, status, onPress, isLastItem, style }) => (
-  <TouchableOpacity style={[stylesheet.history, stylesheet.row, isLastItem && stylesheet.lastItem, style]} onPress={onPress}>
+  <TouchableOpacity accessible={false} style={[stylesheet.history, stylesheet.row, isLastItem && stylesheet.lastItem, style]} onPress={onPress}>
     <View style={[stylesheet.shortInfo]}>
-      <Text style={stylesheet.historyType}>Withdraw</Text>
-      <Text style={stylesheet.shortDesc} numberOfLines={2}>
+      <Text {...generateTestId(TRADE.TITLE)} style={stylesheet.historyType}>Withdraw</Text>
+      <Text {...generateTestId(TRADE.CONTENT)} style={stylesheet.shortDesc} numberOfLines={2}>
         {`${formatUtils.amountFull(amount, pDecimals)} ${tokenSymbol} to ${account}`}
       </Text>
     </View>
     <View style={[stylesheet.textRight, stylesheet.row, stylesheet.historyStatus]}>
       {status === undefined ?
         <ActivityIndicator size="small" style={stylesheet.textRight} /> :
-        <Text style={[stylesheet.textRight, stylesheet[status]]}>{_.capitalize(status)}</Text>
+        <Text {...generateTestId(TRADE.STATUS)} style={[stylesheet.textRight, stylesheet[status]]}>{_.capitalize(status)}</Text>
       }
       <View style={stylesheet.icon}>
         <Icon name="chevron-right" color={COLORS.lightGrey1} />

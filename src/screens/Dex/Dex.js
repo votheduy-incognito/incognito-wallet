@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {View, Image, Text, ScrollView, RefreshControl, TouchableOpacity} from '@src/components/core';
+import { View, Image, Text, ScrollView, RefreshControl, TouchableOpacity } from '@src/components/core';
 import OptionMenu from '@components/OptionMenu/OptionMenu';
 import withdrawBlack from '@assets/images/icons/withdraw_black.png';
 import DepositGuide from '@screens/Dex/components/DepositGuide';
@@ -12,8 +12,10 @@ import addLiquidityIcon from '@src/assets/images/icons/add_liquidity_icon.png';
 import removeLiquidityIcon from '@src/assets/images/icons/remove_liquidity_icon.png';
 import dexUtils from '@utils/dex';
 import COLORS from '@src/styles/colors';
-import {logEvent} from '@services/firebase';
-import {CONSTANT_EVENTS} from '@src/constants';
+import { generateTestId } from '@utils/misc';
+import { TRADE } from '@src/constants/elements';
+import { logEvent } from '@services/firebase';
+import { CONSTANT_EVENTS } from '@src/constants';
 import BackButton from '@components/BackButton/index';
 import GetStartedInvest from '@screens/Dex/components/GetStartedInvest';
 import AddPool from './components/AddPool';
@@ -111,7 +113,7 @@ class Dex extends React.Component {
     const { isLoading } = this.props;
 
     if (!isLoading) {
-      this.setState({mode});
+      this.setState({ mode });
     }
   }
 
@@ -134,17 +136,17 @@ class Dex extends React.Component {
 
   updateTradeParams = (params, cb) => {
     const { tradeParams } = this.state;
-    this.setState({ tradeParams : { ...tradeParams, ...params }}, cb);
+    this.setState({ tradeParams: { ...tradeParams, ...params } }, cb);
   };
 
   updateAddLiquidityParams = (params, cb) => {
     const { addLiquidityParams } = this.state;
-    this.setState({ addLiquidityParams : { ...addLiquidityParams, ...params }}, cb);
+    this.setState({ addLiquidityParams: { ...addLiquidityParams, ...params } }, cb);
   };
 
   updateRemoveLiquidityParams = (params, cb) => {
     const { removeLiquidityParams } = this.state;
-    this.setState({ removeLiquidityParams : { ...removeLiquidityParams, ...params }}, cb);
+    this.setState({ removeLiquidityParams: { ...removeLiquidityParams, ...params } }, cb);
   };
 
   renderModes() {
@@ -152,20 +154,22 @@ class Dex extends React.Component {
     return (
       <View style={dexStyle.header}>
         <BackButton size={20} width={20} />
-        <TouchableOpacity style={dexStyle.mode} onPress={() => this.showPopUp('deposit')}>
+        <TouchableOpacity accessible={false} style={dexStyle.mode} onPress={() => this.showPopUp('deposit')}>
           <Image source={depositIcon} />
-          <Text style={dexStyle.modeText}>Deposit</Text>
+          <Text {...generateTestId(TRADE.DEPOSIT)} style={dexStyle.modeText}>Deposit</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={dexStyle.mode} onPress={() => this.changeMode(MODES.SWAP)}>
+        <TouchableOpacity accessible={false} style={dexStyle.mode} onPress={() => this.changeMode(MODES.SWAP)}>
           <Image source={tradeIcon} />
-          <Text style={[dexStyle.modeText, mode === MODES.SWAP && dexStyle.active]}>Trade</Text>
+          <Text {...generateTestId(TRADE.TRADE)} style={[dexStyle.modeText, mode === MODES.SWAP && dexStyle.active]}>Trade</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={dexStyle.mode} onPress={() => this.changeMode(MODES.GET_STARTED_INVEST)}>
+        <TouchableOpacity accessible={false} style={dexStyle.mode} onPress={() => this.changeMode(MODES.GET_STARTED_INVEST)}>
           <Image source={addLiquidityIcon} />
-          <Text style={[
-            dexStyle.modeText,
-            (mode === MODES.ADD || mode === MODES.GET_STARTED_INVEST) && dexStyle.active
-          ]}
+          <Text
+            {...generateTestId(TRADE.LIQUIDITY)}
+            style={[
+              dexStyle.modeText,
+              (mode === MODES.ADD || mode === MODES.GET_STARTED_INVEST) && dexStyle.active
+            ]}
           >
             Invest
           </Text>
@@ -367,13 +371,13 @@ class Dex extends React.Component {
         <View style={[dexStyle.scrollViewContainer]}>
           <ScrollView refreshControl={this.renderRefreshControl()}>
             {this.renderMode()}
-            { mode !== MODES.GET_STARTED_INVEST && (
+            {mode !== MODES.GET_STARTED_INVEST && (
               <RecentHistory
                 histories={histories}
                 onGetHistoryStatus={onGetHistoryStatus}
                 navigation={navigation}
               />
-            ) }
+            )}
           </ScrollView>
         </View>
         {this.renderTransfer()}

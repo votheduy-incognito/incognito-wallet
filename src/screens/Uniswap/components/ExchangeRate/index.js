@@ -4,6 +4,8 @@ import {
   Text,
   View,
 } from '@src/components/core';
+import { generateTestId } from '@utils/misc';
+import { TRADE } from '@src/constants/elements';
 import style from './style';
 
 class ExchangeRate extends React.PureComponent {
@@ -25,7 +27,7 @@ class ExchangeRate extends React.PureComponent {
     return (
       <View style={style.twoColumns}>
         <Text style={[style.feeTitle]}>Exchange Rate:</Text>
-        <Text style={[style.fee, style.textRight, style.ellipsis]} numberOfLines={1}>
+        <Text {...generateTestId(TRADE.EXCHANGE_RATE)} style={[style.fee, style.textRight, style.ellipsis]} numberOfLines={1}>
           1 {inputToken.symbol} =&nbsp;
           {price}
           &nbsp;{outputToken?.symbol}
