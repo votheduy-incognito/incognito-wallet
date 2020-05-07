@@ -1,5 +1,6 @@
 import { CONSTANT_COMMONS } from '@src/constants';
-import {isIOS} from '@utils/platform';
+import { isIOS, isAndroid } from '@utils/platform';
+import { Platform } from 'react-native';
 
 export const detectToken = {
   ispETH: tokenId => tokenId === CONSTANT_COMMONS.TOKEN_ID.pETH,
@@ -9,8 +10,10 @@ export const detectToken = {
 };
 
 export const generateTestId = (id) => {
-  if (isIOS) {
+  if (isAndroid) {
+    return { accessibilityLabel: id, testID: id };
+  } else if (isIOS) {
     return { testID: id };
-  } 
-  return { accessibilityLabel: id, accessible: true };
+  }
+  return { accessibilityLabel: id, testID: id, accessible: true };
 };
