@@ -97,7 +97,7 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
     //   .map(item => item.account);
 
     const rewards = _.flatten(await Promise.all(accounts.map(account => getRewards(account.PaymentAddress))))
-      .filter(reward => reward.total);
+      .filter(reward => reward.total || reward.amount1 || reward.amount2);
     serverTime = (await getNodeTime()) - (TIME / 1000);
 
     // const rewards = await getRewards('12RqXMEeH55Yw9JRBSe84zd81GgnMvSnMKQTucm29LrM1GwmrMyDZGaoSDY8oBL47L281SRnKbFhFWAyDLDWkHxdkZuiunG6pMWyvSH');
