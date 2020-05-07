@@ -4,6 +4,7 @@ import {
   Modal,
   View, Text,
   TextInput,
+  TouchableOpacity
 } from 'react-native';
 import PropTypes from 'prop-types';
 import LoadingContainer from '@src/components/LoadingContainer';
@@ -76,9 +77,9 @@ class TxHistoryDetailContainer extends Component {
 
         }}
       >
-        <TouchableWithoutFeedback onPress={() => { this.setState({ shouldShowTxModal: false, errorTx: false, shouldEnableBtn: false }); }}>
+        <TouchableOpacity activeOpacity={0.9} onPress={() => { this.setState({ shouldShowTxModal: false, errorTx: false, shouldEnableBtn: false }); }}>
           <View style={styles.modalContainer}>
-            <TouchableWithoutFeedback onPress={() => { }}>
+            <TouchableOpacity activeOpacity={1} onPress={() => { }}>
               <View style={styles.modalContent}>
                 <Text style={styles.titleModal}>{'If you\'ve already sent funds to the deposit address, just enter your transaction ID here. Your balance will update within 24 hours.'}</Text>
                 <TextInput
@@ -112,9 +113,9 @@ class TxHistoryDetailContainer extends Component {
                   />
                 </View>
               </View>
-            </TouchableWithoutFeedback>
+            </TouchableOpacity>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
       </Modal>
     );
   }
