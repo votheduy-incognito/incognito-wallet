@@ -158,7 +158,7 @@ const SIZES = {
 
 const BORDER_RADIUS = {
   avatar: 12,
-  picker: 8,
+  picker: 12,
 };
 
 const SHADOW = {
@@ -199,9 +199,9 @@ const INPUT = {
       paddingVertical: 12,
       width: ScreenWidth * 0.4,
       paddingHorizontal: 10,
-      borderWidth: 1,
+      borderWidth: 0.5,
       borderColor: 'gray',
-      borderRadius: 4,
+      borderRadius: 8,
       color: 'black',
       paddingRight: 30, 
     },

@@ -4,9 +4,9 @@ import { ScreenWidth } from '@src/utils/devices';
 
 const style = StyleSheet.create({
   container: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
     padding: 20,
+    paddingTop: 0,
   },
   backBtn: {
     bottom: 10,
