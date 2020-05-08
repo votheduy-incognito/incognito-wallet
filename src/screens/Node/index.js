@@ -67,15 +67,17 @@ const updateBeaconInfo = async (listDevice) => {
         if (!_.has(data, 'AutoStaking')) {
           throw new CustomError(ErrorCode.FULLNODE_DOWN);
         }
-
-        committees = data;
+        committees = data || [];
       });
       promises.push(cPromise);
     }
 
     const rPromise = listRewardAmount()
       .then(async data => {
-        nodeRewards = data;
+        if (!data) {
+          throw new CustomError(ErrorCode.FULLNODE_DOWN);
+        }
+        nodeRewards = data || {};
         let tokenIds = [];
 
         _.forEach(nodeRewards, reward => tokenIds.push(Object.keys(reward)));
