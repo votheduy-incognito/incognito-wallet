@@ -10,10 +10,10 @@ export const detectToken = {
 };
 
 export const generateTestId = (id) => {
-  if (isAndroid) {
-    return { accessibilityLabel: id, testID: id };
-  } else if (isIOS) {
+  if (isAndroid()) {
+    return { accessibilityLabel: id };
+  } else if (isIOS()) {
     return { testID: id };
   }
-  return { accessibilityLabel: id, testID: id, accessible: true };
+  // return { accessibilityLabel: id, testID: id};
 };
