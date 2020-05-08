@@ -84,7 +84,7 @@ class TxHistoryDetailContainer extends Component {
                 <Text style={styles.titleModal}>{'If you\'ve already sent funds to the deposit address, just enter your transaction ID here. Your balance will update within 24 hours.'}</Text>
                 <TextInput
                   onChangeText={text => {
-                    if (text === '' || text.trim().length === 0) {
+                    if (text.replace(/ /g, '').length === 0) {
                       this.setState({ errorTx: true, shouldEnableBtn: false });
                     } else {
                       this.setState({ txOutchain: text, errorTx: false, shouldEnableBtn: true });
