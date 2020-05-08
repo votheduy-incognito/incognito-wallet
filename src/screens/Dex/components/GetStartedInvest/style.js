@@ -10,7 +10,8 @@ const offset = deviceHeight < 700 ? 5 : 15;
 export default StyleSheet.create({
   container: {
     paddingVertical: offset,
-    paddingHorizontal: 40
+    paddingHorizontal: 40,
+    height: '100%',
   },
   title: {
     fontSize: 24,

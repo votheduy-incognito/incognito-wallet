@@ -324,8 +324,6 @@ class Withdraw extends React.Component {
       return validator.combinedBNBAddress;
     } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.NEO) {
       return validator.combinedNEOAddress;
-    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.XMR) {
-      return validator.combinedXMRAddress;
     } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ZEN) {
       return validator.combinedZenAddress;
     } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ZCL) {

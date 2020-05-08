@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {ActivityIndicator, Button, Image, Text, View} from '@components/core';
+import {ActivityIndicator, Button, Image, ScrollView, Text, View} from '@components/core';
 
 import icBTC from '@src/assets/images/coins/ic_btc.png';
 import icPRV from '@src/assets/images/coins/ic_prv.png';
@@ -15,6 +15,7 @@ import {CONSTANT_COMMONS} from '@src/constants';
 import {PRV_ID} from '@screens/Dex/constants';
 import format from '@utils/format';
 import {getNodeTime} from '@services/wallet/RpcClientService';
+import {RefreshControl} from 'react-native';
 import styles from './style';
 
 const items = [
@@ -51,12 +52,13 @@ const items = [
 ];
 
 let rewardInterval;
-const TIME = 5000;
+const TIME = 100;
 let serverTime = 0;
 
 const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
   const [loading, setLoading] = React.useState(true);
   const [rewards, setRewards] = React.useState(null);
+  const [reloading, setReloading] = React.useState(false);
   const [totalReward, setTotalReward] = React.useState(0);
 
   const isUserPair = (tokenIds) => key => {
@@ -70,31 +72,32 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
   };
 
   const loadData = async () => {
-    const investAccounts = pairs
-      .map(pairInfo => {
-        const tokenIds = pairInfo.keys;
-        const token1 = tokens.find(item => item.id === tokenIds[0]);
-        const token2 = tokens.find(item => item.id === tokenIds[1]);
-        const shareKey = findShareKey(shares, tokenIds);
+    clearInterval(rewardInterval);
+    // const investAccounts = pairs
+    //   .map(pairInfo => {
+    //     const tokenIds = pairInfo.keys;
+    //     const token1 = tokens.find(item => item.id === tokenIds[0]);
+    //     const token2 = tokens.find(item => item.id === tokenIds[1]);
+    //     const shareKey = findShareKey(shares, tokenIds);
+    //
+    //     if (!shareKey || !(
+    //       (tokenIds[0] === PRV_ID && token2.hasIcon) ||
+    //       (tokenIds[1] === PRV_ID && token1.hasIcon) ||
+    //       (token1.hasIcon && token2.hasIcon)
+    //     )) {
+    //       return null;
+    //     }
+    //
+    //     return {
+    //       share: shares[shareKey],
+    //       account: accounts.find(account => shareKey.includes(account.PaymentAddress)),
+    //     };
+    //   })
+    //   .filter(pair => pair && pair.share > 0)
+    //   .map(item => item.account);
 
-        if (!shareKey || !(
-          (tokenIds[0] === PRV_ID && token2.hasIcon) ||
-          (tokenIds[1] === PRV_ID && token1.hasIcon) ||
-          (token1.hasIcon && token2.hasIcon)
-        )) {
-          return null;
-        }
-
-        return {
-          share: shares[shareKey],
-          account: accounts.find(account => shareKey.includes(account.PaymentAddress)),
-        };
-      })
-      .filter(pair => pair && pair.share > 0)
-      .map(item => item.account);
-
-    const rewards = _.flatten(await Promise.all(investAccounts.map(account => getRewards(account.PaymentAddress))))
-      .filter(reward => reward.amount1 || reward.amount2);
+    const rewards = _.flatten(await Promise.all(accounts.map(account => getRewards(account.PaymentAddress))))
+      .filter(reward => reward.total || reward.amount1 || reward.amount2);
     serverTime = (await getNodeTime()) - (TIME / 1000);
 
     // const rewards = await getRewards('12RqXMEeH55Yw9JRBSe84zd81GgnMvSnMKQTucm29LrM1GwmrMyDZGaoSDY8oBL47L281SRnKbFhFWAyDLDWkHxdkZuiunG6pMWyvSH');
@@ -102,8 +105,18 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
     setLoading(false);
   };
 
+  const reloadData = async () => {
+    setReloading(true);
+    await loadData();
+    setReloading(false);
+  };
+
   const calculateOutputValue = (outputTokenId, inputTokenId, inputValue) => {
     try {
+      if (inputValue) {
+        return 0;
+      }
+
       const pair = pairs.find(i => {
         const keys = Object.keys(i);
         return keys.includes(outputTokenId) && keys.includes(inputTokenId);
@@ -124,7 +137,7 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
     let totalReward = 0;
     rewards.forEach(reward => {
       const {amount1, amount2, tokenId1, tokenId2, interestRate1, interestRate2, total, beaconTime} = reward;
-      serverTime += Math.floor(TIME / 1000);
+      serverTime += (TIME / 1000);
 
       const time = serverTime - beaconTime;
 
@@ -155,8 +168,11 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
   };
 
   React.useEffect(() => {
-    clearInterval(rewardInterval);
     loadData();
+
+    return () => {
+      clearInterval(rewardInterval);
+    };
   }, []);
 
   React.useEffect(() => {
@@ -177,7 +193,14 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
 
   if (rewards && rewards.length > 0) {
     return (
-      <InvestReward reward={totalReward} onPress={onPress} />
+      <ScrollView
+        style={{ height: '100%' }}
+        refreshControl={
+          <RefreshControl refreshing={reloading} onRefresh={reloadData} />
+        }
+      >
+        <InvestReward reward={totalReward} onPress={onPress} />
+      </ScrollView>
     );
   }
 

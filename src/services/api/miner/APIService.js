@@ -3,13 +3,13 @@
  */
 import User from '@models/user';
 import NetInfo from '@react-native-community/netinfo';
-import { CONSTANT_CONFIGS, CONSTANT_MINER } from '@src/constants';
-import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
+import {CONSTANT_CONFIGS, CONSTANT_MINER} from '@src/constants';
+import {CustomError, ErrorCode, ExHandler} from '@src/services/exception';
 import http from '@src/services/http';
 import Util from '@src/utils/Util';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
-import { Platform } from 'react-native';
+import {Platform} from 'react-native';
 import API from './api';
 
 
@@ -35,26 +35,26 @@ export default class APIService {
     return url;
   }
 
-  static async getURL(method, url, params, isLogin, isBuildFormData = true) {
+  static async getURL(method, url, params, isLogin,isBuildFormData = true) {
 
-    console.log(TAG, 'getURL :', url);
+    console.log(TAG,'getURL :', url);
     // console.log(TAG,'getURL Params:', params);
     let header = {};
     let user = {};
     const isConnected = await NetInfo.fetch();
     // console.log('isConnected==>', isConnected);
-    if (!isConnected) {
-      return { status: 0, data: { message: 'Internet is offline' } };
+    if (!isConnected){
+      return {status: 0, data: {message:'Internet is offline'}} ;
 
     }
 
-    if (isLogin) {
-      const userObject: User = await LocalDatabase.getUserInfo();
-      user = userObject?.data || {};
+    if (isLogin){
+      const userObject:User = await LocalDatabase.getUserInfo();
+      user = userObject?.data||{};
       // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IjFENUVBQUMzLUQzMTUtNEIxQy1CNEI1LTZBQkFEMUM2MzBDREBtaW5lclguY29tIiwiZXhwIjoxNTc1MjA5ODI2LCJpZCI6MTU5MzI2fQ.GChhKLlRC9IVzr7HwwBbo41JllOBH8gX2PuyWO6UVpM';
       const token = user.token;
-      console.log(TAG, 'getURL token', token);
-      header = {
+      console.log(TAG,'getURL token',token);
+      header= {
         'Authorization': `${AUTHORIZATION_FORMAT} ${token}`
       };
     }
@@ -74,21 +74,24 @@ export default class APIService {
         //   // throw new Error(res.statusText);
         //   return {status: 0, data: ''};
         // }
-        if (res && res.error) {
+        if (res && res.error){
           //throw new Error(res.error);
-          return { status: 0, data: '' };
+          return {status: 0, data: ''} ;
         }
-        if (res.status == 200) {
+        if (res.status == 200){
           const resJson = await res.json();
           // console.log(TAG,'getURL Response data:', resJson);
           return resJson;
-        } else if (res.status == 401) {
-          console.log(TAG, 'getURL 401 -----');
+        }else if (res.status == 401){
+          console.log(TAG,'getURL 401 -----');
           let response = await APIService.handleRefreshToken(method, url, params, isLogin, user);
           return response;
-        } else {
-          return { status: 0, data: '' };
+        }else {
+          return {status: 0, data: ''} ;
+
         }
+
+
       } catch (error) {
         console.debug('API ERROR', error);
         throw error;
@@ -99,16 +102,16 @@ export default class APIService {
       try {
         header = {
           ...header,
-          Accept: 'application/json'
+          Accept:'application/json'
         };
         // header['Accept'] = 'application/json';
         let formData = JSON.stringify(params);
-        if (isBuildFormData) {
+        if(isBuildFormData){
           formData = new FormData();
           var isUpload = false;
           for (var k in params) {
 
-            if (k == 'image' || k == 'image_file') {
+            if (k == 'image' || k== 'image_file'){
               isUpload = true;
               //const isExist = await APIService.isExist(params[k])
               //console.log('File exist:', isExist)
@@ -118,17 +121,17 @@ export default class APIService {
                 name: 'photo.jpg',
               };
               formData.append(k, photo);
-            } else {
+            }else {
               formData.append(k, params[k]);
 
             }
 
-            //formData.append(k, params[k]);
+          //formData.append(k, params[k]);
           }
-          console.log(TAG, 'Form data: ', formData);
+          console.log(TAG,'Form data: ', formData);
           header['Content-Type'] = 'multipart/form-data';
 
-        } else {
+        }else{
           header['Content-Type'] = 'application/json';
 
         }
@@ -136,35 +139,35 @@ export default class APIService {
         const res = await fetch(url, {
           method: method,
           headers: header,
-          body: formData
+          body:formData
         });
         // console.log('Response:', res);
         // console.log('Header: ', header);
         // console.log('Resonse Status:', res.status);
-        if (res && res.error) {
+        if (res && res.error){
           //throw new Error(res.error);
-          return { status: 0, data: '' };
+          return {status: 0, data: ''} ;
         }
 
-        if (res.status == 200) {
-          const resJson = await res.json().catch(e => console.warn(TAG, 'getURL fail template json = ', e)) || { status: 1 };
+        if (res.status == 200){
+          const resJson = await res.json().catch(e=>console.warn(TAG,'getURL fail template json = ',e))||{status:1};
           // if(__DEV__ && _.includes(JSON.stringify(res),'https://hooks.slack.com/services/T06HPU570/BNVDZPZV4')){
           //   console.log(TAG,'getURL Response full',JSON.stringify(res));
           // }
           return resJson;
-        } else if (res.status == 401) {
+        }else if (res.status == 401){
 
           let response = await APIService.handleRefreshToken(method, url, params, isLogin, user);
           return response;
-        } else {
-          return { status: 0, data: '' };
+        }else {
+          return {status: 0, data: ''} ;
 
         }
 
 
       } catch (error) {
         console.log('Error: ', url, error);
-        return { status: 0, error: error.message };
+        return {status: 0, error: error.message} ;
 
       }
     } else if (method === METHOD.DELETE) {
@@ -176,66 +179,66 @@ export default class APIService {
           headers: header
         });
         console.log('Header: ', header);
-        if (res && res.error) {
+        if (res && res.error){
           //throw new Error(res.error);
-          return { status: 0, data: '' };
+          return {status: 0, data: ''} ;
         }
-        if (res.status == 200) {
+        if (res.status == 200){
           const resJson = await res.json();
-          console.log(TAG, 'Response data:', resJson);
+          console.log(TAG,'Response data:', resJson);
           return resJson;
-        } else if (res.status == 401) {
+        }else if (res.status == 401){
 
           let response = await APIService.handleRefreshToken(method, url, params, isLogin, user);
           return response;
-        } else {
-          return { status: 0, data: '' };
+        }else {
+          return {status: 0, data: ''} ;
 
         }
       } catch (error) {
         console.warn(error);
-        return { status: 0, error: error.message };
+        return {status: 0, error: error.message} ;
 
       }
     }
   }
 
-  static async handleRefreshToken(method, url, params, isLogin, user) {
+  static async handleRefreshToken(method, url, params, isLogin, user){
     console.log('handleRefreshToken');
     console.log('User---------:', user);
-    const header = {
+    const header= {
       'Authorization': `${AUTHORIZATION_FORMAT} ${user.refresh_token}`
     };
     let URL = API.REFRESH_TOKEN_API;
     console.log('URL build :', URL);
-    try {
+    try{
       const res = await fetch(URL, {
         method: 'POST',
         credentials: 'include',
         headers: header
       });
       console.log('Header:', header);
-      if (res && res.error) {
+      if (res && res.error){
         //throw new Error(res.error);
-        return { status: 0, data: '' };
+        return {status: 0, data: ''} ;
       }
-      if (res.status == 200) {
+      if (res.status == 200){
         const resJson = await res.json();
         console.log('Response data:', resJson);
         const { status, data } = resJson;
-        if (status) {
-          const { token } = data;
+        if (status){
+          const {token} = data;
           user.token = token;
-          if (!_.isEmpty(token)) {
-            console.log(TAG, 'handleRefreshToken save local');
+          if(!_.isEmpty(token)){
+            console.log(TAG,'handleRefreshToken save local');
             await LocalDatabase.saveUserInfo(JSON.stringify(user));
           }
 
 
-          let response = await APIService.getURL(method, url, params, isLogin);
+          let response =  await APIService.getURL(method, url, params, isLogin);
 
           return response;
-        } else {
+        }else {
           return null;
         }
 
@@ -243,7 +246,7 @@ export default class APIService {
       // else if (res.status == 401){
       //   return APIService.handleRefreshToken(user);
       // }
-    } catch (error) {
+    }catch(error){
       console.log('Error:', error);
       return null;
     }
@@ -256,8 +259,8 @@ export default class APIService {
     return response;
   }
 
-  static async sendValidatorKey(ipAdrress, { type, data }) {
-    if (!_.isEmpty(data)) {
+  static async sendValidatorKey(ipAdrress,{type,data}) {
+    if(!_.isEmpty(data)){
       const url = `http://${ipAdrress}:5000/init-node`;
       const buildParams = {
         'type': type,
@@ -273,8 +276,8 @@ export default class APIService {
 
       console.log('buildParams', buildParams);
 
-      const response = await APIService.getURL(METHOD.POST, url, buildParams, false, false);
-      console.log(TAG, 'sendValidatorKey:', response);
+      const response = await APIService.getURL(METHOD.POST, url, buildParams, false,false);
+      console.log(TAG,'sendValidatorKey:', response);
       return response;
     }
     return null;
@@ -295,8 +298,8 @@ export default class APIService {
     try {
       const ipAdrress = '10.42.0.1';
       const url = `http://${ipAdrress}:5000`;
-      const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.GET, url, {}), 3);
-      console.log(TAG, 'pingHotspot:', response);
+      const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.GET, url, {}),3);
+      console.log(TAG,'pingHotspot:', response);
       return !_.isEmpty(response);
     } catch (error) {
       return null;
@@ -361,11 +364,11 @@ export default class APIService {
     const response = await APIService.getURL(METHOD.GET, url, {}, true);
     let { status, data = [] } = response;
     if (isNeedFilter && status === 1) {
-      data = data.filter(item => {
-        return _.includes(item.platform, CONSTANT_MINER.PRODUCT_TYPE) && item.is_checkin == 1;
+      data  = data.filter(item =>{
+        return _.includes(item.platform, CONSTANT_MINER.PRODUCT_TYPE)&& item.is_checkin == 1;
       });
     }
-    return { status, data };
+    return {status,data};
   }
   static async requestStake({
     ProductID,
@@ -379,15 +382,15 @@ export default class APIService {
     if (!ValidatorKey) return throw new Error('Missing ValidatorKey');
 
     const response = await http.post('pool/request-stake', {
-      ProductID: ProductID,
-      ValidatorKey: ValidatorKey,
+      ProductID:ProductID,
+      ValidatorKey:ValidatorKey ,
       QRCode: qrCodeDeviceId,
-      PaymentAddress: PaymentAddress
+      PaymentAddress:PaymentAddress
     });
 
     return {
-      status: !_.isEmpty(response) ? 1 : 0,
-      data: response
+      status:!_.isEmpty(response) ? 1:0,
+      data:response
     };
   }
 
@@ -397,7 +400,7 @@ export default class APIService {
     return http.get('pool/request-stake',
       {
         params: {
-          PaymentAddress: PaymentAddress
+          PaymentAddress:PaymentAddress
         }
       });
   }
@@ -412,60 +415,60 @@ export default class APIService {
     const response = await http.post('auth/airdrop1', {
       WalletAddress: WalletAddress,
       pDexWalletAddress
-    }).catch(console.log) ?? false;
-    console.log(TAG, 'airdrop1 end = ', response);
+    }).catch(console.log)??false;
+    console.log(TAG,'airdrop1 end = ',response);
     return {
-      status: response ? 1 : 0,
-      data: response
+      status:response ?1:0,
+      data:response
     };
   }
 
-  static async qrCodeCheck({ QRCode }) {
+  static async qrCodeCheck({QRCode}) {
     if (!QRCode) return throw new Error('Missing QRCode');
     try {
       let response = await http.post('pool/qr-code-check', {
-        QRCode: QRCode
+        QRCode:QRCode
       });
-      const status = _.isBoolean(response) && response ? 1 : 0;
-      console.log(TAG, 'qrCodeCheck end = ', response);
+      const status = _.isBoolean(response) && response ?1:0;
+      console.log(TAG,'qrCodeCheck end = ',response);
       return {
-        status: status,
-        data: response
+        status:status,
+        data:response
       };
     } catch (error) {
-      const message = new ExHandler(error, 'QR-Code is invalid. Please try again').message;
+      const message = new ExHandler(error,'QR-Code is invalid. Please try again').message;
       return {
-        status: 0,
-        data: message
+        status:0,
+        data:message
       };
     }
 
   }
 
-  static async trackLog({ action = '', message = '', rawData = '', status = 1 }) {
+  static async trackLog({action='',message='',rawData='',status=1}) {
     if (!action) return null;
     try {
       const phoneInfo = Util.phoneInfo();
       const url = API.TRACK_LOG;
       const buildParams = {
         'os': `${Platform.OS}-${CONSTANT_CONFIGS.BUILD_VERSION}-${phoneInfo}`,
-        'action': `${CONSTANT_CONFIGS.isMainnet ? '' : 'TEST-'}${action}`,
-        'message': message,
+        'action': `${CONSTANT_CONFIGS.isMainnet?'':'TEST-'}${action}`,
+        'message':message,
         'rawData': rawData,
-        'status': status
+        'status':status
       };
-      const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, url, buildParams, false, false), 3);
+      const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, url,buildParams,false,false),3);
 
-      const status = _.isEmpty(response) ? 0 : 1;
-      console.log(TAG, 'trackLog end = ', response);
+      const status = _.isEmpty(response) ?0:1;
+      console.log(TAG,'trackLog end = ',response);
       return {
-        status: status,
-        data: response
+        status:status,
+        data:response
       };
     } catch (error) {
       return {
-        status: 0,
-        data: null
+        status:0,
+        data:null
       };
     }
 
@@ -485,19 +488,19 @@ export default class APIService {
     if (!QRCode) return throw new Error('Missing QRCode');
     try {
       let response = await http.post('stake/qr-code-check-get-wifi', {
-        QRCode: QRCode
+        QRCode:QRCode
       });
-      const { WifiName = '', Status = false } = response ?? {};
-      console.log(TAG, 'qrCodeCheckGetWifi end = ', response);
+      const {WifiName ='', Status = false} = response??{};
+      console.log(TAG,'qrCodeCheckGetWifi end = ',response);
       return {
-        status: Status ? 1 : 0,
-        data: response
+        status:Status?1:0,
+        data:response
       };
     } catch (error) {
-      const message = new ExHandler(error, 'QR-Code is invalid. Please try again').message;
+      const message = new ExHandler(error,'QR-Code is invalid. Please try again').message;
       return {
-        status: 0,
-        data: message
+        status:0,
+        data:message
       };
     }
 

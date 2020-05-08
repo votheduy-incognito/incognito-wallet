@@ -12,8 +12,6 @@ import addLiquidityIcon from '@src/assets/images/icons/add_liquidity_icon.png';
 import removeLiquidityIcon from '@src/assets/images/icons/remove_liquidity_icon.png';
 import dexUtils from '@utils/dex';
 import COLORS from '@src/styles/colors';
-import {logEvent} from '@services/firebase';
-import {CONSTANT_EVENTS} from '@src/constants';
 import BackButton from '@components/BackButton/index';
 import GetStartedInvest from '@screens/Dex/components/GetStartedInvest';
 import AddPool from './components/AddPool';
@@ -92,7 +90,6 @@ class Dex extends React.Component {
   componentDidMount() {
     const { navigation } = this.props;
     this.listener = navigation.addListener('didFocus', async () => {
-      const { mode } = this.state;
       const { navigation } = this.props;
       if (navigation.state?.params?.mode) {
         const mode = navigation.state.params.mode;
@@ -120,6 +117,12 @@ class Dex extends React.Component {
   };
 
   closePopUp = () => {
+    const { mode } = this.state;
+
+    if (mode === MODES.GET_STARTED_INVEST) {
+      this.setState({ mode: MODES.ADD });
+    }
+
     this.setState({ transferAction: null });
   };
 
@@ -361,11 +364,12 @@ class Dex extends React.Component {
   render() {
     const { histories, onGetHistoryStatus, navigation } = this.props;
     const { showDepositGuide, mode } = this.state;
+    const Wrapper = mode === MODES.GET_STARTED_INVEST ? View : ScrollView;
     return (
       <View style={mainStyle.wrapper}>
         {this.renderHeader()}
         <View style={[dexStyle.scrollViewContainer]}>
-          <ScrollView refreshControl={this.renderRefreshControl()}>
+          <Wrapper refreshControl={this.renderRefreshControl()}>
             {this.renderMode()}
             { mode !== MODES.GET_STARTED_INVEST && (
               <RecentHistory
@@ -374,7 +378,7 @@ class Dex extends React.Component {
                 navigation={navigation}
               />
             ) }
-          </ScrollView>
+          </Wrapper>
         </View>
         {this.renderTransfer()}
         <DepositGuide

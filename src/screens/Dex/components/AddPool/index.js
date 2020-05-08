@@ -21,10 +21,10 @@ import NetworkFee from '@screens/Dex/components/NetworkFee';
 import AddSuccessDialog from '@screens/Dex/components/AddSuccessDialog';
 import CODE from '@src/services/exception/customError/code';
 import { ExHandler } from '@services/exception';
-import { DEFAULT_FEE } from '@components/EstimateFee/EstimateFee.utils';
+import { DEFAULT_FEE, DEFAULT_MULTIPLY } from '@components/EstimateFee/EstimateFee.utils';
 import Input from '../Input';
 import Loading from '../Loading';
-import { DEX_CHAIN_ACCOUNT, MESSAGES, MIN_INPUT, MULTIPLY, PRV_ID, SECOND } from '../../constants';
+import { DEX_CHAIN_ACCOUNT, MESSAGES, MIN_INPUT, PRV_ID, SECOND } from '../../constants';
 import { mainStyle } from '../../style';
 
 class Pool extends React.Component {
@@ -63,49 +63,41 @@ class Pool extends React.Component {
   }
 
   estimateFeeForMainCrypto = (amount) => {
-    try {
-      const { account, wallet } = this.props;
-      const fromAddress = account.PaymentAddress;
-      const accountWallet = wallet.getAccountByName(account?.AccountName);
-      return getEstimateFeeForNativeToken(
-        fromAddress,
-        DEX_CHAIN_ACCOUNT.PaymentAddress,
-        amount,
-        accountWallet,
-      );
-    } catch(e){
-      throw e;
-    }
+    const { account, wallet } = this.props;
+    const fromAddress = account.PaymentAddress;
+    const accountWallet = wallet.getAccountByName(account?.AccountName);
+    return getEstimateFeeForNativeToken(
+      fromAddress,
+      DEX_CHAIN_ACCOUNT.PaymentAddress,
+      amount,
+      accountWallet,
+    );
   };
 
   estimateFeeForToken = (token, amount) => {
-    try{
-      const { account, wallet } = this.props;
-      const fromAddress = account.PaymentAddress;
-      const accountWallet = wallet.getAccountByName(account?.AccountName);
-      const tokenObject = {
-        Privacy: true,
-        TokenID: token.id,
-        TokenName: '',
-        TokenSymbol: '',
-        TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
-        TokenAmount: amount,
-        TokenReceivers: {
-          PaymentAddress: DEX_CHAIN_ACCOUNT.PaymentAddress,
-          Amount: amount
-        }
-      };
+    const { account, wallet } = this.props;
+    const fromAddress = account.PaymentAddress;
+    const accountWallet = wallet.getAccountByName(account?.AccountName);
+    const tokenObject = {
+      Privacy: true,
+      TokenID: token.id,
+      TokenName: '',
+      TokenSymbol: '',
+      TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
+      TokenAmount: amount,
+      TokenReceivers: {
+        PaymentAddress: DEX_CHAIN_ACCOUNT.PaymentAddress,
+        Amount: amount
+      }
+    };
 
-      return getEstimateFeeForPToken(
-        fromAddress,
-        DEX_CHAIN_ACCOUNT.PaymentAddress,
-        amount,
-        tokenObject,
-        accountWallet,
-      );
-    } catch(e){
-      throw e;
-    }
+    return getEstimateFeeForPToken(
+      fromAddress,
+      DEX_CHAIN_ACCOUNT.PaymentAddress,
+      amount,
+      tokenObject,
+      accountWallet,
+    );
   };
 
   async estimateFee(token, amount) {
@@ -122,7 +114,7 @@ class Pool extends React.Component {
     }
 
     if (fee) {
-      return fee * MULTIPLY;
+      return fee * DEFAULT_MULTIPLY;
     }
   }
 
