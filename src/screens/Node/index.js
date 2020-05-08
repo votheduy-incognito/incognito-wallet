@@ -5,14 +5,14 @@ import BaseScreen from '@screens/BaseScreen';
 import NodeItem from '@screens/Node/components/NodeItem';
 import WelcomeNodes from '@screens/Node/components/Welcome';
 import { getTokenList } from '@services/api/token';
-import { CustomError, ErrorCode, ExHandler } from '@services/exception';
+import {CustomError, ErrorCode, ExHandler} from '@services/exception';
 import linkingService from '@services/linking';
 import NodeService from '@services/NodeService';
 import accountService from '@services/wallet/accountService';
 import {
   getBeaconBestStateDetail,
   getBlockChainInfo,
-  getListRewardAmount
+  listRewardAmount
 } from '@services/wallet/RpcClientService';
 import tokenService, { PRV } from '@services/wallet/tokenService';
 import { CONSTANT_CONFIGS, MESSAGES } from '@src/constants';
@@ -62,22 +62,20 @@ const updateBeaconInfo = async (listDevice) => {
   }
 
   if (currentHeight !== beaconHeight) {
-    if (!listDevice.every(device => committees.AutoStaking.find(node => node.MiningPubKey.bls === device.PublicKeyMining))) {
+    if(!listDevice.every(device => committees.AutoStaking.find(node => node.MiningPubKey.bls === device.PublicKeyMining))) {
       const cPromise = getBeaconBestStateDetail().then(data => {
-        if (!data || !_.has(data, 'Result') || !_.has(data?.Result, 'AutoStaking')) {
+        if (!_.has(data, 'AutoStaking')) {
           throw new CustomError(ErrorCode.FULLNODE_DOWN);
         }
-        committees = data?.Result || [];
+
+        committees = data;
       });
       promises.push(cPromise);
     }
 
-    const rPromise = getListRewardAmount()
+    const rPromise = listRewardAmount()
       .then(async data => {
-        if (!data || !_.has(data, 'Result')) {
-          throw new CustomError(ErrorCode.FULLNODE_DOWN);
-        }
-        nodeRewards = data?.Result || {};
+        nodeRewards = data;
         let tokenIds = [];
 
         _.forEach(nodeRewards, reward => tokenIds.push(Object.keys(reward)));
@@ -110,7 +108,7 @@ class Node extends BaseScreen {
       selectedIndex: 0,
       listDevice: [],
       loadedDevices: [],
-      balancePRV: 0,
+      balancePRV:0,
       timeToUpdate: Date.now(),
       isFetching: false,
       loading: false,
@@ -126,11 +124,11 @@ class Node extends BaseScreen {
     const { navigation } = this.props;
     this.listener = navigation.addListener('didFocus', () => {
 
-      const { setupNode } = navigation?.state?.params || this.props.navigation.dangerouslyGetParent()?.state?.params || {};
+      const {setupNode} = navigation?.state?.params || this.props.navigation.dangerouslyGetParent()?.state?.params || {};
 
       if (setupNode && !this.hasShowWelcomeNode) {
         this.hasShowWelcomeNode = true;
-        this.setState({ showWelcomeSetupNode: true });
+        this.setState({showWelcomeSetupNode: true});
       }
 
       this.handleRefresh();
@@ -151,7 +149,7 @@ class Node extends BaseScreen {
     this.handleRefresh();
   };
 
-  async componentWillMount() {
+  async componentWillMount(){
     await this.createSignIn();
   }
 
@@ -173,7 +171,7 @@ class Node extends BaseScreen {
     const user = await LocalDatabase.getUserInfo();
     if (_.isEmpty(user)) {
       this.setState({
-        loading: true
+        loading:true
       });
       const deviceId = DeviceInfo.getUniqueId();
       const params = {
@@ -193,7 +191,7 @@ class Node extends BaseScreen {
     }
   };
 
-  saveData = async (data): Promise<Array<Object>> => {
+  saveData = async (data):Promise<Array<Object>> => {
     let filterProducts = [];
     if (data) {
       const {
@@ -287,25 +285,23 @@ class Node extends BaseScreen {
     }
   };
 
-  handleAddVirtualNodePress = () => {
+  handleAddVirtualNodePress=()=>{
     this.goToScreen(routeNames.AddSelfNode);
   };
 
-  handleAddNodePress = () => {
+  handleAddNodePress=()=>{
     this.goToScreen(routeNames.GetStaredAddNode);
   };
 
   handlePressRemoveDevice = (item) => {
     const { listDevice } = this.state;
-    Alert.alert('Confirm', 'Are you sure to delete this item?', [
-      {
-        text: 'Yes', onPress: async () => {
-          const newList = await LocalDatabase.removeDevice(item, listDevice);
-          this.setState({ listDevice: newList });
-        }
-      },
+    Alert.alert('Confirm','Are you sure to delete this item?',[
+      { text:'Yes', onPress:async () => {
+        const newList = await LocalDatabase.removeDevice(item, listDevice);
+        this.setState({ listDevice: newList });
+      }},
       { text: 'Cancel' }
-    ], { cancelable: true });
+    ],{ cancelable: true });
   };
 
   handlePressWithdraw = onClickView(async (device) => {
@@ -332,7 +328,7 @@ class Node extends BaseScreen {
         const message = MESSAGES.PNODE_WITHDRAWAL;
         this.showToastMessage(message);
       }
-    } catch (error) {
+    } catch(error) {
       new ExHandler(error).showErrorToast(true);
     } finally {
       this.setState({ loading: false });
@@ -410,7 +406,7 @@ class Node extends BaseScreen {
         >
           <FlatList
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={[{ flexGrow: 1 }]}
+            contentContainerStyle={[{ flexGrow: 1}]}
             style={style.list}
             data={listDevice}
             keyExtractor={item => String(item.ProductId)}
