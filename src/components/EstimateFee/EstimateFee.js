@@ -156,10 +156,6 @@ class EstimateFee extends Component {
                   name='fee'
                   placeholder='Enter new fee'
                   style={styles.changeFeeInput}
-                  validate={[
-                    ...feeValidator,
-                    ...minFeeValidator ? [minFeeValidator] : []
-                  ]}
                 />
               </View>
               <View style={styles.changeFeeBtnGroup}>
