@@ -549,4 +549,13 @@ export default class APIService {
     };
     return APIService.getURL(METHOD.POST, url, params, false, false);
   }
+  // Get list pToken support for buying device
+  static async getPTokenSupportForBuyingDevice() {
+    return http.get('order/tokens-support');
+  }
+  // Checkout device
+  static async checkOutOrder() {
+    
+    return http.get('order/tokens-support');
+  }
 }

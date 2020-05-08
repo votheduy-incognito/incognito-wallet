@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Animated } from 'react-native';
+import { Animated, RefreshControl } from 'react-native';
 import { Text, Button, View, Image, ScrollView } from '@components/core';
 import nodeImg from '@src/assets/images/node_buy.png';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
@@ -19,6 +19,8 @@ import LogManager from '@src/services/LogManager';
 import { Dropdown } from 'react-native-material-dropdown';
 import { checkEmailValid, checkFieldEmpty } from '@src/utils/validator';
 import APIService from '@src/services/api/miner/APIService';
+import Exception from '@src/services/exception/ex';
+import TokenCustomSelect from '@src/components/TokenSelect/TokenCustomSelect';
 import styles from './style';
 
 const dataCountry = require('../../assets/rawdata/country.json');
@@ -35,22 +37,26 @@ const EMAIL = 'email';
 // For animated total view
 const HEADER_MAX_HEIGHT = 120;
 const HEADER_MIN_HEIGHT = 0;
-const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 const BuyNodeScreen = () => {
+  let scrollViewRef = useRef();
+
   const [errTf, setErrTF] = useState({});
   const [regions, setRegions] = useState([]);
   const [shippingFee, setShippingFee] = useState(0);
   const [price, setPrice] = useState(399);
-  let scrollViewRef = useRef();
+  const [currentTokenId, setCurrentTokenId] = useState('0000000000000000000000000000000000000000000000000000000000000004');
+  const [pTokenSupport, setPTokenSupport] = useState([]);
+
   const [showContactForShipping, setShowContactForShipping] = useState(false);
-  const [formIsValid, setFormValid] = useState(true);
-  const dispatch = useDispatch();
+
   const [currentQuantity, setCurrentQuantity] = useState(1);
   const [contactData, setContactData] = useState({});
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
+
   const [yTotal, setYTotal] = useState(0);
   const [yContact, setYContact] = useState(0);
+
   const quantityItems = [
     {
       label: '1',
@@ -74,13 +80,28 @@ const BuyNodeScreen = () => {
     },
   ];
 
+  const dispatch = useDispatch();
+  const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const { symbol, tokenId, isVerified } = selectedPrivacy;
+
   useEffect(() => {
-    // actionSheetRef && actionSheetRef.show();
+    getPTokenList();
   }, [errTf]);
 
   // Get all pToken for internal app, only accept with these coins
   const getPTokenList = () => {
+    APIService.getPTokenSupportForBuyingDevice()
+      .then(data => {
+        let res = data;
+        setPTokenSupport(res);
 
+        setTimeout(() => {
+          console.log(LogManager.parseJsonObjectToJsonString(pTokenSupport));
+        }, 1000);
+      })
+      .catch(err => {
+        console.log('Could not get support token for buying device');
+      });
   };
 
   const renderNodeImgAndPrice = () => {
@@ -144,6 +165,7 @@ const BuyNodeScreen = () => {
   const renderTotal = () => {
     let subTotal = price * currentQuantity;
     let total = subTotal + shippingFee;
+    let countableToken = getCountCoinPayable();
     return (
       <View onLayout={
         event => setYTotal(event?.nativeEvent?.layout?.y || 0)
@@ -155,13 +177,14 @@ const BuyNodeScreen = () => {
         {renderTotalItem('Ships within 24 hours', '')}
         <LineView color={COLORS.lightGrey1} style={theme.MARGIN.marginBottomDefault} />
         {renderTotalItem('Total', `$${total}`, {}, theme.text.boldTextStyleLarge)}
-        {renderTotalItem('Pay with Bitcoin', '0.086114 BTC', theme.text.boldTextStyleMedium, theme.text.boldTextStyleLarge)}
+        {renderTotalItem(`Pay with ${symbol}`, `${countableToken} ${symbol}`, theme.text.boldTextStyleMedium, theme.text.boldTextStyleLarge)}
         <LineView color={COLORS.lightGrey1} />
       </View>
     );
   };
 
   const handleSelectToken = tokenId => {
+    setCurrentTokenId(tokenId);
     dispatch(setSelectedPrivacy(tokenId));
   };
 
@@ -174,7 +197,7 @@ const BuyNodeScreen = () => {
           <CurrentBalance
             select={
               (
-                <TokenSelect onSelect={handleSelectToken} />
+                <TokenCustomSelect customListPToken={pTokenSupport} onSelect={handleSelectToken} />
               )
             }
           />
@@ -197,7 +220,6 @@ const BuyNodeScreen = () => {
     setErrTF(errors);
   };
   const getShippingFee = async () => {
-    console.log(LogManager.parseJsonObjectToJsonString(contactData));
     await APIService.getShippingFee(contactData.city, contactData.code, contactData.postalCode, contactData.region, contactData.address)
       .then(val => {
         if (val && val?.Result) {
@@ -250,7 +272,6 @@ const BuyNodeScreen = () => {
           onChangeText={async (text) => {
             await setContactData({ ...contactData, email: text });
             await checkErrEmail(checkEmailValid(text).valid);
-            getShippingFee();
           }}
           returnKeyType='next'
           label='Email'
@@ -266,14 +287,13 @@ const BuyNodeScreen = () => {
           onChangeText={async (text) => {
             await setContactData({ ...contactData, firstName: text });
             await checkErrEmpty('firstName', checkFieldEmpty(text));
-            getShippingFee();
           }}
           returnKeyType='next'
           label='First name'
           error={errTf?.firstName}
         />
         <TextField
-          keyboardType='email-address'
+          keyboardType='default'
           autoCapitalize='none'
           autoCorrect={false}
           enablesReturnKeyAutomatically
@@ -281,14 +301,13 @@ const BuyNodeScreen = () => {
           onChangeText={async (text) => {
             await setContactData({ ...contactData, lastName: text });
             await checkErrEmpty('lastName', checkFieldEmpty(text));
-            getShippingFee();
           }}
           returnKeyType='next'
           label='Last name'
           error={errTf?.lastName}
         />
         <TextField
-          keyboardType='email-address'
+          keyboardType='default'
           autoCapitalize='none'
           autoCorrect={false}
           enablesReturnKeyAutomatically
@@ -303,7 +322,7 @@ const BuyNodeScreen = () => {
           error={errTf?.address}
         />
         <TextField
-          keyboardType='email-address'
+          keyboardType='default'
           autoCapitalize='none'
           autoCorrect={false}
           enablesReturnKeyAutomatically
@@ -343,11 +362,13 @@ const BuyNodeScreen = () => {
           enablesReturnKeyAutomatically
           onFocus={() => onFocusField()}
           onChangeText={async (text) => {
+            await checkErrEmpty('postalCode', checkFieldEmpty(text));
             await setContactData({ ...contactData, postalCode: text });
             getShippingFee();
           }}
           returnKeyType='next'
           label='Postal code'
+          error={errTf?.postalCode}
         />
         <TextField
           keyboardType='numeric'
@@ -369,7 +390,6 @@ const BuyNodeScreen = () => {
   // Show contact section for user typing
   const onShowContactForShipping = () => {
     setShowContactForShipping(true);
-    setFormValid(false);
   };
 
   // Process payment flow
@@ -379,7 +399,13 @@ const BuyNodeScreen = () => {
 
   // Disable button process for better behavior
   const shouldDisableButtonProcess = () => {
-    return !formIsValid;
+    return showContactForShipping && !(contactData.email &&
+      contactData.firstName &&
+      contactData.lastName &&
+      contactData.address &&
+      contactData.country &&
+      contactData.region &&
+      contactData.postalCode);
   };
 
   const renderButtonProcess = () => {
@@ -408,16 +434,32 @@ const BuyNodeScreen = () => {
     extrapolate: 'clamp',
   });
 
+  // Get count of token payable
+  const getCountCoinPayable = () => {
+    let subTotal = price * currentQuantity;
+    let total = subTotal + shippingFee;
+    let result = 0;
+    for (let i = 0; i < pTokenSupport.length; i++) {
+      if (currentTokenId === pTokenSupport[i]?.TokenID) {
+        let priceUSD = pTokenSupport[i]?.PriceUsd;
+        result = Math.floor(total / priceUSD);
+        break;
+      }
+    }
+    return result;
+  };
+
   const renderFloatingPriceView = () => {
     let subTotal = price * currentQuantity;
     let total = subTotal + shippingFee;
+    let countableToken = getCountCoinPayable();
     return (
       <Animated.View style={[styles.header, theme.SHADOW.normal, { height: showContactForShipping ? headerHeight : 0 }]}>
         {showContactForShipping ? (
           <View style={styles.bar}>
             {renderTotalItem('Shipping', shippingFee === 0 ? 'FREE' : `$${shippingFee}`)}
             {renderTotalItem('Total', `$${total}`, {}, theme.text.boldTextStyleLarge)}
-            {renderTotalItem('Pay with Bitcoin', '0.086114 BTC', theme.text.boldTextStyleMedium, theme.text.boldTextStyleLarge)}
+            {renderTotalItem(`Pay with ${symbol}`, `${countableToken} ${symbol}`, theme.text.boldTextStyleMedium, theme.text.boldTextStyleLarge)}
           </View>
         ) : null}
       </Animated.View>
@@ -427,6 +469,14 @@ const BuyNodeScreen = () => {
   return (
     <View style={styles.container}>
       <ScrollView
+        refreshControl={(
+          <RefreshControl
+            refreshing={false}
+            onRefresh={() => {
+              getPTokenList();
+            }}
+          />
+        )}
         scrollEventThrottle={16}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }]
@@ -434,8 +484,8 @@ const BuyNodeScreen = () => {
         showsVerticalScrollIndicator={false}
         ref={scrollViewRef}
         containerContentStyle={styles.container}
-        // I want to scroll into current focusing container for better UX
-        // onContentSizeChange={(contentWidth, contentHeight) => { showContactForShipping && scrollViewRef?.current?.scrollToEnd({ animated: true }); }}
+      // I want to scroll into current focusing container for better UX
+      // onContentSizeChange={(contentWidth, contentHeight) => { showContactForShipping && scrollViewRef?.current?.scrollToEnd({ animated: true }); }}
       >
         <KeyboardAwareScrollView showsVerticalScrollIndicator={false} enableOnAndroid enableAutomaticScroll extraScrollHeight={-100}>
           {renderNodeImgAndPrice()}
