@@ -536,23 +536,23 @@ export default class APIService {
   }
 
   static async getBeaconBestStateDetail() {
-    const url = `${API.DEVICE}`;
+    const url = `${CONSTANT_CONFIGS.TRACK_LOG_URL}`;
     const params = {
       'jsonrpc': '1.0',
       'method': 'getbeaconbeststatedetail',
       'params': [],
       'id': 1
     };
-    return APIService.getURL(METHOD.POST, url, params, true, true);
+    return http.post(url, params);
   }
   static async getListRewardAmount() {
-    const url = `${API.DEVICE}`;
+    const url = `${CONSTANT_CONFIGS.TRACK_LOG_URL}`;
     const params = {
       'jsonrpc': '1.0',
       'method': 'listrewardamount',
       'params': [],
       'id': 1
     };
-    return APIService.getURL(METHOD.POST, url, params, true, true);
+    return http.post(url, params);
   }
 }

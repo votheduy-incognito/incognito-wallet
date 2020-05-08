@@ -64,20 +64,20 @@ const updateBeaconInfo = async (listDevice) => {
   if (currentHeight !== beaconHeight) {
     if (!listDevice.every(device => committees.AutoStaking.find(node => node.MiningPubKey.bls === device.PublicKeyMining))) {
       const cPromise = getBeaconBestStateDetail().then(data => {
-        if (!data || !_.has(data, 'Result') || !_.has(data?.Result, 'AutoStaking')) {
+        if (!_.has(data, 'AutoStaking')) {
           throw new CustomError(ErrorCode.FULLNODE_DOWN);
         }
-        committees = data?.Result || [];
+        committees = data || [];
       });
       promises.push(cPromise);
     }
 
     const rPromise = getListRewardAmount()
       .then(async data => {
-        if (!data || !_.has(data, 'Result')) {
+        if (!data) {
           throw new CustomError(ErrorCode.FULLNODE_DOWN);
         }
-        nodeRewards = data?.Result || {};
+        nodeRewards = data || {};
         let tokenIds = [];
 
         _.forEach(nodeRewards, reward => tokenIds.push(Object.keys(reward)));
