@@ -555,4 +555,16 @@ export default class APIService {
     };
     return APIService.getURL(METHOD.POST, url, params, true, true);
   }
+  // Shipping fee when buying device
+  static async getShippingFee(city, country, code, region, street) {
+    const url = `${API.ORDER}/order/shipping-fee`;
+    const params = {
+      'AddressCity': city,
+      'AddressCountry': country,
+      'AddressPostalCode': code,
+      'AddressStreet': street,
+      'AddressRegion': region,
+    };
+    return APIService.getURL(METHOD.POST, url, params, false, false);
+  }
 }

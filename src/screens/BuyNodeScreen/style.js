@@ -37,7 +37,29 @@ const style = StyleSheet.create({
     justifyContent: 'center', 
     height: 50,
     marginEnd: 10
-  }
+  },
+  header: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    borderColor: COLORS.lightGrey3,
+    borderWidth: 1,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 10,
+    borderTopEndRadius: 10,
+    overflow: 'hidden',
+  },
+  bar: {
+    padding: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    backgroundColor: 'transparent',
+    color: 'white',
+    fontSize: 18,
+  },
 });
 
 export default style;
