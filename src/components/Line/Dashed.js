@@ -7,12 +7,11 @@ const styled = StyleSheet.create({
   container: {
     height: 2,
     width: '100%',
-    marginVertical: 10,
   },
 });
 
-const Dashed = ({source, ...rest}) => {
-  return <Image source={source} style={styled.container} {...rest} />;
+const Dashed = ({source, style, ...rest}) => {
+  return <Image source={source} style={[styled.container, style]} {...rest} />;
 };
 
 Dashed.defaultProps = {

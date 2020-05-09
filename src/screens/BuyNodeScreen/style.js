@@ -40,14 +40,14 @@ const style = StyleSheet.create({
   },
   header: {
     position: 'absolute',
-    bottom: 0,
+    top: 0,
     left: 0,
     right: 0,
     borderColor: COLORS.lightGrey3,
     borderWidth: 1,
     backgroundColor: '#fff',
-    borderTopLeftRadius: 10,
-    borderTopEndRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomEndRadius: 10,
     overflow: 'hidden',
   },
   bar: {

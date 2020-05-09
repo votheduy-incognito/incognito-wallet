@@ -40,6 +40,7 @@ import StakeHistory from '@screens/StakeHistory';
 import StakeRecoverAccount from '@screens/Stake/features/RecoverAccount';
 import StakeHistoryDetail from '@screens/StakeHistory/features/Detail';
 import UniswapHelp from '@screens/UniswapHelp';
+import PaymentBuyNodeScreen from '@src/screens/PaymentBuyNodeScreen';
 import ROUTE_NAMES from './routeNames';
 import TabNavigator from './TabNavigator';
 
@@ -155,6 +156,7 @@ const AppNavigator = createStackNavigator(
       title: 'Buy Node',
     }),
     [ROUTE_NAMES.PriceChartCrypto]: navigationOptionsHandler(PriceChartCrypto, { title: 'Price chart' }),
+    [ROUTE_NAMES.PaymentBuyNodeScreen]: navigationOptionsHandler(PaymentBuyNodeScreen, { title: 'Payment' }),
   },
   {
     initialRouteName: ROUTE_NAMES.RootTab,

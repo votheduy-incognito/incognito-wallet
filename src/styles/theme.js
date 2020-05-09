@@ -147,6 +147,12 @@ const FLEX = {
   },
   fullHeight: {
     height: '100%',
+  },
+  absoluteIndicator: {
+    flex: 1, 
+    position: 'absolute',  
+    alignSelf: 'center', 
+    top: ScreenHeight * 0.4
   }
 };
 

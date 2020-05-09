@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Animated, RefreshControl } from 'react-native';
-import { Text, Button, View, Image, ScrollView } from '@components/core';
+import { Text, Button, View, Image, ScrollView, ActivityIndicator } from '@components/core';
 import nodeImg from '@src/assets/images/node_buy.png';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import theme from '@src/styles/theme';
@@ -21,6 +21,9 @@ import { checkEmailValid, checkFieldEmpty } from '@src/utils/validator';
 import APIService from '@src/services/api/miner/APIService';
 import Exception from '@src/services/exception/ex';
 import TokenCustomSelect from '@src/components/TokenSelect/TokenCustomSelect';
+import NavigationService from '@src/services/NavigationService';
+import routeNames from '@src/router/routeNames';
+import { ScreenHeight } from '@src/utils/devices';
 import styles from './style';
 
 const dataCountry = require('../../assets/rawdata/country.json');
@@ -42,6 +45,7 @@ const BuyNodeScreen = () => {
   let scrollViewRef = useRef();
 
   const [errTf, setErrTF] = useState({});
+  const [loading, setLoading] = useState(false);
   const [regions, setRegions] = useState([]);
   const [shippingFee, setShippingFee] = useState(0);
   const [price, setPrice] = useState(399);
@@ -94,10 +98,6 @@ const BuyNodeScreen = () => {
       .then(data => {
         let res = data;
         setPTokenSupport(res);
-
-        setTimeout(() => {
-          console.log(LogManager.parseJsonObjectToJsonString(pTokenSupport));
-        }, 1000);
       })
       .catch(err => {
         console.log('Could not get support token for buying device');
@@ -222,6 +222,7 @@ const BuyNodeScreen = () => {
   const getShippingFee = async () => {
     await APIService.getShippingFee(contactData.city, contactData.code, contactData.postalCode, contactData.region, contactData.address)
       .then(val => {
+        console.log(LogManager.parseJsonObjectToJsonString(val));
         if (val && val?.Result) {
           setShippingFee(val?.Result?.ShippingFee || 0);
           setPrice(val?.Result?.Price || 0);
@@ -393,8 +394,35 @@ const BuyNodeScreen = () => {
   };
 
   // Process payment flow
-  const onPaymentProcess = () => {
-
+  const onPaymentProcess = async () => {
+    setLoading(true);
+    APIService.checkOutOrder(
+      contactData.email,
+      contactData.code,
+      contactData.address,
+      contactData.city,
+      contactData.region,
+      contactData.postalCode,
+      contactData.phoneNumber,
+      currentTokenId,
+      Number(currentQuantity),
+      contactData.firstName,
+      contactData.lastName)
+      .then(data => {
+        setLoading(false);
+        NavigationService.navigate(routeNames.PaymentBuyNodeScreen, {
+          'paymentDevice': {
+            'Address': data?.Address,
+            'TotalAmount': data?.TotalAmount,
+            'TotalPrice': data?.TotalPrice,
+            'OrderID': data?.OrderID
+          }
+        });
+      })
+      .catch(error => {
+        setLoading(false);
+        throw new Error('Can not checkout your order ' + error.message);
+      });
   };
 
   // Disable button process for better behavior
@@ -411,7 +439,6 @@ const BuyNodeScreen = () => {
   const renderButtonProcess = () => {
     return (
       <Button
-        style={{ marginBottom: showContactForShipping ? 130 : 0 }}
         title="Pay Now"
         onPress={async () => {
           if (!showContactForShipping) {
@@ -442,7 +469,7 @@ const BuyNodeScreen = () => {
     for (let i = 0; i < pTokenSupport.length; i++) {
       if (currentTokenId === pTokenSupport[i]?.TokenID) {
         let priceUSD = pTokenSupport[i]?.PriceUsd;
-        result = Math.floor(total / priceUSD);
+        result = (total / priceUSD).toFixed(4);
         break;
       }
     }
@@ -487,7 +514,7 @@ const BuyNodeScreen = () => {
       // I want to scroll into current focusing container for better UX
       // onContentSizeChange={(contentWidth, contentHeight) => { showContactForShipping && scrollViewRef?.current?.scrollToEnd({ animated: true }); }}
       >
-        <KeyboardAwareScrollView showsVerticalScrollIndicator={false} enableOnAndroid enableAutomaticScroll extraScrollHeight={-100}>
+        <KeyboardAwareScrollView showsVerticalScrollIndicator={false} enableOnAndroid enableAutomaticScroll>
           {renderNodeImgAndPrice()}
           {renderMotto()}
           {renderActionSheet()}
@@ -495,9 +522,12 @@ const BuyNodeScreen = () => {
           {renderTotal()}
           {showContactForShipping && renderContactInformation()}
           {renderButtonProcess()}
+          {loading && <ActivityIndicator style={theme.FLEX.absoluteIndicator} />}
         </KeyboardAwareScrollView>
+        
       </ScrollView>
       {renderFloatingPriceView()}
+      
     </View>
   );
 };
