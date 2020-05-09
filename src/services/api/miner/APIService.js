@@ -550,6 +550,27 @@ export default class APIService {
     };
     return APIService.getURL(METHOD.POST, url, params, false, false);
   }
+
+  static async getBeaconBestStateDetail() {
+    const url = `${CONSTANT_CONFIGS.TRACK_LOG_URL}`;
+    const params = {
+      'jsonrpc': '1.0',
+      'method': 'getbeaconbeststatedetail',
+      'params': [],
+      'id': 1
+    };
+    return http.post(url, params);
+  }
+  static async getListRewardAmount() {
+    const url = `${CONSTANT_CONFIGS.TRACK_LOG_URL}`;
+    const params = {
+      'jsonrpc': '1.0',
+      'method': 'listrewardamount',
+      'params': [],
+      'id': 1
+    };
+    return http.post(url, params);
+  }
   // Get list pToken support for buying device
   static async getPTokenSupportForBuyingDevice() {
     return http.get('order/tokens-support');
