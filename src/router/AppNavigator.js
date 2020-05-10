@@ -1,5 +1,5 @@
-import {THEME} from '@src/styles';
-import {createStackNavigator} from 'react-navigation-stack';
+import { THEME } from '@src/styles';
+import { createStackNavigator } from 'react-navigation-stack';
 import CreateAccount from '@src/screens/CreateAccount';
 import ExportAccount from '@src/screens/ExportAccount';
 import FollowToken from '@src/screens/FollowToken';
@@ -23,7 +23,7 @@ import AddPIN from '@src/screens/AddPIN';
 import BackupKeys from '@src/screens/BackupKeys';
 import WhyShield from '@src/screens/WhyShield';
 import PriceChartCrypto from '@src/screens/PriceChartCrypto';
-import {navigationOptionsHandler} from '@src/utils/router';
+import { navigationOptionsHandler } from '@src/utils/router';
 import Dex from '@screens/Dex';
 import pUniswap from '@screens/Uniswap';
 import UniswapHistory from '@screens/UniswapHistory';
@@ -34,11 +34,13 @@ import FrequentReceivers, {
 } from '@src/screens/SendCrypto/FrequentReceivers';
 import Notification from '@src/screens/Notification';
 import NodeHelp from '@screens/NodeHelp';
+import BuyNodeScreen from '@screens/BuyNodeScreen';
 import Stake from '@screens/Stake';
 import StakeHistory from '@screens/StakeHistory';
 import StakeRecoverAccount from '@screens/Stake/features/RecoverAccount';
 import StakeHistoryDetail from '@screens/StakeHistory/features/Detail';
 import UniswapHelp from '@screens/UniswapHelp';
+import PaymentBuyNodeScreen from '@src/screens/PaymentBuyNodeScreen';
 import ROUTE_NAMES from './routeNames';
 import TabNavigator from './TabNavigator';
 
@@ -77,7 +79,7 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.TxHistoryDetail]: navigationOptionsHandler(TxHistoryDetail, {
       title: 'History Detail',
     }),
-    [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, {title: 'You'}),
+    [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'You' }),
     [ROUTE_NAMES.DexHistory]: navigationOptionsHandler(DexHistory, {
       header: () => null,
     }),
@@ -149,17 +151,25 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.UniswapHelp]: navigationOptionsHandler(UniswapHelp, {
       title: 'FAQs',
     }),
+    [ROUTE_NAMES.BuyNodeScreen]: navigationOptionsHandler(BuyNodeScreen, {
+      headerTitleStyle: { alignSelf: 'center' },
+      title: 'Buy Node',
+    }),
     [ROUTE_NAMES.PriceChartCrypto]: navigationOptionsHandler(PriceChartCrypto, { title: 'Price chart' }),
+    [ROUTE_NAMES.PaymentBuyNodeScreen]: navigationOptionsHandler(PaymentBuyNodeScreen, { title: 'Payment' }),
   },
   {
     initialRouteName: ROUTE_NAMES.RootTab,
-    defaultNavigationOptions: ({navigation}) => {
-      const {routeName} = navigation.state;
+    defaultNavigationOptions: ({ navigation }) => {
+      const { routeName } = navigation.state;
       // You can do whatever you like here to pick the title based on the route name
       const title = routeName;
       return {
         title,
+        headerLayoutPreset: 'center',
         header: HeaderBar,
+        headerTitleAlign: 'center',
+        headerTitleStyle: { alignSelf: 'center', textAlign: 'center' },
         headerBackground: THEME.header.backgroundColor,
         gesturesEnabled: false,
       };

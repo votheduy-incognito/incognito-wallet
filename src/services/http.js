@@ -15,7 +15,6 @@ const instance = axios.create({
     Authorization: '',
   },
 });
-
 let renewToken = null;
 let pendingSubscribers = [];
 let isAlreadyFetchingAccessToken = false;
