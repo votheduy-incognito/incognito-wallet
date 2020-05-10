@@ -51,6 +51,7 @@ const BuyNodeScreen = () => {
   const [price, setPrice] = useState(399);
   const [currentTokenId, setCurrentTokenId] = useState('0000000000000000000000000000000000000000000000000000000000000004');
   const [pTokenSupport, setPTokenSupport] = useState([]);
+  const [pTokenSupportsPartner, setPTokenSupportsPartner] = useState([]);
 
   const [showContactForShipping, setShowContactForShipping] = useState(false);
 
@@ -90,10 +91,25 @@ const BuyNodeScreen = () => {
 
   useEffect(() => {
     getPTokenList();
+    getSystemConfig();
   }, [errTf]);
 
+  // Get token system config
+  const getSystemConfig = async () => {
+    APIService.getSystemConfig()
+      .then(data => {
+        if (data?.BuyNodePTokensPartner) {
+          let res = JSON.parse(data?.BuyNodePTokensPartner);
+          setPTokenSupportsPartner(res);
+        }
+      })
+      .catch(err => {
+        console.log('Could not get system config for buying device');
+      });
+  };
+
   // Get all pToken for internal app, only accept with these coins
-  const getPTokenList = () => {
+  const getPTokenList = async() => {
     APIService.getPTokenSupportForBuyingDevice()
       .then(data => {
         let res = data;
@@ -186,6 +202,32 @@ const BuyNodeScreen = () => {
   const handleSelectToken = tokenId => {
     setCurrentTokenId(tokenId);
     dispatch(setSelectedPrivacy(tokenId));
+
+    // Update price dynamically for DAI token
+    checkSelectedTokenIdAndUpdateDynamicPrice(tokenId);
+  };
+
+  const checkSelectedTokenIdAndUpdateDynamicPrice = tokenId => {
+    // Update price dynamically for DAI token
+    let IDTokenDAI = '';
+    for (let i = 0; i < pTokenSupport.length; i++) {
+      if (pTokenSupport[i]?.TokenID === tokenId) {
+        IDTokenDAI = pTokenSupport[i]?.ID;
+        break;
+      }
+    }
+    // Foreach in pTokenPartnerSupport, update price
+    for (let j = 0; j < pTokenSupportsPartner.length; j++) {
+      if (pTokenSupportsPartner[j]?.ID === IDTokenDAI) {
+        IDTokenDAI = pTokenSupportsPartner[j]?.ID;
+        // Set price
+        setPrice(Number(pTokenSupportsPartner[j]?.Price || 0));
+        break;
+      } else {
+        // Set price default
+        setPrice(399);
+      }
+    }
   };
 
   const renderPayment = () => {
@@ -222,7 +264,6 @@ const BuyNodeScreen = () => {
   const getShippingFee = async () => {
     await APIService.getShippingFee(contactData.city, contactData.code, contactData.postalCode, contactData.region, contactData.address)
       .then(val => {
-        console.log(LogManager.parseJsonObjectToJsonString(val));
         if (val && val?.Result) {
           setShippingFee(val?.Result?.ShippingFee || 0);
           setPrice(val?.Result?.Price || 0);
@@ -524,10 +565,10 @@ const BuyNodeScreen = () => {
           {renderButtonProcess()}
           {loading && <ActivityIndicator style={theme.FLEX.absoluteIndicator} />}
         </KeyboardAwareScrollView>
-        
+
       </ScrollView>
       {renderFloatingPriceView()}
-      
+
     </View>
   );
 };

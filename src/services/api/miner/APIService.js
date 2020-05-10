@@ -593,4 +593,8 @@ export default class APIService {
     };
     return http.post('order/incognito/checkout', params);
   }
+  // Get system config
+  static async getSystemConfig() {
+    return http.get('system/configs');
+  }
 }
