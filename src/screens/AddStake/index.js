@@ -7,21 +7,14 @@ import BaseScreen from '@screens/BaseScreen';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler } from '@services/exception';
 import accountService from '@services/wallet/accountService';
-import {
-  getEstimateFeeForNativeToken,
-  getStakingAmount,
-} from '@services/wallet/RpcClientService';
+import { getStakingAmount } from '@services/wallet/RpcClientService';
 import { Toast } from '@components/core/index';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
 import Device from '@models/device';
-import { DEX_CHAIN_ACCOUNT } from '@screens/Dex/constants';
 import routeNames from '@routers/routeNames';
 import config from '@src/constants/config';
-import {
-  DEFAULT_FEE,
-  DEFAULT_MULTIPLY,
-} from '@src/components/EstimateFee/EstimateFee.utils';
+import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
 import style from './styles';
 import AddStake from './AddStake';
 
@@ -38,6 +31,7 @@ class AddStakeContainer extends BaseScreen {
 
     this.state = {
       device,
+      fee: MAX_FEE_PER_TX,
     };
   }
 
@@ -57,29 +51,9 @@ class AddStakeContainer extends BaseScreen {
     this.listener.remove();
   }
 
-  estimateFee = async amount => {
-    try {
-      const { device } = this.state;
-      const { wallet } = this.props;
-      const account = device.Account;
-      const fromAddress = account.PaymentAddress;
-      const accountWallet = wallet.getAccountByName(account.AccountName);
-      const fee = await getEstimateFeeForNativeToken(
-        fromAddress,
-        DEX_CHAIN_ACCOUNT.PaymentAddress,
-        amount,
-        accountWallet,
-      );
-      this.setState({ fee });
-    } catch (e) {
-      this.setState({ fee: DEFAULT_FEE * DEFAULT_MULTIPLY });
-    }
-  };
-
   async getStakeAmount() {
     const amount = await getStakingAmount(stakeType);
     this.setState({ amount });
-    this.estimateFee(amount);
   }
 
   async getBalance() {

@@ -1,28 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import {
-  Button,
-  Image,
-  Text,
-  View,
-  TouchableOpacity,
-  BaseTextInput as TextInput,
-} from '@src/components/core';
+import {BaseTextInput as TextInput, Button, Image, Text, TouchableOpacity, View,} from '@src/components/core';
 import chevronRight from '@src/assets/images/icons/chevron_right.png';
-import { isExchangeRatePToken } from '@src/services/wallet/RpcClientService';
+import {isExchangeRatePToken} from '@src/services/wallet/RpcClientService';
 import {PRV} from '@services/wallet/tokenService';
-import { CONSTANT_COMMONS } from '@src/constants';
+import {CONSTANT_COMMONS} from '@src/constants';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
 import greyRightArrow from '@src/assets/images/icons/grey_right_arrow.png';
-import { Overlay, Icon } from 'react-native-elements';
+import {Icon, Overlay} from 'react-native-elements';
 import Help from '@components/Help';
 import FullScreenLoading from '@components/FullScreenLoading/index';
-import { DEFAULT_FEE } from '@components/EstimateFee/EstimateFee.utils';
-import { MESSAGES, MIN_VALUE, PRV_ID } from '../../constants';
+import {MAX_FEE_PER_TX} from '@components/EstimateFee/EstimateFee.utils';
+import {MESSAGES, MIN_VALUE, PRV_ID} from '../../constants';
 import style from './style';
-import { mainStyle } from '../../style';
+import {mainStyle} from '../../style';
 
 function parseFee(rawFee, token) {
   rawFee = convertUtil.toNumber(rawFee, true);
@@ -92,9 +85,8 @@ class TradeConfirm extends React.Component {
     const stopPrice = outputValue - outputValue / 100;
     const stopPricePercent = 1;
     const pDecimals = networkFeeUnit === inputToken.symbol ? inputToken.pDecimals : PRV.pDecimals || 0;
-    const networkFee = DEFAULT_FEE * 20;
     this.setState({
-      networkFee: formatUtil.amountFull(networkFee, pDecimals),
+      networkFee: formatUtil.amountFull(MAX_FEE_PER_TX, pDecimals),
       networkFeeUnit,
       tradingFee: formatUtil.amountFull(tradingFee, inputToken?.pDecimals),
       tradingPercent: formatUtil.toFixed(tradingPercent, 2),

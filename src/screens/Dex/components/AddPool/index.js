@@ -21,7 +21,7 @@ import NetworkFee from '@screens/Dex/components/NetworkFee';
 import AddSuccessDialog from '@screens/Dex/components/AddSuccessDialog';
 import CODE from '@src/services/exception/customError/code';
 import { ExHandler } from '@services/exception';
-import { DEFAULT_FEE, DEFAULT_MULTIPLY } from '@components/EstimateFee/EstimateFee.utils';
+import { MAX_FEE_PER_TX } from '@components/EstimateFee/EstimateFee.utils';
 import Input from '../Input';
 import Loading from '../Loading';
 import { DEX_CHAIN_ACCOUNT, MESSAGES, MIN_INPUT, PRV_ID, SECOND } from '../../constants';
@@ -110,11 +110,11 @@ class Pool extends React.Component {
       }
     } catch (error) {
       console.debug('ESTIMATE FEE ERROR', error);
-      fee = DEFAULT_FEE;
+      fee = MAX_FEE_PER_TX;
     }
 
     if (fee) {
-      return fee * DEFAULT_MULTIPLY;
+      return fee;
     }
   }
 
