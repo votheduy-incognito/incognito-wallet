@@ -102,15 +102,19 @@ const Home = ({ navigation }) => {
   };
 
   const getHomeConfiguration = () => {
-    fetch('https://api-data.incognito.org/home-configs')
-      .then((val) => val.json())
+    fetch('https://api-data-staging.incognito.org/home-configs')
+      .then(val => val.json())
       .then(val => {
         if (val) {
           if (val?.buttons && Array.isArray(val.buttons)) {
             setButtons(val.buttons);
           }
           if (val?.headerTitle) {
-            setHeaderTitle(val.headerTitle?.title && val.headerTitle?.title.replace('\\n', '\n') || '');
+            setHeaderTitle(
+              (val.headerTitle?.title &&
+                val.headerTitle?.title.replace('\\n', '\n')) ||
+                '',
+            );
           }
         }
       })
@@ -126,7 +130,7 @@ const Home = ({ navigation }) => {
 
     navigation.addListener('didBlur', closeTooltip);
   }, []);
-  const interactionById = (item) => {
+  const interactionById = item => {
     switch (item.sortId) {
     // Shield
     // Send
@@ -141,10 +145,14 @@ const Home = ({ navigation }) => {
       break;
       // Buy PRV
     case 2:
-      goToScreen(item?.route || '', {
-        inputTokenId: BIG_COINS.USDT,
-        outputTokenId: BIG_COINS.PRV,
-      }, CONSTANT_EVENTS.CLICK_HOME_BUY);
+      goToScreen(
+          item?.route || '',
+          {
+            inputTokenId: BIG_COINS.USDT,
+            outputTokenId: BIG_COINS.PRV,
+          },
+          CONSTANT_EVENTS.CLICK_HOME_BUY,
+      );
       break;
       // Issue a coin
     case 6:
@@ -163,14 +171,15 @@ const Home = ({ navigation }) => {
       break;
     }
   };
-
   return (
     <TouchableWithoutFeedback style={{ flex: 1 }} onPress={closeTooltip}>
       <ScrollView
         refreshControl={(
           <RefreshControl
             refreshing={false}
-            onRefresh={() => { getHomeConfiguration(); }}
+            onRefresh={() => {
+              getHomeConfiguration();
+            }}
           />
         )}
       >
@@ -181,13 +190,15 @@ const Home = ({ navigation }) => {
           <View style={styles.btnContainer}>
             {buttons.map(item => (
               <View style={styles.btn} key={item.id}>
-                {item?.toolTip?.message != '' && item?.title === 'Stake PRV' && viewUniswap !== tooltipType && (
-                  <Tooltip
-                    title={item?.toolTip?.title || 'News'}
-                    desc={item?.toolTip?.message || ''}
-                    containerStyled={styles.tooltip}
-                  />
-                )}
+                {item?.toolTip?.message != '' &&
+                  item?.title === 'Stake PRV' &&
+                  viewUniswap !== tooltipType && (
+                    <Tooltip
+                      title={item?.toolTip?.title || 'News'}
+                      desc={item?.toolTip?.message || ''}
+                      containerStyled={styles.tooltip}
+                    />
+                  )}
                 <IconTextButton
                   image={item.icoUrl}
                   title={item.title}

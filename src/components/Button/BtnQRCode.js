@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 const IC_QR = (
@@ -12,11 +12,7 @@ const IC_QR = (
   </Svg>
 );
 const BtnQRCode = props => {
-  return (
-    <TouchableOpacity {...props}>
-      {IC_QR}
-    </TouchableOpacity>
-  );
+  return <TouchableOpacity {...props}>{IC_QR}</TouchableOpacity>;
 };
 
 BtnQRCode.propTypes = {};
