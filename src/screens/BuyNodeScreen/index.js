@@ -189,8 +189,8 @@ const BuyNodeScreen = () => {
         {renderTotalItem('Shipping', shippingFee === 0 ? 'FREE' : `$${shippingFee}`)}
         {renderTotalItem(`Ships ${shippingHour}`, '')}
         <LineView color={COLORS.lightGrey1} style={theme.MARGIN.marginBottomDefault} />
-        {renderTotalItem('Total', `$${subTotal.toFixed(2)}`, {}, theme.text.boldTextStyleLarge)}
-        {renderTotalItem(`Pay with ${symbol}`, `${countableToken} ${symbol}`, theme.text.boldTextStyleMedium, theme.text.boldTextStyleLarge)}
+        {renderTotalItem('Total', `$${subTotal.toFixed(2)}`, {}, theme.text.boldTextStyle)}
+        {renderTotalItem(`Pay with ${symbol}`, `${countableToken} ${symbol}`, theme.text.boldTextStyle, theme.text.boldTextStyle)}
         <LineView color={COLORS.lightGrey1} />
       </View>
     );
@@ -532,7 +532,7 @@ const BuyNodeScreen = () => {
     for (let i = 0; i < pTokenSupport.length; i++) {
       if (currentTokenId === pTokenSupport[i]?.TokenID) {
         let priceUSD = pTokenSupport[i]?.PriceUsd;
-        result = (subTotal / priceUSD).toFixed(6);
+        result = (subTotal / priceUSD).toFixed(4);
         break;
       }
     }
@@ -540,16 +540,15 @@ const BuyNodeScreen = () => {
   };
 
   const renderFloatingPriceView = () => {
-    let subTotal = price * currentQuantity;
-    let total = subTotal + shippingFee;
+    let subTotal = (price + shippingFee) * currentQuantity;
     let countableToken = getCountCoinPayable();
     return (
       <Animated.View style={[styles.header, theme.SHADOW.normal, { height: showContactForShipping ? headerHeight : 0 }]}>
         {showContactForShipping ? (
           <View style={styles.bar}>
             {renderTotalItem('Shipping', shippingFee === 0 ? 'FREE' : `$${shippingFee}`)}
-            {renderTotalItem('Total', `$${total.toFixed(2)}`, {}, theme.text.boldTextStyleLarge)}
-            {renderTotalItem(`Pay with ${symbol}`, `${countableToken} ${symbol}`, theme.text.boldTextStyleMedium, theme.text.boldTextStyleLarge)}
+            {renderTotalItem('Total', `$${subTotal.toFixed(2)}`, {}, theme.text.boldTextStyle)}
+            {renderTotalItem(`Pay with ${symbol}`, `${countableToken} ${symbol}`, theme.text.boldTextStyle, theme.text.boldTextStyle)}
           </View>
         ) : null}
       </Animated.View>
