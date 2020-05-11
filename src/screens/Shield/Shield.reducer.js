@@ -1,0 +1,43 @@
+import {
+  ACTION_FETCHING,
+  ACTION_FETCHED,
+  ACTION_FETCH_FAIL,
+} from './Shield.constant';
+
+const initialState = {
+  isFetching: true,
+  isFetched: false,
+  data: {
+    min: null,
+    max: null,
+    address: '',
+  },
+};
+
+export default (state = initialState, action) => {
+  switch (action.type) {
+  case ACTION_FETCHING: {
+    return {
+      ...state,
+      isFetching: true,
+    };
+  }
+  case ACTION_FETCHED: {
+    return {
+      ...state,
+      isFetching: false,
+      isFetched: true,
+      data: { ...action.payload },
+    };
+  }
+  case ACTION_FETCH_FAIL: {
+    return {
+      ...state,
+      isFetched: false,
+      isFetching: false,
+    };
+  }
+  default:
+    return state;
+  }
+};

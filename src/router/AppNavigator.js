@@ -3,7 +3,6 @@ import { createStackNavigator } from 'react-navigation-stack';
 import CreateAccount from '@src/screens/CreateAccount';
 import ExportAccount from '@src/screens/ExportAccount';
 import FollowToken from '@src/screens/FollowToken';
-import CreateToken from '@src/screens/CreateToken';
 import AddToken from '@src/screens/AddToken';
 import ImportAccount from '@src/screens/ImportAccount';
 import NetworkSetting from '@src/screens/NetworkSetting';
@@ -21,14 +20,12 @@ import HeaderBar from '@src/components/HeaderBar';
 import pApp from '@src/screens/PappView';
 import AddPIN from '@src/screens/AddPIN';
 import BackupKeys from '@src/screens/BackupKeys';
-import WhyShield from '@src/screens/WhyShield';
 import PriceChartCrypto from '@src/screens/PriceChartCrypto';
 import { navigationOptionsHandler } from '@src/utils/router';
 import Dex from '@screens/Dex';
 import pUniswap from '@screens/Uniswap';
 import UniswapHistory from '@screens/UniswapHistory';
 import UniswapHistoryDetail from '@screens/UniswapHistoryDetail';
-import Shield from '@screens/Shield';
 import FrequentReceivers, {
   FrequentReceiversForm,
 } from '@src/screens/SendCrypto/FrequentReceivers';
@@ -42,11 +39,12 @@ import StakeHistoryDetail from '@screens/StakeHistory/features/Detail';
 import UniswapHelp from '@screens/UniswapHelp';
 import PaymentBuyNodeScreen from '@src/screens/PaymentBuyNodeScreen';
 import ROUTE_NAMES from './routeNames';
-import TabNavigator from './TabNavigator';
+import { getRoutesNoHeader } from './routeNoHeader';
+
+const RouteNoHeader = getRoutesNoHeader();
 
 const AppNavigator = createStackNavigator(
   {
-    [ROUTE_NAMES.RootTab]: TabNavigator,
     [ROUTE_NAMES.NetworkSetting]: navigationOptionsHandler(NetworkSetting, {
       title: 'Network',
     }),
@@ -60,9 +58,6 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.FollowToken]: navigationOptionsHandler(FollowToken, {
       header: () => null,
     }),
-    [ROUTE_NAMES.CreateToken]: navigationOptionsHandler(CreateToken, {
-      title: 'Issue a privacy coin',
-    }),
     [ROUTE_NAMES.AddToken]: navigationOptionsHandler(AddToken, {
       title: 'Add manually',
     }),
@@ -72,9 +67,6 @@ const AppNavigator = createStackNavigator(
     }),
     [ROUTE_NAMES.SendCrypto]: navigationOptionsHandler(SendCrypto, {
       title: 'Send',
-    }),
-    [ROUTE_NAMES.Shield]: navigationOptionsHandler(Shield, {
-      title: 'Shield your crypto',
     }),
     [ROUTE_NAMES.TxHistoryDetail]: navigationOptionsHandler(TxHistoryDetail, {
       title: 'History Detail',
@@ -110,9 +102,6 @@ const AppNavigator = createStackNavigator(
         title: 'Transaction Detail',
       },
     ),
-    [ROUTE_NAMES.WhyShield]: navigationOptionsHandler(WhyShield, {
-      title: 'Why Shield?',
-    }),
     [ROUTE_NAMES.FrequentReceiversForm]: navigationOptionsHandler(
       FrequentReceiversForm,
     ),
@@ -123,9 +112,6 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.pApps]: navigationOptionsHandler(pApps),
     [ROUTE_NAMES.NodeHelp]: navigationOptionsHandler(NodeHelp, {
       title: 'Need help?',
-    }),
-    [ROUTE_NAMES.Stake]: navigationOptionsHandler(Stake, {
-      header: () => null,
     }),
     [ROUTE_NAMES.StakeHistory]: navigationOptionsHandler(StakeHistory, {
       title: 'Activities',
@@ -157,9 +143,10 @@ const AppNavigator = createStackNavigator(
     }),
     [ROUTE_NAMES.PriceChartCrypto]: navigationOptionsHandler(PriceChartCrypto, { title: 'Price chart' }),
     [ROUTE_NAMES.PaymentBuyNodeScreen]: navigationOptionsHandler(PaymentBuyNodeScreen, { title: 'Payment' }),
+    ...RouteNoHeader,
   },
   {
-    initialRouteName: ROUTE_NAMES.RootTab,
+    initialRouteName: ROUTE_NAMES.Home,
     defaultNavigationOptions: ({ navigation }) => {
       const { routeName } = navigation.state;
       // You can do whatever you like here to pick the title based on the route name

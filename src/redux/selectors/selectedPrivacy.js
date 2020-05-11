@@ -4,10 +4,17 @@ import SelectedPrivacy from '@src/models/selectedPrivacy';
 import memoize from 'memoize-one';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
+import floor from 'lodash/floor';
 import { defaultAccount } from './account';
-import { followed, pTokens, internalTokens } from './token';
+import {
+  followed,
+  pTokens,
+  internalTokens,
+  exchangeRateSelector,
+} from './token';
+import { getPrice } from '../utils/selectedPrivacy';
 
-export const selectedPrivacyTokenID = (state) => state?.selectedPrivacy?.tokenID;
+export const selectedPrivacyTokenID = state => state?.selectedPrivacy?.tokenID;
 
 export const getPrivacyDataByTokenID = createSelector(
   defaultAccount,
@@ -64,7 +71,7 @@ export const selectedPrivacy = createSelector(
   getPrivacyDataByTokenID,
   (selectedSymbol, getFn) => {
     return getFn(selectedSymbol);
-  }
+  },
 );
 
 export default {

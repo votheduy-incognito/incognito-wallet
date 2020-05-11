@@ -18,6 +18,8 @@ class PToken {
     this.userId = data.UserID;
     this.verified = data.Verified;
     this.currencyType = data.CurrencyType; // including ERC20, BEP1, BEP2,...
+    this.priceUsd = data?.PriceUsd;
+    this.change = data?.Change;
   }
   /**
    * Convert to data structure of token which stored in wallet object
