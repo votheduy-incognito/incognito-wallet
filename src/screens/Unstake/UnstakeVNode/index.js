@@ -2,12 +2,11 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { ExHandler } from '@services/exception';
 import accountService from '@services/wallet/accountService';
-import { getEstimateFeePerKB } from '@services/wallet/RpcClientService';
 import { ActivityIndicator, Toast } from '@components/core';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
 import Device from '@models/device';
-import { DEFAULT_FEE } from '@src/components/EstimateFee/EstimateFee.utils';
+import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
 import Unstake from './Unstake';
 
 export const TAG = 'Unstake';
@@ -17,6 +16,7 @@ class UnstakeVNode extends PureComponent {
     super(props);
     this.state = {
       isUnstaking: false,
+      fee: MAX_FEE_PER_TX,
     };
   }
 
@@ -28,14 +28,7 @@ class UnstakeVNode extends PureComponent {
     const { wallet, device } = this.props;
     const account = device.Account;
     const balance = await accountService.getBalance(account, wallet);
-    let fee;
-    try {
-      const data = await getEstimateFeePerKB(account.PaymentAddress);
-      fee = data.unitFee;
-    } catch (error) {
-      fee = DEFAULT_FEE;
-    }
-    this.setState({ balance, fee: fee * 10 });
+    this.setState({ balance });
   }
 
   handleUnstake = async () => {

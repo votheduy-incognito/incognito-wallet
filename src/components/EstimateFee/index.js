@@ -16,7 +16,7 @@ import { change, destroy } from 'redux-form';
 import accountService from '@services/wallet/accountService';
 import { MESSAGES } from '@screens/Dex/constants';
 import EstimateFee from './EstimateFee';
-import { DEFAULT_FEE, DEFAULT_MULTIPLY } from './EstimateFee.utils';
+import { MAX_FEE_PER_TX } from './EstimateFee.utils';
 
 const CACHED_FEE = {
   // token_id_for_use.token_id_for_fee.total_amount_of_the_token: fee
@@ -159,8 +159,7 @@ class EstimateFeeContainer extends Component {
         throw new Error('Fee is invalid, use default fee instead');
       }
     } catch {
-      fee = DEFAULT_FEE * DEFAULT_MULTIPLY;
-      return fee;
+      return MAX_FEE_PER_TX;
     } finally {
       // cache it
       CACHED_FEE[key] = fee;
@@ -222,7 +221,7 @@ class EstimateFeeContainer extends Component {
           ErrorCode.estimate_fee_does_not_support_type_of_fee,
         );
       }
-      
+
       fee = fee * multiply;
       minFee = fee;
       fee = userFee > fee ? userFee : fee;
@@ -466,7 +465,7 @@ EstimateFeeContainer.defaultProps = {
   onEstimateFailed: null,
   dexToken: null,
   dexBalance: 0,
-  multiply: 2,
+  multiply: 1,
 };
 
 EstimateFeeContainer.propTypes = {

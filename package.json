@@ -1,6 +1,6 @@
 {
-  "name": "constantWalletMobile",
-  "version": "3.6.5.7",
+  "name": "incognito-wallet",
+  "version": "3.6.6.1",
   "private": true,
   "rnpm": {
     "assets": [
