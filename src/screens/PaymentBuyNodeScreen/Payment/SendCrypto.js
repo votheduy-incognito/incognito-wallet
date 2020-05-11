@@ -332,7 +332,7 @@ class SendCrypto extends React.Component {
                   }}
                   component={InputField}
                   name="toAddress"
-                  label="To"
+                  label="Payment address"
                   placeholder="Enter wallet address"
                   style={homeStyle.input}
                   validate={validator.combinedIncognitoAddress}
@@ -350,7 +350,7 @@ class SendCrypto extends React.Component {
                   component={InputField}
                   name="amount"
                   placeholder="0.0"
-                  label="Amount"
+                  label="Payment amount"
                   style={homeStyle.input}
                   maxValue={maxAmount}
                   componentProps={{
@@ -367,11 +367,10 @@ class SendCrypto extends React.Component {
                   componentProps={{ multiline: true, numberOfLines: 10, editable: false }}
                   name="message"
                   placeholder="Message"
-                  label="Memo"
+                  label="Payment ID"
                   style={[
                     homeStyle.input,
                     homeStyle.descriptionInput,
-                    { marginBottom: 25 },
                   ]}
                   validate={descriptionMaxBytes}
                   {...generateTestId(SEND.MEMO_INPUT)}
