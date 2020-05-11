@@ -116,18 +116,21 @@ class TradeConfirm extends React.Component {
 
   handleSelectFee = (type) => {
     const { inputToken, outputValue, outputToken, inputValue } = this.props;
-    const { pDecimals: previousPDecimals } = this.state;
+    let { pDecimals } = this.state;
     let { networkFee } = this.state;
 
-    const pDecimals = type === inputToken.symbol ? inputToken.pDecimals : PRV.pDecimals || 0;
-    const feeNumber = convertUtil.toNumber(networkFee);
-    const originalFee = convertUtil.toOriginalAmount(feeNumber, previousPDecimals);
-    const diff = _.floor((outputValue / outputToken.pDecimals) / (inputValue / inputToken.pDecimals));
-    const newNetworkFeeNumber = _.floor(originalFee / diff);
+    if (type !== PRV.symbol) {
+      pDecimals = type === inputToken.symbol ? inputToken.pDecimals : PRV.pDecimals || 0;
+      const diff = _.floor((outputValue / outputToken.pDecimals) / (inputValue / inputToken.pDecimals));
+      networkFee = _.floor(MAX_FEE_PER_TX / diff);
+    } else {
+      networkFee = MAX_FEE_PER_TX;
+      pDecimals = PRV.pDecimals;
+    }
 
     this.setState({
       networkFeeUnit: type,
-      networkFee: formatUtil.amountFull(newNetworkFeeNumber, pDecimals),
+      networkFee: formatUtil.amountFull(networkFee, pDecimals),
       pDecimals,
     });
   };
