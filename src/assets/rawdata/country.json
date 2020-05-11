@@ -1,5 +1,259 @@
 [
     {
+        "value": "United States",
+        "countryShortCode": "US",
+        "regions": [
+            {
+                "value": "Alabama",
+                "shortCode": "AL"
+            },
+            {
+                "value": "Alaska",
+                "shortCode": "AK"
+            },
+            {
+                "value": "American Samoa",
+                "shortCode": "AS"
+            },
+            {
+                "value": "Arizona",
+                "shortCode": "AZ"
+            },
+            {
+                "value": "Arkansas",
+                "shortCode": "AR"
+            },
+            {
+                "value": "California",
+                "shortCode": "CA"
+            },
+            {
+                "value": "Colorado",
+                "shortCode": "CO"
+            },
+            {
+                "value": "Connecticut",
+                "shortCode": "CT"
+            },
+            {
+                "value": "Delaware",
+                "shortCode": "DE"
+            },
+            {
+                "value": "District of Columbia",
+                "shortCode": "DC"
+            },
+            {
+                "value": "Micronesia",
+                "shortCode": "FM"
+            },
+            {
+                "value": "Florida",
+                "shortCode": "FL"
+            },
+            {
+                "value": "Georgia",
+                "shortCode": "GA"
+            },
+            {
+                "value": "Guam",
+                "shortCode": "GU"
+            },
+            {
+                "value": "Hawaii",
+                "shortCode": "HI"
+            },
+            {
+                "value": "Idaho",
+                "shortCode": "ID"
+            },
+            {
+                "value": "Illinois",
+                "shortCode": "IL"
+            },
+            {
+                "value": "Indiana",
+                "shortCode": "IN"
+            },
+            {
+                "value": "Iowa",
+                "shortCode": "IA"
+            },
+            {
+                "value": "Kansas",
+                "shortCode": "KS"
+            },
+            {
+                "value": "Kentucky",
+                "shortCode": "KY"
+            },
+            {
+                "value": "Louisiana",
+                "shortCode": "LA"
+            },
+            {
+                "value": "Maine",
+                "shortCode": "ME"
+            },
+            {
+                "value": "Marshall Islands",
+                "shortCode": "MH"
+            },
+            {
+                "value": "Maryland",
+                "shortCode": "MD"
+            },
+            {
+                "value": "Massachusetts",
+                "shortCode": "MA"
+            },
+            {
+                "value": "Michigan",
+                "shortCode": "MI"
+            },
+            {
+                "value": "Minnesota",
+                "shortCode": "MN"
+            },
+            {
+                "value": "Mississippi",
+                "shortCode": "MS"
+            },
+            {
+                "value": "Missouri",
+                "shortCode": "MO"
+            },
+            {
+                "value": "Montana",
+                "shortCode": "MT"
+            },
+            {
+                "value": "Nebraska",
+                "shortCode": "NE"
+            },
+            {
+                "value": "Nevada",
+                "shortCode": "NV"
+            },
+            {
+                "value": "New Hampshire",
+                "shortCode": "NH"
+            },
+            {
+                "value": "New Jersey",
+                "shortCode": "NJ"
+            },
+            {
+                "value": "New Mexico",
+                "shortCode": "NM"
+            },
+            {
+                "value": "New York",
+                "shortCode": "NY"
+            },
+            {
+                "value": "North Carolina",
+                "shortCode": "NC"
+            },
+            {
+                "value": "North Dakota",
+                "shortCode": "ND"
+            },
+            {
+                "value": "Northern Mariana Islands",
+                "shortCode": "MP"
+            },
+            {
+                "value": "Ohio",
+                "shortCode": "OH"
+            },
+            {
+                "value": "Oklahoma",
+                "shortCode": "OK"
+            },
+            {
+                "value": "Oregon",
+                "shortCode": "OR"
+            },
+            {
+                "value": "Palau",
+                "shortCode": "PW"
+            },
+            {
+                "value": "Pennsylvania",
+                "shortCode": "PA"
+            },
+            {
+                "value": "Puerto Rico",
+                "shortCode": "PR"
+            },
+            {
+                "value": "Rhode Island",
+                "shortCode": "RI"
+            },
+            {
+                "value": "South Carolina",
+                "shortCode": "SC"
+            },
+            {
+                "value": "South Dakota",
+                "shortCode": "SD"
+            },
+            {
+                "value": "Tennessee",
+                "shortCode": "TN"
+            },
+            {
+                "value": "Texas",
+                "shortCode": "TX"
+            },
+            {
+                "value": "Utah",
+                "shortCode": "UT"
+            },
+            {
+                "value": "Vermont",
+                "shortCode": "VT"
+            },
+            {
+                "value": "Virgin Islands",
+                "shortCode": "VI"
+            },
+            {
+                "value": "Virginia",
+                "shortCode": "VA"
+            },
+            {
+                "value": "Washington",
+                "shortCode": "WA"
+            },
+            {
+                "value": "West Virginia",
+                "shortCode": "WV"
+            },
+            {
+                "value": "Wisconsin",
+                "shortCode": "WI"
+            },
+            {
+                "value": "Wyoming",
+                "shortCode": "WY"
+            },
+            {
+                "value": "Armed Forces Americas",
+                "shortCode": "AA"
+            },
+            {
+                "value": "Armed Forces Europe, Canada, Africa and Middle East",
+                "shortCode": "AE"
+            },
+            {
+                "value": "Armed Forces Pacific",
+                "shortCode": "AP"
+            }
+        ]
+    },
+    {
         "value": "Afghanistan",
         "countryShortCode": "AF",
         "regions": [
@@ -12747,344 +13001,6 @@
         ]
     },
     {
-        "value": "Russian Federation",
-        "countryShortCode": "RU",
-        "regions": [
-            {
-                "value": "Republic of Adygea",
-                "shortCode": "AD"
-            },
-            {
-                "value": "Republic of Altai (Gorno-Altaysk)",
-                "shortCode": "AL"
-            },
-            {
-                "value": "Altai Krai",
-                "shortCode": "ALT"
-            },
-            {
-                "value": "Amur Oblast",
-                "shortCode": "AMU"
-            },
-            {
-                "value": "Arkhangelsk Oblast",
-                "shortCode": "ARK"
-            },
-            {
-                "value": "Astrakhan Oblast",
-                "shortCode": "AST"
-            },
-            {
-                "value": "Republic of Bashkortostan",
-                "shortCode": "BA"
-            },
-            {
-                "value": "Belgorod Oblast",
-                "shortCode": "BEL"
-            },
-            {
-                "value": "Bryansk Oblast",
-                "shortCode": "BRY"
-            },
-            {
-                "value": "Republic of Buryatia",
-                "shortCode": "BU"
-            },
-            {
-                "value": "Chechen Republic",
-                "shortCode": "CE"
-            },
-            {
-                "value": "Chelyabinsk Oblast",
-                "shortCode": "CHE"
-            },
-            {
-                "value": "Chukotka Autonomous Okrug",
-                "shortCode": "CHU"
-            },
-            {
-                "value": "Chuvash Republic",
-                "shortCode": "CU"
-            },
-            {
-                "value": "Republic of Dagestan",
-                "shortCode": "DA"
-            },
-            {
-                "value": "Republic of Ingushetia",
-                "shortCode": "IN"
-            },
-            {
-                "value": "Irkutsk Oblast",
-                "shortCode": "IRK"
-            },
-            {
-                "value": "Ivanovo Oblast",
-                "shortCode": "IVA"
-            },
-            {
-                "value": "Jewish Autonomous Oblast",
-                "shortCode": "JEW"
-            },
-            {
-                "value": "Kabardino-Balkar Republic",
-                "shortCode": "KB"
-            },
-            {
-                "value": "Kaliningrad Oblast",
-                "shortCode": "KLN"
-            },
-            {
-                "value": "Republic of Kalmykia",
-                "shortCode": "KL"
-            },
-            {
-                "value": "Kaluga Oblast",
-                "shortCode": "KLU"
-            },
-            {
-                "value": "Kamchatka Krai",
-                "shortCode": "KAM"
-            },
-            {
-                "value": "Karachay-Cherkess Republic",
-                "shortCode": "KC"
-            },
-            {
-                "value": "Republic of Karelia",
-                "shortCode": "KR"
-            },
-            {
-                "value": "Khabarovsk Krai",
-                "shortCode": "KHA"
-            },
-            {
-                "value": "Republic of Khakassia",
-                "shortCode": "KK"
-            },
-            {
-                "value": "Khanty-Mansi Autonomous Okrug - Yugra",
-                "shortCode": "KHM"
-            },
-            {
-                "value": "Kemerovo Oblast",
-                "shortCode": "KEM"
-            },
-            {
-                "value": "Kirov Oblast",
-                "shortCode": "KIR"
-            },
-            {
-                "value": "Komi Republic",
-                "shortCode": "KO"
-            },
-            {
-                "value": "Kostroma Oblast",
-                "shortCode": "KOS"
-            },
-            {
-                "value": "Krasnodar Krai",
-                "shortCode": "KDA"
-            },
-            {
-                "value": "Krasnoyarsk Krai",
-                "shortCode": "KYA"
-            },
-            {
-                "value": "Kurgan Oblast",
-                "shortCode": "KGN"
-            },
-            {
-                "value": "Kursk Oblast",
-                "shortCode": "KRS"
-            },
-            {
-                "value": "Leningrad Oblast",
-                "shortCode": "LEN"
-            },
-            {
-                "value": "Lipetsk Oblast",
-                "shortCode": "LIP"
-            },
-            {
-                "value": "Magadan Oblast",
-                "shortCode": "MAG"
-            },
-            {
-                "value": "Mari El Republic",
-                "shortCode": "ME"
-            },
-            {
-                "value": "Republic of Mordovia",
-                "shortCode": "MO"
-            },
-            {
-                "value": "Moscow Oblast",
-                "shortCode": "MOS"
-            },
-            {
-                "value": "Moscow",
-                "shortCode": "MOW"
-            },
-            {
-                "value": "Murmansk Oblast",
-                "shortCode": "MU"
-            },
-            {
-                "value": "Nenets Autonomous Okrug",
-                "shortCode": "NEN"
-            },
-            {
-                "value": "Nizhny Novgorod Oblast",
-                "shortCode": "NIZ"
-            },
-            {
-                "value": "Novgorod Oblast",
-                "shortCode": "NGR"
-            },
-            {
-                "value": "Novosibirsk Oblast",
-                "shortCode": "NVS"
-            },
-            {
-                "value": "Omsk Oblast",
-                "shortCode": "OMS"
-            },
-            {
-                "value": "Orenburg Oblast",
-                "shortCode": "ORE"
-            },
-            {
-                "value": "Oryol Oblast",
-                "shortCode": "ORL"
-            },
-            {
-                "value": "Penza Oblast",
-                "shortCode": "PNZ"
-            },
-            {
-                "value": "Perm Krai",
-                "shortCode": "PER"
-            },
-            {
-                "value": "Primorsky Krai",
-                "shortCode": "PRI"
-            },
-            {
-                "value": "Pskov Oblast",
-                "shortCode": "PSK"
-            },
-            {
-                "value": "Rostov Oblast",
-                "shortCode": "ROS"
-            },
-            {
-                "value": "Ryazan Oblast",
-                "shortCode": "RYA"
-            },
-            {
-                "value": "Saint Petersburg",
-                "shortCode": "SPE"
-            },
-            {
-                "value": "Sakha (Yakutia) Republic",
-                "shortCode": "SA"
-            },
-            {
-                "value": "Sakhalin Oblast",
-                "shortCode": "SAK"
-            },
-            {
-                "value": "Samara Oblast",
-                "shortCode": "SAM"
-            },
-            {
-                "value": "Saratov Oblast",
-                "shortCode": "SAR"
-            },
-            {
-                "value": "Republic of North Ossetia-Alania",
-                "shortCode": "NOA"
-            },
-            {
-                "value": "Smolensk Oblast",
-                "shortCode": "SMO"
-            },
-            {
-                "value": "Stavropol Krai",
-                "shortCode": "STA"
-            },
-            {
-                "value": "Sverdlovsk Oblast",
-                "shortCode": "SVE"
-            },
-            {
-                "value": "Tambov Oblast",
-                "shortCode": "TAM"
-            },
-            {
-                "value": "Republic of Tatarstan",
-                "shortCode": "TA"
-            },
-            {
-                "value": "Tomsk Oblast",
-                "shortCode": "TOM"
-            },
-            {
-                "value": "Tuva Republic",
-                "shortCode": "TU"
-            },
-            {
-                "value": "Tula Oblast",
-                "shortCode": "TUL"
-            },
-            {
-                "value": "Tver Oblast",
-                "shortCode": "TVE"
-            },
-            {
-                "value": "Tyumen Oblast",
-                "shortCode": "TYU"
-            },
-            {
-                "value": "Udmurt Republic",
-                "shortCode": "UD"
-            },
-            {
-                "value": "Ulyanovsk Oblast",
-                "shortCode": "ULY"
-            },
-            {
-                "value": "Vladimir Oblast",
-                "shortCode": "VLA"
-            },
-            {
-                "value": "Volgograd Oblast",
-                "shortCode": "VGG"
-            },
-            {
-                "value": "Vologda Oblast",
-                "shortCode": "VLG"
-            },
-            {
-                "value": "Voronezh Oblast",
-                "shortCode": "VOR"
-            },
-            {
-                "value": "Yamalo-Nenets Autonomous Okrug",
-                "shortCode": "YAN"
-            },
-            {
-                "value": "Yaroslavl Oblast",
-                "shortCode": "YAR"
-            },
-            {
-                "value": "Zabaykalsky Krai",
-                "shortCode": "ZAB"
-            }
-        ]
-    },
-    {
         "value": "Rwanda",
         "countryShortCode": "RW",
         "regions": [
@@ -18115,260 +18031,6 @@
             {
                 "value": "York",
                 "shortCode": "YOR"
-            }
-        ]
-    },
-    {
-        "value": "United States",
-        "countryShortCode": "US",
-        "regions": [
-            {
-                "value": "Alabama",
-                "shortCode": "AL"
-            },
-            {
-                "value": "Alaska",
-                "shortCode": "AK"
-            },
-            {
-                "value": "American Samoa",
-                "shortCode": "AS"
-            },
-            {
-                "value": "Arizona",
-                "shortCode": "AZ"
-            },
-            {
-                "value": "Arkansas",
-                "shortCode": "AR"
-            },
-            {
-                "value": "California",
-                "shortCode": "CA"
-            },
-            {
-                "value": "Colorado",
-                "shortCode": "CO"
-            },
-            {
-                "value": "Connecticut",
-                "shortCode": "CT"
-            },
-            {
-                "value": "Delaware",
-                "shortCode": "DE"
-            },
-            {
-                "value": "District of Columbia",
-                "shortCode": "DC"
-            },
-            {
-                "value": "Micronesia",
-                "shortCode": "FM"
-            },
-            {
-                "value": "Florida",
-                "shortCode": "FL"
-            },
-            {
-                "value": "Georgia",
-                "shortCode": "GA"
-            },
-            {
-                "value": "Guam",
-                "shortCode": "GU"
-            },
-            {
-                "value": "Hawaii",
-                "shortCode": "HI"
-            },
-            {
-                "value": "Idaho",
-                "shortCode": "ID"
-            },
-            {
-                "value": "Illinois",
-                "shortCode": "IL"
-            },
-            {
-                "value": "Indiana",
-                "shortCode": "IN"
-            },
-            {
-                "value": "Iowa",
-                "shortCode": "IA"
-            },
-            {
-                "value": "Kansas",
-                "shortCode": "KS"
-            },
-            {
-                "value": "Kentucky",
-                "shortCode": "KY"
-            },
-            {
-                "value": "Louisiana",
-                "shortCode": "LA"
-            },
-            {
-                "value": "Maine",
-                "shortCode": "ME"
-            },
-            {
-                "value": "Marshall Islands",
-                "shortCode": "MH"
-            },
-            {
-                "value": "Maryland",
-                "shortCode": "MD"
-            },
-            {
-                "value": "Massachusetts",
-                "shortCode": "MA"
-            },
-            {
-                "value": "Michigan",
-                "shortCode": "MI"
-            },
-            {
-                "value": "Minnesota",
-                "shortCode": "MN"
-            },
-            {
-                "value": "Mississippi",
-                "shortCode": "MS"
-            },
-            {
-                "value": "Missouri",
-                "shortCode": "MO"
-            },
-            {
-                "value": "Montana",
-                "shortCode": "MT"
-            },
-            {
-                "value": "Nebraska",
-                "shortCode": "NE"
-            },
-            {
-                "value": "Nevada",
-                "shortCode": "NV"
-            },
-            {
-                "value": "New Hampshire",
-                "shortCode": "NH"
-            },
-            {
-                "value": "New Jersey",
-                "shortCode": "NJ"
-            },
-            {
-                "value": "New Mexico",
-                "shortCode": "NM"
-            },
-            {
-                "value": "New York",
-                "shortCode": "NY"
-            },
-            {
-                "value": "North Carolina",
-                "shortCode": "NC"
-            },
-            {
-                "value": "North Dakota",
-                "shortCode": "ND"
-            },
-            {
-                "value": "Northern Mariana Islands",
-                "shortCode": "MP"
-            },
-            {
-                "value": "Ohio",
-                "shortCode": "OH"
-            },
-            {
-                "value": "Oklahoma",
-                "shortCode": "OK"
-            },
-            {
-                "value": "Oregon",
-                "shortCode": "OR"
-            },
-            {
-                "value": "Palau",
-                "shortCode": "PW"
-            },
-            {
-                "value": "Pennsylvania",
-                "shortCode": "PA"
-            },
-            {
-                "value": "Puerto Rico",
-                "shortCode": "PR"
-            },
-            {
-                "value": "Rhode Island",
-                "shortCode": "RI"
-            },
-            {
-                "value": "South Carolina",
-                "shortCode": "SC"
-            },
-            {
-                "value": "South Dakota",
-                "shortCode": "SD"
-            },
-            {
-                "value": "Tennessee",
-                "shortCode": "TN"
-            },
-            {
-                "value": "Texas",
-                "shortCode": "TX"
-            },
-            {
-                "value": "Utah",
-                "shortCode": "UT"
-            },
-            {
-                "value": "Vermont",
-                "shortCode": "VT"
-            },
-            {
-                "value": "Virgin Islands",
-                "shortCode": "VI"
-            },
-            {
-                "value": "Virginia",
-                "shortCode": "VA"
-            },
-            {
-                "value": "Washington",
-                "shortCode": "WA"
-            },
-            {
-                "value": "West Virginia",
-                "shortCode": "WV"
-            },
-            {
-                "value": "Wisconsin",
-                "shortCode": "WI"
-            },
-            {
-                "value": "Wyoming",
-                "shortCode": "WY"
-            },
-            {
-                "value": "Armed Forces Americas",
-                "shortCode": "AA"
-            },
-            {
-                "value": "Armed Forces Europe, Canada, Africa and Middle East",
-                "shortCode": "AE"
-            },
-            {
-                "value": "Armed Forces Pacific",
-                "shortCode": "AP"
             }
         ]
     },
