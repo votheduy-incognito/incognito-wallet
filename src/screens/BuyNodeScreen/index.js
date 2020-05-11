@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Animated, RefreshControl } from 'react-native';
+import { Animated, RefreshControl, InteractionManager } from 'react-native';
 import { Text, Button, View, Image, ScrollView, ActivityIndicator } from '@components/core';
 import nodeImg from '@src/assets/images/node_buy.png';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
@@ -42,6 +42,11 @@ const HEADER_MAX_HEIGHT = 120;
 const HEADER_MIN_HEIGHT = 0;
 
 const BuyNodeScreen = () => {
+  let emailRef = useRef();
+  let firstNameRef = useRef();
+  let lastNameRef = useRef();
+  let addressRef = useRef();
+  let cityRef = useRef();
   let scrollViewRef = useRef();
 
   const [errTf, setErrTF] = useState({});
@@ -51,6 +56,7 @@ const BuyNodeScreen = () => {
   const [price, setPrice] = useState(399);
   const [currentTokenId, setCurrentTokenId] = useState('0000000000000000000000000000000000000000000000000000000000000004');
   const [pTokenSupport, setPTokenSupport] = useState([]);
+  const [pTokenSupportsPartner, setPTokenSupportsPartner] = useState([]);
 
   const [showContactForShipping, setShowContactForShipping] = useState(false);
 
@@ -89,11 +95,31 @@ const BuyNodeScreen = () => {
   const { symbol, tokenId, isVerified } = selectedPrivacy;
 
   useEffect(() => {
+    setDefaultTokenId();
     getPTokenList();
+    getSystemConfig();
   }, [errTf]);
 
+  const setDefaultTokenId = () => {
+    dispatch(setSelectedPrivacy(currentTokenId));
+  };
+
+  // Get token system config
+  const getSystemConfig = async () => {
+    APIService.getSystemConfig()
+      .then(data => {
+        if (data?.BuyNodePTokensPartner) {
+          let res = JSON.parse(data?.BuyNodePTokensPartner);
+          setPTokenSupportsPartner(res);
+        }
+      })
+      .catch(err => {
+        console.log('Could not get system config for buying device');
+      });
+  };
+
   // Get all pToken for internal app, only accept with these coins
-  const getPTokenList = () => {
+  const getPTokenList = async () => {
     APIService.getPTokenSupportForBuyingDevice()
       .then(data => {
         let res = data;
@@ -186,6 +212,32 @@ const BuyNodeScreen = () => {
   const handleSelectToken = tokenId => {
     setCurrentTokenId(tokenId);
     dispatch(setSelectedPrivacy(tokenId));
+
+    // Update price dynamically for DAI token
+    checkSelectedTokenIdAndUpdateDynamicPrice(tokenId);
+  };
+
+  const checkSelectedTokenIdAndUpdateDynamicPrice = tokenId => {
+    // Update price dynamically for DAI token
+    let IDTokenDAI = '';
+    for (let i = 0; i < pTokenSupport.length; i++) {
+      if (pTokenSupport[i]?.TokenID === tokenId) {
+        IDTokenDAI = pTokenSupport[i]?.ID;
+        break;
+      }
+    }
+    // Foreach in pTokenPartnerSupport, update price
+    for (let j = 0; j < pTokenSupportsPartner.length; j++) {
+      if (pTokenSupportsPartner[j]?.ID === IDTokenDAI) {
+        IDTokenDAI = pTokenSupportsPartner[j]?.ID;
+        // Set price
+        setPrice(Number(pTokenSupportsPartner[j]?.Price || 0));
+        break;
+      } else {
+        // Set price default
+        setPrice(399);
+      }
+    }
   };
 
   const renderPayment = () => {
@@ -222,10 +274,12 @@ const BuyNodeScreen = () => {
   const getShippingFee = async () => {
     await APIService.getShippingFee(contactData.city, contactData.code, contactData.postalCode, contactData.region, contactData.address)
       .then(val => {
-        console.log(LogManager.parseJsonObjectToJsonString(val));
         if (val && val?.Result) {
           setShippingFee(val?.Result?.ShippingFee || 0);
           setPrice(val?.Result?.Price || 0);
+
+          // Update price specified
+          checkSelectedTokenIdAndUpdateDynamicPrice(tokenId);
         }
       });
   };
@@ -268,6 +322,8 @@ const BuyNodeScreen = () => {
           keyboardType='email-address'
           autoCapitalize='none'
           autoCorrect={false}
+          ref={emailRef}
+          onSubmitEditing={() => { firstNameRef && firstNameRef?.current?.focus(); }}
           enablesReturnKeyAutomatically
           onFocus={() => onFocusField()}
           onChangeText={async (text) => {
@@ -280,6 +336,8 @@ const BuyNodeScreen = () => {
         />
         <Text style={[theme.text.defaultTextStyle, { fontSize: FONT.SIZE.medium }, theme.MARGIN.marginTopDefault]}>Shipping address</Text>
         <TextField
+          ref={firstNameRef}
+          onSubmitEditing={() => { lastNameRef && lastNameRef?.current?.focus(); }}
           keyboardType='default'
           autoCapitalize='none'
           autoCorrect={false}
@@ -294,6 +352,8 @@ const BuyNodeScreen = () => {
           error={errTf?.firstName}
         />
         <TextField
+          ref={lastNameRef}
+          onSubmitEditing={() => { addressRef && addressRef?.current?.focus(); }}
           keyboardType='default'
           autoCapitalize='none'
           autoCorrect={false}
@@ -308,6 +368,8 @@ const BuyNodeScreen = () => {
           error={errTf?.lastName}
         />
         <TextField
+          ref={addressRef}
+          onSubmitEditing={() => { cityRef && cityRef?.current?.focus(); }}
           keyboardType='default'
           autoCapitalize='none'
           autoCorrect={false}
@@ -323,6 +385,7 @@ const BuyNodeScreen = () => {
           error={errTf?.address}
         />
         <TextField
+          ref={cityRef}
           keyboardType='default'
           autoCapitalize='none'
           autoCorrect={false}
@@ -357,7 +420,7 @@ const BuyNodeScreen = () => {
           }}
         />
         <TextField
-          keyboardType='email-address'
+          keyboardType='default'
           autoCapitalize='none'
           autoCorrect={false}
           enablesReturnKeyAutomatically
@@ -391,6 +454,7 @@ const BuyNodeScreen = () => {
   // Show contact section for user typing
   const onShowContactForShipping = () => {
     setShowContactForShipping(true);
+    emailRef && emailRef?.current?.focus();
   };
 
   // Process payment flow
@@ -439,7 +503,7 @@ const BuyNodeScreen = () => {
   const renderButtonProcess = () => {
     return (
       <Button
-        title="Pay Now"
+        title={showContactForShipping ? 'Complete your order' : 'Continue to payment'}
         onPress={async () => {
           if (!showContactForShipping) {
             // Show contact section
@@ -514,7 +578,7 @@ const BuyNodeScreen = () => {
       // I want to scroll into current focusing container for better UX
       // onContentSizeChange={(contentWidth, contentHeight) => { showContactForShipping && scrollViewRef?.current?.scrollToEnd({ animated: true }); }}
       >
-        <KeyboardAwareScrollView showsVerticalScrollIndicator={false} enableOnAndroid enableAutomaticScroll>
+        <KeyboardAwareScrollView showsVerticalScrollIndicator={false} enableOnAndroid extraScrollHeight={50}>
           {renderNodeImgAndPrice()}
           {renderMotto()}
           {renderActionSheet()}
@@ -524,10 +588,10 @@ const BuyNodeScreen = () => {
           {renderButtonProcess()}
           {loading && <ActivityIndicator style={theme.FLEX.absoluteIndicator} />}
         </KeyboardAwareScrollView>
-        
+
       </ScrollView>
       {renderFloatingPriceView()}
-      
+
     </View>
   );
 };

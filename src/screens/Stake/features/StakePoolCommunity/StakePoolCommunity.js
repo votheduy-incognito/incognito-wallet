@@ -39,7 +39,7 @@ const StakePoolCommunity = () => {
     {
       pool: 'JServers',
       icon: srcIconJSServer,
-      link: 'http://jservers.com/',
+      link: 'https://jservers.com/',
     },
   ];
   return (
