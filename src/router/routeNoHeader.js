@@ -7,6 +7,7 @@ import Community from '@src/screens/Community';
 import CreateToken from '@src/screens/CreateToken';
 import Stake from '@screens/Stake';
 import Shield from '@screens/Shield';
+import ShieldGenQRCode from '@screens/Shield/features/GenQRCode';
 import routeNames from './routeNames';
 
 const routes = [
@@ -41,6 +42,10 @@ const routes = [
   {
     screen: Stake,
     name: routeNames.Stake,
+  },
+  {
+    screen: ShieldGenQRCode,
+    name: routeNames.ShieldGenQRCode,
   },
 ];
 

@@ -13,7 +13,7 @@ import floor from 'lodash/floor';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { styled } from './Token.styled';
 
-const TokenContext = React.createContext(null);
+export const TokenContext = React.createContext(null);
 
 const NormalText = ({ style, text, hasPSymbol = false }) => (
   <Text numberOfLines={1} style={[styled.text, style]}>
@@ -22,12 +22,15 @@ const NormalText = ({ style, text, hasPSymbol = false }) => (
   </Text>
 );
 
-const Name = () => {
+export const Name = props => {
   const { tokenProps } = React.useContext(TokenContext);
   const { displayName, isVerified } = tokenProps;
   return (
     <View style={styled.name}>
-      <NormalText text={displayName} style={styled.boldText} />
+      <NormalText
+        text={displayName}
+        style={[styled.boldText, props?.styledDisplayName]}
+      />
       {isVerified && <TokenVerifiedIcon style={styled.verifiedIcon} />}
     </View>
   );
@@ -75,6 +78,12 @@ const Amount = () => {
   return <NormalText text={`${format.amount(amount, pDecimals)} ${symbol}`} />;
 };
 
+export const Symbol = () => {
+  const { tokenProps } = React.useContext(TokenContext);
+  const { symbol } = tokenProps;
+  return <NormalText text={symbol} />;
+};
+
 const Token = props => {
   const { onPress, style } = props;
   return (
@@ -97,6 +106,14 @@ const Token = props => {
       </TouchableWithoutFeedback>
     </TokenContext.Provider>
   );
+};
+
+Name.defaultProps = {
+  styledDisplayName: null,
+};
+
+Name.propTypes = {
+  styledDisplayName: PropTypes.object,
 };
 
 Token.defaultProps = {

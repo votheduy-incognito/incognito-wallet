@@ -9,7 +9,7 @@ import routeNames from '@src/router/routeNames';
 
 const styled = StyleSheet.create({
   container: {
-    backgroundColor: '#ECECEC',
+    backgroundColor: COLORS.grey,
     padding: 10,
     flexDirection: 'row',
     borderRadius: 20,
@@ -21,6 +21,7 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 6,
+    color: COLORS.black,
     maxWidth: 100,
   },
 });
