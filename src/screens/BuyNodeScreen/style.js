@@ -32,6 +32,18 @@ const style = StyleSheet.create({
     width: '100%',
     alignItems: 'center'
   },
+  wallet: {
+    flexDirection: 'row', 
+    borderRadius: 8, 
+    paddingLeft: 5,
+    borderColor: COLORS.lightGrey11,
+    borderWidth: 0.5,
+    marginBottom: 10,
+    justifyContent: 'flex-end', 
+    alignSelf: 'flex-end',
+    alignItems: 'center', 
+    alignContent: 'flex-end'
+  },
   iconDropDown: {
     alignSelf: 'center', 
     justifyContent: 'center', 

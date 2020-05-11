@@ -4,6 +4,8 @@ import { Text, Image, View, Button, ScrollView } from '@components/core';
 import nodeImg from '@assets/images/node.png';
 import linkingService from '@services/linking';
 import {CONSTANT_CONFIGS} from '@src/constants';
+import NavigationService from '@src/services/NavigationService';
+import routeNames from '@src/router/routeNames';
 import styles from './style';
 
 const WelcomeNodes = ({ onAddPNode, onAddVNode }) => (
@@ -20,7 +22,7 @@ const WelcomeNodes = ({ onAddPNode, onAddVNode }) => (
       <Button
         title="Buy another Node"
         buttonStyle={styles.buyButton}
-        onPress={() => { linkingService.openUrl(CONSTANT_CONFIGS.NODE_URL); }}
+        onPress={() => { NavigationService.navigate(routeNames.BuyNodeScreen); }}
       />
     </View>
 

@@ -21,40 +21,50 @@ export const getPrivacyDataByTokenID = createSelector(
   internalTokens,
   pTokens,
   followed,
-  exchangeRateSelector,
-  (account, _internalTokens, _pTokens, _followed, exchangeRate) =>
-    memoize(tokenID => {
-      try {
-        // 'PRV' is not a token
-        const internalTokenData =
-          _internalTokens?.find(
-            t => t?.id !== CONSTANT_COMMONS.PRV_TOKEN_ID && t?.id === tokenID,
-          ) || {};
-        const pTokenData = _pTokens?.find(t => t?.tokenId === tokenID);
-        const followedTokenData = _followed.find(t => t?.id === tokenID) || {};
+  (account, _internalTokens, _pTokens, _followed) => memoize((tokenID) => {
+    try {
+      // 'PRV' is not a token
+      const internalTokenData = _internalTokens?.find(t => t?.id !== CONSTANT_COMMONS.PRV_TOKEN_ID && t?.id === tokenID) || {};
+      const pTokenData = _pTokens?.find(t => t?.tokenId === tokenID);
+      const followedTokenData = _followed.find(t => t?.id === tokenID) || {};
 
-        if (
-          !internalTokenData &&
-          !pTokenData &&
-          tokenID !== CONSTANT_COMMONS.PRV_TOKEN_ID
-        ) {
-          throw new Error(`Can not find coin with id ${tokenID}`);
-        }
-        const token = new SelectedPrivacy(
-          account,
-          { ...internalTokenData, ...followedTokenData },
-          pTokenData,
-        );
-        const price = getPrice({ token, exchangeRate });
-        return {
-          ...token,
-          ...price,
-        };
-      } catch (e) {
-        new ExHandler(e);
+      if (!internalTokenData && !pTokenData && tokenID !== CONSTANT_COMMONS.PRV_TOKEN_ID) {
+        throw new Error(`Can not find coin with id ${tokenID}`);
       }
-    }),
+
+      return new SelectedPrivacy(account, { ...internalTokenData, ...followedTokenData }, pTokenData);
+    } catch (e) {
+      new ExHandler(e);
+    }
+  })
 );
+
+
+export const getPrivacyDataBaseOnAccount = createSelector(
+  // defaultAccount,
+  internalTokens,
+  pTokens,
+  followed,
+  selectedPrivacyTokenID,
+  (_internalTokens, _pTokens, _followed, tokenID) => account => {
+    try {
+      // 'PRV' is not a token
+      const internalTokenData = _internalTokens?.find(t => t?.id !== CONSTANT_COMMONS.PRV_TOKEN_ID && t?.id === tokenID) || {};
+      const pTokenData = _pTokens?.find(t => t?.tokenId === tokenID);
+      const followedTokenData = _followed.find(t => t?.id === tokenID) || {};
+
+      if (!internalTokenData && !pTokenData && tokenID !== CONSTANT_COMMONS.PRV_TOKEN_ID) {
+        throw new Error(`Can not find coin with id ${tokenID}`);
+      }
+
+      return new SelectedPrivacy(account, { ...internalTokenData, ...followedTokenData }, pTokenData);
+    } catch (e) {
+      new ExHandler(e);
+    }
+  } 
+);
+
+
 
 export const selectedPrivacy = createSelector(
   selectedPrivacyTokenID,
@@ -68,4 +78,5 @@ export default {
   getPrivacyDataByTokenID,
   selectedPrivacyTokenID,
   selectedPrivacy,
+  getPrivacyDataBaseOnAccount
 };

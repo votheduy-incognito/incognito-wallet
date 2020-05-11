@@ -6,7 +6,6 @@ import NodeItem from '@screens/Node/components/NodeItem';
 import WelcomeNodes from '@screens/Node/components/Welcome';
 import { getTokenList } from '@services/api/token';
 import {CustomError, ErrorCode, ExHandler} from '@services/exception';
-import linkingService from '@services/linking';
 import NodeService from '@services/NodeService';
 import accountService from '@services/wallet/accountService';
 import {
@@ -418,7 +417,7 @@ class Node extends BaseScreen {
           <Button
             style={style.buyButton}
             title="Buy another Node"
-            onPress={() => { linkingService.openUrl(CONSTANT_CONFIGS.NODE_URL); }}
+            onPress={() => { this.goToScreen(routeNames.BuyNodeScreen); }}
           />
         </ScrollView>
         <WelcomeSetupNode visible={showWelcomeSetupNode} onClose={this.closeWelcomeSetupNode} />
