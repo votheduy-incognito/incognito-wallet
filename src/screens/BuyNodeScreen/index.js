@@ -42,6 +42,11 @@ const HEADER_MAX_HEIGHT = 120;
 const HEADER_MIN_HEIGHT = 0;
 
 const BuyNodeScreen = () => {
+  let emailRef = useRef();
+  let firstNameRef = useRef();
+  let lastNameRef = useRef();
+  let addressRef = useRef();
+  let cityRef = useRef();
   let scrollViewRef = useRef();
 
   const [errTf, setErrTF] = useState({});
@@ -114,7 +119,7 @@ const BuyNodeScreen = () => {
   };
 
   // Get all pToken for internal app, only accept with these coins
-  const getPTokenList = async() => {
+  const getPTokenList = async () => {
     APIService.getPTokenSupportForBuyingDevice()
       .then(data => {
         let res = data;
@@ -317,6 +322,8 @@ const BuyNodeScreen = () => {
           keyboardType='email-address'
           autoCapitalize='none'
           autoCorrect={false}
+          ref={emailRef}
+          onSubmitEditing={() => { firstNameRef && firstNameRef?.current?.focus(); }}
           enablesReturnKeyAutomatically
           onFocus={() => onFocusField()}
           onChangeText={async (text) => {
@@ -329,6 +336,8 @@ const BuyNodeScreen = () => {
         />
         <Text style={[theme.text.defaultTextStyle, { fontSize: FONT.SIZE.medium }, theme.MARGIN.marginTopDefault]}>Shipping address</Text>
         <TextField
+          ref={firstNameRef}
+          onSubmitEditing={() => { lastNameRef && lastNameRef?.current?.focus(); }}
           keyboardType='default'
           autoCapitalize='none'
           autoCorrect={false}
@@ -343,6 +352,8 @@ const BuyNodeScreen = () => {
           error={errTf?.firstName}
         />
         <TextField
+          ref={lastNameRef}
+          onSubmitEditing={() => { addressRef && addressRef?.current?.focus(); }}
           keyboardType='default'
           autoCapitalize='none'
           autoCorrect={false}
@@ -357,6 +368,8 @@ const BuyNodeScreen = () => {
           error={errTf?.lastName}
         />
         <TextField
+          ref={addressRef}
+          onSubmitEditing={() => { cityRef && cityRef?.current?.focus(); }}
           keyboardType='default'
           autoCapitalize='none'
           autoCorrect={false}
@@ -372,6 +385,7 @@ const BuyNodeScreen = () => {
           error={errTf?.address}
         />
         <TextField
+          ref={cityRef}
           keyboardType='default'
           autoCapitalize='none'
           autoCorrect={false}
@@ -406,7 +420,7 @@ const BuyNodeScreen = () => {
           }}
         />
         <TextField
-          keyboardType='email-address'
+          keyboardType='default'
           autoCapitalize='none'
           autoCorrect={false}
           enablesReturnKeyAutomatically
@@ -440,6 +454,7 @@ const BuyNodeScreen = () => {
   // Show contact section for user typing
   const onShowContactForShipping = () => {
     setShowContactForShipping(true);
+    emailRef && emailRef?.current?.focus();
   };
 
   // Process payment flow
