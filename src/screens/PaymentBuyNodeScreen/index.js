@@ -78,7 +78,6 @@ const PaymentBuyNodeScreen = ({ navigation }) => {
               style={[styles.mode, { width: '100%'}]}
             >
               <Text style={[styles.modeText, {marginTop: 10, marginBottom: 10, color: paymentDevice ? COLORS.dark1 : 'black', fontSize: FONT.SIZE.small, fontFamily: FONT.NAME.bold}]}>{item.text}</Text>
-              <Dashed />
             </TouchableOpacity>
           ))}
         </View>

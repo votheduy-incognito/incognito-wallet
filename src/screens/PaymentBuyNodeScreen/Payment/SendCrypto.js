@@ -326,7 +326,7 @@ class SendCrypto extends React.Component {
           <Form>
             {({ handleSubmit }) => (
               <View style={homeStyle.form}>
-                <Field
+                {/* <Field
                   onChange={(text) => {
                     rfFocus(formName, 'toAddress');
                   }}
@@ -342,7 +342,7 @@ class SendCrypto extends React.Component {
                   }}
                   onOpenAddressBook={onShowFrequentReceivers}
                   {...generateTestId(SEND.ADDRESS_INPUT)}
-                />
+                /> */}
                 <Field
                   onChange={(text) => {
                     rfFocus(formName, 'amount');
