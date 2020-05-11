@@ -77,7 +77,7 @@ class TradeConfirm extends React.Component {
   }
 
   updateData() {
-    const { inputToken, outputValue, outputToken } = this.props;
+    const { inputToken, outputValue, outputToken, inputValue } = this.props;
     const { supportedFeeTypes } = this.state;
     const networkFeeUnit = _.first(supportedFeeTypes) || PRV.symbol;
     const tradingFee = 0;
@@ -109,25 +109,25 @@ class TradeConfirm extends React.Component {
       isUsed && supportedFeeTypes.push(token.symbol);
     } finally {
       this.setState({
-        supportedFeeTypes: [...supportedFeeTypes, CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV]
+        supportedFeeTypes: [CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV, ...supportedFeeTypes, ]
       });
     }
   };
 
   handleSelectFee = (type) => {
-    const { inputToken } = this.props;
-    const { networkFee, pDecimals: previousPDecimals } = this.state;
-    const networkFeeNumber = convertUtil.toNumber(networkFee.replace ? networkFee : 0, true);
-    const pDecimals = type === inputToken.symbol ? inputToken.pDecimals : PRV.pDecimals || 0;
+    const { inputToken, outputValue, outputToken, inputValue } = this.props;
+    const { pDecimals: previousPDecimals } = this.state;
+    let { networkFee } = this.state;
 
-    if (networkFee && !_.isNaN(networkFeeNumber)) {
-      const originalNetworkFee = convertUtil.toOriginalAmount(networkFeeNumber, previousPDecimals);
-      const newNetworkFee = formatUtil.amountFull(originalNetworkFee, pDecimals);
-      this.setState({ networkFee: newNetworkFee, pDecimals });
-    }
+    const pDecimals = type === inputToken.symbol ? inputToken.pDecimals : PRV.pDecimals || 0;
+    const feeNumber = convertUtil.toNumber(networkFee);
+    const originalFee = convertUtil.toOriginalAmount(feeNumber, previousPDecimals);
+    const diff = _.floor((outputValue / outputToken.pDecimals) / (inputValue / inputToken.pDecimals));
+    const newNetworkFeeNumber = _.floor(originalFee / diff);
 
     this.setState({
       networkFeeUnit: type,
+      networkFee: formatUtil.amountFull(newNetworkFeeNumber, pDecimals),
       pDecimals,
     });
   };
