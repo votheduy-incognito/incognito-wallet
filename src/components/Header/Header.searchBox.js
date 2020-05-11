@@ -4,6 +4,7 @@ import { View, StyleSheet } from 'react-native';
 import { FONT, COLORS } from '@src/styles';
 import { createForm } from '@components/core/reduxForm';
 import { Field } from 'redux-form';
+import PropTypes from 'prop-types';
 
 const styled = StyleSheet.create({
   searchBox: {
@@ -26,6 +27,22 @@ export const searchBoxConfig = {
 };
 
 const Form = createForm(searchBoxConfig.form);
+
+const SearchInput = props => {
+  const { input, ...rest } = props;
+  return (
+    <TextInput
+      onChangeText={input?.onChange}
+      onBlur={input?.onBlur}
+      onFocus={input?.onFocus}
+      value={input?.value}
+      style={styled.input}
+      autoFocus
+      containerInputStyle={styled.containerInputStyle}
+      {...rest}
+    />
+  );
+};
 
 const SearchBox = () => {
   return (
@@ -54,6 +71,10 @@ const SearchBox = () => {
   );
 };
 
+SearchInput.props = {
+  input: PropTypes.any.isRequired,
+};
+
 SearchBox.propTypes = {};
 
-export default SearchBox;
+export default React.memo(SearchBox);

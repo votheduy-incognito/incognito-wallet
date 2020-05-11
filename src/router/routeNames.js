@@ -63,4 +63,5 @@ export default {
   HomeWallet: 'HomeWallet',
   SelectAccount: 'SelectAccount',
   FollowTokenOld: 'FollowTokenOld',
+  ShieldGenQRCode: 'ShieldGenQRCode',
 };
