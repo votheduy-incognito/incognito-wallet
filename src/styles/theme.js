@@ -19,22 +19,27 @@ const text = {
   },
   headerTextStyle: {
     ...FONTS.STYLE.bold,
-    color: COLORS.dark1,
+    color: COLORS.black,
     fontSize: FONTS.SIZE.large,
+  },
+  mediumTextStyle: {
+    ...FONTS.STYLE.normal,
+    color: COLORS.black,
+    fontSize: FONTS.SIZE.medium,
   },
   boldTextStyle: {
     ...FONTS.STYLE.bold,
-    color: COLORS.dark1,
+    color: COLORS.black,
     fontSize: FONTS.SIZE.regular,
   },
   boldTextStyleMedium: {
     ...FONTS.STYLE.bold,
-    color: COLORS.dark1,
+    color: COLORS.black,
     fontSize: FONTS.SIZE.medium,
   },
   boldTextStyleLarge: {
     ...FONTS.STYLE.bold,
-    color: COLORS.dark1,
+    color: COLORS.black,
     fontSize: FONTS.SIZE.large,
   },
   defaultSize: FONTS.SIZE.regular,

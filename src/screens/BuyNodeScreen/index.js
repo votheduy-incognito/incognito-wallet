@@ -2,10 +2,11 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Animated, RefreshControl, TouchableOpacity } from 'react-native';
 import { Text, Button, View, Image, ScrollView, ActivityIndicator } from '@components/core';
 import nodeImg from '@src/assets/images/node_buy.png';
-import { selectedPrivacySeleclor } from '@src/redux/selectors';
+import { selectedPrivacySeleclor, accountSeleclor } from '@src/redux/selectors';
 import theme from '@src/styles/theme';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
+import linkingService from '@services/linking';
 import { TextField } from 'react-native-material-textfield';
 import CurrentBalance from '@components/CurrentBalance';
 import { connect, useSelector, useDispatch } from 'react-redux';
@@ -13,13 +14,18 @@ import { LineView } from '@src/components/Line';
 import { COLORS, FONT } from '@src/styles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import LogManager from '@src/services/LogManager';
+import { Icon } from 'react-native-elements';
 import { Dropdown } from 'react-native-material-dropdown';
 import { checkEmailValid, checkFieldEmpty } from '@src/utils/validator';
 import APIService from '@src/services/api/miner/APIService';
 import TokenCustomSelect from '@src/components/TokenSelect/TokenCustomSelect';
 import NavigationService from '@src/services/NavigationService';
 import routeNames from '@src/router/routeNames';
+import { actionToggleModal } from '@src/components/Modal';
+import AccountModal from '@src/components/Modal/AccountModal/modal.account';
+import { CONSTANT_CONFIGS } from '@src/constants';
 import styles from './style';
+
 
 const dataCountry = require('../../assets/rawdata/country.json');
 
@@ -57,6 +63,7 @@ const BuyNodeScreen = () => {
   const [showContactForShipping, setShowContactForShipping] = useState(false);
 
   const [currentQuantity, setCurrentQuantity] = useState(1);
+  const [currentAccount, setCurrentAccount] = useState(useSelector(accountSeleclor.defaultAccount));
   const [contactData, setContactData] = useState({});
   const [scrollY] = useState(new Animated.Value(0));
 
@@ -66,15 +73,19 @@ const BuyNodeScreen = () => {
 
   const dispatch = useDispatch();
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+
   const { symbol, tokenId } = selectedPrivacy;
+  const account = useSelector(accountSeleclor.defaultAccount);
+  const selectedPrivacyWithAccountChange = useSelector(selectedPrivacySeleclor.getPrivacyDataBaseOnAccount)(currentAccount);
+  // const wallet = useSelector(wallet);
 
   useEffect(() => {
     setDefaultTokenId();
-
     getSystemConfig();
+
   }, [errTf]);
 
-  const setDefaultTokenId = () => {
+  const setDefaultTokenId = async () => {
     dispatch(setSelectedPrivacy(currentTokenId));
   };
 
@@ -137,7 +148,7 @@ const BuyNodeScreen = () => {
   const renderActionSheet = () => {
     return (
       <View style={[theme.FLEX.rowSpaceBetween, theme.FLEX.fullWidth, theme.MARGIN.marginTopDefault]}>
-        <Text style={[theme.MARGIN.marginRightDefault, theme.text.boldTextStyleMedium, theme.FLEX.alignViewSelfCenter]}>Select quantity</Text>
+        <Text style={[theme.MARGIN.marginRightDefault, theme.text.boldTextStyle, theme.FLEX.alignViewSelfCenter]}>Select quantity</Text>
         <View style={theme.FLEX.rowSpaceBetween}>
           <TouchableOpacity
             style={theme.MARGIN.marginRightDefault}
@@ -189,7 +200,7 @@ const BuyNodeScreen = () => {
         {renderTotalItem('Shipping', shippingFee === 0 ? 'FREE' : `$${shippingFee}`)}
         {renderTotalItem(`Ships ${shippingHour}`, '')}
         <LineView color={COLORS.lightGrey1} style={theme.MARGIN.marginBottomDefault} />
-        {renderTotalItem('Total', `$${subTotal.toFixed(2)}`, {}, theme.text.boldTextStyle)}
+        {renderTotalItem('Total', `$${subTotal.toFixed(2)}`, {}, theme.text.defaultTextStyle)}
         {renderTotalItem(`Pay with ${symbol}`, `${countableToken} ${symbol}`, theme.text.boldTextStyle, theme.text.boldTextStyle)}
         <LineView color={COLORS.lightGrey1} />
       </View>
@@ -235,24 +246,63 @@ const BuyNodeScreen = () => {
     return (
       <View>
         <LineView color={COLORS.lightGrey1} style={theme.MARGIN.marginTopDefault} />
-        <View style={[theme.FLEX.rowSpaceBetween, { flex: 1 }]}>
-          <Text style={[theme.text.defaultTextStyle, theme.FLEX.alignViewSelfCenter]}>Payment</Text>
-          <CurrentBalance
-            isNestedCurrentBalance
-            containerStyle={{
-              marginHorizontal: 0,
-              paddingHorizontal: 0,
-              justifyContent: 'flex-end',
-              alignItems: 'flex-end',
-            }}
-            hideBalanceTitle
-            select={
-              (
-                <TokenCustomSelect customListPToken={pTokenSupport} onSelect={handleSelectToken} />
-              )
-            }
-          />
+        <View style={[theme.FLEX.rowSpaceBetween]}>
+          <View style={{ justifyContent: 'center', alignContent: 'center', }}>
+            <Text style={[theme.text.defaultTextStyle, { marginTop: 5 }]}>Payment</Text>
+            <View style={[theme.FLEX.rowSpaceBetween]}>
+              <Button
+                style={{ backgroundColor: 'white', marginLeft: -10 }}
+                title="(Or pay with flex)"
+                titleStyle={[theme.text.defaultTextStyle, { color: COLORS.primary }]}
+                onPress={() => {
+                  linkingService.openUrl(`${CONSTANT_CONFIGS.NODE_URL}`);
+                }}
+              />
+
+            </View>
+          </View>
+          <View>
+            <View>
+              <TouchableOpacity
+                style={styles.wallet}
+                onPress={() => {
+                  dispatch(
+                    actionToggleModal({
+                      data: <AccountModal onSelectAccount={(account) => {
+                        setCurrentAccount(account);
+                      }}
+                      />,
+                      visible: true,
+                    }),
+                  );
+                }}
+              >
+                <Text style={[theme.text.mediumTextStyle]}>{currentAccount !== '' ? `${currentAccount?.name}` : 'Choose another wallet'}</Text>
+                <View>
+                  <Icon name="chevron-down" size={30} type="material-community" color={COLORS.primary} />
+                </View>
+              </TouchableOpacity>
+            </View>
+            <CurrentBalance
+              balanceStyle={{ fontSize: 16, fontFamily: FONT.NAME.regular, marginTop: 3 }}
+              tokenStyle={{ fontSize: FONT.SIZE.regular }}
+              isNestedCurrentBalance
+              containerStyle={{
+                marginHorizontal: 0,
+                paddingHorizontal: 0,
+                justifyContent: 'flex-end',
+                alignItems: 'flex-end',
+              }}
+              hideBalanceTitle
+              select={
+                (
+                  <TokenCustomSelect iconStyle={{ width: 100, paddingLeft: 50, }} customListPToken={pTokenSupport} onSelect={handleSelectToken} />
+                )
+              }
+            />
+          </View>
         </View>
+
       </View>
     );
   };
@@ -584,12 +634,13 @@ const BuyNodeScreen = () => {
           {renderTotal()}
           {showContactForShipping && renderContactInformation()}
           {renderButtonProcess()}
+
           {loading && <ActivityIndicator style={theme.FLEX.absoluteIndicator} />}
+
         </KeyboardAwareScrollView>
 
       </ScrollView>
       {renderFloatingPriceView()}
-
     </View>
   );
 };
@@ -598,7 +649,9 @@ BuyNodeScreen.propTypes = {
 };
 
 
-const mapState = () => ({
+const mapState = (state) => ({
+  wallet: state.wallet,
+  account: accountSeleclor.defaultAccount(state),
 });
 
 const mapDispatch = {
