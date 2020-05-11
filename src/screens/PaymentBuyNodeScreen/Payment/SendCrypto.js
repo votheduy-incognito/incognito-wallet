@@ -23,11 +23,13 @@ import { MESSAGES } from '@screens/Dex/constants';
 import TokenSelect from '@components/TokenSelect';
 import CurrentBalance from '@components/CurrentBalance';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
-import { RefreshControl } from 'react-native';
+import { RefreshControl, Modal } from 'react-native';
 import { generateTestId } from '@utils/misc';
 import { SEND } from '@src/constants/elements';
 import LogManager from '@src/services/LogManager';
+import NavigationService from '@src/services/NavigationService';
 import { homeStyle } from './style';
+import PaymentSuccess from './PaymentSuccess';
 
 export const formName = 'sendCrypto';
 const selector = formValueSelector(formName);
@@ -52,6 +54,7 @@ class SendCrypto extends React.Component {
       minAmountValidator: undefined,
       estimateFeeData: {},
       amount: 0,
+      shouldShowSuccessModalPayment: false,
     };
   }
 
@@ -66,7 +69,7 @@ class SendCrypto extends React.Component {
 
   checkIfPaymentDeviceExist = () => {
     const { navigation, rfChange, setSelectedPrivacy } = this.props;
-    
+
     let paymentDevice = navigation?.state?.params?.paymentDevice;
     if (paymentDevice) {
       if (paymentDevice?.Address) {
@@ -106,7 +109,7 @@ class SendCrypto extends React.Component {
     }
 
     if (receiptData?.txId !== prevProps.receiptData?.txId) {
-      openReceipt(receiptData);
+      this.showSuccessTransfer();
     }
 
     if (oldSelectedPrivacy !== selectedPrivacy && selectedPrivacy) {
@@ -116,6 +119,10 @@ class SendCrypto extends React.Component {
       });
       this.getSupportedFeeTypes();
     }
+  }
+
+  showSuccessTransfer = () => {
+    this.setState({ shouldShowSuccessModalPayment: true });
   }
 
   getMinAmount = () => {
@@ -290,7 +297,7 @@ class SendCrypto extends React.Component {
   }
 
   render() {
-    const { supportedFeeTypes, estimateFeeData } = this.state;
+    const { supportedFeeTypes, estimateFeeData, shouldShowSuccessModalPayment } = this.state;
     const {
       isSending,
       amount,
@@ -301,6 +308,7 @@ class SendCrypto extends React.Component {
       selectable,
       onShowFrequentReceivers,
       selectedPrivacy,
+      navigation,
       reloading,
     } = this.props;
     let maxAmount = this.getMaxAmount();
@@ -389,6 +397,9 @@ class SendCrypto extends React.Component {
           <ReceiptModal />
         </Container>
         {isSending && <LoadingTx />}
+        <Modal visible={shouldShowSuccessModalPayment}>
+          <PaymentSuccess onHandlePress={() => navigation.pop(2)} />
+        </Modal>
       </ScrollView>
     );
   }

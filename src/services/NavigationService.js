@@ -22,8 +22,8 @@ function goBack() {
   _navigator && _navigator.dispatch(NavigationActions.back());
 }
 
-function pop() {
-  _navigator && _navigator.dispatch(StackActions.pop());
+function pop(count = 1) {
+  _navigator && _navigator.dispatch(StackActions.pop(count));
 }
 
 function setParams(params, key) {

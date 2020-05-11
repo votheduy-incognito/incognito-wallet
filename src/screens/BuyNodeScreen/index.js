@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Animated, RefreshControl } from 'react-native';
+import { Animated, RefreshControl, InteractionManager } from 'react-native';
 import { Text, Button, View, Image, ScrollView, ActivityIndicator } from '@components/core';
 import nodeImg from '@src/assets/images/node_buy.png';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
@@ -90,9 +90,14 @@ const BuyNodeScreen = () => {
   const { symbol, tokenId, isVerified } = selectedPrivacy;
 
   useEffect(() => {
+    setDefaultTokenId();
     getPTokenList();
     getSystemConfig();
   }, [errTf]);
+
+  const setDefaultTokenId = () => {
+    dispatch(setSelectedPrivacy(currentTokenId));
+  };
 
   // Get token system config
   const getSystemConfig = async () => {
@@ -267,6 +272,9 @@ const BuyNodeScreen = () => {
         if (val && val?.Result) {
           setShippingFee(val?.Result?.ShippingFee || 0);
           setPrice(val?.Result?.Price || 0);
+
+          // Update price specified
+          checkSelectedTokenIdAndUpdateDynamicPrice(tokenId);
         }
       });
   };
