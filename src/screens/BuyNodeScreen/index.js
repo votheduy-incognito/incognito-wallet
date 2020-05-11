@@ -70,7 +70,7 @@ const BuyNodeScreen = () => {
 
   useEffect(() => {
     setDefaultTokenId();
-    getPTokenList();
+
     getSystemConfig();
   }, [errTf]);
 
@@ -85,9 +85,7 @@ const BuyNodeScreen = () => {
         if (data?.BuyNodePTokensPartner) {
           let resPTokenSupportsPartner = JSON.parse(data?.BuyNodePTokensPartner);
           setPTokenSupportsPartner(resPTokenSupportsPartner);
-          
-          // Check current tokenId
-          checkSelectedTokenIdAndUpdateDynamicPrice(tokenId);
+          getPTokenList(resPTokenSupportsPartner);
         }
         if (data?.MinerShipInfo) {
           let minerShipInfo = data?.MinerShipInfo;
@@ -100,13 +98,13 @@ const BuyNodeScreen = () => {
   };
 
   // Get all pToken for internal app, only accept with these coins
-  const getPTokenList = async () => {
+  const getPTokenList = async (resPTokenSupportsPartner) => {
     APIService.getPTokenSupportForBuyingDevice()
       .then(data => {
         let res = data;
         setPTokenSupport(res);
         // Check current tokenId
-        checkSelectedTokenIdAndUpdateDynamicPrice(tokenId);
+        checkSelectedTokenIdAndUpdateDynamicPrice(res, resPTokenSupportsPartner, tokenId);
       })
       .catch(() => {
         console.log('Could not get support token for buying device');
@@ -203,10 +201,14 @@ const BuyNodeScreen = () => {
     dispatch(setSelectedPrivacy(tokenId));
 
     // Update price dynamically for DAI token
-    checkSelectedTokenIdAndUpdateDynamicPrice(tokenId);
+    checkSelectedTokenIdAndUpdateDynamicPrice(pTokenSupport, pTokenSupportsPartner, tokenId);
   };
 
-  const checkSelectedTokenIdAndUpdateDynamicPrice = tokenId => {
+  const checkSelectedTokenIdAndUpdateDynamicPrice = (pTokenSupport, pTokenSupportsPartner, tokenId) => {
+    if (typeof pTokenSupport != 'object' || typeof pTokenSupportsPartner != 'object') {
+      console.log('Response value from server not correct');
+      return;
+    }
     // Update price dynamically for DAI token
     let IDTokenDAI = '';
     for (let i = 0; i < pTokenSupport.length; i++) {
@@ -276,7 +278,7 @@ const BuyNodeScreen = () => {
           setPrice(val?.Result?.Price || 0);
 
           // Update price specified
-          checkSelectedTokenIdAndUpdateDynamicPrice(tokenId);
+          checkSelectedTokenIdAndUpdateDynamicPrice(pTokenSupport, pTokenSupportsPartner, tokenId);
         }
       });
   };
@@ -470,7 +472,7 @@ const BuyNodeScreen = () => {
       contactData.firstName,
       contactData.lastName)
       .then(data => {
-        setLoading(false); 
+        setLoading(false);
         NavigationService.navigate(routeNames.PaymentBuyNodeScreen, {
           'paymentDevice': {
             'Address': data?.Address,
