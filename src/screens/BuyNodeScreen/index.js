@@ -1,29 +1,24 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Animated, RefreshControl, InteractionManager } from 'react-native';
+import { Animated, RefreshControl, TouchableOpacity } from 'react-native';
 import { Text, Button, View, Image, ScrollView, ActivityIndicator } from '@components/core';
 import nodeImg from '@src/assets/images/node_buy.png';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import theme from '@src/styles/theme';
-import RNPickerSelect from 'react-native-picker-select';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
-import TokenSelect from '@components/TokenSelect';
 import { TextField } from 'react-native-material-textfield';
 import CurrentBalance from '@components/CurrentBalance';
 import { connect, useSelector, useDispatch } from 'react-redux';
 import { LineView } from '@src/components/Line';
 import { COLORS, FONT } from '@src/styles';
-import { useNavigation } from 'react-navigation-hooks';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import LogManager from '@src/services/LogManager';
 import { Dropdown } from 'react-native-material-dropdown';
 import { checkEmailValid, checkFieldEmpty } from '@src/utils/validator';
 import APIService from '@src/services/api/miner/APIService';
-import Exception from '@src/services/exception/ex';
 import TokenCustomSelect from '@src/components/TokenSelect/TokenCustomSelect';
 import NavigationService from '@src/services/NavigationService';
 import routeNames from '@src/router/routeNames';
-import { ScreenHeight } from '@src/utils/devices';
 import styles from './style';
 
 const dataCountry = require('../../assets/rawdata/country.json');
@@ -54,6 +49,7 @@ const BuyNodeScreen = () => {
   const [regions, setRegions] = useState([]);
   const [shippingFee, setShippingFee] = useState(0);
   const [price, setPrice] = useState(399);
+  const [shippingHour, setShippingHour] = useState('');
   const [currentTokenId, setCurrentTokenId] = useState('0000000000000000000000000000000000000000000000000000000000000004');
   const [pTokenSupport, setPTokenSupport] = useState([]);
   const [pTokenSupportsPartner, setPTokenSupportsPartner] = useState([]);
@@ -62,37 +58,15 @@ const BuyNodeScreen = () => {
 
   const [currentQuantity, setCurrentQuantity] = useState(1);
   const [contactData, setContactData] = useState({});
-  const [scrollY, setScrollY] = useState(new Animated.Value(0));
+  const [scrollY] = useState(new Animated.Value(0));
 
   const [yTotal, setYTotal] = useState(0);
-  const [yContact, setYContact] = useState(0);
+  const [, setYContact] = useState(0);
 
-  const quantityItems = [
-    {
-      label: '1',
-      value: '1',
-    },
-    {
-      label: '2',
-      value: '2',
-    },
-    {
-      label: '3',
-      value: '3',
-    },
-    {
-      label: '4',
-      value: '4',
-    },
-    {
-      label: '5',
-      value: '5',
-    },
-  ];
 
   const dispatch = useDispatch();
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
-  const { symbol, tokenId, isVerified } = selectedPrivacy;
+  const { symbol, tokenId } = selectedPrivacy;
 
   useEffect(() => {
     setDefaultTokenId();
@@ -109,12 +83,19 @@ const BuyNodeScreen = () => {
     APIService.getSystemConfig()
       .then(data => {
         if (data?.BuyNodePTokensPartner) {
-          let res = JSON.parse(data?.BuyNodePTokensPartner);
-          setPTokenSupportsPartner(res);
+          let resPTokenSupportsPartner = JSON.parse(data?.BuyNodePTokensPartner);
+          setPTokenSupportsPartner(resPTokenSupportsPartner);
+          
+          // Check current tokenId
+          checkSelectedTokenIdAndUpdateDynamicPrice(tokenId);
+        }
+        if (data?.MinerShipInfo) {
+          let minerShipInfo = data?.MinerShipInfo;
+          setShippingHour(minerShipInfo);
         }
       })
-      .catch(err => {
-        console.log('Could not get system config for buying device');
+      .catch((err) => {
+        console.log('Could not get system config for buying device' + err.message);
       });
   };
 
@@ -124,8 +105,10 @@ const BuyNodeScreen = () => {
       .then(data => {
         let res = data;
         setPTokenSupport(res);
+        // Check current tokenId
+        checkSelectedTokenIdAndUpdateDynamicPrice(tokenId);
       })
-      .catch(err => {
+      .catch(() => {
         console.log('Could not get support token for buying device');
       });
   };
@@ -157,24 +140,31 @@ const BuyNodeScreen = () => {
     return (
       <View style={[theme.FLEX.rowSpaceBetween, theme.FLEX.fullWidth, theme.MARGIN.marginTopDefault]}>
         <Text style={[theme.MARGIN.marginRightDefault, theme.text.boldTextStyleMedium, theme.FLEX.alignViewSelfCenter]}>Select quantity</Text>
-        <RNPickerSelect
-          placeholder={{}} // Set placeholder to empyy object
-          items={quantityItems}
-          onValueChange={value => {
-            setCurrentQuantity(value);
-          }}
-          style={theme.INPUT.picker}
-          value={currentQuantity}
-          useNativeAndroidPickerStyle={false}
-          textInputProps={[theme.RECT.picker]}
-          Icon={() => {
-            return (
-              <View style={styles.iconDropDown}>
-                <Ionicons size={20} name="ios-arrow-down" color="black" />
-              </View>
-            );
-          }}
-        />
+        <View style={theme.FLEX.rowSpaceBetween}>
+          <TouchableOpacity
+            style={theme.MARGIN.marginRightDefault}
+            disabled={currentQuantity == 1}
+            onPress={() => {
+              if (currentQuantity - 1 > 0) {
+                setCurrentQuantity(currentQuantity - 1);
+              }
+            }}
+          >
+            <AntDesign name="minuscircleo" size={25} color={currentQuantity === 1 ? COLORS.lightGrey10 : COLORS.black} />
+          </TouchableOpacity>
+          <Text style={[theme.text.boldTextStyleMedium, theme.FLEX.alignViewSelfCenter]}>{`${currentQuantity}`}</Text>
+          <TouchableOpacity
+            style={theme.MARGIN.marginLeftDefault}
+            disabled={currentQuantity == 5}
+            onPress={() => {
+              if (currentQuantity + 1 <= 5) {
+                setCurrentQuantity(currentQuantity + 1);
+              }
+            }}
+          >
+            <AntDesign name="pluscircleo" size={25} color={currentQuantity === 5 ? COLORS.lightGrey10 : COLORS.black} />
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
@@ -189,8 +179,7 @@ const BuyNodeScreen = () => {
   };
 
   const renderTotal = () => {
-    let subTotal = price * currentQuantity;
-    let total = subTotal + shippingFee;
+    let subTotal = (price + shippingFee) * currentQuantity;
     let countableToken = getCountCoinPayable();
     return (
       <View onLayout={
@@ -198,11 +187,11 @@ const BuyNodeScreen = () => {
       }
       >
         <LineView color={COLORS.lightGrey1} />
-        {renderTotalItem('Subtotal', `$${subTotal}`)}
+        {renderTotalItem('Subtotal', `$${subTotal.toFixed(2)}`)}
         {renderTotalItem('Shipping', shippingFee === 0 ? 'FREE' : `$${shippingFee}`)}
-        {renderTotalItem('Ships within 24 hours', '')}
+        {renderTotalItem(`Ships ${shippingHour}`, '')}
         <LineView color={COLORS.lightGrey1} style={theme.MARGIN.marginBottomDefault} />
-        {renderTotalItem('Total', `$${total}`, {}, theme.text.boldTextStyleLarge)}
+        {renderTotalItem('Total', `$${subTotal.toFixed(2)}`, {}, theme.text.boldTextStyleLarge)}
         {renderTotalItem(`Pay with ${symbol}`, `${countableToken} ${symbol}`, theme.text.boldTextStyleMedium, theme.text.boldTextStyleLarge)}
         <LineView color={COLORS.lightGrey1} />
       </View>
@@ -247,6 +236,14 @@ const BuyNodeScreen = () => {
         <View style={[theme.FLEX.rowSpaceBetween, { flex: 1 }]}>
           <Text style={[theme.text.defaultTextStyle, theme.FLEX.alignViewSelfCenter]}>Payment</Text>
           <CurrentBalance
+            isNestedCurrentBalance
+            containerStyle={{
+              marginHorizontal: 0,
+              paddingHorizontal: 0,
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end',
+            }}
+            hideBalanceTitle
             select={
               (
                 <TokenCustomSelect customListPToken={pTokenSupport} onSelect={handleSelectToken} />
@@ -404,7 +401,7 @@ const BuyNodeScreen = () => {
           label='Country/Region'
           data={dataCountry}
           value={contactData?.country || ''}
-          onChangeText={async (value, index, data) => {
+          onChangeText={async (value) => {
             await setContactData({ ...contactData, country: value, region: '' });
             await setRegions([]);
             await changeRegionsDataAndSetCountryCode(value);
@@ -414,7 +411,7 @@ const BuyNodeScreen = () => {
         <Dropdown
           label='State'
           data={regions}
-          onChangeText={async (value, index, data) => {
+          onChangeText={async (value) => {
             await setContactData({ ...contactData, region: value });
             await getShippingFee();
           }}
@@ -473,7 +470,7 @@ const BuyNodeScreen = () => {
       contactData.firstName,
       contactData.lastName)
       .then(data => {
-        setLoading(false);
+        setLoading(false); 
         NavigationService.navigate(routeNames.PaymentBuyNodeScreen, {
           'paymentDevice': {
             'Address': data?.Address,
@@ -514,6 +511,7 @@ const BuyNodeScreen = () => {
             onPaymentProcess();
           }
         }}
+        style={theme.MARGIN.marginTopDefault}
         disabled={shouldDisableButtonProcess()}
       />
     );
@@ -527,17 +525,16 @@ const BuyNodeScreen = () => {
 
   // Get count of token payable
   const getCountCoinPayable = () => {
-    let subTotal = price * currentQuantity;
-    let total = subTotal + shippingFee;
+    let subTotal = (price + shippingFee) * currentQuantity;
     let result = 0;
     for (let i = 0; i < pTokenSupport.length; i++) {
       if (currentTokenId === pTokenSupport[i]?.TokenID) {
         let priceUSD = pTokenSupport[i]?.PriceUsd;
-        result = (total / priceUSD).toFixed(4);
+        result = (subTotal / priceUSD).toFixed(6);
         break;
       }
     }
-    return result;
+    return parseFloat(result);
   };
 
   const renderFloatingPriceView = () => {
@@ -549,7 +546,7 @@ const BuyNodeScreen = () => {
         {showContactForShipping ? (
           <View style={styles.bar}>
             {renderTotalItem('Shipping', shippingFee === 0 ? 'FREE' : `$${shippingFee}`)}
-            {renderTotalItem('Total', `$${total}`, {}, theme.text.boldTextStyleLarge)}
+            {renderTotalItem('Total', `$${total.toFixed(2)}`, {}, theme.text.boldTextStyleLarge)}
             {renderTotalItem(`Pay with ${symbol}`, `${countableToken} ${symbol}`, theme.text.boldTextStyleMedium, theme.text.boldTextStyleLarge)}
           </View>
         ) : null}
@@ -600,7 +597,7 @@ BuyNodeScreen.propTypes = {
 };
 
 
-const mapState = state => ({
+const mapState = () => ({
 });
 
 const mapDispatch = {

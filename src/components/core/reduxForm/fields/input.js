@@ -4,7 +4,7 @@ import createField from './createField';
 
 const renderCustomField = ({ input, meta, ...props }) => {
   const { onChange, onBlur, onFocus, value } = input;
-  return <TextInput {...props} onChangeText={(t) => onChange(t)} onBlur={onBlur} onFocus={onFocus} defaultValue={value} />;
+  return <TextInput {...props} onChangeText={(t) => onChange(t)} onBlur={onBlur} onFocus={onFocus} defaultValue={value} ellipsize="middle" />;
 };
 
 const InputField = createField({
