@@ -1,17 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import {useSelector, shallowEqual, useDispatch} from 'react-redux';
-import {Toast, View} from '@components/core';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
+import { Toast, View } from '@components/core';
 import OptionMenu from '@components/OptionMenu';
-import {selectedPrivacySeleclor, tokenSeleclor, settingsSelector} from '@src/redux/selectors';
-import {Icon} from 'react-native-elements';
+import { selectedPrivacySeleclor, tokenSeleclor, settingsSelector } from '@src/redux/selectors';
+import { Icon } from 'react-native-elements';
 import CryptoIcon from '@components/CryptoIcon';
 import VerifiedText from '@components/VerifiedText/index';
 import TokenNetworkName from '@components/TokenNetworkName/index';
-import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
+import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import COLORS from '@src/styles/colors';
 import { COINS } from '@src/constants';
+import LogManager from '@src/services/LogManager';
 import styles from './style';
 
 const generateMenu = (tokens, onSelect) => {
