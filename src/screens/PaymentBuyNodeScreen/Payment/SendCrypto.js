@@ -367,7 +367,7 @@ class SendCrypto extends React.Component {
                   componentProps={{ multiline: true, numberOfLines: 10, editable: false }}
                   name="message"
                   placeholder="Message"
-                  label="Memo (optional)"
+                  label="Memo"
                   style={[
                     homeStyle.input,
                     homeStyle.descriptionInput,

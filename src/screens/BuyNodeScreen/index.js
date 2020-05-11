@@ -503,7 +503,7 @@ const BuyNodeScreen = () => {
   const renderButtonProcess = () => {
     return (
       <Button
-        title="Pay Now"
+        title={showContactForShipping ? 'Complete your order' : 'Continue to payment'}
         onPress={async () => {
           if (!showContactForShipping) {
             // Show contact section
@@ -578,7 +578,7 @@ const BuyNodeScreen = () => {
       // I want to scroll into current focusing container for better UX
       // onContentSizeChange={(contentWidth, contentHeight) => { showContactForShipping && scrollViewRef?.current?.scrollToEnd({ animated: true }); }}
       >
-        <KeyboardAwareScrollView showsVerticalScrollIndicator={false} enableOnAndroid enableAutomaticScroll>
+        <KeyboardAwareScrollView showsVerticalScrollIndicator={false} enableOnAndroid extraScrollHeight={50}>
           {renderNodeImgAndPrice()}
           {renderMotto()}
           {renderActionSheet()}
