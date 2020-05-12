@@ -41,7 +41,7 @@ const COLORS = {
   overlayBlackDark: 'rgba(0, 0, 0, 0.8)',
   overlayBlackLight: 'rgba(0, 0, 0, 0.3)',
   errorMessage: '#ed4337',
-  grey: '#ECECEC',
+  colorGrey: '#ECECEC',
   mottoGrey: '#8c9c9d'
 };
 

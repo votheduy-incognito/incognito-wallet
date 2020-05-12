@@ -81,14 +81,16 @@ const BuyNodeScreen = () => {
   // const wallet = useSelector(wallet);
 
   useEffect(() => {
+    setDataDefault();
     setDefaultTokenId();
     getSystemConfig();
+  }, [errTf, setDataDefault]);
 
+  const setDataDefault = () => {
     // Default US
     setContactData({ ...contactData, country: dataCountry[0]?.value, code: dataCountry[0].countryShortCode });
     setRegions(dataCountry[0]?.regions);
-
-  }, [errTf]);
+  };
 
   const setDefaultTokenId = async () => {
     dispatch(setSelectedPrivacy(currentTokenId));
@@ -204,6 +206,7 @@ const BuyNodeScreen = () => {
         {renderTotalItem('Subtotal', `$${subTotal.toFixed(2)}`, theme.text.regularTextMotto)}
         {renderTotalItem('Shipping', shippingFee === 0 ? 'FREE' : `$${shippingFee}`, theme.text.regularTextMotto)}
         {renderTotalItem(`Ships ${shippingHour}`, '', theme.text.regularTextMotto)}
+        {shippingFee > 0 ? renderTotalItem('This does not include any potential duties or taxes that will vary depending on your locality.', '', theme.text.regularTextMotto) : null}
         <LineView color={COLORS.lightGrey1} style={theme.MARGIN.marginBottomDefault} />
         {renderTotalItem('Total', `$${subTotal.toFixed(2)}`, theme.text.regularTextMotto, theme.text.mediumText)}
         {renderTotalItem(`Pay with ${symbol}`, `${countableToken} ${symbol}`, theme.text.mediumText)}
@@ -257,7 +260,7 @@ const BuyNodeScreen = () => {
             <View style={[theme.FLEX.rowSpaceBetween]}>
               <Button
                 style={{ backgroundColor: 'white', marginLeft: -10 }}
-                title="(Or pay with fiat)"
+                title="(More options)"
                 titleStyle={[theme.text.defaultTextStyle, { color: COLORS.primary }]}
                 onPress={() => {
                   linkingService.openUrl(`${CONSTANT_CONFIGS.NODE_URL}`);
@@ -325,8 +328,9 @@ const BuyNodeScreen = () => {
 
     setErrTF(errors);
   };
-  const getShippingFee = async () => {
-    await APIService.getShippingFee(contactData.city, contactData.code, contactData.postalCode, contactData.region, contactData.address)
+  const getShippingFee = async (value) => {
+    let region = contactData.region || regions[0]?.value;
+    await APIService.getShippingFee(contactData.city, value, contactData.postalCode, region, contactData.address)
       .then(val => {
         if (val && val?.Result) {
           setShippingFee(val?.Result?.ShippingFee || 0);
@@ -336,6 +340,16 @@ const BuyNodeScreen = () => {
           checkSelectedTokenIdAndUpdateDynamicPrice(pTokenSupport, pTokenSupportsPartner, tokenId);
         }
       });
+  };
+
+  // Update region by countryname change 
+  const updateRegionByCountryName = async (countryValue) => {
+    for (let i = 0; i < dataCountry.length; i++) {
+      if (dataCountry[i].value.includes(countryValue)) {
+        let region = dataCountry[i].regions;
+        await setRegions(region);
+      }
+    }
   };
 
   const checkErrEmail = (valid) => {
@@ -354,13 +368,17 @@ const BuyNodeScreen = () => {
   };
 
   // Update regions by country changes
-  const changeRegionsDataAndSetCountryCode = (countryValue) => {
+  const changeRegionsDataAndSetCountryCode = async (countryValue) => {
+    let countryCode = '';
     for (let i = 0; i < dataCountry.length; i++) {
       if (dataCountry[i].value === countryValue) {
-        setContactData({ ...contactData, code: dataCountry[i].countryShortCode, country: dataCountry[i].value });
-        setRegions(dataCountry[i].regions);
+        await setContactData({ ...contactData, code: dataCountry[i].countryShortCode, country: dataCountry[i].value });
+        countryCode = dataCountry[i].countryShortCode;
+        let dataRegions = dataCountry[i].regions;
+        await setRegions(dataRegions);
       }
     }
+    return countryCode;
   };
 
   const renderContactInformation = () => {
@@ -384,6 +402,7 @@ const BuyNodeScreen = () => {
           onChangeText={async (text) => {
             await setContactData({ ...contactData, email: text });
             await checkErrEmail(checkEmailValid(text).valid);
+            await getShippingFee();
           }}
           returnKeyType='next'
           label='Email'
@@ -393,15 +412,16 @@ const BuyNodeScreen = () => {
           <TextField
             inputContainerStyle={styles.halfInput}
             ref={firstNameRef}
-            onSubmitEditing={() => { lastNameRef && lastNameRef?.current?.focus(); }}
+            // onSubmitEditing={() => { lastNameRef && lastNameRef?.current?.focus(); }}
             keyboardType='default'
             autoCapitalize='none'
             autoCorrect={false}
             enablesReturnKeyAutomatically
-            onFocus={() => onFocusField()}
+            // onFocus={() => onFocusField()}
             onChangeText={async (text) => {
               await setContactData({ ...contactData, firstName: text });
               await checkErrEmpty('firstName', checkFieldEmpty(text));
+              await getShippingFee();
             }}
             returnKeyType='next'
             label='First name'
@@ -420,6 +440,7 @@ const BuyNodeScreen = () => {
             onChangeText={async (text) => {
               await setContactData({ ...contactData, lastName: text });
               await checkErrEmpty('lastName', checkFieldEmpty(text));
+              await getShippingFee();
             }}
             returnKeyType='next'
             label='Last name'
@@ -434,9 +455,9 @@ const BuyNodeScreen = () => {
           value={contactData?.country || ''}
           onChangeText={async (value) => {
             await setContactData({ ...contactData, country: value, region: '' });
-            await setRegions([]);
-            await changeRegionsDataAndSetCountryCode(value);
-            getShippingFee();
+            await updateRegionByCountryName(value);
+            let code = await changeRegionsDataAndSetCountryCode(value);
+            await getShippingFee(code);
           }}
         />
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: -10 }}>
@@ -444,6 +465,7 @@ const BuyNodeScreen = () => {
             inputContainerStyle={styles.halfInput}
             label='State'
             data={regions}
+            value={regions[0]?.value || ''}
             onChangeText={async (value) => {
               await setContactData({ ...contactData, region: value });
               await getShippingFee();
@@ -566,7 +588,6 @@ const BuyNodeScreen = () => {
       contactData.lastName &&
       contactData.address &&
       contactData.country &&
-      contactData.region &&
       contactData.postalCode);
   };
 
