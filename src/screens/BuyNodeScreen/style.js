@@ -1,4 +1,4 @@
-import { COLORS } from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
 import { ScreenWidth } from '@src/utils/devices';
 
@@ -25,6 +25,14 @@ const style = StyleSheet.create({
     right: '50%',
     top: '50%',
     bottom: '50%',
+  },
+  balance: {
+    fontSize: 16, 
+    fontFamily: FONT.NAME.regular, 
+    width: ScreenWidth * 0.3, 
+    textAlign: 'right',  
+    alignContent: 'flex-end', 
+    alignSelf: 'center'
   },
   containerHeader: {
     flexDirection: 'row',
