@@ -160,10 +160,9 @@ const enhance = WrappedComp => props => {
   }, [selectedPrivacy, allTokens]);
 
   const handleSearch = text => {
-    console.log('text here', text);
     if (text) {
       const searchText = _.toLower(_.trim(text));
-      const tokens = _.uniqBy(allTokens).filter(
+      const tokens = _.uniqBy(allTokens, 'id').filter(
         item =>
           _.toLower(item.name).includes(searchText) ||
           _.toLower(item.symbol).includes(searchText),

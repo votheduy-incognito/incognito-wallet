@@ -13,7 +13,23 @@ import floor from 'lodash/floor';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { styled } from './Token.styled';
 
-export const TokenContext = React.createContext(null);
+const defaultProps = {
+  displayName: 'Sample name',
+  amount: 0,
+  onPress: null,
+  symbol: null,
+  isGettingBalance: false,
+  style: null,
+  pDecimals: null,
+  isVerified: false,
+  iconUrl: null,
+  amountInPRV: 0,
+  price: 0,
+  percentChange: 0,
+  pricePrv: 0,
+};
+
+export const TokenContext = React.createContext({ ...defaultProps });
 
 const NormalText = ({ style, text, hasPSymbol = false }) => (
   <Text numberOfLines={1} style={[styled.text, style]}>
@@ -46,7 +62,7 @@ const AmountBasePRV = () => {
         floor(pricePrv * amount),
         CONSTANT_COMMONS.PRV.pDecimals,
       )} `}
-      style={[styled.boldText]}
+      style={[styled.boldText, styled.rightText]}
     />
   );
 };
@@ -80,8 +96,8 @@ const Amount = () => {
 
 export const Symbol = () => {
   const { tokenProps } = React.useContext(TokenContext);
-  const { symbol } = tokenProps;
-  return <NormalText text={symbol} />;
+  const { externalSymbol } = tokenProps;
+  return <NormalText text={externalSymbol} />;
 };
 
 const Token = props => {
@@ -116,21 +132,7 @@ Name.propTypes = {
   styledDisplayName: PropTypes.object,
 };
 
-Token.defaultProps = {
-  displayName: 'Sample name',
-  amount: 0,
-  onPress: null,
-  symbol: null,
-  isGettingBalance: false,
-  style: null,
-  pDecimals: null,
-  isVerified: false,
-  iconUrl: null,
-  amountInPRV: 0,
-  price: 0,
-  percentChange: 0,
-  pricePrv: 0,
-};
+Token.defaultProps = { ...defaultProps };
 
 Token.propTypes = {
   pDecimals: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
