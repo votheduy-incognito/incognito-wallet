@@ -260,7 +260,7 @@ const BuyNodeScreen = () => {
             <View style={[theme.FLEX.rowSpaceBetween]}>
               <Button
                 style={{ backgroundColor: 'white', marginLeft: -10 }}
-                title="(Or pay with fiat)"
+                title="(More options)"
                 titleStyle={[theme.text.defaultTextStyle, { color: COLORS.primary }]}
                 onPress={() => {
                   linkingService.openUrl(`${CONSTANT_CONFIGS.NODE_URL}`);
