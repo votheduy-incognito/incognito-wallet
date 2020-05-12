@@ -84,7 +84,7 @@ const BuyNodeScreen = () => {
     setDataDefault();
     setDefaultTokenId();
     getSystemConfig();
-  }, [errTf, setDataDefault]);
+  }, []);
 
   const setDataDefault = () => {
     // Default US
