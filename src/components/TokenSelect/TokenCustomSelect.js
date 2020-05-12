@@ -1,29 +1,26 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { useSelector, shallowEqual, useDispatch } from 'react-redux';
-import { Toast, View } from '@components/core';
+import { useSelector, useDispatch } from 'react-redux';
+import { View } from '@components/core';
 import OptionMenu from '@components/OptionMenu';
-import { selectedPrivacySeleclor, tokenSeleclor, settingsSelector } from '@src/redux/selectors';
+import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { Icon } from 'react-native-elements';
 import CryptoIcon from '@components/CryptoIcon';
 import VerifiedText from '@components/VerifiedText/index';
 import TokenNetworkName from '@components/TokenNetworkName/index';
-import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import COLORS from '@src/styles/colors';
-import { COINS } from '@src/constants';
-import LogManager from '@src/services/LogManager';
 import styles from './style';
 
 const generateMenu = (tokens, onSelect) => {
   const newMenu = [];
-
+  
   if (!tokens) {
     return newMenu;
   }
 
   tokens
-    .slice(0, 10)
+    .slice(0, tokens.length - 1)
     .forEach(token => {
       newMenu.push({
         id: token.TokenID,
@@ -41,15 +38,9 @@ const generateMenu = (tokens, onSelect) => {
   return newMenu;
 };
 
-const TokenCustomSelect = ({ onSelect, onlyPToken, size, style, iconStyle, customListPToken, toggleStyle }) => {
+const TokenCustomSelect = ({ onSelect, size, style, iconStyle, customListPToken, toggleStyle }) => {
   const [menu, setMenu] = React.useState([]);
-  const [allTokens, setAllTokens] = React.useState([]);
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    setAllTokens(customListPToken);
-  }, []);
 
   const isTokenSelectable = (tokenId) => {
     if (!tokenId) {
@@ -68,6 +59,7 @@ const TokenCustomSelect = ({ onSelect, onlyPToken, size, style, iconStyle, custo
     if (!isTokenSelectable(selectedPrivacy?.tokenId) && customListPToken && customListPToken.length > 0) {
       onSelect(customListPToken[0].id);
     }
+    setMenu(generateMenu(customListPToken, ''));
   }, [selectedPrivacy, customListPToken]);
 
   const handleSearch = (text) => {
