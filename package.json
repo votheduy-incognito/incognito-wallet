@@ -38,7 +38,7 @@
     "deployAndroid:dev": "appcenter codepush release-react -a 0xSiris/Incognito-Android -t \"3.6.6\" -d Development --development -x",
     "deployAndroid:staging": "appcenter codepush release-react -a 0xSiris/Incognito-Android -t \"3.6.6\" -d Staging",
     "deployAndroid:prod": "appcenter codepush release-react -a 0xSiris/Incognito-Android -t \"3.6.6\" -d Production -x",
-    "deployAndroid:next": "appcenter codepush release-react -a 0xSiris/Incognito-Android -t \"3.6.6\" -d NextRelease -x",
+    "deployAndroid:next": "appcenter codepush release-react -a 0xSiris/Incognito-Android -t \"3.6.6\" -d NextRelease",
     "deploy:dev": "yarn deployIOS:dev && yarn deployAndroid:dev",
     "deploy:staging": "yarn deployIOS:staging && yarn deployAndroid:staging",
     "deploy:prod": "yarn deployIOS:prod && yarn deployAndroid:prod",
