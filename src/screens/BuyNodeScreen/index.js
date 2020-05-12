@@ -32,10 +32,10 @@ const dataCountry = require('../../assets/rawdata/country.json');
 const TOP_MOTTO_HEADER = 'Node is the simplest way to power the Incognito network and earn crypto. Just plug it in to get started.';
 const MOTTO_HEADER = 'As a Node owner, you:';
 const MOTTO =
-  `☞ Protect people from the dangers of surveillance.
-☞ Give everyone a way to use crypto privately.
-☞ Own a share of the Incognito network.
-☞ Earn block rewards in PRV, and transaction fees in BTC, ETH, and more.`;
+  `•  Protect people from the dangers of surveillance.
+•  Give everyone a way to use crypto privately.
+•  Own a share of the Incognito network.
+•  Earn block rewards in PRV, and transaction fees in BTC, ETH, and more.`;
 
 const EMAIL = 'email';
 // For animated total view
@@ -131,10 +131,10 @@ const BuyNodeScreen = () => {
       <View style={[styles.containerHeader, theme.MARGIN.marginTopDefault]}>
         <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center' }}>
           <Image style={[theme.IMAGES.avatar, theme.SHADOW.imageAvatar]} resizeMode="contain" source={nodeImg} />
-          <Text style={[theme.text.boldTextStyle, theme.MARGIN.marginLeftDefault]}> Node </Text>
+          <Text style={[theme.text.regularTextStyle, theme.MARGIN.marginLeftDefault]}> Node </Text>
         </View>
         <View>
-          <Text style={theme.text.headerTextStyle}>{`$${price}`}</Text>
+          <Text style={theme.text.regularTextStyle}>{`$${price}`}</Text>
         </View>
       </View>
     );
@@ -142,9 +142,9 @@ const BuyNodeScreen = () => {
   const renderMotto = () => {
     return (
       <View style={theme.MARGIN.marginTopDefault}>
-        <Text style={theme.MARGIN.marginBottomDefault}>{TOP_MOTTO_HEADER}</Text>
-        <Text style={[theme.MARGIN.marginBottomDefault, theme.text.boldTextStyle]}>{MOTTO_HEADER}</Text>
-        <Text>{MOTTO}</Text>
+        <Text style={[theme.MARGIN.marginBottomDefault, theme.text.regularTextMotto]}>{TOP_MOTTO_HEADER}</Text>
+        <Text style={[theme.MARGIN.marginBottomDefault, theme.text.mediumText]}>{MOTTO_HEADER}</Text>
+        <Text style={theme.text.regularTextMotto}>{MOTTO}</Text>
       </View>
     );
   };
@@ -152,7 +152,7 @@ const BuyNodeScreen = () => {
   const renderActionSheet = () => {
     return (
       <View style={[theme.FLEX.rowSpaceBetween, theme.FLEX.fullWidth, theme.MARGIN.marginTopDefault]}>
-        <Text style={[theme.MARGIN.marginRightDefault, theme.text.boldTextStyle, theme.FLEX.alignViewSelfCenter]}>Select quantity</Text>
+        <Text style={[theme.MARGIN.marginRightDefault, theme.text.mediumText, theme.FLEX.alignViewSelfCenter]}>Select quantity</Text>
         <View style={theme.FLEX.rowSpaceBetween}>
           <TouchableOpacity
             style={theme.MARGIN.marginRightDefault}
@@ -163,7 +163,7 @@ const BuyNodeScreen = () => {
               }
             }}
           >
-            <AntDesign name="minuscircleo" size={25} color={currentQuantity === 1 ? COLORS.lightGrey10 : COLORS.black} />
+            <AntDesign name="minuscircle" size={25} color={currentQuantity === 1 ? COLORS.lightGrey15 : COLORS.blue} />
           </TouchableOpacity>
           <Text style={[theme.text.boldTextStyleMedium, theme.FLEX.alignViewSelfCenter]}>{`${currentQuantity}`}</Text>
           <TouchableOpacity
@@ -175,7 +175,7 @@ const BuyNodeScreen = () => {
               }
             }}
           >
-            <AntDesign name="pluscircleo" size={25} color={currentQuantity === 5 ? COLORS.lightGrey10 : COLORS.black} />
+            <AntDesign name="pluscircle" size={25} color={currentQuantity === 5 ? COLORS.lightGrey15 : COLORS.blue} />
           </TouchableOpacity>
         </View>
       </View>
@@ -186,7 +186,7 @@ const BuyNodeScreen = () => {
     return (
       <View style={[theme.FLEX.fullWidth, theme.FLEX.rowSpaceBetween, theme.MARGIN.marginBottomSmall]}>
         <Text style={[theme.text.defaultTextStyle, theme.FLEX.alignViewSelfCenter, styleText]}>{`${text}`}</Text>
-        <Text style={[theme.text.defaultTextStyle, theme.FLEX.alignViewSelfCenter, styleValue]}>{`${value}`}</Text>
+        <Text style={[theme.text.mediumText, theme.FLEX.alignViewSelfCenter, styleValue]}>{`${value}`}</Text>
       </View>
     );
   };
@@ -200,12 +200,12 @@ const BuyNodeScreen = () => {
       }
       >
         <LineView color={COLORS.lightGrey1} />
-        {renderTotalItem('Subtotal', `$${subTotal.toFixed(2)}`)}
-        {renderTotalItem('Shipping', shippingFee === 0 ? 'FREE' : `$${shippingFee}`)}
-        {renderTotalItem(`Ships ${shippingHour}`, '')}
+        {renderTotalItem('Subtotal', `$${subTotal.toFixed(2)}`, theme.text.regularTextMotto)}
+        {renderTotalItem('Shipping', shippingFee === 0 ? 'FREE' : `$${shippingFee}`, theme.text.regularTextMotto)}
+        {renderTotalItem(`Ships ${shippingHour}`, '', theme.text.regularTextMotto)}
         <LineView color={COLORS.lightGrey1} style={theme.MARGIN.marginBottomDefault} />
-        {renderTotalItem('Total', `$${subTotal.toFixed(2)}`, {}, theme.text.defaultTextStyle)}
-        {renderTotalItem(`Pay with ${symbol}`, `${countableToken} ${symbol}`, theme.text.boldTextStyle, theme.text.boldTextStyle)}
+        {renderTotalItem('Total', `$${subTotal.toFixed(2)}`, theme.text.regularTextMotto, theme.text.mediumText)}
+        {renderTotalItem(`Pay with ${symbol}`, `${countableToken} ${symbol}`, theme.text.mediumText)}
         <LineView color={COLORS.lightGrey1} />
       </View>
     );
@@ -252,7 +252,7 @@ const BuyNodeScreen = () => {
         <LineView color={COLORS.lightGrey1} style={theme.MARGIN.marginTopDefault} />
         <View style={[theme.FLEX.rowSpaceBetween]}>
           <View style={{ justifyContent: 'center', alignContent: 'center', }}>
-            <Text style={[theme.text.defaultTextStyle, { marginTop: 5 }]}>Payment</Text>
+            <Text style={[theme.text.mediumText, { marginTop: 5 }]}>Payment</Text>
             <View style={[theme.FLEX.rowSpaceBetween]}>
               <Button
                 style={{ backgroundColor: 'white', marginLeft: -10 }}
@@ -601,8 +601,8 @@ const BuyNodeScreen = () => {
         {showContactForShipping ? (
           <View style={styles.bar}>
             {renderTotalItem('Shipping', shippingFee === 0 ? 'FREE' : `$${shippingFee}`)}
-            {renderTotalItem('Total', `$${subTotal.toFixed(2)}`, {}, theme.text.boldTextStyle)}
-            {renderTotalItem(`Pay with ${symbol}`, `${countableToken} ${symbol}`, theme.text.boldTextStyle, theme.text.boldTextStyle)}
+            {renderTotalItem('Total', `$${subTotal.toFixed(2)}`, {}, theme.text.mediumText)}
+            {renderTotalItem(`Pay with ${symbol}`, `${countableToken} ${symbol}`, theme.text.mediumText)}
           </View>
         ) : null}
       </Animated.View>
@@ -616,7 +616,7 @@ const BuyNodeScreen = () => {
           <RefreshControl
             refreshing={false}
             onRefresh={() => {
-              getPTokenList();
+              getSystemConfig();
             }}
           />
         )}
@@ -630,7 +630,7 @@ const BuyNodeScreen = () => {
       // I want to scroll into current focusing container for better UX
       // onContentSizeChange={(contentWidth, contentHeight) => { showContactForShipping && scrollViewRef?.current?.scrollToEnd({ animated: true }); }}
       >
-        <KeyboardAwareScrollView showsVerticalScrollIndicator={false} enableOnAndroid extraScrollHeight={50}>
+        <KeyboardAwareScrollView style={{ backgroundColor: 'white' }} showsVerticalScrollIndicator={false} enableOnAndroid extraScrollHeight={50}>
           {renderNodeImgAndPrice()}
           {renderMotto()}
           {renderActionSheet()}
