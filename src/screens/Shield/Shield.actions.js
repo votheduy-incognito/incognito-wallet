@@ -97,8 +97,10 @@ export const actionFollowToken = ({ tokenId }) => async (
     const token =
       (foundInternalToken && internalTokenModel.toJson(foundInternalToken)) ||
       foundPToken?.convertToToken();
-    await accountService.addFollowingTokens([token], account, wallet);
-    await dispatch(setWallet(wallet));
+    if (token) {
+      await accountService.addFollowingTokens([token], account, wallet);
+      await dispatch(setWallet(wallet));
+    }
   } catch (error) {
     throw error;
   }
@@ -113,8 +115,12 @@ export const actionFetch = ({ tokenId }) => async (dispatch, getState) => {
       return;
     }
     await dispatch(actionFetching());
-    const [min, max] = await actionGetMinMaxShield({ tokenId });
-    const address = await actionGetAddressToShield({ selectedPrivacy });
+    const [dataMinMax, address] = await new Promise.all([
+      await actionGetMinMaxShield({ tokenId }),
+      await actionGetAddressToShield({ selectedPrivacy }),
+      await actionFollowToken({ tokenId })(dispatch, getState),
+    ]);
+    const [min, max] = dataMinMax;
     await dispatch(
       actionFetched({
         min,

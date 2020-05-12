@@ -1,19 +1,22 @@
 import { StyleSheet } from 'react-native';
+import { COLORS } from '@src/styles';
 
 export default StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.white,
   },
   mainContainer: {
     flex: 1,
     marginTop: 100,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: COLORS.white,
   },
   iconContainer: {
     height: 150,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   icon: {
     fontSize: 60,
@@ -28,6 +31,6 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
   buttonContainer: {
-    marginVertical: 50
+    marginVertical: 50,
   },
 });

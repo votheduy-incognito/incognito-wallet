@@ -36,7 +36,7 @@ export const styled = StyleSheet.create({
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 6,
     color: COLORS.lightGrey1,
-    maxWidth: UTILS.screenWidth() / 2 - 60,
+    maxWidth: UTILS.screenWidth() / 2 - 30,
   },
   verifiedIcon: {
     marginLeft: 5,
