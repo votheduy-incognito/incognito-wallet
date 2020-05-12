@@ -412,7 +412,7 @@ const BuyNodeScreen = () => {
           <TextField
             inputContainerStyle={[styles.halfInput, { overflow: 'hidden', }]}
             ref={firstNameRef}
-            // onSubmitEditing={() => { lastNameRef && lastNameRef?.current?.focus(); }}
+            onSubmitEditing={() => { lastNameRef && lastNameRef?.current?.focus(); }}
             keyboardType='default'
             autoCapitalize='none'
             autoCorrect={false}
@@ -497,7 +497,6 @@ const BuyNodeScreen = () => {
         <TextField
           ref={addressRef}
           inputContainerStyle={{ width: (ScreenWidth - 40) }}
-          onSubmitEditing={() => { cityRef && cityRef?.current?.focus(); }}
           keyboardType='default'
           autoCapitalize='none'
           autoCorrect={false}
