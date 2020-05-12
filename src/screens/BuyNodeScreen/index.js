@@ -410,7 +410,7 @@ const BuyNodeScreen = () => {
         />
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: -10 }}>
           <TextField
-            inputContainerStyle={styles.halfInput}
+            inputContainerStyle={[styles.halfInput, { overflow: 'hidden', }]}
             ref={firstNameRef}
             // onSubmitEditing={() => { lastNameRef && lastNameRef?.current?.focus(); }}
             keyboardType='default'
@@ -430,7 +430,7 @@ const BuyNodeScreen = () => {
             error={errTf?.firstName}
           />
           <TextField
-            inputContainerStyle={styles.halfInput}
+            inputContainerStyle={[styles.halfInput, { overflow: 'hidden', }]}
             ref={lastNameRef}
             onSubmitEditing={() => { addressRef && addressRef?.current?.focus(); }}
             keyboardType='default'
@@ -462,9 +462,9 @@ const BuyNodeScreen = () => {
             await getShippingFee(code);
           }}
         />
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: -10 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: -5 }}>
           <Dropdown
-            inputContainerStyle={styles.halfInput}
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 }}
             label='State'
             data={regions}
             value={regions[0]?.value || ''}
@@ -474,7 +474,11 @@ const BuyNodeScreen = () => {
             }}
           />
           <TextField
-            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15, marginLeft: 20 }}
+            // editable={false}
+            direction='rtl'
+
+            containerStyle={{ width: (ScreenWidth - 40) / 2 - 15, }}
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15, overflow: 'hidden', }}
             ref={cityRef}
             keyboardType='default'
             autoCapitalize='none'
@@ -494,7 +498,7 @@ const BuyNodeScreen = () => {
         </View>
         <TextField
           ref={addressRef}
-          inputContainerStyle={{ marginTop: -5 }}
+          inputContainerStyle={{ width: (ScreenWidth - 40) }}
           onSubmitEditing={() => { cityRef && cityRef?.current?.focus(); }}
           keyboardType='default'
           autoCapitalize='none'
@@ -512,9 +516,9 @@ const BuyNodeScreen = () => {
           error={errTf?.address}
         />
 
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: -10 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 0 }}>
           <TextField
-            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 5, marginEnd: 5 }}
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15, overflow: 'hidden', }}
             keyboardType='default'
             autoCapitalize='none'
             autoCorrect={false}
@@ -531,7 +535,7 @@ const BuyNodeScreen = () => {
             error={errTf?.postalCode}
           />
           <TextField
-            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 5, marginLeft: 5 }}
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15, overflow: 'hidden', }}
             keyboardType='numeric'
             autoCapitalize='none'
             autoCorrect={false}
