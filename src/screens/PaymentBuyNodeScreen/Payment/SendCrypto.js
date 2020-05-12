@@ -4,7 +4,7 @@ import { Field, formValueSelector, isValid, change, touch, focus } from 'redux-f
 import { connect } from 'react-redux';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
-import { Container, ScrollView, View, Button, Toast } from '@components/core';
+import { Container, ScrollView, View, Button, Toast, Text } from '@components/core';
 import ReceiptModal, { openReceipt } from '@components/Receipt';
 import LoadingTx from '@components/LoadingTx';
 import EstimateFee from '@components/EstimateFee';
@@ -28,6 +28,7 @@ import { generateTestId } from '@utils/misc';
 import { SEND } from '@src/constants/elements';
 import LogManager from '@src/services/LogManager';
 import NavigationService from '@src/services/NavigationService';
+import theme from '@src/styles/theme';
 import { homeStyle } from './style';
 import PaymentSuccess from './PaymentSuccess';
 
@@ -296,6 +297,12 @@ class SendCrypto extends React.Component {
     rfChange(formName, 'amount', `${amount}`);
   }
 
+  customLabelForm = text => {
+    return (
+      <Text style={theme.text.regularTextMotto}>{`${text}`}</Text>
+    );
+  }
+
   render() {
     const { supportedFeeTypes, estimateFeeData, shouldShowSuccessModalPayment } = this.state;
     const {
@@ -350,7 +357,7 @@ class SendCrypto extends React.Component {
                   component={InputField}
                   name="amount"
                   placeholder="0.0"
-                  label="Payment amount"
+                  label={this.customLabelForm('Payment amount')}
                   style={[homeStyle.input, { marginTop: 10 }]}
                   maxValue={maxAmount}
                   componentProps={{
@@ -367,7 +374,7 @@ class SendCrypto extends React.Component {
                   componentProps={{ multiline: true, numberOfLines: 10, editable: false }}
                   name="message"
                   placeholder="Message"
-                  label="Payment ID"
+                  label={this.customLabelForm('Payment ID')}
                   style={[
                     homeStyle.input,
                     homeStyle.descriptionInput,
