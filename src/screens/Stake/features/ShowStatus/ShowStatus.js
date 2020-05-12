@@ -1,29 +1,29 @@
 import React from 'react';
-import {View, StyleSheet, Text, Share} from 'react-native';
-import {CheckedGreenIcon} from '@src/components/Icons';
-import {useSelector, useDispatch} from 'react-redux';
+import { View, StyleSheet, Text, Share } from 'react-native';
+import { CheckedGreenIcon } from '@src/components/Icons';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   activeFlowSelector,
   storageStakeSelector,
   stakeDataSelector,
   pStakeAccountSelector,
 } from '@screens/Stake/stake.selector';
-import {COLORS, FONT} from '@src/styles';
-import {BtnDefault} from '@src/components/Button';
+import { COLORS, FONT } from '@src/styles';
+import { BtnDefault } from '@src/components/Button';
 import PropTypes from 'prop-types';
-import {useNavigation} from 'react-navigation-hooks';
-import {actionToggleModal} from '@src/components/Modal';
+import { useNavigation } from 'react-navigation-hooks';
+import { actionToggleModal } from '@src/components/Modal';
 import routeNames from '@src/router/routeNames';
-import {DEPOSIT_FLOW, WITHDRAW_FLOW} from '@screens/Stake/stake.constant';
+import { DEPOSIT_FLOW, WITHDRAW_FLOW } from '@screens/Stake/stake.constant';
 import Hook from '@screens/Stake/features/Hook';
 import format from '@src/utils/format';
-import {ExHandler} from '@src/services/exception';
+import { ExHandler } from '@src/services/exception';
 import isEmpty from 'lodash/isEmpty';
 import Capitalize from 'lodash/capitalize';
-import {v4} from 'uuid';
+import { v4 } from 'uuid';
 import rnfs from 'react-native-fs';
-import {isAndroid, isIOS} from '@src/utils/platform';
-import {actionBackupCreateStake} from '@screens/Stake/stake.actions';
+import { isAndroid, isIOS } from '@src/utils/platform';
+import { actionBackupCreateStake } from '@screens/Stake/stake.actions';
 import ShowStatusDeposit from './ShowStatus.deposit';
 import withShowStatus from './ShowStatus.enhance';
 
@@ -65,7 +65,7 @@ const styled = StyleSheet.create({
 });
 
 export const BlockChecked = props => {
-  const {title} = props;
+  const { title } = props;
   return (
     <View style={styled.heading}>
       <CheckedGreenIcon />
@@ -87,8 +87,8 @@ const ShowStatus = () => {
     activeFlow,
   } = useSelector(activeFlowSelector);
   const pStakeAccount = useSelector(pStakeAccountSelector);
-  const {backup} = useSelector(storageStakeSelector);
-  const {symbol, pDecimals} = useSelector(stakeDataSelector);
+  const { backup } = useSelector(storageStakeSelector);
+  const { symbol, pDecimals } = useSelector(stakeDataSelector);
   const hookFactories = [
     {
       id: 0,
@@ -133,9 +133,8 @@ const ShowStatus = () => {
         url,
       });
       const shared = result?.action === Share.sharedAction;
-      if (shared) {
-        await dispatch(actionBackupCreateStake());
-      }
+      console.log('shared', shared);
+      await dispatch(actionBackupCreateStake());
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
