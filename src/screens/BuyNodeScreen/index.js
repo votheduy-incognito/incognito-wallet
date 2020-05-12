@@ -202,15 +202,15 @@ const BuyNodeScreen = () => {
         event => setYTotal(event?.nativeEvent?.layout?.y || 0)
       }
       >
-        <LineView color={COLORS.lightGrey1} />
+        <LineView color={COLORS.colorGrey} />
         {renderTotalItem('Subtotal', `$${subTotal.toFixed(2)}`, theme.text.regularTextMotto)}
         {renderTotalItem('Shipping', shippingFee === 0 ? 'FREE' : `$${shippingFee}`, theme.text.regularTextMotto)}
         {renderTotalItem(`Ships ${shippingHour}`, '', theme.text.regularTextMotto)}
         {shippingFee > 0 ? renderTotalItem('This does not include any potential duties or taxes that will vary depending on your locality.', '', theme.text.regularTextMotto) : null}
-        <LineView color={COLORS.lightGrey1} style={theme.MARGIN.marginBottomDefault} />
+        <LineView color={COLORS.colorGrey} style={theme.MARGIN.marginBottomDefault} />
         {renderTotalItem('Total', `$${subTotal.toFixed(2)}`, theme.text.regularTextMotto, theme.text.mediumText)}
         {renderTotalItem(`Pay with ${symbol}`, `${countableToken} ${symbol}`, theme.text.mediumText)}
-        <LineView color={COLORS.lightGrey1} />
+        <LineView color={COLORS.colorGrey} />
       </View>
     );
   };
@@ -253,7 +253,7 @@ const BuyNodeScreen = () => {
   const renderPayment = () => {
     return (
       <View>
-        <LineView color={COLORS.lightGrey1} style={theme.MARGIN.marginTopDefault} />
+        <LineView color={COLORS.colorGrey} style={theme.MARGIN.marginTopDefault} />
         <View style={[theme.FLEX.rowSpaceBetween]}>
           <View style={{ justifyContent: 'center', alignContent: 'center', }}>
             <Text style={[theme.text.mediumText, { marginTop: 5 }]}>Payment</Text>
@@ -330,7 +330,7 @@ const BuyNodeScreen = () => {
   };
   const getShippingFee = async (value) => {
     let region = contactData.region ?? regions[0]?.value;
-    await APIService.getShippingFee(contactData.city, value ? value : contactData?.code, contactData.postalCode, region, contactData.address)
+    await APIService.getShippingFee(contactData.city || '', value ? value : contactData?.code, contactData.postalCode || '', region || '', contactData.address || '')
       .then(val => {
         if (val && val?.Result) {
           setShippingFee(val?.Result?.ShippingFee || 0);
