@@ -83,6 +83,10 @@ const BuyNodeScreen = () => {
     setDefaultTokenId();
     getSystemConfig();
 
+    // Default US
+    setContactData({ ...contactData, country: dataCountry[0]?.value, code: dataCountry[0].countryShortCode });
+    setRegions(dataCountry[0]?.regions);
+
   }, [errTf]);
 
   const setDefaultTokenId = async () => {
@@ -475,8 +479,8 @@ const BuyNodeScreen = () => {
           enablesReturnKeyAutomatically
           onFocus={() => onFocusField()}
           onChangeText={async (text) => {
-            await checkErrEmpty('postalCode', checkFieldEmpty(text));
             await setContactData({ ...contactData, postalCode: text });
+            await checkErrEmpty('postalCode', checkFieldEmpty(text));
             getShippingFee();
           }}
           returnKeyType='next'
