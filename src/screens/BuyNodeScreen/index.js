@@ -410,7 +410,7 @@ const BuyNodeScreen = () => {
         />
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: -10 }}>
           <TextField
-            inputContainerStyle={styles.halfInput}
+            inputContainerStyle={[styles.halfInput, { overflow: 'hidden', }]}
             ref={firstNameRef}
             // onSubmitEditing={() => { lastNameRef && lastNameRef?.current?.focus(); }}
             keyboardType='default'
@@ -430,7 +430,7 @@ const BuyNodeScreen = () => {
             error={errTf?.firstName}
           />
           <TextField
-            inputContainerStyle={styles.halfInput}
+            inputContainerStyle={[styles.halfInput, { overflow: 'hidden', }]}
             ref={lastNameRef}
             onSubmitEditing={() => { addressRef && addressRef?.current?.focus(); }}
             keyboardType='default'
