@@ -183,7 +183,7 @@ workflows:
             filters:
               branches:
                 only:
-                  - release/*
+                  - next-release
         - generate_data:
             requires:
               - checkout_code
