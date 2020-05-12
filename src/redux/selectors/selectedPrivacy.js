@@ -32,9 +32,35 @@ export const getPrivacyDataByTokenID = createSelector(
   })
 );
 
+export const getPrivacyDataBaseOnAccount = createSelector(
+  // defaultAccount,
+  internalTokens,
+  pTokens,
+  followed,
+  selectedPrivacyTokenID,
+  (_internalTokens, _pTokens, _followed, tokenID) => account => {
+    try {
+      // 'PRV' is not a token
+      const internalTokenData = _internalTokens?.find(t => t?.id !== CONSTANT_COMMONS.PRV_TOKEN_ID && t?.id === tokenID) || {};
+      const pTokenData = _pTokens?.find(t => t?.tokenId === tokenID);
+      const followedTokenData = _followed.find(t => t?.id === tokenID) || {};
+
+      if (!internalTokenData && !pTokenData && tokenID !== CONSTANT_COMMONS.PRV_TOKEN_ID) {
+        throw new Error(`Can not find coin with id ${tokenID}`);
+      }
+
+      return new SelectedPrivacy(account, { ...internalTokenData, ...followedTokenData }, pTokenData);
+    } catch (e) {
+      new ExHandler(e);
+    }
+  } 
+);
+
+
 export const selectedPrivacy = createSelector(
   selectedPrivacyTokenID,
   getPrivacyDataByTokenID,
+  getPrivacyDataBaseOnAccount,
   (selectedSymbol, getFn) => {
     return getFn(selectedSymbol);
   }
@@ -43,5 +69,6 @@ export const selectedPrivacy = createSelector(
 export default {
   getPrivacyDataByTokenID,
   selectedPrivacyTokenID,
-  selectedPrivacy
+  selectedPrivacy,
+  getPrivacyDataBaseOnAccount
 };
