@@ -14,13 +14,13 @@ import styles from './style';
 
 const generateMenu = (tokens, onSelect) => {
   const newMenu = [];
-  
+
   if (!tokens) {
     return newMenu;
   }
 
   tokens
-    .slice(0, tokens.length - 1)
+    .slice(0, tokens.length)
     .forEach(token => {
       newMenu.push({
         id: token.TokenID,
@@ -64,13 +64,9 @@ const TokenCustomSelect = ({ onSelect, size, style, iconStyle, customListPToken,
 
   const handleSearch = (text) => {
     if (text) {
-      const searchText = _.toLower(_.trim(text));
-      const tokens = _.uniqBy(customListPToken)
-        .filter(item =>
-          _.toLower(item.name).includes(searchText) ||
-          _.toLower(item.symbol).includes(searchText)
-        );
-
+      let tokens = customListPToken.filter(item =>
+        item?.Name?.toLowerCase().includes(text.toLowerCase()) ||
+        item?.Symbol?.toLowerCase().includes(text.toLowerCase()));
       const newMenu = generateMenu(tokens, selectToken);
       setMenu(newMenu);
     } else {
