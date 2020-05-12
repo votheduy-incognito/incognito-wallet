@@ -1,7 +1,7 @@
-import { COLORS } from '@src/styles';
+import {COLORS} from '@src/styles';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Platform, StatusBar as RNComponent, View } from 'react-native';
+import {Platform, StatusBar as RNComponent, View} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import routeNames from '@src/router/routeNames';
 
@@ -17,29 +17,9 @@ const {
   Community,
   Home,
   Stake,
-  CreateToken,
-  HomeWallet,
-  Wallet,
-  SelectAccount,
-  FollowToken,
-  Shield,
-  WhyShield
 } = routeNames;
 
-const whiteScreens = [
-  Game,
-  GetStarted,
-  AddPin,
-  Community,
-  Home,
-  CreateToken,
-  HomeWallet,
-  SelectAccount,
-  FollowToken,
-  Wallet,
-  Shield,
-  WhyShield
-];
+const whiteScreens = [Game, GetStarted, AddPin, Community, Home];
 const blue2Screens = [];
 const blue1Screens = [Wizard, Node];
 const dark2Screen = [Dex, DexHistory, DexHistoryDetail];
@@ -55,7 +35,7 @@ export const STATUS_BAR_HEIGHT = isIOS
     : 20
   : RNComponent.currentHeight;
 
-const StatusBar = React.memo(({ currentScreen }) => {
+const StatusBar = React.memo(({currentScreen}) => {
   let backgroundColor;
   let textColor;
 

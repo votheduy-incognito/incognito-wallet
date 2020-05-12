@@ -26,13 +26,13 @@ const style = StyleSheet.create({
   block: {
     backgroundColor: COLORS.white,
     paddingVertical: 15,
-    marginBottom: 10,
+    marginBottom: 10
   },
   desc: {
-    marginBottom: 10,
+    marginBottom: 10
   },
   input: {
-    marginBottom: 15,
+    marginBottom: 15
   },
   descriptionInput: {
     height: 80,
@@ -40,22 +40,18 @@ const style = StyleSheet.create({
   noteText: {
     fontSize: FONT.SIZE.small,
     fontWeight: 'bold',
-    marginVertical: 15,
+    marginVertical: 15
   },
   submitBtn: {
     marginTop: 40,
-    borderRadius: 20,
-    backgroundColor: COLORS.orange,
-  },
-  submitBtnDisabed: {
-    opacity: 0.5,
+    borderRadius: 4,
   },
   title: {
     fontSize: THEME.text.largeTitleSize,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   balance: {
-    textAlign: 'center',
+    textAlign: 'center'
   },
   error: {
     color: COLORS.red,
@@ -68,23 +64,23 @@ const style = StyleSheet.create({
     paddingVertical: 20,
   },
   showMyAddressLabel: {
-    flex: 1,
+    flex: 1
   },
   switch: {
     height: '100%',
-    marginBottom: 0,
+    marginBottom: 0
   },
   ownerAddressContainer: {
-    alignItems: 'flex-start',
+    alignItems: 'flex-start'
   },
   ownerAddressLabel: {
     marginBottom: 10,
-    fontSize: 14,
+    fontSize: 14
   },
   ownerAddressValue: {
     paddingHorizontal: 1,
-    color: COLORS.lightGrey1,
-  },
+    color: COLORS.lightGrey1
+  }
 });
 
 export default style;
