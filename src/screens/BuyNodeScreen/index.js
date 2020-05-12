@@ -464,7 +464,7 @@ const BuyNodeScreen = () => {
         />
         <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: -5 }}>
           <Dropdown
-            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 }}
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2, marginTop: 2 }}
             label='State'
             data={regions}
             value={regions[0]?.value || ''}
@@ -476,8 +476,6 @@ const BuyNodeScreen = () => {
           <TextField
             // editable={false}
             direction='rtl'
-
-            containerStyle={{ width: (ScreenWidth - 40) / 2 - 15, }}
             inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15, overflow: 'hidden', }}
             ref={cityRef}
             keyboardType='default'
