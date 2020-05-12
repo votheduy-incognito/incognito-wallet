@@ -24,6 +24,7 @@ import routeNames from '@src/router/routeNames';
 import { actionToggleModal } from '@src/components/Modal';
 import AccountModal from '@src/components/Modal/AccountModal/modal.account';
 import { CONSTANT_CONFIGS } from '@src/constants';
+import { ScreenWidth } from '@src/utils/devices';
 import styles from './style';
 
 
@@ -288,7 +289,7 @@ const BuyNodeScreen = () => {
               </TouchableOpacity>
             </View>
             <CurrentBalance
-              balanceStyle={{ fontSize: 16, fontFamily: FONT.NAME.regular, marginTop: 3 }}
+              balanceStyle={styles.balance}
               tokenStyle={{ fontSize: FONT.SIZE.regular }}
               isNestedCurrentBalance
               containerStyle={{
@@ -370,12 +371,13 @@ const BuyNodeScreen = () => {
           event => setYContact(event?.nativeEvent?.layout?.y || 0)
         }
       >
-        <Text style={[theme.text.defaultTextStyle, { fontSize: FONT.SIZE.medium }]}>Contact information</Text>
+        <Text style={[theme.text.defaultTextStyle, { fontSize: FONT.SIZE.medium }]}>Shipping address</Text>
         <TextField
           keyboardType='email-address'
           autoCapitalize='none'
           autoCorrect={false}
           ref={emailRef}
+          inputContainerStyle={{ marginTop: -5 }}
           onSubmitEditing={() => { firstNameRef && firstNameRef?.current?.focus(); }}
           enablesReturnKeyAutomatically
           onFocus={() => onFocusField()}
@@ -387,39 +389,83 @@ const BuyNodeScreen = () => {
           label='Email'
           error={errTf?.email}
         />
-        <Text style={[theme.text.defaultTextStyle, { fontSize: FONT.SIZE.medium }, theme.MARGIN.marginTopDefault]}>Shipping address</Text>
-        <TextField
-          ref={firstNameRef}
-          onSubmitEditing={() => { lastNameRef && lastNameRef?.current?.focus(); }}
-          keyboardType='default'
-          autoCapitalize='none'
-          autoCorrect={false}
-          enablesReturnKeyAutomatically
-          onFocus={() => onFocusField()}
-          onChangeText={async (text) => {
-            await setContactData({ ...contactData, firstName: text });
-            await checkErrEmpty('firstName', checkFieldEmpty(text));
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <TextField
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15 }}
+            ref={firstNameRef}
+            onSubmitEditing={() => { lastNameRef && lastNameRef?.current?.focus(); }}
+            keyboardType='default'
+            autoCapitalize='none'
+            autoCorrect={false}
+            enablesReturnKeyAutomatically
+            onFocus={() => onFocusField()}
+            onChangeText={async (text) => {
+              await setContactData({ ...contactData, firstName: text });
+              await checkErrEmpty('firstName', checkFieldEmpty(text));
+            }}
+            returnKeyType='next'
+            label='First name'
+            errorColor='white'
+            error={errTf?.firstName}
+          />
+          <TextField
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15 }}
+            ref={lastNameRef}
+            onSubmitEditing={() => { addressRef && addressRef?.current?.focus(); }}
+            keyboardType='default'
+            autoCapitalize='none'
+            autoCorrect={false}
+            enablesReturnKeyAutomatically
+            onFocus={() => onFocusField()}
+            onChangeText={async (text) => {
+              await setContactData({ ...contactData, lastName: text });
+              await checkErrEmpty('lastName', checkFieldEmpty(text));
+            }}
+            returnKeyType='next'
+            label='Last name'
+            error={errTf?.lastName}
+          />
+        </View>
+
+        <Dropdown
+          label='Country/Region'
+          data={dataCountry}
+          value={contactData?.country || ''}
+          onChangeText={async (value) => {
+            await setContactData({ ...contactData, country: value, region: '' });
+            await setRegions([]);
+            await changeRegionsDataAndSetCountryCode(value);
+            getShippingFee();
           }}
-          returnKeyType='next'
-          label='First name'
-          error={errTf?.firstName}
         />
-        <TextField
-          ref={lastNameRef}
-          onSubmitEditing={() => { addressRef && addressRef?.current?.focus(); }}
-          keyboardType='default'
-          autoCapitalize='none'
-          autoCorrect={false}
-          enablesReturnKeyAutomatically
-          onFocus={() => onFocusField()}
-          onChangeText={async (text) => {
-            await setContactData({ ...contactData, lastName: text });
-            await checkErrEmpty('lastName', checkFieldEmpty(text));
-          }}
-          returnKeyType='next'
-          label='Last name'
-          error={errTf?.lastName}
-        />
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Dropdown
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15 }}
+            label='State'
+            data={regions}
+            onChangeText={async (value) => {
+              await setContactData({ ...contactData, region: value });
+              await getShippingFee();
+            }}
+          />
+          <TextField
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15, marginLeft: 20 }}
+            ref={cityRef}
+            keyboardType='default'
+            autoCapitalize='none'
+            autoCorrect={false}
+            enablesReturnKeyAutomatically
+            onFocus={() => onFocusField()}
+            onChangeText={async (text) => {
+              await setContactData({ ...contactData, city: text });
+              await checkErrEmpty('city', checkFieldEmpty(text));
+              getShippingFee();
+            }}
+            returnKeyType='next'
+            label='City'
+            error={errTf?.city}
+          />
+        </View>
         <TextField
           ref={addressRef}
           onSubmitEditing={() => { cityRef && cityRef?.current?.focus(); }}
@@ -437,69 +483,39 @@ const BuyNodeScreen = () => {
           label='Address'
           error={errTf?.address}
         />
-        <TextField
-          ref={cityRef}
-          keyboardType='default'
-          autoCapitalize='none'
-          autoCorrect={false}
-          enablesReturnKeyAutomatically
-          onFocus={() => onFocusField()}
-          onChangeText={async (text) => {
-            await setContactData({ ...contactData, city: text });
-            await checkErrEmpty('city', checkFieldEmpty(text));
-            getShippingFee();
-          }}
-          returnKeyType='next'
-          label='City'
-          error={errTf?.city}
-        />
-        <Dropdown
-          label='Country/Region'
-          data={dataCountry}
-          value={contactData?.country || ''}
-          onChangeText={async (value) => {
-            await setContactData({ ...contactData, country: value, region: '' });
-            await setRegions([]);
-            await changeRegionsDataAndSetCountryCode(value);
-            getShippingFee();
-          }}
-        />
-        <Dropdown
-          label='State'
-          data={regions}
-          onChangeText={async (value) => {
-            await setContactData({ ...contactData, region: value });
-            await getShippingFee();
-          }}
-        />
-        <TextField
-          keyboardType='default'
-          autoCapitalize='none'
-          autoCorrect={false}
-          enablesReturnKeyAutomatically
-          onFocus={() => onFocusField()}
-          onChangeText={async (text) => {
-            await setContactData({ ...contactData, postalCode: text });
-            await checkErrEmpty('postalCode', checkFieldEmpty(text));
-            getShippingFee();
-          }}
-          returnKeyType='next'
-          label='Postal code'
-          error={errTf?.postalCode}
-        />
-        <TextField
-          keyboardType='numeric'
-          autoCapitalize='none'
-          autoCorrect={false}
-          enablesReturnKeyAutomatically
-          onFocus={() => onFocusField()}
-          onChangeText={async (text) => {
-            await setContactData({ ...contactData, phone: text });
-            getShippingFee();
-          }}
-          returnKeyType='done'
-          label='Phone (optional)'
-        />
+
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <TextField
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 5, marginEnd: 5 }}
+            keyboardType='default'
+            autoCapitalize='none'
+            autoCorrect={false}
+            enablesReturnKeyAutomatically
+            onFocus={() => onFocusField()}
+            onChangeText={async (text) => {
+              await setContactData({ ...contactData, postalCode: text });
+              await checkErrEmpty('postalCode', checkFieldEmpty(text));
+              getShippingFee();
+            }}
+            returnKeyType='next'
+            label='Postal code'
+            error={errTf?.postalCode}
+          />
+          <TextField
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 5, marginLeft: 5 }}
+            keyboardType='numeric'
+            autoCapitalize='none'
+            autoCorrect={false}
+            enablesReturnKeyAutomatically
+            onFocus={() => onFocusField()}
+            onChangeText={async (text) => {
+              await setContactData({ ...contactData, phone: text });
+              getShippingFee();
+            }}
+            returnKeyType='done'
+            label='Phone (optional)'
+          />
+        </View>
       </View>
     );
   };
@@ -507,7 +523,6 @@ const BuyNodeScreen = () => {
   // Show contact section for user typing
   const onShowContactForShipping = () => {
     setShowContactForShipping(true);
-    emailRef && emailRef?.current?.focus();
   };
 
   // Process payment flow
@@ -574,7 +589,7 @@ const BuyNodeScreen = () => {
   };
 
   const headerHeight = scrollY.interpolate({
-    inputRange: [yTotal, yTotal + 100],
+    inputRange: [yTotal - 50, yTotal],
     outputRange: [HEADER_MIN_HEIGHT, HEADER_MAX_HEIGHT],
     extrapolate: 'clamp',
   });
@@ -627,8 +642,8 @@ const BuyNodeScreen = () => {
         showsVerticalScrollIndicator={false}
         ref={scrollViewRef}
         containerContentStyle={styles.container}
-      // I want to scroll into current focusing container for better UX
-      // onContentSizeChange={(contentWidth, contentHeight) => { showContactForShipping && scrollViewRef?.current?.scrollToEnd({ animated: true }); }}
+        // I want to scroll into current focusing container for better UX
+        onContentSizeChange={(contentWidth, contentHeight) => { showContactForShipping && scrollViewRef?.current?.scrollTo({ y: 600, animated: true }); }}
       >
         <KeyboardAwareScrollView style={{ backgroundColor: 'white' }} showsVerticalScrollIndicator={false} enableOnAndroid extraScrollHeight={50}>
           {renderNodeImgAndPrice()}
@@ -644,7 +659,7 @@ const BuyNodeScreen = () => {
         </KeyboardAwareScrollView>
 
       </ScrollView>
-      {renderFloatingPriceView()}
+      {/* {renderFloatingPriceView()} */}
     </View>
   );
 };
