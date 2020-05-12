@@ -5,6 +5,7 @@ export const homeStyle = StyleSheet.create({
   },
   mainContainer: {
     flex: 1,
+    backgroundColor: 'white'
   },
   form: {
   },
