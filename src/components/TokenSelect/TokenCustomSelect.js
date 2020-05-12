@@ -29,7 +29,7 @@ const generateMenu = (tokens, onSelect) => {
             <CryptoIcon tokenId={token.TokenID} size={30} />
           </View>
         ),
-        label: <VerifiedText text={token?.PSymbol || token?.Symbol} isVerified={token.Verified} />,
+        label: <VerifiedText text={token?.PSymbol || token?.Symbol || ''} isVerified={token.Verified} />,
         desc: <TokenNetworkName id={token.TokenID} />,
         handlePress: onSelect,
       });
