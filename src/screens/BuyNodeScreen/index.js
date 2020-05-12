@@ -84,7 +84,7 @@ const BuyNodeScreen = () => {
     setDataDefault();
     setDefaultTokenId();
     getSystemConfig();
-  }, [errTf, setDataDefault]);
+  }, []);
 
   const setDataDefault = () => {
     // Default US
@@ -329,8 +329,8 @@ const BuyNodeScreen = () => {
     setErrTF(errors);
   };
   const getShippingFee = async (value) => {
-    let region = contactData.region || regions[0]?.value;
-    await APIService.getShippingFee(contactData.city, value, contactData.postalCode, region, contactData.address)
+    let region = contactData.region ?? regions[0]?.value;
+    await APIService.getShippingFee(contactData.city, value ? value : contactData?.code, contactData.postalCode, region, contactData.address)
       .then(val => {
         if (val && val?.Result) {
           setShippingFee(val?.Result?.ShippingFee || 0);
@@ -402,7 +402,7 @@ const BuyNodeScreen = () => {
           onChangeText={async (text) => {
             await setContactData({ ...contactData, email: text });
             await checkErrEmail(checkEmailValid(text).valid);
-            await getShippingFee();
+            getShippingFee();
           }}
           returnKeyType='next'
           label='Email'
@@ -421,8 +421,9 @@ const BuyNodeScreen = () => {
             onChangeText={async (text) => {
               await setContactData({ ...contactData, firstName: text });
               await checkErrEmpty('firstName', checkFieldEmpty(text));
-              await getShippingFee();
+              getShippingFee();
             }}
+            maxLength={50}
             returnKeyType='next'
             label='First name'
             errorColor='white'
@@ -435,12 +436,13 @@ const BuyNodeScreen = () => {
             keyboardType='default'
             autoCapitalize='none'
             autoCorrect={false}
+            maxLength={50}
             enablesReturnKeyAutomatically
             onFocus={() => onFocusField()}
             onChangeText={async (text) => {
               await setContactData({ ...contactData, lastName: text });
               await checkErrEmpty('lastName', checkFieldEmpty(text));
-              await getShippingFee();
+              getShippingFee();
             }}
             returnKeyType='next'
             label='Last name'
@@ -479,6 +481,7 @@ const BuyNodeScreen = () => {
             autoCorrect={false}
             enablesReturnKeyAutomatically
             onFocus={() => onFocusField()}
+            maxLength={50}
             onChangeText={async (text) => {
               await setContactData({ ...contactData, city: text });
               await checkErrEmpty('city', checkFieldEmpty(text));
@@ -497,6 +500,7 @@ const BuyNodeScreen = () => {
           autoCapitalize='none'
           autoCorrect={false}
           enablesReturnKeyAutomatically
+          maxLength={50}
           onFocus={() => onFocusField()}
           onChangeText={async (text) => {
             await setContactData({ ...contactData, address: text });
@@ -515,6 +519,7 @@ const BuyNodeScreen = () => {
             autoCapitalize='none'
             autoCorrect={false}
             enablesReturnKeyAutomatically
+            maxLength={50}
             onFocus={() => onFocusField()}
             onChangeText={async (text) => {
               await setContactData({ ...contactData, postalCode: text });
@@ -531,6 +536,7 @@ const BuyNodeScreen = () => {
             autoCapitalize='none'
             autoCorrect={false}
             enablesReturnKeyAutomatically
+            maxLength={50}
             onFocus={() => onFocusField()}
             onChangeText={async (text) => {
               await setContactData({ ...contactData, phone: text });
