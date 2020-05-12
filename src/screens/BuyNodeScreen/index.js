@@ -49,6 +49,8 @@ const BuyNodeScreen = () => {
   let lastNameRef = useRef();
   let addressRef = useRef();
   let cityRef = useRef();
+  let postalCodeRef = useRef();
+  let phoneRef = useRef();
   let scrollViewRef = useRef();
 
   const [errTf, setErrTF] = useState({});
@@ -432,7 +434,7 @@ const BuyNodeScreen = () => {
           <TextField
             inputContainerStyle={[styles.halfInput, { overflow: 'hidden', }]}
             ref={lastNameRef}
-            onSubmitEditing={() => { addressRef && addressRef?.current?.focus(); }}
+            onSubmitEditing={() => { cityRef && cityRef?.current?.focus(); }}
             keyboardType='default'
             autoCapitalize='none'
             autoCorrect={false}
@@ -484,6 +486,7 @@ const BuyNodeScreen = () => {
             enablesReturnKeyAutomatically
             onFocus={() => onFocusField()}
             maxLength={50}
+            onSubmitEditing={() => { addressRef && addressRef?.current?.focus(); }}
             onChangeText={async (text) => {
               await setContactData({ ...contactData, city: text });
               await checkErrEmpty('city', checkFieldEmpty(text));
@@ -500,6 +503,7 @@ const BuyNodeScreen = () => {
           keyboardType='default'
           autoCapitalize='none'
           autoCorrect={false}
+          onSubmitEditing={() => { postalCodeRef && postalCodeRef?.current?.focus(); }}
           enablesReturnKeyAutomatically
           maxLength={50}
           onFocus={() => onFocusField()}
@@ -519,6 +523,8 @@ const BuyNodeScreen = () => {
             keyboardType='default'
             autoCapitalize='none'
             autoCorrect={false}
+            ref={postalCodeRef}
+            onSubmitEditing={() => { phoneRef && phoneRef?.current?.focus(); }}
             enablesReturnKeyAutomatically
             maxLength={50}
             onFocus={() => onFocusField()}
@@ -536,6 +542,7 @@ const BuyNodeScreen = () => {
             keyboardType='numeric'
             autoCapitalize='none'
             autoCorrect={false}
+            ref={phoneRef}
             enablesReturnKeyAutomatically
             maxLength={50}
             onFocus={() => onFocusField()}
