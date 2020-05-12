@@ -329,8 +329,8 @@ const BuyNodeScreen = () => {
     setErrTF(errors);
   };
   const getShippingFee = async (value) => {
-    let region = contactData.region || regions[0]?.value;
-    await APIService.getShippingFee(contactData.city, value, contactData.postalCode, region, contactData.address)
+    let region = contactData.region ?? regions[0]?.value;
+    await APIService.getShippingFee(contactData.city, value ? value : contactData?.code, contactData.postalCode, region, contactData.address)
       .then(val => {
         if (val && val?.Result) {
           setShippingFee(val?.Result?.ShippingFee || 0);
@@ -402,7 +402,7 @@ const BuyNodeScreen = () => {
           onChangeText={async (text) => {
             await setContactData({ ...contactData, email: text });
             await checkErrEmail(checkEmailValid(text).valid);
-            await getShippingFee();
+            getShippingFee();
           }}
           returnKeyType='next'
           label='Email'
@@ -421,7 +421,7 @@ const BuyNodeScreen = () => {
             onChangeText={async (text) => {
               await setContactData({ ...contactData, firstName: text });
               await checkErrEmpty('firstName', checkFieldEmpty(text));
-              await getShippingFee();
+              getShippingFee();
             }}
             returnKeyType='next'
             label='First name'
@@ -440,7 +440,7 @@ const BuyNodeScreen = () => {
             onChangeText={async (text) => {
               await setContactData({ ...contactData, lastName: text });
               await checkErrEmpty('lastName', checkFieldEmpty(text));
-              await getShippingFee();
+              getShippingFee();
             }}
             returnKeyType='next'
             label='Last name'
