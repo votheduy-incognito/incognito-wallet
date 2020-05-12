@@ -50,14 +50,17 @@ const enhance = WrappedComp => props => {
     internalTokens,
     settings,
     getPrivacyDataByTokenID,
-  } = useSelector(state => ({
-    pTokens: tokenSeleclor.pTokens(state),
-    internalTokens: tokenSeleclor.internalTokens(state),
-    getPrivacyDataByTokenID: selectedPrivacySeleclor.getPrivacyDataByTokenID(
-      state,
-    ),
-    settings: settingsSelector.settings(state),
-  }));
+  } = useSelector(
+    state => ({
+      pTokens: tokenSeleclor.pTokens(state),
+      internalTokens: tokenSeleclor.internalTokens(state),
+      getPrivacyDataByTokenID: selectedPrivacySeleclor.getPrivacyDataByTokenID(
+        state,
+      ),
+      settings: settingsSelector.settings(state),
+    }),
+    shallowEqual,
+  );
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const dispatch = useDispatch();
 

@@ -11,7 +11,7 @@ export const styled = StyleSheet.create({
 
 export const itemStyled = StyleSheet.create({
   container: {
-    marginBottom: 30,
+    marginVertical: 30,
   },
   name: {
     fontFamily: FONT.NAME.medium,

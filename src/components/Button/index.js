@@ -15,4 +15,3 @@ export { default as BtnQuestionDefault } from './BtnQuestionDefault';
 export { default as BtnCircleBack } from './BtnCircleBack';
 export { default as Button } from './Button';
 export { default as ButtonBasic } from './ButtonBasic';
-export { default as BtnGrey } from './BtnGrey';

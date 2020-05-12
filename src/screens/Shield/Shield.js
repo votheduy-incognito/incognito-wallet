@@ -2,13 +2,39 @@ import React from 'react';
 import { View, ScrollView } from 'react-native';
 import Header from '@src/components/Header';
 import { BtnQuestionDefault } from '@src/components/Button';
+import { useNavigation } from 'react-navigation-hooks';
+import routeNames from '@src/router/routeNames';
 import PropTypes from 'prop-types';
-import { TokenShield as Token } from '@src/components/Token';
+import Token from '@src/components/Token';
+import { formValueSelector } from 'redux-form';
+import { searchBoxConfig } from '@src/components/Header/Header.searchBox';
+import { useSelector } from 'react-redux';
+import isEmpty from 'lodash/isEmpty';
 import { styled } from './Shield.styled';
 import withShield from './Shield.enhance';
 
 const Shield = props => {
-  const { data, handleWhyShield, handleShield } = props;
+  const navigation = useNavigation();
+  const handleWhyShield = () => navigation.navigate(routeNames.WhyShield);
+  const { allTokens, menu, handleSearch } = props;
+  const selector = formValueSelector(searchBoxConfig.form);
+  const keySearch = (
+    useSelector(state => selector(state, searchBoxConfig.searchBox)) || ''
+  ).trim();
+  const [state, setState] = React.useState({
+    data: [],
+  });
+  const { data } = state;
+  const handleSetData = async () => {
+    if (!isEmpty(keySearch)) {
+      await handleSearch(keySearch);
+      return await setState({ ...state, data: menu });
+    }
+    return await setState({ ...state, data: [...allTokens] });
+  };
+  React.useEffect(() => {
+    handleSetData();
+  }, [keySearch, allTokens]);
   return (
     <View style={styled.container}>
       <Header
@@ -17,12 +43,8 @@ const Shield = props => {
         rightHeader={<BtnQuestionDefault onPress={handleWhyShield} />}
       />
       <ScrollView style={styled.scrollview}>
-        {data.map(token => (
-          <Token
-            key={token?.id}
-            tokenId={token?.id}
-            onPress={() => handleShield(token?.id)}
-          />
+        {data.map(item => (
+          <Token key={item?.id} tokenId={item?.id} />
         ))}
       </ScrollView>
     </View>
@@ -30,9 +52,8 @@ const Shield = props => {
 };
 
 Shield.propTypes = {
-  data: PropTypes.array.isRequired,
-  handleWhyShield: PropTypes.func.isRequired,
-  handleShield: PropTypes.func.isRequired,
+  allTokens: PropTypes.array.isRequired,
+  handleSearch: PropTypes.func.isRequired,
 };
 
 export default withShield(Shield);
