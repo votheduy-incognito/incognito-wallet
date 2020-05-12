@@ -282,7 +282,7 @@ const BuyNodeScreen = () => {
                   );
                 }}
               >
-                <Text style={[theme.text.mediumTextStyle]}>{currentAccount !== '' ? `${currentAccount?.name}` : 'Choose another wallet'}</Text>
+                <Text style={[theme.text.defaultTextStyle]}>{currentAccount !== '' ? `${currentAccount?.name}` : 'Choose another wallet'}</Text>
                 <View>
                   <Icon name="chevron-down" size={30} type="material-community" color={COLORS.primary} />
                 </View>
@@ -389,9 +389,9 @@ const BuyNodeScreen = () => {
           label='Email'
           error={errTf?.email}
         />
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: -10 }}>
           <TextField
-            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15 }}
+            inputContainerStyle={styles.halfInput}
             ref={firstNameRef}
             onSubmitEditing={() => { lastNameRef && lastNameRef?.current?.focus(); }}
             keyboardType='default'
@@ -409,7 +409,7 @@ const BuyNodeScreen = () => {
             error={errTf?.firstName}
           />
           <TextField
-            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15 }}
+            inputContainerStyle={styles.halfInput}
             ref={lastNameRef}
             onSubmitEditing={() => { addressRef && addressRef?.current?.focus(); }}
             keyboardType='default'
@@ -430,6 +430,7 @@ const BuyNodeScreen = () => {
         <Dropdown
           label='Country/Region'
           data={dataCountry}
+          inputContainerStyle={{ marginTop: -5 }}
           value={contactData?.country || ''}
           onChangeText={async (value) => {
             await setContactData({ ...contactData, country: value, region: '' });
@@ -438,9 +439,9 @@ const BuyNodeScreen = () => {
             getShippingFee();
           }}
         />
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: -10 }}>
           <Dropdown
-            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15 }}
+            inputContainerStyle={styles.halfInput}
             label='State'
             data={regions}
             onChangeText={async (value) => {
@@ -468,6 +469,7 @@ const BuyNodeScreen = () => {
         </View>
         <TextField
           ref={addressRef}
+          inputContainerStyle={{ marginTop: -5 }}
           onSubmitEditing={() => { cityRef && cityRef?.current?.focus(); }}
           keyboardType='default'
           autoCapitalize='none'
@@ -484,7 +486,7 @@ const BuyNodeScreen = () => {
           error={errTf?.address}
         />
 
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: -10 }}>
           <TextField
             inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 5, marginEnd: 5 }}
             keyboardType='default'
@@ -645,7 +647,7 @@ const BuyNodeScreen = () => {
         // I want to scroll into current focusing container for better UX
         onContentSizeChange={(contentWidth, contentHeight) => { showContactForShipping && scrollViewRef?.current?.scrollTo({ y: 600, animated: true }); }}
       >
-        <KeyboardAwareScrollView style={{ backgroundColor: 'white' }} showsVerticalScrollIndicator={false} enableOnAndroid extraScrollHeight={50}>
+        <KeyboardAwareScrollView style={{ backgroundColor: 'white' }} showsVerticalScrollIndicator={false} enableOnAndroid>
           {renderNodeImgAndPrice()}
           {renderMotto()}
           {renderActionSheet()}

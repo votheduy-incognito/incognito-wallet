@@ -26,10 +26,13 @@ const style = StyleSheet.create({
     top: '50%',
     bottom: '50%',
   },
+  halfInput: {
+    width: (ScreenWidth - 40) / 2 - 15,
+  },
   balance: {
     fontSize: 16, 
     fontFamily: FONT.NAME.regular, 
-    width: ScreenWidth * 0.3, 
+    width: ScreenWidth * 0.28, 
     textAlign: 'right',  
     alignContent: 'flex-end', 
     alignSelf: 'center'
@@ -42,8 +45,9 @@ const style = StyleSheet.create({
   },
   wallet: {
     flexDirection: 'row', 
-    borderRadius: 8, 
+    height: 30,
     paddingLeft: 5,
+    borderRadius: 8, 
     borderColor: COLORS.lightGrey11,
     borderWidth: 0.5,
     marginBottom: 10,
