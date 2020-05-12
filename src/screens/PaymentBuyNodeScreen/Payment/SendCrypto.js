@@ -351,7 +351,7 @@ class SendCrypto extends React.Component {
                   name="amount"
                   placeholder="0.0"
                   label="Payment amount"
-                  style={homeStyle.input}
+                  style={[homeStyle.input, { marginTop: 10 }]}
                   maxValue={maxAmount}
                   componentProps={{
                     keyboardType: 'decimal-pad',
