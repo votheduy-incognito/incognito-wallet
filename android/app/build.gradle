@@ -250,6 +250,7 @@ dependencies {
         debugImplementation files(hermesPath + "hermes-debug.aar")
         releaseImplementation files(hermesPath + "hermes-release.aar")
         releaseStagingImplementation files(hermesPath + "hermes-release.aar")
+        releaseNextImplementation files(hermesPath + "hermes-release.aar")
     } else {
         implementation jscFlavor
     }

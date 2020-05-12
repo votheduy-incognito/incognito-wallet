@@ -42,9 +42,9 @@ const COLORS = {
   overlayBlackLight: 'rgba(0, 0, 0, 0.3)',
   errorMessage: '#ed4337',
   grey: '#ECECEC',
-
   mottoGrey: '#8c9c9d'
 };
+
 
 export default {
   ...COLORS,

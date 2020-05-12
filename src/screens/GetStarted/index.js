@@ -1,27 +1,23 @@
-import { login } from '@src/services/auth';
-import { CONSTANT_CONFIGS } from '@src/constants';
-import { reloadWallet, reloadAccountList } from '@src/redux/actions/wallet';
-import { followDefaultTokens } from '@src/redux/actions/account';
-import {
-  getPTokenList,
-  getInternalTokenList,
-  actionGetExchangeRate,
-} from '@src/redux/actions/token';
-import { loadPin } from '@src/redux/actions/pin';
-import { accountSeleclor } from '@src/redux/selectors';
+import {login} from '@src/services/auth';
+import {CONSTANT_CONFIGS} from '@src/constants';
+import {reloadWallet, reloadAccountList} from '@src/redux/actions/wallet';
+import {followDefaultTokens} from '@src/redux/actions/account';
+import {getPTokenList, getInternalTokenList} from '@src/redux/actions/token';
+import {loadPin} from '@src/redux/actions/pin';
+import {accountSeleclor} from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
-import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
-import { savePassword } from '@src/services/wallet/passwordService';
+import {CustomError, ErrorCode, ExHandler} from '@src/services/exception';
+import {savePassword} from '@src/services/wallet/passwordService';
 import serverService from '@src/services/wallet/Server';
-import { initWallet } from '@src/services/wallet/WalletService';
+import {initWallet} from '@src/services/wallet/WalletService';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { DEX } from '@src/utils/dex';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {DEX} from '@src/utils/dex';
 import accountService from '@src/services/wallet/accountService';
-import { actionInit } from '@src/screens/Notification';
+import {actionInit} from '@src/screens/Notification';
 import GetStarted from './GetStarted';
-import { STAKE } from '../Stake/stake.utils';
+import {STAKE} from '../Stake/stake.utils';
 
 class GetStartedContainer extends Component {
   constructor() {
@@ -38,11 +34,11 @@ class GetStartedContainer extends Component {
     this.initApp();
   }
 
-  onError = msg => this.setState({ errorMsg: msg });
+  onError = msg => this.setState({errorMsg: msg});
 
   goHome = async () => {
     try {
-      const { navigation, pin, initNotification } = this.props;
+      const {navigation, pin, initNotification} = this.props;
 
       const wallet = await this.getExistedWallet();
 
@@ -75,10 +71,13 @@ class GetStartedContainer extends Component {
             item?.name === STAKE.MAIN_ACCOUNT,
         )
       ) {
-        await accountService.createAccount(STAKE.MAIN_ACCOUNT, wallet);
+        await accountService.createAccount(
+          STAKE.MAIN_ACCOUNT,
+          wallet,
+        );
       }
 
-      const { reloadAccountList } = this.props;
+      const {reloadAccountList} = this.props;
       await reloadAccountList();
       await initNotification();
       if (pin) {
@@ -97,7 +96,7 @@ class GetStartedContainer extends Component {
 
   getExistedWallet = async () => {
     try {
-      const { reloadWallet } = this.props;
+      const {reloadWallet} = this.props;
       const wallet = await reloadWallet(
         CONSTANT_CONFIGS.PASSPHRASE_WALLET_DEFAULT,
       );
@@ -113,25 +112,18 @@ class GetStartedContainer extends Component {
   };
 
   initApp = async () => {
-    const { loadPin } = this.props;
+    const {loadPin} = this.props;
     try {
       await loadPin();
-      this.setState({ isInitialing: true });
+      this.setState({isInitialing: true});
       const serverLocalList = (await serverService.get()) ?? [];
-      const {
-        getPTokenList,
-        getInternalTokenList,
-        getExchangeRate,
-      } = this.props;
+      const {getPTokenList, getInternalTokenList} = this.props;
       await login();
 
       try {
-        const [pTokens] = await new Promise.all([
-          await getPTokenList(),
-          await getInternalTokenList(),
-          await getExchangeRate(),
-        ]);
-        this.setState({ pTokens });
+        const pTokens = await getPTokenList();
+        await getInternalTokenList();
+        this.setState({pTokens});
       } catch (e) {
         throw new CustomError(ErrorCode.getStarted_load_token_failed, {
           rawError: e,
@@ -146,15 +138,15 @@ class GetStartedContainer extends Component {
 
       // loaded wallet & then continue to Wallet screen
       if (!wallet) {
-        this.setState({ isCreating: true });
+        this.setState({isCreating: true});
         // create new Wallet
         await this.handleCreateNew();
       }
 
-      this.setState({ isInitialing: false, isCreating: false });
+      this.setState({isInitialing: false, isCreating: false});
       this.goHome();
     } catch (e) {
-      this.setState({ isInitialing: false, isCreating: false });
+      this.setState({isInitialing: false, isCreating: false});
       this.onError(
         new ExHandler(
           e,
@@ -189,8 +181,8 @@ class GetStartedContainer extends Component {
 
   setDefaultPToken = async () => {
     try {
-      const { account, followDefaultTokens } = this.props;
-      const { pTokens } = this.state;
+      const {account, followDefaultTokens} = this.props;
+      const {pTokens} = this.state;
 
       if (!account) throw new Error('Missing account');
 
@@ -202,7 +194,7 @@ class GetStartedContainer extends Component {
 
   handleCreateNew = async () => {
     try {
-      const { reloadWallet } = this.props;
+      const {reloadWallet} = this.props;
       await this.handleCreateWallet();
       const wallet = await reloadWallet();
 
@@ -219,11 +211,11 @@ class GetStartedContainer extends Component {
 
   handleRytry = () => {
     this.initApp();
-    this.setState({ errorMsg: null, isInitialing: true });
+    this.setState({errorMsg: null, isInitialing: true});
   };
 
   render() {
-    const { isInitialing, errorMsg, isCreating } = this.state;
+    const {isInitialing, errorMsg, isCreating} = this.state;
     return (
       <GetStarted
         errorMsg={errorMsg}
@@ -243,7 +235,6 @@ const mapDispatch = {
   reloadAccountList,
   loadPin,
   initNotification: actionInit,
-  getExchangeRate: actionGetExchangeRate,
 };
 
 const mapState = state => ({
@@ -260,14 +251,10 @@ GetStartedContainer.propTypes = {
   reloadAccountList: PropTypes.func.isRequired,
   followDefaultTokens: PropTypes.func.isRequired,
   initNotification: PropTypes.func.isRequired,
-  getExchangeRate: PropTypes.func.isRequired,
 };
 
 GetStartedContainer.defaultProps = {
   account: null,
 };
 
-export default connect(
-  mapState,
-  mapDispatch,
-)(GetStartedContainer);
+export default connect(mapState, mapDispatch)(GetStartedContainer);

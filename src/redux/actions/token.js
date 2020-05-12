@@ -1,9 +1,8 @@
 import type from '@src/redux/types/token';
-import { accountSeleclor } from '@src/redux/selectors';
-import { getTokenList, apiGetExchangeRate } from '@src/services/api/token';
+import {accountSeleclor} from '@src/redux/selectors';
+import {getTokenList} from '@src/services/api/token';
 import tokenService from '@src/services/wallet/tokenService';
 import accountService from '@src/services/wallet/accountService';
-import { CONSTANT_COMMONS } from '@src/constants';
 
 export const setToken = (
   token = throw new Error('Token object is required'),
@@ -159,27 +158,3 @@ export const actionAddFollowTokenSuccess = payload => ({
   type: type.ADD_FOLLOW_TOKEN_SUCCESS,
   payload,
 });
-
-export const actionFetchingExchangeRate = () => ({
-  type: type.ACTION_FETCHING_EXCHANGE_RATE,
-});
-
-export const actionFetchedExchangeRate = payload => ({
-  type: type.ACTION_FETCHED_EXCHANGE_RATE,
-  payload,
-});
-
-export const actionFetchFailExchangeRate = () => ({
-  type: type.ACTION_FETCH_FAIL_EXCHANGE_RATE,
-});
-
-export const actionGetExchangeRate = () => async (dispatch, getState) => {
-  try {
-    await dispatch(actionFetchingExchangeRate());
-    const data = await apiGetExchangeRate();
-    await dispatch(actionFetchedExchangeRate(data));
-  } catch (error) {
-    await dispatch(actionFetchFailExchangeRate());
-    throw error;
-  }
-};

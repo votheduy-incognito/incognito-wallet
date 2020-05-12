@@ -1,4 +1,4 @@
-import { genNamspace } from '@src/utils/reduxUtils';
+import {genNamspace} from '@src/utils/reduxUtils';
 
 const n = genNamspace('TOKEN');
 
@@ -14,9 +14,6 @@ const TYPES = {
   SET_INTERNAL_LIST: n('SET_INTERNAL_LIST'),
   ADD_FOLLOW_TOKEN_SUCCESS: n('ADD_FOLLOW_TOKEN_SUCCESS'),
   ADD_FOLLOW_TOKEN_FAIL: n('ADD_FOLLOW_TOKEN_FAIL'),
-  ACTION_FETCHING_EXCHANGE_RATE: n('ACTION_FETCHING_EXCHANGE_RATE'),
-  ACTION_FETCHED_EXCHANGE_RATE: n('ACTION_FETCHED_EXCHANGE_RATE'),
-  ACTION_FETCH_FAIL_EXCHANGE_RATE: n('ACTION_FETCH_FAIL_EXCHANGE_RATE'),
 };
 
 export default TYPES;

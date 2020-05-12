@@ -1,18 +1,11 @@
 import type from '@src/redux/types/token';
-import { unionBy, remove } from 'lodash';
-import { CONSTANT_COMMONS } from '@src/constants';
+import {unionBy, remove} from 'lodash';
 
 const initialState = {
   followed: [],
   pTokens: null,
   internalTokens: null,
   isGettingBalance: [],
-  exchangeRate: {
-    isFetching: true,
-    isFetched: false,
-    data: [],
-    prv: null,
-  },
 };
 
 const setToken = (list, token) => {
@@ -135,41 +128,6 @@ const reducer = (state = initialState, action) => {
   case type.ADD_FOLLOW_TOKEN_FAIL: {
     return {
       ...state,
-    };
-  }
-  case type.ACTION_FETCHING_EXCHANGE_RATE: {
-    return {
-      ...state,
-      exchangeRate: {
-        ...state.exchangeRate,
-        isFetching: true,
-      },
-    };
-  }
-  case type.ACTION_FETCHED_EXCHANGE_RATE: {
-    const ratePRV = action.payload.find(
-      item => item?.Base === CONSTANT_COMMONS.PRV.symbol,
-    );
-    const excludePRV = token => token?.Base !== CONSTANT_COMMONS.PRV.symbol;
-    return {
-      ...state,
-      exchangeRate: {
-        ...state.exchangeRate,
-        isFetching: false,
-        isFetched: true,
-        data: [...action.payload].filter(excludePRV),
-        prv: { ...ratePRV },
-      },
-    };
-  }
-  case type.ACTION_FETCH_FAIL_EXCHANGE_RATE: {
-    return {
-      ...state,
-      exchangeRate: {
-        ...state.exchangeRate,
-        isFetching: false,
-        isFetched: false,
-      },
     };
   }
   default:

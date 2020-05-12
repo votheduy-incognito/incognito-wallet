@@ -2,7 +2,7 @@ export default {
   RootApp: 'App',
   RootSplash: 'RootSplash',
   RootMiner: 'RootMiner',
-  // RootTab: 'RootTab',
+  RootTab: 'RootTab',
   Wallet: 'Wallet',
   Setting: 'Setting',
   NetworkSetting: 'NetworkSetting',
@@ -59,9 +59,5 @@ export default {
   PriceChartCrypto: 'PriceChartCrypto',
   UniswapHelp: 'UniswapHelp',
   BuyNodeScreen: 'BuyNodeScreen',
-  PaymentBuyNodeScreen: 'PaymentBuyNodeScreen',
-  HomeWallet: 'HomeWallet',
-  SelectAccount: 'SelectAccount',
-  FollowTokenOld: 'FollowTokenOld',
-  ShieldGenQRCode: 'ShieldGenQRCode',
+  PaymentBuyNodeScreen: 'PaymentBuyNodeScreen'
 };
