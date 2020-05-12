@@ -19,6 +19,12 @@ const text = {
   },
   headerTextStyle: {
     ...FONTS.STYLE.bold,
+    fontFamily: FONTS.NAME.medium,
+    color: COLORS.black,
+    fontSize: FONTS.SIZE.large,
+  },
+  regularTextStyle: {
+    ...FONTS.STYLE.medium,
     color: COLORS.black,
     fontSize: FONTS.SIZE.large,
   },
@@ -41,6 +47,24 @@ const text = {
     ...FONTS.STYLE.bold,
     color: COLORS.black,
     fontSize: FONTS.SIZE.large,
+  },
+  regularTextMotto: {
+    ...FONTS.STYLE.normal,
+    fontFamily: FONTS.NAME.regular,
+    color: COLORS.mottoGrey,
+    fontSize: FONTS.SIZE.regular,
+  },
+  mediumText: {
+    ...FONTS.STYLE.normal,
+    fontFamily: FONTS.NAME.medium,
+    color: COLORS.black,
+    fontSize: FONTS.SIZE.medium,
+  },
+  mediumTextBold: {
+    ...FONTS.STYLE.normal,
+    fontFamily: FONTS.NAME.bold,
+    color: COLORS.black,
+    fontSize: FONTS.SIZE.medium,
   },
   defaultSize: FONTS.SIZE.regular,
   largeTitleSize: FONTS.SIZE.superLarge
