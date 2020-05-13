@@ -49,6 +49,8 @@ const BuyNodeScreen = () => {
   let lastNameRef = useRef();
   let addressRef = useRef();
   let cityRef = useRef();
+  let postalCodeRef = useRef();
+  let phoneRef = useRef();
   let scrollViewRef = useRef();
 
   const [errTf, setErrTF] = useState({});
@@ -84,7 +86,7 @@ const BuyNodeScreen = () => {
     setDataDefault();
     setDefaultTokenId();
     getSystemConfig();
-  }, [errTf, setDataDefault]);
+  }, []);
 
   const setDataDefault = () => {
     // Default US
@@ -202,15 +204,15 @@ const BuyNodeScreen = () => {
         event => setYTotal(event?.nativeEvent?.layout?.y || 0)
       }
       >
-        <LineView color={COLORS.lightGrey1} />
+        <LineView color={COLORS.colorGrey} />
         {renderTotalItem('Subtotal', `$${subTotal.toFixed(2)}`, theme.text.regularTextMotto)}
         {renderTotalItem('Shipping', shippingFee === 0 ? 'FREE' : `$${shippingFee}`, theme.text.regularTextMotto)}
         {renderTotalItem(`Ships ${shippingHour}`, '', theme.text.regularTextMotto)}
         {shippingFee > 0 ? renderTotalItem('This does not include any potential duties or taxes that will vary depending on your locality.', '', theme.text.regularTextMotto) : null}
-        <LineView color={COLORS.lightGrey1} style={theme.MARGIN.marginBottomDefault} />
+        <LineView color={COLORS.colorGrey} style={theme.MARGIN.marginBottomDefault} />
         {renderTotalItem('Total', `$${subTotal.toFixed(2)}`, theme.text.regularTextMotto, theme.text.mediumText)}
         {renderTotalItem(`Pay with ${symbol}`, `${countableToken} ${symbol}`, theme.text.mediumText)}
-        <LineView color={COLORS.lightGrey1} />
+        <LineView color={COLORS.colorGrey} />
       </View>
     );
   };
@@ -253,14 +255,14 @@ const BuyNodeScreen = () => {
   const renderPayment = () => {
     return (
       <View>
-        <LineView color={COLORS.lightGrey1} style={theme.MARGIN.marginTopDefault} />
+        <LineView color={COLORS.colorGrey} style={theme.MARGIN.marginTopDefault} />
         <View style={[theme.FLEX.rowSpaceBetween]}>
           <View style={{ justifyContent: 'center', alignContent: 'center', }}>
             <Text style={[theme.text.mediumText, { marginTop: 5 }]}>Payment</Text>
             <View style={[theme.FLEX.rowSpaceBetween]}>
               <Button
                 style={{ backgroundColor: 'white', marginLeft: -10 }}
-                title="(Or pay with fiat)"
+                title="(More options)"
                 titleStyle={[theme.text.defaultTextStyle, { color: COLORS.primary }]}
                 onPress={() => {
                   linkingService.openUrl(`${CONSTANT_CONFIGS.NODE_URL}`);
@@ -329,8 +331,8 @@ const BuyNodeScreen = () => {
     setErrTF(errors);
   };
   const getShippingFee = async (value) => {
-    let region = contactData.region || regions[0]?.value;
-    await APIService.getShippingFee(contactData.city, value, contactData.postalCode, region, contactData.address)
+    let region = contactData.region ?? regions[0]?.value;
+    await APIService.getShippingFee(contactData.city || '', value ? value : contactData?.code, contactData.postalCode || '', region || '', contactData.address || '')
       .then(val => {
         if (val && val?.Result) {
           setShippingFee(val?.Result?.ShippingFee || 0);
@@ -402,7 +404,7 @@ const BuyNodeScreen = () => {
           onChangeText={async (text) => {
             await setContactData({ ...contactData, email: text });
             await checkErrEmail(checkEmailValid(text).valid);
-            await getShippingFee();
+            getShippingFee();
           }}
           returnKeyType='next'
           label='Email'
@@ -410,9 +412,9 @@ const BuyNodeScreen = () => {
         />
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: -10 }}>
           <TextField
-            inputContainerStyle={styles.halfInput}
+            inputContainerStyle={[styles.halfInput, { overflow: 'hidden', }]}
             ref={firstNameRef}
-            // onSubmitEditing={() => { lastNameRef && lastNameRef?.current?.focus(); }}
+            onSubmitEditing={() => { lastNameRef && lastNameRef?.current?.focus(); }}
             keyboardType='default'
             autoCapitalize='none'
             autoCorrect={false}
@@ -421,26 +423,28 @@ const BuyNodeScreen = () => {
             onChangeText={async (text) => {
               await setContactData({ ...contactData, firstName: text });
               await checkErrEmpty('firstName', checkFieldEmpty(text));
-              await getShippingFee();
+              getShippingFee();
             }}
+            maxLength={50}
             returnKeyType='next'
             label='First name'
             errorColor='white'
             error={errTf?.firstName}
           />
           <TextField
-            inputContainerStyle={styles.halfInput}
+            inputContainerStyle={[styles.halfInput, { overflow: 'hidden', }]}
             ref={lastNameRef}
-            onSubmitEditing={() => { addressRef && addressRef?.current?.focus(); }}
+            onSubmitEditing={() => { cityRef && cityRef?.current?.focus(); }}
             keyboardType='default'
             autoCapitalize='none'
             autoCorrect={false}
+            maxLength={50}
             enablesReturnKeyAutomatically
             onFocus={() => onFocusField()}
             onChangeText={async (text) => {
               await setContactData({ ...contactData, lastName: text });
               await checkErrEmpty('lastName', checkFieldEmpty(text));
-              await getShippingFee();
+              getShippingFee();
             }}
             returnKeyType='next'
             label='Last name'
@@ -460,9 +464,9 @@ const BuyNodeScreen = () => {
             await getShippingFee(code);
           }}
         />
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: -10 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: -5 }}>
           <Dropdown
-            inputContainerStyle={styles.halfInput}
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2, marginTop: 2 }}
             label='State'
             data={regions}
             value={regions[0]?.value || ''}
@@ -472,13 +476,17 @@ const BuyNodeScreen = () => {
             }}
           />
           <TextField
-            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15, marginLeft: 20 }}
+            // editable={false}
+            direction='rtl'
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15, overflow: 'hidden', }}
             ref={cityRef}
             keyboardType='default'
             autoCapitalize='none'
             autoCorrect={false}
             enablesReturnKeyAutomatically
             onFocus={() => onFocusField()}
+            maxLength={50}
+            onSubmitEditing={() => { addressRef && addressRef?.current?.focus(); }}
             onChangeText={async (text) => {
               await setContactData({ ...contactData, city: text });
               await checkErrEmpty('city', checkFieldEmpty(text));
@@ -491,12 +499,13 @@ const BuyNodeScreen = () => {
         </View>
         <TextField
           ref={addressRef}
-          inputContainerStyle={{ marginTop: -5 }}
-          onSubmitEditing={() => { cityRef && cityRef?.current?.focus(); }}
+          inputContainerStyle={{ width: (ScreenWidth - 40) }}
           keyboardType='default'
           autoCapitalize='none'
           autoCorrect={false}
+          onSubmitEditing={() => { postalCodeRef && postalCodeRef?.current?.focus(); }}
           enablesReturnKeyAutomatically
+          maxLength={50}
           onFocus={() => onFocusField()}
           onChangeText={async (text) => {
             await setContactData({ ...contactData, address: text });
@@ -508,13 +517,16 @@ const BuyNodeScreen = () => {
           error={errTf?.address}
         />
 
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: -10 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 0 }}>
           <TextField
-            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 5, marginEnd: 5 }}
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15, overflow: 'hidden', }}
             keyboardType='default'
             autoCapitalize='none'
             autoCorrect={false}
+            ref={postalCodeRef}
+            onSubmitEditing={() => { phoneRef && phoneRef?.current?.focus(); }}
             enablesReturnKeyAutomatically
+            maxLength={50}
             onFocus={() => onFocusField()}
             onChangeText={async (text) => {
               await setContactData({ ...contactData, postalCode: text });
@@ -526,11 +538,13 @@ const BuyNodeScreen = () => {
             error={errTf?.postalCode}
           />
           <TextField
-            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 5, marginLeft: 5 }}
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15, overflow: 'hidden', }}
             keyboardType='numeric'
             autoCapitalize='none'
             autoCorrect={false}
+            ref={phoneRef}
             enablesReturnKeyAutomatically
+            maxLength={50}
             onFocus={() => onFocusField()}
             onChangeText={async (text) => {
               await setContactData({ ...contactData, phone: text });

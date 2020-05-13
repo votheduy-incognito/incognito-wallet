@@ -32,7 +32,7 @@ const style = StyleSheet.create({
   balance: {
     fontSize: 16, 
     fontFamily: FONT.NAME.regular, 
-    width: ScreenWidth * 0.28, 
+    width: ScreenWidth * 0.25, 
     textAlign: 'right',  
     alignContent: 'flex-end', 
     alignSelf: 'center'
