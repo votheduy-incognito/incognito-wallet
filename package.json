@@ -1,6 +1,6 @@
 {
   "name": "incognito-wallet",
-  "version": "3.6.6.1",
+  "version": "3.6.5.9",
   "private": true,
   "rnpm": {
     "assets": [
@@ -13,7 +13,7 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "start:reset": "react-native start --reset-cache",
-    "android:reload": "adb shell input keyevent 82",
+    "android:reloa": "adb shell input keyevent 82",
     "flow": "flow",
     "android": "react-native run-android --variant=debug",
     "androidStaging": "react-native run-android --variant=releaseStaging",
@@ -32,12 +32,12 @@
     "postinstall": "./node_modules/.bin/rn-nodeify --install crypto,stream,vm --hack && npx jetify",
     "devtools": "react-devtools",
     "deployIOS:dev": "appcenter codepush release-react -a 0xSiris/Incognito -t \"49.6\" -d Development --development",
-    "deployIOS:prod": "appcenter codepush release-react -a 0xSiris/Incognito -t \"49.6\" -d Production -x",
+    "deployIOS:prod": "appcenter codepush release-react -a 0xSiris/Incognito -t \"49.5\" -d Production -x",
     "deployIOS:staging": "appcenter codepush release-react -a 0xSiris/Incognito -t \"49.6\" -d Staging",
     "deployIOS:next": "appcenter codepush release-react -a 0xSiris/Incognito -t \"49.6\" -d NextRelease",
     "deployAndroid:dev": "appcenter codepush release-react -a 0xSiris/Incognito-Android -t \"3.6.6\" -d Development --development -x",
     "deployAndroid:staging": "appcenter codepush release-react -a 0xSiris/Incognito-Android -t \"3.6.6\" -d Staging",
-    "deployAndroid:prod": "appcenter codepush release-react -a 0xSiris/Incognito-Android -t \"3.6.6\" -d Production -x",
+    "deployAndroid:prod": "appcenter codepush release-react -a 0xSiris/Incognito-Android -t \"3.6.5\" -d Production -x",
     "deployAndroid:next": "appcenter codepush release-react -a 0xSiris/Incognito-Android -t \"3.6.6\" -d NextRelease",
     "deploy:dev": "yarn deployIOS:dev && yarn deployAndroid:dev",
     "deploy:staging": "yarn deployIOS:staging && yarn deployAndroid:staging",
@@ -67,7 +67,7 @@
     "formik": "^1.5.3",
     "https-browserify": "0.0.1",
     "immutability-helper": "^3.0.1",
-    "incognito-chain-web-js": "https://github.com/incognitochain/incognito-chain-web-js#3.6.6.1.a",
+    "incognito-chain-web-js": "https://github.com/incognitochain/incognito-chain-web-js#3.6.5.d",
     "intl": "^1.2.5",
     "jetifier": "^1.6.5",
     "lodash": "^4.17.11",
