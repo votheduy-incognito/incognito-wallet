@@ -6,7 +6,7 @@ import { COLORS, FONT } from '@src/styles';
 const styled = StyleSheet.create({
   container: {
     backgroundColor: COLORS.black,
-    borderRadius: 10,
+    borderRadius: 20,
     padding: 10,
   },
   title: {
@@ -18,11 +18,15 @@ const styled = StyleSheet.create({
 });
 
 const ButtonBasic = props => {
-  const { title, btnStyle, titleStyle, ...rest } = props;
+  const { title, btnStyle, titleStyle, customContent, ...rest } = props;
   return (
     <TouchableWithoutFeedback {...rest}>
       <View style={[styled.container, btnStyle]}>
-        <Text style={[styled.title, titleStyle]}>{title}</Text>
+        {customContent ? (
+          customContent
+        ) : (
+          <Text style={[styled.title, titleStyle]}>{title}</Text>
+        )}
       </View>
     </TouchableWithoutFeedback>
   );
@@ -31,12 +35,14 @@ const ButtonBasic = props => {
 ButtonBasic.defaultProps = {
   btnStyle: null,
   titleStyle: null,
+  customContent: null,
 };
 
 ButtonBasic.propTypes = {
   title: PropTypes.string.isRequired,
   btnStyle: PropTypes.any,
   titleStyle: PropTypes.any,
+  customContent: PropTypes.element,
 };
 
 export default ButtonBasic;

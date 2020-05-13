@@ -4,16 +4,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { accountSeleclor } from '@src/redux/selectors';
 import PropTypes from 'prop-types';
 import { switchAccount } from '@src/redux/actions/account';
-import Header from '@src/components/Header';
+import Header, { useSearchBox } from '@src/components/Header';
 import { withLayout_2 } from '@src/components/Layout';
 import { useNavigation } from 'react-navigation-hooks';
 import { defaultAccountNameSelector } from '@src/redux/selectors/account';
 import { Toast } from '@src/components/core';
 import { ExHandler } from '@src/services/exception';
-import { formValueSelector } from 'redux-form';
-import { searchBoxConfig } from '@src/components/Header/Header.searchBox';
 import includes from 'lodash/includes';
-import isEmpty from 'lodash/isEmpty';
 import { styled, itemStyled } from './SelectAccount.styled';
 
 const AccountItem = ({ accountName, PaymentAddress }) => {
@@ -58,37 +55,20 @@ const AccountItem = ({ accountName, PaymentAddress }) => {
 };
 
 const ListAccount = () => {
-  const selector = formValueSelector(searchBoxConfig.form);
-  const keySearch = (
-    useSelector(state => selector(state, searchBoxConfig.searchBox)) || ''
-  )
-    .trim()
-    .toLowerCase();
   const listAccount = useSelector(accountSeleclor.listAccountSelector);
-  const [state, setState] = React.useState({
-    data: [],
+  const [result, keySearch] = useSearchBox({
+    data: listAccount,
+    handleFilter: () => [
+      ...listAccount.filter(
+        account =>
+          includes(account?.accountName.toLowerCase(), keySearch) ||
+          includes(account?.name.toLowerCase(), keySearch),
+      ),
+    ],
   });
-  const handleSearchAccount = async () => {
-    await setState({
-      ...state,
-      data: isEmpty(keySearch)
-        ? listAccount
-        : [
-          ...listAccount.filter(
-            account =>
-              includes(account?.accountName.toLowerCase(), keySearch) ||
-                includes(account?.name.toLowerCase(), keySearch),
-          ),
-        ],
-    });
-  };
-  React.useEffect(() => {
-    handleSearchAccount();
-  }, [keySearch]);
-  const { data } = state;
   return (
     <ScrollView>
-      {data.map(item => (
+      {result.map(item => (
         <AccountItem key={item?.accountName} {...item} />
       ))}
     </ScrollView>

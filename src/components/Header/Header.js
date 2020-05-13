@@ -15,6 +15,7 @@ const HeaderTitle = () => {
   return (
     <TouchableWithoutFeedback onPress={onHandleSearch}>
       <Text
+        numberOfLines={1}
         style={[
           styledHeaderTitle.title,
           canSearch && styledHeaderTitle.searchStyled,
@@ -28,9 +29,10 @@ const HeaderTitle = () => {
 };
 
 const Header = props => {
-  const { rightHeader, toggleSearch } = props;
+  const { rightHeader, toggleSearch, onGoBack } = props;
   const { goBack } = useNavigation();
-  const onGoBack = () => goBack();
+  const handleGoBack = () =>
+    typeof onGoBack === 'function' ? onGoBack() : goBack();
   return (
     <HeaderContext.Provider
       value={{
@@ -38,7 +40,7 @@ const Header = props => {
       }}
     >
       <View style={styled.container}>
-        <BtnCircleBack onPress={onGoBack} />
+        <BtnCircleBack onPress={handleGoBack} />
         {toggleSearch ? <SearchBox /> : <HeaderTitle />}
         {!!rightHeader && rightHeader}
       </View>
@@ -51,6 +53,7 @@ Header.defaultProps = {
   titleStyled: null,
   canSearch: false,
   dataSearch: [],
+  onGoBack: null,
 };
 
 Header.propTypes = {
@@ -60,6 +63,7 @@ Header.propTypes = {
   canSearch: PropTypes.bool,
   dataSearch: PropTypes.array,
   toggleSearch: PropTypes.bool.isRequired,
+  onGoBack: PropTypes.func,
 };
 
 export default withHeader(React.memo(Header));

@@ -6,7 +6,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import withToken from '@src/components/Token/Token.enhance';
+import withToken, { TokenContext } from '@src/components/Token/Token.enhance';
 import { TokenVerifiedIcon } from '@src/components/Icons';
 import format from '@src/utils/format';
 import floor from 'lodash/floor';
@@ -29,9 +29,7 @@ const defaultProps = {
   pricePrv: 0,
 };
 
-export const TokenContext = React.createContext({ ...defaultProps });
-
-const NormalText = ({ style, text, hasPSymbol = false }) => (
+export const NormalText = ({ style, text, hasPSymbol = false }) => (
   <Text numberOfLines={1} style={[styled.text, style]}>
     {hasPSymbol && <Text style={[styled.pSymbol, styled.text, style]}>ℙ</Text>}{' '}
     {text}
@@ -40,21 +38,17 @@ const NormalText = ({ style, text, hasPSymbol = false }) => (
 
 export const Name = props => {
   const { tokenProps } = React.useContext(TokenContext);
-  const { displayName, isVerified } = tokenProps;
+  const { name, isVerified } = tokenProps || defaultProps;
   return (
     <View style={styled.name}>
-      <NormalText
-        text={displayName}
-        style={[styled.boldText, props?.styledDisplayName]}
-      />
+      <NormalText text={name} style={[styled.boldText, props?.styledName]} />
       {isVerified && <TokenVerifiedIcon style={styled.verifiedIcon} />}
     </View>
   );
 };
 
-const AmountBasePRV = () => {
-  const { tokenProps } = React.useContext(TokenContext);
-  const { amount, pricePrv } = tokenProps;
+export const AmountBasePRV = props => {
+  const { amount, pricePrv, customStyle = null } = props || defaultProps;
   return (
     <NormalText
       hasPSymbol
@@ -62,74 +56,89 @@ const AmountBasePRV = () => {
         floor(pricePrv * amount),
         CONSTANT_COMMONS.PRV.pDecimals,
       )} `}
-      style={[styled.boldText, styled.rightText]}
+      style={[styled.boldText, styled.rightText, customStyle]}
+    />
+  );
+};
+
+export const ChangePrice = props => {
+  const { change = '0', customStyle = null } = props || defaultProps;
+  const isTokenDecrease = change[0] === '-';
+  const changeToNumber = Number(change.replace('-', ''));
+  if (changeToNumber === 0) {
+    return null;
+  }
+  return (
+    <NormalText
+      text={`${isTokenDecrease ? '-' : '+'}${floor(changeToNumber, 2)}%`}
+      style={[isTokenDecrease ? styled.redText : styled.greenText, customStyle]}
     />
   );
 };
 
 const Price = () => {
   const { tokenProps } = React.useContext(TokenContext);
-  const { pricePrv, change } = tokenProps;
-  const isTokenDecrease = change[0] === '-';
-  const changeToNumber = Number(change.replace('-', ''));
+  const { pricePrv, change } = tokenProps || defaultProps;
   return (
     <View style={styled.priceContainer}>
       <NormalText text={format.amount(floor(pricePrv, 9), 0)} hasPSymbol />
-      {changeToNumber !== 0 && (
-        <NormalText
-          text={`${isTokenDecrease ? '-' : '+'}${floor(changeToNumber, 2)}%`}
-          style={isTokenDecrease ? styled.redText : styled.greenText}
-        />
-      )}
+      <ChangePrice change={change} />
     </View>
   );
 };
 
-const Amount = () => {
-  const { tokenProps } = React.useContext(TokenContext);
-  const { amount, pDecimals, symbol, isGettingBalance } = tokenProps;
+export const Amount = props => {
+  const {
+    amount,
+    pDecimals,
+    symbol,
+    isGettingBalance,
+    customStyle = null,
+    showSymbol = true,
+  } = props || defaultProps;
   if (isGettingBalance) {
     return <ActivityIndicator size="small" />;
   }
-  return <NormalText text={`${format.amount(amount, pDecimals)} ${symbol}`} />;
+  return (
+    <NormalText
+      style={customStyle}
+      text={`${format.amount(amount, pDecimals)} ${showSymbol ? symbol : ''}`}
+    />
+  );
 };
 
 export const Symbol = () => {
   const { tokenProps } = React.useContext(TokenContext);
-  const { externalSymbol } = tokenProps;
-  return <NormalText text={externalSymbol} />;
+  const { symbol, networkName, isErc20Token } = tokenProps || defaultProps;
+  return (
+    <NormalText text={`${symbol} ${isErc20Token ? `(${networkName})` : ''}`} />
+  );
 };
 
 const Token = props => {
   const { onPress, style } = props;
   return (
-    <TokenContext.Provider
-      value={{
-        tokenProps: props,
-      }}
-    >
-      <TouchableWithoutFeedback onPress={onPress}>
-        <View style={[styled.container, style]}>
-          <View style={styled.extra}>
-            <Name />
-            <AmountBasePRV />
-          </View>
-          <View style={styled.extra}>
-            <Price />
-            <Amount />
-          </View>
+    <TouchableWithoutFeedback onPress={onPress}>
+      <View style={[styled.container, style]}>
+        <View style={styled.extra}>
+          <Name />
+          <AmountBasePRV {...props} />
         </View>
-      </TouchableWithoutFeedback>
-    </TokenContext.Provider>
+        <View style={styled.extra}>
+          <Price />
+          <Amount {...props} />
+        </View>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
 Name.defaultProps = {
-  styledDisplayName: null,
+  styledName: null,
 };
 
 Name.propTypes = {
-  styledDisplayName: PropTypes.object,
+  styledName: PropTypes.object,
 };
 
 Token.defaultProps = { ...defaultProps };
@@ -150,4 +159,4 @@ Token.propTypes = {
   pricePrv: PropTypes.number,
 };
 
-export default withToken(Token);
+export default withToken(React.memo(Token));

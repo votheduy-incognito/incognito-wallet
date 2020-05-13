@@ -17,6 +17,7 @@ export const styledHeaderTitle = StyleSheet.create({
     color: COLORS.black,
     marginRight: 'auto',
     textTransform: 'capitalize',
+    maxWidth: '30%',
   },
   searchStyled: {
     textTransform: 'none',

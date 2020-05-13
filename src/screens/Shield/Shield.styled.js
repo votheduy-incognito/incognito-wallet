@@ -4,7 +4,7 @@ export const styled = StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollview: {
+  flatlist: {
     flex: 1,
   },
 });

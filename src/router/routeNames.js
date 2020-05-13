@@ -64,4 +64,5 @@ export default {
   SelectAccount: 'SelectAccount',
   FollowTokenOld: 'FollowTokenOld',
   ShieldGenQRCode: 'ShieldGenQRCode',
+  AddManually: 'AddManually',
 };

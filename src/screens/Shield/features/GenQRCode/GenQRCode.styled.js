@@ -33,4 +33,8 @@ export const styled = StyleSheet.create({
   qrCode: {
     marginVertical: 40,
   },
+  clockIcon: {
+    width: 40,
+    height: 40,
+  },
 });

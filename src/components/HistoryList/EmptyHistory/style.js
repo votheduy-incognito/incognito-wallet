@@ -6,6 +6,8 @@ const style = StyleSheet.create({
     position: 'relative',
     alignItems: 'center',
     flex: 1,
+    minHeight: 400,
+    backgroundColor: COLORS.white
   },
   text: {
     color: COLORS.lightGrey1,

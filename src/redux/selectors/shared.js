@@ -8,6 +8,7 @@ import {
   isGettingBalance as isGettingBalanceToken,
 } from '@src/redux/selectors/token';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
+import uniqBy from 'lodash/uniqBy';
 import {
   isGettingBalance as isGettingBalanceAccount,
   defaultAccountName,
@@ -51,22 +52,28 @@ export const availableTokensSelector = createSelector(
         tokens.push(_token);
       }
     });
-    return tokens || [];
+    const excludeRPV = token => token?.tokenId !== CONSTANT_COMMONS.PRV.id;
+    return uniqBy(tokens.filter(excludeRPV), 'tokenId') || [];
   },
 );
 
 export const totalShieldedTokensSelector = createSelector(
   availableTokensSelector,
   selectedPrivacySeleclor.getPrivacyDataByTokenID,
-  (tokens,getPrivacyDataByTokenID) => {
+  (tokens, getPrivacyDataByTokenID) => {
     const prv = getPrivacyDataByTokenID(CONSTANT_COMMONS.PRV.id);
     const totalShieldedTokens = [...tokens, prv].reduce(
       (prevValue, currentValue) =>
         prevValue + currentValue?.pricePrv * currentValue?.amount,
       0,
     );
-    return  totalShieldedTokens;
+    return totalShieldedTokens;
   },
+);
+
+export const unFollowTokensSelector = createSelector(
+  availableTokensSelector,
+  tokens => tokens.filter(token => !(token?.isFollowed === true)),
 );
 
 export default {

@@ -8,6 +8,10 @@ import CreateToken from '@src/screens/CreateToken';
 import Stake from '@screens/Stake';
 import Shield from '@screens/Shield';
 import ShieldGenQRCode from '@screens/Shield/features/GenQRCode';
+import FollowToken from '@src/screens/FollowToken';
+import AddManually from '@screens/AddManually';
+import WalletDetail from '@src/screens/Wallet/features/Detail';
+// import WalletDetail from '@src/screens/WalletDetail';
 import routeNames from './routeNames';
 
 const routes = [
@@ -46,6 +50,18 @@ const routes = [
   {
     screen: ShieldGenQRCode,
     name: routeNames.ShieldGenQRCode,
+  },
+  {
+    screen: FollowToken,
+    name: routeNames.FollowToken,
+  },
+  {
+    screen: AddManually,
+    name: routeNames.AddManually,
+  },
+  {
+    screen: WalletDetail,
+    name: routeNames.WalletDetail,
   },
 ];
 

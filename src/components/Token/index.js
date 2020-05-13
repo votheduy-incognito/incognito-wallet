@@ -1,2 +1,3 @@
 export { default } from './Token';
-export { default as TokenShield } from './Token.shield';
+export { default as TokenBasic } from './Token.basic';
+export * from './Token.utils';

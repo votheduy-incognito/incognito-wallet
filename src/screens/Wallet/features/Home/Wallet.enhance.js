@@ -6,9 +6,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
 import {
-  getInternalTokenList,
-  getPTokenList,
   actionGetExchangeRate,
+  actionInitHistory,
 } from '@src/redux/actions/token';
 import {
   getBalance,
@@ -38,19 +37,6 @@ const enhance = WrappedComp => props => {
   const { isReloading } = state;
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const getTokens = async () => {
-    try {
-      await new Promise.all([
-        await dispatch(getPTokenList()),
-        await dispatch(getInternalTokenList()),
-      ]);
-    } catch (e) {
-      new ExHandler(
-        e,
-        'Sorry, we can not get list of tokens, reopen the app can fix it.',
-      );
-    }
-  };
   const getAccountBalance = async () => {
     try {
       await dispatch(getBalance(account));
@@ -60,11 +46,11 @@ const enhance = WrappedComp => props => {
       });
     }
   };
-  const getFollowingToken = async () => {
+  const getFollowingToken = async ({ shouldLoadBalance = false } = {}) => {
     try {
       await dispatch(
         reloadAccountFollowingToken(account, {
-          shouldLoadBalance: true,
+          shouldLoadBalance,
         }),
       );
     } catch (e) {
@@ -84,10 +70,10 @@ const enhance = WrappedComp => props => {
     try {
       setState({ isReloading: true });
       const tasks = [
-        getTokens(),
         getAccountBalance(),
-        getFollowingToken(),
+        getFollowingToken({ shouldLoadBalance: true }),
         getExchangeRate(),
+        handleCountFollowedToken(),
       ];
       await Promise.all(tasks);
     } catch (e) {
@@ -133,14 +119,25 @@ const enhance = WrappedComp => props => {
     await dispatch(setSelectedPrivacy(tokenId));
     navigation.navigate(routeNames.WalletDetail);
   };
+  const clearWallet = async () => {
+    await new Promise.all([
+      dispatch(clearSelectedPrivacy()),
+      dispatch(actionInitHistory()),
+    ]);
+  };
   React.useEffect(() => {
-    if (isFocused && wallet) {
-      reload();
-      handleCountFollowedToken();
-      dispatch(clearSelectedPrivacy());
+    if (wallet) {
+      getFollowingToken();
     }
-  }, [wallet, isFocused]);
-
+  }, [wallet]);
+  React.useEffect(() => {
+    if (isFocused) {
+      clearWallet();
+    }
+  }, [isFocused]);
+  React.useEffect(() => {
+    reload();
+  }, []);
   return (
     <ErrorBoundary>
       <WrappedComp

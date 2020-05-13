@@ -23,6 +23,11 @@ export const exchangeRateSelector = createSelector(
   exchangeRate => exchangeRate,
 );
 
+export const historyTokenSelector = createSelector(
+  state => state?.token?.history,
+  history => history,
+);
+
 export default {
   followed,
   isGettingBalance,
@@ -32,4 +37,5 @@ export default {
   pTokensSelector,
   internalTokensSelector,
   exchangeRateSelector,
+  historyTokenSelector,
 };

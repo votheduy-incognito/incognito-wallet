@@ -5,12 +5,13 @@ import { useSelector } from 'react-redux';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { BtnGrey } from '@src/components/Button';
 import { shieldDataSelector } from '@screens/Shield/Shield.selector';
-import { SquareQuestionIcon } from '@src/components/Icons/';
+import { ClockIcon } from '@src/components/Icons/';
 import QrCodeGenerate from '@src/components/QrCodeGenerate';
 import PropTypes from 'prop-types';
 import SimpleInfo from '@src/components/SimpleInfo';
 import Icons from 'react-native-vector-icons/AntDesign';
 import { Button } from '@src/components/core';
+import srcClockIcon from '@assets/images/icons/clock_grey.png';
 import withGenQRCode from './GenQRCode.enhance';
 import { styled } from './GenQRCode.styled';
 
@@ -43,7 +44,7 @@ const Extra = props => {
         text={`Make your ${selectedPrivacy?.externalSymbol} private by sending it\n to this shielding address.`}
       />
       <View style={styled.hook}>
-        <SquareQuestionIcon style={styled.questionIcon} />
+        <ClockIcon source={srcClockIcon} style={styled.clockIcon} />
         <NormalText
           text={'Use this address only once.\n It will expire in 60 minutes.'}
         />

@@ -4,6 +4,8 @@ import { selectedPrivacySeleclor, sharedSeleclor } from '@src/redux/selectors';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
+export const TokenContext = React.createContext();
+
 const enhance = WrappedComp => props => {
   const { tokenId } = props;
   const token = useSelector(selectedPrivacySeleclor.getPrivacyDataByTokenID)(
@@ -12,18 +14,24 @@ const enhance = WrappedComp => props => {
   const isGettingBalance = useSelector(
     sharedSeleclor.isGettingBalance,
   ).includes(tokenId);
+  const tokenProps = {
+    ...props,
+    ...token,
+    isGettingBalance,
+    symbol: token?.externalSymbol || token?.symbol,
+  };
   if (!token || !tokenId) {
     return null;
   }
   return (
     <ErrorBoundary>
-      <WrappedComp
-        {...{
-          ...props,
-          ...token,
-          isGettingBalance,
+      <TokenContext.Provider
+        value={{
+          tokenProps,
         }}
-      />
+      >
+        <WrappedComp {...tokenProps} />
+      </TokenContext.Provider>
     </ErrorBoundary>
   );
 };
