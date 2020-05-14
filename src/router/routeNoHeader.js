@@ -12,6 +12,7 @@ import FollowToken from '@src/screens/FollowToken';
 import AddManually from '@screens/AddManually';
 import WalletDetail from '@src/screens/Wallet/features/Detail';
 // import WalletDetail from '@src/screens/WalletDetail';
+import ReceiveCrypto from '@src/screens/Wallet/features/ReceiveCrypto';
 import routeNames from './routeNames';
 
 const routes = [
@@ -62,6 +63,10 @@ const routes = [
   {
     screen: WalletDetail,
     name: routeNames.WalletDetail,
+  },
+  {
+    screen: ReceiveCrypto,
+    name: routeNames.ReceiveCrypto,
   },
 ];
 

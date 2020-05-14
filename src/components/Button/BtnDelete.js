@@ -15,7 +15,7 @@ const BtnDelete = props => (
     {...{
       ...props,
       icon: <DeleteIcon />,
-      title: 'Delete',
+      title: 'Remove',
       styledContainer: styled.container,
     }}
   />

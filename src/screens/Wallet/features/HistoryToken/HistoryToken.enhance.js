@@ -56,9 +56,6 @@ const enhance = WrappedComp => props => {
       }}
     />
   );
-  if (isFetching) {
-    return <LoadingContainer />;
-  }
   if (isEmpty) {
     return <EmptyHistory actionButton={renderActionButton()} />;
   }

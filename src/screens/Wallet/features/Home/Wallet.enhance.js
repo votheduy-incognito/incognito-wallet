@@ -8,23 +8,27 @@ import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
 import {
   actionGetExchangeRate,
   actionInitHistory,
+  getPTokenList,
+  getInternalTokenList,
 } from '@src/redux/actions/token';
 import {
   getBalance,
   reloadAccountFollowingToken,
 } from '@src/redux/actions/account';
 import storageService from '@src/services/storage';
-import { CONSTANT_KEYS } from '@src/constants';
+import { CONSTANT_KEYS, CONSTANT_COMMONS } from '@src/constants';
 import { countFollowToken } from '@src/services/api/token';
 import withFCM from '@src/screens/Notification/Notification.withFCM';
-import { actionToggleModal } from '@src/components/Modal';
-import ExportKey from '@src/components/ExportKey';
 import { useNavigation, useIsFocused } from 'react-navigation-hooks';
 import {
   setSelectedPrivacy,
   clearSelectedPrivacy,
 } from '@src/redux/actions/selectedPrivacy';
 import routeNames from '@src/router/routeNames';
+import { actionRemoveFollowToken } from '@src/redux/actions';
+import { Toast } from '@src/components/core';
+
+export const WalletContext = React.createContext({});
 
 const enhance = WrappedComp => props => {
   const account = useSelector(accountSeleclor.defaultAccount);
@@ -66,20 +70,27 @@ const enhance = WrappedComp => props => {
       throw Error(error);
     }
   };
-  const reload = async () => {
+  const fetchData = async (reload = false) => {
     try {
-      setState({ isReloading: true });
-      const tasks = [
+      await setState({ isReloading: true });
+      let tasks = [
         getAccountBalance(),
         getFollowingToken({ shouldLoadBalance: true }),
-        getExchangeRate(),
         handleCountFollowedToken(),
       ];
+      if (reload) {
+        tasks = [
+          ...tasks,
+          await dispatch(getPTokenList()),
+          await dispatch(getInternalTokenList()),
+          await getExchangeRate(),
+        ];
+      }
       await Promise.all(tasks);
-    } catch (e) {
-      new ExHandler(e).showErrorToast();
+    } catch (error) {
+      new ExHandler(error).showErrorToast();
     } finally {
-      setState({ isReloading: false });
+      await setState({ isReloading: false });
     }
   };
   const handleCountFollowedToken = async () => {
@@ -100,19 +111,8 @@ const enhance = WrappedComp => props => {
     }
   };
   const handleExportKey = async () => {
-    await dispatch(
-      actionToggleModal({
-        data: (
-          <ExportKey
-            title="YOUR INCOGNITO ADDRESS"
-            keyExported={account?.PaymentAddress}
-            onPressExportKey={() => dispatch(actionToggleModal())}
-          />
-        ),
-        visible: true,
-        shouldCloseModalWhenTapOverlay: true,
-      }),
-    );
+    navigation.navigate(routeNames.ReceiveCrypto);
+    await dispatch(setSelectedPrivacy(CONSTANT_COMMONS.PRV.id));
   };
   const handleSelectToken = async tokenId => {
     if (!tokenId) return;
@@ -125,6 +125,10 @@ const enhance = WrappedComp => props => {
       dispatch(actionInitHistory()),
     ]);
   };
+  const handleRemoveToken = async tokenId => {
+    await dispatch(actionRemoveFollowToken(tokenId));
+    Toast.showSuccess('Coin removed', { duration: 500 });
+  };
   React.useEffect(() => {
     if (wallet) {
       getFollowingToken();
@@ -136,19 +140,24 @@ const enhance = WrappedComp => props => {
     }
   }, [isFocused]);
   React.useEffect(() => {
-    reload();
+    fetchData();
   }, []);
   return (
     <ErrorBoundary>
-      <WrappedComp
-        {...{
-          ...props,
-          isReloading,
-          reload,
-          handleExportKey,
-          handleSelectToken,
+      <WalletContext.Provider
+        value={{
+          walletProps: {
+            ...props,
+            isReloading,
+            fetchData,
+            handleExportKey,
+            handleSelectToken,
+            handleRemoveToken,
+          },
         }}
-      />
+      >
+        <WrappedComp {...props} />
+      </WalletContext.Provider>
     </ErrorBoundary>
   );
 };

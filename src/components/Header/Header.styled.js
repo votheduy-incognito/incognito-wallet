@@ -5,7 +5,8 @@ export const styled = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 30,
+    marginTop: 18,
+    paddingBottom: 8,
   },
 });
 
@@ -21,6 +22,7 @@ export const styledHeaderTitle = StyleSheet.create({
   },
   searchStyled: {
     textTransform: 'none',
-    color: COLORS.lightGrey2,
+    color: COLORS.colorGreyMedium,
+    maxWidth: '100%',
   },
 });

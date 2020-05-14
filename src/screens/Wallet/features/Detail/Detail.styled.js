@@ -4,7 +4,7 @@ import { FONT, COLORS } from '@src/styles';
 export const styled = StyleSheet.create({
   container: { flex: 1 },
   btnTrade: {
-    backgroundColor: COLORS.grey,
+    backgroundColor: COLORS.colorGrey,
     paddingHorizontal: 18,
   },
   titleBtnTrade: {
@@ -25,7 +25,7 @@ export const groupBtnStyled = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 24,
     padding: 13,
-    backgroundColor: '#C4C4C6',
+    backgroundColor: COLORS.colorGreyMedium,
   },
   titleStyle: {
     fontFamily: FONT.NAME.medium,
@@ -36,9 +36,10 @@ export const groupBtnStyled = StyleSheet.create({
 
 export const balanceStyled = StyleSheet.create({
   container: {
-    marginVertical: 50,
+    marginBottom: 50,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 42
   },
   amount: {
     fontFamily: FONT.NAME.bold,

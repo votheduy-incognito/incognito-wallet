@@ -17,7 +17,7 @@ const TokenShield = props => {
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <View style={[styled.container, style]}>
-        <View style={styled.extra}>
+        <View style={[styled.extra, { marginBottom: 10 }]}>
           <Name styledName={_styled.styledName} />
         </View>
         <View style={styled.extra}>

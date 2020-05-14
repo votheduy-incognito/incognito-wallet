@@ -14,10 +14,13 @@ export const styled = StyleSheet.create({
   },
   text: {
     fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 6,
-    color: COLORS.lightGrey1,
+    fontSize: FONT.SIZE.regular - 1,
+    color: COLORS.colorGreyBold,
     textAlign: 'center',
+  },
+  boldText: {
+    fontFamily: FONT.NAME.bold,
+    color: COLORS.black,
   },
   errorIcon: {
     color: COLORS.orange,
@@ -25,16 +28,26 @@ export const styled = StyleSheet.create({
   },
   hook: {
     alignItems: 'center',
-    marginTop: 40,
+    marginBottom: 50,
   },
   questionIcon: {
     marginBottom: 10,
   },
   qrCode: {
-    marginVertical: 40,
+    marginVertical: 30,
   },
   clockIcon: {
     width: 40,
     height: 40,
+  },
+  title: {
+    color: COLORS.black,
+    fontSize: FONT.SIZE.superMedium,
+  },
+  scrollview: {
+    marginTop: 42,
+  },
+  countdown: {
+    paddingHorizontal: 10,
   },
 });

@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 
 const styled = StyleSheet.create({
   container: {
-    width: 16,
-    height: 16,
+    width: 14,
+    height: 14,
   },
 });
 
