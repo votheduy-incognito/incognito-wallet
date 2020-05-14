@@ -1,4 +1,4 @@
-import { COLORS } from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
 import { ScreenWidth } from '@src/utils/devices';
 
@@ -26,6 +26,17 @@ const style = StyleSheet.create({
     top: '50%',
     bottom: '50%',
   },
+  halfInput: {
+    width: (ScreenWidth - 40) / 2 - 15,
+  },
+  balance: {
+    fontSize: 16, 
+    fontFamily: FONT.NAME.regular, 
+    width: ScreenWidth * 0.25, 
+    textAlign: 'right',  
+    alignContent: 'flex-end', 
+    alignSelf: 'center'
+  },
   containerHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -34,8 +45,9 @@ const style = StyleSheet.create({
   },
   wallet: {
     flexDirection: 'row', 
-    borderRadius: 8, 
+    height: 30,
     paddingLeft: 5,
+    borderRadius: 8, 
     borderColor: COLORS.lightGrey11,
     borderWidth: 0.5,
     marginBottom: 10,

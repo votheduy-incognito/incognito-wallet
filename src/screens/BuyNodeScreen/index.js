@@ -24,6 +24,7 @@ import routeNames from '@src/router/routeNames';
 import { actionToggleModal } from '@src/components/Modal';
 import AccountModal from '@src/components/Modal/AccountModal/modal.account';
 import { CONSTANT_CONFIGS } from '@src/constants';
+import { ScreenWidth } from '@src/utils/devices';
 import styles from './style';
 
 
@@ -48,6 +49,8 @@ const BuyNodeScreen = () => {
   let lastNameRef = useRef();
   let addressRef = useRef();
   let cityRef = useRef();
+  let postalCodeRef = useRef();
+  let phoneRef = useRef();
   let scrollViewRef = useRef();
 
   const [errTf, setErrTF] = useState({});
@@ -80,14 +83,16 @@ const BuyNodeScreen = () => {
   // const wallet = useSelector(wallet);
 
   useEffect(() => {
+    setDataDefault();
     setDefaultTokenId();
     getSystemConfig();
+  }, []);
 
+  const setDataDefault = () => {
     // Default US
     setContactData({ ...contactData, country: dataCountry[0]?.value, code: dataCountry[0].countryShortCode });
     setRegions(dataCountry[0]?.regions);
-
-  }, [errTf]);
+  };
 
   const setDefaultTokenId = async () => {
     dispatch(setSelectedPrivacy(currentTokenId));
@@ -199,14 +204,15 @@ const BuyNodeScreen = () => {
         event => setYTotal(event?.nativeEvent?.layout?.y || 0)
       }
       >
-        <LineView color={COLORS.lightGrey1} />
+        <LineView color={COLORS.colorGrey} />
         {renderTotalItem('Subtotal', `$${subTotal.toFixed(2)}`, theme.text.regularTextMotto)}
         {renderTotalItem('Shipping', shippingFee === 0 ? 'FREE' : `$${shippingFee}`, theme.text.regularTextMotto)}
         {renderTotalItem(`Ships ${shippingHour}`, '', theme.text.regularTextMotto)}
-        <LineView color={COLORS.lightGrey1} style={theme.MARGIN.marginBottomDefault} />
+        {shippingFee > 0 ? renderTotalItem('This does not include any potential duties or taxes that will vary depending on your locality.', '', theme.text.regularTextMotto) : null}
+        <LineView color={COLORS.colorGrey} style={theme.MARGIN.marginBottomDefault} />
         {renderTotalItem('Total', `$${subTotal.toFixed(2)}`, theme.text.regularTextMotto, theme.text.mediumText)}
         {renderTotalItem(`Pay with ${symbol}`, `${countableToken} ${symbol}`, theme.text.mediumText)}
-        <LineView color={COLORS.lightGrey1} />
+        <LineView color={COLORS.colorGrey} />
       </View>
     );
   };
@@ -249,14 +255,14 @@ const BuyNodeScreen = () => {
   const renderPayment = () => {
     return (
       <View>
-        <LineView color={COLORS.lightGrey1} style={theme.MARGIN.marginTopDefault} />
+        <LineView color={COLORS.colorGrey} style={theme.MARGIN.marginTopDefault} />
         <View style={[theme.FLEX.rowSpaceBetween]}>
           <View style={{ justifyContent: 'center', alignContent: 'center', }}>
             <Text style={[theme.text.mediumText, { marginTop: 5 }]}>Payment</Text>
             <View style={[theme.FLEX.rowSpaceBetween]}>
               <Button
                 style={{ backgroundColor: 'white', marginLeft: -10 }}
-                title="(Or pay with fiat)"
+                title="(More options)"
                 titleStyle={[theme.text.defaultTextStyle, { color: COLORS.primary }]}
                 onPress={() => {
                   linkingService.openUrl(`${CONSTANT_CONFIGS.NODE_URL}`);
@@ -281,14 +287,14 @@ const BuyNodeScreen = () => {
                   );
                 }}
               >
-                <Text style={[theme.text.mediumTextStyle]}>{currentAccount !== '' ? `${currentAccount?.name}` : 'Choose another wallet'}</Text>
+                <Text style={[theme.text.defaultTextStyle]}>{currentAccount !== '' ? `${currentAccount?.name}` : 'Choose another wallet'}</Text>
                 <View>
                   <Icon name="chevron-down" size={30} type="material-community" color={COLORS.primary} />
                 </View>
               </TouchableOpacity>
             </View>
             <CurrentBalance
-              balanceStyle={{ fontSize: 16, fontFamily: FONT.NAME.regular, marginTop: 3 }}
+              balanceStyle={styles.balance}
               tokenStyle={{ fontSize: FONT.SIZE.regular }}
               isNestedCurrentBalance
               containerStyle={{
@@ -324,8 +330,9 @@ const BuyNodeScreen = () => {
 
     setErrTF(errors);
   };
-  const getShippingFee = async () => {
-    await APIService.getShippingFee(contactData.city, contactData.code, contactData.postalCode, contactData.region, contactData.address)
+  const getShippingFee = async (value) => {
+    let region = contactData.region ?? regions[0]?.value;
+    await APIService.getShippingFee(contactData.city || '', value ? value : contactData?.code, contactData.postalCode || '', region || '', contactData.address || '')
       .then(val => {
         if (val && val?.Result) {
           setShippingFee(val?.Result?.ShippingFee || 0);
@@ -335,6 +342,16 @@ const BuyNodeScreen = () => {
           checkSelectedTokenIdAndUpdateDynamicPrice(pTokenSupport, pTokenSupportsPartner, tokenId);
         }
       });
+  };
+
+  // Update region by countryname change 
+  const updateRegionByCountryName = async (countryValue) => {
+    for (let i = 0; i < dataCountry.length; i++) {
+      if (dataCountry[i].value.includes(countryValue)) {
+        let region = dataCountry[i].regions;
+        await setRegions(region);
+      }
+    }
   };
 
   const checkErrEmail = (valid) => {
@@ -353,13 +370,17 @@ const BuyNodeScreen = () => {
   };
 
   // Update regions by country changes
-  const changeRegionsDataAndSetCountryCode = (countryValue) => {
+  const changeRegionsDataAndSetCountryCode = async (countryValue) => {
+    let countryCode = '';
     for (let i = 0; i < dataCountry.length; i++) {
       if (dataCountry[i].value === countryValue) {
-        setContactData({ ...contactData, code: dataCountry[i].countryShortCode, country: dataCountry[i].value });
-        setRegions(dataCountry[i].regions);
+        await setContactData({ ...contactData, code: dataCountry[i].countryShortCode, country: dataCountry[i].value });
+        countryCode = dataCountry[i].countryShortCode;
+        let dataRegions = dataCountry[i].regions;
+        await setRegions(dataRegions);
       }
     }
+    return countryCode;
   };
 
   const renderContactInformation = () => {
@@ -370,63 +391,121 @@ const BuyNodeScreen = () => {
           event => setYContact(event?.nativeEvent?.layout?.y || 0)
         }
       >
-        <Text style={[theme.text.defaultTextStyle, { fontSize: FONT.SIZE.medium }]}>Contact information</Text>
+        <Text style={[theme.text.defaultTextStyle, { fontSize: FONT.SIZE.medium }]}>Shipping address</Text>
         <TextField
           keyboardType='email-address'
           autoCapitalize='none'
           autoCorrect={false}
           ref={emailRef}
+          inputContainerStyle={{ marginTop: -5 }}
           onSubmitEditing={() => { firstNameRef && firstNameRef?.current?.focus(); }}
           enablesReturnKeyAutomatically
           onFocus={() => onFocusField()}
           onChangeText={async (text) => {
             await setContactData({ ...contactData, email: text });
             await checkErrEmail(checkEmailValid(text).valid);
+            getShippingFee();
           }}
           returnKeyType='next'
           label='Email'
           error={errTf?.email}
         />
-        <Text style={[theme.text.defaultTextStyle, { fontSize: FONT.SIZE.medium }, theme.MARGIN.marginTopDefault]}>Shipping address</Text>
-        <TextField
-          ref={firstNameRef}
-          onSubmitEditing={() => { lastNameRef && lastNameRef?.current?.focus(); }}
-          keyboardType='default'
-          autoCapitalize='none'
-          autoCorrect={false}
-          enablesReturnKeyAutomatically
-          onFocus={() => onFocusField()}
-          onChangeText={async (text) => {
-            await setContactData({ ...contactData, firstName: text });
-            await checkErrEmpty('firstName', checkFieldEmpty(text));
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: -10 }}>
+          <TextField
+            inputContainerStyle={[styles.halfInput, { overflow: 'hidden', }]}
+            ref={firstNameRef}
+            onSubmitEditing={() => { lastNameRef && lastNameRef?.current?.focus(); }}
+            keyboardType='default'
+            autoCapitalize='none'
+            autoCorrect={false}
+            enablesReturnKeyAutomatically
+            // onFocus={() => onFocusField()}
+            onChangeText={async (text) => {
+              await setContactData({ ...contactData, firstName: text });
+              await checkErrEmpty('firstName', checkFieldEmpty(text));
+              getShippingFee();
+            }}
+            maxLength={50}
+            returnKeyType='next'
+            label='First name'
+            errorColor='white'
+            error={errTf?.firstName}
+          />
+          <TextField
+            inputContainerStyle={[styles.halfInput, { overflow: 'hidden', }]}
+            ref={lastNameRef}
+            onSubmitEditing={() => { cityRef && cityRef?.current?.focus(); }}
+            keyboardType='default'
+            autoCapitalize='none'
+            autoCorrect={false}
+            maxLength={50}
+            enablesReturnKeyAutomatically
+            onFocus={() => onFocusField()}
+            onChangeText={async (text) => {
+              await setContactData({ ...contactData, lastName: text });
+              await checkErrEmpty('lastName', checkFieldEmpty(text));
+              getShippingFee();
+            }}
+            returnKeyType='next'
+            label='Last name'
+            error={errTf?.lastName}
+          />
+        </View>
+
+        <Dropdown
+          label='Country/Region'
+          data={dataCountry}
+          inputContainerStyle={{ marginTop: -5 }}
+          value={contactData?.country || ''}
+          onChangeText={async (value) => {
+            await setContactData({ ...contactData, country: value, region: '' });
+            await updateRegionByCountryName(value);
+            let code = await changeRegionsDataAndSetCountryCode(value);
+            await getShippingFee(code);
           }}
-          returnKeyType='next'
-          label='First name'
-          error={errTf?.firstName}
         />
-        <TextField
-          ref={lastNameRef}
-          onSubmitEditing={() => { addressRef && addressRef?.current?.focus(); }}
-          keyboardType='default'
-          autoCapitalize='none'
-          autoCorrect={false}
-          enablesReturnKeyAutomatically
-          onFocus={() => onFocusField()}
-          onChangeText={async (text) => {
-            await setContactData({ ...contactData, lastName: text });
-            await checkErrEmpty('lastName', checkFieldEmpty(text));
-          }}
-          returnKeyType='next'
-          label='Last name'
-          error={errTf?.lastName}
-        />
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: -5 }}>
+          <Dropdown
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2, marginTop: 2 }}
+            label='State'
+            data={regions}
+            value={regions[0]?.value || ''}
+            onChangeText={async (value) => {
+              await setContactData({ ...contactData, region: value });
+              await getShippingFee();
+            }}
+          />
+          <TextField
+            // editable={false}
+            direction='rtl'
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15, overflow: 'hidden', }}
+            ref={cityRef}
+            keyboardType='default'
+            autoCapitalize='none'
+            autoCorrect={false}
+            enablesReturnKeyAutomatically
+            onFocus={() => onFocusField()}
+            maxLength={50}
+            onSubmitEditing={() => { addressRef && addressRef?.current?.focus(); }}
+            onChangeText={async (text) => {
+              await setContactData({ ...contactData, city: text });
+              await checkErrEmpty('city', checkFieldEmpty(text));
+              getShippingFee();
+            }}
+            returnKeyType='next'
+            label='City'
+            error={errTf?.city}
+          />
+        </View>
         <TextField
           ref={addressRef}
-          onSubmitEditing={() => { cityRef && cityRef?.current?.focus(); }}
+          inputContainerStyle={{ width: (ScreenWidth - 40) }}
           keyboardType='default'
           autoCapitalize='none'
           autoCorrect={false}
+          onSubmitEditing={() => { postalCodeRef && postalCodeRef?.current?.focus(); }}
           enablesReturnKeyAutomatically
+          maxLength={50}
           onFocus={() => onFocusField()}
           onChangeText={async (text) => {
             await setContactData({ ...contactData, address: text });
@@ -437,69 +516,44 @@ const BuyNodeScreen = () => {
           label='Address'
           error={errTf?.address}
         />
-        <TextField
-          ref={cityRef}
-          keyboardType='default'
-          autoCapitalize='none'
-          autoCorrect={false}
-          enablesReturnKeyAutomatically
-          onFocus={() => onFocusField()}
-          onChangeText={async (text) => {
-            await setContactData({ ...contactData, city: text });
-            await checkErrEmpty('city', checkFieldEmpty(text));
-            getShippingFee();
-          }}
-          returnKeyType='next'
-          label='City'
-          error={errTf?.city}
-        />
-        <Dropdown
-          label='Country/Region'
-          data={dataCountry}
-          value={contactData?.country || ''}
-          onChangeText={async (value) => {
-            await setContactData({ ...contactData, country: value, region: '' });
-            await setRegions([]);
-            await changeRegionsDataAndSetCountryCode(value);
-            getShippingFee();
-          }}
-        />
-        <Dropdown
-          label='State'
-          data={regions}
-          onChangeText={async (value) => {
-            await setContactData({ ...contactData, region: value });
-            await getShippingFee();
-          }}
-        />
-        <TextField
-          keyboardType='default'
-          autoCapitalize='none'
-          autoCorrect={false}
-          enablesReturnKeyAutomatically
-          onFocus={() => onFocusField()}
-          onChangeText={async (text) => {
-            await setContactData({ ...contactData, postalCode: text });
-            await checkErrEmpty('postalCode', checkFieldEmpty(text));
-            getShippingFee();
-          }}
-          returnKeyType='next'
-          label='Postal code'
-          error={errTf?.postalCode}
-        />
-        <TextField
-          keyboardType='numeric'
-          autoCapitalize='none'
-          autoCorrect={false}
-          enablesReturnKeyAutomatically
-          onFocus={() => onFocusField()}
-          onChangeText={async (text) => {
-            await setContactData({ ...contactData, phone: text });
-            getShippingFee();
-          }}
-          returnKeyType='done'
-          label='Phone (optional)'
-        />
+
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 0 }}>
+          <TextField
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15, overflow: 'hidden', }}
+            keyboardType='default'
+            autoCapitalize='none'
+            autoCorrect={false}
+            ref={postalCodeRef}
+            onSubmitEditing={() => { phoneRef && phoneRef?.current?.focus(); }}
+            enablesReturnKeyAutomatically
+            maxLength={50}
+            onFocus={() => onFocusField()}
+            onChangeText={async (text) => {
+              await setContactData({ ...contactData, postalCode: text });
+              await checkErrEmpty('postalCode', checkFieldEmpty(text));
+              getShippingFee();
+            }}
+            returnKeyType='next'
+            label='Postal code'
+            error={errTf?.postalCode}
+          />
+          <TextField
+            inputContainerStyle={{ width: (ScreenWidth - 40) / 2 - 15, overflow: 'hidden', }}
+            keyboardType='numeric'
+            autoCapitalize='none'
+            autoCorrect={false}
+            ref={phoneRef}
+            enablesReturnKeyAutomatically
+            maxLength={50}
+            onFocus={() => onFocusField()}
+            onChangeText={async (text) => {
+              await setContactData({ ...contactData, phone: text });
+              getShippingFee();
+            }}
+            returnKeyType='done'
+            label='Phone (optional)'
+          />
+        </View>
       </View>
     );
   };
@@ -507,7 +561,6 @@ const BuyNodeScreen = () => {
   // Show contact section for user typing
   const onShowContactForShipping = () => {
     setShowContactForShipping(true);
-    emailRef && emailRef?.current?.focus();
   };
 
   // Process payment flow
@@ -549,7 +602,6 @@ const BuyNodeScreen = () => {
       contactData.lastName &&
       contactData.address &&
       contactData.country &&
-      contactData.region &&
       contactData.postalCode);
   };
 
@@ -574,7 +626,7 @@ const BuyNodeScreen = () => {
   };
 
   const headerHeight = scrollY.interpolate({
-    inputRange: [yTotal, yTotal + 100],
+    inputRange: [yTotal - 50, yTotal],
     outputRange: [HEADER_MIN_HEIGHT, HEADER_MAX_HEIGHT],
     extrapolate: 'clamp',
   });
@@ -627,10 +679,10 @@ const BuyNodeScreen = () => {
         showsVerticalScrollIndicator={false}
         ref={scrollViewRef}
         containerContentStyle={styles.container}
-      // I want to scroll into current focusing container for better UX
-      // onContentSizeChange={(contentWidth, contentHeight) => { showContactForShipping && scrollViewRef?.current?.scrollToEnd({ animated: true }); }}
+        // I want to scroll into current focusing container for better UX
+        onContentSizeChange={(contentWidth, contentHeight) => { showContactForShipping && scrollViewRef?.current?.scrollTo({ y: 600, animated: true }); }}
       >
-        <KeyboardAwareScrollView style={{ backgroundColor: 'white' }} showsVerticalScrollIndicator={false} enableOnAndroid extraScrollHeight={50}>
+        <KeyboardAwareScrollView style={{ backgroundColor: 'white' }} showsVerticalScrollIndicator={false} enableOnAndroid>
           {renderNodeImgAndPrice()}
           {renderMotto()}
           {renderActionSheet()}
@@ -644,7 +696,7 @@ const BuyNodeScreen = () => {
         </KeyboardAwareScrollView>
 
       </ScrollView>
-      {renderFloatingPriceView()}
+      {/* {renderFloatingPriceView()} */}
     </View>
   );
 };
