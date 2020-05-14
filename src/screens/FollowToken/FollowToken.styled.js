@@ -1,8 +1,10 @@
 import { StyleSheet } from 'react-native';
-import { FONT, COLORS } from '@src/styles';
+import { FONT, COLORS, UTILS } from '@src/styles';
 
 export const styled = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+  },
   flatList: {},
   text: {
     fontFamily: FONT.NAME.regular,
@@ -15,4 +17,10 @@ export const styled = StyleSheet.create({
     color: COLORS.black,
   },
   addManually: {},
+  listToken: {
+    flex: 1,
+  },
+  scrollview: {
+    flex: 1,
+  },
 });

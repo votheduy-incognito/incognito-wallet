@@ -6,13 +6,12 @@ import { COLORS, FONT } from '@src/styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
+import { ButtonBasic } from '@src/components/Button';
 
 const styled = StyleSheet.create({
   container: {
     backgroundColor: COLORS.grey,
-    padding: 10,
     flexDirection: 'row',
-    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -32,14 +31,18 @@ const BtnSelectAccount = () => {
   const onNavSelectAccount = () =>
     navigation.navigate(routeNames.SelectAccount);
   return (
-    <TouchableWithoutFeedback onPress={onNavSelectAccount}>
-      <View style={styled.container}>
-        <Text numberOfLines={1} style={styled.name}>
-          {account?.accountName}
-        </Text>
-        <Ionicons name="ios-arrow-down" color={COLORS.black} size={20} />
-      </View>
-    </TouchableWithoutFeedback>
+    <ButtonBasic
+      onPress={onNavSelectAccount}
+      customContent={(
+        <>
+          <Text numberOfLines={1} style={styled.name}>
+            {account?.accountName}
+          </Text>
+          <Ionicons name="ios-arrow-down" color={COLORS.black} size={20} />
+        </>
+      )}
+      btnStyle={styled.container}
+    />
   );
 };
 

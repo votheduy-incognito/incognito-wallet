@@ -13,6 +13,12 @@ const initialState = {
     data: [],
     prv: null,
   },
+  history: {
+    isFetching: false,
+    isFetched: false,
+    histories: [],
+    isEmpty: true,
+  },
 };
 
 const setToken = (list, token) => {
@@ -169,6 +175,45 @@ const reducer = (state = initialState, action) => {
         ...state.exchangeRate,
         isFetching: false,
         isFetched: false,
+      },
+    };
+  }
+  case type.ACTION_FETCHING_HISTORY: {
+    return {
+      ...state,
+      history: {
+        ...state.history,
+        isFetching: true,
+      },
+    };
+  }
+  case type.ACTION_FETCHED_HISTORY: {
+    return {
+      ...state,
+      history: {
+        ...state.history,
+        isFetching: false,
+        isFetched: true,
+        histories: [...action.payload],
+        isEmpty: action.payload.length === 0,
+      },
+    };
+  }
+  case type.ACTION_FETCH_FAIL_HISTORY: {
+    return {
+      ...state,
+      history: {
+        ...state.history,
+        isFetching: false,
+        isFetched: false,
+      },
+    };
+  }
+  case type.ACTION_INIT_HISTORY: {
+    return {
+      ...state,
+      history: {
+        ...initialState.history,
       },
     };
   }

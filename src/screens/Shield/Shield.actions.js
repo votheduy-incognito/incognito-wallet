@@ -1,8 +1,4 @@
-import {
-  selectedPrivacySeleclor,
-  accountSeleclor,
-  tokenSeleclor,
-} from '@src/redux/selectors';
+import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { getMinMaxDepositAmount } from '@src/services/api/misc';
 import {
   genETHDepositAddress,
@@ -11,9 +7,7 @@ import {
 } from '@src/services/api/deposit';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
-import internalTokenModel from '@models/token';
-import accountService from '@services/wallet/accountService';
-import { setWallet } from '@src/redux/actions/wallet';
+import { actionAddFollowToken } from '@src/redux/actions';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -81,31 +75,6 @@ export const actionGetAddressToShield = async ({ selectedPrivacy }) => {
   }
 };
 
-export const actionFollowToken = ({ tokenId }) => async (
-  dispatch,
-  getState,
-) => {
-  try {
-    const state = getState();
-    const wallet = state?.wallet;
-    const account = accountSeleclor.defaultAccountSelector(state);
-    const pTokens = tokenSeleclor.pTokensSelector(state);
-    const internalTokens = tokenSeleclor.internalTokensSelector;
-    const foundPToken = pTokens?.find(pToken => pToken?.tokenId === tokenId);
-    const foundInternalToken =
-      !foundPToken && internalTokens?.find(token => token?.id === tokenId);
-    const token =
-      (foundInternalToken && internalTokenModel.toJson(foundInternalToken)) ||
-      foundPToken?.convertToToken();
-    if (token) {
-      await accountService.addFollowingTokens([token], account, wallet);
-      await dispatch(setWallet(wallet));
-    }
-  } catch (error) {
-    throw error;
-  }
-};
-
 export const actionFetch = ({ tokenId }) => async (dispatch, getState) => {
   try {
     await dispatch(setSelectedPrivacy(tokenId));
@@ -118,7 +87,7 @@ export const actionFetch = ({ tokenId }) => async (dispatch, getState) => {
     const [dataMinMax, address] = await new Promise.all([
       await actionGetMinMaxShield({ tokenId }),
       await actionGetAddressToShield({ selectedPrivacy }),
-      await actionFollowToken({ tokenId })(dispatch, getState),
+      await actionAddFollowToken(tokenId)(dispatch, getState),
     ]);
     const [min, max] = dataMinMax;
     await dispatch(
