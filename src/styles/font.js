@@ -1,15 +1,30 @@
-import {Platform} from 'react-native';
+import { Platform } from 'react-native';
 
-const FONT_FAMILY = Platform.OS === 'ios' ? 'PostGrotesk' : 'PostGrotesk';
-const fontNames =  {
-  default: Platform.OS === 'ios'?`${FONT_FAMILY}-Light`: `${FONT_FAMILY}Light`,
-  italic: Platform.OS === 'ios'?`${FONT_FAMILY}-LightItalic`:`${FONT_FAMILY}LightItalic`,
-  medium: Platform.OS === 'ios'?`${FONT_FAMILY}-Medium`:`${FONT_FAMILY}Medium`,
-  mediumItalic: Platform.OS === 'ios'?`${FONT_FAMILY}-MediumItalic`:`${FONT_FAMILY}MediumItalic`,
-  bold: Platform.OS === 'ios'?`${FONT_FAMILY}-Bold`:`${FONT_FAMILY}Bold`,
-  boldItalic: Platform.OS === 'ios'?`${FONT_FAMILY}-BoldItalic`:`${FONT_FAMILY}BoldItalic`,
-  regular: Platform.OS === 'ios'?`${FONT_FAMILY}-Book`:`${FONT_FAMILY}Book`,
-  regularItalic: Platform.OS === 'ios'?`${FONT_FAMILY}-BookItalic`:`${FONT_FAMILY}BookItalic`,
+const FONT_FAMILY = 'SFProDisplay';
+const fontNames = {
+  default:
+    Platform.OS === 'ios' ? `${FONT_FAMILY}-Light` : `${FONT_FAMILY}Light`,
+  italic:
+    Platform.OS === 'ios'
+      ? `${FONT_FAMILY}-LightItalic`
+      : `${FONT_FAMILY}LightItalic`,
+  medium:
+    Platform.OS === 'ios' ? `${FONT_FAMILY}-Medium` : `${FONT_FAMILY}Medium`,
+  mediumItalic:
+    Platform.OS === 'ios'
+      ? `${FONT_FAMILY}-MediumItalic`
+      : `${FONT_FAMILY}MediumItalic`,
+  bold: Platform.OS === 'ios' ? `${FONT_FAMILY}-Bold` : `${FONT_FAMILY}Bold`,
+  boldItalic:
+    Platform.OS === 'ios'
+      ? `${FONT_FAMILY}-BoldItalic`
+      : `${FONT_FAMILY}BoldItalic`,
+  regular:
+    Platform.OS === 'ios' ? `${FONT_FAMILY}-Regular` : `${FONT_FAMILY}Regular`,
+  regularItalic:
+    Platform.OS === 'ios'
+      ? `${FONT_FAMILY}-BookItalic`
+      : `${FONT_FAMILY}BookItalic`,
 };
 
 const fontStyle = {
@@ -24,14 +39,15 @@ const fontStyle = {
   },
   light: {
     fontFamily: fontNames.light,
-  }
+  },
 };
 
-const fontSizes =  {
+const fontSizes = {
   superSmall: 12,
   small: 14,
   regular: 16,
   medium: 18,
+  superMedium: 20,
   large: 22,
   superLarge: 30,
 };
@@ -39,5 +55,5 @@ const fontSizes =  {
 export default {
   NAME: fontNames,
   SIZE: fontSizes,
-  STYLE: fontStyle
+  STYLE: fontStyle,
 };

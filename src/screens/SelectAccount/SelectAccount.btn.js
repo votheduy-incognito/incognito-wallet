@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableWithoutFeedback, Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { accountSeleclor } from '@src/redux/selectors';
 import { COLORS, FONT } from '@src/styles';
@@ -10,18 +10,20 @@ import { ButtonBasic } from '@src/components/Button';
 
 const styled = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.grey,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: COLORS.colorGrey,
   },
   name: {
-    marginRight: 10,
+    marginRight: 5,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 6,
     color: COLORS.black,
     maxWidth: 100,
+  },
+  hook: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
@@ -34,12 +36,12 @@ const BtnSelectAccount = () => {
     <ButtonBasic
       onPress={onNavSelectAccount}
       customContent={(
-        <>
+        <View style={styled.hook}>
           <Text numberOfLines={1} style={styled.name}>
             {account?.accountName}
           </Text>
-          <Ionicons name="ios-arrow-down" color={COLORS.black} size={20} />
-        </>
+          <Ionicons name="ios-arrow-down" color={COLORS.black} size={13} />
+        </View>
       )}
       btnStyle={styled.container}
     />

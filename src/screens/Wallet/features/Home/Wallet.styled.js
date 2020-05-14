@@ -9,10 +9,12 @@ export const styled = StyleSheet.create({
   groupButton: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop: 50,
+    marginBottom: 35,
   },
   btnStyle: {
     width: '100%',
-    maxWidth: '48%',
+    maxWidth: '49%',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 24,
@@ -47,13 +49,14 @@ export const styledHook = StyleSheet.create({
 
 export const styledBalance = StyleSheet.create({
   container: {
-    marginVertical: 50,
+    marginTop: 42,
   },
   balance: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superLarge + 10,
     color: COLORS.black,
     textAlign: 'center',
+    marginBottom: 10,
   },
   title: {
     fontFamily: FONT.NAME.medium,
@@ -61,7 +64,6 @@ export const styledBalance = StyleSheet.create({
     lineHeight: FONT.SIZE.medium + 6,
     color: COLORS.lightGrey1,
     textAlign: 'center',
-    marginTop: 5,
   },
 });
 
@@ -76,9 +78,7 @@ export const styledAddToken = StyleSheet.create({
 });
 
 export const styledFollow = StyleSheet.create({
-  container: {
-    marginVertical: 50,
-  },
+  container: {},
 });
 
 export const extraStyled = StyleSheet.create({

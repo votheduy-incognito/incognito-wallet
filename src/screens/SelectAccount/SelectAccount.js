@@ -26,8 +26,8 @@ const AccountItem = ({ accountName, PaymentAddress }) => {
         Toast.showInfo(`Your current account is "${accountName}"`);
         return;
       }
-      await dispatch(switchAccount(accountName));
       navigation.goBack();
+      await dispatch(switchAccount(accountName));
       Toast.showInfo(`Switched to account "${accountName}"`);
     } catch (e) {
       new ExHandler(

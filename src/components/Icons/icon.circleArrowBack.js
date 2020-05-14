@@ -11,15 +11,10 @@ const styled = StyleSheet.create({
 });
 
 const CircleArrowBackIcon = props => {
-  const { style, source, ...rest } = props;
+  const { style = null, source = srcCircleArrowBackIcon, ...rest } = props;
   return (
     <Image source={source} style={[styled.defaultStyle, style]} {...rest} />
   );
-};
-
-CircleArrowBackIcon.defaultProps = {
-  style: null,
-  source: srcCircleArrowBackIcon,
 };
 
 CircleArrowBackIcon.propTypes = {

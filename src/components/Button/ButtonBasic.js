@@ -5,20 +5,25 @@ import { COLORS, FONT } from '@src/styles';
 
 const styled = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.black,
+    backgroundColor: '#33373A',
     borderRadius: 20,
     padding: 10,
   },
   title: {
     color: COLORS.white,
     fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 6,
+    fontSize: FONT.SIZE.regular - 1,
   },
 });
 
 const ButtonBasic = props => {
-  const { title, btnStyle, titleStyle, customContent, ...rest } = props;
+  const {
+    title = '',
+    btnStyle = null,
+    titleStyle = null,
+    customContent,
+    ...rest
+  } = props;
   return (
     <TouchableWithoutFeedback {...rest}>
       <View style={[styled.container, btnStyle]}>
@@ -32,14 +37,8 @@ const ButtonBasic = props => {
   );
 };
 
-ButtonBasic.defaultProps = {
-  btnStyle: null,
-  titleStyle: null,
-  customContent: null,
-};
-
 ButtonBasic.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   btnStyle: PropTypes.any,
   titleStyle: PropTypes.any,
   customContent: PropTypes.element,

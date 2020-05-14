@@ -39,7 +39,7 @@ const RightHeader = () => {
 const GroupButton = () => {
   const navigation = useNavigation();
   const handleShield = () => navigation.navigate(routeNames.SendCrypto);
-  const handleUnShield = () => navigation.navigate(routeNames.SendCrypto);
+  const handleReceive = () => navigation.navigate(routeNames.ReceiveCrypto);
   return (
     <View style={groupBtnStyled.groupButton}>
       <ButtonBasic
@@ -52,7 +52,7 @@ const GroupButton = () => {
         title="Receive"
         btnStyle={groupBtnStyled.btnStyle}
         titleStyle={groupBtnStyled.titleStyle}
-        onRefresh={handleUnShield}
+        onPress={handleReceive}
       />
     </View>
   );

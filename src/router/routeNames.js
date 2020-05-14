@@ -27,7 +27,7 @@ export default {
   Profile: 'Profile',
   ConfigDevice: 'ConfigDevice',
   MineSetting: 'MineSetting',
-  ReceiveCoin: 'ReceiveCoin',
+  ReceiveCrypto: 'ReceiveCrypto',
   SendCrypto: 'SendCrypto',
   Withdraw: 'Withdraw',
   Wizard: 'Wizard',

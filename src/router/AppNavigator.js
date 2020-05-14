@@ -5,7 +5,6 @@ import ExportAccount from '@src/screens/ExportAccount';
 import ImportAccount from '@src/screens/ImportAccount';
 import NetworkSetting from '@src/screens/NetworkSetting';
 import WalletDetail from '@src/screens/WalletDetail';
-import ReceiveCoin from '@src/screens/ReceiveCoin';
 import SendCrypto from '@screens/SendCrypto';
 import WhySend from '@screens/WhySend';
 import WhyReceive from '@screens/WhyReceive';
@@ -53,9 +52,6 @@ const AppNavigator = createStackNavigator(
     }),
     [ROUTE_NAMES.ExportAccount]: navigationOptionsHandler(ExportAccount),
     [ROUTE_NAMES.WalletDetail]: navigationOptionsHandler(WalletDetail),
-    [ROUTE_NAMES.ReceiveCoin]: navigationOptionsHandler(ReceiveCoin, {
-      title: 'Receive privacy coins',
-    }),
     [ROUTE_NAMES.SendCrypto]: navigationOptionsHandler(SendCrypto, {
       title: 'Send',
     }),

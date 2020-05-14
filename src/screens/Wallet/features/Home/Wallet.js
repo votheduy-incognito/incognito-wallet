@@ -28,9 +28,7 @@ import {
   styledToken,
   rightHeaderStyled,
 } from './Wallet.styled';
-import withWallet from './Wallet.enhance';
-
-const WalletContext = React.createContext({});
+import withWallet, { WalletContext } from './Wallet.enhance';
 
 const GroupButton = () => {
   const navigation = useNavigation();
@@ -85,7 +83,7 @@ const Balance = () => {
           ]}
         >
           ℙ
-        </Text>{' '}
+        </Text>
         {totalShielded === 0
           ? '0.00'
           : format.amount(
@@ -101,7 +99,7 @@ const Balance = () => {
 const FollowToken = () => {
   const followed = useSelector(tokenSeleclor.tokensFollowedSelector);
   const { walletProps } = React.useContext(WalletContext);
-  const { handleSelectToken } = walletProps;
+  const { handleSelectToken, handleRemoveToken } = walletProps;
   return (
     <View style={styledFollow.container}>
       <Token
@@ -115,6 +113,9 @@ const FollowToken = () => {
           tokenId={token?.id}
           style={[followed.length - 1 === index && styledToken.lastChild]}
           onPress={() => handleSelectToken(token?.id)}
+          handleRemoveToken={() => handleRemoveToken(token?.id)}
+          swipable
+          removable
         />
       ))}
     </View>
@@ -135,14 +136,17 @@ const AddToken = () => {
 
 const Extra = () => {
   const { walletProps } = React.useContext(WalletContext);
-  const { isReloading, reload } = walletProps;
+  const { isReloading, fetchData } = walletProps;
   return (
     <View style={extraStyled.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={isReloading} onRefresh={reload} />
-        }
+        refreshControl={(
+          <RefreshControl
+            refreshing={isReloading}
+            onRefresh={() => fetchData(true)}
+          />
+        )}
       >
         <Balance />
         <GroupButton />
@@ -168,18 +172,12 @@ const RightHeader = () => {
   );
 };
 
-const Wallet = props => {
+const Wallet = () => {
   return (
-    <WalletContext.Provider
-      value={{
-        walletProps: props,
-      }}
-    >
-      <View style={styled.container}>
-        <Header title="Keychain" rightHeader={<RightHeader />} />
-        <Extra />
-      </View>
-    </WalletContext.Provider>
+    <View style={styled.container}>
+      <Header title="Assets" rightHeader={<RightHeader />} />
+      <Extra />
+    </View>
   );
 };
 

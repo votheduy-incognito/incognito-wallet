@@ -41,8 +41,11 @@ const COLORS = {
   overlayBlackDark: 'rgba(0, 0, 0, 0.8)',
   overlayBlackLight: 'rgba(0, 0, 0, 0.3)',
   errorMessage: '#ed4337',
+  mottoGrey: '#8c9c9d',
+
   colorGrey: '#ECECEC',
-  mottoGrey: '#8c9c9d'
+  colorGreyMedium: '#C4C4C6',
+  colorGreyBold: '#8A8A8E'
 };
 
 export default {

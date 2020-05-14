@@ -3,7 +3,9 @@ import { FONT, COLORS, UTILS } from '@src/styles';
 
 export const styled = StyleSheet.create({
   container: {
-    marginBottom: 30,
+    paddingVertical: 15,
+    // backgroundColor: `pink`
+    // marginBottom: 30
   },
   extra: {
     flexDirection: 'row',
@@ -33,8 +35,7 @@ export const styled = StyleSheet.create({
   },
   text: {
     fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 6,
+    fontSize: FONT.SIZE.superMedium,
     color: COLORS.lightGrey1,
     maxWidth: UTILS.screenWidth() / 2 - 30,
   },
@@ -52,5 +53,9 @@ export const styled = StyleSheet.create({
   },
   greenText: {
     color: COLORS.green,
+  },
+  topText: {},
+  bottomText: {
+    fontSize: FONT.SIZE.medium,
   },
 });
