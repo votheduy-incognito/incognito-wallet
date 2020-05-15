@@ -562,7 +562,7 @@ class Withdraw extends React.Component {
                     ...detectToken.ispNEO(selectedPrivacy?.tokenId) ? [...validator.combinedNanoAmount] : [],
                   ]}
                 />
-                {detectToken.ispBNB(selectedPrivacy?.tokenId) && (
+                {(detectToken.ispBNB(selectedPrivacy?.tokenId) || selectedPrivacy?.currencyType === 5) && (
                   <View style={style.memoContainer}>
                     <Field
                       component={InputQRField}
