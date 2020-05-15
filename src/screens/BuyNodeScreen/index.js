@@ -101,11 +101,11 @@ const BuyNodeScreen = () => {
   // Get token system config
   const getSystemConfig = async () => {
     APIService.getSystemConfig()
-      .then(data => {
+      .then(async data => {
         if (data?.BuyNodePTokensPartner) {
           let resPTokenSupportsPartner = JSON.parse(data?.BuyNodePTokensPartner);
-          setPTokenSupportsPartner(resPTokenSupportsPartner);
-          getPTokenList(resPTokenSupportsPartner);
+          await setPTokenSupportsPartner(resPTokenSupportsPartner);
+          await getPTokenList(resPTokenSupportsPartner);
         }
         if (data?.MinerShipInfo) {
           let minerShipInfo = data?.MinerShipInfo;
@@ -119,16 +119,34 @@ const BuyNodeScreen = () => {
 
   // Get all pToken for internal app, only accept with these coins
   const getPTokenList = async (resPTokenSupportsPartner) => {
-    APIService.getPTokenSupportForBuyingDevice()
-      .then(data => {
+    await APIService.getPTokenSupportForBuyingDevice()
+      .then(async data => {
         let res = data;
-        setPTokenSupport(res);
+        await setPTokenSupport(res);
+        // Update token for only promoted 
+        await updateDefaultVerifiedToken(res, resPTokenSupportsPartner);
         // Check current tokenId
         checkSelectedTokenIdAndUpdateDynamicPrice(res, resPTokenSupportsPartner, tokenId);
       })
-      .catch(() => {
-        console.log('Could not get support token for buying device');
+      .catch((err) => {
+        console.log('Could not get support token for buying device' + err.message);
       });
+  };
+
+  const updateDefaultVerifiedToken = (pTokenSupport, resPTokenSupportsPartner = []) => {
+    if (!pTokenSupport || pTokenSupport.length === 0 || !resPTokenSupportsPartner || resPTokenSupportsPartner.length === 0) {
+      return;
+    }
+    let currentSupportPromotedTokenID = resPTokenSupportsPartner[0]?.ID;
+    
+    for (let i = 0; i < pTokenSupport.length; i++) {
+      if (pTokenSupport[i]?.ID === currentSupportPromotedTokenID) {
+        
+        setCurrentTokenId(pTokenSupport[i]?.TokenID);
+        dispatch(setSelectedPrivacy(pTokenSupport[i]?.TokenID));
+        break;
+      }
+    }
   };
 
   const renderNodeImgAndPrice = () => {
