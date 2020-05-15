@@ -619,6 +619,7 @@ const BuyNodeScreen = () => {
       contactData.firstName &&
       contactData.lastName &&
       contactData.address &&
+      contactData.city &&
       contactData.country &&
       contactData.postalCode);
   };
