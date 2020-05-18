@@ -6,10 +6,12 @@ export const styled = StyleSheet.create({
   btnTrade: {
     backgroundColor: COLORS.colorGrey,
     paddingHorizontal: 18,
+    height: 40,
   },
   titleBtnTrade: {
     color: COLORS.black,
-    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.regular - 1,
+    fontFamily: FONT.NAME.regular
   },
 });
 
@@ -20,12 +22,11 @@ export const groupBtnStyled = StyleSheet.create({
   },
   btnStyle: {
     width: '100%',
-    maxWidth: '48%',
+    maxWidth: '49%',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 24,
     padding: 13,
-    backgroundColor: COLORS.colorGreyMedium,
   },
   titleStyle: {
     fontFamily: FONT.NAME.medium,
@@ -39,7 +40,7 @@ export const balanceStyled = StyleSheet.create({
     marginBottom: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 42
+    marginTop: 42,
   },
   amount: {
     fontFamily: FONT.NAME.bold,
@@ -66,6 +67,6 @@ export const balanceStyled = StyleSheet.create({
 export const historyStyled = StyleSheet.create({
   container: {
     flex: 1,
-    marginVertical: 50,
+    marginVertical: 35,
   },
 });

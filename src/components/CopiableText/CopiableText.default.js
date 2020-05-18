@@ -19,13 +19,15 @@ const styled = StyleSheet.create({
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 6,
     color: COLORS.colorGreyBold,
-    marginHorizontal: 15
+    marginHorizontal: 15,
   },
   btnStyle: {
-    paddingVertical: 11,
+    height: 40,
     paddingHorizontal: 20,
   },
-  titleStyle: {},
+  titleStyle: {
+    fontSize: FONT.SIZE.regular - 1,
+  },
 });
 
 const CopiableText = props => {

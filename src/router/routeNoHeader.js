@@ -1,18 +1,19 @@
 import { navigationOptionsHandler } from '@src/utils/router';
-import WhyShield from '@src/screens/Shield/features/WhyShield';
+import WhyShield from '@screens/Shield/features/WhyShield';
 import SelectAccount from '@screens/SelectAccount';
-import Home from '@src/screens/Home';
-import Wallet from '@src/screens/Wallet/features/Home';
-import Community from '@src/screens/Community';
-import CreateToken from '@src/screens/CreateToken';
+import Home from '@screens/Home';
+import Wallet from '@screens/Wallet/features/Home';
+import Community from '@screens/Community';
+import CreateToken from '@screens/CreateToken';
 import Stake from '@screens/Stake';
 import Shield from '@screens/Shield';
 import ShieldGenQRCode from '@screens/Shield/features/GenQRCode';
-import FollowToken from '@src/screens/FollowToken';
+import FollowToken from '@screens/FollowToken';
 import AddManually from '@screens/AddManually';
-import WalletDetail from '@src/screens/Wallet/features/Detail';
-// import WalletDetail from '@src/screens/WalletDetail';
-import ReceiveCrypto from '@src/screens/Wallet/features/ReceiveCrypto';
+import WalletDetail from '@screens/Wallet/features/Detail';
+// import WalletDetail from '@screens/WalletDetail';
+import ReceiveCrypto from '@screens/Wallet/features/ReceiveCrypto';
+import Send from '@screens/Send';
 import routeNames from './routeNames';
 
 const routes = [
@@ -67,6 +68,10 @@ const routes = [
   {
     screen: ReceiveCrypto,
     name: routeNames.ReceiveCrypto,
+  },
+  {
+    screen: Send,
+    name: routeNames.Send,
   },
 ];
 

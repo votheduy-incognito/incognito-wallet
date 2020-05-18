@@ -45,7 +45,6 @@ const Input = React.forwardRef((props, ref) => {
       rest.onFocus();
     }
   };
-
   const onBlur = () => {
     setState({...state, isFocused: false});
     if (typeof rest.onBlur === 'function') {

@@ -85,6 +85,7 @@ class AddBep2Token extends Component {
               isAsync
               disabled={!data || isSearching || submitting}
               isLoading={isSearching || submitting}
+              titleStyle={styles.submitBtnTitle}
             />
           </>
         )}

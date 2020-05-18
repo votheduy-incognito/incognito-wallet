@@ -37,7 +37,9 @@ const ReceiveCrypto = () => {
       <ScrollView style={homeStyle.scrollview}>
         <QrCodeGenerate value={address} size={175} />
         <Text style={homeStyle.desc}>
-          {'Use this to receive crypto from another \nIncognito address.'}
+          {
+            'This is your address.\nUse it to receive any cryptocurrency\nfrom another Incognito address.'
+          }
         </Text>
         <CopiableText data={address} />
       </ScrollView>

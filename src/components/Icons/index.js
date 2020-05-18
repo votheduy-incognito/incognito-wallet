@@ -28,3 +28,4 @@ export { default as ClockIcon } from './icon.clock';
 export { default as CircleBack } from './icon.circleArrowBack';
 export { default as TokenVerifiedIcon } from './icon.tokenVerified';
 export { default as SquareQuestionIcon } from './icon.squareQuestion';
+export { default as InfiniteIcon } from './icon.infinite';

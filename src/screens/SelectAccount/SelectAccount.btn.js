@@ -11,12 +11,14 @@ import { ButtonBasic } from '@src/components/Button';
 const styled = StyleSheet.create({
   container: {
     backgroundColor: COLORS.colorGrey,
+    paddingHorizontal: 11,
+    height: 40,
   },
   name: {
     marginRight: 5,
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 6,
+    fontSize: FONT.SIZE.regular - 1,
+    lineHeight: FONT.SIZE.regular + 2,
     color: COLORS.black,
     maxWidth: 100,
   },

@@ -24,7 +24,7 @@ const SelectType = () => {
           onPress={toggleChooseType}
           style={styles.selectNetworkButton}
         >
-          <Text style={styles.selectNetworkValue}>{type}</Text>
+          <Text style={styles.text}>{type}</Text>
           <Icons
             name="angle-right"
             style={styles.selectNetworkValueIcon}
@@ -49,12 +49,12 @@ const AddManually = () => {
     <View style={styles.container}>
       <Header title="Add manually" />
       <SelectType />
-      <ModalSelectType />
-      <ScrollView style>
+      <ScrollView style={styles.scrollview}>
         {type === TYPES.INCOGNITO.value && <AddInternalToken />}
         {type === TYPES.BEP2.value && <AddBep2Token />}
         {type === TYPES.ERC20.value && <AddERC20Token />}
       </ScrollView>
+      <ModalSelectType />
     </View>
   );
 };

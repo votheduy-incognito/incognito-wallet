@@ -7,7 +7,7 @@ const style = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     minHeight: 400,
-    backgroundColor: COLORS.white
+    backgroundColor: COLORS.white,
   },
   text: {
     color: COLORS.lightGrey1,
@@ -16,8 +16,10 @@ const style = StyleSheet.create({
     fontSize: 16,
   },
   image: {
-    marginTop: '8%',
-    marginBottom: 25,
+    marginTop: '5%',
+    marginBottom: 20,
+    width: 52,
+    height: 60,
   },
 });
 

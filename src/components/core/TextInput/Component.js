@@ -80,7 +80,7 @@ const TextInput = ({
         {appendView}
         <RNComponent
           allowFontScaling={false}
-          placeholderTextColor={COLORS.lightGrey3}
+          placeholderTextColor={COLORS.colorGreyBold}
           returnKeyType="done"
           maxLength={maxLength}
           {...props}
@@ -101,13 +101,13 @@ const TextInput = ({
         )}
         {prependView}
       </View>
-      {maxLength > 0 && (
+      {/* {maxLength > 0 && (
         <View style={styleSheet.maxLengthContainer}>
           <Text style={styleSheet.maxLengthText}>
             {getLength()}/{maxLength}
           </Text>
         </View>
-      )}
+      )} */}
     </View>
   );
 };

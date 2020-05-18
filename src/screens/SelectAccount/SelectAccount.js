@@ -67,7 +67,7 @@ const ListAccount = () => {
     ],
   });
   return (
-    <ScrollView>
+    <ScrollView style={styled.scrollview}>
       {result.map(item => (
         <AccountItem key={item?.accountName} {...item} />
       ))}
@@ -78,7 +78,7 @@ const ListAccount = () => {
 const SelectAccount = () => {
   return (
     <View style={styled.container}>
-      <Header title="Select a key" titleStyled={styled.titleStyled} canSearch />
+      <Header title="Select a keychain" titleStyled={styled.titleStyled} canSearch />
       <ListAccount />
     </View>
   );

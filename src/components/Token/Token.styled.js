@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import { FONT, COLORS, UTILS } from '@src/styles';
 
 export const styled = StyleSheet.create({
@@ -36,7 +36,7 @@ export const styled = StyleSheet.create({
   text: {
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.superMedium,
-    color: COLORS.lightGrey1,
+    color: COLORS.colorGreyBold,
     maxWidth: UTILS.screenWidth() / 2 - 30,
   },
   verifiedIcon: {
@@ -46,7 +46,7 @@ export const styled = StyleSheet.create({
     flexDirection: 'row',
   },
   pSymbol: {
-    fontFamily: 'HelveticaNeue',
+    fontFamily: 'HelveticaNeue-Regular',
   },
   redText: {
     color: COLORS.red,

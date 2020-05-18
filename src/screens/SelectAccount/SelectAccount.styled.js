@@ -5,7 +5,9 @@ export const styled = StyleSheet.create({
   container: {
     flex: 1,
   },
-  listContainer: {},
+  scrollview: {
+    marginTop: 15,
+  },
   titleStyled: {},
 });
 
@@ -14,16 +16,17 @@ export const itemStyled = StyleSheet.create({
     marginBottom: 30,
   },
   name: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 6,
+    fontFamily: FONT.NAME.bold,
+    fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.black,
     maxWidth: '50%',
+    marginBottom: 10,
   },
   address: {
     fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 6,
-    color: COLORS.lightGrey1,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 5,
+    color: COLORS.colorGreyBold,
   },
 });

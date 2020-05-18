@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { FONT } from '@src/styles';
+import { FONT, COLORS } from '@src/styles';
 
 export default StyleSheet.create({
   container: {
@@ -9,18 +9,29 @@ export default StyleSheet.create({
     marginBottom: 10,
   },
   submitBtn: {
-    marginTop: 30,
-    borderRadius: 4,
+    marginTop: 50,
+    backgroundColor: COLORS.colorPrimary,
+    borderRadius: 100,
+    height: 50,
+  },
+  submitBtnTitle: {
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 3,
   },
   input: {
-    marginBottom: 15,
+    marginBottom: 10,
   },
   text: {
-    fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 6,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 4,
+    color: COLORS.colorGreyBold,
   },
   boldText: {
-    fontFamily: FONT.NAME.medium,
+    fontFamily: FONT.NAME.bold,
+    fontSize: FONT.SIZE.superMedium,
+    color: COLORS.black,
+    lineHeight: FONT.SIZE.superMedium + 4,
   },
 });

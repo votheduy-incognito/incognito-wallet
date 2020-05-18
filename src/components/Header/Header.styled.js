@@ -13,16 +13,15 @@ export const styled = StyleSheet.create({
 export const styledHeaderTitle = StyleSheet.create({
   title: {
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 6,
+    fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.black,
     marginRight: 'auto',
     textTransform: 'capitalize',
-    maxWidth: '30%',
+    flex: 1,
   },
   searchStyled: {
     textTransform: 'none',
     color: COLORS.colorGreyMedium,
-    maxWidth: '100%',
   },
 });

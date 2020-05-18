@@ -1,5 +1,10 @@
 import React from 'react';
-import { Text, View, TouchableWithoutFeedback } from 'react-native';
+import {
+  Text,
+  View,
+  TouchableWithoutFeedback,
+  ActivityIndicator,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import withToken, { TokenContext } from '@src/components/Token/Token.enhance';
 import { TokenVerifiedIcon } from '@src/components/Icons';
@@ -7,7 +12,6 @@ import format from '@src/utils/format';
 import floor from 'lodash/floor';
 import { CONSTANT_COMMONS } from '@src/constants';
 import Swipeout from 'react-native-swipeout';
-import { COLORS } from '@src/styles';
 import { BtnDelete } from '@src/components/Button';
 import { styled } from './Token.styled';
 
@@ -29,7 +33,7 @@ const defaultProps = {
 
 export const NormalText = ({ style, text, hasPSymbol = false }) => (
   <Text numberOfLines={1} style={[styled.text, style]}>
-    {hasPSymbol && <Text style={[styled.pSymbol, styled.text, style]}>ℙ</Text>}
+    {hasPSymbol && <Text style={[styled.text, style, styled.pSymbol]}>ℙ</Text>}
     {text}
   </Text>
 );
@@ -101,20 +105,37 @@ export const Amount = props => {
     symbol = '',
     customStyle = null,
     showSymbol = true,
+    isGettingBalance = false,
+    showGettingBalance = false,
+    hasPSymbol = false,
   } = props;
+  if (isGettingBalance && showGettingBalance) {
+    return <ActivityIndicator size="small" />;
+  }
   return (
     <NormalText
       style={[styled.bottomText, customStyle]}
       text={`${format.amount(amount, pDecimals)} ${showSymbol ? symbol : ''}`}
+      hasPSymbol={hasPSymbol}
     />
   );
 };
 
 export const Symbol = () => {
   const { tokenProps } = React.useContext(TokenContext);
-  const { symbol, networkName, isErc20Token } = tokenProps || defaultProps;
+  const {
+    symbol = '',
+    networkName = '',
+    isErc20Token = false,
+    isBep2Token = false,
+  } = tokenProps;
   return (
-    <NormalText style={styled.bottomText} text={`${symbol} ${isErc20Token ? `(${networkName})` : ''}`} />
+    <NormalText
+      style={styled.bottomText}
+      text={`${symbol} ${
+        isErc20Token || isBep2Token ? `(${networkName})` : ''
+      }`}
+    />
   );
 };
 
