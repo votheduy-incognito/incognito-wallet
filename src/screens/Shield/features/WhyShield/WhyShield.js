@@ -9,16 +9,21 @@ const styled = StyleSheet.create({
     flex: 1,
   },
   scrollview: {
-    marginTop: 30,
+    marginTop: 15,
   },
   text: {
-    color: COLORS.lightGrey1,
-    lineHeight: 26,
+    color: COLORS.colorGreyBold,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
+    marginBottom: 15,
   },
   title: {
-    ...FONT.STYLE.bold,
-    marginTop: 30,
-    lineHeight: 26,
+    fontFamily: FONT.NAME.bold,
+    fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 4,
+    color: COLORS.black,
+    marginBottom: 15,
   },
 });
 

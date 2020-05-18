@@ -6,7 +6,7 @@ import {
   sharedSeleclor,
   tokenSeleclor,
 } from '@src/redux/selectors';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { ButtonBasic } from '@src/components/Button';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
@@ -18,6 +18,8 @@ import {
 import HistoryToken from '@screens/Wallet/features/HistoryToken';
 import MainCryptoHistory from '@screens/Wallet/features/MainCryptoHistory';
 import PropTypes from 'prop-types';
+import { actionFetch as fetchDataShield } from '@screens/Shield/Shield.actions';
+import { ExHandler } from '@src/services/exception';
 import withDetail from './Detail.enhance';
 import {
   styled,
@@ -37,22 +39,41 @@ const RightHeader = () => {
 };
 
 const GroupButton = () => {
+  const selected = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const dispatch = useDispatch();
   const navigation = useNavigation();
-  const handleShield = () => navigation.navigate(routeNames.SendCrypto);
+  const handleSend = () => navigation.navigate(routeNames.Send);
+  const handleShield = async () => {
+    try {
+      navigation.navigate(routeNames.ShieldGenQRCode);
+      await dispatch(fetchDataShield({ tokenId: selected?.tokenId }));
+    } catch (error) {
+      new ExHandler(error).showErrorToast();
+    }
+  };
   const handleReceive = () => navigation.navigate(routeNames.ReceiveCrypto);
   return (
     <View style={groupBtnStyled.groupButton}>
+      {selected?.isMainCrypto ? (
+        <ButtonBasic
+          title="Receive"
+          btnStyle={groupBtnStyled.btnStyle}
+          titleStyle={groupBtnStyled.titleStyle}
+          onPress={handleReceive}
+        />
+      ) : (
+        <ButtonBasic
+          title="Shield"
+          btnStyle={groupBtnStyled.btnStyle}
+          titleStyle={groupBtnStyled.titleStyle}
+          onPress={handleShield}
+        />
+      )}
       <ButtonBasic
         title="Send"
         btnStyle={groupBtnStyled.btnStyle}
         titleStyle={groupBtnStyled.titleStyle}
-        onPress={handleShield}
-      />
-      <ButtonBasic
-        title="Receive"
-        btnStyle={groupBtnStyled.btnStyle}
-        titleStyle={groupBtnStyled.titleStyle}
-        onPress={handleReceive}
+        onPress={handleSend}
       />
     </View>
   );

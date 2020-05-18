@@ -15,9 +15,12 @@ import Token from '@src/components/Token';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { CONSTANT_COMMONS } from '@src/constants';
-import { totalShieldedTokensSelector } from '@src/redux/selectors/shared';
-import format from '@src/utils/format';
+import {
+  totalShieldedTokensSelector,
+  isGettingBalance as isGettingTotalBalanceSelector,
+} from '@src/redux/selectors/shared';
 import floor from 'lodash/floor';
+import { Amount } from '@src/components/Token/Token';
 import {
   styled,
   styledHook,
@@ -71,26 +74,19 @@ const Hook = () => {
 
 const Balance = () => {
   const totalShielded = useSelector(totalShieldedTokensSelector);
+  const isGettingTotalBalance =
+    useSelector(isGettingTotalBalanceSelector).length > 0;
   return (
     <View style={styledBalance.container}>
-      <Text style={styledBalance.balance}>
-        <Text
-          style={[
-            styledBalance.balance,
-            {
-              fontFamily: 'HelveticaNeue',
-            },
-          ]}
-        >
-          ℙ
-        </Text>
-        {totalShielded === 0
-          ? '0.00'
-          : format.amount(
-            floor(totalShielded, 9),
-            CONSTANT_COMMONS.PRV.pDecimals,
-          )}
-      </Text>
+      <Amount
+        amount={floor(totalShielded, 9)}
+        pDecimals={CONSTANT_COMMONS.PRV.pDecimals}
+        showSymbol={false}
+        isGettingBalance={isGettingTotalBalance}
+        showGettingBalance
+        customStyle={styledBalance.balance}
+        hasPSymbol
+      />
       <Text style={styledBalance.title}>Shielded Balance</Text>
     </View>
   );
@@ -150,7 +146,7 @@ const Extra = () => {
       >
         <Balance />
         <GroupButton />
-        <Hook />
+        {/* <Hook /> */}
         <FollowToken />
         <AddToken />
       </ScrollView>

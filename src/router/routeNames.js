@@ -65,4 +65,5 @@ export default {
   FollowTokenOld: 'FollowTokenOld',
   ShieldGenQRCode: 'ShieldGenQRCode',
   AddManually: 'AddManually',
+  Send: 'Send'
 };

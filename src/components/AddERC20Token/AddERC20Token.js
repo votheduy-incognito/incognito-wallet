@@ -86,12 +86,13 @@ class AddERC20Token extends Component {
               />
             ) : null}
             <Button
-              title="Add manually"
+              title="Add coin"
               style={styles.submitBtn}
               onPress={handleSubmit(onAdd)}
               isAsync
               disabled={!data || isSearching || submitting}
               isLoading={isSearching || submitting}
+              titleStyle={styles.submitBtnTitle}
             />
           </View>
         )}

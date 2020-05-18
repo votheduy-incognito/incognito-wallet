@@ -8,12 +8,15 @@ export const styled = StyleSheet.create({
   flatList: {},
   text: {
     fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 6,
-    color: COLORS.lightGrey1,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 5,
+    color: COLORS.colorGreyBold,
+    marginBottom: 5,
   },
   boldText: {
     fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 6,
     color: COLORS.black,
   },
   addManually: {},

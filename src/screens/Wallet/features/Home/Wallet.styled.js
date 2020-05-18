@@ -17,7 +17,7 @@ export const styled = StyleSheet.create({
     maxWidth: '49%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 24,
+    borderRadius: 100,
     padding: 13,
   },
   titleStyle: {
@@ -57,18 +57,21 @@ export const styledBalance = StyleSheet.create({
     color: COLORS.black,
     textAlign: 'center',
     marginBottom: 10,
+    maxWidth: '100%',
   },
   title: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 6,
-    color: COLORS.lightGrey1,
+    color: COLORS.colorGreyBold,
     textAlign: 'center',
   },
 });
 
 export const styledAddToken = StyleSheet.create({
-  container: {},
+  container: {
+    marginTop: 50,
+  },
   title: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
@@ -100,6 +103,6 @@ export const rightHeaderStyled = StyleSheet.create({
     alignItems: 'center',
   },
   btnExportKey: {
-    marginRight: 10,
+    marginRight: 15,
   },
 });

@@ -6,7 +6,7 @@ import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { shieldDataSelector } from '@screens/Shield/Shield.selector';
 import QrCodeGenerate from '@src/components/QrCodeGenerate';
 import PropTypes from 'prop-types';
-import SimpleInfo from '@src/components/SimpleInfo';
+import SimpleInfo from '@src/components/SimpleInfo/SimpleInfo.default';
 import Icons from 'react-native-vector-icons/AntDesign';
 import { Button } from '@src/components/core';
 import { CopiableTextDefault as CopiableText } from '@src/components/CopiableText';
@@ -53,12 +53,14 @@ const Extra = props => {
         <NormalText text="Expires in: ">
           <Text style={[styled.boldText, styled.countdown]}>{remainTime}</Text>
         </NormalText>
-        <NormalText text="Minimum amount: ">
-          <Text style={styled.boldText}>
-            {`${min} ${selectedPrivacy?.externalSymbol ||
-              selectedPrivacy?.symbol}`}
-          </Text>
-        </NormalText>
+        {min && (
+          <NormalText text="Minimum amount: ">
+            <Text style={styled.boldText}>
+              {`${min} ${selectedPrivacy?.externalSymbol ||
+                selectedPrivacy?.symbol}`}
+            </Text>
+          </NormalText>
+        )}
       </View>
       <CopiableText data={address} />
     </View>

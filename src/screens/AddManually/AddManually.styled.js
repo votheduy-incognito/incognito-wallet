@@ -29,11 +29,22 @@ export default StyleSheet.create({
     flex: 1,
   },
   text: {
-    fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 6,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 4,
+    color: COLORS.colorGreyBold,
   },
   boldText: {
-    fontFamily: FONT.NAME.medium,
+    fontFamily: FONT.NAME.bold,
+    fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 4,
+    color: COLORS.black,
+  },
+  selectType: {
+    marginTop: 15,
+    marginBottom: 10,
+  },
+  scrollview: {
+    flex: 1,
   },
 });

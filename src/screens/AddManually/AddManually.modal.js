@@ -13,13 +13,13 @@ const styled = StyleSheet.create({
     flex: 1,
   },
   text: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 6,
-    color: COLORS.lightGrey1,
+    fontFamily: FONT.NAME.bold,
+    fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 4,
+    color: COLORS.black,
   },
   boldText: {
-    color: COLORS.black,
+    color: COLORS.colorGreyMedium,
   },
   typeItem: {
     flexDirection: 'row',
@@ -49,13 +49,12 @@ const Modal = () => {
               <FeatherIcons name="check" size={24} color={COLORS.primary} />
             )}
           </TouchableOpacity>
-          {index < allType.length - 1 && <Divider color={COLORS.lightGrey6} />}
         </View>
       );
     });
   return (
     <View style={styled.container}>
-      <Header title="Select a coin" onGoBack={toggleChooseType} />
+      <Header title="Select coin type" onGoBack={toggleChooseType} />
       {renderTypes()}
     </View>
   );

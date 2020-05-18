@@ -179,7 +179,7 @@ const HistoryItem = ({ history }) => {
     <TouchableOpacity onPress={onPress} style={styleSheet.itemContainer}>
       <View style={styleSheet.row}>
         <Text
-          style={[styleSheet.typeText]}
+          style={[styleSheet.title, styleSheet.leftText]}
           numberOfLines={1}
           ellipsizeMode="tail"
           {...generateTestId(TOKEN.TRANSACTION_TYPE)}
@@ -187,30 +187,25 @@ const HistoryItem = ({ history }) => {
           {typeText}
         </Text>
         <Text
-          style={styleSheet.timeText}
+          style={[styleSheet.title, styleSheet.righText]}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          {...generateTestId(TOKEN.TRANSACTION_CONTENT)}
+        >
+          {amount ? amount : ''}
+        </Text>
+      </View>
+      <View style={styleSheet.row}>
+        <Text
+          style={[styleSheet.desc, styleSheet.leftText]}
           numberOfLines={1}
           ellipsizeMode="tail"
           {...generateTestId(TOKEN.TRANSACTION_TIME)}
         >
           {formatUtil.formatDateTime(history.time)}
         </Text>
-      </View>
-      <View style={styleSheet.row}>
         <Text
-          style={[
-            styleSheet.amountText,
-            {
-              color: balanceColor,
-            },
-          ]}
-          numberOfLines={1}
-          ellipsizeMode="tail"
-          {...generateTestId(TOKEN.TRANSACTION_CONTENT)}
-        >
-          {amount ? `${balanceDirection} ${amount} ${history.symbol}` : ''}
-        </Text>
-        <Text
-          style={[styleSheet.statusText, { color: statusColor }]}
+          style={[styleSheet.desc, styleSheet.righText]}
           numberOfLines={1}
           ellipsizeMode="tail"
           {...generateTestId(TOKEN.TRANSACTION_STATUS)}

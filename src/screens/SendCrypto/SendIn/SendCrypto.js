@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Field, formValueSelector, isValid, change, touch, focus } from 'redux-form';
+import { RefreshControl, Text } from 'react-native';
+import { Field, formValueSelector, isValid, change, focus } from 'redux-form';
 import { connect } from 'react-redux';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
-import { Container, ScrollView, View, Button, Toast } from '@components/core';
+import { Container, ScrollView, View, Toast } from '@components/core';
 import ReceiptModal, { openReceipt } from '@components/Receipt';
 import LoadingTx from '@components/LoadingTx';
-import EstimateFee from '@components/EstimateFee';
 import { isExchangeRatePToken } from '@services/wallet/RpcClientService';
 import {
   createForm,
@@ -23,14 +23,20 @@ import { MESSAGES } from '@screens/Dex/constants';
 import TokenSelect from '@components/TokenSelect';
 import CurrentBalance from '@components/CurrentBalance';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
-import { RefreshControl } from 'react-native';
+
 import { generateTestId } from '@utils/misc';
 import { SEND } from '@src/constants/elements';
-import LogManager from '@src/services/LogManager';
+import { ButtonBasic } from '@src/components/Button';
+import { isIOS } from '@src/utils/platform';
+// import EstimateFee from '@src/components/EstimateFee/EstimateFee.enhance';
+import EstimateFee from '@src/components/EstimateFee';
+import { formName as formEstimateFeeName } from '@src/components/EstimateFee/EstimateFee.default';
 import { homeStyle } from './style';
 
 export const formName = 'sendCrypto';
+
 const selector = formValueSelector(formName);
+
 const initialFormValues = {
   amount: '',
   toAddress: '',
@@ -43,15 +49,27 @@ const descriptionMaxBytes = validator.maxBytes(500, {
   message: 'The description is too long',
 });
 
+const feeValidator = [
+  validator.required(),
+  validator.number(),
+  validator.largerThan(0),
+];
+
 class SendCrypto extends React.Component {
   constructor() {
     super();
     this.state = {
-      supportedFeeTypes: [],
+      supportedFeeTypes: [
+        {
+          tokenId: CONSTANT_COMMONS.PRV_TOKEN_ID,
+          symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
+        },
+      ],
       maxAmountValidator: undefined,
       minAmountValidator: undefined,
       estimateFeeData: {},
       amount: 0,
+      minFeeValidator: null,
     };
   }
 
@@ -60,7 +78,7 @@ class SendCrypto extends React.Component {
       maxAmount: this.getMaxAmount(),
       minAmount: this.getMinAmount(),
     });
-    this.getSupportedFeeTypes();
+    // this.getSupportedFeeTypes();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -93,7 +111,7 @@ class SendCrypto extends React.Component {
         maxAmount: this.getMaxAmount(),
         minAmount: this.getMinAmount(),
       });
-      this.getSupportedFeeTypes();
+      // this.getSupportedFeeTypes();
     }
   }
 
@@ -135,7 +153,7 @@ class SendCrypto extends React.Component {
           message:
             maxAmount > 0
               ? `Max amount you can send is ${formatUtil.number(maxAmount)} ${
-              selectedPrivacy?.symbol
+                  selectedPrivacy?.symbol
               }`
               : 'Your balance is not enough to send',
         }),
@@ -200,9 +218,7 @@ class SendCrypto extends React.Component {
     if (fee !== 0 && !fee) {
       return true;
     }
-    const {
-      isFormValid
-    } = this.props;
+    const { isFormValid } = this.props;
     if (!isFormValid) {
       return true;
     }
@@ -240,7 +256,6 @@ class SendCrypto extends React.Component {
 
     const val = [];
 
-
     if (minAmountValidator) val.push(minAmountValidator);
 
     if (maxAmountValidator) val.push(maxAmountValidator);
@@ -262,14 +277,14 @@ class SendCrypto extends React.Component {
   };
   // When click into Max button, auto set to max value with substract fee
   // It should be refactored into a utils, not prefer this here.
-  reReduceMaxAmount = (amount) => {
+  reReduceMaxAmount = amount => {
     // Holding on next stage
     const { rfChange } = this.props;
     rfChange(formName, 'amount', `${amount}`);
-  }
+  };
 
   render() {
-    const { supportedFeeTypes, estimateFeeData } = this.state;
+    const { supportedFeeTypes, estimateFeeData, minFeeValidator } = this.state;
     const {
       isSending,
       amount,
@@ -281,16 +296,14 @@ class SendCrypto extends React.Component {
       onShowFrequentReceivers,
       selectedPrivacy,
       reloading,
+      rfChange,
     } = this.props;
+    const { feeUnitByTokenId, feeUnit } = estimateFeeData;
     let maxAmount = this.getMaxAmount();
     return (
       <ScrollView
         style={homeStyle.container}
-        refreshControl={(
-          <RefreshControl
-            refreshing={reloading}
-          />
-        )}
+        refreshControl={<RefreshControl refreshing={reloading} />}
       >
         <Container style={homeStyle.mainContainer}>
           <CurrentBalance
@@ -304,21 +317,7 @@ class SendCrypto extends React.Component {
             {({ handleSubmit }) => (
               <View style={homeStyle.form}>
                 <Field
-                  onChange={(text) => {
-                    rfFocus(formName, 'toAddress');
-                  }}
-                  component={InputQRField}
-                  name="toAddress"
-                  label="To"
-                  placeholder="Enter wallet address"
-                  style={homeStyle.input}
-                  validate={validator.combinedIncognitoAddress}
-                  showNavAddrBook
-                  onOpenAddressBook={onShowFrequentReceivers}
-                  {...generateTestId(SEND.ADDRESS_INPUT)}
-                />
-                <Field
-                  onChange={(text) => {
+                  onChange={text => {
                     rfFocus(formName, 'amount');
                   }}
                   component={InputMaxValueField}
@@ -329,9 +328,32 @@ class SendCrypto extends React.Component {
                   maxValue={maxAmount}
                   componentProps={{
                     keyboardType: 'decimal-pad',
+                    onPressMax: () => {
+                      rfChange(
+                        formName,
+                        'amount',
+                        formatUtil.numberWithNoGroupSeparator(
+                          Number(maxAmount),
+                        ),
+                      );
+                    },
                   }}
                   validate={this.getAmountValidator()}
                   {...generateTestId(SEND.AMOUNT_INPUT)}
+                />
+                <Field
+                  onChange={text => {
+                    rfFocus(formName, 'toAddress');
+                  }}
+                  component={InputQRField}
+                  name="toAddress"
+                  label="To"
+                  placeholder="Name, Address"
+                  style={homeStyle.input}
+                  validate={validator.combinedIncognitoAddress}
+                  showNavAddrBook
+                  onOpenAddressBook={onShowFrequentReceivers}
+                  {...generateTestId(SEND.ADDRESS_INPUT)}
                 />
                 <Field
                   component={InputField}
@@ -339,8 +361,9 @@ class SendCrypto extends React.Component {
                   containerStyle={homeStyle.descriptionInput}
                   componentProps={{ multiline: true, numberOfLines: 10 }}
                   name="message"
-                  placeholder="Message"
-                  label="Memo (optional)"
+                  placeholder="Add a note (optional)"
+                  label="Memo"
+                  maxLength={500}
                   style={[
                     homeStyle.input,
                     homeStyle.descriptionInput,
@@ -357,9 +380,9 @@ class SendCrypto extends React.Component {
                   amount={isFormValid ? amount : null}
                   toAddress={isFormValid ? toAddress : null}
                 />
-                <Button
+                <ButtonBasic
                   title="Send"
-                  style={homeStyle.submitBtn}
+                  btnStyle={homeStyle.submitBtn}
                   disabled={this.shouldDisabledSubmit()}
                   onPress={handleSubmit(this.handleSend)}
                   {...generateTestId(SEND.SUBMIT_BUTTON)}
@@ -413,4 +436,7 @@ const mapDispatch = {
   rfFocus: focus,
 };
 
-export default connect(mapState, mapDispatch)(SendCrypto);
+export default connect(
+  mapState,
+  mapDispatch,
+)(SendCrypto);
