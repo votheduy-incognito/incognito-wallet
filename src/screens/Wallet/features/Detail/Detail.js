@@ -94,11 +94,12 @@ const Balance = () => {
     showSymbol: false,
   };
   const amountBasePRVProps = {
-    customStyle: [balanceStyled.hookCustomStyle, balanceStyled.amountBasePRV],
+    customStyle: balanceStyled.amountBasePRV,
+    customPSymbolStyle: [balanceStyled.pSymbol],
     ...tokenData,
   };
   const changePriceProps = {
-    customStyle: [balanceStyled.hookCustomStyle, balanceStyled.changePrice],
+    customStyle: balanceStyled.changePrice,
     ...tokenData,
   };
   return (

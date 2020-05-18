@@ -17,7 +17,7 @@ const initialState = {
     isFetching: false,
     isFetched: false,
     histories: [],
-    isEmpty: true,
+    isEmpty: false,
   },
 };
 

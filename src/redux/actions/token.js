@@ -213,6 +213,10 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
   try {
     const state = getState();
     const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
+    const tokenId = selectedPrivacySeleclor.selectedPrivacyTokenID(state);
+    if (!tokenId) {
+      return;
+    }
     const token = selectedPrivacySeleclor.selectedPrivacyByFollowedSelector(
       state,
     );

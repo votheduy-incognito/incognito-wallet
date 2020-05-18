@@ -27,6 +27,9 @@ import {
 import routeNames from '@src/router/routeNames';
 import { actionRemoveFollowToken } from '@src/redux/actions';
 import { Toast } from '@src/components/core';
+import { View } from 'react-native';
+import PureModal from '@src/components/Modal/features/PureModal';
+import { styled } from './Wallet.styled';
 
 export const WalletContext = React.createContext({});
 
@@ -142,6 +145,7 @@ const enhance = WrappedComp => props => {
   React.useEffect(() => {
     fetchData();
   }, []);
+
   return (
     <ErrorBoundary>
       <WalletContext.Provider
