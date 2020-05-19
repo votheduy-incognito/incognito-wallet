@@ -156,38 +156,41 @@ export const Symbol = () => {
 };
 
 const TokenDefault = props => (
-  <View style={[styled.container, props?.style]}>
-    <View style={[styled.extra, { marginBottom: 10 }]}>
-      <Name />
-      <AmountBasePRV {...props} />
+  <TouchableWithoutFeedback onPress={props?.onPress}>
+    <View style={[styled.container, props?.style]}>
+      <View style={[styled.extra, { marginBottom: 10 }]}>
+        <Name />
+        <AmountBasePRV {...props} />
+      </View>
+      <View style={styled.extra}>
+        <Price />
+        <Amount {...props} />
+      </View>
     </View>
-    <View style={styled.extra}>
-      <Price />
-      <Amount {...props} />
-    </View>
-  </View>
+  </TouchableWithoutFeedback>
 );
 
 const TokenPairPRV = props => (
-  <View style={[styled.container, props?.style]}>
-    <View style={styled.extra}>
-      <Name />
-      <Amount {...{ ...props, customStyle: styled.boldText }} />
+  <TouchableWithoutFeedback onPress={props?.onPress}>
+    <View style={[styled.container, props?.style]}>
+      <View style={styled.extra}>
+        <Name />
+        <Amount {...{ ...props, customStyle: styled.boldText }} />
+      </View>
     </View>
-  </View>
+  </TouchableWithoutFeedback>
 );
 
 const Token = props => {
   const {
-    onPress,
     handleRemoveToken = null,
     swipable = false,
     pairWithPrv = false,
   } = props;
-  let TokenComponent = (
-    <TouchableWithoutFeedback onPress={onPress}>
-      {pairWithPrv ? <TokenDefault {...props} /> : <TokenPairPRV {...props} />}
-    </TouchableWithoutFeedback>
+  let TokenComponent = pairWithPrv ? (
+    <TokenDefault {...props} />
+  ) : (
+    <TokenPairPRV {...props} />
   );
   if (swipable === true) {
     return (
