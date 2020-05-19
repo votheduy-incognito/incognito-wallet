@@ -68,6 +68,7 @@ export const styledBalance = StyleSheet.create({
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superLarge + 10,
     color: COLORS.black,
+    maxWidth: '80%',
   },
   pSymbol: {
     fontFamily: FONT.NAME.specialRegular,
