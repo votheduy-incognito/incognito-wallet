@@ -206,9 +206,14 @@ const RightHeader = () => {
 };
 
 const Wallet = () => {
+  const navigation = useNavigation();
   return (
     <View style={[styled.container]}>
-      <Header title="Assets" rightHeader={<RightHeader />} />
+      <Header
+        title="Assets"
+        rightHeader={<RightHeader />}
+        onGoBack={() => navigation.navigate(routeNames.Home)}
+      />
       <Extra />
     </View>
   );
