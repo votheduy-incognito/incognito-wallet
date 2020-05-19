@@ -177,7 +177,7 @@ const HistoryItem = ({ history }) => {
 
   return (
     <TouchableOpacity onPress={onPress} style={styleSheet.itemContainer}>
-      <View style={styleSheet.row}>
+      <View style={[styleSheet.row, styleSheet.rowTop]}>
         <Text
           style={[styleSheet.title, styleSheet.leftText]}
           numberOfLines={1}

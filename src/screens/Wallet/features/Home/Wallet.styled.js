@@ -81,6 +81,7 @@ export const styledBalance = StyleSheet.create({
 export const styledAddToken = StyleSheet.create({
   container: {
     marginTop: 50,
+    marginBottom: 30
   },
   title: {
     fontFamily: FONT.NAME.medium,

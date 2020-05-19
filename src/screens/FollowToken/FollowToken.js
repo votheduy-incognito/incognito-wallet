@@ -15,9 +15,11 @@ const AddManually = () => {
     navigation?.navigate(routeNames.AddManually, { type: 'ERC20' });
   return (
     <View style={styled.addManually}>
-      <Text style={styled.text}>{title}</Text>
+      <Text style={[styled.text, { marginTop: 10 }]}>{title}</Text>
       <TouchableWithoutFeedback onPress={handleAddTokenManually}>
-        <Text style={[styled.text, styled.boldText]}>Add manually +</Text>
+        <Text style={[styled.text, styled.boldText, { marginTop: 5 }]}>
+          Add manually +
+        </Text>
       </TouchableWithoutFeedback>
     </View>
   );

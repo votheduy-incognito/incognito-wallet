@@ -1,6 +1,7 @@
 import type from '@src/redux/types/token';
 import { unionBy, remove } from 'lodash';
 import { CONSTANT_COMMONS } from '@src/constants';
+import typeSelectedPrivacy from '@src/redux/types/selectedPrivacy';
 
 const initialState = {
   followed: [],
@@ -210,6 +211,11 @@ const reducer = (state = initialState, action) => {
     };
   }
   case type.ACTION_INIT_HISTORY: {
+    return {
+      ...state,
+    };
+  }
+  case typeSelectedPrivacy.SET: {
     return {
       ...state,
       history: {

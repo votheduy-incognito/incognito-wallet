@@ -7,7 +7,6 @@ import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
 import {
   actionGetExchangeRate,
-  actionInitHistory,
   getPTokenList,
   getInternalTokenList,
 } from '@src/redux/actions/token';
@@ -27,9 +26,6 @@ import {
 import routeNames from '@src/router/routeNames';
 import { actionRemoveFollowToken } from '@src/redux/actions';
 import { Toast } from '@src/components/core';
-import { View } from 'react-native';
-import PureModal from '@src/components/Modal/features/PureModal';
-import { styled } from './Wallet.styled';
 
 export const WalletContext = React.createContext({});
 
@@ -123,10 +119,7 @@ const enhance = WrappedComp => props => {
     navigation.navigate(routeNames.WalletDetail);
   };
   const clearWallet = async () => {
-    await new Promise.all([
-      dispatch(clearSelectedPrivacy()),
-      dispatch(actionInitHistory()),
-    ]);
+    await dispatch(clearSelectedPrivacy());
   };
   const handleRemoveToken = async tokenId => {
     await dispatch(actionRemoveFollowToken(tokenId));

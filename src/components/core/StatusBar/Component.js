@@ -23,7 +23,11 @@ const {
   SelectAccount,
   FollowToken,
   Shield,
-  WhyShield
+  WhyShield,
+  WalletDetail,
+  Send,
+  ShieldGenQRCode,
+  AddManually
 } = routeNames;
 
 const whiteScreens = [
@@ -38,7 +42,11 @@ const whiteScreens = [
   FollowToken,
   Wallet,
   Shield,
-  WhyShield
+  WhyShield,
+  WalletDetail,
+  Send,
+  ShieldGenQRCode,
+  AddManually
 ];
 const blue2Screens = [];
 const blue1Screens = [Wizard, Node];
