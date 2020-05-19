@@ -1,7 +1,12 @@
+import AsyncStorage from '@react-native-community/async-storage';
+import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2';
+import { persistReducer } from 'redux-persist';
+import hardSet from 'redux-persist/lib/stateReconciler/hardSet';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
   ACTION_FETCH_FAIL,
+  ACTION_TOGGLE_GUIDE,
 } from './Shield.constant';
 
 const initialState = {
@@ -12,9 +17,12 @@ const initialState = {
     max: null,
     address: '',
   },
+  storage: {
+    guide: false,
+  },
 };
 
-export default (state = initialState, action) => {
+const shieldReducer = (state = initialState, action) => {
   switch (action.type) {
   case ACTION_FETCHING: {
     return {
@@ -37,7 +45,25 @@ export default (state = initialState, action) => {
       isFetching: false,
     };
   }
+  case ACTION_TOGGLE_GUIDE: {
+    return {
+      ...state,
+      storage: {
+        ...state.storage,
+        guide: true,
+      },
+    };
+  }
   default:
     return state;
   }
 };
+
+const persistConfig = {
+  key: 'stake',
+  storage: AsyncStorage,
+  whitelist: ['storage'],
+  stateReconciler: autoMergeLevel2,
+};
+
+export default persistReducer(persistConfig, shieldReducer);

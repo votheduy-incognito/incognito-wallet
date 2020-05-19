@@ -10,7 +10,7 @@ import Header from '@src/components/Header';
 import { BtnSelectAccount } from '@screens/SelectAccount';
 import { ButtonBasic, BtnQRCode } from '@src/components/Button';
 import { tokenSeleclor } from '@src/redux/selectors';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Token from '@src/components/Token';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
@@ -21,6 +21,10 @@ import {
 } from '@src/redux/selectors/shared';
 import floor from 'lodash/floor';
 import { Amount } from '@src/components/Token/Token';
+import { shieldStorageSelector } from '@src/screens/Shield/Shield.selector';
+import { actionToggleGuide } from '@src/screens/Shield/Shield.actions';
+import Tooltip from '@src/components/Tooltip/Tooltip';
+import { COLORS } from '@src/styles';
 import {
   styled,
   styledHook,
@@ -33,33 +37,66 @@ import {
 } from './Wallet.styled';
 import withWallet, { WalletContext } from './Wallet.enhance';
 
+// const BtnShield = () => {
+//   const navigation = useNavigation();
+//   const dispatch = useDispatch();
+//   const { guide } = useSelector(shieldStorageSelector);
+//   const handleShield = async () => {
+//     navigation.navigate(routeNames.Shield);
+//     await dispatch(actionToggleGuide());
+//   };
+//   return (
+
+//   );
+// };
 const GroupButton = () => {
   const navigation = useNavigation();
-  const handleShield = () => navigation.navigate(routeNames.Shield);
+  const dispatch = useDispatch();
+  const { guide } = useSelector(shieldStorageSelector);
   const handleUnShield = () => navigation.navigate(routeNames.SendCrypto);
+  const handleShield = async () => {
+    navigation.navigate(routeNames.Shield);
+    if (!guide) {
+      await dispatch(actionToggleGuide());
+    }
+  };
   return (
-    <View style={styled.groupButton}>
-      <ButtonBasic
-        title="Shield"
-        btnStyle={styled.btnStyle}
-        titleStyle={styled.titleStyle}
-        onPress={handleShield}
-      />
-      <ButtonBasic
-        title="Unshield"
-        btnStyle={styled.btnStyle}
-        titleStyle={styled.titleStyle}
-        onRefresh={handleUnShield}
-      />
+    <View style={styled.groupButtonContainer}>
+      {!guide && (
+        <Tooltip
+          content={<Hook />}
+          containerStyle={{
+            backgroundColor: COLORS.black,
+            borderRadius: 11,
+            padding: 20,
+            marginBottom: 20,
+          }}
+          triangleStyle={{
+            bottom: -35,
+            left: 50,
+            borderBottomColor: COLORS.black,
+          }}
+        />
+      )}
+      <View style={styled.groupButton}>
+        <ButtonBasic
+          title="Shield"
+          btnStyle={[styled.btnStyle]}
+          titleStyle={[styled.titleStyle]}
+          onPress={handleShield}
+        />
+        <ButtonBasic
+          title="Unshield"
+          btnStyle={styled.btnStyle}
+          titleStyle={styled.titleStyle}
+          onRefresh={handleUnShield}
+        />
+      </View>
     </View>
   );
 };
 
 const Hook = () => {
-  const totalShielded = useSelector(totalShieldedTokensSelector);
-  if (totalShielded !== 0) {
-    return null;
-  }
   return (
     <View style={styledHook.container}>
       <Text style={styledHook.title}>Transact without a trace.</Text>
@@ -86,6 +123,7 @@ const Balance = () => {
         showGettingBalance
         customStyle={styledBalance.balance}
         hasPSymbol
+        stylePSymbol={styledBalance.pSymbol}
       />
       <Text style={styledBalance.title}>Shielded Balance</Text>
     </View>
@@ -146,7 +184,6 @@ const Extra = () => {
       >
         <Balance />
         <GroupButton />
-        {/* <Hook /> */}
         <FollowToken />
         <AddToken />
       </ScrollView>
@@ -170,7 +207,7 @@ const RightHeader = () => {
 
 const Wallet = () => {
   return (
-    <View style={styled.container}>
+    <View style={[styled.container]}>
       <Header title="Assets" rightHeader={<RightHeader />} />
       <Extra />
     </View>

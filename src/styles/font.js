@@ -1,6 +1,9 @@
 import { Platform } from 'react-native';
 
 const FONT_FAMILY = Platform.OS === 'ios' ? 'SFProDisplay' : 'SF-Pro-Display-';
+const FONT_FAMILY_SPECIAL =
+  Platform.OS === 'ios' ? 'HelveticaNeue' : 'Helvetica-Neue';
+
 const fontNames = {
   default:
     Platform.OS === 'ios' ? `${FONT_FAMILY}-Light` : `${FONT_FAMILY}Light`,
@@ -25,6 +28,10 @@ const fontNames = {
     Platform.OS === 'ios'
       ? `${FONT_FAMILY}-RegularItalic`
       : `${FONT_FAMILY}RegularItalic`,
+  specialRegular:
+    Platform.OS === 'ios' ? `${FONT_FAMILY_SPECIAL}` : `${FONT_FAMILY_SPECIAL}`,
+  specialBold: `${FONT_FAMILY_SPECIAL}-Bold`,
+  specialMedium: `${FONT_FAMILY_SPECIAL}-Medium`,
 };
 
 const fontStyle = {

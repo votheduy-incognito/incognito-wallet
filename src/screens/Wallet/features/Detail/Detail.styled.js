@@ -11,7 +11,7 @@ export const styled = StyleSheet.create({
   titleBtnTrade: {
     color: COLORS.black,
     fontSize: FONT.SIZE.regular - 1,
-    fontFamily: FONT.NAME.regular
+    fontFamily: FONT.NAME.regular,
   },
 });
 
@@ -25,8 +25,6 @@ export const groupBtnStyled = StyleSheet.create({
     maxWidth: '49%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 24,
-    padding: 13,
   },
   titleStyle: {
     fontFamily: FONT.NAME.medium,
@@ -45,22 +43,30 @@ export const balanceStyled = StyleSheet.create({
   amount: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superLarge + 10,
-    lineHeight: FONT.SIZE.superLarge + 16,
+    lineHeight: FONT.SIZE.superLarge + 18,
     color: COLORS.black,
     maxWidth: '80%',
   },
   amountBasePRV: {
-    color: '#959599',
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 3,
+    color: COLORS.colorGreyBold,
   },
-  changePrice: {},
+  changePrice: {
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 3,
+  },
   hook: {
     flexDirection: 'row',
     marginTop: 10,
   },
-  hookCustomStyle: {
-    fontFamily: FONT.NAME.medium,
+  pSymbol: {
+    color: COLORS.colorGreyBold,
+    fontFamily: FONT.NAME.specialRegular,
     fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 6,
+    lineHeight: FONT.SIZE.medium + 3,
   },
 });
 

@@ -1,11 +1,9 @@
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { FONT, COLORS, UTILS } from '@src/styles';
 
 export const styled = StyleSheet.create({
   container: {
     paddingVertical: 15,
-    // backgroundColor: `pink`
-    // marginBottom: 30
   },
   extra: {
     flexDirection: 'row',
@@ -26,8 +24,7 @@ export const styled = StyleSheet.create({
   },
   boldText: {
     fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.medium + 2,
-    lineHeight: FONT.SIZE.medium + 6,
+    fontSize: FONT.SIZE.superMedium,
     color: COLORS.black,
   },
   displayName: {
@@ -46,7 +43,16 @@ export const styled = StyleSheet.create({
     flexDirection: 'row',
   },
   pSymbol: {
-    fontFamily: 'HelveticaNeue-Regular',
+    fontFamily: FONT.NAME.specialRegular,
+    fontSize: FONT.SIZE.medium,
+    color: COLORS.colorGreyBold,
+    lineHeight: FONT.SIZE.medium + 3,
+  },
+  pSymbolBold: {
+    fontFamily: FONT.NAME.specialRegular,
+    fontSize: FONT.SIZE.superMedium,
+    color: COLORS.black,
+    lineHeight: FONT.SIZE.superMedium + 3,
   },
   redText: {
     color: COLORS.red,
@@ -54,8 +60,11 @@ export const styled = StyleSheet.create({
   greenText: {
     color: COLORS.green,
   },
-  topText: {},
   bottomText: {
     fontSize: FONT.SIZE.medium,
+  },
+  normalText: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

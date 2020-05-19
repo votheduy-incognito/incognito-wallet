@@ -12,6 +12,7 @@ import {
   ACTION_FETCHING,
   ACTION_FETCHED,
   ACTION_FETCH_FAIL,
+  ACTION_TOGGLE_GUIDE,
 } from './Shield.constant';
 
 export const actionFetching = () => ({
@@ -102,3 +103,7 @@ export const actionFetch = ({ tokenId }) => async (dispatch, getState) => {
     throw error;
   }
 };
+
+export const actionToggleGuide = () => ({
+  type: ACTION_TOGGLE_GUIDE,
+});

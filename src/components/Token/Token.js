@@ -10,6 +10,7 @@ import withToken, { TokenContext } from '@src/components/Token/Token.enhance';
 import { TokenVerifiedIcon } from '@src/components/Icons';
 import format from '@src/utils/format';
 import floor from 'lodash/floor';
+import round from 'lodash/round';
 import { CONSTANT_COMMONS } from '@src/constants';
 import Swipeout from 'react-native-swipeout';
 import { BtnDelete } from '@src/components/Button';
@@ -31,11 +32,18 @@ const defaultProps = {
   pricePrv: 0,
 };
 
-export const NormalText = ({ style, text, hasPSymbol = false }) => (
-  <Text numberOfLines={1} style={[styled.text, style]}>
-    {hasPSymbol && <Text style={[styled.text, style, styled.pSymbol]}>ℙ</Text>}
-    {text}
-  </Text>
+export const NormalText = ({
+  style,
+  stylePSymbol,
+  text,
+  hasPSymbol = false,
+}) => (
+  <View style={styled.normalText}>
+    {hasPSymbol && <Text style={[styled.pSymbol, stylePSymbol]}>ℙ</Text>}
+    <Text numberOfLines={1} style={[styled.text, style]}>
+      {text}
+    </Text>
+  </View>
 );
 
 export const Name = props => {
@@ -51,7 +59,12 @@ export const Name = props => {
 };
 
 export const AmountBasePRV = props => {
-  const { amount = 0, pricePrv = 0, customStyle = null } = props;
+  const {
+    amount = 0,
+    pricePrv = 0,
+    customStyle = null,
+    customPSymbolStyle = null,
+  } = props;
   return (
     <NormalText
       hasPSymbol
@@ -60,6 +73,7 @@ export const AmountBasePRV = props => {
         CONSTANT_COMMONS.PRV.pDecimals,
       )} `}
       style={[styled.boldText, styled.rightText, customStyle]}
+      stylePSymbol={[styled.pSymbolBold, customPSymbolStyle]}
     />
   );
 };
@@ -73,7 +87,7 @@ export const ChangePrice = props => {
   }
   return (
     <NormalText
-      text={` ${isTokenDecrease ? '-' : '+'}${floor(changeToNumber, 2)}%`}
+      text={` ${isTokenDecrease ? '-' : '+'}${round(changeToNumber, 2)}%`}
       style={[
         styled.bottomText,
         isTokenDecrease ? styled.redText : styled.greenText,
@@ -89,9 +103,9 @@ const Price = () => {
   return (
     <View style={styled.priceContainer}>
       <NormalText
-        style={styled.bottomText}
         text={format.amount(floor(pricePrv, 9), 0)}
         hasPSymbol
+        style={styled.bottomText}
       />
       <ChangePrice change={change} />
     </View>
@@ -108,6 +122,7 @@ export const Amount = props => {
     isGettingBalance = false,
     showGettingBalance = false,
     hasPSymbol = false,
+    stylePSymbol = null,
   } = props;
   if (isGettingBalance && showGettingBalance) {
     return <ActivityIndicator size="small" />;
@@ -117,6 +132,7 @@ export const Amount = props => {
       style={[styled.bottomText, customStyle]}
       text={`${format.amount(amount, pDecimals)} ${showSymbol ? symbol : ''}`}
       hasPSymbol={hasPSymbol}
+      stylePSymbol={stylePSymbol}
     />
   );
 };
@@ -139,25 +155,38 @@ export const Symbol = () => {
   );
 };
 
+const TokenDefault = props => (
+  <View style={[styled.container, props?.style]}>
+    <View style={[styled.extra, { marginBottom: 10 }]}>
+      <Name />
+      <AmountBasePRV {...props} />
+    </View>
+    <View style={styled.extra}>
+      <Price />
+      <Amount {...props} />
+    </View>
+  </View>
+);
+
+const TokenPairPRV = props => (
+  <View style={[styled.container, props?.style]}>
+    <View style={styled.extra}>
+      <Name />
+      <Amount {...{ ...props, customStyle: styled.boldText }} />
+    </View>
+  </View>
+);
+
 const Token = props => {
   const {
     onPress,
     handleRemoveToken = null,
-    style = null,
     swipable = false,
+    pairWithPrv = false,
   } = props;
-  const TokenComponent = (
+  let TokenComponent = (
     <TouchableWithoutFeedback onPress={onPress}>
-      <View style={[styled.container, style]}>
-        <View style={[styled.extra, { marginBottom: 10 }]}>
-          <Name />
-          <AmountBasePRV {...props} />
-        </View>
-        <View style={styled.extra}>
-          <Price />
-          <Amount {...props} />
-        </View>
-      </View>
+      {pairWithPrv ? <TokenDefault {...props} /> : <TokenPairPRV {...props} />}
     </TouchableWithoutFeedback>
   );
   if (swipable === true) {

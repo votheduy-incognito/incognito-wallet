@@ -14,7 +14,10 @@ import {
 } from './token';
 import { getPrice } from '../utils/selectedPrivacy';
 
-export const selectedPrivacyTokenID = state => state?.selectedPrivacy?.tokenID;
+export const selectedPrivacyTokenID = createSelector(
+  state => state?.selectedPrivacy?.tokenID,
+  tokenId => tokenId,
+);
 
 export const getPrivacyDataByTokenID = createSelector(
   defaultAccount,
@@ -45,9 +48,11 @@ export const getPrivacyDataByTokenID = createSelector(
           pTokenData,
         );
         const price = getPrice({ token, exchangeRate });
+        const pairWithPrv = Number(price?.pricePrv) !== 0;
         return {
           ...token,
           ...price,
+          pairWithPrv,
         };
       } catch (e) {
         new ExHandler(e);
@@ -110,5 +115,5 @@ export default {
   selectedPrivacyTokenID,
   selectedPrivacy,
   getPrivacyDataBaseOnAccount,
-  selectedPrivacyByFollowedSelector
+  selectedPrivacyByFollowedSelector,
 };
