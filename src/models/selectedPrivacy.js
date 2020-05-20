@@ -112,6 +112,7 @@ class SelectedPrivacy {
     this.iconUrl = getIconUrl.call(this, token?.image);
     this.priceUsd = pTokenData?.priceUsd || 0;
     this.change = pTokenData?.change || '0';
+    this.pricePrv = pTokenData?.pricePrv || 0;
   }
 }
 
