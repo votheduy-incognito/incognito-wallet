@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { RefreshControl } from 'react-native';
+import { RefreshControl, ScrollView, View } from 'react-native';
 import { Field, formValueSelector, isValid, change, focus } from 'redux-form';
 import { connect } from 'react-redux';
 import formatUtil from '@utils/format';
-import { Container, ScrollView, View, Toast } from '@components/core';
+import { Toast } from '@components/core';
 import ReceiptModal, { openReceipt } from '@components/Receipt';
 import LoadingTx from '@components/LoadingTx';
 import {
@@ -16,8 +16,6 @@ import {
 } from '@components/core/reduxForm';
 import { ExHandler } from '@services/exception';
 import { MESSAGES } from '@screens/Dex/constants';
-import TokenSelect from '@components/TokenSelect';
-import CurrentBalance from '@components/CurrentBalance';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import { generateTestId } from '@utils/misc';
 import { SEND } from '@src/constants/elements';
@@ -66,15 +64,16 @@ class SendCrypto extends React.Component {
     const { selectedPrivacy, receiptData } = this.props;
     const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
     const {
-      feeData: { fee },
+      feeData: { fee, feeUnitByTokenId },
     } = this.props;
     const {
-      feeData: { fee: oldFee },
+      feeData: { fee: oldFee, feeUnitByTokenId: oldFeeUnitByTokenId },
     } = prevProps;
 
     if (
       selectedPrivacy?.tokenId !== oldSelectedPrivacy?.tokenId ||
-      fee !== oldFee
+      fee !== oldFee ||
+      feeUnitByTokenId !== oldFeeUnitByTokenId
     ) {
       // need to re-calc min amount if token decimals was changed
       this.setFormValidation();
@@ -177,24 +176,16 @@ class SendCrypto extends React.Component {
       amount,
       toAddress,
       isFormValid,
-      selectable,
       onShowFrequentReceivers,
       reloading,
       maxAmount,
     } = this.props;
     return (
       <ScrollView
-        style={homeStyle.container}
+        contentContainerStyle={homeStyle.scrollview}
         refreshControl={<RefreshControl refreshing={reloading} />}
       >
-        <Container style={homeStyle.mainContainer}>
-          <CurrentBalance
-            select={
-              selectable ? (
-                <TokenSelect onSelect={this.handleSelectToken} />
-              ) : null
-            }
-          />
+        <View style={homeStyle.mainContainer}>
           <Form>
             {({ handleSubmit }) => (
               <View style={homeStyle.form}>
@@ -222,10 +213,16 @@ class SendCrypto extends React.Component {
                   onOpenAddressBook={onShowFrequentReceivers}
                   {...generateTestId(SEND.ADDRESS_INPUT)}
                 />
+                <EstimateFee
+                  style={homeStyle.input}
+                  amount={isFormValid ? amount : null}
+                  address={isFormValid ? toAddress : null}
+                  isFormValid={isFormValid}
+                />
                 <Field
                   component={InputField}
-                  inputStyle={homeStyle.descriptionInput}
-                  containerStyle={homeStyle.descriptionInput}
+                  inputStyle={homeStyle.input}
+                  containerStyle={homeStyle.input}
                   componentProps={{ multiline: true, numberOfLines: 10 }}
                   name="message"
                   placeholder="Add a note (optional)"
@@ -233,19 +230,12 @@ class SendCrypto extends React.Component {
                   maxLength={500}
                   style={[
                     homeStyle.input,
-                    homeStyle.descriptionInput,
                     {
-                      marginBottom: 60,
+                      marginBottom: 0,
                     },
                   ]}
                   validate={descriptionMaxBytes}
                   {...generateTestId(SEND.MEMO_INPUT)}
-                />
-                <EstimateFee
-                  style={homeStyle.input}
-                  amount={isFormValid ? amount : null}
-                  address={isFormValid ? toAddress : null}
-                  isFormValid={isFormValid}
                 />
                 <ButtonBasic
                   title="Send"
@@ -258,7 +248,7 @@ class SendCrypto extends React.Component {
             )}
           </Form>
           <ReceiptModal />
-        </Container>
+        </View>
         {isSending && <LoadingTx />}
       </ScrollView>
     );

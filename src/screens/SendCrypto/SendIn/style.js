@@ -1,17 +1,11 @@
 import { StyleSheet } from 'react-native';
 
 export const homeStyle = StyleSheet.create({
-  container: {
-    marginTop: 30,
-  },
   mainContainer: {
     flex: 1,
-  },
-  form: {
-    marginTop: 50,
+    marginTop: 30,
   },
   submitBtn: {
-    marginVertical: 50,
   },
   feeText: {
     textAlign: 'center',
@@ -20,8 +14,5 @@ export const homeStyle = StyleSheet.create({
   },
   input: {
     marginBottom: 30,
-  },
-  descriptionInput: {
-    height: 60,
   },
 });

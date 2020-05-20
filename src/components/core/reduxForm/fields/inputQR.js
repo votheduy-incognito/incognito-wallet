@@ -1,15 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { TextInput, Image, View } from '@src/components/core';
+import { TextInput, View } from '@src/components/core';
 import { openQrScanner } from '@src/components/QrCodeScanner';
-import { scaleInApp } from '@src/styles/TextStyle';
-import qrCodeScanner from '@src/assets/images/icons/qr_code_scanner.png';
 import { AddressBookIcon } from '@src/components/Icons';
-import { COLORS } from '@src/styles';
 import { generateTestId } from '@utils/misc';
 import { SEND } from '@src/constants/elements';
-import { change, Field, formValueSelector, isValid } from 'redux-form';
 import { BtnQRCode } from '@src/components/Button';
 import createField from './createField';
 
@@ -22,13 +18,11 @@ const styled = StyleSheet.create({
   line: {
     width: 1,
     height: 20,
-    backgroundColor: COLORS.lightGrey1,
+    backgroundColor: 'transparent',
     marginHorizontal: 10,
   },
 });
 
-// We have to support user use this format: "bitcoin:AS3sa...", and this currently format: "abdcdFAS..."
-// And also need to check generic data type
 const getAddress = text => {
   if (text && typeof text === 'string') {
     let indexSpec = text.indexOf(':');
@@ -52,8 +46,6 @@ const renderCustomField = ({
   return (
     <TextInput
       {...props}
-      // Damn, it should be the like below, but temporary
-      // onChangeText={t => input.onChange(t)}
       onChangeText={t => input.onChange(t)}
       onBlur={onBlur}
       onFocus={onFocus}
@@ -80,23 +72,6 @@ const renderCustomField = ({
               });
             }}
           />
-          {/* <TouchableOpacity
-            onPress={() => {
-              openQrScanner(data => {
-                let res = getAddress(data);
-                input.onChange(res);
-              });
-            }}
-          >
-            <Image
-              source={qrCodeScanner}
-              style={{
-                width: scaleInApp(16),
-                height: scaleInApp(16),
-                resizeMode: 'contain',
-              }}
-            />
-          </TouchableOpacity> */}
         </View>
       )}
     />

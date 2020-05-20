@@ -1,7 +1,7 @@
 import { getEstimateFeeForNativeToken } from '@src/services/wallet/RpcClientService';
 import { selectedPrivacySeleclor, accountSeleclor } from '@src/redux/selectors';
 import convert from '@src/utils/convert';
-import { change } from 'redux-form';
+import { change, focus } from 'redux-form';
 import format from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
 import {
@@ -99,6 +99,7 @@ export const actionFetchFee = ({ amount, address }) => async (
             format.amountFull(feeEst, CONSTANT_COMMONS.PRV.pDecimals),
           ),
         ),
+        await dispatch(focus(formName, 'fee')),
       ]);
     }
     if (feePTokenEst) {
