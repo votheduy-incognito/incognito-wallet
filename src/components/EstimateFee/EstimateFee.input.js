@@ -2,12 +2,10 @@ import React from 'react';
 import { View, TouchableWithoutFeedback, Text } from 'react-native';
 import { Field, change } from 'redux-form';
 import { InputField, createForm, validator } from '@components/core/reduxForm';
-import { CONSTANT_COMMONS } from '@src/constants';
 import { GENERAL } from '@src/constants/elements';
 import { generateTestId } from '@src/utils/misc';
 import { useSelector, useDispatch } from 'react-redux';
 import format from '@src/utils/format';
-import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import convert from '@src/utils/convert';
 import { styled } from './EstimateFee.styled';
 // eslint-disable-next-line import/no-cycle
@@ -39,15 +37,18 @@ const EstimateFeeInput = props => {
   const { minFeeValidator, maxFeeValidator } = state;
   React.useEffect(() => {
     if (fee) {
+      const convertedMaxFee = convert.toHumanAmount(maxFee, feePDecimals);
+      const convertedMaxFeeStr = format.toFixed(convertedMaxFee, feePDecimals);
+      const maxFeeValidator = validator.maxValue(convertedMaxFee, {
+        message:
+          convertedMaxFee > fee
+            ? `Must be less than ${convertedMaxFeeStr} ${feeUnit}`
+            : `Your ${feeUnit} balance is not enough to send`,
+      });
       const convertedMinFee = convert.toHumanAmount(minFee, feePDecimals);
       const convertedMinFeeStr = format.toFixed(convertedMinFee, feePDecimals);
       const minFeeValidator = validator.minValue(convertedMinFee, {
         message: `Must be at least ${convertedMinFeeStr} ${feeUnit}`,
-      });
-      const convertedMaxFee = convert.toHumanAmount(maxFee, feePDecimals);
-      const convertedMaxFeeStr = format.toFixed(convertedMaxFee, feePDecimals);
-      const maxFeeValidator = validator.maxValue(convertedMaxFee, {
-        message: `Must be less than ${convertedMaxFeeStr} ${feeUnit}`,
       });
       setState({ ...state, minFeeValidator, maxFeeValidator });
     }
@@ -106,19 +107,14 @@ const SupportFeeItem = props => {
 };
 
 const SupportFees = () => {
-  const { actived, types, fee, feePToken } = useSelector(estimateFeeSelector);
-  const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const { types, actived } = useSelector(estimateFeeSelector);
+  const { fee, feePDecimals } = useSelector(feeDataSelector);
   const dispatch = useDispatch();
   if (types.length === 0) {
     return;
   }
   const onChangeTypeFee = async type => {
-    const feeCalByPRV = type?.tokenId === CONSTANT_COMMONS.PRV.id;
-    const feeChange = feeCalByPRV ? fee : feePToken;
-    const pDecimals = feeCalByPRV
-      ? CONSTANT_COMMONS.PRV.pDecimals
-      : selectedPrivacy?.pDecimals;
-    const feeConverted = format.amountFull(feeChange, pDecimals);
+    const feeConverted = format.amountFull(fee, feePDecimals);
     await new Promise.all([
       await dispatch(actionChangeFeeType(type?.tokenId)),
       await dispatch(change(formName, 'fee', feeConverted)),

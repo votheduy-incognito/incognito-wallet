@@ -54,6 +54,10 @@ export default (state = initialState, action) => {
     };
   }
   case ACTION_ADD_FEE_TYPE: {
+    const { tokenId } = action.payload;
+    if (tokenId === CONSTANT_COMMONS.PRV.id) {
+      return state;
+    }
     return {
       ...state,
       types: [...initialState.types, action.payload],
