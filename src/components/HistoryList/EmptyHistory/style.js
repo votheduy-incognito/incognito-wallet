@@ -10,7 +10,7 @@ const style = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   text: {
-    color: COLORS.lightGrey1,
+    color: COLORS.colorGreyBold,
     textAlign: 'center',
     lineHeight: 24,
     fontSize: 16,

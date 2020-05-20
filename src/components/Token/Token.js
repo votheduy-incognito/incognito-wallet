@@ -158,7 +158,7 @@ export const Symbol = () => {
 const TokenDefault = props => (
   <TouchableWithoutFeedback onPress={props?.onPress}>
     <View style={[styled.container, props?.style]}>
-      <View style={[styled.extra, { marginBottom: 10 }]}>
+      <View style={[styled.extra, styled.extraTop]}>
         <Name />
         <AmountBasePRV {...props} />
       </View>

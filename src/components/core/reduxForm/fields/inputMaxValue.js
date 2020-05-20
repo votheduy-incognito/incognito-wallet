@@ -1,15 +1,20 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { TouchableOpacity, TextInput, Text } from '@src/components/core';
+import { TextInput } from '@src/components/core';
 import formatUtil from '@src/utils/format';
-import { COLORS } from '@src/styles';
 import { generateTestId } from '@utils/misc';
 import { SEND } from '@src/constants/elements';
 import { BtnInfinite } from '@src/components/Button';
 import createField from './createField';
 
-const renderCustomField = ({ input, meta, maxValue, autoFocus, onPressMax = null, ...props }) => {
-  const { onChange, onBlur, onFocus, value } = input;
+const renderCustomField = ({
+  input,
+  meta,
+  maxValue,
+  onPressMax = null,
+  ...props
+}) => {
+  const { onBlur, onFocus, value } = input;
   let inputRef;
   return (
     <TextInput
@@ -24,34 +29,10 @@ const renderCustomField = ({ input, meta, maxValue, autoFocus, onPressMax = null
       onRef={ref => {
         inputRef = ref;
       }}
-      // prependView={(
-      //   <TouchableOpacity
-      //     style={{
-      //       paddingHorizontal: 15,
-      //       paddingVertical: 5,
-      //       borderWidth: 1,
-      //       borderRadius: 15,
-      //       borderColor: COLORS.primary,
-      //       marginBottom: 5,
-      //     }}
-      //     onPress={() => {
-      //       input.onChange(
-      //         formatUtil.numberWithNoGroupSeparator(Number(maxValue)),
-      //       );
-      //       inputRef?.current?.focus?.();
-      //     }}
-      //     {...generateTestId(SEND.MAX_BUTTON)}
-      //   >
-      //     <Text style={{ color: COLORS.primary }}>Max</Text>
-      //   </TouchableOpacity>
-      // )}
       prependView={(
         <BtnInfinite
-          style={{
-            padding: 5,
-          }}
           onPress={() => {
-            if(typeof onPressMax === 'function'){
+            if (typeof onPressMax === 'function') {
               return onPressMax();
             }
             input.onChange(
@@ -73,13 +54,14 @@ const InputMaxValueField = createField({
 
 renderCustomField.defaultProps = {
   maxValue: null,
+  onPressMax: null,
 };
 
 renderCustomField.propTypes = {
   input: PropTypes.object.isRequired,
   meta: PropTypes.object.isRequired,
   maxValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  onPressMax: PropTypes.func
+  onPressMax: PropTypes.func,
 };
 
 export default InputMaxValueField;

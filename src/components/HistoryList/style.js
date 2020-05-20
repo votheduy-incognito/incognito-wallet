@@ -1,5 +1,6 @@
 import { FONT, COLORS, DECOR } from '@src/styles';
 import { StyleSheet } from 'react-native';
+import { isIOS } from '@src/utils/platform';
 
 const style = StyleSheet.create({
   container: {
@@ -15,10 +16,12 @@ const style = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
+  },
+  rowTop: {
+    marginBottom: isIOS() ? 10 : 5,
   },
   itemContainer: {
-    paddingVertical: 15
+    paddingVertical: 15,
   },
   amountText: {
     flex: 1,

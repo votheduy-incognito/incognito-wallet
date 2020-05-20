@@ -11,7 +11,6 @@ export const styled = StyleSheet.create({
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 5,
     color: COLORS.colorGreyBold,
-    marginBottom: 5,
   },
   boldText: {
     fontFamily: FONT.NAME.medium,
@@ -19,7 +18,8 @@ export const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.medium + 6,
     color: COLORS.black,
   },
-  addManually: {},
+  addManually: {
+  },
   listToken: {
     flex: 1,
   },
