@@ -66,6 +66,7 @@ export const styled = StyleSheet.create({
   },
   bottomText: {
     fontSize: FONT.SIZE.medium,
+    fontFamily: FONT.NAME.medium
   },
   normalText: {
     flexDirection: 'row',

@@ -16,19 +16,19 @@ export const getPrice = ({ token, exchangeRate }) => {
     };
   }
   const priceOnePRV = Number(prv?.Price);
-  const tokenPairWithPRV = data.find(
-    item => item?.Base === token?.externalSymbol,
-  );
-  if (tokenPairWithPRV) {
-    const priceTokenPair = Number(tokenPairWithPRV.Price) / priceOnePRV;
-    return {
-      change: tokenPairWithPRV?.Change || defaultValue.change,
-      pricePrv: !isNaN(priceTokenPair) ? priceTokenPair : defaultValue.price,
-    };
-  }
+  // const tokenPairWithPRV = data.find(
+  //   item => item?.Base === token?.externalSymbol,
+  // );
+  // if (tokenPairWithPRV) {
+  //   const priceTokenPair = Number(tokenPairWithPRV.Price) / priceOnePRV;
+  //   return {
+  //     change: tokenPairWithPRV?.Change || defaultValue.change,
+  //     pricePrv: !isNaN(priceTokenPair) ? priceTokenPair : defaultValue.price,
+  //   };
+  // }
   const price = Number(token?.priceUsd) / priceOnePRV;
   return {
     change: token?.change || defaultValue.change,
-    pricePrv: !isNaN(price) ? price : defaultValue.pricePrv,
+    pricePrv: token?.pricePrv !== 0 ? token?.pricePrv : price,
   };
 };
