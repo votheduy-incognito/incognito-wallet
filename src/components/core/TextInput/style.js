@@ -1,16 +1,17 @@
 import { COLORS, FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
+import { isIOS } from '@src/utils/platform';
 
 const style = StyleSheet.create({
   container: {
-    flexDirection: 'column',
+    marginBottom: isIOS() ? 20 : 10,
   },
   row: {
-    alignItems: 'center',
+    alignItems: 'flex-end',
     flexDirection: 'row',
+    justifyContent: 'center',
   },
   label: {
-    marginBottom: 15,
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
     color: COLORS.black,
@@ -20,6 +21,9 @@ const style = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.superMedium,
     color: COLORS.colorGreyBold,
+    padding: 0,
+    margin: 0,
+    marginTop: 15,
   },
 });
 

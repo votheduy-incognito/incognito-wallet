@@ -6,10 +6,12 @@ import { ExHandler } from '@src/services/exception';
 import { useDispatch, useSelector } from 'react-redux';
 import { actionFetchHistory } from '@src/redux/actions/token';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
+import { useIsFocused } from 'react-navigation-hooks';
 
 const enhance = WrappedComp => props => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
   const handleLoadHistory = async () => {
     try {
       await dispatch(actionFetchHistory());
@@ -18,8 +20,10 @@ const enhance = WrappedComp => props => {
     }
   };
   React.useEffect(() => {
-    handleLoadHistory();
-  }, [selectedPrivacy?.tokenId]);
+    if (isFocused) {
+      handleLoadHistory();
+    }
+  }, [selectedPrivacy?.tokenId, isFocused]);
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props, handleLoadHistory }} />

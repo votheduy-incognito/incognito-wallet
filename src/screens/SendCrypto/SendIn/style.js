@@ -1,18 +1,18 @@
 import { StyleSheet } from 'react-native';
+import { isIOS } from '@src/utils/platform';
 
 export const homeStyle = StyleSheet.create({
-  mainContainer: {
+  container: {
     flex: 1,
     marginTop: 30,
-  },
-  submitBtn: {
   },
   feeText: {
     textAlign: 'center',
     marginVertical: 10,
     fontSize: 14,
   },
-  input: {
-    marginBottom: 30,
+  submitBtn: {
+    marginTop: isIOS() ? 30 : 40,
+    marginBottom: 50,
   },
 });

@@ -4,12 +4,12 @@ import SelectedPrivacy from '@src/models/selectedPrivacy';
 import memoize from 'memoize-one';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
+import { BIG_COINS } from '@src/screens/Dex/constants';
 import { defaultAccount } from './account';
 import {
   followed,
   pTokens,
   internalTokens,
-  exchangeRateSelector,
   tokensFollowedSelector,
 } from './token';
 import { getPrice } from '../utils/selectedPrivacy';
@@ -24,8 +24,7 @@ export const getPrivacyDataByTokenID = createSelector(
   internalTokens,
   pTokens,
   followed,
-  exchangeRateSelector,
-  (account, _internalTokens, _pTokens, _followed, exchangeRate) =>
+  (account, _internalTokens, _pTokens, _followed) =>
     memoize(tokenID => {
       try {
         // ‘PRV’ is not a token
@@ -42,12 +41,16 @@ export const getPrivacyDataByTokenID = createSelector(
         ) {
           throw new Error(`Can not find coin with id ${tokenID}`);
         }
+
         const token = new SelectedPrivacy(
           account,
           { ...internalTokenData, ...followedTokenData },
           pTokenData,
         );
-        const price = getPrice({ token, exchangeRate });
+        const tokenUSDT = _pTokens.find(
+          token => token?.tokenId === BIG_COINS.USDT,
+        );
+        const price = getPrice({ token, tokenUSDT });
         const pairWithPrv = Number(price?.pricePrv) !== 0;
         return {
           ...token,

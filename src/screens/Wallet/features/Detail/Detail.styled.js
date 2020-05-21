@@ -42,21 +42,19 @@ export const balanceStyled = StyleSheet.create({
   },
   amount: {
     fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superLarge + 10,
-    lineHeight: FONT.SIZE.superLarge + 18,
+    fontSize: FONT.SIZE.superLarge,
     color: COLORS.black,
     maxWidth: '80%',
+    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.superLarge + 4),
   },
   amountBasePRV: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 3,
     color: COLORS.colorGreyBold,
   },
   changePrice: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 3,
   },
   hook: {
     flexDirection: 'row',
@@ -66,7 +64,6 @@ export const balanceStyled = StyleSheet.create({
     color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.specialRegular,
     fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 3,
   },
 });
 

@@ -40,7 +40,7 @@ export default {
    *
    * @param {number} originAmount
    * @param {number} decimals
-   * Convert original amount (usualy get from backend) to humain readable amount or display on frontend
+   * Convert original amount (usualy get from backend) to human readable amount or display on frontend
    */
   toHumanAmount(originAmount, decimals) {
     try {
@@ -57,7 +57,7 @@ export default {
      * @param {number} humanAmount
      * @param {number} decimals
      * @param {boolean} round
-     * Convert humain readable amount (display on frontend) to original amount
+     * Convert human readable amount (display on frontend) to original amount
      */
   },
   toOriginalAmount(humanAmount, decimals, round = true) {

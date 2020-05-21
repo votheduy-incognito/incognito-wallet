@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, KeyboardAvoidingView } from 'react-native';
+import { View, KeyboardAvoidingView, ScrollView } from 'react-native';
 import Header from '@src/components/Header';
 import { useSelector } from 'react-redux';
 import { selectedPrivacySeleclor, accountSeleclor } from '@src/redux/selectors';
@@ -16,26 +16,28 @@ const Send = props => {
   const wallet = useSelector(state => state?.wallet);
   const Wrapper = isIOS() ? KeyboardAvoidingView : View;
   return (
-    <Wrapper
-      style={styled.container}
-      contentContainerStyle={{ flex: 1 }}
-      keyboardVerticalOffset={50}
-      behavior="padding"
-    >
-      <Header
-        titleStyled={styled.headerTitle}
-        title={`Send ${selectedPrivacy?.externalSymbol ||
-          selectedPrivacy?.symbol}`}
-      />
-      <SendForm
-        navigation={navigation}
-        selectable={false}
-        selectedPrivacy={selectedPrivacy}
-        account={account}
-        wallet={wallet}
-        reloading={false}
-      />
-    </Wrapper>
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <Wrapper
+        style={styled.container}
+        contentContainerStyle={{ flex: 1 }}
+        keyboardVerticalOffset={50}
+        behavior="padding"
+      >
+        <Header
+          titleStyled={styled.headerTitle}
+          title={`Send ${selectedPrivacy?.externalSymbol ||
+            selectedPrivacy?.symbol}`}
+        />
+        <SendForm
+          navigation={navigation}
+          selectable={false}
+          selectedPrivacy={selectedPrivacy}
+          account={account}
+          wallet={wallet}
+          reloading={false}
+        />
+      </Wrapper>
+    </ScrollView>
   );
 };
 

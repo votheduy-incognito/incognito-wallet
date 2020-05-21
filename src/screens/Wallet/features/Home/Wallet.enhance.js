@@ -5,11 +5,7 @@ import { compose } from 'recompose';
 import { useSelector, useDispatch } from 'react-redux';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
-import {
-  actionGetExchangeRate,
-  getPTokenList,
-  getInternalTokenList,
-} from '@src/redux/actions/token';
+import { getPTokenList, getInternalTokenList } from '@src/redux/actions/token';
 import {
   getBalance,
   reloadAccountFollowingToken,
@@ -62,13 +58,6 @@ const enhance = WrappedComp => props => {
       });
     }
   };
-  const getExchangeRate = async () => {
-    try {
-      await dispatch(actionGetExchangeRate());
-    } catch (error) {
-      throw Error(error);
-    }
-  };
   const fetchData = async (reload = false) => {
     try {
       await setState({ isReloading: true });
@@ -82,7 +71,6 @@ const enhance = WrappedComp => props => {
           ...tasks,
           await dispatch(getPTokenList()),
           await dispatch(getInternalTokenList()),
-          await getExchangeRate(),
         ];
       }
       await Promise.all(tasks);

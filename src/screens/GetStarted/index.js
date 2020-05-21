@@ -2,11 +2,7 @@ import { login } from '@src/services/auth';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import { reloadWallet, reloadAccountList } from '@src/redux/actions/wallet';
 import { followDefaultTokens } from '@src/redux/actions/account';
-import {
-  getPTokenList,
-  getInternalTokenList,
-  actionGetExchangeRate,
-} from '@src/redux/actions/token';
+import { getPTokenList, getInternalTokenList } from '@src/redux/actions/token';
 import { loadPin } from '@src/redux/actions/pin';
 import { accountSeleclor } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
@@ -118,18 +114,13 @@ class GetStartedContainer extends Component {
       await loadPin();
       this.setState({ isInitialing: true });
       const serverLocalList = (await serverService.get()) ?? [];
-      const {
-        getPTokenList,
-        getInternalTokenList,
-        getExchangeRate,
-      } = this.props;
+      const { getPTokenList, getInternalTokenList } = this.props;
       await login();
 
       try {
         const [pTokens] = await new Promise.all([
           await getPTokenList(),
           await getInternalTokenList(),
-          await getExchangeRate(),
         ]);
         this.setState({ pTokens });
       } catch (e) {
@@ -243,7 +234,6 @@ const mapDispatch = {
   reloadAccountList,
   loadPin,
   initNotification: actionInit,
-  getExchangeRate: actionGetExchangeRate,
 };
 
 const mapState = state => ({
@@ -260,7 +250,6 @@ GetStartedContainer.propTypes = {
   reloadAccountList: PropTypes.func.isRequired,
   followDefaultTokens: PropTypes.func.isRequired,
   initNotification: PropTypes.func.isRequired,
-  getExchangeRate: PropTypes.func.isRequired,
 };
 
 GetStartedContainer.defaultProps = {

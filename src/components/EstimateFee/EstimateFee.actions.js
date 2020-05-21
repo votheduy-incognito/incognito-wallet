@@ -61,7 +61,7 @@ export const actionFetchFee = ({ amount, address }) => async (
     const account = accountSeleclor.defaultAccountSelector(state);
     const wallet = state?.wallet;
     const amountConverted = convert.toOriginalAmount(
-      convert.toHumanAmount(maxAmount, selectedPrivacy?.pDecimals),
+      convert.toHumanAmount(amount, selectedPrivacy?.pDecimals),
       selectedPrivacy?.pDecimals,
     );
     const fromAddress = account?.PaymentAddress;
@@ -75,18 +75,16 @@ export const actionFetchFee = ({ amount, address }) => async (
       amountConverted,
       accountWallet,
     );
-    feePTokenEst = await getEstimateFeeForPToken({
-      Prv: feeEst,
-      TokenID: selectedPrivacy?.tokenId,
-    });
+    if (selectedPrivacy?.tokenId !== CONSTANT_COMMONS.PRV.id) {
+      feePTokenEst = await getEstimateFeeForPToken({
+        Prv: feeEst,
+        TokenID: selectedPrivacy?.tokenId,
+      });
+    }
   } catch (error) {
     if (!feeEst) {
       feeEst = MAX_FEE_PER_TX;
     }
-    //TODO: mockup data
-    // if (!feePTokenEst) {
-    //   feePTokenEst = feeEst;
-    // }
     throw error;
   } finally {
     if (feeEst) {
@@ -96,7 +94,10 @@ export const actionFetchFee = ({ amount, address }) => async (
           change(
             formName,
             'fee',
-            format.amountFull(feeEst, CONSTANT_COMMONS.PRV.pDecimals),
+            format.toFixed(
+              convert.toHumanAmount(feeEst, CONSTANT_COMMONS.PRV.pDecimals),
+              CONSTANT_COMMONS.PRV.pDecimals,
+            ),
           ),
         ),
         await dispatch(focus(formName, 'fee')),

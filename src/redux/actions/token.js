@@ -168,30 +168,6 @@ export const actionAddFollowTokenSuccess = payload => ({
   payload,
 });
 
-export const actionFetchingExchangeRate = () => ({
-  type: type.ACTION_FETCHING_EXCHANGE_RATE,
-});
-
-export const actionFetchedExchangeRate = payload => ({
-  type: type.ACTION_FETCHED_EXCHANGE_RATE,
-  payload,
-});
-
-export const actionFetchFailExchangeRate = () => ({
-  type: type.ACTION_FETCH_FAIL_EXCHANGE_RATE,
-});
-
-export const actionGetExchangeRate = () => async (dispatch, getState) => {
-  try {
-    await dispatch(actionFetchingExchangeRate());
-    const data = await apiGetExchangeRate();
-    await dispatch(actionFetchedExchangeRate(data));
-  } catch (error) {
-    await dispatch(actionFetchFailExchangeRate());
-    throw error;
-  }
-};
-
 export const actionInitHistory = () => ({
   type: type.ACTION_INIT_HISTORY,
 });

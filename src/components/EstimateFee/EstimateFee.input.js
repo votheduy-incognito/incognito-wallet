@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableWithoutFeedback, Text } from 'react-native';
-import { Field, change } from 'redux-form';
+import { Field, change, focus } from 'redux-form';
 import { InputField, createForm, validator } from '@components/core/reduxForm';
 import { GENERAL } from '@src/constants/elements';
 import { generateTestId } from '@src/utils/misc';
@@ -107,22 +107,29 @@ const SupportFeeItem = props => {
 };
 
 const SupportFees = () => {
-  const { types, actived } = useSelector(estimateFeeSelector);
-  const { fee, feePDecimals } = useSelector(feeDataSelector);
+  const { types, actived, isFetched } = useSelector(estimateFeeSelector);
+  const { minFee: fee, feePDecimals, isUseTokenFee } = useSelector(
+    feeDataSelector,
+  );
   const dispatch = useDispatch();
   if (types.length === 0) {
     return;
   }
   const onChangeTypeFee = async type => {
-    const feeConverted = format.amountFull(fee, feePDecimals);
-    await new Promise.all([
-      await dispatch(actionChangeFeeType(type?.tokenId)),
-      await dispatch(change(formName, 'fee', feeConverted)),
-    ]);
+    await dispatch(actionChangeFeeType(type?.tokenId));
     if (typeof type?.onChangeFee === 'function') {
       type?.onChangeFee(type);
     }
   };
+  React.useEffect(() => {
+    if (isFetched) {
+      const feeConverted = convert.toHumanAmount(fee, feePDecimals);
+      dispatch(
+        change(formName, 'fee', format.toFixed(feeConverted, feePDecimals)),
+      );
+      dispatch(focus(formName, 'fee'));
+    }
+  }, [isUseTokenFee]);
   return (
     <View style={styled.spFeeContainer}>
       {types.map((type, index) => (

@@ -14,6 +14,8 @@ import round from 'lodash/round';
 import { CONSTANT_COMMONS } from '@src/constants';
 import Swipeout from 'react-native-swipeout';
 import { BtnDelete } from '@src/components/Button';
+import replace from 'lodash/replace';
+import { BIG_COINS } from '@src/screens/Dex/constants';
 import { styled } from './Token.styled';
 
 const defaultProps = {
@@ -33,12 +35,13 @@ const defaultProps = {
 };
 
 export const NormalText = ({
-  style,
-  stylePSymbol,
-  text,
+  style = null,
+  stylePSymbol = null,
+  containerStyle = null,
+  text = '',
   hasPSymbol = false,
 }) => (
-  <View style={styled.normalText}>
+  <View style={[styled.normalText, containerStyle]}>
     {hasPSymbol && <Text style={[styled.pSymbol, stylePSymbol]}>ℙ</Text>}
     <Text numberOfLines={1} style={[styled.text, style]}>
       {text}
@@ -81,7 +84,7 @@ export const AmountBasePRV = props => {
 export const ChangePrice = props => {
   const { change = '0', customStyle = null } = props;
   const isTokenDecrease = change[0] === '-';
-  const changeToNumber = Number(change.replace('-', ''));
+  const changeToNumber = Number(replace(change, '-', ''));
   if (changeToNumber === 0) {
     return null;
   }
@@ -97,9 +100,8 @@ export const ChangePrice = props => {
   );
 };
 
-const Price = () => {
-  const { tokenProps } = React.useContext(TokenContext);
-  const { pricePrv = 0, change = '0' } = tokenProps;
+const Price = props => {
+  const { pricePrv = 0, change = '0' } = props;
   return (
     <View style={styled.priceContainer}>
       <NormalText
@@ -123,8 +125,10 @@ export const Amount = props => {
     showGettingBalance = false,
     hasPSymbol = false,
     stylePSymbol = null,
+    containerStyle = null,
   } = props;
-  if (isGettingBalance && showGettingBalance) {
+  const shouldShowGettingBalance = isGettingBalance && showGettingBalance;
+  if (shouldShowGettingBalance) {
     return <ActivityIndicator size="small" />;
   }
   return (
@@ -133,6 +137,7 @@ export const Amount = props => {
       text={`${format.amount(amount, pDecimals)} ${showSymbol ? symbol : ''}`}
       hasPSymbol={hasPSymbol}
       stylePSymbol={stylePSymbol}
+      containerStyle={containerStyle}
     />
   );
 };
@@ -155,7 +160,7 @@ export const Symbol = () => {
   );
 };
 
-const TokenDefault = props => (
+const TokenPairPRV = props => (
   <TouchableWithoutFeedback onPress={props?.onPress}>
     <View style={[styled.container, props?.style]}>
       <View style={[styled.extra, styled.extraTop]}>
@@ -163,14 +168,14 @@ const TokenDefault = props => (
         <AmountBasePRV {...props} />
       </View>
       <View style={styled.extra}>
-        <Price />
+        <Price {...props} />
         <Amount {...props} />
       </View>
     </View>
   </TouchableWithoutFeedback>
 );
 
-const TokenPairPRV = props => (
+const TokenDefault = props => (
   <TouchableWithoutFeedback onPress={props?.onPress}>
     <View style={[styled.container, props?.style]}>
       <View style={styled.extra}>
@@ -188,9 +193,9 @@ const Token = props => {
     pairWithPrv = false,
   } = props;
   let TokenComponent = pairWithPrv ? (
-    <TokenDefault {...props} />
-  ) : (
     <TokenPairPRV {...props} />
+  ) : (
+    <TokenDefault {...props} />
   );
   if (swipable === true) {
     return (
