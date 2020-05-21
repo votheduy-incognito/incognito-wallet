@@ -1,4 +1,6 @@
 import { CONSTANT_COMMONS } from '@src/constants';
+import floor from 'lodash/floor';
+import toString from 'lodash/toString';
 import {
   ACTION_FETCHING_FEE,
   ACTION_FETCHED_FEE,
@@ -6,15 +8,28 @@ import {
   ACTION_ADD_FEE_TYPE,
   ACTION_CHANGE_FEE_TYPE,
   ACTION_FETCHED_PTOKEN_FEE,
+  ACTION_FETCHED_MIN_PTOKEN_FEE,
+  ACTION_CHANGE_FEE,
   ACTION_INIT,
+  ACTION_INIT_FETCHED,
 } from './EstimateFee.constant';
 import { MAX_FEE_PER_TX } from './EstimateFee.utils';
 
 const initialState = {
   isFetching: false,
   isFetched: false,
-  fee: null,
+  minFeePrv: null,
+  minFeePrvText: null,
+  feePrv: null,
+  feePrvText: '',
+  maxFeePrv: null,
+  maxFeePrvText: null,
   feePToken: null,
+  feePTokenText: '',
+  minFeePToken: null,
+  minFeePTokenText: '',
+  maxFeePToken: null,
+  maxFeePTokenText: '',
   types: [
     {
       tokenId: CONSTANT_COMMONS.PRV.id,
@@ -22,6 +37,7 @@ const initialState = {
     },
   ],
   actived: CONSTANT_COMMONS.PRV.id,
+  init: false,
 };
 
 export default (state = initialState, action) => {
@@ -29,6 +45,19 @@ export default (state = initialState, action) => {
   case ACTION_INIT: {
     return {
       ...initialState,
+      ...action.payload,
+    };
+  }
+  case ACTION_INIT_FETCHED: {
+    return {
+      ...state,
+      init: true,
+    };
+  }
+  case ACTION_FETCHED_MIN_PTOKEN_FEE: {
+    return {
+      ...state,
+      ...action.payload,
     };
   }
   case ACTION_FETCHING_FEE: {
@@ -42,7 +71,7 @@ export default (state = initialState, action) => {
       ...state,
       isFetching: false,
       isFetched: true,
-      fee: action.payload,
+      ...action.payload,
     };
   }
   case ACTION_FETCH_FAIL_FEE: {
@@ -50,7 +79,7 @@ export default (state = initialState, action) => {
       ...state,
       isFetched: false,
       isFetching: false,
-      fee: MAX_FEE_PER_TX,
+      feePrv: MAX_FEE_PER_TX,
     };
   }
   case ACTION_ADD_FEE_TYPE: {
@@ -72,7 +101,14 @@ export default (state = initialState, action) => {
   case ACTION_FETCHED_PTOKEN_FEE: {
     return {
       ...state,
-      feePToken: action.payload,
+      ...action.payload,
+    };
+  }
+  case ACTION_CHANGE_FEE: {
+    const { field, value } = action.payload;
+    return {
+      ...state,
+      [field]: value,
     };
   }
   default:

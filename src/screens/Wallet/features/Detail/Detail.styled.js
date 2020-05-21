@@ -10,8 +10,8 @@ export const styled = StyleSheet.create({
   },
   titleBtnTrade: {
     color: COLORS.black,
-    fontSize: FONT.SIZE.regular - 1,
-    fontFamily: FONT.NAME.regular,
+    fontSize: FONT.NORMALIZE(FONT.FONT_SIZES.regular - 1),
+    fontFamily: FONT.NAME.medium,
   },
 });
 
@@ -51,10 +51,12 @@ export const balanceStyled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     color: COLORS.colorGreyBold,
+    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.medium + 4),
   },
   changePrice: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.medium + 4),
   },
   hook: {
     flexDirection: 'row',

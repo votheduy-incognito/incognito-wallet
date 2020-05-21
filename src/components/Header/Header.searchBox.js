@@ -11,12 +11,12 @@ const styled = StyleSheet.create({
     width: '100%',
   },
   containerInputStyle: {
-    paddingBottom: 0,
+    marginRight: 30,
+    paddingBottom: 5,
   },
   input: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 6,
     color: COLORS.black,
   },
 });

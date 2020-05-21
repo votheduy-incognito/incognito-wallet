@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { FONT, COLORS } from '@src/styles';
+import { FONT, COLORS, UTILS } from '@src/styles';
 
 export const styled = StyleSheet.create({
   container: {
@@ -66,7 +66,7 @@ export const styledBalance = StyleSheet.create({
     fontSize: FONT.SIZE.superLarge,
     lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.superLarge + 4),
     color: COLORS.black,
-    flex: 1,
+    maxWidth: '85%',
   },
   pSymbol: {
     fontFamily: FONT.NAME.specialRegular,
@@ -75,7 +75,10 @@ export const styledBalance = StyleSheet.create({
     color: COLORS.black,
   },
   balanceContainer: {
-    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    width: '100%',
   },
 });
 

@@ -17,8 +17,7 @@ const styled = StyleSheet.create({
   name: {
     marginRight: 5,
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.regular - 1,
-    lineHeight: FONT.SIZE.regular + 2,
+    fontSize: FONT.NORMALIZE(FONT.FONT_SIZES.regular - 1),
     color: COLORS.black,
     maxWidth: 100,
   },

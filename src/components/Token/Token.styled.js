@@ -57,6 +57,7 @@ export const styled = StyleSheet.create({
   pSymbolBold: {
     fontFamily: FONT.NAME.specialRegular,
     fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.superMedium + 4),
     color: COLORS.black,
   },
   redText: {

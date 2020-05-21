@@ -15,7 +15,6 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import Swipeout from 'react-native-swipeout';
 import { BtnDelete } from '@src/components/Button';
 import replace from 'lodash/replace';
-import { BIG_COINS } from '@src/screens/Dex/constants';
 import { styled } from './Token.styled';
 
 const defaultProps = {
@@ -43,7 +42,7 @@ export const NormalText = ({
 }) => (
   <View style={[styled.normalText, containerStyle]}>
     {hasPSymbol && <Text style={[styled.pSymbol, stylePSymbol]}>ℙ</Text>}
-    <Text numberOfLines={1} style={[styled.text, style]}>
+    <Text numberOfLines={1} style={[styled.text, style]} ellipsizeMode="tail">
       {text}
     </Text>
   </View>
@@ -152,6 +151,7 @@ export const Symbol = () => {
   } = tokenProps;
   return (
     <NormalText
+      allowFontScaling={false}
       style={styled.bottomText}
       text={`${symbol} ${
         isErc20Token || isBep2Token ? `(${networkName})` : ''

@@ -1,4 +1,5 @@
 import { Platform, PixelRatio, Dimensions } from 'react-native';
+import { isIOS } from '@src/utils/platform';
 
 const FONT_FAMILY = Platform.OS === 'ios' ? 'SFProDisplay' : 'SF-Pro-Display-';
 const FONT_FAMILY_SPECIAL =
@@ -79,8 +80,8 @@ export function normalize(size) {
 const getFontSizes = () =>
   Object.keys(fontSizes).reduce((acc, key) => {
     const ratio = PixelRatio.get();
-    console.log('ratio', ratio);
-    acc[key] = normalize((fontSizes[key] - 3) * getFontScale);
+    const size = isIOS() ? fontSizes[key] - 4 : fontSizes[key] - 2;
+    acc[key] = normalize(size * getFontScale);
     return acc;
   }, {});
 

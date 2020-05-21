@@ -13,13 +13,19 @@ const styled = StyleSheet.create({
   prepend: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5
+    height: '100%',
   },
   line: {
     width: 1,
     height: 20,
     backgroundColor: 'transparent',
-    marginHorizontal: 10,
+    marginHorizontal: 7.5,
+  },
+  btn: {
+    width: 32,
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
@@ -42,10 +48,10 @@ const renderCustomField = ({
   showNavAddrBook,
   ...props
 }) => {
-  const { onChange, onBlur, onFocus, value } = input;
+  const { onChange, onBlur, onFocus, value, ...rest } = input;
   return (
     <TextInput
-      {...props}
+      {...{ ...props, ...rest }}
       onChangeText={t => input.onChange(t)}
       onBlur={onBlur}
       onFocus={onFocus}
@@ -56,6 +62,7 @@ const renderCustomField = ({
           {showNavAddrBook && (
             <>
               <TouchableOpacity
+                style={styled.btn}
                 onPress={onOpenAddressBook}
                 {...generateTestId(SEND.ADDRESS_BOOK_ICON)}
               >
@@ -65,6 +72,7 @@ const renderCustomField = ({
             </>
           )}
           <BtnQRCode
+            style={styled.btn}
             onPress={() => {
               openQrScanner(data => {
                 let res = getAddress(data);

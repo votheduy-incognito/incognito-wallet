@@ -61,12 +61,19 @@ const GroupButton = () => {
           titleStyle={groupBtnStyled.titleStyle}
           onPress={handleReceive}
         />
-      ) : (
+      ) : selected?.isDeposable ? (
         <ButtonBasic
           title="Shield"
           btnStyle={groupBtnStyled.btnStyle}
           titleStyle={groupBtnStyled.titleStyle}
           onPress={handleShield}
+        />
+      ) : (
+        <ButtonBasic
+          title="Receive"
+          btnStyle={groupBtnStyled.btnStyle}
+          titleStyle={groupBtnStyled.titleStyle}
+          onPress={handleReceive}
         />
       )}
       <ButtonBasic
