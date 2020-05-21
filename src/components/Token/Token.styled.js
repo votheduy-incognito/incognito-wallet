@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native';
 import { FONT, COLORS, UTILS } from '@src/styles';
-import { isIOS } from '@src/utils/platform';
 
 export const styled = StyleSheet.create({
   container: {
@@ -12,7 +11,7 @@ export const styled = StyleSheet.create({
     alignItems: 'center',
   },
   extraTop: {
-    marginBottom: isIOS() ? 10 : 5,
+    marginBottom: 5,
   },
   name: {
     flexDirection: 'row',
@@ -39,6 +38,7 @@ export const styled = StyleSheet.create({
     fontSize: FONT.SIZE.superMedium,
     color: COLORS.colorGreyBold,
     maxWidth: UTILS.screenWidth() / 2 - 30,
+    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.superMedium + 4),
   },
   verifiedIcon: {
     marginLeft: 5,
@@ -50,13 +50,14 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.specialRegular,
     fontSize: FONT.SIZE.medium,
     color: COLORS.colorGreyBold,
-    lineHeight: FONT.SIZE.medium + 3,
+    alignItems: 'center',
+    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.medium + 4),
+    height: '100%',
   },
   pSymbolBold: {
     fontFamily: FONT.NAME.specialRegular,
     fontSize: FONT.SIZE.superMedium,
     color: COLORS.black,
-    lineHeight: FONT.SIZE.superMedium + 3,
   },
   redText: {
     color: COLORS.red,
@@ -66,7 +67,7 @@ export const styled = StyleSheet.create({
   },
   bottomText: {
     fontSize: FONT.SIZE.medium,
-    fontFamily: FONT.NAME.medium
+    fontFamily: FONT.NAME.medium,
   },
   normalText: {
     flexDirection: 'row',

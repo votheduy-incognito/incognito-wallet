@@ -57,11 +57,6 @@ const TextInput = ({
     }
   }
 
-  function getLength() {
-    const { value, defaultValue } = props || {};
-    const data = value || defaultValue || '';
-    return data?.length || 0;
-  }
 
   return (
     <View style={[styleSheet.container, style]}>
@@ -101,13 +96,6 @@ const TextInput = ({
         )}
         {prependView}
       </View>
-      {/* {maxLength > 0 && (
-        <View style={styleSheet.maxLengthContainer}>
-          <Text style={styleSheet.maxLengthText}>
-            {getLength()}/{maxLength}
-          </Text>
-        </View>
-      )} */}
     </View>
   );
 };

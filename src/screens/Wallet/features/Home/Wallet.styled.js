@@ -39,14 +39,12 @@ export const styledHook = StyleSheet.create({
   title: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 3,
     color: COLORS.white,
     marginBottom: 5,
   },
   desc: {
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.medium,
     color: COLORS.white,
   },
 });
@@ -60,33 +58,35 @@ export const styledBalance = StyleSheet.create({
   title: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 6,
     color: COLORS.colorGreyBold,
     marginTop: 10,
   },
   balance: {
     fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superLarge + 10,
+    fontSize: FONT.SIZE.superLarge,
+    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.superLarge + 4),
     color: COLORS.black,
-    maxWidth: '80%',
+    flex: 1,
   },
   pSymbol: {
     fontFamily: FONT.NAME.specialRegular,
-    fontSize: FONT.SIZE.superLarge + 8,
-    lineHeight: FONT.SIZE.superLarge + 14,
+    fontSize: FONT.SIZE.veryLarge,
+    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.veryLarge + 4),
     color: COLORS.black,
+  },
+  balanceContainer: {
+    flex: 1,
   },
 });
 
 export const styledAddToken = StyleSheet.create({
   container: {
     marginTop: 50,
-    marginBottom: 30
+    marginBottom: 30,
   },
   title: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.regular + 6,
     color: COLORS.black,
   },
 });

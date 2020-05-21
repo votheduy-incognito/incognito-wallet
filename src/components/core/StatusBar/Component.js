@@ -27,7 +27,8 @@ const {
   WalletDetail,
   Send,
   ShieldGenQRCode,
-  AddManually
+  AddManually,
+  ReceiveCrypto
 } = routeNames;
 
 const whiteScreens = [
@@ -46,7 +47,8 @@ const whiteScreens = [
   WalletDetail,
   Send,
   ShieldGenQRCode,
-  AddManually
+  AddManually,
+  ReceiveCrypto
 ];
 const blue2Screens = [];
 const blue1Screens = [Wizard, Node];

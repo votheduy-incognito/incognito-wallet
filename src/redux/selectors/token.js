@@ -18,11 +18,6 @@ export const internalTokensSelector = createSelector(
   internalTokens => internalTokens || [],
 );
 
-export const exchangeRateSelector = createSelector(
-  state => state?.token?.exchangeRate,
-  exchangeRate => exchangeRate,
-);
-
 export const historyTokenSelector = createSelector(
   state => state?.token?.history,
   history => history,
@@ -36,6 +31,5 @@ export default {
   tokensFollowedSelector,
   pTokensSelector,
   internalTokensSelector,
-  exchangeRateSelector,
   historyTokenSelector,
 };

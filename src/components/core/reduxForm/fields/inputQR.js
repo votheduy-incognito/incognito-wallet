@@ -13,7 +13,7 @@ const styled = StyleSheet.create({
   prepend: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5,
+    marginBottom: 5
   },
   line: {
     width: 1,

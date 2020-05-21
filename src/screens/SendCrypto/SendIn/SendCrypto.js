@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import { Field, formValueSelector, isValid, change, focus } from 'redux-form';
 import { connect } from 'react-redux';
 import formatUtil from '@utils/format';
@@ -86,7 +86,6 @@ class SendCrypto extends React.Component {
 
   setFormValidation = () => {
     const { selectedPrivacy, minAmount, maxAmount } = this.props;
-    console.log(minAmount, maxAmount);
     if (Number.isFinite(maxAmount)) {
       this.setState({
         maxAmountValidator: validator.maxValue(maxAmount, {
@@ -177,80 +176,74 @@ class SendCrypto extends React.Component {
       toAddress,
       isFormValid,
       onShowFrequentReceivers,
-      reloading,
+      rfFocus,
+      rfChange,
       maxAmount,
     } = this.props;
     return (
-      <ScrollView
-        contentContainerStyle={homeStyle.scrollview}
-        refreshControl={<RefreshControl refreshing={reloading} />}
-      >
-        <View style={homeStyle.mainContainer}>
-          <Form>
-            {({ handleSubmit }) => (
-              <View style={homeStyle.form}>
-                <Field
-                  component={InputMaxValueField}
-                  name="amount"
-                  placeholder="0.0"
-                  label="Amount"
-                  style={homeStyle.input}
-                  maxValue={maxAmount}
-                  componentProps={{
-                    keyboardType: 'decimal-pad',
-                  }}
-                  validate={this.getAmountValidator()}
-                  {...generateTestId(SEND.AMOUNT_INPUT)}
-                />
-                <Field
-                  component={InputQRField}
-                  name="toAddress"
-                  label="To"
-                  placeholder="Name, Address"
-                  style={homeStyle.input}
-                  validate={validator.combinedIncognitoAddress}
-                  showNavAddrBook
-                  onOpenAddressBook={onShowFrequentReceivers}
-                  {...generateTestId(SEND.ADDRESS_INPUT)}
-                />
-                <EstimateFee
-                  style={homeStyle.input}
-                  amount={isFormValid ? amount : null}
-                  address={isFormValid ? toAddress : null}
-                  isFormValid={isFormValid}
-                />
-                <Field
-                  component={InputField}
-                  inputStyle={homeStyle.input}
-                  containerStyle={homeStyle.input}
-                  componentProps={{ multiline: true, numberOfLines: 10 }}
-                  name="message"
-                  placeholder="Add a note (optional)"
-                  label="Memo"
-                  maxLength={500}
-                  style={[
-                    homeStyle.input,
-                    {
-                      marginBottom: 0,
-                    },
-                  ]}
-                  validate={descriptionMaxBytes}
-                  {...generateTestId(SEND.MEMO_INPUT)}
-                />
-                <ButtonBasic
-                  title="Send"
-                  btnStyle={homeStyle.submitBtn}
-                  disabled={this.shouldDisabledSubmit()}
-                  onPress={handleSubmit(this.handleSend)}
-                  {...generateTestId(SEND.SUBMIT_BUTTON)}
-                />
-              </View>
-            )}
-          </Form>
-          <ReceiptModal />
-        </View>
+      <View style={homeStyle.container}>
+        <Form>
+          {({ handleSubmit }) => (
+            <View style={homeStyle.form}>
+              <Field
+                component={InputMaxValueField}
+                name="amount"
+                placeholder="0.0"
+                label="Amount"
+                style={homeStyle.input}
+                maxValue={maxAmount}
+                componentProps={{
+                  keyboardType: 'decimal-pad',
+                }}
+                validate={this.getAmountValidator()}
+                {...generateTestId(SEND.AMtOUNT_INPUT)}
+              />
+              <Field
+                onChange={text => {
+                  rfChange(formName, 'toAddress', text);
+                  rfFocus(formName, 'toAddress');
+                }}
+                component={InputQRField}
+                name="toAddress"
+                label="To"
+                placeholder="Name, Address"
+                style={homeStyle.input}
+                validate={validator.combinedIncognitoAddress}
+                showNavAddrBook
+                onOpenAddressBook={onShowFrequentReceivers}
+                {...generateTestId(SEND.ADDRESS_INPUT)}
+              />
+              <EstimateFee
+                style={homeStyle.input}
+                amount={isFormValid ? amount : null}
+                address={isFormValid ? toAddress : null}
+                isFormValid={isFormValid}
+              />
+              <Field
+                component={InputField}
+                inputStyle={homeStyle.input}
+                containerStyle={homeStyle.input}
+                name="message"
+                placeholder="Add a note (optional)"
+                label="Memo"
+                maxLength={500}
+                style={[homeStyle.input]}
+                validate={descriptionMaxBytes}
+                {...generateTestId(SEND.MEMO_INPUT)}
+              />
+              <ButtonBasic
+                title="Send"
+                btnStyle={homeStyle.submitBtn}
+                disabled={this.shouldDisabledSubmit()}
+                onPress={handleSubmit(this.handleSend)}
+                {...generateTestId(SEND.SUBMIT_BUTTON)}
+              />
+            </View>
+          )}
+        </Form>
+        <ReceiptModal />
         {isSending && <LoadingTx />}
-      </ScrollView>
+      </View>
     );
   }
 }

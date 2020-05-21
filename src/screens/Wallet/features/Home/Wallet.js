@@ -37,18 +37,6 @@ import {
 } from './Wallet.styled';
 import withWallet, { WalletContext } from './Wallet.enhance';
 
-// const BtnShield = () => {
-//   const navigation = useNavigation();
-//   const dispatch = useDispatch();
-//   const { guide } = useSelector(shieldStorageSelector);
-//   const handleShield = async () => {
-//     navigation.navigate(routeNames.Shield);
-//     await dispatch(actionToggleGuide());
-//   };
-//   return (
-
-//   );
-// };
 const GroupButton = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -124,6 +112,7 @@ const Balance = () => {
         customStyle={styledBalance.balance}
         hasPSymbol
         stylePSymbol={styledBalance.pSymbol}
+        containerStyle={styledBalance.balanceContainer}
       />
       <Text style={styledBalance.title}>Shielded Balance</Text>
     </View>
