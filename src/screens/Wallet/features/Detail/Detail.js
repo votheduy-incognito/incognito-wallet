@@ -20,6 +20,7 @@ import MainCryptoHistory from '@screens/Wallet/features/MainCryptoHistory';
 import PropTypes from 'prop-types';
 import { actionFetch as fetchDataShield } from '@screens/Shield/Shield.actions';
 import { ExHandler } from '@src/services/exception';
+import { CONSTANT_COMMONS } from '@src/constants';
 import withDetail from './Detail.enhance';
 import {
   styled,
@@ -29,11 +30,25 @@ import {
 } from './Detail.styled';
 
 const RightHeader = () => {
+  const navigation = useNavigation();
+  const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  if (
+    !selectedPrivacy?.pairWithPrv ||
+    selectedPrivacy?.tokenId === CONSTANT_COMMONS.PRV.id
+  ) {
+    return null;
+  }
   return (
     <ButtonBasic
       title="Trade"
       btnStyle={styled.btnTrade}
       titleStyle={styled.titleBtnTrade}
+      onPress={() =>
+        navigation.navigate(routeNames.Dex, {
+          inputTokenId: CONSTANT_COMMONS.PRV.id,
+          outputTokenId: selectedPrivacy?.tokenId,
+        })
+      }
     />
   );
 };

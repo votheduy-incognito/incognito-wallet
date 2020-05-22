@@ -129,7 +129,7 @@ const HistoryItemWrapper = ({ history, onCancelEtaHistory, ...otherProps }) => {
         }}
         right={[
           {
-            text: 'Cancel',
+            text: 'Remove',
             backgroundColor: COLORS.red,
             onPress: () => onCancelEtaHistory(history),
           },

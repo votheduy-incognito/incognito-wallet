@@ -71,7 +71,7 @@ class Withdraw extends React.Component {
     const {
       estimateFeeData: { fee, feeUnitByTokenId },
     } = prevState;
-
+    console.log('estimateFeeData', fee, feeUnitByTokenId);
     return {
       feeForBurn: fee,
       isUsedPRVFee: feeUnitByTokenId === CONSTANT_COMMONS.PRV_TOKEN_ID,
@@ -503,7 +503,7 @@ class Withdraw extends React.Component {
                 }}
                 name="toAddress"
                 label="To"
-                placeholder={`Enter ${tokenName} address`}
+                placeholder="Enter address"
                 validate={addressValidator}
                 onOpenAddressBook={() => {
                   // onChange will not works for now, we have to refactor after.
@@ -564,6 +564,17 @@ class Withdraw extends React.Component {
                   </Text>
                 </View>
               )}
+              {/* <EstimateFee
+                amount={
+                  isFormValid && !shouldBlockETHWrongAddress ? amount : null
+                }
+                address={
+                  isFormValid && !shouldBlockETHWrongAddress
+                    ? selectedPrivacy?.paymentAddress
+                    : null
+                }
+                isFormValid={isFormValid}
+              /> */}
               <EstimateFee
                 accountName={account?.name}
                 estimateFeeData={estimateFeeData}
