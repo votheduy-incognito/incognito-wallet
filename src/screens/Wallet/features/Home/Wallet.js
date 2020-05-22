@@ -19,14 +19,14 @@ import {
   totalShieldedTokensSelector,
   isGettingBalance as isGettingTotalBalanceSelector,
 } from '@src/redux/selectors/shared';
-import floor from 'lodash/floor';
 import { Amount } from '@src/components/Token/Token';
 import { shieldStorageSelector } from '@src/screens/Shield/Shield.selector';
 import { actionToggleGuide } from '@src/screens/Shield/Shield.actions';
 import Tooltip from '@src/components/Tooltip/Tooltip';
 import { COLORS } from '@src/styles';
-import format from '@src/utils/format';
 import convert from '@src/utils/convert';
+import { actionToggleModal } from '@components/Modal';
+import UnShieldModal from '@screens/UnShield/UnShield.modal';
 import {
   styled,
   styledHook,
@@ -43,7 +43,14 @@ const GroupButton = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { guide } = useSelector(shieldStorageSelector);
-  const handleUnShield = () => navigation.navigate(routeNames.SendCrypto);
+  const handleUnShield = async () => {
+    await dispatch(
+      actionToggleModal({
+        data: <UnShieldModal />,
+        visible: true,
+      }),
+    );
+  };
   const handleShield = async () => {
     navigation.navigate(routeNames.Shield);
     if (!guide) {
@@ -79,7 +86,7 @@ const GroupButton = () => {
           title="Unshield"
           btnStyle={styled.btnStyle}
           titleStyle={styled.titleStyle}
-          onRefresh={handleUnShield}
+          onPress={handleUnShield}
         />
       </View>
     </View>

@@ -53,9 +53,13 @@ class SendCryptoContainer extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    const { selectedPrivacy } = this.props;
+    const { tokenId } = selectedPrivacy;
     if (
       prevProps?.isGettingTotalBalance !== this.props?.isGettingTotalBalance ||
-      prevProps?.accountBalance !== this.props?.accountBalance
+      prevProps?.accountBalance !== this.props?.accountBalance ||
+      prevProps?.isGettingTotalBalance.includes(tokenId) !==
+        this.props?.isGettingTotalBalance.includes(tokenId)
     ) {
       this.initData();
     }
@@ -248,9 +252,9 @@ class SendCryptoContainer extends Component {
     } = this.props;
     try {
       const amount = selectedPrivacy?.amount;
-      const amountText = convertUtil.toHumanAmount(
-        selectedPrivacy?.amount,
-        selectedPrivacy?.pDecimals,
+      const amountText = formatUtil.toFixed(
+        convertUtil.toHumanAmount(amount, selectedPrivacy.pDecimals),
+        selectedPrivacy.pDecimals,
       );
       const maxFeePrv = accountBalance;
       const maxFeePrvText = formatUtil.toFixed(
@@ -262,6 +266,11 @@ class SendCryptoContainer extends Component {
         convertUtil.toHumanAmount(minFeePrv, CONSTANT_COMMONS.PRV.pDecimals),
         CONSTANT_COMMONS.PRV.pDecimals,
       );
+      const maxFeePToken = selectedPrivacy?.amount;
+      const maxFeePTokenText = formatUtil.toFixed(
+        convertUtil.toHumanAmount(maxFeePToken, selectedPrivacy?.pDecimals),
+        selectedPrivacy.pDecimals,
+      );
       actionInit({
         amount,
         amountText,
@@ -269,6 +278,8 @@ class SendCryptoContainer extends Component {
         maxFeePrvText,
         minFeePrv,
         minFeePrvText,
+        maxFeePToken,
+        maxFeePTokenText,
       });
     } catch (error) {
       throw error;
@@ -285,7 +296,11 @@ class SendCryptoContainer extends Component {
       receiptData,
       isSending,
     };
-    if (!selectedPrivacy || !estimateFee.init || isGettingTotalBalance) {
+    if (
+      !selectedPrivacy ||
+      !estimateFee.init ||
+      isGettingTotalBalance.length > 0
+    ) {
       return <LoadingContainer />;
     }
     return (
@@ -308,7 +323,7 @@ const mapState = state => ({
   getPrivacyDataByTokenID: selectedPrivacySeleclor.getPrivacyDataByTokenID(
     state,
   ),
-  isGettingTotalBalance: sharedSeleclor.isGettingBalance(state).length > 0,
+  isGettingTotalBalance: sharedSeleclor.isGettingBalance(state),
   accountBalance: accountSeleclor.defaultAccountBalanceSelector(state),
 });
 
@@ -339,7 +354,7 @@ SendCryptoContainer.propTypes = {
   actionInit: PropTypes.func.isRequired,
   actionInitFetched: PropTypes.func.isRequired,
   getPrivacyDataByTokenID: PropTypes.func.isRequired,
-  isGettingTotalBalance: PropTypes.bool.isRequired,
+  isGettingTotalBalance: PropTypes.array.isRequired,
   accountBalance: PropTypes.number.isRequired,
 };
 

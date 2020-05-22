@@ -24,6 +24,10 @@ export const formName = 'formEstimateFee';
 
 const Form = createForm(formName, {
   destroyOnUnmount: true,
+  enableReinitialize: true,
+  initialValues: {
+    fee: '',
+  },
 });
 
 const EstimateFeeInput = props => {
@@ -57,7 +61,7 @@ const EstimateFeeInput = props => {
     }
   };
   React.useEffect(() => {
-    if (fee) {
+    if (fee && isFetched) {
       let maxFeeValidator;
       let minFeeValidator;
       try {

@@ -1,11 +1,4 @@
-import {
-  Button,
-  Container,
-  ScrollView,
-  Toast,
-  Text,
-  View,
-} from '@components/core';
+import { Toast, Text } from '@components/core';
 import {
   createForm,
   InputMaxValueField,
@@ -14,7 +7,11 @@ import {
 } from '@components/core/reduxForm';
 import EstimateFee from '@components/EstimateFee';
 import LoadingTx from '@components/LoadingTx';
-import { CONSTANT_COMMONS, CONSTANT_EVENTS, CONSTANT_CONFIGS } from '@src/constants';
+import {
+  CONSTANT_COMMONS,
+  CONSTANT_EVENTS,
+  CONSTANT_CONFIGS,
+} from '@src/constants';
 import { ExHandler } from '@services/exception';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
@@ -24,17 +21,17 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { isExchangeRatePToken } from '@services/wallet/RpcClientService';
 import { connect } from 'react-redux';
-import { detectToken } from '@utils/misc';
+import { detectToken, generateTestId } from '@utils/misc';
 import { change, Field, formValueSelector, isValid, focus } from 'redux-form';
 import { logEvent } from '@services/firebase';
 import accountService from '@services/wallet/accountService';
 import { MESSAGES } from '@screens/Dex/constants';
-import TokenSelect from '@components/TokenSelect';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
-import CurrentBalance from '@components/CurrentBalance';
-import { RefreshControl } from 'react-native';
+import { View } from 'react-native';
 import { actionToggleModal } from '@src/components/Modal';
 import { COLORS } from '@src/styles';
+import { ButtonBasic } from '@src/components/Button';
+import { SEND } from '@src/constants/elements';
 import style from './style';
 import Receipt from './Withdraw.receipt';
 
@@ -85,7 +82,7 @@ class Withdraw extends React.Component {
     await this.getMinAmountAPI();
     this.setBothAmount();
     this.getSupportedFeeTypes();
-  }
+  };
 
   getMinAmountAPI = async () => {
     await fetch(CONSTANT_CONFIGS.API_BASE_URL + '/service/min-max-amount')
@@ -93,14 +90,12 @@ class Withdraw extends React.Component {
       .then(fin => {
         if (fin?.Result && Array.isArray(fin.Result)) {
           this.setState({
-            listMinAmount: fin.Result
+            listMinAmount: fin.Result,
           });
         }
       })
-      .catch(() => {
-
-      });
-  }
+      .catch(() => {});
+  };
 
   setMaxAmount() {
     this.setFormValidator({ maxAmount: this.getMaxAmount() });
@@ -299,9 +294,7 @@ class Withdraw extends React.Component {
     if (shouldBlockETHWrongAddress) {
       return true;
     }
-    const {
-      isFormValid
-    } = this.props;
+    const { isFormValid } = this.props;
     if (!isFormValid) {
       return true;
     }
@@ -418,7 +411,7 @@ class Withdraw extends React.Component {
     const { tempAddress } = this.state;
     setSelectedPrivacy(tokenId);
     this.setState({
-      shouldBlockETHWrongAddress: false
+      shouldBlockETHWrongAddress: false,
     });
 
     this.clearAddressField();
@@ -428,17 +421,20 @@ class Withdraw extends React.Component {
     const { rfChange } = this.props;
     rfChange('withdraw', 'toAddress', null);
     this.setState({ shouldBlockETHWrongAddress: false });
-  }
+  };
 
   checkIfValidAddressETH = (address, isETH, isETHValid) => {
     if (isETH && isETHValid && address != '') {
       try {
-        let url = CONSTANT_CONFIGS.API_BASE_URL + '/eta/is-eth-account?address=' + address;
+        let url =
+          CONSTANT_CONFIGS.API_BASE_URL +
+          '/eta/is-eth-account?address=' +
+          address;
         fetch(url)
-          .then((response) => {
+          .then(response => {
             return response.json();
           })
-          .then((data) => {
+          .then(data => {
             if (data && data.Result === false) {
               this.setState({ shouldBlockETHWrongAddress: true });
             } else {
@@ -451,13 +447,13 @@ class Withdraw extends React.Component {
     } else {
       this.setState({ shouldBlockETHWrongAddress: false });
     }
-  }
+  };
   // When click into Max button, auto set to max value with substract fee
-  reReduceMaxAmount = (amount) => {
+  reReduceMaxAmount = amount => {
     // Holding on next stage
     const { rfChange } = this.props;
     rfChange(formName, 'amount', `${amount}`);
-  }
+  };
 
   render() {
     const {
@@ -487,150 +483,142 @@ class Withdraw extends React.Component {
       isErc20Token,
     );
     const maxAmount = this.getMaxAmount();
-    let isETH = isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
+    let isETH =
+      isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
     let { shouldBlockETHWrongAddress } = this.state;
     return (
-      <ScrollView
-        style={style.container}
-        refreshControl={(
-          <RefreshControl
-            refreshing={reloading}
-          />
-        )}
-      >
-        <Container style={style.mainContainer}>
-          <View>
-            <CurrentBalance
-              select={
-                selectable ? (
-                  <TokenSelect onSelect={this.handleSelectToken} onlyPToken />
-                ) : null
-              }
-            />
-          </View>
-          <Form style={style.form}>
-            {({ handleSubmit, submitting }) => (
-              <>
-                <Field
-                  // This is temporarily
-                  autoFocus
-                  component={InputQRField}
-                  onChange={(event, text) => {
-                    this.setState({ tempAddress: text }, () => {
-                    });
-                    // I wanna check text is ETH valid coin
-                    let ETHValid = walletValidator.validate(text, 'ETH', 'both');
-                    this.checkIfValidAddressETH(text, isETH, ETHValid);
-                  }}
-                  name="toAddress"
-                  label="To"
-                  placeholder={`Enter your ${tokenName} address`}
-                  style={style.input}
-                  validate={addressValidator}
-                  onOpenAddressBook={() => {
-                    // onChange will not works for now, we have to refactor after.
-                    this.clearAddressField();
-                    // Clear address field for a while before going to refactor.
-                    onShowFrequentReceivers();
-                  }}
-                  showNavAddrBook
-                />
-                {(isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) && (
-                  <Text style={[style.warning, shouldBlockETHWrongAddress ? { color: COLORS.red } : {}]}>
-                    Please withdraw to a wallet address, not a smart contract address.
-                  </Text>
-                )}
-                <Field
-                  onChange={(text) => {
-                    // this.setFormValidator({ minAmount: this.getMinAmount() });
-                    // this.setFormValidator({ maxAmount: this.getMaxAmount() });
-                    rfFocus(formName, 'amount');
-                  }}
-                  component={InputMaxValueField}
-                  name="amount"
-                  label="Amount"
-                  placeholder="Amount"
-                  style={style.input}
-                  maxValue={maxAmount}
-                  componentProps={{
-                    keyboardType: 'decimal-pad',
-                  }}
-                  validate={[
-                    ...validator.combinedAmount,
-                    ...maxAmountValidator ? [maxAmountValidator] : [],
-                    ...minAmountValidator ? [minAmountValidator] : [],
-                    ...detectToken.ispNEO(selectedPrivacy?.tokenId) ? [...validator.combinedNanoAmount] : [],
+      <View style={style.container}>
+        <Form>
+          {({ handleSubmit, submitting }) => (
+            <View style={style.mainContainer}>
+              <Field
+                // This is temporarily
+                autoFocus
+                component={InputQRField}
+                onChange={(event, text) => {
+                  this.setState({ tempAddress: text }, () => {});
+                  // I wanna check text is ETH valid coin
+                  let ETHValid = walletValidator.validate(text, 'ETH', 'both');
+                  this.checkIfValidAddressETH(text, isETH, ETHValid);
+                }}
+                name="toAddress"
+                label="To"
+                placeholder={`Enter ${tokenName} address`}
+                validate={addressValidator}
+                onOpenAddressBook={() => {
+                  // onChange will not works for now, we have to refactor after.
+                  this.clearAddressField();
+                  // Clear address field for a while before going to refactor.
+                  onShowFrequentReceivers();
+                }}
+                showNavAddrBook
+              />
+              {(isErc20Token ||
+                externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) && (
+                <Text
+                  style={[
+                    style.warning,
+                    shouldBlockETHWrongAddress ? { color: COLORS.red } : {},
                   ]}
-                />
-                {detectToken.ispBNB(selectedPrivacy?.tokenId) && (
-                  <View style={style.memoContainer}>
-                    <Field
-                      component={InputQRField}
-                      name="memo"
-                      label="Memo (optional)"
-                      placeholder="Enter a memo (max 125 characters)"
-                      style={style.input}
-                      validate={memoMaxLength}
-                    />
-                    <Text style={style.memoText}>
-                      * For withdrawals to wallets on exchanges (e.g. Binance,
-                      etc.), enter your memo to avoid loss of funds.
-                    </Text>
+                >
+                  Please withdraw to a wallet address, not a smart contract
+                  address.
+                </Text>
+              )}
+              <Field
+                onChange={text => {
+                  // this.setFormValidator({ minAmount: this.getMinAmount() });
+                  // this.setFormValidator({ maxAmount: this.getMaxAmount() });
+                  rfFocus(formName, 'amount');
+                }}
+                component={InputMaxValueField}
+                name="amount"
+                label="Amount"
+                placeholder="Amount"
+                maxValue={maxAmount}
+                componentProps={{
+                  keyboardType: 'decimal-pad',
+                }}
+                validate={[
+                  ...validator.combinedAmount,
+                  ...(maxAmountValidator ? [maxAmountValidator] : []),
+                  ...(minAmountValidator ? [minAmountValidator] : []),
+                  ...(detectToken.ispNEO(selectedPrivacy?.tokenId)
+                    ? [...validator.combinedNanoAmount]
+                    : []),
+                ]}
+              />
+              {detectToken.ispBNB(selectedPrivacy?.tokenId) && (
+                <View style={style.memoContainer}>
+                  <Field
+                    component={InputQRField}
+                    name="memo"
+                    label="Memo (optional)"
+                    placeholder="Enter a memo (max 125 characters)"
+                    style={style.input}
+                    validate={memoMaxLength}
+                  />
+                  <Text style={style.memoText}>
+                    * For withdrawals to wallets on exchanges (e.g. Binance,
+                    etc.), enter your memo to avoid loss of funds.
+                  </Text>
+                </View>
+              )}
+              <EstimateFee
+                accountName={account?.name}
+                estimateFeeData={estimateFeeData}
+                onNewFeeData={this.handleSelectFee}
+                onCalculatedFeeSuccess={this.onCalculatedFeeSuccess}
+                types={supportedFeeTypes}
+                amount={
+                  isFormValid && !shouldBlockETHWrongAddress ? amount : null
+                }
+                toAddress={
+                  isFormValid && !shouldBlockETHWrongAddress
+                    ? selectedPrivacy?.paymentAddress
+                    : null
+                } // est fee on the same network, dont care which address will be send to
+                feeText={(
+                  <View>
+                    {fee && (
+                      <Text style={style.feeText}>
+                        Transaction fee:{' '}
+                        {formatUtil.amountFull(
+                          fee,
+                          isUsedPRVFee
+                            ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
+                            : selectedPrivacy?.pDecimals,
+                        )}{' '}
+                        {feeUnit ? feeUnit : ''}
+                      </Text>
+                    )}
+                    {feeForBurn && (
+                      <Text style={style.feeText}>
+                        Withdraw fee:{' '}
+                        {formatUtil.amountFull(
+                          feeForBurn,
+                          isUsedPRVFee
+                            ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
+                            : selectedPrivacy?.pDecimals,
+                        )}{' '}
+                        {feeUnit ? feeUnit : ''}
+                      </Text>
+                    )}
                   </View>
                 )}
-                <EstimateFee
-                  accountName={account?.name}
-                  estimateFeeData={estimateFeeData}
-                  onNewFeeData={this.handleSelectFee}
-                  onCalculatedFeeSuccess={this.onCalculatedFeeSuccess}
-                  types={supportedFeeTypes}
-                  amount={isFormValid && !shouldBlockETHWrongAddress ? amount : null}
-                  toAddress={
-                    isFormValid && !shouldBlockETHWrongAddress ? selectedPrivacy?.paymentAddress : null
-                  } // est fee on the same network, dont care which address will be send to
-                  feeText={(
-                    <View>
-                      {fee && (
-                        <Text style={style.feeText}>
-                          Transaction fee:{' '}
-                          {formatUtil.amountFull(
-                            fee,
-                            isUsedPRVFee
-                              ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
-                              : selectedPrivacy?.pDecimals,
-                          )}{' '}
-                          {feeUnit ? feeUnit : ''}
-                        </Text>
-                      )}
-                      {feeForBurn && (
-                        <Text style={style.feeText}>
-                          Withdraw fee:{' '}
-                          {formatUtil.amountFull(
-                            feeForBurn,
-                            isUsedPRVFee
-                              ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
-                              : selectedPrivacy?.pDecimals,
-                          )}{' '}
-                          {feeUnit ? feeUnit : ''}
-                        </Text>
-                      )}
-                    </View>
-                  )}
-                />
-                <Button
-                  title="Send"
-                  style={style.submitBtn}
-                  disabled={this.shouldDisabledSubmit()}
-                  onPress={handleSubmit(this.handleSubmit)}
-                  isAsync
-                  isLoading={submitting}
-                />
-                {submitting && <LoadingTx />}
-              </>
-            )}
-          </Form>
-        </Container>
-      </ScrollView>
+              />
+              <ButtonBasic
+                title="Send"
+                btnStyle={style.submitBtn}
+                disabled={this.shouldDisabledSubmit()}
+                onPress={handleSubmit(this.handleSubmit)}
+                {...generateTestId(SEND.SUBMIT_BUTTON)}
+              />
+              {submitting && <LoadingTx />}
+            </View>
+          )}
+        </Form>
+      </View>
     );
   }
 }
@@ -673,4 +661,7 @@ const mapDispatch = {
   actionToggleModal,
 };
 
-export default connect(mapState, mapDispatch)(Withdraw);
+export default connect(
+  mapState,
+  mapDispatch,
+)(Withdraw);

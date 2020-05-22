@@ -28,7 +28,8 @@ const {
   Send,
   ShieldGenQRCode,
   AddManually,
-  ReceiveCrypto
+  ReceiveCrypto,
+  UnShield,
 } = routeNames;
 
 const whiteScreens = [
@@ -48,7 +49,8 @@ const whiteScreens = [
   Send,
   ShieldGenQRCode,
   AddManually,
-  ReceiveCrypto
+  ReceiveCrypto,
+  UnShield,
 ];
 const blue2Screens = [];
 const blue1Screens = [Wizard, Node];

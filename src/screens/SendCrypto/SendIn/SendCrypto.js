@@ -39,10 +39,12 @@ const selector = formValueSelector(formName);
 const initialFormValues = {
   amount: '',
   toAddress: '',
+  message: '',
 };
 const Form = createForm(formName, {
   initialValues: initialFormValues,
   destroyOnUnmount: true,
+  enableReinitialize: true,
 });
 
 const descriptionMaxBytes = validator.maxBytes(500, {
@@ -67,15 +69,24 @@ class SendCrypto extends React.Component {
     const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
     const {
       feeData: { fee, feeUnitByTokenId },
+      maxAmountData: { maxAmount },
+      minAmount,
+      feeData,
     } = this.props;
     const {
       feeData: { fee: oldFee, feeUnitByTokenId: oldFeeUnitByTokenId },
+      maxAmountData: { maxAmount: oldMaxAmount },
+      minAmount: oldMinAmount,
+      feeData: oldFeeData,
     } = prevProps;
 
     if (
       selectedPrivacy?.tokenId !== oldSelectedPrivacy?.tokenId ||
       fee !== oldFee ||
-      feeUnitByTokenId !== oldFeeUnitByTokenId
+      feeUnitByTokenId !== oldFeeUnitByTokenId ||
+      maxAmount !== oldMaxAmount ||
+      minAmount !== oldMinAmount ||
+      feeData !== oldFeeData
     ) {
       // need to re-calc min amount if token decimals was changed
       this.setFormValidation();
@@ -87,15 +98,14 @@ class SendCrypto extends React.Component {
   }
 
   setFormValidation = () => {
-    const { selectedPrivacy, minAmount, maxAmount } = this.props;
+    const { selectedPrivacy, minAmount, maxAmountData } = this.props;
+    const { maxAmount, maxAmountText } = maxAmountData;
     if (Number.isFinite(maxAmount)) {
       this.setState({
         maxAmountValidator: validator.maxValue(maxAmount, {
           message:
             maxAmount > 0
-              ? `Max amount you can send is ${formatUtil.number(
-                maxAmount,
-              )} ${selectedPrivacy?.externalSymbol ||
+              ? `Max amount you can send is ${maxAmountText} ${selectedPrivacy?.externalSymbol ||
                   selectedPrivacy?.symbol}`
               : 'Your balance is not enough to send',
         }),
@@ -184,13 +194,13 @@ class SendCrypto extends React.Component {
       onShowFrequentReceivers,
       rfFocus,
       rfChange,
-      maxAmount,
+      maxAmountData,
     } = this.props;
     return (
       <View style={homeStyle.container}>
         <Form>
           {({ handleSubmit }) => (
-            <View style={homeStyle.form}>
+            <View>
               <Field
                 onChange={text => {
                   rfChange(formName, 'amount', text);
@@ -200,9 +210,13 @@ class SendCrypto extends React.Component {
                 name="amount"
                 placeholder="0.0"
                 label="Amount"
-                maxValue={maxAmount}
+                maxValue={maxAmountData?.maxAmountText}
                 componentProps={{
                   keyboardType: 'decimal-pad',
+                  onPressMax: () => {
+                    rfChange(formName, 'amount', maxAmountData?.maxAmountText);
+                    rfFocus(formName, 'amount');
+                  },
                 }}
                 validate={this.getAmountValidator()}
                 {...generateTestId(SEND.AMtOUNT_INPUT)}
@@ -278,10 +292,12 @@ SendCrypto.propTypes = {
   reloading: PropTypes.bool,
   Balance: PropTypes.func.isRequired,
   estimateFee: PropTypes.any.isRequired,
-  maxAmount: PropTypes.number.isRequired,
+  maxAmountData: PropTypes.object.isRequired,
   minAmount: PropTypes.number.isRequired,
   feeData: PropTypes.any.isRequired,
   isFormEstimateFeeValid: PropTypes.bool.isRequired,
+  rfChange: PropTypes.func.isRequired,
+  rfFocus: PropTypes.func.isRequired,
 };
 
 const mapState = state => ({
@@ -289,7 +305,7 @@ const mapState = state => ({
   toAddress: selector(state, 'toAddress'),
   isFormValid: isValid(formName)(state),
   estimateFee: estimateFeeSelector(state),
-  maxAmount: maxAmountSelector(state),
+  maxAmountData: maxAmountSelector(state),
   minAmount: minAmountSelector(state),
   feeData: feeDataSelector(state),
   isFormEstimateFeeValid: isValid(formEstimateFee)(state),
