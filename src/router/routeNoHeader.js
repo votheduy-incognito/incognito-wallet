@@ -11,7 +11,7 @@ import ShieldGenQRCode from '@screens/Shield/features/GenQRCode';
 import FollowToken from '@screens/FollowToken';
 import AddManually from '@screens/AddManually';
 import WalletDetail from '@screens/Wallet/features/Detail';
-// import WalletDetail from '@screens/WalletDetail';
+import UnShield from '@screens/UnShield';
 import ReceiveCrypto from '@screens/Wallet/features/ReceiveCrypto';
 import Send from '@screens/Send';
 import routeNames from './routeNames';
@@ -73,6 +73,10 @@ const routes = [
     screen: Send,
     name: routeNames.Send,
   },
+  {
+    screen: UnShield,
+    name: routeNames.UnShield
+  }
 ];
 
 export const getRoutesNoHeader = () =>

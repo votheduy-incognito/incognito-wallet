@@ -140,10 +140,6 @@ export const actionFetchFee = ({ amount, address }) => async (
         convert.toHumanAmount(minFeePToken, selectedPrivacy?.pDecimals),
         selectedPrivacy?.pDecimals,
       );
-      const maxFeePToken = selectedPrivacy?.amount;
-      const maxFeePTokenText = format.toFixed(
-        convert.toHumanAmount(maxFeePToken, selectedPrivacy?.pDecimals),
-      );
       await new Promise.all([
         await dispatch(
           actionAddFeeType({
@@ -155,8 +151,6 @@ export const actionFetchFee = ({ amount, address }) => async (
           actionFetchedMinPTokenFee({
             minFeePToken,
             minFeePTokenText,
-            maxFeePToken,
-            maxFeePTokenText,
           }),
         ),
       ]);

@@ -2,6 +2,8 @@ import { createSelector } from 'reselect';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import convert from '@src/utils/convert';
 import { CONSTANT_COMMONS } from '@src/constants';
+import format from '@src/utils/format';
+import floor from 'lodash/floor';
 
 export const estimateFeeSelector = createSelector(
   state => state.estimateFee,
@@ -55,7 +57,12 @@ export const maxAmountSelector = createSelector(
       const newAmount = amount - convert.toNumber(fee);
       amount = newAmount > 0 ? newAmount : 0;
     }
-    return Math.max(amount, 0);
+    const maxAmount = Math.max(floor(amount, 9), 0);
+    const maxAmountText = format.amountFull(maxAmount);
+    return {
+      maxAmount,
+      maxAmountText,
+    };
   },
 );
 
