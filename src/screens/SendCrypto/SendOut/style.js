@@ -22,15 +22,17 @@ export default StyleSheet.create({
     marginTop: 20,
   },
   memoContainer: {
-    marginTop: 10,
+    // marginTop: 10,
   },
   memoText: {
-    fontSize: 14,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.regular + 4),
     color: COLORS.lightGrey3,
   },
   warning: {
-    fontSize: 14,
-    color: COLORS.lightGrey3,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.regular + 4),
+    color: COLORS.colorGreyBold,
     textAlign: 'center',
     marginBottom: 15,
   },

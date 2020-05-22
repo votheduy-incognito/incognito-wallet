@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Text,
-  View,
-  TouchableWithoutFeedback,
-  ActivityIndicator,
-} from 'react-native';
+import { Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
 import withToken, { TokenContext } from '@src/components/Token/Token.enhance';
 import { TokenVerifiedIcon } from '@src/components/Icons';
@@ -161,7 +156,7 @@ export const Symbol = () => {
 };
 
 const TokenPairPRV = props => (
-  <TouchableWithoutFeedback onPress={props?.onPress}>
+  <TouchableOpacity onPress={props?.onPress}>
     <View style={[styled.container, props?.style]}>
       <View style={[styled.extra, styled.extraTop]}>
         <Name />
@@ -172,18 +167,18 @@ const TokenPairPRV = props => (
         <Amount {...props} />
       </View>
     </View>
-  </TouchableWithoutFeedback>
+  </TouchableOpacity>
 );
 
 const TokenDefault = props => (
-  <TouchableWithoutFeedback onPress={props?.onPress}>
+  <TouchableOpacity onPress={props?.onPress}>
     <View style={[styled.container, props?.style]}>
       <View style={styled.extra}>
         <Name />
         <Amount {...{ ...props, customStyle: styled.boldText }} />
       </View>
     </View>
-  </TouchableWithoutFeedback>
+  </TouchableOpacity>
 );
 
 const Token = props => {

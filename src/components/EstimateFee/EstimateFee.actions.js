@@ -1,4 +1,7 @@
-import { getEstimateFeeForNativeToken } from '@src/services/wallet/RpcClientService';
+import {
+  getEstimateFeeForNativeToken,
+  getEstimateFeeForPToken,
+} from '@src/services/wallet/RpcClientService';
 import { selectedPrivacySeleclor, accountSeleclor } from '@src/redux/selectors';
 import convert from '@src/utils/convert';
 import { change, focus } from 'redux-form';
@@ -17,7 +20,7 @@ import {
   ACTION_INIT,
   ACTION_INIT_FETCHED,
 } from './EstimateFee.constant';
-import { getEstimateFeeForPToken } from './EstimateFee.services';
+import { apiGetEstimateFeeFromChain } from './EstimateFee.services';
 // eslint-disable-next-line import/no-cycle
 import { estimateFeeSelector } from './EstimateFee.selector';
 // eslint-disable-next-line import/no-cycle
@@ -69,7 +72,7 @@ export const actionFetchFee = ({ amount, address }) => async (
     await dispatch(actionFetchingFee());
     const account = accountSeleclor.defaultAccountSelector(state);
     const wallet = state?.wallet;
-    const amountConverted = convert.toOriginalAmount(
+    const originalAmount = convert.toOriginalAmount(
       convert.toHumanAmount(amount, selectedPrivacy?.pDecimals),
       selectedPrivacy?.pDecimals,
     );
@@ -78,25 +81,47 @@ export const actionFetchFee = ({ amount, address }) => async (
     const accountWallet = wallet.getAccountByName(
       account?.name || account?.AccountName,
     );
-    const [estEstData, minFeePTokenEstData] = await new Promise.all([
-      await getEstimateFeeForNativeToken(
+    if (selectedPrivacy?.isMainCrypto) {
+      feeEst = await getEstimateFeeForNativeToken(
         fromAddress,
         toAddress,
-        amountConverted,
+        originalAmount,
         accountWallet,
-      ),
-      await getEstimateFeeForPToken({
-        Prv: DEFAULT_FEE_PER_KB, //min fee prv
+      );
+    } else if (selectedPrivacy?.isToken) {
+      const tokenObject = {
+        Privacy: true,
         TokenID: selectedPrivacy?.tokenId,
-      }),
-    ]);
-    feeEst = estEstData;
-    minFeePTokenEst = minFeePTokenEstData;
-    if (!selectedPrivacy?.isMainCrypto) {
-      feePTokenEst = await getEstimateFeeForPToken({
-        Prv: feeEst,
-        TokenID: selectedPrivacy?.tokenId,
-      });
+        TokenName: selectedPrivacy?.name,
+        TokenSymbol: selectedPrivacy?.symbol,
+        TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
+        TokenAmount: originalAmount,
+        TokenReceivers: {
+          PaymentAddress: toAddress,
+          Amount: originalAmount,
+        },
+      };
+      const [feeEstData, minFeePTokenEstData] = await new Promise.all([
+        await getEstimateFeeForPToken(
+          fromAddress,
+          toAddress,
+          originalAmount,
+          tokenObject,
+          accountWallet,
+        ),
+        await apiGetEstimateFeeFromChain({
+          Prv: DEFAULT_FEE_PER_KB, //min fee prv
+          TokenID: selectedPrivacy?.tokenId,
+        }),
+      ]);
+      feeEst = feeEstData;
+      minFeePTokenEst = minFeePTokenEstData;
+      if (feeEst) {
+        feePTokenEst = await apiGetEstimateFeeFromChain({
+          Prv: feeEst,
+          TokenID: selectedPrivacy?.tokenId,
+        });
+      }
     }
   } catch (error) {
     if (!feeEst) {

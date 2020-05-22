@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { UTILS } from '@src/styles';
 import PropTypes from 'prop-types';
 import { Name, Symbol, Amount } from './Token';
@@ -15,7 +15,7 @@ const _styled = StyleSheet.create({
 const TokenBasic = props => {
   const { onPress, style, showBalance = false } = props;
   return (
-    <TouchableWithoutFeedback onPress={onPress}>
+    <TouchableOpacity onPress={onPress}>
       <View style={[styled.container, style]}>
         <View style={[styled.extra]}>
           <Name styledName={_styled.styledName} />
@@ -27,7 +27,7 @@ const TokenBasic = props => {
           <Symbol />
         </View>
       </View>
-    </TouchableWithoutFeedback>
+    </TouchableOpacity>
   );
 };
 
