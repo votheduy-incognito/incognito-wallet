@@ -4,6 +4,9 @@ import { FONT, COLORS } from '@src/styles';
 export const styled = StyleSheet.create({
   spFeeContainer: {
     flexDirection: 'row',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   spFeeItem: {
     marginRight: 5,

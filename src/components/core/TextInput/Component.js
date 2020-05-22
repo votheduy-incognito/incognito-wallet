@@ -27,7 +27,6 @@ const TextInput = ({
 }) => {
   const [focus, setFocus] = useState(false);
   let textInput = React.createRef();
-
   React.useEffect(() => {
     if (textInput && onRef) {
       onRef(textInput);
@@ -57,7 +56,6 @@ const TextInput = ({
     }
   }
 
-
   return (
     <View style={[styleSheet.container, style]}>
       {label && (
@@ -78,11 +76,11 @@ const TextInput = ({
           placeholderTextColor={COLORS.colorGreyBold}
           returnKeyType="done"
           maxLength={maxLength}
-          {...props}
           style={[styleSheet.input, inputStyle]}
           onFocus={handleFocus}
           onBlur={handleBlur}
           ref={textInput}
+          {...props}
         />
         {clearable && focus && (
           <TouchableOpacity onPress={handleClear}>

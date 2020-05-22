@@ -29,6 +29,7 @@ import {
   minAmountSelector,
   feeDataSelector,
 } from '@src/components/EstimateFee/EstimateFee.selector';
+import convert from '@src/utils/convert';
 import { homeStyle } from './style';
 
 export const formName = 'sendCrypto';
@@ -41,6 +42,7 @@ const initialFormValues = {
 };
 const Form = createForm(formName, {
   initialValues: initialFormValues,
+  destroyOnUnmount: true,
 });
 
 const descriptionMaxBytes = validator.maxBytes(500, {
@@ -117,8 +119,12 @@ class SendCrypto extends React.Component {
       return;
     }
     try {
+      const originalFee = convert.toOriginalAmount(
+        convert.toNumber(feeData.fee),
+        feeData.feePDecimals,
+      );
       if (typeof handleSend === 'function') {
-        await handleSend({ ...values, ...feeData });
+        await handleSend({ ...feeData, ...values, originalFee });
       }
     } catch (e) {
       if (e.message === MESSAGES.NOT_ENOUGH_NETWORK_FEE) {
@@ -133,8 +139,8 @@ class SendCrypto extends React.Component {
   };
 
   shouldDisabledSubmit = () => {
-    const { isFormValid, estimateFee, isFormEstimateFeeValid } = this.props;
-    const { fee } = estimateFee;
+    const { isFormValid, feeData, isFormEstimateFeeValid } = this.props;
+    const { fee } = feeData;
     if (!isFormValid || !fee || !isFormEstimateFeeValid) {
       return true;
     }
@@ -186,11 +192,14 @@ class SendCrypto extends React.Component {
           {({ handleSubmit }) => (
             <View style={homeStyle.form}>
               <Field
+                onChange={text => {
+                  rfChange(formName, 'amount', text);
+                  rfFocus(formName, 'amount');
+                }}
                 component={InputMaxValueField}
                 name="amount"
                 placeholder="0.0"
                 label="Amount"
-                style={homeStyle.input}
                 maxValue={maxAmount}
                 componentProps={{
                   keyboardType: 'decimal-pad',
@@ -207,22 +216,18 @@ class SendCrypto extends React.Component {
                 name="toAddress"
                 label="To"
                 placeholder="Name, Address"
-                style={homeStyle.input}
                 validate={validator.combinedIncognitoAddress}
                 showNavAddrBook
                 onOpenAddressBook={onShowFrequentReceivers}
                 {...generateTestId(SEND.ADDRESS_INPUT)}
               />
               <EstimateFee
-                style={homeStyle.input}
                 amount={isFormValid ? amount : null}
                 address={isFormValid ? toAddress : null}
                 isFormValid={isFormValid}
               />
               <Field
                 component={InputField}
-                inputStyle={homeStyle.input}
-                containerStyle={homeStyle.input}
                 name="message"
                 placeholder="Add a note (optional)"
                 label="Memo"

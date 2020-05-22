@@ -5,7 +5,6 @@ import { InputField, createForm, validator } from '@components/core/reduxForm';
 import { GENERAL } from '@src/constants/elements';
 import { generateTestId } from '@src/utils/misc';
 import { useSelector, useDispatch } from 'react-redux';
-import format from '@src/utils/format';
 import convert from '@src/utils/convert';
 import { styled } from './EstimateFee.styled';
 // eslint-disable-next-line import/no-cycle
@@ -13,7 +12,7 @@ import withEstimateFee from './EstimateFee.enhance';
 // eslint-disable-next-line import/no-cycle
 import { estimateFeeSelector, feeDataSelector } from './EstimateFee.selector';
 // eslint-disable-next-line import/no-cycle
-import { actionChangeFeeType } from './EstimateFee.actions';
+import { actionChangeFeeType, actionChangeFee } from './EstimateFee.actions';
 
 const feeValidator = [
   validator.required(),
@@ -23,40 +22,66 @@ const feeValidator = [
 
 export const formName = 'formEstimateFee';
 
-const Form = createForm(formName);
+const Form = createForm(formName, {
+  destroyOnUnmount: true,
+});
 
 const EstimateFeeInput = props => {
   const { types, isFetching, isFetched } = useSelector(estimateFeeSelector);
-  const { fee, feePDecimals, feeUnit, minFee, maxFee } = useSelector(
-    feeDataSelector,
-  );
+  const {
+    fee,
+    feeUnit,
+    minFee,
+    maxFee,
+    isUseTokenFee,
+    feePrvText,
+    feePTokenText,
+  } = useSelector(feeDataSelector);
   const [state, setState] = React.useState({
     minFeeValidator: null,
     maxFeeValidator: null,
   });
+  const dispatch = useDispatch();
   const { minFeeValidator, maxFeeValidator } = state;
+  const onChangeFee = async value => {
+    try {
+      dispatch(change(formName, 'fee', value));
+      dispatch(
+        actionChangeFee({
+          field: isUseTokenFee ? 'feePTokenText' : 'feePrvText',
+          value,
+        }),
+      );
+    } catch (error) {
+      throw error;
+    }
+  };
   React.useEffect(() => {
     if (fee) {
-      const convertedMaxFee = convert.toHumanAmount(maxFee, feePDecimals);
-      const convertedMaxFeeStr = format.toFixed(convertedMaxFee, feePDecimals);
-      const maxFeeValidator = validator.maxValue(convertedMaxFee, {
-        message:
-          convertedMaxFee > fee
-            ? `Must be less than ${convertedMaxFeeStr} ${feeUnit}`
-            : `Your ${feeUnit} balance is not enough to send`,
-      });
-      const convertedMinFee = convert.toHumanAmount(minFee, feePDecimals);
-      const convertedMinFeeStr = format.toFixed(convertedMinFee, feePDecimals);
-      const minFeeValidator = validator.minValue(convertedMinFee, {
-        message: `Must be at least ${convertedMinFeeStr} ${feeUnit}`,
-      });
-      setState({ ...state, minFeeValidator, maxFeeValidator });
+      let maxFeeValidator;
+      let minFeeValidator;
+      try {
+        maxFeeValidator = validator.maxValue(convert.toNumber(maxFee), {
+          message:
+            maxFee > fee
+              ? `Must be less than ${maxFee} ${feeUnit}`
+              : `Your ${feeUnit} balance is not enough to send`,
+        });
+        minFeeValidator = validator.minValue(convert.toNumber(minFee), {
+          message: `Must be at least ${minFee} ${feeUnit}`,
+        });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setState({ ...state, minFeeValidator, maxFeeValidator });
+      }
     }
-  }, [fee]);
+  }, [fee, feePTokenText, feePrvText]);
   return (
     <Form>
       {({ handleSubmit }) => (
         <Field
+          onChange={onChangeFee}
           component={InputField}
           prependView={<SupportFees types={types} />}
           placeholder={isFetching ? 'Estimating fee...' : '0'}
@@ -107,10 +132,10 @@ const SupportFeeItem = props => {
 };
 
 const SupportFees = () => {
-  const { types, actived, isFetched } = useSelector(estimateFeeSelector);
-  const { minFee: fee, feePDecimals, isUseTokenFee } = useSelector(
-    feeDataSelector,
+  const { types, actived, isFetched, feePrvText, feePTokenText } = useSelector(
+    estimateFeeSelector,
   );
+  const { isUseTokenFee } = useSelector(feeDataSelector);
   const dispatch = useDispatch();
   if (types.length === 0) {
     return;
@@ -123,10 +148,8 @@ const SupportFees = () => {
   };
   React.useEffect(() => {
     if (isFetched) {
-      const feeConverted = convert.toHumanAmount(fee, feePDecimals);
-      dispatch(
-        change(formName, 'fee', format.toFixed(feeConverted, feePDecimals)),
-      );
+      const fee = isUseTokenFee ? feePTokenText : feePrvText;
+      dispatch(change(formName, 'fee', fee));
       dispatch(focus(formName, 'fee'));
     }
   }, [isUseTokenFee]);

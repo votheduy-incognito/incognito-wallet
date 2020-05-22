@@ -4,12 +4,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import debounce from 'lodash/debounce';
 import PropTypes from 'prop-types';
-import LoadingContainer from '@components/LoadingContainer';
 // eslint-disable-next-line import/no-cycle
-import { actionFetchFee, actionInit } from './EstimateFee.actions';
+import { actionFetchFee } from './EstimateFee.actions';
+import { estimateFeeSelector } from './EstimateFee.selector';
 
 const enhance = WrappedComp => props => {
-  const [init, setInit] = React.useState(false);
+  const { init } = useSelector(estimateFeeSelector);
   const { amount = 0, address = '', isFormValid = false } = props;
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const dispatch = useDispatch();
@@ -24,20 +24,12 @@ const enhance = WrappedComp => props => {
     }
   };
   const _handleEstimateFee = debounce(handleEstimateFee, 1000);
+
   React.useEffect(() => {
     if (init) {
       _handleEstimateFee();
     }
-  }, [amount, address, selectedPrivacy?.tokenId, init]);
-  React.useEffect(() => {
-    if (!init) {
-      dispatch(actionInit());
-      setInit(true);
-    }
-  }, []);
-  if (!init) {
-    return <LoadingContainer />;
-  }
+  }, [amount, address, selectedPrivacy?.tokenId]);
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props }} />

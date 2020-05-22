@@ -25,6 +25,8 @@ import { shieldStorageSelector } from '@src/screens/Shield/Shield.selector';
 import { actionToggleGuide } from '@src/screens/Shield/Shield.actions';
 import Tooltip from '@src/components/Tooltip/Tooltip';
 import { COLORS } from '@src/styles';
+import format from '@src/utils/format';
+import convert from '@src/utils/convert';
 import {
   styled,
   styledHook,
@@ -104,7 +106,10 @@ const Balance = () => {
   return (
     <View style={styledBalance.container}>
       <Amount
-        amount={floor(totalShielded, 9)}
+        amount={convert.toHumanAmount(
+          convert.toNumber(totalShielded, true),
+          CONSTANT_COMMONS.PRV.symbol,
+        )}
         pDecimals={CONSTANT_COMMONS.PRV.pDecimals}
         showSymbol={false}
         isGettingBalance={isGettingTotalBalance}

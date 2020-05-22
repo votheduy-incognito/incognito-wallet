@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { StyleSheet } from 'react-native';
 import { TextInput } from '@src/components/core';
 import formatUtil from '@src/utils/format';
 import { generateTestId } from '@utils/misc';
@@ -7,6 +8,14 @@ import { SEND } from '@src/constants/elements';
 import { BtnInfinite } from '@src/components/Button';
 import createField from './createField';
 
+const styled = StyleSheet.create({
+  btn: {
+    height: '100%',
+    alignContent: 'center',
+    justifyContent: 'center',
+    width: 32,
+  },
+});
 const renderCustomField = ({
   input,
   meta,
@@ -14,11 +23,11 @@ const renderCustomField = ({
   onPressMax = null,
   ...props
 }) => {
-  const { onBlur, onFocus, value } = input;
+  const { onBlur, onFocus, value, ...rest } = input;
   let inputRef;
   return (
     <TextInput
-      {...props}
+      {...{ ...props, ...rest }}
       onChangeText={t => {
         input.onChange(t);
       }}
@@ -31,6 +40,7 @@ const renderCustomField = ({
       }}
       prependView={(
         <BtnInfinite
+          style={styled.btn}
           onPress={() => {
             if (typeof onPressMax === 'function') {
               return onPressMax();

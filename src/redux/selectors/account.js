@@ -1,7 +1,9 @@
 import _, { memoize } from 'lodash';
 import { createSelector } from 'reselect';
 
-export const isGettingBalance = state => state?.account?.isGettingBalance;
+export const isGettingBalance = createSelector(
+  state => state?.account?.isGettingBalance || [],
+);
 export const defaultAccountName = state => state?.account?.defaultAccountName;
 export const listAccount = state => state?.account?.list || [];
 export const defaultAccount = createSelector(
@@ -72,6 +74,16 @@ export const defaultAccountSelector = createSelector(
   },
 );
 
+export const isGettingAccountBalanceSelector = createSelector(
+  isGettingBalance,
+  isGettingBalance => isGettingBalance.length !== 0,
+);
+
+export const defaultAccountBalanceSelector = createSelector(
+  defaultAccountSelector,
+  account => account?.value || 0,
+);
+
 export default {
   defaultAccountName,
   listAccount,
@@ -81,5 +93,7 @@ export default {
   getAccountByPublicKey,
   listAccountSelector,
   defaultAccountNameSelector,
-  defaultAccountSelector
+  defaultAccountSelector,
+  isGettingAccountBalanceSelector,
+  defaultAccountBalanceSelector,
 };
