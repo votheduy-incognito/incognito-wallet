@@ -78,23 +78,24 @@ const addERC20TxWithdraw = ({
   burningTxId,
   currencyType,
 }) => {
-  if (!paymentAddress) return throw new Error('Missing paymentAddress');
-  if (!tokenId) return throw new Error('Missing tokenId');
-  if (!tokenContractID) return throw new Error('Missing tokenContractID');
-  if (!burningTxId) return throw new Error('Missing burningTxId');
-
+  if (!paymentAddress) throw new Error('Missing paymentAddress');
+  if (!tokenId) throw new Error('Missing tokenId');
+  if (!tokenContractID) throw new Error('Missing tokenContractID');
+  if (!burningTxId) throw new Error('Missing burningTxId');
   const parseAmount = Number(amount);
   const parseOriginalAmount = Number(originalAmount);
-
   if (
     !Number.isFinite(parseAmount) ||
     parseAmount === 0 ||
     !Number.isFinite(parseOriginalAmount) ||
     parseOriginalAmount === 0
   ) {
-    return throw new Error('Invalid amount');
+    throw new Error('Invalid amount');
   }
-
+  console.log(
+    'CONSTANT_COMMONS.ADDRESS_TYPE.WITHDRAW',
+    CONSTANT_COMMONS.ADDRESS_TYPE.WITHDRAW,
+  );
   return http.post('eta/add-tx-withdraw', {
     CurrencyType: currencyType,
     AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.WITHDRAW,
