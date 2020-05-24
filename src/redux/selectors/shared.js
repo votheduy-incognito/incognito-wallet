@@ -9,6 +9,7 @@ import {
 } from '@src/redux/selectors/token';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import uniqBy from 'lodash/uniqBy';
+import format from '@src/utils/format';
 import {
   isGettingBalance as isGettingBalanceAccount,
   defaultAccountName,
@@ -63,8 +64,13 @@ export const totalShieldedTokensSelector = createSelector(
   (tokens, getPrivacyDataByTokenID) => {
     const prv = getPrivacyDataByTokenID(CONSTANT_COMMONS.PRV.id);
     const totalShieldedTokens = [...tokens, prv].reduce(
-      (prevValue, currentValue) =>
-        prevValue + currentValue?.pricePrv * currentValue?.amount,
+      (prevValue, currentValue) => {
+        return (
+          prevValue +
+          currentValue?.pricePrv *
+            format.amountFull(currentValue?.amount, currentValue?.pDecimals)
+        );
+      },
       0,
     );
     return totalShieldedTokens;

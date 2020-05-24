@@ -10,6 +10,7 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import Swipeout from 'react-native-swipeout';
 import { BtnDelete } from '@src/components/Button';
 import replace from 'lodash/replace';
+import convert from '@src/utils/convert';
 import { styled } from './Token.styled';
 
 const defaultProps = {
@@ -61,14 +62,15 @@ export const AmountBasePRV = props => {
     pricePrv = 0,
     customStyle = null,
     customPSymbolStyle = null,
+    pDecimals,
   } = props;
+  const _amount = format.amountFull(
+    format.amountFull(amount, pDecimals) * pricePrv,
+  );
   return (
     <NormalText
       hasPSymbol
-      text={`${format.amount(
-        floor(pricePrv * amount),
-        CONSTANT_COMMONS.PRV.pDecimals,
-      )} `}
+      text={`${_amount}`}
       style={[styled.boldText, styled.rightText, customStyle]}
       stylePSymbol={[styled.pSymbolBold, customPSymbolStyle]}
     />
@@ -128,7 +130,9 @@ export const Amount = props => {
   return (
     <NormalText
       style={[styled.bottomText, customStyle]}
-      text={`${format.amount(amount, pDecimals)} ${showSymbol ? symbol : ''}`}
+      text={`${format.amountFull(floor(amount, 9), pDecimals)} ${
+        showSymbol ? symbol : ''
+      }`}
       hasPSymbol={hasPSymbol}
       stylePSymbol={stylePSymbol}
       containerStyle={containerStyle}

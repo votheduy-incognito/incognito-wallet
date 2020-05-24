@@ -226,7 +226,7 @@ class SendCrypto extends React.Component {
                 component={InputQRField}
                 name="toAddress"
                 label="To"
-                placeholder="Name, Address"
+                placeholder="Enter address"
                 validate={validator.combinedIncognitoAddress}
                 showNavAddrBook
                 onOpenAddressBook={onShowFrequentReceivers}

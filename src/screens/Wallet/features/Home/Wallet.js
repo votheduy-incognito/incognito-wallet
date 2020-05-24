@@ -27,6 +27,8 @@ import { COLORS } from '@src/styles';
 import convert from '@src/utils/convert';
 import { actionToggleModal } from '@components/Modal';
 import UnShieldModal from '@screens/UnShield/UnShield.modal';
+import format from '@src/utils/format';
+import floor from 'lodash/floor';
 import {
   styled,
   styledHook,
@@ -113,11 +115,8 @@ const Balance = () => {
   return (
     <View style={styledBalance.container}>
       <Amount
-        amount={convert.toHumanAmount(
-          convert.toNumber(totalShielded, true),
-          CONSTANT_COMMONS.PRV.symbol,
-        )}
-        pDecimals={CONSTANT_COMMONS.PRV.pDecimals}
+        amount={totalShielded}
+        pDecimals={0}
         showSymbol={false}
         isGettingBalance={isGettingTotalBalance}
         showGettingBalance

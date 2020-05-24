@@ -230,10 +230,11 @@ class AddInternalToken extends Component {
     const { account } = this.props;
 
     return (
-      <Text style={styleSheet.balance}>{` Balance: ${formatUtil.amount(
-        account.value,
-        CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY,
-      )} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}`}
+      <Text style={styleSheet.balance}>
+        {` Balance: ${formatUtil.amount(
+          account.value,
+          CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY,
+        )} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}`}
       </Text>
     );
   };
@@ -257,7 +258,12 @@ class AddInternalToken extends Component {
                     name="name"
                     placeholder="Enter coin name"
                     label="Name"
-                    style={styleSheet.input}
+                    style={[
+                      styleSheet.input,
+                      {
+                        marginTop: 0,
+                      },
+                    ]}
                     validate={validator.combinedTokenName}
                   />
                   <Field
@@ -284,19 +290,24 @@ class AddInternalToken extends Component {
                     component={InputField}
                     inputStyle={styleSheet.descriptionInput}
                     containerStyle={styleSheet.descriptionInput}
-                    componentProps={{ multiline: true, numberOfLines: 10 }}
+                    componentProps={{
+                      multiline: true,
+                      numberOfLines: 10,
+                      maxLength: 200
+                    }}
                     name="description"
                     placeholder="Explain what your token is for, how users can get it, and any other details of your project. 255 characters max."
                     label="Description"
                     style={[
                       styleSheet.input,
                       styleSheet.descriptionInput,
-                      { marginBottom: 25 },
+                      { marginBottom: 50 },
                     ]}
+                    maxLength={255}
                     validate={descriptionMaxLength}
                   />
                   <View style={styleSheet.verifyInfoContainer}>
-                    <View style={styleSheet.verifyInfoHeader}>
+                    {/* <View style={styleSheet.verifyInfoHeader}>
                       <Help
                         marginLeft={0}
                         title={(
@@ -312,7 +323,7 @@ class AddInternalToken extends Component {
                         To earn a verified badge, please fill in these fields
                         (optional):
                       </Text>
-                    </View>
+                    </View> */}
                     <Field
                       component={InputField}
                       name="ownerName"

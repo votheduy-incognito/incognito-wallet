@@ -27,7 +27,7 @@ export default StyleSheet.create({
   memoText: {
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.regular + 4),
-    color: COLORS.lightGrey3,
+    color: COLORS.colorGreyBold,
   },
   warning: {
     fontSize: FONT.SIZE.regular,
