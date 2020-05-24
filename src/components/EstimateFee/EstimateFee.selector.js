@@ -25,6 +25,10 @@ export const feeDataSelector = createSelector(
       maxFeePrvText,
       amount,
       amountText,
+      screen,
+      rate,
+      minAmount,
+      minAmountText,
     } = estimateFee;
     const isUseTokenFee = actived !== CONSTANT_COMMONS.PRV.id;
     const feeUnit = isUseTokenFee
@@ -33,9 +37,17 @@ export const feeDataSelector = createSelector(
     const feePDecimals = isUseTokenFee
       ? selectedPrivacy?.pDecimals
       : CONSTANT_COMMONS.PRV.pDecimals;
+    const fee = isUseTokenFee ? feePTokenText : feePrvText;
+    let amountNumber = convert.toNumber(amountText);
+    if (isUseTokenFee || selectedPrivacy?.isMainCrypto) {
+      const newAmount = amountNumber - convert.toNumber(fee);
+      amountNumber = newAmount > 0 ? newAmount : 0;
+    }
+    const maxAmount = Math.max(floor(amountNumber, 9), 0);
+    const maxAmountText = format.amountFull(maxAmount);
     return {
       isUseTokenFee,
-      fee: isUseTokenFee ? feePTokenText : feePrvText,
+      fee,
       feeUnit,
       feeUnitByTokenId: actived,
       feePDecimals,
@@ -43,31 +55,13 @@ export const feeDataSelector = createSelector(
       maxFee: isUseTokenFee ? maxFeePTokenText : maxFeePrvText,
       amount,
       amountText,
-    };
-  },
-);
-
-export const maxAmountSelector = createSelector(
-  selectedPrivacySeleclor.selectedPrivacy,
-  feeDataSelector,
-  (selectedPrivacy, feeData) => {
-    const { isUseTokenFee, fee, amountText } = feeData;
-    let amount = convert.toNumber(amountText);
-    if (isUseTokenFee || selectedPrivacy?.isMainCrypto) {
-      const newAmount = amount - convert.toNumber(fee);
-      amount = newAmount > 0 ? newAmount : 0;
-    }
-    const maxAmount = Math.max(floor(amount, 9), 0);
-    const maxAmountText = format.amountFull(maxAmount);
-    return {
+      screen,
+      rate,
+      minAmount,
+      minAmountText,
       maxAmount,
       maxAmountText,
+      isUsedPRVFee: !isUseTokenFee
     };
   },
-);
-
-export const minAmountSelector = createSelector(
-  selectedPrivacySeleclor.selectedPrivacy,
-  selectedPrivacy =>
-    selectedPrivacy?.pDecimals ? 1 / 10 ** selectedPrivacy.pDecimals : 0,
 );

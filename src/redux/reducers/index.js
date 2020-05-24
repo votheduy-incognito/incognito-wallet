@@ -6,7 +6,6 @@ import notification from '@src/screens/Notification/Notification.reducer';
 import stake from '@screens/Stake/stake.reducer';
 import stakeHistory from '@screens/StakeHistory/stakeHistory.reducer';
 import shield from '@screens/Shield/Shield.reducer';
-import send from '@screens/Send/Send.reducer';
 import estimateFee from '@components/EstimateFee/EstimateFee.reducer';
 import wallet from './wallet';
 import account from './account';
@@ -40,7 +39,6 @@ const rootReducer = reduceReducers(
     stake,
     stakeHistory,
     shield,
-    send,
     estimateFee,
   }),
   globalReducer,

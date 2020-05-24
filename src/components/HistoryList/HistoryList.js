@@ -259,7 +259,7 @@ HistoryItem.propTypes = {
     canRetryExpiredDeposit: PropTypes.bool,
     pDecimals: PropTypes.number,
     requestedAmount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    status: PropTypes.string,
+    status: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     expiredAt: PropTypes.string,
     depositAddress: PropTypes.string,
     userPaymentAddress: PropTypes.string,

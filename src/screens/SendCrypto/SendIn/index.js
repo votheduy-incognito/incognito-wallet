@@ -27,11 +27,7 @@ import {
   sharedSeleclor,
   accountSeleclor,
 } from '@src/redux/selectors';
-import { DEFAULT_FEE_PER_KB } from '@src/components/EstimateFee/EstimateFee.utils';
-import {
-  actionInit,
-  actionInitFetched,
-} from '@src/components/EstimateFee/EstimateFee.actions';
+import { actionInitEstimateFee } from '@src/components/EstimateFee/EstimateFee.actions';
 import SendCrypto, { formName } from './SendCrypto';
 
 class SendCryptoContainer extends Component {
@@ -44,24 +40,26 @@ class SendCryptoContainer extends Component {
   }
 
   componentDidMount() {
-    const { selectedPrivacy } = this.props;
+    const { selectedPrivacy, actionInitEstimateFee } = this.props;
     logEvent(CONSTANT_EVENTS.VIEW_SEND, {
       tokenId: selectedPrivacy.tokenId,
       tokenSymbol: selectedPrivacy.symbol,
     });
-    this.initData();
+    actionInitEstimateFee();
   }
 
   componentDidUpdate(prevProps) {
-    const { selectedPrivacy } = this.props;
+    const { selectedPrivacy, actionInitEstimateFee } = this.props;
+    const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
     const { tokenId } = selectedPrivacy;
     if (
+      oldSelectedPrivacy !== selectedPrivacy ||
       prevProps?.isGettingTotalBalance !== this.props?.isGettingTotalBalance ||
       prevProps?.accountBalance !== this.props?.accountBalance ||
       prevProps?.isGettingTotalBalance.includes(tokenId) !==
         this.props?.isGettingTotalBalance.includes(tokenId)
     ) {
-      this.initData();
+      actionInitEstimateFee();
     }
   }
 
@@ -243,51 +241,6 @@ class SendCryptoContainer extends Component {
     navigation.pop();
   };
 
-  initData = async () => {
-    const {
-      selectedPrivacy,
-      actionInit,
-      actionInitFetched,
-      accountBalance,
-    } = this.props;
-    try {
-      const amount = selectedPrivacy?.amount;
-      const amountText = formatUtil.toFixed(
-        convertUtil.toHumanAmount(amount, selectedPrivacy.pDecimals),
-        selectedPrivacy.pDecimals,
-      );
-      const maxFeePrv = accountBalance;
-      const maxFeePrvText = formatUtil.toFixed(
-        convertUtil.toHumanAmount(maxFeePrv, CONSTANT_COMMONS.PRV.pDecimals),
-        CONSTANT_COMMONS.PRV.pDecimals,
-      );
-      const minFeePrv = DEFAULT_FEE_PER_KB;
-      const minFeePrvText = formatUtil.toFixed(
-        convertUtil.toHumanAmount(minFeePrv, CONSTANT_COMMONS.PRV.pDecimals),
-        CONSTANT_COMMONS.PRV.pDecimals,
-      );
-      const maxFeePToken = selectedPrivacy?.amount;
-      const maxFeePTokenText = formatUtil.toFixed(
-        convertUtil.toHumanAmount(maxFeePToken, selectedPrivacy?.pDecimals),
-        selectedPrivacy.pDecimals,
-      );
-      actionInit({
-        amount,
-        amountText,
-        maxFeePrv,
-        maxFeePrvText,
-        minFeePrv,
-        minFeePrvText,
-        maxFeePToken,
-        maxFeePTokenText,
-      });
-    } catch (error) {
-      throw error;
-    } finally {
-      actionInitFetched();
-    }
-  };
-
   render() {
     const { selectedPrivacy, estimateFee, isGettingTotalBalance } = this.props;
     const { receiptData, isSending } = this.state;
@@ -332,8 +285,7 @@ const mapDispatch = {
   getTokenBalanceBound: getTokenBalance,
   toggleModal,
   rfOnChangeValue,
-  actionInit,
-  actionInitFetched,
+  actionInitEstimateFee,
 };
 
 SendCryptoContainer.defaultProps = {
@@ -351,11 +303,10 @@ SendCryptoContainer.propTypes = {
   tokens: PropTypes.arrayOf(PropTypes.object),
   rfOnChangeValue: PropTypes.func.isRequired,
   estimateFee: PropTypes.object.isRequired,
-  actionInit: PropTypes.func.isRequired,
-  actionInitFetched: PropTypes.func.isRequired,
   getPrivacyDataByTokenID: PropTypes.func.isRequired,
   isGettingTotalBalance: PropTypes.array.isRequired,
   accountBalance: PropTypes.number.isRequired,
+  actionInitEstimateFee: PropTypes.func.isRequired,
 };
 
 export default connect(
