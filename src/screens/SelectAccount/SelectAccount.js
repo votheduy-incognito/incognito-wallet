@@ -78,7 +78,7 @@ const ListAccount = () => {
 const SelectAccount = () => {
   return (
     <View style={styled.container}>
-      <Header title="Select a keychain" titleStyled={styled.titleStyled} canSearch />
+      <Header title="Select a assets" titleStyled={styled.titleStyled} canSearch />
       <ListAccount />
     </View>
   );

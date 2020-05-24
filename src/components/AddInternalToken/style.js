@@ -11,7 +11,7 @@ const style = StyleSheet.create({
     width: '100%',
   },
   verifyInfoContainer: {
-    marginTop: 25,
+    // marginTop: 25,
   },
   verifyInfoHeader: {
     flexDirection: 'row',
@@ -32,15 +32,10 @@ const style = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
-    marginBottom: 15,
+    // marginBottom: 15,
   },
   descriptionInput: {
     height: 80,
-  },
-  noteText: {
-    fontSize: FONT.SIZE.small,
-    fontWeight: 'bold',
-    marginVertical: 15,
   },
   submitBtn: {
     marginTop: 40,
@@ -69,6 +64,10 @@ const style = StyleSheet.create({
   },
   showMyAddressLabel: {
     flex: 1,
+    fontSize: FONT.SIZE.regular,
+    fontFamily: FONT.NAME.regular,
+    lineHeight: FONT.NORMALIZE(FONT.SIZE.regular + 4),
+    color: COLORS.black,
   },
   switch: {
     height: '100%',
@@ -79,11 +78,17 @@ const style = StyleSheet.create({
   },
   ownerAddressLabel: {
     marginBottom: 10,
-    fontSize: 14,
+    fontSize: FONT.SIZE.regular,
+    fontFamily: FONT.NAME.regular,
+    lineHeight: FONT.NORMALIZE(FONT.SIZE.regular + 4),
+    color: COLORS.black,
   },
   ownerAddressValue: {
     paddingHorizontal: 1,
-    color: COLORS.lightGrey1,
+    fontSize: FONT.SIZE.regular,
+    fontFamily: FONT.NAME.regular,
+    lineHeight: FONT.NORMALIZE(FONT.SIZE.regular + 4),
+    color: COLORS.colorGreyBold,
   },
 });
 

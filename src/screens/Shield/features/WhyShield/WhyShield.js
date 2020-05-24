@@ -30,7 +30,7 @@ const styled = StyleSheet.create({
 const WhyShield = props => {
   return (
     <View style={styled.container}>
-      <Header title="Why Shield" />
+      <Header title="Why Shield?" />
       <ScrollView style={styled.scrollview}>
         <Text style={styled.text}>
           To transact anonymously, first you have to shield your crypto. When
@@ -45,7 +45,7 @@ const WhyShield = props => {
           For ETH and all ERC20 tokens, your crypto is safely secured in a
           trustless smart contract.
         </Text>
-        <Text style={styled.title}>Portal (Upcoming)</Text>
+        <Text style={styled.title}>Portal (upcoming)</Text>
         <Text style={styled.text}>
           For other coins, your crypto is stored in one of the wallets
           maintained by the Incognito Core team. We’re working on a trustless
