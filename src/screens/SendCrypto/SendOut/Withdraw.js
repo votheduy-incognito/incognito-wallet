@@ -5,38 +5,37 @@ import {
   InputQRField,
   validator,
 } from '@components/core/reduxForm';
-import EstimateFee from '@components/EstimateFee';
 import LoadingTx from '@components/LoadingTx';
-import {
-  CONSTANT_COMMONS,
-  CONSTANT_EVENTS,
-  CONSTANT_CONFIGS,
-} from '@src/constants';
+import { CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
 import { ExHandler } from '@services/exception';
 import convertUtil from '@utils/convert';
-import formatUtil from '@utils/format';
 import memmoize from 'memoize-one';
 import walletValidator from 'wallet-address-validator';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { isExchangeRatePToken } from '@services/wallet/RpcClientService';
 import { connect } from 'react-redux';
 import { detectToken, generateTestId } from '@utils/misc';
 import { change, Field, formValueSelector, isValid, focus } from 'redux-form';
-import { logEvent } from '@services/firebase';
-import accountService from '@services/wallet/accountService';
 import { MESSAGES } from '@screens/Dex/constants';
-import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import { View } from 'react-native';
 import { actionToggleModal } from '@src/components/Modal';
 import { COLORS } from '@src/styles';
 import { ButtonBasic } from '@src/components/Button';
 import { SEND } from '@src/constants/elements';
+import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
+import EstimateFee, {
+  formName as formEstimateFee,
+} from '@components/EstimateFee/EstimateFee.input';
+import debounce from 'lodash/debounce';
+import { selectedPrivacySeleclor } from '@src/redux/selectors';
+import format from '@src/utils/format';
 import style from './style';
 import Receipt from './Withdraw.receipt';
 
 export const formName = 'withdraw';
+
 const selector = formValueSelector(formName);
+
 const initialFormValues = {
   amount: '',
   toAddress: '',
@@ -53,205 +52,109 @@ const memoMaxLength = validator.maxLength(125, {
 class Withdraw extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       maxAmountValidator: undefined,
       minAmountValidator: undefined,
-      estimateFeeData: {},
-      supportedFeeTypes: [],
-      feeForBurn: 0,
       shouldBlockETHWrongAddress: false,
-      tempAddress: '',
-      listMinAmount: [],
-      amount: 0,
-    };
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    const {
-      estimateFeeData: { fee, feeUnitByTokenId },
-    } = prevState;
-    console.log('estimateFeeData', fee, feeUnitByTokenId);
-    return {
-      feeForBurn: fee,
-      isUsedPRVFee: feeUnitByTokenId === CONSTANT_COMMONS.PRV_TOKEN_ID,
     };
   }
 
   componentDidMount = async () => {
-    await this.getMinAmountAPI();
-    this.setBothAmount();
-    this.getSupportedFeeTypes();
+    this.setFormValidator();
   };
 
-  getMinAmountAPI = async () => {
-    await fetch(CONSTANT_CONFIGS.API_BASE_URL + '/service/min-max-amount')
-      .then(res => res.json())
-      .then(fin => {
-        if (fin?.Result && Array.isArray(fin.Result)) {
-          this.setState({
-            listMinAmount: fin.Result,
-          });
-        }
-      })
-      .catch(() => {});
-  };
-
-  setMaxAmount() {
-    this.setFormValidator({ maxAmount: this.getMaxAmount() });
-  }
-  setBothAmount() {
-    this.setFormValidator({
-      maxAmount: this.getMaxAmount(),
-      minAmount: this.getMinAmount(),
-    });
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { selectedPrivacy } = this.props;
-    const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
+  componentDidUpdate(prevProps) {
     const {
-      estimateFeeData: { fee, feeUnitByTokenId },
-    } = this.state;
+      selectedPrivacy,
+      feeData: { fee, feeUnitByTokenId, minAmount, maxAmount },
+    } = this.props;
     const {
-      estimateFeeData: { fee: oldFee, feeUnitByTokenId: oldFeeUnitByTokenId },
-    } = prevState;
-
-    if (selectedPrivacy?.pDecimals !== oldSelectedPrivacy?.pDecimals) {
+      selectedPrivacy: oldSelectedPrivacy,
+      feeData: {
+        fee: oldFee,
+        feeUnitByTokenId: oldFeeUnitByTokenId,
+        minAmount: oldMinAmount,
+        maxAmount: oldMaxAmount,
+      },
+    } = prevProps;
+    if (
+      selectedPrivacy?.tokenId !== oldSelectedPrivacy?.tokenId ||
+      fee !== oldFee ||
+      feeUnitByTokenId !== oldFeeUnitByTokenId ||
+      maxAmount !== oldMaxAmount ||
+      minAmount !== oldMinAmount
+    ) {
       // need to re-calc min amount if token decimals was changed
-      this.setMaxAmount();
-    }
-
-    if (fee !== oldFee || feeUnitByTokenId !== oldFeeUnitByTokenId) {
-      // need to re-calc max amount can be send if fee was changed
-      this.setMaxAmount();
-    }
-
-    if (oldSelectedPrivacy !== selectedPrivacy && selectedPrivacy) {
-      this.setBothAmount();
-      this.getSupportedFeeTypes();
+      this.setFormValidator();
     }
   }
 
-  getMinAmount = () => {
-    // MIN = 1 nano
-    const { selectedPrivacy, minAmount } = this.props;
-    let min = 0;
-    if (selectedPrivacy?.pDecimals) {
-      min = 1 / 10 ** selectedPrivacy.pDecimals;
-    }
-    // Check in min-amount list
-    const { listMinAmount } = this.state;
-    for (let i = 0; i < listMinAmount.length; i++) {
-      if (selectedPrivacy?.tokenId === listMinAmount[i]?.TokenID) {
-        min = listMinAmount[i]?.MinAmount;
-      }
-    }
-
-    return minAmount ? Math.max(min, minAmount) : min;
-  };
-
-  getMaxAmount = () => {
-    const { selectedPrivacy, maxAmount } = this.props;
-    const {
-      estimateFeeData: { fee },
-      feeForBurn,
-      isUsedPRVFee,
-    } = this.state;
-    let max = 0;
-    let amount = selectedPrivacy?.amount;
-
-    if (!isUsedPRVFee) {
-      amount -= fee + feeForBurn || 0;
-    }
-
-    max = convertUtil.toHumanAmount(amount, selectedPrivacy?.pDecimals);
-
-    max = maxAmount ? Math.min(maxAmount, max) : max;
-
-    return max;
-  };
-
-  setFormValidator = ({ maxAmount, minAmount }) => {
-    const { selectedPrivacy } = this.props;
-
-    if (maxAmount) {
+  setFormValidator = debounce(() => {
+    const { selectedPrivacy, feeData } = this.props;
+    const { maxAmountText, minAmountText } = feeData;
+    const _maxAmount = convertUtil.toNumber(maxAmountText, true);
+    const _minAmount = convertUtil.toNumber(minAmountText, true);
+    if (_maxAmount) {
       this.setState({
-        maxAmountValidator: validator.maxValue(maxAmount, {
+        maxAmountValidator: validator.maxValue(_maxAmount, {
           message:
-            maxAmount > 0
-              ? `Max amount you can withdraw is ${formatUtil.number(
-                maxAmount,
-              )} ${selectedPrivacy?.symbol}`
+            _maxAmount > 0
+              ? `Max amount you can withdraw is ${maxAmountText} ${selectedPrivacy?.symbol}`
               : 'Your balance is not enough to withdraw',
         }),
       });
     }
-
-    if (minAmount) {
+    if (_minAmount) {
       this.setState({
-        minAmountValidator: validator.minValue(minAmount, {
-          message: `Amount must be larger than ${formatUtil.number(
-            minAmount,
-          )} ${selectedPrivacy?.symbol}`,
+        minAmountValidator: validator.minValue(_minAmount, {
+          message: `Amount must be larger than ${minAmountText} ${selectedPrivacy?.symbol}`,
         }),
       });
     }
-  };
+  }, 200);
 
   handleSubmit = async values => {
-    const { selectedPrivacy, actionToggleModal } = this.props;
+    const { selectedPrivacy, feeData, actionToggleModal } = this.props;
+    const disabledForm = this.shouldDisabledSubmit();
+    if (disabledForm) {
+      return;
+    }
+    let res;
     try {
-      let res;
       const {
-        estimateFeeData: { fee },
-        isUsedPRVFee,
-        feeForBurn,
-      } = this.state;
-      const {
-        account,
-        wallet,
         handleCentralizedWithdraw,
         handleDecentralizedWithdraw,
       } = this.props;
       const { amount, toAddress, memo } = values;
-      const convertedAmount = convertUtil.toNumber(amount);
-      await logEvent(CONSTANT_EVENTS.WITHDRAW, {
-        tokenId: selectedPrivacy?.tokenId,
-        tokenSymbol: selectedPrivacy?.symbol,
-      });
-
-      if (isUsedPRVFee) {
-        const prvBalance = await accountService.getBalance(account, wallet);
-
-        if (prvBalance < fee) {
-          throw new Error(MESSAGES.NOT_ENOUGH_NETWORK_FEE);
-        }
-      }
-
+      const { fee, isUsedPRVFee, rate, feePDecimals } = feeData;
+      const originalAmount = convertUtil.toOriginalAmount(
+        convertUtil.toNumber(amount),
+        selectedPrivacy?.pDecimals,
+      );
+      const originalFee = convertUtil.toOriginalAmount(
+        convertUtil.toNumber(fee) / rate,
+        feePDecimals,
+      );
+      const _fee = format.amountFull(originalFee, feePDecimals);
+      const feeForBurn = originalFee;
+      const remoteAddress = toAddress;
+      const payload = {
+        amount,
+        originalAmount,
+        remoteAddress,
+        isUsedPRVFee,
+        originalFee,
+        memo,
+        feeForBurn,
+        feeForBurnText: _fee,
+        fee: _fee,
+      };
       if (selectedPrivacy?.isDecentralized) {
-        res = await handleDecentralizedWithdraw({
-          amount: convertedAmount,
-          remoteAddress: toAddress,
-          fee,
-          isUsedPRVFee,
-          feeForBurn,
-        });
+        res = await handleDecentralizedWithdraw(payload);
       } else {
-        res = await handleCentralizedWithdraw({
-          amount: convertedAmount,
-          remoteAddress: toAddress,
-          fee,
-          isUsedPRVFee,
-          feeForBurn,
-          memo,
-        });
+        res = await handleCentralizedWithdraw(payload);
       }
       if (res) {
-        await logEvent(CONSTANT_EVENTS.WITHDRAW_SUCCESS, {
-          tokenId: selectedPrivacy?.tokenId,
-          tokenSymbol: selectedPrivacy?.symbol,
-        });
         await actionToggleModal({
           visible: true,
           data: (
@@ -267,11 +170,7 @@ class Withdraw extends React.Component {
         });
       }
     } catch (e) {
-      await logEvent(CONSTANT_EVENTS.WITHDRAW_FAILED, {
-        tokenId: selectedPrivacy?.tokenId,
-        tokenSymbol: selectedPrivacy?.symbol,
-      });
-
+      console.log('error', e);
       if (e.message === MESSAGES.NOT_ENOUGH_NETWORK_FEE) {
         Toast.showError(e.message);
       } else {
@@ -284,25 +183,16 @@ class Withdraw extends React.Component {
   };
 
   shouldDisabledSubmit = () => {
-    const {
-      estimateFeeData: { fee },
-    } = this.state;
-    if (fee !== 0 && !fee) {
-      return true;
-    }
     const { shouldBlockETHWrongAddress } = this.state;
     if (shouldBlockETHWrongAddress) {
       return true;
     }
-    const { isFormValid } = this.props;
-    if (!isFormValid) {
+    const { isFormValid, feeData, isFormEstimateFeeValid } = this.props;
+    const { fee } = feeData;
+    if (!isFormValid || !fee || !isFormEstimateFeeValid) {
       return true;
     }
     return false;
-  };
-
-  handleSelectFee = estimateFeeData => {
-    this.setState({ estimateFeeData });
   };
 
   getAddressValidator = memmoize((externalSymbol, isErc20Token) => {
@@ -383,40 +273,6 @@ class Withdraw extends React.Component {
     return validator.combinedUnknownAddress;
   });
 
-  getSupportedFeeTypes = async () => {
-    const supportedFeeTypes = [
-      {
-        tokenId: CONSTANT_COMMONS.PRV_TOKEN_ID,
-        symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
-      },
-    ];
-
-    try {
-      const { selectedPrivacy } = this.props;
-      const isUsed = await isExchangeRatePToken(selectedPrivacy.tokenId);
-      isUsed &&
-        supportedFeeTypes.push({
-          tokenId: selectedPrivacy.tokenId,
-          symbol: selectedPrivacy.symbol,
-        });
-    } catch (e) {
-      new ExHandler(e);
-    } finally {
-      this.setState({ supportedFeeTypes });
-    }
-  };
-
-  handleSelectToken = tokenId => {
-    const { setSelectedPrivacy, selectedPrivacy } = this.props;
-    const { tempAddress } = this.state;
-    setSelectedPrivacy(tokenId);
-    this.setState({
-      shouldBlockETHWrongAddress: false,
-    });
-
-    this.clearAddressField();
-  };
-
   clearAddressField = () => {
     const { rfChange } = this.props;
     rfChange('withdraw', 'toAddress', null);
@@ -448,52 +304,59 @@ class Withdraw extends React.Component {
       this.setState({ shouldBlockETHWrongAddress: false });
     }
   };
-  // When click into Max button, auto set to max value with substract fee
-  reReduceMaxAmount = amount => {
-    // Holding on next stage
-    const { rfChange } = this.props;
-    rfChange(formName, 'amount', `${amount}`);
-  };
 
   render() {
-    const {
-      maxAmountValidator,
-      minAmountValidator,
-      supportedFeeTypes,
-      estimateFeeData,
-      feeForBurn,
-      isUsedPRVFee,
-    } = this.state;
-    const { fee, feeUnit } = estimateFeeData;
+    const { maxAmountValidator, minAmountValidator } = this.state;
     const {
       selectedPrivacy,
       isFormValid,
       amount,
-      account,
-      selectable,
-      onShowFrequentReceivers,
-      onSelectedValue,
-      reloading,
       rfFocus,
+      onShowFrequentReceivers,
+      rfChange,
+      feeData,
     } = this.props;
-    const { externalSymbol, isErc20Token, name: tokenName } =
-      selectedPrivacy || {};
+    const { externalSymbol, isErc20Token } = selectedPrivacy || {};
     const addressValidator = this.getAddressValidator(
       externalSymbol,
       isErc20Token,
     );
-    const maxAmount = this.getMaxAmount();
     let isETH =
       isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
     let { shouldBlockETHWrongAddress } = this.state;
+    const { maxAmountText } = feeData;
     return (
       <View style={style.container}>
         <Form>
           {({ handleSubmit, submitting }) => (
             <View style={style.mainContainer}>
               <Field
-                // This is temporarily
-                autoFocus
+                onChange={text => {
+                  rfChange(formName, 'amount', text);
+                  rfFocus(formName, 'amount');
+                }}
+                component={InputMaxValueField}
+                name="amount"
+                label="Amount"
+                placeholder="Amount"
+                maxValue={maxAmountText}
+                componentProps={{
+                  keyboardType: 'decimal-pad',
+                  onPressMax: () => {
+                    rfChange(formName, 'amount', maxAmountText);
+                    rfFocus(formName, 'amount');
+                  },
+                }}
+                validate={[
+                  ...validator.combinedAmount,
+                  ...(maxAmountValidator ? [maxAmountValidator] : []),
+                  ...(minAmountValidator ? [minAmountValidator] : []),
+                  ...(detectToken.ispNEO(selectedPrivacy?.tokenId)
+                    ? [...validator.combinedNanoAmount]
+                    : []),
+                ]}
+              />
+              <Field
                 component={InputQRField}
                 onChange={(event, text) => {
                   this.setState({ tempAddress: text }, () => {});
@@ -525,29 +388,6 @@ class Withdraw extends React.Component {
                   address.
                 </Text>
               )}
-              <Field
-                onChange={text => {
-                  // this.setFormValidator({ minAmount: this.getMinAmount() });
-                  // this.setFormValidator({ maxAmount: this.getMaxAmount() });
-                  rfFocus(formName, 'amount');
-                }}
-                component={InputMaxValueField}
-                name="amount"
-                label="Amount"
-                placeholder="Amount"
-                maxValue={maxAmount}
-                componentProps={{
-                  keyboardType: 'decimal-pad',
-                }}
-                validate={[
-                  ...validator.combinedAmount,
-                  ...(maxAmountValidator ? [maxAmountValidator] : []),
-                  ...(minAmountValidator ? [minAmountValidator] : []),
-                  ...(detectToken.ispNEO(selectedPrivacy?.tokenId)
-                    ? [...validator.combinedNanoAmount]
-                    : []),
-                ]}
-              />
               {detectToken.ispBNB(selectedPrivacy?.tokenId) && (
                 <View style={style.memoContainer}>
                   <Field
@@ -557,6 +397,7 @@ class Withdraw extends React.Component {
                     placeholder="Enter a memo (max 125 characters)"
                     style={style.input}
                     validate={memoMaxLength}
+                    maxLength={125}
                   />
                   <Text style={style.memoText}>
                     * For withdrawals to wallets on exchanges (e.g. Binance,
@@ -564,7 +405,7 @@ class Withdraw extends React.Component {
                   </Text>
                 </View>
               )}
-              {/* <EstimateFee
+              <EstimateFee
                 amount={
                   isFormValid && !shouldBlockETHWrongAddress ? amount : null
                 }
@@ -574,49 +415,6 @@ class Withdraw extends React.Component {
                     : null
                 }
                 isFormValid={isFormValid}
-              /> */}
-              <EstimateFee
-                accountName={account?.name}
-                estimateFeeData={estimateFeeData}
-                onNewFeeData={this.handleSelectFee}
-                onCalculatedFeeSuccess={this.onCalculatedFeeSuccess}
-                types={supportedFeeTypes}
-                amount={
-                  isFormValid && !shouldBlockETHWrongAddress ? amount : null
-                }
-                toAddress={
-                  isFormValid && !shouldBlockETHWrongAddress
-                    ? selectedPrivacy?.paymentAddress
-                    : null
-                } // est fee on the same network, dont care which address will be send to
-                feeText={(
-                  <View>
-                    {fee && (
-                      <Text style={style.feeText}>
-                        Transaction fee:{' '}
-                        {formatUtil.amountFull(
-                          fee,
-                          isUsedPRVFee
-                            ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
-                            : selectedPrivacy?.pDecimals,
-                        )}{' '}
-                        {feeUnit ? feeUnit : ''}
-                      </Text>
-                    )}
-                    {feeForBurn && (
-                      <Text style={style.feeText}>
-                        Withdraw fee:{' '}
-                        {formatUtil.amountFull(
-                          feeForBurn,
-                          isUsedPRVFee
-                            ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
-                            : selectedPrivacy?.pDecimals,
-                        )}{' '}
-                        {feeUnit ? feeUnit : ''}
-                      </Text>
-                    )}
-                  </View>
-                )}
               />
               <ButtonBasic
                 title="Send"
@@ -646,7 +444,6 @@ Withdraw.defaultProps = {
 Withdraw.propTypes = {
   handleCentralizedWithdraw: PropTypes.func.isRequired,
   handleDecentralizedWithdraw: PropTypes.func.isRequired,
-  setSelectedPrivacy: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   selectedPrivacy: PropTypes.object.isRequired,
   account: PropTypes.object.isRequired,
@@ -657,18 +454,26 @@ Withdraw.propTypes = {
   maxAmount: PropTypes.number,
   selectable: PropTypes.bool,
   reloading: PropTypes.bool,
+  feeData: PropTypes.object.isRequired,
+  actionToggleModal: PropTypes.func.isRequired,
+  isFormEstimateFeeValid: PropTypes.bool.isRequired,
+  rfChange: PropTypes.func.isRequired,
+  rfFocus: PropTypes.func.isRequired,
+  onShowFrequentReceivers: PropTypes.func.isRequired,
 };
 
 const mapState = state => ({
   amount: selector(state, 'amount'),
   toAddress: selector(state, 'toAddress'),
   isFormValid: isValid(formName)(state),
+  feeData: feeDataSelector(state),
+  isFormEstimateFeeValid: isValid(formEstimateFee)(state),
+  selectedPrivacy: selectedPrivacySeleclor.selectedPrivacy(state),
 });
 
 const mapDispatch = {
   rfChange: change,
   rfFocus: focus,
-  setSelectedPrivacy,
   actionToggleModal,
 };
 

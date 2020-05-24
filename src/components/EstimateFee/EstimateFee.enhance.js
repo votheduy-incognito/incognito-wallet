@@ -24,7 +24,6 @@ const enhance = WrappedComp => props => {
     }
   };
   const _handleEstimateFee = debounce(handleEstimateFee, 1000);
-
   React.useEffect(() => {
     if (init) {
       _handleEstimateFee();

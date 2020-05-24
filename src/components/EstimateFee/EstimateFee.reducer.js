@@ -1,6 +1,4 @@
 import { CONSTANT_COMMONS } from '@src/constants';
-import floor from 'lodash/floor';
-import toString from 'lodash/toString';
 import {
   ACTION_FETCHING_FEE,
   ACTION_FETCHED_FEE,
@@ -26,10 +24,18 @@ const initialState = {
   maxFeePrvText: null,
   feePToken: null,
   feePTokenText: '',
+  feeBurnPToken: null,
+  feeBurnPTokenText: '',
   minFeePToken: null,
   minFeePTokenText: '',
   maxFeePToken: null,
   maxFeePTokenText: '',
+  amount: null,
+  amountText: '',
+  minAmount: null,
+  minAmountText: '',
+  init: false,
+  screen: '',
   types: [
     {
       tokenId: CONSTANT_COMMONS.PRV.id,
@@ -37,7 +43,6 @@ const initialState = {
     },
   ],
   actived: CONSTANT_COMMONS.PRV.id,
-  init: false,
 };
 
 export default (state = initialState, action) => {
@@ -45,12 +50,12 @@ export default (state = initialState, action) => {
   case ACTION_INIT: {
     return {
       ...initialState,
-      ...action.payload,
     };
   }
   case ACTION_INIT_FETCHED: {
     return {
       ...state,
+      ...action.payload,
       init: true,
     };
   }

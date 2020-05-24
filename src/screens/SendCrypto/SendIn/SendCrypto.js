@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { View } from 'react-native';
 import { Field, formValueSelector, isValid, change, focus } from 'redux-form';
 import { connect } from 'react-redux';
-import formatUtil from '@utils/format';
 import { Toast } from '@components/core';
 import ReceiptModal, { openReceipt } from '@components/Receipt';
 import LoadingTx from '@components/LoadingTx';
@@ -25,11 +24,10 @@ import EstimateFee, {
 } from '@components/EstimateFee/EstimateFee.input';
 import {
   estimateFeeSelector,
-  maxAmountSelector,
-  minAmountSelector,
   feeDataSelector,
 } from '@src/components/EstimateFee/EstimateFee.selector';
 import convert from '@src/utils/convert';
+import debounce from 'lodash/debounce';
 import { homeStyle } from './style';
 
 export const formName = 'sendCrypto';
@@ -65,62 +63,60 @@ class SendCrypto extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { selectedPrivacy, receiptData } = this.props;
-    const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
     const {
-      feeData: { fee, feeUnitByTokenId },
-      maxAmountData: { maxAmount },
-      minAmount,
-      feeData,
+      selectedPrivacy,
+      receiptData,
+      feeData: { fee, feeUnitByTokenId, minAmount, maxAmount },
     } = this.props;
     const {
-      feeData: { fee: oldFee, feeUnitByTokenId: oldFeeUnitByTokenId },
-      maxAmountData: { maxAmount: oldMaxAmount },
-      minAmount: oldMinAmount,
-      feeData: oldFeeData,
+      selectedPrivacy: oldSelectedPrivacy,
+      feeData: {
+        fee: oldFee,
+        feeUnitByTokenId: oldFeeUnitByTokenId,
+        minAmount: oldMinAmount,
+        maxAmount: oldMaxAmount,
+      },
     } = prevProps;
-
     if (
       selectedPrivacy?.tokenId !== oldSelectedPrivacy?.tokenId ||
       fee !== oldFee ||
       feeUnitByTokenId !== oldFeeUnitByTokenId ||
       maxAmount !== oldMaxAmount ||
-      minAmount !== oldMinAmount ||
-      feeData !== oldFeeData
+      minAmount !== oldMinAmount
     ) {
       // need to re-calc min amount if token decimals was changed
       this.setFormValidation();
     }
-
     if (receiptData?.txId !== prevProps.receiptData?.txId) {
       openReceipt(receiptData);
     }
   }
 
-  setFormValidation = () => {
-    const { selectedPrivacy, minAmount, maxAmountData } = this.props;
-    const { maxAmount, maxAmountText } = maxAmountData;
-    if (Number.isFinite(maxAmount)) {
+  setFormValidation = debounce(() => {
+    const { selectedPrivacy, feeData } = this.props;
+    const { maxAmountText, minAmountText } = feeData;
+    const _maxAmount = convert.toNumber(maxAmountText, true);
+    const _minAmount = convert.toNumber(minAmountText, true);
+    if (Number.isFinite(_maxAmount)) {
       this.setState({
-        maxAmountValidator: validator.maxValue(maxAmount, {
+        maxAmountValidator: validator.maxValue(_maxAmount, {
           message:
-            maxAmount > 0
+            _maxAmount > 0
               ? `Max amount you can send is ${maxAmountText} ${selectedPrivacy?.externalSymbol ||
                   selectedPrivacy?.symbol}`
               : 'Your balance is not enough to send',
         }),
       });
     }
-    if (Number.isFinite(minAmount)) {
+    if (Number.isFinite(_minAmount)) {
       this.setState({
-        minAmountValidator: validator.minValue(minAmount, {
-          message: `Amount must be larger than ${formatUtil.number(
-            minAmount,
-          )} ${selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol}`,
+        minAmountValidator: validator.minValue(_minAmount, {
+          message: `Amount must be larger than ${minAmountText} ${selectedPrivacy?.externalSymbol ||
+            selectedPrivacy?.symbol}`,
         }),
       });
     }
-  };
+  }, 200);
 
   handleSend = async values => {
     const { handleSend, feeData } = this.props;
@@ -194,8 +190,9 @@ class SendCrypto extends React.Component {
       onShowFrequentReceivers,
       rfFocus,
       rfChange,
-      maxAmountData,
+      feeData,
     } = this.props;
+    const { maxAmountText } = feeData;
     return (
       <View style={homeStyle.container}>
         <Form>
@@ -210,11 +207,11 @@ class SendCrypto extends React.Component {
                 name="amount"
                 placeholder="0.0"
                 label="Amount"
-                maxValue={maxAmountData?.maxAmountText}
+                maxValue={maxAmountText}
                 componentProps={{
                   keyboardType: 'decimal-pad',
                   onPressMax: () => {
-                    rfChange(formName, 'amount', maxAmountData?.maxAmountText);
+                    rfChange(formName, 'amount', maxAmountText);
                     rfFocus(formName, 'amount');
                   },
                 }}
@@ -292,8 +289,6 @@ SendCrypto.propTypes = {
   reloading: PropTypes.bool,
   Balance: PropTypes.func.isRequired,
   estimateFee: PropTypes.any.isRequired,
-  maxAmountData: PropTypes.object.isRequired,
-  minAmount: PropTypes.number.isRequired,
   feeData: PropTypes.any.isRequired,
   isFormEstimateFeeValid: PropTypes.bool.isRequired,
   rfChange: PropTypes.func.isRequired,
@@ -305,8 +300,6 @@ const mapState = state => ({
   toAddress: selector(state, 'toAddress'),
   isFormValid: isValid(formName)(state),
   estimateFee: estimateFeeSelector(state),
-  maxAmountData: maxAmountSelector(state),
-  minAmount: minAmountSelector(state),
   feeData: feeDataSelector(state),
   isFormEstimateFeeValid: isValid(formEstimateFee)(state),
 });

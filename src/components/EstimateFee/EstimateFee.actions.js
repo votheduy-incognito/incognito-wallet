@@ -8,6 +8,7 @@ import { change, focus } from 'redux-form';
 import format from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
 import floor from 'lodash/floor';
+import { getMinMaxWithdrawAmount } from '@src/services/api/misc';
 import {
   ACTION_FETCHING_FEE,
   ACTION_FETCHED_FEE,
@@ -27,13 +28,90 @@ import { estimateFeeSelector } from './EstimateFee.selector';
 import { formName } from './EstimateFee.input';
 import { MAX_FEE_PER_TX, DEFAULT_FEE_PER_KB } from './EstimateFee.utils';
 
-export const actionInit = payload => ({
+export const actionInitEstimateFee = (config = {}) => async (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
+  const accountBalance = accountSeleclor.defaultAccountBalanceSelector(state);
+  const { screen = 'Send' } = config;
+  let rate;
+  let minAmount = 1 / 10 ** selectedPrivacy?.pDecimals;
+  let minAmountText = format.amountFull(minAmount);
+  let amount,
+    amountText,
+    maxFeePrv,
+    maxFeePrvText,
+    minFeePrv,
+    minFeePrvText,
+    maxFeePToken,
+    maxFeePTokenText;
+  try {
+    await dispatch(actionInit());
+    const [min] = await getMinMaxWithdrawAmount(selectedPrivacy?.tokenId);
+    if (min) {
+      minAmountText = format.amountFull(min);
+      minAmount = convert.toOriginalAmount(
+        minAmountText,
+        selectedPrivacy?.pDecimals,
+      );
+    }
+    switch (screen) {
+    case 'UnShield': {
+      rate = 2;
+      break;
+    }
+    default: {
+      rate = 1;
+      break;
+    }
+    }
+    amount = selectedPrivacy?.amount;
+    amountText = format.amountFull(
+      convert.toHumanAmount(amount, selectedPrivacy.pDecimals),
+    );
+    maxFeePrv = accountBalance;
+    maxFeePrvText = format.amountFull(
+      convert.toHumanAmount(maxFeePrv, CONSTANT_COMMONS.PRV.pDecimals),
+    );
+    minFeePrv = DEFAULT_FEE_PER_KB * rate;
+    minFeePrvText = format.amountFull(
+      convert.toHumanAmount(minFeePrv, CONSTANT_COMMONS.PRV.pDecimals),
+    );
+    maxFeePToken = selectedPrivacy?.amount;
+    maxFeePTokenText = format.amountFull(
+      convert.toHumanAmount(maxFeePToken, selectedPrivacy?.pDecimals),
+    );
+  } catch (error) {
+    throw error;
+  } finally {
+    await dispatch(
+      actionInitFetched({
+        amount,
+        amountText,
+        maxFeePrv,
+        maxFeePrvText,
+        minFeePrv,
+        minFeePrvText,
+        maxFeePToken,
+        maxFeePTokenText,
+        screen,
+        rate,
+        minAmount,
+        minAmountText,
+      }),
+    );
+  }
+};
+
+export const actionInit = () => ({
   type: ACTION_INIT,
-  payload,
 });
 
-export const actionInitFetched = () => ({
+export const actionInitFetched = payload => ({
   type: ACTION_INIT_FETCHED,
+  payload,
 });
 
 export const actionFetchingFee = () => ({
@@ -55,6 +133,8 @@ export const actionFetchFee = ({ amount, address }) => async (
 ) => {
   const state = getState();
   const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
+  const estimateFee = estimateFeeSelector(state);
+  const { rate } = estimateFee;
   let feeEst = null;
   let feePTokenEst = null;
   let minFeePTokenEst = null;
@@ -73,7 +153,7 @@ export const actionFetchFee = ({ amount, address }) => async (
     const account = accountSeleclor.defaultAccountSelector(state);
     const wallet = state?.wallet;
     const originalAmount = convert.toOriginalAmount(
-      convert.toHumanAmount(amount, selectedPrivacy?.pDecimals),
+      convert.toNumber(amount, true),
       selectedPrivacy?.pDecimals,
     );
     const fromAddress = account?.PaymentAddress;
@@ -101,27 +181,25 @@ export const actionFetchFee = ({ amount, address }) => async (
           Amount: originalAmount,
         },
       };
-      const [feeEstData, minFeePTokenEstData] = await new Promise.all([
-        await getEstimateFeeForPToken(
-          fromAddress,
-          toAddress,
-          originalAmount,
-          tokenObject,
-          accountWallet,
-        ),
+      feeEst = await getEstimateFeeForPToken(
+        fromAddress,
+        toAddress,
+        originalAmount,
+        tokenObject,
+        accountWallet,
+      );
+      const [feePTokenEstData, minFeePTokenEstData] = await new Promise.all([
+        await apiGetEstimateFeeFromChain({
+          Prv: feeEst,
+          TokenID: selectedPrivacy?.tokenId,
+        }),
         await apiGetEstimateFeeFromChain({
           Prv: DEFAULT_FEE_PER_KB, //min fee prv
           TokenID: selectedPrivacy?.tokenId,
         }),
       ]);
-      feeEst = feeEstData;
+      feePTokenEst = feePTokenEstData;
       minFeePTokenEst = minFeePTokenEstData;
-      if (feeEst) {
-        feePTokenEst = await apiGetEstimateFeeFromChain({
-          Prv: feeEst,
-          TokenID: selectedPrivacy?.tokenId,
-        });
-      }
     }
   } catch (error) {
     if (!feeEst) {
@@ -130,10 +208,9 @@ export const actionFetchFee = ({ amount, address }) => async (
     throw error;
   } finally {
     if (feeEst) {
-      const feePrv = floor(feeEst);
-      const feePrvText = format.toFixed(
+      const feePrv = floor(feeEst * rate);
+      const feePrvText = format.amountFull(
         convert.toHumanAmount(feePrv, CONSTANT_COMMONS.PRV.pDecimals),
-        CONSTANT_COMMONS.PRV.pDecimals,
       );
       await new Promise.all([
         await dispatch(
@@ -147,10 +224,9 @@ export const actionFetchFee = ({ amount, address }) => async (
       ]);
     }
     if (feePTokenEst) {
-      const feePToken = floor(feePTokenEst);
-      const feePTokenText = format.toFixed(
+      const feePToken = floor(feePTokenEst * rate);
+      const feePTokenText = format.amountFull(
         convert.toHumanAmount(feePToken, selectedPrivacy?.pDecimals),
-        selectedPrivacy?.pDecimals,
       );
       await dispatch(
         actionFetchedPTokenFee({
@@ -160,10 +236,9 @@ export const actionFetchFee = ({ amount, address }) => async (
       );
     }
     if (minFeePTokenEst) {
-      const minFeePToken = floor(minFeePTokenEst);
-      const minFeePTokenText = format.toFixed(
+      const minFeePToken = floor(minFeePTokenEst * rate);
+      const minFeePTokenText = format.amountFull(
         convert.toHumanAmount(minFeePToken, selectedPrivacy?.pDecimals),
-        selectedPrivacy?.pDecimals,
       );
       await new Promise.all([
         await dispatch(
