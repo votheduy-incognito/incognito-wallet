@@ -153,6 +153,7 @@ const Detail = props => {
     <View style={styled.container}>
       <Header title={selected?.name} rightHeader={<RightHeader />} />
       <ScrollView
+        contentContainerStyle={styled.scrollview}
         showsVerticalScrollIndicator={false}
         refreshControl={(
           <RefreshControl

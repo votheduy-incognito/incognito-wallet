@@ -24,11 +24,9 @@ import { shieldStorageSelector } from '@src/screens/Shield/Shield.selector';
 import { actionToggleGuide } from '@src/screens/Shield/Shield.actions';
 import Tooltip from '@src/components/Tooltip/Tooltip';
 import { COLORS } from '@src/styles';
-import convert from '@src/utils/convert';
 import { actionToggleModal } from '@components/Modal';
 import UnShieldModal from '@screens/UnShield/UnShield.modal';
-import format from '@src/utils/format';
-import floor from 'lodash/floor';
+import isNaN from 'lodash/isNaN';
 import {
   styled,
   styledHook,
@@ -115,7 +113,7 @@ const Balance = () => {
   return (
     <View style={styledBalance.container}>
       <Amount
-        amount={totalShielded}
+        amount={isNaN(totalShielded) ? 0 : totalShielded}
         pDecimals={0}
         showSymbol={false}
         isGettingBalance={isGettingTotalBalance}
@@ -138,7 +136,10 @@ const FollowToken = () => {
     <View style={styledFollow.container}>
       <Token
         tokenId={CONSTANT_COMMONS.PRV_TOKEN_ID}
-        style={[followed.length === 0 && styledToken.lastChild]}
+        style={[
+          styledFollow.token,
+          followed.length === 0 && styledToken.lastChild,
+        ]}
         onPress={() => handleSelectToken(CONSTANT_COMMONS.PRV_TOKEN_ID)}
       />
       {followed.map((token, index) => (

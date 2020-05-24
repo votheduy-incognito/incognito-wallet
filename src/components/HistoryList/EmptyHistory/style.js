@@ -1,19 +1,17 @@
-import { COLORS } from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
   container: {
-    position: 'relative',
-    alignItems: 'center',
     flex: 1,
-    minHeight: 400,
-    backgroundColor: COLORS.white,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   text: {
     color: COLORS.colorGreyBold,
     textAlign: 'center',
-    lineHeight: 24,
-    fontSize: 16,
+    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.regular + 4),
+    fontSize: FONT.SIZE.regular,
   },
   image: {
     marginTop: '5%',
