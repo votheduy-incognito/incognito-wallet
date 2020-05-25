@@ -20,7 +20,6 @@ const {
   CreateToken,
   HomeWallet,
   Wallet,
-  SelectAccount,
   FollowToken,
   Shield,
   WhyShield,
@@ -30,6 +29,12 @@ const {
   AddManually,
   ReceiveCrypto,
   UnShield,
+  Trade,
+  TradeConfirm,
+  TradeHistoryDetail,
+  TradeHistory,
+  SelectAccount,
+  TokenSelectScreen,
 } = routeNames;
 
 const whiteScreens = [
@@ -51,6 +56,12 @@ const whiteScreens = [
   AddManually,
   ReceiveCrypto,
   UnShield,
+  Trade,
+  TradeConfirm,
+  TradeHistory,
+  TradeHistoryDetail,
+  SelectAccount,
+  TokenSelectScreen,
 ];
 const blue2Screens = [];
 const blue1Screens = [Wizard, Node];

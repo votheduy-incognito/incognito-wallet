@@ -41,14 +41,14 @@ export default class Server {
       .then(strData => {
         cachedList = JSON.parse(strData)||[];
         const mainnetServer = cachedList.find(item => item.address.includes('https://mainnet.incognito.org/fullnode'));
-        const testnetServer = cachedList.find(item => item.address.includes('https://test-node.incognito.org'));
+        const testnetServer = cachedList.find(item => item.id === 'testnet');
 
         if (mainnetServer) {
           mainnetServer.address = 'https://lb-fullnode.incognito.org/fullnode';
         }
 
         if (testnetServer) {
-          testnetServer.address = 'http://51.83.36.184:9334';
+          testnetServer.address = 'http://51.83.36.184:20001';
         }
 
         storage.setItem(KEY.SERVER, JSON.stringify(cachedList));

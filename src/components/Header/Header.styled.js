@@ -17,11 +17,11 @@ export const styledHeaderTitle = StyleSheet.create({
     lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.black,
     marginRight: 'auto',
-    textTransform: 'capitalize',
-    flex: 1,
+    maxWidth: '50%',
   },
   searchStyled: {
     textTransform: 'none',
     color: COLORS.colorGreyMedium,
+    maxWidth: '100%',
   },
 });

@@ -1,6 +1,6 @@
 {
   "name": "incognito-wallet",
-  "version": "3.6.6",
+  "version": "3.6.6.4",
   "private": true,
   "rnpm": {
     "assets": [
@@ -17,6 +17,7 @@
     "flow": "flow",
     "android": "react-native run-android --variant=debug",
     "androidStaging": "react-native run-android --variant=releaseStaging",
+    "androidNext": "react-native run-android --variant=releaseNext",
     "android:clean": "cd android && rm app/src/main/assets/index.android.bundle && ./gradlew clean",
     "buildDebug": "npx jetify && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle && cd android && ./gradlew app:assembleDebug",
     "ios:device": "react-native run-ios --device=\"iPhone\"",

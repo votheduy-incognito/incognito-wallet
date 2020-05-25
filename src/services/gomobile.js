@@ -44,7 +44,7 @@ const syncMethods = [
   'generateKeyFromSeed'
 ];
 
-const log = (...args) => console.log('GOMODULE', ...args);
+const log = (...args) => null;
 
 try {
   asyncMethods.forEach(methodName => {

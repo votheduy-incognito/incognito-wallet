@@ -24,5 +24,8 @@ export default StyleSheet.create({
     paddingBottom: 25,
     paddingHorizontal: 25,
     maxHeight: 300,
-  }
+  },
+  icon: {
+    marginLeft: 6,
+  },
 });

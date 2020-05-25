@@ -28,3 +28,4 @@ export { default as Select } from './Select';
 export { default as WebView } from './WebView';
 export { default as BaseTextInput } from './BaseTextInput';
 export { default as InputWithMax } from './InputWithMax';
+export { default as RoundCornerButton } from './RoundCornerButton';
