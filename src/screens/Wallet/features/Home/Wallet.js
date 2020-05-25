@@ -107,13 +107,16 @@ const Hook = () => {
 };
 
 const Balance = () => {
-  const totalShielded = useSelector(totalShieldedTokensSelector);
+  let totalShielded = useSelector(totalShieldedTokensSelector);
   const isGettingTotalBalance =
     useSelector(isGettingTotalBalanceSelector).length > 0;
+  if (isNaN(totalShielded)) {
+    totalShielded = 0;
+  }
   return (
     <View style={styledBalance.container}>
       <Amount
-        amount={isNaN(totalShielded) ? 0 : totalShielded}
+        amount={totalShielded}
         pDecimals={0}
         showSymbol={false}
         isGettingBalance={isGettingTotalBalance}
