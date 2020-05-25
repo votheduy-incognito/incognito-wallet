@@ -10,6 +10,7 @@ import {
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import uniqBy from 'lodash/uniqBy';
 import format from '@src/utils/format';
+import isNaN from 'lodash/isNaN';
 import {
   isGettingBalance as isGettingBalanceAccount,
   defaultAccountName,
@@ -65,11 +66,10 @@ export const totalShieldedTokensSelector = createSelector(
     const prv = getPrivacyDataByTokenID(CONSTANT_COMMONS.PRV.id);
     const totalShieldedTokens = [...tokens, prv].reduce(
       (prevValue, currentValue) => {
-        return (
-          prevValue +
+        const _currentValue =
           currentValue?.pricePrv *
-            format.amountFull(currentValue?.amount, currentValue?.pDecimals)
-        );
+          format.amountFull(currentValue?.amount, currentValue?.pDecimals);
+        return prevValue + isNaN(_currentValue) ? 0 : _currentValue;
       },
       0,
     );

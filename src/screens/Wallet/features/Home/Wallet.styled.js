@@ -4,7 +4,6 @@ import { FONT, COLORS, UTILS } from '@src/styles';
 export const styled = StyleSheet.create({
   container: {
     flex: 1,
-    position: 'relative',
   },
   groupButtonContainer: {
     marginTop: 50,
@@ -96,6 +95,7 @@ export const styledAddToken = StyleSheet.create({
 
 export const styledFollow = StyleSheet.create({
   container: {},
+  token: {},
 });
 
 export const extraStyled = StyleSheet.create({

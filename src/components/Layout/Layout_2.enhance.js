@@ -14,7 +14,6 @@ const styled = StyleSheet.create({
   wrapper: {
     margin: 25,
     flex: 1,
-    marginTop: 0,
   },
 });
 
@@ -23,8 +22,10 @@ const enhance = WrappedComp => props => {
   const hasNotch = ios && DeviceInfo.hasNotch();
   return (
     <ErrorBoundary>
-      <SafeAreaView style={[styled.container, ios, hasNotch]}>
-        <View style={styled.wrapper}>
+      <SafeAreaView
+        style={[styled.container, ios, hasNotch, props?.containerStyled]}
+      >
+        <View style={[styled.wrapper, props?.wrapperStyled]}>
           <WrappedComp {...props} />
         </View>
       </SafeAreaView>
