@@ -1,5 +1,9 @@
-import { Platform, PixelRatio, Dimensions } from 'react-native';
-import { isIOS } from '@src/utils/platform';
+import {
+  Platform,
+  //  PixelRatio,
+  //  Dimensions
+} from 'react-native';
+// import { isIOS } from '@src/utils/platform';
 
 const FONT_FAMILY = Platform.OS === 'ios' ? 'SFProDisplay' : 'SF-Pro-Display-';
 const FONT_FAMILY_SPECIAL =
@@ -50,7 +54,7 @@ const fontStyle = {
   },
 };
 
-const getFontScale = PixelRatio.getFontScale();
+// const getFontScale = PixelRatio.getFontScale();
 
 const fontSizes = {
   superSmall: 12,
@@ -63,31 +67,30 @@ const fontSizes = {
   superLarge: 40,
 };
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+// const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-// based on iphone 5s's scale
-const scale = SCREEN_WIDTH / 320;
+// // based on iphone 5s's scale
+// const scale = SCREEN_WIDTH / 320;
 
 export function normalize(size) {
-  const newSize = size * scale;
-  if (Platform.OS === 'ios') {
-    return Math.round(PixelRatio.roundToNearestPixel(newSize));
-  } else {
-    return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2;
-  }
+  return size;
+  // const newSize = size * scale;
+  // if (Platform.OS === 'ios') {
+  //   return Math.round(PixelRatio.roundToNearestPixel(newSize));
+  // } else {
+  //   return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2;
+  // }
 }
 
 const getFontSizes = () =>
   Object.keys(fontSizes).reduce((acc, key) => {
-    const ratio = PixelRatio.get();
-    const size = isIOS() ? fontSizes[key] - 4 : fontSizes[key] - 2;
-    acc[key] = normalize(size * getFontScale);
+    acc[key] = normalize(fontSizes[key]);
     return acc;
   }, {});
-
+const _SIZE = getFontSizes();
 export default {
   NAME: fontNames,
-  SIZE: getFontSizes(),
+  SIZE: _SIZE,
   STYLE: fontStyle,
   NORMALIZE: normalize,
   FONT_SIZES: fontSizes,

@@ -11,8 +11,8 @@ import withHeader from './Header.enhance';
 export const HeaderContext = React.createContext({});
 
 const HeaderTitle = () => {
-  const {headerProps} = React.useContext(HeaderContext);
-  const {onHandleSearch, title, titleStyled, canSearch} = headerProps;
+  const { headerProps } = React.useContext(HeaderContext);
+  const { onHandleSearch, title, titleStyled, canSearch } = headerProps;
   return (
     <TouchableWithoutFeedback onPress={onHandleSearch}>
       <Text
@@ -37,8 +37,9 @@ const Header = ({
   toggleSearch,
   accountSelectable,
   onGoBack,
+  onHandleSearch,
 }) => {
-  const {goBack} = useNavigation();
+  const { goBack } = useNavigation();
   const handleGoBack = () =>
     typeof onGoBack === 'function' ? onGoBack() : goBack();
   return (
@@ -51,6 +52,7 @@ const Header = ({
           canSearch,
           dataSearch,
           toggleSearch,
+          onHandleSearch,
         },
       }}
     >
@@ -74,6 +76,7 @@ Header.defaultProps = {
   canSearch: false,
   dataSearch: [],
   accountSelectable: false,
+  onGoBack: null,
 };
 
 Header.propTypes = {
@@ -84,6 +87,8 @@ Header.propTypes = {
   dataSearch: PropTypes.array,
   toggleSearch: PropTypes.bool.isRequired,
   accountSelectable: PropTypes.bool,
+  onGoBack: PropTypes.func,
+  onHandleSearch: PropTypes.func.isRequired,
 };
 
 export default withHeader(React.memo(Header));

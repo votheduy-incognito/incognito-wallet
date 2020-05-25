@@ -14,7 +14,7 @@ import { Provider } from 'react-redux';
 import AppUpdater from '@components/AppUpdater/index';
 import { PersistGate } from 'redux-persist/integration/react';
 import NetInfo from '@react-native-community/netinfo';
-import { Linking } from 'react-native';
+import { Linking, Text } from 'react-native';
 import ModalConnection from './components/Modal/ModalConnection';
 
 const isShowDeviceLog = false;
@@ -41,7 +41,8 @@ const App = () => {
   useEffect(() => {
     // Notification
     initNotification();
-
+    Text.defaultProps = Text.defaultProps || {};
+    Text.defaultProps.allowFontScaling = false;
     // Network state change
     listenNetworkChanges();
   }, []);

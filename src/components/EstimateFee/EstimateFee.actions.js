@@ -183,25 +183,21 @@ export const actionFetchFee = ({ amount, address }) => async (
           Amount: originalAmount,
         },
       };
-      feeEst = await getEstimateFeeForPToken(
+      const feeEstForPToken = await getEstimateFeeForPToken(
         fromAddress,
         toAddress,
         originalAmount,
         tokenObject,
         accountWallet,
       );
-      const [feePTokenEstData, minFeePTokenEstData] = await new Promise.all([
-        await apiGetEstimateFeeFromChain({
-          Prv: feeEst,
-          TokenID: selectedPrivacy?.tokenId,
-        }),
-        await apiGetEstimateFeeFromChain({
-          Prv: DEFAULT_FEE_PER_KB, //min fee prv
-          TokenID: selectedPrivacy?.tokenId,
-        }),
-      ]);
+      feeEst = Math.max(feeEstForPToken, DEFAULT_FEE_PER_KB);
+      let feePTokenEstData = await apiGetEstimateFeeFromChain({
+        Prv: feeEst,
+        TokenID: selectedPrivacy?.tokenId,
+      });
+      feePTokenEstData = Math.max(feePTokenEstData, feeEst);
       feePTokenEst = feePTokenEstData;
-      minFeePTokenEst = minFeePTokenEstData;
+      minFeePTokenEst = feePTokenEstData;
     }
   } catch (error) {
     if (!feeEst) {
@@ -241,6 +237,12 @@ export const actionFetchFee = ({ amount, address }) => async (
       const minFeePToken = floor(minFeePTokenEst * rate);
       const minFeePTokenText = format.amountFull(
         convert.toHumanAmount(minFeePToken, selectedPrivacy?.pDecimals),
+      );
+      console.log(
+        'minFeePToken',
+        minFeePToken,
+        'minFeePTokenText',
+        minFeePTokenText,
       );
       await new Promise.all([
         await dispatch(
