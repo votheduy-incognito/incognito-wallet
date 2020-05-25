@@ -61,7 +61,6 @@ class WithdrawContainer extends Component {
         originalFee,
         isUsedPRVFee,
         feeForBurn,
-        feeForBurnText,
       } = payload;
       const { account, wallet, selectedPrivacy } = this.props;
       const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
@@ -81,7 +80,7 @@ class WithdrawContainer extends Component {
       };
       const paymentInfo = {
         paymentAddressStr: tempAddress,
-        amount: feeForBurnText,
+        amount: feeForBurn,
       };
       const res = await tokenService.createSendPToken(
         tokenObject,
@@ -91,7 +90,6 @@ class WithdrawContainer extends Component {
         isUsedPRVFee ? paymentInfo : null,
         isUsedPRVFee ? 0 : originalFee,
       );
-      console.log('res handleSendToken', res);
       if (res.txId) {
         return res;
       } else {
@@ -168,10 +166,15 @@ class WithdrawContainer extends Component {
         paymentAddress: remoteAddress,
         memo,
       });
-      const tx = await this.handleSendToken(payload);
-      console.log('tx handleCentralizedWithdraw', tx);
+      if (!tempAddress) {
+        throw Error('Can not create a temp address');
+      }
+      const tx = await this.handleSendToken({ ...payload, tempAddress });
       if (tx && !isUsedPRVFee) {
-        await updatePTokenFee({ fee, paymentAddress: tempAddress });
+        await updatePTokenFee({
+          fee,
+          paymentAddress: tempAddress,
+        });
       }
       return tx;
     } catch (e) {

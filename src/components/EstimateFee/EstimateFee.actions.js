@@ -49,14 +49,6 @@ export const actionInitEstimateFee = (config = {}) => async (
     maxFeePTokenText;
   try {
     await dispatch(actionInit());
-    const [min] = await getMinMaxWithdrawAmount(selectedPrivacy?.tokenId);
-    if (min) {
-      minAmountText = format.amountFull(min);
-      minAmount = convert.toOriginalAmount(
-        minAmountText,
-        selectedPrivacy?.pDecimals,
-      );
-    }
     switch (screen) {
     case 'UnShield': {
       rate = 2;
@@ -66,6 +58,16 @@ export const actionInitEstimateFee = (config = {}) => async (
       rate = 1;
       break;
     }
+    }
+    if (screen === 'UnShield') {
+      const [min] = await getMinMaxWithdrawAmount(selectedPrivacy?.tokenId);
+      if (min) {
+        minAmountText = format.amountFull(min);
+        minAmount = convert.toOriginalAmount(
+          minAmountText,
+          selectedPrivacy?.pDecimals,
+        );
+      }
     }
     amount = selectedPrivacy?.amount;
     amountText = format.amountFull(
