@@ -46,7 +46,7 @@ class SimpleInfo extends Component {
     const { icon } = this.state;
 
     return (
-      <ScrollView style={style.container}>
+      <ScrollView contentContainerStyle={style.container}>
         <Container style={style.mainContainer}>
           <View style={style.iconContainer}>
             {icon}
