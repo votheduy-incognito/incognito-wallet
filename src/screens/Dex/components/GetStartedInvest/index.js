@@ -55,48 +55,19 @@ let rewardInterval;
 const TIME = 100;
 let serverTime = 0;
 
-const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
+const GetStartedInvest = ({ onPress, accounts, pairs, shares }) => {
   const [loading, setLoading] = React.useState(true);
   const [rewards, setRewards] = React.useState(null);
   const [reloading, setReloading] = React.useState(false);
   const [totalReward, setTotalReward] = React.useState(0);
 
-  const isUserPair = (tokenIds) => key => {
-    if (tokenIds.every(item => key.includes(item))) {
-      return accounts.some(account => key.includes(account.PaymentAddress));
-    }
-  };
-
-  const findShareKey = (shares, tokenIds) => {
-    return Object.keys(shares).find(isUserPair(tokenIds));
-  };
-
   const loadData = async () => {
     clearInterval(rewardInterval);
-    // const investAccounts = pairs
-    //   .map(pairInfo => {
-    //     const tokenIds = pairInfo.keys;
-    //     const token1 = tokens.find(item => item.id === tokenIds[0]);
-    //     const token2 = tokens.find(item => item.id === tokenIds[1]);
-    //     const shareKey = findShareKey(shares, tokenIds);
-    //
-    //     if (!shareKey || !(
-    //       (tokenIds[0] === PRV_ID && token2.hasIcon) ||
-    //       (tokenIds[1] === PRV_ID && token1.hasIcon) ||
-    //       (token1.hasIcon && token2.hasIcon)
-    //     )) {
-    //       return null;
-    //     }
-    //
-    //     return {
-    //       share: shares[shareKey],
-    //       account: accounts.find(account => shareKey.includes(account.PaymentAddress)),
-    //     };
-    //   })
-    //   .filter(pair => pair && pair.share > 0)
-    //   .map(item => item.account);
+    const rawShares = JSON.stringify(shares);
+    const investAccounts = accounts
+      .filter(account => rawShares.includes(account.PaymentAddress));
 
-    const rewards = _.flatten(await Promise.all(accounts.map(account => getRewards(account.PaymentAddress))))
+    const rewards = _.flatten(await Promise.all(investAccounts.map(account => getRewards(account.PaymentAddress))))
       .filter(reward => reward.total || reward.amount1 || reward.amount2);
     serverTime = (await getNodeTime()) - (TIME / 1000);
 
@@ -168,12 +139,14 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares, tokens }) => {
   };
 
   React.useEffect(() => {
-    loadData();
+    if (shares) {
+      loadData();
+    }
 
     return () => {
       clearInterval(rewardInterval);
     };
-  }, []);
+  }, [shares]);
 
   React.useEffect(() => {
     clearInterval(rewardInterval);
@@ -231,7 +204,6 @@ GetStartedInvest.propTypes = {
   accounts: PropTypes.array.isRequired,
   pairs: PropTypes.array.isRequired,
   shares: PropTypes.array.isRequired,
-  tokens: PropTypes.array.isRequired,
 };
 
 export default GetStartedInvest;

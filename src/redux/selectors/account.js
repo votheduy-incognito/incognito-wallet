@@ -34,10 +34,34 @@ export const getAccountByPublicKey = createSelector(listAccount, accounts =>
   ),
 );
 
-// export const getAccountByBlsKey =  createSelector(
-//   listAccount,
-//   accounts => memoize(blsKey => accounts.find(account => account?.BLSPublicKey === blsKey))
-// );
+export const listAccountSelector = createSelector(
+  state => state?.account?.list || [],
+  list =>
+    list.map(item => ({
+      ...item,
+      accountName: item?.name || item?.AccountName,
+    })),
+);
+
+export const defaultAccountNameSelector = createSelector(
+  state => state?.account?.defaultAccountName,
+  accountName => accountName,
+);
+
+export const defaultAccountSelector = createSelector(
+  listAccountSelector,
+  defaultAccountNameSelector,
+  (list, defaultName) => {
+    let account = list?.find(account => account?.name === defaultName);
+    if (_.isEmpty(account?.name)) {
+      console.warn(
+        `Can not get account ${account?.name}, fallback to first account (default account)`,
+      );
+      account = list && list[0];
+    }
+    return account;
+  },
+);
 
 export default {
   defaultAccountName,
@@ -46,4 +70,7 @@ export default {
   isGettingBalance,
   getAccountByName,
   getAccountByPublicKey,
+  listAccountSelector,
+  defaultAccountSelector,
+  defaultAccountNameSelector,
 };

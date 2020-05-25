@@ -17,9 +17,27 @@ const {
   Community,
   Home,
   Stake,
+  Trade,
+  TradeConfirm,
+  TradeHistoryDetail,
+  TradeHistory,
+  SelectAccount,
+  TokenSelectScreen,
 } = routeNames;
 
-const whiteScreens = [Game, GetStarted, AddPin, Community, Home];
+const whiteScreens = [
+  Game,
+  GetStarted,
+  AddPin,
+  Community,
+  Home,
+  Trade,
+  TradeConfirm,
+  TradeHistory,
+  TradeHistoryDetail,
+  SelectAccount,
+  TokenSelectScreen,
+];
 const blue2Screens = [];
 const blue1Screens = [Wizard, Node];
 const dark2Screen = [Dex, DexHistory, DexHistoryDetail];

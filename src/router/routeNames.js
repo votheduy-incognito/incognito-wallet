@@ -59,5 +59,14 @@ export default {
   PriceChartCrypto: 'PriceChartCrypto',
   UniswapHelp: 'UniswapHelp',
   BuyNodeScreen: 'BuyNodeScreen',
-  PaymentBuyNodeScreen: 'PaymentBuyNodeScreen'
+  PaymentBuyNodeScreen: 'PaymentBuyNodeScreen',
+  HomeWallet: 'HomeWallet',
+  SelectAccount: 'SelectAccount',
+  FollowTokenOld: 'FollowTokenOld',
+  ShieldGenQRCode: 'ShieldGenQRCode',
+  TokenSelectScreen: 'TokenSelectScreen',
+  Trade: 'Trade',
+  TradeHistory: 'TradeHistory',
+  TradeHistoryDetail: 'TradeHistoryDetail',
+  TradeConfirm: 'TradeConfirm',
 };

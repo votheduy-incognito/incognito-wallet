@@ -23,11 +23,9 @@ import AddPIN from '@src/screens/AddPIN';
 import BackupKeys from '@src/screens/BackupKeys';
 import WhyShield from '@src/screens/WhyShield';
 import PriceChartCrypto from '@src/screens/PriceChartCrypto';
+import TokenSelectScreen from '@src/components/TokenSelectScreen';
 import { navigationOptionsHandler } from '@src/utils/router';
 import Dex from '@screens/Dex';
-import pUniswap from '@screens/Uniswap';
-import UniswapHistory from '@screens/UniswapHistory';
-import UniswapHistoryDetail from '@screens/UniswapHistoryDetail';
 import Shield from '@screens/Shield';
 import FrequentReceivers, {
   FrequentReceiversForm,
@@ -39,8 +37,12 @@ import Stake from '@screens/Stake';
 import StakeHistory from '@screens/StakeHistory';
 import StakeRecoverAccount from '@screens/Stake/features/RecoverAccount';
 import StakeHistoryDetail from '@screens/StakeHistory/features/Detail';
-import UniswapHelp from '@screens/UniswapHelp';
+import Trade from '@screens/DexV2';
+import TradeConfirm from '@screens/DexV2/components/TradeConfirm';
+import TradeHistory from '@screens/DexV2/components/History';
+import TradeHistoryDetail from '@screens/DexV2/components/HistoryDetail';
 import PaymentBuyNodeScreen from '@src/screens/PaymentBuyNodeScreen';
+import SelectAccount from '@screens/SelectAccount';
 import ROUTE_NAMES from './routeNames';
 import TabNavigator from './TabNavigator';
 
@@ -97,19 +99,21 @@ const AppNavigator = createStackNavigator(
       title: 'pDex',
       header: () => null,
     }),
-    [ROUTE_NAMES.pUniswap]: navigationOptionsHandler(pUniswap, {
-      title: 'pKyber',
+    [ROUTE_NAMES.Trade]: navigationOptionsHandler(Trade, {
       header: () => null,
     }),
-    [ROUTE_NAMES.UniswapHistory]: navigationOptionsHandler(UniswapHistory, {
-      title: 'History',
+    [ROUTE_NAMES.TradeHistory]: navigationOptionsHandler(TradeHistory, {
+      header: () => null,
     }),
-    [ROUTE_NAMES.UniswapHistoryDetail]: navigationOptionsHandler(
-      UniswapHistoryDetail,
-      {
-        title: 'Transaction Detail',
-      },
-    ),
+    [ROUTE_NAMES.TradeHistoryDetail]: navigationOptionsHandler(TradeHistoryDetail, {
+      header: () => null,
+    }),
+    [ROUTE_NAMES.SelectAccount]: navigationOptionsHandler(SelectAccount, {
+      header: () => null,
+    }),
+    [ROUTE_NAMES.TradeConfirm]: navigationOptionsHandler(TradeConfirm, {
+      header: () => null,
+    }),
     [ROUTE_NAMES.WhyShield]: navigationOptionsHandler(WhyShield, {
       title: 'Why Shield?',
     }),
@@ -148,14 +152,14 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.WhyReceive]: navigationOptionsHandler(WhyReceive, {
       title: 'Receive',
     }),
-    [ROUTE_NAMES.UniswapHelp]: navigationOptionsHandler(UniswapHelp, {
-      title: 'FAQs',
-    }),
     [ROUTE_NAMES.BuyNodeScreen]: navigationOptionsHandler(BuyNodeScreen, {
       headerTitleStyle: { alignSelf: 'center' },
       title: 'Buy Node',
     }),
     [ROUTE_NAMES.PriceChartCrypto]: navigationOptionsHandler(PriceChartCrypto, { title: 'Price chart' }),
+    [ROUTE_NAMES.TokenSelectScreen]: navigationOptionsHandler(TokenSelectScreen, {
+      header: () => null,
+    }),
     [ROUTE_NAMES.PaymentBuyNodeScreen]: navigationOptionsHandler(PaymentBuyNodeScreen, { title: 'Payment' }),
   },
   {

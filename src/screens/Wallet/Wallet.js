@@ -40,15 +40,11 @@ class Wallet extends React.Component {
               <Text style={homeStyle.followTokenText}>Add a coin to your list</Text>
             </TouchableOpacity>
             <View style={homeStyle.addTokenContainer}>
-              { !dexUtils.isDEXAccount(account.name) &&
-                (
-                  <Button
-                    title="Issue your own privacy coin"
-                    onPress={handleCreateToken}
-                    style={homeStyle.addTokenBtn}
-                  />
-                )
-              }
+              <Button
+                title="Issue your own privacy coin"
+                onPress={handleCreateToken}
+                style={homeStyle.addTokenBtn}
+              />
             </View>
           </View>
         </ScrollView>

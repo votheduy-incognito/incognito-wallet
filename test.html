@@ -1,0 +1,251 @@
+<style>
+  body {
+    background-color: #725BA4;
+    color: #FCE8DF;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-align: center;
+  }
+  ​
+  .title {
+    color: #b58608;
+    font-family: 'Droid serif', serif;
+    font-size: 36px;
+    font-weight: 400;
+    font-style: italic;
+    line-height: 44px;
+    margin: 0 0 12px;
+    text-align: center;
+  }
+  ​
+  .sub-title,
+  #Available-balance,
+  #Spending {
+    color: #a7e8f8;
+    font-family: 'Julius Sans One', sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 32px;
+    text-shadow: 1px 1px 1px #082b34;
+  }
+  ​
+</style>
+​
+<!DOCTYPE html>
+<html lang="en">
+​
+<head>
+  <meta charset="UTF-8">
+  <title>Arweave Timer</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha3/0.8.0/sha3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/ethereumjs/browser-builds/dist/ethereumjs-tx/ethereumjs-tx-1.3.3.min.js"></script>
+</head>
+<body>
+<div class="page-1" id="page-1">
+  <div class="slogan" id="slogan">
+    <center><div class="title">INCOGNITO</div></center>
+    ​
+    <br /><br /><br />
+    <center><div style="padding: 10px;">UPDATE HELLO WORLD DAPP ANONYMOUSLY</div></center>
+    <center><div id="current-mess">CURRENT MESS ON HELLO DAPP: HELLO WORLD !!!</div></center>
+    <center><input id="update" name="update" type="text" placeholder="Enter new message..." required/></center>
+    <center><button type="submit" id="button-submit" onclick="submit()">UPDATE</button></center>
+  </div>
+</div>
+​
+<center><div></div></center>
+​
+<script>
+  const provider = new Web3.providers.HttpProvider("https://kovan.infura.io/v3/93fe721349134964aa71071a713c5cef");
+  const web3 = new Web3(provider);
+  const account1 = "0xE2C3eb079E46787b8BBff07fc361bcDe4B542C86";
+  let privateKey1 = new ethereumjs.Buffer.Buffer('2CCF641E4C93F7B0F458B84BE43CECC6FB1576EAECD0221548E149E038C2D8DF', 'hex')
+  // to build input data
+  const abiHelloWorld = [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newMessage",
+          "type": "string"
+        }
+      ],
+      "name": "update",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "message",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "initMessage",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    }
+  ];
+  const contract_HelloWorld_Address = "0x23471bf7941b0dd1e6096bdd81f42c7e413c23a2";
+  const contractHelloWorld = new web3.eth.Contract(abiHelloWorld, contract_HelloWorld_Address);
+  const abiBroker = [{"inputs": [{
+                "internalType": "address",
+                "name": "token",
+                "type": "address"
+              },
+                {
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "address",
+                  "name": "recipientToken",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "exchangeAddress",
+                  "type": "address"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "callData",
+                  "type": "bytes"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "timestamp",
+                  "type": "bytes"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "signData",
+                  "type": "bytes"
+                }
+              ],
+              "name": "execute",
+              "outputs": [],
+              "stateMutability": "payable",
+              "type": "function"
+            }
+            ];
+  const contract_Broker_Address = "0x384E826E76D585B5999bbf6BF163f1a8349f790d";
+  const contractBroker = new web3.eth.Contract(abiBroker, contract_Broker_Address);
+  // default amount
+  let amountToSend = 0;
+  // timestamp ( I using random data instead)
+  let randomBytes = getRandomArbitrary(1, 100000000000000000000).toString(16);
+  randomBytes = (randomBytes + "").length % 2 != 0 ? "0" + randomBytes : randomBytes;
+  console.log(randomBytes);
+  // default value
+  let token = "0x0000000000000000000000000000000000000000";
+  // default value9
+  let dest = "0x0000000000000000000000000000000000000000";
+  // current mess
+  updateMessDisplay();
+
+  /**
+   * Returns a random number between min (inclusive) and max (exclusive)
+   */
+  function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function hexToBytes(hex) {
+    for (var bytes = [], c = 0; c < hex.length; c += 2) {
+      bytes.push(parseInt(hex.substr(c, 2), 16));
+    }
+
+    return bytes;
+  }
+
+  // wait transaction success
+  async function getTxByHash(txHash) {
+    let trx = await web3.eth.getTransactionReceipt(txHash);
+    console.log(txHash);
+    while(trx === null) {
+      let trx = await web3.eth.getTransactionReceipt(txHash);
+    }
+    updateMessDisplay();
+  }
+
+  function updateMessDisplay() {
+    contractHelloWorld.methods.message().call({from: '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe'})
+      .then(function(result){
+        console.log(result);
+        document.getElementById("current-mess").innerText = "CURRENT MESS ON HELLO DAPP: " + result;
+      })
+      .catch(function(error) {
+        console.log(error)
+      });
+  }
+
+
+  function submit() {
+    console.log('SUBMIT');
+    var mess = document.getElementById("update").value;
+
+    if (mess == '')
+    {
+      alert("Input box must not empty!");
+      return;
+    }
+    const abiencode = contractHelloWorld.methods.update(mess).encodeABI();
+
+    // move 0x
+    let dataToSign = (contract_HelloWorld_Address + abiencode + randomBytes + web3.utils.padLeft(amountToSend, 64)).split("0x").join("");
+    let dataToSignBytes = hexToBytes(dataToSign);
+    let hashData = keccak256(dataToSignBytes)
+
+    const signBytes = web3.eth.accounts.sign(hexToBytes(hashData), 'B8DB29A7A43FB88AD520F762C5FDF6F1B0155637FA1E5CB2C796AFE9E5C04E31');
+
+    console.log("Signature: ", signBytes.signature);
+
+    const callData = contractBroker.methods.execute(token, amountToSend, dest, contract_HelloWorld_Address, abiencode, "0x" + randomBytes, signBytes.signature).encodeABI();
+
+
+    console.log(callData);
+
+    web3.eth.getTransactionCount(account1, (err, txCount) => {
+      // Build the transaction
+      const txObject = {
+        nonce:    web3.utils.toHex(txCount),
+        to:       contract_Broker_Address,
+        value:    web3.utils.toHex(web3.utils.toWei('0', 'ether')),
+        gasLimit: web3.utils.toHex(2100000),
+        gasPrice: web3.utils.toHex(web3.utils.toWei('6', 'gwei')),
+        data: callData
+      };
+
+      // Sign the transaction
+      let tx = new ethereumjs.Tx(txObject)
+      tx.sign(privateKey1);
+      const serializedTx = tx.serialize();
+      const raw = '0x' + serializedTx.toString('hex');
+      // Broadcast the transaction
+      const transaction = web3.eth.sendSignedTransaction(raw, (err, tx) => {
+        getTxByHash(tx);
+      });
+    });
+  }
+</script>
+</body>
+</html>

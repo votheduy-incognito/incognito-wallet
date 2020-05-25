@@ -8,6 +8,7 @@ const COLORS = {
   blue2: '#01828A',
   blue3: '#ACE9EC',
   blue4: '#004AA9',
+  blue5: '#5995F0',
   red: '#FE4D4D',
   green: '#26C64D',
   dark1: '#101111',
@@ -33,6 +34,8 @@ const COLORS = {
   lightGrey15: '#DCDDDD',
   lightGrey16: '#CCE2E2',
 
+  newGrey: '#8A8A8E',
+
   toastBackgroundDefault: 'rgba(107, 141, 143, 0.8)',
   toastBackgroundError: 'rgba(255, 101, 47, 0.8)',
   toastBackgroundWarning: 'rgba(255, 241, 192, 0.8)',
@@ -42,7 +45,7 @@ const COLORS = {
   overlayBlackLight: 'rgba(0, 0, 0, 0.3)',
   errorMessage: '#ed4337',
   colorGrey: '#ECECEC',
-  mottoGrey: '#8c9c9d'
+  mottoGrey: '#8c9c9d',
 };
 
 

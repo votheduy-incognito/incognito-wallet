@@ -6,14 +6,17 @@ import {
   ScrollView,
   Text,
   View,
+  Image,
+  TouchableOpacity,
 } from '@src/components/core';
+import helpInline from '@src/assets/images/icons/help-inline.png';
 import stylesheet from './style';
 
-const Help = ({ title, content, marginLeft }) => {
+const Help = ({ title, content }) => {
   const [ visible, setVisible ] = React.useState(false);
   return (
-    <View>
-      <Icon name="help-outline" size={14} containerStyle={{ marginLeft }} onPress={() => setVisible(true)} />
+    <TouchableOpacity onPress={() => setVisible(true)}>
+      <Image source={helpInline} style={stylesheet.icon} />
       <Overlay isVisible={visible} overlayStyle={stylesheet.dialog} onBackdropPress={() => setVisible(false)}>
         <View>
           <View style={stylesheet.header}>
@@ -28,7 +31,7 @@ const Help = ({ title, content, marginLeft }) => {
           </ScrollView>
         </View>
       </Overlay>
-    </View>
+    </TouchableOpacity>
   );
 };
 

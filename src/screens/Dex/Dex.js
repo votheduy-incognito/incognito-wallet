@@ -1,26 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {View, Image, Text, ScrollView, RefreshControl, TouchableOpacity} from '@src/components/core';
+import {
+  View,
+  Image,
+  Text,
+  ScrollView,
+  RefreshControl,
+  TouchableOpacity,
+} from '@src/components/core';
 import OptionMenu from '@components/OptionMenu/OptionMenu';
-import withdrawBlack from '@assets/images/icons/withdraw_black.png';
-import DepositGuide from '@screens/Dex/components/DepositGuide';
+import withdrawBlack from '@assets/images/icons/withdraw-node.png';
 import Transfer from '@screens/Dex/components/Transfer';
 import RecentHistory from '@screens/Dex/components/RecentHistory';
 import depositIcon from '@src/assets/images/icons/deposit_icon.png';
-import tradeIcon from '@src/assets/images/icons/trade_icon.png';
 import addLiquidityIcon from '@src/assets/images/icons/add_liquidity_icon.png';
 import removeLiquidityIcon from '@src/assets/images/icons/remove_liquidity_icon.png';
 import dexUtils from '@utils/dex';
 import COLORS from '@src/styles/colors';
 import BackButton from '@components/BackButton/index';
 import GetStartedInvest from '@screens/Dex/components/GetStartedInvest';
+import { MESSAGES } from '@screens/Dex/constants';
 import AddPool from './components/AddPool';
 import RemovePool from './components/RemovePool';
-import Swap from './components/Swap';
 import { dexStyle, mainStyle } from './style';
 
 const MODES = {
-  SWAP: 'trade',
   ADD: 'add',
   REMOVE: 'remove',
   GET_STARTED_INVEST: 'get-started-invest',
@@ -28,21 +32,7 @@ const MODES = {
 
 class Dex extends React.Component {
   state = {
-    mode: MODES.SWAP,
-    showDepositGuide: false,
-    tradeParams: {
-      inputToken: undefined,
-      inputValue: undefined,
-      outputToken: undefined,
-      outputValue: undefined,
-      outputList: [],
-      balance: 'Loading',
-      prvBalance: 0,
-      inputError: undefined,
-      showSwapSuccess: false,
-      showTradeConfirm: false,
-      sending: false,
-    },
+    mode: MODES.GET_STARTED_INVEST,
     addLiquidityParams: {
       adding: false,
       inputToken: undefined,
@@ -78,31 +68,7 @@ class Dex extends React.Component {
       desc: 'Remove your liquidity from the pool',
       handlePress: () => this.changeMode(MODES.REMOVE),
     },
-    {
-      id: 'withdraw',
-      icon: <Image source={withdrawBlack} style={{ width: 25, height: 25, resizeMode: 'contain' }} />,
-      label: 'Withdraw',
-      desc: 'Withdraw funds from your pDEX account to \nanother account',
-      handlePress: () => this.showPopUp('withdraw'),
-    }
   ];
-
-  componentDidMount() {
-    const { navigation } = this.props;
-    this.listener = navigation.addListener('didFocus', async () => {
-      const { navigation } = this.props;
-      if (navigation.state?.params?.mode) {
-        const mode = navigation.state.params.mode;
-        this.setState({ mode });
-      }
-    });
-  }
-
-  componentWillUnmount() {
-    if (this.listener) {
-      this.listener.remove();
-    }
-  }
 
   changeMode(mode) {
     const { isLoading } = this.props;
@@ -126,20 +92,6 @@ class Dex extends React.Component {
     this.setState({ transferAction: null });
   };
 
-  showDepositGuide = () => {
-    this.setState({ showDepositGuide: true });
-  };
-
-  closeDepositGuide = () => {
-    this.setState({ showDepositGuide: false });
-    this.showPopUp('deposit');
-  };
-
-  updateTradeParams = (params, cb) => {
-    const { tradeParams } = this.state;
-    this.setState({ tradeParams : { ...tradeParams, ...params }}, cb);
-  };
-
   updateAddLiquidityParams = (params, cb) => {
     const { addLiquidityParams } = this.state;
     this.setState({ addLiquidityParams : { ...addLiquidityParams, ...params }}, cb);
@@ -159,9 +111,9 @@ class Dex extends React.Component {
           <Image source={depositIcon} />
           <Text style={dexStyle.modeText}>Deposit</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={dexStyle.mode} onPress={() => this.changeMode(MODES.SWAP)}>
-          <Image source={tradeIcon} />
-          <Text style={[dexStyle.modeText, mode === MODES.SWAP && dexStyle.active]}>Trade</Text>
+        <TouchableOpacity style={dexStyle.mode} onPress={() => this.showPopUp('withdraw')}>
+          <Image source={withdrawBlack} style={{ width: 30, height: 27, resizeMode: 'contain' }} />
+          <Text style={[dexStyle.modeText]}>Withdraw</Text>
         </TouchableOpacity>
         <TouchableOpacity style={dexStyle.mode} onPress={() => this.changeMode(MODES.GET_STARTED_INVEST)}>
           <Image source={addLiquidityIcon} />
@@ -187,44 +139,6 @@ class Dex extends React.Component {
           </View>
         </View>
       </View>
-    );
-  }
-
-  renderTrade() {
-    const {
-      wallet,
-      navigation,
-      histories,
-      onAddHistory,
-      onUpdateHistory,
-      onGetHistoryStatus,
-      onGetHistories,
-      dexMainAccount,
-      tokens,
-      pairTokens,
-      pairs,
-      isLoading,
-    } = this.props;
-    const { tradeParams } = this.state;
-    return (
-      <Swap
-        wallet={wallet}
-        navigation={navigation}
-        onClosePopUp={this.closePopUp}
-        onShowDepositGuide={this.showDepositGuide}
-        histories={histories}
-        onAddHistory={onAddHistory}
-        onUpdateHistory={onUpdateHistory}
-        onGetHistoryStatus={onGetHistoryStatus}
-        onGetHistories={onGetHistories}
-        onUpdateTradeParams={this.updateTradeParams}
-        tradeParams={tradeParams}
-        dexMainAccount={dexMainAccount}
-        tokens={tokens}
-        pairTokens={pairTokens}
-        pairs={pairs}
-        isLoading={isLoading}
-      />
     );
   }
 
@@ -296,11 +210,6 @@ class Dex extends React.Component {
   }
 
   renderMode() {
-    const { mode } = this.state;
-    if (mode === MODES.SWAP) {
-      return this.renderTrade();
-    }
-
     return this.renderPool();
   }
 
@@ -363,7 +272,7 @@ class Dex extends React.Component {
 
   render() {
     const { histories, onGetHistoryStatus, navigation } = this.props;
-    const { showDepositGuide, mode } = this.state;
+    const { mode } = this.state;
     const Wrapper = mode === MODES.GET_STARTED_INVEST ? View : ScrollView;
     return (
       <View style={mainStyle.wrapper}>
@@ -373,7 +282,7 @@ class Dex extends React.Component {
             {this.renderMode()}
             { mode !== MODES.GET_STARTED_INVEST && (
               <RecentHistory
-                histories={histories}
+                histories={(histories || []).filter(item => item.type !== MESSAGES.TRADE)}
                 onGetHistoryStatus={onGetHistoryStatus}
                 navigation={navigation}
               />
@@ -381,10 +290,6 @@ class Dex extends React.Component {
           </Wrapper>
         </View>
         {this.renderTransfer()}
-        <DepositGuide
-          onClose={this.closeDepositGuide}
-          visible={showDepositGuide}
-        />
       </View>
     );
   }
@@ -399,7 +304,6 @@ Dex.propTypes = {
   onAddHistory: PropTypes.func.isRequired,
   onUpdateHistory: PropTypes.func.isRequired,
   onGetHistoryStatus: PropTypes.func.isRequired,
-  onGetHistories: PropTypes.func.isRequired,
   onSelectPrivacyByTokenID: PropTypes.func.isRequired,
   onLoadData: PropTypes.func.isRequired,
   dexMainAccount: PropTypes.object.isRequired,

@@ -5,39 +5,15 @@ import IncognitoCoinInfo from '@src/models/incognitoCoinInfo';
 import http from '@src/services/http';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import axios from 'axios';
+import { cachePromise } from '@services/cache';
 
 let BEP2Tokens = [];
 
-let getTokenPromise;
-let getChainTokenPromise;
-
 export const getTokenList = () => {
-  if (!getTokenPromise) {
-    getTokenPromise = http.get('ptoken/list')
-      .then(res => {
-        getTokenPromise = null;
-        return res.map(token => new PToken(token));
-      })
-      .finally(() => {
-        getTokenPromise = null;
-      });
-  }
-
-  return getTokenPromise;
-};
-
-export const getChainTokenList = () => {
-  if (!getChainTokenPromise) {
-    getChainTokenPromise = http.get('/pcustomtoken/list-from-chain')
-      .then(res => {
-        return res.Tokens;
-      })
-      .finally(() => {
-        getChainTokenPromise = null;
-      });
-  }
-
-  return getChainTokenPromise;
+  return cachePromise('ptoken', http.get('ptoken/list')
+    .then(res => {
+      return res.map(token => new PToken(token));
+    }));
 };
 
 export const detectERC20Token = erc20Address => {
@@ -92,7 +68,7 @@ export const addTokenInfo = ({ amount, tokenId, symbol, name, logoFile, descript
   if (!symbol) throw new Error('Missing symbol');
   if (!name) throw new Error('Missing name');
   if (!tokenId) throw new Error('Missing tokenId');
-  
+
   const form = new FormData();
   form.append('File', logoFile ? {
     name: logoFile.name,
@@ -127,14 +103,14 @@ export const addTokenInfo = ({ amount, tokenId, symbol, name, logoFile, descript
 export const getTokenInfo = ({ tokenId } = {}) => {
   const endpoint = tokenId ? 'pcustomtoken/get' : 'pcustomtoken/list';
 
-  return http.get(endpoint, tokenId ? { params: { TokenID: tokenId } } : undefined )
+  return cachePromise('pcustomtoken', http.get(endpoint, tokenId ? { params: { TokenID: tokenId } } : undefined )
     .then(res => {
       return tokenId ? new IncognitoCoinInfo(res) : res.map(token => new IncognitoCoinInfo(token));
-    });
+    }));
 };
 
 /**
- * 
+ *
  * @param {array} tokenIds is array of token id (string)
  */
 export const countFollowToken = (tokenIds, accountPublicKey) => {
@@ -148,8 +124,8 @@ export const countFollowToken = (tokenIds, accountPublicKey) => {
 };
 
 /**
- * 
- * @param {string} tokenId 
+ *
+ * @param {string} tokenId
  */
 export const countUnfollowToken = (tokenId, accountPublicKey) => {
   if (!tokenId) throw new Error('Missing tokenId');

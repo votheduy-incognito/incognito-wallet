@@ -6,6 +6,7 @@ import {getDecimalSeparator, getGroupSeparator} from '@src/resources/separator';
 import convertUtil from './convert';
 
 export const SHORT_DATE_TIME_FORMAT = 'DD MMM hh:mm A';
+export const LONG_DATE_TIME_FORMAT = 'DD MMM YYYY hh:mm A';
 
 const removeTrailingZeroes = (amountString) => {
   let formattedString = amountString;

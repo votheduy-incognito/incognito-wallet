@@ -23,6 +23,7 @@ import LocalDatabase from '@utils/LocalDatabase';
 import { withdraw } from '@services/api/withdraw';
 import { logEvent } from '@services/firebase';
 import Tooltip from '@components/Tooltip';
+import CONSTANT_CONFIGS from '@src/constants/config';
 import styles from './style';
 import withHome from './Home.enhance';
 
@@ -102,8 +103,8 @@ const Home = ({ navigation }) => {
   };
 
   const getHomeConfiguration = () => {
-    fetch('https://api-data.incognito.org/home-configs')
-      .then((val) => val.json())
+    fetch(CONSTANT_CONFIGS.HOME_CONFIG_DATA)
+      .then(val => val.json())
       .then(val => {
         if (val) {
           if (val?.buttons && Array.isArray(val.buttons)) {
@@ -127,39 +128,22 @@ const Home = ({ navigation }) => {
     navigation.addListener('didBlur', closeTooltip);
   }, []);
   const interactionById = (item) => {
-    switch (item.sortId) {
-    // Shield
-    // Send
-    // Receive
-    case 1:
-    case 3:
-    case 4:
-    case 5:
-    case 8:
-    case 10:
-      goToScreen(item?.route || '');
-      break;
-      // Buy PRV
-    case 2:
+    switch (item.key) {
+    case 'buy_prv':
       goToScreen(item?.route || '', {
         inputTokenId: BIG_COINS.USDT,
         outputTokenId: BIG_COINS.PRV,
+        outputValue: 1750e9,
       }, CONSTANT_EVENTS.CLICK_HOME_BUY);
       break;
-      // Issue a coin
-    case 6:
+    case 'trade':
       goToScreen(item?.route || '', {}, CONSTANT_EVENTS.CLICK_HOME_TRADE);
       break;
-    case 7:
-      goToScreen('BuyNodeScreen');
-      // LinkingService.openUrl(
-      //   'https://node.incognito.org/payment.html?utm_source=app&utm_medium=homepage%20app&utm_campaign=pnode',
-      // );
-      break;
-    case 9:
+    case 'feedback':
       sendFeedback();
       break;
     default:
+      goToScreen(item?.route || '');
       break;
     }
   };

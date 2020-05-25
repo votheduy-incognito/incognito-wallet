@@ -8,6 +8,7 @@ import { THEME } from '@src/styles';
 import chevronLeft from '@src/assets/images/icons/chevron-left-icon.png';
 import {generateTestId} from '@utils/misc';
 import {HEADER} from '@src/constants/elements';
+import {CircleBack} from '@components/Icons/index';
 
 const BackButton = ({ onPress, width, height, size, navigation }) => {
   const back = () => navigation?.pop();

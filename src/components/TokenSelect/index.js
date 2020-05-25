@@ -83,7 +83,7 @@ const TokenSelect = ({ onSelect, onlyPToken, size, style, iconStyle, showOrigina
     if (!onlyPToken) {
       allTokens = [{
         id: '0000000000000000000000000000000000000000000000000000000000000004',
-        name: 'Incognito',
+        name: 'Privacy',
         displayName: 'Privacy',
         symbol: 'PRV',
         displaySymbol: 'PRV',

@@ -188,6 +188,7 @@ android {
             resValue "string", "CodePushDeploymentKey", '"dvFvDhRbM6sR3qxCX3gylRHWbrw8SiS2xNDFa"'
             applicationIdSuffix '.next'
             matchingFallbacks = ['release']
+            debuggable true
         }
     }
 //    productFlavors {
