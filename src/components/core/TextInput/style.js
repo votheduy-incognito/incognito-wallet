@@ -14,7 +14,7 @@ const style = StyleSheet.create({
   label: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.medium),
+    lineHeight: FONT.SIZE.superMedium,
     color: COLORS.black,
     marginBottom: 10,
   },
@@ -22,7 +22,6 @@ const style = StyleSheet.create({
     flex: 1,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.superMedium),
     color: COLORS.colorGreyBold,
     height: '100%',
     padding: 0,

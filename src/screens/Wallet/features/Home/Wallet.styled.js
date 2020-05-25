@@ -34,17 +34,30 @@ export const styled = StyleSheet.create({
 });
 
 export const styledHook = StyleSheet.create({
-  container: {},
+  btnClose: {
+    position: 'absolute',
+    top: 5,
+    right: 0,
+    width: 32,
+    height: 32,
+    zIndex: 1,
+  },
   title: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 3,
     color: COLORS.white,
     marginBottom: 5,
   },
   desc: {
     fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.small,
+    fontSize: FONT.SIZE.small + 1,
+    lineHeight: FONT.SIZE.small + 6,
     color: COLORS.white,
+  },
+  container: {
+    padding: 20,
+    paddingBottom: 0,
   },
 });
 

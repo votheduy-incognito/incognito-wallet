@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import Header from '@src/components/Header';
 import { BtnSelectAccount } from '@screens/SelectAccount';
-import { ButtonBasic, BtnQRCode } from '@src/components/Button';
+import { ButtonBasic, BtnQRCode, BtnClose } from '@src/components/Button';
 import { tokenSeleclor } from '@src/redux/selectors';
 import { useSelector, useDispatch } from 'react-redux';
 import Token from '@src/components/Token';
@@ -65,11 +65,10 @@ const GroupButton = () => {
           containerStyle={{
             backgroundColor: COLORS.black,
             borderRadius: 11,
-            padding: 20,
             marginBottom: 20,
           }}
           triangleStyle={{
-            bottom: -35,
+            bottom: -30,
             left: 50,
             borderBottomColor: COLORS.black,
           }}
@@ -94,8 +93,18 @@ const GroupButton = () => {
 };
 
 const Hook = () => {
+  const dispatch = useDispatch();
+  const { guide } = useSelector(shieldStorageSelector);
+  const handleCloseShield = async () => {
+    if (!guide) {
+      await dispatch(actionToggleGuide());
+    }
+  };
   return (
     <View style={styledHook.container}>
+      <View style={styledHook.btnClose}>
+        <BtnClose size={24} onPress={handleCloseShield} />
+      </View>
       <Text style={styledHook.title}>Transact without a trace.</Text>
       <Text style={styledHook.desc}>
         {
