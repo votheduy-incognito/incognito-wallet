@@ -80,8 +80,8 @@ class WalletDetail extends Component {
             }
           </View>
           <Card style={styles.btnContainer}>
-            {!dexUtils.isDEXMainAccount(account.name) && this.renderActionButton({ label: 'Send', icon: sendIcon, onPress: this.handleSendBtn, isDeposable })}
-            {!dexUtils.isDEXWithdrawAccount(account.name) && this.renderActionButton({ label: 'Receive', icon: receiveIcon, onPress: this.handleReceiveBtn, isDeposable })}
+            {this.renderActionButton({ label: 'Send', icon: sendIcon, onPress: this.handleSendBtn, isDeposable })}
+            {this.renderActionButton({ label: 'Receive', icon: receiveIcon, onPress: this.handleReceiveBtn, isDeposable })}
             {
               isDeposable && this.renderActionButton({ label: 'Shield', icon: depositIcon, onPress: this.handleDepositBtn, isDeposable })
             }

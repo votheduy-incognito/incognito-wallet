@@ -66,5 +66,10 @@ export default {
   ShieldGenQRCode: 'ShieldGenQRCode',
   AddManually: 'AddManually',
   Send: 'Send',
-  UnShield: 'UnShield'
+  UnShield: 'UnShield',
+  TokenSelectScreen: 'TokenSelectScreen',
+  Trade: 'Trade',
+  TradeHistory: 'TradeHistory',
+  TradeHistoryDetail: 'TradeHistoryDetail',
+  TradeConfirm: 'TradeConfirm',
 };

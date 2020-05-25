@@ -14,6 +14,17 @@ const POPULAR_COIN_IDS = [
   POPULAR_COIN.BTC,
 ];
 
+const PRV = {
+  id: '0000000000000000000000000000000000000000000000000000000000000004',
+  name: 'Privacy',
+  displayName: 'Privacy',
+  symbol: 'PRV',
+  pDecimals: 9,
+  hasIcon: true,
+  originalSymbol: 'PRV',
+  isVerified: true,
+};
+
 export default {
   POPULAR_COIN,
   POPULAR_COIN_IDS

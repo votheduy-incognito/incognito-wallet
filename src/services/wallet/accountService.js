@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 import AccountModel from '@models/account';
-import {CONSTANT_CONFIGS, CONSTANT_KEYS} from '@src/constants';
+import {COINS, CONSTANT_COMMONS, CONSTANT_KEYS} from '@src/constants';
 import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
 import {countFollowToken, countUnfollowToken} from '@src/services/api/token';
@@ -9,7 +9,7 @@ import _ from 'lodash';
 import {STACK_TRACE} from '@services/exception/customError/code/webjsCode';
 import {CustomError, ErrorCode} from '../exception';
 import {getActiveShard} from './RpcClientService';
-import {getUserUnfollowTokenIDs, setUserUnfollowTokenIDs} from './tokenService';
+import tokenService, {getUserUnfollowTokenIDs, setUserUnfollowTokenIDs} from './tokenService';
 import {loadListAccountWithBLSPubKey, saveWallet} from './WalletService';
 
 const TAG = 'Account';
@@ -88,6 +88,59 @@ export default class Account {
     }
     await Wallet.resetProgressTx();
     return result;
+  }
+
+  static createAndSendToken(account, wallet, receiverAddress, amount, tokenId, nativeFee, tokenFee, prvAmount) {
+    if (tokenId === COINS.PRV_ID) {
+      const paymentInfos = [
+        {
+          paymentAddressStr: receiverAddress,
+          amount: Math.floor(amount),
+        },
+      ];
+
+      console.debug('SEND PRV');
+      return Account.createAndSendNativeToken(
+        paymentInfos,
+        Math.floor(nativeFee),
+        true,
+        account,
+        wallet,
+        '',
+      );
+    }
+
+    const receivers = [{
+      PaymentAddress: receiverAddress,
+      Amount: Math.floor(amount),
+    }];
+
+    let paymentInfos = null;
+    if (prvAmount) {
+      paymentInfos = {
+        paymentAddressStr: receiverAddress,
+        amount: Math.floor(prvAmount),
+      };
+    }
+
+    const tokenObject = {
+      Privacy: true,
+      TokenID: tokenId,
+      TokenName: 'Name',
+      TokenSymbol: 'Symbol',
+      TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
+      TokenAmount: amount,
+      TokenReceivers: receivers
+    };
+
+    return tokenService.createSendPToken(
+      tokenObject,
+      nativeFee,
+      account,
+      wallet,
+      paymentInfos,
+      tokenFee,
+    );
   }
 
   static async createAndSendStopAutoStakingTx(wallet, account, feeNativeToken, candidatePaymentAddress, candidateMiningSeedKey) {
