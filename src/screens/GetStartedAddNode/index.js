@@ -20,9 +20,10 @@ import locationPermissionPng from '@src/assets/images/location.png';
 import ModalBandWidth from '@src/components/Modal/ModalBandWidth';
 import LogManager from '@src/services/LogManager';
 import ScanQRCode from './components/ScanQRCode';
-import SetupWifi from './components/SetupWifi';
 import { DialogNotify } from './components/BackUpAccountDialog';
 import styles from './styles';
+import NodeSetup from './components/SetupWifi/NodeSetup';
+import ConnectionCheck from './components/ConnectionCheck';
 import WifiSetup from './components/SetupWifi/WifiSetup';
 
 export const TAG = 'GetStartedAddNode';
@@ -219,8 +220,13 @@ class GetStartedAddNode extends BaseScreen {
         <TurnOffCellular onNext={this.nextScreen} />
       );
     }
-
     if (step === 3) {
+      return (
+        <ConnectionCheck onNext={this.nextScreen} />
+      );
+    }
+
+    if (step === 4) {
       return (
         <WifiSetup
           onNext={this.handleSetupComplete}
@@ -246,7 +252,7 @@ class GetStartedAddNode extends BaseScreen {
     return (
       <View style={styles.container}>
         <DialogNotify visible={success} onClose={this.handleFinish} />
-        <StepIndicator stepCount={4} currentPage={step} />
+        <StepIndicator stepCount={5} currentPage={step} />
         {this.renderStep()}
         <ModalPermission
           isVisible={isErrPermission}
