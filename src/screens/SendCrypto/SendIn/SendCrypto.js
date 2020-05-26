@@ -35,6 +35,7 @@ import {
 } from '@src/components/EstimateFee/EstimateFee.selector';
 import convert from '@src/utils/convert';
 import debounce from 'lodash/debounce';
+import floor from 'lodash/floor';
 import { homeStyle } from './style';
 
 export const formName = 'sendCrypto';
@@ -112,7 +113,7 @@ class SendCrypto extends React.Component {
             _maxAmount > 0
               ? `Max amount you can send is ${maxAmountText} ${selectedPrivacy?.externalSymbol ||
                   selectedPrivacy?.symbol}`
-              : 'Your balance is not enough to send',
+              : 'Your balance is insufficient.',
         }),
       });
     }
@@ -133,9 +134,11 @@ class SendCrypto extends React.Component {
       return;
     }
     try {
-      const originalFee = convert.toOriginalAmount(
-        convert.toNumber(feeData.fee),
-        feeData.feePDecimals,
+      const originalFee = floor(
+        convert.toOriginalAmount(
+          convert.toNumber(feeData.fee),
+          feeData.feePDecimals,
+        ),
       );
       if (typeof handleSend === 'function') {
         await handleSend({ ...feeData, ...values, originalFee });

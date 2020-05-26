@@ -26,7 +26,7 @@ const style = StyleSheet.create({
   block: {
     backgroundColor: COLORS.white,
     paddingVertical: 15,
-    marginBottom: 10,
+    // marginBottom: 10,
   },
   desc: {
     marginBottom: 10,
@@ -38,9 +38,10 @@ const style = StyleSheet.create({
     height: 80,
   },
   submitBtn: {
-    marginTop: 40,
-    borderRadius: 20,
+    marginVertical: 50,
+    borderRadius: 100,
     backgroundColor: COLORS.orange,
+    height: 50
   },
   submitBtnDisabed: {
     opacity: 0.5,
@@ -60,13 +61,12 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 20,
   },
   showMyAddressLabel: {
     flex: 1,
     fontSize: FONT.SIZE.regular,
-    fontFamily: FONT.NAME.regular,
-    lineHeight: FONT.NORMALIZE(FONT.SIZE.regular + 4),
+    fontFamily: FONT.NAME.bold,
+    lineHeight: FONT.SIZE.regular + 9,
     color: COLORS.black,
   },
   switch: {

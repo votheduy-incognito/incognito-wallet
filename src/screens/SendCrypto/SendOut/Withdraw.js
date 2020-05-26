@@ -29,6 +29,7 @@ import EstimateFee, {
 import debounce from 'lodash/debounce';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import format from '@src/utils/format';
+import floor from 'lodash/floor';
 import style from './style';
 import Receipt from './Withdraw.receipt';
 
@@ -99,15 +100,17 @@ class Withdraw extends React.Component {
         maxAmountValidator: validator.maxValue(_maxAmount, {
           message:
             _maxAmount > 0
-              ? `Max amount you can withdraw is ${maxAmountText} ${selectedPrivacy?.symbol}`
-              : 'Your balance is not enough to withdraw',
+              ? `Max amount you can withdraw is ${maxAmountText} ${selectedPrivacy?.externalSymbol ||
+                  selectedPrivacy?.symbol}`
+              : 'Your balance is insufficient.',
         }),
       });
     }
     if (_minAmount) {
       this.setState({
         minAmountValidator: validator.minValue(_minAmount, {
-          message: `Amount must be larger than ${minAmountText} ${selectedPrivacy?.symbol}`,
+          message: `Amount must be larger than ${minAmountText} ${selectedPrivacy?.externalSymbol ||
+            selectedPrivacy?.symbol}`,
         }),
       });
     }
@@ -127,13 +130,17 @@ class Withdraw extends React.Component {
       } = this.props;
       const { amount, toAddress, memo } = values;
       const { fee, isUsedPRVFee, rate, feePDecimals } = feeData;
-      const originalAmount = convertUtil.toOriginalAmount(
-        convertUtil.toNumber(amount),
-        selectedPrivacy?.pDecimals,
+      const originalAmount = floor(
+        convertUtil.toOriginalAmount(
+          convertUtil.toNumber(amount),
+          selectedPrivacy?.pDecimals,
+        ),
       );
-      const originalFee = convertUtil.toOriginalAmount(
-        convertUtil.toNumber(fee) / rate,
-        feePDecimals,
+      const originalFee = floor(
+        convertUtil.toOriginalAmount(
+          convertUtil.toNumber(fee) / rate,
+          feePDecimals,
+        ),
       );
       const _fee = format.amountFull(originalFee, feePDecimals);
       const feeForBurn = originalFee;
@@ -423,7 +430,7 @@ class Withdraw extends React.Component {
                 style={style.estimateFee}
               />
               <ButtonBasic
-                title="Send"
+                title="Unshield"
                 btnStyle={style.submitBtn}
                 disabled={this.shouldDisabledSubmit()}
                 onPress={handleSubmit(this.handleSubmit)}

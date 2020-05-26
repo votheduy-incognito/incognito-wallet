@@ -46,12 +46,14 @@ export const balanceStyled = StyleSheet.create({
     color: COLORS.black,
     maxWidth: '80%',
     lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.superLarge + 4),
+    textAlign: 'center',
   },
   amountBasePRV: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     color: COLORS.colorGreyBold,
     lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.medium + 4),
+    textAlign: 'center',
   },
   changePrice: {
     fontFamily: FONT.NAME.medium,
