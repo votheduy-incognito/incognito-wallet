@@ -12,6 +12,8 @@ import PropTypes from 'prop-types';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
+import { compose } from 'recompose';
+import withTokenSelect from '@src/components/TokenSelect/TokenSelect.enhance';
 
 const styled = StyleSheet.create({
   container: {
@@ -28,28 +30,26 @@ const ListToken = props => {
     <FlatList
       style={styled.flatList}
       data={[...data]}
-      renderItem={({ item }) =>
-        item?.isWithdrawable ? (
-          <Token
-            onPress={() => handleUnShieldToken(item)}
-            tokenId={item?.tokenId}
-            name="displayName"
-            symbol="pSymbol"
-            showBalance
-            showSymbol={false}
-          />
-        ) : null
-      }
+      renderItem={({ item }) => (
+        <Token
+          onPress={() => handleUnShieldToken(item)}
+          tokenId={item?.tokenId}
+          name="displayName"
+          symbol="pSymbol"
+          showBalance
+          showSymbol={false}
+        />
+      )}
       keyExtractor={token => token?.tokenId}
       extraData={[...data]}
     />
   );
 };
 
-const Modal = () => {
+const Modal = props => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const tokens = useSelector(availableTokensSelector);
+  const tokens = props?.allTokens || [];
   const [result, keySearch] = useSearchBox({
     data: tokens,
     handleFilter: () => handleFilterTokenByKeySearch({ tokens, keySearch }),
@@ -75,4 +75,8 @@ ListToken.propTypes = {
 
 Modal.propTypes = {};
 
-export default withLayout_2(Modal);
+export default compose(
+  withLayout_2,
+  Comp => props => <Comp {...{ ...props, onlyPToken: true }} />,
+  withTokenSelect,
+)(Modal);
