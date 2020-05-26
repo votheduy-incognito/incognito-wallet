@@ -514,7 +514,7 @@ class WifiSetup extends PureComponent {
         });
     }, count, 5);
     console.log(LogManager.parseJsonObjectToJsonString(result));
-    if (result) {
+    if (result && result?.status != 0) {
       this.addStep({ name: 'Verify code success', detail: JSON.stringify(result), isSuccess: true });
     } else {
       this.addStep({ name: 'Verify code failed', isSuccess: false });
@@ -628,7 +628,8 @@ class WifiSetup extends PureComponent {
       await this.verifyCodeFirebase(36, false);
       this.addStep({ name: 'Setup Wi-Fi for node success', isSuccess: true });
     } catch (e) {
-      this.addStep({ name: 'Setup Wi-Fi for node failed', detail: e?.message, isSuccess: false });
+      this.setState({ loading: false });
+      this.addStep({ name: 'Setup Wi-Fi for node failed ' +e?.message, detail: e, isSuccess: false });
     }
   };
 
