@@ -9,15 +9,12 @@ export default StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   selectNetworkButtonLabel: {
-    fontSize: 14,
-    letterSpacing: 0,
-    backgroundColor: 'pink',
+    fontSize: FONT.SIZE.regular,
   },
   selectNetworkButton: {
-    paddingVertical: 4,
-    marginVertical: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop: 15,
   },
   selectNetworkValue: {
     fontSize: 16,
@@ -42,7 +39,6 @@ export default StyleSheet.create({
   },
   selectType: {
     marginTop: 15,
-    marginBottom: 10,
   },
   scrollview: {
     flex: 1,

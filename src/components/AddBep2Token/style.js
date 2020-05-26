@@ -9,7 +9,7 @@ export default StyleSheet.create({
     marginBottom: 10,
   },
   submitBtn: {
-    marginTop: 50,
+    marginTop: 30,
     backgroundColor: COLORS.colorPrimary,
     borderRadius: 100,
     height: 50,

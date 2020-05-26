@@ -1,5 +1,5 @@
-import {StyleSheet} from 'react-native';
-import {COLORS, FONT} from '@src/styles';
+import { StyleSheet } from 'react-native';
+import { COLORS, FONT } from '@src/styles';
 
 export const styledReceipt = StyleSheet.create({
   container: {
