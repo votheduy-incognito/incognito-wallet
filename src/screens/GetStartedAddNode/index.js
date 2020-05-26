@@ -11,7 +11,7 @@ import TurnOffCellular from '@screens/GetStartedAddNode/components/TurnOffCellul
 import { COLORS } from '@src/styles';
 import { Icon } from 'react-native-elements';
 import bandWidthPng from '@src/assets/images/bandwidth.png';
-import { checkBandWidth, cancelCheckBandWidth } from '@src/utils/connection';
+import { checkBandWidth } from '@src/utils/connection';
 import { RESULTS } from 'react-native-permissions';
 import ModalPermission from '@src/components/Modal/ModalPermission';
 import { Linking } from 'react-native';
@@ -22,18 +22,11 @@ import LogManager from '@src/services/LogManager';
 import ScanQRCode from './components/ScanQRCode';
 import { DialogNotify } from './components/BackUpAccountDialog';
 import styles from './styles';
-import NodeSetup from './components/SetupWifi/NodeSetup';
 import ConnectionCheck from './components/ConnectionCheck';
 import WifiSetup from './components/SetupWifi/WifiSetup';
 
 export const TAG = 'GetStartedAddNode';
 
-const TEST_DATA = {
-  step: 2,
-  qrCode: '0205-284853',
-  account: { 'name': '0205-284853', 'AccountName': '0205-284853', 'PaymentAddress': '12S24P6ReX425TqJDoj2U74F9y9seYSPKbK9mNrQrrHZbXubT13iz2wC7dBefaGnfNft62x9Gm8VDRkMn9f71Zg6ryu43aUrPkmKU5T', 'ReadonlyKey': '13hdeYULQK8R6BVmqsuPJo3B5hC4rZRuRoWy2MWzwoQoWuqzghTRS6YNqysDG9r7GNje8PoFxKTWQedh3S7Vk9BqTFZ1RD49tN9gLYf', 'PrivateKey': '112t8rndgm2LWVVkhYPakXGNGyaAb78rjtUxPqScudXegEr3UNJVxWnm42QY1eoKNLeBQGD92PLkSKzdNY234tTjua2ymP6MHemShLP5Qwiz', 'PublicKey': 'b4ac7d62696a6a2f58465697f8e098f64cd090d96fe19c3d9ebfedbdf1ac7dad', 'PublicKeyCheckEncode': '12Na52Ze5U6UzumVtFs5NK5dSLcXbm82n6wdRQzxYewkKMe8DYm', 'PublicKeyBytes': '180,172,125,98,105,106,106,47,88,70,86,151,248,224,152,246,76,208,144,217,111,225,156,61,158,191,237,189,241,172,125,173', 'ValidatorKey': '123LVpXiFGQXg6txnt8BCD5yP8erSxDu6J8fkYWT67Z5GYjyPMo' },
-  hotspotSSID: 'TheMiner-284853',
-};
 
 const CONNECTION_STATUS = {
   HIGH: 'high',
@@ -41,7 +34,7 @@ const CONNECTION_STATUS = {
   LOW: 'low'
 };
 
-const MINIMUM_BANDWIDTH = 0.25;
+const MINIMUM_BANDWIDTH = 0.3;
 
 class GetStartedAddNode extends BaseScreen {
   constructor(props) {
@@ -158,7 +151,7 @@ class GetStartedAddNode extends BaseScreen {
           this.checkBandwidthValid(data?.speed || 0);
         });
       })
-      .catch(err => {
+      .catch(() => {
         this.setState({ bandWidth: {}, showBandWidthModal: true });
       });
 
@@ -169,7 +162,6 @@ class GetStartedAddNode extends BaseScreen {
   handleFinish = () => {
     this.setState({ success: false }, () => {
       // Need to navigate to RootMiner to pass params
-      // this.goToScreen(routeNames.RootMiner, { setupNode: true });
       this.goToScreen(routeNames.Node, { setupNode: true });
     });
   };

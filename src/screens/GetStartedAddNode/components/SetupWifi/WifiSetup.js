@@ -339,7 +339,8 @@ class WifiSetup extends PureComponent {
         let checkVersionParams = {
           action: 'check_version',
         };
-        await Util.delay(3);
+        // Make sure device node is alive
+        await Util.delay(4);
         let currentVersionSupport = await NodeService.sendZMQ(checkVersionParams);
         resolve(!currentVersionSupport || !currentVersionSupport?.value);
       } catch (err) {
@@ -462,7 +463,7 @@ class WifiSetup extends PureComponent {
 
           this.setState({ lastVerifyCode: verifyNewCode });
 
-          Util.delay(1500);
+          await Util.delay(2);
           await this.connectToWifi(ssid, password);
           return verifyNewCode;
         }
