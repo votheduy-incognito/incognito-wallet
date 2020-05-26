@@ -28,6 +28,7 @@ import {
   accountSeleclor,
 } from '@src/redux/selectors';
 import { actionInitEstimateFee } from '@src/components/EstimateFee/EstimateFee.actions';
+import floor from 'lodash/floor';
 import SendCrypto, { formName } from './SendCrypto';
 
 class SendCryptoContainer extends Component {
@@ -74,9 +75,11 @@ class SendCryptoContainer extends Component {
     } = this.props;
     const { toAddress, amount, feeUnit, message, originalFee } = values;
     const fromAddress = selectedPrivacy?.paymentAddress;
-    const originalAmount = convertUtil.toOriginalAmount(
-      convertUtil.toNumber(amount),
-      selectedPrivacy?.pDecimals,
+    const originalAmount = floor(
+      convertUtil.toOriginalAmount(
+        convertUtil.toNumber(amount),
+        selectedPrivacy?.pDecimals,
+      ),
     );
     const paymentInfos = [
       {
@@ -84,9 +87,7 @@ class SendCryptoContainer extends Component {
         amount: originalAmount,
       },
     ];
-
     const info = this.getTxInfo({ message });
-
     try {
       this.setState({
         isSending: true,

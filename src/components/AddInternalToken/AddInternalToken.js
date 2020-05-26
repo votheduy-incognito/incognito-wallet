@@ -293,7 +293,7 @@ class AddInternalToken extends Component {
                     componentProps={{
                       multiline: true,
                       numberOfLines: 10,
-                      maxLength: 200
+                      maxLength: 200,
                     }}
                     name="description"
                     placeholder="Explain what your token is for, how users can get it, and any other details of your project. 255 characters max."
@@ -351,7 +351,7 @@ class AddInternalToken extends Component {
                         autoCapitalize: 'none',
                       }}
                       maxLength={100}
-                      placeholder="Enter the official email address for your coin or project"
+                      placeholder="Enter project email address"
                       label="Email address"
                       style={styleSheet.input}
                       validate={isEmail}
@@ -359,7 +359,7 @@ class AddInternalToken extends Component {
                   </View>
                 </View>
                 <View style={styleSheet.block}>
-                  <View>
+                  {/* <View>
                     <CopiableText
                       text={account.PaymentAddress}
                       style={styleSheet.ownerAddressContainer}
@@ -376,10 +376,10 @@ class AddInternalToken extends Component {
                         {account.PaymentAddress}
                       </Text>
                     </CopiableText>
-                  </View>
+                  </View> */}
                   <View style={styleSheet.showMyAddressContainer}>
                     <Text style={styleSheet.showMyAddressLabel}>
-                      Display my Incognito Address (Optional)
+                      Display my Incognito Address
                     </Text>
                     <Field
                       component={SwitchField}

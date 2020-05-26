@@ -19,23 +19,23 @@ export default StyleSheet.create({
     width: '100%',
   },
   submitBtn: {
-    marginVertical: 50
+    marginVertical: 50,
   },
-  memoContainer: {
-  },
+  memoContainer: {},
   memoText: {
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 4,
+    fontSize: FONT.SIZE.small + 1,
+    lineHeight: FONT.SIZE.small + 3,
     color: COLORS.colorGreyBold,
+    textAlign: 'left',
   },
   warning: {
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 4,
+    fontSize: FONT.SIZE.small + 1,
+    lineHeight: FONT.SIZE.small + 3,
     color: COLORS.colorGreyBold,
-    textAlign: 'center',
+    textAlign: 'left',
     marginBottom: 15,
   },
   estimateFee: {
-    marginTop: 10
-  }
+    marginTop: 10,
+  },
 });
