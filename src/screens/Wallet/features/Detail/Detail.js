@@ -138,10 +138,12 @@ const Balance = () => {
 const History = () => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   return (
-    <View style={historyStyled.container}>
-      {selectedPrivacy?.isToken && <HistoryToken />}
-      {selectedPrivacy?.isMainCrypto && <MainCryptoHistory />}
-    </View>
+    <ScrollView nestedScrollEnabled>
+      <View style={historyStyled.container}>
+        {selectedPrivacy?.isToken && <HistoryToken />}
+        {selectedPrivacy?.isMainCrypto && <MainCryptoHistory />}
+      </View>
+    </ScrollView>
   );
 };
 
@@ -153,7 +155,6 @@ const Detail = props => {
     <View style={styled.container}>
       <Header title={selected?.name} rightHeader={<RightHeader />} />
       <ScrollView
-        contentContainerStyle={styled.scrollview}
         showsVerticalScrollIndicator={false}
         refreshControl={(
           <RefreshControl
@@ -161,6 +162,7 @@ const Detail = props => {
             onRefresh={handleLoadHistory}
           />
         )}
+        nestedScrollEnabled
       >
         <Balance />
         <GroupButton />

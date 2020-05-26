@@ -17,7 +17,7 @@ export const styledHeaderTitle = StyleSheet.create({
     lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.black,
     marginRight: 'auto',
-    maxWidth: '50%',
+    flex: 1,
   },
   searchStyled: {
     textTransform: 'none',

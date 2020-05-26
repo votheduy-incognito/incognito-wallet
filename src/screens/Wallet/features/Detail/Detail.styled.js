@@ -13,9 +13,6 @@ export const styled = StyleSheet.create({
     fontSize: FONT.NORMALIZE(FONT.FONT_SIZES.regular - 1),
     fontFamily: FONT.NAME.medium,
   },
-  scrollview: {
-    flex: 1,
-  },
 });
 
 export const groupBtnStyled = StyleSheet.create({

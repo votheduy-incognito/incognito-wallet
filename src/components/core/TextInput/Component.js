@@ -27,6 +27,7 @@ const TextInput = ({
 }) => {
   const [focus, setFocus] = useState(false);
   let textInput = React.createRef();
+
   React.useEffect(() => {
     if (textInput && onRef) {
       onRef(textInput);
