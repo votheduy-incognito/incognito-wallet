@@ -24,8 +24,6 @@ import { shieldStorageSelector } from '@src/screens/Shield/Shield.selector';
 import { actionToggleGuide } from '@src/screens/Shield/Shield.actions';
 import Tooltip from '@src/components/Tooltip/Tooltip';
 import { COLORS } from '@src/styles';
-import { actionToggleModal } from '@components/Modal';
-import UnShieldModal from '@screens/UnShield/UnShield.modal';
 import isNaN from 'lodash/isNaN';
 import {
   styled,
@@ -43,14 +41,8 @@ const GroupButton = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { guide } = useSelector(shieldStorageSelector);
-  const handleUnShield = async () => {
-    await dispatch(
-      actionToggleModal({
-        data: <UnShieldModal />,
-        visible: true,
-      }),
-    );
-  };
+  const handleUnShield = async () =>
+    navigation.navigate(routeNames.UnShieldModal);
   const handleShield = async () => {
     navigation.navigate(routeNames.Shield);
     if (!guide) {

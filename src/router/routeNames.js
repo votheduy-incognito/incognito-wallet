@@ -67,6 +67,7 @@ export default {
   AddManually: 'AddManually',
   Send: 'Send',
   UnShield: 'UnShield',
+  UnShieldModal: 'UnShieldModal',
   TokenSelectScreen: 'TokenSelectScreen',
   Trade: 'Trade',
   TradeHistory: 'TradeHistory',

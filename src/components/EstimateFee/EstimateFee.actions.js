@@ -43,8 +43,8 @@ export const actionInitEstimateFee = (config = {}) => async (
     amountText,
     maxFeePrv,
     maxFeePrvText,
-    minFeePrv,
-    minFeePrvText,
+    // minFeePrv,
+    // minFeePrvText,
     maxFeePToken,
     maxFeePTokenText;
   try {
@@ -77,10 +77,10 @@ export const actionInitEstimateFee = (config = {}) => async (
     maxFeePrvText = format.amountFull(
       convert.toHumanAmount(maxFeePrv, CONSTANT_COMMONS.PRV.pDecimals),
     );
-    minFeePrv = DEFAULT_FEE_PER_KB * rate;
-    minFeePrvText = format.amountFull(
-      convert.toHumanAmount(minFeePrv, CONSTANT_COMMONS.PRV.pDecimals),
-    );
+    // minFeePrv = DEFAULT_FEE_PER_KB * rate;
+    // minFeePrvText = format.amountFull(
+    //   convert.toHumanAmount(minFeePrv, CONSTANT_COMMONS.PRV.pDecimals),
+    // );
     maxFeePToken = selectedPrivacy?.amount;
     maxFeePTokenText = format.amountFull(
       convert.toHumanAmount(maxFeePToken, selectedPrivacy?.pDecimals),
@@ -94,8 +94,8 @@ export const actionInitEstimateFee = (config = {}) => async (
         amountText,
         maxFeePrv,
         maxFeePrvText,
-        minFeePrv,
-        minFeePrvText,
+        // minFeePrv,
+        // minFeePrvText,
         maxFeePToken,
         maxFeePTokenText,
         screen,
@@ -215,6 +215,8 @@ export const actionFetchFee = ({ amount, address }) => async (
           actionFetchedFee({
             feePrv,
             feePrvText,
+            minFeePrv: feePrv,
+            minFeePrvText: feePrvText,
           }),
         ),
         await dispatch(change(formName, 'fee', feePrvText)),
@@ -237,12 +239,6 @@ export const actionFetchFee = ({ amount, address }) => async (
       const minFeePToken = floor(minFeePTokenEst * rate);
       const minFeePTokenText = format.amountFull(
         convert.toHumanAmount(minFeePToken, selectedPrivacy?.pDecimals),
-      );
-      console.log(
-        'minFeePToken',
-        minFeePToken,
-        'minFeePTokenText',
-        minFeePTokenText,
       );
       await new Promise.all([
         await dispatch(
