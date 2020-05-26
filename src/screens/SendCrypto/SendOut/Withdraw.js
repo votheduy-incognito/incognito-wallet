@@ -390,16 +390,19 @@ class Withdraw extends React.Component {
                   address.
                 </Text>
               )}
-              {detectToken.ispBNB(selectedPrivacy?.tokenId) && (
+              {(detectToken.ispBNB(selectedPrivacy?.tokenId) ||
+                selectedPrivacy?.isBep2Token ||
+                selectedPrivacy?.currencyType === 5) && (
                 <View style={style.memoContainer}>
                   <Field
                     component={InputQRField}
                     name="memo"
                     label="Memo (optional)"
-                    placeholder="Enter a memo (max 125 characters)"
+                    placeholder="Enter a memo"
                     style={style.input}
                     validate={memoMaxLength}
                     maxLength={125}
+                    inputStyle={style.memoInput}
                   />
                   <Text style={style.memoText}>
                     * For withdrawals to wallets on exchanges (e.g. Binance,
@@ -417,6 +420,7 @@ class Withdraw extends React.Component {
                     : null
                 }
                 isFormValid={isFormValid}
+                style={style.estimateFee}
               />
               <ButtonBasic
                 title="Send"

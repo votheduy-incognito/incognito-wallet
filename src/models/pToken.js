@@ -19,7 +19,8 @@ class PToken {
     this.verified = data.Verified;
     this.currencyType = data.CurrencyType; // including ERC20, BEP1, BEP2,...
     this.priceUsd = data?.PriceUsd;
-    this.change = data?.PercentChange1h;
+    this.change =
+      data?.PricePrv !== 0 ? data?.PercentChangePrv1h : data?.PercentChange1h;
     this.pricePrv = data?.PricePrv;
   }
   /**

@@ -19,7 +19,8 @@ export const styled = StyleSheet.create({
     color: COLORS.black,
   },
   addManually: {
-    marginBottom: 30
+    marginBottom: 30,
+    marginTop: 20,
   },
   listToken: {
     flex: 1,
