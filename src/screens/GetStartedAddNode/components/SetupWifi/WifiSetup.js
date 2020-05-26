@@ -513,14 +513,17 @@ class WifiSetup extends PureComponent {
           throw error;
         });
     }, count, 5);
-    console.log(LogManager.parseJsonObjectToJsonString(result));
+
+    // Check if trying old verifyCode => reset.
+    if (isLast) {
+      await LocalDatabase.saveVerifyCode('');
+    }
     if (result && result?.status != 0) {
       this.addStep({ name: 'Verify code success', detail: JSON.stringify(result), isSuccess: true });
     } else {
       this.addStep({ name: 'Verify code failed', isSuccess: false });
       throw new Error('Verify code failed');
     }
-
     return result;
   };
 
