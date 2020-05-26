@@ -3,7 +3,6 @@ import { View, StyleSheet, FlatList } from 'react-native';
 import { withLayout_2 } from '@components/Layout';
 import Header, { useSearchBox } from '@src/components/Header';
 import { useDispatch, useSelector } from 'react-redux';
-import { actionToggleModal } from '@src/components/Modal';
 import { availableTokensSelector } from '@src/redux/selectors/shared';
 import {
   handleFilterTokenByKeySearch,
@@ -60,17 +59,10 @@ const Modal = () => {
     if (!tokenId) return;
     await dispatch(setSelectedPrivacy(tokenId));
     navigation.navigate(routeNames.UnShield);
-    await dispatch(
-      actionToggleModal({
-        visible: false,
-      }),
-    );
   };
-  const handleToggleModal = async () =>
-    dispatch(actionToggleModal({ visible: false, data: null }));
   return (
     <View style={styled.container}>
-      <Header title="Search coins" canSearch onGoBack={handleToggleModal} />
+      <Header title="Search coins" canSearch />
       <ListToken data={result} handleUnShieldToken={handleUnShieldToken} />
     </View>
   );
