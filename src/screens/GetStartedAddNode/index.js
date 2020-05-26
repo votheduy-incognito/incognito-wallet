@@ -22,7 +22,6 @@ import LogManager from '@src/services/LogManager';
 import ScanQRCode from './components/ScanQRCode';
 import { DialogNotify } from './components/BackUpAccountDialog';
 import styles from './styles';
-import NodeSetup from './components/SetupWifi/NodeSetup';
 import ConnectionCheck from './components/ConnectionCheck';
 import WifiSetup from './components/SetupWifi/WifiSetup';
 
