@@ -1,38 +1,39 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, View, Image, Text, TouchableOpacity } from '@src/components/core';
-import defaultTokenIcon from '@src/assets/images/icons/default_token_icon.png';
+import { View, Image, Text, TouchableOpacity } from '@src/components/core';
 import styles from './styles';
 
 class ImagePicker extends Component {
-
   render() {
-    const { onPick, file, text, defaultImageUri, textButton, onBlur, onFocus } = this.props;
+    const {
+      onPick,
+      file,
+      text,
+      defaultImageUri,
+      onBlur,
+      onFocus,
+      label,
+    } = this.props;
     const uri = file?.uri || defaultImageUri;
-
     return (
       <TouchableOpacity
-        style={styles.container}
         onPress={() => {
           typeof onPick === 'function' && onPick();
           typeof onFocus === 'function' && onFocus();
         }}
         onBlur={onBlur}
       >
-        <View style={styles.leftContainer}>
-          <Image style={styles.image} source={uri ? { uri } : defaultTokenIcon} />
-        </View>
-        <View style={styles.rightContainer}>
+        <View style={styles.container}>
+          <Text style={styles.label}>{label || 'Icon'}</Text>
           <Text style={styles.text}>{text || 'Upload your image'}</Text>
-          <Button
-            titleStyle={styles.buttonText}
-            style={styles.button}
-            title={textButton}
-            onPress={() => {
-              typeof onPick === 'function' && onPick();
-              typeof onFocus === 'function' && onFocus();
-            }}
-          />
+          <View style={styles.hook}>
+            {uri ? (
+              <Image style={styles.image} source={uri} />
+            ) : (
+              <View style={styles.circle} />
+            )}
+            <Text style={styles.chooseFile}>Choose file </Text>
+          </View>
         </View>
       </TouchableOpacity>
     );
@@ -45,7 +46,7 @@ ImagePicker.defaultProps = {
   defaultImageUri: null,
   onBlur: null,
   onFocus: null,
-  textButton: 'Select'
+  label: 'Icon',
 };
 
 ImagePicker.propTypes = {
@@ -55,7 +56,7 @@ ImagePicker.propTypes = {
   file: PropTypes.object,
   text: PropTypes.string,
   defaultImageUri: PropTypes.string,
-  textButton: PropTypes.string,
+  label: PropTypes.string,
 };
 
 export default ImagePicker;
