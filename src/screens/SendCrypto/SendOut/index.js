@@ -160,7 +160,13 @@ class WithdrawContainer extends Component {
 
   handleCentralizedWithdraw = async (payload = {}) => {
     try {
-      const { amount, isUsedPRVFee, remoteAddress, memo, fee } = payload;
+      const {
+        amount,
+        isUsedPRVFee,
+        remoteAddress,
+        memo,
+        originalFee,
+      } = payload;
       const tempAddress = await this.getWithdrawAddress({
         amount,
         paymentAddress: remoteAddress,
@@ -172,7 +178,7 @@ class WithdrawContainer extends Component {
       const tx = await this.handleSendToken({ ...payload, tempAddress });
       if (tx && !isUsedPRVFee) {
         await updatePTokenFee({
-          fee,
+          fee: originalFee,
           paymentAddress: tempAddress,
         });
       }
