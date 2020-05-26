@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import { Button, Text, Image, ScrollView, View } from '@src/components/core';
-import nodeStep1 from '@src/assets/images/node/node_setup_step1.png';
+import nodeStep1 from '@src/assets/images/wifi.png';
 import React, { PureComponent } from 'react';
 import styles from '../../styles';
+import Guide from '../TurnOffCellular/Guide';
 
 class ConnectionCheck extends PureComponent {
   constructor(props) {
@@ -15,17 +16,18 @@ class ConnectionCheck extends PureComponent {
     const { onNext } = this.props;
     return (
       <ScrollView>
-        <Text style={styles.title2}>Make sure Node is plugged in.</Text>
+        <Text style={styles.title2}>Please ensure you enabled wifi and turned on node device</Text>
         <View style={styles.content}>
           <Image
-            style={styles.content_step1_image}
+            style={styles.content_step4_image}
             source={nodeStep1}
           />
         </View>
+        <Guide />
         <View style={styles.footer}>
           <Button
             onPress={onNext}
-            title="Done"
+            title="Next"
           />
         </View>
       </ScrollView>
