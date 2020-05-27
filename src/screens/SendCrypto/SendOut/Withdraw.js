@@ -95,7 +95,7 @@ class Withdraw extends React.Component {
     const { maxAmountText, minAmountText } = feeData;
     const _maxAmount = convertUtil.toNumber(maxAmountText, true);
     const _minAmount = convertUtil.toNumber(minAmountText, true);
-    if (_maxAmount) {
+    if (Number.isFinite(_maxAmount)) {
       this.setState({
         maxAmountValidator: validator.maxValue(_maxAmount, {
           message:
@@ -106,7 +106,7 @@ class Withdraw extends React.Component {
         }),
       });
     }
-    if (_minAmount) {
+    if (Number.isFinite(_minAmount)) {
       this.setState({
         minAmountValidator: validator.minValue(_minAmount, {
           message: `Amount must be larger than ${minAmountText} ${selectedPrivacy?.externalSymbol ||

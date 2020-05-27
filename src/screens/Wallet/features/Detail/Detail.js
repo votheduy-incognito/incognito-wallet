@@ -54,48 +54,22 @@ const RightHeader = () => {
 };
 
 const GroupButton = () => {
-  const selected = useSelector(selectedPrivacySeleclor.selectedPrivacy);
-  const dispatch = useDispatch();
   const navigation = useNavigation();
   const handleSend = () => navigation.navigate(routeNames.Send);
-  const handleShield = async () => {
-    try {
-      navigation.navigate(routeNames.ShieldGenQRCode);
-      await dispatch(fetchDataShield({ tokenId: selected?.tokenId }));
-    } catch (error) {
-      new ExHandler(error).showErrorToast();
-    }
-  };
   const handleReceive = () => navigation.navigate(routeNames.ReceiveCrypto);
   return (
     <View style={groupBtnStyled.groupButton}>
-      {selected?.isMainCrypto ? (
-        <ButtonBasic
-          title="Receive"
-          btnStyle={groupBtnStyled.btnStyle}
-          titleStyle={groupBtnStyled.titleStyle}
-          onPress={handleReceive}
-        />
-      ) : selected?.isDeposable ? (
-        <ButtonBasic
-          title="Shield"
-          btnStyle={groupBtnStyled.btnStyle}
-          titleStyle={groupBtnStyled.titleStyle}
-          onPress={handleShield}
-        />
-      ) : (
-        <ButtonBasic
-          title="Receive"
-          btnStyle={groupBtnStyled.btnStyle}
-          titleStyle={groupBtnStyled.titleStyle}
-          onPress={handleReceive}
-        />
-      )}
       <ButtonBasic
         title="Send"
         btnStyle={groupBtnStyled.btnStyle}
         titleStyle={groupBtnStyled.titleStyle}
         onPress={handleSend}
+      />
+      <ButtonBasic
+        title="Receive"
+        btnStyle={groupBtnStyled.btnStyle}
+        titleStyle={groupBtnStyled.titleStyle}
+        onPress={handleReceive}
       />
     </View>
   );

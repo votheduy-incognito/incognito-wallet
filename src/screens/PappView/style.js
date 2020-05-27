@@ -10,7 +10,7 @@ const style = StyleSheet.create({
     minHeight: 500,
   },
   headerRight: {
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
   },
   chooseTokenIcon: {
     backgroundColor: COLORS.white,
@@ -18,8 +18,8 @@ const style = StyleSheet.create({
     width: 40,
     height: 40,
     alignItems: 'center',
-    justifyContent: 'center'
-  }
+    justifyContent: 'center',
+  },
 });
 
 export const requestSendTxStyle = {
@@ -39,7 +39,7 @@ export const requestSendTxStyle = {
     flexDirection: 'column',
     marginVertical: 5,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.lightGrey4
+    borderBottomColor: COLORS.lightGrey4,
   },
   infoLabel: {
     ...FONT.STYLE.medium,
@@ -47,17 +47,39 @@ export const requestSendTxStyle = {
   infoValue: {},
   groupBtn: {
     marginTop: 50,
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   cancelBtn: {
     marginHorizontal: 10,
     width: 150,
-    backgroundColor: COLORS.lightGrey3
+    backgroundColor: COLORS.lightGrey3,
   },
   submitBtn: {
     marginHorizontal: 10,
     width: 150,
-  }
+  },
 };
 
+export const containerStyle = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  searchIcon: {
+    width: 60,
+    height: 60,
+  },
+  desc: {
+    fontFamily: FONT.NAME.regular,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 5,
+    color: COLORS.colorGreyBold,
+    textAlign: 'center',
+    marginTop: 20
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 export default style;

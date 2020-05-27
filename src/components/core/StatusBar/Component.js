@@ -35,7 +35,8 @@ const {
   TradeHistory,
   SelectAccount,
   TokenSelectScreen,
-  UnShieldModal
+  UnShieldModal,
+  pApp,
 } = routeNames;
 
 const whiteScreens = [
@@ -63,7 +64,8 @@ const whiteScreens = [
   TradeHistoryDetail,
   SelectAccount,
   TokenSelectScreen,
-  UnShieldModal
+  UnShieldModal,
+  pApp,
 ];
 const blue2Screens = [];
 const blue1Screens = [Wizard, Node];

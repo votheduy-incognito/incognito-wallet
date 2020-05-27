@@ -39,7 +39,7 @@ export const NormalText = ({
   <View style={[styled.normalText, containerStyle]}>
     {hasPSymbol && <Text style={[styled.pSymbol, stylePSymbol]}>ℙ</Text>}
     <Text numberOfLines={1} style={[styled.text, style]} ellipsizeMode="tail">
-      {text}
+      {text?.trim()}
     </Text>
   </View>
 );
@@ -208,6 +208,7 @@ const Token = props => {
           {
             component: (
               <BtnDelete
+                showIcon={false}
                 onPress={
                   typeof handleRemoveToken === 'function'
                     ? handleRemoveToken

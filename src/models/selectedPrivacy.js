@@ -113,6 +113,7 @@ class SelectedPrivacy {
     this.priceUsd = pTokenData?.priceUsd || 0;
     this.change = pTokenData?.change || '0';
     this.pricePrv = pTokenData?.pricePrv || 0;
+    this.pairWithPrv = pTokenData?.pairPrv;
   }
 }
 

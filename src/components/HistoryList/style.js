@@ -21,7 +21,7 @@ const style = StyleSheet.create({
     marginBottom: isIOS() ? 10 : 5,
   },
   itemContainer: {
-    paddingVertical: 15,
+    paddingVertical: isIOS() ? 15 : 5,
   },
   amountText: {
     flex: 1,
