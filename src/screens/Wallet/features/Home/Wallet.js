@@ -9,10 +9,10 @@ import {
 import Header from '@src/components/Header';
 import { BtnSelectAccount } from '@screens/SelectAccount';
 import { ButtonBasic, BtnQRCode, BtnClose } from '@src/components/Button';
-import { tokenSeleclor } from '@src/redux/selectors';
+import { tokenSeleclor, accountSeleclor } from '@src/redux/selectors';
 import { useSelector, useDispatch } from 'react-redux';
 import Token from '@src/components/Token';
-import { useNavigation } from 'react-navigation-hooks';
+import { useNavigation, useIsFocused } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { CONSTANT_COMMONS } from '@src/constants';
 import {
@@ -25,6 +25,7 @@ import { actionToggleGuide } from '@src/screens/Shield/Shield.actions';
 import Tooltip from '@src/components/Tooltip/Tooltip';
 import { COLORS } from '@src/styles';
 import isNaN from 'lodash/isNaN';
+import PropTypes from 'prop-types';
 import {
   styled,
   styledHook,
@@ -219,8 +220,25 @@ const RightHeader = () => {
   );
 };
 
-const Wallet = () => {
+const Wallet = props => {
+  const { getFollowingToken, clearWallet, fetchData } = props;
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
+  const account = useSelector(accountSeleclor.defaultAccount);
+  const wallet = useSelector(state => state?.wallet);
+  React.useEffect(() => {
+    if (wallet) {
+      getFollowingToken();
+    }
+  }, [wallet, account]);
+  React.useEffect(() => {
+    if (isFocused) {
+      clearWallet();
+    }
+  }, [isFocused]);
+  React.useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <View style={[styled.container]}>
       <Header
@@ -234,6 +252,10 @@ const Wallet = () => {
   );
 };
 
-Wallet.propTypes = {};
+Wallet.propTypes = {
+  getFollowingToken: PropTypes.func.isRequired,
+  clearWallet: PropTypes.func.isRequired,
+  fetchData: PropTypes.func.isRequired,
+};
 
 export default withWallet(Wallet);

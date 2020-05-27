@@ -14,7 +14,7 @@ export const homeStyle = StyleSheet.create({
     flex: 1,
   },
   desc: {
-    fontFamily: FONT.NAME.bold,
+    fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 8,
     color: COLORS.colorGreyBold,

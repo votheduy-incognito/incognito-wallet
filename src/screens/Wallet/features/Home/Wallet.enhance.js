@@ -13,7 +13,7 @@ import {
 import storageService from '@src/services/storage';
 import { CONSTANT_KEYS, CONSTANT_COMMONS } from '@src/constants';
 import { countFollowToken } from '@src/services/api/token';
-import { useNavigation, useIsFocused } from 'react-navigation-hooks';
+import { useNavigation } from 'react-navigation-hooks';
 import {
   setSelectedPrivacy,
   clearSelectedPrivacy,
@@ -21,6 +21,7 @@ import {
 import routeNames from '@src/router/routeNames';
 import { actionRemoveFollowToken } from '@src/redux/actions';
 import { Toast } from '@src/components/core';
+import { InteractionManager } from 'react-native';
 
 export const WalletContext = React.createContext({});
 
@@ -34,7 +35,6 @@ const enhance = WrappedComp => props => {
   });
   const { isReloading } = state;
   const navigation = useNavigation();
-  const isFocused = useIsFocused();
   const getAccountBalance = async () => {
     try {
       await dispatch(getBalance(account));
@@ -58,6 +58,7 @@ const enhance = WrappedComp => props => {
     }
   };
   const fetchData = async (reload = false) => {
+    let start = new Date().getTime();
     try {
       await setState({ isReloading: true });
       let tasks = [
@@ -77,6 +78,7 @@ const enhance = WrappedComp => props => {
       new ExHandler(error).showErrorToast();
     } finally {
       await setState({ isReloading: false });
+      console.log('end ', new Date().getTime() - start);
     }
   };
   const handleCountFollowedToken = async () => {
@@ -114,40 +116,59 @@ const enhance = WrappedComp => props => {
       duration: 1000,
     });
   };
-  React.useEffect(() => {
-    if (wallet) {
-      getFollowingToken();
-    }
-  }, [wallet, account]);
-  React.useEffect(() => {
-    if (isFocused) {
-      clearWallet();
-    }
-  }, [isFocused]);
-  React.useEffect(() => {
-    fetchData();
-  }, []);
   return (
     <ErrorBoundary>
       <WalletContext.Provider
         value={{
           walletProps: {
             ...props,
+            wallet,
             isReloading,
             fetchData,
             handleExportKey,
             handleSelectToken,
             handleRemoveToken,
+            clearWallet,
+            getFollowingToken,
           },
         }}
       >
-        <WrappedComp {...props} />
+        <WrappedComp
+          {...{
+            ...props,
+            wallet,
+            isReloading,
+            fetchData,
+            handleExportKey,
+            handleSelectToken,
+            handleRemoveToken,
+            clearWallet,
+            getFollowingToken,
+          }}
+        />
       </WalletContext.Provider>
     </ErrorBoundary>
   );
 };
 
+const enhanceInteractionManager = WrappedComponent => props => {
+  const [state, setState] = React.useState({
+    mounted: false,
+  });
+  const { mounted } = state;
+  React.useEffect(() => {
+    InteractionManager.runAfterInteractions(() => {
+      setState({ ...state, mounted: true });
+    });
+  }, []);
+  if (!mounted) {
+    return null;
+  }
+  return <WrappedComponent {...props} />;
+};
+
 export default compose(
+  enhanceInteractionManager,
   withFCM,
   enhance,
 );
