@@ -91,7 +91,6 @@ const routes = [
   {
     screen: pApp,
     name: routeNames.pApp,
-    name: routeNames.UnShield
   },
   {
     screen: Trade,
