@@ -6,7 +6,7 @@ import {
   Platform,
   TouchableWithoutFeedback,
   RefreshControl,
-} from 'react-native';
+  Linking } from 'react-native';
 import LinkingService from '@src/services/linking';
 import AppUpdater from '@components/AppUpdater/index';
 import { isIOS } from '@utils/platform';
@@ -26,6 +26,7 @@ import Tooltip from '@components/Tooltip';
 import CONSTANT_CONFIGS from '@src/constants/config';
 import styles from './style';
 import withHome from './Home.enhance';
+
 
 const sendFeedback = async () => {
   const buildVersion = AppUpdater.appVersion;
@@ -131,20 +132,27 @@ const Home = ({ navigation }) => {
 
     navigation.addListener('didBlur', closeTooltip);
   }, []);
-  const interactionById = (item) => {
+  const interactionById = item => {
     switch (item.key) {
     case 'buy_prv':
-      goToScreen(item?.route || '', {
-        inputTokenId: BIG_COINS.USDT,
-        outputTokenId: BIG_COINS.PRV,
-        outputValue: 1750e9,
-      }, CONSTANT_EVENTS.CLICK_HOME_BUY);
+      goToScreen(
+          item?.route || '',
+          {
+            inputTokenId: BIG_COINS.USDT,
+            outputTokenId: BIG_COINS.PRV,
+            outputValue: 1750e9,
+          },
+          CONSTANT_EVENTS.CLICK_HOME_BUY,
+      );
       break;
     case 'trade':
       goToScreen(item?.route || '', {}, CONSTANT_EVENTS.CLICK_HOME_TRADE);
       break;
     case 'feedback':
       sendFeedback();
+      break;
+    case 'explorer':
+      Linking.openURL(item?.route);
       break;
     default:
       goToScreen(item?.route || '');
