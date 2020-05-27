@@ -14,7 +14,6 @@ import Setting from '@screens/Setting';
 import DexHistory from '@screens/DexHistory';
 import DexHistoryDetail from '@screens/DexHistoryDetail';
 import HeaderBar from '@src/components/HeaderBar';
-import pApp from '@src/screens/PappView';
 import AddPIN from '@src/screens/AddPIN';
 import BackupKeys from '@src/screens/BackupKeys';
 import PriceChartCrypto from '@src/screens/PriceChartCrypto';
@@ -65,7 +64,6 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.DexHistoryDetail]: navigationOptionsHandler(DexHistoryDetail, {
       header: () => null,
     }),
-    [ROUTE_NAMES.pApp]: navigationOptionsHandler(pApp),
     [ROUTE_NAMES.AddPin]: navigationOptionsHandler(AddPIN, {
       header: () => null,
     }),

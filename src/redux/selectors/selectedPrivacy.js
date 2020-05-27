@@ -51,11 +51,9 @@ export const getPrivacyDataByTokenID = createSelector(
           token => token?.tokenId === BIG_COINS.USDT,
         );
         const price = getPrice({ token, tokenUSDT });
-        const pairWithPrv = Number(price?.pricePrv) !== 0;
         return {
           ...token,
           ...price,
-          pairWithPrv,
         };
       } catch (e) {
         new ExHandler(e);
