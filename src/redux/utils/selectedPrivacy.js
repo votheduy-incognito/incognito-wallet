@@ -1,7 +1,8 @@
 import isNaN from 'lodash/isNaN';
 
 export const getPrice = ({ token, tokenUSDT }) => {
-  const { pricePrv } = tokenUSDT;
+  const { pricePrv: pricePrvUSDT } = tokenUSDT;
+  const pricePrv = 1 / pricePrvUSDT;
   const defaultValue = {
     pricePrv: 0.5,
     change: '0',

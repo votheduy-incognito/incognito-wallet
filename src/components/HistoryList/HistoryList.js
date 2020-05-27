@@ -14,6 +14,7 @@ import { generateTestId } from '@utils/misc';
 import { TOKEN } from '@src/constants/elements';
 import Swipeout from 'react-native-swipeout';
 import { useNavigation } from 'react-navigation-hooks';
+import trim from 'lodash/trim';
 import styleSheet from './style';
 
 const getStatusData = (status, statusCode, decentralized) => {
@@ -177,7 +178,7 @@ const HistoryItem = ({ history }) => {
           ellipsizeMode="tail"
           {...generateTestId(TOKEN.TRANSACTION_CONTENT)}
         >
-          {amount ? amount : ''}
+          {amount ? trim(amount) : ''}
         </Text>
       </View>
       <View style={styleSheet.row}>

@@ -34,6 +34,9 @@ export const styled = StyleSheet.create({
   guide: {
     marginTop: 20,
   },
+  hook: {
+    marginHorizontal: 25,
+  },
 });
 
 export const styledHook = StyleSheet.create({
@@ -113,7 +116,9 @@ export const styledAddToken = StyleSheet.create({
 
 export const styledFollow = StyleSheet.create({
   container: {},
-  token: {},
+  token: {
+    paddingHorizontal: 25,
+  },
 });
 
 export const extraStyled = StyleSheet.create({
