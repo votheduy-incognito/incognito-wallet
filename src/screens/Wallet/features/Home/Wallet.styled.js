@@ -31,6 +31,9 @@ export const styled = StyleSheet.create({
   themeBtnTitleStyle: {
     color: COLORS.black,
   },
+  guide: {
+    marginTop: 20,
+  },
 });
 
 export const styledHook = StyleSheet.create({
@@ -41,6 +44,8 @@ export const styledHook = StyleSheet.create({
     width: 32,
     height: 32,
     zIndex: 1,
+    // backgroundColor: 'red',
+    alignItems: 'center',
   },
   title: {
     fontFamily: FONT.NAME.bold,

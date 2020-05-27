@@ -21,6 +21,7 @@ import {
 import routeNames from '@src/router/routeNames';
 import { actionRemoveFollowToken } from '@src/redux/actions';
 import { Toast } from '@src/components/core';
+import { InteractionManager } from 'react-native';
 
 export const WalletContext = React.createContext({});
 
@@ -44,11 +45,11 @@ const enhance = WrappedComp => props => {
       });
     }
   };
-  const getFollowingToken = async ({ shouldLoadBalance = false } = {}) => {
+  const getFollowingToken = async () => {
     try {
       await dispatch(
         reloadAccountFollowingToken(account, {
-          shouldLoadBalance,
+          shouldLoadBalance: true,
         }),
       );
     } catch (e) {
@@ -62,7 +63,7 @@ const enhance = WrappedComp => props => {
       await setState({ isReloading: true });
       let tasks = [
         getAccountBalance(),
-        getFollowingToken({ shouldLoadBalance: true }),
+        getFollowingToken(),
         handleCountFollowedToken(),
       ];
       if (reload) {
@@ -115,19 +116,16 @@ const enhance = WrappedComp => props => {
     });
   };
   React.useEffect(() => {
-    if (wallet) {
-      getFollowingToken();
-    }
-  }, [wallet]);
-  React.useEffect(() => {
-    if (isFocused) {
-      clearWallet();
-    }
-  }, [isFocused]);
-  React.useEffect(() => {
-    fetchData();
-  }, []);
-
+    InteractionManager.runAfterInteractions(() => {
+      if (wallet) {
+        getFollowingToken();
+      }
+      if (isFocused) {
+        clearWallet();
+      }
+      fetchData();
+    });
+  }, [wallet, isFocused, account]);
   return (
     <ErrorBoundary>
       <WalletContext.Provider

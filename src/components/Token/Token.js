@@ -6,11 +6,11 @@ import { TokenVerifiedIcon } from '@src/components/Icons';
 import format from '@src/utils/format';
 import floor from 'lodash/floor';
 import round from 'lodash/round';
-import { CONSTANT_COMMONS } from '@src/constants';
 import Swipeout from 'react-native-swipeout';
 import { BtnDelete } from '@src/components/Button';
 import replace from 'lodash/replace';
 import convert from '@src/utils/convert';
+import trim from 'lodash/trim';
 import { styled } from './Token.styled';
 
 const defaultProps = {
@@ -39,7 +39,7 @@ export const NormalText = ({
   <View style={[styled.normalText, containerStyle]}>
     {hasPSymbol && <Text style={[styled.pSymbol, stylePSymbol]}>ℙ</Text>}
     <Text numberOfLines={1} style={[styled.text, style]} ellipsizeMode="tail">
-      {text?.trim()}
+      {trim(text)}
     </Text>
   </View>
 );
@@ -165,11 +165,11 @@ const TokenPairPRV = props => (
     <View style={[styled.container, props?.style]}>
       <View style={[styled.extra, styled.extraTop]}>
         <Name />
-        <AmountBasePRV {...props} />
+        <Amount {...props} />
       </View>
       <View style={styled.extra}>
         <Price {...props} />
-        <Amount {...props} />
+        <AmountBasePRV {...props} />
       </View>
     </View>
   </TouchableOpacity>
@@ -187,11 +187,8 @@ const TokenDefault = props => (
 );
 
 const Token = props => {
-  const {
-    handleRemoveToken = null,
-    swipable = false,
-    pairWithPrv = false,
-  } = props;
+  const { handleRemoveToken = null, swipable = false, pricePrv } = props;
+  const pairWithPrv = pricePrv !== 0;
   let TokenComponent = pairWithPrv ? (
     <TokenPairPRV {...props} />
   ) : (

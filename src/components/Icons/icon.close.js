@@ -1,20 +1,26 @@
 import React from 'react';
-import {Icon} from 'react-native-elements';
+import srcCloseIcon from '@assets/images/icons/close_icon.png';
 import PropTypes from 'prop-types';
-import {COLORS} from '@src/styles';
+import { Image } from 'react-native';
 
 const CloseIcon = props => {
-  const {colorIcon, size} = props;
-  return <Icon name="close" color={colorIcon} size={size} />;
+  const { size } = props;
+  return (
+    <Image
+      source={srcCloseIcon}
+      style={{
+        width: size,
+        height: size,
+      }}
+    />
+  );
 };
 
 CloseIcon.defaultProps = {
-  colorIcon: COLORS.white,
   size: 28,
 };
 
 CloseIcon.propTypes = {
-  colorIcon: PropTypes.string,
   size: PropTypes.number,
 };
 

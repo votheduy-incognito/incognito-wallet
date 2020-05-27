@@ -214,6 +214,11 @@ export const actionNavigate = (item, navigation) => async (
     case 'withdraw-success':
     case 'balance-update':
     case 'deposit-update': {
+      if(!tokenId){
+        navigation.navigate(routeNames.Wallet);
+        return;
+      }
+      await dispatch(setSelectedPrivacy(tokenId));
       navigation.navigate(routeNames.WalletDetail);
       const token = {
         ...getPrivacyDataByTokenID(tokenId),
@@ -224,7 +229,6 @@ export const actionNavigate = (item, navigation) => async (
       const accountUpdated = accountList.find(
         item => item.PublicKeyCheckEncode === publicKey,
       );
-      await dispatch(setSelectedPrivacy(tokenId));
       await dispatch(
         actionSwitchAccount(
             accountUpdated?.AccountName || accountUpdated?.name,

@@ -18,7 +18,7 @@ import { detectToken, generateTestId } from '@utils/misc';
 import { change, Field, formValueSelector, isValid, focus } from 'redux-form';
 import { MESSAGES } from '@screens/Dex/constants';
 import { View } from 'react-native';
-import { actionToggleModal } from '@src/components/Modal';
+import Modal, { actionToggleModal } from '@src/components/Modal';
 import { COLORS } from '@src/styles';
 import { ButtonBasic } from '@src/components/Button';
 import { SEND } from '@src/constants/elements';
@@ -440,6 +440,7 @@ class Withdraw extends React.Component {
             </View>
           )}
         </Form>
+        <Modal />
       </View>
     );
   }

@@ -14,6 +14,7 @@ const styled = StyleSheet.create({
   wrapper: {
     margin: 25,
     flex: 1,
+    marginTop: 0,
   },
 });
 
