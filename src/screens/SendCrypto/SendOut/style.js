@@ -33,7 +33,6 @@ export default StyleSheet.create({
     lineHeight: FONT.SIZE.small + 3,
     color: COLORS.colorGreyBold,
     textAlign: 'left',
-    marginBottom: 15,
   },
   estimateFee: {
     marginTop: 10,

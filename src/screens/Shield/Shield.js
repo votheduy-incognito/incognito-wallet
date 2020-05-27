@@ -12,7 +12,7 @@ const Shield = props => {
   return (
     <View style={styled.container}>
       <Header
-        title="Select a coin to shield"
+        title="Search coins"
         canSearch
         rightHeader={<BtnQuestionDefault onPress={handleWhyShield} />}
       />

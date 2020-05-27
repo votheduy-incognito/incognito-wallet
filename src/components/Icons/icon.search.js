@@ -7,13 +7,13 @@ const SearchIcon = ({ source = srcSearchIcon, style = null }) => {
   return (
     <Image
       source={source}
-      style={
-        ({
+      style={[
+        {
           width: 18,
           height: 18,
         },
-        style)
-      }
+        style,
+      ]}
     />
   );
 };

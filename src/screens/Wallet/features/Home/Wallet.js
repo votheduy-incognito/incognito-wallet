@@ -50,7 +50,7 @@ const GroupButton = () => {
     }
   };
   return (
-    <View style={styled.groupButtonContainer}>
+    <View style={[styled.groupButtonContainer, !guide ? styled.guide : null]}>
       {!guide && (
         <Tooltip
           content={<Hook />}
@@ -95,7 +95,7 @@ const Hook = () => {
   return (
     <View style={styledHook.container}>
       <View style={styledHook.btnClose}>
-        <BtnClose size={24} onPress={handleCloseShield} />
+        <BtnClose size={20} onPress={handleCloseShield} />
       </View>
       <Text style={styledHook.title}>Transact without a trace.</Text>
       <Text style={styledHook.desc}>
