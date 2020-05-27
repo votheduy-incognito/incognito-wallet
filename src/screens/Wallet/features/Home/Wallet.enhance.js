@@ -116,16 +116,18 @@ const enhance = WrappedComp => props => {
     });
   };
   React.useEffect(() => {
-    InteractionManager.runAfterInteractions(() => {
-      if (wallet) {
-        getFollowingToken();
-      }
-      if (isFocused) {
-        clearWallet();
-      }
-      fetchData();
-    });
-  }, [wallet, isFocused, account]);
+    if (wallet) {
+      getFollowingToken();
+    }
+  }, [wallet, account]);
+  React.useEffect(() => {
+    if (isFocused) {
+      clearWallet();
+    }
+  }, [isFocused]);
+  React.useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <ErrorBoundary>
       <WalletContext.Provider
