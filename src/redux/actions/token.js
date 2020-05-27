@@ -1,6 +1,6 @@
 import type from '@src/redux/types/token';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
-import { getTokenList, apiGetExchangeRate } from '@src/services/api/token';
+import { getTokenList } from '@src/services/api/token';
 import tokenService from '@src/services/wallet/tokenService';
 import accountService from '@src/services/wallet/accountService';
 import {
@@ -190,12 +190,12 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
     const state = getState();
     const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
     const tokenId = selectedPrivacySeleclor.selectedPrivacyTokenID(state);
-    if (!tokenId) {
-      return;
-    }
     const token = selectedPrivacySeleclor.selectedPrivacyByFollowedSelector(
       state,
     );
+    if (!tokenId || !token) {
+      return;
+    }
     const account = accountSeleclor.defaultAccountSelector(state);
     let histories = [];
     await dispatch(actionFetchingHistory());

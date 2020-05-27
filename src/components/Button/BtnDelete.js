@@ -7,6 +7,8 @@ import Button from './Button';
 const styled = StyleSheet.create({
   container: {
     backgroundColor: COLORS.red,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

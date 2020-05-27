@@ -1,6 +1,6 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { withLayout_2 } from '@src/components/Layout';
+import withFCM from '@src/screens/Notification/Notification.withFCM';
 import { compose } from 'recompose';
 import { useSelector, useDispatch } from 'react-redux';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
@@ -21,7 +21,6 @@ import {
 import routeNames from '@src/router/routeNames';
 import { actionRemoveFollowToken } from '@src/redux/actions';
 import { Toast } from '@src/components/core';
-import { InteractionManager } from 'react-native';
 
 export const WalletContext = React.createContext({});
 
@@ -149,6 +148,6 @@ const enhance = WrappedComp => props => {
 };
 
 export default compose(
-  withLayout_2,
+  withFCM,
   enhance,
 );

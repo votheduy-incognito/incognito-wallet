@@ -50,7 +50,13 @@ const GroupButton = () => {
     }
   };
   return (
-    <View style={[styled.groupButtonContainer, !guide ? styled.guide : null]}>
+    <View
+      style={[
+        styled.groupButtonContainer,
+        !guide ? styled.guide : null,
+        styled.hook,
+      ]}
+    >
       {!guide && (
         <Tooltip
           content={<Hook />}
@@ -115,7 +121,7 @@ const Balance = () => {
     totalShielded = 0;
   }
   return (
-    <View style={styledBalance.container}>
+    <View style={[styledBalance.container, styled.hook]}>
       <Amount
         amount={totalShielded}
         pDecimals={0}
@@ -150,7 +156,10 @@ const FollowToken = () => {
         <Token
           key={token?.id}
           tokenId={token?.id}
-          style={[followed.length - 1 === index && styledToken.lastChild]}
+          style={[
+            styledFollow.token,
+            followed.length - 1 === index && styledToken.lastChild,
+          ]}
           onPress={() => handleSelectToken(token?.id)}
           handleRemoveToken={() => handleRemoveToken(token?.id)}
           swipable
@@ -166,7 +175,7 @@ const AddToken = () => {
   const handleFollowToken = () => navigation.navigate(routeNames.FollowToken);
   return (
     <TouchableWithoutFeedback onPress={handleFollowToken}>
-      <View style={styledAddToken.container}>
+      <View style={[styledAddToken.container, styled.hook]}>
         <Text style={styledAddToken.title}>Add a coin +</Text>
       </View>
     </TouchableWithoutFeedback>
@@ -218,6 +227,7 @@ const Wallet = () => {
         title="Assets"
         rightHeader={<RightHeader />}
         onGoBack={() => navigation.navigate(routeNames.Home)}
+        style={styled.hook}
       />
       <Extra />
     </View>

@@ -50,7 +50,6 @@ const AddManually = () => {
       <Header title="Add manually" />
       <SelectType />
       <ScrollView style={styles.scrollview}>
-        {type === TYPES.INCOGNITO.value && <AddInternalToken />}
         {type === TYPES.BEP2.value && <AddBep2Token />}
         {type === TYPES.ERC20.value && <AddERC20Token />}
       </ScrollView>

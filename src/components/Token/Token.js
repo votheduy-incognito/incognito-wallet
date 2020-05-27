@@ -74,8 +74,8 @@ export const AmountBasePRV = props => {
     <NormalText
       hasPSymbol
       text={`${_amount}`}
-      style={[styled.boldText, styled.rightText, customStyle]}
-      stylePSymbol={[styled.pSymbolBold, customPSymbolStyle]}
+      style={[styled.rightText, customStyle]}
+      stylePSymbol={[customPSymbolStyle]}
     />
   );
 };
@@ -132,7 +132,7 @@ export const Amount = props => {
   }
   return (
     <NormalText
-      style={[styled.bottomText, customStyle]}
+      style={[styled.bottomText, styled.boldText, customStyle]}
       text={`${format.amount(amount, pDecimals)} ${showSymbol ? symbol : ''}`}
       hasPSymbol={hasPSymbol}
       stylePSymbol={stylePSymbol}

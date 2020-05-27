@@ -38,6 +38,7 @@ const Header = ({
   accountSelectable,
   onGoBack,
   onHandleSearch,
+  style,
 }) => {
   const { goBack } = useNavigation();
   const handleGoBack = () =>
@@ -56,7 +57,7 @@ const Header = ({
         },
       }}
     >
-      <View style={styled.container}>
+      <View style={[styled.container, style]}>
         <BtnCircleBack onPress={handleGoBack} />
         {toggleSearch ? <SearchBox /> : <HeaderTitle />}
         {!!rightHeader && rightHeader}
@@ -77,6 +78,7 @@ Header.defaultProps = {
   dataSearch: [],
   accountSelectable: false,
   onGoBack: null,
+  style: null,
 };
 
 Header.propTypes = {
@@ -89,6 +91,7 @@ Header.propTypes = {
   accountSelectable: PropTypes.bool,
   onGoBack: PropTypes.func,
   onHandleSearch: PropTypes.func.isRequired,
+  style: PropTypes.any,
 };
 
 export default withHeader(React.memo(Header));
