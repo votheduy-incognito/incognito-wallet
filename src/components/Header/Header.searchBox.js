@@ -13,6 +13,7 @@ const styled = StyleSheet.create({
   containerInputStyle: {
     marginRight: 30,
     paddingBottom: 5,
+    borderBottomWidth: 0
   },
   input: {
     fontFamily: FONT.NAME.medium,
