@@ -512,7 +512,7 @@ class WifiSetup extends PureComponent {
           // this.addStep({ name: 'Try to redo verifying code error', detail: error });
           throw error;
         });
-    }, count, 5);
+    }, isLast ? 1 : count, 5);
 
     // Check if trying old verifyCode => reset.
     if (isLast) {
@@ -688,7 +688,7 @@ class WifiSetup extends PureComponent {
       } catch (e) {
         console.debug('SETUP FAILED', e);
         this.setState({ error: e.message, loading: false });
-        this.addStep({ name: `Setup for node device failed \n${e?.message || ''}`, detail: e, isSuccess: false });
+        this.addStep({ name: 'Setup for node device failed ', detail: e, isSuccess: false });
       } finally {
         this.setState({ loading: false });
       }
