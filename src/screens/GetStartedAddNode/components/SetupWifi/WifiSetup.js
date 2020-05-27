@@ -632,7 +632,7 @@ class WifiSetup extends PureComponent {
       this.addStep({ name: 'Setup Wi-Fi for node success', isSuccess: true });
     } catch (e) {
       this.setState({ loading: false });
-      this.addStep({ name: 'Setup Wi-Fi for node failed ' +e?.message, detail: e, isSuccess: false });
+      this.addStep({ name: 'Setup Wi-Fi for node failed ', detail: e, isSuccess: false });
     }
   };
 
