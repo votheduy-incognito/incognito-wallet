@@ -11,6 +11,7 @@ import Util from '@utils/Util';
 import APIService from '@services/api/miner/APIService';
 import AccountModel from '@models/account';
 import LogManager from '@src/services/LogManager';
+import LocalDatabase from '@src/utils/LocalDatabase';
 import GetQrcode from './GetQrCode';
 import styles from '../../styles';
 
@@ -44,13 +45,14 @@ class ScanQRCode extends Component {
     try {
       if (account && account.PaymentAddress && account.ValidatorKey) {
         this.setState({ account });
+        await LocalDatabase.saveAccountWithQRCode(account);
       } else if (!ScanQRCode.creatingAccount) {
         ScanQRCode.creatingAccount = true;
         account = await accountService.createAccount(qrCode, wallet);
 
         account = new AccountModel(accountService.toSerializedAccountObj(account));
         this.setState({ account });
-
+        await LocalDatabase.saveAccountWithQRCode(account);
         await reloadAccountList();
 
         Toast.showInfo('Success! Account created.');

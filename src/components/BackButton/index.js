@@ -9,20 +9,20 @@ import chevronLeft from '@src/assets/images/icons/chevron-left-icon.png';
 import {generateTestId} from '@utils/misc';
 import {HEADER} from '@src/constants/elements';
 
-const BackButton = ({ onPress, width, height, size, navigation }) => {
+const BackButton = ({ onPress, width, height, size, navigation, style }) => {
   const back = () => navigation?.pop();
 
   return (
     <TouchableOpacity
       onPress={onPress || back}
-      style={{
+      style={[{
         display: 'flex',
         justifyContent: 'center',
         width: width,
         paddingLeft: 5,
         paddingRight: 5,
         height: height
-      }}
+      }, style]}
       {...generateTestId(HEADER.BACK_BUTTON)}
     >
       <Image
@@ -43,14 +43,16 @@ BackButton.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   size: PropTypes.number,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  style: PropTypes.object
 };
 
 BackButton.defaultProps = {
   width: 50,
   size: 20,
   height: THEME.header.headerHeight,
-  onPress: null
+  onPress: null,
+  style: {}
 };
 
 export default withNavigation(BackButton);

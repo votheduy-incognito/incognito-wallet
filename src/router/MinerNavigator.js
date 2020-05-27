@@ -9,6 +9,7 @@ import HeaderBar from '@src/components/HeaderBar';
 import { navigationOptionsHandler } from '@src/utils/router';
 import { THEME } from '@src/styles';
 import GetStartedAddNode from '@src/screens/GetStartedAddNode';
+import RepairingSetupNode from '@src/screens/GetStartedAddNode/continueSetup/RepairingSetupNode';
 import ROUTE_NAMES from './routeNames';
 
 export const TAG = 'MinerNavigator';
@@ -22,6 +23,7 @@ const MinerNavigator = createStackNavigator(
     [ROUTE_NAMES.Unstake]: navigationOptionsHandler(Unstake, { title: 'Unstake' }),
     [ROUTE_NAMES.AddSelfNode]: navigationOptionsHandler(AddSelfNode, { title: 'Virtual Node' }),
     [ROUTE_NAMES.GetStaredAddNode]: navigationOptionsHandler(GetStartedAddNode, { title: null }),
+    [ROUTE_NAMES.RepairingSetupNode]: navigationOptionsHandler(RepairingSetupNode, { title: 'Continue setup' }),
   },
   {
     defaultNavigationOptions: ({ navigation }) => {
