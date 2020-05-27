@@ -49,7 +49,7 @@ const style = StyleSheet.create({
     height: 50,
   },
   submitBtnDisabed: {
-    opacity: 0.5,
+    opacity: 0.7,
   },
   title: {
     fontSize: THEME.text.largeTitleSize,

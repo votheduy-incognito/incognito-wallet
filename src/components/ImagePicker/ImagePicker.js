@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Image, Text, TouchableOpacity } from '@src/components/core';
 import styles from './styles';
+import { ArrowRightGreyIcon } from '../Icons';
 
 class ImagePicker extends Component {
   render() {
@@ -32,7 +33,10 @@ class ImagePicker extends Component {
             ) : (
               <View style={styles.circle} />
             )}
-            <Text style={styles.chooseFile}>Choose file </Text>
+            <View style={styles.chooseFileContainer}>
+              <Text style={styles.chooseFile}>Choose file</Text>
+              <ArrowRightGreyIcon />
+            </View>
           </View>
         </View>
       </TouchableOpacity>
