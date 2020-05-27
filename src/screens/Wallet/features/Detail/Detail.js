@@ -6,7 +6,7 @@ import {
   sharedSeleclor,
   tokenSeleclor,
 } from '@src/redux/selectors';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { ButtonBasic } from '@src/components/Button';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
@@ -18,8 +18,6 @@ import {
 import HistoryToken from '@screens/Wallet/features/HistoryToken';
 import MainCryptoHistory from '@screens/Wallet/features/MainCryptoHistory';
 import PropTypes from 'prop-types';
-import { actionFetch as fetchDataShield } from '@screens/Shield/Shield.actions';
-import { ExHandler } from '@src/services/exception';
 import { CONSTANT_COMMONS } from '@src/constants';
 import withDetail from './Detail.enhance';
 import {
@@ -44,7 +42,7 @@ const RightHeader = () => {
       btnStyle={styled.btnTrade}
       titleStyle={styled.titleBtnTrade}
       onPress={() =>
-        navigation.navigate(routeNames.Dex, {
+        navigation.navigate(routeNames.Trade, {
           inputTokenId: CONSTANT_COMMONS.PRV.id,
           outputTokenId: selectedPrivacy?.tokenId,
         })

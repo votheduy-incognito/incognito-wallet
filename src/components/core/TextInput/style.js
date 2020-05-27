@@ -9,14 +9,14 @@ const style = StyleSheet.create({
     alignItems: 'flex-end',
     flexDirection: 'row',
     justifyContent: 'center',
-    height: 40,
+    height: 30,
   },
   label: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium,
     color: COLORS.black,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   input: {
     flex: 1,
