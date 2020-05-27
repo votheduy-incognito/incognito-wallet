@@ -9,7 +9,7 @@ import style from './style';
 const Header = ({ goToScreen, isFetching }) => (
   <View style={[style.row, style.header]}>
     <View style={style.headerContainer}>
-      <BackButton onPress={()=>NavigationService.navigate('Home')} />
+      <BackButton onPress={()=>NavigationService.navigate('Home')} style={{paddingEnd: 10}}/>
       <Text style={style.title}>My Nodes</Text>
     </View>
     <Button

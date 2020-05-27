@@ -12,7 +12,7 @@ import styles from './style';
 const WelcomeNodes = ({ onAddPNode, onAddVNode }) => (
   <ScrollView style={styles.container}>
     <View style={styles.headerContainer}>
-      <BackButton onPress={()=>NavigationService.navigate('Home')} />
+      <BackButton onPress={()=>NavigationService.navigate('Home')} style={{paddingRight: 15}}/>
       <Text style={styles.title}>My Nodes</Text>
     </View>
     <View style={styles.pNode}>

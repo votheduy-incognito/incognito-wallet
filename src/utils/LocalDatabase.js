@@ -15,6 +15,7 @@ export const KEY_SAVE = {
   PIN: CONSTANT_KEYS.PIN,
   DECIMAL_SEPARATOR: '$decimal_separator',
   VERIFY_CODE: '$verify_code',
+  ACCOUNT_QRCODE: '$account_qrcode',
   DEVICE_ID: '$device_id',
   WITHDRAWAL_DATA: CONSTANT_KEYS.WITHDRAWAL_DATA,
   BACKUP_STAKE_KEY: CONSTANT_KEYS.BACKUP_STAKE_KEY,
@@ -205,6 +206,15 @@ export default class LocalDatabase {
 
   static getVerifyCode = async () => {
     let verifyCode = await LocalDatabase.getValue(KEY_SAVE.VERIFY_CODE);
+    return verifyCode;
+  }
+
+  static saveAccountWithQRCode(account) {
+    return LocalDatabase.saveValue(KEY_SAVE.ACCOUNT_QRCODE, JSON.stringify(account));
+  }
+
+  static getAccountWithQRCode = async () => {
+    let verifyCode = await LocalDatabase.getValue(KEY_SAVE.ACCOUNT_QRCODE);
     return verifyCode;
   }
 

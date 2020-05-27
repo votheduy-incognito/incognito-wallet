@@ -101,7 +101,7 @@ class WifiSetup extends PureComponent {
   componentDidMount() {
     this.isMounteds = true;
     this.getCurrentWifi();
-    this.getLastVerifyCode();
+    this.updateLastVerifyCode();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -114,13 +114,8 @@ class WifiSetup extends PureComponent {
   }
 
   // Check last verify code if exist => Set state for current verifyCode
-  async getLastVerifyCode() {
-    const lastVerifyCode = await LocalDatabase.getVerifyCode();
-    if (lastVerifyCode && lastVerifyCode != '') {
-      this.setState({ lastVerifyCode });
-    } else {
-      await LocalDatabase.saveVerifyCode('');
-    }
+  async updateLastVerifyCode() {
+    await LocalDatabase.saveVerifyCode('');
   }
 
   componentWillUnmount() {
@@ -136,6 +131,10 @@ class WifiSetup extends PureComponent {
   }
 
   connectToWifi = async (ssid, password) => {
+    if (!this.isMounteds) {
+      return;
+    }
+    // WifiManager.forceWifiUsage(true);
     try {
       const previousSSID = await this.getWifiSSID();
       this.addStep({ name: 'Current Wi-Fi connected is: ' + previousSSID, isSuccess: true });
@@ -173,6 +172,7 @@ class WifiSetup extends PureComponent {
                   }
 
                   if (currentSSID) {
+                    clearInterval(this._interval);
                     throw new Error('Not connect to new Wi-Fi');
                   }
                 }, 1000);
@@ -196,6 +196,7 @@ class WifiSetup extends PureComponent {
               if (currentSSID === ssid) {
                 resolve(true);
               } else {
+                this.addStep({ name: 'Setup wifi failed. Could not setup connection for device', isSuccess: false });
                 reject(new Error('Connect to another Wi-Fi'));
               }
             },
@@ -211,9 +212,9 @@ class WifiSetup extends PureComponent {
             }
           )
           .catch(err => {
-            reject(err);
             this.setState({ loading: false });
             this.addStep({ name: err?.message || 'Error while connecting to wifi ', isSuccess: false });
+            reject(err);
           });
       });
 
@@ -411,7 +412,6 @@ class WifiSetup extends PureComponent {
     const user = userJson.toJSON();
     const { id, token } = user;
     const { ValidatorKey } = account;
-
     this.setState({ verifyCode: verifyNewCode, lastVerifyCode: verifyNewCode }, () => {
       console.log('### INCOGNITO ###: Last VerifyCode set new' + lastVerifyCode);
       console.log('### INCOGNITO ###: Verify Code set new' + verifyNewCode);
@@ -440,7 +440,7 @@ class WifiSetup extends PureComponent {
       if (this.isMounteds)
         await this.connectToWifiHotspot();
     }, 1, 5);
-
+    // WifiManager.forceWifiUsage(true);
     let isVersionSupported = await this.checkVersionCodeInZMQ();
     if (isVersionSupported) {
       this.addStep({ name: 'Send validator key', detail: ValidatorKey, isSuccess: true });
@@ -501,7 +501,9 @@ class WifiSetup extends PureComponent {
     const result = await this.tryAtMost(() => {
       return NodeService.verifyProductCode(lastVerifyCode)
         .then(res => {
+          console.log('=====================TRY VERIFY CODE' + LogManager.parseJsonObjectToJsonString(res));
           if (!res) {
+            this.addStep({ name: 'Verify code failed', isSuccess: false });
             throw new Error('empty result');
           }
 
@@ -512,12 +514,8 @@ class WifiSetup extends PureComponent {
           // this.addStep({ name: 'Try to redo verifying code error', detail: error });
           throw error;
         });
-    }, isLast ? 1 : count, 5);
+    }, count, 5);
 
-    // Check if trying old verifyCode => reset.
-    if (isLast) {
-      await LocalDatabase.saveVerifyCode('');
-    }
     if (result && result?.status != 0) {
       this.addStep({ name: 'Verify code success', detail: JSON.stringify(result), isSuccess: true });
     } else {
@@ -654,44 +652,38 @@ class WifiSetup extends PureComponent {
   // On press button next
   handleNext = async () => {
     this.funcQueue.push('handleNext');
-    let lastVerifyCode = await LocalDatabase.getVerifyCode();
-    // Check if verifyCode exist, check 1 time
-    if (lastVerifyCode && lastVerifyCode != '') {
-      this.verifyCodeFirebase(1, true);
-    } else {
-      // 
-      const { onNext } = this.props;
-      const { password } = this.state;
+    // 
+    const { onNext } = this.props;
+    const { password } = this.state;
 
-      if (password.length > 0 && password.length < 8) {
-        return this.setState({ error: 'Password must be empty or at least 8 characters' });
-      }
+    if (password.length > 0 && password.length < 8) {
+      return this.setState({ error: 'Password must be empty or at least 8 characters' });
+    }
 
-      try {
-        this.setState({ loading: true });
-        this.checkWifiInfo()
-          .then(async isCorrectWifi => {
-            console.log('isCorrectWifi ' + isCorrectWifi);
-            if (!isCorrectWifi) {
-              this.setState({ error: 'Wifi name or password is incorrect', steps: [] });
-            } else {
-              this.setState({ isCorrectWifi });
+    try {
+      this.setState({ loading: true });
+      this.checkWifiInfo()
+        .then(async isCorrectWifi => {
+          console.log('isCorrectWifi ' + isCorrectWifi);
+          if (!isCorrectWifi) {
+            this.setState({ error: 'Wifi name or password is incorrect', steps: [] });
+          } else {
+            this.setState({ isCorrectWifi });
 
-              // Start to setup node
-              await this.handleSetupNode();
-            }
-          })
-          .catch(e => {
-            this.setState({ loading: false });
-            this.addStep({ name: `Setup for node device failed \n${e?.message || ''}`, detail: e, isSuccess: false });
-          });
-      } catch (e) {
-        console.debug('SETUP FAILED', e);
-        this.setState({ error: e.message, loading: false });
-        this.addStep({ name: 'Setup for node device failed ', detail: e, isSuccess: false });
-      } finally {
-        this.setState({ loading: false });
-      }
+            // Start to setup node
+            await this.handleSetupNode();
+          }
+        })
+        .catch(e => {
+          this.setState({ loading: false });
+          this.addStep({ name: `Setup for node device failed \n${e?.message || ''}`, detail: e, isSuccess: false });
+        });
+    } catch (e) {
+      console.debug('SETUP FAILED', e);
+      this.setState({ error: e.message, loading: false });
+      this.addStep({ name: 'Setup for node device failed ', detail: e, isSuccess: false });
+    } finally {
+      this.setState({ loading: false });
     }
   };
 

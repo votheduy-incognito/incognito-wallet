@@ -66,5 +66,6 @@ export default {
   ShieldGenQRCode: 'ShieldGenQRCode',
   AddManually: 'AddManually',
   Send: 'Send',
-  UnShield: 'UnShield'
+  UnShield: 'UnShield',
+  RepairingSetupNode: 'RepairingSetupNode'
 };
