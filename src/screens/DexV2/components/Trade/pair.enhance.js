@@ -2,10 +2,10 @@ import React from 'react';
 
 const withPair = WrappedComp => (props) => {
   const [pair, setPair] = React.useState([]);
-  const { inputToken, outputToken, pairs } = props;
+  const { inputToken, outputToken, pairs, isErc20 } = props;
 
   React.useEffect(() => {
-    if (inputToken && outputToken) {
+    if (inputToken && outputToken && !isErc20) {
       const pair = pairs.find(item =>
         item.keys.includes(inputToken.id) &&
         item.keys.includes(outputToken.id)

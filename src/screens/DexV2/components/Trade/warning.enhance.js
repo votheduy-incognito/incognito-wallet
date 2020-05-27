@@ -31,7 +31,7 @@ const withWarning = WrappedComp => (props) => {
       const lostPercent = 1 - _.floor(exchangeRate2 / exchangeRate1, 2);
 
       if (lostPercent > 0.1) {
-        return setWarning('Slippage warning for low liquidity pools');
+        return setWarning('This pool has low liquidity. Please note prices.');
       }
     }
 

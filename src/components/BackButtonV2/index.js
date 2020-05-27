@@ -10,30 +10,24 @@ import {generateTestId} from '@utils/misc';
 import {HEADER} from '@src/constants/elements';
 import {CircleBack} from '@components/Icons/index';
 
-const BackButton = ({ onPress, width, height, size, navigation, style }) => {
+const BackButton = ({ onPress, width, height, size, navigation }) => {
   const back = () => navigation?.pop();
 
   return (
     <TouchableOpacity
       onPress={onPress || back}
-      style={[{
+      style={{
         display: 'flex',
         justifyContent: 'center',
         width: width,
         paddingLeft: 5,
         paddingRight: 5,
         height: height
-      }, style]}
+      }}
       {...generateTestId(HEADER.BACK_BUTTON)}
     >
-      <Image
-        style={{
-          height: size,
-          width: '100%',
-        }}
-        resizeMode="contain"
-        resizeMethod="resize"
-        source={chevronLeft}
+      <CircleBack
+        {...generateTestId(HEADER.BACK_BUTTON)}
       />
     </TouchableOpacity>
   );
@@ -44,16 +38,14 @@ BackButton.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   size: PropTypes.number,
-  navigation: PropTypes.object.isRequired,
-  style: PropTypes.object
+  navigation: PropTypes.object.isRequired
 };
 
 BackButton.defaultProps = {
   width: 50,
   size: 20,
   height: THEME.header.headerHeight,
-  onPress: null,
-  style: {}
+  onPress: null
 };
 
 export default withNavigation(BackButton);

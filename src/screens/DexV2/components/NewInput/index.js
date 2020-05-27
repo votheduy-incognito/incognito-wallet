@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, TouchableOpacity } from '@src/components/core';
+import { View, Text, TouchableOpacity, ActivityIndicator } from '@src/components/core';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import { Icon } from 'react-native-elements';
@@ -13,12 +13,12 @@ const RightIcon = () => <Icon name="chevron-right" color={COLORS.lightGrey1} siz
 const InputContainer = (props) => {
   const navigation = useNavigation();
 
-  const { token, onSelectToken, onChange, value, tokens, disabled } = props;
+  const { token, onSelectToken, onChange, value, tokens, disabled, loading, placeholder } = props;
   const showSelectTokenScreen = () => {
     navigation.navigate(ROUTE_NAMES.TokenSelectScreen, {
       onSelectToken,
       tokens,
-      placeholder: onChange ? 'Select token to sell' : 'Select token to buy',
+      placeholder: 'Search coins',
     });
   };
 
@@ -29,11 +29,13 @@ const InputContainer = (props) => {
           onChange={onChange}
           value={value}
           disabled={disabled}
+          placeholder={placeholder}
         /> : (
           <Text numberOfLines={1} style={[stylesheet.bigText, stylesheet.inputContainer]}>
             {value}
           </Text>
         )}
+        {!!loading && <ActivityIndicator />}
         <TouchableOpacity onPress={showSelectTokenScreen} style={stylesheet.centerJustify}>
           {token ? (
             <View style={stylesheet.token}>
@@ -55,6 +57,7 @@ InputContainer.defaultProps = {
   value: undefined,
   onChange: undefined,
   disabled: false,
+  loading: false,
 };
 
 InputContainer.propTypes = {
@@ -64,6 +67,7 @@ InputContainer.propTypes = {
   onSelectToken: PropTypes.func.isRequired,
   onChange: PropTypes.func,
   disabled: PropTypes.bool,
+  loading: PropTypes.bool,
 };
 
 export default InputContainer;

@@ -255,7 +255,7 @@ export const getHistories = () => async (dispatch) => {
     history.errorTried = history.errorTried || 0;
 
     return history;
-  });
+  }).filter(item => item.type !== MESSAGES.TRADE);
 
   dispatch(getHistoriesSuccess(formattedHistories));
 

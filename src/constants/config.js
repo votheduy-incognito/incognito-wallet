@@ -12,6 +12,9 @@ export const MAIN_WEBSITE = 'https://incognito.org/latest?utm_source=mobileapp';
 const API_BASE_URL = isMainnet
   ? 'https://api.incognito.org'
   : 'https://api-staging.incognito.org';
+const API_BASE_URL2 = isMainnet?
+  'https://device-network.incognito.org/' :
+  'https://device-network-staging.incognito.org/';
 const ETHERSCAN_URL = isMainnet
   ? 'https://etherscan.io'
   : 'https://kovan.etherscan.io';
@@ -32,7 +35,7 @@ const MASTER_NODE_ADDRESS = isMainnet ? MAINNET_FULLNODE : TESTNET_FULLNODE;
 const NODE_URL = 'https://node.incognito.org/node.html';
 const USDT_TOKEN_ID = isMainnet
   ? '716fd1009e2a1669caacc36891e707bfdf02590f96ebd897548e8963c95ebac0'
-  : '4946b16a08a9d4afbdf416edf52ef15073db0fc4a63e78eb9de80f94f6c0852a';
+  : '880ea0787f6c1555e59e3958a595086b7802fc7a38276bcd80d4525606557fbc';
 const TRACK_LOG_URL = isMainnet
   ? 'https://device-network.incognito.org'
   : 'https://device-network-staging.incognito.org';
@@ -44,7 +47,9 @@ const ETH_TOKEN_ID = isMainnet
 const CRYPTO_ICON_URL =
   'https://s3.amazonaws.com/incognito-org/wallet/cryptocurrency-icons/32@2x/color';
 
-console.debug('IS MAINNET CONFIG', isMainnet);
+const HOME_CONFIG_DATA = isMainnet ?
+  'https://api-data.incognito.org/home-configs':
+  'https://api-data-staging.incognito.org/home-configs';
 
 export default {
   isMainnet,
@@ -66,4 +71,6 @@ export default {
   ETH_TOKEN_ID,
   MAINNET_FULLNODE,
   TESTNET_FULLNODE,
+  HOME_CONFIG_DATA,
+  API_BASE_URL2,
 };

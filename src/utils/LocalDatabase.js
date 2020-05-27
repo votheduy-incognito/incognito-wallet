@@ -271,19 +271,6 @@ export default class LocalDatabase {
     );
   };
 
-  static async saveUniswapHistory(swapHistory) {
-    await LocalDatabase.saveValue(
-      KEY_SAVE.UNISWAP_HISTORY,
-      JSON.stringify(swapHistory),
-    );
-  }
-
-  static async getUniswapHistory() {
-    const swapHistory =
-      (await LocalDatabase.getValue(KEY_SAVE.UNISWAP_HISTORY)) || '';
-    return _.isEmpty(swapHistory) ? [] : JSON.parse(swapHistory);
-  }
-
   static saveDeviceId(deviceId) {
     return LocalDatabase.saveValue(KEY_SAVE.DEVICE_ID, deviceId);
   }
@@ -318,17 +305,6 @@ export default class LocalDatabase {
 
   static resetViewUniswapTooltip() {
     return LocalDatabase.saveValue(KEY_SAVE.VIEW_UNISWAP_TOOLTIP, '');
-  }
-
-  static async getUniswapAirdrop() {
-    return !!(await LocalDatabase.getValue(KEY_SAVE.UNISWAP_AIRDROP));
-  }
-
-  static saveUniswapAirdrop() {
-    return LocalDatabase.saveValue(
-      KEY_SAVE.UNISWAP_AIRDROP,
-      JSON.stringify(true),
-    );
   }
 
   static resetUniswapAirdrop() {

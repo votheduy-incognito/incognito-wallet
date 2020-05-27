@@ -73,6 +73,12 @@ export async function getQuote({buyToken, sellToken, sellAmount, protocol}) {
     .dividedToIntegerBy(1)
     .toNumber();
 
+  quote.minimumAmount = BigNumber(quote.minimumAmount)
+    .dividedBy(BigNumber(10).pow(buyToken.decimals))
+    .multipliedBy(BigNumber(10).pow(buyToken.pDecimals))
+    .dividedToIntegerBy(1)
+    .toNumber();
+
   return quote;
 }
 

@@ -454,8 +454,6 @@ class Pool extends React.Component {
       outputError,
     } = this.state;
 
-    console.debug('FEE', inputFee, outputFee);
-
     return (
       <View style={mainStyle.feeWrapper}>
         {!!pair && (

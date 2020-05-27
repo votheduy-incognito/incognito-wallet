@@ -11,6 +11,8 @@ import withWarning from '@screens/DexV2/components/Trade/warning.enhance';
 import Loading from '@screens/DexV2/components/Loading';
 import withAccount from '@screens/DexV2/components/account.enhance';
 import Help from '@components/Help/index';
+import { DEFI_TRADING_FEE } from '@components/EstimateFee/EstimateFee.utils';
+import Powered from '@screens/DexV2/components/Powered';
 import withSuccess from './success.enhance';
 import withTrade from './trade.enhance';
 import withData from './data.enhance';
@@ -30,6 +32,7 @@ const Trade = ({
 
   error,
   warning,
+  isErc20,
 }) => {
   return (
     <View>
@@ -57,9 +60,10 @@ const Trade = ({
             <Help title="Fee" content="Network fees go to validators. There is no trading fee." />
           </View>
         )}
-        right={`${format.amount(fee, feeToken.pDecimals)} ${feeToken.symbol}`}
+        right={`${format.amount(fee + (isErc20 ? DEFI_TRADING_FEE : 0), feeToken.pDecimals)} ${feeToken.symbol}`}
         style={styles.extra}
       />
+      {!!isErc20 && <Powered />}
       {!!warning && <ExtraInfo left={warning} right="" style={styles.warning} />}
       {!!error && <Text style={styles.error}>{error}</Text>}
       <RoundCornerButton
@@ -87,6 +91,7 @@ Trade.propTypes = {
 
   error: PropTypes.string,
   warning: PropTypes.string,
+  isErc20: PropTypes.bool,
 };
 
 Trade.defaultProps = {
@@ -97,6 +102,7 @@ Trade.defaultProps = {
   minimumAmount: null,
   error: '',
   warning: '',
+  isErc20: false,
 };
 
 export default compose(

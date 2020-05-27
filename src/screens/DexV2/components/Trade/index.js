@@ -19,6 +19,9 @@ import withHistories from '@screens/DexV2/components/histories.enhance';
 import {COLORS} from '@src/styles';
 import withParams from '@screens/DexV2/components/Trade/params.enhance';
 import withAccount from '@screens/DexV2/components/account.enhance';
+import withERC20 from '@screens/DexV2/components/Trade/with.erc20';
+import PoolSize from '@screens/DexV2/components/PoolSize';
+import Powered from '@screens/DexV2/components/Powered';
 import NewInput from '../NewInput';
 import withPair from './pair.enhance';
 import withChangeInput  from './input.enhance';
@@ -53,22 +56,13 @@ const Trade = ({
 
   error,
   warning,
+
+  quote,
+  gettingQuote,
+  isErc20,
 }) => {
   const navigation = useNavigation();
   const navigateTradeConfirm = () => {
-    console.debug('TRADE', {
-      inputToken,
-      inputValue,
-      inputText,
-
-      outputToken,
-      outputValue,
-      minimumAmount,
-
-      fee,
-      feeToken,
-      pair,
-    });
     navigation.navigate(ROUTE_NAMES.TradeConfirm, {
       inputToken,
       inputValue,
@@ -81,6 +75,7 @@ const Trade = ({
       fee,
       feeToken,
       pair,
+      isErc20,
     });
   };
   const navigateHistory = () => {
@@ -95,6 +90,8 @@ const Trade = ({
         onChange={onChangeInputText}
         token={inputToken}
         value={inputText}
+        disabled={inputBalance === null}
+        placeholder="0"
       />
       <Text style={styles.error}>{error}</Text>
       <View style={styles.arrowWrapper}>
@@ -110,11 +107,12 @@ const Trade = ({
         token={outputToken}
         value={outputText}
         disabled={inputBalance === null}
+        loading={gettingQuote}
       />
       <RoundCornerButton
         style={styles.button}
         title="Preview your order"
-        disabled={!!error || !inputBalance || !inputValue || !outputValue || !minimumAmount}
+        disabled={!!error || !inputBalance || !inputValue || !outputValue || !minimumAmount || !inputText}
         onPress={navigateTradeConfirm}
       />
       { !!(inputToken && outputToken) && (
@@ -127,7 +125,10 @@ const Trade = ({
 
             inputToken={inputToken}
             outputToken={outputToken}
+            quote={quote}
           />
+          {!!(!isErc20 && pair) && <PoolSize outputToken={outputToken} inputToken={inputToken} pair={pair} />}
+          {!!isErc20 && <Powered />}
           <ExtraInfo left={warning} right="" style={styles.warning} />
         </View>
       )}
@@ -168,6 +169,10 @@ Trade.propTypes = {
 
   error: PropTypes.string,
   warning: PropTypes.string,
+
+  gettingQuote: PropTypes.bool,
+  quote: PropTypes.object,
+  isErc20: PropTypes.bool,
 };
 
 export default compose(
@@ -175,6 +180,7 @@ export default compose(
   withHistories,
   withChangeInputToken,
   withFilter,
+  withERC20,
   withPair,
   withEstimateFee,
   withChangeInput,
@@ -200,4 +206,7 @@ Trade.defaultProps = {
   warning: '',
   pair: null,
   histories: null,
+  gettingQuote: false,
+  quote: null,
+  isErc20: false,
 };
