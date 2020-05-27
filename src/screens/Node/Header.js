@@ -2,11 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Text, View, Button } from '@components/core';
 import routeNames from '@routers/routeNames';
+import BackButton from '@src/components/BackButton';
+import NavigationService from '@src/services/NavigationService';
 import style from './style';
 
 const Header = ({ goToScreen, isFetching }) => (
   <View style={[style.row, style.header]}>
-    <Text style={style.title}>My Nodes</Text>
+    <View style={style.headerContainer}>
+      <BackButton onPress={()=>NavigationService.navigate('Home')} />
+      <Text style={style.title}>My Nodes</Text>
+    </View>
     <Button
       onPress={() => goToScreen(routeNames.AddNode)}
       style={style.rightItem}

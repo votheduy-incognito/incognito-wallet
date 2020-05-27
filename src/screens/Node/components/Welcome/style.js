@@ -8,8 +8,14 @@ const style = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    marginBottom: 30,
     ...FONT.STYLE.medium,
+    textAlign: 'center'
+  },
+  headerContainer: {
+    flexDirection: 'row', 
+    alignContent: 'center', 
+    alignItems: 'center', 
+    justifyContent: 'flex-start' 
   },
   pNode: {
     padding: 30,

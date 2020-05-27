@@ -512,15 +512,18 @@ class WifiSetup extends PureComponent {
           // this.addStep({ name: 'Try to redo verifying code error', detail: error });
           throw error;
         });
-    }, count, 5);
-    console.log(LogManager.parseJsonObjectToJsonString(result));
-    if (result) {
+    }, isLast ? 1 : count, 5);
+
+    // Check if trying old verifyCode => reset.
+    if (isLast) {
+      await LocalDatabase.saveVerifyCode('');
+    }
+    if (result && result?.status != 0) {
       this.addStep({ name: 'Verify code success', detail: JSON.stringify(result), isSuccess: true });
     } else {
       this.addStep({ name: 'Verify code failed', isSuccess: false });
       throw new Error('Verify code failed');
     }
-
     return result;
   };
 
@@ -628,7 +631,8 @@ class WifiSetup extends PureComponent {
       await this.verifyCodeFirebase(36, false);
       this.addStep({ name: 'Setup Wi-Fi for node success', isSuccess: true });
     } catch (e) {
-      this.addStep({ name: 'Setup Wi-Fi for node failed', detail: e?.message, isSuccess: false });
+      this.setState({ loading: false });
+      this.addStep({ name: 'Setup Wi-Fi for node failed ', detail: e, isSuccess: false });
     }
   };
 
@@ -684,7 +688,7 @@ class WifiSetup extends PureComponent {
       } catch (e) {
         console.debug('SETUP FAILED', e);
         this.setState({ error: e.message, loading: false });
-        this.addStep({ name: `Setup for node device failed \n${e?.message || ''}`, detail: e, isSuccess: false });
+        this.addStep({ name: 'Setup for node device failed ', detail: e, isSuccess: false });
       } finally {
         this.setState({ loading: false });
       }

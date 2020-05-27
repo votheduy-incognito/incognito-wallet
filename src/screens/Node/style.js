@@ -14,6 +14,12 @@ const style = StyleSheet.create({
     paddingHorizontal: 5,
     minHeight: '100%',
   },
+  headerContainer: {
+    flexDirection: 'row', 
+    alignContent: 'center', 
+    alignItems: 'center', 
+    justifyContent: 'flex-start' 
+  },
   background: {
     position: 'absolute',
     height: 120,
