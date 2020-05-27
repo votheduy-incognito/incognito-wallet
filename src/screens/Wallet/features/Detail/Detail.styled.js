@@ -10,11 +10,8 @@ export const styled = StyleSheet.create({
   },
   titleBtnTrade: {
     color: COLORS.black,
-    fontSize: FONT.NORMALIZE(FONT.FONT_SIZES.regular - 1),
+    fontSize: FONT.SIZE.regular - 1,
     fontFamily: FONT.NAME.medium,
-  },
-  scrollview: {
-    flex: 1,
   },
 });
 
@@ -48,27 +45,31 @@ export const balanceStyled = StyleSheet.create({
     fontSize: FONT.SIZE.superLarge,
     color: COLORS.black,
     maxWidth: '80%',
-    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.superLarge + 4),
+    lineHeight: FONT.SIZE.superLarge + 4,
+    textAlign: 'center',
   },
   amountBasePRV: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     color: COLORS.colorGreyBold,
-    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.medium + 4),
+    lineHeight: FONT.SIZE.medium + 4,
   },
   changePrice: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.medium + 4),
+    lineHeight: FONT.SIZE.medium + 4,
   },
   hook: {
     flexDirection: 'row',
     marginTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   pSymbol: {
     color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.specialRegular,
     fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
   },
 });
 

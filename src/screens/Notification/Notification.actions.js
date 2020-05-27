@@ -1,14 +1,14 @@
-import {ExHandler} from '@src/services/exception';
+import { ExHandler } from '@src/services/exception';
 import routeNames from '@src/router/routeNames';
-import {accountSeleclor, selectedPrivacySeleclor} from '@src/redux/selectors';
+import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import {
   actionSwitchAccount,
   actionReloadFollowingToken,
 } from '@src/redux/actions/account';
-import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
-import {actionAddFollowToken} from '@src/redux/actions';
-import {CONSTANT_COMMONS, CONSTANT_EVENTS} from '@src/constants';
-import {logEvent} from '@services/firebase';
+import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
+import { actionAddFollowToken } from '@src/redux/actions';
+import { CONSTANT_COMMONS, CONSTANT_EVENTS } from '@src/constants';
+import { logEvent } from '@services/firebase';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -33,7 +33,7 @@ import {
   dataNotificationsSelector,
   notificationSelector,
 } from './Notification.selector';
-import {mappingData, delay} from './Notification.utils';
+import { mappingData, delay } from './Notification.utils';
 
 export const actionHasNoti = payload => ({
   type: ACTION_HAS_NOTI,
@@ -134,23 +134,25 @@ export const actionFetchDelete = item => async dispatch => {
   }
 };
 
-export const actionFetch = (data = {loadmore: false}) => async (
+export const actionFetch = (data = { loadmore: false }) => async (
   dispatch,
   getState,
 ) => {
   try {
     const state = getState();
-    const {isFetching} = notificationSelector(state);
+    const { isFetching } = notificationSelector(state);
     if (isFetching) {
       return;
     }
     await dispatch(actionFetching());
-    const {page: pageCurrent, limit, list: oldList} = dataNotificationsSelector(
-      state,
-    );
-    const {loadmore} = data;
+    const {
+      page: pageCurrent,
+      limit,
+      list: oldList,
+    } = dataNotificationsSelector(state);
+    const { loadmore } = data;
     const page = loadmore ? pageCurrent : 1;
-    const {List, IsReadAll} = await apiGetListNotifications({
+    const { List, IsReadAll } = await apiGetListNotifications({
       page,
       limit,
     });
@@ -182,9 +184,12 @@ export const actionNavigate = (item, navigation) => async (
   getState,
 ) => {
   try {
-    const {id, type, publicKey, tokenId, screen, screenParams} = item;
+    const { id, type, publicKey, tokenId, screen, screenParams } = item;
     const rootState = getState();
     const accountList = accountSeleclor.listAccount(rootState);
+    const getPrivacyDataByTokenID = selectedPrivacySeleclor.getPrivacyDataByTokenID(
+      rootState,
+    );
 
     await logEvent(CONSTANT_EVENTS.CLICK_NOTIFICATION, { type });
 
@@ -200,7 +205,7 @@ export const actionNavigate = (item, navigation) => async (
       navigation.navigate(routeNames.Node);
       await new Promise.all([
         dispatch(actionUpdateRecently(item)),
-        dispatch(actionFetchRead({id})),
+        dispatch(actionFetchRead({ id })),
         dispatch(actionFetch()),
       ]);
       break;
@@ -211,7 +216,7 @@ export const actionNavigate = (item, navigation) => async (
     case 'deposit-update': {
       navigation.navigate(routeNames.WalletDetail);
       const token = {
-        ...selectedPrivacySeleclor.getPrivacyDataByTokenID(rootState)(tokenId),
+        ...getPrivacyDataByTokenID(tokenId),
         id: tokenId,
         ID: tokenId,
       };
@@ -231,7 +236,7 @@ export const actionNavigate = (item, navigation) => async (
       await dispatch(actionReloadFollowingToken());
       await new Promise.all([
         dispatch(actionUpdateRecently(item)),
-        dispatch(actionFetchRead({id})),
+        dispatch(actionFetchRead({ id })),
         dispatch(actionFetch()),
       ]);
       break;

@@ -12,7 +12,7 @@ import { listCustomTokens } from './RpcClientService';
 
 export const PRV = {
   id: '0000000000000000000000000000000000000000000000000000000000000004',
-  name: 'Incognito',
+  name: 'Privacy',
   displayName: 'Privacy',
   symbol: 'PRV',
   pDecimals: 9,
@@ -111,6 +111,7 @@ export default class Token {
     // for (let i = 0; i < paymentInfos.length; i++) {
     //   paymentInfos[i] = new PaymentInfo(/*paymentAddress, amount*/);
     // }
+
     let response;
     const hasPrivacyForNativeToken = true;
     const hasPrivacyForPToken = true;

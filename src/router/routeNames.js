@@ -67,5 +67,11 @@ export default {
   AddManually: 'AddManually',
   Send: 'Send',
   UnShield: 'UnShield',
-  RepairingSetupNode: 'RepairingSetupNode'
+  RepairingSetupNode: 'RepairingSetupNode',
+  UnShieldModal: 'UnShieldModal',
+  TokenSelectScreen: 'TokenSelectScreen',
+  Trade: 'Trade',
+  TradeHistory: 'TradeHistory',
+  TradeHistoryDetail: 'TradeHistoryDetail',
+  TradeConfirm: 'TradeConfirm',
 };

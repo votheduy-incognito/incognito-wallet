@@ -1,4 +1,4 @@
-import { Text, Button, View, Toast, TextInput } from '@src/components/core';
+import { Text, Button, View, Toast } from '@src/components/core';
 import LoadingTx from '@src/components/LoadingTx';
 import { Field, change, isValid, formValueSelector } from 'redux-form';
 import {
@@ -23,10 +23,8 @@ import { setWallet } from '@src/redux/actions/wallet';
 import { getInternalTokenList } from '@src/redux/actions/token';
 import { ExHandler } from '@src/services/exception';
 import ROUTES_NAME from '@routers/routeNames';
+import { InfoIcon } from '@components/Icons';
 import styleSheet from './style';
-import CopiableText from '../CopiableText';
-import Help from '../Help';
-import VerifiedText from '../VerifiedText';
 
 const formName = 'addInternalToken';
 const selector = formValueSelector(formName);
@@ -252,19 +250,18 @@ class AddInternalToken extends Component {
           {({ handleSubmit, submitting }) => (
             <>
               <View style={styleSheet.fields}>
-                <View style={styleSheet.block}>
+                <View style={[styleSheet.block, { marginTop: 0 }]}>
                   <Field
                     component={InputField}
                     name="name"
                     placeholder="Enter coin name"
                     label="Name"
-                    style={[
-                      styleSheet.input,
-                      {
-                        marginTop: 0,
-                      },
-                    ]}
                     validate={validator.combinedTokenName}
+                    inputStyle={styleSheet.input}
+                    labelStyle={styleSheet.labelInput}
+                    style={{
+                      marginTop: 0,
+                    }}
                   />
                   <Field
                     component={InputField}
@@ -272,65 +269,55 @@ class AddInternalToken extends Component {
                     name="symbol"
                     placeholder="Enter coin ticker"
                     label="Ticker"
-                    style={styleSheet.input}
+                    inputStyle={styleSheet.input}
                     validate={validator.combinedTokenSymbol}
+                    labelStyle={styleSheet.labelInput}
                   />
                   <Field
                     component={InputField}
                     name="amount"
                     placeholder="Enter number of coins"
                     label="Total supply"
-                    style={styleSheet.input}
+                    inputStyle={styleSheet.input}
                     componentProps={{
                       keyboardType: 'decimal-pad',
                     }}
                     validate={[...validator.combinedNanoAmount]}
+                    labelStyle={styleSheet.labelInput}
                   />
                   <Field
                     component={InputField}
-                    inputStyle={styleSheet.descriptionInput}
                     containerStyle={styleSheet.descriptionInput}
                     componentProps={{
                       multiline: true,
                       numberOfLines: 10,
-                      maxLength: 200
+                      maxLength: 200,
                     }}
                     name="description"
                     placeholder="Explain what your token is for, how users can get it, and any other details of your project. 255 characters max."
                     label="Description"
-                    style={[
-                      styleSheet.input,
-                      styleSheet.descriptionInput,
-                      { marginBottom: 50 },
-                    ]}
+                    style={[styleSheet.descriptionInput, { marginBottom: 50 }]}
                     maxLength={255}
                     validate={descriptionMaxLength}
+                    inputStyle={styleSheet.input}
+                    labelStyle={styleSheet.labelInput}
                   />
                   <View style={styleSheet.verifyInfoContainer}>
-                    {/* <View style={styleSheet.verifyInfoHeader}>
-                      <Help
-                        marginLeft={0}
-                        title={(
-                          <VerifiedText
-                            text="Verification badge"
-                            isVerified
-                            style={{ fontWeight: '500' }}
-                          />
-                        )}
-                        content="A verification badge shows the community that your coin is legitimate, and is part of a genuine project."
-                      />
+                    <View style={styleSheet.verifyInfoHeader}>
+                      <InfoIcon />
                       <Text style={styleSheet.verifyInfoLabel}>
-                        To earn a verified badge, please fill in these fields
+                        Fill in the fields below to earn a verified badge
                         (optional):
                       </Text>
-                    </View> */}
+                    </View>
                     <Field
                       component={InputField}
                       name="ownerName"
                       placeholder="Enter creator name"
                       label="Creator"
                       maxLength={100}
-                      style={styleSheet.input}
+                      inputStyle={styleSheet.input}
+                      labelStyle={styleSheet.labelInput}
                     />
                     <Field
                       component={InputField}
@@ -341,7 +328,8 @@ class AddInternalToken extends Component {
                       maxLength={100}
                       placeholder="Enter project or coin URL"
                       label="Website"
-                      style={styleSheet.input}
+                      inputStyle={styleSheet.input}
+                      labelStyle={styleSheet.labelInput}
                     />
                     <Field
                       component={InputField}
@@ -351,35 +339,18 @@ class AddInternalToken extends Component {
                         autoCapitalize: 'none',
                       }}
                       maxLength={100}
-                      placeholder="Enter the official email address for your coin or project"
+                      placeholder="Enter project email address"
                       label="Email address"
-                      style={styleSheet.input}
+                      inputStyle={styleSheet.input}
+                      labelStyle={styleSheet.labelInput}
                       validate={isEmail}
                     />
                   </View>
                 </View>
                 <View style={styleSheet.block}>
-                  <View>
-                    <CopiableText
-                      text={account.PaymentAddress}
-                      style={styleSheet.ownerAddressContainer}
-                      copiedMessage="Owner address was copied"
-                    >
-                      <Text style={styleSheet.ownerAddressLabel}>
-                        Creator address
-                      </Text>
-                      <Text
-                        style={styleSheet.ownerAddressValue}
-                        numberOfLines={1}
-                        ellipsizeMode="middle"
-                      >
-                        {account.PaymentAddress}
-                      </Text>
-                    </CopiableText>
-                  </View>
                   <View style={styleSheet.showMyAddressContainer}>
                     <Text style={styleSheet.showMyAddressLabel}>
-                      Display my Incognito Address (Optional)
+                      Display my Incognito Address
                     </Text>
                     <Field
                       component={SwitchField}
@@ -388,18 +359,17 @@ class AddInternalToken extends Component {
                     />
                   </View>
                 </View>
-
                 <View style={styleSheet.block}>
                   <Field
                     component={ImagePickerField}
                     name="logo"
-                    text="Upload an icon for your coin (optional, PNG and less than 50kb)"
+                    text="PNG format, < 50kb"
                     textButton="Upload"
                     style={styleSheet.input}
                     validate={imageValidate}
+                    label="Coin icon"
                   />
                 </View>
-
                 {isGettingFee ? (
                   <Text>Calculating fee...</Text>
                 ) : (

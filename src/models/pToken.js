@@ -2,6 +2,7 @@ import TokenModel from './token';
 
 class PToken {
   constructor(data = {}) {
+    const pairPrv = data?.CurrentPrvPool !== 0 && data?.PricePrv !== 0;
     this.id = data.ID;
     this.createdAt = data.CreatedAt;
     this.updatedAt = data.UpdatedAt;
@@ -19,8 +20,9 @@ class PToken {
     this.verified = data.Verified;
     this.currencyType = data.CurrencyType; // including ERC20, BEP1, BEP2,...
     this.priceUsd = data?.PriceUsd;
-    this.change = data?.PercentChange1h;
-    this.pricePrv = data?.PricePrv;
+    this.pairPrv = pairPrv;
+    this.change = pairPrv ? data?.PercentChangePrv1h : data?.PercentChange1h;
+    this.pricePrv = data?.PricePrv || 0;
   }
   /**
    * Convert to data structure of token which stored in wallet object

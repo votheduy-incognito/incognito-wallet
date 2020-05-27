@@ -20,10 +20,10 @@ const UnShield = () => {
       <Wrapper
         style={styled.container}
         contentContainerStyle={{ flex: 1 }}
-        keyboardVerticalOffset={50}
+        keyboardVerticalOffset={200}
         behavior="padding"
       >
-        <Header titleStyled={styled.headerTitle} title="UnShield " />
+        <Header titleStyled={styled.headerTitle} title="Unshield " />
         <UnShieldForm
           navigation={navigation}
           selectable={false}

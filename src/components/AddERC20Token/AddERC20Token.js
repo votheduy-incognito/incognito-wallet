@@ -66,7 +66,7 @@ class AddERC20Token extends Component {
                 component={InputField}
                 name="symbol"
                 label="Symbol"
-                style={styles.input}
+                // style={styles.input}
                 validate={isRequired}
                 componentProps={{
                   editable: false,

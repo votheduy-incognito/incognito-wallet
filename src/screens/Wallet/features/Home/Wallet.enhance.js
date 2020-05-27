@@ -110,7 +110,9 @@ const enhance = WrappedComp => props => {
   };
   const handleRemoveToken = async tokenId => {
     await dispatch(actionRemoveFollowToken(tokenId));
-    Toast.showSuccess('Coin removed', { duration: 500 });
+    Toast.showSuccess('Add coin again to restore balance.', {
+      duration: 1000,
+    });
   };
   React.useEffect(() => {
     if (wallet) {

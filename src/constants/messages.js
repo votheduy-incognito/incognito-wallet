@@ -5,4 +5,8 @@ export default {
   PNODE_UNSTAKE_DESC: 'Stop funded staking',
   ACCOUNT_NOT_FOUND: 'Missing account',
   UNSTAKING: 'unstaking in process',
+
+  // error
+  CAN_NOT_GET_PDEX_TRADE_HISTORIES: 'Can not get pdex trade histories.',
+  CAN_NOT_GET_PDEX_DATA: 'Can not get pdex data.',
 };

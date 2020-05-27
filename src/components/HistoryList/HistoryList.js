@@ -1,10 +1,4 @@
-import {
-  Container,
-  Divider,
-  Text,
-  TouchableOpacity,
-  View,
-} from '@src/components/core';
+import { Text, TouchableOpacity, View } from '@src/components/core';
 import { CONSTANT_COMMONS } from '@src/constants';
 import routeNames from '@src/router/routeNames';
 import {
@@ -110,14 +104,6 @@ const getTypeData = (type, history) => {
   };
 };
 
-// const getAddress = history => {
-//   if ([CONSTANT_COMMONS.HISTORY.TYPE.SEND, CONSTANT_COMMONS.HISTORY.TYPE.WITHDRAW].includes(history?.type)) {
-//     return ['To', history?.toAddress];
-//   } else if ([CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT].includes(history?.type)) {
-//     return ['From', history?.fromAddress];
-//   }
-// };
-
 const HistoryItemWrapper = ({ history, onCancelEtaHistory, ...otherProps }) => {
   const component = <HistoryItem history={history} {...otherProps} />;
   if (history?.cancelable) {
@@ -160,7 +146,6 @@ const HistoryItem = ({ history }) => {
   const amount =
     (history.amount && formatUtil.amount(history.amount, history.pDecimals)) ||
     formatUtil.number(history.requestedAmount);
-  // const [addressDirection, address] = getAddress(history);
   const onPress = () => {
     navigation?.navigate(routeNames.TxHistoryDetail, {
       data: {

@@ -1,7 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
-import { Field, formValueSelector, isValid, change, focus } from 'redux-form';
+import {
+  Field,
+  formValueSelector,
+  isValid,
+  change,
+  focus,
+  sh,
+} from 'redux-form';
 import { connect } from 'react-redux';
 import { Toast } from '@components/core';
 import ReceiptModal, { openReceipt } from '@components/Receipt';
@@ -28,6 +35,7 @@ import {
 } from '@src/components/EstimateFee/EstimateFee.selector';
 import convert from '@src/utils/convert';
 import debounce from 'lodash/debounce';
+import floor from 'lodash/floor';
 import { homeStyle } from './style';
 
 export const formName = 'sendCrypto';
@@ -39,6 +47,7 @@ const initialFormValues = {
   toAddress: '',
   message: '',
 };
+
 const Form = createForm(formName, {
   initialValues: initialFormValues,
   destroyOnUnmount: true,
@@ -104,7 +113,7 @@ class SendCrypto extends React.Component {
             _maxAmount > 0
               ? `Max amount you can send is ${maxAmountText} ${selectedPrivacy?.externalSymbol ||
                   selectedPrivacy?.symbol}`
-              : 'Your balance is not enough to send',
+              : 'Your balance is insufficient.',
         }),
       });
     }
@@ -125,9 +134,11 @@ class SendCrypto extends React.Component {
       return;
     }
     try {
-      const originalFee = convert.toOriginalAmount(
-        convert.toNumber(feeData.fee),
-        feeData.feePDecimals,
+      const originalFee = floor(
+        convert.toOriginalAmount(
+          convert.toNumber(feeData.fee),
+          feeData.feePDecimals,
+        ),
       );
       if (typeof handleSend === 'function') {
         await handleSend({ ...feeData, ...values, originalFee });

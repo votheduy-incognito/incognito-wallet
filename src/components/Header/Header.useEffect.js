@@ -39,32 +39,3 @@ useSearchBox.propTypes = {
   data: PropTypes.array.isRequired,
   handleFilter: PropTypes.func.isRequired,
 };
-
-// const initData = async () =>
-//   await setState({ ...initialState, result: [...data].slice(0, limit) });
-// const onScrollToEnd = async () =>
-//   loading || oversize || !isEmpty(keySearch)
-//     ? null
-//     : await setState({ ...state, page: page + 1, loading: true });
-// const onScrollToEnd = () => null;
-// const fetchData = async () => {
-//   if (oversize) {
-//     return;
-//   }
-//   const start = (page - 1) * limit;
-//   const end = page * limit;
-//   const nextResult = data.slice(start, end);
-//   const newResult = [...result, ...nextResult];
-//   const oversize = nextResult.length < limit;
-//   await setState({
-//     ...state,
-//     result: [...newResult],
-//     loading: false,
-//     oversize,
-//   });
-// };
-// React.useEffect(() => {
-//   if (page !== 1) {
-//     fetchData();
-//   }
-// }, [page]);

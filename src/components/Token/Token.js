@@ -39,7 +39,7 @@ export const NormalText = ({
   <View style={[styled.normalText, containerStyle]}>
     {hasPSymbol && <Text style={[styled.pSymbol, stylePSymbol]}>ℙ</Text>}
     <Text numberOfLines={1} style={[styled.text, style]} ellipsizeMode="tail">
-      {text}
+      {text?.trim()}
     </Text>
   </View>
 );
@@ -65,7 +65,10 @@ export const AmountBasePRV = props => {
     pDecimals,
   } = props;
   const _amount = format.amount(
-    convert.toNumber(format.amountFull(amount, pDecimals), true) * pricePrv,
+    floor(
+      convert.toNumber(convert.toHumanAmount(amount, pDecimals)) * pricePrv,
+      9,
+    ),
   );
   return (
     <NormalText
@@ -130,9 +133,7 @@ export const Amount = props => {
   return (
     <NormalText
       style={[styled.bottomText, customStyle]}
-      text={`${format.amount(floor(amount, 9), pDecimals)} ${
-        showSymbol ? symbol : ''
-      }`}
+      text={`${format.amount(amount, pDecimals)} ${showSymbol ? symbol : ''}`}
       hasPSymbol={hasPSymbol}
       stylePSymbol={stylePSymbol}
       containerStyle={containerStyle}
@@ -207,6 +208,7 @@ const Token = props => {
           {
             component: (
               <BtnDelete
+                showIcon={false}
                 onPress={
                   typeof handleRemoveToken === 'function'
                     ? handleRemoveToken

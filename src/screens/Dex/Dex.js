@@ -7,7 +7,6 @@ import DepositGuide from '@screens/Dex/components/DepositGuide';
 import Transfer from '@screens/Dex/components/Transfer';
 import RecentHistory from '@screens/Dex/components/RecentHistory';
 import depositIcon from '@src/assets/images/icons/deposit_icon.png';
-import tradeIcon from '@src/assets/images/icons/trade_icon.png';
 import addLiquidityIcon from '@src/assets/images/icons/add_liquidity_icon.png';
 import removeLiquidityIcon from '@src/assets/images/icons/remove_liquidity_icon.png';
 import dexUtils from '@utils/dex';
@@ -159,9 +158,9 @@ class Dex extends React.Component {
           <Image source={depositIcon} />
           <Text style={dexStyle.modeText}>Deposit</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={dexStyle.mode} onPress={() => this.changeMode(MODES.SWAP)}>
-          <Image source={tradeIcon} />
-          <Text style={[dexStyle.modeText, mode === MODES.SWAP && dexStyle.active]}>Trade</Text>
+        <TouchableOpacity style={dexStyle.mode} onPress={() => this.showPopUp('withdraw')}>
+          <Image source={withdrawBlack} style={{ width: 30, height: 27, resizeMode: 'contain' }} />
+          <Text style={[dexStyle.modeText]}>Withdraw</Text>
         </TouchableOpacity>
         <TouchableOpacity style={dexStyle.mode} onPress={() => this.changeMode(MODES.GET_STARTED_INVEST)}>
           <Image source={addLiquidityIcon} />

@@ -14,6 +14,8 @@ import WalletDetail from '@screens/Wallet/features/Detail';
 import UnShield from '@screens/UnShield';
 import ReceiveCrypto from '@screens/Wallet/features/ReceiveCrypto';
 import Send from '@screens/Send';
+import UnShieldModal from '@screens/UnShield/UnShield.modal';
+import pApp from '@src/screens/PappView';
 import routeNames from './routeNames';
 
 const routes = [
@@ -75,8 +77,16 @@ const routes = [
   },
   {
     screen: UnShield,
-    name: routeNames.UnShield
-  }
+    name: routeNames.UnShield,
+  },
+  {
+    screen: UnShieldModal,
+    name: routeNames.UnShieldModal,
+  },
+  {
+    screen: pApp,
+    name: routeNames.pApp,
+  },
 ];
 
 export const getRoutesNoHeader = () =>

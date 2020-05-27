@@ -64,14 +64,17 @@ const EstimateFeeInput = props => {
     if (fee && isFetched) {
       let maxFeeValidator;
       let minFeeValidator;
+      const _maxFee = convert.toNumber(maxFee, true);
+      const _fee = convert.toNumber(fee, true);
+      const _minFee = convert.toNumber(minFee, true);
       try {
-        maxFeeValidator = validator.maxValue(convert.toNumber(maxFee), {
+        maxFeeValidator = validator.maxValue(_maxFee, {
           message:
-            maxFee > fee
+            _maxFee > _fee
               ? `Must be less than ${maxFee} ${feeUnit}`
-              : `Your ${feeUnit} balance is not enough to send`,
+              : 'Your balance is insufficient.',
         });
-        minFeeValidator = validator.minValue(convert.toNumber(minFee), {
+        minFeeValidator = validator.minValue(_minFee, {
           message: `Must be at least ${minFee} ${feeUnit}`,
         });
       } catch (error) {

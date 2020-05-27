@@ -1,3 +1,6 @@
+import formatUtil, { LONG_DATE_TIME_FORMAT } from '@utils/format';
+import moment from 'moment';
+
 export class RewardModel {
   constructor(data = {}) {
     this.walletAddress = data.WalletAddress;
@@ -11,5 +14,59 @@ export class RewardModel {
     this.beaconTime = data.BeaconTimeStamp;
     this.interestRate1 = data.InterestRate1;
     this.interestRate2 = data.InterestRate2;
+  }
+}
+
+export class DepositResponse {
+  constructor(data = {}) {
+    this.walletAddress = data.WalletAddress;
+    this.depositId = data.DepositID;
+  }
+}
+
+export class PDexTradeHistoryModel {
+  constructor(json, allTokens, accounts) {
+    if (!json) {
+      return;
+    }
+
+    this.id = json.DepositID;
+    this.sellTokenId = json.TokenID;
+    this.sellAmount = json.Amount;
+    this.buyTokenId = json.BuyTokenID;
+    this.buyAmount = json.MinimumAmount;
+    this.tradingFee = json.TradingFee;
+    this.networkFee = json.NetworkFee;
+    this.networkFeeTokenId = json.NetworkFeeTokenID;
+    this.account = accounts.find(item => item.PaymentAddress === json.ReceiverAddress)?.accountName;
+    this.createdAt = moment(json.CreatedAt).format(LONG_DATE_TIME_FORMAT);
+    this.type = 'Trade';
+    this.status = [
+      'Pending',
+      'Unsuccessful',
+      'Successful',
+    ][json.Status];
+
+    const buyToken = allTokens.find(token => token.id === this.buyTokenId);
+    const sellToken = allTokens.find(token => token.id === this.sellTokenId);
+    const networkFeeToken = allTokens.find(token => token.id === this.networkFeeTokenId);
+
+    if (buyToken) {
+      this.buyTokenSymbol = buyToken.symbol;
+      this.buyAmount = formatUtil.amountFull(this.buyAmount, buyToken.pDecimals);
+    }
+
+    if (sellToken) {
+      this.sellTokenSymbol = sellToken.symbol;
+      this.sellAmount = formatUtil.amountFull(this.sellAmount, sellToken.pDecimals);
+    }
+
+    if (networkFeeToken) {
+      this.networkFeeTokenSymbol = networkFeeToken.symbol;
+      this.networkFee = Math.round(this.networkFee / 3 * 4);
+      this.networkFee = formatUtil.amountFull(this.networkFee, networkFeeToken.pDecimals);
+    }
+
+    this.description = `${this.sellAmount} ${this.sellTokenSymbol} to ${this.buyAmount} ${this.buyTokenSymbol}`;
   }
 }

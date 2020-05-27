@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import Header from '@src/components/Header';
 import { BtnSelectAccount } from '@screens/SelectAccount';
-import { ButtonBasic, BtnQRCode } from '@src/components/Button';
+import { ButtonBasic, BtnQRCode, BtnClose } from '@src/components/Button';
 import { tokenSeleclor } from '@src/redux/selectors';
 import { useSelector, useDispatch } from 'react-redux';
 import Token from '@src/components/Token';
@@ -24,8 +24,6 @@ import { shieldStorageSelector } from '@src/screens/Shield/Shield.selector';
 import { actionToggleGuide } from '@src/screens/Shield/Shield.actions';
 import Tooltip from '@src/components/Tooltip/Tooltip';
 import { COLORS } from '@src/styles';
-import { actionToggleModal } from '@components/Modal';
-import UnShieldModal from '@screens/UnShield/UnShield.modal';
 import isNaN from 'lodash/isNaN';
 import {
   styled,
@@ -43,14 +41,8 @@ const GroupButton = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { guide } = useSelector(shieldStorageSelector);
-  const handleUnShield = async () => {
-    await dispatch(
-      actionToggleModal({
-        data: <UnShieldModal />,
-        visible: true,
-      }),
-    );
-  };
+  const handleUnShield = async () =>
+    navigation.navigate(routeNames.UnShieldModal);
   const handleShield = async () => {
     navigation.navigate(routeNames.Shield);
     if (!guide) {
@@ -65,11 +57,10 @@ const GroupButton = () => {
           containerStyle={{
             backgroundColor: COLORS.black,
             borderRadius: 11,
-            padding: 20,
             marginBottom: 20,
           }}
           triangleStyle={{
-            bottom: -35,
+            bottom: -30,
             left: 50,
             borderBottomColor: COLORS.black,
           }}
@@ -94,8 +85,18 @@ const GroupButton = () => {
 };
 
 const Hook = () => {
+  const dispatch = useDispatch();
+  const { guide } = useSelector(shieldStorageSelector);
+  const handleCloseShield = async () => {
+    if (!guide) {
+      await dispatch(actionToggleGuide());
+    }
+  };
   return (
     <View style={styledHook.container}>
+      <View style={styledHook.btnClose}>
+        <BtnClose size={24} onPress={handleCloseShield} />
+      </View>
       <Text style={styledHook.title}>Transact without a trace.</Text>
       <Text style={styledHook.desc}>
         {
@@ -107,13 +108,16 @@ const Hook = () => {
 };
 
 const Balance = () => {
-  const totalShielded = useSelector(totalShieldedTokensSelector);
+  let totalShielded = useSelector(totalShieldedTokensSelector);
   const isGettingTotalBalance =
     useSelector(isGettingTotalBalanceSelector).length > 0;
+  if (isNaN(totalShielded)) {
+    totalShielded = 0;
+  }
   return (
     <View style={styledBalance.container}>
       <Amount
-        amount={isNaN(totalShielded) ? 0 : totalShielded}
+        amount={totalShielded}
         pDecimals={0}
         showSymbol={false}
         isGettingBalance={isGettingTotalBalance}

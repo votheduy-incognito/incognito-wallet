@@ -26,8 +26,8 @@ const AccountItem = ({ accountName, PaymentAddress }) => {
         Toast.showInfo(`Your current account is "${accountName}"`);
         return;
       }
-      navigation.goBack();
       await dispatch(switchAccount(accountName));
+      navigation.goBack();
       Toast.showInfo(`Switched to account "${accountName}"`);
     } catch (e) {
       new ExHandler(
@@ -78,7 +78,7 @@ const ListAccount = () => {
 const SelectAccount = () => {
   return (
     <View style={styled.container}>
-      <Header title="Select a assets" titleStyled={styled.titleStyled} canSearch />
+      <Header title="Select an account" titleStyled={styled.titleStyled} canSearch />
       <ListAccount />
     </View>
   );

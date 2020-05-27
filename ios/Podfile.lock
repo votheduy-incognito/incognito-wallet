@@ -1,5 +1,4 @@
 PODS:
-  - AppsFlyerFramework (5.1.0)
   - Base64 (1.1.2)
   - boost-for-react-native (1.63.0)
   - CodePush (6.0.0):
@@ -409,7 +408,6 @@ PODS:
   - Yoga (1.14.0)
 
 DEPENDENCIES:
-  - AppsFlyerFramework
   - CodePush (from `../node_modules/react-native-code-push`)
   - Crashlytics (~> 3.13.2)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
@@ -489,7 +487,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - AppsFlyerFramework
     - Base64
     - boost-for-react-native
     - Crashlytics
@@ -644,7 +641,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  AppsFlyerFramework: b5e6d0d1718c445eeb151769e97246c00ae4628d
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   CodePush: 58d8b6595f46057ca1f49c55fb6860ad7fd38ce3
@@ -733,6 +729,6 @@ SPEC CHECKSUMS:
   TouchID: ba4c656d849cceabc2e4eef722dea5e55959ecf4
   Yoga: 14927e37bd25376d216b150ab2a561773d57911f
 
-PODFILE CHECKSUM: f57d51f466ce8bd3e9cd616c050bf785fb388aa8
+PODFILE CHECKSUM: 347009c8a88b831905e8f28efe9f49d61c78d891
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.8.4

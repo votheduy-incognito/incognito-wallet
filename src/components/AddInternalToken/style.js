@@ -11,36 +11,42 @@ const style = StyleSheet.create({
     width: '100%',
   },
   verifyInfoContainer: {
-    // marginTop: 25,
+    marginTop: 15,
   },
   verifyInfoHeader: {
     flexDirection: 'row',
   },
   verifyInfoLabel: {
-    fontSize: 14,
-    marginBottom: 10,
+    fontSize: FONT.SIZE.small + 2,
+    fontFamily: FONT.NAME.regular,
+    lineHeight: FONT.SIZE.small + 6,
+    color: COLORS.colorGreyMedium,
+    flex: 1,
     marginLeft: 10,
-    top: -2,
-    // fontStyle: 'italic'
   },
   block: {
-    backgroundColor: COLORS.white,
-    paddingVertical: 15,
-    marginBottom: 10,
+    marginTop: 30,
   },
   desc: {
     marginBottom: 10,
   },
   input: {
-    // marginBottom: 15,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
+  },
+  labelInput: {
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 4,
+    fontFamily: FONT.NAME.bold,
   },
   descriptionInput: {
     height: 80,
   },
   submitBtn: {
-    marginTop: 40,
-    borderRadius: 20,
+    marginVertical: 50,
+    borderRadius: 100,
     backgroundColor: COLORS.orange,
+    height: 50,
   },
   submitBtnDisabed: {
     opacity: 0.5,
@@ -60,35 +66,17 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 20,
   },
   showMyAddressLabel: {
     flex: 1,
+    fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.regular,
-    fontFamily: FONT.NAME.regular,
-    lineHeight: FONT.NORMALIZE(FONT.SIZE.regular + 4),
+    lineHeight: FONT.SIZE.regular + 4,
     color: COLORS.black,
   },
   switch: {
     height: '100%',
     marginBottom: 0,
-  },
-  ownerAddressContainer: {
-    alignItems: 'flex-start',
-  },
-  ownerAddressLabel: {
-    marginBottom: 10,
-    fontSize: FONT.SIZE.regular,
-    fontFamily: FONT.NAME.regular,
-    lineHeight: FONT.NORMALIZE(FONT.SIZE.regular + 4),
-    color: COLORS.black,
-  },
-  ownerAddressValue: {
-    paddingHorizontal: 1,
-    fontSize: FONT.SIZE.regular,
-    fontFamily: FONT.NAME.regular,
-    lineHeight: FONT.NORMALIZE(FONT.SIZE.regular + 4),
-    color: COLORS.colorGreyBold,
   },
 });
 

@@ -10,11 +10,11 @@ const styled = StyleSheet.create({
   },
 });
 
-const BtnDelete = props => (
+const BtnDelete = ({ showIcon = true, ...rest }) => (
   <Button
     {...{
-      ...props,
-      icon: <DeleteIcon />,
+      ...rest,
+      icon: showIcon ? <DeleteIcon /> : null,
       title: 'Remove',
       styledContainer: styled.container,
     }}
