@@ -2,6 +2,7 @@ import React from 'react';
 import accountService from '@services/wallet/accountService';
 import { PRV } from '@services/wallet/tokenService';
 import convert from '@utils/convert';
+import formatUtil from '@utils/format';
 
 const withBalanceLoader = WrappedComp => (props) => {
   const [inputBalance, setInputBalance] = React.useState(null);
@@ -39,9 +40,9 @@ const withBalanceLoader = WrappedComp => (props) => {
         if (!balance && balance <= inputFee) {
           onChangeInputText('');
         } else {
-          const humanAmount = convert.toHumanAmount(balance, inputToken.pDecimals);
-
+          let humanAmount = convert.toHumanAmount(balance, inputToken.pDecimals);
           if (humanAmount < 1) {
+            humanAmount = formatUtil.toFixed(humanAmount, inputToken.pDecimals);
             onChangeInputText(humanAmount.toString());
           } else {
             onChangeInputText('1');

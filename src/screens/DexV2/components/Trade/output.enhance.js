@@ -2,12 +2,15 @@ import React from 'react';
 import _ from 'lodash';
 import formatUtils from '@utils/format';
 import { MIN_PERCENT } from '@screens/DexV2/constants';
+import { getQuote as getQuoteAPI } from '@services/trading';
 import { calculateOutputValue as calculateOutput } from './utils';
 
 const withCalculateOutput = WrappedComp => (props) => {
   const [outputValue, setOutputValue] = React.useState(0);
   const [outputText, setOutputText] = React.useState('0');
   const [minimumAmount, setMinimumAmount] = React.useState(0);
+  const [gettingQuote, setGettingQuote] = React.useState(false);
+  const [quote, setQuote] = React.useState(null);
 
   const { inputToken, inputValue, outputToken, pair, inputText } = props;
 
@@ -36,15 +39,63 @@ const withCalculateOutput = WrappedComp => (props) => {
     // console.debug('RESULT', outputValue, minimumAmount, outputText);
   };
 
+  const getQuote = async () => {
+    try {
+      setGettingQuote(true);
+
+      if (gettingQuote) {
+        setMinimumAmount(0);
+        setOutputValue(0);
+        setOutputText('');
+        return;
+      }
+
+      const quote = await getQuoteAPI({
+        sellToken: inputToken,
+        sellAmount: inputValue,
+        buyToken: outputToken,
+        protocol: 'Kyber',
+      });
+
+      const { inputValue: currentInputValue } = props;
+
+      if (inputValue && inputValue === currentInputValue) {
+        const { amount, minimumAmount } = quote;
+        setMinimumAmount(amount);
+        setOutputValue(minimumAmount);
+
+        const outputText = formatUtils.amountFull(minimumAmount, outputToken.pDecimals);
+        setOutputText(outputText);
+      } else {
+        setMinimumAmount(0);
+        setOutputValue(0);
+        setOutputText('');
+      }
+    } catch (error) {
+      setMinimumAmount(0);
+      setOutputValue(0);
+      setOutputText('');
+    } finally {
+      setGettingQuote(false);
+    }
+  };
+
+  const debounceGetQuote = _.debounce(getQuote, 1000);
+
   React.useEffect(() => {
     if (inputToken && outputToken && inputValue) {
-      calculateOutputValue();
+      if (inputToken.address && outputToken.address) {
+        debounceGetQuote();
+      } else {
+        calculateOutputValue();
+      }
     }
 
-    if (!inputText) {
+    if (!inputValue) {
       setOutputValue(0);
       setOutputText('');
       setMinimumAmount(0);
+      setQuote(null);
     }
   }, [inputToken, inputValue, outputToken, pair]);
 
@@ -55,6 +106,8 @@ const withCalculateOutput = WrappedComp => (props) => {
         outputValue,
         outputText,
         minimumAmount,
+        quote,
+        gettingQuote,
       }}
     />
   );

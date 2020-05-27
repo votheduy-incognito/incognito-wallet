@@ -1,6 +1,9 @@
 import { getEstimateFee, getEstimateFeeForPToken as getEstimateFeeForPTokenService, getMaxWithdrawAmount, RpcClient, Wallet } from 'incognito-chain-web-js/build/wallet';
 import { CustomError, ErrorCode, ExHandler } from '../exception';
 
+let lastPDEStateData = null;
+let lastBeaconHeight = null;
+
 function getRpcClient() {
   return Wallet.RpcClient;
 }
@@ -222,7 +225,12 @@ export async function getPDEPairs() {
   const client = await getRpcClient();
   const beaconHeight = await client.getBeaconHeight();
 
-  return client.getPDEState(beaconHeight);
+  if (lastBeaconHeight !== beaconHeight) {
+    const data = await client.getPDEState(beaconHeight);
+    lastPDEStateData = data;
+  }
+
+  return lastPDEStateData;
 }
 
 export async function getPDETradeStatus(txId) {

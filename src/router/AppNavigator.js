@@ -19,9 +19,6 @@ import BackupKeys from '@src/screens/BackupKeys';
 import PriceChartCrypto from '@src/screens/PriceChartCrypto';
 import { navigationOptionsHandler } from '@src/utils/router';
 import Dex from '@screens/Dex';
-import pUniswap from '@screens/Uniswap';
-import UniswapHistory from '@screens/UniswapHistory';
-import UniswapHistoryDetail from '@screens/UniswapHistoryDetail';
 import FrequentReceivers, {
   FrequentReceiversForm,
 } from '@src/screens/SendCrypto/FrequentReceivers';
@@ -31,7 +28,6 @@ import BuyNodeScreen from '@screens/BuyNodeScreen';
 import StakeHistory from '@screens/StakeHistory';
 import StakeRecoverAccount from '@screens/Stake/features/RecoverAccount';
 import StakeHistoryDetail from '@screens/StakeHistory/features/Detail';
-import UniswapHelp from '@screens/UniswapHelp';
 import PaymentBuyNodeScreen from '@src/screens/PaymentBuyNodeScreen';
 import ROUTE_NAMES from './routeNames';
 import { getRoutesNoHeader } from './routeNoHeader';
@@ -74,19 +70,6 @@ const AppNavigator = createStackNavigator(
       title: 'pDex',
       header: () => null,
     }),
-    [ROUTE_NAMES.pUniswap]: navigationOptionsHandler(pUniswap, {
-      title: 'pKyber',
-      header: () => null,
-    }),
-    [ROUTE_NAMES.UniswapHistory]: navigationOptionsHandler(UniswapHistory, {
-      title: 'History',
-    }),
-    [ROUTE_NAMES.UniswapHistoryDetail]: navigationOptionsHandler(
-      UniswapHistoryDetail,
-      {
-        title: 'Transaction Detail',
-      },
-    ),
     [ROUTE_NAMES.FrequentReceiversForm]: navigationOptionsHandler(
       FrequentReceiversForm,
     ),
@@ -118,9 +101,6 @@ const AppNavigator = createStackNavigator(
     }),
     [ROUTE_NAMES.WhyReceive]: navigationOptionsHandler(WhyReceive, {
       title: 'Receive',
-    }),
-    [ROUTE_NAMES.UniswapHelp]: navigationOptionsHandler(UniswapHelp, {
-      title: 'FAQs',
     }),
     [ROUTE_NAMES.BuyNodeScreen]: navigationOptionsHandler(BuyNodeScreen, {
       headerTitleStyle: { alignSelf: 'center' },

@@ -27,5 +27,7 @@ const PRV = {
 
 export default {
   POPULAR_COIN,
-  POPULAR_COIN_IDS
+  POPULAR_COIN_IDS,
+  PRV,
+  PRV_ID: PRV.id,
 };

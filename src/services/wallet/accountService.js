@@ -1,16 +1,17 @@
 /* eslint-disable import/no-cycle */
 import AccountModel from '@models/account';
-import {COINS, CONSTANT_COMMONS, CONSTANT_KEYS} from '@src/constants';
+import { COINS, CONSTANT_COMMONS, CONSTANT_KEYS } from '@src/constants';
 import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
-import {countFollowToken, countUnfollowToken} from '@src/services/api/token';
-import {AccountWallet, KeyWallet, Wallet} from 'incognito-chain-web-js/build/wallet';
+import { countFollowToken, countUnfollowToken } from '@src/services/api/token';
+import { AccountWallet, KeyWallet, Wallet } from 'incognito-chain-web-js/build/wallet';
 import _ from 'lodash';
-import {STACK_TRACE} from '@services/exception/customError/code/webjsCode';
-import {CustomError, ErrorCode} from '../exception';
-import {getActiveShard} from './RpcClientService';
-import tokenService, {getUserUnfollowTokenIDs, setUserUnfollowTokenIDs} from './tokenService';
-import {loadListAccountWithBLSPubKey, saveWallet} from './WalletService';
+import { STACK_TRACE } from '@services/exception/customError/code/webjsCode';
+import { cachePromise } from '@services/cache';
+import { CustomError, ErrorCode } from '../exception';
+import { getActiveShard } from './RpcClientService';
+import tokenService, { getUserUnfollowTokenIDs, setUserUnfollowTokenIDs } from './tokenService';
+import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
 
 const TAG = 'Account';
 
@@ -270,9 +271,10 @@ export default class Account {
    * If `tokenId` is not passed, this method will return native token (PRV) balance, else custom token balance (from `tokenId`)
    */
   static async getBalance(account, wallet, tokenId) {
+    const key = `balance-${account.name || account.AccountName}-${tokenId || '0000000000000000000000000000000000000000000000000000000000000004'}`;
     const indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
 
-    return wallet.MasterAccount.child[indexAccount].getBalance(tokenId);
+    return await cachePromise(key, wallet.MasterAccount.child[indexAccount].getBalance(tokenId));
   }
 
   static parseShard(account) {

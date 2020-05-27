@@ -1,7 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
 import convertUtil from '@utils/convert';
-import {PRIORITY_LIST} from '@screens/Dex/constants';
 
 const withFilter = WrappedComp => (props) => {
   const [outputToken, setOutputToken] = React.useState(null);
@@ -11,7 +10,7 @@ const withFilter = WrappedComp => (props) => {
     try {
       let newOutputToken = outputToken;
       let outputPairs = pairs.filter(pair => pair[inputToken.id]);
-      let outputList = _(outputPairs)
+      let outputList = outputPairs
         .map(pair => {
           const id = pair.keys.find(key => key !== inputToken.id);
           const pool = pair[id];
@@ -22,9 +21,15 @@ const withFilter = WrappedComp => (props) => {
           pool: convertUtil.toRealTokenValue(pairTokens, id, pool),
         }))
         .filter(item => item)
-        .filter(item => item.name && item.symbol)
+        .filter(item => item.name && item.symbol);
+
+      if (inputToken.address) {
+        outputList = outputList.concat(pairTokens.filter(token => token.address && token.id !== inputToken.id));
+      }
+
+      outputList = _(outputList)
         .orderBy([
-          item => PRIORITY_LIST.indexOf(item?.id) > -1 ? PRIORITY_LIST.indexOf(item?.id) : 100,
+          'priority',
           'hasIcon',
           'pool',
           item => item.symbol && item.symbol.toLowerCase(),

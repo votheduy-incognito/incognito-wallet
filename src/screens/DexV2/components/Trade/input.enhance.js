@@ -39,6 +39,7 @@ const withChangeInput = WrappedComp => (props) => {
         inputToken,
         inputText,
 
+        onChangeInputValue: setInputValue,
         onChangeInputText: changeInputText,
       }}
     />

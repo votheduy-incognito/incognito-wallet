@@ -1,7 +1,7 @@
 import React from 'react';
 import { COINS } from '@src/constants';
 import { calculateOutputValue } from '@screens/DexV2/components/Trade/utils';
-import { MAX_FEE_PER_TX } from '@components/EstimateFee/EstimateFee.utils';
+import { MAX_FEE_PER_TX, DEFI_TRADING_FEE } from '@components/EstimateFee/EstimateFee.utils';
 import { MAX_PDEX_TRADE_STEPS } from '@screens/DexV2/constants';
 
 const withEstimateFee = WrappedComp => (props) => {
@@ -11,7 +11,7 @@ const withEstimateFee = WrappedComp => (props) => {
   const { inputToken, outputToken, pairs } = props;
 
   const estimateFee = () => {
-    if (inputToken.id !== COINS.PRV_ID && outputToken.id !== COINS.PRV_ID) {
+    if (inputToken.id !== COINS.PRV_ID && outputToken?.id !== COINS.PRV_ID) {
       const prvFee = MAX_FEE_PER_TX * MAX_PDEX_TRADE_STEPS;
       setFee(prvFee);
       setFeeToken(COINS.PRV);
@@ -39,7 +39,7 @@ const withEstimateFee = WrappedComp => (props) => {
   const prvFee = feeToken?.id === COINS.PRV_ID ? fee : 0;
 
   React.useEffect(() => {
-    if (inputToken) {
+    if (inputToken && outputToken) {
       estimateFee();
     }
   }, [inputToken, outputToken]);

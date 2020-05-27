@@ -4,13 +4,13 @@ import { BaseTextInput as TextInput, View } from '@components/core';
 import { COLORS } from '@src/styles';
 import stylesheet from './style';
 
-const Input = ({ value, onChange, disabled }) => {
+const Input = ({ value, onChange, disabled, placeholder }) => {
   return (
     <View style={stylesheet.inputContainer}>
       <TextInput
         keyboardType="decimal-pad"
         style={[stylesheet.bigText, stylesheet.input]}
-        placeholder={onChange ? '0.0' : ''}
+        placeholder={onChange ? placeholder : ''}
         placeholderTextColor={COLORS.lightGrey1}
         value={value}
         onChangeText={onChange}
@@ -24,11 +24,13 @@ Input.propTypes = {
   value: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
+  placeholder: PropTypes.string,
 };
 
 Input.defaultProps = {
   value: '',
   disabled: false,
+  placeholder: '',
 };
 
 export default Input;

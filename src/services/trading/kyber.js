@@ -43,7 +43,7 @@ export async function getKyberQuote({sellToken, sellAmount, buyToken}) {
 
   const url = `uniswap/getKyberRate?SrcToken=${sellAddress}&DestToken=${buyAddress}&Amount=${sellAmount}`;
   const data = await http.get(url);
-  const {ExpectedRate} = data;
+  const {ExpectedRate, SlippageRate} = data;
 
   const originalSellAmount = BigNumber(sellAmount)
     .dividedBy(BigNumber(10).pow(sellToken.decimals));
@@ -53,8 +53,16 @@ export async function getKyberQuote({sellToken, sellAmount, buyToken}) {
     .multipliedBy(originalSellAmount)
     .multipliedBy(BigNumber(10).pow(buyToken.decimals));
 
+  const maxPrice = BigNumber(SlippageRate)
+    .dividedBy(BigNumber(10).pow(18));
+  const minimumAmount = BigNumber(maxPrice)
+    .multipliedBy(originalSellAmount)
+    .multipliedBy(BigNumber(10).pow(buyToken.decimals));
+
   return new TradingQuote({
     price: originalPrice.toString(),
     amount,
+    minimumAmount,
+    maxPrice,
   });
 }

@@ -14,6 +14,11 @@ import WalletDetail from '@screens/Wallet/features/Detail';
 import UnShield from '@screens/UnShield';
 import ReceiveCrypto from '@screens/Wallet/features/ReceiveCrypto';
 import Send from '@screens/Send';
+import TokenSelectScreen from '@components/TokenSelectScreen';
+import Trade from '@screens/DexV2';
+import TradeConfirm from '@screens/DexV2/components/TradeConfirm';
+import TradeHistory from '@screens/DexV2/components/History';
+import TradeHistoryDetail from '@screens/DexV2/components/HistoryDetail';
 import UnShieldModal from '@screens/UnShield/UnShield.modal';
 import pApp from '@src/screens/PappView';
 import routeNames from './routeNames';
@@ -86,6 +91,27 @@ const routes = [
   {
     screen: pApp,
     name: routeNames.pApp,
+    name: routeNames.UnShield
+  },
+  {
+    screen: Trade,
+    name: routeNames.Trade,
+  },
+  {
+    screen: TradeConfirm,
+    name: routeNames.TradeConfirm,
+  },
+  {
+    screen: TradeHistory,
+    name: routeNames.TradeHistory
+  },
+  {
+    screen: TradeHistoryDetail,
+    name: routeNames.TradeHistoryDetail
+  },
+  {
+    screen: TokenSelectScreen,
+    name: routeNames.TokenSelectScreen
   },
 ];
 

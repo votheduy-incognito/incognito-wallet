@@ -58,7 +58,12 @@ const TokenSelect = ({
 };
 
 TokenSelect.propTypes = {
+  tokens: PropTypes.array,
   onSearch: PropTypes.func.isRequired,
+};
+
+TokenSelect.defaultProps = {
+  tokens: [],
 };
 
 export default compose(

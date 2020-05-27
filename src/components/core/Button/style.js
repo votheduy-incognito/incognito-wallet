@@ -31,5 +31,6 @@ export default StyleSheet.create({
   },
   disabled: {
     ...THEME.opacityButton.disabled,
+    opacity: 0.5,
   },
 });

@@ -1,6 +1,7 @@
 import http from '@src/services/http';
 import { DepositResponse, PDexTradeHistoryModel, RewardModel } from '@models/pDefi';
 import { cachePromise } from '@services/cache';
+import { TRADING } from '@src/constants';
 
 export const getRewards = (paymentAddress) => {
   return http.get(`auth/liquidity-reward?wallet=${paymentAddress}`)
@@ -47,4 +48,31 @@ export const getHistories = (accounts, tokens, page = 1, limit = 10) => {
     Limit: limit,
     Wallets: accounts.map(item => item.PaymentAddress).join(','),
   }).then(data => data?.Data ? data.Data.map(item => new PDexTradeHistoryModel(item, tokens, accounts)) : []), 15000);
+};
+
+export const tradePKyber = ({
+  depositId,
+  sellTokenAddress,
+  sellAmount,
+  buyTokenAddress,
+  expectAmount,
+}) => {
+  return http.post('/pdefi/execute/', {
+    'SrcTokens': sellTokenAddress,
+    'SrcQties': sellAmount,
+    'DestTokens': buyTokenAddress,
+    'DappAddress': TRADING.KYBER_TRADE_ADDRESS,
+    'DepositId': depositId,
+    'ExpectAmount': expectAmount,
+  });
+};
+
+export const submitChargeFeeTx = ({
+  feeTxId,
+  depositId,
+}) => {
+  return http.post('uniswap/execute', {
+    ID: depositId,
+    ChargeFeesTx: feeTxId,
+  });
 };

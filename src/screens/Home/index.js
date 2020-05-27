@@ -23,6 +23,7 @@ import LocalDatabase from '@utils/LocalDatabase';
 import { withdraw } from '@services/api/withdraw';
 import { logEvent } from '@services/firebase';
 import Tooltip from '@components/Tooltip';
+import CONSTANT_CONFIGS from '@src/constants/config';
 import styles from './style';
 import withHome from './Home.enhance';
 
@@ -102,7 +103,7 @@ const Home = ({ navigation }) => {
   };
 
   const getHomeConfiguration = () => {
-    fetch('https://api-data-staging.incognito.org/home-configs')
+    fetch(CONSTANT_CONFIGS.HOME_CONFIG_DATA)
       .then(val => val.json())
       .then(val => {
         if (val) {
