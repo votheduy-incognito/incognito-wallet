@@ -13,7 +13,9 @@ const styled = StyleSheet.create({
   containerInputStyle: {
     marginRight: 30,
     paddingBottom: 5,
-    borderBottomWidth: 0
+    borderBottomWidth: 0,
+    maxWidth: '100%',
+    paddingTop: 5
   },
   input: {
     fontFamily: FONT.NAME.medium,

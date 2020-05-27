@@ -51,13 +51,17 @@ const style = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: COLORS.colorGrey,
   },
+  chooseFileContainer: {
+    marginLeft: 15,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
   chooseFile: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 3,
     color: COLORS.colorGreyBold,
-    flex: 1,
-    marginLeft: 15,
+    marginRight: 10,
   },
   hook: {
     flexDirection: 'row',
