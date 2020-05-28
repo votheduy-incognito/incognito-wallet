@@ -496,6 +496,7 @@ class WifiSetup extends PureComponent {
         }
       })
       .catch(err => {
+        this.setState({loading: false});
         this.addStep({ name: 'Setup configuration for node failed ' + err?.message, isSuccess: false });
         return verifyNewCode;
       });
@@ -515,6 +516,7 @@ class WifiSetup extends PureComponent {
       // Send data/info to node
       await this.sendZMQ();
     } catch (error) {
+      this.setState({loading: false});
       await APIService.trackLog({ action: funcName, message: `Connect HOTSPOT FAILED = ${error?.message || ''}` });
       throw error;
     }
@@ -553,13 +555,16 @@ class WifiSetup extends PureComponent {
   };
 
   authFirebase = async (productInfo) => {
-
+    this.setState({loading: true});
     const { qrCode } = this.props;
     const funcName = `${qrCode}-authFirebase`;
     await APIService.trackLog({ action: funcName, message: 'Bat dau Auth Firebase', rawData: `productInfo = ${JSON.stringify(productInfo)}` });
     const authFirebase = await this.tryAtMost(async () => {
       const resultFbUID = await NodeService.authFirebase(productInfo)
-        .catch(error => this.addStep({ name: 'Authenticate firebase error ', detail: error?.message, isSuccess: false }));
+        .catch(error => {
+          this.setState({loading: false});
+          this.addStep({ name: 'Authenticate firebase error ', detail: error?.message, isSuccess: false });
+        });
       this.addStep({ name: 'Authenticate firebase ', detail: resultFbUID, isSuccess: true });
       return _.isEmpty(resultFbUID) ? new CustomError(knownCode.node_auth_firebase_fail) : resultFbUID;
     }, 3, 3);
@@ -635,6 +640,7 @@ class WifiSetup extends PureComponent {
             onNext();
             return;
           }
+          this.setState({loading: false});
           this.addStep({ name: 'Send stake request failed', detail: '', isSuccess: false });
         });
 
