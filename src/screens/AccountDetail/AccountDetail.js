@@ -9,7 +9,7 @@ class AccountDetail extends Component {
     try {
       const { removeAccount, account } = this.props;
       await removeAccount(account);
-      Toast.showSuccess('Account removed.');
+      Toast.showSuccess('Keychain removed.');
     } catch {
       Toast.showError('Something went wrong. Please try again.');
     }
@@ -19,7 +19,7 @@ class AccountDetail extends Component {
     const { account } = this.props;
     Alert.alert(
       'Confirm',
-      `Remove account "${account?.name}"?`,
+      `Remove keychain "${account?.name}"?`,
       [
         {
           text: 'Cancel',
@@ -45,7 +45,7 @@ class AccountDetail extends Component {
           onPress={this.handleExportKey}
         />
         <Button
-          title="Remove Account"
+          title="Remove Keychain"
           type="danger"
           style={styleSheet.removeBtn}
           titleStyle={styleSheet.removeBtnText}

@@ -72,9 +72,10 @@ class GetStarted extends Component {
         <View style={style.getStartedBlock}>
           <Text style={[style.title, style.centerText]}>
             {
-              isCreating ? 'Creating your wallet... This process may take several seconds.' : 'Welcome to Incognito. Loading your Wallet...'
+              isCreating ? 'Generating your keychain... Give it a few seconds.' : 'Entering incognito mode for your crypto...'
             }
           </Text>
+
           { errorMsg && <Text style={[style.errorMsg, style.centerText]}>{errorMsg}</Text> }
           { errorMsg && <Button style={style.retryBtn} title='Retry' onPress={onRetry} /> }
         </View>
