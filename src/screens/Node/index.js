@@ -157,11 +157,9 @@ class Node extends BaseScreen {
           ],
           { cancelable: false }
         );
-      } else {
-        await LocalDatabase.saveVerifyCode('');
       }
     } else {
-      // Force
+      // Force eventhough the same
       LocalDatabase.saveVerifyCode('');
     }
   }
