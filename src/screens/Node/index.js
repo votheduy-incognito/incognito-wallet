@@ -145,17 +145,24 @@ class Node extends BaseScreen {
 
   checkIfVerifyCodeIsExisting = async () => {
     let verifyProductCode = await LocalDatabase.getVerifyCode();
-    console.log(verifyProductCode);
     if (verifyProductCode && verifyProductCode != '') {
-      Alert.alert(
-        'Uncomplete setup for node',
-        'We found a key for old node device that unsuccessfull. Do you want to continue setup this for now?',
-        [
-          { text: 'Back', onPress: () => this.goToScreen(routeNames.Home) },
-          { text: 'Continue', onPress: () => { this.goToScreen(routeNames.RepairingSetupNode, { isRepairing: true, verifyProductCode: verifyProductCode }); } },
-        ],
-        { cancelable: false }
-      );
+      let result = await NodeService.verifyProductCode(verifyProductCode);
+      if (result && result?.status === 1) {
+        Alert.alert(
+          'Uncomplete setup for node',
+          'We found a key for old node device that unsuccessfull. Do you want to continue setup this for now?',
+          [
+            { text: 'Back', onPress: () => this.goToScreen(routeNames.Home) },
+            { text: 'Continue', onPress: () => { this.goToScreen(routeNames.RepairingSetupNode, { isRepairing: true, verifyProductCode: verifyProductCode }); } },
+          ],
+          { cancelable: false }
+        );
+      } else {
+        await LocalDatabase.saveVerifyCode('');
+      }
+    } else {
+      // Force
+      LocalDatabase.saveVerifyCode('');
     }
   }
 
@@ -427,14 +434,16 @@ class Node extends BaseScreen {
         <View style={style.background} />
         <Header goToScreen={this.goToScreen} isFetching={listDevice.length > loadedDevices.length || isFetching} />
         <DialogLoader loading={loading} />
-        <ScrollView refreshControl={(
-          <RefreshControl
-            onRefresh={this.handleRefresh}
-            refreshing={isFetching}
-            tintColor={COLORS.primary}
-            colors={[COLORS.primary]}
-          />
-        )}
+        <ScrollView
+          contentContainerStyle={{paddingBottom: 40}}
+          refreshControl={(
+            <RefreshControl
+              onRefresh={this.handleRefresh}
+              refreshing={isFetching}
+              tintColor={COLORS.primary}
+              colors={[COLORS.primary]}
+            />
+          )}
         >
           <FlatList
             showsVerticalScrollIndicator={false}
