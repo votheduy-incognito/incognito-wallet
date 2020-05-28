@@ -190,10 +190,8 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
     const state = getState();
     const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
     const tokenId = selectedPrivacySeleclor.selectedPrivacyTokenID(state);
-    const token = selectedPrivacySeleclor.selectedPrivacyByFollowedSelector(
-      state,
-    );
-    if (!tokenId || !token) {
+    const token = { ...selectedPrivacy, id: selectedPrivacy?.tokenId };
+    if (!tokenId) {
       return;
     }
     const account = accountSeleclor.defaultAccountSelector(state);
