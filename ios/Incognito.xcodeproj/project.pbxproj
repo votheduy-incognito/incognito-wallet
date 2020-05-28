@@ -11,37 +11,34 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		1F1BF8DF2472DCA200A2DA95 /* Helvetica-Neue.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F1BF8DE2472DCA200A2DA95 /* Helvetica-Neue.otf */; };
-		1F1BF8E62472DFF800A2DA95 /* Helvetica-Neue-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F1BF8E22472DFF700A2DA95 /* Helvetica-Neue-Bold.otf */; };
-		1F1BF8E72472DFF800A2DA95 /* Helvetica-Neue-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F1BF8E52472DFF800A2DA95 /* Helvetica-Neue-Medium.otf */; };
 		1F298112246D5724000EE1C6 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB61A68108700A75B9A /* Info.plist */; };
+		1F3B2CDE247FC9FB00F8A129 /* Helvetica-Neue-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F1BF8E22472DFF700A2DA95 /* Helvetica-Neue-Bold.otf */; };
+		1F3B2CDF247FC9FB00F8A129 /* Helvetica-Neue-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F1BF8E52472DFF800A2DA95 /* Helvetica-Neue-Medium.otf */; };
+		1F3B2CE0247FC9FB00F8A129 /* Helvetica-Neue.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F1BF8DE2472DCA200A2DA95 /* Helvetica-Neue.otf */; };
+		1F3B2CE1247FC9FB00F8A129 /* SF-Pro-Display-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2980E1246D55E3000EE1C6 /* SF-Pro-Display-Bold.otf */; };
+		1F3B2CE2247FC9FB00F8A129 /* SF-Pro-Display-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2980CE246D55E2000EE1C6 /* SF-Pro-Display-BoldItalic.otf */; };
+		1F3B2CE3247FC9FB00F8A129 /* SF-Pro-Display-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2980D2246D55E2000EE1C6 /* SF-Pro-Display-Heavy.otf */; };
+		1F3B2CE4247FC9FB00F8A129 /* SF-Pro-Display-HeavyItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2980DD246D55E3000EE1C6 /* SF-Pro-Display-HeavyItalic.otf */; };
+		1F3B2CE5247FC9FB00F8A129 /* SF-Pro-Display-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2980E7246D55E4000EE1C6 /* SF-Pro-Display-Light.otf */; };
+		1F3B2CE6247FC9FB00F8A129 /* SF-Pro-Display-LightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2980D0246D55E2000EE1C6 /* SF-Pro-Display-LightItalic.otf */; };
+		1F3B2CE7247FC9FB00F8A129 /* SF-Pro-Display-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2980E0246D55E3000EE1C6 /* SF-Pro-Display-Medium.otf */; };
+		1F3B2CE8247FC9FB00F8A129 /* SF-Pro-Display-MediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2980D9246D55E3000EE1C6 /* SF-Pro-Display-MediumItalic.otf */; };
+		1F3B2CE9247FC9FB00F8A129 /* SF-Pro-Display-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2980E5246D55E4000EE1C6 /* SF-Pro-Display-Regular.otf */; };
+		1F3B2CEA247FC9FB00F8A129 /* SF-Pro-Display-RegularItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2980D5246D55E2000EE1C6 /* SF-Pro-Display-RegularItalic.otf */; };
 		20B559AF22C393B10079FC06 /* Gomobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B559AE22C393B10079FC06 /* Gomobile.m */; };
-		3A12A570E48E48C0B340C24F /* SF-Pro-Display-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8F9E0CACF3BB45229438F95F /* SF-Pro-Display-Bold.otf */; };
 		3B50FECFE455494A8373E5A6 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ECBE1563D1B5449E86A7658F /* libRNVectorIcons.a */; };
 		3EF0EC91E7FE4B16A434459C /* libRNZmqService.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE70DDA39F794DA9B6544C35 /* libRNZmqService.a */; };
-		4FE4F7DC2AA9481684933750 /* SF-Pro-Display-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = E4407F21D8B54286BA2B42CD /* SF-Pro-Display-Heavy.otf */; };
-		58511263A8694957A9667323 /* SF-Pro-Display-RegularItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = D44C119054EC45B8A1D4E416 /* SF-Pro-Display-RegularItalic.otf */; };
 		712C447B244313E700A3CBA6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 712C447A244313E700A3CBA6 /* GoogleService-Info.plist */; };
 		7144D81C24373E68005224F2 /* Gomobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7144D81B24373E68005224F2 /* Gomobile.framework */; };
 		71ACEF372477D8CE003AE3E3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 71ACEF362477D8CE003AE3E3 /* Images.xcassets */; };
 		7951D9F679874B4EA8E3CFEE /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27AAED89E8AD4248BBC41F79 /* libRNFirebase.a */; };
-		79A0496630414ECA8E900065 /* Helvetica-Neue-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = D1CBFF9A6B4846FDB3E64476 /* Helvetica-Neue-Bold.otf */; };
-		7BDA05DC4F96444192E100CF /* SF-Pro-Display-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 960F2226C98F46CA8A9CE6B3 /* SF-Pro-Display-Light.otf */; };
 		82E467C899D04A02A0589EB9 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB08C251E22B438096EA6169 /* libRNGestureHandler.a */; };
-		8DCF1CBFF4D74E87AB8965AD /* SF-Pro-Display-HeavyItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8AF67533B48F42BE9BA7E129 /* SF-Pro-Display-HeavyItalic.otf */; };
-		953B9826BC464541AA42922F /* SF-Pro-Display-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 64D0B7AEDD884637A024CA85 /* SF-Pro-Display-Medium.otf */; };
 		9A35DA29B0814E0E85D3F53B /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6024CBE183FA4307ABE2C4F5 /* libRNDeviceInfo.a */; };
-		A10667CB28F742399B925978 /* SF-Pro-Display-LightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3414813A22EC45FFB8C27649 /* SF-Pro-Display-LightItalic.otf */; };
 		A23A5B4BF797429292519AC6 /* libRNCAsyncStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D828B2179CD4981AB6E75EE /* libRNCAsyncStorage.a */; };
-		B5EEF3A92066434F8FAFDB26 /* Helvetica-Neue-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = B9A60B371464497786EFB6D1 /* Helvetica-Neue-Medium.otf */; };
 		C2E73AA50DDC4747BAD7CC54 /* libRNOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 342DA32C89DE489180AC3EF2 /* libRNOS.a */; };
 		C944FB71546FC63E3C584A22 /* libPods-Incognito.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C9B022E86A08BD344C7392 /* libPods-Incognito.a */; };
 		D7BDB11DB76A47B9A686E426 /* libTcpSockets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C5D037565762439F89BE1412 /* libTcpSockets.a */; };
-		D9635E23B98A4C1ABCD1C169 /* SF-Pro-Display-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3A4E0E925E4C4BBFBE81642B /* SF-Pro-Display-BoldItalic.otf */; };
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
-		F20A45871E5C433B9D9CF8DC /* SF-Pro-Display-MediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC11E5EF9842079A2776CF /* SF-Pro-Display-MediumItalic.otf */; };
-		F48AB109EC3A43EE8179B45E /* Helvetica-Neue.otf in Resources */ = {isa = PBXBuildFile; fileRef = F150832F71344BE09CCA8702 /* Helvetica-Neue.otf */; };
-		F562FA37C7A94F53BB23EC40 /* SF-Pro-Display-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 300F9AAF96894BAAB4DBA851 /* SF-Pro-Display-Regular.otf */; };
 		FD6F21E124750AA0000CC07D /* BridgeLottie.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6F21E024750AA0000CC07D /* BridgeLottie.swift */; };
 		FE57448622F97A3700F2A2BC /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE57448522F97A3700F2A2BC /* NetworkExtension.framework */; };
 		FE5C9FA82355D46900AC6E90 /* libreact-native-netinfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5C9FA72355D46900AC6E90 /* libreact-native-netinfo.a */; };
@@ -543,28 +540,25 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F3B2CDE247FC9FB00F8A129 /* Helvetica-Neue-Bold.otf in Resources */,
+				1F3B2CDF247FC9FB00F8A129 /* Helvetica-Neue-Medium.otf in Resources */,
+				1F3B2CE0247FC9FB00F8A129 /* Helvetica-Neue.otf in Resources */,
+				1F3B2CE1247FC9FB00F8A129 /* SF-Pro-Display-Bold.otf in Resources */,
+				1F3B2CE2247FC9FB00F8A129 /* SF-Pro-Display-BoldItalic.otf in Resources */,
+				1F3B2CE3247FC9FB00F8A129 /* SF-Pro-Display-Heavy.otf in Resources */,
+				1F3B2CE4247FC9FB00F8A129 /* SF-Pro-Display-HeavyItalic.otf in Resources */,
+				1F3B2CE5247FC9FB00F8A129 /* SF-Pro-Display-Light.otf in Resources */,
+				1F3B2CE6247FC9FB00F8A129 /* SF-Pro-Display-LightItalic.otf in Resources */,
+				1F3B2CE7247FC9FB00F8A129 /* SF-Pro-Display-Medium.otf in Resources */,
+				1F3B2CE8247FC9FB00F8A129 /* SF-Pro-Display-MediumItalic.otf in Resources */,
+				1F3B2CE9247FC9FB00F8A129 /* SF-Pro-Display-Regular.otf in Resources */,
+				1F3B2CEA247FC9FB00F8A129 /* SF-Pro-Display-RegularItalic.otf in Resources */,
 				FE5C9FB52355EE0100AC6E90 /* MaterialIcons.ttf in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				FED68302235DBC6A002F1A7C /* autonomous_config.plist in Resources */,
 				1F298112246D5724000EE1C6 /* Info.plist in Resources */,
-				1F1BF8DF2472DCA200A2DA95 /* Helvetica-Neue.otf in Resources */,
 				712C447B244313E700A3CBA6 /* GoogleService-Info.plist in Resources */,
-				3A12A570E48E48C0B340C24F /* SF-Pro-Display-Bold.otf in Resources */,
-				D9635E23B98A4C1ABCD1C169 /* SF-Pro-Display-BoldItalic.otf in Resources */,
-				1F1BF8E62472DFF800A2DA95 /* Helvetica-Neue-Bold.otf in Resources */,
-				4FE4F7DC2AA9481684933750 /* SF-Pro-Display-Heavy.otf in Resources */,
-				8DCF1CBFF4D74E87AB8965AD /* SF-Pro-Display-HeavyItalic.otf in Resources */,
-				7BDA05DC4F96444192E100CF /* SF-Pro-Display-Light.otf in Resources */,
-				A10667CB28F742399B925978 /* SF-Pro-Display-LightItalic.otf in Resources */,
-				953B9826BC464541AA42922F /* SF-Pro-Display-Medium.otf in Resources */,
-				F20A45871E5C433B9D9CF8DC /* SF-Pro-Display-MediumItalic.otf in Resources */,
 				71ACEF372477D8CE003AE3E3 /* Images.xcassets in Resources */,
-				F562FA37C7A94F53BB23EC40 /* SF-Pro-Display-Regular.otf in Resources */,
-				58511263A8694957A9667323 /* SF-Pro-Display-RegularItalic.otf in Resources */,
-				F48AB109EC3A43EE8179B45E /* Helvetica-Neue.otf in Resources */,
-				1F1BF8E72472DFF800A2DA95 /* Helvetica-Neue-Medium.otf in Resources */,
-				79A0496630414ECA8E900065 /* Helvetica-Neue-Bold.otf in Resources */,
-				B5EEF3A92066434F8FAFDB26 /* Helvetica-Neue-Medium.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

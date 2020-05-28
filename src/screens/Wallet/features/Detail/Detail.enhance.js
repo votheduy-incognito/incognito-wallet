@@ -7,9 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   actionFetchHistoryMainCrypto,
   actionFetchHistoryToken,
-  actionFetchingHistory,
 } from '@src/redux/actions/token';
-import { selectedPrivacySeleclor, tokenSeleclor } from '@src/redux/selectors';
+import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { useIsFocused } from 'react-navigation-hooks';
 
 const enhance = WrappedComp => props => {
@@ -17,19 +16,14 @@ const enhance = WrappedComp => props => {
   const token = useSelector(
     selectedPrivacySeleclor.selectedPrivacyByFollowedSelector,
   );
-  const { isFetching } = useSelector(tokenSeleclor.historyTokenSelector);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const handleLoadHistory = async () => {
     try {
-      if (isFetching) {
-        return;
-      }
-      await dispatch(actionFetchingHistory());
       if (selectedPrivacy?.isMainCrypto) {
         return await dispatch(actionFetchHistoryMainCrypto());
       }
-      if (selectedPrivacy?.isToken && token?.id) {
+      if (!!selectedPrivacy?.isToken && !!token?.id) {
         return await dispatch(actionFetchHistoryToken());
       }
     } catch (error) {

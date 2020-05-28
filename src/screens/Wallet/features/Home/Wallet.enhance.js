@@ -21,6 +21,7 @@ import routeNames from '@src/router/routeNames';
 import { actionRemoveFollowToken } from '@src/redux/actions';
 import { Toast } from '@src/components/core';
 import { InteractionManager } from 'react-native';
+import { actionInit as actionInitEstimateFee } from '@components/EstimateFee/EstimateFee.actions';
 
 export const WalletContext = React.createContext({});
 
@@ -104,9 +105,11 @@ const enhance = WrappedComp => props => {
     await dispatch(setSelectedPrivacy(tokenId));
     navigation.navigate(routeNames.WalletDetail);
   };
-  const clearWallet = async () => {
-    await dispatch(clearSelectedPrivacy());
-  };
+  const clearWallet = async () =>
+    await new Promise.all([
+      dispatch(actionInitEstimateFee()),
+      dispatch(clearSelectedPrivacy()),
+    ]);
   const handleRemoveToken = async tokenId => {
     await dispatch(actionRemoveFollowToken(tokenId));
     Toast.showSuccess('Add coin again to restore balance.', {
@@ -164,4 +167,7 @@ const enhanceInteractionManager = WrappedComponent => props => {
   return <WrappedComponent {...props} />;
 };
 
-export default compose(enhanceInteractionManager, enhance);
+export default compose(
+  enhanceInteractionManager,
+  enhance,
+);

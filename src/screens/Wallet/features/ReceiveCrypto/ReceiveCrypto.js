@@ -21,10 +21,6 @@ export const homeStyle = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 30,
   },
-  scrollview: {
-    flex: 1,
-    marginTop: 42,
-  },
 });
 
 const ReceiveCrypto = () => {
@@ -34,8 +30,14 @@ const ReceiveCrypto = () => {
   return (
     <View style={homeStyle.container}>
       <Header title="Receive" />
-      <ScrollView style={homeStyle.scrollview}>
-        <QrCodeGenerate value={address} size={175} />
+      <ScrollView>
+        <QrCodeGenerate
+          value={address}
+          size={175}
+          style={{
+            marginTop: 50,
+          }}
+        />
         <Text style={homeStyle.desc}>
           {
             'This is your address.\nUse it to receive any cryptocurrency\nfrom another Incognito address.'
