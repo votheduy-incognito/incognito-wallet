@@ -56,7 +56,6 @@ const TextInput = ({
       onChangeText('');
     }
   }
-
   return (
     <View style={[styleSheet.container, style]}>
       {label && (

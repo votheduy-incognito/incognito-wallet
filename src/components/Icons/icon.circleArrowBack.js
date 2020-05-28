@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 
 const styled = StyleSheet.create({
   defaultStyle: {
-    width: 25,
-    height: 25,
+    width: 24,
+    height: 24,
   },
 });
 

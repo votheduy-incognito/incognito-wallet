@@ -91,6 +91,9 @@ export const ChangePrice = props => {
     <NormalText
       text={` ${isTokenDecrease ? '-' : '+'}${round(changeToNumber, 2)}%`}
       style={[
+        {
+          marginLeft: 5,
+        },
         styled.bottomText,
         isTokenDecrease ? styled.redText : styled.greenText,
         customStyle,

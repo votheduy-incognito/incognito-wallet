@@ -1,5 +1,5 @@
-import {StyleSheet} from 'react-native';
-import {FONT} from '@src/styles';
+import { StyleSheet } from 'react-native';
+import { FONT, COLORS } from '@src/styles';
 
 export const commonStyled = StyleSheet.create({
   container: {},
@@ -7,7 +7,7 @@ export const commonStyled = StyleSheet.create({
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 6,
-    color: '#aaa',
+    color: COLORS.colorGreyBold,
   },
   input: {
     fontFamily: FONT.NAME.bold,
@@ -21,7 +21,6 @@ export const commonStyled = StyleSheet.create({
     borderBottomColor: '#D8D8D8',
   },
   labelFocused: {
-    // color: '#0DB8D8',
   },
   error: {
     color: '#f40000',

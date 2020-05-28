@@ -1,6 +1,5 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import withFCM from '@src/screens/Notification/Notification.withFCM';
 import { compose } from 'recompose';
 import { useSelector, useDispatch } from 'react-redux';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
@@ -58,7 +57,6 @@ const enhance = WrappedComp => props => {
     }
   };
   const fetchData = async (reload = false) => {
-    let start = new Date().getTime();
     try {
       await setState({ isReloading: true });
       let tasks = [
@@ -78,7 +76,6 @@ const enhance = WrappedComp => props => {
       new ExHandler(error).showErrorToast();
     } finally {
       await setState({ isReloading: false });
-      console.log('end ', new Date().getTime() - start);
     }
   };
   const handleCountFollowedToken = async () => {
@@ -167,8 +164,4 @@ const enhanceInteractionManager = WrappedComponent => props => {
   return <WrappedComponent {...props} />;
 };
 
-export default compose(
-  enhanceInteractionManager,
-  withFCM,
-  enhance,
-);
+export default compose(enhanceInteractionManager, enhance);

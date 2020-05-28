@@ -11,7 +11,7 @@ import createField from './createField';
 const styled = StyleSheet.create({
   btn: {
     height: '100%',
-    alignContent: 'center',
+    alignItems: 'center',
     justifyContent: 'center',
     width: 32,
   },
