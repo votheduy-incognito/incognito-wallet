@@ -40,10 +40,10 @@ const AppNavigator = createStackNavigator(
       title: 'Network',
     }),
     [ROUTE_NAMES.CreateAccount]: navigationOptionsHandler(CreateAccount, {
-      title: 'Create Account',
+      title: 'Create Keychain',
     }),
     [ROUTE_NAMES.ImportAccount]: navigationOptionsHandler(ImportAccount, {
-      title: 'Import Account',
+      title: 'Import Keychain',
     }),
     [ROUTE_NAMES.ExportAccount]: navigationOptionsHandler(ExportAccount),
     [ROUTE_NAMES.WalletDetail]: navigationOptionsHandler(WalletDetail),

@@ -107,17 +107,17 @@ const AccountSection = ({
   const onHandleSwitchAccount = onClickView(async account => {
     try {
       if (defaultAccount?.name === account?.name) {
-        Toast.showInfo(`Your current account is "${account?.name}"`);
+        Toast.showInfo(`Your current keychain is "${account?.name}"`);
         return;
       }
 
       await switchAccount(account?.name);
 
-      Toast.showInfo(`Switched to account "${account?.name}"`);
+      Toast.showInfo(`Switched to keychain "${account?.name}"`);
     } catch (e) {
       new ExHandler(
         e,
-        `Can not switch to account "${account?.name}", please try again.`,
+        `Can not switch to keychain "${account?.name}", please try again.`,
       ).showErrorToast();
     }
   });
@@ -144,8 +144,8 @@ const AccountSection = ({
 
   const handleDelete = account => {
     Alert.alert(
-      `Delete account "${account?.name}"?`,
-      'Do you want to delete this account?',
+      `Delete keychain "${account?.name}"?`,
+      'Do you want to delete this keychain?',
       [
         {
           text: 'Cancel',
@@ -156,11 +156,11 @@ const AccountSection = ({
           onPress: async () => {
             try {
               await removeAccount(account);
-              Toast.showSuccess('Account removed.');
+              Toast.showSuccess('Keychain removed.');
             } catch (e) {
               new ExHandler(
                 e,
-                `Can not delete account ${account?.name}, please try again.`,
+                `Can not delete keychain ${account?.name}, please try again.`,
               ).showErrorToast();
             }
           },
@@ -174,21 +174,21 @@ const AccountSection = ({
     {
       id: 'import',
       icon: <Icon type="material" name="input" size={25} />,
-      desc: 'Import an existing account',
+      desc: 'Import an existing private key',
       label: 'Import',
       handlePress: handleImport,
     },
     {
       id: 'create',
       icon: <Icon type="material" name="add" size={25} />,
-      desc: 'Create a new account',
+      desc: 'Create a new keychain',
       label: 'Create',
       handlePress: handleCreate,
     },
     {
       id: 'backup',
       icon: <Icon type="material" name="backup" size={25} />,
-      desc: 'Backup your account keys',
+      desc: 'Backup your keychains',
       label: 'Backup',
       handlePress: handleBackup,
     },
@@ -202,7 +202,7 @@ const AccountSection = ({
 
   return (
     <Section
-      label="Your accounts"
+      label="Your keychains"
       headerRight={(
         <OptionMenu
           data={menu}

@@ -72,7 +72,7 @@ class ImportAccount extends Component {
 
       this.goBack();
     } catch (e) {
-      new ExHandler(e, 'Import account failed, please try again.').showErrorToast();
+      new ExHandler(e, 'Import keychain failed, please try again.').showErrorToast();
     }
   };
 
@@ -98,7 +98,7 @@ class ImportAccount extends Component {
                 isUseRandomName && randomName
                   ? (
                     <View style={styleSheet.randomNameField}>
-                      <Text style={styleSheet.randomNameLabel}>Account Name</Text>
+                      <Text style={styleSheet.randomNameLabel}>Keychain Name</Text>
                       <View style={styleSheet.randomNameValue}>
                         <Text numberOfLines={1} ellipsizeMode='tail' style={styleSheet.randomNameText}>
                           {randomName}
@@ -114,8 +114,8 @@ class ImportAccount extends Component {
                       component={InputField}
                       componentProps={{ autoFocus: true }}
                       name='accountName'
-                      placeholder='Account Name'
-                      label='Account Name'
+                      placeholder='Keychain Name'
+                      label='Keychain Name'
                       validate={validator.combinedAccountName}
                     />
                   )

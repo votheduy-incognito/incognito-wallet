@@ -43,7 +43,7 @@ const CreateAccount = ({ navigation, accountList, createAccount }) => {
 
       goBack();
     } catch (e) {
-      new ExHandler(e, 'Account was not created! Please try again.').showErrorToast();
+      new ExHandler(e, 'Keychain was not created! Please try again.').showErrorToast();
     }
   };
 
@@ -55,12 +55,12 @@ const CreateAccount = ({ navigation, accountList, createAccount }) => {
             <Field
               component={InputField}
               name='accountName'
-              placeholder='Account Name'
-              label='Account Name'
+              placeholder='Keychain Name'
+              label='Keychain Name'
               validate={validator.combinedAccountName}
             />
             <Button
-              title='Create account'
+              title='Create keychain'
               style={styleSheet.submitBtn}
               onPress={handleSubmit(handleCreateAccount)}
               isAsync
