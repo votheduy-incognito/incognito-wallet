@@ -185,18 +185,13 @@ export const actionFetchFailHistory = () => ({
   type: type.ACTION_FETCH_FAIL_HISTORY,
 });
 
-export const actionFetchHistory = () => async (dispatch, getState) => {
+export const actionFetchHistoryToken = () => async (dispatch, getState) => {
   try {
     const state = getState();
     const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
-    const tokenId = selectedPrivacySeleclor.selectedPrivacyTokenID(state);
     const token = selectedPrivacySeleclor.selectedPrivacyByFollowedSelector(
       state,
     );
-    if (!tokenId) {
-      return;
-    }
-    const account = accountSeleclor.defaultAccountSelector(state);
     let histories = [];
     if (selectedPrivacy?.isToken) {
       let task = [dispatch(loadTokenHistory()), dispatch(getHistoryFromApi())];
@@ -212,7 +207,22 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
         selectedPrivacy?.decimals,
         selectedPrivacy?.pDecimals,
       );
+      await dispatch(actionFetchedHistory(histories));
     }
+  } catch (error) {
+    await dispatch(actionFetchFailHistory());
+  }
+};
+
+export const actionFetchHistoryMainCrypto = () => async (
+  dispatch,
+  getState,
+) => {
+  try {
+    const state = getState();
+    const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
+    const account = accountSeleclor.defaultAccountSelector(state);
+    let histories = [];
     if (selectedPrivacy?.isMainCrypto) {
       const [accountHistory] = await new Promise.all([
         dispatch(loadAccountHistory()),
@@ -223,11 +233,9 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
         selectedPrivacy?.decimals,
         selectedPrivacy?.pDecimals,
       );
+      await dispatch(actionFetchedHistory(histories));
     }
-    await dispatch(actionFetchedHistory(histories));
   } catch (error) {
-    throw error;
-  } finally {
     await dispatch(actionFetchFailHistory());
   }
 };

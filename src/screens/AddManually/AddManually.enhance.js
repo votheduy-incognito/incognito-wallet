@@ -5,7 +5,6 @@ import { compose } from 'recompose';
 import { useNavigationParam } from 'react-navigation-hooks';
 
 export const TYPES = {
-  INCOGNITO: { label: 'Incognito', value: 'Incognito' },
   ERC20: { label: 'ERC20', value: 'ERC20' },
   BEP2: { label: 'BEP2', value: 'BEP2' },
 };
@@ -39,7 +38,4 @@ const enhance = WrappedComp => props => {
   );
 };
 
-export default compose(
-  withLayout_2,
-  enhance,
-);
+export default compose(withLayout_2, enhance);

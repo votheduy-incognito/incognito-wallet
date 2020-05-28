@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { BaseTextInput as TextInput } from '@components/core';
 import PropTypes from 'prop-types';
 import { BtnMax } from '@src/components/Button';
-import { COLORS } from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
 import { commonStyled as styled } from './input.styled';
 
 const inputStyled = StyleSheet.create({
@@ -11,12 +11,13 @@ const inputStyled = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomColor: COLORS.colorGreyBold,
-    borderBottomWidth: 1,
     marginRight: 30,
   },
-  inputFocused: {},
   input: {
     flex: 1,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.medium,
+    color: COLORS.black,
   },
 });
 

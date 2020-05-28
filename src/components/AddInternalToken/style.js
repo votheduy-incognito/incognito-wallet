@@ -11,7 +11,7 @@ const style = StyleSheet.create({
     width: '100%',
   },
   verifyInfoContainer: {
-    marginTop: 15,
+    marginTop: 20,
   },
   verifyInfoHeader: {
     flexDirection: 'row',

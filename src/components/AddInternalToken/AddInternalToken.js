@@ -347,7 +347,14 @@ class AddInternalToken extends Component {
                     />
                   </View>
                 </View>
-                <View style={styleSheet.block}>
+                <View
+                  style={[
+                    styleSheet.block,
+                    {
+                      marginTop: 20,
+                    },
+                  ]}
+                >
                   <View style={styleSheet.showMyAddressContainer}>
                     <Text style={styleSheet.showMyAddressLabel}>
                       Display my Incognito Address
@@ -440,9 +447,6 @@ const mapState = state => ({
 });
 
 export default compose(
-  connect(
-    mapState,
-    mapDispatch,
-  ),
+  connect(mapState, mapDispatch),
   withNavigation,
 )(AddInternalToken);

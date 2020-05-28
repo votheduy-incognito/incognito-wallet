@@ -4,8 +4,12 @@ import { withLayout_2 } from '@src/components/Layout';
 import { compose } from 'recompose';
 import { ExHandler } from '@src/services/exception';
 import { useDispatch, useSelector } from 'react-redux';
-import { actionFetchHistory } from '@src/redux/actions/token';
-import { selectedPrivacySeleclor } from '@src/redux/selectors';
+import {
+  actionFetchHistoryMainCrypto,
+  actionFetchHistoryToken,
+  actionFetchingHistory,
+} from '@src/redux/actions/token';
+import { selectedPrivacySeleclor, tokenSeleclor } from '@src/redux/selectors';
 import { useIsFocused } from 'react-navigation-hooks';
 
 const enhance = WrappedComp => props => {
@@ -13,20 +17,30 @@ const enhance = WrappedComp => props => {
   const token = useSelector(
     selectedPrivacySeleclor.selectedPrivacyByFollowedSelector,
   );
+  const { isFetching } = useSelector(tokenSeleclor.historyTokenSelector);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const handleLoadHistory = async () => {
     try {
-      await dispatch(actionFetchHistory());
+      if (isFetching) {
+        return;
+      }
+      await dispatch(actionFetchingHistory());
+      if (selectedPrivacy?.isMainCrypto) {
+        return await dispatch(actionFetchHistoryMainCrypto());
+      }
+      if (selectedPrivacy?.isToken && token?.id) {
+        return await dispatch(actionFetchHistoryToken());
+      }
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
   };
   React.useEffect(() => {
-    if (isFocused && selectedPrivacy?.tokenId && token?.id) {
+    if (isFocused && selectedPrivacy?.tokenId) {
       handleLoadHistory();
     }
-  }, [selectedPrivacy?.tokenId, token?.id, isFocused]);
+  }, [selectedPrivacy?.tokenId, isFocused]);
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props, handleLoadHistory }} />

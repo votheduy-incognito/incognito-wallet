@@ -8,7 +8,7 @@ const initialState = {
   internalTokens: null,
   isGettingBalance: [],
   history: {
-    isFetching: true,
+    isFetching: false,
     isFetched: false,
     histories: [],
     isEmpty: false,
