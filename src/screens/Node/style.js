@@ -30,7 +30,8 @@ const style = StyleSheet.create({
   buyButton: {
     marginTop: 15,
     marginHorizontal: 15,
-    marginBottom: 90,
+    marginBottom: 100,
+    // paddingBottom: 20
   },
   title: {
     fontSize: 24,

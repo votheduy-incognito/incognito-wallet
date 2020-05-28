@@ -398,7 +398,7 @@ PODS:
     - React
   - RNVectorIcons (6.6.0):
     - React
-  - RNWifi (3.1.2):
+  - RNWifi (2.4.0):
     - React
   - SSZipArchive (2.2.2)
   - TcpSockets (3.3.2):
@@ -723,7 +723,7 @@ SPEC CHECKSUMS:
   RNReanimated: 1b52415c4302f198cb581282a0166690bad62c43
   RNSVG: a53a5de0d90ec96a6502cc3a4534dfcc0c130622
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
-  RNWifi: 0d4ae389ead4643139921a6804f28aef015df07e
+  RNWifi: 1747f039612dd494192ba6c8bc498606ad9f3ec4
   SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
   TcpSockets: 14306fb79f9750ea7d2ddd02d8bed182abb01797
   TouchID: ba4c656d849cceabc2e4eef722dea5e55959ecf4
@@ -731,4 +731,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 347009c8a88b831905e8f28efe9f49d61c78d891
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.1
