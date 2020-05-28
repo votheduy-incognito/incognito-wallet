@@ -6,7 +6,7 @@ import { openQrScanner } from '@src/components/QrCodeScanner';
 import { AddressBookIcon } from '@src/components/Icons';
 import { generateTestId } from '@utils/misc';
 import { SEND } from '@src/constants/elements';
-import { BtnQRCode } from '@src/components/Button';
+import { BtnScanQrCode } from '@src/components/Button';
 import createField from './createField';
 
 const styled = StyleSheet.create({
@@ -71,7 +71,7 @@ const renderCustomField = ({
               <View style={styled.line} />
             </>
           )}
-          <BtnQRCode
+          <BtnScanQrCode
             style={styled.btn}
             onPress={() => {
               openQrScanner(data => {

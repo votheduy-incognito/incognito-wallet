@@ -40,7 +40,7 @@ const enhance = WrappedComp => props => {
     if (isFocused && selectedPrivacy?.tokenId) {
       handleLoadHistory();
     }
-  }, [selectedPrivacy?.tokenId, isFocused]);
+  }, [selectedPrivacy?.tokenId, token?.id, isFocused]);
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props, handleLoadHistory }} />
@@ -48,4 +48,7 @@ const enhance = WrappedComp => props => {
   );
 };
 
-export default compose(withLayout_2, enhance);
+export default compose(
+  withLayout_2,
+  enhance,
+);

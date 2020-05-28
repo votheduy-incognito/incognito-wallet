@@ -17,3 +17,4 @@ export { default as Button } from './Button';
 export { default as ButtonBasic } from './ButtonBasic';
 export { default as BtnGrey } from './BtnGrey';
 export { default as BtnInfinite } from './BtnInfinite';
+export { default as BtnScanQrCode } from './BtnScanQrCode';
