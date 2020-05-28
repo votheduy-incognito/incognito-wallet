@@ -115,10 +115,7 @@ class SendCryptoContainer extends Component {
           fee: originalFee,
           feeUnit,
         };
-
         this.setState({ receiptData });
-
-        setTimeout(() => getAccountBalanceBound(account), 10000);
       } else {
         throw new Error('Sent tx, but doesnt have txID, please check it');
       }

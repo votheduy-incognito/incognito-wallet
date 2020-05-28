@@ -28,6 +28,7 @@ const ListToken = props => {
   const { data, handleUnShieldToken } = props;
   return (
     <FlatList
+      showsVerticalScrollIndicator={false}
       style={styled.flatList}
       data={[...data]}
       renderItem={({ item }) => (
