@@ -123,6 +123,12 @@ const Detail = props => {
   const { handleLoadHistory } = props;
   const selected = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const { isFetching } = useSelector(tokenSeleclor.historyTokenSelector);
+  const token = useSelector(
+    selectedPrivacySeleclor.selectedPrivacyByFollowedSelector,
+  );
+  const refreshing = selected?.isMainCrypto
+    ? !!isFetching
+    : !!isFetching && !token?.id;
   return (
     <View style={styled.container}>
       <Header title={selected?.name} rightHeader={<RightHeader />} />
@@ -130,7 +136,7 @@ const Detail = props => {
         showsVerticalScrollIndicator={false}
         refreshControl={(
           <RefreshControl
-            refreshing={isFetching}
+            refreshing={refreshing}
             onRefresh={handleLoadHistory}
           />
         )}

@@ -1,5 +1,9 @@
 import type from '@src/redux/types/token';
-import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
+import {
+  accountSeleclor,
+  selectedPrivacySeleclor,
+  tokenSeleclor,
+} from '@src/redux/selectors';
 import { getTokenList } from '@src/services/api/token';
 import tokenService from '@src/services/wallet/tokenService';
 import accountService from '@src/services/wallet/accountService';
@@ -192,6 +196,11 @@ export const actionFetchHistoryToken = () => async (dispatch, getState) => {
     const token = selectedPrivacySeleclor.selectedPrivacyByFollowedSelector(
       state,
     );
+    const { isFetching } = tokenSeleclor.historyTokenSelector(state);
+    if (isFetching) {
+      return;
+    }
+    await dispatch(actionFetchingHistory());
     let histories = [];
     if (selectedPrivacy?.isToken) {
       let task = [dispatch(loadTokenHistory()), dispatch(getHistoryFromApi())];
@@ -207,8 +216,8 @@ export const actionFetchHistoryToken = () => async (dispatch, getState) => {
         selectedPrivacy?.decimals,
         selectedPrivacy?.pDecimals,
       );
-      await dispatch(actionFetchedHistory(histories));
     }
+    await dispatch(actionFetchedHistory(histories));
   } catch (error) {
     await dispatch(actionFetchFailHistory());
   }
@@ -220,6 +229,11 @@ export const actionFetchHistoryMainCrypto = () => async (
 ) => {
   try {
     const state = getState();
+    const { isFetching } = tokenSeleclor.historyTokenSelector(state);
+    if (isFetching) {
+      return;
+    }
+    await dispatch(actionFetchingHistory());
     const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
     const account = accountSeleclor.defaultAccountSelector(state);
     let histories = [];
@@ -233,8 +247,8 @@ export const actionFetchHistoryMainCrypto = () => async (
         selectedPrivacy?.decimals,
         selectedPrivacy?.pDecimals,
       );
-      await dispatch(actionFetchedHistory(histories));
     }
+    await dispatch(actionFetchedHistory(histories));
   } catch (error) {
     await dispatch(actionFetchFailHistory());
   }

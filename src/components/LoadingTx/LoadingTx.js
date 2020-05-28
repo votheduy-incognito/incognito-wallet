@@ -4,6 +4,7 @@ import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Modal } from 'react-native';
+import KeepAwake from 'react-native-keep-awake';
 import styleSheet from './style';
 
 class LoadingTx extends Component {
@@ -11,7 +12,7 @@ class LoadingTx extends Component {
     super(props);
     this.state = {
       open: false,
-      percent: 0
+      percent: 0,
     };
 
     this.timer = null;
@@ -28,7 +29,7 @@ class LoadingTx extends Component {
     this.clearTimer();
   }
 
-  clearTimer = () => this.timer&&clearInterval(this.timer);
+  clearTimer = () => this.timer && clearInterval(this.timer);
 
   progress = () => {
     const percent = accountService.getProgressTx();
@@ -57,13 +58,12 @@ class LoadingTx extends Component {
             {percent}
             <Text style={styleSheet.percentSymbol}> %</Text>
           </Text>
-          <Text style={[styleSheet.desc, styleSheet.extraDesc]}>
-            {text}
-          </Text>
+          <Text style={[styleSheet.desc, styleSheet.extraDesc]}>{text}</Text>
           <Text style={styleSheet.desc}>
             Please wait, this window will close when complete
           </Text>
         </View>
+        <KeepAwake />
       </Modal>
     );
   }

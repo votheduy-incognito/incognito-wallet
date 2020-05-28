@@ -28,17 +28,18 @@ export const styled = StyleSheet.create({
   boldText: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.black,
   },
   displayName: {
     maxWidth: '80%',
   },
   text: {
-    fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.superMedium,
+    fontFamily: FONT.NAME.medium,
     color: COLORS.colorGreyBold,
     maxWidth: UTILS.screenWidth() / 2 - 30,
-    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.superMedium + 4),
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
   },
   verifiedIcon: {
     marginLeft: 5,
@@ -49,15 +50,13 @@ export const styled = StyleSheet.create({
   pSymbol: {
     fontFamily: FONT.NAME.specialRegular,
     fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
     color: COLORS.colorGreyBold,
-    alignItems: 'center',
-    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.medium + 4),
-    height: '100%',
   },
   pSymbolBold: {
     fontFamily: FONT.NAME.specialRegular,
     fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.superMedium + 4),
+    lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.black,
   },
   redText: {

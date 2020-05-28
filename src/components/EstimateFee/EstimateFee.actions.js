@@ -43,12 +43,9 @@ export const actionInitEstimateFee = (config = {}) => async (
     amountText,
     maxFeePrv,
     maxFeePrvText,
-    // minFeePrv,
-    // minFeePrvText,
     maxFeePToken,
     maxFeePTokenText;
   try {
-    await dispatch(actionInit());
     switch (screen) {
     case 'UnShield': {
       rate = 2;
@@ -77,10 +74,6 @@ export const actionInitEstimateFee = (config = {}) => async (
     maxFeePrvText = format.amountFull(
       convert.toHumanAmount(maxFeePrv, CONSTANT_COMMONS.PRV.pDecimals),
     );
-    // minFeePrv = DEFAULT_FEE_PER_KB * rate;
-    // minFeePrvText = format.amountFull(
-    //   convert.toHumanAmount(minFeePrv, CONSTANT_COMMONS.PRV.pDecimals),
-    // );
     maxFeePToken = selectedPrivacy?.amount;
     maxFeePTokenText = format.amountFull(
       convert.toHumanAmount(maxFeePToken, selectedPrivacy?.pDecimals),
