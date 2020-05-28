@@ -10,6 +10,9 @@ import { useIsFocused } from 'react-navigation-hooks';
 
 const enhance = WrappedComp => props => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const token = useSelector(
+    selectedPrivacySeleclor.selectedPrivacyByFollowedSelector,
+  );
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const handleLoadHistory = async () => {
@@ -20,10 +23,10 @@ const enhance = WrappedComp => props => {
     }
   };
   React.useEffect(() => {
-    if (isFocused) {
+    if (isFocused && selectedPrivacy?.tokenId && token?.id) {
       handleLoadHistory();
     }
-  }, [selectedPrivacy?.tokenId, isFocused]);
+  }, [selectedPrivacy?.tokenId, token?.id, isFocused]);
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props, handleLoadHistory }} />
@@ -31,7 +34,4 @@ const enhance = WrappedComp => props => {
   );
 };
 
-export default compose(
-  withLayout_2,
-  enhance,
-);
+export default compose(withLayout_2, enhance);

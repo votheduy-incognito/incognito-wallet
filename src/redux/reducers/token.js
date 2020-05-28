@@ -1,6 +1,5 @@
 import type from '@src/redux/types/token';
 import { unionBy, remove } from 'lodash';
-import { CONSTANT_COMMONS } from '@src/constants';
 import typeSelectedPrivacy from '@src/redux/types/selectedPrivacy';
 
 const initialState = {
@@ -9,7 +8,7 @@ const initialState = {
   internalTokens: null,
   isGettingBalance: [],
   history: {
-    isFetching: false,
+    isFetching: true,
     isFetched: false,
     histories: [],
     isEmpty: false,

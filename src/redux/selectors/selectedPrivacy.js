@@ -7,10 +7,10 @@ import { ExHandler } from '@src/services/exception';
 import { BIG_COINS } from '@src/screens/Dex/constants';
 import { defaultAccount } from './account';
 import {
-  followed,
+  tokensFollowedSelector,
   pTokens,
   internalTokens,
-  tokensFollowedSelector,
+  // followed,
 } from './token';
 import { getPrice } from '../utils/selectedPrivacy';
 
@@ -23,7 +23,7 @@ export const getPrivacyDataByTokenID = createSelector(
   defaultAccount,
   internalTokens,
   pTokens,
-  followed,
+  tokensFollowedSelector,
   (account, _internalTokens, _pTokens, _followed) =>
     memoize(tokenID => {
       try {
@@ -66,7 +66,7 @@ export const getPrivacyDataBaseOnAccount = createSelector(
   // defaultAccount,
   internalTokens,
   pTokens,
-  followed,
+  tokensFollowedSelector,
   selectedPrivacyTokenID,
   (_internalTokens, _pTokens, _followed, tokenID) => account => {
     try {
