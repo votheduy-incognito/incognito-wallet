@@ -142,6 +142,7 @@ class WifiSetup extends PureComponent {
       if (previousSSID === ssid) {
         return true;
       }
+      this.setState({loading: true});
       this.addStep({ name: 'Trying to connect to Wi-Fi "' + ssid + '" ..... ', isSuccess: true });
       return new Promise((resolve, reject) => {
         let connectFunction = WifiManager.connectToProtectedSSID;
@@ -202,10 +203,10 @@ class WifiSetup extends PureComponent {
             },
             (error) => {
               this.setState({ loading: false });
-              this.addStep({ name: 'Setup wifi for node: \n' + error?.message, isSuccess: false });
+              this.addStep({ name: 'Setup wifi for node: \n' + error?.message || '', isSuccess: false });
               console.debug('CONNECT ERROR', error);
               if (this.isMounteds) {
-                throw new Error('Could not setup wifi connection for node: ' + error?.message);
+                throw new Error('Could not setup wifi connection for node: ' + error?.message || '');
               } else {
                 reject(error);
               }
