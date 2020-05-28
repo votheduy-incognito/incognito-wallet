@@ -255,7 +255,7 @@ class WifiSetup extends PureComponent {
   // Check internet truely connected to network
   checkInternetReachable = async () => {
     const networkState = await NetInfo.fetch();
-    return networkState?.isInternetReachable || false;
+    return networkState?.isInternetReachable || true;
   }
 
   // Check if wifi is correct 
@@ -265,37 +265,61 @@ class WifiSetup extends PureComponent {
     this.funcQueue.push('checkWifiInfo');
     const { ssid, password, isCorrectWifi } = this.state;
 
-    this.addStep({ name: 'Check your Wi-Fi information', isSuccess: true });
-    return new Promise((resolve, reject) => {
-      try {
-        this.addStep({ name: 'Trying to connect your network', isSuccess: true });
-        // Connect to wifi
-        this.connectToWifi(ssid, password)
-          .then(async val => {
-            this.addStep({ name: 'Checking internet is good to go ... ', isSuccess: true });
-            let isInternetReachable = await this.checkInternetReachable();
-            console.log('### INCOGNITO ###: isInternetReachable' + isInternetReachable);
-            if (isInternetReachable) {
-              this.addStep({ name: 'Internet reachable to network', isSuccess: true });
-              resolve(true);
-            } else {
-              this.addStep({ name: 'Trying to check internet is reachable', isSuccess: true });
-              this.checkWifiInfo();
-            }
-          })
-          .catch(err => {
-            this.addStep({ name: 'Your currently wifi connection has issues. Please use another one better', isSuccess: true });
-            resolve(false);
-          });
-      } catch (e) {
-        this.addStep({ name: 'Please check your wifi connection', detail: ssid, isSuccess: false });
-        this.showAlertInfor({
-          title: 'Error',
-          subTitle: 'Your currently wifi connection has issues. Please use another one better',
-        });
-        resolve(false);
-      }
-    });
+    if (isCorrectWifi) {
+      return true;
+    }
+
+    this.addStep({ name: 'Check your Wi-Fi information ... ', isSuccess: true });
+    const result = await this.connectToWifi(ssid, password);
+    try {
+      this.addStep({ name: 'Check internet is available in Wi-Fi', isSuccess: true });
+      this.setState({ loading: true });
+      await Util.tryAtMost(async () => {
+        await fetch('https://google.com.vn');
+      }, 5, 1);
+
+      return result;
+    } catch (e) {
+      this.setState({ loading: false });
+      this.addStep({ name: 'Wi-Fi connected but no Internet', detail: ssid , isSuccess: false});
+      throw new Error('Wi-Fi connected but no Internet');
+    }
+    // return new Promise((resolve, reject) => {
+    //   try {
+    //     this.addStep({ name: 'Trying to connect your network', isSuccess: true });
+    //     // Connect to wifi
+    //     this.connectToWifi(ssid, password)
+    //       .then(async val => {
+    //         this.addStep({ name: 'Checking internet is good to go ... ', isSuccess: true });
+    //         try {
+    //           let isInternetReachable = await this.checkInternetReachable();
+    //           console.log('### INCOGNITO ###: isInternetReachable ' + isInternetReachable);
+    //           if (isInternetReachable) {
+    //             this.addStep({ name: 'Internet reachable to network', isSuccess: true });
+    //             resolve(true);
+    //           } else {
+    //             this.addStep({ name: 'Trying to check internet is reachable', isSuccess: true });
+    //             this.checkWifiInfo();
+    //           }
+    //         } catch (err) {
+    //           console.log('### INCOGNITO ###: isInternetReachable failed' + err?.message);
+    //           this.addStep({ name: 'Trying to check internet is reachable', isSuccess: true });
+    //           this.checkWifiInfo();
+    //         }
+    //       })
+    //       .catch(err => {
+    //         this.addStep({ name: 'Your currently wifi connection has issues. Please use another one better', isSuccess: false });
+    //         resolve(false);
+    //       });
+    //   } catch (e) {
+    //     this.addStep({ name: 'Please check your wifi connection', detail: ssid, isSuccess: false });
+    //     this.showAlertInfor({
+    //       title: 'Error',
+    //       subTitle: 'Your currently wifi connection has issues. Please use another one better',
+    //     });
+    //     resolve(false);
+    //   }
+    // });
   }
 
   renderContent = () => {
@@ -342,8 +366,9 @@ class WifiSetup extends PureComponent {
         };
         // Make sure device node is alive
         await Util.delay(4);
-        let currentVersionSupport = await NodeService.sendZMQ(checkVersionParams);
-        resolve(!currentVersionSupport || !currentVersionSupport?.value);
+        let currentVersionNotSupport = await NodeService.sendZMQ(checkVersionParams);
+        currentVersionNotSupport = JSON.parse(currentVersionNotSupport);
+        resolve(!currentVersionNotSupport || !currentVersionNotSupport?.value);
       } catch (err) {
         reject(false);
       }
@@ -369,7 +394,8 @@ class WifiSetup extends PureComponent {
         return res;
       })
       .catch(error => {
-        this.addStep({ name: 'Send validator key error', detail: error.message, isSuccess: false });
+        this.setState({loading: false});
+        this.addStep({ name: 'Send validator key error: ' + error?.message || '', detail: error.message, isSuccess: false });
         throw error;
       });
   }
@@ -441,8 +467,8 @@ class WifiSetup extends PureComponent {
         await this.connectToWifiHotspot();
     }, 1, 5);
     // WifiManager.forceWifiUsage(true);
-    let isVersionSupported = await this.checkVersionCodeInZMQ();
-    if (isVersionSupported) {
+    let currentVersionNotSupport = await this.checkVersionCodeInZMQ();
+    if (currentVersionNotSupport) {
       this.addStep({ name: 'Send validator key', detail: ValidatorKey, isSuccess: true });
       await this.updateValidatorKey();
     }
