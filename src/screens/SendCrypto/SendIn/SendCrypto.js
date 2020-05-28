@@ -1,14 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
-import {
-  Field,
-  formValueSelector,
-  isValid,
-  change,
-  focus,
-  sh,
-} from 'redux-form';
+import { Field, formValueSelector, isValid, change, focus } from 'redux-form';
 import { connect } from 'react-redux';
 import { Toast } from '@components/core';
 import ReceiptModal, { openReceipt } from '@components/Receipt';
@@ -321,7 +314,4 @@ const mapDispatch = {
   rfFocus: focus,
 };
 
-export default connect(
-  mapState,
-  mapDispatch,
-)(SendCrypto);
+export default connect(mapState, mapDispatch)(SendCrypto);

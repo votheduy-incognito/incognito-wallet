@@ -7,8 +7,8 @@ const InfiniteIcon = () => {
     <Image
       source={srcInfiniteIcon}
       style={{
-        width: 26,
-        height: 12,
+        width: 30,
+        height: 14,
       }}
     />
   );
