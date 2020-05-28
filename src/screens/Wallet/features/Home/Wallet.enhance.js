@@ -46,6 +46,7 @@ const enhance = WrappedComp => props => {
   };
   const getFollowingToken = async () => {
     try {
+      await setState({ isReloading: true });
       await dispatch(
         reloadAccountFollowingToken(account, {
           shouldLoadBalance: true,
@@ -55,6 +56,8 @@ const enhance = WrappedComp => props => {
       throw new CustomError(ErrorCode.home_load_following_token_failed, {
         rawError: e,
       });
+    } finally {
+      await setState({ isReloading: false });
     }
   };
   const fetchData = async (reload = false) => {
