@@ -101,7 +101,6 @@ class SendCryptoContainer extends Component {
         wallet,
         info,
       );
-
       if (res.txId) {
         const receiptData = {
           title: 'Sent successfully',
@@ -194,7 +193,8 @@ class SendCryptoContainer extends Component {
           toAddress,
           fromAddress,
           amount: originalAmount || 0,
-          amountUnit: selectedPrivacy?.symbol,
+          amountUnit:
+            selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol,
           time: formatUtil.toMiliSecond(res.lockTime),
           fee: originalFee,
           feeUnit,
@@ -310,7 +310,4 @@ SendCryptoContainer.propTypes = {
   actionInitEstimateFee: PropTypes.func.isRequired,
 };
 
-export default connect(
-  mapState,
-  mapDispatch,
-)(SendCryptoContainer);
+export default connect(mapState, mapDispatch)(SendCryptoContainer);

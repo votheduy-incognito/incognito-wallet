@@ -20,18 +20,12 @@ const enhance = WrappedComp => props => {
     lockTime,
     pDecimals,
     amountPToken,
-    feeNativeToken,
-    feePToken,
+    fee,
+    feeUnit,
     tokenSymbol,
   } = props;
   const time = formatUtil.formatDateTime(lockTime * 1000);
   const amount = `${formatUtil.amount(amountPToken, pDecimals)} ${tokenSymbol}`;
-  const feeByPToken = !!feePToken;
-  const fee = (feeByPToken ? feePToken : feeNativeToken) * 2;
-  const amountFee = `${formatUtil.amountFull(
-    fee,
-    feeByPToken ? pDecimals : CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY,
-  )} ${feeByPToken ? tokenSymbol : CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}`;
   const infoFactories = [
     {
       label: 'To',
@@ -50,8 +44,8 @@ const enhance = WrappedComp => props => {
     },
     {
       label: 'Fee',
-      desc: amountFee,
-      disabled: !amountFee,
+      desc: `${fee} ${feeUnit}`,
+      disabled: !fee,
     },
   ];
   const onBack = () => {

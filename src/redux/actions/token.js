@@ -190,19 +190,20 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
     const state = getState();
     const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
     const tokenId = selectedPrivacySeleclor.selectedPrivacyTokenID(state);
-    const token = { ...selectedPrivacy, id: selectedPrivacy?.tokenId };
+    const token = selectedPrivacySeleclor.selectedPrivacyByFollowedSelector(
+      state,
+    );
     if (!tokenId) {
       return;
     }
     const account = accountSeleclor.defaultAccountSelector(state);
     let histories = [];
-    await dispatch(actionFetchingHistory());
     if (selectedPrivacy?.isToken) {
-      const [historiesDt, historiesDtFromApi] = await Promise.all([
-        loadTokenHistory()(dispatch, getState),
-        getHistoryFromApi()(dispatch, getState),
-        token ? dispatch(getBalance(token)) : null,
-      ]);
+      let task = [dispatch(loadTokenHistory()), dispatch(getHistoryFromApi())];
+      if (token) {
+        task = [...task, dispatch(getBalance(token))];
+      }
+      const [historiesDt, historiesDtFromApi] = await Promise.all(task);
       histories = combineHistory(
         historiesDt,
         historiesDtFromApi,
@@ -214,7 +215,7 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
     }
     if (selectedPrivacy?.isMainCrypto) {
       const [accountHistory] = await new Promise.all([
-        loadAccountHistory()(dispatch, getState),
+        dispatch(loadAccountHistory()),
         dispatch(getAccountBalance(account)),
       ]);
       histories = normalizeData(
@@ -225,7 +226,8 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
     }
     await dispatch(actionFetchedHistory(histories));
   } catch (error) {
-    await dispatch(actionFetchFailHistory());
     throw error;
+  } finally {
+    await dispatch(actionFetchFailHistory());
   }
 };

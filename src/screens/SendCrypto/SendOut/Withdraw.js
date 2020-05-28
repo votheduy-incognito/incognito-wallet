@@ -129,7 +129,7 @@ class Withdraw extends React.Component {
         handleDecentralizedWithdraw,
       } = this.props;
       const { amount, toAddress, memo } = values;
-      const { fee, isUsedPRVFee, rate, feePDecimals } = feeData;
+      const { fee, isUsedPRVFee, rate, feePDecimals, feeUnit } = feeData;
       const originalAmount = floor(
         convertUtil.toOriginalAmount(
           convertUtil.toNumber(amount),
@@ -137,10 +137,8 @@ class Withdraw extends React.Component {
         ),
       );
       const originalFee = floor(
-        convertUtil.toOriginalAmount(
-          convertUtil.toNumber(fee) / rate,
-          feePDecimals,
-        ),
+        convertUtil.toOriginalAmount(convertUtil.toNumber(fee), feePDecimals) /
+          rate,
       );
       const _fee = format.amountFull(originalFee, feePDecimals);
       const feeForBurn = originalFee;
@@ -168,9 +166,12 @@ class Withdraw extends React.Component {
             <Receipt
               {...{
                 ...res,
+                fee,
+                feeUnit,
                 title: 'Success! You withdrew funds.',
                 toAddress,
                 pDecimals: selectedPrivacy?.pDecimals,
+                tokenSymbol: feeUnit || res?.tokenSymbol,
               }}
             />
           ),
@@ -491,7 +492,4 @@ const mapDispatch = {
   actionToggleModal,
 };
 
-export default connect(
-  mapState,
-  mapDispatch,
-)(Withdraw);
+export default connect(mapState, mapDispatch)(Withdraw);
