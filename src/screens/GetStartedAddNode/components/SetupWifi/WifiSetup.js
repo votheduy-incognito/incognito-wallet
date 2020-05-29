@@ -47,6 +47,7 @@ class WifiSetup extends PureComponent {
       isCorrectWifi: false,
       password: '',
       date: new Date(),
+      backToQRCode: false,
       error: '',
       steps: [],
       connectWifi: {
@@ -206,6 +207,7 @@ class WifiSetup extends PureComponent {
               this.addStep({ name: 'Setup wifi for node: \n' + error?.message || '', isSuccess: false });
               console.debug('CONNECT ERROR', error);
               if (this.isMounteds) {
+                this.setState({ loading: true });
                 throw new Error('Could not setup wifi connection for node: ' + error?.message || '');
               } else {
                 reject(error);
@@ -662,8 +664,12 @@ class WifiSetup extends PureComponent {
       await this.verifyCodeFirebase(36, false);
       this.addStep({ name: 'Setup Wi-Fi for node success', isSuccess: true });
     } catch (e) {
+      const {steps} = this.state;
       this.setState({ loading: false });
-      this.addStep({ name: 'Setup Wi-Fi for node failed ', detail: e, isSuccess: false });
+      this.addStep({ name: 'Setup Wi-Fi for node failed ' + e?.message || e, detail: e, isSuccess: false });
+      if (steps.indexOf('Verify code failed') != -1) { // yes
+        this.setState({backToQRCode: true});
+      } 
     }
   };
 
@@ -770,7 +776,7 @@ class WifiSetup extends PureComponent {
     }
   }
   renderFooter = () => {
-    const { steps, loading } = this.state;
+    const { steps, loading, backToQRCode } = this.state;
     return (
       <View style={styles.footer}>
         <Button
@@ -778,13 +784,18 @@ class WifiSetup extends PureComponent {
           loading={loading}
           onPress={() => {
             console.log('### INCOGNITO ### funcQueue: ' + LogManager.parseJsonObjectToJsonString(this.funcQueue));
+            if (backToQRCode) {
+              const {setStep} = this.props;
+              setStep(1);
+              return;
+            }
             if (this.funcQueue.length > 1) {
               this.retryFuncByName(this.funcQueue.pop());
             } else {
               this.handleNext();
             }
           }}
-          title={steps.length > 0 ? 'Retry' : 'Next'}
+          title={backToQRCode ? 'Re-Setup' : steps.length > 0 ? 'Retry' : 'Next'}
         />
       </View>
     );

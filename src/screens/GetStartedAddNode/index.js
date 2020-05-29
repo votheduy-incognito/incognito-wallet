@@ -14,11 +14,13 @@ import bandWidthPng from '@src/assets/images/bandwidth.png';
 import { checkBandWidth } from '@src/utils/connection';
 import { RESULTS } from 'react-native-permissions';
 import ModalPermission from '@src/components/Modal/ModalPermission';
-import { Linking } from 'react-native';
+import { Linking, Alert } from 'react-native';
 import { withNavigationFocus } from 'react-navigation';
 import locationPermissionPng from '@src/assets/images/location.png';
 import ModalBandWidth from '@src/components/Modal/ModalBandWidth';
 import LogManager from '@src/services/LogManager';
+import LocalDatabase from '@src/utils/LocalDatabase';
+import NodeService from '@src/services/NodeService';
 import ScanQRCode from './components/ScanQRCode';
 import { DialogNotify } from './components/BackUpAccountDialog';
 import styles from './styles';
@@ -183,12 +185,45 @@ class GetStartedAddNode extends BaseScreen {
     }
   };
 
-  scanQrCodeComplete = ({ qrCode, account, hotspotSSID }) => {
-    if (account && account?.ValidatorKey && account?.PaymentAddress) {
-      this.setState({ qrCode, account, hotspotSSID }, this.nextScreen);
+  scanQrCodeComplete = async ({ qrCode, account, hotspotSSID }) => {
+    if (this.state.step === 1) { //QRCode
+      let verifyProductCode = await LocalDatabase.getVerifyCode();
+      console.log(verifyProductCode);
+      if (verifyProductCode && verifyProductCode !== '') {
+        let result = await NodeService.verifyProductCode(verifyProductCode);
+        if (result && result?.status === 1) {
+          Alert.alert(
+            'Uncomplete setup for node',
+            'We found a key for old node device that unsuccessfull. Do you want to continue setup this for now?',
+            [
+              { text: 'Back', onPress: () => this.goToScreen(routeNames.Home) },
+              { text: 'Continue', onPress: () => { this.goToScreen(routeNames.RepairingSetupNode, { isRepairing: true, verifyProductCode: verifyProductCode }); } },
+            ],
+            { cancelable: false }
+          );
+        } else {
+          if (account && account?.ValidatorKey && account?.PaymentAddress) {
+            this.setState({ qrCode, account, hotspotSSID }, this.nextScreen);
+          }  
+        }
+      } else {
+        // Force eventhough the same
+        LocalDatabase.saveVerifyCode('');
+        if (account && account?.ValidatorKey && account?.PaymentAddress) {
+          this.setState({ qrCode, account, hotspotSSID }, this.nextScreen);
+        }
+      }
+    } else {
+      if (account && account?.ValidatorKey && account?.PaymentAddress) {
+        this.setState({ qrCode, account, hotspotSSID }, this.nextScreen);
+      }
     }
   };
 
+  setStep = (step) => {
+    this.setState({ step: step });
+  }
+  
   renderStep() {
     const { step, qrCode, hotspotSSID, account } = this.state;
 
@@ -222,6 +257,7 @@ class GetStartedAddNode extends BaseScreen {
       return (
         <WifiSetup
           onNext={this.handleSetupComplete}
+          setStep={this.setStep}
           qrCode={qrCode}
           account={account}
           hotspotSSID={hotspotSSID}
