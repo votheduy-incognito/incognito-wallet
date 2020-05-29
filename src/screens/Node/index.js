@@ -27,6 +27,7 @@ import React from 'react';
 import { FlatList, RefreshControl, ScrollView, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { connect } from 'react-redux';
+import LogManager from '@src/services/LogManager';
 import WelcomeSetupNode from './components/WelcomeSetupNode';
 import Header from './Header';
 import style from './style';
@@ -146,7 +147,9 @@ class Node extends BaseScreen {
   checkIfVerifyCodeIsExisting = async () => {
     let verifyProductCode = await LocalDatabase.getVerifyCode();
     if (verifyProductCode && verifyProductCode != '') {
+      console.log('Verify code in Home node ' + verifyProductCode);
       let result = await NodeService.verifyProductCode(verifyProductCode);
+      console.log('Verifing process check code in Home node to API: ' + LogManager.parseJsonObjectToJsonString(result));
       if (result && result?.status === 1) {
         Alert.alert(
           'Uncomplete setup for node',
