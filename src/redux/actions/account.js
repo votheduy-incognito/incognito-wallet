@@ -1,14 +1,14 @@
-import {differenceBy} from 'lodash';
+import { differenceBy } from 'lodash';
 import type from '@src/redux/types/account';
 import TokenModel from '@src/models/token';
 import walletType from '@src/redux/types/wallet';
 import accountService from '@src/services/wallet/accountService';
-import {getPassphrase} from '@src/services/wallet/passwordService';
-import {getUserUnfollowTokenIDs} from '@src/services/wallet/tokenService';
+import { getPassphrase } from '@src/services/wallet/passwordService';
+import { getUserUnfollowTokenIDs } from '@src/services/wallet/tokenService';
 import convert from '@src/utils/convert';
-import {tokenSeleclor, accountSeleclor} from '../selectors';
+import { tokenSeleclor, accountSeleclor } from '../selectors';
 // eslint-disable-next-line import/no-cycle
-import {getBalance as getTokenBalance, setListToken} from './token';
+import { getBalance as getTokenBalance, setListToken } from './token';
 
 /**
  *  return basic account object from its name like its KEY, not including account methods (please use accountWallet instead)
@@ -52,7 +52,7 @@ export const removeAccount = (
       );
     }
 
-    const {PrivateKey} = account;
+    const { PrivateKey } = account;
 
     const passphrase = await getPassphrase();
     await accountService.removeAccount(PrivateKey, passphrase, wallet);
@@ -176,7 +176,7 @@ export const loadAllPTokenHasBalance = account => async (
 
 export const reloadAccountFollowingToken = (
   account = throw new Error('Account object is required'),
-  {shouldLoadBalance = true} = {},
+  { shouldLoadBalance = true } = {},
 ) => async (dispatch, getState) => {
   try {
     const wallet = getState()?.wallet;
@@ -237,27 +237,21 @@ export const followDefaultTokens = (
 export const switchAccount = accountName => async (dispatch, getState) => {
   try {
     if (!accountName) throw new Error('accountName is required');
-
     const state = getState();
     const wallet = state?.wallet;
-
     if (!wallet) {
       throw new Error('Wallet is not exist');
     }
-
     const account = getBasicAccountObjectByName(state)(accountName);
     const defaultAccount = accountSeleclor.defaultAccount(state);
-
     if (defaultAccount?.name === account?.name) {
       return;
     }
-
-    dispatch(setDefaultAccount(account));
-    await getBalance(account)(dispatch, getState).catch(() => null);
-    await reloadAccountFollowingToken(account)(dispatch, getState).catch(
-      () => null,
-    );
-
+    await dispatch(setDefaultAccount(account));
+    await new Promise.all([
+      await dispatch(getBalance(account)),
+      await dispatch(reloadAccountFollowingToken(account)),
+    ]);
     return accountSeleclor.defaultAccount(state);
   } catch (e) {
     throw e;

@@ -1,4 +1,6 @@
 import { CONSTANT_COMMONS } from '@src/constants';
+import format from '@src/utils/format';
+import convert from '@src/utils/convert';
 import {
   ACTION_FETCHING_FEE,
   ACTION_FETCHED_FEE,
@@ -10,6 +12,8 @@ import {
   ACTION_CHANGE_FEE,
   ACTION_INIT,
   ACTION_INIT_FETCHED,
+  ACTION_FETCHED_MAX_FEE_PRV,
+  ACTION_FETCHED_MAX_FEE_PTOKEN,
 } from './EstimateFee.constant';
 import { MAX_FEE_PER_TX } from './EstimateFee.utils';
 
@@ -114,6 +118,35 @@ export default (state = initialState, action) => {
     return {
       ...state,
       [field]: value,
+    };
+  }
+  case ACTION_FETCHED_MAX_FEE_PRV: {
+    const accountBalance = action.payload;
+    const maxFeePrv = accountBalance;
+    const maxFeePrvText = format.amountFull(
+      convert.toHumanAmount(maxFeePrv, CONSTANT_COMMONS.PRV.pDecimals),
+    );
+    return {
+      ...state,
+      maxFeePrv,
+      maxFeePrvText,
+    };
+  }
+  case ACTION_FETCHED_MAX_FEE_PTOKEN: {
+    const { amount, pDecimals } = action.payload;
+    const amountText = format.amountFull(
+      convert.toHumanAmount(amount, pDecimals),
+    );
+    const maxFeePToken = amount;
+    const maxFeePTokenText = format.amountFull(
+      convert.toHumanAmount(maxFeePToken, pDecimals),
+    );
+    return {
+      ...state,
+      amount,
+      amountText,
+      maxFeePToken,
+      maxFeePTokenText,
     };
   }
   default:

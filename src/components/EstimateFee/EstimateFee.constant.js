@@ -9,3 +9,6 @@ export const ACTION_INIT_FETCHED = '[estimateFee] Fetched init data';
 export const ACTION_FETCHED_MIN_PTOKEN_FEE =
   '[estimateFee] Fetched min pToken fee';
 export const ACTION_CHANGE_FEE = '[estimateFee] Change fee';
+export const ACTION_FETCHED_MAX_FEE_PRV = '[estimateFee] Fetched max fee prv';
+export const ACTION_FETCHED_MAX_FEE_PTOKEN =
+  '[estimateFee] Fetched max fee pToken';

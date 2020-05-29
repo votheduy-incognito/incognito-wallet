@@ -73,8 +73,8 @@ const enhance = WrappedComp => props => {
       if (reload) {
         tasks = [
           ...tasks,
-          await dispatch(getPTokenList()),
-          await dispatch(getInternalTokenList()),
+          dispatch(getPTokenList()),
+          dispatch(getInternalTokenList()),
         ];
       }
       await Promise.all(tasks);
