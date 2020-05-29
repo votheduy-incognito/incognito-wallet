@@ -191,7 +191,7 @@ class GetStartedAddNode extends BaseScreen {
       console.log(verifyProductCode);
       if (verifyProductCode && verifyProductCode !== '') {
         let result = await NodeService.verifyProductCode(verifyProductCode);
-        if (result && result?.status === 1) {
+        if (result && result?.verify_code === verifyProductCode) {
           Alert.alert(
             'Uncomplete setup for node',
             'We found a key for old node device that unsuccessfull. Do you want to continue setup this for now?',

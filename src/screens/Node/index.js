@@ -146,11 +146,12 @@ class Node extends BaseScreen {
 
   checkIfVerifyCodeIsExisting = async () => {
     let verifyProductCode = await LocalDatabase.getVerifyCode();
+    console.log('Verify code in Home node ' + verifyProductCode);
     if (verifyProductCode && verifyProductCode != '') {
       console.log('Verify code in Home node ' + verifyProductCode);
       let result = await NodeService.verifyProductCode(verifyProductCode);
       console.log('Verifing process check code in Home node to API: ' + LogManager.parseJsonObjectToJsonString(result));
-      if (result && result?.status === 1) {
+      if (result && result?.verify_code === verifyProductCode) {
         Alert.alert(
           'Uncomplete setup for node',
           'We found a key for old node device that unsuccessfull. Do you want to continue setup this for now?',
@@ -207,7 +208,7 @@ class Node extends BaseScreen {
         password: Util.hashCode(deviceId)
       };
       let response = await APIService.signUp(params);
-      if (response.status !== 1) {
+      if (response?.status !== 1) {
         response = await APIService.signIn(params);
       }
       const { status, data } = response;
