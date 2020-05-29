@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { COLORS } from '@src/styles';
 
 export const homeStyle = StyleSheet.create({
   container: {
@@ -7,5 +8,6 @@ export const homeStyle = StyleSheet.create({
   },
   submitBtn: {
     marginVertical: 50,
+    backgroundColor: COLORS.colorBlue
   },
 });

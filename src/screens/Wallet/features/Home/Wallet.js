@@ -244,7 +244,6 @@ const Wallet = props => {
       <Header
         title="Assets"
         rightHeader={<RightHeader />}
-        onGoBack={() => navigation.navigate(routeNames.Home)}
         style={styled.hook}
       />
       <Extra />

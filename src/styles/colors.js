@@ -50,6 +50,8 @@ const COLORS = {
   colorGreyMedium: '#C4C4C6',
   colorGreyBold: '#8A8A8E',
   colorPrimary: '#33373A',
+
+  colorBlue: '#5995F0'
 };
 
 export default {
