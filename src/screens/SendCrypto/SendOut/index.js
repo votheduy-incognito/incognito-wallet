@@ -23,7 +23,12 @@ import {
   accountSeleclor,
 } from '@src/redux/selectors';
 import { estimateFeeSelector } from '@src/components/EstimateFee/EstimateFee.selector';
-import { actionInitEstimateFee } from '@src/components/EstimateFee/EstimateFee.actions';
+import {
+  actionInitEstimateFee,
+  actionFetchedMaxFeePrv,
+  actionFetchedMaxFeePToken,
+  actionInit,
+} from '@src/components/EstimateFee/EstimateFee.actions';
 import Withdraw, { formName } from './Withdraw';
 
 class WithdrawContainer extends Component {
@@ -32,26 +37,42 @@ class WithdrawContainer extends Component {
   }
 
   async componentDidMount() {
-    this.initEstimateFee();
+    const {
+      selectedPrivacy,
+      accountBalance,
+      actionInitEstimateFee,
+      actionFetchedMaxFeePrv,
+      actionFetchedMaxFeePToken,
+      actionInit,
+    } = this.props;
+    await actionInit();
+    await actionInitEstimateFee({ screen: 'UnShield' });
+    await actionFetchedMaxFeePrv(accountBalance);
+    await actionFetchedMaxFeePToken(selectedPrivacy);
   }
 
   componentDidUpdate(prevProps) {
-    const { selectedPrivacy } = this.props;
-    const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
-    // const { tokenId } = selectedPrivacy;
-    if (
-      oldSelectedPrivacy?.tokenId !== selectedPrivacy?.tokenId
-      // prevProps?.isGettingTotalBalance !== this.props?.isGettingTotalBalance ||
-      // prevProps?.accountBalance !== this.props?.accountBalance ||
-      // prevProps?.isGettingTotalBalance.includes(tokenId) !==
-      //   this.props?.isGettingTotalBalance.includes(tokenId)
-    ) {
-      this.initEstimateFee();
+    const {
+      selectedPrivacy,
+      actionInitEstimateFee,
+      accountBalance,
+      actionFetchedMaxFeePrv,
+      actionFetchedMaxFeePToken,
+    } = this.props;
+    const {
+      selectedPrivacy: oldSelectedPrivacy,
+      accountBalance: oldAccountBalance,
+    } = prevProps;
+    if (oldSelectedPrivacy?.tokenId !== selectedPrivacy?.tokenId) {
+      actionInitEstimateFee({ screen: 'UnShield' });
+    }
+    if (accountBalance !== oldAccountBalance) {
+      actionFetchedMaxFeePrv(accountBalance);
+    }
+    if (selectedPrivacy?.amount !== oldSelectedPrivacy?.amount) {
+      actionFetchedMaxFeePToken(selectedPrivacy);
     }
   }
-
-  initEstimateFee = async () =>
-    await this.props?.actionInitEstimateFee({ screen: 'UnShield' });
 
   handleSendToken = async (payload = {}) => {
     try {
@@ -234,7 +255,7 @@ class WithdrawContainer extends Component {
   };
 
   render() {
-    const { selectedPrivacy, estimateFee, isGettingTotalBalance } = this.props;
+    const { selectedPrivacy, estimateFee } = this.props;
 
     if (!estimateFee.init || !selectedPrivacy) {
       return <LoadingContainer />;
@@ -277,6 +298,9 @@ const mapDispatch = {
   getTokenBalanceBound: getTokenBalance,
   rfOnChangeValue,
   actionInitEstimateFee,
+  actionFetchedMaxFeePrv,
+  actionFetchedMaxFeePToken,
+  actionInit,
 };
 
 WithdrawContainer.defaultProps = {
@@ -298,6 +322,9 @@ WithdrawContainer.propTypes = {
   isGettingTotalBalance: PropTypes.array.isRequired,
   accountBalance: PropTypes.number.isRequired,
   actionInitEstimateFee: PropTypes.func.isRequired,
+  actionFetchedMaxFeePrv: PropTypes.func.isRequired,
+  actionFetchedMaxFeePToken: PropTypes.func.isRequired,
+  actionInit: PropTypes.func.isRequired,
 };
 
 export default connect(

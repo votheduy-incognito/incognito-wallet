@@ -8,12 +8,7 @@ import accountService from '@services/wallet/accountService';
 import tokenService from '@services/wallet/tokenService';
 import { getBalance } from '@src/redux/actions/account';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
-import {
-  CONSTANT_COMMONS,
-  CONSTANT_EVENTS,
-  CONSTANT_KEYS,
-} from '@src/constants';
-import { logEvent } from '@services/firebase';
+import { CONSTANT_COMMONS, CONSTANT_KEYS } from '@src/constants';
 import { MESSAGES } from '@screens/Dex/constants';
 import { actionToggleModal as toggleModal } from '@src/components/Modal';
 import routeNames from '@src/router/routeNames';
@@ -54,10 +49,6 @@ class SendCryptoContainer extends Component {
       actionFetchedMaxFeePToken,
       actionInit,
     } = this.props;
-    logEvent(CONSTANT_EVENTS.VIEW_SEND, {
-      tokenId: selectedPrivacy.tokenId,
-      tokenSymbol: selectedPrivacy.symbol,
-    });
     await actionInit();
     await actionInitEstimateFee();
     await actionFetchedMaxFeePrv(accountBalance);
@@ -90,12 +81,7 @@ class SendCryptoContainer extends Component {
   getTxInfo = ({ message } = {}) => message;
 
   _handleSendMainCrypto = async values => {
-    const {
-      account,
-      wallet,
-      selectedPrivacy,
-      getAccountBalanceBound,
-    } = this.props;
+    const { account, wallet, selectedPrivacy } = this.props;
     const { toAddress, amount, feeUnit, message, originalFee } = values;
     const fromAddress = selectedPrivacy?.paymentAddress;
     const originalAmount = floor(
@@ -263,19 +249,14 @@ class SendCryptoContainer extends Component {
   };
 
   render() {
-    const { selectedPrivacy, estimateFee, isGettingTotalBalance } = this.props;
+    const { selectedPrivacy, estimateFee } = this.props;
     const { receiptData, isSending } = this.state;
     const componentProps = {
       handleSend: this.handleSend(),
       receiptData,
       isSending,
     };
-    if (
-      !selectedPrivacy ||
-      !estimateFee.init
-      // ||
-      // isGettingTotalBalance.length > 0
-    ) {
+    if (!selectedPrivacy || !estimateFee.init) {
       return <LoadingContainer />;
     }
     return (
