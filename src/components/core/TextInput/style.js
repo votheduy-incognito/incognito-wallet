@@ -26,6 +26,7 @@ const style = StyleSheet.create({
     height: '100%',
     padding: 0,
     marginRight: 10,
+    textAlignVertical: 'center'
   },
 });
 
