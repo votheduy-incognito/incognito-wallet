@@ -475,6 +475,7 @@ class WifiSetup extends PureComponent {
       this.addStep({ name: 'Send validator key', detail: ValidatorKey, isSuccess: true });
       await this.updateValidatorKey();
     }
+    await LocalDatabase.saveVerifyCode(verifyNewCode);
 
     this.setupWifiZMQ(params)
       .then(async result => {
@@ -484,8 +485,7 @@ class WifiSetup extends PureComponent {
           if (_.isEmpty(result)) {
             throw new CustomError(knownCode.node_can_not_connect_hotspot);
           }
-
-          await LocalDatabase.saveVerifyCode(verifyNewCode);
+      
           // Re connect wifi
 
           this.addStep({ name: 'Check node hotspot', isSuccess: true });
