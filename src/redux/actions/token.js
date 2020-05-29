@@ -15,7 +15,8 @@ import {
   normalizeData,
 } from '@src/redux/utils/token';
 // eslint-disable-next-line import/no-cycle
-import { getBalance as getAccountBalance } from '@src/redux/actions/account';
+// import { getBalance as getAccountBalance } from '@src/redux/actions/account';
+import { CONSTANT_COMMONS } from '@src/constants';
 
 export const setToken = (
   token = throw new Error('Token object is required'),
@@ -235,12 +236,12 @@ export const actionFetchHistoryMainCrypto = () => async (
     }
     await dispatch(actionFetchingHistory());
     const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
-    const account = accountSeleclor.defaultAccountSelector(state);
+    // const account = accountSeleclor.defaultAccountSelector(state);
     let histories = [];
     if (selectedPrivacy?.isMainCrypto) {
       const [accountHistory] = await new Promise.all([
         dispatch(loadAccountHistory()),
-        dispatch(getAccountBalance(account)),
+        dispatch(getBalance(CONSTANT_COMMONS.PRV.id)),
       ]);
       histories = normalizeData(
         accountHistory,

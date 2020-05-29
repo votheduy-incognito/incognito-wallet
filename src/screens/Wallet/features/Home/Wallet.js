@@ -221,24 +221,24 @@ const RightHeader = () => {
 };
 
 const Wallet = props => {
-  const { getFollowingToken, clearWallet, fetchData } = props;
-  const navigation = useNavigation();
-  const isFocused = useIsFocused();
-  const account = useSelector(accountSeleclor.defaultAccount);
-  const wallet = useSelector(state => state?.wallet);
-  React.useEffect(() => {
-    if (wallet) {
-      getFollowingToken();
-    }
-  }, [wallet, account]);
-  React.useEffect(() => {
-    if (isFocused) {
-      clearWallet();
-    }
-  }, [isFocused]);
-  React.useEffect(() => {
-    fetchData();
-  }, []);
+  // const { getFollowingToken, clearWallet, fetchData } = props;
+  // const navigation = useNavigation();
+  // const isFocused = useIsFocused();
+  // const account = useSelector(accountSeleclor.defaultAccount);
+  // const wallet = useSelector(state => state?.wallet);
+  // React.useEffect(() => {
+  //   if (wallet) {
+  //     getFollowingToken();
+  //   }
+  // }, [wallet, account]);
+  // React.useEffect(() => {
+  //   if (isFocused) {
+  //     clearWallet();
+  //   }
+  // }, [isFocused]);
+  // React.useEffect(() => {
+  //   fetchData();
+  // }, []);
   return (
     <View style={[styled.container]}>
       <Header

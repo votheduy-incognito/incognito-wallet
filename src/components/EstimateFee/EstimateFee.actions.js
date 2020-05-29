@@ -9,7 +9,6 @@ import format from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
 import floor from 'lodash/floor';
 import { getMinMaxWithdrawAmount } from '@src/services/api/misc';
-import accountService from '@services/wallet/accountService';
 import {
   ACTION_FETCHING_FEE,
   ACTION_FETCHED_FEE,
@@ -21,6 +20,8 @@ import {
   ACTION_CHANGE_FEE,
   ACTION_INIT,
   ACTION_INIT_FETCHED,
+  ACTION_FETCHED_MAX_FEE_PRV,
+  ACTION_FETCHED_MAX_FEE_PTOKEN,
 } from './EstimateFee.constant';
 import { apiGetEstimateFeeFromChain } from './EstimateFee.services';
 // eslint-disable-next-line import/no-cycle
@@ -44,12 +45,6 @@ export const actionInitEstimateFee = (config = {}) => async (
   let rate;
   let minAmount = 1 / 10 ** selectedPrivacy?.pDecimals;
   let minAmountText = format.amountFull(minAmount);
-  let amount,
-    amountText,
-    maxFeePrv,
-    maxFeePrvText,
-    maxFeePToken,
-    maxFeePTokenText;
   try {
     switch (screen) {
     case 'UnShield': {
@@ -71,34 +66,11 @@ export const actionInitEstimateFee = (config = {}) => async (
         );
       }
     }
-    const [accountBalance, tokenBalance] = await new Promise.all([
-      accountService.getBalance(account, wallet, CONSTANT_COMMONS.PRV.id),
-      accountService.getBalance(account, wallet, selectedPrivacy?.tokenId),
-    ]);
-    console.log('accountBalance', accountBalance, 'tokenBalance', tokenBalance);
-    maxFeePrv = accountBalance;
-    maxFeePrvText = format.amountFull(
-      convert.toHumanAmount(maxFeePrv, CONSTANT_COMMONS.PRV.pDecimals),
-    );
-    amount = tokenBalance;
-    amountText = format.amountFull(
-      convert.toHumanAmount(amount, selectedPrivacy.pDecimals),
-    );
-    maxFeePToken = tokenBalance;
-    maxFeePTokenText = format.amountFull(
-      convert.toHumanAmount(maxFeePToken, selectedPrivacy?.pDecimals),
-    );
   } catch (error) {
     throw error;
   } finally {
     await dispatch(
       actionInitFetched({
-        amount,
-        amountText,
-        maxFeePrv,
-        maxFeePrvText,
-        maxFeePToken,
-        maxFeePTokenText,
         screen,
         rate,
         minAmount,
@@ -107,6 +79,16 @@ export const actionInitEstimateFee = (config = {}) => async (
     );
   }
 };
+
+export const actionFetchedMaxFeePrv = payload => ({
+  type: ACTION_FETCHED_MAX_FEE_PRV,
+  payload,
+});
+
+export const actionFetchedMaxFeePToken = payload => ({
+  type: ACTION_FETCHED_MAX_FEE_PTOKEN,
+  payload,
+});
 
 export const actionInit = () => ({
   type: ACTION_INIT,

@@ -27,7 +27,12 @@ import {
   sharedSeleclor,
   accountSeleclor,
 } from '@src/redux/selectors';
-import { actionInitEstimateFee } from '@src/components/EstimateFee/EstimateFee.actions';
+import {
+  actionInitEstimateFee,
+  actionFetchedMaxFeePrv,
+  actionFetchedMaxFeePToken,
+  actionInit,
+} from '@src/components/EstimateFee/EstimateFee.actions';
 import floor from 'lodash/floor';
 import SendCrypto, { formName } from './SendCrypto';
 
@@ -40,27 +45,45 @@ class SendCryptoContainer extends Component {
     };
   }
 
-  componentDidMount() {
-    const { selectedPrivacy, actionInitEstimateFee } = this.props;
+  async componentDidMount() {
+    const {
+      selectedPrivacy,
+      accountBalance,
+      actionInitEstimateFee,
+      actionFetchedMaxFeePrv,
+      actionFetchedMaxFeePToken,
+      actionInit,
+    } = this.props;
     logEvent(CONSTANT_EVENTS.VIEW_SEND, {
       tokenId: selectedPrivacy.tokenId,
       tokenSymbol: selectedPrivacy.symbol,
     });
-    actionInitEstimateFee();
+    await actionInit();
+    await actionInitEstimateFee();
+    await actionFetchedMaxFeePrv(accountBalance);
+    await actionFetchedMaxFeePToken(selectedPrivacy);
   }
 
   componentDidUpdate(prevProps) {
-    const { selectedPrivacy, actionInitEstimateFee } = this.props;
-    const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
-    if (
-      oldSelectedPrivacy?.tokenId !== selectedPrivacy?.tokenId
-      //  ||
-      // prevProps?.isGettingTotalBalance !== this.props?.isGettingTotalBalance ||
-      // prevProps?.accountBalance !== this.props?.accountBalance ||
-      // prevProps?.isGettingTotalBalance.includes(tokenId) !==
-      //   this.props?.isGettingTotalBalance.includes(tokenId)
-    ) {
+    const {
+      selectedPrivacy,
+      actionInitEstimateFee,
+      accountBalance,
+      actionFetchedMaxFeePrv,
+      actionFetchedMaxFeePToken,
+    } = this.props;
+    const {
+      selectedPrivacy: oldSelectedPrivacy,
+      accountBalance: oldAccountBalance,
+    } = prevProps;
+    if (oldSelectedPrivacy?.tokenId !== selectedPrivacy?.tokenId) {
       actionInitEstimateFee();
+    }
+    if (accountBalance !== oldAccountBalance) {
+      actionFetchedMaxFeePrv(accountBalance);
+    }
+    if (selectedPrivacy?.amount !== oldSelectedPrivacy?.amount) {
+      actionFetchedMaxFeePToken(selectedPrivacy);
     }
   }
 
@@ -285,6 +308,9 @@ const mapDispatch = {
   toggleModal,
   rfOnChangeValue,
   actionInitEstimateFee,
+  actionFetchedMaxFeePrv,
+  actionFetchedMaxFeePToken,
+  actionInit,
 };
 
 SendCryptoContainer.defaultProps = {
@@ -306,6 +332,9 @@ SendCryptoContainer.propTypes = {
   isGettingTotalBalance: PropTypes.array.isRequired,
   accountBalance: PropTypes.number.isRequired,
   actionInitEstimateFee: PropTypes.func.isRequired,
+  actionFetchedMaxFeePrv: PropTypes.func.isRequired,
+  actionFetchedMaxFeePToken: PropTypes.func.isRequired,
+  actionInit: PropTypes.func.isRequired,
 };
 
 export default connect(
