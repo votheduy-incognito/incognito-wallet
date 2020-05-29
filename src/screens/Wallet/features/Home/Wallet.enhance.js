@@ -22,6 +22,7 @@ import { actionRemoveFollowToken } from '@src/redux/actions';
 import { Toast } from '@src/components/core';
 import { InteractionManager } from 'react-native';
 import { actionInit as actionInitEstimateFee } from '@components/EstimateFee/EstimateFee.actions';
+import { isGettingBalance as isGettingBalanceSelector } from '@src/redux/selectors/shared';
 
 export const WalletContext = React.createContext({});
 
@@ -29,6 +30,7 @@ const enhance = WrappedComp => props => {
   const account = useSelector(accountSeleclor.defaultAccount);
   const tokens = useSelector(tokenSeleclor.tokensFollowedSelector);
   const wallet = useSelector(state => state?.wallet);
+  const isGettingBalance = useSelector(isGettingBalanceSelector);
   const dispatch = useDispatch();
   const [state, setState] = React.useState({
     isReloading: false,
@@ -140,7 +142,7 @@ const enhance = WrappedComp => props => {
           {...{
             ...props,
             wallet,
-            isReloading,
+            isReloading: !!isReloading || isGettingBalance.length > 0,
             fetchData,
             handleExportKey,
             handleSelectToken,

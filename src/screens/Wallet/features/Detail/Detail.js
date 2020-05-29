@@ -19,6 +19,11 @@ import HistoryToken from '@screens/Wallet/features/HistoryToken';
 import MainCryptoHistory from '@screens/Wallet/features/MainCryptoHistory';
 import PropTypes from 'prop-types';
 import { CONSTANT_COMMONS } from '@src/constants';
+import { isGettingBalance as isGettingTokenBalanceSelector } from '@src/redux/selectors/token';
+import {
+  isGettingBalance as isGettingMainCryptoBalanceSelector,
+  defaultAccountNameSelector,
+} from '@src/redux/selectors/account';
 import withDetail from './Detail.enhance';
 import {
   styled,
@@ -126,9 +131,15 @@ const Detail = props => {
   const token = useSelector(
     selectedPrivacySeleclor.selectedPrivacyByFollowedSelector,
   );
-  const refreshing = selected?.isMainCrypto
-    ? !!isFetching
-    : !!isFetching && !token?.id;
+  const isGettingTokenBalance = useSelector(isGettingTokenBalanceSelector);
+  const isGettingMainCryptoBalance = useSelector(
+    isGettingMainCryptoBalanceSelector,
+  );
+  const defaultAccountName = useSelector(defaultAccountNameSelector);
+  const refreshing =
+    !!isFetching || selected?.isMainCrypto
+      ? isGettingMainCryptoBalance.length > 0 || !defaultAccountName
+      : isGettingTokenBalance.length > 0 || !token;
   return (
     <View style={styled.container}>
       <Header title={selected?.name} rightHeader={<RightHeader />} />

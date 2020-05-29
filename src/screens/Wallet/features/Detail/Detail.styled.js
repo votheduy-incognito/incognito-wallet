@@ -25,6 +25,7 @@ export const groupBtnStyled = StyleSheet.create({
     maxWidth: '49%',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: COLORS.colorBlue
   },
   titleStyle: {
     fontFamily: FONT.NAME.medium,

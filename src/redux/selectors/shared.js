@@ -9,7 +9,6 @@ import {
 } from '@src/redux/selectors/token';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import uniqBy from 'lodash/uniqBy';
-import format from '@src/utils/format';
 import isNaN from 'lodash/isNaN';
 import convert from '@src/utils/convert';
 import {

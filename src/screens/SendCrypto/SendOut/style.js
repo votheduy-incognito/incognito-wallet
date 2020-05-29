@@ -20,6 +20,7 @@ export default StyleSheet.create({
   },
   submitBtn: {
     marginVertical: 50,
+    backgroundColor: COLORS.colorBlue
   },
   memoContainer: {},
   memoText: {

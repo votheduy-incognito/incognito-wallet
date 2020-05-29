@@ -171,7 +171,8 @@ class Withdraw extends React.Component {
                 title: 'Success! You withdrew funds.',
                 toAddress,
                 pDecimals: selectedPrivacy?.pDecimals,
-                tokenSymbol: feeUnit || res?.tokenSymbol,
+                tokenSymbol:
+                  selectedPrivacy?.externalSymbol || res?.tokenSymbol,
               }}
             />
           ),
@@ -492,4 +493,7 @@ const mapDispatch = {
   actionToggleModal,
 };
 
-export default connect(mapState, mapDispatch)(Withdraw);
+export default connect(
+  mapState,
+  mapDispatch,
+)(Withdraw);

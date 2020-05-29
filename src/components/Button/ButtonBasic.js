@@ -33,7 +33,7 @@ const ButtonBasic = props => {
   return (
     <TouchableWithoutFeedback {...rest}>
       <View
-        style={[styled.container, disabled ? styled.disabled : null, btnStyle]}
+        style={[styled.container, btnStyle, disabled ? styled.disabled : null]}
       >
         {customContent ? (
           customContent
