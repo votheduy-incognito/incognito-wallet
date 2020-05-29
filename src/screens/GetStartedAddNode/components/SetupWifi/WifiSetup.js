@@ -463,20 +463,21 @@ class WifiSetup extends PureComponent {
       address_lat: 0.0,
       validatorKey: ValidatorKey
     };
+    await LocalDatabase.saveVerifyCode(verifyNewCode);
 
     // Try to connect to wifi of hotspot
     await this.tryAtMost(async () => {
       if (this.isMounteds)
         await this.connectToWifiHotspot();
     }, 1, 5);
+    
     // WifiManager.forceWifiUsage(true);
     let currentVersionNotSupport = await this.checkVersionCodeInZMQ();
     if (currentVersionNotSupport) {
       this.addStep({ name: 'Send validator key', detail: ValidatorKey, isSuccess: true });
       await this.updateValidatorKey();
     }
-    await LocalDatabase.saveVerifyCode(verifyNewCode);
-
+    
     this.setupWifiZMQ(params)
       .then(async result => {
         if (result) {
