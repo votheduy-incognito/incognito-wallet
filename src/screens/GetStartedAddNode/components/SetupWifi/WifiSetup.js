@@ -143,7 +143,7 @@ class WifiSetup extends PureComponent {
       if (previousSSID === ssid) {
         return true;
       }
-      this.setState({loading: true});
+      this.setState({ loading: true });
       this.addStep({ name: 'Trying to connect to Wi-Fi "' + ssid + '" ..... ', isSuccess: true });
       return new Promise((resolve, reject) => {
         let connectFunction = WifiManager.connectToProtectedSSID;
@@ -284,7 +284,7 @@ class WifiSetup extends PureComponent {
       return result;
     } catch (e) {
       this.setState({ loading: false });
-      this.addStep({ name: 'Wi-Fi connected but no Internet', detail: ssid , isSuccess: false});
+      this.addStep({ name: 'Wi-Fi connected but no Internet', detail: ssid, isSuccess: false });
       throw new Error('Wi-Fi connected but no Internet');
     }
     // return new Promise((resolve, reject) => {
@@ -397,7 +397,7 @@ class WifiSetup extends PureComponent {
         return res;
       })
       .catch(error => {
-        this.setState({loading: false});
+        this.setState({ loading: false });
         this.addStep({ name: 'Send validator key error: ' + error?.message || '', detail: error.message, isSuccess: false });
         throw error;
       });
@@ -470,14 +470,14 @@ class WifiSetup extends PureComponent {
       if (this.isMounteds)
         await this.connectToWifiHotspot();
     }, 1, 5);
-    
+
     // WifiManager.forceWifiUsage(true);
     let currentVersionNotSupport = await this.checkVersionCodeInZMQ();
     if (currentVersionNotSupport) {
       this.addStep({ name: 'Send validator key', detail: ValidatorKey, isSuccess: true });
       await this.updateValidatorKey();
     }
-    
+
     this.setupWifiZMQ(params)
       .then(async result => {
         if (result) {
@@ -486,7 +486,7 @@ class WifiSetup extends PureComponent {
           if (_.isEmpty(result)) {
             throw new CustomError(knownCode.node_can_not_connect_hotspot);
           }
-      
+
           // Re connect wifi
 
           this.addStep({ name: 'Check node hotspot', isSuccess: true });
@@ -500,7 +500,7 @@ class WifiSetup extends PureComponent {
       })
       .catch(async err => {
         await LocalDatabase.saveVerifyCode(verifyNewCode);
-        this.setState({loading: false});
+        this.setState({ loading: false });
         this.addStep({ name: 'Setup configuration for node failed ', isSuccess: false });
         return verifyNewCode;
       });
@@ -520,7 +520,7 @@ class WifiSetup extends PureComponent {
       // Send data/info to node
       await this.sendZMQ();
     } catch (error) {
-      this.setState({loading: false});
+      this.setState({ loading: false });
       await APIService.trackLog({ action: funcName, message: `Connect HOTSPOT FAILED = ${error?.message || ''}` });
       throw error;
     }
@@ -537,7 +537,7 @@ class WifiSetup extends PureComponent {
           console.log('=====================TRY VERIFY CODE' + LogManager.parseJsonObjectToJsonString(res));
           if (!res) {
             this.addStep({ name: 'Verify code failed', isSuccess: false });
-            throw new Error('empty result');
+            throw new Error('Empty result');
           }
 
           return res;
@@ -552,6 +552,7 @@ class WifiSetup extends PureComponent {
     if (result && result?.status != 0) {
       this.addStep({ name: 'Verify code success', detail: JSON.stringify(result), isSuccess: true });
     } else {
+      this.setState({ backToQRCode: true });
       this.addStep({ name: 'Verify code failed', isSuccess: false });
       throw new Error('Verify code failed');
     }
@@ -559,14 +560,14 @@ class WifiSetup extends PureComponent {
   };
 
   authFirebase = async (productInfo) => {
-    this.setState({loading: true});
+    this.setState({ loading: true });
     const { qrCode } = this.props;
     const funcName = `${qrCode}-authFirebase`;
     await APIService.trackLog({ action: funcName, message: 'Bat dau Auth Firebase', rawData: `productInfo = ${JSON.stringify(productInfo)}` });
     const authFirebase = await this.tryAtMost(async () => {
       const resultFbUID = await NodeService.authFirebase(productInfo)
         .catch(error => {
-          this.setState({loading: false});
+          this.setState({ loading: false });
           this.addStep({ name: 'Authenticate firebase error ', detail: error?.message, isSuccess: false });
         });
       this.addStep({ name: 'Authenticate firebase ', detail: resultFbUID, isSuccess: true });
@@ -644,7 +645,7 @@ class WifiSetup extends PureComponent {
             onNext();
             return;
           }
-          this.setState({loading: false});
+          this.setState({ loading: false });
           this.addStep({ name: 'Send stake request failed', detail: '', isSuccess: false });
         });
 
@@ -657,6 +658,7 @@ class WifiSetup extends PureComponent {
   };
 
   handleSetupNode = async () => {
+    this.setState({ backToQRCode: false });
     this.funcQueue.push('handleSetupNode');
     try {
       await this.setupAndConnectWifiForNode();
@@ -666,12 +668,17 @@ class WifiSetup extends PureComponent {
       await this.verifyCodeFirebase(36, false);
       this.addStep({ name: 'Setup Wi-Fi for node success', isSuccess: true });
     } catch (e) {
-      const {steps} = this.state;
+      const { steps } = this.state;
       this.setState({ loading: false });
+      this.funcQueue.push('handleSetupNode');
       this.addStep({ name: 'Setup node failed', detail: e, isSuccess: false });
-      if (steps.indexOf('Verify code failed') != -1) { // yes
-        this.setState({backToQRCode: true});
-      } 
+      // Check if exist verify code failed
+      for (let i = 0; i < steps.length; i++) {
+        if (steps[i]?.name === 'Verify code failed') {
+          this.setState({ backToQRCode: true });
+          break;
+        }
+      }
     }
   };
 
@@ -787,7 +794,7 @@ class WifiSetup extends PureComponent {
           onPress={() => {
             console.log('### INCOGNITO ### funcQueue: ' + LogManager.parseJsonObjectToJsonString(this.funcQueue));
             if (backToQRCode) {
-              const {setStep} = this.props;
+              const { setStep } = this.props;
               setStep(1);
               return;
             }
