@@ -482,7 +482,7 @@ class WifiSetup extends PureComponent {
       .then(async result => {
         if (result) {
           this.addStep({ name: 'Setup Wi-Fi for node', detail: JSON.stringify(params) + ' ' + JSON.stringify(result), isSuccess: true });
-
+          await LocalDatabase.saveVerifyCode(verifyNewCode);
           if (_.isEmpty(result)) {
             throw new CustomError(knownCode.node_can_not_connect_hotspot);
           }
@@ -498,9 +498,10 @@ class WifiSetup extends PureComponent {
           return verifyNewCode;
         }
       })
-      .catch(err => {
+      .catch(async err => {
+        await LocalDatabase.saveVerifyCode(verifyNewCode);
         this.setState({loading: false});
-        this.addStep({ name: 'Setup configuration for node failed ' + err?.message, isSuccess: false });
+        this.addStep({ name: 'Setup configuration for node failed ', isSuccess: false });
         return verifyNewCode;
       });
     return verifyNewCode;
@@ -667,7 +668,7 @@ class WifiSetup extends PureComponent {
     } catch (e) {
       const {steps} = this.state;
       this.setState({ loading: false });
-      this.addStep({ name: 'Setup Wi-Fi for node failed ' + e?.message || e, detail: e, isSuccess: false });
+      this.addStep({ name: 'Setup node failed', detail: e, isSuccess: false });
       if (steps.indexOf('Verify code failed') != -1) { // yes
         this.setState({backToQRCode: true});
       } 
