@@ -38,13 +38,13 @@ class WithdrawContainer extends Component {
   componentDidUpdate(prevProps) {
     const { selectedPrivacy } = this.props;
     const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
-    const { tokenId } = selectedPrivacy;
+    // const { tokenId } = selectedPrivacy;
     if (
-      oldSelectedPrivacy !== selectedPrivacy ||
-      prevProps?.isGettingTotalBalance !== this.props?.isGettingTotalBalance ||
-      prevProps?.accountBalance !== this.props?.accountBalance ||
-      prevProps?.isGettingTotalBalance.includes(tokenId) !==
-        this.props?.isGettingTotalBalance.includes(tokenId)
+      oldSelectedPrivacy?.tokenId !== selectedPrivacy?.tokenId
+      // prevProps?.isGettingTotalBalance !== this.props?.isGettingTotalBalance ||
+      // prevProps?.accountBalance !== this.props?.accountBalance ||
+      // prevProps?.isGettingTotalBalance.includes(tokenId) !==
+      //   this.props?.isGettingTotalBalance.includes(tokenId)
     ) {
       this.initEstimateFee();
     }
@@ -236,7 +236,7 @@ class WithdrawContainer extends Component {
   render() {
     const { selectedPrivacy, estimateFee, isGettingTotalBalance } = this.props;
 
-    if (!estimateFee.init || isGettingTotalBalance.length > 0) {
+    if (!estimateFee.init || !selectedPrivacy) {
       return <LoadingContainer />;
     }
     if (!selectedPrivacy) {

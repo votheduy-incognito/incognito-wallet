@@ -52,13 +52,13 @@ class SendCryptoContainer extends Component {
   componentDidUpdate(prevProps) {
     const { selectedPrivacy, actionInitEstimateFee } = this.props;
     const { selectedPrivacy: oldSelectedPrivacy } = prevProps;
-    const { tokenId } = selectedPrivacy;
     if (
-      oldSelectedPrivacy !== selectedPrivacy ||
-      prevProps?.isGettingTotalBalance !== this.props?.isGettingTotalBalance ||
-      prevProps?.accountBalance !== this.props?.accountBalance ||
-      prevProps?.isGettingTotalBalance.includes(tokenId) !==
-        this.props?.isGettingTotalBalance.includes(tokenId)
+      oldSelectedPrivacy?.tokenId !== selectedPrivacy?.tokenId
+      //  ||
+      // prevProps?.isGettingTotalBalance !== this.props?.isGettingTotalBalance ||
+      // prevProps?.accountBalance !== this.props?.accountBalance ||
+      // prevProps?.isGettingTotalBalance.includes(tokenId) !==
+      //   this.props?.isGettingTotalBalance.includes(tokenId)
     ) {
       actionInitEstimateFee();
     }
@@ -249,8 +249,9 @@ class SendCryptoContainer extends Component {
     };
     if (
       !selectedPrivacy ||
-      !estimateFee.init ||
-      isGettingTotalBalance.length > 0
+      !estimateFee.init
+      // ||
+      // isGettingTotalBalance.length > 0
     ) {
       return <LoadingContainer />;
     }
@@ -307,4 +308,7 @@ SendCryptoContainer.propTypes = {
   actionInitEstimateFee: PropTypes.func.isRequired,
 };
 
-export default connect(mapState, mapDispatch)(SendCryptoContainer);
+export default connect(
+  mapState,
+  mapDispatch,
+)(SendCryptoContainer);

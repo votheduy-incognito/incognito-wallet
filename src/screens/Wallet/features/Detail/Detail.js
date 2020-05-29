@@ -112,10 +112,17 @@ const Balance = () => {
   );
 };
 
-const History = () => {
+const History = props => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const { isFetching } = useSelector(tokenSeleclor.historyTokenSelector);
+  const { handleLoadHistory } = props;
   return (
-    <ScrollView nestedScrollEnabled>
+    <ScrollView
+      nestedScrollEnabled
+      refreshControl={
+        <RefreshControl refreshing={isFetching} onRefresh={handleLoadHistory} />
+      }
+    >
       <View style={historyStyled.container}>
         {selectedPrivacy?.isToken && <HistoryToken />}
         {selectedPrivacy?.isMainCrypto && <MainCryptoHistory />}
@@ -155,7 +162,7 @@ const Detail = props => {
       >
         <Balance />
         <GroupButton />
-        <History />
+        <History {...{ ...props, refreshing }} />
       </ScrollView>
     </View>
   );

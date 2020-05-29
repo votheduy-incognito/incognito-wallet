@@ -9,6 +9,7 @@ import format from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
 import floor from 'lodash/floor';
 import { getMinMaxWithdrawAmount } from '@src/services/api/misc';
+import accountService from '@services/wallet/accountService';
 import {
   ACTION_FETCHING_FEE,
   ACTION_FETCHED_FEE,
@@ -34,7 +35,11 @@ export const actionInitEstimateFee = (config = {}) => async (
 ) => {
   const state = getState();
   const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
-  const accountBalance = accountSeleclor.defaultAccountBalanceSelector(state);
+  const account = accountSeleclor.defaultAccountSelector(state);
+  const wallet = state?.wallet;
+  if (!wallet || !account || !selectedPrivacy) {
+    return;
+  }
   const { screen = 'Send' } = config;
   let rate;
   let minAmount = 1 / 10 ** selectedPrivacy?.pDecimals;
@@ -66,15 +71,20 @@ export const actionInitEstimateFee = (config = {}) => async (
         );
       }
     }
-    amount = selectedPrivacy?.amount;
-    amountText = format.amountFull(
-      convert.toHumanAmount(amount, selectedPrivacy.pDecimals),
-    );
+    const [accountBalance, tokenBalance] = await new Promise.all([
+      accountService.getBalance(account, wallet, CONSTANT_COMMONS.PRV.id),
+      accountService.getBalance(account, wallet, selectedPrivacy?.tokenId),
+    ]);
+    console.log('accountBalance', accountBalance, 'tokenBalance', tokenBalance);
     maxFeePrv = accountBalance;
     maxFeePrvText = format.amountFull(
       convert.toHumanAmount(maxFeePrv, CONSTANT_COMMONS.PRV.pDecimals),
     );
-    maxFeePToken = selectedPrivacy?.amount;
+    amount = tokenBalance;
+    amountText = format.amountFull(
+      convert.toHumanAmount(amount, selectedPrivacy.pDecimals),
+    );
+    maxFeePToken = tokenBalance;
     maxFeePTokenText = format.amountFull(
       convert.toHumanAmount(maxFeePToken, selectedPrivacy?.pDecimals),
     );
@@ -87,8 +97,6 @@ export const actionInitEstimateFee = (config = {}) => async (
         amountText,
         maxFeePrv,
         maxFeePrvText,
-        // minFeePrv,
-        // minFeePrvText,
         maxFeePToken,
         maxFeePTokenText,
         screen,
