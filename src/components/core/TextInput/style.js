@@ -6,10 +6,9 @@ const style = StyleSheet.create({
     marginTop: 30,
   },
   row: {
-    alignItems: 'flex-end',
     flexDirection: 'row',
     justifyContent: 'center',
-    height: 30,
+    flex: 1,
   },
   label: {
     fontFamily: FONT.NAME.bold,
@@ -22,11 +21,10 @@ const style = StyleSheet.create({
     flex: 1,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.colorGreyBold,
-    height: '100%',
-    padding: 0,
     marginRight: 10,
-    textAlignVertical: 'center'
+    padding: 0,
   },
 });
 

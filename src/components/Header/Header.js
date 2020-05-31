@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { BtnCircleBack } from '@src/components/Button';
 import PropTypes from 'prop-types';
 import { useNavigation } from 'react-navigation-hooks';
 import { BtnSelectAccount } from '@screens/SelectAccount';
+import debounce from 'lodash/debounce';
 import { styled, styledHeaderTitle } from './Header.styled';
 import SearchBox from './Header.searchBox';
 import withHeader from './Header.enhance';
@@ -13,18 +14,27 @@ export const HeaderContext = React.createContext({});
 const HeaderTitle = () => {
   const { headerProps } = React.useContext(HeaderContext);
   const { onHandleSearch, title, titleStyled, canSearch } = headerProps;
+  const Title = () => (
+    <Text
+      style={[
+        styledHeaderTitle.title,
+        canSearch && styledHeaderTitle.searchStyled,
+        titleStyled,
+      ]}
+    >
+      {title}
+    </Text>
+  );
+  if (!canSearch) {
+    return <Title />;
+  }
   return (
-    <TouchableWithoutFeedback onPress={onHandleSearch}>
-      <Text
-        style={[
-          styledHeaderTitle.title,
-          canSearch && styledHeaderTitle.searchStyled,
-          titleStyled,
-        ]}
-      >
-        {title}
-      </Text>
-    </TouchableWithoutFeedback>
+    <TouchableOpacity
+      style={styledHeaderTitle.container}
+      onPress={onHandleSearch}
+    >
+      <Title />
+    </TouchableOpacity>
   );
 };
 
@@ -43,6 +53,7 @@ const Header = ({
   const { goBack } = useNavigation();
   const handleGoBack = () =>
     typeof onGoBack === 'function' ? onGoBack() : goBack();
+  const _handleGoBack = debounce(handleGoBack, 100);
   return (
     <HeaderContext.Provider
       value={{
@@ -58,7 +69,7 @@ const Header = ({
       }}
     >
       <View style={[styled.container, style]}>
-        <BtnCircleBack onPress={handleGoBack} />
+        <BtnCircleBack onPress={_handleGoBack} />
         {toggleSearch ? <SearchBox /> : <HeaderTitle />}
         {!!rightHeader && rightHeader}
         {accountSelectable && (

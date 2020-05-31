@@ -8,15 +8,18 @@ import styles from './style';
 
 const EmptyHistory = () => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
-  return (
-    <View style={styles.container}>
-      <Image source={noTransaction} style={styles.image} />
-      <Text style={styles.text}>
-        {`Shield some ${selectedPrivacy?.externalSymbol ||
-          selectedPrivacy?.symbol} to start\ntransacting anonymously.`}
-      </Text>
-    </View>
-  );
+  if (selectedPrivacy?.isDeposable) {
+    return (
+      <View style={styles.container}>
+        <Image source={noTransaction} style={styles.image} />
+        <Text style={styles.text}>
+          {`Shield some ${selectedPrivacy?.externalSymbol ||
+            selectedPrivacy?.symbol} to start\ntransacting anonymously.`}
+        </Text>
+      </View>
+    );
+  }
+  return null;
 };
 
 EmptyHistory.defaultProps = {};

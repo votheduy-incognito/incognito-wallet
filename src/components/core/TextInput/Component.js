@@ -72,6 +72,7 @@ const TextInput = ({
       <View style={[styleSheet.row, containerStyle, focus && styleSheet.focus]}>
         {appendView}
         <RNComponent
+          ref={textInput}
           allowFontScaling={false}
           placeholderTextColor={COLORS.colorGreyBold}
           returnKeyType="done"
@@ -79,7 +80,11 @@ const TextInput = ({
           style={[styleSheet.input, inputStyle]}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          ref={textInput}
+          autoCapitalize="none"
+          spellCheck={false}
+          textAlignVertical="center"
+          autoCompleteType="off"
+          autoCorrect={false}
           {...props}
         />
         {clearable && focus && (
