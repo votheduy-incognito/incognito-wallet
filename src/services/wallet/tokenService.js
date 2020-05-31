@@ -263,11 +263,12 @@ export default class Token {
 
       const accountWallet = wallet.getAccountByName(account.name);
       let histories = [];
-      if (token?.isPrivacy) {
-        histories = await accountWallet.getPrivacyTokenTxHistoryByTokenID(token?.id);
-      } else {
-        histories = await accountWallet.getCustomTokenTxByTokenID(token?.id);
-      }
+      histories = await accountWallet.getPrivacyTokenTxHistoryByTokenID(token?.id);
+      // if (token?.isPrivacy) {
+      //   histories = await accountWallet.getPrivacyTokenTxHistoryByTokenID(token?.id);
+      // } else {
+      //   histories = await accountWallet.getCustomTokenTxByTokenID(token?.id);
+      // }
 
       return histories;
     } catch (e) {

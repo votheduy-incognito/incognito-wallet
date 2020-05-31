@@ -247,10 +247,10 @@ export const switchAccount = accountName => async (dispatch, getState) => {
     if (defaultAccount?.name === account?.name) {
       return;
     }
-    await dispatch(setDefaultAccount(account));
     await new Promise.all([
-      await dispatch(getBalance(account)),
-      await dispatch(reloadAccountFollowingToken(account)),
+      dispatch(setDefaultAccount(account)),
+      dispatch(getBalance(account)),
+      dispatch(reloadAccountFollowingToken(account)),
     ]);
     return accountSeleclor.defaultAccount(state);
   } catch (e) {

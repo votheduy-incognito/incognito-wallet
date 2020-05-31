@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { BaseTextInput as TextInput } from '@components/core';
+import { View, Text, StyleSheet, TextInput } from 'react-native';
 import PropTypes from 'prop-types';
 import { BtnMax } from '@src/components/Button';
 import { COLORS, FONT } from '@src/styles';
@@ -17,7 +16,9 @@ const inputStyled = StyleSheet.create({
     flex: 1,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
     color: COLORS.black,
+    padding: 0,
   },
 });
 
@@ -76,6 +77,12 @@ const Input = React.forwardRef((props, ref) => {
           style={[inputStyled.input, rest.style ? rest.style : null]}
           onFocus={onFocus}
           onBlur={onBlur}
+          autoCapitalize="none"
+          spellCheck={false}
+          textAlignVertical="center"
+          autoCompleteType="off"
+          autoCorrect={false}
+          allowFontScaling={false}
         />
         {inputMax.visible && <BtnMax onPress={inputMax.handleShowMax} />}
       </View>

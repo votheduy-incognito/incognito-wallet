@@ -6,17 +6,21 @@ export const styled = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 18,
-    height: 50
+    height: 50,
   },
 });
 
 export const styledHeaderTitle = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
   title: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.black,
-    marginRight: 'auto',
     flex: 1,
   },
   searchStyled: {

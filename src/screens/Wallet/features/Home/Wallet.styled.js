@@ -84,15 +84,17 @@ export const styledBalance = StyleSheet.create({
   balance: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superLarge,
-    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.superLarge + 4),
+    lineHeight: FONT.SIZE.superLarge + 6,
     color: COLORS.black,
     maxWidth: '85%',
+    height: '100%',
   },
   pSymbol: {
     fontFamily: FONT.NAME.specialRegular,
     fontSize: FONT.SIZE.veryLarge,
-    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.veryLarge + 4),
+    lineHeight: FONT.SIZE.veryLarge + 6,
     color: COLORS.black,
+    height: '100%',
   },
   balanceContainer: {
     justifyContent: 'center',

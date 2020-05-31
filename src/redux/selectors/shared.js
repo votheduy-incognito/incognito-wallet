@@ -14,6 +14,7 @@ import convert from '@src/utils/convert';
 import {
   isGettingBalance as isGettingBalanceAccount,
   defaultAccountName,
+  defaultAccountBalanceSelector,
 } from './account';
 
 export const isGettingBalance = createSelector(
@@ -62,8 +63,18 @@ export const availableTokensSelector = createSelector(
 export const totalShieldedTokensSelector = createSelector(
   availableTokensSelector,
   selectedPrivacySeleclor.getPrivacyDataByTokenID,
-  (tokens, getPrivacyDataByTokenID) => {
-    const prv = getPrivacyDataByTokenID(CONSTANT_COMMONS.PRV.id);
+  defaultAccountBalanceSelector,
+  tokensFollowedSelector,
+  (availableTokens, getPrivacyDataByTokenID, accountBalance, followed) => {
+    const tokens = followed.map(token =>
+      availableTokens.find(
+        t => t?.tokenId === token?.id || t?.tokenId === token?.tokenId,
+      ),
+    );
+    const prv = {
+      ...getPrivacyDataByTokenID(CONSTANT_COMMONS.PRV.id),
+      amount: accountBalance,
+    };
     const totalShieldedTokens = [...tokens, prv].reduce(
       (prevValue, currentValue) => {
         let _currentValue =
