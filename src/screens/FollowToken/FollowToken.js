@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, FlatList, Text, TouchableWithoutFeedback } from 'react-native';
+import { View, FlatList, Text } from 'react-native';
 import Header from '@src/components/Header';
 import { TokenBasic as Token } from '@src/components/Token';
 import PropTypes from 'prop-types';
 import routeNames from '@src/router/routeNames';
 import { useNavigation } from 'react-navigation-hooks';
+import { TouchableOpacity } from '@src/components/core';
 import { styled } from './FollowToken.styled';
 import withFollowToken from './FollowToken.enhance';
 
@@ -16,11 +17,11 @@ const AddManually = () => {
   return (
     <View style={styled.addManually}>
       <Text style={[styled.text, { marginTop: 10 }]}>{title}</Text>
-      <TouchableWithoutFeedback onPress={handleAddTokenManually}>
+      <TouchableOpacity onPress={handleAddTokenManually}>
         <Text style={[styled.text, styled.boldText, { marginTop: 5 }]}>
           Add manually +
         </Text>
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     </View>
   );
 };

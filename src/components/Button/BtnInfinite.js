@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from '@src/components/core';
 import { InfiniteIcon } from '@src/components/Icons';
 
 const BtnInfinite = props => {

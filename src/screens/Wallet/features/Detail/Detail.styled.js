@@ -7,6 +7,7 @@ export const styled = StyleSheet.create({
     backgroundColor: COLORS.colorGrey,
     paddingHorizontal: 18,
     height: 40,
+    maxWidth: 80
   },
   titleBtnTrade: {
     color: COLORS.black,

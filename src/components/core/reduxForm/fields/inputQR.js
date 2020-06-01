@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, TouchableOpacity } from 'react-native';
-import { TextInput, View } from '@src/components/core';
+import { StyleSheet } from 'react-native';
+import { TextInput, View , TouchableOpacity } from '@src/components/core';
 import { openQrScanner } from '@src/components/QrCodeScanner';
 import { AddressBookIcon } from '@src/components/Icons';
 import { generateTestId } from '@utils/misc';
 import { SEND } from '@src/constants/elements';
 import { BtnScanQrCode } from '@src/components/Button';
 import createField from './createField';
+
 
 const styled = StyleSheet.create({
   prepend: {

@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { UTILS } from '@src/styles';
 import PropTypes from 'prop-types';
+import { TouchableOpacity } from '@src/components/core';
 import { Name, Symbol, Amount } from './Token';
 import withToken from './Token.enhance';
 import { styled } from './Token.styled';

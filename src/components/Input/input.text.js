@@ -14,7 +14,7 @@ const inputStyled = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontFamily: FONT.NAME.medium,
+    fontFamily: FONT.NAME.specialMedium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 4,
     color: COLORS.black,

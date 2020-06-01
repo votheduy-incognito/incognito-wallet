@@ -19,7 +19,7 @@ const style = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontFamily: FONT.NAME.medium,
+    fontFamily: FONT.NAME.specialMedium,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.colorGreyBold,
