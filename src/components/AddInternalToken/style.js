@@ -10,19 +10,16 @@ const style = StyleSheet.create({
     flexDirection: 'column',
     width: '100%',
   },
-  verifyInfoContainer: {
-    marginTop: 20,
-  },
+  verifyInfoContainer: {},
   verifyInfoHeader: {
     flexDirection: 'row',
   },
   verifyInfoLabel: {
-    fontSize: FONT.SIZE.small + 2,
-    fontFamily: FONT.NAME.regular,
-    lineHeight: FONT.SIZE.small + 6,
-    color: COLORS.colorGreyMedium,
+    fontSize: FONT.SIZE.medium,
+    fontFamily: FONT.NAME.medium,
+    lineHeight: FONT.SIZE.medium + 4,
+    color: COLORS.black,
     flex: 1,
-    marginLeft: 10,
   },
   block: {
     marginTop: 30,
@@ -39,9 +36,7 @@ const style = StyleSheet.create({
     lineHeight: FONT.SIZE.regular + 4,
     fontFamily: FONT.NAME.bold,
   },
-  descriptionInput: {
-    height: 80,
-  },
+  descriptionInput: {},
   submitBtn: {
     marginVertical: 50,
     borderRadius: 100,

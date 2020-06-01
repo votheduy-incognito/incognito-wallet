@@ -11,7 +11,6 @@ const renderCustomField = ({ input, ...props }) => {
       onBlur={onBlur}
       onFocus={onFocus}
       defaultValue={value}
-      ellipsize="middle"
     />
   );
 };

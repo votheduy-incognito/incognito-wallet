@@ -10,7 +10,7 @@ const style = StyleSheet.create({
   },
   submitBtn: {
     backgroundColor: COLORS.blue,
-    marginTop: 30
+    marginTop: 50
   },
   title: {
     fontSize: THEME.text.largeTitleSize,

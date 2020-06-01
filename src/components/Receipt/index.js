@@ -70,10 +70,7 @@ class ReceiptModal extends Component {
   goBackToWallet = () => {
     const { navigation } = this.props;
     this.closeReceipt();
-    navigation.reset(
-      [NavigationActions.navigate({ routeName: routeNames.Wallet })],
-      0,
-    );
+    navigation.pop();
   };
 
   onSaveReceivers = () => {

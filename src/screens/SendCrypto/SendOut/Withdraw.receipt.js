@@ -35,7 +35,7 @@ const ReceiptModal = props => {
       <Divider color={COLORS.lightGrey5} height={1.5} style={styled.divider} />
       <Button
         style={styled.backButton}
-        title="Back to Wallet"
+        title="Go back to Assets"
         onPress={onBack}
       />
       {btnSaveReceiver}

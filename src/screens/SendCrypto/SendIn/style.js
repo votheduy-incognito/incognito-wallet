@@ -8,6 +8,6 @@ export const homeStyle = StyleSheet.create({
   },
   submitBtn: {
     marginVertical: 50,
-    backgroundColor: COLORS.colorBlue
+    backgroundColor: COLORS.colorBlue,
   },
 });

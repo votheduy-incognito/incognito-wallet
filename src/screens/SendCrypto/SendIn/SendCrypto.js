@@ -247,7 +247,6 @@ class SendCrypto extends React.Component {
                 placeholder="Add a note (optional)"
                 label="Memo"
                 maxLength={500}
-                style={[homeStyle.input]}
                 validate={descriptionMaxBytes}
                 {...generateTestId(SEND.MEMO_INPUT)}
               />

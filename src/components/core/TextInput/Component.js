@@ -85,7 +85,7 @@ const TextInput = ({
           textAlignVertical="center"
           autoCompleteType="off"
           autoCorrect={false}
-          ellipsizeMode="center"
+          ellipsizeMode="middle"
           numberOfLines={1}
           {...props}
         />

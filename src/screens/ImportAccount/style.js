@@ -5,17 +5,19 @@ const style = StyleSheet.create({
   container: {
     flex: 1,
   },
-  form: {},
+  form: {
+    marginTop: 30,
+  },
   submitBtn: {
     backgroundColor: COLORS.blue,
-    marginTop: 20,
+    marginTop: 50,
   },
   title: {
     fontSize: THEME.text.largeTitleSize,
     fontWeight: 'bold',
   },
   randomNameField: {
-    marginBottom: 20,
+    // marginBottom: 20,
   },
   randomNameText: {
     maxWidth: UTILS.deviceWidth() - 130, // 30 px padding, 100px is randomNameChangeBtn's width
