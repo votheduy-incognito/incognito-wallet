@@ -1,5 +1,6 @@
 import formatUtil, { LONG_DATE_TIME_FORMAT } from '@utils/format';
 import moment from 'moment';
+import { DEFI_TRADING_FEE } from '@components/EstimateFee/EstimateFee.utils';
 
 export class RewardModel {
   constructor(data = {}) {
@@ -47,9 +48,21 @@ export class PDexTradeHistoryModel {
       'Successful',
     ][json.Status];
 
-    const buyToken = allTokens.find(token => token.id === this.buyTokenId);
-    const sellToken = allTokens.find(token => token.id === this.sellTokenId);
+    let buyToken = allTokens.find(token => token.id === this.buyTokenId || token.address === this.buyTokenId);
+    const sellToken = allTokens.find(token => token.id === this.sellTokenId || token.address === this.sellTokenId);
     const networkFeeToken = allTokens.find(token => token.id === this.networkFeeTokenId);
+
+    if (buyToken?.address && sellToken?.address) {
+      this.exchange = 'Kyber';
+      this.tradingFee = DEFI_TRADING_FEE;
+      this.networkFee = this.networkFee - this.tradingFee;
+      buyToken = {
+        ...buyToken,
+        pDecimals: buyToken.decimals,
+      };
+    } else {
+      this.exchange = 'Incognito';
+    }
 
     if (buyToken) {
       this.buyTokenSymbol = buyToken.symbol;
@@ -65,6 +78,7 @@ export class PDexTradeHistoryModel {
       this.networkFeeTokenSymbol = networkFeeToken.symbol;
       this.networkFee = Math.round(this.networkFee / 3 * 4);
       this.networkFee = formatUtil.amountFull(this.networkFee, networkFeeToken.pDecimals);
+      this.tradingFee = formatUtil.amountFull(this.tradingFee, networkFeeToken.pDecimals);
     }
 
     this.description = `${this.sellAmount} ${this.sellTokenSymbol} to ${this.buyAmount} ${this.buyTokenSymbol}`;

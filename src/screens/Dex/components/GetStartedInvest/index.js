@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {ActivityIndicator, Button, Image, ScrollView, Text, View} from '@components/core';
+import { ActivityIndicator, Button, Image, ScrollView, Text, TouchableOpacity, View } from '@components/core';
 
 import icBTC from '@src/assets/images/coins/ic_btc.png';
 import icPRV from '@src/assets/images/coins/ic_prv.png';
@@ -16,6 +16,8 @@ import {PRV_ID} from '@screens/Dex/constants';
 import format from '@utils/format';
 import {getNodeTime} from '@services/wallet/RpcClientService';
 import {RefreshControl} from 'react-native';
+import { Icon } from 'react-native-elements';
+import { COLORS } from '@src/styles';
 import styles from './style';
 
 const items = [
@@ -56,145 +58,155 @@ const TIME = 100;
 let serverTime = 0;
 
 const GetStartedInvest = ({ onPress, accounts, pairs, shares }) => {
-  const [loading, setLoading] = React.useState(true);
-  const [rewards, setRewards] = React.useState(null);
-  const [reloading, setReloading] = React.useState(false);
-  const [totalReward, setTotalReward] = React.useState(0);
+  // const [loading, setLoading] = React.useState(true);
+  // const [rewards, setRewards] = React.useState(null);
+  // const [reloading, setReloading] = React.useState(false);
+  // const [totalReward, setTotalReward] = React.useState(0);
+  //
+  // const loadData = async () => {
+  //   clearInterval(rewardInterval);
+  //   const rawShares = JSON.stringify(shares);
+  //   const investAccounts = accounts
+  //     .filter(account => rawShares.includes(account.PaymentAddress));
+  //
+  //   const rewards = _.flatten(await Promise.all(investAccounts.map(account => getRewards(account.PaymentAddress))))
+  //     .filter(reward => reward.total || reward.amount1 || reward.amount2);
+  //   serverTime = (await getNodeTime()) - (TIME / 1000);
+  //
+  //   // const rewards = await getRewards('12RqXMEeH55Yw9JRBSe84zd81GgnMvSnMKQTucm29LrM1GwmrMyDZGaoSDY8oBL47L281SRnKbFhFWAyDLDWkHxdkZuiunG6pMWyvSH');
+  //   setRewards(rewards);
+  //   setLoading(false);
+  // };
+  //
+  // const reloadData = async () => {
+  //   setReloading(true);
+  //   await loadData();
+  //   setReloading(false);
+  // };
+  //
+  // const calculateOutputValue = (outputTokenId, inputTokenId, inputValue) => {
+  //   try {
+  //     if (inputValue) {
+  //       return 0;
+  //     }
+  //
+  //     const pair = pairs.find(i => {
+  //       const keys = Object.keys(i);
+  //       return keys.includes(outputTokenId) && keys.includes(inputTokenId);
+  //     });
+  //
+  //     const inputPool = pair[inputTokenId];
+  //     const outputPool = pair[outputTokenId];
+  //     const initialPool = inputPool * outputPool;
+  //     const newInputPool = inputPool + inputValue - 0;
+  //     const newOutputPoolWithFee = _.ceil(initialPool / newInputPool);
+  //     return outputPool - newOutputPoolWithFee;
+  //   } catch (error) {
+  //     //
+  //   }
+  // };
+  //
+  // const calculateReward = () => {
+  //   let totalReward = 0;
+  //   rewards.forEach(reward => {
+  //     const {amount1, amount2, tokenId1, tokenId2, interestRate1, interestRate2, total, beaconTime} = reward;
+  //     serverTime += (TIME / 1000);
+  //
+  //     const time = serverTime - beaconTime;
+  //
+  //     const reward1 = Math.floor(
+  //       amount1 * time * interestRate1 / 100 / CONSTANT_COMMONS.YEAR_SECONDS
+  //     );
+  //     const reward2 = Math.floor(
+  //       amount2 * time * interestRate2 / 100 / CONSTANT_COMMONS.YEAR_SECONDS
+  //     );
+  //
+  //     const prvReward1 = tokenId1 === PRV_ID ? reward1 : calculateOutputValue(PRV_ID, tokenId1, reward1);
+  //     const prvReward2 = tokenId2 === PRV_ID ? reward2 : calculateOutputValue(PRV_ID, tokenId2, reward2);
+  //
+  //     // console.debug('TOTAL REWARD', serverTime, time, (new Date().getTime()) / 1000, beaconTime, total, prvReward2, prvReward1, totalReward, amount2, reward2);
+  //     totalReward = totalReward + total + prvReward1 + prvReward2;
+  //   });
+  //
+  //   totalReward = Math.floor(totalReward);
+  //   let maxDigits = totalReward > 1000e9 ? 4 : 9;
+  //   maxDigits = totalReward > 1000000e9 ? 0 : maxDigits;
+  //
+  //   const displayReward = format.balance(
+  //     totalReward,
+  //     9,
+  //     maxDigits,
+  //   );
+  //   setTotalReward(displayReward);
+  // };
+  //
+  // React.useEffect(() => {
+  //   if (shares) {
+  //     loadData();
+  //   }
+  //
+  //   return () => {
+  //     clearInterval(rewardInterval);
+  //   };
+  // }, [shares]);
+  //
+  // React.useEffect(() => {
+  //   clearInterval(rewardInterval);
+  //
+  //   if (!rewards || rewards.length === 0) {
+  //     return;
+  //   }
+  //
+  //   calculateReward();
+  //
+  //   rewardInterval = setInterval(calculateReward, TIME);
+  // }, [rewards]);
 
-  const loadData = async () => {
-    clearInterval(rewardInterval);
-    const rawShares = JSON.stringify(shares);
-    const investAccounts = accounts
-      .filter(account => rawShares.includes(account.PaymentAddress));
+  // if (loading) {
+  //   return <ActivityIndicator />;
+  // }
+  //
+  // if (rewards && rewards.length > 0) {
+  //   return (
+  //     <ScrollView
+  //       style={{ height: '100%' }}
+  //       refreshControl={
+  //         <RefreshControl refreshing={reloading} onRefresh={reloadData} />
+  //       }
+  //     >
+  //       <InvestReward reward={totalReward} onPress={onPress} />
+  //     </ScrollView>
+  //   );
+  // }
 
-    const rewards = _.flatten(await Promise.all(investAccounts.map(account => getRewards(account.PaymentAddress))))
-      .filter(reward => reward.total || reward.amount1 || reward.amount2);
-    serverTime = (await getNodeTime()) - (TIME / 1000);
-
-    // const rewards = await getRewards('12RqXMEeH55Yw9JRBSe84zd81GgnMvSnMKQTucm29LrM1GwmrMyDZGaoSDY8oBL47L281SRnKbFhFWAyDLDWkHxdkZuiunG6pMWyvSH');
-    setRewards(rewards);
-    setLoading(false);
-  };
-
-  const reloadData = async () => {
-    setReloading(true);
-    await loadData();
-    setReloading(false);
-  };
-
-  const calculateOutputValue = (outputTokenId, inputTokenId, inputValue) => {
-    try {
-      if (inputValue) {
-        return 0;
-      }
-
-      const pair = pairs.find(i => {
-        const keys = Object.keys(i);
-        return keys.includes(outputTokenId) && keys.includes(inputTokenId);
-      });
-
-      const inputPool = pair[inputTokenId];
-      const outputPool = pair[outputTokenId];
-      const initialPool = inputPool * outputPool;
-      const newInputPool = inputPool + inputValue - 0;
-      const newOutputPoolWithFee = _.ceil(initialPool / newInputPool);
-      return outputPool - newOutputPoolWithFee;
-    } catch (error) {
-      //
-    }
-  };
-
-  const calculateReward = () => {
-    let totalReward = 0;
-    rewards.forEach(reward => {
-      const {amount1, amount2, tokenId1, tokenId2, interestRate1, interestRate2, total, beaconTime} = reward;
-      serverTime += (TIME / 1000);
-
-      const time = serverTime - beaconTime;
-
-      const reward1 = Math.floor(
-        amount1 * time * interestRate1 / 100 / CONSTANT_COMMONS.YEAR_SECONDS
-      );
-      const reward2 = Math.floor(
-        amount2 * time * interestRate2 / 100 / CONSTANT_COMMONS.YEAR_SECONDS
-      );
-
-      const prvReward1 = tokenId1 === PRV_ID ? reward1 : calculateOutputValue(PRV_ID, tokenId1, reward1);
-      const prvReward2 = tokenId2 === PRV_ID ? reward2 : calculateOutputValue(PRV_ID, tokenId2, reward2);
-
-      // console.debug('TOTAL REWARD', serverTime, time, (new Date().getTime()) / 1000, beaconTime, total, prvReward2, prvReward1, totalReward, amount2, reward2);
-      totalReward = totalReward + total + prvReward1 + prvReward2;
-    });
-
-    totalReward = Math.floor(totalReward);
-    let maxDigits = totalReward > 1000e9 ? 4 : 9;
-    maxDigits = totalReward > 1000000e9 ? 0 : maxDigits;
-
-    const displayReward = format.balance(
-      totalReward,
-      9,
-      maxDigits,
-    );
-    setTotalReward(displayReward);
-  };
-
-  React.useEffect(() => {
-    if (shares) {
-      loadData();
-    }
-
-    return () => {
-      clearInterval(rewardInterval);
-    };
-  }, [shares]);
-
-  React.useEffect(() => {
-    clearInterval(rewardInterval);
-
-    if (!rewards || rewards.length === 0) {
-      return;
-    }
-
-    calculateReward();
-
-    rewardInterval = setInterval(calculateReward, TIME);
-  }, [rewards]);
-
-  if (loading) {
-    return <ActivityIndicator />;
-  }
-
-  if (rewards && rewards.length > 0) {
-    return (
-      <ScrollView
-        style={{ height: '100%' }}
-        refreshControl={
-          <RefreshControl refreshing={reloading} onRefresh={reloadData} />
-        }
-      >
-        <InvestReward reward={totalReward} onPress={onPress} />
-      </ScrollView>
-    );
-  }
+  const [expand, setExpand] = React.useState(false);
 
   return (
     <View style={styles.container}>
       <View>
-        <Text style={styles.title}>Grow your crypto</Text>
-        <Text style={styles.description}>No minimum. Earn interest every second, and withdraw anytime. <Text style={[styles.bold, styles.description]}>$2M</Text> in crypto already invested to date.</Text>
-      </View>
-      <View style={styles.coins}>
-        {items.map(item => (
-          <View key={item.symbol} style={styles.coin}>
-            <Image style={styles.icon} source={item.icon} />
-            <Text style={styles.bold}>{item.symbol}</Text>
-            <Text><Text style={styles.bold}>{item.interest}</Text> APR</Text>
-          </View>
-        ))}
+        <Text style={styles.title}>Provide privacy and earn</Text>
+        <Text style={styles.description}>Provide liquidity for any PRV pair, and earn interest every second.</Text>
+        <Text style={styles.description}>55,000 PRV to be distributed between providers in June.</Text>
       </View>
       <View style={{ alignItems: 'center', justifyContent: 'center' }}>
         <Button title="Get started" onPress={onPress} style={styles.btn} />
       </View>
+      <TouchableOpacity style={styles.row} onPress={() => setExpand(!expand)}>
+        <Text style={styles.description}>
+          Learn more
+        </Text>
+        {!expand ?
+          <Icon containerStyle={styles.arrowIcon} type="material-community" name="chevron-down" color={COLORS.black} />
+          : <Icon containerStyle={styles.arrowIcon} type="material-community" name="chevron-up" color={COLORS.black} />
+        }
+      </TouchableOpacity>
+      {expand && (
+        <View>
+          <Text style={styles.description}>Fixed rewards pool every month</Text>
+          <Text style={styles.description}>Every PRV in any liquidity pool qualifies for rewards</Text>
+          <Text style={styles.description}>Distribution every Monday 08:00 UTC</Text>
+        </View>
+      )}
     </View>
   );
 };

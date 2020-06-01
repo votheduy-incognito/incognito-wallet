@@ -25,6 +25,8 @@ const HistoryDetail = ({
       <ExtraInfo left="Time" right={history.createdAt} />
       <ExtraInfo left="Status" right={history.status} />
       <ExtraInfo left="Account" right={history.account} />
+      <ExtraInfo left="Trading fee" right={history.tradingFee} />
+      <ExtraInfo left="Exchange" right={history.exchange} />
     </View>
   );
 };

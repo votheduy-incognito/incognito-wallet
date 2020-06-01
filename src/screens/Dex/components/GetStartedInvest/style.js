@@ -16,14 +16,14 @@ export default StyleSheet.create({
   title: {
     fontSize: 24,
     textAlign: 'center',
-    marginBottom: 15,
     ...FONT.STYLE.bold,
   },
   description: {
     fontSize: 16,
-    color: COLORS.lightGrey1,
+    color: COLORS.black,
     textAlign: 'center',
     lineHeight: 25,
+    marginTop: 20,
   },
   bold: {
     ...FONT.STYLE.bold,
@@ -53,5 +53,13 @@ export default StyleSheet.create({
   btn: {
     width: '100%',
     marginTop: 10 + offset,
+  },
+  row: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  arrowIcon: {
+    marginTop: 20,
   },
 });

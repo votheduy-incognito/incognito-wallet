@@ -12,7 +12,7 @@ const withCalculateOutput = WrappedComp => (props) => {
   const [gettingQuote, setGettingQuote] = React.useState(false);
   const [quote, setQuote] = React.useState(null);
 
-  const { inputToken, inputValue, outputToken, pair, inputText } = props;
+  const { inputToken, inputValue, outputToken, pair } = props;
 
   const calculateOutputValue = () => {
     let outputValue = calculateOutput(pair, inputToken, inputValue, outputToken);
@@ -39,38 +39,29 @@ const withCalculateOutput = WrappedComp => (props) => {
     // console.debug('RESULT', outputValue, minimumAmount, outputText);
   };
 
-  const getQuote = async () => {
+  const getQuote = async (inputToken, outputToken, value) => {
+    if (gettingQuote) {
+      return;
+    }
+
     try {
       setGettingQuote(true);
 
-      if (gettingQuote) {
-        setMinimumAmount(0);
-        setOutputValue(0);
-        setOutputText('');
-        return;
-      }
-
       const quote = await getQuoteAPI({
         sellToken: inputToken,
-        sellAmount: inputValue,
+        sellAmount: value,
         buyToken: outputToken,
         protocol: 'Kyber',
       });
 
-      const { inputValue: currentInputValue } = props;
+      const { amount } = quote;
+      const minimumAmount = _.floor(amount * MIN_PERCENT);
 
-      if (inputValue && inputValue === currentInputValue) {
-        const { amount, minimumAmount } = quote;
-        setMinimumAmount(amount);
-        setOutputValue(minimumAmount);
+      setOutputValue(amount);
+      setMinimumAmount(minimumAmount);
 
-        const outputText = formatUtils.amountFull(minimumAmount, outputToken.pDecimals);
-        setOutputText(outputText);
-      } else {
-        setMinimumAmount(0);
-        setOutputValue(0);
-        setOutputText('');
-      }
+      const outputText = formatUtils.amountFull(minimumAmount, outputToken.pDecimals);
+      setOutputText(outputText);
     } catch (error) {
       setMinimumAmount(0);
       setOutputValue(0);
@@ -80,12 +71,12 @@ const withCalculateOutput = WrappedComp => (props) => {
     }
   };
 
-  const debounceGetQuote = _.debounce(getQuote, 1000);
+  const debouncedGetQuote = React.useCallback(_.debounce(getQuote, 1000), []);
 
   React.useEffect(() => {
     if (inputToken && outputToken && inputValue) {
       if (inputToken.address && outputToken.address) {
-        debounceGetQuote();
+        debouncedGetQuote(inputToken, outputToken, inputValue);
       } else {
         calculateOutputValue();
       }

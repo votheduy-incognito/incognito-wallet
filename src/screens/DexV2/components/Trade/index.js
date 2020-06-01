@@ -47,6 +47,7 @@ const Trade = ({
   minimumAmount,
 
   inputBalance,
+  prvBalance,
 
   fee,
   feeToken,
@@ -76,6 +77,9 @@ const Trade = ({
       feeToken,
       pair,
       isErc20,
+
+      inputBalance,
+      prvBalance,
     });
   };
   const navigateHistory = () => {
@@ -112,7 +116,15 @@ const Trade = ({
       <RoundCornerButton
         style={styles.button}
         title="Preview your order"
-        disabled={!!error || !inputBalance || !inputValue || !outputValue || !minimumAmount || !inputText}
+        disabled={
+          !!error ||
+          !inputBalance ||
+          !inputValue ||
+          !outputValue ||
+          !minimumAmount ||
+          !inputText ||
+          !!gettingQuote
+        }
         onPress={navigateTradeConfirm}
       />
       { !!(inputToken && outputToken) && (
@@ -160,6 +172,7 @@ Trade.propTypes = {
   minimumAmount: PropTypes.number,
 
   inputBalance: PropTypes.number,
+  prvBalance: PropTypes.number,
 
   fee: PropTypes.number.isRequired,
   feeToken: PropTypes.object.isRequired,
@@ -202,6 +215,7 @@ Trade.defaultProps = {
   outputValue: null,
   minimumAmount: null,
   inputBalance: null,
+  prvBalance: null,
   error: '',
   warning: '',
   pair: null,

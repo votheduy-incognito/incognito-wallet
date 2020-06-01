@@ -50,7 +50,7 @@ class Dex extends React.Component {
   }
 
   render() {
-    const { loading } = this.props;
+    const { loading, onLoadPairs } = this.props;
     return (
       <ScrollView
         style={styles.wrapper}
@@ -58,7 +58,7 @@ class Dex extends React.Component {
         refreshControl={(
           <RefreshControl
             refreshing={loading}
-            onRefresh={this.loadData}
+            onRefresh={onLoadPairs}
             tintColor={COLORS.primary}
             colors={[COLORS.primary]}
           />
@@ -74,6 +74,7 @@ Dex.propTypes = {
   tokens: PropTypes.array.isRequired,
   pairs: PropTypes.array.isRequired,
   pairTokens: PropTypes.array.isRequired,
+  onLoadPairs: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
 };
 

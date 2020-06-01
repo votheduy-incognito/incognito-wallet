@@ -42,12 +42,16 @@ export const trade = ({
   });
 };
 
-export const getHistories = (accounts, tokens, page = 1, limit = 10) => {
-  return cachePromise(`history-pdex-trade-${page}`, http.post('pdefi/history-pdex-trade', {
+const getHistoriesNoCache = (accounts, tokens, page = 1, limit = 10) => () => {
+  return http.post('pdefi/history-pdex-trade', {
     Page: page,
     Limit: limit,
     Wallets: accounts.map(item => item.PaymentAddress).join(','),
-  }).then(data => data?.Data ? data.Data.map(item => new PDexTradeHistoryModel(item, tokens, accounts)) : []), 15000);
+  }).then(data => data?.Data ? data.Data.map(item => new PDexTradeHistoryModel(item, tokens, accounts)) : []);
+};
+
+export const getHistories = (accounts, tokens, page = 1, limit = 10) => {
+  return cachePromise(`history-pdex-trade-${page}`, getHistoriesNoCache(accounts, tokens, page, limit), 15000);
 };
 
 export const tradePKyber = ({
@@ -57,7 +61,7 @@ export const tradePKyber = ({
   buyTokenAddress,
   expectAmount,
 }) => {
-  return http.post('/pdefi/execute/', {
+  return http.post('/uniswap/execute', {
     'SrcTokens': sellTokenAddress,
     'SrcQties': sellAmount,
     'DestTokens': buyTokenAddress,

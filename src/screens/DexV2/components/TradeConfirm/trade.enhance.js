@@ -107,20 +107,18 @@ const withTrade = WrappedComp => (props) => {
   };
 
   const tradeKyber = async (depositId) => {
-    // const originalValue = convertUtil.toDecimals(inputValue, inputToken).toString();
-    // const originalMinimum = convertUtil.toDecimals(minimumAmount, inputToken).toString();
+    const originalValue = convertUtil.toDecimals(inputValue, inputToken).toString();
+    const originalMinimum = convertUtil.toDecimals(minimumAmount, inputToken).toString();
 
     const data = {
       sellTokenAddress: inputToken.address,
-      sellAmount: inputValue.toString(),
+      sellAmount: originalValue,
       buyTokenAddress: outputToken.address,
-      expectAmount: minimumAmount.toString(),
+      expectAmount: originalMinimum,
       depositId: depositId,
     };
 
-    console.debug('DATA', data);
-
-    // await TradeKyberAPI(data);
+    await TradeKyberAPI(data);
   };
 
   return (
