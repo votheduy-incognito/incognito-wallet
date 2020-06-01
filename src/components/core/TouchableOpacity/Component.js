@@ -11,7 +11,7 @@ const TouchableOpacity = ({ onPress, activeOpacity, ...props }) => {
     });
   };
 
-  return <RNComponent {...props} onPress={_onPress} activeOpacity={activeOpacity || 0.9} />;
+  return <RNComponent {...props} onPress={_onPress} activeOpacity={activeOpacity || 0.55} />;
 };
 
 TouchableOpacity.defaultProps = {

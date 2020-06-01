@@ -12,7 +12,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import LoadingContainer from '@components/LoadingContainer';
 import SimpleInfo from '@components/SimpleInfo';
-import { change as rfOnChangeValue } from 'redux-form';
+import { change as rfOnChangeValue, focus } from 'redux-form';
 import routeNames from '@src/router/routeNames';
 import { withdrawReceiversSelector } from '@src/redux/selectors/receivers';
 import { HEADER_TITLE_RECEIVERS } from '@src/redux/types/receivers';
@@ -249,8 +249,9 @@ class WithdrawContainer extends Component {
   };
 
   onSelectedItem = info => {
-    const { rfOnChangeValue, navigation } = this.props;
+    const { rfOnChangeValue, navigation, focus } = this.props;
     rfOnChangeValue(formName, 'toAddress', info.address);
+    focus(formName, 'toAddress');
     navigation.pop();
   };
 
@@ -301,6 +302,7 @@ const mapDispatch = {
   actionFetchedMaxFeePrv,
   actionFetchedMaxFeePToken,
   actionInit,
+  focus
 };
 
 WithdrawContainer.defaultProps = {
@@ -325,6 +327,7 @@ WithdrawContainer.propTypes = {
   actionFetchedMaxFeePrv: PropTypes.func.isRequired,
   actionFetchedMaxFeePToken: PropTypes.func.isRequired,
   actionInit: PropTypes.func.isRequired,
+  focus: PropTypes.func.isRequired,
 };
 
 export default connect(

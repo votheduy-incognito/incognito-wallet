@@ -13,6 +13,7 @@ const styled = StyleSheet.create({
     backgroundColor: COLORS.colorGrey,
     paddingHorizontal: 11,
     height: 40,
+    maxWidth: 100
   },
   name: {
     marginRight: 5,

@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, StyleSheet, TouchableWithoutFeedback, Text } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
+import { TouchableOpacity } from '@src/components/core';
 
 const styled = StyleSheet.create({
   container: {
@@ -10,6 +11,8 @@ const styled = StyleSheet.create({
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',
+    maxWidth: '100%',
+    flex: 1,
   },
   title: {
     color: COLORS.white,
@@ -31,17 +34,16 @@ const ButtonBasic = props => {
     ...rest
   } = props;
   return (
-    <TouchableWithoutFeedback {...rest}>
-      <View
-        style={[styled.container, btnStyle, disabled ? styled.disabled : null]}
-      >
-        {customContent ? (
-          customContent
-        ) : (
-          <Text style={[styled.title, titleStyle]}>{title}</Text>
-        )}
-      </View>
-    </TouchableWithoutFeedback>
+    <TouchableOpacity
+      style={[styled.container, btnStyle, disabled ? styled.disabled : null]}
+      {...rest}
+    >
+      {customContent ? (
+        customContent
+      ) : (
+        <Text style={[styled.title, titleStyle]}>{title}</Text>
+      )}
+    </TouchableOpacity>
   );
 };
 

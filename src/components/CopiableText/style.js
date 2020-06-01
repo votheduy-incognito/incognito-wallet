@@ -13,7 +13,6 @@ export default StyleSheet.create({
   textBox: {
     flexDirection: 'column',
     alignItems: 'center',
-    width: '100%'
   },
   row: {
     alignItems: 'center',

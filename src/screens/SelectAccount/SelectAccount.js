@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Text } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { accountSeleclor } from '@src/redux/selectors';
 import PropTypes from 'prop-types';
@@ -8,10 +8,11 @@ import Header, { useSearchBox } from '@src/components/Header';
 import { withLayout_2 } from '@src/components/Layout';
 import { useNavigation } from 'react-navigation-hooks';
 import { defaultAccountNameSelector } from '@src/redux/selectors/account';
-import { Toast } from '@src/components/core';
+import { Toast , TouchableOpacity } from '@src/components/core';
 import { ExHandler } from '@src/services/exception';
 import includes from 'lodash/includes';
 import { styled, itemStyled } from './SelectAccount.styled';
+
 
 const AccountItem = ({ accountName, PaymentAddress }) => {
   const dispatch = useDispatch();

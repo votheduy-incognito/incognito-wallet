@@ -1,18 +1,12 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  ScrollView,
-  RefreshControl,
-} from 'react-native';
+import { View, Text, ScrollView, RefreshControl } from 'react-native';
 import Header from '@src/components/Header';
 import { BtnSelectAccount } from '@screens/SelectAccount';
 import { ButtonBasic, BtnQRCode, BtnClose } from '@src/components/Button';
-import { tokenSeleclor, accountSeleclor } from '@src/redux/selectors';
+import { tokenSeleclor } from '@src/redux/selectors';
 import { useSelector, useDispatch } from 'react-redux';
 import Token from '@src/components/Token';
-import { useNavigation, useIsFocused } from 'react-navigation-hooks';
+import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { CONSTANT_COMMONS } from '@src/constants';
 import {
@@ -25,7 +19,7 @@ import { actionToggleGuide } from '@src/screens/Shield/Shield.actions';
 import Tooltip from '@src/components/Tooltip/Tooltip';
 import { COLORS } from '@src/styles';
 import isNaN from 'lodash/isNaN';
-import PropTypes from 'prop-types';
+import { TouchableOpacity } from '@src/components/core';
 import {
   styled,
   styledHook,
@@ -175,11 +169,11 @@ const AddToken = () => {
   const navigation = useNavigation();
   const handleFollowToken = () => navigation.navigate(routeNames.FollowToken);
   return (
-    <TouchableWithoutFeedback onPress={handleFollowToken}>
+    <TouchableOpacity onPress={handleFollowToken}>
       <View style={[styledAddToken.container, styled.hook]}>
         <Text style={styledAddToken.title}>Add a coin +</Text>
       </View>
-    </TouchableWithoutFeedback>
+    </TouchableOpacity>
   );
 };
 

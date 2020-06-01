@@ -24,6 +24,7 @@ const styled = StyleSheet.create({
   btnStyle: {
     height: 40,
     paddingHorizontal: 20,
+    maxWidth: 100
   },
   titleStyle: {
     fontSize: FONT.SIZE.regular - 1,

@@ -13,7 +13,7 @@ import { MESSAGES } from '@screens/Dex/constants';
 import { actionToggleModal as toggleModal } from '@src/components/Modal';
 import routeNames from '@src/router/routeNames';
 import { ExHandler } from '@src/services/exception';
-import { change as rfOnChangeValue } from 'redux-form';
+import { change as rfOnChangeValue, focus } from 'redux-form';
 import { sendInReceiversSelector } from '@src/redux/selectors/receivers';
 import { HEADER_TITLE_RECEIVERS } from '@src/redux/types/receivers';
 import { estimateFeeSelector } from '@src/components/EstimateFee/EstimateFee.selector';
@@ -243,8 +243,9 @@ class SendCryptoContainer extends Component {
   };
 
   onSelectedItem = info => {
-    const { rfOnChangeValue, navigation } = this.props;
+    const { rfOnChangeValue, navigation, focus } = this.props;
     rfOnChangeValue(formName, 'toAddress', info.address);
+    focus(formName, 'toAddress');
     navigation.pop();
   };
 
@@ -292,6 +293,7 @@ const mapDispatch = {
   actionFetchedMaxFeePrv,
   actionFetchedMaxFeePToken,
   actionInit,
+  focus,
 };
 
 SendCryptoContainer.defaultProps = {
@@ -316,6 +318,7 @@ SendCryptoContainer.propTypes = {
   actionFetchedMaxFeePrv: PropTypes.func.isRequired,
   actionFetchedMaxFeePToken: PropTypes.func.isRequired,
   actionInit: PropTypes.func.isRequired,
+  focus: PropTypes.func.isRequired,
 };
 
 export default connect(

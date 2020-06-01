@@ -1,6 +1,7 @@
 import React from 'react';
-import { TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import srcScanQrCode from '@src/assets/images/icons/qr_code_scan.png';
+import { TouchableOpacity } from '@src/components/core';
 
 const styled = StyleSheet.create({
   icon: {

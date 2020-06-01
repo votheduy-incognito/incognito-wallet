@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Text, View, ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
 import withToken, { TokenContext } from '@src/components/Token/Token.enhance';
 import { TokenVerifiedIcon } from '@src/components/Icons';
@@ -11,6 +11,7 @@ import { BtnDelete } from '@src/components/Button';
 import replace from 'lodash/replace';
 import convert from '@src/utils/convert';
 import trim from 'lodash/trim';
+import { TouchableOpacity } from '@src/components/core';
 import { styled } from './Token.styled';
 
 const defaultProps = {
