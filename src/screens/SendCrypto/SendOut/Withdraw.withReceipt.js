@@ -55,10 +55,7 @@ const enhance = WrappedComp => props => {
         data: null,
       }),
     );
-    navigation.reset(
-      [NavigationActions.navigate({ routeName: routeNames.Wallet })],
-      0,
-    );
+    navigation.pop();
   };
   const onSaveReceivers = async () => {
     try {

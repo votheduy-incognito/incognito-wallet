@@ -10,7 +10,6 @@ const inputStyled = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomColor: COLORS.colorGreyBold,
-    marginRight: 30,
   },
   input: {
     flex: 1,

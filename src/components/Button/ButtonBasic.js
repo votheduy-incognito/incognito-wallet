@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
 import { TouchableOpacity } from '@src/components/core';
@@ -12,7 +12,6 @@ const styled = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     maxWidth: '100%',
-    flex: 1,
   },
   title: {
     color: COLORS.white,

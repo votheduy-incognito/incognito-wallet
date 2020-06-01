@@ -112,7 +112,7 @@ const Receipt = ({info, onBack, onSaveReceivers}) => {
         />
         <Button
           style={styleSheet.backButton}
-          title="Back to Wallet"
+          title="Go back to Assets"
           onPress={onBack}
         />
         {btnSaveReceiver}

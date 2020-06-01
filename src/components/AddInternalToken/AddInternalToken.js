@@ -291,25 +291,21 @@ class AddInternalToken extends Component {
                     componentProps={{
                       multiline: true,
                       numberOfLines: 10,
-                      maxLength: 200,
+                      maxLength: 255,
                     }}
                     name="description"
                     placeholder="Explain what your token is for, how users can get it, and any other details of your project. 255 characters max."
                     label="Description"
-                    style={[styleSheet.descriptionInput, { marginBottom: 50 }]}
-                    maxLength={255}
+                    style={[styleSheet.descriptionInput, { marginBottom: 10 }]}
                     validate={descriptionMaxLength}
                     inputStyle={styleSheet.input}
                     labelStyle={styleSheet.labelInput}
                   />
                   <View style={styleSheet.verifyInfoContainer}>
-                    <View style={styleSheet.verifyInfoHeader}>
-                      <InfoIcon />
-                      <Text style={styleSheet.verifyInfoLabel}>
-                        Fill in the fields below to earn a verified badge
-                        (optional):
-                      </Text>
-                    </View>
+                    <Text style={styleSheet.verifyInfoLabel}>
+                      Fill in the fields below to earn a verified badge
+                      (optional):
+                    </Text>
                     <Field
                       component={InputField}
                       name="ownerName"
@@ -447,6 +443,9 @@ const mapState = state => ({
 });
 
 export default compose(
-  connect(mapState, mapDispatch),
+  connect(
+    mapState,
+    mapDispatch,
+  ),
   withNavigation,
 )(AddInternalToken);

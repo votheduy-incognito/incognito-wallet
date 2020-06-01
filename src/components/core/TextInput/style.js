@@ -8,14 +8,14 @@ const style = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'center',
-    flex: 1,
+    height: 30,
   },
   label: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium,
     color: COLORS.black,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   input: {
     flex: 1,
