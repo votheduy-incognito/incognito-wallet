@@ -659,7 +659,7 @@ class WifiSetup extends PureComponent {
           }
           await LocalDatabase.updateDevice(fetchProductInfo);
           await LocalDatabase.saveVerifyCode('');
-          this.addStep({ name: 'Setup Wi-Fi for node success', isSuccess: true });
+          this.addStep({ name: 'Setting up node success', isSuccess: true });
           onNext();
         })
         .catch(async error => {
