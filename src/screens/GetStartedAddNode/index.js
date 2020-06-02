@@ -247,7 +247,7 @@ class GetStartedAddNode extends BaseScreen {
       Alert.alert('Connectivity', 'There is an issue with your connection. Please connect to connectable wifi for processing next step', [
         {
           text: 'Go to Settings',
-          onPress: () => { Linking.openSettings(); }
+          onPress: () => { Linking.openURL('App-Prefs:root=WIFI'); }
         }
       ]);
     }
