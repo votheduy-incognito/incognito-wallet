@@ -555,7 +555,7 @@ class WifiSetup extends PureComponent {
         .then(res => {
           console.log('=====================TRY VERIFY CODE' + LogManager.parseJsonObjectToJsonString(res));
           if (!res) {
-            this.addStep({ name: 'Verifing product code failed. Dont worry, we are still working on for you ...', isSuccess: false });
+            this.addStep({ name: 'Verifing product code failed. Still working on it for you ...', isSuccess: false });
             throw new Error('Empty result');
           }
 
@@ -696,7 +696,7 @@ class WifiSetup extends PureComponent {
       this.addStep({ name: 'Setup node failed', detail: e, isSuccess: false });
       // Check if exist verify code failed
       for (let i = 0; i < steps.length; i++) {
-        if (steps[i]?.name === 'Verify code failed') {
+        if (steps[i]?.name.includes('Verifing product code failed. Still working on it for you ...')) {
           this.setState({ backToQRCode: true });
           break;
         }
