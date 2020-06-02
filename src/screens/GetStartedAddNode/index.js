@@ -9,6 +9,7 @@ import FirstScreen from '@screens/GetStartedAddNode/components/FirstScreen';
 import { locationPermission, checkPermission, ENUM_RESULT_PERMISSION } from '@src/utils/PermissionUtil';
 import TurnOffCellular from '@screens/GetStartedAddNode/components/TurnOffCellular';
 import { COLORS } from '@src/styles';
+import WifiManager from 'react-native-wifi-reborn';
 import { Icon } from 'react-native-elements';
 import bandWidthPng from '@src/assets/images/bandwidth.png';
 import { checkBandWidth } from '@src/utils/connection';
@@ -220,7 +221,20 @@ class GetStartedAddNode extends BaseScreen {
       }
     }
   };
+  // Get current wifi
+   getCurrentWifi = async () => {
+     try {
+       const ssid = await WifiManager.getCurrentWifiSSID();
 
+       console.debug('SSID', ssid);
+
+       this.setState({ ssid });
+       return ssid;
+     } catch (error) {
+       this.setState({ ssid: '' });
+       return '';
+     }
+   }
   setStep = async (step) => {
     // Check internet connectable
     let isConnected = await (await NetInfo.fetch()).isConnected;
