@@ -8,10 +8,12 @@ import { AccountWallet, KeyWallet, Wallet } from 'incognito-chain-web-js/build/w
 import _ from 'lodash';
 import { STACK_TRACE } from '@services/exception/customError/code/webjsCode';
 import { cachePromise } from '@services/cache';
+import { chooseBestCoinToSpent } from 'incognito-chain-web-js/lib/tx/utils';
+import bn from 'bn.js';
 import { CustomError, ErrorCode } from '../exception';
 import { getActiveShard } from './RpcClientService';
 import tokenService, { getUserUnfollowTokenIDs, setUserUnfollowTokenIDs } from './tokenService';
-import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
+import { loadListAccountWithBLSPubKey, saveWallet, SuccessTx } from './WalletService';
 
 const TAG = 'Account';
 
@@ -19,34 +21,35 @@ const getBalanceNoCache = (indexAccount, wallet, tokenId) => () => {
   return wallet.MasterAccount.child[indexAccount].getBalance(tokenId);
 };
 
-// const hasSpendingCoins = (indexAccount, wallet, amount, tokenId) => async () => {
-//   const account = wallet.MasterAccount.child[indexAccount];
-//   let coins = await account.getUnspentToken(tokenId, Wallet.RpcClient);
-//
-//   let histories;
-//
-//   await wallet.updateStatusHistory();
-//
-//   histories = await account.getNormalTxHistory();
-//   histories = histories.concat(await account.getPrivacyTokenTxHistory());
-//
-//   const spendingCoins = chooseBestCoinToSpent(coins, new bn(amount)).resultInputCoins;
-//
-//   console.debug('HISTORIES', histories.length, histories);
-//
-//   histories = histories.filter(item => item.status === SuccessTx);
-//
-//   console.debug('HISTORIES', histories.length, histories);
-//
-//   const isUsed = histories.some(history =>
-//     spendingCoins.find(coin => history.listUTXOForPToken.includes(coin.SNDerivator)) ||
-//     spendingCoins.find(coin => history.listUTXOForPRV.includes(coin.SNDerivator))
-//   );
-//
-//   console.debug('SPENDING COINS', spendingCoins);
-//
-//   return isUsed;
-// };
+const getPendingHistory = (histories, spendingCoins) => {
+  histories = histories.filter(item => item.status === SuccessTx);
+
+  const pendingHistory =  histories.find(history =>
+    spendingCoins.find(coin => history.listUTXOForPToken.includes(coin.SNDerivator)) ||
+    spendingCoins.find(coin => history.listUTXOForPRV.includes(coin.SNDerivator))
+  );
+
+  console.debug('GET PENDING HISTORY', pendingHistory);
+
+  return pendingHistory;
+};
+
+const hasSpendingCoins = async (indexAccount, wallet, amount, tokenId) => {
+  const account = wallet.MasterAccount.child[indexAccount];
+  let coins = await account.getUnspentToken(tokenId, Wallet.RpcClient);
+
+  let histories;
+
+  await wallet.updateStatusHistory();
+
+  histories = await account.getNormalTxHistory();
+  histories = histories.concat(await account.getPrivacyTokenTxHistory());
+
+  const spendingCoins = chooseBestCoinToSpent(coins, new bn(amount)).resultInputCoins;
+
+  return getPendingHistory(histories, spendingCoins);
+};
+
 
 export default class Account {
   static async getDefaultAccountName() {
@@ -569,11 +572,8 @@ export default class Account {
     return error.stackTrace.includes(STACK_TRACE.REPLACEMENT);
   }
 
-  // static async hasSpendingCoins(account, wallet, tokenId = null) {
-  //   // const key = `unspent-balance-${account.name || account.AccountName}-${tokenId || '0000000000000000000000000000000000000000000000000000000000000004'}`;
-  //   const indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
-  //
-  //   // return cachePromise(key, getUnspentBalanceNoCache(indexAccount, wallet, tokenId));
-  //   return hasSpendingCoins(indexAccount, wallet, tokenId)();
-  // }
+  static hasSpendingCoins(account, wallet, amount, tokenId = null) {
+    const indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
+    return hasSpendingCoins(indexAccount, wallet, amount, tokenId);
+  }
 }

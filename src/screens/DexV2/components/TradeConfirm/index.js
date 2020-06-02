@@ -77,10 +77,10 @@ const Trade = ({
           left={(
             <View style={styles.row}>
               <Text style={styles.extra}>Fee</Text>
-              <Help title="Fee" content="Network fees go to validators." />
+              <Help title="Fee" content="This includes trading fee and network fee. Network fee go to validators. Trading fee go to ethereum network." />
             </View>
           )}
-          right={`${format.amount(fee, feeToken.pDecimals)} ${feeToken.symbol}`}
+          right={`${format.amount(fee + DEFI_TRADING_FEE, feeToken.pDecimals)} ${feeToken.symbol}`}
           style={styles.extra}
         />
         <Powered />
