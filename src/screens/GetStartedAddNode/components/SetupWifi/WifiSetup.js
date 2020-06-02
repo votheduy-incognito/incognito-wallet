@@ -538,7 +538,7 @@ class WifiSetup extends PureComponent {
     }
   };
 
-  tryVerifyCode = async (count = 36, isLast = false) => {
+  tryVerifyCode = async (count = 18, isLast = false) => {
     this.funcQueue.push('tryVerifyCode');
     const { verifyCode, lastVerifyCode } = this.state;
     console.log('### INCOGNITO ###: tryVerifyCode ' + verifyCode + '_' + lastVerifyCode);
@@ -555,7 +555,7 @@ class WifiSetup extends PureComponent {
         .then(res => {
           console.log('=====================TRY VERIFY CODE' + LogManager.parseJsonObjectToJsonString(res));
           if (!res) {
-            this.addStep({ name: 'Verify code failed', isSuccess: false });
+            this.addStep({ name: 'Verifing product code failed. Dont worry, we are still working on for you ...', isSuccess: false });
             throw new Error('Empty result');
           }
 
@@ -566,21 +566,16 @@ class WifiSetup extends PureComponent {
           // this.addStep({ name: 'Try to redo verifying code error', detail: error });
           throw error;
         });
-    }, count, 5);
+    }, count, 10);
 
     if (result && result?.status != 0) {
-      this.addStep({ name: 'Verify code success', detail: JSON.stringify(result), isSuccess: true });
+      this.addStep({ name: 'Cool! Product code verified successfully', detail: JSON.stringify(result), isSuccess: true });
       return result;
     } else {
       this.setState({ backToQRCode: true });
-      this.addStep({ name: 'Verify code failed', isSuccess: false });
+      this.addStep({ name: 'Opps, verify code failed', isSuccess: false });
       throw new Error('Verify code failed');
     }
-    // } else {
-    //   this.setState({ backToQRCode: true });
-    //   this.addStep({ name: 'Verify code failed', isSuccess: false });
-    //   throw new Error('Verify code failed');
-    // }
   };
 
   authFirebase = async (productInfo) => {
