@@ -202,8 +202,18 @@ class WifiSetup extends PureComponent {
                 reject(new Error('Connect to another Wi-Fi'));
               }
             },
-            (error) => {
+            async (error) => {
               this.setState({ loading: false });
+              // Check internet connectable
+              let isConnected = await (await NetInfo.fetch()).isConnected;
+              let connectable = await (await NetInfo.fetch()).isInternetReachable;
+              // And wifi name is the same with hotspot
+              let wifiName = await this.getCurrentWifi();
+
+              if (!isConnected || !connectable || wifiName.includes('Node') || !wifiName != '') {
+                this.setState({ backToQRCode: true });
+                this.addStep({ name: 'There is an issue with your wifiname/password or internet connection quality now.\nPlease try to connect to wifi manually', isSuccess: false });
+              }
               this.addStep({ name: 'Setup wifi for node: \n' + error?.message || '', isSuccess: false });
               console.debug('CONNECT ERROR', error);
               if (this.isMounteds) {
@@ -238,8 +248,10 @@ class WifiSetup extends PureComponent {
       console.debug('SSID', ssid);
 
       this.setState({ ssid });
+      return ssid;
     } catch (error) {
       this.setState({ ssid: '' });
+      return '';
     }
   }
 
@@ -481,7 +493,7 @@ class WifiSetup extends PureComponent {
     this.setupWifiZMQ(params)
       .then(async result => {
         if (result) {
-          this.addStep({ name: 'Setup Wi-Fi for node', detail: JSON.stringify(params) + ' ' + JSON.stringify(result), isSuccess: true });
+          this.addStep({ name: 'Setting up Wi-Fi for node', detail: JSON.stringify(params) + ' ' + JSON.stringify(result), isSuccess: true });
           await LocalDatabase.saveVerifyCode(verifyNewCode);
           if (_.isEmpty(result)) {
             throw new CustomError(knownCode.node_can_not_connect_hotspot);
@@ -489,7 +501,7 @@ class WifiSetup extends PureComponent {
 
           // Re connect wifi
 
-          this.addStep({ name: 'Check node hotspot', isSuccess: true });
+          this.addStep({ name: 'Checking node hotspot', isSuccess: true });
 
           this.setState({ lastVerifyCode: verifyNewCode });
 
@@ -530,6 +542,13 @@ class WifiSetup extends PureComponent {
     this.funcQueue.push('tryVerifyCode');
     const { verifyCode, lastVerifyCode } = this.state;
     console.log('### INCOGNITO ###: tryVerifyCode ' + verifyCode + '_' + lastVerifyCode);
+    // Check internet connectable
+    let isConnected = await (await NetInfo.fetch()).isConnected;
+    let connectable = await (await NetInfo.fetch()).isInternetReachable;
+    // And wifi name is the same with hotspot
+    let wifiName = await this.getCurrentWifi();
+
+    // if (isConnected && isConnected && connectable && connectable && wifiName && !wifiName.includes('Node') && wifiName != '') {
     this.addStep({ name: isLast ? 'Trying last product code ...' : 'Verifying product code', detail: verifyCode, isSuccess: true });
     const result = await this.tryAtMost(() => {
       return NodeService.verifyProductCode(lastVerifyCode)
@@ -551,12 +570,17 @@ class WifiSetup extends PureComponent {
 
     if (result && result?.status != 0) {
       this.addStep({ name: 'Verify code success', detail: JSON.stringify(result), isSuccess: true });
+      return result;
     } else {
       this.setState({ backToQRCode: true });
       this.addStep({ name: 'Verify code failed', isSuccess: false });
       throw new Error('Verify code failed');
     }
-    return result;
+    // } else {
+    //   this.setState({ backToQRCode: true });
+    //   this.addStep({ name: 'Verify code failed', isSuccess: false });
+    //   throw new Error('Verify code failed');
+    // }
   };
 
   authFirebase = async (productInfo) => {
@@ -635,6 +659,7 @@ class WifiSetup extends PureComponent {
           }
           await LocalDatabase.updateDevice(fetchProductInfo);
           await LocalDatabase.saveVerifyCode('');
+          this.addStep({ name: 'Setup Wi-Fi for node success', isSuccess: true });
           onNext();
         })
         .catch(async error => {
@@ -646,10 +671,12 @@ class WifiSetup extends PureComponent {
             return;
           }
           this.setState({ loading: false });
-          this.addStep({ name: 'Send stake request failed', detail: '', isSuccess: false });
+          this.addStep({ name: 'Send stake request failed' + error?.message || '', detail: error?.message, isSuccess: false });
         });
 
     } catch (error) {
+      this.setState({ loading: false });
+      this.addStep({ name: 'Send stake request failed', detail: error?.message, isSuccess: false });
       await APIService.trackLog({ action: funcName, message: `Result: connected Node ==> ERROR- message ${error.message}` });
       throw error;
     }
@@ -666,7 +693,7 @@ class WifiSetup extends PureComponent {
       Util.delay(2);
       // Check code in firebase
       await this.verifyCodeFirebase(36, false);
-      this.addStep({ name: 'Setup Wi-Fi for node success', isSuccess: true });
+      
     } catch (e) {
       const { steps } = this.state;
       this.setState({ loading: false });
