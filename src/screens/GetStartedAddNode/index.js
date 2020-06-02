@@ -222,28 +222,28 @@ class GetStartedAddNode extends BaseScreen {
     }
   };
   // Get current wifi
-   getCurrentWifi = async () => {
-     try {
-       const ssid = await WifiManager.getCurrentWifiSSID();
+  getCurrentWifi = async () => {
+    try {
+      const ssid = await WifiManager.getCurrentWifiSSID();
 
-       console.debug('SSID', ssid);
+      console.debug('SSID', ssid);
 
-       this.setState({ ssid });
-       return ssid;
-     } catch (error) {
-       this.setState({ ssid: '' });
-       return '';
-     }
-   }
+      this.setState({ ssid });
+      return ssid;
+    } catch (error) {
+      this.setState({ ssid: '' });
+      return '';
+    }
+  }
   setStep = async (step) => {
     // Check internet connectable
     let isConnected = await (await NetInfo.fetch()).isConnected;
     let connectable = await (await NetInfo.fetch()).isInternetReachable;
     // And wifi name is the same with hotspot
     let wifiName = await this.getCurrentWifi();
-    if (isConnected && isConnected && connectable && connectable && wifiName && !wifiName.includes('Node') && wifiName != '') {
-      this.setState({ step: step });
-    } else {
+
+    this.setState({ step: step });
+    if (!isConnected || !connectable || !wifiName || wifiName.includes('Node') || wifiName != '') {
       Alert.alert('Connectivity', 'There is an issue with your connection. Please connect to connectable wifi for processing next step', [
         {
           text: 'Go to Settings',
@@ -251,7 +251,6 @@ class GetStartedAddNode extends BaseScreen {
         }
       ]);
     }
-
   }
 
   renderStep() {
