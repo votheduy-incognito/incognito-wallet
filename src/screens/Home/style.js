@@ -1,12 +1,13 @@
-import {StyleSheet, Dimensions} from 'react-native';
-import {COLORS, FONT} from '@src/styles';
+import { StyleSheet, Dimensions } from 'react-native';
+import { COLORS, FONT } from '@src/styles';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const style = StyleSheet.create({
   container: {
     flex: 1,
   },
   contentContainer: {
+    marginTop: 20,
   },
   btnContainer: {
     flexDirection: 'row',
@@ -14,7 +15,6 @@ const style = StyleSheet.create({
     alignItems: 'center',
     alignContent: 'center',
     width: width,
-    marginTop: 20,
   },
   content: {
     flex: 1,
@@ -31,21 +31,18 @@ const style = StyleSheet.create({
     alignContent: 'center',
     height: 120,
     alignItems: 'center',
-    
   },
   accTitle: {
-    color: COLORS.black
+    color: COLORS.black,
   },
   titleHeader: {
     fontFamily: FONT.NAME.bold,
     fontSize: 25,
-    marginTop: 30,
-    marginLeft: 35,
-    marginEnd: 35,
+    lineHeight: 30,
   },
   tooltip: {
-    bottom: 110
-  }
+    bottom: 110,
+  },
 });
 
 export default style;

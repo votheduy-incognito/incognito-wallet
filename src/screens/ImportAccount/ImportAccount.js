@@ -3,11 +3,16 @@ import {
   Button,
   View,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
 } from '@src/components/core';
 import PropTypes from 'prop-types';
 import { Field } from 'redux-form';
-import { createForm, InputField, InputQRField, validator } from '@src/components/core/reduxForm';
+import {
+  createForm,
+  InputField,
+  InputQRField,
+  validator,
+} from '@src/components/core/reduxForm';
 import React, { Component } from 'react';
 import randomName from '@src/utils/randomName';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
@@ -22,7 +27,7 @@ class ImportAccount extends Component {
     super();
 
     this.state = {
-      isUseRandomName: true
+      isUseRandomName: true,
     };
   }
 
@@ -30,7 +35,7 @@ class ImportAccount extends Component {
     this.setState(({ isUseRandomName }) => {
       if (isUseRandomName) {
         return {
-          randomName: this.genAccountName()
+          randomName: this.genAccountName(),
         };
       }
     });
@@ -42,12 +47,12 @@ class ImportAccount extends Component {
   };
 
   genAccountName = () => {
-    const { accountList } =  this.props;
+    const { accountList } = this.props;
     const excludeNameList = accountList.map(account => account.name);
     return randomName({ excludes: excludeNameList });
   };
 
-  handleImportAccount = async ({ accountName : name, privateKey }) => {
+  handleImportAccount = async ({ accountName: name, privateKey }) => {
     const { accountList, importAccount, navigation } = this.props;
     const { isUseRandomName, randomName } = this.state;
     const accountName = isUseRandomName ? randomName : name;
@@ -56,7 +61,7 @@ class ImportAccount extends Component {
     try {
       if (
         accountList.find(
-          _account => lowerCase(_account.name) === lowerCase(accountName)
+          _account => lowerCase(_account.name) === lowerCase(accountName),
         )
       ) {
         return throw new CustomError(ErrorCode.importAccount_existed);
@@ -72,7 +77,10 @@ class ImportAccount extends Component {
 
       this.goBack();
     } catch (e) {
-      new ExHandler(e, 'Import keychain failed, please try again.').showErrorToast();
+      new ExHandler(
+        e,
+        'Import keychain failed, please try again.',
+      ).showErrorToast();
     }
   };
 
@@ -84,7 +92,7 @@ class ImportAccount extends Component {
     rfChange(formName, 'accountName', randomName);
 
     this.setState({ isUseRandomName: false });
-  }
+  };
 
   render() {
     const { isUseRandomName, randomName } = this.state;
@@ -94,42 +102,52 @@ class ImportAccount extends Component {
         <Form>
           {({ handleSubmit, submitting }) => (
             <View style={styleSheet.form}>
-              {
-                isUseRandomName && randomName
-                  ? (
-                    <View style={styleSheet.randomNameField}>
-                      <Text style={styleSheet.randomNameLabel}>Keychain Name</Text>
-                      <View style={styleSheet.randomNameValue}>
-                        <Text numberOfLines={1} ellipsizeMode='tail' style={styleSheet.randomNameText}>
-                          {randomName}
-                        </Text>
-                        <TouchableOpacity onPress={this.hanldeChangeRandomName} style={styleSheet.randomNameChangeBtn}>
-                          <Text style={styleSheet.randomNameChangeBtnText}>Edit</Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  )
-                  : (
-                    <Field
-                      component={InputField}
-                      componentProps={{ autoFocus: true }}
-                      name='accountName'
-                      placeholder='Keychain Name'
-                      label='Keychain Name'
-                      validate={validator.combinedAccountName}
-                    />
-                  )
-              }
+              {isUseRandomName && randomName ? (
+                <View style={styleSheet.randomNameField}>
+                  <Text style={styleSheet.randomNameLabel}>Keychain Name</Text>
+                  <View style={styleSheet.randomNameValue}>
+                    <Text
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      style={styleSheet.randomNameText}
+                    >
+                      {randomName}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={this.hanldeChangeRandomName}
+                      style={styleSheet.randomNameChangeBtn}
+                    >
+                      <Text style={styleSheet.randomNameChangeBtnText}>
+                        Edit
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ) : (
+                <Field
+                  component={InputField}
+                  componentProps={{
+                    autoFocus: true,
+                    style: {
+                      marginTop: 0,
+                    },
+                  }}
+                  name="accountName"
+                  placeholder="Keychain Name"
+                  label="Keychain Name"
+                  validate={validator.combinedAccountName}
+                />
+              )}
 
               <Field
                 component={InputQRField}
-                name='privateKey'
-                placeholder='Enter Private Key'
-                label='Private Key'
+                name="privateKey"
+                placeholder="Enter Private Key"
+                label="Private Key"
                 validate={[isRequired]}
               />
               <Button
-                title='Import'
+                title="Import"
                 style={styleSheet.submitBtn}
                 onPress={handleSubmit(this.handleImportAccount)}
                 isAsync
@@ -152,7 +170,7 @@ ImportAccount.propTypes = {
   navigation: PropTypes.object.isRequired,
   accountList: PropTypes.array,
   importAccount: PropTypes.func,
-  rfChange: PropTypes.func.isRequired
+  rfChange: PropTypes.func.isRequired,
 };
 
 export default ImportAccount;

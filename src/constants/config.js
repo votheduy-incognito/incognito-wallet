@@ -12,9 +12,9 @@ export const MAIN_WEBSITE = 'https://incognito.org/latest?utm_source=mobileapp';
 const API_BASE_URL = isMainnet
   ? 'https://api.incognito.org'
   : 'https://api-staging.incognito.org';
-const API_BASE_URL2 = isMainnet?
-  'https://device-network.incognito.org/' :
-  'https://device-network-staging.incognito.org/';
+const API_BASE_URL2 = isMainnet
+  ? 'https://device-network.incognito.org/'
+  : 'https://device-network-staging.incognito.org/';
 const ETHERSCAN_URL = isMainnet
   ? 'https://etherscan.io'
   : 'https://kovan.etherscan.io';
@@ -47,9 +47,9 @@ const ETH_TOKEN_ID = isMainnet
 const CRYPTO_ICON_URL =
   'https://s3.amazonaws.com/incognito-org/wallet/cryptocurrency-icons/32@2x/color';
 
-const HOME_CONFIG_DATA = isMainnet ?
-  'https://api-data.incognito.org/home-configs':
-  'https://api-data-staging.incognito.org/home-configs';
+const HOME_CONFIG_DATA = isMainnet
+  ? 'https://api-data.incognito.org/v2/home-configs'
+  : 'https://api-data-staging.incognito.org/v2/home-configs';
 
 export default {
   isMainnet,

@@ -12,7 +12,7 @@ const SendReceiveGroup = ({ navigation }) => {
 
   return (
     <View style={backupStyle.container}>
-      <Button title='Backup' onPress={goToBackup} style={backupStyle.button} titleStyle={backupStyle.buttonText} />
+      <Button title='Back up' onPress={goToBackup} style={backupStyle.button} titleStyle={backupStyle.buttonText} />
     </View>
   );
 };

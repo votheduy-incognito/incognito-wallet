@@ -2,7 +2,7 @@ import TokenModel from './token';
 
 class PToken {
   constructor(data = {}) {
-    const pairPrv = data?.CurrentPrvPool !== 0 && data?.PricePrv !== 0;
+    const pairPrv = data?.CurrentPrvPool !== 0;
     this.id = data.ID;
     this.createdAt = data.CreatedAt;
     this.updatedAt = data.UpdatedAt;

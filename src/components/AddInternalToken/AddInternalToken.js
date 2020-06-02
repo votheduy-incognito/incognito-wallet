@@ -287,7 +287,6 @@ class AddInternalToken extends Component {
                   />
                   <Field
                     component={InputField}
-                    containerStyle={styleSheet.descriptionInput}
                     componentProps={{
                       multiline: true,
                       numberOfLines: 10,
@@ -296,10 +295,10 @@ class AddInternalToken extends Component {
                     name="description"
                     placeholder="Explain what your token is for, how users can get it, and any other details of your project. 255 characters max."
                     label="Description"
-                    style={[styleSheet.descriptionInput, { marginBottom: 10 }]}
                     validate={descriptionMaxLength}
                     inputStyle={styleSheet.input}
                     labelStyle={styleSheet.labelInput}
+                    containerStyle={styleSheet.descriptionInput}
                   />
                   <View style={styleSheet.verifyInfoContainer}>
                     <Text style={styleSheet.verifyInfoLabel}>

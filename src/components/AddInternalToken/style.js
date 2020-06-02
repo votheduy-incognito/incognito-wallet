@@ -10,7 +10,9 @@ const style = StyleSheet.create({
     flexDirection: 'column',
     width: '100%',
   },
-  verifyInfoContainer: {},
+  verifyInfoContainer: {
+    marginTop: 10
+  },
   verifyInfoHeader: {
     flexDirection: 'row',
   },
@@ -36,7 +38,9 @@ const style = StyleSheet.create({
     lineHeight: FONT.SIZE.regular + 4,
     fontFamily: FONT.NAME.bold,
   },
-  descriptionInput: {},
+  descriptionInput: {
+    height: 80,
+  },
   submitBtn: {
     marginVertical: 50,
     borderRadius: 100,
