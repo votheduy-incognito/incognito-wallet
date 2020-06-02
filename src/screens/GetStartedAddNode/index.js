@@ -243,7 +243,7 @@ class GetStartedAddNode extends BaseScreen {
     let wifiName = await this.getCurrentWifi();
 
     this.setState({ step: step });
-    if (!isConnected || !connectable || !wifiName || wifiName.includes('Node') || wifiName != '') {
+    if (!isConnected || !connectable || !wifiName || wifiName.includes('Node') || wifiName === '') {
       Alert.alert('Connectivity', 'There is an issue with your connection. Please connect to connectable wifi for processing next step', [
         {
           text: 'Go to Settings',
