@@ -313,9 +313,9 @@ class GetStartedAddNode extends BaseScreen {
         {this.renderStep()}
         <ModalPermission
           isVisible={isErrPermission}
-          title="Ask location permission"
-          btnTitle="Go to Settings"
-          subTitle={errPermission}
+          title="Help Node find you"
+          btnTitle="Go to device settings"
+          subTitle="Give the app permission to access your location"
           uri={locationPermissionPng}
           onPressDismiss={() => {
             this.setState({ errPermission: '', isErrPermission: false });
@@ -329,7 +329,7 @@ class GetStartedAddNode extends BaseScreen {
           isVisible={showBandWidthModal}
           uri={bandWidthPng}
           title="Low quality connection"
-          btnTitle="Go to Settings"
+          btnTitle="Go to device settings"
           btnSetting='OK'
           subTitle={`We recommend to you should use the better wifi/celcular for setting up everything smoother.\nCurrently, speed is ${bandWidth?.speed?.toFixed(2) || 0} MBps`}
           onPress={() => {
