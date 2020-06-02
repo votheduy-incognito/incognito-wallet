@@ -13,6 +13,7 @@ import { Icon } from 'react-native-elements';
 import bandWidthPng from '@src/assets/images/bandwidth.png';
 import { checkBandWidth } from '@src/utils/connection';
 import { RESULTS } from 'react-native-permissions';
+import NetInfo from '@react-native-community/netinfo';
 import ModalPermission from '@src/components/Modal/ModalPermission';
 import { Linking, Alert } from 'react-native';
 import { withNavigationFocus } from 'react-navigation';
@@ -204,7 +205,7 @@ class GetStartedAddNode extends BaseScreen {
         } else {
           if (account && account?.ValidatorKey && account?.PaymentAddress) {
             this.setState({ qrCode, account, hotspotSSID }, this.nextScreen);
-          }  
+          }
         }
       } else {
         // Force eventhough the same
@@ -220,10 +221,25 @@ class GetStartedAddNode extends BaseScreen {
     }
   };
 
-  setStep = (step) => {
-    this.setState({ step: step });
+  setStep = async (step) => {
+    // Check internet connectable
+    let isConnected = await (await NetInfo.fetch()).isConnected;
+    let connectable = await (await NetInfo.fetch()).isInternetReachable;
+    // And wifi name is the same with hotspot
+    let wifiName = await this.getCurrentWifi();
+    if (isConnected && isConnected && connectable && connectable && wifiName && !wifiName.includes('Node') && wifiName != '') {
+      this.setState({ step: step });
+    } else {
+      Alert.alert('Connectivity', 'There is an issue with your connection. Please connect to connectable wifi for processing next step', [
+        {
+          text: 'Go to Settings',
+          onPress: () => { Linking.openSettings(); }
+        }
+      ]);
+    }
+
   }
-  
+
   renderStep() {
     const { step, qrCode, hotspotSSID, account } = this.state;
 
