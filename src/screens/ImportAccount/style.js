@@ -23,7 +23,7 @@ const style = StyleSheet.create({
     maxWidth: UTILS.deviceWidth() - 130, // 30 px padding, 100px is randomNameChangeBtn's width
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.superMedium),
+    lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.colorGreyBold,
   },
   randomNameChangeBtn: {
@@ -35,7 +35,7 @@ const style = StyleSheet.create({
   },
   randomNameLabel: {
     fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.medium),
+    lineHeight: FONT.SIZE.superMedium + 4,
     fontFamily: FONT.NAME.bold,
     marginBottom: 10,
     color: COLORS.black,

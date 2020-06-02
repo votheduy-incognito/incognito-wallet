@@ -13,7 +13,7 @@ const style = StyleSheet.create({
   label: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.black,
     marginBottom: 10,
   },

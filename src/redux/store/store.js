@@ -1,10 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import rootReducer from '@src/redux/reducers';
-import {applyMiddleware, createStore} from 'redux';
-import {composeWithDevTools} from 'redux-devtools-extension';
+import { applyMiddleware, createStore } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
 import thunkMiddleware from 'redux-thunk';
 import AsyncStorage from '@react-native-community/async-storage';
-import {persistStore, persistReducer} from 'redux-persist';
+import { persistStore, persistReducer } from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
 export default function configureStore(preloadedState) {
@@ -12,7 +12,7 @@ export default function configureStore(preloadedState) {
     key: 'root',
     storage: AsyncStorage,
     whitelist: ['receivers'],
-    blacklist: ['stakeHistory', 'stake'],
+    blacklist: ['stakeHistory', 'stake', 'home'],
     stateReconciler: autoMergeLevel2,
   };
   const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -33,5 +33,5 @@ export default function configureStore(preloadedState) {
     });
   }
 
-  return {store, persistor};
+  return { store, persistor };
 }
