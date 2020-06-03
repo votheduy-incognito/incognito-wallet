@@ -56,7 +56,6 @@ const enhance = WrappedComp => props => {
 
   React.useEffect(() => {
     fetchData();
-    getHomeConfiguration();
     tryLastWithdrawal();
   }, []);
 

@@ -172,4 +172,8 @@ Detail.propTypes = {
   handleLoadHistory: PropTypes.func.isRequired,
 };
 
+History.propTypes = {
+  handleLoadHistory: PropTypes.func.isRequired,
+};
+
 export default withDetail(Detail);

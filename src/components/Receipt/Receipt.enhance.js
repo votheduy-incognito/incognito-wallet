@@ -1,31 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import formatUtil from '@src/utils/format';
-import { CONSTANT_COMMONS, CONSTANT_KEYS } from '@src/constants';
+import { CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
 import { useDispatch, useSelector } from 'react-redux';
 import { actionToggleModal } from '@src/components/Modal';
 import { useNavigation } from 'react-navigation-hooks';
-import { NavigationActions } from 'react-navigation';
 import routeNames from '@src/router/routeNames';
 import { ExHandler } from '@src/services/exception';
-import { withdrawReceiversSelector } from '@src/redux/selectors/receivers';
-import { useBtnSaveReceiver } from '../FrequentReceivers/FrequentReceivers.hooks';
+import { receiversSelector } from '@src/redux/selectors/receivers';
+import { useBtnSaveReceiver } from '@screens/SendCrypto/FrequentReceivers/FrequentReceivers.hooks';
+import { compose } from 'redux';
+import { withLayout_2 } from '@src/components/Layout';
 
 const enhance = WrappedComp => props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const { receivers } = useSelector(withdrawReceiversSelector);
   const {
     toAddress,
     lockTime,
     pDecimals,
-    amountPToken,
+    originalAmount,
     fee,
     feeUnit,
     tokenSymbol,
+    keySaveAddressBook,
+    txId,
   } = props;
+  const { receivers } = useSelector(receiversSelector)[keySaveAddressBook];
   const time = formatUtil.formatDateTime(lockTime * 1000);
-  const amount = `${formatUtil.amount(amountPToken, pDecimals)} ${tokenSymbol}`;
+  const amount = `${formatUtil.amount(
+    originalAmount,
+    pDecimals,
+  )} ${tokenSymbol}`;
   const infoFactories = [
     {
       label: 'To',
@@ -47,6 +53,12 @@ const enhance = WrappedComp => props => {
       desc: `${fee} ${feeUnit}`,
       disabled: !fee,
     },
+    {
+      label: 'TxID',
+      desc: `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txId}`,
+      disabled: !txId,
+      renderTx: true,
+    },
   ];
   const onBack = () => {
     dispatch(
@@ -63,7 +75,7 @@ const enhance = WrappedComp => props => {
         info: {
           toAddress,
         },
-        keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK,
+        keySave: keySaveAddressBook,
         headerTitle: 'Save address',
       });
       await dispatch(
@@ -92,9 +104,9 @@ enhance.defaultProps = {
   lockTime: 0,
   pDecimals: CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY,
   amountPToken: 0,
-  feeNativeToken: 0,
-  feePToken: 0,
   tokenSymbol: '',
+  keySaveAddressBook: '',
+  txId: '',
 };
 
 enhance.propTypes = {
@@ -102,10 +114,13 @@ enhance.propTypes = {
   toAddress: PropTypes.string,
   lockTime: PropTypes.number,
   pDecimals: PropTypes.string,
-  amountPToken: PropTypes.number,
-  feeNativeToken: PropTypes.number,
-  feePToken: PropTypes.number,
+  originalAmount: PropTypes.number,
   tokenSymbol: PropTypes.string,
+  keySaveAddressBook: PropTypes.string,
+  txId: PropTypes.string,
 };
 
-export default enhance;
+export default compose(
+  withLayout_2,
+  enhance,
+);

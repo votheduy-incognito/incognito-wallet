@@ -21,7 +21,10 @@ export const actionFetchFail = () => ({
 });
 
 export const actionFetch = () => async (dispatch, getState) => {
-  const { defaultConfigs } = getState()?.home;
+  const { defaultConfigs, isFetching } = getState()?.home;
+  if (isFetching) {
+    return;
+  }
   let categories = isArray(defaultConfigs?.categories)
     ? defaultConfigs?.categories
     : HOME_CONFIGS.categories;

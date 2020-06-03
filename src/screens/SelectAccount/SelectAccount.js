@@ -8,11 +8,10 @@ import Header, { useSearchBox } from '@src/components/Header';
 import { withLayout_2 } from '@src/components/Layout';
 import { useNavigation } from 'react-navigation-hooks';
 import { defaultAccountNameSelector } from '@src/redux/selectors/account';
-import { Toast , TouchableOpacity } from '@src/components/core';
+import { Toast, TouchableOpacity } from '@src/components/core';
 import { ExHandler } from '@src/services/exception';
 import includes from 'lodash/includes';
 import { styled, itemStyled } from './SelectAccount.styled';
-
 
 const AccountItem = ({ accountName, PaymentAddress }) => {
   const dispatch = useDispatch();
@@ -68,7 +67,7 @@ const ListAccount = () => {
     ],
   });
   return (
-    <ScrollView style={styled.scrollview}>
+    <ScrollView style={styled.scrollview} showsVerticalScrollIndicator={false}>
       {result.map(item => (
         <AccountItem key={item?.accountName} {...item} />
       ))}

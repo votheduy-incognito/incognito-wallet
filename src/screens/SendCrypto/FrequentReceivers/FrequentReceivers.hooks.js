@@ -1,23 +1,27 @@
 import React from 'react';
-import {Button} from '@src/components/core';
-import {StyleSheet} from 'react-native';
-import {ExHandler} from '@src/services/exception';
+import { ButtonBasic } from '@src/components/Button';
+import { StyleSheet } from 'react-native';
+import { ExHandler } from '@src/services/exception';
 import PropTypes from 'prop-types';
-import {isFieldExist} from './FrequentReceivers.utils';
+import { FONT, COLORS } from '@src/styles';
+import { isFieldExist } from './FrequentReceivers.utils';
 
 const styleSheet = StyleSheet.create({
   btnSaveReceivers: {
-    backgroundColor: '#F3F5F5',
+    backgroundColor: COLORS.colorGrey,
     marginTop: 20,
     width: '100%',
   },
   titleReceivers: {
-    color: '#000',
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 3,
+    color: COLORS.black,
   },
 });
 
 export const useBtnSaveReceiver = props => {
-  const {onSaveReceivers, receivers, toAddress} = props;
+  const { onSaveReceivers, receivers, toAddress } = props;
   const [btnSave, setBtnSave] = React.useState(null);
   React.useEffect(() => {
     renderBtnSaveReceiver();
@@ -27,13 +31,16 @@ export const useBtnSaveReceiver = props => {
   }, []);
   const renderBtnSaveReceiver = async () => {
     try {
-      const isAddrExist = (
-        await isFieldExist('address', toAddress, '', receivers)
-      ).error;
+      const isAddrExist = (await isFieldExist(
+        'address',
+        toAddress,
+        '',
+        receivers,
+      )).error;
       if (!isAddrExist) {
         await setBtnSave(
-          <Button
-            style={styleSheet.btnSaveReceivers}
+          <ButtonBasic
+            btnStyle={styleSheet.btnSaveReceivers}
             title="Save this address"
             onPress={onSaveReceivers}
             titleStyle={styleSheet.titleReceivers}

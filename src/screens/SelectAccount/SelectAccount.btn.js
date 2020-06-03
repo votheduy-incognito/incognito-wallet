@@ -11,9 +11,9 @@ import { ButtonBasic } from '@src/components/Button';
 const styled = StyleSheet.create({
   container: {
     backgroundColor: COLORS.colorGrey,
-    paddingHorizontal: 11,
     height: 40,
-    maxWidth: 100
+    maxWidth: 120,
+    paddingHorizontal: 10,
   },
   name: {
     marginRight: 5,
