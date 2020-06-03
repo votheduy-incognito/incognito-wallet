@@ -17,6 +17,7 @@ import NodeService from '@src/services/NodeService';
 import APIService from '@services/api/miner/APIService';
 import Util from '@utils/Util';
 import NetInfo from '@react-native-community/netinfo';
+import RNSettings from 'react-native-settings';
 import { CustomError } from '@services/exception';
 import { PASS_HOSPOT } from 'react-native-dotenv';
 import LocalDatabase from '@utils/LocalDatabase';

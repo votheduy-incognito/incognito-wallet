@@ -8,9 +8,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <!-- <uses-permission  android:name="android.permission.WRITE_SETTINGS" /> -->
-    <uses-permission
-        android:name="android.permission.ACCESS_COARSE_LOCATION"
-        android:required="true" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" android:requiredFeature="true" android:required="true"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:required="true"/>
     <uses-permission
         android:name="android.permission.ACCESS_WIFI_STATE"
         android:required="true" />
