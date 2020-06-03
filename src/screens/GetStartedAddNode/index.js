@@ -18,7 +18,7 @@ import RNSettings from 'react-native-settings';
 import { RESULTS } from 'react-native-permissions';
 import NetInfo from '@react-native-community/netinfo';
 import ModalPermission from '@src/components/Modal/ModalPermission';
-import { Linking, Alert } from 'react-native';
+import { Linking, Alert, Platform } from 'react-native';
 import { withNavigationFocus } from 'react-navigation';
 import locationPermissionPng from '@src/assets/images/location.png';
 import ModalBandWidth from '@src/components/Modal/ModalBandWidth';
@@ -76,9 +76,11 @@ class GetStartedAddNode extends BaseScreen {
   componentDidMount = async () => {
     this.checkPermissionForSteps();
     this.checkBandwidthNetwork();
-    let isEnabledLocation = await this.checkLocationService();
-    if (!isEnabledLocation) {
-      this.warningLocationService();
+    if (Platform.OS === 'android') {
+      let isEnabledLocation = await this.checkLocationService();
+      if (!isEnabledLocation) {
+        this.warningLocationService();
+      }
     }
   };
 
@@ -95,12 +97,13 @@ class GetStartedAddNode extends BaseScreen {
   }
 
   warningLocationService = () => {
-    Alert.alert('Help node find you', 'We detect that you have not enabled location services. Please go to setting and enable it', [
-      {
-        text: 'Go to device settings',
-        onPress: () => { this.openLocationService(); }
-      }
-    ]);
+    this.setState({ isErrPermission: true });
+    // Alert.alert('Help node find you', 'We detect that you have not enabled location services. Please go to setting and enable it', [
+    //   {
+    //     text: 'Go to device settings',
+    //     onPress: () => { this.openLocationService(); }
+    //   }
+    // ]);
   }
 
   checkPermissionForSteps = async () => {
@@ -200,7 +203,7 @@ class GetStartedAddNode extends BaseScreen {
 
   nextScreen = async () => {
     const { bandWidth } = this.state;
-    let isLocationGranted = await this.checkLocationService();
+    let isLocationGranted = Platform.OS === 'android' ? await this.checkLocationService() : await this.checkPermissionForSteps();
     if (isLocationGranted) {
       if (Number(bandWidth?.speed || 0) > MINIMUM_BANDWIDTH) {
         const { step } = this.state;
@@ -348,7 +351,11 @@ class GetStartedAddNode extends BaseScreen {
           }}
           onPressSetting={() => {
             this.setState({ errPermission: '', isErrPermission: false });
-            this.openSettingApp();
+            if (Platform.OS === 'ios') {
+              this.openSettingApp();
+            } else {
+              this.openLocationService();
+            }
           }}
         />
         <ModalBandWidth
