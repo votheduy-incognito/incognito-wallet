@@ -62,6 +62,7 @@ const withCalculateOutput = WrappedComp => (props) => {
 
       const outputText = formatUtils.amountFull(minimumAmount, outputToken.pDecimals);
       setOutputText(outputText);
+      setQuote(quote);
     } catch (error) {
       setMinimumAmount(0);
       setOutputValue(0);

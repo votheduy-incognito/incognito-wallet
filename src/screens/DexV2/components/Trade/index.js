@@ -80,6 +80,8 @@ const Trade = ({
 
       inputBalance,
       prvBalance,
+
+      quote,
     });
   };
   const navigateHistory = () => {
