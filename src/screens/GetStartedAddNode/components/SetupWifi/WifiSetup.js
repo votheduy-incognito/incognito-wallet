@@ -215,11 +215,14 @@ class WifiSetup extends PureComponent {
               if (!isConnected || !connectable || wifiName.includes('Node') || wifiName === '') {
                 
                 this.addStep({ name: 'There is an issue with your wifiname/password or internet connection quality now.\nPlease try to connect to wifi manually', isSuccess: false });
-                if (Platform.OS === 'ios' ||  steps[steps.length - 1] && !steps[steps.length - 1]?.name?.includes('Trying to connect to Wi-Fi "' + ssid + '"')) {
+                if (Platform.OS === 'ios' ||  steps[steps.length - 1] && !steps[steps.length - 2]?.name?.includes('Trying to connect to Wi-Fi')) {
                   this.setState({ backToQRCode: true });
                 }
               }
               this.addStep({ name: 'Setup wifi for node: \n' + error?.message || '', isSuccess: false });
+              if (error?.message?.includes('Timeout connecting')) {
+                this.setState({ backToQRCode: false });
+              }
               console.debug('CONNECT ERROR', error);
               if (this.isMounteds) {
                 this.setState({ loading: true });
