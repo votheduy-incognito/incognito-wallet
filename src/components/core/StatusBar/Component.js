@@ -37,6 +37,7 @@ const {
   TokenSelectScreen,
   UnShieldModal,
   pApp,
+  TxHistoryDetail,
 } = routeNames;
 
 const whiteScreens = [
@@ -66,6 +67,7 @@ const whiteScreens = [
   TokenSelectScreen,
   UnShieldModal,
   pApp,
+  TxHistoryDetail,
 ];
 const blue2Screens = [];
 const blue1Screens = [Wizard, Node];

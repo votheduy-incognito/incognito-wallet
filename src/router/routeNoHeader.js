@@ -21,6 +21,7 @@ import TradeHistory from '@screens/DexV2/components/History';
 import TradeHistoryDetail from '@screens/DexV2/components/HistoryDetail';
 import UnShieldModal from '@screens/UnShield/UnShield.modal';
 import pApp from '@src/screens/PappView';
+import TxHistoryDetail from '@screens/Wallet/features/TxHistoryDetail';
 import routeNames from './routeNames';
 
 const routes = [
@@ -102,15 +103,19 @@ const routes = [
   },
   {
     screen: TradeHistory,
-    name: routeNames.TradeHistory
+    name: routeNames.TradeHistory,
   },
   {
     screen: TradeHistoryDetail,
-    name: routeNames.TradeHistoryDetail
+    name: routeNames.TradeHistoryDetail,
   },
   {
     screen: TokenSelectScreen,
-    name: routeNames.TokenSelectScreen
+    name: routeNames.TokenSelectScreen,
+  },
+  {
+    screen: TxHistoryDetail,
+    name: routeNames.TxHistoryDetail,
   },
 ];
 

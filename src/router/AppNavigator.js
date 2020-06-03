@@ -4,12 +4,9 @@ import CreateAccount from '@src/screens/CreateAccount';
 import ExportAccount from '@src/screens/ExportAccount';
 import ImportAccount from '@src/screens/ImportAccount';
 import NetworkSetting from '@src/screens/NetworkSetting';
-import WalletDetail from '@src/screens/WalletDetail';
-import SendCrypto from '@screens/SendCrypto';
 import WhySend from '@screens/WhySend';
 import WhyReceive from '@screens/WhyReceive';
 import pApps from '@screens/Papps';
-import TxHistoryDetail from '@src/screens/TxHistoryDetail';
 import Setting from '@screens/Setting';
 import DexHistory from '@screens/DexHistory';
 import DexHistoryDetail from '@screens/DexHistoryDetail';
@@ -46,13 +43,6 @@ const AppNavigator = createStackNavigator(
       title: 'Import Keychain',
     }),
     [ROUTE_NAMES.ExportAccount]: navigationOptionsHandler(ExportAccount),
-    [ROUTE_NAMES.WalletDetail]: navigationOptionsHandler(WalletDetail),
-    [ROUTE_NAMES.SendCrypto]: navigationOptionsHandler(SendCrypto, {
-      title: 'Send',
-    }),
-    [ROUTE_NAMES.TxHistoryDetail]: navigationOptionsHandler(TxHistoryDetail, {
-      title: 'History Detail',
-    }),
     [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'You' }),
     [ROUTE_NAMES.DexHistory]: navigationOptionsHandler(DexHistory, {
       header: () => null,
@@ -106,8 +96,13 @@ const AppNavigator = createStackNavigator(
       headerTitleStyle: { alignSelf: 'center' },
       title: 'Buy Node',
     }),
-    [ROUTE_NAMES.PriceChartCrypto]: navigationOptionsHandler(PriceChartCrypto, { title: 'Price chart' }),
-    [ROUTE_NAMES.PaymentBuyNodeScreen]: navigationOptionsHandler(PaymentBuyNodeScreen, { title: 'Payment' }),
+    [ROUTE_NAMES.PriceChartCrypto]: navigationOptionsHandler(PriceChartCrypto, {
+      title: 'Price chart',
+    }),
+    [ROUTE_NAMES.PaymentBuyNodeScreen]: navigationOptionsHandler(
+      PaymentBuyNodeScreen,
+      { title: 'Payment' },
+    ),
     ...RouteNoHeader,
   },
   {

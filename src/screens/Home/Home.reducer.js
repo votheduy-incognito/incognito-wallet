@@ -8,7 +8,7 @@ import {
 } from './Home.constant';
 
 const initialState = {
-  isFetching: true,
+  isFetching: false,
   isFetched: false,
   configs: {
     categories: [],

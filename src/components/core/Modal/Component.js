@@ -18,15 +18,37 @@ const Modal = ({
   isShowHeader,
   ...otherProps
 }) => (
-  <RNComponent transparent={transparent} animationType="fade" onRequestClose={closeOnBack && close} {...otherProps}>
-    <SafeAreaView style={[styleSheet.containerSafeView, transparent && { backgroundColor: 'transparent' }]} forceInset={{ bottom: 'never' }}>
+  <RNComponent
+    transparent={transparent}
+    animationType="fade"
+    onRequestClose={closeOnBack && close}
+    {...otherProps}
+  >
+    <SafeAreaView
+      style={[
+        styleSheet.containerSafeView,
+        transparent && { backgroundColor: 'transparent' },
+      ]}
+      forceInset={{ bottom: 'never' }}
+    >
       <View style={[styleSheet.container, containerStyle]}>
         {isShowHeader && (close || headerText) && (
           <View style={styleSheet.header}>
             <TouchableOpacity onPress={close} style={styleSheet.closeBtn}>
-              <Icon name='close' type='material' size={30} color={closeBtnColor} />
+              <Icon
+                name="close"
+                type="material"
+                size={30}
+                color={COLORS.colorGreyBold}
+              />
             </TouchableOpacity>
-            <Text style={styleSheet.headerText} numberOfLines={1} ellipsizeMode='tail'>{headerText}</Text>
+            <Text
+              style={styleSheet.headerText}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {headerText}
+            </Text>
           </View>
         )}
 
@@ -40,11 +62,11 @@ Modal.defaultProps = {
   children: null,
   close: null,
   containerStyle: null,
-  closeBtnColor: COLORS.primary,
+  closeBtnColor: COLORS.colorGreyBold,
   isShowHeader: true,
   transparent: false,
   headerText: null,
-  closeOnBack: true
+  closeOnBack: true,
 };
 
 Modal.propTypes = {
@@ -55,7 +77,7 @@ Modal.propTypes = {
   isShowHeader: PropTypes.bool,
   transparent: PropTypes.bool,
   headerText: PropTypes.string,
-  closeOnBack: PropTypes.bool
+  closeOnBack: PropTypes.bool,
 };
 
 export default Modal;

@@ -14,11 +14,9 @@ export default StyleSheet.create({
   },
   containerSafeView: {
     flex: 1,
-    backgroundColor: THEME.header.backgroundColor,
   },
   header: {
     alignItems: 'center',
-    backgroundColor: THEME.header.backgroundColor,
     flexDirection: 'row',
     height: THEME.modal.headerHeight,
     justifyContent: 'center',

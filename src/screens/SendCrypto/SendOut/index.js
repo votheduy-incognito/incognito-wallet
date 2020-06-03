@@ -261,15 +261,6 @@ class WithdrawContainer extends Component {
     if (!estimateFee.init || !selectedPrivacy) {
       return <LoadingContainer />;
     }
-    if (!selectedPrivacy) {
-      return (
-        <SimpleInfo
-          type="warning"
-          text="Hmm. We hit a snag. Please re-open the app and try again."
-          subText="If second time didnt work: We'll need to take a closer look at this. Please send a message to go@incognito.org or t.me/@incognitonode for assistance."
-        />
-      );
-    }
     return (
       <Withdraw
         {...{

@@ -21,7 +21,6 @@ const style = StyleSheet.create({
     flex: 1,
     fontFamily: FONT.NAME.specialMedium,
     fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.colorGreyBold,
     marginRight: 10,
     padding: 0,

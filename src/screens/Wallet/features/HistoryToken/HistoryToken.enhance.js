@@ -1,21 +1,31 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { ExHandler } from '@src/services/exception';
-import { tokenSeleclor } from '@src/redux/selectors';
+import { tokenSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeHistory } from '@src/services/api/history';
 import { Toast } from '@src/components/core';
-import { actionFetchHistory } from '@src/redux/actions/token';
-import EmptyHistory from '@src/components/HistoryList/EmptyHistory';
+import {
+  actionFetchHistoryMainCrypto,
+  actionFetchHistoryToken,
+} from '@src/redux/actions/token';
+import EmptyHistory from './HistoryToken.empty';
 
 const enhance = WrappedComp => props => {
-  const { isEmpty, isFetching } = useSelector(
-    tokenSeleclor.historyTokenSelector,
+  const { isEmpty } = useSelector(tokenSeleclor.historyTokenSelector);
+  const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const token = useSelector(
+    selectedPrivacySeleclor.selectedPrivacyByFollowedSelector,
   );
   const dispatch = useDispatch();
   const handleLoadHistory = async () => {
     try {
-      await dispatch(actionFetchHistory());
+      if (selectedPrivacy?.isMainCrypto) {
+        return await dispatch(actionFetchHistoryMainCrypto());
+      }
+      if (!!selectedPrivacy?.isToken && !!token?.id) {
+        return await dispatch(actionFetchHistoryToken());
+      }
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
