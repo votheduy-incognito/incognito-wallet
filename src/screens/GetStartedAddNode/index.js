@@ -92,7 +92,7 @@ class GetStartedAddNode extends BaseScreen {
         case ENUM_RESULT_PERMISSION.DENIED.CODE: {
           locationPermission()
             .then(val => {
-              if (val != RESULTS.GRANTED) {
+              if (!val) {
                 isGranted = false;
                 this.setState({ errPermission: ENUM_RESULT_PERMISSION.UNAVAILABLE.MESSAGE, isErrPermission: true });
               } else {

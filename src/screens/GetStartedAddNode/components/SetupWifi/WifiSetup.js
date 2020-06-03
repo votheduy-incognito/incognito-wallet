@@ -132,6 +132,8 @@ class WifiSetup extends PureComponent {
   }
 
   connectToWifi = async (ssid, password) => {
+    const {steps} = this.state;
+    const { hotspotSSID } = this.props;
     if (!this.isMounteds) {
       return;
     }
@@ -210,9 +212,12 @@ class WifiSetup extends PureComponent {
               // And wifi name is the same with hotspot
               let wifiName = await this.getCurrentWifi();
 
-              if (!isConnected || !connectable || wifiName.includes('Node') || !wifiName != '') {
-                this.setState({ backToQRCode: true });
+              if (!isConnected || !connectable || wifiName.includes('Node') || wifiName === '') {
+                
                 this.addStep({ name: 'There is an issue with your wifiname/password or internet connection quality now.\nPlease try to connect to wifi manually', isSuccess: false });
+                if (Platform.OS === 'ios' ||  steps[steps.length - 1] && !steps[steps.length - 1]?.name?.includes('Trying to connect to Wi-Fi "' + ssid + '"')) {
+                  this.setState({ backToQRCode: true });
+                }
               }
               this.addStep({ name: 'Setup wifi for node: \n' + error?.message || '', isSuccess: false });
               console.debug('CONNECT ERROR', error);
@@ -569,6 +574,7 @@ class WifiSetup extends PureComponent {
     }, count, 10);
 
     if (result && result?.status != 0) {
+      this.setState({ backToQRCode: false });
       this.addStep({ name: 'Cool! Product code verified successfully', detail: JSON.stringify(result), isSuccess: true });
       return result;
     } else {
@@ -746,7 +752,7 @@ class WifiSetup extends PureComponent {
         })
         .catch(e => {
           this.setState({ loading: false });
-          this.addStep({ name: `Setup for node device failed \n${e?.message || ''}`, detail: e, isSuccess: false });
+          this.addStep({ name: 'Setup for node device failed', detail: e, isSuccess: false });
         });
     } catch (e) {
       console.debug('SETUP FAILED', e);
