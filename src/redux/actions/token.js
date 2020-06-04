@@ -260,7 +260,7 @@ export const actionFetchHistoryToken = () => async (dispatch, getState) => {
       state,
     );
     const { isFetching } = tokenSeleclor.historyTokenSelector(state);
-    if (isFetching) {
+    if (isFetching || !token?.id || !selectedPrivacy?.tokenId) {
       return;
     }
     await dispatch(actionFetchingHistory());
@@ -292,12 +292,12 @@ export const actionFetchHistoryMainCrypto = () => async (
 ) => {
   try {
     const state = getState();
+    const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
     const { isFetching } = tokenSeleclor.historyTokenSelector(state);
-    if (isFetching) {
+    if (isFetching || !selectedPrivacy?.tokenId) {
       return;
     }
     await dispatch(actionFetchingHistory());
-    const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
     let histories = [];
     if (selectedPrivacy?.isMainCrypto) {
       const [accountHistory] = await new Promise.all([

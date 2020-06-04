@@ -23,7 +23,7 @@ import { setWallet } from '@src/redux/actions/wallet';
 import { getInternalTokenList } from '@src/redux/actions/token';
 import { ExHandler } from '@src/services/exception';
 import ROUTES_NAME from '@routers/routeNames';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback } from 'react-native';
 import styleSheet from './style';
 
 const formName = 'addInternalToken';
@@ -299,7 +299,7 @@ class AddInternalToken extends Component {
                         numberOfLines: 10,
                         maxLength: 255,
                         textAlignVertical: 'top',
-                        autoFocus: true
+                        autoFocus: true,
                       }}
                       name="description"
                       label="Description"
