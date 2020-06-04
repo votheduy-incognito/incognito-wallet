@@ -23,7 +23,6 @@ import { setWallet } from '@src/redux/actions/wallet';
 import { getInternalTokenList } from '@src/redux/actions/token';
 import { ExHandler } from '@src/services/exception';
 import ROUTES_NAME from '@routers/routeNames';
-import { InfoIcon } from '@components/Icons';
 import styleSheet from './style';
 
 const formName = 'addInternalToken';
@@ -291,6 +290,7 @@ class AddInternalToken extends Component {
                       multiline: true,
                       numberOfLines: 10,
                       maxLength: 255,
+                      textAlignVertical: 'top',
                     }}
                     name="description"
                     placeholder="Explain what your token is for, how users can get it, and any other details of your project. 255 characters max."

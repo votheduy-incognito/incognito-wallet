@@ -51,7 +51,10 @@ const Hook = props => {
           btnStyle={styleSheet.btnRetryDeposit}
           titleStyle={styleSheet.titleRetryDeposit}
           title="Retry"
-          onPress={handleRetryExpiredDeposit}
+          onPress={
+            typeof handleRetryExpiredDeposit === 'function' &&
+            handleRetryExpiredDeposit
+          }
         />
       )}
       {copyable && <CopyIcon />}
@@ -83,29 +86,7 @@ const Hook = props => {
 };
 
 const TxHistoryDetail = props => {
-  const handleRetryExpiredDeposit = ({
-    id,
-    decentralized,
-    walletAddress,
-    currencyType,
-    userPaymentAddress,
-    privacyTokenAddress,
-    erc20TokenAddress,
-    type,
-  }) => {
-    const { onRetryExpiredDeposit } = props;
-    return onRetryExpiredDeposit({
-      id,
-      decentralized,
-      walletAddress,
-      currencyType,
-      userPaymentAddress,
-      privacyTokenAddress,
-      erc20TokenAddress,
-      type,
-    });
-  };
-  const { data } = props;
+  const { data, onRetryExpiredDeposit } = props;
   const {
     typeText,
     balanceDirection,
@@ -150,7 +131,7 @@ const TxHistoryDetail = props => {
       valueTextStyle: { color: statusColor },
       disabled: !statusText,
       canRetryExpiredDeposit: history?.canRetryExpiredDeposit,
-      handleRetryExpiredDeposit,
+      handleRetryExpiredDeposit: onRetryExpiredDeposit,
     },
     {
       label: 'ID',

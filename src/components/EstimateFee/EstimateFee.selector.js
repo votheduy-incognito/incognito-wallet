@@ -38,13 +38,16 @@ export const feeDataSelector = createSelector(
       ? selectedPrivacy?.pDecimals
       : CONSTANT_COMMONS.PRV.pDecimals;
     const fee = isUseTokenFee ? feePTokenText : feePrvText;
-    let amountNumber = convert.toNumber(amountText);
+    let amountNumber = convert.toNumber(amountText, true);
     if (isUseTokenFee || selectedPrivacy?.isMainCrypto) {
       const newAmount = amountNumber - convert.toNumber(fee);
       amountNumber = newAmount > 0 ? newAmount : 0;
     }
-    const maxAmount = Math.max(floor(amountNumber, 9), 0);
-    const maxAmountText = format.amountFull(maxAmount);
+    const maxAmount = Math.max(
+      floor(amountNumber, selectedPrivacy?.pDecimals),
+      0,
+    );
+    const maxAmountText = format.toFixed(maxAmount, selectedPrivacy?.pDecimals);
     return {
       isUseTokenFee,
       fee,
@@ -61,7 +64,7 @@ export const feeDataSelector = createSelector(
       minAmountText,
       maxAmount,
       maxAmountText,
-      isUsedPRVFee: !isUseTokenFee
+      isUsedPRVFee: !isUseTokenFee,
     };
   },
 );
