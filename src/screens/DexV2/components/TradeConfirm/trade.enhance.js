@@ -43,8 +43,8 @@ const withTrade = WrappedComp => (props) => {
   const trade = async () => {
     let prvFee = 0;
     let tokenFee = 0;
-    // let spendingPRV = false;
-    // let spendingCoin = false;
+    let spendingPRV = false;
+    let spendingCoin = false;
     if (trading) {
       return;
     }
@@ -57,17 +57,17 @@ const withTrade = WrappedComp => (props) => {
         prvFee = fee;
         tokenFee = fee;
 
-        // spendingCoin = spendingPRV = await accountService.hasSpendingCoins(account, wallet, inputValue + prvFee);
+        spendingCoin = spendingPRV = await accountService.hasSpendingCoins(account, wallet, inputValue + prvFee);
       } else {
         prvFee = feeToken.id === COINS.PRV_ID ? fee : 0;
         tokenFee = prvFee > 0 ? 0 : fee;
 
-        // if (prvFee) {
-        //   spendingPRV = await accountService.hasSpendingCoins(account, wallet, prvFee);
-        //   spendingCoin = await accountService.hasSpendingCoins(account, wallet, inputValue, inputToken.id);
-        // } else {
-        //   spendingCoin = await accountService.hasSpendingCoins(account, wallet, inputValue + tokenFee, inputToken.id);
-        // }
+        if (prvFee) {
+          spendingPRV = await accountService.hasSpendingCoins(account, wallet, prvFee);
+          spendingCoin = await accountService.hasSpendingCoins(account, wallet, inputValue, inputToken.id);
+        } else {
+          spendingCoin = await accountService.hasSpendingCoins(account, wallet, inputValue + tokenFee, inputToken.id);
+        }
       }
 
       if (inputBalance < inputValue + tokenFee) {
@@ -78,9 +78,9 @@ const withTrade = WrappedComp => (props) => {
         return setError({ tradeError: MESSAGES.NOT_ENOUGH_PRV_NETWORK_FEE });
       }
 
-      // if (spendingCoin || spendingPRV) {
-      //   return setError(MESSAGES.PENDING_TRANSACTIONS);
-      // }
+      if (spendingCoin || spendingPRV) {
+        return setError(MESSAGES.PENDING_TRANSACTIONS);
+      }
 
       const depositObject = await deposit();
       const serverFee = tokenFee / MAX_PDEX_TRADE_STEPS * (MAX_PDEX_TRADE_STEPS - 1);

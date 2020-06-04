@@ -8,7 +8,6 @@ import Trade from '@screens/DexV2/components/Trade';
 import _ from 'lodash';
 import LoadingContainer from '@components/LoadingContainer/index';
 import withPairs from '@screens/DexV2/components/pdexPair.enhance';
-import COLORS from '@src/styles/colors';
 import styles from './style';
 
 class Dex extends React.Component {
@@ -59,8 +58,6 @@ class Dex extends React.Component {
           <RefreshControl
             refreshing={loading}
             onRefresh={onLoadPairs}
-            tintColor={COLORS.primary}
-            colors={[COLORS.primary]}
           />
         )}
       >

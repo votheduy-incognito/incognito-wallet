@@ -97,6 +97,7 @@ const Trade = ({
         token={inputToken}
         value={inputText}
         disabled={inputBalance === null}
+        loading={inputBalance === null}
         placeholder="0"
       />
       <Text style={styles.error}>{error}</Text>

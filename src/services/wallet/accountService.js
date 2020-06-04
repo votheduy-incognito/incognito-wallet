@@ -29,9 +29,7 @@ const getPendingHistory = (histories, spendingCoins) => {
     spendingCoins.find(coin => history.listUTXOForPRV.includes(coin.SNDerivator))
   );
 
-  console.debug('GET PENDING HISTORY', pendingHistory);
-
-  return pendingHistory;
+  return !!pendingHistory;
 };
 
 const hasSpendingCoins = async (indexAccount, wallet, amount, tokenId) => {
