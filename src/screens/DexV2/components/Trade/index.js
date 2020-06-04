@@ -47,6 +47,7 @@ const Trade = ({
   minimumAmount,
 
   inputBalance,
+  prvBalance,
 
   fee,
   feeToken,
@@ -76,6 +77,11 @@ const Trade = ({
       feeToken,
       pair,
       isErc20,
+
+      inputBalance,
+      prvBalance,
+
+      quote,
     });
   };
   const navigateHistory = () => {
@@ -91,6 +97,7 @@ const Trade = ({
         token={inputToken}
         value={inputText}
         disabled={inputBalance === null}
+        loading={inputBalance === null}
         placeholder="0"
       />
       <Text style={styles.error}>{error}</Text>
@@ -112,7 +119,15 @@ const Trade = ({
       <RoundCornerButton
         style={styles.button}
         title="Preview your order"
-        disabled={!!error || !inputBalance || !inputValue || !outputValue || !minimumAmount || !inputText}
+        disabled={
+          !!error ||
+          !inputBalance ||
+          !inputValue ||
+          !outputValue ||
+          !minimumAmount ||
+          !inputText ||
+          !!gettingQuote
+        }
         onPress={navigateTradeConfirm}
       />
       { !!(inputToken && outputToken) && (
@@ -128,14 +143,14 @@ const Trade = ({
             quote={quote}
           />
           {!!(!isErc20 && pair) && <PoolSize outputToken={outputToken} inputToken={inputToken} pair={pair} />}
-          {!!isErc20 && <Powered />}
+          <Powered network={isErc20 ? 'Kyber' : 'Incognito'} />
           <ExtraInfo left={warning} right="" style={styles.warning} />
         </View>
       )}
       {!!histories.length && (
         <TouchableOpacity onPress={navigateHistory} style={styles.bottomFloatBtn}>
           <Text style={styles.bottomText}>Order history</Text>
-          <Icon name="chevron-right" color={COLORS.lightGrey1} />
+          <Icon name="chevron-right" color={COLORS.lightGrey16} containerStyle={{ marginTop: -1 }} />
         </TouchableOpacity>
       )}
     </View>
@@ -160,6 +175,7 @@ Trade.propTypes = {
   minimumAmount: PropTypes.number,
 
   inputBalance: PropTypes.number,
+  prvBalance: PropTypes.number,
 
   fee: PropTypes.number.isRequired,
   feeToken: PropTypes.object.isRequired,
@@ -202,6 +218,7 @@ Trade.defaultProps = {
   outputValue: null,
   minimumAmount: null,
   inputBalance: null,
+  prvBalance: null,
   error: '',
   warning: '',
   pair: null,

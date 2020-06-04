@@ -39,7 +39,7 @@ const withParams = WrappedComp => (props) => {
       }
 
       if (outputValue) {
-        const minimumAmount = outputValue / MIN_PERCENT;
+        const minimumAmount = _.floor(outputValue / MIN_PERCENT);
         const inputValue = calculateInputValue(pair, inputToken, minimumAmount, outputToken);
         const inputText = convert.toHumanAmount(inputValue + (MAX_FEE_PER_TX * MAX_PDEX_TRADE_STEPS), inputToken.pDecimals);
         onChangeInputText(inputText.toString());

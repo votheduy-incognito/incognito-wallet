@@ -64,5 +64,6 @@ export async function getKyberQuote({sellToken, sellAmount, buyToken}) {
     amount,
     minimumAmount,
     maxPrice,
+    expectedRate: ExpectedRate,
   });
 }

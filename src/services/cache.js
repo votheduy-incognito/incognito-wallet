@@ -20,8 +20,7 @@ export async function cachePromise(key, promise, expiredTime = 40000) {
     return cachedData;
   }
 
-  const data = await promise.then(data => data);
-
+  const data = await promise();
   cache(key, data, expiredTime);
 
   return data;

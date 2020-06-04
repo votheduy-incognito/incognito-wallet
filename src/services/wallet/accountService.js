@@ -8,12 +8,46 @@ import { AccountWallet, KeyWallet, Wallet } from 'incognito-chain-web-js/build/w
 import _ from 'lodash';
 import { STACK_TRACE } from '@services/exception/customError/code/webjsCode';
 import { cachePromise } from '@services/cache';
+import { chooseBestCoinToSpent } from 'incognito-chain-web-js/lib/tx/utils';
+import bn from 'bn.js';
 import { CustomError, ErrorCode } from '../exception';
 import { getActiveShard } from './RpcClientService';
 import tokenService, { getUserUnfollowTokenIDs, setUserUnfollowTokenIDs } from './tokenService';
-import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
+import { loadListAccountWithBLSPubKey, saveWallet, SuccessTx } from './WalletService';
 
 const TAG = 'Account';
+
+const getBalanceNoCache = (indexAccount, wallet, tokenId) => () => {
+  return wallet.MasterAccount.child[indexAccount].getBalance(tokenId);
+};
+
+const getPendingHistory = (histories, spendingCoins) => {
+  histories = histories.filter(item => item.status === SuccessTx);
+
+  const pendingHistory =  histories.find(history =>
+    spendingCoins.find(coin => history.listUTXOForPToken.includes(coin.SNDerivator)) ||
+    spendingCoins.find(coin => history.listUTXOForPRV.includes(coin.SNDerivator))
+  );
+
+  return !!pendingHistory;
+};
+
+const hasSpendingCoins = async (indexAccount, wallet, amount, tokenId) => {
+  const account = wallet.MasterAccount.child[indexAccount];
+  let coins = await account.getUnspentToken(tokenId, Wallet.RpcClient);
+
+  let histories;
+
+  await wallet.updateStatusHistory();
+
+  histories = await account.getNormalTxHistory();
+  histories = histories.concat(await account.getPrivacyTokenTxHistory());
+
+  const spendingCoins = chooseBestCoinToSpent(coins, new bn(amount)).resultInputCoins;
+
+  return getPendingHistory(histories, spendingCoins);
+};
+
 
 export default class Account {
   static async getDefaultAccountName() {
@@ -274,7 +308,7 @@ export default class Account {
     const key = `balance-${account.name || account.AccountName}-${tokenId || '0000000000000000000000000000000000000000000000000000000000000004'}`;
     const indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
 
-    return await cachePromise(key, wallet.MasterAccount.child[indexAccount].getBalance(tokenId));
+    return await cachePromise(key, getBalanceNoCache(indexAccount, wallet, tokenId));
   }
 
   static parseShard(account) {
@@ -536,87 +570,8 @@ export default class Account {
     return error.stackTrace.includes(STACK_TRACE.REPLACEMENT);
   }
 
-  static generateIncognitoContractAddress(wallet, account) {
-    return global.generateIncognitoContractAddress(JSON.stringify({
-      privateKey: account.PrivateKey,
-    }));
-  }
-
-  static async sign0x(wallet, {
-    sourceToken,
-    sourceQuantity,
-    destToken,
-    quoteTo,
-    quoteData,
-    tradeABI,
-    tradeDeployedAddress,
-    privateKey,
-  }) {
-    const data = {
-      data: {
-        sourceToken,
-        sourceQuantity,
-
-        destToken,
-        quoteTo,
-        quoteData,
-
-        tradeABI,
-        tradeDeployedAddress,
-
-        privateKey,
-      }
-    };
-
-    const rawData = await global.sign0x(JSON.stringify(data));
-    const result = JSON.parse(rawData);
-    const {signBytes, timestamp, input} = result;
-    return {
-      signBytes,
-      timestamp,
-      input,
-    };
-  }
-
-  static async signKyber(wallet, {
-    sourceToken,
-    sourceQuantity,
-    destToken,
-    tradeABI,
-    tradeDeployedAddress,
-    privateKey,
-    expectRate,
-  }) {
-    const data = {
-      data:{
-        sourceToken,
-        sourceQuantity,
-
-        destToken,
-
-        tradeABI,
-        tradeDeployedAddress,
-
-        expectRate,
-
-        privateKey,
-      }
-    };
-
-    const rawData = await global.signKyber(JSON.stringify(data));
-    const result = JSON.parse(rawData);
-    const {signBytes, timestamp, input} = result;
-    return {
-      signBytes,
-      timestamp,
-      input,
-    };
-  }
-
-  static withdrawSmartContract(wallet, account, tokenAddress) {
+  static hasSpendingCoins(account, wallet, amount, tokenId = null) {
     const indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
-    return wallet.MasterAccount.child[
-      indexAccount
-    ].withdrawSmartContract(account.PaymentAddress, account.PrivateKey, tokenAddress);
+    return hasSpendingCoins(indexAccount, wallet, amount, tokenId);
   }
 }

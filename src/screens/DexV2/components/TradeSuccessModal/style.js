@@ -41,7 +41,7 @@ export default StyleSheet.create({
   extraInfo: {
     fontSize: 14,
     marginTop: 20,
-    color: COLORS.lightGrey9,
+    color: COLORS.lightGrey16,
     textAlign: 'center',
   },
   button: {

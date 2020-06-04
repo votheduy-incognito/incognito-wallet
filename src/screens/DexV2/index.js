@@ -8,7 +8,6 @@ import Trade from '@screens/DexV2/components/Trade';
 import _ from 'lodash';
 import LoadingContainer from '@components/LoadingContainer/index';
 import withPairs from '@screens/DexV2/components/pdexPair.enhance';
-import COLORS from '@src/styles/colors';
 import styles from './style';
 
 class Dex extends React.Component {
@@ -50,7 +49,7 @@ class Dex extends React.Component {
   }
 
   render() {
-    const { loading } = this.props;
+    const { loading, onLoadPairs } = this.props;
     return (
       <ScrollView
         style={styles.wrapper}
@@ -58,9 +57,7 @@ class Dex extends React.Component {
         refreshControl={(
           <RefreshControl
             refreshing={loading}
-            onRefresh={this.loadData}
-            tintColor={COLORS.primary}
-            colors={[COLORS.primary]}
+            onRefresh={onLoadPairs}
           />
         )}
       >
@@ -74,6 +71,7 @@ Dex.propTypes = {
   tokens: PropTypes.array.isRequired,
   pairs: PropTypes.array.isRequired,
   pairTokens: PropTypes.array.isRequired,
+  onLoadPairs: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
 };
 

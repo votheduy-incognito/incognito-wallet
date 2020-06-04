@@ -13,6 +13,7 @@ import withAccount from '@screens/DexV2/components/account.enhance';
 import Help from '@components/Help/index';
 import { DEFI_TRADING_FEE } from '@components/EstimateFee/EstimateFee.utils';
 import Powered from '@screens/DexV2/components/Powered';
+import PoolSize from '@screens/DexV2/components/PoolSize';
 import withSuccess from './success.enhance';
 import withTrade from './trade.enhance';
 import withData from './data.enhance';
@@ -33,6 +34,7 @@ const Trade = ({
   error,
   warning,
   isErc20,
+  pair,
 }) => {
   return (
     <View>
@@ -52,18 +54,49 @@ const Trade = ({
         title="Purchase"
         style={styles.extra}
       />
-      <ExtraInfo
-        token={feeToken}
-        left={(
-          <View style={styles.row}>
-            <Text style={styles.extra}>Fee</Text>
-            <Help title="Fee" content="Network fees go to validators. There is no trading fee." />
-          </View>
-        )}
-        right={`${format.amount(fee + (isErc20 ? DEFI_TRADING_FEE : 0), feeToken.pDecimals)} ${feeToken.symbol}`}
-        style={styles.extra}
-      />
-      {!!isErc20 && <Powered />}
+      { !isErc20 && (
+        <>
+          <ExtraInfo
+            token={feeToken}
+            left={(
+              <View style={styles.row}>
+                <Text style={styles.extra}>Network fee</Text>
+                <Help title="Network fee" content="Network fees go to validators. There is no trading fee." />
+              </View>
+            )}
+            right={`${format.amount(fee, feeToken.pDecimals)} ${feeToken.symbol}`}
+            style={styles.extra}
+          />
+          <PoolSize outputToken={outputToken} inputToken={inputToken} pair={pair} />
+        </>
+      )}
+      { !!isErc20 && (
+        <>
+          <ExtraInfo
+            token={feeToken}
+            left={(
+              <View style={styles.row}>
+                <Text style={styles.extra}>Network fee</Text>
+                <Help title="Network fee" content="Network fees go to validators." />
+              </View>
+            )}
+            right={`${format.amount(fee, feeToken.pDecimals)} ${feeToken.symbol}`}
+            style={styles.extra}
+          />
+          <ExtraInfo
+            token={feeToken}
+            left={(
+              <View style={styles.row}>
+                <Text style={styles.extra}>Trading fee</Text>
+                <Help title="Trading fee" content="This is a Kyber pool. You are trading anonymously on the Ethereum network which will incur trading fees. Incognito does not charge trading fees." />
+              </View>
+            )}
+            right={`${format.amount(fee + DEFI_TRADING_FEE, feeToken.pDecimals)} ${feeToken.symbol}`}
+            style={styles.extra}
+          />
+        </>
+      )}
+      <Powered network={isErc20 ? 'Kyber' : 'Incognito'} />
       {!!warning && <ExtraInfo left={warning} right="" style={styles.warning} />}
       {!!error && <Text style={styles.error}>{error}</Text>}
       <RoundCornerButton
@@ -92,6 +125,7 @@ Trade.propTypes = {
   error: PropTypes.string,
   warning: PropTypes.string,
   isErc20: PropTypes.bool,
+  pair: PropTypes.object,
 };
 
 Trade.defaultProps = {
@@ -103,6 +137,7 @@ Trade.defaultProps = {
   error: '',
   warning: '',
   isErc20: false,
+  pair: null,
 };
 
 export default compose(

@@ -24,8 +24,9 @@ const withPairs = WrappedComp => (props) => {
       const chainTokens = await tokenService.getPrivacyTokens();
       const chainPairs = await getPDEState();
       const tokens = tokenService.mergeTokens(chainTokens, pTokens);
-      // const erc20Tokens = await getAllTradingTokens();
-      const erc20Tokens = [];
+      const erc20Tokens = await getAllTradingTokens();
+
+      // const erc20Tokens = [];
 
       if (!_.has(chainPairs, 'PDEPoolPairs')) {
         throw new CustomError(ErrorCode.FULLNODE_DOWN);
@@ -102,6 +103,8 @@ const withPairs = WrappedComp => (props) => {
         shares,
         loading,
         erc20Tokens,
+
+        onLoadPairs: loadPairs,
       }}
     />
   );

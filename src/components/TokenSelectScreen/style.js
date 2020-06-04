@@ -9,7 +9,7 @@ const style = StyleSheet.create({
     flexDirection: 'row',
   },
   networkName: {
-    color: COLORS.lightGrey1,
+    color: COLORS.lightGrey16,
     marginRight: 5,
   },
   input: {

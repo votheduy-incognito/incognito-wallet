@@ -35,7 +35,7 @@ const withValidate = WrappedComp => (props) => {
           setError(MESSAGES.GREATER(MIN_INPUT, inputToken.pDecimals));
         } else if (!Number.isInteger(number)) {
           setError(MESSAGES.MUST_BE_INTEGER);
-        } else if (inputBalance !== null && inputFee !== null && number > inputBalance + inputFee) {
+        } else if (inputBalance !== null && inputFee !== null && number > inputBalance) {
           setError(MESSAGES.BALANCE_INSUFFICIENT);
         } else if (prvFee !== null && prvBalance !== null && inputToken.id !== COINS.PRV_ID && !inputFee && prvBalance < prvFee ){
           setError(MESSAGES.NOT_ENOUGH_PRV_NETWORK_FEE);

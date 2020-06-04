@@ -22,13 +22,7 @@ const ExchangeRate = ({
       !inputValue || !_.isNumber(inputValue)
   )) {
     const minRate = (inputValue / Math.pow(10, inputToken.pDecimals || 0)) / (minimumAmount / Math.pow(10, outputToken.pDecimals));
-
-    let maxDigits = minRate > 1 ? 4 : 9;
-    maxDigits = minRate > 1e6 ? 0: maxDigits;
-
-    const floorMinRate = _.floor(minRate, Math.min(outputToken.pDecimals, maxDigits));
-
-    right = `${formatUtil.amount(floorMinRate)} ${inputToken?.symbol} / ${outputToken.symbol}`;
+    right = `${formatUtil.amount(minRate, 0, true)} ${inputToken?.symbol} / ${outputToken.symbol}`;
   }
 
   return (

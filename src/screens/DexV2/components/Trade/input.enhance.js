@@ -18,6 +18,10 @@ const withChangeInput = WrappedComp => (props) => {
     if (!newText) {
       setInputValue(0);
     }
+
+    if (newText.toString() === 'NaN') {
+      setInputText('');
+    }
   };
 
   React.useEffect(() => {
