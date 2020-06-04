@@ -13,16 +13,19 @@ import WifiManager from 'react-native-wifi-reborn';
 import { Icon } from 'react-native-elements';
 import bandWidthPng from '@src/assets/images/bandwidth.png';
 import { checkBandWidth } from '@src/utils/connection';
+import _ from 'lodash';
+import RNSettings from 'react-native-settings';
 import { RESULTS } from 'react-native-permissions';
 import NetInfo from '@react-native-community/netinfo';
 import ModalPermission from '@src/components/Modal/ModalPermission';
-import { Linking, Alert } from 'react-native';
+import { Linking, Alert, Platform } from 'react-native';
 import { withNavigationFocus } from 'react-navigation';
 import locationPermissionPng from '@src/assets/images/location.png';
 import ModalBandWidth from '@src/components/Modal/ModalBandWidth';
 import LogManager from '@src/services/LogManager';
 import LocalDatabase from '@src/utils/LocalDatabase';
 import NodeService from '@src/services/NodeService';
+import Util from '@src/utils/Util';
 import ScanQRCode from './components/ScanQRCode';
 import { DialogNotify } from './components/BackUpAccountDialog';
 import styles from './styles';
@@ -73,10 +76,34 @@ class GetStartedAddNode extends BaseScreen {
   componentDidMount = async () => {
     this.checkPermissionForSteps();
     this.checkBandwidthNetwork();
+    if (Platform.OS === 'android') {
+      let isEnabledLocation = await this.checkLocationService();
+      if (!isEnabledLocation) {
+        this.warningLocationService();
+      }
+    }
   };
+
+  checkLocationService = async () => {
+    let res = await RNSettings.getSetting(RNSettings.LOCATION_SETTING);
+    return res === RNSettings.ENABLED;
+  }
+  openLocationService = async () => {
+    await RNSettings.openSetting(RNSettings.ACTION_LOCATION_SOURCE_SETTINGS);
+  }
 
   checkBandwidthNetwork = async () => {
     await this.getNetworkBandwidth();
+  }
+
+  warningLocationService = () => {
+    this.setState({ isErrPermission: true });
+    // Alert.alert('Help node find you', 'We detect that you have not enabled location services. Please go to setting and enable it', [
+    //   {
+    //     text: 'Go to device settings',
+    //     onPress: () => { this.openLocationService(); }
+    //   }
+    // ]);
   }
 
   checkPermissionForSteps = async () => {
@@ -176,7 +203,7 @@ class GetStartedAddNode extends BaseScreen {
 
   nextScreen = async () => {
     const { bandWidth } = this.state;
-    let isLocationGranted = await this.checkPermissionForSteps();
+    let isLocationGranted = Platform.OS === 'android' ? await this.checkLocationService() : await this.checkPermissionForSteps();
     if (isLocationGranted) {
       if (Number(bandWidth?.speed || 0) > MINIMUM_BANDWIDTH) {
         const { step } = this.state;
@@ -184,6 +211,8 @@ class GetStartedAddNode extends BaseScreen {
       } else {
         this.setState({ showBandWidthModal: true });
       }
+    } else {
+      this.warningLocationService();
     }
   };
 
@@ -322,7 +351,11 @@ class GetStartedAddNode extends BaseScreen {
           }}
           onPressSetting={() => {
             this.setState({ errPermission: '', isErrPermission: false });
-            this.openSettingApp();
+            if (Platform.OS === 'ios') {
+              this.openSettingApp();
+            } else {
+              this.openLocationService();
+            }
           }}
         />
         <ModalBandWidth

@@ -127,6 +127,7 @@
     "react-native-root-toast": "^3.0.2",
     "react-native-screens": "^2.0.0-beta.13",
     "react-native-sensors": "5.3.0",
+    "react-native-settings": "^0.2.3",
     "react-native-size-matters": "^0.2.1",
     "react-native-splash-screen": "^3.2.0",
     "react-native-step-indicator": "^0.0.11",

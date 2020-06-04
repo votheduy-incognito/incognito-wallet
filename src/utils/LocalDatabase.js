@@ -22,6 +22,7 @@ export const KEY_SAVE = {
   VIEW_UNISWAP_TOOLTIP: '$uniswap_tooltip',
   UNISWAP_AIRDROP: '$uniswap_airdrop',
   SCREEN_STAKE_GUIDE: CONSTANT_KEYS.SCREEN_STAKE_GUIDE,
+  WEBVIEW: '$webview',
 };
 export default class LocalDatabase {
   static async getValue(key: String): String {
@@ -321,4 +322,14 @@ export default class LocalDatabase {
       JSON.stringify(true),
     );
   }
+
+  // For webview caching
+  static getUriWebviewCommunity = () => {
+    return LocalDatabase.getValue(KEY_SAVE.WEBVIEW);
+  };
+
+  static setUriWebviewCommunity = (value) => {
+    return LocalDatabase.saveValue(KEY_SAVE.WEBVIEW, value);
+  };
+
 }

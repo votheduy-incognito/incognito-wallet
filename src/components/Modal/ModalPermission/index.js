@@ -20,8 +20,8 @@ const ModalPermission = ({title, subTitle, btnTitle, btnDismiss, isVisible, onPr
             <Image source={uri ? uri : internetConnectionIssue} style={{ width: ScreenWidth / 5, height: ScreenWidth / 5 }} />
           </View>
           <View style={[theme.FLEX.rowSpaceBetween, theme.FLEX.fullWidth]}>
-            <Button onPress={onPressSetting} title={btnTitle ?? ''} textContainerStyle={{ width: ScreenWidth * 0.8 * 0.35 }} />
-            <Button onPress={onPressDismiss} title={btnDismiss ?? 'OK'} textContainerStyle={{ width: ScreenWidth * 0.8 * 0.35 }} />
+            <Button onPress={onPressSetting} title={btnTitle ?? ''} textContainerStyle={{ width: ScreenWidth * 0.8 * 0.5 }} style={{height: 50}} /> 
+            <Button onPress={onPressDismiss} title={btnDismiss ?? 'OK'} textContainerStyle={{ width: ScreenWidth * 0.8 * 0.2}} style={{height: 50}} />
           </View>
         </View>
       </View>

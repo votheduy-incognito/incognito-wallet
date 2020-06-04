@@ -23,6 +23,14 @@ const style = StyleSheet.create({
     right: '50%',
     top: '50%',
     bottom: '50%',
+  },
+  customBackContainer: {
+    position: 'absolute', 
+    top: 6, 
+    left: 10, 
+    zIndex: 1, 
+    width: 25, 
+    height: 25
   }
 });
 
