@@ -55,7 +55,7 @@ export default class LocalDatabase {
 
   static updateDevice = async deviceJson => {
     let list = await LocalDatabase.getListDevices();
-    const index = _.findIndex(list, ['product_id', deviceJson.product_id]);
+    const index = _.findIndex(list, ['product_name', deviceJson.product_name]);
     if (index >= 0) {
       list[index] = {
         ...list[index],
