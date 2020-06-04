@@ -6,7 +6,11 @@ import {
   validator,
 } from '@components/core/reduxForm';
 import LoadingTx from '@components/LoadingTx';
-import { CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
+import {
+  CONSTANT_COMMONS,
+  CONSTANT_CONFIGS,
+  CONSTANT_KEYS,
+} from '@src/constants';
 import { ExHandler } from '@services/exception';
 import convertUtil from '@utils/convert';
 import memmoize from 'memoize-one';
@@ -18,7 +22,7 @@ import { detectToken, generateTestId } from '@utils/misc';
 import { change, Field, formValueSelector, isValid, focus } from 'redux-form';
 import { MESSAGES } from '@screens/Dex/constants';
 import { View } from 'react-native';
-import Modal, { actionToggleModal } from '@src/components/Modal';
+import { actionToggleModal } from '@src/components/Modal';
 import { COLORS } from '@src/styles';
 import { ButtonBasic } from '@src/components/Button';
 import { SEND } from '@src/constants/elements';
@@ -30,8 +34,8 @@ import debounce from 'lodash/debounce';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import format from '@src/utils/format';
 import floor from 'lodash/floor';
+import Receipt from '@src/components/Receipt';
 import style from './style';
-import Receipt from './Withdraw.receipt';
 
 export const formName = 'withdraw';
 
@@ -166,6 +170,7 @@ class Withdraw extends React.Component {
             <Receipt
               {...{
                 ...res,
+                originalAmount,
                 fee,
                 feeUnit,
                 title: 'Success! You withdrew funds.',
@@ -173,6 +178,8 @@ class Withdraw extends React.Component {
                 pDecimals: selectedPrivacy?.pDecimals,
                 tokenSymbol:
                   selectedPrivacy?.externalSymbol || res?.tokenSymbol,
+                keySaveAddressBook:
+                  CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK,
               }}
             />
           ),
@@ -339,7 +346,7 @@ class Withdraw extends React.Component {
       <View style={style.container}>
         <Form>
           {({ handleSubmit, submitting }) => (
-            <View style={style.mainContainer}>
+            <View>
               <Field
                 onChange={text => {
                   rfChange(formName, 'amount', text);
@@ -442,7 +449,6 @@ class Withdraw extends React.Component {
             </View>
           )}
         </Form>
-        <Modal />
       </View>
     );
   }

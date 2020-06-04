@@ -10,6 +10,7 @@ import {getBalance as getTokenBalance} from '@src/redux/actions/token';
 import {PRV_ID} from '@screens/Dex/constants';
 import {BtnQuestion} from '@src/components/Button';
 import KeepAwake from 'react-native-keep-awake';
+import { MESSAGES } from '@src/constants';
 import SendIn from './SendIn';
 import SendOut from './SendOut';
 import styles from './style';
@@ -48,7 +49,7 @@ const SendCoin = ({ navigation }) => {
       const tokenId = selectedPrivacy.tokenId;
       const tokenData = getPrivacyDataByTokenID(tokenId);
       if (settings.disableDecentralized && tokenData?.isDecentralized) {
-        Toast.showError('Incognito for smart contracts is coming soon! In preparation, shield, receive-out network, and send-out network features have been temporarily disabled. All features will be re-enabled on 15 April. Thanks for your patience.');
+        Toast.showError(MESSAGES.DISABLE_ETH_BRIDGE);
         return false;
       }
     }

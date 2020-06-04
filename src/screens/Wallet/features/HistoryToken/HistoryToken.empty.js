@@ -1,10 +1,30 @@
 import { Image, Text } from '@src/components/core';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import React from 'react';
 import noTransaction from '@assets/images/icons/shield.png';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { useSelector } from 'react-redux';
-import styles from './style';
+import { COLORS, FONT } from '@src/styles';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    color: COLORS.colorGreyBold,
+    textAlign: 'center',
+    lineHeight: FONT.NORMALIZE(FONT.FONT_SIZES.regular + 4),
+    fontSize: FONT.SIZE.regular,
+  },
+  image: {
+    marginTop: '5%',
+    marginBottom: 20,
+    width: 52,
+    height: 60,
+  },
+});
 
 const EmptyHistory = () => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);

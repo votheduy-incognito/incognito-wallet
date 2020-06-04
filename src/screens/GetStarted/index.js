@@ -16,6 +16,7 @@ import { connect } from 'react-redux';
 import { DEX } from '@src/utils/dex';
 import accountService from '@src/services/wallet/accountService';
 import { actionInit } from '@src/screens/Notification';
+import { actionFetch as actionFetchHomeConfigs } from '@screens/Home/Home.actions';
 import GetStarted from './GetStarted';
 import { STAKE } from '../Stake/stake.utils';
 
@@ -109,14 +110,14 @@ class GetStartedContainer extends Component {
   };
 
   initApp = async () => {
-    const { loadPin } = this.props;
+    const { loadPin, actionFetchHomeConfigs } = this.props;
     try {
       await loadPin();
       this.setState({ isInitialing: true });
       const serverLocalList = (await serverService.get()) ?? [];
       const { getPTokenList, getInternalTokenList } = this.props;
       await login();
-
+      await actionFetchHomeConfigs();
       try {
         const [pTokens] = await new Promise.all([
           await getPTokenList(),
@@ -234,6 +235,7 @@ const mapDispatch = {
   reloadAccountList,
   loadPin,
   initNotification: actionInit,
+  actionFetchHomeConfigs,
 };
 
 const mapState = state => ({
@@ -250,6 +252,8 @@ GetStartedContainer.propTypes = {
   reloadAccountList: PropTypes.func.isRequired,
   followDefaultTokens: PropTypes.func.isRequired,
   initNotification: PropTypes.func.isRequired,
+  actionFetchHomeConfigs: PropTypes.func.isRequired,
+  loadPin: PropTypes.func.isRequired,
 };
 
 GetStartedContainer.defaultProps = {

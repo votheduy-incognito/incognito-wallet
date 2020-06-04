@@ -9,11 +9,15 @@ import { cachePromise } from '@services/cache';
 
 let BEP2Tokens = [];
 
-export const getTokenList = () => {
-  return cachePromise('ptoken', http.get('ptoken/list')
+const getTokenListNoCache = () => {
+  return http.get('ptoken/list')
     .then(res => {
       return res.map(token => new PToken(token));
-    }));
+    });
+};
+
+export const getTokenList = () => {
+  return cachePromise('ptoken', getTokenListNoCache);
 };
 
 export const detectERC20Token = erc20Address => {
@@ -96,17 +100,20 @@ export const addTokenInfo = ({ amount, tokenId, symbol, name, logoFile, descript
   }).then(res => new IncognitoCoinInfo(res));
 };
 
+const getTokenInfoNoCache = ({ tokenId } = {}) => () => {
+  const endpoint = tokenId ? 'pcustomtoken/get' : 'pcustomtoken/list';
+  return http.get(endpoint, tokenId ? { params: { TokenID: tokenId } } : undefined )
+    .then(res => {
+      return tokenId ? new IncognitoCoinInfo(res) : res.map(token => new IncognitoCoinInfo(token));
+    });
+};
+
 /**
  * get incognito token info from backend, if `tokenId` is not passed in then get info for all tokens
  * @param {string} tokenId
  */
 export const getTokenInfo = ({ tokenId } = {}) => {
-  const endpoint = tokenId ? 'pcustomtoken/get' : 'pcustomtoken/list';
-
-  return cachePromise('pcustomtoken', http.get(endpoint, tokenId ? { params: { TokenID: tokenId } } : undefined )
-    .then(res => {
-      return tokenId ? new IncognitoCoinInfo(res) : res.map(token => new IncognitoCoinInfo(token));
-    }));
+  return cachePromise('pcustomtoken', getTokenInfoNoCache({ tokenId }));
 };
 
 /**

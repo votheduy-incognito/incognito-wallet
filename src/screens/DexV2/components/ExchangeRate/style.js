@@ -3,7 +3,7 @@ import { COLORS, FONT } from '@src/styles';
 
 export default StyleSheet.create({
   extra: {
-    color: COLORS.lightGrey9,
+    color: COLORS.lightGrey16,
   },
   row: {
     flexDirection: 'row'

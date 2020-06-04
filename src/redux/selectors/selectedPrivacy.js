@@ -54,6 +54,7 @@ export const getPrivacyDataByTokenID = createSelector(
         let data = {
           ...token,
           ...price,
+          isFollowed: followedTokenData?.id === tokenID,
         };
         return data;
       } catch (e) {

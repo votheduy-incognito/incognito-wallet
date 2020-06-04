@@ -6,9 +6,14 @@ import {
   actionReloadFollowingToken,
 } from '@src/redux/actions/account';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
-import { actionAddFollowToken } from '@src/redux/actions';
+import {
+  actionAddFollowToken,
+  actionFetchHistoryMainCrypto,
+  actionFetchHistoryToken,
+} from '@src/redux/actions/token';
 import { CONSTANT_COMMONS, CONSTANT_EVENTS } from '@src/constants';
 import { logEvent } from '@services/firebase';
+import { actionToggleModal } from '@src/components/Modal';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -190,7 +195,7 @@ export const actionNavigate = (item, navigation) => async (
     const getPrivacyDataByTokenID = selectedPrivacySeleclor.getPrivacyDataByTokenID(
       rootState,
     );
-
+    await dispatch(actionToggleModal());
     await logEvent(CONSTANT_EVENTS.CLICK_NOTIFICATION, { type });
 
     switch (type) {
@@ -214,7 +219,7 @@ export const actionNavigate = (item, navigation) => async (
     case 'withdraw-success':
     case 'balance-update':
     case 'deposit-update': {
-      if(!tokenId){
+      if (!tokenId) {
         navigation.navigate(routeNames.Wallet);
         return;
       }
@@ -225,7 +230,6 @@ export const actionNavigate = (item, navigation) => async (
         id: tokenId,
         ID: tokenId,
       };
-
       const accountUpdated = accountList.find(
         item => item.PublicKeyCheckEncode === publicKey,
       );
@@ -238,6 +242,12 @@ export const actionNavigate = (item, navigation) => async (
         await dispatch(actionAddFollowToken(tokenId));
       }
       await dispatch(actionReloadFollowingToken());
+      if (token?.isMainCrypto) {
+        await dispatch(actionFetchHistoryMainCrypto());
+      }
+      if (token?.isToken) {
+        await dispatch(actionFetchHistoryToken());
+      }
       await new Promise.all([
         dispatch(actionUpdateRecently(item)),
         dispatch(actionFetchRead({ id })),

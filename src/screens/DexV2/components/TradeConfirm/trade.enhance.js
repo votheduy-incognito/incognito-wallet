@@ -26,6 +26,7 @@ const withTrade = WrappedComp => (props) => {
     wallet,
     account,
     isErc20,
+    quote,
   } = props;
 
 
@@ -42,6 +43,8 @@ const withTrade = WrappedComp => (props) => {
   const trade = async () => {
     let prvFee = 0;
     let tokenFee = 0;
+    let spendingPRV = false;
+    let spendingCoin = false;
     if (trading) {
       return;
     }
@@ -53,9 +56,18 @@ const withTrade = WrappedComp => (props) => {
       if (inputToken?.id === PRV.id) {
         prvFee = fee;
         tokenFee = fee;
+
+        spendingCoin = spendingPRV = await accountService.hasSpendingCoins(account, wallet, inputValue + prvFee);
       } else {
         prvFee = feeToken.id === COINS.PRV_ID ? fee : 0;
         tokenFee = prvFee > 0 ? 0 : fee;
+
+        if (prvFee) {
+          spendingPRV = await accountService.hasSpendingCoins(account, wallet, prvFee);
+          spendingCoin = await accountService.hasSpendingCoins(account, wallet, inputValue, inputToken.id);
+        } else {
+          spendingCoin = await accountService.hasSpendingCoins(account, wallet, inputValue + tokenFee, inputToken.id);
+        }
       }
 
       if (inputBalance < inputValue + tokenFee) {
@@ -64,6 +76,10 @@ const withTrade = WrappedComp => (props) => {
 
       if (prvBalance < prvFee) {
         return setError({ tradeError: MESSAGES.NOT_ENOUGH_PRV_NETWORK_FEE });
+      }
+
+      if (spendingCoin || spendingPRV) {
+        return setError(MESSAGES.PENDING_TRANSACTIONS);
       }
 
       const depositObject = await deposit();
@@ -107,20 +123,17 @@ const withTrade = WrappedComp => (props) => {
   };
 
   const tradeKyber = async (depositId) => {
-    // const originalValue = convertUtil.toDecimals(inputValue, inputToken).toString();
-    // const originalMinimum = convertUtil.toDecimals(minimumAmount, inputToken).toString();
+    const originalValue = convertUtil.toDecimals(inputValue, inputToken).toString();
 
     const data = {
       sellTokenAddress: inputToken.address,
-      sellAmount: inputValue.toString(),
+      sellAmount: originalValue,
       buyTokenAddress: outputToken.address,
-      expectAmount: minimumAmount.toString(),
+      expectAmount: quote.expectedRate?.toString(),
       depositId: depositId,
     };
 
-    console.debug('DATA', data);
-
-    // await TradeKyberAPI(data);
+    await TradeKyberAPI(data);
   };
 
   return (

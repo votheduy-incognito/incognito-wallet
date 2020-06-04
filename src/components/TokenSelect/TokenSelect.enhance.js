@@ -1,7 +1,7 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import _ from 'lodash';
-import { useSelector, shallowEqual, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Toast, View } from '@components/core';
 import {
   selectedPrivacySeleclor,
@@ -12,7 +12,7 @@ import VerifiedText from '@components/VerifiedText/index';
 import TokenNetworkName from '@components/TokenNetworkName/index';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import CryptoIcon from '@components/CryptoIcon';
-import { COINS } from '@src/constants';
+import { COINS, MESSAGES } from '@src/constants';
 import PropTypes from 'prop-types';
 
 const generateMenu = (tokens, onSelect) => {
@@ -134,9 +134,7 @@ const enhance = WrappedComp => props => {
       onlyPToken &&
       tokenData?.isDecentralized
     ) {
-      Toast.showError(
-        'Incognito for smart contracts is coming soon! In preparation, shield, receive-out network, and send-out network features have been temporarily disabled. All features will be re-enabled on 15 April. Thanks for your patience.',
-      );
+      Toast.showError(MESSAGES.DISABLE_ETH_BRIDGE);
       return false;
     }
 
@@ -148,16 +146,6 @@ const enhance = WrappedComp => props => {
       onSelect(tokenId);
     }
   };
-
-  React.useEffect(() => {
-    if (
-      !isTokenSelectable(selectedPrivacy?.tokenId) &&
-      allTokens &&
-      allTokens.length > 0
-    ) {
-      onSelect(allTokens[0].id);
-    }
-  }, [selectedPrivacy, allTokens]);
 
   const handleSearch = text => {
     if (text) {
@@ -182,7 +170,14 @@ const enhance = WrappedComp => props => {
   return (
     <ErrorBoundary>
       <WrappedComp
-        {...{ ...props, allTokens, menu, handleSearch, handleClearSearch }}
+        {...{
+          ...props,
+          allTokens,
+          menu,
+          handleSearch,
+          handleClearSearch,
+          isTokenSelectable,
+        }}
       />
     </ErrorBoundary>
   );

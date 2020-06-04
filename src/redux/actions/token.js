@@ -17,6 +17,10 @@ import {
 // eslint-disable-next-line import/no-cycle
 // import { getBalance as getAccountBalance } from '@src/redux/actions/account';
 import { CONSTANT_COMMONS } from '@src/constants';
+import internalTokenModel from '@models/token';
+// eslint-disable-next-line import/no-cycle
+import { setWallet } from './wallet';
+import { followingTokenSelector } from '../selectors/token';
 
 export const setToken = (
   token = throw new Error('Token object is required'),
@@ -163,6 +167,11 @@ export const getInternalTokenList = () => async dispatch => {
   }
 };
 
+export const actionAddFollowTokenFetching = payload => ({
+  type: type.ADD_FOLLOW_TOKEN_FETCHING,
+  payload,
+});
+
 export const actionAddFollowTokenFail = payload => ({
   type: type.ADD_FOLLOW_TOKEN_FAIL,
   payload,
@@ -172,6 +181,59 @@ export const actionAddFollowTokenSuccess = payload => ({
   type: type.ADD_FOLLOW_TOKEN_SUCCESS,
   payload,
 });
+
+export const actionAddFollowToken = tokenId => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const isFetchingFollowToken = followingTokenSelector(state)(tokenId);
+    if (isFetchingFollowToken) {
+      return;
+    }
+    const account = accountSeleclor.defaultAccount(state);
+    const wallet = state.wallet;
+    const { pTokens, internalTokens } = state.token;
+    const foundPToken = pTokens?.find(pToken => pToken.tokenId === tokenId);
+    const foundInternalToken =
+      !foundPToken && internalTokens?.find(token => token.id === tokenId);
+    const token =
+      (foundInternalToken && internalTokenModel.toJson(foundInternalToken)) ||
+      foundPToken?.convertToToken();
+    if (!token) throw Error('Can not follow empty coin');
+    await dispatch(actionAddFollowTokenFetching(tokenId));
+    await accountService.addFollowingTokens([token], account, wallet);
+    await dispatch(setWallet(wallet));
+    await dispatch(actionAddFollowTokenSuccess(tokenId));
+  } catch (error) {
+    await dispatch(actionAddFollowTokenFail(tokenId));
+    throw Error(error);
+  }
+};
+
+export const actionRemoveFollowToken = tokenId => async (
+  dispatch,
+  getState,
+) => {
+  try {
+    const state = getState();
+    const isFetchingFollowToken = followingTokenSelector(state)(tokenId);
+    if (isFetchingFollowToken) {
+      return;
+    }
+    const account = accountSeleclor.defaultAccount(state);
+    const wallet = state.wallet;
+    await dispatch(actionAddFollowTokenFetching(tokenId));
+    const updatedWallet = await accountService.removeFollowingToken(
+      tokenId,
+      account,
+      wallet,
+    );
+    await dispatch(setWallet(updatedWallet));
+    await dispatch(actionAddFollowTokenSuccess(tokenId));
+  } catch (error) {
+    await dispatch(actionAddFollowTokenFail(tokenId));
+    throw Error(error);
+  }
+};
 
 export const actionInitHistory = () => ({
   type: type.ACTION_INIT_HISTORY,
@@ -198,7 +260,7 @@ export const actionFetchHistoryToken = () => async (dispatch, getState) => {
       state,
     );
     const { isFetching } = tokenSeleclor.historyTokenSelector(state);
-    if (isFetching) {
+    if (isFetching || !token?.id || !selectedPrivacy?.tokenId) {
       return;
     }
     await dispatch(actionFetchingHistory());
@@ -230,13 +292,12 @@ export const actionFetchHistoryMainCrypto = () => async (
 ) => {
   try {
     const state = getState();
+    const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
     const { isFetching } = tokenSeleclor.historyTokenSelector(state);
-    if (isFetching) {
+    if (isFetching || !selectedPrivacy?.tokenId) {
       return;
     }
     await dispatch(actionFetchingHistory());
-    const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
-    // const account = accountSeleclor.defaultAccountSelector(state);
     let histories = [];
     if (selectedPrivacy?.isMainCrypto) {
       const [accountHistory] = await new Promise.all([

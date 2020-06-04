@@ -285,6 +285,7 @@ export default class Token {
           ...item,
           id: item.tokenId || item.id,
           pDecimals: Math.min(pToken?.pDecimals || 0, 9),
+          decimals: pToken?.decimals,
           hasIcon: !!pToken,
           symbol: pToken?.symbol || item.symbol,
           displayName: pToken ? `Privacy ${pToken.symbol}` : `Incognito ${item.name}`,

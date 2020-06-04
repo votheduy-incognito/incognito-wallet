@@ -21,7 +21,7 @@ const removeTrailingZeroes = (amountString) => {
   return formattedString;
 };
 
-const amountCreator = (maxDigits) => (amount, decimals, overrideMaxDigits) => {
+const amountCreator = (maxDigits) => (amount, decimals, clipAmount = false) => {
   try {
     const fmt = {
       decimalSeparator: getDecimalSeparator(),
@@ -29,9 +29,21 @@ const amountCreator = (maxDigits) => (amount, decimals, overrideMaxDigits) => {
       groupSize: 3,
     };
 
-    let _maxDigits = overrideMaxDigits || maxDigits;
+    let _maxDigits =  maxDigits;
 
-    const _amount = convertUtil.toHumanAmount(amount, decimals);
+    let _amount = convertUtil.toHumanAmount(amount, decimals);
+
+    if (clipAmount) {
+      let maxDigits = _amount > 1 ? 4 : 9;
+      maxDigits = _amount > 1e3 ? 2 : maxDigits;
+      maxDigits = _amount > 1e5 ? 0: maxDigits;
+      if (decimals) {
+        _amount = _.floor(_amount, Math.min(decimals, maxDigits));
+      } else {
+        _amount = _.floor(_amount, maxDigits);
+      }
+    }
+
     if (!Number.isFinite(_amount)) throw new Error('Can not format invalid amount');
 
     // if amount is too small, do not round it
@@ -110,10 +122,6 @@ const formatWithNotation = (number, noOfDigits = 2) => {
   }
 
   return number;
-};
-
-const formatWithFloor = (number, pDecimals) => {
-
 };
 
 export default {

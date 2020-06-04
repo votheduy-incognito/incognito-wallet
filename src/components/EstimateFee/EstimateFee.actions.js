@@ -44,7 +44,7 @@ export const actionInitEstimateFee = (config = {}) => async (
   const { screen = 'Send' } = config;
   let rate;
   let minAmount = 1 / 10 ** selectedPrivacy?.pDecimals;
-  let minAmountText = format.amountFull(minAmount);
+  let minAmountText = format.toFixed(minAmount, selectedPrivacy?.pDecimals);
   try {
     switch (screen) {
     case 'UnShield': {
@@ -59,7 +59,7 @@ export const actionInitEstimateFee = (config = {}) => async (
     if (screen === 'UnShield') {
       const [min] = await getMinMaxWithdrawAmount(selectedPrivacy?.tokenId);
       if (min) {
-        minAmountText = format.amountFull(min);
+        minAmountText = format.toFixed(min, selectedPrivacy?.pDecimals);
         minAmount = convert.toOriginalAmount(
           minAmountText,
           selectedPrivacy?.pDecimals,
@@ -190,8 +190,9 @@ export const actionFetchFee = ({ amount, address }) => async (
   } finally {
     if (feeEst) {
       const feePrv = floor(feeEst * rate);
-      const feePrvText = format.amountFull(
+      const feePrvText = format.toFixed(
         convert.toHumanAmount(feePrv, CONSTANT_COMMONS.PRV.pDecimals),
+        CONSTANT_COMMONS.PRV.pDecimals
       );
       await new Promise.all([
         await dispatch(
@@ -208,8 +209,9 @@ export const actionFetchFee = ({ amount, address }) => async (
     }
     if (feePTokenEst) {
       const feePToken = floor(feePTokenEst * rate);
-      const feePTokenText = format.amountFull(
+      const feePTokenText = format.toFixed(
         convert.toHumanAmount(feePToken, selectedPrivacy?.pDecimals),
+        selectedPrivacy?.pDecimals
       );
       await dispatch(
         actionFetchedPTokenFee({
@@ -220,8 +222,9 @@ export const actionFetchFee = ({ amount, address }) => async (
     }
     if (minFeePTokenEst) {
       const minFeePToken = floor(minFeePTokenEst * rate);
-      const minFeePTokenText = format.amountFull(
+      const minFeePTokenText = format.toFixed(
         convert.toHumanAmount(minFeePToken, selectedPrivacy?.pDecimals),
+        selectedPrivacy?.pDecimals
       );
       await new Promise.all([
         await dispatch(

@@ -15,6 +15,7 @@ const withData = WrappedComp => (props) => {
   const fee = useNavigationParam('fee');
   const feeToken = useNavigationParam('feeToken');
   const isErc20 = useNavigationParam('isErc20');
+  const quote = useNavigationParam('quote');
 
   return (
     <WrappedComp
@@ -33,6 +34,7 @@ const withData = WrappedComp => (props) => {
         inputBalance,
         prvBalance,
         isErc20,
+        quote,
       }}
     />
   );

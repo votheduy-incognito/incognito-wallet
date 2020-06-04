@@ -30,3 +30,5 @@ export { default as TokenVerifiedIcon } from './icon.tokenVerified';
 export { default as SquareQuestionIcon } from './icon.squareQuestion';
 export { default as InfiniteIcon } from './icon.infinite';
 export { default as InfoIcon } from './icon.info';
+export { default as OpenUrlIcon } from './icon.openUrl';
+export { default as CopyIcon } from './icon.copy';

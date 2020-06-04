@@ -11,7 +11,7 @@ const style = StyleSheet.create({
     width: '100%',
   },
   verifyInfoContainer: {
-    marginTop: 10
+    marginTop: 10,
   },
   verifyInfoHeader: {
     flexDirection: 'row',
@@ -32,14 +32,18 @@ const style = StyleSheet.create({
   input: {
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 4,
+    fontFamily: FONT.NAME.medium,
+    color: COLORS.colorGreyBold,
   },
   labelInput: {
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 4,
     fontFamily: FONT.NAME.bold,
+    color: COLORS.black,
   },
   descriptionInput: {
-    height: 80,
+    marginTop: 30,
+    marginBottom: 20,
   },
   submitBtn: {
     marginVertical: 50,
@@ -77,6 +81,7 @@ const style = StyleSheet.create({
     height: '100%',
     marginBottom: 0,
   },
+  descriptionPlaceholder: {},
 });
 
 export default style;

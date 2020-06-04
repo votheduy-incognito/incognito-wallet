@@ -4,7 +4,6 @@ import { View } from 'react-native';
 import { Field, formValueSelector, isValid, change, focus } from 'redux-form';
 import { connect } from 'react-redux';
 import { Toast } from '@components/core';
-import ReceiptModal, { openReceipt } from '@components/Receipt';
 import LoadingTx from '@components/LoadingTx';
 import {
   createForm,
@@ -29,6 +28,9 @@ import {
 import convert from '@src/utils/convert';
 import debounce from 'lodash/debounce';
 import floor from 'lodash/floor';
+import { actionToggleModal } from '@src/components/Modal';
+import Receipt from '@src/components/Receipt';
+import { CONSTANT_KEYS } from '@src/constants';
 import { homeStyle } from './style';
 
 export const formName = 'sendCrypto';
@@ -67,7 +69,6 @@ class SendCrypto extends React.Component {
   componentDidUpdate(prevProps) {
     const {
       selectedPrivacy,
-      receiptData,
       feeData: { fee, feeUnitByTokenId, minAmount, maxAmount },
     } = this.props;
     const {
@@ -88,9 +89,6 @@ class SendCrypto extends React.Component {
     ) {
       // need to re-calc min amount if token decimals was changed
       this.setFormValidation();
-    }
-    if (receiptData?.txId !== prevProps.receiptData?.txId) {
-      openReceipt(receiptData);
     }
   }
 
@@ -121,20 +119,55 @@ class SendCrypto extends React.Component {
   }, 200);
 
   handleSend = async values => {
-    const { handleSend, feeData } = this.props;
+    const {
+      handleSend,
+      feeData,
+      selectedPrivacy,
+      actionToggleModal,
+    } = this.props;
     const disabledForm = this.shouldDisabledSubmit();
+    const { fee, feeUnit } = feeData;
+    const { toAddress, amount } = values;
     if (disabledForm) {
       return;
     }
     try {
+      const originalAmount = floor(
+        convert.toOriginalAmount(
+          convert.toNumber(amount),
+          selectedPrivacy?.pDecimals,
+        ),
+      );
       const originalFee = floor(
         convert.toOriginalAmount(
           convert.toNumber(feeData.fee),
           feeData.feePDecimals,
         ),
       );
-      if (typeof handleSend === 'function') {
-        await handleSend({ ...feeData, ...values, originalFee });
+      const res = await handleSend({ ...feeData, ...values, originalFee });
+      if (res) {
+        await actionToggleModal({
+          visible: true,
+          data: (
+            <Receipt
+              {...{
+                ...res,
+                originalAmount,
+                fee,
+                feeUnit,
+                title: 'Sent successfully',
+                toAddress,
+                pDecimals: selectedPrivacy?.pDecimals,
+                tokenSymbol:
+                  selectedPrivacy?.externalSymbol ||
+                  selectedPrivacy?.symbol ||
+                  res?.tokenSymbol,
+                keySaveAddressBook:
+                  CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
+              }}
+            />
+          ),
+        });
       }
     } catch (e) {
       if (e.message === MESSAGES.NOT_ENOUGH_NETWORK_FEE) {
@@ -260,7 +293,6 @@ class SendCrypto extends React.Component {
             </View>
           )}
         </Form>
-        <ReceiptModal />
         {isSending && <LoadingTx />}
       </View>
     );
@@ -268,7 +300,6 @@ class SendCrypto extends React.Component {
 }
 
 SendCrypto.defaultProps = {
-  receiptData: null,
   isSending: false,
   isFormValid: false,
   amount: null,
@@ -280,7 +311,6 @@ SendCrypto.defaultProps = {
 SendCrypto.propTypes = {
   selectedPrivacy: PropTypes.object.isRequired,
   account: PropTypes.object.isRequired,
-  receiptData: PropTypes.object,
   handleSend: PropTypes.func.isRequired,
   setSelectedPrivacy: PropTypes.func.isRequired,
   isSending: PropTypes.bool,
@@ -296,6 +326,7 @@ SendCrypto.propTypes = {
   isFormEstimateFeeValid: PropTypes.bool.isRequired,
   rfChange: PropTypes.func.isRequired,
   rfFocus: PropTypes.func.isRequired,
+  actionToggleModal: PropTypes.func.isRequired,
 };
 
 const mapState = state => ({
@@ -311,6 +342,10 @@ const mapDispatch = {
   setSelectedPrivacy,
   rfChange: change,
   rfFocus: focus,
+  actionToggleModal,
 };
 
-export default connect(mapState, mapDispatch)(SendCrypto);
+export default connect(
+  mapState,
+  mapDispatch,
+)(SendCrypto);

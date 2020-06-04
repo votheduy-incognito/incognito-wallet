@@ -11,7 +11,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import LoadingContainer from '@components/LoadingContainer';
-import SimpleInfo from '@components/SimpleInfo';
 import { change as rfOnChangeValue, focus } from 'redux-form';
 import routeNames from '@src/router/routeNames';
 import { withdrawReceiversSelector } from '@src/redux/selectors/receivers';
@@ -261,15 +260,6 @@ class WithdrawContainer extends Component {
     if (!estimateFee.init || !selectedPrivacy) {
       return <LoadingContainer />;
     }
-    if (!selectedPrivacy) {
-      return (
-        <SimpleInfo
-          type="warning"
-          text="Hmm. We hit a snag. Please re-open the app and try again."
-          subText="If second time didnt work: We'll need to take a closer look at this. Please send a message to go@incognito.org or t.me/@incognitonode for assistance."
-        />
-      );
-    }
     return (
       <Withdraw
         {...{
@@ -302,7 +292,7 @@ const mapDispatch = {
   actionFetchedMaxFeePrv,
   actionFetchedMaxFeePToken,
   actionInit,
-  focus
+  focus,
 };
 
 WithdrawContainer.defaultProps = {

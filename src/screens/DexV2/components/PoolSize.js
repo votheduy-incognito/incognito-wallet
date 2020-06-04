@@ -7,8 +7,8 @@ const PoolSize = ({ inputToken, outputToken, pair }) => {
   const inputPool = pair[inputToken.id];
   const outputPool = pair[outputToken.id];
 
-  const formattedInputPool = formatUtil.amount(inputPool, inputToken.pDecimals);
-  const formattedOutputPool = formatUtil.amount(outputPool, outputToken.pDecimals);
+  const formattedInputPool = formatUtil.amount(inputPool, inputToken.pDecimals, true);
+  const formattedOutputPool = formatUtil.amount(outputPool, outputToken.pDecimals, true);
   return (
     <ExtraInfo
       left="Pool size"

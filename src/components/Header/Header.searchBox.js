@@ -3,6 +3,8 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { ScreenWidth } from '@src/utils/devices';
+import { createForm } from '@components/core/reduxForm';
+import { Field } from 'redux-form';
 
 const styled = StyleSheet.create({
   searchBox: {

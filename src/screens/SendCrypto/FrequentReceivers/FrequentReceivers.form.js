@@ -29,7 +29,6 @@ const Form = props => {
         validated={inputName.validated}
         onChangeText={onChangeText}
         maxLength={50}
-        onSubmitEditing={onSaveReceiver}
       />
       <TextInput
         labelStyle={styled.label}

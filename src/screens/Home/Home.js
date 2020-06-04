@@ -1,46 +1,33 @@
 import React from 'react';
-import {
-  ScrollView,
-  TouchableWithoutFeedback,
-  RefreshControl,
-  View,
-} from 'react-native';
+import { RefreshControl, View } from 'react-native';
 import PropTypes from 'prop-types';
+import { ScrollView } from '@src/components/core';
 import styles from './style';
 import withHome from './Home.enhance';
 import Category from './features/Category';
 
 const Home = props => {
-  const {
-    closeTooltip,
-    getHomeConfiguration,
-    categories,
-    isFetching,
-  } = props?.homeProps;
+  const { getHomeConfiguration, categories, isFetching } = props?.homeProps;
   return (
-    <TouchableWithoutFeedback style={{ flex: 1 }} onPress={closeTooltip}>
-      <ScrollView
-        refreshControl={(
-          <RefreshControl
-            refreshing={isFetching}
-            onRefresh={getHomeConfiguration}
-          />
-        )}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.contentContainer}>
-          {categories.map(category => (
-            <Category key={category?.id} {...{ ...category }} />
-          ))}
-        </View>
-      </ScrollView>
-    </TouchableWithoutFeedback>
+    <ScrollView
+      refreshControl={(
+        <RefreshControl
+          refreshing={isFetching}
+          onRefresh={getHomeConfiguration}
+        />
+      )}
+    >
+      <View style={styles.contentContainer}>
+        {categories.map(category => (
+          <Category key={category?.id} {...{ ...category }} />
+        ))}
+      </View>
+    </ScrollView>
   );
 };
 
 Home.propTypes = {
   homeProps: PropTypes.shape({
-    closeTooltip: PropTypes.func.isRequired,
     getHomeConfiguration: PropTypes.func.isRequired,
     categories: PropTypes.array.isRequired,
     isFetching: PropTypes.bool.isRequired,

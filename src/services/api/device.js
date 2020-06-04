@@ -1,17 +1,21 @@
 import http2 from '@src/services/http2';
 import {cachePromise} from '@services/cache';
 
+const getPDEStateNoCache = () => {
+  return http2.post('/chain', {
+    'jsonrpc': '1.0',
+    'method': 'getpdestate',
+    'params': [],
+    'id': 1
+  });
+};
+
 /**
  * Get pde state
  * @returns {AxiosPromise<Object>}
  */
 export const getPDEState = () => {
-  return cachePromise('pdestate', http2.post('/chain', {
-    'jsonrpc': '1.0',
-    'method': 'getpdestate',
-    'params': [],
-    'id': 1
-  }));
+  return cachePromise('pdestate', getPDEStateNoCache);
 };
 
 /**

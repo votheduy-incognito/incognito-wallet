@@ -123,8 +123,9 @@ export default (state = initialState, action) => {
   case ACTION_FETCHED_MAX_FEE_PRV: {
     const accountBalance = action.payload;
     const maxFeePrv = accountBalance;
-    const maxFeePrvText = format.amountFull(
+    const maxFeePrvText = format.toFixed(
       convert.toHumanAmount(maxFeePrv, CONSTANT_COMMONS.PRV.pDecimals),
+      CONSTANT_COMMONS.PRV.pDecimals
     );
     return {
       ...state,
@@ -134,12 +135,14 @@ export default (state = initialState, action) => {
   }
   case ACTION_FETCHED_MAX_FEE_PTOKEN: {
     const { amount, pDecimals } = action.payload;
-    const amountText = format.amountFull(
+    const amountText = format.toFixed(
       convert.toHumanAmount(amount, pDecimals),
+      pDecimals
     );
     const maxFeePToken = amount;
-    const maxFeePTokenText = format.amountFull(
+    const maxFeePTokenText = format.toFixed(
       convert.toHumanAmount(maxFeePToken, pDecimals),
+      pDecimals
     );
     return {
       ...state,

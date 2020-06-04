@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import LoadingContainer from '@components/LoadingContainer';
 import { connect } from 'react-redux';
 import convertUtil from '@utils/convert';
-import formatUtil from '@utils/format';
 import accountService from '@services/wallet/accountService';
 import tokenService from '@services/wallet/tokenService';
 import { getBalance } from '@src/redux/actions/account';
@@ -36,7 +35,6 @@ class SendCryptoContainer extends Component {
     super();
     this.state = {
       isSending: false,
-      receiptData: null,
     };
   }
 
@@ -82,8 +80,7 @@ class SendCryptoContainer extends Component {
 
   _handleSendMainCrypto = async values => {
     const { account, wallet, selectedPrivacy } = this.props;
-    const { toAddress, amount, feeUnit, message, originalFee } = values;
-    const fromAddress = selectedPrivacy?.paymentAddress;
+    const { toAddress, amount, message, originalFee } = values;
     const originalAmount = floor(
       convertUtil.toOriginalAmount(
         convertUtil.toNumber(amount),
@@ -111,20 +108,7 @@ class SendCryptoContainer extends Component {
         info,
       );
       if (res.txId) {
-        const receiptData = {
-          title: 'Sent successfully',
-          txId: res.txId,
-          toAddress,
-          fromAddress,
-          amount: originalAmount || 0,
-          pDecimals: selectedPrivacy.pDecimals,
-          decimals: selectedPrivacy.decimals,
-          amountUnit: selectedPrivacy?.symbol,
-          time: formatUtil.toMiliSecond(res.lockTime),
-          fee: originalFee,
-          feeUnit,
-        };
-        this.setState({ receiptData });
+        return res;
       } else {
         throw new Error('Sent tx, but doesnt have txID, please check it');
       }
@@ -136,22 +120,8 @@ class SendCryptoContainer extends Component {
   };
 
   _handleSendToken = async values => {
-    const {
-      account,
-      wallet,
-      tokens,
-      selectedPrivacy,
-      getTokenBalanceBound,
-    } = this.props;
-    const {
-      toAddress,
-      amount,
-      feeUnit,
-      message,
-      isUseTokenFee,
-      originalFee,
-    } = values;
-    const fromAddress = selectedPrivacy?.paymentAddress;
+    const { account, wallet, selectedPrivacy } = this.props;
+    const { toAddress, amount, message, isUseTokenFee, originalFee } = values;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
     const originalAmount = convertUtil.toOriginalAmount(
       convertUtil.toNumber(amount),
@@ -193,25 +163,7 @@ class SendCryptoContainer extends Component {
       );
 
       if (res.txId) {
-        const receiptData = {
-          title: 'Sent successfully',
-          txId: res.txId,
-          toAddress,
-          fromAddress,
-          amount: originalAmount || 0,
-          amountUnit:
-            selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol,
-          time: formatUtil.toMiliSecond(res.lockTime),
-          fee: originalFee,
-          feeUnit,
-          pDecimals: selectedPrivacy?.pDecimals,
-          decimals: selectedPrivacy.decimals,
-        };
-
-        this.setState({ receiptData });
-
-        const foundToken = tokens?.find(t => t.id === selectedPrivacy?.tokenId);
-        foundToken && setTimeout(() => getTokenBalanceBound(foundToken), 10000);
+        return res;
       } else {
         throw new Error('Sent tx, but doesnt have txID, please check it');
       }
@@ -251,10 +203,9 @@ class SendCryptoContainer extends Component {
 
   render() {
     const { selectedPrivacy, estimateFee } = this.props;
-    const { receiptData, isSending } = this.state;
+    const { isSending } = this.state;
     const componentProps = {
       handleSend: this.handleSend(),
-      receiptData,
       isSending,
     };
     if (!selectedPrivacy || !estimateFee.init) {
