@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TextInput } from 'react-native';
-import {COLORS} from '@src/styles';
+import { COLORS } from '@src/styles';
+import styles from './styles';
 
 const BaseTextInput = ({ style, ...props}) => (
   <TextInput
@@ -11,7 +12,7 @@ const BaseTextInput = ({ style, ...props}) => (
     autoCorrect={false}
     spellCheck={false}
     autoCompleteType="off"
-    style={[{ color: COLORS.black }, style]}
+    style={[styles.input, style]}
   />
 );
 

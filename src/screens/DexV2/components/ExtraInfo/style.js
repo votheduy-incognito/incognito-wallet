@@ -10,7 +10,7 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
   },
   text: {
-    color: COLORS.lightGrey9,
+    color: COLORS.lightGrey16,
   },
   textLeft: {
     marginRight: 10,

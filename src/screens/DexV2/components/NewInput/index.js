@@ -8,7 +8,7 @@ import { COLORS } from '@src/styles';
 import Input from './Input';
 import stylesheet from './style';
 
-const RightIcon = () => <Icon name="chevron-right" color={COLORS.lightGrey1} size={36} />;
+const RightIcon = () => <Icon name="chevron-right" color={COLORS.lightGrey16} size={36} />;
 
 const InputContainer = (props) => {
   const navigation = useNavigation();

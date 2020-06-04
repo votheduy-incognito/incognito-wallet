@@ -24,7 +24,6 @@ export default StyleSheet.create({
   },
   button: {
     marginVertical: 50,
-    borderRadius: 20,
     backgroundColor: COLORS.blue5,
     height: 50,
   },
@@ -34,6 +33,8 @@ export default StyleSheet.create({
   },
   error: {
     color: COLORS.red,
+    fontSize: 14,
+    marginTop: -10,
   },
   warning: {
     color: COLORS.orange,
@@ -45,7 +46,7 @@ export default StyleSheet.create({
     right: 0,
   },
   bottomText: {
-    color: COLORS.lightGrey1,
+    color: COLORS.lightGrey16,
     ...FONT.STYLE.medium,
   },
 });

@@ -39,7 +39,7 @@ const History = ({
         <Text style={[styles.content, styles.ellipsis]} numberOfLines={1}>{item.description}</Text>
         <View style={[styles.row]}>
           <Text style={styles.content} numberOfLines={1}>{item.status}</Text>
-          <Icon name="chevron-right" color={COLORS.lightGrey1} />
+          <Icon name="chevron-right" color={COLORS.lightGrey16} containerStyle={{ marginTop: -1 }} />
         </View>
       </View>
     </TouchableOpacity>

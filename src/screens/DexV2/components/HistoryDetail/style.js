@@ -17,7 +17,7 @@ export default StyleSheet.create({
     color: COLORS.black,
   },
   content: {
-    color: COLORS.lightGrey1,
+    color: COLORS.lightGrey16,
   },
   historyItem: {
     marginVertical: 30,

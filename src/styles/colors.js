@@ -32,7 +32,7 @@ const COLORS = {
   lightGrey13: '#E6EEEF',
   lightGrey14: '#FAFAFA',
   lightGrey15: '#DCDDDD',
-  lightGrey16: '#CCE2E2',
+  lightGrey16: '#8A8A9E',
 
   newGrey: '#8A8A8E',
 

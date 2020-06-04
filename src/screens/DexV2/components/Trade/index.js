@@ -150,7 +150,7 @@ const Trade = ({
       {!!histories.length && (
         <TouchableOpacity onPress={navigateHistory} style={styles.bottomFloatBtn}>
           <Text style={styles.bottomText}>Order history</Text>
-          <Icon name="chevron-right" color={COLORS.lightGrey1} />
+          <Icon name="chevron-right" color={COLORS.lightGrey16} containerStyle={{ marginTop: -1 }} />
         </TouchableOpacity>
       )}
     </View>
