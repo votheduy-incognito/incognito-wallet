@@ -11,7 +11,6 @@ const styled = StyleSheet.create({
     marginRight: 20,
     width: ScreenWidth * 0.62,
     height: 30,
-    backgroundColor: 'red'
   },
 });
 
