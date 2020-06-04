@@ -54,10 +54,16 @@ export class PDexTradeHistoryModel {
 
     if (buyToken?.address && sellToken?.address) {
       this.exchange = 'Kyber';
-      this.tradingFee = DEFI_TRADING_FEE;
+      if (this.networkFee > DEFI_TRADING_FEE) {
+        this.tradingFee = DEFI_TRADING_FEE;
+      } else if (this.networkFee > 4e8) {
+        this.tradingFee = 4e8;
+      } else {
+        this.tradingFee = 1e7;
+      }
       this.networkFee = this.networkFee - this.tradingFee;
       this.buyAmount = this.buyAmount / Math.pow(10, buyToken.decimals - buyToken.pDecimals);
-      this.buyAmount = this.buyAmount * this.sellAmount / Math.pow(10, sellToken.pDecimals);
+      this.buyAmount = Math.floor(this.buyAmount * this.sellAmount / Math.pow(10, sellToken.pDecimals));
     } else {
       this.exchange = 'Incognito';
     }

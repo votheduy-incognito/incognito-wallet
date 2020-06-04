@@ -60,8 +60,8 @@ const Trade = ({
             token={feeToken}
             left={(
               <View style={styles.row}>
-                <Text style={styles.extra}>Fee</Text>
-                <Help title="Fee" content="Network fees go to validators. There is no trading fee." />
+                <Text style={styles.extra}>Network fee</Text>
+                <Help title="Network fee" content="Network fees go to validators. There is no trading fee." />
               </View>
             )}
             right={`${format.amount(fee, feeToken.pDecimals)} ${feeToken.symbol}`}
@@ -71,21 +71,32 @@ const Trade = ({
         </>
       )}
       { !!isErc20 && (
-      <>
-        <ExtraInfo
-          token={feeToken}
-          left={(
-            <View style={styles.row}>
-              <Text style={styles.extra}>Fee</Text>
-              <Help title="Fee" content="This includes trading fee and network fee. Network fee go to validators. Trading fee go to ethereum network." />
-            </View>
-          )}
-          right={`${format.amount(fee + DEFI_TRADING_FEE, feeToken.pDecimals)} ${feeToken.symbol}`}
-          style={styles.extra}
-        />
-        <Powered />
-      </>
+        <>
+          <ExtraInfo
+            token={feeToken}
+            left={(
+              <View style={styles.row}>
+                <Text style={styles.extra}>Network fee</Text>
+                <Help title="Network fee" content="Network fees go to validators." />
+              </View>
+            )}
+            right={`${format.amount(fee, feeToken.pDecimals)} ${feeToken.symbol}`}
+            style={styles.extra}
+          />
+          <ExtraInfo
+            token={feeToken}
+            left={(
+              <View style={styles.row}>
+                <Text style={styles.extra}>Trading fee</Text>
+                <Help title="Trading fee" content="This is a Kyber pool. You are trading anonymously on the Ethereum network which will incur trading fees. Incognito does not charge trading fees." />
+              </View>
+            )}
+            right={`${format.amount(fee + DEFI_TRADING_FEE, feeToken.pDecimals)} ${feeToken.symbol}`}
+            style={styles.extra}
+          />
+        </>
       )}
+      <Powered network={isErc20 ? 'Kyber' : 'Incognito'} />
       {!!warning && <ExtraInfo left={warning} right="" style={styles.warning} />}
       {!!error && <Text style={styles.error}>{error}</Text>}
       <RoundCornerButton
