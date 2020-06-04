@@ -16,7 +16,7 @@ class ConnectionCheck extends PureComponent {
     const { onNext } = this.props;
     return (
       <ScrollView>
-        <Text style={styles.title2}>Please ensure you enabled wifi and turned on node device</Text>
+        <Text style={styles.title2}>Please wait for Node to show up in your network list, then tap Next</Text>
         <View style={styles.content}>
           <Image
             style={styles.content_step4_image}
