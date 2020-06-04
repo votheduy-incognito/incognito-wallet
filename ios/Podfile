@@ -94,6 +94,8 @@ target 'Incognito' do
   # React-Native is not great about React double-including from the Podfile
   pod 'lottie-react-native', :path => '../node_modules/lottie-react-native'
 
+  pod 'react-native-settings', :path => '../node_modules/react-native-settings'
+
   post_install do |installer|
     installer.pods_project.targets.each do |target|
       if target.name == "React"

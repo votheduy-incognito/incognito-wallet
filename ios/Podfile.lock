@@ -332,6 +332,8 @@ PODS:
     - React
   - react-native-randombytes (3.5.3):
     - React
+  - react-native-settings (0.2.3):
+    - React
   - react-native-webview (7.4.3):
     - React
   - React-RCTActionSheet (0.61.2):
@@ -457,6 +459,7 @@ DEPENDENCIES:
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-network-info (from `../node_modules/react-native-network-info`)
   - react-native-randombytes (from `../node_modules/react-native-randombytes`)
+  - react-native-settings (from `../node_modules/react-native-settings`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -587,6 +590,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-network-info"
   react-native-randombytes:
     :path: "../node_modules/react-native-randombytes"
+  react-native-settings:
+    :path: "../node_modules/react-native-settings"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-RCTActionSheet:
@@ -701,6 +706,7 @@ SPEC CHECKSUMS:
   react-native-netinfo: f85616b5f5819085624f2c26dcb98ff3ab013a41
   react-native-network-info: d1290ffc0bd0709e11436f5b8d7f605dcc5c4530
   react-native-randombytes: 3638d24759d67c68f6ccba60c52a7a8a8faa6a23
+  react-native-settings: 67977214c0f7d6062ad25581107c16a7a27af2a8
   react-native-webview: 82d6456dfae1b3ef70c3939135536342afc96373
   React-RCTActionSheet: 89b037c0fb7d2671607cb645760164e7e0c013f6
   React-RCTAnimation: e3cefa93c38c004c318f7ec04b883eb14b8b8235
@@ -729,6 +735,6 @@ SPEC CHECKSUMS:
   TouchID: ba4c656d849cceabc2e4eef722dea5e55959ecf4
   Yoga: 14927e37bd25376d216b150ab2a561773d57911f
 
-PODFILE CHECKSUM: 347009c8a88b831905e8f28efe9f49d61c78d891
+PODFILE CHECKSUM: f7d0e62550afb36cb709a053c202162b24a8b697
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.1
