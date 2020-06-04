@@ -298,7 +298,6 @@ export const actionFetchHistoryMainCrypto = () => async (
     }
     await dispatch(actionFetchingHistory());
     const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
-    // const account = accountSeleclor.defaultAccountSelector(state);
     let histories = [];
     if (selectedPrivacy?.isMainCrypto) {
       const [accountHistory] = await new Promise.all([

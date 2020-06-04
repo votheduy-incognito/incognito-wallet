@@ -71,7 +71,7 @@ const Header = ({
     >
       <View style={[styled.container, style]}>
         <BtnCircleBack onPress={_handleGoBack} />
-        {toggleSearch ? <SearchBox /> : <HeaderTitle />}
+        {toggleSearch ? <SearchBox title={title}/> : <HeaderTitle />}
         {!!rightHeader && rightHeader}
         {accountSelectable && (
           <View>
