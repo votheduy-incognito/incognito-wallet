@@ -7,7 +7,7 @@ import {
 } from '@src/services/api/deposit';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
-import { actionAddFollowToken } from '@src/redux/actions';
+import { actionAddFollowToken } from '@src/redux/actions/token';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,

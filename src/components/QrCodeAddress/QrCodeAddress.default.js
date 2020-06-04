@@ -12,9 +12,9 @@ const styled = StyleSheet.create({
     marginVertical: 50,
   },
   label: {
-    fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.large,
-    lineHeight: FONT.SIZE.large + 4,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.black,
   },
   qrCode: {
@@ -31,7 +31,7 @@ const QrCodeAddress = props => {
     <View style={styled.container}>
       <Text style={styled.label}>{label}</Text>
       <View style={styled.qrCode}>
-        <QrCodeGenerate value={address} size={175} />
+        <QrCodeGenerate value={address} size={150} />
       </View>
       <CopiableText data={address} />
     </View>

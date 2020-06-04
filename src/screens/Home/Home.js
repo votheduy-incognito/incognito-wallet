@@ -40,7 +40,6 @@ const Home = props => {
 
 Home.propTypes = {
   homeProps: PropTypes.shape({
-    closeTooltip: PropTypes.func.isRequired,
     getHomeConfiguration: PropTypes.func.isRequired,
     categories: PropTypes.array.isRequired,
     isFetching: PropTypes.bool.isRequired,

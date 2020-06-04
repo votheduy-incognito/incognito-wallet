@@ -23,6 +23,11 @@ export const historyTokenSelector = createSelector(
   history => history,
 );
 
+export const followingTokenSelector = createSelector(
+  state => state?.token?.following,
+  following => tokenId => following.includes(tokenId),
+);
+
 export default {
   followed,
   isGettingBalance,
@@ -32,4 +37,5 @@ export default {
   pTokensSelector,
   internalTokensSelector,
   historyTokenSelector,
+  followingTokenSelector,
 };

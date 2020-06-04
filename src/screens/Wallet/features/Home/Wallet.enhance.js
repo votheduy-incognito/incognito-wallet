@@ -4,7 +4,11 @@ import { compose } from 'recompose';
 import { useSelector, useDispatch } from 'react-redux';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
-import { getPTokenList, getInternalTokenList } from '@src/redux/actions/token';
+import {
+  getPTokenList,
+  getInternalTokenList,
+  actionRemoveFollowToken,
+} from '@src/redux/actions/token';
 import {
   getBalance,
   reloadAccountFollowingToken,
@@ -18,7 +22,6 @@ import {
   clearSelectedPrivacy,
 } from '@src/redux/actions/selectedPrivacy';
 import routeNames from '@src/router/routeNames';
-import { actionRemoveFollowToken } from '@src/redux/actions';
 import { Toast } from '@src/components/core';
 import { InteractionManager } from 'react-native';
 import { actionInit as actionInitEstimateFee } from '@components/EstimateFee/EstimateFee.actions';

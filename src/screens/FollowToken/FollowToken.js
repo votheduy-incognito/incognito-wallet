@@ -32,16 +32,15 @@ const ListToken = props => {
     <FlatList
       style={styled.flatList}
       data={[...data]}
-      renderItem={({ item }) =>
-        item?.isFollowed === true ? null : (
-          <Token
-            onPress={() => handleToggleFollowToken(item)}
-            tokenId={item?.tokenId}
-            name="displayName"
-            symbol="pSymbol"
-          />
-        )
-      }
+      renderItem={({ item }) => (
+        <Token
+          onPress={() => handleToggleFollowToken(item)}
+          tokenId={item?.tokenId}
+          name="displayName"
+          symbol="pSymbol"
+          shouldShowFollowed
+        />
+      )}
       keyExtractor={token => token?.tokenId}
       extraData={[...data]}
     />

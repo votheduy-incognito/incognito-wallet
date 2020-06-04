@@ -12,15 +12,14 @@ const styled = StyleSheet.create({
   container: {
     backgroundColor: COLORS.colorGrey,
     height: 40,
+    paddingHorizontal: 13,
     maxWidth: 120,
-    paddingHorizontal: 10,
   },
   name: {
     marginRight: 5,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.NORMALIZE(FONT.FONT_SIZES.regular - 1),
     color: COLORS.black,
-    maxWidth: 100,
   },
   hook: {
     flexDirection: 'row',
@@ -39,7 +38,7 @@ const BtnSelectAccount = () => {
       onPress={onNavSelectAccount}
       customContent={(
         <View style={styled.hook}>
-          <Text numberOfLines={1} style={styled.name}>
+          <Text numberOfLines={1} style={styled.name} ellipsizeMode="tail">
             {account?.accountName}
           </Text>
           <Ionicons name="ios-arrow-down" color={COLORS.black} size={13} />
