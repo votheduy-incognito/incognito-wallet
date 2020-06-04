@@ -11,6 +11,7 @@ import { receiversSelector } from '@src/redux/selectors/receivers';
 import { useBtnSaveReceiver } from '@screens/SendCrypto/FrequentReceivers/FrequentReceivers.hooks';
 import { compose } from 'redux';
 import { withLayout_2 } from '@src/components/Layout';
+import { StackActions, NavigationActions } from 'react-navigation';
 
 const enhance = WrappedComp => props => {
   const navigation = useNavigation();
@@ -67,7 +68,15 @@ const enhance = WrappedComp => props => {
         data: null,
       }),
     );
-    navigation.navigate(routeNames.WalletDetail);
+    const resetAction = StackActions.reset({
+      index: 2,
+      actions: [
+        NavigationActions.navigate({ routeName: routeNames.Home }),
+        NavigationActions.navigate({ routeName: routeNames.Wallet }),
+        NavigationActions.navigate({ routeName: routeNames.WalletDetail }),
+      ],
+    });
+    navigation.dispatch(resetAction);
   };
   const onSaveReceivers = async () => {
     try {
