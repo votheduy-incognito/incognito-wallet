@@ -16,10 +16,13 @@ import { actionFetch as fetchDataShield } from './Shield.actions';
 const enhance = WrappedComp => props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const { allTokens: tokens } = props;
+  const { allTokens: tokens, isTokenSelectable } = props;
   const handleWhyShield = () => navigation.navigate(routeNames.WhyShield);
   const handleShield = async tokenId => {
     try {
+      if (!isTokenSelectable(tokenId)) {
+        return;
+      }
       navigation.navigate(routeNames.ShieldGenQRCode);
       await dispatch(fetchDataShield({ tokenId }));
     } catch (error) {

@@ -48,6 +48,7 @@ const ListToken = props => {
 };
 
 const Modal = props => {
+  const { isTokenSelectable } = props;
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const tokens = props?.allTokens || [];
@@ -57,7 +58,7 @@ const Modal = props => {
   });
   const handleUnShieldToken = async token => {
     const tokenId = token?.tokenId || null;
-    if (!tokenId) return;
+    if (!tokenId || !isTokenSelectable(tokenId)) return;
     await dispatch(setSelectedPrivacy(tokenId));
     navigation.navigate(routeNames.UnShield);
   };
@@ -74,7 +75,9 @@ ListToken.propTypes = {
   handleUnShieldToken: PropTypes.func.isRequired,
 };
 
-Modal.propTypes = {};
+Modal.propTypes = {
+  isTokenSelectable: PropTypes.func.isRequired,
+};
 
 export default compose(
   withLayout_2,

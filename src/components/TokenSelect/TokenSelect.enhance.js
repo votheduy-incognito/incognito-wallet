@@ -1,7 +1,7 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import _ from 'lodash';
-import { useSelector, shallowEqual, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Toast, View } from '@components/core';
 import {
   selectedPrivacySeleclor,
@@ -149,16 +149,6 @@ const enhance = WrappedComp => props => {
     }
   };
 
-  React.useEffect(() => {
-    if (
-      !isTokenSelectable(selectedPrivacy?.tokenId) &&
-      allTokens &&
-      allTokens.length > 0
-    ) {
-      onSelect(allTokens[0].id);
-    }
-  }, [selectedPrivacy, allTokens]);
-
   const handleSearch = text => {
     if (text) {
       const searchText = _.toLower(_.trim(text));
@@ -182,7 +172,14 @@ const enhance = WrappedComp => props => {
   return (
     <ErrorBoundary>
       <WrappedComp
-        {...{ ...props, allTokens, menu, handleSearch, handleClearSearch }}
+        {...{
+          ...props,
+          allTokens,
+          menu,
+          handleSearch,
+          handleClearSearch,
+          isTokenSelectable,
+        }}
       />
     </ErrorBoundary>
   );

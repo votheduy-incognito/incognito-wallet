@@ -11,7 +11,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import LoadingContainer from '@components/LoadingContainer';
-import SimpleInfo from '@components/SimpleInfo';
 import { change as rfOnChangeValue, focus } from 'redux-form';
 import routeNames from '@src/router/routeNames';
 import { withdrawReceiversSelector } from '@src/redux/selectors/receivers';
@@ -293,7 +292,7 @@ const mapDispatch = {
   actionFetchedMaxFeePrv,
   actionFetchedMaxFeePToken,
   actionInit,
-  focus
+  focus,
 };
 
 WithdrawContainer.defaultProps = {
