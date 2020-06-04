@@ -133,7 +133,7 @@ class WifiSetup extends PureComponent {
   }
 
   connectToWifi = async (ssid, password) => {
-    const {steps} = this.state;
+    const { steps } = this.state;
     const { hotspotSSID } = this.props;
     if (!this.isMounteds) {
       return;
@@ -214,9 +214,9 @@ class WifiSetup extends PureComponent {
               let wifiName = await this.getCurrentWifi();
 
               if (!isConnected || !connectable || wifiName.includes('Node') || wifiName === '') {
-                
+
                 this.addStep({ name: 'There is an issue with your wifiname/password or internet connection quality now.\nPlease try to connect to wifi manually', isSuccess: false });
-                if (Platform.OS === 'ios' ||  steps[steps.length - 1] && !steps[steps.length - 2]?.name?.includes('Trying to connect to Wi-Fi')) {
+                if (Platform.OS === 'ios' || steps[steps.length - 1] && !steps[steps.length - 2]?.name?.includes('Trying to connect to Wi-Fi')) {
                   this.setState({ backToQRCode: true });
                 }
               }
@@ -698,7 +698,7 @@ class WifiSetup extends PureComponent {
       Util.delay(2);
       // Check code in firebase
       await this.verifyCodeFirebase(36, false);
-      
+
     } catch (e) {
       const { steps } = this.state;
       this.setState({ loading: false });
