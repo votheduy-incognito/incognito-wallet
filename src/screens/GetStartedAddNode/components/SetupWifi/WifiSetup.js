@@ -93,6 +93,7 @@ class WifiSetup extends PureComponent {
       }
 
       if (ssid.includes('unknown ssid')) {
+        ssid = '';
         throw new Error('Can not get Wi-Fi SSID');
       }
 
@@ -213,7 +214,7 @@ class WifiSetup extends PureComponent {
               // And wifi name is the same with hotspot
               let wifiName = await this.getCurrentWifi();
 
-              if (!isConnected || !connectable || wifiName.includes('Node') || wifiName === '') {
+              if (!isConnected || !connectable || !wifiName.includes('Node') || wifiName === '') {
 
                 this.addStep({ name: 'There is an issue with your wifiname/password or internet connection quality now.\nPlease try to connect to wifi manually', isSuccess: false });
                 if (Platform.OS === 'ios' || steps[steps.length - 1] && !steps[steps.length - 2]?.name?.includes('Trying to connect to Wi-Fi')) {
@@ -697,7 +698,7 @@ class WifiSetup extends PureComponent {
 
       Util.delay(2);
       // Check code in firebase
-      await this.verifyCodeFirebase(36, false);
+      await this.verifyCodeFirebase(18, false);
 
     } catch (e) {
       const { steps } = this.state;
