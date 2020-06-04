@@ -6,7 +6,6 @@ import EmptyHistory from './MainCryptoHistory.empty';
 
 const enhance = WrappedComp => props => {
   const { isEmpty } = useSelector(tokenSeleclor.historyTokenSelector);
-  console.log('isEmpty', isEmpty);
   if (isEmpty) {
     return <EmptyHistory />;
   }

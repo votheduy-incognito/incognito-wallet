@@ -127,7 +127,6 @@ class SendCrypto extends React.Component {
     } = this.props;
     const disabledForm = this.shouldDisabledSubmit();
     const { fee, feeUnit } = feeData;
-    console.log('fee data', feeData);
     const { toAddress, amount } = values;
     if (disabledForm) {
       return;

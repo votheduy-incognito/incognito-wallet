@@ -3,6 +3,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { createForm } from '@components/core/reduxForm';
 import { Field } from 'redux-form';
+import PropTypes from 'prop-types';
 
 const styled = StyleSheet.create({
   searchBox: {
@@ -18,13 +19,13 @@ export const searchBoxConfig = {
 
 const Form = createForm(searchBoxConfig.form);
 
-const SearchBox = () => {
+const SearchBox = (props) => {
   return (
     <Form style={styled.searchBox}>
       <Field
         name={searchBoxConfig.searchBox}
-        component={props => {
-          const { input, ...rest } = props;
+        component={componentProps => {
+          const { input, ...rest } = componentProps;
           return (
             <TextInput
               onChangeText={input?.onChange}
@@ -32,6 +33,7 @@ const SearchBox = () => {
               onFocus={input?.onFocus}
               value={input?.value}
               autoFocus
+              placeholder={props?.title || ''}
               {...rest}
             />
           );
@@ -41,6 +43,8 @@ const SearchBox = () => {
   );
 };
 
-SearchBox.propTypes = {};
+SearchBox.propTypes = {
+  title: PropTypes.string.isRequired
+};
 
 export default React.memo(SearchBox);

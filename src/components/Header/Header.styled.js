@@ -18,8 +18,8 @@ export const styledHeaderTitle = StyleSheet.create({
   },
   title: {
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
     color: COLORS.black,
     flex: 1,
   },

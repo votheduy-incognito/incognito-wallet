@@ -184,6 +184,7 @@ const reducer = (state = initialState, action) => {
   case type.ACTION_INIT_HISTORY: {
     return {
       ...state,
+      history: {...initialState.history}
     };
   }
   case typeSelectedPrivacy.SET: {
