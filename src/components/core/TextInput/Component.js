@@ -23,6 +23,7 @@ const TextInput = ({
   maxLength,
   onRef,
   labelStyle,
+  oldVersion = false,
   ...props
 }) => {
   const [focus, setFocus] = useState(false);
@@ -62,14 +63,22 @@ const TextInput = ({
         <Text
           style={[
             styleSheet.label,
+            oldVersion && styleSheet.labelOld,
             labelStyle,
-            focus && styleSheet.labelFocus,
+            focus && oldVersion && styleSheet.labelFocus,
           ]}
         >
           {label}
         </Text>
       )}
-      <View style={[styleSheet.row, containerStyle, focus && styleSheet.focus]}>
+      <View
+        style={[
+          styleSheet.row,
+          oldVersion && styleSheet.rowOld,
+          containerStyle,
+          focus && oldVersion && styleSheet.focus,
+        ]}
+      >
         {appendView}
         <RNComponent
           ref={textInput}
@@ -77,7 +86,11 @@ const TextInput = ({
           placeholderTextColor={COLORS.colorGreyBold}
           returnKeyType="done"
           maxLength={maxLength}
-          style={[styleSheet.input, inputStyle]}
+          style={[
+            styleSheet.input,
+            oldVersion && styleSheet.oldInput,
+            inputStyle,
+          ]}
           onFocus={handleFocus}
           onBlur={handleBlur}
           autoCapitalize="none"
@@ -118,6 +131,8 @@ TextInput.defaultProps = {
   style: null,
   maxLength: null,
   labelStyle: null,
+  oldVersion: false,
+  onRef: null,
 };
 
 TextInput.propTypes = {
@@ -133,6 +148,8 @@ TextInput.propTypes = {
   style: PropTypes.object,
   maxLength: PropTypes.number,
   labelStyle: PropTypes.any,
+  oldVersion: PropTypes.bool,
+  onRef: PropTypes.func,
 };
 
 export default TextInput;

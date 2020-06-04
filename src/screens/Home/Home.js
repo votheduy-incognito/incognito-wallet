@@ -1,31 +1,19 @@
 import React from 'react';
-import {
-  ScrollView,
-  TouchableWithoutFeedback,
-  RefreshControl,
-  View,
-} from 'react-native';
+import { TouchableWithoutFeedback, RefreshControl, View } from 'react-native';
 import PropTypes from 'prop-types';
+import { ScrollView } from '@src/components/core';
 import styles from './style';
 import withHome from './Home.enhance';
 import Category from './features/Category';
 
 const Home = props => {
-  const {
-    closeTooltip,
-    getHomeConfiguration,
-    categories,
-    isFetching,
-  } = props?.homeProps;
+  const { closeTooltip, getHomeConfiguration, categories } = props?.homeProps;
   return (
     <TouchableWithoutFeedback style={{ flex: 1 }} onPress={closeTooltip}>
       <ScrollView
-        refreshControl={(
-          <RefreshControl
-            refreshing={isFetching}
-            onRefresh={getHomeConfiguration}
-          />
-        )}
+        refreshControl={
+          <RefreshControl refreshing={false} onRefresh={getHomeConfiguration} />
+        }
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.contentContainer}>
