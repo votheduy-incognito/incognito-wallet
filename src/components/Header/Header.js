@@ -51,7 +51,8 @@ const Header = ({
   onHandleSearch,
   style,
   onTextSearchChange,
-  onSubmit
+  onSubmit,
+  searchText
 }) => {
   const { goBack } = useNavigation();
   const handleGoBack = () =>
@@ -94,7 +95,8 @@ Header.defaultProps = {
   onGoBack: null,
   style: null,
   onTextSearchChange: () => {},
-  onSubmit: () => {}
+  onSubmit: () => {},
+  searchText: ''
 };
 
 Header.propTypes = {
@@ -110,6 +112,7 @@ Header.propTypes = {
   style: PropTypes.any,
   onTextSearchChange: PropTypes.func,
   onSubmit: PropTypes.func,
+  searchText: PropTypes.string
 };
 
 export default withHeader(React.memo(Header));

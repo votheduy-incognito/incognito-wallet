@@ -190,19 +190,23 @@ class PappViewContainer extends Component {
       <View style={styled.container}>
         <Header
           canSearch
-          title="Search"
-          onSubmit={() => { 
+          title={url ? `${url}`: 'Search'}
+          value={searchText}
+          onSubmit={() => {
             let tempSearchText = searchText;
-            // Check if string is url
-            let indexOfHttp = tempSearchText?.indexOf('https://');
-            if (indexOfHttp === -1) {
-              // InCorrect
-              tempSearchText = 'https://' + tempSearchText;
+            if (tempSearchText.replace(' ', '') != '') {
+              // Check if string is url
+              let indexOfHttp = tempSearchText?.indexOf('https://');
+              if (indexOfHttp === -1) {
+                // InCorrect
+                tempSearchText = 'https://' + tempSearchText;
+              }
+
+              this.setState({ url: tempSearchText });
             }
-            this.setState({ url: tempSearchText }); 
           }}
           onTextSearchChange={text => {
-            this.setState({  searchText: text });
+            this.setState({ searchText: text });
           }}
           rightHeader={(
             <View style={styles.chooseTokenIcon}>
