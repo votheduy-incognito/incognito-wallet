@@ -14,11 +14,12 @@ export const checkBandWidth = (imageURIParam) => {
     const startTime = (new Date()).getTime();
 
     http.get(imageURI, {
-      fileCache: false, 
+      fileCache: false,
       cancelToken: new CancelToken(function executor(c) {
         // An executor function receives a cancel function as a parameter
         cancel = c;
-      })}).then((res) => {
+      })
+    }).then((res) => {
       const endTime = (new Date()).getTime();
       const duration = (endTime - startTime) / 1000;
       const speed = (downloadSizeInBits / (1024 * 1024 * duration));
@@ -32,4 +33,11 @@ export const checkBandWidth = (imageURIParam) => {
 export const cancelCheckBandWidth = () => {
   cancel && cancel?.();
   console.log('Cancelled');
+};
+
+export const validateIPaddress = (ipaddress) => {
+  if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress)) {
+    return (true);
+  }
+  return (false);
 };

@@ -57,6 +57,7 @@ const renderCustomField = ({
       onBlur={onBlur}
       onFocus={onFocus}
       returnKeyType="done"
+      oldVersion
       defaultValue={value}
       prependView={(
         <View style={styled.prepend}>

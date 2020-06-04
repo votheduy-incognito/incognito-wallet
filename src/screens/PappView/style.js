@@ -12,6 +12,13 @@ const style = StyleSheet.create({
   headerRight: {
     paddingHorizontal: 10,
   },
+  loading: {
+    position: 'absolute',
+    left: '50%',
+    right: '50%',
+    top: '50%',
+    bottom: '50%',
+  },
   chooseTokenIcon: {
     backgroundColor: COLORS.white,
     borderRadius: 20,
