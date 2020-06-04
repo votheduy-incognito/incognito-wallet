@@ -36,6 +36,8 @@ const enhance = WrappedComp => props => {
   );
 };
 
+enhance.defaultProps = {};
+
 enhance.propTypes = {
   tokenId: PropTypes.number.isRequired,
 };

@@ -12,6 +12,9 @@ import replace from 'lodash/replace';
 import convert from '@src/utils/convert';
 import trim from 'lodash/trim';
 import { TouchableOpacity } from '@src/components/core';
+import { COLORS } from '@src/styles';
+import { followingTokenSelector } from '@src/redux/selectors/token';
+import { useSelector } from 'react-redux';
 import { styled } from './Token.styled';
 
 const defaultProps = {
@@ -192,6 +195,21 @@ const TokenDefault = props => (
   </TouchableOpacity>
 );
 
+export const Follow = props => {
+  const { shouldShowFollowed, isFollowed, tokenId } = props;
+  const isFetchingFollowToken = useSelector(followingTokenSelector)(tokenId);
+  if (!shouldShowFollowed) {
+    return null;
+  }
+  if (isFetchingFollowToken) {
+    return <ActivityIndicator size="small" color={COLORS.colorGreyBold} />;
+  }
+  if (isFollowed) {
+    return <Text style={styled.followText}>Added</Text>;
+  }
+  return null;
+};
+
 const Token = props => {
   const { handleRemoveToken = null, swipable = false, pricePrv } = props;
   const pairWithPrv = pricePrv !== 0;
@@ -246,7 +264,7 @@ Token.propTypes = {
   onPress: PropTypes.func,
   symbol: PropTypes.string,
   isGettingBalance: PropTypes.bool,
-  style: PropTypes.object,
+  style: PropTypes.any,
   isVerified: PropTypes.bool,
   iconUrl: PropTypes.string,
   amountInPRV: PropTypes.number,

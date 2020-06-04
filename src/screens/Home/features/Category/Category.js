@@ -26,7 +26,7 @@ const Category = props => {
 
 Category.propTypes = {
   title: PropTypes.string.isRequired,
-  buttons: PropTypes.string.isRequired,
+  buttons: PropTypes.array.isRequired,
   interactionById: PropTypes.func.isRequired,
   isDisabled: PropTypes.func.isRequired,
 };

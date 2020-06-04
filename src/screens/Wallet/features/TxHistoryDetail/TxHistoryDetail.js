@@ -211,7 +211,7 @@ const TxHistoryDetail = props => {
         ))}
         {!!history?.depositAddress && (
           <QrCodeAddressDefault
-            label="Deposit address"
+            label="Shielding address"
             address={history?.depositAddress}
           />
         )}

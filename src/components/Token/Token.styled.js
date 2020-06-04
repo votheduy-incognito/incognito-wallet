@@ -74,4 +74,10 @@ export const styled = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  followText: {
+    fontFamily: FONT.NAME.regular,
+    color: COLORS.colorGreyBold,
+    lineHeight: FONT.SIZE.regular + 3,
+    fontSize: FONT.SIZE.regular,
+  },
 });

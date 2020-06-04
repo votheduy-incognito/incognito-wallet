@@ -6,7 +6,7 @@ import {
   actionReloadFollowingToken,
 } from '@src/redux/actions/account';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
-import { actionAddFollowToken } from '@src/redux/actions';
+import { actionAddFollowToken } from '@src/redux/actions/token';
 import { CONSTANT_COMMONS, CONSTANT_EVENTS } from '@src/constants';
 import { logEvent } from '@services/firebase';
 import {
