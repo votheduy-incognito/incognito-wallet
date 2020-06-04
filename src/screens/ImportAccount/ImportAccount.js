@@ -64,7 +64,7 @@ class ImportAccount extends Component {
           _account => lowerCase(_account.name) === lowerCase(accountName),
         )
       ) {
-        return throw new CustomError(ErrorCode.importAccount_existed);
+        throw new CustomError(ErrorCode.importAccount_existed);
       }
 
       const account = await importAccount({ privateKey, accountName });
@@ -131,6 +131,7 @@ class ImportAccount extends Component {
                     style: {
                       marginTop: 0,
                     },
+                    oldVersion: true,
                   }}
                   name="accountName"
                   placeholder="Keychain Name"
@@ -145,6 +146,9 @@ class ImportAccount extends Component {
                 placeholder="Enter Private Key"
                 label="Private Key"
                 validate={[isRequired]}
+                componentProps={{
+                  oldVersion: true,
+                }}
               />
               <Button
                 title="Import"

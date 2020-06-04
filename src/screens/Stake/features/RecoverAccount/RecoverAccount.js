@@ -1,14 +1,14 @@
 import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import {
   InputQRField,
   validator,
   createForm,
 } from '@src/components/core/reduxForm';
-import {Field} from 'redux-form';
-import {Button} from '@src/components/core';
+import { Field } from 'redux-form';
+import { Button } from '@src/components/core';
 import PropTypes from 'prop-types';
-import {FONT, COLORS} from '@src/styles';
+import { FONT, COLORS } from '@src/styles';
 import withRecoverAccount from './withRecoverAccount';
 
 const styled = StyleSheet.create({
@@ -17,12 +17,15 @@ const styled = StyleSheet.create({
     padding: 20,
   },
   desc: {
-    marginVertical: 40,
+    marginVertical: 30,
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 6,
     textAlign: 'center',
     color: COLORS.black,
+  },
+  containerStyle: {
+    marginTop: 0,
   },
 });
 
@@ -31,11 +34,11 @@ const Form = createForm(formName);
 const isRequired = validator.required();
 
 const RecoverAccount = props => {
-  const {handleImportAccount} = props;
+  const { handleImportAccount } = props;
   return (
     <View style={styled.container}>
       <Form>
-        {({handleSubmit, submitting}) => (
+        {({ handleSubmit, submitting }) => (
           <View style={styled.form}>
             <Field
               component={InputQRField}
@@ -44,6 +47,12 @@ const RecoverAccount = props => {
               label="Private Key"
               validate={[isRequired]}
               autoFocus
+              labelStyle={styled.labelStyle}
+              inputStyle={styled.inputStyle}
+              componentProps={{
+                style: styled.containerStyle,
+                oldVersion: true,
+              }}
             />
             <Text style={styled.desc}>
               Your current pStake account will be replaced after you

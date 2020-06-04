@@ -5,9 +5,7 @@ const style = StyleSheet.create({
   container: {
     flex: 1,
   },
-  form: {
-    marginTop: 30,
-  },
+  form: {},
   submitBtn: {
     backgroundColor: COLORS.blue,
     marginTop: 50,
@@ -21,9 +19,9 @@ const style = StyleSheet.create({
   },
   randomNameText: {
     maxWidth: UTILS.deviceWidth() - 130, // 30 px padding, 100px is randomNameChangeBtn's width
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 4,
+    fontFamily: FONT.NAME.regular,
     color: COLORS.colorGreyBold,
   },
   randomNameChangeBtn: {
@@ -32,11 +30,14 @@ const style = StyleSheet.create({
   },
   randomNameChangeBtnText: {
     color: COLORS.primary,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 4,
+    fontFamily: FONT.NAME.regular,
   },
   randomNameLabel: {
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
-    fontFamily: FONT.NAME.bold,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 4,
+    fontFamily: FONT.NAME.regular,
     marginBottom: 10,
     color: COLORS.black,
   },

@@ -1,10 +1,10 @@
-import {
-  Container,
-  Button,
-  View
-} from '@src/components/core';
+import { Container, Button, View } from '@src/components/core';
 import { Field } from 'redux-form';
-import { createForm, InputField, validator } from '@src/components/core/reduxForm';
+import {
+  createForm,
+  InputField,
+  validator,
+} from '@src/components/core/reduxForm';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
@@ -23,7 +23,7 @@ const CreateAccount = ({ navigation, accountList, createAccount }) => {
     try {
       if (
         accountList?.find(
-          _account => lowerCase(_account.name) === lowerCase(accountName)
+          _account => lowerCase(_account.name) === lowerCase(accountName),
         )
       ) {
         throw new CustomError(ErrorCode.createAccount_existed_name);
@@ -43,7 +43,10 @@ const CreateAccount = ({ navigation, accountList, createAccount }) => {
 
       goBack();
     } catch (e) {
-      new ExHandler(e, 'Keychain was not created! Please try again.').showErrorToast();
+      new ExHandler(
+        e,
+        'Keychain was not created! Please try again.',
+      ).showErrorToast();
     }
   };
 
@@ -54,13 +57,19 @@ const CreateAccount = ({ navigation, accountList, createAccount }) => {
           <View style={styleSheet.form}>
             <Field
               component={InputField}
-              name='accountName'
-              placeholder='Keychain Name'
-              label='Keychain Name'
+              name="accountName"
+              placeholder="Keychain Name"
+              label="Keychain Name"
               validate={validator.combinedAccountName}
+              componentProps={{
+                oldVersion: true,
+                style: {
+                  marginTop: 0,
+                },
+              }}
             />
             <Button
-              title='Create keychain'
+              title="Create keychain"
               style={styleSheet.submitBtn}
               onPress={handleSubmit(handleCreateAccount)}
               isAsync
@@ -75,13 +84,13 @@ const CreateAccount = ({ navigation, accountList, createAccount }) => {
 
 CreateAccount.defaultProps = {
   accountList: [],
-  createAccount: null
+  createAccount: null,
 };
 
 CreateAccount.propTypes = {
   navigation: PropTypes.object.isRequired,
   accountList: PropTypes.array,
-  createAccount: PropTypes.func
+  createAccount: PropTypes.func,
 };
 
 export default CreateAccount;
