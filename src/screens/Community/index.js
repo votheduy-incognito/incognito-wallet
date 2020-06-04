@@ -32,7 +32,12 @@ const Community = ({ navigation, isFocused }) => {
     LocalDatabase.getUriWebviewCommunity()
       .then(val => {
         if (val) {
-          setUrl(val);
+          var pattern = /^((http|https|ftp):\/\/)/;
+          if (!pattern.test(url)) {
+            setUrl(val);  
+          } else {
+            setUrl(MAIN_WEBSITE);
+          }
         } else {
           setUrl(MAIN_WEBSITE);
         }
@@ -65,8 +70,6 @@ const Community = ({ navigation, isFocused }) => {
         onLoadEnd={(data) => {
           setLoading(false);
         }}
-        cacheEnabled
-        cacheMode='LOAD_CACHE_ONLY'
         userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1"
         source={{ uri: url }}
         ref={webViewRef}
