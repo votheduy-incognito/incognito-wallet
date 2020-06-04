@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text } from 'react-native';
+import { Text, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 import { View } from '@src/components/core';
 import {
@@ -32,11 +32,13 @@ class PappViewContainer extends Component {
     super(props);
 
     this.state = {
+      loading: false,
       selectedPrivacy: null,
       supportTokenIds: [CONSTANT_COMMONS.PRV_TOKEN_ID],
       url: props.navigation.getParam('url'),
+      searchText: ''
     };
-
+    this.webViewRef = null;
     this.reloadBalanceTimeout = null;
   }
 
@@ -161,7 +163,7 @@ class PappViewContainer extends Component {
   };
 
   render() {
-    const { isSending, selectedPrivacy, supportTokenIds, url } = this.state;
+    const { isSending, searchText, loading, selectedPrivacy, supportTokenIds, url } = this.state;
     let content = null;
     if (!url) {
       content = <Empty />;
@@ -189,6 +191,19 @@ class PappViewContainer extends Component {
         <Header
           canSearch
           title="Search"
+          onSubmit={() => { 
+            let tempSearchText = searchText;
+            // Check if string is url
+            let indexOfHttp = tempSearchText?.indexOf('https://');
+            if (indexOfHttp === -1) {
+              // InCorrect
+              tempSearchText = 'https://' + tempSearchText;
+            }
+            this.setState({ url: tempSearchText }); 
+          }}
+          onTextSearchChange={text => {
+            this.setState({  searchText: text });
+          }}
           rightHeader={(
             <View style={styles.chooseTokenIcon}>
               <SelectToken
@@ -200,6 +215,7 @@ class PappViewContainer extends Component {
           )}
         />
         {content}
+        {loading && <ActivityIndicator style={styles.loading} />}
       </View>
     );
   }

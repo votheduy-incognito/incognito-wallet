@@ -50,6 +50,8 @@ const Header = ({
   onGoBack,
   onHandleSearch,
   style,
+  onTextSearchChange,
+  onSubmit
 }) => {
   const { goBack } = useNavigation();
   const handleGoBack = () =>
@@ -71,7 +73,7 @@ const Header = ({
     >
       <View style={[styled.container, style]}>
         <BtnCircleBack onPress={_handleGoBack} />
-        {toggleSearch ? <SearchBox title={title}/> : <HeaderTitle />}
+        {toggleSearch ? <SearchBox onSubmit={onSubmit} onChange={(text) => onTextSearchChange(text)} /> : <HeaderTitle />}
         {!!rightHeader && rightHeader}
         {accountSelectable && (
           <View>
@@ -91,6 +93,8 @@ Header.defaultProps = {
   accountSelectable: false,
   onGoBack: null,
   style: null,
+  onTextSearchChange: () => {},
+  onSubmit: () => {}
 };
 
 Header.propTypes = {
@@ -104,6 +108,8 @@ Header.propTypes = {
   onGoBack: PropTypes.func,
   onHandleSearch: PropTypes.func.isRequired,
   style: PropTypes.any,
+  onTextSearchChange: PropTypes.func,
+  onSubmit: PropTypes.func,
 };
 
 export default withHeader(React.memo(Header));

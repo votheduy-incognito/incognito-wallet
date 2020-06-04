@@ -213,13 +213,15 @@ class WifiSetup extends PureComponent {
               let connectable = await (await NetInfo.fetch()).isInternetReachable;
               // And wifi name is the same with hotspot
               let wifiName = await this.getCurrentWifi();
-
-              if (!isConnected || !connectable || !wifiName.includes('Node') || wifiName === '') {
-
-                this.addStep({ name: 'There is an issue with your wifiname/password or internet connection quality now.\nPlease try to connect to wifi manually', isSuccess: false });
-                if (Platform.OS === 'ios' || steps[steps.length - 1] && !steps[steps.length - 2]?.name?.includes('Trying to connect to Wi-Fi')) {
-                  this.setState({ backToQRCode: true });
+              if (!isConnected || !connectable || !ssid.includes('Node') || wifiName === '') {
+                if (!ssid.includes('Node')) {
+                  this.addStep({ name: 'There is an issue with your wifiname/password or internet connection quality now.\nPlease try to connect to wifi manually', isSuccess: false });
                 }
+                // if (steps[steps.length - 1] && !steps[steps.length - 2]?.name?.includes('Trying to connect to Wi-Fi')) {
+                //   this.setState({ backToQRCode: true });
+                // } else {
+                //   this.setState({ backToQRCode: false });
+                // }
               }
               this.addStep({ name: 'Setup wifi for node: \n' + error?.message || '', isSuccess: false });
               if (error?.message?.includes('Timeout connecting')) {
@@ -228,6 +230,11 @@ class WifiSetup extends PureComponent {
               console.debug('CONNECT ERROR', error);
               if (this.isMounteds) {
                 this.setState({ loading: true });
+                if (!ssid.includes('Node')) {
+                  this.setState({ backToQRCode: true });
+                } else {
+                  this.setState({ backToQRCode: false });
+                }
                 throw new Error('Could not setup wifi connection for node: ' + error?.message || '');
               } else {
                 reject(error);

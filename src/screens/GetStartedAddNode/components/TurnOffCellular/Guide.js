@@ -34,7 +34,7 @@ const Guide = () => (
           &nbsp;Turn on your wifi
         </Text>
         <Text style={[styles.guideLine]}>
-          <Text style={styles.bold}>Step 2:</Text>
+          <Text style={styles.bold}>Step 3:</Text>
           &nbsp;Turn on your node device
         </Text>
       </View>
