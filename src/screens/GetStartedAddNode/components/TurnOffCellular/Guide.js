@@ -31,11 +31,7 @@ const Guide = () => (
         </Text>
         <Text style={[styles.guideLine]}>
           <Text style={styles.bold}>Step 2:</Text>
-          &nbsp;Turn on your wifi
-        </Text>
-        <Text style={[styles.guideLine]}>
-          <Text style={styles.bold}>Step 3:</Text>
-          &nbsp;Turn on your node device
+          &nbsp;Turn off your celcular
         </Text>
       </View>
     )}

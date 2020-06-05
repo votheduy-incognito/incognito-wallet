@@ -89,6 +89,7 @@ class LinkDevice extends BaseScreen {
           input={{
             onChange: this.handleChangeQRCode
           }}
+          oldVersion
           label='QR Code'
           placeholder='Enter your node qr code'
           style={styles.input}

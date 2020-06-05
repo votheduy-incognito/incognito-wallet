@@ -1,16 +1,18 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, WebView, Modal } from '@src/components/core';
 import SimpleInfo from '@src/components/SimpleInfo';
 import convertUtil from '@src/utils/convert';
 import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
 import { CONSTANT_COMMONS } from '@src/constants';
+import LogManager from '@src/services/LogManager';
 import Validator from './sdk/validator';
 import RequestSendTx from './RequestSendTx';
 import { APPSDK, ERRORSDK, CONSTANTSDK } from './sdk';
 import styles from './style';
 
-let sdk : APPSDK= null;
+
+let sdk: APPSDK = null;
 
 const updateDataToPapp = (data) => {
   if (!sdk) return;
@@ -19,7 +21,7 @@ const updateDataToPapp = (data) => {
     const { selectedPrivacy, listSupportedToken } = data;
     const balance = selectedPrivacy?.amount && convertUtil.toHumanAmount(selectedPrivacy?.amount, selectedPrivacy.pDecimals);
     const paymentAddress = selectedPrivacy?.paymentAddress;
-  
+
     paymentAddress && sdk.sendUpdatePaymentAddress(paymentAddress);
     selectedPrivacy && sdk.sendUpdateTokenInfo({
       balance,
@@ -32,7 +34,7 @@ const updateDataToPapp = (data) => {
     listSupportedToken && sdk.sendListToken(listSupportedToken);
   } catch (e) {
     new ExHandler(e).showErrorToast();
-  }  
+  }
 };
 
 const getListSupportedToken = (supportTokenIds = [], tokens = []) => {
@@ -53,25 +55,33 @@ const getListSupportedToken = (supportTokenIds = [], tokens = []) => {
   return Object.values(list);
 };
 
-class PappView extends PureComponent {
+class PappView extends Component {
   constructor(props) {
     super(props);
     this.state = {
       modalData: null,
       isLoaded: false,
       hasWebViewError: false,
+      url: props?.url || ''
     };
-    
+
     this.webviewInstance = null;
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
+    // Ura: I think we should retry this held while url is invalid
+    if (nextProps?.url != prevState?.url ) {
+      return {
+        url: nextProps?.url || 'https://incscan.io',
+        hasWebViewError: false,
+      };
+    }
     const { selectedPrivacy, supportTokenIds, tokens } = nextProps;
     const { isLoaded } = prevState;
 
     const listSupportedToken = getListSupportedToken(supportTokenIds, tokens);
     isLoaded && updateDataToPapp({ selectedPrivacy, listSupportedToken });
-
+    
     return null;
   }
 
@@ -120,7 +130,7 @@ class PappView extends PureComponent {
 
   onSdkSelectPrivacyById = tokenID => {
     new Validator('onSdkSelectPrivacyById tokenID', tokenID).required().string();
-    
+
     const { onSelectPrivacyToken } = this.props;
     onSelectPrivacyToken(tokenID);
   }
@@ -129,7 +139,7 @@ class PappView extends PureComponent {
     new Validator('onSdkSetSupportListTokenById tokenIds', tokenIds).required().array();
 
     const filterIds = tokenIds.filter(id => typeof id === 'string');
-    
+
     const { onSetListSupportTokenById } = this.props;
     onSetListSupportTokenById(filterIds);
   }
@@ -139,13 +149,13 @@ class PappView extends PureComponent {
       const payload = e.nativeEvent.data;
       new Validator('onWebViewData payload', payload).required().string();
 
-      const [ command, data ] = payload?.split('|');
+      const [command, data] = payload?.split('|');
       new Validator('onWebViewData command', command).required().string();
       new Validator('onWebViewData data', data).string();
 
       const parsedData = JSON.parse(data);
 
-      switch(command) {
+      switch (command) {
       case CONSTANTSDK.COMMANDS.SEND_TX:
         this.onRequestSendTx(parsedData);
         break;
@@ -194,8 +204,7 @@ class PappView extends PureComponent {
 
   render() {
     const { modalData, hasWebViewError } = this.state;
-    const {  url } = this.props;
-
+    const { url } = this.state;
     if (hasWebViewError) {
       return (
         <SimpleInfo
@@ -204,7 +213,7 @@ class PappView extends PureComponent {
         />
       );
     }
-    
+
     return (
       <View style={styles.container}>
         <WebView
@@ -224,7 +233,7 @@ class PappView extends PureComponent {
           onMessage={this.onWebViewData}
         />
         <Modal visible={!!modalData}>
-          { modalData }
+          {modalData}
         </Modal>
       </View>
     );

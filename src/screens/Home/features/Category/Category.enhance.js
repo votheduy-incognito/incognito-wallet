@@ -61,7 +61,7 @@ const enhance = WrappedComp => props => {
       sendFeedback();
       break;
     case 'explorer':
-      Linking.openURL(item?.route);
+      goToScreen('pApp', {url: item?.route});
       break;
     default:
       goToScreen(item?.route || '');
