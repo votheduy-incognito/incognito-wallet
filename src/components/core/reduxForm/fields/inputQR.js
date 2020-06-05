@@ -47,6 +47,7 @@ const renderCustomField = ({
   input,
   onOpenAddressBook,
   showNavAddrBook,
+  oldVersion,
   ...props
 }) => {
   const { onChange, onBlur, onFocus, value, ...rest } = input;
@@ -57,7 +58,7 @@ const renderCustomField = ({
       onBlur={onBlur}
       onFocus={onFocus}
       returnKeyType="done"
-      oldVersion
+      oldVersion={oldVersion && oldVersion}
       defaultValue={value}
       prependView={(
         <View style={styled.prepend}>
@@ -92,12 +93,14 @@ renderCustomField.propTypes = {
   input: PropTypes.object,
   onOpenAddressBook: PropTypes.func,
   showNavAddrBook: PropTypes.bool,
+  oldVersion: PropTypes.bool,
 };
 
 renderCustomField.defaultProps = {
   input: null,
   onOpenAddressBook: () => null,
   showNavAddrBook: false,
+  oldVersion: false
 };
 
 const InputQRField = createField({
