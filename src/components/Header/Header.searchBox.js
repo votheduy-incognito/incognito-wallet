@@ -1,39 +1,45 @@
 import { TextInput } from '@src/components/Input';
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import PropTypes from 'prop-types';
-import { ScreenWidth } from '@src/utils/devices';
 import { createForm } from '@components/core/reduxForm';
 import { Field } from 'redux-form';
+import PropTypes from 'prop-types';
 
 const styled = StyleSheet.create({
   searchBox: {
-    marginRight: 20,
-    width: ScreenWidth * 0.62,
-    height: 30,
+    marginRight: 30,
+    flex: 1,
   },
 });
-
 export const searchBoxConfig = {
   form: 'searchFormHeader',
   searchBox: 'search',
 };
-
+const Form = createForm(searchBoxConfig.form);
 const SearchBox = (props) => {
   return (
-    <TextInput
-      style={styled.searchBox}
-      containerInputStyle={styled.searchBox}
-      onChangeText={props?.onChange}
-      onBlur={props?.onSubmit}
-      onSubmitEditting={props?.onSubmit}
-    />
+    <Form style={styled.searchBox}>
+      <Field
+        name={searchBoxConfig.searchBox}
+        component={componentProps => {
+          const { input, ...rest } = componentProps;
+          return (
+            <TextInput
+              onChangeText={input?.onChange}
+              onBlur={input?.onBlur}
+              onFocus={input?.onFocus}
+              value={input?.value}
+              autoFocus
+              placeholder={props?.title || ''}
+              {...rest}
+            />
+          );
+        }}
+      />
+    </Form>
   );
 };
-
 SearchBox.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired
 };
-
 export default React.memo(SearchBox);
