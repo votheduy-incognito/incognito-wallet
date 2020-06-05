@@ -1,9 +1,8 @@
 import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { withLayout_2 } from '@components/Layout';
 import Header, { useSearchBox } from '@src/components/Header';
-import { useDispatch, useSelector } from 'react-redux';
-import { availableTokensSelector } from '@src/redux/selectors/shared';
+import { useDispatch } from 'react-redux';
 import {
   handleFilterTokenByKeySearch,
   TokenBasic as Token,
@@ -14,6 +13,7 @@ import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { compose } from 'recompose';
 import withTokenSelect from '@src/components/TokenSelect/TokenSelect.enhance';
+import { FlatList } from '@src/components/core/FlatList';
 
 const styled = StyleSheet.create({
   container: {
@@ -24,8 +24,11 @@ const styled = StyleSheet.create({
   },
 });
 
-const ListToken = props => {
+const ListToken = (props) => {
   const { data, handleUnShieldToken } = props;
+  if (data.length === 0) {
+    return null;
+  }
   return (
     <FlatList
       showsVerticalScrollIndicator={false}
@@ -41,13 +44,13 @@ const ListToken = props => {
           showSymbol={false}
         />
       )}
-      keyExtractor={token => token?.tokenId}
+      keyExtractor={(token) => token?.tokenId}
       extraData={[...data]}
     />
   );
 };
 
-const Modal = props => {
+const Modal = (props) => {
   const { isTokenSelectable } = props;
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -56,7 +59,7 @@ const Modal = props => {
     data: tokens,
     handleFilter: () => handleFilterTokenByKeySearch({ tokens, keySearch }),
   });
-  const handleUnShieldToken = async token => {
+  const handleUnShieldToken = async (token) => {
     const tokenId = token?.tokenId || null;
     if (!tokenId || !isTokenSelectable(tokenId)) return;
     await dispatch(setSelectedPrivacy(tokenId));
@@ -81,6 +84,6 @@ Modal.propTypes = {
 
 export default compose(
   withLayout_2,
-  Comp => props => <Comp {...{ ...props, onlyPToken: true }} />,
+  (Comp) => (props) => <Comp {...{ ...props, onlyPToken: true }} />,
   withTokenSelect,
 )(Modal);

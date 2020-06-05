@@ -137,6 +137,17 @@ export const Amount = (props) => {
   if (shouldShowGettingBalance) {
     return <ActivityIndicator size="small" />;
   }
+  if (!showSymbol) {
+    return (
+      <NormalText
+        style={[styled.bottomText, styled.boldText, customStyle]}
+        text={`${format.amount(floor(amount, 9), pDecimals)}`}
+        hasPSymbol={hasPSymbol}
+        stylePSymbol={stylePSymbol}
+        containerStyle={containerStyle}
+      />
+    );
+  }
   return (
     <View
       style={{
@@ -155,17 +166,15 @@ export const Amount = (props) => {
         stylePSymbol={stylePSymbol}
         containerStyle={containerStyle}
       />
-      {showSymbol && (
-        <NormalText
-          style={[
-            styled.bottomText,
-            styled.boldText,
-            { marginLeft: 5 },
-            customStyle,
-          ]}
-          text={symbol}
-        />
-      )}
+      <NormalText
+        style={[
+          styled.bottomText,
+          styled.boldText,
+          { marginLeft: 5 },
+          customStyle,
+        ]}
+        text={symbol}
+      />
     </View>
   );
 };

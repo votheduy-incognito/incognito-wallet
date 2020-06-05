@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import { CopiableTextDefault as CopiableText } from '@src/components/CopiableText';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { ButtonBasic } from '@src/components/Button';
-import { ExclamationIcon } from '@src/components/Icons';
+import { ClockWiseIcon } from '@src/components/Icons';
 import withGenQRCode from './GenQRCode.enhance';
 import { styled } from './GenQRCode.styled';
 import { useCountDown } from './GenQRCode.useEffect';
@@ -27,12 +27,9 @@ const NormalText = (props) => {
 const ShieldError = ({ handleShield }) => {
   return (
     <View style={styled.errorContainer}>
-      <ExclamationIcon />
+      <ClockWiseIcon />
       <Text style={[styled.errorText, { marginTop: 30 }]}>
         {'We seem to have hit a snag. Simply\ntap to try again.'}
-      </Text>
-      <Text style={styled.errorText}>
-        {'If that doesn’t work,\n please come back in 60 minutes.'}
       </Text>
       <ButtonBasic
         btnStyle={styled.btnRetry}
@@ -40,6 +37,9 @@ const ShieldError = ({ handleShield }) => {
         onPress={handleShield}
         title="Try again"
       />
+      <Text style={styled.errorText}>
+        {'If that doesn’t work,\n please come back in 60 minutes.'}
+      </Text>
     </View>
   );
 };
