@@ -15,13 +15,13 @@ const Guide = () => (
           color={COLORS.lightGrey2}
           name="chevron-right"
         />
-        <Text>Wifi</Text>
+        <Text>Cellcular</Text>
         <Icon
           containerStyle={styles.icon}
           color={COLORS.lightGrey2}
           name="chevron-right"
         />
-        <Text>On</Text>
+        <Text>Off</Text>
       </View>
     ) : (
       <View style={{marginTop: 10}}>
@@ -31,7 +31,7 @@ const Guide = () => (
         </Text>
         <Text style={[styles.guideLine]}>
           <Text style={styles.bold}>Step 2:</Text>
-          &nbsp;Turn off your celcular
+          &nbsp;Turn off your cellcular
         </Text>
       </View>
     )}
