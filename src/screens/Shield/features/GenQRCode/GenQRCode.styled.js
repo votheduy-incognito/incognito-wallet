@@ -51,8 +51,8 @@ export const styled = StyleSheet.create({
   },
   errorContainer: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 42,
   },
   errorText: {
     fontFamily: FONT.NAME.medium,
@@ -64,7 +64,7 @@ export const styled = StyleSheet.create({
   },
   btnRetry: {
     width: '100%',
-    marginVertical: 50,
+    marginTop: 50,
   },
   titleBtnRetry: {
     fontSize: FONT.SIZE.medium,
