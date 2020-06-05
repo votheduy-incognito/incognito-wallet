@@ -1,34 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Field, formValueSelector, isValid, change, touch, focus } from 'redux-form';
+import { Field, formValueSelector, isValid, change, focus } from 'redux-form';
 import { connect } from 'react-redux';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
 import { Container, ScrollView, View, Button, Toast, Text } from '@components/core';
-import ReceiptModal, { openReceipt } from '@components/Receipt';
 import LoadingTx from '@components/LoadingTx';
 import EstimateFee from '@components/EstimateFee';
 import { isExchangeRatePToken } from '@services/wallet/RpcClientService';
 import {
   createForm,
-  InputQRField,
   InputField,
-  InputMaxValueField,
   validator,
 } from '@components/core/reduxForm';
 import { ExHandler } from '@services/exception';
 import { CONSTANT_COMMONS, CONSTANT_EVENTS } from '@src/constants';
 import { logEvent } from '@services/firebase';
 import { MESSAGES } from '@screens/Dex/constants';
-import TokenSelect from '@components/TokenSelect';
 import CurrentBalance from '@components/CurrentBalance';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import { RefreshControl, Modal } from 'react-native';
 import { generateTestId } from '@utils/misc';
 import { SEND } from '@src/constants/elements';
-import LogManager from '@src/services/LogManager';
-import NavigationService from '@src/services/NavigationService';
 import theme from '@src/styles/theme';
+import ReceiptModal from '../Receipt/index';
 import { homeStyle } from './style';
 import PaymentSuccess from './PaymentSuccess';
 
@@ -312,9 +307,6 @@ class SendCrypto extends React.Component {
       isFormValid,
       account,
       rfFocus,
-      selectable,
-      onShowFrequentReceivers,
-      selectedPrivacy,
       navigation,
       reloading,
     } = this.props;
@@ -351,7 +343,7 @@ class SendCrypto extends React.Component {
                   {...generateTestId(SEND.ADDRESS_INPUT)}
                 /> */}
                 <Field
-                  onChange={(text) => {
+                  onChange={() => {
                     rfFocus(formName, 'amount');
                   }}
                   component={InputField}
