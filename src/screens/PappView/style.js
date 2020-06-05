@@ -1,12 +1,14 @@
 import { COLORS, FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
+import { ScreenWidth } from '@src/utils/devices';
 
 const style = StyleSheet.create({
   container: {
     flex: 1,
   },
   webview: {
-    flex: 1,
+    width: ScreenWidth,
+    marginLeft: -25, // Cheat sheet
     minHeight: 500,
   },
   headerRight: {

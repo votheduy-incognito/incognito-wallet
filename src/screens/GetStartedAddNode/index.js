@@ -205,11 +205,25 @@ class GetStartedAddNode extends BaseScreen {
     const { bandWidth } = this.state;
     let isLocationGranted = Platform.OS === 'android' ? await this.checkLocationService() : await this.checkPermissionForSteps();
     if (isLocationGranted) {
-      if (Number(bandWidth?.speed || 0) > MINIMUM_BANDWIDTH) {
-        const { step } = this.state;
-        this.setState({ step: step + 1 });
+      if (Platform.OS === 'ios') {
+        if (Number(bandWidth?.speed || 0) > MINIMUM_BANDWIDTH) {
+          const { step } = this.state;
+          this.setState({ step: step + 1 });
+        } else {
+          this.setState({ showBandWidthModal: true });
+        }
       } else {
-        this.setState({ showBandWidthModal: true });
+        let recheck = await this.checkPermissionForSteps();
+        if (recheck) {
+          if (Number(bandWidth?.speed || 0) > MINIMUM_BANDWIDTH) {
+            const { step } = this.state;
+            this.setState({ step: step + 1 });
+          } else {
+            this.setState({ showBandWidthModal: true });
+          }
+        } else {
+          this.warningLocationService();
+        }
       }
     } else {
       this.warningLocationService();

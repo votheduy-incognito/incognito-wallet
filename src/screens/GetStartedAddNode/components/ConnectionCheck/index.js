@@ -3,7 +3,7 @@ import { Button, Text, Image, ScrollView, View } from '@src/components/core';
 import nodeStep1 from '@src/assets/images/wifi.png';
 import React, { PureComponent } from 'react';
 import styles from '../../styles';
-import Guide from '../TurnOffCellular/Guide';
+import Guide from './Guide';
 
 class ConnectionCheck extends PureComponent {
   constructor(props) {

@@ -189,6 +189,7 @@ class PappViewContainer extends Component {
     return (
       <View style={styled.container}>
         <Header
+          isNormalSearch
           canSearch
           title={url ? `${url}`: 'Search'}
           value={searchText}
