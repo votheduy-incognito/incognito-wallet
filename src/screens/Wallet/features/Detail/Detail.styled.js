@@ -7,7 +7,7 @@ export const styled = StyleSheet.create({
     backgroundColor: COLORS.colorGrey,
     paddingHorizontal: 18,
     height: 40,
-    maxWidth: 80
+    maxWidth: 80,
   },
   titleBtnTrade: {
     color: COLORS.black,
@@ -26,7 +26,7 @@ export const groupBtnStyled = StyleSheet.create({
     maxWidth: '49%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: COLORS.colorBlue
+    backgroundColor: COLORS.colorBlue,
   },
   titleStyle: {
     fontFamily: FONT.NAME.medium,
@@ -46,7 +46,7 @@ export const balanceStyled = StyleSheet.create({
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superLarge,
     color: COLORS.black,
-    maxWidth: '80%',
+    maxWidth: '100%',
     lineHeight: FONT.SIZE.superLarge + 4,
     textAlign: 'center',
   },

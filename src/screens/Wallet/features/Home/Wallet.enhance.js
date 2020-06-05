@@ -1,6 +1,5 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { compose } from 'recompose';
 import { useSelector, useDispatch } from 'react-redux';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
@@ -23,16 +22,15 @@ import {
 } from '@src/redux/actions/selectedPrivacy';
 import routeNames from '@src/router/routeNames';
 import { Toast } from '@src/components/core';
-import { InteractionManager } from 'react-native';
 import { actionInit as actionInitEstimateFee } from '@components/EstimateFee/EstimateFee.actions';
 import { isGettingBalance as isGettingBalanceSelector } from '@src/redux/selectors/shared';
 
 export const WalletContext = React.createContext({});
 
-const enhance = WrappedComp => props => {
+const enhance = (WrappedComp) => (props) => {
   const account = useSelector(accountSeleclor.defaultAccount);
   const tokens = useSelector(tokenSeleclor.tokensFollowedSelector);
-  const wallet = useSelector(state => state?.wallet);
+  const wallet = useSelector((state) => state?.wallet);
   const isGettingBalance = useSelector(isGettingBalanceSelector);
   const dispatch = useDispatch();
   const [state, setState] = React.useState({
@@ -92,7 +90,7 @@ const enhance = WrappedComp => props => {
       const isChecked = !!JSON.parse(
         await storageService.getItem(CONSTANT_KEYS.IS_CHECK_FOLLOWED_TOKEN),
       );
-      const tokenIds = tokens.map(t => t.id);
+      const tokenIds = tokens.map((t) => t.id);
       if (!isChecked) {
         countFollowToken(tokenIds, account?.PublicKey).catch(null);
         storageService.setItem(
@@ -108,7 +106,7 @@ const enhance = WrappedComp => props => {
     navigation.navigate(routeNames.ReceiveCrypto);
     await dispatch(setSelectedPrivacy(CONSTANT_COMMONS.PRV.id));
   };
-  const handleSelectToken = async tokenId => {
+  const handleSelectToken = async (tokenId) => {
     if (!tokenId) return;
     await dispatch(setSelectedPrivacy(tokenId));
     navigation.navigate(routeNames.WalletDetail);
@@ -118,7 +116,7 @@ const enhance = WrappedComp => props => {
       dispatch(actionInitEstimateFee()),
       dispatch(clearSelectedPrivacy()),
     ]);
-  const handleRemoveToken = async tokenId => {
+  const handleRemoveToken = async (tokenId) => {
     await dispatch(actionRemoveFollowToken(tokenId));
     Toast.showSuccess('Add coin again to restore balance.', {
       duration: 1000,
@@ -159,23 +157,4 @@ const enhance = WrappedComp => props => {
   );
 };
 
-const enhanceInteractionManager = WrappedComponent => props => {
-  const [state, setState] = React.useState({
-    mounted: false,
-  });
-  const { mounted } = state;
-  React.useEffect(() => {
-    InteractionManager.runAfterInteractions(() => {
-      setState({ ...state, mounted: true });
-    });
-  }, []);
-  if (!mounted) {
-    return null;
-  }
-  return <WrappedComponent {...props} />;
-};
-
-export default compose(
-  enhanceInteractionManager,
-  enhance,
-);
+export default enhance;
