@@ -52,6 +52,8 @@ const TokenSelect = ({
         renderItem={renderTokenItem}
         getItem={(data, index) => data[index]}
         getItemCount={data => data.length}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
       />
     </View>
   );
