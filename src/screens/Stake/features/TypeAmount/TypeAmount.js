@@ -42,7 +42,13 @@ const TypeAmount = props => {
         containerInputStyle={styled.containerInput}
       />
       <Hook data={feeData} />
-      {error && <Text style={styled.error}>{error}</Text>}
+      {error ? 
+        <Text style={styled.error}>{error}</Text> : (
+          <Text style={[styled.error, {color: 'grey', marginTop: 10, textAlign: 'left'}]}>
+          Due to concurrent high volume of withdrawals, wait times are much longer than usual. 
+          Please wait 1 - 3 days for your withdrawal to be processed. We apologize for the inconvenience.
+          </Text>
+        )}
       <BtnDefault
         btnStyle={styled.btnSubmit}
         title={btnSubmitAmount}
