@@ -370,7 +370,8 @@ export const modalStyle = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: COLORS.lightGrey6,
     paddingHorizontal: 20,
-    color: COLORS.dark1,
+    flex: 0,
+    paddingVertical: 15,
   },
   transferSearch: {
     marginVertical: 20,

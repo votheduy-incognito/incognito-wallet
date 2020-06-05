@@ -553,10 +553,8 @@ class Transfer extends React.PureComponent {
             </View>
             <View>
               <TextInput
-                autoCorrect={false}
                 placeholder="Search"
                 style={[modalStyle.search, modalStyle.transferSearch]}
-                placeholderTextColor={COLORS.lightGrey1}
                 onChangeText={this.handleSearch}
               />
             </View>
@@ -646,7 +644,6 @@ class Transfer extends React.PureComponent {
                 <TextInput
                   style={tokenStyle.input}
                   placeholder="0.0"
-                  placeholderColor={COLORS.lightGrey1}
                   keyboardType="decimal-pad"
                   onChangeText={this.changeAmount}
                   editable={_.isNumber(balance)}

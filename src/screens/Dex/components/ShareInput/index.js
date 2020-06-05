@@ -164,7 +164,6 @@ class ShareInput extends React.Component {
           keyboardType="decimal-pad"
           style={stylesheet.input}
           placeholder={onChange ? '0' : ''}
-          placeholderTextColor={COLORS.lightGrey1}
           value={value}
           onChangeText={onChange}
           editable={!disabled}

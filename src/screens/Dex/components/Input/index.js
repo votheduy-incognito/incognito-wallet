@@ -109,7 +109,6 @@ class Input extends React.Component {
               autoCorrect={false}
               placeholder="Search"
               style={modalStyle.search}
-              placeholderTextColor={COLORS.lightGrey1}
               onChangeText={this.handleSearch}
             />
           </View>
@@ -169,7 +168,6 @@ class Input extends React.Component {
           keyboardType="decimal-pad"
           style={stylesheet.input}
           placeholder={onChange ? '0.0' : ''}
-          placeholderTextColor={COLORS.lightGrey1}
           value={value}
           onChangeText={onChange}
           onFocus={this.focus}
