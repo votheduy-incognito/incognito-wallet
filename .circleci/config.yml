@@ -7,13 +7,6 @@ commands:
           command: |
             echo "export LAST_COMMIT_MESSAGE=\"$(git show -s --format=%s)\"" >> $BASH_ENV
             echo "export APP_VERSION="$(sed 's/.*\"version\": \"\(.*\)\".*/\1/;t;d' ./package.json)"" >> $BASH_ENV
-  install_modules:
-      description: "Install node_modules"
-      steps:
-        - run:
-            name: Install node_modules
-            command: |
-              yarn install --frozen-lockfile
   login_appcenter:
       description: "Install and login appcenter"
       steps:
@@ -41,7 +34,18 @@ jobs:
           at: .
       - run: chmod +x .circleci/generate-data.sh
       - run: sh .circleci/generate-data.sh
-      - install_modules
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install Dependencies
+          command: yarn install --frozen-lockfile
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
       - persist_to_workspace:
           paths: .
           root: .
