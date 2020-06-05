@@ -4,7 +4,7 @@ import { compose } from 'recompose';
 import { Image, TouchableOpacity, View, RoundCornerButton, Text } from '@components/core';
 import withFilter from '@screens/DexV2/components/Trade/filter.enhance';
 import {Divider, Icon} from 'react-native-elements';
-import downArrow from '@assets/images/icons/down_arrow.png';
+import downArrow from '@assets/images/icons/circle_arrow_down.png';
 import withSwap from '@screens/DexV2/components/Trade/swap.enhance';
 import Balance from '@screens/DexV2/components/Balance';
 import withCalculateOutput from '@screens/DexV2/components/Trade/output.enhance';
@@ -22,6 +22,7 @@ import withAccount from '@screens/DexV2/components/account.enhance';
 import withERC20 from '@screens/DexV2/components/Trade/with.erc20';
 import PoolSize from '@screens/DexV2/components/PoolSize';
 import Powered from '@screens/DexV2/components/Powered';
+import { ArrowRightGreyIcon } from '@components/Icons';
 import NewInput from '../NewInput';
 import withPair from './pair.enhance';
 import withChangeInput  from './input.enhance';
@@ -150,7 +151,7 @@ const Trade = ({
       {!!histories.length && (
         <TouchableOpacity onPress={navigateHistory} style={styles.bottomFloatBtn}>
           <Text style={styles.bottomText}>Order history</Text>
-          <Icon name="chevron-right" color={COLORS.lightGrey16} containerStyle={{ marginTop: -1 }} />
+          <ArrowRightGreyIcon style={{ marginTop: 2.5, marginLeft: 10 }} />
         </TouchableOpacity>
       )}
     </View>

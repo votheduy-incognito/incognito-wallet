@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity, ActivityIndicator } from '@src/components/core';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
-import { Icon } from 'react-native-elements';
-import { COLORS } from '@src/styles';
+import { ArrowRightGreyIcon } from '@components/Icons';
 import Input from './Input';
 import stylesheet from './style';
 
-const RightIcon = () => <Icon name="chevron-right" color={COLORS.lightGrey16} size={36} />;
+const RightIcon = () => <ArrowRightGreyIcon style={stylesheet.icon} />;
 
 const InputContainer = (props) => {
   const navigation = useNavigation();
@@ -25,12 +24,14 @@ const InputContainer = (props) => {
   return (
     <View style={stylesheet.wrapper}>
       <View style={[stylesheet.row, stylesheet.justifyBetween]}>
-        {onChange ? <Input
-          onChange={onChange}
-          value={value}
-          disabled={disabled}
-          placeholder={placeholder}
-        /> : (
+        {onChange ? (
+          <Input
+            onChange={onChange}
+            value={value}
+            disabled={disabled}
+            placeholder={placeholder}
+          />
+        ) : (
           <Text numberOfLines={1} style={[stylesheet.bigText, stylesheet.inputContainer]}>
             {value}
           </Text>

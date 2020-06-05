@@ -368,7 +368,6 @@ export const modalStyle = StyleSheet.create({
   search: {
     marginHorizontal: 25,
     marginBottom: 15,
-    height: 40,
     backgroundColor: COLORS.lightGrey6,
     paddingHorizontal: 20,
     color: COLORS.dark1,

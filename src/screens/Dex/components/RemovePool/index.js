@@ -9,8 +9,7 @@ import formatUtil from '@utils/format';
 import PoolSize from '@screens/Dex/components/PoolSize';
 import { getEstimateFeePerKB } from '@services/wallet/RpcClientService';
 import {RemoveLiquidityHistory} from '@models/dexHistory';
-import tradeArrow from '@src/assets/images/icons/down_arrow.png';
-import NetworkFee from '@screens/Dex/components/NetworkFee';
+import tradeArrow from '@src/assets/images/icons/circle_arrow_down.png';
 import ShareInput from '@screens/Dex/components/ShareInput';
 import RemoveSuccessDialog from '@screens/Dex/components/RemoveSuccessDialog';
 import SharePercent from '@screens/Dex/components/SharePercent';
@@ -18,6 +17,7 @@ import Loading from '@screens/Dex/components/Loading';
 import {ExHandler} from '@services/exception';
 import CODE from '@services/exception/customError/code';
 import convertUtil from '@utils/convert';
+import NetworkFee from '@screens/Dex/components/NetworkFee';
 import {
   DEX_CHAIN_ACCOUNT,
   MESSAGES,

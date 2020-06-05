@@ -1,6 +1,6 @@
 import React from 'react';
 import {Image} from 'react-native';
-import srcArrowRightGreyIcon from '@src/assets/images/icons/arrow_right_grey.png';
+import chevronRight from '@src/assets/images/icons/icon_chevron_right.png';
 
 const ArrowRightGreyIcon = props => {
   const defaultStyle = {
@@ -10,7 +10,7 @@ const ArrowRightGreyIcon = props => {
   const {style, source, ...rest} = props;
   return (
     <Image
-      source={srcArrowRightGreyIcon}
+      source={chevronRight}
       style={[defaultStyle, style]}
       {...rest}
     />

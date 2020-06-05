@@ -29,4 +29,9 @@ export default StyleSheet.create({
   inputContainer: {
     width: '65%',
   },
+  icon: {
+    width: 12,
+    height: 16,
+    marginLeft: 10,
+  },
 });

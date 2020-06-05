@@ -9,7 +9,7 @@ const Powered = ({ network }) => {
       left=""
       right={`Powered by ${network} Network`}
       style={{
-        color: COLORS.lightGrey16,
+        color: COLORS.lightGrey17,
       }}
     />
   );
