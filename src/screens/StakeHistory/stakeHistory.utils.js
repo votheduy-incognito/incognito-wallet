@@ -6,7 +6,7 @@ export const STATUS_HISTORY = {
   1: 'Processing',
   2: 'Successful',
   3: 'Unsuccessful',
-  4: 'Queued',
+  4: 'Pending',
 };
 
 export const STATUS_HISTORY_COLOR = {
