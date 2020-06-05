@@ -80,7 +80,7 @@ export async function initWallet() {
     const passphrase = await getPassphrase();
     const wallet = new Wallet();
     wallet.Storage = storage;
-    wallet.init(passphrase, numOfAccount, walletName, storage, null);
+    wallet.init(passphrase, storage, walletName, 'Anon');
     await wallet.save(passphrase);
     return wallet;
   } catch (e) {
