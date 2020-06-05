@@ -111,11 +111,7 @@ const enhance = (WrappedComp) => (props) => {
     await dispatch(setSelectedPrivacy(tokenId));
     navigation.navigate(routeNames.WalletDetail);
   };
-  const clearWallet = async () =>
-    await new Promise.all([
-      dispatch(actionInitEstimateFee()),
-      dispatch(clearSelectedPrivacy()),
-    ]);
+  const clearWallet = async () => await dispatch(actionInitEstimateFee());
   const handleRemoveToken = async (tokenId) => {
     await dispatch(actionRemoveFollowToken(tokenId));
     Toast.showSuccess('Add coin again to restore balance.', {
