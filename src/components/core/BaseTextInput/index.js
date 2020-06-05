@@ -6,7 +6,7 @@ import styles from './styles';
 
 const BaseTextInput = ({ style, ...props}) => (
   <TextInput
-    placeholderTextColor={COLORS.lightGrey1}
+    placeholderTextColor={COLORS.colorGreyMedium}
     {...props}
     returnKeyType="done"
     autoCorrect={false}

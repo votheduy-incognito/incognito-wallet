@@ -13,14 +13,13 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   arrow: {
-    marginHorizontal: 7.5,
     height: 40,
     resizeMode: 'contain',
   },
   divider: {
     flex: 1,
     borderBottomWidth: 1,
-    borderColor: COLORS.lightGrey5,
+    borderColor: COLORS.lightGrey18,
   },
   button: {
     marginVertical: 50,

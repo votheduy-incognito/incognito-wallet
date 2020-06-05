@@ -25,8 +25,7 @@ export default StyleSheet.create({
     color: COLORS.black,
   },
   extra: {
-    fontSize: 18,
-    color: COLORS.lightGrey16,
+    color: COLORS.lightGrey17,
   },
   warning: {
     color: COLORS.orange,

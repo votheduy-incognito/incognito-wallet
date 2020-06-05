@@ -64,7 +64,7 @@ const withPairs = WrappedComp => (props) => {
             ...token,
             address: erc20Token?.address,
             priority,
-            verified: token.verified || priority <= PRIORITY_LIST.length,
+            verified: token.verified,
           };
         })
         .orderBy(

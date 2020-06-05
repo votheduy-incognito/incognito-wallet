@@ -3,10 +3,12 @@ import {COLORS, FONT} from '@src/styles';
 
 const style = StyleSheet.create({
   container: {
+    paddingTop: 30,
     paddingBottom: 80,
   },
   row: {
     flexDirection: 'row',
+    paddingBottom: 20,
   },
   networkName: {
     color: COLORS.lightGrey16,
@@ -18,12 +20,10 @@ const style = StyleSheet.create({
     color: COLORS.black,
     fontFamily: FONT.NAME.regular,
   },
-  tokenItem: {
-    marginBottom: 20,
-  },
   tokenName: {
     ...FONT.STYLE.bold,
-    fontSize: 20,
+    fontSize: 24,
+    marginBottom: 10,
   },
 });
 
