@@ -129,7 +129,7 @@ const enhance = WrappedComponent =>
 
           localNotification
             .android.setChannelId(channelId)
-            .android.setSmallIcon('ic_notification_system')
+            .android.setSmallIcon('ic_launcher')
             .android.setPriority(firebase.notifications.Android.Priority.High);
         }
 
