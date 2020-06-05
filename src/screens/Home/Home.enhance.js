@@ -13,11 +13,11 @@ import { withLayout_2 } from '@src/components/Layout';
 import { homeSelector } from './Home.selector';
 import { actionFetch as actionFetchHomeConfigs } from './Home.actions';
 
-const enhance = WrappedComp => props => {
+const enhance = (WrappedComp) => (props) => {
   const { getFollowingToken, clearWallet, fetchData } = props;
   const { categories, headerTitle, isFetching } = useSelector(homeSelector);
   const isFocused = useIsFocused();
-  const wallet = useSelector(state => state?.wallet);
+  const wallet = useSelector((state) => state?.wallet);
   const dispatch = useDispatch();
 
   const tryLastWithdrawal = async () => {
@@ -44,7 +44,7 @@ const enhance = WrappedComp => props => {
 
   React.useEffect(() => {
     if (wallet) {
-      getFollowingToken();
+      getFollowingToken(false);
     }
   }, [wallet]);
 

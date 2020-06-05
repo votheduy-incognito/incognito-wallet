@@ -10,12 +10,14 @@ import {
 } from '@src/redux/actions/token';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { useIsFocused } from 'react-navigation-hooks';
+import { defaultAccountNameSelector } from '@src/redux/selectors/account';
 
-const enhance = WrappedComp => props => {
+const enhance = (WrappedComp) => (props) => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const token = useSelector(
     selectedPrivacySeleclor.selectedPrivacyByFollowedSelector,
   );
+  const account = useSelector(defaultAccountNameSelector);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const handleLoadHistory = async () => {
@@ -34,7 +36,7 @@ const enhance = WrappedComp => props => {
     if (isFocused && selectedPrivacy?.tokenId) {
       handleLoadHistory();
     }
-  }, [selectedPrivacy?.tokenId, token?.id, isFocused]);
+  }, [selectedPrivacy?.tokenId, token?.id, isFocused, account]);
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props, handleLoadHistory }} />

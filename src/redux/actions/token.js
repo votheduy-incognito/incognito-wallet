@@ -111,20 +111,20 @@ export const getBalanceFinish = (tokenSymbol) => ({
 export const getBalance = (
   token = throw new Error('Token object is required'),
 ) => async (dispatch, getState) => {
+  
+  if (!token) {
+    return;
+  }
   try {
-    dispatch(getBalanceStart(token?.id));
-
+    await dispatch(getBalanceStart(token?.id));
     const wallet = getState()?.wallet;
     const account = accountSeleclor.defaultAccount(getState());
-
     if (!wallet) {
       throw new Error('Wallet is not exist');
     }
-
     if (!account) {
       throw new Error('Account is not exist');
     }
-
     const balance = await accountService.getBalance(account, wallet, token.id);
     dispatch(
       setToken({
@@ -206,12 +206,11 @@ export const actionAddFollowToken = (tokenId) => async (dispatch, getState) => {
     if (!token) throw Error('Can not follow empty coin');
     await dispatch(actionAddFollowTokenFetching(tokenId));
     await accountService.addFollowingTokens([token], account, wallet);
+    await dispatch(setWallet(wallet));
     await dispatch(actionAddFollowTokenSuccess(tokenId));
   } catch (error) {
     await dispatch(actionAddFollowTokenFail(tokenId));
     throw Error(error);
-  } finally {
-    await dispatch(setWallet(wallet));
   }
 };
 
@@ -234,12 +233,11 @@ export const actionRemoveFollowToken = (tokenId) => async (
       account,
       wallet,
     );
+    await dispatch(setWallet(wallet));
     await dispatch(actionAddFollowTokenSuccess(tokenId));
   } catch (error) {
     await dispatch(actionAddFollowTokenFail(tokenId));
     throw Error(error);
-  } finally {
-    await dispatch(setWallet(wallet));
   }
 };
 

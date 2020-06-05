@@ -1,7 +1,7 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { ExHandler } from '@src/services/exception';
-import { tokenSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
+import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeHistory } from '@src/services/api/history';
 import { Toast } from '@src/components/core';
@@ -11,9 +11,9 @@ import {
 } from '@src/redux/actions/token';
 import EmptyHistory from './HistoryToken.empty';
 
-const enhance = WrappedComp => props => {
-  const { isEmpty } = useSelector(tokenSeleclor.historyTokenSelector);
+const enhance = (WrappedComp) => (props) => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const isEmpty = selectedPrivacy?.amount === 0;
   const token = useSelector(
     selectedPrivacySeleclor.selectedPrivacyByFollowedSelector,
   );
@@ -30,7 +30,7 @@ const enhance = WrappedComp => props => {
       new ExHandler(error).showErrorToast();
     }
   };
-  const handleCancelEtaHistory = async history => {
+  const handleCancelEtaHistory = async (history) => {
     try {
       const data = await removeHistory({
         historyId: history?.id,

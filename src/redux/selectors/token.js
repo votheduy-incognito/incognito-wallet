@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect';
 
-export const followed = (state) => state?.token?.followed;
-export const isGettingBalance = (state) => state?.token?.isGettingBalance;
-export const pTokens = (state) => state?.token?.pTokens;
-export const internalTokens = (state) => state?.token?.internalTokens;
+export const followed = (state) => state?.token?.followed || [];
+export const isGettingBalance = (state) => state?.token?.isGettingBalance || [];
+export const pTokens = (state) => state?.token?.pTokens || [];
+export const internalTokens = (state) => state?.token?.internalTokens || [];
 export const tokensFollowedSelector = createSelector(
   followed,
   (tokens) => tokens,
