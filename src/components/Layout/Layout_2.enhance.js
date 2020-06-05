@@ -4,6 +4,8 @@ import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { UTILS, COLORS } from '@src/styles';
 import { isIOS } from '@src/utils/platform';
 import DeviceInfo from 'react-native-device-info';
+import { compose } from 'recompose';
+import withInteractions from '@src/components/UseEffect/useInteractions';
 
 const styled = StyleSheet.create({
   container: {
@@ -18,7 +20,7 @@ const styled = StyleSheet.create({
   },
 });
 
-const enhance = WrappedComp => props => {
+const enhance = (WrappedComp) => (props) => {
   const ios = isIOS();
   const hasNotch = ios && DeviceInfo.hasNotch();
   return (
@@ -34,4 +36,7 @@ const enhance = WrappedComp => props => {
   );
 };
 
-export default enhance;
+export default compose(
+  withInteractions,
+  enhance,
+);

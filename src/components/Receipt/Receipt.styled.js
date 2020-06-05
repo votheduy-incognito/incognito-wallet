@@ -5,16 +5,15 @@ export const styled = StyleSheet.create({
   container: {
     backgroundColor: COLORS.white,
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   title: {
     fontFamily: FONT.NAME.bold,
     color: COLORS.black,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
-    marginTop: 30,
+    fontSize: 35,
+    lineHeight: 41,
+    marginTop: 42,
     marginBottom: 25,
+    textAlign: 'center',
   },
   divider: {
     marginVertical: 30,
@@ -41,7 +40,7 @@ export const styled = StyleSheet.create({
     color: COLORS.colorGreyBold,
     flex: 1,
     textAlign: 'left',
-    minWidth: 20
+    minWidth: 20,
   },
   desc: {
     flex: 5,

@@ -49,4 +49,25 @@ export const styled = StyleSheet.create({
   countdown: {
     paddingHorizontal: 10,
   },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    fontFamily: FONT.NAME.medium,
+    lineHeight: FONT.SIZE.regular + 5,
+    fontSize: FONT.SIZE.regular,
+    color: COLORS.colorGreyBold,
+    textAlign: 'center',
+    marginTop: 15,
+  },
+  btnRetry: {
+    width: '100%',
+    marginVertical: 50,
+  },
+  titleBtnRetry: {
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 3,
+  },
 });

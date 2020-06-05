@@ -1,12 +1,10 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { COLORS } from '@src/styles';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import PropTypes from 'prop-types';
-import { ButtonBasic } from '@src/components/Button';
 import { TouchableOpacity } from '@src/components/core';
 import linkingService from '@src/services/linking';
 import IconOpenUrl from '@src/components/Icons/icon.openUrl';
+import Header from '@src/components/Header';
 import { styled } from './Receipt.styled';
 import withReceipt from './Receipt.enhance';
 
@@ -33,23 +31,18 @@ const Hook = ({ label, desc, renderTx = false }) => {
   return renderComponent();
 };
 
-const ReceiptModal = props => {
+const ReceiptModal = (props) => {
   const { infoFactories, onBack, btnSaveReceiver, title } = props;
+
   return (
     <View style={styled.container}>
-      <SimpleLineIcons name="check" size={60} color={COLORS.colorGrey} />
+      <Header onGoBack={onBack} />
       <Text style={styled.title}>{title}</Text>
       <View style={styled.infoContainer}>
         {infoFactories.map((item, key) =>
           item.disabled ? null : <Hook key={key} {...item} />,
         )}
       </View>
-      <ButtonBasic
-        btnStyle={styled.backButton}
-        title="Back to coin details"
-        onPress={onBack}
-        titleStyle={styled.titleBtn}
-      />
       {btnSaveReceiver}
     </View>
   );

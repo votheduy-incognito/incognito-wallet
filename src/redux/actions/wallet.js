@@ -2,6 +2,7 @@ import { loadListAccount, loadWallet } from '@src/services/wallet/WalletService'
 import accountService from '@src/services/wallet/accountService';
 import { getPassphrase } from '@src/services/wallet/passwordService';
 import type from '@src/redux/types/wallet';
+// eslint-disable-next-line import/no-cycle
 import { setListAccount, setDefaultAccount } from '@src/redux/actions/account';
 import { accountSeleclor } from '@src/redux/selectors';
 

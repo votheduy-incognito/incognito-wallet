@@ -11,7 +11,7 @@ import { styled } from '@src/screens/SendCrypto/FrequentReceivers/FrequentReceiv
 import { ButtonBasic } from '@src/components/Button';
 import styleSheet from './styles';
 
-const Hook = props => {
+const Hook = (props) => {
   const {
     label,
     valueText,
@@ -85,16 +85,9 @@ const Hook = props => {
   return renderComponent();
 };
 
-const TxHistoryDetail = props => {
+const TxHistoryDetail = (props) => {
   const { data, onRetryExpiredDeposit } = props;
-  const {
-    typeText,
-    balanceDirection,
-    statusText,
-    statusColor,
-    statusNumber,
-    history,
-  } = data;
+  const { typeText, statusText, statusColor, statusNumber, history } = data;
   const isUseTokenFee = !!history?.feePToken;
   const fee = isUseTokenFee ? history?.feePToken : history?.fee;
   const feeUnit = isUseTokenFee
@@ -115,7 +108,7 @@ const TxHistoryDetail = props => {
   const historyFactories = [
     {
       label: typeText,
-      valueText: `${balanceDirection} ${amountStr} ${history.symbol}`,
+      valueText: `${amountStr} ${history.symbol}`,
       disabled: !history.amount,
     },
     {

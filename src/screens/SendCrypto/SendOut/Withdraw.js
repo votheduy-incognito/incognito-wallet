@@ -120,7 +120,7 @@ class Withdraw extends React.Component {
     }
   }, 200);
 
-  handleSubmit = async values => {
+  handleSubmit = async (values) => {
     const { selectedPrivacy, feeData, actionToggleModal } = this.props;
     const disabledForm = this.shouldDisabledSubmit();
     if (disabledForm) {
@@ -173,7 +173,7 @@ class Withdraw extends React.Component {
                 originalAmount,
                 fee,
                 feeUnit,
-                title: 'Success! You withdrew funds.',
+                title: 'Sent.',
                 toAddress,
                 pDecimals: selectedPrivacy?.pDecimals,
                 tokenSymbol:
@@ -304,10 +304,10 @@ class Withdraw extends React.Component {
           '/eta/is-eth-account?address=' +
           address;
         fetch(url)
-          .then(response => {
+          .then((response) => {
             return response.json();
           })
-          .then(data => {
+          .then((data) => {
             if (data && data.Result === false) {
               this.setState({ shouldBlockETHWrongAddress: true });
             } else {
@@ -348,7 +348,7 @@ class Withdraw extends React.Component {
           {({ handleSubmit, submitting }) => (
             <View>
               <Field
-                onChange={text => {
+                onChange={(text) => {
                   rfChange(formName, 'amount', text);
                   rfFocus(formName, 'amount');
                 }}
@@ -484,7 +484,7 @@ Withdraw.propTypes = {
   onShowFrequentReceivers: PropTypes.func.isRequired,
 };
 
-const mapState = state => ({
+const mapState = (state) => ({
   amount: selector(state, 'amount'),
   toAddress: selector(state, 'toAddress'),
   isFormValid: isValid(formName)(state),

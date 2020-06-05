@@ -45,7 +45,6 @@ TokenBasic.propTypes = {
   showBalance: PropTypes.bool,
   rightTopExtra: PropTypes.element,
   shouldShowFollowed: PropTypes.bool,
-  isFetchingFollowToken: PropTypes.bool.isRequired,
 };
 
 export default withToken(React.memo(TokenBasic));

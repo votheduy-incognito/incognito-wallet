@@ -30,6 +30,7 @@ export const styled = StyleSheet.create({
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.black,
+    maxWidth: UTILS.screenWidth() / 3 - 30,
   },
   displayName: {
     maxWidth: '80%',

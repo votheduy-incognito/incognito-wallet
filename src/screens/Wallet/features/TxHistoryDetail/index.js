@@ -151,7 +151,7 @@ class TxHistoryDetailContainer extends Component {
           flex: 1,
         }}
       >
-        <Header title="History detail" />
+        <Header title="Transaction details" />
         <TxHistoryDetail
           {...this.props}
           data={data}

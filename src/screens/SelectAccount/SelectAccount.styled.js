@@ -24,7 +24,7 @@ export const itemStyled = StyleSheet.create({
     marginBottom: 10,
   },
   address: {
-    fontFamily: FONT.NAME.regular,
+    fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 5,
     color: COLORS.colorGreyBold,
