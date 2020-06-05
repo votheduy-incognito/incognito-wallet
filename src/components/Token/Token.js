@@ -48,7 +48,7 @@ export const NormalText = ({
   </View>
 );
 
-export const Name = props => {
+export const Name = (props) => {
   const { tokenProps } = React.useContext(TokenContext);
   const { name = 'Sample Name', isVerified = false } =
     tokenProps || defaultProps;
@@ -60,7 +60,7 @@ export const Name = props => {
   );
 };
 
-export const AmountBasePRV = props => {
+export const AmountBasePRV = (props) => {
   const {
     amount = 0,
     pricePrv = 0,
@@ -84,7 +84,7 @@ export const AmountBasePRV = props => {
   );
 };
 
-export const ChangePrice = props => {
+export const ChangePrice = (props) => {
   const { change = '0', customStyle = null } = props;
   const isTokenDecrease = change[0] === '-';
   const changeToNumber = Number(replace(change, '-', ''));
@@ -106,7 +106,7 @@ export const ChangePrice = props => {
   );
 };
 
-const Price = props => {
+const Price = (props) => {
   const { pricePrv = 0, change = '0' } = props;
   return (
     <View style={styled.priceContainer}>
@@ -120,7 +120,7 @@ const Price = props => {
   );
 };
 
-export const Amount = props => {
+export const Amount = (props) => {
   const {
     amount = 0,
     pDecimals = 0,
@@ -138,15 +138,35 @@ export const Amount = props => {
     return <ActivityIndicator size="small" />;
   }
   return (
-    <NormalText
-      style={[styled.bottomText, styled.boldText, customStyle]}
-      text={`${format.amount(floor(amount, 9), pDecimals)} ${
-        showSymbol ? symbol : ''
-      }`}
-      hasPSymbol={hasPSymbol}
-      stylePSymbol={stylePSymbol}
-      containerStyle={containerStyle}
-    />
+    <View
+      style={{
+        flexDirection: 'row',
+      }}
+    >
+      <NormalText
+        style={[
+          styled.bottomText,
+          styled.boldText,
+          { maxWidth: 100 },
+          customStyle,
+        ]}
+        text={`${format.amount(floor(amount, 9), pDecimals)}`}
+        hasPSymbol={hasPSymbol}
+        stylePSymbol={stylePSymbol}
+        containerStyle={containerStyle}
+      />
+      {showSymbol && (
+        <NormalText
+          style={[
+            styled.bottomText,
+            styled.boldText,
+            { marginLeft: 5 },
+            customStyle,
+          ]}
+          text={symbol}
+        />
+      )}
+    </View>
   );
 };
 
@@ -169,7 +189,7 @@ export const Symbol = () => {
   );
 };
 
-const TokenPairPRV = props => (
+const TokenPairPRV = (props) => (
   <TouchableOpacity onPress={props?.onPress}>
     <View style={[styled.container, props?.style]}>
       <View style={[styled.extra, styled.extraTop]}>
@@ -184,7 +204,7 @@ const TokenPairPRV = props => (
   </TouchableOpacity>
 );
 
-const TokenDefault = props => (
+const TokenDefault = (props) => (
   <TouchableOpacity onPress={props?.onPress}>
     <View style={[styled.container, props?.style]}>
       <View style={styled.extra}>
@@ -195,7 +215,7 @@ const TokenDefault = props => (
   </TouchableOpacity>
 );
 
-export const Follow = props => {
+export const Follow = (props) => {
   const { shouldShowFollowed, isFollowed, tokenId } = props;
   const isFetchingFollowToken = useSelector(followingTokenSelector)(tokenId);
   if (!shouldShowFollowed) {
@@ -210,7 +230,7 @@ export const Follow = props => {
   return null;
 };
 
-const Token = props => {
+const Token = (props) => {
   const { handleRemoveToken = null, swipable = false, pricePrv } = props;
   const pairWithPrv = pricePrv !== 0;
   let TokenComponent = pairWithPrv ? (

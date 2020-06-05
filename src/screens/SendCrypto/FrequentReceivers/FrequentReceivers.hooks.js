@@ -8,19 +8,17 @@ import { isFieldExist } from './FrequentReceivers.utils';
 
 const styleSheet = StyleSheet.create({
   btnSaveReceivers: {
-    backgroundColor: COLORS.colorGrey,
-    marginTop: 20,
+    marginTop: 50,
     width: '100%',
   },
   titleReceivers: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 3,
-    color: COLORS.black,
   },
 });
 
-export const useBtnSaveReceiver = props => {
+export const useBtnSaveReceiver = (props) => {
   const { onSaveReceivers, receivers, toAddress } = props;
   const [btnSave, setBtnSave] = React.useState(null);
   React.useEffect(() => {

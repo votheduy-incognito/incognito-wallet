@@ -155,7 +155,7 @@ class SendCrypto extends React.Component {
                 originalAmount,
                 fee,
                 feeUnit,
-                title: 'Sent successfully',
+                title: 'Sent.',
                 toAddress,
                 pDecimals: selectedPrivacy?.pDecimals,
                 tokenSymbol:

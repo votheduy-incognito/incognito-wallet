@@ -78,7 +78,7 @@ class SendCryptoContainer extends Component {
 
   getTxInfo = ({ message } = {}) => message;
 
-  _handleSendMainCrypto = async values => {
+  _handleSendMainCrypto = async (values) => {
     const { account, wallet, selectedPrivacy } = this.props;
     const { toAddress, amount, message, originalFee } = values;
     const originalAmount = floor(
@@ -119,13 +119,15 @@ class SendCryptoContainer extends Component {
     }
   };
 
-  _handleSendToken = async values => {
+  _handleSendToken = async (values) => {
     const { account, wallet, selectedPrivacy } = this.props;
     const { toAddress, amount, message, isUseTokenFee, originalFee } = values;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
-    const originalAmount = convertUtil.toOriginalAmount(
-      convertUtil.toNumber(amount),
-      selectedPrivacy?.pDecimals,
+    const originalAmount = floor(
+      convertUtil.toOriginalAmount(
+        convertUtil.toNumber(amount),
+        selectedPrivacy?.pDecimals,
+      ),
     );
     const tokenObject = {
       Privacy: true,
@@ -194,7 +196,7 @@ class SendCryptoContainer extends Component {
     }
   };
 
-  onSelectedItem = info => {
+  onSelectedItem = (info) => {
     const { rfOnChangeValue, navigation, focus } = this.props;
     rfOnChangeValue(formName, 'toAddress', info.address);
     focus(formName, 'toAddress');
@@ -223,7 +225,7 @@ class SendCryptoContainer extends Component {
   }
 }
 
-const mapState = state => ({
+const mapState = (state) => ({
   tokens: state.token.followed,
   receivers: sendInReceiversSelector(state).receivers,
   estimateFee: estimateFeeSelector(state),

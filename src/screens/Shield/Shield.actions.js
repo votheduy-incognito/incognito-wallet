@@ -19,7 +19,7 @@ export const actionFetching = () => ({
   type: ACTION_FETCHING,
 });
 
-export const actionFetched = payload => ({
+export const actionFetched = (payload) => ({
   type: ACTION_FETCHED,
   payload,
 });
@@ -88,7 +88,7 @@ export const actionFetch = ({ tokenId }) => async (dispatch, getState) => {
     const [dataMinMax, address] = await new Promise.all([
       await actionGetMinMaxShield({ tokenId }),
       await actionGetAddressToShield({ selectedPrivacy }),
-      await actionAddFollowToken(tokenId)(dispatch, getState),
+      await dispatch(actionAddFollowToken(tokenId)),
     ]);
     const [min, max] = dataMinMax;
     await dispatch(

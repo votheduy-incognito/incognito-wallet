@@ -12,7 +12,7 @@ const styled = StyleSheet.create({
   container: {
     backgroundColor: COLORS.colorGrey,
     height: 40,
-    paddingHorizontal: 13,
+    paddingHorizontal: 15,
     maxWidth: 120,
   },
   name: {

@@ -13,7 +13,7 @@ import { compose } from 'redux';
 import { withLayout_2 } from '@src/components/Layout';
 import { StackActions, NavigationActions } from 'react-navigation';
 
-const enhance = WrappedComp => props => {
+const enhance = (WrappedComp) => (props) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {
@@ -62,12 +62,6 @@ const enhance = WrappedComp => props => {
     },
   ];
   const onBack = () => {
-    dispatch(
-      actionToggleModal({
-        visible: false,
-        data: null,
-      }),
-    );
     const resetAction = StackActions.reset({
       index: 2,
       actions: [
@@ -77,6 +71,12 @@ const enhance = WrappedComp => props => {
       ],
     });
     navigation.dispatch(resetAction);
+    dispatch(
+      actionToggleModal({
+        visible: false,
+        data: null,
+      }),
+    );
   };
   const onSaveReceivers = async () => {
     try {
@@ -87,7 +87,7 @@ const enhance = WrappedComp => props => {
         keySave: keySaveAddressBook,
         headerTitle: 'Save address',
       });
-      await dispatch(
+      dispatch(
         actionToggleModal({
           visible: false,
           data: null,
@@ -103,7 +103,14 @@ const enhance = WrappedComp => props => {
     toAddress,
   });
   return (
-    <WrappedComp {...{ ...props, onBack, infoFactories, btnSaveReceiver }} />
+    <WrappedComp
+      {...{
+        ...props,
+        onBack,
+        infoFactories,
+        btnSaveReceiver,
+      }}
+    />
   );
 };
 

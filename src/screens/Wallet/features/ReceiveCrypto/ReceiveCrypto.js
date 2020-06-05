@@ -14,9 +14,9 @@ export const homeStyle = StyleSheet.create({
     flex: 1,
   },
   desc: {
-    fontFamily: FONT.NAME.regular,
+    fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 8,
+    lineHeight: FONT.SIZE.regular + 4,
     color: COLORS.colorGreyBold,
     textAlign: 'center',
     marginVertical: 30,

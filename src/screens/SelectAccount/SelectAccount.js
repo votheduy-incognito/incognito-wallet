@@ -22,11 +22,11 @@ const AccountItem = ({ accountName, PaymentAddress }) => {
   }
   const onSelectAccount = async () => {
     try {
+      navigation.pop();
       if (accountName === defaultAccountName) {
         Toast.showInfo(`Your current account is "${accountName}"`);
         return;
       }
-      navigation.pop();
       Toast.showInfo(`Switched to account "${accountName}"`);
       return dispatch(switchAccount(accountName));
     } catch (e) {
@@ -60,7 +60,7 @@ const ListAccount = () => {
     data: listAccount,
     handleFilter: () => [
       ...listAccount.filter(
-        account =>
+        (account) =>
           includes(account?.accountName.toLowerCase(), keySearch) ||
           includes(account?.name.toLowerCase(), keySearch),
       ),
@@ -68,7 +68,7 @@ const ListAccount = () => {
   });
   return (
     <ScrollView style={styled.scrollview} showsVerticalScrollIndicator={false}>
-      {result.map(item => (
+      {result.map((item) => (
         <AccountItem key={item?.accountName} {...item} />
       ))}
     </ScrollView>
