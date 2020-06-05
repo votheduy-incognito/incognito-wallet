@@ -1,18 +1,16 @@
-import React from 'react';
-import { View, ScrollView } from 'react-native';
-import Header from '@src/components/Header';
 import AddInternalToken from '@src/components/AddInternalToken';
+import Header from '@src/components/Header';
+import React from 'react';
+import { ScrollView } from '@src/components/core';
 import { withLayout_2 } from '@src/components/Layout';
+import { View } from 'react-native';
 import { styled } from './CreateToken.styled';
 
 const CreateToken = () => {
   return (
     <View style={styled.container}>
       <Header title="Mint a privacy coin" />
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView>
         <AddInternalToken />
       </ScrollView>
     </View>

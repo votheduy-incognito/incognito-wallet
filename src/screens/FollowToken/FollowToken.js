@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, FlatList, Text } from 'react-native';
+import { View, Text } from 'react-native';
 import Header from '@src/components/Header';
 import { TokenBasic as Token } from '@src/components/Token';
 import PropTypes from 'prop-types';
 import routeNames from '@src/router/routeNames';
 import { useNavigation } from 'react-navigation-hooks';
 import { TouchableOpacity } from '@src/components/core';
+import { FlatList } from '@src/components/core/FlatList';
 import { styled } from './FollowToken.styled';
 import withFollowToken from './FollowToken.enhance';
 
@@ -26,10 +27,11 @@ const AddManually = () => {
   );
 };
 
-const ListToken = props => {
+const ListToken = (props) => {
   const { data, handleToggleFollowToken } = props;
   return (
     <FlatList
+      showsVerticalScrollIndicator={false}
       style={styled.flatList}
       data={[...data]}
       renderItem={({ item }) => (
@@ -41,13 +43,13 @@ const ListToken = props => {
           shouldShowFollowed
         />
       )}
-      keyExtractor={token => token?.tokenId}
+      keyExtractor={(token) => token?.tokenId}
       extraData={[...data]}
     />
   );
 };
 
-const FollowToken = props => {
+const FollowToken = (props) => {
   return (
     <View style={styled.container}>
       <Header title="Add a coin" canSearch />

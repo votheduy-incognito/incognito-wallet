@@ -33,16 +33,16 @@ const style = StyleSheet.create({
     marginHorizontal: 30,
   },
   text: {
-    fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 3,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 3,
     color: COLORS.colorGreyBold,
     marginVertical: 10,
   },
   label: {
     fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 4,
+    fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.black,
   },
   circle: {
@@ -59,7 +59,7 @@ const style = StyleSheet.create({
   },
   chooseFile: {
     fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.regular,
+    fontSize: FONT.SIZE.medium,
     color: COLORS.colorGreyBold,
     marginRight: 10,
   },

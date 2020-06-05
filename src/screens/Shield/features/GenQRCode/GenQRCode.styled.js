@@ -13,8 +13,8 @@ export const styled = StyleSheet.create({
     textTransform: 'none',
   },
   text: {
-    fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.regular - 1,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.medium,
     color: COLORS.colorGreyBold,
     textAlign: 'center',
   },
@@ -28,7 +28,7 @@ export const styled = StyleSheet.create({
   },
   hook: {
     alignItems: 'center',
-    marginBottom: 50,
+    marginBottom: 30,
   },
   questionIcon: {
     marginBottom: 10,
@@ -42,7 +42,6 @@ export const styled = StyleSheet.create({
   },
   title: {
     color: COLORS.black,
-    fontSize: FONT.SIZE.superMedium,
   },
   scrollview: {
     marginTop: 42,
