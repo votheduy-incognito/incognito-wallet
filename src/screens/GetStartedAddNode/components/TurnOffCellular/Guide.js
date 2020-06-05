@@ -15,7 +15,7 @@ const Guide = () => (
           color={COLORS.lightGrey2}
           name="chevron-right"
         />
-        <Text>Cellcular</Text>
+        <Text>Cellular</Text>
         <Icon
           containerStyle={styles.icon}
           color={COLORS.lightGrey2}
