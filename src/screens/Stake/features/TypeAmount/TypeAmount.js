@@ -42,7 +42,12 @@ const TypeAmount = props => {
         containerInputStyle={styled.containerInput}
       />
       <Hook data={feeData} />
-      {error && <Text style={styled.error}>{error}</Text>}
+      {error ? 
+        <Text style={styled.error}>{error}</Text> : (
+          <Text style={[styled.error, {color: 'grey', marginTop: 10, textAlign: 'left'}]}>
+          Funds are staked to nodes, so withdrawal may take 1 - 3 days.
+          </Text>
+        )}
       <BtnDefault
         btnStyle={styled.btnSubmit}
         title={btnSubmitAmount}
