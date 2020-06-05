@@ -89,6 +89,7 @@ const enhance = WrappedComp => props => {
 
     allTokens = allTokens
       .orderBy(item => COINS.POPULAR_COIN_IDS.indexOf(item.id), 'desc')
+      .uniqBy(item => item?.id)
       .value();
 
     if (!onlyPToken) {
