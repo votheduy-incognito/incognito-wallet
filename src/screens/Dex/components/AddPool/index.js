@@ -62,60 +62,8 @@ class Pool extends React.Component {
     }
   }
 
-  estimateFeeForMainCrypto = (amount) => {
-    const { account, wallet } = this.props;
-    const fromAddress = account.PaymentAddress;
-    const accountWallet = wallet.getAccountByName(account?.AccountName);
-    return getEstimateFeeForNativeToken(
-      fromAddress,
-      DEX_CHAIN_ACCOUNT.PaymentAddress,
-      amount,
-      accountWallet,
-    );
-  };
-
-  estimateFeeForToken = (token, amount) => {
-    const { account, wallet } = this.props;
-    const fromAddress = account.PaymentAddress;
-    const accountWallet = wallet.getAccountByName(account?.AccountName);
-    const tokenObject = {
-      Privacy: true,
-      TokenID: token.id,
-      TokenName: '',
-      TokenSymbol: '',
-      TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
-      TokenAmount: amount,
-      TokenReceivers: {
-        PaymentAddress: DEX_CHAIN_ACCOUNT.PaymentAddress,
-        Amount: amount
-      }
-    };
-
-    return getEstimateFeeForPToken(
-      fromAddress,
-      DEX_CHAIN_ACCOUNT.PaymentAddress,
-      amount,
-      tokenObject,
-      accountWallet,
-    );
-  };
-
-  async estimateFee(token, amount) {
-    let fee;
-    try {
-      if (token.id === PRV_ID) {
-        fee = await this.estimateFeeForMainCrypto(amount);
-      } else {
-        fee = await this.estimateFeeForToken(token, amount);
-      }
-    } catch (error) {
-      console.debug('ESTIMATE FEE ERROR', error);
-      fee = MAX_FEE_PER_TX;
-    }
-
-    if (fee) {
-      return fee;
-    }
+  async estimateFee() {
+    return MAX_FEE_PER_TX;
   }
 
   async loadData() {

@@ -71,11 +71,7 @@ class Dex extends React.Component {
   ];
 
   changeMode(mode) {
-    const { isLoading } = this.props;
-
-    if (!isLoading) {
-      this.setState({mode});
-    }
+    this.setState({ mode });
   }
 
   showPopUp = (name) => {

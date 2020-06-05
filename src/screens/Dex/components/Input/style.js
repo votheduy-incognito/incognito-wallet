@@ -52,8 +52,8 @@ export default StyleSheet.create({
     flex: 1,
     fontSize: 26,
     paddingRight: 40,
-    maxHeight: 55,
     marginLeft: -3,
+    height: 48,
     color: COLORS.dark1,
     ...FONT.STYLE.normal
   },
