@@ -70,7 +70,7 @@ class PappView extends Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     // Ura: I think we should retry this held while url is invalid
-    if (nextProps?.url != prevState?.url ) {
+    if (nextProps?.url != prevState?.url || nextProps?.url?.replace(' ', '') != '') {
       return {
         url: nextProps?.url || 'https://incscan.io',
         hasWebViewError: false,
