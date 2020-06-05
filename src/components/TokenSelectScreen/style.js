@@ -13,6 +13,8 @@ const style = StyleSheet.create({
   networkName: {
     color: COLORS.lightGrey16,
     marginRight: 5,
+    fontSize: 18,
+    lineHeight: 23,
   },
   input: {
     flex: 1,
@@ -22,7 +24,8 @@ const style = StyleSheet.create({
   },
   tokenName: {
     ...FONT.STYLE.bold,
-    fontSize: 24,
+    fontSize: 20,
+    lineHeight: 24,
     marginBottom: 10,
   },
 });

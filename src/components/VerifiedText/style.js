@@ -16,7 +16,8 @@ export default StyleSheet.create({
     width: FLAG_SIZE,
     height: FLAG_SIZE,
     borderRadius: FLAG_SIZE,
-    marginLeft: 4
+    marginLeft: 4,
+    marginTop: -8,
   },
   verifiedFlag: {
     color: COLORS.green,
