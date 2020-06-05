@@ -163,6 +163,8 @@ class PappViewContainer extends Component {
   };
 
   render() {
+    const {navigation} = this.props;
+    let isBlocked = navigation.getParam('url');
     const { isSending, searchText, loading, selectedPrivacy, supportTokenIds, url } = this.state;
     let content = null;
     if (!url) {
@@ -190,8 +192,8 @@ class PappViewContainer extends Component {
       <View style={styled.container}>
         <Header
           isNormalSearch
-          canSearch
-          title={url ? `${url}`: 'Search'}
+          canSearch={!isBlocked}
+          title={url ? `${url}`: 'Enter a pApp address'}
           value={searchText}
           onSubmit={() => {
             let tempSearchText = searchText;

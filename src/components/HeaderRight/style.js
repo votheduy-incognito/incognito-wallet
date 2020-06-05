@@ -22,6 +22,11 @@ export const sendReceiveGroupStyle = StyleSheet.create({
 export const tokenInfoStyle = StyleSheet.create({
   container: {
   },
+  line: {
+    height: 0.5, 
+    width: '100%', 
+    backgroundColor: COLORS.lightGrey3
+  },
   infoItemValueContainer: {
     flexDirection: 'row',
     flex: 1
