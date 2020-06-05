@@ -30,7 +30,6 @@ export const styled = StyleSheet.create({
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.black,
-    maxWidth: UTILS.screenWidth() / 3 - 30,
   },
   displayName: {
     maxWidth: '80%',
@@ -69,7 +68,7 @@ export const styled = StyleSheet.create({
   bottomText: {
     fontSize: FONT.SIZE.medium,
     fontFamily: FONT.NAME.medium,
-    lineHeight: FONT.NORMALIZE(FONT.SIZE.medium + 4),
+    lineHeight: FONT.SIZE.medium + 4,
   },
   normalText: {
     flexDirection: 'row',

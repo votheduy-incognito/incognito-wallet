@@ -12,7 +12,7 @@ import replace from 'lodash/replace';
 import convert from '@src/utils/convert';
 import trim from 'lodash/trim';
 import { TouchableOpacity } from '@src/components/core';
-import { COLORS } from '@src/styles';
+import { COLORS, UTILS } from '@src/styles';
 import { followingTokenSelector } from '@src/redux/selectors/token';
 import { useSelector } from 'react-redux';
 import { styled } from './Token.styled';
@@ -137,45 +137,16 @@ export const Amount = (props) => {
   if (shouldShowGettingBalance) {
     return <ActivityIndicator size="small" />;
   }
-  if (!showSymbol) {
-    return (
-      <NormalText
-        style={[styled.bottomText, styled.boldText, customStyle]}
-        text={`${format.amount(floor(amount, 9), pDecimals)}`}
-        hasPSymbol={hasPSymbol}
-        stylePSymbol={stylePSymbol}
-        containerStyle={containerStyle}
-      />
-    );
-  }
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-      }}
-    >
-      <NormalText
-        style={[
-          styled.bottomText,
-          styled.boldText,
-          { maxWidth: 100 },
-          customStyle,
-        ]}
-        text={`${format.amount(floor(amount, 9), pDecimals)}`}
-        hasPSymbol={hasPSymbol}
-        stylePSymbol={stylePSymbol}
-        containerStyle={containerStyle}
-      />
-      <NormalText
-        style={[
-          styled.bottomText,
-          styled.boldText,
-          { marginLeft: 5 },
-          customStyle,
-        ]}
-        text={symbol}
-      />
-    </View>
+    <NormalText
+      style={[styled.bottomText, styled.boldText, customStyle]}
+      text={`${format.amount(floor(amount, 9), pDecimals)} ${
+        showSymbol ? symbol : ''
+      }`}
+      hasPSymbol={hasPSymbol}
+      stylePSymbol={stylePSymbol}
+      containerStyle={containerStyle}
+    />
   );
 };
 

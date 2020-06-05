@@ -4,8 +4,6 @@ import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { UTILS, COLORS } from '@src/styles';
 import { isIOS } from '@src/utils/platform';
 import DeviceInfo from 'react-native-device-info';
-import { compose } from 'recompose';
-import withInteractions from '@src/components/UseEffect/useInteractions';
 
 const styled = StyleSheet.create({
   container: {
@@ -36,7 +34,4 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-export default compose(
-  withInteractions,
-  enhance,
-);
+export default enhance;
