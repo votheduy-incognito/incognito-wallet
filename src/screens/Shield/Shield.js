@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, FlatList } from 'react-native';
+import { View } from 'react-native';
 import Header from '@src/components/Header';
 import { BtnQuestionDefault } from '@src/components/Button';
 import PropTypes from 'prop-types';
 import { TokenBasic as Token } from '@src/components/Token';
+import { FlatList } from '@src/components/core/FlatList';
 import { styled } from './Shield.styled';
 import withShield from './Shield.enhance';
 

@@ -23,7 +23,6 @@ import { setWallet } from '@src/redux/actions/wallet';
 import { getInternalTokenList } from '@src/redux/actions/token';
 import { ExHandler } from '@src/services/exception';
 import ROUTES_NAME from '@routers/routeNames';
-import { TouchableWithoutFeedback } from 'react-native';
 import styleSheet from './style';
 
 const formName = 'addInternalToken';
@@ -47,7 +46,6 @@ class AddInternalToken extends Component {
       isCreatingOrSending: false,
       isGettingFee: false,
       fee: null,
-      toggleDescription: false,
     };
 
     this.handleShouldGetFee = _.debounce(this.handleShouldGetFee, 1000);
@@ -239,12 +237,7 @@ class AddInternalToken extends Component {
   };
 
   render() {
-    const {
-      isCreatingOrSending,
-      isGettingFee,
-      fee,
-      toggleDescription,
-    } = this.state;
+    const { isCreatingOrSending, isGettingFee, fee } = this.state;
     const { account } = this.props;
     const isNotEnoughFee = account?.value < fee;
     const isCanSubmit =
@@ -291,48 +284,16 @@ class AddInternalToken extends Component {
                     validate={[...validator.combinedNanoAmount]}
                     labelStyle={styleSheet.labelInput}
                   />
-                  {toggleDescription ? (
-                    <Field
-                      component={InputField}
-                      componentProps={{
-                        multiline: true,
-                        numberOfLines: 10,
-                        maxLength: 255,
-                        textAlignVertical: 'top',
-                        autoFocus: true,
-                      }}
-                      name="description"
-                      label="Description"
-                      validate={descriptionMaxLength}
-                      inputStyle={styleSheet.input}
-                      labelStyle={styleSheet.labelInput}
-                      containerStyle={{ height: 80 }}
-                    />
-                  ) : (
-                    <TouchableWithoutFeedback
-                      onPress={() =>
-                        this.setState({ toggleDescription: true })
-                      }
-                    >
-                      <View style={styleSheet.descriptionInput}>
-                        <Text
-                          style={[styleSheet.labelInput, { marginBottom: 10 }]}
-                        >
-                          Description
-                        </Text>
-                        <Text
-                          style={[
-                            styleSheet.input,
-                            styleSheet.descriptionPlaceholder,
-                          ]}
-                        >
-                          Explain what your token is for, how users can get it,
-                          and any other details of your project. 255 characters
-                          max.
-                        </Text>
-                      </View>
-                    </TouchableWithoutFeedback>
-                  )}
+                  <Field
+                    component={InputField}
+                    name="description"
+                    label="Description"
+                    validate={descriptionMaxLength}
+                    inputStyle={styleSheet.input}
+                    labelStyle={styleSheet.labelInput}
+                    placeholder="Describe your coin"
+                    maxLength={255}
+                  />
                   <View style={styleSheet.verifyInfoContainer}>
                     <Text style={styleSheet.verifyInfoLabel}>
                       Fill in the fields below to earn a verified badge
@@ -385,7 +346,7 @@ class AddInternalToken extends Component {
                 >
                   <View style={styleSheet.showMyAddressContainer}>
                     <Text style={styleSheet.showMyAddressLabel}>
-                      Display my Incognito Address
+                      {'Display my\nIncognito Address'}
                     </Text>
                     <Field
                       component={SwitchField}
@@ -429,6 +390,7 @@ class AddInternalToken extends Component {
                   styleSheet.submitBtn,
                   disabled && styleSheet.submitBtnDisabed,
                 ]}
+                titleStyle={styleSheet.titleSubmitBtn}
                 onPress={handleSubmit(this.handleCreateSendToken)}
                 isAsync
                 isLoading={isGettingFee || submitting}
@@ -459,6 +421,7 @@ AddInternalToken.propTypes = {
   name: PropTypes.string,
   symbol: PropTypes.string,
   amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  getInternalTokenList: PropTypes.func.isRequired,
 };
 
 const mapDispatch = {

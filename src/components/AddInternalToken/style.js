@@ -36,20 +36,23 @@ const style = StyleSheet.create({
     color: COLORS.colorGreyBold,
   },
   labelInput: {
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 4,
+    fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 4,
     fontFamily: FONT.NAME.bold,
     color: COLORS.black,
   },
   descriptionInput: {
     marginTop: 30,
-    marginBottom: 20,
   },
   submitBtn: {
     marginVertical: 50,
     borderRadius: 100,
     backgroundColor: COLORS.orange,
     height: 50,
+  },
+  titleSubmitBtn:{
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.superMedium
   },
   submitBtnDisabed: {
     opacity: 0.7,
@@ -73,12 +76,11 @@ const style = StyleSheet.create({
   showMyAddressLabel: {
     flex: 1,
     fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 4,
+    fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 10,
     color: COLORS.black,
   },
   switch: {
-    height: '100%',
     marginBottom: 0,
   },
   descriptionPlaceholder: {},

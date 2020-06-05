@@ -15,7 +15,7 @@ const styled = StyleSheet.create({
   },
   text: {
     flex: 1,
-    fontFamily: FONT.NAME.regular,
+    fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 6,
     color: COLORS.colorGreyBold,
