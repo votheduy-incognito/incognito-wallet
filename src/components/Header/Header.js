@@ -11,7 +11,6 @@ import SearchBox from './Header.searchBox';
 import withHeader from './Header.enhance';
 
 export const HeaderContext = React.createContext({});
-
 const HeaderTitle = () => {
   const { headerProps } = React.useContext(HeaderContext);
   const { onHandleSearch, title, titleStyled, canSearch } = headerProps;
@@ -38,7 +37,6 @@ const HeaderTitle = () => {
     </TouchableOpacity>
   );
 };
-
 const Header = ({
   title,
   rightHeader,
@@ -50,9 +48,6 @@ const Header = ({
   onGoBack,
   onHandleSearch,
   style,
-  onTextSearchChange,
-  onSubmit,
-  searchText
 }) => {
   const { goBack } = useNavigation();
   const handleGoBack = () =>
@@ -74,7 +69,7 @@ const Header = ({
     >
       <View style={[styled.container, style]}>
         <BtnCircleBack onPress={_handleGoBack} />
-        {toggleSearch ? <SearchBox onSubmit={onSubmit} onChange={(text) => onTextSearchChange(text)} /> : <HeaderTitle />}
+        {toggleSearch ? <SearchBox title={title}/> : <HeaderTitle />}
         {!!rightHeader && rightHeader}
         {accountSelectable && (
           <View>
@@ -85,7 +80,6 @@ const Header = ({
     </HeaderContext.Provider>
   );
 };
-
 Header.defaultProps = {
   rightHeader: null,
   titleStyled: null,
@@ -94,11 +88,7 @@ Header.defaultProps = {
   accountSelectable: false,
   onGoBack: null,
   style: null,
-  onTextSearchChange: () => {},
-  onSubmit: () => {},
-  searchText: ''
 };
-
 Header.propTypes = {
   title: PropTypes.string.isRequired,
   rightHeader: PropTypes.element,
@@ -110,9 +100,5 @@ Header.propTypes = {
   onGoBack: PropTypes.func,
   onHandleSearch: PropTypes.func.isRequired,
   style: PropTypes.any,
-  onTextSearchChange: PropTypes.func,
-  onSubmit: PropTypes.func,
-  searchText: PropTypes.string
 };
-
 export default withHeader(React.memo(Header));
