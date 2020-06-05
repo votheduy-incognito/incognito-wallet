@@ -61,6 +61,7 @@ class TokenInfo extends Component {
           <CryptoIcon tokenId={selectedPrivacy?.tokenId} />
         </TouchableOpacity>
         <Modal visible={isShowInfo} close={this.handleToggle} containerStyle={tokenInfoStyle.modalContainer} closeBtnColor={COLORS.primary} headerText='Choose token'>
+          <View style={tokenInfoStyle.line} />
           {this.renderListToken()}
         </Modal>
       </View>
