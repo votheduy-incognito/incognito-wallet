@@ -371,7 +371,7 @@ export const modalStyle = StyleSheet.create({
     backgroundColor: COLORS.lightGrey6,
     paddingHorizontal: 20,
     flex: 0,
-    paddingVertical: 15,
+    paddingVertical: 5,
   },
   transferSearch: {
     marginVertical: 20,
@@ -393,10 +393,12 @@ export const modalStyle = StyleSheet.create({
     color: COLORS.lightGrey1,
     marginTop: 10,
     fontSize: 14,
+    lineHeight: 18,
   },
   tokenSymbol: {
     color: COLORS.dark1,
     fontSize: 14,
+    lineHeight: 18,
   },
 });
 

@@ -34,4 +34,7 @@ export default StyleSheet.create({
     height: 16,
     marginLeft: 10,
   },
+  input: {
+    flex: 1,
+  },
 });

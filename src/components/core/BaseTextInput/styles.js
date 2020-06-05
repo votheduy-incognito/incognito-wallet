@@ -5,7 +5,6 @@ export default StyleSheet.create({
   input: {
     ...FONT.STYLE.normal,
     color: COLORS.dark1,
-    flex: 1,
     paddingVertical: 0,
   },
 });
