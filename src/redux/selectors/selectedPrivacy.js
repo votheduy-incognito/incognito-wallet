@@ -6,6 +6,7 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
 import { BIG_COINS } from '@src/screens/Dex/constants';
 import { defaultAccount } from './account';
+// eslint-disable-next-line import/no-cycle
 import {
   tokensFollowedSelector,
   pTokens,

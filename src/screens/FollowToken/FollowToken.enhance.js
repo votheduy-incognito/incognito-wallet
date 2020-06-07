@@ -10,18 +10,17 @@ import uniqBy from 'lodash/uniqBy';
 import withTokenSelect from '@src/components/TokenSelect/TokenSelect.enhance';
 import {
   actionAddFollowToken,
-  getBalance,
   actionRemoveFollowToken,
 } from '@src/redux/actions/token';
 
-const enhance = WrappedComp => props => {
+const enhance = (WrappedComp) => (props) => {
   const tokens = useSelector(availableTokensSelector);
   const dispatch = useDispatch();
   const [result, keySearch] = useSearchBox({
     data: tokens,
     handleFilter: () => handleFilterTokenByKeySearch({ tokens, keySearch }),
   });
-  const handleToggleFollowToken = async token => {
+  const handleToggleFollowToken = async (token) => {
     try {
       if (!token?.isFollowed) {
         await dispatch(actionAddFollowToken(token?.tokenId));
@@ -30,8 +29,6 @@ const enhance = WrappedComp => props => {
       }
     } catch (error) {
       console.log(error);
-    } finally {
-      dispatch(getBalance({ ...token, id: token?.tokenId }));
     }
   };
 

@@ -3,7 +3,7 @@ import { View, ScrollView, Text } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { accountSeleclor } from '@src/redux/selectors';
 import PropTypes from 'prop-types';
-import { switchAccount } from '@src/redux/actions/account';
+import { actionSwitchAccount } from '@src/redux/actions/account';
 import Header, { useSearchBox } from '@src/components/Header';
 import { withLayout_2 } from '@src/components/Layout';
 import { useNavigation } from 'react-navigation-hooks';
@@ -28,7 +28,7 @@ const AccountItem = ({ accountName, PaymentAddress }) => {
         return;
       }
       Toast.showInfo(`Switched to account "${accountName}"`);
-      return dispatch(switchAccount(accountName));
+      return dispatch(actionSwitchAccount(accountName));
     } catch (e) {
       new ExHandler(
         e,

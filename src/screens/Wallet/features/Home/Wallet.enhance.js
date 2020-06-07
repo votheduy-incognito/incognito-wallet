@@ -8,18 +8,12 @@ import {
   getInternalTokenList,
   actionRemoveFollowToken,
 } from '@src/redux/actions/token';
-import {
-  getBalance,
-  reloadAccountFollowingToken,
-} from '@src/redux/actions/account';
+import { actionReloadFollowingToken } from '@src/redux/actions/account';
 import storageService from '@src/services/storage';
 import { CONSTANT_KEYS, CONSTANT_COMMONS } from '@src/constants';
 import { countFollowToken } from '@src/services/api/token';
 import { useNavigation } from 'react-navigation-hooks';
-import {
-  setSelectedPrivacy,
-  clearSelectedPrivacy,
-} from '@src/redux/actions/selectedPrivacy';
+import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import routeNames from '@src/router/routeNames';
 import { Toast } from '@src/components/core';
 import { actionInit as actionInitEstimateFee } from '@components/EstimateFee/EstimateFee.actions';
@@ -38,23 +32,10 @@ const enhance = (WrappedComp) => (props) => {
   });
   const { isReloading } = state;
   const navigation = useNavigation();
-  const getAccountBalance = async () => {
-    try {
-      await dispatch(getBalance(account));
-    } catch (e) {
-      throw new CustomError(ErrorCode.home_load_balance_failed, {
-        rawError: e,
-      });
-    }
-  };
-  const getFollowingToken = async () => {
+  const getFollowingToken = async (shouldLoadBalance) => {
     try {
       await setState({ isReloading: true });
-      await dispatch(
-        reloadAccountFollowingToken(account, {
-          shouldLoadBalance: true,
-        }),
-      );
+      await dispatch(actionReloadFollowingToken(shouldLoadBalance));
     } catch (e) {
       throw new CustomError(ErrorCode.home_load_following_token_failed, {
         rawError: e,
@@ -66,11 +47,7 @@ const enhance = (WrappedComp) => (props) => {
   const fetchData = async (reload = false) => {
     try {
       await setState({ isReloading: true });
-      let tasks = [
-        getAccountBalance(),
-        getFollowingToken(),
-        handleCountFollowedToken(),
-      ];
+      let tasks = [getFollowingToken(), handleCountFollowedToken()];
       if (reload) {
         tasks = [
           ...tasks,
@@ -115,7 +92,7 @@ const enhance = (WrappedComp) => (props) => {
   const handleRemoveToken = async (tokenId) => {
     await dispatch(actionRemoveFollowToken(tokenId));
     Toast.showSuccess('Add coin again to restore balance.', {
-      duration: 1000,
+      duration: 500,
     });
   };
   return (

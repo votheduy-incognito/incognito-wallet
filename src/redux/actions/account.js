@@ -16,7 +16,7 @@ import { getBalance as getTokenBalance, setListToken } from './token';
  * @param {object} state redux state
  * @param {string} accountName name of account you wanna get
  */
-const getBasicAccountObjectByName = state => accountName => {
+const getBasicAccountObjectByName = (state) => (accountName) => {
   return accountSeleclor.getAccountByName(state)(accountName);
 };
 
@@ -68,17 +68,17 @@ export const removeAccount = (
   }
 };
 
-export const getBalanceStart = accountName => ({
+export const getBalanceStart = (accountName) => ({
   type: type.GET_BALANCE,
   data: accountName,
 });
 
-export const getBalanceFinish = accountName => ({
+export const getBalanceFinish = (accountName) => ({
   type: type.GET_BALANCE_FINISH,
   data: accountName,
 });
 
-export const setDefaultAccount = account => {
+export const setDefaultAccount = (account) => {
   accountService.saveDefaultAccountToStorage(account?.name);
   return {
     type: type.SET_DEFAULT_ACCOUNT,
@@ -86,7 +86,7 @@ export const setDefaultAccount = account => {
   };
 };
 
-export const getBalance = account => async (dispatch, getState) => {
+export const getBalance = (account) => async (dispatch, getState) => {
   let balance = 0;
   try {
     if (!account) throw new Error('Account object is required');
@@ -122,7 +122,7 @@ export const getBalance = account => async (dispatch, getState) => {
   return balance ?? 0;
 };
 
-export const loadAllPTokenHasBalance = account => async (
+export const loadAllPTokenHasBalance = (account) => async (
   dispatch,
   getState,
 ) => {
@@ -145,8 +145,8 @@ export const loadAllPTokenHasBalance = account => async (
   const allIncognitoTokens = tokenSeleclor.internalTokens(state);
 
   // get data of tokens that have balance
-  const allTokens = allTokenData?.map(tokenData =>
-    allIncognitoTokens?.find(t => t?.id === tokenData?.id),
+  const allTokens = allTokenData?.map((tokenData) =>
+    allIncognitoTokens?.find((t) => t?.id === tokenData?.id),
   );
 
   const newTokens = differenceBy(allTokens, followedToken, 'id');
@@ -154,7 +154,7 @@ export const loadAllPTokenHasBalance = account => async (
   // if token id has been existed in USER UNFOLLOWING LIST, ignore it!
   const userUnfollowedList = await getUserUnfollowTokenIDs();
   const shouldAddTokens = newTokens?.filter(
-    token => !userUnfollowedList?.includes(token.id),
+    (token) => !userUnfollowedList?.includes(token.id),
   );
 
   if (shouldAddTokens?.length > 0) {
@@ -186,9 +186,8 @@ export const reloadAccountFollowingToken = (
     }
 
     const tokens = accountService.getFollowingTokens(account, wallet);
-
     shouldLoadBalance &&
-      tokens.forEach(token => getTokenBalance(token)(dispatch, getState));
+      tokens.forEach((token) => getTokenBalance(token)(dispatch, getState));
 
     dispatch(setListToken(tokens));
 
@@ -212,7 +211,7 @@ export const followDefaultTokens = (
     }
 
     const defaultTokens = [];
-    pTokens?.forEach(token => {
+    pTokens?.forEach((token) => {
       if (token.default) {
         defaultTokens.push(token.convertToToken());
       }
@@ -234,7 +233,7 @@ export const followDefaultTokens = (
   }
 };
 
-export const switchAccount = accountName => async (dispatch, getState) => {
+export const switchAccount = (accountName) => async (dispatch, getState) => {
   try {
     if (!accountName) throw new Error('accountName is required');
     const state = getState();
@@ -250,7 +249,9 @@ export const switchAccount = accountName => async (dispatch, getState) => {
     await new Promise.all([
       dispatch(setDefaultAccount(account)),
       dispatch(getBalance(account)),
-      dispatch(reloadAccountFollowingToken(account)),
+      dispatch(
+        reloadAccountFollowingToken(account, { shouldLoadBalance: true }),
+      ),
     ]);
     return accountSeleclor.defaultAccount(state);
   } catch (e) {
@@ -258,16 +259,17 @@ export const switchAccount = accountName => async (dispatch, getState) => {
   }
 };
 
-export const actionSwitchAccount = accountName => async (
-  dispatch,
-  getState,
-) => {
+export const actionSwitchAccount = (
+  accountName,
+  shouldLoadBalance = true,
+) => async (dispatch, getState) => {
   try {
     const state = getState();
     const account = accountSeleclor.getAccountByName(state)(accountName);
     const defaultAccount = accountSeleclor.defaultAccount(state);
     if (defaultAccount?.name !== account?.name) {
       await dispatch(setDefaultAccount(account));
+      await dispatch(actionReloadFollowingToken(shouldLoadBalance));
     }
     return account;
   } catch (error) {
@@ -275,17 +277,21 @@ export const actionSwitchAccount = accountName => async (
   }
 };
 
-export const actionReloadFollowingToken = () => async (dispatch, getState) => {
+export const actionReloadFollowingToken = (shouldLoadBalance = true) => async (
+  dispatch,
+  getState,
+) => {
   try {
     const state = getState();
     const wallet = state.wallet;
-    const account = accountSeleclor.defaultAccount(state);
+    const account = accountSeleclor.defaultAccountSelector(state);
     const followed = await accountService.getFollowingTokens(account, wallet);
-    await dispatch(getBalance(account));
-    await new Promise.all(
-      [...followed].map(async token => await dispatch(getTokenBalance(token))),
-    );
     await dispatch(setListToken(followed));
+    !!shouldLoadBalance &&
+      (await new Promise.all(
+        [...followed].map((token) => dispatch(getTokenBalance(token))),
+        dispatch(getBalance(account)),
+      ));
     return followed;
   } catch (error) {
     throw Error(error);
@@ -334,7 +340,7 @@ export const actionLoadAllBalance = () => async (dispatch, getState) => {
     const state = getState();
     const accounts = accountSeleclor.listAccount(state);
     await new Promise.all(
-      accounts.map(async account => await dispatch(getBalance(account))),
+      accounts.map(async (account) => await dispatch(getBalance(account))),
     );
   } catch (error) {
     throw Error(error);

@@ -1,17 +1,14 @@
 import { ExHandler } from '@src/services/exception';
 import routeNames from '@src/router/routeNames';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
-import {
-  actionSwitchAccount,
-  actionReloadFollowingToken,
-} from '@src/redux/actions/account';
+import { actionSwitchAccount } from '@src/redux/actions/account';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import {
   actionAddFollowToken,
   actionFetchHistoryMainCrypto,
   actionFetchHistoryToken,
 } from '@src/redux/actions/token';
-import { CONSTANT_COMMONS, CONSTANT_EVENTS } from '@src/constants';
+import { CONSTANT_EVENTS } from '@src/constants';
 import { logEvent } from '@services/firebase';
 import { actionToggleModal } from '@src/components/Modal';
 import {
@@ -40,7 +37,7 @@ import {
 } from './Notification.selector';
 import { mappingData, delay } from './Notification.utils';
 
-export const actionHasNoti = payload => ({
+export const actionHasNoti = (payload) => ({
   type: ACTION_HAS_NOTI,
   payload,
 });
@@ -51,7 +48,7 @@ export const actionInit = () => async (dispatch, getState) => {
     const list = accountSeleclor.listAccount(state);
     const body = {
       Data: [
-        ...list.map(item => ({
+        ...list.map((item) => ({
           PublicKey: item?.PublicKeyCheckEncode,
           Wallet: item?.PaymentAddress,
           AccountName: item?.AccountName || item?.name,
@@ -78,7 +75,7 @@ export const actionFetching = () => ({
   type: ACTION_FETCHING,
 });
 
-export const actionFetched = payload => ({
+export const actionFetched = (payload) => ({
   type: ACTION_FETCHED,
   payload,
 });
@@ -91,22 +88,22 @@ export const actionLoadmore = () => ({
   type: ACTION_LOAD_MORE,
 });
 
-export const actionReadAll = payload => ({
+export const actionReadAll = (payload) => ({
   type: ACTION_READ_ALL,
   payload,
 });
 
-export const actionDelete = payload => ({
+export const actionDelete = (payload) => ({
   type: ACTION_DELETE,
   payload,
 });
 
-export const actionRead = payload => ({
+export const actionRead = (payload) => ({
   type: ACTION_READ,
   payload,
 });
 
-export const actionFetchRead = item => async dispatch => {
+export const actionFetchRead = (item) => async (dispatch) => {
   try {
     const payload = await apiUpdateNotification(item);
     if (payload) {
@@ -117,7 +114,7 @@ export const actionFetchRead = item => async dispatch => {
   }
 };
 
-export const actionFetchReadAll = () => async dispatch => {
+export const actionFetchReadAll = () => async (dispatch) => {
   try {
     const payload = await apiUpdateAllNotifications();
     if (payload) {
@@ -128,7 +125,7 @@ export const actionFetchReadAll = () => async dispatch => {
   }
 };
 
-export const actionFetchDelete = item => async dispatch => {
+export const actionFetchDelete = (item) => async (dispatch) => {
   try {
     const payload = await apiDeleteNotification(item);
     if (payload) {
@@ -179,7 +176,7 @@ export const actionFetch = (data = { loadmore: false }) => async (
   }
 };
 
-export const actionUpdateRecently = payload => ({
+export const actionUpdateRecently = (payload) => ({
   type: ACTION_UPDATE_RECENTLY,
   payload,
 });
@@ -231,17 +228,16 @@ export const actionNavigate = (item, navigation) => async (
         ID: tokenId,
       };
       const accountUpdated = accountList.find(
-        item => item.PublicKeyCheckEncode === publicKey,
+        (item) => item.PublicKeyCheckEncode === publicKey,
       );
       await dispatch(
         actionSwitchAccount(
             accountUpdated?.AccountName || accountUpdated?.name,
         ),
       );
-      if (token?.isToken || tokenId !== CONSTANT_COMMONS.PRV_TOKEN_ID) {
+      if (token?.isToken && !token?.isMainCrypto) {
         await dispatch(actionAddFollowToken(tokenId));
       }
-      await dispatch(actionReloadFollowingToken());
       if (token?.isMainCrypto) {
         await dispatch(actionFetchHistoryMainCrypto());
       }
@@ -260,7 +256,7 @@ export const actionNavigate = (item, navigation) => async (
 
       const rawParams = (screenParams || '').split('&');
 
-      rawParams.forEach(param => {
+      rawParams.forEach((param) => {
         const parts = param.split('=');
         params[parts[0]] = parts[1];
       });
