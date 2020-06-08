@@ -31,7 +31,7 @@ const Guide = () => (
         </Text>
         <Text style={[styles.guideLine]}>
           <Text style={styles.bold}>Step 2:</Text>
-          &nbsp;Turn off your cellcular
+          &nbsp;Turn off your cellular
         </Text>
       </View>
     )}
