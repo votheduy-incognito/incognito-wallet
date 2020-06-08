@@ -62,6 +62,8 @@ const History = ({
             onRefresh={onReloadHistories}
             onEndReached={(histories || []).length >= LIMIT ? onLoadMoreHistories : _.noop}
             onEndReachedThreshold={0.1}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
           />
         ) : <LoadingContainer /> }
       </View>
