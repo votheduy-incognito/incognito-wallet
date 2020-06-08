@@ -47,7 +47,7 @@ const ETH_TOKEN_ID = isMainnet
 const CRYPTO_ICON_URL =
   'https://s3.amazonaws.com/incognito-org/wallet/cryptocurrency-icons/32@2x/color';
 
-const HOME_CONFIG_DATA = isMainnet
+const HOME_CONFIG_DATA = global.homeConfig !== 'staging'
   ? 'https://api-data.incognito.org/v2/home-configs'
   : 'https://api-data-staging.incognito.org/v2/home-configs';
 
