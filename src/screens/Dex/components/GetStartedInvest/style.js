@@ -11,10 +11,11 @@ export default StyleSheet.create({
   container: {
     paddingVertical: offset,
     paddingHorizontal: 40,
+    backgroundColor: 'transparent',
     height: '100%',
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     textAlign: 'center',
     ...FONT.STYLE.bold,
   },

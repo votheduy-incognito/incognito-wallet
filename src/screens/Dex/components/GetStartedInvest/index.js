@@ -183,7 +183,7 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares }) => {
   const [expand, setExpand] = React.useState(false);
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View>
         <Text style={styles.title}>Provide liquidity for pDEX.</Text>
         <Image source={icInvest} style={styles.image} />
@@ -209,7 +209,7 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares }) => {
           <Text style={styles.description}>Distribution every Monday 08:00 UTC</Text>
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
