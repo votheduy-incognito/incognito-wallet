@@ -279,16 +279,12 @@ export const actionSwitchAccount = (
     const state = getState();
     const account = accountSeleclor.getAccountByName(state)(accountName);
     const defaultAccount = accountSeleclor.defaultAccount(state);
-    const switchAccount = accountSeleclor.switchAccountSelector(state);
-    if (defaultAccount?.name !== account?.name && !switchAccount) {
-      await dispatch(actionSwitchAccountFetching(accountName));
+    if (defaultAccount?.name !== account?.name) {
       await dispatch(setDefaultAccount(account));
       await dispatch(actionReloadFollowingToken(shouldLoadBalance));
-      await dispatch(actionSwitchAccountFetched());
     }
     return account;
   } catch (error) {
-    await dispatch(actionSwitchAccountFetchFail());
     throw Error(error);
   }
 };
