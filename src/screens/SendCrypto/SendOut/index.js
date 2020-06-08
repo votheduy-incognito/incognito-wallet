@@ -28,6 +28,7 @@ import {
   actionFetchedMaxFeePToken,
   actionInit,
 } from '@src/components/EstimateFee/EstimateFee.actions';
+import convert from '@src/utils/convert';
 import Withdraw, { formName } from './Withdraw';
 
 class WithdrawContainer extends Component {
@@ -214,7 +215,7 @@ class WithdrawContainer extends Component {
       const { amount, originalAmount, remoteAddress } = payload;
       const tx = await this.handleBurningToken(payload);
       const data = {
-        amount,
+        amount: convert.toNumber(amount, true),
         originalAmount,
         paymentAddress: remoteAddress,
         walletAddress: selectedPrivacy?.paymentAddress,
@@ -247,7 +248,7 @@ class WithdrawContainer extends Component {
     }
   };
 
-  onSelectedItem = info => {
+  onSelectedItem = (info) => {
     const { rfOnChangeValue, navigation, focus } = this.props;
     rfOnChangeValue(formName, 'toAddress', info.address);
     focus(formName, 'toAddress');
@@ -273,7 +274,7 @@ class WithdrawContainer extends Component {
   }
 }
 
-const mapState = state => ({
+const mapState = (state) => ({
   tokens: state.token?.followed,
   receivers: withdrawReceiversSelector(state).receivers,
   estimateFee: estimateFeeSelector(state),
