@@ -3,6 +3,7 @@ import '@src/services/polyfill';
 import _ from 'lodash';
 // import AppTemp from '@src/Temp';
 import {AppRegistry} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import {name as appName} from './app.json';
 
 const TAG = 'index';
@@ -19,16 +20,18 @@ if (__DEV__) {
 
 AppRegistry.registerRunnable(appName, async initParams => {
   const {default: serverService} = await import('@src/services/wallet/Server');
+  const homeConfig = await AsyncStorage.getItem('home-config');
   const serverDefault =
     (await serverService.getDefaultIfNullGettingDefaulList()) ?? {};
+
+  global.homeConfig = homeConfig;
   global.isMainnet =
     (_.isEmpty(serverDefault)
       ? global.isMainnet
       : serverService.isMainnet(serverDefault)) ?? true;
-
-  console.debug('IS MAINNET', global.isMainnet);
-
   const {default: App} = await import('@src/App');
+
+  console.debug('GLOBAL', global.isMainnet, global.homeConfig);
   AppRegistry.registerComponent(appName, () => App);
   AppRegistry.runApplication(appName, initParams);
 });
