@@ -7,7 +7,7 @@ import styles from '../../styles';
 
 const FirstScreen = ({ onNext, goToScreen }) => (
   <ScrollView>
-    <Text style={styles.title2}>{'Plug in your Node.\nYou\'ll see a blue light.'}</Text>
+    <Text style={styles.title2}>{'Plug in your Node\nYou\'ll see a blue light'}</Text>
     <View style={styles.content}>
       <Image
         style={styles.content_step1_image}
