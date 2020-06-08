@@ -2,16 +2,19 @@ import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import LottieView from 'lottie-react-native';
 import { COLORS } from '@src/styles';
-import { ScreenWidth } from '@src/utils/devices';
+import { ScreenWidth, ScreenHeight } from '@src/utils/devices';
 
 
-const WizardAnim = () => {
+const WizardAnim = ({onAnimationFinish}) => {
   return (
     <View style={styles.content}>
-      <View animation="fadeIn" style={styles.container}>
+      <View style={styles.container}>
         <LottieView
           autoPlay
-          source={require('../../assets/lottie/wizard.json')}
+          loop={false}
+          resizeMode="cover"
+          onAnimationFinish={onAnimationFinish}
+          source={require('../../../assets/lottie/wizard.json')}
         />
       </View>
     </View>
@@ -39,12 +42,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5, 
-    backgroundColor: COLORS.white, 
+    backgroundColor: COLORS.black, 
     borderColor: COLORS.lightGrey11, 
     borderWidth: 0.5, 
-    borderRadius: ScreenWidth / 10, 
-    width: ScreenWidth / 5, 
-    height: ScreenWidth / 5, 
+    width: ScreenWidth, 
+    height: ScreenHeight, 
     alignContent: 'center', 
     alignItems: 'center', 
     alignSelf: 'center', 
