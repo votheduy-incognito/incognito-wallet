@@ -5,7 +5,6 @@ import { isIOS } from '@src/utils/platform';
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 35,
   },
   content: {
     flex: 1,
