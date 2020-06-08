@@ -14,6 +14,7 @@ import {
   ACTION_FETCH_FAIL,
   ACTION_TOGGLE_GUIDE,
 } from './Shield.constant';
+import { shieldSelector } from './Shield.selector';
 
 export const actionFetching = () => ({
   type: ACTION_FETCHING,
@@ -80,16 +81,15 @@ export const actionFetch = ({ tokenId }) => async (dispatch, getState) => {
   try {
     await dispatch(setSelectedPrivacy(tokenId));
     const state = getState();
+    const { isFetching } = shieldSelector(state);
     const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
-    if (!selectedPrivacy) {
+    if (!selectedPrivacy || isFetching) {
       return;
     }
     await dispatch(actionFetching());
-    const [dataMinMax, address] = await new Promise.all([
-      await actionGetMinMaxShield({ tokenId }),
-      await actionGetAddressToShield({ selectedPrivacy }),
-      await dispatch(actionAddFollowToken(tokenId)),
-    ]);
+    await dispatch(actionAddFollowToken(tokenId));
+    const dataMinMax = await actionGetMinMaxShield({ tokenId });
+    const address = await actionGetAddressToShield({ selectedPrivacy });
     const [min, max] = dataMinMax;
     await dispatch(
       actionFetched({
