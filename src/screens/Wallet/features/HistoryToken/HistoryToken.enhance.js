@@ -9,11 +9,12 @@ import {
   actionFetchHistoryMainCrypto,
   actionFetchHistoryToken,
 } from '@src/redux/actions/token';
+import { historyTokenSelector } from '@src/redux/selectors/token';
 import EmptyHistory from './HistoryToken.empty';
 
 const enhance = (WrappedComp) => (props) => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
-  const isEmpty = selectedPrivacy?.amount === 0;
+  const { isEmpty } = useSelector(historyTokenSelector);
   const token = useSelector(
     selectedPrivacySeleclor.selectedPrivacyByFollowedSelector,
   );
