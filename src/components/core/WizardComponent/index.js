@@ -14,7 +14,7 @@ const WizardAnim = ({onAnimationFinish}) => {
           loop={false}
           resizeMode="cover"
           onAnimationFinish={onAnimationFinish}
-          source={require('../../../assets/lottie/wizard.json')}
+          source={require('../../../assets/lottie/intro.json')}
         />
       </View>
     </View>
@@ -34,16 +34,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center' 
   },
   container: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5, 
     backgroundColor: COLORS.black, 
-    borderColor: COLORS.lightGrey11, 
     borderWidth: 0.5, 
     width: ScreenWidth, 
     height: ScreenHeight, 
