@@ -5,21 +5,22 @@ const TAG = 'reducers-account';
 const initialState = {
   list: [],
   defaultAccountName: '',
-  isGettingBalance: []
+  isGettingBalance: [],
+  switch: false,
 };
 
 const setAccount = (list, account) => {
   let newList = [...list];
   // console.log(TAG,'setAccount account = ',account);
   try {
-    const foundIndex = list.findIndex(a => a.name === account.name);
+    const foundIndex = list.findIndex((a) => a.name === account.name);
     if (foundIndex >= 0) {
-      console.log(TAG,'setAccount 01');
+      console.log(TAG, 'setAccount 01');
       newList[foundIndex] = account;
     } else {
       newList.push(account);
     }
-  } catch(e) {
+  } catch (e) {
     console.error(e);
   }
   // console.log(TAG,'setAccount end  = ',newList);
@@ -30,7 +31,7 @@ const removeByPrivateKey = (list, privateKey) => {
   const newList = [...list];
   try {
     _.remove(newList, (_item) => _item.PrivateKey === privateKey);
-  } catch(e) {
+  } catch (e) {
     console.error(e);
   }
   return newList;
@@ -43,7 +44,7 @@ const setGettingBalance = (list, accountName) => {
 
 const removeGettingBalance = (list, accountName) => {
   const newList = [...list];
-  _.remove(newList, item => item === accountName);
+  _.remove(newList, (item) => item === accountName);
   return newList;
 };
 
@@ -71,18 +72,42 @@ const reducer = (state = initialState, action) => {
   case type.GET_BALANCE:
     return {
       ...state,
-      isGettingBalance: setGettingBalance(state.isGettingBalance, action.data)
+      isGettingBalance: setGettingBalance(
+        state.isGettingBalance,
+        action.data,
+      ),
     };
   case type.GET_BALANCE_FINISH:
     return {
       ...state,
-      isGettingBalance: removeGettingBalance(state.isGettingBalance, action.data)
+      isGettingBalance: removeGettingBalance(
+        state.isGettingBalance,
+        action.data,
+      ),
     };
   case type.SET_DEFAULT_ACCOUNT:
     return {
       ...state,
       defaultAccountName: action.data?.name,
     };
+  case type.ACTION_SWITCH_ACCOUNT_FETCHING: {
+    return {
+      ...state,
+      switch: true,
+    };
+  }
+  case type.ACTION_SWITCH_ACCOUNT_FETCHED: {
+    return {
+      ...state,
+      switch: false,
+    };
+  }
+  case type.ACTION_SWITCH_ACCOUNT_FETCH_FAIL: {
+    return {
+      ...state,
+      switch: false,
+    };
+  }
   default:
     return state;
   }
