@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import LoadingContainer from '@components/LoadingContainer';
 import { connect } from 'react-redux';
-import convertUtil from '@utils/convert';
 import accountService from '@services/wallet/accountService';
 import tokenService from '@services/wallet/tokenService';
 import { getBalance } from '@src/redux/actions/account';
@@ -27,7 +26,6 @@ import {
   actionFetchedMaxFeePToken,
   actionInit,
 } from '@src/components/EstimateFee/EstimateFee.actions';
-import floor from 'lodash/floor';
 import SendCrypto, { formName } from './SendCrypto';
 
 class SendCryptoContainer extends Component {
@@ -79,14 +77,8 @@ class SendCryptoContainer extends Component {
   getTxInfo = ({ message } = {}) => message;
 
   _handleSendMainCrypto = async (values) => {
-    const { account, wallet, selectedPrivacy } = this.props;
-    const { toAddress, amount, message, originalFee } = values;
-    const originalAmount = floor(
-      convertUtil.toOriginalAmount(
-        convertUtil.toNumber(amount),
-        selectedPrivacy?.pDecimals,
-      ),
-    );
+    const { account, wallet } = this.props;
+    const { toAddress, message, originalFee, originalAmount } = values;
     const paymentInfos = [
       {
         paymentAddressStr: toAddress,
@@ -121,14 +113,14 @@ class SendCryptoContainer extends Component {
 
   _handleSendToken = async (values) => {
     const { account, wallet, selectedPrivacy } = this.props;
-    const { toAddress, amount, message, isUseTokenFee, originalFee } = values;
+    const {
+      toAddress,
+      message,
+      isUseTokenFee,
+      originalFee,
+      originalAmount,
+    } = values;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
-    const originalAmount = floor(
-      convertUtil.toOriginalAmount(
-        convertUtil.toNumber(amount),
-        selectedPrivacy?.pDecimals,
-      ),
-    );
     const tokenObject = {
       Privacy: true,
       TokenID: selectedPrivacy?.tokenId,

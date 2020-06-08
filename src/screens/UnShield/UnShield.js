@@ -13,7 +13,7 @@ const UnShield = () => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const navigation = useNavigation();
   const account = useSelector(accountSeleclor.defaultAccountSelector);
-  const wallet = useSelector(state => state?.wallet);
+  const wallet = useSelector((state) => state?.wallet);
   const Wrapper = isIOS() ? KeyboardAvoidingView : View;
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -23,7 +23,11 @@ const UnShield = () => {
         keyboardVerticalOffset={200}
         behavior="padding"
       >
-        <Header titleStyled={styled.headerTitle} title="Unshield " />
+        <Header
+          titleStyled={styled.headerTitle}
+          title={`Unshield ${selectedPrivacy?.externalSymbol ||
+            selectedPrivacy?.symbol}`}
+        />
         <UnShieldForm
           navigation={navigation}
           selectable={false}

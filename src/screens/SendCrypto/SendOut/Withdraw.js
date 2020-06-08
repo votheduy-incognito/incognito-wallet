@@ -136,12 +136,12 @@ class Withdraw extends React.Component {
       const { fee, isUsedPRVFee, rate, feePDecimals, feeUnit } = feeData;
       const originalAmount = floor(
         convertUtil.toOriginalAmount(
-          convertUtil.toNumber(amount),
+          convertUtil.toNumber(amount, true),
           selectedPrivacy?.pDecimals,
         ),
       );
       const originalFee = floor(
-        convertUtil.toOriginalAmount(convertUtil.toNumber(fee), feePDecimals) /
+        convertUtil.toOriginalAmount(convertUtil.toNumber(fee, true), feePDecimals) /
           rate,
       );
       const _fee = format.amountFull(originalFee, feePDecimals);
@@ -355,7 +355,7 @@ class Withdraw extends React.Component {
                 component={InputMaxValueField}
                 name="amount"
                 label="Amount"
-                placeholder="Amount"
+                placeholder="0.0"
                 maxValue={maxAmountText}
                 componentProps={{
                   keyboardType: 'decimal-pad',
