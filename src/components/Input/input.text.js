@@ -9,7 +9,6 @@ const inputStyled = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomColor: COLORS.colorGreyBold,
   },
   input: {
     flex: 1,
@@ -30,7 +29,6 @@ const Input = React.forwardRef((props, ref) => {
     containerStyled,
     showBorderBottom,
     hook,
-    value,
     inputMax,
     containerInputStyle,
     ...rest
@@ -109,7 +107,6 @@ Input.defaultProps = {
     handleShowMax: () => null,
   },
   containerInputStyle: null,
-  value: ''
 };
 
 Input.propTypes = {
@@ -128,7 +125,6 @@ Input.propTypes = {
     handleShowMax: PropTypes.func.isRequired,
   }),
   containerInputStyle: PropTypes.any,
-  value: PropTypes.string,
 };
 
 export default Input;

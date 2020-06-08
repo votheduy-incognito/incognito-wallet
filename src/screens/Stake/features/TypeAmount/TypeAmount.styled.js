@@ -9,7 +9,6 @@ export const styled = StyleSheet.create({
     padding: 20,
   },
   input: {
-    fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.large,
     lineHeight: FONT.SIZE.large + 6,
     color: COLORS.black,
