@@ -104,6 +104,7 @@ const ExportAccount = ({ account, token }) => {
         {renderItem('PUBLIC KEY', account?.PublicKeyCheckEncode)}
         {renderItem('READONLY KEY', account?.ReadonlyKey)}
         {renderItem('VALIDATOR KEY', account?.ValidatorKey)}
+        {(__DEV__ || global.isDEV) ? renderItem('BLS KEY', account?.ValidatorKey) : null}
         {(__DEV__ || global.isDEV) ? renderItem('DEVICE TOKEN', token) : null}
         {(__DEV__ || global.isDEV) ? renderItem('Shard', parseShard(account?.PublicKeyBytes)) : null}
       </View>
