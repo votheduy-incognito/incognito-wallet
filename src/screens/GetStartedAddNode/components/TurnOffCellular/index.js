@@ -14,7 +14,7 @@ const bottomImage = isIOS() ? nodeStep32IOS : null;
 
 const TurnOffCellular = ({ onNext }) => (
   <ScrollView>
-    <Text style={styles.title2}>Turn off mobile data to continue</Text>
+    <Text style={styles.title2}>Turn off mobile data</Text>
     <View>
       <Image
         style={styles.content_step3_image}

@@ -16,12 +16,12 @@ const ModalBandWidth = ({title, subTitle, btnTitle, isVisible, btnSetting, onPre
     <Modal isVisible={isVisible} animationIn="fadeIn" animationOut="fadeOut" animationInTiming={800} animationOutTiming={1000}>
       <View style={[styles.container, { backgroundColor: 'white', padding: 20 }, theme.SHADOW.normal]}>
         <View style={styles.contentContainer}>
-          <Text style={[theme.text.headerTextStyle, theme.text.alignCenterText]}>{`${title ?? ''}`}</Text>
+          <Text style={[theme.text.headerTextStyle, theme.text.alignCenterText, theme.MARGIN.marginTopDefault]}>{`${title ?? ''}`}</Text>
           <Text style={[theme.text.largeTitleSize, theme.MARGIN.marginTopDefault, theme.text.alignCenterText]}>{`${subTitle ?? ''}`}</Text>
         </View>
-        <View style={styles.contentContainer}>
+        <View style={[styles.contentContainer, {marginBottom: 30}]}>
           <View style={[theme.MARGIN.marginBottomDefault]}>
-            <Image source={uri ? uri : bandWidth} style={{ width: ScreenWidth / 5, height: ScreenWidth / 5 }} />
+            <Image source={uri ? uri : bandWidth} style={{ width: ScreenWidth / 4, height: ScreenWidth / 4 }} />
           </View>
           <View style={[theme.FLEX.rowSpaceBetween, theme.FLEX.fullWidth]}>
             <Button onPress={onPressSetting} title={btnTitle ?? ''} textContainerStyle={{ width: ScreenWidth * 0.8 * 0.35 }} />

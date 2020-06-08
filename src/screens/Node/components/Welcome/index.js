@@ -20,11 +20,11 @@ const WelcomeNodes = ({ onAddPNode, onAddVNode }) => (
       <Button
         style={styles.pNodeButton}
         onPress={onAddPNode}
-        title='Add a Node Device'
+        title='Add Node Device'
       />
       <Text style={styles.buyText}>Don&apos;t have a node yet?</Text>
       <Button
-        title="Buy another Node"
+        title="Get a Node"
         buttonStyle={styles.buyButton}
         onPress={() => { NavigationService.navigate(routeNames.BuyNodeScreen); }}
       />
@@ -36,7 +36,7 @@ const WelcomeNodes = ({ onAddPNode, onAddVNode }) => (
         titleStyle={styles.vNodeText}
         buttonStyle={styles.vNodeButton}
         onPress={onAddVNode}
-        title='Add a Virtual Node'
+        title='Add Node Virtual'
       />
     </View>
   </ScrollView>
