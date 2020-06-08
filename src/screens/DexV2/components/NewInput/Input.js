@@ -11,7 +11,7 @@ const Input = ({ value, onChange, disabled, placeholder }) => {
         keyboardType="decimal-pad"
         style={[stylesheet.bigText, stylesheet.input]}
         placeholder={onChange ? placeholder : ''}
-        placeholderTextColor={COLORS.lightGrey16}
+        placeholderTextColor={COLORS.colorGreyBold}
         value={value}
         onChangeText={onChange}
         editable={!disabled}

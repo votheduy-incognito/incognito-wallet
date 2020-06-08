@@ -11,10 +11,11 @@ export default StyleSheet.create({
   container: {
     paddingVertical: offset,
     paddingHorizontal: 40,
+    backgroundColor: 'transparent',
     height: '100%',
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     textAlign: 'center',
     ...FONT.STYLE.bold,
   },
@@ -61,5 +62,13 @@ export default StyleSheet.create({
   },
   arrowIcon: {
     marginTop: 20,
+  },
+  image: {
+    alignSelf: 'center',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  more: {
+    color: COLORS.primary,
   },
 });

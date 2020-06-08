@@ -12,6 +12,7 @@ const style = StyleSheet.create({
   },
   networkName: {
     color: COLORS.lightGrey16,
+    ...FONT.STYLE.medium,
     marginRight: 5,
     fontSize: 18,
     lineHeight: 23,
@@ -20,7 +21,7 @@ const style = StyleSheet.create({
     flex: 1,
     fontSize: 18,
     color: COLORS.black,
-    fontFamily: FONT.NAME.regular,
+    fontFamily: FONT.NAME.medium,
   },
   tokenName: {
     ...FONT.STYLE.bold,
