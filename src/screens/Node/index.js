@@ -153,11 +153,11 @@ class Node extends BaseScreen {
       console.log('Verifing process check code in Home node to API: ' + LogManager.parseJsonObjectToJsonString(result));
       if (result && result?.verify_code === verifyProductCode) {
         Alert.alert(
-          'Uncomplete setup for node',
-          'We found a key for old node device that unsuccessfull. Do you want to continue setup this for now?',
+          'Something stopped unexpectedly',
+          'Please resume setup to bring Node online',
           [
             { text: 'Back', onPress: () => this.goToScreen(routeNames.Home) },
-            { text: 'Continue', onPress: () => { this.goToScreen(routeNames.RepairingSetupNode, { isRepairing: true, verifyProductCode: verifyProductCode }); } },
+            { text: 'Resume', onPress: () => { this.goToScreen(routeNames.RepairingSetupNode, { isRepairing: true, verifyProductCode: verifyProductCode }); } },
           ],
           { cancelable: false }
         );
@@ -458,7 +458,7 @@ class Node extends BaseScreen {
           />
           <Button
             style={style.buyButton}
-            title="Buy another Node"
+            title="Get a Node"
             onPress={() => { this.goToScreen(routeNames.BuyNodeScreen); }}
           />
 
