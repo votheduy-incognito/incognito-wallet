@@ -111,11 +111,11 @@ class Dex extends React.Component {
           <Image source={withdrawBlack} style={{ width: 30, height: 27, resizeMode: 'contain' }} />
           <Text style={[dexStyle.modeText]}>Withdraw</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={dexStyle.mode} onPress={() => this.changeMode(MODES.GET_STARTED_INVEST)}>
+        <TouchableOpacity style={dexStyle.mode} onPress={() => this.changeMode(MODES.ADD)}>
           <Image source={addLiquidityIcon} />
           <Text style={[
             dexStyle.modeText,
-            (mode === MODES.ADD || mode === MODES.GET_STARTED_INVEST) && dexStyle.active
+            (mode === MODES.ADD) && dexStyle.active
           ]}
           >
             Invest

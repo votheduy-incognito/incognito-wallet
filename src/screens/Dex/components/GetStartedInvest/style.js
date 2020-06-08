@@ -62,4 +62,12 @@ export default StyleSheet.create({
   arrowIcon: {
     marginTop: 20,
   },
+  image: {
+    alignSelf: 'center',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  more: {
+    color: COLORS.primary,
+  },
 });

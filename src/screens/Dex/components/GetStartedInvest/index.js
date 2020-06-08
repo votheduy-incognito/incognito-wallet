@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ActivityIndicator, Button, Image, ScrollView, Text, TouchableOpacity, View } from '@components/core';
+import icInvest from '@src/assets/images/invest_icon.png';
 
 import icBTC from '@src/assets/images/coins/ic_btc.png';
 import icPRV from '@src/assets/images/coins/ic_prv.png';
@@ -184,20 +185,21 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares }) => {
   return (
     <View style={styles.container}>
       <View>
-        <Text style={styles.title}>Provide privacy and earn</Text>
-        <Text style={styles.description}>Provide liquidity for any PRV pair, and earn interest every second.</Text>
-        <Text style={styles.description}>55,000 PRV to be distributed between providers in June.</Text>
+        <Text style={styles.title}>Provide liquidity for pDEX.</Text>
+        <Image source={icInvest} style={styles.image} />
+        <Text style={styles.title}>Provide privacy for the world.</Text>
+        <Text style={styles.description}>55,000 PRV will be distributed to liquidity providers.</Text>
       </View>
       <View style={{ alignItems: 'center', justifyContent: 'center' }}>
         <Button title="Get started" onPress={onPress} style={styles.btn} />
       </View>
       <TouchableOpacity style={styles.row} onPress={() => setExpand(!expand)}>
-        <Text style={styles.description}>
+        <Text style={[styles.description, styles.more]}>
           Learn more
         </Text>
         {!expand ?
-          <Icon containerStyle={styles.arrowIcon} type="material-community" name="chevron-down" color={COLORS.black} />
-          : <Icon containerStyle={styles.arrowIcon} type="material-community" name="chevron-up" color={COLORS.black} />
+          <Icon containerStyle={styles.arrowIcon} type="material-community" name="chevron-right" color={COLORS.primary} />
+          : <Icon containerStyle={styles.arrowIcon} type="material-community" name="chevron-up" color={COLORS.primary} />
         }
       </TouchableOpacity>
       {expand && (
