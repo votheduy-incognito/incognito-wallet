@@ -183,7 +183,7 @@ const GetStartedInvest = ({ onPress, accounts, pairs, shares }) => {
   const [expand, setExpand] = React.useState(false);
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={{ height: '100%' }} contentContainerStyle={styles.container}>
       <View>
         <Text style={styles.title}>Provide liquidity for pDEX.</Text>
         <Image source={icInvest} style={styles.image} />

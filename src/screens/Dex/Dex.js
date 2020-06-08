@@ -273,7 +273,7 @@ class Dex extends React.Component {
     return (
       <View style={mainStyle.wrapper}>
         {this.renderHeader()}
-        <View style={[dexStyle.scrollViewContainer]}>
+        <View style={[dexStyle.scrollViewContainer, mode === MODES.GET_STARTED_INVEST] && { padding: 0 }}>
           <Wrapper refreshControl={this.renderRefreshControl()}>
             {this.renderMode()}
             { mode !== MODES.GET_STARTED_INVEST && (
