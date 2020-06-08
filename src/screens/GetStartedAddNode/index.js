@@ -358,7 +358,7 @@ class GetStartedAddNode extends BaseScreen {
           isVisible={isErrPermission}
           title="Help Node find you"
           btnTitle="Go to device settings"
-          subTitle="Give the app permission to access your location"
+          subTitle="Please give the app permission to access your location"
           uri={locationPermissionPng}
           onPressDismiss={() => {
             this.setState({ errPermission: '', isErrPermission: false });
