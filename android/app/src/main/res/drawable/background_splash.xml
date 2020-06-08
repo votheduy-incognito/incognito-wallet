@@ -2,12 +2,15 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:drawable="@color/black"/>
+        android:width="500dp"
+        android:height="1000dp"
+        android:drawable="@color/white"/>
 
     <item
-        android:width="400dp"
-        android:height="400dp"
-        android:drawable="@mipmap/splash"
-        android:gravity="center" />
+        android:width="100dp"
+        android:height="100dp"
+        android:drawable="@drawable/icon_splash"
+        android:gravity="top|center"
+        android:top="100dp"/>
 
 </layer-list>
