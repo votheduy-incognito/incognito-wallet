@@ -58,7 +58,7 @@ const GetQrcode = React.memo(({ onSuccess, qrCode = '' }) => {
       ) : (loading ? ViewUtil.loadingComponent() : (
         <>
           <Icon size={scaleInApp(50)} color='#25CDD6' name="check" type='simple-line-icon' />
-          <Text style={[styles.step3_text, { color: '#25CDD6' }]}>Scan complete</Text>
+          <Text style={[styles.step3_text, { color: '#25CDD6' }]}>{'Hello, Node:\n ' + deviceId}</Text>
         </>
       )
       )}

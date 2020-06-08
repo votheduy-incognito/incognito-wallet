@@ -186,7 +186,7 @@ class WifiSetup extends PureComponent {
 
                 await this.tryAtMost(async () => {
                   const currentSSID = await this.getWifiSSID(true);
-                  this.addStep({ name: 'Wi-Fi ' + currentSSID, isSuccess: true });
+                  // this.addStep({ name: 'Wi-Fi ' + currentSSID, isSuccess: true }); // No need to log
                   if (!currentSSID) {
                     this.setState({ steps: [] });
                     throw new Error('Wifi name or password is incorrect');
@@ -906,7 +906,7 @@ class WifiSetup extends PureComponent {
     return (
       <View>
         <ScrollView>
-          <Text style={styles.title2}>Connect Node to your home Wi-Fi</Text>
+          <Text style={styles.title2}>Enter your home WiFi detail</Text>
           {steps.length > 0 ? this.renderLogs() : this.renderContent()}
           <Text style={styles.errorText}>{rootCauseMessage}</Text>
           {this.renderFooter()}

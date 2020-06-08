@@ -238,11 +238,11 @@ class GetStartedAddNode extends BaseScreen {
         let result = await NodeService.verifyProductCode(verifyProductCode);
         if (result && result?.verify_code === verifyProductCode) {
           Alert.alert(
-            'Uncomplete setup for node',
-            'We found a key for old node device that unsuccessfull. Do you want to continue setup this for now?',
+            'Something stopped unexpectedly',
+            'Please resume setup to bring Node online',
             [
               { text: 'Back', onPress: () => this.goToScreen(routeNames.Home) },
-              { text: 'Continue', onPress: () => { this.goToScreen(routeNames.RepairingSetupNode, { isRepairing: true, verifyProductCode: verifyProductCode }); } },
+              { text: 'Resume', onPress: () => { this.goToScreen(routeNames.RepairingSetupNode, { isRepairing: true, verifyProductCode: verifyProductCode }); } },
             ],
             { cancelable: false }
           );
@@ -287,9 +287,9 @@ class GetStartedAddNode extends BaseScreen {
 
     this.setState({ step: step });
     if (!isConnected || !connectable || !wifiName || wifiName.includes('Node') || wifiName === '') {
-      Alert.alert('Connectivity', 'There is an issue with your connection. Please connect to connectable wifi for processing next step', [
+      Alert.alert('Could not connect', 'There seems to be an issue with your WiFi connection. Please try again or switch to a different network if available', [
         {
-          text: 'Go to Settings',
+          text: 'Go to device settings',
           onPress: () => { Linking.openURL('App-Prefs:root=WIFI'); }
         }
       ]);
@@ -375,10 +375,10 @@ class GetStartedAddNode extends BaseScreen {
         <ModalBandWidth
           isVisible={showBandWidthModal}
           uri={bandWidthPng}
-          title="Low quality connection"
-          btnTitle="Go to device settings"
+          title="Weak connection"
+          btnTitle="Switch networks"
           btnSetting='OK'
-          subTitle={`We recommend to you should use the better wifi/celcular for setting up everything smoother.\nCurrently, speed is ${bandWidth?.speed?.toFixed(2) || 0} MBps`}
+          subTitle="Setup may take longer than expected due to slow network speeds"
           onPress={() => {
             this.setState({ showBandWidthModal: false });
           }}
