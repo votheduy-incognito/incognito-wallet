@@ -11,6 +11,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 15,
   },
   text: {
     color: COLORS.colorGreyBold,
@@ -19,7 +20,6 @@ const styles = StyleSheet.create({
     fontSize: FONT.SIZE.regular,
   },
   image: {
-    marginTop: '5%',
     marginBottom: 20,
     width: 60,
     height: 60,

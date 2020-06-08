@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, RefreshControl } from 'react-native';
+import { View, RefreshControl } from 'react-native';
 import Header from '@src/components/Header';
 import {
   selectedPrivacySeleclor,
@@ -24,6 +24,7 @@ import {
   isGettingBalance as isGettingMainCryptoBalanceSelector,
   defaultAccountNameSelector,
 } from '@src/redux/selectors/account';
+import { ScrollView } from '@src/components/core';
 import withDetail from './Detail.enhance';
 import {
   styled,
@@ -112,26 +113,29 @@ const Balance = () => {
   );
 };
 
-const History = props => {
+const History = (props) => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const { isFetching } = useSelector(tokenSeleclor.historyTokenSelector);
   const { handleLoadHistory } = props;
   return (
-    <ScrollView
-      nestedScrollEnabled
-      refreshControl={
-        <RefreshControl refreshing={isFetching} onRefresh={handleLoadHistory} />
-      }
-    >
-      <View style={historyStyled.container}>
+    <View style={historyStyled.container}>
+      <ScrollView
+        nestedScrollEnabled
+        refreshControl={(
+          <RefreshControl
+            refreshing={isFetching}
+            onRefresh={handleLoadHistory}
+          />
+        )}
+      >
         {selectedPrivacy?.isToken && <HistoryToken />}
         {selectedPrivacy?.isMainCrypto && <MainCryptoHistory />}
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
-const Detail = props => {
+const Detail = (props) => {
   const { handleLoadHistory } = props;
   const selected = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const { isFetching } = useSelector(tokenSeleclor.historyTokenSelector);
@@ -151,7 +155,9 @@ const Detail = props => {
     <View style={styled.container}>
       <Header title={selected?.name} rightHeader={<RightHeader />} />
       <ScrollView
-        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          flex: 1,
+        }}
         refreshControl={(
           <RefreshControl
             refreshing={refreshing}
