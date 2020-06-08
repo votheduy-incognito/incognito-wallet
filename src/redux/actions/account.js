@@ -259,6 +259,18 @@ export const switchAccount = (accountName) => async (dispatch, getState) => {
   }
 };
 
+export const actionSwitchAccountFetching = () => ({
+  type: type.ACTION_SWITCH_ACCOUNT_FETCHING,
+});
+
+export const actionSwitchAccountFetched = () => ({
+  type: type.ACTION_SWITCH_ACCOUNT_FETCHED,
+});
+
+export const actionSwitchAccountFetchFail = () => ({
+  type: type.ACTION_SWITCH_ACCOUNT_FETCH_FAIL,
+});
+
 export const actionSwitchAccount = (
   accountName,
   shouldLoadBalance = true,
@@ -267,12 +279,16 @@ export const actionSwitchAccount = (
     const state = getState();
     const account = accountSeleclor.getAccountByName(state)(accountName);
     const defaultAccount = accountSeleclor.defaultAccount(state);
-    if (defaultAccount?.name !== account?.name) {
+    const switchAccount = accountSeleclor.switchAccountSelector(state);
+    if (defaultAccount?.name !== account?.name && !switchAccount) {
+      await dispatch(actionSwitchAccountFetching(accountName));
       await dispatch(setDefaultAccount(account));
       await dispatch(actionReloadFollowingToken(shouldLoadBalance));
+      await dispatch(actionSwitchAccountFetched());
     }
     return account;
   } catch (error) {
+    await dispatch(actionSwitchAccountFetchFail());
     throw Error(error);
   }
 };
