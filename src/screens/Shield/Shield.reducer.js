@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2';
 import { persistReducer } from 'redux-persist';
-import hardSet from 'redux-persist/lib/stateReconciler/hardSet';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -10,7 +9,7 @@ import {
 } from './Shield.constant';
 
 const initialState = {
-  isFetching: true,
+  isFetching: false,
   isFetched: false,
   data: {
     min: null,
