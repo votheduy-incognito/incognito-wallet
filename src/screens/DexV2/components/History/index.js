@@ -6,8 +6,6 @@ import { compose } from 'recompose';
 import { View, Text, TouchableOpacity } from '@components/core';
 import { withLayout_2 } from '@components/Layout';
 import Header from '@components/Header/index';
-import { Icon } from 'react-native-elements';
-import { COLORS } from '@src/styles';
 import { VirtualizedList } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
@@ -16,6 +14,7 @@ import withAccount from '@screens/DexV2/components/account.enhance';
 import LoadingContainer from '@components/LoadingContainer/LoadingContainer';
 import { LIMIT } from '@screens/DexV2/constants';
 import withOldHistories from '@screens/DexV2/components/oldHistories.enhance';
+import { ArrowRightGreyIcon } from '@components/Icons';
 import styles from './style';
 import withHistories from '../histories.enhance';
 
@@ -37,9 +36,9 @@ const History = ({
       <Text style={styles.buttonTitle}>{item.type}</Text>
       <View style={styles.row}>
         <Text style={[styles.content, styles.ellipsis]} numberOfLines={1}>{item.description}</Text>
-        <View style={[styles.row]}>
+        <View style={[styles.row, styles.center]}>
           <Text style={styles.content} numberOfLines={1}>{item.status}</Text>
-          <Icon name="chevron-right" color={COLORS.lightGrey16} containerStyle={{ marginTop: -1 }} />
+          <ArrowRightGreyIcon style={{ marginLeft: 10 }} />
         </View>
       </View>
     </TouchableOpacity>

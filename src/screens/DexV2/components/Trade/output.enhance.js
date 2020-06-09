@@ -60,8 +60,13 @@ const withCalculateOutput = WrappedComp => (props) => {
       setOutputValue(amount);
       setMinimumAmount(minimumAmount);
 
-      const outputText = formatUtils.amountFull(minimumAmount, outputToken.pDecimals);
-      setOutputText(outputText);
+
+      if (minimumAmount === 0 || isNaN(minimumAmount)) {
+        setOutputText('');
+      } else {
+        const outputText = formatUtils.amountFull(minimumAmount, outputToken.pDecimals);
+        setOutputText(outputText);
+      }
       setQuote(quote);
     } catch (error) {
       setMinimumAmount(0);
