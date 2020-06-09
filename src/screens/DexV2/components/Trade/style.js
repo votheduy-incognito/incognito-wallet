@@ -42,6 +42,8 @@ export default StyleSheet.create({
     position: 'absolute',
     flexDirection: 'row',
     bottom: isAndroid() ? 80 : 20,
+    justifyContent: 'center',
+    alignItems: 'center',
     right: 0,
   },
   bottomText: {
