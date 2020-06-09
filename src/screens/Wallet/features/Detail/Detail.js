@@ -137,6 +137,7 @@ const History = (props) => {
 
 const Detail = (props) => {
   const { handleLoadHistory } = props;
+  const navigation = useNavigation();
   const selected = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const { isFetching } = useSelector(tokenSeleclor.historyTokenSelector);
   const token = useSelector(
@@ -153,7 +154,11 @@ const Detail = (props) => {
       : isGettingTokenBalance.length > 0 || !token;
   return (
     <View style={styled.container}>
-      <Header title={selected?.name} rightHeader={<RightHeader />} />
+      <Header
+        title={selected?.name}
+        rightHeader={<RightHeader />}
+        onGoBack={() => navigation.navigate(routeNames.Wallet)}
+      />
       <ScrollView
         contentContainerStyle={{
           flex: 1,
