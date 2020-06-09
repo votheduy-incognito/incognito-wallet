@@ -33,7 +33,7 @@ const ModalComponent = () => {
   return (
     <Modal
       presentationStyle="overFullScreen"
-      animationType="slide"
+      animationType="fade"
       visible={visible}
       transparent
     >

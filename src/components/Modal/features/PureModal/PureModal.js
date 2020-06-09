@@ -1,4 +1,4 @@
-import {Modal, SafeAreaView, StyleSheet} from 'react-native';
+import { Modal, SafeAreaView, StyleSheet } from 'react-native';
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -11,12 +11,13 @@ const styled = StyleSheet.create({
   },
 });
 
-const PureModal = ({visible, content}) => (
+const PureModal = ({ visible, content, animationType = 'fade', ...rest }) => (
   <Modal
     presentationStyle="overFullScreen"
-    animationType="slide"
+    animationType={animationType}
     visible={visible}
     transparent
+    {...rest}
   >
     <SafeAreaView style={styled.overlay}>{content}</SafeAreaView>
   </Modal>
@@ -29,6 +30,7 @@ PureModal.defaultProps = {
 PureModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   content: PropTypes.element,
+  animationType: PropTypes.string,
 };
 
 export default PureModal;

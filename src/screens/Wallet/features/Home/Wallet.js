@@ -184,12 +184,12 @@ const Extra = () => {
     <View style={extraStyled.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        refreshControl={(
+        refreshControl={
           <RefreshControl
             refreshing={isReloading}
             onRefresh={() => fetchData(true)}
           />
-        )}
+        }
       >
         <Balance />
         <GroupButton />
@@ -215,12 +215,14 @@ const RightHeader = () => {
 };
 
 const Wallet = () => {
+  const navigation = useNavigation();
   return (
     <View style={[styled.container]}>
       <Header
         title="Assets"
         rightHeader={<RightHeader />}
         style={styled.hook}
+        onGoBack={() => navigation.navigate(routeNames.Home)}
       />
       <Extra />
     </View>
