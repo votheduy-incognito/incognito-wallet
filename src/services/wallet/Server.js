@@ -2,7 +2,8 @@ import storage from '@src/services/storage';
 import _ from 'lodash';
 
 export const MAINNET_FULLNODE = 'https://lb-fullnode.incognito.org/fullnode';
-export const TESTNET_FULLNODE = 'https://test-node.incognito.org';
+export const TESTNET_FULLNODE = 'https://testnet.incognito.org/fullnode';
+export const DEV_TESTNET_FULLNODE = 'https://dev-test-node.incognito.org/fullnode';
 
 const isMainnet = global.isMainnet??true;
 let cachedList = null;
@@ -23,6 +24,14 @@ export const KEY = {
     username: '',
     password: '',
     name: 'Testnet'
+  },
+  {
+    id: 'devtestnet',
+    default:!isMainnet,
+    address: DEV_TESTNET_FULLNODE,
+    username: '',
+    password: '',
+    name: 'Dev Testnet'
   },{
     id: 'mainnet',
     default: isMainnet,
@@ -37,18 +46,26 @@ export default class Server {
     if (cachedList) {
       return Promise.resolve(cachedList);
     }
+
     return storage.getItem(KEY.SERVER)
       .then(strData => {
-        cachedList = JSON.parse(strData)||[];
-        const mainnetServer = cachedList.find(item => item.address.includes('https://mainnet.incognito.org/fullnode'));
-        const testnetServer = cachedList.find(item => item.id === 'testnet');
-
-        if (mainnetServer) {
-          mainnetServer.address = 'https://lb-fullnode.incognito.org/fullnode';
-        }
-
-        if (testnetServer) {
-          testnetServer.address = 'http://51.83.36.184:20001';
+        cachedList = JSON.parse(strData) || [];
+        if (cachedList.length === 3) {
+          cachedList = [
+            cachedList[0],
+            {
+              ...cachedList[1],
+              address: TESTNET_FULLNODE,
+            },
+            {
+              ...KEY.DEFAULT_LIST_SERVER[2],
+              default: false,
+            },
+            {
+              ...cachedList[2],
+              address: MAINNET_FULLNODE,
+            },
+          ];
         }
 
         storage.setItem(KEY.SERVER, JSON.stringify(cachedList));
@@ -61,7 +78,6 @@ export default class Server {
       .then(result => {
         if (result && result.length) {
           for (const s of result) {
-            // console.log('getDefault s = ',s);
             if (s.default) {
               return s;
             }
@@ -72,9 +88,7 @@ export default class Server {
 
   static async getDefaultIfNullGettingDefaulList() {
     const list = await Server.get().catch(console.log) || KEY.DEFAULT_LIST_SERVER;
-    const found = list?.find(_ => _.default);
-    console.log('getDefaultIfNullGettingDefaulList found = ',found);
-    return found;
+    return list?.find(_ => _.default);
   }
 
   static async setDefault(defaultServer) {
@@ -98,7 +112,7 @@ export default class Server {
   }
 
   static isMainnet(network):Boolean{
-    return  _.isEqual(network?.id,'mainnet');
+    return  _.isEqual(network?.id, 'mainnet');
   }
 
   static setDefaultList() {
