@@ -56,26 +56,28 @@ const withTrade = WrappedComp => (props) => {
       if (inputToken?.id === PRV.id) {
         prvFee = fee;
         tokenFee = fee;
-
-        spendingCoin = spendingPRV = await accountService.hasSpendingCoins(account, wallet, inputValue + prvFee);
       } else {
         prvFee = feeToken.id === COINS.PRV_ID ? fee : 0;
         tokenFee = prvFee > 0 ? 0 : fee;
-
-        if (prvFee) {
-          spendingPRV = await accountService.hasSpendingCoins(account, wallet, prvFee);
-          spendingCoin = await accountService.hasSpendingCoins(account, wallet, inputValue, inputToken.id);
-        } else {
-          spendingCoin = await accountService.hasSpendingCoins(account, wallet, inputValue + tokenFee, inputToken.id);
-        }
       }
 
       if (inputBalance < inputValue + tokenFee) {
         return setError(MESSAGES.NOT_ENOUGH_BALANCE_TO_TRADE(inputToken.symbol));
       }
 
-      if (prvBalance < prvFee) {
-        return setError({ tradeError: MESSAGES.NOT_ENOUGH_PRV_NETWORK_FEE });
+      if (prvBalance < prvFee + (isErc20 ? DEFI_TRADING_FEE : 0)) {
+        return setError(MESSAGES.NOT_ENOUGH_PRV_NETWORK_FEE);
+      }
+
+      if (inputToken?.id === PRV.id) {
+        spendingCoin = spendingPRV = await accountService.hasSpendingCoins(account, wallet, inputValue + prvFee + (isErc20 ? DEFI_TRADING_FEE : 0));
+      } else {
+        if (prvFee) {
+          spendingPRV = await accountService.hasSpendingCoins(account, wallet, prvFee + (isErc20 ? DEFI_TRADING_FEE : 0));
+          spendingCoin = await accountService.hasSpendingCoins(account, wallet, inputValue, inputToken.id);
+        } else {
+          spendingCoin = await accountService.hasSpendingCoins(account, wallet, inputValue + tokenFee, inputToken.id);
+        }
       }
 
       if (spendingCoin || spendingPRV) {
