@@ -38,6 +38,10 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   ellipsis: {
     width: '65%',
   },
