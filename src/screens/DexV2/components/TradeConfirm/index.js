@@ -103,6 +103,7 @@ const Trade = ({
         style={styles.button}
         title="Confirm"
         onPress={onTrade}
+        disabled={!!error}
       />
       <Loading open={trading} />
     </View>
