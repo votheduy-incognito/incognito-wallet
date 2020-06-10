@@ -11,7 +11,9 @@ class TradingQuote {
     this.amount = json.amount;
     this.maxPrice = json.maxPrice;
     this.minimumAmount = json.minimumAmount;
-    this.expectedRate = new BigNumber(json.expectedRate).multipliedBy(MIN_PERCENT);
+    this.expectedRate = new BigNumber(json.expectedRate)
+      .multipliedBy(MIN_PERCENT)
+    ;
     this.to = json.to;
     this.data = json.data;
   }

@@ -130,7 +130,7 @@ const withTrade = WrappedComp => (props) => {
       sellTokenAddress: inputToken.address,
       sellAmount: originalValue,
       buyTokenAddress: outputToken.address,
-      expectAmount: quote.expectedRate?.toFixed(),
+      expectAmount: quote.expectedRate?.toFixed(0),
       depositId: depositId,
     };
 
