@@ -125,7 +125,7 @@ const withTrade = WrappedComp => (props) => {
   };
 
   const tradeKyber = async (depositId) => {
-    const originalValue = convertUtil.toDecimals(inputValue, inputToken).toFixed();
+    const originalValue = convertUtil.toDecimals(inputValue, inputToken);
     const data = {
       sellTokenAddress: inputToken.address,
       sellAmount: originalValue,
