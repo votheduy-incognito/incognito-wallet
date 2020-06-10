@@ -28,7 +28,7 @@ const withCalculateOutput = WrappedComp => (props) => {
 
     let outputText = formatUtils.amountFull(minimumAmount, outputToken.pDecimals);
 
-    if (outputValue === 0 || minimumAmount === 0 || isNaN(outputText)) {
+    if (outputValue === 0 || minimumAmount === 0 || _.isNaN(minimumAmount)) {
       outputText = 0;
     }
 
@@ -36,7 +36,7 @@ const withCalculateOutput = WrappedComp => (props) => {
 
     // console.debug('TOKEN', inputToken.symbol, outputToken.symbol, outputToken.pDecimals, inputValue);
     // console.debug('PAIR', pair, pair[inputToken.id], pair[outputToken.id]);
-    // console.debug('RESULT', outputValue, minimumAmount, outputText);
+    // console.debug('RESULT', outputValue, minimumAmount, outputText, outputValue === 0 || minimumAmount === 0 || isNaN(outputText));
   };
 
   const getQuote = async (inputToken, outputToken, value) => {
