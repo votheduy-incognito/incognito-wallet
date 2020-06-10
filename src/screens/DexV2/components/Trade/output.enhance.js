@@ -28,8 +28,8 @@ const withCalculateOutput = WrappedComp => (props) => {
 
     let outputText = formatUtils.amountFull(minimumAmount, outputToken.pDecimals);
 
-    if (outputValue === 0 || minimumAmount === 0) {
-      outputText = '';
+    if (outputValue === 0 || minimumAmount === 0 || isNaN(outputText)) {
+      outputText = 0;
     }
 
     setOutputText(outputText.toString());
