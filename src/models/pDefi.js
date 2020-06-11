@@ -71,7 +71,8 @@ export class PDexTradeHistoryModel {
         .dividedBy(BigNumber(10).pow(18));
       this.buyAmount = BigNumber(originalPrice)
         .multipliedBy(originalSellAmount)
-        .multipliedBy(BigNumber(10).pow(buyToken.pDecimals));
+        .multipliedBy(BigNumber(10).pow(buyToken.pDecimals))
+        .toFixed(0);
 
       // this.buyAmount = (this.buyAmount / sellDecimals) * (this.sellAmount / sellPDecimals) * buyDecimals;
       // this.buyAmount = this.buyAmount / Math.pow(10, buyToken.decimals - buyToken.pDecimals);
