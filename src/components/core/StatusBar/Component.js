@@ -38,6 +38,12 @@ const {
   UnShieldModal,
   pApp,
   TxHistoryDetail,
+  ImportAccount,
+  CreateAccount,
+  ExportAccount,
+  BackupKeys,
+  Setting,
+  NetworkSetting
 } = routeNames;
 
 const whiteScreens = [
@@ -67,6 +73,12 @@ const whiteScreens = [
   UnShieldModal,
   pApp,
   TxHistoryDetail,
+  ImportAccount,
+  CreateAccount,
+  ExportAccount,
+  BackupKeys,
+  Setting,
+  NetworkSetting
 ];
 const blue2Screens = [];
 const blue1Screens = [Node];
