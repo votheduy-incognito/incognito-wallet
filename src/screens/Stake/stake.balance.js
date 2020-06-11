@@ -41,10 +41,31 @@ const StakeBalance = () => {
         rate: currentRewardRate,
         rewardDateToMilSec,
       });
+      // Check condition, to do improve later.
+      // For reducing number in balance (overlay num)
+      let maxDigit = 2;
+      if (balanceCurrent <= 1000000000000000) {
+        maxDigit = 4;
+      }
+      if (balanceCurrent <= 100000000000000) {
+        maxDigit = 5;
+      }
+      if (balanceCurrent <= 10000000000000) {
+        maxDigit = 6;
+      }
+      if (balanceCurrent <= 1000000000000) {
+        maxDigit = 7;
+      }
+      if (balanceCurrent <= 100000000000) {  
+        maxDigit= 8;
+      } 
+      if (balanceCurrent <= 10000000000) {
+        maxDigit = 9;
+      } 
       const totalBalanceCurrent = format.balance(
         balanceCurrent,
         pDecimals,
-        MAX_DIGITS_BALANCE_PSTAKE,
+        maxDigit,
       );
       const nextNodeTimeCurrent =
         nextNodeTime + TIMEOUT_CAL_REALTIME_BALANCE_PSTAKE;
