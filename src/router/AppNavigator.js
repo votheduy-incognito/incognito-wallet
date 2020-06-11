@@ -1,18 +1,12 @@
 import { THEME } from '@src/styles';
 import { createStackNavigator } from 'react-navigation-stack';
-import CreateAccount from '@src/screens/CreateAccount';
-import ExportAccount from '@src/screens/ExportAccount';
-import ImportAccount from '@src/screens/ImportAccount';
-import NetworkSetting from '@src/screens/NetworkSetting';
 import WhySend from '@screens/WhySend';
 import WhyReceive from '@screens/WhyReceive';
 import pApps from '@screens/Papps';
-import Setting from '@screens/Setting';
 import DexHistory from '@screens/DexHistory';
 import DexHistoryDetail from '@screens/DexHistoryDetail';
 import HeaderBar from '@src/components/HeaderBar';
 import AddPIN from '@src/screens/AddPIN';
-import BackupKeys from '@src/screens/BackupKeys';
 import PriceChartCrypto from '@src/screens/PriceChartCrypto';
 import { navigationOptionsHandler } from '@src/utils/router';
 import Dex from '@screens/Dex';
@@ -33,17 +27,6 @@ const RouteNoHeader = getRoutesNoHeader();
 
 const AppNavigator = createStackNavigator(
   {
-    [ROUTE_NAMES.NetworkSetting]: navigationOptionsHandler(NetworkSetting, {
-      title: 'Network',
-    }),
-    [ROUTE_NAMES.CreateAccount]: navigationOptionsHandler(CreateAccount, {
-      title: 'Create Keychain',
-    }),
-    [ROUTE_NAMES.ImportAccount]: navigationOptionsHandler(ImportAccount, {
-      title: 'Import Keychain',
-    }),
-    [ROUTE_NAMES.ExportAccount]: navigationOptionsHandler(ExportAccount),
-    [ROUTE_NAMES.Setting]: navigationOptionsHandler(Setting, { title: 'You' }),
     [ROUTE_NAMES.DexHistory]: navigationOptionsHandler(DexHistory, {
       header: () => null,
     }),
@@ -52,9 +35,6 @@ const AppNavigator = createStackNavigator(
     }),
     [ROUTE_NAMES.AddPin]: navigationOptionsHandler(AddPIN, {
       header: () => null,
-    }),
-    [ROUTE_NAMES.BackupKeys]: navigationOptionsHandler(BackupKeys, {
-      title: 'Back up private keys',
     }),
     [ROUTE_NAMES.Dex]: navigationOptionsHandler(Dex, {
       title: 'pDex',
