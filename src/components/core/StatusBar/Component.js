@@ -42,7 +42,6 @@ const {
 
 const whiteScreens = [
   Game,
-  GetStarted,
   AddPin,
   Community,
   Home,
@@ -70,9 +69,9 @@ const whiteScreens = [
   TxHistoryDetail,
 ];
 const blue2Screens = [];
-const blue1Screens = [Wizard, Node];
+const blue1Screens = [Node];
 const dark2Screen = [Dex, DexHistory, DexHistoryDetail];
-const blackScreen = [];
+const blackScreen = [Wizard];
 const linearScreen = [Stake];
 
 const isIOS = Platform.OS === 'ios';
