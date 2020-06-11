@@ -1,8 +1,9 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Platform} from 'react-native';
 import {ArrowUpIcon} from '@src/components/Icons';
 import format from '@src/utils/format';
 import {useSelector} from 'react-redux';
+import { FONT } from '@src/styles';
 import {
   MAX_DIGITS_BALANCE_PSTAKE,
   TIMEOUT_CAL_REALTIME_BALANCE_PSTAKE,
@@ -110,9 +111,10 @@ const StakeBalance = () => {
   return (
     <View style={styled.balanceContainer}>
       <Text
-        style={[styled.balance, {fontVariant: ['tabular-nums']}]} // Broken width font
+        style={[styled.balance, {fontVariant: ['tabular-nums']}, Platform.OS === 'ios' ? {fontFamily: FONT.NAME.regular} : {}]} // Broken width font
         numberOfLines={1}
         allowFontScaling
+        includeFontPadding={false} // For android
         adjustsFontSizeToFit
       >
         {balanceCurrent === 0 ? '0.00' : balanceCurrent}
