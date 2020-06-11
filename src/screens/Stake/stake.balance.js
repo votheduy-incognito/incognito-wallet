@@ -109,7 +109,12 @@ const StakeBalance = () => {
   }, [nodeTime]);
   return (
     <View style={styled.balanceContainer}>
-      <Text style={styled.balance} numberOfLines={1}>
+      <Text
+        style={[styled.balance, {fontVariant: ['tabular-nums']}]} // Broken width font
+        numberOfLines={1}
+        allowFontScaling
+        adjustsFontSizeToFit
+      >
         {balanceCurrent === 0 ? '0.00' : balanceCurrent}
       </Text>
       <Text style={styled.symbol}>{symbol}</Text>
