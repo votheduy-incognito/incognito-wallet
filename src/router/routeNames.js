@@ -70,4 +70,6 @@ export default {
   TradeHistory: 'TradeHistory',
   TradeHistoryDetail: 'TradeHistoryDetail',
   TradeConfirm: 'TradeConfirm',
+  WhyUnshield: 'WhyUnshield',
+  ExportAccountModal: 'ExportAccountModal',
 };

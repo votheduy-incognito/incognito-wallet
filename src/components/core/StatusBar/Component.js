@@ -43,7 +43,9 @@ const {
   ExportAccount,
   BackupKeys,
   Setting,
-  NetworkSetting
+  NetworkSetting,
+  WhyUnshield,
+  ExportAccountModal,
 } = routeNames;
 
 const whiteScreens = [
@@ -78,7 +80,9 @@ const whiteScreens = [
   ExportAccount,
   BackupKeys,
   Setting,
-  NetworkSetting
+  NetworkSetting,
+  WhyUnshield,
+  ExportAccountModal,
 ];
 const blue2Screens = [];
 const blue1Screens = [Node];

@@ -22,7 +22,6 @@ import internalTokenModel from '@models/token';
 import { setWallet } from './wallet';
 import {
   followingTokenSelector,
-  tokensFollowedSelector,
   isTokenFollowedSelector,
 } from '../selectors/token';
 
@@ -108,12 +107,9 @@ export const getBalanceFinish = (tokenSymbol) => ({
   data: tokenSymbol,
 });
 
-export const getBalance = (
-  token = throw new Error('Token object is required'),
-) => async (dispatch, getState) => {
-  
+export const getBalance = (token) => async (dispatch, getState) => {
   if (!token) {
-    return;
+    throw new Error('Token object is required');
   }
   try {
     await dispatch(getBalanceStart(token?.id));
@@ -132,7 +128,6 @@ export const getBalance = (
         amount: balance,
       }),
     );
-
     return balance;
   } catch (e) {
     dispatch(

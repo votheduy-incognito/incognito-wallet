@@ -321,7 +321,7 @@ export const actionFetchFeeByMax = () => async (dispatch, getState) => {
   const { isUseTokenFee } = feeDataSelector(state);
   const { amount, isMainCrypto, pDecimals, tokenId, isToken } = selectedPrivacy;
   const { rate, isFetched, feePToken, feePrv, isFetching } = estimateFee;
-  const feeEst = MAX_FEE_PER_TX * rate;
+  const feeEst = MAX_FEE_PER_TX;
   let _amount = Math.max(isMainCrypto ? amount - feeEst : amount, 0);
   let maxAmount = floor(_amount, pDecimals);
   let maxAmountText = format.toFixed(
@@ -359,15 +359,17 @@ export const actionFetchFeeByMax = () => async (dispatch, getState) => {
           ]);
         }
       }
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    if (!isFetched) {
       await dispatch(
         actionHandleFeeEst({
           feeEst,
         }),
       );
     }
-  } catch (error) {
-    console.log(error);
-  } finally {
     // eslint-disable-next-line no-unsafe-finally
     return maxAmountText;
   }

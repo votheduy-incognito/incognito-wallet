@@ -42,6 +42,7 @@ import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import format from '@src/utils/format';
 import floor from 'lodash/floor';
 import Receipt from '@src/components/Receipt';
+import { actionFetchFeeByMax } from '@src/components/EstimateFee/EstimateFee.actions';
 import style from './style';
 
 export const formName = 'withdraw';
@@ -150,13 +151,8 @@ class Withdraw extends React.Component {
           selectedPrivacy?.pDecimals,
         ),
       );
-      const originalFee = floor(
-        convertUtil.toOriginalAmount(
-          convertUtil.toNumber(fee, true),
-          feePDecimals,
-        ) / rate,
-      );
-      const _fee = format.amountFull(originalFee, feePDecimals);
+      const originalFee = floor(fee / rate);
+      const _fee = format.amountFull(originalFee * rate, feePDecimals);
       const feeForBurn = originalFee;
       const remoteAddress = toAddress;
       const payload = {
@@ -184,7 +180,7 @@ class Withdraw extends React.Component {
               {...{
                 ...res,
                 originalAmount,
-                fee,
+                fee: _fee,
                 feeUnit,
                 title: 'Sent.',
                 toAddress,
@@ -335,6 +331,13 @@ class Withdraw extends React.Component {
     }
   };
 
+  onPressMax = async () => {
+    const { actionFetchFeeByMax, rfChange, rfFocus } = this.props;
+    const maxAmountText = await actionFetchFeeByMax();
+    rfChange(formName, 'amount', maxAmountText);
+    rfFocus(formName, 'amount');
+  };
+
   render() {
     const { maxAmountValidator, minAmountValidator } = this.state;
     const {
@@ -344,7 +347,6 @@ class Withdraw extends React.Component {
       rfFocus,
       onShowFrequentReceivers,
       rfChange,
-      feeData,
     } = this.props;
     const { externalSymbol, isErc20Token } = selectedPrivacy || {};
     const addressValidator = this.getAddressValidator(
@@ -354,7 +356,6 @@ class Withdraw extends React.Component {
     let isETH =
       isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
     let { shouldBlockETHWrongAddress } = this.state;
-    const { maxAmountText } = feeData;
     return (
       <View style={style.container}>
         <Form>
@@ -369,13 +370,9 @@ class Withdraw extends React.Component {
                 name="amount"
                 label="Amount"
                 placeholder="0.0"
-                maxValue={maxAmountText}
                 componentProps={{
                   keyboardType: 'decimal-pad',
-                  onPressMax: () => {
-                    rfChange(formName, 'amount', maxAmountText);
-                    rfFocus(formName, 'amount');
-                  },
+                  onPressMax: this.onPressMax,
                 }}
                 validate={[
                   ...validator.combinedAmount,
@@ -495,6 +492,7 @@ Withdraw.propTypes = {
   rfFocus: PropTypes.func.isRequired,
   rfReset: PropTypes.func.isRequired,
   onShowFrequentReceivers: PropTypes.func.isRequired,
+  actionFetchFeeByMax: PropTypes.func.isRequired,
 };
 
 const mapState = (state) => ({
@@ -511,6 +509,7 @@ const mapDispatch = {
   rfFocus: focus,
   rfReset: reset,
   actionToggleModal,
+  actionFetchFeeByMax,
 };
 
 export default connect(

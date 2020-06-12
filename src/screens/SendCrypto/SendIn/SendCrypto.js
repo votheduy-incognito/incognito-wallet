@@ -39,13 +39,12 @@ import { actionToggleModal } from '@src/components/Modal';
 import Receipt from '@src/components/Receipt';
 import { CONSTANT_KEYS } from '@src/constants';
 import { actionFetchFeeByMax } from '@src/components/EstimateFee/EstimateFee.actions';
+import format from '@src/utils/format';
 import { homeStyle } from './style';
 
 export const formName = 'sendCrypto';
 
 const selector = formValueSelector(formName);
-
-const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
 const initialFormValues = {
   amount: '',
@@ -149,12 +148,8 @@ class SendCrypto extends React.Component {
           selectedPrivacy?.pDecimals,
         ),
       );
-      const originalFee = floor(
-        convert.toOriginalAmount(
-          convert.toNumber(feeData.fee, true),
-          feeData.feePDecimals,
-        ),
-      );
+      const originalFee = floor(fee);
+      const _fee = format.amountFull(originalFee, feeData.feePDecimals);
       const res = await handleSend({
         ...feeData,
         ...values,
@@ -170,7 +165,7 @@ class SendCrypto extends React.Component {
               {...{
                 ...res,
                 originalAmount,
-                fee,
+                fee: _fee,
                 feeUnit,
                 title: 'Sent.',
                 toAddress,
