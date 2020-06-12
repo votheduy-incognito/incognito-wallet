@@ -14,6 +14,7 @@ import routeNames from '@src/router/routeNames';
 import { compose } from 'recompose';
 import withTokenSelect from '@src/components/TokenSelect/TokenSelect.enhance';
 import { FlatList } from '@src/components/core/FlatList';
+import { BtnQuestionDefault } from '@src/components/Button';
 
 const styled = StyleSheet.create({
   container: {
@@ -65,9 +66,14 @@ const Modal = (props) => {
     await dispatch(setSelectedPrivacy(tokenId));
     navigation.navigate(routeNames.UnShield);
   };
+  const handleWhyUnShield = () => navigation.navigate(routeNames.WhyUnshield);
   return (
     <View style={styled.container}>
-      <Header title="Search coins" canSearch />
+      <Header
+        title="Search coins"
+        canSearch
+        rightHeader={<BtnQuestionDefault onPress={handleWhyUnShield} />}
+      />
       <ListToken data={result} handleUnShieldToken={handleUnShieldToken} />
     </View>
   );

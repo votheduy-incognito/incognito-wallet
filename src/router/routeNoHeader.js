@@ -28,6 +28,8 @@ import BackupKeys from '@src/screens/BackupKeys';
 import Setting from '@screens/Setting';
 import ExportAccount from '@src/screens/Account/features/ExportAccount';
 import NetworkSetting from '@src/screens/NetworkSetting';
+import WhyUnshield from '@src/screens/UnShield/features/WhyUnshield';
+import ExportAccountModal from '@src/screens/Account/features/ExportAccount/ExportAccount.modal';
 import routeNames from './routeNames';
 
 const routes = [
@@ -146,6 +148,14 @@ const routes = [
   {
     screen: NetworkSetting,
     name: routeNames.NetworkSetting,
+  },
+  {
+    screen: WhyUnshield,
+    name: routeNames.WhyUnshield,
+  },
+  {
+    screen: ExportAccountModal,
+    name: routeNames.ExportAccountModal,
   },
 ];
 
