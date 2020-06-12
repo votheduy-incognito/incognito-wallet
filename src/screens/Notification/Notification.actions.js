@@ -11,6 +11,7 @@ import {
 import { CONSTANT_EVENTS } from '@src/constants';
 import { logEvent } from '@services/firebase';
 import { actionToggleModal } from '@src/components/Modal';
+import { NavigationActions , StackActions } from 'react-navigation';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -36,6 +37,7 @@ import {
   notificationSelector,
 } from './Notification.selector';
 import { mappingData, delay } from './Notification.utils';
+
 
 export const actionHasNoti = (payload) => ({
   type: ACTION_HAS_NOTI,
@@ -221,7 +223,15 @@ export const actionNavigate = (item, navigation) => async (
         return;
       }
       await dispatch(setSelectedPrivacy(tokenId));
-      navigation.navigate(routeNames.WalletDetail);
+      const resetAction = StackActions.reset({
+        index: 2,
+        actions: [
+          NavigationActions.navigate({ routeName: 'Home' }),
+          NavigationActions.navigate({ routeName: 'Wallet' }),
+          NavigationActions.navigate({ routeName: 'WalletDetail' }),
+        ],
+      });
+      navigation.dispatch(resetAction);
       const token = {
         ...getPrivacyDataByTokenID(tokenId),
         id: tokenId,

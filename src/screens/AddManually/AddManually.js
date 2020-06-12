@@ -36,9 +36,15 @@ const SelectType = () => {
 };
 
 const ModalSelectType = () => {
-  const { isShowChooseType } = React.useContext(AddManuallyContext);
+  const { isShowChooseType, toggleChooseType } = React.useContext(
+    AddManuallyContext,
+  );
   return (
-    <PureModal visible={isShowChooseType} content={<AddManuallyModal />} />
+    <PureModal
+      visible={isShowChooseType}
+      content={<AddManuallyModal />}
+      onRequestClose={toggleChooseType}
+    />
   );
 };
 
