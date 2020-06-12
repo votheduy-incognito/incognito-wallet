@@ -419,26 +419,25 @@ class Withdraw extends React.Component {
                   address.
                 </Text>
               )}
-              {(detectToken.ispBNB(selectedPrivacy?.tokenId) ||
-                selectedPrivacy?.isBep2Token ||
-                selectedPrivacy?.currencyType === 5) && (
-                <View style={style.memoContainer}>
-                  <Field
-                    component={InputQRField}
-                    name="memo"
-                    label="Memo (optional)"
-                    placeholder="Enter a memo"
-                    style={style.input}
-                    validate={memoMaxLength}
-                    maxLength={125}
-                    inputStyle={style.memoInput}
-                  />
-                  <Text style={style.memoText}>
-                    * For withdrawals to wallets on exchanges (e.g. Binance,
-                    etc.), enter your memo to avoid loss of funds.
-                  </Text>
-                </View>
-              )}
+              {selectedPrivacy?.isBep2Token ||
+                (selectedPrivacy?.currencyType === 4 && (
+                  <View style={style.memoContainer}>
+                    <Field
+                      component={InputQRField}
+                      name="memo"
+                      label="Memo (optional)"
+                      placeholder="Enter a memo"
+                      style={style.input}
+                      validate={memoMaxLength}
+                      maxLength={125}
+                      inputStyle={style.memoInput}
+                    />
+                    <Text style={style.memoText}>
+                      * For withdrawals to wallets on exchanges (e.g. Binance,
+                      etc.), enter your memo to avoid loss of funds.
+                    </Text>
+                  </View>
+                ))}
               <EstimateFee
                 amount={
                   isFormValid && !shouldBlockETHWrongAddress ? amount : null

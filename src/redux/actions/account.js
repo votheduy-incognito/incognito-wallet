@@ -283,8 +283,8 @@ export const actionSwitchAccount = (
     const defaultAccount = accountSeleclor.defaultAccount(state);
     if (defaultAccount?.name !== account?.name) {
       await dispatch(setDefaultAccount(account));
-      await dispatch(actionReloadFollowingToken(shouldLoadBalance));
     }
+    await dispatch(actionReloadFollowingToken(shouldLoadBalance));
     return account;
   } catch (error) {
     throw Error(error);

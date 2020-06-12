@@ -1,6 +1,7 @@
 import { CONSTANT_COMMONS } from '@src/constants';
 import format from '@src/utils/format';
 import convert from '@src/utils/convert';
+import { floor } from 'lodash';
 import {
   ACTION_FETCHING_FEE,
   ACTION_FETCHED_FEE,
@@ -14,6 +15,7 @@ import {
   ACTION_INIT_FETCHED,
   ACTION_FETCHED_MAX_FEE_PRV,
   ACTION_FETCHED_MAX_FEE_PTOKEN,
+  ACTION_USE_FEE_MAX,
 } from './EstimateFee.constant';
 import { MAX_FEE_PER_TX } from './EstimateFee.utils';
 
@@ -47,6 +49,8 @@ const initialState = {
     },
   ],
   actived: CONSTANT_COMMONS.PRV.id,
+  rate: 1,
+  useFeeMax: false,
 };
 
 export default (state = initialState, action) => {
@@ -114,10 +118,17 @@ export default (state = initialState, action) => {
     };
   }
   case ACTION_CHANGE_FEE: {
-    const { field, value } = action.payload;
+    const { value, isUseTokenFee, pDecimals } = action.payload;
+    const field = isUseTokenFee ? 'feePTokenText' : 'feePrvText';
+    const fieldOriginal = isUseTokenFee ? 'feePToken' : 'feePrv';
+    const valueOriginal = floor(
+      convert.toOriginalAmount(convert.toNumber(value), pDecimals),
+      pDecimals,
+    );
     return {
       ...state,
       [field]: value,
+      [fieldOriginal]: valueOriginal,
     };
   }
   case ACTION_FETCHED_MAX_FEE_PRV: {
@@ -125,7 +136,7 @@ export default (state = initialState, action) => {
     const maxFeePrv = accountBalance;
     const maxFeePrvText = format.toFixed(
       convert.toHumanAmount(maxFeePrv, CONSTANT_COMMONS.PRV.pDecimals),
-      CONSTANT_COMMONS.PRV.pDecimals
+      CONSTANT_COMMONS.PRV.pDecimals,
     );
     return {
       ...state,
@@ -137,19 +148,20 @@ export default (state = initialState, action) => {
     const { amount, pDecimals } = action.payload;
     const amountText = format.toFixed(
       convert.toHumanAmount(amount, pDecimals),
-      pDecimals
-    );
-    const maxFeePToken = amount;
-    const maxFeePTokenText = format.toFixed(
-      convert.toHumanAmount(maxFeePToken, pDecimals),
-      pDecimals
+      pDecimals,
     );
     return {
       ...state,
       amount,
       amountText,
-      maxFeePToken,
-      maxFeePTokenText,
+      maxFeePToken: amount,
+      maxFeePTokenText: amountText,
+    };
+  }
+  case ACTION_USE_FEE_MAX: {
+    return {
+      ...state,
+      useFeeMax: true,
     };
   }
   default:

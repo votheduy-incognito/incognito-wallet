@@ -25,6 +25,7 @@ import {
   defaultAccountNameSelector,
 } from '@src/redux/selectors/account';
 import { ScrollView } from '@src/components/core';
+import { useBackHandler } from '@src/components/UseEffect';
 import withDetail from './Detail.enhance';
 import {
   styled,
@@ -152,12 +153,16 @@ const Detail = (props) => {
     !!isFetching || selected?.isMainCrypto
       ? isGettingMainCryptoBalance.length > 0 || !defaultAccountName
       : isGettingTokenBalance.length > 0 || !token;
+  const onGoBack = () => navigation.navigate(routeNames.Wallet);
+
+  useBackHandler({ onGoBack });
+
   return (
     <View style={styled.container}>
       <Header
         title={selected?.name}
         rightHeader={<RightHeader />}
-        onGoBack={() => navigation.navigate(routeNames.Wallet)}
+        onGoBack={onGoBack}
       />
       <ScrollView
         contentContainerStyle={{

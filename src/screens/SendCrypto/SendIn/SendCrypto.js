@@ -38,11 +38,14 @@ import floor from 'lodash/floor';
 import { actionToggleModal } from '@src/components/Modal';
 import Receipt from '@src/components/Receipt';
 import { CONSTANT_KEYS } from '@src/constants';
+import { actionFetchFeeByMax } from '@src/components/EstimateFee/EstimateFee.actions';
 import { homeStyle } from './style';
 
 export const formName = 'sendCrypto';
 
 const selector = formValueSelector(formName);
+
+const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
 const initialFormValues = {
   amount: '',
@@ -232,6 +235,13 @@ class SendCrypto extends React.Component {
     rfChange(formName, 'amount', `${amount}`);
   };
 
+  onPressMax = async () => {
+    const { actionFetchFeeByMax, rfChange, rfFocus } = this.props;
+    const maxAmountText = await actionFetchFeeByMax();
+    rfChange(formName, 'amount', maxAmountText);
+    rfFocus(formName, 'amount');
+  };
+
   render() {
     const {
       isSending,
@@ -241,9 +251,7 @@ class SendCrypto extends React.Component {
       onShowFrequentReceivers,
       rfFocus,
       rfChange,
-      feeData,
     } = this.props;
-    const { maxAmountText } = feeData;
     return (
       <View style={homeStyle.container}>
         <Form>
@@ -258,13 +266,9 @@ class SendCrypto extends React.Component {
                 name="amount"
                 placeholder="0.0"
                 label="Amount"
-                maxValue={maxAmountText}
                 componentProps={{
                   keyboardType: 'decimal-pad',
-                  onPressMax: () => {
-                    rfChange(formName, 'amount', maxAmountText);
-                    rfFocus(formName, 'amount');
-                  },
+                  onPressMax: this.onPressMax,
                 }}
                 validate={this.getAmountValidator()}
                 {...generateTestId(SEND.AMtOUNT_INPUT)}
@@ -342,6 +346,7 @@ SendCrypto.propTypes = {
   rfFocus: PropTypes.func.isRequired,
   rfReset: PropTypes.func.isRequired,
   actionToggleModal: PropTypes.func.isRequired,
+  actionFetchFeeByMax: PropTypes.func.isRequired,
 };
 
 const mapState = (state) => ({
@@ -357,8 +362,9 @@ const mapDispatch = {
   setSelectedPrivacy,
   rfChange: change,
   rfFocus: focus,
-  actionToggleModal,
   rfReset: reset,
+  actionToggleModal,
+  actionFetchFeeByMax,
 };
 
 export default connect(
