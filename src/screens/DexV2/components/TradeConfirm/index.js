@@ -37,24 +37,25 @@ const Trade = ({
   pair,
 }) => {
   return (
-    <ScrollView>
+    <View>
       <Header title="Order preview" />
-      <View style={styles.mainInfo}>
-        <Text style={styles.bigText}>Buy at least</Text>
-        <Text style={styles.bigText} numberOfLines={3}>{format.amountFull(minimumAmount, outputToken.pDecimals)} {outputToken.symbol}</Text>
-      </View>
-      <ExtraInfo
-        left="Pay with"
-        right={`${inputText} ${inputToken.symbol}`}
-        style={{ ...styles.extra, ...styles.bold }}
-      />
-      <Balance
-        token={inputToken}
-        balance={inputValue}
-        title="Purchase"
-        style={styles.extra}
-      />
-      { !isErc20 && (
+      <ScrollView>
+        <View style={styles.mainInfo}>
+          <Text style={styles.bigText}>Buy at least</Text>
+          <Text style={styles.bigText} numberOfLines={3}>{format.amountFull(minimumAmount, outputToken.pDecimals)} {outputToken.symbol}</Text>
+        </View>
+        <ExtraInfo
+          left="Pay with"
+          right={`${inputText} ${inputToken.symbol}`}
+          style={{ ...styles.extra, ...styles.bold }}
+        />
+        <Balance
+          token={inputToken}
+          balance={inputValue}
+          title="Purchase"
+          style={styles.extra}
+        />
+        { !isErc20 && (
         <>
           <ExtraInfo
             token={feeToken}
@@ -69,8 +70,8 @@ const Trade = ({
           />
           <PoolSize outputToken={outputToken} inputToken={inputToken} pair={pair} />
         </>
-      )}
-      { !!isErc20 && (
+        )}
+        { !!isErc20 && (
         <>
           <ExtraInfo
             token={feeToken}
@@ -95,18 +96,19 @@ const Trade = ({
             style={styles.extra}
           />
         </>
-      )}
-      <Powered network={isErc20 ? 'Kyber' : 'Incognito'} />
-      {!!warning && <ExtraInfo left={warning} right="" style={styles.warning} />}
-      {!!error && <Text style={styles.error}>{error}</Text>}
-      <RoundCornerButton
-        style={styles.button}
-        title="Confirm"
-        onPress={onTrade}
-        disabled={!!error}
-      />
+        )}
+        <Powered network={isErc20 ? 'Kyber' : 'Incognito'} />
+        {!!warning && <ExtraInfo left={warning} right="" style={styles.warning} />}
+        {!!error && <Text style={styles.error}>{error}</Text>}
+        <RoundCornerButton
+          style={styles.button}
+          title="Confirm"
+          onPress={onTrade}
+          disabled={!!error}
+        />
+      </ScrollView>
       <Loading open={trading} />
-    </ScrollView>
+    </View>
   );
 };
 
