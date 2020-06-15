@@ -5,7 +5,7 @@ const deviceWidth = UTILS.deviceWidth();
 
 export default StyleSheet.create({
   wrapper: {
-    marginVertical: UTILS.heightScale(8),
+    marginVertical: UTILS.heightScale(6),
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
