@@ -72,4 +72,6 @@ export default {
   TradeConfirm: 'TradeConfirm',
   WhyUnshield: 'WhyUnshield',
   ExportAccountModal: 'ExportAccountModal',
+  AddressBook: 'AddressBook',
+  AddressBookForm: 'AddressBookForm',
 };

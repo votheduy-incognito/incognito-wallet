@@ -10,9 +10,6 @@ import AddPIN from '@src/screens/AddPIN';
 import PriceChartCrypto from '@src/screens/PriceChartCrypto';
 import { navigationOptionsHandler } from '@src/utils/router';
 import Dex from '@screens/Dex';
-import FrequentReceivers, {
-  FrequentReceiversForm,
-} from '@src/screens/SendCrypto/FrequentReceivers';
 import Notification from '@src/screens/Notification';
 import NodeHelp from '@screens/NodeHelp';
 import BuyNodeScreen from '@screens/BuyNodeScreen';
@@ -40,12 +37,6 @@ const AppNavigator = createStackNavigator(
       title: 'pDex',
       header: () => null,
     }),
-    [ROUTE_NAMES.FrequentReceiversForm]: navigationOptionsHandler(
-      FrequentReceiversForm,
-    ),
-    [ROUTE_NAMES.FrequentReceivers]: navigationOptionsHandler(
-      FrequentReceivers,
-    ),
     [ROUTE_NAMES.Notification]: navigationOptionsHandler(Notification),
     [ROUTE_NAMES.pApps]: navigationOptionsHandler(pApps),
     [ROUTE_NAMES.NodeHelp]: navigationOptionsHandler(NodeHelp, {
