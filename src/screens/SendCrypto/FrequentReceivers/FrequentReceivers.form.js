@@ -1,13 +1,15 @@
 import React from 'react';
-import {View, Text} from 'react-native';
-import {TextInput} from '@src/shared/components/input';
-import {Button} from '@src/components/core';
+import { View } from 'react-native';
+import { TextInput } from '@src/shared/components/input';
+import { Button } from '@src/components/core';
 import PropTypes from 'prop-types';
-import {COLORS} from '@src/styles';
-import {styled} from './FrequentReceivers.styled';
+import { COLORS } from '@src/styles';
+import { useNavigationParam } from 'react-navigation-hooks';
+import Header from '@src/components/Header';
+import { styled } from './FrequentReceivers.styled';
 import withForm from './FrequentReceivers.withForm';
 
-const Form = props => {
+const Form = (props) => {
   const {
     onSaveReceiver,
     inputName,
@@ -17,8 +19,10 @@ const Form = props => {
     action,
   } = props;
   const isUpdate = action === 'update';
+  const headerTitle = useNavigationParam('headerTitle');
   return (
     <View style={styled.container}>
+      <Header title={headerTitle} />
       <TextInput
         labelStyle={styled.label}
         containerStyled={styled.input}

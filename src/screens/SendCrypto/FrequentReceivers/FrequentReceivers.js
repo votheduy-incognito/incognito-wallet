@@ -1,25 +1,18 @@
 import React from 'react';
-import {
-  View,
-  ScrollView,
-  Image,
-  Text,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Alert,
-} from 'react-native';
+import { View, Image, Text, KeyboardAvoidingView, Alert } from 'react-native';
 import SearchInput from '@src/components/Input/input.search';
 import PropTypes from 'prop-types';
-import {Button} from '@src/components/core';
+import { Button, ScrollView, TouchableOpacity } from '@src/components/core';
 import srcNotFound from '@src/assets/images/icons/not_found_receiver.png';
 import ReceiverIcon from '@src/components/Icons/icon.receiver';
-import {isIOS} from '@utils/platform';
+import { isIOS } from '@utils/platform';
 import Swipeout from 'react-native-swipeout';
-import {BtnDelete, BtnEdit} from '@src/components/Button';
+import { BtnDelete, BtnEdit } from '@src/components/Button';
+import Header from '@src/components/Header';
+import { useNavigationParam } from 'react-navigation-hooks';
 import {
   styledModal as styled,
   emptyListStyled,
-  listStyled,
   itemStyled,
 } from './FrequentReceivers.styled';
 import withModal from './FrequentReceivers.enhance';
@@ -35,6 +28,9 @@ const Item = ({
 }) => {
   return (
     <Swipeout
+      style={{
+        backgroundColor: 'transparent',
+      }}
       disabled={disabledSwipe}
       close
       autoClose
@@ -54,9 +50,9 @@ const Item = ({
                       text: 'Cancel',
                       style: 'cancel',
                     },
-                    {text: 'OK', onPress: _onDelete},
+                    { text: 'OK', onPress: _onDelete },
                   ],
-                  {cancelable: false},
+                  { cancelable: false },
                 );
               }}
             />
@@ -70,9 +66,6 @@ const Item = ({
           isLastChild ? itemStyled.lastChild : null,
         ]}
       >
-        <TouchableOpacity {...rest}>
-          <ReceiverIcon />
-        </TouchableOpacity>
         <TouchableOpacity {...rest}>
           <View style={itemStyled.hook}>
             <Text style={itemStyled.name}>{name}</Text>
@@ -97,33 +90,28 @@ const List = ({
   onDelete,
   onUpdate,
   shouldDisabledItem,
-  label = 'All',
-  styledContainer = null,
 }) => {
   return (
-    <View style={[listStyled.container, styledContainer]}>
-      <ScrollView>
-        <Text style={listStyled.all}>{label}</Text>
-        {receivers.map((item, key, arr) => (
-          <Item
-            key={item?.name || key}
-            {...{
-              ...item,
-              disabledSwipe,
-              _onDelete: () => onDelete(item),
-              _onUpdate: () => onUpdate(item),
-            }}
-            onPress={() => onSelectedAddress(item)}
-            disabled={shouldDisabledItem}
-            isLastChild={arr.length - 1 === key}
-          />
-        ))}
-      </ScrollView>
-    </View>
+    <ScrollView>
+      {receivers.map((item, key, arr) => (
+        <Item
+          key={item?.name || key}
+          {...{
+            ...item,
+            disabledSwipe,
+            _onDelete: () => onDelete(item),
+            _onUpdate: () => onUpdate(item),
+          }}
+          onPress={() => onSelectedAddress(item)}
+          disabled={shouldDisabledItem}
+          isLastChild={arr.length - 1 === key}
+        />
+      ))}
+    </ScrollView>
   );
 };
 
-const EmptyList = ({onSelectedAddress, address, disabledSelectedAddr}) => {
+const EmptyList = ({ onSelectedAddress, address, disabledSelectedAddr }) => {
   return (
     <View style={emptyListStyled.container}>
       <View style={emptyListStyled.hook}>
@@ -134,60 +122,28 @@ const EmptyList = ({onSelectedAddress, address, disabledSelectedAddr}) => {
         <Button
           style={emptyListStyled.btnUseAddr}
           title="Use this address"
-          onPress={() => onSelectedAddress({address})}
+          onPress={() => onSelectedAddress({ address })}
         />
       )}
     </View>
   );
 };
 
-const Modal = props => {
+const Modal = (props) => {
   const {
     data,
-    keySearch,
-    onClearAddress,
     onSelectedAddress,
-    onChangeKeySearch,
     disabledSwipe,
     onDelete,
     onUpdate,
     shouldDisabledItem,
-    disabledSelectedAddr,
-    recently,
-    hideRecently,
   } = props;
-  const isPlatformIOS = isIOS();
-  const Wrapper = isPlatformIOS ? KeyboardAvoidingView : View;
+  const headerTitle = useNavigationParam('headerTitle');
   return (
     <View style={styled.container}>
-      <SearchInput
-        value={keySearch}
-        onChangeText={onChangeKeySearch}
-        placeholder="Search by name or address"
-        onClearText={onClearAddress}
-        containerStyled={{
-          marginBottom: 10,
-        }}
-      />
-      <Wrapper
-        behavior="padding"
-        keyboardVerticalOffset={120}
-        style={{
-          flex: 1,
-        }}
-      >
-        {recently.length > 0 && !hideRecently && (
-          <List
-            label="Recent"
-            onSelectedAddress={onSelectedAddress}
-            receivers={recently}
-            disabledSwipe={disabledSwipe}
-            onDelete={onDelete}
-            onUpdate={onUpdate}
-            shouldDisabledItem={shouldDisabledItem}
-          />
-        )}
-        {data.length > 0 ? (
+      <Header title={headerTitle} canSearch />
+      <View style={styled.wrapper}>
+        {data.length > 0 && (
           <List
             onSelectedAddress={onSelectedAddress}
             receivers={data}
@@ -195,21 +151,17 @@ const Modal = props => {
             onDelete={onDelete}
             onUpdate={onUpdate}
             shouldDisabledItem={shouldDisabledItem}
-            styledContainer={{flex: 1}}
-          />
-        ) : (
-          <EmptyList
-            onSelectedAddress={onSelectedAddress}
-            address={keySearch}
-            disabledSelectedAddr={disabledSelectedAddr}
+            styledContainer={{ flex: 1 }}
           />
         )}
-      </Wrapper>
+      </View>
     </View>
   );
 };
 
-Item.defaultProps = {};
+Item.defaultProps = {
+  disabledSwipe: false,
+};
 
 Item.propTypes = {
   name: PropTypes.string.isRequired,
@@ -230,18 +182,11 @@ Modal.defaultProps = {
 
 Modal.propTypes = {
   data: PropTypes.array.isRequired,
-  keySearch: PropTypes.string.isRequired,
-  onClearAddress: PropTypes.func.isRequired,
   onSelectedAddress: PropTypes.func.isRequired,
-  setState: PropTypes.any.isRequired,
-  onChangeKeySearch: PropTypes.func.isRequired,
   disabledSwipe: PropTypes.bool,
   onDelete: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
   shouldDisabledItem: PropTypes.bool.isRequired,
-  disabledSelectedAddr: PropTypes.bool.isRequired,
-  recently: PropTypes.array.isRequired,
-  hideRecently: PropTypes.bool.isRequired,
 };
 
 export default withModal(Modal);

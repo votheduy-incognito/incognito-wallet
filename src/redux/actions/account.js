@@ -392,9 +392,11 @@ export const actionFetchCreateAccount = ({ accountName }) => async (
     await dispatch(reloadAccountList());
     await dispatch(followDefaultTokens(serializedAccount));
     await dispatch(actionFetchedCreateAccount());
+    await dispatch(actionSwitchAccount(serializedAccount?.name));
     return serializedAccount;
   } catch (error) {
     await dispatch(actionFetchFailCreateAccount());
+    throw error;
   }
 };
 

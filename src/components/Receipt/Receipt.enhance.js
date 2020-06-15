@@ -2,13 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import formatUtil from '@src/utils/format';
 import { CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { actionToggleModal } from '@src/components/Modal';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import { ExHandler } from '@src/services/exception';
-import { receiversSelector } from '@src/redux/selectors/receivers';
-import { useBtnSaveReceiver } from '@screens/SendCrypto/FrequentReceivers/FrequentReceivers.hooks';
+import { useBtnSaveAddressBook } from '@screens/AddressBook';
 import { compose } from 'redux';
 import { withLayout_2 } from '@src/components/Layout';
 import { actionInitEstimateFee } from '@src/components/EstimateFee/EstimateFee.actions';
@@ -24,10 +22,8 @@ const enhance = (WrappedComp) => (props) => {
     fee,
     feeUnit,
     tokenSymbol,
-    keySaveAddressBook,
     txId,
   } = props;
-  const { receivers } = useSelector(receiversSelector)[keySaveAddressBook];
   const time = formatUtil.formatDateTime(lockTime * 1000);
   const amount = `${formatUtil.amount(
     originalAmount,
@@ -74,29 +70,17 @@ const enhance = (WrappedComp) => (props) => {
     ]);
   };
 
-  const onSaveReceivers = async () => {
-    try {
-      navigation.navigate(routeNames.FrequentReceiversForm, {
-        info: {
-          toAddress,
-        },
-        keySave: keySaveAddressBook,
-        headerTitle: 'Save address',
-      });
-      dispatch(
-        actionToggleModal({
-          visible: false,
-          data: null,
-        }),
-      );
-    } catch (error) {
-      new ExHandler(error).showErrorToast();
-    }
-  };
-  const [btnSaveReceiver] = useBtnSaveReceiver({
-    onSaveReceivers,
-    receivers,
-    toAddress,
+  const onSaveAddressBook = async () =>
+    await dispatch(
+      actionToggleModal({
+        visible: false,
+        data: null,
+      }),
+    );
+
+  const [btnSaveAddressBook] = useBtnSaveAddressBook({
+    onSaveAddressBook,
+    address: toAddress,
   });
   return (
     <WrappedComp
@@ -104,7 +88,7 @@ const enhance = (WrappedComp) => (props) => {
         ...props,
         onBack,
         infoFactories,
-        btnSaveReceiver,
+        btnSaveAddressBook,
       }}
     />
   );

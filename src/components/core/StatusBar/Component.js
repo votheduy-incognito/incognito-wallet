@@ -46,6 +46,10 @@ const {
   NetworkSetting,
   WhyUnshield,
   ExportAccountModal,
+  FrequentReceivers,
+  FrequentReceiversForm,
+  AddressBook,
+  AddressBookForm,
 } = routeNames;
 
 const whiteScreens = [
@@ -83,6 +87,10 @@ const whiteScreens = [
   NetworkSetting,
   WhyUnshield,
   ExportAccountModal,
+  FrequentReceivers,
+  FrequentReceiversForm,
+  AddressBook,
+  AddressBookForm,
 ];
 const blue2Screens = [];
 const blue1Screens = [Node];
