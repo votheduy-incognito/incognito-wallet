@@ -1,9 +1,9 @@
-import { StyleSheet } from 'react-native';
-import { FONT, COLORS } from '@src/styles';
+import {StyleSheet} from 'react-native';
+import {FONT, COLORS} from '@src/styles';
 
 export const styled = StyleSheet.create({
   container: {
-    flex: 1,
+    padding: 20,
   },
   input: {
     marginTop: 20,
@@ -24,11 +24,11 @@ export const styled = StyleSheet.create({
 
 export const styledModal = StyleSheet.create({
   container: {
+    backgroundColor: COLORS.lightGrey6,
     flex: 1,
-  },
-  wrapper: {
-    flex: 1,
-    marginTop: 15,
+    padding: 20,
+    position: 'relative',
+    zIndex: 100,
   },
 });
 
@@ -62,37 +62,48 @@ export const emptyListStyled = StyleSheet.create({
 
 export const listStyled = StyleSheet.create({
   container: {
-    marginTop: 15,
-    flex: 1,
+    borderRadius: 8,
+    backgroundColor: COLORS.white,
+    marginVertical: 5,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    paddingVertical: 10
   },
   all: {
     color: COLORS.black,
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
+    fontFamily: FONT.NAME.regular,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 6,
+    marginLeft: 15,
   },
 });
 export const itemStyled = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 30,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.lightGrey5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: COLORS.white,
   },
   hook: {
     flex: 1,
+    paddingHorizontal: 20,
+    width: '98%',
   },
   name: {
     color: COLORS.black,
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
-    marginBottom: 10,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 6,
   },
   address: {
-    color: COLORS.colorGreyBold,
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 4,
+    color: COLORS.lightGrey1,
+    fontFamily: FONT.NAME.regular,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.regular + 6,
+    marginTop: 1,
   },
   lastChild: {
     borderBottomColor: 'transparent',

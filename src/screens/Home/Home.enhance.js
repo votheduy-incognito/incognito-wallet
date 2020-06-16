@@ -10,7 +10,6 @@ import { useIsFocused } from 'react-navigation-hooks';
 import LocalDatabase from '@utils/LocalDatabase';
 import { withdraw } from '@services/api/withdraw';
 import { withLayout_2 } from '@src/components/Layout';
-import { withSyncAddressBook } from '@screens/AddressBook';
 import { homeSelector } from './Home.selector';
 import { actionFetch as actionFetchHomeConfigs } from './Home.actions';
 
@@ -82,7 +81,6 @@ export default compose(
   withNavigation,
   withFCM,
   withWallet,
-  withSyncAddressBook,
   withLayout_2,
   enhance,
 );

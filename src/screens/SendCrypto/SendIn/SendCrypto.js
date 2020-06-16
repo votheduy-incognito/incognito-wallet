@@ -157,6 +157,7 @@ class SendCrypto extends React.Component {
         originalAmount,
       });
       if (res) {
+        await rfReset(formName);
         await actionToggleModal({
           visible: true,
           data: (
@@ -173,11 +174,12 @@ class SendCrypto extends React.Component {
                   selectedPrivacy?.externalSymbol ||
                   selectedPrivacy?.symbol ||
                   res?.tokenSymbol,
+                keySaveAddressBook:
+                  CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
               }}
             />
           ),
         });
-        await rfReset(formName);
       }
     } catch (e) {
       if (e.message === MESSAGES.NOT_ENOUGH_NETWORK_FEE) {
@@ -241,7 +243,7 @@ class SendCrypto extends React.Component {
       amount,
       toAddress,
       isFormValid,
-      onOpenAddressBook,
+      onShowFrequentReceivers,
       rfFocus,
       rfChange,
     } = this.props;
@@ -277,7 +279,7 @@ class SendCrypto extends React.Component {
                 placeholder="Enter address"
                 validate={validator.combinedIncognitoAddress}
                 showNavAddrBook
-                onOpenAddressBook={onOpenAddressBook}
+                onOpenAddressBook={onShowFrequentReceivers}
                 {...generateTestId(SEND.ADDRESS_INPUT)}
               />
               <EstimateFee
@@ -329,7 +331,7 @@ SendCrypto.propTypes = {
   amount: PropTypes.string,
   toAddress: PropTypes.string,
   selectable: PropTypes.bool,
-  onOpenAddressBook: PropTypes.func.isRequired,
+  onShowFrequentReceivers: PropTypes.func.isRequired,
   reloading: PropTypes.bool,
   Balance: PropTypes.func.isRequired,
   estimateFee: PropTypes.any.isRequired,
