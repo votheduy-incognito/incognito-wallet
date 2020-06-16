@@ -75,4 +75,5 @@ export default {
   AddressBook: 'AddressBook',
   AddressBookForm: 'AddressBookForm',
   CoinInfo: 'CoinInfo',
+  Keychain: 'Keychain'
 };
