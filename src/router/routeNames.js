@@ -74,4 +74,5 @@ export default {
   ExportAccountModal: 'ExportAccountModal',
   AddressBook: 'AddressBook',
   AddressBookForm: 'AddressBookForm',
+  CoinInfo: 'CoinInfo',
 };
