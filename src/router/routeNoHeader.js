@@ -30,9 +30,6 @@ import ExportAccount from '@src/screens/Account/features/ExportAccount';
 import NetworkSetting from '@src/screens/NetworkSetting';
 import WhyUnshield from '@src/screens/UnShield/features/WhyUnshield';
 import ExportAccountModal from '@src/screens/Account/features/ExportAccount/ExportAccount.modal';
-import FrequentReceivers, {
-  FrequentReceiversForm,
-} from '@src/screens/SendCrypto/FrequentReceivers';
 import AddressBook from '@src/screens/AddressBook';
 import AddressBookForm from '@src/screens/AddressBook/AddressBook.form';
 import CoinInfo from '@screens/Wallet/features/CoinInfo';
@@ -163,14 +160,6 @@ const routes = [
   {
     screen: ExportAccountModal,
     name: routeNames.ExportAccountModal,
-  },
-  {
-    screen: FrequentReceivers,
-    name: routeNames.FrequentReceivers,
-  },
-  {
-    screen: FrequentReceiversForm,
-    name: routeNames.FrequentReceiversForm,
   },
   {
     screen: AddressBook,

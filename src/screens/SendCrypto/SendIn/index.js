@@ -6,13 +6,14 @@ import accountService from '@services/wallet/accountService';
 import tokenService from '@services/wallet/tokenService';
 import { getBalance } from '@src/redux/actions/account';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
-import { CONSTANT_COMMONS } from '@src/constants';
+import { CONSTANT_COMMONS, CONSTANT_KEYS } from '@src/constants';
 import { MESSAGES } from '@screens/Dex/constants';
 import { actionToggleModal as toggleModal } from '@src/components/Modal';
 import routeNames from '@src/router/routeNames';
 import { ExHandler } from '@src/services/exception';
 import { change as rfOnChangeValue, focus } from 'redux-form';
 import { sendInReceiversSelector } from '@src/redux/selectors/receivers';
+import { HEADER_TITLE_RECEIVERS } from '@src/redux/types/receivers';
 import { estimateFeeSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 import {
   selectedPrivacySeleclor,
@@ -174,20 +175,20 @@ class SendCryptoContainer extends Component {
     if (selectedPrivacy?.isMainCrypto) return this._handleSendMainCrypto;
   };
 
-  onOpenAddressBook = async () => {
+  onShowFrequentReceivers = async () => {
     const { navigation } = this.props;
     try {
-      navigation.navigate(routeNames.AddressBook, {
-        params: {
-          onSelectedAddress: this.onSelectedAddress,
-        },
+      navigation.navigate(routeNames.FrequentReceivers, {
+        keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
+        onSelectedItem: this.onSelectedItem,
+        headerTitle: HEADER_TITLE_RECEIVERS.ADDRESS_BOOK,
       });
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
   };
 
-  onSelectedAddress = (info) => {
+  onSelectedItem = (info) => {
     const { rfOnChangeValue, navigation, focus } = this.props;
     rfOnChangeValue(formName, 'toAddress', info.address);
     focus(formName, 'toAddress');
@@ -208,7 +209,7 @@ class SendCryptoContainer extends Component {
       <SendCrypto
         {...{
           ...this.props,
-          onOpenAddressBook: this.onOpenAddressBook,
+          onShowFrequentReceivers: this.onShowFrequentReceivers,
         }}
         {...componentProps}
       />

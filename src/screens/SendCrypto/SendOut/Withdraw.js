@@ -172,6 +172,7 @@ class Withdraw extends React.Component {
         res = await handleCentralizedWithdraw(payload);
       }
       if (res) {
+        await rfReset(formName);
         await actionToggleModal({
           visible: true,
           data: (
@@ -186,13 +187,15 @@ class Withdraw extends React.Component {
                 pDecimals: selectedPrivacy?.pDecimals,
                 tokenSymbol:
                   selectedPrivacy?.externalSymbol || res?.tokenSymbol,
+                keySaveAddressBook:
+                  CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK,
               }}
             />
           ),
         });
-        await rfReset(formName);
       }
     } catch (e) {
+      console.log('error', e);
       if (e.message === MESSAGES.NOT_ENOUGH_NETWORK_FEE) {
         Toast.showError(e.message);
       } else {
@@ -342,7 +345,7 @@ class Withdraw extends React.Component {
       isFormValid,
       amount,
       rfFocus,
-      onOpenAddressBook,
+      onShowFrequentReceivers,
       rfChange,
     } = this.props;
     const { externalSymbol, isErc20Token } = selectedPrivacy || {};
@@ -397,7 +400,7 @@ class Withdraw extends React.Component {
                   // onChange will not works for now, we have to refactor after.
                   this.clearAddressField();
                   // Clear address field for a while before going to refactor.
-                  onOpenAddressBook();
+                  onShowFrequentReceivers();
                 }}
                 showNavAddrBook
               />
@@ -488,7 +491,7 @@ Withdraw.propTypes = {
   rfChange: PropTypes.func.isRequired,
   rfFocus: PropTypes.func.isRequired,
   rfReset: PropTypes.func.isRequired,
-  onOpenAddressBook: PropTypes.func.isRequired,
+  onShowFrequentReceivers: PropTypes.func.isRequired,
   actionFetchFeeByMax: PropTypes.func.isRequired,
 };
 

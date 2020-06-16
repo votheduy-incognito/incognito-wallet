@@ -32,7 +32,8 @@ const Hook = ({ label, desc, renderTx = false }) => {
 };
 
 const ReceiptModal = (props) => {
-  const { infoFactories, onBack, title, btnSaveAddressBook } = props;
+  const { infoFactories, onBack, btnSaveReceiver, title } = props;
+
   return (
     <View style={styled.container}>
       <Header onGoBack={onBack} />
@@ -42,7 +43,7 @@ const ReceiptModal = (props) => {
           item.disabled ? null : <Hook key={key} {...item} />,
         )}
       </View>
-      {btnSaveAddressBook}
+      {btnSaveReceiver}
     </View>
   );
 };
@@ -53,14 +54,14 @@ Hook.propTypes = {
 };
 
 ReceiptModal.defaultProps = {
-  btnSaveAddressBook: null,
+  btnSaveReceiver: null,
 };
 
 ReceiptModal.propTypes = {
   infoFactories: PropTypes.array.isRequired,
   onBack: PropTypes.func.isRequired,
+  btnSaveReceiver: PropTypes.any,
   title: PropTypes.string.isRequired,
-  btnSaveAddressBook: PropTypes.element,
 };
 
 export default withReceipt(ReceiptModal);

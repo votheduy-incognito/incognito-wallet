@@ -1,4 +1,4 @@
-import { CONSTANT_COMMONS } from '@src/constants';
+import { CONSTANT_COMMONS, CONSTANT_KEYS } from '@src/constants';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import {
   genCentralizedWithdrawAddress,
@@ -14,6 +14,7 @@ import LoadingContainer from '@components/LoadingContainer';
 import { change as rfOnChangeValue, focus } from 'redux-form';
 import routeNames from '@src/router/routeNames';
 import { withdrawReceiversSelector } from '@src/redux/selectors/receivers';
+import { HEADER_TITLE_RECEIVERS } from '@src/redux/types/receivers';
 import LocalDatabase from '@utils/LocalDatabase';
 import {
   selectedPrivacySeleclor,
@@ -234,20 +235,20 @@ class WithdrawContainer extends Component {
     }
   };
 
-  onOpenAddressBook = async () => {
+  onShowFrequentReceivers = async () => {
     const { navigation } = this.props;
     try {
-      navigation.navigate(routeNames.AddressBook, {
-        params: {
-          onSelectedAddress: this.onSelectedAddress,
-        },
+      navigation.navigate(routeNames.FrequentReceivers, {
+        keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK,
+        onSelectedItem: this.onSelectedItem,
+        headerTitle: HEADER_TITLE_RECEIVERS.ADDRESS_BOOK,
       });
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
   };
 
-  onSelectedAddress = (info) => {
+  onSelectedItem = (info) => {
     const { rfOnChangeValue, navigation, focus } = this.props;
     rfOnChangeValue(formName, 'toAddress', info.address);
     focus(formName, 'toAddress');
@@ -264,7 +265,7 @@ class WithdrawContainer extends Component {
       <Withdraw
         {...{
           ...this.props,
-          onOpenAddressBook: this.onOpenAddressBook,
+          onShowFrequentReceivers: this.onShowFrequentReceivers,
           handleCentralizedWithdraw: this.handleCentralizedWithdraw,
           handleDecentralizedWithdraw: this.handleDecentralizedWithdraw,
         }}
