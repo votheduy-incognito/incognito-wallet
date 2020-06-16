@@ -7,7 +7,7 @@ import {
   tokenSeleclor,
 } from '@src/redux/selectors';
 import { useSelector } from 'react-redux';
-import { ButtonBasic } from '@src/components/Button';
+import { ButtonBasic, BtnInfo } from '@src/components/Button';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import {
@@ -154,13 +154,16 @@ const Detail = (props) => {
       ? isGettingMainCryptoBalance.length > 0 || !defaultAccountName
       : isGettingTokenBalance.length > 0 || !token;
   const onGoBack = () => navigation.navigate(routeNames.Wallet);
-
+  const onNavTokenInfo = () => navigation.navigate(routeNames.CoinInfo);
   useBackHandler({ onGoBack });
 
   return (
     <View style={styled.container}>
       <Header
         title={selected?.name}
+        customHeaderTitle={
+          <BtnInfo onPress={onNavTokenInfo} style={styled.btnInfo} />
+        }
         rightHeader={<RightHeader />}
         onGoBack={onGoBack}
       />

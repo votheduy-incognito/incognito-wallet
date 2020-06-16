@@ -50,6 +50,7 @@ const {
   FrequentReceiversForm,
   AddressBook,
   AddressBookForm,
+  CoinInfo
 } = routeNames;
 
 const whiteScreens = [
@@ -91,6 +92,7 @@ const whiteScreens = [
   FrequentReceiversForm,
   AddressBook,
   AddressBookForm,
+  CoinInfo
 ];
 const blue2Screens = [];
 const blue1Screens = [Node];

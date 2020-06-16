@@ -14,6 +14,10 @@ export const styled = StyleSheet.create({
     fontSize: FONT.SIZE.regular - 1,
     fontFamily: FONT.NAME.medium,
   },
+  btnInfo: {
+    width: 30,
+    alignItems: 'center',
+  },
 });
 
 export const groupBtnStyled = StyleSheet.create({

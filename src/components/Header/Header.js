@@ -11,19 +11,29 @@ import SearchBox from './Header.searchBox';
 import withHeader from './Header.enhance';
 
 export const HeaderContext = React.createContext({});
-const HeaderTitle = () => {
+
+export const HeaderTitle = () => {
   const { headerProps } = React.useContext(HeaderContext);
-  const { onHandleSearch, title, titleStyled, canSearch } = headerProps;
+  const {
+    onHandleSearch,
+    title,
+    titleStyled,
+    canSearch,
+    customHeaderTitle,
+  } = headerProps;
   const Title = () => (
-    <Text
-      style={[
-        styledHeaderTitle.title,
-        canSearch && styledHeaderTitle.searchStyled,
-        titleStyled,
-      ]}
-    >
-      {title}
-    </Text>
+    <View style={styledHeaderTitle.container}>
+      <Text
+        style={[
+          styledHeaderTitle.title,
+          canSearch && styledHeaderTitle.searchStyled,
+          titleStyled,
+        ]}
+      >
+        {title}
+      </Text>
+      {customHeaderTitle && customHeaderTitle}
+    </View>
   );
   if (!canSearch) {
     return <Title />;
@@ -51,12 +61,29 @@ const Header = ({
   onSubmit,
   isNormalSearch,
   onTextSearchChange,
-
+  customHeaderTitle,
 }) => {
   const { goBack } = useNavigation();
   const handleGoBack = () =>
     typeof onGoBack === 'function' ? onGoBack() : goBack();
   const _handleGoBack = debounce(handleGoBack, 100);
+  const renderHeaderTitle = () => {
+    if (toggleSearch) {
+      if (isNormalSearch) {
+        return (
+          <SearchBox
+            onSubmit={isNormalSearch ? onSubmit : () => {}}
+            onChange={(text) =>
+              isNormalSearch ? onTextSearchChange(text) : () => {}
+            }
+            isNormalSearch={isNormalSearch}
+          />
+        );
+      }
+      return <SearchBox title={title} />;
+    }
+    return <HeaderTitle />;
+  };
   return (
     <HeaderContext.Provider
       value={{
@@ -68,15 +95,13 @@ const Header = ({
           dataSearch,
           toggleSearch,
           onHandleSearch,
+          customHeaderTitle,
         },
       }}
     >
       <View style={[styled.container, style]}>
         <BtnCircleBack onPress={_handleGoBack} />
-        {isNormalSearch ? 
-          toggleSearch ? <SearchBox onSubmit={isNormalSearch ? onSubmit : () => {}} onChange={(text) => isNormalSearch ? onTextSearchChange(text) : () => {}} isNormalSearch={isNormalSearch} /> : <HeaderTitle />:
-          toggleSearch ? <SearchBox title={title} />: <HeaderTitle />
-        }
+        {renderHeaderTitle()}
         {!!rightHeader && rightHeader}
         {accountSelectable && (
           <View>
@@ -96,9 +121,9 @@ Header.defaultProps = {
   onGoBack: null,
   style: null,
   onSubmit: () => {},
-  searchText: '',
   onTextSearchChange: () => {},
   isNormalSearch: false,
+  customHeaderTitle: null,
 };
 Header.propTypes = {
   title: PropTypes.string.isRequired,
@@ -112,8 +137,8 @@ Header.propTypes = {
   onHandleSearch: PropTypes.func.isRequired,
   style: PropTypes.any,
   onSubmit: PropTypes.func,
-  searchText: PropTypes.string,
   onTextSearchChange: PropTypes.func,
   isNormalSearch: PropTypes.bool,
+  customHeaderTitle: PropTypes.element,
 };
 export default withHeader(React.memo(Header));

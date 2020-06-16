@@ -35,6 +35,7 @@ import FrequentReceivers, {
 } from '@src/screens/SendCrypto/FrequentReceivers';
 import AddressBook from '@src/screens/AddressBook';
 import AddressBookForm from '@src/screens/AddressBook/AddressBook.form';
+import CoinInfo from '@screens/Wallet/features/CoinInfo';
 import routeNames from './routeNames';
 
 const routes = [
@@ -177,6 +178,10 @@ const routes = [
   {
     screen: AddressBookForm,
     name: routeNames.AddressBookForm,
+  },
+  {
+    screen: CoinInfo,
+    name: routeNames.CoinInfo,
   },
 ];
 

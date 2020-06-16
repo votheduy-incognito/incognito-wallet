@@ -123,8 +123,6 @@ export const actionFetchFee = ({ amount, address }) => async (
 ) => {
   const state = getState();
   const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
-  const estimateFee = estimateFeeSelector(state);
-  const { rate } = estimateFee;
   let feeEst = null;
   let feePTokenEst = null;
   let minFeePTokenEst = null;
@@ -183,7 +181,6 @@ export const actionFetchFee = ({ amount, address }) => async (
         Prv: feeEst,
         TokenID: selectedPrivacy?.tokenId,
       });
-      feePTokenEstData = Math.max(feePTokenEstData, feeEst);
       feePTokenEst = feePTokenEstData;
       minFeePTokenEst = feePTokenEstData;
     }
@@ -320,7 +317,7 @@ export const actionFetchFeeByMax = () => async (dispatch, getState) => {
   const estimateFee = estimateFeeSelector(state);
   const { isUseTokenFee } = feeDataSelector(state);
   const { amount, isMainCrypto, pDecimals, tokenId, isToken } = selectedPrivacy;
-  const { rate, isFetched, feePToken, feePrv, isFetching } = estimateFee;
+  const { isFetched, feePToken, feePrv, isFetching } = estimateFee;
   const feeEst = MAX_FEE_PER_TX;
   let _amount = Math.max(isMainCrypto ? amount - feeEst : amount, 0);
   let maxAmount = floor(_amount, pDecimals);
@@ -344,15 +341,11 @@ export const actionFetchFeeByMax = () => async (dispatch, getState) => {
       await dispatch(actionFetchingFee());
       await dispatch(actionUseFeeMax());
       if (isToken) {
-        const feePTokenEstData = await apiGetEstimateFeeFromChain({
+        const feePTokenEst = await apiGetEstimateFeeFromChain({
           Prv: feeEst,
           TokenID: tokenId,
         });
-        if (feePTokenEstData) {
-          const feePTokenEst = floor(
-            convert.toOriginalAmount(feePTokenEstData, pDecimals),
-            pDecimals,
-          );
+        if (feePTokenEst) {
           await new Promise.all([
             dispatch(actionHandleFeePTokenEst({ feePTokenEst })),
             dispatch(actionHandleMinFeeEst({ minFeePTokenEst: feePTokenEst })),
