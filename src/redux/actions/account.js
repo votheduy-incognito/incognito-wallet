@@ -440,6 +440,7 @@ export const actionFetchImportAccount = ({ accountName, privateKey }) => async (
         (acc) => acc?.name === accountName || acc?.AccountName === accountName,
       );
       if (account) {
+        await dispatch(actionSwitchAccount(account?.name));
         await dispatch(followDefaultTokens(account));
       }
     }

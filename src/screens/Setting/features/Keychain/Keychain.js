@@ -22,8 +22,8 @@ const styled = StyleSheet.create({
     paddingHorizontal: 25,
   },
   wrapper: {
-    flex: 1,
     marginTop: 22,
+    flex: 1,
   },
 });
 
@@ -50,16 +50,16 @@ const Keychain = () => {
   return (
     <View style={styled.container}>
       <Header title="Keychain" style={styled.header} />
-      <View style={styled.wrapper}>
-        <ScrollView>
+      <ScrollView>
+        <View style={styled.wrapper}>
           <AccountSection devices={devices} />
           <View style={styled.extra}>
             {sectionItemFactories.map((item, id) => (
               <SectionItem data={item} key={id} />
             ))}
           </View>
-        </ScrollView>
-      </View>
+        </View>
+      </ScrollView>
     </View>
   );
 };
