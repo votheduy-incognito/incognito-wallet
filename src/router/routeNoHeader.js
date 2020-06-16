@@ -36,6 +36,7 @@ import FrequentReceivers, {
 import AddressBook from '@src/screens/AddressBook';
 import AddressBookForm from '@src/screens/AddressBook/AddressBook.form';
 import CoinInfo from '@screens/Wallet/features/CoinInfo';
+import Keychain from '@src/screens/Setting/features/Keychain';
 import routeNames from './routeNames';
 
 const routes = [
@@ -182,6 +183,10 @@ const routes = [
   {
     screen: CoinInfo,
     name: routeNames.CoinInfo,
+  },
+  {
+    screen: Keychain,
+    name: routeNames.Keychain,
   },
 ];
 
