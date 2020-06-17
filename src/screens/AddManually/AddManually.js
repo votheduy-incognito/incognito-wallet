@@ -6,6 +6,9 @@ import AddBep2Token from '@src/components/AddBep2Token';
 import Icons from 'react-native-vector-icons/Fontisto';
 import Header from '@src/components/Header';
 import PureModal from '@src/components/Modal/features/PureModal';
+import { useNavigation } from 'react-navigation-hooks';
+import routeNames from '@src/router/routeNames';
+import { useBackHandler } from '@src/components/UseEffect';
 import styles from './AddManually.styled';
 import withAddManually, {
   AddManuallyContext,
@@ -50,9 +53,12 @@ const ModalSelectType = () => {
 
 const AddManually = () => {
   const { type } = React.useContext(AddManuallyContext);
+  const navigation = useNavigation();
+  const onGoBack = () => navigation.navigate(routeNames.FollowToken);
+  useBackHandler({ onGoBack });
   return (
     <View style={styles.container}>
-      <Header title="Add manually" />
+      <Header title="Add manually" onGoBack={onGoBack} />
       <SelectType />
       <ScrollView style={styles.scrollview}>
         {type === TYPES.BEP2.value && <AddBep2Token />}

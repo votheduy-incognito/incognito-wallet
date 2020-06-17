@@ -121,14 +121,17 @@ export default (state = initialState, action) => {
     const { value, isUseTokenFee, feePDecimals } = action.payload;
     const field = isUseTokenFee ? 'feePTokenText' : 'feePrvText';
     const fieldOriginal = isUseTokenFee ? 'feePToken' : 'feePrv';
-    const valueOriginal = floor(
-      convert.toOriginalAmount(convert.toNumber(value), feePDecimals),
+    const valueToNumber = convert.toNumber(value, true);
+    const valueOriginal = convert.toOriginalAmount(
+      valueToNumber,
       feePDecimals,
+      false,
     );
+    const _valueOriginal = floor(valueOriginal);
     return {
       ...state,
       [field]: value,
-      [fieldOriginal]: valueOriginal,
+      [fieldOriginal]: _valueOriginal,
     };
   }
   case ACTION_FETCHED_MAX_FEE_PRV: {
