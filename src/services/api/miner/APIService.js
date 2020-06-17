@@ -425,7 +425,7 @@ export default class APIService {
       (await http
         .post('auth/airdrop1', {
           WalletAddress: WalletAddress,
-          // pDexWalletAddress
+          pDexWalletAddress: 'null'
         })
         .catch(console.log)) ?? false;
     console.log(TAG, 'airdrop1 end = ', response);
