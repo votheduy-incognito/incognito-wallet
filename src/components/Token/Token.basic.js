@@ -18,7 +18,7 @@ const TokenBasic = (props) => {
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={[styled.container, style]}>
-        <View style={[styled.extra]}>
+        <View style={[styled.extra, styled.extraTop]}>
           <Name styledName={_styled.styledName} {...props} />
           {showBalance && (
             <Amount {...{ ...props, customStyle: styled.boldText }} />

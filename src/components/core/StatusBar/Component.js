@@ -50,6 +50,7 @@ const {
   AddressBookForm,
   CoinInfo,
   Keychain,
+  CoinInfoVerify,
 } = routeNames;
 
 const whiteScreens = [
@@ -91,6 +92,7 @@ const whiteScreens = [
   AddressBookForm,
   CoinInfo,
   Keychain,
+  CoinInfoVerify,
 ];
 const blue2Screens = [];
 const blue1Screens = [Node];

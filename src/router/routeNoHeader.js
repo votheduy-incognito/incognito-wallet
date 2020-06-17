@@ -34,6 +34,7 @@ import AddressBook from '@src/screens/AddressBook';
 import AddressBookForm from '@src/screens/AddressBook/AddressBook.form';
 import CoinInfo from '@screens/Wallet/features/CoinInfo';
 import Keychain from '@src/screens/Setting/features/Keychain';
+import CoinInfoVerify from '@src/screens/Wallet/features/CoinInfo/CoinInfo.verify';
 import routeNames from './routeNames';
 
 const routes = [
@@ -176,6 +177,10 @@ const routes = [
   {
     screen: Keychain,
     name: routeNames.Keychain,
+  },
+  {
+    screen: CoinInfoVerify,
+    name: routeNames.CoinInfoVerify,
   },
 ];
 

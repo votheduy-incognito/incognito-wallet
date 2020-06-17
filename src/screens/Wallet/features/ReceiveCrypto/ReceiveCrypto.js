@@ -7,6 +7,9 @@ import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import LoadingContainer from '@components/LoadingContainer/index';
 import QrCodeGenerate from '@src/components/QrCodeGenerate';
 import { CopiableTextDefault as CopiableText } from '@src/components/CopiableText';
+import { TouchableOpacity } from '@src/components/core';
+import { useNavigation } from 'react-navigation-hooks';
+import routeNames from '@src/router/routeNames';
 import withReceiveCrypto from './ReceiveCrypto.enhance';
 
 export const homeStyle = StyleSheet.create({
@@ -21,11 +24,16 @@ export const homeStyle = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 30,
   },
+  sub: {
+    color: COLORS.black,
+    textDecorationLine: 'underline',
+  },
 });
 
 const ReceiveCrypto = () => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const address = selectedPrivacy?.paymentAddress;
+  const navigation = useNavigation();
   if (!selectedPrivacy) return <LoadingContainer />;
   return (
     <View style={homeStyle.container}>
@@ -44,6 +52,16 @@ const ReceiveCrypto = () => {
           }
         </Text>
         <CopiableText data={address} />
+        {selectedPrivacy?.isDeposable && (
+          <TouchableOpacity
+            onPress={() => navigation.navigate(routeNames.Shield)}
+          >
+            <Text style={homeStyle.desc}>
+              {'To receive from outside Incognito,\n please use '}
+              <Text style={[homeStyle.desc, homeStyle.sub]}>Shield.</Text>
+            </Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </View>
   );

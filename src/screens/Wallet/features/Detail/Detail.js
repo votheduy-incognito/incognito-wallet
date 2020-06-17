@@ -122,12 +122,12 @@ const History = (props) => {
     <View style={historyStyled.container}>
       <ScrollView
         nestedScrollEnabled
-        refreshControl={(
+        refreshControl={
           <RefreshControl
             refreshing={isFetching}
             onRefresh={handleLoadHistory}
           />
-        )}
+        }
       >
         {selectedPrivacy?.isToken && <HistoryToken />}
         {selectedPrivacy?.isMainCrypto && <MainCryptoHistory />}
@@ -166,17 +166,18 @@ const Detail = (props) => {
         }
         rightHeader={<RightHeader />}
         onGoBack={onGoBack}
+        titleStyled={styled.headerTitleStyle}
       />
       <ScrollView
         contentContainerStyle={{
           flex: 1,
         }}
-        refreshControl={(
+        refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={handleLoadHistory}
           />
-        )}
+        }
         nestedScrollEnabled
       >
         <Balance />

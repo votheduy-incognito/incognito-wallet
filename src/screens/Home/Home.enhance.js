@@ -10,6 +10,9 @@ import { useIsFocused } from 'react-navigation-hooks';
 import LocalDatabase from '@utils/LocalDatabase';
 import { withdraw } from '@services/api/withdraw';
 import { withLayout_2 } from '@src/components/Layout';
+import APIService from '@src/services/api/miner/APIService';
+import { accountSeleclor } from '@src/redux/selectors';
+import { DEX } from '@src/utils/dex';
 import { homeSelector } from './Home.selector';
 import { actionFetch as actionFetchHomeConfigs } from './Home.actions';
 
@@ -18,6 +21,7 @@ const enhance = (WrappedComp) => (props) => {
   const { categories, headerTitle, isFetching } = useSelector(homeSelector);
   const isFocused = useIsFocused();
   const wallet = useSelector((state) => state?.wallet);
+  const accounts = useSelector(accountSeleclor.listAccountSelector);
   const dispatch = useDispatch();
 
   const tryLastWithdrawal = async () => {
@@ -42,6 +46,21 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
 
+  const fetchAirdrop = async () => {
+    try {
+      const walletAddress = accounts[0]?.PaymentAddress;
+      const pDexWalletAddress = accounts.find(
+        (account) => account?.accountName === DEX.MAIN_ACCOUNT,
+      )?.PaymentAddress;
+      await APIService.airdrop1({
+        WalletAddress: walletAddress,
+        pDexWalletAddress: pDexWalletAddress,
+      });
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
   React.useEffect(() => {
     if (wallet) {
       getFollowingToken(false);
@@ -57,6 +76,7 @@ const enhance = (WrappedComp) => (props) => {
   React.useEffect(() => {
     fetchData();
     tryLastWithdrawal();
+    fetchAirdrop();
   }, []);
 
   return (

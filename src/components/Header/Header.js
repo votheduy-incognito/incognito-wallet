@@ -29,6 +29,8 @@ export const HeaderTitle = () => {
           canSearch && styledHeaderTitle.searchStyled,
           titleStyled,
         ]}
+        numberOfLines={1}
+        ellipsizeMode="tail"
       >
         {title}
       </Text>
