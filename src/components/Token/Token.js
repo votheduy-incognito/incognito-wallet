@@ -51,7 +51,7 @@ export const NormalText = ({
 export const Name = (props) => {
   const { name = 'Sample Name', isVerified = false } = props;
   return (
-    <View style={styled.name}>
+    <View style={[styled.name, props?.styledContainerName]}>
       <NormalText text={name} style={[styled.boldText, props?.styledName]} />
       {isVerified && <TokenVerifiedIcon />}
     </View>

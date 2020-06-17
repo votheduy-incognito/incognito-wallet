@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { FONT, COLORS } from '@src/styles';
+import { FONT, COLORS, UTILS } from '@src/styles';
 
 export const styled = StyleSheet.create({
   container: {
@@ -17,7 +17,13 @@ export const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.medium + 4,
     color: COLORS.colorGreyBold,
     flex: 1,
-    minWidth: 70,
+    marginRight: 15,
+    minWidth: (75 / 375) * UTILS.deviceWidth(),
+  },
+  labelIsVerified: {
+    minWidth: null,
+    flex: null,
+    marginRight: 5,
   },
   value: {
     fontFamily: FONT.NAME.bold,
@@ -37,5 +43,8 @@ export const styled = StyleSheet.create({
   },
   wrapper: {
     marginTop: 27,
+  },
+  btnInfo: {
+    flex: 1,
   },
 });

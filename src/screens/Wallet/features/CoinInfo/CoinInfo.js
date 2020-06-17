@@ -1,23 +1,28 @@
 import React from 'react';
 import { View, Text, Clipboard } from 'react-native';
 import Header from '@src/components/Header';
-import { useSelector } from 'react-redux';
-import { selectedPrivacySeleclor } from '@src/redux/selectors';
-import format from '@src/utils/format';
-import { CONSTANT_CONFIGS } from '@src/constants';
 import { ScrollView, TouchableOpacity, Toast } from '@src/components/core';
 import LinkingService from '@src/services/linking';
 import { CopyIcon, OpenUrlIcon } from '@src/components/Icons';
 import PropTypes from 'prop-types';
-import { COLORS } from '@src/styles';
+import { COLORS, UTILS } from '@src/styles';
 import { TokenBasic } from '@src/components/Token';
+import { BtnInfo } from '@src/components/Button';
 import { styled } from './CoinInfo.styled';
 import withCoinInfo from './CoinInfo.enhance';
 
 const InfoItem = ({ label, value, copyable, link, onlyLabel, labelStyle }) => {
   const renderComponent = () => (
     <View style={styled.infoContainer}>
-      {!!label && <Text style={[styled.label, labelStyle]}>{label}</Text>}
+      {!!label && (
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={[styled.label, labelStyle]}
+        >
+          {label}
+        </Text>
+      )}
       {!!value && (
         <Text numberOfLines={1} ellipsizeMode="middle" style={styled.value}>
           {value}
@@ -54,83 +59,41 @@ const InfoItem = ({ label, value, copyable, link, onlyLabel, labelStyle }) => {
 };
 
 const CoinInfo = (props) => {
-  const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
-  const { info } = props;
-  console.log('info', info);
-  if (!selectedPrivacy) {
-    return null;
-  }
   const {
-    name,
-    symbol,
-    externalSymbol,
-    isVerified,
-    isBep2Token,
+    infosFactories,
     tokenId,
-    contractId,
-    amount,
-    pDecimals,
-    incognitoTotalSupply,
-    networkName,
-  } = selectedPrivacy;
-  const infosFactories = [
-    {
-      label: isVerified ? 'Verified' : 'Unverified',
-      onlyLabel: true,
-      labelStyle: isVerified
-        ? { color: COLORS.green }
-        : { color: COLORS.orange },
-    },
-    {
-      label: 'Balance',
-      value: format.amount(amount, pDecimals),
-    },
-    {
-      label: 'Origin',
-      value: `${networkName} network`,
-    },
-    {
-      label: 'Coin ID',
-      value: tokenId,
-      copyable: true,
-    },
-    {
-      label: 'Contract ID',
-      value: contractId,
-      copyable: true,
-      link: `${CONSTANT_CONFIGS.ETHERSCAN_URL}/token/${contractId}`,
-    },
-    {
-      label: 'Coin supply',
-      value: incognitoTotalSupply
-        ? format.amount(incognitoTotalSupply, pDecimals)
-        : null,
-    },
-    {
-      label: 'Owner name',
-      value: info?.ownerName,
-      copyable: true,
-    },
-    {
-      label: 'Owner address',
-      value: info?.ownerAddress,
-      copyable: true,
-    },
-    { label: 'Owner email', value: info?.ownerEmail, copyable: true },
-    {
-      label: 'Owner website',
-      value: info?.ownerWebsite,
-      link: info?.ownerWebsite,
-      copyable: true,
-    },
-  ];
-
+    isVerified,
+    handlePressVerifiedInfo,
+  } = props;
   return (
     <View style={styled.container}>
-      <Header title="Coin info" />
+      <Header title="Coin info" titleStyled={styled.headerTitleStyle} />
       <View style={styled.wrapper}>
         <ScrollView>
-          <TokenBasic tokenId={tokenId} style={styled.token} />
+          <TokenBasic
+            tokenId={tokenId}
+            style={styled.token}
+            styledContainerName={{
+              maxWidth: '100%',
+            }}
+            styledName={{
+              maxWidth: UTILS.deviceWidth(),
+            }}
+          />
+          <View style={styled.infoContainer}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={[
+                styled.label,
+                styled.labelIsVerified,
+                isVerified ? { color: COLORS.green } : { color: COLORS.orange },
+              ]}
+            >
+              {isVerified ? 'Verified' : 'Unverified'}
+            </Text>
+            <BtnInfo style={styled.btnInfo} onPress={handlePressVerifiedInfo} />
+          </View>
           {infosFactories.map((info, key) => (
             <InfoItem {...info} key={key} />
           ))}
@@ -142,6 +105,10 @@ const CoinInfo = (props) => {
 
 CoinInfo.propTypes = {
   info: PropTypes.object,
+  handlePressVerifiedInfo: PropTypes.func.isRequired,
+  infosFactories: PropTypes.array.isRequired,
+  tokenId: PropTypes.string.isRequired,
+  isVerified: PropTypes.bool.isRequired,
 };
 
 CoinInfo.defaultProps = {

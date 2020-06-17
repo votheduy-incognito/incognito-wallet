@@ -40,7 +40,7 @@ const EstimateFeeInput = (props) => {
     isUseTokenFee,
     feePrvText,
     feePTokenText,
-    pDecimals,
+    feePDecimals,
   } = useSelector(feeDataSelector);
   const [state, setState] = React.useState({
     minFeeValidator: null,
@@ -55,7 +55,7 @@ const EstimateFeeInput = (props) => {
         actionChangeFee({
           value,
           isUseTokenFee,
-          pDecimals,
+          feePDecimals,
         }),
       );
     } catch (error) {

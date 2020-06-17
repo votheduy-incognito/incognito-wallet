@@ -118,12 +118,12 @@ export default (state = initialState, action) => {
     };
   }
   case ACTION_CHANGE_FEE: {
-    const { value, isUseTokenFee, pDecimals } = action.payload;
+    const { value, isUseTokenFee, feePDecimals } = action.payload;
     const field = isUseTokenFee ? 'feePTokenText' : 'feePrvText';
     const fieldOriginal = isUseTokenFee ? 'feePToken' : 'feePrv';
     const valueOriginal = floor(
-      convert.toOriginalAmount(convert.toNumber(value), pDecimals),
-      pDecimals,
+      convert.toOriginalAmount(convert.toNumber(value), feePDecimals),
+      feePDecimals,
     );
     return {
       ...state,
