@@ -145,19 +145,20 @@ class Withdraw extends React.Component {
     try {
       const { amount, toAddress, memo } = values;
       const { fee, isUsedPRVFee, rate, feePDecimals, feeUnit } = feeData;
-      const originalAmount = floor(
-        convertUtil.toOriginalAmount(
-          convertUtil.toNumber(amount, true),
-          selectedPrivacy?.pDecimals,
-        ),
+      const amountToNumber = convertUtil.toNumber(amount, true);
+      const originalAmount = convertUtil.toOriginalAmount(
+        amountToNumber,
+        selectedPrivacy?.pDecimals,
+        false,
       );
+      const _originalAmount = floor(originalAmount);
       const originalFee = floor(fee / rate);
       const _fee = format.amountFull(originalFee * rate, feePDecimals);
       const feeForBurn = originalFee;
       const remoteAddress = toAddress;
       const payload = {
         amount,
-        originalAmount,
+        originalAmount: _originalAmount,
         remoteAddress,
         isUsedPRVFee,
         originalFee,

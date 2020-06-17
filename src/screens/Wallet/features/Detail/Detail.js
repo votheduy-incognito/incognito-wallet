@@ -5,6 +5,7 @@ import {
   selectedPrivacySeleclor,
   sharedSeleclor,
   tokenSeleclor,
+  accountSeleclor,
 } from '@src/redux/selectors';
 import { useSelector } from 'react-redux';
 import { ButtonBasic, BtnInfo } from '@src/components/Button';
@@ -122,12 +123,12 @@ const History = (props) => {
     <View style={historyStyled.container}>
       <ScrollView
         nestedScrollEnabled
-        refreshControl={
+        refreshControl={(
           <RefreshControl
             refreshing={isFetching}
             onRefresh={handleLoadHistory}
           />
-        }
+        )}
       >
         {selectedPrivacy?.isToken && <HistoryToken />}
         {selectedPrivacy?.isMainCrypto && <MainCryptoHistory />}
@@ -148,15 +149,14 @@ const Detail = (props) => {
   const isGettingMainCryptoBalance = useSelector(
     isGettingMainCryptoBalanceSelector,
   );
-  const defaultAccountName = useSelector(defaultAccountNameSelector);
+  const defaultAccount = useSelector(accountSeleclor.defaultAccountSelector);
   const refreshing =
     !!isFetching || selected?.isMainCrypto
-      ? isGettingMainCryptoBalance.length > 0 || !defaultAccountName
+      ? isGettingMainCryptoBalance.length > 0 || !defaultAccount
       : isGettingTokenBalance.length > 0 || !token;
   const onGoBack = () => navigation.navigate(routeNames.Wallet);
   const onNavTokenInfo = () => navigation.navigate(routeNames.CoinInfo);
   useBackHandler({ onGoBack });
-
   return (
     <View style={styled.container}>
       <Header
@@ -172,12 +172,12 @@ const Detail = (props) => {
         contentContainerStyle={{
           flex: 1,
         }}
-        refreshControl={
+        refreshControl={(
           <RefreshControl
             refreshing={refreshing}
             onRefresh={handleLoadHistory}
           />
-        }
+        )}
         nestedScrollEnabled
       >
         <Balance />

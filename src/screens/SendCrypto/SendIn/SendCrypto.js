@@ -142,19 +142,20 @@ class SendCrypto extends React.Component {
       return;
     }
     try {
-      const originalAmount = floor(
-        convert.toOriginalAmount(
-          convert.toNumber(amount, true),
-          selectedPrivacy?.pDecimals,
-        ),
+      const amountToNumber = convert.toNumber(amount, true);
+      const originalAmount = convert.toOriginalAmount(
+        amountToNumber,
+        selectedPrivacy?.pDecimals,
+        false,
       );
+      const _originalAmount = floor(originalAmount);
       const originalFee = floor(fee);
       const _fee = format.amountFull(originalFee, feeData.feePDecimals);
       const res = await handleSend({
         ...feeData,
         ...values,
         originalFee,
-        originalAmount,
+        originalAmount: _originalAmount,
       });
       if (res) {
         await rfReset(formName);

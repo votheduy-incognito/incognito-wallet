@@ -8,8 +8,11 @@ import PropTypes from 'prop-types';
 import { COLORS, UTILS } from '@src/styles';
 import { TokenBasic } from '@src/components/Token';
 import { BtnInfo } from '@src/components/Button';
-import { styled } from './CoinInfo.styled';
+import { useNavigation } from 'react-navigation-hooks';
+import routeNames from '@src/router/routeNames';
+import { useBackHandler } from '@src/components/UseEffect';
 import withCoinInfo from './CoinInfo.enhance';
+import { styled } from './CoinInfo.styled';
 
 const InfoItem = ({ label, value, copyable, link, onlyLabel, labelStyle }) => {
   const renderComponent = () => (
@@ -65,9 +68,16 @@ const CoinInfo = (props) => {
     isVerified,
     handlePressVerifiedInfo,
   } = props;
+  const navigation = useNavigation();
+  const onGoBack = () => navigation.navigate(routeNames.WalletDetail);
+  useBackHandler({ onGoBack });
   return (
     <View style={styled.container}>
-      <Header title="Coin info" titleStyled={styled.headerTitleStyle} />
+      <Header
+        title="Coin info"
+        titleStyled={styled.headerTitleStyle}
+        onGoBack={onGoBack}
+      />
       <View style={styled.wrapper}>
         <ScrollView>
           <TokenBasic
