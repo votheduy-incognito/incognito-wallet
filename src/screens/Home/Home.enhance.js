@@ -87,7 +87,7 @@ const enhance = (WrappedComp) => (props) => {
   React.useEffect(() => {
     fetchData();
     tryLastWithdrawal();
-    airdrop();
+    //airdrop();
   }, []);
   return (
     <ErrorBoundary>
