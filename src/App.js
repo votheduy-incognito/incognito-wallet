@@ -16,6 +16,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 import NetInfo from '@react-native-community/netinfo';
 import { Linking, Text } from 'react-native';
 import ModalConnection from './components/Modal/ModalConnection';
+import LocalDatabase from './utils/LocalDatabase';
+import { MAIN_WEBSITE } from './constants/config';
 
 const isShowDeviceLog = false;
 const { store, persistor } = configureStore();
@@ -45,6 +47,9 @@ const App = () => {
     Text.defaultProps.allowFontScaling = false;
     // Network state change
     listenNetworkChanges();
+
+    // Init default website in community
+    LocalDatabase.setUriWebviewCommunity(MAIN_WEBSITE);
   }, []);
 
   const listenNetworkChanges = () => {
