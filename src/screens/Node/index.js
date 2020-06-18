@@ -151,7 +151,6 @@ class Node extends BaseScreen {
     let list = (await LocalDatabase.getListDevices()) || [];
     let shouldContinue = true;
     let verifyProductCode = await LocalDatabase.getVerifyCode();
-    verifyProductCode = 'dsa';
     list.forEach(element => {
       if (element?.verify_code === verifyProductCode) {
         if (element?.product_name && element?.product_name != '') {
