@@ -5,6 +5,7 @@ import Header from '@src/components/Header';
 import { FONT, COLORS } from '@src/styles';
 import { useSelector } from 'react-redux';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
+import LinkingService from '@src/services/linking';
 
 const styled = StyleSheet.create({
   container: {
@@ -12,9 +13,9 @@ const styled = StyleSheet.create({
   },
   text: {
     marginBottom: 30,
-    fontFamily: FONT.NAME.medium,
+    fontFamily: FONT.NAME.specialMedium,
     fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 9,
+    lineHeight: FONT.SIZE.medium + 4,
     color: COLORS.colorGreyBold,
   },
   sub: {
@@ -44,7 +45,17 @@ const CoinInfoVerify = () => {
 
 const NormalText = ({ text, sub }) => (
   <Text style={styled.text}>
-    {text} <Text style={styled.sub}>{sub}</Text>
+    {text}
+    <Text
+      style={styled.sub}
+      onPress={() =>
+        LinkingService.openUrl(
+          'https://incognito.org/t/verified-badges-for-custom-privacy-coins-on-incognito-chain/952',
+        )
+      }
+    >
+      {sub}
+    </Text>
   </Text>
 );
 
@@ -63,7 +74,7 @@ const CoinInfoVerified = () => {
       <NormalText text="If you are shielding a coin or adding it to your list, look out for the verified symbol to make sure you have the correct coin you are looking for." />
       <NormalText text="On certain blockchains, anyone can create duplicates with the same name and symbol. If an ERC20 or BEP2 coin does not have a verified tick, it is likely to be a copy." />
       <NormalText
-        text="If an Incognito coin does not have a verified tick, its creators have not yet gone through the process of"
+        text="If an Incognito coin does not have a verified tick, its creators have not yet gone through the process of "
         sub="verifying their coin."
       />
     </View>
