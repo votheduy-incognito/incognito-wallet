@@ -21,9 +21,10 @@ import MainCryptoHistory from '@screens/Wallet/features/MainCryptoHistory';
 import PropTypes from 'prop-types';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { isGettingBalance as isGettingTokenBalanceSelector } from '@src/redux/selectors/token';
-import { isGettingBalance as isGettingMainCryptoBalanceSelector } from '@src/redux/selectors/account';
+import {
+  isGettingBalance as isGettingMainCryptoBalanceSelector,
+} from '@src/redux/selectors/account';
 import { ScrollView } from '@src/components/core';
-import { useBackHandler } from '@src/components/UseEffect';
 import withDetail from './Detail.enhance';
 import {
   styled,
@@ -153,7 +154,6 @@ const Detail = (props) => {
       : isGettingTokenBalance.length > 0 || !token;
   const onGoBack = () => navigation.navigate(routeNames.Wallet);
   const onNavTokenInfo = () => navigation.navigate(routeNames.CoinInfo);
-  useBackHandler({ onGoBack });
   return (
     <View style={styled.container}>
       <Header

@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, BackHandler } from 'react-native';
 import { BtnCircleBack } from '@src/components/Button';
 import PropTypes from 'prop-types';
-import { useNavigation } from 'react-navigation-hooks';
+import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import { BtnSelectAccount } from '@screens/SelectAccount';
 import debounce from 'lodash/debounce';
 import { TouchableOpacity } from '@src/components/core';
@@ -69,6 +69,18 @@ const Header = ({
   const handleGoBack = () =>
     typeof onGoBack === 'function' ? onGoBack() : goBack();
   const _handleGoBack = debounce(handleGoBack, 100);
+
+  useFocusEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        _handleGoBack();
+        return true;
+      },
+    );
+    return () => backHandler.remove();
+  });
+
   const renderHeaderTitle = () => {
     if (toggleSearch) {
       if (isNormalSearch) {

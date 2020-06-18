@@ -87,6 +87,7 @@ const enhance = (WrappedComp) => (props) => {
         actionToggleModal({
           visible: false,
           data: null,
+          onBack: () => navigation.navigate(routeNames.WalletDetail)
         }),
       );
     } catch (error) {
