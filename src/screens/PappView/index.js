@@ -199,8 +199,9 @@ class PappViewContainer extends Component {
             let tempSearchText = searchText;
             if (tempSearchText.replace(' ', '') != '') {
               // Check if string is url
-              let indexOfHttp = tempSearchText?.indexOf('https://');
-              if (indexOfHttp === -1) {
+              let indexOfHttps = tempSearchText?.indexOf('https://');
+              let indexOfHttp = tempSearchText?.indexOf('http://');
+              if (indexOfHttp === -1 && indexOfHttps === -1) {
                 // InCorrect
                 tempSearchText = 'https://' + tempSearchText;
               }
