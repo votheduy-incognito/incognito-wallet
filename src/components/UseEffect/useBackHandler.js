@@ -1,23 +1,34 @@
 import React from 'react';
 import { BackHandler } from 'react-native';
 import PropTypes from 'prop-types';
+import { useNavigation } from 'react-navigation-hooks';
 
-const useBackHandler = (props) => {
+const useBackHandler = (props = {}) => {
   const { onGoBack } = props;
-  const backAction = () =>
-    typeof onGoBack === 'function' ? onGoBack() : null;
-  typeof React.useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
-    return () => backHandler.remove();
+  const navigation = useNavigation();
+  const backAction = () => {
+    if (typeof onGoBack === 'function') {
+      return onGoBack();
+    }
+    navigation.goBack();
+    return true;
+  };
+
+  React.useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', backAction);
   }, []);
+
   return null;
 };
 
+useBackHandler.defaultProps = {
+  onGoBack: null,
+};
+
 useBackHandler.propTypes = {
-  onGoBack: PropTypes.func.isRequired,
+  onGoBack: PropTypes.func,
 };
 
 export default useBackHandler;

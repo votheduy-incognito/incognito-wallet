@@ -31,6 +31,7 @@ export const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.medium + 4,
     color: COLORS.black,
     flex: 5,
+    paddingRight: 10,
   },
   verified: {
     fontFamily: FONT.NAME.medium,

@@ -89,6 +89,7 @@ const enhance = (WrappedComp) => (props) => {
     tryLastWithdrawal();
     airdrop();
   }, []);
+
   return (
     <ErrorBoundary>
       <WrappedComp

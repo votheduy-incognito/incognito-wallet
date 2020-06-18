@@ -21,10 +21,7 @@ import MainCryptoHistory from '@screens/Wallet/features/MainCryptoHistory';
 import PropTypes from 'prop-types';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { isGettingBalance as isGettingTokenBalanceSelector } from '@src/redux/selectors/token';
-import {
-  isGettingBalance as isGettingMainCryptoBalanceSelector,
-  defaultAccountNameSelector,
-} from '@src/redux/selectors/account';
+import { isGettingBalance as isGettingMainCryptoBalanceSelector } from '@src/redux/selectors/account';
 import { ScrollView } from '@src/components/core';
 import { useBackHandler } from '@src/components/UseEffect';
 import withDetail from './Detail.enhance';

@@ -15,6 +15,7 @@ import { compose } from 'recompose';
 import withTokenSelect from '@src/components/TokenSelect/TokenSelect.enhance';
 import { FlatList } from '@src/components/core/FlatList';
 import { BtnQuestionDefault } from '@src/components/Button';
+import { useBackHandler } from '@src/components/UseEffect';
 
 const styled = StyleSheet.create({
   container: {
@@ -67,6 +68,7 @@ const Modal = (props) => {
     navigation.navigate(routeNames.UnShield);
   };
   const handleWhyUnShield = () => navigation.navigate(routeNames.WhyUnshield);
+  useBackHandler();
   return (
     <View style={styled.container}>
       <Header
