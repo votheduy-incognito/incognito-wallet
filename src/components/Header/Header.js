@@ -20,20 +20,25 @@ export const HeaderTitle = () => {
     titleStyled,
     canSearch,
     customHeaderTitle,
+    styledContainerHeaderTitle,
   } = headerProps;
   const Title = () => (
-    <View style={styledHeaderTitle.container}>
-      <Text
-        style={[
-          styledHeaderTitle.title,
-          canSearch && styledHeaderTitle.searchStyled,
-          titleStyled,
-        ]}
-        numberOfLines={1}
-        ellipsizeMode="tail"
+    <View style={[styledHeaderTitle.container]}>
+      <View
+        style={[styledHeaderTitle.containerTitle, styledContainerHeaderTitle]}
       >
-        {title}
-      </Text>
+        <Text
+          style={[
+            styledHeaderTitle.title,
+            canSearch && styledHeaderTitle.searchStyled,
+            titleStyled,
+          ]}
+          numberOfLines={1}
+        >
+          {title}
+        </Text>
+      </View>
+
       {customHeaderTitle && customHeaderTitle}
     </View>
   );
@@ -64,6 +69,7 @@ const Header = ({
   isNormalSearch,
   onTextSearchChange,
   customHeaderTitle,
+  styledContainerHeaderTitle,
 }) => {
   const { goBack } = useNavigation();
   const handleGoBack = () =>
@@ -110,6 +116,7 @@ const Header = ({
           toggleSearch,
           onHandleSearch,
           customHeaderTitle,
+          styledContainerHeaderTitle,
         },
       }}
     >
@@ -138,6 +145,7 @@ Header.defaultProps = {
   onTextSearchChange: () => {},
   isNormalSearch: false,
   customHeaderTitle: null,
+  styledContainerHeaderTitle: null,
 };
 Header.propTypes = {
   title: PropTypes.string.isRequired,
@@ -154,5 +162,6 @@ Header.propTypes = {
   onTextSearchChange: PropTypes.func,
   isNormalSearch: PropTypes.bool,
   customHeaderTitle: PropTypes.element,
+  styledContainerHeaderTitle: PropTypes.any,
 };
 export default withHeader(React.memo(Header));
