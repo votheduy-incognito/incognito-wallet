@@ -14,9 +14,9 @@ const styled = StyleSheet.create({
   },
   text: {
     marginBottom: 30,
-    fontFamily: FONT.NAME.medium,
+    fontFamily: FONT.NAME.specialMedium,
     fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 9,
+    lineHeight: FONT.SIZE.medium + 4,
     color: COLORS.colorGreyBold,
   },
   sub: {
