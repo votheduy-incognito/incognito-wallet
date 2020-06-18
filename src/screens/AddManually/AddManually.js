@@ -53,12 +53,9 @@ const ModalSelectType = () => {
 
 const AddManually = () => {
   const { type } = React.useContext(AddManuallyContext);
-  const navigation = useNavigation();
-  const onGoBack = () => navigation.navigate(routeNames.FollowToken);
-  useBackHandler({ onGoBack });
   return (
     <View style={styles.container}>
-      <Header title="Add manually" onGoBack={onGoBack} />
+      <Header title="Add manually" />
       <SelectType />
       <ScrollView style={styles.scrollview}>
         {type === TYPES.BEP2.value && <AddBep2Token />}

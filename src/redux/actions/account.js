@@ -392,15 +392,13 @@ export const actionFetchCreateAccount = ({ accountName }) => async (
     await dispatch(reloadAccountList());
     await dispatch(followDefaultTokens(serializedAccount));
     await dispatch(actionFetchedCreateAccount());
-    await dispatch(actionSwitchAccount(serializedAccount?.name));
+    await dispatch(actionSwitchAccount(serializedAccount?.name, true));
     return serializedAccount;
   } catch (error) {
     await dispatch(actionFetchFailCreateAccount());
     throw error;
   }
 };
-
-//
 
 export const actionFetchingImportAccount = () => ({
   type: type.ACTION_FETCHING_IMPORT_ACCOUNT,
@@ -440,8 +438,8 @@ export const actionFetchImportAccount = ({ accountName, privateKey }) => async (
         (acc) => acc?.name === accountName || acc?.AccountName === accountName,
       );
       if (account) {
-        await dispatch(actionSwitchAccount(account?.name));
         await dispatch(followDefaultTokens(account));
+        await dispatch(actionSwitchAccount(account?.name, true));
       }
     }
     return isImported;
