@@ -14,21 +14,21 @@ const styled = StyleSheet.create({
   },
   text: {
     color: COLORS.colorGreyBold,
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 9,
+    fontFamily: FONT.NAME.specialMedium,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
     marginBottom: 22,
   },
   title: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 4,
+    fontFamily: FONT.NAME.specialBold,
+    fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.black,
     marginBottom: 5,
   },
 });
 
-const WhyShield = props => {
+const WhyShield = () => {
   useBackHandler();
   return (
     <View style={styled.container}>
