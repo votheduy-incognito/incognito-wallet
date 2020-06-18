@@ -339,6 +339,31 @@ class Withdraw extends React.Component {
     rfFocus(formName, 'amount');
   };
 
+  renderMemo = () => {
+    const { selectedPrivacy } = this.props;
+    if (selectedPrivacy?.isBep2Token || selectedPrivacy?.currencyType === 4) {
+      return (
+        <View style={style.memoContainer}>
+          <Field
+            component={InputQRField}
+            name="memo"
+            label="Memo (optional)"
+            placeholder="Enter a memo"
+            style={style.input}
+            validate={memoMaxLength}
+            maxLength={125}
+            inputStyle={style.memoInput}
+          />
+          <Text style={style.memoText}>
+            * For withdrawals to wallets on exchanges (e.g. Binance, etc.),
+            enter your memo to avoid loss of funds.
+          </Text>
+        </View>
+      );
+    }
+    return null;
+  };
+
   render() {
     const { maxAmountValidator, minAmountValidator } = this.state;
     const {
@@ -417,25 +442,7 @@ class Withdraw extends React.Component {
                   address.
                 </Text>
               )}
-              {selectedPrivacy?.isBep2Token ||
-                (selectedPrivacy?.currencyType === 4 && (
-                  <View style={style.memoContainer}>
-                    <Field
-                      component={InputQRField}
-                      name="memo"
-                      label="Memo (optional)"
-                      placeholder="Enter a memo"
-                      style={style.input}
-                      validate={memoMaxLength}
-                      maxLength={125}
-                      inputStyle={style.memoInput}
-                    />
-                    <Text style={style.memoText}>
-                      * For withdrawals to wallets on exchanges (e.g. Binance,
-                      etc.), enter your memo to avoid loss of funds.
-                    </Text>
-                  </View>
-                ))}
+              {this.renderMemo()}
               <EstimateFee
                 amount={
                   isFormValid && !shouldBlockETHWrongAddress ? amount : null
