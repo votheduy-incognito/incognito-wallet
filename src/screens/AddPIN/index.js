@@ -1,11 +1,12 @@
 import React from 'react';
-import {Animated, BackHandler, Easing} from 'react-native';
+import { Animated, BackHandler, Easing } from 'react-native';
 import TouchID from 'react-native-touch-id';
 import PropTypes from 'prop-types';
+import { debounce } from 'lodash';
 import { View, Text, TouchableOpacity, Image } from '@src/components/core';
 import { connect } from 'react-redux';
-import {updatePin} from '@src/redux/actions/pin';
-import {Icon} from 'react-native-elements';
+import { updatePin } from '@src/redux/actions/pin';
+import { Icon } from 'react-native-elements';
 import convertUtil from '@utils/convert';
 import icFaceId from '@src/assets/images/icons/ic_faceid.png';
 import styles from './styles';
@@ -44,6 +45,7 @@ class AddPIN extends React.Component {
       action,
     };
     this.animatedValue = new Animated.Value(0);
+    this.loginSuccess = debounce(this.loginSuccess.bind(this), 1000);
   }
 
   componentDidMount() {
