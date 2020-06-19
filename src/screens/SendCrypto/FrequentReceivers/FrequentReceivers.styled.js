@@ -34,7 +34,7 @@ export const styledModal = StyleSheet.create({
   },
 });
 
-export const emptyListStyled = StyleSheet.create({
+export const notFoundStyled = StyleSheet.create({
   container: {
     justifyContent: 'center',
     flex: 1,
@@ -45,11 +45,11 @@ export const emptyListStyled = StyleSheet.create({
     alignItems: 'center',
   },
   notFound: {
-    color: COLORS.lightGrey1,
-    fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 6,
-    marginTop: 10,
+    color: COLORS.colorGreyBold,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
+    marginTop: 20,
   },
   notFoundImg: {
     width: 194,

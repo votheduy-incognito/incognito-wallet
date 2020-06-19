@@ -113,7 +113,7 @@ const Price = (props) => {
         hasPSymbol
         style={styled.bottomText}
       />
-      <ChangePrice change={change} />
+      {/* <ChangePrice change={change} /> */}
     </View>
   );
 };
@@ -209,8 +209,8 @@ export const Follow = (props) => {
 };
 
 const Token = (props) => {
-  const { handleRemoveToken = null, swipable = false, pricePrv } = props;
-  const pairWithPrv = pricePrv !== 0;
+  const { handleRemoveToken = null, swipable = false, pricePrv, isMainCrypto } = props;
+  const pairWithPrv = pricePrv !== 0 && !isMainCrypto;
   let TokenComponent = pairWithPrv ? (
     <TokenPairPRV {...props} />
   ) : (
