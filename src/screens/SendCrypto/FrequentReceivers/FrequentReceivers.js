@@ -1,14 +1,18 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Image, KeyboardAvoidingView } from 'react-native';
 import PropTypes from 'prop-types';
 import { ScrollView, TouchableOpacity } from '@src/components/core';
 import Swipeout from 'react-native-swipeout';
 import { BtnDelete } from '@src/components/Button';
 import Header from '@src/components/Header';
+import srcNotFound from '@src/assets/images/icons/not_found_receiver.png';
+import { isIOS } from '@src/utils/platform';
+import EmptyList from './FrequentReceivers.empty';
 import {
   styledModal as styled,
   listStyled,
   itemStyled,
+  notFoundStyled,
 } from './FrequentReceivers.styled';
 import withModal from './FrequentReceivers.enhance';
 
@@ -79,6 +83,17 @@ const List = ({
   );
 };
 
+const NotFound = () => {
+  return (
+    <View style={notFoundStyled.container}>
+      <View style={notFoundStyled.hook}>
+        <Image source={srcNotFound} style={notFoundStyled.notFoundImg} />
+        <Text style={notFoundStyled.notFound}>Not found</Text>
+      </View>
+    </View>
+  );
+};
+
 const Modal = (props) => {
   const {
     data,
@@ -86,20 +101,41 @@ const Modal = (props) => {
     disabledSwipe,
     onDelete,
     shouldDisabledItem,
+    isEmpty,
   } = props;
+  const notFound = data.length === 0;
+  const renderList = () => {
+    if (isEmpty) {
+      return <EmptyList />;
+    }
+    if (notFound) {
+      return <NotFound />;
+    }
+    return (
+      <List
+        onSelectedAddress={onSelectedAddress}
+        receivers={data}
+        disabledSwipe={disabledSwipe}
+        onDelete={onDelete}
+        shouldDisabledItem={shouldDisabledItem}
+        styledContainer={{ flex: 1 }}
+      />
+    );
+  };
+  const isPlatformIOS = isIOS();
+  const Wrapper = isPlatformIOS ? KeyboardAvoidingView : View;
   return (
     <View style={styled.container}>
-      <Header title="Address book" style={styled.header} canSearch />
-      {data.length > 0 && (
-        <List
-          onSelectedAddress={onSelectedAddress}
-          receivers={data}
-          disabledSwipe={disabledSwipe}
-          onDelete={onDelete}
-          shouldDisabledItem={shouldDisabledItem}
-          styledContainer={{ flex: 1 }}
-        />
-      )}
+      <Header title="Address book" style={styled.header} canSearch={!isEmpty} />
+      <Wrapper
+        behavior="padding"
+        keyboardVerticalOffset={50}
+        style={{
+          flex: 1,
+        }}
+      >
+        {renderList()}
+      </Wrapper>
     </View>
   );
 };
@@ -132,6 +168,7 @@ Modal.propTypes = {
   disabledSwipe: PropTypes.bool,
   onDelete: PropTypes.func,
   shouldDisabledItem: PropTypes.bool.isRequired,
+  isEmpty: PropTypes.bool.isRequired,
 };
 
 export default withModal(Modal);

@@ -9,7 +9,6 @@ import routeNames from '@src/router/routeNames';
 import { compose } from 'recompose';
 import { useSearchBox } from '@src/components/Header';
 import withSync from './FrequentReceivers.withSync';
-import Empty from './FrequentReceivers.empty';
 
 const enhance = (WrappedComp) => (props) => {
   const navigation = useNavigation();
@@ -59,9 +58,6 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
 
-  if (receivers.length === 0) {
-    return <Empty />;
-  }
   return (
     <WrappedComp
       {...{
@@ -75,6 +71,7 @@ const enhance = (WrappedComp) => (props) => {
         shouldDisabledItem: typeof onSelectedItem !== 'function',
         disabledSelectedAddr,
         hideRecently: keySearch.length > 0,
+        isEmpty: receivers.length === 0,
       }}
     />
   );
