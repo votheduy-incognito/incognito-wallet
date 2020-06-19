@@ -17,8 +17,8 @@ export const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.medium + 4,
     color: COLORS.colorGreyBold,
     flex: 1,
+    minWidth: 80,
     marginRight: 15,
-    minWidth: (75 / 375) * UTILS.deviceWidth(),
   },
   labelIsVerified: {
     minWidth: null,
@@ -32,6 +32,7 @@ export const styled = StyleSheet.create({
     color: COLORS.black,
     flex: 5,
     paddingRight: 10,
+    textAlign: 'left',
   },
   verified: {
     fontFamily: FONT.NAME.medium,

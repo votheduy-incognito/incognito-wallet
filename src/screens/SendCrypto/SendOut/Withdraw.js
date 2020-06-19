@@ -43,6 +43,8 @@ import format from '@src/utils/format';
 import floor from 'lodash/floor';
 import Receipt from '@src/components/Receipt';
 import { actionFetchFeeByMax } from '@src/components/EstimateFee/EstimateFee.actions';
+import routeNames from '@src/router/routeNames';
+import { withNavigation } from 'react-navigation';
 import style from './style';
 
 export const formName = 'withdraw';
@@ -136,6 +138,7 @@ class Withdraw extends React.Component {
       rfReset,
       handleCentralizedWithdraw,
       handleDecentralizedWithdraw,
+      navigation,
     } = this.props;
     const disabledForm = this.shouldDisabledSubmit();
     if (disabledForm) {
@@ -173,7 +176,6 @@ class Withdraw extends React.Component {
         res = await handleCentralizedWithdraw(payload);
       }
       if (res) {
-        await rfReset(formName);
         await actionToggleModal({
           visible: true,
           data: (
@@ -193,7 +195,9 @@ class Withdraw extends React.Component {
               }}
             />
           ),
+          onBack: () => navigation.navigate(routeNames.WalletDetail),
         });
+        await rfReset(formName);
       }
     } catch (e) {
       console.log('error', e);
@@ -520,7 +524,9 @@ const mapDispatch = {
   actionFetchFeeByMax,
 };
 
-export default connect(
-  mapState,
-  mapDispatch,
-)(Withdraw);
+export default withNavigation(
+  connect(
+    mapState,
+    mapDispatch,
+  )(Withdraw),
+);

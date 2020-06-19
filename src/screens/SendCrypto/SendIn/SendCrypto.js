@@ -160,7 +160,6 @@ class SendCrypto extends React.Component {
         originalAmount: _originalAmount,
       });
       if (res) {
-        await rfReset(formName);
         await actionToggleModal({
           visible: true,
           data: (
@@ -184,6 +183,7 @@ class SendCrypto extends React.Component {
           ),
           onBack: () => navigation.navigate(ROUTES_NAME.WalletDetail)
         });
+        await rfReset(formName);
       }
     } catch (e) {
       if (e.message === MESSAGES.NOT_ENOUGH_NETWORK_FEE) {

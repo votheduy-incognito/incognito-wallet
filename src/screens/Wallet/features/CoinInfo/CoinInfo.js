@@ -19,7 +19,7 @@ const InfoItem = ({ label, value, copyable, link, onlyLabel, labelStyle }) => {
       {!!label && (
         <Text
           numberOfLines={1}
-          ellipsizeMode="tail"
+          ellipsizeMode="middle"
           style={[styled.label, labelStyle]}
         >
           {label}

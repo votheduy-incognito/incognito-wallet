@@ -34,11 +34,10 @@ const ReceiveCrypto = () => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const address = selectedPrivacy?.paymentAddress;
   const navigation = useNavigation();
-  const onGoBack = () => navigation.navigate(routeNames.WalletDetail);
   if (!selectedPrivacy) return <LoadingContainer />;
   return (
     <View style={homeStyle.container}>
-      <Header title="Receive" onGoBack={onGoBack} />
+      <Header title="Receive" />
       <ScrollView>
         <QrCodeGenerate
           value={address}
