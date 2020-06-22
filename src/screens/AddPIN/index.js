@@ -45,7 +45,6 @@ class AddPIN extends React.Component {
       action,
     };
     this.animatedValue = new Animated.Value(0);
-    this.loginSuccess = debounce(this.loginSuccess.bind(this), 1000);
   }
 
   componentDidMount() {
