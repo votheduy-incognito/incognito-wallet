@@ -444,7 +444,7 @@ export default {
   combinedTOMOAddress,
   combinedBTCAddress,
   combinedNEOAddress,
-  combinedXMRAddress,
+  // combinedXMRAddress, // Temporarily remove
   combinedZenAddress,
   combinedZCLAddress,
   combinedZECAddress,
