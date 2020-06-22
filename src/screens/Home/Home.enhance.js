@@ -119,7 +119,6 @@ const withPin = (WrappedComp) =>
     handleAppStateChange = async (nextAppState) => {
       const { pin, navigation } = this.props;
       const { appState } = this.state;
-
       if (appState.match(/background/) && nextAppState === 'active') {
         AppUpdater.update();
         if (pin && !WithdrawHistory.withdrawing) {

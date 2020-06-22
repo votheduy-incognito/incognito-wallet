@@ -18,8 +18,16 @@ import StakeHistory from '@screens/StakeHistory';
 import StakeRecoverAccount from '@screens/Stake/features/RecoverAccount';
 import StakeHistoryDetail from '@screens/StakeHistory/features/Detail';
 import PaymentBuyNodeScreen from '@src/screens/PaymentBuyNodeScreen';
-import ROUTE_NAMES from './routeNames';
+import Node from '@screens/Node';
+import AddNode from '@screens/AddNode';
+import LinkDevice from '@screens/LinkDevice';
+import AddStake from '@screens/AddStake';
+import Unstake from '@screens/Unstake';
+import AddSelfNode from '@screens/AddSelfNode';
+import GetStartedAddNode from '@screens/GetStartedAddNode';
+import RepairingSetupNode from '@screens/GetStartedAddNode/continueSetup/RepairingSetupNode';
 import { getRoutesNoHeader } from './routeNoHeader';
+import ROUTE_NAMES from './routeNames';
 
 const RouteNoHeader = getRoutesNoHeader();
 
@@ -75,6 +83,14 @@ const AppNavigator = createStackNavigator(
       PaymentBuyNodeScreen,
       { title: 'Payment' },
     ),
+    [ROUTE_NAMES.Node]: navigationOptionsHandler(Node,{ header: () => null }),
+    [ROUTE_NAMES.AddNode]: navigationOptionsHandler(AddNode, { title: 'Add Node' }),
+    [ROUTE_NAMES.LinkDevice]: navigationOptionsHandler(LinkDevice, { title: 'Link Device' }),
+    [ROUTE_NAMES.AddStake]: navigationOptionsHandler(AddStake, { title: 'Stake' }),
+    [ROUTE_NAMES.Unstake]: navigationOptionsHandler(Unstake, { title: 'Unstake' }),
+    [ROUTE_NAMES.AddSelfNode]: navigationOptionsHandler(AddSelfNode, { title: 'Virtual Node' }),
+    [ROUTE_NAMES.GetStaredAddNode]: navigationOptionsHandler(GetStartedAddNode, { title: 'null' }),
+    [ROUTE_NAMES.RepairingSetupNode]: navigationOptionsHandler(RepairingSetupNode, { title: 'Continue setup' }),
     ...RouteNoHeader,
   },
   {
