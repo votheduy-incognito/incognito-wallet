@@ -297,8 +297,6 @@ class Withdraw extends React.Component {
       return validator.combinedAURAddress;
     } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ZIL) {
       return validator.combinedZILAddress;
-    } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.XMR) {
-      return validator.combinedXMRAddress;
     }
     // default
     return validator.combinedUnknownAddress;
