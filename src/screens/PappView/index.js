@@ -191,6 +191,7 @@ class PappViewContainer extends Component {
     return (
       <View style={styled.container}>
         <Header
+          placeHolder="Enter a pApp address"
           isNormalSearch
           canSearch={!isBlocked}
           title={url ? `${url}`: 'Enter a pApp address'}

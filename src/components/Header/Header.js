@@ -70,6 +70,7 @@ const Header = ({
   onTextSearchChange,
   customHeaderTitle,
   styledContainerHeaderTitle,
+  placeHolder,
 }) => {
   const { goBack } = useNavigation();
   const handleGoBack = () =>
@@ -92,6 +93,7 @@ const Header = ({
       if (isNormalSearch) {
         return (
           <SearchBox
+            placeHolder={placeHolder || ''}
             onSubmit={isNormalSearch ? onSubmit : () => {}}
             onChange={(text) =>
               isNormalSearch ? onTextSearchChange(text) : () => {}
@@ -146,6 +148,7 @@ Header.defaultProps = {
   isNormalSearch: false,
   customHeaderTitle: null,
   styledContainerHeaderTitle: null,
+  placeHolder: ''
 };
 Header.propTypes = {
   title: PropTypes.string.isRequired,
@@ -163,5 +166,6 @@ Header.propTypes = {
   isNormalSearch: PropTypes.bool,
   customHeaderTitle: PropTypes.element,
   styledContainerHeaderTitle: PropTypes.any,
+  placeHolder: PropTypes.string,
 };
 export default withHeader(React.memo(Header));
