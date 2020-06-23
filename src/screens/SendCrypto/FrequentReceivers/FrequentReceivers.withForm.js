@@ -56,7 +56,7 @@ const enhance = (WrappedComp) => (props) => {
       // Check if name is existing, return dialog message
       let shouldBreakIfDuplicate = false;
       accounts.forEach(element => {
-        if (element?.name?.toLowerCase() === name?.toLowerCase()) {
+        if (element?.name?.trim()?.toLowerCase() === name?.trim().toLowerCase()) {
           shouldBreakIfDuplicate = true;
           return new ExHandler({}, 'This name is already existed').showErrorToast();
         }
