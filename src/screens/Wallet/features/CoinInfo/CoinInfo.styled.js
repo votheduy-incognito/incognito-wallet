@@ -8,7 +8,6 @@ export const styled = StyleSheet.create({
   infoContainer: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
     marginBottom: 25,
   },
   label: {

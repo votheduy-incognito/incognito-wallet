@@ -14,7 +14,7 @@ import withCoinInfo from './CoinInfo.enhance';
 import { styled } from './CoinInfo.styled';
 
 const InfoItem = ({ label, value, copyable, link, onlyLabel, labelStyle }) => {
-  const renderComponent = () => (
+  const renderComponent = (numberOfLinesValue) => (
     <View style={styled.infoContainer}>
       {!!label && (
         <Text
@@ -26,7 +26,7 @@ const InfoItem = ({ label, value, copyable, link, onlyLabel, labelStyle }) => {
         </Text>
       )}
       {!!value && (
-        <Text numberOfLines={1} ellipsizeMode="middle" style={styled.value}>
+        <Text numberOfLines={numberOfLinesValue || 1} ellipsizeMode="middle" style={styled.value}>
           {value}
         </Text>
       )}
@@ -57,7 +57,7 @@ const InfoItem = ({ label, value, copyable, link, onlyLabel, labelStyle }) => {
       </TouchableOpacity>
     );
   }
-  return renderComponent();
+  return renderComponent(2);
 };
 
 const CoinInfo = (props) => {

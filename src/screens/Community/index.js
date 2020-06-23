@@ -11,6 +11,7 @@ import LogManager from '@src/services/LogManager';
 import LocalDatabase from '@src/utils/LocalDatabase';
 import { CircleBack } from '@src/components/Icons';
 import NavigationService from '@src/services/NavigationService';
+import Header from '@src/components/Header';
 import styles from './style';
 
 const Community = ({ navigation, isFocused }) => {
@@ -63,9 +64,7 @@ const Community = ({ navigation, isFocused }) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => NavigationService.goBack()} style={styles.customBackContainer}>
-        <CircleBack />
-      </TouchableOpacity>
+      <Header title='Community' style={{paddingLeft: 20}}/>
       <WebView
         onLoadEnd={(data) => {
           setLoading(false);
@@ -102,7 +101,8 @@ const Community = ({ navigation, isFocused }) => {
         }}
       />
       {loading && <ActivityIndicator style={styles.loading} />}
-      {backable && (
+      {/* No need to add back button here */}
+      {/* {backable && (
         <TouchableOpacity onPress={goBack} style={styles.backBtn}>
           <Image
             style={{
@@ -114,7 +114,7 @@ const Community = ({ navigation, isFocused }) => {
             source={chevronLeft}
           />
         </TouchableOpacity>
-      )}
+      )} */}
     </View>
   );
 };
