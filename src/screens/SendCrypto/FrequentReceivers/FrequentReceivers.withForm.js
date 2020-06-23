@@ -10,7 +10,8 @@ import { compose } from 'recompose';
 import { withLayout_2 } from '@src/components/Layout';
 import { formValueSelector, isValid, change } from 'redux-form';
 import { Keyboard } from 'react-native';
-import { listAccountSelector } from '@src/redux/selectors/account';
+import { receiversSelector } from '@src/redux/selectors/receivers';
+import { CONSTANT_KEYS } from '@src/constants';
 import { formName } from './FrequentReceivers.form';
 
 const enhance = (WrappedComp) => (props) => {
@@ -26,7 +27,7 @@ const enhance = (WrappedComp) => (props) => {
   const isFormValid = useSelector((state) => isValid(formName)(state));
   const selector = formValueSelector(formName);
   const nameInput = useSelector((state) => selector(state, 'name')) || '';
-  const accounts = useSelector(listAccountSelector) || [];
+  const accounts = useSelector(receiversSelector)[CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK]['receivers'] || [];
   let shouldUpdate = nameInput !== name;
   const disabledBtn = !isFormValid || (isUpdate && !shouldUpdate);
   const onCreateReceiver = async ({ name, address }) => {
@@ -56,7 +57,7 @@ const enhance = (WrappedComp) => (props) => {
       // Check if name is existing, return dialog message
       let shouldBreakIfDuplicate = false;
       accounts.forEach(element => {
-        if (element?.name?.trim()?.toLowerCase() === name?.trim().toLowerCase()) {
+        if (element?.name === name) {
           shouldBreakIfDuplicate = true;
           return new ExHandler({}, 'This name is already existed').showErrorToast();
         }

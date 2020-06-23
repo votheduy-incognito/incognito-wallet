@@ -1,6 +1,6 @@
 import React from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
-import {listAccount} from '@src/redux/selectors/account';
+import {listAccountSelector} from '@src/redux/selectors/account';
 import {useSelector, useDispatch} from 'react-redux';
 import {ExHandler} from '@src/services/exception';
 import {actionCreate, actionSyncSuccess} from '@src/redux/actions/receivers';
@@ -15,7 +15,7 @@ const enhance = WrappedComp => props => {
     isFetched: false,
   });
   const dispatch = useDispatch();
-  const accounts = useSelector(listAccount);
+  const accounts = useSelector(listAccountSelector);
   const keySave = useNavigationParam('keySave');
   const {sync = false} = useSelector(receiversSelector)[keySave];
   const shouldSyncData =
