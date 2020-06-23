@@ -64,7 +64,7 @@ const Community = ({ navigation, isFocused }) => {
 
   return (
     <View style={styles.container}>
-      <Header headerTitle='' style={{paddingLeft: 20}}/>
+      <Header title='Community' style={{paddingLeft: 20}}/>
       <WebView
         onLoadEnd={(data) => {
           setLoading(false);
