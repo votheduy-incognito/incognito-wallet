@@ -41,16 +41,20 @@ const App = () => {
   const [currentNetworkConnectedState, setCurrentNetworkConnectedState] = useState(true);
 
   useEffect(() => {
+    // Init recursive main website
+    resetMainCommunity();
     // Notification
     initNotification();
     Text.defaultProps = Text.defaultProps || {};
     Text.defaultProps.allowFontScaling = false;
     // Network state change
     listenNetworkChanges();
-
-    // Init default website in community
-    LocalDatabase.setUriWebviewCommunity(MAIN_WEBSITE);
   }, []);
+
+  const resetMainCommunity = async () => {
+    // Init default website in community
+    await LocalDatabase.setUriWebviewCommunity(MAIN_WEBSITE);
+  };
 
   const listenNetworkChanges = () => {
     // Add event listener for network state changes
