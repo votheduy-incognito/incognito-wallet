@@ -56,9 +56,9 @@ const enhance = (WrappedComp) => (props) => {
       // Check if name is existing, return dialog message
       let shouldBreakIfDuplicate = false;
       accounts.forEach(element => {
-        if (element?.name === name) {
+        if (element?.name?.trim()?.toLowerCase() === name?.trim().toLowerCase()) {
           shouldBreakIfDuplicate = true;
-          return new ExHandler('This name is already existed').showErrorToast();
+          return new ExHandler({}, 'This name is already existed').showErrorToast();
         }
       });
       if (!shouldBreakIfDuplicate) {
@@ -75,7 +75,7 @@ const enhance = (WrappedComp) => (props) => {
         Toast.showInfo('Updated!');
         return navigation.pop();
       } else {
-        return new ExHandler('This name is already existed').showErrorToast();
+        return new ExHandler({}, 'This name is already existed').showErrorToast();
       }
     } catch (error) {
       new ExHandler(error?.message || error).showErrorToast();
