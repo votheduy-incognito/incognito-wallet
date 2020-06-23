@@ -10,6 +10,7 @@ import { compose } from 'recompose';
 import { withLayout_2 } from '@src/components/Layout';
 import { formValueSelector, isValid, change } from 'redux-form';
 import { Keyboard } from 'react-native';
+import { listAccountSelector } from '@src/redux/selectors/account';
 import { formName } from './FrequentReceivers.form';
 
 const enhance = (WrappedComp) => (props) => {
@@ -25,7 +26,8 @@ const enhance = (WrappedComp) => (props) => {
   const isFormValid = useSelector((state) => isValid(formName)(state));
   const selector = formValueSelector(formName);
   const nameInput = useSelector((state) => selector(state, 'name')) || '';
-  const shouldUpdate = nameInput !== name;
+  const accounts = useSelector(listAccountSelector) || [];
+  let shouldUpdate = nameInput !== name;
   const disabledBtn = !isFormValid || (isUpdate && !shouldUpdate);
   const onCreateReceiver = async ({ name, address }) => {
     try {
@@ -51,18 +53,30 @@ const enhance = (WrappedComp) => (props) => {
 
   const onUpdateReceiver = async ({ name, address }) => {
     try {
-      const receiver = {
-        name,
-        address,
-      };
-      await dispatch(
-        actionUpdate({
-          keySave,
-          receiver,
-        }),
-      );
-      Toast.showInfo('Updated!');
-      return navigation.pop();
+      // Check if name is existing, return dialog message
+      let shouldBreakIfDuplicate = false;
+      accounts.forEach(element => {
+        if (element?.name === name) {
+          shouldBreakIfDuplicate = true;
+          return new ExHandler('This name is already existed').showErrorToast();
+        }
+      });
+      if (!shouldBreakIfDuplicate) {
+        const receiver = {
+          name,
+          address,
+        };
+        await dispatch(
+          actionUpdate({
+            keySave,
+            receiver,
+          }),
+        );
+        Toast.showInfo('Updated!');
+        return navigation.pop();
+      } else {
+        return new ExHandler('This name is already existed').showErrorToast();
+      }
     } catch (error) {
       new ExHandler(error?.message || error).showErrorToast();
     }
