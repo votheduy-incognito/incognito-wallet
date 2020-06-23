@@ -150,20 +150,23 @@ class PappView extends Component {
       new Validator('onWebViewData payload', payload).required().string();
 
       const [command, data] = payload?.split('|');
-      new Validator('onWebViewData command', command).required().string();
-      new Validator('onWebViewData data', data).string();
+      if (command) {
+        new Validator('onWebViewData command', command).required().string();
+      }
+      if (data) {
+        new Validator('onWebViewData data', data).string();
+        const parsedData = JSON.parse(data);
 
-      const parsedData = JSON.parse(data);
-
-      switch (command) {
-      case CONSTANTSDK.COMMANDS.SEND_TX:
-        this.onRequestSendTx(parsedData);
-        break;
-      case CONSTANTSDK.COMMANDS.SELECT_PRIVACY_TOKEN_BY_ID:
-        this.onSdkSelectPrivacyById(parsedData?.tokenID);
-        break;
-      case CONSTANTSDK.COMMANDS.SET_LIST_SUPPORT_TOKEN_BY_ID:
-        this.onSdkSetSupportListTokenById(parsedData?.tokenIds);
+        switch (command) {
+        case CONSTANTSDK.COMMANDS.SEND_TX:
+          this.onRequestSendTx(parsedData);
+          break;
+        case CONSTANTSDK.COMMANDS.SELECT_PRIVACY_TOKEN_BY_ID:
+          this.onSdkSelectPrivacyById(parsedData?.tokenID);
+          break;
+        case CONSTANTSDK.COMMANDS.SET_LIST_SUPPORT_TOKEN_BY_ID:
+          this.onSdkSetSupportListTokenById(parsedData?.tokenIds);
+        }
       }
     } catch (e) {
       new ExHandler(e, 'The pApp occured an error. Please try again.').showErrorToast();
