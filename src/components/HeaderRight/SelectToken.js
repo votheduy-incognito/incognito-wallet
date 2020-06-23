@@ -19,11 +19,12 @@ class TokenInfo extends Component {
   }
 
   renderListToken = () => {
-    const { tokens, account, supportTokenIds } = this.props;
+    const { tokens, account } = this.props;
 
-    const supportTokens = tokens?.filter(token => supportTokenIds?.includes(token.id));
+    // No need to filter supportToken, get all of them
+    // const supportTokens = tokens?.filter(token => supportTokenIds?.includes(token.id));
 
-    if ((!supportTokens || supportTokens.length === 0) && !account) {
+    if ((!tokens || tokens.length === 0) && !account) {
       return <SimpleInfo text='There has no token to display' />;
     }
 
@@ -31,7 +32,7 @@ class TokenInfo extends Component {
       <Container>
         <FollowingTokenList
           account={account}
-          tokens={supportTokens}
+          tokens={tokens}
           onSelectToken={this.handleSelectToken}
           excludeTokenIds={[]}
         />
