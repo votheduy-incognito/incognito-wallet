@@ -181,7 +181,7 @@ class PappViewContainer extends Component {
           <PappView
             {...this.props}
             url={url}
-            selectedPrivacy={tokens}
+            selectedPrivacy={selectedPrivacy}
             supportTokenIds={supportTokenIds}
             onSelectPrivacyToken={this.handleSelectPrivacyToken}
             onSetListSupportTokenById={this.handleSetListSupportTokenById}
