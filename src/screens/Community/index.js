@@ -13,6 +13,7 @@ import { CircleBack } from '@src/components/Icons';
 import NavigationService from '@src/services/NavigationService';
 import Header from '@src/components/Header';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import { hasNotch } from 'react-native-device-info';
 import { COLORS } from '@src/styles';
 import styles from './style';
@@ -81,22 +82,18 @@ const Community = ({ navigation, isFocused }) => {
   const renderBottomBar = () => {
     return (
       <View style={styles.navigation}>
-        <View style={{flexDirection: 'row', flex: 1}}>
-          <TouchableOpacity onPress={()=>goBack()} style={styles.back}>
-            <Ionicons name="ios-arrow-back" size={30} color={COLORS.black} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={()=>goForward()} style={styles.back}>
-            <Ionicons name="ios-arrow-forward" size={30} color={COLORS.black} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.rightContainer}>
-          <TouchableOpacity onPress={()=>goHome()} style={styles.back}>
-            <Ionicons name="ios-home" size={30} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={()=>reload()} style={styles.back}>
-            <Ionicons name="ios-refresh" size={30} color="black" />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={()=>goBack()} style={styles.back}>
+          <Ionicons name="ios-arrow-back" size={30} color={COLORS.colorGreyBold} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={()=>goForward()} style={styles.back}>
+          <Ionicons name="ios-arrow-forward" size={30} color={COLORS.colorGreyBold} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={()=>goHome()} style={styles.back}>
+          <SimpleLineIcons name="home" size={25} color={COLORS.colorGreyBold} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={()=>reload()} style={styles.back}>
+          <Ionicons name="ios-refresh" size={30} color={COLORS.colorGreyBold} />
+        </TouchableOpacity>
       </View>
     );
   };

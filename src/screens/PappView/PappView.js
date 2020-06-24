@@ -212,7 +212,7 @@ class PappView extends Component {
       <View style={styles.navigation}>
         <View style={{flexDirection: 'row', flex: 1}}>
           <TouchableOpacity onPress={()=>this.onGoBack()} style={styles.back}>
-            <Ionicons name="ios-arrow-back" size={30} color={COLORS.black} />
+            <Ionicons name="ios-arrow-back" size={30} color={COLORS.colorGreyBold} />
           </TouchableOpacity>
         </View>
       </View>

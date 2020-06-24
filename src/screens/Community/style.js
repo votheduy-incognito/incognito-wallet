@@ -39,12 +39,11 @@ const style = StyleSheet.create({
     height: 70, 
     width: '100%', 
     flexDirection: 'row', 
-    paddingLeft: 10, 
     backgroundColor: 'white'
   },
   back: {
     height: 70, 
-    width: 50, 
+    width: '25%', 
     justifyContent: 'center', 
     alignContent: 'center', 
     alignItems: 'center', 

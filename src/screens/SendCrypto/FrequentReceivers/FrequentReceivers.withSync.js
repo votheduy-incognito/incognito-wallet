@@ -8,6 +8,8 @@ import LoadingContainer from '@src/components/LoadingContainer';
 import {useNavigationParam} from 'react-navigation-hooks';
 import {CONSTANT_KEYS} from '@src/constants';
 import {receiversSelector} from '@src/redux/selectors/receivers';
+import { searchBoxConfig } from '@src/components/Header/Header.searchBox';
+import { reset } from 'redux-form';
 
 const enhance = WrappedComp => props => {
   const [state, setState] = React.useState({
@@ -65,6 +67,7 @@ const enhance = WrappedComp => props => {
   };
 
   React.useEffect(() => {
+    dispatch(reset(searchBoxConfig.form));
     if (shouldSyncData) {
       syncReceivers();
     }
