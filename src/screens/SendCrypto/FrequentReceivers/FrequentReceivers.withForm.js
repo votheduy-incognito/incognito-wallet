@@ -27,7 +27,7 @@ const enhance = (WrappedComp) => (props) => {
   const isFormValid = useSelector((state) => isValid(formName)(state));
   const selector = formValueSelector(formName);
   const nameInput = useSelector((state) => selector(state, 'name')) || '';
-  const accounts = useSelector(receiversSelector)[CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK]['receivers'] || [];
+  const accounts = useSelector(receiversSelector)[keySave]['receivers'] || [];
   let shouldUpdate = nameInput !== name;
   const disabledBtn = !isFormValid || (isUpdate && !shouldUpdate);
   const onCreateReceiver = async ({ name, address }) => {

@@ -8,6 +8,8 @@ import LoadingContainer from '@src/components/LoadingContainer';
 import {useNavigationParam} from 'react-navigation-hooks';
 import {CONSTANT_KEYS} from '@src/constants';
 import {receiversSelector} from '@src/redux/selectors/receivers';
+import { searchBoxConfig } from '@src/components/Header/Header.searchBox';
+import { reset } from 'redux-form';
 
 const enhance = WrappedComp => props => {
   const [state, setState] = React.useState({
@@ -19,7 +21,7 @@ const enhance = WrappedComp => props => {
   const keySave = useNavigationParam('keySave');
   const {sync = false} = useSelector(receiversSelector)[keySave];
   const shouldSyncData =
-    keySave === CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK;
+    keySave === CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK && !sync;
   const syncData = async () => {
     try {
       const isAccListEmpty = accounts.length === 0;
@@ -65,6 +67,7 @@ const enhance = WrappedComp => props => {
   };
 
   React.useEffect(() => {
+    dispatch(reset(searchBoxConfig.form));
     if (shouldSyncData) {
       syncReceivers();
     }
