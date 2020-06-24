@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { tokenSeleclor, accountSeleclor } from '@src/redux/selectors';
 import { COLORS } from '@src/styles';
-import { View, Container, Modal, TouchableOpacity } from '../core';
+import { View, Container, Modal, TouchableOpacity, ScrollView } from '../core';
 import CryptoIcon from '../CryptoIcon';
 import { tokenInfoStyle } from './style';
 import SimpleInfo from '../SimpleInfo';
@@ -29,14 +29,14 @@ class TokenInfo extends Component {
     }
 
     return (
-      <Container>
+      <ScrollView>
         <FollowingTokenList
           account={account}
           tokens={tokens}
           onSelectToken={this.handleSelectToken}
           excludeTokenIds={[]}
         />
-      </Container>
+      </ScrollView>
     );
   };
 
