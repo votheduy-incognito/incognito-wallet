@@ -31,6 +31,29 @@ const style = StyleSheet.create({
     zIndex: 1, 
     width: 25, 
     height: 25
+  },
+  navigation: {
+    position: 'absolute', 
+    bottom: 15, 
+    left: 0, 
+    height: 70, 
+    width: '100%', 
+    flexDirection: 'row', 
+    paddingLeft: 10, 
+    backgroundColor: 'white'
+  },
+  back: {
+    height: 70, 
+    width: 50, 
+    justifyContent: 'center', 
+    alignContent: 'center', 
+    alignItems: 'center', 
+    marginEnd: 5
+  },
+  rightContainer: {
+    flexDirection: 'row', 
+    flex: 1, 
+    justifyContent: 'flex-end'
   }
 });
 
