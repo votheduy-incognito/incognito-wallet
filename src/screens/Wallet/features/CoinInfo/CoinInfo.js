@@ -26,7 +26,11 @@ const InfoItem = ({ label, value, copyable, link, onlyLabel, labelStyle }) => {
         </Text>
       )}
       {!!value && (
-        <Text numberOfLines={numberOfLinesValue || 1} ellipsizeMode="middle" style={styled.value}>
+        <Text
+          numberOfLines={numberOfLinesValue || 1}
+          ellipsizeMode="middle"
+          style={styled.value}
+        >
           {value}
         </Text>
       )}
@@ -85,7 +89,10 @@ const CoinInfo = (props) => {
               maxWidth: '100%',
             }}
             styledName={{
-              maxWidth: UTILS.deviceWidth(),
+              maxWidth: '100%',
+            }}
+            styledSymbol={{
+              maxWidth: '100%',
             }}
           />
           <View style={styled.infoContainer}>
