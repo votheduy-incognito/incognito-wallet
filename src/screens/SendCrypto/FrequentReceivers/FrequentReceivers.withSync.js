@@ -19,7 +19,7 @@ const enhance = WrappedComp => props => {
   const keySave = useNavigationParam('keySave');
   const {sync = false} = useSelector(receiversSelector)[keySave];
   const shouldSyncData =
-    keySave === CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK;
+    keySave === CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK && !sync;
   const syncData = async () => {
     try {
       const isAccListEmpty = accounts.length === 0;
