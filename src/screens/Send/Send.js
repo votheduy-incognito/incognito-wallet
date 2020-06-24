@@ -8,6 +8,8 @@ import SendForm from '@screens/SendCrypto/SendIn';
 import { useNavigation } from 'react-navigation-hooks';
 import { isIOS } from '@src/utils/platform';
 import routeNames from '@src/router/routeNames';
+import { BtnQuestionDefault } from '@src/components/Button';
+import NavigationService from '@src/services/NavigationService';
 import { styled } from './Send.styled';
 
 const Send = () => {
@@ -29,6 +31,7 @@ const Send = () => {
           titleStyled={styled.headerTitle}
           title={`Send ${selectedPrivacy?.externalSymbol ||
             selectedPrivacy?.symbol}`}
+          rightHeader={<BtnQuestionDefault onPress={()=>{NavigationService.navigate(routeNames.WhySend);}} />}
           onGoBack={onGoBack}
         />
         <SendForm

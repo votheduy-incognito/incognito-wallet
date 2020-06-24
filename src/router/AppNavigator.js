@@ -67,7 +67,7 @@ const AppNavigator = createStackNavigator(
       },
     ),
     [ROUTE_NAMES.WhySend]: navigationOptionsHandler(WhySend, {
-      title: 'Send',
+      header: () => null
     }),
     [ROUTE_NAMES.WhyReceive]: navigationOptionsHandler(WhyReceive, {
       title: 'Receive',

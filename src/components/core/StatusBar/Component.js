@@ -52,7 +52,8 @@ const {
   Keychain,
   CoinInfoVerify,
   FrequentReceivers,
-  FrequentReceiversForm
+  FrequentReceiversForm,
+  WhySend,
 } = routeNames;
 
 const whiteScreens = [
@@ -72,6 +73,7 @@ const whiteScreens = [
   ShieldGenQRCode,
   AddManually,
   ReceiveCrypto,
+  WhySend,
   UnShield,
   Trade,
   TradeConfirm,
