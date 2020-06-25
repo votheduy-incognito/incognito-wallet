@@ -70,6 +70,7 @@ const Community = ({ navigation, isFocused }) => {
       setBackable(state?.canGoBack);
       setUrl(MAIN_WEBSITE);
     } else if (!state.url.includes(MAIN_WEBSITE)) {
+      setBackable(state?.canGoBack);
       setUrl(MAIN_WEBSITE);
     } else {
       setUrl(state?.url);
@@ -78,8 +79,10 @@ const Community = ({ navigation, isFocused }) => {
 
   const goHome = async () => {
     setUrl(MAIN_WEBSITE);
-    webViewRef?.current?.reload();
     await LocalDatabase.setUriWebviewCommunity(MAIN_WEBSITE);
+    setTimeout(()=>{
+      webViewRef?.current?.reload();
+    }, 750);
   };
 
   const reload = () => {
@@ -95,8 +98,8 @@ const Community = ({ navigation, isFocused }) => {
         <TouchableOpacity onPress={() => goForward()} style={styles.back}>
           <Ionicons name="ios-arrow-forward" size={30} color={COLORS.colorGreyBold} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => goHome()} style={styles.back}>
-          <SimpleLineIcons name="home" size={25} color={COLORS.colorGreyBold} />
+        <TouchableOpacity style={styles.back}>
+          {/* <SimpleLineIcons name="home" size={25} color={COLORS.colorGreyBold} /> */}
         </TouchableOpacity>
         <TouchableOpacity onPress={() => reload()} style={styles.back}>
           <Ionicons name="ios-refresh" size={30} color={COLORS.colorGreyBold} />
@@ -110,17 +113,14 @@ const Community = ({ navigation, isFocused }) => {
       <Header title='Community' style={{ paddingLeft: 20 }} />
       <WebView
         key={`${url} ${new Date().getTime()}`}
+        startInLoadingState
         onLoadEnd={(data) => {
           setLoading(false);
         }}
-        onLoad={
-          e => {
-            setUrl(e.nativeEvent.url);
-          }
-        }
         userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1"
         source={{ uri: url }}
         ref={webViewRef}
+        useWebKit
         onNavigationStateChange={stateHandler}
         injectedJavaScript={`
         (function() {
@@ -149,7 +149,7 @@ const Community = ({ navigation, isFocused }) => {
           }
         }}
       />
-      {loading && <ActivityIndicator style={styles.loading} />}
+      {/* {loading && <ActivityIndicator style={styles.loading} />} */}
       {/* No need to add back button here */}
       {/* {backable && (
         <TouchableOpacity onPress={goBack} style={styles.backBtn}>
