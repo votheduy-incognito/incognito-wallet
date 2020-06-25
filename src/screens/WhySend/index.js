@@ -6,15 +6,15 @@ import styles from './style';
 const WhySend = () => {
   return (
     <ScrollView style={styles.container}>
-      <Header title="Why Send ?" />
+      <Header title="When to use Send ?" />
       <Text style={styles.title}>
-        When to use Send ?
+      Use Send to transfer assets to another Incognito address
       </Text>
-      <Text style={styles.text}>
-        Use Send to transfer assets to another Incognito address. Incognito addresses all begin with 12. All parties involved are anonymous, and the transaction is privacy-protected from start to finish.
+      <Text includeFontPadding={false} style={styles.text}>
+        Incognito addresses all begin with 12. All parties involved are anonymous, and the transaction is privacy-protected from start to finish.
       </Text>
       <Text style={styles.title}>Want to send assets to an external address?</Text>
-      <Text style={styles.text}>
+      <Text includeFontPadding={false} style={styles.text}>
         Use the Unshield function on the main Assets screen to exit the Incognito network. Unshielding turns your assets public again.
       </Text>
     </ScrollView>
