@@ -34,7 +34,7 @@ const style = StyleSheet.create({
     position: 'absolute', 
     bottom: 0, 
     left: 0, 
-    height: 50, 
+    height: 70, 
     width: ScreenWidth, 
     flexDirection: 'row', 
     paddingLeft: 10, 
