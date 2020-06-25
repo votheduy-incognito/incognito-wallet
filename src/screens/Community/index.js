@@ -19,6 +19,7 @@ import { COLORS } from '@src/styles';
 import _ from 'lodash';
 import styles from './style';
 
+var isBackable = false;
 const Community = ({ navigation, isFocused }) => {
   const webViewRef = useRef();
   const [loading, setLoading] = useState(true);
@@ -40,7 +41,7 @@ const Community = ({ navigation, isFocused }) => {
         if (val) {
           var pattern = /^((http|https|ftp):\/\/)/;
           if (!pattern.test(url)) {
-            setUrl(val);  
+            setUrl(val);
           } else {
             setUrl(MAIN_WEBSITE);
           }
@@ -51,29 +52,31 @@ const Community = ({ navigation, isFocused }) => {
       .catch(err => {
         setUrl(MAIN_WEBSITE);
       });
-    if (_.isEmpty(url)) {
+    if (url === 'about:blank') {
       setUrl(MAIN_WEBSITE);
     }
-  }, [url]);
+  }, []);
 
 
   const goBack = () => {
-    webViewRef.current.goBack();
-    if (backable) {
-      setBackable(false);
-    }
+    webViewRef?.current?.goBack();
   };
   const goForward = () => {
     webViewRef.current.goForward();
   };
 
   const stateHandler = (state) => {
-    if (!state.url.includes(MAIN_WEBSITE)) {
+    if (state?.url === 'about:blank') {
       setBackable(state?.canGoBack);
+      setUrl(MAIN_WEBSITE);
+    } else if (!state.url.includes(MAIN_WEBSITE)) {
+      setUrl(MAIN_WEBSITE);
+    } else {
+      setUrl(state?.url);
     }
   };
 
-  const goHome = async() => {
+  const goHome = async () => {
     setUrl(MAIN_WEBSITE);
     webViewRef?.current?.reload();
     await LocalDatabase.setUriWebviewCommunity(MAIN_WEBSITE);
@@ -86,16 +89,16 @@ const Community = ({ navigation, isFocused }) => {
   const renderBottomBar = () => {
     return (
       <View style={styles.navigation}>
-        <TouchableOpacity onPress={()=>goBack()} style={styles.back}>
+        <TouchableOpacity onPress={() => goBack()} style={styles.back}>
           <Ionicons name="ios-arrow-back" size={30} color={COLORS.colorGreyBold} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=>goForward()} style={styles.back}>
+        <TouchableOpacity onPress={() => goForward()} style={styles.back}>
           <Ionicons name="ios-arrow-forward" size={30} color={COLORS.colorGreyBold} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=>goHome()} style={styles.back}>
+        <TouchableOpacity onPress={() => goHome()} style={styles.back}>
           <SimpleLineIcons name="home" size={25} color={COLORS.colorGreyBold} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=>reload()} style={styles.back}>
+        <TouchableOpacity onPress={() => reload()} style={styles.back}>
           <Ionicons name="ios-refresh" size={30} color={COLORS.colorGreyBold} />
         </TouchableOpacity>
       </View>
@@ -104,14 +107,14 @@ const Community = ({ navigation, isFocused }) => {
 
   return (
     <View style={styles.container}>
-      <Header title='Community' style={{paddingLeft: 20}} />
+      <Header title='Community' style={{ paddingLeft: 20 }} />
       <WebView
+        key={`${url} ${new Date().getTime()}`}
         onLoadEnd={(data) => {
           setLoading(false);
         }}
         onLoad={
           e => {
-            // Update the state so url changes could be detected by React and we could load the mainUrl.
             setUrl(e.nativeEvent.url);
           }
         }
