@@ -43,11 +43,10 @@ const style = StyleSheet.create({
   },
   back: {
     height: 70, 
-    width: 50, 
+    width: '25%', 
     justifyContent: 'center', 
     alignContent: 'center', 
     alignItems: 'center', 
-    marginEnd: 5
   },
   rightContainer: {
     flexDirection: 'row', 
