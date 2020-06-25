@@ -16,6 +16,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import { hasNotch } from 'react-native-device-info';
 import { COLORS } from '@src/styles';
+import _ from 'lodash';
 import styles from './style';
 
 const Community = ({ navigation, isFocused }) => {
@@ -50,7 +51,10 @@ const Community = ({ navigation, isFocused }) => {
       .catch(err => {
         setUrl(MAIN_WEBSITE);
       });
-  }, []);
+    if (_.isEmpty(url)) {
+      setUrl(MAIN_WEBSITE);
+    }
+  }, [url]);
 
 
   const goBack = () => {
