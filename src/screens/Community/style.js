@@ -34,9 +34,9 @@ const style = StyleSheet.create({
   },
   navigation: {
     position: 'absolute', 
-    bottom: 15, 
+    bottom: 5, 
     left: 0, 
-    height: 70, 
+    height: 75, 
     width: '100%', 
     flexDirection: 'row', 
     backgroundColor: 'white'
