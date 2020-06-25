@@ -47,7 +47,8 @@ const style = StyleSheet.create({
     justifyContent: 'center', 
     alignContent: 'center', 
     alignItems: 'center', 
-    marginEnd: 5
+    marginEnd: 5,
+    paddingBottom: 10
   },
   rightContainer: {
     flexDirection: 'row', 
