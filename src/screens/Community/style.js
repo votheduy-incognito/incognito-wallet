@@ -34,7 +34,7 @@ const style = StyleSheet.create({
   },
   navigation: {
     position: 'absolute', 
-    bottom: 5, 
+    bottom: 0, 
     left: 0, 
     height: 75, 
     width: '100%', 
