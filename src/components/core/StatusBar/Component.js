@@ -6,105 +6,21 @@ import DeviceInfo from 'react-native-device-info';
 import routeNames from '@src/router/routeNames';
 
 const {
-  GetStarted,
-  Game,
   Wizard,
   Node,
   Dex,
   DexHistory,
   DexHistoryDetail,
-  AddPin,
-  Community,
-  Home,
-  Stake,
-  CreateToken,
-  HomeWallet,
-  Wallet,
-  FollowToken,
-  Shield,
-  WhyShield,
-  WalletDetail,
-  Send,
-  ShieldGenQRCode,
-  AddManually,
-  ReceiveCrypto,
-  UnShield,
-  Trade,
-  TradeConfirm,
-  TradeHistoryDetail,
-  TradeHistory,
-  SelectAccount,
-  TokenSelectScreen,
-  UnShieldModal,
-  pApp,
-  TxHistoryDetail,
-  ImportAccount,
-  CreateAccount,
-  ExportAccount,
-  BackupKeys,
-  Setting,
-  NetworkSetting,
-  WhyUnshield,
-  ExportAccountModal,
-  AddressBook,
-  AddressBookForm,
-  CoinInfo,
-  Keychain,
-  CoinInfoVerify,
   FrequentReceivers,
-  FrequentReceiversForm,
-  WhySend,
 } = routeNames;
 
-const whiteScreens = [
-  Game,
-  AddPin,
-  Community,
-  Home,
-  CreateToken,
-  HomeWallet,
-  SelectAccount,
-  FollowToken,
-  Wallet,
-  Shield,
-  WhyShield,
-  WalletDetail,
-  Send,
-  ShieldGenQRCode,
-  AddManually,
-  ReceiveCrypto,
-  WhySend,
-  UnShield,
-  Trade,
-  TradeConfirm,
-  TradeHistory,
-  TradeHistoryDetail,
-  SelectAccount,
-  TokenSelectScreen,
-  UnShieldModal,
-  pApp,
-  TxHistoryDetail,
-  ImportAccount,
-  CreateAccount,
-  ExportAccount,
-  BackupKeys,
-  Setting,
-  NetworkSetting,
-  WhyUnshield,
-  ExportAccountModal,
-  AddressBook,
-  AddressBookForm,
-  CoinInfo,
-  Keychain,
-  CoinInfoVerify,
+const dark4Screens = [
   FrequentReceivers,
-  FrequentReceiversForm
 ];
 const blue2Screens = [];
 const blue1Screens = [Node];
 const dark2Screen = [Dex, DexHistory, DexHistoryDetail];
 const blackScreen = [Wizard];
-const linearScreen = [Stake];
 
 const isIOS = Platform.OS === 'ios';
 const isIphoneX = DeviceInfo.hasNotch();
@@ -119,11 +35,9 @@ const StatusBar = React.memo(({ currentScreen }) => {
   let backgroundColor;
   let textColor;
 
-  if (linearScreen.includes(currentScreen)) {
-    return null;
-  } else if (whiteScreens.includes(currentScreen)) {
-    backgroundColor = COLORS.white;
-    textColor = 'dark-content';
+  if (dark4Screens.includes(currentScreen)) {
+    backgroundColor = COLORS.dark4;
+    textColor = 'light-content';
   } else if (blue2Screens.includes(currentScreen)) {
     backgroundColor = COLORS.blue2;
     textColor = 'light-content';
@@ -137,8 +51,8 @@ const StatusBar = React.memo(({ currentScreen }) => {
     backgroundColor = COLORS.black;
     textColor = 'light-content';
   } else {
-    backgroundColor = COLORS.dark4;
-    textColor = 'light-content';
+    backgroundColor = COLORS.white;
+    textColor = 'dark-content';
   }
 
   if (!isIOS) {
