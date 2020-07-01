@@ -30,6 +30,7 @@ const Provide = ({
             placeholder="0"
             editable={false}
             value={displayFullTotalRewards}
+            keyboardType="decimal-pad"
           />
           <Text style={styles.symbol}>{coin.symbol}</Text>
         </Row>

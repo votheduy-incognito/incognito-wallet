@@ -27,6 +27,10 @@ const withConfirm = WrappedComp => (props) => {
     }
   };
 
+  React.useEffect(() => {
+    setError(props.error);
+  }, [props.error]);
+
   return (
     <WrappedComp
       {...{
