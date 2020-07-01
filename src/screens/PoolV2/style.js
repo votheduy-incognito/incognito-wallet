@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { FONT, COLORS, UTILS } from '@src/styles';
+import { isAndroid } from '@utils/platform';
 
 export default StyleSheet.create({
   flex: {
@@ -42,5 +43,21 @@ export default StyleSheet.create({
   },
   disabled: {
     opacity: 0.5,
+  },
+  input: {
+    fontFamily: FONT.NAME.bold,
+    fontSize: 26,
+    height: isAndroid() ? 52 : 'auto',
+    padding: 0,
+    flex: 1,
+    marginRight: 15,
+    marginBottom: isAndroid() ? -UTILS.heightScale(8) : 0,
+  },
+  inputContainer: {
+    marginBottom: UTILS.heightScale(8)
+  },
+  symbol: {
+    fontSize: UTILS.heightScale(20),
+    fontFamily: FONT.NAME.bold,
   },
 });
