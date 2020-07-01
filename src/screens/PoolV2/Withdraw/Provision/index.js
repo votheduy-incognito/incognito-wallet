@@ -42,6 +42,7 @@ const Provide = ({
             placeholder="0"
             onChangeText={onChangeInputText}
             value={inputText}
+            keyboardType="decimal-pad"
           />
           <BtnInfinite
             style={styles.symbol}

@@ -40,6 +40,7 @@ const CoinList = ({
               onRefresh={() => onLoad(account)}
             />
           )}
+          style={styles.scrollView}
         >
           {coins.map(item => (
             <Row style={mainStyles.coin} key={item.symbol}>
@@ -64,6 +65,7 @@ const CoinList = ({
             onRefresh={() => onLoad(account)}
           />
         )}
+        style={styles.scrollView}
       >
         {data.map(item => (
           <View style={mainStyles.coin} key={item.symbol}>

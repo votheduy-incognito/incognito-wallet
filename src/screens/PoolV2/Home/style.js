@@ -69,4 +69,7 @@ export default StyleSheet.create({
     color: COLORS.newGrey,
     fontSize: 18,
   },
+  scrollView: {
+    marginBottom: UTILS.heightScale(30),
+  },
 });
