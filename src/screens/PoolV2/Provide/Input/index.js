@@ -49,16 +49,16 @@ const Provide = ({
     <View style={mainStyle.flex}>
       <Header title="Provide" />
       <View style={mainStyle.coinContainer}>
-        <Row center spaceBetween style={styles.inputContainer}>
+        <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
-            style={styles.input}
+            style={mainStyle.input}
             placeholder="0"
             onChangeText={onChangeInputText}
             value={inputText}
             keyboardType="decimal-pad"
           />
           <BtnInfinite
-            style={styles.symbol}
+            style={mainStyle.symbol}
             onPress={handleMax}
           />
         </Row>

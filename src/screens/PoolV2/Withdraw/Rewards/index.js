@@ -24,15 +24,15 @@ const Provide = ({
     <View style={mainStyle.flex}>
       <Header title="Withdraw rewards" />
       <View style={mainStyle.coinContainer}>
-        <Row center spaceBetween style={styles.inputContainer}>
+        <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
-            style={styles.input}
+            style={mainStyle.input}
             placeholder="0"
             editable={false}
             value={displayFullTotalRewards}
             keyboardType="decimal-pad"
           />
-          <Text style={styles.symbol}>{coin.symbol}</Text>
+          <Text style={mainStyle.symbol}>{coin.symbol}</Text>
         </Row>
         <Text style={mainStyle.error} numberOfLines={2}>{error}</Text>
         <RoundCornerButton
