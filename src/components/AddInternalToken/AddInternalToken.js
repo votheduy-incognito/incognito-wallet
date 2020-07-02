@@ -34,7 +34,7 @@ const Form = createForm(formName, { initialValues });
 const descriptionMaxLength = validator.maxLength(255);
 const isEmail = validator.email();
 const imageValidate = [
-  validator.fileTypes(['jpeg/png']),
+  validator.fileTypes(['jpeg', 'png']),
   validator.maxFileSize(50),
 ];
 
@@ -75,7 +75,7 @@ class AddInternalToken extends Component {
     navigation?.navigate(ROUTES_NAME.Wallet);
   };
 
-  handleSaveCoinInfo = async data => {
+  handleSaveCoinInfo = async (data) => {
     try {
       return await addTokenInfo(data);
     } catch (e) {
@@ -87,7 +87,7 @@ class AddInternalToken extends Component {
   };
 
   // estimate fee when user update isPrivacy or amount, and toAddress is not null
-  handleEstimateFee = async values => {
+  handleEstimateFee = async (values) => {
     const { account, wallet } = this.props;
 
     const { fromAddress, toAddress, name, symbol, amount } = values;
@@ -125,7 +125,7 @@ class AddInternalToken extends Component {
     }
   };
 
-  handleCreateSendToken = async values => {
+  handleCreateSendToken = async (values) => {
     const { account, wallet, setWallet, getInternalTokenList } = this.props;
 
     const {
@@ -430,7 +430,7 @@ const mapDispatch = {
   getInternalTokenList,
 };
 
-const mapState = state => ({
+const mapState = (state) => ({
   amount: selector(state, 'amount'),
   name: selector(state, 'name'),
   symbol: selector(state, 'symbol'),

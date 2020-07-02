@@ -123,7 +123,7 @@ class GetStartedContainer extends Component {
           await getPTokenList(),
           await getInternalTokenList(),
         ]);
-        this.setState({ pTokens });
+        await this.setState({ pTokens });
       } catch (e) {
         throw new CustomError(ErrorCode.getStarted_load_token_failed, {
           rawError: e,

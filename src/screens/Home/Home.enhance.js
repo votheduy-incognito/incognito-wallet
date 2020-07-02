@@ -125,7 +125,6 @@ const withPin = (WrappedComp) =>
           navigation?.navigate(routeNames.AddPin, { action: 'login' });
           AddPin.waiting = false;
         }
-
         if (WithdrawHistory.withdrawing) {
           AddPin.waiting = true;
         }
@@ -155,8 +154,8 @@ withPin.propTypes = {
 export default compose(
   withNavigation,
   connect(mapState),
-  withPin,
   withFCM,
+  withPin,
   withWallet,
   withLayout_2,
   enhance,
