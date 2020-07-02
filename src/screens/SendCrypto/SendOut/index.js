@@ -82,6 +82,7 @@ class WithdrawContainer extends Component {
         originalFee,
         isUsedPRVFee,
         feeForBurn,
+        memo
       } = payload;
       const { account, wallet, selectedPrivacy } = this.props;
       const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
@@ -110,6 +111,7 @@ class WithdrawContainer extends Component {
         wallet,
         isUsedPRVFee ? paymentInfo : null,
         isUsedPRVFee ? 0 : originalFee,
+        memo
       );
       if (res.txId) {
         return res;
