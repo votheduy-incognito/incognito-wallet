@@ -58,7 +58,7 @@ const Provide = ({
         />
         <ExtraInfo
           left="Balance"
-          right={`${coin.displayBalance} ${coin.symbol}`}
+          right={`${coin.displayFullBalance} ${coin.symbol}`}
           style={mainStyle.coinExtra}
         />
         <Text style={mainStyle.coinExtra}>

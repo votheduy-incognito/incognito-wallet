@@ -70,7 +70,7 @@ const Provide = ({
           onPress={handleProvide}
           disabled={!!error || !inputText}
         />
-        <ExtraInfo left="Balance" right={`${coin.displayBalance} ${coin.symbol}`} />
+        <ExtraInfo left="Balance" right={`${coin.displayFullBalance} ${coin.symbol}`} />
       </View>
     </View>
   );
