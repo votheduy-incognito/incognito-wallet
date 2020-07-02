@@ -42,8 +42,8 @@ const withPoolData = WrappedComp => (props) => {
     const totalReducer = (accumulator, item) => accumulator + item.rewardBalance;
     const totalRewards = userData.reduce(totalReducer, 0);
 
-    const displayFullTotalRewards = formatUtils.amountFull(totalRewards, COINS.PRV.pDecimals, true);
-    const displayClipTotalRewards = formatUtils.amountFull(totalRewards, COINS.PRV.pDecimals, false);
+    const displayClipTotalRewards = formatUtils.amountFull(totalRewards, COINS.PRV.pDecimals, true);
+    const displayFullTotalRewards = formatUtils.amountFull(totalRewards, COINS.PRV.pDecimals, false);
 
     setTotalRewards(totalRewards);
     setDisplayClipTotalRewards(displayClipTotalRewards.toString());
