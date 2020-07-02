@@ -38,8 +38,6 @@ const hasSpendingCoins = async (indexAccount, wallet, amount, tokenId) => {
 
   let histories;
 
-  await wallet.updateStatusHistory();
-
   histories = await account.getNormalTxHistory();
   histories = histories.concat(await account.getPrivacyTokenTxHistory());
 
