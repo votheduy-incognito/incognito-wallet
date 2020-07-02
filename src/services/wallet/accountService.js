@@ -89,7 +89,7 @@ export default class Account {
   }
 
   // paymentInfos = [{ paymentAddressStr: toAddress, amount: amount}];
-  static async createAndSendNativeToken(paymentInfos, fee, isPrivacy, account, wallet, info) {
+  static async createAndSendNativeToken(paymentInfos, fee, isPrivacy, account, wallet, info = '') {
     console.log('Wallet.ProgressTx: ', Wallet.ProgressTx);
     // paymentInfos: payment address string, amount in Number (miliconstant)
     // await Wallet.resetProgressTx();
@@ -97,7 +97,9 @@ export default class Account {
     const indexAccount = wallet.getAccountIndexByName(account.name || account.AccountName);
     // create and send constant
     let result;
-    const infoStr = ![undefined, null].includes(info) ? JSON.stringify(info) : undefined;
+
+    const infoStr = typeof info !== 'string' ? JSON.stringify(info) : info;
+
     result = await wallet.MasterAccount.child[
       indexAccount
     ].createAndSendNativeToken(paymentInfos, fee, isPrivacy, infoStr);

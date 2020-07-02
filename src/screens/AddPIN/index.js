@@ -9,6 +9,7 @@ import { updatePin } from '@src/redux/actions/pin';
 import { Icon } from 'react-native-elements';
 import convertUtil from '@utils/convert';
 import icFaceId from '@src/assets/images/icons/ic_faceid.png';
+import routeNames from '@src/router/routeNames';
 import styles from './styles';
 
 export const TAG = 'AddPIN';
@@ -36,7 +37,7 @@ class AddPIN extends React.Component {
     super(props);
 
     const { action } = props.navigation?.state?.params;
-
+    
     this.state = {
       pin1: '',
       pin2: '',
@@ -178,6 +179,7 @@ class AddPIN extends React.Component {
   };
 
   handleBioAuth = () => {
+    const { navigation } = this.props;
     TouchID.authenticate('', optionalConfigObject)
       .then(() => {
         const { action } = this.state;
@@ -188,7 +190,10 @@ class AddPIN extends React.Component {
         }
       })
       .catch(() => {
-        this.removeSuccess();
+        //handle when type 'Cancel'
+        navigation.navigate(routeNames.AddPin, {
+          action: 'login',
+        });
       });
   };
 
