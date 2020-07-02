@@ -58,6 +58,7 @@ export class UserCoinPoolModel {
 
     this.displayReward = formatUtil.amountFull(this.rewardBalance, this.pDecimals, true);
     this.displayBalance = formatUtil.amountFull(this.balance, this.pDecimals, true);
+    this.displayFullBalance = formatUtil.amountFull(this.balance, this.pDecimals, false);
     this.displayPendingBalance = formatUtil.amountFull(this.pendingBalance, this.pDecimals, true);
     this.displayUnstakeBalance = formatUtil.amountFull(this.unstakePendingBalance, this.pDecimals, true);
     this.displayWithdrawReward = formatUtil.amountFull(this.withdrawPendingBalance, this.pDecimals, true);
