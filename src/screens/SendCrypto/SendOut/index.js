@@ -29,6 +29,9 @@ import {
   actionInit,
 } from '@src/components/EstimateFee/EstimateFee.actions';
 import convert from '@src/utils/convert';
+import accountService from '@services/wallet/accountService';
+import { MESSAGES } from '@screens/Dex/constants';
+import Toast from '@components/core/Toast/Toast';
 import Withdraw, { formName } from './Withdraw';
 
 class WithdrawContainer extends Component {
@@ -186,8 +189,31 @@ class WithdrawContainer extends Component {
         isUsedPRVFee,
         remoteAddress,
         memo,
+        originalAmount,
         originalFee,
       } = payload;
+      const {
+        account,
+        wallet,
+        selectedPrivacy,
+      } = this.props;
+
+      const prvFee = isUsedPRVFee ? originalFee : 0;
+      const tokenFee = isUsedPRVFee ? 0 : originalFee;
+
+      let spendingPRV;
+      let spendingCoin;
+
+      if (prvFee) {
+        spendingPRV = await accountService.hasSpendingCoins(account, wallet, prvFee);
+      }
+
+      spendingCoin = await accountService.hasSpendingCoins(account, wallet, originalAmount + tokenFee, selectedPrivacy.tokenId);
+
+      if (spendingCoin || spendingPRV) {
+        return Toast.showError(MESSAGES.PENDING_TRANSACTIONS);
+      }
+
       const tempAddress = await this.getWithdrawAddress({
         amount,
         paymentAddress: remoteAddress,
