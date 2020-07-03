@@ -137,7 +137,7 @@ export const Amount = (props) => {
   return (
     <NormalText
       style={[styled.bottomText, styled.boldText, customStyle]}
-      text={`${format.amount(floor(amount, 9), pDecimals)} ${
+      text={`${format.amount(floor(amount, pDecimals), pDecimals, true)} ${
         showSymbol ? symbol : ''
       }`}
       hasPSymbol={hasPSymbol}

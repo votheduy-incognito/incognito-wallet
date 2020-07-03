@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { CONSTANT_COMMONS } from '@src/constants';
-import { fromPairs } from 'lodash';
+import { fromPairs, floor } from 'lodash';
 import {
   pTokensSelector,
   internalTokensSelector,
@@ -37,15 +37,15 @@ export const availableTokensSelector = createSelector(
   tokensFollowedSelector,
   selectedPrivacySeleclor.getPrivacyDataByTokenID,
   (pTokens, internalTokens, followedTokens, getPrivacyDataByTokenID) => {
-    const followedTokenIds = followedTokens.map(t => t?.id) || [];
+    const followedTokenIds = followedTokens.map((t) => t?.id) || [];
     const allTokenIds = Object.keys(
       fromPairs([
-        ...internalTokens?.map(t => [t?.id]),
-        ...pTokens?.map(t => [t?.tokenId]),
+        ...internalTokens?.map((t) => [t?.id]),
+        ...pTokens?.map((t) => [t?.tokenId]),
       ]),
     );
     const tokens = [];
-    allTokenIds?.forEach(tokenId => {
+    allTokenIds?.forEach((tokenId) => {
       const token = getPrivacyDataByTokenID(tokenId);
       if (token?.name && token?.symbol && token.tokenId) {
         let _token = { ...token };
@@ -55,7 +55,7 @@ export const availableTokensSelector = createSelector(
         tokens.push(_token);
       }
     });
-    const excludeRPV = token => token?.tokenId !== CONSTANT_COMMONS.PRV.id;
+    const excludeRPV = (token) => token?.tokenId !== CONSTANT_COMMONS.PRV.id;
     return uniqBy(tokens.filter(excludeRPV), 'tokenId') || [];
   },
 );
@@ -66,9 +66,9 @@ export const totalShieldedTokensSelector = createSelector(
   defaultAccountBalanceSelector,
   tokensFollowedSelector,
   (availableTokens, getPrivacyDataByTokenID, accountBalance, followed) => {
-    const tokens = followed.map(token =>
+    const tokens = followed.map((token) =>
       availableTokens.find(
-        t => t?.tokenId === token?.id || t?.tokenId === token?.tokenId,
+        (t) => t?.tokenId === token?.id || t?.tokenId === token?.tokenId,
       ),
     );
     const prv = {
@@ -77,14 +77,12 @@ export const totalShieldedTokensSelector = createSelector(
     };
     const totalShieldedTokens = [...tokens, prv].reduce(
       (prevValue, currentValue) => {
-        let _currentValue =
-          currentValue?.pricePrv *
-          convert.toNumber(
-            convert.toHumanAmount(
-              currentValue?.amount,
-              currentValue?.pDecimals,
-            ),
-          );
+        const pricePrv = currentValue?.pricePrv || 0;
+        const humanAmount = convert.toHumanAmount(
+          currentValue?.amount,
+          currentValue?.pDecimals,
+        );
+        let _currentValue = pricePrv * convert.toNumber(humanAmount);
         if (isNaN(_currentValue)) {
           _currentValue = 0;
         }
@@ -92,13 +90,17 @@ export const totalShieldedTokensSelector = createSelector(
       },
       0,
     );
-    return totalShieldedTokens;
+    return convert.toOriginalAmount(
+      totalShieldedTokens,
+      CONSTANT_COMMONS.PRV.pDecimals,
+      true,
+    );
   },
 );
 
 export const unFollowTokensSelector = createSelector(
   availableTokensSelector,
-  tokens => tokens.filter(token => !(token?.isFollowed === true)),
+  (tokens) => tokens.filter((token) => !(token?.isFollowed === true)),
 );
 
 export default {
