@@ -10,6 +10,7 @@ import withPoolData from '@screens/PoolV2/Home/data.enhance';
 import withDefaultAccount from '@components/Hoc/withDefaultAccount';
 import { Header, LoadingContainer } from '@src/components/';
 import withHistories from '@screens/PoolV2/histories.enhance';
+import withRetry from '@screens/PoolV2/Home/retry.enhance';
 import styles from './style';
 
 const Home = ({
@@ -87,4 +88,5 @@ export default compose(
   withDefaultAccount,
   withPoolData,
   withHistories,
+  withRetry,
 )(Home);
