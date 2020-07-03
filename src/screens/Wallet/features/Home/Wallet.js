@@ -119,7 +119,7 @@ const Balance = () => {
     <View style={[styledBalance.container, styled.hook]}>
       <Amount
         amount={totalShielded}
-        pDecimals={0}
+        pDecimals={CONSTANT_COMMONS.PRV.pDecimals}
         showSymbol={false}
         isGettingBalance={isGettingTotalBalance}
         showGettingBalance
