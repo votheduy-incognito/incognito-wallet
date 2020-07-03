@@ -18,7 +18,6 @@ const withRetry = WrappedComp => (props) => {
       txs.splice(txIndex, 1);
     } catch (e) {
       if (e.code === apiCode.api_tx_added) {
-        await provide(tx.paymentAddress, tx.txId, tx.signPublicKeyEncode, tx.value);
         txs.splice(txIndex, 1);
       } else {
         new ExHandler(e).showErrorToast(true);
