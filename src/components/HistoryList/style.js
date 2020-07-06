@@ -1,4 +1,4 @@
-import { FONT, COLORS, DECOR } from '@src/styles';
+import { FONT, COLORS, DECOR, UTILS } from '@src/styles';
 import { StyleSheet } from 'react-native';
 import { isIOS } from '@src/utils/platform';
 
@@ -13,6 +13,7 @@ const style = StyleSheet.create({
     borderRadius: DECOR.borderRadiusBorder,
   },
   row: {
+    flex: 1,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -63,22 +64,17 @@ const style = StyleSheet.create({
     marginBottom: 15,
   },
   title: {
-    flex: 1,
-    color: COLORS.black,
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 4,
+    color: COLORS.black,
   },
-  desc: {
-    flex: 1,
+  text: {
+    maxWidth: UTILS.screenWidth() / 2 - 50,
     color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
-  },
-  leftText: {
-    textAlign: 'left',
-  },
-  righText: {
-    textAlign: 'right',
+    lineHeight: FONT.SIZE.medium + 4,
   },
 });
 
