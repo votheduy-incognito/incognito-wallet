@@ -86,7 +86,7 @@ Home.defaultProps = {
 export default compose(
   withLayout_2,
   withDefaultAccount,
-  withPoolData,
   withHistories,
+  withPoolData,
   withRetry,
 )(Home);
