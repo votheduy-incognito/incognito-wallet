@@ -94,7 +94,7 @@ export class PoolHistory {
     this.coin = coins.find(coin => coin.id === this.coinId);
 
     if (this.coin) {
-      this.description = `${formatUtil.amountFull(this.amount, this.coin.pDecimals)} ${this.coin.symbol}`;
+      this.description = `${formatUtil.amountFull(this.amount, this.coin.pDecimals, true)} ${this.coin.symbol}`;
     }
 
     this.status = [
