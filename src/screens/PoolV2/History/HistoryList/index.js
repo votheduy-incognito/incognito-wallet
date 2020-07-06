@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { compose } from 'recompose';
-import { View, Text, TouchableOpacity } from '@components/core';
+import { View, Text, TouchableOpacity, ActivityIndicator } from '@components/core';
 import { withLayout_2 } from '@components/Layout';
 import Header from '@components/Header/index';
 import { VirtualizedList } from 'react-native';
@@ -21,6 +21,7 @@ const History = ({
   isLoadingHistories,
   onReloadHistories,
   onLoadMoreHistories,
+  isLoadingMoreHistories,
 }) => {
   const navigation = useNavigation();
   const viewDetail = (item) => {
@@ -41,6 +42,10 @@ const History = ({
     </TouchableOpacity>
   );
 
+  const renderFooter = () => isLoadingMoreHistories ?
+    <ActivityIndicator /> : null;
+
+
   return (
     <View style={styles.wrapper}>
       <Header title="Provider history" />
@@ -58,6 +63,7 @@ const History = ({
             onEndReachedThreshold={0.1}
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
+            ListFooterComponent={renderFooter}
           />
         ) : <LoadingContainer /> }
       </View>
@@ -68,11 +74,13 @@ const History = ({
 History.propTypes = {
   histories: PropTypes.array,
   isLoadingHistories: PropTypes.bool,
+  isLoadingMoreHistories: PropTypes.bool,
 };
 
 History.defaultProps = {
   histories: null,
   isLoadingHistories: false,
+  isLoadingMoreHistories: false,
 };
 
 export default compose(

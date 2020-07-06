@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { getHistories } from '@services/api/pool';
 import { ExHandler } from '@services/exception';
 import { MESSAGES } from '@src/constants';
-import { useFocusEffect, useNavigationParam } from 'react-navigation-hooks';
+import { useNavigationParam } from 'react-navigation-hooks';
 import { LIMIT } from './constants';
 
 const withHistories = WrappedComp => (props) => {
@@ -14,26 +14,18 @@ const withHistories = WrappedComp => (props) => {
   const coins = useNavigationParam('coins');
   const { account } = props;
 
-  useFocusEffect(useCallback(() => {
-    reload();
-  }, [account.PaymentAddress]));
-
   const reload = () => {
     if (!loading) {
       debounceLoadHistories.cancel();
       if (page !== 1) {
         setPage(1);
       } else {
-        loadHistories(account, page);
+        loadHistories(account, page, total, histories);
       }
     }
   };
 
   const loadHistories = async (account, page, total, histories) => {
-    if (total !== null && histories?.length >= total) {
-      return;
-    }
-
     try {
       setLoading(true);
       const data = await getHistories(account, page, LIMIT, coins || []);
@@ -56,7 +48,7 @@ const withHistories = WrappedComp => (props) => {
 
   const loadMore = () => {
     if (!loading) {
-      setPage(page + 1);
+      setPage(Math.floor(histories.length / LIMIT) + 1);
     }
   };
 
@@ -80,7 +72,8 @@ const withHistories = WrappedComp => (props) => {
       {...{
         ...props,
         histories,
-        isLoadingHistories: loading,
+        isLoadingHistories: page <= 1 && loading,
+        isLoadingMoreHistories: page > 1 && loading,
         onLoadMoreHistories: loadMore,
         onReloadHistories: reload,
       }}
