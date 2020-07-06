@@ -12,19 +12,18 @@ const withHistories = WrappedComp => (props) => {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(null);
   const coins = useNavigationParam('coins');
+  const { account } = props;
 
   useFocusEffect(useCallback(() => {
     reload();
-  }, []));
-
-  const { account } = props;
+  }, [account.PaymentAddress]));
 
   const reload = () => {
     if (!loading) {
+      debounceLoadHistories.cancel();
       if (page !== 1) {
         setPage(1);
       } else {
-        debounceLoadHistories.cancel();
         loadHistories(account, page);
       }
     }
