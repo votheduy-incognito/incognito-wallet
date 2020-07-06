@@ -1,4 +1,10 @@
-import { Text, Button, View, Toast } from '@src/components/core';
+import {
+  Text,
+  Button,
+  View,
+  Toast,
+  KeyboardAwareScrollView,
+} from '@src/components/core';
 import LoadingTx from '@src/components/LoadingTx';
 import { Field, change, isValid, formValueSelector } from 'redux-form';
 import {
@@ -72,7 +78,7 @@ class AddInternalToken extends Component {
 
   goBack = () => {
     const { navigation } = this.props;
-    navigation?.navigate(ROUTES_NAME.Wallet);
+    navigation?.navigate(ROUTES_NAME.Home);
   };
 
   handleSaveCoinInfo = async (data) => {
@@ -244,10 +250,10 @@ class AddInternalToken extends Component {
       !isGettingFee && typeof fee === 'number' && !isNotEnoughFee;
     const disabled = !isCanSubmit;
     return (
-      <View style={styleSheet.container}>
-        <Form style={styleSheet.form}>
+      <KeyboardAwareScrollView>
+        <Form>
           {({ handleSubmit, submitting }) => (
-            <>
+            <View style={styleSheet.container}>
               <View style={styleSheet.fields}>
                 <View style={[styleSheet.block, { marginTop: 0 }]}>
                   <Field
@@ -395,11 +401,11 @@ class AddInternalToken extends Component {
                 isAsync
                 isLoading={isGettingFee || submitting}
               />
-            </>
+            </View>
           )}
         </Form>
         {isCreatingOrSending && <LoadingTx />}
-      </View>
+      </KeyboardAwareScrollView>
     );
   }
 }

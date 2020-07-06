@@ -130,6 +130,17 @@ const HistoryItemWrapper = ({ history, onCancelEtaHistory, ...otherProps }) => {
   return component;
 };
 
+const NormalText = ({ style, text, ...rest }) => (
+  <Text
+    numberOfLines={1}
+    style={[styleSheet.text, style]}
+    ellipsizeMode="tail"
+    {...rest}
+  >
+    {trim(text)}
+  </Text>
+);
+
 const HistoryItem = ({ history }) => {
   const navigation = useNavigation();
   if (!history) {
@@ -164,41 +175,30 @@ const HistoryItem = ({ history }) => {
   return (
     <TouchableOpacity onPress={onPress} style={styleSheet.itemContainer}>
       <View style={[styleSheet.row, styleSheet.rowTop]}>
-        <Text
-          style={[styleSheet.title, styleSheet.leftText]}
-          numberOfLines={1}
-          ellipsizeMode="tail"
+        <NormalText
+          text={typeText}
+          style={styleSheet.title}
           {...generateTestId(TOKEN.TRANSACTION_TYPE)}
-        >
-          {typeText}
-        </Text>
-        <Text
-          style={[styleSheet.title, styleSheet.righText]}
-          numberOfLines={1}
-          ellipsizeMode="tail"
+        />
+        <NormalText
+          text={amount ? trim(amount) : ''}
+          style={styleSheet.title}
           {...generateTestId(TOKEN.TRANSACTION_CONTENT)}
-        >
-          {amount ? trim(amount) : ''}
-        </Text>
+        />
       </View>
       <View style={styleSheet.row}>
-        <Text
-          style={[styleSheet.desc, styleSheet.leftText]}
-          numberOfLines={1}
-          ellipsizeMode="tail"
+        <NormalText
+          style={styleSheet.desc}
+          text={formatUtil.formatDateTime(history.time)}
           {...generateTestId(TOKEN.TRANSACTION_TIME)}
-        >
-          {formatUtil.formatDateTime(history.time)}
-        </Text>
-        <Text
-          style={[styleSheet.desc, styleSheet.righText]}
-          numberOfLines={1}
-          ellipsizeMode="tail"
+        />
+        <NormalText
+          style={styleSheet.desc}
           {...generateTestId(TOKEN.TRANSACTION_STATUS)}
-        >
-          {statusText}{' '}
-          {!!statusNumber || statusNumber === 0 ? `[${statusNumber}]` : null}
-        </Text>
+          text={`${statusText} ${
+            !!statusNumber || statusNumber === 0 ? `[${statusNumber}]` : ''
+          }`}
+        />
       </View>
     </TouchableOpacity>
   );
@@ -263,6 +263,16 @@ HistoryList.defaultProps = {
 HistoryList.propTypes = {
   histories: PropTypes.array,
   onCancelEtaHistory: PropTypes.func,
+};
+
+NormalText.propTypes = {
+  style: PropTypes.any,
+  text: PropTypes.string,
+};
+
+NormalText.defaultProps = {
+  style: null,
+  text: '',
 };
 
 export default HistoryList;
