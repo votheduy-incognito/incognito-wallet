@@ -5,7 +5,6 @@ import Home from '@screens/Home';
 import Wallet from '@screens/Wallet/features/Home';
 import Community from '@screens/Community';
 import CreateToken from '@screens/CreateToken';
-import Stake from '@screens/Stake';
 import Shield from '@screens/Shield';
 import ShieldGenQRCode from '@screens/Shield/features/GenQRCode';
 import FollowToken from '@screens/FollowToken';
@@ -69,10 +68,6 @@ const routes = [
   {
     screen: CreateToken,
     name: routeNames.CreateToken,
-  },
-  {
-    screen: Stake,
-    name: routeNames.Stake,
   },
   {
     screen: ShieldGenQRCode,

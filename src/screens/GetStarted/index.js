@@ -18,7 +18,6 @@ import accountService from '@src/services/wallet/accountService';
 import { actionInit } from '@src/screens/Notification';
 import { actionFetch as actionFetchHomeConfigs } from '@screens/Home/Home.actions';
 import GetStarted from './GetStarted';
-import { STAKE } from '../Stake/stake.utils';
 
 class GetStartedContainer extends Component {
   constructor() {
@@ -65,16 +64,6 @@ class GetStartedContainer extends Component {
           accountService.parseShard(dexMainAccount),
         );
       }
-      if (
-        !accounts.some(
-          item =>
-            item?.AccountName === STAKE.MAIN_ACCOUNT ||
-            item?.name === STAKE.MAIN_ACCOUNT,
-        )
-      ) {
-        await accountService.createAccount(STAKE.MAIN_ACCOUNT, wallet);
-      }
-
       const { reloadAccountList } = this.props;
       await reloadAccountList();
       await initNotification();
