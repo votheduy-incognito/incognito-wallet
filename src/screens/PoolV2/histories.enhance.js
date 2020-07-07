@@ -37,8 +37,13 @@ const withHistories = WrappedComp => (props) => {
         .uniqBy(item => item.id)
         .value();
 
-      setTotal(data.total);
-      setHistories(mergedData);
+      if (_.first(mergedData)?.paymentAddress === account.PaymentAddress) {
+        setTotal(data.total);
+        setHistories(mergedData);
+      } else {
+        setTotal(0);
+        setHistories([]);
+      }
     } catch (error) {
       new ExHandler(error, MESSAGES.CAN_NOT_GET_POOL_HISTORIES).showErrorToast();
     } finally {
@@ -55,6 +60,8 @@ const withHistories = WrappedComp => (props) => {
   const debounceLoadHistories = useCallback(_.debounce(loadHistories, 200), [histories]);
 
   React.useEffect(() => {
+    console.debug('LOAD EFFECT', account.name, total, histories.length);
+
     setHistories([]);
     debounceLoadHistories.cancel();
     debounceLoadHistories(account, 1, null, []);
