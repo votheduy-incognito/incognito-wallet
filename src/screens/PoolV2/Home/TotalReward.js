@@ -17,9 +17,11 @@ const TotalReward = ({
           <Text style={styles.symbol}>{CONSTANT_COMMONS.PRV_SPECIAL_SYMBOL}</Text>&nbsp;
           {total}
         </Text>
+      </Row>
+      <Row center>
+        <Text style={[styles.center, styles.rateStyle]}>Provider Rewards</Text>
         <HelpIcon screen={ROUTE_NAMES.PoolV2Help} style={styles.icon} />
       </Row>
-      <Text style={[styles.center, styles.rateStyle]}>Provider Rewards</Text>
     </View>
   );
 };
