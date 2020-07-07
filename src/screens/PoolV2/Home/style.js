@@ -26,9 +26,9 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
   icon: {
-    marginLeft: 1,
+    marginLeft: 5,
     alignSelf: 'flex-start',
-    marginTop: -UTILS.heightScale(3),
+    marginTop: UTILS.heightScale(2),
   },
   actions: {
 
@@ -68,6 +68,7 @@ export default StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     color: COLORS.newGrey,
     fontSize: 18,
+    marginBottom: 25,
   },
   scrollView: {
     marginBottom: UTILS.heightScale(30),
