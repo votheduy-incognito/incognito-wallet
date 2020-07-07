@@ -14,13 +14,17 @@ const withHistories = WrappedComp => (props) => {
   const coins = useNavigationParam('coins');
   const { account } = props;
 
-  const reload = () => {
+  const reload = (force = false) => {
     if (!loading) {
+      if (force) {
+        setHistories([]);
+      }
+
       debounceLoadHistories.cancel();
       if (page !== 1) {
         setPage(1);
       } else {
-        loadHistories(account, page, total, histories);
+        loadHistories(account, page, total, force ? [] : histories);
       }
     }
   };
