@@ -11,7 +11,6 @@ import {
 import { CONSTANT_EVENTS } from '@src/constants';
 import { logEvent } from '@services/firebase';
 import { actionToggleModal } from '@src/components/Modal';
-import { NavigationActions, StackActions } from 'react-navigation';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -189,6 +188,7 @@ export const actionNavigate = (item, navigation) => async (
   try {
     const { id, type, publicKey, tokenId, screen, screenParams } = item;
     const rootState = getState();
+    const pin = rootState?.pin?.pin;
     const accountList = accountSeleclor.listAccount(rootState);
     const getPrivacyDataByTokenID = selectedPrivacySeleclor.getPrivacyDataByTokenID(
       rootState,
@@ -222,16 +222,14 @@ export const actionNavigate = (item, navigation) => async (
         return;
       }
       await dispatch(setSelectedPrivacy(tokenId));
-      // const resetAction = StackActions.reset({
-      //   index: 2,
-      //   actions: [
-      //     NavigationActions.navigate({ routeName: 'Home' }),
-      //     NavigationActions.navigate({ routeName: 'Wallet' }),
-      //     NavigationActions.navigate({ routeName: 'WalletDetail' }),
-      //   ],
-      // });
-      // navigation.dispatch(resetAction);
-      navigation.navigate(routeNames.WalletDetail);
+      if (pin) {
+        navigation.navigate(routeNames.AddPin, {
+          action: 'login',
+          redirectRoute: routeNames.WalletDetail,
+        });
+      } else {
+        navigation.navigate(routeNames.WalletDetail);
+      }
       const token = {
         ...getPrivacyDataByTokenID(tokenId),
         id: tokenId,
