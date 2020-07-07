@@ -68,6 +68,7 @@ export default StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     color: COLORS.newGrey,
     fontSize: 18,
+    marginBottom: 25,
   },
   scrollView: {
     marginBottom: UTILS.heightScale(30),
