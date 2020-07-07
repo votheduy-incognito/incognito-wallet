@@ -14,13 +14,17 @@ const withHistories = WrappedComp => (props) => {
   const coins = useNavigationParam('coins');
   const { account } = props;
 
-  const reload = () => {
+  const reload = (force = false) => {
     if (!loading) {
+      if (force) {
+        setHistories([]);
+      }
+
       debounceLoadHistories.cancel();
       if (page !== 1) {
         setPage(1);
       } else {
-        loadHistories(account, page, total, histories);
+        loadHistories(account, page, total, force ? [] : histories);
       }
     }
   };
@@ -37,13 +41,8 @@ const withHistories = WrappedComp => (props) => {
         .uniqBy(item => item.id)
         .value();
 
-      if (_.first(mergedData)?.paymentAddress === account.PaymentAddress) {
-        setTotal(data.total);
-        setHistories(mergedData);
-      } else {
-        setTotal(0);
-        setHistories([]);
-      }
+      setTotal(data.total);
+      setHistories(mergedData);
     } catch (error) {
       new ExHandler(error, MESSAGES.CAN_NOT_GET_POOL_HISTORIES).showErrorToast();
     } finally {
@@ -60,8 +59,6 @@ const withHistories = WrappedComp => (props) => {
   const debounceLoadHistories = useCallback(_.debounce(loadHistories, 200), [histories]);
 
   React.useEffect(() => {
-    console.debug('LOAD EFFECT', account.name, total, histories.length);
-
     setHistories([]);
     debounceLoadHistories.cancel();
     debounceLoadHistories(account, 1, null, []);

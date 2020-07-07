@@ -71,6 +71,6 @@ export default StyleSheet.create({
     marginBottom: 25,
   },
   scrollView: {
-    marginBottom: UTILS.heightScale(30),
+    marginBottom: UTILS.heightScale(45),
   },
 });
