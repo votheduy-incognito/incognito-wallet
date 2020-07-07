@@ -73,7 +73,7 @@ const withPoolData = WrappedComp => (props) => {
     setConfig(null);
     loadDataDebounce.cancel();
     loadDataDebounce(account);
-    onReloadHistories();
+    onReloadHistories(true);
   }, [account.PaymentAddress]));
 
   return (
