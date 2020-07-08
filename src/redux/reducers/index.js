@@ -8,6 +8,7 @@ import estimateFee from '@components/EstimateFee/EstimateFee.reducer';
 import home from '@screens/Home/Home.reducer';
 import setting from '@screens/Setting/Setting.reducer';
 import addressBook from '@screens/AddressBook/AddressBook.reducer';
+import unShield from '@screens/UnShield/UnShield.reducer';
 import wallet from './wallet';
 import account from './account';
 import server from './server';
@@ -40,6 +41,7 @@ const rootReducer = reduceReducers(
     home,
     setting,
     addressBook,
+    unShield
   }),
   globalReducer,
 );
