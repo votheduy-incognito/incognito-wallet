@@ -60,7 +60,7 @@ const withPoolData = WrappedComp => (props) => {
       const config = await getConfig(account);
       await getUserData(account, config.coins);
     } catch (error) {
-      new ExHandler(error, MESSAGES.CAN_NOT_GET_PDEX_DATA).showErrorToast();
+      new ExHandler(error, MESSAGES.CAN_NOT_GET_POOL_DATA).showErrorToast();
     } finally {
       setLoading(false);
     }
