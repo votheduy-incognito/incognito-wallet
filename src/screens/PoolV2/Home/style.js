@@ -8,6 +8,10 @@ export default StyleSheet.create({
   container: {
     flex: 1,
   },
+  wrapper: {
+    marginTop: 20,
+    flex: 1,
+  },
   rewards: {
     marginTop: UTILS.heightScale(23),
     marginBottom: UTILS.heightScale(7.5),
@@ -18,9 +22,9 @@ export default StyleSheet.create({
     lineHeight: lineHeight,
   },
   symbol: {
-    fontFamily: FONT.NAME.regular,
     fontSize: fontSize,
     lineHeight: lineHeight,
+    color: COLORS.dark1,
   },
   center: {
     textAlign: 'center',
@@ -63,12 +67,12 @@ export default StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+    marginBottom: UTILS.heightScale(15),
   },
   rateStyle: {
     fontFamily: FONT.NAME.medium,
     color: COLORS.newGrey,
     fontSize: 18,
-    marginBottom: 25,
   },
   scrollView: {
     marginBottom: UTILS.heightScale(45),

@@ -24,6 +24,7 @@ const Home = ({
   onLoad,
   loading,
   account,
+  isLoadingHistories,
 }) => {
   const renderContent = () => {
     if (!config || !userData) {
@@ -33,7 +34,7 @@ const Home = ({
     }
 
     return (
-      <>
+      <View style={styles.wrapper}>
         <TotalReward
           total={displayClipTotalRewards}
         />
@@ -52,8 +53,9 @@ const Home = ({
           onLoad={onLoad}
           loading={loading}
           account={account}
+          isLoadingHistories={isLoadingHistories}
         />
-      </>
+      </View>
     );
   };
 
