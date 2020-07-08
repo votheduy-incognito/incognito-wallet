@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, ScrollView, TouchableOpacity } from '@components/core';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from '@components/core';
 import mainStyles from '@screens/PoolV2/style';
-import { Row } from '@src/components/';
+import { Row, PRVSymbol } from '@src/components/';
 import { ArrowRightGreyIcon } from '@components/Icons/index';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
-import { CONSTANT_COMMONS } from '@src/constants';
 import { RefreshControl } from 'react-native';
 import styles from './style';
 
@@ -18,6 +17,7 @@ const CoinList = ({
   loading,
   onLoad,
   account,
+  isLoadingHistories,
 }) => {
   const navigation = useNavigation();
 
@@ -85,7 +85,7 @@ const CoinList = ({
                 <Text style={[mainStyles.coinName, mainStyles.textRight]}>- {item.displayUnstakeBalance}</Text>
                 }
                 <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
-                  {CONSTANT_COMMONS.PRV_SPECIAL_SYMBOL}&nbsp;
+                  <PRVSymbol />&nbsp;
                   {item.displayReward}
                 </Text>
                 {!!item.displayWithdrawReward &&
@@ -100,6 +100,12 @@ const CoinList = ({
   };
 
   const renderBottom = () => {
+    if (isLoadingHistories) {
+      return (
+        <ActivityIndicator />
+      );
+    }
+
     if (histories?.length > 0) {
       return (
         <TouchableOpacity onPress={handleHistory}>
@@ -142,6 +148,7 @@ CoinList.propTypes = {
   onLoad: PropTypes.func,
   loading: PropTypes.bool,
   account: PropTypes.object.isRequired,
+  isLoadingHistories: PropTypes.bool,
 };
 
 CoinList.defaultProps = {
@@ -151,6 +158,7 @@ CoinList.defaultProps = {
   withdrawable: false,
   onLoad: undefined,
   loading: false,
+  isLoadingHistories: false,
 };
 
 export default React.memo(CoinList);
