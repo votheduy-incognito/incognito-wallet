@@ -19,8 +19,6 @@ const withRetry = WrappedComp => (props) => {
     } catch (e) {
       if (e.code === apiCode.api_tx_added) {
         txs.splice(txIndex, 1);
-      } else {
-        new ExHandler(e).showErrorToast(true);
       }
     }
   };
