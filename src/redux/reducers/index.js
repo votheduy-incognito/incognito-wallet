@@ -2,7 +2,6 @@ import { combineReducers } from 'redux';
 import reduceReducers from 'reduce-reducers';
 import { reducer as formReducer } from 'redux-form';
 import { modalReducer } from '@src/components/Modal';
-import notification from '@src/screens/Notification/Notification.reducer';
 import shield from '@screens/Shield/Shield.reducer';
 import estimateFee from '@components/EstimateFee/EstimateFee.reducer';
 import home from '@screens/Home/Home.reducer';
@@ -34,7 +33,6 @@ const rootReducer = reduceReducers(
     form: formReducer,
     modal: modalReducer,
     receivers,
-    notification,
     settings,
     shield,
     estimateFee,
