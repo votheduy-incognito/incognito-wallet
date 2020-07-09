@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native';
 const style = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom: 50,
   },
   content: {
     flex: 1,
