@@ -14,7 +14,7 @@ const sections = [
   },
   {
     title: 'APY rates',
-    description: 'Current rates are noted here in green. These are subject to change at any time.',
+    description: 'Current rates are noted here in grey. These are subject to change at any time.',
   },
   {
     title: 'Rewards for each currency',

@@ -16,7 +16,7 @@ const withPoolData = WrappedComp => (props) => {
   const [displayFullTotalRewards, setDisplayFullTotalRewards] = useState('');
   const [displayClipTotalRewards, setDisplayClipTotalRewards] = useState('');
 
-  const { account, onReloadHistories } = props;
+  const { account } = props;
 
   const getConfig = async () => {
     const config = await getPoolConfig();
@@ -73,7 +73,6 @@ const withPoolData = WrappedComp => (props) => {
     setConfig(null);
     loadDataDebounce.cancel();
     loadDataDebounce(account);
-    onReloadHistories(true);
   }, [account.PaymentAddress]));
 
   return (

@@ -62,7 +62,7 @@ const Provide = ({
             onPress={handleMax}
           />
         </Row>
-        <Text style={mainStyle.coinInterest}>{coin.displayInterest}</Text>
+        <Text style={mainStyle.coinExtra}>{coin.displayInterest}</Text>
         <Text style={mainStyle.error}>{error}</Text>
         <RoundCornerButton
           title="Provide liquidity"

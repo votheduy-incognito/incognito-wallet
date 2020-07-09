@@ -16,7 +16,7 @@ class CoinConfigModel {
     this.pDecimals = token.PDecimals;
     this.min = data.Min;
     this.max = data.Max;
-    this.apy = data.APY;
+    this.apy = data.APY.toFixed(2);
     this.masterAddress = masterAddress;
 
     if (this.id === COINS.PRV_ID) {
