@@ -15,6 +15,8 @@ import { TOKEN } from '@src/constants/elements';
 import Swipeout from 'react-native-swipeout';
 import { useNavigation } from 'react-navigation-hooks';
 import trim from 'lodash/trim';
+import { useSelector } from 'react-redux';
+import { decimalDigitsSelector } from '@src/screens/Setting';
 import styleSheet from './style';
 
 const getStatusData = (status, statusCode, decentralized) => {
@@ -143,6 +145,8 @@ const NormalText = ({ style, text, ...rest }) => (
 
 const HistoryItem = ({ history }) => {
   const navigation = useNavigation();
+  const decimalDigits = useSelector(decimalDigitsSelector);
+  const { pDecimals, amount } = history;
   if (!history) {
     return null;
   }
@@ -155,10 +159,7 @@ const HistoryItem = ({ history }) => {
     history.type,
     history,
   );
-  const amount =
-    (history.amount &&
-      formatUtil.amount(history.amount, history.pDecimals, true)) ||
-    formatUtil.number(history.requestedAmount);
+  const _amount = formatUtil.amount(amount, pDecimals, true, decimalDigits);
   const onPress = () => {
     navigation?.navigate(routeNames.TxHistoryDetail, {
       data: {
@@ -182,7 +183,7 @@ const HistoryItem = ({ history }) => {
           {...generateTestId(TOKEN.TRANSACTION_TYPE)}
         />
         <NormalText
-          text={amount ? trim(amount) : ''}
+          text={_amount ? trim(_amount) : '0'}
           style={styleSheet.title}
           {...generateTestId(TOKEN.TRANSACTION_CONTENT)}
         />
