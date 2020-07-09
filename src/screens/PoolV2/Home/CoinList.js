@@ -93,9 +93,11 @@ const CoinList = ({
                 {!!item.displayUnstakeBalance &&
                 <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>- {item.displayUnstakeBalance}</Text>
                 }
-                <Text style={[mainStyles.coinInterest, mainStyles.textRight]}>
+                <Text style={mainStyles.textRight}>
                   <PRVSymbol style={mainStyles.coinInterest} />&nbsp;
-                  {item.displayReward}
+                  <Text style={mainStyles.coinInterest}>
+                    {item.displayReward}
+                  </Text>
                 </Text>
                 {!!item.displayWithdrawReward &&
                 <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>- {item.displayWithdrawReward}</Text>
