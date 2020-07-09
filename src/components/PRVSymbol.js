@@ -7,16 +7,18 @@ import { COLORS, FONT } from '@src/styles';
 
 const styles = StyleSheet.create({
   symbol: {
-    fontFamily: FONT.NAME.specialRegular,
     fontSize: 18,
     lineHeight: 18,
     color: COLORS.newGrey,
+  },
+  font: {
+    fontFamily: FONT.NAME.specialRegular,
   },
 });
 
 
 const PRVSymbol = ({ style }) => (
-  <Text style={[styles.symbol, style]}>{CONSTANT_COMMONS.PRV_SPECIAL_SYMBOL}</Text>
+  <Text style={[styles.symbol, style, styles.font]}>{CONSTANT_COMMONS.PRV_SPECIAL_SYMBOL}</Text>
 );
 
 PRVSymbol.propTypes = {

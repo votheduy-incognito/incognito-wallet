@@ -13,9 +13,9 @@ const TotalReward = ({
   return (
     <View>
       <Row center style={styles.rewards}>
-        <Text style={styles.amount}>
+        <Text>
           <PRVSymbol style={styles.symbol} />&nbsp;
-          {total}
+          <Text style={styles.amount}>{total}</Text>
         </Text>
       </Row>
       <Row center>
