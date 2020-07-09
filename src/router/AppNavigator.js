@@ -10,8 +10,6 @@ import AddPIN from '@src/screens/AddPIN';
 import PriceChartCrypto from '@src/screens/PriceChartCrypto';
 import { navigationOptionsHandler } from '@src/utils/router';
 import Dex from '@screens/Dex';
-
-import Notification from '@src/screens/Notification';
 import NodeHelp from '@screens/NodeHelp';
 import BuyNodeScreen from '@screens/BuyNodeScreen';
 import PaymentBuyNodeScreen from '@src/screens/PaymentBuyNodeScreen';
@@ -43,7 +41,6 @@ const AppNavigator = createStackNavigator(
       title: 'pDex',
       header: () => null,
     }),
-    [ROUTE_NAMES.Notification]: navigationOptionsHandler(Notification),
     [ROUTE_NAMES.pApps]: navigationOptionsHandler(pApps),
     [ROUTE_NAMES.NodeHelp]: navigationOptionsHandler(NodeHelp, {
       title: 'Need help?',
