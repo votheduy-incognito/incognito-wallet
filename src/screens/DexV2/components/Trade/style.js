@@ -64,6 +64,5 @@ export default StyleSheet.create({
     alignItems: 'flex-end',
     left: 0,
     right: 0,
-    paddingBottom: 25,
   },
 });

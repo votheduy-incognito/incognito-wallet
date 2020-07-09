@@ -67,7 +67,6 @@ export default StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    marginBottom: UTILS.heightScale(15),
   },
   rateStyle: {
     fontFamily: FONT.NAME.medium,
