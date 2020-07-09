@@ -3,8 +3,6 @@ export { default as ClearIcon } from './icon.clear';
 export { default as DeleteIcon } from './icon.delete';
 export { default as EditIcon } from './icon.edit';
 export { default as AddressBookIcon } from './icon.addressBook';
-export { default as NotificationIcon } from './icon.notificationsIcon';
-export { default as ReadAllIcon } from './icon.readAll';
 export { default as CircleIcon } from './icon.circle';
 export { default as ReadIcon } from './icon.read';
 export { default as QuestionIcon } from './icon.question';

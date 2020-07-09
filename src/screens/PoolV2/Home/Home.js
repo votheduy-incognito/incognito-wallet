@@ -9,7 +9,7 @@ import CoinList from '@screens/PoolV2/Home/CoinList';
 import withPoolData from '@screens/PoolV2/Home/data.enhance';
 import withDefaultAccount from '@components/Hoc/withDefaultAccount';
 import { Header, LoadingContainer } from '@src/components/';
-import withHistories from '@screens/PoolV2/histories.enhance';
+import withHistories from '@screens/PoolV2/Home/histories.enhance';
 import withRetry from '@screens/PoolV2/Home/retry.enhance';
 import styles from './style';
 
@@ -48,7 +48,7 @@ const Home = ({
         <CoinList
           coins={config.coins}
           data={userData}
-          withdrawable
+          withdrawable={withdrawable}
           histories={histories}
           onLoad={onLoad}
           loading={loading}
