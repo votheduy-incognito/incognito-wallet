@@ -156,7 +156,8 @@ const HistoryItem = ({ history }) => {
     history,
   );
   const amount =
-    (history.amount && formatUtil.amount(history.amount, history.pDecimals)) ||
+    (history.amount &&
+      formatUtil.amount(history.amount, history.pDecimals, true)) ||
     formatUtil.number(history.requestedAmount);
   const onPress = () => {
     navigation?.navigate(routeNames.TxHistoryDetail, {
