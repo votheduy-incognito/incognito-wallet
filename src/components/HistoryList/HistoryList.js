@@ -208,13 +208,15 @@ const HistoryItem = ({ history }) => {
 
 const HistoryList = ({ histories, onCancelEtaHistory }) => (
   <View style={styleSheet.container}>
-    {histories.map((history) => (
-      <HistoryItemWrapper
-        key={history.id}
-        history={history}
-        onCancelEtaHistory={onCancelEtaHistory}
-      />
-    ))}
+    {histories
+      .sort((a, b) => new Date(b?.time).getTime() - new Date(a?.time).getTime())
+      .map((history) => (
+        <HistoryItemWrapper
+          key={history.id}
+          history={history}
+          onCancelEtaHistory={onCancelEtaHistory}
+        />
+      ))}
   </View>
 );
 
