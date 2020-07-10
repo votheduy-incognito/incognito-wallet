@@ -11,7 +11,7 @@ export const MAIN_WEBSITE = 'https://incognito.org/latest?utm_source=mobileapp';
 
 const API_BASE_URL = isMainnet
   ? 'https://api.incognito.org'
-  : 'https://api-staging.incognito.org';
+  : 'https://staging-api-service.incognito.org';
 const API_BASE_URL2 = isMainnet
   ? 'https://device-network.incognito.org/'
   : 'https://device-network-staging.incognito.org/';
