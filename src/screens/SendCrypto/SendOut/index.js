@@ -252,8 +252,8 @@ class WithdrawContainer extends Component {
     try {
       const {
         selectedPrivacy,
-        actionAddStorageDataDecent,
-        actionRemoveStorageDataDecent,
+        actionAddStorageData,
+        actionRemoveStorageData,
       } = this.props;
       const { amount, originalAmount, remoteAddress } = payload;
       const tx = await this.handleBurningToken(payload);
@@ -269,13 +269,13 @@ class WithdrawContainer extends Component {
         isErc20Token: selectedPrivacy?.isErc20Token,
         externalSymbol: selectedPrivacy?.externalSymbol,
       };
-      await actionAddStorageDataDecent({
+      await actionAddStorageData({
         keySave: KEY_SAVE.WITHDRAWAL_DATA_DECENTRALIZED,
         tx: data,
       });
       await delay(1000000);
       await withdraw(data);
-      await actionRemoveStorageDataDecent(data?.burningTxId);
+      await actionRemoveStorageData(data?.burningTxId);
       return tx;
     } catch (e) {
       throw e;
@@ -303,11 +303,7 @@ class WithdrawContainer extends Component {
   };
 
   render() {
-    const {
-      selectedPrivacy,
-      estimateFee,
-      actionAddStorageDataDecent,
-    } = this.props;
+    const { selectedPrivacy, estimateFee } = this.props;
     if (!estimateFee.init || !selectedPrivacy) {
       return <LoadingContainer />;
     }
@@ -344,8 +340,8 @@ const mapDispatch = {
   actionFetchedMaxFeePToken,
   actionInit,
   focus,
-  actionAddStorageDataDecent: actionAddStorageData,
-  actionRemoveStorageDataDecent: actionRemoveStorageData,
+  actionAddStorageData,
+  actionRemoveStorageData,
 };
 
 WithdrawContainer.defaultProps = {
@@ -371,8 +367,8 @@ WithdrawContainer.propTypes = {
   actionFetchedMaxFeePToken: PropTypes.func.isRequired,
   actionInit: PropTypes.func.isRequired,
   focus: PropTypes.func.isRequired,
-  actionAddStorageDataDecent: PropTypes.func.isRequired,
-  actionRemoveStorageDataDecent: PropTypes.func.isRequired,
+  actionAddStorageData: PropTypes.func.isRequired,
+  actionRemoveStorageData: PropTypes.func.isRequired,
 };
 
 export default connect(
