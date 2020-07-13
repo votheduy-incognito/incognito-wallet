@@ -1,11 +1,12 @@
 import { StyleSheet } from 'react-native';
-import { FONT, COLORS } from '@src/styles';
+import { FONT, COLORS, UTILS } from '@src/styles';
 
 const styles = StyleSheet.create({
   dialog: {
     margin: 25,
     position: 'relative',
     borderRadius: 13,
+    width: UTILS.deviceWidth() - 50,
   },
   hook: {
     marginVertical: 50,

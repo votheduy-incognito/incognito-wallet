@@ -6,6 +6,7 @@ import 'react-native-console-time-polyfill';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import { View, Text } from '@components/core';
 import { CONSTANT_CONFIGS } from '@src/constants';
+import { COLORS } from '@src/styles';
 
 import styles from './styles';
 import { BtnClose } from '../Button';
@@ -115,16 +116,20 @@ class AppUpdater extends PureComponent {
 
     return (
       <View>
-        <Text style={styles.desc}>Downloading: {percent}%</Text>
         {Platform.OS === 'android' ? (
           <ProgressBarAndroid
             progress={percent / 100}
             styleAttr="Horizontal"
             indeterminate={false}
+            color={COLORS.black}
           />
         ) : (
-          <ProgressViewIOS progress={percent / 100} />
+          <ProgressViewIOS
+            progressTintColor={COLORS.black}
+            progress={percent / 100}
+          />
         )}
+        <Text style={[styles.desc, { marginTop: 10 }]}>{percent}%</Text>
       </View>
     );
   }
@@ -137,12 +142,17 @@ class AppUpdater extends PureComponent {
     const { downloading, updating, news, appVersion } = this.state;
     return (
       <View>
-        <Dialog visible={updating || downloading}>
+        <Dialog
+          visible={updating || downloading}
+          dialogStyle={styles.dialog}
+        >
           <DialogContent>
-            <Text style={styles.title}>Update new version</Text>
-            {!downloading
-              ? this.renderDownloadModal()
-              : this.renderInstallModal()}
+            <View style={styles.hook}>
+              <Text style={styles.title}>Update new version</Text>
+              {!downloading
+                ? this.renderDownloadModal()
+                : this.renderInstallModal()}
+            </View>
           </DialogContent>
         </Dialog>
         <Dialog
