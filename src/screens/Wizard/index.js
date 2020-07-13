@@ -7,7 +7,7 @@ import Wizard from './Wizard';
 
 export default class WizardContainer extends Component {
   state = {
-    isShow: false
+    isShow: false,
   };
 
   componentDidMount() {
@@ -16,17 +16,17 @@ export default class WizardContainer extends Component {
 
   markDisplayed = () => {
     storageService.setItem(CONSTANT_KEYS.DISPLAYED_WIZARD, String(true));
-  }
+  };
 
   goHome = () => {
     const { navigation } = this.props;
     this.markDisplayed();
     navigation.navigate(routeNames.GetStarted);
-  }
+  };
 
   init = async () => {
     try {
-      if (!await this.shouldDisplay()) {
+      if (!(await this.shouldDisplay())) {
         this.goHome();
         return;
       }
@@ -35,27 +35,26 @@ export default class WizardContainer extends Component {
     } catch {
       this.goHome();
     }
-  }
+  };
 
   shouldDisplay = async () => {
     try {
-      const isDisplayed = await storageService.getItem(CONSTANT_KEYS.DISPLAYED_WIZARD);
+      const isDisplayed = await storageService.getItem(
+        CONSTANT_KEYS.DISPLAYED_WIZARD,
+      );
 
       return !isDisplayed;
     } catch {
       return false;
     }
-  }
+  };
 
   render() {
     const { isShow } = this.state;
-    
-    return (
-      isShow ? <Wizard goHome={this.goHome} /> : null
-    );
+    return isShow ? <Wizard goHome={this.goHome} /> : null;
   }
 }
 
 WizardContainer.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
 };

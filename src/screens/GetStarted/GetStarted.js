@@ -2,8 +2,8 @@ import { Text, View, Button } from '@src/components/core';
 import { ActivityIndicator, Animated } from 'react-native';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-
 import { UTILS } from '@src/styles';
+import withGetStarted from './GetStarted.enhance';
 import style from './style';
 
 class GetStarted extends Component {
@@ -73,4 +73,4 @@ GetStarted.propTypes = {
   onRetry: PropTypes.func,
 };
 
-export default GetStarted;
+export default withGetStarted(GetStarted);
