@@ -37,7 +37,13 @@ import CoinInfoVerify from '@src/screens/Wallet/features/CoinInfo/CoinInfo.verif
 import FrequentReceivers, {
   FrequentReceiversForm,
 } from '@src/screens/SendCrypto/FrequentReceivers';
-import { PoolV2, PoolV2History, PoolV2Provide, PoolV2Withdraw } from '@src/screens/PoolV2';
+import {
+  PoolV2,
+  PoolV2History,
+  PoolV2Provide,
+  PoolV2Withdraw,
+} from '@src/screens/PoolV2';
+import GetStarted from '@src/screens/GetStarted';
 import routeNames from './routeNames';
 
 const routes = [
@@ -228,6 +234,10 @@ const routes = [
   {
     screen: PoolV2History.HistoryDetail,
     name: routeNames.PoolV2HistoryDetail,
+  },
+  {
+    screen: GetStarted,
+    name: routeNames.GetStarted,
   },
 ];
 

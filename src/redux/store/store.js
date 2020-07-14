@@ -12,7 +12,14 @@ export default function configureStore(preloadedState) {
     key: 'root',
     storage: AsyncStorage,
     whitelist: ['receivers', 'addressBook'],
-    blacklist: ['stakeHistory', 'stake', 'home', 'unShield', 'setting'],
+    blacklist: [
+      'stakeHistory',
+      'stake',
+      'home',
+      'unShield',
+      'setting',
+      'getStarted',
+    ],
     stateReconciler: autoMergeLevel2,
   };
   const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -5,13 +5,13 @@ import { Platform, StatusBar as RNComponent, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import routeNames from '@src/router/routeNames';
 
-const { Wizard, Node, Dex, DexHistory, DexHistoryDetail } = routeNames;
+const { Node, Dex, DexHistory, DexHistoryDetail } = routeNames;
 
 const dark4Screens = [];
 const blue2Screens = [];
 const blue1Screens = [Node];
 const dark2Screen = [Dex, DexHistory, DexHistoryDetail];
-const blackScreen = [Wizard];
+const blackScreen = [];
 
 const isIOS = Platform.OS === 'ios';
 const isIphoneX = DeviceInfo.hasNotch();

@@ -2,16 +2,13 @@ import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useSelector, useDispatch } from 'react-redux';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
-import { accountSeleclor, tokenSeleclor } from '@src/redux/selectors';
 import {
   getPTokenList,
   getInternalTokenList,
   actionRemoveFollowToken,
 } from '@src/redux/actions/token';
 import { actionReloadFollowingToken } from '@src/redux/actions/account';
-import storageService from '@src/services/storage';
-import { CONSTANT_KEYS, CONSTANT_COMMONS } from '@src/constants';
-import { countFollowToken } from '@src/services/api/token';
+import { CONSTANT_COMMONS } from '@src/constants';
 import { useNavigation } from 'react-navigation-hooks';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import routeNames from '@src/router/routeNames';
@@ -22,8 +19,6 @@ import { isGettingBalance as isGettingBalanceSelector } from '@src/redux/selecto
 export const WalletContext = React.createContext({});
 
 const enhance = (WrappedComp) => (props) => {
-  const account = useSelector(accountSeleclor.defaultAccount);
-  const tokens = useSelector(tokenSeleclor.tokensFollowedSelector);
   const wallet = useSelector((state) => state?.wallet);
   const isGettingBalance = useSelector(isGettingBalanceSelector);
   const dispatch = useDispatch();
@@ -47,36 +42,15 @@ const enhance = (WrappedComp) => (props) => {
   const fetchData = async (reload = false) => {
     try {
       await setState({ isReloading: true });
-      let tasks = [getFollowingToken(), handleCountFollowedToken()];
+      getFollowingToken();
       if (reload) {
-        tasks = [
-          ...tasks,
-          dispatch(getPTokenList()),
-          dispatch(getInternalTokenList()),
-        ];
+        dispatch(getPTokenList());
+        dispatch(getInternalTokenList());
       }
-      await Promise.all(tasks);
     } catch (error) {
       new ExHandler(error).showErrorToast();
     } finally {
       await setState({ isReloading: false });
-    }
-  };
-  const handleCountFollowedToken = async () => {
-    try {
-      const isChecked = !!JSON.parse(
-        await storageService.getItem(CONSTANT_KEYS.IS_CHECK_FOLLOWED_TOKEN),
-      );
-      const tokenIds = tokens.map((t) => t.id);
-      if (!isChecked) {
-        countFollowToken(tokenIds, account?.PublicKey).catch(null);
-        storageService.setItem(
-          CONSTANT_KEYS.IS_CHECK_FOLLOWED_TOKEN,
-          JSON.stringify(true),
-        );
-      }
-    } catch (e) {
-      new ExHandler(e);
     }
   };
   const handleExportKey = async () => {
