@@ -46,7 +46,7 @@ const AppNavigator = createStackNavigator(
       title: 'Need help?',
     }),
     [ROUTE_NAMES.WhySend]: navigationOptionsHandler(WhySend, {
-      header: () => null
+      header: () => null,
     }),
     [ROUTE_NAMES.WhyReceive]: navigationOptionsHandler(WhyReceive, {
       title: 'Receive',
@@ -62,14 +62,30 @@ const AppNavigator = createStackNavigator(
       PaymentBuyNodeScreen,
       { title: 'Payment' },
     ),
-    [ROUTE_NAMES.Node]: navigationOptionsHandler(Node,{ header: () => null }),
-    [ROUTE_NAMES.AddNode]: navigationOptionsHandler(AddNode, { title: 'Add Node' }),
-    [ROUTE_NAMES.LinkDevice]: navigationOptionsHandler(LinkDevice, { title: 'Link Device' }),
-    [ROUTE_NAMES.AddStake]: navigationOptionsHandler(AddStake, { title: 'Stake' }),
-    [ROUTE_NAMES.Unstake]: navigationOptionsHandler(Unstake, { title: 'Unstake' }),
-    [ROUTE_NAMES.AddSelfNode]: navigationOptionsHandler(AddSelfNode, { title: 'Virtual Node' }),
-    [ROUTE_NAMES.GetStaredAddNode]: navigationOptionsHandler(GetStartedAddNode, { title: 'null' }),
-    [ROUTE_NAMES.RepairingSetupNode]: navigationOptionsHandler(RepairingSetupNode, { title: 'Continue setup' }),
+    [ROUTE_NAMES.Node]: navigationOptionsHandler(Node, { header: () => null }),
+    [ROUTE_NAMES.AddNode]: navigationOptionsHandler(AddNode, {
+      title: 'Add Node',
+    }),
+    [ROUTE_NAMES.LinkDevice]: navigationOptionsHandler(LinkDevice, {
+      title: 'Link Device',
+    }),
+    [ROUTE_NAMES.AddStake]: navigationOptionsHandler(AddStake, {
+      title: 'Stake',
+    }),
+    [ROUTE_NAMES.Unstake]: navigationOptionsHandler(Unstake, {
+      title: 'Unstake',
+    }),
+    [ROUTE_NAMES.AddSelfNode]: navigationOptionsHandler(AddSelfNode, {
+      title: 'Virtual Node',
+    }),
+    [ROUTE_NAMES.GetStaredAddNode]: navigationOptionsHandler(
+      GetStartedAddNode,
+      { title: 'null' },
+    ),
+    [ROUTE_NAMES.RepairingSetupNode]: navigationOptionsHandler(
+      RepairingSetupNode,
+      { title: 'Continue setup' },
+    ),
     ...RouteNoHeader,
   },
   {

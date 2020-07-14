@@ -131,7 +131,6 @@ const enhance = (WrappedComp) => (props) => {
 
   const initApp = async () => {
     try {
-      console.log('fdsafasdfds');
       await setState({ ...state, isInitialing: true });
       dispatch(actionFetchHomeConfigs());
       dispatch(loadPin());
