@@ -4,14 +4,16 @@ import React from 'react';
 import { Platform, StatusBar as RNComponent, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import routeNames from '@src/router/routeNames';
+import { useSelector } from 'react-redux';
+import { wizardSelector } from '@src/screens/GetStarted/GetStarted.selector';
 
-const { Node, Dex, DexHistory, DexHistoryDetail } = routeNames;
+const { Wizard, Node, Dex, DexHistory, DexHistoryDetail } = routeNames;
 
 const dark4Screens = [];
 const blue2Screens = [];
 const blue1Screens = [Node];
 const dark2Screen = [Dex, DexHistory, DexHistoryDetail];
-const blackScreen = [];
+const blackScreen = [Wizard];
 
 const isIOS = Platform.OS === 'ios';
 const isIphoneX = DeviceInfo.hasNotch();
@@ -25,6 +27,7 @@ export const STATUS_BAR_HEIGHT = isIOS
 const StatusBar = React.memo(({ currentScreen }) => {
   let backgroundColor;
   let textColor;
+  const { isFetched } = useSelector(wizardSelector);
 
   if (dark4Screens.includes(currentScreen)) {
     backgroundColor = COLORS.dark4;
@@ -45,13 +48,16 @@ const StatusBar = React.memo(({ currentScreen }) => {
     backgroundColor = COLORS.white;
     textColor = 'dark-content';
   }
+  if (currentScreen === Wizard && isFetched) {
+    backgroundColor = COLORS.white;
+    textColor = 'dark-content';
+  }
 
   if (!isIOS) {
     RNComponent.setBackgroundColor(backgroundColor);
     RNComponent.setBarStyle(textColor);
     return null;
   }
-
   return (
     <View
       style={{

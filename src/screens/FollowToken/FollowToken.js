@@ -33,7 +33,7 @@ const ListToken = (props) => {
     <FlatList
       showsVerticalScrollIndicator={false}
       style={styled.flatList}
-      data={[...data]}
+      data={data}
       renderItem={({ item }) => (
         <Token
           onPress={() => handleToggleFollowToken(item)}
@@ -44,7 +44,6 @@ const ListToken = (props) => {
         />
       )}
       keyExtractor={(token) => token?.tokenId}
-      extraData={[...data]}
     />
   );
 };

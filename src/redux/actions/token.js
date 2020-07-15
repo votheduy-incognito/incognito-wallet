@@ -17,6 +17,7 @@ import {
 } from '@src/redux/utils/token';
 import { getBalance as getAccountBalance } from '@src/redux/actions/account';
 import internalTokenModel from '@models/token';
+import Util from '@src/utils/Util';
 import { setWallet } from './wallet';
 import {
   followingTokenSelector,
@@ -198,7 +199,8 @@ export const actionAddFollowToken = (tokenId) => async (dispatch, getState) => {
       foundPToken?.convertToToken();
     if (!token) throw Error('Can not follow empty coin');
     await dispatch(actionAddFollowTokenFetching(tokenId));
-    await accountService.addFollowingTokens([token], account, wallet);
+    await Util.delay(0);
+    wallet = await accountService.addFollowingTokens([token], account, wallet);
     await dispatch(setWallet(wallet));
     await dispatch(actionAddFollowTokenSuccess(tokenId));
   } catch (error) {
@@ -221,6 +223,7 @@ export const actionRemoveFollowToken = (tokenId) => async (
     }
     const account = accountSeleclor.defaultAccount(state);
     await dispatch(actionAddFollowTokenFetching(tokenId));
+    await Util.delay(0);
     wallet = await accountService.removeFollowingToken(
       tokenId,
       account,

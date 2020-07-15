@@ -18,6 +18,12 @@ import routeNames from '@src/router/routeNames';
 import AddPin from '@screens/AddPIN';
 import PropTypes from 'prop-types';
 import { useBackHandler } from '@src/components/UseEffect';
+import {
+  isFollowDefaultPTokensSelector,
+  actionToggleFollowDefaultPTokens,
+} from '@screens/GetStarted';
+import { followDefaultTokens } from '@src/redux/actions/account';
+import { pTokensSelector } from '@src/redux/selectors/token';
 import { homeSelector } from './Home.selector';
 import { actionFetch as actionFetchHomeConfigs } from './Home.actions';
 import Airdrop from './features/Airdrop';
@@ -30,10 +36,11 @@ const enhance = (WrappedComp) => (props) => {
     tryLastWithdrawal,
   } = props;
   const { categories, headerTitle, isFetching } = useSelector(homeSelector);
+  const pTokens = useSelector(pTokensSelector);
   const isFocused = useIsFocused();
   const wallet = useSelector((state) => state?.wallet);
   const defaultAccount = useSelector(accountSeleclor.defaultAccountSelector);
-
+  const isFollowedDefaultPTokens = useSelector(isFollowDefaultPTokensSelector);
   const dispatch = useDispatch();
 
   const getHomeConfiguration = async () => {
@@ -43,7 +50,6 @@ const enhance = (WrappedComp) => (props) => {
       console.log('Fetching configuration for home failed.', error);
     }
   };
-
   const airdrop = async () => {
     try {
       const WalletAddress = defaultAccount?.PaymentAddress;
@@ -60,6 +66,14 @@ const enhance = (WrappedComp) => (props) => {
       }
     } catch (e) {
       new ExHandler(e);
+    }
+  };
+  const followDefaultPTokens = async () => {
+    try {
+      await dispatch(followDefaultTokens(defaultAccount, pTokens));
+      await dispatch(actionToggleFollowDefaultPTokens());
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -82,6 +96,12 @@ const enhance = (WrappedComp) => (props) => {
     tryLastWithdrawal();
     airdrop();
   }, []);
+
+  React.useEffect(() => {
+    if (!isFollowedDefaultPTokens && pTokens.length > 0) {
+      followDefaultPTokens();
+    }
+  }, [pTokens]);
 
   return (
     <ErrorBoundary>
