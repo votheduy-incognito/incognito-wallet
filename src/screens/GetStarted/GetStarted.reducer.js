@@ -38,11 +38,13 @@ const getStartedReducer = (state = initialState, action) => {
     };
   }
   case ACTION_TOGGLE_SHOW_WIZARD: {
+    const { isFetched } = action.payload;
     return {
       ...state,
       showWizard: {
-        ...state,
-        ...action.payload,
+        ...state?.showWizard,
+        isFetched,
+        isFetching: isFetched ? false : true,
       },
     };
   }

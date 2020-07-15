@@ -27,6 +27,21 @@ const AddManually = () => {
   );
 };
 
+const Item = ({ item, handleToggleFollowToken }) =>
+  React.useMemo(() => {
+    return (
+      <Token
+        onPress={() => {
+          handleToggleFollowToken(item);
+        }}
+        tokenId={item?.tokenId}
+        name="displayName"
+        symbol="pSymbol"
+        shouldShowFollowed
+      />
+    );
+  }, [item?.isFollowed]);
+
 const ListToken = (props) => {
   const { data, handleToggleFollowToken } = props;
   return (
@@ -34,16 +49,10 @@ const ListToken = (props) => {
       showsVerticalScrollIndicator={false}
       style={styled.flatList}
       data={data}
-      renderItem={({ item }) => (
-        <Token
-          onPress={() => handleToggleFollowToken(item)}
-          tokenId={item?.tokenId}
-          name="displayName"
-          symbol="pSymbol"
-          shouldShowFollowed
-        />
-      )}
+      renderItem={({ item }) => <Item {...{ item, handleToggleFollowToken }} />}
       keyExtractor={(token) => token?.tokenId}
+      removeClippedSubviews
+      initialNumToRender={10}
     />
   );
 };

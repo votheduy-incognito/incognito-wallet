@@ -39,6 +39,9 @@ const enhance = (WrappedComp) => (props) => {
 
   const getDataWillMigrate = async () => {
     try {
+      if (!isFetching && isFetched) {
+        return;
+      }
       const isDisplayed = await storageService.getItem(
         CONSTANT_KEYS.DISPLAYED_WIZARD,
       );
@@ -103,6 +106,7 @@ const enhance = (WrappedComp) => (props) => {
       let isCreatedNewAccount = false;
       let wallet;
       wallet = shouldReGetExistedWallet ? await getExistedWallet() : _wallet;
+      // console.log(`wallet`, wallet);
       let accounts = await wallet.listAccount();
       if (!accounts.find((item) => item.AccountName === DEX.MAIN_ACCOUNT)) {
         const firstAccount = accounts[0];
@@ -151,6 +155,7 @@ const enhance = (WrappedComp) => (props) => {
       await setState({ ...state, pTokens });
       // console.time('exist_wallet');
       const wallet = await getExistedWallet();
+      // console.log(`exist wallet`, wallet);
       let shouldReGetExistedWallet = false;
       // console.timeEnd('exist_wallet');
       if (!wallet) {
