@@ -101,12 +101,9 @@ const enhance = (WrappedComp) => (props) => {
 
   const onError = (msg) => setState({ ...state, errorMsg: msg });
 
-  const goHome = async ({ _wallet, shouldReGetExistedWallet }) => {
+  const goHome = async ({ wallet }) => {
     try {
       let isCreatedNewAccount = false;
-      let wallet;
-      wallet = shouldReGetExistedWallet ? await getExistedWallet() : _wallet;
-      // console.log(`wallet`, wallet);
       let accounts = await wallet.listAccount();
       if (!accounts.find((item) => item.AccountName === DEX.MAIN_ACCOUNT)) {
         const firstAccount = accounts[0];
@@ -137,36 +134,24 @@ const enhance = (WrappedComp) => (props) => {
   };
 
   const initApp = async () => {
-    // console.log('\n\n\n\n\n');
     try {
-      // console.time('start');
       await setState({ ...state, isInitialing: true });
+      login();
       dispatch(actionFetchHomeConfigs());
       dispatch(loadPin());
-      login();
       dispatch(getInternalTokenList());
       dispatch(getPTokenList());
-      // console.time('await');
       const servers = await serverService.get();
-      // console.timeEnd('await');
       if (!servers || servers?.length === 0) {
         await serverService.setDefaultList();
       }
       await setState({ ...state, pTokens });
-      // console.time('exist_wallet');
-      const wallet = await getExistedWallet();
-      // console.log(`exist wallet`, wallet);
-      let shouldReGetExistedWallet = false;
-      // console.timeEnd('exist_wallet');
+      let wallet = await getExistedWallet();
       if (!wallet) {
-        shouldReGetExistedWallet = true;
         await setState({ ...state, isCreating: true });
-        await handleCreateNew();
+        wallet = await handleCreateNew();
       }
-      // console.time('goHome');
-      await goHome({ shouldReGetExistedWallet, _wallet: wallet });
-      // console.timeEnd('goHome');
-      // console.timeEnd('start');
+      await goHome({ wallet });
     } catch (e) {
       onError(
         new ExHandler(

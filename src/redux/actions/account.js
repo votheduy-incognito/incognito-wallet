@@ -285,7 +285,7 @@ export const actionSwitchAccount = (
     if (defaultAccount?.name !== account?.name) {
       await dispatch(setDefaultAccount(account));
     }
-    await dispatch(actionReloadFollowingToken(shouldLoadBalance));
+    dispatch(actionReloadFollowingToken(shouldLoadBalance));
     return account;
   } catch (error) {
     throw Error(error);
