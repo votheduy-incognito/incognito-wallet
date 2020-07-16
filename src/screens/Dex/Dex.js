@@ -18,7 +18,6 @@ import removeLiquidityIcon from '@src/assets/images/icons/remove_liquidity_icon.
 import dexUtils from '@utils/dex';
 import COLORS from '@src/styles/colors';
 import BackButton from '@components/BackButton/index';
-import GetStartedInvest from '@screens/Dex/components/GetStartedInvest';
 import { MESSAGES } from '@screens/Dex/constants';
 import AddPool from './components/AddPool';
 import RemovePool from './components/RemovePool';
@@ -27,12 +26,11 @@ import { dexStyle, mainStyle } from './style';
 const MODES = {
   ADD: 'add',
   REMOVE: 'remove',
-  GET_STARTED_INVEST: 'get-started-invest',
 };
 
 class Dex extends React.Component {
   state = {
-    mode: MODES.GET_STARTED_INVEST,
+    mode: MODES.ADD,
     addLiquidityParams: {
       adding: false,
       inputToken: undefined,
@@ -154,19 +152,7 @@ class Dex extends React.Component {
       isLoading,
     } = this.props;
     const { addLiquidityParams, mode, removeLiquidityParams } = this.state;
-
-    if (mode === MODES.GET_STARTED_INVEST) {
-      return (
-        <GetStartedInvest
-          onPress={() => this.changeMode(MODES.ADD)}
-          shares={shares}
-          accounts={accounts}
-          pairs={pairs}
-          tokens={tokens}
-        />
-      );
-    }
-
+    
     if (mode === MODES.ADD) {
       return (
         <AddPool
