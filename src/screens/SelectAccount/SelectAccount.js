@@ -34,13 +34,13 @@ const AccountItem = ({ accountName, PaymentAddress }) => {
       if (switchingAccount) {
         return;
       }
+      navigation.goBack();
       await dispatch(actionSwitchAccountFetching());
-      navigation.pop();
       if (accountName === defaultAccountName) {
         Toast.showInfo(`Your current account is "${accountName}"`);
         return;
       }
-      await dispatch(actionSwitchAccount(accountName));
+      dispatch(actionSwitchAccount(accountName));
     } catch (e) {
       new ExHandler(
         e,
