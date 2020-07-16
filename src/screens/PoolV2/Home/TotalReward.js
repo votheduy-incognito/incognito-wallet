@@ -19,7 +19,7 @@ const TotalReward = ({
         </Text>
       </Row>
       <Row center>
-        <Text style={[styles.center, styles.rateStyle]}>Provider Rewards</Text>
+        <Text style={[styles.center, styles.rateStyle]}>Compounding Rewards</Text>
         <HelpIcon screen={ROUTE_NAMES.PoolV2Help} style={styles.icon} />
       </Row>
     </View>

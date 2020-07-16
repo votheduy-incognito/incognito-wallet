@@ -33,6 +33,9 @@ export default StyleSheet.create({
   textRight: {
     textAlign: 'right',
   },
+  justifyRight: {
+    justifyContent: 'flex-end',
+  },
   button: {
     backgroundColor: COLORS.green2,
   },

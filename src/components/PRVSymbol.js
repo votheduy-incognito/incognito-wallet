@@ -8,7 +8,6 @@ import { COLORS, FONT } from '@src/styles';
 const styles = StyleSheet.create({
   symbol: {
     fontSize: 18,
-    lineHeight: 18,
     color: COLORS.newGrey,
   },
   font: {
