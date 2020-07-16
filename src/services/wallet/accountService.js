@@ -13,6 +13,7 @@ import { STACK_TRACE } from '@services/exception/customError/code/webjsCode';
 import { cachePromise } from '@services/cache';
 import { chooseBestCoinToSpent } from 'incognito-chain-web-js/lib/tx/utils';
 import bn from 'bn.js';
+import { getPassphrase } from '@services/wallet/passwordService';
 import { CustomError, ErrorCode } from '../exception';
 import { getActiveShard } from './RpcClientService';
 import tokenService from './tokenService';
@@ -24,8 +25,13 @@ import {
 
 const TAG = 'Account';
 
-const getBalanceNoCache = (indexAccount, wallet, tokenId) => () => {
-  return wallet.MasterAccount.child[indexAccount].getBalance(tokenId);
+const getBalanceNoCache = (indexAccount, wallet, tokenId) => async () => {
+  const account = wallet.MasterAccount.child[indexAccount];
+  account.isRevealViewKeyToGetCoins = true;
+
+  const balance = await wallet.MasterAccount.child[indexAccount].getBalance(tokenId);
+  await account.saveAccountCached(wallet.Storage);
+  return balance;
 };
 
 const getPendingHistory = (histories, spendingCoins) => {
