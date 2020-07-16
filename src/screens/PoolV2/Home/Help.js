@@ -9,8 +9,8 @@ import { Header } from '@src/components/';
 
 const sections = [
   {
-    title: 'Total rewards balance',
-    description: 'The big number is your total PRV rewards balance, across all currencies. You can withdraw this anytime. If you wish to re-invest your rewards, simply add it to the pool again.',
+    title: 'Compounding Rewards',
+    description: 'This number is your total PRV rewards balance, which reflects automatic compounding at currency-specific rates.',
   },
   {
     title: 'APY rates',
