@@ -7,7 +7,7 @@ import pkg from '../../package.json';
 
 const isMainnet = global.isMainnet ?? true;
 
-export const MAIN_WEBSITE = 'https://incognito.org/latest?utm_source=mobileapp';
+export const MAIN_WEBSITE = 'https://we.incognito.org/?utm_source=mobileapp';
 
 const API_BASE_URL = isMainnet
   ? 'https://api.incognito.org'
