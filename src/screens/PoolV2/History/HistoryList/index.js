@@ -34,8 +34,8 @@ const History = ({
       <Text style={styles.buttonTitle}>{item.type}</Text>
       <View style={styles.row}>
         <Text style={[styles.content, styles.ellipsis]} numberOfLines={1}>{item.description}</Text>
-        <View style={[styles.row, styles.center]}>
-          <Text style={styles.content} numberOfLines={1}>{item.status}</Text>
+        <View style={[styles.row, styles.center, styles.status]}>
+          <Text style={[styles.content]} numberOfLines={1}>{item.status}</Text>
           <ArrowRightGreyIcon style={{ marginLeft: 10 }} />
         </View>
       </View>
