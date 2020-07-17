@@ -4,7 +4,6 @@ import DeviceInfo from 'react-native-device-info';
 import { getToken as getUserToken } from '@src/services/api/user';
 import LocalDatabase from '@utils/LocalDatabase';
 import { v4 } from 'uuid';
-import { CustomError, ErrorCode } from './exception';
 
 export const getToken = async () => {
   let firebaseToken = '';
@@ -20,7 +19,11 @@ export const getToken = async () => {
   try {
     uniqueId = (await LocalDatabase.getDeviceId()) || DeviceInfo.getUniqueId();
   } catch {
-    uniqueId = v4();
+    try {
+      uniqueId = DeviceInfo.getUniqueId();
+    } catch {
+      uniqueId = v4();
+    }
   }
 
   const tokenData = await getUserToken(uniqueId, firebaseToken);
@@ -34,13 +37,9 @@ export const getToken = async () => {
 
 // if "fresh" is true, dont use savedToken, have to get new one
 export const login = async () => {
-  try {
-    const token = await getToken();
-    setTokenHeader(token);
-    return token;
-  } catch (e) {
-    throw new CustomError(ErrorCode.user_login_failed, { rawError: e });
-  }
+  const token = await getToken();
+  setTokenHeader(token);
+  return token;
 };
 
 global.login = login;
