@@ -1,14 +1,14 @@
-import storageService from '@src/services/storage';
-import {setTokenHeader} from '@src/services/http';
-import {CONSTANT_KEYS} from '@src/constants';
-import {getToken as getFirebaseToken} from '@src/services/firebase';
+import { setTokenHeader } from '@src/services/http';
+import { getToken as getFirebaseToken } from '@src/services/firebase';
 import DeviceInfo from 'react-native-device-info';
-import {getToken as getUserToken} from '@src/services/api/user';
+import { getToken as getUserToken } from '@src/services/api/user';
 import LocalDatabase from '@utils/LocalDatabase';
-import {CustomError, ErrorCode} from './exception';
+import { v4 } from 'uuid';
+import { CustomError, ErrorCode } from './exception';
 
 export const getToken = async () => {
   let firebaseToken = '';
+  let uniqueId = '';
   try {
     firebaseToken = await getFirebaseToken();
   } catch (error) {
@@ -16,10 +16,17 @@ export const getToken = async () => {
     firebaseToken = DeviceInfo.getUniqueId() + new Date().getTime();
     console.debug('Can not get firebase token');
   }
-  const uniqueId = (await LocalDatabase.getDeviceId()) || DeviceInfo.getUniqueId();
+
+  try {
+    uniqueId = (await LocalDatabase.getDeviceId()) || DeviceInfo.getUniqueId();
+  } catch {
+    uniqueId = v4();
+  }
+
   const tokenData = await getUserToken(uniqueId, firebaseToken);
 
   await LocalDatabase.saveDeviceId(uniqueId);
+
   const { token } = tokenData;
 
   return token;
