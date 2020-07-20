@@ -1,8 +1,7 @@
 import React from 'react';
-import { Animated, BackHandler, Easing } from 'react-native';
+import { Animated, BackHandler, Easing, AppState } from 'react-native';
 import TouchID from 'react-native-touch-id';
 import PropTypes from 'prop-types';
-import { debounce } from 'lodash';
 import { View, Text, TouchableOpacity, Image } from '@src/components/core';
 import { connect } from 'react-redux';
 import { updatePin } from '@src/redux/actions/pin';
@@ -37,13 +36,14 @@ class AddPIN extends React.Component {
     super(props);
 
     const { action } = props.navigation?.state?.params;
-    
+
     this.state = {
       pin1: '',
       pin2: '',
       nextPin: false,
       bioSupportedType: null,
       action,
+      appState: '',
     };
     this.animatedValue = new Animated.Value(0);
   }
@@ -54,11 +54,21 @@ class AddPIN extends React.Component {
       this.handleBackPress,
     );
     this.checkTouchSupported();
+    AppState.addEventListener('change', this.handleAppStateChange);
   }
 
   componentWillUnmount() {
     this.backHandler.remove();
+    AppState.removeEventListener('change', this.handleAppStateChange);
   }
+
+  handleAppStateChange = async (nextAppState) => {
+    const { appState } = this.state;
+    if (appState.match(/background/) && nextAppState === 'active') {
+      this.setState({ pin1: '', pin2: '' });
+    }
+    await this.setState({ appState: nextAppState });
+  };
 
   handleAnimation = () => {
     Animated.sequence([
