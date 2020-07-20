@@ -7,7 +7,6 @@ import { v4 } from 'uuid';
 
 export const getToken = async () => {
   let firebaseToken = '';
-  let uniqueId = '';
   try {
     firebaseToken = await getFirebaseToken();
   } catch (error) {
@@ -16,16 +15,7 @@ export const getToken = async () => {
     console.debug('Can not get firebase token');
   }
 
-  try {
-    uniqueId = (await LocalDatabase.getDeviceId()) || DeviceInfo.getUniqueId();
-  } catch {
-    try {
-      uniqueId = DeviceInfo.getUniqueId();
-    } catch {
-      uniqueId = v4();
-    }
-  }
-
+  const uniqueId = (await LocalDatabase.getDeviceId()) || DeviceInfo.getUniqueId() || v4();
   const tokenData = await getUserToken(uniqueId, firebaseToken);
 
   await LocalDatabase.saveDeviceId(uniqueId);
