@@ -11,7 +11,7 @@ import { withLayout_2 } from '@src/components/Layout';
 import APIService from '@src/services/api/miner/APIService';
 import { accountSeleclor } from '@src/redux/selectors';
 import { ExHandler } from '@src/services/exception';
-import { AppState } from 'react-native';
+import { AppState, BackHandler } from 'react-native';
 import AppUpdater from '@components/AppUpdater';
 import { WithdrawHistory } from '@models/dexHistory';
 import routeNames from '@src/router/routeNames';
@@ -77,7 +77,9 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
 
-  useBackHandler({});
+  const handleGoBack = () => BackHandler.exitApp();
+
+  useBackHandler({ handleGoBack });
 
   React.useEffect(() => {
     if (wallet) {

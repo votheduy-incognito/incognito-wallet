@@ -268,10 +268,9 @@ class WithdrawContainer extends Component {
         keySave: KEY_SAVE.WITHDRAWAL_DATA_DECENTRALIZED,
         tx: data,
       });
-      throw new Error('withdraw fail!');
-      // await withdraw(data);
-      // await removeStorageData(data?.burningTxId);
-      // return tx;
+      await withdraw(data);
+      await removeStorageData(data?.burningTxId);
+      return tx;
     } catch (e) {
       throw e;
     }
