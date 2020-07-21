@@ -17,4 +17,9 @@ export const styled = StyleSheet.create({
   btn: {
     alignItems: 'flex-end',
   },
+  abs: {
+    position: 'absolute',
+    bottom: 25,
+    right: 25,
+  },
 });

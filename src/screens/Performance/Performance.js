@@ -25,7 +25,7 @@ const Performance = () => {
   const dispatch = useDispatch();
   if (!toggle) {
     return (
-      <View style={styled.btn}>
+      <View style={[styled.btn, styled.abs]}>
         <BtnClose onPress={() => dispatch(actionToggle())} />
       </View>
     );
