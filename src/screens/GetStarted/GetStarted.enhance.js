@@ -137,9 +137,7 @@ const enhance = (WrappedComp) => (props) => {
   const initApp = async () => {
     try {
       await setState({ ...state, isInitialing: true });
-      login();
       dispatch(actionFetchHomeConfigs());
-      dispatch(loadPin());
       dispatch(getInternalTokenList());
       dispatch(getPTokenList());
       await dispatch(
@@ -148,7 +146,11 @@ const enhance = (WrappedComp) => (props) => {
           restart: true,
         }),
       );
-      const servers = await serverService.get();
+      const [servers] = await new Promise.all([
+        serverService.get(),
+        dispatch(loadPin()),
+        login(),
+      ]);
       await dispatch(
         actionLogEvent({
           desc: 'cal time implement get servers services',
