@@ -20,6 +20,7 @@ import { ExHandler } from '@src/services/exception';
 import includes from 'lodash/includes';
 import debounce from 'lodash/debounce';
 import { styled, itemStyled } from './SelectAccount.styled';
+import { actionLogEvent } from '../Performance';
 
 const AccountItem = ({ accountName, PaymentAddress }) => {
   const dispatch = useDispatch();
@@ -35,6 +36,11 @@ const AccountItem = ({ accountName, PaymentAddress }) => {
         return;
       }
       navigation.goBack();
+      await dispatch(
+        actionLogEvent({
+          restart: true,
+        }),
+      );
       await dispatch(actionSwitchAccountFetching());
       if (accountName === defaultAccountName) {
         Toast.showInfo(`Your current account is "${accountName}"`);
@@ -47,7 +53,12 @@ const AccountItem = ({ accountName, PaymentAddress }) => {
         `Can not switch to account "${accountName}", please try again.`,
       ).showErrorToast();
     } finally {
-      await dispatch(actionSwitchAccountFetched());
+      dispatch(actionSwitchAccountFetched());
+      await dispatch(
+        actionLogEvent({
+          desc: 'End switch account',
+        }),
+      );
     }
   };
   const Component = () => (

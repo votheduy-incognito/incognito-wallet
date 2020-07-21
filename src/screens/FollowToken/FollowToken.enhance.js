@@ -12,6 +12,7 @@ import {
   actionAddFollowToken,
   actionRemoveFollowToken,
 } from '@src/redux/actions/token';
+import { actionLogEvent } from '../Performance';
 
 const enhance = (WrappedComp) => (props) => {
   const tokens = useSelector(availableTokensSelector);
@@ -22,13 +23,24 @@ const enhance = (WrappedComp) => (props) => {
   });
   const handleToggleFollowToken = async (token) => {
     try {
+      await dispatch(
+        actionLogEvent({
+          restart: true,
+        }),
+      );
       if (!token?.isFollowed) {
-        await dispatch(actionAddFollowToken(token?.tokenId));
+        dispatch(actionAddFollowToken(token?.tokenId));
       } else {
-        await dispatch(actionRemoveFollowToken(token?.tokenId));
+        dispatch(actionRemoveFollowToken(token?.tokenId));
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      await dispatch(
+        actionLogEvent({
+          desc: 'End toggle follow token',
+        }),
+      );
     }
   };
 

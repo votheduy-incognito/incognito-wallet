@@ -20,6 +20,7 @@ import { useNavigation, useIsFocused } from 'react-navigation-hooks';
 import { useMigrate } from '@src/components/UseEffect/useMigrate';
 import storageService from '@src/services/storage';
 import { LoadingContainer } from '@src/components/core';
+import { actionLogEvent } from '@screens/Performance';
 import { wizardSelector } from './GetStarted.selector';
 import { actionToggleShowWizard } from './GetStarted.actions';
 
@@ -141,17 +142,48 @@ const enhance = (WrappedComp) => (props) => {
       dispatch(loadPin());
       dispatch(getInternalTokenList());
       dispatch(getPTokenList());
+      await dispatch(
+        actionLogEvent({
+          desc: '',
+          restart: true,
+        }),
+      );
       const servers = await serverService.get();
+      await dispatch(
+        actionLogEvent({
+          desc: 'cal time implement get servers services',
+        }),
+      );
       if (!servers || servers?.length === 0) {
         await serverService.setDefaultList();
+        await dispatch(
+          actionLogEvent({
+            desc: 'cal time implement set default server',
+          }),
+        );
       }
       await setState({ ...state, pTokens });
       let wallet = await getExistedWallet();
+      await dispatch(
+        actionLogEvent({
+          desc: 'cal time implement get existed wallet',
+        }),
+      );
       if (!wallet) {
         await setState({ ...state, isCreating: true });
         wallet = await handleCreateNew();
+        await dispatch(
+          actionLogEvent({
+            desc: 'cal time implement init new wallet',
+          }),
+        );
       }
       await goHome({ wallet });
+      await dispatch(
+        actionLogEvent({
+          desc: 'cal time implement go home',
+        }),
+      );
     } catch (e) {
       onError(
         new ExHandler(
