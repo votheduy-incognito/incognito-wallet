@@ -6,13 +6,14 @@ import DeviceInfo from 'react-native-device-info';
 import routeNames from '@src/router/routeNames';
 import { useSelector } from 'react-redux';
 import { wizardSelector } from '@src/screens/GetStarted/GetStarted.selector';
+import GetStartedAddNode from '@src/screens/GetStartedAddNode';
 
 const { Wizard, Node, Dex, DexHistory, DexHistoryDetail } = routeNames;
 
 const dark4Screens = [];
-const blue2Screens = [];
-const blue1Screens = [Node];
-const dark2Screen = [Dex, DexHistory, DexHistoryDetail];
+const blue2Screens = [GetStartedAddNode];
+const blue1Screens = [Node, GetStartedAddNode];
+const dark2Screen = [Dex, DexHistory, DexHistoryDetail, GetStartedAddNode];
 const blackScreen = [Wizard];
 
 const isIOS = Platform.OS === 'ios';
