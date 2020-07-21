@@ -80,7 +80,7 @@ const AppNavigator = createStackNavigator(
     }),
     [ROUTE_NAMES.GetStaredAddNode]: navigationOptionsHandler(
       GetStartedAddNode,
-      { title: 'null' },
+      { title: 'Setup Node' },
     ),
     [ROUTE_NAMES.RepairingSetupNode]: navigationOptionsHandler(
       RepairingSetupNode,
