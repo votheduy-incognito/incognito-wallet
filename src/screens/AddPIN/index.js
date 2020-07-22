@@ -29,24 +29,29 @@ const optionalConfigObject = {
   passcodeFallback: false, // iOS - allows the device to fall back to using the passcode, if faceid/touch is not available. this does not mean that if touchid/faceid fails the first few times it will revert to passcode, rather that if the former are not enrolled, then it will use the passcode.
 };
 
+const initialState = {
+  pin1: '',
+  pin2: '',
+  nextPin: false,
+  bioSupportedType: null,
+  action: null,
+  appState: '',
+};
+
 class AddPIN extends React.Component {
   static waiting = false;
 
   constructor(props) {
     super(props);
-
     const { action } = props.navigation?.state?.params;
-
     this.state = {
-      pin1: '',
-      pin2: '',
-      nextPin: false,
-      bioSupportedType: null,
+      ...initialState,
       action,
-      appState: '',
     };
     this.animatedValue = new Animated.Value(0);
   }
+
+  resetPin = () => this.setState({ ...initialState });
 
   componentDidMount() {
     this.backHandler = BackHandler.addEventListener(
@@ -59,12 +64,16 @@ class AddPIN extends React.Component {
 
   componentWillUnmount() {
     this.backHandler.remove();
+    this.resetPin();
     AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
   handleAppStateChange = async (nextAppState) => {
     const { appState } = this.state;
-    if (appState.match(/background/) && nextAppState === 'active') {
+    if (
+      appState.match(/inactive|background|active/) &&
+      nextAppState === 'active'
+    ) {
       this.setState({ pin1: '', pin2: '' });
     }
     await this.setState({ appState: nextAppState });

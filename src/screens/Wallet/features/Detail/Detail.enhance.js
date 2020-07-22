@@ -9,7 +9,7 @@ import {
   actionFetchHistoryToken,
 } from '@src/redux/actions/token';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
-import { useIsFocused, useFocusEffect } from 'react-navigation-hooks';
+import { useFocusEffect } from 'react-navigation-hooks';
 import withWallet from '@screens/Wallet/features/Home/Wallet.enhance';
 
 const enhance = (WrappedComp) => (props) => {
@@ -19,7 +19,6 @@ const enhance = (WrappedComp) => (props) => {
     selectedPrivacySeleclor.selectedPrivacyByFollowedSelector,
   );
   const dispatch = useDispatch();
-  const isFocused = useIsFocused();
   const handleLoadHistory = async () => {
     try {
       if (selectedPrivacy?.isMainCrypto) {
@@ -34,11 +33,9 @@ const enhance = (WrappedComp) => (props) => {
   };
   useFocusEffect(
     React.useCallback(() => {
-      if (isFocused && selectedPrivacy?.tokenId) {
-        tryLastWithdrawal();
-        handleLoadHistory();
-      }
-    }, [isFocused]),
+      tryLastWithdrawal();
+      handleLoadHistory();
+    }, []),
   );
   return (
     <ErrorBoundary>
