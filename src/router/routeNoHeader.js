@@ -235,10 +235,10 @@ const routes = [
     screen: PoolV2History.HistoryDetail,
     name: routeNames.PoolV2HistoryDetail,
   },
-  {
-    screen: GetStarted,
-    name: routeNames.GetStarted,
-  },
+  // {
+  //   screen: GetStarted,
+  //   name: routeNames.GetStarted,
+  // },
 ];
 
 export const getRoutesNoHeader = () =>
