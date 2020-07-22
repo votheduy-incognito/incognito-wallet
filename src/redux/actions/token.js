@@ -18,7 +18,6 @@ import {
 import { getBalance as getAccountBalance } from '@src/redux/actions/account';
 import internalTokenModel from '@models/token';
 import Util from '@src/utils/Util';
-import { actionLogEvent } from '@src/screens/Performance';
 import { setWallet } from './wallet';
 import {
   followingTokenSelector,

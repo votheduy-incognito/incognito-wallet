@@ -14,7 +14,6 @@ import { Provider, useDispatch } from 'react-redux';
 import AppUpdater from '@components/AppUpdater/index';
 import { PersistGate } from 'redux-persist/integration/react';
 import NetInfo from '@react-native-community/netinfo';
-import Performance from '@screens/Performance';
 import { Linking, Text } from 'react-native';
 import { compose } from 'recompose';
 import PropTypes from 'prop-types';
@@ -139,8 +138,6 @@ export const AppWrapper = (props) => (WrappedComponent) => {
             onPressOk={() => listenNetworkChanges()}
           />
         </AppScreen>
-        {/*<Timer />*/}
-        <Performance />
       </PersistGate>
     </Provider>
   );
