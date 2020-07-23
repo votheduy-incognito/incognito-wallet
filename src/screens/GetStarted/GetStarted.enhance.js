@@ -139,8 +139,8 @@ const enhance = (WrappedComp) => (props) => {
       dispatch(actionFetchHomeConfigs());
       dispatch(getInternalTokenList());
       const [servers] = await new Promise.all([
-        dispatch(getPTokenList()),
         serverService.get(),
+        dispatch(getPTokenList()),
         login(),
         dispatch(loadPin()),
       ]);
