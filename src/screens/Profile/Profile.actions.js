@@ -22,7 +22,7 @@ export const actionFetchFail = () => ({
 export const actionFetch = () => async (dispatch, getState) => {
   try {
     const state = getState();
-    const { isFetched } = state.profile;
+    const { isFetched } = profileSelector(state);
     if (isFetched) {
       return;
     }

@@ -10,7 +10,6 @@ import { BtnDelete } from '@src/components/Button';
 import { CircleIcon } from '@src/components/Icons';
 import Icon from 'react-native-vector-icons/Entypo';
 import { COLORS } from '@src/styles';
-import { ellipsisTail } from '@src/utils';
 import PropTypes from 'prop-types';
 import { actionReadNews, actionRemoveNews } from './News.actions';
 import { listNewsStyled as styled } from './News.styled';
@@ -42,7 +41,7 @@ const ListNews = ({ listNews, type }) => {
           />
           <View style={styled.extra}>
             <Text style={styled.desc}>
-              {`${ellipsisTail({ str: title, limit: 60 })} `}
+              {`${title} `}
               <Text style={[styled.desc, { color: COLORS.black }]}>
                 {`${description}`}
                 <Icon
@@ -60,9 +59,7 @@ const ListNews = ({ listNews, type }) => {
       return (
         <View style={[styled.hook, styled.hook2]}>
           <Image style={styled.icon} source={{ uri: icon }} />
-          <Text style={styled.desc}>
-            {ellipsisTail({ str: title, limit: 70 })}
-          </Text>
+          <Text style={styled.desc}>{`${title} `}</Text>
         </View>
       );
     }
@@ -70,7 +67,7 @@ const ListNews = ({ listNews, type }) => {
       return (
         <View style={[styled.hook, styled.hook3]}>
           <Text style={[styled.desc, styled.descNoIcon]}>
-            {ellipsisTail({ str: title, limit: 30 })}
+            {`${title} `}
             <Icon
               name="chevron-thin-right"
               size={14}
