@@ -24,6 +24,7 @@ import {
 } from '@screens/GetStarted';
 import { followDefaultTokens } from '@src/redux/actions/account';
 import { pTokensSelector } from '@src/redux/selectors/token';
+import { withNews } from '@screens/News';
 import { homeSelector } from './Home.selector';
 import { actionFetch as actionFetchHomeConfigs } from './Home.actions';
 import Airdrop from './features/Airdrop';
@@ -173,5 +174,6 @@ export default compose(
   withPin,
   withWallet,
   withLayout_2,
+  withNews,
   enhance,
 );
