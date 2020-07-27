@@ -1,3 +1,4 @@
+import { actionFetchNews } from '@screens/News';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -21,7 +22,10 @@ export const actionFetchFail = () => ({
 export const actionFetch = () => async (dispatch) => {
   try {
     await dispatch(actionFetching());
-    const data = await apiGetProfile();
+    const [data] = await new Promise.all([
+      apiGetProfile(),
+      dispatch(actionFetchNews()),
+    ]);
     await dispatch(actionFetched(data));
   } catch (error) {
     await dispatch(actionFetchFail());
