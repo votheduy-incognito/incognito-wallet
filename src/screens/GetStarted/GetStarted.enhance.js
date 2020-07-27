@@ -16,7 +16,7 @@ import { DEX } from '@src/utils/dex';
 import accountService from '@src/services/wallet/accountService';
 import { actionInit as initNotification } from '@src/screens/Notification';
 import { actionFetch as actionFetchHomeConfigs } from '@screens/Home/Home.actions';
-import { useNavigation, useIsFocused } from 'react-navigation-hooks';
+import { useNavigation, useFocusEffect } from 'react-navigation-hooks';
 import { useMigrate } from '@src/components/UseEffect/useMigrate';
 import storageService from '@src/services/storage';
 import { LoadingContainer } from '@src/components/core';
@@ -27,16 +27,17 @@ import { actionToggleShowWizard } from './GetStarted.actions';
 const enhance = (WrappedComp) => (props) => {
   const { isFetching, isFetched } = useSelector(wizardSelector);
   const pin = useSelector((state) => state?.pin?.pin);
-  const isFocused = useIsFocused();
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [state, setState] = React.useState({
+  const initialState = {
     isInitialing: true,
     isCreating: false,
     errorMsg: null,
-    pTokens: [],
+  };
+  const [state, setState] = React.useState({
+    ...initialState,
   });
-  const { errorMsg, isInitialing, isCreating, pTokens } = state;
+  const { errorMsg, isInitialing, isCreating } = state;
 
   const getDataWillMigrate = async () => {
     try {
@@ -100,8 +101,6 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
 
-  const onError = (msg) => setState({ ...state, errorMsg: msg });
-
   const goHome = async ({ wallet }) => {
     try {
       let isCreatedNewAccount = false;
@@ -135,11 +134,12 @@ const enhance = (WrappedComp) => (props) => {
   };
 
   const initApp = async () => {
+    let errorMessage = null;
     try {
-      await setState({ ...state, isInitialing: true });
+      await setState({ ...initialState, isInitialing: true });
+      await login();
       dispatch(actionFetchHomeConfigs());
       dispatch(getInternalTokenList());
-      await login();
       const [servers] = await new Promise.all([
         serverService.get(),
         dispatch(getPTokenList()),
@@ -149,7 +149,6 @@ const enhance = (WrappedComp) => (props) => {
       if (!servers || servers?.length === 0) {
         await serverService.setDefaultList();
       }
-      await setState({ ...state, pTokens });
       let wallet = await getExistedWallet();
       if (!wallet) {
         await setState({ ...state, isCreating: true });
@@ -157,20 +156,18 @@ const enhance = (WrappedComp) => (props) => {
       }
       await goHome({ wallet });
     } catch (e) {
-      onError(
-        new ExHandler(
-          e,
-          'Sorry, something went wrong while opening the wallet. Please check your connection or re-install the application and try again.',
-        )?.writeLog()?.message,
-      );
+      errorMessage = new ExHandler(
+        e,
+        'Sorry, something went wrong while opening the wallet. Please check your connection or re-install the application and try again.',
+      )?.writeLog()?.message;
     } finally {
-      await setState({ ...state, isInitialing: false, isCreating: false });
+      await setState({
+        ...state,
+        isInitialing: false,
+        isCreating: false,
+        errorMsg: errorMessage,
+      });
     }
-  };
-
-  const onRetry = () => {
-    initApp();
-    setState({ ...state, errorMsg: null, isInitialing: true });
   };
 
   React.useEffect(() => {
@@ -179,33 +176,27 @@ const enhance = (WrappedComp) => (props) => {
     });
   }, []);
 
-  React.useEffect(() => {
-    if (
-      !isInitialing &&
-      isMigrated &&
-      !isMigrating &&
-      !isFetching &&
-      isFetched &&
-      isFocused
-    ) {
-      if (pin) {
-        navigation.navigate(routeNames.AddPin, {
-          action: 'login',
-          redirectRoute: routeNames.Home,
-        });
-      } else {
-        navigation.navigate(routeNames.Home);
+  useFocusEffect(
+    React.useCallback(() => {
+      if (
+        !isInitialing && //init app success
+        !isCreating && //created wallet
+        isMigrated && //migrate old data success
+        isFetched && //finish splash screen
+        !errorMsg //no error
+      ) {
+        if (pin) {
+          navigation.navigate(routeNames.AddPin, {
+            action: 'login',
+            redirectRoute: routeNames.Home,
+          });
+        } else {
+          navigation.navigate(routeNames.Home);
+        }
       }
-    }
-  }, [
-    isFetched,
-    isFetching,
-    isInitialing,
-    isCreating,
-    isFocused,
-    isMigrating,
-    isMigrated,
-  ]);
+    }, [isInitialing, isCreating, isMigrated, isFetched, errorMsg]),
+  );
+
   if (isMigrating) {
     return <LoadingContainer size="large" />;
   }
@@ -215,7 +206,7 @@ const enhance = (WrappedComp) => (props) => {
   return (
     <ErrorBoundary>
       <WrappedComp
-        {...{ ...props, errorMsg, isInitialing, isCreating, onRetry }}
+        {...{ ...props, errorMsg, isInitialing, isCreating, onRetry: initApp }}
       />
     </ErrorBoundary>
   );
