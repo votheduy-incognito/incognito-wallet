@@ -44,6 +44,7 @@ import {
   PoolV2Provide,
   PoolV2Withdraw,
 } from '@src/screens/PoolV2';
+import Profile from '@src/screens/Profile';
 import routeNames from './routeNames';
 
 const routes = [
@@ -238,6 +239,10 @@ const routes = [
   {
     name: routeNames.News,
     screen: News,
+  },
+  {
+    name: routeNames.Profile,
+    screen: Profile,
   },
 ];
 
