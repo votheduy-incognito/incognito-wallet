@@ -27,7 +27,7 @@ const ListNews = ({ listNews, type }) => {
   };
   const handleRemoveNews = (id) => dispatch(actionRemoveNews(id));
   const Item = React.memo((props) => {
-    const { item, isRead } = props;
+    const { item, isRead, firstChild } = props;
     const { icon, title, description } = item;
     const canTap = !!item?.more;
     const TapItem = (props) => {
@@ -103,7 +103,9 @@ const ListNews = ({ listNews, type }) => {
     }
     case TYPE.whatNext: {
       const Component = () => (
-        <View style={[styled.hook, styled.hook3]}>
+        <View
+          style={[styled.hook, styled.hook3, firstChild && { marginTop: 30 }]}
+        >
           <Text style={[styled.desc, styled.descNoIcon]}>
             {`${title} `}
             {canTap && (
@@ -160,7 +162,12 @@ const ListNews = ({ listNews, type }) => {
               },
             ]}
           >
-            <Item item={item} isRead={isRead} key={item?.id} />
+            <Item
+              item={item}
+              firstChild={index === 0}
+              isRead={isRead}
+              key={item?.id}
+            />
           </Swipeout>
         );
       }
