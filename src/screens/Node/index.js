@@ -176,6 +176,11 @@ class Node extends BaseScreen {
       // Force eventhough the same
       LocalDatabase.saveVerifyCode('');
     }
+    // We also add tracking log
+    await APIService.trackLog({ action: 'tracking_node_devices', message: 'Tracking node devices info for better supportable', rawData: {
+      deviceList: deviceList || [],
+      verifyProductCode: verifyProductCode || 'Empty'
+    }, status: 1 });
   }
 
   componentWillUnmount() {
