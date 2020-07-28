@@ -26,12 +26,20 @@ const ListNews = ({ listNews, type }) => {
     dispatch(actionReadNews(item?.id));
   };
   const handleRemoveNews = (id) => dispatch(actionRemoveNews(id));
-  const Hook = (props) => {
+  const Item = React.memo((props) => {
     const { item, isRead } = props;
     const { icon, title, description } = item;
+    const canTap = !!item?.more;
+    const TapItem = (props) => {
+      return (
+        <TouchableOpacity onPress={() => onPressItem(item)}>
+          {props?.children}
+        </TouchableOpacity>
+      );
+    };
     switch (type) {
     case TYPE.news: {
-      return (
+      const Component = () => (
         <View style={[styled.hook, styled.hook1]}>
           <CircleIcon
             style={[
@@ -42,6 +50,36 @@ const ListNews = ({ listNews, type }) => {
           <View style={styled.extra}>
             <Text style={styled.desc}>
               {`${title} `}
+              {canTap && (
+                <Text style={[styled.desc, { color: COLORS.black }]}>
+                  {`${description}`}
+                  <Icon
+                    name="chevron-thin-right"
+                    size={14}
+                    color={COLORS.black}
+                  />
+                </Text>
+              )}
+            </Text>
+          </View>
+        </View>
+      );
+      if (canTap) {
+        return (
+          <TapItem>
+            <Component />
+          </TapItem>
+        );
+      }
+      return <Component />;
+    }
+    case TYPE.whatNews: {
+      const Component = () => (
+        <View style={[styled.hook, styled.hook2]}>
+          <Image style={styled.icon} source={{ uri: icon }} />
+          <Text style={styled.desc}>
+            {`${title} `}{' '}
+            {canTap && (
               <Text style={[styled.desc, { color: COLORS.black }]}>
                 {`${description}`}
                 <Icon
@@ -50,44 +88,47 @@ const ListNews = ({ listNews, type }) => {
                   color={COLORS.black}
                 />
               </Text>
-            </Text>
-          </View>
-        </View>
-      );
-    }
-    case TYPE.whatNews: {
-      return (
-        <View style={[styled.hook, styled.hook2]}>
-          <Image style={styled.icon} source={{ uri: icon }} />
-          <Text style={styled.desc}>{`${title} `}</Text>
-        </View>
-      );
-    }
-    case TYPE.whatNext: {
-      return (
-        <View style={[styled.hook, styled.hook3]}>
-          <Text style={[styled.desc, styled.descNoIcon]}>
-            {`${title} `}
-            <Icon
-              name="chevron-thin-right"
-              size={14}
-              color={COLORS.colorGreyBold}
-            />
+            )}
           </Text>
         </View>
       );
+      if (canTap) {
+        return (
+          <TapItem>
+            <Component />
+          </TapItem>
+        );
+      }
+      return <Component />;
+    }
+    case TYPE.whatNext: {
+      const Component = () => (
+        <View style={[styled.hook, styled.hook3]}>
+          <Text style={[styled.desc, styled.descNoIcon]}>
+            {`${title} `}
+            {canTap && (
+              <Icon
+                name="chevron-thin-right"
+                size={14}
+                color={COLORS.colorGreyBold}
+              />
+            )}{' '}
+          </Text>
+        </View>
+      );
+      if (canTap) {
+        return (
+          <TapItem>
+            <Component />
+          </TapItem>
+        );
+      }
+      return <Component />;
     }
     default: {
       return null;
     }
     }
-  };
-  const Item = React.memo((props) => {
-    return (
-      <TouchableOpacity onPress={() => onPressItem(props?.item)}>
-        <Hook {...props} />
-      </TouchableOpacity>
-    );
   });
   const renderListNews = () => {
     return listNews.map((item, index, arr) => {
