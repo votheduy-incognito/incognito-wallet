@@ -25,6 +25,7 @@ import {
 import { followDefaultTokens } from '@src/redux/actions/account';
 import { pTokensSelector } from '@src/redux/selectors/token';
 import { withNews, actionFetchNews } from '@screens/News';
+import { CONSTANT_KEYS } from '@src/constants';
 import { homeSelector } from './Home.selector';
 import { actionFetch as actionFetchHomeConfigs } from './Home.actions';
 import Airdrop from './features/Airdrop';
@@ -41,7 +42,9 @@ const enhance = (WrappedComp) => (props) => {
   const isFocused = useIsFocused();
   const wallet = useSelector((state) => state?.wallet);
   const defaultAccount = useSelector(accountSeleclor.defaultAccountSelector);
-  const isFollowedDefaultPTokens = useSelector(isFollowDefaultPTokensSelector);
+  const isFollowedDefaultPTokens = useSelector(isFollowDefaultPTokensSelector)(
+    CONSTANT_KEYS.IS_FOLLOW_DEFAULT_PTOKENS,
+  );
   const dispatch = useDispatch();
 
   const getHomeConfiguration = async () => {
@@ -75,7 +78,11 @@ const enhance = (WrappedComp) => (props) => {
   const followDefaultPTokens = async () => {
     try {
       await dispatch(followDefaultTokens(defaultAccount, pTokens));
-      await dispatch(actionToggleFollowDefaultPTokens());
+      await dispatch(
+        actionToggleFollowDefaultPTokens({
+          keySave: CONSTANT_KEYS.IS_FOLLOW_DEFAULT_PTOKENS,
+        }),
+      );
     } catch (error) {
       console.log(error);
     }
