@@ -25,14 +25,13 @@ const Community = ({ navigation, isFocused }) => {
   const [loading, setLoading] = useState(true);
   const [backable, setBackable] = useState(false);
   const [url, setUrl] = useState('');
-
   useEffect(() => {
     if (isFocused) {
       const { uri: _uri } = navigation?.state?.params || {};
-
       if (_uri) {
         webViewRef?.current?.injectJavaScript(`location.href = '${_uri}';`);
         navigation?.setParams({ uri: null });
+        return setUrl(_uri);
       }
       // Check if the cache is existing
       LocalDatabase.getUriWebviewCommunity()
@@ -54,7 +53,6 @@ const Community = ({ navigation, isFocused }) => {
     }
   }, []);
 
-
   const goBack = () => {
     if (!backable) {
       setUrl(MAIN_WEBSITE);
@@ -70,7 +68,8 @@ const Community = ({ navigation, isFocused }) => {
   const stateHandler = (state) => {
     if (state?.url?.includes('about:blank')) {
       setBackable(state?.canGoBack);
-      setUrl(MAIN_WEBSITE);
+      // setUrl(MAIN_WEBSITE);
+      setUrl(state?.url);
     } else {
       setBackable(state?.canGoBack);
       // No need to clarify here
@@ -99,10 +98,18 @@ const Community = ({ navigation, isFocused }) => {
     return (
       <View style={styles.navigation}>
         <TouchableOpacity onPress={() => goBack()} style={styles.back}>
-          <Ionicons name="ios-arrow-back" size={30} color={COLORS.colorGreyBold} />
+          <Ionicons
+            name="ios-arrow-back"
+            size={30}
+            color={COLORS.colorGreyBold}
+          />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => goForward()} style={styles.back}>
-          <Ionicons name="ios-arrow-forward" size={30} color={COLORS.colorGreyBold} />
+          <Ionicons
+            name="ios-arrow-forward"
+            size={30}
+            color={COLORS.colorGreyBold}
+          />
         </TouchableOpacity>
         <TouchableOpacity style={styles.back}>
           {/* <SimpleLineIcons name="home" size={25} color={COLORS.colorGreyBold} /> */}
@@ -116,7 +123,7 @@ const Community = ({ navigation, isFocused }) => {
 
   return (
     <View style={styles.container}>
-      <Header title='Community' style={{ paddingLeft: 20 }} />
+      <Header title="Community" style={{ paddingLeft: 20 }} />
       <WebView
         key={`${url}`}
         startInLoadingState
@@ -124,7 +131,10 @@ const Community = ({ navigation, isFocused }) => {
           setLoading(false);
         }}
         onShouldStartLoadWithRequest={event => {
-          return true;
+          if (event.url.startsWith('http')) {
+            return true;
+          }
+          return false;
         }}
         userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1"
         source={{ uri: url }}

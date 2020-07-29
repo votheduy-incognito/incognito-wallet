@@ -11,7 +11,7 @@ export const actionFetching = () => ({
   type: ACTION_FETCHING,
 });
 
-export const actionFetched = payload => ({
+export const actionFetched = (payload) => ({
   type: ACTION_FETCHED,
   payload,
 });
@@ -37,7 +37,7 @@ export const actionFetch = () => async (dispatch, getState) => {
     categories = data?.categories || [];
     headerTitle = data?.headerTitle?.title.replace('\\n', '\n') || '';
   } catch (error) {
-    console.log('error', error);
+    console.debug('error', error);
   } finally {
     await dispatch(
       actionFetched({
