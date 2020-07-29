@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withNavigationFocus } from 'react-navigation';
 import { WebView } from 'react-native-webview';
-import { Image } from 'react-native';
+import { Image, Linking } from 'react-native';
 import { ActivityIndicator, TouchableOpacity, View } from '@components/core';
 import { MAIN_WEBSITE } from '@src/constants/config';
 import chevronLeft from '@assets/images/icons/chevron-left-icon.png';
@@ -34,26 +34,23 @@ const Community = ({ navigation, isFocused }) => {
         webViewRef?.current?.injectJavaScript(`location.href = '${_uri}';`);
         navigation?.setParams({ uri: null });
       }
-    }
-    // Check if the cache is existing
-    LocalDatabase.getUriWebviewCommunity()
-      .then(val => {
-        if (val) {
-          var pattern = /^((http|https|ftp):\/\/)/;
-          if (!pattern.test(url)) {
-            setUrl(val);
+      // Check if the cache is existing
+      LocalDatabase.getUriWebviewCommunity()
+        .then(val => {
+          if (val) {
+            var pattern = /^((http|https|ftp):\/\/)/;
+            if (!pattern.test(url)) {
+              setUrl(val);
+            } else {
+              setUrl(MAIN_WEBSITE);
+            }
           } else {
             setUrl(MAIN_WEBSITE);
           }
-        } else {
+        })
+        .catch(err => {
           setUrl(MAIN_WEBSITE);
-        }
-      })
-      .catch(err => {
-        setUrl(MAIN_WEBSITE);
-      });
-    if (url === 'about:blank') {
-      setUrl(MAIN_WEBSITE);
+        });
     }
   }, []);
 
@@ -71,28 +68,31 @@ const Community = ({ navigation, isFocused }) => {
   };
 
   const stateHandler = (state) => {
-    if (state?.url === 'about:blank') {
+    if (state?.url?.includes('about:blank')) {
       setBackable(state?.canGoBack);
       setUrl(MAIN_WEBSITE);
-    } else if (!state.url.includes(MAIN_WEBSITE)) {
-      setBackable(state?.canGoBack);
-      // setUrl(MAIN_WEBSITE);
-      setUrl(state?.url);
     } else {
-      setUrl(state?.url);
+      setBackable(state?.canGoBack);
+      // No need to clarify here
+      // setUrl(MAIN_WEBSITE);
+      // setUrl(`${state?.url}`);
     }
   };
 
   const goHome = async () => {
     setUrl(MAIN_WEBSITE);
     await LocalDatabase.setUriWebviewCommunity(MAIN_WEBSITE);
-    setTimeout(()=>{
+    setTimeout(() => {
       webViewRef?.current?.reload();
     }, 750);
   };
 
   const reload = () => {
+    try {
     webViewRef?.current?.reload();
+    } catch (err) {
+      console.log(err?.message || '');
+    }
   };
 
   const renderBottomBar = () => {
@@ -118,10 +118,13 @@ const Community = ({ navigation, isFocused }) => {
     <View style={styles.container}>
       <Header title='Community' style={{ paddingLeft: 20 }} />
       <WebView
-        key={`${url} ${new Date().getTime()}`}
+        key={`${url}`}
         startInLoadingState
         onLoadEnd={(data) => {
           setLoading(false);
+        }}
+        onShouldStartLoadWithRequest={event => {
+          return true;
         }}
         userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1"
         source={{ uri: url }}
@@ -149,7 +152,7 @@ const Community = ({ navigation, isFocused }) => {
       `}
         onMessage={async ({ nativeEvent: state }) => {
           if (state.data === 'navigationStateChange') {
-            if (typeof state?.url === 'string') {
+            if (typeof state?.url === 'string' && state.url.includes(MAIN_WEBSITE)) {
               await LocalDatabase.setUriWebviewCommunity(state?.url);
             }
           }
