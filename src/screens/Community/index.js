@@ -130,7 +130,10 @@ const Community = ({ navigation, isFocused }) => {
           setLoading(false);
         }}
         onShouldStartLoadWithRequest={event => {
-          return true;
+          if (event.url.startsWith('http')) {
+            return true;
+          }
+          return false;
         }}
         userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1"
         source={{ uri: url }}
