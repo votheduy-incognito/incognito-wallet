@@ -24,7 +24,7 @@ import {
 } from '@screens/GetStarted';
 import { followDefaultTokens } from '@src/redux/actions/account';
 import { pTokensSelector } from '@src/redux/selectors/token';
-import { withNews } from '@screens/News';
+import { withNews, actionFetchNews } from '@screens/News';
 import { homeSelector } from './Home.selector';
 import { actionFetch as actionFetchHomeConfigs } from './Home.actions';
 import Airdrop from './features/Airdrop';
@@ -46,7 +46,10 @@ const enhance = (WrappedComp) => (props) => {
 
   const getHomeConfiguration = async () => {
     try {
-      await dispatch(actionFetchHomeConfigs());
+      await new Promise.all([
+        dispatch(actionFetchHomeConfigs()),
+        dispatch(actionFetchNews()),
+      ]);
     } catch (error) {
       console.log('Fetching configuration for home failed.', error);
     }
