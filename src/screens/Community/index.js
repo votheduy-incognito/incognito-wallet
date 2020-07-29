@@ -68,7 +68,8 @@ const Community = ({ navigation, isFocused }) => {
   const stateHandler = (state) => {
     if (state?.url?.includes('about:blank')) {
       setBackable(state?.canGoBack);
-      setUrl(MAIN_WEBSITE);
+      // setUrl(MAIN_WEBSITE);
+      setUrl(state?.url);
     } else {
       setBackable(state?.canGoBack);
       // No need to clarify here
