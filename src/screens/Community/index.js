@@ -57,7 +57,12 @@ const Community = ({ navigation, isFocused }) => {
   }, []);
 
   const goBack = () => {
-    webViewRef?.current?.goBack();
+    if (!backable) {
+      setUrl(MAIN_WEBSITE);
+      webViewRef?.current?.reload();
+    } else {
+      webViewRef?.current?.goBack();
+    }
   };
   const goForward = () => {
     webViewRef.current.goForward();
@@ -69,7 +74,8 @@ const Community = ({ navigation, isFocused }) => {
       setUrl(MAIN_WEBSITE);
     } else if (!state.url.includes(MAIN_WEBSITE)) {
       setBackable(state?.canGoBack);
-      setUrl(MAIN_WEBSITE);
+      // setUrl(MAIN_WEBSITE);
+      setUrl(state?.url);
     } else {
       setUrl(state?.url);
     }
