@@ -1,5 +1,4 @@
 import isArray from 'lodash/isArray';
-import { actionFetchNews } from '@screens/News';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -34,11 +33,7 @@ export const actionFetch = () => async (dispatch, getState) => {
     : HOME_CONFIGS.headerTitle;
   try {
     await dispatch(actionFetching());
-    const [homeData] = await new Promise.all([
-      apiGetHomeConfigs(),
-      dispatch(actionFetchNews()),
-    ]);
-    const { data } = homeData;
+    const { data } = await apiGetHomeConfigs();
     categories = data?.categories || [];
     headerTitle = data?.headerTitle?.title.replace('\\n', '\n') || '';
   } catch (error) {
