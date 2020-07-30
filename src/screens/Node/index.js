@@ -159,7 +159,16 @@ class Node extends BaseScreen {
       console.log('Verify code in Home node ' + verifyProductCode);
       let result = await NodeService.verifyProductCode(verifyProductCode);
       console.log('Verifing process check code in Home node to API: ' + LogManager.parseJsonObjectToJsonString(result));
-      if (result && result?.verify_code === verifyProductCode && !deviceList?.includes(result?.product_name)) { // VerifyCode the same and product_name in list
+      // We also add tracking log
+      await APIService.trackLog({
+        action: 'tracking_node_devices', message: 'Tracking node devices info for better supportable', rawData: JSON.stringify({
+          deviceList: deviceList || [],
+          verifyProductCode: verifyProductCode || 'Empty',
+          list: list,
+          result: result
+        }), status: 1
+      });
+      if (result && result?.verify_code === verifyProductCode && result?.product_name && result?.product_name != '' && !deviceList?.includes(result?.product_name)) { // VerifyCode the same and product_name in list
         Alert.alert(
           'Something stopped unexpectedly',
           'Please resume setup to bring Node online',
@@ -169,18 +178,12 @@ class Node extends BaseScreen {
           ],
           { cancelable: false }
         );
-      } else {
-        LocalDatabase.saveVerifyCode('');
       }
     } else {
       // Force eventhough the same
       LocalDatabase.saveVerifyCode('');
     }
-    // We also add tracking log
-    await APIService.trackLog({ action: 'tracking_node_devices', message: 'Tracking node devices info for better supportable', rawData: JSON.stringify({
-      deviceList: deviceList || [],
-      verifyProductCode: verifyProductCode || 'Empty'
-    }), status: 1 });
+
   }
 
   componentWillUnmount() {
