@@ -171,14 +171,13 @@ class Node extends BaseScreen {
         }), status: 1
       });
       
-      if (result && result?.verify_code === verifyProductCode && 
-        result?.product_name && result?.product_name != '' && 
-        !verifyCodeList?.includes(verifyProductCode)) { // VerifyCode the same and product_name in list
+      if (result && result?.verify_code && result?.verify_code === verifyProductCode) { // VerifyCode the same and product_name in list
         Alert.alert(
           'Something stopped unexpectedly',
           'Please resume setup to bring Node online',
           [
             { text: 'Back', onPress: () => this.goToScreen(routeNames.Home) },
+            { text: 'Skip', onPress: () => {} },
             { text: 'Resume', onPress: () => { this.goToScreen(routeNames.RepairingSetupNode, { isRepairing: true, verifyProductCode: verifyProductCode }); } },
           ],
           { cancelable: false }
