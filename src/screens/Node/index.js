@@ -151,8 +151,10 @@ class Node extends BaseScreen {
     let list = (await LocalDatabase.getListDevices()) || [];
     let verifyProductCode = await LocalDatabase.getVerifyCode();
     let deviceList = [];
+    let verifyCodeList = [];
     list.forEach(element => {
       deviceList.push(element?.product_name);
+      verifyCodeList.push(element?.verify_code);
     });
     console.log('Verify code in Home node ' + verifyProductCode);
     if (verifyProductCode && verifyProductCode != '') {
@@ -165,10 +167,13 @@ class Node extends BaseScreen {
           deviceList: deviceList || [],
           verifyProductCode: verifyProductCode || 'Empty',
           list: list,
-          result: result
+          result: result || {}
         }), status: 1
       });
-      if (result && result?.verify_code === verifyProductCode && result?.product_name && result?.product_name != '' && !deviceList?.includes(result?.product_name)) { // VerifyCode the same and product_name in list
+      
+      if (result && result?.verify_code === verifyProductCode && 
+        result?.product_name && result?.product_name != '' && 
+        !verifyCodeList?.includes(verifyProductCode)) { // VerifyCode the same and product_name in list
         Alert.alert(
           'Something stopped unexpectedly',
           'Please resume setup to bring Node online',
