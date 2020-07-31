@@ -130,7 +130,7 @@ jobs:
           at: .
       - login_appcenter
       - get_app_info
-      - run: yarn deployAndroid:release
+      - run: yarn deployAndroid:prod
       - run: curl -X POST -H "Content-type:application/json" --data '{"text":"'"Deploy Android $APP_VERSION production successfully! $LAST_COMMIT_MESSAGE"'"}' $SLACK_HOOK
   push_ios_production:
     executor:
@@ -140,7 +140,7 @@ jobs:
           at: .
       - login_appcenter
       - get_app_info
-      - run: yarn deployIOS:release
+      - run: yarn deployIOS:prod
       - run: curl -X POST -H 'Content-type:application/json' --data '{"text":"'"Deploy iOS $APP_VERSION production successfully! $LAST_COMMIT_MESSAGE"'"}' $SLACK_HOOK
   push_play_store:
     executor:
