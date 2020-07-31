@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
-import { View, Text, RoundCornerButton, ScrollView } from '@components/core';
+import { View, Text, RoundCornerButton, ScrollView, FlexView } from '@components/core';
 import Balance from '@screens/DexV2/components/Balance';
 import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import format from '@utils/format';
@@ -38,9 +38,9 @@ const Trade = ({
   quote,
 }) => {
   return (
-    <View>
+    <FlexView>
       <Header title="Order preview" />
-      <ScrollView>
+      <ScrollView paddingBottom>
         <View style={styles.mainInfo}>
           <Text style={styles.bigText}>Buy at least</Text>
           <Text style={styles.bigText} numberOfLines={3}>{format.amountFull(minimumAmount, outputToken.pDecimals)} {outputToken.symbol}</Text>
@@ -109,7 +109,7 @@ const Trade = ({
         />
       </ScrollView>
       <Loading open={trading} />
-    </View>
+    </FlexView>
   );
 };
 
