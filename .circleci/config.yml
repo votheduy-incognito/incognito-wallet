@@ -13,7 +13,7 @@ commands:
         - run:
             name: Login appcenter
             command: |
-              npm install appcenter-cli -g
+              npm install appcenter-cli@2.6.3 -g
               appcenter login --token $CODEPUSH_ACCESS_TOKEN --disable-telemetry
 jobs:
   checkout_code:
