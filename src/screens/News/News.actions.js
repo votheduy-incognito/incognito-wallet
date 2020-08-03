@@ -34,6 +34,7 @@ export const actionFetchNews = () => async (dispatch, getState) => {
     }
     await dispatch(actionFetchingNews());
     const data = await apiGetNews();
+    await dispatch(actionCheckUnreadNews());
     await dispatch(actionFetchedNews({ data }));
   } catch (error) {
     await dispatch(actionFetchFailNews());
