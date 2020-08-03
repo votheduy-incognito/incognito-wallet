@@ -177,7 +177,6 @@ class Node extends BaseScreen {
           'Please resume setup to bring Node online',
           [
             { text: 'Back', onPress: () => this.goToScreen(routeNames.Home) },
-            { text: 'Skip', onPress: () => {} },
             { text: 'Resume', onPress: () => { this.goToScreen(routeNames.RepairingSetupNode, { isRepairing: true, verifyProductCode: verifyProductCode }); } },
           ],
           { cancelable: false }
