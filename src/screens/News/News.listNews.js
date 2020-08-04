@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, TouchableWithoutFeedback } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import routeNames from '@src/router/routeNames';
@@ -19,32 +19,45 @@ const ListNews = ({ listNews, type }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const userId = useSelector(userIdSelector);
-  const onPressItem = (item) => {
-    navigation.navigate(routeNames.Community, {
-      uri: item?.more,
-    });
+  const onPressItem = ({ item, canTap }) => {
     dispatch(actionReadNews(item?.id));
+    if (canTap) {
+      navigation.navigate(routeNames.Community, {
+        uri: item?.more,
+      });
+    }
   };
   const handleRemoveNews = (id) => dispatch(actionRemoveNews(id));
   const Item = React.memo((props) => {
-    const { item, isRead, firstChild } = props;
+    const { item, firstChild } = props;
     const { icon, title, description } = item;
     const canTap = !!item?.more;
     const TapItem = (props) => {
+      const { animated = true } = props;
+      if (!animated) {
+        return (
+          <TouchableWithoutFeedback
+            onPress={() => onPressItem({ item, canTap })}
+          >
+            {props?.children}
+          </TouchableWithoutFeedback>
+        );
+      }
       return (
-        <TouchableOpacity onPress={() => onPressItem(item)}>
+        <TouchableOpacity onPress={() => onPressItem({ item, canTap })}>
           {props?.children}
         </TouchableOpacity>
       );
     };
+    let Component;
     switch (type) {
     case TYPE.news: {
-      const Component = () => (
+      Component = () => (
         <View style={[styled.hook, styled.hook1]}>
           <CircleIcon
             style={[
               styled.circle,
-              isRead && { backgroundColor: COLORS.colorGreyLight },
+              // isRead && { backgroundColor: COLORS.colorGreyLight },
             ]}
           />
           <View style={styled.extra}>
@@ -64,17 +77,10 @@ const ListNews = ({ listNews, type }) => {
           </View>
         </View>
       );
-      if (canTap) {
-        return (
-          <TapItem>
-            <Component />
-          </TapItem>
-        );
-      }
-      return <Component />;
+      break;
     }
     case TYPE.whatNews: {
-      const Component = () => (
+      Component = () => (
         <View style={[styled.hook, styled.hook2]}>
           <Image style={styled.icon} source={{ uri: icon }} />
           <Text style={styled.desc}>
@@ -92,17 +98,10 @@ const ListNews = ({ listNews, type }) => {
           </Text>
         </View>
       );
-      if (canTap) {
-        return (
-          <TapItem>
-            <Component />
-          </TapItem>
-        );
-      }
-      return <Component />;
+      break;
     }
     case TYPE.whatNext: {
-      const Component = () => (
+      Component = () => (
         <View
           style={[styled.hook, styled.hook3, firstChild && { marginTop: 30 }]}
         >
@@ -118,19 +117,17 @@ const ListNews = ({ listNews, type }) => {
           </Text>
         </View>
       );
-      if (canTap) {
-        return (
-          <TapItem>
-            <Component />
-          </TapItem>
-        );
-      }
-      return <Component />;
+      break;
     }
     default: {
       return null;
     }
     }
+    return (
+      <TapItem animated={!!canTap}>
+        <Component />
+      </TapItem>
+    );
   });
   const renderListNews = () => {
     return listNews.map((item, index, arr) => {
