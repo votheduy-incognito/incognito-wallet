@@ -42,13 +42,13 @@ export const actionFetchNews = () => async (dispatch, getState) => {
   }
 };
 
-export const actionReadNews = (id) => async (dispatch) => {
+export const actionReadNews = (id) => async () => {
   try {
     await apiReadNews({ id });
   } catch (error) {
     console.log(error);
   } finally {
-    dispatch(actionFetchNews());
+    // dispatch(actionFetchNews()); // Now no need anymore.
   }
 };
 
@@ -64,11 +64,10 @@ export const actionRemoveNews = (id) => async (dispatch) => {
 
 export const actionCheckUnreadNews = () => async (dispatch) => {
   try {
-    const unread = await apiCheckUnreadNews();
-    const isReadAll = unread === 0;
+    const unread = await apiCheckUnreadNews();    
     dispatch({
       type: ACTION_CHECK_UNREAD_NEWS,
-      payload: isReadAll,
+      payload: unread,
     });
   } catch (error) {
     console.debug(error);
