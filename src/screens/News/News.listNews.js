@@ -15,23 +15,39 @@ import { actionReadNews, actionRemoveNews } from './News.actions';
 import { listNewsStyled as styled } from './News.styled';
 import { TYPE } from './News.constant';
 
-const ListNews = ({ listNews, type }) => {
+
+
+const ListNews = ({ listNews, type, lastNewsID }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const userId = useSelector(userIdSelector);
+  const userId = useSelector(userIdSelector);  
+  
+  const handleRemoveNews = (id) => dispatch(actionRemoveNews(id));
+
   const onPressItem = ({ item, canTap }) => {
+
     dispatch(actionReadNews(item?.id));
-    if (canTap) {
+    
+    if (canTap) {        
+
+      // reset all highlight:
+      navigation.setParams({ 'lastNewsID': 0 });
+
       navigation.navigate(routeNames.Community, {
         uri: item?.more,
       });
     }
   };
-  const handleRemoveNews = (id) => dispatch(actionRemoveNews(id));
+
   const Item = React.memo((props) => {
+
     const { item, firstChild } = props;
-    const { icon, title, description } = item;
+    const { id, icon, title, description } = item;
     const canTap = !!item?.more;
+
+    // check show highlight or no:
+    const isHighlight = lastNewsID > 1 && lastNewsID < id;
+    
     const TapItem = (props) => {
       const { animated = true } = props;
       if (!animated) {
@@ -53,7 +69,7 @@ const ListNews = ({ listNews, type }) => {
     switch (type) {
     case TYPE.news: {
       Component = () => (
-        <View style={[styled.hook, styled.hook1]}>
+        <View style={[styled.hook, styled.hook1, isHighlight?styled.highlights:'']}>
           <CircleIcon
             style={[
               styled.circle,
@@ -81,7 +97,7 @@ const ListNews = ({ listNews, type }) => {
     }
     case TYPE.whatNews: {
       Component = () => (
-        <View style={[styled.hook, styled.hook2]}>
+        <View style={[styled.hook, styled.hook2, isHighlight?styled.highlights:'']}>
           <Image style={styled.icon} source={{ uri: icon }} />
           <Text style={styled.desc}>
             {`${title} `}{' '}
@@ -103,7 +119,7 @@ const ListNews = ({ listNews, type }) => {
     case TYPE.whatNext: {
       Component = () => (
         <View
-          style={[styled.hook, styled.hook3, firstChild && { marginTop: 30 }]}
+          style={[styled.hook, styled.hook3,firstChild && { marginTop: 30 }]}
         >
           <Text style={[styled.desc, styled.descNoIcon]}>
             {`${title} `}
@@ -115,7 +131,7 @@ const ListNews = ({ listNews, type }) => {
               />
             )}{' '}
           </Text>
-        </View>
+        </View>        
       );
       break;
     }
@@ -177,6 +193,7 @@ const ListNews = ({ listNews, type }) => {
 ListNews.propTypes = {
   listNews: PropTypes.array.isRequired,
   type: PropTypes.number.isRequired,
+  lastNewsID: PropTypes.number.isRequired,
 };
 
 export default ListNews;
