@@ -9,7 +9,7 @@ const initialState = {
   isFetching: false,
   isFetched: false,
   data: [],
-  isReadAll: true,
+  isReadAll: 0,
 };
 
 export default (state = initialState, action) => {
