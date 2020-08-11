@@ -35,7 +35,6 @@ const Trade = ({
   warning,
   isErc20,
   pair,
-  quote,
 }) => {
   return (
     <FlexView>
@@ -98,7 +97,7 @@ const Trade = ({
           />
         </>
         )}
-        <Powered network={isErc20 ? quote?.protocol : 'Incognito'} />
+        <Powered network={isErc20 ? 'Kyber' : 'Incognito'} />
         {!!warning && <ExtraInfo left={warning} right="" style={styles.warning} />}
         {!!error && <Text style={styles.error}>{error}</Text>}
         <RoundCornerButton
@@ -130,7 +129,6 @@ Trade.propTypes = {
   warning: PropTypes.string,
   isErc20: PropTypes.bool,
   pair: PropTypes.object,
-  quote: PropTypes.object,
 };
 
 Trade.defaultProps = {
@@ -143,7 +141,6 @@ Trade.defaultProps = {
   warning: '',
   isErc20: false,
   pair: null,
-  quote: null,
 };
 
 export default compose(
