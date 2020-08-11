@@ -8,10 +8,10 @@ const withEstimateFee = WrappedComp => (props) => {
   const [fee, setFee] = React.useState(MAX_DEX_FEE);
   const [feeToken, setFeeToken] = React.useState(COINS.PRV);
 
-  const { inputToken, outputToken, pairs } = props;
+  const { inputToken, outputToken, pairs, isErc20 } = props;
 
   const estimateFee = () => {
-    if (inputToken.id === COINS.PRV_ID) {
+    if (isErc20 || inputToken.id === COINS.PRV_ID) {
       setFee(MAX_DEX_FEE);
       setFeeToken(COINS.PRV);
       return;
