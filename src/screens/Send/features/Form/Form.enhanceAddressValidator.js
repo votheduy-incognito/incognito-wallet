@@ -6,25 +6,15 @@ import { validator } from '@src/components/core/reduxForm';
 import { CONSTANT_COMMONS } from '@src/constants';
 import accountService from '@src/services/wallet/accountService';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
-import { useKeyboard } from '@src/components/UseEffect/useKeyboard';
-import walletValidator from 'wallet-address-validator';
-import { Toast } from '@src/components/core';
-import { estimateFeeSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 import { formName } from './Form.enhance';
-import { apiCheckIfValidAddressETH } from './Form.services';
 
 export const enhanceAddressValidation = (WrappedComp) => (props) => {
   const selector = formValueSelector(formName);
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
-  const { screen } = useSelector(estimateFeeSelector);
   const { externalSymbol, isErc20Token, isMainCrypto } = selectedPrivacy;
   const toAddress = useSelector((state) => selector(state, 'toAddress'));
   const isIncognitoAddress = accountService.checkPaymentAddress(toAddress);
-  const [state, setState] = React.useState({
-    shouldBlockETHWrongAddress: false,
-  });
-  const { shouldBlockETHWrongAddress } = state;
-  const [isKeyboardVisible] = useKeyboard();
+
   const isERC20 =
     isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
 
@@ -112,49 +102,15 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
     return getExternalAddressValidator();
   };
 
-  const handleValidateERC20Address = async () => {
-    try {
-      const { data } = await apiCheckIfValidAddressETH(toAddress);
-      await setState({
-        ...state,
-        shouldBlockETHWrongAddress: !data?.Result,
-      });
-    } catch (error) {
-      Toast.showError(
-        'Could not validate ETH address for now, please try again',
-      );
-      await setState({ ...state, shouldBlockETHWrongAddress: false });
-    }
-  };
-
-  const handleChangeAddress = async () => {
-    try {
-      if (!isKeyboardVisible) {
-        return;
-      }
-      if (screen === 'UnShield') {
-        const isAddressERC20Valid = walletValidator.validate(
-          toAddress,
-          CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH,
-          'both',
-        );
-        if (isERC20 && isAddressERC20Valid && !!toAddress) {
-          return handleValidateERC20Address();
-        }
-      }
-    } catch (error) {
-      console.debug(error);
-    }
-  };
-
-  React.useEffect(() => {
-    handleChangeAddress();
-  }, [toAddress, isKeyboardVisible, screen]);
-
   const validateAddress = getAddressValidator();
+
   return (
     <WrappedComp
-      {...{ ...props, validateAddress, shouldBlockETHWrongAddress, isERC20 }}
+      {...{
+        ...props,
+        validateAddress,
+        isERC20,
+      }}
     />
   );
 };

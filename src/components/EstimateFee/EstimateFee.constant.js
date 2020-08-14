@@ -13,3 +13,4 @@ export const ACTION_FETCHED_MAX_FEE_PRV = '[estimateFee] Fetched max fee prv';
 export const ACTION_FETCHED_MAX_FEE_PTOKEN =
   '[estimateFee] Fetched max fee pToken';
 export const ACTION_USE_FEE_MAX = '[estimateFee] Use fee max';
+export const ACTION_FETCHED_VALID_ADDR = '[estimateFee] Fetched valid address';

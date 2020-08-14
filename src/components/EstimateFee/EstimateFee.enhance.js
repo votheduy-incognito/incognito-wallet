@@ -6,7 +6,12 @@ import PropTypes from 'prop-types';
 import accountService from '@src/services/wallet/accountService';
 import { useKeyboard } from '@src/components/UseEffect/useKeyboard';
 import { usePrevious } from '@src/components/UseEffect/usePrevious';
-import { actionFetchFee, actionInitEstimateFee } from './EstimateFee.actions';
+import { ExHandler } from '@src/services/exception';
+import {
+  actionFetchFee,
+  actionInitEstimateFee,
+  actionValAddr,
+} from './EstimateFee.actions';
 import { estimateFeeSelector } from './EstimateFee.selector';
 
 const enhance = (WrappedComp) => (props) => {
@@ -33,21 +38,24 @@ const enhance = (WrappedComp) => (props) => {
       if (!address) {
         return;
       }
-      let config = {};
+      let config = {
+        screen: 'Send',
+      };
       if (!isIncognitoAddress) {
-        config = { screen: 'UnShield' };
+        config = { ...config, screen: 'UnShield' };
       }
       await dispatch(actionInitEstimateFee(config));
       if (isKeyboardVisible) {
         return;
       }
+      await dispatch(actionValAddr(address));
       if (!isFetched) {
         return handleFetchFeeData();
       } else if (isFetched && !isFetching && prevScreen !== screen) {
         return handleFetchFeeData();
       }
     } catch (error) {
-      console.debug(error);
+      new ExHandler(error).showErrorToast();
     }
   };
   React.useEffect(() => {

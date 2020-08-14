@@ -25,16 +25,21 @@ export const enhance = (WrappedComp) => (props) => {
     isValid(formEstimateFee)(state),
   );
   const navigation = useNavigation();
-  const { fee, isFetching: estimatingFee, isSend, isUnShield } = useSelector(
-    feeDataSelector,
-  );
+  const {
+    fee,
+    isFetching: estimatingFee,
+    isSend,
+    isUnShield,
+    isAddressValidated,
+    isValidETHAddress,
+  } = useSelector(feeDataSelector);
   const dispatch = useDispatch();
   const selector = formValueSelector(formName);
   const isFormValid = useSelector((state) => isValid(formName)(state));
   const amount = useSelector((state) => selector(state, 'amount'));
   const toAddress = useSelector((state) => selector(state, 'toAddress'));
   const [isKeyboardVisible] = useKeyboard();
-  const { shouldBlockETHWrongAddress } = props;
+
   const onChangeField = (value, field) => {
     dispatch(change(formName, field, String(value)));
     dispatch(focus(formName, field));
@@ -48,6 +53,7 @@ export const enhance = (WrappedComp) => (props) => {
       console.debug(error);
     }
   };
+
   const shouldDisabledSubmit = () => {
     if (
       !isFormValid ||
@@ -55,7 +61,8 @@ export const enhance = (WrappedComp) => (props) => {
       !isFormEstimateFeeValid ||
       estimatingFee ||
       !!isKeyboardVisible ||
-      !!shouldBlockETHWrongAddress
+      !isAddressValidated ||
+      !isValidETHAddress
     ) {
       return true;
     }
