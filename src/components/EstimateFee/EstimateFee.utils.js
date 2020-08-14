@@ -49,6 +49,7 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
     minAmountText,
     feePToken,
     feePrv,
+    isFetching,
   } = estimateFee;
   const { amount } = selectedPrivacy;
   const isUseTokenFee = actived !== CONSTANT_COMMONS.PRV.id;
@@ -64,6 +65,11 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
     feePToken,
     feePrv,
   });
+  let titleBtnSubmit =
+    screen === 'Send' ? 'Send anonymously' : 'Unshield my crypto';
+  if (isFetching) {
+    titleBtnSubmit = 'Estimating fee...';
+  }
   return {
     isUseTokenFee,
     fee,
@@ -82,5 +88,9 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
     maxAmountText,
     isUsedPRVFee: !isUseTokenFee,
     pDecimals: selectedPrivacy?.pDecimals,
+    titleBtnSubmit,
+    isFetching,
+    isUnShield: screen === 'UnShield',
+    isSend: screen === 'Send',
   };
 };
