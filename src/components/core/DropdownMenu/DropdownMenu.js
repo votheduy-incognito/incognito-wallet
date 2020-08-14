@@ -1,9 +1,14 @@
 import React from 'react';
-import { View, StyleSheet, Text, SectionList } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  SectionList,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Entypo';
 import { COLORS, FONT } from '@src/styles';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const styled = StyleSheet.create({
   container: {
