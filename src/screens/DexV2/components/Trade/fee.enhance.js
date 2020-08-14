@@ -11,7 +11,7 @@ const withEstimateFee = WrappedComp => (props) => {
   const { inputToken, outputToken, pairs } = props;
 
   const estimateFee = () => {
-    if (inputToken.id === COINS.PRV_ID) {
+    if (inputToken.id !== COINS.PRV_ID && outputToken?.id !== COINS.PRV_ID) {
       setFee(MAX_DEX_FEE);
       setFeeToken(COINS.PRV);
       return;
