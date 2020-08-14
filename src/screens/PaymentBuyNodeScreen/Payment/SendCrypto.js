@@ -4,15 +4,18 @@ import { Field, formValueSelector, isValid, change, focus } from 'redux-form';
 import { connect } from 'react-redux';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
-import { Container, ScrollView, View, Button, Toast, Text } from '@components/core';
+import {
+  Container,
+  ScrollView,
+  View,
+  Button,
+  Toast,
+  Text,
+} from '@components/core';
 import LoadingTx from '@components/LoadingTx';
 import EstimateFee from '@components/EstimateFee';
 import { isExchangeRatePToken } from '@services/wallet/RpcClientService';
-import {
-  createForm,
-  InputField,
-  validator,
-} from '@components/core/reduxForm';
+import { createForm, InputField, validator } from '@components/core/reduxForm';
 import { ExHandler } from '@services/exception';
 import { CONSTANT_COMMONS, CONSTANT_EVENTS } from '@src/constants';
 import { logEvent } from '@services/firebase';
@@ -23,6 +26,9 @@ import { RefreshControl, Modal } from 'react-native';
 import { generateTestId } from '@utils/misc';
 import { SEND } from '@src/constants/elements';
 import theme from '@src/styles/theme';
+import floor from 'lodash/floor';
+import { accountSeleclor } from '@src/redux/selectors';
+import { COLORS } from '@src/styles';
 import ReceiptModal from '../Receipt/index';
 import { homeStyle } from './style';
 import PaymentSuccess from './PaymentSuccess';
@@ -49,7 +55,6 @@ class SendCrypto extends React.Component {
       maxAmountValidator: undefined,
       minAmountValidator: undefined,
       estimateFeeData: {},
-      amount: 0,
       shouldShowSuccessModalPayment: false,
     };
   }
@@ -67,6 +72,7 @@ class SendCrypto extends React.Component {
     const { navigation, rfChange, setSelectedPrivacy } = this.props;
 
     let paymentDevice = navigation?.state?.params?.paymentDevice;
+
     if (paymentDevice) {
       if (paymentDevice?.Address) {
         rfChange(formName, 'toAddress', paymentDevice?.Address);
@@ -81,7 +87,7 @@ class SendCrypto extends React.Component {
         setSelectedPrivacy(paymentDevice?.TokenID);
       }
     }
-  }
+  };
 
   componentDidUpdate(prevProps, prevState) {
     const { selectedPrivacy } = this.props;
@@ -119,7 +125,7 @@ class SendCrypto extends React.Component {
 
   showSuccessTransfer = () => {
     this.setState({ shouldShowSuccessModalPayment: true });
-  }
+  };
 
   getMinAmount = () => {
     // MIN = 1 nano
@@ -159,7 +165,7 @@ class SendCrypto extends React.Component {
           message:
             maxAmount > 0
               ? `Max amount you can send is ${formatUtil.number(maxAmount)} ${
-              selectedPrivacy?.symbol
+                  selectedPrivacy?.symbol
               }`
               : 'Your balance is not enough to send',
         }),
@@ -177,7 +183,7 @@ class SendCrypto extends React.Component {
     }
   };
 
-  handleSend = async values => {
+  handleSend = async (values) => {
     const { selectedPrivacy } = this.props;
     try {
       const { handleSend } = this.props;
@@ -213,7 +219,7 @@ class SendCrypto extends React.Component {
     }
   };
 
-  handleSelectFee = estimateFeeData => {
+  handleSelectFee = (estimateFeeData) => {
     this.setState({ estimateFeeData });
   };
 
@@ -224,12 +230,11 @@ class SendCrypto extends React.Component {
     if (fee !== 0 && !fee) {
       return true;
     }
-    const {
-      isFormValid
-    } = this.props;
+    const { isFormValid } = this.props;
     if (!isFormValid) {
       return true;
     }
+
     return false;
   };
 
@@ -264,7 +269,6 @@ class SendCrypto extends React.Component {
 
     const val = [];
 
-
     if (minAmountValidator) val.push(minAmountValidator);
 
     if (maxAmountValidator) val.push(maxAmountValidator);
@@ -280,7 +284,7 @@ class SendCrypto extends React.Component {
     return values;
   };
 
-  handleSelectToken = tokenId => {
+  handleSelectToken = (tokenId) => {
     const { setSelectedPrivacy } = this.props;
     setSelectedPrivacy(tokenId);
   };
@@ -290,63 +294,59 @@ class SendCrypto extends React.Component {
     // Holding on next stage
     const { rfChange } = this.props;
     rfChange(formName, 'amount', `${amount}`);
-  }
+  };
 
-  customLabelForm = text => {
-    return (
-      <Text style={theme.text.regularTextMotto}>{`${text}`}</Text>
-    );
-  }
+  customLabelForm = (text) => {
+    return <Text style={theme.text.regularTextMotto}>{`${text}`}</Text>;
+  };
 
   render() {
-    const { supportedFeeTypes, estimateFeeData, shouldShowSuccessModalPayment } = this.state;
+    const {
+      supportedFeeTypes,
+      estimateFeeData,
+      shouldShowSuccessModalPayment,
+    } = this.state;
     const {
       isSending,
       amount,
       toAddress,
-      isFormValid,
       account,
-      rfFocus,
-      navigation,
       reloading,
+      selectedPrivacy,
+      navigation,
     } = this.props;
     let maxAmount = this.getMaxAmount();
+    const originalAmount = convertUtil.toOriginalAmount(
+      amount,
+      selectedPrivacy?.pDecimals,
+    );
+    const _originalAmount = floor(originalAmount);
     return (
       <ScrollView
         style={homeStyle.container}
-        refreshControl={(
-          <RefreshControl
-            refreshing={reloading}
-          />
-        )}
+        refreshControl={<RefreshControl refreshing={reloading} />}
       >
         <Container style={homeStyle.mainContainer}>
           <CurrentBalance />
           <Form>
             {({ handleSubmit }) => (
               <View style={homeStyle.form}>
-                {/* <Field
-                  onChange={(text) => {
-                    rfFocus(formName, 'toAddress');
-                  }}
-                  component={InputField}
-                  name="toAddress"
-                  label="Payment address"
-                  placeholder="Enter wallet address"
-                  style={homeStyle.input}
-                  validate={validator.combinedIncognitoAddress}
-                  showNavAddrBook
-                  componentProps={{
-                    editable: false
-                  }}
-                  onOpenAddressBook={onShowFrequentReceivers}
-                  {...generateTestId(SEND.ADDRESS_INPUT)}
-                /> */}
                 <Field
-                  onChange={() => {
-                    rfFocus(formName, 'amount');
-                  }}
-                  component={InputField}
+                  component={({ meta: { error }, ...rest }) => (
+                    <>
+                      <InputField {...rest} />
+                      {error && (
+                        <Text
+                          style={{
+                            color: COLORS.red,
+                            fontSize: 12,
+                          }}
+                        >
+                          {error}
+                        </Text>
+                      )}
+                    </>
+                  )}
                   name="amount"
                   placeholder="0.0"
                   label={this.customLabelForm('Payment amount')}
@@ -354,7 +354,7 @@ class SendCrypto extends React.Component {
                   maxValue={maxAmount}
                   componentProps={{
                     keyboardType: 'decimal-pad',
-                    editable: false
+                    editable: false,
                   }}
                   validate={this.getAmountValidator()}
                   {...generateTestId(SEND.AMOUNT_INPUT)}
@@ -363,14 +363,15 @@ class SendCrypto extends React.Component {
                   component={InputField}
                   inputStyle={homeStyle.descriptionInput}
                   containerStyle={homeStyle.descriptionInput}
-                  componentProps={{ multiline: true, numberOfLines: 10, editable: false }}
+                  componentProps={{
+                    multiline: true,
+                    numberOfLines: 10,
+                    editable: false,
+                  }}
                   name="message"
                   placeholder="Message"
                   label={this.customLabelForm('Payment ID')}
-                  style={[
-                    homeStyle.input,
-                    homeStyle.descriptionInput,
-                  ]}
+                  style={[homeStyle.input, homeStyle.descriptionInput]}
                   validate={descriptionMaxBytes}
                   {...generateTestId(SEND.MEMO_INPUT)}
                 />
@@ -379,8 +380,8 @@ class SendCrypto extends React.Component {
                   estimateFeeData={estimateFeeData}
                   onNewFeeData={this.handleSelectFee}
                   types={supportedFeeTypes}
-                  amount={isFormValid ? amount : null}
-                  toAddress={isFormValid ? toAddress : null}
+                  amount={_originalAmount}
+                  toAddress={toAddress}
                 />
                 <Button
                   title="Send"
@@ -427,12 +428,16 @@ SendCrypto.propTypes = {
   onShowFrequentReceivers: PropTypes.func.isRequired,
   reloading: PropTypes.bool,
   Balance: PropTypes.func.isRequired,
+  rfChange: PropTypes.func.isRequired,
+  rfFocus: PropTypes.func.isRequired,
+  navigation: PropTypes.any.isRequired,
 };
 
-const mapState = state => ({
+const mapState = (state) => ({
   amount: selector(state, 'amount'),
   toAddress: selector(state, 'toAddress'),
   isFormValid: isValid(formName)(state),
+  accountBalance: accountSeleclor.defaultAccountBalanceSelector(state),
 });
 
 const mapDispatch = {
@@ -441,4 +446,7 @@ const mapDispatch = {
   rfFocus: focus,
 };
 
-export default connect(mapState, mapDispatch)(SendCrypto);
+export default connect(
+  mapState,
+  mapDispatch,
+)(SendCrypto);
