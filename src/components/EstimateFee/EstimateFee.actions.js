@@ -10,6 +10,8 @@ import format from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
 import floor from 'lodash/floor';
 import { getMinMaxWithdrawAmount } from '@src/services/api/misc';
+import walletValidator from 'wallet-address-validator';
+import { trim } from 'lodash';
 import {
   ACTION_FETCHING_FEE,
   ACTION_FETCHED_FEE,
@@ -24,8 +26,13 @@ import {
   ACTION_FETCHED_MAX_FEE_PRV,
   ACTION_FETCHED_MAX_FEE_PTOKEN,
   ACTION_USE_FEE_MAX,
+  ACTION_FETCHED_VALID_ADDR,
 } from './EstimateFee.constant';
-import { apiGetEstimateFeeFromChain } from './EstimateFee.services';
+import {
+  apiGetEstimateFeeFromChain,
+  apiCheckValidAddress,
+  apiCheckIfValidAddressETH,
+} from './EstimateFee.services';
 import { estimateFeeSelector, feeDataSelector } from './EstimateFee.selector';
 import { formName } from './EstimateFee.input';
 import {
@@ -33,6 +40,7 @@ import {
   DEFAULT_FEE_PER_KB,
   getMaxAmount,
 } from './EstimateFee.utils';
+import { Toast } from '../core';
 
 export const actionInitEstimateFee = (config = {}) => async (
   dispatch,
@@ -42,6 +50,7 @@ export const actionInitEstimateFee = (config = {}) => async (
   const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
   const account = accountSeleclor.defaultAccountSelector(state);
   const wallet = state?.wallet;
+
   if (!wallet || !account || !selectedPrivacy) {
     return;
   }
@@ -364,5 +373,53 @@ export const actionFetchFeeByMax = () => async (dispatch, getState) => {
     }
     // eslint-disable-next-line no-unsafe-finally
     return maxAmountText;
+  }
+};
+
+export const actionFetchedValidAddr = (payload) => ({
+  type: ACTION_FETCHED_VALID_ADDR,
+  payload,
+});
+
+export const actionValAddr = (address = '') => async (dispatch, getState) => {
+  let isAddressValidated = true;
+  let isValidETHAddress = true;
+  const state = getState();
+  const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
+  const { isUnShield } = feeDataSelector(state);
+  try {
+    if (isUnShield) {
+      const _address = trim(address);
+      if (_address) {
+        const validAddr = await apiCheckValidAddress(
+          _address,
+          selectedPrivacy?.currencyType,
+        );
+        isAddressValidated = !!validAddr?.data?.Result;
+        if (!isAddressValidated) {
+          Toast.showError(
+            `Invalid ${selectedPrivacy?.externalSymbol ||
+              selectedPrivacy?.symbol} address`,
+          );
+        }
+        const isAddressERC20Valid = walletValidator.validate(
+          _address,
+          CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH,
+          'both',
+        );
+        const isERC20 =
+          selectedPrivacy?.isErc20Token ||
+          selectedPrivacy?.externalSymbol ===
+            CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
+        if (isERC20 && isAddressERC20Valid && !!_address) {
+          const validETHAddr = await apiCheckIfValidAddressETH(_address);
+          isValidETHAddress = !!validETHAddr?.data?.Result;
+        }
+      }
+    }
+  } catch (error) {
+    throw error;
+  } finally {
+    dispatch(actionFetchedValidAddr({ isAddressValidated, isValidETHAddress }));
   }
 };
