@@ -46,10 +46,11 @@ const SendForm = (props) => {
     validateAmount,
     validateAddress,
     isERC20,
-    shouldBlockETHWrongAddress,
     isSending,
   } = props;
-  const { titleBtnSubmit, screen, isUnShield } = useSelector(feeDataSelector);
+  const { titleBtnSubmit, isUnShield, isValidETHAddress } = useSelector(
+    feeDataSelector,
+  );
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const renderMemo = () => {
     if (isUnShield) {
@@ -117,11 +118,11 @@ const SendForm = (props) => {
                 onOpenAddressBook={onShowFrequentReceivers}
                 {...generateTestId(SEND.ADDRESS_INPUT)}
               />
-              {isERC20 && screen === 'UnShield' && (
+              {isERC20 && isUnShield && (
                 <Text
                   style={[
                     styled.warningText,
-                    shouldBlockETHWrongAddress ? { color: COLORS.red } : null,
+                    !isValidETHAddress ? { color: COLORS.red } : null,
                   ]}
                 >
                   Please withdraw to a wallet address, not a smart contract
@@ -167,7 +168,6 @@ SendForm.propTypes = {
   validateAddress: PropTypes.any.isRequired,
   getValidateAddress: PropTypes.func.isRequired,
   isERC20: PropTypes.bool.isRequired,
-  shouldBlockETHWrongAddress: PropTypes.bool.isRequired,
   isSending: PropTypes.bool.isRequired,
 };
 

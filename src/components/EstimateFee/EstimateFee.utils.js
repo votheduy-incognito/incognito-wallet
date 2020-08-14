@@ -50,6 +50,8 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
     feePToken,
     feePrv,
     isFetching,
+    isAddressValidated,
+    isValidETHAddress,
   } = estimateFee;
   const { amount } = selectedPrivacy;
   const isUseTokenFee = actived !== CONSTANT_COMMONS.PRV.id;
@@ -92,5 +94,7 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
     isFetching,
     isUnShield: screen === 'UnShield',
     isSend: screen === 'Send',
+    isAddressValidated,
+    isValidETHAddress,
   };
 };

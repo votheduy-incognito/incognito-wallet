@@ -16,6 +16,7 @@ import {
   ACTION_FETCHED_MAX_FEE_PRV,
   ACTION_FETCHED_MAX_FEE_PTOKEN,
   ACTION_USE_FEE_MAX,
+  ACTION_FETCHED_VALID_ADDR,
 } from './EstimateFee.constant';
 import { MAX_FEE_PER_TX } from './EstimateFee.utils';
 
@@ -51,6 +52,8 @@ const initialState = {
   actived: CONSTANT_COMMONS.PRV.id,
   rate: 1,
   useFeeMax: false,
+  isAddressValidated: true,
+  isValidETHAddress: true,
 };
 
 export default (state = initialState, action) => {
@@ -165,6 +168,14 @@ export default (state = initialState, action) => {
     return {
       ...state,
       useFeeMax: true,
+    };
+  }
+  case ACTION_FETCHED_VALID_ADDR: {
+    const { isAddressValidated, isValidETHAddress } = action.payload;
+    return {
+      ...state,
+      isAddressValidated,
+      isValidETHAddress,
     };
   }
   default:
