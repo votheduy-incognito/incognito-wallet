@@ -44,7 +44,7 @@ export async function getKyberQuote({sellToken, sellAmount, buyToken}) {
 
   const url = `uniswap/rate?SrcToken=${sellAddress}&DestToken=${buyAddress}&Amount=${sellAmount}`;
   const rates = await http.get(url);
-  const bestRate = _.maxBy(rates.ListRate, rate => BigNumber(rate.ExpectedRate).toNumber());
+  const bestRate = _.maxBy(rates.ListRate, rate => rate.ExpectedRate);
 
   const {ExpectedRate, SlippageRate} = bestRate;
 
