@@ -52,6 +52,7 @@ const TokenSelect = ({
         renderItem={renderTokenItem}
         getItem={(data, index) => data[index]}
         getItemCount={data => data.length}
+        keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
       />
