@@ -4,18 +4,31 @@ const PROTOCOLS = {
   UNISWAP: 'Uniswap',
 };
 
-const OX_TRADE_ADDRESS = '0x4C6e4aC9a49b78EDc7e885ad0281fE9D84dc8341';
-const KYBER_TRADE_ADDRESS = global?.isMainnet ?
-  '0xe866b1D52A582acB83786f776C5cb579310f3b5F' :
-  '0xdaB0881611A8B4a1386b9F0Ad4203E6B5598De60';
+let KYBER_TRADE_ADDRESS = '';
+let UNISWAP_TRADE_ADDRESS = '';
 
-const UNISWAP_TRADE_ADDRESS = global?.isMainnet ?
-  '' :
-  '0xfAAa26e153dE1d800F8d67FdE3C4391A435c1fEe';
+const setDAppAddresses = ({
+  Kyber,
+  Uniswap,
+}) => {
+  if (Kyber) {
+    KYBER_TRADE_ADDRESS = Kyber;
+  }
+
+  if (Uniswap) {
+    UNISWAP_TRADE_ADDRESS = Uniswap;
+  }
+};
+
+const getDAppAddresses = () => {
+  return {
+    KYBER_TRADE_ADDRESS,
+    UNISWAP_TRADE_ADDRESS
+  };
+};
 
 export default {
   PROTOCOLS,
-  KYBER_TRADE_ADDRESS,
-  OX_TRADE_ADDRESS,
-  UNISWAP_TRADE_ADDRESS,
+  setDAppAddresses,
+  getDAppAddresses,
 };
