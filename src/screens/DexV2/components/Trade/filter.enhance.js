@@ -32,6 +32,7 @@ const withFilter = WrappedComp => (props) => {
           'hasIcon',
           item => item.symbol && item.symbol.toLowerCase(),
         ], ['asc', 'desc', 'desc', 'asc'])
+        .uniqBy(item => item.id)
         .value();
 
       if (outputToken && !outputList.find(item => item.id === outputToken.id)) {
