@@ -89,7 +89,7 @@ function getDAppAddressesNoCache() {
 }
 
 export async function getDAppAddresses() {
-  const data = cachePromise(KEYS.DAppAddress, getDAppAddressesNoCache, 600000);
+  const data = await cachePromise(KEYS.DAppAddress, getDAppAddressesNoCache, 600000);
   const config = {};
 
   data.forEach(item => config[item.DappName] = item.ContractId);
