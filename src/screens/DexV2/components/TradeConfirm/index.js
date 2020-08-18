@@ -129,7 +129,10 @@ Trade.propTypes = {
   error: PropTypes.string,
   warning: PropTypes.string,
   isErc20: PropTypes.bool,
-  pair: PropTypes.object,
+  pair: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+  ]),
   quote: PropTypes.object,
 };
 

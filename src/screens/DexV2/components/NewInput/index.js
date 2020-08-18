@@ -49,7 +49,7 @@ const InputContainer = (props) => {
           </Text>
         )}
         {!!loading && <ActivityIndicator />}
-        {!!maxValue && (
+        {!loading && !!maxValue && (
           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
             <BtnInfinite onPress={() => onChange(maxValue)} />
           </View>
@@ -98,7 +98,7 @@ InputContainer.propTypes = {
   disabled: PropTypes.bool,
   loading: PropTypes.bool,
   selectable: PropTypes.bool,
-  maxValue: PropTypes.number,
+  maxValue: PropTypes.string,
 };
 
 export default InputContainer;
