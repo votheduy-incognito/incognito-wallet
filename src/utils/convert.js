@@ -82,6 +82,22 @@ export default {
 
   toNumber,
 
+  toInput(text) {
+    if (typeof text !== 'string') {
+      return text;
+    }
+
+    if (getDecimalSeparator() === ',') {
+      text = text.replace(/\./g, '');
+    }
+
+    if (getDecimalSeparator() === '.') {
+      text = text.replace(/,/g, '');
+    }
+
+    return text;
+  },
+
   toHash(text) {
     let hash = 0,
       i,

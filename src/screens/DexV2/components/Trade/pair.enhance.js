@@ -23,12 +23,17 @@ const withPair = WrappedComp => (props) => {
           item.keys.includes(outputToken.id) &&
           item.keys.includes(COINS.PRV_ID)
         );
-        setPair([inPair, outPair]);
+
+        if (inPair && outPair) {
+          setPair([inPair, outPair]);
+        } else {
+          setPair(null);
+        }
       }
     } else {
       setPair(null);
     }
-  }, [inputToken, outputToken, pairs]);
+  }, [inputToken, outputToken, pairs, isErc20]);
 
   React.useEffect(() => {
     getDAppAddresses()

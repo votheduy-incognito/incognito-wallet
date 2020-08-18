@@ -9,22 +9,31 @@ const withFilter = WrappedComp => (props) => {
   const filter = () => {
     try {
       let newOutputToken = outputToken;
-      let outputList = pairs
-        .map(pair => {
-          const id = pair.keys.find(key => key !== inputToken.id && key !== COINS.PRV_ID);
-          return pairTokens.find(token => token.id === id);
-        })
-        .filter(item => item && item.name && item.symbol);
+      let outputList = [];
 
-      const prvToken = pairTokens.find(token => token.id === COINS.PRV_ID);
-      if (inputToken.id !== COINS.PRV_ID && !outputList.includes(prvToken)) {
-        outputList.push(prvToken);
+      if (pairs.find(pair => pair.keys.includes(inputToken.id))) {
+        outputList = pairs
+          .map(pair => {
+            const {keys} = pair;
+
+            if (inputToken.id === COINS.PRV_ID ||!keys.includes(inputToken.id)) {
+              const id = pair.keys.find(key => key !== COINS.PRV_ID);
+              return pairTokens.find(token => token.id === id);
+            }
+
+            return null;
+          })
+          .filter(item => item && item.name && item.symbol);
+
+        const prvToken = pairTokens.find(token => token.id === COINS.PRV_ID);
+        if (inputToken.id !== COINS.PRV_ID && !outputList.includes(prvToken)) {
+          outputList.push(prvToken);
+        }
       }
 
       if (inputToken.address) {
         outputList = outputList.concat(pairTokens.filter(token => token.address && token.id !== inputToken.id));
       }
-
 
       outputList = _(outputList)
         .orderBy([

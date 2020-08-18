@@ -5,6 +5,7 @@ import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import { ArrowRightGreyIcon } from '@components/Icons';
 import { BtnInfinite } from '@components/Button';
+import convertUtil from '@utils/convert';
 import Input from './Input';
 import stylesheet from './style';
 
@@ -49,9 +50,9 @@ const InputContainer = (props) => {
           </Text>
         )}
         {!!loading && <ActivityIndicator />}
-        {!!maxValue && (
+        {!loading && !!maxValue && (
           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <BtnInfinite onPress={() => onChange(maxValue)} />
+            <BtnInfinite onPress={() => onChange(convertUtil.toInput(maxValue))} />
           </View>
         ) }
         {selectable ? (
@@ -98,7 +99,7 @@ InputContainer.propTypes = {
   disabled: PropTypes.bool,
   loading: PropTypes.bool,
   selectable: PropTypes.bool,
-  maxValue: PropTypes.number,
+  maxValue: PropTypes.string,
 };
 
 export default InputContainer;
