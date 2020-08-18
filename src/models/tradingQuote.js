@@ -16,6 +16,7 @@ class TradingQuote {
     this.to = json.to;
     this.data = json.data;
     this.protocol = json.protocol;
+    this.maxAmountOut = json.maxAmountOut;
   }
 }
 
