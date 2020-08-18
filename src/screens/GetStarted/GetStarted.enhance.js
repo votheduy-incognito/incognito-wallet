@@ -4,7 +4,7 @@ import Wizard from '@screens/Wizard';
 import { useSelector, useDispatch } from 'react-redux';
 import { login } from '@src/services/auth';
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
-import { reloadWallet, reloadAccountList } from '@src/redux/actions/wallet';
+import { reloadAccountList, reloadWallet } from '@src/redux/actions/wallet';
 import { getPTokenList, getInternalTokenList } from '@src/redux/actions/token';
 import { loadPin } from '@src/redux/actions/pin';
 import routeNames from '@src/router/routeNames';
@@ -12,8 +12,6 @@ import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import { savePassword } from '@src/services/wallet/passwordService';
 import serverService from '@src/services/wallet/Server';
 import { initWallet } from '@src/services/wallet/WalletService';
-import { DEX } from '@src/utils/dex';
-import accountService from '@src/services/wallet/accountService';
 import { actionInit as initNotification } from '@src/screens/Notification';
 import { actionFetch as actionFetchHomeConfigs } from '@screens/Home/Home.actions';
 import { useNavigation, useFocusEffect } from 'react-navigation-hooks';
@@ -22,6 +20,8 @@ import storageService from '@src/services/storage';
 import { LoadingContainer } from '@src/components/core';
 import { actionFetch as actionFetchProfile } from '@screens/Profile';
 import { KEYS } from '@src/constants/keys';
+import accountService from '@services/wallet/accountService';
+import { DEX } from '@utils/dex';
 import {
   wizardSelector,
   isFollowedDefaultPTokensSelector,
