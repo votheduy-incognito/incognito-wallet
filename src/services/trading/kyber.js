@@ -4,6 +4,7 @@ import TradingToken from '@models/tradingToken';
 import TradingQuote from '@models/tradingQuote';
 import http from '@services/http';
 import BigNumber from 'bignumber.js';
+import { MIN_PERCENT } from '@screens/DexV2/constants';
 
 /**
  * Get all tradable tokens on Kyber exchange
@@ -46,7 +47,7 @@ export async function getKyberQuote({sellToken, sellAmount, buyToken}) {
   const rates = await http.get(url);
   const bestRate = _.maxBy(rates.ListRate, rate => BigNumber(rate.ExpectedRate).toNumber());
 
-  const {ExpectedRate, SlippageRate} = bestRate;
+  const {ExpectedRate, SlippageRate, MaxAmountOut} = bestRate;
 
   const originalSellAmount = BigNumber(sellAmount)
     .dividedBy(BigNumber(10).pow(sellToken.decimals));
@@ -55,6 +56,9 @@ export async function getKyberQuote({sellToken, sellAmount, buyToken}) {
   const amount = BigNumber(originalPrice)
     .multipliedBy(originalSellAmount)
     .multipliedBy(BigNumber(10).pow(buyToken.decimals));
+  const maxAmountOut = BigNumber(MaxAmountOut)
+    .multipliedBy(MIN_PERCENT)
+    .toFixed(0);
 
   const maxPrice = BigNumber(SlippageRate)
     .dividedBy(BigNumber(10).pow(18));
@@ -69,5 +73,6 @@ export async function getKyberQuote({sellToken, sellAmount, buyToken}) {
     minimumAmount,
     maxPrice,
     expectedRate: ExpectedRate,
+    maxAmountOut,
   });
 }
