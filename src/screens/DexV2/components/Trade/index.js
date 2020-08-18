@@ -196,7 +196,10 @@ Trade.propTypes = {
 
   fee: PropTypes.number.isRequired,
   feeToken: PropTypes.object.isRequired,
-  pair: PropTypes.object,
+  pair: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+  ]),
 
   histories: PropTypes.array,
 

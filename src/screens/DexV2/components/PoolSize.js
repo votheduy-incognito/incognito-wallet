@@ -12,7 +12,7 @@ const PoolSize = ({ inputToken, outputToken, pair }) => {
     />
   );
   
-  if (!pair || !pair.length) {
+  if (!pair || !pair.length || !inputToken || !outputToken) {
     return empty;
   }
 
@@ -68,7 +68,10 @@ const PoolSize = ({ inputToken, outputToken, pair }) => {
 PoolSize.propTypes = {
   inputToken: PropTypes.object.isRequired,
   outputToken: PropTypes.object.isRequired,
-  pair: PropTypes.object.isRequired,
+  pair: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+  ]).isRequired,
 };
 
 export default PoolSize;
