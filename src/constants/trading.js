@@ -4,31 +4,59 @@ const PROTOCOLS = {
   UNISWAP: 'Uniswap',
 };
 
-let KYBER_TRADE_ADDRESS = '';
-let UNISWAP_TRADE_ADDRESS = '';
+let kyberTradeAddress = '';
+let uniswapTradeAddress = '';
+let kyberFee = 0;
+let uniswapFee = 0;
 
 const setDAppAddresses = ({
   Kyber,
   Uniswap,
 }) => {
   if (Kyber) {
-    KYBER_TRADE_ADDRESS = Kyber;
+    kyberTradeAddress = Kyber;
   }
 
   if (Uniswap) {
-    UNISWAP_TRADE_ADDRESS = Uniswap;
+    uniswapTradeAddress = Uniswap;
   }
 };
 
 const getDAppAddresses = () => {
   return {
-    KYBER_TRADE_ADDRESS,
-    UNISWAP_TRADE_ADDRESS
+    Kyber: kyberTradeAddress,
+    kyber: kyberTradeAddress,
+    Uniswap: uniswapTradeAddress,
+    uniswap: uniswapTradeAddress,
   };
+};
+
+const getFees = () => {
+  return {
+    Kyber: kyberFee,
+    kyber: kyberFee,
+    Uniswap: uniswapFee,
+    uniswap: uniswapFee,
+  };
+};
+
+const setFees = ({
+  Kyber,
+  Uniswap,
+}) => {
+  if (Kyber) {
+    kyberFee = Kyber;
+  }
+
+  if (Uniswap) {
+    uniswapFee = Uniswap;
+  }
 };
 
 export default {
   PROTOCOLS,
   setDAppAddresses,
   getDAppAddresses,
+  setFees,
+  getFees,
 };
