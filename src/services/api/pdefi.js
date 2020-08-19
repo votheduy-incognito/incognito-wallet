@@ -68,7 +68,7 @@ export const tradePKyber = ({
     'SrcTokens': sellTokenAddress,
     'SrcQties': sellAmount,
     'DestTokens': buyTokenAddress,
-    'DappAddress': protocol?.toLowerCase() === 'uniswap' ? addresses.UNISWAP_TRADE_ADDRESS : addresses.KYBER_TRADE_ADDRESS,
+    'DappAddress': addresses[protocol || 'Kyber'],
     'DepositId': depositId,
     'ExpectAmount': protocol?.toLowerCase() === 'uniswap' ? maxAmountOut : expectAmount,
   });

@@ -9,7 +9,7 @@ import UniswapRequest from '@models/uniswapRequest';
 import tokenService from '@services/wallet/tokenService';
 import { cachePromise, KEYS } from '@services/cache';
 
-const { PROTOCOLS, setDAppAddresses } = TRADING;
+const { PROTOCOLS, setDAppAddresses, setFees } = TRADING;
 
 /**
  * Get all tradable tokens of multiple exchanges
@@ -90,10 +90,14 @@ function getDAppAddressesNoCache() {
 
 export async function getDAppAddresses() {
   const data = await cachePromise(KEYS.DAppAddress, getDAppAddressesNoCache, 600000);
-  const config = {};
+  const addressConfig = {};
+  const feeConfig = {};
 
-  data.forEach(item => config[item.DappName] = item.ContractId);
-  setDAppAddresses(config);
+  data.forEach(item => addressConfig[item.DappName] = item.ContractId);
+  setDAppAddresses(addressConfig);
+
+  data.forEach(item => feeConfig[item.DappName] = item.NetworkFee);
+  setFees(feeConfig);
 }
 
 export async function getUniswapBalance(scAddress, token) {
