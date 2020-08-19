@@ -11,9 +11,9 @@ import withWarning from '@screens/DexV2/components/Trade/warning.enhance';
 import Loading from '@screens/DexV2/components/Loading';
 import withAccount from '@screens/DexV2/components/account.enhance';
 import Help from '@components/Help/index';
-import { DEFI_TRADING_FEE } from '@components/EstimateFee/EstimateFee.utils';
 import Powered from '@screens/DexV2/components/Powered';
 import PoolSize from '@screens/DexV2/components/PoolSize';
+import { TRADING } from '@src/constants';
 import withSuccess from './success.enhance';
 import withTrade from './trade.enhance';
 import withData from './data.enhance';
@@ -93,7 +93,7 @@ const Trade = ({
                 <Help title="Trading fee" content="This is a Kyber pool. You are trading anonymously on the Ethereum network which will incur trading fees. Incognito does not charge trading fees." />
               </View>
             )}
-            right={`${format.amount(DEFI_TRADING_FEE, feeToken.pDecimals)} ${feeToken.symbol}`}
+            right={`${format.amount(TRADING.getFees()[quote.protocol || 'Kyber'], feeToken.pDecimals)} ${feeToken.symbol}`}
             style={styles.extra}
           />
         </>
