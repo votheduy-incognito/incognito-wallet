@@ -77,16 +77,6 @@ const withPairs = WrappedComp => (props) => {
         )
         .value();
 
-      tokens = tokens.concat(erc20Tokens.filter(token => !tokens.find(item => item.id === token.id)));
-      tokens = tokens
-        .map(token => {
-          const erc20Token = erc20Tokens.find(item => item.id === token.id);
-          return {
-            ...token,
-            address: erc20Token?.address,
-          };
-        });
-
       setPairs(pairs);
       setPairTokens(pairTokens);
       setTokens(tokens);
