@@ -38,6 +38,7 @@ export const enhance = (WrappedComp) => (props) => {
   const isFormValid = useSelector((state) => isValid(formName)(state));
   const amount = useSelector((state) => selector(state, 'amount'));
   const toAddress = useSelector((state) => selector(state, 'toAddress'));
+  const memo = useSelector((state) => selector(state, 'memo'));
   const [isKeyboardVisible] = useKeyboard();
 
   const onChangeField = (value, field) => {
@@ -118,6 +119,7 @@ export const enhance = (WrappedComp) => (props) => {
         disabledForm,
         handleSend,
         isSending,
+        memo,
       }}
     />
   );

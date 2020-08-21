@@ -90,11 +90,11 @@ const Hook = () => {
       <View style={styledHook.btnClose}>
         <BtnClose size={20} onPress={handleCloseShield} />
       </View>
-      <Text style={styledHook.title}>Transact without a trace.</Text>
+      <Text style={styledHook.title}>
+        {'Turn your public coins into\nprivacy coins.'}
+      </Text>
       <Text style={styledHook.desc}>
-        {
-          'Shield any amount of any cryptocurrency.\nTurn your public coins into privacy coins.'
-        }
+        Enter the Incognito network and transact without a trace.
       </Text>
     </View>
   );
@@ -179,12 +179,12 @@ const Extra = () => {
     <View style={extraStyled.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        refreshControl={
+        refreshControl={(
           <RefreshControl
             refreshing={isReloading}
             onRefresh={() => fetchData(true)}
           />
-        }
+        )}
       >
         <Balance />
         <GroupButton />

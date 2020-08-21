@@ -18,7 +18,7 @@ const styled = StyleSheet.create({
   line: {
     width: 1,
     height: 20,
-    marginHorizontal: 7.5,
+    marginHorizontal: 5,
   },
   btn: {
     width: 32,
