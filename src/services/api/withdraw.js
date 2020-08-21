@@ -3,7 +3,8 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import convert from '@src/utils/convert';
 
 export const genCentralizedWithdrawAddress = ({
-  amount,
+  originalAmount,
+  requestedAmount,
   paymentAddress,
   walletAddress,
   tokenId,
@@ -13,120 +14,129 @@ export const genCentralizedWithdrawAddress = ({
   if (!paymentAddress) throw new Error('Missing paymentAddress');
   if (!walletAddress) throw new Error('Missing walletAddress');
   if (!tokenId) throw new Error('Missing tokenId');
-  const parseAmount = convert.toNumber(amount);
-  if (!Number.isFinite(parseAmount) || parseAmount === 0) {
+  if (!Number.isFinite(originalAmount) || originalAmount === 0) {
     throw new Error('Invalid amount');
   }
-  return http
-    .post('ota/generate', {
-      CurrencyType: currencyType,
-      AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.WITHDRAW,
-      RequestedAmount: String(parseAmount),
-      PaymentAddress: paymentAddress,
-      WalletAddress: walletAddress,
-      PrivacyTokenAddress: tokenId,
-      ...(memo ? { Memo: memo } : {}),
-    })
-    .then((res) => res?.Address);
-};
-
-const addETHTxWithdraw = ({
-  amount,
-  originalAmount,
-  paymentAddress,
-  walletAddress,
-  tokenId,
-  burningTxId,
-  currencyType,
-}) => {
-  if (!paymentAddress) throw new Error('Missing paymentAddress');
-  if (!tokenId) throw new Error('Missing tokenId');
-  if (!burningTxId) throw new Error('Missing burningTxId');
-
-  const parseAmount = Number(amount);
-  const parseOriginalAmount = Number(originalAmount);
-
-  if (
-    !Number.isFinite(parseAmount) ||
-    parseAmount === 0 ||
-    !Number.isFinite(parseOriginalAmount) ||
-    parseOriginalAmount === 0
-  ) {
-    throw new Error('Invalid amount');
-  }
-
-  return http.post('eta/add-tx-withdraw', {
+  const data = {
     CurrencyType: currencyType,
     AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.WITHDRAW,
-    RequestedAmount: String(parseAmount),
+    RequestedAmount: String(requestedAmount),
     IncognitoAmount: String(originalAmount),
     PaymentAddress: paymentAddress,
-    Erc20TokenAddress: '',
+    WalletAddress: walletAddress,
     PrivacyTokenAddress: tokenId,
-    IncognitoTx: burningTxId,
-    WalletAddress: walletAddress ?? paymentAddress,
-  });
+    ...(memo ? { Memo: memo } : {}),
+  };
+
+  return http.post('ota/generate', data).then((res) => res);
 };
 
-const addERC20TxWithdraw = ({
-  amount,
-  originalAmount,
-  paymentAddress,
-  walletAddress,
-  tokenContractID,
-  tokenId,
-  burningTxId,
-  currencyType,
-}) => {
-  if (!paymentAddress) throw new Error('Missing paymentAddress');
-  if (!tokenId) throw new Error('Missing tokenId');
-  if (!tokenContractID) throw new Error('Missing tokenContractID');
-  if (!burningTxId) throw new Error('Missing burningTxId');
-  const parseAmount = Number(amount);
+export const withdraw = (data) => {
+  const {
+    isErc20Token,
+    paymentAddress,
+    tokenId,
+    burningTxId,
+    originalAmount,
+    requestedAmount,
+    tokenContractID,
+    walletAddress,
+    currencyType,
+    userFeesData,
+    isUsedPRVFee,
+    fast2x,
+  } = data;
   const parseOriginalAmount = Number(originalAmount);
-  if (
-    !Number.isFinite(parseAmount) ||
-    parseAmount === 0 ||
-    !Number.isFinite(parseOriginalAmount) ||
-    parseOriginalAmount === 0
-  ) {
+  if (!burningTxId) throw new Error('Missing burningTxId');
+  if (isErc20Token && !tokenContractID) {
+    throw new Error('Missing tokenContractID');
+  }
+  if (!paymentAddress) throw new Error('Missing payment address');
+  if (!tokenId) throw new Error('Missing token id');
+  if (!Number.isFinite(parseOriginalAmount) || parseOriginalAmount === 0) {
     throw new Error('Invalid amount');
   }
-  console.log(
-    'CONSTANT_COMMONS.ADDRESS_TYPE.WITHDRAW',
-    CONSTANT_COMMONS.ADDRESS_TYPE.WITHDRAW,
-  );
-  return http.post('eta/add-tx-withdraw', {
+  const payload = {
     CurrencyType: currencyType,
     AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.WITHDRAW,
-    RequestedAmount: String(parseAmount),
+    RequestedAmount: String(requestedAmount),
     IncognitoAmount: String(originalAmount),
     PaymentAddress: paymentAddress,
     Erc20TokenAddress: tokenContractID,
     PrivacyTokenAddress: tokenId,
     IncognitoTx: burningTxId,
-    WalletAddress: walletAddress ?? paymentAddress,
-  });
+    WalletAddress: walletAddress,
+    ID: userFeesData?.ID,
+    UserFeeSelection: isUsedPRVFee ? 2 : 1,
+    UserFeeLevel: fast2x ? 2 : 1,
+  };
+  return http.post('eta/add-tx-withdraw', payload);
 };
 
-export const withdraw = (data) => {
-  const { isErc20Token, externalSymbol } = data;
-  if (isErc20Token) {
-    return addERC20TxWithdraw(data);
-  } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) {
-    return addETHTxWithdraw(data);
+export const updatePTokenFee = (data) => {
+  const { fee, paymentAddress, isUsedPRVFee, fast2x, txId } = data;
+  if (!isUsedPRVFee) {
+    if (!fee) throw new Error('Missing fee');
+    const parseFee = convert.toNumber(fee);
+    if (!Number.isFinite(parseFee) || parseFee === 0) {
+      throw new Error('Invalid fee');
+    }
   }
-};
-
-export const updatePTokenFee = ({ fee, paymentAddress }) => {
-  if (!fee) throw new Error('Missing fee');
   if (!paymentAddress) throw new Error('Missing paymentAddress');
-  const parseFee = convert.toNumber(fee);
-  if (!Number.isFinite(parseFee) || parseFee === 0) {
-    throw new Error('Invalid fee');
+  if (!txId) {
+    throw new Error('Missing tx id');
   }
-  http.post('ota/update-fee', {
+
+  const payload = {
     Address: paymentAddress,
-    TokenFee: String(fee),
-  });
+    TokenFee: String(isUsedPRVFee ? 0 : fee),
+    ID: '',
+    UserFeeSelection: isUsedPRVFee ? 2 : 1,
+    UserFeeLevel: fast2x ? 2 : 1,
+    IncognitoTxToPayOutsideChainFee: txId,
+  };
+
+  return http.post('ota/update-fee', payload);
+};
+
+export const estimateUserFees = (data) => {
+  const {
+    paymentAddress,
+    tokenId,
+    originalAmount,
+    requestedAmount,
+    tokenContractID,
+    walletAddress,
+    currencyType,
+    isErc20Token,
+  } = data;
+  if (isErc20Token && !tokenContractID) {
+    throw new Error('Missing tokenContractID');
+  }
+  if (!paymentAddress) throw new Error('Missing payment address');
+  if (!tokenId) throw new Error('Missing token id');
+  const parseOriginalAmount = Number(originalAmount);
+  const parseRequestedAmount = Number(requestedAmount);
+  if (
+    !Number.isFinite(parseOriginalAmount) ||
+    parseOriginalAmount === 0 ||
+    !Number.isFinite(parseRequestedAmount) ||
+    parseOriginalAmount === 0
+  ) {
+    throw new Error('Invalid amount');
+  }
+
+  const payload = {
+    TokenID: tokenId,
+    RequestedAmount: String(requestedAmount),
+    CurrencyType: currencyType,
+    AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.WITHDRAW,
+    IncognitoAmount: String(originalAmount),
+    PaymentAddress: paymentAddress,
+    Erc20TokenAddress: tokenContractID,
+    PrivacyTokenAddress: tokenId,
+    WalletAddress: walletAddress,
+    IncognitoTx: '',
+  };
+  return http.post('eta/estimate-fees', payload);
 };

@@ -22,7 +22,6 @@ const style = StyleSheet.create({
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.black,
-    marginBottom: 10,
   },
   labelFocus: {
     color: COLORS.primary,
@@ -34,15 +33,22 @@ const style = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontFamily: FONT.NAME.specialMedium,
+    fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.colorGreyBold,
-    marginRight: 10,
+    marginRight: 5,
     padding: 0,
   },
   oldInput: {
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.regular,
+  },
+  labelContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
   },
 });
 

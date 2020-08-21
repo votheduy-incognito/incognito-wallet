@@ -6,6 +6,7 @@ import { validator } from '@src/components/core/reduxForm';
 import { CONSTANT_COMMONS } from '@src/constants';
 import accountService from '@src/services/wallet/accountService';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
+import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 import { formName } from './Form.enhance';
 
 export const enhanceAddressValidation = (WrappedComp) => (props) => {
@@ -14,11 +15,14 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
   const { externalSymbol, isErc20Token, isMainCrypto } = selectedPrivacy;
   const toAddress = useSelector((state) => selector(state, 'toAddress'));
   const isIncognitoAddress = accountService.checkPaymentAddress(toAddress);
-
+  const { isAddressValidated } = useSelector(feeDataSelector);
   const isERC20 =
     isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
 
   const getExternalAddressValidator = () => {
+    if (!isAddressValidated) {
+      return [validator.invalidAddress(`Invalid ${externalSymbol} address`)];
+    }
     if (isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) {
       return validator.combinedETHAddress;
     }
@@ -91,6 +95,7 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
     } else if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ZIL) {
       return validator.combinedZILAddress;
     }
+
     // default
     return validator.combinedUnknownAddress;
   };

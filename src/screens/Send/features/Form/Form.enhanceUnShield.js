@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 /* eslint-disable import/no-cycle */
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
@@ -14,11 +15,7 @@ import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { reset } from 'redux-form';
 import { KEY_SAVE } from '@src/utils/LocalDatabase';
-import {
-  withdraw,
-  updatePTokenFee,
-  genCentralizedWithdrawAddress,
-} from '@src/services/api/withdraw';
+import { withdraw, updatePTokenFee } from '@src/services/api/withdraw';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import tokenService from '@services/wallet/tokenService';
@@ -30,50 +27,170 @@ import {
 import { formName } from './Form.enhance';
 
 export const enhanceUnshield = (WrappedComp) => (props) => {
-  const { fee, isUsedPRVFee, rate, feePDecimals, feeUnit } = useSelector(
-    feeDataSelector,
-  );
+  const {
+    isETH,
+    fee,
+    isUsedPRVFee,
+    rate,
+    feePDecimals,
+    feeUnit,
+    userFees,
+    userFee,
+    fast2x,
+    totalFeeText,
+  } = useSelector(feeDataSelector);
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const {
+    tokenId,
+    contractId,
+    currencyType,
+    isErc20Token,
+    externalSymbol,
+    paymentAddress: walletAddress,
+    symbol,
+    pDecimals,
+    isDecentralized,
+    name,
+  } = selectedPrivacy;
+  const { data: userFeesData } = userFees;
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const account = useSelector(defaultAccountSelector);
   const wallet = useSelector(walletSelector);
-
   const handleBurningToken = async (payload = {}) => {
     try {
-      const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
       const {
         originalAmount,
         originalFee,
         isUsedPRVFee,
-        remoteAddress,
+        paymentAddress,
         feeForBurn,
       } = payload;
+      const { FeeAddress: masterAddress } = userFeesData;
+      //Token Object Decentralized
       const tokenObject = {
         Privacy: true,
-        TokenID: selectedPrivacy?.tokenId,
-        TokenName: selectedPrivacy?.name,
-        TokenSymbol: selectedPrivacy?.symbol,
-        TokenTxType: type,
+        TokenID: tokenId,
+        TokenName: name,
+        TokenSymbol: symbol,
+        TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
         TokenAmount: originalAmount + (isUsedPRVFee ? 0 : feeForBurn),
-        TokenReceivers: {
-          PaymentAddress: '',
-          Amount: originalAmount + (isUsedPRVFee ? 0 : feeForBurn),
-        },
+        TokenReceivers: isUsedPRVFee
+          ? []
+          : [
+            {
+              paymentAddress: masterAddress,
+              amount: userFee,
+            },
+          ],
       };
+      const paymentInfos = isUsedPRVFee
+        ? [
+          {
+            paymentAddressStr: masterAddress,
+            amount: userFee,
+          },
+        ]
+        : [];
+
       const res = await tokenService.createBurningRequest(
         tokenObject,
         isUsedPRVFee ? originalFee : 0,
         isUsedPRVFee ? 0 : originalFee,
-        remoteAddress,
+        paymentAddress,
         account,
         wallet,
+        paymentInfos,
       );
       if (res.txId) {
-        return res;
+        return { ...res, burningTxId: res?.txId };
       } else {
         throw new Error('Burned token, but doesnt have txID, please check it');
       }
+    } catch (e) {
+      throw e;
+    }
+  };
+
+  const handleDecentralizedWithdraw = async (payload) => {
+    try {
+      const { amount, originalAmount, paymentAddress } = payload;
+      const amountToNumber = convert.toNumber(amount, true);
+      const requestedAmount = format.toFixed(amountToNumber, pDecimals);
+      let data = {
+        requestedAmount,
+        originalAmount,
+        paymentAddress,
+        walletAddress,
+        tokenContractID: isETH ? '' : contractId,
+        tokenId,
+        burningTxId: '',
+        currencyType: currencyType,
+        isErc20Token: isErc20Token,
+        externalSymbol: externalSymbol,
+        isUsedPRVFee,
+        userFeesData,
+        fast2x,
+      };
+      if (!userFeesData?.ID) throw new Error('Missing id withdraw session');
+      const tx = await handleBurningToken(payload);
+      await dispatch(
+        actionAddStorageData({
+          keySave: KEY_SAVE.WITHDRAWAL_DATA_DECENTRALIZED,
+          tx,
+        }),
+      );
+      await withdraw({ ...data, burningTxId: tx?.txId });
+      await dispatch(
+        actionRemoveStorageData({
+          keySave: KEY_SAVE.WITHDRAWAL_DATA_DECENTRALIZED,
+          burningTxId: tx?.txId,
+        }),
+      );
+      return tx;
+    } catch (e) {
+      throw e;
+    }
+  };
+
+  const handleCentralizedWithdraw = async (payload) => {
+    try {
+      const { isUsedPRVFee, originalAmount, originalFee } = payload;
+      const { Address: tempAddress } = userFeesData;
+      const prvFee = isUsedPRVFee ? originalFee : 0;
+      const tokenFee = isUsedPRVFee ? 0 : originalFee;
+      let spendingPRV;
+      let spendingCoin;
+      if (prvFee) {
+        spendingPRV = await accountService.hasSpendingCoins(
+          account,
+          wallet,
+          prvFee,
+        );
+      }
+      spendingCoin = await accountService.hasSpendingCoins(
+        account,
+        wallet,
+        originalAmount + tokenFee,
+        tokenId,
+      );
+      if (spendingCoin || spendingPRV) {
+        return Toast.showError(MESSAGES.PENDING_TRANSACTIONS);
+      }
+
+      const tx = await handleSendToken({ ...payload, tempAddress });
+
+      if (tx) {
+        await updatePTokenFee({
+          fee: originalFee,
+          paymentAddress: tempAddress,
+          userFeesData,
+          isUsedPRVFee,
+          fast2x,
+          txId: tx?.txId,
+        });
+      }
+      return tx;
     } catch (e) {
       throw e;
     }
@@ -89,34 +206,59 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         feeForBurn,
         memo,
       } = payload;
+      if (!tempAddress) {
+        throw Error('Can not create a temp address');
+      }
+      const { FeeAddress: masterAddress } = userFeesData;
       const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
       const tokenObject = {
         Privacy: true,
-        TokenID: selectedPrivacy?.tokenId,
-        TokenName: selectedPrivacy?.name,
-        TokenSymbol: selectedPrivacy?.symbol,
+        TokenID: tokenId,
+        TokenName: name,
+        TokenSymbol: symbol,
         TokenTxType: type,
         TokenAmount: originalAmount + (isUsedPRVFee ? 0 : feeForBurn),
-        TokenReceivers: [
+        TokenReceivers: isUsedPRVFee
+          ? [
+            {
+              PaymentAddress: tempAddress,
+              Amount: originalAmount,
+            },
+          ]
+          : [
+            {
+              PaymentAddress: tempAddress,
+              Amount: originalAmount + feeForBurn,
+            },
+            {
+              PaymentAddress: masterAddress,
+              Amount: userFee,
+            },
+          ],
+      };
+      const paymentInfos = isUsedPRVFee
+        ? [
           {
-            PaymentAddress: tempAddress,
-            Amount: originalAmount + (isUsedPRVFee ? 0 : feeForBurn),
+            paymentAddressStr: tempAddress,
+            amount: feeForBurn,
           },
-        ],
-      };
-      const paymentInfo = {
-        paymentAddressStr: tempAddress,
-        amount: feeForBurn,
-      };
+          {
+            paymentAddressStr: masterAddress,
+            amount: userFee,
+          },
+        ]
+        : [];
+
       const res = await tokenService.createSendPToken(
         tokenObject,
         isUsedPRVFee ? originalFee : 0,
         account,
         wallet,
-        isUsedPRVFee ? paymentInfo : null,
+        isUsedPRVFee ? paymentInfos : null,
         isUsedPRVFee ? 0 : originalFee,
         memo,
       );
+
       if (res.txId) {
         return res;
       } else {
@@ -127,122 +269,23 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     }
   };
 
-  const handleDecentralizedWithdraw = async (payload) => {
-    try {
-      const { amount, originalAmount, remoteAddress } = payload;
-      const tx = await handleBurningToken(payload);
-      const data = {
-        amount: convert.toNumber(amount, true),
-        originalAmount,
-        paymentAddress: remoteAddress,
-        walletAddress: selectedPrivacy?.paymentAddress,
-        tokenContractID: selectedPrivacy?.contractId,
-        tokenId: selectedPrivacy?.tokenId,
-        burningTxId: tx?.txId,
-        currencyType: selectedPrivacy?.currencyType,
-        isErc20Token: selectedPrivacy?.isErc20Token,
-        externalSymbol: selectedPrivacy?.externalSymbol,
-      };
-      await dispatch(
-        actionAddStorageData({
-          keySave: KEY_SAVE.WITHDRAWAL_DATA_DECENTRALIZED,
-          tx: data,
-        }),
-      );
-      await withdraw(data);
-      await dispatch(
-        actionRemoveStorageData({
-          keySave: KEY_SAVE.WITHDRAWAL_DATA_DECENTRALIZED,
-          burningTxId: data?.burningTxId,
-        }),
-      );
-      return tx;
-    } catch (e) {
-      throw e;
-    }
-  };
-
-  const handleCentralizedWithdraw = async (payload) => {
-    try {
-      const {
-        amount,
-        isUsedPRVFee,
-        remoteAddress,
-        memo,
-        originalAmount,
-        originalFee,
-      } = payload;
-
-      const prvFee = isUsedPRVFee ? originalFee : 0;
-      const tokenFee = isUsedPRVFee ? 0 : originalFee;
-
-      let spendingPRV;
-      let spendingCoin;
-
-      if (prvFee) {
-        spendingPRV = await accountService.hasSpendingCoins(
-          account,
-          wallet,
-          prvFee,
-        );
-      }
-
-      spendingCoin = await accountService.hasSpendingCoins(
-        account,
-        wallet,
-        originalAmount + tokenFee,
-        selectedPrivacy.tokenId,
-      );
-
-      if (spendingCoin || spendingPRV) {
-        return Toast.showError(MESSAGES.PENDING_TRANSACTIONS);
-      }
-
-      const walletAddress = selectedPrivacy?.paymentAddress;
-
-      const tempAddress = await genCentralizedWithdrawAddress({
-        amount,
-        paymentAddress: remoteAddress,
-        walletAddress,
-        tokenId: selectedPrivacy?.tokenId,
-        currencyType: selectedPrivacy?.currencyType,
-        memo,
-      });
-
-      if (!tempAddress) {
-        throw Error('Can not create a temp address');
-      }
-      const tx = await handleSendToken({ ...payload, tempAddress });
-      if (tx && !isUsedPRVFee) {
-        await updatePTokenFee({
-          fee: originalFee,
-          paymentAddress: tempAddress,
-        });
-      }
-      return tx;
-    } catch (e) {
-      throw e;
-    }
-  };
-
   const handleUnShieldCrypto = async (values) => {
     try {
       const { amount, toAddress, memo } = values;
       const amountToNumber = convert.toNumber(amount, true);
       const originalAmount = convert.toOriginalAmount(
         amountToNumber,
-        selectedPrivacy?.pDecimals,
+        pDecimals,
         false,
       );
       const _originalAmount = floor(originalAmount);
       const originalFee = floor(fee / rate);
       const _fee = format.amountFull(originalFee * rate, feePDecimals);
       const feeForBurn = originalFee;
-      const remoteAddress = toAddress;
       const payload = {
         amount,
         originalAmount: _originalAmount,
-        remoteAddress,
+        paymentAddress: toAddress,
         isUsedPRVFee,
         originalFee,
         memo,
@@ -251,7 +294,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         fee: _fee,
       };
       let res;
-      if (selectedPrivacy?.isDecentralized) {
+      if (isDecentralized) {
         res = await handleDecentralizedWithdraw(payload);
       } else {
         res = await handleCentralizedWithdraw(payload);
@@ -260,12 +303,12 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         const params = {
           ...res,
           originalAmount: _originalAmount,
-          fee: _fee,
+          fee: totalFeeText,
           feeUnit,
           title: 'Sent.',
           toAddress,
-          pDecimals: selectedPrivacy?.pDecimals,
-          tokenSymbol: selectedPrivacy?.externalSymbol || res?.tokenSymbol,
+          pDecimals: pDecimals,
+          tokenSymbol: externalSymbol || res?.tokenSymbol,
           keySaveAddressBook: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK,
         };
         navigation.navigate(routeNames.Receipt, { params });

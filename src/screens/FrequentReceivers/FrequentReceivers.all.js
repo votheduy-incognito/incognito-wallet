@@ -67,6 +67,7 @@ const ListReceivers = (props) => {
 const ListAllReceivers = () => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const accounts = useSelector(accountSeleclor.listAccountSelector);
+  
   const { receivers: sendInReceivers } = useSelector(receiversSelector)[
     CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK
   ];

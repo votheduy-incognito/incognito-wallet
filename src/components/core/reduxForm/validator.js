@@ -433,6 +433,9 @@ const isBNBAddress = (address) => {
 
 const isZILAddress = (address) => validation.isBech32(address);
 
+const invalidAddress = (message = '') => () =>
+  message ? message : 'Invalid address';
+
 export default {
   required,
   maxLength,
@@ -496,4 +499,5 @@ export default {
   isUnShieldAddress,
   isBNBAddress,
   isZILAddress,
+  invalidAddress,
 };

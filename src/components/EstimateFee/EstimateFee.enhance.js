@@ -1,67 +1,41 @@
 /* eslint-disable import/no-cycle */
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import accountService from '@src/services/wallet/accountService';
-import { useKeyboard } from '@src/components/UseEffect/useKeyboard';
-import { usePrevious } from '@src/components/UseEffect/usePrevious';
 import { ExHandler } from '@src/services/exception';
-import {
-  actionFetchFee,
-  actionInitEstimateFee,
-  actionValAddr,
-} from './EstimateFee.actions';
-import { estimateFeeSelector } from './EstimateFee.selector';
+import { debounce } from 'lodash';
+import { actionFetchFee } from './EstimateFee.actions';
+import { feeDataSelector } from './EstimateFee.selector';
 
 const enhance = (WrappedComp) => (props) => {
-  const { screen, isFetching, isFetched } = useSelector(estimateFeeSelector);
-  const { amount = 0, address = '' } = props;
+  const { screen, isFetching } = useSelector(feeDataSelector);
+  const { amount = 0, address = '', memo = '' } = props;
   const isIncognitoAddress = accountService.checkPaymentAddress(address);
-  const [isKeyboardVisible] = useKeyboard();
-  const prevScreen = usePrevious(screen);
   const dispatch = useDispatch();
-  const handleFetchFeeData = async () => {
+  const handleChangeForm = async () => {
     try {
+      if (!amount || !address || isFetching) {
+        return;
+      }
       await dispatch(
         actionFetchFee({
           amount,
           address,
+          screen: !isIncognitoAddress ? 'UnShield' : 'Send',
+          memo,
         }),
       );
     } catch (error) {
       console.debug(error);
-    }
-  };
-  const handleChangeForm = async () => {
-    try {
-      if (!address) {
-        return;
-      }
-      let config = {
-        screen: 'Send',
-      };
-      if (!isIncognitoAddress) {
-        config = { ...config, screen: 'UnShield' };
-      }
-      await dispatch(actionInitEstimateFee(config));
-      if (isKeyboardVisible) {
-        return;
-      }
-      await dispatch(actionValAddr(address));
-      if (!isFetched) {
-        return handleFetchFeeData();
-      } else if (isFetched && !isFetching && prevScreen !== screen) {
-        return handleFetchFeeData();
-      }
-    } catch (error) {
       new ExHandler(error).showErrorToast();
     }
   };
+  const _handleChangeForm = debounce(handleChangeForm, 500);
   React.useEffect(() => {
-    handleChangeForm();
-  }, [isKeyboardVisible, address, amount, screen, isFetched, isFetching]);
-
+    _handleChangeForm();
+  }, [address, amount, screen, memo]);
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props }} />

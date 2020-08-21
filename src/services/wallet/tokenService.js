@@ -1,5 +1,5 @@
 import { Wallet } from 'incognito-chain-web-js/build/wallet';
-import _ from 'lodash';
+import _, { isArray } from 'lodash';
 import tokenModel from '@src/models/token';
 import storage from '@src/services/storage';
 import { CONSTANT_KEYS } from '@src/constants';
@@ -108,7 +108,14 @@ export default class Token {
     // prepare param for create and send privacy custom token
     // payment info
     // @@ Note: it is use for receivers constant
-    const paymentInfos = paymentInfo ? [paymentInfo] : [];
+    // paymentInfos = paymentInfo ? [paymentInfo] : [];
+    let paymentInfos = [];
+    if (isArray(paymentInfo)) {
+      paymentInfos = [...paymentInfo];
+    } else if (!!paymentInfo && typeof paymentInfo === 'object') {
+      paymentInfos = [paymentInfo];
+    }
+
     // for (let i = 0; i < paymentInfos.length; i++) {
     //   paymentInfos[i] = new PaymentInfo(/*paymentAddress, amount*/);
     // }
@@ -148,6 +155,7 @@ export default class Token {
     remoteAddress,
     account,
     wallet,
+    paymentInfos = [],
   ) {
     await Wallet.resetProgressTx();
     // get index account by name
@@ -157,11 +165,12 @@ export default class Token {
     // prepare param for create and send privacy custom token
     // payment info
     // @@ Note: it is use for receivers constant
-    let paymentInfos = [];
+    // let paymentInfos = [];
     //   paymentInfos[0] = {
     //     paymentAddressStr: submitParam.TokenReceivers.PaymentAddress,
     //     amount: 100
     //   };
+
     let response;
     try {
       response = await wallet.MasterAccount.child[
