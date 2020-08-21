@@ -27,7 +27,7 @@ export default StyleSheet.create({
     ...FONT.STYLE.bold,
   },
   inputContainer: {
-    width: '65%',
+    width: '60%',
   },
   icon: {
     width: 12,

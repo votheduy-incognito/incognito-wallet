@@ -2,6 +2,10 @@ import _ from 'lodash';
 
 export const calculateOutputValue = (pair, inputToken, inputValue, outputToken) => {
   try {
+    if (!pair) {
+      return 0;
+    }
+
     const inputPool = pair[inputToken.id];
     const outputPool = pair[outputToken.id];
     const initialPool = inputPool * outputPool;
