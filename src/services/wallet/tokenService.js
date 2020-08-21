@@ -286,8 +286,14 @@ export default class Token {
           const pToken = pTokens.find(
             (token) => token.tokenId === (item.tokenId || item.id),
           );
+
+          if (pToken && pToken.symbol === 'ETH' && pToken.currencyType === 1) {
+            pToken.address = '0x0000000000000000000000000000000000000000';
+          }
+
           return {
             ...item,
+            address: pToken?.address || pToken?.contractId,
             id: item.tokenId || item.id,
             pDecimals: Math.min(pToken?.pDecimals || 0, 9),
             decimals: pToken?.decimals,

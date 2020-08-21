@@ -62,18 +62,17 @@ export class PDexTradeHistoryModel {
     const sellToken = allTokens.find(token => token.id === this.sellTokenId || token.address === this.sellTokenId);
     const networkFeeToken = allTokens.find(token => token.id === this.networkFeeTokenId);
 
-    if (buyToken?.address && sellToken?.address) {
+    if (this.exchange !== 'Incognito' && buyToken?.address === json.BuyTokenID) {
       this.tradingFee = (this.networkFee - MAX_DEX_FEE) + MAX_FEE_PER_TX;
       this.networkFee = this.networkFee - this.tradingFee;
-
-      const originalSellAmount = BigNumber(this.sellAmount)
-        .dividedBy(BigNumber(10).pow(sellToken.pDecimals));
-
-      // Decimals is 18 for all buy tokens returned by Kyber/Uniswap (handled by API)
       this.buyAmount = BigNumber(this.buyAmount);
 
       // Buy amount of Kyber is expected rate
       if (this.exchange === 'Kyber') {
+        const originalSellAmount = BigNumber(this.sellAmount)
+          .dividedBy(BigNumber(10).pow(sellToken.pDecimals));
+
+        // Decimals is 18 for all buy tokens returned by Kyber (handled by API)
         this.buyAmount = this.buyAmount
           .dividedBy(BigNumber(10).pow(18))
           .multipliedBy(originalSellAmount);
@@ -88,10 +87,6 @@ export class PDexTradeHistoryModel {
       this.buyAmount = this.buyAmount
         .multipliedBy(BigNumber(10).pow(buyToken.pDecimals))
         .toFixed(0);
-
-      // this.buyAmount = (this.buyAmount / sellDecimals) * (this.sellAmount / sellPDecimals) * buyDecimals;
-      // this.buyAmount = this.buyAmount / Math.pow(10, buyToken.decimals - buyToken.pDecimals);
-      // this.buyAmount = Math.floor(this.buyAmount * this.sellAmount / Math.pow(10, sellToken.pDecimals));
     }
 
     if (buyToken) {
