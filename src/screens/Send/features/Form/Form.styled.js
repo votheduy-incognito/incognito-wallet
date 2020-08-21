@@ -15,9 +15,17 @@ export const styledForm = StyleSheet.create({
     backgroundColor: COLORS.orange,
   },
   warningText: {
+    fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.small - 2,
     lineHeight: FONT.SIZE.small + 4,
-    color: COLORS.orange,
+    color: COLORS.colorGreyBold,
     marginTop: 5,
+  },
+  amount: {
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
+    color: COLORS.colorGreyBold,
+    maxWidth: '50%',
   },
 });

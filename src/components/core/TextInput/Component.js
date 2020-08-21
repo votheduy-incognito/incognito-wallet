@@ -25,6 +25,7 @@ const TextInput = ({
   labelStyle,
   oldVersion = false,
   canEditable,
+  rightLabel,
   ...props
 }) => {
   const [focus, setFocus] = useState(false);
@@ -61,16 +62,19 @@ const TextInput = ({
   return (
     <View style={[styleSheet.container, style]}>
       {label && (
-        <Text
-          style={[
-            styleSheet.label,
-            oldVersion && styleSheet.labelOld,
-            labelStyle,
-            focus && oldVersion && styleSheet.labelFocus,
-          ]}
-        >
-          {label}
-        </Text>
+        <View style={[styleSheet.labelContainer]}>
+          <Text
+            style={[
+              styleSheet.label,
+              oldVersion && styleSheet.labelOld,
+              labelStyle,
+              focus && oldVersion && styleSheet.labelFocus,
+            ]}
+          >
+            {label}
+          </Text>
+          {rightLabel}
+        </View>
       )}
       <View
         style={[
@@ -146,6 +150,7 @@ TextInput.defaultProps = {
   oldVersion: false,
   onRef: null,
   canEditable: true,
+  rightLabel: null,
 };
 
 TextInput.propTypes = {
@@ -164,6 +169,7 @@ TextInput.propTypes = {
   oldVersion: PropTypes.bool,
   onRef: PropTypes.func,
   canEditable: PropTypes.bool,
+  rightLabel: PropTypes.element,
 };
 
 export default TextInput;

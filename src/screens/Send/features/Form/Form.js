@@ -18,8 +18,11 @@ import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selecto
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { COLORS } from '@src/styles';
 import LoadingTx from '@src/components/LoadingTx';
-import withSendForm, { formName } from './Form.enhance';
+import { decimalDigitsSelector } from '@src/screens/Setting';
+import format from '@src/utils/format';
+import { floor } from 'lodash';
 import { styledForm as styled } from './Form.styled';
+import withSendForm, { formName } from './Form.enhance';
 
 const initialFormValues = {
   amount: '',
@@ -31,6 +34,23 @@ const Form = createForm(formName, {
   initialValues: initialFormValues,
   destroyOnUnmount: true,
   enableReinitialize: true,
+});
+
+const RightLabel = React.memo(() => {
+  const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const decimalDigits = useSelector(decimalDigitsSelector);
+  const amount = format.amount(
+    floor(selectedPrivacy?.amount),
+    selectedPrivacy?.pDecimals,
+    true,
+    decimalDigits,
+  );
+  return (
+    <Text style={styled.amount} numberOfLines={1} ellipsizeMode="tail">
+      {`${amount} ${selectedPrivacy?.externalSymbol ||
+        selectedPrivacy?.symbol}`}
+    </Text>
+  );
 });
 
 const SendForm = (props) => {
@@ -47,11 +67,17 @@ const SendForm = (props) => {
     validateAddress,
     isERC20,
     isSending,
+    memo,
   } = props;
   const { titleBtnSubmit, isUnShield, isValidETHAddress } = useSelector(
     feeDataSelector,
   );
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const placeholderAddress = `Incognito ${
+    selectedPrivacy?.isMainCrypto
+      ? ''
+      : `or ${selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol}`
+  } address`;
   const renderMemo = () => {
     if (isUnShield) {
       if (selectedPrivacy?.isBep2Token || selectedPrivacy?.currencyType === 4) {
@@ -96,6 +122,7 @@ const SendForm = (props) => {
                 name="amount"
                 placeholder="0.0"
                 label="Amount"
+                rightLabel={<RightLabel />}
                 componentProps={{
                   keyboardType: 'decimal-pad',
                   onPressMax,
@@ -111,8 +138,7 @@ const SendForm = (props) => {
                 component={InputQRField}
                 name="toAddress"
                 label="To"
-                placeholder={`Enter ${selectedPrivacy?.externalSymbol ||
-                  selectedPrivacy?.symbol} address`}
+                placeholder={placeholderAddress}
                 validate={validateAddress}
                 showNavAddrBook
                 onOpenAddressBook={onShowFrequentReceivers}
@@ -133,9 +159,9 @@ const SendForm = (props) => {
                 amount={amount}
                 address={toAddress}
                 isFormValid={isFormValid}
+                memo={memo}
               />
               {renderMemo()}
-
               <ButtonBasic
                 title={titleBtnSubmit}
                 btnStyle={[
@@ -155,20 +181,24 @@ const SendForm = (props) => {
   );
 };
 
+SendForm.defaultProps = {
+  memo: '',
+};
+
 SendForm.propTypes = {
   onChangeField: PropTypes.func.isRequired,
   onPressMax: PropTypes.func.isRequired,
   isFormValid: PropTypes.bool.isRequired,
-  amount: PropTypes.number.isRequired,
+  amount: PropTypes.string.isRequired,
   toAddress: PropTypes.string.isRequired,
   onShowFrequentReceivers: PropTypes.func.isRequired,
   disabledForm: PropTypes.bool.isRequired,
   handleSend: PropTypes.func.isRequired,
   validateAmount: PropTypes.any.isRequired,
   validateAddress: PropTypes.any.isRequired,
-  getValidateAddress: PropTypes.func.isRequired,
   isERC20: PropTypes.bool.isRequired,
   isSending: PropTypes.bool.isRequired,
+  memo: PropTypes.string,
 };
 
 export default withSendForm(SendForm);

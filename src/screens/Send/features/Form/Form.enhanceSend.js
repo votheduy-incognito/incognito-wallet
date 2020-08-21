@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 /* eslint-disable import/no-cycle */
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
@@ -158,7 +159,7 @@ export const enhanceSend = (WrappedComp) => (props) => {
       }
     }
   };
-  
+
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props, handleSendAnonymously }} />

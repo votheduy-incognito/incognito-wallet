@@ -1,7 +1,7 @@
 import { CONSTANT_COMMONS } from '@src/constants';
 import format from '@src/utils/format';
 import convert from '@src/utils/convert';
-import { floor } from 'lodash';
+import { floor, isNull } from 'lodash';
 import {
   ACTION_FETCHING_FEE,
   ACTION_FETCHED_FEE,
@@ -15,8 +15,10 @@ import {
   ACTION_INIT_FETCHED,
   ACTION_FETCHED_MAX_FEE_PRV,
   ACTION_FETCHED_MAX_FEE_PTOKEN,
-  ACTION_USE_FEE_MAX,
   ACTION_FETCHED_VALID_ADDR,
+  ACTION_FETCHED_USER_FEES,
+  ACTION_FETCHING_USER_FEES,
+  ACTION_TOGGLE_FAST_FEE,
 } from './EstimateFee.constant';
 import { MAX_FEE_PER_TX } from './EstimateFee.utils';
 
@@ -51,9 +53,22 @@ const initialState = {
   ],
   actived: CONSTANT_COMMONS.PRV.id,
   rate: 1,
-  useFeeMax: false,
   isAddressValidated: true,
   isValidETHAddress: true,
+  userFees: {
+    isFetching: false,
+    isFetched: false,
+    data: null,
+  },
+  isValidating: false,
+  fast2x: false,
+  totalFeePrv: null,
+  totalFeePrvText: '',
+  userFeePrv: null,
+  totalFeePToken: null,
+  totalFeePTokenText: '',
+  userFeePToken: null,
+  isFetchedMinMaxWithdraw: false,
 };
 
 export default (state = initialState, action) => {
@@ -164,18 +179,48 @@ export default (state = initialState, action) => {
       maxFeePTokenText: amountText,
     };
   }
-  case ACTION_USE_FEE_MAX: {
-    return {
-      ...state,
-      useFeeMax: true,
-    };
-  }
   case ACTION_FETCHED_VALID_ADDR: {
     const { isAddressValidated, isValidETHAddress } = action.payload;
     return {
       ...state,
       isAddressValidated,
       isValidETHAddress,
+    };
+  }
+  case ACTION_FETCHED_USER_FEES: {
+    return {
+      ...state,
+      userFees: {
+        ...state.userFees,
+        isFetched: true,
+        isFetching: false,
+        data: { ...action.payload },
+      },
+    };
+  }
+  case ACTION_FETCHING_USER_FEES: {
+    return {
+      ...state,
+      userFees: {
+        ...state.userFees,
+        isFetching: true,
+      },
+    };
+  }
+  case ACTION_TOGGLE_FAST_FEE: {
+    const { fast2x, totalFee, totalFeeText, userFee } = action.payload;
+    const { isUsedPRVFee } = state;
+    const totalFeeField = isUsedPRVFee ? 'totalFeePrv' : 'totalFeePToken';
+    const totalFeeTextField = isUsedPRVFee
+      ? 'totalFeePrvText'
+      : 'totalFeePTokenText';
+    const userFeeField = isUsedPRVFee ? 'userFeePrv' : 'userFeePToken';
+    return {
+      ...state,
+      fast2x,
+      [totalFeeField]: totalFee,
+      [totalFeeTextField]: totalFeeText,
+      [userFeeField]: userFee,
     };
   }
   default:
