@@ -9,10 +9,14 @@ export default StyleSheet.create({
     fontFamily: FONT.NAME.regular,
     fontSize: 12,
     lineHeight: 16,
-    marginBottom: 10,
-    color: COLORS.orange,
+    marginTop: 10,
+    color: COLORS.red,
   },
-  field: {
-    marginBottom: 5,
+  warningText: {
+    fontFamily: FONT.NAME.regular,
+    fontSize: 12,
+    lineHeight: 16,
+    marginTop: 10,
+    color: COLORS.orange,
   },
 });

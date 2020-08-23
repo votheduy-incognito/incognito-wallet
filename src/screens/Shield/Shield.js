@@ -26,6 +26,9 @@ const Shield = (props) => {
             onPress={() => handleShield(item?.tokenId)}
             tokenId={item?.tokenId}
             symbol="externalSymbol"
+            styledSymbol={styled.styledSymbol}
+            styledName={styled.styledName}
+            styledContainerName={styled.styledContainerName}
           />
         )}
         keyExtractor={(token) => token?.tokenId}
