@@ -70,20 +70,18 @@ export default (state = initialState, action) => {
   }
   case ACTION_DELETE: {
     const { keySave, receiver } = action.payload;
-    const { name, address } = receiver;
+    const { address } = receiver;
     const oldReceivers = state[keySave].receivers;
     const exist = isReceiverExist(oldReceivers, receiver);
     if (!exist) {
-      throw Error('User is not exist! Can not delete');
+      return state;
     }
     return {
       ...state,
       [keySave]: {
         ...state[keySave],
         receivers: [
-          ...oldReceivers.filter(
-            (item) => item?.name !== name && item?.address !== address,
-          ),
+          ...oldReceivers.filter((item) => item?.address !== address),
         ],
       },
     };
