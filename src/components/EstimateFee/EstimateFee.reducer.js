@@ -1,7 +1,7 @@
 import { CONSTANT_COMMONS } from '@src/constants';
 import format from '@src/utils/format';
 import convert from '@src/utils/convert';
-import { floor, isNull } from 'lodash';
+import { floor, isNull, isEmpty } from 'lodash';
 import {
   ACTION_FETCHING_FEE,
   ACTION_FETCHED_FEE,
@@ -20,7 +20,7 @@ import {
   ACTION_FETCHING_USER_FEES,
   ACTION_TOGGLE_FAST_FEE,
 } from './EstimateFee.constant';
-import { MAX_FEE_PER_TX } from './EstimateFee.utils';
+import { MAX_FEE_PER_TX, hasMultiLevelUsersFee } from './EstimateFee.utils';
 
 const initialState = {
   isFetching: false,
@@ -59,6 +59,7 @@ const initialState = {
     isFetching: false,
     isFetched: false,
     data: null,
+    hasMultiLevel: false,
   },
   isValidating: false,
   fast2x: false,
@@ -188,13 +189,20 @@ export default (state = initialState, action) => {
     };
   }
   case ACTION_FETCHED_USER_FEES: {
+    const data = action.payload;
+    console.debug('DATA_USER_FEES', data, isEmpty(data));
+    if (isEmpty(data)) {
+      return state;
+    }
+    const hasMultiLevel = hasMultiLevelUsersFee(data);
     return {
       ...state,
       userFees: {
         ...state.userFees,
         isFetched: true,
         isFetching: false,
-        data: { ...action.payload },
+        data: { ...data },
+        hasMultiLevel,
       },
     };
   }

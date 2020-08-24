@@ -228,7 +228,7 @@ const SupportFees = React.memo(() => {
   };
   return (
     <View style={styled.spFeeContainer}>
-      {isUnShield && (
+      {isUnShield && userFees.hasMultiLevel && (
         <BtnFast style={styled.btnFast} onPress={handlePressFast} />
       )}
       {types.map((type, index) => (
