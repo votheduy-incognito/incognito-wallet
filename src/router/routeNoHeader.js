@@ -38,7 +38,6 @@ import CoinInfoVerify from '@src/screens/Wallet/features/CoinInfo/CoinInfo.verif
 import News from '@screens/News';
 import FrequentReceivers, {
   FrequentReceiversForm,
-  FrequentReceiversAll,
 } from '@screens/FrequentReceivers';
 import {
   PoolV2,
@@ -46,7 +45,6 @@ import {
   PoolV2Provide,
   PoolV2Withdraw,
 } from '@src/screens/PoolV2';
-import GetStarted from '@src/screens/GetStarted';
 import InvestBalance from '@screens/Dex/InvestBalance';
 import Invest from '@screens/Dex';
 import InvestHistory from '@screens/DexHistory';
@@ -305,10 +303,6 @@ const routes = [
   {
     screen: RemoveLiquidityConfirm,
     name: routeNames.RemoveLiquidityConfirm,
-  },
-  {
-    screen: FrequentReceiversAll,
-    name: routeNames.FrequentReceiversAll,
   },
   {
     screen: Receipt,

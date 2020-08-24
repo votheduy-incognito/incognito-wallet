@@ -99,6 +99,5 @@ export default {
   AddLiquidityConfirm: 'AddLiquidityConfirm',
   RemoveLiquidityConfirm: 'RemoveLiquidityConfirm',
   News: 'News',
-  FrequentReceiversAll: 'FrequentReceiversAll',
   Receipt: 'Receipt',
 };

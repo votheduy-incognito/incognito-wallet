@@ -44,7 +44,12 @@ const DropdownMenu = (props) => {
             setToggle(!toggle);
           }}
         >
-          <View style={styled.labelContainer}>
+          <View
+            style={[
+              styled.labelContainer,
+              toggle ? { marginBottom: 15 } : null,
+            ]}
+          >
             <Text style={styled.label}>{label}</Text>
             <Icon
               name={`chevron-thin-${toggle ? 'up' : 'down'}`}

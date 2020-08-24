@@ -15,46 +15,30 @@ const styled = StyleSheet.create({
   },
 });
 
-const AddressBookSection = (props) => {
+const AddressBookSection = () => {
   const navigation = useNavigation();
-  const onSelectedItem = ({ info, keySave }) => {
+  const onSelectedItem = (data) => {
+    const { keySave, ...rest } = data;
     navigation.navigate(routeNames.FrequentReceiversForm, {
       info: {
-        ...info,
-        toAddress: info?.address,
+        ...rest,
+        toAddress: rest?.address,
       },
       keySave,
       action: 'update',
       headerTitle: 'Edit',
     });
   };
-  const handleNavigateFrequentReceivers = ({ keySave, headerTitle, keySync }) =>
+  const handleNavigateFrequentReceivers = () =>
     navigation.navigate(routeNames.FrequentReceivers, {
-      keySave,
-      keySync,
-      disabledSwipe: false,
-      disabledSelectedAddr: true,
-      headerTitle,
-      onSelectedItem: (info) => onSelectedItem({ keySave, info }),
+      onSelectedItem,
+      disabledSwipe: false
     });
+
   const itemsFactories = [
     {
-      desc: HEADER_TITLE_RECEIVERS.SENDIN,
-      handlePress: () =>
-        handleNavigateFrequentReceivers({
-          keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
-          headerTitle: HEADER_TITLE_RECEIVERS.ADDRESS_BOOK,
-        }),
-      styleItem: styled.styleItem,
-    },
-    {
-      desc: HEADER_TITLE_RECEIVERS.WITHDRAW,
-      handlePress: () =>
-        handleNavigateFrequentReceivers({
-          keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK,
-          headerTitle: HEADER_TITLE_RECEIVERS.ADDRESS_BOOK,
-        }),
-      styleItem: styled.styleItem,
+      desc: 'Manage your saved addresses',
+      handlePress: handleNavigateFrequentReceivers,
     },
   ];
   return (

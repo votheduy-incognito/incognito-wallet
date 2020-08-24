@@ -1,179 +1,146 @@
 import React from 'react';
-import { View, Text, Image, KeyboardAvoidingView } from 'react-native';
-import PropTypes from 'prop-types';
-import { ScrollView, TouchableOpacity } from '@src/components/core';
-import Swipeout from 'react-native-swipeout';
-import { BtnDelete } from '@src/components/Button';
-import Header from '@src/components/Header';
-import srcNotFound from '@src/assets/images/icons/not_found_receiver.png';
+import { View, KeyboardAvoidingView } from 'react-native';
+import { useSelector } from 'react-redux';
+import { receiversSelector } from '@src/redux/selectors/receivers';
+import Header, { useSearchBox } from '@src/components/Header';
 import { isIOS } from '@src/utils/platform';
-import debounce from 'lodash/debounce';
+import { useNavigationParam } from 'react-navigation-hooks';
+import { DropdownMenu, KeyboardAwareScrollView } from '@src/components/core';
+import { selectedPrivacySeleclor, accountSeleclor } from '@src/redux/selectors';
+import { CONSTANT_KEYS } from '@src/constants';
+import PropTypes from 'prop-types';
+import Item from './FrequentReceivers.item';
 import EmptyList from './FrequentReceivers.empty';
-import {
-  styledModal as styled,
-  listStyled,
-  itemStyled,
-  notFoundStyled,
-} from './FrequentReceivers.styled';
-import withModal from './FrequentReceivers.enhance';
+import { styledModal as styled } from './FrequentReceivers.styled';
+import { filterAddressByKey } from './FrequentReceivers.utils';
 
-export const Item = ({
-  name,
-  address,
-  disabledSwipe,
-  _onDelete,
-  isLastChild,
-  containerStyled,
-  ...rest
-}) => {
+const ListReceivers = (props) => {
+  const { receivers, isEmpty } = props;
+  const onSelectedItem = useNavigationParam('onSelectedItem');
+  const disabledSwipe = useNavigationParam('disabledSwipe');
+  const onSelectedAddress = async (receiver = { name: '', address: '' }) => {
+    if (typeof onSelectedItem === 'function') {
+      return onSelectedItem(receiver);
+    }
+  };
+  if (isEmpty) {
+    return <EmptyList />;
+  }
   return (
-    <Swipeout
-      disabled={disabledSwipe}
-      close
-      autoClose
-      right={[
-        {
-          component: <BtnDelete showIcon={false} onPress={_onDelete} />,
-        },
-      ]}
+    <KeyboardAwareScrollView
       style={{
-        backgroundColor: 'transparent',
+        paddingTop: 42,
+        paddingBottom: 50,
       }}
     >
-      <TouchableOpacity {...rest}>
-        <View style={[itemStyled.hook, containerStyled]}>
-          <Text style={itemStyled.name}>{name}</Text>
-          <Text
-            style={itemStyled.address}
-            ellipsizeMode="middle"
-            numberOfLines={1}
-          >
-            {address}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    </Swipeout>
+      {receivers?.map((receiver, index) => (
+        <DropdownMenu
+          sections={[receiver]}
+          renderItem={({ item }) => {
+            return (
+              <Item
+                {...{
+                  ...item,
+                  disabledSwipe,
+                  keySave: receiver?.keySave,
+                  onPress: () =>
+                    onSelectedAddress({ ...item, keySave: receiver?.keySave }),
+                }}
+              />
+            );
+          }}
+          key={index}
+          style={{ marginBottom: 30 }}
+        />
+      ))}
+    </KeyboardAwareScrollView>
   );
 };
 
-export const List = ({
-  onSelectedAddress,
-  receivers,
-  disabledSwipe,
-  onDelete,
-  shouldDisabledItem,
-  styledContainer = null,
-  title = '',
-}) => {
-  const onPressItem = (item) => debounce(() => onSelectedAddress(item), 300);
-  return (
-    <View style={[listStyled.container, styledContainer]}>
-      {!!title && <Text style={listStyled.title}>{title}</Text>}
-      <ScrollView>
-        {receivers.map((item, key, arr) => (
-          <Item
-            key={item?.name || key}
-            {...{
-              ...item,
-              disabledSwipe,
-              _onDelete: () => onDelete(item),
-            }}
-            onPress={onPressItem(item)}
-            disabled={shouldDisabledItem}
-            isLastChild={arr.length - 1 === key}
-          />
-        ))}
-      </ScrollView>
-    </View>
+const ListAllReceivers = () => {
+  const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const accounts = useSelector(accountSeleclor.listAccountSelector);
+  const defaultAccount = useSelector(accountSeleclor?.defaultAccountSelector);
+  const { receivers: sendInReceivers } = useSelector(receiversSelector)[
+    CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK
+  ];
+  const _sendInReceivers = sendInReceivers.filter(
+    (receiver) => receiver?.address !== defaultAccount?.paymentAddress,
   );
-};
-
-export const NotFound = () => {
-  return (
-    <View style={notFoundStyled.container}>
-      <View style={notFoundStyled.hook}>
-        <Image source={srcNotFound} style={notFoundStyled.notFoundImg} />
-        <Text style={notFoundStyled.notFound}>Not found</Text>
-      </View>
-    </View>
+  const keychainsAddresses = _sendInReceivers.filter((receiver) =>
+    accounts.some((account) => account?.paymentAddress === receiver?.address),
   );
-};
+  const incognitoAddress = _sendInReceivers.filter(
+    (receiver) =>
+      !keychainsAddresses.some(
+        (keychainReceiver) => keychainReceiver?.address === receiver?.address,
+      ),
+  );
+  const { receivers: externalAddress } = useSelector(receiversSelector)[
+    CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK
+  ];
+  const extAddrFilBySelPrivacy = [
+    ...externalAddress.filter(
+      (item) => item?.networkName === selectedPrivacy?.networkName,
+    ),
+  ];
+  const [_keychainsAddresses, keySearch] = useSearchBox({
+    data: keychainsAddresses,
+    handleFilter: () => filterAddressByKey(keychainsAddresses, keySearch),
+  });
+  const [_incognitoAddress] = useSearchBox({
+    data: incognitoAddress,
+    handleFilter: () => filterAddressByKey(incognitoAddress, keySearch),
+  });
+  const [_externalAddress] = useSearchBox({
+    data: extAddrFilBySelPrivacy,
+    handleFilter: () => filterAddressByKey(extAddrFilBySelPrivacy, keySearch),
+  });
+  const receivers = [
+    {
+      data: _keychainsAddresses,
+      label: 'Your keychains',
+      keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
+    },
+    {
+      data: _incognitoAddress,
+      label: 'Incognito addresses',
+      keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
+    },
+    {
+      data: _externalAddress,
+      label: 'External addresses',
+      keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK,
+    },
+  ];
 
-export const Modal = (props) => {
-  const {
-    data,
-    onSelectedAddress,
-    disabledSwipe,
-    onDelete,
-    shouldDisabledItem,
-    isEmpty,
-  } = props;
-  const notFound = data.length === 0;
-  const renderList = () => {
-    if (isEmpty) {
-      return <EmptyList />;
-    }
-    if (notFound) {
-      return <NotFound />;
-    }
-    return (
-      <List
-        onSelectedAddress={onSelectedAddress}
-        receivers={data}
-        disabledSwipe={disabledSwipe}
-        onDelete={onDelete}
-        shouldDisabledItem={shouldDisabledItem}
-        styledContainer={{ flex: 1 }}
-      />
-    );
-  };
+  const isEmpty = receivers.length === 0;
   const isPlatformIOS = isIOS();
   const Wrapper = isPlatformIOS ? KeyboardAvoidingView : View;
   return (
     <View style={styled.container}>
-      <Header title="Address book" style={styled.header} canSearch={!isEmpty} />
+      <Header
+        title="Search by name or address"
+        style={styled.header}
+        canSearch
+      />
       <Wrapper
         behavior="padding"
-        keyboardVerticalOffset={50}
+        keyboardVerticalOffset={25}
         style={{
           flex: 1,
+          marginHorizontal: 25,
         }}
       >
-        {renderList()}
+        <ListReceivers {...{ receivers, isEmpty }} />
       </Wrapper>
     </View>
   );
 };
 
-Item.defaultProps = {
-  disabledSwipe: true,
-  onDelete: null,
-};
-
-Item.propTypes = {
-  name: PropTypes.string.isRequired,
-  address: PropTypes.string.isRequired,
-  onDelete: PropTypes.func,
-  disabledSwipe: PropTypes.bool,
-};
-
-List.propTypes = {
-  onSelectedAddress: PropTypes.func.isRequired,
+ListReceivers.propTypes = {
   receivers: PropTypes.array.isRequired,
-};
-
-Modal.defaultProps = {
-  disabledSwipe: true,
-  onDelete: null,
-};
-
-Modal.propTypes = {
-  data: PropTypes.array.isRequired,
-  onSelectedAddress: PropTypes.func.isRequired,
-  disabledSwipe: PropTypes.bool,
-  onDelete: PropTypes.func,
-  shouldDisabledItem: PropTypes.bool.isRequired,
   isEmpty: PropTypes.bool.isRequired,
 };
 
-export default withModal(Modal);
+export default React.memo(ListAllReceivers);
