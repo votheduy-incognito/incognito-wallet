@@ -84,6 +84,5 @@ export default {
   PoolV2History: 'StakeHistory',
   PoolV2HistoryDetail: 'StakeHistoryDetail',
   News: 'News',
-  FrequentReceiversAll: 'FrequentReceiversAll',
   Receipt: 'Receipt',
 };

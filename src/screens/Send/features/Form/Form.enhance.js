@@ -49,7 +49,9 @@ export const enhance = (WrappedComp) => (props) => {
   const onPressMax = async () => {
     try {
       const maxAmountText = await dispatch(actionFetchFeeByMax());
-      onChangeField(maxAmountText, 'amount');
+      if (maxAmountText) {
+        onChangeField(maxAmountText, 'amount');
+      }
     } catch (error) {
       console.debug(error);
     }
@@ -77,7 +79,7 @@ export const enhance = (WrappedComp) => (props) => {
 
   const onShowFrequentReceivers = async () => {
     try {
-      navigation.navigate(routeNames.FrequentReceiversAll, {
+      navigation.navigate(routeNames.FrequentReceivers, {
         onSelectedItem,
       });
     } catch (error) {

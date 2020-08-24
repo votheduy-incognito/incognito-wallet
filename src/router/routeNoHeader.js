@@ -37,7 +37,6 @@ import CoinInfoVerify from '@src/screens/Wallet/features/CoinInfo/CoinInfo.verif
 import News from '@screens/News';
 import FrequentReceivers, {
   FrequentReceiversForm,
-  FrequentReceiversAll,
 } from '@screens/FrequentReceivers';
 import {
   PoolV2,
@@ -245,10 +244,6 @@ const routes = [
   {
     name: routeNames.Profile,
     screen: Profile,
-  },
-  {
-    screen: FrequentReceiversAll,
-    name: routeNames.FrequentReceiversAll,
   },
   {
     screen: Receipt,
