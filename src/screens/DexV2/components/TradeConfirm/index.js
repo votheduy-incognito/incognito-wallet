@@ -11,9 +11,9 @@ import withWarning from '@screens/DexV2/components/Trade/warning.enhance';
 import Loading from '@screens/DexV2/components/Loading';
 import withAccount from '@screens/DexV2/components/account.enhance';
 import Help from '@components/Help/index';
-import { DEFI_TRADING_FEE } from '@components/EstimateFee/EstimateFee.utils';
 import Powered from '@screens/DexV2/components/Powered';
 import PoolSize from '@screens/DexV2/components/PoolSize';
+import { TRADING } from '@src/constants';
 import withSuccess from './success.enhance';
 import withTrade from './trade.enhance';
 import withData from './data.enhance';
@@ -35,6 +35,7 @@ const Trade = ({
   warning,
   isErc20,
   pair,
+  quote,
 }) => {
   return (
     <FlexView>
@@ -92,12 +93,12 @@ const Trade = ({
                 <Help title="Trading fee" content="This is a Kyber pool. You are trading anonymously on the Ethereum network which will incur trading fees. Incognito does not charge trading fees." />
               </View>
             )}
-            right={`${format.amount(DEFI_TRADING_FEE, feeToken.pDecimals)} ${feeToken.symbol}`}
+            right={`${format.amount(TRADING.getFees()[quote.protocol || 'Kyber'], feeToken.pDecimals)} ${feeToken.symbol}`}
             style={styles.extra}
           />
         </>
         )}
-        <Powered network={isErc20 ? 'Kyber' : 'Incognito'} />
+        <Powered network={isErc20 ? quote?.protocol : 'Incognito'} />
         {!!warning && <ExtraInfo left={warning} right="" style={styles.warning} />}
         {!!error && <Text style={styles.error}>{error}</Text>}
         <RoundCornerButton
@@ -129,6 +130,7 @@ Trade.propTypes = {
   warning: PropTypes.string,
   isErc20: PropTypes.bool,
   pair: PropTypes.object,
+  quote: PropTypes.object,
 };
 
 Trade.defaultProps = {
@@ -141,6 +143,7 @@ Trade.defaultProps = {
   warning: '',
   isErc20: false,
   pair: null,
+  quote: null,
 };
 
 export default compose(

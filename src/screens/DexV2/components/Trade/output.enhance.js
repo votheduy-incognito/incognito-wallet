@@ -84,7 +84,7 @@ const withCalculateOutput = WrappedComp => (props) => {
   const debouncedGetQuote = React.useCallback(_.debounce(getQuote, 1000), []);
 
   React.useEffect(() => {
-    if (inputToken && outputToken && inputValue) {
+    if (inputToken && outputToken && inputToken.id !== outputToken.id && inputValue) {
       if (inputToken.address && outputToken.address) {
         const debounceId = v4();
         setGettingQuote(true);

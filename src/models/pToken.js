@@ -4,6 +4,7 @@ class PToken {
   constructor(data = {}) {
     const pairPrv = data?.CurrentPrvPool !== 0;
     this.id = data.ID;
+    this.address = data.ContractID;
     this.createdAt = data.CreatedAt;
     this.updatedAt = data.UpdatedAt;
     this.deletedAt = data.DeletedAt;

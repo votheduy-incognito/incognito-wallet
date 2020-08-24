@@ -14,13 +14,15 @@ export const deposit = ({
   networkFee,
   networkFeeTokenId,
   receiverAddress,
+  type,
 }) => {
   return http.post('pdefi/request-deposit', {
     'TokenID': tokenId,
     'Amount': Math.floor(amount),
     'NetworkFee': Math.floor(networkFee),
     'NetworkFeeTokenID': networkFeeTokenId,
-    'ReceiverAddress': receiverAddress
+    'ReceiverAddress': receiverAddress,
+    'Type': type,
   }).then(data => new DepositResponse(data));
 };
 
@@ -60,14 +62,17 @@ export const tradePKyber = ({
   sellAmount,
   buyTokenAddress,
   expectAmount,
+  protocol,
+  maxAmountOut,
 }) => {
+  const addresses = TRADING.getDAppAddresses();
   return http.post('/uniswap/execute', {
     'SrcTokens': sellTokenAddress,
     'SrcQties': sellAmount,
     'DestTokens': buyTokenAddress,
-    'DappAddress': TRADING.KYBER_TRADE_ADDRESS,
+    'DappAddress': addresses[protocol || 'Kyber'],
     'DepositId': depositId,
-    'ExpectAmount': expectAmount,
+    'ExpectAmount': protocol?.toLowerCase() === 'uniswap' ? maxAmountOut : expectAmount,
   });
 };
 

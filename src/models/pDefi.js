@@ -3,6 +3,14 @@ import moment from 'moment';
 import { MAX_DEX_FEE, MAX_FEE_PER_TX } from '@components/EstimateFee/EstimateFee.utils';
 import BigNumber from 'bignumber.js';
 
+const TYPES = [
+  'Incognito',
+  'Incognito',
+  'Kyber',
+  '0x',
+  'Uniswap'
+];
+
 export class RewardModel {
   constructor(data = {}) {
     this.walletAddress = data.WalletAddress;
@@ -48,37 +56,37 @@ export class PDexTradeHistoryModel {
       'Unsuccessful',
       'Successful',
     ][json.Status];
+    this.exchange = TYPES[json.Type] || 'Incognito';
 
     let buyToken = allTokens.find(token => token.id === this.buyTokenId || token.address === this.buyTokenId);
     const sellToken = allTokens.find(token => token.id === this.sellTokenId || token.address === this.sellTokenId);
     const networkFeeToken = allTokens.find(token => token.id === this.networkFeeTokenId);
 
-    if (buyToken?.address && sellToken?.address) {
-      this.exchange = 'Kyber';
-      // if (this.networkFee > DEFI_TRADING_FEE) {
-      //   this.tradingFee = DEFI_TRADING_FEE;
-      // } else if (this.networkFee > 4e8) {
-      //   this.tradingFee = 4e8;
-      // } else {
-      //   this.tradingFee = 1e7;
-      // }
+    if (this.exchange !== 'Incognito' && buyToken?.address === json.BuyTokenID) {
       this.tradingFee = (this.networkFee - MAX_DEX_FEE) + MAX_FEE_PER_TX;
       this.networkFee = this.networkFee - this.tradingFee;
+      this.buyAmount = BigNumber(this.buyAmount);
 
-      const originalSellAmount = BigNumber(this.sellAmount)
-        .dividedBy(BigNumber(10).pow(sellToken.pDecimals));
-      const originalPrice = BigNumber(this.buyAmount)
-        .dividedBy(BigNumber(10).pow(18));
-      this.buyAmount = BigNumber(originalPrice)
-        .multipliedBy(originalSellAmount)
+      // Buy amount of Kyber is expected rate
+      if (this.exchange === 'Kyber') {
+        const originalSellAmount = BigNumber(this.sellAmount)
+          .dividedBy(BigNumber(10).pow(sellToken.pDecimals));
+
+        // Decimals is 18 for all buy tokens returned by Kyber (handled by API)
+        this.buyAmount = this.buyAmount
+          .dividedBy(BigNumber(10).pow(18))
+          .multipliedBy(originalSellAmount);
+      }
+
+      // Buy amount of Uniswap is minimum amount
+      if (this.exchange === 'Uniswap') {
+        this.buyAmount = this.buyAmount
+          .dividedBy(BigNumber(10).pow(buyToken.decimals));
+      }
+
+      this.buyAmount = this.buyAmount
         .multipliedBy(BigNumber(10).pow(buyToken.pDecimals))
         .toFixed(0);
-
-      // this.buyAmount = (this.buyAmount / sellDecimals) * (this.sellAmount / sellPDecimals) * buyDecimals;
-      // this.buyAmount = this.buyAmount / Math.pow(10, buyToken.decimals - buyToken.pDecimals);
-      // this.buyAmount = Math.floor(this.buyAmount * this.sellAmount / Math.pow(10, sellToken.pDecimals));
-    } else {
-      this.exchange = 'Incognito';
     }
 
     if (buyToken) {

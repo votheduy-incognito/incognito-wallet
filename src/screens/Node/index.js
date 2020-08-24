@@ -166,7 +166,6 @@ class Node extends BaseScreen {
         action: 'tracking_node_devices', message: 'Tracking node devices info for better supportable', rawData: JSON.stringify({
           deviceList: deviceList || [],
           verifyProductCode: verifyProductCode || 'Empty',
-          list: list,
           result: result || {}
         }), status: 1
       });

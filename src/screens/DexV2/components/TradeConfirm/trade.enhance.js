@@ -1,13 +1,12 @@
 import React from 'react';
 import { MESSAGES } from '@screens/Dex/constants';
 import { PRV } from '@services/wallet/tokenService';
-import { COINS } from '@src/constants';
+import { COINS, TRADING } from '@src/constants';
 import { ExHandler } from '@services/exception';
 import accountService from '@services/wallet/accountService';
 import { deposit as depositAPI, trade as tradeAPI, tradePKyber as TradeKyberAPI } from '@services/api/pdefi';
 import { MAX_PDEX_TRADE_STEPS } from '@screens/DexV2/constants';
 import convertUtil from '@utils/convert';
-import { DEFI_TRADING_FEE } from '@components/EstimateFee/EstimateFee.utils';
 
 const withTrade = WrappedComp => (props) => {
   const [error, setError] = React.useState('');
@@ -31,12 +30,25 @@ const withTrade = WrappedComp => (props) => {
 
 
   const deposit = () => {
+    let type = 1;
+
+    if (isErc20) {
+      if (quote.protocol.toLowerCase() === 'kyber') {
+        type = 2;
+      } else {
+        type = 4;
+      }
+    }
+
+    const feeConfig = TRADING.getFees();
+
     return depositAPI({
       tokenId: inputToken.id,
       amount: inputValue,
-      networkFee: fee / MAX_PDEX_TRADE_STEPS * (MAX_PDEX_TRADE_STEPS - 1) + (isErc20 ? DEFI_TRADING_FEE : 0),
+      networkFee: fee / MAX_PDEX_TRADE_STEPS * (MAX_PDEX_TRADE_STEPS - 1) + (isErc20 ? feeConfig[quote.protocol || 'Kyber'] : 0),
       networkFeeTokenId: feeToken.id,
       receiverAddress: account.PaymentAddress,
+      type,
     });
   };
 
@@ -65,15 +77,17 @@ const withTrade = WrappedComp => (props) => {
         return setError(MESSAGES.NOT_ENOUGH_BALANCE_TO_TRADE(inputToken.symbol));
       }
 
-      if (prvBalance < prvFee + (isErc20 ? DEFI_TRADING_FEE : 0)) {
+      const feeConfig = TRADING.getFees();
+      const erc20Fee = isErc20 ? feeConfig[quote.protocol || 'Kyber'] : 0;
+      if (prvBalance < prvFee + erc20Fee) {
         return setError(MESSAGES.NOT_ENOUGH_PRV_NETWORK_FEE);
       }
 
       if (inputToken?.id === PRV.id) {
-        spendingCoin = spendingPRV = await accountService.hasSpendingCoins(account, wallet, inputValue + prvFee + (isErc20 ? DEFI_TRADING_FEE : 0));
+        spendingCoin = spendingPRV = await accountService.hasSpendingCoins(account, wallet, inputValue + prvFee + erc20Fee);
       } else {
         if (prvFee) {
-          spendingPRV = await accountService.hasSpendingCoins(account, wallet, prvFee + (isErc20 ? DEFI_TRADING_FEE : 0));
+          spendingPRV = await accountService.hasSpendingCoins(account, wallet, prvFee + erc20Fee);
           spendingCoin = await accountService.hasSpendingCoins(account, wallet, inputValue, inputToken.id);
         } else {
           spendingCoin = await accountService.hasSpendingCoins(account, wallet, inputValue + tokenFee, inputToken.id);
@@ -92,7 +106,7 @@ const withTrade = WrappedComp => (props) => {
 
       if (isErc20) {
         await tradeKyber(depositObject.depositId);
-        prvAmount = prvAmount + DEFI_TRADING_FEE;
+        prvAmount = prvAmount + erc20Fee;
       } else {
         await tradeAPI({
           depositId: depositObject.depositId,
@@ -132,6 +146,8 @@ const withTrade = WrappedComp => (props) => {
       buyTokenAddress: outputToken.address,
       expectAmount: quote.expectedRate?.toFixed(0),
       depositId: depositId,
+      protocol: quote.protocol,
+      maxAmountOut: quote.maxAmountOut,
     };
 
     await TradeKyberAPI(data);
