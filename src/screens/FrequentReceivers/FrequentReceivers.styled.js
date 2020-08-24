@@ -82,24 +82,3 @@ export const listStyled = StyleSheet.create({
     color: COLORS.black,
   },
 });
-export const itemStyled = StyleSheet.create({
-  hook: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-    paddingVertical: 15,
-    paddingLeft: 25,
-  },
-  name: {
-    color: COLORS.black,
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
-    marginBottom: 15,
-  },
-  address: {
-    color: COLORS.colorGreyBold,
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 4,
-  },
-});
