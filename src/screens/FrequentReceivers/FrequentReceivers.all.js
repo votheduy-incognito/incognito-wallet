@@ -67,14 +67,17 @@ const ListReceivers = (props) => {
 const ListAllReceivers = () => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const accounts = useSelector(accountSeleclor.listAccountSelector);
-  
+  const defaultAccount = useSelector(accountSeleclor?.defaultAccountSelector);
   const { receivers: sendInReceivers } = useSelector(receiversSelector)[
     CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK
   ];
-  const keychainsAddresses = sendInReceivers.filter((receiver) =>
+  const _sendInReceivers = sendInReceivers.filter(
+    (receiver) => receiver?.address !== defaultAccount?.paymentAddress,
+  );
+  const keychainsAddresses = _sendInReceivers.filter((receiver) =>
     accounts.some((account) => account?.paymentAddress === receiver?.address),
   );
-  const incognitoAddress = sendInReceivers.filter(
+  const incognitoAddress = _sendInReceivers.filter(
     (receiver) =>
       !keychainsAddresses.some(
         (keychainReceiver) => keychainReceiver?.address === receiver?.address,

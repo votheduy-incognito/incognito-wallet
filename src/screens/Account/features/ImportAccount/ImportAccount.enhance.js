@@ -8,7 +8,7 @@ import { useNavigation } from 'react-navigation-hooks';
 import trim from 'lodash/trim';
 import { useDispatch, useSelector } from 'react-redux';
 import useAccount from '@src/components/Account/Account.useEffect';
-import { change, reset } from 'redux-form';
+import { change } from 'redux-form';
 import { accountSeleclor } from '@src/redux/selectors';
 import handleRandomName from '@src/utils/randomName';
 import { Keyboard } from 'react-native';
