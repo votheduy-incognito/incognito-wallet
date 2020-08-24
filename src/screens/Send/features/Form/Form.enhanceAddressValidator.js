@@ -101,19 +101,28 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
   };
 
   const getAddressValidator = () => {
-    if (isMainCrypto || isIncognitoAddress) {
+    if (isIncognitoAddress || isMainCrypto) {
       return validator.combinedIncognitoAddress;
     }
     return getExternalAddressValidator();
   };
 
+  const getWarningAddress = () => {
+    if (!(isIncognitoAddress || isMainCrypto)) {
+      return 'You are exiting Incognito and going public.';
+    }
+  };
+
   const validateAddress = getAddressValidator();
+
+  const warningAddress = getWarningAddress();
 
   return (
     <WrappedComp
       {...{
         ...props,
         validateAddress,
+        warningAddress,
         isERC20,
       }}
     />

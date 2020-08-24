@@ -6,7 +6,11 @@ import {
   actionFetchedMaxFeePrv,
   actionFetchedMaxFeePToken,
 } from '@src/components/EstimateFee/EstimateFee.actions';
-import { selectedPrivacySeleclor, accountSeleclor } from '@src/redux/selectors';
+import {
+  selectedPrivacySeleclor,
+  accountSeleclor,
+  sharedSeleclor,
+} from '@src/redux/selectors';
 import { LoadingContainer } from '@src/components/core';
 import { usePrevious } from '@src/components/UseEffect/usePrevious';
 import ErrorBoundary from '@src/components/ErrorBoundary';
@@ -27,7 +31,8 @@ export const enhanceInit = (WrappedComp) => (props) => {
   const estimateFee = useSelector(estimateFeeSelector);
   const selector = formValueSelector(formName);
   const amount = useSelector((state) => selector(state, 'amount'));
-
+  const gettingBalance = useSelector(sharedSeleclor.isGettingBalance);
+  const isGettingBalance = gettingBalance.includes(selectedPrivacy?.tokenId);
   const initData = async () => {
     try {
       setInit(true);
@@ -57,13 +62,13 @@ export const enhanceInit = (WrappedComp) => (props) => {
 
   React.useEffect(() => {
     updateData();
-  }, [selectedPrivacy?.tokenId, accountBalance, amount]);
+  }, [selectedPrivacy?.tokenId, accountBalance, amount, isGettingBalance]);
 
   React.useEffect(() => {
     initData();
   }, [selectedPrivacy?.tokenId]);
 
-  if (!selectedPrivacy || !estimateFee.init || init) {
+  if (!selectedPrivacy || !estimateFee.init || init || isGettingBalance) {
     return <LoadingContainer />;
   }
   return (

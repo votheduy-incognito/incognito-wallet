@@ -19,7 +19,7 @@ export const styledForm = StyleSheet.create({
     fontSize: FONT.SIZE.small - 2,
     lineHeight: FONT.SIZE.small + 4,
     color: COLORS.colorGreyBold,
-    marginTop: 5,
+    marginTop: 10,
   },
   amount: {
     fontFamily: FONT.NAME.medium,

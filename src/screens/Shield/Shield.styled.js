@@ -7,4 +7,13 @@ export const styled = StyleSheet.create({
   flatlist: {
     flex: 1,
   },
+  styledSymbol: {
+    maxWidth: '100%',
+  },
+  styledName: {
+    maxWidth: '100%',
+  },
+  styledContainerName: {
+    maxWidth: '100%',
+  },
 });

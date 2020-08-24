@@ -13,6 +13,7 @@ const Send = () => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const navigation = useNavigation();
   const onGoBack = () => navigation.navigate(routeNames.WalletDetail);
+  
   return (
     <View style={styled.container}>
       <Header
