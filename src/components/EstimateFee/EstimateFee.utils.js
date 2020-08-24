@@ -157,3 +157,6 @@ export const getTotalFee = ({
   }
   return { totalFee, totalFeeText, userFee };
 };
+
+export const hasMultiLevelUsersFee = (data) =>
+  !!data?.PrivacyFees?.Level2 || !!data?.TokenFees?.Level2;

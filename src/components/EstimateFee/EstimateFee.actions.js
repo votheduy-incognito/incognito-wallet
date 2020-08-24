@@ -490,7 +490,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
   const { isBTC, isETH, isUsedPRVFee, userFees, isUnShield } = feeDataSelector(
     state,
   );
-  userFeesData = { ...userFees };
+  userFeesData = { ...userFees?.data };
   const { isFetching, isFetched } = userFees;
   if (isFetching || !isUnShield || (isFetched && !isFetching && !isBTC)) {
     return;
