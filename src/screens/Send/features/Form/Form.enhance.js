@@ -32,6 +32,7 @@ export const enhance = (WrappedComp) => (props) => {
     isUnShield,
     isAddressValidated,
     isValidETHAddress,
+    userFees,
   } = useSelector(feeDataSelector);
   const dispatch = useDispatch();
   const selector = formValueSelector(formName);
@@ -40,7 +41,6 @@ export const enhance = (WrappedComp) => (props) => {
   const toAddress = useSelector((state) => selector(state, 'toAddress'));
   const memo = useSelector((state) => selector(state, 'memo'));
   const [isKeyboardVisible] = useKeyboard();
-
   const onChangeField = (value, field) => {
     dispatch(change(formName, field, String(value)));
     dispatch(focus(formName, field));
@@ -66,6 +66,11 @@ export const enhance = (WrappedComp) => (props) => {
       !isValidETHAddress
     ) {
       return true;
+    }
+    if (isUnShield) {
+      if (!userFees?.isFetched) {
+        return true;
+      }
     }
     return false;
   };
