@@ -44,6 +44,7 @@ const enhance = (WrappedComp) => (props) => {
             ...receiver,
             recently: new Date().getTime(),
             networkName: selectedPrivacy?.networkName,
+            tokenId: selectedPrivacy?.tokenId,
           },
         }),
       );

@@ -68,6 +68,7 @@ const SendForm = (props) => {
     isERC20,
     isSending,
     memo,
+    warningAddress,
   } = props;
   const { titleBtnSubmit, isUnShield, isValidETHAddress } = useSelector(
     feeDataSelector,
@@ -110,6 +111,7 @@ const SendForm = (props) => {
       />
     );
   };
+
   return (
     <View style={styled.container}>
       <KeyboardAwareScrollView>
@@ -140,6 +142,7 @@ const SendForm = (props) => {
                 label="To"
                 placeholder={placeholderAddress}
                 validate={validateAddress}
+                warning={warningAddress}
                 showNavAddrBook
                 onOpenAddressBook={onShowFrequentReceivers}
                 {...generateTestId(SEND.ADDRESS_INPUT)}
@@ -199,6 +202,7 @@ SendForm.propTypes = {
   isERC20: PropTypes.bool.isRequired,
   isSending: PropTypes.bool.isRequired,
   memo: PropTypes.string,
+  warningAddress: PropTypes.string.isRequired,
 };
 
 export default withSendForm(SendForm);
