@@ -136,6 +136,11 @@ export const actionFetchFee = ({ amount, address, screen, memo }) => async (
   let feeEst = MAX_FEE_PER_TX;
   let feePTokenEst = null;
   let minFeePTokenEst = null;
+  const originalAmount = convert.toOriginalAmount(
+    amount,
+    selectedPrivacy?.pDecimals,
+  );
+  const _originalAmount = Number(originalAmount);
   try {
     const { isFetching, init } = estimateFeeSelector(state);
     if (
@@ -143,7 +148,8 @@ export const actionFetchFee = ({ amount, address, screen, memo }) => async (
       !amount ||
       !address ||
       !selectedPrivacy?.tokenId ||
-      isFetching
+      isFetching ||
+      _originalAmount === 0
     ) {
       return;
     }
@@ -490,6 +496,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
   const { isBTC, isETH, isUsedPRVFee, userFees, isUnShield } = feeDataSelector(
     state,
   );
+  const originalAmount = convert.toOriginalAmount(requestedAmount, pDecimals);
   userFeesData = { ...userFees?.data };
   const { isFetching, isFetched } = userFees;
   if (isFetching || !isUnShield || (isFetched && !isFetching && !isBTC)) {
@@ -498,7 +505,6 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
   try {
     await dispatch(actionFetchingUserFees());
     if (isDecentralized) {
-      const originalAmount = selectedPrivacy?.amount;
       const data = {
         requestedAmount,
         originalAmount,
@@ -514,10 +520,6 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
       };
       userFeesData = await estimateUserFees(data);
     } else {
-      const originalAmount = convert.toOriginalAmount(
-        requestedAmount,
-        pDecimals,
-      );
       const payload = {
         originalAmount,
         requestedAmount,
