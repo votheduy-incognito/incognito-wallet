@@ -62,7 +62,9 @@ class History {
       cancelable: data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT && [CONSTANT_COMMONS.HISTORY.STATUS_TEXT.EXPIRED,CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING].includes(statusText),
       walletAddress: data.WalletAddress,
       canRetryExpiredDeposit: data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT && statusText === CONSTANT_COMMONS.HISTORY.STATUS_TEXT.EXPIRED,
-      depositTmpAddress: data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT && data.Address
+      depositTmpAddress: data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT && data.Address,
+      privacyFee: data?.PrivacyFee,
+      tokenFee: data?.TokenFee
     };
   }
 }

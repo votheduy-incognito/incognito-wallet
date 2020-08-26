@@ -4,18 +4,16 @@ import { getpTokenHistory } from '@src/services/api/history';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
 
-export const combineHistory = (
+export const combineHistory = ({
   histories,
   historiesFromApi,
-  symbol,
   externalSymbol,
   decimals,
   pDecimals,
-) => {
+}) => {
   const data = [];
-
   historiesFromApi &&
-    historiesFromApi.forEach(h => {
+    historiesFromApi.forEach((h) => {
       data.push({
         id: h?.id,
         inchainTx: h?.inchainTx,
@@ -41,11 +39,13 @@ export const combineHistory = (
         canRetryExpiredDeposit: h?.canRetryExpiredDeposit,
         expiredAt: h?.expiredAt,
         depositAddress: h?.depositTmpAddress,
+        privacyFee: h?.privacyFee,
+        tokenFee: h?.tokenFee,
       });
     });
 
   histories &&
-    histories.forEach(h => {
+    histories.forEach((h) => {
       data.push({
         id: h?.txID,
         incognitoTxID: h?.txID,
@@ -55,12 +55,13 @@ export const combineHistory = (
           : CONSTANT_COMMONS.HISTORY.TYPE.SEND,
         toAddress: h?.receivers?.length && h?.receivers[0],
         amount: h?.amountPToken,
-        symbol: h?.tokenSymbol,
+        symbol: externalSymbol || h?.tokenSymbol,
         decimals,
         pDecimals,
         status: h?.status,
         fee: h?.feeNativeToken,
         feePToken: h?.feePToken,
+        isIncognitoTx: true,
       });
     });
 
@@ -71,7 +72,7 @@ export const combineHistory = (
 
 export const normalizeData = (histories, decimals, pDecimals) =>
   histories &&
-  histories.map(h => ({
+  histories.map((h) => ({
     id: h?.txID,
     incognitoTxID: h?.txID,
     time: h?.time,
