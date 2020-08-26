@@ -116,13 +116,7 @@ export const estimateUserFees = (data) => {
   if (!paymentAddress) throw new Error('Missing payment address');
   if (!tokenId) throw new Error('Missing token id');
   const parseOriginalAmount = Number(originalAmount);
-  const parseRequestedAmount = Number(requestedAmount);
-  if (
-    !Number.isFinite(parseOriginalAmount) ||
-    parseOriginalAmount === 0 ||
-    !Number.isFinite(parseRequestedAmount) ||
-    parseOriginalAmount === 0
-  ) {
+  if (!Number.isFinite(parseOriginalAmount) || parseOriginalAmount === 0) {
     throw new Error('Invalid amount');
   }
 
