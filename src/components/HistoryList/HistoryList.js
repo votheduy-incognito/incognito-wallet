@@ -1,11 +1,5 @@
 import { Text, TouchableOpacity, View } from '@src/components/core';
-import { CONSTANT_COMMONS } from '@src/constants';
 import routeNames from '@src/router/routeNames';
-import {
-  ConfirmedTx,
-  FailedTx,
-  SuccessTx,
-} from '@src/services/wallet/WalletService';
 import { COLORS } from '@src/styles';
 import formatUtil from '@src/utils/format';
 import PropTypes from 'prop-types';
@@ -18,94 +12,7 @@ import trim from 'lodash/trim';
 import { useSelector } from 'react-redux';
 import { decimalDigitsSelector } from '@src/screens/Setting';
 import styleSheet from './style';
-
-const getStatusData = (status, statusCode, decentralized) => {
-  let statusText;
-  let statusColor;
-  let statusNumber;
-  if (decentralized) {
-    if (statusCode && (statusCode === 9 || statusCode === 10)) {
-      statusText = 'Failed';
-      statusColor = COLORS.red;
-      return {
-        statusText,
-        statusColor,
-        statusNumber,
-      };
-    }
-  }
-
-  switch (status) {
-  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING:
-    statusNumber = statusCode;
-    statusText = 'Pending';
-    statusColor = COLORS.blue;
-    break;
-  case SuccessTx:
-    statusNumber = null;
-    statusText = 'Pending';
-    statusColor = COLORS.blue;
-    break;
-  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SUCCESS:
-  case ConfirmedTx:
-    statusText = 'Complete';
-    statusColor = COLORS.green;
-    break;
-  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.FAILED:
-  case FailedTx:
-    statusText = 'Failed';
-    statusColor = COLORS.red;
-    break;
-  case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.EXPIRED:
-    statusText = 'Expired';
-    statusColor = COLORS.orange;
-    break;
-  default:
-    statusText = '';
-    statusColor = COLORS.lightGrey1;
-  }
-
-  return {
-    statusText,
-    statusColor,
-    statusNumber,
-  };
-};
-
-const getTypeData = (type, history) => {
-  let typeText;
-  let balanceDirection;
-  let balanceColor;
-
-  switch (type) {
-  case CONSTANT_COMMONS.HISTORY.TYPE.WITHDRAW:
-    typeText = 'Withdraw';
-    balanceColor = COLORS.red;
-    balanceDirection = '-';
-    break;
-  case CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT:
-    typeText = history?.depositAddress ? 'Deposit' : 'Receive';
-    balanceColor = COLORS.green;
-    balanceDirection = '+';
-    break;
-  case CONSTANT_COMMONS.HISTORY.TYPE.SEND:
-    typeText = 'Send';
-    balanceColor = COLORS.orange;
-    balanceDirection = '-';
-    break;
-  case CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE:
-    typeText = 'Receive';
-    balanceColor = COLORS.green;
-    balanceDirection = '+';
-    break;
-  }
-
-  return {
-    typeText,
-    balanceColor,
-    balanceDirection,
-  };
-};
+import { getStatusData, getTypeData } from './HistoryList.utils';
 
 const HistoryItemWrapper = ({ history, onCancelEtaHistory, ...otherProps }) => {
   const component = <HistoryItem history={history} {...otherProps} />;
@@ -153,7 +60,6 @@ const HistoryItem = ({ history }) => {
   const { statusText, statusColor, statusNumber } = getStatusData(
     history.status,
     history.statusCode,
-    history.decentralized,
   );
   const { typeText, balanceColor, balanceDirection } = getTypeData(
     history.type,
