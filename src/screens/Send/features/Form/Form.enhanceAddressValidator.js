@@ -14,14 +14,26 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const { externalSymbol, isErc20Token, isMainCrypto } = selectedPrivacy;
   const toAddress = useSelector((state) => selector(state, 'toAddress'));
-  const isIncognitoAddress = accountService.checkPaymentAddress(toAddress);
-  const { isAddressValidated } = useSelector(feeDataSelector);
+  const isIncognitoAddress =
+    accountService.checkPaymentAddress(toAddress) || isMainCrypto;
+  const isExternalAddress =
+    !isIncognitoAddress && selectedPrivacy?.isWithdrawable;
+  const { isAddressValidated, isValidETHAddress } = useSelector(
+    feeDataSelector,
+  );
   const isERC20 =
     isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
 
   const getExternalAddressValidator = () => {
     if (!isAddressValidated) {
       return [validator.invalidAddress(`Invalid ${externalSymbol} address`)];
+    }
+    if (!isValidETHAddress) {
+      return [
+        validator.invalidAddress(
+          'Please withdraw to a wallet address, not a smart contract address.',
+        ),
+      ];
     }
     if (isErc20Token || externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) {
       return validator.combinedETHAddress;
@@ -101,14 +113,14 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
   };
 
   const getAddressValidator = () => {
-    if (isIncognitoAddress || isMainCrypto) {
-      return validator.combinedIncognitoAddress;
+    if (isExternalAddress) {
+      return getExternalAddressValidator();
     }
-    return getExternalAddressValidator();
+    return validator.combinedIncognitoAddress;
   };
 
   const getWarningAddress = () => {
-    if (!(isIncognitoAddress || isMainCrypto)) {
+    if (isExternalAddress) {
       return 'You are exiting Incognito and going public.';
     }
   };
@@ -124,6 +136,8 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
         validateAddress,
         warningAddress,
         isERC20,
+        isIncognitoAddress,
+        isExternalAddress,
       }}
     />
   );

@@ -3,7 +3,6 @@ import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import accountService from '@src/services/wallet/accountService';
 import { ExHandler } from '@src/services/exception';
 import { debounce } from 'lodash';
 import { actionFetchFee } from './EstimateFee.actions';
@@ -11,19 +10,30 @@ import { feeDataSelector } from './EstimateFee.selector';
 
 const enhance = (WrappedComp) => (props) => {
   const { screen, isFetching } = useSelector(feeDataSelector);
-  const { amount = 0, address = '', memo = '' } = props;
-  const isIncognitoAddress = accountService.checkPaymentAddress(address);
+  const {
+    amount,
+    address,
+    memo,
+    isExternalAddress,
+    isIncognitoAddress,
+  } = props;
   const dispatch = useDispatch();
   const handleChangeForm = async () => {
     try {
       if (!amount || !address || isFetching) {
         return;
       }
+      let screen = 'Send';
+      if (isExternalAddress) {
+        screen = 'UnShield';
+      } else if (isIncognitoAddress) {
+        screen = 'Send';
+      }
       await dispatch(
         actionFetchFee({
           amount,
           address,
-          screen: !isIncognitoAddress ? 'UnShield' : 'Send',
+          screen,
           memo,
         }),
       );
@@ -43,9 +53,16 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
+enhance.defaultProps = {
+  memo: '',
+};
+
 enhance.propTypes = {
   amount: PropTypes.number.isRequired,
   address: PropTypes.string.isRequired,
+  memo: PropTypes.string,
+  isExternalAddress: PropTypes.bool.isRequired,
+  isIncognitoAddress: PropTypes.bool.isRequired,
 };
 
 export default enhance;

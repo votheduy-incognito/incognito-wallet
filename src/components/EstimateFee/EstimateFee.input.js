@@ -167,6 +167,7 @@ const SupportFees = React.memo(() => {
     feePrvText,
     feePToken,
     feePTokenText,
+    hasMultiLevel,
   } = useSelector(feeDataSelector);
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const dispatch = useDispatch();
@@ -195,6 +196,7 @@ const SupportFees = React.memo(() => {
             : selectedPrivacy?.pDecimals,
           feeEst: _isUsedPRVFee ? feePrv : feePToken,
           isUsedPRVFee: _isUsedPRVFee,
+          hasMultiLevel,
         });
         totalFeeText = _totalFeeText;
       }
@@ -210,10 +212,10 @@ const SupportFees = React.memo(() => {
       const totalFeeData = getTotalFee({
         fast2x,
         userFeesData: userFees?.data,
-        rate,
         pDecimals: feePDecimals,
         feeEst: fee,
         isUsedPRVFee,
+        hasMultiLevel,
       });
       dispatch(
         actionToggleFastFee({
