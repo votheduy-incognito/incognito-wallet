@@ -81,6 +81,7 @@ export const enhance = (WrappedComp) => (props) => {
     try {
       navigation.navigate(routeNames.FrequentReceivers, {
         onSelectedItem,
+        filterBySelectedPrivacy: true,
       });
     } catch (error) {
       console.debug(error);
