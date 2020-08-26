@@ -273,14 +273,14 @@ export const actionFetchHistoryToken = () => async (dispatch, getState) => {
         task = [...task, dispatch(getBalance(token))];
       }
       const [historiesDt, historiesDtFromApi] = await Promise.all(task);
-      histories = combineHistory(
-        historiesDt,
-        historiesDtFromApi,
-        selectedPrivacy?.symbol,
-        selectedPrivacy?.externalSymbol,
-        selectedPrivacy?.decimals,
-        selectedPrivacy?.pDecimals,
-      );
+      histories = combineHistory({
+        histories: historiesDt,
+        historiesFromApi: historiesDtFromApi,
+        symbol: selectedPrivacy?.symbol,
+        externalSymbol: selectedPrivacy?.externalSymbol,
+        decimals: selectedPrivacy?.decimals,
+        pDecimals: selectedPrivacy?.pDecimals,
+      });
     }
     await dispatch(actionFetchedHistory(histories));
   } catch (error) {

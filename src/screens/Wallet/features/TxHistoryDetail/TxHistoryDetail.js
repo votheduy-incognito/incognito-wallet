@@ -9,6 +9,7 @@ import { QrCodeAddressDefault } from '@src/components/QrCodeAddress';
 import { CopyIcon, OpenUrlIcon } from '@src/components/Icons';
 import { ButtonBasic } from '@src/components/Button';
 import styleSheet from './styles';
+import { getFeeFromTxHistory } from './TxHistoryDetail.utils';
 
 const Hook = (props) => {
   const {
@@ -90,19 +91,7 @@ const Hook = (props) => {
 const TxHistoryDetail = (props) => {
   const { data, onRetryExpiredDeposit } = props;
   const { typeText, statusText, statusColor, statusNumber, history } = data;
-  const isUseTokenFee = !!history?.feePToken;
-  const fee = isUseTokenFee ? history?.feePToken : history?.fee;
-  const feeUnit = isUseTokenFee
-    ? history?.symbol
-    : CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
-  const formatFee =
-    fee &&
-    formatUtil.amountFull(
-      fee,
-      isUseTokenFee
-        ? history?.pDecimals
-        : CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY,
-    );
+  const { fee, formatFee, feeUnit } = getFeeFromTxHistory(history);
   const amountStr =
     (history.amount &&
       formatUtil.amount(history.amount, history.pDecimals, true)) ||

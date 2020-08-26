@@ -17,7 +17,6 @@ import { followingTokenSelector } from '@src/redux/selectors/token';
 import { useSelector } from 'react-redux';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { decimalDigitsSelector } from '@src/screens/Setting';
-import { ellipsisTail } from '@src/utils';
 import { styled } from './Token.styled';
 
 export const NormalText = (props) => {
@@ -52,10 +51,7 @@ export const Name = (props) => {
   const { name, isVerified } = props;
   return (
     <View style={[styled.name, props?.styledContainerName]}>
-      <NormalText
-        text={ellipsisTail({ str: name, limit: isVerified ? 30 : 40 })}
-        style={[styled.boldText, props?.styledName]}
-      />
+      <NormalText text={name} style={[styled.boldText, props?.styledName]} />
       {isVerified && <TokenVerifiedIcon />}
     </View>
   );

@@ -5,7 +5,7 @@ import { receiversSelector } from '@src/redux/selectors/receivers';
 import Header, { useSearchBox } from '@src/components/Header';
 import { isIOS } from '@src/utils/platform';
 import { useNavigationParam } from 'react-navigation-hooks';
-import { DropdownMenu, KeyboardAwareScrollView } from '@src/components/core';
+import { DropdownMenu, ScrollView } from '@src/components/core';
 import { selectedPrivacySeleclor, accountSeleclor } from '@src/redux/selectors';
 import { CONSTANT_KEYS } from '@src/constants';
 import PropTypes from 'prop-types';
@@ -27,12 +27,7 @@ const ListReceivers = (props) => {
     return <EmptyList />;
   }
   return (
-    <KeyboardAwareScrollView
-      style={{
-        paddingTop: 42,
-        paddingBottom: 50,
-      }}
-    >
+    <>
       {receivers?.map((receiver, index) => (
         <DropdownMenu
           sections={[receiver]}
@@ -53,7 +48,7 @@ const ListReceivers = (props) => {
           style={{ marginBottom: 30 }}
         />
       ))}
-    </KeyboardAwareScrollView>
+    </>
   );
 };
 
@@ -61,6 +56,9 @@ const ListAllReceivers = () => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const accounts = useSelector(accountSeleclor.listAccountSelector);
   const defaultAccount = useSelector(accountSeleclor?.defaultAccountSelector);
+  const filterBySelectedPrivacy = !!useNavigationParam(
+    'filterBySelectedPrivacy',
+  );
   const { receivers: sendInReceivers } = useSelector(receiversSelector)[
     CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK
   ];
@@ -80,8 +78,10 @@ const ListAllReceivers = () => {
     CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK
   ];
   const extAddrFilBySelPrivacy = [
-    ...externalAddress.filter(
-      (item) => item?.networkName === selectedPrivacy?.networkName,
+    ...externalAddress.filter((item) =>
+      filterBySelectedPrivacy
+        ? item?.networkName === selectedPrivacy?.networkName
+        : true,
     ),
   ];
   const [_keychainsAddresses, keySearch] = useSearchBox({
@@ -132,7 +132,9 @@ const ListAllReceivers = () => {
           marginHorizontal: 25,
         }}
       >
-        <ListReceivers {...{ receivers, isEmpty }} />
+        <ScrollView>
+          <ListReceivers {...{ receivers, isEmpty }} />
+        </ScrollView>
       </Wrapper>
     </View>
   );
