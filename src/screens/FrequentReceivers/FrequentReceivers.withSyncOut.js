@@ -9,7 +9,7 @@ import {
   detectNetworkNameSelector,
   actionToggleDetectNetworkName,
 } from '@screens/GetStarted';
-import { CONSTANT_KEYS } from '@src/constants';
+import { CONSTANT_KEYS, CONSTANT_COMMONS } from '@src/constants';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { trim } from 'lodash';
 import { actionUpdate } from '@src/redux/actions/receivers';
@@ -28,16 +28,30 @@ const enhance = (WrappedComp) => (props) => {
 
   const getNetworkNameByAddress = ({ address }) => {
     let networkName = '';
-    const externalSymbol = getExternalSymbol(address);
-    const token = pTokens.find((token) => {
-      return token?.symbol === externalSymbol;
-    });
-    const tokenData = getPrivacyDataByTokenID(token?.tokenId);
-    if (tokenData) {
-      networkName = tokenData?.networkName;
+    try {
+      const externalSymbol = getExternalSymbol(address);
+      const token = pTokens.find((token) => {
+        return token?.symbol === externalSymbol;
+      });
+      const tokenData = getPrivacyDataByTokenID(token?.tokenId);
+      const isETH =
+        tokenData?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
+      const isBNB =
+        tokenData?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BNB;
+      if (tokenData) {
+        networkName = tokenData?.networkName;
+        if (tokenData?.isErc20Token || isETH) {
+          networkName = 'Ethereum';
+        } else if (tokenData?.isBep2Token || isBNB) {
+          networkName = 'Binance';
+        }
+      }
+    } catch (error) {
+      console.debug(error);
     }
     return networkName;
   };
+
   const handleDetectNetwork = async () => {
     try {
       if (detectNetworkName) {

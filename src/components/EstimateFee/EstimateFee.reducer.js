@@ -190,7 +190,6 @@ export default (state = initialState, action) => {
   }
   case ACTION_FETCHED_USER_FEES: {
     const data = action.payload;
-    console.debug('DATA_USER_FEES', data, isEmpty(data));
     if (isEmpty(data)) {
       return state;
     }
