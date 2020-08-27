@@ -127,6 +127,7 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
     feePrvText,
     feePTokenText,
     isBTC,
+    hasMultiLevel: userFees?.hasMultiLevel,
   };
 };
 
@@ -136,10 +137,10 @@ export const getTotalFee = ({
   feeEst = 0,
   pDecimals,
   isUsedPRVFee,
+  hasMultiLevel = false,
 }) => {
   let totalFee, totalFeeText, userFee;
   try {
-    const { hasMultiLevel = false } = userFeesData;
     const userFees = isUsedPRVFee
       ? userFeesData?.PrivacyFees
       : userFeesData?.TokenFees;

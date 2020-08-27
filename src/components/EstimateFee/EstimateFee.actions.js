@@ -232,6 +232,7 @@ export const actionHandleFeeEst = ({ feeEst }) => async (
     isUsedPRVFee,
     isUnShield,
     feePDecimals,
+    hasMultiLevel,
   } = feeDataSelector(state);
   const { isFetched } = userFees;
   try {
@@ -250,6 +251,7 @@ export const actionHandleFeeEst = ({ feeEst }) => async (
         rate,
         pDecimals: feePDecimals,
         isUsedPRVFee,
+        hasMultiLevel,
       });
       totalFeePrv = totalFee;
       totalFeePrvText = totalFeeText;
@@ -297,6 +299,7 @@ export const actionHandleFeePTokenEst = ({ feePTokenEst }) => async (
     isUnShield,
     feePDecimals,
     isUsedPRVFee,
+    hasMultiLevel,
   } = feeDataSelector(state);
   const { isFetched } = userFees;
   try {
@@ -315,6 +318,7 @@ export const actionHandleFeePTokenEst = ({ feePTokenEst }) => async (
         rate,
         pDecimals: feePDecimals,
         isUsedPRVFee,
+        hasMultiLevel,
       });
       totalFeePToken = totalFee;
       totalFeePTokenText = totalFeeText;
