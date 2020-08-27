@@ -9,7 +9,7 @@ import convert from '@src/utils/convert';
 import { useSelector, useDispatch } from 'react-redux';
 import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
-import { floor } from 'lodash';
+import { floor, toString } from 'lodash';
 import format from '@src/utils/format';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
@@ -53,6 +53,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     name,
   } = selectedPrivacy;
   const { data: userFeesData } = userFees;
+  const info = toString(userFeesData?.ID) || '';
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const account = useSelector(defaultAccountSelector);
@@ -101,6 +102,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         account,
         wallet,
         paymentInfos,
+        info,
       );
       if (res.txId) {
         return { ...res, burningTxId: res?.txId };
@@ -204,7 +206,6 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         originalFee,
         isUsedPRVFee,
         feeForBurn,
-        memo,
       } = payload;
       if (!tempAddress) {
         throw Error('Can not create a temp address');
@@ -256,7 +257,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         wallet,
         isUsedPRVFee ? paymentInfos : null,
         isUsedPRVFee ? 0 : originalFee,
-        memo,
+        info,
       );
 
       if (res.txId) {
