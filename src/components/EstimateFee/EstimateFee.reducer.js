@@ -216,13 +216,19 @@ export default (state = initialState, action) => {
     };
   }
   case ACTION_TOGGLE_FAST_FEE: {
-    const { fast2x, totalFee, totalFeeText, userFee } = action.payload;
-    const { isUsedPRVFee } = state;
+    const {
+      fast2x,
+      totalFee,
+      totalFeeText,
+      userFee,
+      isUsedPRVFee,
+    } = action.payload;
     const totalFeeField = isUsedPRVFee ? 'totalFeePrv' : 'totalFeePToken';
     const totalFeeTextField = isUsedPRVFee
       ? 'totalFeePrvText'
       : 'totalFeePTokenText';
     const userFeeField = isUsedPRVFee ? 'userFeePrv' : 'userFeePToken';
+
     return {
       ...state,
       fast2x,
