@@ -59,24 +59,23 @@ const ListAllReceivers = () => {
   const filterBySelectedPrivacy = !!useNavigationParam(
     'filterBySelectedPrivacy',
   );
-  const { receivers: sendInReceivers } = useSelector(receiversSelector)[
+  const { receivers: incognitoAddress } = useSelector(receiversSelector)[
     CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK
   ];
-  const _sendInReceivers = sendInReceivers.filter(
-    (receiver) => receiver?.address !== defaultAccount?.paymentAddress,
-  );
-  const keychainsAddresses = _sendInReceivers.filter((receiver) =>
-    accounts.some((account) => account?.paymentAddress === receiver?.address),
-  );
-  const incognitoAddress = _sendInReceivers.filter(
-    (receiver) =>
-      !keychainsAddresses.some(
-        (keychainReceiver) => keychainReceiver?.address === receiver?.address,
-      ),
-  );
+  const keychainsAddresses = accounts
+    .filter(
+      (account) => account?.paymentAddress !== defaultAccount?.paymentAddress,
+    )
+    .map((item) => ({
+      name: item?.accountName,
+      address: item?.paymentAddress,
+    }));
   const { receivers: externalAddress } = useSelector(receiversSelector)[
     CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK
   ];
+  const incognitoAddresses = incognitoAddress.filter(
+    (item) => item?.address !== defaultAccount?.paymentAddress,
+  );
   const extAddrFilBySelPrivacy = [
     ...externalAddress.filter((item) =>
       filterBySelectedPrivacy
@@ -89,7 +88,7 @@ const ListAllReceivers = () => {
     handleFilter: () => filterAddressByKey(keychainsAddresses, keySearch),
   });
   const [_incognitoAddress] = useSearchBox({
-    data: incognitoAddress,
+    data: incognitoAddresses,
     handleFilter: () => filterAddressByKey(incognitoAddress, keySearch),
   });
   const [_externalAddress] = useSearchBox({

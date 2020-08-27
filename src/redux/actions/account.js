@@ -9,8 +9,6 @@ import { getUserUnfollowTokenIDs } from '@src/services/wallet/tokenService';
 import convert from '@src/utils/convert';
 import { reloadAccountList } from '@src/redux/actions/wallet';
 import AccountModel from '@src/models/account';
-import { CONSTANT_KEYS } from '@src/constants';
-import { actionCreate, actionDelete } from '@src/redux/actions/receivers';
 import { getBalance as getTokenBalance, setListToken } from './token';
 import { tokenSeleclor, accountSeleclor } from '../selectors';
 
@@ -66,18 +64,6 @@ export const removeAccount = (account) => async (dispatch, getState) => {
       type: type.REMOVE_BY_PRIVATE_KEY,
       data: PrivateKey,
     });
-
-    const receiver = {
-      address: account?.PaymentAddress,
-      name: account?.name || account?.AccountName,
-    };
-
-    dispatch(
-      actionDelete({
-        keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
-        receiver,
-      }),
-    );
 
     return true;
   } catch (e) {
@@ -409,17 +395,6 @@ export const actionFetchCreateAccount = ({ accountName }) => async (
     await dispatch(followDefaultTokens(serializedAccount));
     await dispatch(actionFetchedCreateAccount());
     await dispatch(actionSwitchAccount(serializedAccount?.name, true));
-    const receiver = {
-      name: accountName,
-      address: serializedAccount?.PaymentAddress,
-      recently: new Date().getTime(),
-    };
-    dispatch(
-      actionCreate({
-        keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
-        receiver,
-      }),
-    );
     return serializedAccount;
   } catch (error) {
     await dispatch(actionFetchFailCreateAccount());
@@ -467,17 +442,6 @@ export const actionFetchImportAccount = ({ accountName, privateKey }) => async (
       if (account) {
         await dispatch(followDefaultTokens(account));
         await dispatch(actionSwitchAccount(account?.name, true));
-        const receiver = {
-          name: accountName,
-          address: account?.PaymentAddress,
-          recently: new Date().getTime(),
-        };
-        dispatch(
-          actionCreate({
-            keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
-            receiver,
-          }),
-        );
       }
     }
     return isImported;

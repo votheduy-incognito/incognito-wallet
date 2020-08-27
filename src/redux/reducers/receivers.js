@@ -5,14 +5,17 @@ import {
   ACTION_UPDATE_RECENTLY,
   ACTION_DELETE_ALL,
   ACTION_SYNC_SUCCESS,
+  ACTION_MIGRATE_INCOGNITO_ADDRESS,
 } from '@src/redux/actions/receivers';
 import { isReceiverExist } from '@src/redux/utils/receivers';
 import { CONSTANT_KEYS } from '@src/constants';
+import { isEqual, lowerCase } from 'lodash';
 
 const initialState = {
   [CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK]: {
     receivers: [],
     sync: false,
+    migrateIncognitoAddress: false,
   },
   [CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK]: {
     receivers: [],
@@ -22,12 +25,9 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
   case ACTION_CREATE: {
-    const { keySave, receiver, sync = false } = action.payload;
+    const { keySave, receiver } = action.payload;
     const oldReceivers = state[keySave].receivers;
     const exist = isReceiverExist(oldReceivers, receiver);
-    if (sync && exist) {
-      return state;
-    }
     if (exist) {
       throw new Error('User exist!');
     }
@@ -49,6 +49,14 @@ export default (state = initialState, action) => {
   case ACTION_UPDATE: {
     const { keySave, receiver } = action.payload;
     const oldReceivers = state[keySave].receivers;
+
+    const isNameExisted = oldReceivers.some((item) =>
+      isEqual(lowerCase(item?.name), lowerCase(receiver?.name)),
+    );
+    
+    if (isNameExisted) {
+      throw new Error('User exist!');
+    }
     return {
       ...state,
       [keySave]: {
@@ -126,6 +134,16 @@ export default (state = initialState, action) => {
       [keySave]: {
         ...state[keySave],
         sync: true,
+      },
+    };
+  }
+  case ACTION_MIGRATE_INCOGNITO_ADDRESS: {
+    const keySave = CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK;
+    return {
+      ...state,
+      [keySave]: {
+        ...state[keySave],
+        migrateIncognitoAddress: true,
       },
     };
   }

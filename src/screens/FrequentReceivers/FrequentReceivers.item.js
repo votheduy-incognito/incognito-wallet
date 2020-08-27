@@ -5,9 +5,10 @@ import { TouchableOpacity } from '@src/components/core';
 import { View, Text, StyleSheet } from 'react-native';
 import { FONT, COLORS } from '@src/styles';
 import { ExHandler } from '@src/services/exception';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { actionDelete } from '@src/redux/actions/receivers';
 import PropTypes from 'prop-types';
+import { isKeychainAddressSelector } from '@src/redux/selectors/receivers';
 
 const itemStyled = StyleSheet.create({
   hook: {
@@ -39,21 +40,42 @@ const Item = ({
   disabledSwipe,
   ...rest
 }) => {
+  const receiver = {
+    name,
+    address,
+  };
+  const isKeychainAddress = useSelector(isKeychainAddressSelector)(receiver);
   const dispatch = useDispatch();
   const onDelete = async () => {
     try {
       const payload = {
         keySave,
-        receiver: {
-          name,
-          address,
-        },
+        receiver,
       };
       dispatch(actionDelete(payload));
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
   };
+  const Component = () => (
+    <TouchableOpacity {...rest}>
+      <View style={[itemStyled.hook, containerStyled]}>
+        <Text style={itemStyled.name}>{name}</Text>
+        <Text
+          style={itemStyled.address}
+          ellipsizeMode="middle"
+          numberOfLines={1}
+        >
+          {address}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  if (isKeychainAddress) {
+    return <Component />;
+  }
+
   return (
     <Swipeout
       disabled={!!disabledSwipe}
@@ -68,18 +90,7 @@ const Item = ({
         backgroundColor: 'transparent',
       }}
     >
-      <TouchableOpacity {...rest}>
-        <View style={[itemStyled.hook, containerStyled]}>
-          <Text style={itemStyled.name}>{name}</Text>
-          <Text
-            style={itemStyled.address}
-            ellipsizeMode="middle"
-            numberOfLines={1}
-          >
-            {address}
-          </Text>
-        </View>
-      </TouchableOpacity>
+      <Component />
     </Swipeout>
   );
 };

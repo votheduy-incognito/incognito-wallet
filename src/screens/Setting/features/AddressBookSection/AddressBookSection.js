@@ -2,27 +2,26 @@
 import React from 'react';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import { HEADER_TITLE_RECEIVERS } from '@src/redux/types/receivers';
-import { CONSTANT_KEYS } from '@src/constants';
-import { StyleSheet } from 'react-native';
 import Section, {
   SectionItem as Item,
 } from '@screens/Setting/features/Section';
-
-const styled = StyleSheet.create({
-  styleItem: {
-    marginBottom: 10,
-  },
-});
+import { isKeychainAddressSelector } from '@src/redux/selectors/receivers';
+import { useSelector } from 'react-redux';
 
 const AddressBookSection = () => {
   const navigation = useNavigation();
+  const keychainAddress = useSelector(isKeychainAddressSelector);
   const onSelectedItem = (data) => {
-    const { keySave, ...rest } = data;
+    const { keySave, address, name } = data;
+    const receiver = { address, name };
+    const isKeychain = keychainAddress(receiver);
+    if (isKeychain) {
+      return;
+    }
     navigation.navigate(routeNames.FrequentReceiversForm, {
       info: {
-        ...rest,
-        toAddress: rest?.address,
+        ...data,
+        toAddress: address,
       },
       keySave,
       action: 'update',
@@ -32,7 +31,7 @@ const AddressBookSection = () => {
   const handleNavigateFrequentReceivers = () =>
     navigation.navigate(routeNames.FrequentReceivers, {
       onSelectedItem,
-      disabledSwipe: false
+      disabledSwipe: false,
     });
 
   const itemsFactories = [

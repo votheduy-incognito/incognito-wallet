@@ -6,6 +6,8 @@ export const ACTION_UPDATE_RECENTLY =
   '[receivers] Action update recently receiver';
 export const ACTION_DELETE_ALL = '[receivers] Action delete all receivers';
 export const ACTION_SYNC_SUCCESS = '[receivers] Sync receivers success';
+export const ACTION_MIGRATE_INCOGNITO_ADDRESS =
+  '[receivers] Migrate incognito address success';
 
 const initPayload = {
   keySave: '',
@@ -48,5 +50,10 @@ export const actionDeleteAll = (payload = initPayload) => ({
 
 export const actionSyncSuccess = (payload) => ({
   type: ACTION_SYNC_SUCCESS,
+  payload,
+});
+
+export const actionMigrateIncognitoAddress = (payload) => ({
+  type: ACTION_MIGRATE_INCOGNITO_ADDRESS,
   payload,
 });
