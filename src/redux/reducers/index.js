@@ -6,7 +6,6 @@ import shield from '@screens/Shield/Shield.reducer';
 import estimateFee from '@components/EstimateFee/EstimateFee.reducer';
 import home from '@screens/Home/Home.reducer';
 import setting from '@screens/Setting/Setting.reducer';
-import addressBook from '@screens/AddressBook/AddressBook.reducer';
 import unShield from '@screens/UnShield/UnShield.reducer';
 import getStarted from '@screens/GetStarted/GetStarted.reducer';
 import performance from '@screens/Performance/Performance.reducer';
@@ -43,7 +42,6 @@ const rootReducer = reduceReducers(
     estimateFee,
     home,
     setting,
-    addressBook,
     unShield,
     getStarted,
     performance,
