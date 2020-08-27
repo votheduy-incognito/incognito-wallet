@@ -10,7 +10,6 @@ import ShieldGenQRCode from '@screens/Shield/features/GenQRCode';
 import FollowToken from '@screens/FollowToken';
 import AddManually from '@screens/AddManually';
 import WalletDetail from '@screens/Wallet/features/Detail';
-import UnShield from '@screens/UnShield';
 import ReceiveCrypto from '@screens/Wallet/features/ReceiveCrypto';
 import Send from '@screens/Send';
 import TokenSelectScreen from '@components/TokenSelectScreen';
@@ -30,8 +29,6 @@ import ExportAccount from '@src/screens/Account/features/ExportAccount';
 import NetworkSetting from '@src/screens/NetworkSetting';
 import WhyUnshield from '@src/screens/UnShield/features/WhyUnshield';
 import ExportAccountModal from '@src/screens/Account/features/ExportAccount/ExportAccount.modal';
-import AddressBook from '@src/screens/AddressBook';
-import AddressBookForm from '@src/screens/AddressBook/AddressBook.form';
 import CoinInfo from '@screens/Wallet/features/CoinInfo';
 import Keychain from '@src/screens/Setting/features/Keychain';
 import CoinInfoVerify from '@src/screens/Wallet/features/CoinInfo/CoinInfo.verify';
@@ -109,10 +106,6 @@ const routes = [
     name: routeNames.Send,
   },
   {
-    screen: UnShield,
-    name: routeNames.UnShield,
-  },
-  {
     screen: UnShieldModal,
     name: routeNames.UnShieldModal,
   },
@@ -179,14 +172,6 @@ const routes = [
   {
     screen: ExportAccountModal,
     name: routeNames.ExportAccountModal,
-  },
-  {
-    screen: AddressBook,
-    name: routeNames.AddressBook,
-  },
-  {
-    screen: AddressBookForm,
-    name: routeNames.AddressBookForm,
   },
   {
     screen: CoinInfo,

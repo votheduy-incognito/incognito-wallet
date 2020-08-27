@@ -80,6 +80,7 @@ const enhance = (WrappedComp) => (props) => {
     onSaveReceivers,
     receivers,
     toAddress,
+    keySave: keySaveAddressBook,
   });
   return (
     <WrappedComp

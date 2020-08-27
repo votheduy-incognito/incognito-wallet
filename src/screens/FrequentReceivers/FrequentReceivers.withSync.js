@@ -1,78 +1,49 @@
 import React from 'react';
 import { listAccountSelector } from '@src/redux/selectors/account';
 import { useSelector, useDispatch } from 'react-redux';
-import { ExHandler } from '@src/services/exception';
-import { actionCreate, actionSyncSuccess } from '@src/redux/actions/receivers';
-import LoadingContainer from '@src/components/LoadingContainer';
+import {
+  actionMigrateIncognitoAddress,
+  actionDelete,
+} from '@src/redux/actions/receivers';
 import { CONSTANT_KEYS } from '@src/constants';
 import { receiversSelector } from '@src/redux/selectors/receivers';
-import { searchBoxConfig } from '@src/components/Header/Header.searchBox';
-import { reset } from 'redux-form';
+import { isEqual } from 'lodash';
 
 const enhance = (WrappedComp) => (props) => {
-  const [state, setState] = React.useState({
-    isFetching: false,
-    isFetched: false,
-  });
   const dispatch = useDispatch();
   const accounts = useSelector(listAccountSelector);
   const keySave = CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK;
-  const { sync = false } = useSelector(receiversSelector)[keySave];
-  const syncData = async () => {
+  const sendInReceivers = useSelector(receiversSelector)[keySave];
+  const { migrateIncognitoAddress, receivers } = sendInReceivers;
+  const handleMigrateIncognitoAddress = async () => {
     try {
       const isAccListEmpty = accounts.length === 0;
       if (!isAccListEmpty) {
-        await Promise.all(
-          accounts.map(
-            async (account) =>
-              await dispatch(
-                actionCreate({
-                  keySave,
-                  receiver: {
-                    name: account?.name,
-                    address: account?.PaymentAddress,
-                    recently: null,
-                  },
-                  sync: true,
-                }),
-              ),
-          ),
-        );
-        await dispatch(actionSyncSuccess(keySave));
+        const receiversSynced = receivers
+          .filter((receiver) => {
+            const isReceiverSync = accounts.some(
+              (account) =>
+                isEqual(account?.paymentAddress, receiver?.address) &&
+                isEqual(account?.accountName, receiver?.name),
+            );
+            return isReceiverSync;
+          })
+          .map((receiver) => dispatch(actionDelete({ keySave, receiver })));
+        await new Promise.all(receiversSynced);
       }
     } catch (error) {
-      new ExHandler(error).showErrorToast();
-    }
-  };
-  const syncReceivers = async () => {
-    try {
-      await setState({
-        ...state,
-        isFetching: true,
-      });
-      await syncData();
-      await setState({ ...state, isFetched: true, isFetching: false });
-    } catch (error) {
-      await setState({
-        ...state,
-        isFetching: false,
-        isFetched: false,
-      });
-      new ExHandler(error).showErrorToast();
+      console.debug(error);
+    } finally {
+      dispatch(actionMigrateIncognitoAddress(keySave));
     }
   };
 
   React.useEffect(() => {
-    dispatch(reset(searchBoxConfig.form));
-    if (!sync) {
-      syncReceivers();
+    if (!migrateIncognitoAddress) {
+      handleMigrateIncognitoAddress();
     }
   }, [accounts]);
 
-  const { isFetched } = state;
-  if (!sync && !isFetched) {
-    return <LoadingContainer />;
-  }
   return <WrappedComp {...props} />;
 };
 
