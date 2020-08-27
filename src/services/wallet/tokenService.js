@@ -156,6 +156,7 @@ export default class Token {
     account,
     wallet,
     paymentInfos = [],
+    info = '',
   ) {
     await Wallet.resetProgressTx();
     // get index account by name
@@ -181,6 +182,7 @@ export default class Token {
         feeNativeToken,
         feePToken,
         remoteAddress,
+        info,
       );
       await saveWallet(wallet);
     } catch (e) {
