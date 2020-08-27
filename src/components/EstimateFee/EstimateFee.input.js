@@ -221,6 +221,7 @@ const SupportFees = React.memo(() => {
         actionToggleFastFee({
           fast2x,
           ...totalFeeData,
+          isUsedPRVFee,
         }),
       );
       onChangeFee(totalFeeData?.totalFeeText);
