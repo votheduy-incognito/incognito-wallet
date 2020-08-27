@@ -16,7 +16,6 @@ import { ButtonBasic } from '@src/components/Button';
 import { useSelector } from 'react-redux';
 import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
-import { COLORS } from '@src/styles';
 import LoadingTx from '@src/components/LoadingTx';
 import { decimalDigitsSelector } from '@src/screens/Setting';
 import format from '@src/utils/format';
@@ -65,14 +64,13 @@ const SendForm = (props) => {
     handleSend,
     validateAmount,
     validateAddress,
-    isERC20,
     isSending,
     memo,
     warningAddress,
+    isIncognitoAddress,
+    isExternalAddress,
   } = props;
-  const { titleBtnSubmit, isUnShield, isValidETHAddress } = useSelector(
-    feeDataSelector,
-  );
+  const { titleBtnSubmit, isUnShield } = useSelector(feeDataSelector);
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const placeholderAddress = `Incognito ${
     selectedPrivacy?.isMainCrypto
@@ -147,22 +145,15 @@ const SendForm = (props) => {
                 onOpenAddressBook={onShowFrequentReceivers}
                 {...generateTestId(SEND.ADDRESS_INPUT)}
               />
-              {isERC20 && isUnShield && (
-                <Text
-                  style={[
-                    styled.warningText,
-                    !isValidETHAddress ? { color: COLORS.red } : null,
-                  ]}
-                >
-                  Please withdraw to a wallet address, not a smart contract
-                  address.
-                </Text>
-              )}
               <EstimateFee
-                amount={amount}
-                address={toAddress}
-                isFormValid={isFormValid}
-                memo={memo}
+                {...{
+                  amount,
+                  address: toAddress,
+                  isFormValid,
+                  memo,
+                  isIncognitoAddress,
+                  isExternalAddress,
+                }}
               />
               {renderMemo()}
               <ButtonBasic
@@ -203,6 +194,8 @@ SendForm.propTypes = {
   isSending: PropTypes.bool.isRequired,
   memo: PropTypes.string,
   warningAddress: PropTypes.string.isRequired,
+  isIncognitoAddress: PropTypes.bool.isRequired,
+  isExternalAddress: PropTypes.bool.isRequired,
 };
 
 export default withSendForm(SendForm);
