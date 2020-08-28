@@ -11,7 +11,6 @@ import { withLayout_2 } from '@src/components/Layout';
 import { formValueSelector, isValid, change } from 'redux-form';
 import { Keyboard } from 'react-native';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
-import { CONSTANT_COMMONS } from '@src/constants';
 import { formName } from './FrequentReceivers.form';
 
 const enhance = (WrappedComp) => (props) => {
@@ -30,23 +29,6 @@ const enhance = (WrappedComp) => (props) => {
   const nameInput = useSelector((state) => selector(state, 'name')) || '';
   let shouldUpdate = nameInput !== name;
   const disabledBtn = !isFormValid || (isUpdate && !shouldUpdate);
-  const isETH =
-    selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
-  const isBNB =
-    selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BNB;
-  const getNetworkName = () => {
-    let networkName = selectedPrivacy?.networkName;
-    try {
-      if (selectedPrivacy?.isErc20Token || isETH) {
-        networkName = 'Ethereum';
-      } else if (selectedPrivacy?.isBep2Token || isBNB) {
-        networkName = 'Binance';
-      }
-    } catch (error) {
-      console.debug(error);
-    }
-    return networkName;
-  };
   const onCreateReceiver = async ({ name, address }) => {
     try {
       const receiver = {
@@ -59,7 +41,7 @@ const enhance = (WrappedComp) => (props) => {
           receiver: {
             ...receiver,
             recently: new Date().getTime(),
-            networkName: getNetworkName(),
+            rootNetworkName: selectedPrivacy?.rootNetworkName,
             tokenId: selectedPrivacy?.tokenId,
           },
         }),

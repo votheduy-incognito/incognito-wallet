@@ -3,6 +3,8 @@ import PToken from './pToken';
 
 function getNetworkName() {
   let name = 'Unknown';
+  const isETH = this?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
+  const isBNB = this?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BNB;
   if (this.isPrivateCoin) {
     name = `${this.name}`;
   } else if (this.isErc20Token) {
@@ -12,8 +14,16 @@ function getNetworkName() {
   } else if (this.isIncognitoToken || this.isMainCrypto) {
     name = 'Incognito';
   }
-
-  return name;
+  let rootNetworkName = name;
+  if (isETH || this?.isErc20Token) {
+    rootNetworkName = 'Ethereum';
+  } else if (isBNB || this?.isBep2Token) {
+    rootNetworkName = 'Binance';
+  }
+  return {
+    name,
+    rootNetworkName,
+  };
 }
 
 function combineData(pData, incognitoData, defaultData) {
@@ -46,7 +56,6 @@ function getIconUrl(chainTokenImageUri) {
 class SelectedPrivacy {
   constructor(account = {}, token = {}, pTokenData: PToken = {}) {
     const tokenId = pTokenData?.tokenId || token?.id;
-
     this.currencyType = pTokenData.currencyType;
     this.isToken = tokenId !== CONSTANT_COMMONS.PRV_TOKEN_ID && !!tokenId; // all kind of tokens (private tokens, incognito tokens)
     this.isMainCrypto =
@@ -100,7 +109,6 @@ class SelectedPrivacy {
         this.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) ||
       this.isErc20Token;
     this.isCentralized = this.isToken && !this.isDecentralized;
-    this.networkName = getNetworkName.call(this);
     this.incognitoTotalSupply =
       (this.isIncognitoToken && Number(token?.totalSupply)) || 0;
     this.isVerified = combineData.call(
@@ -114,6 +122,9 @@ class SelectedPrivacy {
     this.change = pTokenData?.change || '0';
     this.pricePrv = pTokenData?.pricePrv || 0;
     this.pairWithPrv = pTokenData?.pairPrv;
+    const { networkName, rootNetworkName } = getNetworkName.call(this);
+    this.networkName = networkName;
+    this.rootNetworkName = rootNetworkName;
   }
 }
 

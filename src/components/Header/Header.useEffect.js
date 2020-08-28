@@ -1,17 +1,19 @@
 import React from 'react';
-import { formValueSelector } from 'redux-form';
+import { formValueSelector, reset } from 'redux-form';
 import { searchBoxConfig } from '@src/components/Header/Header.searchBox';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 import toLower from 'lodash/toLower';
 import { trim } from 'lodash';
+import { useFocusEffect } from 'react-navigation-hooks';
 
 export const useSearchBox = (props) => {
   const { data, handleFilter } = props;
   const initialState = {
     result: [],
   };
+  const dispatch = useDispatch();
   const selector = formValueSelector(searchBoxConfig.form);
   const keySearch = trim(
     toLower(
@@ -26,6 +28,13 @@ export const useSearchBox = (props) => {
       return setState({ ...state, result: handleFilter() });
     }
   }, [keySearch]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setState({ ...state, result: [] });
+      dispatch(reset(searchBoxConfig.form));
+    }, []),
+  );
 
   return [isKeyEmpty ? data : result, keySearch];
 };
