@@ -129,6 +129,11 @@ const TxHistoryDetail = (props) => {
       disabled: !history?.time,
     },
     {
+      label: 'Expired at',
+      valueText: formatUtil.formatDateTime(history?.expiredAt),
+      disabled: !history?.expiredAt,
+    },
+    {
       label: 'TxID',
       valueText: `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${history.incognitoTxID}`,
       openUrl: true,
