@@ -9,7 +9,6 @@ import {
 } from '@src/redux/actions/receivers';
 import { isReceiverExist } from '@src/redux/utils/receivers';
 import { CONSTANT_KEYS } from '@src/constants';
-import { isEqual, lowerCase } from 'lodash';
 
 const initialState = {
   [CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK]: {
@@ -49,14 +48,6 @@ export default (state = initialState, action) => {
   case ACTION_UPDATE: {
     const { keySave, receiver } = action.payload;
     const oldReceivers = state[keySave].receivers;
-
-    const isNameExisted = oldReceivers.some((item) =>
-      isEqual(lowerCase(item?.name), lowerCase(receiver?.name)),
-    );
-    
-    if (isNameExisted) {
-      throw new Error('User exist!');
-    }
     return {
       ...state,
       [keySave]: {
@@ -68,7 +59,7 @@ export default (state = initialState, action) => {
                 ...item,
                 name: receiver.name,
                 updatedAt: new Date().getTime(),
-                networkName: receiver?.networkName,
+                rootNetworkName: receiver?.rootNetworkName,
               }
               : item,
           ),

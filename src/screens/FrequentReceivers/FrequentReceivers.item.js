@@ -43,7 +43,7 @@ const Item = ({
   address,
   containerStyled,
   disabledSwipe,
-  networkName,
+  rootNetworkName,
   ...rest
 }) => {
   const receiver = {
@@ -70,7 +70,7 @@ const Item = ({
           <Text style={itemStyled.name} numberOfLines={1} ellipsizeMode="tail">
             {name}
           </Text>
-          <Text style={itemStyled.name}>{networkName}</Text>
+          <Text style={itemStyled.name}>{rootNetworkName}</Text>
         </View>
         <Text
           style={itemStyled.address}
@@ -117,7 +117,7 @@ Item.propTypes = {
   address: PropTypes.string.isRequired,
   containerStyled: PropTypes.any,
   disabledSwipe: PropTypes.bool,
-  networkName: PropTypes.string.isRequired,
+  rootNetworkName: PropTypes.string.isRequired,
 };
 
 export default Item;
