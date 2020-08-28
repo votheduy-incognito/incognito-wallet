@@ -54,9 +54,9 @@ const enhance = (WrappedComp) => (props) => {
 
   const handleDetectNetwork = async () => {
     try {
-      if (detectNetworkName) {
-        return;
-      }
+      // if (detectNetworkName) {
+      //   return;
+      // }
       await new Promise.all([
         receivers.map(async (receiver) => {
           const { address } = receiver;

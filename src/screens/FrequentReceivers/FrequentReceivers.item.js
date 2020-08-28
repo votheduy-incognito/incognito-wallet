@@ -23,12 +23,17 @@ const itemStyled = StyleSheet.create({
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
     marginBottom: 15,
+    maxWidth: '50%',
   },
   address: {
     color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 4,
+  },
+  extra: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 
@@ -38,6 +43,7 @@ const Item = ({
   address,
   containerStyled,
   disabledSwipe,
+  networkName,
   ...rest
 }) => {
   const receiver = {
@@ -60,7 +66,12 @@ const Item = ({
   const Component = () => (
     <TouchableOpacity {...rest}>
       <View style={[itemStyled.hook, containerStyled]}>
-        <Text style={itemStyled.name}>{name}</Text>
+        <View style={itemStyled.extra}>
+          <Text style={itemStyled.name} numberOfLines={1} ellipsizeMode="tail">
+            {name}
+          </Text>
+          <Text style={itemStyled.name}>{networkName}</Text>
+        </View>
         <Text
           style={itemStyled.address}
           ellipsizeMode="middle"
@@ -106,6 +117,7 @@ Item.propTypes = {
   address: PropTypes.string.isRequired,
   containerStyled: PropTypes.any,
   disabledSwipe: PropTypes.bool,
+  networkName: PropTypes.string.isRequired,
 };
 
 export default Item;

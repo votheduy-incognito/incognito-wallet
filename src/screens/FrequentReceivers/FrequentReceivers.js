@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, KeyboardAvoidingView } from 'react-native';
+import { View, KeyboardAvoidingView, Text } from 'react-native';
 import { useSelector } from 'react-redux';
 import { receiversSelector } from '@src/redux/selectors/receivers';
 import Header, { useSearchBox } from '@src/components/Header';
@@ -59,9 +59,9 @@ const ListAllReceivers = () => {
   const filterBySelectedPrivacy = !!useNavigationParam(
     'filterBySelectedPrivacy',
   );
-  const { receivers: incognitoAddress } = useSelector(receiversSelector)[
-    CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK
-  ];
+  const { receivers: incognitoAddress, migrateIncognitoAddress } = useSelector(
+    receiversSelector,
+  )[CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK];
   const keychainsAddresses = accounts
     .filter(
       (account) => account?.paymentAddress !== defaultAccount?.paymentAddress,
@@ -123,6 +123,13 @@ const ListAllReceivers = () => {
         style={styled.header}
         canSearch
       />
+      <Text
+        style={{
+          marginLeft: 25,
+          marginBottom: 20,
+        }}
+      >{`Migrate external address: ${migrateIncognitoAddress}`}
+      </Text>
       <Wrapper
         behavior="padding"
         keyboardVerticalOffset={25}
