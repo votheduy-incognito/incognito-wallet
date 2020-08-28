@@ -123,14 +123,6 @@ const ListAllReceivers = () => {
         style={styled.header}
         canSearch
       />
-      <Text
-        style={{
-          marginLeft: 25,
-          marginBottom: 20,
-        }}
-      >
-        {`Migrate external address: ${migrateIncognitoAddress}`}
-      </Text>
       <Wrapper
         behavior="padding"
         keyboardVerticalOffset={25}

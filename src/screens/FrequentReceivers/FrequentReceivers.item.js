@@ -31,10 +31,6 @@ const itemStyled = StyleSheet.create({
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 4,
   },
-  extra: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
 });
 
 const Item = ({
@@ -66,12 +62,9 @@ const Item = ({
   const Component = () => (
     <TouchableOpacity {...rest}>
       <View style={[itemStyled.hook, containerStyled]}>
-        <View style={itemStyled.extra}>
-          <Text style={itemStyled.name} numberOfLines={1} ellipsizeMode="tail">
-            {name}
-          </Text>
-          <Text style={itemStyled.name}>{rootNetworkName}</Text>
-        </View>
+        <Text style={itemStyled.name} numberOfLines={1} ellipsizeMode="tail">
+          {name}
+        </Text>
         <Text
           style={itemStyled.address}
           ellipsizeMode="middle"
