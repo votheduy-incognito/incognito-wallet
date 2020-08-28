@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { pTokensSelector } from '@src/redux/selectors/token';
 import { withdrawReceiversSelector } from '@src/redux/selectors/receivers';
 import {
-  // detectNetworkNameSelector,
+  detectNetworkNameSelector,
   actionToggleDetectNetworkName,
 } from '@screens/GetStarted';
 import { CONSTANT_KEYS } from '@src/constants';
@@ -18,9 +18,9 @@ const enhance = (WrappedComp) => (props) => {
   const pTokens = useSelector(pTokensSelector);
   const dispatch = useDispatch();
   const { receivers } = useSelector(withdrawReceiversSelector);
-  // const detectNetworkName = useSelector(detectNetworkNameSelector)[
-  //   CONSTANT_KEYS.DETECT_NETWORK_NAME
-  // ];
+  const detectNetworkName = useSelector(detectNetworkNameSelector)[
+    CONSTANT_KEYS.DETECT_NETWORK_NAME
+  ];
   const getPrivacyDataByTokenID = useSelector(
     selectedPrivacySeleclor.getPrivacyDataByTokenID,
   );
@@ -44,9 +44,9 @@ const enhance = (WrappedComp) => (props) => {
 
   const handleDetectNetwork = async () => {
     try {
-      // if (detectNetworkName) {
-      //   return;
-      // }
+      if (detectNetworkName) {
+        return;
+      }
       await new Promise.all([
         receivers.map(async (receiver) => {
           const { address } = receiver;

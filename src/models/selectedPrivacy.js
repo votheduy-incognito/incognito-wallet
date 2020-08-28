@@ -21,7 +21,7 @@ function getNetworkName() {
     rootNetworkName = 'Binance';
   }
   return {
-    name,
+    networkName: name,
     rootNetworkName,
   };
 }
