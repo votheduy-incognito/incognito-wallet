@@ -79,7 +79,7 @@ const ListAllReceivers = () => {
   const extAddrFilBySelPrivacy = [
     ...externalAddress.filter((item) =>
       filterBySelectedPrivacy
-        ? item?.networkName === selectedPrivacy?.networkName
+        ? item?.rootNetworkName === selectedPrivacy?.rootNetworkName
         : true,
     ),
   ];
@@ -128,7 +128,8 @@ const ListAllReceivers = () => {
           marginLeft: 25,
           marginBottom: 20,
         }}
-      >{`Migrate external address: ${migrateIncognitoAddress}`}
+      >
+        {`Migrate external address: ${migrateIncognitoAddress}`}
       </Text>
       <Wrapper
         behavior="padding"
