@@ -28,4 +28,17 @@ export const styled = StyleSheet.create({
   scrollview: {
     flex: 1,
   },
+  hook: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 30,
+    marginTop: 15,
+  },
+  hookText: {
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 3,
+    color: COLORS.black,
+    marginLeft: 10,
+  },
 });
