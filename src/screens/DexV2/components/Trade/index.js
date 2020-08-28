@@ -64,6 +64,7 @@ const Trade = ({
 
   isLoading,
   onLoadPairs,
+  inputBalanceText,
 }) => {
   const navigation = useNavigation();
   const navigateTradeConfirm = () => {
@@ -112,6 +113,7 @@ const Trade = ({
             disabled={inputBalance === null}
             loading={inputBalance === null}
             placeholder="0"
+            maxValue={inputBalanceText}
           />
           <Text style={styles.error}>{error}</Text>
           <View style={styles.arrowWrapper}>
@@ -209,6 +211,7 @@ Trade.propTypes = {
   gettingQuote: PropTypes.bool,
   quote: PropTypes.object,
   isErc20: PropTypes.bool,
+  inputBalanceText: PropTypes.string,
 };
 
 export default compose(
@@ -246,4 +249,5 @@ Trade.defaultProps = {
   gettingQuote: false,
   quote: null,
   isErc20: false,
+  inputBalanceText: '',
 };
