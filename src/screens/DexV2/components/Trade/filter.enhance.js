@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import convertUtil from '@utils/convert';
+import { COINS } from '@src/constants';
 
 const withFilter = WrappedComp => (props) => {
   const [outputToken, setOutputToken] = React.useState(null);
@@ -9,19 +9,27 @@ const withFilter = WrappedComp => (props) => {
   const filter = () => {
     try {
       let newOutputToken = outputToken;
-      let outputPairs = pairs.filter(pair => pair[inputToken.id]);
-      let outputList = outputPairs
-        .map(pair => {
-          const id = pair.keys.find(key => key !== inputToken.id);
-          const pool = pair[id];
-          return ({ id, pool });
-        })
-        .map(({ id, pool }) => ({
-          ...pairTokens.find(token => token.id === id),
-          pool: convertUtil.toRealTokenValue(pairTokens, id, pool),
-        }))
-        .filter(item => item)
-        .filter(item => item.name && item.symbol);
+      let outputList = [];
+
+      if (pairs.find(pair => pair.keys.includes(inputToken.id))) {
+        outputList = pairs
+          .map(pair => {
+            const {keys} = pair;
+
+            if (inputToken.id === COINS.PRV_ID ||!keys.includes(inputToken.id)) {
+              const id = pair.keys.find(key => key !== COINS.PRV_ID);
+              return pairTokens.find(token => token.id === id);
+            }
+
+            return null;
+          })
+          .filter(item => item && item.name && item.symbol);
+
+        const prvToken = pairTokens.find(token => token.id === COINS.PRV_ID);
+        if (inputToken.id !== COINS.PRV_ID && !outputList.includes(prvToken)) {
+          outputList.push(prvToken);
+        }
+      }
 
       if (inputToken.address) {
         outputList = outputList.concat(pairTokens.filter(token => token.address && token.id !== inputToken.id));
@@ -31,9 +39,9 @@ const withFilter = WrappedComp => (props) => {
         .orderBy([
           'priority',
           'hasIcon',
-          'pool',
           item => item.symbol && item.symbol.toLowerCase(),
         ], ['asc', 'desc', 'desc', 'asc'])
+        .uniqBy(item => item.id)
         .value();
 
       if (outputToken && !outputList.find(item => item.id === outputToken.id)) {
