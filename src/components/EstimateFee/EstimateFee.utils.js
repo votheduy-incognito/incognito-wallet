@@ -57,6 +57,7 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
     fast2x,
     feePrvText,
     feePTokenText,
+    isFetchedMinMaxWithdraw,
   } = estimateFee;
   const { amount } = selectedPrivacy;
   const isUseTokenFee = actived !== CONSTANT_COMMONS.PRV.id;
@@ -128,6 +129,7 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
     feePTokenText,
     isBTC,
     hasMultiLevel: userFees?.hasMultiLevel,
+    isFetchedMinMaxWithdraw,
   };
 };
 
