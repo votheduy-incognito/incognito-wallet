@@ -7,25 +7,26 @@ import routeNames from '@src/router/routeNames';
 import { useNavigation } from 'react-navigation-hooks';
 import { TouchableOpacity } from '@src/components/core';
 import { FlatList } from '@src/components/core/FlatList';
+import { BtnChecked } from '@src/components/Button';
 import { styled } from './FollowToken.styled';
 import withFollowToken from './FollowToken.enhance';
 
-const AddManually = () => {
-  const title = 'Don\'t see your coin?';
-  const navigation = useNavigation();
-  const handleAddTokenManually = () =>
-    navigation?.navigate(routeNames.AddManually, { type: 'ERC20' });
-  return (
-    <View style={styled.addManually}>
-      <Text style={[styled.text, { marginTop: 10 }]}>{title}</Text>
-      <TouchableOpacity onPress={handleAddTokenManually}>
-        <Text style={[styled.text, styled.boldText, { marginTop: 5 }]}>
-          Add manually +
-        </Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
+// const AddManually = () => {
+//   const title = 'Don\'t see your coin?';
+//   const navigation = useNavigation();
+//   const handleAddTokenManually = () =>
+//     navigation?.navigate(routeNames.AddManually, { type: 'ERC20' });
+//   return (
+//     <View style={styled.addManually}>
+//       <Text style={[styled.text, { marginTop: 10 }]}>{title}</Text>
+//       <TouchableOpacity onPress={handleAddTokenManually}>
+//         <Text style={[styled.text, styled.boldText, { marginTop: 5 }]}>
+//           Add manually +
+//         </Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// };
 
 const Item = ({ item, handleToggleFollowToken }) =>
   React.useMemo(() => {
@@ -57,12 +58,22 @@ const ListToken = (props) => {
   );
 };
 
+const Hook = (props) => {
+  return (
+    <View style={styled.hook}>
+      <BtnChecked onPress={props?.handleFilterTokensVerified} />
+      <Text style={styled.hookText}>Show unverified coins</Text>
+    </View>
+  );
+};
+
 const FollowToken = (props) => {
   return (
     <View style={styled.container}>
       <Header title="Add a coin" canSearch />
       <ListToken {...props} />
-      <AddManually />
+      {/* <AddManually /> */}
+      <Hook {...props} />
     </View>
   );
 };
