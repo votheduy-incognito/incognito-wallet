@@ -6,18 +6,21 @@ import Section, {
   SectionItem as Item,
 } from '@screens/Setting/features/Section';
 import { isKeychainAddressSelector } from '@src/redux/selectors/receivers';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { actionSelectedReceiver } from '@src/redux/actions/receivers';
 
 const AddressBookSection = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const keychainAddress = useSelector(isKeychainAddressSelector);
-  const onSelectedItem = (data) => {
+  const onSelectedItem = async (data) => {
     const { keySave, address, name } = data;
     const receiver = { address, name };
     const isKeychain = keychainAddress(receiver);
     if (isKeychain) {
       return;
     }
+    await dispatch(actionSelectedReceiver({ keySave, address }));
     navigation.navigate(routeNames.FrequentReceiversForm, {
       info: {
         ...data,

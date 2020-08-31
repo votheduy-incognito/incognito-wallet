@@ -1,18 +1,13 @@
 import React from 'react';
-import { View, KeyboardAvoidingView, Text } from 'react-native';
-import { useSelector } from 'react-redux';
-import { receiversSelector } from '@src/redux/selectors/receivers';
-import Header, { useSearchBox } from '@src/components/Header';
-import { isIOS } from '@src/utils/platform';
+import { View } from 'react-native';
+import Header from '@src/components/Header';
 import { useNavigationParam } from 'react-navigation-hooks';
 import { DropdownMenu, ScrollView } from '@src/components/core';
-import { selectedPrivacySeleclor, accountSeleclor } from '@src/redux/selectors';
-import { CONSTANT_KEYS } from '@src/constants';
 import PropTypes from 'prop-types';
+import withListAllReceivers from './FrequentReceivers.enhance';
 import Item from './FrequentReceivers.item';
 import EmptyList from './FrequentReceivers.empty';
 import { styledModal as styled } from './FrequentReceivers.styled';
-import { filterAddressByKey } from './FrequentReceivers.utils';
 
 const ListReceivers = (props) => {
   const { receivers, isEmpty } = props;
@@ -52,70 +47,8 @@ const ListReceivers = (props) => {
   );
 };
 
-const ListAllReceivers = () => {
-  const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
-  const accounts = useSelector(accountSeleclor.listAccountSelector);
-  const defaultAccount = useSelector(accountSeleclor?.defaultAccountSelector);
-  const filterBySelectedPrivacy = !!useNavigationParam(
-    'filterBySelectedPrivacy',
-  );
-  const { receivers: incognitoAddress, migrateIncognitoAddress } = useSelector(
-    receiversSelector,
-  )[CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK];
-  const keychainsAddresses = accounts
-    .filter(
-      (account) => account?.paymentAddress !== defaultAccount?.paymentAddress,
-    )
-    .map((item) => ({
-      name: item?.accountName,
-      address: item?.paymentAddress,
-    }));
-  const { receivers: externalAddress } = useSelector(receiversSelector)[
-    CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK
-  ];
-  const incognitoAddresses = incognitoAddress.filter(
-    (item) => item?.address !== defaultAccount?.paymentAddress,
-  );
-  const extAddrFilBySelPrivacy = [
-    ...externalAddress.filter((item) =>
-      filterBySelectedPrivacy
-        ? item?.rootNetworkName === selectedPrivacy?.rootNetworkName
-        : true,
-    ),
-  ];
-  const [_keychainsAddresses, keySearch] = useSearchBox({
-    data: keychainsAddresses,
-    handleFilter: () => filterAddressByKey(keychainsAddresses, keySearch),
-  });
-  const [_incognitoAddress] = useSearchBox({
-    data: incognitoAddresses,
-    handleFilter: () => filterAddressByKey(incognitoAddress, keySearch),
-  });
-  const [_externalAddress] = useSearchBox({
-    data: extAddrFilBySelPrivacy,
-    handleFilter: () => filterAddressByKey(extAddrFilBySelPrivacy, keySearch),
-  });
-  const receivers = [
-    {
-      data: _keychainsAddresses,
-      label: 'Your keychains',
-      keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
-    },
-    {
-      data: _incognitoAddress,
-      label: 'Incognito addresses',
-      keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
-    },
-    {
-      data: _externalAddress,
-      label: 'External addresses',
-      keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK,
-    },
-  ];
-
-  const isEmpty = receivers.length === 0;
-  const isPlatformIOS = isIOS();
-  const Wrapper = isPlatformIOS ? KeyboardAvoidingView : View;
+const ListAllReceivers = (props) => {
+  const { Wrapper, receivers, isEmpty } = props;
   return (
     <View style={styled.container}>
       <Header
@@ -129,6 +62,7 @@ const ListAllReceivers = () => {
         style={{
           flex: 1,
           marginHorizontal: 25,
+          marginTop: 42,
         }}
       >
         <ScrollView>
@@ -144,4 +78,10 @@ ListReceivers.propTypes = {
   isEmpty: PropTypes.bool.isRequired,
 };
 
-export default React.memo(ListAllReceivers);
+ListAllReceivers.propTypes = {
+  receivers: PropTypes.array.isRequired,
+  isEmpty: PropTypes.bool.isRequired,
+  Wrapper: PropTypes.any.isRequired,
+};
+
+export default withListAllReceivers(ListAllReceivers);

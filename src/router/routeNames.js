@@ -97,4 +97,5 @@ export default {
   RemoveLiquidityConfirm: 'RemoveLiquidityConfirm',
   News: 'News',
   Receipt: 'Receipt',
+  SelectNetworkName: 'SelectNetworkName',
 };

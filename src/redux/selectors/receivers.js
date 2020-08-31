@@ -30,3 +30,8 @@ export const isKeychainAddressSelector = createSelector(
     return isKeychainAddress;
   },
 );
+
+export const selectedReceiverSelector = createSelector(
+  receiversSelector,
+  (receivers) => receivers?.selected,
+);

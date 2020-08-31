@@ -11,6 +11,9 @@ import { withLayout_2 } from '@src/components/Layout';
 import { formValueSelector, isValid, change } from 'redux-form';
 import { Keyboard } from 'react-native';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
+import { selectedReceiverSelector } from '@src/redux/selectors/receivers';
+import { CONSTANT_KEYS } from '@src/constants';
+import { isEqual, toLower } from 'lodash';
 import { formName } from './FrequentReceivers.form';
 
 const enhance = (WrappedComp) => (props) => {
@@ -21,14 +24,19 @@ const enhance = (WrappedComp) => (props) => {
   const headerTitle = useNavigationParam('headerTitle');
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { toAddress = '', name = '' } = info;
+  const { address = '', name = '' } = info;
   const isUpdate = action === 'update';
   const titleBtnSubmit = isUpdate ? 'Save changes' : 'Save to address book';
   const isFormValid = useSelector((state) => isValid(formName)(state));
   const selector = formValueSelector(formName);
   const nameInput = useSelector((state) => selector(state, 'name')) || '';
-  let shouldUpdate = nameInput !== name;
+  let shouldUpdate = !isEqual(toLower(nameInput), toLower(name));
   const disabledBtn = !isFormValid || (isUpdate && !shouldUpdate);
+  const selectedReceiver = useSelector(selectedReceiverSelector);
+  const shouldShowNetwork =
+    selectedReceiver?.keySave ===
+    CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK;
+
   const onCreateReceiver = async ({ name, address }) => {
     try {
       const receiver = {
@@ -84,11 +92,20 @@ const enhance = (WrappedComp) => (props) => {
   };
 
   React.useEffect(() => {
-    if (isUpdate) {
-      dispatch(change(formName, 'name', name));
+    if (!isUpdate) {
+      return dispatch(change(formName, 'address', address));
     }
-    dispatch(change(formName, 'address', toAddress));
-  }, [toAddress]);
+    if (selectedReceiver) {
+      const { address, name } = selectedReceiver;
+      dispatch(change(formName, 'address', address));
+      dispatch(change(formName, 'name', name));
+      if (shouldShowNetwork) {
+        dispatch(
+          change(formName, 'networkName', selectedReceiver?.rootNetworkName),
+        );
+      }
+    }
+  }, [selectedReceiver, address]);
   return (
     <WrappedComp
       {...{
@@ -97,6 +114,7 @@ const enhance = (WrappedComp) => (props) => {
         headerTitle,
         disabledBtn,
         titleBtnSubmit,
+        shouldShowNetwork,
       }}
     />
   );

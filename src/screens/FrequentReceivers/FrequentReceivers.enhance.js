@@ -1,83 +1,92 @@
 import React from 'react';
-import { ExHandler } from '@src/services/exception';
-import { useNavigationParam, useNavigation } from 'react-navigation-hooks';
-import _ from 'lodash';
+import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useSelector, useDispatch } from 'react-redux';
 import { receiversSelector } from '@src/redux/selectors/receivers';
-import { actionDelete } from '@src/redux/actions/receivers';
-import routeNames from '@src/router/routeNames';
-import { compose } from 'recompose';
+import { selectedPrivacySeleclor, accountSeleclor } from '@src/redux/selectors';
+import { CONSTANT_KEYS } from '@src/constants';
+import { isIOS } from '@src/utils/platform';
+import { View, KeyboardAvoidingView } from 'react-native';
 import { useSearchBox } from '@src/components/Header';
-import withSync from './FrequentReceivers.withSync';
+import { useNavigationParam, useFocusEffect } from 'react-navigation-hooks';
+import { actionRemoveSelectedReceiver } from '@src/redux/actions/receivers';
+import { filterAddressByKey } from './FrequentReceivers.utils';
 
 const enhance = (WrappedComp) => (props) => {
-  const navigation = useNavigation();
   const dispatch = useDispatch();
-  const keySave = useNavigationParam('keySave');
-  const onSelectedItem = useNavigationParam('onSelectedItem');
-  const disabledSwipe = useNavigationParam('disabledSwipe');
-  const disabledSelectedAddr =
-    useNavigationParam('disabledSelectedAddr') || false;
-  const { receivers } = useSelector(receiversSelector)[keySave];
-  const [result, keySearch] = useSearchBox({
-    data: receivers,
-    handleFilter: () => [
-      ...receivers.filter(
-        (item) =>
-          _.includes(item?.name.toLowerCase(), keySearch) ||
-          _.includes(item?.address.toLowerCase(), keySearch),
-      ),
-    ],
+  const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const accounts = useSelector(accountSeleclor.listAccountSelector);
+  const defaultAccount = useSelector(accountSeleclor?.defaultAccountSelector);
+  const filterBySelectedPrivacy = !!useNavigationParam(
+    'filterBySelectedPrivacy',
+  );
+  const { receivers: incognitoAddress } = useSelector(receiversSelector)[
+    CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK
+  ];
+  const keychainsAddresses = accounts
+    .filter(
+      (account) => account?.paymentAddress !== defaultAccount?.paymentAddress,
+    )
+    .map((item) => ({
+      name: item?.accountName,
+      address: item?.paymentAddress,
+    }));
+  const { receivers: externalAddress } = useSelector(receiversSelector)[
+    CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK
+  ];
+  const incognitoAddresses = incognitoAddress.filter(
+    (item) => item?.address !== defaultAccount?.paymentAddress,
+  );
+  const extAddrFilBySelPrivacy = [
+    ...externalAddress.filter((item) =>
+      filterBySelectedPrivacy
+        ? item?.rootNetworkName === selectedPrivacy?.rootNetworkName
+        : true,
+    ),
+  ];
+  const [_keychainsAddresses, keySearch] = useSearchBox({
+    data: keychainsAddresses,
+    handleFilter: () => filterAddressByKey(keychainsAddresses, keySearch),
   });
-  const onSelectedAddress = async (receiver = { name: '', address: '' }) => {
-    if (typeof onSelectedItem === 'function') {
-      return onSelectedItem(receiver);
-    }
-  };
-  const onUpdateReceiver = async (info) => {
-    navigation.navigate(routeNames.FrequentReceiversForm, {
-      info: {
-        ...info,
-        toAddress: info?.address,
-      },
-      keySave,
-      action: 'update',
-      headerTitle: 'Edit',
-    });
-  };
-  const onDeleteReceiver = async (receiver) => {
-    try {
-      await dispatch(
-        actionDelete({
-          keySave,
-          receiver,
-        }),
-      );
-    } catch (error) {
-      new ExHandler(error).showErrorToast();
-    }
-  };
+  const [_incognitoAddress] = useSearchBox({
+    data: incognitoAddresses,
+    handleFilter: () => filterAddressByKey(incognitoAddress, keySearch),
+  });
+  const [_externalAddress] = useSearchBox({
+    data: extAddrFilBySelPrivacy,
+    handleFilter: () => filterAddressByKey(extAddrFilBySelPrivacy, keySearch),
+  });
+  const receivers = [
+    {
+      data: _keychainsAddresses,
+      label: 'Your keychains',
+      keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
+    },
+    {
+      data: _incognitoAddress,
+      label: 'Incognito addresses',
+      keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
+    },
+    {
+      data: _externalAddress,
+      label: 'External addresses',
+      keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK,
+    },
+  ];
 
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(actionRemoveSelectedReceiver());
+    }, []),
+  );
+
+  const isEmpty = receivers.length === 0;
+  const isPlatformIOS = isIOS();
+  const Wrapper = isPlatformIOS ? KeyboardAvoidingView : View;
   return (
-    <WrappedComp
-      {...{
-        ...props,
-        data: result.sort((a, b) => a.name.localeCompare(b.name)),
-        keySearch,
-        onSelectedAddress,
-        disabledSwipe,
-        onUpdate: onUpdateReceiver,
-        onDelete: onDeleteReceiver,
-        shouldDisabledItem: typeof onSelectedItem !== 'function',
-        disabledSelectedAddr,
-        hideRecently: keySearch.length > 0,
-        isEmpty: receivers.length === 0,
-      }}
-    />
+    <ErrorBoundary>
+      <WrappedComp {...{ ...props, Wrapper, isEmpty, receivers }} />
+    </ErrorBoundary>
   );
 };
 
-export default compose(
-  withSync,
-  enhance,
-);
+export default enhance;

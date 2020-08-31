@@ -67,7 +67,7 @@ const enhance = (WrappedComp) => (props) => {
     try {
       navigation.navigate(routeNames.FrequentReceiversForm, {
         info: {
-          toAddress,
+          address: toAddress,
         },
         keySave: keySaveAddressBook,
         headerTitle: 'Save address',
