@@ -298,7 +298,6 @@ export const actionHandleFeePTokenEst = ({ feePTokenEst }) => async (
     isUseTokenFee,
     isUnShield,
     feePDecimals,
-    isUsedPRVFee,
     hasMultiLevel,
   } = feeDataSelector(state);
   const { isFetched } = userFees;
@@ -317,7 +316,7 @@ export const actionHandleFeePTokenEst = ({ feePTokenEst }) => async (
         feeEst: feePToken,
         rate,
         pDecimals: feePDecimals,
-        isUsedPRVFee,
+        isUsedPRVFee: false,
         hasMultiLevel,
       });
       totalFeePToken = totalFee;
