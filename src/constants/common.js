@@ -108,6 +108,12 @@ const YEAR_SECONDS = 365 * 24 * 60 * 60;
 
 const PRV_SPECIAL_SYMBOL = 'ℙ';
 
+const NETWORK_NAME = {
+  BINANCE: 'Binance',
+  ETHEREUM: 'Ethereum',
+  TOMO: 'TomoChain',
+};
+
 export default {
   // old varibles, maybe remove later
   STAKING_TYPES: {
@@ -189,4 +195,5 @@ export default {
   },
   YEAR_SECONDS,
   PRV_SPECIAL_SYMBOL,
+  NETWORK_NAME,
 };
