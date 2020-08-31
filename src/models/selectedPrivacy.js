@@ -16,9 +16,9 @@ function getNetworkName() {
   }
   let rootNetworkName = name;
   if (isETH || this?.isErc20Token) {
-    rootNetworkName = 'Ethereum';
+    rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.ETHEREUM;
   } else if (isBNB || this?.isBep2Token) {
-    rootNetworkName = 'Binance';
+    rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.BINANCE;
   }
   return {
     networkName: name,

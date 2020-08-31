@@ -1,4 +1,4 @@
-import { lowerCase, isEqual } from 'lodash';
+import { toLower, isEqual } from 'lodash';
 
 export const isReceiverExist = (
   oldReceivers = [],
@@ -7,5 +7,5 @@ export const isReceiverExist = (
   oldReceivers.some(
     (item) =>
       isEqual(item?.address, receiver.address) ||
-      isEqual(lowerCase(item?.name), lowerCase(receiver.name)),
+      isEqual(toLower(item?.name), toLower(receiver.name)),
   );

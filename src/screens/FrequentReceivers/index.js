@@ -12,4 +12,6 @@ export {
 
 export * from './FrequentReceivers.hooks';
 
+export { default as SelectNetworkName } from './FrequentReceivers.networkName';
+
 export default FrequentReceivers;

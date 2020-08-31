@@ -6,9 +6,12 @@ import {
   ACTION_DELETE_ALL,
   ACTION_SYNC_SUCCESS,
   ACTION_MIGRATE_INCOGNITO_ADDRESS,
+  ACTION_SELECTED_RECEIVER,
+  ACTION_REMOVE_SELECTED_RECEIVER,
 } from '@src/redux/actions/receivers';
 import { isReceiverExist } from '@src/redux/utils/receivers';
 import { CONSTANT_KEYS } from '@src/constants';
+import { isEqual, toLower } from 'lodash';
 
 const initialState = {
   [CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK]: {
@@ -19,6 +22,7 @@ const initialState = {
   [CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK]: {
     receivers: [],
   },
+  selected: null,
 };
 
 export default (state = initialState, action) => {
@@ -48,6 +52,12 @@ export default (state = initialState, action) => {
   case ACTION_UPDATE: {
     const { keySave, receiver } = action.payload;
     const oldReceivers = state[keySave].receivers;
+    const isNameExisted = oldReceivers
+      .filter((item) => item?.address !== receiver?.address)
+      .some((item) => isEqual(toLower(item?.name), toLower(receiver?.name)));
+    if (isNameExisted) {
+      throw new Error('Name is existed!');
+    }
     return {
       ...state,
       [keySave]: {
@@ -57,9 +67,10 @@ export default (state = initialState, action) => {
             item.address === receiver.address
               ? {
                 ...item,
-                name: receiver.name,
+                name: receiver?.name || item?.name,
                 updatedAt: new Date().getTime(),
-                rootNetworkName: receiver?.rootNetworkName,
+                rootNetworkName:
+                      receiver?.rootNetworkName || item?.rootNetworkName,
               }
               : item,
           ),
@@ -136,6 +147,23 @@ export default (state = initialState, action) => {
         ...state[keySave],
         migrateIncognitoAddress: true,
       },
+    };
+  }
+  case ACTION_SELECTED_RECEIVER: {
+    const { address, keySave } = action.payload;
+    const { receivers } = state[keySave];
+    const selected = receivers?.find(
+        (receiver) => receiver?.address === address,
+      );
+    return {
+      ...state,
+      selected: { ...selected, keySave },
+    };
+  }
+  case ACTION_REMOVE_SELECTED_RECEIVER: {
+    return {
+      ...state,
+      selected: null,
     };
   }
   default:

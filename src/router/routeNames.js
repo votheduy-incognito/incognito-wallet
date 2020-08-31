@@ -82,4 +82,5 @@ export default {
   PoolV2HistoryDetail: 'StakeHistoryDetail',
   News: 'News',
   Receipt: 'Receipt',
+  SelectNetworkName: 'SelectNetworkName',
 };
