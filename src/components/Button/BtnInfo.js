@@ -7,7 +7,7 @@ import routeNames from '@src/router/routeNames';
 
 const styled = StyleSheet.create({
   btnInfo: {
-    margin: 5,
+    marginLeft: 5,
   },
 });
 
@@ -25,7 +25,7 @@ const BtnInfo = (props) => {
         style: [styled.btnInfo, props?.style],
       }}
     >
-      <InfoIcon isBlack={props?.isBlack} />
+      <InfoIcon />
     </TouchableOpacity>
   );
 };
