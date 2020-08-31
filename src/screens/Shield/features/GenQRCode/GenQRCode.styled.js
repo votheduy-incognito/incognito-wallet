@@ -70,16 +70,4 @@ export const styled = StyleSheet.create({
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 3,
   },
-  content: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 40,
-  },
-  textContent: {
-    fontFamily: FONT.NAME.medium,
-    lineHeight: FONT.SIZE.regular + 3,
-    fontSize: FONT.SIZE.regular,
-    color: COLORS.white,
-    textAlign: 'center',
-  },
 });

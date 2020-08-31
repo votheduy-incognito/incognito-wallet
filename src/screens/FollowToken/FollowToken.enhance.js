@@ -15,13 +15,9 @@ import {
 
 const enhance = (WrappedComp) => (props) => {
   const tokens = useSelector(availableTokensSelector);
-  const [state, setState] = React.useState({
-    data: [],
-  });
-  const { data } = state;
   const dispatch = useDispatch();
   const [result, keySearch] = useSearchBox({
-    data,
+    data: tokens,
     handleFilter: () => handleFilterTokenByKeySearch({ tokens, keySearch }),
   });
   const handleToggleFollowToken = async (token) => {
@@ -36,21 +32,6 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
 
-  const handleFilterTokensVerified = (checked) => {
-    let _tokens = [];
-    try {
-      _tokens = checked ? tokens.filter((token) => token?.isVerified) : tokens;
-    } catch (error) {
-      console.debug(error);
-    } finally {
-      setState({ ...state, data: _tokens });
-    }
-  };
-
-  React.useEffect(() => {
-    setState({ ...state, data: tokens });
-  }, [tokens]);
-
   return (
     <ErrorBoundary>
       <WrappedComp
@@ -58,7 +39,6 @@ const enhance = (WrappedComp) => (props) => {
           ...props,
           data: uniqBy([...result], 'tokenId'),
           handleToggleFollowToken,
-          handleFilterTokensVerified,
         }}
       />
     </ErrorBoundary>
