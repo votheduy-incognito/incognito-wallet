@@ -60,7 +60,7 @@ export default class Token {
       ];
     }
 
-    if (isArray(submitParam) && submitParam?.TokenReceivers?.length > 0) {
+    if (isArray(submitParam?.TokenReceivers) && submitParam?.TokenReceivers?.length > 0) {
       _submitParam.TokenReceivers = [
         ..._submitParam?.TokenReceivers.filter(
           (item) => Number(item?.Amount) > 0 && item?.PaymentAddress !== '',
