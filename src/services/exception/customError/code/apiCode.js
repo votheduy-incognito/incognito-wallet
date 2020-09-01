@@ -29,6 +29,7 @@ const api = {
   api_tx_added: apiError(-80002),
   api_amount_invalid: apiError(-80003),
   api_trade_maintain: apiError(-2009),
+  api_insufficient_funds: apiError(-9001)
 };
 
 

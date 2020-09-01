@@ -52,5 +52,6 @@ export default {
   [CODE.FULLNODE_DOWN]: 'The network is a little busy',
   [CODE.api_unstake_fail]: 'Your previous withdrawal is still processing. Please wait then try again.',
   [CODE.web_js_can_not_created_tx]: 'Please wait for your previous deposit to finish processing, then try again.',
-  [CODE.api_trade_maintain]: 'The exchange is down for maintenance. Please wait then try again later.'
+  [CODE.api_trade_maintain]: 'The exchange is down for maintenance. Please wait then try again later.',
+  [CODE.api_insufficient_funds]: 'Insufficient funds'
 };
