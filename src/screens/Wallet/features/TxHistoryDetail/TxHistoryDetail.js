@@ -131,7 +131,7 @@ const TxHistoryDetail = (props) => {
     {
       label: 'Expired at',
       valueText: formatUtil.formatDateTime(history?.expiredAt),
-      disabled: !history?.expiredAt,
+      disabled: history?.decentralized ? true : !history?.expiredAt,
     },
     {
       label: 'TxID',
