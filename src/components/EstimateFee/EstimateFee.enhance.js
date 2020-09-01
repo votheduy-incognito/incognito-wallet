@@ -38,7 +38,6 @@ const enhance = (WrappedComp) => (props) => {
         }),
       );
     } catch (error) {
-      console.debug(error);
       new ExHandler(error).showErrorToast();
     }
   };
