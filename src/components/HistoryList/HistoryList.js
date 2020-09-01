@@ -89,7 +89,7 @@ const HistoryItem = ({ history }) => {
           {...generateTestId(TOKEN.TRANSACTION_TYPE)}
         />
         <NormalText
-          text={_amount ? trim(_amount) : '0'}
+          text={_amount ? trim(_amount) : ''}
           style={styleSheet.title}
           {...generateTestId(TOKEN.TRANSACTION_CONTENT)}
         />
