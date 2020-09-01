@@ -29,6 +29,7 @@ import {
   ACTION_FETCHED_USER_FEES,
   ACTION_FETCHING_USER_FEES,
   ACTION_TOGGLE_FAST_FEE,
+  ACTION_REMOVE_FEE_TYPE,
 } from './EstimateFee.constant';
 import {
   apiGetEstimateFeeFromChain,
@@ -198,25 +199,30 @@ export const actionHandleMinFeeEst = ({ minFeePTokenEst }) => async (
   const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
   const estimateFee = estimateFeeSelector(state);
   const { rate } = estimateFee;
+  const { userFees, isUnShield } = feeDataSelector(state);
   const minFeePToken = floor(minFeePTokenEst * rate);
   const minFeePTokenText = format.toFixed(
     convert.toHumanAmount(minFeePToken, selectedPrivacy?.pDecimals),
     selectedPrivacy?.pDecimals,
   );
-  await new Promise.all([
-    await dispatch(
-      actionAddFeeType({
-        tokenId: selectedPrivacy?.tokenId,
-        symbol: selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol,
-      }),
-    ),
-    await dispatch(
+  let task = [
+    dispatch(
       actionFetchedMinPTokenFee({
         minFeePToken,
         minFeePTokenText,
       }),
     ),
-  ]);
+    dispatch(
+      actionAddFeeType({
+        tokenId: selectedPrivacy?.tokenId,
+        symbol: selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol,
+      }),
+    ),
+  ];
+  await new Promise.all(task);
+  if (isUnShield && !!userFees?.isFetched && !userFees?.TokenFees) {
+    await dispatch(actionRemoveFeeType({ tokenId: selectedPrivacy?.tokenId }));
+  }
 };
 
 export const actionHandleFeeEst = ({ feeEst }) => async (
@@ -343,6 +349,11 @@ export const actionHandleFeePTokenEst = ({ feePTokenEst }) => async (
     }
   }
 };
+
+export const actionRemoveFeeType = (payload) => ({
+  type: ACTION_REMOVE_FEE_TYPE,
+  payload,
+});
 
 export const actionAddFeeType = (payload) => ({
   type: ACTION_ADD_FEE_TYPE,

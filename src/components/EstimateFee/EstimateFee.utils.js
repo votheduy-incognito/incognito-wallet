@@ -146,12 +146,9 @@ export const getTotalFee = ({
     const userFees = isUsedPRVFee
       ? userFeesData?.PrivacyFees
       : userFeesData?.TokenFees;
-    userFee = Number(userFees?.Level1);
+    userFee = Number(userFees?.Level1) || 0;
     if (hasMultiLevel) {
       userFee = Number(fast2x ? userFees?.Level2 : userFees?.Level1);
-    }
-    if (!userFee) {
-      throw new Error('Invalid user fee');
     }
     totalFee = floor(userFee + Number(feeEst));
     totalFeeText = format.toFixed(
