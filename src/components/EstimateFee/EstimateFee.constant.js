@@ -17,3 +17,4 @@ export const ACTION_FETCHED_VALID_ADDR = '[estimateFee] Fetched valid address';
 export const ACTION_FETCHED_USER_FEES = '[estimateFee] Fetched user fees';
 export const ACTION_FETCHING_USER_FEES = '[estimateFee] Fetching user fees';
 export const ACTION_TOGGLE_FAST_FEE = '[estimateFee] Toggle fast fee';
+export const ACTION_REMOVE_FEE_TYPE = '[estimateFee] Remove fee type';

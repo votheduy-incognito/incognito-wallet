@@ -1,7 +1,7 @@
 import { CONSTANT_COMMONS } from '@src/constants';
 import format from '@src/utils/format';
 import convert from '@src/utils/convert';
-import { floor, isNull, isEmpty } from 'lodash';
+import { floor, isEmpty } from 'lodash';
 import {
   ACTION_FETCHING_FEE,
   ACTION_FETCHED_FEE,
@@ -19,6 +19,7 @@ import {
   ACTION_FETCHED_USER_FEES,
   ACTION_FETCHING_USER_FEES,
   ACTION_TOGGLE_FAST_FEE,
+  ACTION_REMOVE_FEE_TYPE,
 } from './EstimateFee.constant';
 import { MAX_FEE_PER_TX, hasMultiLevelUsersFee } from './EstimateFee.utils';
 
@@ -116,12 +117,23 @@ export default (state = initialState, action) => {
   }
   case ACTION_ADD_FEE_TYPE: {
     const { tokenId } = action.payload;
-    if (tokenId === CONSTANT_COMMONS.PRV.id) {
+    const isExisted = state.types.some((item) => item?.tokenId === tokenId);
+    if (tokenId === CONSTANT_COMMONS.PRV.id || isExisted) {
       return state;
     }
     return {
       ...state,
       types: [...initialState.types, action.payload],
+    };
+  }
+  case ACTION_REMOVE_FEE_TYPE: {
+    const { tokenId } = action.payload;
+    if (tokenId === CONSTANT_COMMONS.PRV.id) {
+      return state;
+    }
+    return {
+      ...state,
+      types: [...state?.types.filter((item) => item?.tokenId !== tokenId)],
     };
   }
   case ACTION_CHANGE_FEE_TYPE: {
