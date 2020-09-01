@@ -183,14 +183,15 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       const tx = await handleSendToken({ ...payload, tempAddress });
 
       if (tx) {
-        await updatePTokenFee({
+        const payloadUpdatePTokenFee = {
           fee: originalFee,
           paymentAddress: tempAddress,
           userFeesData,
           isUsedPRVFee,
           fast2x,
           txId: tx?.txId,
-        });
+        };
+        await updatePTokenFee(payloadUpdatePTokenFee);
       }
       return tx;
     } catch (e) {

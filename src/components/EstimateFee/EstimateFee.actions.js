@@ -162,10 +162,11 @@ export const actionFetchFee = ({ amount, address, screen, memo }) => async (
     }
     if (selectedPrivacy?.isToken) {
       try {
-        let feePTokenEstData = await apiGetEstimateFeeFromChain({
+        const payload = {
           Prv: feeEst,
           TokenID: selectedPrivacy?.tokenId,
-        });
+        };
+        let feePTokenEstData = await apiGetEstimateFeeFromChain(payload);
         feePTokenEst = feePTokenEstData;
         minFeePTokenEst = feePTokenEstData;
       } catch (error) {
@@ -220,7 +221,7 @@ export const actionHandleMinFeeEst = ({ minFeePTokenEst }) => async (
     ),
   ];
   await new Promise.all(task);
-  if (isUnShield && !!userFees?.isFetched && !userFees?.TokenFees) {
+  if (isUnShield && !!userFees?.isFetched && !userFees?.data?.TokenFees) {
     await dispatch(actionRemoveFeeType({ tokenId: selectedPrivacy?.tokenId }));
   }
 };
