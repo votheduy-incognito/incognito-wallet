@@ -37,12 +37,10 @@ const Form = createForm(formName, {
 
 const RightLabel = React.memo(() => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
-  const decimalDigits = useSelector(decimalDigitsSelector);
   const amount = format.amount(
     floor(selectedPrivacy?.amount),
     selectedPrivacy?.pDecimals,
     true,
-    decimalDigits,
   );
   return (
     <Text style={styled.amount} numberOfLines={1} ellipsizeMode="tail">
