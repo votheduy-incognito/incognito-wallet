@@ -150,7 +150,8 @@ export const actionFetchFee = ({ amount, address, screen, memo }) => async (
       !address ||
       !selectedPrivacy?.tokenId ||
       isFetching ||
-      _originalAmount === 0
+      _originalAmount === 0 ||
+      _originalAmount > selectedPrivacy?.amount
     ) {
       return;
     }
