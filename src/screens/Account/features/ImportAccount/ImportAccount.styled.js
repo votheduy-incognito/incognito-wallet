@@ -1,4 +1,4 @@
-import { COLORS, THEME, UTILS, FONT } from '@src/styles';
+import { COLORS, THEME, FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
@@ -6,7 +6,7 @@ const style = StyleSheet.create({
     flex: 1,
   },
   form: {
-    marginTop: 16,
+    marginTop: 42,
     flex: 1,
   },
   submitBtn: {

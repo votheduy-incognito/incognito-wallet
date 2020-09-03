@@ -7,7 +7,6 @@ export const styled = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
-    marginTop: 42,
   },
 });
 
@@ -19,7 +18,7 @@ export const networkItemStyle = StyleSheet.create({
     flex: 1,
     opacity: 0.3,
     flexDirection: 'row',
-    marginBottom: 30
+    marginBottom: 30,
   },
   editContainer: {
     marginBottom: SPACING.large,
