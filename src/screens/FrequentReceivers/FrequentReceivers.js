@@ -62,10 +62,13 @@ const ListAllReceivers = (props) => {
         style={{
           flex: 1,
           marginHorizontal: 25,
-          marginTop: 42,
         }}
       >
-        <ScrollView>
+        <ScrollView
+          style={{
+            paddingTop: 42,
+          }}
+        >
           <ListReceivers {...{ receivers, isEmpty }} />
         </ScrollView>
       </Wrapper>
