@@ -318,3 +318,7 @@ export const actionFetchHistoryMainCrypto = () => async (
     await dispatch(actionFetchFailHistory());
   }
 };
+
+export const actionToggleUnVerifiedToken = () => ({
+  type: type.ACTION_TOGGLE_UNVERIFIED_TOKEN,
+});

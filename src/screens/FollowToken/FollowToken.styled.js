@@ -5,9 +5,11 @@ export const styled = StyleSheet.create({
   container: {
     flex: 1,
   },
-  flatList: {},
+  flatList: {
+    paddingTop: 27,
+  },
   text: {
-    fontFamily: FONT.NAME.regular,
+    fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 5,
     color: COLORS.colorGreyBold,
@@ -19,13 +21,25 @@ export const styled = StyleSheet.create({
     color: COLORS.black,
   },
   addManually: {
-    marginBottom: 30,
-    marginTop: 20,
+    marginBottom: 40,
+    marginTop: 15,
   },
   listToken: {
     flex: 1,
   },
   scrollview: {
     flex: 1,
+  },
+  hook: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 35,
+  },
+  hookText: {
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 5,
+    color: COLORS.black,
+    marginLeft: 5,
   },
 });

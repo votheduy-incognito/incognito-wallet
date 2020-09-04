@@ -23,11 +23,14 @@ export const useSearchBox = (props) => {
   const isKeyEmpty = isEmpty(keySearch);
   const [state, setState] = React.useState(initialState);
   const { result } = state;
-  React.useEffect(() => {
+  const handleFilterData = (data = null) => {
     if (!isEmpty(keySearch)) {
-      return setState({ ...state, result: handleFilter() });
+      return setState({ ...state, result: data ? data : handleFilter() });
     }
-  }, [keySearch]);
+  };
+  React.useEffect(() => {
+    handleFilterData();
+  }, [keySearch, data?.length]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -36,7 +39,7 @@ export const useSearchBox = (props) => {
     }, []),
   );
 
-  return [isKeyEmpty ? data : result, keySearch];
+  return [isKeyEmpty ? data : result, keySearch, handleFilterData];
 };
 
 useSearchBox.defaultProps = {};
