@@ -3,8 +3,8 @@ import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import Header from '@src/components/Header';
 import { COLORS, FONT } from '@src/styles';
 import FeatherIcons from 'react-native-vector-icons/Feather';
-import { Divider } from '@src/components/core';
 import { withLayout_2 } from '@src/components/Layout';
+import { compose } from 'recompose';
 import { TYPES, AddManuallyContext } from './AddManually.enhance';
 
 const styled = StyleSheet.create({
@@ -24,7 +24,10 @@ const styled = StyleSheet.create({
   typeItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 15,
+    marginBottom: 30,
+  },
+  typesContainer: {
+    marginTop: 42,
   },
 });
 
@@ -33,7 +36,7 @@ const Modal = () => {
     AddManuallyContext,
   );
   const renderTypes = () =>
-    Object.values(TYPES).map((TYPE, index, allType) => {
+    Object.values(TYPES).map((TYPE) => {
       const selected = type === TYPE.value;
       return (
         <View key={TYPE.value}>
@@ -46,7 +49,7 @@ const Modal = () => {
               {TYPE.label}
             </Text>
             {selected && (
-              <FeatherIcons name="check" size={24} color={COLORS.primary} />
+              <FeatherIcons name="check" size={24} color={COLORS.black} />
             )}
           </TouchableOpacity>
         </View>
@@ -55,11 +58,16 @@ const Modal = () => {
   return (
     <View style={styled.container}>
       <Header title="Select coin type" onGoBack={toggleChooseType} />
-      {renderTypes()}
+      <View style={styled.typesContainer}>{renderTypes()}</View>
     </View>
   );
 };
 
 Modal.propTypes = {};
 
-export default withLayout_2(Modal);
+export default compose(
+  (Comp) => (props) => (
+    <Comp {...{ props, containerStyled: { borderRadius: 8 } }} />
+  ),
+  withLayout_2,
+)(Modal);
