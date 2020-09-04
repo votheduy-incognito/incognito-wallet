@@ -26,3 +26,4 @@ export { default as BtnInfo } from './BtnInfo';
 export { default as BtnNotification } from './BtnNotification';
 export { default as BtnHasNotification } from './BtnHasNotification';
 export { default as BtnFast } from './BtnFast';
+export { default as BtnChecked } from './BtnChecked';
