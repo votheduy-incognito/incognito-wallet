@@ -1,6 +1,6 @@
 import { COLORS } from '@src/styles';
 import React, { Component } from 'react';
-import { Animated } from 'react-native';
+import { Animated, Keyboard } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Text from '../Text';
 import styles from './style';
@@ -77,7 +77,7 @@ class Toast extends Component {
   show = (msg, config = {}) => {
     const { opacityAni, animation } = this.state;
     config.duration = config?.duration || DURATION;
-
+    Keyboard.dismiss();
     // stop exist animation
     if (animation && typeof animation.stop === 'function') {
       animation.stop();
