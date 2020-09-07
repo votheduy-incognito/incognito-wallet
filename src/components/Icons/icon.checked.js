@@ -10,8 +10,8 @@ const CheckedIcon = (props) => {
     <Image
       source={checked ? srcCheckedIcon : srcUnCheckedIcon}
       style={{
-        width: 15,
-        height: 15,
+        width: 18,
+        height: 18,
       }}
     />
   );
