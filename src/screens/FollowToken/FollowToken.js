@@ -43,7 +43,12 @@ const Item = ({ item, handleToggleFollowToken }) =>
   }, [item?.isFollowed]);
 
 const FollowToken = React.memo((props) => {
-  const { tokensFactories, handleToggleFollowToken } = props;
+  const {
+    tokensFactories,
+    handleToggleFollowToken,
+    onToggleUnVerifiedTokens,
+    toggleUnVerified,
+  } = props;
   return (
     <View style={styled.container}>
       <Header title="Add a coin" canSearch />
@@ -51,6 +56,8 @@ const FollowToken = React.memo((props) => {
         {tokensFactories.map((item, index) => (
           <ListToken
             {...item}
+            toggleUnVerified={toggleUnVerified}
+            onToggleUnVerifiedTokens={onToggleUnVerifiedTokens}
             renderItem={({ item }) => (
               <Item
                 item={item}
@@ -69,6 +76,8 @@ const FollowToken = React.memo((props) => {
 FollowToken.propTypes = {
   tokensFactories: PropTypes.any.isRequired,
   handleToggleFollowToken: PropTypes.array.isRequired,
+  onToggleUnVerifiedTokens: PropTypes.func.isRequired,
+  toggleUnVerified: PropTypes.bool.isRequired,
 };
 
 export default withFollowToken(FollowToken);

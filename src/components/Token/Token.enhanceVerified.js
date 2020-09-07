@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import { availableTokensSelector } from '@src/redux/selectors/shared';
 import { useSearchBox } from '@src/components/Header';
 import { handleFilterTokenByKeySearch } from '@src/components/Token';
-import { toggleUnVerifiedTokensSelector } from '@src/redux/selectors/token';
 import PropTypes from 'prop-types';
+import { useTokenList } from './Token.useEffect';
 
 const enhance = (WrappedComp) => (props) => {
   const availableTokens =
@@ -17,7 +17,7 @@ const enhance = (WrappedComp) => (props) => {
       ? verifiedTokens.push(token)
       : unVerifiedTokens.push(token),
   );
-  const toggleUnVerified = useSelector(toggleUnVerifiedTokensSelector);
+  const [toggleUnVerified, onToggleUnVerifiedTokens] = useTokenList();
   const [_verifiedTokens, keySearch, handleFilterData] = useSearchBox({
     data: verifiedTokens,
     handleFilter: () =>
@@ -61,6 +61,12 @@ const enhance = (WrappedComp) => (props) => {
       styledListToken: { paddingTop: 15 },
     },
   ];
+
+  React.useEffect(() => {
+    if (toggleUnVerified && !keySearch) {
+      onToggleUnVerifiedTokens();
+    }
+  }, [keySearch]);
   return (
     <ErrorBoundary>
       <WrappedComp
@@ -68,6 +74,7 @@ const enhance = (WrappedComp) => (props) => {
           ...props,
           tokensFactories,
           toggleUnVerified,
+          onToggleUnVerifiedTokens,
         }}
       />
     </ErrorBoundary>
