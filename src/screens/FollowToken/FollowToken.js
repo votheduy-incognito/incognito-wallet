@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import Header from '@src/components/Header';
-import { TokenBasic as Token } from '@src/components/Token';
+import { TokenBasic as Token, ListToken } from '@src/components/Token';
 import PropTypes from 'prop-types';
 import routeNames from '@src/router/routeNames';
 import { useNavigation } from 'react-navigation-hooks';
@@ -9,8 +9,6 @@ import {
   TouchableOpacity,
   KeyboardAwareScrollView,
 } from '@src/components/core';
-import { FlatList } from '@src/components/core/FlatList';
-import { BtnChecked } from '@src/components/Button';
 import { styled } from './FollowToken.styled';
 import withFollowToken from './FollowToken.enhance';
 
@@ -31,19 +29,6 @@ const AddManually = () => {
   );
 };
 
-const Hook = React.memo((props) => {
-  const { toggleUnVerified, handleFilterTokensUnVerified } = props;
-  return (
-    <View style={styled.hook}>
-      <BtnChecked
-        onPress={handleFilterTokensUnVerified}
-        checked={toggleUnVerified}
-      />
-      <Text style={styled.hookText}>Show unverified coins</Text>
-    </View>
-  );
-});
-
 const Item = ({ item, handleToggleFollowToken }) =>
   React.useMemo(() => {
     return (
@@ -57,40 +42,23 @@ const Item = ({ item, handleToggleFollowToken }) =>
     );
   }, [item?.isFollowed]);
 
-const ListToken = (props) => {
-  const {
-    data,
-    handleToggleFollowToken,
-    isVerifiedTokens,
-    visible,
-    styledListToken,
-    ...rest
-  } = props;
-  if (!visible || data.length === 0) {
-    return null;
-  }
-  return (
-    <FlatList
-      showsVerticalScrollIndicator={false}
-      style={styledListToken}
-      data={data}
-      renderItem={({ item }) => <Item {...{ item, handleToggleFollowToken }} />}
-      keyExtractor={(token) => token?.tokenId}
-      removeClippedSubviews
-      initialNumToRender={10}
-      ListFooterComponent={isVerifiedTokens ? <Hook {...rest} /> : null}
-    />
-  );
-};
-
 const FollowToken = React.memo((props) => {
-  const { tokensFactories, ...rest } = props;
+  const { tokensFactories, handleToggleFollowToken } = props;
   return (
     <View style={styled.container}>
       <Header title="Add a coin" canSearch />
       <KeyboardAwareScrollView>
         {tokensFactories.map((item, index) => (
-          <ListToken {...{ ...rest, ...item }} key={index} />
+          <ListToken
+            {...item}
+            renderItem={({ item }) => (
+              <Item
+                item={item}
+                handleToggleFollowToken={handleToggleFollowToken}
+              />
+            )}
+            key={index}
+          />
         ))}
       </KeyboardAwareScrollView>
       <AddManually />
@@ -100,19 +68,7 @@ const FollowToken = React.memo((props) => {
 
 FollowToken.propTypes = {
   tokensFactories: PropTypes.any.isRequired,
-};
-
-ListToken.propTypes = {
-  data: PropTypes.array.isRequired,
-  handleToggleFollowToken: PropTypes.func.isRequired,
-  isVerifiedTokens: PropTypes.bool.isRequired,
-  visible: PropTypes.bool.isRequired,
-  styledListToken: PropTypes.any.isRequired,
-};
-
-Hook.propTypes = {
-  toggleUnVerified: PropTypes.bool.isRequired,
-  handleFilterTokensUnVerified: PropTypes.func.isRequired,
+  handleToggleFollowToken: PropTypes.array.isRequired,
 };
 
 export default withFollowToken(FollowToken);

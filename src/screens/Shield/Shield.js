@@ -3,13 +3,13 @@ import { View } from 'react-native';
 import Header from '@src/components/Header';
 import { BtnQuestionDefault } from '@src/components/Button';
 import PropTypes from 'prop-types';
-import { TokenBasic as Token } from '@src/components/Token';
-import { FlatList } from '@src/components/core/FlatList';
+import { TokenBasic as Token, ListToken } from '@src/components/Token';
+import { KeyboardAwareScrollView } from '@src/components/core';
 import { styled } from './Shield.styled';
 import withShield from './Shield.enhance';
 
 const Shield = (props) => {
-  const { data, handleWhyShield, handleShield } = props;
+  const { handleShield, handleWhyShield, tokensFactories } = props;
   return (
     <View style={styled.container}>
       <Header
@@ -17,31 +17,33 @@ const Shield = (props) => {
         canSearch
         rightHeader={<BtnQuestionDefault onPress={handleWhyShield} />}
       />
-      <FlatList
-        style={styled.flatList}
-        data={[...data]}
-        renderItem={({ item }) => (
-          <Token
-            externalSymbol
-            onPress={() => handleShield(item?.tokenId)}
-            tokenId={item?.tokenId}
-            symbol="externalSymbol"
-            styledSymbol={styled.styledSymbol}
-            styledName={styled.styledName}
-            styledContainerName={styled.styledContainerName}
+      <KeyboardAwareScrollView>
+        {tokensFactories.map((item, index) => (
+          <ListToken
+            {...item}
+            renderItem={({ item }) => (
+              <Token
+                externalSymbol
+                onPress={() => handleShield(item?.tokenId)}
+                tokenId={item?.tokenId}
+                symbol="externalSymbol"
+                styledSymbol={styled.styledSymbol}
+                styledName={styled.styledName}
+                styledContainerName={styled.styledContainerName}
+              />
+            )}
+            key={index}
           />
-        )}
-        keyExtractor={(token) => token?.tokenId}
-        extraData={[...data]}
-      />
+        ))}
+      </KeyboardAwareScrollView>
     </View>
   );
 };
 
 Shield.propTypes = {
-  data: PropTypes.array.isRequired,
   handleWhyShield: PropTypes.func.isRequired,
   handleShield: PropTypes.func.isRequired,
+  tokensFactories: PropTypes.array.isRequired,
 };
 
 export default withShield(Shield);
