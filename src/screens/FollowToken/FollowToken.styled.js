@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { FONT, COLORS, UTILS } from '@src/styles';
+import { FONT, COLORS } from '@src/styles';
 
 export const styled = StyleSheet.create({
   container: {
@@ -29,17 +29,5 @@ export const styled = StyleSheet.create({
   },
   scrollview: {
     flex: 1,
-  },
-  hook: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 35,
-  },
-  hookText: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 5,
-    color: COLORS.black,
-    marginLeft: 5,
   },
 });
