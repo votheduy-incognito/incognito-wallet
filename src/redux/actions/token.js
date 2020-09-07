@@ -18,6 +18,7 @@ import {
 import { getBalance as getAccountBalance } from '@src/redux/actions/account';
 import internalTokenModel from '@models/token';
 import Util from '@src/utils/Util';
+import { actionLogEvent } from '@src/screens/Performance';
 import { setWallet } from './wallet';
 import {
   followingTokenSelector,
@@ -110,8 +111,16 @@ export const getBalance = (token) => async (dispatch, getState) => {
   if (!token) {
     throw new Error('Token object is required');
   }
+  let symbol = token?.externalSymbol || token?.symbol;
   try {
-    await dispatch(getBalanceStart(token?.id));
+    await dispatch(
+      actionLogEvent({
+        desc: `Start getting balance token ${symbol}`,
+      }),
+    );
+
+    dispatch(getBalanceStart(token?.id));
+
     const wallet = getState()?.wallet;
     const account = accountSeleclor.defaultAccount(getState());
     if (!wallet) {
@@ -121,6 +130,11 @@ export const getBalance = (token) => async (dispatch, getState) => {
       throw new Error('Account is not exist');
     }
     const balance = await accountService.getBalance(account, wallet, token.id);
+    await dispatch(
+      actionLogEvent({
+        desc: `Balance token ${symbol} is: ${balance}`,
+      }),
+    );
     dispatch(
       setToken({
         ...token,
@@ -138,6 +152,11 @@ export const getBalance = (token) => async (dispatch, getState) => {
     throw e;
   } finally {
     dispatch(getBalanceFinish(token?.id));
+    await dispatch(
+      actionLogEvent({
+        desc: `Finish getting balance token ${symbol}`,
+      }),
+    );
   }
 };
 
