@@ -4,9 +4,7 @@ import { FlatList } from '@src/components/core/FlatList';
 import { BtnChecked } from '@src/components/Button';
 import { Text, StyleSheet } from 'react-native';
 import { FONT, COLORS } from '@src/styles';
-import { useSelector, useDispatch } from 'react-redux';
-import { toggleUnVerifiedTokensSelector } from '@src/redux/selectors/token';
-import { actionToggleUnVerifiedToken } from '@src/redux/actions/token';
+import { useSelector } from 'react-redux';
 import { isEmpty, trim, toLower } from 'lodash';
 import { searchBoxConfig } from '@src/components/Header';
 import { formValueSelector } from 'redux-form';
@@ -33,8 +31,10 @@ const ListToken = (props) => {
     visible,
     styledListToken,
     renderItem,
+    onToggleUnVerifiedTokens,
+    toggleUnVerified,
   } = props;
-  const toggleUnVerified = useSelector(toggleUnVerifiedTokensSelector);
+
   const selector = formValueSelector(searchBoxConfig.form);
   const keySearch = trim(
     toLower(
@@ -42,9 +42,7 @@ const ListToken = (props) => {
     ),
   );
   const isKeyEmpty = isEmpty(keySearch);
-  const dispatch = useDispatch();
-  const handleFilterTokensUnVerified = () =>
-    dispatch(actionToggleUnVerifiedToken());
+
   if (!visible || data.length === 0) {
     return null;
   }
@@ -61,7 +59,7 @@ const ListToken = (props) => {
         isVerifiedTokens && !isKeyEmpty ? (
           <BtnChecked
             btnStyle={styled.hook}
-            onPress={handleFilterTokensUnVerified}
+            onPress={onToggleUnVerifiedTokens}
             checked={toggleUnVerified}
             hook={<Text style={styled.hookText}>Show unverified coins</Text>}
           />
@@ -81,6 +79,8 @@ ListToken.propTypes = {
   visible: PropTypes.bool.isRequired,
   styledListToken: PropTypes.any,
   renderItem: PropTypes.any.isRequired,
+  onToggleUnVerifiedTokens: PropTypes.func.isRequired,
+  toggleUnVerified: PropTypes.bool.isRequired,
 };
 
 export default ListToken;

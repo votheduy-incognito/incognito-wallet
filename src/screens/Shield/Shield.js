@@ -9,7 +9,13 @@ import { styled } from './Shield.styled';
 import withShield from './Shield.enhance';
 
 const Shield = (props) => {
-  const { handleShield, handleWhyShield, tokensFactories } = props;
+  const {
+    handleShield,
+    handleWhyShield,
+    tokensFactories,
+    onToggleUnVerifiedTokens,
+    toggleUnVerified,
+  } = props;
   return (
     <View style={styled.container}>
       <Header
@@ -21,6 +27,8 @@ const Shield = (props) => {
         {tokensFactories.map((item, index) => (
           <ListToken
             {...item}
+            toggleUnVerified={toggleUnVerified}
+            onToggleUnVerifiedTokens={onToggleUnVerifiedTokens}
             renderItem={({ item }) => (
               <Token
                 externalSymbol
@@ -44,6 +52,8 @@ Shield.propTypes = {
   handleWhyShield: PropTypes.func.isRequired,
   handleShield: PropTypes.func.isRequired,
   tokensFactories: PropTypes.array.isRequired,
+  onToggleUnVerifiedTokens: PropTypes.func.isRequired,
+  toggleUnVerified: PropTypes.bool.isRequired,
 };
 
 export default withShield(Shield);
