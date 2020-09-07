@@ -7,13 +7,13 @@ import {
   AccountWallet,
   KeyWallet,
   Wallet,
+  constants,
 } from 'incognito-chain-web-js/build/wallet';
 import _ from 'lodash';
 import { STACK_TRACE } from '@services/exception/customError/code/webjsCode';
 import { cachePromise } from '@services/cache';
 import { chooseBestCoinToSpent } from 'incognito-chain-web-js/lib/tx/utils';
 import bn from 'bn.js';
-import { getPassphrase } from '@services/wallet/passwordService';
 import { CustomError, ErrorCode } from '../exception';
 import { getActiveShard } from './RpcClientService';
 import tokenService from './tokenService';
@@ -289,29 +289,6 @@ export default class Account {
       // save wallet
       await saveWallet(wallet);
     } catch (e) {
-      throw e;
-    }
-    await Wallet.resetProgressTx();
-    return result;
-  }
-
-  static async defragment(amount, fee, isPrivacy, account, wallet) {
-    // param: payment address string, amount in Number (miliconstant)
-    await Wallet.resetProgressTx();
-    const indexAccount = wallet.getAccountIndexByName(account.name);
-    // create and send constant
-    let result;
-    try {
-      result = await wallet.MasterAccount.child[indexAccount].defragment(
-        amount,
-        fee,
-        isPrivacy,
-      );
-
-      // save wallet
-      await saveWallet(wallet);
-    } catch (e) {
-      await Wallet.resetProgressTx();
       throw e;
     }
     await Wallet.resetProgressTx();
@@ -741,5 +718,51 @@ export default class Account {
     }
 
     return '';
+  }
+
+  static getUTXOs(wallet, account, coinId) {
+    const indexAccount = wallet.getAccountIndexByName(
+      account.name || account.AccountName,
+    );
+
+    const walletAccount = wallet.MasterAccount.child[indexAccount];
+    return walletAccount?.coinUTXOs[coinId || COINS.PRV_ID];
+  }
+
+  static getMaxInputPerTx() {
+    return constants.MAX_INPUT_PER_TX;
+  }
+
+  static hasExceededMaxInput(wallet, account, coinId) {
+    const noOfUTXOs = this.getUTXOs(wallet, account, coinId);
+
+    return noOfUTXOs > this.getMaxInputPerTx();
+  }
+
+  /**
+   * Create multiple tx to defragment all utxo in account
+   * @param paymentInfos
+   * @param {number} fee
+   * @param {string} isPrivacy
+   * @param {object} account
+   * @param {object} wallet
+   * @returns {Promise<*>}
+   */
+  static async defragmentNativeCoin(
+    paymentInfos,
+    fee,
+    isPrivacy,
+    account,
+    wallet,
+  ) {
+    const indexAccount = wallet.getAccountIndexByName(this.getAccountName(account));
+    const result = await wallet.MasterAccount.child[
+      indexAccount
+    ].defragmentNativeCoin(fee, isPrivacy);
+
+    // save wallet
+    await saveWallet(wallet);
+    await Wallet.resetProgressTx();
+    return result;
   }
 }
