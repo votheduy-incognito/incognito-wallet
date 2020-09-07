@@ -203,7 +203,13 @@ export default (state = initialState, action) => {
   case ACTION_FETCHED_USER_FEES: {
     const data = action.payload;
     if (isEmpty(data)) {
-      return state;
+      return {
+        ...state,
+        userFees: {
+          ...state.userFees,
+          isFetching: false,
+        },
+      };
     }
     const hasMultiLevel = hasMultiLevelUsersFee(data);
     return {
