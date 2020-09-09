@@ -10,6 +10,7 @@ export const combineHistory = ({
   externalSymbol,
   decimals,
   pDecimals,
+  symbol,
 }) => {
   const data = [];
   historiesFromApi &&
@@ -24,7 +25,7 @@ export const combineHistory = ({
         fromAddress: h?.userPaymentAddress,
         amount: h?.incognitoAmount,
         requestedAmount: h?.requestedAmount,
-        symbol: externalSymbol,
+        symbol: externalSymbol || symbol,
         decimals,
         pDecimals,
         status: h?.statusText,
@@ -55,7 +56,7 @@ export const combineHistory = ({
           : CONSTANT_COMMONS.HISTORY.TYPE.SEND,
         toAddress: h?.receivers?.length && h?.receivers[0],
         amount: h?.amountPToken,
-        symbol: externalSymbol || h?.tokenSymbol,
+        symbol: externalSymbol || symbol || h?.tokenSymbol,
         decimals,
         pDecimals,
         status: h?.status,
