@@ -6,7 +6,7 @@ import format from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
 import floor from 'lodash/floor';
 import { getMinMaxWithdrawAmount } from '@src/services/api/misc';
-import walletValidator from 'wallet-address-validator';
+// import walletValidator from 'wallet-address-validator';
 import { trim } from 'lodash';
 import {
   estimateUserFees,
@@ -34,7 +34,7 @@ import {
 import {
   apiGetEstimateFeeFromChain,
   apiCheckValidAddress,
-  apiCheckIfValidAddressETH,
+  // apiCheckIfValidAddressETH,
 } from './EstimateFee.services';
 import { estimateFeeSelector, feeDataSelector } from './EstimateFee.selector';
 import { formName } from './EstimateFee.input';
@@ -463,18 +463,19 @@ export const actionValAddr = (address = '') => async (dispatch, getState) => {
         selectedPrivacy?.currencyType,
       );
       isAddressValidated = !!validAddr?.data?.Result;
-      const isAddressERC20Valid = walletValidator.validate(
-        _address,
-        CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH,
-        'both',
-      );
-      const isERC20 =
-        selectedPrivacy?.isErc20Token ||
-        selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
-      if (isERC20 && isAddressERC20Valid && !!_address) {
-        const validETHAddr = await apiCheckIfValidAddressETH(_address);
-        isValidETHAddress = !!validETHAddr?.data?.Result;
-      }
+      // const isAddressERC20Valid = walletValidator.validate(
+      //   _address,
+      //   CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH,
+      //   'both',
+      // );
+      // const isERC20 =
+      //   selectedPrivacy?.isErc20Token ||
+      //   selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
+      //check is smart contract address   
+      // if (isERC20 && isAddressERC20Valid && !!_address) {
+      //   const validETHAddr = await apiCheckIfValidAddressETH(_address);
+      //   isValidETHAddress = !!validETHAddr?.data?.Result;
+      // }
     }
   } catch (error) {
     throw error;
