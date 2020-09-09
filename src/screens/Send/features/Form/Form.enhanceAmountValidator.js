@@ -48,7 +48,6 @@ export const enhanceAmountValidation = (WrappedComp) => (props) => {
 
   const getAmountValidator = () => {
     const val = [];
-    val.push(...validator.combinedAmount);
     if (minAmountValidator) val.push(minAmountValidator);
     if (maxAmountValidator) val.push(maxAmountValidator);
     if (
@@ -57,6 +56,7 @@ export const enhanceAmountValidation = (WrappedComp) => (props) => {
     ) {
       val.push(...validator.combinedNanoAmount);
     }
+    val.push(...validator.combinedAmount);
     const values = Array.isArray(val) ? [...val] : [val];
     return values;
   };
