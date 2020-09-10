@@ -40,13 +40,14 @@ class History {
   static parsePrivateTokenFromApi(data = {}) {
     const status = data?.Status;
     const statusText = getStatusText(status, data.Decentralized);
-    return {
+    const decentralized = data.Decentralized === 1;
+    const history = {
       id: data?.ID,
       updatedAt: data.UpdatedAt,
       expiredAt: data.ExpiredAt,
       addressType: data.AddressType,
       status,
-      decentralized: data.Decentralized === 1,
+      decentralized,
       statusText,
       currencyType: data.CurrencyType,
       userPaymentAddress: data.UserPaymentAddress,
@@ -58,21 +59,25 @@ class History {
       outchainTx: data.OutChainTx,
       inchainTx: data.InChainTx,
       cancelable:
-        data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT &&
+        data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.SHIELD &&
         [
           CONSTANT_COMMONS.HISTORY.STATUS_TEXT.EXPIRED,
           CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING,
         ].includes(statusText),
       walletAddress: data.WalletAddress,
       canRetryExpiredDeposit:
-        data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT &&
+        data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.SHIELD &&
         statusText === CONSTANT_COMMONS.HISTORY.STATUS_TEXT.EXPIRED,
       depositTmpAddress:
-        data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT &&
+        data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.SHIELD &&
         data.Address,
-      privacyFee: data?.PrivacyFee,
-      tokenFee: data?.TokenFee,
+      privacyFee: Number(data?.OutChainPrivacyFee),
+      tokenFee: Number(data?.OutChainTokenFee),
+      burnPrivacyFee: Number(data?.BurnPrivacyFee),
+      burnTokenFee: Number(data?.BurnTokenFee),
+      incognitoTxID: data?.IncognitoTxToPayOutsideChainFee,
     };
+    return history;
   }
 }
 

@@ -89,6 +89,7 @@ export const updatePTokenFee = (data) => {
 
   const payload = {
     Address: paymentAddress,
+    PrivacyFee: String(isUsedPRVFee ? fee : 0),
     TokenFee: String(isUsedPRVFee ? 0 : fee),
     ID: '',
     UserFeeSelection: isUsedPRVFee ? 2 : 1,
