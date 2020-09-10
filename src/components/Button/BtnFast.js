@@ -22,8 +22,8 @@ const BtnFast = (props) => {
       <Image
         source={fast2x ? srcFast2x : srcFast}
         style={{
-          width: 40,
-          height: 24,
+          width: 20,
+          height: 14,
         }}
       />
     </TouchableOpacity>
