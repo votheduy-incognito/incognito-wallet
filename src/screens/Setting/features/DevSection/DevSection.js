@@ -6,10 +6,19 @@ import RNRestart from 'react-native-restart';
 import { AsyncStorage } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  devSelector,
+  actionToggleTestModeDecentralized,
+  actionToggleTestModeCentralized,
+} from '@src/screens/Dev';
+import { CONSTANT_KEYS } from '@src/constants';
 
 const DevSection = () => {
   const [homeConfig] = React.useState(global.homeConfig);
   const navigation = useNavigation();
+  const dev = useSelector(devSelector);
+  const dispatch = useDispatch();
   const resetUniswapTooltip = async () => {
     await LocalDatabase.resetViewUniswapTooltip();
     RNRestart.Restart();
@@ -25,37 +34,73 @@ const DevSection = () => {
 
   const onNavUserProfile = () => navigation.navigate(routeNames.Profile);
 
+  const onToggleTestModeDecentralized = () =>
+    dispatch(actionToggleTestModeDecentralized());
+
+  const onToggleTestModeCentralized = () =>
+    dispatch(actionToggleTestModeCentralized());
+
   const isStagingConfig = homeConfig === 'staging';
+
+  const customItems = [
+    {
+      id: 'home-config',
+      onPress: toggleHomeConfig,
+      toggleSwitch: true,
+      switchComponent: (
+        <Switch onValueChange={toggleHomeConfig} value={isStagingConfig} />
+      ),
+      desc: 'Use staging home config',
+    },
+    {
+      id: 'uniswap-tooltip',
+      onPress: resetUniswapTooltip,
+      desc: 'Reset uniswap tooltip',
+    },
+    {
+      id: 'user-profile',
+      onPress: onNavUserProfile,
+      desc: 'User profile',
+    },
+    {
+      id: 'decentralized',
+      desc: 'Toggle test mode decentralized',
+      onPress: null,
+      toggleSwitch: true,
+      switchComponent: (
+        <Switch
+          onValueChange={onToggleTestModeDecentralized}
+          value={dev[CONSTANT_KEYS.DEV_TEST_MODE_DECENTRALIZED]}
+        />
+      ),
+    },
+    {
+      id: 'Centralized',
+      desc: 'Toggle test mode centralized',
+      onPress: null,
+      toggleSwitch: true,
+      switchComponent: (
+        <Switch
+          onValueChange={onToggleTestModeCentralized}
+          value={dev[CONSTANT_KEYS.DEV_TEST_MODE_CENTRALIZED]}
+        />
+      ),
+    },
+  ];
 
   return (
     <Section
       label="Dev Tools"
-      customItems={[
+      customItems={customItems.map((item, index) => (
         <TouchableOpacity
-          key="home-config"
-          onPress={toggleHomeConfig}
-          style={sectionStyle.subItem}
+          key={item?.id}
+          onPress={item?.onPress}
+          style={[sectionStyle.subItem, index !== 0 ? { marginTop: 10 } : null]}
         >
-          <Text style={sectionStyle.desc}>Use staging home config</Text>
-          <Switch onValueChange={toggleHomeConfig} value={isStagingConfig} />
-        </TouchableOpacity>,
-        <TouchableOpacity
-          key="uniswap-tooltip"
-          onPress={resetUniswapTooltip}
-          activeOpacity={0.5}
-          style={[sectionStyle.subItem, { marginTop: 10 }]}
-        >
-          <Text style={sectionStyle.desc}>Reset uniswap tooltip</Text>
-        </TouchableOpacity>,
-        <TouchableOpacity
-          key="user-profile"
-          onPress={onNavUserProfile}
-          activeOpacity={0.5}
-          style={[sectionStyle.subItem, { marginTop: 10 }]}
-        >
-          <Text style={sectionStyle.desc}>User profile</Text>
-        </TouchableOpacity>,
-      ]}
+          <Text style={sectionStyle.desc}>{item?.desc}</Text>
+          {!!item?.toggleSwitch && item?.switchComponent}
+        </TouchableOpacity>
+      ))}
     />
   );
 };

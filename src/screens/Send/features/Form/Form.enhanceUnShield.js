@@ -24,6 +24,8 @@ import {
   actionAddStorageData,
   actionRemoveStorageData,
 } from '@screens/UnShield';
+import Utils from '@src/utils/Util';
+import { devSelector } from '@src/screens/Dev';
 import { formName } from './Form.enhance';
 
 export const enhanceUnshield = (WrappedComp) => (props) => {
@@ -39,6 +41,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     fast2x,
     totalFeeText,
   } = useSelector(feeDataSelector);
+  const dev = useSelector(devSelector);
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const {
     tokenId,
@@ -52,6 +55,15 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     isDecentralized,
     name,
   } = selectedPrivacy;
+  const [state, setState] = React.useState({
+    textLoadingTx: '',
+  });
+  const toggleDecentralized =
+    !!isDecentralized &&
+    !!dev[CONSTANT_KEYS.DEV_TEST_MODE_DECENTRALIZED] &&
+    (!!global.isDEV || __DEV__);
+  const { textLoadingTx } = state;
+
   const { data: userFeesData } = userFees;
   const info = toString(userFeesData?.ID) || '';
   const navigation = useNavigation();
@@ -136,17 +148,26 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       };
       if (!userFeesData?.ID) throw new Error('Missing id withdraw session');
       const tx = await handleBurningToken(payload);
+      const { burningTxId } = tx;
+      const _tx = { ...data, burningTxId };
       await dispatch(
         actionAddStorageData({
           keySave: KEY_SAVE.WITHDRAWAL_DATA_DECENTRALIZED,
-          tx,
+          tx: _tx,
         }),
       );
-      await withdraw({ ...data, burningTxId: tx?.txId });
+      if (toggleDecentralized) {
+        await setState({
+          ...state,
+          textLoadingTx: 'Tx burn saved. You have 15 seconds',
+        });
+        await Utils.delay(15);
+      }
+      await withdraw(_tx);
       await dispatch(
         actionRemoveStorageData({
           keySave: KEY_SAVE.WITHDRAWAL_DATA_DECENTRALIZED,
-          burningTxId: tx?.txId,
+          burningTxId,
         }),
       );
       return tx;
@@ -329,7 +350,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
   };
   return (
     <ErrorBoundary>
-      <WrappedComp {...{ ...props, handleUnShieldCrypto }} />
+      <WrappedComp {...{ ...props, handleUnShieldCrypto, textLoadingTx }} />
     </ErrorBoundary>
   );
 };
