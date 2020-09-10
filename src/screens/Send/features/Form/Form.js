@@ -65,6 +65,7 @@ const SendForm = (props) => {
     warningAddress,
     isIncognitoAddress,
     isExternalAddress,
+    textLoadingTx,
   } = props;
   const { titleBtnSubmit, isUnShield } = useSelector(feeDataSelector);
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
@@ -166,7 +167,7 @@ const SendForm = (props) => {
           )}
         </Form>
       </KeyboardAwareScrollView>
-      {isSending && <LoadingTx />}
+      {isSending && <LoadingTx text={textLoadingTx} />}
     </View>
   );
 };
@@ -192,6 +193,7 @@ SendForm.propTypes = {
   warningAddress: PropTypes.string.isRequired,
   isIncognitoAddress: PropTypes.bool.isRequired,
   isExternalAddress: PropTypes.bool.isRequired,
+  textLoadingTx: PropTypes.string.isRequired,
 };
 
 export default withSendForm(SendForm);
