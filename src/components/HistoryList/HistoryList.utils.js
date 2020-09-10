@@ -50,15 +50,14 @@ export const getTypeData = (type, history) => {
   let typeText;
   let balanceDirection;
   let balanceColor;
-
   switch (type) {
-  case CONSTANT_COMMONS.HISTORY.TYPE.WITHDRAW:
-    typeText = 'Withdraw';
+  case CONSTANT_COMMONS.HISTORY.TYPE.UNSHIELD:
+    typeText = 'Unshield';
     balanceColor = COLORS.red;
     balanceDirection = '-';
     break;
-  case CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT:
-    typeText = history?.depositAddress ? 'Deposit' : 'Receive';
+  case CONSTANT_COMMONS.HISTORY.TYPE.SHIELD:
+    typeText = history?.depositAddress ? 'Shield' : 'Receive';
     balanceColor = COLORS.green;
     balanceDirection = '+';
     break;
