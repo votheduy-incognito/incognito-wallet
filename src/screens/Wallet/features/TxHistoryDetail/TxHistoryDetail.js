@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, View, Clipboard } from 'react-native';
 import PropTypes from 'prop-types';
 import { TouchableOpacity, ScrollView, Toast } from '@src/components/core';
-import { CONSTANT_CONFIGS, CONSTANT_COMMONS } from '@src/constants';
+import { CONSTANT_CONFIGS } from '@src/constants';
 import formatUtil from '@src/utils/format';
 import linkingService from '@src/services/linking';
 import { QrCodeAddressDefault } from '@src/components/QrCodeAddress';
@@ -122,6 +122,7 @@ const TxHistoryDetail = (props) => {
       label: 'ID',
       valueText: `#${history?.id}`,
       disabled: !history?.id,
+      copyable: true,
     },
     {
       label: 'Time',

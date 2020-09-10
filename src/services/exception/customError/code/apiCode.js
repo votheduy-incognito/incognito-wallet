@@ -29,16 +29,14 @@ const api = {
   api_tx_added: apiError(-80002),
   api_amount_invalid: apiError(-80003),
   api_trade_maintain: apiError(-2009),
-  api_insufficient_funds: apiError(-1024)
+  api_insufficient_funds: apiError(-1024),
 };
-
 
 const game = {
   player_have_pending_transactions: apiError(-70000),
 };
 
-
 export default {
   ...api,
-  ...game
+  ...game,
 };

@@ -163,8 +163,8 @@ export default {
   },
   HISTORY: {
     TYPE: {
-      DEPOSIT: 1, // same with PRIVATE_TOKEN_HISTORY_ADDRESS_TYPE.DEPOSIT
-      WITHDRAW: 2, // same with PRIVATE_TOKEN_HISTORY_ADDRESS_TYPE.WITHDRAW
+      SHIELD: 1, // same with PRIVATE_TOKEN_HISTORY_ADDRESS_TYPE.DEPOSIT
+      UNSHIELD: 2, // same with PRIVATE_TOKEN_HISTORY_ADDRESS_TYPE.WITHDRAW
       SEND: 3, // custom
       RECEIVE: 4, // custom
     },
@@ -177,6 +177,8 @@ export default {
     META_DATA_TYPE: {
       90: 'Add liquidity',
       93: 'Remove liquidity',
+      27: 'Unshield',
+      240: 'Unshield',
     },
   },
   TRACK_LOG_EVENT,

@@ -17,9 +17,7 @@ import { useSelector } from 'react-redux';
 import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import LoadingTx from '@src/components/LoadingTx';
-import { decimalDigitsSelector } from '@src/screens/Setting';
 import format from '@src/utils/format';
-import { floor } from 'lodash';
 import { styledForm as styled } from './Form.styled';
 import withSendForm, { formName } from './Form.enhance';
 
@@ -38,7 +36,7 @@ const Form = createForm(formName, {
 const RightLabel = React.memo(() => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const amount = format.amount(
-    floor(selectedPrivacy?.amount),
+    selectedPrivacy?.amount,
     selectedPrivacy?.pDecimals,
     true,
   );

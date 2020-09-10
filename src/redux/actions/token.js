@@ -304,6 +304,7 @@ export const actionFetchHistoryToken = () => async (dispatch, getState) => {
     await dispatch(actionFetchedHistory(histories));
   } catch (error) {
     await dispatch(actionFetchFailHistory());
+    throw error;
   }
 };
 
@@ -335,6 +336,7 @@ export const actionFetchHistoryMainCrypto = () => async (
     await dispatch(actionFetchedHistory(histories));
   } catch (error) {
     await dispatch(actionFetchFailHistory());
+    throw error;
   }
 };
 

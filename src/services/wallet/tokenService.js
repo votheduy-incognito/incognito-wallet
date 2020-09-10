@@ -60,7 +60,10 @@ export default class Token {
       ];
     }
 
-    if (isArray(submitParam?.TokenReceivers) && submitParam?.TokenReceivers?.length > 0) {
+    if (
+      isArray(submitParam?.TokenReceivers) &&
+      submitParam?.TokenReceivers?.length > 0
+    ) {
       _submitParam.TokenReceivers = [
         ..._submitParam?.TokenReceivers.filter(
           (item) => Number(item?.Amount) > 0 && item?.PaymentAddress !== '',
@@ -215,22 +218,14 @@ export default class Token {
       if (!token?.id) {
         throw new Error('Token is required');
       }
-
       await updateStatusHistory(wallet).catch(() =>
         console.warn('History statuses were not updated'),
       );
-
       const accountWallet = wallet.getAccountByName(account.name);
       let histories = [];
       histories = await accountWallet.getPrivacyTokenTxHistoryByTokenID(
         token?.id,
       );
-      // if (token?.isPrivacy) {
-      //   histories = await accountWallet.getPrivacyTokenTxHistoryByTokenID(token?.id);
-      // } else {
-      //   histories = await accountWallet.getCustomTokenTxByTokenID(token?.id);
-      // }
-
       return histories;
     } catch (e) {
       throw e;
