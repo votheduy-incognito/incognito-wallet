@@ -14,15 +14,16 @@ import format from '@src/utils/format';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { reset } from 'redux-form';
-import { KEY_SAVE } from '@src/utils/LocalDatabase';
 import { withdraw, updatePTokenFee } from '@src/services/api/withdraw';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import tokenService from '@services/wallet/tokenService';
 import accountService from '@services/wallet/accountService';
 import {
-  actionAddStorageData,
-  actionRemoveStorageData,
+  actionAddStorageDataDecentralized,
+  actionRemoveStorageDataDecentralized,
+  actionRemoveStorageDataCentralized,
+  actionAddStorageDataCentralized,
 } from '@screens/UnShield';
 import Utils from '@src/utils/Util';
 import { devSelector } from '@src/screens/Dev';
@@ -40,6 +41,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     userFee,
     fast2x,
     totalFeeText,
+    isUnShield,
   } = useSelector(feeDataSelector);
   const dev = useSelector(devSelector);
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
@@ -55,15 +57,23 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     isDecentralized,
     name,
   } = selectedPrivacy;
+  const keySave = isDecentralized
+    ? CONSTANT_KEYS.UNSHIELD_DATA_DECENTRALIZED
+    : CONSTANT_KEYS.UNSHIELD_DATA_CENTRALIZED;
   const [state, setState] = React.useState({
     textLoadingTx: '',
   });
   const toggleDecentralized =
+    isUnShield &&
     !!isDecentralized &&
     !!dev[CONSTANT_KEYS.DEV_TEST_MODE_DECENTRALIZED] &&
     (!!global.isDEV || __DEV__);
+  const toggleCentralized =
+    isUnShield &&
+    !isDecentralized &&
+    !!dev[CONSTANT_KEYS.DEV_TEST_MODE_CENTRALIZED] &&
+    (!!global.isDEV || __DEV__);
   const { textLoadingTx } = state;
-
   const { data: userFeesData } = userFees;
   const info = toString(userFeesData?.ID) || '';
   const navigation = useNavigation();
@@ -151,8 +161,8 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       const { burningTxId } = tx;
       const _tx = { ...data, burningTxId };
       await dispatch(
-        actionAddStorageData({
-          keySave: KEY_SAVE.WITHDRAWAL_DATA_DECENTRALIZED,
+        actionAddStorageDataDecentralized({
+          keySave,
           tx: _tx,
         }),
       );
@@ -165,8 +175,8 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       }
       await withdraw(_tx);
       await dispatch(
-        actionRemoveStorageData({
-          keySave: KEY_SAVE.WITHDRAWAL_DATA_DECENTRALIZED,
+        actionRemoveStorageDataDecentralized({
+          keySave,
           burningTxId,
         }),
       );
@@ -204,7 +214,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       const tx = await handleSendToken({ ...payload, tempAddress });
 
       if (tx) {
-        const payloadUpdatePTokenFee = {
+        const txUpdatePTokenFee = {
           fee: originalFee,
           paymentAddress: tempAddress,
           userFeesData,
@@ -212,7 +222,26 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           fast2x,
           txId: tx?.txId,
         };
-        await updatePTokenFee(payloadUpdatePTokenFee);
+        await dispatch(
+          actionAddStorageDataCentralized({
+            keySave,
+            tx: txUpdatePTokenFee,
+          }),
+        );
+        if (toggleCentralized) {
+          await setState({
+            ...state,
+            textLoadingTx: 'Tx saved. You have 15 seconds',
+          });
+          await Utils.delay(15);
+        }
+        await updatePTokenFee(txUpdatePTokenFee);
+        await dispatch(
+          actionRemoveStorageDataCentralized({
+            keySave,
+            txId: txUpdatePTokenFee?.txId,
+          }),
+        );
       }
       return tx;
     } catch (e) {
