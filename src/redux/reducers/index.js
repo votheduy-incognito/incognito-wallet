@@ -12,6 +12,7 @@ import performance from '@screens/Performance/Performance.reducer';
 import navigation from '@screens/Navigation/Navigation.reducer';
 import profile from '@screens/Profile/Profile.reducer';
 import news from '@screens/News/News.reducer';
+import dev from '@screens/Dev/Dev.reducer';
 import wallet from './wallet';
 import account from './account';
 import server from './server';
@@ -48,6 +49,7 @@ const rootReducer = reduceReducers(
     navigation,
     news,
     profile,
+    dev,
   }),
   globalReducer,
 );

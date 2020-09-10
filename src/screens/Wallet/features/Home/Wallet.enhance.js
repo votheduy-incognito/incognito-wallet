@@ -80,19 +80,18 @@ const enhance = (WrappedComp) => (props) => {
   };
   const tryLastWithdrawal = async () => {
     try {
-      txs.forEach(async (tx) => {
-        if (tx) {
-          await new Promise.all([
-            withdraw(tx),
+      txs &&
+        txs.map(async (tx) => {
+          if (tx) {
             dispatch(
               actionRemoveStorageData({
                 keySave: KEY_SAVE.WITHDRAWAL_DATA_DECENTRALIZED,
                 burningTxId: tx?.burningTxId,
               }),
-            ),
-          ]);
-        }
-      });
+            );
+            withdraw(tx);
+          }
+        });
     } catch (e) {
       console.log('error', e);
     }
