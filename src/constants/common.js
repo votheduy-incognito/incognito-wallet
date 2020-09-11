@@ -180,6 +180,9 @@ export default {
       27: 'Unshield',
       240: 'Unshield',
     },
+    STATUS_CODE: {
+      PENDING: 0,
+    },
   },
   TRACK_LOG_EVENT,
   TRACK_LOG_EVENT_STATUS,

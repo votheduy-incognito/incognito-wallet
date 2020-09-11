@@ -72,37 +72,63 @@ const normalizedHistories = ({
       };
       if (!h?.isIn) {
         //not incognito tx
-        const isDecentralized = isDecentralizedTx(history);
-        history = { ...history, isDecentralized };
-        if (!isDecentralized) {
-          const isTxBurnCentralized = _historiesFromApi.find(
-            (item) => item?.incognitoTxID === history?.incognitoTxID,
-          );
-          if (isTxBurnCentralized) {
-            return null;
-          }
-        } else {
-          //decentralized
-          const indexTxBurnDecentralized = _historiesFromApi.findIndex(
-            (item) => item?.incognitoTxID === history?.incognitoTxID,
-          );
-          if (indexTxBurnDecentralized > -1) {
-            const { fee, isUseTokenFee } = getFeeFromTxHistory(history);
-            let historyFromApi = _historiesFromApi[indexTxBurnDecentralized];
-            historyFromApi = {
-              ...historyFromApi,
-              burnTokenFee: isUseTokenFee ? fee : 0,
-              burnPrivacyFee: isUseTokenFee ? 0 : fee,
-            };
-            _historiesFromApi[indexTxBurnDecentralized] = { ...historyFromApi };
-            return null;
-          }
+        const { indexTx, historyFromApi } = normalizedCentralizedHistory(
+          _historiesFromApi,
+          history,
+        );
+        if (indexTx > -1 && !!historyFromApi) {
+          _historiesFromApi[indexTx] = { ...historyFromApi };
+          return null;
         }
       }
       _histories.push(history);
       return history;
     });
   return [..._historiesFromApi, ..._histories];
+};
+
+const normalizedCentralizedHistory = (histories = [], history = {}) => {
+  const isDecentralized = isDecentralizedTx(history);
+  let indexTx = -1;
+  let historyFromApi;
+  if (!isDecentralized) {
+    indexTx = histories.findIndex(
+      (item) => item?.incognitoTxID === history?.incognitoTxID,
+    );
+    if (indexTx > -1) {
+      historyFromApi = histories[indexTx];
+      const { fee, isUseTokenFee } = getFeeFromTxHistory(history);
+      let _amount = isUseTokenFee
+        ? history?.amount - fee - historyFromApi?.tokenFee
+        : history?.amount;
+      const amount =
+        !historyFromApi?.amount ||
+        history?.status === CONSTANT_COMMONS.HISTORY.STATUS_CODE.PENDING
+          ? _amount
+          : historyFromApi?.amount;
+      historyFromApi = {
+        ...historyFromApi,
+        amount: Math.max(amount, 0),
+      };
+    }
+  } else {
+    indexTx = histories.findIndex(
+      (item) => item?.incognitoTxID === history?.incognitoTxID,
+    );
+    if (indexTx > -1) {
+      const { fee, isUseTokenFee } = getFeeFromTxHistory(history);
+      historyFromApi = histories[indexTx];
+      historyFromApi = {
+        ...historyFromApi,
+        burnTokenFee: isUseTokenFee ? fee : 0,
+        burnPrivacyFee: isUseTokenFee ? 0 : fee,
+      };
+    }
+  }
+  return {
+    indexTx,
+    historyFromApi,
+  };
 };
 
 export const combineHistory = (payload) => {
