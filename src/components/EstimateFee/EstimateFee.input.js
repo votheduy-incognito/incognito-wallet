@@ -187,7 +187,7 @@ const SupportFees = React.memo(() => {
     let totalFeeText = _isUsedPRVFee ? feePrvText : feePTokenText;
     try {
       if (isUnShield) {
-        const { totalFeeText: _totalFeeText } = getTotalFee({
+        const totalFeeData = getTotalFee({
           fast2x,
           rate,
           userFeesData: userFees?.data,
@@ -198,7 +198,14 @@ const SupportFees = React.memo(() => {
           isUsedPRVFee: _isUsedPRVFee,
           hasMultiLevel,
         });
-        totalFeeText = _totalFeeText;
+        totalFeeText = totalFeeData?.totalFeeText;
+        dispatch(
+          actionToggleFastFee({
+            fast2x,
+            ...totalFeeData,
+            isUsedPRVFee: _isUsedPRVFee,
+          }),
+        );
       }
       dispatch(actionChangeFeeType(type?.tokenId));
       onChangeFee(totalFeeText);
