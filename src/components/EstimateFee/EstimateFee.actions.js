@@ -305,7 +305,6 @@ export const actionHandleFeePTokenEst = ({ feePTokenEst }) => async (
     fast2x,
     isUseTokenFee,
     isUnShield,
-    feePDecimals,
     hasMultiLevel,
   } = feeDataSelector(state);
   const { isFetched } = userFees;
@@ -323,7 +322,7 @@ export const actionHandleFeePTokenEst = ({ feePTokenEst }) => async (
         userFeesData: userFees?.data,
         feeEst: feePToken,
         rate,
-        pDecimals: feePDecimals,
+        pDecimals: selectedPrivacy?.pDecimals,
         isUsedPRVFee: false,
         hasMultiLevel,
       });
@@ -471,7 +470,7 @@ export const actionValAddr = (address = '') => async (dispatch, getState) => {
       // const isERC20 =
       //   selectedPrivacy?.isErc20Token ||
       //   selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
-      //check is smart contract address   
+      //check is smart contract address
       // if (isERC20 && isAddressERC20Valid && !!_address) {
       //   const validETHAddr = await apiCheckIfValidAddressETH(_address);
       //   isValidETHAddress = !!validETHAddr?.data?.Result;
