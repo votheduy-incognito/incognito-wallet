@@ -39,7 +39,8 @@ const enhance = (WrappedComp) => (props) => {
     getFollowingToken,
     clearWallet,
     fetchData,
-    tryLastWithdrawal,
+    retryLastTxsUnshieldDecentralized,
+    retryLastTxsUnshieldCentralized,
   } = props;
   const { categories, headerTitle, isFetching } = useSelector(homeSelector);
   const pTokens = useSelector(pTokensSelector);
@@ -103,7 +104,8 @@ const enhance = (WrappedComp) => (props) => {
 
   React.useEffect(() => {
     fetchData();
-    tryLastWithdrawal();
+    retryLastTxsUnshieldDecentralized();
+    retryLastTxsUnshieldCentralized();
     airdrop();
   }, []);
 
