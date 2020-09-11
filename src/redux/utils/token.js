@@ -102,14 +102,19 @@ const normalizedHistory = (histories = [], history = {}) => {
   }
   if (!isDecentralized) {
     historyFromApi = histories[indexTx];
-    let _amount = isUseTokenFee
-      ? history?.amount - fee - historyFromApi?.tokenFee
-      : history?.amount;
-    const amount =
+    let amount;
+    if (
       !historyFromApi?.amount ||
       history?.status === CONSTANT_COMMONS.HISTORY.STATUS_CODE.PENDING
-        ? _amount
+    ) {
+      amount = isUseTokenFee
+        ? history?.amount - fee - historyFromApi?.tokenFee
+        : history?.amount;
+    } else {
+      amount = isUseTokenFee
+        ? historyFromApi?.amount - fee
         : historyFromApi?.amount;
+    }
     historyFromApi = {
       ...historyFromApi,
       amount: Math.max(amount, 0),
