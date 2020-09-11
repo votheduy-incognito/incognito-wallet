@@ -44,6 +44,6 @@ export const styled = StyleSheet.create({
     alignItems: 'center',
   },
   btnFast: {
-    marginRight: 10,
+    marginRight: 15,
   },
 });
