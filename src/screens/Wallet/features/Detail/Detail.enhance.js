@@ -13,7 +13,10 @@ import { useFocusEffect } from 'react-navigation-hooks';
 import withWallet from '@screens/Wallet/features/Home/Wallet.enhance';
 
 const enhance = (WrappedComp) => (props) => {
-  const { tryLastWithdrawal } = props;
+  const {
+    retryLastTxsUnshieldDecentralized,
+    retryLastTxsUnshieldCentralized,
+  } = props;
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const token = useSelector(
     selectedPrivacySeleclor.selectedPrivacyByFollowedSelector,
@@ -33,7 +36,8 @@ const enhance = (WrappedComp) => (props) => {
   };
   useFocusEffect(
     React.useCallback(() => {
-      tryLastWithdrawal();
+      retryLastTxsUnshieldCentralized();
+      retryLastTxsUnshieldDecentralized();
       handleLoadHistory();
     }, []),
   );

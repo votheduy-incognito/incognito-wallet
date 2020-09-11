@@ -8,7 +8,7 @@ import {
   actionRemoveFollowToken,
 } from '@src/redux/actions/token';
 import { actionReloadFollowingToken } from '@src/redux/actions/account';
-import { CONSTANT_COMMONS } from '@src/constants';
+import { CONSTANT_COMMONS, CONSTANT_KEYS } from '@src/constants';
 import { useNavigation } from 'react-navigation-hooks';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import routeNames from '@src/router/routeNames';
@@ -17,19 +17,17 @@ import { actionInit as actionInitEstimateFee } from '@components/EstimateFee/Est
 import { isGettingBalance as isGettingBalanceSelector } from '@src/redux/selectors/shared';
 import {
   unShieldStorageDataSelector,
-  actionRemoveStorageData,
+  actionRemoveStorageDataDecentralized,
+  actionRemoveStorageDataCentralized,
 } from '@src/screens/UnShield';
-import { KEY_SAVE } from '@src/utils/LocalDatabase';
-import { withdraw } from '@src/services/api/withdraw';
+import { withdraw, updatePTokenFee } from '@src/services/api/withdraw';
 
 export const WalletContext = React.createContext({});
 
 const enhance = (WrappedComp) => (props) => {
   const wallet = useSelector((state) => state?.wallet);
   const isGettingBalance = useSelector(isGettingBalanceSelector);
-  const txs = useSelector(unShieldStorageDataSelector)(
-    KEY_SAVE.WITHDRAWAL_DATA_DECENTRALIZED,
-  );
+  const unshieldStorage = useSelector(unShieldStorageDataSelector);
   const dispatch = useDispatch();
   const [state, setState] = React.useState({
     isReloading: false,
@@ -78,18 +76,41 @@ const enhance = (WrappedComp) => (props) => {
       duration: 500,
     });
   };
-  const tryLastWithdrawal = async () => {
+  const retryLastTxsUnshieldDecentralized = async () => {
     try {
+      const keyUnshieldDecentralized =
+        CONSTANT_KEYS.UNSHIELD_DATA_DECENTRALIZED;
+      const txs = unshieldStorage[keyUnshieldDecentralized]?.txs || [];
       txs &&
         txs.map(async (tx) => {
           if (tx) {
             dispatch(
-              actionRemoveStorageData({
-                keySave: KEY_SAVE.WITHDRAWAL_DATA_DECENTRALIZED,
+              actionRemoveStorageDataDecentralized({
+                keySave: keyUnshieldDecentralized,
                 burningTxId: tx?.burningTxId,
               }),
             );
             withdraw(tx);
+          }
+        });
+    } catch (e) {
+      console.log('error', e);
+    }
+  };
+  const retryLastTxsUnshieldCentralized = async () => {
+    try {
+      const keyUnshieldCentralized = CONSTANT_KEYS.UNSHIELD_DATA_CENTRALIZED;
+      const txs = unshieldStorage[keyUnshieldCentralized]?.txs || [];
+      txs &&
+        txs.map(async (tx) => {
+          if (tx) {
+            dispatch(
+              actionRemoveStorageDataCentralized({
+                keySave: keyUnshieldCentralized,
+                txId: tx?.txId,
+              }),
+            );
+            updatePTokenFee(tx);
           }
         });
     } catch (e) {
@@ -124,7 +145,8 @@ const enhance = (WrappedComp) => (props) => {
             handleRemoveToken,
             clearWallet,
             getFollowingToken,
-            tryLastWithdrawal,
+            retryLastTxsUnshieldDecentralized,
+            retryLastTxsUnshieldCentralized,
           }}
         />
       </WalletContext.Provider>

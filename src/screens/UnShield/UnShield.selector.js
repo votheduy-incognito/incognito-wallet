@@ -7,5 +7,5 @@ export const unShieldSelector = createSelector(
 
 export const unShieldStorageDataSelector = createSelector(
   unShieldSelector,
-  (unShield) => (keySave) => unShield?.storage[keySave]?.txs || [],
+  (unShield) => unShield?.storage,
 );
