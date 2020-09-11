@@ -1,39 +1,40 @@
-import { StyleSheet} from 'react-native';
-import { COLORS } from '@src/styles';
+import { StyleSheet } from 'react-native';
+import { COLORS, FONT } from '@src/styles';
 
-const style = StyleSheet.create({
-  container: {
-    backgroundColor: COLORS.lightGrey6,
-    paddingHorizontal: 20,
-    paddingVertical: 30,
-    height: '100%',
-  },
+export default StyleSheet.create({
   content: {
-    backgroundColor: COLORS.white,
-    maxHeight: '100%',
-    borderRadius: 10,
-    overflow: 'hidden',
+    marginTop: 42,
   },
-  modes: {
-    flexDirection: 'row',
+  field: {
+    marginBottom: 30,
   },
-  mode: {
-    width: '50%',
-    paddingVertical: 15,
-    paddingLeft: 20 ,
-    paddingEnd: 20,
+  label: {
+    ...FONT.STYLE.bold,
+    color: COLORS.black,
+    fontSize: 20,
+    marginBottom: 10,
   },
-  modeText: {
+  text: {
+    ...FONT.STYLE.medium,
+    color: COLORS.black,
+    fontSize: 20,
+  },
+  error: {
+    ...FONT.STYLE.medium,
+    color: COLORS.orange,
+    fontSize: 14,
+  },
+  button: {
+    marginTop: 30,
+    marginBottom: 20,
+    backgroundColor: COLORS.blue6,
+  },
+  buttonColor: {
+    backgroundColor: COLORS.blue6,
+  },
+  feeText: {
     textAlign: 'center',
-  },
-  deactiveMode: {
-    backgroundColor: COLORS.lightGrey7,
-    borderColor: COLORS.lightGrey5,
-    borderWidth: 1,
-  },
-  deactiveModeText: {
-    color: COLORS.lightGrey1,
+    marginVertical: 10,
+    fontSize: 14
   },
 });
-
-export default style;

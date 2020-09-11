@@ -1,25 +1,18 @@
 import { Text, View } from '@components/core';
 import PropTypes from 'prop-types';
 import React from 'react';
-import CryptoIcon from '@components/CryptoIcon/index';
 import formatUtils from '@src/utils/format';
-import VerifiedText from '@components/VerifiedText/index';
-import styles, { rewardStyle } from './style';
+import { PRV } from '@src/services/wallet/tokenService';
+import { PRVSymbol } from '@src/components';
+import { rewardStyle } from './style';
 
-const Reward = ({ tokenId, symbol, pDecimals, balance, isVerified }) => (
+const Reward = ({ symbol, pDecimals, balance, balanceStyle, containerItemStyle }) => (
   <View style={rewardStyle.container}>
-    <View style={styles.imageWrapper}>
-      <CryptoIcon tokenId={tokenId} size={30} />
-    </View>
-    <View style={rewardStyle.row}>
-      <Text style={rewardStyle.balance} numberOfLines={1}>
-        {formatUtils.amount(balance, pDecimals)} {symbol}
+    <View style={[{ flexDirection: 'row' }, containerItemStyle]}>
+      {symbol === PRV?.symbol && <PRVSymbol style={[balanceStyle, rewardStyle.prvStyle]} />}
+      <Text style={[rewardStyle.balance, balanceStyle, {fontVariant: ['tabular-nums']}]} numberOfLines={1}>
+        {formatUtils.amountFull(balance, pDecimals, true)} {symbol === PRV?.symbol ? '' : symbol}
       </Text>
-      <VerifiedText
-        style={rewardStyle.balance}
-        text=" "
-        isVerified={isVerified}
-      />
     </View>
   </View>
 );
@@ -27,14 +20,16 @@ const Reward = ({ tokenId, symbol, pDecimals, balance, isVerified }) => (
 
 Reward.defaultProps = {
   pDecimals: 0,
+  containerItemStyle: null,
+  balanceStyle: null,
 };
 
 Reward.propTypes = {
-  tokenId: PropTypes.string.isRequired,
   symbol: PropTypes.string.isRequired,
   balance: PropTypes.number.isRequired,
   pDecimals: PropTypes.number,
-  isVerified: PropTypes.bool.isRequired,
+  containerItemStyle: PropTypes.object,
+  balanceStyle: PropTypes.object,
 };
 
 export default React.memo(Reward);

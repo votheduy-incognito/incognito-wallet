@@ -4,14 +4,12 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {
   ActivityIndicator,
-  Button,
-  InputExtension as Input,
+  RoundCornerButton,
   Text,
   TouchableOpacity
 } from '@src/components/core';
 import knownCode from '@src/services/exception/customError/code/knownCode';
 import NodeService from '@src/services/NodeService';
-import WifiManager from 'react-native-wifi-reborn';
 import APIService from '@services/api/miner/APIService';
 import Util from '@utils/Util';
 import { CustomError } from '@services/exception';
@@ -21,9 +19,9 @@ import clipboard from '@services/clipboard';
 import { Icon } from 'react-native-elements';
 import { COLORS } from '@src/styles';
 import LogManager from '@src/services/LogManager';
-import ModalConnectWifi from '@src/components/Modal/ModalConnection/ModalConnectWifi';
 import { ScreenHeight, ScreenWidth } from '@src/utils/devices';
 import { LineView } from '@src/components/Line';
+import theme from '@src/styles/theme';
 import styles from './styles';
 
 export const TAG = 'SetupWifi';
@@ -33,28 +31,25 @@ class WifiRepairSetup extends PureComponent {
     super(props);
     this.state = {
       loading: false,
-      ssid: '',
-      lastVerifyCode: '',
-      verifyCode: '',
-      isCorrectWifi: false,
-      password: '',
-      date: new Date(),
-      error: '',
       steps: [],
-      connectWifi: {
-        shouldShowModalConnectWifi: false,
-        isCheckingWifiConnection: false,
-        isConnected: false,
-        title: 'We are trying to connect to your network',
-      },
     };
     this.isMounteds = false;
     this.scrollView = React.createRef();
     this.funcQueue = [];
   }
 
+
+  componentDidMount() {
+    this.isMounteds = true;
+    this.handleNext();
+  }
+
+  componentWillUnmount() {
+    this.isMounteds = false;
+  }
+
   tryAtMost = async (promiseFunc, count = 6, delayToTry = 1) => {
-    if (count > 0 && promiseFunc && this.isMounteds === true) {
+    if (count > 0 && promiseFunc && this.isMounteds) {
       const result = await promiseFunc().catch(e => e);
       console.log(`tryAtMost result = ${result}, count = ${count}---isEROR = ${result instanceof Error}`);
       if (result instanceof Error) {
@@ -68,88 +63,28 @@ class WifiRepairSetup extends PureComponent {
     return Promise.reject(`Tried ${count} times and failed`);
   };
 
-  componentDidMount() {
-    this.isMounteds = true;
-    this.getCurrentWifi();
-    this.getLastVerifyCode();
-  }
-  // Get current wifi
-  async getCurrentWifi() {
-    try {
-      const ssid = await WifiManager.getCurrentWifiSSID();
-      console.debug('SSID', ssid);
-      this.setState({ ssid });
-    } catch (error) {
-      this.setState({ ssid: '' });
-    }
-  }
-
-  // Check last verify code if exist => Set state for current verifyCode
-  async getLastVerifyCode() {
-    const { verifyProductCode } = this.props;
-    console.log('Verify code' + verifyProductCode);
-    this.setState({ verifyCode: verifyProductCode, lastVerifyCode: verifyProductCode });
-  }
-
-  componentWillUnmount() {
-    this.isMounteds = false;
-    clearInterval(this._interval);
-    clearInterval(this.checkNetWorkSwitched);
-  }
-
   addStep(step) {
     const { steps } = this.state;
     steps.push(step);
     this.setState({ steps: [...steps] });
   }
 
-  renderContent = () => {
-    const { ssid, error, password } = this.state;
-    const { text, item, item_container_input, errorText } = styles;
-
-    return (
-      <View>
-        <Input
-          underlineColorAndroid="transparent"
-          containerStyle={item}
-          inputContainerStyle={item_container_input}
-          inputStyle={[text]}
-          placeholder="Wi-Fi name"
-          errorStyle={[errorText, { textAlign: 'left', marginLeft: 0 }]}
-          errorMessage={!_.isEmpty(this.ssid) ? 'Required' : ''}
-          value={ssid}
-          onChangeText={ssid => this.setState({ ssid })}
-        />
-        <Input
-          underlineColorAndroid="transparent"
-          containerStyle={item}
-          autoCapitalize="none"
-          inputContainerStyle={item_container_input}
-          inputStyle={[text]}
-          placeholder="Password"
-          errorStyle={[errorText, { textAlign: 'left', marginLeft: 0 }]}
-          errorMessage={error}
-          value={password}
-          onChangeText={password => this.setState({ password })}
-        />
-      </View>
-    );
-  };
-
   tryVerifyCode = async (count = 12, isLast = false) => {
     this.funcQueue.push('tryVerifyCode');
     const { verifyProductCode } = this.props;
+
     if (!verifyProductCode || verifyProductCode === '') {
       this.setState({ loading: false });
-      throw new Error('Verify code failed');
+      throw new Error('Could not verify device code');
     }
+
     console.log('### INCOGNITO ###: tryVerifyCode ' + verifyProductCode);
-    this.addStep({ name: 'Trying last product code ...', detail: verifyProductCode, isSuccess: true });
+    this.addStep({ name: 'Verifying last device code ', detail: verifyProductCode, isSuccess: true });
     const result = await this.tryAtMost(() => {
       return NodeService.verifyProductCode(verifyProductCode)
         .then(res => {
           if (!res) {
-            this.addStep({ name: 'Verify code failed', isSuccess: false });
+            this.addStep({ name: 'Could not verify device code', isSuccess: false });
             throw new Error('empty result');
           }
 
@@ -161,11 +96,11 @@ class WifiRepairSetup extends PureComponent {
     }, count, 5);
 
     if (result && result?.status != 0) {
-      this.addStep({ name: 'Verify code success', detail: JSON.stringify(result), isSuccess: true });
+      this.addStep({ name: 'Success! Node verified', detail: JSON.stringify(result), isSuccess: true });
     } else {
       this.setState({ loading: false });
-      this.addStep({ name: 'Verify code failed', isSuccess: false });
-      throw new Error('Verify code failed');
+      this.addStep({ name: 'Could not verify device code', isSuccess: false });
+      throw new Error('Unable to verify Node');
     }
     return result;
   };
@@ -176,16 +111,17 @@ class WifiRepairSetup extends PureComponent {
       account = JSON.parse(account);
       let qrCode = account?.name || '';
       const funcName = `${qrCode}-authFirebase`;
+      this.addStep({ name: 'Authenticating firebase', detail: '', isSuccess: true });
       await APIService.trackLog({ action: funcName, message: 'Bat dau Auth Firebase', rawData: `productInfo = ${JSON.stringify(productInfo)}` });
       const authFirebase = await this.tryAtMost(async () => {
         const resultFbUID = await NodeService.authFirebase(productInfo)
           .catch(error => this.addStep({ name: 'Authenticate firebase error ', detail: error?.message, isSuccess: false }));
         if (!resultFbUID) {
           this.setState({ loading: false });
-          this.addStep({ name: 'Authenticate firebase failed', detail: resultFbUID, isSuccess: false });
+          this.addStep({ name: 'Unable to authenticate firebase', detail: resultFbUID, isSuccess: false });
           throw new CustomError(knownCode.node_auth_firebase_fail);
         } else {
-          this.addStep({ name: 'Authenticate firebase success', detail: resultFbUID, isSuccess: true });
+          this.addStep({ name: 'Success! Authenticated firebase', detail: resultFbUID, isSuccess: true });
         }
         return _.isEmpty(resultFbUID) ? new CustomError(knownCode.node_auth_firebase_fail) : resultFbUID;
       }, 3, 3);
@@ -193,7 +129,7 @@ class WifiRepairSetup extends PureComponent {
       return authFirebase;
     } catch (err) {
       this.setState({ loading: false });
-      this.addStep({ name: 'Authenticate firebase failed', detail: '', isSuccess: false });
+      this.addStep({ name: 'Unable to authenticate firebase', detail: '', isSuccess: false });
       throw err;
     }
   };
@@ -225,14 +161,14 @@ class WifiRepairSetup extends PureComponent {
       account = JSON.parse(account);
     } catch (err) {
       this.setState({ loading: false });
-      this.addStep({ name: 'Send stake request failed', detail: err?.message || err, isSuccess: false });
+      this.addStep({ name: 'Sending stake request', detail: err?.message || err, isSuccess: false });
       throw err;
     }
     let qrCode = account?.name || '';
     const { onNext } = this.props;
     const funcName = `${qrCode}-changeDeviceName`;
     try {
-      this.addStep({ name: 'Setup account for node ', detail: account?.PaymentAddress || '', isSuccess: true });
+      this.addStep({ name: 'Create keychain for Node', detail: account?.PaymentAddress || '', isSuccess: true });
       this.updateDeviceNameRequest(productInfo.product_id, qrCode);
       let fetchProductInfo = {
         ...productInfo,
@@ -246,7 +182,7 @@ class WifiRepairSetup extends PureComponent {
       const { product_id } = fetchProductInfo;
       let PaymentAddress = account?.PaymentAddress || '';
       let ValidatorKey = account?.ValidatorKey || '';
-      this.addStep({ name: 'Send stake request', isSuccess: true });
+      this.addStep({ name: 'Sending stake request', isSuccess: true });
       await Util.excuteWithTimeout(APIService.requestStake({
         ProductID: product_id,
         ValidatorKey: ValidatorKey,
@@ -255,7 +191,7 @@ class WifiRepairSetup extends PureComponent {
       }), 60)
         .then(async response => {
           this.setState({ loading: true });
-          this.addStep({ name: 'Send stake request success', detail: response, isSuccess: true });
+          this.addStep({ name: 'Success! Stake request sent', detail: response, isSuccess: true });
           await APIService.trackLog({ action: funcName, message: `Result: requestStake ==> ${response ? 'SUCCESS' : 'FAIL'}` });
           const dataRequestStake = response?.data || {};
           if (!_.isEmpty(dataRequestStake) && !_.isEmpty(dataRequestStake.PaymentAddress)) {
@@ -277,7 +213,7 @@ class WifiRepairSetup extends PureComponent {
             return;
           }
           this.setState({ loading: false });
-          this.addStep({ name: 'Send stake request failed', detail: '', isSuccess: false });
+          this.addStep({ name: 'Stake request not yet sent', detail: '', isSuccess: false });
           throw error;
         });
 
@@ -288,7 +224,6 @@ class WifiRepairSetup extends PureComponent {
     await APIService.trackLog({ action: funcName, message: 'Result: connected Node ==> SUCCESS' });
     return true;
   };
-
 
   // Start to authen with firebase for verifying code
   verifyCodeFirebase = async (count, isLast) => {
@@ -307,7 +242,6 @@ class WifiRepairSetup extends PureComponent {
   // On press button next
   handleNext = async () => {
     this.funcQueue.push('handleNext');
-    const { navigation } = this.props;
     // Check if verifyCode exist, check 1 time
     this.verifyCodeFirebase(12, false);
   };
@@ -317,42 +251,18 @@ class WifiRepairSetup extends PureComponent {
     clipboard.set(JSON.stringify(steps), { copiedMessage: 'Logs copied.' });
   };
 
-  // Check by func name 
+  // Check by func name
   retryFuncByName = (name) => {
     console.log('### INCOGNITO_LOG ### Current step being invoked: ' + name);
     switch (name) {
-    case 'getLastVerifyCode':
-      this.getLastVerifyCode();
-      break;
-    case 'checkWifiInfo':
-      this.handleNext();
-      break;
-    case 'setupAndConnectWifiForNode':
-      this.setupAndConnectWifiForNode();
-      break;
-    case 'connectToWifiHotspot':
-      this.handleSetupNode();
-      break;
     case 'verifyCodeFirebase':
       this.verifyCodeFirebase();
       break;
     case 'handleSetupAccount':
       this.handleSetupAccount();
       break;
-    case 'handleSetupNode':
-      this.handleSetupNode();
-      break;
     case 'tryVerifyCode':
       this.verifyCodeFirebase();
-      break;
-    case 'setupWifiZMQ':
-      this.setupAndConnectWifiForNode();
-      break;
-    case 'updateValidatorKey':
-      this.setupAndConnectWifiForNode();
-      break;
-    case 'checkVersionCodeInZMQ':
-      this.checkVersionCodeInZMQ();
       break;
     case 'handleNext':
       this.handleNext();
@@ -360,12 +270,13 @@ class WifiRepairSetup extends PureComponent {
     default:
       break;
     }
-  }
+  };
+
   renderFooter = () => {
     const { steps, loading } = this.state;
     return (
       <View style={styles.footer}>
-        <Button
+        <RoundCornerButton
           disabled={loading}
           loading={loading}
           onPress={() => {
@@ -376,6 +287,7 @@ class WifiRepairSetup extends PureComponent {
               this.handleNext();
             }
           }}
+          style={[theme.BUTTON.BLACK_TYPE]}
           title={steps.length > 0 ? 'Retry' : 'Next'}
         />
       </View>
@@ -389,8 +301,8 @@ class WifiRepairSetup extends PureComponent {
         {isLastStep && loading ? <ActivityIndicator style={styles.logIcon} size="small" /> : (
           <Icon
             containerStyle={styles.logIcon}
-            color={step?.isSuccess ? COLORS.primary : COLORS.red}
-            size={14}
+            color={step?.isSuccess ? COLORS.colorPrimary : COLORS.red}
+            size={15}
             name="checkbox-blank-circle"
             type="material-community"
           />
@@ -404,7 +316,6 @@ class WifiRepairSetup extends PureComponent {
     const { steps } = this.state;
     return (
       <View>
-        <LineView color={COLORS.lightGrey10} />
         <ScrollView
           style={[{ height: ScreenHeight * 0.35 }]}
           ref={ref => this.scrollView = ref}
@@ -419,7 +330,6 @@ class WifiRepairSetup extends PureComponent {
             {steps.map((step, index) => this.renderStep(step, index === steps.length - 1))}
           </TouchableOpacity>
         </ScrollView>
-        <LineView color={COLORS.lightGrey10} />
       </View>
     );
   }
@@ -432,35 +342,22 @@ class WifiRepairSetup extends PureComponent {
   };
 
   render() {
-    const { steps, connectWifi } = this.state;
+    const { steps } = this.state;
     const rootCauseMessage = this.getErrorMessage();
 
     return (
-      <View>
-        <ScrollView>
-          <Text style={styles.title2}>Enter your home WiFi detail</Text>
-          {steps.length > 0 ? this.renderLogs() : this.renderContent()}
-          <Text style={styles.errorText}>{rootCauseMessage}</Text>
-          {this.renderFooter()}
-        </ScrollView>
-        <ModalConnectWifi
-          isLoading={connectWifi.isCheckingWifiConnection}
-          isVisible={connectWifi.shouldShowModalConnectWifi}
-          isSuccess={connectWifi.isConnected}
-          title={connectWifi.title}
-          titleConfirm='OK'
-          titleRetry='Retry'
-        />
-      </View>
+      <ScrollView style={{ marginTop: 42 }}>
+        <Text style={styles.title2}>{'Connecting Node\nto your home WiFi'}</Text>
+        {steps.length > 0 && this.renderLogs()}
+        <Text style={styles.errorText}>{rootCauseMessage}</Text>
+        {this.renderFooter()}
+      </ScrollView>
     );
   }
 }
 
 WifiRepairSetup.propTypes = {
-  qrCode: PropTypes.string.isRequired,
-  hotspotSSID: PropTypes.string.isRequired,
   onNext: PropTypes.func.isRequired,
-  account: PropTypes.object.isRequired,
 };
 
 WifiRepairSetup.defaultProps = {};

@@ -1,25 +1,22 @@
 import { StyleSheet } from 'react-native';
-import {COLORS, FONT} from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
 
 export default StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
     padding: 20,
-    backgroundColor: COLORS.lightGrey14,
+    paddingTop: 0,
   },
   card: {
-    padding: 35,
-    backgroundColor: COLORS.white,
-    shadowOpacity: 1,
-    shadowRadius: 4,
-    shadowColor: '#DCDDDD',
-    shadowOffset: { height: 2, width: 0 },
+    padding: 10,
+    paddingEnd: 10,
+    paddingLeft: 10,
   },
   title: {
     fontSize: 18,
     marginBottom: 20,
-    ...FONT.STYLE.medium,
+    ...FONT.STYLE.bold,
   },
   row: {
     flexDirection: 'row',
@@ -27,20 +24,24 @@ export default StyleSheet.create({
   },
   itemRight: {
     marginLeft: 'auto',
-  },
-  field: {
-    color: COLORS.lightGrey1,
+    ...FONT.STYLE.bold,
+    color: COLORS.black,
   },
   button: {
     marginTop: 40,
   },
   buy: {
-    marginTop: 55,
+    marginTop: 20,
   },
   desc: {
-    color: COLORS.lightGrey9,
+    ...FONT.STYLE.medium,
+    color: COLORS.newGrey,
+  },
+  bold: {
+    ...FONT.STYLE.bold,
+    color: COLORS.black,
   },
   firstLine: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
 });

@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
-import { Button, Text, Image, ScrollView, View } from '@src/components/core';
+import { Text, Image, View, RoundCornerButton } from '@src/components/core';
 import nodeStep1 from '@src/assets/images/wifi.png';
 import React, { PureComponent } from 'react';
+import theme from '@src/styles/theme';
 import styles from '../../styles';
-import Guide from './Guide';
 
 class ConnectionCheck extends PureComponent {
   constructor(props) {
@@ -15,22 +15,24 @@ class ConnectionCheck extends PureComponent {
   render() {
     const { onNext } = this.props;
     return (
-      <ScrollView>
-        <Text style={styles.title2}>Please wait for Node to appear in your network list, then tap Next</Text>
-        <View style={styles.content}>
+      <View>
+        <Text style={styles.title2}>{'Please wait for Node to appear\nin your network list, then tap Next.'}</Text>
+        <View>
           <Image
             style={styles.content_step4_image}
             source={nodeStep1}
+            resizeMode="contain"
+            resizeMethod="resize"
           />
         </View>
-        <Guide />
         <View style={styles.footer}>
-          <Button
+          <RoundCornerButton
             onPress={onNext}
             title="Next"
+            style={[theme.BUTTON.NODE_BUTTON]}
           />
         </View>
-      </ScrollView>
+      </View>
     );
   }
 }

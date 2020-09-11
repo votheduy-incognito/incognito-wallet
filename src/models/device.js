@@ -1,12 +1,12 @@
-import {DEVICES} from '@src/constants/miner';
+import { DEVICES } from '@src/constants/miner';
 import accountService from '@src/services/wallet/accountService';
 import _ from 'lodash';
+import { COLORS } from '@src/styles';
 
 export const DEVICE_STATUS = {
   CODE_UNKNOWN : -1,
   CODE_STOP : 4,
   CODE_PENDING : 5,
-  // CODE_OUT_OF_STATUS : -3,
   CODE_START : 2,
   CODE_MINING : 3,
   CODE_SYNCING : 1,
@@ -53,14 +53,18 @@ export const template = {
   deleted:false,
   product_type:DEVICES.MINER_TYPE
 };
+export const VALIDATOR_STATUS = {
+  WAITING: 'waiting',
+  WORKING: 'committee'
+};
+export const MAX_ERROR_COUNT = 5;
+
 export default class Device {
-  static CODE_UNKNOWN = DEVICE_STATUS.CODE_UNKNOWN;
   static CODE_STOP = DEVICE_STATUS.CODE_STOP;
   static CODE_PENDING = DEVICE_STATUS.CODE_PENDING;
   static CODE_START = DEVICE_STATUS.CODE_START;
   static CODE_MINING = DEVICE_STATUS.CODE_MINING;
   static CODE_SYNCING = DEVICE_STATUS.CODE_SYNCING;
-  static CODE_OFFLINE = DEVICE_STATUS.CODE_OFFLINE;
 
   constructor(data){
     this.data = {...template, ...data,status:template.status};
@@ -72,11 +76,10 @@ export default class Device {
     return this.data.keyInfo?.publicKeyMining;
   }
   set PublicKeyMining(publicKeyMining:String){
-    const keyInfo = {
+    this.data['keyInfo'] = {
       ...this.data.keyInfo,
-      publicKeyMining:publicKeyMining
+      publicKeyMining: publicKeyMining
     };
-    this.data['keyInfo'] = keyInfo;
   }
   set PublicKey(publicKey) {
     this.data.minerInfo.publicKey = publicKey;
@@ -84,9 +87,7 @@ export default class Device {
   get PublicKey() {
     return this.data.minerInfo.publicKey;
   }
-  get IsOnline() {
-    return this.data.minerInfo.isOnline;
-  }
+
   setIsOnline(result) {
     this.data.minerInfo.isOnline = result;
   }
@@ -105,54 +106,113 @@ export default class Device {
   get AccountName() {
     return this.data.minerInfo.account?.AccountName;
   }
-  set StakeTx(tx) {
+
+  set SelfStakeTx(tx) {
     this.data.minerInfo.stakeTx = tx;
+    this.SelfStakeTxErrorCount = undefined;
   }
-  get StakeTx() {
+
+  get SelfStakeTx() {
     return this.data.minerInfo.stakeTx;
   }
-  get Staked() {
-    return !!this.Status || !!this.StakeTx;
+
+  set SelfStakeTxErrorCount(newCount) {
+    this.data.minerInfo.stakeTxErrorCount = newCount;
   }
+
+  get SelfStakeTxErrorCount() {
+    return this.data.minerInfo.stakeTxErrorCount;
+  }
+
+  get IsSelfStaked() {
+    return !!this.Status || !!this.SelfStakeTx;
+  }
+
+  set IsFundedAutoStake(result) {
+    this.data.minerInfo.isFundedAutoStake = result;
+  }
+
+  get IsFundedAutoStake() {
+    return this.data.minerInfo.isFundedAutoStake;
+  }
+
   set IsAutoStake(result) {
     this.data.minerInfo.isAutoStake = result;
   }
+
   get IsAutoStake() {
     return this.data.minerInfo.isAutoStake;
   }
-  set UnstakeTx(txId) {
+
+  set SelfUnstakeTx(txId) {
     this.data.minerInfo.unstakeTx = txId;
+    this.SelfUnstakeTxErrorCount = MAX_ERROR_COUNT;
   }
-  get UnstakeTx() {
+
+  get SelfUnstakeTx() {
     return this.data.minerInfo.unstakeTx;
   }
+
+  set SelfUnstakeTxErrorCount(newCount) {
+    this.data.minerInfo.unstakeTxErrorCount = newCount;
+  }
+
+  get SelfUnstakeTxErrorCount() {
+    return this.data.minerInfo.unstakeTxErrorCount;
+  }
+
   set ValidatorKey(key) {
     this.data.minerInfo.validatorKey = key;
   }
+
   get ValidatorKey() {
     return this.data.minerInfo.validatorKey || this.Account?.ValidatorKey;
   }
-  get Unstaking() {
-    return this.UnstakeTx || (!!this.Status && !this.IsAutoStake);
+
+  get IsInAutoStakingList() {
+    return !!this.Status;
   }
-  set IsWithdrawable(bool) {
+
+  get IsSelfUnstaking() {
+    return this.SelfUnstakeTx || (this.IsInAutoStakingList && !this.IsAutoStake);
+  }
+
+  set IsFundedStakeWithdrawable(bool) {
     this.data.minerInfo.isDrawable = bool;
   }
-  get IsWithdrawable() {
+
+  get IsFundedStakeWithdrawable() {
     return this.data.minerInfo.isDrawable;
   }
-  set UnstakeStatus(status) {
+
+  set FundedUnstakeStatus(status) {
     this.data.minerInfo.unstakeStatus = status;
   }
-  get UnstakeStatus() {
+
+  get FundedUnstakeStatus() {
     return this.data.minerInfo.unstakeStatus;
   }
-  get IsUnstaking() {
-    return this.UnstakeStatus === 1;
+
+  get IsFundedUnstaked() {
+    return this.IsFundedUnstakedRequestProcessed && !this.IsFundedAutoStake;
   }
-  get Unstaked() {
-    return this.UnstakeStatus === 2;
+
+  get IsFundedUnstakedRequestProcessed() {
+    return this.FundedUnstakeStatus === 2;
   }
+
+  get IsFundedUnstaking() {
+    return this.FundedUnstakeStatus === 1;
+  }
+
+  get IsFundedStaked() {
+    return this.data.minerInfo.Status === 2;
+  }
+
+  get IsFundedStaking() {
+    return this.data.minerInfo.Status !== 2;
+  }
+
   get Host(){
     return this.data.minerInfo?.ipAddress||'';
   }
@@ -173,16 +233,19 @@ export default class Device {
 
     return !_.isEmpty(this.Host) && !_.isEmpty(this.Port) ? `${this.Host}:${this.Port}` : '';
   }
+
   set Status(status) {
     this.data.minerInfo.status = status;
   }
+
   get Status() {
     return this.data.minerInfo.status;
   }
 
   get Name(){
-    return this.data.product_name || '';
+    return this.AccountName || '-';
   }
+
   get Type(){
     return this.data.product_type || '';
   }
@@ -196,6 +259,10 @@ export default class Device {
   }
 
   get qrCodeDeviceId(){
+    return this.data.minerInfo?.qrCodeDeviceId ?? '';
+  }
+
+  get QRCode() {
     return this.data.minerInfo?.qrCodeDeviceId ?? '';
   }
 
@@ -231,11 +298,96 @@ export default class Device {
     return !!this.data.linked;
   }
 
+  get IsSetupViaLan() {
+    return this.ValidatorKey === this.ProductId;
+  }
+
   toJSON(){
     return this.data;
   }
+
   static getInstance = (data=template):Device =>{
     return new Device(data);
   }
 
+
+  get IsStaked() {
+    if (this.IsPNode) {
+      return ((this.IsFundedStaking || this.IsFundedStaked) && !this.IsFundedUnstaked) || this.IsSelfStaked;
+    }
+
+    return this.IsSelfStaked;
+  }
+
+  get IsUnstaking() {
+    if (this.IsPNode) {
+      if (this.IsFundedStaking) {
+        return false;
+      }
+
+      if (this.IsFundedUnstaking) {
+        return true;
+      }
+
+      if (this.IsFundedStaked && this.IsFundedUnstaked) {
+        return this.IsSelfUnstaking;
+      }
+
+      return false;
+    }
+
+    return this.IsSelfUnstaking;
+  }
+
+  get IsUnstaked() {
+    return !this.IsStaked;
+  }
+
+  get IsOnline() {
+    return this.data.minerInfo.isOnline;
+  }
+
+  get IsOffline() {
+    return this.IsOnline <= 0;
+  }
+
+  get IsWorking() {
+    return this.Status === VALIDATOR_STATUS.WORKING;
+  }
+
+  get IsWaiting() {
+    return this.Status === VALIDATOR_STATUS.WAITING;
+  }
+
+  get StatusColor() {
+    if (this.IsOffline) {
+      return COLORS.lightGrey1;
+    }
+
+    if (this.IsUnstaking) {
+      return COLORS.orange;
+    }
+
+    if (this.IsWorking) {
+      return COLORS.blue;
+    }
+
+    if (this.IsWaiting || this.IsStaked) {
+      return COLORS.green2;
+    }
+
+    return COLORS.lightGrey1;
+  }
+
+  get IsStaking() {
+    return !!this.SelfStakeTx;
+  }
+
+  get IsUnstakable() {
+    if (this.IsPNode) {
+      return !!this.Account && this.IsFundedStaked && !this.IsStaking && this.IsStaked && !this.IsUnstaking;
+    }
+
+    return !!this.Account && !this.IsStaking && this.IsStaked && !this.IsUnstaking;
+  }
 }

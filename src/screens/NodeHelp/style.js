@@ -6,25 +6,37 @@ const style = StyleSheet.create({
     paddingHorizontal: 25,
   },
   text: {
-    color: COLORS.lightGrey1,
-    lineHeight: 26,
-    ...FONT.STYLE.normal,
+    color: COLORS.newGrey,
+    lineHeight: 30,
+    ...FONT.STYLE.medium,
   },
-  title: {
+  header: {
     ...FONT.STYLE.bold,
     marginTop: 30,
     lineHeight: 26,
+    fontSize: 18,
+    color: COLORS.black,
+  },
+  title: {
+    ...FONT.STYLE.medium,
+    marginTop: 30,
+    lineHeight: 26,
+    fontSize: 16,
+    color: COLORS.black,
   },
   bold: {
     ...FONT.STYLE.bold,
   },
   semiBold: {
     ...FONT.STYLE.bold,
-    color: COLORS.lightGrey1,
+    color: COLORS.newGrey,
   },
   marginTop: {
     marginTop: 25,
   },
+  noMarginTop: {
+    marginTop: 0,
+  }
 });
 
 export default style;

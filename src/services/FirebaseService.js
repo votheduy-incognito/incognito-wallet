@@ -265,8 +265,8 @@ export default class FirebaseService {
     return fuid;
   }
 
-  sendAction = async (username, password, action, onCallback, timeout)=> {
-    console.log(TAG,`sendAction Username: ${username}-password=${password}`);
+  sendAction = async (username, password, action, onCallback, timeout, retries = 4)=> {
+    console.log(TAG,`sendAction Username: ${username}-password=${password}`, action);
     this.username = username;
     this.password = password;
     // await this.send(action, onCallback, timeout);
@@ -275,7 +275,7 @@ export default class FirebaseService {
     const getFBUID = this.getUID();
     // console.log('sendAction isEqual =',_.isEqual(fbuid,getFBUID));
     if (_.isEqual(fbuid,getFBUID)) {
-      await this.send(action, onCallback, timeout);
+      await this.send(action, onCallback, timeout, retries);
     } else {
       console.log('You input invalid data');
     }
@@ -315,8 +315,7 @@ export default class FirebaseService {
     }),5);
     return await temp.catch(console.log)||false;
   }
-  send = async(action, onCallback, timeout)=>{
-
+  send = async(action, onCallback, timeout = 8, retries)=>{
     if (onCallback) {
       this.addActionCallback(action, onCallback);
     }
@@ -363,7 +362,7 @@ export default class FirebaseService {
         console.log(TAG, 'send fetchData begin ------');
         let receiveData = false;
         try {
-          receiveData =  await Util.excuteWithTimeout(this.startListenData(actionSource),8);
+          receiveData =  await Util.excuteWithTimeout(this.startListenData(actionSource),timeout);
           console.log(TAG, 'send fetchData receiveData ------',receiveData);
         } catch (error) {
           console.log(TAG, 'send tryAtMost-fetchData error ',error);
@@ -388,7 +387,7 @@ export default class FirebaseService {
         return receiveData?receiveData:new Error('codeData fail');
       };
 
-      const resultReceive = await Util.tryAtMost(codeData,4,3).catch(e=>{
+      const resultReceive = await Util.tryAtMost(codeData,retries,3).catch(e=>{
         console.log(TAG, 'send tryAtMost-fetchData= ',e);
         this.checkTimeout(action, onCallback);
       });

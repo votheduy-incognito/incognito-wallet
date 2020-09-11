@@ -1,13 +1,13 @@
-import http from '@src/services/http.track_log';
 import Axios from 'axios';
 import { CONSTANT_CONFIGS } from '@src/constants';
+import http2 from '@src/services/http2';
 
 export const apiGetEstimateFeeFromChain = (
   data = {
     Prv: 0,
     TokenID: null,
   },
-) => http.post('chain/estimatefee', data);
+) => http2.post('chain/estimatefee', data);
 
 export const apiCheckIfValidAddressETH = (address = '') =>
   Axios.get(

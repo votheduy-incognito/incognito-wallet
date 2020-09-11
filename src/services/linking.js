@@ -1,5 +1,8 @@
 import { Linking } from 'react-native';
 import { Toast } from '@src/components/core';
+import NavigationService from '@services/NavigationService';
+import routeNames from '@routers/routeNames';
+import RNSettings from 'react-native-settings';
 
 const LinkingService = {
   openUrl(url) {
@@ -18,6 +21,18 @@ const LinkingService = {
     } catch {
       Toast.showError('Can not open this URL, please try again');
     }
+  },
+
+  openCommunityUrl(uri) {
+    NavigationService.navigate(routeNames.Community, { uri });
+  },
+
+  openSettings() {
+    Linking.openSettings();
+  },
+
+  openLocation() {
+    return RNSettings.openSetting(RNSettings.ACTION_LOCATION_SOURCE_SETTINGS);
   },
 };
 

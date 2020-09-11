@@ -1,6 +1,5 @@
-import StepIndicator from '@components/StepIndicator';
 import BaseScreen from '@screens/BaseScreen';
-import { TouchableOpacity, View } from '@src/components/core';
+import { View, ScrollView } from '@src/components/core';
 import { getAccountByName } from '@src/redux/selectors/account';
 import routeNames from '@src/router/routeNames';
 import React from 'react';
@@ -8,26 +7,24 @@ import { connect } from 'react-redux';
 import FirstScreen from '@screens/GetStartedAddNode/components/FirstScreen';
 import { locationPermission, checkPermission, ENUM_RESULT_PERMISSION } from '@src/utils/PermissionUtil';
 import TurnOffCellular from '@screens/GetStartedAddNode/components/TurnOffCellular';
-import { COLORS } from '@src/styles';
 import WifiManager from 'react-native-wifi-reborn';
-import { Icon } from 'react-native-elements';
-import bandWidthPng from '@src/assets/images/bandwidth.png';
 import { checkBandWidth } from '@src/utils/connection';
-import _ from 'lodash';
 import RNSettings from 'react-native-settings';
-import { RESULTS } from 'react-native-permissions';
 import NetInfo from '@react-native-community/netinfo';
-import ModalPermission from '@src/components/Modal/ModalPermission';
-import { Linking, Alert, Platform } from 'react-native';
+import { Linking, Platform } from 'react-native';
 import { withNavigationFocus } from 'react-navigation';
 import locationPermissionPng from '@src/assets/images/location.png';
-import ModalBandWidth from '@src/components/Modal/ModalBandWidth';
 import LogManager from '@src/services/LogManager';
 import LocalDatabase from '@src/utils/LocalDatabase';
 import NodeService from '@src/services/NodeService';
-import Util from '@src/utils/Util';
+import Header from '@src/components/Header';
+import NavigationService from '@src/services/NavigationService';
+import { BtnQuestionDefault } from '@src/components/Button';
+import { withLayout_2 } from '@components/Layout';
+import { SuccessModal } from '@src/components';
+import theme from '@src/styles/theme';
+import { BackUpAccountModal } from '@screens/Node/BackuUpAccountModal';
 import ScanQRCode from './components/ScanQRCode';
-import { DialogNotify } from './components/BackUpAccountDialog';
 import styles from './styles';
 import ConnectionCheck from './components/ConnectionCheck';
 import WifiSetup from './components/SetupWifi/WifiSetup';
@@ -42,7 +39,7 @@ const CONNECTION_STATUS = {
 };
 
 const MINIMUM_BANDWIDTH = 0.3;
-
+var oldVerifyProductCode = '';
 class GetStartedAddNode extends BaseScreen {
   constructor(props) {
     super(props);
@@ -57,21 +54,9 @@ class GetStartedAddNode extends BaseScreen {
       errPermission: '',
       isErrPermission: false,
       showBandWidthModal: false,
+      showModalMissingSetup: false,
     };
   }
-
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerRight: (
-        <TouchableOpacity
-          onPress={() => navigation.navigate(routeNames.NodeHelp)}
-          style={styles.headerRight}
-        >
-          <Icon name="help-outline" color={COLORS.white} />
-        </TouchableOpacity>
-      )
-    };
-  };
 
   componentDidMount = async () => {
     this.checkPermissionForSteps();
@@ -87,24 +72,19 @@ class GetStartedAddNode extends BaseScreen {
   checkLocationService = async () => {
     let res = await RNSettings.getSetting(RNSettings.LOCATION_SETTING);
     return res === RNSettings.ENABLED;
-  }
+  };
+
   openLocationService = async () => {
     await RNSettings.openSetting(RNSettings.ACTION_LOCATION_SOURCE_SETTINGS);
-  }
+  };
 
   checkBandwidthNetwork = async () => {
     await this.getNetworkBandwidth();
-  }
+  };
 
   warningLocationService = () => {
     this.setState({ isErrPermission: true });
-    // Alert.alert('Help node find you', 'We detect that you have not enabled location services. Please go to setting and enable it', [
-    //   {
-    //     text: 'Go to device settings',
-    //     onPress: () => { this.openLocationService(); }
-    //   }
-    // ]);
-  }
+  };
 
   checkPermissionForSteps = async () => {
     let isGranted = false;
@@ -151,16 +131,7 @@ class GetStartedAddNode extends BaseScreen {
         return isGranted;
       });
     return isGranted;
-  }
-
-  listenFocusedScreen = () => {
-    this.focusedListener = this.props.navigation.addListener(
-      'willFocus',
-      () => {
-        this.checkPermissionForSteps();
-      }
-    );
-  }
+  };
 
   componentWillUnmount() {
     this.focusedListener && this.focusedListener?.remove();
@@ -172,7 +143,7 @@ class GetStartedAddNode extends BaseScreen {
     } else {
       this.setState({ showBandWidthModal: speed <= MINIMUM_BANDWIDTH });
     }
-  }
+  };
 
   getNetworkBandwidth = async () => {
     await checkBandWidth()
@@ -188,11 +159,10 @@ class GetStartedAddNode extends BaseScreen {
 
     // If wanna cancel, do this.
     // await cancelCheckBandWidth();
-  }
+  };
 
   handleFinish = () => {
     this.setState({ success: false }, () => {
-      // Need to navigate to RootMiner to pass params
       this.goToScreen(routeNames.Node, { setupNode: true });
     });
   };
@@ -233,19 +203,11 @@ class GetStartedAddNode extends BaseScreen {
   scanQrCodeComplete = async ({ qrCode, account, hotspotSSID }) => {
     if (this.state.step === 1) { //QRCode
       let verifyProductCode = await LocalDatabase.getVerifyCode();
-      console.log(verifyProductCode);
       if (verifyProductCode && verifyProductCode !== '') {
         let result = await NodeService.verifyProductCode(verifyProductCode);
         if (result && result?.verify_code === verifyProductCode) {
-          Alert.alert(
-            'Something stopped unexpectedly',
-            'Please resume setup to bring Node online',
-            [
-              { text: 'Back', onPress: () => this.goToScreen(routeNames.Home) },
-              { text: 'Resume', onPress: () => { this.goToScreen(routeNames.RepairingSetupNode, { isRepairing: true, verifyProductCode: verifyProductCode }); } },
-            ],
-            { cancelable: false }
-          );
+          oldVerifyProductCode = verifyProductCode;
+          this.setState({showModalMissingSetup: true});
         } else {
           if (account && account?.ValidatorKey && account?.PaymentAddress) {
             this.setState({ qrCode, account, hotspotSSID }, this.nextScreen);
@@ -287,12 +249,7 @@ class GetStartedAddNode extends BaseScreen {
 
     this.setState({ step: step });
     if (!isConnected || !connectable || !wifiName || wifiName.includes('Node') || wifiName === '') {
-      Alert.alert('Could not connect', 'There seems to be an issue with your WiFi connection. Please try again or switch to a different network if available', [
-        {
-          text: 'Go to device settings',
-          onPress: () => { Linking.openURL('App-Prefs:root=WIFI'); }
-        }
-      ]);
+      this.setState({showBandWidthModal: true});
     }
   }
 
@@ -325,17 +282,15 @@ class GetStartedAddNode extends BaseScreen {
       );
     }
 
-    if (step === 4) {
-      return (
-        <WifiSetup
-          onNext={this.handleSetupComplete}
-          setStep={this.setStep}
-          qrCode={qrCode}
-          account={account}
-          hotspotSSID={hotspotSSID}
-        />
-      );
-    }
+    return (
+      <WifiSetup
+        onNext={this.handleSetupComplete}
+        setStep={this.setStep}
+        qrCode={qrCode}
+        account={account}
+        hotspotSSID={hotspotSSID}
+      />
+    );
   }
 
   openSettingApp = () => {
@@ -348,22 +303,23 @@ class GetStartedAddNode extends BaseScreen {
   };
 
   render() {
-    const { success, step, isErrPermission, errPermission, bandWidth, showBandWidthModal } = this.state;
+    const { success, isErrPermission, showBandWidthModal } = this.state;
     return (
       <View style={styles.container}>
-        <DialogNotify visible={success} onClose={this.handleFinish} />
-        <StepIndicator stepCount={5} currentPage={step} />
-        {this.renderStep()}
-        <ModalPermission
-          isVisible={isErrPermission}
+        <Header
+          rightHeader={<BtnQuestionDefault onPress={()=>NavigationService.navigate(routeNames.NodeHelp)} />}
+          title=""
+          style={styles.header}
+        />
+        <BackUpAccountModal onClose={this.handleFinish} visible={success} />
+        <ScrollView contentContainerStyle={styles.contentWrapper} paddingBottom>
+          {this.renderStep()}
+        </ScrollView>
+        <SuccessModal
           title="Help Node find you"
-          btnTitle="Go to device settings"
-          subTitle="Please give the app permission to access your location"
-          uri={locationPermissionPng}
-          onPressDismiss={() => {
-            this.setState({ errPermission: '', isErrPermission: false });
-          }}
-          onPressSetting={() => {
+          extraInfo="Give the app permission to access your location"
+          visible={isErrPermission}
+          closeSuccessDialog={() => {
             this.setState({ errPermission: '', isErrPermission: false });
             if (Platform.OS === 'ios') {
               this.openSettingApp();
@@ -371,21 +327,18 @@ class GetStartedAddNode extends BaseScreen {
               this.openLocationService();
             }
           }}
+          buttonStyle={theme.BUTTON.NODE_BUTTON}
+          icon={locationPermissionPng}
         />
-        <ModalBandWidth
-          isVisible={showBandWidthModal}
-          uri={bandWidthPng}
-          title="Weak connection"
-          btnTitle="Switch networks"
-          btnSetting='OK'
-          subTitle="Setup may take longer than expected due to slow network speeds"
-          onPress={() => {
-            this.setState({ showBandWidthModal: false });
-          }}
-          onPressSetting={() => {
+        <SuccessModal
+          title="Connectivity"
+          extraInfo="There is an issue with your connection. Please connect to connectable wifi for processing next step"
+          visible={showBandWidthModal}
+          closeSuccessDialog={() => {
             this.setState({ showBandWidthModal: false });
             this.openSettingApp();
           }}
+          buttonStyle={theme.BUTTON.NODE_BUTTON}
         />
       </View>
     );
@@ -403,4 +356,10 @@ const mapDispatchToProps = {};
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withNavigationFocus(GetStartedAddNode));
+)(
+  withLayout_2(
+    withNavigationFocus(
+      GetStartedAddNode
+    )
+  )
+);

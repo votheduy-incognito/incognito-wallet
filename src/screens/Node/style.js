@@ -10,28 +10,24 @@ const style = StyleSheet.create({
     marginLeft: 'auto',
   },
   container: {
-    paddingTop: 15,
-    paddingHorizontal: 5,
     minHeight: '100%',
+    flex: 1,
   },
   headerContainer: {
-    flexDirection: 'row', 
-    alignContent: 'center', 
-    alignItems: 'center', 
-    justifyContent: 'flex-start' 
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'flex-start'
   },
   background: {
     position: 'absolute',
     height: 120,
     left: 0,
     right: 0,
-    backgroundColor: COLORS.dark2,
   },
   buyButton: {
     marginTop: 15,
-    marginHorizontal: 15,
-    marginBottom: 100,
-    // paddingBottom: 20
+    marginBottom: 40,
   },
   title: {
     fontSize: 24,
@@ -57,7 +53,8 @@ const style = StyleSheet.create({
     marginHorizontal: 15,
   },
   list: {
-    paddingHorizontal: 15,
+    paddingBottom: 50,
+    flex: 1
   },
   container_first_app:{
     flex: 1,
@@ -88,11 +85,47 @@ const style = StyleSheet.create({
     color:'#FFFFFF'
   },
   button:{
-    backgroundColor:'#25CDD6',
-    padding:scaleInApp(10),
-    borderRadius:scaleInApp(4),
-    marginTop:scaleInApp(10),
+    backgroundColor: COLORS.blue6,
   },
+  dot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    margin: 10,
+    marginTop: 10,
+    backgroundColor: COLORS.lightGrey5,
+  },
+  activeDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    marginTop: 10,
+    margin: 10,
+    backgroundColor: COLORS.blue6,
+  },
+  balance: {
+    fontFamily: FONT.NAME.specialRegular,
+    fontSize: 20,
+    color: COLORS.colorGreyBold,
+  },
+  balanceContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center'
+  },
+  balanceUpdate: {
+    fontSize: FONT.SIZE.veryLarge,
+    color: COLORS.black,
+    textAlign: 'center',
+    height: '100%',
+  },
+  symbolStyle: {
+    marginTop: 14,
+  },
+  rightButton: {
+    width: 22,
+    height: 22,
+  }
 });
 
 export default style;

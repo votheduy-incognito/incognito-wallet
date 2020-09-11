@@ -1,14 +1,16 @@
+import React, { useCallback, useMemo, useState } from 'react';
+import PropTypes from 'prop-types';
+import { Image, TouchableOpacity, Text } from 'react-native';
+import _ from 'lodash';
 import images from '@src/assets';
 import DeviceLog from '@components/DeviceLog/index';
 import { openQrScanner } from '@components/QrCodeScanner/index';
 import APIService from '@services/api/miner/APIService';
-import { scaleInApp } from '@src/styles/TextStyle';
 import Util from '@utils/Util';
 import ViewUtil, { onClickView } from '@utils/ViewUtil';
-import _ from 'lodash';
-import React, { useCallback, useMemo, useState } from 'react';
-import { Image, TouchableOpacity, Text } from 'react-native';
-import { Icon } from 'react-native-elements';
+import nodeVerified from '@src/assets/images/node/node_verified.png';
+import { COLORS } from '@src/styles';
+import FONT from '@src/styles/font';
 import styles from '../../styles';
 
 export const TAG = 'GetQrcode';
@@ -48,29 +50,34 @@ const GetQrcode = React.memo(({ onSuccess, qrCode = '' }) => {
   return (
     <>
       <Image style={styles.content_step1} source={images.ic_getstarted_scan_device} />
-
       {!isPassedValidate ? (
         <TouchableOpacity onPress={handleQrcode}>
-          <Image style={styles.content_step1} source={images.ic_getstarted_qrcode} />
+          <Image style={styles.content_step1QRCode} source={images.ic_getstarted_qrcode} />
           <Text style={styles.step3_text}>Tap to scan</Text>
         </TouchableOpacity>
       ) : (loading ? ViewUtil.loadingComponent() : (
         <>
-          <Icon size={scaleInApp(50)} color='#25CDD6' name="check" type='simple-line-icon' />
-          <Text style={[styles.step3_text, { color: '#25CDD6' }]}>Hello, Node</Text>
+          <Image style={styles.nodeVerifiedImage} source={nodeVerified} />
+          <Text style={[styles.step3_text, { color: COLORS.colorGreyBold }]}>Hello, Node:</Text>
         </>
       )
       )}
-      {!isPassedValidate && (
-        <Text style={[styles.text, styles.errorText, styles.item_container_error]}>{errorMessage}</Text>
-      )}
-
-      {!_.isEmpty(deviceId) && (
-        <Text style={[styles.text, styles.item_container_input, { textAlign: 'center', paddingBottom: 2 }]}>{deviceId}</Text>
-      )}
-
+      {!_.isEmpty(deviceId) ?
+        <Text style={[styles.text, { textAlign: 'center', paddingBottom: 2, fontFamily: FONT.NAME.bold }]}>{deviceId}</Text>
+        : null}
+      {!isPassedValidate && errorMessage !== '' ?
+        <Text style={[styles.text, styles.errorText]}>{errorMessage}</Text> : null}
     </>
   );
 });
+
+GetQrcode.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+  qrCode: PropTypes.string,
+};
+
+GetQrcode.defaultProps = {
+  qrCode: ''
+};
 
 export default GetQrcode;

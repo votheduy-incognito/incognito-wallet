@@ -12,5 +12,14 @@ export default {
   CAN_NOT_GET_POOL_DATA: 'Can not get pool data.',
   DISABLE_ETH_BRIDGE: 'Current congestion may affect out-network functionality. Please check back later.',
 
-  CAN_NOT_GET_POOL_HISTORIES: 'Can not get pool histories.'
+  CAN_NOT_GET_POOL_HISTORIES: 'Can not get pool histories.',
+
+  INSUFFICIENT_BALANCE: 'Your balance is insufficient.',
+  NOT_ENOUGH_NETWORK_FEE: 'Please top up PRV to cover the network fee.',
+
+  CHANGE_WIFI_SUCCESSFULLY_TITLE: 'Change wifi successfully',
+  CHANGE_WIFI_SUCCESSFULLY_DESCRIPTION: 'You has changed your wifi.',
+  CAN_NOT_CHANGE_WIFI: 'Change wifi unsuccessfully.',
+  NODE_OUT_OF_DATE: 'Your node\'s firmware is out of date. Please contact go@incognito.org for support.',
+  NODE_SETUP_LAN_NOT_SUPPORTED: 'Your node is not supported to update wifi. Please contact go@incognito.org for more information.',
 };
