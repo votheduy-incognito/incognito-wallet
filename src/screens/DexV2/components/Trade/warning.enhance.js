@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import convert from '@utils/convert';
-import { calculateOutputValue as calculateOutput } from './utils';
+import { calculateOutputValueCrossPool } from './utils';
 
 const withWarning = WrappedComp => (props) => {
   const [warning, setWarning] = React.useState('');
@@ -23,7 +23,7 @@ const withWarning = WrappedComp => (props) => {
       inputValue > convert.toOriginalAmount(1, inputToken.pDecimals)
     ) {
       const halfInput = inputValue / 2;
-      const halfOutput = calculateOutput(pair, inputToken, halfInput, outputToken);
+      const halfOutput = calculateOutputValueCrossPool(pair, inputToken, halfInput, outputToken);
 
       const exchangeRate1 = inputValue / outputValue;
       const exchangeRate2 = halfInput / halfOutput;
