@@ -4,8 +4,7 @@ import formatUtils from '@utils/format';
 import { MIN_PERCENT } from '@screens/DexV2/constants';
 import { getQuote as getQuoteAPI } from '@services/trading';
 import { v4 } from 'uuid';
-import { COINS } from '@src/constants';
-import { calculateOutputValue as calculateOutput } from './utils';
+import { calculateOutputValueCrossPool } from './utils';
 
 let currentDebounceId;
 
@@ -19,23 +18,7 @@ const withCalculateOutput = WrappedComp => (props) => {
   const { inputToken, inputValue, outputToken, pair } = props;
 
   const calculateOutputValue = () => {
-    const firstPair = _.get(pair, 0);
-    const secondPair = _.get(pair, 1);
-
-    let currentInputToken = inputToken;
-    let outputValue = inputValue;
-
-    if (secondPair) {
-      outputValue = calculateOutput(firstPair, currentInputToken, outputValue, COINS.PRV);
-      currentInputToken = COINS.PRV;
-    }
-
-    outputValue = calculateOutput(secondPair || firstPair, currentInputToken, outputValue, outputToken);
-
-    if (outputValue < 0) {
-      outputValue = 0;
-    }
-
+    const outputValue = calculateOutputValueCrossPool(pair, inputToken, inputValue, outputToken);
     setOutputValue(outputValue);
 
     const minimumAmount = _.floor(outputValue * MIN_PERCENT);
@@ -48,10 +31,6 @@ const withCalculateOutput = WrappedComp => (props) => {
     }
 
     setOutputText(outputText.toString());
-
-    // console.debug('TOKEN', inputToken.symbol, outputToken.symbol, outputToken.pDecimals, inputValue);
-    // console.debug('PAIR', pair, pair[inputToken.id], pair[outputToken.id]);
-    // console.debug('RESULT', outputValue, minimumAmount, outputText, outputValue === 0 || minimumAmount === 0 || isNaN(outputText));
   };
 
   const getQuote = async (inputToken, outputToken, value, id) => {

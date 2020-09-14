@@ -1,4 +1,26 @@
 import _ from 'lodash';
+import { COINS } from '@src/constants';
+
+export const calculateOutputValueCrossPool = (pairs, inputToken, inputValue, outputToken) => {
+  const firstPair = _.get(pairs, 0);
+  const secondPair = _.get(pairs, 1);
+
+  let currentInputToken = inputToken;
+  let outputValue = inputValue;
+
+  if (secondPair) {
+    outputValue = calculateOutputValue(firstPair, currentInputToken, outputValue, COINS.PRV);
+    currentInputToken = COINS.PRV;
+  }
+
+  outputValue = calculateOutputValue(secondPair || firstPair, currentInputToken, outputValue, outputToken);
+
+  if (outputValue < 0) {
+    outputValue = 0;
+  }
+
+  return outputValue;
+};
 
 export const calculateOutputValue = (pair, inputToken, inputValue, outputToken) => {
   try {
