@@ -7,6 +7,7 @@ import {
   actionAddFollowToken,
   actionRemoveFollowToken,
 } from '@src/redux/actions/token';
+import { withTokenVerified } from '@src/components/Token';
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
@@ -35,5 +36,6 @@ const enhance = (WrappedComp) => (props) => {
 
 export default compose(
   withLayout_2,
+  withTokenVerified,
   enhance,
 );

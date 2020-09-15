@@ -40,11 +40,12 @@ const Item = ({ item, handleToggleFollowToken }) =>
   }, [item?.isFollowed]);
 
 const FollowToken = React.memo((props) => {
-  const { handleToggleFollowToken } = props;
+  const { handleToggleFollowToken, ...rest } = props;
   return (
     <View style={styled.container}>
       <Header title="Add a coin" canSearch />
       <ListAllToken
+        {...rest}
         renderItem={({ item }) => (
           <Item item={item} handleToggleFollowToken={handleToggleFollowToken} />
         )}
@@ -55,7 +56,8 @@ const FollowToken = React.memo((props) => {
 });
 
 FollowToken.propTypes = {
-  handleToggleFollowToken: PropTypes.array.isRequired,
+  handleToggleFollowToken: PropTypes.func.isRequired,
+  tokensFactories: PropTypes.array.isRequired,
 };
 
 export default withFollowToken(FollowToken);

@@ -9,6 +9,7 @@ import routeNames from '@src/router/routeNames';
 import { ExHandler } from '@src/services/exception';
 import PropTypes from 'prop-types';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
+import { withTokenVerified } from '@src/components/Token';
 import { actionFetch as fetchDataShield } from './Shield.actions';
 
 const enhance = (WrappedComp) => (props) => {
@@ -55,4 +56,5 @@ export default compose(
   (Comp) => (props) => <Comp {...{ ...props, onlyPToken: true }} />,
   withTokenSelect,
   enhance,
+  withTokenVerified,
 );
