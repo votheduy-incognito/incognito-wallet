@@ -10,7 +10,7 @@ const ListToken = (props) => {
   return (
     <FlatList
       showsVerticalScrollIndicator={false}
-      style={styledListToken}
+      style={[{ flex: 1 }, styledListToken]}
       data={data}
       renderItem={renderItem}
       keyExtractor={(token) => token?.tokenId}
