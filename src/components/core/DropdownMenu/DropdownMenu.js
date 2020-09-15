@@ -27,7 +27,7 @@ const styled = StyleSheet.create({
 });
 
 const DropdownMenu = (props) => {
-  const { defaultToggle, sections, ...rest } = props;
+  const { defaultToggle, sections, customStyle, ...rest } = props;
   const [toggle, setToggle] = React.useState(defaultToggle);
   const sectionsData = sections.map((section) => ({
     ...section,
@@ -35,7 +35,7 @@ const DropdownMenu = (props) => {
   }));
   return (
     <SectionList
-      style={styled.container}
+      style={[styled.container, customStyle]}
       sections={sectionsData}
       keyExtractor={(item, index) => item + index}
       renderSectionHeader={({ section: { label } }) => (
@@ -68,10 +68,12 @@ const DropdownMenu = (props) => {
 
 DropdownMenu.defaultProps = {
   defaultToggle: false,
+  customStyle: null,
 };
 
 DropdownMenu.propTypes = {
   defaultToggle: PropTypes.bool,
+  customStyle: PropTypes.any,
   sections: PropTypes.array.isRequired,
 };
 
