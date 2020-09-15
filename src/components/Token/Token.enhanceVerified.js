@@ -49,13 +49,11 @@ const enhance = (WrappedComp) => (props) => {
 
   const tokensFactories = [
     {
-      isVerifiedTokens: true,
       data: _verifiedTokens,
       visible: true,
       styledListToken: { paddingTop: 27 },
     },
     {
-      isVerifiedTokens: false,
       data: _unVerifiedTokens,
       visible: toggleUnVerified,
       styledListToken: { paddingTop: 15 },
