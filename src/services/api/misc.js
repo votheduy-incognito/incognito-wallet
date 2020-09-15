@@ -1,4 +1,5 @@
 import http from '@src/services/http';
+import FunctionConfigModel from '@models/function';
 
 const getMinMaxDepositWithdrawAmount = () => {
   // cache
@@ -8,7 +9,7 @@ const getMinMaxDepositWithdrawAmount = () => {
     const parsedAmount = Number(amount);
 
     if (Number.isFinite(parsedAmount) && parsedAmount > 0) return parsedAmount;
-    
+
     return null;
   };
 
@@ -37,3 +38,8 @@ const getMinMaxDepositWithdrawAmount = () => {
 
 export const getMinMaxDepositAmount = getMinMaxDepositWithdrawAmount();
 export const getMinMaxWithdrawAmount = getMinMaxDepositAmount;
+
+export const getFunctionConfigs = () => {
+  return http.get('/system/disable-function-configs')
+    .then(data => Object.keys(data).map(key => new FunctionConfigModel(data[key])));
+};

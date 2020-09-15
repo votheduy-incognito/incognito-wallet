@@ -20,6 +20,7 @@ import Tooltip from '@src/components/Tooltip/Tooltip';
 import { COLORS } from '@src/styles';
 import isNaN from 'lodash/isNaN';
 import { TouchableOpacity } from '@src/components/core';
+import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import {
   styled,
   styledHook,
@@ -42,6 +43,9 @@ const GroupButton = () => {
       await dispatch(actionToggleGuide());
     }
   };
+
+  const [onFeaturePress, isDisabled] = useFeatureConfig('shield', handleShield);
+
   return (
     <View
       style={[
@@ -70,7 +74,8 @@ const GroupButton = () => {
           title="Shield my crypto"
           btnStyle={[styled.btnStyle]}
           titleStyle={[styled.titleStyle]}
-          onPress={handleShield}
+          onPress={onFeaturePress}
+          disabledPress={isDisabled}
         />
       </View>
     </View>
