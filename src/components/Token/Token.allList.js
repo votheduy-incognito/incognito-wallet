@@ -49,4 +49,4 @@ ListAllToken.propTypes = {
   renderItem: PropTypes.func.isRequired,
 };
 
-export default React.memo(withTokenVerified(ListAllToken));
+export default React.memo(ListAllToken);
