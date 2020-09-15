@@ -2,7 +2,7 @@ import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import _ from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
-import { Toast, View } from '@components/core';
+import { View } from '@components/core';
 import {
   selectedPrivacySeleclor,
   tokenSeleclor,
@@ -12,8 +12,9 @@ import VerifiedText from '@components/VerifiedText/index';
 import TokenNetworkName from '@components/TokenNetworkName/index';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import CryptoIcon from '@components/CryptoIcon';
-import { COINS, MESSAGES } from '@src/constants';
+import { COINS } from '@src/constants';
 import PropTypes from 'prop-types';
+import useFeatureConfig from '@src/shared/hooks/featureConfig';
 
 const generateMenu = (tokens, onSelect) => {
   const newMenu = [];
@@ -48,7 +49,6 @@ const enhance = WrappedComp => props => {
   const {
     pTokens,
     internalTokens,
-    settings,
     getPrivacyDataByTokenID,
   } = useSelector(state => ({
     pTokens: tokenSeleclor.pTokens(state),
@@ -59,6 +59,8 @@ const enhance = WrappedComp => props => {
     settings: settingsSelector.settings(state),
   }));
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const [onCentralizedPress, isCentralizedDisabled] = useFeatureConfig('centralized');
+  const [onDecentralizedPress, isDecentralizedDisabled] = useFeatureConfig('decentralized');
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -130,13 +132,16 @@ const enhance = WrappedComp => props => {
     }
 
     const tokenData = getPrivacyDataByTokenID(tokenId);
-    if (
-      settings.disableDecentralized &&
-      onlyPToken &&
-      tokenData?.isDecentralized
-    ) {
-      Toast.showError(MESSAGES.DISABLE_ETH_BRIDGE);
-      return false;
+    if (onlyPToken) {
+      if (isDecentralizedDisabled && tokenData?.isDecentralized) {
+        onDecentralizedPress();
+        return false;
+      }
+
+      if (isCentralizedDisabled && tokenData?.isCentralized) {
+        onCentralizedPress();
+        return false;
+      }
     }
 
     return true;

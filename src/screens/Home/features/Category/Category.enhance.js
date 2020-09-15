@@ -1,17 +1,18 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import dexUtil from '@utils/dex';
 import { BIG_COINS } from '@screens/Dex/constants';
 import { CONSTANT_EVENTS } from '@src/constants';
 import { logEvent } from '@services/firebase';
 import { useSelector } from 'react-redux';
-import { defaultAccount } from '@src/redux/selectors/account';
 import { useNavigation } from 'react-navigation-hooks';
 import LinkingService from '@src/services/linking';
 import AppUpdater from '@components/AppUpdater/index';
 import { isIOS } from '@utils/platform';
 import deviceInfo from 'react-native-device-info';
-import { Dimensions, PixelRatio, Platform, Linking } from 'react-native';
+import { Dimensions, PixelRatio, Platform } from 'react-native';
+import { featuresSelector } from '@screens/Home/Home.selector';
+import Toast from '@components/core/Toast/Toast';
+import useFeatureConfig from '@src/shared/hooks/featureConfig';
 
 const sendFeedback = async () => {
   const buildVersion = AppUpdater.appVersion;
@@ -32,7 +33,6 @@ const sendFeedback = async () => {
 };
 
 const enhance = WrappedComp => props => {
-  const account = useSelector(defaultAccount);
   const navigation = useNavigation();
 
   const goToScreen = (route, params, event) => {
@@ -69,23 +69,9 @@ const enhance = WrappedComp => props => {
     }
   };
 
-  const isDisabled = item => {
-    if (item?.sortId === 'Send' && dexUtil.isDEXMainAccount(account.name)) {
-      return true;
-    }
-
-    if (
-      (item?.title === 'Receive' || item?.title === 'Shield') &&
-      dexUtil.isDEXWithdrawAccount(account.name)
-    ) {
-      return true;
-    }
-
-    return false;
-  };
   return (
     <ErrorBoundary>
-      <WrappedComp {...{ ...props, interactionById, isDisabled }} />
+      <WrappedComp {...{ ...props, interactionById }} />
     </ErrorBoundary>
   );
 };
