@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   KeyboardAwareScrollView,
 } from '@src/components/core';
+import { BtnChecked } from '@src/components/Button';
 import { styled } from './FollowToken.styled';
 import withFollowToken from './FollowToken.enhance';
 
@@ -53,20 +54,30 @@ const FollowToken = React.memo((props) => {
     <View style={styled.container}>
       <Header title="Add a coin" canSearch />
       <KeyboardAwareScrollView>
-        {tokensFactories.map((item, index) => (
-          <ListToken
-            {...item}
-            toggleUnVerified={toggleUnVerified}
-            onToggleUnVerifiedTokens={onToggleUnVerifiedTokens}
-            renderItem={({ item }) => (
-              <Item
-                item={item}
-                handleToggleFollowToken={handleToggleFollowToken}
-              />
-            )}
-            key={index}
-          />
-        ))}
+        <ListToken
+          {...tokensFactories[0]}
+          renderItem={({ item }) => (
+            <Item
+              item={item}
+              handleToggleFollowToken={handleToggleFollowToken}
+            />
+          )}
+        />
+        <BtnChecked
+          btnStyle={styled.hook}
+          onPress={onToggleUnVerifiedTokens}
+          checked={toggleUnVerified}
+          hook={<Text style={styled.hookText}>Show unverified coins</Text>}
+        />
+        <ListToken
+          {...tokensFactories[1]}
+          renderItem={({ item }) => (
+            <Item
+              item={item}
+              handleToggleFollowToken={handleToggleFollowToken}
+            />
+          )}
+        />
       </KeyboardAwareScrollView>
       <AddManually />
     </View>
