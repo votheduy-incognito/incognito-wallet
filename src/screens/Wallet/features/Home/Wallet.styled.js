@@ -37,6 +37,9 @@ export const styled = StyleSheet.create({
   hook: {
     marginHorizontal: 25,
   },
+  disabled: {
+    opacity: 0.5,
+  },
 });
 
 export const styledHook = StyleSheet.create({

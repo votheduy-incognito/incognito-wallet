@@ -2,13 +2,16 @@ import React from 'react';
 import { View, Image, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { TouchableOpacity } from '@src/components/core';
+import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import { styled } from './Button.styled';
 
 const Button = props => {
-  const { onPress, icoUrl, title, desc, disabled } = props;
+  const { onPress, icoUrl, title, desc, key } = props;
+  const [onFeaturePress, isDisabled] = useFeatureConfig(key, onPress);
+
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View style={[styled.container, disabled && styled.disabled]}>
+    <TouchableOpacity onPress={onFeaturePress}>
+      <View style={[styled.container, isDisabled && styled.disabled]}>
         <Image
           style={styled.image}
           source={{ uri: icoUrl || '' }}
@@ -36,11 +39,7 @@ Button.propTypes = {
   icoUrl: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   desc: PropTypes.string.isRequired,
-  disabled: PropTypes.bool,
-};
-
-Button.defaultProps = {
-  disabled: false,
+  key: PropTypes.string.isRequired,
 };
 
 export default Button;

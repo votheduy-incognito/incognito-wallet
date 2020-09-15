@@ -18,7 +18,7 @@ const Title = React.memo(({ title }) => (
 ));
 
 const Category = (props) => {
-  const { title, buttons, interactionById, isDisabled, firstChild } = props;
+  const { title, buttons, interactionById, firstChild } = props;
   const { isReadAll } = useSelector(newsSelector);
   const navigation = useNavigation();
   const handleNavNotification = () => navigation.navigate(routeNames.News, {'lastNewsID': isReadAll});
@@ -28,7 +28,7 @@ const Category = (props) => {
       return titleComp;
     }
     return (
-      <View style={styled.hook}>        
+      <View style={styled.hook}>
         {titleComp}
         {isReadAll == 0 ? (
           <BtnNotification onPress={handleNavNotification} />
@@ -45,7 +45,6 @@ const Category = (props) => {
         <Button
           {...button}
           key={button?.id}
-          disabled={isDisabled(button)}
           onPress={() => interactionById(button)}
         />
       ))}
@@ -57,7 +56,6 @@ Category.propTypes = {
   title: PropTypes.string.isRequired,
   buttons: PropTypes.array.isRequired,
   interactionById: PropTypes.func.isRequired,
-  isDisabled: PropTypes.func.isRequired,
   firstChild: PropTypes.bool.isRequired,
 };
 

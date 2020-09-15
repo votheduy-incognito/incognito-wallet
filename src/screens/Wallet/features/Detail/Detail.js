@@ -23,6 +23,7 @@ import { isGettingBalance as isGettingTokenBalanceSelector } from '@src/redux/se
 import { isGettingBalance as isGettingMainCryptoBalanceSelector } from '@src/redux/selectors/account';
 import { ScrollView } from '@src/components/core';
 import { useBtnTrade } from '@src/components/UseEffect/useBtnTrade';
+import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import withDetail from './Detail.enhance';
 import {
   styled,
@@ -33,6 +34,7 @@ import {
 
 const GroupButton = () => {
   const navigation = useNavigation();
+  const [onPressSend, isSendDisabled] = useFeatureConfig('send');
   const handleSend = () => navigation.navigate(routeNames.Send);
   const handleReceive = () => navigation.navigate(routeNames.ReceiveCrypto);
   return (
@@ -42,6 +44,7 @@ const GroupButton = () => {
         btnStyle={groupBtnStyled.btnStyle}
         titleStyle={groupBtnStyled.titleStyle}
         onPress={handleSend}
+        disabledPress={isSendDisabled}
       />
       <ButtonBasic
         title="Receive"
@@ -95,12 +98,12 @@ const History = (props) => {
     <View style={historyStyled.container}>
       <ScrollView
         nestedScrollEnabled
-        refreshControl={
+        refreshControl={(
           <RefreshControl
             refreshing={isFetching}
             onRefresh={handleLoadHistory}
           />
-        }
+        )}
       >
         {selectedPrivacy?.isToken && <HistoryToken />}
         {selectedPrivacy?.isMainCrypto && <MainCryptoHistory />}

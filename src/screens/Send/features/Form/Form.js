@@ -18,6 +18,7 @@ import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selecto
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import LoadingTx from '@src/components/LoadingTx';
 import format from '@src/utils/format';
+import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import { styledForm as styled } from './Form.styled';
 import withSendForm, { formName } from './Form.enhance';
 
@@ -69,6 +70,8 @@ const SendForm = (props) => {
   } = props;
   const { titleBtnSubmit, isUnShield } = useSelector(feeDataSelector);
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const [onCentralizedPress, isCentralizedDisabled] = useFeatureConfig('centralized', handleSend);
+  const [onDecentralizedPress, isDecentralizedDisabled] = useFeatureConfig('decentralized', handleSend);
   const placeholderAddress = `Incognito ${
     selectedPrivacy?.isMainCrypto
       ? ''
@@ -106,6 +109,14 @@ const SendForm = (props) => {
       />
     );
   };
+
+  const isDisabled = isUnShield && (
+    (selectedPrivacy.isCentralized && isCentralizedDisabled) ||
+    (selectedPrivacy.isDecentralized && isDecentralizedDisabled)
+  );
+  const handlePressSend = isUnShield ? (
+    selectedPrivacy.isCentralized ? onCentralizedPress : onDecentralizedPress
+  ) : handleSend;
 
   return (
     <View style={styled.container}>
@@ -160,7 +171,8 @@ const SendForm = (props) => {
                   isUnShield ? styled.submitBtnUnShield : null,
                 ]}
                 disabled={disabledForm}
-                onPress={handleSubmit(handleSend)}
+                onPress={handleSubmit(handlePressSend)}
+                disabledPress={isDisabled}
                 {...generateTestId(SEND.SUBMIT_BUTTON)}
               />
             </>
