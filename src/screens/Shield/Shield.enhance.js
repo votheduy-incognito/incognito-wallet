@@ -8,7 +8,6 @@ import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { ExHandler } from '@src/services/exception';
 import PropTypes from 'prop-types';
-import { withTokenVerified } from '@src/components/Token';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { actionFetch as fetchDataShield } from './Shield.actions';
 
@@ -56,5 +55,4 @@ export default compose(
   (Comp) => (props) => <Comp {...{ ...props, onlyPToken: true }} />,
   withTokenSelect,
   enhance,
-  withTokenVerified,
 );
