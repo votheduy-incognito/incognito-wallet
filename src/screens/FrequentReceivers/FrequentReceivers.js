@@ -2,15 +2,14 @@ import React from 'react';
 import { View } from 'react-native';
 import Header from '@src/components/Header';
 import { useNavigationParam } from 'react-navigation-hooks';
-import { DropdownMenu, ScrollView } from '@src/components/core';
+import { DropdownMenu, KeyboardAwareScrollView } from '@src/components/core';
 import PropTypes from 'prop-types';
 import withListAllReceivers from './FrequentReceivers.enhance';
 import Item from './FrequentReceivers.item';
-import EmptyList from './FrequentReceivers.empty';
 import { styledModal as styled } from './FrequentReceivers.styled';
 
 const ListReceivers = (props) => {
-  const { receivers, isEmpty } = props;
+  const { receivers } = props;
   const onSelectedItem = useNavigationParam('onSelectedItem');
   const disabledSwipe = useNavigationParam('disabledSwipe');
   const onSelectedAddress = async (receiver = { name: '', address: '' }) => {
@@ -18,9 +17,6 @@ const ListReceivers = (props) => {
       return onSelectedItem(receiver);
     }
   };
-  if (isEmpty) {
-    return <EmptyList />;
-  }
   return (
     <>
       {receivers?.map((receiver, index) => (
@@ -40,7 +36,10 @@ const ListReceivers = (props) => {
             );
           }}
           key={index}
-          style={{ marginBottom: 30 }}
+          customStyle={[
+            { marginBottom: 30 },
+            index === 0 ? { paddingTop: 40 } : null,
+          ]}
         />
       ))}
     </>
@@ -48,7 +47,7 @@ const ListReceivers = (props) => {
 };
 
 const ListAllReceivers = (props) => {
-  const { Wrapper, receivers, isEmpty } = props;
+  const { receivers, isEmpty } = props;
   return (
     <View style={styled.container}>
       <Header
@@ -56,22 +55,13 @@ const ListAllReceivers = (props) => {
         style={styled.header}
         canSearch
       />
-      <Wrapper
-        behavior="padding"
-        keyboardVerticalOffset={25}
+      <KeyboardAwareScrollView
         style={{
-          flex: 1,
           marginHorizontal: 25,
         }}
       >
-        <ScrollView
-          style={{
-            paddingTop: 42,
-          }}
-        >
-          <ListReceivers {...{ receivers, isEmpty }} />
-        </ScrollView>
-      </Wrapper>
+        <ListReceivers {...{ receivers, isEmpty }} />
+      </KeyboardAwareScrollView>
     </View>
   );
 };
