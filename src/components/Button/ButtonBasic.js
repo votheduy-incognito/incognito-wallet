@@ -25,6 +25,10 @@ const styled = StyleSheet.create({
   disabledPress: {
     opacity: 0.5
   },
+  button: {
+    width: '100%',
+    alignItems: 'center',
+  }
 });
 
 const ButtonBasic = (props) => {
@@ -41,7 +45,7 @@ const ButtonBasic = (props) => {
   return (
     <View style={[styled.container, btnStyle, disabledPress && styled.disabledPress]}>
       <TouchableOpacity
-        style={[styled.container, btnStyle, disabled ? styled.disabled : null]}
+        style={[disabled ? styled.disabled : null, styled.button]}
         {...rest}
       >
         {customContent ? (
