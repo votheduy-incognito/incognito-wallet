@@ -8,7 +8,7 @@ import { styled } from './Shield.styled';
 import withShield from './Shield.enhance';
 
 const Shield = (props) => {
-  const { handleShield, handleWhyShield } = props;
+  const { handleShield, handleWhyShield, ...rest } = props;
   return (
     <View style={styled.container}>
       <Header
@@ -17,6 +17,7 @@ const Shield = (props) => {
         rightHeader={<BtnQuestionDefault onPress={handleWhyShield} />}
       />
       <ListAllToken
+        {...rest}
         renderItem={({ item }) => (
           <Token
             externalSymbol
@@ -36,6 +37,7 @@ const Shield = (props) => {
 Shield.propTypes = {
   handleWhyShield: PropTypes.func.isRequired,
   handleShield: PropTypes.func.isRequired,
+  tokensFactories: PropTypes.array.isRequired,
 };
 
 export default withShield(Shield);
