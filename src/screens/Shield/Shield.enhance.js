@@ -31,7 +31,7 @@ const enhance = (WrappedComp) => (props) => {
       navigation.navigate(routeNames.ShieldGenQRCode);
       await dispatch(fetchDataShield({ tokenId }));
     } catch (error) {
-      new ExHandler(error).showErrorToast();
+      console.debug('SHIELD ERROR', error);
     }
   };
   return (
