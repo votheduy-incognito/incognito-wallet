@@ -7,6 +7,7 @@ const Component = ({ ...rest }) => {
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
       enableOnAndroid
+      enableResetScrollToCoords={false}
       {...rest}
     />
   );
