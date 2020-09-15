@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, StyleSheet } from 'react-native';
 import { KeyboardAwareScrollView } from '@src/components/core';
 import { BtnChecked } from '@src/components/Button';
-import { ListToken, withTokenVerified } from '@src/components/Token';
+import { ListToken } from '@src/components/Token';
 import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
 
@@ -32,7 +32,10 @@ const ListAllToken = (props) => {
     <KeyboardAwareScrollView>
       <ListToken {...tokensFactories[0]} renderItem={renderItem} />
       <BtnChecked
-        btnStyle={styled.hook}
+        btnStyle={[
+          styled.hook,
+          tokensFactories[1]?.visible ? null : { marginBottom: 50 },
+        ]}
         onPress={onToggleUnVerifiedTokens}
         checked={toggleUnVerified}
         hook={<Text style={styled.hookText}>Show unverified coins</Text>}
