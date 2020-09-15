@@ -65,7 +65,13 @@ const HistoryItem = ({ history }) => {
     history.type,
     history,
   );
-  const _amount = formatUtil.amount(amount, pDecimals, true, decimalDigits);
+  const renderAmount = () => {
+    if (amount === '') {
+      return '';
+    }
+    const _amount = formatUtil.amount(amount, pDecimals, true, decimalDigits);
+    return trim(_amount);
+  };
   const onPress = () => {
     navigation?.navigate(routeNames.TxHistoryDetail, {
       data: {
@@ -89,7 +95,7 @@ const HistoryItem = ({ history }) => {
           {...generateTestId(TOKEN.TRANSACTION_TYPE)}
         />
         <NormalText
-          text={_amount ? trim(_amount) : ''}
+          text={renderAmount()}
           style={styleSheet.title}
           {...generateTestId(TOKEN.TRANSACTION_CONTENT)}
         />
