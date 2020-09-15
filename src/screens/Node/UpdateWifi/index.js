@@ -6,7 +6,7 @@ import MainLayout from '@components/MainLayout';
 import { InputExtension as Input } from '@components/core/TextInput';
 import _ from 'lodash';
 import NodeService from '@services/NodeService';
-import { RoundCornerButton, Text } from '@components/core';
+import { RoundCornerButton, Text, View } from '@components/core';
 import theme from '@src/styles/theme';
 import Util from '@src/utils/Util';
 import { SuccessModal } from '@src/components';
@@ -21,7 +21,8 @@ import routeNames from '@routers/routeNames';
 import KeepAwake from 'react-native-keep-awake';
 import styles from './style';
 
-const OUT_DATE_VERSIONS = ['1.0.0', '1.0.1', '1.0.2'];
+const OUT_DATE_VERSIONS = ['1.0.0', '1.0.1', '1.0.2', '1.0.3'];
+
 const getWifiSSID = (empty = false) => {
   return Util.tryAtMost(async () => {
     let ssid;
@@ -43,6 +44,25 @@ const getWifiSSID = (empty = false) => {
   }, 5, 2);
 };
 
+const NotSupport = () => (
+  <View>
+    <Text style={[theme.text.mediumTextStyle, { marginBottom: 20, lineHeight: 30 }]}>
+      {MESSAGES.NODE_NOT_SUPPORTED_UPDATE_WIFI_TITLE}
+    </Text>
+    <Text style={[theme.text.mediumTextMotto, { lineHeight: 30 }]}>
+      {MESSAGES.NODE_NOT_SUPPORTED_UPDATE_WIFI_DESCRIPTION}
+    </Text>
+  </View>
+);
+
+const OutOfDate = () => (
+  <View>
+    <Text style={[theme.text.mediumTextStyle, { marginBottom: 20, lineHeight: 30 }]}>
+      {MESSAGES.NODE_OUT_OF_DATE}
+    </Text>
+  </View>
+);
+
 const NodeUpdateWifi = () => {
   const navigation = useNavigation();
 
@@ -55,14 +75,15 @@ const NodeUpdateWifi = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [permission, setPermission] = useState(false);
-  const [notSupported, setNotSupported] = useState('');
+  const [notSupported, setNotSupported] = useState(false);
+  const [outOfDate, setOutOfDate] = useState(false);
 
   const checkIfNodeSupportUpdateWifi = async () => {
     try {
       setLoading(true);
       if (device.IsSetupViaLan) {
-        setNotSupported(MESSAGES.NODE_SETUP_LAN_NOT_SUPPORTED);
-      } else if (device.IsOnline) {
+        setNotSupported(true);
+      } else if (device.Host) {
         await checkVersion();
       }
     } catch (e) {
@@ -76,12 +97,10 @@ const NodeUpdateWifi = () => {
   const checkVersion = async () => {
     try {
       setLoading(true);
-      const version = await NodeService.checkVersion(device);
-
+      const version = device.Firmware;
       if (OUT_DATE_VERSIONS.includes(version)) {
-        setNotSupported(MESSAGES.NODE_OUT_OF_DATE);
+        setOutOfDate(true);
       }
-
     } catch (e) {
       setError(e.message);
     } finally {
@@ -134,7 +153,8 @@ const NodeUpdateWifi = () => {
         await updateWifiViaHotspot();
       }
     } catch (e) {
-      setError(e.message);
+      setCurrentStep(e.message || e);
+      setError(MESSAGES.CAN_NOT_CHANGE_WIFI);
     } finally {
       KeepAwake.deactivate();
       setProcessing(false);
@@ -142,8 +162,8 @@ const NodeUpdateWifi = () => {
   };
 
   const updateWifiViaFirebase = async () => {
-    await NodeService.updateWifi(device, ssid, password);
-    await Util.delay(5);
+    await NodeService.updateWifi(device, `'${ssid}'`, `'${password}'`);
+    await Util.delay(10);
     await checkCurrentWifi();
   };
 
@@ -165,6 +185,9 @@ const NodeUpdateWifi = () => {
                 const currentSSID = await getWifiSSID(true);
 
                 setCurrentStep(currentSSID);
+
+                console.debug('SSID', currentSSID);
+
                 if (!currentSSID) {
                   throw new Error('Wifi name or password is incorrect');
                 }
@@ -203,20 +226,59 @@ const NodeUpdateWifi = () => {
       setSuccess(true);
       return true;
     } else {
-      throw new Error(MESSAGES.CAN_NOT_CHANGE_WIFI);
+      setError(MESSAGES.CAN_NOT_CHANGE_WIFI);
     }
   };
 
-  const changeWifiWithAPI = (ip) => async () => {
+  const changeWifiWithAPI = async (ip, hotspotID) => {
     try {
+      try {
+        setCurrentStep('CONNECTING TO HOTSPOT ' + hotspotID);
+        await connectToWifi(hotspotID, PASS_HOSPOT);
+        await Util.delay(5);
+      } catch {
+        //
+      }
+
+      const currentSSID = await getWifiSSID(false);
+
+      if (currentSSID !== hotspotID) {
+        return setError(MESSAGES.CAN_NOT_CONNECT_HOTSPOT);
+      }
+
       setCurrentStep('UPDATING WIFI');
       await Util.delay(2);
-      await Util.excuteWithTimeout(axios.get(`http://${ip}:5000/change-wifi?qrcode=${device.QRCode}&ssid=${ssid}&password=${password}`), 10);
+      const qrCodeURI = encodeURIComponent(device.QRCode);
+      const ssidURI = encodeURIComponent(`'${ssid}'`);
+      const passwordURI = encodeURIComponent(`'${password}'`);
+      axios.get(`http://${ip}:5000/change-wifi?qrcode=${qrCodeURI}&ssid=${ssidURI}&password=${passwordURI}`);
+      axios.get(`http://${ip}:5000/update-wifi?qrcode=${qrCodeURI}&ssid=${ssidURI}&password=${passwordURI}`);
+      await Util.delay(10);
     } catch (e) {
-      setCurrentStep(e.message);
+      return setError(MESSAGES.CAN_NOT_CONNECT_HOTSPOT);
     }
-    await Util.delay(30);
-    await checkCurrentWifi();
+
+    try {
+      setCurrentStep('WAIT FOR NODE ONLINE');
+      // Call this action to clear firebase database
+      await NodeService.pingGetIP(device, 30);
+    } catch {
+      //
+    }
+
+    const newIp = await NodeService.pingGetIP(device, 10);
+    setCurrentStep(`NEW IP ${newIp}`);
+
+    const version = await NodeService.checkVersion(device);
+    setCurrentStep(`VERSION ${version}`);
+
+    if (OUT_DATE_VERSIONS.includes(version)) {
+      setSuccess(true);
+      NodeService.updateFirware(device)
+        .catch(e => console.debug('UPDATE FIRMWARE FAILED', e));
+    } else {
+      await checkCurrentWifi();
+    }
   };
 
   const updateWifiViaHotspot = async () => {
@@ -226,15 +288,15 @@ const NodeUpdateWifi = () => {
       return setPermission(true);
     }
 
-    const hotspotID = await Util.excuteWithTimeout(APIService.qrCodeGetWifi({ QRCode: device.QRCode }), 5);
-    try {
-      await connectToWifi(hotspotID, PASS_HOSPOT);
-    } catch {
-      //
+    const hotspotID = await APIService.qrCodeGetWifi({ QRCode: device.QRCode });
+
+    console.debug('HOTSPOT ID', hotspotID);
+
+    if (!hotspotID) {
+      setError(MESSAGES.CAN_NOT_GET_HOTSPOT_ID + ' ' + hotspotID);
     }
 
-    setCurrentStep('CHANGING WIFI');
-    await Util.tryAtMost(changeWifiWithAPI('10.42.0.1'), 5, 5);
+    await changeWifiWithAPI('10.42.0.1', hotspotID);
   };
 
   const openLocation = () => {
@@ -250,60 +312,72 @@ const NodeUpdateWifi = () => {
     navigation.navigate(routeNames.Node);
   };
 
+  const renderContent = () => {
+    if (notSupported) {
+      return <NotSupport />;
+    }
+
+    if (outOfDate) {
+      return <OutOfDate />;
+    }
+
+    return (
+      <View>
+        <Text style={[theme.text.mediumTextMotto, { lineHeight: 30, marginBottom: 20 }]}>
+          {MESSAGES.UPDATE_WIFI_INSTRUCTION}
+        </Text>
+        <Input
+          underlineColorAndroid="transparent"
+          containerStyle={styles.input}
+          inputStyle={styles.inputStyle}
+          placeholder="Wi-Fi name"
+          errorStyle={[null, {textAlign: 'left', marginLeft: 0}]}
+          errorMessage={ssid !== null && _.isEmpty(ssid) ? 'Required' : ''}
+          value={ssid}
+          onChangeText={ssid => setSSID(ssid)}
+          disabled={processing}
+        />
+        <Input
+          underlineColorAndroid="transparent"
+          containerStyle={styles.input}
+          autoCapitalize="none"
+          inputContainerStyle={null}
+          inputStyle={styles.inputStyle}
+          placeholder="Password"
+          onChangeText={password => setPassword(password)}
+          value={password}
+          disabled={processing}
+        />
+        {!!currentStep && <Text style={styles.error}>{currentStep}</Text>}
+        {!!error && <Text style={styles.error}>{error}</Text>}
+        <RoundCornerButton
+          disabled={!ssid}
+          title="Update"
+          style={[styles.button, theme.BUTTON.NODE_BUTTON]}
+          isLoading={processing}
+          onPress={updateWifi}
+        />
+      </View>
+    );
+  };
+
   return (
     <MainLayout header="Change Wi-Fi" loading={loading}>
-      { notSupported ?
-        <Text style={theme.text.mediumTextMotto}>{notSupported}</Text> : (
-          <>
-            <Text style={theme.text.mediumTextMotto}>
-              Please make sure your Node is online before changing networks.
-            </Text>
-            <Input
-              underlineColorAndroid="transparent"
-              containerStyle={styles.input}
-              inputStyle={null}
-              placeholder="Wi-Fi name"
-              errorStyle={[null, {textAlign: 'left', marginLeft: 0}]}
-              errorMessage={ssid !== null && _.isEmpty(ssid) ? 'Required' : ''}
-              value={ssid}
-              onChangeText={ssid => setSSID(ssid)}
-            />
-            <Input
-              underlineColorAndroid="transparent"
-              containerStyle={styles.input}
-              autoCapitalize="none"
-              inputContainerStyle={null}
-              inputStyle={null}
-              placeholder="Password"
-              onChangeText={password => setPassword(password)}
-              value={password}
-            />
-            {!!currentStep && global.isDebug() && <Text style={styles.error}>{error}</Text>}
-            {!!error && <Text style={styles.error}>{error}</Text>}
-            <RoundCornerButton
-              disabled={!ssid}
-              title="Update"
-              style={[styles.button, theme.BUTTON.NODE_BUTTON]}
-              isLoading={processing}
-              onPress={updateWifi}
-            />
-            <SuccessModal
-              title={MESSAGES.CHANGE_WIFI_SUCCESSFULLY_TITLE}
-              extraInfo={MESSAGES.CHANGE_WIFI_SUCCESSFULLY_DESCRIPTION}
-              visible={success}
-              closeSuccessDialog={goBack}
-            />
-            <SuccessModal
-              title="Help Node find you"
-              extraInfo="Give the app permission to access your location"
-              visible={permission}
-              closeSuccessDialog={openLocation}
-              buttonStyle={theme.BUTTON.NODE_BUTTON}
-              icon={locationPermissionPng}
-            />
-          </>
-        )
-      }
+      {renderContent()}
+      <SuccessModal
+        title={MESSAGES.CHANGE_WIFI_SUCCESSFULLY_TITLE}
+        extraInfo={MESSAGES.CHANGE_WIFI_SUCCESSFULLY_DESCRIPTION}
+        visible={success}
+        closeSuccessDialog={goBack}
+      />
+      <SuccessModal
+        title="Help Node find you"
+        extraInfo="Give the app permission to access your location"
+        visible={permission}
+        closeSuccessDialog={openLocation}
+        buttonStyle={theme.BUTTON.NODE_BUTTON}
+        icon={locationPermissionPng}
+      />
     </MainLayout>
   );
 };

@@ -147,7 +147,7 @@ class WifiSetup extends PureComponent {
         return true;
       }
       this.setState({ loading: true });
-      this.addStep({ name: 'Trying to connect to preferred WiFi: "' + ssid + '" ..... ', isSuccess: true });
+      this.addStep({ name: 'Trying to connect to preferred Wi-Fi: "' + ssid + '" ..... ', isSuccess: true });
       return new Promise((resolve, reject) => {
         let connectFunction = WifiManager.connectToProtectedSSID;
         let args = [ssid, password, false];
@@ -159,7 +159,7 @@ class WifiSetup extends PureComponent {
         connectFunction(...args)
           .then(
             async () => {
-              this.addStep({ name: 'Waiting for phone to switch from current WiFi', isSuccess: true });
+              this.addStep({ name: 'Waiting for phone to switch from current Wi-Fi', isSuccess: true });
 
               try {
                 let count = 0;
@@ -188,7 +188,7 @@ class WifiSetup extends PureComponent {
                   // this.addStep({ name: 'Wi-Fi ' + currentSSID, isSuccess: true }); // No need to log
                   if (!currentSSID) {
                     this.setState({ steps: [] });
-                    throw new Error('WiFi details are incorrect');
+                    throw new Error('Wi-Fi details are incorrect');
                   }
                 }, 5, 3);
               } catch (e) {
@@ -201,7 +201,7 @@ class WifiSetup extends PureComponent {
                 this.addStep({ name: 'Switched to ' + currentSSID, isSuccess: true });
                 resolve(true);
               } else {
-                this.addStep({ name: 'Could not setup WiFi and connect to Node', isSuccess: false });
+                this.addStep({ name: 'Could not setup Wi-Fi and connect to Node', isSuccess: false });
                 reject(new Error('Connect to another Wi-Fi'));
               }
             },
@@ -214,10 +214,10 @@ class WifiSetup extends PureComponent {
               let wifiName = await this.getCurrentWifi();
               if (!isConnected || !connectable || !ssid.includes('Node') || wifiName === '') {
                 if (!ssid.includes('Node')) {
-                  this.addStep({ name: 'Could not automatically connect to WiFi. Please first disconnect your phone from WiFi,\nthen manually connect again by entering username and password.', isSuccess: false });
+                  this.addStep({ name: 'Could not automatically connect to Wi-Fi. Please first disconnect your phone from Wi-Fi,\nthen manually connect again by entering username and password.', isSuccess: false });
                 }
               }
-              this.addStep({ name: 'Could not setup WiFi and connect to Node: \n' + error?.message || '', isSuccess: false });
+              this.addStep({ name: 'Could not setup Wi-Fi and connect to Node: \n' + error?.message || '', isSuccess: false });
               if (error?.message?.includes('Timeout connecting')) {
                 this.setState({ backToQRCode: false });
               }
@@ -295,7 +295,7 @@ class WifiSetup extends PureComponent {
     // this.addStep({ name: 'Check your Wi-Fi information ... ', isSuccess: true });
     const result = await this.connectToWifi(ssid, password);
     try {
-      this.addStep({ name: 'Checking WiFi details', isSuccess: true });
+      this.addStep({ name: 'Checking Wi-Fi details', isSuccess: true });
       this.setState({ loading: true });
       await Util.tryAtMost(async () => {
         await fetch('https://google.com.vn');
@@ -304,8 +304,8 @@ class WifiSetup extends PureComponent {
       return result;
     } catch (e) {
       this.setState({ loading: false });
-      this.addStep({ name: 'WiFi connected but internet unavailable', detail: ssid, isSuccess: false });
-      throw new Error('WiFi connected but internet unavailable');
+      this.addStep({ name: 'Wi-Fi connected but internet unavailable', detail: ssid, isSuccess: false });
+      throw new Error('Wi-Fi connected but internet unavailable');
     }
   };
 
@@ -479,7 +479,7 @@ class WifiSetup extends PureComponent {
       })
       .catch(async err => {
         await LocalDatabase.saveVerifyCode(verifyNewCode);
-        this.addStep({ name: 'Could not setup Node WiFi ', isSuccess: false });
+        this.addStep({ name: 'Could not setup Node Wi-Fi ', isSuccess: false });
         // Cheating testing
         setTimeout(()=>{
           this.setState({ loading: false });
@@ -664,7 +664,7 @@ class WifiSetup extends PureComponent {
       const { steps } = this.state;
       this.setState({ loading: false });
       this.funcQueue.push('handleSetupNode');
-      this.addStep({ name: 'Could not setup Node WiFi', detail: e, isSuccess: false });
+      this.addStep({ name: 'Could not setup Node Wi-Fi', detail: e, isSuccess: false });
       // Check if exist verify code failed
       for (let i = 0; i < steps.length; i++) {
         if (steps[i]?.name.includes('Could not verify device code')) {
@@ -707,7 +707,7 @@ class WifiSetup extends PureComponent {
         .then(async isCorrectWifi => {
           console.log('isCorrectWifi ' + isCorrectWifi);
           if (!isCorrectWifi) {
-            this.setState({ error: 'Could not automatically connect to WiFi. Please first disconnect your phone from WiFi, then manually connect again by entering username and password.', steps: [] });
+            this.setState({ error: 'Could not automatically connect to Wi-Fi. Please first disconnect your phone from Wi-Fi, then manually connect again by entering username and password.', steps: [] });
           } else {
             this.setState({ isCorrectWifi });
 
@@ -717,12 +717,12 @@ class WifiSetup extends PureComponent {
         })
         .catch(e => {
           this.setState({ loading: false });
-          this.addStep({ name: 'Could not setup WiFi and connect to Node', detail: e, isSuccess: false });
+          this.addStep({ name: 'Could not setup Wi-Fi and connect to Node', detail: e, isSuccess: false });
         });
     } catch (e) {
       console.debug('SETUP FAILED', e);
       this.setState({ error: e.message, loading: false });
-      this.addStep({ name: 'Could not setup WiFi and connect to Node', detail: e, isSuccess: false });
+      this.addStep({ name: 'Could not setup Wi-Fi and connect to Node', detail: e, isSuccess: false });
     } finally {
       this.setState({ loading: false });
     }
@@ -848,7 +848,7 @@ class WifiSetup extends PureComponent {
     return (
       <View>
         <ScrollView>
-          <Text style={styles.title2}>{'Connecting Node\nto your home WiFi'}</Text>
+          <Text style={styles.title2}>{'Connecting Node\nto your home Wi-Fi'}</Text>
           {steps.length > 0 ? this.renderLogs() : this.renderContent()}
           {this.renderFooter()}
         </ScrollView>

@@ -476,8 +476,8 @@ class Node extends BaseScreen {
     const { showModalMissingSetup, verifyProductCode } = this.state;
     return (
       <SuccessModal
-        title="Uncomplete setup for node"
-        extraInfo="We found a key for old node device that unsuccessful. Do you want to continue setup this for now?"
+        title="Something stopped unexpectedly"
+        extraInfo="Please resume setup to bring Node online."
         visible={showModalMissingSetup}
         onSuccess={() => {
           this.setState({ showModalMissingSetup: false });
@@ -564,7 +564,7 @@ class Node extends BaseScreen {
           <View style={{ marginHorizontal: 25 }}>
             <RoundCornerButton
               style={[style.buyButton, theme.BUTTON.BLACK_TYPE]}
-              title="Get a Node"
+              title="Get a Node Device"
               onPress={() => this.goToScreen(routeNames.BuyNodeScreen)}
             />
           </View>

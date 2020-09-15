@@ -266,6 +266,14 @@ export default class Device {
     return this.data.minerInfo?.qrCodeDeviceId ?? '';
   }
 
+  set Firmware(firmware) {
+    this.data.minerInfo.firmware = firmware;
+  }
+
+  get Firmware() {
+    return this.data.minerInfo?.firmware ?? '';
+  }
+
   get PaymentAddress() {
     return this.data.minerInfo.account?.PaymentAddress || this.data.minerInfo.PaymentAddress;
   }

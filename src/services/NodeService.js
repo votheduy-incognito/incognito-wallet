@@ -6,6 +6,8 @@ import LocalDatabase from '@src/utils/LocalDatabase';
 import Util from '@src/utils/Util';
 import _ from 'lodash';
 import ZMQService from 'react-native-zmq-service';
+import API from '@services/api/miner/api';
+import axios from 'axios';
 import { CustomError, ExHandler } from './exception';
 import knownCode from './exception/customError/code/knownCode';
 import FirebaseService, {
@@ -216,7 +218,7 @@ export default class NodeService {
     try {
       if (!_.isEmpty(device)) {
         const action = LIST_ACTION.CHECK_VERSION;
-        const dataResult = await Util.excuteWithTimeout(NodeService.send(device.data, action, chain, Action.TYPE.PRODUCT_CONTROL), 8);
+        const dataResult = await Util.excuteWithTimeout(NodeService.send(device.data, action, chain, Action.TYPE.PRODUCT_CONTROL, undefined, undefined, 2), 20);
         console.log(TAG, 'checkVersion send dataResult = ', dataResult);
         const {status = -1, data, message = ''} = dataResult;
         if (status === 1) {
@@ -230,11 +232,16 @@ export default class NodeService {
     return null;
   };
 
-  static pingGetIP = async (device: Device, chain = 'incognito') => {
+  static getLatestVersion = async () => {
+    return axios.get(API.GET_CURRENT_VERSION)
+      .then(res => res.data.data.version);
+  };
+
+  static pingGetIP = async (device: Device, timeout = 8) => {
     try {
       if (!_.isEmpty(device)) {
         const action = LIST_ACTION.GET_IP;
-        const dataResult = await Util.excuteWithTimeout(NodeService.send(device.data, action, chain, Action.TYPE.PRODUCT_CONTROL, undefined, 8), 8);
+        const dataResult = await Util.excuteWithTimeout(NodeService.send(device.data, action, 'Incognito', Action.TYPE.PRODUCT_CONTROL, undefined, timeout), timeout);
         console.log(TAG, 'pingGetIP send dataResult = ', dataResult);
         const {status = -1, data, message = ''} = dataResult;
         if (status === 1) {
@@ -368,7 +375,7 @@ export default class NodeService {
     try {
       const action = { ...LIST_ACTION.UPDATE_WIFI };
       action.data = action.data(ssid, password);
-      const dataResult = await NodeService.send(device.data, action, undefined, Action.TYPE.PRODUCT_CONTROL, { data: action.data }, 15, 1);
+      const dataResult = await NodeService.send(device.data, action, undefined, Action.TYPE.PRODUCT_CONTROL, { data: action.data }, 20, 1);
       console.log('Update wifi send dataResult = ', dataResult);
       const {status = -1, data} = dataResult;
 
@@ -393,7 +400,7 @@ export default class NodeService {
 
   static getCurrentWifi = async (device) => {
     try {
-      const dataResult = await NodeService.send(device.data, LIST_ACTION.GET_CURRENT_WIFI, undefined, Action.TYPE.PRODUCT_CONTROL, undefined, 10, 1);
+      const dataResult = await NodeService.send(device.data, LIST_ACTION.GET_CURRENT_WIFI, undefined, Action.TYPE.PRODUCT_CONTROL, undefined, 120, 2);
       console.log('Get current wifi send dataResult = ', dataResult);
       const {status = -1, data} = dataResult;
 

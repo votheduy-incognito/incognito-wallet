@@ -157,6 +157,26 @@ class NodeItem extends React.Component {
       device.Rewards = actualRewards;
     }
 
+    if (device.IsOnline && device.Host) {
+      console.debug('UPDATING FIRM WARE', device.QRCode);
+      try {
+        const version = await NodeService.checkVersion(device);
+        const latestVersion = await NodeService.getLatestVersion();
+
+        device.Firmware = version;
+
+        console.debug('LATEST VERSION', device.QRCode, version, latestVersion);
+
+        if (version !== latestVersion) {
+          NodeService.updateFirware(device)
+            .then(res => console.debug('UPDATE FIRMWARE SUCCESS', device.QRCode, res))
+            .catch(e => console.debug('UPDATE FIRMWARE FAILED', device.QRCode, e));
+        }
+      } catch (e) {
+        console.debug('CHECK VERSION ERROR', device.QRCode, e);
+      }
+    }
+
     return device;
   }
 

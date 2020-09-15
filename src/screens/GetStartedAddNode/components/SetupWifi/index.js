@@ -226,7 +226,7 @@ class SetupWifi extends PureComponent {
         <Input
           underlineColorAndroid="transparent"
           containerStyle={item}
-          autoCapitalize="none" 
+          autoCapitalize="none"
           inputContainerStyle={item_container_input}
           inputStyle={[text]}
           placeholder="Password"
@@ -578,7 +578,7 @@ class SetupWifi extends PureComponent {
     return (
       <View>
         <ScrollView>
-          <Text style={styles.title2}>Enter your home WiFi detail</Text>
+          <Text style={styles.title2}>Enter your home Wi-Fi detail</Text>
           {steps.length > 0 ? this.renderLogs() : this.renderContent()}
           <Text style={styles.errorText}>{rootCauseMessage}</Text>
           {this.renderFooter()}

@@ -331,14 +331,15 @@ class GetStartedAddNode extends BaseScreen {
           icon={locationPermissionPng}
         />
         <SuccessModal
-          title="Connectivity"
-          extraInfo="There is an issue with your connection. Please connect to connectable wifi for processing next step"
+          title="Weak connection"
+          extraInfo="Setup may take longer than expected due to slow network speeds."
           visible={showBandWidthModal}
           closeSuccessDialog={() => {
             this.setState({ showBandWidthModal: false });
             this.openSettingApp();
           }}
           buttonStyle={theme.BUTTON.NODE_BUTTON}
+          buttonTitle="Switch networks"
         />
       </View>
     );

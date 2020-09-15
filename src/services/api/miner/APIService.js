@@ -527,28 +527,12 @@ export default class APIService {
   }
 
   static async qrCodeGetWifi({ QRCode }) {
-    // if (!QRCode) return throw new Error('Missing QRCode');
-    // try {
-    //   let response = await http.post('stake/qr-code-get-wifi', {
-    //     QRCode: QRCode,
-    //   });
-    //   const { WifiName = '', Status = false } = response ?? {};
-    //   console.log(TAG, 'qrCodeCheckGetWifi end = ', response);
-    //   return {
-    //     status: Status ? 1 : 0,
-    //     data: response,
-    //   };
-    // } catch (error) {
-    //   const message = new ExHandler(
-    //     error,
-    //     'QR-Code is invalid. Please try again',
-    //   ).message;
-    //   return {
-    //     status: 0,
-    //     data: message,
-    //   };
-    // }
-    return `Node-${QRCode.split('-')[1]}`;
+    if (!QRCode) return throw new Error('Missing QRCode');
+    const response = await http.post('stake/qr-code-get-wifi', {
+      QRCode: QRCode,
+    });
+    return response?.WifiName;
+    // return `Node-${QRCode.split('-')[1]}`;
   }
 
   static async requestWithdraw({ ProductID, QRCode, PaymentAddress }) {

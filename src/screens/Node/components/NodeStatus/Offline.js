@@ -15,7 +15,7 @@ const Offline = ({ isVNode, ip }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.desc}>1. Make sure the blue light is on</Text>
-      <Text style={styles.desc}>2. Make sure that your home WiFi is connected</Text>
+      <Text style={styles.desc}>2. Make sure that your home Wi-Fi is connected</Text>
       <Text style={styles.desc}>3. Power cycle the Node and wait a few minutes</Text>
       <Text style={styles.desc}>{'\nIf this issue persists, reach out to us at go@incognito.org'}</Text>
     </View>

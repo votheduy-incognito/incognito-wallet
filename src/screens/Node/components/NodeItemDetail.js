@@ -64,7 +64,7 @@ class NodeItemDetail extends Component {
       <TouchableOpacity
         onPress={() => NavigationService.navigate(routeNames.NodeUpdateWifi, { device: item })}
       >
-        <Text style={[styles.text, styles.bold, styles.bigText]}>Update Node wifi</Text>
+        <Text style={[styles.text, styles.bold, styles.bigText]}>Change Wi-Fi</Text>
       </TouchableOpacity>
     );
   };
@@ -140,12 +140,13 @@ class NodeItemDetail extends Component {
           <View style={{ marginTop: 50 }}>
             {this.renderItemText('Keychain', name)}
             {this.renderItemText('IP', ip)}
+            { item.IsPNode && this.renderItemText('Version', item.Firmware) }
             <NodeStatus item={item} />
           </View>
           {(!!shouldRenderUnstake || !!item.IsPNode) && (
             <View style={{ marginTop: 50 }}>
               {!!shouldRenderUnstake && this.renderUnstake(() => onUnstake(item))}
-              {!!item.IsPNode && this.renderNodeSettings()}
+              {!!item.IsPNode && (global.isDebug() || !!item.AccountName) && this.renderNodeSettings()}
             </View>
           )}
         </ScrollView>

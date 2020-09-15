@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
 
 export default StyleSheet.create({
   input: {
@@ -11,6 +11,12 @@ export default StyleSheet.create({
   error: {
     color: COLORS.orange,
     fontSize: 14,
+  },
+  inputStyle: {
+    ...FONT.STYLE.medium,
+    color: COLORS.newGrey,
+    fontSize: 20,
+    marginTop: 10,
   },
 });
 

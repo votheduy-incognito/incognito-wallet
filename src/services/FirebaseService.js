@@ -119,8 +119,6 @@ export default class FirebaseService {
   }
 
   startListenData = async (channel)=>{
-
-    console.log(TAG,'startListenData Current Channel:', currentChannel);
     // console.log(TAG,'startListenData Channel: ', channel);
     let result = false;
     try {
@@ -129,42 +127,33 @@ export default class FirebaseService {
       let path = `/${fuid}/${channel}`;
       //Update current subcribed channel
       if (channel) {
-        console.log('startListenData Update Path: ', path);
         currentChannel = channel;
-
-
         const snapshot =  await this.firebase.database().ref(path).once('child_added');
-
-        console.log(TAG,'startListenData begin------- ');
         if (snapshot.exists()) {
         // snapshot.forEach(hihi=>{
         //   console.log(TAG,'startListenData begin kakakaa------- ',hihi);
         // });
           const dictValue = snapshot.exists()? snapshot.val():null;
-          console.log('startListenData begin-------0000---- data : ', dictValue);
+          console.log('FIREBASE DATA', dictValue);
           const timeNanoNow = _.now()* 1000000;
           const { data = {},time = timeNanoNow } = dictValue;
           const snapshotKey = snapshot.key??'';
           let isNeedClear  = (timeNanoNow - time) >(3*60*1000*1000000);
-          console.log(TAG,'startListenData snapshotKey: ', snapshotKey);
           if (!_.isEmpty(data)) {
             const { action } = data;
-
-            console.log(TAG,'startListenData Action: ', action,'--- _.now() - timestamp = ',timeNanoNow - time);
+            console.log('FIREBASE ACTION', action, Object.keys(this.dictCallback));
             if (action) {
-              console.log(TAG,'startListenData Action01 ');
-              let arr = this.dictCallback[action];
-              console.log(TAG,'startListenData Action02 ');
+              const arr = this.dictCallback[action];
+
               if (arr) {
-                console.log(TAG, 'startListenData Arr: ', arr);
+                console.log('FIREBASE CALLBACK', arr, this.dictKey);
                 arr.forEach(dict => {
-                  const { key ,callback } = dict;
+                  const { key, callback } = dict;
                   if (this.dictKey[key] == 1) {
                     result = true;
                     if (action !== 'update_firmware_status') {
                       this.dictKey[key] = 0;
                     }
-                    console.log(TAG,'startListenData Return callback = ',key);
                     callback && callback({status:STATUS_CODE.SERVER, ...data});
                     timer.clearTimeout(key);
                   }
@@ -175,9 +164,8 @@ export default class FirebaseService {
               }
 
               const childPath = `/${fuid}/${channel}/${snapshotKey}`;
-              console.log(TAG,'startListenData Action03 Child Path: ', childPath,'-isNeedClear = ',isNeedClear);
+              console.log('FIREBASE CLEAR', childPath, isNeedClear);
               result  && !_.isEmpty(fuid)&& !_.isEmpty(snapshotKey) && await this.firebase.database().ref(childPath).remove();
-              console.log(TAG,'startListenData Action04 End--------');
             }
 
           }
@@ -186,12 +174,11 @@ export default class FirebaseService {
       }
       !result && await this.firebase.database().ref(path).remove();
     } catch (error) {
-      console.log(TAG,'startListenData error ');
+      console.log('FIREBASE ERROR', error);
     }
-    console.log(TAG,'startListenData Action05 End--------result = ',result);
-
+    console.log('FIREBASE RESULT',result);
     return result;
-  }
+  };
 
   stopListenData = ()=>{
     console.log('stopListenData begin');
@@ -373,11 +360,9 @@ export default class FirebaseService {
       };
 
       const codeData  = async ()=>{
-        console.log(TAG, 'send codeData begin ------');
         let receiveData = false;
         try {
-          let [isPush,isFetch] = await Promise.all([pushData(),fetchData()]);
-          // receiveData =  await Util.excuteWithTimeout(this.startListenData(actionSource),8);
+          let [isPush, isFetch] = await Promise.all([pushData(),fetchData()]);
           console.log(TAG, 'send codeData receiveData ------',isPush,'-isFetch = ',isFetch);
           receiveData = isPush && isFetch;
         } catch (error) {

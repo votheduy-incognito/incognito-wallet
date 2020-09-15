@@ -347,7 +347,7 @@ class WifiRepairSetup extends PureComponent {
 
     return (
       <ScrollView style={{ marginTop: 42 }}>
-        <Text style={styles.title2}>{'Connecting Node\nto your home WiFi'}</Text>
+        <Text style={styles.title2}>{'Connecting Node\nto your home Wi-Fi'}</Text>
         {steps.length > 0 && this.renderLogs()}
         <Text style={styles.errorText}>{rootCauseMessage}</Text>
         {this.renderFooter()}
