@@ -3,7 +3,6 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useDispatch } from 'react-redux';
 import { withLayout_2 } from '@src/components/Layout';
 import { compose } from 'recompose';
-import { withTokenVerified } from '@src/components/Token';
 import {
   actionAddFollowToken,
   actionRemoveFollowToken,
@@ -36,6 +35,5 @@ const enhance = (WrappedComp) => (props) => {
 
 export default compose(
   withLayout_2,
-  withTokenVerified,
   enhance,
 );
