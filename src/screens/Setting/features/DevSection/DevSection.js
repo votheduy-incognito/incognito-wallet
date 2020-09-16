@@ -11,6 +11,8 @@ import {
   devSelector,
   actionToggleTestModeDecentralized,
   actionToggleTestModeCentralized,
+  actionToggleUTXOs,
+  // actionToggleUTXOs,
 } from '@src/screens/Dev';
 import { CONSTANT_KEYS } from '@src/constants';
 
@@ -39,6 +41,8 @@ const DevSection = () => {
 
   const onToggleTestModeCentralized = () =>
     dispatch(actionToggleTestModeCentralized());
+
+  const onToggleUTXOs = () => dispatch(actionToggleUTXOs());
 
   const isStagingConfig = homeConfig === 'staging';
 
@@ -75,7 +79,7 @@ const DevSection = () => {
       ),
     },
     {
-      id: 'Centralized',
+      id: 'centralized',
       desc: 'Toggle test mode centralized',
       onPress: null,
       toggleSwitch: true,
@@ -83,6 +87,18 @@ const DevSection = () => {
         <Switch
           onValueChange={onToggleTestModeCentralized}
           value={dev[CONSTANT_KEYS.DEV_TEST_MODE_CENTRALIZED]}
+        />
+      ),
+    },
+    {
+      id: 'streamline',
+      desc: 'Toggle streamline auto UTXOs ',
+      onPress: null,
+      toggleSwitch: true,
+      switchComponent: (
+        <Switch
+          onValueChange={onToggleUTXOs}
+          value={dev[CONSTANT_KEYS.DEV_TEST_TOGGLE_UTXOS]}
         />
       ),
     },
