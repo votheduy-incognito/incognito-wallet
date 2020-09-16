@@ -75,7 +75,7 @@ const GroupButton = () => {
           btnStyle={[styled.btnStyle]}
           titleStyle={[styled.titleStyle]}
           onPress={onFeaturePress}
-          disabledPress={isDisabled}
+          disabled={isDisabled}
         />
       </View>
     </View>
