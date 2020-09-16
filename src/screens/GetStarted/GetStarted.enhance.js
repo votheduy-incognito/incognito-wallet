@@ -20,6 +20,7 @@ import storageService from '@src/services/storage';
 import { LoadingContainer } from '@src/components/core';
 import { actionFetch as actionFetchProfile } from '@screens/Profile';
 import { KEYS } from '@src/constants/keys';
+import { getFunctionConfigs } from '@services/api/misc';
 import {
   wizardSelector,
   isFollowedDefaultPTokensSelector,
@@ -154,6 +155,7 @@ const enhance = (WrappedComp) => (props) => {
         dispatch(getPTokenList()),
         dispatch(loadPin()),
         dispatch(actionFetchProfile()),
+        getFunctionConfigs().catch(e => e),
       ]);
       if (!servers || servers?.length === 0) {
         await serverService.setDefaultList();

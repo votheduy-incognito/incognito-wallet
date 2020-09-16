@@ -8,8 +8,3 @@ export const homeSelector = createSelector(
     headerTitle: home?.configs?.headerTitle,
   }),
 );
-
-export const featuresSelector = createSelector(
-  state => state.home,
-  home => home?.configs?.features,
-);

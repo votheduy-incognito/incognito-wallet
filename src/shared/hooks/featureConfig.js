@@ -1,10 +1,9 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { featuresSelector } from '@screens/Home/Home.selector';
+import { useState, useCallback, useMemo } from 'react';
 import Toast from '@components/core/Toast/Toast';
+import { useFocusEffect } from 'react-navigation-hooks';
+import { getFunctionConfigs } from '@services/api/misc';
 
 function useFeatureConfig(featureName, onPress) {
-  const features = useSelector(featuresSelector);
   const [feature, setFeature] = useState(null);
 
   const handlePress = useCallback((...params) => {
@@ -28,12 +27,23 @@ function useFeatureConfig(featureName, onPress) {
     return false;
   }, [feature]);
 
-  useEffect(() => {
-    if (features && features.length) {
-      const feature = features.find(featureItem => featureItem.name === featureName);
-      setFeature(feature);
+  const getFeature = async () => {
+    try {
+      const features = await getFunctionConfigs();
+      if (features && features.length) {
+        const feature = features.find(featureItem => featureItem.name === featureName);
+        setFeature(feature);
+      } else {
+        setFeature({});
+      }
+    } catch (e) {
+      console.debug('CAN NOT GET FEATURE', featureName, e);
     }
-  }, [features, featureName]);
+  };
+
+  useFocusEffect(useCallback(() => {
+    getFeature();
+  }, [featureName]));
 
   return [handlePress, isDisabled, feature?.message];
 }

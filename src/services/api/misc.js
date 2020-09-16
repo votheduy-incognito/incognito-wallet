@@ -1,5 +1,6 @@
 import http from '@src/services/http';
 import FunctionConfigModel from '@models/function';
+import { cachePromise, KEYS } from '@services/cache';
 
 const getMinMaxDepositWithdrawAmount = () => {
   // cache
@@ -37,9 +38,14 @@ const getMinMaxDepositWithdrawAmount = () => {
 };
 
 export const getMinMaxDepositAmount = getMinMaxDepositWithdrawAmount();
+
 export const getMinMaxWithdrawAmount = getMinMaxDepositAmount;
 
-export const getFunctionConfigs = () => {
+export const getFunctionConfigsNoCache = () => {
   return http.get('/system/disable-function-configs')
     .then(data => Object.keys(data).map(key => new FunctionConfigModel(data[key])));
+};
+
+export const getFunctionConfigs = () => {
+  return cachePromise(KEYS.FeatureConfigs, getFunctionConfigsNoCache, 30000);
 };
