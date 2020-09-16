@@ -516,12 +516,8 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
   const originalAmount = convert.toOriginalAmount(requestedAmount, pDecimals);
   userFeesData = { ...userFees?.data };
   let _error;
-  const { isFetching, isFetched } = userFees;
-  if (
-    isFetching ||
-    !isUnShield ||
-    (isFetched && !isFetching && isDecentralized)
-  ) {
+  const { isFetching } = userFees;
+  if (isFetching || !isUnShield) {
     return;
   }
   try {
