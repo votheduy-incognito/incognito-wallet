@@ -46,6 +46,7 @@ const Category = (props) => {
           {...button}
           key={button?.id}
           onPress={() => interactionById(button)}
+          name={button.key}
         />
       ))}
     </View>

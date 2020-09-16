@@ -6,8 +6,8 @@ import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import { styled } from './Button.styled';
 
 const Button = props => {
-  const { onPress, icoUrl, title, desc, key } = props;
-  const [onFeaturePress, isDisabled] = useFeatureConfig(key, onPress);
+  const { onPress, icoUrl, title, desc, name } = props;
+  const [onFeaturePress, isDisabled] = useFeatureConfig(name, onPress);
 
   return (
     <TouchableOpacity onPress={onFeaturePress}>
@@ -39,7 +39,7 @@ Button.propTypes = {
   icoUrl: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   desc: PropTypes.string.isRequired,
-  key: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 export default Button;
