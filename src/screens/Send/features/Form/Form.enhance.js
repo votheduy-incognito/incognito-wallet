@@ -14,6 +14,7 @@ import { enhanceAmountValidation } from './Form.enhanceAmountValidator';
 import { enhanceInit } from './Form.enhanceInit';
 import { enhanceSend } from './Form.enhanceSend';
 import { enhanceUnshield } from './Form.enhanceUnShield';
+import { enhanceMemoValidation } from './Form.enhanceMemoValidator';
 
 export const formName = 'formSend';
 
@@ -137,6 +138,7 @@ export default compose(
   enhanceInit,
   enhanceAmountValidation,
   enhanceAddressValidation,
+  enhanceMemoValidation,
   enhanceSend,
   enhanceUnshield,
   enhance,

@@ -20,6 +20,7 @@ import {
   ACTION_FETCHING_USER_FEES,
   ACTION_TOGGLE_FAST_FEE,
   ACTION_REMOVE_FEE_TYPE,
+  ACTION_FETCH_FAIL_USER_FEES,
 } from './EstimateFee.constant';
 import { MAX_FEE_PER_TX, hasMultiLevelUsersFee } from './EstimateFee.utils';
 
@@ -61,6 +62,7 @@ const initialState = {
     isFetched: false,
     data: null,
     hasMultiLevel: false,
+    isMemoRequired: false,
   },
   isValidating: false,
   fast2x: false,
@@ -70,7 +72,6 @@ const initialState = {
   totalFeePToken: null,
   totalFeePTokenText: '',
   userFeePToken: null,
-  isFetchedMinMaxWithdraw: false,
 };
 
 export default (state = initialState, action) => {
@@ -220,6 +221,7 @@ export default (state = initialState, action) => {
         isFetching: false,
         data: { ...data },
         hasMultiLevel,
+        isMemoRequired: false,
       },
     };
   }
@@ -229,6 +231,17 @@ export default (state = initialState, action) => {
       userFees: {
         ...state.userFees,
         isFetching: true,
+      },
+    };
+  }
+  case ACTION_FETCH_FAIL_USER_FEES: {
+    return {
+      ...state,
+      userFees: {
+        ...state.userFees,
+        isFetching: false,
+        isFetched: false,
+        isMemoRequired: action?.payload,
       },
     };
   }
