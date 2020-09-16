@@ -22,13 +22,6 @@ const styled = StyleSheet.create({
   disabled: {
     backgroundColor: COLORS.colorGreyMedium,
   },
-  disabledPress: {
-    opacity: 0.5
-  },
-  button: {
-    width: '100%',
-    alignItems: 'center',
-  }
 });
 
 const ButtonBasic = (props) => {
@@ -38,23 +31,20 @@ const ButtonBasic = (props) => {
     titleStyle = null,
     customContent,
     disabled = false,
-    disabledPress,
     ...rest
   } = props;
 
   return (
-    <View style={[styled.container, btnStyle, disabledPress && styled.disabledPress]}>
-      <TouchableOpacity
-        style={[disabled ? styled.disabled : null, styled.button]}
-        {...rest}
-      >
-        {customContent ? (
-          customContent
-        ) : (
-          <Text style={[styled.title, titleStyle]}>{title}</Text>
-        )}
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity
+      style={[styled.container, btnStyle, disabled ? styled.disabled : null]}
+      {...rest}
+    >
+      {customContent ? (
+        customContent
+      ) : (
+        <Text style={[styled.title, titleStyle]}>{title}</Text>
+      )}
+    </TouchableOpacity>
   );
 };
 
@@ -64,7 +54,6 @@ ButtonBasic.propTypes = {
   titleStyle: PropTypes.any,
   customContent: PropTypes.element,
   disabled: PropTypes.bool,
-  disabledPress: PropTypes.bool,
 };
 
 ButtonBasic.defaultProps = {
@@ -73,7 +62,6 @@ ButtonBasic.defaultProps = {
   titleStyle: null,
   customContent: null,
   disabled: false,
-  disabledPress: false,
 };
 
 export default ButtonBasic;

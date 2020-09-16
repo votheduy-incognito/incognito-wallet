@@ -44,7 +44,7 @@ const GroupButton = () => {
         btnStyle={groupBtnStyled.btnStyle}
         titleStyle={groupBtnStyled.titleStyle}
         onPress={handleSend}
-        disabledPress={isSendDisabled}
+        disabled={isSendDisabled}
       />
       <ButtonBasic
         title="Receive"
