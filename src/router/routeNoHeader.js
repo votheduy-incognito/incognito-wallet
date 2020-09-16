@@ -10,7 +10,6 @@ import ShieldGenQRCode from '@screens/Shield/features/GenQRCode';
 import FollowToken from '@screens/FollowToken';
 import AddManually from '@screens/AddManually';
 import WalletDetail from '@screens/Wallet/features/Detail';
-import UnShield from '@screens/UnShield';
 import ReceiveCrypto from '@screens/Wallet/features/ReceiveCrypto';
 import Send from '@screens/Send';
 import TokenSelectScreen from '@components/TokenSelectScreen';
@@ -29,15 +28,14 @@ import ExportAccount from '@src/screens/Account/features/ExportAccount';
 import NetworkSetting from '@src/screens/NetworkSetting';
 import WhyUnshield from '@src/screens/UnShield/features/WhyUnshield';
 import ExportAccountModal from '@src/screens/Account/features/ExportAccount/ExportAccount.modal';
-import AddressBook from '@src/screens/AddressBook';
-import AddressBookForm from '@src/screens/AddressBook/AddressBook.form';
 import CoinInfo from '@screens/Wallet/features/CoinInfo';
 import Keychain from '@src/screens/Setting/features/Keychain';
 import CoinInfoVerify from '@src/screens/Wallet/features/CoinInfo/CoinInfo.verify';
 import News from '@screens/News';
 import FrequentReceivers, {
   FrequentReceiversForm,
-} from '@src/screens/SendCrypto/FrequentReceivers';
+  SelectNetworkName,
+} from '@screens/FrequentReceivers';
 import {
   PoolV2,
   PoolV2History,
@@ -45,6 +43,7 @@ import {
   PoolV2Withdraw,
 } from '@src/screens/PoolV2';
 import Profile from '@src/screens/Profile';
+import Receipt from '@src/components/Receipt';
 import routeNames from './routeNames';
 
 const routes = [
@@ -99,10 +98,6 @@ const routes = [
   {
     screen: Send,
     name: routeNames.Send,
-  },
-  {
-    screen: UnShield,
-    name: routeNames.UnShield,
   },
   {
     screen: UnShieldModal,
@@ -167,14 +162,6 @@ const routes = [
   {
     screen: ExportAccountModal,
     name: routeNames.ExportAccountModal,
-  },
-  {
-    screen: AddressBook,
-    name: routeNames.AddressBook,
-  },
-  {
-    screen: AddressBookForm,
-    name: routeNames.AddressBookForm,
   },
   {
     screen: CoinInfo,
@@ -243,6 +230,14 @@ const routes = [
   {
     name: routeNames.Profile,
     screen: Profile,
+  },
+  {
+    screen: Receipt,
+    name: routeNames.Receipt,
+  },
+  {
+    screen: SelectNetworkName,
+    name: routeNames.SelectNetworkName,
   },
 ];
 

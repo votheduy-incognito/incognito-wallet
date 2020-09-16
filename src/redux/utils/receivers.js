@@ -1,7 +1,11 @@
+import { toLower, isEqual } from 'lodash';
+
 export const isReceiverExist = (
   oldReceivers = [],
-  receiver = {name: '', address: ''},
+  receiver = { name: '', address: '' },
 ) =>
   oldReceivers.some(
-    item => item?.address === receiver.address || item?.name === receiver.name,
+    (item) =>
+      isEqual(item?.address, receiver.address) ||
+      isEqual(toLower(item?.name), toLower(receiver.name)),
   );

@@ -1,12 +1,11 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import Header from '@src/components/Header';
-import { TokenBasic as Token } from '@src/components/Token';
+import { TokenBasic as Token, ListAllToken } from '@src/components/Token';
 import PropTypes from 'prop-types';
 import routeNames from '@src/router/routeNames';
 import { useNavigation } from 'react-navigation-hooks';
 import { TouchableOpacity } from '@src/components/core';
-import { FlatList } from '@src/components/core/FlatList';
 import { styled } from './FollowToken.styled';
 import withFollowToken from './FollowToken.enhance';
 
@@ -17,7 +16,7 @@ const AddManually = () => {
     navigation?.navigate(routeNames.AddManually, { type: 'ERC20' });
   return (
     <View style={styled.addManually}>
-      <Text style={[styled.text, { marginTop: 10 }]}>{title}</Text>
+      <Text style={styled.text}>{title}</Text>
       <TouchableOpacity onPress={handleAddTokenManually}>
         <Text style={[styled.text, styled.boldText, { marginTop: 5 }]}>
           Add manually +
@@ -31,9 +30,7 @@ const Item = ({ item, handleToggleFollowToken }) =>
   React.useMemo(() => {
     return (
       <Token
-        onPress={() => {
-          handleToggleFollowToken(item);
-        }}
+        onPress={() => handleToggleFollowToken(item)}
         tokenId={item?.tokenId}
         name="displayName"
         symbol="pSymbol"
@@ -42,34 +39,25 @@ const Item = ({ item, handleToggleFollowToken }) =>
     );
   }, [item?.isFollowed]);
 
-const ListToken = (props) => {
-  const { data, handleToggleFollowToken } = props;
-  return (
-    <FlatList
-      showsVerticalScrollIndicator={false}
-      style={styled.flatList}
-      data={data}
-      renderItem={({ item }) => <Item {...{ item, handleToggleFollowToken }} />}
-      keyExtractor={(token) => token?.tokenId}
-      removeClippedSubviews
-      initialNumToRender={10}
-    />
-  );
-};
-
-const FollowToken = (props) => {
+const FollowToken = React.memo((props) => {
+  const { handleToggleFollowToken, ...rest } = props;
   return (
     <View style={styled.container}>
       <Header title="Add a coin" canSearch />
-      <ListToken {...props} />
+      <ListAllToken
+        {...rest}
+        renderItem={({ item }) => (
+          <Item item={item} handleToggleFollowToken={handleToggleFollowToken} />
+        )}
+      />
       <AddManually />
     </View>
   );
-};
+});
 
-ListToken.propTypes = {
-  data: PropTypes.array.isRequired,
+FollowToken.propTypes = {
   handleToggleFollowToken: PropTypes.func.isRequired,
+  tokensFactories: PropTypes.array.isRequired,
 };
 
 export default withFollowToken(FollowToken);

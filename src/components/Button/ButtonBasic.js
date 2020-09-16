@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
 import { TouchableOpacity } from '@src/components/core';
@@ -22,6 +22,13 @@ const styled = StyleSheet.create({
   disabled: {
     backgroundColor: COLORS.colorGreyMedium,
   },
+  disabledPress: {
+    opacity: 0.5
+  },
+  button: {
+    width: '100%',
+    alignItems: 'center',
+  }
 });
 
 const ButtonBasic = (props) => {
@@ -31,19 +38,23 @@ const ButtonBasic = (props) => {
     titleStyle = null,
     customContent,
     disabled = false,
+    disabledPress,
     ...rest
   } = props;
+
   return (
-    <TouchableOpacity
-      style={[styled.container, btnStyle, disabled ? styled.disabled : null]}
-      {...rest}
-    >
-      {customContent ? (
-        customContent
-      ) : (
-        <Text style={[styled.title, titleStyle]}>{title}</Text>
-      )}
-    </TouchableOpacity>
+    <View style={[styled.container, btnStyle, disabledPress && styled.disabledPress]}>
+      <TouchableOpacity
+        style={[disabled ? styled.disabled : null, styled.button]}
+        {...rest}
+      >
+        {customContent ? (
+          customContent
+        ) : (
+          <Text style={[styled.title, titleStyle]}>{title}</Text>
+        )}
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -53,6 +64,16 @@ ButtonBasic.propTypes = {
   titleStyle: PropTypes.any,
   customContent: PropTypes.element,
   disabled: PropTypes.bool,
+  disabledPress: PropTypes.bool,
+};
+
+ButtonBasic.defaultProps = {
+  title: '',
+  btnStyle: null,
+  titleStyle: null,
+  customContent: null,
+  disabled: false,
+  disabledPress: false,
 };
 
 export default ButtonBasic;

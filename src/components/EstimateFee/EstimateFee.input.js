@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import React from 'react';
 import { View, TouchableWithoutFeedback, Text } from 'react-native';
 import { Field, change, focus } from 'redux-form';
@@ -6,13 +7,20 @@ import { GENERAL } from '@src/constants/elements';
 import { generateTestId } from '@src/utils/misc';
 import { useSelector, useDispatch } from 'react-redux';
 import convert from '@src/utils/convert';
+import { BtnFast } from '@src/components/Button';
+import { COLORS } from '@src/styles';
+import PropTypes from 'prop-types';
+import { CONSTANT_COMMONS } from '@src/constants';
+import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { styled } from './EstimateFee.styled';
-// eslint-disable-next-line import/no-cycle
 import withEstimateFee from './EstimateFee.enhance';
-// eslint-disable-next-line import/no-cycle
 import { estimateFeeSelector, feeDataSelector } from './EstimateFee.selector';
-// eslint-disable-next-line import/no-cycle
-import { actionChangeFeeType, actionChangeFee } from './EstimateFee.actions';
+import {
+  actionChangeFeeType,
+  actionChangeFee,
+  actionToggleFastFee,
+} from './EstimateFee.actions';
+import { getTotalFee } from './EstimateFee.utils';
 
 const feeValidator = [
   validator.required(),
@@ -31,16 +39,14 @@ const Form = createForm(formName, {
 });
 
 const EstimateFeeInput = (props) => {
-  const { types, isFetching, isFetched } = useSelector(estimateFeeSelector);
+  const { types, isFetched } = useSelector(estimateFeeSelector);
   const {
-    fee,
     feeUnit,
     minFee,
     maxFee,
     isUseTokenFee,
-    feePrvText,
-    feePTokenText,
     feePDecimals,
+    totalFee,
   } = useSelector(feeDataSelector);
   const [state, setState] = React.useState({
     minFeeValidator: null,
@@ -63,11 +69,11 @@ const EstimateFeeInput = (props) => {
     }
   };
   React.useEffect(() => {
-    if (fee && isFetched) {
+    if (totalFee && isFetched) {
       let maxFeeValidator;
       let minFeeValidator;
       const _maxFee = convert.toNumber(maxFee, true);
-      const _fee = convert.toNumber(fee, true);
+      const _fee = convert.toNumber(totalFee, true);
       const _minFee = convert.toNumber(minFee, true);
       try {
         maxFeeValidator = validator.maxValue(_maxFee, {
@@ -85,15 +91,16 @@ const EstimateFeeInput = (props) => {
         setState({ ...state, minFeeValidator, maxFeeValidator });
       }
     }
-  }, [fee, feePTokenText, feePrvText]);
+  }, [maxFee, minFee, totalFee]);
+
   return (
     <Form>
-      {({ handleSubmit }) => (
+      {() => (
         <Field
           onChange={onChangeFee}
           component={InputField}
           prependView={<SupportFees types={types} />}
-          placeholder={isFetching ? 'Estimating fee...' : '0'}
+          placeholder="0"
           name="fee"
           validate={[
             ...feeValidator,
@@ -102,7 +109,10 @@ const EstimateFeeInput = (props) => {
           ]}
           componentProps={{
             keyboardType: 'decimal-pad',
-            editable: isFetched,
+            editable: false,
+            inputStyle: {
+              color: COLORS.black,
+            },
           }}
           label="Fee"
           {...props}
@@ -115,14 +125,7 @@ const EstimateFeeInput = (props) => {
 EstimateFeeInput.propTypes = {};
 
 const SupportFeeItem = (props) => {
-  const {
-    tokenId = null,
-    symbol = null,
-    isActived = false,
-    types = false,
-    tail = false,
-    ...rest
-  } = props;
+  const { tokenId, symbol, isActived, types, tail, ...rest } = props;
   if (!tokenId) {
     return;
   }
@@ -140,30 +143,104 @@ const SupportFeeItem = (props) => {
   );
 };
 
-const SupportFees = () => {
-  const { types, actived, isFetched, feePrvText, feePTokenText } = useSelector(
-    estimateFeeSelector,
-  );
-  const { isUseTokenFee } = useSelector(feeDataSelector);
+SupportFeeItem.propTypes = {
+  tokenId: PropTypes.string.isRequired,
+  symbol: PropTypes.string.isRequired,
+  isActived: PropTypes.bool.isRequired,
+  types: PropTypes.array.isRequired,
+  tail: PropTypes.bool.isRequired,
+};
+
+const SupportFees = React.memo(() => {
+  const {
+    isUnShield,
+    rate,
+    feePDecimals,
+    fee,
+    userFees,
+    isUsedPRVFee,
+    fast2x,
+    types,
+    actived,
+    isFetched,
+    feePrv,
+    feePrvText,
+    feePToken,
+    feePTokenText,
+    hasMultiLevel,
+  } = useSelector(feeDataSelector);
+  const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const dispatch = useDispatch();
   if (types.length === 0) {
     return;
   }
-  const onChangeTypeFee = async (type) => {
-    await dispatch(actionChangeFeeType(type?.tokenId));
-    if (typeof type?.onChangeFee === 'function') {
-      type?.onChangeFee(type);
-    }
-  };
-  React.useEffect(() => {
+
+  const onChangeFee = (value) => {
     if (isFetched) {
-      const fee = isUseTokenFee ? feePTokenText : feePrvText;
-      dispatch(change(formName, 'fee', fee));
+      dispatch(change(formName, 'fee', value));
       dispatch(focus(formName, 'fee'));
     }
-  }, [isUseTokenFee]);
+  };
+
+  const onChangeTypeFee = async (type) => {
+    const _isUsedPRVFee = type?.tokenId === CONSTANT_COMMONS.PRV.id;
+    let totalFeeText = _isUsedPRVFee ? feePrvText : feePTokenText;
+    try {
+      if (isUnShield) {
+        const totalFeeData = getTotalFee({
+          fast2x,
+          rate,
+          userFeesData: userFees?.data,
+          pDecimals: _isUsedPRVFee
+            ? CONSTANT_COMMONS.PRV.pDecimals
+            : selectedPrivacy?.pDecimals,
+          feeEst: _isUsedPRVFee ? feePrv : feePToken,
+          isUsedPRVFee: _isUsedPRVFee,
+          hasMultiLevel,
+        });
+        totalFeeText = totalFeeData?.totalFeeText;
+        dispatch(
+          actionToggleFastFee({
+            fast2x,
+            ...totalFeeData,
+            isUsedPRVFee: _isUsedPRVFee,
+          }),
+        );
+      }
+      dispatch(actionChangeFeeType(type?.tokenId));
+      onChangeFee(totalFeeText);
+    } catch (error) {
+      console.debug(error);
+    }
+  };
+
+  const handlePressFast = async (fast2x) => {
+    try {
+      const totalFeeData = getTotalFee({
+        fast2x,
+        userFeesData: userFees?.data,
+        pDecimals: feePDecimals,
+        feeEst: fee,
+        isUsedPRVFee,
+        hasMultiLevel,
+      });
+      dispatch(
+        actionToggleFastFee({
+          fast2x,
+          ...totalFeeData,
+          isUsedPRVFee,
+        }),
+      );
+      onChangeFee(totalFeeData?.totalFeeText);
+    } catch (error) {
+      console.debug(error);
+    }
+  };
   return (
     <View style={styled.spFeeContainer}>
+      {isUnShield && userFees.hasMultiLevel && (
+        <BtnFast style={styled.btnFast} onPress={handlePressFast} />
+      )}
       {types.map((type, index) => (
         <SupportFeeItem
           key={type?.tokenId}
@@ -177,6 +254,6 @@ const SupportFees = () => {
       ))}
     </View>
   );
-};
+});
 
 export default withEstimateFee(EstimateFeeInput);

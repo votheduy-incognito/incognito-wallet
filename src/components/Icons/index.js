@@ -35,3 +35,4 @@ export { default as ClockWiseIcon } from './icon.clockwise';
 export { default as ExportIcon } from './icon.export';
 export { default as NotificationIcon } from './icon.notification';
 export { default as HasNotificationIcon } from './icon.hasNotification';
+export { default as CheckedIcon } from './icon.checked';

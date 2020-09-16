@@ -6,12 +6,18 @@ export const ACTION_UPDATE_RECENTLY =
   '[receivers] Action update recently receiver';
 export const ACTION_DELETE_ALL = '[receivers] Action delete all receivers';
 export const ACTION_SYNC_SUCCESS = '[receivers] Sync receivers success';
+export const ACTION_MIGRATE_INCOGNITO_ADDRESS =
+  '[receivers] Migrate incognito address success';
+export const ACTION_SELECTED_RECEIVER = '[receivers] Selected receiver';
+export const ACTION_REMOVE_SELECTED_RECEIVER =
+  '[receivers] Remove selected receiver';
 
 const initPayload = {
   keySave: '',
   receiver: {
     address: '',
     name: '',
+    networkName: '',
   },
 };
 
@@ -45,7 +51,21 @@ export const actionDeleteAll = (payload = initPayload) => ({
   payload,
 });
 
-export const actionSyncSuccess = payload => ({
+export const actionSyncSuccess = (payload) => ({
   type: ACTION_SYNC_SUCCESS,
   payload,
+});
+
+export const actionMigrateIncognitoAddress = (payload) => ({
+  type: ACTION_MIGRATE_INCOGNITO_ADDRESS,
+  payload,
+});
+
+export const actionSelectedReceiver = (payload) => ({
+  type: ACTION_SELECTED_RECEIVER,
+  payload,
+});
+
+export const actionRemoveSelectedReceiver = () => ({
+  type: ACTION_REMOVE_SELECTED_RECEIVER,
 });

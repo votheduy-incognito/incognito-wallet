@@ -8,8 +8,10 @@ import QrCodeGenerate from '@src/components/QrCodeGenerate';
 import PropTypes from 'prop-types';
 import { CopiableTextDefault as CopiableText } from '@src/components/CopiableText';
 import LoadingContainer from '@src/components/LoadingContainer';
-import { ButtonBasic } from '@src/components/Button';
+import { ButtonBasic, BtnInfo } from '@src/components/Button';
 import { ClockWiseIcon } from '@src/components/Icons';
+import Tooltip from '@src/components/Tooltip/Tooltip';
+import { COLORS } from '@src/styles';
 import withGenQRCode from './GenQRCode.enhance';
 import { styled } from './GenQRCode.styled';
 import { useCountDown } from './GenQRCode.useEffect';
@@ -79,9 +81,31 @@ const Extra = () => {
   );
 };
 
+const Content = () => {
+  return (
+    <View style={styled.content}>
+      <Text style={styled.textContent}>
+        Make sure you have selected the right coin
+      </Text>
+    </View>
+  );
+};
+
 const GenQRCode = (props) => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const { hasError, handleShield, isFetching } = props;
+  const [toggle, setToggle] = React.useState(true);
+  const handleToggleTootip = () => setToggle(!toggle);
+  React.useEffect(() => {
+    if (toggle) {
+      const timeout = setTimeout(() => {
+        setToggle(false);
+      }, 3000);
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [toggle]);
   const renderComponent = () => {
     if (isFetching) {
       return <LoadingContainer />;
@@ -96,7 +120,24 @@ const GenQRCode = (props) => {
       <Header
         title={`Shield ${selectedPrivacy?.externalSymbol}`}
         titleStyled={styled.titleStyled}
+        rightHeader={<BtnInfo isBlack onPress={handleToggleTootip} />}
       />
+      {toggle && (
+        <Tooltip
+          content={<Content />}
+          containerStyle={{
+            backgroundColor: COLORS.black,
+            borderRadius: 11,
+            paddingBottom: 0,
+          }}
+          triangleStyle={{
+            top: -50,
+            right: 5,
+            borderBottomColor: COLORS.black,
+            transform: [{ rotate: '0deg' }],
+          }}
+        />
+      )}
       {renderComponent()}
     </View>
   );

@@ -24,7 +24,6 @@ export const KEY_SAVE = {
   SCREEN_STAKE_GUIDE: CONSTANT_KEYS.SCREEN_STAKE_GUIDE,
   WEBVIEW: '$webview',
   PROVIDE_TXS: CONSTANT_KEYS.PROVIDE_TXS,
-  WITHDRAWAL_DATA_DECENTRALIZED: CONSTANT_KEYS.WITHDRAWAL_DATA_DECENTRALIZED,
 };
 export default class LocalDatabase {
   static async getValue(key: String): String {

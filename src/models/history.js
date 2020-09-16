@@ -1,23 +1,20 @@
 import { CONSTANT_COMMONS } from '@src/constants';
 
 const CENTRALIZED_STATUS = {
-  FAILED: [
-    14, // RejectedIssueFromIncognito
-    15, // RejectedBurnFromIncognito
-  ],
+  FAILED: [14, 15, 18, 19],
   SUCCESS: [3, 4, 5, 10],
   EXPIRED: [16],
 };
 
 const DECENTRALIZED_STATUS = {
-  FAILED: [6, 23],
+  FAILED: [6, 9, 10, 15, 16, 23],
   SUCCESS: [7, 12],
   EXPIRED: [14],
 };
 
-const getStatusText = (status, currencyType, isDecentralized) => {
+const getStatusText = (status, isDecentralized) => {
   if (isDecentralized) {
-    // decentralized token history 
+    // decentralized token history
     if (DECENTRALIZED_STATUS.FAILED.includes(status)) {
       return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.FAILED;
     } else if (DECENTRALIZED_STATUS.SUCCESS.includes(status)) {
@@ -27,7 +24,7 @@ const getStatusText = (status, currencyType, isDecentralized) => {
     }
     return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING;
   } else {
-    // centralized token history 
+    // centralized token history
     if (CENTRALIZED_STATUS.FAILED.includes(status)) {
       return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.FAILED;
     } else if (CENTRALIZED_STATUS.SUCCESS.includes(status)) {
@@ -38,17 +35,19 @@ const getStatusText = (status, currencyType, isDecentralized) => {
     return CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING;
   }
 };
- 
+
 class History {
   static parsePrivateTokenFromApi(data = {}) {
-    const statusText = getStatusText(data.Status, data.CurrencyType, data.Decentralized);
-    return {
+    const status = data?.Status;
+    const statusText = getStatusText(status, data.Decentralized);
+    const decentralized = data.Decentralized === 1;
+    const history = {
       id: data?.ID,
       updatedAt: data.UpdatedAt,
       expiredAt: data.ExpiredAt,
       addressType: data.AddressType,
-      status: data.Status,
-      decentralized: data.Decentralized === 1,
+      status,
+      decentralized,
       statusText,
       currencyType: data.CurrencyType,
       userPaymentAddress: data.UserPaymentAddress,
@@ -59,11 +58,26 @@ class History {
       incognitoAmount: data.IncognitoAmount,
       outchainTx: data.OutChainTx,
       inchainTx: data.InChainTx,
-      cancelable: data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT && [CONSTANT_COMMONS.HISTORY.STATUS_TEXT.EXPIRED,CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING].includes(statusText),
+      cancelable:
+        data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.SHIELD &&
+        [
+          CONSTANT_COMMONS.HISTORY.STATUS_TEXT.EXPIRED,
+          CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING,
+        ].includes(statusText),
       walletAddress: data.WalletAddress,
-      canRetryExpiredDeposit: data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT && statusText === CONSTANT_COMMONS.HISTORY.STATUS_TEXT.EXPIRED,
-      depositTmpAddress: data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.DEPOSIT && data.Address
+      canRetryExpiredDeposit:
+        data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.SHIELD &&
+        statusText === CONSTANT_COMMONS.HISTORY.STATUS_TEXT.EXPIRED,
+      depositTmpAddress:
+        data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.SHIELD &&
+        data.Address,
+      privacyFee: Number(data?.OutChainPrivacyFee),
+      tokenFee: Number(data?.OutChainTokenFee),
+      burnPrivacyFee: Number(data?.BurnPrivacyFee),
+      burnTokenFee: Number(data?.BurnTokenFee),
+      incognitoTxID: data?.IncognitoTxToPayOutsideChainFee,
     };
+    return history;
   }
 }
 

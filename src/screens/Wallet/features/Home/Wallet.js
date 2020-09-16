@@ -20,6 +20,7 @@ import Tooltip from '@src/components/Tooltip/Tooltip';
 import { COLORS } from '@src/styles';
 import isNaN from 'lodash/isNaN';
 import { TouchableOpacity } from '@src/components/core';
+import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import {
   styled,
   styledHook,
@@ -36,14 +37,15 @@ const GroupButton = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { guide } = useSelector(shieldStorageSelector);
-  const handleUnShield = async () =>
-    navigation.navigate(routeNames.UnShieldModal);
   const handleShield = async () => {
     navigation.navigate(routeNames.Shield);
     if (!guide) {
       await dispatch(actionToggleGuide());
     }
   };
+
+  const [onFeaturePress, isDisabled] = useFeatureConfig('shield', handleShield);
+
   return (
     <View
       style={[
@@ -62,23 +64,18 @@ const GroupButton = () => {
           }}
           triangleStyle={{
             bottom: -30,
-            left: 50,
+            left: '48%',
             borderBottomColor: COLORS.black,
           }}
         />
       )}
       <View style={styled.groupButton}>
         <ButtonBasic
-          title="Shield"
+          title="Shield my crypto"
           btnStyle={[styled.btnStyle]}
           titleStyle={[styled.titleStyle]}
-          onPress={handleShield}
-        />
-        <ButtonBasic
-          title="Unshield"
-          btnStyle={styled.btnStyle}
-          titleStyle={styled.titleStyle}
-          onPress={handleUnShield}
+          onPress={onFeaturePress}
+          disabledPress={isDisabled}
         />
       </View>
     </View>
@@ -98,11 +95,11 @@ const Hook = () => {
       <View style={styledHook.btnClose}>
         <BtnClose size={20} onPress={handleCloseShield} />
       </View>
-      <Text style={styledHook.title}>Transact without a trace.</Text>
+      <Text style={styledHook.title}>
+        {'Turn your public coins into\nprivacy coins.'}
+      </Text>
       <Text style={styledHook.desc}>
-        {
-          'Shield any amount of any cryptocurrency.\nTurn your public coins into privacy coins.'
-        }
+        Enter the Incognito network and transact without a trace.
       </Text>
     </View>
   );
@@ -187,12 +184,12 @@ const Extra = () => {
     <View style={extraStyled.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        refreshControl={
+        refreshControl={(
           <RefreshControl
             refreshing={isReloading}
             onRefresh={() => fetchData(true)}
           />
-        }
+        )}
       >
         <Balance />
         <GroupButton />

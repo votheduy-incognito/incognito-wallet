@@ -3,50 +3,56 @@ import tokenService from '@src/services/wallet/tokenService';
 import { getpTokenHistory } from '@src/services/api/history';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
+import { getFeeFromTxHistory } from '@src/screens/Wallet/features/TxHistoryDetail/TxHistoryDetail.utils';
 
-export const combineHistory = (
-  histories,
-  historiesFromApi,
-  symbol,
+const normalizeHistoriesFromApi = ({
+  historiesFromApi = [],
   externalSymbol,
+  symbol,
   decimals,
   pDecimals,
-) => {
-  const data = [];
+}) =>
+  (historiesFromApi &&
+    historiesFromApi.map((h) => ({
+      ...h,
+      time: h?.updatedAt,
+      type: h?.addressType,
+      toAddress: h?.userPaymentAddress,
+      fromAddress: h?.userPaymentAddress,
+      amount: h?.incognitoAmount,
+      symbol: externalSymbol || symbol,
+      decimals,
+      pDecimals,
+      status: h?.statusText,
+      statusCode: h?.status,
+      depositAddress: h?.depositTmpAddress,
+    }))) ||
+  [];
 
-  historiesFromApi &&
-    historiesFromApi.forEach(h => {
-      data.push({
-        id: h?.id,
-        inchainTx: h?.inchainTx,
-        outchainTx: h?.outchainTx,
-        time: h?.updatedAt,
-        type: h?.addressType,
-        toAddress: h?.userPaymentAddress,
-        fromAddress: h?.userPaymentAddress,
-        amount: h?.incognitoAmount,
-        requestedAmount: h?.requestedAmount,
-        symbol: externalSymbol,
-        decimals,
-        pDecimals,
-        status: h?.statusText,
-        statusCode: h?.status,
-        cancelable: h?.cancelable,
-        currencyType: h?.currencyType,
-        decentralized: h?.decentralized,
-        walletAddress: h?.walletAddress,
-        privacyTokenAddress: h?.privacyTokenAddress,
-        erc20TokenAddress: h?.erc20TokenAddress,
-        userPaymentAddress: h?.userPaymentAddress,
-        canRetryExpiredDeposit: h?.canRetryExpiredDeposit,
-        expiredAt: h?.expiredAt,
-        depositAddress: h?.depositTmpAddress,
-      });
-    });
+const isDecentralizedTx = (history) => {
+  let isDecentralized = false;
+  if (
+    !!history?.metaDataType &&
+    (history?.metaDataType === 27 || history?.metaDataType === 240)
+  ) {
+    isDecentralized = true;
+  }
+  return isDecentralized;
+};
 
+const normalizedHistories = ({
+  histories = [],
+  historiesNormalizedFromApi = [],
+  externalSymbol,
+  symbol,
+  pDecimals,
+  decimals,
+}) => {
+  let _histories = [];
+  let _historiesFromApi = [...historiesNormalizedFromApi];
   histories &&
-    histories.forEach(h => {
-      data.push({
+    histories.map((h) => {
+      let history = {
         id: h?.txID,
         incognitoTxID: h?.txID,
         time: h?.time,
@@ -55,23 +61,98 @@ export const combineHistory = (
           : CONSTANT_COMMONS.HISTORY.TYPE.SEND,
         toAddress: h?.receivers?.length && h?.receivers[0],
         amount: h?.amountPToken,
-        symbol: h?.tokenSymbol,
+        symbol: externalSymbol || symbol || h?.tokenSymbol,
         decimals,
         pDecimals,
         status: h?.status,
         fee: h?.feeNativeToken,
         feePToken: h?.feePToken,
-      });
+        isIncognitoTx: true,
+        metaDataType: h?.metaData?.Type,
+      };
+      if (!h?.isIn) {
+        //not incognito tx
+        const { indexTx, historyFromApi } = normalizedHistory(
+          _historiesFromApi,
+          history,
+        );
+        if (indexTx > -1 && !!historyFromApi) {
+          _historiesFromApi[indexTx] = { ...historyFromApi };
+          return null;
+        }
+      }
+      _histories.push(history);
+      return history;
     });
-
-  return data.sort((a, b) =>
-    new Date(a.time).getTime() < new Date(b.time).getTime() ? 1 : -1,
-  );
+  return [..._historiesFromApi, ..._histories];
 };
 
-export const normalizeData = (histories, decimals, pDecimals) =>
+const normalizedHistory = (histories = [], history = {}) => {
+  const isDecentralized = isDecentralizedTx(history);
+  let indexTx = histories.findIndex(
+    (item) => item?.incognitoTxID === history?.incognitoTxID,
+  );
+  const { fee, isUseTokenFee } = getFeeFromTxHistory(history);
+  let historyFromApi;
+  if (indexTx === -1) {
+    return {
+      indexTx,
+      historyFromApi,
+    };
+  }
+  if (!isDecentralized) {
+    historyFromApi = histories[indexTx];
+    let amount;
+    if (
+      !historyFromApi?.amount ||
+      history?.status === CONSTANT_COMMONS.HISTORY.STATUS_CODE.PENDING
+    ) {
+      amount = isUseTokenFee
+        ? history?.amount - fee - historyFromApi?.tokenFee
+        : history?.amount;
+    } else {
+      amount = isUseTokenFee
+        ? historyFromApi?.amount - fee
+        : historyFromApi?.amount;
+    }
+    historyFromApi = {
+      ...historyFromApi,
+      amount: Math.max(amount, 0),
+    };
+  } else {
+    historyFromApi = histories[indexTx];
+    historyFromApi = {
+      ...historyFromApi,
+      burnTokenFee: isUseTokenFee ? fee : 0,
+      burnPrivacyFee: isUseTokenFee ? 0 : fee,
+    };
+  }
+  return {
+    indexTx,
+    historyFromApi,
+  };
+};
+
+export const combineHistory = (payload) => {
+  let histories = [];
+  try {
+    const historiesNormalizedFromApi = normalizeHistoriesFromApi(payload);
+    const _histories = normalizedHistories({
+      ...payload,
+      historiesNormalizedFromApi,
+    });
+    histories = _histories.sort((a, b) =>
+      new Date(a.time).getTime() < new Date(b.time).getTime() ? 1 : -1,
+    );
+  } catch (error) {
+    console.debug(error);
+  }
+  return histories;
+};
+
+export const normalizeData = (histories = [], decimals, pDecimals) =>
   histories &&
-  histories.map(h => ({
+  histories.map((h) => ({
     id: h?.txID,
     incognitoTxID: h?.txID,
     time: h?.time,
@@ -85,6 +166,8 @@ export const normalizeData = (histories, decimals, pDecimals) =>
     fee: h?.feeNativeToken,
     decimals,
     pDecimals,
+    metaDataType: h?.metaData?.Type,
+    isIncognitoTx: true,
   }));
 
 export const loadTokenHistory = () => async (dispatch, getState) => {

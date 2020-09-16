@@ -11,7 +11,6 @@ import { notificationInitialize } from '@src/services/notification';
 import NavigationService from '@src/services/NavigationService';
 import React, { useEffect, useState } from 'react';
 import { Provider, useDispatch } from 'react-redux';
-import AppUpdater from '@components/AppUpdater/index';
 import { PersistGate } from 'redux-persist/integration/react';
 import NetInfo from '@react-native-community/netinfo';
 import { Linking, Text } from 'react-native';
@@ -24,6 +23,7 @@ import {
   actionSetCurrentScreen,
   actionSetPrevScreen,
 } from './screens/Navigation';
+// import Performance from './screens/Performance';
 
 const isShowDeviceLog = false;
 const { store, persistor } = configureStore();
@@ -127,7 +127,6 @@ export const AppWrapper = (props) => (WrappedComponent) => {
         <AppScreen>
           <App {...{ ...props, currentScreen, setCurrentScreen }} />
           {isShowDeviceLog && <DeviceLog />}
-          <AppUpdater />
           <QrScanner />
           <Toast />
           <ModalConnection
@@ -137,6 +136,7 @@ export const AppWrapper = (props) => (WrappedComponent) => {
             }}
             onPressOk={() => listenNetworkChanges()}
           />
+          {/* <Performance /> */}
         </AppScreen>
       </PersistGate>
     </Provider>

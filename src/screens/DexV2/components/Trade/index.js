@@ -102,6 +102,7 @@ const Trade = ({
             onRefresh={onLoadPairs}
           />
         )}
+        paddingBottom
       >
         <View style={styles.wrapper}>
           <NewInput

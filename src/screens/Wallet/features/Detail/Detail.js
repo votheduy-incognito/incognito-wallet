@@ -19,10 +19,11 @@ import {
 import HistoryToken from '@screens/Wallet/features/HistoryToken';
 import MainCryptoHistory from '@screens/Wallet/features/MainCryptoHistory';
 import PropTypes from 'prop-types';
-import { CONSTANT_COMMONS } from '@src/constants';
 import { isGettingBalance as isGettingTokenBalanceSelector } from '@src/redux/selectors/token';
 import { isGettingBalance as isGettingMainCryptoBalanceSelector } from '@src/redux/selectors/account';
 import { ScrollView } from '@src/components/core';
+import { useBtnTrade } from '@src/components/UseEffect/useBtnTrade';
+import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import withDetail from './Detail.enhance';
 import {
   styled,
@@ -31,29 +32,9 @@ import {
   historyStyled,
 } from './Detail.styled';
 
-const RightHeader = ({ hasTradeBtn }) => {
-  const navigation = useNavigation();
-  const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
-  if (!hasTradeBtn) {
-    return null;
-  }
-  return (
-    <ButtonBasic
-      title="Trade"
-      btnStyle={styled.btnTrade}
-      titleStyle={styled.titleBtnTrade}
-      onPress={() =>
-        navigation.navigate(routeNames.Trade, {
-          inputTokenId: CONSTANT_COMMONS.PRV.id,
-          outputTokenId: selectedPrivacy?.tokenId,
-        })
-      }
-    />
-  );
-};
-
 const GroupButton = () => {
   const navigation = useNavigation();
+  const [onPressSend, isSendDisabled] = useFeatureConfig('send');
   const handleSend = () => navigation.navigate(routeNames.Send);
   const handleReceive = () => navigation.navigate(routeNames.ReceiveCrypto);
   return (
@@ -63,6 +44,7 @@ const GroupButton = () => {
         btnStyle={groupBtnStyled.btnStyle}
         titleStyle={groupBtnStyled.titleStyle}
         onPress={handleSend}
+        disabledPress={isSendDisabled}
       />
       <ButtonBasic
         title="Receive"
@@ -147,18 +129,14 @@ const Detail = (props) => {
       ? isGettingMainCryptoBalance.length > 0 || !defaultAccount
       : isGettingTokenBalance.length > 0 || !token;
   const onGoBack = () => navigation.navigate(routeNames.Wallet);
-  const onNavTokenInfo = () => navigation.navigate(routeNames.CoinInfo);
-  const hasTradeBtn =
-    selected?.pairWithPrv && selected?.tokenId !== CONSTANT_COMMONS.PRV.id;
 
+  const [BtnTrade, hasTradeBtn] = useBtnTrade();
   return (
     <View style={styled.container}>
       <Header
         title={selected?.name}
-        customHeaderTitle={
-          <BtnInfo onPress={onNavTokenInfo} style={styled.btnInfo} />
-        }
-        rightHeader={<RightHeader hasTradeBtn={hasTradeBtn} />}
+        customHeaderTitle={<BtnInfo />}
+        rightHeader={<BtnTrade />}
         onGoBack={onGoBack}
         styledContainerHeaderTitle={
           hasTradeBtn && styled.styledContainerHeaderTitle
@@ -177,14 +155,6 @@ Detail.propTypes = {
 
 History.propTypes = {
   handleLoadHistory: PropTypes.func.isRequired,
-};
-
-RightHeader.defaultProps = {
-  hasTradeBtn: false,
-};
-
-RightHeader.propTypes = {
-  hasTradeBtn: PropTypes.bool,
 };
 
 export default withDetail(Detail);

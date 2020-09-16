@@ -13,3 +13,8 @@ export const ACTION_FETCHED_MAX_FEE_PRV = '[estimateFee] Fetched max fee prv';
 export const ACTION_FETCHED_MAX_FEE_PTOKEN =
   '[estimateFee] Fetched max fee pToken';
 export const ACTION_USE_FEE_MAX = '[estimateFee] Use fee max';
+export const ACTION_FETCHED_VALID_ADDR = '[estimateFee] Fetched valid address';
+export const ACTION_FETCHED_USER_FEES = '[estimateFee] Fetched user fees';
+export const ACTION_FETCHING_USER_FEES = '[estimateFee] Fetching user fees';
+export const ACTION_TOGGLE_FAST_FEE = '[estimateFee] Toggle fast fee';
+export const ACTION_REMOVE_FEE_TYPE = '[estimateFee] Remove fee type';

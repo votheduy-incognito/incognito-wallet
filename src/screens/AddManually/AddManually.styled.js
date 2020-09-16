@@ -38,11 +38,10 @@ export default StyleSheet.create({
     lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.black,
   },
-  selectType: {
-    marginTop: 15,
-  },
+  selectType: {},
   extra: {
     flex: 1,
     marginBottom: isIOS() ? 70 : 100,
+    marginTop: 42,
   },
 });

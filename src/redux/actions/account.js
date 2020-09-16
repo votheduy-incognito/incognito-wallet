@@ -9,6 +9,7 @@ import { getUserUnfollowTokenIDs } from '@src/services/wallet/tokenService';
 import convert from '@src/utils/convert';
 import { reloadAccountList } from '@src/redux/actions/wallet';
 import AccountModel from '@src/models/account';
+import { actionLogEvent } from '@src/screens/Performance';
 import { getBalance as getTokenBalance, setListToken } from './token';
 import { tokenSeleclor, accountSeleclor } from '../selectors';
 
@@ -42,12 +43,12 @@ export const setListAccount = (
   };
 };
 
-export const removeAccount = (
-  account = throw new Error('Account is required'),
-) => async (dispatch, getState) => {
+export const removeAccount = (account) => async (dispatch, getState) => {
   try {
     const wallet = getState()?.wallet;
-
+    if (!account) {
+      new Error('Account is required');
+    }
     if (!wallet) {
       throw new Error(
         'Wallet is not existed, can not remove account right now',
@@ -57,6 +58,7 @@ export const removeAccount = (
     const { PrivateKey } = account;
 
     const passphrase = await getPassphrase();
+
     await accountService.removeAccount(PrivateKey, passphrase, wallet);
 
     dispatch({
@@ -93,6 +95,12 @@ export const getBalance = (account) => async (dispatch, getState) => {
   try {
     if (!account) throw new Error('Account object is required');
 
+    await dispatch(
+      actionLogEvent({
+        desc: `Getting balance account ${account?.name}`,
+      }),
+    );
+
     dispatch(getBalanceStart(account?.name));
 
     const wallet = getState()?.wallet;
@@ -102,6 +110,13 @@ export const getBalance = (account) => async (dispatch, getState) => {
     }
 
     balance = await accountService.getBalance(account, wallet);
+
+    await dispatch(
+      actionLogEvent({
+        desc: `Balance account ${account?.name} is: ${balance}`,
+      }),
+    );
+
     const accountMerge = {
       ...account,
       value: balance,
@@ -119,6 +134,12 @@ export const getBalance = (account) => async (dispatch, getState) => {
     throw e;
   } finally {
     dispatch(getBalanceFinish(account?.name));
+
+    await dispatch(
+      actionLogEvent({
+        desc: `Finish balance account ${account?.name}`,
+      }),
+    );
   }
 
   return balance ?? 0;
@@ -301,12 +322,11 @@ export const actionReloadFollowingToken = (shouldLoadBalance = true) => async (
     const wallet = state.wallet;
     const account = accountSeleclor.defaultAccountSelector(state);
     const followed = await accountService.getFollowingTokens(account, wallet);
-    await dispatch(setListToken(followed));
-    !!shouldLoadBalance &&
-      (await new Promise.all(
-        [...followed].map((token) => dispatch(getTokenBalance(token))),
-        dispatch(getBalance(account)),
-      ));
+    dispatch(setListToken(followed));
+    if (shouldLoadBalance) {
+      dispatch(getBalance(account));
+      [...followed].map((token) => dispatch(getTokenBalance(token)));
+    }
     return followed;
   } catch (error) {
     throw Error(error);

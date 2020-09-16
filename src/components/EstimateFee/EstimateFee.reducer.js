@@ -1,7 +1,7 @@
 import { CONSTANT_COMMONS } from '@src/constants';
 import format from '@src/utils/format';
 import convert from '@src/utils/convert';
-import { floor } from 'lodash';
+import { floor, isEmpty } from 'lodash';
 import {
   ACTION_FETCHING_FEE,
   ACTION_FETCHED_FEE,
@@ -15,9 +15,13 @@ import {
   ACTION_INIT_FETCHED,
   ACTION_FETCHED_MAX_FEE_PRV,
   ACTION_FETCHED_MAX_FEE_PTOKEN,
-  ACTION_USE_FEE_MAX,
+  ACTION_FETCHED_VALID_ADDR,
+  ACTION_FETCHED_USER_FEES,
+  ACTION_FETCHING_USER_FEES,
+  ACTION_TOGGLE_FAST_FEE,
+  ACTION_REMOVE_FEE_TYPE,
 } from './EstimateFee.constant';
-import { MAX_FEE_PER_TX } from './EstimateFee.utils';
+import { MAX_FEE_PER_TX, hasMultiLevelUsersFee } from './EstimateFee.utils';
 
 const initialState = {
   isFetching: false,
@@ -50,7 +54,23 @@ const initialState = {
   ],
   actived: CONSTANT_COMMONS.PRV.id,
   rate: 1,
-  useFeeMax: false,
+  isAddressValidated: true,
+  isValidETHAddress: true,
+  userFees: {
+    isFetching: false,
+    isFetched: false,
+    data: null,
+    hasMultiLevel: false,
+  },
+  isValidating: false,
+  fast2x: false,
+  totalFeePrv: null,
+  totalFeePrvText: '',
+  userFeePrv: null,
+  totalFeePToken: null,
+  totalFeePTokenText: '',
+  userFeePToken: null,
+  isFetchedMinMaxWithdraw: false,
 };
 
 export default (state = initialState, action) => {
@@ -97,12 +117,23 @@ export default (state = initialState, action) => {
   }
   case ACTION_ADD_FEE_TYPE: {
     const { tokenId } = action.payload;
-    if (tokenId === CONSTANT_COMMONS.PRV.id) {
+    const isExisted = state.types.some((item) => item?.tokenId === tokenId);
+    if (tokenId === CONSTANT_COMMONS.PRV.id || isExisted) {
       return state;
     }
     return {
       ...state,
       types: [...initialState.types, action.payload],
+    };
+  }
+  case ACTION_REMOVE_FEE_TYPE: {
+    const { tokenId } = action.payload;
+    if (tokenId === CONSTANT_COMMONS.PRV.id) {
+      return state;
+    }
+    return {
+      ...state,
+      types: [...state?.types.filter((item) => item?.tokenId !== tokenId)],
     };
   }
   case ACTION_CHANGE_FEE_TYPE: {
@@ -161,10 +192,66 @@ export default (state = initialState, action) => {
       maxFeePTokenText: amountText,
     };
   }
-  case ACTION_USE_FEE_MAX: {
+  case ACTION_FETCHED_VALID_ADDR: {
+    const { isAddressValidated, isValidETHAddress } = action.payload;
     return {
       ...state,
-      useFeeMax: true,
+      isAddressValidated,
+      isValidETHAddress,
+    };
+  }
+  case ACTION_FETCHED_USER_FEES: {
+    const data = action.payload;
+    if (isEmpty(data)) {
+      return {
+        ...state,
+        userFees: {
+          ...state.userFees,
+          isFetching: false,
+        },
+      };
+    }
+    const hasMultiLevel = hasMultiLevelUsersFee(data);
+    return {
+      ...state,
+      userFees: {
+        ...state.userFees,
+        isFetched: true,
+        isFetching: false,
+        data: { ...data },
+        hasMultiLevel,
+      },
+    };
+  }
+  case ACTION_FETCHING_USER_FEES: {
+    return {
+      ...state,
+      userFees: {
+        ...state.userFees,
+        isFetching: true,
+      },
+    };
+  }
+  case ACTION_TOGGLE_FAST_FEE: {
+    const {
+      fast2x,
+      totalFee,
+      totalFeeText,
+      userFee,
+      isUsedPRVFee,
+    } = action.payload;
+    const totalFeeField = isUsedPRVFee ? 'totalFeePrv' : 'totalFeePToken';
+    const totalFeeTextField = isUsedPRVFee
+      ? 'totalFeePrvText'
+      : 'totalFeePTokenText';
+    const userFeeField = isUsedPRVFee ? 'userFeePrv' : 'userFeePToken';
+
+    return {
+      ...state,
+      fast2x,
+      [totalFeeField]: totalFee,
+      [totalFeeTextField]: totalFeeText,
+      [userFeeField]: userFee,
     };
   }
   default:

@@ -58,7 +58,6 @@ export default {
   ShieldGenQRCode: 'ShieldGenQRCode',
   AddManually: 'AddManually',
   Send: 'Send',
-  UnShield: 'UnShield',
   RepairingSetupNode: 'RepairingSetupNode',
   UnShieldModal: 'UnShieldModal',
   TokenSelectScreen: 'TokenSelectScreen',
@@ -68,8 +67,6 @@ export default {
   TradeConfirm: 'TradeConfirm',
   WhyUnshield: 'WhyUnshield',
   ExportAccountModal: 'ExportAccountModal',
-  AddressBook: 'AddressBook',
-  AddressBookForm: 'AddressBookForm',
   CoinInfo: 'CoinInfo',
   Keychain: 'Keychain',
   CoinInfoVerify: 'CoinInfoVerify',
@@ -83,5 +80,7 @@ export default {
   PoolV2WithdrawProvision: 'PoolV2WithdrawProvision',
   PoolV2History: 'StakeHistory',
   PoolV2HistoryDetail: 'StakeHistoryDetail',
-  News: 'News'
+  News: 'News',
+  Receipt: 'Receipt',
+  SelectNetworkName: 'SelectNetworkName',
 };

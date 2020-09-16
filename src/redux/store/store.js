@@ -11,7 +11,7 @@ export default function configureStore(preloadedState) {
   const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
-    whitelist: ['receivers', 'addressBook'],
+    whitelist: ['receivers'],
     blacklist: [
       'stakeHistory',
       'stake',
@@ -20,6 +20,7 @@ export default function configureStore(preloadedState) {
       'setting',
       'getStarted',
       'profile',
+      'dev'
     ],
     stateReconciler: autoMergeLevel2,
   };

@@ -19,10 +19,10 @@ export default StyleSheet.create({
     marginVertical: 30,
   },
   title: {
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 5,
-    color: COLORS.black,
-    fontFamily: FONT.NAME.bold,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 5,
+    color: COLORS.colorGreyBold,
+    fontFamily: FONT.NAME.medium,
     marginBottom: 30,
   },
   importKeyBlock: {

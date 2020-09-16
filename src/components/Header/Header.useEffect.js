@@ -1,38 +1,45 @@
 import React from 'react';
-import { formValueSelector } from 'redux-form';
+import { formValueSelector, reset } from 'redux-form';
 import { searchBoxConfig } from '@src/components/Header/Header.searchBox';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 import toLower from 'lodash/toLower';
+import { trim } from 'lodash';
+import { useFocusEffect } from 'react-navigation-hooks';
 
 export const useSearchBox = (props) => {
   const { data, handleFilter } = props;
   const initialState = {
     result: [],
   };
+  const dispatch = useDispatch();
   const selector = formValueSelector(searchBoxConfig.form);
-  const keySearch = toLower(
-    (
-      useSelector((state) => selector(state, searchBoxConfig.searchBox)) || ''
-    ).trim(),
+  const keySearch = trim(
+    toLower(
+      useSelector((state) => selector(state, searchBoxConfig.searchBox)) || '',
+    ),
   );
+  const isKeyEmpty = isEmpty(keySearch);
   const [state, setState] = React.useState(initialState);
   const { result } = state;
-  const initData = async () =>
-    await setState({ ...initialState, result: [...data] });
-  const filterData = async () => {
+  const handleFilterData = (data = null) => {
     if (!isEmpty(keySearch)) {
-      return await setState({ ...initialState, result: handleFilter() });
-    }
-    if (!isEmpty(data)) {
-      return await initData();
+      return setState({ ...state, result: data ? data : handleFilter() });
     }
   };
   React.useEffect(() => {
-    filterData();
-  }, [keySearch, data]);
-  return [result, keySearch];
+    handleFilterData();
+  }, [keySearch, data?.length]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setState({ ...state, result: [] });
+      dispatch(reset(searchBoxConfig.form));
+    }, []),
+  );
+
+  return [isKeyEmpty ? data : result, keySearch, handleFilterData];
 };
 
 useSearchBox.defaultProps = {};
