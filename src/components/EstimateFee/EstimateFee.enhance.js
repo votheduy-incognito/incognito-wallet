@@ -18,7 +18,7 @@ const enhance = (WrappedComp) => (props) => {
     isIncognitoAddress,
   } = props;
   const dispatch = useDispatch();
-  const handleChangeForm = async () => {
+  const handleChangeForm = async (address, amount, screen, memo, isFetching) => {
     try {
       if (!amount || !address || isFetching) {
         return;
@@ -42,10 +42,10 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
 
-  const _handleChangeForm = debounce(handleChangeForm, 1000);
+  const _handleChangeForm = React.useRef(debounce(handleChangeForm, 600));
 
   React.useEffect(() => {
-    _handleChangeForm();
+    _handleChangeForm.current(address, amount, screen, memo, isFetching);
   }, [address, amount, screen, memo]);
   return (
     <ErrorBoundary>
