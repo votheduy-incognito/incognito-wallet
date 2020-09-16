@@ -41,7 +41,9 @@ const enhance = (WrappedComp) => (props) => {
       new ExHandler(error).showErrorToast();
     }
   };
-  const _handleChangeForm = debounce(handleChangeForm, 600);
+
+  const _handleChangeForm = debounce(handleChangeForm, 1000);
+
   React.useEffect(() => {
     _handleChangeForm();
   }, [address, amount, screen, memo]);
