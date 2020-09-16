@@ -43,8 +43,7 @@ const RightLabel = React.memo(() => {
   );
   return (
     <Text style={styled.amount} numberOfLines={1} ellipsizeMode="tail">
-      {`${amount} ${selectedPrivacy?.externalSymbol ||
-        selectedPrivacy?.symbol}`}
+      {amount}
     </Text>
   );
 });
@@ -67,11 +66,18 @@ const SendForm = (props) => {
     isIncognitoAddress,
     isExternalAddress,
     textLoadingTx,
+    validateMemo,
   } = props;
   const { titleBtnSubmit, isUnShield } = useSelector(feeDataSelector);
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
-  const [onCentralizedPress, isCentralizedDisabled] = useFeatureConfig('centralized', handleSend);
-  const [onDecentralizedPress, isDecentralizedDisabled] = useFeatureConfig('decentralized', handleSend);
+  const [onCentralizedPress, isCentralizedDisabled] = useFeatureConfig(
+    'centralized',
+    handleSend,
+  );
+  const [onDecentralizedPress, isDecentralizedDisabled] = useFeatureConfig(
+    'decentralized',
+    handleSend,
+  );
   const placeholderAddress = `Incognito ${
     selectedPrivacy?.isMainCrypto
       ? ''
@@ -88,6 +94,7 @@ const SendForm = (props) => {
               label="Memo"
               placeholder="Add a note (optional)"
               maxLength={125}
+              validate={validateMemo}
             />
             <Text style={styled.warningText}>
               For withdrawals to wallets on exchanges (e.g. Binance, etc.),
@@ -110,13 +117,15 @@ const SendForm = (props) => {
     );
   };
 
-  const isDisabled = isUnShield && (
-    (selectedPrivacy.isCentralized && isCentralizedDisabled) ||
-    (selectedPrivacy.isDecentralized && isDecentralizedDisabled)
-  );
-  const handlePressSend = isUnShield ? (
-    selectedPrivacy.isCentralized ? onCentralizedPress : onDecentralizedPress
-  ) : handleSend;
+  const isDisabled =
+    isUnShield &&
+    ((selectedPrivacy.isCentralized && isCentralizedDisabled) ||
+      (selectedPrivacy.isDecentralized && isDecentralizedDisabled));
+  const handlePressSend = isUnShield
+    ? selectedPrivacy.isCentralized
+      ? onCentralizedPress
+      : onDecentralizedPress
+    : handleSend;
 
   return (
     <View style={styled.container}>
@@ -205,6 +214,7 @@ SendForm.propTypes = {
   isIncognitoAddress: PropTypes.bool.isRequired,
   isExternalAddress: PropTypes.bool.isRequired,
   textLoadingTx: PropTypes.string.isRequired,
+  validateMemo: PropTypes.any.isRequired,
 };
 
 export default withSendForm(SendForm);

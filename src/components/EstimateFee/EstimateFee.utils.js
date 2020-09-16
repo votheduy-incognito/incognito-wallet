@@ -57,7 +57,6 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
     fast2x,
     feePrvText,
     feePTokenText,
-    isFetchedMinMaxWithdraw,
   } = estimateFee;
   const { amount } = selectedPrivacy;
   const isUseTokenFee = actived !== CONSTANT_COMMONS.PRV.id;
@@ -79,7 +78,7 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
   let titleBtnSubmit =
     screen === 'Send' ? 'Send anonymously' : 'Unshield my crypto';
   if (isFetching) {
-    titleBtnSubmit = 'Estimating data...';
+    titleBtnSubmit = 'Calculating fee...';
   }
   const feeText = format.toFixed(
     convert.toHumanAmount(fee, feePDecimals),
@@ -129,7 +128,6 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
     feePTokenText,
     isBTC,
     hasMultiLevel: userFees?.hasMultiLevel,
-    isFetchedMinMaxWithdraw,
   };
 };
 

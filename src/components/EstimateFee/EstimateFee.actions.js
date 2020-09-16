@@ -30,6 +30,7 @@ import {
   ACTION_FETCHING_USER_FEES,
   ACTION_TOGGLE_FAST_FEE,
   ACTION_REMOVE_FEE_TYPE,
+  ACTION_FETCH_FAIL_USER_FEES,
 } from './EstimateFee.constant';
 import {
   apiGetEstimateFeeFromChain,
@@ -48,8 +49,7 @@ export const actionInitEstimateFee = (config = {}) => async (
   const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
   const account = accountSeleclor.defaultAccountSelector(state);
   const wallet = state?.wallet;
-  const { isFetchedMinMaxWithdraw } = feeDataSelector(state);
-  let _isFetchedMinMaxWithdraw = isFetchedMinMaxWithdraw;
+
   if (!wallet || !account || !selectedPrivacy) {
     return;
   }
@@ -68,7 +68,7 @@ export const actionInitEstimateFee = (config = {}) => async (
       break;
     }
     }
-    if (screen === 'UnShield' && !isFetchedMinMaxWithdraw) {
+    if (screen === 'UnShield') {
       const [min] = await getMinMaxWithdrawAmount(selectedPrivacy?.tokenId);
       if (min) {
         minAmountText = format.toFixed(min, selectedPrivacy?.pDecimals);
@@ -77,7 +77,6 @@ export const actionInitEstimateFee = (config = {}) => async (
           selectedPrivacy?.pDecimals,
         );
       }
-      _isFetchedMinMaxWithdraw = true;
     }
   } catch (error) {
     throw error;
@@ -90,7 +89,6 @@ export const actionInitEstimateFee = (config = {}) => async (
         minAmountText,
         isAddressValidated: true,
         isValidETHAddress: true,
-        isFetchedMinMaxWithdraw: _isFetchedMinMaxWithdraw,
       }),
     );
   }
@@ -494,6 +492,11 @@ export const actionFetchingUserFees = () => ({
   type: ACTION_FETCHING_USER_FEES,
 });
 
+export const actionFetchFailUserFees = (payload) => ({
+  type: ACTION_FETCH_FAIL_USER_FEES,
+  payload,
+});
+
 export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
   let userFeesData;
   const state = getState();
@@ -509,13 +512,12 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
     pDecimals,
     isDecentralized,
   } = selectedPrivacy;
-  const { isBTC, isETH, isUsedPRVFee, userFees, isUnShield } = feeDataSelector(
-    state,
-  );
+  const { isETH, isUsedPRVFee, userFees, isUnShield } = feeDataSelector(state);
   const originalAmount = convert.toOriginalAmount(requestedAmount, pDecimals);
   userFeesData = { ...userFees?.data };
-  const { isFetching, isFetched } = userFees;
-  if (isFetching || !isUnShield || (isFetched && !isFetching && !isBTC)) {
+  let _error;
+  const { isFetching } = userFees;
+  if (isFetching || !isUnShield) {
     return;
   }
   try {
@@ -551,9 +553,14 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
       };
     }
   } catch (error) {
+    _error = error;
     throw error;
   } finally {
-    await dispatch(actionFetchedUserFees(userFeesData));
+    if (_error && _error?.code === 'API_ERROR(-1027)') {
+      await dispatch(actionFetchFailUserFees(true));
+    } else {
+      await dispatch(actionFetchedUserFees(userFeesData));
+    }
   }
 };
 
