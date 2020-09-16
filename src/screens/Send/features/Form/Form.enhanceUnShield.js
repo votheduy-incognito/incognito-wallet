@@ -84,7 +84,6 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     try {
       const {
         originalAmount,
-        originalFee,
         isUsedPRVFee,
         paymentAddress,
         feeForBurn,
@@ -97,7 +96,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         TokenName: name,
         TokenSymbol: symbol,
         TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
-        TokenAmount: originalAmount + (isUsedPRVFee ? 0 : feeForBurn),
+        TokenAmount: originalAmount,
         TokenReceivers: isUsedPRVFee
           ? []
           : [
@@ -118,8 +117,8 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
 
       const res = await tokenService.createBurningRequest(
         tokenObject,
-        isUsedPRVFee ? originalFee : 0,
-        isUsedPRVFee ? 0 : originalFee,
+        isUsedPRVFee ? feeForBurn : 0,
+        isUsedPRVFee ? 0 : feeForBurn,
         paymentAddress,
         account,
         wallet,
