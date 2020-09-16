@@ -78,7 +78,7 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
   let titleBtnSubmit =
     screen === 'Send' ? 'Send anonymously' : 'Unshield my crypto';
   if (isFetching) {
-    titleBtnSubmit = 'Estimating fee...';
+    titleBtnSubmit = 'Calculating fee...';
   }
   const feeText = format.toFixed(
     convert.toHumanAmount(fee, feePDecimals),
