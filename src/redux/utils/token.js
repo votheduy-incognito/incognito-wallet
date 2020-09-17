@@ -77,7 +77,10 @@ const normalizedHistories = ({
           history,
         );
         if (indexTx > -1 && !!historyFromApi) {
-          _historiesFromApi[indexTx] = { ...historyFromApi };
+          _historiesFromApi[indexTx] = {
+            ...historyFromApi,
+            isUnshieldTx: true,
+          };
           return null;
         }
       }

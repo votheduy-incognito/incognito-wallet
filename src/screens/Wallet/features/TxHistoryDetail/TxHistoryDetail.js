@@ -8,6 +8,8 @@ import linkingService from '@src/services/linking';
 import { QrCodeAddressDefault } from '@src/components/QrCodeAddress';
 import { CopyIcon, OpenUrlIcon } from '@src/components/Icons';
 import { ButtonBasic } from '@src/components/Button';
+import { useSelector } from 'react-redux';
+import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import styleSheet from './styles';
 import { getFeeFromTxHistory } from './TxHistoryDetail.utils';
 
@@ -89,6 +91,7 @@ const Hook = (props) => {
 };
 
 const TxHistoryDetail = (props) => {
+  const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const { data, onRetryExpiredDeposit } = props;
   const { typeText, statusText, statusColor, statusNumber, history } = data;
   const { fee, formatFee, feeUnit } = getFeeFromTxHistory(history);
@@ -96,7 +99,6 @@ const TxHistoryDetail = (props) => {
     (history.amount &&
       formatUtil.amount(history.amount, history.pDecimals, true)) ||
     formatUtil.number(history.requestedAmount);
-
   const historyFactories = [
     {
       label: typeText,
@@ -138,7 +140,9 @@ const TxHistoryDetail = (props) => {
       label: 'TxID',
       valueText: `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${history.incognitoTxID}`,
       openUrl: true,
-      disabled: !history?.incognitoTxID,
+      disabled:
+        (!!history?.isUnshieldTx && selectedPrivacy?.isDecentralized) ||
+        !history?.incognitoTxID,
     },
     {
       label: 'Inchain TxID',
