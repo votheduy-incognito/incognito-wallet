@@ -49,7 +49,7 @@ const ShieldError = ({ handleShield }) => {
 const Extra = () => {
   const { address, min } = useSelector(shieldDataSelector);
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
-  const [remainTime] = useCountDown();
+  const [remainTime] = useCountDown({ time: 7200 });
   return (
     <ScrollView style={styled.scrollview}>
       <View style={styled.extra}>
@@ -76,6 +76,14 @@ const Extra = () => {
           )}
         </View>
         <CopiableText data={address} />
+        <NormalText
+          text={'If sending from an exchange, please take\nwithdrawal times into account.'}
+          style={styled.smallText}
+        />
+        <NormalText
+          text={'It may be more reliable to use a normal\nwallet as an intermediary.'}
+          style={[styled.smallText, { marginTop: 10 }]}
+        />
       </View>
     </ScrollView>
   );
