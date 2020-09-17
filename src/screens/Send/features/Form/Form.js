@@ -79,9 +79,7 @@ const SendForm = (props) => {
     handleSend,
   );
   const placeholderAddress = `Incognito ${
-    selectedPrivacy?.isMainCrypto
-      ? ''
-      : `or ${selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol}`
+    selectedPrivacy?.isMainCrypto ? '' : `or ${selectedPrivacy?.rootNetworkName}`
   } address`;
   const renderMemo = () => {
     if (isUnShield) {
