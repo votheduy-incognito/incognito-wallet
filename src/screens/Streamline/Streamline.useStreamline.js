@@ -11,7 +11,10 @@ import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
 import React from 'react';
 import { devSelector } from '@screens/Dev';
 import { actionFetch } from './Streamline.actions';
-import { streamlineStorageSelector } from './Streamline.selector';
+import {
+  streamlineStorageSelector,
+  streamlineDataSelector,
+} from './Streamline.selector';
 
 export const useStreamLine = () => {
   const isDev = !!global.isDEV || __DEV__;
@@ -27,6 +30,7 @@ export const useStreamLine = () => {
   const isAutoUTXOs = dev[CONSTANT_KEYS.DEV_TEST_TOGGLE_UTXOS];
   const streamlineStorage = useSelector(streamlineStorageSelector);
   const { isFetching, isFetched, data } = streamlineStorage[keySave];
+  const { totalFee, UTXONativeCoin } = useSelector(streamlineDataSelector);
   const onNavigateStreamLine = () => navigation.navigate(routeNames.Streamline);
   const handleNavigateWhyStreamline = () =>
     navigation.navigate(routeNames.WhyStreamline);
@@ -35,11 +39,6 @@ export const useStreamLine = () => {
     isPending: false,
   });
   const { shouldDisabledForm } = state;
-  const UTXONativeCoin = accountServices.getUTXOs(
-    wallet,
-    account,
-    CONSTANT_COMMONS.PRV.id,
-  );
   const hasExceededMaxInputPRV = isAutoUTXOs
     ? true
     : accountServices.hasExceededMaxInput(
@@ -58,11 +57,9 @@ export const useStreamLine = () => {
     },
     {
       title: 'Network fee',
-      desc: `${format.amount(
-        MAX_FEE_PER_TX,
-        CONSTANT_COMMONS.PRV.pDecimals,
-        true,
-      )} ${CONSTANT_COMMONS.PRV.symbol}`,
+      desc: `${format.amount(totalFee, CONSTANT_COMMONS.PRV.pDecimals, true)} ${
+        CONSTANT_COMMONS.PRV.symbol
+      }`,
     },
     {
       title: 'UTXOs',
