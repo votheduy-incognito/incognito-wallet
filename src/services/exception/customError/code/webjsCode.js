@@ -19,6 +19,7 @@ const webJs = {
   web_js_can_not_use_this_token_for_fee: webjsError(-4009),
   web_js_not_enough_coin: webjsError(-5),
   web_js_can_not_created_tx: webjsError(-3002),
+  web_js_can_not_send_main_crypto: webjsError(-3006),
 };
 
 export const STACK_TRACE = {
