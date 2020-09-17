@@ -7,13 +7,13 @@ export const styled = StyleSheet.create({
   },
   extra: {
     alignItems: 'center',
-    flex: 1,
   },
   titleStyled: {
     textTransform: 'none',
   },
   text: {
     fontFamily: FONT.NAME.medium,
+    lineHeight: FONT.SIZE.medium + 9,
     fontSize: FONT.SIZE.medium,
     color: COLORS.colorGreyBold,
     textAlign: 'center',
@@ -21,6 +21,11 @@ export const styled = StyleSheet.create({
   boldText: {
     fontFamily: FONT.NAME.bold,
     color: COLORS.black,
+  },
+  smallText: {
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 8,
+    marginTop: 30,
   },
   errorIcon: {
     color: COLORS.orange,
@@ -44,7 +49,7 @@ export const styled = StyleSheet.create({
     color: COLORS.black,
   },
   scrollview: {
-    marginTop: 42,
+    paddingTop: 42,
   },
   countdown: {
     paddingHorizontal: 10,

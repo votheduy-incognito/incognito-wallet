@@ -1,9 +1,9 @@
 import React from 'react';
 import { formatTime } from '@src/utils/convert';
 
-export const useCountDown = props => {
+export const useCountDown = (props) => {
   const [state, setState] = React.useState({
-    time: 3600,
+    time: props?.time || 3600,
   });
   const { time } = state;
   const handleCountDown = async () => {
