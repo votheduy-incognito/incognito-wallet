@@ -235,13 +235,14 @@ export default (state = initialState, action) => {
     };
   }
   case ACTION_FETCH_FAIL_USER_FEES: {
+    const prevIsMemoRequired = state?.userFees?.isMemoRequired;
     return {
       ...state,
       userFees: {
         ...state.userFees,
         isFetching: false,
         isFetched: false,
-        isMemoRequired: action?.payload,
+        isMemoRequired: action?.payload || prevIsMemoRequired,
       },
     };
   }

@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-finally */
 /* eslint-disable import/no-cycle */
 import { selectedPrivacySeleclor, accountSeleclor } from '@src/redux/selectors';
 import convert from '@src/utils/convert';
@@ -557,10 +558,13 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
     throw error;
   } finally {
     if (_error && _error?.code === 'API_ERROR(-1027)') {
-      await dispatch(actionFetchFailUserFees(true));
-    } else {
-      await dispatch(actionFetchedUserFees(userFeesData));
+      return await dispatch(actionFetchFailUserFees(true));
     }
+    if (!userFeesData.FeeAddress) {
+      await dispatch(actionFetchFailUserFees());
+      throw new Error('Can\'t not get master address!');
+    }
+    await dispatch(actionFetchedUserFees(userFeesData));
   }
 };
 
