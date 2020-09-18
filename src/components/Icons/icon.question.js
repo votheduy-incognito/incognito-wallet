@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 
 const styled = StyleSheet.create({
   icon: {
-    width: 24,
-    height: 24,
+    width: 20,
+    height: 20,
   },
 });
 

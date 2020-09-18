@@ -87,10 +87,10 @@ const Streamline = (props) => {
       return <Empty />;
     }
     return (
-      <ScrollView style={styled.scrollview}>
+      <>
         <Extra />
         {isLoadingTx && <LoadingTx />}
-      </ScrollView>
+      </>
     );
   };
   return (
@@ -106,7 +106,7 @@ const Streamline = (props) => {
         )}
         accountSelectable
       />
-      {renderMain()}
+      <ScrollView style={styled.scrollview}>{renderMain()}</ScrollView>
     </View>
   );
 };
