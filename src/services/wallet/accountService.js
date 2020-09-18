@@ -766,7 +766,7 @@ export default class Account {
     );
     const result = await wallet.MasterAccount.child[
       indexAccount
-    ].defragmentNativeCoin(fee, isPrivacy);
+    ].defragmentNativeCoin(fee, isPrivacy, 10);
 
     // save wallet
     await saveWallet(wallet);
