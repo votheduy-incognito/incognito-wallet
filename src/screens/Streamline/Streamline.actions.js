@@ -1,3 +1,4 @@
+import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
 import { CONSTANT_KEYS } from '@src/constants';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { walletSelector } from '@src/redux/selectors/wallet';
@@ -35,13 +36,12 @@ export const actionFetch = () => async (dispatch, getState) => {
     const keySave = CONSTANT_KEYS.UTXOS_DATA;
     const streamlineStorage = streamlineStorageSelector(state);
     const { isFetching } = streamlineStorage[keySave];
-    const { totalFee } = streamlineDataSelector(state);
     if (isFetching) {
       return;
     }
     await dispatch(actionFetching());
     const result = await accountServices.defragmentNativeCoin(
-      totalFee,
+      MAX_FEE_PER_TX,
       true,
       account,
       wallet,
