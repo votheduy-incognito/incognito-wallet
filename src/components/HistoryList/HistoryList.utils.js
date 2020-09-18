@@ -46,7 +46,7 @@ export const getStatusData = (status, statusCode) => {
   };
 };
 
-export const getTypeData = (type, history) => {
+export const getTypeData = (type, history, paymentAddress) => {
   let typeText;
   let balanceDirection;
   let balanceColor;
@@ -61,13 +61,17 @@ export const getTypeData = (type, history) => {
     balanceColor = COLORS.green;
     balanceDirection = '+';
     break;
-  case CONSTANT_COMMONS.HISTORY.TYPE.SEND:
-    typeText =
-        CONSTANT_COMMONS.HISTORY.META_DATA_TYPE[(history?.metaDataType)] ||
-        'Send';
+  case CONSTANT_COMMONS.HISTORY.TYPE.SEND: {
+    const isUTXO =
+        history?.memo === 'Defragment' && history?.toAddress === paymentAddress;
+    typeText = isUTXO
+      ? 'UTXO'
+      : CONSTANT_COMMONS.HISTORY.META_DATA_TYPE[(history?.metaDataType)] ||
+          'Send';
     balanceColor = COLORS.orange;
     balanceDirection = '-';
     break;
+  }
   case CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE:
     typeText = 'Receive';
     balanceColor = COLORS.green;

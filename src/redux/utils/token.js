@@ -168,6 +168,7 @@ export const normalizeData = (histories = [], decimals, pDecimals) =>
     pDecimals,
     metaDataType: h?.metaData?.Type,
     isIncognitoTx: true,
+    memo: h?.info,
   }));
 
 export const loadTokenHistory = () => async (dispatch, getState) => {
