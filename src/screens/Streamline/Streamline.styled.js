@@ -40,9 +40,7 @@ export const styled = StyleSheet.create({
     marginBottom: 20,
   },
   questionIcon: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    marginBottom: 5,
+    marginLeft: 5,
   },
   emptyText: {
     fontFamily: FONT.NAME.medium,

@@ -26,23 +26,14 @@ const Hook = React.memo((props) => {
 const Extra = React.memo(() => {
   const {
     handleDefragmentNativeCoin,
-    handleNavigateWhyStreamline,
     hookFactories,
     shouldDisabledForm,
   } = useStreamLine();
   return (
     <>
-      <View style={styled.tooltipContainer}>
-        <Text style={styled.tooltip}>
-          Consolidate your UTXOs to ensure successful transactions of any
-          amount.
-        </Text>
-        <BtnQuestionDefault
-          style={styled.questionIcon}
-          icon={srcQuestion}
-          onPress={handleNavigateWhyStreamline}
-        />
-      </View>
+      <Text style={styled.tooltip}>
+        Consolidate your UTXOs to ensure successful transactions of any amount.
+      </Text>
       <ButtonBasic
         btnStyle={styled.btnStyle}
         title="Consolidating"
@@ -58,9 +49,15 @@ const Extra = React.memo(() => {
 
 const Empty = React.memo(() => {
   return (
-    <Text style={styled.emptyText}>
-      You’re operating at peak efficiency. Go you!
-    </Text>
+    <>
+      <Text style={styled.emptyText}>
+        You’re operating at peak efficiency. Go you!
+      </Text>
+      <Text style={styled.emptyText}>
+        You’ll see a notification on your Assets screen if and when
+        consolidation is needed for this keychain.
+      </Text>
+    </>
   );
 });
 
@@ -73,7 +70,11 @@ const Pending = React.memo(() => {
 });
 
 const Streamline = (props) => {
-  const { hasExceededMaxInputPRV, isFetching: isLoadingTx } = useStreamLine();
+  const {
+    hasExceededMaxInputPRV,
+    isFetching: isLoadingTx,
+    handleNavigateWhyStreamline,
+  } = useStreamLine();
   const { showPending, isFetching } = props;
   const renderMain = () => {
     if (isFetching) {
@@ -94,7 +95,17 @@ const Streamline = (props) => {
   };
   return (
     <View style={styled.container}>
-      <Header title="Streamline" accountSelectable />
+      <Header
+        title="Consolidate"
+        customHeaderTitle={(
+          <BtnQuestionDefault
+            style={styled.questionIcon}
+            icon={srcQuestion}
+            onPress={handleNavigateWhyStreamline}
+          />
+        )}
+        accountSelectable
+      />
       {renderMain()}
     </View>
   );
