@@ -10,10 +10,7 @@ import {
   ACTION_FETCH_FAIL,
   ACTION_INIT,
 } from './Streamline.constant';
-import {
-  streamlineDataSelector,
-  streamlineStorageSelector,
-} from './Streamline.selector';
+import { streamlineStorageSelector } from './Streamline.selector';
 
 export const actionFetching = () => ({
   type: ACTION_FETCHING,
@@ -29,6 +26,7 @@ export const actionFetchFail = () => ({
 });
 
 export const actionFetch = () => async (dispatch, getState) => {
+  let error;
   try {
     const state = getState();
     const wallet = walletSelector(state);
@@ -53,8 +51,14 @@ export const actionFetch = () => async (dispatch, getState) => {
       };
       dispatch(actionFetched(payload));
     }
-  } catch (error) {
+  } catch (e) {
     dispatch(actionFetchFail());
+    error = e;
+    if (error && error?.code == 'WEB_JS_ERROR(-3002)') {
+      error = new Error(
+        'Cant not processing defragment utxo, please try again.',
+      );
+    }
     new ExHandler(error).showErrorToast();
   }
 };

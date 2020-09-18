@@ -47,6 +47,6 @@ export const styled = StyleSheet.create({
     fontSize: FONT.SIZE.medium,
     color: COLORS.black,
     lineHeight: 30,
-    marginTop: 42,
+    marginBottom: 30,
   },
 });
