@@ -34,16 +34,16 @@ import {
 
 const GroupButton = () => {
   const navigation = useNavigation();
-  const [onPressSend, isSendDisabled] = useFeatureConfig('send');
   const handleSend = () => navigation.navigate(routeNames.Send);
   const handleReceive = () => navigation.navigate(routeNames.ReceiveCrypto);
+  const [onPressSend, isSendDisabled] = useFeatureConfig('send', handleSend);
   return (
     <View style={groupBtnStyled.groupButton}>
       <ButtonBasic
         title="Send"
         btnStyle={groupBtnStyled.btnStyle}
         titleStyle={groupBtnStyled.titleStyle}
-        onPress={handleSend}
+        onPress={onPressSend}
         disabled={isSendDisabled}
       />
       <ButtonBasic

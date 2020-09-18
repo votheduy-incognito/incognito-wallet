@@ -1,5 +1,4 @@
 import isArray from 'lodash/isArray';
-import { getFunctionConfigs } from '@services/api/misc';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -32,13 +31,11 @@ export const actionFetch = () => async (dispatch, getState) => {
   let headerTitle = defaultConfigs?.headerTitle
     ? defaultConfigs?.headerTitle
     : HOME_CONFIGS.headerTitle;
-  let features = [];
   try {
     await dispatch(actionFetching());
     const { data } = await apiGetHomeConfigs();
     categories = data?.categories || [];
     headerTitle = data?.headerTitle?.title.replace('\\n', '\n') || '';
-    features = await getFunctionConfigs();
   } catch (error) {
     console.debug('error', error);
   } finally {
@@ -46,7 +43,6 @@ export const actionFetch = () => async (dispatch, getState) => {
       actionFetched({
         categories,
         headerTitle,
-        features,
       }),
     );
   }

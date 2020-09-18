@@ -3,16 +3,12 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import { BIG_COINS } from '@screens/Dex/constants';
 import { CONSTANT_EVENTS } from '@src/constants';
 import { logEvent } from '@services/firebase';
-import { useSelector } from 'react-redux';
 import { useNavigation } from 'react-navigation-hooks';
 import LinkingService from '@src/services/linking';
 import AppUpdater from '@components/AppUpdater/index';
 import { isIOS } from '@utils/platform';
 import deviceInfo from 'react-native-device-info';
 import { Dimensions, PixelRatio, Platform } from 'react-native';
-import { featuresSelector } from '@screens/Home/Home.selector';
-import Toast from '@components/core/Toast/Toast';
-import useFeatureConfig from '@src/shared/hooks/featureConfig';
 
 const sendFeedback = async () => {
   const buildVersion = AppUpdater.appVersion;

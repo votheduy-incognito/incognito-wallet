@@ -5,6 +5,7 @@ export const KEYS = {
   PoolUserData: (paymentAddress) => `pool-data-${paymentAddress}`,
   PoolHistory: (paymentAddress) => `pool-history-${paymentAddress}`,
   DAppAddress: 'dapp-address',
+  FeatureConfigs: 'feature-configs',
 };
 
 /**
@@ -23,18 +24,18 @@ export function cache(key, data, expiredTime) {
 /**
  *
  * @param {string} key should be a key of KEYS dictionary above
- * @param {Promise} promise
+ * @param {function} promiseFunc
  * @param {number} expiredTime in ms
  * @returns {Promise<*>}
  */
-export async function cachePromise(key, promise, expiredTime = 40000) {
+export async function cachePromise(key, promiseFunc, expiredTime = 40000) {
   const cachedData = getCache(key);
 
   if (cachedData !== null) {
     return cachedData;
   }
 
-  const data = await promise();
+  const data = await promiseFunc();
   cache(key, data, expiredTime);
 
   return data;
