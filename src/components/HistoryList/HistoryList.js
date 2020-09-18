@@ -11,6 +11,7 @@ import { useNavigation } from 'react-navigation-hooks';
 import trim from 'lodash/trim';
 import { useSelector } from 'react-redux';
 import { decimalDigitsSelector } from '@src/screens/Setting';
+import { defaultAccountSelector } from '@src/redux/selectors/account';
 import styleSheet from './style';
 import { getStatusData, getTypeData } from './HistoryList.utils';
 
@@ -53,6 +54,7 @@ const NormalText = ({ style, text, ...rest }) => (
 const HistoryItem = ({ history }) => {
   const navigation = useNavigation();
   const decimalDigits = useSelector(decimalDigitsSelector);
+  const account = useSelector(defaultAccountSelector);
   const { pDecimals, amount } = history;
   if (!history) {
     return null;
@@ -64,6 +66,7 @@ const HistoryItem = ({ history }) => {
   const { typeText, balanceColor, balanceDirection } = getTypeData(
     history.type,
     history,
+    account?.paymentAddress,
   );
   const renderAmount = () => {
     if (amount === '') {
