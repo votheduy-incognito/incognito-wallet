@@ -54,12 +54,17 @@ export const actionFetch = () => async (dispatch, getState) => {
   } catch (e) {
     dispatch(actionFetchFail());
     error = e;
-    if (error && error?.code == 'WEB_JS_ERROR(-3002)') {
+    if (
+      error &&
+      error?.code === 'WEB_JS_ERROR(-3002)' &&
+      error?.stackTraceCode === ''
+    ) {
       error = new Error(
-        'Cant not processing defragment utxo, please try again.',
+        'Can’t not processing defragment utxo, please try again.',
       );
+      return new ExHandler(error).showErrorToast();
     }
-    new ExHandler(error).showErrorToast();
+    new ExHandler(error).showErrorToast(true);
   }
 };
 
