@@ -54,6 +54,7 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.3.4",
     "@react-native-community/netinfo": "^5.0.0",
+    "@react-native-community/push-notification-ios": "^1.4.1",
     "@tradle/react-native-http": "^2.0.1",
     "@zilliqa-js/zilliqa": "^0.9.0",
     "assert": "^1.5.0",
@@ -125,6 +126,7 @@
     "react-native-picker-select": "^7.0.0",
     "react-native-popup-dialog": "^0.18.3",
     "react-native-pulse": "^1.0.7",
+    "react-native-push-notification": "^5.1.1",
     "react-native-qrcode-scanner": "https://github.com/Tyrone2333/react-native-qrcode-scanner.git",
     "react-native-qrcode-svg": "^5.1.2",
     "react-native-randombytes": "^3.5.2",

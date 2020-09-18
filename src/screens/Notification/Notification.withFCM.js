@@ -1,10 +1,6 @@
 import React from 'react';
-import {
-  actionNavigate,
-  normalizedData,
-  actionInit,
-} from '@src/screens/Notification';
 import firebase from 'react-native-firebase';
+import { actionInit, actionNavigate, normalizedData, } from '@src/screens/Notification';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
@@ -13,13 +9,44 @@ import { ExHandler } from '@src/services/exception';
 import ErrorBoundary from '@src/components/ErrorBoundary/ErrorBoundary';
 import _ from 'lodash';
 import { accountSeleclor } from '@src/redux/selectors';
-import { v4 } from 'uuid';
-import { isAndroid } from '@utils/platform';
+import PushNotification from 'react-native-push-notification';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import { isIOS } from '@utils/platform';
 
 const sentIds = {};
-const channelId = 'Incognito';
-const channelName = 'Incogniton notification';
-const channelDescription = 'Incognito notification';
+let component;
+
+const notificationHandler = (notification) => {
+  if (notification) {
+    // process the notification
+    if (notification.userInteraction && notification) {
+      component.onNavigateNotification({
+        ...notification,
+        data: {
+          ...notification,
+          ...notification.data,
+        }
+      });
+    }
+
+    // (required) Called when a remote is received or opened, or local notification is opened
+    notification.finish(PushNotificationIOS.FetchResult.NoData);
+  }
+};
+
+PushNotification.configure({
+  // (required) Called when a remote is received or opened, or local notification is opened
+  onNotification: notificationHandler,
+
+  /**
+   * (optional) default: true
+   * - Specified if permissions (ios) and token (android and ios) will requested or not,
+   * - if not, you must call PushNotificationsHandler.requestPermissions() later
+   * - if you are not using remote notification or do not have Firebase installed, use this:
+   *     requestPermissions: Platform.OS === 'ios'
+   */
+  requestPermissions: true,
+});
 
 const enhance = WrappedComponent =>
   class extends React.Component {
@@ -27,25 +54,14 @@ const enhance = WrappedComponent =>
       try {
         const { navigateNotification, navigation } = this.props;
         await navigateNotification(
-          normalizedData(notification?.data),
+          normalizedData({
+            ...notification?.data,
+            ...sentIds[notification?.data?.ID],
+          }),
           navigation,
         );
       } catch (error) {
         new ExHandler(error).showErrorToast();
-      }
-    };
-
-    getFCMToken = async () => {
-      try {
-        const fcmToken = await firebase.messaging().getToken();
-        if (fcmToken) {
-          // user has a device token
-          return fcmToken;
-        } else {
-          // user doesn't have a device token yet
-        }
-      } catch (error) {
-        console.log('error', error);
       }
     };
 
@@ -55,74 +71,35 @@ const enhance = WrappedComponent =>
           return;
         }
 
-        const { ID, Title, Content } = notification.data;
+        const { ID, Title, Content, message, title } = notification.data;
 
         if (sentIds[ID]) {
           return;
         }
 
-        const id = v4();
-        sentIds[ID] = id;
+        sentIds[ID] = notification.data;
 
-        const localNotification = new firebase.notifications.Notification({
-          sound: 'default',
-          show_in_foreground: true,
-        })
-          .setNotificationId(id)
-          .setTitle(Title)
-          .setBody(Content)
-          .setData(notification.data);
+        const newNotification = {
+          autoCancel: true,
+          title: Title || message,
+          message: Content || title,
+          userInfo: notification.data,
+        };
 
-        if (isAndroid()) {
-          const channel = new firebase.notifications.Android.Channel(
-            channelId,
-            channelName,
-            firebase.notifications.Android.Importance.Max
-          ).setDescription(channelDescription);
-          firebase.notifications().android.createChannel(channel);
-
-          localNotification
-            .android.setChannelId(channelId)
-            .android.setSmallIcon('ic_launcher')
-            .android.setPriority(firebase.notifications.Android.Priority.High);
-        }
-
-        return firebase
-          .notifications()
-          .displayNotification(localNotification)
-          .catch(err => console.error(err));
-      } catch {
-        //
+        delete newNotification.id;
+        return PushNotification.localNotification(newNotification);
+      } catch (e) {
+        console.debug('PUSH NOTIFICATION ERROR', e);
       }
     }
-    onListenerEventFCM = async () => {
-      firebase.messaging().onMessage(notification => {
-        this.handleSendNotificationToSystem(notification);
-      });
-      this.removeNotificationListener = firebase
-        .notifications()
-        .onNotification(notification => {
-          this.handleSendNotificationToSystem(notification);
-        });
-      this.removeNotificationOpenedListener = firebase
-        .notifications()
-        .onNotificationOpened(notificationOpen => {
-          const notification = notificationOpen.notification;
-          this.onNavigateNotification(notification);
-          firebase.notifications().removeDeliveredNotification(notification._notificationId ? notification._notificationId : notification.notificationId);
-        });
-      const notificationOpen = await firebase
-        .notifications()
-        .getInitialNotification();
-      if (notificationOpen) {
-        const notification = notificationOpen.notification;
-        this.onNavigateNotification(notification);
-      }
-      await this.getFCMToken();
-    };
 
     componentDidMount() {
       this.onListenerEventFCM();
+      component = this;
+    }
+
+    componentWillUnmount() {
+      component = null;
     }
 
     componentDidUpdate(prevProps) {
@@ -132,6 +109,27 @@ const enhance = WrappedComponent =>
         initNotification();
       }
     }
+
+    onListenerEventFCM = async () => {
+      await firebase
+        .messaging()
+        .ios.registerForRemoteNotifications();
+      firebase.messaging().ios.getAPNSToken();
+
+      firebase.messaging().onMessage(this.handleSendNotificationToSystem);
+      firebase.notifications().onNotification(this.handleSendNotificationToSystem);
+
+      if (isIOS()) {
+        firebase
+          .notifications()
+          .onNotificationOpened(notificationOpen => {
+            const notification = notificationOpen.notification;
+            this.onNavigateNotification(notification);
+          });
+      }
+
+      PushNotification.popInitialNotification(notificationHandler);
+    };
 
     render() {
       return (

@@ -95,6 +95,7 @@ target 'Incognito' do
   pod 'lottie-react-native', :path => '../node_modules/lottie-react-native'
 
   pod 'react-native-settings', :path => '../node_modules/react-native-settings'
+  pod 'RNCPushNotificationIOS', :path => '../node_modules/@react-native-community/push-notification-ios'
 
   post_install do |installer|
     installer.pods_project.targets.each do |target|
