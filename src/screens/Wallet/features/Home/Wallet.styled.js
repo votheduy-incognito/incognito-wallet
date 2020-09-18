@@ -156,7 +156,7 @@ export const streamLineStyled = StyleSheet.create({
     backgroundColor: COLORS.black,
     marginBottom: 30,
     justifyContent: 'center',
-    paddingVertical: 10,
+    paddingVertical: 5,
   },
   text: {
     color: COLORS.white,
