@@ -70,19 +70,16 @@ const normalizedHistories = ({
         isIncognitoTx: true,
         metaDataType: h?.metaData?.Type,
       };
-      if (!h?.isIn) {
-        //not incognito tx
-        const { indexTx, historyFromApi } = normalizedHistory(
-          _historiesFromApi,
-          history,
-        );
-        if (indexTx > -1 && !!historyFromApi) {
-          _historiesFromApi[indexTx] = {
-            ...historyFromApi,
-            isUnshieldTx: true,
-          };
-          return null;
-        }
+      const { indexTx, historyFromApi } = normalizedHistory(
+        _historiesFromApi,
+        history,
+      );
+      if (indexTx > -1 && !!historyFromApi) {
+        _historiesFromApi[indexTx] = {
+          ...historyFromApi,
+          isUnshieldTx: true,
+        };
+        return null;
       }
       _histories.push(history);
       return history;
