@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, RefreshControl } from 'react-native';
 import Header from '@src/components/Header';
 import { BtnSelectAccount } from '@screens/SelectAccount';
 import { ButtonBasic, BtnQRCode, BtnClose } from '@src/components/Button';
@@ -19,7 +19,7 @@ import { actionToggleGuide } from '@src/screens/Shield/Shield.actions';
 import Tooltip from '@src/components/Tooltip/Tooltip';
 import { COLORS } from '@src/styles';
 import isNaN from 'lodash/isNaN';
-import { TouchableOpacity } from '@src/components/core';
+import { ScrollView, TouchableOpacity } from '@src/components/core';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import { Icon } from 'react-native-elements';
 import { useStreamLine } from '@src/screens/Streamline';
@@ -137,33 +137,50 @@ const Balance = React.memo(() => {
 const FollowToken = React.memo(() => {
   const followed = useSelector(tokenSeleclor.tokensFollowedSelector);
   const { walletProps } = React.useContext(WalletContext);
-  const { handleSelectToken, handleRemoveToken } = walletProps;
+  const {
+    handleSelectToken,
+    handleRemoveToken,
+    isReloading,
+    fetchData,
+  } = walletProps;
   return (
     <View style={styledFollow.container}>
-      <Token
-        tokenId={CONSTANT_COMMONS.PRV_TOKEN_ID}
-        style={[
-          styledFollow.token,
-          followed.length === 0 && styledToken.lastChild,
-        ]}
-        onPress={() => handleSelectToken(CONSTANT_COMMONS.PRV_TOKEN_ID)}
-        showGettingBalance
-      />
-      {followed.map((token, index) => (
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={(
+          <RefreshControl
+            refreshing={isReloading}
+            onRefresh={() => fetchData(true)}
+          />
+        )}
+        nestedScrollEnabled
+      >
         <Token
-          key={token?.id}
-          tokenId={token?.id}
+          tokenId={CONSTANT_COMMONS.PRV_TOKEN_ID}
           style={[
             styledFollow.token,
-            followed.length - 1 === index && styledToken.lastChild,
+            followed.length === 0 && styledToken.lastChild,
           ]}
-          onPress={() => handleSelectToken(token?.id)}
-          handleRemoveToken={() => handleRemoveToken(token?.id)}
-          swipable
-          removable
+          onPress={() => handleSelectToken(CONSTANT_COMMONS.PRV_TOKEN_ID)}
           showGettingBalance
         />
-      ))}
+        {followed.map((token, index) => (
+          <Token
+            key={token?.id}
+            tokenId={token?.id}
+            style={[
+              styledFollow.token,
+              followed.length - 1 === index && styledToken.lastChild,
+            ]}
+            onPress={() => handleSelectToken(token?.id)}
+            handleRemoveToken={() => handleRemoveToken(token?.id)}
+            swipable
+            removable
+            showGettingBalance
+          />
+        ))}
+        <AddToken />
+      </ScrollView>
     </View>
   );
 });
@@ -197,31 +214,18 @@ const StreamLine = React.memo(() => {
   );
 });
 
-const Extra = () => {
-  const { walletProps } = React.useContext(WalletContext);
-  const { isReloading, fetchData } = walletProps;
+const Extra = React.memo(() => {
   return (
     <View style={extraStyled.container}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        refreshControl={(
-          <RefreshControl
-            refreshing={isReloading}
-            onRefresh={() => fetchData(true)}
-          />
-        )}
-      >
-        <Balance />
-        <GroupButton />
-        <FollowToken />
-        <AddToken />
-        <StreamLine />
-      </ScrollView>
+      <Balance />
+      <GroupButton />
+      <FollowToken />
+      <StreamLine />
     </View>
   );
-};
+});
 
-const RightHeader = () => {
+const RightHeader = React.memo(() => {
   const { walletProps } = React.useContext(WalletContext);
   const { handleExportKey } = walletProps;
   return (
@@ -233,7 +237,7 @@ const RightHeader = () => {
       <BtnSelectAccount />
     </View>
   );
-};
+});
 
 const Wallet = () => {
   const navigation = useNavigation();

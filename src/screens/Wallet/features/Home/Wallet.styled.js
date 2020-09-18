@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { FONT, COLORS } from '@src/styles';
+import { hasNotch } from 'react-native-device-info';
 
 export const styled = StyleSheet.create({
   container: {
@@ -109,7 +110,7 @@ export const styledBalance = StyleSheet.create({
 
 export const styledAddToken = StyleSheet.create({
   container: {
-    marginTop: 50,
+    marginTop: 35,
     marginBottom: 30,
   },
   title: {
@@ -120,7 +121,9 @@ export const styledAddToken = StyleSheet.create({
 });
 
 export const styledFollow = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+  },
   token: {
     paddingHorizontal: 25,
   },
@@ -154,9 +157,9 @@ export const streamLineStyled = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: COLORS.black,
-    marginBottom: 30,
     justifyContent: 'center',
     paddingVertical: 5,
+    marginBottom: hasNotch() ? 34 : 0,
   },
   text: {
     color: COLORS.white,
