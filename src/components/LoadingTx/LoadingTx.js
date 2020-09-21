@@ -13,6 +13,7 @@ class LoadingTx extends Component {
     this.state = {
       open: false,
       percent: 0,
+      message: '',
     };
 
     this.timer = null;
@@ -33,8 +34,9 @@ class LoadingTx extends Component {
 
   progress = () => {
     const percent = accountService.getProgressTx();
+    const message = accountService.getDebugMessage();
     percent &&
-      this.setState({ percent }, () => {
+      this.setState({ percent, message }, () => {
         if (percent === 100) {
           this.clearTimer();
           setTimeout(() => this.handleToggle(false), 1000);
@@ -47,7 +49,7 @@ class LoadingTx extends Component {
   };
 
   renderModalContent = () => {
-    const { percent } = this.state;
+    const { percent, message } = this.state;
     const { text } = this.props;
     return (
       <View style={styleSheet.container}>
@@ -60,6 +62,11 @@ class LoadingTx extends Component {
           <Text style={styleSheet.desc}>
             {'Please do not navigate away till this\nwindow closes.'}
           </Text>
+          {!!global.isDebug() && (
+            <Text style={styleSheet.desc}>
+              {message}
+            </Text>
+          )}
         </View>
         <KeepAwake />
       </View>

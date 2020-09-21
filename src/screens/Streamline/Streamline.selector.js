@@ -24,7 +24,7 @@ export const streamlineDataSelector = createSelector(
       account,
       CONSTANT_COMMONS.PRV.id,
     );
-    const maxInputPerTx = accountServices.getMaxInputPerTx();
+    const maxInputPerTx = accountServices.NO_OF_INPUT_PER_DEFRAGMENT_TX;
     const totalFee = MAX_FEE_PER_TX * Math.ceil(UTXONativeCoin / maxInputPerTx);
     return {
       totalFee,
