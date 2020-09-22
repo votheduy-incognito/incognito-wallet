@@ -28,7 +28,6 @@ export default StyleSheet.create({
     minWidth: 70,
   },
   valueText: {
-    flex: 5,
     fontFamily: FONT.NAME.bold,
     color: COLORS.black,
     fontSize: 15,
@@ -129,20 +128,45 @@ export default StyleSheet.create({
     borderBottomColor: 'gray',
     borderWidth: 0.5,
     borderRadius: 0,
-    paddingBottom: 10
+    paddingBottom: 10,
   },
-  btnRetryDeposit: {
-    height: '100%',
-    backgroundColor: COLORS.colorGrey,
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    width: 60,
-  },
+  btnRetryDeposit: {},
   titleRetryDeposit: {
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 4,
     fontFamily: FONT.NAME.regular,
     color: COLORS.black,
+  },
+  a: {
+    color: COLORS.black,
+    textDecorationLine: 'underline',
+  },
+  p: {
+    fontFamily: FONT.NAME.medium,
+    color: COLORS.colorGreyBold,
+    fontSize: 14,
+    lineHeight: 21,
+    marginTop: 20,
+  },
+  extra: {
+    flex: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 34,
+  },
+  btnRetry: {
+    marginLeft: 10,
+  },
+  copyIcon: {
+    marginLeft: 5,
+  },
+  linkingIcon: {
+    marginLeft: 5,
+  },
+  btnChevron: {
+    height: '100%',
+    position: 'absolute',
+    right: 0,
+    justifyContent: 'center',
   },
 });

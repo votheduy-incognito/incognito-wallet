@@ -27,3 +27,5 @@ export { default as BtnNotification } from './BtnNotification';
 export { default as BtnHasNotification } from './BtnHasNotification';
 export { default as BtnFast } from './BtnFast';
 export { default as BtnChecked } from './BtnChecked';
+export { default as BtnRetry } from './BtnRetry';
+export { default as BtnChevron } from './BtnChevron';

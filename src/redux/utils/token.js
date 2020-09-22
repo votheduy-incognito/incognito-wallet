@@ -84,7 +84,8 @@ const normalizedHistories = ({
       _histories.push(history);
       return history;
     });
-  return [..._historiesFromApi, ..._histories];
+  const result = [..._historiesFromApi, ..._histories];
+  return result;
 };
 
 const normalizedHistory = (histories = [], history = {}) => {

@@ -41,6 +41,9 @@ class History {
     const status = data?.Status;
     const statusText = getStatusText(status, data.Decentralized);
     const decentralized = data.Decentralized === 1;
+    const depositTmpAddress =
+      data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.SHIELD && data.Address;
+    const isShieldTx = !!depositTmpAddress;
     const history = {
       id: data?.ID,
       updatedAt: data.UpdatedAt,
@@ -68,14 +71,16 @@ class History {
       canRetryExpiredDeposit:
         data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.SHIELD &&
         statusText === CONSTANT_COMMONS.HISTORY.STATUS_TEXT.EXPIRED,
-      depositTmpAddress:
-        data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.SHIELD &&
-        data.Address,
+      depositTmpAddress,
       privacyFee: Number(data?.OutChainPrivacyFee),
       tokenFee: Number(data?.OutChainTokenFee),
       burnPrivacyFee: Number(data?.BurnPrivacyFee),
       burnTokenFee: Number(data?.BurnTokenFee),
       incognitoTxID: data?.IncognitoTxToPayOutsideChainFee,
+      statusMessage: data?.StatusMessage,
+      statusDetail: data?.StatusDetail,
+      isShieldTx,
+      isDecentralized: decentralized,
     };
     return history;
   }

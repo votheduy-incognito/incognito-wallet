@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Clipboard } from 'react-native';
+import { Text, View, Clipboard, Dimensions, Linking } from 'react-native';
 import PropTypes from 'prop-types';
 import { TouchableOpacity, ScrollView, Toast } from '@src/components/core';
 import { CONSTANT_CONFIGS } from '@src/constants';
@@ -7,10 +7,11 @@ import formatUtil from '@src/utils/format';
 import linkingService from '@src/services/linking';
 import { QrCodeAddressDefault } from '@src/components/QrCodeAddress';
 import { CopyIcon, OpenUrlIcon } from '@src/components/Icons';
-import { ButtonBasic } from '@src/components/Button';
+import { BtnRetry, BtnChevron } from '@src/components/Button';
 import { useSelector } from 'react-redux';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
-import styleSheet from './styles';
+import HTML from 'react-native-render-html';
+import styled from './styles';
 import { getFeeFromTxHistory } from './TxHistoryDetail.utils';
 
 const Hook = (props) => {
@@ -23,45 +24,83 @@ const Hook = (props) => {
     disabled,
     canRetryExpiredDeposit = false,
     handleRetryExpiredDeposit = null,
+    message = '',
   } = props;
+  const shouldShowMsg = !!message;
+  const [state, setState] = React.useState({
+    toggleMessage: false,
+  });
+  const { toggleMessage } = state;
 
   const handleCopyText = () => {
     Clipboard.setString(valueText);
     Toast.showInfo('Copied');
   };
 
+  const handleToggleMsg = () => {
+    setState({ ...state, toggleMessage: !toggleMessage });
+  };
+
   const handleOpenUrl = () => linkingService.openUrl(valueText);
 
   const renderComponent = () => (
-    <View style={styleSheet.rowText}>
-      <Text
-        style={styleSheet.labelText}
-        numberOfLines={1}
-        ellipsizeMode="middle"
-      >
-        {`${label}:`}
-      </Text>
-      <Text
-        style={[styleSheet.valueText, valueTextStyle]}
-        numberOfLines={1}
-        ellipsizeMode="middle"
-      >
-        {valueText}
-      </Text>
-      {canRetryExpiredDeposit && (
-        <ButtonBasic
-          btnStyle={styleSheet.btnRetryDeposit}
-          titleStyle={styleSheet.titleRetryDeposit}
-          title="Retry"
-          onPress={
-            typeof handleRetryExpiredDeposit === 'function' &&
-            handleRetryExpiredDeposit
-          }
+    <>
+      <View style={styled.rowText}>
+        <Text
+          style={[styled.labelText]}
+          numberOfLines={1}
+          ellipsizeMode="middle"
+        >
+          {`${label}:`}
+        </Text>
+        <View style={styled.extra}>
+          <Text
+            style={[
+              styled.valueText,
+              shouldShowMsg ? {} : { flex: 1 },
+              valueTextStyle,
+            ]}
+            numberOfLines={1}
+            ellipsizeMode="middle"
+          >
+            {valueText}
+          </Text>
+          {canRetryExpiredDeposit && (
+            <BtnRetry
+              style={styled.btnRetry}
+              onPress={
+                typeof handleRetryExpiredDeposit === 'function' &&
+                handleRetryExpiredDeposit
+              }
+            />
+          )}
+          {shouldShowMsg && (
+            <View style={styled.btnChevron}>
+              <BtnChevron
+                size={18}
+                toggle={toggleMessage}
+                onPress={handleToggleMsg}
+              />
+            </View>
+          )}
+          {copyable && <CopyIcon style={styled.copyIcon} />}
+          {openUrl && <OpenUrlIcon style={styled.linkingIcon} />}
+        </View>
+      </View>
+      {toggleMessage && (
+        <HTML
+          html={`<p>${message}</p>`}
+          imagesMaxWidth={Dimensions.get('window').width}
+          onLinkPress={(e, href) => {
+            Linking.openURL(href);
+          }}
+          tagsStyles={{
+            a: { ...styled?.p, ...styled?.a },
+            p: styled?.p,
+          }}
         />
       )}
-      {copyable && <CopyIcon />}
-      {openUrl && <OpenUrlIcon />}
-    </View>
+    </>
   );
 
   if (disabled) {
@@ -70,7 +109,7 @@ const Hook = (props) => {
   if (copyable) {
     return (
       <TouchableOpacity
-        style={styleSheet.rowTextTouchable}
+        style={styled.rowTextTouchable}
         onPress={handleCopyText}
       >
         {renderComponent()}
@@ -79,10 +118,7 @@ const Hook = (props) => {
   }
   if (openUrl) {
     return (
-      <TouchableOpacity
-        style={styleSheet.rowTextTouchable}
-        onPress={handleOpenUrl}
-      >
+      <TouchableOpacity style={styled.rowTextTouchable} onPress={handleOpenUrl}>
         {renderComponent()}
       </TouchableOpacity>
     );
@@ -93,7 +129,7 @@ const Hook = (props) => {
 const TxHistoryDetail = (props) => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const { data, onRetryExpiredDeposit } = props;
-  const { typeText, statusText, statusColor, statusNumber, history } = data;
+  const { typeText, statusColor, statusMessage, history } = data;
   const { fee, formatFee, feeUnit } = getFeeFromTxHistory(history);
   const amountStr =
     (history.amount &&
@@ -112,13 +148,12 @@ const TxHistoryDetail = (props) => {
     },
     {
       label: 'Status',
-      valueText: `${statusText} ${
-        !!statusNumber || statusNumber === 0 ? `[${statusNumber}]` : ''
-      }`,
+      valueText: statusMessage,
       valueTextStyle: { color: statusColor },
-      disabled: !statusText,
+      disabled: !statusMessage,
       canRetryExpiredDeposit: history?.canRetryExpiredDeposit,
       handleRetryExpiredDeposit: onRetryExpiredDeposit,
+      message: history?.statusDetail,
     },
     {
       label: 'ID',
@@ -175,19 +210,17 @@ const TxHistoryDetail = (props) => {
     },
   ];
   return (
-    <View style={styleSheet.container}>
-      <ScrollView>
-        {historyFactories.map((hook, index) => (
-          <Hook key={index} {...hook} />
-        ))}
-        {!!history?.depositAddress && (
-          <QrCodeAddressDefault
-            label="Shielding address"
-            address={history?.depositAddress}
-          />
-        )}
-      </ScrollView>
-    </View>
+    <ScrollView>
+      {historyFactories.map((hook, index) => (
+        <Hook key={index} {...hook} />
+      ))}
+      {!!history?.depositAddress && (
+        <QrCodeAddressDefault
+          label="Shielding address"
+          address={history?.depositAddress}
+        />
+      )}
+    </ScrollView>
   );
 };
 
@@ -195,13 +228,11 @@ TxHistoryDetail.propTypes = {
   data: PropTypes.shape({
     typeText: PropTypes.string,
     balanceDirection: PropTypes.string,
-    statusText: PropTypes.string,
-    balanceColor: PropTypes.string,
+    statusMessage: PropTypes.string,
     statusColor: PropTypes.string,
-    statusNumber: PropTypes.string,
     history: PropTypes.object,
   }).isRequired,
   onRetryExpiredDeposit: PropTypes.func.isRequired,
 };
 
-export default TxHistoryDetail;
+export default React.memo(TxHistoryDetail);

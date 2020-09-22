@@ -33,3 +33,4 @@ export { default as KeyboardAwareScrollView } from './KeyboardAwareScrollView';
 export { default as LoadingContainer } from './LoadingContainer';
 export { default as FlexView } from './FlexView';
 export { default as DropdownMenu } from './DropdownMenu';
+export { default as Link } from './Link';
