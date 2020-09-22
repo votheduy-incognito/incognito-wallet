@@ -69,6 +69,7 @@ const hasSpendingCoins = async (indexAccount, wallet, amount, tokenId) => {
 
 export default class Account {
   static NO_OF_INPUT_PER_DEFRAGMENT_TX = 10;
+  static MAX_DEFRAGMENT_TXS = 30;
 
   static async getDefaultAccountName() {
     try {
@@ -771,7 +772,7 @@ export default class Account {
     );
     const result = await wallet.MasterAccount.child[
       indexAccount
-    ].defragmentNativeCoin(fee, isPrivacy, this.NO_OF_INPUT_PER_DEFRAGMENT_TX);
+    ].defragmentNativeCoin(fee, isPrivacy, this.NO_OF_INPUT_PER_DEFRAGMENT_TX, this.MAX_DEFRAGMENT_TXS);
 
     // save wallet
     await saveWallet(wallet);
