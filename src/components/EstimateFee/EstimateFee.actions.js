@@ -203,6 +203,9 @@ export const actionHandleMinFeeEst = ({ minFeePTokenEst }) => async (
   const estimateFee = estimateFeeSelector(state);
   const { rate } = estimateFee;
   const { userFees, isUnShield } = feeDataSelector(state);
+  const isFreeFeePToken = !userFees?.data?.TokenFees;
+  const isFreeFeePrivacy = !userFees?.data?.PrivacyFees;
+  const isFreeFee = isFreeFeePToken && isFreeFeePrivacy;
   const minFeePToken = floor(minFeePTokenEst * rate);
   const minFeePTokenText = format.toFixed(
     convert.toHumanAmount(minFeePToken, selectedPrivacy?.pDecimals),
@@ -223,8 +226,15 @@ export const actionHandleMinFeeEst = ({ minFeePTokenEst }) => async (
     ),
   ];
   await new Promise.all(task);
-  if (isUnShield && !!userFees?.isFetched && !userFees?.data?.TokenFees) {
-    await dispatch(actionRemoveFeeType({ tokenId: selectedPrivacy?.tokenId }));
+  if (isUnShield && !!userFees?.isFetched) {
+    if (isFreeFee) {
+      return;
+    }
+    if (isFreeFeePToken) {
+      return await dispatch(
+        actionRemoveFeeType({ tokenId: selectedPrivacy?.tokenId }),
+      );
+    }
   }
 };
 
