@@ -157,8 +157,10 @@ export const actionFetchFee = ({ amount, address, screen, memo }) => async (
     await dispatch(actionFetchingFee());
     await dispatch(actionInitEstimateFee({ screen }));
     if (selectedPrivacy?.isWithdrawable && screen === 'UnShield') {
-      await dispatch(actionValAddr(address));
-      await dispatch(actionFetchUserFees({ address, amount, memo }));
+      const isAddressValidated = await dispatch(actionValAddr(address));
+      if (isAddressValidated) {
+        await dispatch(actionFetchUserFees({ address, amount, memo }));
+      }
     }
     if (selectedPrivacy?.isToken) {
       try {
@@ -482,6 +484,7 @@ export const actionValAddr = (address = '') => async (dispatch, getState) => {
       actionFetchedValidAddr({ isAddressValidated, isValidETHAddress }),
     );
   }
+  return isAddressValidated;
 };
 
 export const actionFetchedUserFees = (payload) => ({
