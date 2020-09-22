@@ -6,60 +6,129 @@ import {
 import { CONSTANT_COMMONS } from '@src/constants';
 import { COLORS } from '@src/styles';
 
-export const getStatusData = (status, statusCode) => {
-  let statusText;
+const getStatusDataShield = (history) => {
+  const { statusCode, statusMessage } = history;
   let statusColor;
-  let statusNumber;
+  const {
+    STATUS_CODE_SHIELD_CENTRALIZED,
+    STATUS_CODE_SHIELD_DECENTRALIZED,
+  } = CONSTANT_COMMONS.HISTORY;
+  if (history?.isDecentralized) {
+    if (
+      STATUS_CODE_SHIELD_DECENTRALIZED.PENDING === statusCode ||
+      STATUS_CODE_SHIELD_DECENTRALIZED.PROCESSING.includes(statusCode)
+    ) {
+      statusColor = COLORS.blue;
+    } else if (STATUS_CODE_SHIELD_DECENTRALIZED.COMPLETE === statusCode) {
+      statusColor = COLORS.green;
+    } else if (STATUS_CODE_SHIELD_DECENTRALIZED.TIMED_OUT === statusCode) {
+      statusColor = COLORS.orange;
+    } else {
+      statusColor = COLORS.colorGreyBold;
+    }
+  } else {
+    if (
+      STATUS_CODE_SHIELD_CENTRALIZED.PENDING === statusCode ||
+      STATUS_CODE_SHIELD_CENTRALIZED.PROCESSING.includes(statusCode)
+    ) {
+      statusColor = COLORS.blue;
+    } else if (STATUS_CODE_SHIELD_CENTRALIZED.COMPLETE === statusCode) {
+      statusColor = COLORS.green;
+    } else if (STATUS_CODE_SHIELD_CENTRALIZED.TIMED_OUT.includes(statusCode)) {
+      statusColor = COLORS.orange;
+    } else {
+      statusColor = COLORS.colorGreyBold;
+    }
+  }
+  return { statusColor, statusMessage };
+};
+
+const getStatusDataUnShield = (history) => {
+  const { statusCode, statusMessage } = history;
+  const {
+    STATUS_CODE_UNSHIELD_CENTRALIZED,
+    STATUS_CODE_UNSHIELD_DECENTRALIZED,
+  } = CONSTANT_COMMONS.HISTORY;
+  let statusColor;
+  if (history?.isDecentralized) {
+    if (STATUS_CODE_UNSHIELD_DECENTRALIZED.PROCESSING.includes(statusCode)) {
+      statusColor = COLORS.blue;
+    } else if (STATUS_CODE_UNSHIELD_DECENTRALIZED.COMPLETE === statusCode) {
+      statusColor = COLORS.green;
+    } else if (STATUS_CODE_UNSHIELD_DECENTRALIZED.TIMED_OUT === statusCode) {
+      statusColor = COLORS.orange;
+    } else if (STATUS_CODE_UNSHIELD_DECENTRALIZED.FAILED.includes(statusCode)) {
+      statusColor = COLORS.red;
+    } else {
+      statusColor = COLORS.colorGreyBold;
+    }
+  } else {
+    if (
+      STATUS_CODE_UNSHIELD_CENTRALIZED.PROCESSING.includes(statusCode) ||
+      STATUS_CODE_UNSHIELD_CENTRALIZED.PENDING === statusCode
+    ) {
+      statusColor = COLORS.blue;
+    } else if (STATUS_CODE_UNSHIELD_CENTRALIZED.COMPLETE === statusCode) {
+      statusColor = COLORS.green;
+    } else if (STATUS_CODE_UNSHIELD_CENTRALIZED.TIMED_OUT === statusCode) {
+      statusColor = COLORS.orange;
+    } else {
+      statusColor = COLORS.colorGreyBold;
+    }
+  }
+  return { statusColor, statusMessage };
+};
+
+export const getStatusData = (history) => {
+  const { status } = history;
+  if (history?.isShieldTx) {
+    const statusData = getStatusDataShield(history);
+    return statusData;
+  }
+  if (history?.isUnshieldTx) {
+    const statusData = getStatusDataUnShield(history);
+    return statusData;
+  }
+  let statusMessage;
+  let statusColor;
   switch (status) {
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING:
-    statusNumber = statusCode;
-    statusText = 'Pending';
-    statusColor = COLORS.blue;
-    break;
   case SuccessTx:
-    statusNumber = null;
-    statusText = 'Pending';
+    statusMessage = 'Pending';
     statusColor = COLORS.blue;
     break;
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SUCCESS:
   case ConfirmedTx:
-    statusText = 'Complete';
+    statusMessage = 'Complete';
     statusColor = COLORS.green;
     break;
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.FAILED:
   case FailedTx:
-    statusText = 'Failed';
+    statusMessage = 'Failed';
     statusColor = COLORS.red;
     break;
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.EXPIRED:
-    statusText = 'Expired';
+    statusMessage = 'Expired';
     statusColor = COLORS.orange;
     break;
   default:
-    statusText = '';
-    statusColor = COLORS.lightGrey1;
+    statusMessage = '';
+    statusColor = COLORS.colorGreyBold;
   }
   return {
-    statusText,
+    statusMessage,
     statusColor,
-    statusNumber,
   };
 };
 
 export const getTypeData = (type, history, paymentAddress) => {
   let typeText;
-  let balanceDirection;
-  let balanceColor;
   switch (type) {
   case CONSTANT_COMMONS.HISTORY.TYPE.UNSHIELD:
     typeText = 'Unshield';
-    balanceColor = COLORS.red;
-    balanceDirection = '-';
     break;
   case CONSTANT_COMMONS.HISTORY.TYPE.SHIELD:
     typeText = history?.depositAddress ? 'Shield' : 'Receive';
-    balanceColor = COLORS.green;
-    balanceDirection = '+';
     break;
   case CONSTANT_COMMONS.HISTORY.TYPE.SEND: {
     const isUTXO =
@@ -68,20 +137,13 @@ export const getTypeData = (type, history, paymentAddress) => {
       ? 'UTXO'
       : CONSTANT_COMMONS.HISTORY.META_DATA_TYPE[(history?.metaDataType)] ||
           'Send';
-    balanceColor = COLORS.orange;
-    balanceDirection = '-';
     break;
   }
   case CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE:
     typeText = 'Receive';
-    balanceColor = COLORS.green;
-    balanceDirection = '+';
     break;
   }
-
   return {
     typeText,
-    balanceColor,
-    balanceDirection,
   };
 };

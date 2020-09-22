@@ -183,6 +183,37 @@ export default {
     STATUS_CODE: {
       PENDING: 0,
     },
+    //shield decentralized
+    STATUS_CODE_SHIELD_DECENTRALIZED: {
+      PENDING: 0,
+      PROCESSING: [1, 2, 3, 4, 5],
+      COMPLETE: 7,
+      TIMED_OUT: 14,
+      RETRYING: 6,
+    },
+    //shield centralized
+    STATUS_CODE_SHIELD_CENTRALIZED: {
+      PENDING: 0,
+      PROCESSING: [1, 2],
+      COMPLETE: 3,
+      TIMED_OUT: [14, 16],
+    },
+    //unshield decentralized
+    STATUS_CODE_UNSHIELD_DECENTRALIZED: {
+      PROCESSING: [8, 11],
+      FAILED: [9, 15],
+      COMPLETE: 12,
+      RETRYING: [10, 13],
+      TIMED_OUT: 14,
+    },
+    //unshield centralized
+    STATUS_CODE_UNSHIELD_CENTRALIZED: {
+      PENDING: 0,
+      PROCESSING: [6, 7, 8, 9],
+      COMPLETE: 10,
+      RETRYING: 15,
+      TIMED_OUT: 16,
+    },
   },
   TRACK_LOG_EVENT,
   TRACK_LOG_EVENT_STATUS,

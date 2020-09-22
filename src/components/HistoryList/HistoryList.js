@@ -59,11 +59,8 @@ const HistoryItem = ({ history }) => {
   if (!history) {
     return null;
   }
-  const { statusText, statusColor, statusNumber } = getStatusData(
-    history.status,
-    history.statusCode,
-  );
-  const { typeText, balanceColor, balanceDirection } = getTypeData(
+  const { statusMessage, statusColor } = getStatusData(history);
+  const { typeText } = getTypeData(
     history.type,
     history,
     account?.paymentAddress,
@@ -80,11 +77,8 @@ const HistoryItem = ({ history }) => {
       data: {
         history,
         typeText,
-        balanceColor,
-        balanceDirection,
-        statusText,
         statusColor,
-        statusNumber,
+        statusMessage,
       },
     });
   };
@@ -110,11 +104,9 @@ const HistoryItem = ({ history }) => {
           {...generateTestId(TOKEN.TRANSACTION_TIME)}
         />
         <NormalText
-          style={styleSheet.desc}
+          style={[styleSheet.desc]}
           {...generateTestId(TOKEN.TRANSACTION_STATUS)}
-          text={`${statusText} ${
-            !!statusNumber || statusNumber === 0 ? `[${statusNumber}]` : ''
-          }`}
+          text={statusMessage}
         />
       </View>
     </TouchableOpacity>

@@ -4,8 +4,8 @@ import srcOpenUrl from '@src/assets/images/icons/open_url.png';
 
 const styled = StyleSheet.create({
   container: {
-    width: 18,
-    height: 18,
+    width: 15,
+    height: 14,
   },
 });
 

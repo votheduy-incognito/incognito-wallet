@@ -1,11 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Modal,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import { Modal, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { retryExpiredDeposit } from '@src/services/api/history';

@@ -36,3 +36,5 @@ export { default as ExportIcon } from './icon.export';
 export { default as NotificationIcon } from './icon.notification';
 export { default as HasNotificationIcon } from './icon.hasNotification';
 export { default as CheckedIcon } from './icon.checked';
+export { default as RetryIcon } from './icon.retry';
+export { default as ChevronIcon } from './icon.chevron';
