@@ -34,3 +34,4 @@ export { default as LoadingContainer } from './LoadingContainer';
 export { default as FlexView } from './FlexView';
 export { default as DropdownMenu } from './DropdownMenu';
 export { default as Link } from './Link';
+export { default as BottomBar } from './BottomBar';

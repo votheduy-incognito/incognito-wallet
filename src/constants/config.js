@@ -3,6 +3,7 @@ import {
   PASSWORD_SECRET_KEY,
 } from 'react-native-dotenv';
 import { MAINNET_FULLNODE, TESTNET_FULLNODE } from '@services/wallet/Server';
+import { isIOS } from '@src/utils/platform';
 import pkg from '../../package.json';
 
 const isMainnet = global.isMainnet ?? true;
@@ -47,9 +48,18 @@ const ETH_TOKEN_ID = isMainnet
 const CRYPTO_ICON_URL =
   'https://s3.amazonaws.com/incognito-org/wallet/cryptocurrency-icons/32@2x/color';
 
-const HOME_CONFIG_DATA = global.homeConfig !== 'staging'
-  ? 'https://api-data.incognito.org/v2/home-configs'
-  : 'https://api-data-staging.incognito.org/v2/home-configs';
+const HOME_CONFIG_DATA =
+  global.homeConfig !== 'staging'
+    ? 'https://api-data.incognito.org/v2/home-configs'
+    : 'https://api-data-staging.incognito.org/v2/home-configs';
+
+const APP_VERSION = isMainnet
+  ? `https://api-service.incognito.org/system/${
+    isIOS() ? 'ios' : 'android'
+  }/last-version`
+  : `https://staging-api-service.incognito.org/system/${
+    isIOS() ? 'ios' : 'android'
+  }/last-version`;
 
 export default {
   isMainnet,
@@ -73,4 +83,5 @@ export default {
   TESTNET_FULLNODE,
   HOME_CONFIG_DATA,
   API_BASE_URL2,
+  APP_VERSION
 };

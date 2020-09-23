@@ -190,7 +190,7 @@ export default compose(
   withFCM,
   withPin,
   withWallet,
-  withLayout_2,
+  // withLayout_2,
   withNews,
   withSyncIncognitoAddress,
   withSyncDetectNetwork,
