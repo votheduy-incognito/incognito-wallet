@@ -1,35 +1,22 @@
+/* eslint-disable react/no-did-update-set-state */
 import React, { Component } from 'react';
 import { Modal, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
-import LoadingContainer from '@src/components/LoadingContainer';
 import { retryExpiredDeposit } from '@src/services/api/history';
 import { ExHandler } from '@src/services/exception';
 import { Toast, Button } from '@src/components/core';
-import { compose } from 'recompose';
-import { withLayout_2 } from '@src/components/Layout';
 import Header from '@src/components/Header';
 import routeNames from '@src/router/routeNames';
+import withTxHistoryDetail from './TxHistoryDetail.enhance';
 import styles from './styles';
 import TxHistoryDetail from './TxHistoryDetail';
 
 class TxHistoryDetailContainer extends Component {
   state = {
-    data: null,
     shouldShowTxModal: false,
     errorTx: false,
     txOutchain: '',
     shouldEnableBtn: false,
-  };
-
-  componentDidMount() {
-    this.loadHistoryData();
-  }
-
-  loadHistoryData = () => {
-    const { navigation } = this.props;
-    const data = navigation?.getParam('data');
-
-    this.setState({ data });
   };
 
   goBack = () => {
@@ -118,7 +105,8 @@ class TxHistoryDetailContainer extends Component {
                     disabled={!shouldEnableBtn}
                     title="Submit"
                     onPress={async () => {
-                      const { data, txOutchain } = this.state;
+                      const { txOutchain } = this.state;
+                      const { data } = this.props;
                       if (txOutchain != '') {
                         await this.retryExpiredDeposit(data, true);
                         this.setState({
@@ -142,13 +130,8 @@ class TxHistoryDetailContainer extends Component {
   onGoBack = () => this.props?.navigation?.navigate(routeNames.WalletDetail);
 
   render() {
-    const { data } = this.state;
+    const { data } = this.props;
     let decentralized = data?.history?.decentralized;
-
-    if (!data) {
-      return <LoadingContainer />;
-    }
-
     return (
       <View
         style={{
@@ -158,7 +141,6 @@ class TxHistoryDetailContainer extends Component {
         <Header title="Transaction details" onGoBack={this.onGoBack} />
         <TxHistoryDetail
           {...this.props}
-          data={data}
           onRetryExpiredDeposit={() => {
             if (decentralized) {
               this.setState({ shouldShowTxModal: true });
@@ -175,6 +157,7 @@ class TxHistoryDetailContainer extends Component {
 
 TxHistoryDetailContainer.propTypes = {
   navigation: PropTypes.object.isRequired,
+  data: PropTypes.object.isRequired,
 };
 
-export default compose(withLayout_2)(TxHistoryDetailContainer);
+export default withTxHistoryDetail(TxHistoryDetailContainer);
