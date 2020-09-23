@@ -7,6 +7,7 @@ import { AddressBookIcon } from '@src/components/Icons';
 import { generateTestId } from '@utils/misc';
 import { SEND } from '@src/constants/elements';
 import { BtnScanQrCode } from '@src/components/Button';
+import { standardizedAddress } from '@src/screens/Send/features/Form/Form.utils';
 import createField from './createField';
 
 const styled = StyleSheet.create({
@@ -46,6 +47,7 @@ const renderCustomField = ({
   onOpenAddressBook,
   showNavAddrBook,
   oldVersion,
+  shouldStandardized,
   ...props
 }) => {
   const { onChange, onBlur, onFocus, value, ...rest } = input;
@@ -77,6 +79,9 @@ const renderCustomField = ({
             onPress={() => {
               openQrScanner((data) => {
                 let res = getAddress(data);
+                if (shouldStandardized) {
+                  res = standardizedAddress(res);
+                }
                 input.onChange(res);
               });
             }}
@@ -92,6 +97,7 @@ renderCustomField.propTypes = {
   onOpenAddressBook: PropTypes.func,
   showNavAddrBook: PropTypes.bool,
   oldVersion: PropTypes.bool,
+  shouldStandardized: PropTypes.bool,
 };
 
 renderCustomField.defaultProps = {
@@ -99,6 +105,7 @@ renderCustomField.defaultProps = {
   onOpenAddressBook: () => null,
   showNavAddrBook: false,
   oldVersion: false,
+  shouldStandardized: false,
 };
 
 const InputQRField = createField({
