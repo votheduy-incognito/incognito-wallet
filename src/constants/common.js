@@ -195,7 +195,7 @@ export default {
     STATUS_CODE_SHIELD_CENTRALIZED: {
       PENDING: 0,
       PROCESSING: [1, 2],
-      COMPLETE: 3,
+      COMPLETE: [3, 5],
       TIMED_OUT: [14, 16],
     },
     //unshield decentralized
