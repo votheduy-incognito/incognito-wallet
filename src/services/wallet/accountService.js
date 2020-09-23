@@ -68,6 +68,9 @@ const hasSpendingCoins = async (indexAccount, wallet, amount, tokenId) => {
 };
 
 export default class Account {
+  static NO_OF_INPUT_PER_DEFRAGMENT_TX = 10;
+  static MAX_DEFRAGMENT_TXS = 30;
+
   static async getDefaultAccountName() {
     try {
       return await storage.getItem(CONSTANT_KEYS.DEFAULT_ACCOUNT_NAME);
@@ -313,8 +316,11 @@ export default class Account {
 
   // get progress tx
   static getProgressTx() {
-    console.log('Wallet.progressTx: ', Wallet.ProgressTx);
     return Wallet.ProgressTx;
+  }
+
+  static getDebugMessage() {
+    return Wallet.Debug;
   }
 
   static checkPaymentAddress(paymentAddrStr) {
@@ -766,7 +772,7 @@ export default class Account {
     );
     const result = await wallet.MasterAccount.child[
       indexAccount
-    ].defragmentNativeCoin(fee, isPrivacy, 10);
+    ].defragmentNativeCoin(fee, isPrivacy, this.NO_OF_INPUT_PER_DEFRAGMENT_TX, this.MAX_DEFRAGMENT_TXS);
 
     // save wallet
     await saveWallet(wallet);

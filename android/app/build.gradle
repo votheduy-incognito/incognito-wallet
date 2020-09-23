@@ -138,8 +138,8 @@ android {
         applicationId "com.incognito.wallet"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 79
-        versionName "3.9.0"
+        versionCode 80
+        versionName "3.10.0"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     signingConfigs {
@@ -264,7 +264,7 @@ dependencies {
         releaseStagingImplementation files(hermesPath + "hermes-release.aar")
         releaseNextImplementation files(hermesPath + "hermes-release.aar")
         releaseNext2Implementation files(hermesPath + "hermes-release.aar")
-        releaseNext3Implementation files(hermesPath + "hermes-release.aar")       
+        releaseNext3Implementation files(hermesPath + "hermes-release.aar")
     } else {
         implementation jscFlavor
     }
