@@ -14,28 +14,14 @@ const getStatusDataShield = (history) => {
     STATUS_CODE_SHIELD_DECENTRALIZED,
   } = CONSTANT_COMMONS.HISTORY;
   if (history?.isDecentralized) {
-    if (
-      STATUS_CODE_SHIELD_DECENTRALIZED.PENDING === statusCode ||
-      STATUS_CODE_SHIELD_DECENTRALIZED.PROCESSING.includes(statusCode)
-    ) {
-      statusColor = COLORS.blue;
-    } else if (STATUS_CODE_SHIELD_DECENTRALIZED.COMPLETE === statusCode) {
+    if (STATUS_CODE_SHIELD_DECENTRALIZED.COMPLETE === statusCode) {
       statusColor = COLORS.green;
-    } else if (STATUS_CODE_SHIELD_DECENTRALIZED.TIMED_OUT === statusCode) {
-      statusColor = COLORS.orange;
     } else {
       statusColor = COLORS.colorGreyBold;
     }
   } else {
-    if (
-      STATUS_CODE_SHIELD_CENTRALIZED.PENDING === statusCode ||
-      STATUS_CODE_SHIELD_CENTRALIZED.PROCESSING.includes(statusCode)
-    ) {
-      statusColor = COLORS.blue;
-    } else if (STATUS_CODE_SHIELD_CENTRALIZED.COMPLETE === statusCode) {
+    if (STATUS_CODE_SHIELD_CENTRALIZED.COMPLETE.includes(statusCode)) {
       statusColor = COLORS.green;
-    } else if (STATUS_CODE_SHIELD_CENTRALIZED.TIMED_OUT.includes(statusCode)) {
-      statusColor = COLORS.orange;
     } else {
       statusColor = COLORS.colorGreyBold;
     }
@@ -51,27 +37,14 @@ const getStatusDataUnShield = (history) => {
   } = CONSTANT_COMMONS.HISTORY;
   let statusColor;
   if (history?.isDecentralized) {
-    if (STATUS_CODE_UNSHIELD_DECENTRALIZED.PROCESSING.includes(statusCode)) {
-      statusColor = COLORS.blue;
-    } else if (STATUS_CODE_UNSHIELD_DECENTRALIZED.COMPLETE === statusCode) {
+    if (STATUS_CODE_UNSHIELD_DECENTRALIZED.COMPLETE === statusCode) {
       statusColor = COLORS.green;
-    } else if (STATUS_CODE_UNSHIELD_DECENTRALIZED.TIMED_OUT === statusCode) {
-      statusColor = COLORS.orange;
-    } else if (STATUS_CODE_UNSHIELD_DECENTRALIZED.FAILED.includes(statusCode)) {
-      statusColor = COLORS.red;
     } else {
       statusColor = COLORS.colorGreyBold;
     }
   } else {
-    if (
-      STATUS_CODE_UNSHIELD_CENTRALIZED.PROCESSING.includes(statusCode) ||
-      STATUS_CODE_UNSHIELD_CENTRALIZED.PENDING === statusCode
-    ) {
-      statusColor = COLORS.blue;
-    } else if (STATUS_CODE_UNSHIELD_CENTRALIZED.COMPLETE === statusCode) {
+    if (STATUS_CODE_UNSHIELD_CENTRALIZED.COMPLETE === statusCode) {
       statusColor = COLORS.green;
-    } else if (STATUS_CODE_UNSHIELD_CENTRALIZED.TIMED_OUT === statusCode) {
-      statusColor = COLORS.orange;
     } else {
       statusColor = COLORS.colorGreyBold;
     }

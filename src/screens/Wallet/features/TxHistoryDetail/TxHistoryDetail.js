@@ -137,6 +137,12 @@ const TxHistoryDetail = (props) => {
     formatUtil.number(history.requestedAmount);
   const historyFactories = [
     {
+      label: 'ID',
+      valueText: `#${history?.id}`,
+      disabled: !history?.id,
+      copyable: true,
+    },
+    {
       label: typeText,
       valueText: `${amountStr} ${history.symbol}`,
       disabled: !history.amount,
@@ -154,12 +160,6 @@ const TxHistoryDetail = (props) => {
       canRetryExpiredDeposit: history?.canRetryExpiredDeposit,
       handleRetryExpiredDeposit: onRetryExpiredDeposit,
       message: history?.statusDetail,
-    },
-    {
-      label: 'ID',
-      valueText: `#${history?.id}`,
-      disabled: !history?.id,
-      copyable: true,
     },
     {
       label: 'Time',
