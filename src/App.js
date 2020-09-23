@@ -7,7 +7,6 @@ import QrScanner from '@src/components/QrCodeScanner';
 import configureStore from '@src/redux/store';
 import AppContainer from '@src/router';
 import ROUTE_NAMES from '@src/router/routeNames';
-import { notificationInitialize } from '@src/services/notification';
 import NavigationService from '@src/services/NavigationService';
 import React, { useEffect, useState } from 'react';
 import { Provider, useDispatch } from 'react-redux';
@@ -64,7 +63,7 @@ const App = (props) => {
   );
 };
 
-export const AppWrapper = (props) => (WrappedComponent) => {
+export const AppWrapper = (props) => () => {
   const [currentScreen, setCurrentScreen] = useState(ROUTE_NAMES.Wizard);
   const [
     currentNetworkConnectedState,
@@ -75,7 +74,6 @@ export const AppWrapper = (props) => (WrappedComponent) => {
     // Init recursive main website
     resetMainCommunity();
     // Notification
-    initNotification();
     Text.defaultProps = Text.defaultProps || {};
     Text.defaultProps.allowFontScaling = false;
     // Network state change
@@ -101,10 +99,6 @@ export const AppWrapper = (props) => (WrappedComponent) => {
         setCurrentNetworkConnectedState(state?.isConnected);
       }
     });
-  };
-
-  const initNotification = () => {
-    notificationInitialize();
   };
 
   const openSettingApp = () => {
