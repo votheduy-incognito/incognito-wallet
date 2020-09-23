@@ -75,13 +75,12 @@ const Hook = (props) => {
             />
           )}
           {shouldShowMsg && (
-            <View style={styled.btnChevron}>
-              <BtnChevron
-                size={18}
-                toggle={toggleMessage}
-                onPress={handleToggleMsg}
-              />
-            </View>
+            <BtnChevron
+              style={styled.btnChevron}
+              size={18}
+              toggle={toggleMessage}
+              onPress={handleToggleMsg}
+            />
           )}
           {copyable && <CopyIcon style={styled.copyIcon} />}
           {openUrl && <OpenUrlIcon style={styled.linkingIcon} />}
