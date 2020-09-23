@@ -8,6 +8,7 @@ const style = StyleSheet.create({
   },
   contentContainer: {
     marginTop: 20,
+    paddingHorizontal: 25,
   },
   btnContainer: {
     flexDirection: 'row',

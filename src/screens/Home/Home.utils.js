@@ -1,3 +1,6 @@
+import { CONSTANT_CONFIGS } from '@src/constants';
+import { split } from 'lodash';
+
 export const HOME_CONFIGS = {
   categories: [
     {
@@ -306,4 +309,14 @@ export const HOME_CONFIGS = {
     title: 'Incognito mode\\nfor your crypto',
     desc: '',
   },
+};
+
+export const checkOutdatedVersion = (appVersion) => {
+  const currentAppVersion = split(CONSTANT_CONFIGS.BUILD_VERSION, '.').map(
+    (item) => Number(item),
+  );
+  const newAppVersions = split(appVersion, '.').map((item) => Number(item));
+  return currentAppVersion
+    .slice(0, 2)
+    .some((item, index) => item < newAppVersions[index]);
 };

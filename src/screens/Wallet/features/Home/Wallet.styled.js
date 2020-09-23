@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native';
 import { FONT, COLORS } from '@src/styles';
-import { hasNotch } from 'react-native-device-info';
 
 export const styled = StyleSheet.create({
   container: {
@@ -149,22 +148,5 @@ export const rightHeaderStyled = StyleSheet.create({
   },
   btnExportKey: {
     marginRight: 15,
-  },
-});
-
-export const streamLineStyled = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.black,
-    justifyContent: 'center',
-    paddingVertical: 5,
-    marginBottom: hasNotch() ? 34 : 0,
-  },
-  text: {
-    color: COLORS.white,
-    fontSize: 13,
-    lineHeight: 15,
-    fontFamily: FONT.NAME.medium,
   },
 });

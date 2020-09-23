@@ -15,6 +15,7 @@ const initialState = {
     headerTitle: null,
   },
   defaultConfigs: null,
+  appVersion: {},
 };
 
 const homeReducer = (state = initialState, action) => {
@@ -26,12 +27,14 @@ const homeReducer = (state = initialState, action) => {
     };
   }
   case ACTION_FETCHED: {
+    const { configs, appVersion } = action.payload;
     return {
       ...state,
       isFetching: false,
       isFetched: true,
-      configs: { ...action.payload },
-      defaultConfigs: { ...action.payload },
+      configs: { ...configs },
+      defaultConfigs: { ...configs },
+      appVersion: { ...appVersion },
     };
   }
   case ACTION_FETCH_FAIL: {

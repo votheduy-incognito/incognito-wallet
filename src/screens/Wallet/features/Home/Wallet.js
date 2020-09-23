@@ -19,9 +19,8 @@ import { actionToggleGuide } from '@src/screens/Shield/Shield.actions';
 import Tooltip from '@src/components/Tooltip/Tooltip';
 import { COLORS } from '@src/styles';
 import isNaN from 'lodash/isNaN';
-import { ScrollView, TouchableOpacity } from '@src/components/core';
+import { BottomBar, ScrollView, TouchableOpacity } from '@src/components/core';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
-import { Icon } from 'react-native-elements';
 import { useStreamLine } from '@src/screens/Streamline';
 import {
   styled,
@@ -32,7 +31,6 @@ import {
   extraStyled,
   styledToken,
   rightHeaderStyled,
-  streamLineStyled,
 } from './Wallet.styled';
 import withWallet, { WalletContext } from './Wallet.enhance';
 
@@ -203,14 +201,10 @@ const StreamLine = React.memo(() => {
     return null;
   }
   return (
-    <TouchableOpacity onPress={onNavigateStreamLine}>
-      <View style={streamLineStyled.container}>
-        <Text style={streamLineStyled.text}>
-          Streamline this keychain now for efficient transactions
-        </Text>
-        <Icon name="chevron-right" color={COLORS.white} />
-      </View>
-    </TouchableOpacity>
+    <BottomBar
+      onPress={onNavigateStreamLine}
+      text="Streamline this keychain now for efficient transactions"
+    />
   );
 });
 
