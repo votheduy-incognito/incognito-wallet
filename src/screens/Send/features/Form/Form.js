@@ -158,6 +158,7 @@ const SendForm = (props) => {
                 warning={warningAddress}
                 showNavAddrBook
                 onOpenAddressBook={onShowFrequentReceivers}
+                shouldStandardized
                 {...generateTestId(SEND.ADDRESS_INPUT)}
               />
               <EstimateFee

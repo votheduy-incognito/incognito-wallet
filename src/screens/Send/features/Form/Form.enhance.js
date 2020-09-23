@@ -1,5 +1,6 @@
 /* eslint-disable import/no-cycle */
 import React from 'react';
+import { Clipboard } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { formName as formEstimateFee } from '@components/EstimateFee/EstimateFee.input';
@@ -15,6 +16,7 @@ import { enhanceInit } from './Form.enhanceInit';
 import { enhanceSend } from './Form.enhanceSend';
 import { enhanceUnshield } from './Form.enhanceUnShield';
 import { enhanceMemoValidation } from './Form.enhanceMemoValidator';
+import { standardizedAddress } from './Form.utils';
 
 export const formName = 'formSend';
 
@@ -42,8 +44,27 @@ export const enhance = (WrappedComp) => (props) => {
   const toAddress = useSelector((state) => selector(state, 'toAddress'));
   const memo = useSelector((state) => selector(state, 'memo'));
   const [isKeyboardVisible] = useKeyboard();
-  const onChangeField = (value, field) => {
-    dispatch(change(formName, field, String(value)));
+  const handleStandardizedAddress = async (value) => {
+    let _value = value;
+    try {
+      const copiedValue = await Clipboard.getString();
+      if (copiedValue !== '') {
+        const isPasted = value.includes(copiedValue);
+        if (isPasted) {
+          _value = standardizedAddress(value);
+        }
+      }
+    } catch (e) {
+      console.debug('error', e);
+    }
+    return _value;
+  };
+  const onChangeField = async (value, field) => {
+    let _value = value;
+    if (field === 'toAddress') {
+      _value = await handleStandardizedAddress(value);
+    }
+    dispatch(change(formName, field, String(_value)));
     dispatch(focus(formName, field));
   };
 
