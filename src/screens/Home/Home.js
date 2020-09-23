@@ -24,7 +24,7 @@ const Home = (props) => {
   const onUpdateApp = async () => {
     try {
       const APP_STORE_LINK =
-        'itms://itunes.apple.com/us/app/apple-store/id1475631606?mt=8';
+        'itms-apps://apps.apple.com/us/app/apple-store/id1475631606?mt=8';
       const PLAY_STORE_LINK = 'market://details?id=com.incognito.wallet';
       const url = isIOS() ? APP_STORE_LINK : PLAY_STORE_LINK;
 
@@ -44,12 +44,12 @@ const Home = (props) => {
   return (
     <View style={styled.container}>
       <ScrollView
-        refreshControl={(
+        refreshControl={
           <RefreshControl
             refreshing={isFetching}
             onRefresh={getHomeConfiguration}
           />
-        )}
+        }
       >
         <View style={styles.contentContainer}>
           {categories.map((category, index) => (
