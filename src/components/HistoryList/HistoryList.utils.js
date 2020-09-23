@@ -68,7 +68,6 @@ export const getStatusData = (history) => {
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.PENDING:
   case SuccessTx:
     statusMessage = 'Pending';
-    statusColor = COLORS.blue;
     break;
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.SUCCESS:
   case ConfirmedTx:
@@ -78,11 +77,9 @@ export const getStatusData = (history) => {
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.FAILED:
   case FailedTx:
     statusMessage = 'Failed';
-    statusColor = COLORS.red;
     break;
   case CONSTANT_COMMONS.HISTORY.STATUS_TEXT.EXPIRED:
     statusMessage = 'Expired';
-    statusColor = COLORS.orange;
     break;
   default:
     statusMessage = '';

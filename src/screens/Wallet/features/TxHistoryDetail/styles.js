@@ -168,5 +168,7 @@ export default StyleSheet.create({
     position: 'absolute',
     right: 0,
     justifyContent: 'center',
+    alignItems: 'flex-end',
+    width: 30,
   },
 });
