@@ -44,6 +44,7 @@ class History {
     const depositTmpAddress =
       data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.SHIELD && data.Address;
     const isShieldTx = !!depositTmpAddress;
+    const isDecentralized = decentralized;
     const history = {
       id: data?.ID,
       updatedAt: data.UpdatedAt,
@@ -69,6 +70,7 @@ class History {
         ].includes(statusText),
       walletAddress: data.WalletAddress,
       canRetryExpiredDeposit:
+        !isDecentralized &&
         data.AddressType === CONSTANT_COMMONS.HISTORY.TYPE.SHIELD &&
         statusText === CONSTANT_COMMONS.HISTORY.STATUS_TEXT.EXPIRED,
       depositTmpAddress,
@@ -80,7 +82,7 @@ class History {
       statusMessage: data?.StatusMessage,
       statusDetail: data?.StatusDetail,
       isShieldTx,
-      isDecentralized: decentralized,
+      isDecentralized,
     };
     return history;
   }
