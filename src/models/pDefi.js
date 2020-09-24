@@ -58,8 +58,8 @@ export class PDexTradeHistoryModel {
     ][json.Status];
     this.exchange = TYPES[json.Type] || 'Incognito';
 
-    let buyToken = allTokens.find(token => token.id === this.buyTokenId || token.address === this.buyTokenId);
-    const sellToken = allTokens.find(token => token.id === this.sellTokenId || token.address === this.sellTokenId);
+    let buyToken = allTokens.find(token => token.id === this.buyTokenId || (token.address && token.address === this.buyTokenId));
+    const sellToken = allTokens.find(token => token.id === this.sellTokenId || (token.address && token.address === this.sellTokenId));
     const networkFeeToken = allTokens.find(token => token.id === this.networkFeeTokenId);
 
     if (this.exchange !== 'Incognito' && buyToken?.address === json.BuyTokenID) {
