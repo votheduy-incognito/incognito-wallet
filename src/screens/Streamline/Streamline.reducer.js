@@ -5,15 +5,17 @@ import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
-  ACTION_FETCH_FAIL,
-  ACTION_INIT,
+  ACTION_INIT_PROCCESS,
+  ACTION_FETCHED_ALL_TXS,
 } from './Streamline.constant';
 
 const initialState = {
+  consolidated: 0,
+  times: 1,
+  isFetching: false,
+  isFetched: false,
   storage: {
     [CONSTANT_KEYS.UTXOS_DATA]: {
-      isFetching: false,
-      isFetched: false,
       data: {},
     },
   },
@@ -21,66 +23,44 @@ const initialState = {
 
 const streamlineReducer = (state = initialState, action) => {
   switch (action.type) {
-  case ACTION_INIT: {
-    const keySave = CONSTANT_KEYS.UTXOS_DATA;
-    const storage = state?.storage;
-    return {
-      ...state,
-      storage: {
-        ...storage,
-        [keySave]: {
-          ...storage[keySave],
-          isFetching: false,
-          isFetched: false,
-        },
-      },
-    };
-  }
   case ACTION_FETCHING: {
-    const keySave = CONSTANT_KEYS.UTXOS_DATA;
-    const storage = state?.storage;
     return {
       ...state,
-      storage: {
-        ...storage,
-        [keySave]: {
-          ...storage[keySave],
-          isFetching: true,
-        },
-      },
+      isFetching: true,
     };
   }
   case ACTION_FETCHED: {
     const keySave = CONSTANT_KEYS.UTXOS_DATA;
     const storage = state?.storage;
     const { address, utxos } = action.payload;
-    const data = storage[keySave]?.data;
+    const data = storage[keySave]?.data || {};
+    const addressData = data[address] || [];
+    const newData = { ...data, [address]: [...addressData, ...utxos] };
     return {
       ...state,
       storage: {
         ...storage,
         [keySave]: {
           ...storage[keySave],
-          isFetching: false,
-          isFetched: true,
-          data: { ...data, [address]: [...utxos] },
+          data: newData,
         },
       },
+      consolidated: state.consolidated + 1,
     };
   }
-  case ACTION_FETCH_FAIL: {
-    const keySave = CONSTANT_KEYS.UTXOS_DATA;
-    const storage = state?.storage;
+  case ACTION_FETCHED_ALL_TXS: {
     return {
       ...state,
-      storage: {
-        ...storage,
-        [keySave]: {
-          ...storage[keySave],
-          isFetched: false,
-          isFetching: false,
-        },
-      },
+      isFetching: false,
+      isFetched: true,
+    };
+  }
+  case ACTION_INIT_PROCCESS: {
+    const { times } = action.payload;
+    return {
+      ...state,
+      consolidated: 0,
+      times,
     };
   }
   default:

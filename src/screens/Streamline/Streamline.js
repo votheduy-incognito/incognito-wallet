@@ -23,12 +23,21 @@ const Hook = React.memo((props) => {
   );
 });
 
-const Extra = React.memo(() => {
+const Extra = (props) => {
   const {
     handleDefragmentNativeCoin,
     hookFactories,
     shouldDisabledForm,
   } = useStreamLine();
+  const _handleDefragmentNativeCoin = async () => {
+    try {
+      await handleDefragmentNativeCoin();
+    } catch (error) {
+      console.debug(error);
+    } finally {
+      props?.handleFetchData();
+    }
+  };
   return (
     <>
       <Text style={styled.tooltip}>
@@ -37,7 +46,7 @@ const Extra = React.memo(() => {
       <ButtonBasic
         btnStyle={styled.btnStyle}
         title="Consolidating"
-        onPress={handleDefragmentNativeCoin}
+        onPress={_handleDefragmentNativeCoin}
         disabled={shouldDisabledForm}
       />
       {hookFactories.map((item, id) => (
@@ -45,7 +54,7 @@ const Extra = React.memo(() => {
       ))}
     </>
   );
-});
+};
 
 const Empty = React.memo(() => {
   return (
@@ -74,6 +83,7 @@ const Streamline = (props) => {
     hasExceededMaxInputPRV,
     isFetching: isLoadingTx,
     handleNavigateWhyStreamline,
+    loadingText,
   } = useStreamLine();
   const { showPending, isFetching } = props;
   const renderMain = () => {
@@ -88,8 +98,8 @@ const Streamline = (props) => {
     }
     return (
       <>
-        <Extra />
-        {isLoadingTx && <LoadingTx />}
+        <Extra {...props} />
+        {isLoadingTx && <LoadingTx text={loadingText} />}
       </>
     );
   };
@@ -114,6 +124,7 @@ const Streamline = (props) => {
 Streamline.propTypes = {
   showPending: PropTypes.bool.isRequired,
   isFetching: PropTypes.bool.isRequired,
+  handleFetchData: PropTypes.func.isRequired,
 };
 
 export default withStreamline(Streamline);

@@ -19,16 +19,26 @@ export const streamlineDataSelector = createSelector(
   walletSelector,
   accountSeleclor.defaultAccountSelector,
   (wallet, account) => {
+    const MAX_UTXOS_PER_DEFRAGMENT_PROCESS =
+      accountServices.MAX_DEFRAGMENT_TXS *
+      accountServices.NO_OF_INPUT_PER_DEFRAGMENT_TX;
     const UTXONativeCoin = accountServices.getUTXOs(
       wallet,
       account,
       CONSTANT_COMMONS.PRV.id,
     );
     const maxInputPerTx = accountServices.NO_OF_INPUT_PER_DEFRAGMENT_TX;
-    const totalFee = MAX_FEE_PER_TX * Math.min(Math.ceil(UTXONativeCoin / maxInputPerTx), accountServices.MAX_DEFRAGMENT_TXS);
+    const totalFee =
+      MAX_FEE_PER_TX *
+      Math.min(
+        Math.ceil(UTXONativeCoin / maxInputPerTx),
+        accountServices.MAX_DEFRAGMENT_TXS,
+      );
+    const times = Math.ceil(UTXONativeCoin / MAX_UTXOS_PER_DEFRAGMENT_PROCESS);
     return {
       totalFee,
       UTXONativeCoin,
+      times,
     };
   },
 );

@@ -10,7 +10,7 @@ import { useFocusEffect } from 'react-navigation-hooks';
 import { accountSeleclor } from '@src/redux/selectors';
 import { getStatusData } from '@src/components/HistoryList/HistoryList.utils';
 import { useStreamLine } from './Streamline.useStreamline';
-import { actionInit } from './Streamline.actions';
+import { actionInitProccess } from './Streamline.actions';
 
 const enhance = (WrappedComp) => (props) => {
   const [state, setState] = React.useState({
@@ -21,11 +21,10 @@ const enhance = (WrappedComp) => (props) => {
   const { isFetching, isFetched, isPending } = state;
   const account = useSelector(accountSeleclor.defaultAccountSelector);
   const dispatch = useDispatch();
-  const { data } = useStreamLine();
+  const { data, times } = useStreamLine();
   const handleFetchData = async () => {
     let _isPending = false;
     try {
-      await dispatch(actionInit());
       const accountHistory = await dispatch(loadAccountHistory());
       const historiesMainCrypto = normalizeData(
         accountHistory,
@@ -56,13 +55,16 @@ const enhance = (WrappedComp) => (props) => {
   useFocusEffect(
     React.useCallback(() => {
       handleFetchData();
-    }, [data]),
+      dispatch(actionInitProccess({ times }));
+    }, []),
   );
+
   return (
     <ErrorBoundary>
       <WrappedComp
         {...{
           ...props,
+          handleFetchData,
           isFetching,
           showPending: isFetched && !isFetching && isPending,
         }}
