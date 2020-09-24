@@ -81,7 +81,7 @@ export default class Server {
             if (s.default) {
               return {
                 ...s,
-                address: s.address === TESTNET_FULLNODE ? 'http://51.83.36.184:20001' : TESTNET_FULLNODE,
+                address: s.address === TESTNET_FULLNODE ? 'http://51.83.36.184:20001' : s.address,
               };
             }
           }
