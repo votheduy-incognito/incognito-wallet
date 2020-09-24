@@ -8,6 +8,7 @@ import {
   ACTION_FETCHED,
   ACTION_INIT_PROCCESS,
   ACTION_FETCHED_ALL_TXS,
+  ACTION_TOGGLE_PENDING,
 } from './Streamline.constant';
 import {
   streamlineDataSelector,
@@ -73,4 +74,9 @@ export const actionInitProccess = (payload) => ({
 
 export const actionFetchedAllTxs = () => ({
   type: ACTION_FETCHED_ALL_TXS,
+});
+
+export const actionTogglePending = (payload) => ({
+  type: ACTION_TOGGLE_PENDING,
+  payload,
 });

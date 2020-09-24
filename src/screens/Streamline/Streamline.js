@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, RefreshControl } from 'react-native';
 import Header from '@src/components/Header';
 import { BtnQuestionDefault, ButtonBasic } from '@src/components/Button';
 import srcQuestion from '@src/assets/images/icons/question_gray.png';
-import { LoadingContainer, ScrollView } from '@src/components/core';
+import { ScrollView } from '@src/components/core';
 import LoadingTx from '@src/components/LoadingTx';
 import PropTypes from 'prop-types';
 import withStreamline from './Streamline.enhance';
@@ -29,15 +29,6 @@ const Extra = (props) => {
     hookFactories,
     shouldDisabledForm,
   } = useStreamLine();
-  const _handleDefragmentNativeCoin = async () => {
-    try {
-      await handleDefragmentNativeCoin();
-    } catch (error) {
-      console.debug(error);
-    } finally {
-      props?.handleFetchData();
-    }
-  };
   return (
     <>
       <Text style={styled.tooltip}>
@@ -46,7 +37,7 @@ const Extra = (props) => {
       <ButtonBasic
         btnStyle={styled.btnStyle}
         title="Consolidating"
-        onPress={_handleDefragmentNativeCoin}
+        onPress={handleDefragmentNativeCoin}
         disabled={shouldDisabledForm}
       />
       {hookFactories.map((item, id) => (
@@ -81,16 +72,14 @@ const Pending = React.memo(() => {
 const Streamline = (props) => {
   const {
     hasExceededMaxInputPRV,
-    isFetching: isLoadingTx,
     handleNavigateWhyStreamline,
     loadingText,
+    isFetching,
+    isPending,
   } = useStreamLine();
-  const { showPending, isFetching } = props;
+  const { refresh, handleFetchData } = props;
   const renderMain = () => {
-    if (isFetching) {
-      return <LoadingContainer />;
-    }
-    if (showPending) {
+    if (isPending) {
       return <Pending />;
     }
     if (!hasExceededMaxInputPRV) {
@@ -99,7 +88,7 @@ const Streamline = (props) => {
     return (
       <>
         <Extra {...props} />
-        {isLoadingTx && <LoadingTx text={loadingText} />}
+        {isFetching && <LoadingTx text={loadingText} />}
       </>
     );
   };
@@ -116,15 +105,21 @@ const Streamline = (props) => {
         )}
         accountSelectable
       />
-      <ScrollView style={styled.scrollview}>{renderMain()}</ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refresh} onRefresh={handleFetchData} />
+        }
+        style={styled.scrollview}
+      >
+        {renderMain()}
+      </ScrollView>
     </View>
   );
 };
 
 Streamline.propTypes = {
-  showPending: PropTypes.bool.isRequired,
-  isFetching: PropTypes.bool.isRequired,
   handleFetchData: PropTypes.func.isRequired,
+  refresh: PropTypes.bool.isRequired,
 };
 
 export default withStreamline(Streamline);
