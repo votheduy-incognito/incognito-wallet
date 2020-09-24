@@ -1,103 +1,176 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { TouchableOpacity, View, Text, ActivityIndicator } from '@src/components/core';
-import { useNavigationParam } from 'react-navigation-hooks';
-import ROUTES_NAME from '@routers/routeNames';
-import { useDispatch, useSelector } from 'react-redux';
-import { accountSeleclor, selectedPrivacySeleclor, settingsSelector } from '@src/redux/selectors';
-import { getBalance } from '@src/redux/actions/account';
-import { getBalance as getTokenBalance } from '@src/redux/actions/token';
-import { PRV_ID } from '@screens/Dex/constants';
+import { compose } from 'recompose';
+import {
+  View,
+  Text,
+  RoundCornerButton,
+  LoadingContainer,
+  FlexView,
+} from '@components/core';
+import LoadingTx from '@components/LoadingTx';
+import { ExHandler } from '@services/exception';
+import { COINS, MESSAGES } from '@src/constants';
+import Row from '@components/Row';
+import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
+import accountService from '@services/wallet/accountService';
+import convertUtil from '@utils/convert';
+import withDefaultAccount from '@components/Hoc/withDefaultAccount';
+import { withLayout_2 } from '@components/Layout';
+import { Header, SuccessModal, Balance } from '@src/components';
 import KeepAwake from 'react-native-keep-awake';
-import { COLORS, FONT } from '@src/styles';
-import { Dashed } from '@src/components/Line';
-import Payment from './Payment';
+import formatUtil from '@utils/format';
+import routeNames from '@routers/routeNames';
 import styles from './style';
 
-const modes = [
-  {
-    text: 'Please make a transfer to complete \nyour order.',
-    component: Payment,
-  }
-];
-const modePaymentDevice = [
-  {
-    text: 'Please make a transfer to complete \nyour order.',
-    component: Payment,
-  },
-];
+const BuyNodeFormScreen = (props) => {
+  const orderId = useNavigationParam('orderId');
+  const paymentAddress = useNavigationParam('paymentAddress');
+  const rawAmount = useNavigationParam('amount');
+  const coin = useNavigationParam('coin');
+  const fee = useNavigationParam('fee');
+  const prvBalance = useNavigationParam('prvBalance');
+  const coinBalance = useNavigationParam('coinBalance');
 
-const PaymentBuyNodeScreen = ({ navigation }) => {
-  // Payment device
-  const paymentDevice = useNavigationParam('paymentDevice');
+  const [amount, setAmount] = useState(0);
+  const [displayAmount, setDisplayAmount] = useState('');
+  const [error, setError] = useState('');
+  const [processing, setProcessing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const navigation = useNavigation();
 
-  const [mode] = React.useState(modes[0]);
-  const [reloading, setReloading] = React.useState(false);
-  const origin = useNavigationParam('origin');
-  const { wallet, account, selectedPrivacy } = useSelector(state => ({
-    selectedPrivacy: selectedPrivacySeleclor.selectedPrivacy(state),
-    account: accountSeleclor.defaultAccount(state),
-    wallet: state.wallet,
-    settings: settingsSelector.settings(state),
-    getPrivacyDataByTokenID: selectedPrivacySeleclor.getPrivacyDataByTokenID(state),
-  }));
-  const dispatch = useDispatch();
-  const selectable = origin !== ROUTES_NAME.WalletDetail;
-
-  const reloadBalance = () => {
-    setReloading(true);
-    if (selectedPrivacy.tokenId === PRV_ID) {
-      dispatch(getBalance(account));
-    } else {
-      dispatch(getTokenBalance(selectedPrivacy));
-    }
-    setReloading(false);
-  };
-
-  const Component = mode.component;
-
-  if (!selectedPrivacy) {
-    return (
-      <ActivityIndicator />
-    );
-  }
+  const { account, wallet } = props;
 
   useEffect(() => {
-    if (origin !== ROUTES_NAME.WalletDetail) {
-      reloadBalance();
-    }
+    loadData();
   }, []);
 
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      let amount = rawAmount;
+
+      if (fee.id === coin.tokenId) {
+        amount += fee.value;
+      }
+
+      const displayAmount = formatUtil.amountFull(amount, coin.pDecimals);
+      setAmount(amount);
+      setDisplayAmount(displayAmount);
+    } catch (e) {
+      new ExHandler(e, 'Could not load data').showErrorToast(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSuccess = () => {
+    setSuccess(true);
+  };
+
+  const handleSend = async () => {
+    let prvFee = 0;
+    let tokenFee = 0;
+
+    if (fee.id === COINS.PRV_ID) {
+      prvFee = fee.value;
+    } else {
+      tokenFee = fee.value;
+    }
+
+    if (processing) {
+      return;
+    }
+
+    setProcessing(true);
+    setError('');
+
+    try {
+      if (coinBalance < amount + tokenFee) {
+        return setError(MESSAGES.INSUFFICIENT_BALANCE);
+      }
+
+      if (prvBalance < prvFee) {
+        return setError(MESSAGES.NOT_ENOUGH_NETWORK_FEE);
+      }
+
+      const result = await accountService.createAndSendToken(
+        account,
+        wallet,
+        paymentAddress,
+        amount,
+        coin.tokenId,
+        prvFee,
+        tokenFee,
+      );
+
+      if (result && result.txId) {
+        handleSuccess();
+      }
+    } catch (error) {
+      setError(new ExHandler(error).getMessage());
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const closeSuccess = () => {
+    setSuccess(false);
+    navigation.navigate(routeNames.Node);
+  };
+
+  if (loading) {
+    return <LoadingContainer />;
+  }
+
   return (
-    <View style={styles.container}>
+    <FlexView>
+      <Header title="Payment" />
       <View style={styles.content}>
-        <View style={styles.modes}>
-          {modePaymentDevice.slice(0, 1)?.map(item => (
-            <TouchableOpacity
-              key={item.text}
-              style={[styles.mode, { width: '100%'}]}
-            >
-              <Text style={[styles.modeText, {marginTop: 10, marginBottom: 10, color: paymentDevice ? COLORS.dark1 : 'black', fontSize: FONT.SIZE.regular, fontFamily: FONT.NAME.medium}]}>{item.text}</Text>
-            </TouchableOpacity>
-          ))}
+        <View style={styles.field}>
+          <Text style={styles.label}>Amount payable</Text>
+          <Row spaceBetween center>
+            <Text style={styles.text}>{displayAmount}</Text>
+            <Text style={styles.text}>{coin.symbol}</Text>
+          </Row>
+          {!!error && <Text style={styles.error}>{error}</Text>}
         </View>
-        <Component
-          navigation={navigation}
-          selectable={selectable}
-          selectedPrivacy={selectedPrivacy}
-          account={account}
-          wallet={wallet}
-          paymentDevice={paymentDevice}
-          reloading={reloading}
+        <View style={styles.field}>
+          <Text style={styles.label}>Order ID</Text>
+          <Text style={styles.text}>{orderId}</Text>
+        </View>
+        <RoundCornerButton
+          title="Buy now"
+          style={styles.button}
+          disabled={error}
+          onPress={handleSend}
         />
-        <KeepAwake />
+        <Balance token={coin} balance={coinBalance} />
+        { fee.id === COINS.PRV_ID && coin.tokenId !== COINS.PRV_ID && (
+          <Balance token={COINS.PRV} balance={prvBalance} />
+        )}
+        <Balance token={fee.coin} balance={fee.value} title="Network fee" />
       </View>
-    </View>
+      {processing && <LoadingTx />}
+      <SuccessModal
+        title="Payment successful."
+        extraInfo="You’ll receive an order confirmation within 24 hours."
+        visible={success}
+        closeSuccessDialog={closeSuccess}
+        buttonStyle={styles.buttonColor}
+      />
+      <KeepAwake />
+    </FlexView>
   );
 };
 
-PaymentBuyNodeScreen.propTypes = {
-  navigation: PropTypes.object.isRequired,
+BuyNodeFormScreen.propTypes = {
+  account: PropTypes.object.isRequired,
+  wallet: PropTypes.object.isRequired,
 };
 
-export default PaymentBuyNodeScreen;
+export default compose(
+  withLayout_2,
+  withDefaultAccount,
+)(BuyNodeFormScreen);

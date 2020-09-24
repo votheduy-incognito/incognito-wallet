@@ -1,4 +1,4 @@
-import { Alert, Button } from '@components/core';
+import { ActivityIndicator, RoundCornerButton } from '@components/core';
 import DialogLoader from '@components/DialogLoader';
 import Device from '@models/device';
 import BaseScreen from '@screens/BaseScreen';
@@ -8,32 +8,39 @@ import { getTokenList } from '@services/api/token';
 import { CustomError, ErrorCode, ExHandler } from '@services/exception';
 import NodeService from '@services/NodeService';
 import accountService from '@services/wallet/accountService';
+import {PRV_ID} from '@screens/Dex/constants';
 import {
   getBeaconBestStateDetail,
   getBlockChainInfo,
+  getTransactionByHash,
   listRewardAmount
 } from '@services/wallet/RpcClientService';
 import tokenService, { PRV } from '@services/wallet/tokenService';
-import { CONSTANT_CONFIGS, MESSAGES } from '@src/constants';
+import { MESSAGES } from '@src/constants';
 import routeNames from '@src/router/routeNames';
 import APIService from '@src/services/api/miner/APIService';
-import COLORS from '@src/styles/colors';
 import LocalDatabase from '@utils/LocalDatabase';
 import Util from '@utils/Util';
 import { onClickView } from '@utils/ViewUtil';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FlatList, RefreshControl, ScrollView, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { connect } from 'react-redux';
 import LogManager from '@src/services/LogManager';
-import WelcomeSetupNode from './components/WelcomeSetupNode';
-import Header from './Header';
+import Header from '@src/components/Header';
+import BtnAdd from '@src/components/Button/BtnAdd';
+import convert from '@utils/convert';
+import NavigationService from '@src/services/NavigationService';
+import theme from '@src/styles/theme';
+import Rewards from '@screens/Node/components/Rewards';
+import { SuccessModal } from '@src/components';
+import { parseNodeRewardsToArray } from '@screens/Node/utils';
 import style from './style';
+import WelcomeFirstTime from './components/WelcomeFirstTime';
 
 export const TAG = 'Node';
-
 let allTokens = [PRV];
 let beaconHeight;
 let committees = {
@@ -45,7 +52,7 @@ let committees = {
 };
 let nodeRewards = {};
 
-const updateBeaconInfo = async (listDevice) => {
+const updateBeaconInfo = async () => {
   const chainInfo = await getBlockChainInfo();
   const beacon = chainInfo.BestBlocks['-1'];
   const currentHeight = beacon.Height;
@@ -62,15 +69,13 @@ const updateBeaconInfo = async (listDevice) => {
   }
 
   if (currentHeight !== beaconHeight) {
-    if (!listDevice.every(device => committees.AutoStaking.find(node => node.MiningPubKey.bls === device.PublicKeyMining))) {
-      const cPromise = getBeaconBestStateDetail().then(data => {
-        if (!_.has(data, 'AutoStaking')) {
-          throw new CustomError(ErrorCode.FULLNODE_DOWN);
-        }
-        committees = data || [];
-      });
-      promises.push(cPromise);
-    }
+    const cPromise = getBeaconBestStateDetail().then(data => {
+      if (!_.has(data, 'AutoStaking')) {
+        throw new CustomError(ErrorCode.FULLNODE_DOWN);
+      }
+      committees = data || [];
+    });
+    promises.push(cPromise);
 
     const rPromise = listRewardAmount()
       .then(async data => {
@@ -114,35 +119,44 @@ class Node extends BaseScreen {
       timeToUpdate: Date.now(),
       isFetching: false,
       loading: false,
-      showWelcomeSetupNode: false,
       dialogVisible: false,
+      rewards: [],
+      showModalMissingSetup: false,
+      showWelcome: false,
+      withdrawTxs: {},
     };
-    this.dialogbox = React.createRef();
     this.renderNode = this.renderNode.bind(this);
   }
 
-  hasShowWelcomeNode = false;
-
   async componentDidMount() {
     const { navigation } = this.props;
-    this.listener = navigation.addListener('willFocus', () => {
-
-      const { setupNode } = navigation?.state?.params || this.props.navigation.dangerouslyGetParent()?.state?.params || {};
-
-      if (setupNode && !this.hasShowWelcomeNode) {
-        this.hasShowWelcomeNode = true;
-        this.setState({ showWelcomeSetupNode: true });
-      }
-      // Check old product code
-      this.checkIfVerifyCodeIsExisting();
-      // Refresh newest
-      this.handleRefresh();
-    });
+    this.listener = navigation.addListener('willFocus', this.loadData);
 
     if (allTokens.length === 0) {
       allTokens.push(PRV);
     }
   }
+
+  loadData = async () => {
+    const { listDevice } = this.state;
+    const clearedNode = await LocalDatabase.getNodeCleared();
+    const list = (await LocalDatabase.getListDevices()) || [];
+
+    if (!clearedNode && listDevice.length === 0 && list.length > 0) {
+      const firstDevice = Device.getInstance(list[0]);
+
+      if (firstDevice.IsPNode && firstDevice.IsLinked) {
+        this.setState({showWelcome: true});
+      }
+    } else {
+      this.setState({ showWelcome: false });
+    }
+
+    // Check old product code
+    this.checkIfVerifyCodeIsExisting();
+    // Refresh newest
+    this.handleRefresh();
+  };
 
   checkIfVerifyCodeIsExisting = async () => {
     // Check if the current list is existing
@@ -169,23 +183,14 @@ class Node extends BaseScreen {
           result: result || {}
         }), status: 1
       });
-      
+
       if (result && result?.verify_code && result?.verify_code === verifyProductCode) { // VerifyCode the same and product_name in list
-        Alert.alert(
-          'Something stopped unexpectedly',
-          'Please resume setup to bring Node online',
-          [
-            { text: 'Back', onPress: () => this.goToScreen(routeNames.Home) },
-            { text: 'Resume', onPress: () => { this.goToScreen(routeNames.RepairingSetupNode, { isRepairing: true, verifyProductCode: verifyProductCode }); } },
-          ],
-          { cancelable: false }
-        );
+        this.setState({ showModalMissingSetup: true, verifyProductCode });
       }
     } else {
       // Force eventhough the same
       LocalDatabase.saveVerifyCode('');
     }
-
   }
 
   componentWillUnmount() {
@@ -202,18 +207,19 @@ class Node extends BaseScreen {
     await this.createSignIn();
   }
 
-  closeWelcomeSetupNode = () => {
-    this.setState({ showWelcomeSetupNode: false });
-  };
-
   sendWithdrawTx = async (paymentAddress, tokenIds) => {
     const { wallet } = this.props;
+    const { withdrawTxs } = this.state;
     const listAccount = await wallet.listAccount();
     for (const tokenId of tokenIds) {
       const account = listAccount.find(item => item.PaymentAddress === paymentAddress);
       await accountService.createAndSendWithdrawRewardTx(tokenId, account, wallet)
+        .then((res) => withdrawTxs[paymentAddress] = res?.txId)
         .catch(() => null);
     }
+
+    this.setState({ withdrawTxs });
+    return withdrawTxs;
   };
 
   createSignIn = async () => {
@@ -291,7 +297,7 @@ class Node extends BaseScreen {
 
     this.setState({ loadedDevices: [] });
 
-    updateBeaconInfo(listDevice)
+    updateBeaconInfo()
       .catch(error => {
         new ExHandler(error).showErrorToast(true);
       })
@@ -302,8 +308,9 @@ class Node extends BaseScreen {
     const { listDevice, loadedDevices } = this.state;
 
     if (device) {
+
       const deviceIndex = listDevice.findIndex(item => item.ProductId === device.ProductId);
-      if (deviceIndex) {
+      if (deviceIndex > -1) {
         listDevice[deviceIndex] = device;
         await LocalDatabase.saveListDevices(listDevice);
       }
@@ -311,8 +318,41 @@ class Node extends BaseScreen {
 
     loadedDevices.push(index);
 
-    this.setState({ listDevice, loadedDevices });
+    this.setState({ listDevice, loadedDevices }, () => {
+      let rewardsList = [];
+      listDevice.forEach((element) => {
+        let rewards = !_.isEmpty(element?.Rewards) ? element?.Rewards : { [PRV_ID] : 0};
+        if (rewards) {
+          const nodeReward = parseNodeRewardsToArray(rewards, allTokens);
+          nodeReward.forEach((reward) => {
+            const coinTotalReward = rewardsList.find(item => item.id === reward.id);
+            if (!coinTotalReward) {
+              rewardsList.push(reward);
+            } else {
+              coinTotalReward.balance += reward.balance;
+              coinTotalReward.displayBalance = convert.toHumanAmount(coinTotalReward.balance, coinTotalReward.pDecimals || 0);
+            }
+          });
+        }
+      });
+
+      rewardsList = _.orderBy(rewardsList, item => item.displayBalance, 'desc');
+      this.setState({ rewards: rewardsList });
+    });
+
   };
+
+  checkWithdrawTxsStatus() {
+    const { withdrawTxs } = this.state;
+
+    _.forEach(withdrawTxs, async (txId, key) => {
+      const tx = await getTransactionByHash(txId);
+
+      if (tx.err || tx.isInBlock) {
+        delete withdrawTxs[key];
+      }
+    });
+  }
 
   handleRefresh = async () => {
     const { isFetching } = this.state;
@@ -329,9 +369,14 @@ class Node extends BaseScreen {
         isLoadMore: false,
         listDevice: list,
       }, this.getFullInfo);
+
+      this.checkWithdrawTxsStatus();
     } else {
-      this.setState({ listDevice: list });
+      this.setState({ listDevice: list }, () => {
+        this.getFullInfo();
+      });
     }
+
   };
 
   handleAddVirtualNodePress = () => {
@@ -342,32 +387,33 @@ class Node extends BaseScreen {
     this.goToScreen(routeNames.GetStaredAddNode);
   };
 
-  handlePressRemoveDevice = (item) => {
-    const { listDevice } = this.state;
-    Alert.alert('Confirm', 'Are you sure to delete this item?', [
-      {
-        text: 'Yes', onPress: async () => {
-          const newList = await LocalDatabase.removeDevice(item, listDevice);
-          this.setState({ listDevice: newList });
-        }
-      },
-      { text: 'Cancel' }
-    ], { cancelable: true });
+  handlePressRemoveDevice = async (item) => {
+    this.setState({ removingDevice: item });
+  };
+
+  handleConfirmRemoveDevice = async () => {
+    const { listDevice, removingDevice } = this.state;
+    const newList = await LocalDatabase.removeDevice(removingDevice, listDevice);
+    this.setState({ listDevice: newList, removingDevice: null });
+  };
+
+  handleCancelRemoveDevice = () => {
+    this.setState({ removingDevice: null });
   };
 
   handlePressWithdraw = onClickView(async (device) => {
     try {
       const account = device.Account;
       const rewards = device.Rewards;
-      this.setState({ loading: true });
-      if ((device.IsVNode) || (device.Unstaked)) {
+      if ((device.IsVNode) || (device.IsFundedUnstaked)) {
         const { PaymentAddress } = (account || {});
         const tokenIds = Object.keys(rewards)
           .filter(id => rewards[id] > 0);
-        await this.sendWithdrawTx(PaymentAddress, tokenIds);
-
+        const txs = await this.sendWithdrawTx(PaymentAddress, tokenIds);
         const message = MESSAGES.VNODE_WITHDRAWAL;
         this.showToastMessage(message);
+
+        return txs;
       } else {
         await APIService.requestWithdraw({
           ProductID: device.ProductId,
@@ -375,14 +421,12 @@ class Node extends BaseScreen {
           ValidatorKey: device.ValidatorKey,
           PaymentAddress: device.PaymentAddressFromServer
         });
-        device.IsWithdrawable = await NodeService.isWithdrawable(device);
+        device.IsFundedStakeWithdrawable = await NodeService.isWithdrawable(device);
         const message = MESSAGES.PNODE_WITHDRAWAL;
         this.showToastMessage(message);
       }
     } catch (error) {
       new ExHandler(error).showErrorToast(true);
-    } finally {
-      this.setState({ loading: false });
     }
   });
 
@@ -395,13 +439,17 @@ class Node extends BaseScreen {
   });
 
   importAccount = () => {
-    this.goToScreen(routeNames.ImportAccount);
+    const { navigation } = this.props;
+    this.goToScreen(routeNames.ImportAccount, {
+      onGoBack: () => navigation.navigate(routeNames.Node),
+    });
   };
 
   renderNode({ item, index }) {
     const { wallet } = this.props;
     const {
       isFetching,
+      withdrawTxs,
     } = this.state;
 
     return (
@@ -419,71 +467,147 @@ class Node extends BaseScreen {
         onRemove={this.handlePressRemoveDevice}
         onGetInfoCompleted={this.handleGetNodeInfoCompleted}
         onImport={this.importAccount}
+        withdrawTxs={withdrawTxs}
       />
+    );
+  }
+
+  renderModalActionsForNodePrevSetup = () => {
+    const { showModalMissingSetup, verifyProductCode } = this.state;
+    return (
+      <SuccessModal
+        title="Something stopped unexpectedly"
+        extraInfo="Please resume setup to bring Node online."
+        visible={showModalMissingSetup}
+        onSuccess={() => {
+          this.setState({ showModalMissingSetup: false });
+          this.goToScreen(routeNames.RepairingSetupNode, { isRepairing: true, verifyProductCode: verifyProductCode });
+        }}
+        successTitle="Continue"
+        buttonTitle="Back"
+        buttonStyle={style.button}
+        closeSuccessDialog={() => {
+          this.setState({ showModalMissingSetup: false });
+          setTimeout(()=>{
+            this.goToScreen(routeNames.Home);
+          }, 200);
+        }}
+      />
+    );
+  };
+
+  onClearNetworkNextTime = async () => {
+    await LocalDatabase.setNodeCleared('1');
+    this.setState({ showWelcome: false });
+  };
+
+  renderTotalRewards() {
+    const {
+      listDevice,
+      loadedDevices,
+      rewards,
+    } = this.state;
+
+    if (listDevice?.length > loadedDevices?.length) {
+      return (
+        <ActivityIndicator />
+      );
+    }
+
+    return (
+      <Rewards rewards={rewards} />
+    );
+  }
+
+  renderContent() {
+    const {
+      listDevice,
+      isFetching,
+      showWelcome,
+      removingDevice,
+    } = this.state;
+
+
+    if (showWelcome) {
+      return (
+        <View style={{ marginHorizontal: 25 }}>
+          <WelcomeFirstTime onPressOk={this.onClearNetworkNextTime} />
+        </View>
+      );
+    }
+
+    if (!isFetching && _.isEmpty(listDevice)) {
+      return (
+        <View style={{ marginHorizontal: 25 }}>
+          <WelcomeNodes
+            onAddVNode={this.handleAddVirtualNodePress}
+            onAddPNode={this.handleAddNodePress}
+          />
+        </View>
+      );
+    }
+
+    return (
+      <>
+        {this.renderTotalRewards()}
+        <View style={{ flex: 1 }}>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={[{ flexGrow: 1}]}
+            style={style.list}
+            data={listDevice}
+            keyExtractor={item => String(item.ProductId)}
+            renderItem={this.renderNode}
+            onRefresh={this.handleRefresh}
+            refreshing={isFetching}
+          />
+          <View style={{ marginHorizontal: 25 }}>
+            <RoundCornerButton
+              style={[style.buyButton, theme.BUTTON.BLACK_TYPE]}
+              title="Get a Node Device"
+              onPress={() => this.goToScreen(routeNames.BuyNodeScreen)}
+            />
+          </View>
+          {this.renderModalActionsForNodePrevSetup()}
+          <SuccessModal
+            title="Remove from display"
+            extraInfo={'Are you sure?\nYou can add this Node again later.'}
+            visible={!!removingDevice}
+            buttonTitle="Remove"
+            closeSuccessDialog={this.handleConfirmRemoveDevice}
+            onSuccess={this.handleCancelRemoveDevice}
+            successTitle="Cancel"
+            buttonStyle={theme.BUTTON.NODE_BUTTON}
+          />
+        </View>
+      </>
     );
   }
 
   render() {
     const {
+      loading,
       listDevice,
       isFetching,
-      loading,
-      loadedDevices,
-      showWelcomeSetupNode,
+      showWelcome,
     } = this.state;
 
-    if (!isFetching && _.isEmpty(listDevice)) {
-      return (
-        <ScrollView refreshControl={(
-          <RefreshControl
-            onRefresh={this.handleRefresh}
-            refreshing={isFetching}
-            tintColor={COLORS.primary}
-            colors={[COLORS.primary]}
-          />
-        )}
-        >
-          <WelcomeNodes
-            onAddVNode={this.handleAddVirtualNodePress}
-            onAddPNode={this.handleAddNodePress}
-          />
-        </ScrollView>
-      );
+    let rightHeader = <BtnAdd btnStyle={style.rightButton} onPress={() => NavigationService.navigate(routeNames.AddNode)} />;
+
+    if (showWelcome || (!isFetching && _.isEmpty(listDevice))) {
+      rightHeader = null;
     }
 
     return (
       <View style={style.container}>
-        <View style={style.background} />
-        <Header goToScreen={this.goToScreen} isFetching={listDevice.length > loadedDevices.length || isFetching} />
+        <Header
+          title="Nodes"
+          rightHeader={rightHeader}
+          style={{ paddingHorizontal: 25 }}
+        />
+        {this.renderContent()}
+        {this.renderModalActionsForNodePrevSetup()}
         <DialogLoader loading={loading} />
-        <ScrollView
-          contentContainerStyle={{ paddingBottom: 40 }}
-          refreshControl={(
-            <RefreshControl
-              onRefresh={this.handleRefresh}
-              refreshing={isFetching}
-              tintColor={COLORS.primary}
-              colors={[COLORS.primary]}
-            />
-          )}
-        >
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={[{ flexGrow: 1 }]}
-            style={style.list}
-            data={listDevice}
-            keyExtractor={item => String(item.ProductId)}
-            onEndReachedThreshold={0.7}
-            renderItem={this.renderNode}
-          />
-          <Button
-            style={style.buyButton}
-            title="Get a Node"
-            onPress={() => { this.goToScreen(routeNames.BuyNodeScreen); }}
-          />
-
-        </ScrollView>
-        <WelcomeSetupNode visible={showWelcomeSetupNode} onClose={this.closeWelcomeSetupNode} />
       </View>
     );
   }

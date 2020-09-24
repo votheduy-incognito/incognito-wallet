@@ -24,6 +24,8 @@ export const KEY_SAVE = {
   SCREEN_STAKE_GUIDE: CONSTANT_KEYS.SCREEN_STAKE_GUIDE,
   WEBVIEW: '$webview',
   PROVIDE_TXS: CONSTANT_KEYS.PROVIDE_TXS,
+  NODECLEARED: '$node_cleared',
+  SHIP_ADDRESS: '$ship_address',
 };
 export default class LocalDatabase {
   static async getValue(key: String): String {
@@ -344,4 +346,22 @@ export default class LocalDatabase {
       JSON.stringify(txs || []),
     );
   }
+  
+  // For node caching
+  static getNodeCleared = () => {
+    return LocalDatabase.getValue(KEY_SAVE.NODECLEARED);
+  };
+
+  static setNodeCleared = (value) => {
+    return LocalDatabase.saveValue(KEY_SAVE.NODECLEARED, value);
+  };
+
+  static getShipAddress = async () => {
+    const value = await LocalDatabase.getValue(KEY_SAVE.SHIP_ADDRESS);
+    return JSON.parse(value || '{}');
+  };
+
+  static setShipAddress = (value) => {
+    return LocalDatabase.saveValue(KEY_SAVE.SHIP_ADDRESS, JSON.stringify(value || {}));
+  };
 }

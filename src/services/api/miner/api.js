@@ -12,8 +12,10 @@ export default class API {
   static GET_SYSTEM_APP_API = `${API_URL}/system-version?platform=${CONSTANT_MINER.PRODUCT_TYPE}`;
   static REFRESH_TOKEN_API = `${API_URL}/refresh-token`;
   static UPDATE_PRODUCT_API = `${API_URL}/product`;
-  static TRACK_LOG=`${CONSTANT_CONFIGS.TRACK_LOG_URL}/app-logs`;
-  static GET_LOG=`${CONSTANT_CONFIGS.TRACK_LOG_URL}/device`;
+  static TRACK_LOG = `${CONSTANT_CONFIGS.TRACK_LOG_URL}/app-logs`;
+  static GET_LOG = `${CONSTANT_CONFIGS.TRACK_LOG_URL}/device`;
+  static GET_CURRENT_VERSION = `${API_URL}/system-version?platform=MINER`;
+
 
   static DEVICE = 'https://device-network.incognito.org';
   static ORDER = 'https://api2.incognito.org';

@@ -4,9 +4,6 @@ import isLessThan from 'lodash/lt';
 
 export const validateForm = ({amount, min, max}) => {
   const result = convert.toNumber(amount);
-
-  console.debug('RESULT', result);
-
   if (!result) {
     return {
       error: true,

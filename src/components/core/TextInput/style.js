@@ -8,6 +8,7 @@ const style = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
     height: 30,
   },
   rowOld: {

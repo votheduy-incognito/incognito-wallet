@@ -4,7 +4,7 @@ import React from 'react';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@src/components/Layout';
-import { useNavigation } from 'react-navigation-hooks';
+import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import trim from 'lodash/trim';
 import { useDispatch, useSelector } from 'react-redux';
 import useAccount from '@src/components/Account/Account.useEffect';
@@ -19,6 +19,7 @@ const enhance = (WrappedComponent) => (props) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const accountList = useSelector(accountSeleclor.listAccountSelector);
+  const onGoBack = useNavigationParam('onGoBack');
   const [useRandomName, setUseRandomName] = React.useState({
     toggle: true,
     randomName: '',
@@ -57,7 +58,13 @@ const enhance = (WrappedComponent) => (props) => {
         }),
       );
       if (!isImported) throw new CustomError(ErrorCode.importAccount_failed);
-      navigation.pop();
+
+      if (!onGoBack) {
+        navigation.pop();
+      } else {
+        onGoBack();
+      }
+
       Toast.showSuccess('Import successful.');
     } catch (error) {
       new ExHandler(
