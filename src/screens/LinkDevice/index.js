@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import { Button, View, TextInput } from '@components/core';
+import { View, RoundCornerButton } from '@components/core';
 import Loader from '@components/DialogLoader';
 import routeNames from '@routers/routeNames';
 import BaseScreen from '@screens/BaseScreen';
@@ -9,7 +9,9 @@ import Device from '@models/device';
 import LocalDatabase from '@utils/LocalDatabase';
 import InputQRField from '@components/core/reduxForm/fields/inputQR';
 import NodeService from '@services/NodeService';
-import {ExHandler} from '@services/exception';
+import { ExHandler } from '@services/exception';
+import Header from '@src/components/Header';
+import theme from '@src/styles/theme';
 import styles from './style';
 
 class LinkDevice extends BaseScreen {
@@ -25,9 +27,9 @@ class LinkDevice extends BaseScreen {
 
   addNode = async () => {
     try {
-      this.setState({loading: true});
-      const {nodeInfo} = this.state;
-      const {qrCode, paymentAddress, productId, commission} = nodeInfo;
+      this.setState({ loading: true });
+      const { nodeInfo } = this.state;
+      const { qrCode, paymentAddress, productId, commission } = nodeInfo;
       const node = new Device({
         minerInfo: {
           qrCodeDeviceId: qrCode,
@@ -40,10 +42,21 @@ class LinkDevice extends BaseScreen {
         product_id: productId,
         product_type: DEVICES.MINER_TYPE
       });
-      const listDevice = await LocalDatabase.getListDevices();
-      const newListDevice = [node, ...listDevice];
-      await LocalDatabase.saveListDevices(newListDevice);
-      this.goToScreen(routeNames.Node);
+      let listDevice = await LocalDatabase.getListDevices();
+      let isDuplicate = false;
+      for (let i = 0; i < listDevice?.length; i++) {
+        if (listDevice[i]?.minerInfo?.qrCodeDeviceId === qrCode) {
+          isDuplicate = true;
+          break;
+        }
+      }
+      if (isDuplicate) {
+        this.goToScreen(routeNames.Node);
+      } else {
+        const newListDevice = [node, ...listDevice];
+        await LocalDatabase.saveListDevices(newListDevice);
+        this.goToScreen(routeNames.Node);
+      }
     } finally {
       this.setState({ loading: false });
     }
@@ -55,7 +68,7 @@ class LinkDevice extends BaseScreen {
     }
 
     try {
-      this.setState({loading: true, qrCode});
+      this.setState({ loading: true, qrCode });
       const nodeInfo = await NodeService.getInfoByQrCode(qrCode);
       this.setState({
         nodeInfo: {
@@ -81,33 +94,29 @@ class LinkDevice extends BaseScreen {
 
   render() {
     const { container } = styles;
-    const { loading, nodeInfo } = this.state;
+    const { loading, nodeInfo, qrCode } = this.state;
     return (
       <View style={container}>
         <Loader loading={loading} />
+        <Header
+          title="Add existing Node"
+        />
         <InputQRField
           input={{
             onChange: this.handleChangeQRCode
           }}
-          oldVersion
           label='QR Code'
-          placeholder='Enter your node qr code'
-          style={styles.input}
+          placeholder='Scan Node QR code'
+          style={[styles.input]}
+          inputStyle={styles.inputStyle}
+          labelStyle={theme.text.BUTTON_TITLE}
+          value={qrCode}
         />
-        { !!nodeInfo && (
-        <>
-          <TextInput
-            label="Payment Address"
-            editable={false}
-            style={styles.input}
-            value={nodeInfo.paymentAddress}
-          />
-        </>
-        )}
-        <Button
+        <RoundCornerButton
           onPress={this.addNode}
           disabled={!nodeInfo}
-          title='Link'
+          title='Add'
+          style={[theme.BUTTON.NODE_BUTTON]}
         />
       </View>
     );

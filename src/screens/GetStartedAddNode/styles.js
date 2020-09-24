@@ -1,22 +1,34 @@
 import { StyleSheet } from 'react-native';
 import TextStyle, { scaleInApp, FontStyle } from '@src/styles/TextStyle';
-import { COLORS } from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
 import { ScreenWidth } from '@src/utils/devices';
+
+const ratioImageCellular = ScreenWidth / 500;
+const ratioConnection = ScreenWidth / 500;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    padding: scaleInApp(20),
-    flexDirection: 'column',
+    backgroundColor: COLORS.white,
   },
   item: {
-    marginVertical: scaleInApp(10)
+    marginTop: 12,
   },
   errorText: {
-    ...TextStyle.minimizeText,
+    ...FONT.STYLE.medium,
     textAlign: 'center',
-    color: '#FF9494',
+    color: COLORS.orange,
+  },
+  qrError: {
+    ...FONT.STYLE.medium,
+    color: COLORS.orange,
+    textAlign: 'center',
+    fontSize: 13,
+  },
+  errorWifi: {
+    ...TextStyle.minimizeText,
+    textAlign: 'left',
+    color: COLORS.orange,
   },
   title1: {
     ...TextStyle.minimizeText,
@@ -26,24 +38,31 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   title2: {
-    marginVertical: scaleInApp(10),
-    marginTop: 25,
-    ...TextStyle.bigText,
-    ...FontStyle.medium,
-    width: '75%',
+    width: '100%',
+    color: COLORS.black,
+    fontFamily: FONT.NAME.bold,
+    fontSize: FONT.SIZE.superMedium,
     alignSelf: 'center',
-    color: '#101111',
     textAlign: 'center',
+    lineHeight: 28,
+    marginBottom: 50,
   },
   content: {
-    margin: scaleInApp(20),
-    flex: 1,
     justifyContent: 'center',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    marginTop: 50
   },
   content_step1_image: {
+    height: 255,
     alignSelf: 'center',
     resizeMode: 'contain',
+  },
+  plug: {
+    width: 20,
+    height: 40,
+    alignSelf: 'center',
+    resizeMode: 'contain',
+    marginVertical: 25,
   },
   content_step2_image: {
     alignSelf: 'center',
@@ -51,22 +70,35 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 70,
   },
+  contentWrapper: {
+    paddingTop: 42,
+  },
   content_step4_image: {
     alignSelf: 'center',
     resizeMode: 'contain',
     width: ScreenWidth * 0.8,
-    height: ScreenWidth * 0.3,
+    height: ratioConnection * 0.8 * 271,
   },
   content_step3_image: {
     alignSelf: 'center',
+    height: ratioImageCellular * 0.8 * 156,
+    width: ScreenWidth * 0.8,
     resizeMode: 'contain',
-    marginTop: 20,
   },
   content_step1: {
-    alignSelf: 'center'
+    alignSelf: 'center',
+    width: 230,
+  },
+  content_step1QRCode: {
+    alignSelf: 'center',
+    width: 30,
+    height: 30,
+  },
+  nodeVerifiedImage: {
+    alignSelf: 'center',
   },
   footer: {
-    marginVertical: scaleInApp(20),
+    marginVertical: 50,
     flexDirection: 'column',
   },
   button: {
@@ -82,7 +114,9 @@ const styles = StyleSheet.create({
   },
   step3_text: {
     ...TextStyle.normalText,
-    color: '#101111',
+    marginTop: 10,
+    color: COLORS.colorGreyBold,
+    fontFamily: FONT.NAME.medium,
     alignSelf: 'center'
   },
   item_container_input: {
@@ -91,7 +125,11 @@ const styles = StyleSheet.create({
   },
   text: {
     ...TextStyle.normalText,
-    color: '#1C1C1C',
+    color: COLORS.black,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.superMedium,
+    marginTop: 15,
+    marginBottom: 5,
   },
   item_container_error: {
     borderBottomColor: '#E5E9EA',
@@ -99,9 +137,11 @@ const styles = StyleSheet.create({
     paddingVertical: scaleInApp(10),
   },
   linkBtn: {
-    marginVertical: 15,
-    color: COLORS.primary,
+    marginTop: 30,
+    color: COLORS.colorGreyBold,
     alignSelf: 'center',
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.medium,
   },
   centerText: {
     textAlign: 'center',
@@ -119,11 +159,15 @@ const styles = StyleSheet.create({
   },
   guideLine: {
     marginTop: 15,
-    fontSize: 14,
+    fontSize: 16,
+    width: ScreenWidth * 0.8,
+    fontFamily: FONT.NAME.medium,
+    color: COLORS.colorGreyBold
   },
   bold: {
     ...FontStyle.bold,
-    fontSize: 14,
+    fontSize: 16,
+    color: COLORS.colorPrimary,
   },
   icon: {
     marginHorizontal: 5,
@@ -133,11 +177,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   guide: {
-    marginBottom: 25,
+    marginLeft: 20,
   },
   log: {
-    paddingTop: 20,
     flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
   },
   logIcon: {
     marginRight: 15,
@@ -146,7 +191,7 @@ const styles = StyleSheet.create({
     paddingTop: 3,
   },
   disabledText: {
-    color: COLORS.lightGrey1,
+    color: COLORS.newGrey,
   },
   headerRight: {
     marginRight: 15,

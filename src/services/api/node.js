@@ -1,4 +1,5 @@
 import http from '@src/services/http';
+import PToken from '@models/pToken';
 
 const url = 'pool/request-unstake';
 
@@ -22,4 +23,13 @@ export const getUnstakePNodeStatus = async ({ paymentAddress }) => {
   } catch {
     return 0;
   }
+};
+
+export const getPTokenSupportForBuyingDevice = () => {
+  return http.get('order/tokens-support')
+    .then(res => res.map(token => new PToken(token)));
+};
+
+export const getNodePrice = () => {
+  return http.get('order/price');
 };

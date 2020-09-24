@@ -1,17 +1,23 @@
-import { COLORS, FONT } from '@src/styles';
+import { COLORS, FONT, UTILS } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   dialog: {
     height: 'auto',
     borderRadius: 20,
+    width: UTILS.screenWidth() - (27 * 2),
   },
   dialogContent: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: 40,
+    paddingHorizontal: 15,
     justifyContent: 'center',
     alignItems: 'center',
     width: 'auto',
+  },
+  icon: {
+    width: 62,
+    height: 62,
+    marginBottom: 30,
   },
   swapSuccess: {
     width: 100,
@@ -21,15 +27,15 @@ export default StyleSheet.create({
     resizeMode: 'contain'
   },
   dialogTitle: {
-    fontSize: 26,
-    marginTop: 30,
+    fontSize: 20,
     marginBottom: 15,
-    ...FONT.STYLE.medium,
+    ...FONT.STYLE.bold,
     textAlign: 'center',
   },
   dialogDesc: {
     fontSize: 18,
     paddingHorizontal: 30,
+    marginBottom: 20,
     color: COLORS.dark1,
     textAlign: 'center',
   },
@@ -41,11 +47,17 @@ export default StyleSheet.create({
   },
   extraInfo: {
     fontSize: 16,
-    marginTop: 20,
+    marginBottom: 20,
     color: COLORS.lightGrey16,
     textAlign: 'center',
   },
   button: {
-    marginTop: 30,
+    marginTop: 10,
+  },
+  twoButton: {
+    width: '48%',
+  },
+  twoButtonWrapper: {
+    width: '100%',
   },
 });

@@ -1,29 +1,67 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
+import { isAndroid } from '@utils/platform';
 
 const style = StyleSheet.create({
   container: {
-    paddingHorizontal: 25,
-    paddingVertical: 25,
     backgroundColor: COLORS.white,
-    borderRadius: 8,
-    shadowOpacity: 1,
-    shadowRadius: 4,
-    shadowColor: '#DCDDDD',
-    shadowOffset: { height: 2, width: 0 },
+    marginBottom: 30,
+  },
+  containerDetail: {
+    backgroundColor: COLORS.white,
     marginBottom: 15,
-    elevation: 3,
-    borderWidth: 1,
-    borderColor: COLORS.transparent,
+    padding: 20,
+    paddingTop: 0,
+    flex: 1
   },
   row: {
     flexDirection: 'row',
   },
   itemLeft: {
     marginRight: 'auto',
+    fontFamily: FONT.NAME.bold,
+    fontSize: FONT.SIZE.superMedium,
+    color: COLORS.black,
+    textAlign: 'left',
+    maxWidth: 200,
   },
   itemRight: {
     marginLeft: 'auto',
+    paddingVertical: 5
+  },
+  statusContainer: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    marginEnd: 20,
+  },
+  dot: {
+    width: 6,
+    height: 6,
+    marginTop: 20,
+    borderRadius: 3,
+    backgroundColor: COLORS.lightGrey5,
+  },
+  activeDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    marginTop: 20,
+    backgroundColor: COLORS.blue6,
+  },
+  balance: {
+    fontSize: 20,
+    color: COLORS.colorGreyBold,
+  },
+  balanceContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center'
+  },
+  balanceUpdate: {
+    fontSize: FONT.SIZE.veryLarge,
+    color: COLORS.black,
+    textAlign: 'center',
   },
   itemCenter: {
     marginLeft: 'auto',
@@ -34,6 +72,11 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
+  },
+  token: {
+    fontSize: 20,
+    color: COLORS.colorGreyBold,
+    textAlign: 'center'
   },
   desc: {
     marginTop: 15,
@@ -59,7 +102,7 @@ const style = StyleSheet.create({
     marginLeft: 10,
   },
   hidden: {
-    opacity: 0,
+    opacity: 1,
   },
   fixButton: {
     backgroundColor: COLORS.dark3,
@@ -76,18 +119,30 @@ const style = StyleSheet.create({
   disabled: {
     opacity: 0.6,
   },
+  balanceList: {
+    width: '100%',
+    marginTop: 42,
+    height: 70
+  },
+  text: {
+    ...FONT.STYLE.medium,
+    color: COLORS.newGrey,
+  },
+  bold: {
+    ...FONT.STYLE.bold,
+  },
+  bigText: {
+    fontSize: 18,
+  },
 });
 
 export const rewardStyle = StyleSheet.create({
   slider: {
-    height: 130,
-    marginBottom: 20,
-    width: 220,
-    marginLeft: 20,
+    marginTop: 10,
+    marginBottom: 30,
   },
   container: {
     justifyContent: 'flex-start',
-    alignItems: 'center',
   },
   row: {
     flexDirection: 'row',
@@ -118,8 +173,15 @@ export const rewardStyle = StyleSheet.create({
     backgroundColor: COLORS.primary,
   },
   balance: {
-    fontSize: 20,
-  }
+    fontSize: FONT.SIZE.medium,
+    color: COLORS.newGrey,
+    textAlign: 'center',
+    height: '100%',
+    ...FONT.STYLE.medium,
+  },
+  prvStyle: {
+    marginTop: isAndroid() ? 3 : 0,
+  },
 });
 
 export default style;

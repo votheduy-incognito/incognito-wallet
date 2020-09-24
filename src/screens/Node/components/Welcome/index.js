@@ -1,44 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text, Image, View, Button, ScrollView } from '@components/core';
-import nodeImg from '@assets/images/node.png';
-import linkingService from '@services/linking';
-import { CONSTANT_CONFIGS } from '@src/constants';
+import { TouchableOpacity } from 'react-native';
+import { Text, Image, ScrollView, RoundCornerButton } from '@components/core';
+import nodeImg from '@assets/images/node/node.png';
 import NavigationService from '@src/services/NavigationService';
 import routeNames from '@src/router/routeNames';
-import BackButton from '@src/components/BackButton';
+import theme from '@src/styles/theme';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { COLORS } from '@src/styles';
 import styles from './style';
 
 const WelcomeNodes = ({ onAddPNode, onAddVNode }) => (
-  <ScrollView style={styles.container}>
-    <View style={styles.headerContainer}>
-      <BackButton onPress={()=>NavigationService.navigate('Home')} style={{paddingRight: 15}}/>
-      <Text style={styles.title}>My Nodes</Text>
-    </View>
-    <View style={styles.pNode}>
-      <Image style={styles.pNodeImg} source={nodeImg} />
-      <Button
-        style={styles.pNodeButton}
-        onPress={onAddPNode}
-        title='Add Node Device'
-      />
-      <Text style={styles.buyText}>Don&apos;t have a node yet?</Text>
-      <Button
-        title="Get a Node"
-        buttonStyle={styles.buyButton}
-        onPress={() => { NavigationService.navigate(routeNames.BuyNodeScreen); }}
-      />
-    </View>
-
-    <View>
-      <Text style={styles.vNodeTitle}>Experienced node operators</Text>
-      <Button
-        titleStyle={styles.vNodeText}
-        buttonStyle={styles.vNodeButton}
-        onPress={onAddVNode}
-        title='Add Node Virtual'
-      />
-    </View>
+  <ScrollView contentContainerStyle={styles.pNode}>
+    <Image style={styles.pNodeImg} source={nodeImg} resizeMode="contain" resizeMethod="resize" />
+    <RoundCornerButton
+      style={[styles.pNodeButton, theme.BUTTON.NODE_BUTTON]}
+      onPress={onAddPNode}
+      title='Add Node Device'
+    />
+    <Text style={styles.buyText}>Don&apos;t have a Node yet?</Text>
+    <TouchableOpacity style={[theme.FLEX.rowSpaceBetweenCenter]} onPress={() => { NavigationService.navigate(routeNames.BuyNodeScreen); }}>
+      <Text style={styles.getNode}>Get a Node</Text>
+      <Ionicons name="ios-arrow-forward" color={COLORS.newGrey} size={20} style={styles.arrow}  />
+    </TouchableOpacity>
+    <Text style={[styles.buyText, theme.MARGIN.marginTop30]}>Experienced Node operators?</Text>
+    <TouchableOpacity style={[theme.FLEX.rowSpaceBetweenCenter]} onPress={onAddVNode}>
+      <Text style={styles.getNode}>Add Node Virtual</Text>
+      <Ionicons name="ios-arrow-forward" color={COLORS.newGrey} size={20} style={styles.arrow} />
+    </TouchableOpacity>
   </ScrollView>
 );
 
@@ -47,4 +36,4 @@ WelcomeNodes.propTypes = {
   onAddPNode: PropTypes.func.isRequired,
 };
 
-export default WelcomeNodes;
+export default React.memo(WelcomeNodes);

@@ -10,7 +10,6 @@ import Util from '@src/utils/Util';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
 import { Platform } from 'react-native';
-import LogManager from '@src/services/LogManager';
 import API from './api';
 
 let AUTHORIZATION_FORMAT = 'Autonomous';
@@ -527,6 +526,15 @@ export default class APIService {
     }
   }
 
+  static async qrCodeGetWifi({ QRCode }) {
+    if (!QRCode) return throw new Error('Missing QRCode');
+    const response = await http.post('stake/qr-code-get-wifi', {
+      QRCode: QRCode,
+    });
+    return response?.WifiName;
+    // return `Node-${QRCode.split('-')[1]}`;
+  }
+
   static async requestWithdraw({ ProductID, QRCode, PaymentAddress }) {
     return http
       .post('pool/request-withdraw', {
@@ -591,10 +599,7 @@ export default class APIService {
     };
     return http.post(url, params);
   }
-  // Get list pToken support for buying device
-  static async getPTokenSupportForBuyingDevice() {
-    return http.get('order/tokens-support');
-  }
+
   // Checkout device
   static async checkOutOrder(
     email,
@@ -623,6 +628,7 @@ export default class APIService {
       TaxCountry: countryCode,
       Email: email,
     };
+    // console.log("Params get order: " + LogManager.parseJsonObjectToJsonString(params));
     return http.post('order/incognito/checkout', params);
   }
   // Get system config

@@ -8,6 +8,9 @@ const style = StyleSheet.create({
     padding: 20,
     paddingTop: 0,
   },
+  nodeImage: {
+    marginRight: 40,
+  },
   backBtn: {
     bottom: 10,
     right: 10,
@@ -26,39 +29,53 @@ const style = StyleSheet.create({
     top: '50%',
     bottom: '50%',
   },
+  incBtn: {
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 25,
+    width: 25,
+  },
   halfInput: {
     width: (ScreenWidth - 40) / 2 - 15,
   },
+  btnAdd: {
+    backgroundColor: COLORS.colorGrey,
+    height: 40,
+    paddingHorizontal: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20
+  },
   balance: {
-    fontSize: 16, 
-    fontFamily: FONT.NAME.regular, 
-    width: ScreenWidth * 0.25, 
-    textAlign: 'right',  
-    alignContent: 'flex-end', 
+    fontSize: 16,
+    fontFamily: FONT.NAME.regular,
+    // width: ScreenWidth * 0.25,
+    textAlign: 'right',
+    alignContent: 'flex-end',
     alignSelf: 'center'
   },
   containerHeader: {
+    flex: 1,
+    alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    alignItems: 'center'
+    justifyContent: 'center',
+    marginTop: 28,
+    marginBottom: 35,
   },
   wallet: {
-    flexDirection: 'row', 
+    flexDirection: 'row',
     height: 30,
     paddingLeft: 5,
-    borderRadius: 8, 
-    borderColor: COLORS.lightGrey11,
-    borderWidth: 0.5,
     marginBottom: 10,
-    justifyContent: 'flex-end', 
+    justifyContent: 'flex-end',
     alignSelf: 'flex-end',
-    alignItems: 'center', 
+    alignItems: 'center',
     alignContent: 'flex-end'
   },
   iconDropDown: {
-    alignSelf: 'center', 
-    justifyContent: 'center', 
+    alignSelf: 'center',
+    justifyContent: 'center',
     height: 50,
     marginEnd: 10
   },

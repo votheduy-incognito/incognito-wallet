@@ -11,9 +11,7 @@ let BEP2Tokens = [];
 
 const getTokenListNoCache = () => {
   return http.get('ptoken/list')
-    .then(res => {
-      return res.map(token => new PToken(token));
-    });
+    .then(res => res.map(token => new PToken(token)));
 };
 
 export const getTokenList = () => {

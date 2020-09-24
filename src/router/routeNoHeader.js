@@ -44,7 +44,24 @@ import {
 } from '@src/screens/PoolV2';
 import Profile from '@src/screens/Profile';
 import Receipt from '@src/components/Receipt';
-import routeNames from './routeNames';
+import NodeItemsHelp from '@screens/NodeItemsHelp';
+import DestinationBuyNode from '@screens/DestinationBuyNode';
+import ItemSelectScreen from '@components/ItemSelectScreen';
+import NodeReturnPolicy from '@screens/BuyNodeScreen/NodeReturnPolicy';
+import routeNames from '@routers/routeNames';
+import BuyNodeScreen from '@screens/BuyNodeScreen';
+import NodeHelp from '@screens/NodeHelp';
+import PaymentBuyNodeScreen from '@screens/PaymentBuyNodeScreen';
+import Node from '@screens/Node';
+import AddNode from '@screens/AddNode';
+import LinkDevice from '@screens/LinkDevice';
+import AddStake from '@screens/AddStake';
+import Unstake from '@screens/Unstake';
+import AddSelfNode from '@screens/AddSelfNode';
+import GetStartedAddNode from '@screens/GetStartedAddNode';
+import RepairingSetupNode from '@screens/GetStartedAddNode/continueSetup/RepairingSetupNode';
+import NodeItemDetail from '@screens/Node/components/NodeItemDetail';
+import NodeUpdateWifi from '@screens/Node/UpdateWifi';
 
 const routes = [
   {
@@ -234,6 +251,74 @@ const routes = [
   {
     screen: Receipt,
     name: routeNames.Receipt,
+  },
+  {
+    screen: NodeItemsHelp,
+    name: routeNames.NodeItemsHelp,
+  },
+  {
+    name: routeNames.DestinationBuyNode,
+    screen: DestinationBuyNode,
+  },
+  {
+    name: routeNames.ItemSelectScreen,
+    screen: ItemSelectScreen,
+  },
+  {
+    name: routeNames.NodeReturnPolicy,
+    screen: NodeReturnPolicy,
+  },
+  {
+    name: routeNames.BuyNodeScreen,
+    screen: BuyNodeScreen,
+  },
+  {
+    name: routeNames.NodeHelp,
+    screen: NodeHelp,
+  },
+  {
+    name: routeNames.PaymentBuyNodeScreen,
+    screen: PaymentBuyNodeScreen,
+  },
+  {
+    name: routeNames.Node,
+    screen: Node,
+  },
+  {
+    name: routeNames.AddNode,
+    screen: AddNode,
+  },
+  {
+    name: routeNames.LinkDevice,
+    screen: LinkDevice,
+  },
+  {
+    name: routeNames.AddStake,
+    screen: AddStake,
+  },
+  {
+    name: routeNames.AddSelfNode,
+    screen: AddSelfNode,
+  },
+  {
+    name: routeNames.Unstake,
+    screen: Unstake,
+  },
+  {
+    name: routeNames.GetStaredAddNode,
+    screen: GetStartedAddNode,
+  },
+  {
+    name: routeNames.RepairingSetupNode,
+    screen: RepairingSetupNode,
+  },
+  {
+    name: routeNames.NodeItemDetail,
+    screen: NodeItemDetail,
+  },
+  {
+    name: routeNames.NodeUpdateWifi,
+    screen: NodeUpdateWifi,
   },
   {
     screen: SelectNetworkName,

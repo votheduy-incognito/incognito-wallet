@@ -5,71 +5,135 @@ import DECOR from './decor';
 import FONTS from './font';
 import SPACINGS from './spacing';
 
+const fontSizes = {
+  superSmall: 12,
+  small: 14,
+  regular: 16,
+  medium: 18,
+  superMedium: 20,
+  large: 22,
+  veryLarge: 38,
+  superLarge: 40,
+};
+
+
+const SIZES = {
+  pickerView: {
+    height: 40,
+  },
+  button: {
+    height: 50,
+  }
+};
+
+const BORDER_RADIUS = {
+  avatar: 12,
+  picker: 12,
+};
+
 const text = {
   errorText: {
     ...FONTS.STYLE.normal,
-    fontSize: FONTS.SIZE.superSmall,
+    fontSize: fontSizes.superSmall,
     color: COLORS.red,
   },
   defaultTextStyle: {
     ...FONTS.STYLE.normal,
     color: COLORS.dark1,
-    fontSize: FONTS.SIZE.regular,
+    fontSize: fontSizes.regular,
     letterSpacing: 0,
   },
   headerTextStyle: {
     ...FONTS.STYLE.bold,
     fontFamily: FONTS.NAME.medium,
     color: COLORS.black,
-    fontSize: FONTS.SIZE.large,
+    fontSize: fontSizes.large,
   },
   regularTextStyle: {
     ...FONTS.STYLE.medium,
     color: COLORS.black,
-    fontSize: FONTS.SIZE.large,
+    fontSize: fontSizes.large,
   },
   mediumTextStyle: {
     ...FONTS.STYLE.normal,
     color: COLORS.black,
-    fontSize: FONTS.SIZE.medium,
+    fontSize: fontSizes.medium,
   },
   boldTextStyle: {
     ...FONTS.STYLE.bold,
     color: COLORS.black,
-    fontSize: FONTS.SIZE.regular,
+    fontSize: fontSizes.regular,
   },
   boldTextStyleMedium: {
     ...FONTS.STYLE.bold,
     color: COLORS.black,
-    fontSize: FONTS.SIZE.medium,
+    fontSize: fontSizes.medium,
+  },
+  boldTextStyleSuperMedium: {
+    ...FONTS.STYLE.bold,
+    color: COLORS.black,
+    fontSize: fontSizes.superMedium,
   },
   boldTextStyleLarge: {
     ...FONTS.STYLE.bold,
     color: COLORS.black,
-    fontSize: FONTS.SIZE.large,
+    fontSize: fontSizes.large,
   },
   regularTextMotto: {
-    ...FONTS.STYLE.normal,
+    ...FONTS.STYLE.medium,
     fontFamily: FONTS.NAME.regular,
-    color: COLORS.mottoGrey,
-    fontSize: FONTS.SIZE.regular,
+    color: COLORS.newGrey,
+    fontSize: fontSizes.regular,
+  },
+  mediumTextMotto: {
+    ...FONTS.STYLE.medium,
+    color: COLORS.newGrey,
+    fontSize: fontSizes.medium,
   },
   mediumText: {
     ...FONTS.STYLE.normal,
     fontFamily: FONTS.NAME.medium,
     color: COLORS.black,
-    fontSize: FONTS.SIZE.medium,
+    fontSize: fontSizes.medium,
   },
   mediumTextBold: {
     ...FONTS.STYLE.normal,
     fontFamily: FONTS.NAME.bold,
     color: COLORS.black,
-    fontSize: FONTS.SIZE.medium,
+    fontSize: fontSizes.medium,
+  },
+  greyTextBoldMediumSize: {
+    ...FONTS.STYLE.bold,
+    color: COLORS.newGrey,
+    fontSize: fontSizes.medium,
   },
   defaultSize: FONTS.SIZE.regular,
-  largeTitleSize: FONTS.SIZE.superLarge,
+  largeTitleSize: fontSizes.superLarge,
   alignCenterText: {
     textAlign: 'center'
+  },
+  TEXT_TITLE: {
+    fontFamily: FONTS.NAME.default,
+    fontSize: fontSizes.medium,
+  },
+  BUTTON_TITLE: {
+    fontFamily: FONTS.NAME.bold,
+    fontSize: fontSizes.medium,
+  },
+  BUTTON_TITLE_DISABLE: {
+    fontFamily: FONTS.NAME.medium,
+    fontSize: fontSizes.medium,
+    color: COLORS.black,
+  },
+  regularSizeMediumFontGrey: {
+    color: COLORS.newGrey,
+    fontSize: fontSizes.regular,
+    fontFamily: FONTS.NAME.medium,
+  },
+  regularSizeMediumFontBlack: {
+    color: COLORS.black,
+    fontSize: fontSizes.regular,
+    fontFamily: FONTS.NAME.medium,
   }
 };
 
@@ -90,7 +154,14 @@ const MARGIN = {
   marginTopDefault: {
     marginTop: 15,
   },
+  marginTopAvg: {
+    marginTop: 25,
+  },
+  marginTop30: {
+    marginTop: 30,
+  },
 };
+
 
 const header = {
   headerHeight: DECOR.scaleInApp(55),
@@ -171,6 +242,15 @@ const FLEX = {
     justifyContent: 'space-between',
     alignContents: 'center',
   },
+  rowSpaceBetweenDefault: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  rowSpaceBetweenCenter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
   alignViewSelfCenter: {
     alignSelf: 'center',
   },
@@ -186,17 +266,6 @@ const FLEX = {
     alignSelf: 'center',
     top: ScreenHeight * 0.4,
   },
-};
-
-const SIZES = {
-  pickerView: {
-    height: 40,
-  },
-};
-
-const BORDER_RADIUS = {
-  avatar: 12,
-  picker: 12,
 };
 
 const SHADOW = {
@@ -226,6 +295,11 @@ const IMAGES = {
   avatar: {
     width: ScreenWidth * 0.22,
     height: ScreenWidth * 0.22,
+    borderRadius: BORDER_RADIUS.avatar,
+  },
+  node: {
+    width: ScreenWidth / 2.5,
+    height: ScreenWidth * 0.5,
     borderRadius: BORDER_RADIUS.avatar,
   },
 };
@@ -267,6 +341,31 @@ const INPUT = {
   },
 };
 
+const BUTTON = {
+  BLACK_TYPE: {
+    backgroundColor: COLORS.blue6,
+    borderRadius: 25,
+    width: '100%',
+    height: SIZES.button.height,
+  },
+  BLACK_TYPE_DISABLE: {
+    backgroundColor: COLORS.colorGrey,
+    borderRadius: 25,
+    width: '100%',
+    height: SIZES.button.height,
+  },
+  BLUE_TYPE: {
+    backgroundColor: COLORS.blue6,
+    borderRadius: 25,
+    width: '100%',
+    height: SIZES.button.height,
+  },
+
+  NODE_BUTTON: {
+    backgroundColor: COLORS.blue6,
+  },
+};
+
 export default {
   header,
   IMAGES,
@@ -277,6 +376,7 @@ export default {
   SIZES,
   MARGIN,
   SHADOW,
+  BUTTON,
   opacityButton,
   text,
   indicator,

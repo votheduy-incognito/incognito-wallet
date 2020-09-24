@@ -82,5 +82,12 @@ export default {
   PoolV2HistoryDetail: 'StakeHistoryDetail',
   News: 'News',
   Receipt: 'Receipt',
+  NodeBuyHelp: 'NodeBuyHelp',
+  DestinationBuyNode: 'DestinationBuyNode',
+  NodeItemsHelp: 'NodeItemsHelp',
+  NodeItemDetail: 'NodeItemDetail',
+  NodeUpdateWifi: 'NodeUpdateWifi',
+  ItemSelectScreen: 'ItemSelectScreen',
+  NodeReturnPolicy: 'NodeReturnPolicy',
   SelectNetworkName: 'SelectNetworkName',
 };

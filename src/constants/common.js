@@ -175,9 +175,12 @@ export default {
       EXPIRED: 'EXPIRED',
     },
     META_DATA_TYPE: {
+      44: 'Withdraw rewards',
+      63: 'Stake',
       90: 'Add liquidity',
       93: 'Remove liquidity',
       27: 'Unshield',
+      127: 'Unstake',
       240: 'Unshield',
     },
     STATUS_CODE: {
