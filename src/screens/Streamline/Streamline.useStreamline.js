@@ -14,6 +14,7 @@ import { actionFetch } from './Streamline.actions';
 import {
   streamlineStorageSelector,
   streamlineDataSelector,
+  streamlineSelector,
 } from './Streamline.selector';
 
 export const useStreamLine = () => {
@@ -27,9 +28,13 @@ export const useStreamLine = () => {
   );
   const dev = useSelector(devSelector);
   const isAutoUTXOs = dev[CONSTANT_KEYS.DEV_TEST_TOGGLE_UTXOS];
+  const streamline = useSelector(streamlineSelector);
+  const { consolidated, isFetching, isFetched } = streamline;
   const streamlineStorage = useSelector(streamlineStorageSelector);
-  const { isFetching, isFetched, data } = streamlineStorage[keySave];
-  const { totalFee, UTXONativeCoin } = useSelector(streamlineDataSelector);
+  const { data } = streamlineStorage[keySave];
+  const { totalFee, UTXONativeCoin, times } = useSelector(
+    streamlineDataSelector,
+  );
   const onNavigateStreamLine = () => navigation.navigate(routeNames.Streamline);
   const handleNavigateWhyStreamline = () =>
     navigation.navigate(routeNames.WhyStreamline);
@@ -69,7 +74,7 @@ export const useStreamLine = () => {
     if (shouldDisabledForm || !hasExceededMaxInputPRV) {
       return;
     }
-    dispatch(actionFetch());
+    await dispatch(actionFetch());
   };
 
   React.useEffect(() => {
@@ -88,5 +93,7 @@ export const useStreamLine = () => {
     isFetched,
     isFetching,
     data,
+    times,
+    loadingText: `${consolidated} / ${times}`,
   };
 };
