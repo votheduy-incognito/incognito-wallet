@@ -39,7 +39,7 @@ const enhance = (WrappedComp) => (props) => {
         )
         .map((history) => ({ ...history, ...getStatusData(history?.status) }));
       _isPending = histories.some(
-        (history) => history?.statusText === 'Pending',
+        (history) => history?.statusMessage === 'Pending',
       );
     } catch (error) {
       new ExHandler(error).showErrorToast();
