@@ -57,9 +57,7 @@ export const actionFetch = () => async (dispatch, getState) => {
       error?.code === 'WEB_JS_ERROR(-3002)' &&
       error?.stackTraceCode === ''
     ) {
-      error = new Error(
-        'Can’t not processing defragment utxo, please try again.',
-      );
+      error = new Error('Something’s not quite right. Please try again later.');
       return new ExHandler(error).showErrorToast();
     }
     new ExHandler(error).showErrorToast(true);
