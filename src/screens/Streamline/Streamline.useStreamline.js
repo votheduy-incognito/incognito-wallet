@@ -29,10 +29,10 @@ export const useStreamLine = () => {
   const dev = useSelector(devSelector);
   const isAutoUTXOs = dev[CONSTANT_KEYS.DEV_TEST_TOGGLE_UTXOS];
   const streamline = useSelector(streamlineSelector);
-  const { consolidated, isFetching, isFetched, isPending } = streamline;
+  const { isFetching, isFetched, isPending } = streamline;
   const streamlineStorage = useSelector(streamlineStorageSelector);
   const { data } = streamlineStorage[keySave];
-  const { totalFee, UTXONativeCoin, times } = useSelector(
+  const { totalFee, UTXONativeCoin, times, percent } = useSelector(
     streamlineDataSelector,
   );
   const onNavigateStreamLine = () => navigation.navigate(routeNames.Streamline);
@@ -93,7 +93,7 @@ export const useStreamLine = () => {
     isFetching,
     data,
     times,
-    loadingText: `${consolidated} / ${times}`,
     isPending,
+    percent,
   };
 };

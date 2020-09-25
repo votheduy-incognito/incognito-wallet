@@ -21,13 +21,17 @@ class LoadingTx extends Component {
 
   componentDidMount() {
     this.handleToggle(true);
-    this.timer = setInterval(() => {
-      this.progress();
-    }, 1000);
+    if (typeof this?.propPercent !== 'undefined') {
+      this.timer = setInterval(() => {
+        this.progress();
+      }, 1000);
+    }
   }
 
   componentWillUnmount() {
-    this.clearTimer();
+    if (typeof this?.propPercent !== 'undefined') {
+      this.clearTimer();
+    }
   }
 
   clearTimer = () => this.timer && clearInterval(this.timer);
@@ -50,22 +54,28 @@ class LoadingTx extends Component {
 
   renderModalContent = () => {
     const { percent, message } = this.state;
-    const { text } = this.props;
+    const { text, propPercent, descFactories } = this.props;
+    const totalPercent =
+      typeof propPercent !== 'undefined' ? propPercent : percent;
     return (
       <View style={styleSheet.container}>
         <View style={styleSheet.wrapper}>
           <ActivityIndicator size="large" color={COLORS.black} />
-          <Text style={styleSheet.percent}>{`${percent}%`}</Text>
+          <Text style={styleSheet.percent}>{`${totalPercent}%`}</Text>
           {!!text && (
             <Text style={[styleSheet.desc, styleSheet.extraDesc]}>{text}</Text>
           )}
-          <Text style={styleSheet.desc}>
-            {'Please do not navigate away till this\nwindow closes.'}
-          </Text>
-          {!!global.isDebug() && (
+          {descFactories ? (
+            descFactories?.map((item) => (
+              <Text style={[styleSheet.desc, item?.styled]}>{item?.desc}</Text>
+            ))
+          ) : (
             <Text style={styleSheet.desc}>
-              {message}
+              {'Please do not navigate away till this\nwindow closes.'}
             </Text>
+          )}
+          {!!global.isDebug() && !!message && (
+            <Text style={styleSheet.desc}>{message}</Text>
           )}
         </View>
         <KeepAwake />
@@ -81,10 +91,14 @@ class LoadingTx extends Component {
 
 LoadingTx.defaultProps = {
   text: '',
+  propPercent: undefined,
+  descFactories: [],
 };
 
 LoadingTx.propTypes = {
   text: PropTypes.string,
+  propPercent: PropTypes.number,
+  descFactories: PropTypes.array,
 };
 
 export default LoadingTx;
