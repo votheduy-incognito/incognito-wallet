@@ -12,7 +12,7 @@ const Unstake = ({ device, isUnstaking, onUnstake }) => {
       <Header title="Unstake" />
       <Text style={styles.title}>Node {name}</Text>
       <View style={styles.buy}>
-        <Text style={[styles.desc, styles.firstLine]}>{isUnstaking ? 'Unstaking may take up to 21 days. This Node will unstake the next time it is selected to earn.' : 'The unstaking process will complete the next time your Node is selected to work. This may take up to 21 days'}</Text>
+        <Text style={[styles.desc, styles.firstLine]}>{isUnstaking ? 'Unstaking may take up to 21 days. This Node will unstake the next time it is selected to earn.' : 'The unstaking process will complete the next time your Node is selected to work. This may take up to 21 days.'}</Text>
         {!isUnstaking && <Text style={styles.desc}>Are you sure you want to unstake this Node?</Text>}
         <RoundCornerButton
           disabled={isUnstaking}

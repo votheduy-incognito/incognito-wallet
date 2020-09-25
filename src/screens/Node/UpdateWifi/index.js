@@ -348,7 +348,7 @@ const NodeUpdateWifi = () => {
           value={password}
           disabled={processing}
         />
-        {!!currentStep && <Text style={styles.error}>{currentStep}</Text>}
+        {/*{!!currentStep && <Text style={styles.error}>{currentStep}</Text>}*/}
         {!!error && <Text style={styles.error}>{error}</Text>}
         <RoundCornerButton
           disabled={!ssid}
@@ -368,6 +368,7 @@ const NodeUpdateWifi = () => {
         title={MESSAGES.CHANGE_WIFI_SUCCESSFULLY_TITLE}
         extraInfo={MESSAGES.CHANGE_WIFI_SUCCESSFULLY_DESCRIPTION}
         visible={success}
+        buttonStyle={theme.BUTTON.NODE_BUTTON}
         closeSuccessDialog={goBack}
       />
       <SuccessModal

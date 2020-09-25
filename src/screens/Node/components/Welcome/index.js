@@ -23,7 +23,7 @@ const WelcomeNodes = ({ onAddPNode, onAddVNode }) => (
       <Text style={styles.getNode}>Get a Node Device</Text>
       <Ionicons name="ios-arrow-forward" color={COLORS.newGrey} size={20} style={styles.arrow}  />
     </TouchableOpacity>
-    <Text style={[styles.buyText, theme.MARGIN.marginTop30]}>Experienced Node operators?</Text>
+    <Text style={[styles.buyText, theme.MARGIN.marginTop30]}>Experienced Node operator?</Text>
     <TouchableOpacity style={[theme.FLEX.rowSpaceBetweenCenter]} onPress={onAddVNode}>
       <Text style={styles.getNode}>Add Node Virtual</Text>
       <Ionicons name="ios-arrow-forward" color={COLORS.newGrey} size={20} style={styles.arrow} />
