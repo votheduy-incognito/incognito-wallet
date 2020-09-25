@@ -3,6 +3,8 @@ import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import { ExHandler } from '@src/services/exception';
 import accountServices from '@src/services/wallet/accountService';
+import { loadWallet } from '@src/services/wallet/WalletService';
+import Util from '@src/utils/Util';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -28,14 +30,15 @@ export const actionFetch = () => async (dispatch, getState) => {
   let error;
   try {
     const state = getState();
-    const wallet = walletSelector(state);
     const account = defaultAccountSelector(state);
+    const wallet = walletSelector(state);
     const { isFetching } = streamlineSelector(state);
     const { times } = streamlineDataSelector(state);
     if (isFetching) {
       return;
     }
     await dispatch(actionFetching());
+
     for (let index = 0; index < times; index++) {
       const result = await accountServices.defragmentNativeCoin(
         MAX_FEE_PER_TX,
@@ -50,6 +53,9 @@ export const actionFetch = () => async (dispatch, getState) => {
         };
         await dispatch(actionFetched(payload));
       }
+    }
+    if (times > 1) {
+      await Util.delay(0.5);
     }
   } catch (e) {
     error = e;

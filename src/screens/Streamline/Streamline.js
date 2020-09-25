@@ -73,9 +73,9 @@ const Streamline = (props) => {
   const {
     hasExceededMaxInputPRV,
     handleNavigateWhyStreamline,
-    loadingText,
     isFetching,
     isPending,
+    percent,
   } = useStreamLine();
   const { refresh, handleFetchData } = props;
   const renderMain = () => {
@@ -88,7 +88,22 @@ const Streamline = (props) => {
     return (
       <>
         <Extra {...props} />
-        {isFetching && <LoadingTx text={loadingText} />}
+        {isFetching && (
+          <LoadingTx
+            propPercent={percent}
+            descFactories={[
+              {
+                desc:
+                  'The more UTXOs this keychain has, the\nlonger it will take to consolidate.',
+              },
+              {
+                desc:
+                  'Please stay on this screen until the\nprocess is complete.',
+                styled: { marginTop: 10 },
+              },
+            ]}
+          />
+        )}
       </>
     );
   };
@@ -96,13 +111,13 @@ const Streamline = (props) => {
     <View style={styled.container}>
       <Header
         title="Consolidate"
-        customHeaderTitle={(
+        customHeaderTitle={
           <BtnQuestionDefault
             style={styled.questionIcon}
             icon={srcQuestion}
             onPress={handleNavigateWhyStreamline}
           />
-        )}
+        }
         accountSelectable
       />
       <ScrollView

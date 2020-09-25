@@ -18,7 +18,9 @@ export const streamlineStorageSelector = createSelector(
 export const streamlineDataSelector = createSelector(
   walletSelector,
   accountSeleclor.defaultAccountSelector,
-  (wallet, account) => {
+  streamlineSelector,
+  (wallet, account, streamline) => {
+    const { consolidated } = streamline;
     const MAX_UTXOS_PER_DEFRAGMENT_PROCESS =
       accountServices.MAX_DEFRAGMENT_TXS *
       accountServices.NO_OF_INPUT_PER_DEFRAGMENT_TX;
@@ -35,10 +37,13 @@ export const streamlineDataSelector = createSelector(
         accountServices.MAX_DEFRAGMENT_TXS,
       );
     const times = Math.ceil(UTXONativeCoin / MAX_UTXOS_PER_DEFRAGMENT_PROCESS);
+    const percent =
+      times === 1 ? undefined : Math.ceil((consolidated / times) * 100);
     return {
       totalFee,
       UTXONativeCoin,
       times,
+      percent,
     };
   },
 );
