@@ -23,7 +23,7 @@ const Hook = React.memo((props) => {
   );
 });
 
-const Extra = (props) => {
+const Extra = () => {
   const {
     handleDefragmentNativeCoin,
     hookFactories,
@@ -79,11 +79,11 @@ const Streamline = (props) => {
   } = useStreamLine();
   const { refresh, handleFetchData } = props;
   const renderMain = () => {
-    if (isPending) {
-      return <Pending />;
-    }
     if (!hasExceededMaxInputPRV) {
       return <Empty />;
+    }
+    if (isPending && !isFetching) {
+      return <Pending />;
     }
     return (
       <>

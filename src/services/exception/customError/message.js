@@ -51,8 +51,8 @@ export default {
   [CODE.api_bnb_memo_required]: 'The Memo is required',
   [CODE.FULLNODE_DOWN]: 'The network is a little busy',
   [CODE.api_unstake_fail]: 'Your previous withdrawal is still processing. Please wait then try again.',
-  [CODE.web_js_can_not_created_tx]: 'Please wait for your previous deposit to finish processing, then try again.',
+  [CODE.web_js_can_not_created_tx]: 'Something’s not quite right. Please try again later!',
   [CODE.api_trade_maintain]: 'The exchange is down for maintenance. Please wait then try again later.',
   [CODE.api_insufficient_funds]: 'Incognito is currently experiencing high volume. Please try again later.',
-  [CODE.web_js_can_not_send_main_crypto]: 'Please wait for your previous deposit to finish processing, then try again.',
+  [CODE.web_js_can_not_send_main_crypto]: 'Streamline this keychain now for efficient transactions',
 };
