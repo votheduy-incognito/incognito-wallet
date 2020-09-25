@@ -7,6 +7,7 @@ import {
   ACTION_FETCHED,
   ACTION_INIT_PROCCESS,
   ACTION_FETCHED_ALL_TXS,
+  ACTION_TOGGLE_PENDING,
 } from './Streamline.constant';
 
 const initialState = {
@@ -14,6 +15,7 @@ const initialState = {
   times: 1,
   isFetching: false,
   isFetched: false,
+  isPending: false,
   storage: {
     [CONSTANT_KEYS.UTXOS_DATA]: {
       data: {},
@@ -61,6 +63,12 @@ const streamlineReducer = (state = initialState, action) => {
       ...state,
       consolidated: 0,
       times,
+    };
+  }
+  case ACTION_TOGGLE_PENDING: {
+    return {
+      ...state,
+      isPending: action.payload,
     };
   }
   default:

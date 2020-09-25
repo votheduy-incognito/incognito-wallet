@@ -18,6 +18,7 @@ import {
 } from './Streamline.selector';
 
 export const useStreamLine = () => {
+  const isDev = !!global.isDEV || __DEV__;
   const keySave = CONSTANT_KEYS.UTXOS_DATA;
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ export const useStreamLine = () => {
   const dev = useSelector(devSelector);
   const isAutoUTXOs = dev[CONSTANT_KEYS.DEV_TEST_TOGGLE_UTXOS];
   const streamline = useSelector(streamlineSelector);
-  const { consolidated, isFetching, isFetched } = streamline;
+  const { consolidated, isFetching, isFetched, isPending } = streamline;
   const streamlineStorage = useSelector(streamlineStorageSelector);
   const { data } = streamlineStorage[keySave];
   const { totalFee, UTXONativeCoin, times } = useSelector(
@@ -40,7 +41,6 @@ export const useStreamLine = () => {
     navigation.navigate(routeNames.WhyStreamline);
   const [state, setState] = React.useState({
     shouldDisabledForm: false,
-    isPending: false,
   });
   const { shouldDisabledForm } = state;
   const hasExceededMaxInputPRV = isAutoUTXOs
@@ -68,6 +68,12 @@ export const useStreamLine = () => {
     {
       title: 'UTXOs',
       desc: UTXONativeCoin,
+      disabled: !isDev,
+    },
+    {
+      title: 'Consolidated / Time',
+      desc: `${consolidated} / ${times}`,
+      disabled: !isDev,
     },
   ];
   const handleDefragmentNativeCoin = async () => {
@@ -95,5 +101,6 @@ export const useStreamLine = () => {
     data,
     times,
     loadingText: `${consolidated} / ${times}`,
+    isPending,
   };
 };

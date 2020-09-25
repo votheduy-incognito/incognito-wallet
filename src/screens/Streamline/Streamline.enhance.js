@@ -10,21 +10,21 @@ import { useFocusEffect } from 'react-navigation-hooks';
 import { accountSeleclor } from '@src/redux/selectors';
 import { getStatusData } from '@src/components/HistoryList/HistoryList.utils';
 import { useStreamLine } from './Streamline.useStreamline';
-import { actionInitProccess } from './Streamline.actions';
+import { actionInitProccess, actionTogglePending } from './Streamline.actions';
 
 const enhance = (WrappedComp) => (props) => {
-  const [state, setState] = React.useState({
-    isPending: false,
-    isFetching: true,
-    isFetched: false,
-  });
-  const { isFetching, isFetched, isPending } = state;
   const account = useSelector(accountSeleclor.defaultAccountSelector);
   const dispatch = useDispatch();
+  const [state, setState] = React.useState({ refresh: false });
+  const { refresh } = state;
   const { data, times } = useStreamLine();
   const handleFetchData = async () => {
     let _isPending = false;
     try {
+      if (refresh) {
+        return;
+      }
+      await setState({ ...state, refresh: true });
       const accountHistory = await dispatch(loadAccountHistory());
       const historiesMainCrypto = normalizeData(
         accountHistory,
@@ -36,27 +36,29 @@ const enhance = (WrappedComp) => (props) => {
         ?.filter((history) =>
           utxos.find((txId) => txId === history?.incognitoTxID),
         )
-        .map((history) => ({ ...history, ...getStatusData(history?.status) }));
+        .map((history) => ({ ...history, ...getStatusData(history) }));
       _isPending = histories.some(
         (history) => history?.statusMessage === 'Pending',
       );
     } catch (error) {
       new ExHandler(error).showErrorToast();
     } finally {
-      await setState({
-        ...state,
-        isFetching: false,
-        isFetched: true,
-        isPending: _isPending,
-      });
+      dispatch(actionTogglePending(_isPending));
+      await setState({ ...state, refresh: false });
     }
   };
 
   useFocusEffect(
     React.useCallback(() => {
       handleFetchData();
+    }, [data]),
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
       dispatch(actionInitProccess({ times }));
-    }, []),
+      handleFetchData();
+    }, [account]),
   );
 
   return (
@@ -65,8 +67,7 @@ const enhance = (WrappedComp) => (props) => {
         {...{
           ...props,
           handleFetchData,
-          isFetching,
-          showPending: isFetched && !isFetching && isPending,
+          refresh,
         }}
       />
     </ErrorBoundary>
