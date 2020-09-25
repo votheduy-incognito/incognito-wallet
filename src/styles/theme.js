@@ -134,6 +134,11 @@ const text = {
     color: COLORS.black,
     fontSize: fontSizes.regular,
     fontFamily: FONTS.NAME.medium,
+  },
+  blackMedium: {
+    color: COLORS.black,
+    fontSize: fontSizes.medium,
+    fontFamily: FONTS.NAME.medium,
   }
 };
 

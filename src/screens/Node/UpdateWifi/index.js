@@ -46,7 +46,7 @@ const getWifiSSID = (empty = false) => {
 
 const NotSupport = () => (
   <View>
-    <Text style={[theme.text.mediumTextStyle, { marginBottom: 20, lineHeight: 30 }]}>
+    <Text style={[theme.text.blackMedium, { marginBottom: 20, lineHeight: 30 }]}>
       {MESSAGES.NODE_NOT_SUPPORTED_UPDATE_WIFI_TITLE}
     </Text>
     <Text style={[theme.text.mediumTextMotto, { lineHeight: 30 }]}>
@@ -57,7 +57,7 @@ const NotSupport = () => (
 
 const OutOfDate = () => (
   <View>
-    <Text style={[theme.text.mediumTextStyle, { marginBottom: 20, lineHeight: 30 }]}>
+    <Text style={[theme.text.blackMedium, { marginBottom: 20, lineHeight: 30 }]}>
       {MESSAGES.NODE_OUT_OF_DATE}
     </Text>
   </View>
@@ -323,7 +323,7 @@ const NodeUpdateWifi = () => {
 
     return (
       <View>
-        <Text style={[theme.text.mediumTextMotto, { lineHeight: 30, marginBottom: 20 }]}>
+        <Text style={[theme.text.blackMedium, { lineHeight: 30, marginBottom: 20 }]}>
           {MESSAGES.UPDATE_WIFI_INSTRUCTION}
         </Text>
         <Input
