@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import PINSection from './features/PINSection';
 import SeparatorSection from './features/SeparatorSection';
 import DevSection from './features/DevSection';
+import UTXOSection from './features/UTXOSection';
 import { settingStyle } from './Setting.styled';
 import AddressBookSection from './features/AddressBookSection';
 import { SectionItem } from './features/Section';
@@ -43,6 +44,7 @@ const Setting = () => {
           <SeparatorSection />
           <DecimalDigitsSection />
           <AddressBookSection />
+          <UTXOSection />
           {global.isDebug() && <DevSection />}
         </View>
         <Text style={settingStyle.textVersion}>

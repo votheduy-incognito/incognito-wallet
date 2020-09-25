@@ -2,9 +2,7 @@
 import React from 'react';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import Section, {
-  SectionItem as Item,
-} from '@screens/Setting/features/Section';
+import { SectionItem as Section } from '@screens/Setting/features/Section';
 import { isKeychainAddressSelector } from '@src/redux/selectors/receivers';
 import { useSelector, useDispatch } from 'react-redux';
 import { actionSelectedReceiver } from '@src/redux/actions/receivers';
@@ -37,22 +35,17 @@ const AddressBookSection = () => {
       disabledSwipe: false,
     });
 
-  const itemsFactories = [
-    {
-      desc: 'Manage your saved addresses',
-      handlePress: handleNavigateFrequentReceivers,
-    },
-  ];
   return (
     <Section
-      label="Address Book"
-      customItems={itemsFactories.map((item, key, arr) => (
-        <Item data={{ ...item, lastChild: arr.length - 1 === key }} key={key} />
-      ))}
+      data={{
+        title: 'Address Book',
+        desc: 'Manage your saved addresses',
+        handlePress: handleNavigateFrequentReceivers,
+      }}
     />
   );
 };
 
 AddressBookSection.propTypes = {};
 
-export default AddressBookSection;
+export default React.memo(AddressBookSection);

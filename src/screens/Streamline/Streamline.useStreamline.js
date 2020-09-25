@@ -18,7 +18,6 @@ import {
 } from './Streamline.selector';
 
 export const useStreamLine = () => {
-  const isDev = !!global.isDEV || __DEV__;
   const keySave = CONSTANT_KEYS.UTXOS_DATA;
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -66,14 +65,8 @@ export const useStreamLine = () => {
       }`,
     },
     {
-      title: 'UTXOs',
+      title: 'UTXO count',
       desc: UTXONativeCoin,
-      disabled: !isDev,
-    },
-    {
-      title: 'Consolidated / Time',
-      desc: `${consolidated} / ${times}`,
-      disabled: !isDev,
     },
   ];
   const handleDefragmentNativeCoin = async () => {
