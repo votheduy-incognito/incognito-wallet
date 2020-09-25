@@ -16,7 +16,6 @@ class NodeItemDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      withdrawing: false,
       processing: false,
     };
   }
@@ -30,10 +29,7 @@ class NodeItemDetail extends Component {
     try {
       this.setState({ processing: true });
       await onWithdraw(item);
-      this.setState({
-        withdrawing: true,
-      });
-    } finally {
+    } catch {
       this.setState({ processing: false });
     }
   };
@@ -69,14 +65,12 @@ class NodeItemDetail extends Component {
     );
   };
 
-  renderBtn = (title, onPress, disabled = false, loading) => {
+  renderBtn = (title, onPress, disabled = false) => {
     return (
       <RoundCornerButton
-        disabled={loading || disabled}
+        disabled={disabled}
         onPress={onPress}
         title={title}
-        isAsync={loading}
-        isLoading={loading}
         style={[{ flex: 1, margin: 2 }, theme.BUTTON.BLUE_TYPE]}
       />
     );
@@ -84,7 +78,7 @@ class NodeItemDetail extends Component {
 
   render() {
     const { navigation } = this.props;
-    const { withdrawing, processing } = this.state;
+    const { processing } = this.state;
     const {
       rewardsList,
       onUnstake,
@@ -111,7 +105,7 @@ class NodeItemDetail extends Component {
     if (item.IsPNode && !item.IsFundedUnstaked && !item.IsFundedUnstaking) {
       withdrawable = item.IsFundedStakeWithdrawable;
     } else {
-      withdrawable = !(withdrawing || !!_.get(withdrawTxs, item.PaymentAddress));
+      withdrawable = !(processing || !!_.get(withdrawTxs, item.PaymentAddress));
     }
 
     if (item.IsPNode && item.IsFundedUnstaking) {
@@ -131,8 +125,8 @@ class NodeItemDetail extends Component {
           <View style={[{ flexDirection: 'row' }, theme.MARGIN.marginBottomDefault]}>
             {!hasAccount ? this.renderBtn('Import a keychain', onImport) : (
               <>
-                {shouldShowStake && shouldShowWithdraw ? this.renderBtn(processing ? 'Withdrawing' : 'Withdraw', this.handleWithdraw, !withdrawable, processing) : null}
-                {!shouldShowStake && shouldShowWithdraw ? this.renderBtn(processing ? 'Withdrawing rewards' : 'Withdraw rewards', this.handleWithdraw, !withdrawable, processing) : null}
+                {shouldShowStake && shouldShowWithdraw ? this.renderBtn(processing ? 'Withdrawing...' : 'Withdraw', this.handleWithdraw, !withdrawable) : null}
+                {!shouldShowStake && shouldShowWithdraw ? this.renderBtn(processing ? 'Withdrawing rewards...' : 'Withdraw rewards', this.handleWithdraw, !withdrawable) : null}
                 {shouldShowStake ? this.renderBtn(shouldShowWithdraw ? 'Stake' : 'Stake required', () => onStake(item)) : null}
               </>
             )}

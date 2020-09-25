@@ -350,8 +350,8 @@ class WifiRepairSetup extends PureComponent {
         <Text style={styles.title2}>
           {
             steps.length > 0 ?
-              'Connecting Node to your home Wi-Fi' :
-              'Enter\n your home Wi-Fi details'
+              'Connecting Node\n to your home Wi-Fi' :
+              'Enter your home Wi-Fi details'
           }
         </Text>
         {steps.length > 0 && this.renderLogs()}
