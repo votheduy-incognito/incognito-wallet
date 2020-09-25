@@ -8,7 +8,7 @@ export const BackUpAccountModal = ({ visible, onClose }) => (
     visible={visible}
     closeSuccessDialog={onClose}
     title="Keep your Node safe."
-    extraInfo="A keychain has been created for you. Remember to copy your private key keep it somewhere safe."
+    extraInfo="A keychain has been created for you. Remember to copy your private key and keep it somewhere safe."
     buttonStyle={[theme.BUTTON.NODE_BUTTON]}
   />
 );

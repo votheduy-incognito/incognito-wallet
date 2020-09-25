@@ -27,7 +27,7 @@ import { BackUpAccountModal } from '@screens/Node/BackuUpAccountModal';
 import ScanQRCode from './components/ScanQRCode';
 import styles from './styles';
 import ConnectionCheck from './components/ConnectionCheck';
-import WifiSetup from './components/SetupWifi/WifiSetup';
+import WifiSetup from './components/SetupWifi';
 
 export const TAG = 'GetStartedAddNode';
 
@@ -318,7 +318,7 @@ class GetStartedAddNode extends BaseScreen {
         </ScrollView>
         <SuccessModal
           title="Help Node find you"
-          extraInfo="Give the app permission to access your location"
+          extraInfo="Please give the app permission to access your location."
           visible={isErrPermission}
           closeSuccessDialog={() => {
             this.setState({ errPermission: '', isErrPermission: false });
