@@ -145,11 +145,9 @@ class Node extends BaseScreen {
     if (!clearedNode && listDevice.length === 0 && list.length > 0) {
       const firstDevice = Device.getInstance(list[0]);
 
-      if (firstDevice.IsPNode && firstDevice.IsLinked) {
-        this.setState({showWelcome: true});
+      if (firstDevice.IsPNode && !firstDevice.IsLinked) {
+        this.setState({ showWelcome: true });
       }
-    } else {
-      this.setState({ showWelcome: false });
     }
 
     // Check old product code
@@ -483,7 +481,7 @@ class Node extends BaseScreen {
           this.setState({ showModalMissingSetup: false });
           this.goToScreen(routeNames.RepairingSetupNode, { isRepairing: true, verifyProductCode: verifyProductCode });
         }}
-        successTitle="Continue"
+        successTitle="Resume"
         buttonTitle="Back"
         buttonStyle={style.button}
         closeSuccessDialog={() => {
@@ -601,7 +599,7 @@ class Node extends BaseScreen {
     return (
       <View style={style.container}>
         <Header
-          title="Nodes"
+          title="Power"
           rightHeader={rightHeader}
           style={{ paddingHorizontal: 25 }}
         />
