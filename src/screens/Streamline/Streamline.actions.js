@@ -31,18 +31,24 @@ export const actionFetch = () => async (dispatch, getState) => {
     const wallet = walletSelector(state);
     const account = defaultAccountSelector(state);
     const { isFetching } = streamlineSelector(state);
-    const { times } = streamlineDataSelector(state);
+    const { UTXONativeCoin, times } = streamlineDataSelector(state);
+    let noOfRemainingTxs = Math.ceil(UTXONativeCoin / accountServices.NO_OF_INPUT_PER_DEFRAGMENT_TX);
     if (isFetching) {
       return;
     }
     await dispatch(actionFetching());
     for (let index = 0; index < times; index++) {
+      const noOfTxsWillBeCreated = Math.min(noOfRemainingTxs, accountServices.MAX_DEFRAGMENT_TXS);
       const result = await accountServices.defragmentNativeCoin(
         MAX_FEE_PER_TX,
         true,
         account,
         wallet,
+        noOfTxsWillBeCreated,
       );
+
+      noOfRemainingTxs -= noOfTxsWillBeCreated;
+
       if (result) {
         const payload = {
           address: account?.paymentAddress,
