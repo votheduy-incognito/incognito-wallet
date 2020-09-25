@@ -372,7 +372,7 @@ const NodeUpdateWifi = () => {
       />
       <SuccessModal
         title="Help Node find you"
-        extraInfo="Give the app permission to access your location"
+        extraInfo="Please give the app permission to access your location."
         visible={permission}
         closeSuccessDialog={openLocation}
         buttonStyle={theme.BUTTON.NODE_BUTTON}
