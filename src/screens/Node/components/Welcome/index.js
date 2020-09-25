@@ -20,7 +20,7 @@ const WelcomeNodes = ({ onAddPNode, onAddVNode }) => (
     />
     <Text style={styles.buyText}>Don&apos;t have a Node yet?</Text>
     <TouchableOpacity style={[theme.FLEX.rowSpaceBetweenCenter]} onPress={() => { NavigationService.navigate(routeNames.BuyNodeScreen); }}>
-      <Text style={styles.getNode}>Get a Node</Text>
+      <Text style={styles.getNode}>Get a Node Device</Text>
       <Ionicons name="ios-arrow-forward" color={COLORS.newGrey} size={20} style={styles.arrow}  />
     </TouchableOpacity>
     <Text style={[styles.buyText, theme.MARGIN.marginTop30]}>Experienced Node operators?</Text>

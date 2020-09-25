@@ -239,7 +239,8 @@ class GetStartedAddNode extends BaseScreen {
       this.setState({ ssid: '' });
       return '';
     }
-  }
+  };
+
   setStep = async (step) => {
     // Check internet connectable
     let isConnected = await (await NetInfo.fetch()).isConnected;
@@ -249,9 +250,9 @@ class GetStartedAddNode extends BaseScreen {
 
     this.setState({ step: step });
     if (!isConnected || !connectable || !wifiName || wifiName.includes('Node') || wifiName === '') {
-      this.setState({showBandWidthModal: true});
+      this.setState({ showBandWidthModal: true });
     }
-  }
+  };
 
   renderStep() {
     const { step, qrCode, hotspotSSID, account } = this.state;
@@ -331,15 +332,14 @@ class GetStartedAddNode extends BaseScreen {
           icon={locationPermissionPng}
         />
         <SuccessModal
-          title="Weak connection"
-          extraInfo="Setup may take longer than expected due to slow network speeds."
+          title="Unable to connect"
+          extraInfo="Please ensure you are connected to Wi-Fi and try again."
           visible={showBandWidthModal}
           closeSuccessDialog={() => {
             this.setState({ showBandWidthModal: false });
             this.openSettingApp();
           }}
           buttonStyle={theme.BUTTON.NODE_BUTTON}
-          buttonTitle="Switch networks"
         />
       </View>
     );
