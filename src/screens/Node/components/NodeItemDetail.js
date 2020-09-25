@@ -103,7 +103,7 @@ class NodeItemDetail extends Component {
     let withdrawable;
 
     if (item.IsPNode && !item.IsFundedUnstaked && !item.IsFundedUnstaking) {
-      withdrawable = item.IsFundedStakeWithdrawable;
+      withdrawable = !processing && item.IsFundedStakeWithdrawable;
     } else {
       withdrawable = !(processing || !!_.get(withdrawTxs, item.PaymentAddress));
     }
