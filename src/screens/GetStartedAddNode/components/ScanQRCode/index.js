@@ -134,7 +134,7 @@ class ScanQRCode extends Component {
     const { error } = this.state;
     return (
       <View>
-        <Text style={styles.title2}>{'Scan the code at the base\nof your device'}</Text>
+        <Text style={styles.title2}>{'Scan the code at the base\nof your device...'}</Text>
         {this.renderContent()}
         <Text style={styles.qrError}>{error}</Text>
         {this.renderFooter()}
