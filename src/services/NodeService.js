@@ -8,6 +8,7 @@ import _ from 'lodash';
 import ZMQService from 'react-native-zmq-service';
 import API from '@services/api/miner/api';
 import axios from 'axios';
+import moment from 'moment';
 import { CustomError, ExHandler } from './exception';
 import knownCode from './exception/customError/code/knownCode';
 import FirebaseService, {
@@ -196,23 +197,31 @@ export default class NodeService {
     return true;
   }
 
-  static updateFirware = async (device: Device, chain = 'incognito') => {
+  static updateFirmware = async (device: Device, chain = 'incognito') => {
+    const lastUpdateFirmWare = LocalDatabase.getLastUpdateFirmware();
+    const currentTime = moment();
 
-    try {
-      if (!_.isEmpty(device)) {
-        const actionReset = LIST_ACTION.UPDATE_FIRMWARE;
-        const dataResult = await Util.excuteWithTimeout(NodeService.send(device.data, actionReset, chain, Action.TYPE.PRODUCT_CONTROL), timeout);
-        console.log(TAG, 'updateFirware send dataResult = ', dataResult);
-        // const { status = -1, data, message= ''} = dataResult;
-        return dataResult;
+    const diffInMinutes = currentTime.diff(lastUpdateFirmWare, 'minutes');
+
+    // Only update firmware once every 5 minutes. Because if we update it continuously,
+    // the Node will die \./
+    if (diffInMinutes >= 5) {
+      try {
+        if (!_.isEmpty(device)) {
+          const actionReset = LIST_ACTION.UPDATE_FIRMWARE;
+          const dataResult = await Util.excuteWithTimeout(NodeService.send(device.data, actionReset, chain, Action.TYPE.PRODUCT_CONTROL), timeout);
+          console.log(TAG, 'updateFirware send dataResult = ', dataResult);
+          // const { status = -1, data, message= ''} = dataResult;
+          return dataResult;
+        }
+      } catch (error) {
+        console.log(TAG, 'updateFirware error = ', error);
+        return null;
       }
-    } catch (error) {
-      console.log(TAG, 'updateFirware error = ', error);
-      return null;
     }
 
     return null;
-  }
+  };
 
   static checkVersion = async (device: Device, chain = 'incognito') => {
     try {
