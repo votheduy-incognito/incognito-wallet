@@ -2,57 +2,32 @@ import { ActivityIndicator, Text, View } from '@src/components/core';
 import accountService from '@src/services/wallet/accountService';
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import KeepAwake from 'react-native-keep-awake';
 import PureModal from '@components/Modal/features/PureModal';
 import styleSheet from './style';
 
-class LoadingTx extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      open: false,
-      percent: 0,
-      message: '',
-    };
-
-    this.timer = null;
-  }
-
-  componentDidMount() {
-    this.handleToggle(true);
-    this.timer = setInterval(() => {
-      this.progress();
-    }, 1000);
-  }
-
-  componentWillUnmount() {
-    this.clearTimer();
-  }
-
-  clearTimer = () => this.timer && clearInterval(this.timer);
-
-  progress = () => {
+const LoadingTx = (props) => {
+  const [state, setState] = React.useState({
+    open: true,
+    percent: 0,
+    message: '',
+    totalTime: 0,
+  });
+  const { text, propPercent, descFactories } = props;
+  const { open, percent, message, totalTime } = state;
+  const totalPercent =
+    typeof propPercent !== 'undefined' ? propPercent : percent;
+  const progress = () => {
     const percent = accountService.getProgressTx();
     const message = accountService.getDebugMessage();
-    percent &&
-      this.setState({ percent, message }, () => {
-        if (percent === 100) {
-          this.clearTimer();
-          setTimeout(() => this.handleToggle(false), 1000);
-        }
-      });
+    setState({ ...state, percent, message, totalTime: new Date().getTime() });
+    if (percent === 100) {
+      setTimeout(() => handleToggle(false), 1000);
+    }
   };
-
-  handleToggle = (isOpen) => {
-    this.setState(({ open }) => ({ open: isOpen ?? !open }));
-  };
-
-  renderModalContent = () => {
-    const { percent, message } = this.state;
-    const { text, propPercent, descFactories } = this.props;
-    const totalPercent =
-      typeof propPercent !== 'undefined' ? propPercent : percent;
+  const handleToggle = (isOpen) => setState({ ...state, open: !!isOpen });
+  const renderModalContent = () => {
     return (
       <View style={styleSheet.container}>
         <View style={styleSheet.wrapper}>
@@ -73,17 +48,22 @@ class LoadingTx extends Component {
           {!!global.isDebug() && !!message && (
             <Text style={styleSheet.desc}>{message}</Text>
           )}
+          {!!global.isDebug() && (
+            <Text style={styleSheet.desc}>{('Total time: ', totalTime)}</Text>
+          )}
         </View>
         <KeepAwake />
       </View>
     );
   };
-
-  render() {
-    const { open } = this.state;
-    return <PureModal visible={open} content={this.renderModalContent()} />;
-  }
-}
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      progress();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+  return <PureModal visible={open} content={renderModalContent()} />;
+};
 
 LoadingTx.defaultProps = {
   text: '',
@@ -97,4 +77,4 @@ LoadingTx.propTypes = {
   descFactories: PropTypes.array,
 };
 
-export default LoadingTx;
+export default React.memo(LoadingTx);
