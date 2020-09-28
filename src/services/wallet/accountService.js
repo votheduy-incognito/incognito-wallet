@@ -758,9 +758,10 @@ export default class Account {
    * @param {boolean} isPrivacy
    * @param {object} account
    * @param {object} wallet
+   * @param {number} noOfTxs
    * @returns {Promise<*>}
    */
-  static async defragmentNativeCoin(fee, isPrivacy, account, wallet) {
+  static async defragmentNativeCoin(fee, isPrivacy, account, wallet, noOfTxs = this.MAX_DEFRAGMENT_TXS) {
     if (!wallet) {
       throw new Error('Missing wallet');
     }
@@ -772,7 +773,7 @@ export default class Account {
     );
     const result = await wallet.MasterAccount.child[
       indexAccount
-    ].defragmentNativeCoin(fee, isPrivacy, this.NO_OF_INPUT_PER_DEFRAGMENT_TX, this.MAX_DEFRAGMENT_TXS);
+    ].defragmentNativeCoin(fee, isPrivacy, this.NO_OF_INPUT_PER_DEFRAGMENT_TX, noOfTxs);
 
     // save wallet
     await saveWallet(wallet);
