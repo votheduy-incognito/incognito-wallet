@@ -50,22 +50,15 @@ export default class Server {
     return storage.getItem(KEY.SERVER)
       .then(strData => {
         cachedList = JSON.parse(strData) || [];
-        if (cachedList.length === 3) {
-          cachedList = [
-            cachedList[0],
-            {
-              ...cachedList[1],
-              address: TESTNET_FULLNODE,
-            },
-            {
-              ...KEY.DEFAULT_LIST_SERVER[2],
-              default: false,
-            },
-            {
-              ...cachedList[2],
-              address: MAINNET_FULLNODE,
-            },
-          ];
+        if (cachedList.length === 4) {
+          cachedList.push( {
+            id: 'testnet2',
+            default: false,
+            address: 'http://51.161.119.66:9334',
+            username: '',
+            password: '',
+            name: 'Testnet 2'
+          });
         }
 
         storage.setItem(KEY.SERVER, JSON.stringify(cachedList));
