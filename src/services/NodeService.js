@@ -201,25 +201,23 @@ export default class NodeService {
   static updateFirmware = async (device: Device, latestVersion) => {
     const lastUpdateFirmWare = await getLastUpdateFirmwareTime(device.QRCode, latestVersion);
 
-    const currentTime = moment();
+    if (lastUpdateFirmWare) {
+      const currentTime = moment();
+      const diffInMinutes = currentTime.diff(lastUpdateFirmWare, 'minutes');
 
-    const diffInMinutes = currentTime.diff(lastUpdateFirmWare, 'minutes');
+      // console.debug('CURRENT TIME', currentTime.format(), lastUpdateFirmWare.format(), diffInMinutes);
 
-    // console.debug('CURRENT TIME', currentTime.format(), lastUpdateFirmWare.format(), diffInMinutes);
-
-    // Only update firmware once every 5 minutes. Because if we update it continuously,
-    // the Node will die \./
-    if (diffInMinutes < 5) {
-      return;
+      // Only update firmware once every 5 minutes. Because if we update it continuously,
+      // the Node will die \./
+      if (diffInMinutes < 5) {
+        return;
+      }
     }
 
     try {
-      if (!_.isEmpty(device)) {
-        const actionReset = LIST_ACTION.UPDATE_FIRMWARE;
-        Util.excuteWithTimeout(NodeService.send(device.data, actionReset, undefined, Action.TYPE.PRODUCT_CONTROL), timeout);
-
-        await setLastUpdatefirmwareTime(device.QRCode, latestVersion);
-      }
+      const actionReset = LIST_ACTION.UPDATE_FIRMWARE;
+      Util.excuteWithTimeout(NodeService.send(device.data, actionReset, undefined, Action.TYPE.PRODUCT_CONTROL), timeout);
+      await setLastUpdatefirmwareTime(device.QRCode, latestVersion);
     } catch (error) {
       console.log(TAG, 'updateFirware error = ', error);
       return null;

@@ -45,9 +45,9 @@ export const getLastUpdateFirmwareTime = async (qrCode, version) => {
   try {
     const url = `system/last-update-firmware?DeviceID=${qrCode}&Version=${version}`;
     const data = await http.get(url);
-    return moment(data.CreatedAt);
+    return moment(data.UpdatedAt);
   } catch {
-    return moment();
+    return null;
   }
 };
 
