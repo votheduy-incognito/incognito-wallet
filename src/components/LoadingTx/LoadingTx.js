@@ -21,17 +21,13 @@ class LoadingTx extends Component {
 
   componentDidMount() {
     this.handleToggle(true);
-    if (typeof this?.propPercent !== 'undefined') {
-      this.timer = setInterval(() => {
-        this.progress();
-      }, 1000);
-    }
+    this.timer = setInterval(() => {
+      this.progress();
+    }, 1000);
   }
 
   componentWillUnmount() {
-    if (typeof this?.propPercent !== 'undefined') {
-      this.clearTimer();
-    }
+    this.clearTimer();
   }
 
   clearTimer = () => this.timer && clearInterval(this.timer);
