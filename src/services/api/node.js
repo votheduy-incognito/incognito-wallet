@@ -1,5 +1,6 @@
 import http from '@src/services/http';
 import PToken from '@models/pToken';
+import moment from 'moment';
 
 const url = 'pool/request-unstake';
 
@@ -32,4 +33,34 @@ export const getPTokenSupportForBuyingDevice = () => {
 
 export const getNodePrice = () => {
   return http.get('order/price');
+};
+
+/**
+ * Get last update firmware time
+ * @param {string} qrCode
+ * @param {string} version
+ * @returns {Promise<moment>}
+ */
+export const getLastUpdateFirmwareTime = async (qrCode, version) => {
+  try {
+    const url = `system/last-update-firmware?DeviceID=${qrCode}&Version=${version}`;
+    const data = await http.get(url);
+    return moment(data.CreatedAt);
+  } catch {
+    return moment();
+  }
+};
+
+/**
+ * Set last update firmware time
+ * @param {string} qrCode
+ * @param {string} version
+ * @returns {Promise<void>}
+ */
+export const setLastUpdatefirmwareTime = async (qrCode, version) => {
+  const url = `system/last-update-firmware?DeviceID=${qrCode}&Version=${version}`;
+  return http.post(url, {
+    Version: version,
+    DeviceID: qrCode,
+  });
 };
