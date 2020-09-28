@@ -274,8 +274,6 @@ const NodeUpdateWifi = () => {
 
     if (OUT_DATE_VERSIONS.includes(version)) {
       setSuccess(true);
-      NodeService.updateFirmware(device)
-        .catch(e => console.debug('UPDATE FIRMWARE FAILED', e));
     } else {
       await checkCurrentWifi();
     }
