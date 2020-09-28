@@ -92,7 +92,7 @@ class LoadingTx extends Component {
 LoadingTx.defaultProps = {
   text: '',
   propPercent: undefined,
-  descFactories: [],
+  descFactories: null,
 };
 
 LoadingTx.propTypes = {
