@@ -2,6 +2,7 @@ import User from '@models/user';
 import AsyncStorage from '@react-native-community/async-storage';
 import {CONSTANT_KEYS} from '@src/constants';
 import _ from 'lodash';
+import moment from 'moment';
 
 const TAG = 'LocalDatabase';
 export const KEY_SAVE = {
@@ -26,6 +27,7 @@ export const KEY_SAVE = {
   PROVIDE_TXS: CONSTANT_KEYS.PROVIDE_TXS,
   NODECLEARED: '$node_cleared',
   SHIP_ADDRESS: '$ship_address',
+  LAST_UPDATE_FIRMWARE: '$last_update_firmware',
 };
 export default class LocalDatabase {
   static async getValue(key: String): String {
@@ -346,7 +348,7 @@ export default class LocalDatabase {
       JSON.stringify(txs || []),
     );
   }
-  
+
   // For node caching
   static getNodeCleared = () => {
     return LocalDatabase.getValue(KEY_SAVE.NODECLEARED);
@@ -363,5 +365,22 @@ export default class LocalDatabase {
 
   static setShipAddress = (value) => {
     return LocalDatabase.saveValue(KEY_SAVE.SHIP_ADDRESS, JSON.stringify(value || {}));
+  };
+
+  /**
+   * Get last time update firmware
+   * @returns {Promise<moment>}
+   */
+  static getLastUpdateFirmware = async () => {
+    const value = await LocalDatabase.getValue(KEY_SAVE.LAST_UPDATE_FIRMWARE);
+    return moment(_.toNumber(value || ''));
+  };
+
+  /**
+   * Save last time update firmware (current time)
+   * @returns {Promise<void>}
+   */
+  static setLastUpdateFirmware = () => {
+    return LocalDatabase.saveValue(KEY_SAVE.LAST_UPDATE_FIRMWARE, new Date().getTime().toString());
   };
 }

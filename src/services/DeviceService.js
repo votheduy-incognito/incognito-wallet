@@ -20,7 +20,7 @@ const templateAction = {
 const timeout = 10;
 
 export default class DeviceService {
-  
+
   static formatForDisplayBalance = (balance:Number)=>{
     return format.amount(_.isNaN(balance)?0:balance,common.DECIMALS['PRV']);
   }
@@ -59,14 +59,14 @@ export default class DeviceService {
       switch(device.Type){
       case DEVICES.VIRTUAL_TYPE:
         return await VirtualNodeService.isStaked(device);
-          
+
       default:{
         const accountName = device.accountName();
         const accountModel = await accountService.getFullDataOfAccount(accountName,wallet);
         return !_.isEmpty(accountModel?.BLSPublicKey) && await VirtualNodeService.checkStakedWithBlsKey(accountModel.BLSPublicKey);
       }
       }
-      
+
 
     } catch (error) {
       console.log(TAG,'isStaked error',error);
@@ -76,11 +76,11 @@ export default class DeviceService {
 
 
   // static fetchAndSavingInfoNodeStake = async(device:Device,isNeedSaving=false)=>{
-    
+
   //   try {
-      
+
   //     const paymentAddress =  device.PaymentAddressFromServer;
-      
+
   //     const resultRequest =  await Util.excuteWithTimeout(APIService.fetchInfoNodeStake({
   //       PaymentAddress:paymentAddress
   //     }),5).catch(console.log);
@@ -98,7 +98,7 @@ export default class DeviceService {
   //     }
 
   //     return dataRequestStake;
-      
+
   //   } catch (error) {
   //     console.log(TAG,'fetchAndSavingInfoNodeStake error = ',error);
   //   }
@@ -119,7 +119,7 @@ export default class DeviceService {
     return result;
   }
 
-  /** 
+  /**
     * Result : null -> network have problem,
     *{}: not earning
   */
@@ -129,7 +129,7 @@ export default class DeviceService {
      if(!_.isEmpty(deviceInfo)){
        switch(deviceInfo.Type){
        case DEVICES.VIRTUAL_TYPE:{
-        
+
          const dataResult = await VirtualNodeService.getRewardFromMiningkey(deviceInfo);
          console.log(TAG,'getRewardAmountAllToken VIRTUAL_TYPE ',dataResult);
          Result = dataResult?.Result;
@@ -152,13 +152,13 @@ export default class DeviceService {
    } catch (error) {
      new ExHandler(error,'getRewardAmountAllToken error').showWarningToast().throw();
    }
-  
+
    return Result;
  }
 
- //  /** 
+ //  /**
  //     * balance : null -> node die,
- //     *-1: full-node die 
+ //     *-1: full-node die
  //   */
  //  static getRewardAmount = async (deviceInfo:Device)=>{
  //    let balance = null;
@@ -185,18 +185,18 @@ export default class DeviceService {
  //    return balance;
  //  }
 
- /** 
+ /**
     * balance : null -> node die,
-    *-1: full-node die 
+    *-1: full-node die
   */
  static getRewardAmount = async (deviceInfo:Device)=>{
    let balance = null;
    if(!_.isEmpty(deviceInfo)){
      const Result = await DeviceService.getRewardAmountAllToken(deviceInfo).catch(console.log) ?? null;
      balance = _.isNil(Result) ?-1:Result?.PRV;
-     
+
      switch(deviceInfo.Type){
-     case DEVICES.VIRTUAL_TYPE:{       
+     case DEVICES.VIRTUAL_TYPE:{
        console.log(TAG,'getRewardAmount VIRTUAL_TYPE dataResult = ',Result,deviceInfo.Name,balance);
        break;
      }
@@ -220,14 +220,14 @@ export default class DeviceService {
      console.log(TAG,'updateFirmwareForNode begin -- ',device.isUpdatingFirmware());
      if(!device.isUpdatingFirmware()){
        console.log(TAG,'updateFirmwareForNode begin01');
-       const {data,status} = await NodeService.updateFirware(device).catch(console.log)??{};
+       const {data,status} = await NodeService.updateFirmware(device).catch(console.log)??{};
        await LocalDatabase.saveUpdatingFirware(device.ProductId,true);
        return 0;
      }
    } catch (error) {
      return -1;
    }
-   
+
    return 1;
  }
 

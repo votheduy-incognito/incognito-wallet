@@ -168,7 +168,7 @@ class NodeItem extends React.Component {
         console.debug('LATEST VERSION', device.QRCode, version, latestVersion);
 
         if (version !== latestVersion) {
-          NodeService.updateFirware(device)
+          NodeService.updateFirmware(device)
             .then(res => console.debug('UPDATE FIRMWARE SUCCESS', device.QRCode, res))
             .catch(e => console.debug('UPDATE FIRMWARE FAILED', device.QRCode, e));
         }
