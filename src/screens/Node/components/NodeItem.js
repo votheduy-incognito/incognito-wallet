@@ -75,6 +75,23 @@ class NodeItem extends React.Component {
       }
     }
 
+    if (device.IsOnline && device.Host) {
+      try {
+        const version = await NodeService.checkVersion(device);
+        const latestVersion = await NodeService.getLatestVersion();
+
+        device.Firmware = version;
+
+        if (version && version !== latestVersion) {
+          NodeService.updateFirmware(device, latestVersion)
+            .then(res => console.debug('UPDATE FIRMWARE SUCCESS', device.QRCode, res))
+            .catch(e => console.debug('UPDATE FIRMWARE FAILED', device.QRCode, e));
+        }
+      } catch (e) {
+        console.debug('CHECK VERSION ERROR', device.QRCode, e);
+      }
+    }
+
     if (device.PaymentAddress) {
       const { wallet } = this.props;
 
@@ -155,23 +172,6 @@ class NodeItem extends React.Component {
       });
 
       device.Rewards = actualRewards;
-    }
-
-    if (device.IsOnline && device.Host) {
-      try {
-        const version = await NodeService.checkVersion(device);
-        const latestVersion = await NodeService.getLatestVersion();
-
-        device.Firmware = version;
-
-        if (version && version !== latestVersion) {
-          NodeService.updateFirmware(device, latestVersion)
-            .then(res => console.debug('UPDATE FIRMWARE SUCCESS', device.QRCode, res))
-            .catch(e => console.debug('UPDATE FIRMWARE FAILED', device.QRCode, e));
-        }
-      } catch (e) {
-        console.debug('CHECK VERSION ERROR', device.QRCode, e);
-      }
     }
 
     return device;
