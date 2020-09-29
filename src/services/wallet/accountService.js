@@ -154,6 +154,7 @@ export default class Account {
     nativeFee,
     tokenFee,
     prvAmount,
+    memo = '',
   ) {
     if (tokenId === COINS.PRV_ID) {
       const paymentInfos = [
@@ -169,7 +170,7 @@ export default class Account {
         true,
         account,
         wallet,
-        '',
+        memo,
       );
     }
 
@@ -205,6 +206,7 @@ export default class Account {
       wallet,
       paymentInfos,
       tokenFee,
+      memo,
     );
   }
 
