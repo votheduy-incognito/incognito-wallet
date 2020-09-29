@@ -32,13 +32,11 @@ export const streamlineDataSelector = createSelector(
     const maxInputPerTx = accountServices.NO_OF_INPUT_PER_DEFRAGMENT_TX;
     const totalFee = MAX_FEE_PER_TX * Math.ceil(UTXONativeCoin / maxInputPerTx);
     const times = Math.ceil(UTXONativeCoin / MAX_UTXOS_PER_DEFRAGMENT_PROCESS);
-    const percent =
-      times === 1 ? undefined : Math.ceil((consolidated / times) * 100);
     return {
       totalFee,
       UTXONativeCoin,
       times,
-      percent,
+      consolidated,
     };
   },
 );

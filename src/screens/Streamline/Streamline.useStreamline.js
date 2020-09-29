@@ -32,7 +32,7 @@ export const useStreamLine = () => {
   const { isFetching, isFetched, isPending } = streamline;
   const streamlineStorage = useSelector(streamlineStorageSelector);
   const { data } = streamlineStorage[keySave];
-  const { totalFee, UTXONativeCoin, times, percent } = useSelector(
+  const { totalFee, UTXONativeCoin, times, consolidated } = useSelector(
     streamlineDataSelector,
   );
   const onNavigateStreamLine = () => navigation.navigate(routeNames.Streamline);
@@ -94,6 +94,7 @@ export const useStreamLine = () => {
     data,
     times,
     isPending,
-    percent,
+    totalTimes: times,
+    currentTime: consolidated,
   };
 };
