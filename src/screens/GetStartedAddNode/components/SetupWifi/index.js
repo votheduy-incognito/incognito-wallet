@@ -418,7 +418,7 @@ class WifiSetup extends PureComponent {
     let verifyNewCode = `${deviceId}.${time}`;
     const userJson = await LocalDatabase.getUserInfo();
     const user = userJson.toJSON();
-    const { id, token } = user;
+    const { id, token, refresh_token } = user;
     const { ValidatorKey } = account;
     this.setState({ verifyCode: verifyNewCode, lastVerifyCode: verifyNewCode }, () => {
       console.log('### INCOGNITO ###: Last VerifyCode set new' + lastVerifyCode);
@@ -436,6 +436,7 @@ class WifiSetup extends PureComponent {
       verify_code: verifyNewCode,
       platform: CONSTANT_MINER.PRODUCT_TYPE,
       token,
+      refresh_token,
       time_zone: getTimeZone(),
       user_id: id,
       address_long: 0.0,
