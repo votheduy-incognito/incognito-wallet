@@ -116,6 +116,8 @@ const enhance = WrappedComponent =>
         .ios.registerForRemoteNotifications();
       firebase.messaging().ios.getAPNSToken();
 
+      firebase.messaging().subscribeToTopic(global.isMainnet ? 'all-production' : 'all-staging');
+
       firebase.messaging().onMessage(this.handleSendNotificationToSystem);
       firebase.notifications().onNotification(this.handleSendNotificationToSystem);
 
