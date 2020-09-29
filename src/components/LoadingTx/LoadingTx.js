@@ -14,10 +14,18 @@ const LoadingTx = (props) => {
     message: '',
     totalTime: 0,
   });
-  const { text, propPercent, descFactories } = props;
+  const { text, descFactories, currentTime, totalTimes } = props;
   const { open, percent, message, totalTime } = state;
-  const totalPercent =
-    typeof propPercent !== 'undefined' ? propPercent : percent;
+
+  let displayPercent = percent;
+
+  if (totalTimes) {
+    const maxPercentPerTime = 100 / totalTimes;
+    const currentTimeStartPercent = currentTime * maxPercentPerTime;
+
+    displayPercent = Math.floor(currentTimeStartPercent + (percent / totalTimes));
+  }
+
   const progress = () => {
     const percent = accountService.getProgressTx();
     const message = accountService.getDebugMessage();
@@ -27,12 +35,13 @@ const LoadingTx = (props) => {
     }
   };
   const handleToggle = (isOpen) => setState({ ...state, open: !!isOpen });
+
   const renderModalContent = () => {
     return (
       <View style={styleSheet.container}>
         <View style={styleSheet.wrapper}>
           <ActivityIndicator size="large" color={COLORS.black} />
-          <Text style={styleSheet.percent}>{`${totalPercent}%`}</Text>
+          <Text style={styleSheet.percent}>{`${displayPercent}%`}</Text>
           {!!text && (
             <Text style={[styleSheet.desc, styleSheet.extraDesc]}>{text}</Text>
           )}
@@ -56,24 +65,28 @@ const LoadingTx = (props) => {
       </View>
     );
   };
+
   React.useEffect(() => {
     const interval = setInterval(() => {
       progress();
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+
   return <PureModal visible={open} content={renderModalContent()} />;
 };
 
 LoadingTx.defaultProps = {
   text: '',
-  propPercent: undefined,
+  totalTimes: undefined,
+  currentTime: undefined,
   descFactories: null,
 };
 
 LoadingTx.propTypes = {
   text: PropTypes.string,
-  propPercent: PropTypes.number,
+  totalTimes: PropTypes.number,
+  currentTime: PropTypes.number,
   descFactories: PropTypes.array,
 };
 

@@ -75,7 +75,8 @@ const Streamline = (props) => {
     handleNavigateWhyStreamline,
     isFetching,
     isPending,
-    percent,
+    totalTimes,
+    currentTime,
   } = useStreamLine();
   const { refresh, handleFetchData } = props;
   const renderMain = () => {
@@ -90,7 +91,8 @@ const Streamline = (props) => {
         <Extra {...props} />
         {isFetching && (
           <LoadingTx
-            propPercent={percent}
+            currentTime={currentTime}
+            totalTimes={totalTimes}
             descFactories={[
               {
                 desc:
