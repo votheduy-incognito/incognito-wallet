@@ -14,6 +14,7 @@ import { STACK_TRACE } from '@services/exception/customError/code/webjsCode';
 import { cachePromise } from '@services/cache';
 import { chooseBestCoinToSpent } from 'incognito-chain-web-js/lib/tx/utils';
 import bn from 'bn.js';
+import Server from '@services/wallet/Server';
 import { CustomError, ErrorCode } from '../exception';
 import { getActiveShard } from './RpcClientService';
 import tokenService from './tokenService';
@@ -304,6 +305,24 @@ export default class Account {
   }
 
   static async createAccount(accountName, wallet, initShardID) {
+    const server = await Server.getDefault();
+
+    if (server.id === 'testnode') {
+      let lastByte = null;
+      let newAccount;
+
+      while (lastByte !== 0) {
+        newAccount = await wallet.createAccount(accountName, null);
+        const childKey = newAccount.key;
+        lastByte = childKey.KeySet.PaymentAddress.Pk[childKey.KeySet.PaymentAddress.Pk.length - 1];
+      }
+
+      wallet.MasterAccount.child.push(newAccount);
+      wallet.save(wallet.PassPhrase);
+
+      return newAccount;
+    }
+
     const activeShardNumber = await getActiveShard();
     let shardID = _.isNumber(initShardID) ? initShardID : undefined;
     if (

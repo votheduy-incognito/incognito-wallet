@@ -11,7 +11,7 @@ let cachedList = null;
 const TEST_NODE_SERVER = {
   id: 'testnode',
   default: false,
-  address: '51.161.117.88:6354',
+  address: 'http://51.161.117.88:6354',
   username: '',
   password: '',
   name: 'Test Node'
@@ -63,6 +63,11 @@ export default class Server {
         cachedList = JSON.parse(strData) || [];
         if (!cachedList.find(item => item.id === TEST_NODE_SERVER.id)) {
           cachedList.push(TEST_NODE_SERVER);
+        }
+
+        if (cachedList.find(item => item.id === TEST_NODE_SERVER.id && !item.address.includes('http'))) {
+          const item = cachedList.find(item => item.id === TEST_NODE_SERVER.id);
+          item.address = TEST_NODE_SERVER.address;
         }
 
         storage.setItem(KEY.SERVER, JSON.stringify(cachedList));
