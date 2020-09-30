@@ -131,6 +131,10 @@ export const actionNavigate = (item, navigation) => async (
         );
       }
 
+      if (tokenId) {
+        await dispatch(setSelectedPrivacy(tokenId));
+      }
+
       navigation.navigate(screen, params);
       break;
     }
