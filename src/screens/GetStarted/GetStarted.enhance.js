@@ -4,7 +4,7 @@ import Wizard from '@screens/Wizard';
 import { useSelector, useDispatch } from 'react-redux';
 import { login } from '@src/services/auth';
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
-import { reloadWallet } from '@src/redux/actions/wallet';
+import { reloadAccountList, reloadWallet } from '@src/redux/actions/wallet';
 import { getPTokenList, getInternalTokenList } from '@src/redux/actions/token';
 import { loadPin } from '@src/redux/actions/pin';
 import routeNames from '@src/router/routeNames';
@@ -21,6 +21,8 @@ import { LoadingContainer } from '@src/components/core';
 import { actionFetch as actionFetchProfile } from '@screens/Profile';
 import { KEYS } from '@src/constants/keys';
 import { getFunctionConfigs } from '@services/api/misc';
+import { DEX } from '@utils/dex';
+import accountService from '@services/wallet/accountService';
 import {
   wizardSelector,
   isFollowedDefaultPTokensSelector,
@@ -135,9 +137,33 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
 
-  const goHome = async () => {
+  const goHome = async ({ wallet }) => {
     try {
+      let isCreatedNewAccount = false;
+      let accounts = await wallet.listAccount();
+      if (!accounts.find((item) => item.AccountName === DEX.MAIN_ACCOUNT)) {
+        const firstAccount = accounts[0];
+        await accountService.createAccount(
+          DEX.MAIN_ACCOUNT,
+          wallet,
+          accountService.parseShard(firstAccount),
+        );
+        isCreatedNewAccount = true;
+      }
+      if (!accounts.find((item) => item.AccountName === DEX.WITHDRAW_ACCOUNT)) {
+        accounts = await wallet.listAccount();
+        const dexMainAccount = accounts.find(
+          (item) => item.AccountName === DEX.MAIN_ACCOUNT,
+        );
+        await accountService.createAccount(
+          DEX.WITHDRAW_ACCOUNT,
+          wallet,
+          accountService.parseShard(dexMainAccount),
+        );
+        isCreatedNewAccount = true;
+      }
       dispatch(initNotification());
+      isCreatedNewAccount ? dispatch(reloadAccountList()) : false;
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
