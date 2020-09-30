@@ -7,6 +7,16 @@ export const DEV_TESTNET_FULLNODE = 'https://dev-test-node.incognito.org/fullnod
 
 const isMainnet = global.isMainnet??true;
 let cachedList = null;
+
+const TEST_NODE_SERVER = {
+  id: 'testnode',
+  default: false,
+  address: '51.161.117.88:6354',
+  username: '',
+  password: '',
+  name: 'Test Node'
+};
+
 export const KEY = {
   SERVER: '$servers',
   DEFAULT_LIST_SERVER:[{
@@ -25,6 +35,7 @@ export const KEY = {
     password: '',
     name: 'Testnet'
   },
+  TEST_NODE_SERVER,
   {
     id: 'devtestnet',
     default:!isMainnet,
@@ -50,15 +61,8 @@ export default class Server {
     return storage.getItem(KEY.SERVER)
       .then(strData => {
         cachedList = JSON.parse(strData) || [];
-        if (cachedList.length === 4) {
-          cachedList.push( {
-            id: 'testnet2',
-            default: false,
-            address: 'http://51.161.119.66:9334',
-            username: '',
-            password: '',
-            name: 'Testnet 2'
-          });
+        if (!cachedList.find(item => item.id === TEST_NODE_SERVER.id)) {
+          cachedList.push(TEST_NODE_SERVER);
         }
 
         storage.setItem(KEY.SERVER, JSON.stringify(cachedList));
