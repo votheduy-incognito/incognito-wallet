@@ -72,7 +72,7 @@ const Pending = React.memo(() => {
   const remainingUTXOs = UTXONativeCoin - accountService.NO_OF_INPUT_PER_DEFRAGMENT + accountService.MAX_DEFRAGMENT_TXS;
   const consolidatedUTXOs = accountService.NO_OF_INPUT_PER_DEFRAGMENT;
 
-  if (UTXONativeCoin > accountService.NO_OF_INPUT_PER_DEFRAGMENT) {
+  if (remainingUTXOs > accountService.NO_OF_INPUT_PER_DEFRAGMENT) {
     return (
       <>
         <Text style={styled.emptyTitle}>
