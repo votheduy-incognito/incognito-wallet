@@ -1,10 +1,13 @@
 import { StyleSheet } from 'react-native';
 import { COLORS, FONT } from '@src/styles';
+import { ScreenWidth } from '@src/utils/devices';
+import theme from '@src/styles/theme';
 
 const style = StyleSheet.create({
   container: {
     padding: 30,
-    backgroundColor: COLORS.lightGrey6,
+    paddingTop: 0,
+    backgroundColor: COLORS.white,
   },
   title: {
     fontSize: 24,
@@ -12,59 +15,45 @@ const style = StyleSheet.create({
     textAlign: 'center'
   },
   headerContainer: {
-    flexDirection: 'row', 
-    alignContent: 'center', 
-    alignItems: 'center', 
-    justifyContent: 'flex-start' 
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'flex-start'
   },
   pNode: {
-    padding: 30,
-    paddingTop: 40,
     backgroundColor: COLORS.white,
-    borderRadius: 8,
-    shadowOpacity: 1,
-    shadowRadius: 4,
-    shadowColor: COLORS.lightGrey15,
-    shadowOffset: { height: 2, width: 0 },
-    marginBottom: 15,
-    elevation: 3,
+    paddingBottom: 150,
   },
   pNodeImg: {
-    width: 200,
     alignSelf: 'center',
-    resizeMode: 'cover',
-    marginBottom: -20,
+    marginVertical: 50,
+    width: 180,
   },
   pNodeButton: {
-    marginBottom: 35,
+    marginBottom: 50,
+    height: theme.SIZES.button.height
   },
   buyButton: {
-    backgroundColor: COLORS.dark2,
+    backgroundColor: COLORS.white,
   },
   buyText: {
-    textAlign: 'center',
-    color: COLORS.lightGrey9,
-    marginBottom: 15,
+    textAlign: 'left',
+    color: COLORS.black,
+    fontFamily: FONT.NAME.bold,
+    fontSize: FONT.SIZE.superMedium,
+    lineHeight: 20,
+    marginBottom: 10,
   },
-  vNodeTitle: {
-    textAlign: 'center',
-    color: COLORS.lightGrey9,
-    marginTop: 35,
-    marginBottom: 15,
+  getNode: {
+    textAlign: 'left',
+    color: COLORS.newGrey,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: 18,
   },
-  vNodeText: {
-    color: COLORS.dark1,
+  arrow: {
+    fontFamily: FONT.NAME.regular,
   },
-  vNodeButton: {
-    shadowOpacity: 1,
-    shadowRadius: 4,
-    shadowColor: COLORS.lightGrey15,
-    shadowOffset: { height: 2, width: 0 },
-    marginBottom: 50,
-    borderWidth: 1,
-    elevation: 3,
-    backgroundColor: COLORS.white,
-  }
 });
 
 export default style;

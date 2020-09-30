@@ -1,7 +1,6 @@
 import { Component } from 'react';
 import { AppState } from 'react-native';
 import { Toast } from './core';
-import DeviceLog from './DeviceLog';
 
 export const TAG = 'BaseComponent';
 
@@ -35,18 +34,13 @@ class BaseComponent extends Component {
     this.subs?.forEach(sub => sub?.remove());
     AppState.removeEventListener('change', this.handleAppStateChange);
   }
-  showLogConnect=(message)=>{
-    DeviceLog.show(); //
-  }
-  logOnView=(message)=>{
-    DeviceLog.logInfo(message);
-  }
+
   onResume = () => {};
 
 
   showToastMessage = (message = '', callback?) => {
     // message && new ExHandler(new Error(message),message).showWarningToast();
-    message && Toast.showInfo(message);
+    message && Toast.showInfo(message, { duration: 10000 });
   };
 
   handleAppStateChange = nextAppState => {
@@ -66,7 +60,6 @@ class BaseComponent extends Component {
       AppState.currentState === 'active'
     );
   };
-
 }
 
 BaseComponent.propTypes = {};

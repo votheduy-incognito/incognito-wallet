@@ -276,4 +276,24 @@ export async function getNodeTime() {
   return client.getNodeTime();
 }
 
+export async function getPublicKeyFromPaymentAddress(paymentAddress) {
+  const client = await getRpcClient();
+  const data = {
+    'jsonrpc': '1.0',
+    'method': 'getpublickeyfrompaymentaddress',
+    'params': [paymentAddress],
+    'id': 1
+  };
+
+  const response = await client.rpcHttpService.postRequest(data);
+
+  if (response.status !== 200) {
+    throw new Error('Can\'t request API check has serial number derivator');
+  } else if (response.data.Error) {
+    throw response.data.Error;
+  }
+
+  return response.data.Result.PublicKeyInBase58Check;
+}
+
 setRpcClientInterceptor();

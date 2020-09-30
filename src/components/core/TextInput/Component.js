@@ -5,6 +5,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Keyboard,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { COLORS } from '@src/styles';
@@ -54,11 +55,12 @@ const TextInput = ({
   function handleClear() {
     const { onChangeText } = props;
     textInput.current.clear();
-
+    Keyboard.dismiss();
     if (onChangeText) {
       onChangeText('');
     }
   }
+
   return (
     <View style={[styleSheet.container, style]}>
       {label && (
@@ -123,7 +125,7 @@ const TextInput = ({
             <Icon
               name="ios-close-circle"
               type="ionicon"
-              color={COLORS.lightGrey3}
+              color={COLORS.newGrey}
               size={20}
             />
           </TouchableOpacity>

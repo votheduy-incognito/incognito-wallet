@@ -1,23 +1,11 @@
 import { StyleSheet } from 'react-native';
 import {COLORS, FONT} from '@src/styles';
+import screenTheme from '@screens/Node/theme';
 
 export default StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    padding: 20,
-    backgroundColor: COLORS.lightGrey14,
-  },
-  card: {
-    padding: 35,
-    backgroundColor: COLORS.white,
-    shadowOpacity: 1,
-    shadowRadius: 4,
-    shadowColor: '#DCDDDD',
-    shadowOffset: { height: 2, width: 0 },
-  },
   title: {
     fontSize: 18,
+    marginTop: 40,
     marginBottom: 15,
     ...FONT.STYLE.medium,
   },
@@ -32,14 +20,11 @@ export default StyleSheet.create({
     color: COLORS.lightGrey1,
   },
   button: {
-    backgroundColor: COLORS.red,
-    marginTop: 40,
-  },
-  buy: {
-    marginTop: 20,
+    backgroundColor: screenTheme.buttonColor,
+    marginTop: 30,
   },
   desc: {
-    color: COLORS.lightGrey9,
+    color: COLORS.newGrey,
   },
   firstLine: {
     marginBottom: 20,

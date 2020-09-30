@@ -1,7 +1,4 @@
-/**
- * @providesModule AddSelfNode
- */
-import { ButtonExtension as Button, InputExtension as Input } from '@components/core';
+import { ButtonExtension as Button, RoundCornerButton, TextInput } from '@components/core';
 import Loader from '@components/DialogLoader';
 import routeNames from '@routers/routeNames';
 import BaseScreen from '@screens/BaseScreen';
@@ -15,7 +12,11 @@ import PropTypes from 'prop-types';
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { getTimeZone } from 'react-native-localize';
-import styles, { placeHolderColor } from './style';
+import Header from '@src/components/Header';
+import theme from '@src/styles/theme';
+import { COLORS } from '@src/styles';
+import { withLayout_2 } from '@components/Layout';
+import styles from './style';
 
 const SHORT_DOMAIN_REGEX = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/;
 const FULL_DOMAIN_REGEX = /^(http)|(https):\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/;
@@ -24,7 +25,7 @@ const LOCALHOST_REGEX = /^localhost(:[0-9]+)?$/;
 
 export const TAG = 'AddSelfNode';
 const ViewInput = React.forwardRef((props,ref)=>{
-  const {  textInput, item,item_container_input,label } = styles;
+  const { item,item_container_input,label } = styles;
   let inputView = useRef(null);
   const [text,setText] = useState('');
   useImperativeHandle(ref, () => ({
@@ -34,22 +35,22 @@ const ViewInput = React.forwardRef((props,ref)=>{
   }));
 
   return (
-    <Input
+    <TextInput
       ref={inputView}
-      placeholderTextColor={placeHolderColor}
+      placeholderTextColor={COLORS.colorGreyMedium}
       maxLength={200}
-      // errorMessage={!_.isNil(inputView.current) && _.isEmpty(text)?'Required':''}
       labelStyle={label}
       onChangeText={(t) => setText(t)}
       underlineColorAndroid="transparent"
-      inputStyle={textInput}
+      inputStyle={styles.input}
       inputContainerStyle={item_container_input}
       containerStyle={item}
-      placeholder="192.168.1.1:1002 or node.example.com"
-      label='IP address or domain'
+      placeholder="192.168.1.1:9334"
+      label="IP address or domain"
       defaultValue={text}
       autoCapitalize="none"
       clearable
+      ellipsizeMode="tail"
     />
   );
 });
@@ -60,7 +61,6 @@ class AddSelfNode extends BaseScreen {
     const {accountList = [],defaultAccountName= ''} = props;
 
     this.state = {
-      currentPositionStep:0,
       accountList:accountList,
       loading:false,
       defaultAccountName:defaultAccountName,
@@ -69,11 +69,7 @@ class AddSelfNode extends BaseScreen {
       isShowListAccount:false
     };
 
-    this.viewImportPrivateKey = React.createRef();
     this.inputView = React.createRef();
-    this.inputDeviceName = '';
-    this.inputPrivateKey = '';
-    this.inputHost = '';
     this.inputPort = '9334';
   }
 
@@ -85,7 +81,7 @@ class AddSelfNode extends BaseScreen {
   }
   static getDerivedStateFromProps(nextProps, prevState) {
     if(!_.isEqual(nextProps?.accountList,prevState.accountList)){
-      const {accountList = [],defaultAccountName= ''} = nextProps;
+      const { accountList = [] } = nextProps;
       return {
         accountList:accountList??[]
       };
@@ -106,8 +102,6 @@ class AddSelfNode extends BaseScreen {
         });
       }
 
-      console.log('isValid', isValid);
-
       if (isValid) {
         return isValid;
       }
@@ -126,7 +120,7 @@ class AddSelfNode extends BaseScreen {
       address = _.trim(parts[0]);
       port = parts.length > 1 ?_.trim(parts[parts.length-1]):this.inputPort;
       port = !_.isEmpty(port) && _.isNumber(Number(port))?port:this.inputPort;
-      const duplicatedNode = listLocalDevice.find(({ minerInfo }) => minerInfo.ipAddress === host && minerInfo.port === port);
+      const duplicatedNode = listLocalDevice.find(({ minerInfo }) => minerInfo.ipAddress === address && minerInfo.port === port);
 
       if (duplicatedNode) {
         throw new CustomError(ErrorCode.node_duplicate);
@@ -136,8 +130,6 @@ class AddSelfNode extends BaseScreen {
       port = '';
     }
 
-    console.log(TAG,'parseHost', address, port);
-
     const userJson = await LocalDatabase.getUserInfo();
     const user = userJson.toJSON();
     const {
@@ -145,7 +137,6 @@ class AddSelfNode extends BaseScreen {
       id,
       created_at,
     } = user;
-    // const deviceName = _.isEmpty(port) ? address : `${address}:${port}`;
     const deviceName =  address ;
 
     console.log('DeviceName', deviceName, address, port);
@@ -198,31 +189,24 @@ class AddSelfNode extends BaseScreen {
   });
 
   render() {
-    const { container, textInput, item,item_container_input ,label } = styles;
     const {loading} = this.state;
     return (
       <ScrollView keyboardShouldPersistTaps="handled">
         <Loader loading={loading} />
-        <KeyboardAvoidingView contentContainerStyle={{flex:1}} keyboardVerticalOffset={200} behavior="padding" style={[container]}>
-
+        <KeyboardAvoidingView contentContainerStyle={{flex:1}} keyboardVerticalOffset={200} behavior="padding">
+          <Header
+            title="Node Virtual"
+          />
           <ViewInput ref={this.inputView} />
-          <Button
-            titleStyle={styles.textTitleButton}
-            buttonStyle={styles.button}
+          <RoundCornerButton
+            style={[styles.button, theme.BUTTON.NODE_BUTTON]}
             onPress={this.handleSetUpPress}
             title='Add'
           />
-
         </KeyboardAvoidingView>
       </ScrollView>
     );
   }
-  set CurrentPositionStep(index:Number){
-    this.setState({
-      currentPositionStep:index
-    });
-  }
-
 }
 
 AddSelfNode.propTypes = {
@@ -234,17 +218,7 @@ AddSelfNode.defaultProps = {
   accountList:[],
   defaultAccountName:''
 };
-const mapDispatch = { };
-
-// export default connect(
-//   state => ({
-//     wallet: state.wallet,
-//     defaultAccountName: accountSeleclor.defaultAccount(state)?.name,
-//     accountList: accountSeleclor.listAccount(state),
-//   }),
-//   mapDispatch
-// )(AddSelfNode);
 
 const AddSelfNodeComponent = AddSelfNode;
 
-export default AddSelfNodeComponent;
+export default withLayout_2(AddSelfNodeComponent);

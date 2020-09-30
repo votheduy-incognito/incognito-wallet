@@ -8,10 +8,15 @@ import {PRV} from '@services/wallet/tokenService';
 import {ExHandler} from '@services/exception';
 import {PRV_ID} from '@screens/Dex/constants';
 import {getUnstakePNodeStatus} from '@services/api/node';
-import Device from '@models/device';
+import Device, { MAX_ERROR_COUNT, VALIDATOR_STATUS } from '@models/device';
 import _ from 'lodash';
-import VNode from './VNode';
+import { getPublicKeyFromPaymentAddress, getTransactionByHash } from '@services/wallet/RpcClientService';
+import { COLORS } from '@src/styles';
+import { View } from '@components/core';
+import Swipeout from 'react-native-swipeout';
 import PNode from './PNode';
+import VNode from './VNode';
+import styles from './style';
 
 export const TAG = 'Node';
 
@@ -32,11 +37,19 @@ class NodeItem extends React.Component {
     const deviceData = await NodeService.fetchAndSavingInfoNodeStake(item);
     const device = Device.getInstance(deviceData);
 
-    if (device.IsLinked) {
+    if (device.IsSetupViaLan) {
       const res = await NodeService.getLog(device);
       const log = res.Data;
 
-      const { updatedAt } = log;
+      const { updatedAt, description } = log;
+
+      let data;
+
+      try {
+        data = JSON.parse(description);
+      } catch {
+        // Ignore the error
+      }
 
       if (updatedAt) {
         const startTime = moment(updatedAt);
@@ -48,15 +61,34 @@ class NodeItem extends React.Component {
           device.setIsOnline(Math.max(device.IsOnline - 1, 0));
         } else {
           device.setIsOnline(MAX_RETRY);
+          device.Host = data?.ip?.lan;
         }
       }
     } else {
       const ip = await NodeService.pingGetIP(device);
-
       if (ip) {
+        device.Host = ip;
         device.setIsOnline(MAX_RETRY);
       } else {
+        device.Host = '';
         device.setIsOnline(Math.max(device.IsOnline - 1, 0));
+      }
+    }
+
+    if (device.IsOnline && device.Host) {
+      try {
+        const version = await NodeService.checkVersion(device);
+        const latestVersion = await NodeService.getLatestVersion();
+
+        device.Firmware = version;
+
+        if (version && version !== latestVersion) {
+          NodeService.updateFirmware(device, latestVersion)
+            .then(res => console.debug('UPDATE FIRMWARE SUCCESS', device.QRCode, res))
+            .catch(e => console.debug('UPDATE FIRMWARE FAILED', device.QRCode, e));
+        }
+      } catch (e) {
+        console.debug('CHECK VERSION ERROR', device.QRCode, e);
       }
     }
 
@@ -64,13 +96,13 @@ class NodeItem extends React.Component {
       const { wallet } = this.props;
 
       const listAccount = await wallet.listAccount();
-      device.IsWithdrawable = await NodeService.isWithdrawable(device);
-      device.UnstakeStatus = await getUnstakePNodeStatus({ paymentAddress: device.PaymentAddress });
+      device.IsFundedStakeWithdrawable = await NodeService.isWithdrawable(device);
+      device.FundedUnstakeStatus = await getUnstakePNodeStatus({ paymentAddress: device.PaymentAddress });
       device.Account = listAccount.find(item => item.PaymentAddress === device.PaymentAddress);
 
       if (device.Account) {
         device.ValidatorKey = device.Account.ValidatorKey;
-        device.PublicKey = device.Account.PublicKey;
+        device.PublicKey = device.Account.PublicKeyCheckEncode;
 
         const listAccounts = await wallet.listAccountWithBLSPubKey();
         const account = listAccounts.find(item=> _.isEqual(item.AccountName, device.AccountName));
@@ -79,10 +111,47 @@ class NodeItem extends React.Component {
       }
 
       const { committees } = this.props;
-      if (device.Unstaked && !JSON.stringify(committees.AutoStaking).includes(device.ValidatorKey)) {
-        device.IsWithdrawable = true;
+
+      const autoStakingInfo = committees.AutoStaking.find(item => item.MiningPubKey.bls === device.PublicKeyMining);
+
+      if (autoStakingInfo) {
+        if (device.StakerAddress) {
+          const stakerPublicKey = await getPublicKeyFromPaymentAddress(device.StakerAddress);
+
+          if (autoStakingInfo.IncPubKey === stakerPublicKey) {
+            device.IsFundedAutoStake = autoStakingInfo.IsAutoStake;
+          }
+        }
+
+        device.IsAutoStake = autoStakingInfo.IsAutoStake;
+      }
+
+      if (device.IsFundedUnstakedRequestProcessed) {
+        device.IsFundedStakeWithdrawable = true;
         device.StakerAddress = null;
-        return this.getVNodeInfo(device, true);
+
+        if (device.IsFundedUnstaked) {
+          return this.getVNodeInfo(device, true);
+        }
+      }
+
+      let ShardCommittee = Object.values(committees?.ShardCommittee) || [];
+      let ShardCommitteeData = ShardCommittee[0] || [];
+
+      device.Status = VALIDATOR_STATUS.WAITING;
+
+      if (device.IsFundedUnstaked) {
+        device.Status = '';
+      }
+
+      if (autoStakingInfo) {
+        device.Status = VALIDATOR_STATUS.WAITING;
+        for (let i = 0; i < ShardCommitteeData.length; i++) {
+          if (device?.PublicKeyMining === ShardCommitteeData[i].MiningPubKey.bls) {
+            device.Status = VALIDATOR_STATUS.WORKING;
+            break;
+          }
+        }
       }
     }
 
@@ -119,7 +188,6 @@ class NodeItem extends React.Component {
       if (newKey && blsKey !== newKey) {
         blsKey = newKey;
       }
-
       if (newKey) {
         device.setIsOnline(MAX_RETRY);
       } else {
@@ -132,23 +200,16 @@ class NodeItem extends React.Component {
       const isAutoStake = nodeInfo.IsAutoStake;
       const newPublicKey = nodeInfo.IncPubKey;
 
-      if (JSON.stringify(committees.ShardPendingValidator).includes(blsKey)) {
-        device.Status = 'waiting';
-      } else if (
+      if (
+        JSON.stringify(committees.ShardPendingValidator).includes(blsKey) ||
         JSON.stringify(committees.CandidateShardWaitingForNextRandom).includes(blsKey) ||
         JSON.stringify(committees.CandidateShardWaitingForCurrentRandom).includes(blsKey)
       ) {
-        device.Status = 'random';
+        device.Status = VALIDATOR_STATUS.WAITING;
       } else if (JSON.stringify(committees.ShardCommittee).includes(blsKey)) {
-        device.Status = 'committee';
+        device.Status = VALIDATOR_STATUS.WORKING;
       } else {
         device.Status = null;
-      }
-
-      if (!isAutoStake) {
-        device.UnstakeTx = null;
-      } else {
-        device.StakeTx = null;
       }
 
       device.PublicKeyMining = blsKey;
@@ -173,6 +234,56 @@ class NodeItem extends React.Component {
     if (publicKey) {
       device.Rewards = nodeRewards[publicKey] || {};
     }
+
+    if (device.SelfUnstakeTx) {
+      console.debug('CHECK UNSTAKE TX STATUS', device.SelfUnstakeTx, device.Name);
+      try {
+        const res = await getTransactionByHash(device.SelfUnstakeTx);
+        console.debug('CHECK UNSTAKE TX STATUS RESPONSE', res, device.Name);
+
+        if (res.isInBlock && !device.IsAutoStake) {
+          device.SelfUnstakeTx = null;
+        } else if (res.err) {
+          if (!_.isNumber(device.SelfUnstakeTxErrorCount)) {
+            device.SelfUnstakeTxErrorCount = MAX_ERROR_COUNT;
+          }
+
+          if (device.SelfUnstakeTxErrorCount <= 0) {
+            device.SelfUnstakeTx = null;
+          } else {
+            device.SelfUnstakeTxErrorCount = device.SelfUnstakeTxErrorCount - 1;
+          }
+        }
+      } catch {
+        device.SelfUnstakeTx = null;
+      }
+    }
+
+
+    if (device.SelfStakeTx) {
+      console.debug('CHECK STAKE TX STATUS', device.SelfStakeTx, device.Name);
+      try {
+        const res = await getTransactionByHash(device.SelfStakeTx);
+        console.debug('CHECK STAKE TX STATUS RESPONSE', res, device.Name);
+        if (res.isInBlock && device.IsAutoStake) {
+          device.SelfStakeTx = null;
+        } else if (res.err) {
+          if (!_.isNumber(device.SelfStakeTxErrorCount)) {
+            device.SelfStakeTxErrorCount = MAX_ERROR_COUNT;
+          }
+
+          if (device.SelfStakeTxErrorCount <= 0) {
+            device.SelfStakeTx = null;
+          } else {
+            device.SelfStakeTxErrorCount = device.SelfStakeTxErrorCount - 1;
+          }
+        }
+      } catch {
+        device.SelfStakeTx = null;
+      }
+    }
+
+    console.debug('DEVICE', device.SelfStakeTx, device.IsAutoStake);
 
     return device;
   }
@@ -213,16 +324,16 @@ class NodeItem extends React.Component {
       .finally(() => this.setState({ loading: false }));
   }
 
-  render() {
+  renderNode() {
     const {
       item,
       allTokens,
       onStake,
       onUnstake,
       onWithdraw,
-      onRemove,
       onImport,
       isFetching,
+      withdrawTxs,
     } = this.props;
     const { loading } = this.state;
 
@@ -232,7 +343,6 @@ class NodeItem extends React.Component {
           item={item}
           allTokens={allTokens}
           onImportAccount={onImport}
-          onRemoveDevice={onRemove}
           onWithdraw={onWithdraw}
           onUnstake={onUnstake}
           onStake={onStake}
@@ -245,13 +355,31 @@ class NodeItem extends React.Component {
       <VNode
         item={item}
         allTokens={allTokens}
-        onRemoveDevice={onRemove}
         onImportAccount={onImport}
         onStake={onStake}
         onUnstake={onUnstake}
         onWithdraw={onWithdraw}
         isFetching={!!isFetching || !!loading}
+        withdrawTxs={withdrawTxs}
       />
+    );
+  }
+
+  render() {
+    const { onRemove, item } = this.props;
+    return (
+      <Swipeout
+        style={[styles.container]}
+        right={[{
+          text: 'Remove',
+          backgroundColor: COLORS.red,
+          onPress: () => onRemove(item),
+        }]}
+      >
+        <View style={{ paddingHorizontal: 25 }}>
+          {this.renderNode()}
+        </View>
+      </Swipeout>
     );
   }
 }
@@ -270,6 +398,7 @@ NodeItem.propTypes = {
   onStake: PropTypes.func.isRequired,
   onUnstake: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
+  withdrawTxs: PropTypes.object.isRequired,
 };
 
 NodeItem.defaultProps = {};

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import TextStyle, { scaleInApp, FontStyle } from '@src/styles/TextStyle';
-import { COLORS } from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
 import { ScreenWidth } from '@src/utils/devices';
 
 const styles = StyleSheet.create({
@@ -8,10 +8,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
     padding: scaleInApp(20),
+    paddingTop: 0,
     flexDirection: 'column',
   },
   item: {
-    marginVertical: scaleInApp(10)
+    marginVertical: scaleInApp(5)
   },
   errorText: {
     ...TextStyle.minimizeText,
@@ -26,14 +27,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   title2: {
-    marginVertical: scaleInApp(10),
-    marginTop: 25,
-    ...TextStyle.bigText,
-    ...FontStyle.medium,
-    width: '75%',
+    width: '100%',
+    color: COLORS.black,
+    fontFamily: FONT.NAME.bold,
+    fontSize: FONT.SIZE.superMedium,
     alignSelf: 'center',
-    color: '#101111',
     textAlign: 'center',
+    lineHeight: 28,
+    marginBottom: 40,
   },
   content: {
     margin: scaleInApp(20),
@@ -146,7 +147,7 @@ const styles = StyleSheet.create({
     paddingTop: 3,
   },
   disabledText: {
-    color: COLORS.lightGrey1,
+    color: COLORS.colorPrimary,
   },
   headerRight: {
     marginRight: 15,

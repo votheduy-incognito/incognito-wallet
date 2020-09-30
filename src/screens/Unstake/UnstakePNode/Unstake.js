@@ -1,23 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Button, Text, View} from '@components/core';
-import LoadingTx from '@components/LoadingTx/LoadingTx';
+import { RoundCornerButton, Text, View } from '@components/core';
+import Header from '@src/components/Header';
+import { withLayout_2 } from '@components/Layout';
 import styles from '../styles';
 
 const Unstake = ({ device, isUnstaking, onUnstake }) => {
   const name = device.Name;
   return (
-    <View style={styles.container}>
-      <View style={styles.card}>
-        <View>
-          <Text style={styles.title}>Node {name}</Text>
-        </View>
-        <View style={styles.buy}>
-          <Text style={[styles.desc, styles.firstLine]}>Unstaking will complete after the next time you earn.</Text>
-          <Text style={styles.desc}>Are you sure you want to unstake this node?</Text>
-          <Button style={styles.button} title="Unstake" onPress={onUnstake} />
-        </View>
-        { isUnstaking && <LoadingTx /> }
+    <View>
+      <Header title="Unstake" />
+      <Text style={styles.title}>Node {name}</Text>
+      <View style={styles.buy}>
+        <Text style={[styles.desc, styles.firstLine]}>{isUnstaking ? 'Unstaking may take up to 21 days. This Node will unstake the next time it is selected to earn.' : 'The unstaking process will complete the next time your Node is selected to work. This may take up to 21 days.'}</Text>
+        {!isUnstaking && <Text style={styles.desc}>Are you sure you want to unstake this Node?</Text>}
+        <RoundCornerButton
+          disabled={isUnstaking}
+          style={styles.button}
+          title={isUnstaking ? 'Unstaking in process' : 'Unstake'}
+          isAsync={isUnstaking}
+          isLoading={isUnstaking}
+          onPress={onUnstake}
+        />
       </View>
     </View>
   );
@@ -31,4 +35,4 @@ Unstake.propTypes = {
 
 Unstake.defaultProps = {};
 
-export default Unstake;
+export default withLayout_2(Unstake);

@@ -6,6 +6,7 @@ import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import { BtnSelectAccount } from '@screens/SelectAccount';
 import debounce from 'lodash/debounce';
 import { TouchableOpacity } from '@src/components/core';
+import NavigationService from '@src/services/NavigationService';
 import { styled, styledHeaderTitle } from './Header.styled';
 import SearchBox from './Header.searchBox';
 import withHeader from './Header.enhance';

@@ -1,5 +1,4 @@
 import React from 'react';
-import { View } from 'react-native';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -8,14 +7,16 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler } from '@services/exception';
 import accountService from '@services/wallet/accountService';
 import { getStakingAmount } from '@services/wallet/RpcClientService';
-import { Toast } from '@components/core/index';
+import { FlexView, Toast } from '@components/core';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
 import Device from '@models/device';
 import routeNames from '@routers/routeNames';
 import config from '@src/constants/config';
 import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
-import style from './styles';
+import Header from '@src/components/Header';
+import { withLayout_2 } from '@components/Layout';
+import { actionSwitchAccount } from '@src/redux/actions/account';
 import AddStake from './AddStake';
 
 export const TAG = 'AddStake';
@@ -88,7 +89,7 @@ class AddStakeContainer extends BaseScreen {
     await LocalDatabase.saveListDevices(listDevice);
     Toast.showInfo('You staked successfully.');
 
-    navigation.goBack();
+    navigation.navigate(routeNames.Node);
   }
 
   handleStake = async () => {
@@ -115,13 +116,14 @@ class AddStakeContainer extends BaseScreen {
       this.setState({ isStaking: false });
     }
   };
-
+  
   render() {
-    const { navigation, wallet } = this.props;
+    const { navigation, wallet, actionSwitchAccount } = this.props;
     const { device, amount, fee, isStaking, balance } = this.state;
     const account = device.Account;
     return (
-      <View style={style.container}>
+      <FlexView>
+        <Header title="Stake" />
         <AddStake
           account={account}
           navigation={navigation}
@@ -133,8 +135,10 @@ class AddStakeContainer extends BaseScreen {
           onBuy={this.handleBuy}
           isStaking={isStaking}
           balance={balance}
+          isVNode={device.IsVNode}
+          onSwitchAccount={actionSwitchAccount}
         />
-      </View>
+      </FlexView>
     );
   }
 }
@@ -149,4 +153,10 @@ const mapStateToProps = state => ({
   wallet: state?.wallet,
 });
 
-export default compose(connect(mapStateToProps))(AddStakeContainer);
+const mapDispatch = {
+  actionSwitchAccount
+};
+
+export default compose(connect(mapStateToProps, mapDispatch))(
+  withLayout_2(AddStakeContainer)
+);

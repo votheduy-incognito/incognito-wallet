@@ -1,12 +1,6 @@
 /**
  * @providesModule Action
  */
-var type = '';
-var source = '';
-var data = {};
-var myProtocal = '';
-var dest = '';
-var key = '';
 const TYPE = {
   PRODUCT_CONTROL:'product_control',
   INCOGNITO:'incognito'

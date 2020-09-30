@@ -2,29 +2,20 @@ import React, { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withNavigationFocus } from 'react-navigation';
 import { WebView } from 'react-native-webview';
-import { Image, Linking } from 'react-native';
-import { ActivityIndicator, TouchableOpacity, View } from '@components/core';
+import { TouchableOpacity, View } from '@components/core';
 import { MAIN_WEBSITE } from '@src/constants/config';
-import chevronLeft from '@assets/images/icons/chevron-left-icon.png';
-import BackButton from '@src/components/BackButton';
-import LogManager from '@src/services/LogManager';
 import LocalDatabase from '@src/utils/LocalDatabase';
-import { CircleBack } from '@src/components/Icons';
-import NavigationService from '@src/services/NavigationService';
 import Header from '@src/components/Header';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import { hasNotch } from 'react-native-device-info';
 import { COLORS } from '@src/styles';
-import _ from 'lodash';
 import styles from './style';
 
-var isBackable = false;
 const Community = ({ navigation, isFocused }) => {
   const webViewRef = useRef();
   const [loading, setLoading] = useState(true);
   const [backable, setBackable] = useState(false);
   const [url, setUrl] = useState('');
+
   useEffect(() => {
     if (isFocused) {
       const { uri: _uri } = navigation?.state?.params || {};
