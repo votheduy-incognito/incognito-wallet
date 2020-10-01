@@ -26,13 +26,13 @@ const LoadingTx = (props) => {
     const maxPercentPerTime = 100 / totalTimes;
     const currentTimeStartPercent = currentTime * maxPercentPerTime;
 
-    displayPercent = Math.floor(currentTimeStartPercent + (percent / totalTimes));
+    displayPercent = Math.floor(currentTimeStartPercent + percent / totalTimes);
   }
 
   const progress = () => {
     const percent = accountService.getProgressTx();
     const message = accountService.getDebugMessage();
-    setState({ ...state, percent, message });
+    percent && setState({ ...state, percent, message });
     if (percent === 100) {
       setTimeout(() => handleToggle(false), 1000);
     }
@@ -61,7 +61,9 @@ const LoadingTx = (props) => {
             <Text style={styleSheet.desc}>{message}</Text>
           )}
           {!!global.isDebug() && (
-            <Text style={styleSheet.desc}>{moment().diff(startTime, 'seconds')} seconds</Text>
+            <Text style={styleSheet.desc}>
+              {moment().diff(startTime, 'seconds')} seconds
+            </Text>
           )}
         </View>
         <KeepAwake />
@@ -72,7 +74,7 @@ const LoadingTx = (props) => {
   React.useEffect(() => {
     const interval = setInterval(() => {
       progress();
-    }, 1000);
+    }, 100);
     setStartTime(moment());
     return () => clearInterval(interval);
   }, []);
