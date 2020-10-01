@@ -55,4 +55,5 @@ export default {
   [CODE.api_trade_maintain]: 'The exchange is down for maintenance. Please wait then try again later.',
   [CODE.api_insufficient_funds]: 'Incognito is currently experiencing high volume. Please try again later.',
   [CODE.web_js_can_not_send_main_crypto]: 'Streamline this keychain now for efficient transactions',
+  [CODE.api_tx_hash_invalid]: 'This is taking a little longer than usual, but will be automatically retried soon. Simply check back later.',
 };
