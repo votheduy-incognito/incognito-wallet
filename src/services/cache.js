@@ -61,7 +61,7 @@ export function getCache(key) {
  */
 
 export const clearCache = (key) => {
-  if (!key) {
+  if (!caches[key]) {
     return;
   }
   return delete caches[key];

@@ -8,6 +8,7 @@ import {
   ACTION_INIT_PROCCESS,
   ACTION_FETCHED_ALL_TXS,
   ACTION_TOGGLE_PENDING,
+  ACTION_REMOVE_LOCAL_UTXOS,
 } from './Streamline.constant';
 
 const initialState = {
@@ -48,7 +49,7 @@ const streamlineReducer = (state = initialState, action) => {
         },
       },
       consolidated: state.consolidated + 1,
-      isPending: true
+      isPending: true,
     };
   }
   case ACTION_FETCHED_ALL_TXS: {
@@ -70,6 +71,23 @@ const streamlineReducer = (state = initialState, action) => {
     return {
       ...state,
       isPending: action.payload,
+    };
+  }
+  case ACTION_REMOVE_LOCAL_UTXOS: {
+    const keySave = CONSTANT_KEYS.UTXOS_DATA;
+    const storage = state?.storage;
+    const { address } = action.payload;
+    const data = storage[keySave]?.data || {};
+    const newData = { ...data, [address]: [] };
+    return {
+      ...state,
+      storage: {
+        ...storage,
+        [keySave]: {
+          ...storage[keySave],
+          data: newData,
+        },
+      },
     };
   }
   default:
