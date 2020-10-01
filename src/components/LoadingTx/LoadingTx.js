@@ -34,7 +34,7 @@ const LoadingTx = (props) => {
     const message = accountService.getDebugMessage();
     percent && setState({ ...state, percent, message });
     if (percent === 100) {
-      setTimeout(() => handleToggle(false), 1000);
+      setTimeout(() => handleToggle(false), 100);
     }
   };
   const handleToggle = (isOpen) => setState({ ...state, open: !!isOpen });
