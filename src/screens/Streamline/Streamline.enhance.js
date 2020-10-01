@@ -53,7 +53,6 @@ const enhance = (WrappedComp) => (props) => {
       _isPending = histories.some(
         (history) => history?.statusMessage === 'Pending',
       );
-      console.debug(_isPending, utxos.length);
       if (!_isPending && utxos.length > 0) {
         const payload = { address: account?.paymentAddress };
         await dispatch(actionRemoveLocalUTXOs(payload));
