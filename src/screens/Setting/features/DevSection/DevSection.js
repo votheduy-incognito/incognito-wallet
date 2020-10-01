@@ -12,7 +12,7 @@ import {
   actionToggleTestModeDecentralized,
   actionToggleTestModeCentralized,
   actionToggleUTXOs,
-  // actionToggleUTXOs,
+  actionToggleHistoryDetail,
 } from '@src/screens/Dev';
 import { CONSTANT_KEYS } from '@src/constants';
 
@@ -43,6 +43,8 @@ const DevSection = () => {
     dispatch(actionToggleTestModeCentralized());
 
   const onToggleUTXOs = () => dispatch(actionToggleUTXOs());
+
+  const onToggleHistoryDetail = () => dispatch(actionToggleHistoryDetail());
 
   const isStagingConfig = homeConfig === 'staging';
 
@@ -99,6 +101,18 @@ const DevSection = () => {
         <Switch
           onValueChange={onToggleUTXOs}
           value={dev[CONSTANT_KEYS.DEV_TEST_TOGGLE_UTXOS]}
+        />
+      ),
+    },
+    {
+      id: 'history-detail',
+      desc: 'Toggle copy history detail',
+      onPress: null,
+      toggleSwitch: true,
+      switchComponent: (
+        <Switch
+          onValueChange={onToggleHistoryDetail}
+          value={dev[CONSTANT_KEYS.DEV_TEST_TOGGLE_HISTORY_DETAIL]}
         />
       ),
     },

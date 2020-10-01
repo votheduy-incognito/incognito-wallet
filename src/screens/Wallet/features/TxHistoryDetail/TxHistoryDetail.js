@@ -2,15 +2,16 @@ import React from 'react';
 import { Text, View, Clipboard, Dimensions, Linking } from 'react-native';
 import PropTypes from 'prop-types';
 import { TouchableOpacity, ScrollView, Toast } from '@src/components/core';
-import { CONSTANT_CONFIGS } from '@src/constants';
+import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import formatUtil from '@src/utils/format';
 import linkingService from '@src/services/linking';
 import { QrCodeAddressDefault } from '@src/components/QrCodeAddress';
 import { CopyIcon, OpenUrlIcon } from '@src/components/Icons';
-import { BtnRetry, BtnChevron } from '@src/components/Button';
+import { BtnRetry, BtnChevron, ButtonBasic } from '@src/components/Button';
 import { useSelector } from 'react-redux';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import HTML from 'react-native-render-html';
+import { devSelector } from '@src/screens/Dev';
 import styled from './styles';
 import { getFeeFromTxHistory } from './TxHistoryDetail.utils';
 
@@ -127,6 +128,9 @@ const Hook = (props) => {
 
 const TxHistoryDetail = (props) => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const dev = useSelector(devSelector);
+  const keySave = CONSTANT_KEYS.DEV_TEST_TOGGLE_HISTORY_DETAIL;
+  const toggleTxHistoryDetail = global.isDebug() && dev[keySave];
   const { data, onRetryExpiredDeposit } = props;
   const { typeText, statusColor, statusMessage, history } = data;
   const { fee, formatFee, feeUnit } = getFeeFromTxHistory(history);
@@ -208,6 +212,10 @@ const TxHistoryDetail = (props) => {
       disabled: !history?.erc20TokenAddress,
     },
   ];
+  const onCopyData = () => {
+    Clipboard.setString(JSON.stringify(data));
+    Toast.showSuccess('Copied');
+  };
   return (
     <ScrollView>
       {historyFactories.map((hook, index) => (
@@ -217,6 +225,13 @@ const TxHistoryDetail = (props) => {
         <QrCodeAddressDefault
           label="Shielding address"
           address={history?.depositAddress}
+        />
+      )}
+      {toggleTxHistoryDetail && (
+        <ButtonBasic
+          title="Copy"
+          btnStyle={{ marginTop: 30 }}
+          onPress={onCopyData}
         />
       )}
     </ScrollView>

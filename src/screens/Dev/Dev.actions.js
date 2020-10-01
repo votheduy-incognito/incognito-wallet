@@ -2,6 +2,7 @@ import {
   ACTION_TOGGLE_TEST_MODE_CENTRALIZED,
   ACTION_TOGGLE_TEST_MODE_DECENTRALIZED,
   ACTION_TOGGLE_UTXOS,
+  ACTION_DEV_TEST_TOGGLE_HISTORY_DETAIL,
 } from './Dev.constant';
 
 export const actionToggleTestModeCentralized = () => ({
@@ -14,4 +15,8 @@ export const actionToggleTestModeDecentralized = () => ({
 
 export const actionToggleUTXOs = () => ({
   type: ACTION_TOGGLE_UTXOS,
+});
+
+export const actionToggleHistoryDetail = () => ({
+  type: ACTION_DEV_TEST_TOGGLE_HISTORY_DETAIL,
 });
