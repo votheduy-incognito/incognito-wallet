@@ -56,4 +56,12 @@ export const styled = StyleSheet.create({
     lineHeight: 30,
     marginBottom: 30,
   },
+  emptyContainer: {
+    flex: 1,
+    paddingTop: 42,
+  },
+  pendingContainer: {
+    flex: 1,
+    paddingTop: 42,
+  },
 });

@@ -1,4 +1,4 @@
-const caches = {};
+export const caches = {};
 
 export const KEYS = {
   PoolConfig: 'pool-configs',
@@ -55,3 +55,14 @@ export function getCache(key) {
 
   return null;
 }
+
+/**
+ * @param key
+ */
+
+export const clearCache = (key) => {
+  if (!key) {
+    return;
+  }
+  return delete caches[key];
+};

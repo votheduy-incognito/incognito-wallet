@@ -26,7 +26,11 @@ import {
 
 const TAG = 'Account';
 
-const getBalanceNoCache = (indexAccount, wallet, tokenId) => async () => {
+export const getBalanceNoCache = (
+  indexAccount,
+  wallet,
+  tokenId,
+) => async () => {
   const account = wallet.MasterAccount.child[indexAccount];
   account.isRevealViewKeyToGetCoins = true;
 
@@ -71,7 +75,8 @@ const hasSpendingCoins = async (indexAccount, wallet, amount, tokenId) => {
 export default class Account {
   static NO_OF_INPUT_PER_DEFRAGMENT_TX = 10;
   static MAX_DEFRAGMENT_TXS = 3;
-  static NO_OF_INPUT_PER_DEFRAGMENT = Account.NO_OF_INPUT_PER_DEFRAGMENT_TX * Account.MAX_DEFRAGMENT_TXS;
+  static NO_OF_INPUT_PER_DEFRAGMENT =
+    Account.NO_OF_INPUT_PER_DEFRAGMENT_TX * Account.MAX_DEFRAGMENT_TXS;
 
   static async getDefaultAccountName() {
     try {
@@ -314,7 +319,10 @@ export default class Account {
       while (lastByte !== 0) {
         newAccount = await wallet.createAccount(accountName, null);
         const childKey = newAccount.key;
-        lastByte = childKey.KeySet.PaymentAddress.Pk[childKey.KeySet.PaymentAddress.Pk.length - 1];
+        lastByte =
+          childKey.KeySet.PaymentAddress.Pk[
+            childKey.KeySet.PaymentAddress.Pk.length - 1
+          ];
       }
 
       wallet.MasterAccount.child.push(newAccount);
@@ -783,7 +791,13 @@ export default class Account {
    * @param {number} noOfTxs
    * @returns {Promise<*>}
    */
-  static async defragmentNativeCoin(fee, isPrivacy, account, wallet, noOfTxs = this.MAX_DEFRAGMENT_TXS) {
+  static async defragmentNativeCoin(
+    fee,
+    isPrivacy,
+    account,
+    wallet,
+    noOfTxs = this.MAX_DEFRAGMENT_TXS,
+  ) {
     if (!wallet) {
       throw new Error('Missing wallet');
     }
@@ -795,7 +809,12 @@ export default class Account {
     );
     const result = await wallet.MasterAccount.child[
       indexAccount
-    ].defragmentNativeCoin(fee, isPrivacy, this.NO_OF_INPUT_PER_DEFRAGMENT_TX, noOfTxs);
+    ].defragmentNativeCoin(
+      fee,
+      isPrivacy,
+      this.NO_OF_INPUT_PER_DEFRAGMENT_TX,
+      noOfTxs,
+    );
 
     // save wallet
     await saveWallet(wallet);
