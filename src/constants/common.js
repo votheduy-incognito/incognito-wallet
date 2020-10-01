@@ -175,7 +175,7 @@ export default {
       EXPIRED: 'EXPIRED',
     },
     META_DATA_TYPE: {
-      44: 'Withdraw rewards',
+      44: 'Node withdraw',
       63: 'Stake',
       90: 'Add liquidity',
       93: 'Remove liquidity',
