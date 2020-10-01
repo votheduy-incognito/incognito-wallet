@@ -9,8 +9,14 @@ import { ExHandler } from '@src/services/exception';
 import { useFocusEffect } from 'react-navigation-hooks';
 import { accountSeleclor } from '@src/redux/selectors';
 import { getStatusData } from '@src/components/HistoryList/HistoryList.utils';
+import { clearCache } from '@src/services/cache';
+import { getBalance as getAccountBalance } from '@src/redux/actions/account';
+import {
+  actionInitProccess,
+  actionTogglePending,
+  actionRemoveLocalUTXOs,
+} from './Streamline.actions';
 import { useStreamLine } from './Streamline.useStreamline';
-import { actionInitProccess, actionTogglePending } from './Streamline.actions';
 
 const enhance = (WrappedComp) => (props) => {
   const account = useSelector(accountSeleclor.defaultAccountSelector);
@@ -22,11 +28,12 @@ const enhance = (WrappedComp) => (props) => {
   const { refresh, loading } = state;
   const { data, times } = useStreamLine();
   const handleFetchData = async () => {
+    const utxos = data[(account?.paymentAddress)] || [];
+    if (refresh) {
+      return;
+    }
     let _isPending = false;
     try {
-      if (refresh) {
-        return;
-      }
       await setState({
         ...state,
         refresh: true,
@@ -38,7 +45,6 @@ const enhance = (WrappedComp) => (props) => {
         CONSTANT_COMMONS.PRV.pDecimals,
         CONSTANT_COMMONS.PRV.pDecimals,
       );
-      const utxos = data[(account?.paymentAddress)] || [];
       const histories = historiesMainCrypto
         ?.filter((history) =>
           utxos.find((txId) => txId === history?.incognitoTxID),
@@ -47,11 +53,19 @@ const enhance = (WrappedComp) => (props) => {
       _isPending = histories.some(
         (history) => history?.statusMessage === 'Pending',
       );
+      console.debug(_isPending, utxos.length);
+      if (!_isPending && utxos.length > 0) {
+        const payload = { address: account?.paymentAddress };
+        await dispatch(actionRemoveLocalUTXOs(payload));
+        const key = `balance-${account?.accountName}-${CONSTANT_COMMONS.PRV.id}`;
+        clearCache(key);
+        await dispatch(getAccountBalance(account));
+      }
     } catch (error) {
       new ExHandler(error).showErrorToast();
     } finally {
       dispatch(actionTogglePending(_isPending));
-      await setState({ ...state, refresh: false, loading: false });
+      setState({ ...state, refresh: false, loading: false });
     }
   };
 

@@ -1,18 +1,15 @@
 import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
-import { CONSTANT_COMMONS } from '@src/constants';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { walletSelector } from '@src/redux/selectors/wallet';
-import { clearCache } from '@src/services/cache';
 import { ExHandler } from '@src/services/exception';
-import accountServices, {
-  getBalanceNoCache,
-} from '@src/services/wallet/accountService';
+import accountServices from '@src/services/wallet/accountService';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
   ACTION_INIT_PROCCESS,
   ACTION_FETCHED_ALL_TXS,
   ACTION_TOGGLE_PENDING,
+  ACTION_REMOVE_LOCAL_UTXOS,
 } from './Streamline.constant';
 import { streamlineSelector } from './Streamline.selector';
 
@@ -53,10 +50,6 @@ export const actionFetch = () => async (dispatch, getState) => {
         utxos: result?.map((item) => item?.txId),
       };
       await dispatch(actionFetched(payload));
-      const key = `balance-${account?.accountName}-${CONSTANT_COMMONS.PRV.id}`;
-      clearCache(key);
-      const indexAccount = wallet.getAccountIndexByName(account?.accountName);
-      await getBalanceNoCache(indexAccount, wallet, CONSTANT_COMMONS.PRV.id);
     }
   } catch (e) {
     error = e;
@@ -85,5 +78,10 @@ export const actionFetchedAllTxs = () => ({
 
 export const actionTogglePending = (payload) => ({
   type: ACTION_TOGGLE_PENDING,
+  payload,
+});
+
+export const actionRemoveLocalUTXOs = (payload) => ({
+  type: ACTION_REMOVE_LOCAL_UTXOS,
   payload,
 });
