@@ -1,8 +1,12 @@
 import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
+import { CONSTANT_COMMONS } from '@src/constants';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { walletSelector } from '@src/redux/selectors/wallet';
+import { clearCache } from '@src/services/cache';
 import { ExHandler } from '@src/services/exception';
-import accountServices from '@src/services/wallet/accountService';
+import accountServices, {
+  getBalanceNoCache,
+} from '@src/services/wallet/accountService';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -10,9 +14,7 @@ import {
   ACTION_FETCHED_ALL_TXS,
   ACTION_TOGGLE_PENDING,
 } from './Streamline.constant';
-import {
-  streamlineSelector,
-} from './Streamline.selector';
+import { streamlineSelector } from './Streamline.selector';
 
 export const actionFetching = () => ({
   type: ACTION_FETCHING,
@@ -42,7 +44,7 @@ export const actionFetch = () => async (dispatch, getState) => {
       true,
       account,
       wallet,
-      accountServices.MAX_DEFRAGMENT_TXS
+      accountServices.MAX_DEFRAGMENT_TXS,
     );
 
     if (result) {
@@ -51,8 +53,11 @@ export const actionFetch = () => async (dispatch, getState) => {
         utxos: result?.map((item) => item?.txId),
       };
       await dispatch(actionFetched(payload));
+      const key = `balance-${account?.accountName}-${CONSTANT_COMMONS.PRV.id}`;
+      clearCache(key);
+      const indexAccount = wallet.getAccountIndexByName(account?.accountName);
+      await getBalanceNoCache(indexAccount, wallet, CONSTANT_COMMONS.PRV.id);
     }
-
   } catch (e) {
     error = e;
     if (

@@ -48,6 +48,7 @@ const streamlineReducer = (state = initialState, action) => {
         },
       },
       consolidated: state.consolidated + 1,
+      isPending: true
     };
   }
   case ACTION_FETCHED_ALL_TXS: {

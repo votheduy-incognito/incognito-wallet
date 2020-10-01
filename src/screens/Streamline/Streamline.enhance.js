@@ -15,8 +15,11 @@ import { actionInitProccess, actionTogglePending } from './Streamline.actions';
 const enhance = (WrappedComp) => (props) => {
   const account = useSelector(accountSeleclor.defaultAccountSelector);
   const dispatch = useDispatch();
-  const [state, setState] = React.useState({ refresh: false });
-  const { refresh } = state;
+  const [state, setState] = React.useState({
+    refresh: false,
+    loading: undefined,
+  });
+  const { refresh, loading } = state;
   const { data, times } = useStreamLine();
   const handleFetchData = async () => {
     let _isPending = false;
@@ -24,7 +27,11 @@ const enhance = (WrappedComp) => (props) => {
       if (refresh) {
         return;
       }
-      await setState({ ...state, refresh: true });
+      await setState({
+        ...state,
+        refresh: true,
+        loading: typeof loading === 'undefined' ? true : false,
+      });
       const accountHistory = await dispatch(loadAccountHistory());
       const historiesMainCrypto = normalizeData(
         accountHistory,
@@ -44,15 +51,9 @@ const enhance = (WrappedComp) => (props) => {
       new ExHandler(error).showErrorToast();
     } finally {
       dispatch(actionTogglePending(_isPending));
-      await setState({ ...state, refresh: false });
+      await setState({ ...state, refresh: false, loading: false });
     }
   };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      handleFetchData();
-    }, [data]),
-  );
 
   useFocusEffect(
     React.useCallback(() => {
@@ -61,6 +62,12 @@ const enhance = (WrappedComp) => (props) => {
     }, [account]),
   );
 
+  React.useEffect(() => {
+    return () => {
+      dispatch(actionTogglePending(false));
+    };
+  }, []);
+
   return (
     <ErrorBoundary>
       <WrappedComp
@@ -68,6 +75,7 @@ const enhance = (WrappedComp) => (props) => {
           ...props,
           handleFetchData,
           refresh,
+          loading,
         }}
       />
     </ErrorBoundary>
