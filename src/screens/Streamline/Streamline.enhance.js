@@ -72,7 +72,7 @@ const enhance = (WrappedComp) => (props) => {
     React.useCallback(() => {
       dispatch(actionInitProccess({ times }));
       handleFetchData();
-    }, [account]),
+    }, [account?.accountName]),
   );
 
   React.useEffect(() => {

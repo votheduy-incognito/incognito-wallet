@@ -35,6 +35,9 @@ const Extra = () => {
 
   return (
     <>
+      <Text style={[styled.tooltip, { marginBottom: 30 }]}>
+        Consolidate your UTXOs to ensure successful transactions of any amount.
+      </Text>
       <Text style={styled.tooltip}>
         There are {UTXONativeCoin} UTXOs in this keychain. You can consolidate{' '}
         {maxUTXOPerDefragment} UTXOs at a time.
@@ -70,16 +73,13 @@ const Pending = React.memo(() => {
     UTXONativeCoin -
     accountService.NO_OF_INPUT_PER_DEFRAGMENT +
     accountService.MAX_DEFRAGMENT_TXS;
-  const consolidatedUTXOs = accountService.NO_OF_INPUT_PER_DEFRAGMENT;
-
   if (remainingUTXOs > accountService.NO_OF_INPUT_PER_DEFRAGMENT) {
     return (
       <View style={styled.pendingContainer}>
-        <Text style={styled.emptyTitle}>Consolidation successful</Text>
+        <Text style={styled.emptyTitle}>Consolidation in process.</Text>
         <Text style={styled.emptyText}>
-          You consolidated {consolidatedUTXOs} UTXOs. Your remaining UTXO count
-          is {remainingUTXOs}. Please make another consolidation after this
-          consolidation complete.
+          Your remaining UTXO count is {remainingUTXOs}. Please make another
+          consolidation after this one is complete.
         </Text>
       </View>
     );
@@ -114,21 +114,7 @@ const Streamline = (props) => {
         style={styled.scrollview}
       >
         <Extra {...props} />
-        {isFetching && (
-          <LoadingTx
-            descFactories={[
-              {
-                desc:
-                  'The more UTXOs this keychain has, the\nlonger it will take to consolidate.',
-              },
-              {
-                desc:
-                  'Please stay on this screen until the\nprocess is complete.',
-                styled: { marginTop: 10 },
-              },
-            ]}
-          />
-        )}
+        {isFetching && <LoadingTx />}
       </ScrollView>
     );
   };

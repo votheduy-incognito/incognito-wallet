@@ -104,7 +104,7 @@ export const getTypeData = (type, history, paymentAddress) => {
     const isUTXO =
         history?.memo === 'Defragment' && history?.toAddress === paymentAddress;
     typeText = isUTXO
-      ? 'UTXO'
+      ? 'Consolidation'
       : CONSTANT_COMMONS.HISTORY.META_DATA_TYPE[(history?.metaDataType)] ||
           'Send';
     break;
