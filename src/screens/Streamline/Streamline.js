@@ -58,7 +58,7 @@ const Extra = () => {
 const Empty = React.memo(() => {
   return (
     <View style={styled.emptyContainer}>
-      <Text style={styled.emptyTitle}>Consolidation complete</Text>
+      <Text style={styled.emptyTitle}>Consolidation complete.</Text>
       <Text style={styled.emptyText}>
         You’re now running at peak efficiency.
       </Text>
