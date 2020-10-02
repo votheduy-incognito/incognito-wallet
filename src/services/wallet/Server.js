@@ -3,9 +3,7 @@ import _ from 'lodash';
 
 export const MAINNET_FULLNODE = 'https://lb-fullnode.incognito.org/fullnode';
 export const TESTNET_FULLNODE = 'https://testnet.incognito.org/fullnode';
-export const DEV_TESTNET_FULLNODE = 'https://dev-test-node.incognito.org/fullnode';
 
-const isMainnet = global.isMainnet??true;
 let cachedList = null;
 
 const TEST_NODE_SERVER = {
@@ -16,42 +14,42 @@ const TEST_NODE_SERVER = {
   password: '',
   name: 'Test Node'
 };
+const MAIN_NET_SERVER = {
+  id: 'mainnet',
+  default: true,
+  address: MAINNET_FULLNODE,
+  username: '',
+  password: '',
+  name: 'Mainnet'
+};
+const TEST_NET_SERVER = {
+  id: 'testnet',
+  default: false,
+  address: TESTNET_FULLNODE,
+  username: '',
+  password: '',
+  name: 'Testnet'
+};
+const LOCAL_SERVER = {
+  id: 'local',
+  default: false,
+  address: 'http://localhost:9334',
+  username: '',
+  password: '',
+  name: 'Local'
+};
+const DEFAULT_LIST_SERVER = [
+  LOCAL_SERVER,
+  TEST_NET_SERVER,
+  TEST_NODE_SERVER,
+  MAIN_NET_SERVER,
+];
 
 export const KEY = {
   SERVER: '$servers',
-  DEFAULT_LIST_SERVER:[{
-    id: 'local',
-    default: false,
-    address: 'http://localhost:9334',
-    username: '',
-    password: '',
-    name: 'Local'
-  },
-  {
-    id: 'testnet',
-    default:!isMainnet,
-    address: TESTNET_FULLNODE,
-    username: '',
-    password: '',
-    name: 'Testnet'
-  },
-  TEST_NODE_SERVER,
-  {
-    id: 'devtestnet',
-    default:!isMainnet,
-    address: DEV_TESTNET_FULLNODE,
-    username: '',
-    password: '',
-    name: 'Dev Testnet'
-  },{
-    id: 'mainnet',
-    default: isMainnet,
-    address: MAINNET_FULLNODE,
-    username: '',
-    password: '',
-    name: 'Mainnet'
-  }]
+  DEFAULT_LIST_SERVER,
 };
+
 export default class Server {
   static get() {
     if (cachedList) {
@@ -61,6 +59,11 @@ export default class Server {
     return storage.getItem(KEY.SERVER)
       .then(strData => {
         cachedList = JSON.parse(strData) || [];
+
+        if (!cachedList || cachedList.length === 0) {
+          return DEFAULT_LIST_SERVER;
+        }
+
         if (!cachedList.find(item => item.id === TEST_NODE_SERVER.id)) {
           cachedList.push(TEST_NODE_SERVER);
         }
@@ -85,6 +88,9 @@ export default class Server {
             }
           }
         }
+
+        this.setDefault(MAIN_NET_SERVER);
+        return MAIN_NET_SERVER;
       });
   }
 
