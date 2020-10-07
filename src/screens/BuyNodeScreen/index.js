@@ -269,7 +269,7 @@ const BuyNodeScreen = (props) => {
       contactData.firstName,
       contactData.lastName)
       .then(data => {
-        const usdPrice = data.TotalPrice;
+        const usdPrice = data.TotalPrice * currentQuantity;
         const displayAmount = data.TotalAmount;
         const originalAmount = convertUtil.toOriginalAmount(displayAmount, supportToken.pDecimals);
         const exchangeRate = formatUtil.amountFull(_.floor(usdPrice / displayAmount, 9), 0);
