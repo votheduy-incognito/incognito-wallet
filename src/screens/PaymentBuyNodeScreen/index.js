@@ -14,13 +14,13 @@ import { COINS, MESSAGES } from '@src/constants';
 import Row from '@components/Row';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import accountService from '@services/wallet/accountService';
-import convertUtil from '@utils/convert';
 import withDefaultAccount from '@components/Hoc/withDefaultAccount';
 import { withLayout_2 } from '@components/Layout';
 import { Header, SuccessModal, Balance } from '@src/components';
 import KeepAwake from 'react-native-keep-awake';
 import formatUtil from '@utils/format';
 import routeNames from '@routers/routeNames';
+import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import styles from './style';
 
 const BuyNodeFormScreen = (props) => {
@@ -31,6 +31,7 @@ const BuyNodeFormScreen = (props) => {
   const fee = useNavigationParam('fee');
   const prvBalance = useNavigationParam('prvBalance');
   const coinBalance = useNavigationParam('coinBalance');
+  const exchangeRate = useNavigationParam('exchangeRate');
 
   const [amount, setAmount] = useState(0);
   const [displayAmount, setDisplayAmount] = useState('');
@@ -148,6 +149,7 @@ const BuyNodeFormScreen = (props) => {
           disabled={error}
           onPress={handleSend}
         />
+        <ExtraInfo left="Exchange rate" right={`1 ${coin.symbol} = $${exchangeRate}`} />
         <Balance token={coin} balance={coinBalance} />
         { fee.id === COINS.PRV_ID && coin.tokenId !== COINS.PRV_ID && (
           <Balance token={COINS.PRV} balance={prvBalance} />
