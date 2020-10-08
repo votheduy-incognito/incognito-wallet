@@ -6,7 +6,8 @@ import {
   ACTION_TOGGLE_TEST_MODE_CENTRALIZED,
   ACTION_TOGGLE_TEST_MODE_DECENTRALIZED,
   ACTION_TOGGLE_UTXOS,
-  ACTION_DEV_TEST_TOGGLE_HISTORY_DETAIL
+  ACTION_DEV_TEST_TOGGLE_HISTORY_DETAIL,
+  ACTION_TOGGLE_LOG_APP,
 } from './Dev.constant';
 
 const initialState = {
@@ -14,7 +15,8 @@ const initialState = {
     [CONSTANT_KEYS.DEV_TEST_MODE_CENTRALIZED]: false,
     [CONSTANT_KEYS.DEV_TEST_MODE_DECENTRALIZED]: false,
     [CONSTANT_KEYS.TOGGLE_UTXOS]: false,
-    [CONSTANT_KEYS.DEV_TEST_TOGGLE_HISTORY_DETAIL]: false
+    [CONSTANT_KEYS.DEV_TEST_TOGGLE_HISTORY_DETAIL]: false,
+    [CONSTANT_KEYS.DEV_TEST_TOGGLE_LOG_APP]: false,
   },
 };
 
@@ -55,6 +57,17 @@ const devReducer = (state = initialState, action) => {
   }
   case ACTION_DEV_TEST_TOGGLE_HISTORY_DETAIL: {
     const keySave = CONSTANT_KEYS.DEV_TEST_TOGGLE_HISTORY_DETAIL;
+    const value = state?.storage[keySave];
+    return {
+      ...state,
+      storage: {
+        ...state?.storage,
+        [keySave]: !value,
+      },
+    };
+  }
+  case ACTION_TOGGLE_LOG_APP: {
+    const keySave = CONSTANT_KEYS.DEV_TEST_TOGGLE_LOG_APP;
     const value = state?.storage[keySave];
     return {
       ...state,
