@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { RefreshControl } from 'react-native';
@@ -39,6 +39,7 @@ import MainItem from '@screens/BuyNodeScreen/MainItem';
 import SubItem from '@screens/BuyNodeScreen/SubItem';
 import { COLORS } from '@src/styles';
 import convertUtil from '@utils/convert';
+import { useFocusEffect } from 'react-navigation-hooks';
 
 const BuyNodeScreen = (props) => {
   const [loadingData, setLoadingData] = useState(false);
@@ -65,9 +66,9 @@ const BuyNodeScreen = (props) => {
     shippingFee = 0;
   }
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     loadData();
-  }, []);
+  }, []));
 
   useEffect(() => {
     if (account && supportToken) {
@@ -254,7 +255,6 @@ const BuyNodeScreen = (props) => {
 
   // Process payment flow
   const onPaymentProcess = async () => {
-    const priceData = getTotal();
     setLoading(true);
     APIService.checkOutOrder(
       contactData.email,
@@ -269,14 +269,19 @@ const BuyNodeScreen = (props) => {
       contactData.firstName,
       contactData.lastName)
       .then(data => {
+        const usdPrice = data.TotalPrice * currentQuantity;
+        const displayAmount = data.TotalAmount;
+        const originalAmount = convertUtil.toOriginalAmount(displayAmount, supportToken.pDecimals);
+        const exchangeRate = formatUtil.amountFull(_.floor(usdPrice / displayAmount, 9), 0);
         setLoading(false);
         NavigationService.navigate(routeNames.PaymentBuyNodeScreen, {
           'paymentAddress': data?.Address,
-          'amount': priceData.totalCoinBalance,
+          'amount': originalAmount,
           'coin': supportToken,
           'orderId': data?.OrderID,
           'prvBalance': prvBalance,
           'coinBalance': coinBalance,
+          exchangeRate,
           'fee': fee,
         });
       })
@@ -312,7 +317,7 @@ const BuyNodeScreen = (props) => {
 
   const getTotal = () => {
     let totalUSD = (usdPrice + shippingFee) * currentQuantity;
-    let totalCoin = totalUSD / supportToken.priceUsd;
+    let totalCoin = totalUSD / _.floor(supportToken.priceUsd, supportToken.pDecimals);
 
     let totalCoinBalance = _.ceil(totalCoin, supportToken.pDecimals);
     totalCoin = formatUtil.amountFull(totalCoinBalance, 0);

@@ -33,9 +33,22 @@ class NodeItem extends React.Component {
     }
   }
 
+  checkPNodeStatus(device, ShardCommittee) {
+    device.Status = VALIDATOR_STATUS.WAITING;
+    _.forEach(ShardCommittee, shard =>
+      _.forEach(shard, committee => {
+        if (device?.PublicKeyMining === committee.MiningPubKey.bls) {
+          device.Status = VALIDATOR_STATUS.WORKING;
+        }
+      })
+    );
+
+    return device;
+  }
+
   async getPNodeInfo(item) {
     const deviceData = await NodeService.fetchAndSavingInfoNodeStake(item);
-    const device = Device.getInstance(deviceData);
+    let device = Device.getInstance(deviceData);
 
     if (device.IsSetupViaLan) {
       const res = await NodeService.getLog(device);
@@ -135,8 +148,7 @@ class NodeItem extends React.Component {
         }
       }
 
-      let ShardCommittee = Object.values(committees?.ShardCommittee) || [];
-      let ShardCommitteeData = ShardCommittee[0] || [];
+      const ShardCommittee = Object.values(committees?.ShardCommittee) || [];
 
       device.Status = VALIDATOR_STATUS.WAITING;
 
@@ -145,13 +157,7 @@ class NodeItem extends React.Component {
       }
 
       if (autoStakingInfo) {
-        device.Status = VALIDATOR_STATUS.WAITING;
-        for (let i = 0; i < ShardCommitteeData.length; i++) {
-          if (device?.PublicKeyMining === ShardCommitteeData[i].MiningPubKey.bls) {
-            device.Status = VALIDATOR_STATUS.WORKING;
-            break;
-          }
-        }
+        device = this.checkPNodeStatus(device, ShardCommittee);
       }
     }
 
