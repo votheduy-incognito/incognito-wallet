@@ -3,4 +3,6 @@ export const ACTION_TOGGLE_TEST_MODE_DECENTRALIZED =
 export const ACTION_TOGGLE_TEST_MODE_CENTRALIZED =
   '[dev] Toggle mode test mode centralized';
 export const ACTION_TOGGLE_UTXOS = '[dev] Toggle utxos';
-export const ACTION_DEV_TEST_TOGGLE_HISTORY_DETAIL = '[dev] Toggle history detail';
+export const ACTION_DEV_TEST_TOGGLE_HISTORY_DETAIL =
+  '[dev] Toggle history detail';
+export const ACTION_TOGGLE_LOG_APP = '[dev] Toggle log app';

@@ -21,8 +21,12 @@ const Item = ({ title, desc, time, id }) => (
 );
 
 const Performance = () => {
+  const isDev = global.isDebug();
   const { data, toggle } = useSelector(performanceSelector);
   const dispatch = useDispatch();
+  if (!isDev) {
+    return null;
+  }
   if (!toggle) {
     return (
       <View style={[styled.btn, styled.abs]}>

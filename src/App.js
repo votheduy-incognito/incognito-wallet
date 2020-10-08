@@ -22,7 +22,6 @@ import {
   actionSetCurrentScreen,
   actionSetPrevScreen,
 } from './screens/Navigation';
-// import Performance from './screens/Performance';
 
 const isShowDeviceLog = false;
 const { store, persistor } = configureStore();
@@ -130,7 +129,6 @@ export const AppWrapper = (props) => () => {
             }}
             onPressOk={() => listenNetworkChanges()}
           />
-          {/* <Performance /> */}
         </AppScreen>
       </PersistGate>
     </Provider>

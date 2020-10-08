@@ -7,7 +7,6 @@ import withFCM from '@src/screens/Notification/Notification.withFCM';
 import withWallet from '@screens/Wallet/features/Home/Wallet.enhance';
 import { useSelector, useDispatch, connect } from 'react-redux';
 import { useFocusEffect } from 'react-navigation-hooks';
-import { withLayout_2 } from '@src/components/Layout';
 import APIService from '@src/services/api/miner/APIService';
 import { accountSeleclor } from '@src/redux/selectors';
 import { ExHandler } from '@src/services/exception';
@@ -26,6 +25,7 @@ import { followDefaultTokens } from '@src/redux/actions/account';
 import { pTokensSelector } from '@src/redux/selectors/token';
 import { withNews, actionCheckUnreadNews } from '@screens/News';
 import { CONSTANT_KEYS } from '@src/constants';
+import Performance from '@screens/Performance';
 import {
   withSyncIncognitoAddress,
   withSyncDetectNetwork,
@@ -33,6 +33,7 @@ import {
 import { homeSelector } from './Home.selector';
 import { actionFetch as actionFetchHomeConfigs } from './Home.actions';
 import Airdrop from './features/Airdrop';
+import { devSelector } from '../Dev';
 
 const enhance = (WrappedComp) => (props) => {
   const {
@@ -49,6 +50,8 @@ const enhance = (WrappedComp) => (props) => {
   const isFollowedDefaultPTokens = useSelector(isFollowDefaultPTokensSelector)(
     CONSTANT_KEYS.IS_FOLLOW_DEFAULT_PTOKENS,
   );
+  const dev = useSelector(devSelector);
+  const logApp = dev[CONSTANT_KEYS.DEV_TEST_TOGGLE_LOG_APP];
   const dispatch = useDispatch();
 
   const getHomeConfiguration = async () => {
@@ -137,6 +140,7 @@ const enhance = (WrappedComp) => (props) => {
       />
       <Modal />
       <AppUpdater />
+      {logApp && <Performance />}
     </ErrorBoundary>
   );
 };
@@ -190,7 +194,6 @@ export default compose(
   withFCM,
   withPin,
   withWallet,
-  // withLayout_2,
   withNews,
   withSyncIncognitoAddress,
   withSyncDetectNetwork,

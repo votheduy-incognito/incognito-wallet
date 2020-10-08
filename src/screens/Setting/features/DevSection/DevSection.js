@@ -13,6 +13,7 @@ import {
   actionToggleTestModeCentralized,
   actionToggleUTXOs,
   actionToggleHistoryDetail,
+  actionToggleLogApp,
 } from '@src/screens/Dev';
 import { CONSTANT_KEYS } from '@src/constants';
 
@@ -45,6 +46,8 @@ const DevSection = () => {
   const onToggleUTXOs = () => dispatch(actionToggleUTXOs());
 
   const onToggleHistoryDetail = () => dispatch(actionToggleHistoryDetail());
+
+  const onToggleLogApp = () => dispatch(actionToggleLogApp());
 
   const isStagingConfig = homeConfig === 'staging';
 
@@ -113,6 +116,18 @@ const DevSection = () => {
         <Switch
           onValueChange={onToggleHistoryDetail}
           value={dev[CONSTANT_KEYS.DEV_TEST_TOGGLE_HISTORY_DETAIL]}
+        />
+      ),
+    },
+    {
+      id: 'log-app',
+      desc: 'Toggle log app',
+      onPress: null,
+      toggleSwitch: true,
+      switchComponent: (
+        <Switch
+          onValueChange={onToggleLogApp}
+          value={dev[CONSTANT_KEYS.DEV_TEST_TOGGLE_LOG_APP]}
         />
       ),
     },
