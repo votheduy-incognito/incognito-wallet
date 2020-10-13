@@ -130,7 +130,9 @@ class Node extends BaseScreen {
       showWelcome: false,
       withdrawTxs: {},
       disabled: false,
-      message: ''
+      message: '',
+      withdrawing: false,
+      withdrawable: false,
     };
     this.renderNode = this.renderNode.bind(this);
   }
@@ -313,7 +315,7 @@ class Node extends BaseScreen {
   }
 
   handleGetNodeInfoCompleted = async ({ device, index }) => {
-    const { listDevice, loadedDevices } = this.state;
+    const { listDevice, loadedDevices, withdrawTxs } = this.state;
 
     if (device) {
 
@@ -327,6 +329,7 @@ class Node extends BaseScreen {
     loadedDevices.push(index);
 
     this.setState({ listDevice, loadedDevices }, () => {
+      let noRewards = true;
       let rewardsList = [];
       listDevice.forEach((element) => {
         let rewards = !_.isEmpty(element?.Rewards) ? element?.Rewards : { [PRV_ID] : 0};
@@ -340,14 +343,25 @@ class Node extends BaseScreen {
               coinTotalReward.balance += reward.balance;
               coinTotalReward.displayBalance = convert.toHumanAmount(coinTotalReward.balance, coinTotalReward.pDecimals || 0);
             }
+
+            if (reward?.balance > 0) {
+              noRewards = false;
+            }
           });
         }
       });
 
       rewardsList = _.orderBy(rewardsList, item => item.displayBalance, 'desc');
-      this.setState({ rewards: rewardsList });
-    });
 
+      const vNodes = listDevice.filter(device => device.IsVNode);
+      const pNodes = listDevice.filter(device => device.IsPNode);
+
+      let vNodeWithdrawable = vNodes.length !== withdrawTxs?.length;
+      let pNodeWithdrawable = pNodes.length && pNodes.some(item => item.IsFundedStakeWithdrawable);
+      const withdrawable = !noRewards && (vNodeWithdrawable || pNodeWithdrawable);
+
+      this.setState({ rewards: rewardsList, withdrawable });
+    });
   };
 
   checkWithdrawTxsStatus() {
@@ -376,6 +390,7 @@ class Node extends BaseScreen {
         isFetching: true,
         isLoadMore: false,
         listDevice: list,
+        withdrawing: false,
       }, this.getFullInfo);
 
       this.checkWithdrawTxsStatus();
@@ -409,7 +424,23 @@ class Node extends BaseScreen {
     this.setState({ removingDevice: null });
   };
 
-  handlePressWithdraw = onClickView(async (device) => {
+  handleWithdrawAll = async () => {
+    try {
+      const { listDevice } = this.state;
+
+      this.setState({ withdrawing: true });
+
+      for (const device of listDevice) {
+        await this.handleWithdraw(device, false);
+      }
+
+      this.showToastMessage(MESSAGES.ALL_NODE_WITHDRAWAL);
+    } catch (e) {
+      //
+    }
+  };
+
+  handleWithdraw = async (device, showToast = true) => {
     try {
       const account = device.Account;
       const rewards = device.Rewards;
@@ -419,7 +450,10 @@ class Node extends BaseScreen {
           .filter(id => rewards[id] > 0);
         const txs = await this.sendWithdrawTx(PaymentAddress, tokenIds);
         const message = MESSAGES.VNODE_WITHDRAWAL;
-        this.showToastMessage(message);
+
+        if (showToast) {
+          this.showToastMessage(message);
+        }
 
         return txs;
       } else {
@@ -431,12 +465,21 @@ class Node extends BaseScreen {
         });
         device.IsFundedStakeWithdrawable = await NodeService.isWithdrawable(device);
         const message = MESSAGES.PNODE_WITHDRAWAL;
-        this.showToastMessage(message);
+
+        if (showToast) {
+          this.showToastMessage(message);
+        }
       }
     } catch (error) {
-      new ExHandler(error).showErrorToast(true);
+      if (showToast) {
+        new ExHandler(error).showErrorToast(true);
+      }
+
+      throw error;
     }
-  });
+  };
+
+  handlePressWithdraw = onClickView(this.handleWithdraw);
 
   handlePressStake = onClickView(async (device) => {
     this.goToScreen(routeNames.AddStake, { device });
@@ -524,6 +567,8 @@ class Node extends BaseScreen {
       listDevice,
       loadedDevices,
       rewards,
+      withdrawable,
+      withdrawing,
     } = this.state;
 
     if (listDevice?.length > loadedDevices?.length) {
@@ -533,7 +578,15 @@ class Node extends BaseScreen {
     }
 
     return (
-      <Rewards rewards={rewards} />
+      <View style={{ paddingHorizontal: 25 }}>
+        <Rewards rewards={rewards} />
+        <RoundCornerButton
+          onPress={this.handleWithdrawAll}
+          style={[theme.BUTTON.NODE_BUTTON, { marginBottom: 50 }]}
+          title={withdrawing ? 'Withdrawing all rewards...' : 'Withdraw all rewards'}
+          disabled={!withdrawable || withdrawing}
+        />
+      </View>
     );
   }
 
