@@ -240,15 +240,12 @@ export default class FirebaseService {
   }
 
   isAuth = async (username, password)=> {
-    console.log('isAuth begin username =',username );
     let fuid = this.getUID();
     const email = this.firebase.auth().currentUser?.email ||'';
     if(!_.isEqual(email ,username)){
       fuid = await this.signIn(username,password).catch(console.log)||undefined;
     }
     // fuid = await this.signIn(username,password).catch(console.log)||undefined;
-
-    console.log('isAuth end uid =',fuid );
     return fuid;
   }
 
@@ -323,7 +320,6 @@ export default class FirebaseService {
       // let chanel = `/${uid}/` + action.source;
       // await this.firebase.database().ref(chanel).remove().catch(console.log);
       const pushData = async ()=>{
-        console.log(TAG, 'send pushData begin ------');
         await this.isAuth(this.username,this.password);
         const temp  = await this.push(path,json).catch(console.log)??false;
         // return temp?temp:new Error('pushData  fail');
@@ -346,7 +342,6 @@ export default class FirebaseService {
       // };
 
       const fetchData = async ()=>{
-        console.log(TAG, 'send fetchData begin ------');
         let receiveData = false;
         try {
           receiveData =  await Util.excuteWithTimeout(this.startListenData(actionSource),timeout);

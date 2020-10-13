@@ -20,7 +20,9 @@ class UnstakeContainer extends PureComponent {
 
   handleCompleteUnstake = async () => {
     const { navigation } = this.props;
-    navigation.navigate(routeNames.Node);
+    navigation.navigate(routeNames.Node, {
+      refresh: new Date().getTime()
+    });
   };
 
   render() {
