@@ -45,7 +45,9 @@ class RepairingSetupNode extends BaseScreen {
   handleFinish = () => {
     this.setState({ success: false }, () => {
       // Need to navigate to RootMiner to pass params
-      this.goToScreen(routeNames.Node, { setupNode: true });
+      this.goToScreen(routeNames.Node, {
+        refresh: new Date().getTime()
+      });
     });
   };
 

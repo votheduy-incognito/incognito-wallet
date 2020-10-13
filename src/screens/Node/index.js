@@ -1,4 +1,5 @@
-import { ActivityIndicator, RoundCornerButton, Toast } from '@components/core';
+import React from 'react';
+import { ActivityIndicator, RoundCornerButton } from '@components/core';
 import DialogLoader from '@components/DialogLoader';
 import Device from '@models/device';
 import BaseScreen from '@screens/BaseScreen';
@@ -24,7 +25,6 @@ import Util from '@utils/Util';
 import { onClickView } from '@utils/ViewUtil';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React from 'react';
 import { FlatList, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { connect } from 'react-redux';
@@ -56,6 +56,7 @@ let committees = {
   ShardCommittee: {},
 };
 let nodeRewards = {};
+let lastRefreshTime;
 
 const updateBeaconInfo = async () => {
   const chainInfo = await getBlockChainInfo();
@@ -139,15 +140,33 @@ class Node extends BaseScreen {
 
   async componentDidMount() {
     const { navigation } = this.props;
-    this.listener = navigation.addListener('willFocus', this.loadData);
 
     if (allTokens.length === 0) {
       allTokens.push(PRV);
     }
+
+    this.loadData(true);
+
+    this.listener = navigation.addListener('didFocus', this.loadData);
   }
 
-  loadData = async () => {
+  componentWillUnmount() {
+    if (this.listener) {
+      this.listener.remove();
+    }
+  }
+
+  loadData = async (firstTime = false) => {
+    const { navigation } = this.props;
     const { listDevice } = this.state;
+    const { refresh } = navigation?.state?.params || {};
+
+    if (firstTime !== true && (!refresh || (refresh === lastRefreshTime))) {
+      return;
+    }
+
+    lastRefreshTime = refresh || new Date().getTime();
+
     const clearedNode = await LocalDatabase.getNodeCleared();
     const list = (await LocalDatabase.getListDevices()) || [];
 
@@ -198,13 +217,7 @@ class Node extends BaseScreen {
       // Force eventhough the same
       LocalDatabase.saveVerifyCode('');
     }
-  }
-
-  componentWillUnmount() {
-    if (this.listener) {
-      this.listener.remove();
-    }
-  }
+  };
 
   onResume = () => {
     this.handleRefresh();
@@ -492,7 +505,9 @@ class Node extends BaseScreen {
   importAccount = () => {
     const { navigation } = this.props;
     this.goToScreen(routeNames.ImportAccount, {
-      onGoBack: () => navigation.navigate(routeNames.Node),
+      onGoBack: () => navigation.navigate(routeNames.Node, {
+        refresh: new Date().getTime()
+      }),
     });
   };
 

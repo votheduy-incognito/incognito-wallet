@@ -89,7 +89,9 @@ class AddStakeContainer extends BaseScreen {
     await LocalDatabase.saveListDevices(listDevice);
     Toast.showInfo('You staked successfully.');
 
-    navigation.navigate(routeNames.Node);
+    navigation.navigate(routeNames.Node, {
+      refresh: new Date().getTime()
+    });
   }
 
   handleStake = async () => {
@@ -116,7 +118,7 @@ class AddStakeContainer extends BaseScreen {
       this.setState({ isStaking: false });
     }
   };
-  
+
   render() {
     const { navigation, wallet, actionSwitchAccount } = this.props;
     const { device, amount, fee, isStaking, balance } = this.state;

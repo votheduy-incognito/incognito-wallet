@@ -307,7 +307,7 @@ const NodeUpdateWifi = () => {
   };
 
   const goBack = () => {
-    navigation.navigate(routeNames.Node);
+    navigation.navigate(routeNames.Node, { refresh: new Date().getTime() });
   };
 
   const renderContent = () => {
