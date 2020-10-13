@@ -1,4 +1,4 @@
-import { ActivityIndicator, RoundCornerButton } from '@components/core';
+import { ActivityIndicator, RoundCornerButton, Toast } from '@components/core';
 import DialogLoader from '@components/DialogLoader';
 import Device from '@models/device';
 import BaseScreen from '@screens/BaseScreen';
@@ -8,7 +8,7 @@ import { getTokenList } from '@services/api/token';
 import { CustomError, ErrorCode, ExHandler } from '@services/exception';
 import NodeService from '@services/NodeService';
 import accountService from '@services/wallet/accountService';
-import {PRV_ID} from '@screens/Dex/constants';
+import { PRV_ID } from '@screens/Dex/constants';
 import {
   getBeaconBestStateDetail,
   getBlockChainInfo,
@@ -37,6 +37,11 @@ import theme from '@src/styles/theme';
 import Rewards from '@screens/Node/components/Rewards';
 import { SuccessModal } from '@src/components';
 import { parseNodeRewardsToArray } from '@screens/Node/utils';
+import appConstant from '@src/constants/app';
+import {
+  getDurationShowMessage,
+  handleGetFunctionConfigs
+} from '@src/shared/hooks/featureConfig';
 import style from './style';
 import WelcomeFirstTime from './components/WelcomeFirstTime';
 
@@ -124,6 +129,8 @@ class Node extends BaseScreen {
       showModalMissingSetup: false,
       showWelcome: false,
       withdrawTxs: {},
+      disabled: false,
+      message: ''
     };
     this.renderNode = this.renderNode.bind(this);
   }
@@ -203,6 +210,9 @@ class Node extends BaseScreen {
 
   async componentWillMount() {
     await this.createSignIn();
+    const feature = await handleGetFunctionConfigs(appConstant.DISABLED.BUY_NODE);
+    const { disabled, message } = feature;
+    this.setState({ disabled, message });
   }
 
   sendWithdrawTx = async (paymentAddress, tokenIds) => {
@@ -499,6 +509,16 @@ class Node extends BaseScreen {
     this.setState({ showWelcome: false });
   };
 
+  onBuyNodePress = () => {
+    const { disabled, message } = this.props;
+    if (disabled) {
+      const duration = getDurationShowMessage(message);
+      Toast.showInfo(message, {duration});
+      return;
+    }
+    this.goToScreen(routeNames.BuyNodeScreen);
+  };
+
   renderTotalRewards() {
     const {
       listDevice,
@@ -563,7 +583,7 @@ class Node extends BaseScreen {
             <RoundCornerButton
               style={[style.buyButton, theme.BUTTON.BLACK_TYPE]}
               title="Get a Node Device"
-              onPress={() => this.goToScreen(routeNames.BuyNodeScreen)}
+              onPress={this.onBuyNodePress}
             />
           </View>
           {this.renderModalActionsForNodePrevSetup()}
