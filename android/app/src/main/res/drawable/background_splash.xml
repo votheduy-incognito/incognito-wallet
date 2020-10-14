@@ -7,10 +7,10 @@
         android:drawable="@color/white"/>
 
     <item
-        android:width="100dp"
-        android:height="100dp"
-        android:drawable="@drawable/icon_splash"
-        android:gravity="top|center"
-        android:top="100dp"/>
+        android:top="100dp">
+        <bitmap
+            android:src="@drawable/icon_splash"
+            android:gravity="top|center" />
+    </item>
 
 </layer-list>
