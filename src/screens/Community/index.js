@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback, memo } from 'react';
 import PropTypes from 'prop-types';
 import { withNavigationFocus } from 'react-navigation';
 import { WebView } from 'react-native-webview';
@@ -8,13 +8,16 @@ import LocalDatabase from '@src/utils/LocalDatabase';
 import Header from '@src/components/Header';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '@src/styles';
+import { Keyboard } from 'react-native';
+import { isIOS } from '@utils/platform';
 import styles from './style';
 
 const Community = ({ navigation, isFocused }) => {
-  const webViewRef = useRef();
-  const [loading, setLoading] = useState(true);
-  const [backable, setBackable] = useState(false);
-  const [url, setUrl] = useState('');
+  const webViewRef                        = useRef();
+  const [loading, setLoading]             = useState(true);
+  const [backable, setBackable]           = useState(false);
+  const [url, setUrl]                     = useState('');
+  const [showBottomBar, setShowBottomBar] = useState(true);
 
   useEffect(() => {
     if (isFocused) {
@@ -42,6 +45,26 @@ const Community = ({ navigation, isFocused }) => {
           setUrl(MAIN_WEBSITE);
         });
     }
+  }, []);
+
+  const _keyboardDidShow = useCallback(() => {
+    setShowBottomBar(false);
+  }, []);
+
+  const _keyboardDidHide = useCallback(() => {
+    setShowBottomBar(true);
+  }, []);
+
+  useEffect(() => {
+    if (isIOS()) return;
+    Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
+    Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
+
+    return () => {
+      if(isIOS()) return;
+      Keyboard.removeListener('keyboardDidShow', _keyboardDidShow);
+      Keyboard.removeListener('keyboardDidHide', _keyboardDidHide);
+    };
   }, []);
 
   const goBack = () => {
@@ -173,7 +196,7 @@ const Community = ({ navigation, isFocused }) => {
           />
         </TouchableOpacity>
       )} */}
-      {renderBottomBar()}
+      {showBottomBar && renderBottomBar()}
     </View>
   );
 };
@@ -183,4 +206,4 @@ Community.propTypes = {
   isFocused: PropTypes.bool.isRequired,
 };
 
-export default withNavigationFocus(Community);
+export default withNavigationFocus(memo(Community));
