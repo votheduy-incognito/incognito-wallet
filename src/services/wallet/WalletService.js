@@ -119,3 +119,8 @@ export async function updateStatusHistory(wallet) {
 export function clearCache(wallet) {
   wallet.clearCached();
 }
+
+export async function updateHistoryStatus(wallet, txId) {
+  await wallet.updateTxStatus(txId);
+  await saveWallet(wallet);
+}
