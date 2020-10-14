@@ -6,12 +6,20 @@ const STATUS = {
 };
 
 const DISABLED = {
-  APP: 'app',
-  TRADE: 'trade',
-  BUY_NODE: 'buynode'
+  APP:        'app',
+  TRADE:      'trade',
+  BUY_NODE:   'buynode'
+};
+
+const STATUS_MESSAGE = {
+  PENDING:    'Pending',
+  COMPLETE:   'Complete',
+  FAILED:     'Failed',
+  EXPIRED:    'Expired'
 };
 
 export default {
   STATUS,
-  DISABLED
+  DISABLED,
+  STATUS_MESSAGE
 };
