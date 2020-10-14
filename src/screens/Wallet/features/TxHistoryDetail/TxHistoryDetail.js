@@ -1,5 +1,12 @@
 import React from 'react';
-import { Text, View, Clipboard, Dimensions, Linking } from 'react-native';
+import {
+  Text,
+  View,
+  Clipboard,
+  Dimensions,
+  Linking,
+  ActivityIndicator
+} from 'react-native';
 import PropTypes from 'prop-types';
 import { TouchableOpacity, ScrollView, Toast } from '@src/components/core';
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
@@ -26,6 +33,9 @@ const Hook = (props) => {
     canRetryExpiredDeposit = false,
     handleRetryExpiredDeposit = null,
     message = '',
+    showReload,
+    handleRetryHistoryStatus,
+    fetchingHistory
   } = props;
   const shouldShowMsg = !!message;
   const [state, setState] = React.useState({
@@ -58,7 +68,7 @@ const Hook = (props) => {
           <Text
             style={[
               styled.valueText,
-              shouldShowMsg ? {} : { flex: 1 },
+              shouldShowMsg || showReload ? {} : { flex: 1 },
               valueTextStyle,
             ]}
             numberOfLines={1}
@@ -74,6 +84,24 @@ const Hook = (props) => {
                 handleRetryExpiredDeposit
               }
             />
+          )}
+          {showReload && !canRetryExpiredDeposit && (
+            fetchingHistory ?
+              (
+                <View style={{ marginLeft: 10 }}>
+                  <ActivityIndicator size='small' />
+                </View>
+              )
+              :
+              (
+                <BtnRetry
+                  style={styled.btnRetry}
+                  onPress={
+                    typeof handleRetryHistoryStatus === 'function' &&
+                  handleRetryHistoryStatus
+                  }
+                />
+              )
           )}
           {shouldShowMsg && (
             <BtnChevron
@@ -131,7 +159,13 @@ const TxHistoryDetail = (props) => {
   const dev = useSelector(devSelector);
   const keySave = CONSTANT_KEYS.DEV_TEST_TOGGLE_HISTORY_DETAIL;
   const toggleTxHistoryDetail = global.isDebug() && dev[keySave];
-  const { data, onRetryExpiredDeposit } = props;
+  const {
+    data,
+    onRetryExpiredDeposit,
+    onRetryHistoryStatus,
+    showReload,
+    fetchingHistory
+  } = props;
   const { typeText, statusColor, statusMessage, history } = data;
   const { fee, formatFee, feeUnit } = getFeeFromTxHistory(history);
   const amountStr =
@@ -163,6 +197,9 @@ const TxHistoryDetail = (props) => {
       canRetryExpiredDeposit: history?.canRetryExpiredDeposit,
       handleRetryExpiredDeposit: onRetryExpiredDeposit,
       message: history?.statusDetail,
+      handleRetryHistoryStatus: onRetryHistoryStatus,
+      showReload,
+      fetchingHistory,
     },
     {
       label: 'Time',
@@ -247,6 +284,10 @@ TxHistoryDetail.propTypes = {
     history: PropTypes.object,
   }).isRequired,
   onRetryExpiredDeposit: PropTypes.func.isRequired,
+  /* handle for history status below */
+  onRetryHistoryStatus: PropTypes.func.isRequired,
+  showReload: PropTypes.bool.isRequired,
+  fetchingHistory: PropTypes.bool.isRequired,
 };
 
 export default React.memo(TxHistoryDetail);
