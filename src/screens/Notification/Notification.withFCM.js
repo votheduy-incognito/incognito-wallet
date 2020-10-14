@@ -17,6 +17,7 @@ import {
   getDurationShowMessage,
   handleGetFunctionConfigs
 } from '@src/shared/hooks/featureConfig';
+import { CONSTANT_APP } from '@src/constants';
 
 const sentIds = {};
 let component;
@@ -63,7 +64,7 @@ const enhance = WrappedComponent =>
           ...notification?.data,
           ...sentIds[notification?.data?.ID],
         });
-        const featureName = _normalizedData.type;
+        const featureName = CONSTANT_APP.FEATURES_TYPE_MAP[_normalizedData.type] || CONSTANT_APP.FEATURES_ROUTE_MAP[_normalizedData.screen];
         const feature = await handleGetFunctionConfigs(featureName);
         const { disabled, message } = feature;
         if (disabled) {
