@@ -1,0 +1,14 @@
+export const ACTION_REFRESHING
+  = '[TxHistoryDetail]ACTION_REFRESHING';
+
+export const ACTION_REFRESHED
+  = '[TxHistoryDetail]ACTION_REFRESHED';
+
+export const ACTION_REFRESH_FAIL
+  = '[TxHistoryDetail]ACTION_REFRESH_FAIL';
+
+export const ACTION_UPDATE_HISTORY_DETAIL
+  = '[TxHistoryDetail]ACTION_UPDATE_HISTORY_DETAIL';
+
+export const ACTION_CLEAR_HISTORY_DETAIL
+  = '[TxHistoryDetail]ACTION_CLEAR_HISTORY_DETAIL';

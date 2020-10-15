@@ -8,7 +8,7 @@ import {
   ActivityIndicator
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { TouchableOpacity, ScrollView, Toast } from '@src/components/core';
+import {TouchableOpacity, ScrollView, Toast, RefreshControl} from '@src/components/core';
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import formatUtil from '@src/utils/format';
 import linkingService from '@src/services/linking';
@@ -164,9 +164,14 @@ const TxHistoryDetail = (props) => {
     onRetryExpiredDeposit,
     onRetryHistoryStatus,
     showReload,
-    fetchingHistory
+    fetchingHistory,
+    onPullRefresh,
+    isRefresh,
+    historyId
   } = props;
+
   const { typeText, statusColor, statusMessage, history } = data;
+  const { fromApi } = history;
   const { fee, formatFee, feeUnit } = getFeeFromTxHistory(history);
   const amountStr =
     (history.amount &&
@@ -254,7 +259,14 @@ const TxHistoryDetail = (props) => {
     Toast.showSuccess('Copied');
   };
   return (
-    <ScrollView>
+    <ScrollView
+      refreshControl={fromApi && (
+        <RefreshControl
+          refreshing={isRefresh}
+          onRefresh={() => onPullRefresh && onPullRefresh(historyId)}
+        />
+      )}
+    >
       {historyFactories.map((hook, index) => (
         <Hook key={index} {...hook} />
       ))}
@@ -284,10 +296,14 @@ TxHistoryDetail.propTypes = {
     history: PropTypes.object,
   }).isRequired,
   onRetryExpiredDeposit: PropTypes.func.isRequired,
+  historyId: PropTypes.string.isRequired,
   /* handle for history status below */
   onRetryHistoryStatus: PropTypes.func.isRequired,
   showReload: PropTypes.bool.isRequired,
   fetchingHistory: PropTypes.bool.isRequired,
+  /* Handle pull refresh */
+  isRefresh: PropTypes.bool.isRequired,
+  onPullRefresh: PropTypes.func.isRequired,
 };
 
 export default React.memo(TxHistoryDetail);
