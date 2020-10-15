@@ -29,22 +29,24 @@ const Performance = () => {
   }
   if (!toggle) {
     return (
-      <View style={[styled.btn, styled.abs]}>
+      <View style={styled.abs}>
         <BtnClose onPress={() => dispatch(actionToggle())} />
       </View>
     );
   }
   return (
-    <ScrollView style={styled.scrollview}>
+    <View style={styled.container}>
+      <ScrollView style={styled.scrollview}>
+        <View style={{ flex: 1 }}>
+          {data.map((item, index) => (
+            <Item {...{ ...item, id: index }} key={item?.id || index} />
+          ))}
+        </View>
+      </ScrollView>
       <View style={styled.btn}>
         <BtnClose onPress={() => dispatch(actionToggle())} />
       </View>
-      <View style={{ flex: 1 }}>
-        {data.map((item, index) => (
-          <Item {...{ ...item, id: index }} key={item?.id || index} />
-        ))}
-      </View>
-    </ScrollView>
+    </View>
   );
 };
 
