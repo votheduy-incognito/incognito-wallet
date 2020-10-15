@@ -51,11 +51,15 @@ class LinkDevice extends BaseScreen {
         }
       }
       if (isDuplicate) {
-        this.goToScreen(routeNames.Node);
+        this.goToScreen(routeNames.Node, {
+          refresh: new Date().getTime()
+        });
       } else {
         const newListDevice = [node, ...listDevice];
         await LocalDatabase.saveListDevices(newListDevice);
-        this.goToScreen(routeNames.Node);
+        this.goToScreen(routeNames.Node, {
+          refresh: new Date().getTime()
+        });
       }
     } finally {
       this.setState({ loading: false });
