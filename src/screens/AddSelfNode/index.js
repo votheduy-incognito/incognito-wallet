@@ -180,7 +180,9 @@ class AddSelfNode extends BaseScreen {
         const deviceJSON = await this.parseHost(host);
         listLocalDevice = [deviceJSON, ...listLocalDevice];
         await LocalDatabase.saveListDevices(listLocalDevice);
-        this.goToScreen(routeNames.Node);
+        this.goToScreen(routeNames.Node, {
+          refresh: new Date().getTime()
+        });
         return true;
       }
     } catch (error) {
