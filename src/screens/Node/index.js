@@ -366,8 +366,13 @@ class Node extends BaseScreen {
 
       rewardsList = _.orderBy(rewardsList, item => item.displayBalance, 'desc');
 
-      const vNodes = listDevice.filter(device => device.IsVNode && device.AccountName);
-      const pNodes = listDevice.filter(device => device.IsPNode && device.AccountName);
+      const validNodes = listDevice.filter(device => device.AccountName &&
+        !_.isEmpty(device?.Rewards) &&
+        _.some(device.Rewards, value => value),
+      );
+
+      const vNodes = validNodes.filter(device => device.IsVNode);
+      const pNodes = validNodes.filter(device => device.IsPNode);
 
       const vNodeWithdrawable = vNodes.length && vNodes.length !== withdrawTxs?.length;
       const pNodeWithdrawable = pNodes.length && pNodes.some(item => item.IsFundedStakeWithdrawable);
@@ -438,19 +443,19 @@ class Node extends BaseScreen {
   };
 
   handleWithdrawAll = async () => {
-    try {
-      const { listDevice } = this.state;
+    const { listDevice } = this.state;
 
-      this.setState({ withdrawing: true });
+    this.setState({ withdrawing: true });
 
-      for (const device of listDevice) {
+    for (const device of listDevice) {
+      try {
         await this.handleWithdraw(device, false);
+      } catch {
+        // Ignore the error
       }
-
-      this.showToastMessage(MESSAGES.ALL_NODE_WITHDRAWAL);
-    } catch (e) {
-      //
     }
+
+    this.showToastMessage(MESSAGES.ALL_NODE_WITHDRAWAL);
   };
 
   handleWithdraw = async (device, showToast = true) => {
