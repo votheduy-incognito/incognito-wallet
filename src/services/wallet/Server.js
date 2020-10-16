@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 export const MAINNET_FULLNODE = 'https://lb-fullnode.incognito.org/fullnode';
 export const TESTNET_FULLNODE = 'https://testnet.incognito.org/fullnode';
+export const TESTNET1_FULLNODE = 'http://51.83.36.184:20002/fullnode';
 
 let cachedList = null;
 
@@ -12,7 +13,7 @@ const TEST_NODE_SERVER = {
   address: 'http://51.161.117.88:6354',
   username: '',
   password: '',
-  name: 'Test Node'
+  name: 'Test Node',
 };
 const MAIN_NET_SERVER = {
   id: 'mainnet',
@@ -20,7 +21,7 @@ const MAIN_NET_SERVER = {
   address: MAINNET_FULLNODE,
   username: '',
   password: '',
-  name: 'Mainnet'
+  name: 'Mainnet',
 };
 const TEST_NET_SERVER = {
   id: 'testnet',
@@ -28,7 +29,7 @@ const TEST_NET_SERVER = {
   address: TESTNET_FULLNODE,
   username: '',
   password: '',
-  name: 'Testnet'
+  name: 'Testnet',
 };
 const LOCAL_SERVER = {
   id: 'local',
@@ -36,13 +37,22 @@ const LOCAL_SERVER = {
   address: 'http://localhost:9334',
   username: '',
   password: '',
-  name: 'Local'
+  name: 'Local',
+};
+const TEST_NET_1_SERVER = {
+  id: 'testnet1',
+  default: false,
+  address: TESTNET1_FULLNODE,
+  username: '',
+  password: '',
+  name: 'Testnet 1',
 };
 const DEFAULT_LIST_SERVER = [
   LOCAL_SERVER,
   TEST_NET_SERVER,
   TEST_NODE_SERVER,
   MAIN_NET_SERVER,
+  TEST_NET_1_SERVER,
 ];
 
 export const KEY = {
@@ -55,58 +65,64 @@ export default class Server {
     if (cachedList) {
       return Promise.resolve(cachedList);
     }
+    return storage.getItem(KEY.SERVER).then((strData) => {
+      cachedList = JSON.parse(strData) || [];
+      if (!cachedList || cachedList.length === 0) {
+        return DEFAULT_LIST_SERVER;
+      }
 
-    return storage.getItem(KEY.SERVER)
-      .then(strData => {
-        cachedList = JSON.parse(strData) || [];
+      if (!cachedList.find((item) => item.id === TEST_NODE_SERVER.id)) {
+        cachedList.push(TEST_NODE_SERVER);
+      }
 
-        if (!cachedList || cachedList.length === 0) {
-          return DEFAULT_LIST_SERVER;
-        }
+      if (!cachedList.find((item) => item.id === TEST_NET_1_SERVER.id)) {
+        cachedList.push(TEST_NET_1_SERVER);
+      }
 
-        if (!cachedList.find(item => item.id === TEST_NODE_SERVER.id)) {
-          cachedList.push(TEST_NODE_SERVER);
-        }
+      if (
+        cachedList.find(
+          (item) =>
+            item.id === TEST_NODE_SERVER.id && !item.address.includes('http'),
+        )
+      ) {
+        const item = cachedList.find((item) => item.id === TEST_NODE_SERVER.id);
+        item.address = TEST_NODE_SERVER.address;
+      }
 
-        if (cachedList.find(item => item.id === TEST_NODE_SERVER.id && !item.address.includes('http'))) {
-          const item = cachedList.find(item => item.id === TEST_NODE_SERVER.id);
-          item.address = TEST_NODE_SERVER.address;
-        }
-
-        storage.setItem(KEY.SERVER, JSON.stringify(cachedList));
-        return cachedList;
-      });
+      storage.setItem(KEY.SERVER, JSON.stringify(cachedList));
+      return cachedList;
+    });
   }
 
   static getDefault() {
-    return Server.get()
-      .then(result => {
-        if (result && result.length) {
-          for (const s of result) {
-            if (s.default) {
-              return s;
-            }
+    return Server.get().then((result) => {
+      if (result && result.length) {
+        for (const s of result) {
+          if (s.default) {
+            return s;
           }
         }
+      }
 
-        this.setDefault(MAIN_NET_SERVER);
-        return MAIN_NET_SERVER;
-      });
+      this.setDefault(MAIN_NET_SERVER);
+      return MAIN_NET_SERVER;
+    });
   }
 
   static async getDefaultIfNullGettingDefaulList() {
-    const list = await Server.get().catch(console.log) || KEY.DEFAULT_LIST_SERVER;
-    return list?.find(_ => _.default);
+    const list =
+      (await Server.get().catch(console.log)) || KEY.DEFAULT_LIST_SERVER;
+    return list?.find((_) => _.default);
   }
 
   static async setDefault(defaultServer) {
     try {
       const servers = await Server.get();
-      const newServers = servers.map(server => {
+      const newServers = servers.map((server) => {
         if (defaultServer.id === server.id) {
           return {
             ...defaultServer,
-            default: true
+            default: true,
           };
         }
         return { ...server, default: false };
@@ -119,8 +135,8 @@ export default class Server {
     }
   }
 
-  static isMainnet(network):Boolean{
-    return  _.isEqual(network?.id, 'mainnet');
+  static isMainnet(network): Boolean {
+    return _.isEqual(network?.id, 'mainnet');
   }
 
   static setDefaultList() {
