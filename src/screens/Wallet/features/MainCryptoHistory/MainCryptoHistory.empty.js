@@ -44,4 +44,4 @@ EmptyHistory.defaultProps = {};
 
 EmptyHistory.propTypes = {};
 
-export default EmptyHistory;
+export default React.memo(EmptyHistory);

@@ -38,6 +38,14 @@ export const toggleUnVerifiedTokensSelector = createSelector(
   (toggleUnVerified) => toggleUnVerified,
 );
 
+export const receiveHistorySelector = createSelector(
+  (state) => state?.token?.receiveHistory,
+  (history) => ({
+    ...history,
+    isLoadmore: !!history?.isFetching && !history?.refreshing,
+  }),
+);
+
 export default {
   followed,
   isGettingBalance,
@@ -50,4 +58,5 @@ export default {
   followingTokenSelector,
   isTokenFollowedSelector,
   toggleUnVerifiedTokensSelector,
+  receiveHistorySelector,
 };

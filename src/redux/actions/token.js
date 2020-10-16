@@ -14,16 +14,25 @@ import {
   getHistoryFromApi,
   loadAccountHistory,
   normalizeData,
+  getTypeHistoryReceive,
+  handleFilterHistoryReceiveByTokenId,
 } from '@src/redux/utils/token';
 import { getBalance as getAccountBalance } from '@src/redux/actions/account';
 import internalTokenModel from '@models/token';
 import Util from '@src/utils/Util';
+import { getReceiveHistoryByRPC } from '@src/services/wallet/RpcClientService';
 import { actionLogEvent } from '@src/screens/Performance';
-import { setWallet } from './wallet';
+import { ConfirmedTx } from '@src/services/wallet/WalletService';
+import { CONSTANT_COMMONS } from '@src/constants';
+import { unionBy } from 'lodash';
 import {
   followingTokenSelector,
   isTokenFollowedSelector,
-} from '../selectors/token';
+  receiveHistorySelector,
+} from '@src/redux/selectors/token';
+import { MAX_LIMIT_RECEIVE_HISTORY_ITEM } from '@src/redux/reducers/token';
+import { setWallet } from './wallet';
+
 
 export const setToken = (
   token = throw new Error('Token object is required'),
@@ -260,8 +269,9 @@ export const actionInitHistory = () => ({
   type: type.ACTION_INIT_HISTORY,
 });
 
-export const actionFetchingHistory = () => ({
+export const actionFetchingHistory = (payload) => ({
   type: type.ACTION_FETCHING_HISTORY,
+  payload,
 });
 
 export const actionFetchedHistory = (payload) => ({
@@ -273,7 +283,10 @@ export const actionFetchFailHistory = () => ({
   type: type.ACTION_FETCH_FAIL_HISTORY,
 });
 
-export const actionFetchHistoryToken = () => async (dispatch, getState) => {
+export const actionFetchHistoryToken = (refreshing = false) => async (
+  dispatch,
+  getState,
+) => {
   try {
     const state = getState();
     const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
@@ -284,17 +297,45 @@ export const actionFetchHistoryToken = () => async (dispatch, getState) => {
     if (isFetching || !token?.id || !selectedPrivacy?.tokenId) {
       return;
     }
-    await dispatch(actionFetchingHistory());
+    await dispatch(actionFetchingHistory({ refreshing }));
     let histories = [];
     if (selectedPrivacy?.isToken) {
-      let task = [dispatch(loadTokenHistory()), dispatch(getHistoryFromApi())];
+      let task = [
+        dispatch(loadTokenHistory()),
+        dispatch(getHistoryFromApi()),
+        dispatch(actionFetchReceiveHistory(refreshing)),
+      ];
       if (token) {
         task = [...task, dispatch(getBalance(token))];
       }
-      const [historiesDt, historiesDtFromApi] = await Promise.all(task);
+      const [
+        historiesToken,
+        historiesTokenFromApi,
+        receiveHistory,
+      ] = await Promise.all(task);
+      const rcHistoryFilByTokenHistory = receiveHistory
+        ? receiveHistory?.filter(
+            (rcHistory) =>
+              !historiesToken?.some(
+                (history) => history?.txID === rcHistory?.txID,
+              ),
+          )
+        : [];
+      const rcHistoryFilByTokenHistoryFromApi = rcHistoryFilByTokenHistory
+        ? rcHistoryFilByTokenHistory?.filter(
+            (rcHistory) =>
+              !historiesTokenFromApi?.some(
+                (history) => history?.inchainTx === rcHistory?.txID,
+              ),
+          )
+        : [];
+      const mergeHistories = [
+        ...historiesToken,
+        ...rcHistoryFilByTokenHistoryFromApi,
+      ];
       histories = combineHistory({
-        histories: historiesDt,
-        historiesFromApi: historiesDtFromApi,
+        histories: mergeHistories,
+        historiesFromApi: historiesTokenFromApi,
         symbol: selectedPrivacy?.symbol,
         externalSymbol: selectedPrivacy?.externalSymbol,
         decimals: selectedPrivacy?.decimals,
@@ -308,7 +349,7 @@ export const actionFetchHistoryToken = () => async (dispatch, getState) => {
   }
 };
 
-export const actionFetchHistoryMainCrypto = () => async (
+export const actionFetchHistoryMainCrypto = (refreshing = false) => async (
   dispatch,
   getState,
 ) => {
@@ -320,15 +361,25 @@ export const actionFetchHistoryMainCrypto = () => async (
     if (isFetching || !selectedPrivacy?.tokenId) {
       return;
     }
-    await dispatch(actionFetchingHistory());
+    await dispatch(actionFetchingHistory({ refreshing }));
     let histories = [];
     if (selectedPrivacy?.isMainCrypto) {
-      const [accountHistory] = await new Promise.all([
+      const [accountHistory, receiveHistory] = await new Promise.all([
         dispatch(loadAccountHistory()),
+        dispatch(actionFetchReceiveHistory(refreshing)),
         dispatch(getAccountBalance(account)),
       ]);
+      const rcHistoryFilByAccHistory = receiveHistory
+        ? receiveHistory?.filter(
+            (rcHistory) =>
+              !accountHistory?.some(
+                (accHistory) => accHistory?.txID === rcHistory?.txID,
+              ),
+          )
+        : [];
+      const mergeHistories = [...accountHistory, ...rcHistoryFilByAccHistory];
       histories = normalizeData(
-        accountHistory,
+        mergeHistories,
         selectedPrivacy?.decimals,
         selectedPrivacy?.pDecimals,
       );
@@ -343,3 +394,100 @@ export const actionFetchHistoryMainCrypto = () => async (
 export const actionToggleUnVerifiedToken = () => ({
   type: type.ACTION_TOGGLE_UNVERIFIED_TOKEN,
 });
+
+//
+
+export const actionFetchingReceiveHistory = (payload) => ({
+  type: type.ACTION_FETCHING_RECEIVE_HISTORY,
+  payload,
+});
+
+export const actionFetchedReceiveHistory = (payload) => ({
+  type: type.ACTION_FETCHED_RECEIVE_HISTORY,
+  payload,
+});
+
+export const actionFetchFailReceiveHistory = () => ({
+  type: type.ACTION_FETCH_FAIL_RECEIVE_HISTORY,
+});
+
+export const actionInitReceiveHistory = () => ({
+  type: type.ACTION_INIT_RECEIVE_HISTORY,
+});
+
+export const actionFetchReceiveHistory = (refreshing = false) => async (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
+  let data = [];
+  const {
+    isFetching,
+    oversize,
+    page,
+    limit,
+    data: oldData,
+  } = receiveHistorySelector(state);
+  if (isFetching || oversize || !selectedPrivacy?.tokenId) {
+    return [...oldData];
+  }
+  try {
+    await dispatch(actionFetchingReceiveHistory({ refreshing }));
+    const curPage = refreshing ? 0 : page;
+    const curSkip = refreshing ? 0 : curPage * limit;
+    const nextPage = curPage + 1;
+    const curLimit =
+      refreshing && page > 0 ? MAX_LIMIT_RECEIVE_HISTORY_ITEM : limit;
+    const account = accountSeleclor?.defaultAccountSelector(state);
+    const histories =
+      (await getReceiveHistoryByRPC({
+        PaymentAddress: account?.paymentAddress,
+        ReadonlyKey: account?.readonlyKey,
+        Limit: curLimit,
+        Skip: curSkip,
+        TokenID: selectedPrivacy?.tokenId,
+      })) || [];
+    const historiesFilterByTokenId = handleFilterHistoryReceiveByTokenId({
+      tokenId: selectedPrivacy?.tokenId,
+      histories,
+    });
+    data = await new Promise.all([
+      ...historiesFilterByTokenId?.map(async (history) => {
+        const txID = history?.txID;
+        let type = getTypeHistoryReceive({
+          account,
+          serialNumbers: history?.serialNumbers,
+        });
+        const h = {
+          ...history,
+          id: txID,
+          incognitoTxID: txID,
+          type,
+          pDecimals: selectedPrivacy?.pDecimals,
+          decimals: selectedPrivacy?.decimals,
+          symbol: selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol,
+          status: ConfirmedTx,
+          isHistoryReceived: true,
+        };
+        return h;
+      }),
+    ]);
+    data = data.filter(
+      (history) => history?.type === CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE,
+    );
+    data = refreshing ? [...data, ...oldData] : [...oldData, ...data];
+    data = unionBy(data, 'id') || [];
+    let payload = {
+      nextPage,
+      data,
+      oversize: histories?.length < curLimit,
+      refreshing,
+    };
+    await dispatch(actionFetchedReceiveHistory(payload));
+  } catch (error) {
+    data = [];
+    await dispatch(actionFetchFailReceiveHistory());
+  }
+  return data;
+};
