@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, RoundCornerButton } from '@components/core';
+import { ActivityIndicator, RoundCornerButton, Toast } from '@components/core';
 import DialogLoader from '@components/DialogLoader';
 import Device from '@models/device';
 import BaseScreen from '@screens/BaseScreen';
@@ -366,11 +366,11 @@ class Node extends BaseScreen {
 
       rewardsList = _.orderBy(rewardsList, item => item.displayBalance, 'desc');
 
-      const vNodes = listDevice.filter(device => device.IsVNode);
-      const pNodes = listDevice.filter(device => device.IsPNode);
+      const vNodes = listDevice.filter(device => device.IsVNode && device.AccountName);
+      const pNodes = listDevice.filter(device => device.IsPNode && device.AccountName);
 
-      let vNodeWithdrawable = vNodes.length !== withdrawTxs?.length;
-      let pNodeWithdrawable = pNodes.length && pNodes.some(item => item.IsFundedStakeWithdrawable);
+      const vNodeWithdrawable = vNodes.length !== withdrawTxs?.length;
+      const pNodeWithdrawable = pNodes.length && pNodes.some(item => item.IsFundedStakeWithdrawable);
       const withdrawable = !noRewards && (vNodeWithdrawable || pNodeWithdrawable);
 
       this.setState({ rewards: rewardsList, withdrawable });
@@ -568,10 +568,10 @@ class Node extends BaseScreen {
   };
 
   onBuyNodePress = () => {
-    const { disabled, message } = this.props;
+    const { disabled, message } = this.state;
     if (disabled) {
       const duration = getDurationShowMessage(message);
-      Toast.showInfo(message, {duration});
+      Toast.showInfo(message, { duration });
       return;
     }
     this.goToScreen(routeNames.BuyNodeScreen);
