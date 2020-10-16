@@ -42,7 +42,6 @@ export const getBalanceNoCache = (
     await account.saveAccountCached(wallet.Storage);
   }
 
-  await account.saveAccountCached(wallet.Storage);
   return balance;
 };
 
