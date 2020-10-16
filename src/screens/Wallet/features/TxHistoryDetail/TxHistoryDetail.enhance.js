@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect } from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { compose } from 'recompose';
@@ -16,59 +16,34 @@ import {
   actionFetchHistoryToken
 } from '@src/redux/actions/token';
 import { ExHandler } from '@services/exception';
+import withPullRefresh from '@screens/Wallet/features/TxHistoryDetail/TxHistoryDetail.enhanceRefresh';
 import {
-  getStatusData,
-  getTypeData
-} from '@components/HistoryList/HistoryList.utils';
-import { defaultAccountSelector } from '@src/redux/selectors/account';
-import appConstant from '@src/constants/app';
-
-const FAILED = appConstant.STATUS_MESSAGE.FAILED;
-
-const handleShowReload = (statusMessage) => {
-  return FAILED === statusMessage;
-};
+  txHistoryDetailViewerSelector
+} from '@screens/Wallet/features/TxHistoryDetail/TxHistoryDetail.selector';
+import {
+  clearHistoryDetail,
+  updateHistoryDetail
+} from '@screens/Wallet/features/TxHistoryDetail/TxHistoryDetail.actions';
 
 const enhance = (WrappedComp) => (props) => {
+  const data            = useNavigationParam('data');
+  const history         = data?.history;
+  const historyId       = history?.id || history?.incognitoTxID;
+  const historyData     = useSelector(txHistoryDetailViewerSelector);
   const wallet          = useSelector(walletSelector);
   const navigation      = useNavigation();
   const dispatch        = useDispatch();
-  const account         = useSelector(defaultAccountSelector);
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const token           = useSelector(selectedPrivacySeleclor.selectedPrivacyByFollowedSelector);
   const {
-    histories,
     isFetching,
     isFetched,
+    histories
   } = useSelector(tokenSeleclor.historyTokenSelector);
 
-  const data                              = useNavigationParam('data');
-  const [historyData, setHistoryData]     = useState(data);
-  const [showReload, setShowReload]       = useState(false);
-
-  useEffect(() => {
-    if(data && !isFetching && isFetched) {
-      const historyId   = data?.history?.id;
-      const history = histories.find(history => history.id === historyId);
-      const { statusMessage, statusColor } = getStatusData(history);
-      const { typeText } = getTypeData(
-        history.type,
-        history,
-        account?.paymentAddress,
-      );
-      setHistoryData({
-        history,
-        statusMessage,
-        statusColor,
-        typeText
-      });
-      setShowReload(handleShowReload(statusMessage));
-    } else {
-      setHistoryData(data);
-      setShowReload(handleShowReload(data?.statusMessage));
-    }
-  }, [isFetching, isFetched, histories, data]);
-
+  /*
+  * Action
+  * */
   const handleFetchHistory = async () => {
     try {
       if (selectedPrivacy?.isMainCrypto) {
@@ -84,9 +59,8 @@ const enhance = (WrappedComp) => (props) => {
 
   const onRetryHistoryStatus = async () => {
     try {
-      const txId  = historyData?.history?.incognitoTxID;
-      if (txId) {
-        await updateHistoryStatus(wallet, txId);
+      if (historyId) {
+        await updateHistoryStatus(wallet, historyId);
         await handleFetchHistory();
       }
     } catch (error) {
@@ -94,7 +68,25 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
 
-  if (!data) {
+  /*
+  * Handle fetch data showing
+  * */
+  useEffect(() => {
+    if(!isFetching && isFetched && histories) {
+      dispatch(updateHistoryDetail(historyId));
+    }
+  }, [isFetching, isFetched, histories]);
+
+  /*
+  * Handle clear data
+  * */
+  useEffect(() => {
+    return () => {
+      dispatch(clearHistoryDetail());
+    };
+  }, []);
+
+  if (!historyData) {
     return <LoadingContainer />;
   }
   return (
@@ -104,8 +96,9 @@ const enhance = (WrappedComp) => (props) => {
         navigation,
         data: historyData,
         onRetryHistoryStatus,
-        showReload,
-        fetchingHistory: isFetching
+        showReload: historyData && historyData.showReload,
+        fetchingHistory: isFetching,
+        historyId
       }}
       />
     </ErrorBoundary>
@@ -114,5 +107,6 @@ const enhance = (WrappedComp) => (props) => {
 
 export default compose(
   withLayout_2,
+  withPullRefresh,
   enhance,
 );

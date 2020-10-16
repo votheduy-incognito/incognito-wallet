@@ -5,7 +5,7 @@ import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
 import { getFeeFromTxHistory } from '@src/screens/Wallet/features/TxHistoryDetail/TxHistoryDetail.utils';
 
-const normalizeHistoriesFromApi = ({
+export const normalizeHistoriesFromApi = ({
   historiesFromApi = [],
   externalSymbol,
   symbol,
@@ -26,6 +26,7 @@ const normalizeHistoriesFromApi = ({
       status: h?.statusText,
       statusCode: h?.status,
       depositAddress: h?.depositTmpAddress,
+      fromApi: true
     }))) ||
   [];
 
