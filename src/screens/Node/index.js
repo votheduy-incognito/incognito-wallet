@@ -369,7 +369,7 @@ class Node extends BaseScreen {
       const vNodes = listDevice.filter(device => device.IsVNode && device.AccountName);
       const pNodes = listDevice.filter(device => device.IsPNode && device.AccountName);
 
-      const vNodeWithdrawable = vNodes.length !== withdrawTxs?.length;
+      const vNodeWithdrawable = vNodes.length && vNodes.length !== withdrawTxs?.length;
       const pNodeWithdrawable = pNodes.length && pNodes.some(item => item.IsFundedStakeWithdrawable);
       const withdrawable = !noRewards && (vNodeWithdrawable || pNodeWithdrawable);
 
