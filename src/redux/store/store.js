@@ -21,7 +21,8 @@ export default function configureStore(preloadedState) {
       'getStarted',
       'profile',
       'dev',
-      'streamline'
+      'streamline',
+      'txHistoryDetail'
     ],
     stateReconciler: autoMergeLevel2,
   };
