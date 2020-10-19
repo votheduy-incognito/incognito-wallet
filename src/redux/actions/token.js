@@ -33,7 +33,6 @@ import {
 import { MAX_LIMIT_RECEIVE_HISTORY_ITEM } from '@src/redux/reducers/token';
 import { setWallet } from './wallet';
 
-
 export const setToken = (
   token = throw new Error('Token object is required'),
 ) => ({
@@ -283,10 +282,10 @@ export const actionFetchFailHistory = () => ({
   type: type.ACTION_FETCH_FAIL_HISTORY,
 });
 
-export const actionFetchHistoryToken = (refreshing = false) => async (
-  dispatch,
-  getState,
-) => {
+export const actionFetchHistoryToken = (
+  refreshing = false,
+  onlyReceiveHistory = false,
+) => async (dispatch, getState) => {
   try {
     const state = getState();
     const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
@@ -300,19 +299,26 @@ export const actionFetchHistoryToken = (refreshing = false) => async (
     await dispatch(actionFetchingHistory({ refreshing }));
     let histories = [];
     if (selectedPrivacy?.isToken) {
-      let task = [
-        dispatch(loadTokenHistory()),
-        dispatch(getHistoryFromApi()),
-        dispatch(actionFetchReceiveHistory(refreshing)),
-      ];
-      if (token) {
-        task = [...task, dispatch(getBalance(token))];
+      let receiveHistory = [];
+      let historiesToken = [];
+      let historiesTokenFromApi = [];
+      if (onlyReceiveHistory) {
+        receiveHistory = await dispatch(actionFetchReceiveHistory(refreshing));
+      } else {
+        let task = [
+          dispatch(loadTokenHistory()),
+          dispatch(getHistoryFromApi()),
+          dispatch(actionFetchReceiveHistory(refreshing)),
+        ];
+        if (token) {
+          task = [...task, dispatch(getBalance(token))];
+        }
+        [
+          historiesToken,
+          historiesTokenFromApi,
+          receiveHistory,
+        ] = await Promise.all(task);
       }
-      const [
-        historiesToken,
-        historiesTokenFromApi,
-        receiveHistory,
-      ] = await Promise.all(task);
       const rcHistoryFilByTokenHistory = receiveHistory
         ? receiveHistory?.filter(
             (rcHistory) =>
@@ -349,26 +355,36 @@ export const actionFetchHistoryToken = (refreshing = false) => async (
   }
 };
 
-export const actionFetchHistoryMainCrypto = (refreshing = false) => async (
-  dispatch,
-  getState,
-) => {
+export const actionFetchHistoryMainCrypto = (
+  refreshing = false,
+  onlyReceiveHistory = false,
+) => async (dispatch, getState) => {
   try {
     const state = getState();
     const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
     const account = accountSeleclor.defaultAccountSelector(state);
-    const { isFetching } = tokenSeleclor.historyTokenSelector(state);
+    const {
+      isFetching,
+      histories: mainCryptoHistories,
+    } = tokenSeleclor.historyTokenSelector(state);
     if (isFetching || !selectedPrivacy?.tokenId) {
       return;
     }
     await dispatch(actionFetchingHistory({ refreshing }));
+    dispatch(getAccountBalance(account));
     let histories = [];
+    let receiveHistory = [];
+    let accountHistory = [];
     if (selectedPrivacy?.isMainCrypto) {
-      const [accountHistory, receiveHistory] = await new Promise.all([
-        dispatch(loadAccountHistory()),
-        dispatch(actionFetchReceiveHistory(refreshing)),
-        dispatch(getAccountBalance(account)),
-      ]);
+      if (onlyReceiveHistory) {
+        receiveHistory = await dispatch(actionFetchReceiveHistory(refreshing));
+        accountHistory = [...mainCryptoHistories];
+      } else {
+        [accountHistory, receiveHistory] = await new Promise.all([
+          dispatch(actionFetchReceiveHistory(refreshing)),
+          dispatch(loadAccountHistory()),
+        ]);
+      }
       const rcHistoryFilByAccHistory = receiveHistory
         ? receiveHistory?.filter(
             (rcHistory) =>
@@ -422,14 +438,9 @@ export const actionFetchReceiveHistory = (refreshing = false) => async (
   const state = getState();
   const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
   let data = [];
-  const {
-    isFetching,
-    oversize,
-    page,
-    limit,
-    data: oldData,
-  } = receiveHistorySelector(state);
-  if (isFetching || oversize || !selectedPrivacy?.tokenId) {
+  const receiveHistory = receiveHistorySelector(state);
+  const { isFetching, oversize, page, limit, data: oldData } = receiveHistory;
+  if (isFetching || (oversize && !refreshing) || !selectedPrivacy?.tokenId) {
     return [...oldData];
   }
   try {

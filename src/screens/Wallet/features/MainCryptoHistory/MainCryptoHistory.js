@@ -9,13 +9,13 @@ import EmptyHistory from './MainCryptoHistory.empty';
 
 const MainCryptoHistory = () => {
   const { histories } = useSelector(tokenSeleclor.historyTokenSelector);
-  const { isLoadmore, isFetching } = useSelector(
+  const { isFetching, oversize } = useSelector(
     tokenSeleclor.receiveHistorySelector,
   );
   const dispatch = useDispatch();
-  const handleLoadHistory = (refreshing = false) => {
+  const handleLoadHistory = (refreshing, onlyReceiveHistory) => {
     try {
-      dispatch(actionFetchHistoryMainCrypto(refreshing));
+      dispatch(actionFetchHistoryMainCrypto(refreshing, onlyReceiveHistory));
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
@@ -24,13 +24,13 @@ const MainCryptoHistory = () => {
   return (
     <HistoryList
       histories={histories}
-      onRefreshHistoryList={() => handleLoadHistory(true)}
-      onLoadmoreHistory={handleLoadHistory}
+      onRefreshHistoryList={() => handleLoadHistory(true, false)}
+      onLoadmoreHistory={() => handleLoadHistory(false, true)}
       refreshing={refreshing}
-      isLoadmore={isLoadmore}
       loading={isFetching}
       renderEmpty={() => <EmptyHistory />}
       showEmpty={showEmpty}
+      oversize={oversize}
     />
   );
 };
