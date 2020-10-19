@@ -2,6 +2,9 @@ import type from '@src/redux/types/token';
 import { unionBy, remove } from 'lodash';
 import typeSelectedPrivacy from '@src/redux/types/selectedPrivacy';
 
+export const LIMIT_RECEIVE_HISTORY_ITEM = 10;
+export const MAX_LIMIT_RECEIVE_HISTORY_ITEM = 50;
+
 const initialState = {
   followed: [],
   pTokens: null,
@@ -12,9 +15,20 @@ const initialState = {
     isFetched: false,
     histories: [],
     isEmpty: false,
+    refreshing: true,
   },
   following: [],
   toggleUnVerified: false,
+  receiveHistory: {
+    isFetching: false,
+    isFetched: false,
+    data: [],
+    oversize: false,
+    page: 0,
+    limit: LIMIT_RECEIVE_HISTORY_ITEM,
+    refreshing: true,
+    tokenId: null,
+  },
 };
 
 const setToken = (list, token) => {
@@ -157,6 +171,7 @@ const reducer = (state = initialState, action) => {
       history: {
         ...state.history,
         isFetching: true,
+        refreshing: action?.payload?.refreshing || false,
       },
     };
   }
@@ -169,6 +184,7 @@ const reducer = (state = initialState, action) => {
         isFetched: true,
         histories: [...action.payload],
         isEmpty: action.payload.length === 0,
+        refreshing: false,
       },
     };
   }
@@ -179,6 +195,7 @@ const reducer = (state = initialState, action) => {
         ...state.history,
         isFetching: false,
         isFetched: false,
+        refreshing: false,
       },
     };
   }
@@ -194,12 +211,61 @@ const reducer = (state = initialState, action) => {
       history: {
         ...initialState.history,
       },
+      receiveHistory: {
+        ...initialState.receiveHistory,
+        tokenId: action?.data,
+      },
     };
   }
   case type.ACTION_TOGGLE_UNVERIFIED_TOKEN: {
     return {
       ...state,
       toggleUnVerified: !state.toggleUnVerified,
+    };
+  }
+  //
+  case type.ACTION_INIT_RECEIVE_HISTORY: {
+    return {
+      ...state,
+      receiveHistory: {
+        ...initialState?.receiveHistory,
+      },
+    };
+  }
+  case type.ACTION_FETCHING_RECEIVE_HISTORY: {
+    return {
+      ...state,
+      receiveHistory: {
+        ...state.receiveHistory,
+        isFetching: true,
+        refreshing: action?.payload?.refreshing || false,
+      },
+    };
+  }
+  case type.ACTION_FETCHED_RECEIVE_HISTORY: {
+    const { nextPage, data, oversize, refreshing } = action?.payload;
+    return {
+      ...state,
+      receiveHistory: {
+        ...state.receiveHistory,
+        isFetching: false,
+        isFetched: true,
+        data: [...data],
+        page: refreshing ? state?.receiveHistory?.page : nextPage,
+        oversize,
+        refreshing: false,
+      },
+    };
+  }
+  case type.ACTION_FETCH_FAIL_RECEIVE_HISTORY: {
+    return {
+      ...state,
+      receiveHistory: {
+        ...state.receiveHistory,
+        isFetching: false,
+        isFetched: false,
+        refreshing: false,
+      },
     };
   }
   default:

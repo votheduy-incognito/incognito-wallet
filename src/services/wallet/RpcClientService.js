@@ -1,4 +1,11 @@
-import { getEstimateFee, getEstimateFeeForPToken as getEstimateFeeForPTokenService, getMaxWithdrawAmount, RpcClient, Wallet } from 'incognito-chain-web-js/build/wallet';
+import Axios from 'axios';
+import {
+  getEstimateFee,
+  getEstimateFeeForPToken as getEstimateFeeForPTokenService,
+  getMaxWithdrawAmount,
+  RpcClient,
+  Wallet,
+} from 'incognito-chain-web-js/build/wallet';
 import { CustomError, ErrorCode, ExHandler } from '../exception';
 
 let lastPDEStateData = null;
@@ -11,18 +18,23 @@ function getRpcClient() {
 function setRpcClientInterceptor() {
   const instance = Wallet.RpcClient?.rpcHttpService?.axios;
 
-  instance?.interceptors.response.use(res => {
-    return Promise.resolve(res);
-  }, errorData => {
-    const errResponse = errorData?.response;
+  instance?.interceptors.response.use(
+    (res) => {
+      return Promise.resolve(res);
+    },
+    (errorData) => {
+      const errResponse = errorData?.response;
 
-    // can not get response, alert to user
-    if (errorData?.isAxiosError && !errResponse) {
-      return new ExHandler(new CustomError(ErrorCode.network_make_request_failed)).throw();
-    }
+      // can not get response, alert to user
+      if (errorData?.isAxiosError && !errResponse) {
+        return new ExHandler(
+          new CustomError(ErrorCode.network_make_request_failed),
+        ).throw();
+      }
 
-    return Promise.reject(errorData);
-  });
+      return Promise.reject(errorData);
+    },
+  );
 }
 
 export function setRpcClient(server, username, password) {
@@ -64,7 +76,7 @@ export async function getEstimateFeeForNativeToken(
       accountWallet,
       isPrivacyForNativeToken,
       isPrivacyForPrivateToken,
-      getRpcClient()
+      getRpcClient(),
     );
   } catch (e) {
     throw e;
@@ -101,7 +113,7 @@ export async function getEstimateFeeForPToken(
   amount,
   tokenObject,
   account,
-  isGetTokenFee = false
+  isGetTokenFee = false,
 ) {
   let fee;
   const isPrivacyForNativeToken = false;
@@ -118,7 +130,7 @@ export async function getEstimateFeeForPToken(
       isPrivacyForNativeToken,
       isPrivacyForPrivateToken,
       feeToken,
-      isGetTokenFee
+      isGetTokenFee,
     );
   } catch (e) {
     throw e;
@@ -195,7 +207,7 @@ export async function getMaxWithdrawAmountService(
   to,
   tokenObject,
   account,
-  isPrivacyForPrivateToken
+  isPrivacyForPrivateToken,
 ) {
   let response;
   const isPrivacyForNativeToken = false;
@@ -207,7 +219,7 @@ export async function getMaxWithdrawAmountService(
       account,
       getRpcClient(),
       isPrivacyForNativeToken,
-      isPrivacyForPrivateToken
+      isPrivacyForPrivateToken,
     );
   } catch (e) {
     throw e;
@@ -215,7 +227,7 @@ export async function getMaxWithdrawAmountService(
   return response;
 }
 
-export function isExchangeRatePToken(tokenID)  {
+export function isExchangeRatePToken(tokenID) {
   if (typeof tokenID !== 'string') throw new Error('tokenID must be a string');
 
   return getRpcClient().isExchangeRatePToken(tokenID);
@@ -279,10 +291,10 @@ export async function getNodeTime() {
 export async function getPublicKeyFromPaymentAddress(paymentAddress) {
   const client = await getRpcClient();
   const data = {
-    'jsonrpc': '1.0',
-    'method': 'getpublickeyfrompaymentaddress',
-    'params': [paymentAddress],
-    'id': 1
+    jsonrpc: '1.0',
+    method: 'getpublickeyfrompaymentaddress',
+    params: [paymentAddress],
+    id: 1,
   };
 
   const response = await client.rpcHttpService.postRequest(data);
@@ -295,5 +307,53 @@ export async function getPublicKeyFromPaymentAddress(paymentAddress) {
 
   return response.data.Result.PublicKeyInBase58Check;
 }
+
+export const getReceiveHistoryByRPC = async ({
+  PaymentAddress,
+  ReadonlyKey,
+  Skip = 0,
+  Limit = 10,
+  TokenID,
+}) => {
+  const client = await getRpcClient();
+  const data = {
+    jsonrpc: '1.0',
+    method: 'gettransactionbyreceiverv2',
+    params: [
+      {
+        PaymentAddress,
+        ReadonlyKey,
+        Skip,
+        Limit,
+        TokenID,
+      },
+    ],
+    id: 1,
+  };
+  const response = await client.rpcHttpService.postRequest(data);
+  if (response.status !== 200) {
+    throw new Error('Can\'t request API');
+  } else if (response.data.Error) {
+    throw response.data.Error;
+  }
+  return response.data.Result?.ReceivedTransactions;
+};
+
+export const getTxTransactionByHash = async (txId) => {
+  const client = await getRpcClient();
+  const data = {
+    jsonrpc: '1.0',
+    method: 'gettransactionbyhash',
+    params: [txId],
+    id: 3,
+  };
+  const response = await client.rpcHttpService.postRequest(data);
+  if (response.status !== 200) {
+    throw new Error('Can\'t request API');
+  } else if (response.data.Error) {
+    throw response.data.Error;
+  }
+  return response.data.Result;
+};
 
 setRpcClientInterceptor();
