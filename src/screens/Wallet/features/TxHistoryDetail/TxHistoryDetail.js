@@ -5,10 +5,15 @@ import {
   Clipboard,
   Dimensions,
   Linking,
-  ActivityIndicator
+  ActivityIndicator,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {TouchableOpacity, ScrollView, Toast, RefreshControl} from '@src/components/core';
+import {
+  TouchableOpacity,
+  ScrollView,
+  Toast,
+  RefreshControl,
+} from '@src/components/core';
 import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import formatUtil from '@src/utils/format';
 import linkingService from '@src/services/linking';
@@ -35,7 +40,8 @@ export const Hook = (props) => {
     message = '',
     showReload,
     handleRetryHistoryStatus,
-    fetchingHistory
+    fetchingHistory,
+    handleOpenLink = null,
   } = props;
   const shouldShowMsg = !!message;
   const [state, setState] = React.useState({
@@ -52,7 +58,10 @@ export const Hook = (props) => {
     setState({ ...state, toggleMessage: !toggleMessage });
   };
 
-  const handleOpenUrl = () => linkingService.openUrl(valueText);
+  const handleOpenUrl = () =>
+    typeof handleOpenLink === 'function'
+      ? handleOpenLink()
+      : linkingService.openUrl(valueText);
 
   const renderComponent = () => (
     <>
@@ -85,24 +94,21 @@ export const Hook = (props) => {
               }
             />
           )}
-          {showReload && !canRetryExpiredDeposit && (
-            fetchingHistory ?
-              (
-                <View style={{ marginLeft: 10 }}>
-                  <ActivityIndicator size='small' />
-                </View>
-              )
-              :
-              (
-                <BtnRetry
-                  style={styled.btnRetry}
-                  onPress={
-                    typeof handleRetryHistoryStatus === 'function' &&
+          {showReload &&
+            !canRetryExpiredDeposit &&
+            (fetchingHistory ? (
+              <View style={{ marginLeft: 10 }}>
+                <ActivityIndicator size="small" />
+              </View>
+            ) : (
+              <BtnRetry
+                style={styled.btnRetry}
+                onPress={
+                  typeof handleRetryHistoryStatus === 'function' &&
                   handleRetryHistoryStatus
-                  }
-                />
-              )
-          )}
+                }
+              />
+            ))}
           {shouldShowMsg && (
             <BtnChevron
               style={styled.btnChevron}
@@ -111,8 +117,23 @@ export const Hook = (props) => {
               onPress={handleToggleMsg}
             />
           )}
-          {copyable && <CopyIcon style={styled.copyIcon} />}
-          {openUrl && <OpenUrlIcon style={styled.linkingIcon} />}
+          {copyable && (
+            <TouchableOpacity
+              style={styled.rowTextTouchable}
+              onPress={handleCopyText}
+            >
+              <CopyIcon style={styled.copyIcon} />
+            </TouchableOpacity>
+          )}
+
+          {openUrl && (
+            <TouchableOpacity
+              style={styled.rowTextTouchable}
+              onPress={handleOpenUrl}
+            >
+              <OpenUrlIcon style={styled.linkingIcon} />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
       {toggleMessage && (
@@ -134,23 +155,6 @@ export const Hook = (props) => {
   if (disabled) {
     return null;
   }
-  if (copyable) {
-    return (
-      <TouchableOpacity
-        style={styled.rowTextTouchable}
-        onPress={handleCopyText}
-      >
-        {renderComponent()}
-      </TouchableOpacity>
-    );
-  }
-  if (openUrl) {
-    return (
-      <TouchableOpacity style={styled.rowTextTouchable} onPress={handleOpenUrl}>
-        {renderComponent()}
-      </TouchableOpacity>
-    );
-  }
   return renderComponent();
 };
 
@@ -167,7 +171,7 @@ const TxHistoryDetail = (props) => {
     fetchingHistory,
     onPullRefresh,
     isRefresh,
-    historyId
+    historyId,
   } = props;
   const toggleHistoryDetail = dev[CONSTANT_KEYS.DEV_TEST_TOGGLE_HISTORY_DETAIL];
   const { typeText, statusColor, statusMessage, history } = data;
@@ -264,7 +268,7 @@ const TxHistoryDetail = (props) => {
         fromApi && (
           <RefreshControl
             refreshing={isRefresh}
-            onRefresh={() => onPullRefresh && onPullRefresh(historyId, data?.history?.currencyType)}
+            onRefresh={() => onPullRefresh && onPullRefresh(historyId)}
           />
         )
       }
