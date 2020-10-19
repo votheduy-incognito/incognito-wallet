@@ -2,11 +2,9 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import tokenService from '@src/services/wallet/tokenService';
 import { getpTokenHistory } from '@src/services/api/history';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
-import {
-  loadHistoryByAccount,
-  ConfirmedTx,
-} from '@src/services/wallet/WalletService';
+import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
 import { getFeeFromTxHistory } from '@src/screens/Wallet/features/TxHistoryDetail/TxHistoryDetail.utils';
+import moment from 'moment';
 
 export const normalizeHistoriesFromApi = ({
   historiesFromApi = [],
@@ -29,7 +27,7 @@ export const normalizeHistoriesFromApi = ({
       status: h?.statusText,
       statusCode: h?.status,
       depositAddress: h?.depositTmpAddress,
-      fromApi: true
+      fromApi: true,
     }))) ||
   [];
 
@@ -293,7 +291,7 @@ export const handleFilterHistoryReceiveByTokenId = ({ tokenId, histories }) => {
         }
         return {
           txID: history?.Hash,
-          time: history?.LockTime,
+          time: moment(history?.LockTime).add(7, 'hours'),
           isPrivacy: history?.IsPrivacy,
           amount,
           tokenId,
