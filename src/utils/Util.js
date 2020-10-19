@@ -147,20 +147,16 @@ export default class Util {
   static excuteWithTimeout = (promiseObj, timeSecond = 1) => {
     return new Promise(function(resolve, reject) {
       const ss = Util.createRandomString(10);
-      console.log(TAG,'excuteWithTimeout random string = ',ss);
       timer.setTimeout(ss,function() {
-        console.log(TAG,'excuteWithTimeout FAILLLLLLLLL random string = ',ss);
         reject(new CustomError(knownCode.timeout_promise,{message:'timeout '+ ss}));
         timer.clearTimeout(ss);
       }, timeSecond * 1000);
       const resolveWrap = (data?)=>{
         timer?.clearTimeout(ss);
-        console.log(TAG,'excuteWithTimeout resolveWrap clear = ',ss);
         resolve(data);
       };
       const rejectWrap = (error?)=>{
         timer?.clearTimeout(ss);
-        console.log(TAG,'excuteWithTimeout rejectWrap clear = ',ss);
         reject(error);
       };
       promiseObj.then(resolveWrap, rejectWrap);

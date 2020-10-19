@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import HistoryList from '@src/components/HistoryList';
 import { useSelector } from 'react-redux';
 import { tokenSeleclor } from '@src/redux/selectors';
@@ -11,4 +11,4 @@ const MainCryptoHistory = props => {
 
 MainCryptoHistory.propTypes = {};
 
-export default withMainCryptoHistory(MainCryptoHistory);
+export default withMainCryptoHistory(memo(MainCryptoHistory));

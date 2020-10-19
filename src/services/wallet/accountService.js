@@ -37,7 +37,11 @@ export const getBalanceNoCache = (
   const balance = await wallet.MasterAccount.child[indexAccount].getBalance(
     tokenId,
   );
-  await account.saveAccountCached(wallet.Storage);
+
+  if (Object.keys(account.derivatorToSerialNumberCache).length < 10000) {
+    await account.saveAccountCached(wallet.Storage);
+  }
+
   return balance;
 };
 

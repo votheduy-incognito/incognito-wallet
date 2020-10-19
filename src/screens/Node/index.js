@@ -1,4 +1,5 @@
-import { ActivityIndicator, RoundCornerButton } from '@components/core';
+import React from 'react';
+import { ActivityIndicator, RoundCornerButton, Toast } from '@components/core';
 import DialogLoader from '@components/DialogLoader';
 import Device from '@models/device';
 import BaseScreen from '@screens/BaseScreen';
@@ -8,7 +9,7 @@ import { getTokenList } from '@services/api/token';
 import { CustomError, ErrorCode, ExHandler } from '@services/exception';
 import NodeService from '@services/NodeService';
 import accountService from '@services/wallet/accountService';
-import {PRV_ID} from '@screens/Dex/constants';
+import { PRV_ID } from '@screens/Dex/constants';
 import {
   getBeaconBestStateDetail,
   getBlockChainInfo,
@@ -24,7 +25,6 @@ import Util from '@utils/Util';
 import { onClickView } from '@utils/ViewUtil';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import React from 'react';
 import { FlatList, View } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import { connect } from 'react-redux';
@@ -37,6 +37,11 @@ import theme from '@src/styles/theme';
 import Rewards from '@screens/Node/components/Rewards';
 import { SuccessModal } from '@src/components';
 import { parseNodeRewardsToArray } from '@screens/Node/utils';
+import appConstant from '@src/constants/app';
+import {
+  getDurationShowMessage,
+  handleGetFunctionConfigs
+} from '@src/shared/hooks/featureConfig';
 import style from './style';
 import WelcomeFirstTime from './components/WelcomeFirstTime';
 
@@ -51,6 +56,7 @@ let committees = {
   ShardCommittee: {},
 };
 let nodeRewards = {};
+let lastRefreshTime;
 
 const updateBeaconInfo = async () => {
   const chainInfo = await getBlockChainInfo();
@@ -124,21 +130,43 @@ class Node extends BaseScreen {
       showModalMissingSetup: false,
       showWelcome: false,
       withdrawTxs: {},
+      disabled: false,
+      message: '',
+      withdrawing: false,
+      withdrawable: false,
     };
     this.renderNode = this.renderNode.bind(this);
   }
 
   async componentDidMount() {
     const { navigation } = this.props;
-    this.listener = navigation.addListener('willFocus', this.loadData);
 
     if (allTokens.length === 0) {
       allTokens.push(PRV);
     }
+
+    this.loadData(true);
+
+    this.listener = navigation.addListener('didFocus', this.loadData);
   }
 
-  loadData = async () => {
+  componentWillUnmount() {
+    if (this.listener) {
+      this.listener.remove();
+    }
+  }
+
+  loadData = async (firstTime = false) => {
+    const { navigation } = this.props;
     const { listDevice } = this.state;
+    const { refresh } = navigation?.state?.params || {};
+
+    if (firstTime !== true && (!refresh || (refresh === lastRefreshTime))) {
+      return;
+    }
+
+    lastRefreshTime = refresh || new Date().getTime();
+
     const clearedNode = await LocalDatabase.getNodeCleared();
     const list = (await LocalDatabase.getListDevices()) || [];
 
@@ -189,13 +217,7 @@ class Node extends BaseScreen {
       // Force eventhough the same
       LocalDatabase.saveVerifyCode('');
     }
-  }
-
-  componentWillUnmount() {
-    if (this.listener) {
-      this.listener.remove();
-    }
-  }
+  };
 
   onResume = () => {
     this.handleRefresh();
@@ -203,6 +225,9 @@ class Node extends BaseScreen {
 
   async componentWillMount() {
     await this.createSignIn();
+    const feature = await handleGetFunctionConfigs(appConstant.DISABLED.BUY_NODE);
+    const { disabled, message } = feature;
+    this.setState({ disabled, message });
   }
 
   sendWithdrawTx = async (paymentAddress, tokenIds) => {
@@ -303,7 +328,7 @@ class Node extends BaseScreen {
   }
 
   handleGetNodeInfoCompleted = async ({ device, index }) => {
-    const { listDevice, loadedDevices } = this.state;
+    const { listDevice, loadedDevices, withdrawTxs } = this.state;
 
     if (device) {
 
@@ -317,6 +342,7 @@ class Node extends BaseScreen {
     loadedDevices.push(index);
 
     this.setState({ listDevice, loadedDevices }, () => {
+      let noRewards = true;
       let rewardsList = [];
       listDevice.forEach((element) => {
         let rewards = !_.isEmpty(element?.Rewards) ? element?.Rewards : { [PRV_ID] : 0};
@@ -330,14 +356,30 @@ class Node extends BaseScreen {
               coinTotalReward.balance += reward.balance;
               coinTotalReward.displayBalance = convert.toHumanAmount(coinTotalReward.balance, coinTotalReward.pDecimals || 0);
             }
+
+            if (reward?.balance > 0) {
+              noRewards = false;
+            }
           });
         }
       });
 
       rewardsList = _.orderBy(rewardsList, item => item.displayBalance, 'desc');
-      this.setState({ rewards: rewardsList });
-    });
 
+      const validNodes = listDevice.filter(device => device.AccountName &&
+        !_.isEmpty(device?.Rewards) &&
+        _.some(device.Rewards, value => value),
+      );
+
+      const vNodes = validNodes.filter(device => device.IsVNode);
+      const pNodes = validNodes.filter(device => device.IsPNode);
+
+      const vNodeWithdrawable = vNodes.length && vNodes.length !== withdrawTxs?.length;
+      const pNodeWithdrawable = pNodes.length && pNodes.some(item => item.IsFundedStakeWithdrawable);
+      const withdrawable = !noRewards && (vNodeWithdrawable || pNodeWithdrawable);
+
+      this.setState({ rewards: rewardsList, withdrawable });
+    });
   };
 
   checkWithdrawTxsStatus() {
@@ -366,6 +408,7 @@ class Node extends BaseScreen {
         isFetching: true,
         isLoadMore: false,
         listDevice: list,
+        withdrawing: false,
       }, this.getFullInfo);
 
       this.checkWithdrawTxsStatus();
@@ -399,7 +442,23 @@ class Node extends BaseScreen {
     this.setState({ removingDevice: null });
   };
 
-  handlePressWithdraw = onClickView(async (device) => {
+  handleWithdrawAll = async () => {
+    const { listDevice } = this.state;
+
+    this.setState({ withdrawing: true });
+
+    for (const device of listDevice) {
+      try {
+        await this.handleWithdraw(device, false);
+      } catch {
+        // Ignore the error
+      }
+    }
+
+    this.showToastMessage(MESSAGES.ALL_NODE_WITHDRAWAL);
+  };
+
+  handleWithdraw = async (device, showToast = true) => {
     try {
       const account = device.Account;
       const rewards = device.Rewards;
@@ -409,7 +468,10 @@ class Node extends BaseScreen {
           .filter(id => rewards[id] > 0);
         const txs = await this.sendWithdrawTx(PaymentAddress, tokenIds);
         const message = MESSAGES.VNODE_WITHDRAWAL;
-        this.showToastMessage(message);
+
+        if (showToast) {
+          this.showToastMessage(message);
+        }
 
         return txs;
       } else {
@@ -421,12 +483,21 @@ class Node extends BaseScreen {
         });
         device.IsFundedStakeWithdrawable = await NodeService.isWithdrawable(device);
         const message = MESSAGES.PNODE_WITHDRAWAL;
-        this.showToastMessage(message);
+
+        if (showToast) {
+          this.showToastMessage(message);
+        }
       }
     } catch (error) {
-      new ExHandler(error).showErrorToast(true);
+      if (showToast) {
+        new ExHandler(error).showErrorToast(true);
+      }
+
+      throw error;
     }
-  });
+  };
+
+  handlePressWithdraw = onClickView(this.handleWithdraw);
 
   handlePressStake = onClickView(async (device) => {
     this.goToScreen(routeNames.AddStake, { device });
@@ -439,7 +510,9 @@ class Node extends BaseScreen {
   importAccount = () => {
     const { navigation } = this.props;
     this.goToScreen(routeNames.ImportAccount, {
-      onGoBack: () => navigation.navigate(routeNames.Node),
+      onGoBack: () => navigation.navigate(routeNames.Node, {
+        refresh: new Date().getTime()
+      }),
     });
   };
 
@@ -499,11 +572,23 @@ class Node extends BaseScreen {
     this.setState({ showWelcome: false });
   };
 
+  onBuyNodePress = () => {
+    const { disabled, message } = this.state;
+    if (disabled) {
+      const duration = getDurationShowMessage(message);
+      Toast.showInfo(message, { duration });
+      return;
+    }
+    this.goToScreen(routeNames.BuyNodeScreen);
+  };
+
   renderTotalRewards() {
     const {
       listDevice,
       loadedDevices,
       rewards,
+      withdrawable,
+      withdrawing,
     } = this.state;
 
     if (listDevice?.length > loadedDevices?.length) {
@@ -513,7 +598,15 @@ class Node extends BaseScreen {
     }
 
     return (
-      <Rewards rewards={rewards} />
+      <View style={{ paddingHorizontal: 25 }}>
+        <Rewards rewards={rewards} />
+        <RoundCornerButton
+          onPress={this.handleWithdrawAll}
+          style={[theme.BUTTON.NODE_BUTTON, { marginBottom: 50 }]}
+          title={withdrawing ? 'Withdrawing all rewards...' : 'Withdraw all rewards'}
+          disabled={!withdrawable || withdrawing}
+        />
+      </View>
     );
   }
 
@@ -563,7 +656,7 @@ class Node extends BaseScreen {
             <RoundCornerButton
               style={[style.buyButton, theme.BUTTON.BLACK_TYPE]}
               title="Get a Node Device"
-              onPress={() => this.goToScreen(routeNames.BuyNodeScreen)}
+              onPress={this.onBuyNodePress}
             />
           </View>
           {this.renderModalActionsForNodePrevSetup()}

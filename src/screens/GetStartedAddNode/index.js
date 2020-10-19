@@ -163,7 +163,9 @@ class GetStartedAddNode extends BaseScreen {
 
   handleFinish = () => {
     this.setState({ success: false }, () => {
-      this.goToScreen(routeNames.Node, { setupNode: true });
+      this.goToScreen(routeNames.Node, {
+        refresh: new Date().getTime()
+      });
     });
   };
 

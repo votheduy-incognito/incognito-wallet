@@ -12,6 +12,12 @@ import { accountSeleclor } from '@src/redux/selectors';
 import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import { isIOS } from '@utils/platform';
+import { Toast } from '@components/core';
+import {
+  getDurationShowMessage,
+  handleGetFunctionConfigs
+} from '@src/shared/hooks/featureConfig';
+import { CONSTANT_APP } from '@src/constants';
 
 const sentIds = {};
 let component;
@@ -53,11 +59,21 @@ const enhance = WrappedComponent =>
     onNavigateNotification = async notification => {
       try {
         const { navigateNotification, navigation } = this.props;
+
+        const _normalizedData = normalizedData({
+          ...notification?.data,
+          ...sentIds[notification?.data?.ID],
+        });
+        const featureName = CONSTANT_APP.FEATURES_TYPE_MAP[_normalizedData.type] || CONSTANT_APP.FEATURES_ROUTE_MAP[_normalizedData.screen];
+        const feature = await handleGetFunctionConfigs(featureName);
+        const { disabled, message } = feature;
+        if (disabled) {
+          const duration = getDurationShowMessage(message);
+          Toast.showInfo(message, {duration});
+          return;
+        }
         await navigateNotification(
-          normalizedData({
-            ...notification?.data,
-            ...sentIds[notification?.data?.ID],
-          }),
+          _normalizedData,
           navigation,
         );
       } catch (error) {
