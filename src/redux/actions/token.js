@@ -467,9 +467,13 @@ export const actionFetchReceiveHistory = (refreshing = false) => async (
         return h;
       }),
     ]);
-    data = data.filter(
-      (history) => history?.type === CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE,
-    );
+
+    data = data
+      .filter(
+        (history) => history?.type === CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE,
+      )
+      .filter((history) => !!history?.amount);
+
     data = refreshing ? [...data, ...oldData] : [...oldData, ...data];
     data = unionBy(data, 'id') || [];
     let payload = {
