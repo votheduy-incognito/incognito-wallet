@@ -97,6 +97,8 @@ target 'Incognito' do
   pod 'react-native-settings', :path => '../node_modules/react-native-settings'
   pod 'RNCPushNotificationIOS', :path => '../node_modules/@react-native-community/push-notification-ios'
 
+  pod 'RealmJS', :path => '../node_modules/realm'
+
   post_install do |installer|
     installer.pods_project.targets.each do |target|
       if target.name == "React"

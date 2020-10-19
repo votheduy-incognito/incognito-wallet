@@ -15,7 +15,15 @@ import { cachePromise } from '@services/cache';
 import { chooseBestCoinToSpent } from 'incognito-chain-web-js/lib/tx/utils';
 import bn from 'bn.js';
 import Server from '@services/wallet/Server';
-import { CustomError, ErrorCode } from '../exception';
+import {
+  insertAccountCached,
+} from '@models/realm/utils/accountCached.utils';
+import { SCHEMA_ACCOUNT } from '@models/realm/schema.const';
+import {
+  CustomError,
+  ErrorCode,
+  ExHandler
+} from '../exception';
 import { getActiveShard } from './RpcClientService';
 import tokenService from './tokenService';
 import {
@@ -26,23 +34,54 @@ import {
 
 const TAG = 'Account';
 
+/*
+* mirage
+* @param derivatorToSerialNumberCache
+* @param spentCoinCached
+* to Realm-db
+* */
+export const mirageAccountCached = async (account) => {
+  try {
+    const accountName = account.name;
+    const startMs = new Date().getTime();
+    if(accountName) {
+      const serials = account.derivatorToSerialNumberCache;
+      if (serials) {
+        const serialsStr = JSON.stringify(serials);
+        await insertAccountCached(serialsStr, accountName, SCHEMA_ACCOUNT.SERIAL);
+      }
+      const spentCoin = account.spentCoinCached;
+      if (spentCoin) {
+        const spentCoinStr = JSON.stringify(spentCoin);
+        await insertAccountCached(spentCoinStr, accountName, SCHEMA_ACCOUNT.SPENT_COIN);
+      }
+      const endMs = new Date().getTime();
+      console.debug(`MIRAGE_ACCOUNT_CACHED: ${endMs - startMs}Ms`);
+    }
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
+};
+
 export const getBalanceNoCache = (
   indexAccount,
   wallet,
   tokenId,
 ) => async () => {
-  const account = wallet.MasterAccount.child[indexAccount];
-  account.isRevealViewKeyToGetCoins = true;
-
-  const balance = await wallet.MasterAccount.child[indexAccount].getBalance(
-    tokenId,
-  );
-
-  if (Object.keys(account.derivatorToSerialNumberCache).length < 10000) {
-    await account.saveAccountCached(wallet.Storage);
+  try {
+    const account = wallet.MasterAccount.child[indexAccount];
+    account.isRevealViewKeyToGetCoins = true;
+    const balance = await wallet.MasterAccount.child[indexAccount].getBalance(
+      tokenId,
+    );
+    await mirageAccountCached(account);
+    if (Object.keys(account.derivatorToSerialNumberCache).length < 10000) {
+      await account.saveAccountCached(wallet.Storage);
+    }
+    return balance;
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
   }
-
-  return balance;
 };
 
 const getPendingHistory = (histories, spendingCoins) => {

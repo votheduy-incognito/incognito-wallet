@@ -10,6 +10,8 @@ import {
   Wallet
 } from 'incognito-chain-web-js/build/wallet';
 import {randomBytes} from 'react-native-randombytes';
+import { mirageAccountCached } from '@services/wallet/accountService';
+import { queryAccountCached } from '@models/realm/utils/accountCached.utils';
 import {getPassphrase} from './passwordService';
 import {getMaxShardNumber} from './RpcClientService';
 import Server from './Server';
@@ -72,9 +74,16 @@ export async function loadWallet(passphrase) {
   for (const account of accounts) {
     try {
       await account.loadAccountCached(storage);
+      if (account.name) {
+        const startMs = new Date().getTime();
+        await queryAccountCached(account.name);
+        const endMs = new Date().getTime();
+        console.debug(`LOAD_ACCOUNT_CACHED: ${endMs - startMs}Ms`);
+      }
     } catch (e) {
       console.debug('LOAD ACCOUNTS CACHE ERROR', e);
       await account.clearCached();
+      await mirageAccountCached(account);
       await account.saveAccountCached(storage);
     }
   }
