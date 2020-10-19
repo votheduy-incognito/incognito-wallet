@@ -1,5 +1,6 @@
 import _, { memoize } from 'lodash';
 import { createSelector } from 'reselect';
+import {walletSelector} from './wallet';
 
 export const isGettingBalance = createSelector(
   (state) => state?.account?.isGettingBalance || [],
@@ -53,6 +54,7 @@ export const listAccountSelector = createSelector(
       accountName: item?.name || item?.AccountName,
       privateKey: item?.PrivateKey,
       paymentAddress: item?.PaymentAddress,
+      readonlyKey: item?.ReadonlyKey,
     })),
 );
 
@@ -64,15 +66,30 @@ export const defaultAccountNameSelector = createSelector(
 export const defaultAccountSelector = createSelector(
   listAccountSelector,
   defaultAccountNameSelector,
-  (list, defaultName) => {
+  walletSelector,
+  (list, defaultName, wallet) => {
     let account = list?.find((account) => account?.name === defaultName);
+    let indexAccount, derivatorToSerialNumberCache;
+    try {
+      indexAccount = wallet.getAccountIndexByName(
+        account.name || account.AccountName,
+      );
+      const walletAccount = wallet.MasterAccount.child[indexAccount];
+      derivatorToSerialNumberCache = walletAccount?.derivatorToSerialNumberCache;
+    } catch (error) {
+      console.debug('ERROR', error);
+    }
     if (_.isEmpty(account?.name)) {
       console.warn(
         `Can not get account ${account?.name}, fallback to first account (default account)`,
       );
       account = list && list[0];
     }
-    return account;
+    return {
+      ...account,
+      indexAccount,
+      derivatorToSerialNumberCache
+    };
   },
 );
 

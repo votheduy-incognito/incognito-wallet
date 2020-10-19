@@ -2,7 +2,10 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import tokenService from '@src/services/wallet/tokenService';
 import { getpTokenHistory } from '@src/services/api/history';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
-import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
+import {
+  loadHistoryByAccount,
+  ConfirmedTx,
+} from '@src/services/wallet/WalletService';
 import { getFeeFromTxHistory } from '@src/screens/Wallet/features/TxHistoryDetail/TxHistoryDetail.utils';
 
 export const normalizeHistoriesFromApi = ({
@@ -53,6 +56,9 @@ const normalizedHistories = ({
   let _historiesFromApi = [...historiesNormalizedFromApi];
   histories &&
     histories.map((h) => {
+      if (h?.isHistoryReceived) {
+        return _histories.push(h);
+      }
       let history = {
         id: h?.txID,
         incognitoTxID: h?.txID,
@@ -66,8 +72,8 @@ const normalizedHistories = ({
         decimals,
         pDecimals,
         status: h?.status,
-        fee: Number(h?.feeNativeToken),
-        feePToken: Number(h?.feePToken),
+        fee: h?.feeNativeToken,
+        feePToken: h?.feePToken,
         isIncognitoTx: true,
         metaDataType: h?.metaData?.Type,
       };
@@ -170,7 +176,7 @@ export const normalizeData = (histories = [], decimals, pDecimals) =>
         amount: h?.amountNativeToken,
         symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
         status: h?.status,
-        fee: Number(h?.feeNativeToken),
+        fee: h?.feeNativeToken,
         decimals,
         pDecimals,
         metaDataType: h?.metaData?.Type,
@@ -237,4 +243,65 @@ export const loadAccountHistory = () => async (dispatch, getState) => {
   } catch (e) {
     throw e;
   }
+};
+
+export const getTypeHistoryReceive = ({ account, serialNumbers }) => {
+  let type = CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE;
+  if (!serialNumbers) {
+    return type;
+  }
+  if (serialNumbers) {
+    const accountSerialNumbers = account?.derivatorToSerialNumberCache;
+    try {
+      for (let key in accountSerialNumbers) {
+        const accountSerialNumber = accountSerialNumbers[key];
+        const isExisted = serialNumbers?.includes(accountSerialNumber);
+        if (isExisted) {
+          type = CONSTANT_COMMONS.HISTORY.TYPE.SEND;
+          break;
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+  return type;
+};
+
+export const handleFilterHistoryReceiveByTokenId = ({ tokenId, histories }) => {
+  let result = histories;
+  try {
+    result = result
+      .filter((history) => {
+        const receivedAmounts = history?.ReceivedAmounts;
+        const isTokenExisted = Object.keys(receivedAmounts)?.includes(tokenId);
+        return isTokenExisted;
+      })
+      .map((history) => {
+        const receivedAmounts = history?.ReceivedAmounts;
+        let amount = 0;
+        try {
+          for (let id in receivedAmounts) {
+            if (id === tokenId) {
+              const item = receivedAmounts[id][0];
+              amount = item?.CoinDetails?.Value;
+              break;
+            }
+          }
+        } catch (error) {
+          console.debug('ERROR', error);
+        }
+        return {
+          txID: history?.Hash,
+          time: history?.LockTime,
+          isPrivacy: history?.IsPrivacy,
+          amount,
+          tokenId,
+          serialNumbers: history?.InputSerialNumbers[tokenId] || [],
+        };
+      });
+  } catch (error) {
+    throw error;
+  }
+  return result;
 };

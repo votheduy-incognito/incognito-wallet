@@ -22,7 +22,7 @@ import { devSelector } from '@src/screens/Dev';
 import styled from './styles';
 import { getFeeFromTxHistory } from './TxHistoryDetail.utils';
 
-const Hook = (props) => {
+export const Hook = (props) => {
   const {
     label,
     valueText,
