@@ -6,6 +6,7 @@ import { CONSTANT_CONFIGS } from '@src/constants';
 import PropTypes from 'prop-types';
 import { Hook } from '@screens/Wallet/features/TxHistoryDetail/TxHistoryDetail';
 import formatUtil from '@src/utils/format';
+import LinkingService from '@src/services/linking';
 import withTxHistoryReceive from './TxHistoryReceive.enhance';
 
 const styled = StyleSheet.create({
@@ -26,6 +27,11 @@ const TxHistoryReceive = (props) => {
       valueText: `#${history?.id}`,
       disabled: !history?.id,
       copyable: true,
+      openUrl: true,
+      handleOpenLink: () =>
+        LinkingService.openUrl(
+          `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${history?.incognitoTxID}`,
+        ),
     },
     {
       label: typeText,
@@ -43,12 +49,6 @@ const TxHistoryReceive = (props) => {
       label: 'Time',
       valueText: formatUtil.formatDateTime(history?.time),
       disabled: !history?.time,
-    },
-    {
-      label: 'TxID',
-      valueText: `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${history?.incognitoTxID}`,
-      openUrl: true,
-      disabled: !history?.incognitoTxID,
     },
     {
       label: 'Type',
