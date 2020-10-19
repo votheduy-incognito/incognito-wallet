@@ -130,9 +130,9 @@ const HistoryList = ({
   onRefreshHistoryList,
   onLoadmoreHistory,
   refreshing,
-  isLoadmore,
   renderEmpty,
   showEmpty,
+  oversize,
 }) => (
   <FlatList
     data={histories.sort(
@@ -150,7 +150,7 @@ const HistoryList = ({
       typeof onLoadmoreHistory === 'function' && onLoadmoreHistory()
     }
     ListFooterComponent={
-      isLoadmore ? (
+      !oversize && !refreshing ? (
         <View style={styleSheet.loadingContainer}>
           <LoadingContainer />
         </View>
@@ -209,7 +209,7 @@ HistoryList.defaultProps = {
   onRefreshHistoryList: null,
   refreshing: false,
   onLoadmoreHistory: null,
-  isLoadmore: false,
+  oversize: false,
   renderEmpty: null,
   showEmpty: false,
 };
@@ -220,7 +220,7 @@ HistoryList.propTypes = {
   onRefreshHistoryList: PropTypes.func,
   onLoadmoreHistory: PropTypes.func,
   refreshing: PropTypes.bool,
-  isLoadmore: PropTypes.bool,
+  oversize: PropTypes.bool,
   renderEmpty: PropTypes.func,
   showEmpty: PropTypes.bool,
 };

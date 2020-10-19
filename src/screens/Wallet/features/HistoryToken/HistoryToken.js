@@ -8,7 +8,7 @@ import EmptyHistory from './HistoryToken.empty';
 
 const HistoryToken = (props) => {
   const { histories } = useSelector(tokenSeleclor.historyTokenSelector);
-  const { isLoadmore, isFetching } = useSelector(
+  const { isFetching, oversize } = useSelector(
     tokenSeleclor.receiveHistorySelector,
   );
   const {
@@ -21,13 +21,13 @@ const HistoryToken = (props) => {
     <HistoryList
       histories={histories}
       onCancelEtaHistory={handleCancelEtaHistory}
-      onRefreshHistoryList={() => handleLoadHistory(true)}
-      onLoadmoreHistory={handleLoadHistory}
+      onRefreshHistoryList={() => handleLoadHistory(true, false)}
+      onLoadmoreHistory={() => handleLoadHistory(false, true)}
       refreshing={refreshing}
-      isLoadmore={isLoadmore}
       loading={isFetching}
       renderEmpty={() => <EmptyHistory />}
       showEmpty={showEmpty}
+      oversize={oversize}
     />
   );
 };
