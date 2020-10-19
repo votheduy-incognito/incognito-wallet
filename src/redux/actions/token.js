@@ -282,10 +282,10 @@ export const actionFetchFailHistory = () => ({
   type: type.ACTION_FETCH_FAIL_HISTORY,
 });
 
-export const actionFetchHistoryToken = (
-  refreshing = false,
-  onlyReceiveHistory = false,
-) => async (dispatch, getState) => {
+export const actionFetchHistoryToken = (refreshing = false) => async (
+  dispatch,
+  getState,
+) => {
   try {
     const state = getState();
     const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
@@ -299,26 +299,19 @@ export const actionFetchHistoryToken = (
     await dispatch(actionFetchingHistory({ refreshing }));
     let histories = [];
     if (selectedPrivacy?.isToken) {
-      let receiveHistory = [];
-      let historiesToken = [];
-      let historiesTokenFromApi = [];
-      if (onlyReceiveHistory) {
-        receiveHistory = await dispatch(actionFetchReceiveHistory(refreshing));
-      } else {
-        let task = [
-          dispatch(loadTokenHistory()),
-          dispatch(getHistoryFromApi()),
-          dispatch(actionFetchReceiveHistory(refreshing)),
-        ];
-        if (token) {
-          task = [...task, dispatch(getBalance(token))];
-        }
-        [
-          historiesToken,
-          historiesTokenFromApi,
-          receiveHistory,
-        ] = await Promise.all(task);
+      let task = [
+        dispatch(loadTokenHistory()),
+        dispatch(getHistoryFromApi()),
+        dispatch(actionFetchReceiveHistory(refreshing)),
+      ];
+      if (token) {
+        task = [...task, dispatch(getBalance(token))];
       }
+      const [
+        historiesToken,
+        historiesTokenFromApi,
+        receiveHistory,
+      ] = await Promise.all(task);
       const rcHistoryFilByTokenHistory = receiveHistory
         ? receiveHistory?.filter(
             (rcHistory) =>
@@ -331,7 +324,7 @@ export const actionFetchHistoryToken = (
         ? rcHistoryFilByTokenHistory?.filter(
             (rcHistory) =>
               !historiesTokenFromApi?.some(
-                (history) => history?.inchainTx === rcHistory?.txID,
+                (history) => history?.incognitoTxID === rcHistory?.txID,
               ),
           )
         : [];
@@ -355,36 +348,26 @@ export const actionFetchHistoryToken = (
   }
 };
 
-export const actionFetchHistoryMainCrypto = (
-  refreshing = false,
-  onlyReceiveHistory = false,
-) => async (dispatch, getState) => {
+export const actionFetchHistoryMainCrypto = (refreshing = false) => async (
+  dispatch,
+  getState,
+) => {
   try {
     const state = getState();
     const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
     const account = accountSeleclor.defaultAccountSelector(state);
-    const {
-      isFetching,
-      histories: mainCryptoHistories,
-    } = tokenSeleclor.historyTokenSelector(state);
+    const { isFetching } = tokenSeleclor.historyTokenSelector(state);
     if (isFetching || !selectedPrivacy?.tokenId) {
       return;
     }
     await dispatch(actionFetchingHistory({ refreshing }));
     dispatch(getAccountBalance(account));
     let histories = [];
-    let receiveHistory = [];
-    let accountHistory = [];
     if (selectedPrivacy?.isMainCrypto) {
-      if (onlyReceiveHistory) {
-        receiveHistory = await dispatch(actionFetchReceiveHistory(refreshing));
-        accountHistory = [...mainCryptoHistories];
-      } else {
-        [accountHistory, receiveHistory] = await new Promise.all([
-          dispatch(actionFetchReceiveHistory(refreshing)),
-          dispatch(loadAccountHistory()),
-        ]);
-      }
+      const [accountHistory, receiveHistory] = await new Promise.all([
+        dispatch(actionFetchReceiveHistory(refreshing)),
+        dispatch(loadAccountHistory()),
+      ]);
       const rcHistoryFilByAccHistory = receiveHistory
         ? receiveHistory?.filter(
             (rcHistory) =>
