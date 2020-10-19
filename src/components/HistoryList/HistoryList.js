@@ -150,10 +150,12 @@ const HistoryList = ({
       typeof onLoadmoreHistory === 'function' && onLoadmoreHistory()
     }
     ListFooterComponent={
-      isLoadmore && (
+      isLoadmore ? (
         <View style={styleSheet.loadingContainer}>
           <LoadingContainer />
         </View>
+      ) : (
+        <View style={{ marginBottom: 30 }} />
       )
     }
     ListEmptyComponent={
