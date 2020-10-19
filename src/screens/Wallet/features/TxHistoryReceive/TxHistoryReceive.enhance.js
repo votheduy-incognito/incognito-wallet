@@ -21,6 +21,7 @@ const enhance = (WrappedComp) => (props) => {
   const handleFetchHistoryReceive = async () => {
     const { loading } = historyReceive;
     const txId = _history?.id;
+    let tx;
     if (loading || !txId) {
       return;
     }
@@ -32,7 +33,7 @@ const enhance = (WrappedComp) => (props) => {
         ...historyReceive,
         loading: true,
       });
-      let tx = await getTxTransactionByHash(txId);
+      tx = await getTxTransactionByHash(txId);
       if (tx) {
         typeOf = getTypeOfHistoryReceive({
           selectedPrivacy,
@@ -45,7 +46,7 @@ const enhance = (WrappedComp) => (props) => {
       await setHistoryReceive({
         ...historyReceive,
         loading: false,
-        history: { ...history, typeOf },
+        history: { ...history, typeOf, time: tx?.LockTime || history?.time },
       });
     }
   };
