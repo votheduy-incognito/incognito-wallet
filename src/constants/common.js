@@ -224,6 +224,7 @@ export default {
       94: 'Remove liquidity',
       95: 'Add liquidity',
       96: 'Shield Amount',
+      25: 'Shield',
     },
   },
   TRACK_LOG_EVENT,
