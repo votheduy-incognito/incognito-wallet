@@ -1,9 +1,9 @@
 import React from 'react';
-import { Text, TouchableOpacity, Switch } from '@components/core/index';
+import { Text, TouchableOpacity, Switch, Toast } from '@components/core/index';
 import Section, { sectionStyle } from '@screens/Setting/features/Section';
 import LocalDatabase from '@utils/LocalDatabase';
 import RNRestart from 'react-native-restart';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Clipboard } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,12 +16,14 @@ import {
   actionToggleLogApp,
 } from '@src/screens/Dev';
 import { CONSTANT_KEYS } from '@src/constants';
+import { accountSeleclor } from '@src/redux/selectors';
 
 const DevSection = () => {
   const [homeConfig] = React.useState(global.homeConfig);
   const navigation = useNavigation();
   const dev = useSelector(devSelector);
   const dispatch = useDispatch();
+  const account = useSelector(accountSeleclor.defaultAccountSelector);
   const resetUniswapTooltip = async () => {
     await LocalDatabase.resetViewUniswapTooltip();
     RNRestart.Restart();
@@ -50,6 +52,11 @@ const DevSection = () => {
   const onToggleLogApp = () => dispatch(actionToggleLogApp());
 
   const isStagingConfig = homeConfig === 'staging';
+
+  const onCopySerialNumberCache = () => {
+    Clipboard.setString(JSON.stringify(account?.derivatorToSerialNumberCache));
+    Toast.showSuccess('Copied');
+  };
 
   const customItems = [
     {
@@ -130,6 +137,11 @@ const DevSection = () => {
           value={dev[CONSTANT_KEYS.DEV_TEST_TOGGLE_LOG_APP]}
         />
       ),
+    },
+    {
+      id: 'serial-number',
+      desc: 'Copy serial number',
+      onPress: onCopySerialNumberCache,
     },
   ];
 
