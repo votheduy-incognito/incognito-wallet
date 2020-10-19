@@ -6,6 +6,7 @@ import { useFocusEffect, useNavigationParam } from 'react-navigation-hooks';
 import { useSelector } from 'react-redux';
 import { compose } from 'recompose';
 import ErrorBoundary from '@src/components/ErrorBoundary';
+import moment from 'moment';
 import { getTypeOfHistoryReceive } from './TxHistoryReceive.utils';
 
 const enhance = (WrappedComp) => (props) => {
@@ -46,7 +47,11 @@ const enhance = (WrappedComp) => (props) => {
       await setHistoryReceive({
         ...historyReceive,
         loading: false,
-        history: { ...history, typeOf, time: tx?.LockTime || history?.time },
+        history: {
+          ...history,
+          typeOf,
+          time: moment(tx?.LockTime).add(7, 'hours') || history?.time,
+        },
       });
     }
   };
