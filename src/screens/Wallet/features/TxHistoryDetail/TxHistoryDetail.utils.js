@@ -13,7 +13,7 @@ export const getFeeFromTxHistory = (history) => {
     }
     let isIncognitoTx = !!history?.isIncognitoTx;
     if (isIncognitoTx) {
-      isUseTokenFee = !!history?.feePToken;
+      isUseTokenFee = !!Number(history?.feePToken);
       feeUnit = isUseTokenFee ? history?.symbol : CONSTANT_COMMONS.PRV.symbol;
       feePDecimals = isUseTokenFee
         ? history?.pDecimals
