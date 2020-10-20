@@ -63,22 +63,24 @@ const Extra = () => {
         </View>
         <View style={styled.hook}>
           <NormalText text="Expires in: ">
-            <Text style={[styled.boldText, styled.countdown]}>
+            <Text
+              style={[
+                styled.boldText,
+                styled.countdown,
+                { color: COLORS.green },
+              ]}
+            >
               {remainTime}
             </Text>
           </NormalText>
           {min && (
             <>
               <NormalText text="Minimum: ">
-                <Text style={styled.boldText}>
+                <Text style={[styled.boldText, { color: COLORS.green }]}>
                   {`${min} ${selectedPrivacy?.externalSymbol ||
                     selectedPrivacy?.symbol}`}
                 </Text>
               </NormalText>
-              <NormalText
-                text="Smaller amounts will not be processed."
-                style={styled.smallText}
-              />
             </>
           )}
         </View>
