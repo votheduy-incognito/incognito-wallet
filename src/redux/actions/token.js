@@ -24,7 +24,7 @@ import { getReceiveHistoryByRPC } from '@src/services/wallet/RpcClientService';
 import { actionLogEvent } from '@src/screens/Performance';
 import { ConfirmedTx } from '@src/services/wallet/WalletService';
 import { CONSTANT_COMMONS } from '@src/constants';
-import { unionBy } from 'lodash';
+import { uniqBy } from 'lodash';
 import {
   followingTokenSelector,
   isTokenFollowedSelector,
@@ -474,7 +474,7 @@ export const actionFetchReceiveHistory = (refreshing = false) => async (
       .filter((history) => !!history?.amount);
 
     data = refreshing ? [...data, ...oldData] : [...oldData, ...data];
-    data = unionBy(data, 'id') || [];
+    data = uniqBy(data, (item) => item?.id) || [];
     let payload = {
       nextPage,
       data,
