@@ -365,8 +365,8 @@ export const actionFetchHistoryMainCrypto = (refreshing = false) => async (
     let histories = [];
     if (selectedPrivacy?.isMainCrypto) {
       const [accountHistory, receiveHistory] = await new Promise.all([
-        dispatch(actionFetchReceiveHistory(refreshing)),
         dispatch(loadAccountHistory()),
+        dispatch(actionFetchReceiveHistory(refreshing)),
       ]);
       const rcHistoryFilByAccHistory = receiveHistory
         ? receiveHistory?.filter(
