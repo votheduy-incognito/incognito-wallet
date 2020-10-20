@@ -25,7 +25,7 @@ const initialState = {
     data: [],
     oversize: false,
     page: 0,
-    limit: LIMIT_RECEIVE_HISTORY_ITEM,
+    limit: MAX_LIMIT_RECEIVE_HISTORY_ITEM,
     refreshing: true,
     tokenId: null,
   },
