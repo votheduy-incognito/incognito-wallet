@@ -14,21 +14,24 @@ export const normalizeHistoriesFromApi = ({
   pDecimals,
 }) =>
   (historiesFromApi &&
-    historiesFromApi.map((h) => ({
-      ...h,
-      time: h?.updatedAt,
-      type: h?.addressType,
-      toAddress: h?.userPaymentAddress,
-      fromAddress: h?.userPaymentAddress,
-      amount: h?.incognitoAmount,
-      symbol: externalSymbol || symbol,
-      decimals,
-      pDecimals,
-      status: h?.statusText,
-      statusCode: h?.status,
-      depositAddress: h?.depositTmpAddress,
-      fromApi: true,
-    }))) ||
+    historiesFromApi.map((h) => {
+      const history = {
+        ...h,
+        time: h?.createdAt,
+        type: h?.addressType,
+        toAddress: h?.userPaymentAddress,
+        fromAddress: h?.userPaymentAddress,
+        amount: h?.incognitoAmount,
+        symbol: externalSymbol || symbol,
+        decimals,
+        pDecimals,
+        status: h?.statusText,
+        statusCode: h?.status,
+        depositAddress: h?.depositTmpAddress,
+        fromApi: true,
+      };
+      return history;
+    })) ||
   [];
 
 const isDecentralizedTx = (history) => {
