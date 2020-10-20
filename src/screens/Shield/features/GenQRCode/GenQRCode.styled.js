@@ -25,8 +25,9 @@ export const styled = StyleSheet.create({
   smallText: {
     fontSize: 13,
     lineHeight: 15,
-    marginTop: 10,
-    color: COLORS.orange,
+    marginTop: 5,
+    color: COLORS.green,
+    fontFamily: FONT.NAME.bold,
   },
   errorIcon: {
     color: COLORS.orange,
