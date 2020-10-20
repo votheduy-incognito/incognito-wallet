@@ -447,7 +447,7 @@ export const actionFetchReceiveHistory = (refreshing = false) => async (
       histories,
     });
     data = await new Promise.all([
-      ...historiesFilterByTokenId?.map(async (history) => {
+      ...historiesFilterByTokenId?.map((history) => {
         const txID = history?.txID;
         let type = getTypeHistoryReceive({
           account,
@@ -467,7 +467,6 @@ export const actionFetchReceiveHistory = (refreshing = false) => async (
         return h;
       }),
     ]);
-
     data = data
       .filter(
         (history) => history?.type === CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE,
