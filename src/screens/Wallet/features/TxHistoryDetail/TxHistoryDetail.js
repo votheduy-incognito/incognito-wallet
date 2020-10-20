@@ -177,10 +177,15 @@ const TxHistoryDetail = (props) => {
   const { typeText, statusColor, statusMessage, history } = data;
   const { fromApi } = history;
   const { fee, formatFee, feeUnit } = getFeeFromTxHistory(history);
+  const amount = Number(history?.amount) || 0;
   const amountStr =
-    (history.amount &&
-      formatUtil.amount(history.amount, history.pDecimals, true)) ||
-    formatUtil.number(history.requestedAmount);
+    (amount &&
+      formatUtil.amount(
+        amount,
+        history?.pDecimals || selectedPrivacy?.pDecimals,
+        true,
+      )) ||
+    formatUtil.number(history?.requestedAmount);
   const historyFactories = [
     {
       label: 'ID',
@@ -191,7 +196,7 @@ const TxHistoryDetail = (props) => {
     {
       label: typeText,
       valueText: `${amountStr} ${history.symbol}`,
-      disabled: !history.amount,
+      disabled: !amount,
     },
     {
       label: 'Fee',

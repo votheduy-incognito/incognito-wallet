@@ -73,7 +73,8 @@ const HistoryItem = React.memo(({ history }) => {
     account?.paymentAddress,
   );
   const renderAmount = () => {
-    if (amount === '') {
+    const amountToNumber = Number(amount) || 0;
+    if (!amountToNumber) {
       return '';
     }
     const _amount = formatUtil.amount(amount, pDecimals, true, decimalDigits);
