@@ -1,6 +1,6 @@
 const COLORS = {
   transparent: 'transparent',
-  orange: '#FF8E00',
+  orange: '#FF9500',
   white: 'white',
   black: '#000000',
   blue: '#25CDD6',
