@@ -125,8 +125,8 @@ class NodeItemDetail extends Component {
           <View style={[{ flexDirection: 'row' }, theme.MARGIN.marginBottomDefault]}>
             {!hasAccount ? this.renderBtn('Import a keychain', onImport) : (
               <>
-                {shouldShowStake && shouldShowWithdraw ? this.renderBtn(processing ? 'Withdrawing...' : 'Withdraw', this.handleWithdraw, !withdrawable) : null}
-                {!shouldShowStake && shouldShowWithdraw ? this.renderBtn(processing ? 'Withdrawing rewards...' : 'Withdraw rewards', this.handleWithdraw, !withdrawable) : null}
+                {shouldShowStake && shouldShowWithdraw ? this.renderBtn(processing || !withdrawable ? 'Withdrawing...' : 'Withdraw', this.handleWithdraw, !withdrawable) : null}
+                {!shouldShowStake && shouldShowWithdraw ? this.renderBtn(processing || !withdrawable ? 'Withdrawing rewards...' : 'Withdraw rewards', this.handleWithdraw, !withdrawable) : null}
                 {shouldShowStake ? this.renderBtn(shouldShowWithdraw ? 'Stake' : 'Stake required', () => onStake(item)) : null}
               </>
             )}
