@@ -264,8 +264,8 @@ export const actionRemoveFollowToken = (tokenId) => async (
   }
 };
 
-export const actionInitHistory = () => ({
-  type: type.ACTION_INIT_HISTORY,
+export const actionFreeHistory = () => ({
+  type: type.ACTION_FREE_HISTORY,
 });
 
 export const actionFetchingHistory = (payload) => ({
@@ -410,8 +410,8 @@ export const actionFetchFailReceiveHistory = () => ({
   type: type.ACTION_FETCH_FAIL_RECEIVE_HISTORY,
 });
 
-export const actionInitReceiveHistory = () => ({
-  type: type.ACTION_INIT_RECEIVE_HISTORY,
+export const actionFreeReceiveHistory = () => ({
+  type: type.ACTION_FREE_RECEIVE_HISTORY,
 });
 
 export const actionFetchReceiveHistory = (refreshing = false) => async (
@@ -475,11 +475,14 @@ export const actionFetchReceiveHistory = (refreshing = false) => async (
 
     data = refreshing ? [...data, ...oldData] : [...oldData, ...data];
     data = uniqBy(data, (item) => item?.id) || [];
+    const oversize = histories?.length < curLimit;
+    const notEnoughData = data?.length < oldData?.length + 5;
     let payload = {
       nextPage,
       data,
-      oversize: histories?.length < curLimit,
+      oversize,
       refreshing,
+      notEnoughData,
     };
     await dispatch(actionFetchedReceiveHistory(payload));
   } catch (error) {

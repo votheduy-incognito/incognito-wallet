@@ -47,6 +47,7 @@ export const receiveHistorySelector = createSelector(
       refreshing: refreshingReceiveHistory,
       isFetched: isFetchedReceiveHistory,
       isFetching: isFetchingReceiveHistory,
+      notEnoughData: notEnoughDataReceiveHistory,
     } = receiveHistory;
     const {
       histories,
@@ -56,7 +57,7 @@ export const receiveHistorySelector = createSelector(
     } = history;
     const refreshing = refreshingHistory || refreshingReceiveHistory;
     const notEnoughData =
-      histories?.length < 10 &&
+      (histories?.length < 10 || notEnoughDataReceiveHistory) &&
       !isFetchingReceiveHistory &&
       isFetchedReceiveHistory &&
       !oversize;
