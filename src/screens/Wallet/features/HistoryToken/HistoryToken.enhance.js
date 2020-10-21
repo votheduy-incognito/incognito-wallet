@@ -15,10 +15,10 @@ const enhance = (WrappedComp) => (props) => {
   );
 
   const dispatch = useDispatch();
-  const handleLoadHistory = async (refreshing, onlyReceiveHistory) => {
+  const handleLoadHistory = async (refreshing) => {
     try {
       if (!!selectedPrivacy?.isToken && !!token?.id) {
-        dispatch(actionFetchHistoryToken(refreshing, onlyReceiveHistory));
+        dispatch(actionFetchHistoryToken(refreshing));
       }
     } catch (error) {
       new ExHandler(error).showErrorToast();

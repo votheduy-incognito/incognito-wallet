@@ -21,8 +21,8 @@ const HistoryToken = (props) => {
     <HistoryList
       histories={histories}
       onCancelEtaHistory={handleCancelEtaHistory}
-      onRefreshHistoryList={() => handleLoadHistory(true, false)}
-      onLoadmoreHistory={() => handleLoadHistory(false, true)}
+      onRefreshHistoryList={() => handleLoadHistory(true)}
+      onLoadmoreHistory={() => !oversize && handleLoadHistory(false)}
       refreshing={refreshing}
       loading={isFetching}
       renderEmpty={() => <EmptyHistory />}
