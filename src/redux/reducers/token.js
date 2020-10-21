@@ -2,7 +2,7 @@ import type from '@src/redux/types/token';
 import { unionBy, remove } from 'lodash';
 import typeSelectedPrivacy from '@src/redux/types/selectedPrivacy';
 
-export const LIMIT_RECEIVE_HISTORY_ITEM = 10;
+export const LIMIT_RECEIVE_HISTORY_ITEM = 20;
 export const MAX_LIMIT_RECEIVE_HISTORY_ITEM = 50;
 
 const initialState = {
@@ -25,9 +25,10 @@ const initialState = {
     data: [],
     oversize: false,
     page: 0,
-    limit: MAX_LIMIT_RECEIVE_HISTORY_ITEM,
+    limit: LIMIT_RECEIVE_HISTORY_ITEM,
     refreshing: true,
     tokenId: null,
+    notEnoughData: false,
   },
 };
 
@@ -199,7 +200,7 @@ const reducer = (state = initialState, action) => {
       },
     };
   }
-  case type.ACTION_INIT_HISTORY: {
+  case type.ACTION_FREE_HISTORY: {
     return {
       ...state,
       history: { ...initialState.history },
@@ -224,7 +225,7 @@ const reducer = (state = initialState, action) => {
     };
   }
   //
-  case type.ACTION_INIT_RECEIVE_HISTORY: {
+  case type.ACTION_FREE_RECEIVE_HISTORY: {
     return {
       ...state,
       receiveHistory: {
@@ -239,11 +240,12 @@ const reducer = (state = initialState, action) => {
         ...state.receiveHistory,
         isFetching: true,
         refreshing: action?.payload?.refreshing || false,
+        notEnoughData: false,
       },
     };
   }
   case type.ACTION_FETCHED_RECEIVE_HISTORY: {
-    const { nextPage, data, oversize, refreshing } = action?.payload;
+    const { nextPage, data, oversize, refreshing, notEnoughData } = action?.payload;
     return {
       ...state,
       receiveHistory: {
@@ -254,6 +256,7 @@ const reducer = (state = initialState, action) => {
         page: refreshing ? state?.receiveHistory?.page : nextPage,
         oversize,
         refreshing: false,
+        notEnoughData,
       },
     };
   }
@@ -265,6 +268,7 @@ const reducer = (state = initialState, action) => {
         isFetching: false,
         isFetched: false,
         refreshing: false,
+        notEnoughData: false,
       },
     };
   }

@@ -13,9 +13,9 @@ const MainCryptoHistory = () => {
     tokenSeleclor.receiveHistorySelector,
   );
   const dispatch = useDispatch();
-  const handleLoadHistory = (refreshing, onlyReceiveHistory) => {
+  const handleLoadHistory = (refreshing) => {
     try {
-      dispatch(actionFetchHistoryMainCrypto(refreshing, onlyReceiveHistory));
+      dispatch(actionFetchHistoryMainCrypto(refreshing));
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
@@ -24,8 +24,8 @@ const MainCryptoHistory = () => {
   return (
     <HistoryList
       histories={histories}
-      onRefreshHistoryList={() => handleLoadHistory(true, false)}
-      onLoadmoreHistory={() => handleLoadHistory(false, true)}
+      onRefreshHistoryList={() => handleLoadHistory(true)}
+      onLoadmoreHistory={() => !oversize && handleLoadHistory(false)}
       refreshing={refreshing}
       loading={isFetching}
       renderEmpty={() => <EmptyHistory />}
