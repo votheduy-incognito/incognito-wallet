@@ -1,5 +1,5 @@
 // eslint-disable-next-line react-native/split-platform-components
-import { PermissionsAndroid } from 'react-native';
+import {PermissionsAndroid, Platform} from 'react-native';
 import { check, PERMISSIONS, RESULTS, request } from 'react-native-permissions';
 import { isIOS, isAndroid } from './platform';
 
@@ -21,6 +21,52 @@ const cameraPermission = async () => {
     return Promise.reject(err);
   }
 };
+
+const CameraRationale = {
+  title: 'Camera Permission',
+  message: 'To scan QR codes, please give Incognito access to your camera.',
+  buttonNeutral: 'Ask Me Later',
+  buttonNegative: 'Cancel',
+  buttonPositive: 'OK'
+};
+
+const handleCameraPermission = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      check(Platform.select({ ios: PERMISSIONS.IOS.CAMERA, android: PERMISSIONS.ANDROID.CAMERA }))
+        .then((result) => {
+          switch (result) {
+          case RESULTS.DENIED:
+            //The permission has not been requested / is denied but requestable,
+            request(
+              Platform.select({
+                ios: PERMISSIONS.IOS.CAMERA,
+                android: PERMISSIONS.ANDROID.CAMERA
+              }),
+              CameraRationale)
+              .then((granted) => {
+                resolve(granted === RESULTS.GRANTED);
+              });
+            break;
+            // return Promise.resolve(granted === PermissionsAndroid.RESULTS.GRANTED);
+          case RESULTS.GRANTED: //The permission is granted
+            resolve(true);
+            break;
+          case RESULTS.UNAVAILABLE: //This feature is not available (on this device / in this context)
+            resolve(false);
+            break;
+          case RESULTS.BLOCKED: //The permission is denied and not requestable anymore
+            resolve(false);
+            break;
+          }
+        });
+    } catch (error) {
+      console.warn(error);
+      reject(error);
+    }
+  });
+};
+
 const locationPermission = async () => {
   if (isAndroid()) {
     try {
@@ -132,5 +178,5 @@ const ENUM_RESULT_PERMISSION = {
   },
 };
 
-export { cameraPermission, locationPermission, checkPermission, ENUM_RESULT_PERMISSION };
+export { cameraPermission, locationPermission, checkPermission, ENUM_RESULT_PERMISSION, handleCameraPermission };
 
