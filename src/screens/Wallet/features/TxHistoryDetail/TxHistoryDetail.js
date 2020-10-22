@@ -273,7 +273,7 @@ const TxHistoryDetail = (props) => {
         fromApi && (
           <RefreshControl
             refreshing={isRefresh}
-            onRefresh={() => onPullRefresh && onPullRefresh(historyId)}
+            onRefresh={() => onPullRefresh && onPullRefresh(historyId, data?.history?.currencyType)}
           />
         )
       }
