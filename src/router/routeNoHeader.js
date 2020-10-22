@@ -65,6 +65,7 @@ import NodeUpdateWifi from '@screens/Node/UpdateWifi';
 import Streamline from '@screens/Streamline';
 import WhyStreamline from '@screens/Streamline/features/WhyStreamLine';
 import TxHistoryReceive from '@screens/Wallet/features/TxHistoryReceive';
+import Event from '@screens/Event';
 
 const routes = [
   {
@@ -338,6 +339,10 @@ const routes = [
   {
     screen: TxHistoryReceive,
     name: routeNames.TxHistoryReceive,
+  },
+  {
+    screen: Event,
+    name: routeNames.Event,
   },
 ];
 
