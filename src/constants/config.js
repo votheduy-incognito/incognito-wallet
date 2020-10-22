@@ -51,6 +51,19 @@ const HOME_CONFIG_DATA =
     ? 'https://api-data.incognito.org/v2/home-configs'
     : 'https://api-data-staging.incognito.org/v2/home-configs';
 
+const HOME_CONFIG_EVENT = () => {
+  const isStaging = global.homeConfig !== 'staging';
+  const prefix = 'https://';
+  const content = `${
+    isStaging 
+      ? 'hunt'
+      : 'hunt-staging'}.incognito.org`;
+  return {
+    title: content,
+    url: prefix + content
+  };
+};
+
 const APP_VERSION = isMainnet
   ? `https://api-service.incognito.org/system/${
     isIOS() ? 'ios' : 'android'
@@ -82,4 +95,5 @@ export default {
   HOME_CONFIG_DATA,
   API_BASE_URL2,
   APP_VERSION,
+  HOME_CONFIG_EVENT
 };

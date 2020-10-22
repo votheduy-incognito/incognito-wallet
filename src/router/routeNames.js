@@ -108,4 +108,5 @@ export default {
   Streamline: 'Streamline',
   WhyStreamline: 'WhyStreamline',
   TxHistoryReceive: 'TxHistoryReceive',
+  Event: 'Event',
 };
