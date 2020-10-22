@@ -1,7 +1,7 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { BIG_COINS } from '@screens/Dex/constants';
-import { CONSTANT_EVENTS } from '@src/constants';
+import {CONSTANT_CONFIGS, CONSTANT_EVENTS} from '@src/constants';
 import { logEvent } from '@services/firebase';
 import { useNavigation } from 'react-navigation-hooks';
 import LinkingService from '@src/services/linking';
@@ -9,6 +9,8 @@ import AppUpdater from '@components/AppUpdater/index';
 import { isIOS } from '@utils/platform';
 import deviceInfo from 'react-native-device-info';
 import { Dimensions, PixelRatio, Platform } from 'react-native';
+import { handleCameraPermission } from '@src/utils/PermissionUtil';
+import {ExHandler} from '@services/exception';
 
 const sendFeedback = async () => {
   const buildVersion = AppUpdater.appVersion;
@@ -58,6 +60,21 @@ const enhance = WrappedComp => props => {
       break;
     case 'explorer':
       goToScreen('pApp', {url: item?.route});
+      break;
+    case 'hunt':
+      /*
+      * @hunt can be changed according to the event
+      * response API
+      * */
+      handleCameraPermission()
+        .then((granted) => {
+          if (granted) {
+            goToScreen('Event', {data: CONSTANT_CONFIGS.HOME_CONFIG_EVENT()});
+          }
+        })
+        .catch((error) => {
+          new ExHandler(error).showErrorToast();
+        });
       break;
     default:
       goToScreen(item?.route || '');
