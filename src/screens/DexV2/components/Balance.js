@@ -4,13 +4,16 @@ import { ActivityIndicator } from '@src/components/core';
 import formatUtils from '@utils/format';
 import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 
-const Balance = (props) => {
+const Balance = React.memo((props) => {
   const { token, balance, title, style, hideRightSymbol } = props;
-
-  const right = balance === null ?
-    <ActivityIndicator size="small" /> :
-    `${formatUtils.amountFull(balance, token.pDecimals)} ${!hideRightSymbol ? token.symbol : ''}`;
-
+  const right =
+    balance === null ? (
+      <ActivityIndicator size="small" />
+    ) : (
+      `${formatUtils.amountFull(balance, token?.pDecimals)} ${
+        !hideRightSymbol ? token?.symbol : ''
+      }`
+    );
   return (
     <ExtraInfo
       left={title ? title : `${token.symbol} balance`}
@@ -18,7 +21,7 @@ const Balance = (props) => {
       style={style}
     />
   );
-};
+});
 
 Balance.defaultProps = {
   balance: null,

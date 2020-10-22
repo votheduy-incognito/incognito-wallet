@@ -14,7 +14,7 @@ import ReceiveCrypto from '@screens/Wallet/features/ReceiveCrypto';
 import Send from '@screens/Send';
 import TokenSelectScreen from '@components/TokenSelectScreen';
 import Trade from '@screens/DexV2';
-import TradeConfirm from '@screens/DexV2/components/TradeConfirm';
+import TradeConfirm from '@screens/DexV2/features/TradeConfirm';
 import TradeHistory from '@screens/DexV2/components/History';
 import TradeHistoryDetail from '@screens/DexV2/components/HistoryDetail';
 import UnShieldModal from '@screens/UnShield/UnShield.modal';

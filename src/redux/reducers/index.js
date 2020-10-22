@@ -15,6 +15,7 @@ import news from '@screens/News/News.reducer';
 import dev from '@screens/Dev/Dev.reducer';
 import streamline from '@screens/Streamline/Streamline.reducer';
 import txHistoryDetail from '@screens/Wallet/features/TxHistoryDetail/TxHistoryDetail.reducer';
+import dexV2 from '@screens/DexV2/DexV2.reducer';
 import wallet from './wallet';
 import account from './account';
 import server from './server';
@@ -53,7 +54,8 @@ const rootReducer = reduceReducers(
     profile,
     dev,
     streamline,
-    txHistoryDetail
+    txHistoryDetail,
+    dexV2,
   }),
   globalReducer,
 );

@@ -4,16 +4,15 @@ import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import { COLORS } from '@src/styles';
 
 const colors = {
-  'Incognito': COLORS.black,
-  'Kyber': COLORS.green,
-  'Uniswap': COLORS.pink,
+  Incognito: COLORS.black,
+  Kyber: COLORS.green,
+  Uniswap: COLORS.pink,
 };
 
-const Powered = ({ network }) => {
+const Powered = React.memo(({ network }) => {
   if (!network) {
     return null;
   }
-
   return (
     <ExtraInfo
       left=""
@@ -23,7 +22,7 @@ const Powered = ({ network }) => {
       }}
     />
   );
-};
+});
 
 Powered.propTypes = {
   network: PropTypes.string.isRequired,

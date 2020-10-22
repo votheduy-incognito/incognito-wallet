@@ -8,9 +8,7 @@ import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import styles from './style';
 import withData from './data.enhance';
 
-const HistoryDetail = ({
-  history,
-}) => {
+const HistoryDetail = React.memo(({ history }) => {
   return (
     <FlexView>
       <Header title="pDEX" />
@@ -20,9 +18,18 @@ const HistoryDetail = ({
       </View>
       <ScrollView paddingBottom>
         <ExtraInfo left="ID" right={history.id} />
-        <ExtraInfo left="Buy" right={`${history.buyAmount} ${history.buyTokenSymbol}`} />
-        <ExtraInfo left="Sell" right={`${history.sellAmount} ${history.sellTokenSymbol}`} />
-        <ExtraInfo left="Fee" right={`${history.networkFee} ${history.networkFeeTokenSymbol}`} />
+        <ExtraInfo
+          left="Buy"
+          right={`${history.buyAmount} ${history.buyTokenSymbol}`}
+        />
+        <ExtraInfo
+          left="Sell"
+          right={`${history.sellAmount} ${history.sellTokenSymbol}`}
+        />
+        <ExtraInfo
+          left="Fee"
+          right={`${history.networkFee} ${history.networkFeeTokenSymbol}`}
+        />
         <ExtraInfo left="Time" right={history.createdAt} />
         <ExtraInfo left="Status" right={history.status} />
         <ExtraInfo left="Account" right={history.account} />
@@ -31,14 +38,13 @@ const HistoryDetail = ({
       </ScrollView>
     </FlexView>
   );
-};
+});
 
 HistoryDetail.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-HistoryDetail.defaultProps = {
-};
+HistoryDetail.defaultProps = {};
 
 export default compose(
   withLayout_2,
