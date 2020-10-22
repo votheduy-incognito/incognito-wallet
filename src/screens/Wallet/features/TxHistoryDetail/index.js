@@ -138,7 +138,6 @@ class TxHistoryDetailContainer extends Component {
           flex: 1,
         }}
       >
-        <Header title="Transaction details" onGoBack={this.onGoBack} />
         <TxHistoryDetail
           {...this.props}
           onRetryExpiredDeposit={() => {

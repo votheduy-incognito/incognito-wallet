@@ -260,12 +260,14 @@ const TxHistoryDetail = (props) => {
   };
   return (
     <ScrollView
-      refreshControl={fromApi && (
-        <RefreshControl
-          refreshing={isRefresh}
-          onRefresh={() => onPullRefresh && onPullRefresh(historyId)}
-        />
-      )}
+      refreshControl={
+        fromApi && (
+          <RefreshControl
+            refreshing={isRefresh}
+            onRefresh={() => onPullRefresh && onPullRefresh(historyId, data?.history?.currencyType)}
+          />
+        )
+      }
     >
       {historyFactories.map((hook, index) => (
         <Hook key={index} {...hook} />
