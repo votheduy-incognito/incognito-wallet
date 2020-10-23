@@ -220,11 +220,12 @@ export default {
     TYPE_HISTORY_RECEIVE: {
       41: 'Unstake Node',
       45: 'Node withdraw',
-      81: 'Shield',
+      81: 'Shield',//decentralized
       94: 'Remove liquidity',
       95: 'Add liquidity',
       96: 'Shield Amount',
-      25: 'Shield',
+      25: 'Shield',//centralized
+      92: 'Trade',
     },
   },
   TRACK_LOG_EVENT,

@@ -110,7 +110,7 @@ export const getTypeData = (type, history, paymentAddress) => {
     break;
   }
   case CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE:
-    typeText = 'Receive';
+    typeText = history?.typeText || 'Receive';
     break;
   }
   return {

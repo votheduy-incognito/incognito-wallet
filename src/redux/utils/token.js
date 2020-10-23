@@ -5,6 +5,7 @@ import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
 import { getFeeFromTxHistory } from '@src/screens/Wallet/features/TxHistoryDetail/TxHistoryDetail.utils';
 import moment from 'moment';
+import { uniqBy } from 'lodash';
 
 export const normalizeHistoriesFromApi = ({
   historiesFromApi = [],
@@ -58,6 +59,27 @@ const normalizedHistories = ({
   histories &&
     histories.map((h) => {
       if (h?.isHistoryReceived) {
+        const metaData = h?.metaData;
+        const typeOf = metaData?.Type;
+        switch (typeOf) {
+        case 81: {
+          const requestTxId = metaData?.RequestedTxID;
+          const index = _historiesFromApi.findIndex(
+            (history) => history?.incognitoTxID === requestTxId,
+          );
+          const txFromApi = _historiesFromApi[index];
+          if (txFromApi) {
+            if (!txFromApi?.isShieldTx) {
+              //Trade tx
+              _historiesFromApi[index].typeOf = 'Trade';
+            }
+            return;
+          }
+          break;
+        }
+        default:
+          break;
+        }
         return _histories.push(h);
       }
       let history = {
@@ -92,8 +114,8 @@ const normalizedHistories = ({
       _histories.push(history);
       return history;
     });
-  const result = [..._historiesFromApi, ..._histories];
-  return result;
+  const mergeHistories = [..._historiesFromApi, ..._histories];
+  return mergeHistories;
 };
 
 const normalizedHistory = (histories = [], history = {}) => {
@@ -143,20 +165,19 @@ const normalizedHistory = (histories = [], history = {}) => {
 };
 
 export const combineHistory = (payload) => {
-  let histories = [];
+  let mergedHistories = [];
   try {
     const historiesNormalizedFromApi = normalizeHistoriesFromApi(payload);
-    const _histories = normalizedHistories({
+    mergedHistories = normalizedHistories({
       ...payload,
       historiesNormalizedFromApi,
-    });
-    histories = _histories.sort((a, b) =>
+    }).sort((a, b) =>
       new Date(a.time).getTime() < new Date(b.time).getTime() ? 1 : -1,
     );
   } catch (error) {
     console.debug(error);
   }
-  return histories;
+  return mergedHistories;
 };
 
 export const normalizeData = (histories = [], decimals, pDecimals) =>
@@ -305,4 +326,42 @@ export const handleFilterHistoryReceiveByTokenId = ({ tokenId, histories }) => {
     throw error;
   }
   return result;
+};
+
+export const mergeReceiveAndLocalHistory = ({
+  localHistory = [],
+  receiveHistory = [],
+}) => {
+  let allHistory = [...localHistory, ...receiveHistory];
+  let _localHistory = [...localHistory];
+  try {
+    allHistory.map((history) => {
+      if (history?.isHistoryReceived) {
+        const metaData = history?.metaData;
+        const typeOf = metaData?.Type;
+        let txId;
+        switch (typeOf) {
+        case 41:
+          txId = metaData?.TxID;
+          break;
+        case 45:
+          txId = metaData?.TxRequest;
+          break;
+        case 94:
+          txId = metaData?.RequestedTxID;
+          break;
+        default:
+          break;
+        }
+        if (txId) {
+          console.debug(txId);
+          _localHistory = _localHistory.filter((item) => item?.txID !== txId);
+        }
+      }
+      return history;
+    });
+  } catch (error) {
+    console.debug('MERGE_RECEIVE_AND_LOCAL_HISTORY', error);
+  }
+  return [..._localHistory, ...receiveHistory];
 };
