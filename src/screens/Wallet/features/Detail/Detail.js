@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View } from 'react-native';
 import Header from '@src/components/Header';
 import {
@@ -98,6 +99,7 @@ const History = React.memo(() => {
 });
 
 const Detail = (props) => {
+  const { routeBackName } = props;
   const navigation = useNavigation();
   const selected = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const { isFetching } = useSelector(tokenSeleclor.historyTokenSelector);
@@ -113,7 +115,7 @@ const Detail = (props) => {
     !!isFetching || selected?.isMainCrypto
       ? isGettingMainCryptoBalance.length > 0 || !defaultAccount
       : isGettingTokenBalance.length > 0 || !token;
-  const onGoBack = () => navigation.navigate(routeNames.Wallet);
+  const onGoBack = () => navigation.navigate(routeBackName || routeNames.Wallet);
   const [BtnTrade, hasTradeBtn] = useBtnTrade();
   return (
     <View style={styled.container}>
@@ -133,8 +135,11 @@ const Detail = (props) => {
   );
 };
 
-Detail.propTypes = {};
+Detail.propTypes = {
+  routeBackName: PropTypes.string
+};
 
-History.propTypes = {};
+History.propTypes = {
+};
 
 export default withDetail(React.memo(Detail));
