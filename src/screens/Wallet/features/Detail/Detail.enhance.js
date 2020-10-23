@@ -2,7 +2,7 @@ import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { withLayout_2 } from '@src/components/Layout';
 import { compose } from 'recompose';
-import { useFocusEffect, useNavigationParam } from 'react-navigation-hooks';
+import { useFocusEffect } from 'react-navigation-hooks';
 import withWallet from '@screens/Wallet/features/Home/Wallet.enhance';
 import { useDispatch } from 'react-redux';
 import {
@@ -15,7 +15,7 @@ const enhance = (WrappedComp) => (props) => {
     retryLastTxsUnshieldDecentralized,
     retryLastTxsUnshieldCentralized,
   } = props;
-  const routeBackName = useNavigationParam('routeName');
+
   const dispatch = useDispatch();
   const handleFreeHistoryData = () => {
     try {
@@ -38,7 +38,7 @@ const enhance = (WrappedComp) => (props) => {
   }, []);
   return (
     <ErrorBoundary>
-      <WrappedComp {...{ ...props, routeBackName }} />
+      <WrappedComp {...{ ...props }} />
     </ErrorBoundary>
   );
 };

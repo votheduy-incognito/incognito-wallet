@@ -117,7 +117,7 @@ const GenQRCode = (props) => {
   const navigation      = useNavigation();
   const { hasError, handleShield, isFetching } = props;
   const [toggle, setToggle] = React.useState(true);
-  const handleToggleTooltip = () => navigation.navigate(routeNames.WalletDetail, { routeName: routeNames.ShieldGenQRCode });
+  const handleToggleTooltip = () => navigation.navigate(routeNames.CoinInfo);
   React.useEffect(() => {
     if (toggle) {
       const timeout = setTimeout(() => {
