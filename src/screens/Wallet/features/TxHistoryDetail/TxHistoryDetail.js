@@ -189,9 +189,16 @@ const TxHistoryDetail = (props) => {
   const historyFactories = [
     {
       label: 'ID',
-      valueText: `#${history?.id}`,
       disabled: !history?.id,
       copyable: true,
+      openUrl: !!history?.isIncognitoTx,
+      valueText: `#${history?.id}`,
+      handleOpenLink: () =>
+        history?.isIncognitoTx
+          ? linkingService.openUrl(
+            `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${history?.id}`,
+          )
+          : null,
     },
     {
       label: typeText,
@@ -230,8 +237,9 @@ const TxHistoryDetail = (props) => {
       valueText: `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${history.incognitoTxID}`,
       openUrl: true,
       disabled:
-        (!!history?.isUnshieldTx && selectedPrivacy?.isDecentralized) ||
-        !history?.incognitoTxID,
+        history?.id === history?.incognitoTxID ||
+        !history.incognitoTxID ||
+        (!!history?.isUnshieldTx && selectedPrivacy?.isDecentralized),
     },
     {
       label: 'Inchain TxID',
@@ -278,7 +286,10 @@ const TxHistoryDetail = (props) => {
         fromApi && (
           <RefreshControl
             refreshing={isRefresh}
-            onRefresh={() => onPullRefresh && onPullRefresh(historyId, data?.history?.currencyType)}
+            onRefresh={() =>
+              onPullRefresh &&
+              onPullRefresh(historyId, data?.history?.currencyType)
+            }
           />
         )
       }
