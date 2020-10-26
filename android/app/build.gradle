@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: "io.fabric"
+apply plugin: "kotlin-android"
 
 import com.android.build.OutputFile
 
@@ -243,6 +244,7 @@ dependencies {
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation project(':gomobile')
+    implementation project(':watermelondb')
 
     // Firebase dependencies
     implementation "com.google.android.gms:play-services-base:16.1.0"

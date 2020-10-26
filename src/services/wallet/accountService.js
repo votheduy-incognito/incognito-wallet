@@ -15,7 +15,11 @@ import { cachePromise } from '@services/cache';
 import { chooseBestCoinToSpent } from 'incognito-chain-web-js/lib/tx/utils';
 import bn from 'bn.js';
 import Server from '@services/wallet/Server';
-import { CustomError, ErrorCode } from '../exception';
+import {
+  getIsMirage,
+  handleCachedAccount
+} from '@services/wallet/accountService.helpers';
+import { CustomError, ErrorCode, ExHandler } from '../exception';
 import { getActiveShard } from './RpcClientService';
 import tokenService from './tokenService';
 import {
@@ -31,18 +35,35 @@ export const getBalanceNoCache = (
   wallet,
   tokenId,
 ) => async () => {
-  const account = wallet.MasterAccount.child[indexAccount];
-  account.isRevealViewKeyToGetCoins = true;
+  try {
+    const account = wallet.MasterAccount.child[indexAccount];
+    account.isRevealViewKeyToGetCoins = true;
 
-  const balance = await wallet.MasterAccount.child[indexAccount].getBalance(
-    tokenId,
-  );
+    const balance = await wallet.MasterAccount.child[indexAccount].getBalance(
+      tokenId,
+    );
+    const accountName = account?.name;
 
-  if (Object.keys(account.derivatorToSerialNumberCache).length < 10000) {
-    await account.saveAccountCached(wallet.Storage);
+    const isMirage = await getIsMirage(accountName);
+
+    /*
+    * Check did mirage data dont save data to storage below
+    * @account.saveAccountCached(wallet.Storage)
+    * */
+    if (!isMirage && Object.keys(account.derivatorToSerialNumberCache).length < 10000) {
+      await account.saveAccountCached(wallet.Storage);
+    }
+
+    /*
+    * store data by @watermelonDB
+    * */
+    if (accountName) {
+      await handleCachedAccount(account);
+    }
+    return balance;
+  } catch (e) {
+    new ExHandler(e).showErrorToast();
   }
-
-  return balance;
 };
 
 const getPendingHistory = (histories, spendingCoins) => {

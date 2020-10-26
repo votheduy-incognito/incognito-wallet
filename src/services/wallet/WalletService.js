@@ -9,8 +9,13 @@ import {
   SuccessTx as SuccessTxWallet,
   Wallet
 } from 'incognito-chain-web-js/build/wallet';
-import {randomBytes} from 'react-native-randombytes';
-import {getPassphrase} from './passwordService';
+import { randomBytes } from 'react-native-randombytes';
+import { loadAccountCached } from '@src/database/helper/accountCached.helpers';
+import {
+  getIsMirage,
+  handleCachedAccount
+} from '@services/wallet/accountService.helpers';
+import { getPassphrase } from './passwordService';
 import {getMaxShardNumber} from './RpcClientService';
 import Server from './Server';
 
@@ -71,11 +76,42 @@ export async function loadWallet(passphrase) {
   const accounts = wallet.MasterAccount.child;
   for (const account of accounts) {
     try {
-      await account.loadAccountCached(storage);
+      const accountName = account?.name;
+      const isMirage    = await getIsMirage(accountName);
+
+      if (!isMirage) {
+        await account.loadAccountCached(storage);
+      }
+
+      if (accountName && isMirage) {
+        const {
+          derivatorToSerialNumberCache,
+          spentCoinCached
+        } = await loadAccountCached(accountName);
+        account.derivatorToSerialNumberCache = derivatorToSerialNumberCache;
+        account.spentCoinCached = spentCoinCached;
+      }
+
     } catch (e) {
       console.debug('LOAD ACCOUNTS CACHE ERROR', e);
-      await account.clearCached();
-      await account.saveAccountCached(storage);
+      const accountName = account?.name;
+
+      /*
+      * if did mirage data
+      * dont @account.saveAccountCached(storage) by AsyncStorage
+      * */
+      const isMirage = await getIsMirage(accountName);
+      if (!isMirage) {
+        await account.clearCached();
+        await account.saveAccountCached(storage);
+      }
+
+      /*
+      * store data by @watermelonDB
+      * */
+      if(accountName) {
+        await handleCachedAccount(account);
+      }
     }
   }
   return wallet?.Name ? wallet : false;

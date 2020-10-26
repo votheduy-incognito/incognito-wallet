@@ -7,6 +7,7 @@ const commonPlugins = [
   '@babel/plugin-proposal-export-namespace-from',
   '@babel/plugin-proposal-nullish-coalescing-operator',
   '@babel/plugin-proposal-throw-expressions',
+  ['@babel/plugin-proposal-decorators', { 'legacy': true }],
   [
     'module-resolver',
     {

@@ -296,6 +296,13 @@
 			name = "Recovered References";
 			sourceTree = "<group>";
 		};
+		20652761254339BD009A7647 /* WatermelonDB */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = WatermelonDB;
+			sourceTree = "<group>";
+		};
 		25B8F1BF1D9A90CBC089A9C9 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -339,6 +346,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				20652761254339BD009A7647 /* WatermelonDB */,
 				71EA6FAA252459DE0067DE9B /* Gomobile.framework */,
 				1F29808A246D5526000EE1C6 /* fonts */,
 				FD6F21E024750AA0000CC07D /* BridgeLottie.swift */,

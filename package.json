@@ -52,6 +52,8 @@
     "deploy:next3": "yarn deployIOS:next3 && yarn deployAndroid:next3"
   },
   "dependencies": {
+    "@nozbe/watermelondb": "^0.20.0",
+    "@nozbe/with-observables": "^1.0.6",
     "@react-native-community/async-storage": "^1.3.4",
     "@react-native-community/netinfo": "^5.0.0",
     "@react-native-community/push-notification-ios": "^1.4.1",
@@ -182,6 +184,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
+    "@babel/plugin-proposal-decorators": "^7.12.1",
     "@babel/plugin-proposal-export-default-from": "^7.2.0",
     "@babel/plugin-proposal-export-namespace-from": "^7.2.0",
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.4.3",

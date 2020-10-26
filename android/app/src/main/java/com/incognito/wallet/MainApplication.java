@@ -9,6 +9,7 @@ import com.airbnb.android.react.lottie.LottiePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.nozbe.watermelondb.WatermelonDBPackage;
 
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class MainApplication extends Application implements ReactApplication {
               packages.add(new RNFirebaseCrashlyticsPackage());
               packages.add(new RNFirebaseAnalyticsPackage());
               packages.add(new GomobilePackage());
+              packages.add(new WatermelonDBPackage());
               return packages;
             }
 

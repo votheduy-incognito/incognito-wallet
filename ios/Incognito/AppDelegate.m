@@ -67,6 +67,8 @@ NSString *const kGCMMessageIDKey = @"gcm.message_id";
   [self.window makeKeyAndVisible];
    
   [FIRMessaging messaging].autoInitEnabled = YES;
+  NSString *docDirPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)objectAtIndex:0];
+  NSLog(@"Simulator Path: %@", docDirPath);
   return YES;
 }
 
