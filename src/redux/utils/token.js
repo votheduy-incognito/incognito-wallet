@@ -62,10 +62,11 @@ const normalizedHistories = ({
         const metaData = h?.metaData;
         const typeOf = metaData?.Type;
         switch (typeOf) {
+        case 25:
         case 81: {
           const requestTxId = metaData?.RequestedTxID;
           const index = _historiesFromApi.findIndex(
-            (history) => history?.incognitoTxID === requestTxId,
+            (history) => history?.incognitoTx === requestTxId,
           );
           const txFromApi = _historiesFromApi[index];
           if (txFromApi) {
@@ -363,10 +364,7 @@ export const mergeReceiveAndLocalHistory = ({
         default:
           break;
         }
-        if (
-          !typeOf &&
-          history?.isMintedToken
-        ) {
+        if (!typeOf && history?.isMintedToken) {
           txId = history?.txID;
         }
         if (txId) {
