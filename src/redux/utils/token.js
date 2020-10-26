@@ -301,15 +301,19 @@ export const handleFilterHistoryReceiveByTokenId = ({ tokenId, histories }) => {
       })
       .map((history) => {
         const receivedAmounts = history?.ReceivedAmounts;
+        const serialNumbers = history?.InputSerialNumbers[tokenId] || [];
         const metaData = history?.Metadata
           ? JSON.parse(history?.Metadata)
           : null;
         let amount = 0;
+        let hasOutputs = false;
+        let hasInputs = !isEmpty(serialNumbers[tokenId]);
         try {
           for (let id in receivedAmounts) {
             if (id === tokenId) {
               const item = receivedAmounts[id][0];
               amount = item?.CoinDetails?.Value;
+              id !== CONSTANT_COMMONS.PRV.id ? (hasOutputs = true) : false;
               break;
             }
           }
@@ -322,8 +326,10 @@ export const handleFilterHistoryReceiveByTokenId = ({ tokenId, histories }) => {
           isPrivacy: history?.IsPrivacy,
           amount,
           tokenId,
-          serialNumbers: history?.InputSerialNumbers[tokenId] || [],
+          serialNumbers,
           metaData,
+          privacyCustomTokenProofDetail: history?.PrivacyCustomTokenProofDetail,
+          isMintedToken: !hasInputs && !!hasOutputs,
         };
       });
   } catch (error) {
@@ -359,8 +365,7 @@ export const mergeReceiveAndLocalHistory = ({
         }
         if (
           !typeOf &&
-          isEmpty(history?.PrivacyCustomTokenProofDetail?.InputCoins) &&
-          !isEmpty(history?.PrivacyCustomTokenProofDetail?.OutputCoins)
+          history?.isMintedToken
         ) {
           txId = history?.txID;
         }
