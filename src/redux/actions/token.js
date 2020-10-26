@@ -432,12 +432,10 @@ export const actionFetchReceiveHistory = (refreshing = false) => async (
     data = await new Promise.all([
       ...historiesFilterByTokenId?.map(async (history) => {
         const txID = history?.txID;
-        const tx = await getTxTransactionByHash(txID);
         let type = getTypeHistoryReceive({
           account,
           serialNumbers: history?.serialNumbers,
         });
-        const metaData = !!tx?.Metadata && JSON.parse(tx?.Metadata);
         const h = {
           ...history,
           id: txID,
@@ -448,7 +446,6 @@ export const actionFetchReceiveHistory = (refreshing = false) => async (
           symbol: selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol,
           status: ConfirmedTx,
           isHistoryReceived: true,
-          metaData,
         };
         return h;
       }),
