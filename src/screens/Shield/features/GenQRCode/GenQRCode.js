@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text } from 'react-native';
 import Header from '@src/components/Header';
 import { useSelector } from 'react-redux';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
@@ -12,11 +12,14 @@ import { ButtonBasic, BtnInfo } from '@src/components/Button';
 import { ClockWiseIcon } from '@src/components/Icons';
 import Tooltip from '@src/components/Tooltip/Tooltip';
 import { COLORS } from '@src/styles';
+import { ScrollView } from '@src/components/core';
+import routeNames from '@routers/routeNames';
+import { useNavigation } from 'react-navigation-hooks';
 import withGenQRCode from './GenQRCode.enhance';
 import { styled } from './GenQRCode.styled';
 import { useCountDown } from './GenQRCode.useEffect';
 
-const NormalText = (props) => {
+const NormalText = React.memo((props) => {
   const { text, style = null, children = null } = props;
   return (
     <Text style={[styled.text, style]}>
@@ -24,9 +27,9 @@ const NormalText = (props) => {
       {children}
     </Text>
   );
-};
+});
 
-const ShieldError = ({ handleShield }) => {
+const ShieldError = React.memo(({ handleShield }) => {
   return (
     <View style={styled.errorContainer}>
       <ClockWiseIcon />
@@ -44,7 +47,7 @@ const ShieldError = ({ handleShield }) => {
       </Text>
     </View>
   );
-};
+});
 
 const Extra = () => {
   const { address, min } = useSelector(shieldDataSelector);
@@ -53,7 +56,7 @@ const Extra = () => {
   return (
     <ScrollView style={styled.scrollview}>
       <View style={styled.extra}>
-        <NormalText style={[styled.text, styled.title]}>
+        <NormalText style={styled.title}>
           {'Send to this shielding\naddress '}
           <Text style={[styled.boldText]}>once only.</Text>
         </NormalText>
@@ -67,22 +70,32 @@ const Extra = () => {
             </Text>
           </NormalText>
           {min && (
-            <NormalText text="Minimum amount: ">
-              <Text style={styled.boldText}>
-                {`${min} ${selectedPrivacy?.externalSymbol ||
-                  selectedPrivacy?.symbol}`}
-              </Text>
-            </NormalText>
+            <>
+              <NormalText text="Minimum: ">
+                <Text style={[styled.boldText]}>
+                  {`${min} ${selectedPrivacy?.externalSymbol ||
+                    selectedPrivacy?.symbol}`}
+                </Text>
+              </NormalText>
+              <NormalText
+                text="Smaller amounts will not be processed."
+                style={styled.smallText}
+              />
+            </>
           )}
         </View>
         <CopiableText data={address} />
         <NormalText
-          text={'If sending from an exchange, please take\nwithdrawal times into account.'}
-          style={styled.smallText}
+          text={
+            'If sending from an exchange, please take\nwithdrawal times into account.'
+          }
+          style={{ marginTop: 30 }}
         />
         <NormalText
-          text={'It may be more reliable to use a normal\nwallet as an intermediary.'}
-          style={[styled.smallText, { marginTop: 10 }]}
+          text={
+            'It may be more reliable to use a normal\nwallet as an intermediary.'
+          }
+          style={{ marginTop: 10 }}
         />
       </View>
     </ScrollView>
@@ -101,9 +114,10 @@ const Content = () => {
 
 const GenQRCode = (props) => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const navigation      = useNavigation();
   const { hasError, handleShield, isFetching } = props;
   const [toggle, setToggle] = React.useState(true);
-  const handleToggleTootip = () => setToggle(!toggle);
+  const handleToggleTooltip = () => navigation.navigate(routeNames.CoinInfo);
   React.useEffect(() => {
     if (toggle) {
       const timeout = setTimeout(() => {
@@ -128,7 +142,7 @@ const GenQRCode = (props) => {
       <Header
         title={`Shield ${selectedPrivacy?.externalSymbol}`}
         titleStyled={styled.titleStyled}
-        rightHeader={<BtnInfo isBlack onPress={handleToggleTootip} />}
+        rightHeader={<BtnInfo isBlack onPress={handleToggleTooltip} />}
       />
       {toggle && (
         <Tooltip

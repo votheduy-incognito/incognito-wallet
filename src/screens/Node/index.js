@@ -378,7 +378,7 @@ class Node extends BaseScreen {
       const pNodeWithdrawable = pNodes.length && pNodes.some(item => item.IsFundedStakeWithdrawable);
       const withdrawable = !noRewards && (vNodeWithdrawable || pNodeWithdrawable);
 
-      this.setState({ rewards: rewardsList, withdrawable });
+      this.setState({ rewards: rewardsList, withdrawable, noRewards });
     });
   };
 
@@ -589,6 +589,7 @@ class Node extends BaseScreen {
       rewards,
       withdrawable,
       withdrawing,
+      noRewards,
     } = this.state;
 
     if (listDevice?.length > loadedDevices?.length) {
@@ -600,12 +601,14 @@ class Node extends BaseScreen {
     return (
       <View style={{ paddingHorizontal: 25 }}>
         <Rewards rewards={rewards} />
-        <RoundCornerButton
-          onPress={this.handleWithdrawAll}
-          style={[theme.BUTTON.NODE_BUTTON, { marginBottom: 50 }]}
-          title={withdrawing ? 'Withdrawing all rewards...' : 'Withdraw all rewards'}
-          disabled={!withdrawable || withdrawing}
-        />
+        { !noRewards && (
+          <RoundCornerButton
+            onPress={this.handleWithdrawAll}
+            style={[theme.BUTTON.NODE_BUTTON, { marginBottom: 50 }]}
+            title={!withdrawable || withdrawing ? 'Withdrawing all rewards...' : 'Withdraw all rewards'}
+            disabled={!withdrawable || withdrawing}
+          />
+        ) }
       </View>
     );
   }

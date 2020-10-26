@@ -169,7 +169,7 @@ const TxHistoryDetail = (props) => {
     isRefresh,
     historyId
   } = props;
-
+  const toggleHistoryDetail = dev[CONSTANT_KEYS.DEV_TEST_TOGGLE_HISTORY_DETAIL];
   const { typeText, statusColor, statusMessage, history } = data;
   const { fromApi } = history;
   const { fee, formatFee, feeUnit } = getFeeFromTxHistory(history);
@@ -198,7 +198,7 @@ const TxHistoryDetail = (props) => {
       label: 'Status',
       valueText: statusMessage,
       valueTextStyle: { color: statusColor },
-      disabled: !statusMessage,
+      disabled: !toggleHistoryDetail && !statusMessage,
       canRetryExpiredDeposit: history?.canRetryExpiredDeposit,
       handleRetryExpiredDeposit: onRetryExpiredDeposit,
       message: history?.statusDetail,
@@ -260,12 +260,14 @@ const TxHistoryDetail = (props) => {
   };
   return (
     <ScrollView
-      refreshControl={fromApi && (
-        <RefreshControl
-          refreshing={isRefresh}
-          onRefresh={() => onPullRefresh && onPullRefresh(historyId)}
-        />
-      )}
+      refreshControl={
+        fromApi && (
+          <RefreshControl
+            refreshing={isRefresh}
+            onRefresh={() => onPullRefresh && onPullRefresh(historyId, data?.history?.currencyType)}
+          />
+        )
+      }
     >
       {historyFactories.map((hook, index) => (
         <Hook key={index} {...hook} />

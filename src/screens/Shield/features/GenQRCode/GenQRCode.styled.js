@@ -12,9 +12,9 @@ export const styled = StyleSheet.create({
     textTransform: 'none',
   },
   text: {
-    fontFamily: FONT.NAME.medium,
-    lineHeight: FONT.SIZE.medium + 9,
-    fontSize: FONT.SIZE.medium,
+    fontFamily: FONT.NAME.regular,
+    lineHeight: FONT.SIZE.regular + 9,
+    fontSize: FONT.SIZE.regular,
     color: COLORS.colorGreyBold,
     textAlign: 'center',
   },
@@ -23,9 +23,11 @@ export const styled = StyleSheet.create({
     color: COLORS.black,
   },
   smallText: {
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 8,
-    marginTop: 30,
+    fontSize: 13,
+    lineHeight: 15,
+    marginTop: 5,
+    color: COLORS.colorGreyBold,
+    fontFamily: FONT.NAME.bold,
   },
   errorIcon: {
     color: COLORS.orange,
@@ -47,6 +49,8 @@ export const styled = StyleSheet.create({
   },
   title: {
     color: COLORS.black,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 7,
   },
   scrollview: {
     paddingTop: 42,

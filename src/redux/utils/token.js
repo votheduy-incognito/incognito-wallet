@@ -66,8 +66,8 @@ const normalizedHistories = ({
         decimals,
         pDecimals,
         status: h?.status,
-        fee: h?.feeNativeToken,
-        feePToken: h?.feePToken,
+        fee: Number(h?.feeNativeToken),
+        feePToken: Number(h?.feePToken),
         isIncognitoTx: true,
         metaDataType: h?.metaData?.Type,
       };
@@ -154,24 +154,30 @@ export const combineHistory = (payload) => {
 
 export const normalizeData = (histories = [], decimals, pDecimals) =>
   histories &&
-  histories.map((h) => ({
-    id: h?.txID,
-    incognitoTxID: h?.txID,
-    time: h?.time,
-    type: h?.isIn
-      ? CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE
-      : CONSTANT_COMMONS.HISTORY.TYPE.SEND,
-    toAddress: h?.receivers?.length && h?.receivers[0],
-    amount: h?.amountNativeToken,
-    symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
-    status: h?.status,
-    fee: h?.feeNativeToken,
-    decimals,
-    pDecimals,
-    metaDataType: h?.metaData?.Type,
-    isIncognitoTx: true,
-    memo: h?.info,
-  }));
+  histories.map((h) =>
+    h?.isHistoryReceived
+      ? {
+        ...h,
+      }
+      : {
+        id: h?.txID,
+        incognitoTxID: h?.txID,
+        time: h?.time,
+        type: h?.isIn
+          ? CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE
+          : CONSTANT_COMMONS.HISTORY.TYPE.SEND,
+        toAddress: h?.receivers?.length && h?.receivers[0],
+        amount: h?.amountNativeToken,
+        symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
+        status: h?.status,
+        fee: Number(h?.feeNativeToken),
+        decimals,
+        pDecimals,
+        metaDataType: h?.metaData?.Type,
+        isIncognitoTx: true,
+        memo: h?.info,
+      },
+  );
 
 export const loadTokenHistory = () => async (dispatch, getState) => {
   try {
