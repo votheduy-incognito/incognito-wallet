@@ -1,11 +1,6 @@
 import formatUtil, { LONG_DATE_TIME_FORMAT } from '@utils/format';
 import moment from 'moment';
-import {
-  MAX_DEX_FEE,
-  MAX_FEE_PER_TX,
-} from '@components/EstimateFee/EstimateFee.utils';
 import BigNumber from 'bignumber.js';
-import { TRADING } from '@src/constants';
 
 const TYPES = ['Incognito', 'Incognito', 'Kyber', '0x', 'Uniswap'];
 
@@ -53,7 +48,6 @@ export class PDexTradeHistoryModel {
     this.type = 'Trade';
     this.status = ['Pending', 'Unsuccessful', 'Successful'][json.Status];
     this.exchange = TYPES[json.Type] || 'Incognito';
-
     let buyToken = allTokens.find(
       (token) =>
         token.id === this.buyTokenId ||
@@ -67,12 +61,10 @@ export class PDexTradeHistoryModel {
     const networkFeeToken = allTokens.find(
       (token) => token.id === this.networkFeeTokenId,
     );
-
     if (
       this.exchange !== 'Incognito' &&
       buyToken?.address === json.BuyTokenID
     ) {
-      this.tradingFee = this.networkFee - MAX_DEX_FEE + MAX_FEE_PER_TX;
       this.networkFee = this.networkFee - this.tradingFee;
       this.buyAmount = BigNumber(this.buyAmount);
     }
@@ -90,7 +82,6 @@ export class PDexTradeHistoryModel {
         sellToken.pDecimals,
       );
     }
-
     if (networkFeeToken) {
       this.networkFeeTokenSymbol = networkFeeToken.symbol;
       this.networkFee = Math.round((this.networkFee / 3) * 4);
@@ -103,7 +94,6 @@ export class PDexTradeHistoryModel {
         networkFeeToken.pDecimals,
       );
     }
-
     this.description = `${this.sellAmount} ${this.sellTokenSymbol} to ${this.buyAmount} ${this.buyTokenSymbol}`;
   }
 }
