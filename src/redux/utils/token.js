@@ -5,7 +5,6 @@ import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
 import { getFeeFromTxHistory } from '@src/screens/Wallet/features/TxHistoryDetail/TxHistoryDetail.utils';
 import moment from 'moment';
-import { uniqBy } from 'lodash';
 
 export const normalizeHistoriesFromApi = ({
   historiesFromApi = [],
@@ -301,6 +300,7 @@ export const handleFilterHistoryReceiveByTokenId = ({ tokenId, histories }) => {
       })
       .map((history) => {
         const receivedAmounts = history?.ReceivedAmounts;
+        const metaData = history?.Metadata ? JSON.parse(history?.Metadata) : null;
         let amount = 0;
         try {
           for (let id in receivedAmounts) {
@@ -320,6 +320,7 @@ export const handleFilterHistoryReceiveByTokenId = ({ tokenId, histories }) => {
           amount,
           tokenId,
           serialNumbers: history?.InputSerialNumbers[tokenId] || [],
+          metaData,
         };
       });
   } catch (error) {
@@ -354,7 +355,6 @@ export const mergeReceiveAndLocalHistory = ({
           break;
         }
         if (txId) {
-          console.debug(txId);
           _localHistory = _localHistory.filter((item) => item?.txID !== txId);
         }
       }
