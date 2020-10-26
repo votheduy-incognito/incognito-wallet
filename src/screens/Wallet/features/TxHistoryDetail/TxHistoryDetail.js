@@ -24,6 +24,7 @@ import { useSelector } from 'react-redux';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import HTML from 'react-native-render-html';
 import { devSelector } from '@src/screens/Dev';
+import includes from 'lodash/includes';
 import styled from './styles';
 import { getFeeFromTxHistory } from './TxHistoryDetail.utils';
 
@@ -239,6 +240,7 @@ const TxHistoryDetail = (props) => {
       disabled:
         history?.id === history?.incognitoTxID ||
         !history.incognitoTxID ||
+        includes(history?.inchainTx, history.incognitoTxID) ||
         (!!history?.isUnshieldTx && selectedPrivacy?.isDecentralized),
     },
     {
