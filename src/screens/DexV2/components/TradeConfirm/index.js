@@ -105,6 +105,13 @@ const Trade = ({
               }`}
               style={styles.extra}
             />
+            {quote?.crossTrade && (
+              <PoolSize
+                outputToken={outputToken}
+                inputToken={inputToken}
+                pair={pair}
+              />
+            )}
             {!!quote?.erc20Fee && (
               <ExtraInfo
                 token={feeToken}
