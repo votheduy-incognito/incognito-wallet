@@ -214,6 +214,9 @@ export const actionAddFollowTokenSuccess = (payload) => ({
 export const actionAddFollowToken = (tokenId) => async (dispatch, getState) => {
   const state = getState();
   let wallet = state.wallet;
+  if(!tokenId){
+    return;
+  }
   try {
     const isTokenFollowed = isTokenFollowedSelector(state)(tokenId);
     const isFetchingFollowToken = followingTokenSelector(state)(tokenId);
@@ -246,6 +249,9 @@ export const actionRemoveFollowToken = (tokenId) => async (
 ) => {
   const state = getState();
   let wallet = state.wallet;
+  if(!tokenId){
+    return;
+  }
   try {
     const isFetchingFollowToken = followingTokenSelector(state)(tokenId);
     const isTokenFollowed = isTokenFollowedSelector(state)(tokenId);
