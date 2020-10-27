@@ -1,13 +1,15 @@
 import React from 'react';
 import { MESSAGES } from '@screens/Dex/constants';
 import { PRV } from '@services/wallet/tokenService';
-import { COINS, TRADING } from '@src/constants';
+import { COINS } from '@src/constants';
 import { ExHandler } from '@services/exception';
 import accountService from '@services/wallet/accountService';
 import { deposit as depositAPI, trade as tradeAPI } from '@services/api/pdefi';
 import { MAX_PDEX_TRADE_STEPS } from '@screens/DexV2/constants';
 import { apiTradePKyber } from '@screens/DexV2';
 import convertUtil from '@utils/convert';
+import { useDispatch } from 'react-redux';
+import { actionAddFollowToken } from '@src/redux/actions/token';
 
 const withTrade = (WrappedComp) => (props) => {
   const [error, setError] = React.useState('');
@@ -29,7 +31,7 @@ const withTrade = (WrappedComp) => (props) => {
     quote,
   } = props;
   const erc20Fee = isErc20 ? quote?.erc20Fee : 0;
-  const network = quote?.network || 'Incognito';
+  const dispatch = useDispatch();
   const deposit = () => {
     let type = 1;
     if (isErc20) {
@@ -147,6 +149,8 @@ const withTrade = (WrappedComp) => (props) => {
       setError(new ExHandler(error).getMessage(MESSAGES.TRADE_ERROR));
     } finally {
       setTrading(false);
+      dispatch(actionAddFollowToken(inputToken?.id));
+      dispatch(actionAddFollowToken(outputToken?.id));
     }
   };
 
