@@ -88,6 +88,21 @@ const Trade = ({
     navigation.navigate(ROUTE_NAMES.TradeHistory);
   };
 
+  const renderPoolSize = () => {
+    if (pair) {
+      if (!quote || (quote && !!quote?.crossTrade)) {
+        return (
+          <PoolSize
+            outputToken={outputToken}
+            inputToken={inputToken}
+            pair={pair}
+          />
+        );
+      }
+    }
+    return null;
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -150,13 +165,7 @@ const Trade = ({
                 outputToken={outputToken}
                 quote={quote}
               />
-              {!!(!isErc20 && pair) && (
-                <PoolSize
-                  outputToken={outputToken}
-                  inputToken={inputToken}
-                  pair={pair}
-                />
-              )}
+              {renderPoolSize()}
               <Powered network={isErc20 ? quote?.network : 'Incognito'} />
               <ExtraInfo left={warning} right="" style={styles.warning} />
             </View>
