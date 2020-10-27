@@ -1,7 +1,7 @@
 import React from 'react';
 import { MESSAGES } from '@screens/Dex/constants';
 import { PRV } from '@services/wallet/tokenService';
-import { COINS } from '@src/constants';
+import { COINS, TRADING } from '@src/constants';
 import { ExHandler } from '@services/exception';
 import accountService from '@services/wallet/accountService';
 import { deposit as depositAPI, trade as tradeAPI } from '@services/api/pdefi';
@@ -29,6 +29,7 @@ const withTrade = (WrappedComp) => (props) => {
     quote,
   } = props;
   const erc20Fee = isErc20 ? quote?.erc20Fee : 0;
+  const network = quote?.network || 'Incognito';
   const deposit = () => {
     let type = 1;
     if (isErc20) {
@@ -115,18 +116,19 @@ const withTrade = (WrappedComp) => (props) => {
       let prvAmount =
         (prvFee / MAX_PDEX_TRADE_STEPS) * (MAX_PDEX_TRADE_STEPS - 1);
 
-      if (isErc20) {
+      if (isErc20 && !quote?.crossTrade) {
         await tradeKyber(depositObject.depositId);
         prvAmount = prvAmount + erc20Fee;
       } else {
-        await tradeAPI({
+        const payload = {
           depositId: depositObject.depositId,
           buyTokenId: outputToken.id,
           buyAmount: outputValue,
           buyExpectedAmount: outputValue,
           tradingFee: 0,
           minimumAmount,
-        });
+        };
+        await tradeAPI(payload);
       }
       const result = await accountService.createAndSendToken(
         account,
