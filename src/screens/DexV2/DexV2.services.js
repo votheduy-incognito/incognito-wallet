@@ -63,7 +63,9 @@ export const apiGetKyberQuote = async ({ inputToken, outputToken, amount }) => {
     expectAmount,
     protocol,
     dAppAddress,
-    network: TRADING.ERC20_NETWORK[protocol] || TRADING.ERC20_NETWORK['PDex']
+    network: TRADING.ERC20_NETWORK[protocol] || TRADING.ERC20_NETWORK['PDex'],
+    crossTrade:
+      TRADING.ERC20_NETWORK[protocol] === TRADING.ERC20_NETWORK['PDex'],
   };
   return data;
 };
