@@ -70,10 +70,10 @@ const normalizedHistories = ({
           );
           const txFromApi = _historiesFromApi[index];
           if (txFromApi) {
-            if (!txFromApi?.isShieldTx) {
-              //Trade tx
-              _historiesFromApi[index].typeOf = 'Trade';
-            }
+            // if (!txFromApi?.isShieldTx) {
+            //   //Trade tx
+            //   _historiesFromApi[index].typeOf = 'Trade';
+            // }
             return;
           }
           break;
@@ -352,7 +352,10 @@ export const mergeReceiveAndLocalHistory = ({
         const typeOf = metaData?.Type;
         let txId;
         switch (typeOf) {
-        case 94:
+        case 45://Node withdraw
+          txId = metaData?.TxRequest;
+          break;
+        case 94://Remove liquidity
           txId = metaData?.RequestedTxID;
           break;
         default:
