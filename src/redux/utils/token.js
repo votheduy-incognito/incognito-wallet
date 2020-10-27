@@ -352,9 +352,9 @@ export const mergeReceiveAndLocalHistory = ({
         const typeOf = metaData?.Type;
         let txId;
         switch (typeOf) {
-        case 41:
-          txId = metaData?.TxID;
-          break;
+        // case 41:
+        //   txId = metaData?.TxID;
+        //   break;
         case 45:
           txId = metaData?.TxRequest;
           break;
