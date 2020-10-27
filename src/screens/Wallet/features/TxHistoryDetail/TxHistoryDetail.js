@@ -272,11 +272,6 @@ const TxHistoryDetail = (props) => {
       copyable: true,
       disabled: !history?.erc20TokenAddress,
     },
-    {
-      label: 'Type',
-      valueText: history?.typeOf,
-      disabled: !history?.typeOf,
-    },
   ];
   const onCopyData = () => {
     Clipboard.setString(JSON.stringify(data));
