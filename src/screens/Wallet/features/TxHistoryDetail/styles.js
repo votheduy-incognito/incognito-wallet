@@ -172,14 +172,12 @@ export default StyleSheet.create({
     width: 30,
   },
   btnResume: {
-    position: 'absolute',
-    right: 30,
-    height: 40,
-    minWidth: 75,
-    paddingHorizontal: 16,
-    borderRadius: 20,
+    height: 30,
+    width: 73,
+    borderRadius: 15,
+    marginLeft: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: COLORS.lightGrey19
+    backgroundColor: COLORS.colorGrey
   }
 });
