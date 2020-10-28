@@ -1,6 +1,7 @@
 import formatUtil, { LONG_DATE_TIME_FORMAT } from '@utils/format';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
+import { isNaN } from 'lodash';
 
 const TYPES = ['Incognito', 'Incognito', 'Kyber', '0x', 'Uniswap'];
 
@@ -32,12 +33,11 @@ export class PDexTradeHistoryModel {
     if (!json) {
       return;
     }
-
     this.id = json.DepositID;
     this.sellTokenId = json.TokenID;
     this.sellAmount = json.Amount;
     this.buyTokenId = json.BuyTokenID;
-    this.buyAmount = json.MinimumAmount;
+    this.buyAmount = BigNumber(json.MinimumAmount);
     this.tradingFee = json.TradingFee;
     this.networkFee = json.NetworkFee;
     this.networkFeeTokenId = json.NetworkFeeTokenID;
@@ -61,19 +61,20 @@ export class PDexTradeHistoryModel {
     const networkFeeToken = allTokens.find(
       (token) => token.id === this.networkFeeTokenId,
     );
+    this.buyTokenSymbol = buyToken?.symbol || '';
     if (
       this.exchange !== 'Incognito' &&
       buyToken?.address === json.BuyTokenID
     ) {
       this.networkFee = this.networkFee - this.tradingFee;
-      this.buyAmount = BigNumber(this.buyAmount);
     }
-    if (buyToken) {
-      this.buyTokenSymbol = buyToken.symbol;
+    if (buyToken && !this.buyAmount?.isNaN()) {
       this.buyAmount = formatUtil.amountFull(
         this.buyAmount,
         buyToken.pDecimals,
       );
+    } else {
+      this.buyAmount = '';
     }
     if (sellToken) {
       this.sellTokenSymbol = sellToken.symbol;
