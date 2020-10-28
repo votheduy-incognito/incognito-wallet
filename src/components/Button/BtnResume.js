@@ -5,7 +5,7 @@ import { StyleSheet } from 'react-native';
 
 const style = StyleSheet.create({
   text: {
-    ...FONT.STYLE.bold,
+    ...FONT.STYLE.medium,
     fontSize: 15,
     color: COLORS.black,
   }
