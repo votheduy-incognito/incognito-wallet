@@ -171,4 +171,15 @@ export default StyleSheet.create({
     alignItems: 'flex-end',
     width: 30,
   },
+  btnResume: {
+    position: 'absolute',
+    right: 30,
+    height: 40,
+    minWidth: 75,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.lightGrey19
+  }
 });
