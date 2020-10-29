@@ -34,7 +34,7 @@ const withTrade = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const deposit = () => {
     let type = 1;
-    if (isErc20) {
+    if (isErc20 && !quote?.crossTrade) {
       if (quote.protocol.toLowerCase() === 'kyber') {
         type = 2;
       } else {
