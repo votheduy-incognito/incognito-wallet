@@ -1,4 +1,10 @@
-import { Text, TouchableOpacity, View } from '@src/components/core';
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  LoadingContainer,
+} from '@src/components/core';
+import { FlatList } from '@components/core/FlatList';
 import routeNames from '@src/router/routeNames';
 import { COLORS } from '@src/styles';
 import formatUtil from '@src/utils/format';
@@ -15,30 +21,31 @@ import { defaultAccountSelector } from '@src/redux/selectors/account';
 import styleSheet from './style';
 import { getStatusData, getTypeData } from './HistoryList.utils';
 
-const HistoryItemWrapper = ({ history, onCancelEtaHistory, ...otherProps }) => {
-  const component = <HistoryItem history={history} {...otherProps} />;
-  if (history?.cancelable) {
-    return (
-      <Swipeout
-        autoClose
-        style={{
-          backgroundColor: 'transparent',
-        }}
-        right={[
-          {
-            text: 'Remove',
-            backgroundColor: COLORS.red,
-            onPress: () => onCancelEtaHistory(history),
-          },
-        ]}
-      >
-        {component}
-      </Swipeout>
-    );
-  }
+const HistoryItemWrapper = ({ history, onCancelEtaHistory, ...otherProps }) =>
+  React.useMemo(() => {
+    const component = <HistoryItem history={history} {...otherProps} />;
+    if (history?.cancelable) {
+      return (
+        <Swipeout
+          autoClose
+          style={{
+            backgroundColor: 'transparent',
+          }}
+          right={[
+            {
+              text: 'Remove',
+              backgroundColor: COLORS.red,
+              onPress: () => onCancelEtaHistory(history),
+            },
+          ]}
+        >
+          {component}
+        </Swipeout>
+      );
+    }
 
-  return component;
-};
+    return component;
+  }, [history]);
 
 const NormalText = ({ style, text, ...rest }) => (
   <Text
@@ -51,7 +58,7 @@ const NormalText = ({ style, text, ...rest }) => (
   </Text>
 );
 
-const HistoryItem = ({ history }) => {
+const HistoryItem = React.memo(({ history }) => {
   const navigation = useNavigation();
   const decimalDigits = useSelector(decimalDigitsSelector);
   const account = useSelector(defaultAccountSelector);
@@ -66,23 +73,28 @@ const HistoryItem = ({ history }) => {
     account?.paymentAddress,
   );
   const renderAmount = () => {
-    if (amount === '') {
+    const amountToNumber = Number(amount) || 0;
+    if (!amountToNumber) {
       return '';
     }
     const _amount = formatUtil.amount(amount, pDecimals, true, decimalDigits);
     return trim(_amount);
   };
   const onPress = () => {
-    navigation?.navigate(routeNames.TxHistoryDetail, {
-      data: {
-        history,
-        typeText,
-        statusColor,
-        statusMessage,
+    navigation?.navigate(
+      history?.isHistoryReceived
+        ? routeNames.TxHistoryReceive
+        : routeNames.TxHistoryDetail,
+      {
+        data: {
+          history,
+          typeText,
+          statusColor,
+          statusMessage,
+        },
       },
-    });
+    );
   };
-
   return (
     <TouchableOpacity onPress={onPress} style={styleSheet.itemContainer}>
       <View style={[styleSheet.row, styleSheet.rowTop]}>
@@ -111,20 +123,46 @@ const HistoryItem = ({ history }) => {
       </View>
     </TouchableOpacity>
   );
-};
+});
 
-const HistoryList = ({ histories, onCancelEtaHistory }) => (
-  <View style={styleSheet.container}>
-    {histories
-      .sort((a, b) => new Date(b?.time).getTime() - new Date(a?.time).getTime())
-      .map((history) => (
-        <HistoryItemWrapper
-          key={history.id}
-          history={history}
-          onCancelEtaHistory={onCancelEtaHistory}
-        />
-      ))}
-  </View>
+const HistoryList = ({
+  histories,
+  onCancelEtaHistory,
+  onRefreshHistoryList,
+  onLoadmoreHistory,
+  refreshing,
+  renderEmpty,
+  showEmpty,
+  oversize,
+}) => (
+  <FlatList
+    data={histories.sort(
+      (a, b) => new Date(b?.time).getTime() - new Date(a?.time).getTime(),
+    )}
+    renderItem={({ item: history }) => {
+      return <HistoryItemWrapper {...{ history, onCancelEtaHistory }} />;
+    }}
+    keyExtractor={(item) => item?.id}
+    onRefresh={() =>
+      typeof onRefreshHistoryList === 'function' && onRefreshHistoryList()
+    }
+    refreshing={refreshing}
+    onEndReached={() =>
+      typeof onLoadmoreHistory === 'function' && onLoadmoreHistory()
+    }
+    ListFooterComponent={
+      !oversize && !refreshing ? (
+        <View style={styleSheet.loadingContainer}>
+          <LoadingContainer />
+        </View>
+      ) : (
+        <View style={{ marginBottom: 30 }} />
+      )
+    }
+    ListEmptyComponent={
+      showEmpty && typeof renderEmpty === 'function' && renderEmpty()
+    }
+  />
 );
 
 HistoryItem.defaultProps = {
@@ -169,11 +207,23 @@ HistoryItem.propTypes = {
 HistoryList.defaultProps = {
   histories: [],
   onCancelEtaHistory: null,
+  onRefreshHistoryList: null,
+  refreshing: false,
+  onLoadmoreHistory: null,
+  oversize: false,
+  renderEmpty: null,
+  showEmpty: false,
 };
 
 HistoryList.propTypes = {
   histories: PropTypes.array,
   onCancelEtaHistory: PropTypes.func,
+  onRefreshHistoryList: PropTypes.func,
+  onLoadmoreHistory: PropTypes.func,
+  refreshing: PropTypes.bool,
+  oversize: PropTypes.bool,
+  renderEmpty: PropTypes.func,
+  showEmpty: PropTypes.bool,
 };
 
 NormalText.propTypes = {

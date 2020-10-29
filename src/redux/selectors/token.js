@@ -38,6 +38,50 @@ export const toggleUnVerifiedTokensSelector = createSelector(
   (toggleUnVerified) => toggleUnVerified,
 );
 
+export const receiveHistorySelector = createSelector(
+  (state) => state?.token?.receiveHistory,
+  historyTokenSelector,
+  (receiveHistory, history) => {
+    const {
+      oversize,
+      refreshing: refreshingReceiveHistory,
+      isFetched: isFetchedReceiveHistory,
+      isFetching: isFetchingReceiveHistory,
+      notEnoughData: notEnoughDataReceiveHistory,
+    } = receiveHistory;
+    const {
+      histories,
+      isFetched,
+      isFetching,
+      refreshing: refreshingHistory,
+    } = history;
+    const refreshing = refreshingHistory || refreshingReceiveHistory;
+    const notEnoughData =
+      (histories?.length < 10 || notEnoughDataReceiveHistory) &&
+      !isFetchingReceiveHistory &&
+      isFetchedReceiveHistory &&
+      !oversize;
+    const showEmpty =
+      histories?.length === 0 &&
+      isFetched &&
+      !isFetching &&
+      !notEnoughData &&
+      !oversize;
+    const isLoadmore =
+      !notEnoughData &&
+      !!receiveHistory?.isFetching &&
+      !receiveHistory?.refreshing &&
+      !oversize;
+    return {
+      ...receiveHistory,
+      isLoadmore,
+      refreshing,
+      notEnoughData,
+      showEmpty,
+    };
+  },
+);
+
 export default {
   followed,
   isGettingBalance,
@@ -50,4 +94,5 @@ export default {
   followingTokenSelector,
   isTokenFollowedSelector,
   toggleUnVerifiedTokensSelector,
+  receiveHistorySelector,
 };

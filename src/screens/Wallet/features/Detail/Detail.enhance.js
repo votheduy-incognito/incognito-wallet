@@ -2,48 +2,43 @@ import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { withLayout_2 } from '@src/components/Layout';
 import { compose } from 'recompose';
-import { ExHandler } from '@src/services/exception';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  actionFetchHistoryMainCrypto,
-  actionFetchHistoryToken,
-} from '@src/redux/actions/token';
-import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { useFocusEffect } from 'react-navigation-hooks';
 import withWallet from '@screens/Wallet/features/Home/Wallet.enhance';
+import { useDispatch } from 'react-redux';
+import {
+  actionFreeReceiveHistory,
+  actionFreeHistory,
+} from '@src/redux/actions/token';
 
 const enhance = (WrappedComp) => (props) => {
   const {
     retryLastTxsUnshieldDecentralized,
     retryLastTxsUnshieldCentralized,
   } = props;
-  const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
-  const token = useSelector(
-    selectedPrivacySeleclor.selectedPrivacyByFollowedSelector,
-  );
+
   const dispatch = useDispatch();
-  const handleLoadHistory = async () => {
+  const handleFreeHistoryData = () => {
     try {
-      if (selectedPrivacy?.isMainCrypto) {
-        return await dispatch(actionFetchHistoryMainCrypto());
-      }
-      if (!!selectedPrivacy?.isToken && !!token?.id) {
-        return await dispatch(actionFetchHistoryToken());
-      }
+      dispatch(actionFreeReceiveHistory());
+      dispatch(actionFreeHistory());
     } catch (error) {
-      new ExHandler(error).showErrorToast();
+      console.debug('ERROR', error);
     }
   };
   useFocusEffect(
     React.useCallback(() => {
       retryLastTxsUnshieldCentralized();
       retryLastTxsUnshieldDecentralized();
-      handleLoadHistory();
     }, []),
   );
+  React.useEffect(() => {
+    return () => {
+      handleFreeHistoryData();
+    };
+  }, []);
   return (
     <ErrorBoundary>
-      <WrappedComp {...{ ...props, handleLoadHistory }} />
+      <WrappedComp {...{ ...props }} />
     </ErrorBoundary>
   );
 };

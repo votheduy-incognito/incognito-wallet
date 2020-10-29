@@ -107,4 +107,6 @@ export default {
   SelectNetworkName: 'SelectNetworkName',
   Streamline: 'Streamline',
   WhyStreamline: 'WhyStreamline',
+  TxHistoryReceive: 'TxHistoryReceive',
+  Event: 'Event',
 };

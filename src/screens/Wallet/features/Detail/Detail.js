@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, RefreshControl } from 'react-native';
+import { View } from 'react-native';
 import Header from '@src/components/Header';
 import {
   selectedPrivacySeleclor,
@@ -18,10 +18,8 @@ import {
 } from '@src/components/Token/Token';
 import HistoryToken from '@screens/Wallet/features/HistoryToken';
 import MainCryptoHistory from '@screens/Wallet/features/MainCryptoHistory';
-import PropTypes from 'prop-types';
 import { isGettingBalance as isGettingTokenBalanceSelector } from '@src/redux/selectors/token';
 import { isGettingBalance as isGettingMainCryptoBalanceSelector } from '@src/redux/selectors/account';
-import { ScrollView } from '@src/components/core';
 import { useBtnTrade } from '@src/components/UseEffect/useBtnTrade';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import withDetail from './Detail.enhance';
@@ -32,7 +30,7 @@ import {
   historyStyled,
 } from './Detail.styled';
 
-const GroupButton = () => {
+const GroupButton = React.memo(() => {
   const navigation = useNavigation();
   const handleSend = () => navigation.navigate(routeNames.Send);
   const handleReceive = () => navigation.navigate(routeNames.ReceiveCrypto);
@@ -54,9 +52,9 @@ const GroupButton = () => {
       />
     </View>
   );
-};
+});
 
-const Balance = () => {
+const Balance = React.memo(() => {
   const selected = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const isGettingBalance = useSelector(
     sharedSeleclor.isGettingBalance,
@@ -88,29 +86,16 @@ const Balance = () => {
       </View>
     </View>
   );
-};
+});
 
-const History = (props) => {
+const History = React.memo(() => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
-  const { isFetching } = useSelector(tokenSeleclor.historyTokenSelector);
-  const { handleLoadHistory } = props;
   return (
     <View style={historyStyled.container}>
-      <ScrollView
-        nestedScrollEnabled
-        refreshControl={(
-          <RefreshControl
-            refreshing={isFetching}
-            onRefresh={handleLoadHistory}
-          />
-        )}
-      >
-        {selectedPrivacy?.isToken && <HistoryToken />}
-        {selectedPrivacy?.isMainCrypto && <MainCryptoHistory />}
-      </ScrollView>
+      {selectedPrivacy?.isMainCrypto ? <MainCryptoHistory /> : <HistoryToken />}
     </View>
   );
-};
+});
 
 const Detail = (props) => {
   const navigation = useNavigation();
@@ -129,7 +114,6 @@ const Detail = (props) => {
       ? isGettingMainCryptoBalance.length > 0 || !defaultAccount
       : isGettingTokenBalance.length > 0 || !token;
   const onGoBack = () => navigation.navigate(routeNames.Wallet);
-
   const [BtnTrade, hasTradeBtn] = useBtnTrade();
   return (
     <View style={styled.container}>
@@ -149,12 +133,8 @@ const Detail = (props) => {
   );
 };
 
-Detail.propTypes = {
-  handleLoadHistory: PropTypes.func.isRequired,
-};
+Detail.propTypes = {};
 
-History.propTypes = {
-  handleLoadHistory: PropTypes.func.isRequired,
-};
+History.propTypes = {};
 
-export default withDetail(Detail);
+export default withDetail(React.memo(Detail));

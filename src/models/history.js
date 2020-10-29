@@ -47,6 +47,7 @@ class History {
     const isDecentralized = decentralized;
     const history = {
       id: data?.ID,
+      createdAt: data?.CreatedAt,
       updatedAt: data.UpdatedAt,
       expiredAt: data.ExpiredAt,
       addressType: data.AddressType,
@@ -83,6 +84,7 @@ class History {
       statusDetail: data?.StatusDetail,
       isShieldTx,
       isDecentralized,
+      incognitoTx: data?.IncognitoTx,
     };
     return history;
   }

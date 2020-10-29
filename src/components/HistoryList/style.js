@@ -6,6 +6,9 @@ const style = StyleSheet.create({
     flex: 1,
     marginBottom: 50,
   },
+  loadingContainer: {
+    marginVertical: 15,
+  },
   content: {
     flex: 1,
     padding: 20,

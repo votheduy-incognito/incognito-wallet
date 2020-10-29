@@ -4,6 +4,8 @@ import { getpTokenHistory } from '@src/services/api/history';
 import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
 import { getFeeFromTxHistory } from '@src/screens/Wallet/features/TxHistoryDetail/TxHistoryDetail.utils';
+import moment from 'moment';
+import { isEmpty } from 'lodash';
 
 export const normalizeHistoriesFromApi = ({
   historiesFromApi = [],
@@ -13,21 +15,24 @@ export const normalizeHistoriesFromApi = ({
   pDecimals,
 }) =>
   (historiesFromApi &&
-    historiesFromApi.map((h) => ({
-      ...h,
-      time: h?.updatedAt,
-      type: h?.addressType,
-      toAddress: h?.userPaymentAddress,
-      fromAddress: h?.userPaymentAddress,
-      amount: h?.incognitoAmount,
-      symbol: externalSymbol || symbol,
-      decimals,
-      pDecimals,
-      status: h?.statusText,
-      statusCode: h?.status,
-      depositAddress: h?.depositTmpAddress,
-      fromApi: true
-    }))) ||
+    historiesFromApi.map((h) => {
+      const history = {
+        ...h,
+        time: h?.createdAt,
+        type: h?.addressType,
+        toAddress: h?.userPaymentAddress,
+        fromAddress: h?.userPaymentAddress,
+        amount: h?.incognitoAmount,
+        symbol: externalSymbol || symbol,
+        decimals,
+        pDecimals,
+        status: h?.statusText,
+        statusCode: h?.status,
+        depositAddress: h?.depositTmpAddress,
+        fromApi: true,
+      };
+      return history;
+    })) ||
   [];
 
 const isDecentralizedTx = (history) => {
@@ -53,6 +58,31 @@ const normalizedHistories = ({
   let _historiesFromApi = [...historiesNormalizedFromApi];
   histories &&
     histories.map((h) => {
+      if (h?.isHistoryReceived) {
+        const metaData = h?.metaData;
+        const typeOf = metaData?.Type;
+        switch (typeOf) {
+        case 25:
+        case 81: {
+          const requestTxId = metaData?.RequestedTxID;
+          const index = _historiesFromApi.findIndex(
+            (history) => history?.incognitoTx === requestTxId,
+          );
+          const txFromApi = _historiesFromApi[index];
+          if (txFromApi) {
+            // if (!txFromApi?.isShieldTx) {
+            //   //Trade tx
+            //   _historiesFromApi[index].typeOf = 'Trade';
+            // }
+            return;
+          }
+          break;
+        }
+        default:
+          break;
+        }
+        return _histories.push(h);
+      }
       let history = {
         id: h?.txID,
         incognitoTxID: h?.txID,
@@ -85,8 +115,8 @@ const normalizedHistories = ({
       _histories.push(history);
       return history;
     });
-  const result = [..._historiesFromApi, ..._histories];
-  return result;
+  const mergeHistories = [..._historiesFromApi, ..._histories];
+  return mergeHistories;
 };
 
 const normalizedHistory = (histories = [], history = {}) => {
@@ -136,20 +166,19 @@ const normalizedHistory = (histories = [], history = {}) => {
 };
 
 export const combineHistory = (payload) => {
-  let histories = [];
+  let mergedHistories = [];
   try {
     const historiesNormalizedFromApi = normalizeHistoriesFromApi(payload);
-    const _histories = normalizedHistories({
+    mergedHistories = normalizedHistories({
       ...payload,
       historiesNormalizedFromApi,
-    });
-    histories = _histories.sort((a, b) =>
+    }).sort((a, b) =>
       new Date(a.time).getTime() < new Date(b.time).getTime() ? 1 : -1,
     );
   } catch (error) {
     console.debug(error);
   }
-  return histories;
+  return mergedHistories;
 };
 
 export const normalizeData = (histories = [], decimals, pDecimals) =>
@@ -237,4 +266,112 @@ export const loadAccountHistory = () => async (dispatch, getState) => {
   } catch (e) {
     throw e;
   }
+};
+
+export const getTypeHistoryReceive = ({ account, serialNumbers }) => {
+  let type = CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE;
+  if (!serialNumbers) {
+    return type;
+  }
+  if (serialNumbers) {
+    const accountSerialNumbers = account?.derivatorToSerialNumberCache;
+    try {
+      for (let key in accountSerialNumbers) {
+        const accountSerialNumber = accountSerialNumbers[key];
+        const isExisted = serialNumbers?.includes(accountSerialNumber);
+        if (isExisted) {
+          type = CONSTANT_COMMONS.HISTORY.TYPE.SEND;
+          break;
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+  return type;
+};
+
+export const handleFilterHistoryReceiveByTokenId = ({ tokenId, histories }) => {
+  let result = histories;
+  try {
+    result = result
+      .filter((history) => {
+        const receivedAmounts = history?.ReceivedAmounts;
+        const isTokenExisted = Object.keys(receivedAmounts)?.includes(tokenId);
+        return isTokenExisted;
+      })
+      .map((history) => {
+        const receivedAmounts = history?.ReceivedAmounts;
+        const serialNumbers = history?.InputSerialNumbers[tokenId] || [];
+        const metaData = history?.Metadata
+          ? JSON.parse(history?.Metadata)
+          : null;
+        let amount = 0;
+        let hasOutputs = false;
+        let hasInputs = !isEmpty(serialNumbers[tokenId]);
+        try {
+          for (let id in receivedAmounts) {
+            if (id === tokenId) {
+              const item = receivedAmounts[id][0];
+              amount = item?.CoinDetails?.Value;
+              id !== CONSTANT_COMMONS.PRV.id ? (hasOutputs = true) : false;
+              break;
+            }
+          }
+        } catch (error) {
+          console.debug('ERROR', error);
+        }
+        return {
+          txID: history?.Hash,
+          time: moment(history?.LockTime).add(7, 'hours'),
+          isPrivacy: history?.IsPrivacy,
+          amount,
+          tokenId,
+          serialNumbers,
+          metaData,
+          privacyCustomTokenProofDetail: history?.PrivacyCustomTokenProofDetail,
+          isMintedToken: !hasInputs && !!hasOutputs,
+        };
+      });
+  } catch (error) {
+    throw error;
+  }
+  return result;
+};
+
+export const mergeReceiveAndLocalHistory = ({
+  localHistory = [],
+  receiveHistory = [],
+}) => {
+  let allHistory = [...localHistory, ...receiveHistory];
+  let _localHistory = [...localHistory];
+  try {
+    allHistory.map((history) => {
+      if (history?.isHistoryReceived) {
+        const metaData = history?.metaData;
+        const typeOf = metaData?.Type;
+        let txId;
+        switch (typeOf) {
+        case 45://Node withdraw
+          txId = metaData?.TxRequest;
+          break;
+        case 94://Remove liquidity
+          txId = metaData?.RequestedTxID;
+          break;
+        default:
+          break;
+        }
+        if (!typeOf && history?.isMintedToken) {
+          txId = history?.txID;
+        }
+        if (txId) {
+          _localHistory = _localHistory.filter((item) => item?.txID !== txId);
+        }
+      }
+      return history;
+    });
+  } catch (error) {
+    console.debug('MERGE_RECEIVE_AND_LOCAL_HISTORY', error);
+  }
+  return [..._localHistory, ...receiveHistory];
 };

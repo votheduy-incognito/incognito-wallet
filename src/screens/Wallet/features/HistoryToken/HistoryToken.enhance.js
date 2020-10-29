@@ -5,27 +5,20 @@ import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeHistory } from '@src/services/api/history';
 import { Toast } from '@src/components/core';
-import {
-  actionFetchHistoryMainCrypto,
-  actionFetchHistoryToken,
-} from '@src/redux/actions/token';
-import { historyTokenSelector } from '@src/redux/selectors/token';
-import EmptyHistory from './HistoryToken.empty';
+import { actionFetchHistoryToken } from '@src/redux/actions/token';
+import { useHistoryList } from '@src/components/HistoryList';
 
 const enhance = (WrappedComp) => (props) => {
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
-  const { isEmpty } = useSelector(historyTokenSelector);
   const token = useSelector(
     selectedPrivacySeleclor.selectedPrivacyByFollowedSelector,
   );
+
   const dispatch = useDispatch();
-  const handleLoadHistory = async () => {
+  const handleLoadHistory = async (refreshing) => {
     try {
-      if (selectedPrivacy?.isMainCrypto) {
-        return await dispatch(actionFetchHistoryMainCrypto());
-      }
       if (!!selectedPrivacy?.isToken && !!token?.id) {
-        return await dispatch(actionFetchHistoryToken());
+        dispatch(actionFetchHistoryToken(refreshing));
       }
     } catch (error) {
       new ExHandler(error).showErrorToast();
@@ -40,7 +33,7 @@ const enhance = (WrappedComp) => (props) => {
       });
       if (data) {
         Toast.showSuccess('Canceled');
-        await handleLoadHistory();
+        handleLoadHistory(true);
       }
     } catch (e) {
       new ExHandler(
@@ -49,15 +42,18 @@ const enhance = (WrappedComp) => (props) => {
       ).showErrorToast();
     }
   };
-  if (isEmpty) {
-    return <EmptyHistory />;
-  }
+
+  const [showEmpty, refreshing] = useHistoryList({ handleLoadHistory });
+
   return (
     <ErrorBoundary>
       <WrappedComp
         {...{
           ...props,
           handleCancelEtaHistory,
+          handleLoadHistory,
+          showEmpty,
+          refreshing,
         }}
       />
     </ErrorBoundary>

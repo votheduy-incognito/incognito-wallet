@@ -14,16 +14,28 @@ import {
   getHistoryFromApi,
   loadAccountHistory,
   normalizeData,
+  getTypeHistoryReceive,
+  handleFilterHistoryReceiveByTokenId,
+  mergeReceiveAndLocalHistory,
 } from '@src/redux/utils/token';
 import { getBalance as getAccountBalance } from '@src/redux/actions/account';
 import internalTokenModel from '@models/token';
 import Util from '@src/utils/Util';
+import {
+  getReceiveHistoryByRPC,
+  getTxTransactionByHash,
+} from '@src/services/wallet/RpcClientService';
 import { actionLogEvent } from '@src/screens/Performance';
-import { setWallet } from './wallet';
+import { ConfirmedTx } from '@src/services/wallet/WalletService';
+import { CONSTANT_COMMONS } from '@src/constants';
+import { uniqBy } from 'lodash';
 import {
   followingTokenSelector,
   isTokenFollowedSelector,
-} from '../selectors/token';
+  receiveHistorySelector,
+} from '@src/redux/selectors/token';
+import { MAX_LIMIT_RECEIVE_HISTORY_ITEM } from '@src/redux/reducers/token';
+import { setWallet } from './wallet';
 
 export const setToken = (
   token = throw new Error('Token object is required'),
@@ -202,6 +214,9 @@ export const actionAddFollowTokenSuccess = (payload) => ({
 export const actionAddFollowToken = (tokenId) => async (dispatch, getState) => {
   const state = getState();
   let wallet = state.wallet;
+  if(!tokenId){
+    return;
+  }
   try {
     const isTokenFollowed = isTokenFollowedSelector(state)(tokenId);
     const isFetchingFollowToken = followingTokenSelector(state)(tokenId);
@@ -234,6 +249,9 @@ export const actionRemoveFollowToken = (tokenId) => async (
 ) => {
   const state = getState();
   let wallet = state.wallet;
+  if(!tokenId){
+    return;
+  }
   try {
     const isFetchingFollowToken = followingTokenSelector(state)(tokenId);
     const isTokenFollowed = isTokenFollowedSelector(state)(tokenId);
@@ -256,12 +274,13 @@ export const actionRemoveFollowToken = (tokenId) => async (
   }
 };
 
-export const actionInitHistory = () => ({
-  type: type.ACTION_INIT_HISTORY,
+export const actionFreeHistory = () => ({
+  type: type.ACTION_FREE_HISTORY,
 });
 
-export const actionFetchingHistory = () => ({
+export const actionFetchingHistory = (payload) => ({
   type: type.ACTION_FETCHING_HISTORY,
+  payload,
 });
 
 export const actionFetchedHistory = (payload) => ({
@@ -273,7 +292,10 @@ export const actionFetchFailHistory = () => ({
   type: type.ACTION_FETCH_FAIL_HISTORY,
 });
 
-export const actionFetchHistoryToken = () => async (dispatch, getState) => {
+export const actionFetchHistoryToken = (refreshing = false) => async (
+  dispatch,
+  getState,
+) => {
   try {
     const state = getState();
     const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
@@ -284,17 +306,29 @@ export const actionFetchHistoryToken = () => async (dispatch, getState) => {
     if (isFetching || !token?.id || !selectedPrivacy?.tokenId) {
       return;
     }
-    await dispatch(actionFetchingHistory());
+    await dispatch(actionFetchingHistory({ refreshing }));
     let histories = [];
     if (selectedPrivacy?.isToken) {
-      let task = [dispatch(loadTokenHistory()), dispatch(getHistoryFromApi())];
+      let task = [
+        dispatch(loadTokenHistory()),
+        dispatch(getHistoryFromApi()),
+        dispatch(actionFetchReceiveHistory(refreshing)),
+      ];
       if (token) {
         task = [...task, dispatch(getBalance(token))];
       }
-      const [historiesDt, historiesDtFromApi] = await Promise.all(task);
+      const [
+        historiesToken,
+        historiesTokenFromApi,
+        receiveHistory,
+      ] = await Promise.all(task);
+      const mergeHistories = mergeReceiveAndLocalHistory({
+        localHistory: historiesToken,
+        receiveHistory,
+      });
       histories = combineHistory({
-        histories: historiesDt,
-        historiesFromApi: historiesDtFromApi,
+        histories: mergeHistories,
+        historiesFromApi: historiesTokenFromApi,
         symbol: selectedPrivacy?.symbol,
         externalSymbol: selectedPrivacy?.externalSymbol,
         decimals: selectedPrivacy?.decimals,
@@ -308,7 +342,7 @@ export const actionFetchHistoryToken = () => async (dispatch, getState) => {
   }
 };
 
-export const actionFetchHistoryMainCrypto = () => async (
+export const actionFetchHistoryMainCrypto = (refreshing = false) => async (
   dispatch,
   getState,
 ) => {
@@ -320,15 +354,20 @@ export const actionFetchHistoryMainCrypto = () => async (
     if (isFetching || !selectedPrivacy?.tokenId) {
       return;
     }
-    await dispatch(actionFetchingHistory());
+    await dispatch(actionFetchingHistory({ refreshing }));
+    dispatch(getAccountBalance(account));
     let histories = [];
     if (selectedPrivacy?.isMainCrypto) {
-      const [accountHistory] = await new Promise.all([
+      const [accountHistory, receiveHistory] = await new Promise.all([
         dispatch(loadAccountHistory()),
-        dispatch(getAccountBalance(account)),
+        dispatch(actionFetchReceiveHistory(refreshing)),
       ]);
+      const mergeHistories = mergeReceiveAndLocalHistory({
+        localHistory: accountHistory,
+        receiveHistory,
+      });
       histories = normalizeData(
-        accountHistory,
+        mergeHistories,
         selectedPrivacy?.decimals,
         selectedPrivacy?.pDecimals,
       );
@@ -343,3 +382,100 @@ export const actionFetchHistoryMainCrypto = () => async (
 export const actionToggleUnVerifiedToken = () => ({
   type: type.ACTION_TOGGLE_UNVERIFIED_TOKEN,
 });
+
+//
+
+export const actionFetchingReceiveHistory = (payload) => ({
+  type: type.ACTION_FETCHING_RECEIVE_HISTORY,
+  payload,
+});
+
+export const actionFetchedReceiveHistory = (payload) => ({
+  type: type.ACTION_FETCHED_RECEIVE_HISTORY,
+  payload,
+});
+
+export const actionFetchFailReceiveHistory = () => ({
+  type: type.ACTION_FETCH_FAIL_RECEIVE_HISTORY,
+});
+
+export const actionFreeReceiveHistory = () => ({
+  type: type.ACTION_FREE_RECEIVE_HISTORY,
+});
+
+export const actionFetchReceiveHistory = (refreshing = false) => async (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
+  let data = [];
+  const receiveHistory = receiveHistorySelector(state);
+  const { isFetching, oversize, page, limit, data: oldData } = receiveHistory;
+  if (isFetching || (oversize && !refreshing) || !selectedPrivacy?.tokenId) {
+    return [...oldData];
+  }
+  try {
+    await dispatch(actionFetchingReceiveHistory({ refreshing }));
+    const curPage = refreshing ? 0 : page;
+    const curSkip = refreshing ? 0 : curPage * limit;
+    const nextPage = curPage + 1;
+    const curLimit =
+      refreshing && page > 0 ? MAX_LIMIT_RECEIVE_HISTORY_ITEM : limit;
+    const account = accountSeleclor?.defaultAccountSelector(state);
+    const histories =
+      (await getReceiveHistoryByRPC({
+        PaymentAddress: account?.paymentAddress,
+        ReadonlyKey: account?.readonlyKey,
+        Limit: curLimit,
+        Skip: curSkip,
+        TokenID: selectedPrivacy?.tokenId,
+      })) || [];
+    const historiesFilterByTokenId = handleFilterHistoryReceiveByTokenId({
+      tokenId: selectedPrivacy?.tokenId,
+      histories,
+    });
+    data = await new Promise.all([
+      ...historiesFilterByTokenId?.map(async (history) => {
+        const txID = history?.txID;
+        let type = getTypeHistoryReceive({
+          account,
+          serialNumbers: history?.serialNumbers,
+        });
+        const h = {
+          ...history,
+          id: txID,
+          incognitoTxID: txID,
+          type,
+          pDecimals: selectedPrivacy?.pDecimals,
+          decimals: selectedPrivacy?.decimals,
+          symbol: selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol,
+          status: ConfirmedTx,
+          isHistoryReceived: true,
+        };
+        return h;
+      }),
+    ]);
+    data = data
+      .filter(
+        (history) => history?.type === CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE,
+      )
+      .filter((history) => !!history?.amount);
+    data = refreshing ? [...data, ...oldData] : [...oldData, ...data];
+    data = uniqBy(data, (item) => item?.id) || [];
+    const oversize = histories?.length < curLimit;
+    const notEnoughData = data?.length < oldData?.length + 5;
+    let payload = {
+      nextPage,
+      data,
+      oversize,
+      refreshing,
+      notEnoughData,
+    };
+    await dispatch(actionFetchedReceiveHistory(payload));
+  } catch (error) {
+    data = [];
+    await dispatch(actionFetchFailReceiveHistory());
+  }
+  return data;
+};
