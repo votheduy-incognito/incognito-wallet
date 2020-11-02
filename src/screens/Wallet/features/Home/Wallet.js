@@ -22,6 +22,8 @@ import isNaN from 'lodash/isNaN';
 import { BottomBar, ScrollView, TouchableOpacity } from '@src/components/core';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import { useStreamLine } from '@src/screens/Streamline';
+import { BIG_COINS } from '@src/screens/DexV2/constants';
+import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
 import {
   styled,
   styledHook,
@@ -108,6 +110,7 @@ const Hook = React.memo(() => {
 
 const Balance = React.memo(() => {
   let totalShielded = useSelector(totalShieldedTokensSelector);
+  const pUSDT = useSelector(getPrivacyDataByTokenID)(BIG_COINS.USDT);
   const isGettingTotalBalance =
     useSelector(isGettingTotalBalanceSelector).length > 0;
   if (isNaN(totalShielded)) {
@@ -117,7 +120,7 @@ const Balance = React.memo(() => {
     <View style={[styledBalance.container, styled.hook]}>
       <Amount
         amount={totalShielded}
-        pDecimals={CONSTANT_COMMONS.PRV.pDecimals}
+        pDecimals={pUSDT?.pDecimals}
         showSymbol={false}
         isGettingBalance={isGettingTotalBalance}
         showGettingBalance

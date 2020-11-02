@@ -11,7 +11,9 @@ import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import uniqBy from 'lodash/uniqBy';
 import isNaN from 'lodash/isNaN';
 import convert from '@src/utils/convert';
+import { BIG_COINS } from '@src/screens/DexV2/constants';
 import { defaultAccountName, defaultAccountBalanceSelector } from './account';
+import { getPrivacyDataByTokenID } from './selectedPrivacy';
 
 export const isGettingBalance = createSelector(
   isGettingBalanceToken,
@@ -70,7 +72,8 @@ export const totalShieldedTokensSelector = createSelector(
       ...getPrivacyDataByTokenID(CONSTANT_COMMONS.PRV.id),
       amount: accountBalance,
     };
-    const totalShieldedTokens = [...tokens, prv].reduce(
+    const pUSDT = getPrivacyDataByTokenID(BIG_COINS.USDT);
+    const totalShieldedTokensByPRV = [...tokens, prv].reduce(
       (prevValue, currentValue) => {
         const pricePrv = currentValue?.pricePrv || 0;
         const humanAmount = convert.toHumanAmount(
@@ -85,9 +88,11 @@ export const totalShieldedTokensSelector = createSelector(
       },
       0,
     );
+    const totalShieldedTokensByUSDT =
+      totalShieldedTokensByPRV * prv?.priceUsd || 0;
     return convert.toOriginalAmount(
-      totalShieldedTokens,
-      CONSTANT_COMMONS.PRV.pDecimals,
+      totalShieldedTokensByUSDT,
+      pUSDT?.pDecimals,
       true,
     );
   },
