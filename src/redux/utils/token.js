@@ -5,7 +5,7 @@ import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { loadHistoryByAccount } from '@src/services/wallet/WalletService';
 import { getFeeFromTxHistory } from '@src/screens/Wallet/features/TxHistoryDetail/TxHistoryDetail.utils';
 import moment from 'moment';
-import { isEmpty } from 'lodash';
+import { endsWith, isEmpty } from 'lodash';
 
 export const normalizeHistoriesFromApi = ({
   historiesFromApi = [],
@@ -323,7 +323,9 @@ export const handleFilterHistoryReceiveByTokenId = ({ tokenId, histories }) => {
         }
         return {
           txID: history?.Hash,
-          time: moment(history?.LockTime).add(7, 'hours'),
+          time: endsWith(history?.LockTime, 'Z')
+            ? history?.LockTime
+            : `${history?.LockTime}Z`,
           isPrivacy: history?.IsPrivacy,
           amount,
           tokenId,
@@ -352,10 +354,10 @@ export const mergeReceiveAndLocalHistory = ({
         const typeOf = metaData?.Type;
         let txId;
         switch (typeOf) {
-        case 45://Node withdraw
+        case 45: //Node withdraw
           txId = metaData?.TxRequest;
           break;
-        case 94://Remove liquidity
+        case 94: //Remove liquidity
           txId = metaData?.RequestedTxID;
           break;
         default:
