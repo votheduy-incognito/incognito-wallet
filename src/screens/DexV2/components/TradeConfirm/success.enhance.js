@@ -18,7 +18,7 @@ const withSuccess = WrappedComp => (props) => {
 
   const closeSuccess = () => {
     setTradeSuccess(false);
-    onTradeSuccess && onTradeSuccess(true);
+    onTradeSuccess && onTradeSuccess();
     navigation.goBack();
   };
 
