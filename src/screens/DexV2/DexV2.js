@@ -5,7 +5,7 @@ import Header from '@components/Header';
 import { withLayout_2 } from '@components/Layout';
 import { View } from '@components/core';
 import Trade from '@screens/DexV2/components/Trade';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import LoadingContainer from '@components/LoadingContainer/index';
 import withPairs from '@screens/DexV2/components/pdexPair.enhance';
 import styles from './style';
@@ -27,7 +27,7 @@ class Dex extends React.Component {
   renderMode() {
     const { pairTokens, pairs, tokens } = this.props;
 
-    if (_.isEmpty(tokens) || _.isEmpty(pairs) || _.isEmpty(pairTokens)) {
+    if (isEmpty(tokens) || isEmpty(pairs) || isEmpty(pairTokens)) {
       return <LoadingContainer />;
     }
 
