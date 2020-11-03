@@ -82,6 +82,9 @@ const Trade = ({
       inputBalance,
       prvBalance,
       quote,
+
+      // Reload new rate after trading successfully
+      onTradeSuccess: onLoadPairs
     });
   };
   const navigateHistory = () => {
