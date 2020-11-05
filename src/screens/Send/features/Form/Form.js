@@ -172,7 +172,6 @@ const SendForm = (props) => {
                   memo,
                   isIncognitoAddress,
                   isExternalAddress,
-                  validateAmount
                 }}
               />
               {renderMemo()}
