@@ -11,7 +11,7 @@ import routeNames from '@src/router/routeNames';
 import { CONSTANT_COMMONS } from '@src/constants';
 import {
   totalShieldedTokensSelector,
-  isGettingBalance as isGettingTotalBalanceSelector,
+  isGettingBalance as isGettingTotalBalanceSelector, pTokenSelector,
 } from '@src/redux/selectors/shared';
 import { Amount } from '@src/components/Token/Token';
 import { shieldStorageSelector } from '@src/screens/Shield/Shield.selector';
@@ -110,9 +110,10 @@ const Hook = React.memo(() => {
 
 const Balance = React.memo(() => {
   let totalShielded = useSelector(totalShieldedTokensSelector);
-  const pUSDT = useSelector(getPrivacyDataByTokenID)(BIG_COINS.USDT);
   const isGettingTotalBalance =
     useSelector(isGettingTotalBalanceSelector).length > 0;
+  const { pToken } = useSelector(pTokenSelector);
+
   if (isNaN(totalShielded)) {
     totalShielded = 0;
   }
@@ -120,7 +121,7 @@ const Balance = React.memo(() => {
     <View style={[styledBalance.container, styled.hook]}>
       <Amount
         amount={totalShielded}
-        pDecimals={pUSDT?.pDecimals}
+        pDecimals={pToken?.pDecimals}
         showSymbol={false}
         isGettingBalance={isGettingTotalBalance}
         showGettingBalance

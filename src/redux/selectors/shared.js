@@ -12,6 +12,7 @@ import uniqBy from 'lodash/uniqBy';
 import isNaN from 'lodash/isNaN';
 import convert from '@src/utils/convert';
 import { BIG_COINS } from '@src/screens/DexV2/constants';
+import { currencySelector } from '@screens/Setting';
 import { defaultAccountName, defaultAccountBalanceSelector } from './account';
 import { getPrivacyDataByTokenID } from './selectedPrivacy';
 
@@ -57,12 +58,37 @@ export const availableTokensSelector = createSelector(
   },
 );
 
+export const pTokenSelector = createSelector(
+  selectedPrivacySeleclor.getPrivacyDataByTokenID,
+  currencySelector,
+  (getPrivacyDataByTokenID, isToggleUSD) => {
+    const decimalDigit = getPrivacyDataByTokenID(
+      isToggleUSD ? BIG_COINS.USDT : BIG_COINS.PRV
+    );
+    return {
+      pToken: decimalDigit,
+      isToggleUSD
+    };
+  },
+);
+
+export const prefixCurrency = createSelector(
+  currencySelector,
+  (isToggleUSD) => {
+    return isToggleUSD ?
+      CONSTANT_COMMONS.USD_SPECIAL_SYMBOL:
+      CONSTANT_COMMONS.PRV_SPECIAL_SYMBOL;
+  },
+);
+
 export const totalShieldedTokensSelector = createSelector(
   availableTokensSelector,
   selectedPrivacySeleclor.getPrivacyDataByTokenID,
   defaultAccountBalanceSelector,
   tokensFollowedSelector,
-  (availableTokens, getPrivacyDataByTokenID, accountBalance, followed) => {
+  pTokenSelector,
+  (availableTokens, getPrivacyDataByTokenID, accountBalance, followed, currency) => {
+    const { isToggleUSD, pToken: decimalDigit } = currency;
     const tokens = followed.map((token) =>
       availableTokens.find(
         (t) => t?.tokenId === token?.id || t?.tokenId === token?.tokenId,
@@ -72,7 +98,6 @@ export const totalShieldedTokensSelector = createSelector(
       ...getPrivacyDataByTokenID(CONSTANT_COMMONS.PRV.id),
       amount: accountBalance,
     };
-    const pUSDT = getPrivacyDataByTokenID(BIG_COINS.USDT);
     const totalShieldedTokensByPRV = [...tokens, prv].reduce(
       (prevValue, currentValue) => {
         const pricePrv = currentValue?.pricePrv || 0;
@@ -88,11 +113,18 @@ export const totalShieldedTokensSelector = createSelector(
       },
       0,
     );
-    const totalShieldedTokensByUSDT =
-      totalShieldedTokensByPRV * prv?.priceUsd || 0;
+
+    // default is PRV
+    let totalShielded = totalShieldedTokensByPRV || 0;
+
+    if (isToggleUSD) {
+      // mean is USD
+      totalShielded = totalShielded * prv?.priceUsd || 0;
+    }
+
     return convert.toOriginalAmount(
-      totalShieldedTokensByUSDT,
-      pUSDT?.pDecimals,
+      totalShielded,
+      decimalDigit?.pDecimals,
       true,
     );
   },

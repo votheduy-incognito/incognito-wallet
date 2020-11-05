@@ -107,6 +107,7 @@ const TRACK_LOG_EVENT_STATUS = {
 const YEAR_SECONDS = 365 * 24 * 60 * 60;
 
 const PRV_SPECIAL_SYMBOL = 'ℙ';
+const USD_SPECIAL_SYMBOL = '$';
 
 const NETWORK_NAME = {
   BINANCE: 'Binance',
@@ -244,5 +245,6 @@ export default {
   },
   YEAR_SECONDS,
   PRV_SPECIAL_SYMBOL,
+  USD_SPECIAL_SYMBOL,
   NETWORK_NAME,
 };
