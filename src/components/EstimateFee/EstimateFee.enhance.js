@@ -16,19 +16,28 @@ const enhance = (WrappedComp) => (props) => {
     memo,
     isExternalAddress,
     isIncognitoAddress,
+    isFormValid,
+    validateAmount,
   } = props;
   const dispatch = useDispatch();
   const handleChangeForm = async (
     address,
     amount,
-    screen,
     memo,
     isFetching,
     isExternalAddress,
     isIncognitoAddress,
+    isFormValid,
+    validateAmount,
   ) => {
     try {
-      if (!amount || !address || isFetching) {
+      if (
+        !amount ||
+        !address ||
+        isFetching ||
+        !isFormValid ||
+        !validateAmount
+      ) {
         return;
       }
       let screen = 'Send';
@@ -61,8 +70,19 @@ const enhance = (WrappedComp) => (props) => {
       isFetching,
       isExternalAddress,
       isIncognitoAddress,
+      isFormValid,
+      validateAmount,
     );
-  }, [address, amount, screen, memo, isExternalAddress, isIncognitoAddress]);
+  }, [
+    address,
+    amount,
+    screen,
+    memo,
+    isExternalAddress,
+    isIncognitoAddress,
+    isFormValid,
+    validateAmount,
+  ]);
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props }} />
