@@ -25,6 +25,8 @@ const Provide = ({
   prvBalance,
   fee,
   error,
+  payOnOrigin,
+  isPrv
 }) => {
   const navigation = useNavigation();
 
@@ -36,6 +38,8 @@ const Provide = ({
       fee,
       feeToken,
       prvBalance,
+      payOnOrigin,
+      isPrv
     });
   };
 
@@ -70,7 +74,16 @@ const Provide = ({
           onPress={handleProvide}
           disabled={!!error || !inputText}
         />
-        <ExtraInfo left="Balance" right={`${coin.displayFullBalance} ${coin.symbol}`} />
+        <ExtraInfo
+          left="Balance"
+          right={`${coin.displayFullBalance} ${coin.symbol}`}
+        />
+        <ExtraInfo
+          token={feeToken}
+          left="Fee"
+          right={`${formatUtil.amount(fee, feeToken.pDecimals)} ${feeToken.symbol}`}
+          style={styles.extra}
+        />
       </View>
     </View>
   );
@@ -85,6 +98,8 @@ Provide.propTypes = {
   fee: PropTypes.number,
   feeToken: PropTypes.object,
   error: PropTypes.string,
+  payOnOrigin: PropTypes.bool.isRequired,
+  isPrv: PropTypes.bool.isRequired
 };
 
 Provide.defaultProps = {
