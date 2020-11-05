@@ -1,11 +1,10 @@
-import React, { PureComponent, Component } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, WebView, Modal, TouchableOpacity } from '@src/components/core';
 import SimpleInfo from '@src/components/SimpleInfo';
 import convertUtil from '@src/utils/convert';
 import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
 import { CONSTANT_COMMONS } from '@src/constants';
-import LogManager from '@src/services/LogManager';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '@src/styles';
 import Validator from './sdk/validator';
@@ -176,12 +175,14 @@ class PappView extends Component {
   }
 
   onPappLoaded = (syntheticEvent) => {
-    const { selectedPrivacy, listSupportedToken, onChangeUrl } = this.props;
+    const { selectedPrivacy, listSupportedToken, onChangeUrl, onLoadEnd } = this.props;
     const { nativeEvent } = syntheticEvent;
 
     if (typeof onChangeUrl === 'function') {
       onChangeUrl(nativeEvent?.url);
     }
+
+    onLoadEnd && onLoadEnd();
 
     setTimeout(() => {
       this.setState({ isLoaded: true }, () => {
@@ -191,6 +192,8 @@ class PappView extends Component {
   }
 
   onLoadPappError = (e) => {
+    const { onLoadError } = this.props;
+    onLoadError && onLoadError();
     this.setState({ hasWebViewError: true });
     new ExHandler(new CustomError(ErrorCode.papp_can_not_opened, { rawError: e }));
   }
@@ -280,6 +283,13 @@ PappView.propTypes = {
   listSupportedToken: PropTypes.arrayOf(PropTypes.object).isRequired,
   onSetListSupportTokenById: PropTypes.func.isRequired,
   onChangeUrl: PropTypes.func.isRequired,
+  onLoadError: PropTypes.oneOfType([PropTypes.func, PropTypes.number]),
+  onLoadEnd: PropTypes.oneOfType([PropTypes.func, PropTypes.number]),
+};
+
+PappView.defaultProps = {
+  onLoadError: null,
+  onLoadEnd: null
 };
 
 export default PappView;
