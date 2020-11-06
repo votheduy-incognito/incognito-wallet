@@ -29,8 +29,9 @@ const withChangeInput = WrappedComp => (props) => {
       const number = convertUtil.toNumber(inputText);
       if (!_.isNaN(number) && number > 0) {
         const originalAmount = convertUtil.toOriginalAmount(number, inputToken.pDecimals, inputToken.pDecimals !== 0);
-        const value = feeToken.id === inputToken.id ? originalAmount - fee : originalAmount;
-        setInputValue(value);
+        // const value = feeToken.id === inputToken.id ? originalAmount - fee : originalAmount;
+        // setInputValue(value);
+        setInputValue(originalAmount);
       }
     }
   }, [fee, feeToken, inputText, inputToken]);
