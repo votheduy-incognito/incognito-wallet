@@ -9,7 +9,10 @@ import {
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { uniqBy, isNaN, compact, fromPairs } from 'lodash';
 import convert from '@src/utils/convert';
+import { BIG_COINS } from '@src/screens/DexV2/constants';
+import { currencySelector } from '@screens/Setting';
 import { defaultAccountName, defaultAccountBalanceSelector } from './account';
+import { getPrivacyDataByTokenID } from './selectedPrivacy';
 
 export const isGettingBalance = createSelector(
   isGettingBalanceToken,
@@ -50,6 +53,29 @@ export const availableTokensSelector = createSelector(
     });
     const excludeRPV = (token) => token?.tokenId !== CONSTANT_COMMONS.PRV.id;
     return uniqBy(tokens.filter(excludeRPV), 'tokenId') || [];
+  },
+);
+
+export const pTokenSelector = createSelector(
+  selectedPrivacySeleclor.getPrivacyDataByTokenID,
+  currencySelector,
+  (getPrivacyDataByTokenID, isToggleUSD) => {
+    const decimalDigit = getPrivacyDataByTokenID(
+      isToggleUSD ? BIG_COINS.USDT : BIG_COINS.PRV
+    );
+    return {
+      pToken: decimalDigit,
+      isToggleUSD
+    };
+  },
+);
+
+export const prefixCurrency = createSelector(
+  currencySelector,
+  (isToggleUSD) => {
+    return isToggleUSD ?
+      CONSTANT_COMMONS.USD_SPECIAL_SYMBOL:
+      CONSTANT_COMMONS.PRV_SPECIAL_SYMBOL;
   },
 );
 

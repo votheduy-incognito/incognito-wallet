@@ -36,7 +36,7 @@ const MASTER_NODE_ADDRESS = isMainnet ? MAINNET_FULLNODE : TESTNET_FULLNODE;
 const NODE_URL = 'https://node.incognito.org/node.html';
 const USDT_TOKEN_ID = isMainnet
   ? '716fd1009e2a1669caacc36891e707bfdf02590f96ebd897548e8963c95ebac0'
-  : '880ea0787f6c1555e59e3958a595086b7802fc7a38276bcd80d4525606557fbc';
+  : '4946b16a08a9d4afbdf416edf52ef15073db0fc4a63e78eb9de80f94f6c0852a';
 const TRACK_LOG_URL = 'https://device-network.incognito.org';
 
 const ETH_TOKEN_ID = isMainnet
