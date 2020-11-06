@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, WebView, Modal, TouchableOpacity } from '@src/components/core';
+import { View, WebView, TouchableOpacity } from '@src/components/core';
 import SimpleInfo from '@src/components/SimpleInfo';
 import convertUtil from '@src/utils/convert';
 import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
 import { CONSTANT_COMMONS } from '@src/constants';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '@src/styles';
+import { openQrScanner } from '@components/QrCodeScanner';
+import { Modal } from 'react-native';
 import Validator from './sdk/validator';
 import RequestSendTx from './RequestSendTx';
 import { APPSDK, ERRORSDK, CONSTANTSDK } from './sdk';
 import styles from './style';
-
 
 let sdk: APPSDK = null;
 
@@ -157,7 +158,6 @@ class PappView extends Component {
       if (data) {
         new Validator('onWebViewData data', data).string();
         const parsedData = JSON.parse(data);
-
         switch (command) {
         case CONSTANTSDK.COMMANDS.SEND_TX:
           this.onRequestSendTx(parsedData);
@@ -167,7 +167,14 @@ class PappView extends Component {
           break;
         case CONSTANTSDK.COMMANDS.SET_LIST_SUPPORT_TOKEN_BY_ID:
           this.onSdkSetSupportListTokenById(parsedData?.tokenIds);
-        }
+          break;
+        case CONSTANTSDK.COMMANDS.REQUEST_OPEN_CAMERA_QR_CODE: {
+          const callBack = eval(parsedData.callBack);
+          openQrScanner((qrCode) => {
+            callBack && callBack(qrCode);
+          });
+          break;
+        }}
       }
     } catch (e) {
       new ExHandler(e, 'The pApp occured an error. Please try again.').showErrorToast();
