@@ -22,6 +22,7 @@ import sourceSearchIcon from '@assets/images/icons/search_icon.png';
 import PappError from '@screens/PappView/PappError';
 import PappView from '@screens/PappView/PappView';
 import styles, { containerStyle as styled } from '@screens/PappView/style';
+import SelectToken from '@components/HeaderRight/SelectToken';
 
 class Event extends Component {
   constructor(props) {
@@ -131,6 +132,8 @@ class Event extends Component {
 
   render() {
     const { loading, selectedPrivacy, supportTokenIds, url, isLoading } = this.state;
+    const { tokens } = this.props;
+
     let content;
     if (!url) {
       content = <Empty />;
@@ -157,6 +160,16 @@ class Event extends Component {
       <View style={styled.container}>
         <Header
           title={url}
+          rightHeader={(
+            <View style={styles.chooseTokenIcon}>
+              <SelectToken
+                tokens={tokens}
+                onSelect={this.handleSelectPrivacyToken}
+                selectedPrivacy={selectedPrivacy}
+                supportTokenIds={supportTokenIds}
+              />
+            </View>
+          )}
         />
         {content}
         { isLoading && (
