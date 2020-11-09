@@ -49,7 +49,7 @@ const withValidate = WrappedComp => (props) => {
           setError(MESSAGES.BALANCE_INSUFFICIENT);
         } else if (
           prvBalance < fee ||
-          (isPrv && prvBalance === number &&  number === min))
+          (isPrv && (prvBalance < min + fee)))
         {
           setError(MESSAGES.NOT_ENOUGH_PRV_NETWORK_FEE);
         } else if (inputFee && number <= inputFee) {
