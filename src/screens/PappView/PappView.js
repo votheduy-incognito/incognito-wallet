@@ -246,8 +246,8 @@ class PappView extends Component {
     const qrCode = result?.data;
     if (!isEmpty(qrCode)) {
       const command   = COMMANDS.ON_RECEIVE_QR_CODE;
-      const data      = JSON.stringify({qrCode});
-      const payload = `${command}|${JSON.stringify(data)}`;
+      const data      = { qrCode };
+      const payload   = `${command}|${JSON.stringify(data)}`;
       this.webviewInstance.postMessage(payload);
       this.setState({ openQrScanner: false });
     }
