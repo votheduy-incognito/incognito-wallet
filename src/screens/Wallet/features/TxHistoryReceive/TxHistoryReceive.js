@@ -47,7 +47,7 @@ const TxHistoryReceive = (props) => {
     },
     {
       label: 'Time',
-      valueText: formatUtil.formatDateTime(history?.time),
+      valueText: history?.time,
       disabled: !history?.time,
     },
     {
