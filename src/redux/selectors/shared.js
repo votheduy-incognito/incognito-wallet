@@ -94,33 +94,44 @@ export const totalShieldedTokensSelector = createSelector(
         (t) => t?.tokenId === token?.id || t?.tokenId === token?.tokenId,
       ),
     );
+
     const prv = {
       ...getPrivacyDataByTokenID(CONSTANT_COMMONS.PRV.id),
       amount: accountBalance,
     };
-    const totalShieldedTokensByPRV = [...tokens, prv].reduce(
+    const totalShieldedTokens = [...tokens, prv].reduce(
       (prevValue, currentValue) => {
+        const totalShieldByPRV = prevValue.totalShieldByPRV;
+        const totalShieldByUSD = prevValue.totalShieldByUSD;
         const pricePrv = currentValue?.pricePrv || 0;
+        const priceUsd = currentValue?.priceUsd || 0;
         const humanAmount = convert.toHumanAmount(
           currentValue?.amount,
           currentValue?.pDecimals,
         );
-        let _currentValue = pricePrv * convert.toNumber(humanAmount);
-        if (isNaN(_currentValue)) {
-          _currentValue = 0;
+
+        let _currentPrvValue = pricePrv * convert.toNumber(humanAmount);
+        if (isNaN(_currentPrvValue)) {
+          _currentPrvValue = 0;
         }
-        return prevValue + _currentValue;
+
+        let _currentUsdValue = priceUsd * convert.toNumber(humanAmount);
+        if (isNaN(_currentPrvValue)) {
+          _currentUsdValue = 0;
+        }
+        return {
+          totalShieldByPRV: totalShieldByPRV + _currentPrvValue,
+          totalShieldByUSD: totalShieldByUSD + _currentUsdValue
+        };
       },
-      0,
+      {
+        totalShieldByPRV: 0,
+        totalShieldByUSD: 0
+      },
     );
 
-    // default is PRV
-    let totalShielded = totalShieldedTokensByPRV || 0;
-
-    if (isToggleUSD) {
-      // mean is USD
-      totalShielded = totalShielded * prv?.priceUsd || 0;
-    }
+    const { totalShieldByPRV, totalShieldByUSD } = totalShieldedTokens;
+    const totalShielded = isToggleUSD ? totalShieldByUSD : totalShieldByPRV;
 
     return convert.toOriginalAmount(
       totalShielded,
