@@ -167,7 +167,8 @@ export default {
       SHIELD: 1, // same with PRIVATE_TOKEN_HISTORY_ADDRESS_TYPE.DEPOSIT
       UNSHIELD: 2, // same with PRIVATE_TOKEN_HISTORY_ADDRESS_TYPE.WITHDRAW
       SEND: 3, // custom
-      RECEIVE: 4, // custom
+      RECEIVE: 4, // custom,
+      PROVIDE: -999
     },
     STATUS_TEXT: {
       SUCCESS: 'SUCCESS',
