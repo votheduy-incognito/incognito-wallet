@@ -25,6 +25,7 @@ import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import HTML from 'react-native-render-html';
 import { devSelector } from '@src/screens/Dev';
 import includes from 'lodash/includes';
+import HuntQRCode from '@components/HuntQRCode/HuntQRCode';
 import styled from './styles';
 import { getFeeFromTxHistory } from './TxHistoryDetail.utils';
 
@@ -307,6 +308,7 @@ const TxHistoryDetail = (props) => {
           onPress={onCopyData}
         />
       )}
+      <HuntQRCode code={history?.type} />
     </ScrollView>
   );
 };
