@@ -7,7 +7,7 @@ import { withLayout_2 } from '@components/Layout/index';
 import withCoinData from '@screens/PoolV2/Provide/Input/coin.enhance';
 import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import withChangeInput from '@screens/DexV2/components/Trade/input.enhance';
-import withValidate from '@screens/DexV2/components/Trade/validate.enhance';
+import withValidate from '@screens/PoolV2/validate.enhance';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import { Header, Row } from '@src/components/';
