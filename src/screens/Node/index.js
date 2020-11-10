@@ -449,7 +449,9 @@ class Node extends BaseScreen {
 
     for (const device of listDevice) {
       try {
-        await this.handleWithdraw(device, false);
+        if (device.AccountName && _.some(device.Rewards, reward => reward > 0)) {
+          await this.handleWithdraw(device, false);
+        }
       } catch {
         // Ignore the error
       }
