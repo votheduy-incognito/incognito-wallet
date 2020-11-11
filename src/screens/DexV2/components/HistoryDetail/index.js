@@ -5,6 +5,8 @@ import { View, Text, ScrollView, FlexView } from '@components/core';
 import { withLayout_2 } from '@components/Layout';
 import Header from '@components/Header/index';
 import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
+import { CONSTANT_COMMONS } from '@src/constants';
+import HuntQRCode from '@components/HuntQRCode/HuntQRCode';
 import styles from './style';
 import withData from './data.enhance';
 
@@ -63,6 +65,7 @@ const HistoryDetail = ({ history }) => {
         {factories.map(
           (item) => !item?.disabled && <ExtraInfo key={item?.left} {...item} />,
         )}
+        <HuntQRCode code={CONSTANT_COMMONS.HISTORY.TYPE.SEND} />
       </ScrollView>
     </FlexView>
   );
