@@ -47,6 +47,10 @@ const withValidate = WrappedComp => (props) => {
           isPrv && (prvBalance < number)
         )) {
           setError(MESSAGES.BALANCE_INSUFFICIENT);
+        } else if (inputFee && number <= inputFee) {
+          setError(MESSAGES.GREATER(inputFee, inputToken.pDecimals));
+        } else if (number < min) {
+          setError(MESSAGES.GREATER_OR_EQUAL(min, inputToken.pDecimals));
         } else if (
           prvBalance < fee ||
           (isPrv && (
@@ -60,10 +64,6 @@ const withValidate = WrappedComp => (props) => {
           ))
         ) {
           setError(MESSAGES.NOT_ENOUGH_PRV_NETWORK_FEE);
-        } else if (inputFee && number <= inputFee) {
-          setError(MESSAGES.GREATER(inputFee, inputToken.pDecimals));
-        } else if (number < min) {
-          setError(MESSAGES.GREATER_OR_EQUAL(min, inputToken.pDecimals));
         } else if (!Number.isInteger(number)) {
           setError(MESSAGES.MUST_BE_INTEGER);
         } else {
