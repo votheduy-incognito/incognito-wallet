@@ -8,8 +8,7 @@ import {
   isGettingBalance as isGettingBalanceToken,
 } from '@src/redux/selectors/token';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
-import uniqBy from 'lodash/uniqBy';
-import isNaN from 'lodash/isNaN';
+import { uniqBy, isNaN, compact, fromPairs } from 'lodash';
 import convert from '@src/utils/convert';
 import { defaultAccountName, defaultAccountBalanceSelector } from './account';
 
@@ -70,7 +69,7 @@ export const totalShieldedTokensSelector = createSelector(
       ...getPrivacyDataByTokenID(CONSTANT_COMMONS.PRV.id),
       amount: accountBalance,
     };
-    const totalShieldedTokens = [...tokens, prv].reduce(
+    const totalShieldedTokens = compact([...tokens, prv]).reduce(
       (prevValue, currentValue) => {
         const pricePrv = currentValue?.pricePrv || 0;
         const humanAmount = convert.toHumanAmount(
