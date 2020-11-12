@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
 import { CONSTANT_COMMONS } from '@src/constants';
-import { fromPairs } from 'lodash';
 import {
   pTokensSelector,
   internalTokensSelector,
