@@ -371,11 +371,13 @@ class Node extends BaseScreen {
         _.some(device.Rewards, value => value),
       );
 
+      noRewards = noRewards || validNodes.length === 0;
+
       const vNodes = validNodes.filter(device => device.IsVNode);
       const pNodes = validNodes.filter(device => device.IsPNode);
 
-      const vNodeWithdrawable = vNodes.length && vNodes.length !== withdrawTxs?.length;
-      const pNodeWithdrawable = pNodes.length && pNodes.some(item => item.IsFundedStakeWithdrawable);
+      const vNodeWithdrawable = vNodes.length > 0 && vNodes.length !== withdrawTxs?.length;
+      const pNodeWithdrawable = pNodes.length > 0 && pNodes.some(item => item.IsFundedStakeWithdrawable);
       const withdrawable = !noRewards && (vNodeWithdrawable || pNodeWithdrawable);
 
       this.setState({ rewards: rewardsList, withdrawable, noRewards });
