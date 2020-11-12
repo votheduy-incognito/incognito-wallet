@@ -10,6 +10,7 @@ import { apiTradePKyber } from '@screens/DexV2';
 import convertUtil from '@utils/convert';
 import { useDispatch } from 'react-redux';
 import { actionAddFollowToken } from '@src/redux/actions/token';
+import { actionLogEvent } from '@src/screens/Performance';
 
 const withTrade = (WrappedComp) => (props) => {
   const [error, setError] = React.useState('');
@@ -146,6 +147,11 @@ const withTrade = (WrappedComp) => (props) => {
         onTradeSuccess(true);
       }
     } catch (error) {
+      if (error) {
+        dispatch(actionLogEvent({
+          desc: `Trade has error: ${error?.message || error}`
+        }));
+      }
       setError(new ExHandler(error).getMessage(MESSAGES.TRADE_ERROR));
     } finally {
       setTrading(false);
