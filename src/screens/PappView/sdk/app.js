@@ -45,6 +45,12 @@ class SDK {
     const script = `${SDK_MODULE}._setData("${DATA_NAMES.PAYMENT_ADDRESS}", "${address}");`;
     this.sendScript(script);
   }
+
+  sendUpdateDeviceId(deviceId) {
+    if (!deviceId || typeof deviceId !== 'string') throw new Error('invalid device id');
+    const script = `${SDK_MODULE}._setData("${DATA_NAMES.DEVICE_ID}", "${deviceId}");`;
+    this.sendScript(script);
+  }
   
   sendUpdateTxPendingResult({ pendingTxId, error, data }) {
     if (!pendingTxId) throw new Error('invalid pendingTxId');

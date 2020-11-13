@@ -8,11 +8,12 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '@src/styles';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import { SafeAreaView} from 'react-native';
+import { SafeAreaView } from 'react-native';
 import styleSheet from '@components/core/Modal/style';
 import { Icon } from 'react-native-elements';
 import { isEmpty } from 'lodash';
 import { COMMANDS } from 'papp-sdk/src/base/constants';
+import DeviceInfo from 'react-native-device-info';
 import Validator from './sdk/validator';
 import RequestSendTx from './RequestSendTx';
 import { APPSDK, ERRORSDK, CONSTANTSDK } from './sdk';
@@ -26,8 +27,9 @@ const updateDataToPapp = (data) => {
     const { selectedPrivacy, listSupportedToken } = data;
     const balance = selectedPrivacy?.amount && convertUtil.toHumanAmount(selectedPrivacy?.amount, selectedPrivacy.pDecimals);
     const paymentAddress = selectedPrivacy?.paymentAddress;
-
+    const deviceId = DeviceInfo.getUniqueId();
     paymentAddress && sdk.sendUpdatePaymentAddress(paymentAddress);
+    deviceId && sdk.sendUpdateDeviceId(deviceId);
     selectedPrivacy && sdk.sendUpdateTokenInfo({
       balance,
       id: selectedPrivacy?.tokenId,
