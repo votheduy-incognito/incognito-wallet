@@ -12,11 +12,24 @@ import { useSelector } from 'react-redux';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { COLORS } from '@src/styles';
 import stylesheet from '@screens/DexV2/components/ExtraInfo/style';
-import convertUtil from '@utils/convert';
+import BigNumber from 'bignumber.js';
 import styles from './style';
 
+const convertToUsdNumber = (multiple, multipliedBy, decimal) => {
+  return BigNumber(multiple)
+    .multipliedBy(BigNumber(multipliedBy))
+    .dividedBy(BigNumber(10).pow(decimal))
+    .toNumber();
+};
+
 const getImpact = (input, output) => {
-  return ((input - output) / input).toFixed(3);
+  input   = BigNumber(input);
+  output  = BigNumber(output);
+  return input
+    .minus(output)
+    .dividedBy(input)
+    .decimalPlaces(3)
+    .toNumber();
 };
 
 const ExchangeRateImpact = ({
@@ -39,15 +52,13 @@ const ExchangeRateImpact = ({
       priceUsd:   outputPriceUsd,
       pDecimals:  outputPDecimals
     } = useSelector(selectedPrivacySeleclor.getPrivacyDataByTokenID)(outputToken?.id);
-    const totalInputUsd
-      = convertUtil.toHumanAmount(inputValue * inputPriceUsd, inputPDecimals);
-    const totalOutputUsd
-      = convertUtil.toHumanAmount(minimumAmount * outputPriceUsd, outputPDecimals);
-    if (totalOutputUsd && totalOutputUsd !== 0) {
+    const totalInputUsd   = convertToUsdNumber(inputValue, inputPriceUsd, inputPDecimals);
+    const totalOutputUsd  = convertToUsdNumber(minimumAmount, outputPriceUsd, outputPDecimals);
+    if (totalInputUsd && totalInputUsd !== 0 && totalOutputUsd) {
       const impactValue = getImpact(totalInputUsd, totalOutputUsd);
       if (!isNaN(impactValue)) {
         impact = (
-          <Text style={[stylesheet.text, stylesheet.textLeft, { color: impactValue > 0 ? COLORS.orange : COLORS.black, marginRight: 0 }]}>
+          <Text style={[stylesheet.text, stylesheet.textLeft, { color: impactValue > 2 ? COLORS.orange : COLORS.black, marginRight: 0 }]}>
             {`(${Math.abs(impactValue)})%`}
           </Text>
         );
@@ -70,7 +81,11 @@ const ExchangeRateImpact = ({
     }
     right = (
       <View style={{ alignItems: 'flex-end' }}>
-        <Text style={[stylesheet.text, stylesheet.textLeft, { marginRight: 0 }]}>
+        <Text
+          numberOfLines={1}
+          ellipsizeMode='tail'
+          style={[stylesheet.text, stylesheet.textLeft, { marginRight: 0 }]}
+        >
           {maxPrice}
         </Text>
         {impact || null}
