@@ -7,10 +7,16 @@ import Header from '@components/Header/index';
 import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import { CONSTANT_COMMONS } from '@src/constants';
 import HuntQRCode from '@components/HuntQRCode/HuntQRCode';
+import { HISTORY_STATUS } from '@src/constants/trading';
 import styles from './style';
 import withData from './data.enhance';
 
 const HistoryDetail = ({ history }) => {
+  const buyAmount = history?.status === HISTORY_STATUS.SUCCESSFUL
+  && history?.amountReceive
+    ? history?.amountReceive
+    : history?.buyAmount;
+
   let factories = [
     {
       left: 'ID',
@@ -18,7 +24,7 @@ const HistoryDetail = ({ history }) => {
     },
     {
       left: 'Buy',
-      right: `${history?.buyAmount} ${history?.buyTokenSymbol}`,
+      right: `${buyAmount} ${history?.buyTokenSymbol}`,
     },
     {
       left: 'Sell',

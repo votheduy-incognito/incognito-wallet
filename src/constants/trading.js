@@ -10,6 +10,12 @@ const ERC20_NETWORK = {
   PDex: 'Incognito',
 };
 
+export const HISTORY_STATUS = {
+  PENDING:      'Pending',
+  UNSUCCESSFUL: 'Unsuccessful',
+  SUCCESSFUL:   'Successful'
+};
+
 let kyberTradeAddress = '';
 let uniswapTradeAddress = '';
 let kyberFee = 0;

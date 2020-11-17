@@ -1,7 +1,7 @@
 import formatUtil, { LONG_DATE_TIME_FORMAT } from '@utils/format';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
-import { isNaN } from 'lodash';
+import { HISTORY_STATUS } from '@src/constants/trading';
 
 const TYPES = ['Incognito', 'Incognito', 'Kyber', '0x', 'Uniswap'];
 
@@ -38,6 +38,7 @@ export class PDexTradeHistoryModel {
     this.sellAmount = json.Amount;
     this.buyTokenId = json.BuyTokenID;
     this.buyAmount = BigNumber(json.MinimumAmount);
+    this.amountReceive = BigNumber(json?.AmountReceive);
     this.tradingFee = json.TradingFee;
     this.networkFee = json.NetworkFee;
     this.networkFeeTokenId = json.NetworkFeeTokenID;
@@ -46,7 +47,7 @@ export class PDexTradeHistoryModel {
     )?.accountName;
     this.createdAt = moment(json.CreatedAt).format(LONG_DATE_TIME_FORMAT);
     this.type = 'Trade';
-    this.status = ['Pending', 'Unsuccessful', 'Successful'][json.Status];
+    this.status = [HISTORY_STATUS.PENDING, HISTORY_STATUS.UNSUCCESSFUL, HISTORY_STATUS.SUCCESSFUL][json.Status];
     this.exchange = TYPES[json.Type] || 'Incognito';
     let buyToken = allTokens.find(
       (token) =>
@@ -75,6 +76,14 @@ export class PDexTradeHistoryModel {
       );
     } else {
       this.buyAmount = '';
+    }
+    if (buyToken && !this.amountReceive?.isNaN()) {
+      this.amountReceive = formatUtil.amountFull(
+        this.amountReceive,
+        buyToken.pDecimals,
+      );
+    } else {
+      this.amountReceive = '';
     }
     if (sellToken) {
       this.sellTokenSymbol = sellToken.symbol;
