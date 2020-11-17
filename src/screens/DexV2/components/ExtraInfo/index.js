@@ -16,7 +16,7 @@ const ExtraInfo = (props) => {
       <RightWrapper
         numberOfLines={1}
         ellipsizeMode='tail'
-        style={[stylesheet.text, stylesheet.textRight, style, rightStyle]}
+        style={[stylesheet.text, stylesheet.textRight, style, rightStyle, { flex: 1 }]}
       >
         {right}
       </RightWrapper>
