@@ -30,6 +30,7 @@ import withERC20 from '@screens/DexV2/components/Trade/with.erc20';
 import PoolSize from '@screens/DexV2/components/PoolSize';
 import { ArrowRightGreyIcon } from '@components/Icons';
 import PDexFee from '@screens/DexV2/components/PDexFee';
+import { PowerTrade } from '@screens/DexV2/components/Powered';
 import NewInput from '../NewInput';
 import withPair from './pair.enhance';
 import withChangeInput from './input.enhance';
@@ -92,14 +93,21 @@ const Trade = ({
   };
 
   const renderPoolSize = () => {
+    if (pair && (!quote || (quote && !!quote?.crossTrade))) {
+      return (
+        <PoolSize
+          outputToken={outputToken}
+          inputToken={inputToken}
+          pair={pair}
+          hasPower
+          network={isErc20 ? quote?.network : 'Incognito'}
+        />
+      );
+    }
     return (
-      <PoolSize
-        outputToken={outputToken}
-        inputToken={inputToken}
-        pair={pair}
-        quote={quote}
-        hasPower
-        network={isErc20 ? quote?.network : 'Incognito'}
+      <ExtraInfo
+        left={<PowerTrade network={isErc20 ? quote?.network : 'Incognito'} />}
+        right=''
       />
     );
   };

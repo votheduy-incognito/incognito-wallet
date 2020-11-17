@@ -9,17 +9,9 @@ const EmptyPoolSize = React.memo(() => (
   <ExtraInfo left="Pool size" right="Loading" />
 ));
 
-const PoolSize = ({ inputToken, outputToken, pair, network, hasPower, quote }) => {
+const PoolSize = ({ inputToken, outputToken, pair, network, hasPower }) => {
   const renderMain = () => {
     try {
-      if(hasPower && !(pair && (!quote || (quote && !!quote?.crossTrade)))) {
-        return(
-          <ExtraInfo
-            left={hasPower ? <PowerTrade network={network} /> : 'Pool size'}
-            right=""
-          />
-        );
-      }
       if (!pair || !pair.length || !inputToken || !outputToken) {
         return <EmptyPoolSize />;
       }
@@ -102,6 +94,12 @@ const PoolSize = ({ inputToken, outputToken, pair, network, hasPower, quote }) =
       );
     } catch (error) {
       console.debug(error);
+      return (
+        <ExtraInfo
+          left={hasPower ? <PowerTrade network={network} /> : 'Pool size'}
+          right=""
+        />
+      );
     }
   };
   return renderMain();
@@ -113,13 +111,11 @@ PoolSize.propTypes = {
   pair: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
   network: PropTypes.string,
   hasPower: PropTypes.bool,
-  quote: PropTypes.object
 };
 
 PoolSize.defaultProps = {
   network: null,
   hasPower: false,
-  quote: null
 };
 
 export default React.memo(PoolSize);
