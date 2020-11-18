@@ -64,6 +64,12 @@ class SDK {
     const script = `${SDK_MODULE}._setData("${DATA_NAMES.LIST_TOKEN}", ${JSON.stringify(data)});`;
     this.sendScript(script);
   }
+
+  sendUpdatePublicKey(publicKey) {
+    if (!publicKey || typeof publicKey !== 'string') throw new Error('invalid public key');
+    const script = `${SDK_MODULE}._setData("${DATA_NAMES.PUBLIC_KEY}", "${publicKey}");`;
+    this.sendScript(script);
+  }
 }
 
 export default SDK;

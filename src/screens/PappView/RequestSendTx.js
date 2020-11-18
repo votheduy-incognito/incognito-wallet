@@ -122,7 +122,7 @@ class RequestSendTx extends Component {
 
   render() {
     const { isSending } = this.state;
-    const { onCancel, selectedPrivacy, toAddress, amount, url } = this.props;
+    const { onCancel, selectedPrivacy, toAddress, amount, url, info } = this.props;
     const fee = DEFAULT_FEE; // default in PRV
 
     return (
@@ -132,7 +132,7 @@ class RequestSendTx extends Component {
         {this.renderData('To address', toAddress)}
         {this.renderData('Amount', `${formatUtil.amount(amount, selectedPrivacy?.pDecimals)} ${selectedPrivacy?.symbol}`)}
         {this.renderData('Fee', `${formatUtil.amount(fee, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}`)}
-
+        {this.renderData('Info', info)}
         <View style={requestSendTxStyle.groupBtn}>
           <Button style={requestSendTxStyle.cancelBtn} title='Cancel' onPress={onCancel} />
           <Button style={requestSendTxStyle.submitBtn} title='Confirm Send' onPress={this.handleSendTx} />
