@@ -54,7 +54,7 @@ const ExchangeRateImpact = ({
     } = useSelector(selectedPrivacySeleclor.getPrivacyDataByTokenID)(outputToken?.id);
     const totalInputUsd   = convertToUsdNumber(inputValue, inputPriceUsd, inputPDecimals);
     const totalOutputUsd  = convertToUsdNumber(minimumAmount, outputPriceUsd, outputPDecimals);
-    if (totalInputUsd && totalInputUsd !== 0 && totalOutputUsd) {
+    if (totalInputUsd && totalInputUsd !== 0) {
       const impactValue = getImpact(totalInputUsd, totalOutputUsd);
       if (!isNaN(impactValue)) {
         impact = (
