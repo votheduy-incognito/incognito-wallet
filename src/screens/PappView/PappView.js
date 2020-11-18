@@ -19,25 +19,33 @@ import RequestSendTx from './RequestSendTx';
 import { APPSDK, ERRORSDK, CONSTANTSDK } from './sdk';
 import styles from './style';
 
-let sdk: APPSDK   = null;
+let sdk: APPSDK = null;
 const updateDataToPapp = (data) => {
   if (!sdk) return;
 
   try {
-    const { selectedPrivacy, listSupportedToken } = data;
-    const balance = selectedPrivacy?.amount && convertUtil.toHumanAmount(selectedPrivacy?.amount, selectedPrivacy.pDecimals);
-    const paymentAddress = selectedPrivacy?.paymentAddress;
+    const { selectedPrivacy, listSupportedToken, account } = data;
+    const publicKey = account?.PublicKeyCheckEncode;
+    const paymentAddress = account?.PaymentAddress;
+    const balance =
+      selectedPrivacy?.amount &&
+      convertUtil.toHumanAmount(
+        selectedPrivacy?.amount,
+        selectedPrivacy.pDecimals,
+      );
     const deviceId = DeviceInfo.getUniqueId();
     paymentAddress && sdk.sendUpdatePaymentAddress(paymentAddress);
+    publicKey && sdk.sendUpdatePublicKey(publicKey);
     deviceId && sdk.sendUpdateDeviceId(deviceId);
-    selectedPrivacy && sdk.sendUpdateTokenInfo({
-      balance,
-      id: selectedPrivacy?.tokenId,
-      symbol: selectedPrivacy?.symbol,
-      name: selectedPrivacy?.name,
-      nanoBalance: selectedPrivacy?.amount,
-      pDecimals: selectedPrivacy?.pDecimals
-    });
+    selectedPrivacy &&
+      sdk.sendUpdateTokenInfo({
+        balance,
+        id: selectedPrivacy?.tokenId,
+        symbol: selectedPrivacy?.symbol,
+        name: selectedPrivacy?.name,
+        nanoBalance: selectedPrivacy?.amount,
+        pDecimals: selectedPrivacy?.pDecimals,
+      });
     listSupportedToken && sdk.sendListToken(listSupportedToken);
   } catch (e) {
     new ExHandler(e).showErrorToast();
@@ -49,14 +57,21 @@ const getListSupportedToken = (supportTokenIds = [], tokens = []) => {
     [CONSTANT_COMMONS.PRV_TOKEN_ID]: {
       id: CONSTANT_COMMONS.PRV_TOKEN_ID,
       symbol: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
-      name: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV
-    }
+      name: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
+    },
   };
 
-  const supportTokens = tokens.filter(token => supportTokenIds.includes(token?.id));
+  const supportTokens = tokens.filter((token) =>
+    supportTokenIds.includes(token?.id),
+  );
 
-  supportTokens?.forEach(token => {
-    token?.id && (list[token?.id] = { id: token?.id, symbol: token?.symbol, name: token?.name });
+  supportTokens?.forEach((token) => {
+    token?.id &&
+      (list[(token?.id)] = {
+        id: token?.id,
+        symbol: token?.symbol,
+        name: token?.name,
+      });
   });
 
   return Object.values(list);
@@ -70,7 +85,7 @@ class PappView extends Component {
       isLoaded: false,
       hasWebViewError: false,
       url: props?.url || '',
-      openQrScanner: false
+      openQrScanner: false,
     };
 
     this.webviewInstance = null;
@@ -78,17 +93,21 @@ class PappView extends Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     // Ura: I think we should retry this held while url is invalid
-    if (nextProps?.url != prevState?.url && nextProps?.url?.replace(' ', '') != '') {
+    if (
+      nextProps?.url != prevState?.url &&
+      nextProps?.url?.replace(' ', '') != ''
+    ) {
       return {
         url: nextProps?.url || 'https://incscan.io',
         hasWebViewError: isLoaded && false,
       };
     }
-    const { selectedPrivacy, supportTokenIds, tokens } = nextProps;
+    const { selectedPrivacy, supportTokenIds, tokens, account } = nextProps;
     const { isLoaded } = prevState;
 
     const listSupportedToken = getListSupportedToken(supportTokenIds, tokens);
-    isLoaded && updateDataToPapp({ selectedPrivacy, listSupportedToken });
+    isLoaded &&
+      updateDataToPapp({ selectedPrivacy, listSupportedToken, account });
 
     return null;
   }
@@ -101,12 +120,16 @@ class PappView extends Component {
 
   closeModal = () => {
     this.setState({ modalData: null });
-  }
+  };
 
   onRequestSendTx = ({ toAddress, amount, pendingTxId, info } = {}) => {
-    new Validator('onRequestSendTx toAddress', toAddress).required().paymentAddress();
+    new Validator('onRequestSendTx toAddress', toAddress)
+      .required()
+      .paymentAddress();
     new Validator('onRequestSendTx amount', amount).required().amount();
-    new Validator('onRequestSendTx pendingTxId', pendingTxId).required().string();
+    new Validator('onRequestSendTx pendingTxId', pendingTxId)
+      .required()
+      .string();
     new Validator('onRequestSendTx info', info).string();
 
     const { selectedPrivacy, url } = this.props;
@@ -120,37 +143,50 @@ class PappView extends Component {
           pendingTxId={pendingTxId}
           selectedPrivacy={selectedPrivacy}
           onCancel={() => {
-            sdk?.sendUpdateTxPendingResult({ pendingTxId, error: ERRORSDK.user_cancel_send_tx });
+            sdk?.sendUpdateTxPendingResult({
+              pendingTxId,
+              error: ERRORSDK.user_cancel_send_tx,
+            });
             this.closeModal();
           }}
-          onSendSuccess={rs => {
+          onSendSuccess={(rs) => {
             sdk?.sendUpdateTxPendingResult({ pendingTxId, data: rs });
             this.closeModal();
           }}
-          onSendFailed={e => {
-            sdk?.sendUpdateTxPendingResult({ pendingTxId, error: ERRORSDK.createError(ERRORSDK.ERROR_CODE.SEND_TX_ERROR, e?.message) });
+          onSendFailed={(e) => {
+            sdk?.sendUpdateTxPendingResult({
+              pendingTxId,
+              error: ERRORSDK.createError(
+                ERRORSDK.ERROR_CODE.SEND_TX_ERROR,
+                e?.message,
+              ),
+            });
             this.closeModal();
           }}
         />
-      )
+      ),
     });
-  }
+  };
 
-  onSdkSelectPrivacyById = tokenID => {
-    new Validator('onSdkSelectPrivacyById tokenID', tokenID).required().string();
+  onSdkSelectPrivacyById = (tokenID) => {
+    new Validator('onSdkSelectPrivacyById tokenID', tokenID)
+      .required()
+      .string();
 
     const { onSelectPrivacyToken } = this.props;
     onSelectPrivacyToken(tokenID);
-  }
+  };
 
-  onSdkSetSupportListTokenById = tokenIds => {
-    new Validator('onSdkSetSupportListTokenById tokenIds', tokenIds).required().array();
+  onSdkSetSupportListTokenById = (tokenIds) => {
+    new Validator('onSdkSetSupportListTokenById tokenIds', tokenIds)
+      .required()
+      .array();
 
-    const filterIds = tokenIds.filter(id => typeof id === 'string');
+    const filterIds = tokenIds.filter((id) => typeof id === 'string');
 
     const { onSetListSupportTokenById } = this.props;
     onSetListSupportTokenById(filterIds);
-  }
+  };
 
   onWebViewData = async (e) => {
     try {
@@ -180,15 +216,25 @@ class PappView extends Component {
             this.setState({ openQrScanner: false });
           }, 30000);
           break;
-        }}
+        }
+        }
       }
     } catch (e) {
-      new ExHandler(e, 'The pApp occured an error. Please try again.').showErrorToast();
+      new ExHandler(
+        e,
+        'The pApp occured an error. Please try again.',
+      ).showErrorToast();
     }
-  }
+  };
 
   onPappLoaded = (syntheticEvent) => {
-    const { selectedPrivacy, listSupportedToken, onChangeUrl, onLoadEnd } = this.props;
+    const {
+      selectedPrivacy,
+      listSupportedToken,
+      onChangeUrl,
+      onLoadEnd,
+      account,
+    } = this.props;
     const { nativeEvent } = syntheticEvent;
 
     if (typeof onChangeUrl === 'function') {
@@ -196,48 +242,64 @@ class PappView extends Component {
     }
 
     onLoadEnd && onLoadEnd();
-
     setTimeout(() => {
       this.setState({ isLoaded: true }, () => {
-        updateDataToPapp({ selectedPrivacy, listSupportedToken });
+        updateDataToPapp({ selectedPrivacy, listSupportedToken, account });
       });
     }, 2000);
-  }
+  };
 
   onLoadPappError = (e) => {
     const { onLoadError } = this.props;
     onLoadError && onLoadError();
     this.setState({ hasWebViewError: true });
-    new ExHandler(new CustomError(ErrorCode.papp_can_not_opened, { rawError: e }));
-  }
+    new ExHandler(
+      new CustomError(ErrorCode.papp_can_not_opened, { rawError: e }),
+    );
+  };
 
   onGoBack = () => {
     this.webviewInstance?.goBack();
-  }
+  };
 
   onGoForward = () => {
     this.webviewInstance?.goForward();
-  }
+  };
 
   onReload = () => {
     this.webviewInstance?.reload();
-  }
+  };
 
   renderBottomBar = () => {
     return (
       <View style={styles.navigation}>
         <View style={{ flexDirection: 'row', flex: 1 }}>
           <TouchableOpacity onPress={() => this.onGoBack()} style={styles.back}>
-            <Ionicons name="ios-arrow-back" size={30} color={COLORS.colorGreyBold} />
+            <Ionicons
+              name="ios-arrow-back"
+              size={30}
+              color={COLORS.colorGreyBold}
+            />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.onGoForward()} style={styles.back}>
-            <Ionicons name="ios-arrow-forward" size={30} color={COLORS.colorGreyBold} />
+          <TouchableOpacity
+            onPress={() => this.onGoForward()}
+            style={styles.back}
+          >
+            <Ionicons
+              name="ios-arrow-forward"
+              size={30}
+              color={COLORS.colorGreyBold}
+            />
           </TouchableOpacity>
           <TouchableOpacity style={styles.back}>
             {/* <SimpleLineIcons name="home" size={25} color={COLORS.colorGreyBold} /> */}
           </TouchableOpacity>
           <TouchableOpacity onPress={() => this.onReload()} style={styles.back}>
-            <Ionicons name="ios-refresh" size={30} color={COLORS.colorGreyBold} />
+            <Ionicons
+              name="ios-refresh"
+              size={30}
+              color={COLORS.colorGreyBold}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -247,9 +309,9 @@ class PappView extends Component {
   onReadQrCode = (result) => {
     const qrCode = result?.data;
     if (!isEmpty(qrCode)) {
-      const command   = COMMANDS.ON_RECEIVE_QR_CODE;
-      const data      = { qrCode };
-      const payload   = `${command}|${JSON.stringify(data)}`;
+      const command = COMMANDS.ON_RECEIVE_QR_CODE;
+      const data = { qrCode };
+      const payload = `${command}|${JSON.stringify(data)}`;
       this.webviewInstance.postMessage(payload);
       this.setState({ openQrScanner: false });
     }
@@ -282,9 +344,9 @@ class PappView extends Component {
   renderQrCodeCamera = () => {
     const { openQrScanner } = this.state;
     return (
-      <Modal animationType='fade' visible={openQrScanner} >
+      <Modal animationType="fade" visible={openQrScanner}>
         <View style={styles.container}>
-          { this.renderHeaderQRCode() }
+          {this.renderHeaderQRCode()}
           <QRCodeScanner
             showMarker
             cameraStyle={styles.scanner}
@@ -302,7 +364,7 @@ class PappView extends Component {
       return (
         <SimpleInfo
           text={`We can not open "${url}". Please make sure you are using a correct pApp URL.`}
-          type='warning'
+          type="warning"
         />
       );
     }
@@ -311,7 +373,7 @@ class PappView extends Component {
       <>
         <View style={styles.container}>
           <WebView
-            ref={webview => {
+            ref={(webview) => {
               if (webview?.webViewRef?.current) {
                 sdk = new APPSDK(webview);
                 this.webviewInstance = webview;
@@ -320,24 +382,20 @@ class PappView extends Component {
             containerStyle={styles.webview}
             source={{ uri: url }}
             allowsBackForwardNavigationGestures
-            onLoad={
-              e => {
-                // Update the state so url changes could be detected by React and we could load the mainUrl.
-                this.setState({ url: e.nativeEvent.url });
-              }
-            }
+            onLoad={(e) => {
+              // Update the state so url changes could be detected by React and we could load the mainUrl.
+              this.setState({ url: e.nativeEvent.url });
+            }}
             bounces
             cacheEnabled={false}
-            cacheMode='LOAD_NO_CACHE'
+            cacheMode="LOAD_NO_CACHE"
             onError={this.onLoadPappError}
             onLoadEnd={this.onPappLoaded}
             onMessage={this.onWebViewData}
           />
           {!hasWebViewError ? this.renderBottomBar() : null}
-          <Modal visible={!!modalData}>
-            {modalData}
-          </Modal>
-          { this.renderQrCodeCamera() }
+          <Modal visible={!!modalData}>{modalData}</Modal>
+          {this.renderQrCodeCamera()}
         </View>
       </>
     );
@@ -357,7 +415,7 @@ PappView.propTypes = {
 
 PappView.defaultProps = {
   onLoadError: null,
-  onLoadEnd: null
+  onLoadEnd: null,
 };
 
 export default PappView;
