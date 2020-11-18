@@ -22,7 +22,6 @@ import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import withChangeInputToken from '@screens/DexV2/components/Trade/inputToken.enhance';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
-import withWarning from '@screens/DexV2/components/Trade/warning.enhance';
 import withHistories from '@screens/DexV2/components/histories.enhance';
 import withParams from '@screens/DexV2/components/Trade/params.enhance';
 import withAccount from '@screens/DexV2/components/account.enhance';
@@ -249,7 +248,6 @@ export default compose(
   withSwap,
   withCalculateOutput,
   withValidate,
-  withWarning,
   withParams,
 )(Trade);
 
