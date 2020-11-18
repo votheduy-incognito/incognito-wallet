@@ -43,6 +43,7 @@ export const sectionStyle = StyleSheet.create({
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 4,
     color: COLORS.colorGreyBold,
+    flex: 1,
   },
   subDesc: {
     marginTop: 10,
