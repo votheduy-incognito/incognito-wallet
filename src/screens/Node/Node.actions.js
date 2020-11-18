@@ -62,7 +62,6 @@ export const actionGetNodesInfoFromApi = (isRefresh) => async (dispatch, getStat
     const {
       allTokens,
       allRewards,
-      noRewards
     } = await parseRewards(nodesInfo);
     const nodeRewards = parseNodeRewardsToArray(allRewards, allTokens);
 
@@ -77,7 +76,6 @@ export const actionGetNodesInfoFromApi = (isRefresh) => async (dispatch, getStat
     await dispatch(actionFetchedNodesInfoFromAPI({
       listDevice,
       nodeRewards,
-      noRewards,
       allTokens
     }));
 
