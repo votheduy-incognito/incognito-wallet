@@ -25,8 +25,8 @@ const convertToUsdNumber = (multiple, multipliedBy, decimal) => {
 const getImpact = (input, output) => {
   input   = BigNumber(input);
   output  = BigNumber(output);
-  return input
-    .minus(output)
+  return output
+    .minus(input)
     .dividedBy(input)
     .decimalPlaces(3)
     .toNumber();
@@ -58,8 +58,8 @@ const ExchangeRateImpact = ({
       const impactValue = getImpact(totalInputUsd, totalOutputUsd);
       if (!isNaN(impactValue)) {
         impact = (
-          <Text style={[stylesheet.text, stylesheet.textLeft, { color: impactValue > 2 ? COLORS.orange : COLORS.black, marginRight: 0 }]}>
-            {`(${Math.abs(impactValue)})%`}
+          <Text style={[stylesheet.text, stylesheet.textLeft, { color: impactValue < 2 ? COLORS.orange : COLORS.black, marginRight: 0 }]}>
+            {`(${impactValue})%`}
           </Text>
         );
       }
