@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
 import { Text, View, StyleSheet, ScrollView } from 'react-native';
-import {Header} from '@src/components';
+import { Header } from '@src/components';
 import { COLORS, FONT } from '@src/styles';
 import PropTypes from 'prop-types';
 import withEnhance from './Helper.enhance';
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
 
 HelperScreen.propTypes = {
   title: PropTypes.string.isRequired,
-  content: PropTypes.string.isRequired,
+  content: PropTypes.string.isRequired
 };
 
 export default withEnhance(memo(HelperScreen));
