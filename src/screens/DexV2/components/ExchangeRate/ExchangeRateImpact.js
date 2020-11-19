@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { isNumber } from 'lodash';
 import formatUtil from '@utils/format';
@@ -8,29 +8,10 @@ import Help from '@components/Help';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import helperConst from '@src/constants/helper';
-import { useSelector } from 'react-redux';
-import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { COLORS } from '@src/styles';
 import stylesheet from '@screens/DexV2/components/ExtraInfo/style';
-import BigNumber from 'bignumber.js';
+import { calculateSizeImpact } from '@screens/DexV2/components/Trade/utils';
 import styles from './style';
-
-const convertToUsdNumber = (multiple, multipliedBy, decimal) => {
-  return BigNumber(multiple)
-    .multipliedBy(BigNumber(multipliedBy))
-    .dividedBy(BigNumber(10).pow(decimal))
-    .toNumber() || 0;
-};
-
-const getImpact = (input, output) => {
-  input   = BigNumber(input);
-  output  = BigNumber(output);
-  return output
-    .minus(input)
-    .dividedBy(input)
-    .decimalPlaces(3)
-    .toNumber();
-};
 
 const ExchangeRateImpact = ({
   inputToken,
@@ -40,31 +21,22 @@ const ExchangeRateImpact = ({
 }) => {
   const navigation = useNavigation();
 
-  let right = '';
+  let right   = '';
 
-  let impact = null;
-  if (inputToken?.id && outputToken.symbol) {
-    const {
-      priceUsd:   inputPriceUsd,
-      pDecimals:  inputPDecimals
-    } = useSelector(selectedPrivacySeleclor.getPrivacyDataByTokenID)(inputToken?.id);
-    const {
-      priceUsd:   outputPriceUsd,
-      pDecimals:  outputPDecimals
-    } = useSelector(selectedPrivacySeleclor.getPrivacyDataByTokenID)(outputToken?.id);
-    const totalInputUsd   = convertToUsdNumber(inputValue, inputPriceUsd, inputPDecimals);
-    const totalOutputUsd  = convertToUsdNumber(minimumAmount, outputPriceUsd, outputPDecimals);
-    if (totalInputUsd && totalInputUsd !== 0) {
-      const impactValue = getImpact(totalInputUsd, totalOutputUsd);
-      if (!isNaN(impactValue)) {
-        impact = (
-          <Text style={[stylesheet.text, stylesheet.textLeft, { color: impactValue < 2 ? COLORS.orange : COLORS.black, marginRight: 0 }]}>
-            {`(${impactValue})%`}
-          </Text>
-        );
-      }
+  const {
+    impact: impactValue,
+    showWarning
+  } = calculateSizeImpact(inputValue, inputToken, minimumAmount, outputToken);
+  const Impact = useMemo(() => {
+    if (impactValue) {
+      return (
+        <Text style={[stylesheet.text, stylesheet.textLeft, { color: showWarning ? COLORS.orange : COLORS.black, marginRight: 0 }]}>
+          {`(${impactValue})%`}
+        </Text>
+      );
     }
-  }
+    return null;
+  }, [impactValue, showWarning]);
 
   if (!(
     !outputToken ||
@@ -88,7 +60,7 @@ const ExchangeRateImpact = ({
         >
           {maxPrice}
         </Text>
-        {impact || null}
+        {Impact || null}
       </View>
     );
   }
