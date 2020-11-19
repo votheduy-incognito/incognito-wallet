@@ -19,7 +19,7 @@ const convertToUsdNumber = (multiple, multipliedBy, decimal) => {
   return BigNumber(multiple)
     .multipliedBy(BigNumber(multipliedBy))
     .dividedBy(BigNumber(10).pow(decimal))
-    .toNumber();
+    .toNumber() || 0;
 };
 
 const getImpact = (input, output) => {
