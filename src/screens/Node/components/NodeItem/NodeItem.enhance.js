@@ -25,14 +25,14 @@ const enhance = WrappedComp => props => {
   const { isRefreshing: isRefresh } = useSelector(nodeSelector);
 
   const getVNodeInfo = async () => {
-    const blsKey    = device?.PublicKeyMining;
+    const oldBLSKey = device?.PublicKeyMining;
     const publicKey = device?.PublicKey;
     const productId = device?.ProductId;
 
     dispatch(actionUpdateVNodeItem(
-      { blsKey, productId, device },
+      { oldBLSKey, productId, device },
       () => {
-        if (isEmpty(blsKey) || isEmpty(publicKey)) {
+        if (isEmpty(oldBLSKey) || isEmpty(publicKey)) {
           dispatch(actionUpdateNumberLoadedVNodeBLS());
         }
         setLoading(false);
