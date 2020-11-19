@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { isNumber } from 'lodash';
 import formatUtil from '@utils/format';
@@ -8,9 +8,7 @@ import Help from '@components/Help';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import helperConst from '@src/constants/helper';
-import { COLORS } from '@src/styles';
 import stylesheet from '@screens/DexV2/components/ExtraInfo/style';
-import { calculateSizeImpact } from '@screens/DexV2/components/Trade/utils';
 import styles from './style';
 
 const ExchangeRateImpact = ({
@@ -22,21 +20,6 @@ const ExchangeRateImpact = ({
   const navigation = useNavigation();
 
   let right   = '';
-
-  const {
-    impact: impactValue,
-    showWarning
-  } = calculateSizeImpact(inputValue, inputToken, minimumAmount, outputToken);
-  const Impact = useMemo(() => {
-    if (impactValue) {
-      return (
-        <Text style={[stylesheet.text, stylesheet.textLeft, { color: showWarning ? COLORS.orange : COLORS.black, marginRight: 0 }]}>
-          {`(${impactValue})%`}
-        </Text>
-      );
-    }
-    return null;
-  }, [impactValue, showWarning]);
 
   if (!(
     !outputToken ||
@@ -60,19 +43,18 @@ const ExchangeRateImpact = ({
         >
           {maxPrice}
         </Text>
-        {Impact || null}
       </View>
     );
   }
   const onHelpPress = () => {
-    navigation.navigate(routeNames.Helper, helperConst.HELPER_CONSTANT.MAX_PRICE_IMPACT);
+    navigation.navigate(routeNames.Helper, helperConst.HELPER_CONSTANT.MAX_PRICE);
   };
 
   return (
     <ExtraInfo
       left={(
         <View style={styles.row}>
-          <Text style={styles.extra}>Max price & impact</Text>
+          <Text style={styles.extra}>Max price</Text>
           <Help onPress={onHelpPress} />
         </View>
       )}

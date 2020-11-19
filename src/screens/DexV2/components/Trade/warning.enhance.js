@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { calculateSizeImpact } from './utils';
 
-const WARNING_STR = 'This pool has low liquidity. Please note prices.';
+const WARNING_STR = 'Do note that due to trade size, the price of this trade varies significantly from market price.';
 const withWarning = (WrappedComp) => (props) => {
   const {
     inputToken,

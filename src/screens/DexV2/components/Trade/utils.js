@@ -3,6 +3,7 @@ import { COINS } from '@src/constants';
 import { useSelector } from 'react-redux';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import BigNumber from 'bignumber.js';
+import formatUtils from '@utils/format';
 
 export const calculateOutputValueCrossPool = (pairs, inputToken, inputValue, outputToken) => {
   const firstPair = _.get(pairs, 0);
@@ -66,7 +67,7 @@ const getImpact = (input, output) => {
   return output
     .minus(input)
     .dividedBy(input)
-    .decimalPlaces(3)
+    .multipliedBy(100)
     .toNumber();
 };
 
@@ -82,7 +83,7 @@ export const calculateSizeImpact = (inputValue, inputToken, outputValue, outputT
   const totalInputUsd   = convertToUsdNumber(inputValue, inputPriceUsd, inputPDecimals);
   const totalOutputUsd  = convertToUsdNumber(outputValue, outputPriceUsd, outputPDecimals);
   if (totalInputUsd && totalInputUsd !== 0) {
-    const impact = getImpact(totalInputUsd, totalOutputUsd);
+    const impact = formatUtils.fixedNumber(getImpact(totalInputUsd, totalOutputUsd), 3);
     if (!isNaN(impact)) {
       return {
         impact: impact,
