@@ -30,6 +30,7 @@ import PoolSize from '@screens/DexV2/components/PoolSize';
 import { ArrowRightGreyIcon } from '@components/Icons';
 import PDexFee from '@screens/DexV2/components/PDexFee';
 import { PowerTrade } from '@screens/DexV2/components/Powered';
+import PriceImpact from '@screens/DexV2/components/PriceImpact/PriceImpact';
 import NewInput from '../NewInput';
 import withPair from './pair.enhance';
 import withChangeInput from './input.enhance';
@@ -182,6 +183,13 @@ const Trade = ({
                 inputToken={inputToken}
                 outputToken={outputToken}
                 quote={quote}
+              />
+              <PriceImpact
+                inputValue={inputValue}
+                outputValue={outputValue}
+                minimumAmount={minimumAmount}
+                inputToken={inputToken}
+                outputToken={outputToken}
               />
               {renderFee()}
               {renderPoolSize()}
