@@ -19,7 +19,12 @@ import formatUtil from '@src/utils/format';
 import linkingService from '@src/services/linking';
 import { QrCodeAddressDefault } from '@src/components/QrCodeAddress';
 import { CopyIcon, OpenUrlIcon } from '@src/components/Icons';
-import {BtnRetry, BtnChevron, ButtonBasic, BtnResume} from '@src/components/Button';
+import {
+  BtnRetry,
+  BtnChevron,
+  ButtonBasic,
+  BtnResume,
+} from '@src/components/Button';
 import { useSelector } from 'react-redux';
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import HTML from 'react-native-render-html';
@@ -308,7 +313,7 @@ const TxHistoryDetail = (props) => {
           onPress={onCopyData}
         />
       )}
-      <HuntQRCode code={history?.type} />
+      <HuntQRCode txId={history?.id} code={history?.type} />
     </ScrollView>
   );
 };
