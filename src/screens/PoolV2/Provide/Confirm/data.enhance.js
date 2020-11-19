@@ -22,7 +22,7 @@ const withData = WrappedComp => (props) => {
   );
 
   const originDeposit = formatDeposit(value, fee);
-  const deposit       = formatUtil.amountFull(originDeposit, feeToken.pDecimals);
+  const deposit       = formatUtil.amountFull(originDeposit, coin.pDecimals);
 
   return (
     <WrappedComp
