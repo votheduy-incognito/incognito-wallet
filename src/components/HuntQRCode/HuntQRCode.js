@@ -1,5 +1,11 @@
-import React, {memo, useEffect, useState} from 'react';
-import { ActivityIndicator, Clipboard, Text, TouchableOpacity, View } from 'react-native';
+import React, { memo, useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  Clipboard,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import PropTypes from 'prop-types';
 import { COLORS } from '@src/styles';
@@ -11,22 +17,21 @@ import routeNames from '@routers/routeNames';
 import styles from './Hunt.styles';
 
 const TEXT_CONST = {
-  title:      'Booya! You found a code.',
-  head:       'Scan it from the Quest',
-  subHead:    'tab to unlock a prize. ',
-  learnMore:  'Learn more'
+  title: 'Booya! You found a code.',
+  head: 'Scan it from the Quest',
+  subHead: 'tab to unlock a prize. ',
+  learnMore: 'Learn more',
 };
 
-const HuntQRCode = ({ code }) => {
+const HuntQRCode = (props) => {
+  const { code, txId } = props;
   const navigation = useNavigation();
-
   const [qrCode, setQrCode] = useState(null);
   const [loaded, setLoaded] = useState(false);
-
   const getQrcode = async () => {
     try {
-      if (!code) return;
-      const { qrCode } = await apiGetQrCodeHunt(code) || {};
+      if (!code || !txId) return;
+      const { qrCode } = (await apiGetQrCodeHunt(code, txId)) || {};
       setQrCode(qrCode);
     } catch (error) {
       console.log('GET HUNT QRCODE WITH ERROR: ', error);
@@ -34,7 +39,6 @@ const HuntQRCode = ({ code }) => {
       setLoaded(true);
     }
   };
-
   const onLearnMorePress = () => {
     if (!qrCode) return;
     navigation?.navigate(routeNames.pApp, { url: qrCode });
@@ -47,16 +51,10 @@ const HuntQRCode = ({ code }) => {
 
   const renderHeader = () => (
     <View style={styles.wrapperHeader}>
-      <Text style={styles.labelBold}>
-        {TEXT_CONST.title}
-      </Text>
-      <Text style={styles.labelGray}>
-        {TEXT_CONST.head}
-      </Text>
+      <Text style={styles.labelBold}>{TEXT_CONST.title}</Text>
+      <Text style={styles.labelGray}>{TEXT_CONST.head}</Text>
       <View style={styles.row}>
-        <Text style={styles.labelGray}>
-          {TEXT_CONST.subHead}
-        </Text>
+        <Text style={styles.labelGray}>{TEXT_CONST.subHead}</Text>
         <TouchableOpacity onPress={onLearnMorePress} style={styles.row}>
           <Text style={[styles.labelGray, { color: COLORS.black }]}>
             {TEXT_CONST.learnMore}
@@ -68,10 +66,7 @@ const HuntQRCode = ({ code }) => {
   );
 
   const renderContent = () => (
-    <TouchableOpacity
-      style={styles.wrapper}
-      onPress={onCopyQRCode}
-    >
+    <TouchableOpacity style={styles.wrapper} onPress={onCopyQRCode}>
       <View style={styles.wrapperCode}>
         <QRCode
           value={qrCode}
@@ -81,18 +76,16 @@ const HuntQRCode = ({ code }) => {
         />
       </View>
       <View style={styles.wrapperBottom}>
-        <Text style={styles.label}>
-          GUEST
-        </Text>
+        <Text style={styles.label}>QUEST</Text>
       </View>
-    </TouchableOpacity >
+    </TouchableOpacity>
   );
 
   useEffect(() => {
     getQrcode().then();
   }, [code]);
 
-  if (!loaded && !qrCode) return (<LoadingView />);
+  if (!loaded && !qrCode) return <LoadingView />;
 
   return (
     <>
@@ -108,16 +101,18 @@ const HuntQRCode = ({ code }) => {
 
 const LoadingView = () => (
   <View style={styles.wrapperLoading}>
-    <ActivityIndicator size='small' />
+    <ActivityIndicator size="small" />
   </View>
 );
 
 HuntQRCode.propTypes = {
-  code: PropTypes.number
+  code: PropTypes.number,
+  txId: PropTypes.string,
 };
 
 HuntQRCode.defaultProps = {
-  code: null
+  code: null,
+  txId: '',
 };
 
 export default memo(HuntQRCode);
