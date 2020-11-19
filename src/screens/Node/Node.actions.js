@@ -25,7 +25,7 @@ import {
 } from '@screens/Node/Node.utils';
 import NodeService from '@services/NodeService';
 import moment from 'moment';
-import { forEach, isEqual } from 'lodash';
+import { forEach, isEqual, isEmpty } from 'lodash';
 import { getTransactionByHash } from '@services/wallet/RpcClientService';
 
 const MAX_RETRY = 5;
@@ -148,6 +148,32 @@ export const actionUpdateNumberLoadedVNodeBLS = () => ({
   type: ACTION_UPDATE_NUMBER_LOADED_VNODE_BLS,
 });
 
+
+export const updateWithdrawTxs = (withdrawTxs) => ({
+  type: UPDATE_WITHDRAW_TXS,
+  withdrawTxs
+});
+
+export const actionClearWithdrawTxs = () => ({
+  type: ACTION_CLEAR_WITHDRAW_TXS,
+});
+
+export const actionCheckWithdrawTxs = () =>  async (dispatch, getState) => {
+  try {
+    const state = getState();
+    let { withdrawTxs } = state?.node;
+    forEach(withdrawTxs, async (txId, key) => {
+      const tx = await getTransactionByHash(txId);
+      if (tx.err || tx.isInBlock) {
+        delete withdrawTxs[key];
+      }
+    });
+    dispatch(updateWithdrawTxs(withdrawTxs));
+  } catch (error) {
+    console.debug('Check Withdraw Txs with Error: ', error);
+  }
+};
+
 // @actionUpdatePNodeItem update PNode
 // update Account, Host, Firmware, PublicKeyMining, check is Online
 // When callback load end, hide loading cell
@@ -234,7 +260,7 @@ export const actionUpdatePNodeItem = (options, callbackResolve) => async (dispat
 export const actionUpdateVNodeItem = (options, callbackResolve) => async (dispatch, getState) => {
   try {
     let {
-      blsKey,
+      oldBLSKey,
       productId,
       device: itemDevice
     }  = options;
@@ -252,17 +278,19 @@ export const actionUpdateVNodeItem = (options, callbackResolve) => async (dispat
     if (deviceIndex > -1) {
       device = listDevice[deviceIndex];
     }
-    if (newBLSKey && blsKey !== newBLSKey) {
-      device.PublicKeyMining  = newBLSKey;
-      device.Account = {};
+    if (!isEmpty(newBLSKey) && !isEmpty(oldBLSKey) && oldBLSKey !== newBLSKey) {
+      device.PublicKeyMining = newBLSKey;
       device.StakeTx = null;
     }
     if (newBLSKey) {
       device?.setIsOnline(MAX_RETRY);
-      device = await combineNode(device, wallet, newBLSKey);
     } else {
       device?.setIsOnline(Math.max(device?.IsOnline - 1, 0));
     }
+
+    // Check VNode has Account by BLS Key
+    // If has new BLS Key, use new BLSKey, if not use Old BLS Key
+    device = await combineNode(device, wallet, isEmpty(newBLSKey) ? oldBLSKey : newBLSKey);
 
     await dispatch(actionUpdateNodeAt(deviceIndex, device));
 
@@ -276,31 +304,3 @@ export const actionUpdateVNodeItem = (options, callbackResolve) => async (dispat
     callbackResolve && callbackResolve();
   }
 };
-
-export const updateWithdrawTxs = (withdrawTxs) => ({
-  type: UPDATE_WITHDRAW_TXS,
-  withdrawTxs
-});
-
-export const actionClearWithdrawTxs = () => ({
-  type: ACTION_CLEAR_WITHDRAW_TXS,
-});
-
-export const actionCheckWithdrawTxs = () =>  async (dispatch, getState) => {
-  try {
-    const state = getState();
-    let { withdrawTxs } = state?.node;
-    forEach(withdrawTxs, async (txId, key) => {
-      const tx = await getTransactionByHash(txId);
-      if (tx.err || tx.isInBlock) {
-        delete withdrawTxs[key];
-      }
-    });
-    dispatch(updateWithdrawTxs(withdrawTxs));
-  } catch (error) {
-    console.debug('Check Withdraw Txs with Error: ', error);
-  }
-};
-
-
-

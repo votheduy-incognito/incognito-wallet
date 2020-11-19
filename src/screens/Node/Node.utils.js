@@ -3,7 +3,7 @@ import Device, {MAX_ERROR_COUNT, VALIDATOR_STATUS} from '@models/device';
 import NodeService from '@services/NodeService';
 import APIService from '@src/services/api/miner/APIService';
 import LogManager from '@src/services/LogManager';
-import { map, isEmpty, isNumber, forEach, uniq, some } from 'lodash';
+import { map, isEmpty, isNumber, forEach, uniq } from 'lodash';
 import { getTransactionByHash } from '@services/wallet/RpcClientService';
 import tokenService, { PRV } from '@services/wallet/tokenService';
 import { PRV_ID } from '@screens/Dex/constants';

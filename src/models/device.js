@@ -73,21 +73,26 @@ export default class Device {
   constructor(data){
     this.data = {...template, ...data,status:template.status};
   }
+
   isUpdatingFirmware =()=>{
     return this.data.minerInfo?.isUpdating??false;
   };
+
   get PublicKeyMining(){
     return this.data.keyInfo?.publicKeyMining;
   }
+
   set PublicKeyMining(publicKeyMining:String){
     this.data['keyInfo'] = {
       ...this.data.keyInfo,
       publicKeyMining: publicKeyMining
     };
   }
+
   set PublicKey(publicKey) {
     this.data.minerInfo.publicKey = publicKey;
   }
+
   get PublicKey() {
     return this.data.minerInfo.publicKey;
   }
