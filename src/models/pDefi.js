@@ -104,6 +104,9 @@ export class PDexTradeHistoryModel {
         networkFeeToken.pDecimals,
       );
     }
-    this.description = `${this.sellAmount} ${this.sellTokenSymbol} to ${this.status === HISTORY_STATUS.SUCCESSFUL ? this.amountReceive : this.buyAmount} ${this.buyTokenSymbol}`;
+    const amountBuy = this.status === HISTORY_STATUS.SUCCESSFUL && this.amountReceive
+      ? this.amountReceive
+      : this.buyAmount;
+    this.description = `${this.sellAmount} ${this.sellTokenSymbol} to ${amountBuy} ${this.buyTokenSymbol}`;
   }
 }
