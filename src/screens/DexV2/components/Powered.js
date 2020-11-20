@@ -40,10 +40,7 @@ export const PowerTrade = ({ network }) => {
   }
 
   const onHelpPress = () => {
-    navigation.navigate(routeNames.Helper, {
-      ...helperConst.HELPER_CONSTANT.COMPANY,
-      title: network
-    });
+    navigation.navigate(routeNames.Helper, helperConst.HELPER_CONSTANT.NETWORK);
   };
 
   return (

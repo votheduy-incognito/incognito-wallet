@@ -3,19 +3,23 @@ const HELPER_CONSTANT = {
     title: 'Fee',
     content: 'Incognito charges only network fees. Uniswap and Kyber pools will also incur cross-chain fees.'
   },
-  COMPANY: {
+  NETWORK: {
+    title: 'Pool',
     content: 'The best pool for this trade, taking into account prices and fees from Uniswap, Kyber and Incognito.'
   },
   MAX_PRICE: {
     title: 'Max price',
-    content: 'Max price represents the maximum price you are willing to accept for this trade. This takes into account a 1% slippage tolerance, which covers the potential variance in price between the time of trade request and the time of execution. Your trade will go through at this prize or better.',
+    content: 'This is the maximum price you are willing to accept for this trade.\n' +
+      '\n' +
+      'It takes into account 1% slippage tolerance, which covers the potential price variance between the time of trade request and the time of execution. Your trade will go through at this price or better.',
   },
   PRICE_IMPACT: {
-    title: 'Price impact',
-    content: 'Price impact is a percentage difference between market price and trade price based on the size of your trade. Bigger trades have larger price impacts.\n\n' +
-      '-1% price impact means you’ll lose 1% on this trade, compared to market value.\n\n' +
-      '+1% price impact means you’ll gain 1% on top of market value for this trade.\n\n' +
-      'The percentage shown for price impact takes into account 1% slippage tolerance by default, and as such, may change in your favor after the trade has been executed.',
+    title: 'Max price impact',
+    content: 'This is the percentage difference between external market prices and your pDEX trade price. You may experience either positive or negative price impacts.\n\n' +
+      '+1% max price impact means you’ll gain at least 1%\n\n' +
+      '-1% max price impact means you’ll lose at most 1%\n\n' +
+      'The percentage shown for price impact takes into account 1% slippage tolerance by default, and may change in your favor after the trade has been executed.\n\n' +
+      'Price impact is affected by the size of your trade in relation to the balance of liquidity available. Bigger trades have larger price impacts.',
   },
   WARNING: {
     title: 'Warning',
