@@ -78,8 +78,9 @@ export const calculateSizeImpact = (inputValue, inputToken, outputValue, outputT
   if (totalInputUsd && totalInputUsd !== 0) {
     const impact = formatUtils.fixedNumber(getImpact(totalInputUsd, totalOutputUsd), 3);
     if (!isNaN(impact)) {
+      const formatSeparator = formatUtils.amount(impact);
       return {
-        impact: impact > 0 ? `+${impact}` : impact,
+        impact: impact > 0 ? `+${formatSeparator}` : formatSeparator,
         showWarning: impact < -5
       };
     }
