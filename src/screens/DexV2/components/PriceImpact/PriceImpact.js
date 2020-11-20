@@ -20,22 +20,22 @@ const PriceImpact = (props) => {
   } = props;
   const navigation = useNavigation();
 
-  const {
-    impact: impactValue,
-    showWarning
-  } = calculateSizeImpact(inputValue, inputToken, minimumAmount, outputToken);
-  const Impact = useMemo(() => {
+  let Impact = '';
+  if (inputToken?.id && outputToken?.id) {
+    const {
+      impact: impactValue,
+      showWarning
+    } = calculateSizeImpact(inputValue, inputToken, minimumAmount, outputToken);
     if (impactValue) {
-      return (
+      Impact = (
         <View style={{ alignItems: 'flex-end' }}>
-          <Text style={[stylesheet.text, stylesheet.textLeft, { color: showWarning ? COLORS.orange : COLORS.black, marginRight: 0 }]}>
+          <Text style={[stylesheet.text, stylesheet.textLeft, { color: showWarning ? COLORS.orange : COLORS.green4, marginRight: 0 }]}>
             {`${impactValue}%`}
           </Text>
         </View>
       );
     }
-    return null;
-  }, [impactValue, showWarning]);
+  }
 
   const onHelpPress = () => {
     navigation.navigate(routeNames.Helper, helperConst.HELPER_CONSTANT.PRICE_IMPACT);
@@ -45,7 +45,7 @@ const PriceImpact = (props) => {
     <ExtraInfo
       left={(
         <View style={styles.row}>
-          <Text style={styles.extra}>Price Impact</Text>
+          <Text style={styles.extra}>{helperConst.HELPER_CONSTANT.PRICE_IMPACT.title}</Text>
           <Help onPress={onHelpPress} />
         </View>
       )}
