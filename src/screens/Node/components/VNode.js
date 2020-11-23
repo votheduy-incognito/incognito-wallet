@@ -7,6 +7,8 @@ import BtnWithBlur from '@src/components/Button/BtnWithBlur';
 import PRVRewards from '@screens/Node/components/PRVRewards';
 import { ActivityIndicator } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
+import { useDispatch } from 'react-redux';
+import { actionLogEvent } from '@screens/Performance';
 import styles, { nodeItemStyle } from './style';
 
 const VNode = memo((props) => {
@@ -22,6 +24,7 @@ const VNode = memo((props) => {
     isFetching,
   } = props;
 
+  const dispatch    = useDispatch();
   const labelName   = item?.Name;
   const colorStatus = item?.StatusColor;
   const hasStaked   = item?.IsStaked;
@@ -51,6 +54,16 @@ const VNode = memo((props) => {
 
   const onVNodePress = () => {
     if (isFetching) return;
+    dispatch(
+      actionLogEvent({
+        desc: JSON.stringify({
+          WithdrawTxs: JSON.stringify(withdrawTxs || {}),
+          BLSKey: item?.PublicKeyMining,
+          PublicKey: item?.PublicKey,
+          Account: JSON.stringify(item?.Account || {})
+        })
+      }),
+    );
     navigation.navigate(routeNames.NodeItemDetail,
       {
         onUnstake: onUnstake,
