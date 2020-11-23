@@ -21,7 +21,8 @@ import {
   parseRewards,
   combineNodesInfoToObject,
   formatNodeItemFromApi,
-  combineNode
+  combineNode,
+  findNodeIndexByProductId
 } from '@screens/Node/Node.utils';
 import NodeService from '@services/NodeService';
 import moment from 'moment';
@@ -102,13 +103,16 @@ export const updateListNodeDevice = (payload) => ({
   payload,
 });
 
-export const actionUpdateNodeAt = (deviceIndex, device) => async (dispatch, getState) => {
+export const actionUpdateNodeByProductId = (productId, device) => async (dispatch, getState) => {
   try {
     const state             = getState();
     let { listDevice }      = state?.node;
-    listDevice[deviceIndex] = device;
-    await LocalDatabase.saveListDevices(listDevice);
-    dispatch(updateListNodeDevice({ listDevice }));
+    const deviceIndex = findNodeIndexByProductId(listDevice, productId);
+    if (deviceIndex > -1 && listDevice.length > deviceIndex) {
+      listDevice[deviceIndex] = device;
+      await LocalDatabase.saveListDevices(listDevice);
+      dispatch(updateListNodeDevice({ listDevice }));
+    }
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
@@ -183,68 +187,72 @@ export const actionUpdatePNodeItem = (options, callbackResolve) => async (dispat
     const { listDevice }  = state?.node;
     const wallet          = state?.wallet;
     let { productId }     = options;
-    const deviceIndex
-      = listDevice.findIndex(item => item.ProductId === productId);
+    const start = new Date().getTime();
+    const deviceIndex = findNodeIndexByProductId(listDevice, productId);
     let device = {};
-    if (deviceIndex > -1) {
+    if (deviceIndex > -1 && listDevice.length > deviceIndex) {
       device = listDevice[deviceIndex];
-    }
-    const deviceData = await NodeService.fetchAndSavingInfoNodeStake(device);
-    device = Device.getInstance(deviceData);
-    if (device.IsSetupViaLan) {
-      const res = await NodeService.getLog(device);
-      const log = res.Data;
-      const { updatedAt, description } = log;
-      let data;
-      try { data = JSON.parse(description); } catch {/*Ignore the error*/}
-      if (updatedAt) {
-        const startTime = moment(updatedAt);
-        const endTime   = moment();
-        const duration  = moment.duration(endTime.diff(startTime));
-        const minutes   = duration.asMinutes();
-        if (minutes > TIMEOUT) {
-          device.setIsOnline(Math.max(device.IsOnline - 1, 0));
-        } else {
-          device.setIsOnline(MAX_RETRY);
-          device.Host = data?.ip?.lan;
+      const deviceData = await NodeService.fetchAndSavingInfoNodeStake(device);
+      device = Device.getInstance(deviceData);
+      if (device.IsSetupViaLan) {
+        const res = await NodeService.getLog(device);
+        const log = res.Data;
+        const { updatedAt, description } = log;
+        let data;
+        try { data = JSON.parse(description); } catch {/*Ignore the error*/}
+        if (updatedAt) {
+          const startTime = moment(updatedAt);
+          const endTime   = moment();
+          const duration  = moment.duration(endTime.diff(startTime));
+          const minutes   = duration.asMinutes();
+          if (minutes > TIMEOUT) {
+            device.setIsOnline(Math.max(device.IsOnline - 1, 0));
+          } else {
+            device.setIsOnline(MAX_RETRY);
+            device.Host = data?.ip?.lan;
+          }
         }
-      }
-    } else {
-      const ip = await NodeService.pingGetIP(device);
-      if (ip) {
-        device.Host = ip;
-        device.setIsOnline(MAX_RETRY);
       } else {
-        device.Host = '';
-        device.setIsOnline(Math.max(device.IsOnline - 1, 0));
-      }
-    }
-    if (device.IsOnline && device.Host) {
-      try {
-        const version = await NodeService.checkVersion(device);
-        const latestVersion = await NodeService.getLatestVersion();
-        device.Firmware = version;
-        if (version && version !== latestVersion) {
-          NodeService.updateFirmware(device, latestVersion)
-            .then(res => console.debug('UPDATE FIRMWARE SUCCESS', device.QRCode, res))
-            .catch(e => console.debug('UPDATE FIRMWARE FAILED', device.QRCode, e));
+        const ip = await NodeService.pingGetIP(device);
+        if (ip) {
+          device.Host = ip;
+          device.setIsOnline(MAX_RETRY);
+        } else {
+          device.Host = '';
+          device.setIsOnline(Math.max(device.IsOnline - 1, 0));
         }
-      } catch (e) {
-        console.debug('CHECK VERSION ERROR', device.QRCode, e);
       }
-    }
-    if (device.PaymentAddress) {
-      const listAccount = await wallet.listAccount();
-      device.Account = listAccount.find(item => item.PaymentAddress === device.PaymentAddress);
-      if (device.Account) {
-        device.ValidatorKey = device.Account.ValidatorKey;
-        device.PublicKey = device.Account.PublicKeyCheckEncode;
-        const listAccounts = await wallet.listAccountWithBLSPubKey();
-        const account = listAccounts.find(item=> isEqual(item.AccountName, device.AccountName));
-        device.PublicKeyMining = account.BLSPublicKey;
+      if (device.IsOnline && device.Host) {
+        try {
+          const version = await NodeService.checkVersion(device);
+          const latestVersion = await NodeService.getLatestVersion();
+          device.Firmware = version;
+          if (version && version !== latestVersion) {
+            NodeService.updateFirmware(device, latestVersion)
+              .then(res => console.debug('UPDATE FIRMWARE SUCCESS', device.QRCode, res))
+              .catch(e => console.debug('UPDATE FIRMWARE FAILED', device.QRCode, e));
+          }
+        } catch (e) {
+          console.debug('CHECK VERSION ERROR', device.QRCode, e);
+        }
       }
+      if (device.PaymentAddress) {
+        const listAccount = await wallet.listAccount();
+        device.Account = listAccount.find(item => item.PaymentAddress === device.PaymentAddress);
+        if (device.Account) {
+          device.ValidatorKey = device.Account.ValidatorKey;
+          device.PublicKey = device.Account.PublicKeyCheckEncode;
+          const listAccounts = await wallet.listAccountWithBLSPubKey();
+          const account = listAccounts.find(item=> isEqual(item.AccountName, device.AccountName));
+          device.PublicKeyMining = account.BLSPublicKey;
+        }
+      }
+      await dispatch(actionUpdateNodeByProductId(deviceIndex, device));
+      // Log Time load Node
+      const end = new Date().getTime();
+      console.debug('Loaded PNode in: ', end - start);
     }
-    await dispatch(actionUpdateNodeAt(deviceIndex, device));
+    return null;
   } catch (error) {
     new ExHandler(error).showErrorToast();
   } finally {
@@ -266,37 +274,38 @@ export const actionUpdateVNodeItem = (options, callbackResolve) => async (dispat
     }  = options;
     const state     = getState();
     const wallet    = state?.wallet;
-    const now       = new Date().getTime();
+    const start       = new Date().getTime();
     const newBLSKey = await VirtualNodeService.getPublicKeyMining(itemDevice);
 
     const { listDevice }  = state?.node;
 
-    const deviceIndex
-      = listDevice.findIndex(item => item.ProductId === productId);
+    const deviceIndex = findNodeIndexByProductId(listDevice, productId);
 
     let device = {};
-    if (deviceIndex > -1) {
+    if (deviceIndex > -1 && listDevice.length > deviceIndex) {
       device = listDevice[deviceIndex];
-    }
-    if (!isEmpty(newBLSKey) && !isEmpty(oldBLSKey) && oldBLSKey !== newBLSKey) {
-      device.PublicKeyMining = newBLSKey;
-      device.StakeTx = null;
-    }
-    if (newBLSKey) {
-      device?.setIsOnline(MAX_RETRY);
-    } else {
-      device?.setIsOnline(Math.max(device?.IsOnline - 1, 0));
-    }
+      if (!isEmpty(newBLSKey)) {
+        device.PublicKeyMining = newBLSKey;
+        device.StakeTx = null;
+      }
+      if (newBLSKey) {
+        device?.setIsOnline(MAX_RETRY);
+      } else {
+        device?.setIsOnline(Math.max(device?.IsOnline - 1, 0));
+      }
 
-    // Check VNode has Account by BLS Key
-    // If has new BLS Key, use new BLSKey, if not use Old BLS Key
-    device = await combineNode(device, wallet, isEmpty(newBLSKey) ? oldBLSKey : newBLSKey);
+      // Check VNode has Account by BLS Key
+      // If has new BLS Key, use new BLSKey, if not use Old BLS Key
+      const accountBLSKey = isEmpty(newBLSKey) ? oldBLSKey : newBLSKey;
+      device = await combineNode(device, wallet, accountBLSKey || '');
 
-    await dispatch(actionUpdateNodeAt(deviceIndex, device));
+      await dispatch(actionUpdateNodeByProductId(productId, device));
 
-    // Log Time load Node
-    const end = new Date().getTime();
-    console.debug('Loaded Node in: ', end - now);
+      // Log Time load Node
+      const end = new Date().getTime();
+      console.debug('Loaded VNode in: ', end - start);
+    }
+    return null;
   } catch (error) {
     new ExHandler(error).showErrorToast();
   } finally {

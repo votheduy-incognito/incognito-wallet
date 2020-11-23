@@ -94,6 +94,8 @@ const Node = (props) => {
     );
   };
 
+  const getKeyExtractor = (item) => ((item?.ProductId || Date.now()) + '');
+
   const renderContent = () => {
     if (showWelcome) {
       return (
@@ -123,7 +125,7 @@ const Node = (props) => {
             contentContainerStyle={[{ flexGrow: 1}]}
             style={style.list}
             data={listDevice}
-            keyExtractor={item => String(item.ProductId)}
+            keyExtractor={getKeyExtractor}
             renderItem={renderNode}
             onRefresh={refreshData}
             refreshing={isRefreshing}

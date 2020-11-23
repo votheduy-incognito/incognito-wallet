@@ -18,6 +18,9 @@ import { COLORS } from '@src/styles';
 import { withLayout_2 } from '@components/Layout';
 import VirtualNodeService from '@services/VirtualNodeService';
 import Device from '@models/device';
+import { actionClearListNodes as clearListNodes } from '@screens/Node/Node.actions';
+import { connect } from 'react-redux';
+import { compose } from 'recompose';
 import styles from './style';
 
 const SHORT_DOMAIN_REGEX = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/;
@@ -173,10 +176,11 @@ class AddSelfNode extends BaseScreen {
     // start loading
     this.setState({ loading: true });
     try {
+      const { dispatch } = this.props;
       const userJson = await LocalDatabase.getUserInfo();
       const host = _.trim(this.inputView.current?.getText()).toLowerCase();
 
-      console.log(TAG,'handleSetUpPress host = ',host);
+      console.log(TAG,'handleSetUpPress host = ',host, userJson);
       if (userJson && !_.isEmpty(host)) {
         await this.validateHost(host);
         let listLocalDevice = await LocalDatabase.getListDevices();
@@ -190,6 +194,7 @@ class AddSelfNode extends BaseScreen {
         if (newBLSKey) {
           device.PublicKeyMining = newBLSKey;
         }
+        dispatch(clearListNodes());
         listLocalDevice = [device, ...listLocalDevice];
         this.setState({ loading: false });
         await LocalDatabase.saveListDevices(listLocalDevice);
@@ -238,4 +243,7 @@ AddSelfNode.defaultProps = {
 
 const AddSelfNodeComponent = AddSelfNode;
 
-export default withLayout_2(AddSelfNodeComponent);
+export default compose(withLayout_2, connect(
+  () => ({}),
+  dispatch => ({dispatch})) )(AddSelfNodeComponent);
+
