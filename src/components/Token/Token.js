@@ -98,7 +98,7 @@ export const AmountBasePRV = (props) => {
     pDecimals,
     !isToggleUSD && isUSDT ? pPRV?.pDecimals : pDecimals,
     decimalDigits,
-    true
+    false
   );
 
   return (
@@ -147,7 +147,7 @@ export const AmountBaseUSDT = React.memo((props) => {
     pDecimals,
     isToggleUSD && !isUSDT ? pDecimals : pUSDT?.pDecimals,
     decimalDigits,
-    true
+    false
   );
 
   return (
