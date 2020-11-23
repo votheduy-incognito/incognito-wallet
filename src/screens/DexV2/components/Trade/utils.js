@@ -1,5 +1,10 @@
 import _ from 'lodash';
 import { COINS } from '@src/constants';
+import { useSelector } from 'react-redux';
+import { selectedPrivacySeleclor } from '@src/redux/selectors';
+import BigNumber from 'bignumber.js';
+import formatUtils from '@utils/format';
+import convertUtil from '@utils/convert';
 
 export const calculateOutputValueCrossPool = (pairs, inputToken, inputValue, outputToken) => {
   const firstPair = _.get(pairs, 0);
@@ -27,7 +32,6 @@ export const calculateOutputValue = (pair, inputToken, inputValue, outputToken) 
     if (!pair) {
       return 0;
     }
-
     const inputPool = pair[inputToken.id];
     const outputPool = pair[outputToken.id];
     const initialPool = inputPool * outputPool;
@@ -48,4 +52,41 @@ export const calculateInputValue = (pair, inputToken, outputValue, outputToken) 
   } catch (error) {
     console.debug('CALCULATE OUTPUT', error);
   }
+};
+
+const getImpact = (input, output) => {
+  input   = BigNumber(input);
+  output  = BigNumber(output);
+  return output
+    .minus(input)
+    .dividedBy(input)
+    .multipliedBy(100)
+    .toNumber();
+};
+
+export const calculateSizeImpact = (inputValue, inputToken, outputValue, outputToken) => {
+  const {
+    priceUsd:   inputPriceUsd,
+    pDecimals:  inputPDecimals
+  } = useSelector(selectedPrivacySeleclor.getPrivacyDataByTokenID)(inputToken?.id);
+  const {
+    priceUsd:   outputPriceUsd,
+    pDecimals:  outputPDecimals
+  } = useSelector(selectedPrivacySeleclor.getPrivacyDataByTokenID)(outputToken?.id);
+  const totalInputUsd   = convertUtil.toHumanAmount(inputValue * inputPriceUsd, inputPDecimals);
+  const totalOutputUsd  = convertUtil.toHumanAmount(outputValue * outputPriceUsd, outputPDecimals);
+  if (totalInputUsd && totalInputUsd !== 0) {
+    const impact = formatUtils.fixedNumber(getImpact(totalInputUsd, totalOutputUsd), 3);
+    if (!isNaN(impact)) {
+      const formatSeparator = formatUtils.amount(impact);
+      return {
+        impact: impact > 0 ? `+${formatSeparator}` : formatSeparator,
+        showWarning: impact < -5
+      };
+    }
+  }
+  return {
+    impact: null,
+    showWarning: false
+  };
 };

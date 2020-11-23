@@ -22,20 +22,21 @@ import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import withChangeInputToken from '@screens/DexV2/components/Trade/inputToken.enhance';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
-import withWarning from '@screens/DexV2/components/Trade/warning.enhance';
 import withHistories from '@screens/DexV2/components/histories.enhance';
 import withParams from '@screens/DexV2/components/Trade/params.enhance';
 import withAccount from '@screens/DexV2/components/account.enhance';
 import withERC20 from '@screens/DexV2/components/Trade/with.erc20';
 import PoolSize from '@screens/DexV2/components/PoolSize';
-import Powered from '@screens/DexV2/components/Powered';
 import { ArrowRightGreyIcon } from '@components/Icons';
+import PDexFee from '@screens/DexV2/components/PDexFee';
+import { PowerTrade } from '@screens/DexV2/components/Powered';
+import PriceImpact from '@screens/DexV2/components/PriceImpact/PriceImpact';
 import NewInput from '../NewInput';
 import withPair from './pair.enhance';
 import withChangeInput from './input.enhance';
 import withBalanceLoader from './balance.enhance';
 import styles from './style';
-import ExchangeRate from '../ExchangeRate';
+import ExchangeRate from '../ExchangeRate/ExchangeRateImpact';
 
 const Trade = ({
   pairTokens,
@@ -92,19 +93,34 @@ const Trade = ({
   };
 
   const renderPoolSize = () => {
-    if (pair) {
-      if (!quote || (quote && !!quote?.crossTrade)) {
-        return (
-          <PoolSize
-            outputToken={outputToken}
-            inputToken={inputToken}
-            pair={pair}
-          />
-        );
-      }
+    if (pair && (!quote || (quote && !!quote?.crossTrade))) {
+      return (
+        <PoolSize
+          outputToken={outputToken}
+          inputToken={inputToken}
+          pair={pair}
+          hasPower
+          network={isErc20 ? quote?.network : 'Incognito'}
+        />
+      );
     }
-    return null;
+    return (
+      <ExtraInfo
+        left={<PowerTrade network={isErc20 ? quote?.network : 'Incognito'} />}
+        right=''
+      />
+    );
   };
+
+  const renderFee = () => (
+    <PDexFee
+      isErc20={isErc20}
+      feeToken={feeToken}
+      fee={fee}
+      quote={quote}
+      leftStyle={styles.textLeft}
+    />
+  );
 
   return (
     <View style={styles.container}>
@@ -159,7 +175,7 @@ const Trade = ({
           />
           {!!(inputToken && outputToken) && (
             <View style={styles.extraInfo}>
-              <Balance token={inputToken} balance={inputBalance} />
+              <Balance title='Balance' token={inputToken} balance={inputBalance} />
               <ExchangeRate
                 inputValue={inputValue}
                 outputValue={outputValue}
@@ -168,8 +184,15 @@ const Trade = ({
                 outputToken={outputToken}
                 quote={quote}
               />
+              <PriceImpact
+                inputValue={inputValue}
+                outputValue={outputValue}
+                minimumAmount={minimumAmount}
+                inputToken={inputToken}
+                outputToken={outputToken}
+              />
+              {renderFee()}
               {renderPoolSize()}
-              <Powered network={isErc20 ? quote?.network : 'Incognito'} />
               <ExtraInfo left={warning} right="" style={styles.warning} />
             </View>
           )}
@@ -233,7 +256,6 @@ export default compose(
   withSwap,
   withCalculateOutput,
   withValidate,
-  withWarning,
   withParams,
 )(Trade);
 

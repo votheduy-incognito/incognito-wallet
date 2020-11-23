@@ -1,52 +1,23 @@
-import React from 'react';
-import _ from 'lodash';
-import convert from '@utils/convert';
-import { calculateOutputValueCrossPool } from './utils';
+import React, { useMemo } from 'react';
+import { calculateSizeImpact } from './utils';
 
+const WARNING_STR = 'Do note that due to trade size, the price of this trade varies significantly from market price.';
 const withWarning = (WrappedComp) => (props) => {
-  const [warning, setWarning] = React.useState('');
-
   const {
     inputToken,
     inputValue,
     outputToken,
-    outputValue,
-    pair,
-    gettingQuote,
-    isErc20,
+    minimumAmount
   } = props;
 
-  const calculateHalfValue = () => {
-    if (isErc20 && gettingQuote) {
-      return setWarning('');
-    }
-    if (
-      inputToken &&
-      outputToken &&
-      inputValue &&
-      outputValue &&
-      inputValue > convert.toOriginalAmount(1, inputToken.pDecimals)
-    ) {
-      const halfInput = inputValue / 2;
-      const halfOutput = calculateOutputValueCrossPool(
-        pair,
-        inputToken,
-        halfInput,
-        outputToken,
-      );
-      const exchangeRate1 = inputValue / outputValue;
-      const exchangeRate2 = halfInput / halfOutput;
-      const lostPercent = 1 - _.floor(exchangeRate2 / exchangeRate1, 2);
-      if (lostPercent > 0.1) {
-        return setWarning('This pool has low liquidity. Please note prices.');
-      }
-    }
-    setWarning('');
-  };
+  const {
+    impact: impactValue,
+    showWarning
+  } = calculateSizeImpact(inputValue, inputToken, minimumAmount, outputToken);
 
-  React.useEffect(() => {
-    calculateHalfValue();
-  }, [isErc20, gettingQuote, pair, inputValue, outputValue]);
+  const warning = useMemo(() => {
+    return impactValue && showWarning ? WARNING_STR : '';
+  }, [impactValue, showWarning]);
 
   return (
     <WrappedComp

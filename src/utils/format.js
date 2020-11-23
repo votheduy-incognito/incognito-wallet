@@ -175,6 +175,11 @@ const formatWithNotation = (number, noOfDigits = 2) => {
   return number;
 };
 
+const fixedNumber = (number, digits = 3) => {
+  if (isNaN(number) || isNaN(digits)) return NaN;
+  return Math.trunc(number*Math.pow(10, digits))/Math.pow(10, digits);
+};
+
 export default {
   amount,
   amountFull,
@@ -187,4 +192,5 @@ export default {
   amountCreator,
   balance,
   formatWithNotation,
+  fixedNumber
 };

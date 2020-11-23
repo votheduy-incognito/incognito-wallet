@@ -7904,7 +7904,9 @@ pako@~0.2.0:
 
 "papp-sdk@https://github.com/incognitochain/sdk#papp-client-sdk":
   version "1.0.2"
-  resolved "https://github.com/incognitochain/sdk#9eb28999e77e92434896a2454c4fec0c0048ac33"
+  resolved "https://github.com/incognitochain/sdk#6b29b689ab1e3e5bd255385d8778adc6af0c5b44"
+  dependencies:
+    uuid "^8.3.1"
 
 parent-module@^1.0.0:
   version "1.0.1"
@@ -10987,6 +10989,11 @@ uuid@^7.0.2:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.3.tgz#c5c9f2c8cf25dc0a372c4df1441c41f5bd0c680b"
   integrity sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==
+
+uuid@^8.3.1:
+  version "8.3.1"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.1.tgz#2ba2e6ca000da60fce5a196954ab241131e05a31"
+  integrity sha512-FOmRr+FmWEIG8uhZv6C2bTgEVXsHk08kE7mPlrBbEe+c3r9pjceVPgupIfNIhc4yx55H69OXANrUaSuu9eInKg==
 
 validate-npm-package-license@^3.0.1:
   version "3.0.4"

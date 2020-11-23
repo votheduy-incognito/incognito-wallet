@@ -30,6 +30,7 @@ const withCalculateOutput = WrappedComp => (props) => {
       outputText = 0;
     }
 
+    setQuote(null);
     setOutputText(outputText.toString());
   };
 
