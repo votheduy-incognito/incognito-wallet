@@ -22,7 +22,7 @@ export const formatPrice = (price, toNumber = false) => {
     true,
   ) || 0;
   const result = format.amount(originalAmount, pDecimals);
-  return toNumber ? convert.toNumber(result) : result;
+  return toNumber ? convert.toNumber(result, true) : result;
 };
 
 export const formatAmount = (
@@ -44,7 +44,7 @@ export const formatAmount = (
     decimalDigits
   );
 
-  const totalAmountNumber = convert.toNumber(formatAmount) * priceFormat;
+  const totalAmountNumber = convert.toNumber(formatAmount, true) * priceFormat;
 
   const amountOriginalFormat  = convert.toOriginalAmount(
     totalAmountNumber,
@@ -59,6 +59,6 @@ export const formatAmount = (
     decimalDigits,
   );
 
-  return toNumber ? convert.toNumber(amountBaseToggle) : amountBaseToggle;
+  return toNumber ? convert.toNumber(amountBaseToggle, true) : amountBaseToggle;
 };
 
