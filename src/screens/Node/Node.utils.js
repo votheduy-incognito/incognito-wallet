@@ -3,7 +3,7 @@ import Device, {MAX_ERROR_COUNT, VALIDATOR_STATUS} from '@models/device';
 import NodeService from '@services/NodeService';
 import APIService from '@src/services/api/miner/APIService';
 import LogManager from '@src/services/LogManager';
-import { map, isEmpty, isNumber, forEach, uniq } from 'lodash';
+import { map, isEmpty, isNumber, forEach, uniq, some } from 'lodash';
 import { getTransactionByHash } from '@services/wallet/RpcClientService';
 import tokenService, { PRV } from '@services/wallet/tokenService';
 import { PRV_ID } from '@screens/Dex/constants';
@@ -208,7 +208,11 @@ export const checkNoRewards = (nodeRewards, listDevice) => {
     });
   }
   if (listDevice && listDevice.length > 0) {
-    const validNodes = listDevice.filter(device => device.AccountName);
+    const validNodes = listDevice.filter(device => (
+      device.AccountName &&
+      !isEmpty(device.Rewards) &&
+      some(device.Rewards, value => value && value > 0)
+    ));
     noRewards = noRewards || validNodes.length === 0;
   }
   return noRewards;
@@ -288,4 +292,8 @@ export const formatNodeItemFromApi = async (device, listNodeObject, allTokens, w
   device.AllRewards = parseNodeRewardsToArray(allRewards, allTokens);
 
   return device;
+};
+
+export const findNodeIndexByProductId = (listDevice, productId) => {
+  return listDevice.findIndex(item => item.ProductId === productId);
 };
