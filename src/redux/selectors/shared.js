@@ -10,9 +10,16 @@ import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { uniqBy, isNaN, compact, fromPairs } from 'lodash';
 import convert from '@src/utils/convert';
 import { BIG_COINS } from '@src/screens/DexV2/constants';
-import { currencySelector } from '@screens/Setting';
-import { defaultAccountName, defaultAccountBalanceSelector } from './account';
-import { getPrivacyDataByTokenID } from './selectedPrivacy';
+import {
+  currencySelector,
+  decimalDigitsSelector
+} from '@screens/Setting';
+import { formatAmount } from '@components/Token';
+import { PRV } from '@services/wallet/tokenService';
+import {
+  defaultAccountName,
+  defaultAccountBalanceSelector
+} from './account';
 
 export const isGettingBalance = createSelector(
   isGettingBalanceToken,
@@ -85,7 +92,8 @@ export const totalShieldedTokensSelector = createSelector(
   defaultAccountBalanceSelector,
   tokensFollowedSelector,
   pTokenSelector,
-  (availableTokens, getPrivacyDataByTokenID, accountBalance, followed, currency) => {
+  decimalDigitsSelector,
+  (availableTokens, getPrivacyDataByTokenID, accountBalance, followed, currency, decimalDigits) => {
     const { isToggleUSD, pToken: decimalDigit } = currency;
     const tokens = followed.map((token) =>
       availableTokens.find(
@@ -97,43 +105,32 @@ export const totalShieldedTokensSelector = createSelector(
       ...getPrivacyDataByTokenID(CONSTANT_COMMONS.PRV.id),
       amount: accountBalance,
     };
-    const totalShieldedTokens = compact([...tokens, prv]).reduce(
+    const totalShielded = compact([...tokens, prv]).reduce(
       (prevValue, currentValue) => {
-        const totalShieldByPRV = prevValue.totalShieldByPRV;
-        const totalShieldByUSD = prevValue.totalShieldByUSD;
-        const pricePrv = currentValue?.pricePrv || 0;
-        const priceUsd = currentValue?.priceUsd || 0;
-        const humanAmount = convert.toHumanAmount(
-          currentValue?.amount,
-          currentValue?.pDecimals,
+        const totalShielded = prevValue;
+        const pDecimals     = currentValue?.pDecimals || 0;
+        const amount        = currentValue?.amount || 0;
+        const price         = isToggleUSD
+          ? currentValue?.priceUsd
+          : currentValue?.pricePrv || 0;
+        let currentAmount = formatAmount(
+          price,
+          amount,
+          pDecimals,
+          isToggleUSD ? pDecimals : decimalDigit?.pDecimals,
+          decimalDigits,
+          true
         );
 
-        let _currentPrvValue = pricePrv * convert.toNumber(humanAmount);
-        if (isNaN(_currentPrvValue)) {
-          _currentPrvValue = 0;
+        if (isNaN(currentAmount)) {
+          currentAmount = 0;
         }
-
-        let _currentUsdValue = priceUsd * convert.toNumber(humanAmount);
-        if (isNaN(_currentUsdValue)) {
-          _currentUsdValue = 0;
-        }
-        return {
-          totalShieldByPRV: totalShieldByPRV + _currentPrvValue,
-          totalShieldByUSD: totalShieldByUSD + _currentUsdValue
-        };
-      },
-      {
-        totalShieldByPRV: 0,
-        totalShieldByUSD: 0
-      },
-    );
-
-    const { totalShieldByPRV, totalShieldByUSD } = totalShieldedTokens;
-    const totalShielded = isToggleUSD ? totalShieldByUSD : totalShieldByPRV;
+        return currentAmount + totalShielded;
+      }, 0);
 
     return convert.toOriginalAmount(
       totalShielded,
-      decimalDigit?.pDecimals,
+      PRV.pDecimals,
       true,
     );
   },
