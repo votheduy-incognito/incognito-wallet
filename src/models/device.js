@@ -116,7 +116,7 @@ export default class Device {
 
   // All Node rewards include PRV, BTC, ....
   get AllRewards() {
-    return this.data.minerInfo.allRewards;
+    return this.data.minerInfo.allRewards || parseNodeRewardsToArray({ [PRV_ID]: 0 }, [PRV]);
   }
 
   get Account() {
