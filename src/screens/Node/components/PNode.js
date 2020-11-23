@@ -7,6 +7,8 @@ import routeNames from '@src/router/routeNames';
 import PRVRewards from '@screens/Node/components/PRVRewards';
 import { useNavigation } from 'react-navigation-hooks';
 import { ActivityIndicator } from 'react-native';
+import { actionLogEvent } from '@screens/Performance';
+import { useDispatch } from 'react-redux';
 import styles, { nodeItemStyle } from './style';
 
 const PNode = memo((props) => {
@@ -19,8 +21,8 @@ const PNode = memo((props) => {
     onWithdraw,
   } = props;
 
-  const navigation = useNavigation();
-
+  const navigation    = useNavigation();
+  const dispatch      = useDispatch();
   const labelName     = item.Name;
   const unstakedPNode = item.IsFundedUnstaked;
   const hasStaked     = item.IsStaked;
@@ -51,6 +53,16 @@ const PNode = memo((props) => {
 
   const onPNodePress = () => {
     if (isFetching) return;
+    dispatch(
+      actionLogEvent({
+        desc: JSON.stringify({
+          Account: item?.AccountName,
+          QRCODE: item?.QRCode,
+          IsFundedUnstaked: item.IsFundedUnstaked,
+          IsStaked: item.IsStaked
+        })
+      }),
+    );
     navigation.navigate(routeNames.NodeItemDetail, {
       onUnstake: onUnstake,
       onWithdraw: onWithdraw,
