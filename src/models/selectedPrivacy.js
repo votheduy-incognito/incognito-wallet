@@ -1,4 +1,5 @@
 import { CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
+import { BIG_COINS } from '@src/screens/DexV2/constants';
 import PToken from './pToken';
 
 function getNetworkName() {
@@ -72,7 +73,7 @@ class SelectedPrivacy {
     this.isBep2Token =
       this.isPrivateToken &&
       this.currencyType ===
-        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB_BEP2;
+      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB_BEP2;
     this.symbol = combineData.call(
       this,
       pTokenData?.pSymbol,
@@ -125,6 +126,7 @@ class SelectedPrivacy {
     const { networkName, rootNetworkName } = getNetworkName.call(this);
     this.networkName = networkName;
     this.rootNetworkName = rootNetworkName;
+    this.isUSDT = this.tokenId === BIG_COINS.USDT;
   }
 }
 
