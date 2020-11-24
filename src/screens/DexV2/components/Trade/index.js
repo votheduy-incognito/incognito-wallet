@@ -100,7 +100,7 @@ const Trade = ({
           inputToken={inputToken}
           pair={pair}
           hasPower
-          network={isErc20 ? quote?.network : 'Incognito'}
+          network={isErc20 && quote?.network ? quote?.network : 'Incognito'}
         />
       );
     }
