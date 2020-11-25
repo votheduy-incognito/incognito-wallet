@@ -9,7 +9,8 @@ import {
   ACTION_CLEAR_NODE_DATA,
   UPDATE_WITHDRAW_TXS,
   ACTION_CLEAR_LIST_NODES,
-  ACTION_CLEAR_WITHDRAW_TXS
+  ACTION_CLEAR_WITHDRAW_TXS,
+  ACTION_UPDATE_WITHDRAWING
 } from '@screens/Node/Node.constant';
 import { ExHandler } from '@services/exception';
 import { apiGetNodesInfo } from '@screens/Node/Node.services';
@@ -162,6 +163,12 @@ export const actionClearWithdrawTxs = () => ({
   type: ACTION_CLEAR_WITHDRAW_TXS,
 });
 
+export const actionUpdateWithdrawing = (withdrawing) => ({
+  type: ACTION_UPDATE_WITHDRAWING,
+  withdrawing
+});
+
+// check node finish withdraw
 export const actionCheckWithdrawTxs = () =>  async (dispatch, getState) => {
   try {
     const state = getState();
@@ -172,6 +179,9 @@ export const actionCheckWithdrawTxs = () =>  async (dispatch, getState) => {
         delete withdrawTxs[key];
       }
     });
+    if (isEmpty(withdrawTxs)) {
+      dispatch(actionUpdateWithdrawing(false));
+    }
     dispatch(updateWithdrawTxs(withdrawTxs));
   } catch (error) {
     console.debug('Check Withdraw Txs with Error: ', error);
@@ -247,7 +257,7 @@ export const actionUpdatePNodeItem = (options, callbackResolve) => async (dispat
           device.PublicKeyMining = account.BLSPublicKey;
         }
       }
-      await dispatch(actionUpdateNodeByProductId(deviceIndex, device));
+      await dispatch(actionUpdateNodeByProductId(productId, device));
       // Log Time load Node
       const end = new Date().getTime();
       console.debug('Loaded PNode in: ', end - start);

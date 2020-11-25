@@ -13,7 +13,8 @@ import {
   ACTION_CLEAR_NODE_DATA,
   UPDATE_WITHDRAW_TXS,
   ACTION_CLEAR_WITHDRAW_TXS,
-  ACTION_CLEAR_LIST_NODES
+  ACTION_CLEAR_LIST_NODES,
+  ACTION_UPDATE_WITHDRAWING
 } from '@screens/Node/Node.constant';
 import { cloneDeep } from 'lodash';
 import { PRV } from '@services/wallet/tokenService';
@@ -34,7 +35,7 @@ const initialStateClear = {
   isFetched:      false,
   isRefreshing:   false,
   noRewards:      true,
-
+  withdrawing:    false,
   vNodeOptions:   initVNodeOptions,
   nodeRewards:    null,
   allTokens:      [PRV],
@@ -166,6 +167,13 @@ const nodeReducer = (state = initialState, action) => {
     return {
       ...state,
       withdrawTxs
+    };
+  }
+  case ACTION_UPDATE_WITHDRAWING: {
+    const withdrawing = action?.withdrawing;
+    return {
+      ...state,
+      withdrawing
     };
   }
   default:
