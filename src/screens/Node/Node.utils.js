@@ -116,7 +116,6 @@ export const combineNode = async (device, wallet, newBLSKey) => {
     console.debug('CHECK STAKE TX STATUS', device.SelfStakeTx, device.Name);
     try {
       const res = await getTransactionByHash(device.SelfStakeTx);
-      console.debug('CHECK STAKE TX STATUS RESPONSE', res, device.Name);
       if (res.isInBlock && device.IsAutoStake) {
         device.SelfStakeTx = null;
       } else if (res.err) {

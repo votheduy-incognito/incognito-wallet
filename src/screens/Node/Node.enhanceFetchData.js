@@ -58,6 +58,7 @@ const enhanceFetchData = WrappedComp => props => {
 
   const refreshData = () => {
     dispatch(getNodesInfoFromApi(true));
+    dispatch(checkWithdrawTxs());
   };
 
   useEffect(() => {

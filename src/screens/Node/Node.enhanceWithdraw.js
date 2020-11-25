@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { MESSAGES } from '@src/constants';
 import { Toast } from '@components/core';
@@ -9,13 +9,15 @@ import { isEmpty, some } from 'lodash';
 import accountService from '@services/wallet/accountService';
 import { onClickView } from '@utils/ViewUtil';
 import { useDispatch } from 'react-redux';
-import { updateWithdrawTxs } from '@screens/Node/Node.actions';
+import {
+  actionUpdateWithdrawing as updateWithdrawing,
+  updateWithdrawTxs
+} from '@screens/Node/Node.actions';
 
 const enhanceWithdraw = WrappedComp => props => {
   const dispatch = useDispatch();
-  const { listDevice, noRewards, wallet, withdrawTxs } = props;
+  const { listDevice, noRewards, wallet, withdrawTxs, withdrawing } = props;
 
-  const [withdrawing, setWithdrawing] = useState(false);
 
   const withdrawable = useMemo(() => {
     const validNodes = listDevice.filter(device => device.AccountName &&
@@ -92,7 +94,7 @@ const enhanceWithdraw = WrappedComp => props => {
   };
 
   const handleWithdrawAll = async () => {
-    setWithdrawing(true);
+    dispatch(updateWithdrawing(true));
     for (const device of listDevice) {
       try {
         if (device.AccountName && some(device.Rewards, reward => reward > 0)) {
