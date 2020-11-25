@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { FONT, COLORS, UTILS } from '@src/styles';
+import { ScreenWidth } from '@utils/devices';
 
 const maxWidth = UTILS.screenWidth() - 190;
 
@@ -48,6 +49,7 @@ export const balanceStyled = StyleSheet.create({
     fontSize: FONT.SIZE.medium,
     color: COLORS.colorGreyBold,
     lineHeight: FONT.SIZE.medium + 4,
+    maxWidth: ScreenWidth
   },
   changePrice: {
     fontFamily: FONT.NAME.medium,
