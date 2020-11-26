@@ -101,11 +101,7 @@ class RequestSendTx extends Component {
       wallet,
       selectedPrivacy?.tokenId,
     );
-    const balancePRV = await accountService.getBalance(
-      account,
-      wallet,
-      selectedPrivacy?.tokenId,
-    );
+    const balancePRV = await accountService.getBalance(account, wallet);
     if (balanceToken < originalAmount) {
       throw new Error(MESSAGES.BALANCE_INSUFFICIENT);
     }
