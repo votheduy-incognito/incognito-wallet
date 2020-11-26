@@ -72,11 +72,7 @@ export const addTokenInfo = ({ amount, tokenId, symbol, name, logoFile, descript
   if (!tokenId) throw new Error('Missing tokenId');
 
   const form = new FormData();
-  form.append('File', logoFile ? {
-    name: logoFile.name,
-    uri: logoFile.uri,
-    type: 'image/png'
-  } : null);
+  form.append('File', logoFile || null);
 
   form.append('TokenID', tokenId);
   form.append('Name', name ?? '');
