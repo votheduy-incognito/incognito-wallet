@@ -14,6 +14,7 @@ import LoadingTx from '@src/components/LoadingTx';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
 import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
+import { MESSAGES } from '@screens/Dex/constants';
 import { requestSendTxStyle } from './style';
 
 const DEFAULT_FEE = 30; // in nano
@@ -95,6 +96,36 @@ class RequestSendTx extends Component {
         amount: HUNT_FEE,
       },
     ];
+    const balanceToken = await accountService.getBalance(
+      account,
+      wallet,
+      selectedPrivacy?.tokenId,
+    );
+    const balancePRV = await accountService.getBalance(
+      account,
+      wallet,
+      selectedPrivacy?.tokenId,
+    );
+    if (balanceToken < originalAmount) {
+      throw new Error(MESSAGES.BALANCE_INSUFFICIENT);
+    }
+    if (balancePRV < totalFee) {
+      throw new Error(MESSAGES.BALANCE_INSUFFICIENT);
+    }
+    const spendingPRV = await accountService.hasSpendingCoins(
+      account,
+      wallet,
+      originalAmount,
+    );
+    const spendingCoin = await accountService.hasSpendingCoins(
+      account,
+      wallet,
+      originalAmount,
+      selectedPrivacy?.tokenId,
+    );
+    if (spendingCoin || spendingPRV) {
+      throw new Error(MESSAGES.PENDING_TRANSACTIONS);
+    }
     try {
       this.setState({ isSending: true });
       const res = await tokenService.createSendPToken(
