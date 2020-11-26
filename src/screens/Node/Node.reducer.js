@@ -40,11 +40,11 @@ const initialStateClear = {
   nodeRewards:    null,
   allTokens:      [PRV],
   missingSetup:   initMissingSetup,
+  listDevice:     [], // List node,
 };
 
 const initialState = {
   ...initialStateClear,
-  listDevice:   [], // List node,
   withdrawTxs:  {}
 };
 
