@@ -2,22 +2,32 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, Text, Button, Container } from '@src/components/core';
-import { accountSeleclor, tokenSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
+import {
+  accountSeleclor,
+  tokenSeleclor,
+  selectedPrivacySeleclor,
+} from '@src/redux/selectors';
 import formatUtil from '@src/utils/format';
 import accountService from '@src/services/wallet/accountService';
 import tokenService from '@src/services/wallet/tokenService';
 import LoadingTx from '@src/components/LoadingTx';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
+import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
+import { MESSAGES } from '@screens/Dex/constants';
 import { requestSendTxStyle } from './style';
 
 const DEFAULT_FEE = 30; // in nano
+
+const HUNT_FEE = 80000000;
+
+const totalFee = MAX_FEE_PER_TX + HUNT_FEE;
 
 class RequestSendTx extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isSending: false
+      isSending: false,
     };
   }
 
@@ -27,16 +37,26 @@ class RequestSendTx extends Component {
     const originalAmount = nanoAmount;
     const originalFee = Number(fee);
 
-    const paymentInfos = [{
-      paymentAddressStr: toAddress, amount: originalAmount
-    }];
+    const paymentInfos = [
+      {
+        paymentAddressStr: toAddress,
+        amount: originalAmount,
+      },
+    ];
 
     try {
       this.setState({
-        isSending: true
+        isSending: true,
       });
 
-      const res = await accountService.createAndSendNativeToken(paymentInfos, originalFee, true, account, wallet, info);
+      const res = await accountService.createAndSendNativeToken(
+        paymentInfos,
+        originalFee,
+        true,
+        account,
+        wallet,
+        info,
+      );
       if (res.txId) {
         return res;
       } else {
@@ -47,7 +67,7 @@ class RequestSendTx extends Component {
     } finally {
       this.setState({ isSending: false });
     }
-  }
+  };
 
   _handleSendToken = async ({ toAddress, nanoAmount, feeUnit, fee, info }) => {
     const { selectedPrivacy, account, wallet } = this.props;
@@ -55,32 +75,63 @@ class RequestSendTx extends Component {
     fee = fee || DEFAULT_FEE;
 
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
-    const originalFee = Number(fee);
-    const isUseTokenFee = false; //feeUnit !== CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV;
     const originalAmount = nanoAmount;
     const tokenObject = {
-      Privacy : true,
+      Privacy: true,
       TokenID: selectedPrivacy?.tokenId,
       TokenName: selectedPrivacy?.name,
       TokenSymbol: selectedPrivacy?.symbol,
       TokenTxType: type,
       TokenAmount: originalAmount,
-      TokenReceivers: [{
-        PaymentAddress: toAddress,
-        Amount: originalAmount
-      }]
+      TokenReceivers: [
+        {
+          PaymentAddress: toAddress,
+          Amount: originalAmount,
+        },
+      ],
     };
-
+    const paymentInfos = [
+      {
+        paymentAddressStr: toAddress,
+        amount: HUNT_FEE,
+      },
+    ];
     try {
       this.setState({ isSending: true });
-      const res = await tokenService.createSendPToken(
-        tokenObject,
-        isUseTokenFee ? 0 : originalFee,
+      const balanceToken = await accountService.getBalance(
         account,
         wallet,
-        null,
-        isUseTokenFee ? originalFee : 0,
-        info
+        selectedPrivacy?.tokenId,
+      );
+      const balancePRV = await accountService.getBalance(account, wallet);
+      if (balanceToken < originalAmount) {
+        throw new Error(MESSAGES.BALANCE_INSUFFICIENT);
+      }
+      if (balancePRV < totalFee) {
+        throw new Error(MESSAGES.BALANCE_INSUFFICIENT);
+      }
+      const spendingPRV = await accountService.hasSpendingCoins(
+        account,
+        wallet,
+        originalAmount,
+      );
+      const spendingCoin = await accountService.hasSpendingCoins(
+        account,
+        wallet,
+        originalAmount,
+        selectedPrivacy?.tokenId,
+      );
+      if (spendingCoin || spendingPRV) {
+        throw new Error(MESSAGES.PENDING_TRANSACTIONS);
+      }
+      const res = await tokenService.createSendPToken(
+        tokenObject,
+        MAX_FEE_PER_TX,
+        account,
+        wallet,
+        paymentInfos,
+        0,
+        info,
       );
 
       if (res.txId) {
@@ -93,23 +144,35 @@ class RequestSendTx extends Component {
     } finally {
       this.setState({ isSending: false });
     }
-  }
+  };
 
   handleSendTx = async () => {
     try {
-      const { selectedPrivacy, toAddress, amount, info, pendingTxId, onSendSuccess } = this.props;
+      const {
+        selectedPrivacy,
+        toAddress,
+        amount,
+        info,
+        pendingTxId,
+        onSendSuccess,
+      } = this.props;
       let sendFn;
       if (selectedPrivacy?.isToken) sendFn = this._handleSendToken;
       if (selectedPrivacy?.isMainCrypto) sendFn = this._handleSendNativeToken;
 
-      const res = await sendFn({ toAddress, nanoAmount: amount, pendingTxId, info });
+      const res = await sendFn({
+        toAddress,
+        nanoAmount: amount,
+        pendingTxId,
+        info,
+      });
       onSendSuccess(res);
     } catch (e) {
       const { onSendFailed } = this.props;
       onSendFailed(e);
       new ExHandler(e).showErrorToast(true);
     }
-  }
+  };
 
   renderData = (label, value) => {
     return (
@@ -118,43 +181,68 @@ class RequestSendTx extends Component {
         <Text style={requestSendTxStyle.infoValue}>{value}</Text>
       </View>
     );
-  }
+  };
 
   render() {
     const { isSending } = this.state;
-    const { onCancel, selectedPrivacy, toAddress, amount, url, info } = this.props;
-    const fee = DEFAULT_FEE; // default in PRV
-
+    const {
+      onCancel,
+      selectedPrivacy,
+      toAddress,
+      amount,
+      url,
+      info,
+    } = this.props;
     return (
       <Container style={requestSendTxStyle.container}>
         <Text style={requestSendTxStyle.title}> REQUEST SEND TX </Text>
         {this.renderData('PAPP URL', url)}
         {this.renderData('To address', toAddress)}
-        {this.renderData('Amount', `${formatUtil.amount(amount, selectedPrivacy?.pDecimals)} ${selectedPrivacy?.symbol}`)}
-        {this.renderData('Fee', `${formatUtil.amount(fee, CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY)} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}`)}
+        {this.renderData(
+          'Amount',
+          `${formatUtil.amount(amount, selectedPrivacy?.pDecimals)} ${
+            selectedPrivacy?.symbol
+          }`,
+        )}
+        {this.renderData(
+          'Fee',
+          `${formatUtil.amount(
+            totalFee,
+            CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY,
+          )} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}`,
+        )}
         {this.renderData('Info', info)}
         <View style={requestSendTxStyle.groupBtn}>
-          <Button style={requestSendTxStyle.cancelBtn} title='Cancel' onPress={onCancel} />
-          <Button style={requestSendTxStyle.submitBtn} title='Confirm Send' onPress={this.handleSendTx} />
+          <Button
+            style={requestSendTxStyle.cancelBtn}
+            title="Cancel"
+            onPress={onCancel}
+          />
+          <Button
+            style={requestSendTxStyle.submitBtn}
+            title={isSending ? 'Sending...' : 'Confirm Send'}
+            onPress={this.handleSendTx}
+          />
         </View>
-        { isSending && <LoadingTx /> }
+        {isSending && <LoadingTx />}
       </Container>
     );
   }
 }
 
-const mapState = state => ({
+const mapState = (state) => ({
   account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet,
   tokens: tokenSeleclor.followed(state),
-  selectPrivacyByTokenID: selectedPrivacySeleclor.getPrivacyDataByTokenID(state),
+  selectPrivacyByTokenID: selectedPrivacySeleclor.getPrivacyDataByTokenID(
+    state,
+  ),
 });
 
-const mapDispatch = {
-};
+const mapDispatch = {};
 
 RequestSendTx.defaultProps = {
-  info: null
+  info: null,
 };
 
 RequestSendTx.propTypes = {
@@ -171,4 +259,7 @@ RequestSendTx.propTypes = {
   pendingTxId: PropTypes.number.isRequired,
 };
 
-export default connect(mapState, mapDispatch)(RequestSendTx);
+export default connect(
+  mapState,
+  mapDispatch,
+)(RequestSendTx);

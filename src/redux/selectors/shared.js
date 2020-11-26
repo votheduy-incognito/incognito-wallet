@@ -9,7 +9,17 @@ import {
 import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { uniqBy, isNaN, compact, fromPairs } from 'lodash';
 import convert from '@src/utils/convert';
-import { defaultAccountName, defaultAccountBalanceSelector } from './account';
+import { BIG_COINS } from '@src/screens/DexV2/constants';
+import {
+  currencySelector,
+  decimalDigitsSelector
+} from '@screens/Setting';
+import { formatAmount } from '@components/Token';
+import { PRV } from '@services/wallet/tokenService';
+import {
+  defaultAccountName,
+  defaultAccountBalanceSelector
+} from './account';
 
 export const isGettingBalance = createSelector(
   isGettingBalanceToken,
@@ -53,39 +63,74 @@ export const availableTokensSelector = createSelector(
   },
 );
 
+export const pTokenSelector = createSelector(
+  selectedPrivacySeleclor.getPrivacyDataByTokenID,
+  currencySelector,
+  (getPrivacyDataByTokenID, isToggleUSD) => {
+    const decimalDigit = getPrivacyDataByTokenID(
+      isToggleUSD ? BIG_COINS.USDT : BIG_COINS.PRV
+    );
+    return {
+      pToken: decimalDigit,
+      isToggleUSD
+    };
+  },
+);
+
+export const prefixCurrency = createSelector(
+  currencySelector,
+  (isToggleUSD) => {
+    return isToggleUSD ?
+      CONSTANT_COMMONS.USD_SPECIAL_SYMBOL:
+      CONSTANT_COMMONS.PRV_SPECIAL_SYMBOL;
+  },
+);
+
 export const totalShieldedTokensSelector = createSelector(
   availableTokensSelector,
   selectedPrivacySeleclor.getPrivacyDataByTokenID,
   defaultAccountBalanceSelector,
   tokensFollowedSelector,
-  (availableTokens, getPrivacyDataByTokenID, accountBalance, followed) => {
+  pTokenSelector,
+  decimalDigitsSelector,
+  (availableTokens, getPrivacyDataByTokenID, accountBalance, followed, currency, decimalDigits) => {
+    const { isToggleUSD, pToken: decimalDigit } = currency;
     const tokens = followed.map((token) =>
       availableTokens.find(
         (t) => t?.tokenId === token?.id || t?.tokenId === token?.tokenId,
       ),
     );
+
     const prv = {
       ...getPrivacyDataByTokenID(CONSTANT_COMMONS.PRV.id),
       amount: accountBalance,
     };
-    const totalShieldedTokens = compact([...tokens, prv]).reduce(
+    const totalShielded = compact([...tokens, prv]).reduce(
       (prevValue, currentValue) => {
-        const pricePrv = currentValue?.pricePrv || 0;
-        const humanAmount = convert.toHumanAmount(
-          currentValue?.amount,
-          currentValue?.pDecimals,
+        const totalShielded = prevValue;
+        const pDecimals     = currentValue?.pDecimals || 0;
+        const amount        = currentValue?.amount || 0;
+        const price         = isToggleUSD
+          ? currentValue?.priceUsd
+          : currentValue?.pricePrv || 0;
+        let currentAmount = formatAmount(
+          price,
+          amount,
+          pDecimals,
+          isToggleUSD ? pDecimals : decimalDigit?.pDecimals,
+          decimalDigits,
+          true
         );
-        let _currentValue = pricePrv * convert.toNumber(humanAmount);
-        if (isNaN(_currentValue)) {
-          _currentValue = 0;
+
+        if (isNaN(currentAmount)) {
+          currentAmount = 0;
         }
-        return prevValue + _currentValue;
-      },
-      0,
-    );
+        return currentAmount + totalShielded;
+      }, 0);
+
     return convert.toOriginalAmount(
-      totalShieldedTokens,
-      CONSTANT_COMMONS.PRV.pDecimals,
+      totalShielded,
+      PRV.pDecimals,
       true,
     );
   },

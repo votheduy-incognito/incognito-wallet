@@ -12,7 +12,7 @@ export default {
   [CODE.withdraw_gen_withdraw_address_failed]: 'Can not get withdraw address, please try again.',
   [CODE.getStarted_can_not_create_wallet_on_existed]: 'Can not create new wallet on existing wallet.',
   [CODE.wallet_can_not_create_new_wallet]: 'Sorry, we can not create new wallet, close and reopen the app can fix it.',
-  [CODE.wallet_can_not_load_existed_wallet]: 'Something’s not right. Please re-install this app and try again.',
+  [CODE.wallet_can_not_load_existed_wallet]: 'Something’s not right. Please re-install this app and try again  (only if you have a backup of your private keys).',
   [CODE.createAccount_failed]: 'Account was not created! Please try again.',
   [CODE.createAccount_existed_name]: 'You already have an account with this name. Please try another.',
   [CODE.home_load_following_token_failed]: 'Is your list coin not show? Pull to reload your the list.',

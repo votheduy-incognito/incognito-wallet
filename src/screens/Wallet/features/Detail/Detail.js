@@ -14,6 +14,7 @@ import routeNames from '@src/router/routeNames';
 import {
   Amount,
   AmountBasePRV,
+  AmountBaseUSDT,
   ChangePrice,
 } from '@src/components/Token/Token';
 import HistoryToken from '@screens/Wallet/features/HistoryToken';
@@ -22,6 +23,7 @@ import { isGettingBalance as isGettingTokenBalanceSelector } from '@src/redux/se
 import { isGettingBalance as isGettingMainCryptoBalanceSelector } from '@src/redux/selectors/account';
 import { useBtnTrade } from '@src/components/UseEffect/useBtnTrade';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
+import { pTokenSelector } from '@src/redux/selectors/shared';
 import withDetail from './Detail.enhance';
 import {
   styled,
@@ -55,7 +57,11 @@ const GroupButton = React.memo(() => {
 });
 
 const Balance = React.memo(() => {
-  const selected = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const selected  = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const {
+    isToggleUSD
+  } = useSelector(pTokenSelector);
+
   const isGettingBalance = useSelector(
     sharedSeleclor.isGettingBalance,
   ).includes(selected?.tokenId);
@@ -68,7 +74,7 @@ const Balance = React.memo(() => {
     ...tokenData,
     showSymbol: false,
   };
-  const amountBasePRVProps = {
+  const amountBaseUSDTProps = {
     customStyle: balanceStyled.amountBasePRV,
     customPSymbolStyle: [balanceStyled.pSymbol],
     ...tokenData,
@@ -81,7 +87,10 @@ const Balance = React.memo(() => {
     <View style={balanceStyled.container}>
       <Amount {...amountProps} />
       <View style={balanceStyled.hook}>
-        <AmountBasePRV {...amountBasePRVProps} />
+        { isToggleUSD
+          ? (<AmountBaseUSDT {...amountBaseUSDTProps} />)
+          : (<AmountBasePRV {...amountBaseUSDTProps} />)
+        }
         <ChangePrice {...changePriceProps} />
       </View>
     </View>
