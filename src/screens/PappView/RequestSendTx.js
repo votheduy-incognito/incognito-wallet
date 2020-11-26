@@ -96,34 +96,34 @@ class RequestSendTx extends Component {
         amount: HUNT_FEE,
       },
     ];
-    const balanceToken = await accountService.getBalance(
-      account,
-      wallet,
-      selectedPrivacy?.tokenId,
-    );
-    const balancePRV = await accountService.getBalance(account, wallet);
-    if (balanceToken < originalAmount) {
-      throw new Error(MESSAGES.BALANCE_INSUFFICIENT);
-    }
-    if (balancePRV < totalFee) {
-      throw new Error(MESSAGES.BALANCE_INSUFFICIENT);
-    }
-    const spendingPRV = await accountService.hasSpendingCoins(
-      account,
-      wallet,
-      originalAmount,
-    );
-    const spendingCoin = await accountService.hasSpendingCoins(
-      account,
-      wallet,
-      originalAmount,
-      selectedPrivacy?.tokenId,
-    );
-    if (spendingCoin || spendingPRV) {
-      throw new Error(MESSAGES.PENDING_TRANSACTIONS);
-    }
     try {
       this.setState({ isSending: true });
+      const balanceToken = await accountService.getBalance(
+        account,
+        wallet,
+        selectedPrivacy?.tokenId,
+      );
+      const balancePRV = await accountService.getBalance(account, wallet);
+      if (balanceToken < originalAmount) {
+        throw new Error(MESSAGES.BALANCE_INSUFFICIENT);
+      }
+      if (balancePRV < totalFee) {
+        throw new Error(MESSAGES.BALANCE_INSUFFICIENT);
+      }
+      const spendingPRV = await accountService.hasSpendingCoins(
+        account,
+        wallet,
+        originalAmount,
+      );
+      const spendingCoin = await accountService.hasSpendingCoins(
+        account,
+        wallet,
+        originalAmount,
+        selectedPrivacy?.tokenId,
+      );
+      if (spendingCoin || spendingPRV) {
+        throw new Error(MESSAGES.PENDING_TRANSACTIONS);
+      }
       const res = await tokenService.createSendPToken(
         tokenObject,
         MAX_FEE_PER_TX,
@@ -220,7 +220,7 @@ class RequestSendTx extends Component {
           />
           <Button
             style={requestSendTxStyle.submitBtn}
-            title="Confirm Send"
+            title={isSending ? 'Sending...' : 'Confirm Send'}
             onPress={this.handleSendTx}
           />
         </View>
