@@ -167,9 +167,12 @@ export const parseRewards = async (nodesInfo, skipAllTokens = false) => {
     const rewardValue = reward?.Amount || 0;
     tokenIds.push(tokenId);
     if (allRewards.hasOwnProperty(tokenId)) {
-      allRewards[tokenId] += rewardValue;
+      allRewards[tokenId] += rewardValue || 0;
     } else {
-      allRewards[tokenId] = rewardValue;
+      // Remove another tokens are not PRV have reward = 0
+      if (rewardValue && rewardValue > 0) {
+        allRewards[tokenId] = rewardValue;
+      }
     }
   });
   
