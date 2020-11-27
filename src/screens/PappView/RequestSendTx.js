@@ -15,6 +15,7 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
 import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
 import { MESSAGES } from '@screens/Dex/constants';
+import { actionLogEvent } from '@src/screens/Performance';
 import { requestSendTxStyle } from './style';
 
 const DEFAULT_FEE = 30; // in nano
@@ -70,7 +71,7 @@ class RequestSendTx extends Component {
   };
 
   _handleSendToken = async ({ toAddress, nanoAmount, feeUnit, fee, info }) => {
-    const { selectedPrivacy, account, wallet } = this.props;
+    const { selectedPrivacy, account, wallet, actionLogEvent } = this.props;
     feeUnit = feeUnit || selectedPrivacy?.symbol;
     fee = fee || DEFAULT_FEE;
 
@@ -103,7 +104,9 @@ class RequestSendTx extends Component {
         wallet,
         selectedPrivacy?.tokenId,
       );
+      actionLogEvent({desc: `get balance token ${balanceToken}`});
       const balancePRV = await accountService.getBalance(account, wallet);
+      actionLogEvent({desc: `get balance ${balancePRV}`});
       if (balanceToken < originalAmount) {
         throw new Error(MESSAGES.BALANCE_INSUFFICIENT);
       }
@@ -115,12 +118,14 @@ class RequestSendTx extends Component {
         wallet,
         originalAmount,
       );
+      actionLogEvent({desc: `get spending PRV ${spendingPRV}`});
       const spendingCoin = await accountService.hasSpendingCoins(
         account,
         wallet,
         originalAmount,
         selectedPrivacy?.tokenId,
       );
+      actionLogEvent({desc: `get spending PRV ${spendingCoin}`});
       if (spendingCoin || spendingPRV) {
         throw new Error(MESSAGES.PENDING_TRANSACTIONS);
       }
@@ -133,13 +138,14 @@ class RequestSendTx extends Component {
         0,
         info,
       );
-
+      actionLogEvent({desc: `get spending PRV ${JSON.stringify((res))}`});
       if (res.txId) {
         return res;
       } else {
         throw new Error('Sent tx, but doesnt have txID, please check it');
       }
     } catch (e) {
+      actionLogEvent({desc: `get spending PRV ${JSON.stringify((e))}`});
       throw e;
     } finally {
       this.setState({ isSending: false });
@@ -147,6 +153,7 @@ class RequestSendTx extends Component {
   };
 
   handleSendTx = async () => {
+    const {actionLogEvent} = this.props;
     try {
       const {
         selectedPrivacy,
@@ -168,6 +175,8 @@ class RequestSendTx extends Component {
       });
       onSendSuccess(res);
     } catch (e) {
+      actionLogEvent({desc: `get spending PRV ${JSON.stringify((e))}`});
+
       const { onSendFailed } = this.props;
       onSendFailed(e);
       new ExHandler(e).showErrorToast(true);
@@ -239,7 +248,9 @@ const mapState = (state) => ({
   ),
 });
 
-const mapDispatch = {};
+const mapDispatch = {
+  actionLogEvent
+};
 
 RequestSendTx.defaultProps = {
   info: null,
@@ -257,6 +268,7 @@ RequestSendTx.propTypes = {
   info: PropTypes.string,
   url: PropTypes.string.isRequired,
   pendingTxId: PropTypes.number.isRequired,
+  actionLogEvent: PropTypes.func.isRequired
 };
 
 export default connect(
