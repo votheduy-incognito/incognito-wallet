@@ -6,6 +6,10 @@ export const KEYS = {
   PoolHistory: (paymentAddress) => `pool-history-${paymentAddress}`,
   DAppAddress: 'dapp-address',
   FeatureConfigs: 'feature-configs',
+  PDESTATE: 'pdestate',
+  PDEX_HISTORY: 'history-pdex-trade',
+  P_TOKEN: 'ptoken',
+  P_CUSTOM_TOKEN: 'pcustomtoken',
 };
 
 /**
@@ -65,4 +69,18 @@ export const clearCache = (key) => {
     return;
   }
   return delete caches[key];
+};
+
+export const clearAllCaches = () => {
+  Object.keys(caches)
+    .forEach(key => delete caches[key]);
+};
+
+export const clearWalletCaches = () => {
+  Object.keys(caches)
+    .forEach(key => {
+      if (key.includes(KEYS.PDEX_HISTORY)) {
+        delete caches[key];
+      }
+    });
 };

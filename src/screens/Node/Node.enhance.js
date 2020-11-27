@@ -44,8 +44,9 @@ const nodeEnhance = WrappedComp => props => {
   const importAccount = () => {
     navigation.navigate(routeNames.ImportAccount, {
       onGoBack: () => navigation.navigate(routeNames.Node, {
-        refresh: new Date().getTime()
+        refresh: new Date().getTime(),
       }),
+      redirect: routeNames.Node,
     });
   };
 

@@ -1,5 +1,5 @@
 import http2 from '@src/services/http2';
-import {cachePromise} from '@services/cache';
+import { cachePromise, KEYS } from '@services/cache';
 
 const getPDEStateNoCache = () => {
   return http2.post('/chain', {
@@ -15,7 +15,7 @@ const getPDEStateNoCache = () => {
  * @returns {AxiosPromise<Object>}
  */
 export const getPDEState = () => {
-  return cachePromise('pdestate', getPDEStateNoCache);
+  return cachePromise(KEYS.PDESTATE, getPDEStateNoCache);
 };
 
 /**

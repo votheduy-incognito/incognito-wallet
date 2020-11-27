@@ -32,6 +32,7 @@ const api = {
   api_trade_maintain: apiError(-2009),
   api_insufficient_funds: apiError(-1024),
   api_tx_hash_invalid: apiError(-80006),
+  api_request_cancelled: apiError(-80007),
 };
 
 const game = {

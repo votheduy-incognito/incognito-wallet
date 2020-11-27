@@ -4,9 +4,10 @@ import { StyleSheet } from 'react-native';
 import { ExHandler } from '@src/services/exception';
 import PropTypes from 'prop-types';
 import { FONT } from '@src/styles';
-import { listAccountSelector } from '@src/redux/selectors/account';
 import { useSelector } from 'react-redux';
 import { CONSTANT_KEYS } from '@src/constants';
+import { listAllMasterKeyAccounts } from '@src/redux/selectors/masterKey';
+import accountService from '@services/wallet/accountService';
 
 const styleSheet = StyleSheet.create({
   btnSaveReceivers: {
@@ -22,12 +23,12 @@ const styleSheet = StyleSheet.create({
 
 export const useBtnSaveReceiver = (props) => {
   const { onSaveReceivers, receivers, toAddress, keySave } = props;
-  const accounts = useSelector(listAccountSelector);
+  const accounts = useSelector(listAllMasterKeyAccounts);
   const [btnSave, setBtnSave] = React.useState(null);
   const isExisted =
     receivers.some((item) => item?.address === toAddress) ||
     (keySave === CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK &&
-      accounts?.some((account) => account?.paymentAddress === toAddress));
+      accounts?.some((account) => accountService.getPaymentAddress(account) === toAddress));
   React.useEffect(() => {
     renderBtnSaveReceiver();
     return () => {

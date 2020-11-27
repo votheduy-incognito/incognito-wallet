@@ -10,8 +10,15 @@ import convert from '@src/utils/convert';
 import { reloadAccountList } from '@src/redux/actions/wallet';
 import AccountModel from '@src/models/account';
 import { actionLogEvent } from '@src/screens/Performance';
-import { getBalance as getTokenBalance, setListToken } from './token';
+import {
+  currentMasterKeySelector,
+  masterlessKeyChainSelector,
+  noMasterLessSelector
+} from '@src/redux/selectors/masterKey';
+import { switchMasterKey, updateMasterKey } from '@src/redux/actions/masterKey';
+import { storeWalletAccountIdsOnAPI } from '@services/wallet/WalletService';
 import { tokenSeleclor, accountSeleclor } from '../selectors';
+import { getBalance as getTokenBalance, setListToken } from './token';
 
 /**
  *  return basic account object from its name like its KEY, not including account methods (please use accountWallet instead)
@@ -45,7 +52,8 @@ export const setListAccount = (
 
 export const removeAccount = (account) => async (dispatch, getState) => {
   try {
-    const wallet = getState()?.wallet;
+    const state = getState();
+    const wallet = state?.wallet;
     if (!account) {
       new Error('Account is required');
     }
@@ -58,6 +66,19 @@ export const removeAccount = (account) => async (dispatch, getState) => {
     const { PrivateKey } = account;
 
     const passphrase = await getPassphrase();
+
+    const masterKey = currentMasterKeySelector(state);
+
+    const walletAccountIndex = wallet.getAccountIndexByName(account.name);
+    const walletAccount = wallet.MasterAccount.child[walletAccountIndex];
+    const accountInfo = await walletAccount.getDeserializeInformation();
+    if (!masterKey.deletedAccountIds) {
+      masterKey.deletedAccountIds = [];
+    }
+
+    masterKey.deletedAccountIds.push(accountInfo.ID);
+    wallet.deletedAccountIds = masterKey.deletedAccountIds;
+    dispatch(updateMasterKey(masterKey));
 
     await accountService.removeAccount(PrivateKey, passphrase, wallet);
 
@@ -83,7 +104,7 @@ export const getBalanceFinish = (accountName) => ({
 });
 
 export const setDefaultAccount = (account) => {
-  accountService.saveDefaultAccountToStorage(account?.name);
+  accountService.saveDefaultAccountToStorage(accountService.getAccountName(account));
   return {
     type: type.SET_DEFAULT_ACCOUNT,
     data: account,
@@ -143,6 +164,12 @@ export const getBalance = (account) => async (dispatch, getState) => {
   }
 
   return balance ?? 0;
+};
+
+export const reloadBalance = () => async (dispatch, getState) => {
+  const state = getState();
+  const account = accountSeleclor.defaultAccountSelector(state);
+  await dispatch(getBalance(account));
 };
 
 export const loadAllPTokenHasBalance = (account) => async (
@@ -302,8 +329,8 @@ export const actionSwitchAccount = (
   try {
     const state = getState();
     const account = accountSeleclor.getAccountByName(state)(accountName);
-    const defaultAccount = accountSeleclor.defaultAccount(state);
-    if (defaultAccount?.name !== account?.name) {
+    const defaultAccountName = accountSeleclor.defaultAccountNameSelector(state);
+    if (defaultAccountName !== account?.name) {
       await dispatch(setDefaultAccount(account));
     }
     dispatch(actionReloadFollowingToken(shouldLoadBalance));
@@ -414,6 +441,7 @@ export const actionFetchCreateAccount = ({ accountName }) => async (
     await dispatch(followDefaultTokens(serializedAccount));
     await dispatch(actionFetchedCreateAccount());
     await dispatch(actionSwitchAccount(serializedAccount?.name, true));
+    await storeWalletAccountIdsOnAPI(wallet);
     return serializedAccount;
   } catch (error) {
     await dispatch(actionFetchFailCreateAccount());
@@ -439,13 +467,32 @@ export const actionFetchImportAccount = ({ accountName, privateKey }) => async (
 ) => {
   const state = getState();
   const importAccount = accountSeleclor.importAccountSelector(state);
-  const wallet = state?.wallet;
-  if (!!importAccount || !accountName || !wallet || !privateKey) {
+  const masterless = masterlessKeyChainSelector(state);
+  const masterKeys = noMasterLessSelector(state);
+
+  let selectedMasterKey = masterless;
+
+  if (!!importAccount || !accountName || !privateKey) {
     return;
   }
   try {
     await dispatch(actionFetchingImportAccount());
     const passphrase = await getPassphrase();
+
+    for (const masterKey of masterKeys) {
+      try {
+        const isCreated = await masterKey.wallet.hasCreatedAccount(privateKey);
+        if (isCreated) {
+          selectedMasterKey = masterKey;
+          break;
+        }
+      } catch (e) {
+        console.debug('CHECK CREATED ERROR', e);
+      }
+    }
+
+    const wallet = await selectedMasterKey.wallet;
+
     const isImported = await accountService.importAccount(
       privateKey,
       accountName,
@@ -453,6 +500,7 @@ export const actionFetchImportAccount = ({ accountName, privateKey }) => async (
       wallet,
     );
     if (isImported) {
+      await dispatch(switchMasterKey(selectedMasterKey.name));
       await dispatch(actionFetchedImportAccount());
       const accountList = await dispatch(reloadAccountList());
       const account = accountList.find(
@@ -462,9 +510,14 @@ export const actionFetchImportAccount = ({ accountName, privateKey }) => async (
         await dispatch(followDefaultTokens(account));
         await dispatch(actionSwitchAccount(account?.name, true));
       }
+
+      if (selectedMasterKey !== masterless) {
+        await storeWalletAccountIdsOnAPI(wallet);
+      }
     }
     return isImported;
   } catch (error) {
     await dispatch(actionFetchFailImportAccount());
+    throw error;
   }
 };

@@ -282,7 +282,19 @@ export default class Device {
   }
 
   get Name(){
-    return this.AccountName || '-';
+    if (this.Account) {
+      return this.Account.AccountName;
+    }
+
+    return '-';
+  }
+
+  get MasterKey(){
+    if (this.Account) {
+      return this.Account.MasterKeyName;
+    }
+
+    return '-';
   }
 
   get Type(){

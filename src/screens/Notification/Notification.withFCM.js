@@ -25,7 +25,7 @@ let component;
 const notificationHandler = (notification) => {
   if (notification) {
     // process the notification
-    if (notification.userInteraction && notification) {
+    if (notification.userInteraction && notification && component) {
       component.onNavigateNotification({
         ...notification,
         data: {
@@ -58,6 +58,7 @@ const enhance = WrappedComponent =>
   class extends React.Component {
     onNavigateNotification = async notification => {
       try {
+        // eslint-disable-next-line react/prop-types
         const { navigateNotification, navigation } = this.props;
 
         const _normalizedData = normalizedData({
@@ -119,7 +120,9 @@ const enhance = WrappedComponent =>
     }
 
     componentDidUpdate(prevProps) {
+      // eslint-disable-next-line react/prop-types
       const { accountList, initNotification } = this.props;
+      // eslint-disable-next-line react/prop-types
       const { accountList: oldAccountList } = prevProps;
       if (!_.isEqual(accountList, oldAccountList)) {
         initNotification();

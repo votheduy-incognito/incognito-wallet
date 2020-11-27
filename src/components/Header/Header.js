@@ -3,10 +3,9 @@ import { View, Text, BackHandler } from 'react-native';
 import { BtnCircleBack } from '@src/components/Button';
 import PropTypes from 'prop-types';
 import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
-import { BtnSelectAccount } from '@screens/SelectAccount';
 import debounce from 'lodash/debounce';
 import { TouchableOpacity } from '@src/components/core';
-import NavigationService from '@src/services/NavigationService';
+import SelectAccountButton from '@src/components/SelectAccountButton';
 import { styled, styledHeaderTitle } from './Header.styled';
 import SearchBox from './Header.searchBox';
 import withHeader from './Header.enhance';
@@ -73,6 +72,7 @@ const Header = ({
   styledContainerHeaderTitle,
   placeHolder,
   ignoredAccounts,
+  hideBackButton,
 }) => {
   const { goBack } = useNavigation();
   const handleGoBack = () =>
@@ -125,18 +125,19 @@ const Header = ({
       }}
     >
       <View style={[styled.container, style]}>
-        <BtnCircleBack onPress={_handleGoBack} />
+        {!hideBackButton && <BtnCircleBack onPress={_handleGoBack} />}
         {renderHeaderTitle()}
         {!!rightHeader && rightHeader}
         {accountSelectable && (
           <View>
-            <BtnSelectAccount ignoredAccounts={ignoredAccounts} />
+            <SelectAccountButton ignoredAccounts={ignoredAccounts} />
           </View>
         )}
       </View>
     </HeaderContext.Provider>
   );
 };
+
 Header.defaultProps = {
   rightHeader: null,
   titleStyled: null,
@@ -152,7 +153,9 @@ Header.defaultProps = {
   styledContainerHeaderTitle: null,
   placeHolder: '',
   ignoredAccounts: [],
+  hideBackButton: false,
 };
+
 Header.propTypes = {
   title: PropTypes.string.isRequired,
   rightHeader: PropTypes.element,
@@ -171,5 +174,7 @@ Header.propTypes = {
   styledContainerHeaderTitle: PropTypes.any,
   placeHolder: PropTypes.string,
   ignoredAccounts: PropTypes.array,
+  hideBackButton: PropTypes.bool,
 };
+
 export default withHeader(React.memo(Header));

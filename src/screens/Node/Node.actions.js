@@ -30,8 +30,9 @@ import {
 } from '@screens/Node/Node.utils';
 import NodeService from '@services/NodeService';
 import moment from 'moment';
-import { forEach, isEqual, isEmpty } from 'lodash';
+import { forEach, isEmpty } from 'lodash';
 import { getTransactionByHash } from '@services/wallet/RpcClientService';
+import { listAllMasterKeyAccounts } from '@src/redux/selectors/masterKey';
 
 const MAX_RETRY = 5;
 const TIMEOUT   = 5; // 2 minutes
@@ -54,8 +55,8 @@ export const actionFetchNodesInfoFromAPIFail = () => ({
 // Get NodesInfo from API
 export const actionGetNodesInfoFromApi = (isRefresh) => async (dispatch, getState) => {
   const state = getState();
+  const listAccount = listAllMasterKeyAccounts(state);
   let { listDevice, isFetching, isRefreshing } = state?.node;
-  const wallet = state?.wallet;
   if (isFetching || isRefreshing) return;
   try {
     // Start loading
@@ -75,7 +76,7 @@ export const actionGetNodesInfoFromApi = (isRefresh) => async (dispatch, getStat
 
     // format listDevice with new Data get from API
     listDevice = await Promise.all(listDevice.map(async (device) => (
-      await formatNodeItemFromApi(device, combineNodeInfo, allTokens, wallet)
+      await formatNodeItemFromApi(device, combineNodeInfo, allTokens, listAccount)
     )));
 
     await dispatch(actionFetchedNodesInfoFromAPI({
@@ -202,8 +203,8 @@ export const actionCheckWithdrawTxs = () =>  async (dispatch, getState) => {
 export const actionUpdatePNodeItem = (productId) => async (dispatch, getState) => {
   try {
     const state           = getState();
+    const listAccount     = listAllMasterKeyAccounts(state);
     const { listDevice }  = state?.node;
-    const wallet          = state?.wallet;
     if (productId) {
       dispatch(actionUpdateLoadedNode({[productId]: false}));
     }
@@ -258,14 +259,11 @@ export const actionUpdatePNodeItem = (productId) => async (dispatch, getState) =
         }
       }
       if (device.PaymentAddress) {
-        const listAccount = await wallet.listAccount();
         device.Account = listAccount.find(item => item.PaymentAddress === device.PaymentAddress);
         if (device.Account) {
           device.ValidatorKey = device.Account.ValidatorKey;
           device.PublicKey = device.Account.PublicKeyCheckEncode;
-          const listAccounts = await wallet.listAccountWithBLSPubKey();
-          const account = listAccounts.find(item=> isEqual(item.AccountName, device.AccountName));
-          device.PublicKeyMining = account.BLSPublicKey;
+          device.PublicKeyMining = device.Account.BLSPublicKey;
         }
       }
       await dispatch(actionUpdateNodeByProductId(productId, device));
@@ -297,7 +295,7 @@ export const actionUpdateVNodeItem = (deviceItem) => async (dispatch, getState) 
     }
     const start     = new Date().getTime();
     const state     = getState();
-    const wallet    = state?.wallet;
+    const listAccount = listAllMasterKeyAccounts(state);
     const newBLSKey = await VirtualNodeService.getPublicKeyMining(deviceItem);
 
     const { listDevice }  = state?.node;
@@ -320,7 +318,7 @@ export const actionUpdateVNodeItem = (deviceItem) => async (dispatch, getState) 
       // Check VNode has Account by BLS Key
       // If has new BLS Key, use new BLSKey, if not use Old BLS Key
       const accountBLSKey = isEmpty(newBLSKey) ? oldBLSKey : newBLSKey;
-      device = await combineNode(device, wallet, accountBLSKey || '');
+      device = await combineNode(device, listAccount, accountBLSKey || '');
 
       await dispatch(actionUpdateNodeByProductId(productId, device));
 

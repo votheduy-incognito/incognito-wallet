@@ -5,11 +5,14 @@ import { ExHandler } from '@services/exception';
 import { MESSAGES } from '@src/constants';
 import { useFocusEffect } from 'react-navigation-hooks';
 import { LIMIT } from '@screens/DexV2/constants';
+import { useSelector } from 'react-redux';
+import { currentMasterKeySelector } from '@src/redux/selectors/masterKey';
 
 const withHistories = WrappedComp => (props) => {
   const [loading, setLoading] = useState(false);
   const [histories, setHistories] = useState([]);
   const [page, setPage] = useState(1);
+  const masterKey = useSelector(currentMasterKeySelector);
 
   useFocusEffect(useCallback(() => {
     reload();

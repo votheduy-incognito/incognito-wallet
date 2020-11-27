@@ -7,14 +7,17 @@ import { useFocusEffect } from 'react-navigation-hooks';
 
 const withHistories = WrappedComp => (props) => {
   const [loading, setLoading] = useState(false);
-  const [histories, setHistories] = useState([]);
+  const [accountHistories, setAccountHistories] = useState({});
   const { account } = props;
 
   const loadHistories = async (account) => {
     try {
       setLoading(true);
       const data = await getHistories(account, 1, 1, []);
-      setHistories(data.items);
+      accountHistories[account.PaymentAddress] = data.items;
+      setAccountHistories({
+        ...accountHistories,
+      });
     } catch (error) {
       new ExHandler(error, MESSAGES.CAN_NOT_GET_POOL_HISTORIES).showErrorToast();
     } finally {
@@ -25,7 +28,10 @@ const withHistories = WrappedComp => (props) => {
   const debounceLoadHistories = useCallback(_.debounce(loadHistories, 200), []);
 
   useFocusEffect(useCallback(() => {
-    setHistories([]);
+    setAccountHistories({
+      ...accountHistories,
+      [account.PaymentAddress]: [],
+    });
     debounceLoadHistories.cancel();
     debounceLoadHistories(account);
   }, [account.PaymentAddress]));
@@ -34,7 +40,7 @@ const withHistories = WrappedComp => (props) => {
     <WrappedComp
       {...{
         ...props,
-        histories,
+        histories: accountHistories[account?.PaymentAddress] || [],
         isLoadingHistories: loading,
       }}
     />

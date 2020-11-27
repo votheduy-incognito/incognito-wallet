@@ -2,7 +2,6 @@
 import codePush from 'react-native-code-push';
 import { ProgressBarAndroid, ProgressViewIOS, Platform } from 'react-native';
 import React, { PureComponent } from 'react';
-import 'react-native-console-time-polyfill';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import { View, Text } from '@components/core';
 import { CONSTANT_CONFIGS } from '@src/constants';

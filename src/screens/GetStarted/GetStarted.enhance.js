@@ -1,17 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import Wizard from '@screens/Wizard';
 import { useSelector, useDispatch } from 'react-redux';
 import { login } from '@src/services/auth';
-import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
-import { reloadAccountList, reloadWallet } from '@src/redux/actions/wallet';
+import { CONSTANT_KEYS } from '@src/constants';
+import { reloadWallet } from '@src/redux/actions/wallet';
 import { getPTokenList, getInternalTokenList } from '@src/redux/actions/token';
 import { loadPin } from '@src/redux/actions/pin';
 import routeNames from '@src/router/routeNames';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
-import { savePassword } from '@src/services/wallet/passwordService';
 import serverService from '@src/services/wallet/Server';
-import { initWallet } from '@src/services/wallet/WalletService';
 import { actionInit as initNotification } from '@src/screens/Notification';
 import { actionFetch as actionFetchHomeConfigs } from '@screens/Home/Home.actions';
 import { useNavigation, useFocusEffect } from 'react-navigation-hooks';
@@ -21,8 +19,9 @@ import { LoadingContainer } from '@src/components/core';
 import { actionFetch as actionFetchProfile } from '@screens/Profile';
 import { KEYS } from '@src/constants/keys';
 import { getFunctionConfigs } from '@services/api/misc';
-import { DEX } from '@utils/dex';
-import accountService from '@services/wallet/accountService';
+import { loadAllMasterKeyAccounts, loadAllMasterKeys } from '@src/redux/actions/masterKey';
+import { masterKeysSelector } from '@src/redux/selectors/masterKey';
+import Welcome from '@screens/GetStarted/Welcome';
 import {
   wizardSelector,
   isFollowedDefaultPTokensSelector,
@@ -33,11 +32,13 @@ import {
 } from './GetStarted.actions';
 
 const enhance = (WrappedComp) => (props) => {
+  const [loadMasterKeys, setLoadMasterKeys] = useState(false);
   const { isFetching, isFetched } = useSelector(wizardSelector);
   const pin = useSelector((state) => state?.pin?.pin);
   const isFollowedDefaultPTokensMainnet = useSelector(
     isFollowedDefaultPTokensSelector,
   );
+  const masterKeys = useSelector(masterKeysSelector);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const initialState = {
@@ -95,26 +96,9 @@ const enhance = (WrappedComp) => (props) => {
     getDataWillMigrate,
   });
 
-  const handleCreateNew = async () => {
-    try {
-      await handleCreateWallet();
-      const wallet = await dispatch(reloadWallet());
-      if (wallet) {
-        goHome();
-        return wallet;
-      } else {
-        throw new Error('Load new wallet failed');
-      }
-    } catch (e) {
-      throw e;
-    }
-  };
-
   const getExistedWallet = async () => {
     try {
-      const wallet = await dispatch(
-        reloadWallet(CONSTANT_CONFIGS.PASSPHRASE_WALLET_DEFAULT),
-      );
+      const wallet = await dispatch(reloadWallet());
       if (wallet) {
         return wallet;
       }
@@ -126,59 +110,29 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
 
-  const handleCreateWallet = async () => {
+  const goHome = async () => {
     try {
-      await savePassword(CONSTANT_CONFIGS.PASSPHRASE_WALLET_DEFAULT);
-      await initWallet();
-    } catch (e) {
-      throw new CustomError(ErrorCode.wallet_can_not_create_new_wallet, {
-        rawError: e,
-      });
-    }
-  };
-
-  const goHome = async ({ wallet }) => {
-    try {
-      let isCreatedNewAccount = false;
-      let accounts = await wallet.listAccount();
-      if (!accounts.find((item) => item.AccountName === DEX.MAIN_ACCOUNT)) {
-        const firstAccount = accounts[0];
-        await accountService.createAccount(
-          DEX.MAIN_ACCOUNT,
-          wallet,
-          accountService.parseShard(firstAccount),
-        );
-        isCreatedNewAccount = true;
-      }
-      if (!accounts.find((item) => item.AccountName === DEX.WITHDRAW_ACCOUNT)) {
-        accounts = await wallet.listAccount();
-        const dexMainAccount = accounts.find(
-          (item) => item.AccountName === DEX.MAIN_ACCOUNT,
-        );
-        await accountService.createAccount(
-          DEX.WITHDRAW_ACCOUNT,
-          wallet,
-          accountService.parseShard(dexMainAccount),
-        );
-        isCreatedNewAccount = true;
-      }
       dispatch(initNotification());
-      isCreatedNewAccount ? dispatch(reloadAccountList()) : false;
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
   };
 
+  const checkWallet = async () => {
+    const wallet = await getExistedWallet();
+    await goHome({ wallet });
+  };
+
   const initApp = async () => {
     let errorMessage = null;
     try {
+      await dispatch(loadAllMasterKeyAccounts());
       await setState({ ...initialState, isInitialing: true });
       await login();
       dispatch(actionFetchHomeConfigs());
       dispatch(getInternalTokenList());
       const [servers] = await new Promise.all([
         serverService.get(),
-        dispatch(getPTokenList()),
         dispatch(loadPin()),
         dispatch(actionFetchProfile()),
         getFunctionConfigs().catch(e => e),
@@ -186,12 +140,7 @@ const enhance = (WrappedComp) => (props) => {
       if (!servers || servers?.length === 0) {
         await serverService.setDefaultList();
       }
-      let wallet = await getExistedWallet();
-      if (!wallet) {
-        await setState({ ...state, isCreating: true });
-        wallet = await handleCreateNew();
-      }
-      await goHome({ wallet });
+      await checkWallet();
     } catch (e) {
       errorMessage = new ExHandler(
         e,
@@ -208,14 +157,27 @@ const enhance = (WrappedComp) => (props) => {
   };
 
   React.useEffect(() => {
-    requestAnimationFrame(() => {
-      return initApp();
+    requestAnimationFrame(async () => {
+      await dispatch(getPTokenList());
+      await dispatch(loadAllMasterKeys());
+      setLoadMasterKeys(true);
     });
   }, []);
+
+  React.useEffect(() => {
+    if (!masterKeys || !loadMasterKeys || isFetching) {
+      return;
+    }
+
+    if (masterKeys.length) {
+      initApp();
+    }
+  }, [masterKeys, loadMasterKeys, isFetching]);
 
   useFocusEffect(
     React.useCallback(() => {
       if (
+        masterKeys?.length > 0 &&
         !isInitialing && //init app success
         !isCreating && //created wallet
         isMigrated && //migrate old data success
@@ -231,15 +193,21 @@ const enhance = (WrappedComp) => (props) => {
           navigation.navigate(routeNames.Home);
         }
       }
-    }, [isInitialing, isCreating, isMigrated, isFetched, errorMsg]),
+    }, [masterKeys, isInitialing, isCreating, isMigrated, isFetched, errorMsg]),
   );
 
-  if (isMigrating) {
+  if (isMigrating || !loadMasterKeys) {
     return <LoadingContainer size="large" />;
   }
+
   if (isFetching) {
     return <Wizard />;
   }
+
+  if (masterKeys.length === 0) {
+    return <Welcome />;
+  }
+
   return (
     <ErrorBoundary>
       <WrappedComp

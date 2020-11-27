@@ -1,9 +1,9 @@
-import http from '@src/services/http';
+import http, { CANCEL_KEY } from '@src/services/http';
 import { PoolConfigModel, PoolHistory, UserCoinPoolModel } from '@models/pool';
 import { cachePromise, KEYS } from '@services/cache';
 
 export async function getPoolConfigNoCache() {
-  return http.get('pool/staker/configs')
+  return http.get(`pool/staker/configs?${CANCEL_KEY}`)
     .then(data => new PoolConfigModel(data));
 }
 
@@ -12,7 +12,7 @@ export async function getPoolConfig() {
 }
 
 export const getUserPoolDataNoCache = (paymentAddress, coins) => () => {
-  const url = `/pool/staker/balance-info?p_stake_address=${paymentAddress}`;
+  const url = `/pool/staker/balance-info?p_stake_address=${paymentAddress}&${CANCEL_KEY}`;
   return http.get(url)
     .then(data => data.map(item => new UserCoinPoolModel(item, coins)));
 };
@@ -53,7 +53,7 @@ export async function withdrawProvision(paymentAddress, signEncode, amount, toke
 }
 
 export async function getHistories(account, page, limit, coins) {
-  const url = `/pool/staker/history?p_stake_address=${account.PaymentAddress}&page=${page}&limit=${limit}&type=1,2,6`;
+  const url = `/pool/staker/history?p_stake_address=${account.PaymentAddress}&page=${page}&limit=${limit}&type=1,2,6&${CANCEL_KEY}`;
   return http.get(url)
     .then(data => ({
       items: data.Items.map(item => new PoolHistory(item, account, coins)),
