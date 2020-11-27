@@ -74,7 +74,6 @@ class RequestSendTx extends Component {
     const { selectedPrivacy, account, wallet, actionLogEvent } = this.props;
     feeUnit = feeUnit || selectedPrivacy?.symbol;
     fee = fee || DEFAULT_FEE;
-
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
     const originalAmount = nanoAmount;
     const tokenObject = {
@@ -104,9 +103,9 @@ class RequestSendTx extends Component {
         wallet,
         selectedPrivacy?.tokenId,
       );
-      actionLogEvent({desc: `get balance token ${balanceToken}`});
+      actionLogEvent({ desc: `get balance token ${balanceToken}` });
       const balancePRV = await accountService.getBalance(account, wallet);
-      actionLogEvent({desc: `get balance ${balancePRV}`});
+      actionLogEvent({ desc: `get balance ${balancePRV}` });
       if (balanceToken < originalAmount) {
         throw new Error(MESSAGES.BALANCE_INSUFFICIENT);
       }
@@ -118,17 +117,26 @@ class RequestSendTx extends Component {
         wallet,
         originalAmount,
       );
-      actionLogEvent({desc: `get spending PRV ${spendingPRV}`});
+      actionLogEvent({ desc: `get spending PRV ${spendingPRV}` });
       const spendingCoin = await accountService.hasSpendingCoins(
         account,
         wallet,
         originalAmount,
         selectedPrivacy?.tokenId,
       );
-      actionLogEvent({desc: `get spending PRV ${spendingCoin}`});
+      actionLogEvent({ desc: `get spending token ${spendingCoin}` });
       if (spendingCoin || spendingPRV) {
         throw new Error(MESSAGES.PENDING_TRANSACTIONS);
       }
+      actionLogEvent({
+        desc: `create send 
+      \ntoken object: ${JSON.stringify(tokenObject)},
+      \ntotal fee: ${MAX_FEE_PER_TX},
+      \naccount: ${JSON.stringify(account)},
+      \npaymentInfos: ${JSON.stringify(paymentInfos)},
+      \ninfo: ${info}
+      `,
+      });
       const res = await tokenService.createSendPToken(
         tokenObject,
         MAX_FEE_PER_TX,
@@ -138,14 +146,14 @@ class RequestSendTx extends Component {
         0,
         info,
       );
-      actionLogEvent({desc: `get spending PRV ${JSON.stringify((res))}`});
+      actionLogEvent({ desc: `get spending PRV ${JSON.stringify(res)}` });
       if (res.txId) {
         return res;
       } else {
         throw new Error('Sent tx, but doesnt have txID, please check it');
       }
     } catch (e) {
-      actionLogEvent({desc: `get spending PRV ${JSON.stringify((e))}`});
+      actionLogEvent({ desc: `get spending PRV ${JSON.stringify(e)}` });
       throw e;
     } finally {
       this.setState({ isSending: false });
@@ -153,7 +161,7 @@ class RequestSendTx extends Component {
   };
 
   handleSendTx = async () => {
-    const {actionLogEvent} = this.props;
+    const { actionLogEvent } = this.props;
     try {
       const {
         selectedPrivacy,
@@ -175,7 +183,7 @@ class RequestSendTx extends Component {
       });
       onSendSuccess(res);
     } catch (e) {
-      actionLogEvent({desc: `get spending PRV ${JSON.stringify((e))}`});
+      actionLogEvent({ desc: `get spending PRV ${JSON.stringify(e)}` });
 
       const { onSendFailed } = this.props;
       onSendFailed(e);
@@ -249,7 +257,7 @@ const mapState = (state) => ({
 });
 
 const mapDispatch = {
-  actionLogEvent
+  actionLogEvent,
 };
 
 RequestSendTx.defaultProps = {
@@ -268,7 +276,7 @@ RequestSendTx.propTypes = {
   info: PropTypes.string,
   url: PropTypes.string.isRequired,
   pendingTxId: PropTypes.number.isRequired,
-  actionLogEvent: PropTypes.func.isRequired
+  actionLogEvent: PropTypes.func.isRequired,
 };
 
 export default connect(
