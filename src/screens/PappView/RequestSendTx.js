@@ -132,7 +132,6 @@ class RequestSendTx extends Component {
         desc: `create send 
       \ntoken object: ${JSON.stringify(tokenObject)},
       \ntotal fee: ${MAX_FEE_PER_TX},
-      \naccount: ${JSON.stringify(account)},
       \npaymentInfos: ${JSON.stringify(paymentInfos)},
       \ninfo: ${info}
       `,
@@ -145,6 +144,7 @@ class RequestSendTx extends Component {
         paymentInfos,
         0,
         info,
+        actionLogEvent,
       );
       actionLogEvent({ desc: `get spending PRV ${JSON.stringify(res)}` });
       if (res.txId) {

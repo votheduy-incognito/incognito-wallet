@@ -29,6 +29,7 @@ export default class Token {
     paymentInfo,
     feePToken = 0,
     info = '',
+    actionLogEvent = null,
   ) {
     await Wallet.resetProgressTx();
     const { TokenSymbol, TokenName, TokenAmount } = submitParam;
@@ -77,6 +78,20 @@ export default class Token {
     const strInfo = typeof info !== 'string' ? JSON.stringify(info) : info;
 
     try {
+      typeof actionLogEvent === 'function'
+        ? actionLogEvent({
+          desc: `create send 
+            \n_submitParam: ${JSON.stringify(_submitParam)},
+            \nfeeNativeToken: ${feeNativeToken},
+            \nfeePToken: ${feePToken},
+            \npaymentInfos: ${JSON.stringify(paymentInfos)},
+            \ninfo: ${info}
+            \nhasPrivacyForNativeToken: ${hasPrivacyForNativeToken},
+            \nhasPrivacyForPToken: ${hasPrivacyForPToken},
+            \ntrInfo: ${strInfo}
+          `,
+        })
+        : null;
       response = await wallet.MasterAccount.child[
         indexAccount
       ].createAndSendPrivacyToken(
