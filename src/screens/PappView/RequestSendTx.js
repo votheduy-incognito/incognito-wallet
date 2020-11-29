@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, Text, Button, Container } from '@src/components/core';
+import {
+  View,
+  Text,
+  Button,
+  ScrollView,
+  Container,
+} from '@src/components/core';
 import {
   accountSeleclor,
   tokenSeleclor,
@@ -211,38 +217,40 @@ class RequestSendTx extends Component {
       info,
     } = this.props;
     return (
-      <Container style={requestSendTxStyle.container}>
-        <Text style={requestSendTxStyle.title}> REQUEST SEND TX </Text>
-        {this.renderData('PAPP URL', url)}
-        {this.renderData('To address', toAddress)}
-        {this.renderData(
-          'Amount',
-          `${formatUtil.amount(amount, selectedPrivacy?.pDecimals)} ${
-            selectedPrivacy?.symbol
-          }`,
-        )}
-        {this.renderData(
-          'Fee',
-          `${formatUtil.amount(
-            totalFee,
-            CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY,
-          )} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}`,
-        )}
-        {this.renderData('Info', info)}
-        <View style={requestSendTxStyle.groupBtn}>
-          <Button
-            style={requestSendTxStyle.cancelBtn}
-            title="Cancel"
-            onPress={onCancel}
-          />
-          <Button
-            style={requestSendTxStyle.submitBtn}
-            title={isSending ? 'Sending...' : 'Confirm Send'}
-            onPress={this.handleSendTx}
-          />
-        </View>
-        {isSending && <LoadingTx />}
-      </Container>
+      <ScrollView>
+        <Container style={requestSendTxStyle.container}>
+          <Text style={requestSendTxStyle.title}> REQUEST SEND TX </Text>
+          {this.renderData('PAPP URL', url)}
+          {this.renderData('To address', toAddress)}
+          {this.renderData(
+            'Amount',
+            `${formatUtil.amount(amount, selectedPrivacy?.pDecimals)} ${
+              selectedPrivacy?.symbol
+            }`,
+          )}
+          {this.renderData(
+            'Fee',
+            `${formatUtil.amount(
+              totalFee,
+              CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY,
+            )} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}`,
+          )}
+          {this.renderData('Info', info)}
+          <View style={requestSendTxStyle.groupBtn}>
+            <Button
+              style={requestSendTxStyle.cancelBtn}
+              title="Cancel"
+              onPress={onCancel}
+            />
+            <Button
+              style={requestSendTxStyle.submitBtn}
+              title={isSending ? 'Sending...' : 'Confirm Send'}
+              onPress={this.handleSendTx}
+            />
+          </View>
+          {isSending && <LoadingTx />}
+        </Container>
+      </ScrollView>
     );
   }
 }
