@@ -122,7 +122,13 @@ class PappView extends Component {
     this.setState({ modalData: null });
   };
 
-  onRequestSendTx = ({ toAddress, amount, pendingTxId, info } = {}) => {
+  onRequestSendTx = ({
+    toAddress,
+    amount,
+    pendingTxId,
+    info,
+    paymentInfos,
+  } = {}) => {
     new Validator('onRequestSendTx toAddress', toAddress)
       .required()
       .paymentAddress();
@@ -139,6 +145,7 @@ class PappView extends Component {
           url={url}
           toAddress={toAddress}
           amount={amount}
+          paymentInfos={paymentInfos}
           info={info}
           pendingTxId={pendingTxId}
           selectedPrivacy={selectedPrivacy}

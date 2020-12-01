@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, Text, Button, Container } from '@src/components/core';
+import {
+  View,
+  Text,
+  Button,
+  ScrollView,
+  Container,
+} from '@src/components/core';
 import {
   accountSeleclor,
   tokenSeleclor,
@@ -16,13 +22,11 @@ import { ExHandler } from '@src/services/exception';
 import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
 import { MESSAGES } from '@screens/Dex/constants';
 import { actionLogEvent } from '@src/screens/Performance';
+import convert from '@src/utils/convert';
+import { compose } from 'recompose';
 import { requestSendTxStyle } from './style';
 
 const DEFAULT_FEE = 30; // in nano
-
-const HUNT_FEE = 80000000;
-
-const totalFee = MAX_FEE_PER_TX + HUNT_FEE;
 
 class RequestSendTx extends Component {
   constructor(props) {
@@ -70,10 +74,14 @@ class RequestSendTx extends Component {
     }
   };
 
-  _handleSendToken = async ({ toAddress, nanoAmount, feeUnit, fee, info }) => {
+  _handleSendToken = async ({
+    toAddress,
+    nanoAmount,
+    totalFee,
+    info,
+    paymentInfos,
+  }) => {
     const { selectedPrivacy, account, wallet, actionLogEvent } = this.props;
-    feeUnit = feeUnit || selectedPrivacy?.symbol;
-    fee = fee || DEFAULT_FEE;
     const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
     const originalAmount = nanoAmount;
     const tokenObject = {
@@ -90,12 +98,6 @@ class RequestSendTx extends Component {
         },
       ],
     };
-    const paymentInfos = [
-      {
-        paymentAddressStr: toAddress,
-        amount: HUNT_FEE,
-      },
-    ];
     try {
       this.setState({ isSending: true });
       const balanceToken = await accountService.getBalance(
@@ -103,9 +105,7 @@ class RequestSendTx extends Component {
         wallet,
         selectedPrivacy?.tokenId,
       );
-      actionLogEvent({ desc: `get balance token ${balanceToken}` });
       const balancePRV = await accountService.getBalance(account, wallet);
-      actionLogEvent({ desc: `get balance ${balancePRV}` });
       if (balanceToken < originalAmount) {
         throw new Error(MESSAGES.BALANCE_INSUFFICIENT);
       }
@@ -117,25 +117,15 @@ class RequestSendTx extends Component {
         wallet,
         originalAmount,
       );
-      actionLogEvent({ desc: `get spending PRV ${spendingPRV}` });
       const spendingCoin = await accountService.hasSpendingCoins(
         account,
         wallet,
         originalAmount,
         selectedPrivacy?.tokenId,
       );
-      actionLogEvent({ desc: `get spending token ${spendingCoin}` });
       if (spendingCoin || spendingPRV) {
         throw new Error(MESSAGES.PENDING_TRANSACTIONS);
       }
-      actionLogEvent({
-        desc: `create send 
-      \ntoken object: ${JSON.stringify(tokenObject)},
-      \ntotal fee: ${MAX_FEE_PER_TX},
-      \npaymentInfos: ${JSON.stringify(paymentInfos)},
-      \ninfo: ${info}
-      `,
-      });
       const res = await tokenService.createSendPToken(
         tokenObject,
         MAX_FEE_PER_TX,
@@ -146,14 +136,12 @@ class RequestSendTx extends Component {
         info,
         actionLogEvent,
       );
-      actionLogEvent({ desc: `get spending PRV ${JSON.stringify(res)}` });
       if (res.txId) {
         return res;
       } else {
         throw new Error('Sent tx, but doesnt have txID, please check it');
       }
     } catch (e) {
-      actionLogEvent({ desc: `get spending PRV ${JSON.stringify(e)}` });
       throw e;
     } finally {
       this.setState({ isSending: false });
@@ -170,6 +158,7 @@ class RequestSendTx extends Component {
         info,
         pendingTxId,
         onSendSuccess,
+        paymentInfos,
       } = this.props;
       let sendFn;
       if (selectedPrivacy?.isToken) sendFn = this._handleSendToken;
@@ -180,6 +169,7 @@ class RequestSendTx extends Component {
         nanoAmount: amount,
         pendingTxId,
         info,
+        paymentInfos,
       });
       onSendSuccess(res);
     } catch (e) {
@@ -209,40 +199,44 @@ class RequestSendTx extends Component {
       amount,
       url,
       info,
+      paymentInfos,
+      totalFee,
     } = this.props;
     return (
-      <Container style={requestSendTxStyle.container}>
-        <Text style={requestSendTxStyle.title}> REQUEST SEND TX </Text>
-        {this.renderData('PAPP URL', url)}
-        {this.renderData('To address', toAddress)}
-        {this.renderData(
-          'Amount',
-          `${formatUtil.amount(amount, selectedPrivacy?.pDecimals)} ${
-            selectedPrivacy?.symbol
-          }`,
-        )}
-        {this.renderData(
-          'Fee',
-          `${formatUtil.amount(
-            totalFee,
-            CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY,
-          )} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}`,
-        )}
-        {this.renderData('Info', info)}
-        <View style={requestSendTxStyle.groupBtn}>
-          <Button
-            style={requestSendTxStyle.cancelBtn}
-            title="Cancel"
-            onPress={onCancel}
-          />
-          <Button
-            style={requestSendTxStyle.submitBtn}
-            title={isSending ? 'Sending...' : 'Confirm Send'}
-            onPress={this.handleSendTx}
-          />
-        </View>
-        {isSending && <LoadingTx />}
-      </Container>
+      <ScrollView>
+        <Container style={requestSendTxStyle.container}>
+          <Text style={requestSendTxStyle.title}> REQUEST SEND TX </Text>
+          {this.renderData('PAPP URL', url)}
+          {this.renderData('To address', toAddress)}
+          {this.renderData(
+            'Amount',
+            `${formatUtil.amount(amount, selectedPrivacy?.pDecimals)} ${
+              selectedPrivacy?.symbol
+            }`,
+          )}
+          {this.renderData(
+            'Fee',
+            `${formatUtil.amount(
+              totalFee,
+              CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY,
+            )} ${CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}`,
+          )}
+          {this.renderData('Info', info)}
+          <View style={requestSendTxStyle.groupBtn}>
+            <Button
+              style={requestSendTxStyle.cancelBtn}
+              title="Cancel"
+              onPress={onCancel}
+            />
+            <Button
+              style={requestSendTxStyle.submitBtn}
+              title={isSending ? 'Sending...' : 'Confirm Send'}
+              onPress={this.handleSendTx}
+            />
+          </View>
+          {isSending && <LoadingTx />}
+        </Container>
+      </ScrollView>
     );
   }
 }
@@ -262,6 +256,8 @@ const mapDispatch = {
 
 RequestSendTx.defaultProps = {
   info: null,
+  paymentInfos: [],
+  totalFee: 0,
 };
 
 RequestSendTx.propTypes = {
@@ -277,9 +273,25 @@ RequestSendTx.propTypes = {
   url: PropTypes.string.isRequired,
   pendingTxId: PropTypes.number.isRequired,
   actionLogEvent: PropTypes.func.isRequired,
+  paymentInfos: PropTypes.array,
+  totalFee: PropTypes.number,
 };
 
-export default connect(
-  mapState,
-  mapDispatch,
+const enhance = (WrapComponent) => (props) => {
+  const { paymentInfos } = props;
+  const totalFee =
+    MAX_FEE_PER_TX +
+      paymentInfos?.reduce(
+        (prev, current) => (prev += convert.toNumber(current?.amount)),
+        0,
+      ) || 0;
+  return <WrapComponent {...{ ...props, totalFee }} />;
+};
+
+export default compose(
+  connect(
+    mapState,
+    mapDispatch,
+  ),
+  enhance,
 )(RequestSendTx);
