@@ -22,7 +22,6 @@ import { getEstimateFeeForPToken } from '@src/services/wallet/RpcClientService';
 import { addTokenInfo } from '@src/services/api/token';
 import Token from '@src/services/wallet/tokenService';
 import formatUtil from '@src/utils/format';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { setWallet } from '@src/redux/actions/wallet';
@@ -44,29 +43,16 @@ const imageValidate = [
   validator.maxFileSize(50),
 ];
 
+const TOKEN_FEE = 100;
+
 class AddInternalToken extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       isCreatingOrSending: false,
-      isGettingFee: false,
-      fee: null,
     };
 
-    this.handleShouldGetFee = _.debounce(this.handleShouldGetFee, 1000);
-  }
-
-  componentDidUpdate(prevProps) {
-    const { amount: oldAmount, isFormValid: oldIsFormValid } = prevProps;
-    const { isFormValid, amount } = this.props;
-
-    if (
-      (amount !== oldAmount || isFormValid !== oldIsFormValid) &&
-      isFormValid
-    ) {
-      this.handleShouldGetFee();
-    }
   }
 
   updateFormValues = (field, value) => {
@@ -113,7 +99,6 @@ class AddInternalToken extends Component {
 
     const accountWallet = wallet.getAccountByName(account.name);
     try {
-      this.setState({ isGettingFee: true });
       const fee = await getEstimateFeeForPToken(
         fromAddress,
         toAddress,
@@ -126,8 +111,6 @@ class AddInternalToken extends Component {
       this.setState({ fee: Number(fee * 2) || 50 });
     } catch (e) {
       new ExHandler(e).showErrorToast(true);
-    } finally {
-      this.setState({ isGettingFee: false });
     }
   };
 
@@ -145,7 +128,6 @@ class AddInternalToken extends Component {
       ownerEmail,
       ownerWebsite,
     } = values;
-    const { fee } = this.state;
     const parseAmount = Number(amount);
 
     const tokenObject = {
@@ -167,7 +149,7 @@ class AddInternalToken extends Component {
       this.setState({ isCreatingOrSending: true });
       const res = await Token.createSendPToken(
         tokenObject,
-        Number(fee) || 0,
+        TOKEN_FEE || 0,
         account,
         wallet,
       );
@@ -243,11 +225,10 @@ class AddInternalToken extends Component {
   };
 
   render() {
-    const { isCreatingOrSending, isGettingFee, fee } = this.state;
+    const { isCreatingOrSending } = this.state;
     const { account } = this.props;
-    const isNotEnoughFee = account?.value < fee;
-    const isCanSubmit =
-      !isGettingFee && typeof fee === 'number' && !isNotEnoughFee;
+    const isNotEnoughFee = account?.value < TOKEN_FEE;
+    const isCanSubmit = !isNotEnoughFee;
     const disabled = !isCanSubmit;
     return (
       <KeyboardAwareScrollView>
@@ -372,26 +353,20 @@ class AddInternalToken extends Component {
                     label="Coin icon"
                   />
                 </View>
-                {isGettingFee ? (
-                  <Text>Calculating fee...</Text>
-                ) : (
-                  typeof fee === 'number' && (
-                    <Text style={isNotEnoughFee && styleSheet.error}>
-                      Issuance fee:{' '}
-                      {formatUtil.amountFull(
-                        fee,
-                        CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY,
-                      )}{' '}
-                      {CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}
-                      {isNotEnoughFee &&
-                        ' (please top up your balance to cover the fee)'}
-                    </Text>
-                  )
-                )}
+                <Text style={isNotEnoughFee && styleSheet.error}>
+                  Issuance fee:{' '}
+                  {formatUtil.amountFull(
+                    TOKEN_FEE,
+                    CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY,
+                  )}{' '}
+                  {CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV}
+                  {isNotEnoughFee &&
+                  ' (please top up your balance to cover the fee)'}
+                </Text>
               </View>
               <Button
                 disabled={disabled}
-                title={isGettingFee ? 'Calculating fee...' : 'Mint'}
+                title='Mint'
                 style={[
                   styleSheet.submitBtn,
                   disabled && styleSheet.submitBtnDisabed,
@@ -399,7 +374,7 @@ class AddInternalToken extends Component {
                 titleStyle={styleSheet.titleSubmitBtn}
                 onPress={handleSubmit(this.handleCreateSendToken)}
                 isAsync
-                isLoading={isGettingFee || submitting}
+                isLoading={submitting}
               />
             </View>
           )}
