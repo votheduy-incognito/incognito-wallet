@@ -32,6 +32,7 @@ export default {
   [CODE.web_js_not_enough_coin]: 'Your balance is not enough for this transaction.',
   [CODE.addBep2Token_not_found]: 'This BEP2 coin doesn\'t seem to exist. Please check and try again.',
   [CODE.api_add_private_token_already_existed]: 'This coin has been added.',
+  [CODE.api_not_supported_token]: 'This coin is not supported by the app.',
   [CODE.addErc20Token_not_found]: 'This BEP2 coin has been added.',
   [CODE.api_qrcode_fail_ProductNotFound]: 'This QR code is unfamiliar. Please try again.',
   [CODE.api_qrcode_fail_QRCodeAlreadyStaked]: 'You\'ve already set up this Node.',
