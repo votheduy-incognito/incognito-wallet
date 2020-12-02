@@ -20,6 +20,7 @@ const api = {
   api_paymentaddres_existed: apiError(-100002),
   api_transfer_fail: apiError(-100003),
   api_add_private_token_already_existed: apiError(-1023),
+  api_not_supported_token: apiError(-1029),
   api_qrcode_fail_ProductNotFound: apiError(-80008),
   api_qrcode_fail_QRCodeAlreadyStaked: apiError(-80009),
   api_invalid_size_upload_file: apiError(-8002),
