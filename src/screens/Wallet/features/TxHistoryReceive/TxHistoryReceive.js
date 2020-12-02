@@ -47,6 +47,12 @@ const TxHistoryReceive = (props) => {
       message: history?.statusDetail,
     },
     {
+      label: 'Memo',
+      valueText: history?.memo,
+      copyable: true,
+      disabled: !history?.memo,
+    },
+    {
       label: 'Time',
       valueText: history?.time,
       disabled: !history?.time,
