@@ -214,7 +214,7 @@ export const parseRewards = async (nodesInfo, skipAllTokens = false) => {
 const checkValidNodeWithdraw = (device) => {
   // PNode check can withdraw when PRV > 0, another rewards > 0 cant withdraw
   if (!device?.IsFundedUnstaked && device?.IsPNode) {
-    return some(device.Rewards, rewards => rewards > 0);
+    return some(device.Rewards, rewards => rewards > 100);
   }
   return some(device.AllRewards, rewards => rewards?.balance > 0);
 };
