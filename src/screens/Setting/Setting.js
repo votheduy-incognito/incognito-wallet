@@ -1,11 +1,11 @@
-import { ScrollView, Text, View } from '@src/components/core';
+import { Text, View } from '@src/components/core';
 import React from 'react';
 import AppUpdater from '@components/AppUpdater/index';
-import Header from '@src/components/Header';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { useSelector } from 'react-redux';
 import CurrencySection from '@screens/Setting/features/CurrencySection/CurrencySection';
+import MainLayout from '@components/MainLayout/index';
 import PINSection from './features/PINSection';
 import SeparatorSection from './features/SeparatorSection';
 import DevSection from './features/DevSection';
@@ -34,26 +34,23 @@ const Setting = () => {
   ];
 
   return (
-    <View style={settingStyle.container}>
-      <Header title="Settings" style={settingStyle.header} />
-      <ScrollView>
-        <View style={settingStyle.extra}>
-          {sectionItemFactories.map((item, id) => (
-            <SectionItem data={item} key={id} />
-          ))}
-          <PINSection />
-          <SeparatorSection />
-          <DecimalDigitsSection />
-          <CurrencySection />
-          <AddressBookSection />
-          <UTXOSection />
-          {global.isDebug() && <DevSection />}
-        </View>
-        <Text style={settingStyle.textVersion}>
-          {`v${AppUpdater.appVersion}`}
-        </Text>
-      </ScrollView>
-    </View>
+    <MainLayout header="Settings" scrollable>
+      <View>
+        {sectionItemFactories.map((item, id) => (
+          <SectionItem data={item} key={id} />
+        ))}
+        <PINSection />
+        <SeparatorSection />
+        <DecimalDigitsSection />
+        <CurrencySection />
+        <AddressBookSection />
+        <UTXOSection />
+        {global.isDebug() && <DevSection />}
+      </View>
+      <Text style={settingStyle.textVersion}>
+        {`v${AppUpdater.appVersion}`}
+      </Text>
+    </MainLayout>
   );
 };
 
