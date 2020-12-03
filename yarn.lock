@@ -7904,7 +7904,7 @@ pako@~0.2.0:
 
 "papp-sdk@https://github.com/incognitochain/sdk#papp-client-sdk":
   version "1.0.2"
-  resolved "https://github.com/incognitochain/sdk#6b29b689ab1e3e5bd255385d8778adc6af0c5b44"
+  resolved "https://github.com/incognitochain/sdk#ab0eca0a27188f6380b25886eee482dd2ab1b9d2"
   dependencies:
     uuid "^8.3.1"
 

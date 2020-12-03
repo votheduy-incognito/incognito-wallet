@@ -136,6 +136,15 @@ export const combineNode = async (device, wallet, newBLSKey) => {
   return device;
 };
 
+// Old Node stuck in last round, should not show rewards on app
+const checkOldNodeStuckReward = (nodeInfo) => {
+  const IsInAutoStaking = nodeInfo?.IsInAutoStaking;
+  const IsAutoStake     = nodeInfo?.IsAutoStake;
+  const IsUnstaked      = nodeInfo?.IsUnstaked;
+  const IsStaked        = nodeInfo?.IsStaked;
+  return !IsInAutoStaking && !IsAutoStake && IsUnstaked && IsStaked;
+};
+
 /*
 * Return value
 // *All tokens in all rewards
@@ -159,7 +168,11 @@ export const parseRewards = async (nodesInfo, skipAllTokens = false) => {
   let allRewards  = { [PRV_ID]: 0 };
 
   forEach(nodesInfo, item => {
-    rewardsList = rewardsList.concat(item?.Rewards || []);
+    // Old Node stuck in last round, should not show rewards on app
+    const isStuckLastRound = checkOldNodeStuckReward(item);
+    if (!isStuckLastRound) {
+      rewardsList = rewardsList.concat(item?.Rewards || []);
+    }
   });
 
   forEach(rewardsList, (reward) => {
@@ -198,6 +211,26 @@ export const parseRewards = async (nodesInfo, skipAllTokens = false) => {
   };
 };
 
+const checkValidNodeWithdraw = (device) => {
+  // PNode check can withdraw when PRV > 0, another rewards > 0 cant withdraw
+  if (!device?.IsFundedUnstaked && device?.IsPNode) {
+    return some(device.Rewards, rewards => rewards > 100);
+  }
+  return some(device.AllRewards, rewards => rewards?.balance > 0);
+};
+
+export const checkValidNode = (device) => (
+  device.AccountName
+  && !isEmpty(device.AllRewards)
+  && checkValidNodeWithdraw(device)
+);
+
+export const getValidNodes = (listDevice) => {
+  if (!listDevice || listDevice.length <= 0) return [];
+  return listDevice.filter(checkValidNode);
+};
+
+
 export const checkNoRewards = (nodeRewards, listDevice) => {
   let noRewards = true;
   if (nodeRewards && nodeRewards.length > 0) {
@@ -209,14 +242,8 @@ export const checkNoRewards = (nodeRewards, listDevice) => {
       }
     });
   }
-  if (listDevice && listDevice.length > 0) {
-    const validNodes = listDevice.filter(device => (
-      device.AccountName &&
-      !isEmpty(device.Rewards) &&
-      some(device.Rewards, value => value && value > 0)
-    ));
-    noRewards = noRewards || validNodes.length === 0;
-  }
+  const validNodes = getValidNodes(listDevice);
+  noRewards = noRewards || validNodes.length === 0;
   return noRewards;
 };
 

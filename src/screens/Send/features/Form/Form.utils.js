@@ -1,3 +1,5 @@
+import { trim } from 'lodash';
+
 export const standardizedAddress = (address) => {
   if (!address) {
     return '';
@@ -7,5 +9,5 @@ export const standardizedAddress = (address) => {
   if (indexParams !== -1) {
     newAddress = address.substring(0, indexParams);
   }
-  return newAddress;
+  return trim(newAddress || '');
 };
