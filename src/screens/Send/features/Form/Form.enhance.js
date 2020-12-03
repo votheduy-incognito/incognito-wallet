@@ -10,14 +10,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isValid, formValueSelector, change, focus } from 'redux-form';
 import { actionFetchFeeByMax } from '@src/components/EstimateFee/EstimateFee.actions';
 import { useKeyboard } from '@src/components/UseEffect/useKeyboard';
-import { trim } from 'lodash';
 import { enhanceAddressValidation } from './Form.enhanceAddressValidator';
 import { enhanceAmountValidation } from './Form.enhanceAmountValidator';
 import { enhanceInit } from './Form.enhanceInit';
 import { enhanceSend } from './Form.enhanceSend';
 import { enhanceUnshield } from './Form.enhanceUnShield';
 import { enhanceMemoValidation } from './Form.enhanceMemoValidator';
-import { standardizedAddress } from './Form.utils';
+import { removeAllSpace, standardizedAddress } from './Form.utils';
 
 export const formName = 'formSend';
 
@@ -58,7 +57,7 @@ export const enhance = (WrappedComp) => (props) => {
     } catch (e) {
       console.debug('error', e);
     }
-    return trim(_value || '');
+    return removeAllSpace(_value);
   };
   const onChangeField = async (value, field) => {
     let _value = value;
