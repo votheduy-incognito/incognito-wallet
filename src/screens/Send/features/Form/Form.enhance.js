@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isValid, formValueSelector, change, focus } from 'redux-form';
 import { actionFetchFeeByMax } from '@src/components/EstimateFee/EstimateFee.actions';
 import { useKeyboard } from '@src/components/UseEffect/useKeyboard';
+import { trim } from 'lodash';
 import { enhanceAddressValidation } from './Form.enhanceAddressValidator';
 import { enhanceAmountValidation } from './Form.enhanceAmountValidator';
 import { enhanceInit } from './Form.enhanceInit';
@@ -57,7 +58,7 @@ export const enhance = (WrappedComp) => (props) => {
     } catch (e) {
       console.debug('error', e);
     }
-    return _value;
+    return trim(_value || '');
   };
   const onChangeField = async (value, field) => {
     let _value = value;
