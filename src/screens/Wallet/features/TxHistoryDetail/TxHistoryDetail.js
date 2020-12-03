@@ -268,6 +268,12 @@ const TxHistoryDetail = (props) => {
       disabled: !history?.toAddress,
     },
     {
+      label: 'Memo',
+      valueText: history?.memo,
+      copyable: true,
+      disabled: !history?.memo,
+    },
+    {
       label: 'Coin',
       valueText: history.symbol,
       disabled: !history?.symbol,
