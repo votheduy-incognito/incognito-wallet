@@ -230,7 +230,7 @@ export const actionUpdatePNodeItem = (productId) => async (dispatch, getState) =
           }
         }
       } else {
-        const ip = await NodeService.pingGetIP(device);
+        const ip = await NodeService.pingGetIP(device, 15);
         if (ip) {
           device.Host = ip;
           device.setIsOnline(MAX_RETRY);
