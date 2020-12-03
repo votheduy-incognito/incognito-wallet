@@ -100,6 +100,7 @@ const normalizedHistories = ({
         feePToken: Number(h?.feePToken),
         isIncognitoTx: true,
         metaDataType: h?.metaData?.Type,
+        memo: h?.info || h?.memo
       };
       const { indexTx, historyFromApi } = normalizedHistory(
         _historiesFromApi,
