@@ -56,6 +56,7 @@ const enhance = (WrappedComp) => (props) => {
               ? tx?.LockTime
               : `${tx?.LockTime}Z` || history?.time,
           ),
+          memo: tx?.Info
         },
       });
     }
