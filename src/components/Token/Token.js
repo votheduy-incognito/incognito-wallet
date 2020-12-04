@@ -3,12 +3,10 @@ import { Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import withToken from '@src/components/Token/Token.enhance';
 import { TokenVerifiedIcon } from '@src/components/Icons';
-import format from '@src/utils/format';
 import round from 'lodash/round';
 import Swipeout from 'react-native-swipeout';
 import { BtnDelete } from '@src/components/Button';
 import replace from 'lodash/replace';
-import convert from '@src/utils/convert';
 import trim from 'lodash/trim';
 import { TouchableOpacity, ActivityIndicator } from '@src/components/core';
 import { COLORS } from '@src/styles';
@@ -86,17 +84,14 @@ export const AmountBasePRV = (props) => {
     pricePrv,
     customPSymbolStyle,
     customStyle,
-    isUSDT
   } = props;
   const decimalDigits = useSelector(decimalDigitsSelector);
-  const pPRV          = useSelector(getPrivacyDataByTokenID)(BIG_COINS.PRV);
-  const isToggleUSD   = useSelector(currencySelector);
 
   let currentAmount = formatAmount(
     pricePrv,
     amount,
     pDecimals,
-    !isToggleUSD && isUSDT ? pPRV?.pDecimals : pDecimals,
+    pDecimals,
     decimalDigits,
     false
   );
@@ -135,17 +130,14 @@ export const AmountBaseUSDT = React.memo((props) => {
     priceUsd,
     customPSymbolStyle,
     customStyle,
-    isUSDT
   } = props;
-  const pUSDT         = useSelector(getPrivacyDataByTokenID)(BIG_COINS.USDT);
   const decimalDigits = useSelector(decimalDigitsSelector);
-  const isToggleUSD   = useSelector(currencySelector);
 
   let currentAmount = formatAmount(
     priceUsd,
     amount,
     pDecimals,
-    isToggleUSD && !isUSDT ? pDecimals : pUSDT?.pDecimals,
+    pDecimals,
     decimalDigits,
     false
   );
@@ -232,21 +224,18 @@ export const Amount = (props) => {
     stylePSymbol,
     containerStyle,
     size,
-    isUSDT,
-    priceUsd,
   } = props;
   const decimalDigits = useSelector(decimalDigitsSelector);
-  const { pToken, isToggleUSD } = useSelector(pTokenSelector);
   const shouldShowGettingBalance = isGettingBalance && showGettingBalance;
   if (shouldShowGettingBalance) {
     return <ActivityIndicator size={size} />;
   }
 
   let amountWithDecimalDigits = formatAmount(
-    isUSDT && isToggleUSD ? priceUsd : 1,
+    1,
     amount,
     pDecimals,
-    isUSDT && isToggleUSD ? pToken?.pDecimals : pDecimals,
+    pDecimals,
     decimalDigits,
     false
   );
@@ -274,8 +263,6 @@ Amount.propTypes = {
   hasPSymbol: PropTypes.bool,
   stylePSymbol: PropTypes.any,
   containerStyle: PropTypes.any,
-  isUSDT: PropTypes.bool,
-  priceUsd: PropTypes.number
 };
 
 Amount.defaultProps = {
@@ -290,8 +277,6 @@ Amount.defaultProps = {
   hasPSymbol: false,
   stylePSymbol: null,
   containerStyle: null,
-  isUSDT: false,
-  priceUsd: 1
 };
 
 export const Symbol = (props) => {
@@ -395,20 +380,13 @@ const Token = (props) => {
   const {
     handleRemoveToken = null,
     swipable = false,
-    priceUsd,
     pricePrv,
-    isUSDT,
     isPRV
   } = props;
   const isToggleUSD = useSelector(currencySelector);
   let TokenComponent;
   if (isToggleUSD) {
-    const pairWithUSDT = priceUsd !== 0 && !isUSDT;
-    TokenComponent = pairWithUSDT ? (
-      <TokenPairUSDT {...props} />
-    ) : (
-      <TokenDefault {...props} />
-    );
+    TokenComponent = (<TokenPairUSDT {...props} />);
   }
   else {
     const pairWithPRV = pricePrv !== 0 && !isPRV;

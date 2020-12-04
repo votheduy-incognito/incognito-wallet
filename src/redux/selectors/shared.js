@@ -117,7 +117,7 @@ export const totalShieldedTokensSelector = createSelector(
           price,
           amount,
           pDecimals,
-          isToggleUSD ? pDecimals : decimalDigit?.pDecimals,
+          pDecimals,
           decimalDigits,
           true
         );
