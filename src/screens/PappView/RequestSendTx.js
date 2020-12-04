@@ -174,10 +174,9 @@ class RequestSendTx extends Component {
       onSendSuccess(res);
     } catch (e) {
       actionLogEvent({ desc: `get spending PRV ${JSON.stringify(e)}` });
-
       const { onSendFailed } = this.props;
       onSendFailed(e);
-      new ExHandler(e).showErrorToast(true);
+      new ExHandler(e, '').showErrorToast(true);
     }
   };
 
