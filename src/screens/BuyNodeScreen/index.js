@@ -68,7 +68,7 @@ const BuyNodeScreen = (props) => {
 
   useFocusEffect(useCallback(() => {
     loadData();
-  }, []));
+  }, [currentTokenId]));
 
   useEffect(() => {
     if (account && supportToken) {
@@ -199,6 +199,8 @@ const BuyNodeScreen = (props) => {
   };
 
   const getShippingFee = async (data) => {
+    console.debug('SHIP', currentTokenId);
+
     await APIService.getShippingFee(
       data.countryCode || '',
       data.countryCode || '',
@@ -262,6 +264,7 @@ const BuyNodeScreen = (props) => {
 
   // Process payment flow
   const onPaymentProcess = async () => {
+    console.debug('PAYMENT', currentTokenId);
     setLoading(true);
     APIService.checkOutOrder(
       contactData.email,
