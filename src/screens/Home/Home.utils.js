@@ -316,7 +316,12 @@ export const checkOutdatedVersion = (appVersion) => {
     (item) => Number(item),
   );
   const newAppVersions = split(appVersion, '.').map((item) => Number(item));
-  return currentAppVersion
-    .slice(0, 2)
-    .some((item, index) => item < newAppVersions[index]);
+  for (let index = 0; index < currentAppVersion.length; index++) {
+    const iCurr = currentAppVersion[index];
+    const iNew = newAppVersions[index];
+    if (iCurr > iNew) {
+      return false;
+    }
+  }
+  return true;
 };
