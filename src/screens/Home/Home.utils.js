@@ -319,7 +319,7 @@ export const checkOutdatedVersion = (appVersion) => {
   for (let index = 0; index < currentAppVersion.length; index++) {
     const iCurr = currentAppVersion[index];
     const iNew = newAppVersions[index];
-    if (iCurr > iNew) {
+    if (iCurr >= iNew) {
       return false;
     }
   }
