@@ -568,7 +568,7 @@ export default class APIService {
   }
   // Shipping fee when buying device
   static async getShippingFee(city, country, code, region, street, tokenId) {
-    const url = `${API.ORDER}/order/shipping-fee`;
+    const url = 'order/shipping-fee';
     const params = {
       AddressCity: city,
       AddressCountry: country,
@@ -577,7 +577,7 @@ export default class APIService {
       AddressRegion: region,
       TokenID: tokenId,
     };
-    return APIService.getURL(METHOD.POST, url, params, false, false);
+    return http.post(url, params);
   }
 
   static async getBeaconBestStateDetail() {
