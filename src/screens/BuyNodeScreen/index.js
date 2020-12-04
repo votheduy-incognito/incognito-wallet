@@ -209,9 +209,9 @@ const BuyNodeScreen = (props) => {
       data.address || '',
       currentTokenId,
     )
-      .then(val => {
-        if (val && val?.Result) {
-          data.shippingFee = val?.Result?.ShippingFee || 0;
+      .then(result => {
+        if (result) {
+          data.shippingFee = result.ShippingFee || 0;
           setContactData(data);
 
           LocalDatabase.setShipAddress(data);
