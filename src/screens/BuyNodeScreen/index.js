@@ -199,7 +199,14 @@ const BuyNodeScreen = (props) => {
   };
 
   const getShippingFee = async (data) => {
-    await APIService.getShippingFee(data.countryCode || '', data.countryCode || '', data.countryCode || '', data.region || '', data.address || '')
+    await APIService.getShippingFee(
+      data.countryCode || '',
+      data.countryCode || '',
+      data.countryCode || '',
+      data.region || '',
+      data.address || '',
+      currentTokenId,
+    )
       .then(val => {
         if (val && val?.Result) {
           data.shippingFee = val?.Result?.ShippingFee || 0;
