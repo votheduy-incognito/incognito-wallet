@@ -10,7 +10,9 @@ import {
   UPDATE_WITHDRAW_TXS,
   ACTION_CLEAR_LIST_NODES,
   ACTION_CLEAR_WITHDRAW_TXS,
-  ACTION_UPDATE_WITHDRAWING, ACTION_UPDATE_LOADED_NODE
+  ACTION_UPDATE_WITHDRAWING,
+  ACTION_UPDATE_LOADED_NODE,
+  ACTION_UPDATE_ACCESS_TOKEN_REFRESH_TOKEN
 } from '@screens/Node/Node.constant';
 import { ExHandler } from '@services/exception';
 import { apiGetNodesInfo } from '@screens/Node/Node.services';
@@ -23,7 +25,8 @@ import {
   combineNodesInfoToObject,
   formatNodeItemFromApi,
   combineNode,
-  findNodeIndexByProductId
+  findNodeIndexByProductId,
+  getNodeToken
 } from '@screens/Node/Node.utils';
 import NodeService from '@services/NodeService';
 import moment from 'moment';
@@ -244,6 +247,7 @@ export const actionUpdatePNodeItem = (productId) => async (dispatch, getState) =
           const version = await NodeService.checkVersion(device);
           const latestVersion = await NodeService.getLatestVersion();
           device.Firmware = version;
+          device.LatestFirmware = latestVersion;
           if (version && version !== latestVersion) {
             NodeService.updateFirmware(device, latestVersion)
               .then(res => console.debug('UPDATE FIRMWARE SUCCESS', device.QRCode, res))
@@ -335,4 +339,25 @@ export const actionUpdateVNodeItem = (deviceItem) => async (dispatch, getState) 
       dispatch(actionUpdateLoadedNode({[productId]: true}));
     }
   }
+};
+
+export const actionUpdateAccessRefreshToken = (payload) => ({
+  type: ACTION_UPDATE_ACCESS_TOKEN_REFRESH_TOKEN,
+  payload
+});
+
+export const actionCheckAccessRefreshToken = (accessToken, refreshToken) => async (dispatch) => {
+  try {
+    if (isEmpty(accessToken) || isEmpty(refreshToken)) {
+      const {
+        accessToken: access_token,
+        refreshToken: refresh_token
+      } = await getNodeToken();
+      accessToken = access_token;
+      refreshToken = refresh_token;
+    }
+    if (!isEmpty(accessToken) && !isEmpty(refreshToken)) {
+      dispatch(actionUpdateAccessRefreshToken({accessToken, refreshToken}));
+    }
+  } catch (error) {/*Ignore error*/}
 };

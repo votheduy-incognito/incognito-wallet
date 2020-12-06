@@ -67,6 +67,7 @@ import WhyStreamline from '@screens/Streamline/features/WhyStreamLine';
 import TxHistoryReceive from '@screens/Wallet/features/TxHistoryReceive';
 import Event from '@screens/Event';
 import Helper from '@screens/Helper/Helper';
+import UpdateFirmware from '@screens/Node/UpdateFirmware';
 
 const routes = [
   {
@@ -349,6 +350,10 @@ const routes = [
     screen: Helper,
     name: routeNames.Helper,
   },
+  {
+    screen: UpdateFirmware,
+    name: routeNames.UpdateNodeFirmware,
+  }
 ];
 
 export const getRoutesNoHeader = () =>

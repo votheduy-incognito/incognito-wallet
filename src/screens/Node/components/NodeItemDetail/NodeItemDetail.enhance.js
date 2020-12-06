@@ -71,6 +71,13 @@ const withEnhance = WrappedComp => props => {
     item.IsVNode ? getVNodeInfo() : getPNodeInfo();
   };
 
+  const onUpdateNode = () => {
+    navigation.navigate(routeNames.UpdateNodeFirmware, {
+      host: item?.Host,
+      onReload: onRefreshNodeItem
+    });
+  };
+
   return (
     <ErrorBoundary>
       <WrappedComp
@@ -83,7 +90,8 @@ const withEnhance = WrappedComp => props => {
           onStakePress,
           onChangeWifiPress,
           onUnStakePress,
-          onRefresh: onRefreshNodeItem
+          onRefresh: onRefreshNodeItem,
+          onUpdateNode
         }}
       />
     </ErrorBoundary>

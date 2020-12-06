@@ -25,6 +25,7 @@
 		1F3B2CE8247FC9FB00F8A129 /* SF-Pro-Display-MediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2980D9246D55E3000EE1C6 /* SF-Pro-Display-MediumItalic.otf */; };
 		1F3B2CE9247FC9FB00F8A129 /* SF-Pro-Display-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2980E5246D55E4000EE1C6 /* SF-Pro-Display-Regular.otf */; };
 		1F3B2CEA247FC9FB00F8A129 /* SF-Pro-Display-RegularItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2980D5246D55E2000EE1C6 /* SF-Pro-Display-RegularItalic.otf */; };
+		2000529E2577658100E21F97 /* libRNSSHClient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2000529B2577655A00E21F97 /* libRNSSHClient.a */; };
 		20B559AF22C393B10079FC06 /* Gomobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B559AE22C393B10079FC06 /* Gomobile.m */; };
 		3B50FECFE455494A8373E5A6 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ECBE1563D1B5449E86A7658F /* libRNVectorIcons.a */; };
 		3EF0EC91E7FE4B16A434459C /* libRNZmqService.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE70DDA39F794DA9B6544C35 /* libRNZmqService.a */; };
@@ -53,6 +54,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		2000529A2577655A00E21F97 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 200052962577655A00E21F97 /* RNSSHClient.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNSSHClient;
+		};
 		FEEBD6D32355C724006EFECD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FEEBD6CD2355C724006EFECD /* RNZmqService.xcodeproj */;
@@ -109,6 +117,7 @@
 		1F2980E5246D55E4000EE1C6 /* SF-Pro-Display-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Display-Regular.otf"; path = "../../src/assets/fonts/SF-Pro-Display-Regular.otf"; sourceTree = "<group>"; };
 		1F2980E7246D55E4000EE1C6 /* SF-Pro-Display-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Display-Light.otf"; path = "../../src/assets/fonts/SF-Pro-Display-Light.otf"; sourceTree = "<group>"; };
 		1FE9C669E1BF469DA6A28690 /* libRNRandomBytes-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNRandomBytes-tvOS.a"; sourceTree = "<group>"; };
+		200052962577655A00E21F97 /* RNSSHClient.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSSHClient.xcodeproj; path = "../node_modules/react-native-ssh-sftp/ios/RNSSHClient.xcodeproj"; sourceTree = "<group>"; };
 		20160FCB034340829E942C14 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		20B559AD22C393920079FC06 /* Gomobile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Gomobile.h; sourceTree = "<group>"; };
 		20B559AE22C393B10079FC06 /* Gomobile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Gomobile.m; sourceTree = "<group>"; };
@@ -209,6 +218,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2000529E2577658100E21F97 /* libRNSSHClient.a in Frameworks */,
 				FE5C9FA82355D46900AC6E90 /* libreact-native-netinfo.a in Frameworks */,
 				FEEBD6E32355CBB3006EFECD /* libreact-native-camera.a in Frameworks */,
 				FEEBD6DB2355CA94006EFECD /* libRNPermissions.a in Frameworks */,
@@ -267,6 +277,14 @@
 				1F2980D5246D55E2000EE1C6 /* SF-Pro-Display-RegularItalic.otf */,
 			);
 			path = fonts;
+			sourceTree = "<group>";
+		};
+		200052972577655A00E21F97 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2000529B2577655A00E21F97 /* libRNSSHClient.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		202892B6227045F6004F5C14 /* Recovered References */ = {
@@ -331,6 +349,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				200052962577655A00E21F97 /* RNSSHClient.xcodeproj */,
 				FEEBD6CD2355C724006EFECD /* RNZmqService.xcodeproj */,
 			);
 			name = Libraries;
@@ -518,6 +537,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 200052972577655A00E21F97 /* Products */;
+					ProjectRef = 200052962577655A00E21F97 /* RNSSHClient.xcodeproj */;
+				},
+				{
 					ProductGroup = FEEBD6CE2355C724006EFECD /* Products */;
 					ProjectRef = FEEBD6CD2355C724006EFECD /* RNZmqService.xcodeproj */;
 				},
@@ -530,6 +553,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		2000529B2577655A00E21F97 /* libRNSSHClient.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNSSHClient.a;
+			remoteRef = 2000529A2577655A00E21F97 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FEEBD6D42355C724006EFECD /* libRNZmqService.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
