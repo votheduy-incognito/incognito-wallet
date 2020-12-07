@@ -18,5 +18,4 @@ export default class API {
 
 
   static DEVICE = 'https://device-network.incognito.org';
-  static ORDER = 'https://api2.incognito.org';
 }
