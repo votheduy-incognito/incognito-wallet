@@ -9143,9 +9143,9 @@ react-native-wifi-reborn@^2.2.1:
   resolved "https://registry.yarnpkg.com/react-native-wifi-reborn/-/react-native-wifi-reborn-2.4.0.tgz#d5b9d8f3a6deba1cc4e2c0bcd17907f962599731"
   integrity sha512-jp6BoXUBiGl+aR3QlEBHKbkEAy6eLv7rFPl4f1zUkcVXsWaGfTCw0JF2HcT+c6NLw5UkXmZNDB0WuxnvgU5FJg==
 
-"react-native-zmq-service@https://github.com/matsatit/RNZmqService.git":
+"react-native-zmq-service@https://github.com/incognitochain/RNZmqService":
   version "1.0.0"
-  resolved "https://github.com/matsatit/RNZmqService.git#d1e0c3a6837aed1cda808e39e908141575d8b4c0"
+  resolved "https://github.com/incognitochain/RNZmqService#c1511d1092460ee57663105fe22f969a99264613"
 
 react-native@0.61.2:
   version "0.61.2"
