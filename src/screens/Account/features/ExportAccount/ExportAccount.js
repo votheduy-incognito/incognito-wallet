@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import clipboard from '@src/services/clipboard';
 import { BtnQRCode, BtnCopy } from '@src/components/Button';
@@ -8,6 +8,7 @@ import srcQrCodeLight from '@src/assets/images/icons/qr_code_light.png';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { ScrollView } from '@src/components/core';
+import { loadListAccountWithBLSPubKey } from '@services/wallet/WalletService';
 import withExportAccount from './ExportAccount.enhance';
 import styleSheet from './ExportAccount.styled';
 
@@ -30,7 +31,8 @@ const ExportItem = ({ label, data, onPress, onPressQRCode }) => (
   </View>
 );
 
-const ExportAccount = ({ account, token, title }) => {
+const ExportAccount = ({ wallet, account, token, title }) => {
+  const [blsPublicKey, setBlsPublicKey] = useState(null);
   const navigation = useNavigation();
   const parseShard = (bytes) => {
     const arr = bytes.split(',');
@@ -55,6 +57,22 @@ const ExportAccount = ({ account, token, title }) => {
         }}
       />
     ) : null;
+
+  const loadBLSPublicKeyMining = async () => {
+    const listAccounts = (await loadListAccountWithBLSPubKey(wallet)) || [];
+    const rawAccount = listAccounts.find(element =>
+      element?.AccountName === account?.name
+    );
+    if (!rawAccount) return;
+    setBlsPublicKey(rawAccount?.BLSPublicKey);
+  };
+
+  useEffect(() => {
+    if (__DEV__ || global.isDEV) {
+      loadBLSPublicKeyMining().then();
+    }
+  }, []);
+
   return (
     <View style={styleSheet.container}>
       <Header title={title} />
@@ -71,6 +89,9 @@ const ExportAccount = ({ account, token, title }) => {
           {__DEV__ || global.isDEV ? renderItem('Device token', token) : null}
           {__DEV__ || global.isDEV
             ? renderItem('Shard', parseShard(account?.PublicKeyBytes))
+            : null}
+          { blsPublicKey
+            ? renderItem('BLS Public Key Mining', blsPublicKey)
             : null}
         </ScrollView>
       </View>

@@ -4,6 +4,7 @@ import { getToken } from '@services/firebase';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@src/components/Layout';
 import { useNavigationParam } from 'react-navigation-hooks';
+import withAccount from '@screens/DexV2/components/account.enhance';
 
 const enhance = (WrappedComponent) => (props) => {
   const account = useNavigationParam('account');
@@ -27,5 +28,6 @@ const enhance = (WrappedComponent) => (props) => {
 
 export default compose(
   withLayout_2,
+  withAccount,
   enhance,
 );
