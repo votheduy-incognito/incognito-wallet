@@ -416,6 +416,7 @@ export default class Account {
     const indexAccount = wallet.getAccountIndexByName(this.getAccountName(account));
     const walletAccount = wallet.MasterAccount.child[indexAccount];
     await walletAccount.addFollowingToken(...tokens);
+    saveWallet(wallet);
     return wallet;
   }
 
@@ -424,6 +425,7 @@ export default class Account {
     await wallet.MasterAccount.child[indexAccount].removeFollowingToken(
       tokenId,
     );
+    saveWallet(wallet);
     return wallet;
   }
 

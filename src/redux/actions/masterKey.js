@@ -183,15 +183,10 @@ const switchMasterKeySuccess = (data) => ({
   payload: data,
 });
 
-export const switchMasterKey = (masterKeyName, accountName) => async (dispatch, getState) => {
+export const switchMasterKey = (masterKeyName, accountName) => async (dispatch) => {
   clearWalletCaches();
-
   await dispatch(switchMasterKeySuccess(masterKeyName));
   await dispatch(reloadWallet(accountName));
-  dispatch(reloadBalance());
-
-  const defaultAccount = defaultAccountSelector(getState());
-  dispatch(reloadAccountFollowingToken(defaultAccount), { shouldLoadBalance: true });
 };
 
 const createMasterKeySuccess = (newMasterKey) => ({

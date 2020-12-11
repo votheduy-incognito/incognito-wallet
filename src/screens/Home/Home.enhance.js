@@ -46,7 +46,6 @@ const enhance = (WrappedComp) => (props) => {
   } = props;
   const { categories, headerTitle, isFetching } = useSelector(homeSelector);
   const pTokens = useSelector(pTokensSelector);
-  const wallet = useSelector((state) => state?.wallet);
   const defaultAccount = useSelector(accountSeleclor.defaultAccountSelector);
   const isFollowedDefaultPTokens = useSelector(isFollowDefaultPTokensSelector)(
     CONSTANT_KEYS.IS_FOLLOW_DEFAULT_PTOKENS,
@@ -100,10 +99,8 @@ const enhance = (WrappedComp) => (props) => {
   useBackHandler({ handleGoBack });
 
   React.useEffect(() => {
-    if (wallet) {
-      getFollowingToken(false);
-    }
-  }, [wallet]);
+    getFollowingToken(false);
+  }, []);
 
   React.useEffect(() => {
     fetchData();

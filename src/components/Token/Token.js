@@ -10,14 +10,11 @@ import replace from 'lodash/replace';
 import trim from 'lodash/trim';
 import { TouchableOpacity, ActivityIndicator } from '@src/components/core';
 import { COLORS } from '@src/styles';
-import { followingTokenSelector } from '@src/redux/selectors/token';
 import { useSelector } from 'react-redux';
 import {
   currencySelector,
   decimalDigitsSelector
 } from '@src/screens/Setting';
-import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
-import { BIG_COINS } from '@src/screens/DexV2/constants';
 import {
   prefixCurrency,
   pTokenSelector
@@ -226,7 +223,7 @@ export const Amount = (props) => {
     size,
   } = props;
   const decimalDigits = useSelector(decimalDigitsSelector);
-  const shouldShowGettingBalance = isGettingBalance && showGettingBalance;
+  const shouldShowGettingBalance = isGettingBalance || showGettingBalance;
   if (shouldShowGettingBalance) {
     return <ActivityIndicator size={size} />;
   }
@@ -356,13 +353,9 @@ const TokenPairUSDT = (props) => (
 );
 
 export const Follow = (props) => {
-  const { shouldShowFollowed, isFollowed, tokenId } = props;
-  const isFetchingFollowToken = useSelector(followingTokenSelector)(tokenId);
+  const { shouldShowFollowed, isFollowed } = props;
   if (!shouldShowFollowed) {
     return null;
-  }
-  if (isFetchingFollowToken) {
-    return <ActivityIndicator size="small" color={COLORS.colorGreyBold} />;
   }
   if (isFollowed) {
     return <Text style={styled.followText}>Added</Text>;

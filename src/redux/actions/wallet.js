@@ -1,16 +1,19 @@
+import { batch } from 'react-redux';
 import { loadListAccount } from '@src/services/wallet/WalletService';
 import accountService from '@src/services/wallet/accountService';
 import type from '@src/redux/types/wallet';
 // eslint-disable-next-line import/no-cycle
 import {
   setListAccount,
-  setDefaultAccount, actionSwitchAccount,
+  setDefaultAccount, actionReloadFollowingToken, getBalance, getBalanceStart, setAccount,
 } from '@src/redux/actions/account';
 import { accountSeleclor } from '@src/redux/selectors';
 import { currentMasterKeySelector } from '@src/redux/selectors/masterKey';
 import { walletSelector } from '@src/redux/selectors/wallet';
 // eslint-disable-next-line import/no-cycle
 import { updateMasterKey } from '@src/redux/actions/masterKey';
+// eslint-disable-next-line import/no-cycle
+import { getBalance as getTokenBalance, setListToken } from '@src/redux/actions/token';
 
 const getStoredDefaultAccountName = async (listAccount) => {
   const firstAccountName = listAccount && listAccount[0]?.name;
@@ -65,26 +68,45 @@ export const reloadWallet = (accountName) => async (dispatch, getState) => {
 
     if (wallet) {
       const accounts = await loadListAccount(wallet);
-      await dispatch(setWallet(wallet));
-      await dispatch(setListAccount(accounts));
-
       if (!accountName) {
         // Change default account to first account after switching master key
         if (defaultAccount) {
           const existed = accounts.find(item => item.PrivateKey === defaultAccount.PrivateKey);
           if (!existed) {
             defaultAccount = accounts[0];
-            dispatch(setDefaultAccount(defaultAccount));
           }
         }
 
         if (!defaultAccount) {
           const defaultAccountName = await getStoredDefaultAccountName(accounts);
           defaultAccount = accounts?.find((a) => a?.name === defaultAccountName);
-          defaultAccount && dispatch(setDefaultAccount(defaultAccount));
         }
+
+        batch(() => {
+          dispatch(setWallet(wallet));
+          dispatch(setListAccount(accounts));
+          defaultAccount && dispatch(setDefaultAccount(defaultAccount));
+        });
       } else {
-        dispatch(actionSwitchAccount(accountName));
+        const account = accounts.find(item => accountService.getAccountName(item) === accountName);
+        const followed = await accountService.getFollowingTokens(account, wallet);
+
+        followed.forEach(item => {
+          item.loading = true;
+        });
+
+        batch(() => {
+          dispatch(setWallet(wallet));
+          dispatch(setListAccount(accounts));
+          dispatch(setDefaultAccount(account));
+          dispatch(setAccount(account));
+          dispatch(getBalanceStart(account?.name));
+          dispatch(setListToken(followed));
+        });
+
+        setTimeout(() => {
+          dispatch(actionReloadFollowingToken(true));
+        }, 1000);
       }
 
       return wallet;

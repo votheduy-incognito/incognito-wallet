@@ -10,7 +10,7 @@ import routeNames from '@src/router/routeNames';
 import { CONSTANT_COMMONS } from '@src/constants';
 import {
   totalShieldedTokensSelector,
-  isGettingBalance as isGettingTotalBalanceSelector, pTokenSelector,
+  isGettingBalance as isGettingTotalBalanceSelector,
 } from '@src/redux/selectors/shared';
 import { Amount } from '@src/components/Token/Token';
 import { shieldStorageSelector } from '@src/screens/Shield/Shield.selector';
@@ -122,7 +122,6 @@ const Balance = React.memo(() => {
         pDecimals={PRV.pDecimals}
         showSymbol={false}
         isGettingBalance={isGettingTotalBalance}
-        showGettingBalance
         customStyle={styledBalance.balance}
         hasPSymbol
         stylePSymbol={styledBalance.pSymbol}
@@ -143,6 +142,7 @@ const FollowToken = React.memo(() => {
     isReloading,
     fetchData,
   } = walletProps;
+
   return (
     <View style={styledFollow.container}>
       <ScrollView
@@ -162,7 +162,6 @@ const FollowToken = React.memo(() => {
             followed.length === 0 && styledToken.lastChild,
           ]}
           onPress={() => handleSelectToken(CONSTANT_COMMONS.PRV_TOKEN_ID)}
-          showGettingBalance
         />
         {followed.map((token, index) => (
           <Token
@@ -176,7 +175,7 @@ const FollowToken = React.memo(() => {
             handleRemoveToken={() => handleRemoveToken(token?.id)}
             swipable
             removable
-            showGettingBalance
+            showGettingBalance={token?.loading}
           />
         ))}
         <AddToken />

@@ -248,7 +248,7 @@ const mapState = state => ({
   account: accountSeleclor.defaultAccount(state),
   wallet: state.wallet,
   tokens: tokenSeleclor.followed(state),
-  followed: tokenSeleclor.followingTokenSelector,
+  followed: tokenSeleclor.followed(state),
   selectPrivacyByTokenID: selectedPrivacySeleclor.getPrivacyDataByTokenID(
     state,
   ),
