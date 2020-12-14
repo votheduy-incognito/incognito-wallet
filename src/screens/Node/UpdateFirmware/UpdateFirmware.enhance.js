@@ -11,6 +11,9 @@ import {
 } from '@screens/Node/Node.utils';
 import { useNavigation } from 'react-navigation-hooks';
 
+const SECONDS = 1000;
+const MINUTE  =  60 * SECONDS;
+
 const enhance = WrappedComp => props => {
 
   const navigation = useNavigation();
@@ -43,6 +46,7 @@ const enhance = WrappedComp => props => {
         if (error) {
           // Cant Connect SSH NODE IP
           console.debug('CONNECT TO SSH FAIL: ', host);
+          setUpdating(false);
           return;
         }
         console.debug('CONNECT TO SSH SUCCESS: ', host);
@@ -50,21 +54,23 @@ const enhance = WrappedComp => props => {
         SSH.execute(command, (error, output) => {
           if (error) {
             console.log('WRITE SSH ERROR: ', error, command);
+            setUpdating(false);
             // SSH.disconnect();
             return;
           }
           console.log('WRITE SSH SUCCESS WITH OUTPUT: ', output);
 
           // Update Firmware Success
-          setUpdateSuccess(true);
+          setTimeout(() => {
+            setUpdating(false);
+            setUpdateSuccess(true);
+          }, MINUTE);
           // SSH.disconnect();
         });
       });
     } catch (e) {
       // Update FIRMWARE have error
       console.debug('UPDATE FIRMWARE NODE BY SSH FAIL: ', host);
-      setUpdating(false);
-    } finally {
       setUpdating(false);
     }
   };
