@@ -10,6 +10,9 @@ import { PRV_ID } from '@screens/Dex/constants';
 import { getTokenList } from '@services/api/token';
 import { parseNodeRewardsToArray } from '@screens/Node/utils';
 import accountService from '@services/wallet/accountService';
+import DeviceInfo from 'react-native-device-info';
+import Util from '@utils/Util';
+import { CONSTANT_CONFIGS } from '@src/constants';
 
 export const checkIfVerifyCodeIsExisting = async () => {
   return new Promise(async (resolve, reject) => {
@@ -325,4 +328,36 @@ export const formatNodeItemFromApi = async (device, listNodeObject, allTokens, w
 
 export const findNodeIndexByProductId = (listDevice, productId) => {
   return listDevice.findIndex(item => item.ProductId === productId);
+};
+
+export const getNodeUserParams = async () => {
+  const deviceId = DeviceInfo.getUniqueId();
+  const params = {
+    email: deviceId + '@minerX.com',
+    password: Util.hashCode(deviceId)
+  };
+  let response = await APIService.signUp(params);
+  if (response?.status !== 1) {
+    response = await APIService.signIn(params);
+  }
+  return response;
+};
+
+export const getNodeToken = async () => {
+  const { data } = await getNodeUserParams();
+  const {
+    access_token,
+    refresh_token
+  } = data || {};
+  return {
+    accessToken: access_token,
+    refreshToken: refresh_token
+  };
+};
+
+export const SSHCommandUpdateNode = (accessToken, refreshToken) => {
+  const url_amzn      = 'https://incognito-org.s3.amazonaws.com/ssh/lan_setup.py';
+  const url_service   = CONSTANT_CONFIGS.URL_SERVICE_UPDATE_FIRMWARE;
+  const wget          = `wget -q ${url_amzn} -O lan_setup.py && python lan_setup.py -u 25484 -t ${accessToken} -r ${refreshToken} -l ${url_service}`;
+  return `tmux split-window -v -t brain:brain.0 && tmux send-keys -t brain:brain.1 '${wget}' C-m`;
 };

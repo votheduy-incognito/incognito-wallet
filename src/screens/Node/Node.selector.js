@@ -15,7 +15,9 @@ export const nodeSelector = createSelector(
       noRewards:    node?.noRewards,
       nodeRewards:  node?.nodeRewards,
       withdrawTxs:  node?.withdrawTxs,
-      loadedNodes:  node?.loadedNodes
+      loadedNodes:  node?.loadedNodes,
+      accessToken:  node?.accessToken,
+      refreshToken: node?.refreshToken,
     };
   }
 );
@@ -69,4 +71,14 @@ export const checkLoadingNodeByProductId = createSelector(
       const nodeIsLoading = !loadedNodes[productId];
       return nodeIsLoading || node?.isFetching || node?.isRefreshing;
     }),
+);
+
+export const selectUserNodeToken = createSelector(
+  nodeSelector,
+  (node) => {
+    return {
+      accessToken:  node?.accessToken,
+      refreshToken: node?.refreshToken
+    };
+  },
 );

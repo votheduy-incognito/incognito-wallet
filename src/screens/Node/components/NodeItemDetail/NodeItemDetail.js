@@ -15,6 +15,7 @@ import {
 import { RefreshControl } from 'react-native';
 import theme from '@src/styles/theme';
 import NodeStatus from '@screens/Node/components/NodeStatus';
+import { isEmpty } from 'lodash';
 
 const NodeItemDetail = memo(({
   isLoading,
@@ -28,7 +29,9 @@ const NodeItemDetail = memo(({
   processing,
   withdrawable,
   shouldRenderUnstake,
-
+  accessToken,
+  refreshToken,
+  onUpdateNode,
   onHelpPress,
   onImportAccountPress,
   onWithdrawPress,
@@ -119,6 +122,30 @@ const NodeItemDetail = memo(({
     );
   };
 
+  // Can update Firmware
+  const renderUpdateNode = () => {
+    if (
+      !isLoading
+      && item?.AccountName
+      && item?.IsPNode
+      && item?.Host
+      && !isEmpty(accessToken)
+      && !isEmpty(refreshToken)
+      && !isEmpty(item?.LatestFirmware)
+      && !isEmpty(item?.Firmware)
+      && item?.Firmware !== item?.LatestFirmware
+    ) {
+      return (
+        <TouchableOpacity style={{ marginTop: 30 }} onPress={onUpdateNode}>
+          <Text style={[styles.text, styles.bold, styles.bigText]}>
+            Update Node firmware
+          </Text>
+        </TouchableOpacity>
+      );
+    }
+    return null;
+  };
+
   const renderStakeInfo = () => (
     <>
       {(!!shouldRenderUnstake || !!item?.IsPNode) && (
@@ -162,6 +189,7 @@ const NodeItemDetail = memo(({
           { !!item && (<NodeStatus isLoading={isLoading} item={item} />) }
         </View>
         {renderStakeInfo()}
+        {renderUpdateNode()}
       </ScrollView>
     </View>
   );
@@ -177,6 +205,8 @@ NodeItemDetail.propTypes = {
   shouldShowStake: PropTypes.bool.isRequired,
   shouldShowWithdraw: PropTypes.bool.isRequired,
   processing: PropTypes.bool.isRequired,
+  accessToken: PropTypes.bool.isRequired,
+  refreshToken: PropTypes.bool.isRequired,
   withdrawable: PropTypes.bool.isRequired,
   shouldRenderUnstake: PropTypes.bool.isRequired,
   onHelpPress: PropTypes.func.isRequired,
@@ -186,6 +216,7 @@ NodeItemDetail.propTypes = {
   onChangeWifiPress: PropTypes.func.isRequired,
   onUnStakePress: PropTypes.func.isRequired,
   onRefresh: PropTypes.func.isRequired,
+  onUpdateNode: PropTypes.func.isRequired,
 };
 
 export default withEnhance(NodeItemDetail);

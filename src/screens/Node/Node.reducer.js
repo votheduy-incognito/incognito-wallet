@@ -14,7 +14,9 @@ import {
   UPDATE_WITHDRAW_TXS,
   ACTION_CLEAR_WITHDRAW_TXS,
   ACTION_CLEAR_LIST_NODES,
-  ACTION_UPDATE_WITHDRAWING, ACTION_UPDATE_LOADED_NODE
+  ACTION_UPDATE_WITHDRAWING,
+  ACTION_UPDATE_LOADED_NODE,
+  ACTION_UPDATE_ACCESS_TOKEN_REFRESH_TOKEN
 } from '@screens/Node/Node.constant';
 import { cloneDeep } from 'lodash';
 import { PRV } from '@services/wallet/tokenService';
@@ -48,6 +50,8 @@ const initialStateClear = {
 
 const initialState = {
   ...initialStateClear,
+  accessToken:  null,
+  refreshToken: null,
   withdrawTxs:  {}
 };
 
@@ -187,6 +191,14 @@ const nodeReducer = (state = initialState, action) => {
       loadedNodes: Object.assign(loadedNodes, payload || {})
     };
   }
+  case ACTION_UPDATE_ACCESS_TOKEN_REFRESH_TOKEN: {
+    const { accessToken, refreshToken } = action?.payload;
+    return {
+      ...state,
+      accessToken,
+      refreshToken
+    };
+  }
   default:
     return state;
   }
@@ -195,7 +207,7 @@ const nodeReducer = (state = initialState, action) => {
 const persistConfig = {
   key: 'node',
   storage: AsyncStorage,
-  whitelist: [''],
+  whitelist: ['accessToken, refreshToken'],
   stateReconciler: autoMergeLevel2,
 };
 

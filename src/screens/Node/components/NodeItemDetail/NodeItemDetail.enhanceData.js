@@ -4,7 +4,7 @@ import { useNavigationParam } from 'react-navigation-hooks';
 import { useSelector } from 'react-redux';
 import {
   checkLoadingNodeByProductId,
-  getDeviceByProductId
+  getDeviceByProductId, selectUserNodeToken
 } from '@screens/Node/Node.selector';
 import { get } from 'lodash';
 
@@ -20,6 +20,10 @@ const nodeItemDetailEnhanceData = WrappedComp => props => {
 
   const device      = useSelector(getDeviceByProductId)(productId);
   const isLoading   = useSelector(checkLoadingNodeByProductId)(productId);
+  const {
+    accessToken,
+    refreshToken
+  } = useSelector(selectUserNodeToken);
   const ip          = device?.Host;
   const name        = device?.Name;
   const hasAccount  = !!device?.AccountName;
@@ -59,6 +63,8 @@ const nodeItemDetailEnhanceData = WrappedComp => props => {
           setProcessing,
           shouldRenderUnstake,
           withdrawTxs,
+          accessToken,
+          refreshToken,
 
           onUnstake,
           onStake,

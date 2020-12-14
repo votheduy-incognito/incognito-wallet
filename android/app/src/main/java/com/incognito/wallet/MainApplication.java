@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.reactlibrary.RNSshClientPackage;
 import io.rumors.reactnativesettings.RNSettingsPackage;
 import com.airbnb.android.react.lottie.LottiePackage;
 import com.facebook.react.ReactNativeHost;
@@ -42,6 +43,7 @@ public class MainApplication extends Application implements ReactApplication {
               packages.add(new RNFirebaseCrashlyticsPackage());
               packages.add(new RNFirebaseAnalyticsPackage());
               packages.add(new GomobilePackage());
+              packages.add(new RNSshClientPackage());
               return packages;
             }
 

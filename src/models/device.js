@@ -38,6 +38,7 @@ export const template = {
     isOnline: 0,
     accountName: '',
     stakeTx: '',
+    latestFirmware: ''
   },
   keyInfo:{
     publicKeyMining:'',
@@ -310,6 +311,14 @@ export default class Device {
 
   get Firmware() {
     return this.data.minerInfo?.firmware ?? '';
+  }
+
+  set LatestFirmware(firmware) {
+    this.data.minerInfo.latestFirmware = firmware;
+  }
+
+  get LatestFirmware() {
+    return this.data.minerInfo?.latestFirmware ?? '';
   }
 
   get PaymentAddress() {
