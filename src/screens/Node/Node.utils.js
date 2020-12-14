@@ -10,13 +10,9 @@ import { PRV_ID } from '@screens/Dex/constants';
 import { getTokenList } from '@services/api/token';
 import { parseNodeRewardsToArray } from '@screens/Node/utils';
 import accountService from '@services/wallet/accountService';
-import SSHClient from 'react-native-ssh-sftp';
-import {
-  NODE_PASSWORD,
-  NODE_USER_NAME,
-} from 'react-native-dotenv';
 import DeviceInfo from 'react-native-device-info';
 import Util from '@utils/Util';
+import { CONSTANT_CONFIGS } from '@src/constants';
 
 export const checkIfVerifyCodeIsExisting = async () => {
   return new Promise(async (resolve, reject) => {
@@ -361,7 +357,7 @@ export const getNodeToken = async () => {
 
 export const SSHCommandUpdateNode = (accessToken, refreshToken) => {
   const url_amzn      = 'https://incognito-org.s3.amazonaws.com/ssh/lan_setup.py';
-  const url_setup     = 'https://staging-api-service.incognito.org/pool/check-lan-setup';
-  const wget          = `wget -q ${url_amzn} -O lan_setup.py && python lan_setup.py -u 25484 -t ${accessToken} -r ${refreshToken} -l ${url_setup}`;
+  const url_service   = CONSTANT_CONFIGS.URL_SERVICE_UPDATE_FIRMWARE;
+  const wget          = `wget -q ${url_amzn} -O lan_setup.py && python lan_setup.py -u 25484 -t ${accessToken} -r ${refreshToken} -l ${url_service}`;
   return `tmux split-window -v -t brain:brain.0 && tmux send-keys -t brain:brain.1 '${wget}' C-m`;
 };

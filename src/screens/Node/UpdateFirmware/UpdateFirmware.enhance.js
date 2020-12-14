@@ -39,7 +39,7 @@ const enhance = WrappedComp => props => {
         // Start update FIRMWARE
         setUpdating(true);
       }
-      const SSH = new SSHClient(host, 22, NODE_USER_NAME, NODE_PASSWORD,async (error) => {
+      const SSH = new SSHClient(host, 22, NODE_USER_NAME, NODE_PASSWORD, async (error) => {
         if (error) {
           // Cant Connect SSH NODE IP
           console.debug('CONNECT TO SSH FAIL: ', host);

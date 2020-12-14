@@ -82,6 +82,13 @@ const APP_VERSION = isMainnet
     isIOS() ? 'ios' : 'android'
   }/last-version`;
 
+const URL_SERVICE_UPDATE_FIRMWARE =
+  `https://${
+    global.isMainnet 
+      ? ''
+      : 'staging-'
+  }api-service.incognito.org/pool/check-lan-setup`;
+
 export default {
   isMainnet,
   CRYPTO_ICON_URL,
@@ -106,5 +113,6 @@ export default {
   API_BASE_URL2,
   APP_VERSION,
   HOME_CONFIG_EVENT,
-  HUNT_CONFIG_QR_CODE
+  HUNT_CONFIG_QR_CODE,
+  URL_SERVICE_UPDATE_FIRMWARE,
 };
