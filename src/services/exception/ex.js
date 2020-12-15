@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import {Toast} from '@src/components/core';
+import { ErrorCode } from '@services/exception/index';
 import CustomError from './customError/customError';
 import Message from './customError/message';
 import ERROR from './customError/code';
@@ -137,6 +138,10 @@ class Exception {
 
   // private method
   _log2Console() {
+    if (this.exception.code === ErrorCode.api_request_cancelled) {
+      return;
+    }
+
     const log = this._getLog();
     log && console.debug(log);
   }
@@ -163,6 +168,10 @@ class Exception {
    * If __DEV__ is true, `debugMessage` will be displayed too.
    */
   showErrorToast(showCode = false) {
+    if (this.exception.code === ErrorCode.api_request_cancelled) {
+      return;
+    }
+
     let msg = this.message;
     if (__DEV__) {
       msg = `${msg}\n****** DEBUG ******\n(${this.debugMessage})`;

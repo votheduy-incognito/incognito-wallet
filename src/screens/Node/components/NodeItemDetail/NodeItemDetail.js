@@ -178,6 +178,7 @@ const NodeItemDetail = memo(({
         {renderRewards()}
         {renderButton()}
         <View style={{ marginTop: 50 }}>
+          {renderItemText('Master key', item.MasterKey)}
           {renderItemText('Keychain', name)}
           {renderItemText('IP', ip)}
           { item?.IsPNode && renderItemText('Version', item?.Firmware) }

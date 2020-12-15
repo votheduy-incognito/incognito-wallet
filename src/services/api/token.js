@@ -5,7 +5,7 @@ import IncognitoCoinInfo from '@src/models/incognitoCoinInfo';
 import http from '@src/services/http';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import axios from 'axios';
-import { cachePromise } from '@services/cache';
+import { cachePromise, KEYS } from '@services/cache';
 
 let BEP2Tokens = [];
 
@@ -15,7 +15,7 @@ const getTokenListNoCache = () => {
 };
 
 export const getTokenList = () => {
-  return cachePromise('ptoken', getTokenListNoCache);
+  return cachePromise(KEYS.P_TOKEN, getTokenListNoCache);
 };
 
 export const detectERC20Token = erc20Address => {
@@ -107,7 +107,7 @@ const getTokenInfoNoCache = ({ tokenId } = {}) => () => {
  * @param {string} tokenId
  */
 export const getTokenInfo = ({ tokenId } = {}) => {
-  return cachePromise('pcustomtoken', getTokenInfoNoCache({ tokenId }));
+  return cachePromise(KEYS.P_CUSTOM_TOKEN, getTokenInfoNoCache({ tokenId }));
 };
 
 /**

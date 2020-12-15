@@ -100,6 +100,7 @@ class NodeItemDetailV1 extends Component {
     const ip         = item.Host;
     const name       = item.Name;
     const hasAccount = !!item?.AccountName;
+    const masterKey  = item.MasterKey;
 
     let shouldShowWithdraw = false;
 
@@ -144,6 +145,7 @@ class NodeItemDetailV1 extends Component {
             )}
           </View>
           <View style={{ marginTop: 50 }}>
+            {this.renderItemText('Master key', masterKey)}
             {this.renderItemText('Keychain', name)}
             {this.renderItemText('IP', ip)}
             { item.IsPNode && this.renderItemText('Version', item.Firmware) }

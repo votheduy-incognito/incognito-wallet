@@ -15,12 +15,9 @@ const setAccount = (list, account) => {
   let newList = [...list];
   // console.log(TAG,'setAccount account = ',account);
   try {
-    const foundIndex = list.findIndex((a) => a.name === account.name);
+    const foundIndex = list.findIndex((a) => a.PaymentAddress === account.PaymentAddress);
     if (foundIndex >= 0) {
-      console.log(TAG, 'setAccount 01');
       newList[foundIndex] = account;
-    } else {
-      newList.push(account);
     }
   } catch (e) {
     console.error(e);

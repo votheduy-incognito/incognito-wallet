@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, RefreshControl } from 'react-native';
 import Header from '@src/components/Header';
-import { BtnSelectAccount } from '@screens/SelectAccount';
 import { ButtonBasic, BtnQRCode, BtnClose } from '@src/components/Button';
 import { tokenSeleclor } from '@src/redux/selectors';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,7 +10,7 @@ import routeNames from '@src/router/routeNames';
 import { CONSTANT_COMMONS } from '@src/constants';
 import {
   totalShieldedTokensSelector,
-  isGettingBalance as isGettingTotalBalanceSelector, pTokenSelector,
+  isGettingBalance as isGettingTotalBalanceSelector,
 } from '@src/redux/selectors/shared';
 import { Amount } from '@src/components/Token/Token';
 import { shieldStorageSelector } from '@src/screens/Shield/Shield.selector';
@@ -23,6 +22,7 @@ import { BottomBar, ScrollView, TouchableOpacity } from '@src/components/core';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import { useStreamLine } from '@src/screens/Streamline';
 import { PRV } from '@services/wallet/tokenService';
+import SelectAccountButton from '@components/SelectAccountButton';
 import {
   styled,
   styledHook,
@@ -122,7 +122,6 @@ const Balance = React.memo(() => {
         pDecimals={PRV.pDecimals}
         showSymbol={false}
         isGettingBalance={isGettingTotalBalance}
-        showGettingBalance
         customStyle={styledBalance.balance}
         hasPSymbol
         stylePSymbol={styledBalance.pSymbol}
@@ -143,6 +142,7 @@ const FollowToken = React.memo(() => {
     isReloading,
     fetchData,
   } = walletProps;
+
   return (
     <View style={styledFollow.container}>
       <ScrollView
@@ -162,7 +162,6 @@ const FollowToken = React.memo(() => {
             followed.length === 0 && styledToken.lastChild,
           ]}
           onPress={() => handleSelectToken(CONSTANT_COMMONS.PRV_TOKEN_ID)}
-          showGettingBalance
         />
         {followed.map((token, index) => (
           <Token
@@ -176,7 +175,7 @@ const FollowToken = React.memo(() => {
             handleRemoveToken={() => handleRemoveToken(token?.id)}
             swipable
             removable
-            showGettingBalance
+            showGettingBalance={token?.loading}
           />
         ))}
         <AddToken />
@@ -230,7 +229,7 @@ const RightHeader = React.memo(() => {
         style={rightHeaderStyled.btnExportKey}
         onPress={handleExportKey}
       />
-      <BtnSelectAccount />
+      <SelectAccountButton />
     </View>
   );
 });

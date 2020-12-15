@@ -3,8 +3,15 @@ import {CONSTANT_CONFIGS} from '@src/constants';
 import Log from '@src/services/log';
 import {CustomError, ErrorCode, ExHandler} from './exception';
 
+const CancelToken = axios.CancelToken;
 const HEADERS = {'Content-Type': 'application/json'};
 const TIMEOUT = 20000;
+const sources = {};
+
+const CANCEL_MESSAGE = 'Request cancelled';
+
+export const CANCEL_KEY = 'cancelPrevious';
+
 let currentAccessToken = '';
 
 const instance = axios.create({
@@ -32,13 +39,24 @@ function addSubscriber(callback) {
 // Add a request interceptor
 instance.interceptors.request.use(
   config => {
-    return {
+    const newConfig = {
       ...config,
       headers: {
         ...config.headers,
         Authorization: 'Bearer ' + currentAccessToken,
-      },
+      }
     };
+
+    const path = config.url;
+    if (path.includes(CANCEL_KEY)) {
+      if (sources[path]) {
+        sources[path].cancel(CANCEL_MESSAGE);
+      }
+
+      sources[path] = CancelToken.source();
+      newConfig.cancelToken = sources[path].token;
+    }
+    return newConfig;
   },
   error => {
     return Promise.reject(error);
@@ -52,6 +70,10 @@ instance.interceptors.response.use(
     return Promise.resolve(result);
   },
   errorData => {
+    if (errorData?.message === CANCEL_MESSAGE) {
+      throw new CustomError(ErrorCode.api_request_cancelled);
+    }
+
     const errResponse = errorData?.response;
     const originalRequest = errorData?.config;
     // can not get response, alert to user

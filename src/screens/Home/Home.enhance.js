@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { compose } from 'recompose';
 import { withNavigation } from 'react-navigation';
@@ -10,12 +10,8 @@ import { useFocusEffect } from 'react-navigation-hooks';
 import APIService from '@src/services/api/miner/APIService';
 import { accountSeleclor } from '@src/redux/selectors';
 import { ExHandler } from '@src/services/exception';
-import { AppState, BackHandler } from 'react-native';
+import { BackHandler } from 'react-native';
 import AppUpdater from '@components/AppUpdater';
-import { WithdrawHistory } from '@models/dexHistory';
-import routeNames from '@src/router/routeNames';
-import AddPin from '@screens/AddPIN';
-import PropTypes from 'prop-types';
 import { useBackHandler } from '@src/components/UseEffect';
 import {
   isFollowDefaultPTokensSelector,
@@ -29,6 +25,10 @@ import {
   withSyncIncognitoAddress,
   withSyncDetectNetwork,
 } from '@screens/FrequentReceivers';
+import { loadAllMasterKeyAccounts } from '@src/redux/actions/masterKey';
+import { masterKeysSelector } from '@src/redux/selectors/masterKey';
+import { configRPC } from '@services/wallet/WalletService';
+import withPin from '@components/pin.enhance';
 import { homeSelector } from './Home.selector';
 import { actionFetch as actionFetchHomeConfigs } from './Home.actions';
 import Airdrop from './features/Airdrop';
@@ -43,11 +43,11 @@ const enhance = (WrappedComp) => (props) => {
   } = props;
   const { categories, headerTitle, isFetching } = useSelector(homeSelector);
   const pTokens = useSelector(pTokensSelector);
-  const wallet = useSelector((state) => state?.wallet);
   const defaultAccount = useSelector(accountSeleclor.defaultAccountSelector);
   const isFollowedDefaultPTokens = useSelector(isFollowDefaultPTokensSelector)(
     CONSTANT_KEYS.IS_FOLLOW_DEFAULT_PTOKENS,
   );
+  const masterKeys = useSelector(masterKeysSelector);
   const dispatch = useDispatch();
 
   const getHomeConfiguration = async () => {
@@ -96,16 +96,15 @@ const enhance = (WrappedComp) => (props) => {
   useBackHandler({ handleGoBack });
 
   React.useEffect(() => {
-    if (wallet) {
-      getFollowingToken(false);
-    }
-  }, [wallet]);
+    getFollowingToken(false);
+  }, []);
 
   React.useEffect(() => {
     fetchData();
     retryLastTxsUnshieldDecentralized();
     retryLastTxsUnshieldCentralized();
     airdrop();
+    configRPC();
   }, []);
 
   React.useEffect(() => {
@@ -120,6 +119,12 @@ const enhance = (WrappedComp) => (props) => {
       getHomeConfiguration();
     }, []),
   );
+
+  useEffect(() => {
+    if (masterKeys && masterKeys.length > 0) {
+      dispatch(loadAllMasterKeyAccounts());
+    }
+  }, [masterKeys]);
 
   return (
     <ErrorBoundary>
@@ -140,52 +145,8 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-const withPin = (WrappedComp) =>
-  class extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        appState: '',
-      };
-    }
-    handleAppStateChange = async (nextAppState) => {
-      const { pin, navigation } = this.props;
-      const { appState } = this.state;
-      if (appState.match(/background/) && nextAppState === 'active') {
-        AppUpdater.update();
-        if (pin && !WithdrawHistory.withdrawing) {
-          navigation?.navigate(routeNames.AddPin, { action: 'login' });
-          AddPin.waiting = false;
-        }
-        if (WithdrawHistory.withdrawing) {
-          AddPin.waiting = true;
-        }
-      }
-      await this.setState({ appState: nextAppState });
-    };
-    componentDidMount() {
-      AppState.addEventListener('change', this.handleAppStateChange);
-    }
-    componentWillUnmount() {
-      AppState.removeEventListener('change', this.handleAppStateChange);
-    }
-    render() {
-      return <WrappedComp {...this.props} />;
-    }
-  };
-
-const mapState = (state) => ({
-  pin: state?.pin?.pin,
-});
-
-withPin.propTypes = {
-  pin: PropTypes.any,
-  navigation: PropTypes.any,
-};
-
 export default compose(
   withNavigation,
-  connect(mapState),
   withFCM,
   withPin,
   withWallet,

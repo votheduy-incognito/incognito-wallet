@@ -17,7 +17,6 @@ import string from '@src/constants/string';
 
 const Node = (props) => {
   const {
-    wallet,
     refreshData,
     nodeRewards,
     loading, // creating account from @enhanceSignIn
@@ -49,7 +48,6 @@ const Node = (props) => {
   const renderNode = ({ item, index }) => {
     return (
       <NodeItem
-        wallet={wallet}
         item={item}
         isFetching={isFetching}
         index={index}
@@ -162,7 +160,6 @@ const Node = (props) => {
 };
 
 Node.propTypes = {
-  wallet: PropTypes.object.isRequired,
   nodeRewards: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,
   isFetching: PropTypes.bool.isRequired,

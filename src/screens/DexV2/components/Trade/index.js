@@ -22,7 +22,6 @@ import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import withChangeInputToken from '@screens/DexV2/components/Trade/inputToken.enhance';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
-import withHistories from '@screens/DexV2/components/histories.enhance';
 import withParams from '@screens/DexV2/components/Trade/params.enhance';
 import withAccount from '@screens/DexV2/components/account.enhance';
 import withERC20 from '@screens/DexV2/components/Trade/with.erc20';
@@ -31,6 +30,7 @@ import { ArrowRightGreyIcon } from '@components/Icons';
 import PDexFee from '@screens/DexV2/components/PDexFee';
 import { PowerTrade } from '@screens/DexV2/components/Powered';
 import PriceImpact from '@screens/DexV2/components/PriceImpact/PriceImpact';
+import withHistory from '@screens/DexV2/components/Trade/history.enhance';
 import NewInput from '../NewInput';
 import withPair from './pair.enhance';
 import withChangeInput from './input.enhance';
@@ -245,7 +245,7 @@ Trade.propTypes = {
 
 export default compose(
   withAccount,
-  withHistories,
+  withHistory,
   withChangeInputToken,
   withFilter,
   withERC20,

@@ -1,6 +1,6 @@
 import http from '@src/services/http';
 import { DepositResponse, PDexTradeHistoryModel, RewardModel } from '@models/pDefi';
-import { cachePromise } from '@services/cache';
+import { cachePromise, KEYS } from '@services/cache';
 import { TRADING } from '@src/constants';
 
 export const getRewards = (paymentAddress) => {
@@ -53,7 +53,7 @@ const getHistoriesNoCache = (accounts, tokens, page = 1, limit = 10) => () => {
 };
 
 export const getHistories = (accounts, tokens, page = 1, limit = 10) => {
-  return cachePromise(`history-pdex-trade-${page}`, getHistoriesNoCache(accounts, tokens, page, limit), 15000);
+  return cachePromise(`${KEYS.PDEX_HISTORY}-${page}`, getHistoriesNoCache(accounts, tokens, page, limit), 15000);
 };
 
 export const tradePKyber = ({

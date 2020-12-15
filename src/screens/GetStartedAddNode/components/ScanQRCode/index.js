@@ -12,6 +12,7 @@ import APIService from '@services/api/miner/APIService';
 import AccountModel from '@models/account';
 import LocalDatabase from '@src/utils/LocalDatabase';
 import theme from '@src/styles/theme';
+import { storeWalletAccountIdsOnAPI } from '@services/wallet/WalletService';
 import GetQrcode from './GetQrCode';
 import styles from '../../styles';
 
@@ -49,6 +50,7 @@ class ScanQRCode extends Component {
       } else if (!ScanQRCode.creatingAccount) {
         ScanQRCode.creatingAccount = true;
         account = await accountService.createAccount(qrCode, wallet);
+        await storeWalletAccountIdsOnAPI(wallet);
 
         account = new AccountModel(accountService.toSerializedAccountObj(account));
         this.setState({ account });

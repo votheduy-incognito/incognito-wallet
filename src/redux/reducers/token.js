@@ -17,7 +17,6 @@ const initialState = {
     isEmpty: false,
     refreshing: true,
   },
-  following: [],
   toggleUnVerified: false,
   receiveHistory: {
     isFetching: false,
@@ -144,28 +143,6 @@ const reducer = (state = initialState, action) => {
       ...state,
       internalTokens: setListToken(state.followed, action.data),
     };
-  case type.ADD_FOLLOW_TOKEN_FETCHING: {
-    return {
-      ...state,
-      following: [...state.following, action.payload],
-    };
-  }
-  case type.ADD_FOLLOW_TOKEN_SUCCESS: {
-    return {
-      ...state,
-      following: [...state.following].filter(
-        (tokenId) => tokenId !== action.payload,
-      ),
-    };
-  }
-  case type.ADD_FOLLOW_TOKEN_FAIL: {
-    return {
-      ...state,
-      following: [...state.following].filter(
-        (tokenId) => tokenId !== action.payload,
-      ),
-    };
-  }
   case type.ACTION_FETCHING_HISTORY: {
     return {
       ...state,

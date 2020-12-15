@@ -109,6 +109,7 @@ const BuyNodeScreen = (props) => {
 
     if (supportToken?.tokenId !== COINS.PRV_ID) {
       coinBalance = await accountService.getBalance(account, wallet, currentTokenId);
+      console.debug('GET BALANCE', coinBalance, currentTokenId, account.PaymentAddress);
     }
 
     setPrvBalance(prvBalance);

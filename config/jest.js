@@ -1,9 +1,9 @@
 /* eslint-disable */
 
-jest.mock('PushNotificationIOS', () => ({
-  addEventListener: jest.fn(),
-  requestPermissions: jest.fn(),
-}));
+// jest.mock('PushNotificationIOS', () => ({
+//   addEventListener: jest.fn(),
+//   requestPermissions: jest.fn(),
+// }));
 
 // jest.mock('react-native', () => ({
 //   NetInfo: {
@@ -81,6 +81,7 @@ jest.mock('react-native-tab-view', () => ({
 }));
 jest.mock('react-native-device-info', () => ({
   getTimezone: () => '',
+  hasNotch: () => false,
 }));
 
 jest.mock('react-native-elements', () => ({

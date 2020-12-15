@@ -1,5 +1,5 @@
 import { CONSTANT_CONFIGS } from '@src/constants';
-import { split } from 'lodash';
+import { split, get } from 'lodash';
 
 export const HOME_CONFIGS = {
   categories: [
@@ -311,17 +311,22 @@ export const HOME_CONFIGS = {
   },
 };
 
-export const checkOutdatedVersion = (appVersion) => {
-  const currentAppVersion = split(CONSTANT_CONFIGS.BUILD_VERSION, '.').map(
+export const checkOutdatedVersion = (appVersion, packageVersion = CONSTANT_CONFIGS.BUILD_VERSION) => {
+  const currentAppVersion = split(packageVersion, '.').map(
     (item) => Number(item),
   );
   const newAppVersions = split(appVersion, '.').map((item) => Number(item));
-  for (let index = 0; index < currentAppVersion.length; index++) {
-    const iCurr = currentAppVersion[index];
-    const iNew = newAppVersions[index];
-    if (iCurr >= iNew) {
+  for (let index = 0; index < Math.max(currentAppVersion.length, newAppVersions.length); index++) {
+    const iCurr = get(currentAppVersion, index, 0);
+    const iNew = get(newAppVersions, index, 0);
+
+    if (iCurr > iNew) {
       return false;
     }
+
+    if (iCurr < iNew) {
+      return true;
+    }
   }
-  return true;
+  return false;
 };

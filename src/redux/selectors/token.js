@@ -23,11 +23,6 @@ export const historyTokenSelector = createSelector(
   (history) => history,
 );
 
-export const followingTokenSelector = createSelector(
-  (state) => state?.token?.following,
-  (following) => (tokenId) => following.includes(tokenId),
-);
-
 export const isTokenFollowedSelector = createSelector(
   tokensFollowedSelector,
   (tokens) => (tokenId) => tokens.find((token) => token?.id === tokenId),
@@ -91,7 +86,6 @@ export default {
   pTokensSelector,
   internalTokensSelector,
   historyTokenSelector,
-  followingTokenSelector,
   isTokenFollowedSelector,
   toggleUnVerifiedTokensSelector,
   receiveHistorySelector,

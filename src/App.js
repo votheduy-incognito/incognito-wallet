@@ -1,4 +1,3 @@
-import 'react-native-console-time-polyfill';
 import codePush from 'react-native-code-push';
 import AppScreen from '@src/components/AppScreen';
 import { StatusBar, Toast } from '@src/components/core';

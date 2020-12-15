@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
+import { groupBy, forEach } from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 import { receiversSelector } from '@src/redux/selectors/receivers';
 import { selectedPrivacySeleclor, accountSeleclor } from '@src/redux/selectors';
@@ -9,12 +10,14 @@ import { View, KeyboardAvoidingView } from 'react-native';
 import { useSearchBox } from '@src/components/Header';
 import { useNavigationParam, useFocusEffect } from 'react-navigation-hooks';
 import { actionRemoveSelectedReceiver } from '@src/redux/actions/receivers';
+import { listAllMasterKeyAccounts } from '@src/redux/selectors/masterKey';
+import accountService from '@services/wallet/accountService';
 import { filterAddressByKey } from './FrequentReceivers.utils';
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
-  const accounts = useSelector(accountSeleclor.listAccountSelector);
+  const accounts = useSelector(listAllMasterKeyAccounts);
   const defaultAccount = useSelector(accountSeleclor?.defaultAccountSelector);
   const filterBySelectedPrivacy = !!useNavigationParam(
     'filterBySelectedPrivacy',
@@ -22,14 +25,6 @@ const enhance = (WrappedComp) => (props) => {
   const { receivers: incognitoAddress } = useSelector(receiversSelector)[
     CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK
   ];
-  const keychainsAddresses = accounts
-    .filter(
-      (account) => account?.paymentAddress !== defaultAccount?.paymentAddress,
-    )
-    .map((item) => ({
-      name: item?.accountName,
-      address: item?.paymentAddress,
-    }));
   const { receivers: externalAddress } = useSelector(receiversSelector)[
     CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK
   ];
@@ -43,10 +38,41 @@ const enhance = (WrappedComp) => (props) => {
         : true,
     ),
   ];
-  const [_keychainsAddresses, keySearch] = useSearchBox({
-    data: keychainsAddresses,
-    handleFilter: () => filterAddressByKey(keychainsAddresses, keySearch),
+
+  // eslint-disable-next-line no-unused-vars
+  const [_, keySearch] = useSearchBox({
+    data: [],
+    handleFilter: () => filterAddressByKey([], keySearch),
   });
+
+  const accountGroupByMasterKey = useMemo(() =>
+    groupBy(accounts, item => item.MasterKeyName),
+  [accounts]);
+
+  const receivers = [];
+  forEach(accountGroupByMasterKey, (accounts, masterKeyName) => {
+    const keychainsAddresses = accounts
+      .filter(
+        (account) => accountService.getPaymentAddress(account) !== accountService.getPaymentAddress(defaultAccount),
+      )
+      .map((item) => ({
+        name: accountService.getAccountName(item),
+        address: accountService.getPaymentAddress(item),
+      }));
+    const [_keychainsAddresses] = useSearchBox({
+      data: keychainsAddresses,
+      handleFilter: () => filterAddressByKey(keychainsAddresses, keySearch),
+    });
+
+    if (_keychainsAddresses.length > 0) {
+      receivers.push({
+        data: _keychainsAddresses,
+        label: masterKeyName,
+        keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
+      });
+    }
+  });
+
   const [_incognitoAddress] = useSearchBox({
     data: incognitoAddresses,
     handleFilter: () => filterAddressByKey(incognitoAddress, keySearch),
@@ -55,12 +81,8 @@ const enhance = (WrappedComp) => (props) => {
     data: extAddrFilBySelPrivacy,
     handleFilter: () => filterAddressByKey(extAddrFilBySelPrivacy, keySearch),
   });
-  const receivers = [
-    {
-      data: _keychainsAddresses,
-      label: 'Your keychains',
-      keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
-    },
+
+  receivers.push(...[
     {
       data: _incognitoAddress,
       label: 'Incognito addresses',
@@ -71,7 +93,7 @@ const enhance = (WrappedComp) => (props) => {
       label: 'External addresses',
       keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK,
     },
-  ];
+  ]);
 
   useFocusEffect(
     React.useCallback(() => {
