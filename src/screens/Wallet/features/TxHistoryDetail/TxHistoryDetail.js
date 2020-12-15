@@ -320,6 +320,7 @@ const TxHistoryDetail = (props) => {
         />
       )}
       <HuntQRCode txId={history?.id} code={history?.type} />
+      <View style={{ height: 50 }} />
     </ScrollView>
   );
 };
