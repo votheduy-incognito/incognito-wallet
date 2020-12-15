@@ -126,19 +126,14 @@ const NodeItemDetail = memo(({
   const renderUpdateNode = () => {
     if (
       !isLoading
-      && item?.AccountName
-      && item?.IsPNode
-      && item?.Host
       && !isEmpty(accessToken)
       && !isEmpty(refreshToken)
-      && !isEmpty(item?.LatestFirmware)
-      && !isEmpty(item?.Firmware)
-      && item?.Firmware !== item?.LatestFirmware
+      && item?.IsUpdateFirmware
     ) {
       return (
         <TouchableOpacity style={{ marginTop: 30 }} onPress={onUpdateNode}>
           <Text style={[styles.text, styles.bold, styles.bigText]}>
-            Update Node firmware
+            Update firmware
           </Text>
         </TouchableOpacity>
       );

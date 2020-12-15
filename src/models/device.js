@@ -1,6 +1,6 @@
 import { DEVICES } from '@src/constants/miner';
 import accountService from '@src/services/wallet/accountService';
-import _ from 'lodash';
+import _, { isEmpty } from 'lodash';
 import { COLORS } from '@src/styles';
 import { PRV_ID } from '@screens/Dex/constants';
 import { parseNodeRewardsToArray } from '@screens/Node/utils';
@@ -319,6 +319,20 @@ export default class Device {
 
   get LatestFirmware() {
     return this.data.minerInfo?.latestFirmware ?? '';
+  }
+
+  /** Update OS config with SSH */
+  get IsUpdateFirmware() {
+    // Node setup firebase
+    const updateFirmwareNodeFirebase =
+      !isEmpty(this.LatestFirmware)
+      && !isEmpty(this.Firmware)
+      && this.Firmware !== this.LatestFirmware;
+
+    return this.AccountName
+      && this.IsPNode
+      && this.Host
+      && (updateFirmwareNodeFirebase || this.IsSetupViaLan);
   }
 
   get PaymentAddress() {
