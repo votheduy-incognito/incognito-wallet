@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { compose } from 'recompose';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import Wizard from '@screens/Wizard';
 import { useSelector, useDispatch } from 'react-redux';
@@ -22,6 +23,7 @@ import { getFunctionConfigs } from '@services/api/misc';
 import { loadAllMasterKeyAccounts, loadAllMasterKeys } from '@src/redux/actions/masterKey';
 import { masterKeysSelector } from '@src/redux/selectors/masterKey';
 import Welcome from '@screens/GetStarted/Welcome';
+import withPin from '@components/pin.enhance';
 import {
   wizardSelector,
   isFollowedDefaultPTokensSelector,
@@ -133,7 +135,6 @@ const enhance = (WrappedComp) => (props) => {
       dispatch(getInternalTokenList());
       const [servers] = await new Promise.all([
         serverService.get(),
-        dispatch(loadPin()),
         dispatch(actionFetchProfile()),
         getFunctionConfigs().catch(e => e),
       ]);
@@ -158,6 +159,7 @@ const enhance = (WrappedComp) => (props) => {
 
   React.useEffect(() => {
     requestAnimationFrame(async () => {
+      await dispatch(loadPin());
       await dispatch(getPTokenList());
       await dispatch(loadAllMasterKeys());
       setLoadMasterKeys(true);
@@ -184,17 +186,18 @@ const enhance = (WrappedComp) => (props) => {
         isFetched && //finish splash screen
         !errorMsg //no error
       ) {
-        if (pin) {
-          navigation.navigate(routeNames.AddPin, {
-            action: 'login',
-            redirectRoute: routeNames.Home,
-          });
-        } else {
-          navigation.navigate(routeNames.Home);
-        }
+        navigation.navigate(routeNames.Home);
       }
     }, [masterKeys, isInitialing, isCreating, isMigrated, isFetched, errorMsg]),
   );
+
+  useEffect(() => {
+    if (pin) {
+      navigation.navigate(routeNames.AddPin, {
+        action: 'login',
+      });
+    }
+  }, [pin]);
 
   if (isMigrating || !loadMasterKeys) {
     return <LoadingContainer size="large" />;
@@ -217,4 +220,7 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-export default enhance;
+export default compose(
+  withPin,
+  enhance,
+);
