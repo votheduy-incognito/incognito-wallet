@@ -196,7 +196,7 @@ const mecAddress = (value, { message } = {}) => (value) =>
     : undefined;
 
 const ltcAddress = (value, { message } = {}) => (value) =>
-  !walletValidator.validate(value, 'LTC', 'both')
+  !new RegExp('^(ltc1|[LM])[a-zA-HJ-NP-Z0-9]{26,40}$').test(value)
     ? messageHanlder(message, value) ?? 'Invalid LTC address'
     : undefined;
 
