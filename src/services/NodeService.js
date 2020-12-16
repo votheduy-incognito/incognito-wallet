@@ -292,6 +292,14 @@ export default class NodeService {
     try {
       const paymentAddress = device.PaymentAddressFromServer;
       const data = await APIService.fetchInfoNodeStake({PaymentAddress: paymentAddress});
+
+      // Have new ProductId from API, update old Product ID
+      // This case up date OS Config pNode setup by Lan
+      // This Node will be Firebase
+      if (!_.isEmpty(data?.ProductID) && device.product_id !== data?.ProductID) {
+        device.ProductId = data?.ProductID;
+      }
+
       const fetchProductInfo = device.toJSON() ?? {};
       fetchProductInfo['minerInfo'] = {
         ...fetchProductInfo.minerInfo,

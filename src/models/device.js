@@ -293,7 +293,14 @@ export default class Device {
     return (!_.isEmpty(account) && !_.isEmpty(wallet) && await accountService.getBalance(account, wallet)) || 0;
   };
 
-  get ProductId(){
+  // Not arbitrary use this function
+  // This function just be call in @fetchAndSavingInfoNodeStake
+  set ProductId(newProductId) {
+    if (isEmpty(newProductId)) return;
+    this.data.product_id = newProductId;
+  }
+
+  get ProductId() {
     return this.data.product_id ?? '';
   }
 
