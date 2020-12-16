@@ -10,6 +10,8 @@ import {
   SSHCommandUpdateNode
 } from '@screens/Node/Node.utils';
 import { useNavigation } from 'react-navigation-hooks';
+import { MESSAGES } from '@src/constants';
+import routeNames from '@routers/routeNames';
 
 const SECONDS = 1000;
 const MINUTE  =  60 * SECONDS;
@@ -20,18 +22,21 @@ const enhance = WrappedComp => props => {
 
   const {
     host,
-    onReload,
     updateSuccess,
     accessToken,
     refreshToken,
     setUpdating,
-    setUpdateSuccess
+    setUpdateSuccess,
+    setError,
   } = props;
 
   const onGoBack = () => {
-    // If update firmware success, refresh NodeItem
+    // If update firmware success
+    // Back to list node, refresh all
     if (updateSuccess) {
-      onReload && onReload();
+      navigation.navigate(routeNames.Node, {
+        refresh: new Date().getTime()
+      });
     }
     navigation.goBack();
   };
@@ -47,6 +52,7 @@ const enhance = WrappedComp => props => {
           // Cant Connect SSH NODE IP
           console.debug('CONNECT TO SSH FAIL: ', host);
           setUpdating(false);
+          setError(MESSAGES.UPDATE_FIRMWARE_NODE_FAIL);
           return;
         }
         console.debug('CONNECT TO SSH SUCCESS: ', host);
@@ -55,7 +61,8 @@ const enhance = WrappedComp => props => {
           if (error) {
             console.log('WRITE SSH ERROR: ', error, command);
             setUpdating(false);
-            // SSH.disconnect();
+            SSH.disconnect();
+            setError(MESSAGES.UPDATE_FIRMWARE_NODE_FAIL);
             return;
           }
           console.log('WRITE SSH SUCCESS WITH OUTPUT: ', output);
@@ -64,8 +71,9 @@ const enhance = WrappedComp => props => {
           setTimeout(() => {
             setUpdating(false);
             setUpdateSuccess(true);
+            setError('');
+            SSH.disconnect();
           }, MINUTE);
-          // SSH.disconnect();
         });
       });
     } catch (e) {

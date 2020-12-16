@@ -6,10 +6,10 @@ import { selectUserNodeToken } from '@screens/Node/Node.selector';
 
 const enhance = WrappedComp => props => {
   const host      = useNavigationParam('host');
-  const onReload  = useNavigationParam('onReload');
 
   const [updating, setUpdating] = useState(false);
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [error, setError] = useState('');
 
   const {
     accessToken,
@@ -29,7 +29,8 @@ const enhance = WrappedComp => props => {
 
           setUpdating,
           setUpdateSuccess,
-          onReload,
+          error,
+          setError,
         }}
       />
     </ErrorBoundary>
