@@ -13,16 +13,18 @@ import {
   Text
 } from '@components/core';
 import { MESSAGES } from '@src/constants';
+import { isEmpty } from 'lodash';
 
 const UpdateFirmware = memo(({
+  error,
   updating,
   updateSuccess,
   onGoBack,
-  onButtonPress
+  onButtonPress,
 }) => {
 
   const renderTitle = () => (
-    <Text style={[theme.text.blackMedium, UpdateFirmwareStyles.title ]}>
+    <Text style={[theme.text.blackMedium, UpdateFirmwareStyles.title]}>
       { updateSuccess
         ? MESSAGES.UPDATE_FIRMWARE_NODE_DONE
         : MESSAGES.MAKE_UPDATE_FIRMWARE_NODE
@@ -30,16 +32,22 @@ const UpdateFirmware = memo(({
     </Text>
   );
 
+  const renderError = () => {
+    if (isEmpty(error)) return null;
+    return (<Text style={[styles.error, { marginBottom: 20 }  ]}>{error}</Text>);
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <Header title='Update Node' onGoBack={onGoBack} />
       <ScrollView>
         {renderTitle()}
+        {renderError()}
         <RoundCornerButton
           disabled={updating}
           title={updateSuccess ? 'OK' : updating ? 'Updating' : 'Update now'}
           isLoading={updating}
-          style={[styles.button, theme.BUTTON.NODE_BUTTON]}
+          style={[styles.button, theme.BUTTON.NODE_BUTTON, { marginTop: 0 }]}
           onPress={onButtonPress}
         />
       </ScrollView>
@@ -48,16 +56,21 @@ const UpdateFirmware = memo(({
 });
 
 UpdateFirmware.propTypes = {
+  error: PropTypes.string,
   updating: PropTypes.bool.isRequired,
   updateSuccess: PropTypes.bool.isRequired,
   onGoBack: PropTypes.func.isRequired,
   onButtonPress: PropTypes.func.isRequired,
 };
 
+UpdateFirmware.defaultProps = {
+  error: ''
+};
+
 const UpdateFirmwareStyles = StyleSheet.create({
   title: {
     lineHeight: 30,
-    marginBottom: 20,
+    marginBottom: 50,
     marginTop: 42
   }
 });

@@ -74,7 +74,6 @@ const withEnhance = WrappedComp => props => {
   const onUpdateNode = () => {
     navigation.navigate(routeNames.UpdateNodeFirmware, {
       host: item?.Host,
-      onReload: onRefreshNodeItem
     });
   };
 
@@ -98,8 +97,4 @@ const withEnhance = WrappedComp => props => {
   );
 };
 
-
-export default compose(
-  nodeItemDetailEnhanceData,
-  withEnhance,
-);
+export default withEnhance;

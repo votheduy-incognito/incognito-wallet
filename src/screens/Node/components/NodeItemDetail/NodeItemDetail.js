@@ -16,6 +16,8 @@ import { RefreshControl } from 'react-native';
 import theme from '@src/styles/theme';
 import NodeStatus from '@screens/Node/components/NodeStatus';
 import { isEmpty } from 'lodash';
+import { compose } from 'recompose';
+import nodeItemDetailEnhanceData from '@screens/Node/components/NodeItemDetail/NodeItemDetail.enhanceData';
 
 const NodeItemDetail = memo(({
   isLoading,
@@ -201,8 +203,8 @@ NodeItemDetail.propTypes = {
   shouldShowStake: PropTypes.bool.isRequired,
   shouldShowWithdraw: PropTypes.bool.isRequired,
   processing: PropTypes.bool.isRequired,
-  accessToken: PropTypes.bool.isRequired,
-  refreshToken: PropTypes.bool.isRequired,
+  accessToken: PropTypes.string.isRequired,
+  refreshToken: PropTypes.string.isRequired,
   withdrawable: PropTypes.bool.isRequired,
   shouldRenderUnstake: PropTypes.bool.isRequired,
   onHelpPress: PropTypes.func.isRequired,
@@ -215,4 +217,7 @@ NodeItemDetail.propTypes = {
   onUpdateNode: PropTypes.func.isRequired,
 };
 
-export default withEnhance(NodeItemDetail);
+export default compose(
+  nodeItemDetailEnhanceData,
+  withEnhance,
+)(NodeItemDetail);
