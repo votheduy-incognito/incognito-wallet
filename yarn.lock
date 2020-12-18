@@ -9026,10 +9026,9 @@ react-native-splash-screen@^3.2.0:
   resolved "https://registry.yarnpkg.com/react-native-splash-screen/-/react-native-splash-screen-3.2.0.tgz#d47ec8557b1ba988ee3ea98d01463081b60fff45"
   integrity sha512-Ls9qiNZzW/OLFoI25wfjjAcrf2DZ975hn2vr6U9gyuxi2nooVbzQeFoQS5vQcbCt9QX5NY8ASEEAtlLdIa6KVg==
 
-react-native-ssh-sftp@^1.0.3:
+"react-native-ssh-sftp@https://github.com/incognitochain/react-native-ssh-sftp":
   version "1.0.3"
-  resolved "https://registry.yarnpkg.com/react-native-ssh-sftp/-/react-native-ssh-sftp-1.0.3.tgz#42c4a0e5c12d3c64cec605ded62dabd83253794d"
-  integrity sha1-QsSg5cEtPGTOxgXe1i2r2DJTeU0=
+  resolved "https://github.com/incognitochain/react-native-ssh-sftp#a108863ff541dbca70ee6f2b45fc64068bdc8286"
 
 react-native-status-bar-height@^2.2.0:
   version "2.4.0"
