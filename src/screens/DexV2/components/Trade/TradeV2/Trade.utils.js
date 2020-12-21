@@ -528,8 +528,8 @@ export const calculatorInputERC20Network = async (payload) => {
     newPriorityList = priorityList;
 
     if (maxAmountIn !== 0 && !isNaN(maxAmountIn)) {
-      inputValue = ceil(formatUtils.convertDecimalsToPDecimals(maxAmountIn, inputToken));
-      inputText = formatUtils.amountFull(inputValue, inputToken?.pDecimals);
+      inputValue = ceil(formatUtils.convertDecimalsToPDecimals(maxAmountIn, inputToken)) || 0;
+      inputText = formatUtils.amountFull(inputValue, inputToken?.pDecimals) || '0';
     }
 
     return {

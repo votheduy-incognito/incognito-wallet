@@ -11,6 +11,7 @@ const PriorityItem = ({ data, selected, onSelected }) => {
     for (let index = 0; index < data?.number; index++) {
       listImage.push(
         <Image
+          key={data?.key + index}
           style={[styles.lightningIcon, selected && styles.lightningSelected]}
           source={lightningIcon}
         />
@@ -36,7 +37,7 @@ const PriorityItem = ({ data, selected, onSelected }) => {
 
 PriorityItem.propTypes = {
   data: PropTypes.object.isRequired,
-  selected: PropTypes.object.isRequired,
+  selected: PropTypes.bool.isRequired,
   onSelected: PropTypes.func.isRequired,
 };
 

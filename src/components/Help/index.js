@@ -49,8 +49,8 @@ const Help = ({ title, content, onPress }) => {
 
 Help.defaultProps = {
   title: '',
-  marginLeft: 10,
-  onPress: null
+  onPress: null,
+  content: ''
 };
 
 Help.propTypes = {
@@ -58,8 +58,7 @@ Help.propTypes = {
   content: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.element,
-  ]).isRequired,
-  marginLeft: PropTypes.number,
+  ]),
   onPress: PropTypes.func
 };
 

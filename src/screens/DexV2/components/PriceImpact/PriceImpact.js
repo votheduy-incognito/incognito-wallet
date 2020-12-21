@@ -64,13 +64,14 @@ const PriceImpact = (props) => {
 
 PriceImpact.propTypes = {
   inputToken: PropTypes.object.isRequired,
-  inputValue: PropTypes.number.isRequired,
+  inputValue: PropTypes.number,
   outputToken: PropTypes.object.isRequired,
   minimumAmount: PropTypes.number,
 };
 
 PriceImpact.defaultProps = {
   minimumAmount: 0,
+  inputValue: 0
 };
 
 export default memo(PriceImpact);
