@@ -180,6 +180,14 @@ const fixedNumber = (number, digits = 3) => {
   return Math.trunc(number*Math.pow(10, digits))/Math.pow(10, digits);
 };
 
+const convertDecimalsToPDecimals = (number, pToken) => {
+  return BigNumber(number).dividedBy(BigNumber(10)
+    .pow(pToken?.decimals))
+    .multipliedBy(BigNumber(10).pow(pToken?.pDecimals))
+    .dividedToIntegerBy(1)
+    .toNumber();
+};
+
 export default {
   amount,
   amountFull,
@@ -192,5 +200,6 @@ export default {
   amountCreator,
   balance,
   formatWithNotation,
-  fixedNumber
+  fixedNumber,
+  convertDecimalsToPDecimals,
 };

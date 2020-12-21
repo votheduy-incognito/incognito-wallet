@@ -5,24 +5,59 @@ import { COLORS, FONT } from '@src/styles';
 import PropTypes from 'prop-types';
 import withEnhance from './Helper.enhance';
 
-const HelperScreen = ({ title, content }) => (
-  <View style={styles.container}>
-    <Header title={title} />
-    <ScrollView>
-      <Text style={styles.wrapper}>
-        {content}
-      </Text>
-    </ScrollView>
-  </View>
-);
+const HelperScreen = ({ title, contents }) => {
+
+  const renderContent = () => {
+    let views = [];
+    contents.forEach(section => {
+      const content = section?.content || '';
+      const subTitle = section?.subTitle || '';
+      views.push(
+        <>
+          { !!subTitle && (
+            <Text style={styles.subTitle}>
+              {subTitle}
+            </Text>
+          )}
+          <Text style={styles.content}>
+            {content}
+          </Text>
+        </>
+      );
+    });
+    return views;
+  };
+
+  return (
+    <View style={styles.container}>
+      <Header title={title} />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.wrapper}>
+          {renderContent()}
+        </View>
+      </ScrollView>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1
   },
   wrapper: {
-    ...FONT.STYLE.normal,
-    marginTop: 43,
+    flex: 1,
+    paddingTop: 43,
+    marginBottom: 40
+  },
+  subTitle: {
+    ...FONT.STYLE.bold,
+    marginTop: 25,
+    lineHeight: 25,
+    color: COLORS.black,
+    fontSize: FONT.SIZE.medium
+  },
+  content: {
+    ...FONT.STYLE.medium,
     lineHeight: 25,
     color: COLORS.newGrey,
     fontSize: FONT.SIZE.regular
@@ -31,7 +66,7 @@ const styles = StyleSheet.create({
 
 HelperScreen.propTypes = {
   title: PropTypes.string.isRequired,
-  content: PropTypes.string.isRequired
+  contents: PropTypes.array.isRequired
 };
 
 export default withEnhance(memo(HelperScreen));

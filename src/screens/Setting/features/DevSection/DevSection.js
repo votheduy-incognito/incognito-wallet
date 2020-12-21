@@ -14,6 +14,7 @@ import {
   actionToggleUTXOs,
   actionToggleHistoryDetail,
   actionToggleLogApp,
+  actionToggleTradeDebug,
 } from '@src/screens/Dev';
 import { CONSTANT_KEYS } from '@src/constants';
 import { accountSeleclor } from '@src/redux/selectors';
@@ -48,6 +49,8 @@ const DevSection = () => {
   const onToggleUTXOs = () => dispatch(actionToggleUTXOs());
 
   const onToggleHistoryDetail = () => dispatch(actionToggleHistoryDetail());
+
+  const onToggleTradeDebug = () => dispatch(actionToggleTradeDebug());
 
   const onToggleLogApp = () => dispatch(actionToggleLogApp());
 
@@ -142,6 +145,17 @@ const DevSection = () => {
       id: 'serial-number',
       desc: 'Copy serial number',
       onPress: onCopySerialNumberCache,
+    },
+    {
+      id: 'trade-debug',
+      desc: 'Toggle log trade debug',
+      toggleSwitch: true,
+      switchComponent: (
+        <Switch
+          onValueChange={onToggleTradeDebug}
+          value={dev[CONSTANT_KEYS.DEV_TEST_TOGGLE_TRADE]}
+        />
+      ),
     },
   ];
 
