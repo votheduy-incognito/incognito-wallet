@@ -40,7 +40,7 @@ export default function configureStore(preloadedState) {
   );
   const persistor = persistStore(store);
   if (__DEV__ && module.hot) {
-    module.hot.accept('@src/TradeV2/reducers', () => {
+    module.hot.accept('@src/redux/reducers', () => {
       const nextRootReducer = require('@src/redux/reducers').default;
       store.replaceReducer(persistReducer(persistConfig, nextRootReducer));
     });
