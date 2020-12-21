@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import TitleSection from '@screens/DexV2/components/Trade/Components/TitleSection/TitleSection';
 import enhancePriority from '@screens/DexV2/components/Trade/Components/Priority/Priority.enhance';
 import helperConst from '@src/constants/helper';
+import { v4 } from 'uuid';
 import PriorityItem from './PriorityItem';
 import styles from './styles';
 
@@ -22,6 +23,7 @@ const Priority = ({
     const item = priorityList[key];
     return(
       <PriorityItem
+        key={item?.key || v4()}
         data={item}
         selected={item?.key === priority}
         onSelected={onSelectedItem}
@@ -45,7 +47,7 @@ const Priority = ({
 
 Priority.propTypes = {
   priority: PropTypes.string.isRequired,
-  priorityList: PropTypes.array.isRequired,
+  priorityList: PropTypes.object.isRequired,
   handleChoosePriority: PropTypes.func.isRequired
 };
 
