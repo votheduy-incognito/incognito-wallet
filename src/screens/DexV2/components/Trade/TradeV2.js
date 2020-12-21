@@ -175,7 +175,6 @@ const Trade = (props) => {
           />
         )}
         extraScrollHeight={50}
-        paddingBottom
       >
         {renderContent()}
       </KeyboardAwareScrollView>
