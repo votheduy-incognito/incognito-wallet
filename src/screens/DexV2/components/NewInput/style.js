@@ -12,7 +12,8 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   centerJustify: {
-    justifyContent: 'center'
+    justifyContent: 'center',
+
   },
   justifyBetween: {
     justifyContent: 'space-between',

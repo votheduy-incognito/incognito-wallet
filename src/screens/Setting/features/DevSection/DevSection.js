@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, TouchableOpacity, Switch, Toast } from '@components/core/index';
 import Section, { sectionStyle } from '@screens/Setting/features/Section';
+import LocalDatabase from '@utils/LocalDatabase';
 import RNRestart from 'react-native-restart';
 import { AsyncStorage, Clipboard } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
@@ -13,10 +14,10 @@ import {
   actionToggleUTXOs,
   actionToggleHistoryDetail,
   actionToggleLogApp,
+  actionToggleTradeDebug,
 } from '@src/screens/Dev';
 import { CONSTANT_KEYS } from '@src/constants';
 import { accountSeleclor } from '@src/redux/selectors';
-import storage from '@services/storage';
 
 const DevSection = () => {
   const [homeConfig] = React.useState(global.homeConfig);
@@ -24,6 +25,10 @@ const DevSection = () => {
   const dev = useSelector(devSelector);
   const dispatch = useDispatch();
   const account = useSelector(accountSeleclor.defaultAccountSelector);
+  const resetUniswapTooltip = async () => {
+    await LocalDatabase.resetViewUniswapTooltip();
+    RNRestart.Restart();
+  };
 
   const toggleHomeConfig = async () => {
     await AsyncStorage.setItem(
@@ -45,6 +50,8 @@ const DevSection = () => {
 
   const onToggleHistoryDetail = () => dispatch(actionToggleHistoryDetail());
 
+  const onToggleTradeDebug = () => dispatch(actionToggleTradeDebug());
+
   const onToggleLogApp = () => dispatch(actionToggleLogApp());
 
   const isStagingConfig = homeConfig === 'staging';
@@ -52,14 +59,6 @@ const DevSection = () => {
   const onCopySerialNumberCache = () => {
     Clipboard.setString(JSON.stringify(account?.derivatorToSerialNumberCache));
     Toast.showSuccess('Copied');
-  };
-
-  const handleBackUpAllData = () => {
-
-  };
-
-  const handleRestoreAllData = () => {
-
   };
 
   const customItems = [
@@ -71,6 +70,11 @@ const DevSection = () => {
         <Switch onValueChange={toggleHomeConfig} value={isStagingConfig} />
       ),
       desc: 'Use staging home config',
+    },
+    {
+      id: 'uniswap-tooltip',
+      onPress: resetUniswapTooltip,
+      desc: 'Reset uniswap tooltip',
     },
     {
       id: 'user-profile',
@@ -156,6 +160,17 @@ const DevSection = () => {
       id: 'restore',
       desc: 'Restore all app data',
       onPress: () => navigation.navigate(routeNames.RestoreAllData),
+    },
+    {
+      id: 'trade-debug',
+      desc: 'Toggle log trade debug',
+      toggleSwitch: true,
+      switchComponent: (
+        <Switch
+          onValueChange={onToggleTradeDebug}
+          value={dev[CONSTANT_KEYS.DEV_TEST_TOGGLE_TRADE]}
+        />
+      ),
     },
   ];
 

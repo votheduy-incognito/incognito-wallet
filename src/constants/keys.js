@@ -72,6 +72,7 @@ const KEYS_TESTNET = {
   DEV_TEST_TOGGLE_UTXOS: `${prefix_network}_$DEV_TEST_TOGGLE_UTXOS`,
   UTXOS_DATA: `${prefix_network}_$UTXOS_DATA`,
   DEV_TEST_TOGGLE_HISTORY_DETAIL: `${prefix_network}_DEV_TEST_TOGGLE_HISTORY_DETAIL`,
+  DEV_TEST_TOGGLE_TRADE: `${prefix_network}_DEV_TEST_TOGGLE_TRADE`,
   DEV_TEST_TOGGLE_LOG_APP: `${prefix_network}_$DEV_TEST_TOGGLE_LOG_APP`,
   MASTER_KEY_LIST: 'testnet_$master_key_list',
 };

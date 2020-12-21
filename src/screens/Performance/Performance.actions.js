@@ -14,7 +14,7 @@ export const actionLogEvent = (data) => async (dispatch, getState) => {
       type: ACTION_LOG_EVENT,
       payload: {
         title: `Screen: ${screen}`,
-        desc: `Desc: ${desc}`,
+        desc: desc,
         time: `Time: ${currentTime - time} ms`,
         timestamp: currentTime,
         restart: !!restart,

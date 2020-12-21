@@ -14,6 +14,7 @@ export default StyleSheet.create({
   wrapper: {
     flex: 1,
     marginTop: 40,
+    marginBottom: 50
   },
   arrowWrapper: {
     flexDirection: 'row',
@@ -52,7 +53,7 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   bottomText: {
-    color: COLORS.lightGrey16,
+    color: COLORS.newGrey,
     ...FONT.STYLE.medium,
   },
   bottomBar: {
@@ -71,5 +72,18 @@ export default StyleSheet.create({
   },
   textLeft: {
     marginRight: 0
+  },
+  wrapperInfo: {
+    marginTop: 26
+  },
+  wrapperSegment: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  btnRetry: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 32,
   }
 });

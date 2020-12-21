@@ -106,7 +106,7 @@ const PoolSize = ({ inputToken, outputToken, pair, network, hasPower }) => {
 };
 
 PoolSize.propTypes = {
-  inputTokenPoolSize: PropTypes.object.isRequired,
+  inputToken: PropTypes.object.isRequired,
   outputToken: PropTypes.object.isRequired,
   pair: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
   network: PropTypes.string,

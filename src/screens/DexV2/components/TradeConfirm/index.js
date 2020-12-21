@@ -16,9 +16,9 @@ import Header from '@components/Header/index';
 import withWarning from '@screens/DexV2/components/Trade/warning.enhance';
 import Loading from '@screens/DexV2/components/Loading';
 import withAccount from '@screens/DexV2/components/account.enhance';
-import Help from '@components/Help/index';
 import Powered from '@screens/DexV2/components/Powered';
 import PoolSize from '@screens/DexV2/components/PoolSize';
+import FeeViewTradeConfirm from '@screens/DexV2/components/TradeConfirm/FeeViewTradeConfirm';
 import withSuccess from './success.enhance';
 import withTrade from './trade.enhance';
 import withData from './data.enhance';
@@ -30,16 +30,26 @@ const Trade = ({
   inputText,
   outputToken,
   minimumAmount,
-  fee,
-  feeToken,
   onTrade,
   trading,
   error,
   warning,
-  isErc20,
   pair,
   quote,
+  isErc20
 }) => {
+
+  const renderPoolSize = () => {
+    if (isErc20 && !quote?.crossTrade) return null;
+    return (
+      <PoolSize
+        outputToken={outputToken}
+        inputToken={inputToken}
+        pair={pair}
+      />
+    );
+  };
+
   return (
     <FlexView>
       <Header title="Order preview" />
@@ -62,76 +72,8 @@ const Trade = ({
           title="Purchase"
           style={styles.extra}
         />
-        {!isErc20 && (
-          <>
-            <ExtraInfo
-              token={feeToken}
-              left={(
-                <View style={styles.row}>
-                  <Text style={styles.extra}>Network fee</Text>
-                  <Help
-                    title="Network fee"
-                    content="Network fees go to validators. There is no trading fee."
-                  />
-                </View>
-              )}
-              right={`${format.amount(fee, feeToken.pDecimals)} ${
-                feeToken.symbol
-              }`}
-              style={styles.extra}
-            />
-            <PoolSize
-              outputToken={outputToken}
-              inputToken={inputToken}
-              pair={pair}
-            />
-          </>
-        )}
-        {!!isErc20 && (
-          <>
-            <ExtraInfo
-              token={feeToken}
-              left={(
-                <View style={styles.row}>
-                  <Text style={styles.extra}>Network fee</Text>
-                  <Help
-                    title="Network fee"
-                    content="Network fees go to validators."
-                  />
-                </View>
-              )}
-              right={`${format.amount(fee, feeToken.pDecimals)} ${
-                feeToken.symbol
-              }`}
-              style={styles.extra}
-            />
-            {quote?.crossTrade && (
-              <PoolSize
-                outputToken={outputToken}
-                inputToken={inputToken}
-                pair={pair}
-              />
-            )}
-            {!!quote?.erc20Fee && (
-              <ExtraInfo
-                token={feeToken}
-                left={(
-                  <View style={styles.row}>
-                    <Text style={styles.extra}>Trading fee</Text>
-                    <Help
-                      title="Trading fee"
-                      content="This is a Kyber pool. You are trading anonymously on the Ethereum network which will incur trading fees. Incognito does not charge trading fees."
-                    />
-                  </View>
-                )}
-                right={`${format.amount(quote?.erc20Fee, feeToken.pDecimals)} ${
-                  feeToken.symbol
-                }`}
-                style={styles.extra}
-              />
-            )}
-          </>
-        )}
+        <FeeViewTradeConfirm />
+        {renderPoolSize()}
         <Powered network={quote?.network} />
         {!!warning && (
           <ExtraInfo left={warning} right="" style={styles.warning} />
@@ -157,9 +99,6 @@ Trade.propTypes = {
   outputToken: PropTypes.object,
   minimumAmount: PropTypes.number,
 
-  fee: PropTypes.number.isRequired,
-  feeToken: PropTypes.object.isRequired,
-
   trading: PropTypes.bool.isRequired,
 
   error: PropTypes.string,
@@ -167,6 +106,7 @@ Trade.propTypes = {
   isErc20: PropTypes.bool,
   pair: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   quote: PropTypes.object,
+
 };
 
 Trade.defaultProps = {

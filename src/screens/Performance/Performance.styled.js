@@ -25,9 +25,10 @@ export const styled = StyleSheet.create({
     marginTop: 5
   },
   btnClear: {
-    width: 65,
+    minWidth: 65,
     height: 30,
     marginRight: 15,
+    paddingHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 7,

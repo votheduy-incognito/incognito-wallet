@@ -16,6 +16,7 @@ import dev from '@screens/Dev/Dev.reducer';
 import streamline from '@screens/Streamline/Streamline.reducer';
 import txHistoryDetail from '@screens/Wallet/features/TxHistoryDetail/TxHistoryDetail.reducer';
 import node from '@src/screens/Node/Node.reducer';
+import trade from '@screens/DexV2/components/Trade/TradeV2/Trade.reducer';
 import wallet from './wallet';
 import account from './account';
 import server from './server';
@@ -58,6 +59,7 @@ const rootReducer = reduceReducers(
     txHistoryDetail,
     node,
     masterKey,
+    trade,
   }),
   globalReducer,
 );

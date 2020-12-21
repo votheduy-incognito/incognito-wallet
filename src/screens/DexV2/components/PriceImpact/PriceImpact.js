@@ -20,14 +20,16 @@ const PriceImpact = (props) => {
   } = props;
   const navigation = useNavigation();
 
-  let Impact = '';
+  let impactValue = null;
+  let ImpactView = '';
   if (inputToken?.id && outputToken?.id) {
     const {
-      impact: impactValue,
+      impact,
       showWarning
     } = calculateSizeImpact(inputValue, inputToken, minimumAmount, outputToken);
-    if (impactValue) {
-      Impact = (
+    impactValue = impact;
+    if (impactValue !== null) {
+      ImpactView = (
         <View style={{ alignItems: 'flex-end' }}>
           <Text style={[stylesheet.text, stylesheet.textLeft, { color: showWarning ? COLORS.orange : COLORS.green4, marginRight: 0 }]}>
             {`${impactValue}%`}
@@ -42,15 +44,21 @@ const PriceImpact = (props) => {
   };
 
   return (
-    <ExtraInfo
-      left={(
-        <View style={styles.row}>
-          <Text style={styles.extra}>{helperConst.HELPER_CONSTANT.PRICE_IMPACT.title}</Text>
-          <Help onPress={onHelpPress} />
-        </View>
-      )}
-      right={Impact}
-    />
+    <>
+      { impactValue !== null &&
+      (
+        <ExtraInfo
+          left={(
+            <View style={styles.row}>
+              <Text style={styles.extra}>{helperConst.HELPER_CONSTANT.PRICE_IMPACT.title}</Text>
+              <Help onPress={onHelpPress} />
+            </View>
+          )}
+          right={ImpactView}
+        />
+      )
+      }
+    </>
   );
 };
 

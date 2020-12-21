@@ -28,6 +28,9 @@ export default StyleSheet.create({
   extra: {
     color: COLORS.lightGrey17,
   },
+  extraMedium: {
+    ...FONT.STYLE.medium,
+  },
   warning: {
     color: COLORS.orange,
   },

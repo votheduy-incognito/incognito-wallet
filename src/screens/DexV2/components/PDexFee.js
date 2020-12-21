@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo } from 'react';
 import { View } from 'react-native';
 import PropTypes from 'prop-types';
 import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
@@ -10,23 +10,16 @@ import format from '@utils/format';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import helperConst  from '@src/constants/helper';
+import { totalFeeSelector } from '@screens/DexV2/components/Trade/TradeV2/Trade.selector';
+import { useSelector } from 'react-redux';
 
 const PDexFee = ({
-  isErc20,
   feeToken,
-  quote,
-  fee,
   leftStyle
 }) => {
   const navigation = useNavigation();
 
-  const pDexFee = useMemo(() => {
-    let pDexFee = fee;
-    if (isErc20 && quote?.erc20Fee) {
-      pDexFee += quote?.erc20Fee;
-    }
-    return pDexFee;
-  }, [fee, quote, isErc20]);
+  const pDexFee = useSelector(totalFeeSelector)();
 
   const onHelpPress = () => {
     navigation.navigate(routeNames.Helper, helperConst.HELPER_CONSTANT.FEE);
@@ -42,7 +35,7 @@ const PDexFee = ({
             <Help onPress={onHelpPress} />
           </View>
         )}
-        right={`${format.amount(pDexFee, feeToken.pDecimals)} ${
+        right={`${pDexFee} ${
           feeToken.symbol
         }`}
         style={styles.extra}
@@ -52,24 +45,14 @@ const PDexFee = ({
 
   return (
     <View>
-      { renderFee() }
+      {renderFee()}
     </View>
   );
 };
 
 PDexFee.propTypes = {
-  isErc20: PropTypes.bool,
   feeToken: PropTypes.object.isRequired,
-  quote: PropTypes.object,
-  fee: PropTypes.number.isRequired,
   leftStyle: PropTypes.object.isRequired
 };
-
-
-PDexFee.defaultProps = {
-  quote: null,
-  isErc20: false,
-};
-
 
 export default memo(PDexFee);
