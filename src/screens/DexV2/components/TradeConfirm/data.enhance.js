@@ -2,6 +2,8 @@ import React from 'react';
 import { useNavigationParam } from 'react-navigation-hooks';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
+import { useSelector } from 'react-redux';
+import {tradeSelector, tradingFeeSelector} from '@screens/DexV2/components/Trade/TradeV2/Trade.selector';
 
 const withData = WrappedComp => (props) => {
   const inputToken = useNavigationParam('inputToken');
@@ -19,6 +21,12 @@ const withData = WrappedComp => (props) => {
   const quote = useNavigationParam('quote');
 
   const inputText = formatUtil.toFixed(convertUtil.toNumber(rawText), inputToken.pDecimals);
+
+  const { tradingFee } = useSelector(tradingFeeSelector)();
+  const {
+    priority,
+    slippage
+  } = useSelector(tradeSelector);
 
   return (
     <WrappedComp
@@ -38,6 +46,10 @@ const withData = WrappedComp => (props) => {
         prvBalance,
         isErc20,
         quote,
+
+        tradingFee,
+        priority,
+        slippage,
       }}
     />
   );

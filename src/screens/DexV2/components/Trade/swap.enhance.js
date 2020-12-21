@@ -15,7 +15,6 @@ const withSwap = WrappedComp => (props) => {
     if (!inputToken || !outputToken || inputBalance === null) {
       return;
     }
-
     onChangeOutputToken(inputToken);
     onChangeInputToken(outputToken);
     onChangeInputText(inputText);

@@ -27,6 +27,28 @@ export const calculateOutputValueCrossPool = (pairs, inputToken, inputValue, out
   return outputValue;
 };
 
+export const calculateInputValueCrossPool = (pairs, inputToken, outputValue, outputToken) => {
+  const firstPair   = _.get(pairs, 0);
+  const secondPair  = _.get(pairs, 1);
+
+  let currentOutputToken  = inputToken;
+  let inputValue          = outputValue;
+
+  if (secondPair) {
+    inputValue = calculateInputValue(secondPair, COINS.PRV, inputValue, outputToken);
+    currentOutputToken = COINS.PRV;
+    inputValue = calculateInputValue(firstPair, inputToken, inputValue, currentOutputToken);
+  } else {
+    inputValue = calculateInputValue(firstPair, currentOutputToken, inputValue, outputToken);
+  }
+
+  if (inputValue < 0) {
+    inputValue = 0;
+  }
+
+  return inputValue;
+};
+
 export const calculateOutputValue = (pair, inputToken, inputValue, outputToken) => {
   try {
     if (!pair) {
@@ -75,7 +97,7 @@ export const calculateSizeImpact = (inputValue, inputToken, outputValue, outputT
   } = useSelector(selectedPrivacySeleclor.getPrivacyDataByTokenID)(outputToken?.id);
   const totalInputUsd   = convertUtil.toHumanAmount(inputValue * inputPriceUsd, inputPDecimals);
   const totalOutputUsd  = convertUtil.toHumanAmount(outputValue * outputPriceUsd, outputPDecimals);
-  if (totalInputUsd && totalInputUsd !== 0) {
+  if (totalInputUsd && totalOutputUsd) {
     const impact = formatUtils.fixedNumber(getImpact(totalInputUsd, totalOutputUsd), 3);
     if (!isNaN(impact)) {
       const formatSeparator = formatUtils.amount(impact);

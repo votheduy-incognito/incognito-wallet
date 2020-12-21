@@ -17,7 +17,7 @@ const withValidate = WrappedComp => (props) => {
     try {
       const newValue = inputText;
       const min = isNumber(inputMin) ? inputMin : MIN_INPUT;
-      let number = convertUtil.toNumber(inputText);
+      let number = convertUtil.toNumber(inputText, true);
       if (!newValue || newValue.length === 0) {
         setError('');
       } else if (isNaN(number)) {

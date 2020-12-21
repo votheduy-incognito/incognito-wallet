@@ -4,6 +4,7 @@ import {
   ACTION_TOGGLE_UTXOS,
   ACTION_DEV_TEST_TOGGLE_HISTORY_DETAIL,
   ACTION_TOGGLE_LOG_APP,
+  ACTION_DEV_TEST_TOGGLE_TRADE,
 } from './Dev.constant';
 
 export const actionToggleTestModeCentralized = () => ({
@@ -20,6 +21,10 @@ export const actionToggleUTXOs = () => ({
 
 export const actionToggleHistoryDetail = () => ({
   type: ACTION_DEV_TEST_TOGGLE_HISTORY_DETAIL,
+});
+
+export const actionToggleTradeDebug = () => ({
+  type: ACTION_DEV_TEST_TOGGLE_TRADE,
 });
 
 export const actionToggleLogApp = () => ({

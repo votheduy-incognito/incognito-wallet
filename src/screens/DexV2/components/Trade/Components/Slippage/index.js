@@ -1,0 +1,1 @@
+export { default as enhanceSlippage } from './Slippage.enhance';
