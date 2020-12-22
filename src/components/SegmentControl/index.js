@@ -1,7 +1,8 @@
-import React, { memo } from 'react';
-import { View } from 'react-native';
+import React, { memo, useCallback } from 'react';
+import { LayoutAnimation, View } from 'react-native';
 import PropTypes from 'prop-types';
 import SegmentItem from '@components/SegmentControl/SegmentItem/SegmentItem';
+import { isIOS } from '@utils/platform';
 import { styles } from './styles';
 
 const SegmentControl = ({
@@ -11,9 +12,24 @@ const SegmentControl = ({
   style
 }) => {
 
+  const animationLinear = useCallback(() => {
+    const CustomLayoutLinear = {
+      duration: 200,
+      create: {
+        type: LayoutAnimation.Types.linear,
+        property: LayoutAnimation.Properties.opacity,
+      },
+      update: {
+        type: LayoutAnimation.Types.easeInEaseOut,
+      },
+    };
+    LayoutAnimation.configureNext(CustomLayoutLinear);
+  }, []);
+
   const onSelected = (index) => {
     if (index === selectedIndex) return;
     onChange && onChange(index);
+    isIOS() && animationLinear();
   };
 
   const renderItem = (item, index) => (

@@ -14,7 +14,7 @@ const enhanceSwap = WrappedComp => (props) => {
       return;
     }
 
-    onChangeOutputToken(inputToken, true);
+    onChangeOutputToken(inputToken);
     onChangeInputToken(outputToken);
   };
 

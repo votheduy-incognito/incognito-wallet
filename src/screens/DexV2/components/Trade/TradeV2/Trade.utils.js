@@ -371,7 +371,7 @@ export const getInputBalance = async (payload) => {
     account,
     inputToken,
     wallet,
-    inputFee
+    inputFee,
   } = payload;
   const token = inputToken;
   const balance = await accountService.getBalance(account, wallet, token.id);

@@ -8,12 +8,10 @@ import {
   ACTION_UPDATE_TRADE_FEE,
   ACTION_UPDATE_TRADE_TEXT_VALUE,
   ACTION_UPDATE_LOADING_INPUT_BOX,
-  ACTION_CLEAR_OUTPUT_TEXT,
   ACTION_CLEAR_FEE,
   ACTION_UPDATE_SLIPPAGE,
   ACTION_UPDATE_PRIORITY,
   ACTION_RETRY_TRADE_INFO,
-  ACTION_CLEAR_INPUT_TEXT,
   ACTION_UPDATE_BALANCE
 } from '@screens/DexV2/components/Trade/TradeV2/Trade.constant';
 import {
@@ -96,16 +94,6 @@ export const actionClearTradeData = () => ({
   type: ACTION_CLEAR_TRADE_DATA,
 });
 
-/** Choose new InputToken, clear outputText */
-export const actionClearOutputText = () => ({
-  type: ACTION_CLEAR_OUTPUT_TEXT
-});
-
-/** clear Input text when debounce still call */
-export const actionClearInputText = () => ({
-  type: ACTION_CLEAR_INPUT_TEXT
-});
-
 /** Load all Pairs from api @getPairsData */
 export const actionUpdatePairData = (payload) => ({
   type: ACTION_UPDATE_PAIR_DATA,
@@ -133,11 +121,9 @@ export const actionGetCouplePair = () => async (dispatch, getState) => {
     dispatch(actionUpdateCouplePair(pair));
 
     // pair did change, inputText have value, calculator again
-    if (inputText && pair) {
+    if (inputText) {
       dispatch(actionChangeInputText(inputText));
     }
-
-    //load new outputValue here
   } catch (error) {
     console.debug('GETTING PAIR WITH ERROR', error);
   }
@@ -318,6 +304,7 @@ export const getOutputIncognitoNetwork = (payload) => async (dispatch, getState)
  * @debouncedLoadInputBalance
  * @handleChoosePriority // Change Priority calculator input again
  * @onRetryTradeInfo
+ * @loadPairs
  */
 export const actionChangeInputText = (newText) => async (dispatch, getState) => {
   try {
@@ -671,17 +658,23 @@ export const actionLoadInputBalance = (payload) => async (dispatch, getState) =>
       lastAccount,
       outputText,
     } = trade;
+
     const {
       newInputText,
       prvBalance,
       inputBalance,
       inputBalanceText
-    } = await getInputBalance({account, inputToken, wallet, inputFee});
+    } = await getInputBalance({
+      account,
+      inputToken,
+      wallet,
+      inputFee
+    });
 
-    let tokenChange =
-      lastInputToken !== inputToken ||
-      lastAccount !== account ||
-      (newInputText && (!outputText || outputText === '0'));
+    const tokenChange =
+      lastInputToken !== inputToken
+      || lastAccount !== account
+      || (newInputText && (!outputText || outputText === '0'));
 
     if (tokenChange) {
       dispatch(actionChangeInputText(newInputText));
