@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, {memo, useCallback} from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import {
@@ -33,6 +33,7 @@ import { TradeInputAmount } from '@screens/DexV2/components/Trade/Components/Tra
 import { TRADE_LOADING_VALUE } from '@screens/DexV2/components/Trade/TradeV2/Trade.appConstant';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import BtnRetryGrey from '@components/Button/BtnRetryGrey';
+import withParams from '@screens/DexV2/components/Trade/params.enhance';
 import styles from './style';
 
 const Trade = (props) => {
@@ -163,6 +164,23 @@ const Trade = (props) => {
     </View>
   );
 
+  const renderBottomView = useCallback(() => {
+    if (histories && histories.length > 0) {
+      return (
+        <View style={styles.bottomBar}>
+          <TouchableOpacity
+            onPress={navigateHistory}
+            style={styles.bottomFloatBtn}
+          >
+            <Text style={styles.bottomText}>Order history</Text>
+            <ArrowRightGreyIcon style={{ marginLeft: 10 }} />
+          </TouchableOpacity>
+        </View>
+      );
+    }
+    return null;
+  }, [histories]);
+
   return (
     <View style={styles.container}>
       <KeyboardAwareScrollView
@@ -178,18 +196,7 @@ const Trade = (props) => {
       >
         {renderContent()}
       </KeyboardAwareScrollView>
-
-      <View style={styles.bottomBar}>
-        {!!histories.length && (
-          <TouchableOpacity
-            onPress={navigateHistory}
-            style={styles.bottomFloatBtn}
-          >
-            <Text style={styles.bottomText}>Order history</Text>
-            <ArrowRightGreyIcon style={{ marginLeft: 10 }} />
-          </TouchableOpacity>
-        )}
-      </View>
+      {renderBottomView()}
     </View>
   );
 };
@@ -264,4 +271,5 @@ export default compose(
   withSwap,
   withSegment,
   withRetryTradeInfo,
+  withParams
 )(memo(Trade));

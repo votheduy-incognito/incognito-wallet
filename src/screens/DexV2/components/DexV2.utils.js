@@ -10,13 +10,19 @@ import {PRIORITY_LIST} from '@screens/Dex/constants';
 
 export const getPairsData = async () => {
   try {
-    const pTokens     = await getTokenList();
-    const chainTokens = await tokenService.getPrivacyTokens();
-    const chainPairs  = await getPDEState();
-    let tokens        = tokenService.mergeTokens(chainTokens, pTokens);
-    const erc20Tokens = await getAllTradingTokens();
 
-    // const erc20Tokens = [];
+    const now = Date.now();
+    const [pTokens, chainTokens, chainPairs, erc20Tokens] = await Promise.all([
+      getTokenList(),
+      tokenService.getPrivacyTokens(),
+      getPDEState(),
+      getAllTradingTokens()
+    ]);
+
+    let tokens = tokenService.mergeTokens(chainTokens, pTokens);
+    const end = Date.now();
+
+    console.debug('LOAD PAIRS IN: ', end - now);
 
     if (!_.has(chainPairs, 'PDEPoolPairs')) {
       return new ExHandler(new CustomError(ErrorCode.FULLNODE_DOWN), MESSAGES.CAN_NOT_GET_PDEX_DATA).showErrorToast();
