@@ -16,7 +16,6 @@ const TradeInfoSimple = ({ inputBalance }) => {
 
     outputToken,
     minimumAmount,
-    quote,
 
     feeToken,
   } = useSelector(tradeSelector);

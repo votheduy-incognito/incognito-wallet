@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, ScrollView } from 'react-native';
 import { Header } from '@src/components';
 import { COLORS, FONT } from '@src/styles';
 import PropTypes from 'prop-types';
+import { v4 } from 'uuid';
 import withEnhance from './Helper.enhance';
 
 const HelperScreen = ({ title, contents }) => {
@@ -12,8 +13,9 @@ const HelperScreen = ({ title, contents }) => {
     contents.forEach(section => {
       const content = section?.content || '';
       const subTitle = section?.subTitle || '';
+      const key = v4();
       views.push(
-        <>
+        <View key={key}>
           { !!subTitle && (
             <Text style={styles.subTitle}>
               {subTitle}
@@ -22,7 +24,7 @@ const HelperScreen = ({ title, contents }) => {
           <Text style={styles.content}>
             {content}
           </Text>
-        </>
+        </View>
       );
     });
     return views;

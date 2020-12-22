@@ -2,7 +2,6 @@ import React, { memo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import Header from '@components/Header';
-import { withLayout_2 } from '@components/Layout';
 import { View } from '@components/core';
 import Trade from '@screens/DexV2/components/Trade';
 import { isEmpty } from 'lodash';
@@ -51,7 +50,7 @@ const Dex = memo((props) =>  {
   }, []);
 
   return (
-    <View style={styles.wrapper}>
+    <View style={styles.wrapperContainer}>
       <Header title="pDEX" accountSelectable />
       {renderMode()}
     </View>
@@ -68,6 +67,5 @@ Dex.propTypes = {
 
 export default compose(
   withData,
-  withLayout_2,
   withPairs,
 )(Dex);
