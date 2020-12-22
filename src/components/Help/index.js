@@ -26,7 +26,7 @@ const Help = ({ title, content, onPress }) => {
   return (
     <TouchableOpacity
       onPress={onBtnPress}
-      style={{ justifyContent: 'center', alignItems: 'center' }}
+      style={stylesheet.wrapperButton}
     >
       <Image source={helpInline} style={stylesheet.icon} />
       <Overlay isVisible={visible} overlayStyle={stylesheet.dialog} onBackdropPress={() => setVisible(false)}>

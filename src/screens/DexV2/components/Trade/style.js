@@ -1,20 +1,19 @@
 import { COLORS, FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
+import { getBottomAreaHeight } from '@utils/SafeAreaHelper';
 
-const bottomBarHeight = 50;
+const BOTTOM_BAR_PADDING_BOTTOM = getBottomAreaHeight() + 10;
 
 export default StyleSheet.create({
   container: {
     flex: 1,
   },
   scrollContainer: {
-    paddingBottom: bottomBarHeight,
-    marginBottom: 10,
+    paddingBottom: 60 + BOTTOM_BAR_PADDING_BOTTOM,
   },
   wrapper: {
     flex: 1,
     marginTop: 40,
-    marginBottom: 50
   },
   arrowWrapper: {
     flexDirection: 'row',
@@ -58,14 +57,13 @@ export default StyleSheet.create({
   },
   bottomBar: {
     position: 'absolute',
-    bottom: 0,
-    backgroundColor: 'white',
-    height: bottomBarHeight,
     justifyContent: 'center',
-    // alignItems: 'flex-end',
     left: 0,
     right: 0,
-    paddingBottom: 25,
+    bottom: 0,
+    paddingBottom: BOTTOM_BAR_PADDING_BOTTOM,
+    paddingTop: 10,
+    backgroundColor: COLORS.white
   },
   row: {
     flexDirection: 'row'
@@ -74,7 +72,7 @@ export default StyleSheet.create({
     marginRight: 0
   },
   wrapperInfo: {
-    marginTop: 26
+    marginTop: 26,
   },
   wrapperSegment: {
     flexDirection: 'row',
