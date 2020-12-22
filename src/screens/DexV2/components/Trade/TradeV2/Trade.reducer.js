@@ -11,7 +11,6 @@ import {
   ACTION_UPDATE_TRADE_FEE,
   ACTION_UPDATE_TRADE_TEXT_VALUE,
   ACTION_UPDATE_LOADING_INPUT_BOX,
-  ACTION_CLEAR_OUTPUT_TEXT,
   ACTION_CLEAR_FEE,
   ACTION_UPDATE_SLIPPAGE,
   ACTION_UPDATE_PRIORITY,
@@ -101,12 +100,6 @@ const tradeReducer = (state = initialState, action) => {
     return {
       ...state,
       ...initStateClear,
-    };
-  }
-  case ACTION_CLEAR_OUTPUT_TEXT: {
-    return {
-      ...state,
-      ...initOutput,
     };
   }
   case ACTION_UPDATE_INPUT_TOKEN: {
