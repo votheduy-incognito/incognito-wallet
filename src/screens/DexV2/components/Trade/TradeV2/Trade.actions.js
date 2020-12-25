@@ -27,7 +27,7 @@ import {
   getInputTextAndInputValue,
   getTradingFee,
   calculatorInputERC20Network,
-  getInputBalance, calculatorOriginalOutputSlippage,
+  getInputBalance, calculatorOriginalOutputSlippage, getSlippagePercent,
 } from '@screens/DexV2/components/Trade/TradeV2/Trade.utils';
 import { debounce } from 'lodash';
 import { actionLogEvent } from '@screens/Performance';
@@ -316,7 +316,8 @@ export const actionChangeInputText = (newText) => async (dispatch, getState) => 
       fee,
       feeToken,
       priority,
-      priorityList
+      priorityList,
+      slippage
     } = trade;
     const { inputText, inputValue } = getInputTextAndInputValue({
       inputToken,
@@ -327,7 +328,7 @@ export const actionChangeInputText = (newText) => async (dispatch, getState) => 
       newText
     });
     /** input = 0, clear output */
-    if (!inputValue) {
+    if (!inputValue || slippage >= 100) {
       debouncedGetOutputERC20Network.cancel();
       dispatch(actionUpdateLoadingBox(null));
       const actionPayload = {
@@ -477,10 +478,11 @@ export const actionChangeOutputText = (newText) => async (dispatch, getState) =>
     const {
       inputToken,
       outputToken,
-      loadingBox
+      loadingBox,
+      slippage
     } = trade;
 
-    if (!newText) {
+    if (!newText || slippage >= 100) {
       debouncedGetInputERC20.cancel();
       dispatch(actionUpdateLoadingBox(null));
       return dispatch(actionUpdateTextValue({
@@ -544,6 +546,7 @@ export const actionLogTradeData = () => async (dispatch, getState) => {
       priorityList,
       slippage,
       lastUsedSlippage,
+      quote
     } = trade;
     const log = {
       inputText,
@@ -555,8 +558,11 @@ export const actionLogTradeData = () => async (dispatch, getState) => {
       originalFee: `${originalFee} ${originalFeeToken?.symbol}`,
       slippage: slippage,
       lastSlippage: lastUsedSlippage,
+      slippagePercent: getSlippagePercent(slippage),
       priority,
-      priorityList: JSON.stringify(priorityList)
+      priorityList: JSON.stringify(priorityList),
+      expectAmount: quote?.expectAmount,
+      maxAmountOut: quote?.maxAmountOut,
     };
     dispatch(actionLogEvent({ desc: log }));
   } catch (e) {/*Ignored*/}
