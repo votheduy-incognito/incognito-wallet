@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 import { Text, View, TextInput } from 'react-native';
 import TitleSection from '@screens/DexV2/components/Trade/Components/TitleSection/TitleSection';
 import helperConst from '@src/constants/helper';
@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { enhanceSlippage } from '@screens/DexV2/components/Trade/Components/Slippage';
 import { compose } from 'recompose';
 import enhanceValidate from '@screens/DexV2/components/Trade/Components/Slippage/Slippage.enhanceValidate';
+import { COLORS } from '@src/styles';
 
 const Slippage = memo((props) => {
 
@@ -15,6 +16,15 @@ const Slippage = memo((props) => {
     onChangeSlippage,
     error,
   } = props;
+
+  const renderError = useCallback(() => {
+    if (!error) return null;
+    return (
+      <Text style={[styles.errorStyle, error?.error && { color: COLORS.red }]}>
+        {error?.error || error?.warning}
+      </Text>
+    );
+  }, [error]);
 
   return (
     <>
@@ -35,11 +45,7 @@ const Slippage = memo((props) => {
           %
         </Text>
       </View>
-      { !!error && (
-        <Text style={styles.errorStyle}>
-          {error}
-        </Text>
-      )}
+      {renderError()}
     </>
   );
 });

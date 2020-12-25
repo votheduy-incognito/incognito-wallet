@@ -29,7 +29,7 @@ const SegmentControl = ({
   const onSelected = (index) => {
     if (index === selectedIndex) return;
     onChange && onChange(index);
-    isIOS() && animationLinear();
+    if (isIOS()) animationLinear();
   };
 
   const renderItem = (item, index) => (

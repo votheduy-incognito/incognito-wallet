@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   actionUpdateBalance as updateBalance,
   actionLoadInputBalance as loadInputBalance,
-  asyncActionDebounced,
 } from '@screens/DexV2/components/Trade/TradeV2/Trade.actions';
 
 const enhanceBalanceLoader = WrappedComp => (props) => {

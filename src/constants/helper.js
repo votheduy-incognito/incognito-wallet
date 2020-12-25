@@ -2,7 +2,7 @@ const HELPER_CONSTANT = {
   FEE: {
     title: 'Fee',
     contents: [{
-      content: 'Incognito charges only network fees. Uniswap and Kyber pools will also incur cross-chain fees.'
+      content: 'By default, Incognito charges only network fees. If you have chosen to boost your trade, the priority fee will also be reflected here. Note that Uniswap and Kyber pools will also incur cross-chain fees.'
     }]
   },
   NETWORK: {

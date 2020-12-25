@@ -7,22 +7,28 @@ import { MESSAGES } from '@screens/Dex/constants';
 
 const enhanceValidate = WrappedComp => props => {
 
-  const [messageSlippage, setMessageSlippage] = useState('');
+  const [errorSlippage, setErrorSlippage]     = useState(null);
 
-  const {
-    slippage,
-    minimumAmount,
-  } = useSelector(tradeSelector);
+  const { slippage, minimumAmount, } = useSelector(tradeSelector);
 
   useEffect(() => {
-    if (
-      (minimumAmount && isNumber(minimumAmount) && minimumAmount < 0)
-      ||
-      (slippage && (slippage < 0 || slippage > 100))
-    ) {
-      setMessageSlippage(MESSAGES.SLIPPAGE);
+    if (slippage && slippage >= 100) {
+      setErrorSlippage({
+        warning: '',
+        error: MESSAGES.SLIPPAGE_ERROR
+      });
+    } else if (slippage && (slippage < 0 || slippage >= 6 && slippage < 100)) {
+      setErrorSlippage({
+        warning: MESSAGES.SLIPPAGE_WARNING,
+        error: ''
+      });
+    } else if (minimumAmount && isNumber(minimumAmount) && minimumAmount < 0) {
+      setErrorSlippage({
+        warning: MESSAGES.SLIPPAGE_WARNING,
+        error: ''
+      });
     } else {
-      setMessageSlippage('');
+      setErrorSlippage(null);
     }
   }, [slippage, minimumAmount]);
 
@@ -33,7 +39,7 @@ const enhanceValidate = WrappedComp => props => {
         {...{
           ...props,
 
-          error: messageSlippage
+          error: errorSlippage
         }}
       />
     </ErrorBoundary>
