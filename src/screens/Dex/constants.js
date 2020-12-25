@@ -107,7 +107,7 @@ export const MESSAGES = {
   CANCEL_ADD_LIQUIDITY_SUCCESS: 'Your balance will update in a couple of minutes after the request is complete.',
   NO_PAIR: 'You haven\'t added any pairs yet.',
   SLIPPAGE_WARNING: 'Your trade may fail at this range.',
-  SLIPPAGE_ERROR: 'Enter valid slippage percentage.',
+  SLIPPAGE_ERROR: 'Enter a number from 0 to 99.99.',
 };
 export const MILLISECOND = 1;
 export const SECOND = 1000 * MILLISECOND;
