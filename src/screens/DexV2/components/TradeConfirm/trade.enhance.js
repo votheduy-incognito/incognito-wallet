@@ -11,7 +11,6 @@ import { useDispatch } from 'react-redux';
 import { actionAddFollowToken } from '@src/redux/actions/token';
 import { actionLogEvent } from '@src/screens/Performance';
 import { getSlippagePercent } from '@screens/DexV2/components/Trade/TradeV2/Trade.utils';
-import { floor } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 const withTrade = (WrappedComp) => (props) => {
@@ -177,15 +176,23 @@ const withTrade = (WrappedComp) => (props) => {
 
   const tradeKyber = async (depositId) => {
     const originalValue = convertUtil.toDecimals(inputValue, inputToken);
-    const expectAmount  = floor(convertUtil.toNumber(quote?.expectAmount || 0) * getSlippagePercent(slippage));
-    const maxAmountOut  = floor(convertUtil.toNumber(quote?.maxAmountOut || 0) * getSlippagePercent(slippage));
+    const expectAmount  = new BigNumber(quote?.expectAmount || '0')
+      .multipliedBy(getSlippagePercent(slippage))
+      .integerValue(BigNumber.ROUND_FLOOR)
+      .toFixed();
+
+    const maxAmountOut = new BigNumber(quote?.maxAmountOut || '0')
+      .multipliedBy(getSlippagePercent(slippage))
+      .integerValue(BigNumber.ROUND_FLOOR)
+      .toNumber();
+
     const data = {
       SrcTokens: inputToken?.address,
       SrcQties: originalValue,
       DestTokens: outputToken?.address,
       DappAddress: quote?.dAppAddress,
       DepositId: depositId,
-      ExpectAmount: BigNumber(expectAmount).toFixed(), // RatioTrade / slippage ? slippage * ratio trade
+      ExpectAmount: expectAmount, // RatioTrade / slippage ? slippage * ratio trade
       MaxAmountOut: maxAmountOut, // AmountOutput / slippage ? slippage * amount out
       Fee: tradingFee,
       FeeLevel: priority.toLowerCase()
