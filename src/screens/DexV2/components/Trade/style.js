@@ -1,15 +1,15 @@
 import { COLORS, FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
+import { getBottomAreaHeight } from '@utils/SafeAreaHelper';
 
-const bottomBarHeight = 50;
+const BOTTOM_BAR_PADDING_BOTTOM = getBottomAreaHeight() + 10;
 
 export default StyleSheet.create({
   container: {
     flex: 1,
   },
   scrollContainer: {
-    paddingBottom: bottomBarHeight,
-    marginBottom: 10,
+    paddingBottom: 60 + BOTTOM_BAR_PADDING_BOTTOM,
   },
   wrapper: {
     flex: 1,
@@ -52,24 +52,36 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   bottomText: {
-    color: COLORS.lightGrey16,
+    color: COLORS.newGrey,
     ...FONT.STYLE.medium,
   },
   bottomBar: {
     position: 'absolute',
-    bottom: 0,
-    backgroundColor: 'white',
-    height: bottomBarHeight,
     justifyContent: 'center',
-    // alignItems: 'flex-end',
     left: 0,
     right: 0,
-    paddingBottom: 25,
+    bottom: 0,
+    paddingBottom: BOTTOM_BAR_PADDING_BOTTOM,
+    paddingTop: 10,
+    backgroundColor: COLORS.white
   },
   row: {
     flexDirection: 'row'
   },
   textLeft: {
     marginRight: 0
+  },
+  wrapperInfo: {
+    marginTop: 26,
+  },
+  wrapperSegment: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  btnRetry: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 32,
   }
 });

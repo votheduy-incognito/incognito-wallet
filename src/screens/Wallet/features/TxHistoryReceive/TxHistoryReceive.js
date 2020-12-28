@@ -74,6 +74,7 @@ const TxHistoryReceive = (props) => {
             <Hook key={index} {...hook} />
           ))}
           <HuntQRCode code={history?.type} />
+          <View style={{ height: 50 }} />
         </ScrollView>
       )}
     </View>

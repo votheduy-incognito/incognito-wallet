@@ -23,7 +23,8 @@ export default function configureStore(preloadedState) {
       'dev',
       'streamline',
       'txHistoryDetail',
-      'node'
+      'node',
+      'trade'
     ],
     stateReconciler: autoMergeLevel2,
   };

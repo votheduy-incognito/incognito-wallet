@@ -1,58 +1,71 @@
-import React from 'react';
+import React, { memo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import Header from '@components/Header';
-import { withLayout_2 } from '@components/Layout';
 import { View } from '@components/core';
 import Trade from '@screens/DexV2/components/Trade';
 import { isEmpty } from 'lodash';
 import LoadingContainer from '@components/LoadingContainer/index';
-import withPairs from '@screens/DexV2/components/pdexPair.enhance';
+import withPairs from '@screens/DexV2/components/pdexPairV2.enhance';
+import withData from '@screens/DexV2/DexV2.enhanceData';
+import { useDispatch } from 'react-redux';
+import { actionClearTradeData } from '@screens/DexV2/components/Trade/TradeV2/Trade.actions';
 import styles from './style';
 
-class Dex extends React.Component {
-  renderTrade() {
-    const { tokens, pairTokens, pairs, loading, onLoadPairs } = this.props;
+const Dex = memo((props) =>  {
+  const {
+    loadingPair,
+    tokens,
+    pairTokens,
+    pairs,
+    onLoadPairs,
+  } = props;
+
+  const dispatch = useDispatch();
+
+  const renderTrade = () => {
     return (
       <Trade
         pairs={pairs}
         tokens={tokens}
         pairTokens={pairTokens}
-        isLoading={loading}
+        isLoading={loadingPair}
         onLoadPairs={onLoadPairs}
       />
     );
-  }
+  };
 
-  renderMode() {
-    const { pairTokens, pairs, tokens } = this.props;
-
+  const renderMode = () => {
     if (isEmpty(tokens) || isEmpty(pairs) || isEmpty(pairTokens)) {
       return <LoadingContainer />;
     }
 
-    return this.renderTrade();
-  }
+    return renderTrade();
+  };
 
-  render() {
-    return (
-      <View style={styles.wrapper}>
-        <Header title="pDEX" accountSelectable />
-        {this.renderMode()}
-      </View>
-    );
-  }
-}
+  useEffect(() => {
+    return () => {
+      dispatch(actionClearTradeData());
+    };
+  }, []);
+
+  return (
+    <View style={styles.wrapperContainer}>
+      <Header title="pDEX" accountSelectable />
+      {renderMode()}
+    </View>
+  );
+});
 
 Dex.propTypes = {
   tokens: PropTypes.array.isRequired,
   pairs: PropTypes.array.isRequired,
   pairTokens: PropTypes.array.isRequired,
   onLoadPairs: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
+  loadingPair: PropTypes.bool.isRequired,
 };
 
 export default compose(
-  withLayout_2,
+  withData,
   withPairs,
 )(Dex);

@@ -195,7 +195,9 @@ const enhance = (WrappedComp) => (props) => {
     } catch (e) {
       errorMessage = new ExHandler(
         e,
-        'Sorry, something went wrong while\nopening the wallet.\nPlease check your connection or re-install the application (only if you have a backup of your private keys) and try again.\n',
+        'Something\'s not quite right. Please make sure you\'re connected to the internet.\n' +
+        '\n' +
+        'If your connection is strong but the app still won\'t load, please contact us at go@incognito.org.\n',
       )?.writeLog()?.message;
     } finally {
       await setState({

@@ -7,7 +7,7 @@ import { useNavigationParam } from 'react-navigation-hooks';
 const enhance = WrappedComp => props => {
 
   const title   = useNavigationParam('title') || '';
-  const content = useNavigationParam('content') || '';
+  const contents = useNavigationParam('contents') || '';
 
   return (
     <ErrorBoundary>
@@ -16,7 +16,7 @@ const enhance = WrappedComp => props => {
           ...props,
 
           title,
-          content
+          contents
         }}
       />
     </ErrorBoundary>

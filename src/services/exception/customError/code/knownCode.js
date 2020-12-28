@@ -26,11 +26,6 @@ const document_picker = {
   document_picker_must_be_png: knownError(-44)
 };
 
-const estimateFee = {
-  estimate_fee_with_zero_balance: knownError(-1),
-  estimate_fee_does_not_support_type_of_fee: knownError(-29)
-};
-
 const getStarted = {
   getStarted_can_not_create_wallet_on_existed: knownError(-10),
   getStarted_load_token_failed: knownError(-24),
@@ -108,7 +103,6 @@ const chain = {
 
 export default {
   ...app,
-  ...estimateFee,
   ...getStarted,
   ...withdraw,
   ...createAccount,

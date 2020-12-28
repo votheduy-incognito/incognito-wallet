@@ -28,4 +28,8 @@ export default StyleSheet.create({
   icon: {
     marginLeft: 6,
   },
+  wrapperButton: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 });

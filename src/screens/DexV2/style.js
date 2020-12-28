@@ -7,4 +7,8 @@ export default StyleSheet.create({
   componentWrapper: {
     flex: 1,
   },
+  wrapperContainer: {
+    flex: 1,
+    marginHorizontal: 25
+  }
 });

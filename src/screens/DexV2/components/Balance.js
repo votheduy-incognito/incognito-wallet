@@ -3,12 +3,17 @@ import PropTypes from 'prop-types';
 import { ActivityIndicator } from '@src/components/core';
 import formatUtils from '@utils/format';
 import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
+import { View } from 'react-native';
 
 const Balance = (props) => {
   const { token, balance, title, style, hideRightSymbol } = props;
 
   const right = balance === null ?
-    <ActivityIndicator size="small" /> :
+    (
+      <View style={{ maxWidth: 50, alignSelf: 'flex-end' }}>
+        <ActivityIndicator size="small" />
+      </View>
+    ) :
     `${formatUtils.amountFull(balance, token.pDecimals)} ${!hideRightSymbol ? token.symbol : ''}`;
 
   return (

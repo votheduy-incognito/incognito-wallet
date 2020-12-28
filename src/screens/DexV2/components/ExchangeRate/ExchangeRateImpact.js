@@ -65,13 +65,14 @@ const ExchangeRateImpact = ({
 
 ExchangeRateImpact.propTypes = {
   inputToken: PropTypes.object.isRequired,
-  inputValue: PropTypes.number.isRequired,
+  inputValue: PropTypes.number,
   outputToken: PropTypes.object.isRequired,
   minimumAmount: PropTypes.number,
 };
 
 ExchangeRateImpact.defaultProps = {
   minimumAmount: 0,
+  inputValue: 0
 };
 
 export default memo(ExchangeRateImpact);
