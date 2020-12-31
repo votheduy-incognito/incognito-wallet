@@ -22,6 +22,7 @@ const TradeInputAmountEditor = ({
   loading,
   placeholder,
   maxValue,
+  disableChooseToken
 }) => {
 
   const navigation = useNavigation();
@@ -37,6 +38,7 @@ const TradeInputAmountEditor = ({
   );
 
   const showSelectTokenScreen = () => {
+    if (disableChooseToken) return;
     navigation.navigate(ROUTE_NAMES.TokenSelectScreen, {
       onSelectToken,
       tokens,
@@ -105,7 +107,8 @@ TradeInputAmountEditor.propTypes = {
   disabled: PropTypes.bool,
   loading: PropTypes.bool,
   maxValue: PropTypes.string,
-  placeholder: PropTypes.string
+  placeholder: PropTypes.string,
+  disableChooseToken: PropTypes.bool.isRequired
 };
 
 export default memo(TradeInputAmountEditor);

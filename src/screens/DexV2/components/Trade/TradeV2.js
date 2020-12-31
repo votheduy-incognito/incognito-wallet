@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import {
@@ -98,6 +98,13 @@ const Trade = (props) => {
     navigation.navigate(ROUTE_NAMES.TradeHistory);
   };
 
+  const disableButton = useMemo(() => {
+    return {
+      disableInput: inputBalance === null || (loadingBox && loadingBox === TRADE_LOADING_VALUE.INPUT),
+      disableOutput: inputBalance === null || (loadingBox && loadingBox === TRADE_LOADING_VALUE.OUTPUT)
+    };
+  }, [inputBalance, loadingBox]);
+
   const renderContent = () => (
     <View style={styles.wrapper}>
       <TradeInputAmount
@@ -106,7 +113,8 @@ const Trade = (props) => {
         onChange={onChangeInputText}
         token={inputToken}
         value={inputText}
-        disabled={inputBalance === null || (loadingBox && loadingBox === TRADE_LOADING_VALUE.INPUT)}
+        disabled={disableButton.disableInput}
+        disableChooseToken={disableButton.disableInput && disableButton.disableOutput}
         loading={inputBalance === null || (loadingBox && loadingBox === TRADE_LOADING_VALUE.INPUT)}
         placeholder="0"
         maxValue={inputBalanceText}
@@ -119,7 +127,8 @@ const Trade = (props) => {
         onChange={onChangeOutputText}
         token={outputToken}
         value={minimumAmount < 0 ? '0': outputText}
-        disabled={inputBalance === null || (loadingBox && loadingBox === TRADE_LOADING_VALUE.OUTPUT)}
+        disabled={disableButton.disableOutput}
+        disableChooseToken={disableButton.disableInput && disableButton.disableOutput}
         loading={loadingBox && loadingBox === TRADE_LOADING_VALUE.OUTPUT}
         placeholder="0"
       />
