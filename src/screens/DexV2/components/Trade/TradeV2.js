@@ -8,7 +8,6 @@ import {
   RoundCornerButton,
   TouchableOpacity,
 } from '@components/core';
-import withHistories from '@screens/DexV2/components/histories.enhance';
 import withAccount from '@screens/DexV2/components/account.enhance';
 import {
   withInput,
@@ -34,6 +33,7 @@ import { TRADE_LOADING_VALUE } from '@screens/DexV2/components/Trade/TradeV2/Tra
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import BtnRetryGrey from '@components/Button/BtnRetryGrey';
 import withParams from '@screens/DexV2/components/Trade/params.enhance';
+import withHistory from '@screens/DexV2/components/Trade/history.enhance';
 import styles from './style';
 
 const Trade = (props) => {
@@ -260,7 +260,7 @@ Trade.defaultProps = {
 
 export default compose(
   withAccount,
-  withHistories,
+  withHistory,
   withData,
   withInput,
   withOutput,
