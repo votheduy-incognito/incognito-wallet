@@ -18,6 +18,7 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 3,
+    textAlign: 'center',
   },
   disabled: {
     backgroundColor: COLORS.colorGreyMedium,

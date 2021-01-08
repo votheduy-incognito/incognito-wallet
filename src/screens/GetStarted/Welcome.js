@@ -9,6 +9,10 @@ import MainLayout from '@components/MainLayout';
 import storage from '@src/services/storage';
 import WelcomeNewUser from '@screens/GetStarted/WelcomeNewUser';
 import WelcomeOldUser from '@screens/GetStarted/WelcomeOldUser';
+import BackupKeys from '@screens/BackupKeys';
+import ConfirmBackUp from '@screens/GetStarted/ConfirmBackUpKeys';
+import { loadWallet as loadWallet } from '@src/services/wallet/WalletService';
+import { CONSTANT_CONFIGS } from '@src/constants';
 
 const styles = StyleSheet.create({
   flex: {
@@ -17,15 +21,37 @@ const styles = StyleSheet.create({
 });
 
 const Welcome = () => {
+  const [showBackUpKeys, setShowBackUpKeys] = useState(false);
+  const [showConfirmBackUpKeys, setShowConfirmBackUpKeys] = useState(false);
   const [isExisted, setIsExisted] = useState(false);
   const [loadingWallet, setLoadingWallet] = useState(true);
+  const [isBackUp, setIsBackUp] = useState(false);
+  const [listAccount, setListAccount] = useState([]);
   const navigation = useNavigation();
 
-  const loadWallet = useCallback(async () => {
+  const loadWalletData = useCallback(async () => {
     const data = await storage.getItem('Wallet');
 
     setIsExisted(!!data);
-    setLoadingWallet(false);
+
+    if (data) {
+      const wallet = await loadWallet(CONSTANT_CONFIGS.PASSPHRASE_WALLET_DEFAULT);
+      const accounts = await wallet.listAccount();
+
+      setListAccount(accounts);
+    }
+
+    setTimeout(() => {
+      setLoadingWallet(false);
+    }, 100);
+  }, []);
+
+  const handleShowBackUp = useCallback(() => {
+    setShowBackUpKeys(true);
+  }, []);
+
+  const handleCopy = useCallback(() => {
+    setShowConfirmBackUpKeys(true);
   }, []);
 
   const handleImport = () => {
@@ -37,19 +63,41 @@ const Welcome = () => {
   };
 
   useEffect(() => {
-    loadWallet();
+    loadWalletData();
   }, []);
 
   if (loadingWallet) {
     return <LoadingContainer />;
   }
 
+  if (showBackUpKeys && !isBackUp && !showConfirmBackUpKeys) {
+    return (
+      <BackupKeys
+        onNext={handleCopy}
+        onBack={() => setShowBackUpKeys(false)}
+        listAccount={listAccount}
+      />
+    );
+  }
+
+  const renderContent = () => {
+    if (!isBackUp && showConfirmBackUpKeys) {
+      return (
+        <ConfirmBackUp
+          onNext={() => setIsBackUp(true)}
+          onBack={() => setShowConfirmBackUpKeys(false)}
+        />
+      );
+    }
+
+    return !isExisted ?
+      <WelcomeNewUser onImport={handleImport} onCreate={handleCreate} /> :
+      <WelcomeOldUser onImport={handleImport} onCreate={handleCreate} isBackUp={isBackUp} onBackUp={handleShowBackUp} />;
+  };
+
   return (
     <MainLayout noHeader contentStyle={styles.flex}>
-      {!isExisted ?
-        <WelcomeNewUser onImport={handleImport} onCreate={handleCreate} /> :
-        <WelcomeOldUser onImport={handleImport} onCreate={handleCreate} />
-      }
+      {renderContent()}
     </MainLayout>
   );
 };

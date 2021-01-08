@@ -43,5 +43,8 @@ export default StyleSheet.create({
   },
   copyAllButton: {
     marginVertical: 50,
+    paddingVertical: 15,
+    height: 90,
+    borderRadius: 11,
   },
 });

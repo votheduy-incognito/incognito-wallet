@@ -29,6 +29,8 @@ const styles = StyleSheet.create({
   subContent: {
     marginTop: verticalScale(40 * scale),
     ...THEME.text.regularSizeMediumFontBlack,
+    textAlign: 'center',
+    lineHeight: 24,
   },
   bold: {
     ...THEME.text.boldTextStyle,
@@ -40,12 +42,32 @@ const styles = StyleSheet.create({
   },
 });
 
-const WelcomeOldUser = ({ onCreate, onImport }) => {
+const WelcomeOldUser = ({ onCreate, onImport, onBackUp, isBackUp }) => {
+  if (!isBackUp) {
+    return (
+      <View>
+        <Text style={styles.title}>Welcome back.</Text>
+        <Text style={styles.subContent}>
+          Managing your keychains just got a whole lot more convenient.
+          {'\n\n'}
+          This is a big update, so please back up your existing private keys before continuing. Make doubly sure that you will always be able to recover your funds.
+        </Text>
+        <RoundCornerButton
+          style={styles.button}
+          titleStyle={styles.buttonText}
+          onPress={onBackUp}
+          title="Back up now"
+        />
+      </View>
+    );
+  }
+
   return (
     <View>
       <Text style={styles.title}>Hello again.</Text>
       <Text style={styles.subContent}>
         Things may look a little different since the last time you visited, but don’t worry!
+        {'\n'}
         <Text style={styles.bold}> Your data is safe.</Text>
         {'\n\n'}
         Simply create a master key to continue as you were. You’ll find your old keychains in the Keychain tab.
@@ -68,6 +90,8 @@ const WelcomeOldUser = ({ onCreate, onImport }) => {
 WelcomeOldUser.propTypes = {
   onCreate: PropTypes.func.isRequired,
   onImport: PropTypes.func.isRequired,
+  onBackUp: PropTypes.func.isRequired,
+  isBackUp: PropTypes.bool.isRequired,
 };
 
 export default WelcomeOldUser;
