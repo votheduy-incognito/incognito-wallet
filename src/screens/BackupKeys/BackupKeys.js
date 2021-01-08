@@ -12,7 +12,7 @@ import style from './BackupKeys.styled';
 import withBackupKeys from './BackupKeys.enhance';
 
 const BackupKeys = (props) => {
-  const { onSaveAs, onCopyAll, backupData, getNameKey } = props;
+  const { onSaveAs, onCopyAll, backupData, getNameKey, onNext, onBack } = props;
 
   const renderAccountItem = (name, key) => {
     return (
@@ -33,9 +33,17 @@ const BackupKeys = (props) => {
     );
   };
 
+  const handleCopy = () => {
+    onCopyAll();
+
+    if (onNext) {
+      onNext();
+    }
+  };
+
   return (
     <View style={style.container}>
-      <Header title="Back up private keys" />
+      <Header title="Back up private keys" onGoBack={onBack} />
       <View style={style.wrapper}>
         <ScrollView>
           <View style={style.topGroup}>
@@ -54,8 +62,8 @@ const BackupKeys = (props) => {
             </TouchableOpacity>
             <ButtonBasic
               btnStyle={style.copyAllButton}
-              title="Copy all keys"
-              onPress={onCopyAll}
+              title={onNext ? 'Copy all keys and\n\ncontinue to new update' : 'Copy all keys'}
+              onPress={handleCopy}
             />
           </View>
         </ScrollView>
@@ -66,6 +74,8 @@ const BackupKeys = (props) => {
 
 BackupKeys.defaultProps = {
   backupData: [],
+  onNext: undefined,
+  onBack: undefined,
 };
 
 BackupKeys.propTypes = {
@@ -73,6 +83,8 @@ BackupKeys.propTypes = {
   onSaveAs: PropTypes.func.isRequired,
   onCopyAll: PropTypes.func.isRequired,
   getNameKey: PropTypes.func.isRequired,
+  onNext: PropTypes.func,
+  onBack: PropTypes.func,
 };
 
 export default withBackupKeys(BackupKeys);

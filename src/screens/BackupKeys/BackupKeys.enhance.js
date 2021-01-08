@@ -37,7 +37,7 @@ const getBackupData = (accounts) => {
     const info = [];
     if (accounts instanceof Array) {
       for (let account of accounts) {
-        info.push({ [account?.name]: account?.PrivateKey });
+        info.push({ [account?.name || account?.AccountName]: account?.PrivateKey });
       }
     }
 
@@ -50,11 +50,14 @@ const getBackupData = (accounts) => {
 };
 
 const enhance = (WrappedComponent) => (props) => {
-  const accounts = useSelector(accountSeleclor.listAccountSelector);
+  const { listAccount } = props;
+  let accounts = useSelector(accountSeleclor.listAccountSelector);
   const [state, setState] = React.useState({
     backupData: [],
     backupDataStr: '',
   });
+
+  accounts = listAccount || accounts;
 
   const { backupData, backupDataStr } = state;
 
