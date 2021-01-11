@@ -131,9 +131,19 @@ export default class VirtualNodeService {
         apiURL = `${apiURL}/${LIST_ACTION.GET_PUBLIC_KEY_MINING.key}`;
         const buildParams = LIST_ACTION.GET_PUBLIC_KEY_MINING.data;
         const response = await Util.excuteWithTimeout(APIService.getURL(METHOD.POST, apiURL, buildParams, false,false), 5);
-        const {Result=''} = response;
-        const data = Result[0]??'';
-        return _.split(data, ':')[1];
+        const { Result = [] } = response;
+        const blsKey = _.reduce(Result, (prevBLS, curBLS) => {
+          let bls = prevBLS;
+          const array = _.split(curBLS, ':');
+          if (array && array.length > 0) {
+            const prefix = array[0];
+            const suffix = array[1];
+            if (prefix === 'bls') bls = suffix;
+          }
+          return bls;
+        }, '');
+        console.debug(`${device.AccountName} bls key: ${blsKey}`);
+        return blsKey;
       }
     } catch (error) {
       console.log(TAG,'getPublicKeyMining error',error);
