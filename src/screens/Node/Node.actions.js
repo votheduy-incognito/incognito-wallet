@@ -293,10 +293,10 @@ export const actionUpdateVNodeItem = (deviceItem) => async (dispatch, getState) 
     if (productId) {
       dispatch(actionUpdateLoadedNode({[productId]: false}));
     }
-    const start     = new Date().getTime();
-    const state     = getState();
+    const start       = new Date().getTime();
+    const state       = getState();
     const listAccount = listAllMasterKeyAccounts(state);
-    const newBLSKey = await VirtualNodeService.getPublicKeyMining(deviceItem);
+    const newBLSKey   = await VirtualNodeService.getPublicKeyMining(deviceItem);
 
     const { listDevice }  = state?.node;
 
