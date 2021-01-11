@@ -214,6 +214,7 @@ export const actionUpdatePNodeItem = (productId) => async (dispatch, getState) =
     if (deviceIndex > -1 && listDevice.length > deviceIndex) {
       device = listDevice[deviceIndex];
       const deviceData = await NodeService.fetchAndSavingInfoNodeStake(device);
+      if (!deviceData) return null;
       device = Device.getInstance(deviceData);
       if (device.IsSetupViaLan) {
         const res = await NodeService.getLog(device);

@@ -299,15 +299,17 @@ export default class NodeService {
       if (!_.isEmpty(data?.ProductID) && device.product_id !== data?.ProductID) {
         device.ProductId = data?.ProductID;
       }
-
+      let newParams = {};
+      if (data) newParams = data;
       const fetchProductInfo = device.toJSON() ?? {};
       fetchProductInfo['minerInfo'] = {
         ...fetchProductInfo.minerInfo,
-        ...data
+        ...newParams
       };
       return fetchProductInfo;
     } catch (error) {
-      console.log(TAG, 'fetchAndSavingInfoNodeStake error = ', error);
+      console.debug(TAG, 'fetchAndSavingInfoNodeStake error = ', error);
+      return device.toJSON() ?? {};
     }
   };
 
