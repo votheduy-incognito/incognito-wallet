@@ -18,7 +18,7 @@ import APIService from '@services/api/miner/APIService';
 import Util from '@utils/Util';
 import NetInfo from '@react-native-community/netinfo';
 import { CustomError } from '@services/exception';
-import { PASS_HOSPOT } from 'react-native-dotenv';
+import { NODE_PASSWORD, NODE_USER_NAME, PASS_HOSPOT } from 'react-native-dotenv';
 import LocalDatabase from '@utils/LocalDatabase';
 import { DEVICES } from '@src/constants/miner';
 import { CONSTANT_MINER } from '@src/constants';
@@ -29,6 +29,8 @@ import LogManager from '@src/services/LogManager';
 import ModalConnectWifi from '@src/components/Modal/ModalConnection/ModalConnectWifi';
 import { ScreenHeight, ScreenWidth } from '@src/utils/devices';
 import theme from '@src/styles/theme';
+import SSHClient from 'react-native-ssh-sftp';
+import { SSHCommandClearTrashDataNode } from '@screens/Node/Node.utils';
 import styles from '../../styles';
 
 export const TAG = 'SetupWifi';
@@ -490,6 +492,28 @@ class WifiSetup extends PureComponent {
     return verifyNewCode;
   };
 
+  // Clear trash data in Node by ssh
+  clearTrashDataNode = async () => {
+    try {
+      const host = '10.42.0.1';
+      const SSH = new SSHClient(host, 22, NODE_USER_NAME, NODE_PASSWORD, async (error) => {
+        if (error) {
+          console.debug('CONNECT SSH IP ERROR: ', error);
+          return; // Cant Connect SSH NODE IP
+        }
+
+        const command = SSHCommandClearTrashDataNode();
+        SSH.execute(command, (error, output) => {
+          if (error) {
+            console.debug('WRITE SSH ERROR: ', error, command);
+            return SSH.disconnect();
+          }
+          console.debug('WRITE SSH SUCCESS WITH OUTPUT: ', output);
+        });
+      });
+    } catch (e) {/*Ignored error*/}
+  };
+
   // Send ssid and password wifi for Node
   // Node will automatically connect if received
   setupAndConnectWifiForNode = async () => {
@@ -502,6 +526,7 @@ class WifiSetup extends PureComponent {
 
       // Send data/info to node
       await this.sendZMQ();
+      await this.clearTrashDataNode();
     } catch (error) {
       this.setState({ loading: false });
       await APIService.trackLog({ action: funcName, message: `Connect HOTSPOT FAILED = ${error?.message || ''}` });
