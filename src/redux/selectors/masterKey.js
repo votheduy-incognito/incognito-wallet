@@ -4,12 +4,15 @@ const masterKeyReducerSelector = (state) => state.masterKey;
 
 export const masterlessKeyChainSelector = createSelector(
   masterKeyReducerSelector,
-  (masterKey) => masterKey.list.find(item => item.name.toLowerCase() === 'unlinked'),
+  (masterKey) => masterKey.list.find(item =>
+    item.name.toLowerCase() === 'unlinked' ||
+    item.name.toLowerCase() === 'masterless'
+  ),
 );
 
 export const noMasterLessSelector = createSelector(
   masterKeyReducerSelector,
-  (masterKey) => masterKey.list.filter(item => item.name.toLowerCase() !== 'unlinked'),
+  (masterKey) => masterKey.list.filter(item => item.name.toLowerCase() !== 'masterless'),
 );
 
 export const masterKeysSelector = createSelector(

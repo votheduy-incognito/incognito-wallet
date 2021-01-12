@@ -11,6 +11,10 @@ class MasterKeyModel {
     this.mnemonic = data?.passphrase;
     this.isActive = !!data?.isActive;
     this.deletedAccountIds = data?.deletedAccountIds || [];
+
+    if (this.name.toLowerCase() === 'unlinked') {
+      this.name = 'Masterless';
+    }
   }
 
   static getStorageName(name) {
