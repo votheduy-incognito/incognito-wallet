@@ -23,7 +23,7 @@ const DEFAULT_MASTER_KEY = new MasterKeyModel({
 });
 
 const MASTERLESS = new MasterKeyModel({
-  name: 'Unlinked',
+  name: 'Masterless',
   isActive: false,
 });
 
@@ -40,14 +40,14 @@ const migrateData = async () => {
   const data = await storage.getItem('Wallet');
 
   if (data) {
-    await storage.setItem(`$${MasterKeyModel.network}-master-unlinked`, data);
+    await storage.setItem(`$${MasterKeyModel.network}-master-masterless`, data);
     // await storage.removeItem('Wallet');
     isMigratedData = true;
   }
 
   const dexHistories = await LocalDatabase.getOldDexHistory();
   if (dexHistories.length > 0) {
-    await storage.setItem(`$${MasterKeyModel.network}-master-unlinked-dex-histories`, JSON.stringify(dexHistories));
+    await storage.setItem(`$${MasterKeyModel.network}-master-masterless-dex-histories`, JSON.stringify(dexHistories));
     isMigratedData = true;
   }
 
@@ -140,7 +140,7 @@ export const loadAllMasterKeys = () => async (dispatch) => {
   for (const key of masterKeyList) {
     await key.loadWallet();
 
-    if (key.name === 'Unlinked') {
+    if (key.name.toLowerCase() === 'masterless') {
       continue;
     }
 
@@ -325,7 +325,7 @@ export const removeMasterKey = (name) => async(dispatch, getState) => {
   const newList = _.remove([...list], item => item.name !== name);
   const activeItem = newList.find(item => item.isActive);
   if (!activeItem) {
-    const firstItem = newList.filter(item => item.name !== 'Unlinked')[0];
+    const firstItem = newList.filter(item => item.name.toLowerCase() !== 'masterless')[0];
     await dispatch(switchMasterKey(firstItem.name));
   }
 
