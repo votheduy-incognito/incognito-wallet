@@ -61,7 +61,7 @@ const BackupKeys = (props) => {
               </View>
             </TouchableOpacity>
             <ButtonBasic
-              btnStyle={style.copyAllButton}
+              btnStyle={[style.copyAllButton, onNext && style.copyNext]}
               title={onNext ? 'Copy all keys and\n\ncontinue to new update' : 'Copy all keys'}
               onPress={handleCopy}
             />
