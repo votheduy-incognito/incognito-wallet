@@ -49,6 +49,7 @@ export const Hook = (props) => {
     handleRetryHistoryStatus,
     fetchingHistory,
     handleOpenLink = null,
+    moreLines = false
   } = props;
   const shouldShowMsg = !!message;
   const [state, setState] = React.useState({
@@ -72,7 +73,7 @@ export const Hook = (props) => {
 
   const renderComponent = () => (
     <>
-      <View style={styled.rowText}>
+      <View style={[styled.rowText, !moreLines && { height: 30 }]}>
         <Text
           style={[styled.labelText]}
           numberOfLines={1}
@@ -87,7 +88,7 @@ export const Hook = (props) => {
               shouldShowMsg || showReload ? {} : { flex: 1 },
               valueTextStyle,
             ]}
-            numberOfLines={1}
+            numberOfLines={moreLines ? 0 : 1}
             ellipsizeMode="middle"
           >
             {valueText}
@@ -271,6 +272,7 @@ const TxHistoryDetail = (props) => {
       label: 'Memo',
       valueText: history?.memo,
       copyable: true,
+      moreLines: true,
       disabled: !history?.memo,
     },
     {
