@@ -603,7 +603,7 @@ export const getTradingFee = (priority, priorityList) => {
 };
 
 
-export const isValidString = (text) => (
+export const validInput = (text) => (
   !isEmpty(text) && text !== '0'
 );
 

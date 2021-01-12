@@ -7,10 +7,11 @@ const enhanceSwap = WrappedComp => (props) => {
     inputToken,
     outputToken,
     inputBalance,
+    disableButton
   } = props;
 
   const swapTokens = () => {
-    if (!inputToken || !outputToken || inputBalance === null) {
+    if (!inputToken || !outputToken || inputBalance === null || disableButton.disableInput || disableButton.disableOutput) {
       return;
     }
 
