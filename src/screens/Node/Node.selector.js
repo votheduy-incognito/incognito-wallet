@@ -68,7 +68,7 @@ export const checkLoadingNodeByProductId = createSelector(
   loadedNodesSelector,
   (node, loadedNodes) =>
     memoize((productId) => {
-      const nodeIsLoading = !loadedNodes[productId];
+      const nodeIsLoading = productId && !loadedNodes[productId];
       return nodeIsLoading || node?.isFetching || node?.isRefreshing;
     }),
 );
