@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { retryExpiredDeposit } from '@src/services/api/history';
 import { ExHandler } from '@src/services/exception';
 import { Toast, Button } from '@src/components/core';
-import Header from '@src/components/Header';
 import routeNames from '@src/router/routeNames';
 import withTxHistoryDetail from './TxHistoryDetail.enhance';
 import styles from './styles';

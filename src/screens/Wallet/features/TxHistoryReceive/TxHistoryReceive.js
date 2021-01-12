@@ -50,6 +50,7 @@ const TxHistoryReceive = (props) => {
       label: 'Memo',
       valueText: history?.memo,
       copyable: true,
+      moreLines: true,
       disabled: !history?.memo,
     },
     {

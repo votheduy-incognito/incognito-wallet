@@ -12,7 +12,6 @@ export default StyleSheet.create({
     alignItems: 'center',
     marginTop: 15,
     position: 'relative',
-    height: 30,
   },
   icon: {
     fontSize: 100,
@@ -152,7 +151,6 @@ export default StyleSheet.create({
     flex: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    height: 34,
   },
   btnRetry: {
     marginLeft: 10,
