@@ -1,5 +1,4 @@
-import { createDefaultAccounts, initWallet, loadWallet } from '@services/wallet/WalletService';
-import { CONSTANT_CONFIGS } from '@src/constants';
+import { initWallet, loadWallet } from '@services/wallet/WalletService';
 import storage from '@services/storage';
 import { getPassphrase } from '@services/wallet/passwordService';
 
@@ -11,10 +10,6 @@ class MasterKeyModel {
     this.mnemonic = data?.passphrase;
     this.isActive = !!data?.isActive;
     this.deletedAccountIds = data?.deletedAccountIds || [];
-
-    if (this.name.toLowerCase() === 'unlinked') {
-      this.name = 'Masterless';
-    }
   }
 
   static getStorageName(name) {
@@ -47,6 +42,13 @@ class MasterKeyModel {
     this.mnemonic = wallet.Mnemonic;
     this.wallet = wallet;
     wallet.deletedAccountIds = this.deletedAccountIds || [];
+
+    if (this.name.toLowerCase() === 'unlinked') {
+      this.name = 'Masterless';
+      wallet.Name = this.getStorageName();
+
+      wallet.save();
+    }
 
     wallet.Name = this.getStorageName();
     return wallet;
