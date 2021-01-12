@@ -70,6 +70,7 @@ const Trade = (props) => {
     segmentIndex,
     onChangeSegment,
     onRetryTradeInfo,
+    disableButton,
   } = props;
 
   const navigation = useNavigation();
@@ -106,7 +107,8 @@ const Trade = (props) => {
         onChange={onChangeInputText}
         token={inputToken}
         value={inputText}
-        disabled={inputBalance === null || (loadingBox && loadingBox === TRADE_LOADING_VALUE.INPUT)}
+        disabled={disableButton.disableInput}
+        disableChooseToken={disableButton.disableInput || disableButton.disableOutput}
         loading={inputBalance === null || (loadingBox && loadingBox === TRADE_LOADING_VALUE.INPUT)}
         placeholder="0"
         maxValue={inputBalanceText}
@@ -119,7 +121,8 @@ const Trade = (props) => {
         onChange={onChangeOutputText}
         token={outputToken}
         value={minimumAmount < 0 ? '0': outputText}
-        disabled={inputBalance === null || (loadingBox && loadingBox === TRADE_LOADING_VALUE.OUTPUT)}
+        disabled={disableButton.disableOutput}
+        disableChooseToken={disableButton.disableInput || disableButton.disableOutput}
         loading={loadingBox && loadingBox === TRADE_LOADING_VALUE.OUTPUT}
         placeholder="0"
       />
@@ -234,6 +237,7 @@ Trade.propTypes = {
   segmentIndex: PropTypes.number.isRequired,
   onChangeSegment: PropTypes.func.isRequired,
   onRetryTradeInfo: PropTypes.func.isRequired,
+  disableButton: PropTypes.object,
 };
 
 Trade.defaultProps = {
@@ -256,6 +260,7 @@ Trade.defaultProps = {
   isErc20: false,
   inputBalanceText: '',
   isSimple: true,
+  disableButton: {}
 };
 
 export default compose(
