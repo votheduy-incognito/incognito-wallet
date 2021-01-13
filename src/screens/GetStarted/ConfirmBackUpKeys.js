@@ -7,19 +7,14 @@ import {
   Text,
   View,
 } from '@src/components/core';
-import { COLORS, THEME, UTILS } from '@src/styles';
-import { verticalScale } from 'react-native-size-matters';
+import { COLORS, THEME } from '@src/styles';
 import checkedIcon from '@assets/images/icons/checked-checkbox.png';
 import uncheckedIcon from '@assets/images/icons/unchecked-checkbox.png';
 import CheckBox from '@components/core/CheckBox/Component';
-import { Header } from '@src/components';
 import MainLayout from '@components/MainLayout/index';
-
-const scale = UTILS.deviceHeight() < 550 ? 0.4 : 1;
 
 const styles = StyleSheet.create({
   title: {
-    marginTop: 42,
     ...THEME.text.boldTextStyleSuperMedium,
     fontSize: 20,
   },
@@ -32,7 +27,7 @@ const styles = StyleSheet.create({
   },
   subContent: {
     marginTop: 15,
-    ...THEME.text.regularSizeMediumFontBlack,
+    ...THEME.text.mediumTextStyle,
     lineHeight: 24,
   },
   checkboxWrapper: {
@@ -56,10 +51,11 @@ const ConfirmBackUp = ({ onNext, onBack }) => {
   const [checked, setChecked] = useState(false);
 
   return (
-    <View>
-      <Header title="Confirm" onGoBack={onBack} />
-      <Text style={styles.title}>All done?</Text>
+    <MainLayout header="Confirm" onGoBack={onBack}>
+      <Text style={styles.title}>Private keys copied to clipboard.</Text>
       <Text style={styles.subContent}>
+        Now, record them securely. Keep them secret – keep them safe!
+        {'\n\n'}
         If you lose access to your existing private keys, you lose access to your funds.
       </Text>
       <View style={styles.checkboxWrapper}>
@@ -81,7 +77,7 @@ const ConfirmBackUp = ({ onNext, onBack }) => {
         disabled={!checked}
         title="Proceed update"
       />
-    </View>
+    </MainLayout>
   );
 };
 
