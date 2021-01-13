@@ -3,7 +3,9 @@ import format from '@utils/format';
 import { PRV_ID } from '@screens/Dex/constants';
 import memoize from 'memoize-one';
 import { COINS } from '@src/constants';
-import {getTradingFee} from '@screens/DexV2/components/Trade/TradeV2/Trade.utils';
+import { getTradingFee } from '@screens/DexV2/components/Trade/TradeV2/Trade.utils';
+import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
+import BigNumber from 'bignumber.js';
 
 export const tradeSelector = createSelector(
   (state) => state.trade,
@@ -77,5 +79,35 @@ export const totalFeeSelector = createSelector(
         pDexFee += getTradingFee(priority, priorityList);
       }
       return format.amount(pDexFee, feeToken.pDecimals);
+    })
+);
+
+export const maxPriceSelector = createSelector(
+  getPrivacyDataByTokenID,
+  (getFn) =>
+    memoize((inputId, outputId, inputValue, outputValue) => {
+      const inputToken  = getFn(inputId);
+      const outputToken = getFn(outputId);
+
+      const minRate = new BigNumber(inputValue)
+        .dividedBy(Math.pow(10, inputToken?.pDecimals || 0))
+        .dividedBy(new BigNumber(outputValue)
+          .dividedBy(Math.pow(10, outputToken?.pDecimals)))
+        .toNumber();
+
+      let maxPrice = '';
+
+      if (isNaN(minRate)) return maxPrice;
+
+      const getSymbol = (token) => token?.externalSymbol || token?.symbol;
+
+      const suffix = `${getSymbol(inputToken)} / ${getSymbol(outputToken)}`;
+
+      if (minRate >= 1) {
+        maxPrice = `${format.amount(minRate, 0, true)} ${suffix}`;
+      } else {
+        maxPrice = `${format.toFixed(minRate, 9)} ${suffix}`;
+      }
+      return maxPrice;
     })
 );
