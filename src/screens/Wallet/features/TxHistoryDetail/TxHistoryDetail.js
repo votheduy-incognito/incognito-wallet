@@ -291,6 +291,11 @@ const TxHistoryDetail = (props) => {
     Clipboard.setString(JSON.stringify(data));
     Toast.showSuccess('Copied');
   };
+  React.useEffect(() => {
+    if (fromApi && historyId && onPullRefresh && data?.history?.currencyType) {
+      onPullRefresh(historyId, data?.history?.currencyType);
+    }
+  }, []);
   return (
     <ScrollView
       refreshControl={
