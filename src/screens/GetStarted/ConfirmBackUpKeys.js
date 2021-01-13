@@ -45,6 +45,10 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     marginTop: 20,
   },
+  bold: {
+    ...THEME.text.boldTextStyleMedium,
+    lineHeight: 24,
+  },
 });
 
 const ConfirmBackUp = ({ onNext, onBack }) => {
@@ -54,7 +58,7 @@ const ConfirmBackUp = ({ onNext, onBack }) => {
     <MainLayout header="Confirm" onGoBack={onBack}>
       <Text style={styles.title}>Private keys copied to clipboard.</Text>
       <Text style={styles.subContent}>
-        Now, record them securely. Keep them secret – keep them safe!
+        Now, record them <Text style={styles.bold}>securely.</Text> Keep them secret – keep them safe!
         {'\n\n'}
         If you lose access to your existing private keys, you lose access to your funds.
       </Text>
