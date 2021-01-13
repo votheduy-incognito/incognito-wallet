@@ -12,6 +12,8 @@ import {
 } from '@screens/Wallet/features/TxHistoryDetail/TxHistoruDetail.builder';
 import Toast from '@components/core/Toast';
 import { ExHandler } from '@services/exception';
+import { getSignPublicKey } from '@services/gomobile';
+import { defaultAccount } from '@src/redux/selectors/account';
 
 export const actionRefreshing = () => ({
   type: ACTION_REFRESHING,
@@ -29,19 +31,24 @@ export const actionRefreshFail = () => ({
 export const actionRefreshHistoryDetail = (txID, currencyType) => async (dispatch, getState) => {
   let data = null;
   const state = getState();
-  const { isRefreshing } = getState().txHistoryDetail;
+  const { isRefreshing } = state.txHistoryDetail;
   if (isRefreshing) return;
   try {
+    const account = defaultAccount(state);
+    const signPublicKeyEncode = await getSignPublicKey(account.PrivateKey);
     await dispatch(actionRefreshing());
-    data = await apiRefreshHistory(txID, currencyType);
+    data = await apiRefreshHistory(txID, currencyType, signPublicKeyEncode);
   } catch (error) {
     await dispatch(actionRefreshFail());
     Toast.showError(new ExHandler(error).getMessage());
   } finally {
-    const historyDetail = combineHistoryApi(state, data);
-    await dispatch(actionRefreshed({ historyDetail }));
+    if (data) {
+      const historyDetail = combineHistoryApi(state, data);
+      await dispatch(actionRefreshed({ historyDetail }));
+    }
   }
 };
+
 
 /*
 * GET HISTORY DETAIL WHEN OPEN SCREEN txHistoryDetail

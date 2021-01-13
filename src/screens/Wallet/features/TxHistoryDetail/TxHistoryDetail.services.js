@@ -1,12 +1,13 @@
 import http from '@services/http';
 
-export const apiRefreshHistory = async (txID, currencyType) => {
+export const apiRefreshHistory = async (txID, currencyType, signPublicKeyEncode) => {
   return new Promise((resolve, reject) => {
     return http
       .get(`eta/history/detail/${txID}`, {
         params: {
           ID: txID,
-          CurrencyType: currencyType
+          CurrencyType: currencyType,
+          SignPublicKeyEncode: signPublicKeyEncode,
         },
       })
       .then((res) => {
