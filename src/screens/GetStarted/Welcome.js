@@ -80,16 +80,16 @@ const Welcome = () => {
     );
   }
 
-  const renderContent = () => {
-    if (!isBackUp && showConfirmBackUpKeys) {
-      return (
-        <ConfirmBackUp
-          onNext={() => setIsBackUp(true)}
-          onBack={() => setShowConfirmBackUpKeys(false)}
-        />
-      );
-    }
+  if (!isBackUp && showConfirmBackUpKeys) {
+    return (
+      <ConfirmBackUp
+        onNext={() => setIsBackUp(true)}
+        onBack={() => setShowConfirmBackUpKeys(false)}
+      />
+    );
+  }
 
+  const renderContent = () => {
     return !isExisted ?
       <WelcomeNewUser onImport={handleImport} onCreate={handleCreate} /> :
       <WelcomeOldUser onImport={handleImport} onCreate={handleCreate} isBackUp={isBackUp} onBackUp={handleShowBackUp} />;
