@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
   subContent: {
     marginTop: 15,
-    ...THEME.text.mediumTextStyle,
+    ...THEME.text.mediumText,
     lineHeight: 24,
   },
   checkboxWrapper: {
