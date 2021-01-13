@@ -156,6 +156,7 @@ const Trade = (props) => {
       <View style={styles.wrapperInfo}>
         { isSimple ? (
           <TradeInfoSimple
+            showPriceImpact={false}
             inputBalance={inputBalance}
           />
         ) : (

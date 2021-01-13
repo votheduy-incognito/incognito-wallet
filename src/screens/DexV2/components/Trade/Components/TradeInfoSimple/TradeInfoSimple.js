@@ -9,7 +9,7 @@ import MultiplePoolSize from '@screens/DexV2/components/Trade/Components/Multipl
 import { useSelector } from 'react-redux';
 import { tradeSelector } from '@screens/DexV2/components/Trade/TradeV2/Trade.selector';
 
-const TradeInfoSimple = ({ inputBalance }) => {
+const TradeInfoSimple = ({ inputBalance, showPriceImpact }) => {
   const {
     inputToken,
     inputValue,
@@ -36,12 +36,14 @@ const TradeInfoSimple = ({ inputBalance }) => {
         inputToken={inputToken}
         outputToken={outputToken}
       />
-      <PriceImpact
-        inputValue={inputValue}
-        minimumAmount={minimumAmount}
-        inputToken={inputToken}
-        outputToken={outputToken}
-      />
+      {showPriceImpact && (
+        <PriceImpact
+          inputValue={inputValue}
+          minimumAmount={minimumAmount}
+          inputToken={inputToken}
+          outputToken={outputToken}
+        />
+      )}
       <PDexFee
         feeToken={feeToken}
         leftStyle={styles.textLeft}
@@ -52,11 +54,13 @@ const TradeInfoSimple = ({ inputBalance }) => {
 };
 
 TradeInfoSimple.propTypes = {
+  showPriceImpact: PropTypes.bool,
   inputBalance: PropTypes.number,
 };
 
 TradeInfoSimple.defaultProps = {
   inputBalance: null,
+  showPriceImpact: true
 };
 
 export default memo(TradeInfoSimple);
