@@ -4,6 +4,7 @@ import storage from '@src/services/storage';
 import { CONSTANT_KEYS } from '@src/constants';
 import { getTokenInfo } from '@services/api/token';
 import { PRIORITY_LIST } from '@screens/Dex/constants';
+// eslint-disable-next-line import/no-cycle
 import { saveWallet, updateStatusHistory } from './WalletService';
 
 export const PRV = {
@@ -30,6 +31,7 @@ export default class Token {
     feePToken = 0,
     info = '',
     actionLogEvent = null,
+    txHandler,
   ) {
     await Wallet.resetProgressTx();
     const { TokenSymbol, TokenName, TokenAmount } = submitParam;
@@ -102,6 +104,9 @@ export default class Token {
         hasPrivacyForNativeToken,
         hasPrivacyForPToken,
         strInfo,
+        false,
+        false,
+        txHandler,
       );
 
       await saveWallet(wallet);
@@ -124,6 +129,7 @@ export default class Token {
     wallet,
     paymentInfos = [],
     info = '',
+    txHandler,
   ) {
     await Wallet.resetProgressTx();
     // get index account by name
@@ -150,6 +156,10 @@ export default class Token {
         feePToken,
         remoteAddress,
         info,
+        undefined,
+        undefined,
+        undefined,
+        txHandler,
       );
       await saveWallet(wallet);
     } catch (e) {

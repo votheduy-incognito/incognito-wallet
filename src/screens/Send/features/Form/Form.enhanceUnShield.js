@@ -80,7 +80,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const account = useSelector(defaultAccountSelector);
   const wallet = useSelector(walletSelector);
-  const handleBurningToken = async (payload = {}) => {
+  const handleBurningToken = async (payload = {}, txHandler) => {
     try {
       const {
         originalAmount,
@@ -124,6 +124,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         wallet,
         paymentInfos,
         info,
+        txHandler,
       );
       if (res.txId) {
         return { ...res, burningTxId: res?.txId };
@@ -156,15 +157,21 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         fast2x,
       };
       if (!userFeesData?.ID) throw new Error('Missing id withdraw session');
-      const tx = await handleBurningToken(payload);
-      const { burningTxId } = tx;
-      const _tx = { ...data, burningTxId };
-      await dispatch(
-        actionAddStorageDataDecentralized({
-          keySave,
-          tx: _tx,
-        }),
-      );
+
+      let _tx;
+
+      const txHandler = async (txId) => {
+        _tx = { ...data, burningTxId: txId };
+        await dispatch(
+          actionAddStorageDataDecentralized({
+            keySave,
+            tx: _tx,
+          }),
+        );
+      };
+
+      const tx = await handleBurningToken(payload, txHandler);
+
       if (toggleDecentralized) {
         await setState({
           ...state,
@@ -176,7 +183,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       await dispatch(
         actionRemoveStorageDataDecentralized({
           keySave,
-          burningTxId,
+          burningTxId: _tx.burningTxId,
         }),
       );
       return tx;
@@ -210,16 +217,16 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         return Toast.showError(MESSAGES.PENDING_TRANSACTIONS);
       }
 
-      const tx = await handleSendToken({ ...payload, tempAddress });
+      let txUpdatePTokenFee;
 
-      if (tx) {
-        const txUpdatePTokenFee = {
+      const txHandler = async (txId) => {
+        txUpdatePTokenFee = {
           fee: originalFee,
           paymentAddress: tempAddress,
           userFeesData,
           isUsedPRVFee,
           fast2x,
-          txId: tx?.txId,
+          txId: txId,
         };
         await dispatch(
           actionAddStorageDataCentralized({
@@ -227,6 +234,12 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
             tx: txUpdatePTokenFee,
           }),
         );
+      };
+
+      const tx = await handleSendToken({ ...payload, tempAddress }, txHandler);
+
+      if (tx) {
+
         if (toggleCentralized) {
           await setState({
             ...state,
@@ -248,7 +261,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     }
   };
 
-  const handleSendToken = async (payload = {}) => {
+  const handleSendToken = async (payload = {}, txHandler) => {
     try {
       const {
         tempAddress,
@@ -308,6 +321,8 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         isUsedPRVFee ? paymentInfos : null,
         isUsedPRVFee ? 0 : originalFee,
         info,
+        false,
+        txHandler,
       );
 
       if (res.txId) {
