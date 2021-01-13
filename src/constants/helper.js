@@ -20,7 +20,7 @@ const HELPER_CONSTANT = {
     }]
   },
   PRICE_IMPACT: {
-    title: 'Max price impact',
+    title: 'Price difference',
     contents: [{
       content: 'This is the percentage difference between external market prices and your pDEX trade price. You may experience either positive or negative price impacts.\n\n' +
         '+1% max price impact means you’ll gain at least 1%\n\n' +
