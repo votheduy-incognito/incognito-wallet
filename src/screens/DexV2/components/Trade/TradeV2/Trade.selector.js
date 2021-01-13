@@ -90,9 +90,7 @@ export const maxPriceSelector = createSelector(
       const outputToken = getFn(outputId);
 
       const minRate = new BigNumber(inputValue)
-        .dividedBy(Math.pow(10, inputToken?.pDecimals || 0))
-        .dividedBy(new BigNumber(outputValue)
-          .dividedBy(Math.pow(10, outputToken?.pDecimals)))
+        .dividedBy(new BigNumber(outputValue))
         .toNumber();
 
       let maxPrice = '';
