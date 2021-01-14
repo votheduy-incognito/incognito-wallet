@@ -1,15 +1,13 @@
 /* eslint-disable import/no-cycle */
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { ExHandler } from '@src/services/exception';
-import { debounce } from 'lodash';
+import { useKeyboard } from '@src/components/UseEffect/useKeyboard';
 import { actionFetchFee } from './EstimateFee.actions';
-import { feeDataSelector } from './EstimateFee.selector';
 
 const enhance = (WrappedComp) => (props) => {
-  const { screen, isFetching } = useSelector(feeDataSelector);
   const {
     amount,
     address,
@@ -18,17 +16,17 @@ const enhance = (WrappedComp) => (props) => {
     isIncognitoAddress,
   } = props;
   const dispatch = useDispatch();
+  const [isKeyboardVisible] = useKeyboard();
   const handleChangeForm = async (
     address,
     amount,
-    screen,
     memo,
-    isFetching,
     isExternalAddress,
     isIncognitoAddress,
+    isKeyboardVisible,
   ) => {
     try {
-      if (!amount || !address || isFetching) {
+      if (!amount || !address || isKeyboardVisible) {
         return;
       }
       let screen = 'Send';
@@ -50,19 +48,25 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
 
-  const _handleChangeForm = React.useRef(debounce(handleChangeForm, 400));
+  const _handleChangeForm = React.useRef(handleChangeForm);
 
   React.useEffect(() => {
     _handleChangeForm.current(
       address,
       amount,
-      screen,
       memo,
-      isFetching,
       isExternalAddress,
       isIncognitoAddress,
+      isKeyboardVisible,
     );
-  }, [address, amount, screen, memo, isExternalAddress, isIncognitoAddress]);
+  }, [
+    address,
+    amount,
+    memo,
+    isExternalAddress,
+    isIncognitoAddress,
+    isKeyboardVisible,
+  ]);
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props }} />

@@ -7,7 +7,6 @@ import format from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
 import floor from 'lodash/floor';
 import { getMinMaxWithdrawAmount } from '@src/services/api/misc';
-// import walletValidator from 'wallet-address-validator';
 import { trim } from 'lodash';
 import {
   estimateUserFees,
@@ -36,7 +35,6 @@ import {
 import {
   apiGetEstimateFeeFromChain,
   apiCheckValidAddress,
-  // apiCheckIfValidAddressETH,
 } from './EstimateFee.services';
 import { estimateFeeSelector, feeDataSelector } from './EstimateFee.selector';
 import { formName } from './EstimateFee.input';
@@ -142,13 +140,12 @@ export const actionFetchFee = ({ amount, address, screen, memo }) => async (
   );
   const _originalAmount = Number(originalAmount);
   try {
-    const { isFetching, init } = estimateFeeSelector(state);
+    const { init } = estimateFeeSelector(state);
     if (
       !init ||
       !amount ||
       !address ||
       !selectedPrivacy?.tokenId ||
-      isFetching ||
       _originalAmount === 0
     ) {
       return;
@@ -529,8 +526,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
   const originalAmount = convert.toOriginalAmount(requestedAmount, pDecimals);
   userFeesData = { ...userFees?.data };
   let _error;
-  const { isFetching } = userFees;
-  if (isFetching || !isUnShield) {
+  if (!isUnShield) {
     return;
   }
   try {

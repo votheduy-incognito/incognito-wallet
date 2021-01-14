@@ -68,7 +68,9 @@ const SendForm = (props) => {
     textLoadingTx,
     validateMemo,
   } = props;
-  const { titleBtnSubmit, isUnShield } = useSelector(feeDataSelector);
+  const { titleBtnSubmit, isUnShield, editableInput } = useSelector(
+    feeDataSelector,
+  );
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const [onCentralizedPress, isCentralizedDisabled] = useFeatureConfig(
     'centralized',
@@ -96,6 +98,9 @@ const SendForm = (props) => {
               placeholder="Add a note (optional)"
               maxLength={125}
               validate={validateMemo}
+              componentProps={{
+                editable: editableInput,
+              }}
             />
             <Text style={styled.warningText}>
               For withdrawals to wallets on exchanges (e.g. Binance, etc.),
@@ -113,6 +118,9 @@ const SendForm = (props) => {
         placeholder="Add a note (optional)"
         label="Memo"
         maxLength={500}
+        componentProps={{
+          editable: editableInput,
+        }}
         {...generateTestId(SEND.MEMO_INPUT)}
       />
     );
@@ -147,6 +155,7 @@ const SendForm = (props) => {
                   style: {
                     marginTop: 22,
                   },
+                  editable: editableInput,
                 }}
                 validate={validateAmount}
                 {...generateTestId(SEND.AMOUNT_INPUT)}
@@ -162,6 +171,9 @@ const SendForm = (props) => {
                 showNavAddrBook
                 onOpenAddressBook={onShowFrequentReceivers}
                 shouldStandardized
+                componentProps={{
+                  editable: editableInput,
+                }}
                 {...generateTestId(SEND.ADDRESS_INPUT)}
               />
               <EstimateFee
