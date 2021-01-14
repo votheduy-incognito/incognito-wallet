@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import { updateHistoryStatus } from '@src/services/wallet/WalletService';
 import {
+  accountSeleclor,
   selectedPrivacySeleclor,
   tokenSeleclor
 } from '@src/redux/selectors';
@@ -37,6 +38,7 @@ const enhance = (WrappedComp) => (props) => {
   const dispatch        = useDispatch();
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
   const token           = useSelector(selectedPrivacySeleclor.selectedPrivacyByFollowedSelector);
+  const signPublicKeyEncode = useSelector(accountSeleclor.signPublicKeyEncodeSelector);
   const {
     isFetching,
     isFetched,
@@ -107,7 +109,8 @@ const enhance = (WrappedComp) => (props) => {
               onRetryHistoryStatus,
               showReload: historyData && historyData.showReload,
               fetchingHistory: isFetching,
-              historyId
+              historyId,
+              signPublicKeyEncode,
             }}
             />
           )

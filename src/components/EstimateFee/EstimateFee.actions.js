@@ -512,6 +512,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
   const state = getState();
   const { address: paymentAddress, memo, amount: requestedAmount } = payload;
   const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
+  const signPublicKeyEncode = accountSeleclor.signPublicKeyEncodeSelector(state);
   const {
     tokenId,
     contractId,
@@ -544,6 +545,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
         isErc20Token: isErc20Token,
         externalSymbol: externalSymbol,
         isUsedPRVFee,
+        signPublicKeyEncode
       };
       userFeesData = await estimateUserFees(data);
     } else {

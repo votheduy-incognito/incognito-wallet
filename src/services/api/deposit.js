@@ -1,7 +1,7 @@
 import http from '@src/services/http';
 import { CONSTANT_COMMONS } from '@src/constants';
 
-export const genCentralizedDepositAddress = ({ paymentAddress, walletAddress, tokenId, currencyType }) => {
+export const genCentralizedDepositAddress = ({ paymentAddress, walletAddress, tokenId, currencyType, signPublicKeyEncode }) => {
   if (!paymentAddress) return throw new Error('Missing paymentAddress');
   if (!walletAddress) return throw new Error('Missing walletAddress');
   if (!tokenId) return throw new Error('Missing tokenId');
@@ -12,17 +12,23 @@ export const genCentralizedDepositAddress = ({ paymentAddress, walletAddress, to
   //   return throw new Error('Invalid amount');
   // }
 
-  return http.post('ota/generate', {
+  let body = {
     CurrencyType: currencyType,
     AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.DEPOSIT,
     RequestedAmount: undefined,
     PaymentAddress: paymentAddress,
     WalletAddress: walletAddress ?? paymentAddress,
     PrivacyTokenAddress: tokenId,
-  }).then(res => res?.Address);
+  };
+
+  if (signPublicKeyEncode) {
+    body.SignPublicKeyEncode = signPublicKeyEncode;
+  }
+
+  return http.post('ota/generate', body).then(res => res?.Address);
 };
 
-export const genETHDepositAddress = ({ paymentAddress, walletAddress, tokenId, currencyType }) => {
+export const genETHDepositAddress = ({ paymentAddress, walletAddress, tokenId, currencyType, signPublicKeyEncode }) => {
   if (!paymentAddress) return throw new Error('Missing paymentAddress');
   if (!walletAddress) return throw new Error('Missing walletAddress');
   if (!tokenId) return throw new Error('Missing tokenId');
@@ -33,18 +39,23 @@ export const genETHDepositAddress = ({ paymentAddress, walletAddress, tokenId, c
   //   return throw new Error('Invalid amount');
   // }
 
-  return http.post('eta/generate', {
+  let body = {
     CurrencyType: currencyType,
     AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.DEPOSIT,
     RequestedAmount: undefined,
     PaymentAddress: paymentAddress,
     WalletAddress: walletAddress ?? paymentAddress,
     Erc20TokenAddress: '',
-    PrivacyTokenAddress: tokenId
-  }).then(res => res?.Address);
+    PrivacyTokenAddress: tokenId,
+  };
+  if (signPublicKeyEncode) {
+    body.SignPublicKeyEncode = signPublicKeyEncode;
+  }
+  return http.post('eta/generate', body)
+    .then(res => res?.Address);
 };
 
-export const genERC20DepositAddress = ({ paymentAddress, walletAddress, tokenId, tokenContractID, currencyType }) => {
+export const genERC20DepositAddress = ({ paymentAddress, walletAddress, tokenId, tokenContractID, currencyType, signPublicKeyEncode }) => {
   if (!paymentAddress) return throw new Error('Missing paymentAddress');
   if (!walletAddress) return throw new Error('Missing walletAddress');
   if (!tokenId) return throw new Error('Missing tokenId');
@@ -56,13 +67,20 @@ export const genERC20DepositAddress = ({ paymentAddress, walletAddress, tokenId,
   //   return throw new Error('Invalid amount');
   // }
 
-  return http.post('eta/generate', {
+  let body = {
     CurrencyType: currencyType,
     AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.DEPOSIT,
     RequestedAmount: undefined,
     PaymentAddress: paymentAddress,
     WalletAddress: walletAddress ?? paymentAddress,
     Erc20TokenAddress: tokenContractID,
-    PrivacyTokenAddress: tokenId
-  }).then(res => res?.Address);
+    PrivacyTokenAddress: tokenId,
+  };
+
+  if (signPublicKeyEncode) {
+    body.SignPublicKeyEncode = signPublicKeyEncode;
+  }
+
+  return http.post('eta/generate', body)
+    .then(res => res?.Address);
 };

@@ -45,6 +45,7 @@ export const withdraw = (data) => {
     userFeesData,
     isUsedPRVFee,
     fast2x,
+    signPublicKeyEncode,
   } = data;
   const parseOriginalAmount = Number(originalAmount);
   if (!burningTxId) throw new Error('Missing burningTxId');
@@ -56,7 +57,7 @@ export const withdraw = (data) => {
   if (!Number.isFinite(parseOriginalAmount) || parseOriginalAmount === 0) {
     throw new Error('Invalid amount');
   }
-  const payload = {
+  let payload = {
     CurrencyType: currencyType,
     AddressType: CONSTANT_COMMONS.ADDRESS_TYPE.WITHDRAW,
     RequestedAmount: String(requestedAmount),
@@ -70,6 +71,11 @@ export const withdraw = (data) => {
     UserFeeSelection: isUsedPRVFee ? 2 : 1,
     UserFeeLevel: fast2x ? 2 : 1,
   };
+
+  if (signPublicKeyEncode) {
+    payload.SignPublicKeyEncode = signPublicKeyEncode;
+  }
+
   return http.post('eta/add-tx-withdraw', payload);
 };
 
@@ -110,6 +116,7 @@ export const estimateUserFees = (data) => {
     walletAddress,
     currencyType,
     isErc20Token,
+    signPublicKeyEncode,
   } = data;
   if (isErc20Token && !tokenContractID) {
     throw new Error('Missing tokenContractID');
@@ -121,7 +128,7 @@ export const estimateUserFees = (data) => {
     throw new Error('Invalid amount');
   }
 
-  const payload = {
+  let payload = {
     TokenID: tokenId,
     RequestedAmount: String(requestedAmount),
     CurrencyType: currencyType,
@@ -133,5 +140,10 @@ export const estimateUserFees = (data) => {
     WalletAddress: walletAddress,
     IncognitoTx: '',
   };
+
+  if (signPublicKeyEncode) {
+    payload.SignPublicKeyEncode = signPublicKeyEncode;
+  }
+
   return http.post('eta/estimate-fees', payload);
 };
