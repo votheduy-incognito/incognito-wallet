@@ -130,6 +130,11 @@ export const getAccountByNameSelector = createSelector(
     ),
 );
 
+export const signPublicKeyEncodeSelector = createSelector(
+  (state) => state?.account,
+  (account) => account?.signPublicKeyEncode,
+);
+
 export default {
   defaultAccountName,
   listAccount,
@@ -146,4 +151,5 @@ export default {
   createAccountSelector,
   importAccountSelector,
   getAccountByNameSelector,
+  signPublicKeyEncodeSelector,
 };

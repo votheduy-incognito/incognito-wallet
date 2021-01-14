@@ -19,17 +19,23 @@ export const getpTokenHistory = ({ paymentAddress, tokenId }) => {
     });
 };
 
-export const removeHistory = ({ historyId, currencyType, isDecentralized }) => {
+export const removeHistory = ({ historyId, currencyType, isDecentralized, signPublicKeyEncode }) => {
   if (typeof historyId !== 'number' && !Number.isFinite(historyId))
     return throw new Error('Invalid historyId');
   if (typeof currencyType !== 'number' && !Number.isFinite(currencyType))
     return throw new Error('Invalid currencyType');
 
-  return http.post('eta/remove', {
+  let body = {
     CurrencyType: currencyType,
     ID: historyId,
     Decentralized: Number(isDecentralized),
-  });
+  };
+
+  if (signPublicKeyEncode) {
+    body.SignPublicKeyEncode = signPublicKeyEncode;
+  }
+
+  return http.post('eta/remove', body);
 };
 
 export const retryExpiredDeposit = ({
@@ -42,6 +48,7 @@ export const retryExpiredDeposit = ({
   erc20TokenAddress,
   type,
   TxOutchain,
+  signPublicKeyEncode
 }) => {
   if (typeof id !== 'number' && !Number.isFinite(id)) {
     return throw new Error('Invalid history Id');
@@ -80,6 +87,11 @@ export const retryExpiredDeposit = ({
     PrivacyTokenAddress: privacyTokenAddress,
     Erc20TokenAddress: erc20TokenAddress,
   };
+
+  if (signPublicKeyEncode) {
+    body.SignPublicKeyEncode = signPublicKeyEncode;
+  }
+
   if (TxOutchain) {
     body.TxOutchain = TxOutchain;
   }

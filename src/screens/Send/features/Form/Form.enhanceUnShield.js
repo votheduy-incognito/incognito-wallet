@@ -8,7 +8,7 @@ import { Toast } from '@src/components/core';
 import convert from '@src/utils/convert';
 import { useSelector, useDispatch } from 'react-redux';
 import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
-import { selectedPrivacySeleclor } from '@src/redux/selectors';
+import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { floor, toString } from 'lodash';
 import format from '@src/utils/format';
 import { useNavigation } from 'react-navigation-hooks';
@@ -45,6 +45,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
   } = useSelector(feeDataSelector);
   const dev = useSelector(devSelector);
   const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const signPublicKeyEncode = useSelector(accountSeleclor.signPublicKeyEncodeSelector);
   const {
     tokenId,
     contractId,
@@ -172,7 +173,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         });
         await Utils.delay(15);
       }
-      await withdraw(_tx);
+      await withdraw({..._tx, signPublicKeyEncode});
       await dispatch(
         actionRemoveStorageDataDecentralized({
           keySave,

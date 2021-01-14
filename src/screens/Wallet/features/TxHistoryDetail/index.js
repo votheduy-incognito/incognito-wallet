@@ -27,14 +27,15 @@ class TxHistoryDetailContainer extends Component {
     try {
       if (data) {
         const { txOutchain } = this.state;
+        const { signPublicKeyEncode } = this.props;
         if (isDecentralized) {
           if (txOutchain === '') {
             return;
           }
           let newData = { ...data.history, TxOutchain: txOutchain };
-          await retryExpiredDeposit(newData);
+          await retryExpiredDeposit({ ...newData, signPublicKeyEncode });
         } else {
-          await retryExpiredDeposit(data);
+          await retryExpiredDeposit({ ...data, signPublicKeyEncode });
         }
         const decentralizedMSg =
           'Your request has been sent, we will process it soon.';
@@ -156,6 +157,7 @@ class TxHistoryDetailContainer extends Component {
 TxHistoryDetailContainer.propTypes = {
   navigation: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired,
+  signPublicKeyEncode: PropTypes.string.isRequired
 };
 
 export default withTxHistoryDetail(TxHistoryDetailContainer);

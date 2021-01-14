@@ -1,7 +1,7 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { ExHandler } from '@src/services/exception';
-import { selectedPrivacySeleclor } from '@src/redux/selectors';
+import { accountSeleclor, selectedPrivacySeleclor } from '@src/redux/selectors';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeHistory } from '@src/services/api/history';
 import { Toast } from '@src/components/core';
@@ -13,6 +13,7 @@ const enhance = (WrappedComp) => (props) => {
   const token = useSelector(
     selectedPrivacySeleclor.selectedPrivacyByFollowedSelector,
   );
+  const signPublicKeyEncode = useSelector(accountSeleclor.signPublicKeyEncodeSelector);
 
   const dispatch = useDispatch();
   const handleLoadHistory = async (refreshing) => {
@@ -30,6 +31,7 @@ const enhance = (WrappedComp) => (props) => {
         historyId: history?.id,
         currencyType: history?.currencyType,
         isDecentralized: history?.decentralized,
+        signPublicKeyEncode,
       });
       if (data) {
         Toast.showSuccess('Canceled');

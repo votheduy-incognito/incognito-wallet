@@ -12,8 +12,7 @@ import {
 } from '@screens/Wallet/features/TxHistoryDetail/TxHistoruDetail.builder';
 import Toast from '@components/core/Toast';
 import { ExHandler } from '@services/exception';
-import { getSignPublicKey } from '@services/gomobile';
-import { defaultAccount } from '@src/redux/selectors/account';
+import { accountSeleclor } from '@src/redux/selectors';
 
 export const actionRefreshing = () => ({
   type: ACTION_REFRESHING,
@@ -34,8 +33,7 @@ export const actionRefreshHistoryDetail = (txID, currencyType) => async (dispatc
   const { isRefreshing } = state.txHistoryDetail;
   if (isRefreshing) return;
   try {
-    const account = defaultAccount(state);
-    const signPublicKeyEncode = await getSignPublicKey(account.PrivateKey);
+    const signPublicKeyEncode = accountSeleclor.signPublicKeyEncodeSelector(state);
     await dispatch(actionRefreshing());
     data = await apiRefreshHistory(txID, currencyType, signPublicKeyEncode);
   } catch (error) {

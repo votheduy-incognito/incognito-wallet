@@ -17,6 +17,7 @@ import {
 } from '@src/redux/selectors/masterKey';
 import { switchMasterKey, updateMasterKey } from '@src/redux/actions/masterKey';
 import { storeWalletAccountIdsOnAPI } from '@services/wallet/WalletService';
+import { getSignPublicKey } from '@services/gomobile';
 import { tokenSeleclor, accountSeleclor } from '../selectors';
 import { getBalance as getTokenBalance, setListToken } from './token';
 
@@ -103,12 +104,29 @@ export const getBalanceFinish = (accountName) => ({
   data: accountName,
 });
 
-export const setDefaultAccount = (account) => {
+const setSignPublicKeyEncode = (signPublicKeyEncode) => {
+  return {
+    type: type.SET_SIGN_PUBLIC_KEY_ENCODE,
+    signPublicKeyEncode,
+  };
+};
+
+const updateDefaultAccount = (account) => {
   accountService.saveDefaultAccountToStorage(accountService.getAccountName(account));
   return {
     type: type.SET_DEFAULT_ACCOUNT,
     data: account,
   };
+};
+
+export const setDefaultAccount = (account) => async (dispatch) => {
+  try {
+    dispatch(updateDefaultAccount(account));
+    const signPublicKeyEncode = await getSignPublicKey(account?.PrivateKey);
+    dispatch(setSignPublicKeyEncode(signPublicKeyEncode));
+  } catch (e) {
+    console.debug('SET DEFAULT ACCOUNT WITH ERROR: ', e);
+  }
 };
 
 export const getBalance = (account) => async (dispatch, getState) => {

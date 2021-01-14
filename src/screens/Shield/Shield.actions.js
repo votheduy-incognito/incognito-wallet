@@ -8,7 +8,10 @@ import {
 import { CONSTANT_COMMONS } from '@src/constants';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import { actionAddFollowToken } from '@src/redux/actions/token';
-import { defaultAccountSelector } from '@src/redux/selectors/account';
+import {
+  defaultAccountSelector,
+  signPublicKeyEncodeSelector
+} from '@src/redux/selectors/account';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -38,7 +41,7 @@ export const actionGetMinMaxShield = async ({ tokenId }) => {
   }
 };
 
-export const actionGetAddressToShield = async ({ selectedPrivacy, account }) => {
+export const actionGetAddressToShield = async ({ selectedPrivacy, account, signPublicKeyEncode }) => {
   try {
     let address;
     if (!selectedPrivacy?.isPToken) {
@@ -52,6 +55,7 @@ export const actionGetAddressToShield = async ({ selectedPrivacy, account }) => 
         walletAddress: account.PaymentAddress,
         tokenId: selectedPrivacy?.tokenId,
         currencyType: selectedPrivacy?.currencyType,
+        signPublicKeyEncode,
       });
     } else if (selectedPrivacy?.isErc20Token) {
       address = await genERC20DepositAddress({
@@ -60,6 +64,7 @@ export const actionGetAddressToShield = async ({ selectedPrivacy, account }) => 
         tokenId: selectedPrivacy?.tokenId,
         tokenContractID: selectedPrivacy?.contractId,
         currencyType: selectedPrivacy?.currencyType,
+        signPublicKeyEncode
       });
     } else {
       address = await genCentralizedDepositAddress({
@@ -67,6 +72,7 @@ export const actionGetAddressToShield = async ({ selectedPrivacy, account }) => 
         walletAddress: account.PaymentAddress,
         tokenId: selectedPrivacy?.tokenId,
         currencyType: selectedPrivacy?.currencyType,
+        signPublicKeyEncode
       });
     }
     if (!address) {
@@ -85,13 +91,14 @@ export const actionFetch = ({ tokenId }) => async (dispatch, getState) => {
     const account = defaultAccountSelector(state);
     const { isFetching } = shieldSelector(state);
     const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
+    const signPublicKeyEncode = signPublicKeyEncodeSelector(state);
     if (!selectedPrivacy || isFetching) {
       return;
     }
     await dispatch(actionFetching());
     await dispatch(actionAddFollowToken(tokenId));
     const dataMinMax = await actionGetMinMaxShield({ tokenId });
-    const address = await actionGetAddressToShield({ selectedPrivacy, account });
+    const address = await actionGetAddressToShield({ selectedPrivacy, account, signPublicKeyEncode });
     const [min, max] = dataMinMax;
     await dispatch(
       actionFetched({

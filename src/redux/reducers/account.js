@@ -9,6 +9,7 @@ const initialState = {
   switch: false,
   create: false,
   import: false,
+  signPublicKeyEncode: ''
 };
 
 const setAccount = (list, account) => {
@@ -141,6 +142,13 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       import: false,
+    };
+  }
+  case type.SET_SIGN_PUBLIC_KEY_ENCODE: {
+    const { signPublicKeyEncode } = action;
+    return {
+      ...state,
+      signPublicKeyEncode
     };
   }
   default:
