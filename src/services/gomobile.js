@@ -39,6 +39,8 @@ const asyncMethods = [
   'signPoolWithdraw',
   'scalarMultBase',
   'generateKeyFromSeed',
+  'parseNativeRawTx',
+  'parsePrivacyTokenRawTx',
 ];
 
 const log = (...args) => null;

@@ -221,4 +221,24 @@ RCT_EXPORT_METHOD(generateKeyFromSeed:(NSString *)data callback:(RCTResponseSend
   }
 }
 
+RCT_EXPORT_METHOD(parseNativeRawTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileParseNativeRawTx(data, nil);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
+RCT_EXPORT_METHOD(parsePrivacyTokenRawTx:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileParsePrivacyTokenRawTx(data, nil);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
 @end

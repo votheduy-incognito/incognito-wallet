@@ -33,6 +33,19 @@ const withConfirm = WrappedComp => (props) => {
 
       const signPublicKeyEncode = await getSignPublicKey(account.PrivateKey);
       const txs = await LocalDatabase.getProvideTxs();
+
+      const txHandler = async (txHash) => {
+        txs.push({
+          paymentAddress: account.PaymentAddress,
+          txId: txHash,
+          signPublicKeyEncode,
+          provideValue,
+          value: provideValue,
+          time: new Date().getTime(),
+        });
+        await LocalDatabase.saveProvideTxs(txs);
+      };
+
       const result = await accountService.createAndSendToken(
         account,
         wallet,
@@ -41,15 +54,11 @@ const withConfirm = WrappedComp => (props) => {
         coin.id,
         providerFee,
         0,
+        0,
+        '',
+        txHandler,
       );
-      if (result && result.txId) {
-        txs.push({
-          paymentAddress: account.PaymentAddress,
-          txId: result.txId,
-          signPublicKeyEncode,
-          provideValue
-        });
-        await LocalDatabase.saveProvideTxs(txs);
+      if (!global.isDEV && result && result.txId) {
         await provide(account.PaymentAddress, result.txId, signPublicKeyEncode, provideValue);
         txs.splice(txs.length - 1, 1);
         await LocalDatabase.saveProvideTxs(txs);
