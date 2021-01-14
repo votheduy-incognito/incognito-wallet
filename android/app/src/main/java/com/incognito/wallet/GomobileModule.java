@@ -268,4 +268,22 @@ public class GomobileModule extends ReactContextBaseJavaModule {
             successCallback.invoke(e.getMessage(), null);
         }
     }
+
+    @ReactMethod
+    public void parseNativeRawTx(String data, Callback successCallback) {
+        try {
+            successCallback.invoke(null, Gomobile.parseNativeRawTx(data));
+        } catch (Exception e) {
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
+
+    @ReactMethod
+    public void parsePrivacyTokenRawTx(String data, Callback successCallback) {
+        try {
+            successCallback.invoke(null, Gomobile.parsePrivacyTokenRawTx(data));
+        } catch (Exception e) {
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
 }

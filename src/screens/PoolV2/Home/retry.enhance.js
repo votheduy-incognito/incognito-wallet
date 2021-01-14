@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { ExHandler } from '@services/exception';
 import { provide } from '@services/api/pool';
 import LocalDatabase from '@utils/LocalDatabase';
 import apiCode from '@services/exception/customError/code/apiCode';
@@ -18,7 +17,8 @@ const withRetry = WrappedComp => (props) => {
       txs.splice(txIndex, 1);
     } catch (e) {
       if (e.code === apiCode.api_tx_added ||
-          e.code === apiCode.api_amount_invalid) {
+          e.code === apiCode.api_amount_invalid ||
+          e.code === apiCode.api_invalid_arguments) {
         txs.splice(txIndex, 1);
       }
     }
@@ -29,7 +29,7 @@ const withRetry = WrappedComp => (props) => {
     if (txs && txs.length > 0) {
       await Promise.all(txs.map(tx => retryCallAPI(tx, txs)));
       await LocalDatabase.saveProvideTxs(txs);
-      await onReloadHistories();
+      await onReloadHistories(account);
       await onLoad(account);
     }
   };

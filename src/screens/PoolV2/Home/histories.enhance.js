@@ -42,6 +42,7 @@ const withHistories = WrappedComp => (props) => {
         ...props,
         histories: accountHistories[account?.PaymentAddress] || [],
         isLoadingHistories: loading,
+        onReloadHistories: debounceLoadHistories,
       }}
     />
   );

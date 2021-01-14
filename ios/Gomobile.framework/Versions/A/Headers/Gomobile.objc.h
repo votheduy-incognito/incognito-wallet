@@ -68,6 +68,10 @@ FOUNDATION_EXPORT NSString* _Nonnull GomobileInitPrivacyTx(NSString* _Nullable a
 
 FOUNDATION_EXPORT NSString* _Nonnull GomobileInitWithdrawRewardTx(NSString* _Nullable args, int64_t serverTime, NSError* _Nullable* _Nullable error);
 
+FOUNDATION_EXPORT NSString* _Nonnull GomobileParseNativeRawTx(NSString* _Nullable rawTx, NSError* _Nullable* _Nullable error);
+
+FOUNDATION_EXPORT NSString* _Nonnull GomobileParsePrivacyTokenRawTx(NSString* _Nullable rawTx, NSError* _Nullable* _Nullable error);
+
 FOUNDATION_EXPORT NSString* _Nonnull GomobileRandomScalars(NSString* _Nullable n, NSError* _Nullable* _Nullable error);
 
 FOUNDATION_EXPORT NSString* _Nonnull GomobileScalarMultBase(NSString* _Nullable scalarB64Encode, NSError* _Nullable* _Nullable error);
