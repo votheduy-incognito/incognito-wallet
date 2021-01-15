@@ -2,10 +2,11 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useDispatch } from 'react-redux';
+import debounce from 'lodash/debounce';
 import PropTypes from 'prop-types';
 import { ExHandler } from '@src/services/exception';
-import { useKeyboard } from '@src/components/UseEffect/useKeyboard';
 import { actionFetchFee } from './EstimateFee.actions';
+import { useKeyboard } from '../UseEffect/useKeyboard';
 
 const enhance = (WrappedComp) => (props) => {
   const {
@@ -23,10 +24,9 @@ const enhance = (WrappedComp) => (props) => {
     memo,
     isExternalAddress,
     isIncognitoAddress,
-    isKeyboardVisible,
   ) => {
     try {
-      if (!amount || !address || isKeyboardVisible) {
+      if (!amount || !address) {
         return;
       }
       let screen = 'Send';
@@ -47,9 +47,7 @@ const enhance = (WrappedComp) => (props) => {
       new ExHandler(error).showErrorToast();
     }
   };
-
-  const _handleChangeForm = React.useRef(handleChangeForm);
-
+  const _handleChangeForm = React.useRef(debounce(handleChangeForm, 1000));
   React.useEffect(() => {
     _handleChangeForm.current(
       address,
@@ -57,16 +55,19 @@ const enhance = (WrappedComp) => (props) => {
       memo,
       isExternalAddress,
       isIncognitoAddress,
-      isKeyboardVisible,
     );
-  }, [
-    address,
-    amount,
-    memo,
-    isExternalAddress,
-    isIncognitoAddress,
-    isKeyboardVisible,
-  ]);
+  }, [address, amount, memo, isExternalAddress, isIncognitoAddress]);
+  React.useEffect(() => {
+    if (!isKeyboardVisible) {
+      handleChangeForm(
+        address,
+        amount,
+        memo,
+        isExternalAddress,
+        isIncognitoAddress,
+      );
+    }
+  }, [isKeyboardVisible]);
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props }} />
