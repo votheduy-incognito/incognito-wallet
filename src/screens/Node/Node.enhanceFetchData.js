@@ -14,6 +14,7 @@ import {
   actionUpdateListNodeDevice as updateListNode
 } from '@screens/Node/Node.actions';
 import LocalDatabase from '@utils/LocalDatabase';
+import {Text} from 'react-native';
 
 let lastRefreshTime;
 
@@ -22,6 +23,8 @@ const enhanceFetchData = WrappedComp => props => {
     listDevice,
     isFetched
   } = props;
+
+  const [errorStorage, setErrorStorage] = React.useState(null);
 
   const dispatch    = useDispatch();
   const refresh     = useNavigationParam('refresh');
@@ -41,19 +44,24 @@ const enhanceFetchData = WrappedComp => props => {
 
     lastRefreshTime = refresh || new Date().getTime();
 
-    // update list nodes from local
-    let listDevice = await LocalDatabase.getListDevices();
-    dispatch(updateListNode({ listDevice }));
-
-    // Add loading here
-    getTotalVNodeNotHaveBlsKey()
-      .then(async ({ hasVNode, vNodeNotHaveBLS, hasNode }) => {
-        //check vNode have blsKey
-        dispatch(setTotalVNode({ hasVNode, vNodeNotHaveBLS }));
-        if (hasNode && ((hasVNode && vNodeNotHaveBLS === 0) || !hasVNode)) {
-          dispatch(getNodesInfoFromApi());
-        }
-      });
+    try {
+      // update list nodes from local
+      let listDevice = await LocalDatabase.getListDevices();
+      if (listDevice && listDevice.length === 0) return;
+      dispatch(updateListNode({ listDevice }));
+      // Add loading here
+      getTotalVNodeNotHaveBlsKey()
+        .then(async ({ hasVNode, vNodeNotHaveBLS, hasNode }) => {
+          //check vNode have blsKey
+          dispatch(setTotalVNode({ hasVNode, vNodeNotHaveBLS }));
+          if (hasNode && ((hasVNode && vNodeNotHaveBLS === 0) || !hasVNode)) {
+            dispatch(getNodesInfoFromApi());
+          }
+        });
+    } catch (e) {
+      setErrorStorage(e);
+      console.log('FETCH DATA ERROR: ', e);
+    }
   };
 
   const refreshData = () => {
@@ -100,6 +108,8 @@ const enhanceFetchData = WrappedComp => props => {
       <WrappedComp
         {...{
           ...props,
+
+          errorStorage,
 
           refreshData
         }}
