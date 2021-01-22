@@ -6,10 +6,13 @@ import { split } from 'lodash';
 import {loadWallet, saveWallet} from '@services/wallet/WalletService';
 import { PASSPHRASE_WALLET_DEFAULT } from 'react-native-dotenv';
 import RNRestart from 'react-native-restart';
+import { useDispatch } from 'react-redux';
+import { actionLogEvent } from '@screens/Performance';
 
 const REMOVE_HISTORY_KEYS = ['CustomTokenTx', 'NormalTx', 'PrivacyTokenTx'];
 
 const enhance = WrappedComp => props => {
+  const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(false);
   const loadRemoveKeys = async () => {
     const keys = await AsyncStorage.getAllKeys();
@@ -35,32 +38,30 @@ const enhance = WrappedComp => props => {
       const { UTXOCacheds, walletCacheds } = await loadRemoveKeys();
       if (UTXOCacheds.length === 0 && walletCacheds.length === 0) return;
       setLoading(true);
-
       /** handle clear account cached */
       UTXOCacheds.forEach(accountKey => {
+        dispatch(actionLogEvent({ desc: 'START REMOVE WITH ACCOUNT: ' + accountKey}));
         AsyncStorage.removeItem(accountKey);
       });
 
       /** handle clear wallet history*/
       for (const walletName of walletCacheds) {
         const wallet = await loadWallet(PASSPHRASE_WALLET_DEFAULT, walletName) || {};
-        wallet.MasterAccount.child.forEach((child) => {
-          const txHistory = child.txHistory;
+        dispatch(actionLogEvent({ desc: 'START REMOVE WITH WALLET: ' + walletName}));
+        wallet.MasterAccount.child.forEach((_, index) => {
           REMOVE_HISTORY_KEYS.forEach(removeKey => {
-            txHistory[removeKey] = [];
+            wallet.MasterAccount.child[index].txHistory[removeKey] = [];
           });
         });
         /** Update wallet after clear */
         await saveWallet(wallet);
       }
-
+    } catch (e) {
+      dispatch(actionLogEvent({ desc: 'ERROR REMOVE DATA: ' + JSON.stringify(e) }));      setLoading(false);
+    } finally {
       setLoading(false);
-
       /** Restart app */
       RNRestart.Restart();
-    } catch (e) {
-      setLoading(false);
-      console.debug('Remove storage with error: ', e);
     }
   };
 
