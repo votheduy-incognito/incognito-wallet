@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 import nodeEnhance from '@screens/Node/Node.enhance';
 import DialogLoader from '@components/DialogLoader';
 import PropTypes from 'prop-types';
@@ -20,6 +20,7 @@ const Node = (props) => {
     refreshData,
     nodeRewards,
     loading, // creating account from @enhanceSignIn
+    errorStorage,
     listDevice,
     showWelcome,
     isFetching,
@@ -95,6 +96,10 @@ const Node = (props) => {
   const getKeyExtractor = (item) => ((item?.ProductId || Date.now()) + '');
 
   const renderContent = () => {
+    if (errorStorage) {
+      return <Text style={{ textAlign: 'center' }}>STORAGE ERROR</Text>;
+    }
+
     if (showWelcome) {
       return (
         <View style={{ marginHorizontal: 25 }}>
@@ -183,7 +188,8 @@ Node.propTypes = {
   noRewards: PropTypes.bool.isRequired,
   handleConfirmRemoveDevice: PropTypes.func.isRequired,
   handleCancelRemoveDevice: PropTypes.func.isRequired,
-  isRefreshing: PropTypes.bool.isRequired
+  isRefreshing: PropTypes.bool.isRequired,
+  errorStorage: PropTypes.object.isRequired
 };
 
 export default nodeEnhance(memo(Node));

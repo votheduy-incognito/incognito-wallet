@@ -15,14 +15,16 @@ const enhance = WrappedComp => props => {
   };
 
   const checkWelcome = async () => {
-    const clearedNode = await LocalDatabase.getNodeCleared();
-    const list = (await LocalDatabase.getListDevices()) || [];
-    if (!clearedNode && listDevice.length === 0 && list.length > 0) {
-      const firstDevice = Device.getInstance(list[0]);
-      if (firstDevice.IsPNode && !firstDevice.IsLinked) {
-        setShowWelcome(true);
+    try {
+      const clearedNode = await LocalDatabase.getNodeCleared();
+      const list = (await LocalDatabase.getListDevices()) || [];
+      if (!clearedNode && listDevice.length === 0 && list.length > 0) {
+        const firstDevice = Device.getInstance(list[0]);
+        if (firstDevice.IsPNode && !firstDevice.IsLinked) {
+          setShowWelcome(true);
+        }
       }
-    }
+    } catch (e) {/** ignored error*/}
   };
 
   useFocusEffect(

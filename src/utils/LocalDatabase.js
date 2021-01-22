@@ -2,6 +2,7 @@ import User from '@models/user';
 import AsyncStorage from '@services/storage';
 import { CONSTANT_KEYS, MESSAGES } from '@src/constants';
 import _ from 'lodash';
+import {array} from 'prop-types';
 
 const TAG = 'LocalDatabase';
 export const KEY_SAVE = {
@@ -36,8 +37,8 @@ export default class LocalDatabase {
     try {
       listDevice = JSON.parse((await LocalDatabase.getValue(KEY_SAVE.LIST_DEVICE)) || '[]');
     } catch (error) {
-      listDevice = [];
-      console.log(TAG, ' getListDevices error ');
+      console.log(TAG, ' getListDevices error ', error);
+      throw new Error(error);
     }
 
     if (!_.isArray(listDevice)) {
