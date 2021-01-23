@@ -14,6 +14,7 @@ import theme from '@src/styles/theme';
 import { SuccessModal } from '@src/components';
 import NodeItem from '@screens/Node/components/NodeItem/NodeItem';
 import string from '@src/constants/string';
+import NodeFullDisk from '@screens/Node/components/NodeFullDisk';
 
 const Node = (props) => {
   const {
@@ -97,7 +98,7 @@ const Node = (props) => {
 
   const renderContent = () => {
     if (errorStorage) {
-      return <Text style={{ textAlign: 'center' }}>STORAGE ERROR</Text>;
+      return <NodeFullDisk />;
     }
 
     if (showWelcome) {
@@ -189,7 +190,14 @@ Node.propTypes = {
   handleConfirmRemoveDevice: PropTypes.func.isRequired,
   handleCancelRemoveDevice: PropTypes.func.isRequired,
   isRefreshing: PropTypes.bool.isRequired,
-  errorStorage: PropTypes.object.isRequired
+  errorStorage: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.oneOf([null]),
+  ])
+};
+
+Node.defaultProps = {
+  errorStorage: null
 };
 
 export default nodeEnhance(memo(Node));

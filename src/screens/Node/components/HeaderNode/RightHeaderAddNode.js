@@ -7,8 +7,8 @@ import {useNavigation} from 'react-navigation-hooks';
 import {Header} from '@src/components';
 
 const HeaderNode = (props) => {
-  const { disable }   = props;
-  const navigation    = useNavigation();
+  const { disable, errorStorage } = props;
+  const navigation = useNavigation();
 
   const RightButton = useMemo(() => {
     if (disable) return null;
@@ -22,7 +22,7 @@ const HeaderNode = (props) => {
 
   return (
     <Header
-      title='Power'
+      title={errorStorage ? '' : 'Power'}
       style={{ paddingHorizontal: 25 }}
       rightHeader={RightButton}
     />
@@ -30,7 +30,15 @@ const HeaderNode = (props) => {
 };
 
 HeaderNode.propTypes = {
-  disable: PropTypes.bool.isRequired
+  disable: PropTypes.bool.isRequired,
+  errorStorage: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.oneOf([null]),
+  ])
+};
+
+HeaderNode.defaultProps = {
+  errorStorage: null
 };
 
 export default memo(HeaderNode);
