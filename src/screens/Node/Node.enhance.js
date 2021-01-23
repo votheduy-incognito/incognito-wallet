@@ -23,6 +23,7 @@ const nodeEnhance = WrappedComp => props => {
     showWelcome,
     listDevice,
     isFetching,
+    errorStorage,
   } = props;
 
   const handleAddVirtualNodePress = () => {
@@ -52,9 +53,11 @@ const nodeEnhance = WrappedComp => props => {
 
   return (
     <ErrorBoundary>
-      <HeaderNode disable={
-        showWelcome ||
-        (!isFetching && isEmpty(listDevice))}
+      <HeaderNode
+        disable={
+          showWelcome ||
+          (!isFetching && isEmpty(listDevice))}
+        errorStorage={errorStorage}
       />
       <WrappedComp
         {...{

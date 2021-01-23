@@ -5,7 +5,7 @@ import LocalDatabase from '@utils/LocalDatabase';
 import Device from '@models/device';
 
 const enhance = WrappedComp => props => {
-  const { listDevice } = props;
+  const { listDevice, setErrorStorage } = props;
 
   const [showWelcome, setShowWelcome] = useState(false);
 
@@ -24,7 +24,9 @@ const enhance = WrappedComp => props => {
           setShowWelcome(true);
         }
       }
-    } catch (e) {/** ignored error*/}
+    } catch (e) {
+      setErrorStorage(e);
+    }
   };
 
   useFocusEffect(

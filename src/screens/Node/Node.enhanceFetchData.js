@@ -3,7 +3,7 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useDispatch, useSelector } from 'react-redux';
 import { vNodeOptionsSelector } from '@screens/Node/Node.selector';
 import { useFocusEffect, useNavigationParam } from 'react-navigation-hooks';
-import { getTotalVNodeNotHaveBlsKey } from '@screens/Node/Node.utils';
+import { checkSpaceSaveNode, getTotalVNodeNotHaveBlsKey } from '@screens/Node/Node.utils';
 import {
   actionCheckWithdrawTxs as checkWithdrawTxs,
   actionClearListNodes as clearListNodes,
@@ -14,17 +14,17 @@ import {
   actionUpdateListNodeDevice as updateListNode
 } from '@screens/Node/Node.actions';
 import LocalDatabase from '@utils/LocalDatabase';
-import {Text} from 'react-native';
+import { ExHandler } from '@services/exception';
 
 let lastRefreshTime;
 
 const enhanceFetchData = WrappedComp => props => {
   const {
     listDevice,
-    isFetched
+    isFetched,
+    setErrorStorage
   } = props;
 
-  const [errorStorage, setErrorStorage] = React.useState(null);
 
   const dispatch    = useDispatch();
   const refresh     = useNavigationParam('refresh');
@@ -45,6 +45,8 @@ const enhanceFetchData = WrappedComp => props => {
     lastRefreshTime = refresh || new Date().getTime();
 
     try {
+      // make sure can storage DATA
+      await checkSpaceSaveNode();
       // update list nodes from local
       let listDevice = await LocalDatabase.getListDevices();
       if (listDevice && listDevice.length === 0) return;
@@ -60,7 +62,7 @@ const enhanceFetchData = WrappedComp => props => {
         });
     } catch (e) {
       setErrorStorage(e);
-      console.log('FETCH DATA ERROR: ', e);
+      new ExHandler(e).showErrorToast();
     }
   };
 
@@ -108,8 +110,6 @@ const enhanceFetchData = WrappedComp => props => {
       <WrappedComp
         {...{
           ...props,
-
-          errorStorage,
 
           refreshData
         }}

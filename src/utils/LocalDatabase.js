@@ -24,8 +24,12 @@ export const KEY_SAVE = {
 export default class LocalDatabase {
   static async getValue(key: String): String {
     // console.log(TAG, ' getValue begin ', key);
-    const s = await AsyncStorage.getItem(key);
-    return s;
+    try {
+      const s = await AsyncStorage.getItem(key);
+      return s;
+    } catch (e) {
+      console.log('GET ');
+    }
   }
   static saveValue = async (key: String, value: Object) => {
     // console.log(TAG, ' saveValue begin ', value);

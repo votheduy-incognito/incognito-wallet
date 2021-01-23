@@ -42,6 +42,7 @@ const COLORS = {
   lightGrey20: '#D6D6D6',
 
   newGrey: '#8A8A8E',
+  manateeGrey: '#959599',
 
   toastBackgroundDefault: 'rgba(107, 141, 143, 0.8)',
   toastBackgroundError: 'rgba(255, 101, 47, 0.8)',
