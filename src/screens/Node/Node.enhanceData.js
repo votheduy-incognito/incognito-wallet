@@ -16,6 +16,14 @@ const enhanceData = WrappedComp => props => {
     withdrawing
   } = useSelector(nodeSelector);
 
+  const [errorStorage, setErrorStorage] = React.useState(null);
+
+  const handleSetErrorStorage = (error) => {
+    if (error && error.message && error.message.includes('disk')) {
+      setErrorStorage(error);
+    }
+  };
+
   return (
     <ErrorBoundary>
       <WrappedComp
@@ -29,7 +37,9 @@ const enhanceData = WrappedComp => props => {
           isRefreshing,
           isFetched,
           withdrawTxs,
-          withdrawing
+          withdrawing,
+          errorStorage,
+          setErrorStorage: handleSetErrorStorage,
         }}
       />
     </ErrorBoundary>

@@ -6,6 +6,7 @@ import { split } from 'lodash';
 import {loadWallet, saveWallet} from '@services/wallet/WalletService';
 import { PASSPHRASE_WALLET_DEFAULT } from 'react-native-dotenv';
 import RNRestart from 'react-native-restart';
+import { FAKE_FULL_DISK_KEY } from '@screens/Setting/features/DevSection/DevSection.utils';
 
 const REMOVE_HISTORY_KEYS = ['CustomTokenTx', 'NormalTx', 'PrivacyTokenTx'];
 
@@ -19,7 +20,12 @@ const enhance = WrappedComp => props => {
       const data = await AsyncStorage.getItem(key);
       if (data?.length) {
         const splitResults = split(key, '-');
-        if (splitResults && splitResults.length >= 2 && splitResults.length <= 3 && splitResults[splitResults.length - 1] === 'cached') {
+        if (key.includes(FAKE_FULL_DISK_KEY) ||
+          (splitResults
+            && splitResults.length >= 2
+            && splitResults.length <= 3
+            && splitResults[splitResults.length - 1] === 'cached'))
+        {
           UTXOCacheds.push(key);
         }
         if (key === 'Wallet' || key.includes('master-masterless')) {
@@ -44,14 +50,16 @@ const enhance = WrappedComp => props => {
       /** handle clear wallet history*/
       for (const walletName of walletCacheds) {
         const wallet = await loadWallet(PASSPHRASE_WALLET_DEFAULT, walletName) || {};
-        wallet.MasterAccount.child.forEach((child) => {
-          const txHistory = child.txHistory;
-          REMOVE_HISTORY_KEYS.forEach(removeKey => {
-            txHistory[removeKey] = [];
+        if (wallet && wallet.MasterAccount && wallet.MasterAccount.child) {
+          wallet.MasterAccount.child.forEach((child) => {
+            const txHistory = child.txHistory;
+            REMOVE_HISTORY_KEYS.forEach(removeKey => {
+              txHistory[removeKey] = [];
+            });
           });
-        });
-        /** Update wallet after clear */
-        await saveWallet(wallet);
+          /** Update wallet after clear */
+          await saveWallet(wallet);
+        }
       }
 
       setLoading(false);

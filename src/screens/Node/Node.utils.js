@@ -9,10 +9,10 @@ import tokenService, { PRV } from '@services/wallet/tokenService';
 import { PRV_ID } from '@screens/Dex/constants';
 import { getTokenList } from '@services/api/token';
 import { parseNodeRewardsToArray } from '@screens/Node/utils';
-import accountService from '@services/wallet/accountService';
 import DeviceInfo from 'react-native-device-info';
 import Util from '@utils/Util';
 import { CONSTANT_CONFIGS } from '@src/constants';
+import storage from '@services/storage';
 
 export const checkIfVerifyCodeIsExisting = async () => {
   return new Promise(async (resolve, reject) => {
@@ -363,3 +363,20 @@ export const SSHCommandClearTrashDataNode = () => {
   return `tmux split-window -v -t brain:brain.0 && tmux send-keys -t brain:brain.1 '${wget}' C-m`;
 };
 
+/** 208 KB ~= 212992 byte */
+export const checkSpaceSaveNode = async () => {
+  try {
+    let str = Date.now().toString();
+    const maxLoop = 14;
+    let index = 0;
+    while (index < maxLoop) {
+      str += str;
+      index++;
+    }
+    await storage.setItem('TEST_STORAGE', str);
+    await storage.removeItem('TEST_STORAGE');
+  } catch (e) {
+    console.debug('checkSpaceSaveNode error: ', e);
+    throw e;
+  }
+};

@@ -18,6 +18,7 @@ import {
 } from '@src/screens/Dev';
 import { CONSTANT_KEYS } from '@src/constants';
 import { accountSeleclor } from '@src/redux/selectors';
+import { clearFakeFullDisk, makeFakeFullDisk } from '@screens/Setting/features/DevSection/DevSection.utils';
 
 const DevSection = () => {
   const [homeConfig] = React.useState(global.homeConfig);
@@ -171,6 +172,16 @@ const DevSection = () => {
           value={dev[CONSTANT_KEYS.DEV_TEST_TOGGLE_TRADE]}
         />
       ),
+    },
+    {
+      id: 'make-full-disk',
+      desc: 'Toggle make full disk',
+      onPress: makeFakeFullDisk
+    },
+    {
+      id: 'clear-full-disk',
+      desc: 'Toggle clear fake full disk',
+      onPress: clearFakeFullDisk
     },
   ];
 
