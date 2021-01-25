@@ -238,6 +238,7 @@ export const getHistoryFromApi = () => async (dispatch, getState) => {
   try {
     const state = getState();
     const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
+    const signPublicKeyEncode = accountSeleclor.signPublicKeyEncodeSelector(state);
     const { isDeposable, isWithdrawable, paymentAddress } = selectedPrivacy;
     if (!isWithdrawable || !isDeposable) {
       return;
@@ -245,6 +246,7 @@ export const getHistoryFromApi = () => async (dispatch, getState) => {
     return await getpTokenHistory({
       paymentAddress,
       tokenId: selectedPrivacy?.tokenId,
+      signPublicKeyEncode,
     });
   } catch (e) {
     throw e;

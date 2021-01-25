@@ -235,7 +235,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           });
           await Utils.delay(15);
         }
-        await updatePTokenFee(txUpdatePTokenFee);
+        await updatePTokenFee({ ...txUpdatePTokenFee, signPublicKeyEncode  });
         await dispatch(
           actionRemoveStorageDataCentralized({
             keySave,

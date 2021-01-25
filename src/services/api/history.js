@@ -1,13 +1,12 @@
 import http from '@src/services/http';
 import historyModel from '@src/models/history';
 
-export const getpTokenHistory = ({ paymentAddress, tokenId }) => {
+export const getpTokenHistory = ({ paymentAddress, tokenId, signPublicKeyEncode }) => {
   return http
-    .get('eta/history', {
-      params: {
-        WalletAddress: paymentAddress,
-        PrivacyTokenAddress: tokenId,
-      },
+    .post('eta/history', {
+      WalletAddress: paymentAddress,
+      PrivacyTokenAddress: tokenId,
+      SignPublicKeyEncode: signPublicKeyEncode
     })
     .then((res) => {
       return (

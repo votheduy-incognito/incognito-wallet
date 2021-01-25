@@ -80,7 +80,7 @@ export const withdraw = (data) => {
 };
 
 export const updatePTokenFee = (data) => {
-  const { fee, paymentAddress, isUsedPRVFee, fast2x, txId } = data;
+  const { fee, paymentAddress, isUsedPRVFee, fast2x, txId, signPublicKeyEncode } = data;
   if (!isUsedPRVFee) {
     if (!fee) throw new Error('Missing fee');
     const parseFee = convert.toNumber(fee);
@@ -93,7 +93,7 @@ export const updatePTokenFee = (data) => {
     throw new Error('Missing tx id');
   }
 
-  const payload = {
+  let payload = {
     Address: paymentAddress,
     PrivacyFee: String(isUsedPRVFee ? fee : 0),
     TokenFee: String(isUsedPRVFee ? 0 : fee),
@@ -102,6 +102,10 @@ export const updatePTokenFee = (data) => {
     UserFeeLevel: fast2x ? 2 : 1,
     IncognitoTxToPayOutsideChainFee: txId,
   };
+
+  if (signPublicKeyEncode) {
+    payload.SignPublicKeyEncode = signPublicKeyEncode;
+  }
 
   return http.post('ota/update-fee', payload);
 };
