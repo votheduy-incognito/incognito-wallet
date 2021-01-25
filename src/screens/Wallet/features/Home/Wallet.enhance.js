@@ -112,7 +112,7 @@ const enhance = (WrappedComp) => (props) => {
                 txId: tx?.txId,
               }),
             );
-            updatePTokenFee(tx);
+            updatePTokenFee({ ...tx, signPublicKeyEncode });
           }
         });
     } catch (e) {

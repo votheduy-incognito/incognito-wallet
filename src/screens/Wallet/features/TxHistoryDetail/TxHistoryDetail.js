@@ -291,21 +291,26 @@ const TxHistoryDetail = (props) => {
     Clipboard.setString(JSON.stringify(data));
     Toast.showSuccess('Copied');
   };
+
+  const handleRefresh = () => {
+    const currencyType = data?.history?.currencyType;
+    const decentralized = data?.history?.decentralized;
+    onPullRefresh && onPullRefresh(historyId, currencyType, decentralized);
+  };
+
   React.useEffect(() => {
     if (fromApi && historyId && onPullRefresh && data?.history?.currencyType) {
-      onPullRefresh(historyId, data?.history?.currencyType);
+      handleRefresh();
     }
   }, []);
+
   return (
     <ScrollView
       refreshControl={
         fromApi && (
           <RefreshControl
             refreshing={isRefresh}
-            onRefresh={() =>
-              onPullRefresh &&
-              onPullRefresh(historyId, data?.history?.currencyType)
-            }
+            onRefresh={handleRefresh}
           />
         )
       }

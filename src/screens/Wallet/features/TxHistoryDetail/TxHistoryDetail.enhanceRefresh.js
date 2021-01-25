@@ -12,9 +12,9 @@ const enhance = WrappedComp => props => {
   const dispatch        = useDispatch();
   const isRefreshing    = useSelector(txHistoryDetailRefreshSelector);
 
-  const onPullRefresh = (historyId, currencyType) => {
+  const onPullRefresh = (historyId, currencyType, decentralized) => {
     if(historyId) {
-      dispatch(actionRefreshHistoryDetail(historyId, currencyType));
+      dispatch(actionRefreshHistoryDetail(historyId, currencyType, decentralized));
     }
   };
 
