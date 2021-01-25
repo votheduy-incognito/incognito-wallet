@@ -1,5 +1,4 @@
 import React from 'react';
-import { Alert } from 'react-native';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import AsyncStorage from '@react-native-community/async-storage';
 import { split } from 'lodash';
@@ -9,12 +8,16 @@ import RNRestart from 'react-native-restart';
 import { FAKE_FULL_DISK_KEY } from '@screens/Setting/features/DevSection/DevSection.utils';
 import { useDispatch } from 'react-redux';
 import { actionLogEvent } from '@screens/Performance';
+import RemoveDialog from '@screens/Setting/features/RemoveStorage/RemoveStorage.Dialog';
+import DialogLoader from '@components/DialogLoader';
 
 const REMOVE_HISTORY_KEYS = ['CustomTokenTx', 'NormalTx', 'PrivacyTokenTx'];
 
 const enhance = WrappedComp => props => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = React.useState(false);
+  const [removing, setRemoving] = React.useState(false);
+  const [visible, setVisible] = React.useState(false);
+
   const loadRemoveKeys = async () => {
     const keys = await AsyncStorage.getAllKeys();
     const UTXOCacheds = [];
@@ -41,9 +44,9 @@ const enhance = WrappedComp => props => {
 
   const handleRemoveStorage = async () => {
     try {
+      setRemoving(true);
       const { UTXOCacheds, walletCacheds } = await loadRemoveKeys();
       if (UTXOCacheds.length === 0 && walletCacheds.length === 0) return;
-      setLoading(true);
 
       /** handle clear account cached */
       UTXOCacheds.forEach(accountKey => {
@@ -69,37 +72,34 @@ const enhance = WrappedComp => props => {
     } catch (e) {
       dispatch(actionLogEvent({ desc: 'ERROR REMOVE DATA: ' + JSON.stringify(e) }));
     } finally {
-      setLoading(false);
+      setRemoving(false);
       /** Restart app */
       RNRestart.Restart();
     }
   };
 
-  const onPressRemove = () => {
-    Alert.alert(
-      'Clear history',
-      'This will delete transaction histories from display. Are you sure you want to continue?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel'
-        },
-        { text: 'OK', onPress: handleRemoveStorage }
-      ],
-      { cancelable: false }
-    );
-  };
+  const onPressRemove = () => setVisible(true);
 
   return (
-    <ErrorBoundary>
-      <WrappedComp
-        {...{
-          ...props,
-          loading,
-          onPressRemove,
+    <>
+      <ErrorBoundary>
+        <WrappedComp
+          {...{
+            ...props,
+            onPressRemove,
+          }}
+        />
+      </ErrorBoundary>
+      <RemoveDialog
+        visible={visible}
+        onPressCancel={() => setVisible(false)}
+        onPressAccept={() => {
+          setVisible(false);
+          handleRemoveStorage().then();
         }}
       />
-    </ErrorBoundary>
+      <DialogLoader loading={removing} />
+    </>
   );
 };
 

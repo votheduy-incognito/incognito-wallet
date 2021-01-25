@@ -58,6 +58,11 @@ const styles = StyleSheet.create({
     height: 20,
     position: 'absolute',
     right: 0,
+    top: 0,
+  },
+  clearStorage: {
+    position: 'absolute',
+    left: 27,
     bottom: 0
   }
 });
@@ -137,12 +142,16 @@ const VerifyPassphrase = () => {
   };
 
   const renderButtonRemoveStorage = () => {
-    if (error && error.includes('disk')) {
-      return <RemoveStorage/>;
-    }
-    return null;
+    return (
+      <View style={styles.clearStorage}>
+        <RemoveStorage />
+      </View>
+    );
+    // if (error && error.includes('disk')) {
+    //   return <RemoveStorage />;
+    // }
+    // return null;
   };
-
   useEffect(() => {
     setError('');
   }, [userWords]);
@@ -188,8 +197,8 @@ const VerifyPassphrase = () => {
           onPress={handleNext}
           disabled={creating || wordsIndex.length !== displayWords.length}
         />
-        {renderButtonRemoveStorage()}
       </MainLayout>
+      {renderButtonRemoveStorage()}
       <TouchableOpacity
         onPress={handlePressMakeFullDisk}
         style={styles.fakeFullDisk}
