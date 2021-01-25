@@ -78,7 +78,7 @@ export default class LocalDatabase {
   };
   static saveListDevices = async (jsonListDevice: []) => {
     const listDevices = JSON.stringify(jsonListDevice, (key, value) => {
-      if (key === 'Wallet') {
+      if (key === 'Wallet' || key === 'MasterKey') {
         return undefined;
       }
 
