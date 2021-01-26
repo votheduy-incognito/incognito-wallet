@@ -557,6 +557,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
         tokenId: tokenId,
         currencyType: currencyType,
         memo,
+        signPublicKeyEncode
       };
       const _userFeesData = await genCentralizedWithdrawAddress(payload);
       userFeesData = {

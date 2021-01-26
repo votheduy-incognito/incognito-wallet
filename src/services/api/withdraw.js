@@ -10,6 +10,7 @@ export const genCentralizedWithdrawAddress = ({
   tokenId,
   currencyType,
   memo,
+  signPublicKeyEncode,
 }) => {
   if (!paymentAddress) throw new Error('Missing paymentAddress');
   if (!walletAddress) throw new Error('Missing walletAddress');
@@ -25,6 +26,7 @@ export const genCentralizedWithdrawAddress = ({
     PaymentAddress: paymentAddress,
     WalletAddress: walletAddress,
     PrivacyTokenAddress: tokenId,
+    SignPublicKeyEncode: signPublicKeyEncode,
     ...(memo ? { Memo: memo } : {}),
   };
 
