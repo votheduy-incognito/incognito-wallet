@@ -3,15 +3,13 @@ import { StyleSheet } from 'react-native';
 import _ from 'lodash';
 import MainLayout from '@components/MainLayout/index';
 import Button from '@screens/BackUpPassphrase/components/Button';
-import { Text, Toast, TouchableOpacity, View } from '@components/core';
+import { Text, TouchableOpacity, View } from '@components/core';
 import { COLORS, FONT, THEME } from '@src/styles';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { CustomError, ErrorCode } from '@services/exception';
 import { createMasterKey, initMasterKey } from '@src/redux/actions/masterKey';
 import { useDispatch } from 'react-redux';
 import routeNames from '@routers/routeNames';
-import { makeFakeFullDisk } from '@screens/Setting/features/DevSection/DevSection.utils';
-import RemoveStorage from '@screens/Setting/features/RemoveStorage/RemoveStorage';
 
 const styles = StyleSheet.create({
   desc: {
@@ -53,18 +51,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.orange,
   },
-  fakeFullDisk: {
-    width: 30,
-    height: 20,
-    position: 'absolute',
-    right: 0,
-    top: 0,
-  },
-  clearStorage: {
-    position: 'absolute',
-    left: 27,
-    bottom: 0
-  }
 });
 
 const VerifyPassphrase = () => {
@@ -73,7 +59,6 @@ const VerifyPassphrase = () => {
   const [wordsIndex, setWordsIndex] = useState([]);
   const [error, setError] = useState('');
   const [creating, setCreating] = useState(false);
-  const [countTapFullDisk, setCountTapFullDisk] = useState(0);
   const dispatch = useDispatch();
 
   const displayWords = useMemo(() => {
@@ -132,78 +117,51 @@ const VerifyPassphrase = () => {
     setWordsIndex(newWordsIndex);
   };
 
-  const handlePressMakeFullDisk = async () => {
-    if (countTapFullDisk === 7) {
-      Toast.showInfo('active make full disk');
-    } else if (countTapFullDisk >= 7) {
-      await makeFakeFullDisk();
-    }
-    setCountTapFullDisk(countTapFullDisk + 1);
-  };
-
-  const renderButtonRemoveStorage = () => {
-    return (
-      <View style={styles.clearStorage}>
-        <RemoveStorage />
-      </View>
-    );
-    // if (error && error.includes('disk')) {
-    //   return <RemoveStorage />;
-    // }
-    // return null;
-  };
   useEffect(() => {
     setError('');
   }, [userWords]);
 
   return (
-    <>
-      <MainLayout header="Verify phrase" scrollable>
-        <Text style={styles.desc}>
-          Tap on these words in the correct order.
-        </Text>
-        <View style={styles.words}>
-          {displayWords.map((word, index) => (
-            <TouchableOpacity
-              key={`${word}-${index}`}
+    <MainLayout header="Verify phrase" scrollable>
+      <Text style={styles.desc}>
+        Tap on these words in the correct order.
+      </Text>
+      <View style={styles.words}>
+        {displayWords.map((word, index) => (
+          <TouchableOpacity
+            key={`${word}-${index}`}
+            style={[
+              styles.word,
+              wordsIndex.includes(index) && styles.selected
+            ]}
+            onPress={() => handleToggleWord(index)}
+          >
+            <Text
+              key={word}
               style={[
-                styles.word,
-                wordsIndex.includes(index) && styles.selected
+                wordsIndex.includes(index) && styles.selectedText,
+                styles.wordStyle,
               ]}
-              onPress={() => handleToggleWord(index)}
             >
-              <Text
-                key={word}
-                style={[
-                  wordsIndex.includes(index) && styles.selectedText,
-                  styles.wordStyle,
-                ]}
-              >
-                {word}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        <Text style={[styles.desc, styles.userWords]}>
-          {userWords}
+              {word}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+      <Text style={[styles.desc, styles.userWords]}>
+        {userWords}
+      </Text>
+      {!!error && (
+        <Text style={styles.error}>
+          {error}
         </Text>
-        {!!error && (
-          <Text style={styles.error}>
-            {error}
-          </Text>
-        )}
-        <Button
-          label={creating ? 'Creating...' : 'Create master key'}
-          onPress={handleNext}
-          disabled={creating || wordsIndex.length !== displayWords.length}
-        />
-      </MainLayout>
-      {renderButtonRemoveStorage()}
-      <TouchableOpacity
-        onPress={handlePressMakeFullDisk}
-        style={styles.fakeFullDisk}
+      )}
+      <Button
+        label={creating ? 'Creating...' : 'Create master key'}
+        onPress={handleNext}
+        disabled={creating || wordsIndex.length !== displayWords.length}
       />
-    </>
+    </MainLayout>
   );
 };
 

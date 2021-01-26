@@ -24,7 +24,6 @@ import { loadAllMasterKeyAccounts, loadAllMasterKeys } from '@src/redux/actions/
 import { masterKeysSelector } from '@src/redux/selectors/masterKey';
 import Welcome from '@screens/GetStarted/Welcome';
 import withPin from '@components/pin.enhance';
-import withRemoveStorage from '@screens/Setting/features/RemoveStorage/RemoveStorage.enhance';
 import {
   wizardSelector,
   isFollowedDefaultPTokensSelector,
@@ -35,7 +34,6 @@ import {
 } from './GetStarted.actions';
 
 const enhance = (WrappedComp) => (props) => {
-  const { onPressRemove } = props;
   const [loadMasterKeys, setLoadMasterKeys] = useState(false);
   const { isFetching, isFetched } = useSelector(wizardSelector);
   const pin = useSelector((state) => state?.pin?.pin);
@@ -161,14 +159,6 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
 
-  const handleRetry = () => {
-    if (errorMsg.includes('disk')) {
-      onPressRemove && onPressRemove();
-      return;
-    }
-    initApp();
-  };
-
   React.useEffect(() => {
     requestAnimationFrame(async () => {
       await dispatch(loadPin());
@@ -226,7 +216,7 @@ const enhance = (WrappedComp) => (props) => {
   return (
     <ErrorBoundary>
       <WrappedComp
-        {...{ ...props, errorMsg, isInitialing, isCreating, onRetry: handleRetry }}
+        {...{ ...props, errorMsg, isInitialing, isCreating, onRetry: initApp }}
       />
     </ErrorBoundary>
   );
@@ -234,6 +224,5 @@ const enhance = (WrappedComp) => (props) => {
 
 export default compose(
   withPin,
-  withRemoveStorage,
   enhance,
 );
