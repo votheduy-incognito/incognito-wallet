@@ -32,9 +32,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 24,
   },
-  bold: {
-    ...THEME.text.boldTextStyle,
-  },
   subButton: {
     marginTop: verticalScale(20 * scale),
     textAlign: 'center',
@@ -66,11 +63,11 @@ const WelcomeOldUser = ({ onCreate, onImport, onBackUp, isBackUp }) => {
     <View>
       <Text style={styles.title}>Hello again.</Text>
       <Text style={styles.subContent}>
-        Things may look a little different since the last time you visited, but don’t worry!
-        {'\n'}
-        <Text style={styles.bold}> Your data is safe.</Text>
+        Things may look a little different since the last time you visited, but don’t worry – you&apos;re doing good.
         {'\n\n'}
-        Simply create a master key to continue as you were. You’ll find your old keychains in the Keychain tab.
+        When you switch keychains in Assets, you&apos;ll find your existing keychains and funds under the heading: Masterless.
+        {'\n\n'}
+        Ready? Create a master key to continue.
       </Text>
       <RoundCornerButton
         style={styles.button}
