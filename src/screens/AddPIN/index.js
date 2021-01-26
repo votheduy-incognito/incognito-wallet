@@ -36,6 +36,7 @@ const initialState = {
   bioSupportedType: null,
   action: null,
   appState: '',
+  isShowTouchId: false
 };
 
 class AddPIN extends React.Component {
@@ -49,6 +50,7 @@ class AddPIN extends React.Component {
       action,
     };
     this.animatedValue = new Animated.Value(0);
+    AppState.addEventListener('change', this.handleAppStateChange);
   }
 
   resetPin = () => this.setState({ ...initialState });
@@ -69,12 +71,31 @@ class AddPIN extends React.Component {
   }
 
   handleAppStateChange = async (nextAppState) => {
-    const { appState } = this.state;
+    const { appState, isShowTouchId } = this.state;
     if (
       appState.match(/inactive|background|active/) &&
       nextAppState === 'active'
     ) {
       this.setState({ pin1: '', pin2: '' });
+    }
+    if (
+      appState.match(/inactive|background|active/) &&
+      nextAppState === 'background'
+    ) {
+      this.setState({
+        isShowTouchId: true
+      });
+    }
+    if (appState === '') {
+      this.setState({
+        isShowTouchId: true
+      });
+    }
+    if(isShowTouchId && nextAppState === 'active') {
+      this.setState({
+        isShowTouchId: true
+      });
+      this.handleBioAuth();
     }
     await this.setState({ appState: nextAppState });
   };
@@ -197,23 +218,32 @@ class AddPIN extends React.Component {
     this.updatePin('');
   };
 
-  handleBioAuth = () => {
+  handleBioAuth = (btnShowTouchId = false) => {
     const { navigation } = this.props;
-    TouchID.authenticate('', optionalConfigObject)
-      .then(() => {
-        const { action } = this.state;
-        if (action === 'login') {
-          this.loginSuccess();
-        } else {
-          this.removeSuccess();
-        }
-      })
-      .catch(() => {
-        //handle when type 'Cancel'
-        navigation.navigate(routeNames.AddPin, {
-          action: 'login',
+    const { isShowTouchId } = this.state;
+    if(isShowTouchId || btnShowTouchId) {
+      TouchID.authenticate('', optionalConfigObject)
+        .then(() => {
+          const { action } = this.state;
+          this.setState({
+            isShowTouchId: false,
+          });
+          if (action === 'login') {
+            this.loginSuccess();
+          } else {
+            this.removeSuccess();
+          }
+        })
+        .catch(() => {
+          this.setState({
+            isShowTouchId: false,
+          });
+          //handle when type 'Cancel'
+          navigation.navigate(routeNames.AddPin, {
+            action: 'login',
+          });
         });
-      });
+    }
   };
 
   renderTitle() {
@@ -242,7 +272,7 @@ class AddPIN extends React.Component {
         {(action === 'login' || action === 'remove') && bioSupportedType && (
           <TouchableOpacity
             style={styles.fingerprint}
-            onPress={this.handleBioAuth}
+            onPress={()=>this.handleBioAuth(true)}
             activeOpacity={opacity}
           >
             {bioSupportedType === 'FaceID' ? (
