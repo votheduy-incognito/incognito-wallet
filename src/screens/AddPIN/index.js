@@ -50,7 +50,6 @@ class AddPIN extends React.Component {
       action,
     };
     this.animatedValue = new Animated.Value(0);
-    AppState.addEventListener('change', this.handleAppStateChange);
   }
 
   resetPin = () => this.setState({ ...initialState });
@@ -71,30 +70,14 @@ class AddPIN extends React.Component {
   }
 
   handleAppStateChange = async (nextAppState) => {
-    const { appState, isShowTouchId } = this.state;
+    const { appState } = this.state;
     if (
       appState.match(/inactive|background|active/) &&
       nextAppState === 'active'
     ) {
       this.setState({ pin1: '', pin2: '' });
     }
-    if (
-      appState.match(/inactive|background|active/) &&
-      nextAppState === 'background'
-    ) {
-      this.setState({
-        isShowTouchId: true
-      });
-    }
-    if (appState === '') {
-      this.setState({
-        isShowTouchId: true
-      });
-    }
-    if(isShowTouchId && nextAppState === 'active') {
-      this.setState({
-        isShowTouchId: true
-      });
+    if(appState === '' && nextAppState === 'active') {
       this.handleBioAuth();
     }
     await this.setState({ appState: nextAppState });
@@ -126,11 +109,14 @@ class AddPIN extends React.Component {
 
   checkTouchSupported() {
     const { action } = this.state;
+    const {currentScreen, prevScreen} = this.props;
     if (action === 'login' || action === 'remove') {
       TouchID.isSupported(optionalConfigObject)
         .then((biometryType) => {
           this.setState({ bioSupportedType: biometryType });
-          this.handleBioAuth();
+          if(currentScreen === '' && prevScreen === '') {
+            this.handleBioAuth();
+          }
         })
         .catch(() => null);
     }
@@ -218,32 +204,23 @@ class AddPIN extends React.Component {
     this.updatePin('');
   };
 
-  handleBioAuth = (btnShowTouchId = false) => {
+  handleBioAuth = () => {
     const { navigation } = this.props;
-    const { isShowTouchId } = this.state;
-    if(isShowTouchId || btnShowTouchId) {
-      TouchID.authenticate('', optionalConfigObject)
-        .then(() => {
-          const { action } = this.state;
-          this.setState({
-            isShowTouchId: false,
-          });
-          if (action === 'login') {
-            this.loginSuccess();
-          } else {
-            this.removeSuccess();
-          }
-        })
-        .catch(() => {
-          this.setState({
-            isShowTouchId: false,
-          });
-          //handle when type 'Cancel'
-          navigation.navigate(routeNames.AddPin, {
-            action: 'login',
-          });
+    TouchID.authenticate('', optionalConfigObject)
+      .then(() => {
+        const { action } = this.state;
+        if (action === 'login') {
+          this.loginSuccess();
+        } else {
+          this.removeSuccess();
+        }
+      })
+      .catch(() => {
+        //handle when type 'Cancel'
+        navigation.navigate(routeNames.AddPin, {
+          action: 'login',
         });
-    }
+      });
   };
 
   renderTitle() {
@@ -272,7 +249,7 @@ class AddPIN extends React.Component {
         {(action === 'login' || action === 'remove') && bioSupportedType && (
           <TouchableOpacity
             style={styles.fingerprint}
-            onPress={()=>this.handleBioAuth(true)}
+            onPress={this.handleBioAuth}
             activeOpacity={opacity}
           >
             {bioSupportedType === 'FaceID' ? (
@@ -370,14 +347,20 @@ AddPIN.propTypes = {
   navigation: PropTypes.object.isRequired,
   updatePin: PropTypes.func.isRequired,
   pin: PropTypes.string,
+  currentScreen: PropTypes.string,
+  prevScreen: PropTypes.string
 };
 
 AddPIN.defaultProps = {
   pin: '',
+  currentScreen: '',
+  prevScreen: ''
 };
 
 const mapStateToProps = (state) => ({
   pin: state.pin.pin,
+  currentScreen: state.navigation.currentScreen,
+  prevScreen: state.navigation.prevScreen
 });
 
 const mapDispatchToProps = { updatePin };
