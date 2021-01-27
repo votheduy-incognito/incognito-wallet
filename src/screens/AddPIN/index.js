@@ -35,8 +35,7 @@ const initialState = {
   nextPin: false,
   bioSupportedType: null,
   action: null,
-  appState: '',
-  isShowTouchId: false
+  appState: ''
 };
 
 class AddPIN extends React.Component {
